@@ -52,6 +52,93 @@ ROUTE_CODES = ["CF", "CH", "TF", "TH"]
 ROUTE_LABEL = ks4_lessons.ROUTE_LABELS
 ROUTE_URL = ks4_lessons.ROUTE_URL
 
+# ⊕ Mide's ruling (27 Sep 2026, the KS4 polish run) — the header route chip
+# now states the page's route IN WORDS rather than the review-tool label
+# ("Triple Higher"). Same four routes, a reader-facing phrasing.
+ROUTE_WORDS = {
+    "CF": "Combined Science · Foundation tier",
+    "CH": "Combined Science · Higher tier",
+    "TF": "Triple Science · Foundation tier",
+    "TH": "Triple Science · Higher tier",
+}
+
+
+def compute_route_switch(lesson):
+    """One dict per route this lesson ships on: `{route_code: {"words":
+    ..., "options": [{"href", "label"}, ...]}}` — the OTHER routes this
+    SAME lesson exists on, from `ks4_lessons.LESSONS`'s own `routes` list
+    (the same ground truth `shared/ks4-lib.js`'s NAV/hrefFor mirrors for
+    prev/next/connects) via `ks4_lessons.site_url()`. Computed once per
+    lesson (not per route) since every route's option list is a subset of
+    the same `lesson["routes"]`; `ks4_rulings.R11` reads it per (lesson,
+    route) at mount time."""
+    out = {}
+    for route in lesson["routes"]:
+        others = [{"href": ks4_lessons.site_url(lesson["slug"], other),
+                   "label": ROUTE_WORDS[other]}
+                  for other in lesson["routes"] if other != route]
+        out[route] = {"words": ROUTE_WORDS[route], "options": others}
+    return out
+
+
+# ⊕ Mide's ruling (27 Sep 2026) — every route used to show the Combined
+# Science (8464) AQA spec section number, even on a Triple/separate-science
+# route. `docs/theme/spec-numbers.md` is the citation table (verified
+# against the real AQA-8462/8463-SP-2016.PDF spec PDFs, section by section,
+# never assumed by numeric pattern) this dict is the machine copy of. Every
+# lesson but `nanoparticles` gets an entry — nanoparticles has NO Combined
+# route at all (8462 §4.2.4 is chemistry-only content), and its eyebrow/
+# key-note already show the correct, verified 8462 number with nothing to
+# swap, so `ks4_rulings.apply_r14_spec_number` is never called for it.
+SPEC_TEXT = {
+    "chemical-bonds": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.1.1 · Classify", "keynote": "AQA 5.2.1.1"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.1.1 · Classify", "keynote": "AQA 4.2.1.1 (8462)"}},
+    "ionic-bonding": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.1.2 · Process", "keynote": "AQA 5.2.1.2"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.1.2 · Process", "keynote": "AQA 4.2.1.2 (8462)"}},
+    "ionic-compounds": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.1.3 · Model", "keynote": "AQA 5.2.1.3"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.1.3 · Model", "keynote": "AQA 4.2.1.3 (8462)"}},
+    "covalent-bonding": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.1.4 · Process", "keynote": "AQA 5.2.1.4"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.1.4 · Process", "keynote": "AQA 4.2.1.4 (8462)"}},
+    "metallic-bonding": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.1.5 · Model", "keynote": "AQA 5.2.1.5"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.1.5 · Model", "keynote": "AQA 4.2.1.5 (8462)"}},
+    "states-of-matter": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.2.1–5.2.2.2 · Investigation", "keynote": "AQA 5.2.2.1–5.2.2.2"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.1–4.2.2.2 · Investigation", "keynote": "AQA 4.2.2.1–4.2.2.2 (8462)"}},
+    "properties-ionic-compounds": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.2.3 · Contrast", "keynote": "AQA 5.2.2.3"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.3 · Contrast", "keynote": "AQA 4.2.2.3 (8462)"}},
+    "properties-small-molecules": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.2.4 · Model", "keynote": "AQA 5.2.2.4"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.4 · Model", "keynote": "AQA 4.2.2.4 (8462)"}},
+    "polymers": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.2.5 · Classify", "keynote": "AQA 5.2.2.5"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.5 · Classify", "keynote": "AQA 4.2.2.5 (8462)"}},
+    "giant-covalent-structures": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.2.6 · 5.2.3.1–5.2.3.3 · Contrast", "keynote": "AQA 5.2.2.6, 5.2.3"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.6 · 4.2.3.1–4.2.3.3 · Contrast", "keynote": "AQA 4.2.2.6, 4.2.3 (8462)"}},
+    "metals-alloys": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.2.7–5.2.2.8 · Contrast", "keynote": "AQA 5.2.2.7–5.2.2.8"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.7–4.2.2.8 · Contrast", "keynote": "AQA 4.2.2.7–4.2.2.8 (8462)"}},
+    "series-parallel-circuits": {
+        "combined": {"eyebrow": "AQA Physics 6.2.2 · System", "keynote": "AQA 6.2.2"},
+        "triple": {"eyebrow": "AQA Physics (8463) 4.2.2 · System", "keynote": "AQA 4.2.2 (8463)"}},
+    "resistors": {
+        "combined": {"eyebrow": "AQA Physics 6.2.1.4 · Required practical", "keynote": "AQA 6.2.1.4 · RP"},
+        "triple": {"eyebrow": "AQA Physics (8463) 4.2.1.4 · Required practical", "keynote": "AQA 4.2.1.4 (8463) · RP"}},
+}
+
+
+def compute_spec_note(slug, route):
+    entry = SPEC_TEXT.get(slug)
+    if entry is None:
+        return None
+    return entry["triple" if route in ("TF", "TH") else "combined"]
+
 # ⊕ D3 fix (26 Sep 2026, docs/ks4/pilot-live-audit.md) — the pilot pages
 # shipped no `<link rel="icon">` at all, so every one of the 54 pages 404'd
 # on the browser's `/favicon.ico` fallback (the ONLY console error the audit
@@ -412,6 +499,7 @@ def build_ds_css():
 def build_ks4_lib_js():
     text = open(os.path.join(DESIGN_DIR, "ks4-lib.js"), encoding="utf-8").read()
     text = ks4_rulings.apply_r2_ks4lib(text)
+    text = ks4_rulings.apply_r11_route_lib(text)
 
     nav = {L["slug"]: {"subject": L["subject"], "topic": L["topic_id"],
                         "routes": L["routes"]} for L in ks4_lessons.LESSONS}
@@ -510,7 +598,7 @@ def collect_lesson_css(all_files):
                "   <helmet> of the 14 lessons + 11 blocks, deduplicated "
                "(exact text match), first-seen order.\n"
                "   Never hand-edit; re-run build_ks4.py. */\n\n")
-    return header + "\n\n".join(chunks) + "\n" + KS4_DARK_MODE_FIXES
+    return header + "\n\n".join(chunks) + "\n" + KS4_DARK_MODE_FIXES + KS4_CHIP_CSS
 
 
 # ── Dark-mode legibility fixes (Mide's ruling, Experience run item 13;
@@ -605,6 +693,75 @@ KS4_DARK_MODE_FIXES = """
 [data-theme="dark"] .rd[data-mode="ks3"] textarea::placeholder {
   color: var(--ks3-ink-muted);
   opacity: 1;
+}
+"""
+
+
+# ── the header route chip/switcher (Mide's ruling, 27 Sep 2026;
+# ks4_rulings.py R12). Every colour is a `--ks3-*` token, so light and dark
+# both "just work" the same way the rest of the page does — no separate
+# dark-mode block is needed here the way KS4-DARK-1..3 above needed one:
+# those three fought an INLINE style Design's own compiled Component sets
+# per instance (only `!important` in a stylesheet can outrank an inline
+# style); this chip carries no inline colour at all. `summary` is added to
+# the page's own focus-visible selector list (html,body's own `<style>`
+# block only names button/a/select/input/textarea) so the chip gets the
+# SAME outline every other interactive control on the page does. `list-
+# style: none` on a `<ul>` is a known VoiceOver/Safari gotcha (it can drop
+# the element's implicit list semantics) — `role="list"` on the markup
+# restores it explicitly, matching the templates rather than duplicated
+# here.
+KS4_CHIP_CSS = """
+/* ⊕ KS4-CHIP-1 (Mide's ruling, 27 Sep 2026) — replaces the two static
+   "Combined · Triple" / "Foundation · Higher" header chips with one
+   chip stating the page's own route in words, as a native disclosure.
+   Enter/Space toggles a native <details>/<summary> with no script; Tab
+   reaches the menu's links (already static <a> elements in the prerendered
+   HTML, not a runtime fetch). shared/ks4-runtime.js adds only Esc-to-close
+   plus keeping aria-expanded in sync with the open state. */
+.ks3-route-switch { position: relative; }
+.ks3-route-chip {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500;
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);
+  color: var(--ks3-ink); background: var(--ks3-card);
+  -webkit-tap-highlight-color: transparent;
+}
+.ks3-route-chip::-webkit-details-marker { display: none; }
+.ks3-route-chip::marker { content: ""; }
+.ks3-route-chip:hover { border-color: var(--ks3-accent-text); }
+.ks3-route-chip:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+.ks3-route-chip svg { flex: 0 0 auto; transition: transform .15s ease; }
+.ks3-route-switch[open] > .ks3-route-chip svg { transform: rotate(180deg); }
+.ks3-route-menu {
+  /* ⚠️ `display: none` here is LOAD-BEARING, not a default this selector
+     happens to start from. The browser's own UA stylesheet already hides a
+     closed <details>'s non-summary content (`details:not([open]) >
+     *:not(summary) { display: none }`), but an AUTHOR stylesheet's rule
+     beats a UA rule at equal-or-lower specificity regardless of source
+     order — an unconditional `display: flex` here would force the menu
+     visible EVEN WHILE CLOSED (found live via ks4_parity's G-keyboard
+     layer: 3 always-focusable <a> with non-zero rects). `[open] >` below
+     is the ONLY rule that may ever show it. */
+  display: none;
+  list-style: none; margin: 6px 0 0; padding: 6px;
+  flex-direction: column; gap: 2px;
+  position: absolute; top: 100%; left: 0; z-index: 5;
+  min-width: 15rem; max-width: min(20rem, calc(100vw - 32px));
+  background: var(--ks3-card); border: 2px solid var(--ks3-option-border);
+  border-radius: var(--ks3-r-panel); box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+}
+.ks3-route-switch[open] > .ks3-route-menu { display: flex; }
+.ks3-route-menu a {
+  display: block; padding: 9px 10px; border-radius: 8px; min-height: 44px;
+  font-family: var(--ks3-font-body); font-size: 15px; font-weight: 500;
+  line-height: 1.3; color: var(--ks3-ink); text-decoration: none;
+}
+.ks3-route-menu a:hover { background: var(--ks3-band); }
+.ks3-route-menu a:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: -3px; background: var(--ks3-band); }
+@media (max-width: 400px) {
+  .ks3-route-menu { left: 0; right: auto; }
 }
 """
 
@@ -769,8 +926,10 @@ def compile_lesson(page, lesson, report):
 
     # structural template edits BEFORE the browser compile — removing a node
     # renumbers everything after it (student_template.py's rule, carried
-    # over unchanged: R1/R6/R7 all touch the template, so all three run here).
+    # over unchanged: R1/R6/R7/R12/R14 all touch the template, so they all
+    # run here).
     tpl = ks4_rulings.apply_r1_route_selector(lesson["design_file"], tpl)
+    tpl = ks4_rulings.apply_r12_route_chip(lesson["slug"], tpl)
     tpl, r9_fired = ks4_rulings.apply_r9_badge_gate(lesson["slug"], tpl)
     ks4_rulings.check_r3_ready_unused(logic)
     draft_tip = None
@@ -778,11 +937,18 @@ def compile_lesson(page, lesson, report):
         ks4_rulings.check_r5_nanoparticles_spec(tpl)
     if lesson["slug"] == "series-parallel-circuits":
         tpl = ks4_rulings.apply_r6_rtotal_chip(tpl)
-        tpl, draft_tip = ks4_rulings.apply_r7_remove_draft_tip(lesson["design_file"], tpl)
+        tpl = ks4_rulings.apply_r13_approved_exam_tip(lesson["design_file"], tpl)
+        logic = ks4_rulings.apply_r13_exam_tip_logic(lesson["design_file"], logic)
     if lesson["slug"] == "resistors":
-        tpl, draft_tip = ks4_rulings.apply_r7_remove_draft_tip(lesson["design_file"], tpl)
+        tpl = ks4_rulings.apply_r13_approved_exam_tip(lesson["design_file"], tpl)
+        logic = ks4_rulings.apply_r13_exam_tip_logic(lesson["design_file"], logic)
     if lesson["slug"] == "metals-alloys":
         logic = ks4_rulings.apply_r8_model_data(logic)
+    spec_text = SPEC_TEXT.get(lesson["slug"])
+    if spec_text is not None:
+        tpl = ks4_rulings.apply_r14_spec_number(
+            lesson["slug"], tpl, spec_text["combined"]["eyebrow"],
+            spec_text["combined"]["keynote"])
 
     logic, tpl, slug_renamed = ks4_rulings.apply_r_slug(lesson["slug"], logic, tpl)
     logic, n_prev, n_next = ks4_rulings.apply_r_prevnext(lesson["design_file"], logic)
@@ -940,11 +1106,14 @@ def block_registration_scripts(compiled_blocks):
 
 def lesson_mount_script(compiled_lesson, route, lesson, prev_next, subject_label):
     prev, nxt = prev_next
+    route_switch = compute_route_switch(lesson)
     props = {
         "route": ROUTE_LABEL[route],
         "theme": "auto",
         "showDraft": lesson["review_state"] == "draft",
         "mrbPrevNext": {"prev": prev, "next": nxt},
+        "mrbRouteSwitch": route_switch[route],
+        "mrbSpecNote": compute_spec_note(lesson["slug"], route),
     }
     return (
         "<script>\n(function () {\n%s\n"

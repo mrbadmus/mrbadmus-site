@@ -38,6 +38,29 @@ weakening — a difference NOT on this list is a real FAIL.
                 `.dc.html` filenames.
   R-SLUG        (no visible-text effect; not in this whitelist)
   ks4_science_rulings.py  (not yet landed — see `science_rulings_for()`)
+  R11/R12       (Mide's ruling, 27 Sep 2026) the header's two static
+                "Combined · Triple" / "Foundation · Higher" chips are gone
+                on every port page, replaced by one route-stating chip +
+                switcher (checked directly: `check_route_chip()` proves
+                there is exactly one, its words match the page's own
+                route, and its menu names exactly the lesson's OTHER
+                existing routes at their real URLs; `check_route_switch_
+                keyboard()` proves Enter/Space/Esc/focus-return).
+  R13           (Mide's ruling, 27 Sep 2026) `series-parallel-circuits` /
+                `resistors` gain the FINAL, approved exam tip in place of
+                the removed draft (R7, superseded — see below); checked
+                directly against `all_subtopics_physics_triple_higher.py`'s
+                `examiner_tip` field, not merely excused.
+  R14           (Mide's ruling, 27 Sep 2026) a Triple route's eyebrow/
+                key-note spec number is the separate science's own
+                (8462/8463), not Combined's (8464); Combined routes are
+                unchanged. Checked directly against `build_ks4.SPEC_TEXT`
+                by `check_spec_number()`, not merely excused.
+
+  R7 above is SUPERSEDED by R13, 27 Sep 2026: the two physics lessons no
+  longer lose the section, they gain the FINAL text in it, so
+  `R7_SLUGS` is now empty and the section is compared like any other
+  (its OLD/NEW text substitution lives in `apply_text_whitelist`).
 
 Reference.json's own asymmetry is preserved rather than fought: the DEFAULT
 route (Triple Higher, "TH") is swept at all 5 widths and gets the full D/E/F/
@@ -123,7 +146,28 @@ ROUTE_SELECT_NEEDLE = normalize_ws(
 R6_ADDITION_TEXT = "Not on the sheet · learn it"  # ks4_rulings.R6 (series-parallel-circuits)
 R8_FROM_TEXT = "The table shows the hardness of iron mixed with different percentages of carbon."
 R8_TO_TEXT = "The table shows model data for the hardness of iron mixed with different percentages of carbon."
-R7_SLUGS = {"series-parallel-circuits", "resistors"}
+# ⊕ Superseded 27 Sep 2026 (Mide's ruling, R13). This used to read
+# `{"series-parallel-circuits", "resistors"}` and `reference_sections_
+# after_rulings()` DROPPED the "Examiner tip" section from Design's
+# reference for both, because R7 used to remove that section from the port
+# entirely (flag 11: the draft tip was never approved). R13 replaces R7:
+# the section is no longer removed, it gets the FINAL approved text — so
+# Design's reference and the port now both carry it, section counts match
+# with no adjustment, and its TEXT is proven directly against
+# `all_subtopics_physics_triple_higher.py` by `compare_section_text()`'s own
+# R13 branch, not merely excused. Left as an empty set (not deleted) so a
+# FUTURE lesson whose ruling genuinely removes a whole section still has
+# this mechanism to use.
+R7_SLUGS = set()
+
+# ⊕ R12 (Mide's ruling, 27 Sep 2026) — the two static header chips Design's
+# page always carried, in the ONE place they ever appear (index 0, the
+# header section). `build_ks4.ROUTE_WORDS` are the NEW chip's four possible
+# labels — the routeWords/routeSwitchOptions link text baked into the port,
+# stripped from the PORT side in `compare_section_text()` (symmetric to
+# this constant being stripped from the REFERENCE side here).
+R12_OLD_TIER_CHIP = "Foundation · Higher"
+R12_OLD_PATHWAY_CHIP = {"nanoparticles": "Triple"}  # default (13 of 14): "Combined · Triple"
 
 
 
@@ -428,6 +472,27 @@ def apply_text_whitelist(slug, route, index, sec, ref_text_norm):
         if badge:
             t = t.replace(badge, "").strip()
             t = _WS_RE.sub(" ", t)
+        # ⊕ R12 — the two static chips Design's page always carried here.
+        # The port's replacement chip/switcher text is stripped from the
+        # PORT side instead (compare_section_text(), symmetrically).
+        t = t.replace(R12_OLD_PATHWAY_CHIP.get(slug, "Combined · Triple"), "")
+        t = t.replace(R12_OLD_TIER_CHIP, "")
+        t = _WS_RE.sub(" ", t).strip()
+    # ⊕ R14 — a Triple route's spec number is the separate science's own,
+    # not Combined's. Applied on WHATEVER section carries it (the header's
+    # eyebrow is always index 0; the KeyNote child component's `spec` prop
+    # renders inside whichever section that dc-import sits in, lesson by
+    # lesson) — a plain substring replace is exact and safe here because
+    # every `combined` string below is the FULL literal citation Design's
+    # page shows nowhere else (verified when `build_ks4.SPEC_TEXT` was
+    # built: each string is unique to its own eyebrow/key-note line).
+    if route in ("TF", "TH"):
+        spec_entry = build_ks4.SPEC_TEXT.get(slug)
+        if spec_entry is not None:
+            t = t.replace(normalize_ws(spec_entry["combined"]["eyebrow"]),
+                          normalize_ws(spec_entry["triple"]["eyebrow"]))
+            t = t.replace(normalize_ws(spec_entry["combined"]["keynote"]),
+                          normalize_ws(spec_entry["triple"]["keynote"]))
     if slug == "series-parallel-circuits" and R6_ADDITION_TEXT not in t:
         # R6 is an ADDITION on the port side; nothing to strip from Design's
         # side — the port's own text will carry the extra chip, handled by
@@ -441,9 +506,49 @@ def apply_text_whitelist(slug, route, index, sec, ref_text_norm):
     return t
 
 
+R13_TIP_SLUGS = {"series-parallel-circuits", "resistors"}
+
+
+def _approved_tip_text(slug):
+    """The FINAL, approved exam-tip text for one of R13_TIP_SLUGS, read
+    straight from `all_subtopics_physics_triple_higher.py`'s `examiner_tip`
+    field — the SAME record `build_ks4.build_source_record()` serves onto
+    the page via `shared/ks4-source.js` (never a second, hand-copied literal
+    here that could drift from it)."""
+    import all_subtopics_physics_triple_higher as _phys_th
+    for topic_list in _phys_th.PHYSICS_SUBTOPICS_ALL.values():
+        for st in topic_list:
+            if st.get("id") == slug:
+                return st.get("examiner_tip") or ""
+    return ""
+
+
 def compare_section_text(slug, route, index, sec, ref_text_norm, port_text_norm):
+    # ⊕ R13 — proves the approved exam tip is present BYTE-EXACT, rather
+    # than merely excusing a known difference from Design's (unapproved,
+    # different-wording) draft. Both physics lessons' tip section carries
+    # this on every route (examiner_tip is not route-varying).
+    if slug in R13_TIP_SLUGS and is_examiner_tip_section(sec):
+        expected = normalize_ws(_approved_tip_text(slug))
+        got = normalize_ws(port_text_norm.replace("Examiner tip", "", 1))
+        if not expected:
+            return ("R13: no examiner_tip found for %r in "
+                     "all_subtopics_physics_triple_higher.py" % slug)
+        if got != expected:
+            return "R13 approved exam tip mismatch: expected=%r got=%r" % (
+                expected[:160], got[:160])
+        return None
     ref_norm = apply_text_whitelist(slug, route, index, sec, ref_text_norm)
     port_norm = port_text_norm
+    if index == 0:
+        # ⊕ R12 — the port's replacement chip/switcher text (symmetric to
+        # the OLD chip text being stripped from the reference side in
+        # apply_text_whitelist()). Every one of these four phrases is the
+        # site's own fixed vocabulary (build_ks4.ROUTE_WORDS) and appears
+        # NOWHERE else in any lesson's prose.
+        for words in build_ks4.ROUTE_WORDS.values():
+            port_norm = port_norm.replace(words, "")
+        port_norm = _WS_RE.sub(" ", port_norm).strip()
     # The header's "Draft — not yet science-reviewed." chip tracks
     # `ks4_lessons.LESSONS[...]["review_state"]` (mount prop `showDraft`).
     # ks4_science_rulings.py landing flips reviewed lessons off draft, so
@@ -671,13 +776,19 @@ def check_layout(R, slug, route, width, ref_widths_entry, port_widths_entry, hav
                 # and a reviewed lesson's draft chip going away — ~83px at
                 # 1280, up to ~124px at 360/390 (the same two removed rows
                 # wrap onto more lines at a narrow width, so removing them
-                # saves proportionally more height there). 150 covers the
-                # measured range with margin without hiding a genuinely
-                # broken header.
+                # saves proportionally more height there). ⊕ R12 (27 Sep
+                # 2026): the two short static chips are ALSO gone now,
+                # replaced by one longer "Combined Science · Higher tier"
+                # chip, which wraps onto a different number of lines than
+                # the two short ones did at 390/360 — measured up to 164px
+                # of DELTA on top of the above (chemical-bonds, ionic-
+                # compounds, etc., TH route, 390/360 widths). 180 covers the
+                # measured range (max seen: 164) with the same margin-not-
+                # hiding-a-real-break intent the original 150 had.
                 text_differs = (squash(normalize_ws(rsec.get("text", "")))
                                 != squash(normalize_ws(psec.get("text", ""))))
                 if i == 0:
-                    h_tol = 150
+                    h_tol = 180
                 elif text_differs:
                     # The RAW text (before any whitelist substitution) is
                     # not identical — for ANY reason, whether B-text's
@@ -776,6 +887,62 @@ def check_keyboard(R, slug, route, page):
     R.record(slug, route, 1280, "G-keyboard", ok, detail)
 
 
+def check_route_switch_keyboard(R, slug, route, page):
+    """R12: the header route switcher opens/closes by keyboard alone —
+    Enter/Space on the chip (native <details>/<summary>, so a plain
+    `.click()` on the summary proves the same activation a real Enter/
+    Space keypress triggers per the HTML spec), Esc closes it and returns
+    focus to the chip, and aria-expanded tracks the open state throughout —
+    the one R12 assertion that genuinely needs a real browser (ks4_pilot_
+    check.py proves the chip/menu/links exist and are correct; this proves
+    they OPERATE)."""
+    js = """
+    (function(){
+      var d = document.querySelector('.ks3-route-switch');
+      if (!d) { return {error: 'no .ks3-route-switch found'}; }
+      var summary = d.querySelector('summary');
+      if (!summary) { return {error: 'no <summary> found'}; }
+      var before = {open: d.open, aria: summary.getAttribute('aria-expanded')};
+      summary.focus();
+      summary.click();
+      var afterOpen = {open: d.open, aria: summary.getAttribute('aria-expanded')};
+      document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape', bubbles: true}));
+      var afterEsc = {open: d.open, aria: summary.getAttribute('aria-expanded'),
+                       focusReturned: document.activeElement === summary};
+      return {before: before, afterOpen: afterOpen, afterEsc: afterEsc};
+    })();
+    """
+    try:
+        res = page.eval(js)
+    except Exception as e:
+        R.record(slug, route, 1280, "G-route-switch", False, "eval failed: %s" % e)
+        return
+    if res.get("error"):
+        R.record(slug, route, 1280, "G-route-switch", False, res["error"])
+        return
+    ok = (res["before"]["open"] is False and res["before"]["aria"] == "false"
+          and res["afterOpen"]["open"] is True and res["afterOpen"]["aria"] == "true"
+          and res["afterEsc"]["open"] is False and res["afterEsc"]["aria"] == "false"
+          and res["afterEsc"]["focusReturned"])
+    R.record(slug, route, 1280, "G-route-switch", ok, "ok" if ok else repr(res))
+
+
+# ⊕ R12 — `STYLE_TARGETS["badge_pill"]` is a GENERIC probe (`[style*=
+# 'border-radius: 99px']`, `measure_design.py`), not a probe for any one
+# named element — when reference.json was captured it happened to match
+# Design's static header chips (removed by R12; the new route chip is
+# styled by a STYLESHEET class, not an inline style, so the selector no
+# longer finds it). On a lesson that carries a LATER inline-styled pill
+# (an R9 "Contains …" badge, a "Required practical" badge, the R6 "Not on
+# the sheet" chip) the same query now matches THAT element instead — an
+# apples-to-oranges comparison against Design's chip, forever, by
+# construction, regardless of anything this port could style. Exempting
+# the comparison, not the floor: only this ONE named component is skipped;
+# every other STYLE_TARGETS entry on the same page still compares and
+# still gates.
+D_STYLES_EXEMPT_COMPONENTS = {"badge_pill"}
+
+
 def check_styles(R, slug, page, ref_entry):
     for scheme, ref_key in (("light", "styles_light"), ("dark", "styles_dark")):
         MD.set_media(page, scheme=scheme)
@@ -783,6 +950,8 @@ def check_styles(R, slug, page, ref_entry):
         ref_styles = ref_entry.get(ref_key) or {}
         fails = []
         for comp, sel in MD.STYLE_TARGETS.items():
+            if comp in D_STYLES_EXEMPT_COMPONENTS:
+                continue
             ref_cs = ref_styles.get(comp)
             if ref_cs is None:
                 continue
@@ -993,6 +1162,7 @@ def run(only_slug=None, only_width=None):
                         check_console(R, slug, route, w, page)
 
                     check_keyboard(R, slug, route, page)
+                    check_route_switch_keyboard(R, slug, route, page)
                     check_prev_next(R, slug, route, url, lesson, data)
 
                 if not only_width or only_width == 1280:
