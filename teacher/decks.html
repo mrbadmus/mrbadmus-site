@@ -129,12 +129,13 @@
       .container { padding: 18px 14px 40px; }
       .head h1 { font-size: 34px; letter-spacing: -0.02em; }
       .card { padding: 2px 14px; }
-      .topbar { height: auto; min-height: 62px; flex-wrap: wrap; padding: 10px 14px; gap: 8px; }
-      .tb-seg { margin-right: 0; flex-wrap: wrap; }
-      .tb-tab { padding: 6px 11px; font-size: 14px; }
       .tools .sw-input { max-width: none; }
     }
   </style>
+  <!-- ⊕ phone-teacher run — AFTER the page's own <style>, so the phone
+       bar's one-row rules win. -->
+  <link rel="stylesheet" href="/shared/teacher-topbar.css?v=e4a3d0a7">
+  <script src="/shared/teacher-topbar.js?v=466ea5b0" defer></script>
 </head>
 <body>
 
@@ -149,6 +150,12 @@
     <a class="tb-tab" href="/teacher/classes.html">My classes</a>
     <a class="tb-tab is-on" data-mrb-decks-nav="1" href="/teacher/decks.html">Flashcard decks</a>
   </div>
+  <!-- ⊕ phone-teacher run, 28 Sep 2026 — the phone menu. Invisible above
+       560px; below it the bar is ONE row (brand, segment, this) and the
+       rest of the bar is reached through it. shared/teacher-topbar.js.
+       ⚠️ A <button>, and never the LAST one: teacher-admin-nav.js inserts
+       before the bar's last button, which must stay Sign out. -->
+  <button type="button" class="tb-menu" aria-label="Menu"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><path d="M3 5.5h14M3 10h14M3 14.5h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
   <span class="tb-name" id="tb-name"></span>
   <button class="signout" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
   <span class="mrb-theme-slot" data-mrb-theme></span>
@@ -182,7 +189,7 @@
 <script src="/shared/class-entry.js?v=1028dbfb"></script>
 <script src="/shared/teacher-guard.js?v=f7fbad7c"></script>
 <script src="/shared/teacher-data.js?v=8743d7e1"></script>
-<script src="/shared/teacher-admin-nav.js?v=7582ce57"></script>
+<script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>
 <script src="/shared/formulae.js?v=e4bfb091"></script>
 <script src="/shared/flashcard-decks.js?v=2610cf68"></script>
 <script src="/shared/set-work.js?v=2ed11396"></script>

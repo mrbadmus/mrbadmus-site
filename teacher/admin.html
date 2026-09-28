@@ -328,20 +328,16 @@
       .card { padding: 14px 14px; }
       .row .right { margin-left: 0; width: 100%; }
       .page-header h1 { font-size: 34px; letter-spacing: -0.02em; }
-      /* ⚠️ THE BAR WRAPS RATHER THAN OVERFLOWING, and that is deliberate.
-         v3's top bar has no @media rule at all and measures 953px wide inside
-         a 390px viewport on all six generated pages. `today_drive`'s
-         "390px: no horizontal overflow" check is a PUSH GATE on this page, and
-         this page has always held that property (the rules below are the
-         descendants of the ones that did). Importing the defect to match the
-         six would be a regression on a live page, so the bar keeps its own
-         narrow-viewport behaviour until the cross-screen responsive unit
-         gives all eight pages one answer. */
-      .topbar { height: auto; min-height: 62px; flex-wrap: wrap; padding: 10px 14px; gap: 8px; }
-      .tb-seg { margin-right: 0; }
-      .tb-tab { padding: 6px 11px; font-size: 14px; }
+      /* ⊕ Superseded 28 Sep 2026 (phone-teacher run). The bar used to WRAP
+         here, onto two lines. It is now ONE row with a menu button —
+         shared/teacher-topbar.css, loaded after this <style>. The 390px
+         no-overflow push gate (`today_drive`) still holds. */
     }
   </style>
+  <!-- ⊕ phone-teacher run — AFTER the page's own <style>, so the phone
+       bar's one-row rules win. -->
+  <link rel="stylesheet" href="/shared/teacher-topbar.css?v=e4a3d0a7">
+  <script src="/shared/teacher-topbar.js?v=466ea5b0" defer></script>
 </head>
 <body>
 
@@ -395,6 +391,12 @@
     <a class="tb-tab" id="operator-link" href="/consumer/admin-accounts.html"
        style="display:none;">Operator</a>
   </div>
+  <!-- ⊕ phone-teacher run, 28 Sep 2026 — the phone menu. Invisible above
+       560px; below it the bar is ONE row (brand, segment, this) and the
+       rest of the bar is reached through it. shared/teacher-topbar.js.
+       ⚠️ A <button>, and never the LAST one: teacher-admin-nav.js inserts
+       before the bar's last button, which must stay Sign out. -->
+  <button type="button" class="tb-menu" aria-label="Menu"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><path d="M3 5.5h14M3 10h14M3 14.5h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
   <span id="env-pill" class="pill env-prod" style="display:none;">TEST</span>
   <button class="signout" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
   <span class="mrb-theme-slot" data-mrb-theme></span>
@@ -508,7 +510,7 @@
 <script src="/shared/class-entry.js?v=1028dbfb"></script>
 <script src="/shared/teacher-guard.js?v=f7fbad7c"></script>
 <script src="/shared/teacher-data.js?v=8743d7e1"></script>
-<script src="/shared/teacher-admin-nav.js?v=7582ce57"></script>
+<script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>
 <!-- ⊕ MRB-330 — the six locked shoutout template keys resolve to a
      sentence in exactly ONE place, and this is it. A template-only
      shoutout carries a NULL `message`, so without this module the

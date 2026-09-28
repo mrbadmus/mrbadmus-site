@@ -1630,6 +1630,15 @@ SET_ATTR = {
     17:  {"class": "mrb-crumb"},
     30:  {"class": "mrb-teachername"},
 
+    # ⊕ phone-teacher run, 28 Sep 2026 — THE TWO THINGS THE PHONE BAR KEEPS.
+    # Below 560px the bar is one row: the brand (11), the Today / My classes
+    # tabs (13) and a ≡ menu; `shared/teacher-topbar.css` hides every other
+    # child of node 10 and `shared/teacher-topbar.js` lists it in the menu.
+    # These two are named so the CSS can say "keep" without reading Design's
+    # inline style strings. Nothing changes above 560px.
+    11:  {"data-tb-keep": "brand"},
+    13:  {"data-tb-keep": "tabs"},
+
     158: {"data-port-region": "classes"},
     208: {"data-port-region": "class"},
     330: {"data-port-region": "student"},
@@ -3631,11 +3640,13 @@ INSERT_AT = {
 
     # ── ⊕ MRB-336 §5/§6 · EDIT AND DELETE, ON THE ROW ──────────────────
     #
-    # ⚠️ ONLY ON A ROW A TEACHER SET. `a.canEdit` is `source === 'teacher'`.
-    # The automatic weekly producer owns its own rows: deleting one would
-    # simply be re-composed next week, and the server answers 409. A control
-    # that exists and always refuses is worse than no control, so there is
-    # none — the whole cell is absent on an automatic row.
+    # ⚠️ `a.canEdit` IS NOW `canWrite` ALONE, and `a.showEdit` carries the
+    # `source === 'teacher'` half. ⊕ phone-teacher run, 28 Sep 2026: Delete
+    # is offered on an AUTOMATIC row too (the server soft-deletes it and the
+    # lazy composer no longer recomposes a week whose automatic row was
+    # deleted). Edit and Download stay on teacher-set rows only. This used to
+    # read "ONLY ON A ROW A TEACHER SET … the server answers 409. … the whole
+    # cell is absent on an automatic row."
     #
     # ⚠️ THE CONFIRM IS THE SAME BUTTON, TWICE, IN PLACE. Tap Delete and the
     # row's controls become Delete and Cancel; tap Delete again and it goes.
@@ -3727,15 +3738,43 @@ INSERT_AT = {
     # colleague's set whose profile this teacher cannot read under RLS. "Set
     # by" over a blank is worse than nothing — see `set_by_name` in
     # `shared/teacher-live.js` for what can and cannot be resolved.
+    #
+    # ⊕ phone-teacher run, 28 Sep 2026 — THE DECK SIZE JOINS IT. A flashcard
+    # set's "Flashcards · N cards" used to sit in the Weakest-question column,
+    # where it read as a result. It is a fact about the set, so it is a quiet
+    # sub-line under the title, in the same register as "Set by", above it.
+    # One INSERT_AT key per (parent, after), so both lines ride in one
+    # unstyled wrapper; an empty wrapper takes no height.
     (321, None): ({
-        "t": "if", "e": "a.setByLine",
-        "c": [{"t": "div", "a": {"style": _ROW_SETBY,
-                                 "data-mrb-added": "set-work-set-by"},
-               "c": [{"t": "#", "v": {"parts": [{"e": "a.setByLine"}]}}]}]},
+        "t": "div", "a": {"data-mrb-added": "row-sublines"},
+        "c": [
+            {"t": "if", "e": "a.deckLine",
+             "c": [{"t": "div", "a": {"style": _ROW_SETBY,
+                                      "data-mrb-added": "row-deck-line"},
+                    "c": [{"t": "#", "v": {"parts": [{"e": "a.deckLine"}]}}]}]},
+            {"t": "if", "e": "a.setByLine",
+             "c": [{"t": "div", "a": {"style": _ROW_SETBY,
+                                      "data-mrb-added": "set-work-set-by"},
+                    "c": [{"t": "#", "v": {"parts": [{"e": "a.setByLine"}]}}]}]},
+        ]},
         "MRB-340 — who set this work, under its title. The table said when "
         "a set was released and never who released it, which on a shared "
         "class is the first question a teacher asks about a row they do not "
         "recognise."),
+
+    # ── ⊕ phone-teacher run, 28 Sep 2026 · A FLASHCARD SET IS NOT GRADED ──
+    #
+    # Its Class-mean cell reads "—", and the dash says why on hover and to a
+    # screen reader. `a.mean` is '' on a flashcard row (LOGIC), so the dash
+    # here is the cell's only content. `role="img"` so `aria-label` is read.
+    (327, None): ({
+        "t": "if", "e": "a.notGraded",
+        "c": [{"t": "span", "a": {"title": "Not graded", "role": "img",
+                                  "aria-label": "Not graded",
+                                  "data-mrb-added": "row-not-graded"},
+               "c": [{"t": "#", "v": "\u2014"}]}]},
+        "phone-teacher run — a flashcard set has no class mean; the cell "
+        "shows a dash that says \"Not graded\" on hover and aloud."),
 
     # The header cell above them. No text: an actions column has no name.
     (311, 318): ({
@@ -10839,11 +10878,13 @@ componentDidUpdate() {
         weakFg = wkMin < 50 ? 'var(--st-accent-text)' : 'var(--st-muted)';
       }
       if (p.kind === 'flashcards') {
-        weak = p.kindLabel || 'Flashcards'; weakFg = 'var(--st-muted)';
+        weak = ''; weakFg = 'var(--st-ghost)';
       }""",
-     "⊕ MRB-351: a flashcard set has no weakest question — its cell reads "
-     "\"Flashcards · N cards\" (`kindLabel`, counted by teacher-live.js), "
-     "or \"Flashcards\" when the count is not in hand. "
+     "⊕ MRB-351, re-ruled by the phone-teacher run (28 Sep 2026): a flashcard "
+     "set has no weakest question, so its cell is EMPTY. The deck size it "
+     "used to print here (\"Flashcards · N cards\", `kindLabel`) moved to a "
+     "quiet sub-line under the row's title (`deckLine`), because a fact about "
+     "the set in a column that measures pupils read as a result. "
      "the assignment table's weakest-question column. A null grid and a "
      "deleted `STEMS` are two separate throws on the one class that has "
      "work set; a null `qpct` entry is a third wrong answer that does not "
@@ -12279,10 +12320,14 @@ componentDidUpdate() {
     # already wrapped on it (`WRAP`, nodes 215/276/214/282); these are
     # inside a `<for>` and cannot be, so the gate rides on the row.
     #
-    # ⚠️ `source === 'teacher'` IS THE OTHER HALF. An automatic row's
-    # controls would be a pair of buttons that always refuse — the server
-    # answers 409 on a delete and the weekly producer would re-compose it
-    # next week regardless.
+    # ⚠️ `source === 'teacher'` GATES EDIT (and Download), NOT DELETE.
+    # ⊕ Re-ruled by the phone-teacher run, 28 Sep 2026 (Mide): an automatic
+    # row can be DELETED — the server now soft-deletes it and the lazy
+    # composer in `GET /api/class/current-assignment` treats a deleted
+    # automatic row as "this week has no work", so it is not recomposed.
+    # Edit stays teacher-only: the server still answers 409 on editing one.
+    # This used to read "An automatic row's controls would be a pair of
+    # buttons that always refuse — the server answers 409 on a delete".
     #
     # ⚠️ THE ARMED STATE IS IN `s`, NOT IN THE ROW, and that is what makes
     # it single. `s.delArm` holds ONE assignment id, so arming a second row
@@ -12306,12 +12351,16 @@ componentDidUpdate() {
         stBg: p.state === 'open' ? 'var(--st-chip-tint)' : 'var(--st-num-well)',
         stBc: p.state === 'open' ? 'var(--st-chip-tint-border)'
           : (p.state === 'scheduled' ? 'var(--st-rule)' : 'var(--st-rule-soft)'),
-        canEdit: p.source === 'teacher' && !!MRB_DATA('canWrite'),
+        canEdit: !!MRB_DATA('canWrite'),
         showEdit: p.source === 'teacher' && s.delArm !== p.id
           && s.dlArm !== p.id,
         armed: s.delArm === p.id,
         setByLine: p.set_by_name ? ('Set by ' + p.set_by_name) : '',
-        showDl: p.kind !== 'flashcards' && s.delArm !== p.id && s.dlArm !== p.id,
+        deckLine: p.kind === 'flashcards' ? (p.kindLabel || 'Flashcards') : '',
+        mean: p.kind === 'flashcards' ? '' : p.mean,
+        notGraded: p.kind === 'flashcards',
+        showDl: p.kind !== 'flashcards' && p.source === 'teacher'
+          && s.delArm !== p.id && s.dlArm !== p.id,
         showDel: s.dlArm !== p.id,
         dlArmed: s.dlArm === p.id,
         dl: (e) => { e.stopPropagation();
@@ -12365,11 +12414,12 @@ componentDidUpdate() {
      """        eyebrow: k.code + ' · ' + pp.statusLabel
           + ' · Set ' + pp.set
           + ' · Due ' + pp.due.replace(/^Due /, ''),
-        canEdit: pp.source === 'teacher' && !!MRB_DATA('canWrite'),
+        canEdit: !!MRB_DATA('canWrite'),
         showEdit: pp.source === 'teacher' && s.delArm !== pp.id
           && s.dlArm !== pp.id,
         armed: s.delArm === pp.id,
-        showDl: pp.kind !== 'flashcards' && s.delArm !== pp.id && s.dlArm !== pp.id,
+        showDl: pp.kind !== 'flashcards' && pp.source === 'teacher'
+          && s.delArm !== pp.id && s.dlArm !== pp.id,
         showDel: s.dlArm !== pp.id,
         dlArmed: s.dlArm === pp.id,
         dl: () => this.setState({ dlArm: pp.id, delArm: '' }),

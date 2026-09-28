@@ -665,16 +665,38 @@
       pair.appendChild(model);
       li.appendChild(pair);
 
+      /* ⊕ phone-teacher run, 28 Sep 2026 — PLAIN PHASE WORDS, NOT "M · ".
+         A rating given while the pupil was writing their own answer (make
+         mode) and one given later in review are different evidence, and the
+         old chip said so with a CSS "M · " prefix nobody could read. Now the
+         ratings are grouped under a small muted "while writing" / "in review"
+         label — but only when the distinction exists on this card (both
+         phases present) or the whole set is make mode. On a plain review
+         set there is one phase and a label would only repeat itself. */
+      var rs = c.ratings || [];
+      var makeR = rs.filter(function (r) { return r.phase === "make"; });
+      var revR = rs.filter(function (r) { return r.phase !== "make"; });
+      var labelled = make || (makeR.length > 0 && revR.length > 0);
       var rates = h("div", "fp-rates");
-      (c.ratings || []).forEach(function (r) {
-        var lab = RATING[r.rating] || r.rating;
-        var chipEl = h("span", "fp-rate fp-rate-" + r.rating + (r.phase === "make" ? " fp-rate-make" : ""), lab);
-        chipEl.setAttribute("data-rating", r.rating);
-        chipEl.setAttribute("data-phase", r.phase || "");
-        chipEl.title = (r.phase === "make" ? "Make · " : "") + lab + (r.at ? " · " + londonWhen(r.at) : "");
-        if (r.phase === "make") { chipEl.setAttribute("aria-label", lab + ", make"); }
-        rates.appendChild(chipEl);
-      });
+      function chips(group, phaseWord) {
+        if (!group.length) { return; }
+        if (labelled) {
+          var pl = h("span", "fp-phase", phaseWord);
+          pl.setAttribute("data-fp-phase-label", phaseWord);
+          rates.appendChild(pl);
+        }
+        group.forEach(function (r) {
+          var lab = RATING[r.rating] || r.rating;
+          var chipEl = h("span", "fp-rate fp-rate-" + r.rating + (r.phase === "make" ? " fp-rate-make" : ""), lab);
+          chipEl.setAttribute("data-rating", r.rating);
+          chipEl.setAttribute("data-phase", r.phase || "");
+          chipEl.title = lab + (labelled ? " · " + phaseWord : "") + (r.at ? " · " + londonWhen(r.at) : "");
+          if (labelled) { chipEl.setAttribute("aria-label", lab + ", " + phaseWord); }
+          rates.appendChild(chipEl);
+        });
+      }
+      chips(makeR, "while writing");
+      chips(revR, "in review");
       if (rates.firstChild) { li.appendChild(rates); }
       list.appendChild(li);
     });

@@ -153,6 +153,10 @@ LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
 # ⊕ MRB-303 J2 — the scope-gated Admin entry. See `admin_nav` in page_html.
 ADMIN_NAV_JS_NAME = "teacher-admin-nav.js"
 
+# ⊕ phone-teacher run — the top bar's phone menu. See `admin_nav` in page_html.
+TOPBAR_JS_NAME = "teacher-topbar.js"
+TOPBAR_CSS_NAME = "teacher-topbar.css"
+
 # ⊕ MRB-323 — the random name picker. See `picker` in page_html.
 PICKER_JS_NAME = "teacher-picker.js"
 
@@ -305,7 +309,9 @@ STAMPED_DEPS = ("config.js", "class-entry.js", "teacher-guard.js",
                 BREAKDOWN_CSS_NAME, BREAKDOWN_JS_NAME, "theme.js",
                 # ⊕ MRB-351 — set-work.js loads these on demand when a
                 # teacher picks Flashcards; stamped like every other dep.
-                "formulae.js", "flashcard-decks.js", "flashcard-decks.css")
+                "formulae.js", "flashcard-decks.js", "flashcard-decks.css",
+                # ⊕ phone-teacher run — the top bar's phone menu.
+                "teacher-topbar.js", "teacher-topbar.css")
 # ⊕ One mark (Mide, 13 Sep 2026) — the kit's favicon, the lockup's
 # stylesheet and brand.js, which the runtime draws the top bar's brand from.
 STAMPED_DEPS += brand_port.BRAND_DEPS
@@ -5096,9 +5102,11 @@ function MRB_WORKSHEET(p,k,format){
 
    ⚠️ AND IT IS IDEMPOTENT AT THE SERVER, NOT HERE. A second DELETE of a row
    that is already deleted answers 200 with the same shape, so a double tap
-   — or a teacher on two devices — is not an error to be explained. An
-   AUTOMATIC row answers 409: the weekly producer owns those, and deleting
-   one would simply be re-composed next week. */
+   — or a teacher on two devices — is not an error to be explained.
+   ⊕ phone-teacher run, 28 Sep 2026: an AUTOMATIC row is deletable now too
+   (soft, and the lazy composer no longer recomposes a deleted week). This
+   used to say "An AUTOMATIC row answers 409"; a 409 on DELETE now means a
+   row of some other kind (not teacher-set, not automatic). */
 function MRB_DELETE_SET_WORK(assignmentId){
   var no=function(e){return Promise.resolve({ok:false,error:e});};
   if(!assignmentId){return no(new Error('teacher page: no assignment'));}
@@ -5120,8 +5128,7 @@ function MRB_DELETE_SET_WORK(assignmentId){
    different verb and a different set of refusals. */
 function MRB_DELETE_SET_WORK_WHY(e){
   var m=(e&&e.message)||'', st=(e&&e.mrbStatus)||0, c=(e&&e.mrbCode)||'';
-  if(st===409||c==='auto_assignment'||/auto/i.test(m))
-    return "Automatic weekly work can't be deleted.";
+  if(st===409) return "Couldn't delete · this work can't be deleted here.";
   if(st===403||/row-level security|permission|policy/i.test(m))
     return "Couldn't delete · you no longer teach this class.";
   if(st===404) return "Couldn't delete · that assignment is no longer there.";
@@ -5298,6 +5305,14 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
     # failure.
     admin_nav = ("<script src=\"/shared/%s\"></script>\n" % ADMIN_NAV_JS_NAME
                  if spec.get("admin_nav") else "")
+    # ⊕ phone-teacher run, 28 Sep 2026 — the top bar's phone menu, the SAME
+    # two files the five hand-written teacher pages load. On EVERY screen,
+    # class-detail included (it has the same bar; only the Admin link is
+    # excluded there). The script injects its ≡ button into the bar on every
+    # redraw, exactly as teacher-admin-nav.js re-injects Admin.
+    topbar = ("<link rel=\"stylesheet\" href=\"/shared/%s\">\n"
+              "<script src=\"/shared/%s\"></script>\n"
+              % (TOPBAR_CSS_NAME, TOPBAR_JS_NAME))
 
     # ⊕ MRB-323 — the name picker, on ONE of the six.
     #
@@ -5653,13 +5668,15 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         # Written without it, this rule changed nothing and the bar stayed
         # a fixed 62px scrolling strip; `flex-wrap` alone (not inline, so no
         # `!important` needed there) had nowhere to put the wrapped line.
+        # ⊕ Superseded 28 Sep 2026 (phone-teacher run). The three top-bar
+        # rules that opened this block — wrap the bar below 420px, ellipsise
+        # the crumb, hide the teacher's name — are gone: on a phone the bar
+        # is now ONE row (brand, the Today / My classes tabs, a ≡ menu) and
+        # everything else is reached through the menu. That lives in
+        # `shared/teacher-topbar.css` + `.js`, shared with the five
+        # hand-written teacher pages, linked below as `topbar`. The wrap is
+        # what put the bar on three lines on a 390px phone.
         "@media (max-width:420px){"
-        "[data-port-region=\"topbar\"]{flex-wrap:wrap;height:auto!important;"
-        "min-height:62px;row-gap:8px!important;column-gap:8px!important;"
-        "padding:10px 12px!important;overflow-x:visible!important}"
-        "[data-port-region=\"topbar\"] .mrb-crumb{overflow:hidden;"
-        "text-overflow:ellipsis}"
-        "[data-port-region=\"topbar\"] .mrb-teachername{display:none}"
         # ⊕ Stream N, 25 Sep 2026 (experience run, item 20) — THE OTHER HALF
         # OF THIS ITEM, LEFT OPEN BY ROUND THREE. The comment immediately
         # above named this gap without closing it: `_WK_RAIL`'s own
@@ -5821,7 +5838,7 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
            "    props: {}\n"
            "  }));\n"
            "};",
-           dep_map + admin_nav + picker + setwork_js + breakdown_js + csv_js,
+           dep_map + admin_nav + topbar + picker + setwork_js + breakdown_js + csv_js,
            tail)),
         versions)
 

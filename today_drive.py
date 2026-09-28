@@ -686,6 +686,47 @@ PICKER_EVALS = {
 }
 
 
+# ⊕ phone-teacher run — measures the phone bar and walks its menu. Returns
+# what a teacher can SEE in the bar, the menu's items once opened, and
+# whether "Find a student" in the menu opens the page's real search sheet.
+BAR_ONE_ROW_JS = r"""(function(){
+  var bar=document.querySelector('[data-port-region="topbar"]');
+  if(!bar){return {error:'no bar'};}
+  var r=bar.getBoundingClientRect(), vis=[], tops=[], bots=[];
+  function shown(e){var c=getComputedStyle(e);var q=e.getBoundingClientRect();
+    return c.display!=='none'&&c.visibility!=='hidden'&&q.width>0&&q.height>0;}
+  Array.prototype.forEach.call(bar.querySelectorAll('.mrb-brand, a, button'),function(e){
+    if(e.closest('.mrb-brand')&&!e.classList.contains('mrb-brand')){return;}
+    if(!shown(e)){return;}
+    var q=e.getBoundingClientRect(); tops.push(q.top); bots.push(q.bottom);
+    vis.push(e.classList.contains('mrb-brand')?'brand':
+      (e.getAttribute('aria-label')==='Menu'?'Menu':(e.textContent||'').trim()));
+  });
+  var m=bar.querySelector('.tb-menu'); var mr=m?m.getBoundingClientRect():{width:0,height:0};
+  var out={height:Math.round(r.height), visible:vis,
+    oneRow: tops.length>0 && (Math.max.apply(null,bots)-Math.min.apply(null,tops))<=r.height,
+    menuSize: Math.min(mr.width,mr.height),
+    adminInBar: Array.prototype.some.call(bar.querySelectorAll('a'),function(a){return (a.textContent||'').trim()==='Admin';})};
+  if(!m){return out;}
+  m.click();
+  var p=document.getElementById('tb-menu-panel');
+  if(!p||p.hidden){out.items=[];return out;}
+  var pr=p.getBoundingClientRect();
+  out.rect={l:pr.left,r:pr.right,t:pr.top,b:pr.bottom};
+  out.inside=pr.left>=0&&pr.right<=window.innerWidth&&pr.top>=r.bottom-1;
+  var nm=p.querySelector('.tb-menu-who'); out.name=nm?nm.textContent.trim():null;
+  var ev=p.querySelector('.tb-menu-env'); out.env=ev?ev.textContent.trim():null;
+  var be=document.getElementById('env-pill'); out.barEnv=be?be.textContent.trim():null;
+  out.items=Array.prototype.map.call(p.querySelectorAll('.tb-menu-item'),function(e){return e.textContent.trim();});
+  out.theme=!!p.querySelector('.tb-menu-theme [data-mrb-theme] .mrb-theme');
+  var fs=Array.prototype.filter.call(p.querySelectorAll('.tb-menu-item'),function(e){return e.textContent.trim()==='Find a student';})[0];
+  if(fs){fs.click();}
+  var sb=document.getElementById('search-back');
+  out.searchOpened=!!sb&&!sb.hidden&&p.hidden;
+  return out;
+})()"""
+
+
 def run_case(b, base, name, when, tables, packs, shots, width=1280,
              page="/teacher/today.html", evals=None, pre_extra=""):
     """One state. A FRESH PAGE TARGET each time, because
@@ -1007,6 +1048,50 @@ def main():
             check(not ov5, "390px: no horizontal overflow")
             check("8r/Sc1" in t5, "390px: still renders the lessons")
             check(vis5, "390px: the page is actually PAINTED")
+
+            # ── 5b. ⊕ phone-teacher run · the bar is ONE row, with a menu ──
+            #
+            # Mide's phone screenshot (28 Sep 2026): the bar wrapped onto two
+            # lines. At 360 and 390 it is now one 62px row — brand, the Today /
+            # My classes segment, a ≡ button — and the name, Find a student,
+            # the theme control, Sign out and (for an admin) the injected Admin
+            # link are all REACHABLE through that button. A legacy
+            # `profiles.role = 'admin'` teacher makes teacher-admin-nav.js
+            # inject its real Admin link, so the menu is proved to pick up an
+            # item that arrives late rather than a list typed into it.
+            admin_tables = dict(TABLES)
+            admin_tables["profiles"] = [dict(TABLES["profiles"][0], role="admin")]
+            for w in (360, 390):
+                tb, sb_, ovb, eb, visb, gb = run_case(
+                    b, base, "5b-bar-%d" % w, "2026-09-07T09:00:00",
+                    admin_tables, packs_for(), args.shots, width=w,
+                    evals={"bar": BAR_ONE_ROW_JS})
+                g = gb.get("bar") or {}
+                check(not ovb, "%dpx bar: no horizontal overflow" % w)
+                check(g.get("height", 999) <= 64 and g.get("oneRow"),
+                      "%dpx bar: ONE row (%spx tall)" % (w, g.get("height")),
+                      json.dumps(g)[:300])
+                check(g.get("visible") == ["brand", "Today", "My classes", "Menu"],
+                      "%dpx bar: brand, segment and the menu button only" % w,
+                      str(g.get("visible")))
+                check(g.get("menuSize", 0) >= 44,
+                      "%dpx bar: the menu button is at least 44px" % w,
+                      str(g.get("menuSize")))
+                check(g.get("adminInBar"), "%dpx bar: teacher-admin-nav.js still injected Admin" % w)
+                items = g.get("items") or []
+                check(g.get("name") == "Ms Nwosu", "%dpx menu: names the teacher" % w, str(g.get("name")))
+                check(g.get("barEnv") and g.get("env") == g.get("barEnv"),
+                      "%dpx menu: the environment badge the bar hides is repeated in the menu" % w,
+                      "%s vs bar %s" % (g.get("env"), g.get("barEnv")))
+                check("Admin" in items and "Find a student" in items and items[-1:] == ["Sign out"],
+                      "%dpx menu: Admin, Find a student and Sign out (last) are reachable" % w,
+                      str(items))
+                check(g.get("theme"), "%dpx menu: the theme control is in it" % w)
+                check(g.get("inside"), "%dpx menu: the sheet sits inside the screen" % w,
+                      json.dumps(g.get("rect")))
+                check(g.get("searchOpened"),
+                      "%dpx menu: Find a student opens the real search sheet" % w)
+                check(not eb, "%dpx bar: no console errors" % w, "; ".join(eb[:2]))
 
             # ── 6. the timetable EDITOR ──────────────────────────────────
             t6, s6, ov6, e6, vis6, g6 = run_case(

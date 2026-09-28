@@ -222,7 +222,9 @@ window.MrBadmusAdminScope = (function () {
     if (!bar) { return false; }
     if (bar.querySelector('[' + TODAY_MARK + ']')) { return true; }
     if (todayAlreadyInBar(bar)) { return true; }
-    var buttons = bar.querySelectorAll('button');
+    // ⊕ phone-teacher run — the phone menu button (shared/teacher-topbar.js)
+    // is not the bar's Sign out, wherever it sits; skip it.
+    var buttons = bar.querySelectorAll('button:not(.tb-menu)');
     var out = buttons.length ? buttons[buttons.length - 1] : null;
     var link = make(
       'flex:none;height:32px;padding:0 12px;display:inline-flex;' +
@@ -416,7 +418,9 @@ window.MrBadmusAdminScope = (function () {
     var bar = document.querySelector('[data-port-region="topbar"]');
     if (bar) {
       if (!decksAlreadyIn(bar)) {
-        var buttons = bar.querySelectorAll('button');
+        // ⊕ phone-teacher run — the phone menu button (shared/teacher-topbar.js)
+    // is not the bar's Sign out, wherever it sits; skip it.
+    var buttons = bar.querySelectorAll('button:not(.tb-menu)');
         var out = buttons.length ? buttons[buttons.length - 1] : null;
         var link = make(
           'flex:none;height:32px;padding:0 12px;display:inline-flex;' +
@@ -448,7 +452,9 @@ window.MrBadmusAdminScope = (function () {
     if (bar.querySelector('[' + MARK + ']')) { return true; }
     // The sign-out button is the topbar's last child and the link belongs
     // before it, matching the hand-written pages' running order.
-    var buttons = bar.querySelectorAll('button');
+    // ⊕ phone-teacher run — the phone menu button (shared/teacher-topbar.js)
+    // is not the bar's Sign out, wherever it sits; skip it.
+    var buttons = bar.querySelectorAll('button:not(.tb-menu)');
     var out = buttons.length ? buttons[buttons.length - 1] : null;
     var link = make(
       'flex:none;height:32px;padding:0 12px;display:inline-flex;' +

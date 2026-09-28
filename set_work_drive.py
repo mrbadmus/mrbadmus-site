@@ -4801,28 +4801,55 @@ def check_delete(t_teacher, t_pupil, t_admin, scopes):
            "cascades", "%d row(s) still there"
            % (len(qrows) if isinstance(qrows, list) else -1))
 
-    # ── D4 · AN AUTOMATIC ROW IS NOT A TEACHER'S TO DELETE ────────────
+    # ── D4 · AN AUTOMATIC ROW CAN BE DELETED, AND STAYS DELETED ───────
+    #
+    # ⊕ phone-teacher run, 28 Sep 2026 (Mide). This used to assert the
+    # opposite — "delete_refuses_an_auto_row — 409". The server now
+    # soft-deletes an automatic row, and the lazy composer treats a deleted
+    # automatic row for (class, week) as "no automatic work this week", so
+    # the delete is real rather than lasting until the next pupil read.
+    #
+    # ⚠️ AND THEN THE ROW IS PUT BACK. The auto row belongs to this drive's
+    # own throwaway world (`mrb331_fixture`), but checks further down read
+    # 8a/Sc1's week, and a world that silently lost its automatic set halfway
+    # through would make them pass or fail for a reason that is not theirs.
+    # Restored by its id — the one row this check deleted — and re-read.
     st, comp = call("GET", "/api/class/current-assignment?class_id=" +
                     FX.C_KS3_A, t_pupil)
     auto_id = ((comp or {}).get("assignment") or {}).get("id")
     if not auto_id:
-        record(False, "an automatic assignment exists on 8a/Sc1 to refuse",
+        record(False, "an automatic assignment exists on 8a/Sc1 to delete",
                "reason %r" % (comp or {}).get("reason"))
     else:
-        st, refused = api_delete(t_teacher, auto_id)
-        record(st == 409
-               and (refused or {}).get("error") == "auto_assignment_not_editable"
-               and ((refused or {}).get("detail") or {}).get("source") == "auto",
-               "delete_refuses_an_auto_row — 409 "
-               "`auto_assignment_not_editable`, and it names the source so the "
-               "page can say WHICH rule it hit",
-               "status %s %s" % (st, json.dumps(refused)[:180]))
-        # …and the refusal did not delete it anyway.
-        st, still = call("GET", "/api/class/current-assignment?class_id=%s"
-                         "&assignment_id=%s" % (FX.C_KS3_A, auto_id), t_pupil)
-        record(st == 200,
-               "…and the automatic assignment is still there afterwards, so "
-               "the 409 refused rather than merely reported", "status %s" % st)
+        st, edit_refused = call("PATCH", "/api/teacher/set-work/" + auto_id,
+                                t_teacher, {"title": "x",
+                                            "client_ref": str(uuid.uuid4())})
+        record(st == 409 and (edit_refused or {}).get("error")
+               == "auto_assignment_not_editable",
+               "edit_refuses_an_auto_row — Edit on an automatic row is still "
+               "409 `auto_assignment_not_editable`",
+               "status %s %s" % (st, json.dumps(edit_refused)[:180]))
+        st, gone = api_delete(t_teacher, auto_id)
+        ga = (gone or {}).get("assignment") or {}
+        record(st == 200 and ga.get("source") == "auto"
+               and ga.get("deleted_at") and not (gone or {}).get("already_deleted"),
+               "delete_accepts_an_auto_row — 200, soft, naming the row auto",
+               "status %s %s" % (st, json.dumps(gone)[:180]))
+        st, again = call("GET", "/api/class/current-assignment?class_id=" +
+                         FX.C_KS3_A, t_pupil)
+        record(st == 200 and (again or {}).get("assignment") is None
+               and (again or {}).get("reason") == "auto_assignment_deleted",
+               "auto_delete_not_recomposed — the pupil's next read does not "
+               "compose the week again",
+               "status %s reason %r" % (st, (again or {}).get("reason")))
+        st, back = FX.api("PATCH", "/rest/v1/assignments?id=eq.%s" % auto_id,
+                          {"deleted_at": None, "deleted_by": None})
+        st, comp2 = call("GET", "/api/class/current-assignment?class_id=" +
+                         FX.C_KS3_A, t_pupil)
+        record(((comp2 or {}).get("assignment") or {}).get("id") == auto_id,
+               "…and the fixture's automatic set is restored by its id for the "
+               "checks below — re-read, not assumed",
+               "reason %r" % (comp2 or {}).get("reason"))
 
     # ── D4 · WHO MAY NOT ──────────────────────────────────────────────
     live_title = TITLE + " · survives the refusals"
@@ -5069,7 +5096,21 @@ CARDS_JS = """(function(){
 # identifies it without needing a hook the page does not have.
 ROW_GRID = '2fr 100px 1fr 1fr 1fr 1fr 1.2fr auto'
 
+# ⊕ phone-teacher run, 28 Sep 2026 — THE TITLE IS THE CELL'S OWN TEXT, NOT
+# ITS WHOLE textContent. The title cell carries sub-lines under the title
+# ("Flashcards · 10 cards", "Set by …", `data-mrb-added` children), and
+# `textContent` would glue them onto the title so an exact-title match missed
+# every row that had one. The title is the cell's own content (the runtime's
+# `span.sc-interp`) minus every `data-mrb-added` child; the sub-lines are read
+# separately as `sub`, so nothing they say goes unchecked.
+TITLE_OF_JS = ("function mrbTitleOf(el){var t='';if(!el){return t;}"
+               "for(var k=0;k<el.childNodes.length;k++){var n=el.childNodes[k];"
+               "if(n.nodeType===3){t+=n.textContent;}"
+               "else if(n.nodeType===1&&!n.hasAttribute('data-mrb-added')){t+=n.textContent;}}"
+               "return t.trim();}")
+
 ROWS_JS = """(function(){
+  """ + TITLE_OF_JS + """
   var all = document.querySelectorAll('div[style*=%s]');
   var out = [];
   for (var i = 0; i < all.length; i++) {
@@ -5079,7 +5120,10 @@ ROWS_JS = """(function(){
     }
     var c = r.children;
     out.push({
-      title:  ((c[0] && c[0].textContent) || '').trim(),
+      title:  mrbTitleOf(c[0]),
+      sub:    Array.prototype.map.call(c[0] ? c[0].querySelectorAll(
+                '[data-mrb-added="row-sublines"] > div') : [],
+                function(d){ return (d.textContent || '').trim(); }),
       status: ((c[1] && c[1].textContent) || '').trim(),
       set:    ((c[2] && c[2].textContent) || '').trim(),
       due:    ((c[3] && c[3].textContent) || '').trim(),
@@ -5095,12 +5139,13 @@ ROWS_JS = """(function(){
 def press_row(p, title, kind):
     """Press one row's Edit / Delete / Cancel, found by its title."""
     return p.eval("""(function(){
+      """ + TITLE_OF_JS + """
       var all = document.querySelectorAll('div[style*=%s]');
       for (var i = 0; i < all.length; i++) {
         var r = all[i];
         if ((r.getAttribute('style')||'').indexOf('cursor:pointer') === -1) {
           continue; }
-        if (((r.children[0]||{}).textContent||'').trim() !== %s) { continue; }
+        if (mrbTitleOf(r.children[0]) !== %s) { continue; }
         var b = r.querySelector('[data-mrb-added="set-work-%s"]');
         if (!b) { return 'no control'; }
         b.click(); return 'clicked'; }

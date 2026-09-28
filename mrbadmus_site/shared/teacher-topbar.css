@@ -1,0 +1,85 @@
+/* shared/teacher-topbar.css — the hand-written teacher pages' top bar on a
+   phone. ⊕ phone-teacher run, 28 Sep 2026. Loaded AFTER each page's own
+   <style> so it wins at equal specificity; see shared/teacher-topbar.js for
+   the menu itself and for why `--tb-in-menu` is how the two talk.
+
+   Desktop (>560px): the menu button does not exist visually and nothing
+   else here applies — the bar is exactly what it was. */
+.tb-menu { display: none; }
+
+@media (max-width: 560px) {
+  /* ONE ROW. It used to wrap (`flex-wrap:wrap`, `height:auto`), which on a
+     390px phone put the name, Admin and Sign out on a second line under the
+     brand (Mide's screenshot, 28 Sep 2026) — and three lines on the six
+     generated screens. `!important` because the generated bar (node 10)
+     carries its height, padding and gap INLINE, and an inline declaration
+     beats any selector. Two bars, one rule set:
+       · hand-written: `.mrb-brand` + `.tb-seg`
+       · generated:    `[data-tb-keep]` (nodes 11 and 13, teacher_rulings) */
+  [data-port-region="topbar"] {
+    height: 62px !important; min-height: 0; flex-wrap: nowrap !important;
+    padding: 0 12px !important; gap: 8px !important;
+    overflow: visible !important;
+  }
+  [data-port-region="topbar"] .tb-seg,
+  [data-port-region="topbar"] > [data-tb-keep="tabs"] {
+    margin-right: auto !important; flex-wrap: nowrap; min-width: 0;
+  }
+  [data-port-region="topbar"] .tb-tab,
+  [data-port-region="topbar"] > [data-tb-keep="tabs"] > * {
+    padding: 6px 10px !important; font-size: 14px !important; white-space: nowrap;
+  }
+  /* Only Today and My classes stay in the segment; a third tab (Flashcard
+     decks, Operator) is reached through the menu. */
+  [data-port-region="topbar"] .tb-seg > .tb-tab:nth-child(n+3) {
+    --tb-in-menu: 1; display: none !important;
+  }
+  /* Everything that is not the brand, the tabs or the menu button moves
+     into the menu. `!important` because the items teacher-admin-nav.js
+     injects, and Design's own, carry an inline `display`. */
+  [data-port-region="topbar"] > :not(.mrb-brand):not(.tb-seg):not(.tb-menu):not([data-tb-keep]) {
+    --tb-in-menu: 1; display: none !important;
+  }
+  .tb-menu {
+    display: inline-flex; align-items: center; justify-content: center;
+    flex: none; width: 44px; height: 44px; margin-right: -6px; padding: 0;
+    background: transparent; color: var(--st-ink);
+    border: 1px solid transparent; border-radius: 10px; cursor: pointer;
+  }
+  .tb-menu:hover, .tb-menu[aria-expanded="true"] { background: var(--st-seg-bg); }
+  .tb-menu:focus-visible { outline: 3px solid var(--mrb-focus, #E4572E); outline-offset: 1px; }
+  .tb-menu svg { display: block; }
+}
+
+.tb-menu-panel {
+  position: fixed; right: 10px; z-index: 70;
+  width: min(280px, calc(100vw - 20px));
+  max-height: calc(100vh - 90px); overflow-y: auto;
+  background: var(--st-paper); color: var(--st-ink);
+  border: 1px solid var(--st-rule-soft); border-radius: 12px;
+  box-shadow: 0 10px 28px rgba(28, 22, 16, 0.18);
+  padding: 6px;
+}
+.tb-menu-panel[hidden] { display: none; }
+.tb-menu-name {
+  padding: 10px 12px 8px; font: 600 16px/1.2 var(--st-ui); color: var(--st-ink);
+  border-bottom: 1px solid var(--st-rule-fact); margin-bottom: 4px;
+}
+.tb-menu-env {
+  margin-left: 8px; padding: 3px 7px; border-radius: 5px; vertical-align: 2px;
+  font: 500 11px/1.2 var(--st-mono); letter-spacing: .16em;
+  color: var(--st-caption); background: var(--st-num-well);
+}
+.tb-menu-item {
+  display: flex; align-items: center; width: 100%; min-height: 44px;
+  padding: 0 12px; border: 0; border-radius: 8px; background: transparent;
+  font: 600 15.5px/1.2 var(--st-ui); color: var(--st-ink);
+  text-align: left; text-decoration: none; cursor: pointer;
+}
+.tb-menu-item:hover { background: var(--st-seg-bg); color: var(--st-ink); text-decoration: none; }
+.tb-menu-item:focus-visible { outline: 3px solid var(--mrb-focus, #E4572E); outline-offset: -3px; }
+.tb-menu-theme {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: 44px; padding: 0 12px; font: 600 15.5px/1.2 var(--st-ui); color: var(--st-ink);
+}
+@media print { .tb-menu, .tb-menu-panel { display: none !important; } }

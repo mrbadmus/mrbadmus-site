@@ -561,6 +561,13 @@ def main():
                 check:c.querySelector('.fp-check').getAttribute('data-check'),
                 rates:Array.prototype.map.call(c.querySelectorAll('.fp-rate'),function(r){
                   return r.getAttribute('data-rating')+'/'+r.getAttribute('data-phase');}),
+                rateRow:Array.prototype.map.call(c.querySelectorAll('.fp-rates > *'),function(r){
+                  return r.classList.contains('fp-phase') ? '['+r.textContent+']'
+                    : r.getAttribute('data-rating');}),
+                makeTip:(c.querySelector('.fp-rate[data-phase="make"]')||{}).title||'',
+                prefix:Array.prototype.some.call(c.querySelectorAll('.fp-rate'),function(r){
+                  var b=getComputedStyle(r,'::before').content;
+                  return b && b!=='none' && b!=='normal';}),
                 sub:!!document.querySelector('#fp-drawer-body .fp-card[data-card="c1"] .fp-model sub'),
                 secured:!!document.querySelector('#fp-drawer-body .fp-card[data-card="c1"] .fp-secured'),
                 sessions:document.querySelectorAll('#fp-drawer-body .fp-session').length,
@@ -575,6 +582,14 @@ def main():
             check(d["check"] == "no", "drawer: answer-check chip")
             check(d["rates"] == ["not_yet/make", "not_yet/review", "nearly/review"],
                   "drawer: rating history in order, make phase marked", str(d["rates"]))
+            # ⊕ phone-teacher run — the phase is said in plain words before
+            # its chips, never as an "M · " prefix, and the tooltip keeps
+            # the phase and the time.
+            check(d["rateRow"] == ["[while writing]", "not_yet", "[in review]", "not_yet", "nearly"],
+                  "drawer: ratings grouped under 'while writing' / 'in review'", str(d["rateRow"]))
+            check(not d["prefix"], "drawer: no CSS prefix on a rating chip")
+            check(d["makeTip"].startswith("Not yet · while writing · "),
+                  "drawer: a make rating's tooltip names the phase and the time", d["makeTip"])
             check(d["sub"], "drawer: formulae render with <sub>")
             check(d["secured"], "drawer: secured tick")
             check(d["sessions"] == 2 and d["sesRushed"] == 1, "drawer: sittings timeline with rushed marker")

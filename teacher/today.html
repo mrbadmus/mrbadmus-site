@@ -527,18 +527,10 @@
       .container { padding: 18px 14px 40px; }
       .card { padding: 14px 14px; }
       .page-header h1 { font-size: 34px; letter-spacing: -0.02em; }
-      /* ⚠️ THE BAR WRAPS RATHER THAN OVERFLOWING, and that is deliberate.
-         v3's top bar has no @media rule at all and measures 953px wide inside
-         a 390px viewport on all six generated pages. `today_drive`'s
-         "390px: no horizontal overflow" check is a PUSH GATE on this page, and
-         this page has always held that property (the rules below are the
-         descendants of the ones that did). Importing the defect to match the
-         six would be a regression on a live page, so the bar keeps its own
-         narrow-viewport behaviour until the cross-screen responsive unit
-         gives all eight pages one answer. */
-      .topbar { height: auto; min-height: 62px; flex-wrap: wrap; padding: 10px 14px; gap: 8px; }
-      .tb-seg { margin-right: 0; }
-      .tb-tab { padding: 6px 11px; font-size: 14px; }
+      /* ⊕ Superseded 28 Sep 2026 (phone-teacher run). The bar used to WRAP
+         here, onto two lines. It is now ONE row with a menu button —
+         shared/teacher-topbar.css, loaded after this <style>. The 390px
+         no-overflow push gate (`today_drive`) still holds. */
     }
 
     @media (max-width: 560px) {
@@ -555,6 +547,10 @@
       .search-back { padding: 60px 10px 10px; }
     }
   </style>
+  <!-- ⊕ phone-teacher run — AFTER the page's own <style>, so the phone
+       bar's one-row rules win. -->
+  <link rel="stylesheet" href="/shared/teacher-topbar.css?v=e4a3d0a7">
+  <script src="/shared/teacher-topbar.js?v=466ea5b0" defer></script>
 </head>
 <body>
 
@@ -590,6 +586,12 @@
     <a class="tb-tab is-on" data-mrb-today-nav="1" href="/teacher/today.html">Today</a>
     <a class="tb-tab" href="/teacher/classes.html">My classes</a>
   </div>
+  <!-- ⊕ phone-teacher run, 28 Sep 2026 — the phone menu. Invisible above
+       560px; below it the bar is ONE row (brand, segment, this) and the
+       rest of the bar is reached through it. shared/teacher-topbar.js.
+       ⚠️ A <button>, and never the LAST one: teacher-admin-nav.js inserts
+       before the bar's last button, which must stay Sign out. -->
+  <button type="button" class="tb-menu" aria-label="Menu"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><path d="M3 5.5h14M3 10h14M3 14.5h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
   <!-- ⊕ MRB-326 JOB 3 · ruling 9 — "Find a student", in Design's own place
        (`margin-left:auto`, so it starts the right-hand group) and in her own
        shape: magnifier, mono label, "/" key chip. REAL — see `openSearch()`.
@@ -743,7 +745,7 @@
      second dashboard against a `__MRB_TPL__` this page does not have. -->
 <script>window.MRB_TEACHER_LIVE_NO_AUTORUN = true;</script>
 <script src="/shared/teacher-live.js?v=123910f9"></script>
-<script src="/shared/teacher-admin-nav.js?v=7582ce57"></script>
+<script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>
 <!-- ⊕ MRB-323 — the name picker. Defines `window.MrBadmusPicker` and does
      nothing until a lesson row's picker button is pressed. It makes no
      request and touches no storage, so its position in this list carries no

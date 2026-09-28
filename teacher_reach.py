@@ -364,7 +364,56 @@ _REACH_JS = r"""
      intersection has to be big enough to aim at: the whole control where the
      control is small, and at least a 24x16 target where it is large. One
      visible pixel is not reachability. */
+  /* ⊕ phone-teacher run, 28 Sep 2026 — REACHABLE THROUGH THE MENU.
+     Below 560px the top bar is one row and shared/teacher-topbar.css moves
+     every other bar control out of sight, marking it `--tb-in-menu: 1`. Such
+     a control has no box at rest, and that is the design, not a defect —
+     but ONLY if a teacher can still get to it. So it passes here on three
+     measured conditions, never on the marker alone: the bar's menu button
+     is itself reachable (the same `reach()`), pressing it opens the menu,
+     and the open menu holds an entry with this control's name that is
+     itself reachable. Anything else still fails as "has no box". */
+  function inMenu(el) {
+    var bar = el.closest && el.closest('[data-port-region="topbar"]');
+    if (!bar) { return null; }
+    for (var n = el; n && n !== bar; n = n.parentElement) {
+      if (getComputedStyle(n).getPropertyValue('--tb-in-menu').trim() === '1') {
+        return bar;
+      }
+    }
+    return null;
+  }
+  function viaMenu(el) {
+    var bar = inMenu(el);
+    if (!bar) { return null; }
+    var m = bar.querySelector('.tb-menu');
+    if (!m) { return {ok: false, why: 'is moved into the phone menu, and the bar has no menu button'}; }
+    var mr = reach(m);
+    if (!mr.ok) { return {ok: false, why: 'is in the phone menu, and the menu button ' + mr.why}; }
+    var want = (el.getAttribute('aria-label') || (el.textContent || '').replace(/\s+/g, ' ').trim()
+                || el.getAttribute('title') || '');
+    m.click();
+    var panel = document.getElementById('tb-menu-panel');
+    var res = {ok: false, why: 'is in the phone menu, and the open menu has no entry named ' + JSON.stringify(want)};
+    if (panel && !panel.hidden) {
+      var items = panel.querySelectorAll('.tb-menu-item');
+      for (var i = 0; i < items.length; i++) {
+        if ((items[i].textContent || '').trim() === want) {
+          var ir = reach(items[i]);
+          res = ir.ok ? {ok: true} : {ok: false, why: 'is in the phone menu, whose entry ' + ir.why};
+          break;
+        }
+      }
+      m.click();                       // close it again
+    } else if (!panel || panel.hidden) {
+      res = {ok: false, why: 'is in the phone menu, and pressing the menu button opened nothing'};
+    }
+    return res;
+  }
+
   function reach(el) {
+    var vm = viaMenu(el);
+    if (vm) { return vm; }
     bringIn(el);
     var r = el.getBoundingClientRect();
     if (r.width < 1 || r.height < 1) {
