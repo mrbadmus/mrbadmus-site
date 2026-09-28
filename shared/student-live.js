@@ -2652,6 +2652,9 @@
 
     var cards = detail.assignmentsDueNow
       .concat(detail.assignmentsComingUp, detail.assignmentsDone);
+    /* ⊕ Stage B — kept under its own name: `cards` is re-declared (the
+       flashcard deck, `rankDeck()`) further down this same function. */
+    var assignmentCards = cards;
 
     /* ⊕ MRB-351 — how many cards each flashcard homework has, for its row's
        "Flashcards · N cards". One read of the frozen snapshot, only when the
@@ -3150,7 +3153,10 @@
       lessonDefs.push({
         num: pad2(lessonDefs.length + 1),
         name: deslug(slug),
-        meta: "SET IN THIS WEEK’S ASSIGNMENT",
+        /* ⊕ Stage B (phone run, 28 Sep 2026) — was "SET IN THIS WEEK’S
+           ASSIGNMENT" on every card: the panel is "Lessons in this topic" and
+           every card in it says the same, so it said nothing. */
+        meta: "",
         on: true,
         /* ⊕ RULED 22 Aug 2026 — found by the control sweep, not by the brief.
            Each card in "Lessons in this topic" is an `<a href="#top">`, so
@@ -4021,7 +4027,9 @@
           } else if ((pair[1].data || []).length) {
             bankAll = bankAll.concat(mapBank(pair[1].data));
             next.practiceBank = rankBank();
-            next.practiceLabel = next.practiceBank.length ? "Practice" : "";
+            /* ⊕ Stage B — the bench's Practice button is gone; practice is
+               offered by `benchNext` when the bench has nothing open. */
+            next.practiceLabel = "";
             moved = true;
           }
         }
@@ -4152,7 +4160,11 @@
          Not a disabled button and not an explanatory sentence: §8.10 forbids
          the page explaining itself, and a greyed-out control a student cannot
          act on is a worse answer than a bench that simply offers what it has. */
-      practiceLabel: practiceBank.length ? "Practice" : "",
+      /* ⊕ Stage B (phone run, 28 Sep 2026) — always empty (binding `drop`):
+         beside "Open the assignment" it was a second route off the one
+         thing the bench is for. Practice now fills an EMPTY bench — see
+         `benchNext` / `drawBenchNext`. */
+      practiceLabel: "",
       /* ⊕ MRB-288 — the component's ruled name, everywhere Design drew the
          old one: the round's heading (a bound text node), the readings
          tile's label and the crumb's second half (two logic lifts). The
@@ -4169,7 +4181,9 @@
          trap `accountClassLine` documents. Composed from the class name this
          function already holds; the separator is Design's typography and is
          carried through verbatim. */
-      flashcardsTitle: "FLASHCARDS \u00a0\u00b7\u00a0 " + name,
+      /* ⊕ Stage B (phone run, 28 Sep 2026) — "Flashcards", not
+         "FLASHCARDS · 8r/Sc1": the class is the page the overlay opens over. */
+      flashcardsTitle: "Flashcards",
 
       /* \u2295 MRB-336 \u2014 null, not nought, and for `boardWeek`'s reason:
          the two are compared against each other. Nought was never a week
@@ -4185,9 +4199,9 @@
       classNamePadded: name + "\n        ",
       studentFirstName: first,
       studentInitials: initials(v.first_name, v.last_name),
-      welcomeLine: first
-        ? "Welcome back, " + first + " · your class"
-        : "Welcome back · your class",
+      /* ⊕ Stage B (phone run, 28 Sep 2026) — "· your class" is gone: the
+         class name is the h1 directly under it. */
+      welcomeLine: first ? "Welcome back, " + first : "Welcome back",
 
       /* ⊕ MRB-330, 6 Sep 2026 — NOW SOURCED. This used to read "COULD NOT
          SOURCE — a student can read `class_teachers` but has no read policy on
@@ -4202,8 +4216,10 @@
          one this chip means, and picking the first would put a name in front of
          a child that may not be theirs. With anything other than exactly one,
          the honest fallback is the words that were always there. */
+      /* ⊕ Stage B — empty rather than "Your teacher", which named nobody;
+         the binding is `drop`, so the chip goes with it. */
       teacherName: (classTeachers.length === 1 && classTeachers[0])
-        ? classTeachers[0] : "Your teacher",
+        ? classTeachers[0] : "",
       teacherInitials: (classTeachers.length === 1 && classTeachers[0])
         ? initialsOfName(classTeachers[0]) : "",
 
@@ -4224,8 +4240,11 @@
          An empty docket row is honest. "40 POINTS AT STAKE" over an
          assignment with no points is not. */
       docketQuestions: currentCount ? String(currentCount) : "",
-      docketDrawsOn: lessonDefs.map(function (l) { return l.name; }).join(" · "),
-      docketSet: benchWork ? fmtSet(benchWork.setAt) : "",
+      /* ⊕ Stage B (phone run, 28 Sep 2026) — the docket keeps QUESTIONS and
+         DUE. DRAWS ON repeated the h2 beside it (the topic), and SET is a
+         date nobody acts on. Empty here; LOGIC drops a row with no value. */
+      docketDrawsOn: "",
+      docketSet: "",
       docketDue: benchWork ? fmtDueMixed(benchWork.dueAt) : "",
       /* ⊕ RULED 22 Aug 2026 — P4. The docket agrees with the bench.
          `OPEN` was welded, so a finished piece of work still wore it — and
@@ -4244,9 +4263,11 @@
 
          and the MARKED / COMPLETE distinction survives verbatim, on the
          surface Design drew for it. */
+      /* ⊕ Stage B — "OPEN" said what the "Open the assignment" button says.
+         MISSED stays: that one is news. */
       docketFlag: (benchCard && benchCard.due_at
                    && Date.parse(benchCard.due_at) < serverNow)
-        ? "MISSED" : "OPEN",
+        ? "MISSED" : "",
       /* Once the work is done the deadline is not the story, and the slot is
          directly above the answered-progress bar — so it LABELS that bar
          instead, which is the other half of the 22 Aug progress ruling
@@ -4294,9 +4315,11 @@
 
          ⚠️ AND THE OPEN ARMS ARE UNTOUCHED. Nothing about a student with work
          still on the bench changes tonight. */
-      benchLead: benchWork && benchWork.dueAt
-        ? "On the bench now · due " + fmtDueMixed(benchWork.dueAt)
-        : "On the bench now",
+      /* ⊕ Stage B (phone run, 28 Sep 2026) — EMPTY, and the binding is `drop`.
+         The due date is the docket's DUE row, and "On the bench now" labels
+         the only thing on the bench. What it said: "On the bench now · due "
+         + fmtDueMixed(benchWork.dueAt). */
+      benchLead: "",
       /* ⊕ MRB-331 — THE PROVENANCE CLAUSE IS DROPPED WHERE IT IS NOT TRUE.
 
          Both sentences said "set from this week's lessons", and for the auto
@@ -4310,17 +4333,10 @@
          unbackable half removed, not a new one about a new kind of work. The
          page never says what "teacher-set" is; the title is the teacher's, and
          that is the whole of the difference a student sees. */
-      benchBlurb: benchWork && benchWork.fromScheme
-        ? ((currentCount && benchWork.dueAt)
-            ? (currentCount + " questions, set from this week's lessons. " +
-               "Open it, answer them, and complete it before " +
-               weekdayName(benchWork.dueAt) + ".")
-            : "Set from this week's lessons. Open it, answer the questions, "
-              + "and complete it.")
-        : ((currentCount && benchWork && benchWork.dueAt)
-            ? (currentCount + " questions. Open it, answer them, and " +
-               "complete it before " + weekdayName(benchWork.dueAt) + ".")
-            : "Open it, answer the questions, and complete it."),
+      /* ⊕ Stage B — EMPTY (binding `drop`): instructions the button already
+         gives ("Open the assignment"), and a count the docket already shows.
+         The MRB-331 note above describes the sentence this replaced. */
+      benchBlurb: "",
 
       /* W5, in the readings strip. */
       handedLabel: "Completed",
@@ -4335,13 +4351,11 @@
          kept by the structure instead of by a flag — which is what P4's own
          note asked for: "when Design's redraw is ported it replaces markup,
          not logic". */
-      benchTasks: [
-        { key: "t1", label: "Open it" },
-        { key: "t2", label: currentCount
-            ? "Answer the " + currentCount + " questions"
-            : "Answer the questions" },
-        { key: "t3", label: "Complete it" }
-      ],
+      /* ⊕ Stage B (phone run, 28 Sep 2026) — NO CHECKLIST. "Open it ·
+         Answer the N questions · Complete it" restated the one button under
+         it and the docket beside it. Empty list, so the fixture (Design's
+         three) is untouched and a pupil sees the button alone. */
+      benchTasks: [],
       /* ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST 18. See the
          section header above the `benchProgPct`/`benchProgText` computation,
          a couple of hundred lines up, for the full reasoning. Empty string
@@ -4373,6 +4387,37 @@
          RELEASED teacher-set work, and saying "isn't live yet" over the top of
          it is a false sentence about homework the child is expected to do. */
       benchHeldLine: (held && !benchWork) ? "This week's work isn't live yet" : "",
+      /* ⊕ Stage B (phone run, 28 Sep 2026) — THE BENCH IS NEVER EMPTY.
+         With nothing open and nothing finished the bench used to draw its
+         dark frame and nothing in it. `drawBenchNext` fills it with ONE thing
+         to do, in this order: a missed piece of work (it can still be done —
+         Mide, 22 Sep), practice on the current topic, the next lesson to
+         read. Practice is read from `__MRB_DATA__` at draw time, because the
+         bank arrives after the paint (foldInPractice). */
+      benchEmpty: !benchDone && !benchWork,
+      benchNextMissed: (function () {
+        var dueOf = {};
+        (assignmentCards || []).forEach(function (c) { if (c && c.id) { dueOf[c.id] = c.due_at; } });
+        var missed = (work || []).filter(function (r) {
+          return r && r.status === "missed" && !r.fc && r.assignmentHref;
+        }).sort(function (a, b) {
+          return String(dueOf[a.id] || "").localeCompare(String(dueOf[b.id] || ""));
+        });
+        if (!missed.length) { return null; }
+        return { title: missed[0].title || "Your work",
+                 line: dueOf[missed[0].id] ? "Was due " + fmtDueMixed(dueOf[missed[0].id]) : "",
+                 href: missed[0].assignmentHref };
+      })(),
+      benchNextLesson: (function () {
+        for (var i = 0; i < lessonDefs.length; i++) {
+          if (lessonDefs[i].href) { return { name: lessonDefs[i].name, href: lessonDefs[i].href }; }
+        }
+        for (var j = deckSlugs.length - 1; j >= 0; j--) {
+          var h = lessonHref(deckSlugs[j]);
+          if (h) { return { name: deslug(deckSlugs[j]), href: h }; }
+        }
+        return null;
+      })(),
       benchDone: benchDone,
       /* ⊕ 23 Aug 2026 — PHASE 4. ONE FACT, ONE NEGATION. Design's amended
          bench is two branches and names them `benchOpen` and `benchDone`;
@@ -4952,6 +4997,16 @@
       questions: questions,
 
       assignmentLessonHref: lessonHref(assignmentLessonSlug),
+      /* ⊕ Stage B (phone run, 28 Sep 2026) — where the bar's back button
+         goes: THIS assignment's class, by id, carrying `env`. Not
+         `history.back()`, which lands wherever the pupil came from (a bell
+         message, a KS3 lesson) — a button reading "‹ 8r/Sc1" goes to 8r/Sc1. */
+      classHref: (function () {
+        var base = carryParams("/student/class.html");
+        return /[?&]class=/.test(base) ? base
+          : base + (base.indexOf("?") < 0 ? "?" : "&") +
+            "class=" + encodeURIComponent(klass.id);
+      })(),
       /* Design's word was "Open lesson 02" — a position, not a fact about
          any real lesson. See BINDINGS in build_student_port.py. */
       assignmentLessonLabel: "Open lesson",
@@ -5092,10 +5147,60 @@
      Registered as an after-draw hook for the reason F24 exists — anything put
      into the mount point from outside the template lives until the next render
      pass, and this one has to outlast every one of them. */
+  /* ⊕ Stage B (phone run, 28 Sep 2026) — the empty bench's one card: one
+     heading, one line, one button, in Design's own bench type (nodes 62, 64,
+     74). Idempotent and redrawn after every runtime rebuild, like drawHeld,
+     which stays the LAST resort (it stands down when this card is there). */
+  var mountedApp = null;
+  function drawBenchNext(data) {
+    var d = window.__MRB_DATA__ || data;
+    if (!d || !d.benchEmpty) { return; }
+    var frame = document.querySelector('[data-port-region="bench"]');
+    if (!frame || frame.querySelector("[data-mrb-bench-next]")) { return; }
+    var pick = null;
+    if (d.benchNextMissed) {
+      pick = { h: d.benchNextMissed.title, line: d.benchNextMissed.line,
+               label: "Finish it", href: d.benchNextMissed.href };
+    } else if (d.practiceBank && d.practiceBank.length) {
+      var topic = String(d.practiceBank[0].topic || "Practice");
+      pick = { h: topic.charAt(0) + topic.slice(1).toLowerCase(),
+               line: d.practiceBank.length + " questions", label: "Practise",
+               act: function () {
+                 var lg = mountedApp && mountedApp.logic;
+                 if (lg && lg.openRecall) { lg.openRecall(); }
+               } };
+    } else if (d.benchNextLesson) {
+      pick = { h: d.benchNextLesson.name, line: "This week's lesson",
+               label: "Read it", href: d.benchNextLesson.href };
+    }
+    if (!pick) { return; }
+    var box = document.createElement("div");
+    box.setAttribute("data-mrb-bench-next", "1");
+    box.style.cssText = "padding:clamp(22px,2.4cqw,32px) clamp(18px,2.5cqw,36px) clamp(24px,2.6cqw,36px)";
+    var h = document.createElement("h2");
+    h.style.cssText = "margin:0;font:600 clamp(27px,3.6cqw,46px)/1 var(--st-display);letter-spacing:-0.04em;color:var(--st-cream)";
+    h.textContent = pick.h;
+    box.appendChild(h);
+    if (pick.line) {
+      var p = document.createElement("p");
+      p.style.cssText = "margin:14px 0 0;max-width:46ch;font:400 16.5px/1.55 var(--st-ui);color:var(--st-room-body)";
+      p.textContent = pick.line;
+      box.appendChild(p);
+    }
+    var b = document.createElement(pick.href ? "a" : "button");
+    if (pick.href) { b.href = pick.href; } else { b.type = "button"; b.addEventListener("click", pick.act); }
+    b.setAttribute("data-mrb-bench-next-go", "1");
+    b.style.cssText = "all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:10px;margin-top:clamp(20px,2cqw,28px);min-height:44px;background:var(--ks3-accent-text);color:var(--st-paper);font:600 15px/1 var(--st-ui);border-radius:var(--st-r-btn);padding:15px 20px";
+    b.textContent = pick.label;
+    box.appendChild(b);
+    frame.appendChild(box);
+  }
+
   function drawHeld(data) {
     if (!data || !data.benchHeldLine) { return; }
     var frame = document.querySelector('[data-port-region="bench"]');
-    if (!frame || frame.querySelector("[data-mrb-held]")) { return; }
+    if (!frame || frame.querySelector("[data-mrb-held]")
+        || frame.querySelector("[data-mrb-bench-next]")) { return; }
 
     var p = document.createElement("p");
     p.setAttribute("data-mrb-held", "1");
@@ -5523,6 +5628,7 @@
           if (pendingSink) { window.__MRB_SINK__ = pendingSink; }
 
           var app = window.__MRB_MOUNT__();
+          mountedApp = app;
 
           /* ⊕ MRB-348 ROUND THREE — THE PRACTICE FOLD-IN, AFTER THE PAINT.
              `buildClass` no longer waits for `/api/class/practice`; it hands
@@ -5623,6 +5729,11 @@
             window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
             window.__MRB_AFTER_DRAW__.push(function () { drawReminder(sb, data); });
             drawReminder(sb, data);
+          }
+          if (page === "class" && data && data.benchEmpty) {
+            window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
+            window.__MRB_AFTER_DRAW__.push(function () { drawBenchNext(data); });
+            drawBenchNext(data);
           }
           if (page === "class" && data && data.benchHeldLine) {
             window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];

@@ -61,7 +61,9 @@
     if (answer) { return Promise.resolve(answer); }
     if (asking) { return asking; }
     var ce = window.MRBClassEntry;
-    if (!ce || !ce.viewer) { answer = { entry: null, who: null }; return Promise.resolve(answer); }
+    /* Not loaded YET (the student runtime injects class-entry.js itself):
+       a provisional answer, NOT cached, so the next redraw asks again. */
+    if (!ce || !ce.viewer) { return Promise.resolve({ entry: null, who: null, provisional: true }); }
     asking = Promise.all([ce.viewer(), ce.resolve()]).then(function (r) {
       answer = { who: r[0], entry: r[0] ? r[1] : null };
       return answer;
@@ -160,8 +162,9 @@
     var mode = slot.getAttribute('data-mrb-topbar-who') || 'all';
     var b = bar(slot);
     var kind = (b && b.getAttribute('data-mrb-topbar')) || '';
+    if (a.provisional) { return; }
     if (!a.who) {
-      if (kind === 'student') { return; }
+      if (kind === 'student' || mode === 'avatar') { return; }
       var s = el('a', 'mrb-topbar__signin', 'Sign in');
       s.href = carry('/auth.html?tab=signin&return=' +
                      encodeURIComponent(window.location.pathname + window.location.search));

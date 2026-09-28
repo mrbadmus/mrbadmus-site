@@ -452,6 +452,13 @@
       return get[k];
     };
     var out = JSON.parse(JSON.stringify(roots));
+    /* ⊕ Stage B (phone run, 28 Sep 2026) — drops are COLLECTED and applied
+       after every path has resolved. Splicing inside the loop shifted every
+       later sibling one place left, so two `drop` literals under one parent
+       (the bench's eyebrow and blurb; the hero's teacher chip and class-size
+       chip) broke the second binding's path and the page refused to mount.
+       Removal is by reference (`indexOf(owner)`), so order no longer matters. */
+    var drops = [];
     for (var i = 0; i < bindings.length; i++) {
       var b = bindings[i], node = out[b.p[0]], j;
       for (j = 1; j < b.p.length; j++) {
@@ -484,11 +491,12 @@
           gp = owner;
           owner = owner && owner.c && owner.c[b.p[k]];
         }
-        if (gp && gp.c) {
-          var at = gp.c.indexOf(owner);
-          if (at >= 0) { gp.c.splice(at, 1); }
-        }
+        if (gp && gp.c) { drops.push([gp, owner]); }
       }
+    }
+    for (var q = 0; q < drops.length; q++) {
+      var at = drops[q][0].c.indexOf(drops[q][1]);
+      if (at >= 0) { drops[q][0].c.splice(at, 1); }
     }
     return out;
   }

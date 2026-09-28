@@ -229,7 +229,10 @@ STAMPED_DEPS = ("config.js", "class-entry.js", "student-guard.js",
                 # ⊕ MRB-351 — injected by student-live.js like the rest.
                 "formulae.js", "flashcard-homework.js",
                 # ⊕ PUPIL FLOW — the answer box above the phone keyboard.
-                "flashcard-keyboard.js")
+                "flashcard-keyboard.js",
+                # ⊕ Stage B — the one pupil top bar's stylesheet and script
+                # (the assignment bar's avatar; see page_html).
+                "topbar.css", "topbar.js")
 # ⊕ One mark (Mide, 13 Sep 2026) — the kit's favicon, the lockup's
 # stylesheet and brand.js, which the runtime draws the header brand from.
 STAMPED_DEPS += brand_port.BRAND_DEPS
@@ -452,7 +455,12 @@ PAGES = [
                         # not a placeholder — so the fixture stays byte-
                         # identical and there is nothing for
                         # `student_behaviour.py` to register.
-                        pastDeadlineNow="false")),
+                        pastDeadlineNow="false",
+                        # ⊕ Stage B — the bar's back button (`goClassPage`,
+                        # student_rulings RETARGET_ON 15) reads it on press;
+                        # the behaviour gate presses every control, so the
+                        # fixture needs a real class-page URL.
+                        classHref="'/student/class.html'")),
 ]
 
 # ── the identity strings, which are NOT in the logic ──────────────────────
@@ -518,7 +526,10 @@ BINDINGS = {
         # sheet needs the NAME bound where Design drew the monogram twice.
         ("Welcome back, Ayo · your class", "welcomeLine"),
         ("AY", "studentInitials"),
-        ("Mr Badmus", "teacherName"),
+        # ⊕ Stage B (phone run, 28 Sep 2026) — `drop`: with no single teacher
+        # to name, the chip used to read "Your teacher", which tells a pupil
+        # nothing (No redundant text, CLAUDE.md). Empty now, and the chip goes.
+        ("Mr Badmus", "teacherName", "drop"),
         ("MB", "teacherInitials"),
         # ⊕ RULED 23 Aug 2026 — `drop`, and it is P6's ruling applied to the
         # case P6 missed. `classSize` is a deliberate COULD-NOT-SOURCE empty
@@ -544,7 +555,12 @@ BINDINGS = {
         # The FIXTURE is unmoved — Design supplies "28 students" there, the
         # value is non-empty, and the chip stays exactly as Design drew it.
         ("28 students", "classSize", "drop"),
-        ("Biology", "subjectLabel"),
+        # ⊕ Stage B (phone run, 28 Sep 2026) — `drop`: a class with no pill
+        # label drew an empty coloured pill beside the teacher chip. Safe now
+        # that the runtime applies drops AFTER every path resolves (see
+        # applyBindings in shared/student-runtime.js) — the stale-path hazard
+        # the note above steers around is gone.
+        ("Biology", "subjectLabel", "drop"),
         ("Cells & microscopy", "topicTitle"),
         ("AUTUMN TERM", "termLabel"),
         # ── ⊕ RULED 22 Aug 2026 — P6. THE PROD BADGE SHIPPED TO STUDENTS ──
@@ -765,8 +781,13 @@ BINDINGS = {
         # The blurb is worse than a wrong time: it states the question count in
         # WORDS, tells the student to "hand it in" (which W5 retires), and
         # names Thursday as the deadline for every class in every week.
-        ('On the bench now · due Thu 18:00', "benchLead"),
-        ("Eight questions, set from this week's lessons. Open it, answer them, hand it in before Thursday.", "benchBlurb"),
+        # ⊕ Stage B (phone run, 28 Sep 2026) — both `drop`. The eyebrow's due
+        # date is the docket's DUE row a thumb's width away, and the blurb is
+        # instructions the "Open the assignment" button already gives. The
+        # live page sends both empty (shared/student-live.js); the fixture
+        # keeps Design's words, so nothing here moves a gate.
+        ('On the bench now · due Thu 18:00', "benchLead", "drop"),
+        ("Eight questions, set from this week's lessons. Open it, answer them, hand it in before Thursday.", "benchBlurb", "drop"),
         # ── ⊕ 23 Aug 2026 — PHASE 1b. THE ACCOUNT SHEET'S TWO REAL ROWS ───
         #
         # Design's sheet carries three hardcoded facts about one sample class:
@@ -4213,6 +4234,10 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
         "%s"
         "%s"
         "<link rel=\"stylesheet\" href=\"%s\">\n"
+        # ⊕ Stage B (phone run, 28 Sep 2026) — the one pupil top bar's
+        # stylesheet: the assignment bar's avatar and menu (shared/topbar.js,
+        # loaded at the end of <body>) are styled by it on both pages.
+        "<link rel=\"stylesheet\" href=\"/shared/topbar.css\">\n"
         # ⊕ Theme run, 27 Sep 2026 — was a hard-coded #FBF3E6. Same light
         # byte value, but now a token so `html[data-theme="dark"]` can
         # redefine --st-ground and this ground follows it, instead of
@@ -4235,6 +4260,7 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
         "<script>\n%s\n</script>\n"
         "%s"
         "%s"
+        "<script src=\"/shared/topbar.js\" defer></script>\n"
         "</body>\n</html>\n"
         % (theme_head.THEME_HEAD, theme_head.theme_script(),
            ", interactive-widget=resizes-content"
@@ -4273,7 +4299,9 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
            # names one), so `.mrb-figure-scroll` cannot match there.
            (_EYEBROW_TYPE + _FOCUS_RING +
             ((_THEME_BRIDGE + _FOCUS_RING_BENCH + _PAGE_STRONG + _PIP_ROW
-              + _CARD_FIT + _ROW_DONE + _TAP44)
+              # ⊕ Stage B — `_TAP44` retired: its node (33, the crumb) is
+              # pruned with the crumb strip, so the rule could never match.
+              + _CARD_FIT + _ROW_DONE)
              if spec["page"] == "class view"
              else (bench_css + _THEME_BRIDGE + _Q_EYEBROW
                    + _FIGURE_SCROLL))),

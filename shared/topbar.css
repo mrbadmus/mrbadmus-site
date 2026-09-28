@@ -24,7 +24,10 @@
    hand-written pupil pages: the site tokens), so dark mode follows each
    family's own dark sheet and this file carries no dark literals of its own. */
 
-.mrb-topbar {
+/* `[data-mrb-topbar-tokens]` carries the same palette onto a bar the component
+   did not draw — the ported assignment page's own header, which adopts the
+   avatar slot only (`="st"` → the --st-* family). */
+.mrb-topbar, [data-mrb-topbar-tokens] {
   /* KS3 + KS4 pilot (both load a --ks3-* sheet with a dark twin) */
   --tb-ink: var(--ks3-ink, #221E1B);
   --tb-body: var(--ks3-ink-muted, #5E5145);
@@ -35,6 +38,8 @@
   --tb-ui: var(--ks3-font-body, 'Instrument Sans', system-ui, -apple-system, sans-serif);
   --tb-mono: var(--ks3-font-mono, ui-monospace, monospace);
   --tb-accent: #E4572E;
+}
+.mrb-topbar {
   container-type: inline-size;
   position: relative;
   z-index: 60;
@@ -45,7 +50,7 @@
   font-family: var(--tb-ui);
   color: var(--tb-ink);
 }
-.mrb-topbar[data-mrb-topbar="leaderboard"] {
+.mrb-topbar[data-mrb-topbar="leaderboard"], [data-mrb-topbar-tokens="st"] {
   --tb-ink: var(--st-ink, #1A1714);
   --tb-body: var(--st-body, #4A4038);
   --tb-paper: var(--st-paper, #FFFCF5);

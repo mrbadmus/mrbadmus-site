@@ -635,6 +635,14 @@ def run(cdp):
 # held to byte-for-byte parity.
 RULED_DIVERGENCE = {
     "class view": [
+        # ⊕ Stage B (phone run, 28 Sep 2026) — student_rulings PRUNE 32 and
+        # 100. The crumb strip repeated the h1 (class), named the only view
+        # there is and the week the spine shows; the docket's countdown block
+        # repeated DUE one row up. Flagged for Mide's veto (amendment B-A4).
+        ("the crumb strip under the header (Stage B)",
+         r"8r/Sc1 › [A-Z ]+? AUTUMN TERM · WEEK \d+ (?:/ \d+ )?"),
+        ("the docket's countdown and worth line (Stage B)",
+         r"2 days left 40 POINTS AT STAKE "),
         # ── ⊕ ONE MARK (Mide's ruling, 13 Sep 2026; one-mark run 27 Sep) ──
         #
         # *"ONE mark on every page … the wordmark "MrBadmus" (no "AI")."*
@@ -1224,6 +1232,11 @@ def _apply_ruled_controls(page, d_controls, g_controls, problems, seen):
 # one of them changed for a reason nothing to do with this ruling.
 RULED_CONTROL_EDITS = {
     "class view": [
+        dict(label="the crumb strip's class button (Stage B)",
+             design="8r/Sc1", port=None, n=1,
+             why="Stage B (phone run, 28 Sep 2026) — the crumb strip is "
+                 "pruned (student_rulings PRUNE 32); its one control was a "
+                 "button naming the class the page is already about."),
         dict(label="the avatar drops the duplicated name",
              design="AY Ayo", port="AY", n=1,
              why="RULED 23 Aug 2026 — the student's first name was on the "

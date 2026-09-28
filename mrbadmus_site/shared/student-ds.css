@@ -3567,6 +3567,19 @@ a:hover { color: var(--st-accent-hover); }
   --st-ghost:   #6E604B;  /* was #7D6D55 — 4.55:1 on --st-seg-bg (was 3.74) */
 }
 
+/* ⊕ Stage B (phone run, 28 Sep 2026) — the assignment bar on a phone: the
+   clock leaves the bar for the progress strip, the LATE chip goes (the work
+   list the pupil came from already says late), and nothing wraps. */
+[data-mrb-strip-clock] { display: none; }
+@media (max-width: 600px) {
+  [data-mrb-bar-clock], [data-mrb-bar-late] { display: none !important; }
+  [data-mrb-strip-clock] {
+    display: inline-flex; align-items: center; margin-left: auto;
+    padding-left: 10px; flex: none;
+    font: 500 12px/1 var(--st-mono); letter-spacing: 0.06em; color: var(--st-ink);
+  }
+}
+
 
 /* ⊕ D5 (theme-run audit, 27 Sep 2026). The flashcards "Next" button (node
    10363, STYLE_EDIT 'class view') is Design's own inline

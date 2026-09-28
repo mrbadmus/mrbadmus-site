@@ -6189,3 +6189,191 @@ html[data-theme="dark"] [data-hw="rate"] {
 } /* @media screen — D8 */
 
 """
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# ⊕ STAGE B (phone run, 28 Sep 2026) — THE ASSIGNMENT PAGE'S BAR AND SCREENS
+# ══════════════════════════════════════════════════════════════════════════
+#
+# Mide, as a pupil on his phone: "overwhelming", "too jampacked". His model of
+# GOOD is the class page's header (brand, My class, bell, avatar, theme — one
+# row). The assignment header was a different animal: brand only when wide,
+# a wrapping row, LATE / HANDED IN chips and a clock fighting for 360px, and a
+# back button that went to /ks3/index.html. And under it a readout —
+# "ANSWERED 01 / 10 · 01 RIGHT · 09 LEFT" — above "QUESTION 02 OF 10".
+# CLAUDE.md's "No redundant text" rule is the test every cut below passed.
+#
+# 1. THE BACK BUTTON GOES TO THE CLASS. Node 15 — back chevron, brand, class
+#    code, drawn by Design as ONE control — was retargeted to `goKS3` on
+#    23 Aug ("the brand goes home"). On this page the control is a BACK
+#    button first: it reads "‹ 8r/Sc1", and it went to the KS3 landing. It now
+#    goes to the class page named in the data (`classHref`), not
+#    `history.back()` — `goClass` is left exactly as it is for the done
+#    screen's "Back to 8r/Sc1", whose history-first behaviour was ruled
+#    22 Aug and still stands.
+RETARGET_ON["assignment"] = {15: ("goClass", "goClassPage")}
+
+# 2. THE MARK AT EVERY WIDTH. RULED_BRAND's note kept the lockup inside
+#    Design's `<if wide>` because at 360px the chips and the clock left no
+#    room. Both leave the bar on a phone (4 and 5 below), so the room is back
+#    and the page wears the one mark like every other pupil page.
+SET_EXPR["assignment"][18] = ("wide", "showBrand")
+
+# 5/6. The clock and the LATE chip are marked so a phone can move / drop them
+#      (STAGE_B_CSS below); the bar's end group is where the avatar goes.
+SET_ATTR["assignment"][33] = {"data-mrb-bar-clock": "1"}
+SET_ATTR["assignment"][27] = {"data-mrb-bar-late": "1"}
+#   25 already carries `data-port-bell-host`; the tokens hook lets
+#   shared/topbar.css paint the avatar in this page's own --st-* palette.
+SET_ATTR["assignment"][25]["data-mrb-topbar-tokens"] = "st"
+
+# 5. After hand-in the header clock only repeats the done screen's TIME TAKEN.
+WRAP["assignment"][33] = "showClock"
+
+# 3. ONE ROW. Stage A's experience run let row 14 wrap (so nothing was pushed
+#    off-screen); with the chips and clock off the phone bar it no longer has
+#    to, and a wrapping bar is the thing Mide photographed. The class code
+#    ellipsises instead.
+STYLE_EDIT["assignment"][14] = [
+    ("display:flex;align-items:center;gap:clamp(10px,1.6cqw,20px);",
+     "display:flex;flex-wrap:nowrap;align-items:center;"
+     "gap:clamp(10px,1.6cqw,20px);min-width:0;")]
+STYLE_EDIT["assignment"][15] = [("flex:none", "flex:0 1 auto;min-width:0")]
+STYLE_EDIT["assignment"][20] = [
+    ("letter-spacing:0.09em",
+     "letter-spacing:0.09em;min-width:0;overflow:hidden;"
+     "text-overflow:ellipsis;white-space:nowrap")]
+
+# 4. The avatar and its menu (My class · Settings · Sign out), from
+#    shared/topbar.js in `avatar` mode — the bell here is the page's own
+#    (`wireBell`, node 25's `data-port-bell-host`), so the slot never mounts a
+#    second one. Theme slot and avatar travel as ONE insertion because
+#    INSERT_AT holds one entry per (parent, before) and the theme slot already
+#    had (25, None); the wrapper is `display:contents`, so the flex row sees
+#    avatar then theme control as two items, in that order.
+INSERT_AT["assignment"][(25, None)] = (
+    {"t": "span", "a": {"style": "display:contents"}, "c": [
+        {"t": "span", "a": {"class": "mrb-topbar__who",
+                             "data-mrb-topbar-who": "avatar"}},
+        {"t": "span", "a": {"class": "mrb-theme-slot",
+                             "data-mrb-theme": "compact"}},
+    ]},
+    "Stage B — the avatar slot (shared/topbar.js, avatar mode) and the theme "
+    "control's slot, at the end of the assignment bar's end group.")
+
+# 5 (cont.). On a phone the clock moves out of the bar and into the progress
+#    strip's right-hand end, which is where the eye already is between
+#    questions. Same expression as node 37; shown only ≤600px (STAGE_B_CSS).
+INSERT_AT["assignment"][(39, None)] = (
+    {"t": "span", "a": {"data-mrb-strip-clock": "1"},
+     "c": [{"t": "#", "v": {"parts": [{"e": "clock"}]}}]},
+    "Stage B — the clock, in the progress strip on a phone.")
+
+# §3 — THE QUESTION SCREEN AND THE RESULTS SCREEN.
+#   48   the readout row: "ANSWERED 01 / 10 · 01 RIGHT · 09 LEFT". The strip
+#        above it already shows every question's state, and "Question 02 of
+#        10" below it says where the pupil is.
+#   296  "MARKED · WEEK 05" — the eyebrow above it already says completed and
+#        when; the score under it says marked.
+#   299  "70%" beside "7 / 10" — the same number twice.
+#   317  "03 OF 10" beside "Where it went wrong" — the list under it is the
+#        count, and WRONG is in the stats row.
+PRUNE["assignment"].extend([48, 296, 299, 317])
+
+LOGIC["assignment"].extend([
+    # 1 + 2 + 5 — three keys in the render scope. A WRAP / SET_EXPR key that
+    # is not named in the scope object resolves to nothing and `<if>` reads
+    # that as false (see the QUICKFIX-2026-08-24 note above `openLesson`).
+    (
+        "      feedbackHas: MRB_DATA('feedbackHas'),\n",
+        "      feedbackHas: MRB_DATA('feedbackHas'),\n"
+        "      /* ⊕ Stage B — the bar: the mark at every width, the clock only\n"
+        "         while the work is open, and the back button's destination. */\n"
+        "      showBrand: true,\n"
+        "      showClock: !handed,\n"
+        "      goClassPage: () => { window.location.href = MRB_DATA('classHref'); },\n",
+    ),
+    # 6 — the HANDED IN chip: the h1 on the done screen already says it.
+    (
+        "chipLate: st.late, chipHanded: handed,",
+        "chipLate: st.late, chipHanded: false,",
+    ),
+    # §3 — RIGHT is the score's numerator, drawn in 92px directly above.
+    (
+        "      doneStats: [\n"
+        "        { label: 'RIGHT', value: pad(nRight) },\n"
+        "        { label: 'WRONG', value: pad(wrongList.length) },\n",
+        "      doneStats: [\n"
+        "        { label: 'WRONG', value: pad(wrongList.length) },\n",
+    ),
+])
+
+STAGE_B_CSS = """
+/* ⊕ Stage B (phone run, 28 Sep 2026) — the assignment bar on a phone: the
+   clock leaves the bar for the progress strip, the LATE chip goes (the work
+   list the pupil came from already says late), and nothing wraps. */
+[data-mrb-strip-clock] { display: none; }
+@media (max-width: 600px) {
+  [data-mrb-bar-clock], [data-mrb-bar-late] { display: none !important; }
+  [data-mrb-strip-clock] {
+    display: inline-flex; align-items: center; margin-left: auto;
+    padding-left: 10px; flex: none;
+    font: 500 12px/1 var(--st-mono); letter-spacing: 0.06em; color: var(--st-ink);
+  }
+}
+"""
+PORT_CSS += STAGE_B_CSS
+
+# §3 (cont.) — the pruned readout's "01 RIGHT" (node 53) was the ONLY run of
+# this shorthand on the page; an entry matching nothing stops the build, as it
+# should, so it leaves with the node it scaled.
+_STAGE_B_GONE_RUN = "font:500 9.5px/1 var(--st-mono);letter-spacing:0.11em"
+TYPE_SCALE["assignment"] = [e for e in TYPE_SCALE["assignment"]
+                            if e[0] != _STAGE_B_GONE_RUN]
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# ⊕ STAGE B (phone run, 28 Sep 2026) — THE CLASS PAGE: LESS, NOT DIFFERENT
+# ══════════════════════════════════════════════════════════════════════════
+#
+# Kept, by amendment B-A1: the header (nodes 11-31) and the four-stat block —
+# Mide's own model of a good screen. Cut, each because it repeats something on
+# the same screen (CLAUDE.md, "No redundant text"):
+#
+#   32   the crumb strip under the header: "8r/Sc1 › OVERVIEW … WK 05 / 39".
+#        The class name is the h1 an inch below, "Overview" names the only
+#        view there is, and the week is on the term spine. ⚑ FLAGGED FOR
+#        MIDE'S VETO (amendment B-A4) — it is a Design-drawn strip.
+#   100  the docket's countdown block: "7 days left", the worth line and the
+#        elapsed bar. DUE is the row directly above it, and the bench's own
+#        "0 OF 10 ANSWERED" meter is the progress bar that matters.
+#
+# The bench's eyebrow, blurb, checklist, Practice button, DRAWS ON / SET rows
+# and "OPEN" flag go at the DATA level instead (shared/student-live.js sends
+# them empty; their bindings are `drop`), so the fixture keeps Design's words.
+PRUNE["class view"].extend([32, 100])
+
+LOGIC["class view"].append((
+    "      docket: docket,\n",
+    "      /* ⊕ Stage B — a docket row with nothing in it is not drawn (the live\n"
+    "         page sends DRAWS ON and SET empty; Design's fixture fills all). */\n"
+    "      docket: docket.filter(function (d) { return d.value !== ''; }),\n",
+))
+# The crumb's 44px tap target (P11, 25 Sep) went with the crumb.
+del SET_ATTR["class view"][33]
+# …and so did the "›" separator's contrast fix (experience run, item 13).
+del STYLE_EDIT["class view"][34]
+# The crumb strip (32) and the docket's worth line (103) held the only runs of
+# these three shorthands on the class view; the entries leave with the nodes.
+_STAGE_B_GONE_CLASS = {
+    "font:400 11.5px/1 var(--st-mono)",
+    "font:400 11.5px/1 var(--st-mono);letter-spacing:0.09em",
+    "font:400 9.5px/1 var(--st-mono);letter-spacing:0.12em",
+}
+TYPE_SCALE["class view"] = [e for e in TYPE_SCALE["class view"]
+                            if e[0] not in _STAGE_B_GONE_CLASS]
+
+# The docket's flag chip (node 94) is drawn only when it says something: the
+# live page sends "" for an open piece of work (the button says it) and
+# "MISSED" when it is late. An empty chip is a bordered box with nothing in it.
+WRAP["class view"][94] = "docketFlag"
