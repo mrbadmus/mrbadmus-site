@@ -1,0 +1,375 @@
+{
+ "_source": "public.flashcard_quick_check on TEST (qeppkiswvclkkwbxmlok), 28 Sep 2026, body md5 4f1522f9b11d9652199acb3913b968b4 = production's. Regenerate the sql column with flashcard_engine_test.js --sql and run it on TEST.",
+ "cases": [
+  {
+   "pupil": "",
+   "model": "The newton (N)",
+   "sql": "blank"
+  },
+  {
+   "pupil": "   ",
+   "model": "anything",
+   "sql": "blank"
+  },
+  {
+   "pupil": "\n\t",
+   "model": "x",
+   "sql": "blank"
+  },
+  {
+   "pupil": null,
+   "model": "x",
+   "sql": "blank"
+  },
+  {
+   "pupil": "newton",
+   "model": "The newton (N)",
+   "sql": "match"
+  },
+  {
+   "pupil": "Newton!",
+   "model": "The newton (N)",
+   "sql": "match"
+  },
+  {
+   "pupil": "N",
+   "model": "The newton (N)",
+   "sql": "match"
+  },
+  {
+   "pupil": "newtons",
+   "model": "The newton (N)",
+   "sql": "no"
+  },
+  {
+   "pupil": "the",
+   "model": "The newton (N)",
+   "sql": "no"
+  },
+  {
+   "pupil": "The",
+   "model": "the",
+   "sql": "match"
+  },
+  {
+   "pupil": "a",
+   "model": "A vector",
+   "sql": "no"
+  },
+  {
+   "pupil": "vector",
+   "model": "A vector",
+   "sql": "match"
+  },
+  {
+   "pupil": "A vector",
+   "model": "A vector",
+   "sql": "match"
+  },
+  {
+   "pupil": "a  VECTOR.",
+   "model": "A vector",
+   "sql": "match"
+  },
+  {
+   "pupil": "scalar",
+   "model": "A vector",
+   "sql": "no"
+  },
+  {
+   "pupil": "idk",
+   "model": "H2O",
+   "sql": "blank"
+  },
+  {
+   "pupil": "IDK",
+   "model": "H2O",
+   "sql": "blank"
+  },
+  {
+   "pupil": "I don't know",
+   "model": "H2O",
+   "sql": "blank"
+  },
+  {
+   "pupil": "i dont know",
+   "model": "H2O",
+   "sql": "blank"
+  },
+  {
+   "pupil": "dunno",
+   "model": "H2O",
+   "sql": "blank"
+  },
+  {
+   "pupil": "no idea",
+   "model": "H2O",
+   "sql": "blank"
+  },
+  {
+   "pupil": "Not sure!",
+   "model": "H2O",
+   "sql": "blank"
+  },
+  {
+   "pupil": "?",
+   "model": "H2O",
+   "sql": "blank"
+  },
+  {
+   "pupil": "x",
+   "model": "H2O",
+   "sql": "blank"
+  },
+  {
+   "pupil": "xx",
+   "model": "H2O",
+   "sql": "blank"
+  },
+  {
+   "pupil": "n/a",
+   "model": "H2O",
+   "sql": "blank"
+  },
+  {
+   "pupil": "N.A.",
+   "model": "H2O",
+   "sql": "blank"
+  },
+  {
+   "pupil": "hmm",
+   "model": "H2O",
+   "sql": "blank"
+  },
+  {
+   "pupil": "pass",
+   "model": "H2O",
+   "sql": "blank"
+  },
+  {
+   "pupil": "skip",
+   "model": "H2O",
+   "sql": "blank"
+  },
+  {
+   "pupil": "blank",
+   "model": "H2O",
+   "sql": "blank"
+  },
+  {
+   "pupil": "h2o",
+   "model": "H2O",
+   "sql": "match"
+  },
+  {
+   "pupil": "H2O",
+   "model": "H2O",
+   "sql": "match"
+  },
+  {
+   "pupil": "H₂O",
+   "model": "H2O",
+   "sql": null
+  },
+  {
+   "pupil": "water",
+   "model": "H2O",
+   "sql": "no"
+  },
+  {
+   "pupil": "gravity",
+   "model": "The force acting on an object due to gravity",
+   "sql": "match"
+  },
+  {
+   "pupil": "force due to gravity",
+   "model": "The force acting on an object due to gravity",
+   "sql": null
+  },
+  {
+   "pupil": "the force acting on an object due to gravity",
+   "model": "The force acting on an object due to gravity",
+   "sql": "match"
+  },
+  {
+   "pupil": "F = ke",
+   "model": "Force = spring constant × extension (F = ke)",
+   "sql": null
+  },
+  {
+   "pupil": "ke",
+   "model": "Force = spring constant × extension (F = ke)",
+   "sql": "match"
+  },
+  {
+   "pupil": "×",
+   "model": "×",
+   "sql": "blank"
+  },
+  {
+   "pupil": "café",
+   "model": "cafe",
+   "sql": "no"
+  },
+  {
+   "pupil": "café",
+   "model": "café",
+   "sql": "match"
+  },
+  {
+   "pupil": "naïve",
+   "model": "naive",
+   "sql": null
+  },
+  {
+   "pupil": "ÉCOLE",
+   "model": "école",
+   "sql": "match"
+  },
+  {
+   "pupil": "İstanbul",
+   "model": "istanbul",
+   "sql": null
+  },
+  {
+   "pupil": "straße",
+   "model": "strasse",
+   "sql": null
+  },
+  {
+   "pupil": "100%",
+   "model": "100",
+   "sql": "match"
+  },
+  {
+   "pupil": "3.14",
+   "model": "3 14",
+   "sql": "match"
+  },
+  {
+   "pupil": "3.14",
+   "model": "314",
+   "sql": null
+  },
+  {
+   "pupil": "mitochondria",
+   "model": "Mitochondria are where respiration happens",
+   "sql": "match"
+  },
+  {
+   "pupil": "mitochondrion",
+   "model": "Mitochondria",
+   "sql": "no"
+  },
+  {
+   "pupil": "it",
+   "model": "it",
+   "sql": "match"
+  },
+  {
+   "pupil": "it is",
+   "model": "it is",
+   "sql": "match"
+  },
+  {
+   "pupil": "an",
+   "model": "an",
+   "sql": "match"
+  },
+  {
+   "pupil": "and",
+   "model": "and so on",
+   "sql": "no"
+  },
+  {
+   "pupil": "on",
+   "model": "on and off",
+   "sql": "no"
+  },
+  {
+   "pupil": "don't know",
+   "model": "x",
+   "sql": "blank"
+  },
+  {
+   "pupil": "don t know",
+   "model": "x",
+   "sql": "blank"
+  },
+  {
+   "pupil": "i dno",
+   "model": "x",
+   "sql": "blank"
+  },
+  {
+   "pupil": "DK",
+   "model": "x",
+   "sql": "blank"
+  },
+  {
+   "pupil": "um",
+   "model": "x",
+   "sql": "blank"
+  },
+  {
+   "pupil": "erm...",
+   "model": "x",
+   "sql": "blank"
+  },
+  {
+   "pupil": "  photosynthesis  ",
+   "model": "photosynthesis",
+   "sql": "match"
+  },
+  {
+   "pupil": "photo-synthesis",
+   "model": "photosynthesis",
+   "sql": null
+  },
+  {
+   "pupil": "photosynthesis",
+   "model": "photo-synthesis",
+   "sql": "no"
+  },
+  {
+   "pupil": "CO2",
+   "model": "carbon dioxide CO2",
+   "sql": "match"
+  },
+  {
+   "pupil": "co2",
+   "model": "Carbon dioxide (CO₂)",
+   "sql": "no"
+  },
+  {
+   "pupil": "O2",
+   "model": "O₂",
+   "sql": "no"
+  },
+  {
+   "pupil": "electron",
+   "model": "",
+   "sql": "no"
+  },
+  {
+   "pupil": "",
+   "model": "",
+   "sql": "blank"
+  },
+  {
+   "pupil": "😀",
+   "model": "x",
+   "sql": "blank"
+  },
+  {
+   "pupil": "😀 electron",
+   "model": "electron",
+   "sql": "match"
+  },
+  {
+   "pupil": "electron😀",
+   "model": "electron",
+   "sql": "match"
+  }
+ ]
+}

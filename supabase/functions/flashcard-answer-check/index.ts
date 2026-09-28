@@ -22,6 +22,18 @@
 //
 // Without the ANTHROPIC_API_KEY secret this does nothing and leaves the
 // rows `pending`; the teacher's table counts them as pending.
+//
+// ⊕ SYNC MODE (MRB-351 pupil flow, docs/mrb351/PUPIL-FLOW.md §3.2) — called
+// with {assignment_id, card_id, pupil_answer} by the pupil's page the moment
+// they tap Check, for an answer the page's own check (a port of
+// `flashcard_quick_check`) could not decide. Replies 200 {verdict} with one of
+// match | partial | no | blank, or 200 {skipped:"no_key"} without the secret.
+// The page waits four seconds and no longer. Pupils only, in their own class,
+// after release. If the pupil's own `flashcard_pupil_cards` row for that card
+// is still `pending` with the same text, the verdict is written onto it, so
+// the end-of-sitting batch does not pay for the same answer twice. The same
+// prompt builder, so no pupil identifier reaches the model. The batch mode
+// above is untouched.
 // =====================================================================
 
 import { background, caller, CORS, isSchoolAdmin, json, logUsage, serviceClient } from "../_shared/flashcards/http.ts";
@@ -37,9 +49,10 @@ Deno.serve(async (req) => {
   const who = await caller(req, svc);
   if (!who) return json(401, { error: "not_signed_in" });
 
-  let body: { assignment_id?: string; session_id?: string };
+  let body: { assignment_id?: string; session_id?: string; card_id?: string; pupil_answer?: string };
   try { body = await req.json(); } catch { return json(400, { error: "bad_request" }); }
   if (!body.assignment_id) return json(400, { error: "no_assignment" });
+  if (body.card_id !== undefined) return syncCheck(svc, who, body);
 
   const { data: a } = await svc.from("assignments")
     .select("id, class_id, school_id, set_by, kind").eq("id", body.assignment_id).maybeSingle();
@@ -110,4 +123,45 @@ async function run(svc: SupabaseClient, a: { id: string; school_id: string; set_
       }
     }
   }
+}
+
+// ── sync mode: one answer, now ─────────────────────────────────────────
+async function syncCheck(svc: SupabaseClient, who: { id: string; role: string },
+                         body: { assignment_id?: string; card_id?: string; pupil_answer?: string }) {
+  const answer = typeof body.pupil_answer === "string" ? body.pupil_answer.slice(0, 500) : null;
+  if (!body.card_id || answer === null) return json(400, { error: "bad_request" });
+  if (who.role !== "student") return json(404, { error: "not_found" });
+
+  const { data: a } = await svc.from("assignments")
+    .select("id, class_id, school_id, set_by, kind, deleted_at, release_at")
+    .eq("id", body.assignment_id).maybeSingle();
+  if (!a || a.kind !== "flashcards" || a.deleted_at ||
+      (a.release_at && new Date(a.release_at).getTime() > Date.now())) return json(404, { error: "not_found" });
+  const { data: m } = await svc.from("class_members").select("id").eq("class_id", a.class_id)
+    .eq("student_id", who.id).is("left_at", null).is("deleted_at", null).limit(1);
+  if (!m?.length) return json(404, { error: "not_found" });
+
+  const { data: card } = await svc.from("assignment_flashcards").select("id, question, answer")
+    .eq("id", body.card_id).eq("assignment_id", a.id).maybeSingle();
+  if (!card) return json(404, { error: "not_found" });
+
+  const key = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!key) return json(200, { skipped: "no_key" });
+
+  let verdict: string | null = null;
+  try {
+    const { verdicts, usage } = await checkWithModel([{
+      question: card.question, model_answer: card.answer, pupil_answer: answer,
+    }], key);
+    verdict = verdicts[0] ?? null;
+    if (a.set_by) await logUsage(svc, "flashcard_answer_check", a.set_by, a.school_id, usage, { assignment_id: a.id });
+  } catch {
+    return json(200, { skipped: "model_error" });
+  }
+  if (!verdict) return json(200, { skipped: "no_verdict" });
+
+  await svc.from("flashcard_pupil_cards").update({ answer_check: verdict, checked_at: new Date().toISOString() })
+    .eq("assignment_id", a.id).eq("pupil_id", who.id).eq("card_id", card.id)
+    .eq("answer_check", "pending").eq("pupil_answer", answer);
+  return json(200, { verdict });
 }

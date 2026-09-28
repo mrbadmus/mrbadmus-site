@@ -95,7 +95,10 @@
     /* ⊕ MRB-351 — flashcard homework: the formula renderer the card's text
        goes through, and the engine the overlay reads in homework mode. */
     "/shared/formulae.js",
-    "/shared/flashcard-homework.js"
+    "/shared/flashcard-homework.js",
+    /* ⊕ MRB-351 pupil flow — keeps the answer box above the phone keyboard
+       (docs/mrb351/PUPIL-FLOW.md §6). */
+    "/shared/flashcard-keyboard.js"
   ];
 
   /* ── plain words, for when the page cannot render ───────────────────────
@@ -741,6 +744,48 @@
       }).catch(function () {});
     };
 
+    /* ⊕ PUPIL FLOW (docs/mrb351/PUPIL-FLOW.md §3.2–3.3) — the model's
+       verdict on an answer the local check could not decide. The answer's
+       own event goes first, so the edge function can write the verdict onto
+       the pupil's pending row and the end-of-sitting batch does not pay for
+       it again. FOUR SECONDS, then the pupil rates it themselves: a
+       timeout, a network error, `skipped`, a non-JSON reply or an older
+       deployment without this mode all come back as "no verdict". */
+    H.modelCheck = function (id, cardId, answer, engine) {
+      var C = window.MrBadmusConfig || {};
+      if (!C.SUPABASE_URL || typeof fetch !== "function") { return Promise.resolve(null); }
+      var ctl = (typeof AbortController === "function") ? new AbortController() : null;
+      var timer = setTimeout(function () { if (ctl) { ctl.abort(); } }, 4000);
+      var flushed = engine && typeof engine.flush === "function"
+        ? Promise.resolve(engine.flush()).catch(function () {}) : Promise.resolve();
+      return flushed.then(function () { return sb.auth.getSession(); }).then(function (res) {
+        var t = res && res.data && res.data.session && res.data.session.access_token;
+        if (!t) { return null; }
+        return fetch(C.SUPABASE_URL + "/functions/v1/flashcard-answer-check", {
+          method: "POST", signal: ctl ? ctl.signal : undefined,
+          headers: { "Content-Type": "application/json", Authorization: "Bearer " + t,
+                     apikey: C.SUPABASE_ANON_KEY || "" },
+          body: JSON.stringify({ assignment_id: id, card_id: cardId, pupil_answer: answer })
+        }).then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (j) { return (j && typeof j.verdict === "string") ? j.verdict : null; });
+      }).catch(function () { return null; }).then(function (v) { clearTimeout(timer); return v; });
+    };
+    /* ⊕ PUPIL FLOW (§4) — a reload inside a sitting carries on where the
+       pupil was: their own ratings in the sitting still open on the server
+       (RLS lets a pupil read their own rows), the latest per card. */
+    H.resumeRead = function (sessionId) {
+      return sb.from("flashcard_reviews").select("card_id, rating, phase, rated_at")
+        .eq("session_id", sessionId).order("rated_at", { ascending: true })
+        .then(function (r) {
+          if (r.error) { throw r.error; }
+          var map = {};
+          (r.data || []).forEach(function (row) {
+            map[row.card_id] = { rating: row.rating, phase: row.phase, at: Date.parse(row.rated_at) };
+          });
+          return map;
+        });
+    };
+
     var opened = false, first = true;
     function openFromHash() {
       var m = /^#cards=([0-9a-f-]{36})$/i.exec(window.location.hash || "");
@@ -753,17 +798,15 @@
 
     function active() { return H.active || null; }
 
-    /* Space turns the card; 1 · 2 · 3 are Not yet · Nearly · Got it. Never
-       while the pupil is typing their answer. */
+    /* 1 · 2 · 3 are Not yet · Nearly · Got it, once the answer is showing.
+       Never while the pupil is typing their answer. ⊕ PUPIL FLOW — Space
+       no longer turns the card: every card is answered first. */
     document.addEventListener("keydown", function (ev) {
       var e = active();
       if (!e || !document.querySelector('[data-hw="strip"]')) { return; }
       var tag = (ev.target && ev.target.tagName) || "";
       if (tag === "TEXTAREA" || tag === "INPUT") { return; }
       var v = e.view();
-      if ((ev.key === " " || ev.key === "Enter") && v.phase === "review" && !v.revealed) {
-        ev.preventDefault(); e.flip(); return;
-      }
       if (v.revealed && v.card) {
         var r = { "1": "not_yet", "2": "nearly", "3": "got_it" }[ev.key];
         if (r) { ev.preventDefault(); e.rate(r); }

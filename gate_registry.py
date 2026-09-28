@@ -414,8 +414,18 @@ GATES = [
                   "student/class-fixture.html", "shared/student-fixture-class.js",
                   "shared/student-runtime.js", "shared/student-live.js",
                   "shared/student-ds.css",
-                  "shared/flashcard-homework.js", "shared/formulae.js"],
-         why="MRB-351 §4 — the pupil's flashcard homework in Design's ONE "
+                  "shared/flashcard-homework.js", "shared/flashcard-keyboard.js",
+                  "shared/formulae.js"],
+         why="MRB-351 §4 + PUPIL FLOW (docs/mrb351/PUPIL-FLOW.md §9.2, A11) — "
+             "the pupil's flashcard homework on a PHONE with the keyboard up: "
+             "390×844 and 360×740 `mobile:true`, never shrunk, with a fake "
+             "visualViewport of 508 / 404; the question text and answer box "
+             "inside it and Check visible at every typing state. States A-D, "
+             "'N of M right' per pass, the segmented bar, the verdict chip and "
+             "filled rating, ‹ Back, I don't know, make mode's two passes, the "
+             "end screens, a second sitting to secured, × after one Check, and "
+             "the retired words absent. Before the pupil flow: "
+             "MRB-351 §4 — the pupil's flashcard homework in Design's ONE "
              "flashcard overlay (homework mode), driven on the compiled class "
              "page with the real engine and formula renderer and a stand-in "
              "transport: make phase (write, Check, model answer beside theirs, "
@@ -425,6 +435,22 @@ GATES = [
              "events carrying ids/clock/visibility and no durations, no sideways "
              "scroll at 390 and 360. Asserts the live page's hook is the one "
              "driven."),
+    dict(name="flashcard_engine_test",
+         cmd=["python3", "flashcard_engine_test.py"],
+         speed="fast",
+         watches=["flashcard_engine_test.py", "flashcard_engine_test.js",
+                  "shared/flashcard-homework.js",
+                  "tests/fixtures/quickcheck_cases.json"],
+         why="MRB-351 PUPIL FLOW (docs/mrb351/PUPIL-FLOW.md §9.1) — the "
+             "flashcard homework ENGINE in Node, no browser: quickCheck agrees "
+             "with SQL flashcard_quick_check on every case of a table whose "
+             "`sql` column the real function produced on TEST (A12 — else the "
+             "teacher sees `pending` for an answer the pupil was told was "
+             "Right); 'N of M right' per pass; ‹ Back replaces a rating; I "
+             "don't know; the verdict chip, a late verdict ignored; resume "
+             "from the open sitting; make mode's two passes; every end-screen "
+             "case A8 names; × after one Check ends the sitting (A13); retired "
+             "strings gone."),
     dict(name="flashcard_progress_drive",
          cmd=["python3", "flashcard_progress_drive.py"],
          speed="slow",

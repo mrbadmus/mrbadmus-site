@@ -179,6 +179,23 @@ name (3rd Eye Ltd) and the domain are unchanged.
 
 ---
 
+## No redundant text on any page ⊕ (Mide's standing rule, phone run, 28 Sep 2026)
+
+**No redundant text on any page.** Every label, caption, count and helper line
+must carry information the pupil or teacher cannot already see on that screen.
+If a number is shown once, it is not shown again in another form. If the screen
+shows what to do, no checklist says it too. Empty states say one useful thing,
+not three. Write for a 12-year-old on a phone.
+
+Why: Mide used the site as a pupil on his phone on 28 Sep 2026 and called it
+"overwhelming", "too jampacked and tacky". His model of a good screen is the
+pupil class page header (brand, My class, bell, avatar, theme; then the class
+name and four clean stats). His model of a bad one is "ANSWERED 01 / 10 · 01
+RIGHT · 09 LEFT" sitting above "QUESTION 02 OF 10". The run that applied it is
+written up in `docs/experience/PHONE-REPORT.md`.
+
+---
+
 ## Key Files and Folders
 
 ```

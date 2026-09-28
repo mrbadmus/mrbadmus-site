@@ -5369,9 +5369,12 @@ LOGIC["class view"].extend([
         "                    () => this.setState({ hwErr: true }));\n"
         "  };\n"
         "  hwRetry = () => { if (this.state.hw) { this.openHomework(this.state.hw); } };\n"
+        "  /* ⊕ PUPIL FLOW (docs/mrb351/PUPIL-FLOW.md §11, A13) — × ends the\n"
+        "     sitting whenever the pupil did anything in it: a Check, an\n"
+        "     \"I don't know\" or a rating. The engine decides. */\n"
         "  hwClose = () => {\n"
         "    const e = this.hwEngine();\n"
-        "    if (e && !e.betweenPasses && e.acted) { e.finish(); }\n"
+        "    if (e) { e.finish(); }\n"
         "    if (window.MRBHomework) { window.MRBHomework.close(); }\n"
         "  };\n"
         "  /* Per keystroke, but a redraw only when Check changes state: the\n"
@@ -5384,66 +5387,92 @@ LOGIC["class view"].extend([
         "    if (was !== e.canCheck()) { this.hwTick(); }\n"
         "  };\n"
         "  hwCheck = () => { const e = this.hwEngine(); if (e) { e.check(); } };\n"
-        "  hwFlip = () => { const e = this.hwEngine(); if (e) { e.flip(); } };\n"
+        "  hwIdk = () => { const e = this.hwEngine(); if (e) { e.idk(); } };\n"
+        "  hwBack = () => { const e = this.hwEngine(); if (e) { e.back(); } };\n"
         "  hwRate = (r) => { const e = this.hwEngine(); if (e) { e.rate(r); } };\n"
         "  hwGot = () => this.hwRate('got_it');\n"
         "  hwNearly = () => this.hwRate('nearly');\n"
         "  hwNotYet = () => this.hwRate('not_yet');\n"
-        "  hwFinish = () => { const e = this.hwEngine(); if (e) { e.finish(); } };\n"
         "  hwAgain = () => { const e = this.hwEngine(); if (e) { e.again(); } };\n"
+        "  hwDoneTap = () => this.closeAll();\n"
         "  hwNoop = () => {};\n"
+        "  /* A rating button: FILLED when it is the one chosen for the pupil\n"
+        "     (A1 — tapping it is the tap that advances), outlined otherwise. */\n"
+        "  hwRateStyle(tone, on) {\n"
+        "    return on\n"
+        "      ? 'border:1.5px solid ' + tone + ';background:' + tone + ';color:var(--on-accent);'\n"
+        "      : 'border:1.5px solid ' + tone + ';background:var(--pg-card);color:' + tone + ';';\n"
+        "  }\n"
         "\n"
         "  hwVals() {\n"
-        "    const pad = (x) => (x < 10 ? '0' + x : '' + x);\n"
         "    const e = this.hwEngine();\n"
         "    const blank = { tag: '', topic: '', front: '', back: '', mine: false };\n"
         "    if (!e || !e.state) {\n"
         "      return { hwOn: true, hwNotOn: false, hwShowCard: false, hwLoading: true,\n"
-        "        hwErr: !!this.state.hwErr, hwWriting: false, hwRating: false, hwRevealRow: false,\n"
-        "        hwPanel: false, hwMineOn: false, hwFresh: false, hwReview: false, hwNoteOn: false,\n"
-        "        hwHintOn: false, hwProgress: '', hwPct: '0%', hwBarFill: 'var(--pg-accent-text)',\n"
+        "        hwErr: !!this.state.hwErr, hwWriting: false, hwRating: false,\n"
+        "        hwPanel: false, hwMineOn: false, hwPlay: false, hwStripHide: 'display:none;',\n"
+        "        hwNoteOn: false, hwSecuredOn: false, hwHelperOn: false, hwOffline: false,\n"
+        "        hwHeadline: '', hwSegs: [], hwCardId: '',\n"
         "        hwRetry: this.hwRetry, card: blank, stackPos: '', cardPips: [],\n"
         "        flipOn: '0', flip: this.hwNoop, next: this.hwNoop };\n"
         "    }\n"
         "    const v = e.view();\n"
         "    const c = v.card;\n"
-        "    const panel = v.phase === 'pause' || v.phase === 'done';\n"
-        "    const word = v.word.toUpperCase();\n"
+        "    const end = v.end;\n"
+        "    const tones = { right: 'var(--pg-ok-text)', answered: 'var(--pg-rule-strong)', todo: 'var(--pg-band)' };\n"
+        "    const chipTone = { match: 'var(--pg-ok-text)', partial: 'var(--pg-ink)', no: 'var(--pg-accent-text)',\n"
+        "                       blank: 'var(--pg-accent-text)', pending: 'var(--pg-muted)' }[v.verdict] || 'var(--pg-muted)';\n"
+        "    const many = v.m > 30;\n"
         "    return {\n"
         "      hwOn: true, hwNotOn: false, hwLoading: false, hwErr: false,\n"
-        "      hwShowCard: !panel && !!c,\n"
-        "      hwWriting: v.phase === 'make' && !!c && !v.revealed,\n"
+        "      hwShowCard: !!c, hwPlay: !!c, hwStripHide: c ? '' : 'display:none;',\n"
+        "      hwCardId: c ? c.id : '',\n"
+        "      hwHeadline: v.headline,\n"
+        "      hwSegGap: many ? '2px' : '4px',\n"
+        "      hwSegs: v.segments.map((g) => ({\n"
+        "        bg: tones[g.state],\n"
+        "        ring: g.current ? 'box-shadow:inset 0 0 0 2px var(--pg-ink);' : ''\n"
+        "      })),\n"
+        "      hwSecuredOn: !!v.securedLine, hwSecured: v.securedLine,\n"
+        "      hwHelperOn: !!v.helper, hwHelper: v.helper,\n"
+        "      hwNote: v.note || '', hwNoteOn: !!v.note && !e.acted && !!c,\n"
+        "      hwOffline: e.error === 'offline' && !!c,\n"
+        "      hwWriting: !!c && !v.revealed,\n"
         "      hwCheckOff: !e.canCheck(),\n"
         "      hwCheckOpacity: e.canCheck() ? '1' : '.45',\n"
+        "      hwBackOn: !!v.canBack,\n"
         "      hwRating: !!c && v.revealed,\n"
-        "      hwRevealRow: v.phase === 'review' && !!c && !v.revealed,\n"
-        "      hwReview: v.phase === 'review',\n"
-        "      hwPanel: panel, hwPause: v.phase === 'pause', hwDone: v.phase === 'done',\n"
-        "      hwProgress: v.progressText,\n"
-        "      hwPct: v.pct + '%',\n"
-        "      hwBarFill: v.complete ? 'var(--pg-ok)' : 'var(--pg-accent-text)',\n"
-        "      hwHint: v.hint, hwHintOn: !!v.hint,\n"
-        "      hwFresh: !!v.fresh && !!c,\n"
-        "      hwNote: v.note || '', hwNoteOn: !!v.note && !e.acted && !!c,\n"
+        "      hwChipOn: !!c && v.revealed && !!v.chip,\n"
+        "      hwChip: v.chip,\n"
+        "      hwChipStyle: 'color:' + chipTone + ';border:1.5px solid ' + chipTone + ';',\n"
+        "      hwNotYetStyle: this.hwRateStyle('var(--pg-accent-text)', v.suggest === 'not_yet'),\n"
+        "      hwNearlyStyle: this.hwRateStyle('var(--pg-ink)', v.suggest === 'nearly'),\n"
+        "      hwGotStyle: this.hwRateStyle('var(--pg-ok-text)', v.suggest === 'got_it'),\n"
+        "      hwNotYetOn: v.suggest === 'not_yet' ? 'true' : 'false',\n"
+        "      hwNearlyOn: v.suggest === 'nearly' ? 'true' : 'false',\n"
+        "      hwGotOn: v.suggest === 'got_it' ? 'true' : 'false',\n"
         "      hwMineOn: !!c && v.revealed && !!v.mine,\n"
         "      hwMine: v.mine || '',\n"
-        "      hwBig: pad(v.count) + ' / ' + pad(v.n),\n"
-        "      hwWord: word,\n"
-        "      hwPanelEyebrow: v.phase === 'done' ? 'DECK ' + word : 'FOR NOW',\n"
-        "      hwOffline: e.error === 'offline',\n"
-        "      hwCheck: this.hwCheck, hwDraftIn: this.hwDraftIn,\n"
+        "      hwPanel: !!end,\n"
+        "      hwEnd1: end ? end.line1 : '',\n"
+        "      hwEnd2On: !!end && !!end.line2, hwEnd2: end ? end.line2 : '',\n"
+        "      hwEndOffline: !!end && end.offline,\n"
+        "      hwEndHelperOn: !!end && !!end.helper, hwEndHelper: end ? end.helper : '',\n"
+        "      hwEndDone: !!end && end.button === 'done',\n"
+        "      hwEndAgain: !!end && end.button === 'again',\n"
+        "      hwCheck: this.hwCheck, hwDraftIn: this.hwDraftIn, hwIdk: this.hwIdk, hwBack: this.hwBack,\n"
         "      hwGot: this.hwGot, hwNearly: this.hwNearly, hwNotYet: this.hwNotYet,\n"
-        "      hwFinish: this.hwFinish, hwAgain: this.hwAgain, hwRetry: this.hwRetry,\n"
+        "      hwAgain: this.hwAgain, hwDoneTap: this.hwDoneTap, hwRetry: this.hwRetry,\n"
         "      card: c ? { tag: 'HOMEWORK', topic: (v.title || '').toUpperCase(),\n"
         "                  front: c.question, back: c.answer, mine: false,\n"
         "                  plain: !this.hwChem() } : blank,\n"
-        "      stackPos: c ? pad(v.pos) + ' / ' + pad(v.total) : '',\n"
-        "      cardPips: (v.n && v.n <= this.PIP_MAX)\n"
-        "        ? e.cards.map((k) => ({ on: (v.phase === 'make' ? k.made\n"
-        "            : (v.word === 'known' ? k.known : k.secured)) ? '1' : '0' })) : [],\n"
+        "      /* A5 — one counter per fact: the segmented bar carries the\n"
+        "         position, so the header's own counter is blank. */\n"
+        "      stackPos: '',\n"
+        "      cardPips: [],\n"
         "      flipOn: v.revealed ? '1' : '0',\n"
-        "      flipLabel: 'Reveal',\n"
-        "      flip: v.phase === 'review' ? this.hwFlip : this.hwNoop,\n"
+        "      flipLabel: '',\n"
+        "      flip: this.hwNoop,\n"
         "      next: this.hwNoop\n"
         "    };\n"
         "  }\n",
@@ -5470,6 +5499,28 @@ def _hw_btn(on, label, style, hw):
             "c": [{"t": "#", "v": label}]}
 
 
+# ⊕ PUPIL FLOW — a small text link (‹ Back, I don't know): 44px tall to tap,
+# quiet to read, so it never competes with Check.
+def _hw_link(on, label, hw):
+    return {"t": "button", "on": on,
+            "a": {"type": "button", "data-hw": hw,
+                  "style": "font:inherit;font-family:'Instrument Sans',system-ui,sans-serif;font-size:15px;"
+                           "font-weight:600;min-height:44px;padding:0 6px;border:0;background:none;"
+                           "color:var(--pg-ink);text-decoration:underline;text-underline-offset:3px;"
+                           "cursor:pointer;white-space:nowrap;"},
+            "c": [{"t": "#", "v": label}]}
+
+
+# ⊕ PUPIL FLOW — a rating button whose look says whether it is the one
+# chosen for the pupil (filled) or not (outlined). `aria-pressed` says it too.
+def _hw_rate(on, label, style_expr, pressed_expr, hw):
+    return {"t": "button", "on": on,
+            "a": {"type": "button", "data-hw": hw,
+                  "aria-pressed": {"parts": [{"e": pressed_expr}]},
+                  "style": {"parts": [_HW_BTN, {"e": style_expr}]}},
+            "c": [{"t": "#", "v": label}]}
+
+
 # The finished row's button: a deck is revised, not read about.
 LOGIC["class view"].append((
     "        primaryLabel: w.retake ? 'Retake it' : isMarked ?"
@@ -5479,115 +5530,146 @@ LOGIC["class view"].append((
 ))
 
 INSERT_AT["class view"].update({
-    # ── the strip: progress, "what's left", the teacher's note ─────────
+    # ── the strip: this pass's headline, the segmented bar, secured, the
+    #    one helper line, the teacher's note (PUPIL-FLOW §2 + A5) ─────────
+    #
+    # ⚠️ The strip element stays in the DOM for the whole homework (hidden
+    # on the end screen, `hwStripHide`): student-live.js and
+    # flashcard-keyboard.js both read `[data-hw="strip"]` as "a homework is
+    # open". The end screen carries its own numbers, so the strip's would
+    # only repeat them (CLAUDE.md, "No redundant text on any page").
     (10320, 10321): ({"t": "if", "e": "hwOn", "c": [{
         "t": "div",
         "a": {"data-hw": "strip",
-              "style": "padding:12px 18px 14px;border-bottom:1px solid var(--pg-rule);"
-                       "background:var(--pg-card);display:flex;flex-direction:column;gap:8px;"},
+              "style": {"parts": ["padding:12px 18px 14px;border-bottom:1px solid var(--pg-rule);"
+                                  "background:var(--pg-card);display:flex;flex-direction:column;gap:8px;",
+                                  {"e": "hwStripHide"}]}},
         "c": [
-            {"t": "if", "e": "hwFresh", "c": [{
-                "t": "span", "a": {"data-hw": "fresh", "style": _HW_MONO + "color:var(--pg-ok-text);"},
-                "c": [{"t": "#", "v": "YOUR DECK IS READY"}]}]},
-            {"t": "span",
-             "a": {"style": "display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;"},
-             "c": [
-                 {"t": "span",
-                  "a": {"data-hw": "progress",
-                        "style": "font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;"
-                                 "font-size:19px;letter-spacing:-.02em;color:var(--pg-ink);"},
-                  "c": [_hw_text("hwProgress")]},
-                 {"t": "if", "e": "hwReview", "c": [
-                     _hw_btn("hwFinish", "Finish for now",
-                             "font-size:15px;font-weight:600;min-height:44px;border:1px solid var(--pg-rule);"
-                             "background:var(--pg-ground);color:var(--pg-ink);", "finish")]},
-             ]},
-            {"t": "span",
-             "a": {"style": "display:block;height:6px;border-radius:3px;background:var(--pg-band);overflow:hidden;"},
-             "c": [{"t": "span",
-                    "a": {"data-hw": "bar", "role": "presentation",
-                          "style": {"parts": ["display:block;height:100%;border-radius:3px;width:",
-                                              {"e": "hwPct"}, ";background:", {"e": "hwBarFill"}, ";"]}},
-                    "c": []}]},
-            {"t": "if", "e": "hwHintOn", "c": [{
-                "t": "span", "a": {"data-hw": "hint", "style": _HW_UI + "color:var(--pg-muted);"},
-                "c": [_hw_text("hwHint")]}]},
-            {"t": "if", "e": "hwOffline", "c": [{
-                "t": "span", "a": {"data-hw": "offline", "style": _HW_MONO + "color:var(--pg-muted);"},
-                "c": [{"t": "#", "v": "SAVED ON THIS PHONE"}]}]},
-            {"t": "if", "e": "hwNoteOn", "c": [{
-                "t": "span",
-                "a": {"data-hw": "note",
-                      "style": "display:flex;flex-direction:column;gap:6px;margin-top:4px;padding:12px 14px;"
-                               "border:1px solid var(--pg-rule);border-radius:14px;background:var(--pg-ground);"},
-                "c": [
-                    {"t": "span", "a": {"style": _HW_MONO + "color:var(--pg-muted);"},
-                     "c": [{"t": "#", "v": "FROM YOUR TEACHER"}]},
-                    {"t": "span",
-                     "a": {"style": _HW_UI + "color:var(--pg-body);white-space:pre-wrap;overflow-wrap:anywhere;"},
-                     "c": [_hw_text("hwNote")]},
-                ]}]},
+            {"t": "if", "e": "hwPlay", "c": [
+                {"t": "span",
+                 "a": {"data-hw": "progress", "aria-live": "polite",
+                       "style": "font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;"
+                                "font-size:19px;letter-spacing:-.02em;color:var(--pg-ink);"},
+                 "c": [_hw_text("hwHeadline")]},
+                {"t": "span",
+                 "a": {"data-hw": "bar", "role": "presentation",
+                       "style": {"parts": ["display:flex;gap:", {"e": "hwSegGap"}, ";height:8px;"]}},
+                 "c": [{"t": "for", "e": "hwSegs", "as": "g", "c": [{
+                     "t": "span",
+                     "a": {"data-hw": "seg",
+                           "style": {"parts": ["flex:1 1 0;min-width:0;border-radius:3px;background:",
+                                               {"e": "g.bg"}, ";", {"e": "g.ring"}]}},
+                     "c": []}]}]},
+                {"t": "if", "e": "hwSecuredOn", "c": [{
+                    "t": "span", "a": {"data-hw": "secured", "style": _HW_UI + "color:var(--pg-muted);"},
+                    "c": [_hw_text("hwSecured")]}]},
+                {"t": "if", "e": "hwHelperOn", "c": [{
+                    "t": "span", "a": {"data-hw": "hint", "style": _HW_UI + "color:var(--pg-muted);"},
+                    "c": [_hw_text("hwHelper")]}]},
+                {"t": "if", "e": "hwOffline", "c": [{
+                    "t": "span", "a": {"data-hw": "offline", "style": _HW_MONO + "color:var(--pg-muted);"},
+                    "c": [{"t": "#", "v": "SAVED ON THIS PHONE"}]}]},
+                {"t": "if", "e": "hwNoteOn", "c": [{
+                    "t": "span",
+                    "a": {"data-hw": "note",
+                          "style": "display:flex;flex-direction:column;gap:6px;margin-top:4px;padding:12px 14px;"
+                                   "border:1px solid var(--pg-rule);border-radius:14px;background:var(--pg-ground);"},
+                    "c": [
+                        {"t": "span", "a": {"style": _HW_MONO + "color:var(--pg-muted);"},
+                         "c": [{"t": "#", "v": "FROM YOUR TEACHER"}]},
+                        {"t": "span",
+                         "a": {"style": _HW_UI + "color:var(--pg-body);white-space:pre-wrap;overflow-wrap:anywhere;"},
+                         "c": [_hw_text("hwNote")]},
+                    ]}]},
+            ]},
         ]}]},
-        "MRB-351: the homework's progress strip under the overlay header — "
-        "made/secured/known count, bar, the one 'what's left' line, the "
-        "teacher's note before the first rating, and an offline marker."),
+        "MRB-351 pupil flow: the homework's strip under the overlay header — "
+        "'N of M right' for this pass, one bar segment per card (right / "
+        "answered / to come / current), '4 secured', the one helper line, "
+        "the teacher's note before the first answer, and an offline marker."),
 
-    # ── what the pupil does: write, reveal, rate; and the panel ────────
+    # ── what the pupil does: answer, check, rate; and the end screen ───
     (10328, 10361): ({"t": "if", "e": "hwOn", "c": [
+        # State A — the answer box; ‹ Back and I don't know are small links.
         {"t": "if", "e": "hwWriting", "c": [{
             "t": "div", "a": {"data-hw": "write", "style": "display:flex;flex-direction:column;gap:10px;"},
             "c": [
                 {"t": "textarea", "onch": "hwDraftIn",
                  "a": {"data-hw": "answer", "aria-label": "Your answer", "placeholder": "Your answer",
-                       "maxlength": "500", "rows": "3", "autocomplete": "off",
-                       "style": "font:inherit;font-size:17px;line-height:1.4;padding:12px 14px;"
+                       "data-hw-card": {"parts": [{"e": "hwCardId"}]},
+                       "maxlength": "500", "rows": "2", "autocomplete": "off",
+                       "style": "font:inherit;font-size:17px;line-height:1.4;padding:10px 14px;"
                                 "border-radius:14px;border:1.5px solid var(--pg-rule-strong);"
-                                "background:var(--pg-card);color:var(--pg-ink);resize:none;min-height:88px;"
+                                "background:var(--pg-card);color:var(--pg-ink);resize:none;min-height:64px;"
                                 "width:100%;box-sizing:border-box;"},
                  "c": []},
-                {"t": "button", "on": "hwCheck",
-                 "a": {"type": "button", "data-hw": "check",
-                       "disabled": {"parts": [{"e": "hwCheckOff"}]},
-                       "style": {"parts": [_HW_BTN + "border:0;background:var(--pg-accent-text);color:var(--on-accent);opacity:",
-                                           {"e": "hwCheckOpacity"}, ";"]}},
-                 "c": [{"t": "#", "v": "Check"}]},
+                {"t": "div", "a": {"data-hw": "act", "style": "display:flex;align-items:center;gap:6px;"},
+                 "c": [
+                     {"t": "if", "e": "hwBackOn", "c": [_hw_link("hwBack", "‹ Back", "back")]},
+                     _hw_link("hwIdk", "I don't know", "idk"),
+                     {"t": "button", "on": "hwCheck",
+                      "a": {"type": "button", "data-hw": "check",
+                            "disabled": {"parts": [{"e": "hwCheckOff"}]},
+                            "style": {"parts": [_HW_BTN + "flex:1 1 auto;margin-left:auto;max-width:220px;"
+                                                "border:0;background:var(--pg-accent-text);color:var(--on-accent);opacity:",
+                                                {"e": "hwCheckOpacity"}, ";"]}},
+                      "c": [{"t": "#", "v": "Check"}]},
+                 ]},
             ]}]},
-        {"t": "if", "e": "hwRevealRow", "c": [{
-            "t": "div", "a": {"style": "display:flex;gap:12px;"},
-            "c": [_hw_btn("flip", "Reveal",
-                          "flex:1 1 auto;border:1.5px solid var(--pg-ink);background:var(--pg-card);"
-                          "color:var(--pg-ink);", "reveal")]}]},
+        # States B and C — the chip, the three ratings (A1/A2: the filled one
+        # is the one chosen for the pupil; tapping any rating advances).
         {"t": "if", "e": "hwRating", "c": [{
-            "t": "div",
-            "a": {"data-hw": "rate", "role": "group", "aria-label": "Rate this card",
-                  "style": "display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;"},
+            "t": "div", "a": {"data-hw": "judge", "style": "display:flex;flex-direction:column;gap:10px;"},
             "c": [
-                _hw_btn("hwNotYet", "Not yet", "border:0;background:var(--pg-accent-text);color:var(--on-accent);", "not_yet"),
-                _hw_btn("hwNearly", "Nearly", "border:1.5px solid var(--pg-ink);background:var(--pg-card);"
-                                              "color:var(--pg-ink);", "nearly"),
-                _hw_btn("hwGot", "Got it", "border:0;background:var(--pg-ok-text);color:var(--on-accent);", "got_it"),
+                {"t": "span", "a": {"style": "display:flex;align-items:center;gap:10px;min-height:30px;"}, "c": [
+                    {"t": "if", "e": "hwBackOn", "c": [_hw_link("hwBack", "‹ Back", "back")]},
+                    {"t": "if", "e": "hwChipOn", "c": [{
+                        "t": "span",
+                        "a": {"data-hw": "chip", "aria-live": "polite",
+                              "style": {"parts": [_HW_MONO + "display:inline-flex;align-items:center;"
+                                                  "padding:5px 12px;border-radius:999px;margin-left:auto;",
+                                                  {"e": "hwChipStyle"}]}},
+                        "c": [_hw_text("hwChip")]}]},
+                ]},
+                {"t": "div",
+                 "a": {"data-hw": "rate", "role": "group", "aria-label": "Rate this card",
+                       "style": "display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;"},
+                 "c": [
+                     _hw_rate("hwNotYet", "Not yet", "hwNotYetStyle", "hwNotYetOn", "not_yet"),
+                     _hw_rate("hwNearly", "Nearly", "hwNearlyStyle", "hwNearlyOn", "nearly"),
+                     _hw_rate("hwGot", "Got it", "hwGotStyle", "hwGotOn", "got_it"),
+                 ]},
             ]}]},
+        # The end of a pass (A6/A8): two lines, the helper when it applies,
+        # one button. Line 2 waits for the server's number.
         {"t": "if", "e": "hwPanel", "c": [{
             "t": "div",
             "a": {"data-hw": "panel",
-                  "style": "flex:1 1 auto;min-height:300px;border-radius:22px;padding:28px 24px;"
+                  "style": "flex:1 1 auto;min-height:260px;border-radius:22px;padding:28px 24px;"
                            "background:var(--b-ground);color:var(--b-ink);display:flex;"
                            "flex-direction:column;justify-content:center;gap:12px;"},
             "c": [
-                {"t": "span", "a": {"style": _HW_MONO + "color:var(--b-ember);"}, "c": [_hw_text("hwPanelEyebrow")]},
                 {"t": "span",
-                 "a": {"data-hw": "big",
+                 "a": {"data-hw": "end1",
                        "style": "font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;"
-                                "font-size:56px;line-height:1;letter-spacing:-.04em;"},
-                 "c": [_hw_text("hwBig")]},
-                {"t": "span", "a": {"style": _HW_MONO + "color:var(--b-muted);"}, "c": [_hw_text("hwWord")]},
+                                "font-size:30px;line-height:1.1;letter-spacing:-.03em;"},
+                 "c": [_hw_text("hwEnd1")]},
+                {"t": "if", "e": "hwEnd2On", "c": [{
+                    "t": "span", "a": {"data-hw": "end2", "style": "font-size:19px;line-height:1.4;color:var(--b-ink);"},
+                    "c": [_hw_text("hwEnd2")]}]},
+                {"t": "if", "e": "hwEndOffline", "c": [{
+                    "t": "span", "a": {"data-hw": "offline", "style": _HW_MONO + "color:var(--b-muted);"},
+                    "c": [{"t": "#", "v": "SAVED ON THIS PHONE"}]}]},
+                {"t": "if", "e": "hwEndHelperOn", "c": [{
+                    "t": "span", "a": {"data-hw": "hint", "style": _HW_UI + "color:var(--b-muted);margin-top:6px;"},
+                    "c": [_hw_text("hwEndHelper")]}]},
                 {"t": "span", "a": {"style": "display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;"}, "c": [
-                    {"t": "if", "e": "hwPause", "c": [
-                        _hw_btn("hwAgain", "Go again", "flex:1 1 140px;border:0;background:var(--b-cta);"
-                                                        "color:var(--b-cta-ink);", "again")]},
-                    {"t": "if", "e": "hwDone", "c": [
-                        _hw_btn("hwAgain", "Keep revising", "flex:1 1 140px;border:0;background:var(--b-cta);"
-                                                             "color:var(--b-cta-ink);", "keep")]},
+                    {"t": "if", "e": "hwEndAgain", "c": [
+                        _hw_btn("hwAgain", "Revise flashcards one more time",
+                                "flex:1 1 200px;border:0;background:var(--b-cta);color:var(--b-cta-ink);", "again")]},
+                    {"t": "if", "e": "hwEndDone", "c": [
+                        _hw_btn("hwDoneTap", "Done",
+                                "flex:1 1 140px;border:0;background:var(--b-cta);color:var(--b-cta-ink);", "done")]},
                 ]},
             ]}]},
         {"t": "if", "e": "hwLoading", "c": [{
@@ -5600,9 +5682,11 @@ INSERT_AT["class view"].update({
                                                     "color:var(--pg-ink);", "retry")]},
             ]}]},
     ]},
-        "MRB-351: the homework's controls under Design's card — the answer "
-        "box and Check (make phase), Reveal (review), Got it / Nearly / Not "
-        "yet, and the between-sittings / secured panel in the bench theme."),
+        "MRB-351 pupil flow: the homework's controls under Design's card — "
+        "the answer box with Check, '‹ Back' and 'I don't know' (state A); "
+        "the verdict chip and Not yet / Nearly / Got it with the suggested "
+        "one filled (states B-C); and the end-of-pass screen in the bench "
+        "theme."),
 
     # ── the pupil's own answer, on the back beside the model answer ────
     (10351, 10353): ({"t": "if", "e": "hwMineOn", "c": [{
@@ -5625,6 +5709,9 @@ WRAP["class view"].update({
     10361: "hwNotOn",
     # The card gives way to the panel between sittings and when secured.
     10332: "hwShowCard",
+    # ⊕ PUPIL FLOW (§1.7) — the pip row belongs to the practice deck; in
+    # homework mode the segmented bar in the strip carries the position.
+    10329: "hwNotOn",
 })
 
 # A homework question or answer can be several lines long, and Design's card

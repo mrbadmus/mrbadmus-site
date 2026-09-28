@@ -227,7 +227,9 @@ STAMPED_DEPS = ("config.js", "class-entry.js", "student-guard.js",
                 "shoutouts.js", "figures-ks3.js", "figures-ks4.js",
                 "theme.js",
                 # ⊕ MRB-351 — injected by student-live.js like the rest.
-                "formulae.js", "flashcard-homework.js")
+                "formulae.js", "flashcard-homework.js",
+                # ⊕ PUPIL FLOW — the answer box above the phone keyboard.
+                "flashcard-keyboard.js")
 # ⊕ One mark (Mide, 13 Sep 2026) — the kit's favicon, the lockup's
 # stylesheet and brand.js, which the runtime draws the header brand from.
 STAMPED_DEPS += brand_port.BRAND_DEPS
@@ -4184,8 +4186,13 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
         # `stamp_versions()` at the very end appends its `?v=` from the
         # `theme.js` entry this build adds to STAMPED_DEPS.
         "%s%s"
+        # ⊕ PUPIL FLOW (docs/mrb351/PUPIL-FLOW.md §11) — on the class page,
+        # `interactive-widget=resizes-content` asks Android Chrome to shrink
+        # the layout viewport when the keyboard opens, so the flashcard
+        # answer box is not drawn under it. Other browsers ignore the key;
+        # shared/flashcard-keyboard.js covers them via `visualViewport`.
         "<meta name=\"viewport\" content=\"width=device-width, "
-        "initial-scale=1\">\n"
+        "initial-scale=1%s\">\n"
         # ⊕ Perf, 21 Sep 2026 — OPEN THE THREE CONNECTIONS EARLY.
         # The runtime reaches the Supabase project, the jsDelivr CDN
         # (the Supabase SDK) and the Render backend only after its own
@@ -4230,6 +4237,8 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
         "%s"
         "</body>\n</html>\n"
         % (theme_head.THEME_HEAD, theme_head.theme_script(),
+           ", interactive-widget=resizes-content"
+           if spec["page"] == "class view" else "",
            html.escape(spec["title"]),
            brand_port.HEAD,
            (_BANNER_FIXTURE % (spec["page"].capitalize(), spec["out"]))
