@@ -909,6 +909,16 @@ def check_keyboard(R, slug, route, page):
         // is not a port defect, and driving it open is out of this pilot's
         // scope (it is site-wide, pre-existing, and unowned by the pilot).
         if (el.closest('[inert]')) { return false; }
+        // ⊕ Stage B (phone run, 28 Sep 2026) — the content of a CLOSED
+        // <details> is the same case as `inert` above: Chrome lays it out
+        // (content-visibility:hidden keeps its box) but it cannot take focus
+        // until its <summary> opens it, and the summary itself stays in this
+        // list and is asserted reachable. The one top bar's compact theme
+        // control is such a menu (its three popup radios). An element whose
+        // OWN summary is the thing being tested is not exempt: only the
+        // details' content below the summary is.
+        var d = el.closest('details:not([open])');
+        if (d && !el.closest('summary')) { return false; }
         var r = el.getBoundingClientRect();
         return r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== 'hidden';
       });
@@ -1088,10 +1098,30 @@ def check_theme(R, slug, route, url):
 
             # (a) exactly one control; reachable; arrow keys change it (a
             # REAL keypress, see _cdp_key); a visible focus ring
-            n_controls = page.eval("document.querySelectorAll('.mrb-theme').length")
+            # ⊕ Stage B (phone run, 28 Sep 2026) — the header is the ONE
+            # pupil top bar, whose slot is theme.js's `compact` variant (the
+            # class page's): at ≥600px one inline radio group; below 600px a
+            # single 32px button that opens the SAME group. A compact slot
+            # therefore holds TWO `.mrb-theme` fieldsets in the DOM (inline +
+            # popup) and exactly one is ever RENDERED. The count is of
+            # rendered controls — still exactly one — and on a phone the
+            # button is pressed first, so the arrow-key and focus-ring
+            # assertions below run on the control a pupil actually uses.
             page.eval(
-                "(function(){var el=document.querySelector('.mrb-theme input:checked')"
-                "||document.querySelector('.mrb-theme input');if(el)el.focus();})();")
+                "(function(){var s=document.querySelector('.mrb-theme-menu > summary');"
+                "if(s&&s.getClientRects().length&&!s.parentNode.open){s.click();}})();")
+            time.sleep(0.1)
+            n_controls = page.eval(
+                "[].filter.call(document.querySelectorAll('.mrb-theme'),"
+                "function(f){return f.getClientRects().length>0;}).length")
+            n_slots = page.eval("document.querySelectorAll('[data-mrb-theme]').length")
+            if n_slots != 1:
+                n_controls = "%s (in %s slots)" % (n_controls, n_slots)
+            page.eval(
+                "(function(){var gs=[].filter.call(document.querySelectorAll('.mrb-theme'),"
+                "function(f){return f.getClientRects().length>0;});var g=gs[0];"
+                "var el=g&&(g.querySelector('input:checked')||g.querySelector('input'));"
+                "if(el)el.focus();})();")
             reached = page.eval(
                 "!!(document.activeElement && document.activeElement.closest "
                 "&& document.activeElement.closest('.mrb-theme'))")

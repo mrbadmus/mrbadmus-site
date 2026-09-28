@@ -1,0 +1,224 @@
+/* shared/topbar.css — the ONE pupil top bar (Stage B of the phone run, 28 Sep 2026).
+
+   Markup comes from topbar.py (never hand-copied); the right-hand group is
+   hydrated by shared/topbar.js. The model is the class page's own header
+   (Design's nodes 11-31 in student_templates.json), and the measurements
+   below are read out of those nodes, not retyped from memory:
+
+     node 11  header  min-height:clamp(56px,4.4cqw,64px);
+                      padding:0 clamp(14px,3cqw,44px);
+                      gap:clamp(14px,2.4cqw,34px)
+     node 17  nav tab font:500 clamp(13.5px,1.15cqw,15px)/1 var(--st-ui);
+                      box-shadow:inset 0 -2px 0 0 <accent>
+     node 18  end     margin-left:auto; gap:clamp(10px,1.3cqw,16px)
+     node 22  avatar  30px circle, num-well ground, 10.5px mono initials
+     node 29  menu    186px, 6px padding, card radius, 0 18px 40px -20px shadow
+
+   ONE ROW, ALWAYS. The rail never wraps, at any width and in any family —
+   there is deliberately no media query in this file that sets flex-wrap.
+   What does not fit is the TITLE, and the title ellipsises. That is the
+   whole fix for the KS3 header Mide photographed stacking over four rows.
+
+   Colours go through --tb-* and each family maps them from its OWN tokens
+   (KS3 and the KS4 pilot: --ks3-*; the leaderboard: --st-*; the
+   hand-written pupil pages: the site tokens), so dark mode follows each
+   family's own dark sheet and this file carries no dark literals of its own. */
+
+.mrb-topbar {
+  /* KS3 + KS4 pilot (both load a --ks3-* sheet with a dark twin) */
+  --tb-ink: var(--ks3-ink, #221E1B);
+  --tb-body: var(--ks3-ink-muted, #5E5145);
+  --tb-paper: var(--ks3-card, #FFFCF5);
+  --tb-rule: var(--ks3-rule, #E0D2B9);
+  --tb-well: var(--ks3-inset, #F1E6D2);
+  --tb-link: var(--ks3-accent-text, #A63C12);
+  --tb-ui: var(--ks3-font-body, 'Instrument Sans', system-ui, -apple-system, sans-serif);
+  --tb-mono: var(--ks3-font-mono, ui-monospace, monospace);
+  --tb-accent: #E4572E;
+  container-type: inline-size;
+  position: relative;
+  z-index: 60;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  font-family: var(--tb-ui);
+  color: var(--tb-ink);
+}
+.mrb-topbar[data-mrb-topbar="leaderboard"] {
+  --tb-ink: var(--st-ink, #1A1714);
+  --tb-body: var(--st-body, #4A4038);
+  --tb-paper: var(--st-paper, #FFFCF5);
+  --tb-rule: var(--st-rule, #E0D2B9);
+  --tb-well: var(--st-num-well, #F1E6D2);
+  --tb-link: var(--st-accent-text, #A63C12);
+  --tb-ui: var(--st-ui, 'Instrument Sans', system-ui, -apple-system, sans-serif);
+  --tb-mono: var(--st-mono, ui-monospace, monospace);
+}
+.mrb-topbar[data-mrb-topbar="student"] {
+  --tb-ink: var(--text, #241C14);
+  --tb-body: var(--muted, #6B5F51);
+  --tb-paper: var(--card, #FFFFFF);
+  --tb-rule: var(--border, #E4DAC6);
+  --tb-well: var(--sunken, #EFE7D6);
+  --tb-link: var(--text, #241C14);
+  --tb-ui: 'Instrument Sans', var(--font-sans, system-ui), sans-serif;
+  --tb-mono: var(--font-mono, ui-monospace, monospace);
+}
+
+/* A family that does not already paint its own bar (KS3's `.ks3-nav` does:
+   sticky, blurred, 2px ink rule) gets the class page's: paper + hairline. */
+.mrb-topbar:not(.ks3-nav) {
+  background: var(--tb-paper);
+  border-bottom: 1px solid var(--tb-rule);
+}
+/* The KS4 pilot's bundle styles `.ks3-nav` as a padded flex row; the rail
+   below does that job, so the host's own box model is neutralised. */
+.mrb-topbar.ks3-nav { display: block; padding: 0; gap: 0; }
+
+.mrb-topbar__rail {
+  box-sizing: border-box;
+  min-height: clamp(56px, 4.4cqw, 64px);
+  padding: 0 clamp(14px, 3cqw, 44px);
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: clamp(12px, 2.4cqw, 34px);
+  min-width: 0;
+}
+/* KS3 keeps its page rail, so the bar lines up with the content under it. */
+.mrb-topbar.ks3-nav .mrb-topbar__rail { max-width: var(--ks3-rail, none); margin: 0 auto; }
+.mrb-topbar .mrb-brand { flex: none; }
+
+/* ── the title ─────────────────────────────────────────────────────────
+   Either this page's own name (a span, aria-current, underlined like the
+   class page's "My class" tab) or the PARENT page (a link, with a "‹"). */
+.mrb-topbar__title {
+  flex: 0 1 auto;
+  min-width: 0;
+  display: block;
+  box-sizing: border-box;
+  /* 44px of tap, no pixel of layout (the ks3 trail's MRB-257 trick). */
+  padding-block: 13px;
+  margin-block: -13px;
+  font: 500 clamp(13.5px, 1.15cqw, 15px)/1.3 var(--tb-ui);
+  letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--tb-body);
+  text-decoration: none;
+}
+a.mrb-topbar__title { color: var(--tb-link); font-weight: 600; }
+a.mrb-topbar__title::before { content: "\2039\00a0"; font-weight: 600; }
+a.mrb-topbar__title:hover { text-decoration: underline; text-underline-offset: 3px; }
+a.mrb-topbar__title:focus-visible,
+.mrb-topbar__signin:focus-visible,
+.mrb-topbar__avatar:focus-visible,
+.mrb-topbar__menu a:focus-visible,
+.mrb-topbar__menu button:focus-visible {
+  outline: 3px solid var(--tb-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+span.mrb-topbar__title[aria-current] {
+  color: var(--tb-ink);
+  /* the class page's active tab (node 17): 2px accent rule at the foot */
+  padding-block: 0;
+  margin-block: 0;
+  line-height: 40px;
+  box-shadow: inset 0 -2px 0 0 var(--tb-accent);
+}
+
+/* ── the right-hand group ─────────────────────────────────────────────── */
+.mrb-topbar__end {
+  margin-left: auto;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1.3cqw, 16px);
+}
+.mrb-topbar__who { display: contents; }
+/* Ink, not the muted body tone: theme.js draws its unchosen options at 72%
+   opacity of currentColor, and muted-at-72% measured 3.43:1 (contrast_audit). */
+.mrb-topbar__end .mrb-theme-slot { display: inline-flex; align-items: center; flex: none; color: var(--tb-ink); }
+.mrb-topbar__end .mrb-bell-btn { min-width: 36px; padding: 0 6px; }
+
+.mrb-topbar__signin {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--tb-rule);
+  border-radius: 999px;
+  font: 600 14px/1 var(--tb-ui);
+  color: var(--tb-ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.mrb-topbar__signin:hover { background: var(--tb-well); }
+
+/* the avatar (node 21/22) */
+.mrb-topbar__avatar {
+  all: unset;
+  box-sizing: border-box;
+  flex: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 40px;
+}
+.mrb-topbar__initials {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: var(--tb-well);
+  border: 1px solid var(--tb-rule);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 500 10.5px/1 var(--tb-mono);
+  letter-spacing: 0.04em;
+  color: var(--tb-ink);
+}
+.mrb-topbar__avatar[aria-expanded="true"] .mrb-topbar__initials { border-color: var(--tb-accent); }
+
+/* the menu (node 29-31) */
+.mrb-topbar__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: clamp(14px, 3cqw, 44px);
+  z-index: 70;
+  width: 186px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--tb-paper);
+  border: 1px solid var(--tb-rule);
+  box-shadow: 0 18px 40px -20px rgba(40, 26, 10, 0.45);
+}
+.mrb-topbar__menu[hidden] { display: none; }
+.mrb-topbar__menu a,
+.mrb-topbar__menu button {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font: 500 14.5px/1 var(--tb-ui);
+  color: var(--tb-ink);
+}
+.mrb-topbar__menu a:hover,
+.mrb-topbar__menu button:hover { background: var(--tb-well); }
+
+@media print { .mrb-topbar__end { display: none !important; } }

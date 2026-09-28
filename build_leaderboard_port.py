@@ -136,8 +136,16 @@ LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
 
 # The nav's own dependencies, loaded exactly as the retired page loaded them.
 # ⚠️ `class-entry.js` BEFORE anything that uses it (CLAUDE.md, MRB-267).
-NAV_DEPS = ("tokens.css", "nav.css", "search-index.js", "search.js",
-            "nav.js", "class-entry.js")
+#
+# ⊕ Stage B (phone run, 28 Sep 2026) — the page's header is the ONE pupil top
+# bar (topbar.py) now, not `nav_html()`, so the nav's own scripts go with the
+# nav: `nav.js` (the burger drawer + auth area), `search-index.js` and
+# `search.js` (the 🔍 control) drew controls this header no longer has. What
+# the bar needs comes in their place — its stylesheet and its script, which
+# must follow class-entry.js (it asks class-entry who is looking). The tuple
+# used to read ("tokens.css", "nav.css", "search-index.js", "search.js",
+# "nav.js", "class-entry.js").
+NAV_DEPS = ("tokens.css", "nav.css", "topbar.css", "class-entry.js")
 
 # ⊕ MRB-337, 8 Sep 2026 — the bell, and it is deliberately NOT in NAV_DEPS.
 # NAV_DEPS is what the retired page loaded, byte for byte, and that sentence
@@ -167,7 +175,8 @@ NAV_DEPS = ("tokens.css", "nav.css", "search-index.js", "search.js",
 # guards, and `head_links`'s loop already emits a bare `<script defer>` for
 # any non-`.css` name in this tuple, stamped by the same STAMPED_DEPS pass
 # below. See theme_head.py for the pre-paint snippet this pairs with.
-PAGE_DEPS = ("config.js",) + NAV_DEPS + ("student-bell.js", "theme.js")
+PAGE_DEPS = ("config.js",) + NAV_DEPS + ("student-bell.js", "theme.js",
+                                         "topbar.js")
 
 STAMPED_DEPS = PAGE_DEPS + (LIVE_JS_NAME,)
 
@@ -1768,39 +1777,39 @@ def live_nav():
     brought into the new chrome, this should go back to tracking whatever
     the landing wears, which is one word: `nav_html(chrome=True)`.
     """
-    try:
-        from generate_site_v5 import nav_html
-    except ImportError as e:                                # pragma: no cover
-        raise SystemExit(
-            "build_leaderboard_port.py: cannot import nav_html from "
-            "generate_site_v5.py (%s).\n"
-            "  Mide's 25 Aug 2026 ruling (R1) is that this page carries the "
-            "site's public nav, and that function is the only thing that "
-            "writes it. Retyping it here would make the two drift the first "
-            "time either changed." % e)
-    nav = nav_html()
+    # ⊕ Stage B (phone run, 28 Sep 2026) — THE ONE PUPIL TOP BAR, not
+    # `generate_site_v5.nav_html()`. R1's intent was that this page never
+    # carries a hand-typed nav that drifts from the site's; the bar is
+    # written by ONE function (`topbar.topbar`) for every pupil surface, so
+    # that intent is kept and the "OPEN, ON MIDE" pin above is resolved: the
+    # leaderboard no longer wears the classic nav while KS3/KS4 wear another.
+    # No title — the page's own h1 is "Leaderboard", an inch below, and a bar
+    # that repeats it is redundant text.
+    #
+    # The assertions are the old ones re-aimed, none dropped: the one lockup
+    # and the mark byte for byte (unchanged); the bar, its right-hand group
+    # and the theme slot in place of `nav-auth-area` / `nav-burger` /
+    # `nav-cluster`, which were the old nav's equivalents; and still no
+    # retired placeholder.
+    import topbar
+    nav = topbar.topbar(None, kind="leaderboard", tone="studio")
     for want, why in (
-            # ⊕ One-mark ruling (Mide, 13 Sep 2026): the nav's brand is the
-            # ONE lockup brand.py draws — the gold-to-rust `.nav-brand` /
-            # `.brand-logo` pair this used to require is retired. Checked by
-            # the lockup's own class and by the mark's data attribute, so a
-            # nav carrying any other drawing fails here.
             ('class="mrb-brand"', "the one brand lockup (brand.brand_lockup)"),
             (brand.MARK_SVG, "brand.py's mark, byte for byte"),
-            ('id="nav-auth-area"', "nav.js's sign-in slot"),
-            ('class="nav-burger"', "the drawer trigger"),
-            ('class="nav-cluster"', "the right-hand cluster")):
+            ('data-mrb-topbar="leaderboard"', "the one pupil top bar"),
+            ("data-mrb-topbar-end", "the bar's right-hand group"),
+            ('data-mrb-topbar-who="all"', "the sign-in / bell / avatar slot"),
+            ("data-mrb-theme", "the theme control's slot")):
         if want not in nav:
             raise SystemExit(
-                "build_leaderboard_port.py: the nav lifted from index.html "
-                "has no `%s` — %s.\n  Either index.html's nav has been "
-                "restructured, or the wrong element matched." % (want, why))
+                "build_leaderboard_port.py: the top bar from topbar.py has no "
+                "`%s` — %s.\n  topbar.py has been restructured; re-read it "
+                "before re-aiming this check." % (want, why))
     if "octopus" in nav or "⚗" in nav:
         raise SystemExit(
-            "build_leaderboard_port.py: the nav lifted from index.html "
-            "carries a retired placeholder (the octopus logo or the alembic "
-            "emoji). CLAUDE.md calls that brand drift — fix index.html "
-            "rather than propagating it here.")
+            "build_leaderboard_port.py: the top bar carries a retired "
+            "placeholder (the octopus logo or the alembic emoji). CLAUDE.md "
+            "calls that brand drift.")
     return nav
 
 
@@ -2827,7 +2836,7 @@ def build():
 
     # ── the nav, read from the landing page ──────────────────────────────
     nav = live_nav()
-    print("     ⊕ nav:   %d bytes lifted from index.html (R1)" % len(nav))
+    print("     ⊕ nav:   %d bytes of the one top bar, from topbar.py (R1, Stage B)" % len(nav))
 
     # ── the design system ────────────────────────────────────────────────
     css, sizes = ds_css()

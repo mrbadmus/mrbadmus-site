@@ -957,10 +957,20 @@ COMPONENTS = [
     # 14px — they are two different components and only one of them is a
     # lesson's. The mono row survives on unit indices, discipline hubs and the
     # browse layer, and is gated there.
-    dict(name="header trail is body type (MRB-208)", on=LESSON, sel=".ks3-trail",
-         props={"font-family": "Instrument Sans", "font-size": "17px"}),
-    dict(name="breadcrumb row is mono", on=UNIT, sel=".ks3-crumbs",
-         props={"font-family": "DM Mono", "font-size": "14px"}),
+    # ⊕ Stage B (phone run, 28 Sep 2026) — RE-REGISTERED, not dropped. The
+    # lesson trail (`.ks3-trail`, 17px body) and the browse rows' mono
+    # `.ks3-crumbs` are both retired with the multi-row header; what took
+    # their slot is the ONE pupil top bar's title (topbar.py), which is the
+    # class page's nav type — Design's node 17, `500 clamp(13.5px,1.15cqw,
+    # 15px) var(--st-ui)`, i.e. Instrument Sans at 13.5px at this harness's
+    # 756px (1.15cqw is 8.7px there, under the clamp's floor). Pinned on both
+    # page kinds the two retired rows were pinned on.
+    dict(name="top bar title is the class page's nav type (Stage B)", on=LESSON,
+         sel=".mrb-topbar__title",
+         props={"font-family": "Instrument Sans", "font-size": "13.5px"}),
+    dict(name="top bar title on a unit index (Stage B)", on=UNIT,
+         sel=".mrb-topbar__title",
+         props={"font-family": "Instrument Sans", "font-size": "13.5px"}),
     # MRB-197: Design's nav mark. Pinned to the frozen reference's header —
     # if the wordmark shrinks below display size, the chevron's 3:1 pair
     # below stops being the whole story and this fails first.
@@ -6492,12 +6502,14 @@ CONTRAST = [
          fg=".ks3-eyebrow", bg="body", need=4.5),
     dict(name="big question on page ground", on=LESSON,
          fg=".ks3-bigq", bg="body", need=4.5),
-    dict(name="header trail link on page ground", on=LESSON,
-         fg=".ks3-trail a", bg=".ks3-nav", need=4.5),
-    dict(name="header trail current page on page ground", on=LESSON,
-         fg=".ks3-trail [aria-current]", bg=".ks3-nav", need=4.5),
-    dict(name="breadcrumb row link on page ground", on=UNIT,
-         fg=".ks3-crumbs a", bg="body", need=4.5),
+    # ⊕ Stage B — the retired trail/crumb pairs move to the top bar's title
+    # link (the parent page) and its signed-out "Sign in", on the bar itself.
+    dict(name="top bar parent link on the bar", on=LESSON,
+         fg="a.mrb-topbar__title", bg=".ks3-nav", need=4.5),
+    dict(name="top bar parent link on a unit index's bar", on=UNIT,
+         fg="a.mrb-topbar__title", bg=".ks3-nav", need=4.5),
+    dict(name="top bar Sign in on the bar", on=LESSON,
+         fg=".mrb-topbar__signin", bg=".ks3-nav", need=4.5),
     dict(name="nav brand wordmark on page ground", on=LESSON,
          # ⊕ one-mark ruling 13 Sep 2026: `.ks3-brand` → the one lockup.
          fg=".mrb-brand__word", bg=".ks3-nav", need=4.5),
@@ -15241,9 +15253,11 @@ def mutation_test_correct_state(ks3_root, browser_mod):
 # also FLOORS `--window-size` at about 500px, so a `--window-size=390` run
 # would report a 500px layout and find nothing.
 #
-# One page of each kind, because they are three different header components:
-# a lesson carries `<ol class="ks3-trail">`, a unit index and the hub carry
-# `<nav class="ks3-crumbs">`, and the truncation rule has to hold for both.
+# One page of each kind. ⊕ Stage B (phone run, 28 Sep 2026): these used to be
+# "three different header components" (a lesson's `<ol class="ks3-trail">`, a
+# unit index's and the hub's `<nav class="ks3-crumbs">`); every page now
+# carries the ONE top bar, but the three still carry three different titles
+# (a long parent name, a short one, none), so all three stay.
 # The lesson is b9-04, which carries the longest trail in Biology and was the
 # worst measured page in the key stage.
 _REFLOW_PAGES = (
@@ -15254,14 +15268,28 @@ _REFLOW_PAGES = (
 
 
 def check_reflow(browser_mod, url_for, rel, label, width=390):
-    """Returns a list of problems. One page, one viewport, measured."""
+    """Returns a list of problems. One page, one viewport, measured.
+
+    ⊕ Stage B (phone run, 28 Sep 2026) — two assertions ADDED, none relaxed:
+    the header is at most 64px tall (the class page's own clamp ceiling, and
+    what the one top bar is built to), and every visible item on its rail sits
+    on ONE row. The crumb-count assertion is retargeted to the bar's title,
+    which must be one element. The only exemption from the content-overflow
+    walk is the bar's title when it is ellipsising inside the rail — that
+    overflow is the design (an elided title), not a leak — and it is exempt
+    from the WALK only: the document's scrollWidth is asserted exactly as
+    before.
+    """
     problems = []
     with browser_mod.Browser() as b:
+        # The size is set on a blank page FIRST: a page decides its layout at
+        # load, so resizing into it would measure the previous width's.
+        b.page("about:blank").set_viewport(width, 844)
         page = b.page(url_for(rel))
         page.set_viewport(width, 844)
         got = page.eval(
             "(function(){var d=document.documentElement;"
-            " var t=document.querySelector('.ks3-trail,.ks3-crumbs');"
+            " var t=document.querySelector('.mrb-topbar__title');"
             " var wide=[];var all=document.querySelectorAll('*');"
             " for(var i=0;i<all.length && wide.length<4;i++){"
             "   var e=all[i];"
@@ -15278,6 +15306,8 @@ def check_reflow(browser_mod, url_for, rel, label, width=390):
             " if(!wide.length){for(var k=0;k<all.length && wide.length<4;k++){"
             "   var x=all[k];"
             "   if(x.closest('.ks3-figure-scroll')){continue;}"
+            "   if(x.matches('.mrb-topbar__rail > .mrb-topbar__title') &&"
+            "      getComputedStyle(x).textOverflow==='ellipsis'){continue;}"
             "   if(x.clientWidth>0 && x.scrollWidth>x.clientWidth+0.5){"
             "     wide.push('content overflows '"
             "       +(x.tagName+'.'+(typeof x.className==='string'?x.className:'')).slice(0,44)"
@@ -15286,8 +15316,15 @@ def check_reflow(browser_mod, url_for, rel, label, width=390):
             "         nav:(document.querySelector('header.ks3-nav')||{getBoundingClientRect:"
             "              function(){return{height:-1};}}).getBoundingClientRect().height,"
             r"         crumbs: t ? t.textContent.replace(/\s+/g,' ').trim() : null,"
-            "         shown: t ? [].slice.call(t.children).filter(function(c){"
-            "              return getComputedStyle(c).display !== 'none';}).length : -1,"
+            "         shown: document.querySelectorAll('.mrb-topbar__title').length,"
+            "         bar: !!document.querySelector('header.ks3-nav[data-mrb-topbar]'),"
+            "         rows: (function(){var r=document.querySelector('header.ks3-nav .mrb-topbar__rail');"
+            "           if(!r){return [];}"
+            "           return [].slice.call(r.querySelectorAll('.mrb-topbar__rail > *,"
+            " .mrb-topbar__end > *, .mrb-topbar__who > :not(.mrb-topbar__menu)'))"
+            "           .map(function(e){var q=e.getBoundingClientRect();"
+            "             return q.width>0&&q.height>0 ? Math.round(q.top+q.height/2) : null;})"
+            "           .filter(function(y){return y!==null;});})(),"
             "         wide: wide};})()")
     # The override itself is asserted. A run where `innerWidth` came back at
     # Chrome's ~500px floor would "pass" this gate on every page while proving
@@ -15308,12 +15345,29 @@ def check_reflow(browser_mod, url_for, rel, label, width=390):
                "the overflow is a margin, a pseudo-element or a shadow"))
     # The truncation itself, not only its consequence. A page could stop
     # overflowing because someone shrank the type, and this gate would smile.
-    if got["shown"] > 3:
+    # ⊕ Stage B — MRB-229's "unit and page only" is now stricter: ONE title.
+    if got["shown"] > 1:
         problems.append(
-            "REFLOW: /%s (%s) shows %d crumb elements at %dpx — MRB-229 rules "
-            "unit and page only, which is three: the crumb, its separator and "
-            "the current page. Reading: %r"
-            % (rel, label, got["shown"], width, got["crumbs"]))
+            "REFLOW: /%s (%s) shows %d top-bar titles at %dpx — the one top "
+            "bar carries at most one (the parent link, or this page's name). "
+            "Reading: %r" % (rel, label, got["shown"], width, got["crumbs"]))
+    # ⊕ Stage B — the header Mide photographed stacking over four rows.
+    if not got["bar"]:
+        problems.append(
+            "REFLOW: /%s (%s) has no `header.ks3-nav[data-mrb-topbar]` — the "
+            "one top bar (topbar.py) is missing, so the height and one-row "
+            "assertions below have nothing to measure." % (rel, label))
+    if got["nav"] > 64.5:
+        problems.append(
+            "REFLOW: /%s (%s) header is %.1fpx tall at %dpx — the one top bar "
+            "holds one row at most 64px (the class page's clamp ceiling)."
+            % (rel, label, got["nav"], width))
+    rows = got.get("rows") or []
+    if rows and max(rows) - min(rows) > 10:
+        problems.append(
+            "REFLOW: /%s (%s) top bar items sit on more than one row at %dpx "
+            "(vertical centres %s). The rail must never wrap."
+            % (rel, label, width, sorted(set(rows))))
     return problems
 
 
@@ -18198,13 +18252,16 @@ def run_browser_layers(ks3_root, browser_mod):
                     "REFLOW: /%s (%s) is not in the built tree, so MRB-229's "
                     "assertion did not run on it." % (rel, label))
                 continue
-            reflow_problems.extend(
-                check_reflow(browser_mod, _url, rel, label))
+            # ⊕ Stage B — 360 as well as 390: the narrowest phone Mide's
+            # pupils carry, and where the bar's title has least room.
+            for _w in (390, 360):
+                reflow_problems.extend(
+                    check_reflow(browser_mod, _url, rel, label, width=_w))
         problems.extend(reflow_problems)
         style_rows.append(
-            ("⊕ MRB-229 · no horizontal overflow at 390px (device metrics)",
+            ("⊕ MRB-229 · no horizontal overflow at 390px and 360px (device metrics)",
              "document.scrollWidth == clientWidth, on a lesson, a unit index "
-             "and the hub",
+             "and the hub; ⊕ Stage B: header ≤64px, top bar on one row",
              "0 problems across %d page(s)" % len(_REFLOW_PAGES),
              "%d problem(s)" % len(reflow_problems),
              not reflow_problems))

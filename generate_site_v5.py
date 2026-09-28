@@ -12,6 +12,7 @@ import os, shutil, json, glob, sys, re, base64
 # THEME-CONTRACT.md and theme_head.py. Never retype THEME_HEAD by hand.
 from theme_head import THEME_HEAD, THEME_SLOT
 import brand  # the ONE brand mark (one-mark ruling, 13 Sep 2026)
+import topbar  # the ONE pupil top bar (Stage B, phone run 28 Sep 2026)
 
 # Bonding redesign (MRB-113 Phase B) — theory-block decomposition for the
 # redesigned bonding pages. Frozen source fields are never edited; blocks are
@@ -6334,10 +6335,15 @@ def build_site(output_dir="mrbadmus_site"):
             _fp = os.path.join(_root, _fn)
             with open(_fp, "r", encoding="utf-8") as _fh:
                 _content = _fh.read()
-            if brand.BRAND_START[:-3] not in _content and brand.HEAD_START not in _content:
+            if (brand.BRAND_START[:-3] not in _content and brand.HEAD_START not in _content
+                    and topbar.TOPBAR_END not in _content):
                 continue
             _brand_pages += 1
-            _new = brand.stamp_brand(_content)
+            # ⊕ Stage B (phone run, 28 Sep 2026) — the one pupil top bar's
+            # region (<!--mrb:topbar …-->…<!--/mrb:topbar-->) is stamped in the
+            # same pass, BEFORE the brand: the bar draws brand.py's lockup
+            # itself, so it carries no mrb:brand markers of its own.
+            _new = brand.stamp_brand(topbar.stamp_topbar(_content))
             if _new != _content:
                 with open(_fp, "w", encoding="utf-8") as _fh:
                     _fh.write(_new)

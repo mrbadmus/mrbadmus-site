@@ -17,6 +17,7 @@
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
+  <link rel="stylesheet" href="/shared/topbar.css?v=7defaa3c"/>
   <script src="/shared/search-index.js?v=c016cb14" defer></script>
   <script src="/shared/search.js?v=d011978d" defer></script>
   <style>
@@ -56,15 +57,13 @@
       box-shadow: 0 1px 6px rgba(166, 60, 18, 0.30);
     }
 
-    nav.top-nav {
+    /* ⊕ Stage B (phone run, 28 Sep 2026) — the header is the ONE pupil top
+       bar (topbar.py, stamped between the mrb:topbar markers; styled by
+       shared/topbar.css). This page only positions it: fixed under the 6px
+       subject stripe, exactly where nav.top-nav sat. */
+    header.mrb-topbar {
       position: fixed;
       top: 6px; left: 0; right: 0;
-      padding: 12px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
       z-index: 10;
     }
     .pill {
@@ -249,16 +248,7 @@
 
 <div class="subject-stripe" id="subject-stripe"></div>
 
-<nav class="top-nav">
-  <!--mrb:brand--><a class="mrb-brand" href="/index.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span id="env-pill" class="pill env-prod" title=""></span>
-    <span id="nav-user-area" style="color:var(--muted);font-weight:700;font-size:0.85rem;"></span>
-    <a id="settings-link" href="/student/settings.html" style="color:var(--muted);font-weight:700;font-size:0.85rem;text-decoration:none;">&#9881;&#65039; Settings</a>
-    <button class="signout-btn" onclick="MrBadmusStudentGuard.signOut()">Sign out</button>
-    <span class="mrb-theme-slot" data-mrb-theme></span>
-  </div>
-</nav>
+<!--mrb:topbar kind=student--><header class="mrb-topbar" data-mrb-topbar="student" data-mrb-bell-tone="chrome"><div class="mrb-topbar__rail"><a class="mrb-brand" href="/index.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><div class="mrb-topbar__end" data-mrb-topbar-end><span class="mrb-topbar__who" data-mrb-topbar-who="all"></span><span class="mrb-theme-slot" data-mrb-theme="compact"></span></div></div></header><!--/mrb:topbar-->
 
 <main class="container">
   <header class="page-header">
@@ -309,11 +299,12 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/shared/config.js?v=d1fecb43"></script>
 <script src="/shared/student-guard.js?v=1da3dc79"></script>
-<script src="/shared/class-entry.js?v=a97c1d3d" defer></script>
+<script src="/shared/class-entry.js?v=1028dbfb" defer></script>
 <script src="/shared/student-data.js?v=b82d1c0f"></script>
 <!-- MRB-337 — the student's messages. config.js is already above; the bell
      attaches itself to this page's nav.top-nav cluster, left of Sign out. -->
 <script src="/shared/student-bell.js?v=f46f4d9b" defer></script>
+<script src="/shared/topbar.js?v=6587c53d" defer></script>
 <script>
 (function () {
   const STATES = {
@@ -394,17 +385,26 @@
       const firstName = ctx.profile.first_name || 'there';
       const env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) || 'prod';
 
-      document.getElementById('nav-user-area').textContent = '\ud83d\udc64 ' + firstName;
+      /* ⊕ Stage B — the name, the env pill and the Settings link lived in
+         the old nav.top-nav. The one top bar replaced it: the avatar carries
+         who is signed in, its menu carries Settings (with ?env carried),
+         and the env pill is gone like the class page's. Guarded rather than
+         deleted, so a page that ever puts them back still gets them filled. */
+      const userEl = document.getElementById('nav-user-area');
+      if (userEl) userEl.textContent = '\ud83d\udc64 ' + firstName;
 
       const envEl = document.getElementById('env-pill');
-      envEl.textContent = env.toUpperCase();
-      envEl.className = 'pill env-' + env;
-      envEl.title = env === 'test'
-        ? 'Test sandbox — fake data only'
-        : 'Production — live student data';
+      if (envEl) {
+        envEl.textContent = env.toUpperCase();
+        envEl.className = 'pill env-' + env;
+        envEl.title = env === 'test'
+          ? 'Test sandbox — fake data only'
+          : 'Production — live student data';
+      }
 
-      if (env === 'test') {
-        document.getElementById('settings-link').href = '/student/settings.html?env=test';
+      const settingsEl = document.getElementById('settings-link');
+      if (env === 'test' && settingsEl) {
+        settingsEl.href = '/student/settings.html?env=test';
       }
 
       const subtitleEl = document.getElementById('subtitle');

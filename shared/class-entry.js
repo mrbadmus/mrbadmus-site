@@ -279,6 +279,7 @@
      viewer's list behind under a name nothing was looking for. A family is
      the stem, so it survives its own versioning. */
   var CLASS_LISTS_FAMILY = 'mrb-teacher-classes:';
+  var VIEWER_PREFIX = 'mrb-topbar-viewer:';
 
   var CACHE_FAMILIES = [
     CACHE_PREFIX,           // mrb-class-entry:v2:
@@ -296,7 +297,11 @@
        `mrb-staff-session:` above. Same reason it must be here: a shared
        classroom machine is exactly where one child's resolved session must
        not survive into the next child's. */
-    'mrb-student-session:'
+    'mrb-student-session:',
+    /* ⊕ Stage B (phone run, 28 Sep 2026) — the top bar's initials. Same
+       reason as every family above: one child's initials must not sit on a
+       shared classroom machine's bar after the next child signs in. */
+    VIEWER_PREFIX
   ];
 
   /* ⊕ MRB-328 J4(b) — WHAT A MEMBERSHIP WRITE INVALIDATES, named once.
@@ -319,6 +324,7 @@
     // from a promise resolved for the person who just left.
     _yearsInflight = null;
     _inflight = null;
+    _viewer = null;
   }
 
   /* One family of keys, for a write that invalidates less than everything.
@@ -527,6 +533,44 @@
     return _inflight;
   }
 
+  /* ⊕ Stage B (phone run, 28 Sep 2026) — WHO IS LOOKING, for the top bar's
+     avatar (shared/topbar.js). Null when signed out; otherwise
+     { initials, email }. Its own read and its own cache rather than a column
+     added to resolve()'s role query, deliberately: a column the grant does
+     not cover would 4xx that query and take the class entry down with it.
+     Initials follow the class page's own rule (student-live.js `initials`):
+     first + last initial, else the first two letters of the first name,
+     else the email's first letter. */
+  var _viewer = null;
+  function viewer() {
+    if (_viewer) return _viewer;
+    _viewer = (function () {
+      var conf = cfg();
+      var ref = projectRef(conf.url);
+      if (!ref) return Promise.resolve(null);
+      var session = readSession(ref);
+      if (!session) return Promise.resolve(null);
+      var email = (session.user && session.user.email) || '';
+      var key = VIEWER_PREFIX + 'v1:' + conf.env + ':' + session.user.id;
+      var cached = cacheGet(key);
+      if (cached) return Promise.resolve(cached);
+      return rest(conf, session, 'profiles?id=eq.' +
+                  encodeURIComponent(session.user.id) +
+                  '&select=first_name,last_name')
+        .then(function (rows) {
+          var p = (rows && rows[0]) || {};
+          var f = String(p.first_name || '').trim();
+          var l = String(p.last_name || '').trim();
+          var ini = f && l ? (f[0] + l[0]) : f ? f.slice(0, 2)
+                  : (email ? email[0] : '');
+          var v = { initials: ini.toUpperCase(), email: email };
+          if (rows) cacheSet(key, v);
+          return v;
+        });
+    })();
+    return _viewer;
+  }
+
   // ── Rendering ───────────────────────────────────────────────────────────
 
   // Don't offer a link to the page the viewer is already on. Compared on
@@ -547,20 +591,11 @@
     return a;
   }
 
-  // 1. KS3 — its own design world. An outlined lozenge sitting immediately
-  //    before the solid ink KS3 pill: same lozenge geometry, different weight,
-  //    so the two read as a pair without competing. No new colour (every value
-  //    is an existing --ks3-* token), which is what keeps the MRB-183 parity
-  //    gate's provenance layer green.
-  function renderKs3(entry) {
-    var rail = document.querySelector('.ks3-nav-rail');
-    if (!rail) return false;
-    var pill = rail.querySelector('.ks3-pill');
-    var a = anchor('ks3-classlink', entry);
-    if (pill) rail.insertBefore(a, pill);
-    else rail.appendChild(a);
-    return true;
-  }
+  // 1. KS3 — ⊖ RETIRED by Stage B (phone run, 28 Sep 2026). `renderKs3()`
+  //    appended a `.ks3-classlink` lozenge to `.ks3-nav-rail`; on a phone that
+  //    lozenge was the FOURTH row of the header Mide photographed. Every KS3
+  //    page now carries the one top bar (topbar.py), whose avatar menu holds
+  //    "My class", and `mount()` below stands down on any page with that bar.
 
   // 2. Public / KS4 — into the persistent cluster, before the auth control,
   //    plus a drawer row. .nav-class-link collapses one rung ABOVE
@@ -616,10 +651,14 @@
   }
 
   function mount() {
+    /* ⊕ Stage B — a page with the one top bar owns its own entry (the avatar
+       menu, filled by shared/topbar.js); drawing a second one here would put
+       "My class" on the page twice. */
+    if (document.querySelector('[data-mrb-topbar]')) return;
     resolve().then(function (entry) {
       if (!entry) return;                 // signed out, or zero classes
       if (isHere(entry.href)) return;     // already here
-      renderKs3(entry) || renderPublic(entry) || renderDashboard(entry);
+      renderPublic(entry) || renderDashboard(entry);
     }).catch(function () { /* never break a page over a nav affordance */ });
   }
 
@@ -632,6 +671,7 @@
      two of them are unfinished at once. */
   window.MRBClassEntry = {
     resolve: resolve,
+    viewer: viewer,
     mount: mount,
     workingAcademicYear: workingAcademicYear,
     /* ⊕ 27 Aug 2026 — the ROWS the predicate above is applied to, read once

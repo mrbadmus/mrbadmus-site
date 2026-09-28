@@ -187,7 +187,7 @@ GATES = [
     dict(name="brand_one_mark",
          cmd=["python3", "brand_one_mark.py"],
          speed="fast",
-         watches=["brand_one_mark.py", "brand.py", "shared/brand/**",
+         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "brand_one_mark.py", "brand.py", "shared/brand/**",
                   "generate_site_v5.py", "build_ks3.py", "build_ks4.py",
                   "ks4_rulings.py", "build_student_port.py", "build_teacher_port.py",
                   "brand_port.py", "student_rulings.py", "teacher_rulings.py",
@@ -299,7 +299,7 @@ GATES = [
          # ks3/**` (the only tree it opens), and generate_site_v5.py, which it
          # executes. Those are also precisely the changes the drift check
          # exists to detect collateral damage FROM.
-         watches=["verify_ks3.py", "ks3_parity.py", "ks3_canvas.py",
+         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "verify_ks3.py", "ks3_parity.py", "ks3_canvas.py",
                   "ks3_figure_sweep.py", "ks3_overflow.py", "ks3_browser.py",
                   "build_ks3.py", "ks3_art/**", "ks3_data/**",
                   "!ks3_data/**/questions_*.py",
@@ -843,7 +843,7 @@ GATES = [
     dict(name="leaderboard_tells",
          cmd=["python3", "leaderboard_tells.py"],
          speed="fast",
-         watches=["leaderboard_tells.py", "build_leaderboard_port.py",
+         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "leaderboard_tells.py", "build_leaderboard_port.py",
                   "leaderboard.html", "mrbadmus_site/leaderboard.html"],
          why="no student Design invented reaches the live leaderboard. The "
              "corpus is DERIVED from the vendored delivery on every run — "
@@ -917,7 +917,7 @@ GATES = [
          # `leaderboard_fixtures/` and nothing else (see the note below), so
          # the live page cannot move its outcome. leaderboard_tells is the
          # gate that reads those two files.
-         watches=["leaderboard_behaviour.py", "ks3_browser.py",
+         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "leaderboard_behaviour.py", "ks3_browser.py",
                   "build_leaderboard_port.py", "leaderboard_fixtures/**",
                   "shared/leaderboard-live.js", "shared/leaderboard-ds.css",
                   "shared/student-runtime.js"],
@@ -2081,7 +2081,7 @@ GATES = [
     dict(name="student_bell_drive",
          cmd=["python3", "student_bell_drive.py"],
          speed="slow",
-         watches=["student_bell_drive.py", "ks3_browser.py",
+         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "student_bell_drive.py", "ks3_browser.py",
                   "build_student_port.py", "student_rulings.py",
                   "build_leaderboard_port.py", "generate_site_v5.py",
                   "shared/student-bell.js", "shared/student-live.js",
@@ -2210,7 +2210,7 @@ GATES = [
     dict(name="theme_wiring_check",
          cmd=["python3", "theme_wiring_check.py"],
          speed="fast",
-         watches=["theme_wiring_check.py", "theme_head.py", "shared/theme.js",
+         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "theme_wiring_check.py", "theme_head.py", "shared/theme.js",
                   "generate_site_v5.py", "build_ks3.py", "build_ks4.py",
                   "build_student_port.py", "build_teacher_port.py",
                   "build_leaderboard_port.py", "student_rulings.py",
@@ -2226,7 +2226,7 @@ GATES = [
     dict(name="contrast_audit",
          cmd=["python3", "contrast_audit.py", "--quick", "--gate"],
          speed="fast",
-         watches=["contrast_audit.py", "ks3_browser.py",
+         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "contrast_audit.py", "ks3_browser.py",
                   # ⊕ theme run, 27 Sep 2026 — the audit now measures every
                   # page in light AND dark through the real stored choice.
                   "shared/theme.js", "theme_head.py", "shared/ks3-theme.css",
@@ -2334,7 +2334,7 @@ GATES = [
     dict(name="contrast_audit_interactions",
          cmd=["python3", "contrast_audit.py", "--interactions", "--quick", "--gate"],
          speed="slow",
-         watches=["contrast_audit.py", "ks3_browser.py",
+         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "contrast_audit.py", "ks3_browser.py",
                   "shared/ks3.js", "shared/ks3.css", "shared/ks3-theme.css",
                   "shared/mrbadmus.v2.js", "shared/styles.css",
                   "shared/tokens.css", "shared/theme.js",
@@ -2388,7 +2388,7 @@ GATES = [
          # the estate, which is the intolerable-hook failure mode this
          # file's own docstring warns turns into "a gate that stops
          # watching". Deviation recorded rather than silently followed.
-         watches=["focus_audit.py", "ks3_browser.py",
+         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "focus_audit.py", "ks3_browser.py",
                   "build_student_port.py", "build_teacher_port.py",
                   "student_rulings.py", "student_template.py",
                   "shared/student-runtime.js", "shared/student-live.js",
@@ -2441,7 +2441,7 @@ GATES = [
     dict(name="ks4_pilot_check",
          cmd=["python3", "ks4_pilot_check.py"],
          speed="fast",
-         watches=["ks4_pilot_check.py", "build_ks4.py", "ks4_lessons/**",
+         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "ks4_pilot_check.py", "build_ks4.py", "ks4_lessons/**",
                   "ks4_rulings.py", "shared/ks4-ds.css", "shared/ks4-theme.css",
                   "shared/ks4-lesson.css", "shared/ks4-source.js",
                   "shared/ks4-lib.js", "shared/ks4-diagrams.js",
@@ -2491,7 +2491,7 @@ GATES = [
     dict(name="ks4_parity",
          cmd=["python3", "ks4_parity.py"],
          speed="slow",
-         watches=["ks4_parity.py", "ks3_browser.py", "build_ks4.py",
+         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "ks4_parity.py", "ks3_browser.py", "build_ks4.py",
                   "ks4_lessons/**", "ks4_rulings.py", "ks4_science_rulings.py",
                   "shared/ks4-ds.css", "shared/ks4-theme.css",
                   "shared/ks4-lesson.css", "shared/ks4-source.js",
@@ -2584,6 +2584,14 @@ EXCLUDED = {
         "generator imports, plus `python3 brand.py` to rewrite "
         "shared/brand/brand.js. Asserts nothing; `brand_one_mark` is the gate "
         "that proves every page wears what this module draws.",
+    # ── ⊕ Stage B (phone run, 28 Sep 2026) · the one pupil top bar ──────────
+    "topbar.py":
+        "the ONE pupil top bar's emitter — a library build_ks3.py, build_ks4 "
+        "(via ks4_rulings R-TOPBAR), build_leaderboard_port.py and the "
+        "hand-written-page stamp in generate_site_v5.py import. Asserts "
+        "nothing; `verify_ks3` (ks3_parity's ≤64px / one-row reflow check at "
+        "360 and 390), `ks4_pilot_check`, `theme_wiring_check` and "
+        "`brand_one_mark` are the gates that prove what it draws.",
     "brand_port.py":
         "the one-mark substitution the two compiled Design ports share "
         "(Mide's ruling, 13 Sep 2026): `RULED_BRAND` in student_rulings.py / "

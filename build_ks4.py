@@ -217,7 +217,12 @@ KS4_VERSIONED = ("ks4-ds.css", "ks4-theme.css", "ks4-lesson.css",
                   "ks4-runtime.js", "mrbadmus.v2.js", "theme.js",
                   # ⊕ one-mark run (27 Sep 2026) — brand.brand_head()'s assets.
                   "brand/brand.css", "brand/mrbadmus-favicon.svg",
-                  "brand/mrbadmus-icon-light-512.png")
+                  "brand/mrbadmus-icon-light-512.png",
+                  # ⊕ Stage B (phone run, 28 Sep 2026) — the one top bar and
+                  # what its right-hand group needs (config.js for ?env=test,
+                  # class-entry.js for who is looking, the bell).
+                  "topbar.css", "topbar.js", "config.js", "class-entry.js",
+                  "student-bell.js")
 
 # The subset of KS4_VERSIONED this script itself WRITES (excludes
 # mrbadmus.v2.js, which it only reads — that one is generate_site_v5.py's,
@@ -1237,14 +1242,17 @@ def compile_block(page, name):
     path = os.path.join(DESIGN_DIR, name + ".dc.html")
     tpl, logic = template_and_logic(path)
     if name == "Ks4Chrome":
-        tpl = ks4_rulings.apply_r_breadcrumb(tpl)
-        # ⊕ D11 (theme-run audit, 27 Sep 2026) — R15, moved here from
-        # compile_lesson(): the theme slot goes into the shared header nav
-        # (brand + breadcrumb), not the per-lesson hero, so every one of
-        # the 54 pages gets it from this ONE compiled block.
-        tpl = ks4_rulings.apply_r15_theme_slot(name, tpl)
-        # ⊕ R-BRAND (one-mark ruling, 13 Sep 2026) — AFTER R-BREADCRUMB.
-        tpl = ks4_rulings.apply_r_brand_chrome(tpl)
+        # ⊕ R-TOPBAR (Stage B, phone run 28 Sep 2026) — FIRST, and it
+        # replaces the whole header nav with the ONE pupil top bar. It
+        # RETIRES the three rulings that used to run here, in this order:
+        #     tpl = ks4_rulings.apply_r_breadcrumb(tpl)
+        #     tpl = ks4_rulings.apply_r15_theme_slot(name, tpl)
+        #     tpl = ks4_rulings.apply_r_brand_chrome(tpl)
+        # — their targets (the README.md crumbs, the nav's closing bytes, the
+        # old brand anchor) are all inside the nav R-TOPBAR removes, so each
+        # would now fail loud on a missing anchor. See ks4_rulings.py.
+        tpl = ks4_rulings.apply_r_topbar(tpl)
+        logic = ks4_rulings.apply_r_topbar_logic(logic)
     if name == "Ks4End":
         # ⊕ R-BRAND — the footer's sign-off says "MrBadmus".
         tpl = ks4_rulings.apply_r_brand_footer(tpl)
@@ -1558,6 +1566,7 @@ def render_page(lesson, route, compiled_lesson, block_scripts, prev_next, versio
 <link rel="stylesheet" href="/shared/ks4-ds.css">
 <link rel="stylesheet" href="/shared/ks4-theme.css">
 <link rel="stylesheet" href="/shared/ks4-lesson.css">
+<link rel="stylesheet" href="/shared/topbar.css">
 <style>html,body{margin:0;padding:0;background:#FBF3E6}@media screen{html[data-theme="dark"] body,html[data-theme="dark"]{background:#16120E}}</style>
 </head>
 <body>
@@ -1569,6 +1578,10 @@ def render_page(lesson, route, compiled_lesson, block_scripts, prev_next, versio
 %(block_scripts)s
 %(mount_script)s
 %(tutor)s
+<script src="/shared/config.js" defer></script>
+<script src="/shared/class-entry.js" defer></script>
+<script src="/shared/student-bell.js" defer></script>
+<script src="/shared/topbar.js" defer></script>
 </body>
 </html>
 """ % dict(title=title, url=url, favicon=KS4_PILOT_FAVICON_LINK,
@@ -1665,7 +1678,16 @@ def prerender_all(cdp, pages):
                     except Exception:
                         renders = None
                     if renders:
-                        baked = page.eval("document.querySelector('#ks4-mount').innerHTML")
+                        # ⊕ Stage B — the top bar's "who" slot is emptied in
+                        # the SAME eval that reads the mount: what topbar.js
+                        # put there depends on who is looking (and on when its
+                        # promise settled), so baking it would make the page
+                        # nondeterministic and hand every visitor the bake's
+                        # signed-out "Sign in" until the runtime redraws.
+                        baked = page.eval(
+                            "(function(){[].forEach.call(document.querySelectorAll("
+                            "'[data-mrb-topbar-who]'),function(s){s.textContent='';});"
+                            "return document.querySelector('#ks4-mount').innerHTML;})()")
                         break
                     time.sleep(0.1)
                 errors_1280 = _real_errors(page.console_errors())

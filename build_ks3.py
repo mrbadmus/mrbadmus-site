@@ -53,7 +53,7 @@ from ks3_data.substatements import all_sub_ids, parent_of
 
 # Theme run (26 Sep 2026): the one shared pre-paint snippet, control slot and
 # script tag, imported rather than retyped — see theme_head.py.
-from theme_head import THEME_HEAD, THEME_SLOT, theme_script
+from theme_head import THEME_HEAD, theme_script
 
 # The browse layer's only data source. Slugs and display names live in
 # half_terms.py rather than here on purpose: a second copy in the generator
@@ -78,6 +78,7 @@ KS4_BRIDGE_PATHWAY = "combined"
 KS4_BRIDGE_TIER = "foundation"
 
 import brand
+import topbar  # the ONE pupil top bar (Stage B, phone run 28 Sep 2026)
 import ks3_art
 from ks3_art.kit import (
     MARKS,
@@ -206,7 +207,12 @@ VERSIONED_ASSETS = ("tokens.css", "styles.css", "nav.css", "ks3.css", "ks3.js",
                      # tags (brand.brand_head()). Same staleness argument:
                      # a cached brand.css would draw last week's lockup.
                      "brand/brand.css", "brand/mrbadmus-favicon.svg",
-                     "brand/mrbadmus-icon-light-512.png")
+                     "brand/mrbadmus-icon-light-512.png",
+                     # ⊕ Stage B (phone run, 28 Sep 2026) — the one top bar
+                     # (topbar.css/.js) and what its right-hand group needs:
+                     # config.js (so ?env=test reaches the bar), and the
+                     # bell. Same staleness argument as every line above.
+                     "topbar.css", "topbar.js", "config.js", "student-bell.js")
 
 
 def asset_versions(repo_root="."):
@@ -455,7 +461,7 @@ def tutor_mount(discipline, topic):
 # is RETIRED with every other mark on the site. KS3 now wears the ONE lockup,
 # drawn by brand.py and styled by shared/brand/brand.css; nothing here draws
 # a chevron any more.
-NAV_BRAND = brand.brand_lockup("/index.html")
+NAV_BRAND = brand.brand_lockup("/index.html")  # ⊕ Stage B: the bar is topbar.py's now; kept for the gate that names it
 
 
 # SPEC.md §2 requires the KS3 fonts preloaded. Two of the five, matching the
@@ -475,76 +481,46 @@ FONT_PRELOADS = "".join(
                  "instrument-sans-var-latin.woff2"))
 
 
-def crumbs(parts):
-    """KS3 › Chemistry › Particles and their behaviour  (§8.5).
+def topbar_title(parts):
+    """The top bar's title slot, from a page's place in the tree.
 
-    The separate breadcrumb ROW, mono 14px inside `<main>`. Still correct on
-    unit indices, discipline hubs and the browse layer. ⊕ MRB-208 amendment 1
-    removed it from LESSON pages only, where the trail moved into the header —
-    see `header_trail()`.
+    ⊕ Stage B (phone run, 28 Sep 2026) — REPLACES `crumbs()` (the mono 14px
+    `<nav class="ks3-crumbs">`) and `header_trail()` (MRB-208 rule 1's
+    `<ol class="ks3-trail">`). Both put the whole path into the header rail,
+    and on a phone the path wrapped: the lesson Mide photographed ("Animal and
+    plant cells") stacked brand, trail, theme control and "My class" over four
+    rows, 198px of a 844px screen. The one top bar (topbar.py) holds ONE row.
+
+    What survives is the PARENT rung, as the title link ("‹ Cells and
+    organisation") — the one step up a pupil actually takes. The rungs above it
+    are reachable from there, and the lesson's own eyebrow and h1 already say
+    the rest; repeating them in the bar was the redundancy the phone paid for.
+
+    `parts` is the same `[(label, href), …]` path the retired helpers took,
+    last element this page. Returns `(title, href)`; `(None, None)` at the key
+    stage's root, where the page's own eyebrow already says "Key Stage 3".
     """
-    out = []
-    for i, (label, href) in enumerate(parts):
-        if href and i < len(parts) - 1:
-            out.append('<a href="%s">%s</a>' % (e(href), t(label)))
-        else:
-            out.append('<span aria-current="page">%s</span>' % t(label))
-    return ('<nav class="ks3-crumbs" aria-label="Breadcrumb">%s</nav>'
-            % '<span class="ks3-crumb-sep" aria-hidden="true">›</span>'.join(out))
+    if len(parts) < 2:
+        return (None, None)
+    label, href = parts[-2]
+    if label == "KS3":
+        label = "Key Stage 3"
+    return (label, href)
 
 
-def header_trail(parts):
-    """The lesson trail, inline in the header bar. ⊕ MRB-208 rule 1.
-
-    Ruled by Mide during B1 round one, and re-affirmed on 13 Aug 2026 when both
-    treatments were found alive in the tree:
-
-        "Amendment 1 on this ticket ruled it on 12 August: the header carries
-         the trail inline, the separate breadcrumb row is gone, the KS3 pill
-         stays. Design's treatment survives; `.ks3-crumbs` is removed from the
-         lesson pages. Re-opening a settled ruling because both artefacts still
-         exist in the repo is how a decision quietly becomes a discussion
-         again."
-
-    An `<ol>` rather than the row's flat spans, because it is an ordered path
-    and a screen reader should say so. Separators are their own `<li>`s and are
-    `aria-hidden`, so the list reads as four items and not seven. Measured on
-    Design's pages at body 17px/600, gap 9px, wrapping to its own row at 820
-    and over three rows at 390 — which is what grows `nav.ks3-nav` from 63.19px
-    to 94.78px to 176.06px, and the sticky rail sits directly under it.
-    """
-    out = []
-    for i, (label, href) in enumerate(parts):
-        last = i == len(parts) - 1
-        if i:
-            out.append('<li class="ks3-trail-sep" aria-hidden="true">›</li>')
-        if href and not last:
-            out.append('<li><a href="%s">%s</a></li>' % (e(href), t(label)))
-        else:
-            out.append('<li><span aria-current="page">%s</span></li>' % t(label))
-    return ('<ol class="ks3-trail" aria-label="Breadcrumb">%s</ol>'
-            % "".join(out))
-
-
-def shell(title, body, crumb_html="", discipline=None, description="",
+def shell(title, body, nav=(None, None), discipline=None, description="",
           footer_links=(), main_class="", lesson_slug=None,
-          trail_html="", rail_html="", canonical="", head_links="",
+          rail_html="", canonical="", head_links="",
           tail_html="", needs_js=True, og_type="website"):
     """KS3 page shell. `class="rd"` + `data-mode="ks3"` per §8.5.
 
-    **The breadcrumbs live in the HEADER, not in `<main>` (MRB-208).** Design's
-    browse layer puts them on the header rail, one divider after the brand, and
-    that is the only place they appear: a page that repeated them as a row
-    inside `<main>` would announce the same trail twice to a screen reader and
-    push the h1 below the fold on a phone for no gain.
-
-    **Two treatments of that one landmark, never two landmarks.** An authored
-    lesson passes `trail_html` — MRB-208 rule 1's `<ol class="ks3-trail">`, body
-    17px/600, an ordered path a screen reader announces as one. Every other page
-    type passes `crumb_html` — `crumbs()`'s mono 14px `<nav class="ks3-crumbs">`,
-    which survives on unit indices, discipline hubs, the year and half-term
-    screens and the browse layer. They occupy the same header slot after the
-    same divider, so a page has exactly one trail whichever it is.
+    **The header is the ONE pupil top bar (Stage B, phone run 28 Sep 2026).**
+    `nav` is `topbar_title()`'s `(title, href)`: the parent page as a "‹" link,
+    or nothing at the key stage's root. ⊖ The two trail treatments this used
+    to describe — a lesson's `trail_html` (`<ol class="ks3-trail">`, MRB-208
+    rule 1) and every other page's `crumb_html` (`<nav class="ks3-crumbs">`)
+    — are retired with the multi-row header they produced on a phone. Nothing
+    inside `<main>` changed.
 
     `footer_links` is a list of `(label, href)` for the footer's right-hand
     quick links. It is per-page rather than derived here because only the caller
@@ -571,7 +547,7 @@ def shell(title, body, crumb_html="", discipline=None, description="",
 
     ⊕ MRB-257 — five additive keyword slots. Every one of them defaults to the
     behaviour this shell already had, so a caller that passes none is
-    unchanged. The `trail_html or crumb_html` slot above is untouched: the
+    unchanged. (⊖ Stage B: the `trail_html or crumb_html` slot is now `nav`.) The
     MRB-220 contract's objection was to a SECOND trail slot, not to the shell
     growing head metadata it never had.
 
@@ -604,10 +580,11 @@ def shell(title, body, crumb_html="", discipline=None, description="",
     """
     accent = ("--subject: var(%s);" % SUBJECT_TOKEN[discipline]) if discipline else ""
 
-    # No brand→trail divider when there is nothing to divide.
-    header_nav = trail_html or crumb_html
-    crumb_rail = ('<span class="ks3-nav-divider" aria-hidden="true"></span>\n  %s'
-                  % header_nav) if header_nav.strip() else ""
+    # ⊕ Stage B (phone run, 28 Sep 2026) — the header is the ONE pupil top
+    # bar. `nav` is `topbar_title()`'s (title, href). `host_class="ks3-nav"`
+    # keeps `header.ks3-nav`'s sticky/blur/rule (ks3.css) and the selector
+    # shared/ks3.js measures for `--ks3-nav-h`.
+    header_html = topbar.topbar(nav[0], nav[1], kind="ks3", host_class="ks3-nav")
 
     # ⊕ MRB-330, 6 Sep 2026 — the "All of KS3" footer link is CUT. It used to
     # be prepended to every page in the key stage:
@@ -694,14 +671,10 @@ def shell(title, body, crumb_html="", discipline=None, description="",
 <link rel="stylesheet" href="/shared/nav.css"/>
 <link rel="stylesheet" href="/shared/ks3.css"/>
 <link rel="stylesheet" href="/shared/ks3-theme.css"/>
+<link rel="stylesheet" href="/shared/topbar.css"/>
 %(headlinks)s</head>
 <body class="rd" data-mode="ks3"%(lesson)s%(style)s>
-<header class="ks3-nav">
-  <div class="ks3-nav-rail">%(brand)s
-  %(crumbs)s
-  <span class="ks3-nav-spacer"></span>
-  %(themeslot)s</div>
-</header>
+%(header)s
 %(rail)s<main class="ks3-main%(mainclass)s">
 %(body)s
 </main>
@@ -710,7 +683,10 @@ def shell(title, body, crumb_html="", discipline=None, description="",
     <p class="ks3-footer-title">MrBadmus · Key Stage 3 Science</p>%(links)s
   </div>
 </footer>
-%(tail)s%(themescript)s%(scripts)s<script src="/shared/class-entry.js" defer></script>
+%(tail)s%(themescript)s%(scripts)s<script src="/shared/config.js" defer></script>
+<script src="/shared/class-entry.js" defer></script>
+<script src="/shared/student-bell.js" defer></script>
+<script src="/shared/topbar.js" defer></script>
 </body>
 </html>
 """ % {
@@ -723,15 +699,13 @@ def shell(title, body, crumb_html="", discipline=None, description="",
         "scripts": scripts,
         "style": (' style="%s"' % accent) if accent else "",
         "lesson": (' data-ks3-lesson="%s"' % e(lesson_slug)) if lesson_slug else "",
-        "brand": NAV_BRAND,
-        "crumbs": crumb_rail,
+        "header": header_html,
         "rail": rail_html,
         "mainclass": (" %s" % main_class) if main_class else "",
         "links": links_html,
         "body": body,
         "preload": FONT_PRELOADS,
         "themehead": THEME_HEAD,
-        "themeslot": THEME_SLOT,
         "themescript": theme_script(),
     }
 
@@ -4337,7 +4311,7 @@ def lesson_page(unit, lesson, registry, units_by_code, neighbours=None):
     # ⊕ MRB-208 rule 1: on a LESSON page the trail lives in the header bar and
     # the separate `.ks3-crumbs` row is gone. Every other page type still calls
     # crumbs() — the ruling was scoped to lessons and nothing else moved.
-    trail = header_trail([("KS3", "/ks3/index.html"),
+    trail = topbar_title([("KS3", "/ks3/index.html"),
                           (DISCIPLINE_TITLES[disc], "/ks3/%s/index.html" % disc),
                           (unit["title"], base + "/index.html"),
                           (lesson["title"], None)])
@@ -4660,11 +4634,11 @@ def lesson_page(unit, lesson, registry, units_by_code, neighbours=None):
         head_links += '<link rel="prev" href="%s"/>\n' % e(canon(
             _lesson_href(prev_n[0], prev_n[1])))
 
-    return shell(lesson["title"], "\n".join(x for x in body if x), "", disc,
+    return shell(lesson["title"], "\n".join(x for x in body if x), trail, disc,
                  lesson.get("meta_description")
                  or lesson.get("big_question", ""),
                  lesson_slug=lesson["slug"],
-                 trail_html=trail, rail_html=r_rail(lesson),
+                 rail_html=r_rail(lesson),
                  canonical=_lesson_href(unit, lesson),
                  head_links=head_links,
                  og_type="article",
@@ -4676,7 +4650,7 @@ def coming_soon_page(unit, lesson):
     """An honest placeholder. Structure-first — never a broken link (§11 dec 8)."""
     disc = unit["discipline"]
     base = "/ks3/%s/%s" % (disc, unit["slug"])
-    crumb = crumbs([("KS3", "/ks3/index.html"),
+    crumb = topbar_title([("KS3", "/ks3/index.html"),
                     (DISCIPLINE_TITLES[disc], "/ks3/%s/index.html" % disc),
                     (unit["title"], base + "/index.html"),
                     (lesson["title"], None)])
@@ -4702,7 +4676,7 @@ def coming_soon_page(unit, lesson):
 
 def unit_index(unit, units_by_code, registry):
     disc = unit["discipline"]
-    crumb = crumbs([("KS3", "/ks3/index.html"),
+    crumb = topbar_title([("KS3", "/ks3/index.html"),
                     (DISCIPLINE_TITLES[disc], "/ks3/%s/index.html" % disc),
                     (unit["title"], None)])
 
@@ -4751,7 +4725,7 @@ def unit_index(unit, units_by_code, registry):
 
 
 def discipline_hub(disc, units):
-    crumb = crumbs([("KS3", "/ks3/index.html"),
+    crumb = topbar_title([("KS3", "/ks3/index.html"),
                     (DISCIPLINE_TITLES[disc], None)])
     cards = []
     for u in units:
@@ -4973,7 +4947,7 @@ def year_index(year, browse):
     exists to answer. A half term may carry four units, or two in one science;
     the list is derived, so it renders however many there actually are.
     """
-    crumb = crumbs([("KS3", "/ks3/index.html"), ("Year %d" % year, None)])
+    crumb = topbar_title([("KS3", "/ks3/index.html"), ("Year %d" % year, None)])
 
     rows = []
     for season, hts in _seasons_of_year():
@@ -5067,7 +5041,7 @@ def half_term_index(year, half_term, browse):
     slug = half_term_slug(half_term)
     name = half_term_name(half_term)
     season = season_of(half_term)
-    crumb = crumbs([("KS3", "/ks3/index.html"),
+    crumb = topbar_title([("KS3", "/ks3/index.html"),
                     ("Year %d" % year, "/ks3/year-%d/index.html" % year),
                     (name, None)])
 
@@ -5221,7 +5195,7 @@ def half_term_discipline_index(year, half_term, disc, browse, units_by_code):
     """
     slug = half_term_slug(half_term)
     name = half_term_name(half_term)
-    crumb = crumbs([("KS3", "/ks3/index.html"),
+    crumb = topbar_title([("KS3", "/ks3/index.html"),
                     ("Year %d" % year, "/ks3/year-%d/index.html" % year),
                     (name, "/ks3/year-%d/%s/index.html" % (year, slug)),
                     (DISCIPLINE_TITLES[disc], None)])
@@ -5460,7 +5434,7 @@ def landing(units, browse):
     these pages change, so a hardcoded number fails the build rather than
     quietly lying to a student about how much course there is.
     """
-    crumb = crumbs([("KS3", None)])
+    crumb = topbar_title([("KS3", None)])
 
     # ⊕ MRB-330, 6 Sep 2026 — the "Live right now" panel is CUT, and with it
     # everything computed only to fill it. What stood here was `total_lessons`

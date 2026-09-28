@@ -530,6 +530,63 @@ def apply_r_tutor_label(text):
 
 
 # ═══════════════════════════════════════════════════════════════════════
+# R-TOPBAR — Stage B of the phone run (28 Sep 2026). Ks4Chrome's whole
+# header — `<nav class="ks3-nav" …>` holding Design's retired mark, a
+# divider and a four-rung breadcrumb that wraps — is replaced by the ONE
+# pupil top bar (topbar.py), the same bar every KS3 page and the leaderboard
+# now carry. Measured before: 184px tall at 390px, over four rows.
+#
+# Matched STRUCTURALLY, not by a byte copy of Design's nav: the nav holds
+# KS3's retired mark, and this file carries no copy of it (see R-BRAND). The
+# first `<nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">` up to
+# its own `</nav>` (it contains no nested nav), exactly once, and it must
+# still carry the breadcrumb, `{{ unit }}` and `{{ title }}` — so a moved or
+# redrawn delivery fails here rather than being half-replaced.
+#
+# The title is `{{ unit }}`, linked to the UNIT's own topic page. ⊕ This
+# DEVIATES from the Stage B plan's `/ks4.html`: a link that says "Bonding,
+# structure and properties" and lands on the GCSE landing is a link that
+# lies. The topic page is `<route dir>.html` — /combined/higher/chemistry/
+# bonding/ionic-bonding.html → /combined/higher/chemistry/bonding.html —
+# which exists for all 54 pages because generate_site_v5.py writes it for
+# every topic. `unitHref` is derived in Ks4Chrome's renderVals from
+# `location.pathname`, the only per-route fact the shared block can see
+# (one compiled Ks4Chrome serves up to four routes).
+#
+# ⊖ RETIRES R-BREADCRUMB (the four `href="README.md"` it rewrote are gone
+# with the nav), R15 (the theme slot is part of the bar) and R-BRAND's
+# chrome half (the bar draws brand.py's lockup). Their functions stay below,
+# uncalled, as the record of what they did; R-BRAND's footer half still runs.
+# ═══════════════════════════════════════════════════════════════════════
+_R_TOPBAR_NAV_RE = re.compile(
+    r'<nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">(?:(?!<nav\b).)*?</nav>', re.S)
+R_TOPBAR_UNIT_FROM = "unit: this.props.unit || '',"
+R_TOPBAR_UNIT_TO = ("unit: this.props.unit || '', "
+                    "unitHref: window.location.pathname.replace(/\\/[^\\/]*$/, '') + '.html',")
+
+
+def apply_r_topbar(text):
+    import topbar
+    hits = _R_TOPBAR_NAV_RE.findall(text)
+    if len(hits) != 1:
+        raise RulingError(
+            "ks4_rulings R-TOPBAR: Ks4Chrome.dc.html carries %d header nav(s), "
+            "expected exactly 1. Design's delivery moved." % len(hits))
+    for must in ('aria-label="Breadcrumb"', "{{ unit }}", "{{ title }}"):
+        if must not in hits[0]:
+            raise RulingError(
+                "ks4_rulings R-TOPBAR: the header nav no longer carries %r — "
+                "Design redrew it; read the diff before re-anchoring." % must)
+    bar = topbar.topbar("{{ unit }}", "{{ unitHref }}", kind="ks4", host_class="ks3-nav")
+    return _R_TOPBAR_NAV_RE.sub(lambda m: bar, text, count=1)
+
+
+def apply_r_topbar_logic(logic):
+    _require(logic, R_TOPBAR_UNIT_FROM, "Ks4Chrome.dc.html (logic)", "R-TOPBAR")
+    return logic.replace(R_TOPBAR_UNIT_FROM, R_TOPBAR_UNIT_TO, 1)
+
+
+# ═══════════════════════════════════════════════════════════════════════
 # R-BREADCRUMB — Ks4Chrome's brand link and three breadcrumb links
 # (`href="README.md"`) point at Design's local review index, which does not
 # exist on the live site. Rewritten to `/ks4.html`, the real GCSE landing
