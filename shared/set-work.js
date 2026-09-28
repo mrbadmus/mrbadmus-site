@@ -643,6 +643,7 @@
      the last class un-anchors. Anchored, the anchor is the page's fact and
      is not the teacher's to clear by unticking. */
   var isAnchoredOpen = false;
+  var openerClasses = null;    // ⊕ Set from class (M) — `open({classes})`
   /* Restored on close, so a keyboard user is put back where they were. */
   var opener = null;
 
@@ -876,7 +877,7 @@
          `syncStep` and `submit`, and never renumbers a step. `fc` is the
          flashcard set's own three facts. */
       type: "questions",
-      fc: { deck: null, mode: "make", rule: "secure", cards: 0, deckTitle: "" },
+      fc: { deck: null, mode: "make", rule: "secure", cards: 0, deckTitle: "", preset: false },
       /* ⊕ 25 Sep 2026 — THE QUESTIONS AN EDITED SET ALREADY HOLDS, and
          whether they have been PLACED. `keepPicked` (MRB-336) and
          `originalPicked` (Stream L) are retired in favour of these; see
@@ -1057,19 +1058,26 @@
     var body = el("div", "sw-body");
     body.setAttribute("data-sw", "body");
 
-    /* ── panel 0: Classes ── */
-    var pClasses = el("div", "sw-panel");
-    pClasses.setAttribute("data-sw", "panel-classes");
-    /* ⊕ MRB-351 — THE TYPE CHOICE, at the top of the Classes step. Questions
-       is the default and is the sheet it always was. */
+    /* ⊕ MRB-351 — THE TYPE CHOICE.
+       ⊕ Set from class (M), 27 Sep 2026 — Mide's ruling: it is the FIRST
+       thing on the sheet, above every panel, on whichever step the sheet
+       opens on, and it stays there on the step after (Topic or Deck) so a
+       teacher can change their mind. It used to live inside the Classes
+       panel. Questions is the default and is the sheet it always was. */
+    var typeWrap = el("div", "sw-type");
+    typeWrap.setAttribute("data-sw", "type");
     var typeLbl = el("div", "sw-label", SAY.labelType);
     typeLbl.setAttribute("data-sw", "type-label");
     var typeChips = el("div", "sw-chips");
     typeChips.setAttribute("data-sw", "type-chips");
-    pClasses.appendChild(typeLbl);
-    pClasses.appendChild(typeChips);
+    typeWrap.appendChild(typeLbl);
+    typeWrap.appendChild(typeChips);
+
+    /* ── panel 0: Classes ── */
+    var pClasses = el("div", "sw-panel");
+    pClasses.setAttribute("data-sw", "panel-classes");
     pClasses.appendChild(el("div", "sw-label", SAY.labelClasses));
-    var classList = el("div", "sw-tree");
+    var classList = el("div", "sw-tree sw-classes");
     classList.setAttribute("data-sw", "class-list");
     pClasses.appendChild(classList);
     /* ⊕ MRB-335 — the scope's failure, on the step the teacher is standing
@@ -1275,6 +1283,7 @@
     fcSummary.appendChild(fcSumMeta);
     pDetail.appendChild(fcSummary);
 
+    body.appendChild(typeWrap);
     body.appendChild(pClasses); body.appendChild(pTopic);
     body.appendChild(pDeck); body.appendChild(pDetail);
     sheet.appendChild(head); sheet.appendChild(body);
@@ -1312,7 +1321,7 @@
       toast: toast,
       treeRows: [], classRows: [],
       /* ⊕ MRB-351 */
-      typeLbl: typeLbl, typeChips: typeChips, typeList: null,
+      typeWrap: typeWrap, typeLbl: typeLbl, typeChips: typeChips, typeList: null,
       pDeck: pDeck, deckHost: deckHost, deckNote: deckNote, deckRetry: deckRetry,
       fcTop: fcTop, fcModeBtns: fcModeBtns, fcRule: fcRule, fcRuleList: null,
       fcSummary: fcSummary, fcSumTitle: fcSumTitle, fcSumMeta: fcSumMeta
@@ -1982,13 +1991,16 @@
      request instead of after it. */
   function pagePool() {
     var d = window.__MRB_DATA__;
-    var raw = (d && d.SET_WORK_CLASSES) || [];
+    /* ⊕ Set from class (M) — a page with no compiled data (the deck
+       library) hands its own list to `open({classes})`. */
+    var raw = (d && d.SET_WORK_CLASSES) || openerClasses || [];
     var out = [];
     for (var i = 0; i < raw.length; i++) {
       var c = raw[i];
       if (!c || !c.id) { continue; }
+      var n = (c.n != null) ? c.n : c.pupils;
       out.push({ id: String(c.id), name: String(c.code || c.name || ""),
-                 pupils: Number(c.n != null ? c.n : c.pupils) || 0 });
+                 pupils: (n == null) ? null : (Number(n) || 0) });
     }
     return out;
   }
@@ -2021,7 +2033,9 @@
         "border:1.5px solid var(--st-rule-strong)";
       var main = el("span", "sw-row-main");
       main.appendChild(el("span", "sw-row-name", String(c.name || "")));
-      main.appendChild(el("span", "sw-row-tag", SAY.pupils(c.pupils || 0)));
+      /* A list with no roster size (the deck library's) says nothing
+         rather than "0 pupils". */
+      if (c.pupils != null) { main.appendChild(el("span", "sw-row-tag", SAY.pupils(c.pupils || 0))); }
       row.appendChild(box); row.appendChild(main);
       els.classList.appendChild(row);
       var rec = { id: String(c.id), node: row, box: box };
@@ -3242,11 +3256,12 @@
      inside 300, and — on an edit — a note the sheet actually knows, because
      `flashcard_edit_assignment` always writes `p_note` and an edit that
      never learned the stored note must not be the edit that clears it. */
+  function flashStepValidDeck() {
+    var d = S.fc.deck;
+    return !!(d && d.id && d.status === "ready" && Number(d.card_count) > 0);
+  }
   function flashStepValid() {
-    if (S.step === 1) {
-      var d = S.fc.deck;
-      return !!(d && d.id && d.status === "ready" && Number(d.card_count) > 0);
-    }
+    if (S.step === 1) { return flashStepValidDeck(); }
     if (S.busy || S.submitting) { return false; }
     if (!S.editId && !S.classes.length) { return false; }
     if (!S.editId && !(S.fc.deck && S.fc.deck.id)) { return false; }
@@ -3348,9 +3363,7 @@
        flashcard schema yet, and with nothing to pick from a picker of one
        is not a picker — Questions is simply what the sheet does, exactly as
        before this feature existed. */
-    els.typeLbl.hidden = !!S.editId || !fcCapable();
-    els.typeChips.hidden = !!S.editId || !fcCapable();
-    syncChips(els.typeList, S.type);
+    syncTypeChoice();
     els.qLbl.hidden = flash;
     els.scopesHost.hidden = flash;
     if (flash) {
@@ -3710,11 +3723,18 @@
     if (!S || S.editId || S.type === k) { return; }
     S.type = k;
     S.clientRef = "";
+    /* ⊕ Set from class (M), 27 Sep 2026 — the choice MOVES the sheet.
+       Flashcards goes to the Deck step as soon as there is a class to set
+       it to (from a class page there always is); with none ticked yet it
+       stays on Classes and Next goes to Deck. Questions returns to the
+       start of the Questions flow, the Classes step, exactly as it opens. */
     if (k === "flashcards") {
       els.classNote.hidden = true;
       /* Warm the deck module while the teacher is still choosing classes. */
       loadDecks();
+      if (S.step === 1 || S.classes.length) { S.step = 1; }
     } else {
+      S.step = 0;
       /* Back to Questions: the cohort applies again. A class ticked while
          the type was Flashcards may be outside it, and goes. */
       els.classNote.hidden = !S.scopeErr;
@@ -3740,7 +3760,11 @@
     /* The summary. The deck title is DATA (a teacher's words), drawn with
        its formulae; the rest is labels and numbers. */
     var t = S.fc.deckTitle || (S.fc.deck && S.fc.deck.title) || "";
-    if (window.MRBFormulae) { window.MRBFormulae.fill(els.fcSumTitle, t); }
+    /* ⊕ Set from class (M) — subscripts on a CHEMISTRY deck only: on a
+       physics or biology deck N2 is Newton's second law and F2 a filial
+       generation, and an untagged deck is shown exactly as typed. */
+    var chem = !!(S.fc.deck && S.fc.deck.subject === "chemistry");
+    if (chem && window.MRBFormulae) { window.MRBFormulae.fill(els.fcSumTitle, t); }
     else { els.fcSumTitle.textContent = t; }
     var parts = [];
     var n = S.fc.cards || (S.fc.deck && Number(S.fc.deck.card_count)) || 0;
@@ -3758,6 +3782,10 @@
   }
 
   function onPrimaryFlash() {
+    /* ⊕ Set from class (M) — a deck chosen in the library (`open({deck})`)
+       is already chosen: Classes → Detail. Back from Detail still shows
+       the Deck step, where it can be changed. */
+    if (S.step === 0 && S.fc.preset && flashStepValidDeck()) { goDetailFlash(); return; }
     if (S.step === 0) { S.step = 1; syncStep(); return; }
     if (S.step === 1) { goDetailFlash(); return; }
     if (S.editId) { saveEditFlash(); return; }
@@ -3789,34 +3817,102 @@
     return (g && g.getClient) ? g.getClient() : null;
   }
 
-  /* ⊕ MRB-351 landing (27 Sep 2026) — DEGRADE-SAFE. `fcCapableCache` mirrors
-     `shared/teacher-admin-nav.js`'s own probe — LITERALLY the same probe,
-     not a second read of `flashcard_decks`: `probeFcCapability` below asks
-     `window.MrBadmusAdminScope.flashcardsCapable()`, which is one cached
-     promise shared by that module's own "Flashcard decks" nav link. Absent
-     that module (a fixture page with no nav script, or a future page that
-     never loads it) this fails closed rather than probing a second time —
-     `fcCapable()` reads `false` and the Flashcards chip stays hidden.
-     Starts `null` (unprobed); `open()` kicks the probe off, never on the
-     critical path, and `syncStep()` re-draws once it resolves. */
+  /* ⊕ MRB-351 landing (27 Sep 2026) — DEGRADE-SAFE. `fcCapableCache` is
+     true / false once DEFINITELY known and null while not: production
+     without the flashcard schema must never show a Flashcards choice that
+     opens onto a missing table.
+
+     ⊕ Set from class (M), 27 Sep 2026 — THE SHEET GETS ITS OWN ANSWER.
+     This used to ask `window.MrBadmusAdminScope.flashcardsCapable()` and
+     nothing else, and fail closed when that module was absent. On
+     `teacher/class-detail.html` it IS absent when Set work opens:
+     `teacher-admin-nav.js` is lazy-loaded there (by `class-csv-upload.js`,
+     for its own reasons), so the answer was `Promise.resolve(false)`, the
+     state stayed null, and the Flashcards choice never appeared — on
+     production, with the schema live and the probe itself answering 200.
+     Mide could not set a deck from a class page at all.
+
+     Now: when the nav module is on the page, its ONE cached probe is still
+     the one asked (so the nav link and the sheet agree). When it is not,
+     the sheet runs the same one-row GET itself (`ownFcProbe`), with the
+     same rules — a real GET, never `head:true` (see teacher-admin-nav.js
+     for why), and "missing table" is the only answer that means no. An
+     unknown answer (no client yet, a network blip) retries while the sheet
+     is open, and the choice re-draws the moment an answer lands. */
   var fcCapableCache = null;
+  var fcProbing = false;
+  var fcRetries = 0;
+  var FC_CAP_KEY = "mrb-fc-cap:v2";          // teacher-admin-nav.js's own key
+  var FC_NO_TTL_MS = 10 * 60 * 1000;
   function fcCapable() { return fcCapableCache === true; }
+
+  /* The client the sheet writes with, waited for — the guard can arrive
+     after the sheet's first open on a slow sign-in. */
+  function waitClient(ms) {
+    var until = Date.now() + ms;
+    return new Promise(function (resolve) {
+      (function poll() {
+        var c = sbClient();
+        if (c || Date.now() > until) { resolve(c || null); return; }
+        setTimeout(poll, 200);
+      })();
+    });
+  }
+
+  function ownFcProbe() {
+    try {
+      var at = Number(sessionStorage.getItem(FC_CAP_KEY));
+      if (at > 0 && (Date.now() - at) < FC_NO_TTL_MS) { return Promise.resolve(false); }
+    } catch (e) { /* private window: probe again */ }
+    return waitClient(15000).then(function (c) {
+      if (!c) { return null; }
+      return Promise.resolve(c.from("flashcard_decks").select("id").limit(1)).then(function (r) {
+        if (r && !r.error && typeof r.status === "number" && r.status >= 200 && r.status < 300) {
+          return true;
+        }
+        var code = r && r.error && r.error.code;
+        if (code === "PGRST205" || code === "42P01" || (r && r.status === 404)) {
+          try { sessionStorage.setItem(FC_CAP_KEY, String(Date.now())); } catch (e) { /* ok */ }
+          return false;
+        }
+        return null;
+      }, function () { return null; });
+    });
+  }
+
   function probeFcCapability() {
-    if (fcCapableCache !== null) { return; }
+    if (fcCapableCache !== null || fcProbing) { return; }
+    fcProbing = true;
     var scope = window.MrBadmusAdminScope;
     var ask = (scope && scope.flashcardsCapable)
-      ? scope.flashcardsCapable()
-      : Promise.resolve(false);
-    Promise.resolve(ask).then(function (ok) {
-      /* Remember only a DEFINITE answer. "Not known yet" (no client in
-         time, a network blip) leaves the cache null, so the next open()
-         asks again instead of pinning the chip hidden for the page. */
-      var st = (scope && scope.flashcardsState) ? scope.flashcardsState() : (ok ? true : null);
-      if (st === true || st === false) { fcCapableCache = st; }
-      if (S) { syncStep(); }
-    }, function () {
-      if (S) { syncStep(); }
+      ? Promise.resolve(scope.flashcardsCapable()).then(function (ok) {
+          return scope.flashcardsState ? scope.flashcardsState() : (ok ? true : null);
+        })
+      : ownFcProbe();
+    Promise.resolve(ask).then(null, function () { return null; }).then(function (st) {
+      fcProbing = false;
+      if (st === true || st === false) {
+        fcCapableCache = st;
+        window.__MRB_FC_CAPABLE__ = st;      // for a drive to read, not to trust
+      } else if (S && fcRetries < 4) {
+        /* Unknown: ask again shortly, while the sheet is still open. */
+        fcRetries += 1;
+        setTimeout(function () { if (S) { probeFcCapability(); } }, 2500);
+      }
+      if (S) { syncTypeChoice(); }
     });
+  }
+
+  /* The type choice's visibility, on its own so an answer landing mid-step
+     re-draws the choice and nothing else (a `syncStep` would reset the
+     sheet's scroll). Offered on a NEW set, on the step it opens on and the
+     step after; the Detail step is about the set already chosen. */
+  function syncTypeChoice() {
+    if (!S || !els) { return; }
+    var on = !S.editId && fcCapable() && S.step < 2;
+    els.typeWrap.hidden = !on;
+    els.overlay.setAttribute("data-sw-fc", fcCapableCache === null ? "unknown" : String(fcCapableCache));
+    syncChips(els.typeList, S.type);
   }
 
   function rpc(name, args) {
@@ -3994,11 +4090,12 @@
       syncFlash();
       syncValidity();
       if (!a.deck_id || (S.fc.deckTitle && S.fc.cards)) { return true; }
-      return Promise.resolve(c.from("flashcard_decks").select("id,title,card_count")
+      return Promise.resolve(c.from("flashcard_decks").select("id,title,card_count,subject")
         .eq("id", a.deck_id).maybeSingle()).then(function (dr) {
         if (!S || mySession !== session || S.editId !== want) { return false; }
         var d = dr && dr.data;
         if (d) {
+          if (S.fc.deck) { S.fc.deck.subject = d.subject || null; }
           if (!S.fc.deckTitle) { S.fc.deckTitle = String(d.title || ""); }
           if (!S.fc.cards) { S.fc.cards = Number(d.card_count) || 0; }
         }
@@ -4715,6 +4812,8 @@
     // first call that actually resolves. See `probeFcCapability` above.
     probeFcCapability();
     isAnchoredOpen = !!o.classId;
+    openerClasses = (o.classes && o.classes.length) ? o.classes : openerClasses;
+    fcRetries = 0;
     opener = (document.activeElement &&
               document.activeElement !== document.body)
       ? document.activeElement : null;
@@ -4738,10 +4837,21 @@
     els.classList.textContent = "";
     els.classRows = [];
     els.classNote.hidden = true;
-    /* ⊕ MRB-351 — every open starts on Questions with no deck. */
+    /* ⊕ MRB-351 — every open starts on Questions with no deck.
+       ⊕ Set from class (M) — unless the opener hands a READY deck
+       (`open({deck})`, the library's "Set to a class"): then it starts on
+       Flashcards with that deck chosen, on the Classes step. */
     if (deckSource) { deckSource.reset(); }
     els.deckNote.hidden = true;
     els.deckRetry.hidden = true;
+    if (o.deck && o.deck.id) {
+      S.type = "flashcards";
+      S.fc.deck = o.deck;
+      S.fc.preset = true;
+      S.fc.cards = Number(o.deck.card_count) || 0;
+      S.fc.deckTitle = String(o.deck.title || "");
+      loadDecks();
+    }
     /* Drawn from the page before anything is asked for, so step 0 is never
        an empty panel with a dead Next. `/scope` refines it when it lands. */
     buildClasses();

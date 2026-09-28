@@ -235,6 +235,9 @@ def run(width, height, shots):
             settle()
 
             # ── open the homework ────────────────────────────────────────
+            # ⊕ Set from class (M), 27 Sep 2026 — formulae are drawn only on a
+            # Chemistry deck; student-live.js publishes this map on the live page.
+            q(page, "window.__MRB_FC_SUBJECT__ = %s" % json.dumps({AID: "chemistry"}))
             q(page, "window.__MRB_OPEN_HW__(%s)" % json.dumps(AID))
             settle(0.6)
             s = st(page)

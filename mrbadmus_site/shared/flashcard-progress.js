@@ -273,9 +273,12 @@
     if (text != null) { e.textContent = text; }
     return e;
   }
+  /* ⊕ Set from class (M), 27 Sep 2026 — formulae are drawn only when the
+     assignment is Chemistry (`S.chem`, read once in `start()`); otherwise the
+     text shows exactly as typed (N2 can be Newton's second law). */
   function sci(tag, cls, text) {
     var e = h(tag, cls);
-    if (window.MRBFormulae && window.MRBFormulae.fill) { window.MRBFormulae.fill(e, text || ""); }
+    if (S.chem && window.MRBFormulae && window.MRBFormulae.fill) { window.MRBFormulae.fill(e, text || ""); }
     else { e.textContent = text || ""; }
     return e;
   }
@@ -285,7 +288,7 @@
   /* ── state ────────────────────────────────────────────────────────────── */
   var S = {
     id: null, sb: null, data: null, sortKey: null, sortDir: "asc",
-    timer: null, inflight: false, detailFor: null, lastFocus: null
+    timer: null, inflight: false, detailFor: null, lastFocus: null, chem: false
   };
 
   function nowIso() { return new Date().toISOString(); }
@@ -830,6 +833,15 @@
       ? await scope.flashcardsCapableSettled().catch(function () { return false; })
       : false;
     if (!capable) { S.notSwitchedOn = true; fail({ code: "not_switched_on" }); return; }
+    /* ⊕ Set from class (M), 27 Sep 2026 — the progress RPC carries no
+       subject, so one read decides whether formulae are drawn. Any failure
+       leaves the text plain. */
+    try {
+      var subj = await S.sb.from("assignments").select("subject:subjects(name)")
+        .eq("id", S.id).maybeSingle();
+      var sname = subj && subj.data && subj.data.subject && subj.data.subject.name;
+      S.chem = String(sname || "").toLowerCase() === "chemistry";
+    } catch (e) { S.chem = false; }
     try {
       render(await fetchProgress());
     } catch (e) { fail(e); return; }

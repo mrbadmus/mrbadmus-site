@@ -94,7 +94,7 @@ TABLES = {
     "staff_scopes": [],
     "flashcard_decks": [
         deck(D1, "Cell biology", 3, T, updated="2026-09-20T09:00:00Z", subject="biology"),
-        deck(D2, "Making CO2", 2, T, shared=True),
+        deck(D2, "Making CO2", 2, T, shared=True, subject="chemistry"),
         deck(D3, "Old ecology", 4, T, deleted="2026-09-18T09:00:00Z"),
         deck(D4, "Scratch deck", 1, T, deleted="2026-09-18T09:00:00Z"),
         deck(D5, "Bonding", 2, COL, shared=True),
@@ -348,6 +348,8 @@ STUB_JS = r"""
 
 INJECT_SHEET = r"""
 new Promise(function (resolve) {
+  /* ⊕ Set from class (M) — decks.html now loads the sheet itself. */
+  if (window.MRBSetWork) { resolve(true); return; }
   var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/shared/set-work.css';
   document.head.appendChild(l);
   var s = document.createElement('script'); s.src = '/shared/set-work.js';
@@ -485,9 +487,18 @@ def main():
             p.eval("MRBSetWork.open({})")
             check(p.eval("document.querySelector('[data-sw=type-chips] .is-on').textContent")
                   == "Questions", "sheet: type chips at the top, Questions by default")
-            first = p.eval("(function(){var pc=document.querySelector('[data-sw=panel-classes]');"
-                           "return pc.firstElementChild.getAttribute('data-sw');})()")
-            check(first == "type-label", "sheet: the type rail is the first thing on Classes", first)
+            # ⊕ Set from class (M), 27 Sep 2026 — Mide's ruling: the type
+            # choice is the first thing on the SHEET, above every panel (it
+            # used to be the first thing inside the Classes panel).
+            first = p.eval("(function(){var b=document.querySelector('[data-sw=body]');"
+                           "return b.firstElementChild.getAttribute('data-sw');})()")
+            check(first == "type", "sheet: the type choice is the first thing on the sheet", first)
+            check(not p.eval("document.querySelector('[data-sw=type]').hidden"),
+                  "sheet: the type choice is shown on the first step")
+            widths = p.eval("Array.from(document.querySelectorAll('[data-sw=type-chips] .sw-chip'))"
+                            ".map(function(c){return Math.round(c.getBoundingClientRect().width);})")
+            check(len(widths) == 2 and abs(widths[0] - widths[1]) <= 1,
+                  "sheet: Questions and Flashcards are two equal options", widths)
             click(p, "[data-sw=class][data-sw-ref='%s']" % C1)
             wait(p, "document.querySelector('[data-sw=overlay]').getAttribute('data-sw-scope-state')==='ready'")
             check(p.eval("document.querySelector(\"[data-sw=class][data-sw-ref='%s']\")"
@@ -576,6 +587,13 @@ def main():
                   p.eval("document.querySelector('[data-fd=count]').textContent"))
             check(p.eval("document.querySelector('[data-fd=save]').disabled") is True,
                   "flash: Save deck disabled with an empty answer")
+            # ⊕ Set from class (M), 27 Sep 2026 — formulae are drawn only on a
+            # Chemistry deck: an untagged deck shows the text as typed, and
+            # choosing Chemistry redraws the line with <sub>.
+            plain = p.eval("(function(){var q=document.querySelectorAll('[data-fd=card]')[2]"
+                           ".querySelector('[data-fd=q-render]');return q.hidden && !q.querySelector('sub');})()")
+            check(plain is True, "flash: an untagged deck draws no <sub>", plain)
+            p.eval("document.querySelector('[data-fd=subject] [data-fd-key=chemistry]').click()")
             sub = p.eval("(function(){var r=document.querySelectorAll('[data-fd=card]')[2];"
                          "var q=r.querySelector('[data-fd=q-render]');"
                          "return !q.hidden && !!q.querySelector('sub') && q.textContent;})()")
@@ -958,9 +976,9 @@ def main():
                   and up[-1]["filters"][0] == {"op": "eq", "col": "id", "val": D2},
                   "library: Unshare writes shared_with_school=false on that deck", up)
             wait(p, "(function(){var r=document.querySelector(\"[data-fd=lib-row][data-fd-id='%s'] [data-fd=lib-share]\");"
-                    "return r&&r.textContent==='Share';})()" % D2)
+                    "return r&&r.textContent==='Share with colleagues';})()" % D2)
             check(p.eval("document.querySelector(\"[data-fd=lib-row][data-fd-id='%s'] [data-fd=lib-share]\").textContent" % D2)
-                  == "Share", "library: the row then offers Share")
+                  == "Share with colleagues", "library: the row then offers Share with colleagues")
             # delete D2: two presses
             p.eval("document.querySelector(\"[data-fd=lib-row][data-fd-id='%s'] [data-fd=lib-delete]\").click()" % D2)
             n_up = len(calls(p, None, kind="update"))
@@ -1027,6 +1045,62 @@ def main():
             errs = errors(p)
             check(not errs, "library: no console errors", errs)
 
+            # ═══ 5b. ⊕ Set from class (M) — "Set to a class" ═════════════
+            print("\n── library: Set to a class ──")
+            p = fresh(b)
+            p.goto(base + "/teacher/decks.html", settle=1.5)
+            wait(p, "document.querySelectorAll('[data-fd=lib-set]').length>0")
+            sid = p.eval("document.querySelector('[data-fd=lib-set]').closest('[data-fd=lib-row]')"
+                         ".getAttribute('data-fd-id')")
+            p.eval("document.querySelector('[data-fd=lib-set]').click()")
+            wait(p, "!document.querySelector('[data-sw=overlay]').hidden")
+            ov = "document.querySelector('[data-sw=overlay]')"
+            check(p.eval(ov + ".getAttribute('data-sw-type')") == "flashcards"
+                  and p.eval(ov + ".getAttribute('data-sw-step')") == "0",
+                  "library: Set to a class opens Set work on Flashcards, on the Classes step")
+            wait(p, "document.querySelectorAll('[data-sw=class]').length>0", timeout=6.0)
+            wait(p, "!document.querySelector('[data-sw=type]').hidden", timeout=6.0)
+            check(p.eval("document.querySelector('[data-sw=type-chips] .is-on').textContent") == "Flashcards",
+                  "library: the type choice shows Flashcards chosen")
+            p.eval("document.querySelector('[data-sw=class]').click()")
+            click(p, "[data-sw=primary]")
+            step = wait(p, ov + ".getAttribute('data-sw-step')==='2'&&'2'")
+            check(step == "2", "library: with the deck already chosen, Next goes straight to Detail", step)
+            p.screenshot(os.path.join(shots, "library-set-to-class-1280.png"), width=1280, height=800)
+            click(p, "[data-sw=primary]")
+            wait(p, "window.__FD__.calls.some(function(c){return c.kind==='rpc'&&c.name==='flashcard_set_work';})")
+            sw = calls(p, "flashcard_set_work")
+            check(sw and sw[-1]["args"].get("p_deck") == sid,
+                  "library: Set work writes flashcard_set_work with the library's deck", sw and sw[-1]["args"])
+            check(not p.eval("document.querySelector('[data-fd=lib-share]')") or
+                  all(t in ("Share with colleagues", "Stop sharing with colleagues") for t in
+                      p.eval("Array.from(document.querySelectorAll('[data-fd=lib-share]')).map(function(b){return b.textContent;})")),
+                  "library: the colleague toggle says 'with colleagues'")
+
+            # ═══ 5c. ⊕ Set from class (M) — no nav module on the page ═════
+            # The class page: `teacher-admin-nav.js` is lazy there, so
+            # `window.MrBadmusAdminScope` is absent when Set work opens. The
+            # sheet must get its own answer and show the Flashcards choice.
+            print("\n── sheet: no MrBadmusAdminScope (the class-page shape) ──")
+            p = fresh(b)
+            p.goto(base + "/teacher/decks.html", settle=1.5)
+            p.eval("delete window.MrBadmusAdminScope")
+            p.set_viewport(1280, 800)
+            p.eval("MRBSetWork.open({classId: %s})" % json.dumps(C1))
+            fc = wait(p, "(function(){var o=document.querySelector('[data-sw=overlay]');"
+                         "var v=o&&o.getAttribute('data-sw-fc');return v&&v!=='unknown'?v:null;})()", timeout=6.0)
+            check(fc == "true", "no nav module: the sheet's own probe answers 'capable'", fc)
+            check(not p.eval("document.querySelector('[data-sw=type]').hidden"),
+                  "no nav module: the Flashcards choice is shown straight away")
+            click(p, "[data-sw=type-chips] [data-sw-key=flashcards]")
+            check(p.eval("document.querySelector('[data-sw=overlay]').getAttribute('data-sw-step')") == "1"
+                  and p.eval("document.querySelector('[data-sw=step]').textContent") == "Deck",
+                  "no nav module: choosing Flashcards from a class goes straight to the Deck step")
+            click(p, "[data-sw=type-chips] [data-sw-key=questions]")
+            check(p.eval("document.querySelector('[data-sw=overlay]').getAttribute('data-sw-step')") == "0",
+                  "no nav module: choosing Questions returns to the Questions flow's first step")
+            p.eval("MRBSetWork.close()")
+
             # ═══ 6. THE NAV LINK on another teacher page ══════════════════
             print("\n── nav: the link on a hand-written teacher page ──")
             for page in ("timetable.html", "today.html"):
@@ -1069,7 +1143,7 @@ def main():
             # moment to resolve and redraw before asserting on it.
             wait(p, "window.MrBadmusAdminScope && true", timeout=2.0)
             time.sleep(0.3)
-            check(bool(p.eval("document.querySelector('[data-sw=type-chips]').hidden")),
+            check(bool(p.eval("document.querySelector('[data-sw=type]').hidden")),
                   "no schema: the type picker itself is hidden (one option is not a picker)")
             check(not bool(p.eval("!!document.querySelector('[data-sw=type-chips]').offsetParent")),
                   "no schema: the Flashcards chip is not reachable — its container is not rendered")
