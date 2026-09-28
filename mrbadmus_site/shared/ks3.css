@@ -3132,8 +3132,10 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
      4.49:1. Identical correction to audit 3.19's on the option badge, and the
      dark-block rule at `.ks3-dark .ks3-option[aria-pressed="true"]
      .ks3-opt-mark` has always paired a fill with ink — this is that pattern,
-     applied where it was missed. */
-  color: var(--ks3-ink);
+     applied where it was missed.
+     ⊕ theme run re-check (N1): 4.49:1 is still under 4.5 at 16px, so the
+     badge takes the next ink step, #1A1714 (Design's own --st-ink) — 4.85:1. */
+  color: #1A1714;
 }
 .ks3-rule-badge[data-badge="initials"] {
   width: 44px;
