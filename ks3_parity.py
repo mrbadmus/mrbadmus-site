@@ -5206,10 +5206,13 @@ COMPONENTS = [
     # ⊕ MRB-257 · audit 3.13 — the second row that pinned cream on the accent.
     # 16px/800 is body size; the token says "LARGE TEXT ONLY. Never body size",
     # and cream on it is 3.34:1. Ink is 4.49:1 and the fill does not move.
+    # ⊕ Theme run re-check N1 (28 Sep 2026): 4.49:1 is still under AA's 4.5 at
+    # 16px, and the run's target was 0 failures in light. The ink takes the next
+    # step, #1A1714 (Design's own --st-ink), 4.85:1; the fill still does not move.
     dict(name="initials badge is a 44px accent square", on=B10_MODEL,
          sel='.ks3-rule-badge[data-badge="initials"]',
          props={"width": "44px", "height": "44px",
-                "background-color": "#E4572E", "color": "#221E1B",
+                "background-color": "#E4572E", "color": "#1A1714",
                 "font-size": "16px"}),
     # ⚠️ ON A BADGED CARD THE NAME IS THE HEADLINE AND THE ROLE SITS UNDER IT,
     # which is the reverse of a b1-04 card. The badge already does the

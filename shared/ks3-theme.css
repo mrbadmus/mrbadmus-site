@@ -173,6 +173,9 @@
 [data-theme="dark"] .rd[data-mode="ks3"] .ks3-endmatter .ks3-tutor {
   --ks3-ink: #221E1B;
 }
+/* Re-check N1: the rule-card badge is the same fill+ink pair; its ink is now a
+   fixed #1A1714, and the fill must stay the light accent it was measured on. */
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-rule-badge { background: #E4572E; }
 
 /* ── the ink-dark call-out block (hook / practical / keynote) ──
    `.ks3-dark`'s OWN background is `--ks3-ink` (see shared/ks3.css ~line 417),

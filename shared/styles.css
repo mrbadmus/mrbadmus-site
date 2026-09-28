@@ -590,6 +590,7 @@ a { color: inherit; text-decoration: none; }
 .quiz-opt:hover { border-color: var(--accent-border); background: var(--accent-soft); }
 .quiz-opt.correct { border-color: var(--success); background: var(--success-soft); color: var(--success); }
 .quiz-opt.wrong { border-color: var(--danger); background: var(--danger-soft); color: var(--danger); }
+@media screen { [data-theme="dark"] .quiz-opt.wrong, [data-theme="dark"] .match-result-partial { color: color-mix(in srgb, var(--danger) 80%, #FFFFFF); } }
 .quiz-feedback, .quiz-fb { margin-top: var(--sp-3); font-size: var(--fs-small); display: none; padding: 10px 14px; border-radius: var(--radius-sm); line-height: 1.6; }
 .quiz-feedback.show, .quiz-fb.show { display: block; }
 .quiz-feedback.correct-fb, .quiz-fb.correct-fb { background: var(--success-soft); color: var(--success); border: 1px solid transparent; }
