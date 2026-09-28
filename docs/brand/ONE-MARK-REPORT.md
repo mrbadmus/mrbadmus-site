@@ -155,10 +155,49 @@ your call whether they become "MrBadmus":
 - **Gates changed** (none weakened; each cites the ruling): `ks4_chrome_drive` (now also asserts which chevron is faded and the 600 weight), `night3_selfreview` (any chevron on a staff surface must be byte-for-byte `brand.MARK_SVG`, and org pages must carry it), `ks3_parity` (brand rows re-pointed to `.mrb-brand`), `3d_parity` + `3d_render_check` (brand rows re-pointed; serve `/shared/` like production), `student_behaviour` (the "AI" removal and the assignment label declared through its own divergence mechanisms).
 - **Adjacent defect fixed:** `parents/public.css` — the sign-up rail stayed cream in dark theme, making the wordmark and step labels invisible.
 
-## 6. Landing
+## 6. Landing and live proof
 
-See §7 (filled at push): commits, gates, live stamps and bytes, the live
-fingerprint across every family, screenshots.
+**Commits.** Unit 1 (kit + partial + tools) `3a50ca3c2`, live 27 Sep 00:52.
+Unit 2 (every page) `54f36956f` with lane merges, then three merges of
+`origin/main` (the theme run kept landing: Set-from-class, dark-audit fixes,
+re-check fixes, its report) — pushed as **`9e3396053`** on 28 Sep. Backend
+worksheet fix `7cce2d0` (live, `/api/health`).
+
+**Gates at the push** (`prepush_gate.py`, `MRB_BACKEND` pointed at a fresh
+backend worktree; credentials exactly as `docs/mrb335/RISKS.md` E6 —
+`MRB_SET_WORK_PASSWORD`, `MRB_THROWAWAY_PASSWORD`, `MRB_TEST_TEACHER_PASSWORD`;
+`MRB_DRIVE_PASSWORD` / `MRB_TEST_STUDENT_PASSWORD` never set): 31 fast gates
+ran fresh, 30 slow gates passed on receipts, 4 skipped by rule, 2 skipped for a
+missing precondition (`student_controls_drive`, which needs the forbidden
+credentials, and one other). Two red, both pre-existing and declared with
+`GATE-OVERRIDE` in the tip commit: `3d_parity` (three token/border rows,
+proved red on `origin/main`) and `set_work` (452/455; the three standing TEST
+small-pool data checks, recorded red by the Set-from-class landing too).
+`brand_one_mark` is registered as a fast gate and green.
+
+**Live bytes.** 19 pages across every family fetched from mrbadmus.com are
+**byte-identical** to the committed build (landing, KS3 hub, a KS4 lesson,
+teacher today and all six generated teacher screens, parents, leaderboard, 3D,
+auth, student class and assignment, consumer signup, org, go). Every brand
+asset link is `?v=`-stamped from its own bytes — `brand.css?v=9c818614`,
+`brand.js?v=a8b2a506`, `mrbadmus-favicon.svg?v=414f7a61`,
+`mrbadmus-icon-light-512.png?v=cffd3cc4` — and the live files' md5s match.
+
+**Live rendered proof** (`brand_fingerprint.py --base https://mrbadmus.com
+--themes light,dark --widths 360,1280 --expect-one`): **1 distinct mark across
+39 families**, exit 0; the wordmark ink on light and cream on dark, ≥ 4.5:1 on
+its real ground; student assignment at 360 reported as ruled. Two honest
+footnotes: the two generated teacher screens are measured on their fixtures,
+which are not published — on the live run those rows had served the 404 page
+(the script now refuses to count a 404), so their live proof is the byte
+match above plus the local rendered run on identical bytes; and the consumer
+admin console redirects a signed-out browser to its sign-in, so its `on_dark`
+variant was verified locally by lane C.
+
+**Screenshots:** `$MRB_SHOTS` = `~/tmp/one-mark-shots/` — `live/` (every
+family, light/dark × 360/1280: `mark-*.png` crops and `page-*.png` viewports),
+`before-live/` (the old marks), `after-local/`, `worksheet/` (PDF/DOCX
+before/after).
 
 ## Deviations
 

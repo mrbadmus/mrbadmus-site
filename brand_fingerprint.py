@@ -279,6 +279,11 @@ def main():
                         d = page.eval(FIND_JS)
                     except Exception as e:  # noqa: BLE001 — a page that will not load is a row, not a crash
                         d = {"found": False, "error": str(e)[:120]}
+                    if d.get("found") and str(d.get("title", "")).startswith("Page not found"):
+                        # An unpublished path (teacher_fixtures/ on the live
+                        # site) serves the 404 page, which wears the mark too;
+                        # counting it would prove the 404 page, not the family.
+                        d = {"found": False, "error": "served the 404 page"}
                     fp, desc = fingerprint(d)
                     tag = f"{fam}-{theme}-{width}"
                     if d.get("found"):
