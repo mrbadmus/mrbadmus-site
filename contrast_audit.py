@@ -453,6 +453,8 @@ _page("ks4 chrome/tier", "combined/higher/index.html")
 _page("ks4 pilot/ionic-bonding [Combined Higher]",
       "combined/higher/chemistry/bonding/ionic-bonding.html")
 _page("ks3 hub", "ks3/index.html")
+# theme run re-check N1: a lesson with a rule card (the badge is ink on accent)
+_page("ks3 lesson [rule card]", "ks3/chemistry/types-of-reaction/which-reaction-is-this.html")
 _page("profile-setup.html", "profile-setup.html")
 _page("weekly-challenge.html", "weekly-challenge.html")
 _page("my-challenges.html", "my-challenges.html")
@@ -804,8 +806,18 @@ _ipage("D3 ks3 instrument panels [42 pairs, post-answer]",
 
 # ── D5: student flashcards, flipped so the "Next" button is on screen ──
 _ipage("D5 student flashcards [Next button]", "student/class-fixture.html",
-       setup=_click_containing("Flashcards") + ";" + _click_containing("Flip"),
-       wait=0.6)
+       # Re-check N3: the label is "FLASHCARDS…" and there is no Flip
+       # button, so the old setup opened nothing and the gate measured
+       # nothing. Case-insensitive, and FAIL if Next never appears.
+       setup=("(async function(){var b=[].slice.call(document.querySelectorAll("
+              "'button,a,[role=button]')).filter(function(e){var r=e.getBoundingClientRect();"
+              "return r.width>0&&/flashcards/i.test(e.textContent||'')})[0];"
+              "if(!b)throw new Error('D5: no Flashcards control');b.click();"
+              "await new Promise(function(r){setTimeout(r,900)});"
+              "if(![].slice.call(document.querySelectorAll('button')).some(function(x){"
+              "return /^\\s*next/i.test(x.textContent||'')}))"
+              "throw new Error('D5: the deck opened no Next button');})()"),
+       wait=0.3)
 
 # ── D6: the leaderboard's SELECTED week chip — the real chip is
 # client-rendered from a backend fetch this harness cannot make (no

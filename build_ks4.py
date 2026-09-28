@@ -1548,7 +1548,7 @@ def render_page(lesson, route, compiled_lesson, block_scripts, prev_next, versio
 <link rel="stylesheet" href="/shared/ks4-ds.css">
 <link rel="stylesheet" href="/shared/ks4-theme.css">
 <link rel="stylesheet" href="/shared/ks4-lesson.css">
-<style>html,body{margin:0;padding:0;background:#FBF3E6}html[data-theme="dark"] body,html[data-theme="dark"]{background:#16120E}</style>
+<style>html,body{margin:0;padding:0;background:#FBF3E6}@media screen{html[data-theme="dark"] body,html[data-theme="dark"]{background:#16120E}}</style>
 </head>
 <body>
 <div id="ks4-mount"></div>
