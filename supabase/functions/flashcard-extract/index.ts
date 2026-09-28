@@ -128,11 +128,13 @@ Deno.serve(async (req) => {
   //    can see (their own, or one shared with the school) ──────────────
   if (!force && !deck && sourceKind === "upload") {
     const { data: prior } = await svc.from("flashcard_decks")
-      .select("id, title, card_count, created_by, shared_with_school, status")
+      .select("id, title, subject, card_count, created_by, shared_with_school, status")
       .eq("school_id", who.school_id).eq("source_file_sha256", sha).is("deleted_at", null)
       .order("updated_at", { ascending: false }).limit(5);
     const hit = (prior ?? []).find((d) => d.card_count > 0 && (d.created_by === who.id || d.shared_with_school));
-    if (hit) return json(200, { cached: { deck_id: hit.id, title: hit.title, card_count: hit.card_count, mine: hit.created_by === who.id } });
+    // ⊕ Set from class (M), 27 Sep 2026 — `subject` so the page draws the
+    // title's formulae only on a chemistry deck.
+    if (hit) return json(200, { cached: { deck_id: hit.id, title: hit.title, subject: hit.subject ?? null, card_count: hit.card_count, mine: hit.created_by === who.id } });
   }
 
   // ── the draft deck and the job row ──────────────────────────────────

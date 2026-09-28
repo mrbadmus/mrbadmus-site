@@ -587,6 +587,45 @@
   .sw-sheet.sw-fixed-header .sw-body { padding-top: 78px; }
 }
 
+/* ── ⊕ Set from class (M), 27 Sep 2026 — the type choice ─────────────────
+   Mide's ruling: Questions and Flashcards are the first thing on the sheet,
+   two EQUAL, full-size options — the Tier chips' own rail, each chip taking
+   half. Ruled off from the panel below it so it reads as the choice that
+   decides what the rest of the sheet is. */
+.sw-type {
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--st-rule-soft);
+}
+.sw-type[hidden] { display: none; }
+.sw-type .sw-chip { flex: 1 1 0; }
+
+/* ── ⊕ Set from class (M), 27 Sep 2026 — the WIDE sheet ──────────────────
+   Mide's ruling: on a desktop 720px was a thin column in the middle of the
+   screen. From 1100px up the sheet takes 88% of the viewport, to 1400px so
+   it does not sprawl on a very wide monitor; the height is unchanged.
+   Below 1100px — tablets and phones — nothing here applies and the sheet is
+   exactly what it was.
+
+   The width is used, not just spent: the class list and the topic tree go
+   two columns (`align-items:start`, so a topic opened in one column does
+   not stretch its neighbour), and every chip rail stays on one line. The
+   questions on the Detail step stay one column — a stem is read, not
+   scanned. */
+@media (min-width: 1100px) {
+  .sw-sheet { width: min(88vw, 1400px); }
+  .sw-body { padding: 22px 28px 28px; }
+  .sw-head { padding: 14px 28px; }
+  .sw-classes,
+  .sw-panel[data-sw="panel-topic"] .sw-tree {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 14px;
+    align-items: start;
+  }
+  .sw-chips { flex-wrap: nowrap; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sw-toast { animation: none; }
   .sw-chev svg { transition: none; }

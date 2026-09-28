@@ -153,7 +153,13 @@
       fv = (fv === null || fv === undefined) ? "" : String(fv);
       var fw = document.createElement("span");
       fw.className = "sc-interp";
-      if (window.MRBFormulae && typeof window.MRBFormulae.nodes === "function") {
+      /* ⊕ Set from class (M), 27 Sep 2026 — a sibling `.plain` (e.g.
+         `card.plain` beside `card.front`) turns the drawing off: a pupil's
+         homework deck subscripts only when it is Chemistry. `null` miss, so
+         a scope without the key (the practice deck) records nothing. */
+      var fplain = node.e.indexOf(".") >= 0
+        ? lookup(node.e.replace(/\.[^.]+$/, ".plain"), scope, null) : false;
+      if (!fplain && window.MRBFormulae && typeof window.MRBFormulae.nodes === "function") {
         var fn = window.MRBFormulae.nodes(fv, document);
         for (var fi = 0; fi < fn.length; fi++) { fw.appendChild(fn[fi]); }
       } else {

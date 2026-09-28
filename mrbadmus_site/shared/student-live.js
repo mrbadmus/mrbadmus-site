@@ -2616,6 +2616,17 @@
     var fcCounts = {};
     var fcIds = cards.filter(function (c) { return c.kind === "flashcards"; })
                      .map(function (c) { return c.id; });
+    /* ⊕ Set from class (M), 27 Sep 2026 — each flashcard homework's
+       subject, for the overlay (`hwChem()` in student_rulings.py): formulae
+       are drawn only on a Chemistry deck. An untagged deck reads "Science". */
+    var fcSubject = {};
+    cards.forEach(function (c) {
+      if (c.kind !== "flashcards") { return; }
+      var sn = String(c.subject_name || "").toLowerCase();
+      fcSubject[c.id] = sn;
+      fcSubject[String(c.id).toLowerCase()] = sn;
+    });
+    window.__MRB_FC_SUBJECT__ = fcSubject;
     if (fcIds.length) {
       try {
         var fcRes = await sb.from("assignment_flashcards")
