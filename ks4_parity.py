@@ -53,9 +53,14 @@ weakening — a difference NOT on this list is a real FAIL.
                 `examiner_tip` field, not merely excused.
   R14           (Mide's ruling, 27 Sep 2026) a Triple route's eyebrow/
                 key-note spec number is the separate science's own
-                (8462/8463), not Combined's (8464); Combined routes are
-                unchanged. Checked directly against `build_ks4.SPEC_TEXT`
-                by `check_spec_number()`, not merely excused.
+                (8462/8463), not Combined's (8464). ⊕ D13 (theme-run audit,
+                27 Sep 2026): Combined routes are no longer byte-identical
+                either — they now NAME 8464 the same way Triple always
+                named its own code (`build_ks4.SPEC_TEXT`'s "combined"
+                values), and nanoparticles (outside SPEC_TEXT, R5) gained
+                "(8462)" on both its routes. Checked directly against
+                `build_ks4.SPEC_TEXT` / R5's two literals by
+                `check_spec_numbers()`, not merely excused.
 
   R7 above is SUPERSEDED by R13, 27 Sep 2026: the two physics lessons no
   longer lose the section, they gain the FINAL text in it, so
@@ -210,20 +215,28 @@ def science_rulings_for(slug):
 
 DRAFT_BANNER_TEXT = "Draft — not yet science-reviewed."
 # ⊕ THEME RUN (26 Sep 2026, THEME-CONTRACT.md) — R15's `data-mrb-theme` slot
-# mounts shared/theme.js's Light/Dark/System control into the SAME header
-# row R12's chip lives in. Its accessible text (a real `<legend>` plus one
-# visually-hidden `.mrb-theme-sr` label per radio — screen-reader content,
-# so it DOES appear in `textContent` even though nothing is visible) is new
-# on every one of these 54 pages and exists NOWHERE in Design's reference,
-# captured before the theme run. Symmetric with R12's own ROUTE_WORDS strip
-# just below: a fixed, site-wide, non-lesson-specific vocabulary, stripped
-# from the PORT side only (the reference side has nothing to strip). Order
-# matches theme.js's own PREFS/LABELS arrays and DOM order (legend, then
-# light/dark/system in that order) with no whitespace between — confirmed
-# against the DOM (`_WS_RE` normalizes runs of whitespace to single spaces
-# but never INSERTS one where the compiled DOM has none, which is the case
-# here: legend and each `.mrb-theme-sr` span are adjacent siblings with no
-# text node between them).
+# mounts shared/theme.js's Light/Dark/System control. Its accessible text
+# (a real `<legend>` plus one visually-hidden `.mrb-theme-sr` label per
+# radio — screen-reader content, so it DOES appear in `textContent` even
+# though nothing is visible) is new on every one of these 54 pages and
+# exists NOWHERE in Design's reference, captured before the theme run.
+# Order matches theme.js's own PREFS/LABELS arrays and DOM order (legend,
+# then light/dark/system in that order) with no whitespace between —
+# confirmed against the DOM (`_WS_RE` normalizes runs of whitespace to
+# single spaces but never INSERTS one where the compiled DOM has none,
+# which is the case here: legend and each `.mrb-theme-sr` span are
+# adjacent siblings with no text node between them).
+#
+# ⊕ D11 (theme-run audit, 27 Sep 2026) — R15 moved the slot OUT of the
+# lesson's own index-0 header section and into the shared Ks4Chrome block
+# (the nav, brand + breadcrumb), so this text no longer appears in ANY
+# lesson's own `sections` list at all — Ks4Chrome is shared boilerplate,
+# not one of the per-lesson sections `compare_section_text()` walks
+# against `reference.json`. The `port_norm.replace(THEME_CONTROL_TEXT, "")`
+# call at index==0 below is consequently a no-op on every lesson now (the
+# text it used to strip is not there to find) — left in place rather than
+# deleted, because a no-op `.replace()` is harmless and this stays correct
+# if a future ruling ever puts a lesson-hero copy of the control back.
 THEME_CONTROL_TEXT = "Colour theme" + "Light" + "Dark" + "System"
 _BANK_TALLY_RE = re.compile(r"\d+\s+of\s+\d+\s+answered\s*·\s*\d+\s+matched the mark scheme"
                              r"|\d+\s+answered\s*·\s*\d+\s+matched the mark scheme")
@@ -504,13 +517,38 @@ def apply_text_whitelist(slug, route, index, sec, ref_text_norm):
     # every `combined` string below is the FULL literal citation Design's
     # page shows nowhere else (verified when `build_ks4.SPEC_TEXT` was
     # built: each string is unique to its own eyebrow/key-note line).
-    if route in ("TF", "TH"):
-        spec_entry = build_ks4.SPEC_TEXT.get(slug)
-        if spec_entry is not None:
-            t = t.replace(normalize_ws(spec_entry["combined"]["eyebrow"]),
-                          normalize_ws(spec_entry["triple"]["eyebrow"]))
-            t = t.replace(normalize_ws(spec_entry["combined"]["keynote"]),
-                          normalize_ws(spec_entry["triple"]["keynote"]))
+    #
+    # ⊕ D13 (theme-run audit, 27 Sep 2026) — `spec_entry["combined"]` is now
+    # the RENDER-TIME value (with "(8464)"), but `t` here is Design's
+    # ORIGINAL reference text, which never had "(8464)" on any route — it
+    # is the literal her template was compiled from, before D13 gave
+    # `build_ks4.compile_lesson()` a reason to swap it for anything. So the
+    # substitution SOURCE is always `old_combined_spec_text()` regardless
+    # of route, and the destination now branches both ways: a Triple route
+    # (TF/TH) reconciles to `entry["triple"]` exactly as it always did, and
+    # a Combined route (CF/CH) — new with D13 — reconciles to `entry
+    # ["combined"]` itself, since that is no longer byte-identical to what
+    # `t` already contains.
+    spec_entry = build_ks4.SPEC_TEXT.get(slug)
+    if spec_entry is not None:
+        old_spec = build_ks4.old_combined_spec_text(slug)
+        want = spec_entry["triple" if route in ("TF", "TH") else "combined"]
+        t = t.replace(normalize_ws(old_spec["eyebrow"]),
+                      normalize_ws(want["eyebrow"]))
+        t = t.replace(normalize_ws(old_spec["keynote"]),
+                      normalize_ws(want["keynote"]))
+    # ⊕ D13/R5 (theme-run audit, 27 Sep 2026) — nanoparticles is outside
+    # `SPEC_TEXT` (see that dict's own comment: no Combined route), so the
+    # block above never reaches it. `ks4_rulings.apply_r5_nanoparticles_
+    # spec` adds "(8462)" to its eyebrow and key-note on both its routes
+    # (TF, TH — nanoparticles has no CF/CH at all), which Design's
+    # reference text never carried; reconciled here the same way as R14.
+    if slug == "nanoparticles":
+        t = t.replace(
+            normalize_ws("AQA Chemistry 4.2.4 (chemistry only) · Quantitative"),
+            normalize_ws("AQA Chemistry (8462) 4.2.4 (chemistry only) · Quantitative"))
+        t = t.replace(normalize_ws("AQA 4.2.4 (chemistry only)"),
+                      normalize_ws("AQA 4.2.4 (8462) (chemistry only)"))
     if slug == "series-parallel-circuits" and R6_ADDITION_TEXT not in t:
         # R6 is an ADDITION on the port side; nothing to strip from Design's
         # side — the port's own text will carry the extra chip, handled by

@@ -91,45 +91,66 @@ def compute_route_switch(lesson):
 # route at all (8462 §4.2.4 is chemistry-only content), and its eyebrow/
 # key-note already show the correct, verified 8462 number with nothing to
 # swap, so `ks4_rulings.apply_r14_spec_number` is never called for it.
+#
+# ⊕ D13 (theme-run audit, 27 Sep 2026) — the COMBINED side of every entry
+# below used to show only the bare section number ("AQA Chemistry 5.2.1.1"),
+# with no "(8464)" — inconsistent with the TRIPLE side of the very same
+# entry, which has always named its own spec ("AQA Chemistry (8462)
+# 4.2.1.1"). A Combined pupil reading the eyebrow could not tell which of
+# the three AQA GCSE Science specs the number belonged to; a Triple pupil
+# always could. Every "combined" eyebrow now carries "(8464)" in the exact
+# position its "triple" sibling carries "(8462)"/"(8463)" (right after the
+# subject name), and every "combined" keynote carries it where the sibling
+# does (right after the number, before any trailing "· RP"/"· <word>"
+# annotation). `apply_r14_spec_number` itself is untouched: it swaps the
+# template's literal text for a `{{ specEyebrow }}`/`{{ specNote }}`
+# placeholder and does not care what the replacement text says, so this
+# is a content-only change, verified with `extract_freeze_pieces()` (see
+# docs/theme/spec-numbers.md) to move nothing else on any of the 54 pages.
+# The tutor's own context string (`tutor_block()`, below) reads THIS dict
+# via `compute_spec_note()` and already regexes "AQA <num> (<code>)" into
+# "AQA <code> <num>" for the tutor — that conversion previously never fired
+# for Combined (nothing to convert) and now fires identically to Triple's,
+# so the tutor is consistent with the page for free; no separate edit.
 SPEC_TEXT = {
     "chemical-bonds": {
-        "combined": {"eyebrow": "AQA Chemistry 5.2.1.1 · Classify", "keynote": "AQA 5.2.1.1"},
+        "combined": {"eyebrow": "AQA Chemistry (8464) 5.2.1.1 · Classify", "keynote": "AQA 5.2.1.1 (8464)"},
         "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.1.1 · Classify", "keynote": "AQA 4.2.1.1 (8462)"}},
     "ionic-bonding": {
-        "combined": {"eyebrow": "AQA Chemistry 5.2.1.2 · Process", "keynote": "AQA 5.2.1.2"},
+        "combined": {"eyebrow": "AQA Chemistry (8464) 5.2.1.2 · Process", "keynote": "AQA 5.2.1.2 (8464)"},
         "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.1.2 · Process", "keynote": "AQA 4.2.1.2 (8462)"}},
     "ionic-compounds": {
-        "combined": {"eyebrow": "AQA Chemistry 5.2.1.3 · Model", "keynote": "AQA 5.2.1.3"},
+        "combined": {"eyebrow": "AQA Chemistry (8464) 5.2.1.3 · Model", "keynote": "AQA 5.2.1.3 (8464)"},
         "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.1.3 · Model", "keynote": "AQA 4.2.1.3 (8462)"}},
     "covalent-bonding": {
-        "combined": {"eyebrow": "AQA Chemistry 5.2.1.4 · Process", "keynote": "AQA 5.2.1.4"},
+        "combined": {"eyebrow": "AQA Chemistry (8464) 5.2.1.4 · Process", "keynote": "AQA 5.2.1.4 (8464)"},
         "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.1.4 · Process", "keynote": "AQA 4.2.1.4 (8462)"}},
     "metallic-bonding": {
-        "combined": {"eyebrow": "AQA Chemistry 5.2.1.5 · Model", "keynote": "AQA 5.2.1.5"},
+        "combined": {"eyebrow": "AQA Chemistry (8464) 5.2.1.5 · Model", "keynote": "AQA 5.2.1.5 (8464)"},
         "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.1.5 · Model", "keynote": "AQA 4.2.1.5 (8462)"}},
     "states-of-matter": {
-        "combined": {"eyebrow": "AQA Chemistry 5.2.2.1–5.2.2.2 · Investigation", "keynote": "AQA 5.2.2.1–5.2.2.2"},
+        "combined": {"eyebrow": "AQA Chemistry (8464) 5.2.2.1–5.2.2.2 · Investigation", "keynote": "AQA 5.2.2.1–5.2.2.2 (8464)"},
         "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.1–4.2.2.2 · Investigation", "keynote": "AQA 4.2.2.1–4.2.2.2 (8462)"}},
     "properties-ionic-compounds": {
-        "combined": {"eyebrow": "AQA Chemistry 5.2.2.3 · Contrast", "keynote": "AQA 5.2.2.3"},
+        "combined": {"eyebrow": "AQA Chemistry (8464) 5.2.2.3 · Contrast", "keynote": "AQA 5.2.2.3 (8464)"},
         "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.3 · Contrast", "keynote": "AQA 4.2.2.3 (8462)"}},
     "properties-small-molecules": {
-        "combined": {"eyebrow": "AQA Chemistry 5.2.2.4 · Model", "keynote": "AQA 5.2.2.4"},
+        "combined": {"eyebrow": "AQA Chemistry (8464) 5.2.2.4 · Model", "keynote": "AQA 5.2.2.4 (8464)"},
         "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.4 · Model", "keynote": "AQA 4.2.2.4 (8462)"}},
     "polymers": {
-        "combined": {"eyebrow": "AQA Chemistry 5.2.2.5 · Classify", "keynote": "AQA 5.2.2.5"},
+        "combined": {"eyebrow": "AQA Chemistry (8464) 5.2.2.5 · Classify", "keynote": "AQA 5.2.2.5 (8464)"},
         "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.5 · Classify", "keynote": "AQA 4.2.2.5 (8462)"}},
     "giant-covalent-structures": {
-        "combined": {"eyebrow": "AQA Chemistry 5.2.2.6 · 5.2.3.1–5.2.3.3 · Contrast", "keynote": "AQA 5.2.2.6, 5.2.3"},
+        "combined": {"eyebrow": "AQA Chemistry (8464) 5.2.2.6 · 5.2.3.1–5.2.3.3 · Contrast", "keynote": "AQA 5.2.2.6, 5.2.3 (8464)"},
         "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.6 · 4.2.3.1–4.2.3.3 · Contrast", "keynote": "AQA 4.2.2.6, 4.2.3 (8462)"}},
     "metals-alloys": {
-        "combined": {"eyebrow": "AQA Chemistry 5.2.2.7–5.2.2.8 · Contrast", "keynote": "AQA 5.2.2.7–5.2.2.8"},
+        "combined": {"eyebrow": "AQA Chemistry (8464) 5.2.2.7–5.2.2.8 · Contrast", "keynote": "AQA 5.2.2.7–5.2.2.8 (8464)"},
         "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.7–4.2.2.8 · Contrast", "keynote": "AQA 4.2.2.7–4.2.2.8 (8462)"}},
     "series-parallel-circuits": {
-        "combined": {"eyebrow": "AQA Physics 6.2.2 · System", "keynote": "AQA 6.2.2"},
+        "combined": {"eyebrow": "AQA Physics (8464) 6.2.2 · System", "keynote": "AQA 6.2.2 (8464)"},
         "triple": {"eyebrow": "AQA Physics (8463) 4.2.2 · System", "keynote": "AQA 4.2.2 (8463)"}},
     "resistors": {
-        "combined": {"eyebrow": "AQA Physics 6.2.1.4 · Required practical", "keynote": "AQA 6.2.1.4 · RP"},
+        "combined": {"eyebrow": "AQA Physics (8464) 6.2.1.4 · Required practical", "keynote": "AQA 6.2.1.4 (8464) · RP"},
         "triple": {"eyebrow": "AQA Physics (8463) 4.2.1.4 · Required practical", "keynote": "AQA 4.2.1.4 (8463) · RP"}},
 }
 
@@ -139,6 +160,29 @@ def compute_spec_note(slug, route):
     if entry is None:
         return None
     return entry["triple" if route in ("TF", "TH") else "combined"]
+
+
+def old_combined_spec_text(slug):
+    """⊕ D13 (theme-run audit, 27 Sep 2026) — `SPEC_TEXT[slug]["combined"]`
+    is the RENDER-TIME value (with "(8464)"); Design's ORIGINAL template
+    file on disk, and `ks4_parity`'s `reference.json` snapshot of it, both
+    still carry the pre-D13 literal with no spec code at all. Three
+    consumers need that exact pre-D13 string — `compile_lesson()`'s call to
+    `ks4_rulings.apply_r14_spec_number` (finds it in the template to swap
+    in the placeholder), and `ks4_parity.apply_text_whitelist()` (finds it
+    in Design's reference text to reconcile against the port, on EVERY
+    route: CF/CH now show the new combined text, TF/TH show triple's) — so
+    this is the one place the stripping happens, not three. "(8464) "/"
+    (8464)" appear nowhere else in either string, so removing them
+    reproduces the exact original, byte for byte. Returns None for a slug
+    not in SPEC_TEXT (nanoparticles)."""
+    entry = SPEC_TEXT.get(slug)
+    if entry is None:
+        return None
+    return {
+        "eyebrow": entry["combined"]["eyebrow"].replace("(8464) ", "", 1),
+        "keynote": entry["combined"]["keynote"].replace(" (8464)", "", 1),
+    }
 
 # ⊕ D3 fix (26 Sep 2026, docs/ks4/pilot-live-audit.md) — the pilot pages
 # shipped no `<link rel="icon">` at all, so every one of the 54 pages 404'd
@@ -494,6 +538,9 @@ _DS_CSS_HEADER = """/* shared/ks4-ds.css — GENERATED by build_ks4.py from Desi
 """
 
 
+_DS_CSS_DARK_MARKER = '[data-theme="dark"] {'
+
+
 def build_ds_css():
     parts = []
     for rel in ("tokens/src-styles-tokens.css", "tokens/shared-tokens.css",
@@ -501,6 +548,42 @@ def build_ds_css():
         parts.append(open(os.path.join(DS_DIR, rel), encoding="utf-8").read())
     body = "\n\n".join(parts)
     body = _FONT_URL_RE.sub(lambda m: "url('/shared/fonts/%s')" % m.group(1), body)
+    # ⊕ D8 (theme-run audit, 27 Sep 2026). This bundle's ONE `[data-theme=
+    # "dark"] { ... }` block (from tokens/shared-tokens.css, byte-identical
+    # to shared/tokens.css's own — same reasoning as that file's D8 fix) is
+    # unconditional: `data-theme="dark"` is written by THEME_HEAD/theme.js
+    # on every load, in every medium, so un-guarded it printed the dark
+    # ground and cream ink on every one of the 54 pilot pages regardless of
+    # the viewed theme. `body.count(...) == 1` is checked because this is a
+    # build-time transform of Design's frozen concatenation, never a
+    # hand-edit of her source files — if a future delivery changes the
+    # bundle so this marker no longer appears exactly once, the build must
+    # stop rather than silently wrap the wrong text (or nothing at all). */
+    if body.count(_DS_CSS_DARK_MARKER) != 1:
+        raise SystemExit(
+            "build_ks4: ks4-ds.css bundle's [data-theme=\"dark\"] block "
+            "moved, is missing, or is no longer unique (found %d) — the D8 "
+            "@media screen wrap in build_ds_css() needs to be re-read "
+            "against the new bundle before this can be re-run."
+            % body.count(_DS_CSS_DARK_MARKER))
+    start = body.index(_DS_CSS_DARK_MARKER)
+    depth = 0
+    end = None
+    for i in range(start, len(body)):
+        if body[i] == "{":
+            depth += 1
+        elif body[i] == "}":
+            depth -= 1
+            if depth == 0:
+                end = i + 1
+                break
+    if end is None:
+        raise SystemExit(
+            "build_ks4: ks4-ds.css bundle's [data-theme=\"dark\"] block "
+            "has no matching closing brace — re-read before this can be "
+            "re-run.")
+    body = (body[:start] + "@media screen {\n" + body[start:end]
+            + "\n} /* @media screen — D8 */" + body[end:])
     return _DS_CSS_HEADER + body
 
 
@@ -579,6 +662,20 @@ def build_ks4_diagrams_js():
 # surviving `[data-theme="dark"] .rd[data-mode="ks3"]` selector (an
 # ancestor match on `<html>`, which THEME_HEAD/theme.js DO always set)
 # covers every case the media block used to, including System mode.
+_KS4_THEME_CSS_DARK_BLOCK = """.rd[data-mode="ks3"][data-theme="dark"],
+[data-theme="dark"] .rd[data-mode="ks3"] {
+  --ks3-ground: #16120E; --ks3-card: #1F1A15; --ks3-band: #2A231C; --ks3-inset: #231D17; --ks3-row-dim: #1B1611;
+  --ks3-rule: #3E352C; --ks3-rule-strong: #5E5246; --ks3-option-border: #4F443A; --ks3-option-spent: #2B241D;
+  --ks3-ink: #F3ECE0; --ks3-ink-body: #E3D9CA; --ks3-ink-muted: #C2B6A6; --ks3-ink-faint: #B0A493; --ks3-ink-ghost: #8A7F72;
+  --ks3-accent: #F07A4E; --ks3-accent-text: #FF9E78; --ks3-accent-tint: #3A2218; --ks3-accent-hover: #FFC2A8;
+  --ks3-ok: #3CC477; --ks3-ok-text: #86E6AC; --ks3-ok-tint: #15301F;
+  --ks3-alert: #FFC53D; --ks3-alert-text: #FFDC85; --ks3-alert-tint: #33290F; --ks3-alert-border: #D9821A;
+  --ks3-stretch: #9C7BFF; --ks3-stretch-text: #C2ADFF; --ks3-stretch-tint: #261D3D; --ks3-stretch-rule: #44386A;
+  --ks3-blue: #6C8EFF; --ks3-blue-text: #A8C0FF; --ks3-blue-tint: #1B2440;
+  --ks3-on-dark: #16120E; /* ink-filled controls (reveal, check, retry) flip to light fills in dark mode, so their label flips dark */
+  color-scheme: dark;
+}"""
+
 _KS4_THEME_CSS_MEDIA_BLOCK = """@media (prefers-color-scheme: dark) {
   .rd[data-mode="ks3"]:not([data-theme="light"]):not([data-theme="light"] .rd) {
     --ks3-ground: #16120E; --ks3-card: #1F1A15; --ks3-band: #2A231C; --ks3-inset: #231D17; --ks3-row-dim: #1B1611;
@@ -605,6 +702,25 @@ def build_ks4_theme_css():
             "build_ks4_theme_css() needs to be re-read against the new "
             "text before this can be re-run.")
     text = text.replace(_KS4_THEME_CSS_MEDIA_BLOCK, "", 1)
+    # ⊕ D8 (theme-run audit, 27 Sep 2026). The surviving non-media block
+    # (`.rd[data-mode="ks3"][data-theme="dark"], [data-theme="dark"]
+    # .rd[data-mode="ks3"] { ... color-scheme: dark; }`) is unconditional —
+    # `data-theme="dark"` is written by THEME_HEAD/theme.js on every load,
+    # in every medium — so printing one of these 54 pages in dark mode
+    # printed the dark ground and cream ink verbatim (rule 7: print is
+    # always light text on white). Same build-time transform this function
+    # already applies to the OS-media block above, for the same reason:
+    # never a hand-edit of Design's frozen file, only a wrap of the copy.
+    if _KS4_THEME_CSS_DARK_BLOCK not in text:
+        raise SystemExit(
+            "build_ks4: ks4-theme.css's surviving [data-theme=\"dark\"] "
+            "block moved or is missing — the D8 @media screen wrap in "
+            "build_ks4_theme_css() needs to be re-read against the new "
+            "text before this can be re-run.")
+    text = text.replace(
+        _KS4_THEME_CSS_DARK_BLOCK,
+        "@media screen {\n" + _KS4_THEME_CSS_DARK_BLOCK + "\n} /* @media screen — D8 */",
+        1)
     text += (
         "\n/* ⊕ THEME RUN (26 Sep 2026) — the @media (prefers-color-scheme: "
         "dark) block Design's own ks4-theme.css carried here has been "
@@ -691,6 +807,19 @@ def collect_lesson_css(all_files):
 # still reaches these three fixes; only the double-application through the
 # `.rd`'s own dead attribute is gone.
 KS4_DARK_MODE_FIXES = """
+/* ⊕ D8 (theme-run audit, 27 Sep 2026) — every rule below is guarded inside
+   `@media screen`. All five fixes key off `[data-theme="dark"]` (directly,
+   or via `html[data-theme="dark"] body`'s inherited colour), and the
+   attribute is unconditional — it is written by THEME_HEAD/theme.js on
+   every load of every one of these 54 pages, in EVERY medium, including
+   print. Un-guarded, printing a pilot page in dark mode printed the dark
+   ground (`html[data-theme="dark"] body`'s own rule a few lines down being
+   the clearest case: it sets print's own text colour to the dark-mode
+   cream) with "print background graphics" on, or faint low-contrast text
+   without it — both wrong; rule 7 is print stays light text on white
+   regardless of the viewed theme. Matches the guard `shared/ks3-theme.css`
+   already uses for the identical reason. */
+@media screen {
 /* ⊕ KS4-DARK-1 (DEPARTURES-PILOT.md) — disabled .ks3-reveal-btn/.ks3-retry
    measured 2.01:1 in dark mode (contrast_audit.py, disabled-control floor
    3.0). Design's own compiled Component sets `style="opacity:.45"` inline
@@ -831,6 +960,7 @@ html[data-theme="dark"] body {
 #chatOverlay {
   color-scheme: light;
 }
+} /* @media screen — D8 */
 """
 
 
@@ -1108,6 +1238,11 @@ def compile_block(page, name):
     tpl, logic = template_and_logic(path)
     if name == "Ks4Chrome":
         tpl = ks4_rulings.apply_r_breadcrumb(tpl)
+        # ⊕ D11 (theme-run audit, 27 Sep 2026) — R15, moved here from
+        # compile_lesson(): the theme slot goes into the shared header nav
+        # (brand + breadcrumb), not the per-lesson hero, so every one of
+        # the 54 pages gets it from this ONE compiled block.
+        tpl = ks4_rulings.apply_r15_theme_slot(name, tpl)
         # ⊕ R-BRAND (one-mark ruling, 13 Sep 2026) — AFTER R-BREADCRUMB.
         tpl = ks4_rulings.apply_r_brand_chrome(tpl)
     if name == "Ks4End":
@@ -1141,15 +1276,15 @@ def compile_lesson(page, lesson, report):
     tpl = ks4_rulings.apply_r1_route_selector(lesson["design_file"], tpl)
     tpl = ks4_rulings.apply_r12_route_chip(lesson["slug"], tpl)
     tpl, r9_fired = ks4_rulings.apply_r9_badge_gate(lesson["slug"], tpl)
-    # ⊕ THEME RUN (26 Sep 2026, THEME-CONTRACT.md) — R15: the site's
-    # Light/Dark/System control slot, into the same header row as R12's
-    # route chip. Runs after both R12 and R9 so it lands after whatever
-    # they left in that row (see ks4_rulings.apply_r15_theme_slot).
-    tpl = ks4_rulings.apply_r15_theme_slot(lesson["slug"], tpl)
+    # ⊕ D11 (theme-run audit, 27 Sep 2026): R15 (the theme slot) moved OFF
+    # this per-lesson hero row and into the shared Ks4Chrome block's own
+    # top header nav — see ks4_rulings.apply_r15_theme_slot's own comment.
+    # It is applied once, in compile_block()'s "Ks4Chrome" branch below,
+    # not per lesson.
     ks4_rulings.check_r3_ready_unused(logic)
     draft_tip = None
     if lesson["slug"] == "nanoparticles":
-        ks4_rulings.check_r5_nanoparticles_spec(tpl)
+        tpl = ks4_rulings.apply_r5_nanoparticles_spec(tpl)
     if lesson["slug"] == "series-parallel-circuits":
         tpl = ks4_rulings.apply_r6_rtotal_chip(tpl)
         tpl = ks4_rulings.apply_r13_approved_exam_tip(lesson["design_file"], tpl)
@@ -1161,9 +1296,14 @@ def compile_lesson(page, lesson, report):
         logic = ks4_rulings.apply_r8_model_data(logic)
     spec_text = SPEC_TEXT.get(lesson["slug"])
     if spec_text is not None:
+        # ⊕ D13 (theme-run audit, 27 Sep 2026): the TEMPLATE FILE on disk
+        # still carries Design's original, un-prefixed literal —
+        # `apply_r14_spec_number` has to find THAT to swap in the
+        # `{{ specEyebrow }}`/`{{ specNote }}` placeholder, not the new
+        # (8464)-carrying render value. See `old_combined_spec_text()`.
+        old_spec = old_combined_spec_text(lesson["slug"])
         tpl = ks4_rulings.apply_r14_spec_number(
-            lesson["slug"], tpl, spec_text["combined"]["eyebrow"],
-            spec_text["combined"]["keynote"])
+            lesson["slug"], tpl, old_spec["eyebrow"], old_spec["keynote"])
 
     logic, tpl, slug_renamed = ks4_rulings.apply_r_slug(lesson["slug"], logic, tpl)
     logic, n_prev, n_next = ks4_rulings.apply_r_prevnext(lesson["design_file"], logic)
@@ -1362,7 +1502,17 @@ def tutor_block(lesson, route):
     # eyebrow and key note read (docs/theme/spec-numbers.md) — so a Triple
     # pupil's tutor is never told the Combined (8464) number.
     note = compute_spec_note(lesson["slug"], route)
-    spec = note["keynote"].split(" · ")[0] if note else "AQA %s" % lesson["spec"]
+    # ⊕ D13 (theme-run audit, 27 Sep 2026) — nanoparticles is the one lesson
+    # `compute_spec_note` returns None for (it has no Combined route, so it
+    # is deliberately outside SPEC_TEXT — see that dict's own comment), and
+    # its fallback used to read `lesson["spec"]` bare ("4.2.4", the same
+    # value `ks4_lessons.verify_slugs` checks against the data and which
+    # must stay bare there). R5 now puts "(8462)" on the page itself (the
+    # eyebrow and the key note); the tutor needs the same code so it is not
+    # the one surface still silent about which spec "4.2.4" belongs to.
+    spec = (note["keynote"].split(" · ")[0] if note else
+            "AQA %s (8462)" % lesson["spec"] if lesson["slug"] == "nanoparticles"
+            else "AQA %s" % lesson["spec"])
     # "AQA 4.2.1.4 (8463)" -> "AQA 8463 4.2.1.4", so the context has no nested brackets
     spec = re.sub(r"^AQA (.+) \((\d{4})\)$", r"AQA \2 \1", spec)
     topic = "%s (%s) — %s" % (lesson["title"], spec, ROUTE_LABEL[route])

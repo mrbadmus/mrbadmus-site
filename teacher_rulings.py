@@ -12949,6 +12949,15 @@ LIVE_REGIONS = {
 # full reasoning (the specificity argument, the --st-room-*/--ks3-ink
 # exclusions) and for the WCAG numbers.
 THEME_DARK_CSS = """
+/* ⊕ D8 (theme-run audit, 27 Sep 2026). Every `html[data-theme="dark"]`
+   rule below (the whole rest of this file) is now wrapped in `@media
+   screen`. `data-theme="dark"` is unconditional — THEME_HEAD/theme.js
+   write it on every load, in every medium, including print — so
+   un-guarded, printing the teacher port in dark mode printed the dark
+   ground and cream ink verbatim. Rule 7: print is always dark text on
+   white, whatever the viewed theme. Matches the guard
+   `shared/ks3-theme.css` already uses for the identical reason. */
+@media screen {
 
 /* ═══ THEME RUN, 27 Sep 2026 (Mide's ruling: light by default, a
    Light/Dark/System control on every page) — DARK VALUES FOR THE TOKENS
@@ -13223,5 +13232,7 @@ html[data-theme="dark"] textarea::placeholder {
   color: var(--st-ghost);
   opacity: 1;
 }
+
+} /* @media screen — D8 */
 
 """

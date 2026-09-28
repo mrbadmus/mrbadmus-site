@@ -3,6 +3,7 @@
    Applies under the OS setting, or when a page root carries data-theme="dark".
    Every -text token measured >= 4.5:1 on --ks3-ground, --ks3-card and its own tint;
    figure plates stay cream (#F3F0E7) in both modes, so diagram ink never changes. */
+@media screen {
 .rd[data-mode="ks3"][data-theme="dark"],
 [data-theme="dark"] .rd[data-mode="ks3"] {
   --ks3-ground: #16120E; --ks3-card: #1F1A15; --ks3-band: #2A231C; --ks3-inset: #231D17; --ks3-row-dim: #1B1611;
@@ -16,5 +17,6 @@
   --ks3-on-dark: #16120E; /* ink-filled controls (reveal, check, retry) flip to light fills in dark mode, so their label flips dark */
   color-scheme: dark;
 }
+} /* @media screen — D8 */
 
 /* ⊕ THEME RUN (26 Sep 2026) — the @media (prefers-color-scheme: dark) block Design's own ks4-theme.css carried here has been stripped by build_ks4.build_ks4_theme_css() at build time (never hand-edited in Design's frozen source under docs/ks4/design-reference/pilot/). See THEME-CONTRACT.md rule 3 and the comment above KS4_DARK_MODE_FIXES in build_ks4.py for why: it guarded on the .rd element's own (always-unset) data-theme attribute, not on html[data-theme], so it fired from the OS setting regardless of the site's own stored theme choice. The surviving non-media block above (both its own-attribute and [data-theme="dark"] ancestor selector forms) is unchanged and covers every case this did. */

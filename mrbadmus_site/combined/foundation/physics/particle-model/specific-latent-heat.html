@@ -9,12 +9,12 @@
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614">
-  <link rel="stylesheet" href="/shared/tokens.css?v=66931d71"/>
-  <link rel="stylesheet" href="/shared/styles.css?v=31dbb661"/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
+  <link rel="stylesheet" href="/shared/styles.css?v=d263a66b"/>
   <link rel="stylesheet" href="/shared/nav.css?v=7415488f"/>
   <script src="/shared/search-index.js?v=c016cb14" defer></script>
   <script src="/shared/search.js?v=d011978d" defer></script>
-  <script src="/shared/nav.js?v=d653be2c" defer></script>
+  <script src="/shared/nav.js?v=731ac0e4" defer></script>
   <script src="/shared/class-entry.js?v=a97c1d3d" defer></script>
   
 <style>
@@ -293,9 +293,17 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
         const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
         endMsg.innerHTML = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
         endMsg.style.display = 'block';
-        endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
-        endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
-        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
+        /* ⊕ D9 (theme-run audit, 27 Sep 2026) — see the identical fix and
+           its full rationale above (the other quiz-card variant's endMsg
+           block, same file). This is a SECOND copy of the same literal
+           hex/rgba logic this build had never noticed was duplicated;
+           the audit's own repro page (a "Test Yourself" distance-time-
+           graphs lesson) renders through THIS copy, not the one already
+           fixed, which is how the fix landed once yet the live page still
+           failed until this second site was found and fixed identically. */
+        endMsg.style.background = ratio === 1 ? 'var(--success-soft)' : ratio >= 0.6 ? 'var(--quiz-end-mid-bg)' : 'var(--quiz-end-bad-bg)';
+        endMsg.style.color = ratio === 1 ? 'var(--success)' : ratio >= 0.6 ? 'var(--higher)' : 'var(--danger)';
+        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'var(--quiz-end-ok-border)' : ratio >= 0.6 ? 'var(--quiz-end-mid-border)' : 'var(--quiz-end-bad-border)');
       }
     } else {
       if (prog) prog.innerHTML = 'Question ' + (answered + 1) + ' of ' + total;

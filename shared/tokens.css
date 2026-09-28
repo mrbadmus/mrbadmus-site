@@ -89,6 +89,7 @@
 }
 
 :root {
+  --on-success: #FFFFFF;
   /* ── Surfaces — cream page vs white card is a DELIBERATE pairing.
      The warmth of the whole design comes from this relationship:
      warm cream ground, pure-white cards lifted off it by border +
@@ -173,6 +174,31 @@
   --examiner-tint:   #FFF6E4;
   --examiner-border: #E0A21A;
 
+  /* ⊕ D9 (theme-run audit, 27 Sep 2026) — the older KS4 lessons' (811
+     pages) "Test Yourself" result banner, `generate_site_v5.py`'s
+     `endMsg.style.*`. Two of its three states already have an exact
+     token match (`--success`/`--success-soft`, `--danger`) — those are
+     used directly, no minting needed. The middle ("mid", 60–99%) band's
+     text is `--higher` (also an exact match) but its background alpha,
+     0.10, is NOT `--higher-soft`'s 0.12 — reusing that token would move
+     the rendered colour, however slightly, which rule 1 forbids. And none
+     of the three states had a BORDER token at all (the border was always
+     a literal rgba). So: one new bg (the "mid" band only) and three new
+     borders, one per band. Light values are the script's own existing
+     literals, byte-identical. Dark values are freshly measured, not
+     copied from --success-soft/--danger-soft's own dark values (which are
+     tuned for THEIR consumers, not for compositing under `--higher`/
+     `--danger` at these exact alphas) — bg alphas composited against the
+     dark `--card` (#1D1915) clear >=4.5:1 against their paired text
+     (5.94 / 6.47 / 4.67); border alphas raised to 0.7 (a border is not
+     body text, but is a real state signal) so all three clear >=3:1
+     against the same dark card (3.92 / 4.79 / 3.22). */
+  --quiz-end-mid-bg:     rgba(122, 95, 0, 0.10);
+  --quiz-end-bad-bg:     rgba(179, 38, 30, 0.09);
+  --quiz-end-ok-border:  rgba(35, 122, 59, 0.3);
+  --quiz-end-mid-border: rgba(122, 95, 0, 0.3);
+  --quiz-end-bad-border: rgba(179, 38, 30, 0.3);
+
   /* ── Type — serif for headlines and topic/section titles ONLY.
      Body text and all UI stay sans (readability, dyslexic students). ── */
   --font-serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
@@ -204,8 +230,21 @@
   color-scheme: light;
 }
 
-/* ═══ DARK — opt-in via <html data-theme="dark">. Gold on near-black. ═══ */
+/* ═══ DARK — opt-in via <html data-theme="dark">. Gold on near-black. ═══
+   ⊕ D8 (theme-run audit, 27 Sep 2026): wrapped in `@media screen` so a
+   printed page is dark text on white whatever the viewed theme was (rule
+   7) — `[data-theme="dark"]` is unconditional otherwise (the page always
+   carries the attribute; nothing about it is screen-specific on its own),
+   so without this guard the browser's print preview inherited the same
+   near-black ground and gold ink as the screen, which under "print
+   background graphics" is a near-black page and under Chrome's default
+   (backgrounds off) is faint low-contrast text on white — both wrong.
+   Falling through to this file's own un-guarded `:root` light values (the
+   same mechanism `shared/ks3-theme.css` already used for KS3) is print's
+   own text, on white, always. */
+@media screen {
 [data-theme="dark"] {
+  --on-success: #14110D;   /* theme run: ink on --success fills (FIFA letters) */
   --bg:        #14110D;
   --card:      #1D1915;
   --sunken:    #0F0D0A;
@@ -243,11 +282,22 @@
   --examiner-tint:   rgba(224, 172, 75, 0.14);
   --examiner-border: #E0AC4B;
 
+  /* ⊕ D9 — see the light-theme block's comment. Measured against dark
+     --card (#1D1915): 6.47:1 (mid text --higher #E0AC4B on this bg),
+     4.67:1 (bad text --danger #E5655C on this bg); borders at 0.7 alpha
+     clear >=3:1 against the same card (3.92 / 4.79 / 3.22). */
+  --quiz-end-mid-bg:     rgba(224, 172, 75, 0.14);
+  --quiz-end-bad-bg:     rgba(229, 101, 92, 0.10);
+  --quiz-end-ok-border:  rgba(85, 179, 106, 0.7);
+  --quiz-end-mid-border: rgba(224, 172, 75, 0.7);
+  --quiz-end-bad-border: rgba(229, 101, 92, 0.7);
+
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 14px rgba(0, 0, 0, 0.45);
   --shadow-pop:  0 2px 6px rgba(0, 0, 0, 0.5), 0 12px 32px rgba(0, 0, 0, 0.6);
 
   color-scheme: dark;
 }
+} /* @media screen — D8 */
 
 /* ═══ KS3 — playful variant hook. Same bones, different energy.
    Full KS3 styling lands in a later pass; these are the dials. ═══

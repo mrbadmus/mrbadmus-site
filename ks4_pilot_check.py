@@ -369,10 +369,16 @@ def check_exam_tips(errors):
 
 def check_spec_numbers(errors):
     """R14: a Triple route (TF/TH) shows the separate science's own AQA
-    spec number (8462/8463); a Combined route (CF/CH) shows 8464's,
-    unchanged. `nanoparticles` is excluded — it has no Combined route at
-    all and already showed the correct, verified 8462 number before this
-    ruling; R14 was never applied to it (see DEPARTURES-PILOT.md)."""
+    spec number (8462/8463); a Combined route (CF/CH) shows 8464's — and,
+    ⊕ D13 (theme-run audit, 27 Sep 2026), NAMES it: every "combined" value
+    in `build_ks4.SPEC_TEXT` now carries "(8464)" the same way every
+    "triple" value has always carried "(8462)"/"(8463)", so this check's
+    own `want["eyebrow"]`/`want["keynote"]` already read the D13 text —
+    nothing else here needed to change for the 12 Combined-route lessons.
+    `nanoparticles` is excluded from THIS loop (it has no Combined route at
+    all, so it is not in `SPEC_TEXT`, and R14 was never applied to it — see
+    DEPARTURES-PILOT.md) but is checked separately below, by R5, which now
+    also carries "(8462)"."""
     for lesson in ks4_lessons.LESSONS:
         slug = lesson["slug"]
         entry = build_ks4.SPEC_TEXT.get(slug)
@@ -393,6 +399,31 @@ def check_spec_numbers(errors):
                         "%s citation %r" % (path, route, field, needle))
 
 
+def check_r5_nanoparticles_spec(errors):
+    """⊕ D13 (theme-run audit, 27 Sep 2026) — nanoparticles sits outside
+    `check_spec_numbers()` (it is not in `SPEC_TEXT`), so its own R5 fix
+    (`ks4_rulings.apply_r5_nanoparticles_spec`) had no gate at all watching
+    it. Asserts both literals it writes are on both of nanoparticles' two
+    routes (TF, TH)."""
+    for route in ("TF", "TH"):
+        path = _page_path("nanoparticles", route)
+        if not os.path.exists(path):
+            errors.append("SPEC-NUMBER: %s missing" % path)
+            continue
+        text = open(path, encoding="utf-8").read()
+        # ⊕ bare substrings, matching check_spec_numbers()'s own convention
+        # just above — the compiled page carries these as JSON string
+        # values ("spec": "AQA ..."), not the source template's HTML
+        # attribute syntax (spec="AQA ..."), so a needle wrapped in that
+        # syntax never matches the built output.
+        for needle in ("AQA Chemistry (8462) 4.2.4 (chemistry only) · Quantitative",
+                       "AQA 4.2.4 (8462) (chemistry only)"):
+            if needle not in text:
+                errors.append(
+                    "SPEC-NUMBER: %s (%s) does not contain the expected "
+                    "R5 citation %r" % (path, route, needle))
+
+
 def main():
     os.chdir(os.path.dirname(os.path.abspath(__file__)) or ".")
     manifest = load_manifest()
@@ -411,6 +442,7 @@ def main():
     check_route_chip(errors)
     check_exam_tips(errors)
     check_spec_numbers(errors)
+    check_r5_nanoparticles_spec(errors)
 
     if errors:
         print("\n❌ ks4_pilot_check: %d problem(s)\n" % len(errors))

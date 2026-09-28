@@ -194,6 +194,22 @@
     drawer.setAttribute('role', 'dialog');
     drawer.setAttribute('aria-modal', 'true');
     drawer.setAttribute('aria-label', 'Main menu');
+    /* ⊕ D12 (theme-run audit, 27 Sep 2026) — CLOSED by default, here at
+       creation, not only inside close(): the drawer is built once and
+       starts life off-canvas (`transform: translateX(100%)`, no `.open`
+       class yet), and `inert` on this attribute right now, not toggled
+       later, means there is never a frame where a freshly-built, closed
+       drawer is reachable. `open()`/`close()` below toggle both away and
+       back. `inert` (not just `aria-hidden`) is what actually pulls its
+       twelve links/buttons — and, since the theme run, the Light/Dark/
+       System radios — out of the TAB ORDER; `aria-hidden` alone hides it
+       from a screen reader's tree but a sighted keyboard user would still
+       Tab into an invisible off-canvas control. `.nav-overlay`, the scrim,
+       needs no such treatment — it is `visibility: hidden` while closed,
+       which already removes it from both the accessibility tree and the
+       tab order on its own. */
+    drawer.inert = true;
+    drawer.setAttribute('aria-hidden', 'true');
 
     var menuItems = MENU.map(function (m) {
       if (m.search) {
@@ -241,6 +257,11 @@
 
     function open() {
       lastFocused = document.activeElement;
+      // ⊕ D12 — remove BEFORE the drawer needs to take focus: an inert
+      // subtree cannot receive it, so this must run before the
+      // focusables()/.focus() call three lines down, not after.
+      drawer.inert = false;
+      drawer.removeAttribute('aria-hidden');
       overlay.classList.add('open');
       drawer.classList.add('open');
       burger.setAttribute('aria-expanded', 'true');
@@ -251,6 +272,11 @@
     function close() {
       overlay.classList.remove('open');
       drawer.classList.remove('open');
+      // ⊕ D12 — restored once the drawer is closing. `close()` moves focus
+      // back to the burger a few lines down, off the drawer entirely, so
+      // setting `inert` here never strands focus inside a now-inert node.
+      drawer.inert = true;
+      drawer.setAttribute('aria-hidden', 'true');
       burger.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
       // Return focus to the button that opened the drawer (spec requirement).

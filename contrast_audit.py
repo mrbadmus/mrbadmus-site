@@ -644,6 +644,214 @@ _page("student/class.html [flashcard homework]", "student/class-fixture.html",
 
 
 # ══════════════════════════════════════════════════════════════════════════
+# INTERACTION STATES (theme-run audit, 27 Sep 2026) — "the contrast gate
+# missed all of these because it measures pages at rest." Every page above
+# is measured AS LOADED; every defect the independent audit found was a
+# page in a state only reachable after an interaction (chat opened and a
+# message sent, an instrument answered, a card flipped, a toast fired) or
+# on a surface the sweep above never had real data for (the leaderboard's
+# week chips need a backend fetch this harness cannot make). This section
+# adds exactly those states, each via a `setup=` step, so a real AA
+# regression here shows up on `--interactions` the same way any other
+# regression shows up above.
+#
+# Kept OUT of `PAGES` on purpose, behind `--interactions`: driving 15
+# instruments' own controls one by one would slow the fast sweep every
+# other page in this file has to stay fast for. `run_interactions()` below
+# is registered as its own SLOW gate in gate_registry.py.
+INTERACTION_PAGES = []
+
+
+def _ipage(label, path, setup, wait=0.6):
+    INTERACTION_PAGES.append({"label": label, "path": path, "setup": setup, "wait": wait})
+
+
+# ── D1: the KS3 tutor chat, opened, with a sent exchange on screen ──
+# `[data-open-chat]` is the real trigger `shared/mrbadmus.v2.js` binds
+# (`document.querySelectorAll('[data-open-chat]').forEach(el =>
+# el.addEventListener('click', open))`) — clicking it is the real open
+# path, not a class toggle. A real reply needs the backend
+# (`mrbadmus-backend.onrender.com`), which this harness has neither a
+# route to nor a reason to fake, so the exchange is built via the EXACT
+# markup `addMsg(role, html)` writes (`shared/mrbadmus.v2.js`: `<div
+# class="chat-msg chat-msg--${role}"><div class="chat-msg__avatar">...
+# </div><div class="chat-msg__bubble">...</div></div>`, appended to
+# `#chatMsgs`) rather than calling that closure-private function.
+_CHAT_OPEN_JS = r"""
+(function(){
+  var btn = document.querySelector('[data-open-chat]');
+  if (btn) { btn.click(); }
+  var box = document.getElementById('chatMsgs');
+  if (box) {
+    box.insertAdjacentHTML('beforeend',
+      '<div class="chat-msg chat-msg--bot"><div class="chat-msg__avatar">⚡</div>'
+      + '<div class="chat-msg__bubble">Great question — let\'s work through it '
+      + 'with FIFA: Formula, Insert, Fix, Answer.</div></div>'
+      + '<div class="chat-msg chat-msg--user"><div class="chat-msg__avatar">🧑</div>'
+      + '<div class="chat-msg__bubble">Can you help me with this?</div></div>');
+  }
+})()
+"""
+_ipage("D1 ks3 tutor chat [open+message]",
+       "ks3/physics/electric-circuits/current-and-circuits.html",
+       setup=_CHAT_OPEN_JS)
+
+# ── D2: the safeguarding box lessons — static content, no interaction
+# needed, just not previously in PAGES/INTERACTION_PAGES at all. ──
+for _slug, _path in (
+    ("substance-misuse-and-decisions",
+     "ks3/biology/health-and-drugs/substance-misuse-and-decisions.html"),
+    ("alcohol-and-smoking", "ks3/biology/health-and-drugs/alcohol-and-smoking.html"),
+    ("what-drugs-do-to-the-body",
+     "ks3/biology/health-and-drugs/what-drugs-do-to-the-body.html"),
+    ("how-we-worked-out-dna",
+     "ks3/biology/inheritance-and-dna/how-we-worked-out-dna.html"),
+):
+    _ipage("D2 ks3 safeguarding box [%s]" % _slug, _path, setup=None, wait=0.2)
+
+# ── D3: every "ink ground" panel this run fixed, reproduced as REAL,
+# VISIBLE DOM nodes — the audit's own method (`inj.py`'s `build()`),
+# ported here so this gate's generic walker measures them exactly as it
+# measures any other text (no separate compositing logic needed: unlike
+# the audit's own script, this one runs INSIDE the sweep that already
+# composites real ancestor chains). Built on any KS3 lesson page, not the
+# instruments' OWN lessons — these are synthetic nodes proving the CSS
+# RULE, the same reason the audit's own script did not need the real
+# instruments either. `pairs.json` under the audit's own `data/` is this
+# list's source; kept verbatim so a future re-run of that script and this
+# gate are checking the identical 42 pairings.
+INSTRUMENT_PAIRS = [
+    [".ks3-unit-panel", ".ks3-unit-panel .ks3-eyebrow"],
+    [".ks3-unit-panel", ".ks3-unit-panel-intro"],
+    [".ks3-board-verdict", ".ks3-board-verdict-body"],
+    [".ks3-board-verdict", ".ks3-board-extra-label"],
+    [".ks3-board-verdict", ".ks3-board-extra-note"],
+    [".ks3-case-verdict", ".ks3-case-why"],
+    [".ks3-switch-chain", ".ks3-switch-chip"],
+    [".ks3-switch-chain", ".ks3-switch-step"],
+    [".ks3-verdict-panel", ".ks3-verdict-panel .ks3-verdict-why"],
+    [".ks3-limit-card[data-ground=\"ink\"]",
+     ".ks3-limit-card[data-ground=\"ink\"] .ks3-limit-body"],
+    [".ks3-pick-reveal", ".ks3-pick-reveal .ks3-pick-steplabel"],
+    [".ks3-pick-reveal", ".ks3-pick-reveal .ks3-pick-stepnote"],
+    [".ks3-pick-reveal", ".ks3-pick-reveal .ks3-pick-close"],
+    [".ks3-lstep-reveal", ".ks3-lstep-reveal .ks3-lstep-steplabel"],
+    [".ks3-lstep-reveal", ".ks3-lstep-reveal .ks3-lstep-stepnote"],
+    [".ks3-lstep-reveal", ".ks3-lstep-reveal .ks3-lstep-close"],
+    [".ks3-psort-reveal", ".ks3-psort .ks3-psort-why"],
+    [".ks3-seq-report", ".ks3-seq .ks3-seq-reporttext"],
+    [".ks3-still-result", ".ks3-still .ks3-still-resulttext"],
+    [".ks3-mchoice-reveal", ".ks3-mchoice .ks3-mchoice-why"],
+    [".ks3-critiq-reveal", ".ks3-critiq .ks3-critiq-why"],
+    [".ks3-chroma-say", ".ks3-chroma .ks3-chroma-saytext"],
+    [".ks3-mpb-say", ".ks3-mpb .ks3-mpb-saytext"],
+    [".ks3-cpair-verdict", ".ks3-cpair .ks3-cpair-why"],
+    [".ks3-iask-verdict", ".ks3-iask .ks3-iask-text"],
+    [".ks3-eqb-check", ".ks3-eqb .ks3-eqb-checktext"],
+    [".ks3-fcard .ks3-fcard-reveal", ".ks3-fcard .ks3-fcard-why"],
+    [".ks3-tuber-done", ".ks3-tuber .ks3-tuber-finish"],
+    [".ks3-ctube-open", ".ks3-ctube .ks3-ctube-why"],
+    [".ks3-rgrid-result", ".ks3-rgrid .ks3-rgrid-why"],
+    [".ks3-tsort-reveal", ".ks3-tsort .ks3-tsort-why"],
+    [".ks3-tempb .ks3-tempb-run", ".ks3-tempb .ks3-tempb-figlabel"],
+    [".ks3-tempb .ks3-tempb-run", ".ks3-tempb .ks3-tempb-why"],
+    [".ks3-rigb .ks3-rigb-panel", ".ks3-rigb .ks3-rigb-figlabel"],
+    [".ks3-rigb .ks3-rigb-panel", ".ks3-rigb .ks3-rigb-why"],
+    [".ks3-phbench .ks3-phbench-result", ".ks3-phbench .ks3-phbench-why"],
+    [".ks3-amgrid .ks3-amgrid-result", ".ks3-amgrid .ks3-amgrid-why"],
+    [".ks3-namer .ks3-namer-result", ".ks3-namer .ks3-namer-note"],
+    [".ks3-catb .ks3-catb-result", ".ks3-catb .ks3-catb-tilelabel"],
+    [".ks3-catb .ks3-catb-result", ".ks3-catb .ks3-catb-figsnote"],
+    [".ks3-catb .ks3-catb-result", ".ks3-catb .ks3-catb-why"],
+    [".ks3-oxb .ks3-oxb-compare", ".ks3-oxb .ks3-oxb-cmp"],
+]
+_PAIRS_INJECT_JS = r"""
+(function(pairs){
+  function build(sel, parent){
+    var parts = sel.split(/\s+/); var cur = parent; var last = null;
+    parts.forEach(function(p){
+      var m = p.match(/^([a-z]*)((?:\.[a-z0-9-]+)*)((?:\[[^\]]+\])*)$/i);
+      if (!m) return;
+      var el = document.createElement(m[1] || 'div');
+      (m[2] || '').split('.').filter(Boolean).forEach(function(c){ el.classList.add(c); });
+      var at = (m[3] || '').match(/\[([^=\]]+)(?:="?([^"\]]*)"?)?\]/g) || [];
+      at.forEach(function(a){
+        var mm = a.match(/\[([^=\]]+)(?:="?([^"\]]*)"?)?\]/);
+        el.setAttribute(mm[1], mm[2] || '');
+      });
+      cur.appendChild(el); cur = el; last = el;
+    });
+    return last;
+  }
+  var host = document.querySelector('main') || document.querySelector('.rd');
+  if (!host) return;
+  pairs.forEach(function(pr){
+    var box = document.createElement('div');
+    host.appendChild(box);
+    var panel = build(pr[0], box);
+    if (!panel) return;
+    var tparts = pr[1].split(/\s+/);
+    var tl = tparts[tparts.length - 1];
+    var tel = build(tl, panel);
+    if (!tel) return;
+    tel.textContent = 'Sample text for the contrast gate.';
+  });
+})(%s)
+""" % json.dumps(INSTRUMENT_PAIRS)
+_ipage("D3 ks3 instrument panels [42 pairs, post-answer]",
+       "ks3/physics/electric-circuits/current-and-circuits.html",
+       setup=_PAIRS_INJECT_JS, wait=0.3)
+
+# ── D5: student flashcards, flipped so the "Next" button is on screen ──
+_ipage("D5 student flashcards [Next button]", "student/class-fixture.html",
+       setup=_click_containing("Flashcards") + ";" + _click_containing("Flip"),
+       wait=0.6)
+
+# ── D6: the leaderboard's SELECTED week chip — the real chip is
+# client-rendered from a backend fetch this harness cannot make (no
+# session, no `mrbadmus-backend.onrender.com` route), so the exact
+# rendered SHAPE (`docs/ks3/design-reference/leaderboard/source/KS4 Weekly
+# Leaderboard.dc.html`: `bg: on ? 'var(--st-ink)' : …, fg: on ?
+# 'var(--st-cream)' : …`) is reproduced as a real, visible node instead of
+# waiting on data this environment cannot provide. ──
+_ipage("D6 leaderboard [selected week chip]", "leaderboard.html",
+       setup=("(function(){document.body.insertAdjacentHTML('beforeend',"
+              "'<button style=\"position:relative;padding:12px 30px 11px 14px;"
+              "background:var(--st-ink);border:1px solid var(--st-ink);"
+              "color:var(--st-cream);border-radius:14px;font:500 15px var(--st-mono);\">"
+              "25 SEP\\u201311 OCT</button>');})()"),
+       wait=0.2)
+
+# ── D7: the teacher Set work toast — real trigger needs a save round trip
+# to the backend; the audit's own shot (`fx_setwork_toast_dark.png`) notes
+# it was "a toast injected into the real .sw-overlay", so this does the
+# same, into the real class-detail fixture (real shared/set-work.css). ──
+_ipage("D7 teacher Set work toast", "teacher_fixtures/class-detail-fixture.html",
+       setup=("(function(){document.body.insertAdjacentHTML('beforeend',"
+              "'<div class=\"sw-toast\">Set for 10h/Sc1 \\u00b7 not saved</div>');})()"),
+       wait=0.2)
+
+# ── D9: an older KS4 lesson's "Test Yourself" result banner, shown ──
+_ipage("D9 ks4 lesson [Test Yourself result]",
+       "combined/higher/physics/forces/distance-time-graphs.html",
+       setup=("(function(){document.querySelectorAll('.quiz-options').forEach("
+              "function(box){var o=box.querySelector('.quiz-opt'); if(o) o.click();});"
+              "var b=document.getElementById('quizCheckBtn'); if(b) b.click();})()"),
+       wait=0.4)
+
+
+def run_interactions(widths=None, shots=True, themes=None):
+    """The `--interactions` sweep: `sweep()`, pointed at `INTERACTION_PAGES`
+    instead of `PAGES`, so the fast/default run's page count and timing are
+    completely unaffected. Registered as its own SLOW gate — see
+    gate_registry.py — because a couple of these steps (D3's 42-node inject,
+    D9's click-every-option-then-check) are real page interactions, not
+    just a bigger page list."""
+    return sweep(widths=widths or WIDTHS, shots=shots, themes=themes,
+                 page_list=INTERACTION_PAGES)
+
+
+# ══════════════════════════════════════════════════════════════════════════
 # the sweep
 # ══════════════════════════════════════════════════════════════════════════
 
@@ -669,8 +877,9 @@ def _apply_theme(p, theme, url):
     return p.eval(_THEME_CHECK_JS)
 
 
-def sweep(widths=WIDTHS, shots=True, only=None, themes=None):
+def sweep(widths=WIDTHS, shots=True, only=None, themes=None, page_list=None):
     themes = themes or THEMES
+    pages = PAGES if page_list is None else page_list
     findings = []
     server, port = cdp.serve(REPO)
     # The one page target is reused across every spec (`b.page()` re-navigates
@@ -695,7 +904,7 @@ def sweep(widths=WIDTHS, shots=True, only=None, themes=None):
 
     try:
         with cdp.Browser() as b:
-            for spec in PAGES:
+            for spec in pages:
                 if only and only not in spec["label"]:
                     continue
                 url = "http://127.0.0.1:%d/%s" % (port, spec["path"])
@@ -770,7 +979,7 @@ def sweep(widths=WIDTHS, shots=True, only=None, themes=None):
     return findings
 
 
-def write_report(findings, path, title):
+def write_report(findings, path, title, page_count=None, width_count=None, theme_count=None):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     lines = ["# %s\n" % title, ""]
     if not findings:
@@ -779,7 +988,9 @@ def write_report(findings, path, title):
     real = [f for f in findings if "error" not in f]
     real.sort(key=lambda f: f["ratio"])
     lines.append("%d failing text/placeholder/disabled instances across %d page+width combinations measured.\n"
-                  % (len(real), len(PAGES) * len(WIDTHS) * len(THEMES)))
+                  % (len(real), (page_count if page_count is not None else len(PAGES))
+                     * (width_count if width_count is not None else len(WIDTHS))
+                     * (theme_count if theme_count is not None else len(THEMES))))
     lines.append("| ratio | floor | page | width | kind | token | fg | bg | selector | text |")
     lines.append("|---|---|---|---|---|---|---|---|---|---|")
     for f in real:
@@ -806,14 +1017,27 @@ def main():
     ap.add_argument("--gate", action="store_true")
     ap.add_argument("--themes", default="light,dark",
                     help="comma list of site themes to measure (light,dark)")
+    ap.add_argument("--interactions", action="store_true",
+                    help="sweep INTERACTION_PAGES (chat open, instrument "
+                         "after answering, flashcards, toasts, quiz result) "
+                         "instead of the at-rest PAGES list — see gate_registry.py, "
+                         "registered as its own slow gate")
     args = ap.parse_args()
 
     widths = [1280] if args.quick else WIDTHS
-    findings = sweep(widths=widths, shots=not args.quick, only=args.only,
-                     themes=[t for t in args.themes.split(",") if t])
+    themes = [t for t in args.themes.split(",") if t]
+    if args.interactions:
+        findings = run_interactions(widths=widths, shots=not args.quick, themes=themes)
+        page_count = len(INTERACTION_PAGES)
+    else:
+        findings = sweep(widths=widths, shots=not args.quick, only=args.only, themes=themes)
+        page_count = len(PAGES)
     out_path = args.before or args.after or os.path.join(OUT_DIR, "contrast-before.md")
-    title = "Contrast audit — %s" % ("after" if args.after else "before")
-    real, errors = write_report(findings, out_path, title)
+    title = "Contrast audit — %s%s" % (
+        "after" if args.after else "before",
+        " (interactions)" if args.interactions else "")
+    real, errors = write_report(findings, out_path, title, page_count=page_count,
+                                width_count=len(widths), theme_count=len(themes))
     print("contrast_audit: %d failing instance(s), %d page error(s). Report: %s"
           % (len(real), len(errors), out_path))
     if args.gate:

@@ -10,7 +10,7 @@
   <!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614"><!--/mrb:brand-head-->
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="/shared/tokens.css?v=66931d71"/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <script src="/shared/search-index.js?v=c016cb14" defer></script>
   <script src="/shared/search.js?v=d011978d" defer></script>
   <style>
@@ -71,15 +71,33 @@
     .handle-status.ok { color: var(--success); }
     .handle-status.err { color: var(--danger); }
     .handle-status.checking { color: var(--muted); }
+
+    /* ⊕ D16 (theme-run audit, 27 Sep 2026) — at 320–390px the brand
+       ("MrBadmusAI"), the theme control (~96px) and "← Back to site" never
+       had room on one row (no wrap, no shrink, nothing preventing the two
+       right-hand items pressing straight up against the brand once the
+       row ran out of space) — measured: 0px gap between the brand and the
+       control, and "← Back to site" splitting across 2–3 lines.
+       `flex-wrap: wrap` on the nav lets the right-hand GROUP drop to its
+       own row as one unit instead of letting its own children wrap
+       independently; `white-space: nowrap` on the back-link is what stops
+       THAT link splitting internally once it has its own row and still
+       is not full width. `row-gap` is the fix for the touching brand: a
+       real gap even when the group above it is a full row taller. */
+    @media (max-width: 460px) {
+      .auth-nav { flex-wrap: wrap; row-gap: 8px; padding: 10px 16px !important; }
+      .auth-nav-right { flex-wrap: nowrap; margin-left: auto; }
+      .auth-back-link { white-space: nowrap; }
+    }
   </style>
 </head>
 <body>
 
 <nav class="auth-nav" style="position:fixed;top:0;left:0;right:0;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border-bottom:1px solid var(--border);z-index:10;">
   <!--mrb:brand--><a class="mrb-brand" href="/index.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
-  <div style="display:flex;align-items:center;gap:12px;">
+  <div class="auth-nav-right" style="display:flex;align-items:center;gap:12px;">
     <span class="mrb-theme-slot" data-mrb-theme></span>
-    <a href="/index.html" style="color:var(--muted);font-size:0.85rem;font-weight:700;text-decoration:none;">← Back to site</a>
+    <a href="/index.html" class="auth-back-link" style="color:var(--muted);font-size:0.85rem;font-weight:700;text-decoration:none;">← Back to site</a>
   </div>
 </nav>
 

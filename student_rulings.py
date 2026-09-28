@@ -4997,6 +4997,13 @@ STYLE_EDIT = {
         # tail below) — the crumb separator gets the same colour a crumb
         # LABEL near it would use for its own caption-weight text.
         34: [("color:var(--st-crumb-sep)", "color:var(--st-caption)")],
+        # ⊕ D5 (theme-run audit, 27 Sep 2026) — flashcards "Next" button.
+        # Design's literal `color:#FFF7EC` can't follow `--pg-accent-text`
+        # brightening for dark (1.87:1, measured); see THEME_DARK_CSS's own
+        # note on the new `--pg-on-accent-text` token this points at, which
+        # is byte-identical to this literal in light and dark-ink in dark.
+        10363: [("background:var(--pg-accent-text);color:#FFF7EC;",
+                 "background:var(--pg-accent-text);color:var(--pg-on-accent-text);")],
     },
     # ⊕ RULED 25 Sep 2026 (experience run, stream K) — PROD N1. Node 14 is the
     # page's own header strip — the back button, the class name, and (on a
@@ -5725,6 +5732,34 @@ PORT_CSS = """
 # triggered by anything these three ports render.
 THEME_DARK_CSS = """
 
+/* ⊕ D5 (theme-run audit, 27 Sep 2026). The flashcards "Next" button (node
+   10363, STYLE_EDIT 'class view') is Design's own inline
+   `background:var(--pg-accent-text);color:#FFF7EC`. `--pg-accent-text`
+   brightens for dark (below: #FFA167, a light peach-orange, the same
+   brightening every other `-accent-text` token in this file gets) but the
+   label is a LITERAL hex, so it cannot follow — measured 1.87:1. A brand
+   new token, because nothing existing is right for both ends: it must stay
+   byte-identical to `#FFF7EC` in light (this file's contract, rule 1) and
+   go dark-ink in dark, which is the opposite of what `--pg-ground` (this
+   file, cream in light) or any existing `-ink`/`-text` token does. Declared
+   unconditionally here (nothing else defines it) so light needs no separate
+   touch; STYLE_EDIT then repoints the literal at it. 9.36:1 in dark on
+   `--pg-accent-text` (#16120D on #FFA167), 6.20:1 in light (unchanged, the
+   original pairing). */
+:root { --pg-on-accent-text: #FFF7EC; }
+
+/* ⊕ D8 (theme-run audit, 27 Sep 2026). Every `html[data-theme="dark"]`
+   rule below (the whole rest of this file) is now wrapped in `@media
+   screen`. `data-theme="dark"` is unconditional — THEME_HEAD/theme.js
+   write it on every load, in every medium, including print — so
+   un-guarded, printing the student/teacher/leaderboard ports in dark mode
+   printed the dark ground and cream ink verbatim. Rule 7: print is always
+   dark text on white, whatever the viewed theme. Matches the guard
+   `shared/ks3-theme.css` already uses for the identical reason; the new
+   `--pg-on-accent-text` token above stays OUTSIDE the guard on purpose —
+   its light value must hold in print too, exactly as it does on screen. */
+@media screen {
+
 /* ═══ THEME RUN, 27 Sep 2026 (Mide's ruling: light by default, a
    Light/Dark/System control on every page) — DARK VALUES FOR THE TOKENS
    THIS PORT ACTUALLY USES.
@@ -5826,6 +5861,7 @@ html[data-theme="dark"] {
   --pg-accent: #FF7A47;
   --pg-accent-text: #FFA167;
   --pg-accent-hover: #FFC299;
+  --pg-on-accent-text: #16120D;
   --pg-tint: #2C1912;
 
   /* The docket (SET_ATTR node 91, "stays paper and ink on all six bench
@@ -6062,5 +6098,7 @@ html[data-theme="dark"] [data-hw="write"],
 html[data-theme="dark"] [data-hw="rate"] {
   --on-accent: #14110D;
 }
+
+} /* @media screen — D8 */
 
 """

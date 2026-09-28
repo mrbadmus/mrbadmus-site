@@ -553,6 +553,32 @@
   to   { opacity: 1; transform: translate(-50%, 0); }
 }
 
+/* ⊕ D7 (theme-run audit, 27 Sep 2026). This file "must stand up on a page
+   that has not loaded [Design's] inline <style>" (the comment above) — and
+   it equally never had its own dark handling at all, which is the bug: the
+   toast is drawn INK, on purpose, so it reads as a page-level announcement
+   rather than another card ("Set for 10h/Sc1", "not set", "not saved") —
+   the same "inverted ink card" idiom `shared/leaderboard-ds.css`'s week
+   chip and every KS3 ink panel share. `--st-ink` flips light for dark-theme
+   body text (`shared/teacher-ds.css`'s own dark block, which this file
+   depends on already being loaded), so the toast's card flips from a dark
+   pill to a light one, and `--st-cream` (correctly NOT flipped generally —
+   its other job is "cream on a plate that is always dark") stays light on
+   it: 1.05:1, measured. `.sw-toast` is a real class, so — unlike the
+   leaderboard week chip, which is inline-templated — this can be a normal
+   class override, no attribute-selector trick needed, and `--st-cream` is
+   used nowhere else in this file, so scoping the fix to `.sw-toast` alone
+   cannot affect anything else. Wrapped in `@media screen` per rule 7
+   (D8): the toast is a transient screen announcement, never meant to be
+   part of a print output, and any future dark rule added to this file
+   should be added inside this same guard rather than a new bare one.
+   15.75:1 in dark (#F3EBDD bg / #16120D text — the same ink
+   `--pg-on-accent-text` and the leaderboard week-chip fix both use for the
+   identical reason). */
+@media screen {
+html[data-theme="dark"] .sw-toast { color: #16120D; }
+}
+
 /* ── 390px ───────────────────────────────────────────────────────────────
    The sheet takes the whole phone. `max-height:100%` with the overlay padding
    at 0 gives the scroller the full height, which matters because the sticky

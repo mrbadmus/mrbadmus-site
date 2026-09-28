@@ -88,7 +88,7 @@ import theme_head
 # Both builds assemble the same six sheets from Design's delivery and
 # both had the same 7-declared-twice duplication; a second copy of the
 # rule here would drift from that one on the first change to either.
-from build_student_port import dedupe_faces
+from build_student_port import dedupe_faces, _wrap_bundle_dark_screen
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 REF = os.path.join("docs", "ks3", "design-reference", "leaderboard")
@@ -2639,7 +2639,11 @@ def ds_css():
             css = css.replace("./", SERVED_FONTS)
         out.append("/* ── %s ── */\n%s" % (rel, css))
         sizes.append((rel, len(css)))
-    return dedupe_faces("\n\n".join(out)), sizes
+    # ⊕ D8 (theme-run audit, 27 Sep 2026) — see build_student_port.
+    # _wrap_bundle_dark_screen's own docstring: the bundle's bare
+    # [data-theme="dark"] block is unconditional, so printing this port in
+    # dark mode printed the dark ground and cream ink verbatim.
+    return _wrap_bundle_dark_screen(dedupe_faces("\n\n".join(out))), sizes
 
 
 _VAR_RE = re.compile(r"var\(\s*(--[A-Za-z0-9_-]+)")
@@ -2997,6 +3001,15 @@ def main():
 # specificity argument, the --st-room-*/--ks3-ink exclusions) and the WCAG
 # numbers.
 THEME_DARK_CSS = """
+/* ⊕ D8 (theme-run audit, 27 Sep 2026). Every `html[data-theme="dark"]`
+   rule below (the whole rest of this file, including the D6 week-chip
+   fix) is now wrapped in `@media screen`. `data-theme="dark"` is
+   unconditional — THEME_HEAD/theme.js write it on every load, in every
+   medium, including print — so un-guarded, printing the leaderboard in
+   dark mode printed the dark ground and cream ink verbatim. Rule 7: print
+   is always dark text on white, whatever the viewed theme. Matches the
+   guard `shared/ks3-theme.css` already uses for the identical reason. */
+@media screen {
 
 /* ═══ THEME RUN, 27 Sep 2026 (Mide's ruling: light by default, a
    Light/Dark/System control on every page) — DARK VALUES FOR THE TOKENS
@@ -3109,6 +3122,32 @@ html[data-theme="dark"] {
      now theme-variant) rather than let the capture carry the new dark
      value through. */
   --st-docket-paper: #FFFDF8;
+}
+
+/* ⊕ D6 (theme-run audit, 27 Sep 2026). The week rail's SELECTED chip (the
+   only inline-styled node on this page whose computed `bg` is
+   `var(--st-ink)` — `docs/ks3/design-reference/leaderboard/source/KS4
+   Weekly Leaderboard.dc.html:434-436`, `bg: on ? 'var(--st-ink)' : …, fg:
+   on ? 'var(--st-cream)' : …`) is the same "inverted ink card" idiom as
+   the KS3/student ink panels: `--st-ink` flips light for dark-theme body
+   text (above), so the selected chip's card flips from a dark pill to a
+   light one, and its label (`--st-cream`, deliberately excluded from the
+   general remap above because its OTHER job is "cream on an
+   always-dark plate") stays light too — 1.07:1, measured, and it is
+   selected BY DEFAULT (the current week).
+   Fixed by attribute selector rather than by node index, matching
+   `shared/teacher-ds.css`'s `[style*="color:var(--st-paper)"]` pattern:
+   `w.bg`/`w.fg` are template-driven strings baked into the DOM `style`
+   attribute at render time (never a CSS class), and grepping the whole
+   .dc.html source confirms this is the ONLY node whose inline style ever
+   sets `background: var(--st-ink)` — no other element's `--st-cream` use
+   is reachable through this selector, so nothing else moves. 15.75:1 on
+   the flipped ink-card in dark (#F3EBDD bg / #16120D text, the same ink
+   `--pg-on-accent-text` uses for the identical reason on the student
+   port). */
+html[data-theme="dark"] [style*="background: var(--st-ink)"],
+html[data-theme="dark"] [style*="background:var(--st-ink)"] {
+  --st-cream: #16120D;
 }
 
 /* ═══ THEME RUN, 27 Sep 2026 — dark values for `.rd[data-mode="ks3"]`'s
@@ -3254,6 +3293,8 @@ html[data-theme="dark"] textarea::placeholder {
   color: var(--st-ghost);
   opacity: 1;
 }
+
+} /* @media screen — D8 */
 
 """
 

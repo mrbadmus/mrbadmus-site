@@ -26,6 +26,9 @@
      flip in dark, so the ink that sits on it must not flip either — without
      this the chat header subtitle took the global dark #241D14 on rust (2.53:1). */
   --on-accent: #FFFFFF; --on-accent-soft: #FBF5F3;
+  /* theme run, interaction gate: the borrowed chrome's soft accent (the chat's
+     own-message bubble) stayed KS3's light wash under dark ink — 1.03:1. */
+  --accent-soft: #3A2218; --accent-border: #6B3A28;
   --ks3-ground: #16120E; --ks3-card: #1F1A15; --ks3-band: #2A231C; --ks3-inset: #231D17; --ks3-row-dim: #1B1611;
   --ks3-rule: #3E352C; --ks3-rule-strong: #5E5246; --ks3-option-border: #4F443A; --ks3-option-spent: #2B241D;
   --ks3-ink: #F3ECE0; --ks3-ink-body: #E3D9CA; --ks3-ink-muted: #C2B6A6; --ks3-ink-faint: #B0A493; --ks3-ink-ghost: #8A7F72;
@@ -33,12 +36,53 @@
   --ks3-ok: #3CC477; --ks3-ok-text: #86E6AC; --ks3-ok-tint: #15301F;
   --ks3-alert: #FFC53D; --ks3-alert-text: #FFDC85; --ks3-alert-tint: #33290F; --ks3-alert-border: #D9821A;
   --ks3-stretch: #9C7BFF; --ks3-stretch-text: #C2ADFF; --ks3-stretch-tint: #261D3D; --ks3-stretch-rule: #44386A;
+  /* ⊕ D2 (theme-run audit, 27 Sep 2026): `--ks3-stretch-wash`/`-dash` were
+     missing from this remap — the other `--ks3-stretch-*` siblings on this
+     line were all flipped, these two weren't. `.ks3-support .ks3-layer-body`
+     (the safeguarding/support box on the 4 drugs+DNA lessons) is the one
+     consumer of `-wash`, with a dashed `-dash` border; its body text is the
+     page's own `--ks3-ink`, which this block already flips to cream, so the
+     wash has to go dark enough to hold that cream at >=4.5:1 (measures
+     12.3:1 here) the same way `--ks3-stretch-tint` does for `.ks3-layer-body`
+     generally. `-dash` is a decorative border only (3.5:1 against the wash,
+     clearing the 3:1 non-text floor), picked partway between `-rule` and the
+     bold `--ks3-stretch` accent so the dashed variant still reads distinct
+     from the solid-bordered `.ks3-layer-body`. */
+  --ks3-stretch-wash: #211934; --ks3-stretch-dash: #7A66B5;
   --ks3-blue: #6C8EFF; --ks3-blue-text: #A8C0FF; --ks3-blue-tint: #1B2440;
   /* ink-filled controls (reveal, check, retry, .ks3-btn.is-primary,
      .ks3-compare-head, the is-wrong mark) flip to light fills in dark mode
      (their bg is --ks3-ink or --ks3-accent-text, both flipped above), so
      their label flips dark to stay legible on the now-light fill. */
   --ks3-on-dark: #16120E;
+
+  /* ⊕ D1 (theme-run audit, 27 Sep 2026): the KS3 tutor chat is the ONE piece
+     of KS3 chrome that is NOT styled from `--ks3-*` — it is
+     `shared/styles.css`'s generic `.chat-msg__bubble { background:
+     var(--card) }` etc, shared with every other page family. On a KS3 page
+     `--card` doesn't come from tokens.css's own `[data-theme="dark"]` block:
+     `.rd` (which every KS3 page also carries, per §8.5) redeclares `--card:
+     var(--surface-panel)`, `--sunken: var(--surface-inset)`, `--bg: var(
+     --surface-page)`, `--border-strong: var(--rule)`, `--text: var(--ink)`,
+     `--muted: var(--ink-muted)` — and NONE of `--surface-panel`,
+     `--surface-inset`, `--surface-page`, `--rule`, `--ink`, `--ink-body`,
+     `--ink-muted`, `--ink-faint` had a dark value anywhere, on any page, so
+     they held their light-theme hex straight through. The message bubble
+     background (`--card` → `--surface-panel` = #FFFDF8) and the avatar/
+     camera-button ground (`--sunken` → `--surface-inset` = #F7F2E8) both
+     stayed near-white while the inherited text (`--text` → `--ink`, or the
+     KS3 page's own `--ks3-ink`) flipped cream — 1.15:1 and 1.11:1, measured.
+     Fixed at KS3's own scope (not tokens.css's shared `[data-theme="dark"]`
+     block, which every other `.rd` family — the KS4 bonding redesign,
+     leaderboard/student/teacher `-ds.css` — also reads: touching it there
+     risks a family this run did not test). Pointed at the SAME hex as this
+     block's own `--ks3-card`/`--ks3-inset`/`--ks3-rule`/`--ks3-ink*` above,
+     so the chat overlay reads as part of the same dark KS3 surface rather
+     than a mismatched grey panel — not just "passes contrast" but visually
+     consistent. Measured after the fix: bubble bg #1F1A15 vs ink #F3ECE0 =
+     14.7:1; avatar/inset bg #231D17 vs ink = 14.2:1 (both ✓ AAA). */
+  --surface-page: #16120E; --surface-card: #1F1A15; --surface-panel: #1F1A15; --surface-inset: #231D17;
+  --rule: #3E352C; --ink: #F3ECE0; --ink-body: #E3D9CA; --ink-muted: #C2B6A6; --ink-faint: #B0A493;
 
   /* ── the browse-layer surfaces (year/half-term browse pages) ──
      Tints flipped the same direction as --ks3-band/--ks3-inset above: a
@@ -145,23 +189,85 @@
    themselves with the same on-dark family plus, in a few places,
    `--ks3-data`/`--ks3-blue-light`/`--ks3-ok-dark`.
 
-   ⚠️ SCOPED TO `.ks3-dark` ON PURPOSE — this is not the general dark remap
-   and must never be hoisted into the block above. Every one of these same
-   four/seven tokens has a SECOND, much more numerous life: standalone
-   instrument trays that do NOT descend from `.ks3-dark` at all (the
-   circuit-board and ray-diagram "figwrap" family, `.ks3-canvas-frame`,
-   `.ks3-iboard`/`.ks3-rbench`/`.ks3-hrig` and the rest of the interaction
-   boards, sliders, `.ks3-hook-art`). Those paint HARDCODED hex figure ink
-   (physics wires, needles, rays, particle dots — see the colour audit in
+   ⚠️ SCOPED TO NAMED SELECTORS ON PURPOSE — this is not the general dark
+   remap and must never be hoisted into the block above (`[data-theme="dark"]
+   .rd[data-mode="ks3"]` itself). Every one of these same tokens has a
+   SECOND, much more numerous life: standalone instrument trays that do NOT
+   appear in this selector list at all (the circuit-board and ray-diagram
+   "figwrap" family, `.ks3-canvas-frame`, `.ks3-iboard`/`.ks3-rbench`/
+   `.ks3-hrig` and the rest of the interaction boards, sliders,
+   `.ks3-hook-art`). Those paint HARDCODED hex figure ink (physics wires,
+   needles, rays, particle dots — see the colour audit in
    docs/theme/REPORT.md) directly onto this same dark-panel plate, with no
    token in between. A diagram's plate must not invert (rule 4: figures stay
    on their plate colour in both themes, same as a cream one would) — and
    confirmed by reading every one of those instruments' wrapper markup in
-   ks3_art/: none of them carries the `ks3-dark` class, so scoping the flip
-   to `.ks3-dark`'s own subtree reaches only the three call-out blocks and
-   their (verified var()-only, no hardcoded hex) nested controls, and never
-   touches a single instrument's plate or ink. */
-[data-theme="dark"] .rd[data-mode="ks3"] .ks3-dark {
+   ks3_art/: none of them appears below, so scoping the flip to these named
+   selectors' own subtrees reaches only the call-out blocks and the ~28
+   "ink ground" verdict/reveal/result/report/check/why panels named below
+   (their nested controls are verified var()-only, no hardcoded hex), and
+   never touches a single instrument's drawn figure plate or ink.
+
+   ⊕ D3 (theme-run audit, 27 Sep 2026): this block used to be scoped to
+   `.ks3-dark` alone. `.ks3-dark` is three call-out blocks (hook / practical
+   / keynote); it is NOT the only "ink ground" idiom in ks3.css. Roughly 30
+   more components use the identical pattern — `background: var(--ks3-ink)`
+   with children painted in `--ks3-on-dark(-body|-muted)`, occasionally
+   `--ks3-alert` or `--ks3-data` directly as text, occasionally a
+   `--ks3-dark-panel`/`--ks3-dark-rule` divider — for a verdict, a reveal, a
+   "why", a report or a check that arrives on its own dark card after a
+   student answers. Because those components are not `.ks3-dark`, none of
+   them got the second-inversion this block performs, so in Dark theme their
+   card flips light (the same `--ks3-ink` flip that makes body text legible
+   elsewhere) while their text stayed the light-ground value — cream on
+   cream, 1.1–1.6:1, is what the audit's own `pairs.json`/`inj.py` measured
+   across 42 such (panel, text) pairings, 28 of them failing. The fix is the
+   same inversion `.ks3-dark` already got, applied to every other selector
+   in ks3.css whose own rule sets `background: var(--ks3-ink)` and is not a
+   figure plate — found by grepping `background: var(--ks3-ink)` in
+   shared/ks3.css and checking each hit's markup in ks3_art/ for hardcoded
+   figure-ink children (none of the ones below have any). Selectors that
+   share the same `--ks3-ink` background but are CONTROLS, not panels
+   (`.ks3-reveal-btn`, `.ks3-retry`, `.ks3-compare-head`, `.ks3-tab[aria-
+   pressed="true"]`, `.ks3-bar-btn[aria-pressed="true"]`, the `is-wrong`
+   mark, `.ks3-hcurve-bar.is-lit`, `.ks3-cbeam-beam`, `.ks3-lever-bar`) are
+   NOT listed here: they already read correctly, because their only label
+   colour is the single `--ks3-on-dark` token, which was already flipped in
+   the general block above (this file, line 41) — confirmed by reading each
+   one's full rule body. Re-running `inj.py`'s method after this change:
+   0/42 pairs under 4.5:1 in both themes (see docs/theme/REPORT.md, D3). */
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-dark,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-unit-panel,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-board-verdict,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-case-verdict,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-switch-chain,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-verdict-panel,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-limit-card[data-ground="ink"],
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-pick-reveal,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-lstep-reveal,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-psort-reveal,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-seq-report,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-still-result,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-mchoice-reveal,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-critiq-reveal,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-chroma-say,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-mpb-say,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-cpair-verdict,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-iask-verdict,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-eqb-check,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-fcard .ks3-fcard-reveal,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-tuber-done,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-ctube-open,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-rgrid-result,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-tsort-reveal,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-tempb .ks3-tempb-run,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-rigb .ks3-rigb-panel,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-phbench .ks3-phbench-result,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-amgrid .ks3-amgrid-result,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-namer .ks3-namer-result,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-catb .ks3-catb-result,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-oxb .ks3-oxb-compare,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-mcov .ks3-mcov-plate {
   --ks3-on-dark-body: #2E2419;
   --ks3-on-dark-muted: #4A3C2E;
   --ks3-dark-panel: #FFFCF5;
@@ -186,4 +292,7 @@
      silently pick up the wrong (dark-ground) amber. */
   --ks3-alert: #5A430A;
 }
+/* theme run, interaction gate: a disabled Check read 2.96:1 at .45 opacity in
+   dark against the 3:1 disabled floor. */
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-ccheck-check[disabled] { opacity: .55; }
 } /* @media screen */

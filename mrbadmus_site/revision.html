@@ -10,7 +10,7 @@
   <!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614"><!--/mrb:brand-head-->
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="/shared/tokens.css?v=66931d71"/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/nav.css?v=7415488f"/>
   <!-- MRB-337 — the student's messages. config.js first (it is the
        environment switcher shared/student-bell.js reads for the backend URL
@@ -21,7 +21,7 @@
   <script src="/shared/config.js?v=d1fecb43"></script>
   <script src="/shared/search-index.js?v=c016cb14" defer></script>
   <script src="/shared/search.js?v=d011978d" defer></script>
-  <script src="/shared/nav.js?v=d653be2c" defer></script>
+  <script src="/shared/nav.js?v=731ac0e4" defer></script>
   <script src="/shared/class-entry.js?v=a97c1d3d" defer></script>
   <script src="/shared/student-bell.js?v=f46f4d9b" defer></script>
   <style>
@@ -128,6 +128,22 @@
       align-self: flex-start; padding: 3px 10px; border-radius: 999px;
     }
     .choice .c-count.empty { color: var(--muted); background: var(--sunken); }
+    /* ⊕ D14 (theme-run audit, 27 Sep 2026) — `--tint-soft` (`var(--physics-
+       soft)`/`var(--chemistry-soft)`/etc, whichever the card's own subject/
+       pathway/tier passes in) is a fixed low alpha over the PAGE, chosen
+       for light mode's near-white card. In dark mode the same alpha lifts
+       the (already dark) card TOWARD the tint colour, and since the tint
+       colour is itself the text, more alpha means less contrast, not more
+       — measured worst on the Triple Science pathway card ("50 materials"),
+       `--chemistry`/`--chemistry-soft` dark: 4.35:1. A dark-only override,
+       independent of `--tint-soft` (which other elements on this page
+       still use for its own light-mode-tuned alpha) and of the exact hue
+       (recomputed per-card from whatever `--tint` that card carries, so
+       every one of the four tints this page uses gets the same fix):
+       measured 4.84–7.77:1 across all four after this change. */
+    [data-theme="dark"] .choice .c-count {
+      background: color-mix(in srgb, var(--tint) 5%, var(--card));
+    }
 
     /* ── MATERIALS LIST ── */
     .mat-list { display: flex; flex-direction: column; gap: var(--sp-3); }

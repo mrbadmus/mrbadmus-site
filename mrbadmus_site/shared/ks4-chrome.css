@@ -192,6 +192,14 @@ body[data-chrome="ks4"] {
    panel), --k4-on-accent (fixed dark ink, paired with a fill that is
    bright in BOTH themes), and --k4-done* (dead — no page reads it).
    ═══════════════════════════════════════════════════════════════════════ */
+/* ⊕ D8 (theme-run audit, 27 Sep 2026): both rules below wrapped in
+   `@media screen`. `data-theme="dark"` is unconditional (THEME_HEAD/theme.js
+   write it on every load, including print), so un-guarded, printing one of
+   the seven chrome pages in dark mode printed the dark ground and cream
+   ink verbatim — rule 7 is print stays light text on white regardless of
+   the viewed theme. Matches the guard `shared/ks3-theme.css` already uses
+   for the identical reason. */
+@media screen {
 html[data-theme="dark"] body[data-chrome="ks4"] {
   --k4-ground:      #14110D;
   --k4-card:        #1D1915;
@@ -247,6 +255,7 @@ html[data-theme="dark"] body[data-chrome="ks4"] {
    --k4-fact-color (the dot, the progress fill) are left alone — they are
    not text and are not gated. */
 html[data-theme="dark"] body[data-chrome="ks4"] .k4-fact-kicker { color: var(--k4-muted-2); }
+} /* @media screen — D8 */
 
 body[data-chrome="ks4"] *,
 body[data-chrome="ks4"] *::before,

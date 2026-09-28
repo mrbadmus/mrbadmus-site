@@ -162,15 +162,39 @@ def check_r4_storage_key(text):
 
 
 # ═══════════════════════════════════════════════════════════════════════
-# R5 — nanoparticles' spec LABEL. VERIFIED AS A NO-OP: the delivered
-# FILENAME still says 5.2.3.3 (frozen — see ks4_lessons/__init__.py's
-# comment), but the PAGE ITSELF already shows "AQA Chemistry 4.2.4
-# (chemistry only)". flag 2 in NOTES-KS4-pilot.md §9 says exactly this: "the
-# page shows 4.2.4". If this assertion ever fails, the page has drifted back
-# to 5.2.3.3 and this needs to become a real rewrite.
+# R5 — nanoparticles' spec LABEL. USED TO BE VERIFIED AS A NO-OP: the
+# delivered FILENAME still says 5.2.3.3 (frozen — see ks4_lessons/
+# __init__.py's comment), and the PAGE ITSELF already showed "AQA Chemistry
+# 4.2.4 (chemistry only)" — flag 2 in NOTES-KS4-pilot.md §9 said exactly
+# this: "the page shows 4.2.4".
+#
+# ⊕ D13 (theme-run audit, 27 Sep 2026) — genuinely a real rewrite now, for
+# the first time. R14's own docstring names WHY nanoparticles sits outside
+# that ruling's lesson set: "its eyebrow/key-note ALREADY show the correct,
+# verified 8462 number — nothing to swap." That reasoning has a hole:
+# "4.2.4" is the correct SECTION, but nowhere on the page did it ever say
+# "8462" — the SPEC CODE its 13 combined/triple siblings all carry
+# (`build_ks4.SPEC_TEXT`, every "triple" entry). A pupil reading "AQA
+# Chemistry 4.2.4 (chemistry only)" has no way to tell that "4.2.4" is an
+# 8462 section rather than, say, an 8464 one — the exact ambiguity R14
+# closes everywhere else. Two literals, both in the same template file:
+# the eyebrow (`<p class="ks3-eyebrow">`) and the `Ks4KeyNote` `spec="..."`
+# attribute. Both get "(8462)" inserted in the same position their
+# siblings' equivalent strings carry their own code (right after the
+# section number, before any trailing annotation).
 # ═══════════════════════════════════════════════════════════════════════
-def check_r5_nanoparticles_spec(text):
-    _require(text, "AQA Chemistry 4.2.4 (chemistry only)", "ks4-chemistry-5.2.3.3-nanoparticles.dc.html", "R5")
+_R5_EYEBROW_FROM = "AQA Chemistry 4.2.4 (chemistry only) · Quantitative"
+_R5_EYEBROW_TO = "AQA Chemistry (8462) 4.2.4 (chemistry only) · Quantitative"
+_R5_KEYNOTE_FROM = 'spec="AQA 4.2.4 (chemistry only)"'
+_R5_KEYNOTE_TO = 'spec="AQA 4.2.4 (8462) (chemistry only)"'
+
+
+def apply_r5_nanoparticles_spec(text):
+    _require(text, _R5_EYEBROW_FROM, "ks4-chemistry-5.2.3.3-nanoparticles.dc.html", "R5 (eyebrow)")
+    _require(text, _R5_KEYNOTE_FROM, "ks4-chemistry-5.2.3.3-nanoparticles.dc.html", "R5 (keynote)")
+    text = text.replace(_R5_EYEBROW_FROM, _R5_EYEBROW_TO, 1)
+    text = text.replace(_R5_KEYNOTE_FROM, _R5_KEYNOTE_TO, 1)
+    return text
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -710,9 +734,18 @@ def apply_r13_exam_tip_logic(design_file, logic_text):
 # route. Triple routes now show the SEPARATE science's own number (8462
 # Chemistry / 8463 Physics), verified section by section against the real
 # AQA spec PDFs — docs/theme/spec-numbers.md is the citation table this
-# ruling is built from; `build_ks4.SPEC_TEXT` is its machine copy. Combined
-# routes are byte-identical to before (the literal text simply moves from
-# the template into `build_ks4.SPEC_TEXT[slug]["combined"]`, unchanged).
+# ruling is built from; `build_ks4.SPEC_TEXT` is its machine copy.
+#
+# ⊕ D13 (theme-run audit, 27 Sep 2026) — "Combined routes are byte-identical
+# to before" USED to be true here and is no longer: the literal text still
+# moves from the template into `build_ks4.SPEC_TEXT[slug]["combined"]`
+# unchanged BY THIS FUNCTION, but that dict's own "combined" values now
+# carry "(8464)" where they used to carry nothing — Mide's ruling that the
+# eyebrow/key-note should say WHICH spec a Combined pupil is reading, the
+# same as a Triple pupil's page already did. This function's job (require
+# the OLD literal, swap in the placeholder) is unaffected either way: it
+# only cares that the literal it is told to find is still there, not what
+# the machine-copy dict resolves the placeholder to afterwards.
 #
 # Nanoparticles is NOT in this ruling's lesson set: it has no Combined route
 # at all (8462 §4.2.4 is chemistry-only), and its eyebrow/key-note ALREADY
@@ -758,24 +791,34 @@ def apply_r14_spec_number(site_slug, template_text, eyebrow_literal, keynote_lit
 # WRAPPER around it (for right-alignment in this specific flex row) is
 # page-family-specific, exactly as different families position it
 # differently in their own headers.
-# ═══════════════════════════════════════════════════════════════════════
-R15_HEADER_ROW_OPEN = (
-    '<div style="margin-top: 16px; display: flex; flex-wrap: wrap; '
-    'align-items: center; gap: 8px 10px;">'
+# ⊕ D11 (theme-run audit, 27 Sep 2026) — MOVED, not duplicated. R15 used to
+# insert the theme slot into the LESSON's own header status-strip row (the
+# `<div>` below, shared with R12's route chip) — which put the control
+# inside the HERO, at y≈514 (1280px) / y≈658–733 (phone), rather than in
+# the page's actual top header. Every other family on the site keeps the
+# control in the SITE HEADER (the bar, or the drawer's Theme row) — the
+# one place a pupil learns to look for it, on every OTHER page they read.
+# The pilot's own header IS a real header row: Ks4Chrome's `<nav
+# class="ks3-nav">` (brand + breadcrumb, shared across all 54 pages,
+# compiled ONCE in `build_ks4.compile_block()` rather than per-lesson) —
+# it simply never carried the slot before. `.ks3-nav` is `display:flex`
+# in the bundle these pages load (`shared/ks4-ds.css`), which already has
+# its own `margin-left:auto` idiom for "push to the row's far right"
+# (`.ks3-nav-link`) — this reuses that exact idiom rather than inventing a
+# second one. Moving it here also means one insertion point instead of
+# fourteen: every lesson gets the control from the ONE shared Ks4Chrome
+# block, so a future 15th lesson needs nothing added for this.
+R15_CHROME_NAV_ANCHOR = (
+    '<li aria-current="page" style="color: var(--ks3-ink-muted); '
+    'font-weight: 500;">{{ title }}</li>\n    </ol>\n  </nav>'
 )
-_R15_HEADER_ROW_RE = re.compile(re.escape(R15_HEADER_ROW_OPEN) + r'(.*?)</div>', re.S)
 R15_THEME_SLOT_WRAPPED = (
     '<span style="margin-left:auto;display:inline-flex;align-items:center;">'
-    + THEME_SLOT + '</span>'
+    + THEME_SLOT + '</span>\n  </nav>'
 )
 
 
 def apply_r15_theme_slot(site_slug, template_text):
-    m = _R15_HEADER_ROW_RE.search(template_text)
-    if m is None:
-        raise RulingError(
-            "ks4_rulings R15: %s — the header status-strip row "
-            "(%r) was not found. Design's delivery moved; read the diff "
-            "before widening this ruling." % (site_slug, R15_HEADER_ROW_OPEN))
-    insert_at = m.end() - len("</div>")
-    return template_text[:insert_at] + R15_THEME_SLOT_WRAPPED + template_text[insert_at:]
+    _require(template_text, R15_CHROME_NAV_ANCHOR, site_slug, "R15")
+    replacement = R15_CHROME_NAV_ANCHOR[:-len('</nav>')] + R15_THEME_SLOT_WRAPPED
+    return template_text.replace(R15_CHROME_NAV_ANCHOR, replacement, 1)
