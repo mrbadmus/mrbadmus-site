@@ -247,3 +247,22 @@ Everywhere else, flashcard text is shown exactly as typed:
 - **"Returns to the normal flow"** is read as going back to the Classes step, the start of the Questions flow.
 - **TEST uses the fixture's class** (8a/Sc1), because 8r/Sc1 exists only on production.
 - **Pupil subject:** comes from the work list's `subject_name`, not from a new read or any database change.
+
+### Landing (Set from class)
+
+- **Commit:** main `3953495f4`, pushed 28 Sep 2026 about 00:30.
+- **Live check:** `class-detail`, `decks` and `student/class` on mrbadmus.com carry the committed stamps (`set-work.js?v=2ed11396`, `set-work.css?v=91d649e0`, `flashcard-decks.js?v=2610cf68`, `student-runtime.js?v=262db1e1`, `student-live.js?v=7ef9b8c5`). All seven changed assets match the committed build's md5 byte for byte, including `flashcard-progress.js?v=66f7cf7d` and `flashcard-decks.css?v=3da3c46d`.
+- **Gates** (affected only, `--record-all`):
+  - Every run gate is green, apart from the two overrides below.
+  - Skipped by rule, with nothing on this branch in their watches: `student_parity`, `flashcard_request_shape_drive`, `today_drive`, `import_year_drive`, `ks4_pool_drive`, `ks3_instrument_liveness`, `student_switches`, `seating_drive`, `assignments_hold_drive`, `class_csv_upload`, `mrb328_import_picker`, `mrb328_import_picker_real`, `teacher_rollup_equal`, `ks4_parity`.
+  - Skipped for a missing precondition: `student_controls_drive` (no production credential) and `3d_*` (no studio build).
+- **Standing overrides** (in the commit message):
+  - `set_work`: 455 checks, 3 red. These are the standing TEST small-pool reds.
+  - `figures_mirror`: `build_figures.py --mirror` reads the main backend checkout by a hard-coded path, and that checkout has no `figures.json`.
+- **Production is not yet proved.** No production credentials were set, so the 8r/Sc1 journey is Mide's click:
+  1. Open 8r/Sc1 → Set work.
+  2. Check the Flashcards choice is at the top.
+  3. Choose Flashcards and pick "(Higher) Rate of Reaction Quiz" under My decks.
+  4. Next → keep the due date → Set work.
+  5. As the pupil, the deck is in the work list; pressing it opens the cards.
+- **The edge function (item 4)** is committed but not deployed. The chat deploys `flashcard-extract` using the md5s above. Until then, production still redacts uploads and still returns the cached-upload reply without `subject`; the page copes with both.
