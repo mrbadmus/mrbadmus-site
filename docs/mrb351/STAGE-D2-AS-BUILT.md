@@ -34,12 +34,24 @@ Branch `feat/sharpen-d2`, based on `5aa846c24`. Every ⚑ decision in §1 took t
 | `tools/flashcards_library_live.py` (new) | the TEST live proof (§3.6) |
 | generated | `student/class.html`, `class-fixture.html`, `assignment*.html` (stamp map only) and their `mrbadmus_site/` copies |
 
-Migration (branch `feat/mrb352-migrations` only):
-`supabase/migrations/20261001090000_mrb352_flashcard_set_names.sql` md5 `78b7acafcce70621f9de75d8bec113ac`,
-`supabase/rollbacks/20261001090000_mrb352_flashcard_set_names_rollback.sql` md5 `f3a487b980b6af21fd71183e1123b960`.
-Rehearsed on TEST (`qeppkiswvclkkwbxmlok`): apply → verified (RLS on, 4 policies, 1 trigger, anon has no
-select) → rollback → verified absent → apply → verified; left applied. Production untouched (read-only check:
-the table is absent and `mrb351_touch_updated_at` exists, so the migration will apply at merge).
+Migration (branch `feat/mrb352-migrations` only, now at `c8d06436b`):
+`supabase/migrations/20261001090000_mrb352_flashcard_set_names.sql` md5 `b576184631f1375657adf2e9049fbcca`,
+`supabase/rollbacks/20261001090000_mrb352_flashcard_set_names_rollback.sql` md5 `f3a487b980b6af21fd71183e1123b960`
+(unchanged; it drops the table, which takes the policies and grants with it).
+
+⊕ Fable's review (29 Sep 2026): the UPDATE policy's `with check` tested only `pupil_id`, so a pupil could move a
+name row onto an assignment they cannot see. It now carries the same visibility test as INSERT
+(`exists (select 1 from public.assignments a where a.id = flashcard_set_names.assignment_id)`), and
+`truncate, references, trigger` are revoked from `authenticated`. The first version (`39218008c`, md5
+`78b7acafcce70621f9de75d8bec113ac`) is superseded.
+
+Rehearsed on TEST (`qeppkiswvclkkwbxmlok`) with the corrected file's exact text: rollback of the first version →
+apply → verified (RLS on, 4 policies, 1 trigger, the UPDATE check carries the EXISTS, `authenticated` has no
+truncate/references/trigger, anon has no select) → rollback → verified absent → apply; left applied.
+`tools/flashcard_set_names_rls.py`, as real pupils under RLS on TEST: insert and update on a visible set
+allowed; insert for an invisible set refused (42501); **UPDATE of `assignment_id` onto an invisible set refused
+(42501), row unchanged**; insert as another pupil refused; another pupil reads nothing; anon refused. Production
+untouched (read-only check: the table is absent and `mrb351_touch_updated_at` exists).
 
 ## Deviations
 
@@ -80,6 +92,23 @@ the table is absent and `mrb351_touch_updated_at` exists, so the migration will 
   `select('id, question')` in `teacher-data.js` turned it red, then reverted.
 - Deviation: pushing `feat/mrb352-migrations` needed `MRB_BACKEND_DIR` (the `figures_mirror` gate) and an SSH
   keepalive (the first attempt died with 141 after the gates passed) — both known traps; the push went through.
+
+## Review corrections (Fable, 29 Sep 2026)
+
+- The migration's UPDATE with-check and the revokes (above).
+- The set's name in the header carries a small muted pencil (`aria-hidden`), so tap-to-rename is findable.
+  An icon, no helper text.
+- `offer()` no longer loads the stylesheet; `build()` does, on the first open. Deviation: because the sheet
+  then arrives with the first open, the overlay stays `visibility:hidden` until the sheet's `load` (and takes
+  focus then), so a first open never paints unstyled.
+
+## Parked follow-up
+
+- **R1 grows with the pupil's history.** The qualifying read pulls every one of the pupil's
+  `flashcard_reviews` rows (`assignment_id, card_id`) on every class-page load, paged at 1,000 and capped at
+  21 pages. A year of flashcards is tens to low hundreds of rows today; a heavy user could reach thousands.
+  The right shape is a pupil-scoped RPC or view returning `(assignment_id, distinct cards rated)` — one row
+  per set — which needs DDL, so it is parked rather than done here.
 
 ## Not run
 

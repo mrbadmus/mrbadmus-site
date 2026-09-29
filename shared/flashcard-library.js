@@ -79,12 +79,23 @@
     var map = root.__MRB_ASSET_V__, v = map && map[src.replace(/^\/shared\//, "")];
     return v ? src + "?v=" + v : src;
   }
+  /* Loaded on the first open (build()). Until the sheet has arrived the
+     overlay stays invisible, so a first open never paints unstyled. */
+  var cssReady = false;
   function loadCss() {
     if (!doc || doc.querySelector("link[data-mrb-library-css]")) { return; }
     var l = doc.createElement("link");
     l.rel = "stylesheet";
     l.href = stamped("/shared/flashcard-library.css");
     l.setAttribute("data-mrb-library-css", "1");
+    l.onload = l.onerror = function () {
+      cssReady = true;
+      if (els) {
+        els.root.style.visibility = "";
+        /* an open that happened before the sheet arrived could not take focus */
+        if (S.screen && !els.dlg.contains(doc.activeElement)) { els.dlg.focus({ preventScroll: true }); }
+      }
+    };
     doc.head.appendChild(l);
   }
 
@@ -243,7 +254,8 @@
     var p = doc.createElementNS("http://www.w3.org/2000/svg", "path"); p.setAttribute("d", d); s.appendChild(p);
     return s;
   }
-  var CHEV_L = "M15 5l-7 7 7 7", CHEV_R = "M9 5l7 7-7 7", CROSS = "M6 6l12 12M18 6L6 18";
+  var CHEV_L = "M15 5l-7 7 7 7", CHEV_R = "M9 5l7 7-7 7", CROSS = "M6 6l12 12M18 6L6 18",
+      PENCIL = "M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4";
 
   function build() {
     if (els) { return els; }
@@ -251,7 +263,15 @@
     var e = {};
     e.back = h("button", { type: "button", "data-lib": "back", "aria-label": "Back to your sets", "class": "mrbl-icon" }, [svg(CHEV_L)]);
     e.title = h("h2", { "data-lib": "title", "class": "mrbl-title" }, ["Your flashcards"]);
-    e.name = h("button", { type: "button", "data-lib": "name", "aria-label": "Rename this set", "class": "mrbl-title mrbl-name" });
+    /* the name, and a small muted pencil so a tap-to-rename is findable
+       (an icon, not a helper sentence) */
+    e.nameText = h("span", { "class": "mrbl-name-text" });
+    e.pencil = svg(PENCIL);
+    e.pencil.setAttribute("class", "mrbl-pencil");
+    e.pencil.setAttribute("width", "14"); e.pencil.setAttribute("height", "14");
+    e.pencil.setAttribute("stroke-width", "2");
+    e.name = h("button", { type: "button", "data-lib": "name", "aria-label": "Rename this set", "class": "mrbl-title mrbl-name" },
+               [e.nameText, e.pencil]);
     e.input = h("input", { type: "text", "data-lib": "name-input", maxlength: "60", "class": "mrbl-title mrbl-input",
                            "aria-label": "Rename this set", autocomplete: "off", enterkeyhint: "done" });
     e.close = h("button", { type: "button", "data-lib": "close", "aria-label": "Close", "class": "mrbl-icon" }, [svg(CROSS)]);
@@ -292,6 +312,7 @@
     e.dlg = h("div", { "class": "mrbl-dlg", role: "dialog", "aria-modal": "true", "aria-label": "Your flashcards",
                        tabindex: "-1" }, [e.head, e.sets, e.set]);
     e.root = h("div", { "data-mrb-library": "", "class": "mrbl-scrim", hidden: "" }, [e.dlg]);
+    if (!cssReady) { e.root.style.visibility = "hidden"; }
     doc.body.appendChild(e.root);
     els = e;
     wire();
@@ -377,7 +398,7 @@
   }
   function drawName() {
     var s = (S.sets || []).filter(function (x) { return x.id === S.set; })[0];
-    els.name.textContent = s ? nameOf(s) : "";
+    els.nameText.textContent = s ? nameOf(s) : "";
   }
   function drawSet() {
     var e = els, id = S.set;
@@ -602,7 +623,6 @@
       root.__MRB_AFTER_DRAW__ = root.__MRB_AFTER_DRAW__ || [];
       root.__MRB_AFTER_DRAW__.push(function (host) { place(host); });
     }
-    loadCss();
     place(doc.getElementById("mrb-student") || doc);
     if (parse()) { route(); }
   }

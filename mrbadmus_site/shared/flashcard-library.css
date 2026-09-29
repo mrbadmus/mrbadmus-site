@@ -47,9 +47,12 @@ html[data-mrb-library-open] { overflow: hidden !important; scrollbar-gutter: sta
   font-size: 19px; line-height: 1.2; letter-spacing: -.02em; color: var(--pg-ink);
 }
 [data-mrb-library] .mrbl-name {
+  display: flex; align-items: center; gap: 8px;
   text-align: left; background: none; border: 0; padding: 6px 8px; margin: 0 0 0 -8px;
-  border-radius: 10px; cursor: text; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  border-radius: 10px; cursor: text;
 }
+[data-mrb-library] .mrbl-name-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+[data-mrb-library] .mrbl-pencil { flex: 0 0 auto; color: var(--pg-muted); opacity: .8; }
 [data-mrb-library] .mrbl-name:hover { background: var(--pg-band); }
 [data-mrb-library] .mrbl-input {
   box-sizing: border-box; width: 100%; padding: 5px 8px; margin: 0 0 0 -8px;
