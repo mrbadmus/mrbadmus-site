@@ -30,7 +30,10 @@ create policy flashcard_set_names_insert on public.flashcard_set_names for inser
 drop policy if exists flashcard_set_names_update on public.flashcard_set_names;
 create policy flashcard_set_names_update on public.flashcard_set_names for update
   using (pupil_id = (select auth.uid()))
-  with check (pupil_id = (select auth.uid()));
+  with check (
+    pupil_id = (select auth.uid())
+    and exists (select 1 from public.assignments a where a.id = flashcard_set_names.assignment_id)
+  );
 drop policy if exists flashcard_set_names_delete on public.flashcard_set_names;
 create policy flashcard_set_names_delete on public.flashcard_set_names for delete using (
   pupil_id = (select auth.uid())
@@ -38,5 +41,6 @@ create policy flashcard_set_names_delete on public.flashcard_set_names for delet
 
 revoke all on public.flashcard_set_names from anon;
 grant select, insert, update, delete on public.flashcard_set_names to authenticated;
+revoke truncate, references, trigger on public.flashcard_set_names from authenticated;
 
 commit;
