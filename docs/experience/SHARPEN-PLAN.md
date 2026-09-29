@@ -267,9 +267,15 @@ teacher one commit on top (C1, C2, C4).
 ### Stage C teacher — C6 cuts (Fable's teacher audit, 29 Sep)
 
 All 18 musts and the named shoulds applied; the per-item table (done / skipped and why) is
-`docs/experience/sweep/CUTS-2-teacher.md`.
-- Deviation OVERRULED and replaced: tables no longer scroll sideways on a phone. Below 720px each drops to its deciding columns (T50) — see CUTS-2-teacher.md.
+`docs/experience/sweep/CUTS-2.md`, "Teacher pages".
+- Deviation OVERRULED and replaced: tables no longer scroll sideways on a phone. Below 720px each drops to its deciding columns (T50) — see CUTS-2.md, "Teacher pages".
 - Deviation: T31 on a phone — title · SCORE on the row's line and the status chip with Add feedback / Breakdown on one line under it, rather than a third STATUS column (a "COMPLETE · LATE" chip plus two links does not fit a 390 row beside a title).
 - Deviation: Students on a phone hides the initials disc beside the name (41px back to the name so no surname is cut off).
 - Deviation: T46 — the flashcards page's bar crumb is hidden below 560px, as the generated pages' crumb is.
 - Adjacent fix: the class-detail fixture's feed rows gained `byLine` (the new binding), or they would have been unresolved bindings.
+
+### Integration with lane P (C3 + C5 + pupil C6), 29 Sep
+- Lane P's two commits cherry-picked onto the teacher lane; the only conflicts were generated files and a cache-bust stamp in `teacher/today.html` (taken from this side, then `build_all.py`).
+- Lane P's "revised after marking" on the student screen's history row moved from a block line under the score (a second line in every revised row) to a caption beside the score on the same line; the SCORE track is 210px (was 170px) so `8/8 revised after marking` fits at 1440; below 720px it stacks under the score.
+- The breakdown panel's revised line uses the panel's short date form ("29 Sep, 21:10"), like the HANDED IN line above it (T41).
+- `CUTS-2-teacher.md` folded into `docs/experience/sweep/CUTS-2.md` as "Teacher pages".

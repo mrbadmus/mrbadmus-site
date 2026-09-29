@@ -206,7 +206,7 @@ EMPTY_SHAPE = {
     ("student-detail", "deck"):
         "the newest set is a flashcard deck the pupil is part-way through: "
         "In progress, 6/10 secured, Breakdown opens the flashcard panel, no "
-        "Add feedback until the deck is complete",
+        "Add feedback until the deck is complete; one MCQ set revised after marking",
     # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 7) — THE THREE THE CHARTS
     # SCREEN HAD NO ANSWER FOR. `insights-empty` withholds a GRID, which
     # reaches ONE of the six chart kinds; the other five were rendering

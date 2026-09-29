@@ -1902,13 +1902,13 @@ BIND_ATTR = {
     354: ("style",
           "display:grid;grid-template-columns:2.3fr 1fr 1.1fr 100px 1.05fr;"
           "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
-          "display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.1fr) 170px 400px;min-width:1000px;"
+          "display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.1fr) 210px 400px;min-width:1000px;"
           "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
           "the submission-history header strip (C1)."),
     361: ("style",
           "display:grid;grid-template-columns:2.3fr 1fr 1.1fr 100px 1.05fr;"
           "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
-          "display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.1fr) 170px 400px;min-width:1000px;"
+          "display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.1fr) 210px 400px;min-width:1000px;"
           "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
           "the submission-history row, matching its header (C1)."),
     446: ("style",
@@ -13717,8 +13717,11 @@ INSERT_AT[(365, None)] = (
     {"t": "if", "e": "h.revised", "c": [
         {"t": "span",
          "a": {"data-mrb-revised": "1",
-               "style": "display:block;margin-top:5px;font:400 12px/1.3 "
-                        "var(--st-ui);color:var(--st-caption)"},
+               # ⊕ integration with lane T (C1/C6) — beside the score on the
+               # SAME line (the history row is one baseline; SCORE is 210px
+               # for it), and under it on a phone (build_teacher_port.py).
+               "style": "display:inline-block;margin-left:10px;font:400 12.5px/1.3 "
+                        "var(--st-ui);color:var(--st-caption);white-space:nowrap"},
          "c": [{"t": "#", "v": "revised after marking"}]}]},
     "Sharpen C5 — 'revised after marking' under the score on the student "
     "screen's submission history, when the pupil changed the set after it "

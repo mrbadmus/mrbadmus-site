@@ -702,7 +702,7 @@
          tile is already the latest. When, under when it was handed in. */
       if (isRevised(sub)) {
         var rv = el("div", "bd-stat-sub", "Revised after marking " +
-                    fmtDateTime(sub.updated_at));
+                    fmtShort(sub.updated_at));
         rv.setAttribute("data-bd-revised", "1");
         handedTile.node.appendChild(rv);
       }

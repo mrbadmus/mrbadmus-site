@@ -3194,7 +3194,8 @@ EMPTY_SHAPES = {
         # ⊕ Sharpen B4, 29 Sep 2026 — see `_shape_deck`.
         ("deck",
          "a flashcard deck in the history: In progress with 6/10 secured and "
-         "a Breakdown control, no Add feedback until the deck is complete.",
+         "a Breakdown control, no Add feedback until the deck is complete; "
+         "and one MCQ set revised after marking (Sharpen C5).",
          lambda p: _shape_deck(p)),
     ),
 }
@@ -3728,6 +3729,14 @@ def _shape_deck(p):
             r["fcStatus"][0], r["fcSecured"][0], r["fcSittings"][0] = "done", 10, 2
         else:
             r["fcStatus"][0], r["fcSecured"][0], r["fcSittings"][0] = "not_started", 0, 0
+        # ⊕ Sharpen C5 integration — the fixture pupil changed their
+        # newest completed MCQ set after it was marked ("revised after
+        # marking", buildMatrix's `revised[]`).
+        r["revised"] = [False] * n
+        if r["sid"] == sid:
+            done = [i for i in range(1, n) if r["submitted"][i]]
+            if done:
+                r["revised"][done[0]] = True
     return _reaverage(p, cid)
 
 
@@ -5651,6 +5660,8 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "[data-mrb-table=\"assignments\"] > :nth-child(4),"
         "[data-mrb-table=\"assignments\"] > :nth-child(n+6){display:none!important}"
         "[data-mrb-table=\"history\"]{grid-template-columns:minmax(min-content,1fr) max-content!important}"
+        "[data-mrb-table=\"history\"] [data-mrb-revised]{display:block!important;"
+        "margin:4px 0 0!important;text-align:right}"
         "[data-mrb-table=\"history\"] > :nth-child(2),"
         "[data-mrb-table=\"history\"] > :nth-child(3){display:none!important}"
         "[data-mrb-table=\"history\"]:not([style*=\"cursor:pointer\"]) > :nth-child(5){display:none!important}"
