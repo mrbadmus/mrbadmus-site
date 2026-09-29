@@ -5461,7 +5461,9 @@ LOGIC["class view"].extend([
         "      })),\n"
         "      hwSecuredOn: !!v.securedLine, hwSecured: v.securedLine,\n"
         "      hwHelperOn: !!v.helper, hwHelper: v.helper,\n"
-        "      hwNote: v.note || '', hwNoteOn: !!v.note && !e.acted && !!c,\n"
+        # ⊕ Stage D — a pass reopened part-way (decision 5) has started even
+        # though this visit has not: the note is for the very first card only.
+        "      hwNote: v.note || '', hwNoteOn: !!v.note && !e.acted && !!c && v.pos === 1 && !v.retry,\n"
         "      hwOffline: e.error === 'offline' && !!c,\n"
         "      hwWriting: !!c && !v.revealed,\n"
         "      /* ⊕ Sharpen §13.1.4 — \"I don't know\": the model answer under\n"
@@ -5688,10 +5690,13 @@ INSERT_AT["class view"].update({
                        "aria-label": {"parts": [{"e": "hwPlaceholder"}]},
                        "placeholder": {"parts": [{"e": "hwPlaceholder"}]},
                        "data-hw-card": {"parts": [{"e": "hwCardKey"}]},
-                       "maxlength": "500", "rows": "2", "autocomplete": "off",
+                       # ⊕ Stage D (decision 3) — three rows; the height
+                       # floor (64px, 96px on a tall dialog) is
+                       # shared/flashcard-keyboard.js's, beside the card's.
+                       "maxlength": "500", "rows": "3", "autocomplete": "off",
                        "style": "font:inherit;font-size:17px;line-height:1.4;padding:10px 14px;"
                                 "border-radius:14px;border:1.5px solid var(--pg-rule-strong);"
-                                "background:var(--pg-card);color:var(--pg-ink);resize:none;min-height:64px;"
+                                "background:var(--pg-card);color:var(--pg-ink);resize:none;"
                                 "width:100%;box-sizing:border-box;"},
                  "c": []},
                 {"t": "div", "a": {"data-hw": "act", "style": "display:flex;align-items:center;gap:6px;"},
@@ -5826,6 +5831,19 @@ STYLE_EDIT["class view"].update({
     10334: [("gap:14px;", "gap:14px;overflow-y:auto;overflow-wrap:anywhere;")],
     10351: [("gap:14px;", "gap:14px;overflow-y:auto;overflow-wrap:anywhere;")],
 })
+
+# ⊕ Stage D (STAGE-D-PLAN.md decision 9, ⚑ Mide may overturn) — Mide: "when I
+# click any homework card… it lifts the page up in a weird way". What moved
+# was Design's entrance: the dialog rose 14px as it faded in (`fcUp`), and on
+# a phone the dialog IS the screen. The slide goes; the scrim (10319) keeps
+# its `fcIn` fade, so the overlay still arrives, it just does not lift.
+STYLE_EDIT["class view"][10320] = [("animation:fcUp .24s both;", "")]
+
+# ⊕ Stage D review (Fable) — the flashcard dialog's body is its own scroller
+# (flashcard-keyboard.js sets overflow-y:auto on it under a keyboard). A
+# scroll that reaches its end must not carry on into the class page behind
+# the overlay: `contain` keeps it in the dialog, for both decks.
+STYLE_EDIT["class view"][10328] = [("min-height:0;", "min-height:0;overscroll-behavior:contain;")]
 
 # ── ⊕ MRB-351 · THE TWELFTH MECHANISM: FORMULA TEXT ─────────────────────
 #

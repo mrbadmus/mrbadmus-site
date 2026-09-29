@@ -22,6 +22,11 @@
  *     once; the leftovers screen (Try again, no session_finish); Try again
  *     replays only the leftovers with a redo of a green card; ONE
  *     session_finish across a pass and its retries; a deleted set → gone.
+ *   · ⊕ Stage D (STAGE-D-PLAN.md §2.9, cases 17–27): `reconstruct` builds the
+ *     pass from the pupil's own ratings; × / a dead phone / another device /
+ *     offline-then-reload land on the next card not done; Try again lasts an
+ *     hour; answers are sent at once; the keepalive leaves the queue; half-
+ *     typed words survive a reload.
  *
  * WHAT IT DOES NOT PROVE: the server's arithmetic (TEST, under real roles),
  * or the page (flashcard_homework_drive.py).
@@ -79,7 +84,8 @@ console.log(`  quickCheck: ${parity}/${CASES.cases.length} cases agree with publ
 function server(opts) {
   const cards = opts.cards.map((c, i) => Object.assign({ id: "c" + i, position: i, made: false, known: false,
     secured: false, last: null, mine: null }, c));
-  const S = { events: [], sittings: 0, open: null, fail: false, gapOk: false, sittingRatings: {}, history: [] };
+  const S = { events: [], sittings: 0, open: null, fail: false, gapOk: false, sittingRatings: {}, history: [],
+              rows: [], seen: {} };
   function recompute() {
     cards.forEach((c) => {
       const per = [];
@@ -103,17 +109,28 @@ function server(opts) {
   S.transport = (id, events) => {
     if (S.fail) { return Promise.reject(new Error("offline")); }
     (events || []).forEach((e) => {
+      if (e.id && S.seen[e.id]) { return; }          // on conflict (id) do nothing
+      if (e.id) { S.seen[e.id] = true; }
       S.events.push(e);
       if (!S.open) { S.sittings++; S.open = "s" + S.sittings; S.sittingRatings = {}; }
       const c = cards.find((k) => k.id === e.card);
       if (e.type === "answer_submitted" && c && e.phase === "make" && !c.made) { c.made = true; c.mine = e.answer; }
-      if (e.type === "rated" && c) { c.last = e.rating; S.sittingRatings[c.id + e.phase] = { rating: e.rating, phase: e.phase }; }
+      if (e.type === "rated" && c) {
+        c.last = e.rating; S.sittingRatings[c.id + e.phase] = { rating: e.rating, phase: e.phase };
+        // flashcard_reviews: one row per rating; a make rating only once the card is made
+        if (e.phase !== "make" || c.made) {
+          S.rows.push({ id: e.id, card_id: c.id, rating: e.rating, phase: e.phase, rated_at: e.at });
+        }
+      }
       if (e.type === "session_finish") { S.history.push(S.sittingRatings); S.open = null; }
     });
     recompute();
     return Promise.resolve(state());
   };
   S.cards = cards;
+  // ⊕ Stage D — the pupil's own flashcard_reviews, oldest first (RLS: own rows).
+  S.reviews = () => JSON.parse(JSON.stringify(S.rows));
+  S.shift = (ms) => { S.rows.forEach((r) => { r.rated_at -= ms; }); };
   return S;
 }
 
@@ -130,8 +147,9 @@ async function fresh(opts) {
   localStorage.clear();
   const S = server(Object.assign({ mode: "review", rule: "secure", cards: FIVE }, opts || {}));
   H.transport = S.transport;
+  H.transportKeepalive = null;
   H.modelCheck = null;
-  H.resumeRead = null;
+  H.resumeRead = () => Promise.resolve(S.reviews());
   H.modelWaitMs = 4000;
   const e = await H.open("A");
   return { S, e };
@@ -197,7 +215,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     v = e.view();
     check(v.right === 0 && v.headline === "0 of 5 right", "re-rated Not yet REPLACES Got it for this pass (" + v.headline + ")");
     check(v.card.id === "c1" && v.draft === "some half typed", "forward again: card 2 keeps what was typed before going back");
-    await e.flush();
+    await e.flush(); await tick(5); await e.flush();
     const c0 = S.events.filter((x) => x.type === "rated" && x.card === "c0").map((x) => x.rating);
     check(c0.join() === "got_it,not_yet", "both ratings are events; the latest wins (" + c0 + ")");
     e.back(); answer(e, "newton"); e.rate("got_it");
@@ -228,29 +246,20 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(e.view().chip === "" && e.view().cap === null, "a reply without a verdict string → no chip, no cap");
   }
 
-  // ── 5. resume a sitting still open on the server ─────────────────────
+  // ── 5. a failed resume read starts a fresh pass (§2.7) ───────────────
   {
-    H._reset(); localStorage.clear();
-    const S = server({ mode: "review", rule: "secure", cards: FIVE });
-    H.transport = S.transport;
-    await S.transport("A", [{ id: "x", type: "card_shown", card: "c0", phase: "review", at: Date.now() }]);
-    const now = Date.now();
-    H.resumeRead = () => Promise.resolve({ c3: { rating: "got_it", phase: "review", at: now - 60000 },
-                                            c1: { rating: "not_yet", phase: "review", at: now - 30000 } });
-    const e = await H.open("A");
-    const v = e.view();
-    check(v.pos === 3 && v.headline === "1 of 5 right" && v.segments[0].state === "answered" && v.segments[1].state === "right",
-          "resume: the two rated cards count as done, the pass carries on at card 3 (" + v.headline + ", pos " + v.pos + ")");
-    check(v.canBack, "resume: ‹ Back reaches the cards already rated");
-    H._reset(); localStorage.clear();
-    H.resumeRead = () => Promise.resolve({ c3: { rating: "got_it", phase: "review", at: Date.now() - 11 * 60000 } });
-    const e2 = await H.open("A");
-    check(e2.view().pos === 1 && e2.view().headline === "0 of 5 right", "a sitting silent for over ten minutes is not resumed");
-    H._reset(); localStorage.clear();
+    const { S, e } = await fresh();
+    answer(e, "newton"); e.rate("got_it");
+    await e.flush(); await tick(5);
+    H._reset();
     H.resumeRead = () => Promise.reject(new Error("rls"));
     const e3 = await H.open("A");
-    check(e3.view().pos === 1, "a failed resume read starts a fresh pass");
+    check(e3.view().pos === 1 && e3.view().headline === "0 of 5 right", "a failed resume read starts a fresh pass");
+    H._reset();
     H.resumeRead = null;
+    const e4 = await H.open("A");
+    check(e4.view().pos === 1, "no resume reader → a fresh pass");
+    check(S.rows.length === 1, "the stand-in kept the one rating as a flashcard_reviews row");
   }
 
   // ── 6. make mode: the writing pass, its end screen, the review pass ──
@@ -273,7 +282,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(S.cards.every((c) => c.made) && S.cards[1].mine === "I don't know", "every card made; I don't know is what the teacher sees");
     e.again();
     v = e.view();
-    check(v.phase === "review" && v.headline === "0 of 3 right" && e.afterWriting, "the review pass opens at '0 of 3 right' (A7), same sitting");
+    check(v.phase === "review" && v.headline === "0 of 3 right", "the review pass opens at '0 of 3 right' (A7), same sitting");
     check(v.securedLine === "" && v.helper === "", "mid-pass the strip is the headline and the bar only: no secured line, no helper (M-2)");
     check(e.view().card.id === "c1", "the review pass starts on the Not yet card");
     for (let k = 0; k < 3; k++) {
@@ -457,18 +466,13 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(v.card.id === "c1" && !v.learn, "the replay is a plain card");
   }
 
-  // ── 12c. a reload inside the sitting keeps the I-don't-know card (S-c) ─
+  // ── 12c. a reload keeps the I-don't-know card (S-c, now beside any pass) ─
   {
-    H._reset(); localStorage.clear();
-    const S = server({ mode: "review", rule: "secure", cards: FIVE });
-    H.transport = S.transport; H.modelCheck = null;
-    const e = await H.open("A");
+    const { S, e } = await fresh();
     answer(e, "newton"); e.rate("got_it");
     e.idk();
     await e.flush(); await tick(5);
     H._reset();                                   // the page reloads; localStorage survives
-    const now = Date.now();
-    H.resumeRead = () => Promise.resolve({ c0: { rating: "got_it", phase: "review", at: now - 1000 } });
     const e2 = await H.open("A");
     let v = e2.view();
     check(v.card.id === "c1" && v.learn, "reload mid-learn: the card reopens in the learn state");
@@ -476,31 +480,15 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(!e2.view().allowed.got_it, "reload mid-learn: still capped at Nearly");
     e2.rate("nearly");
     check(e2.passIds[e2.passIds.length - 1] === "c1", "reload mid-learn: still replayed");
+    await e2.flush(); await tick(5);
     H._reset();
-    H.resumeRead = () => Promise.resolve({ c0: { rating: "got_it", phase: "review", at: Date.now() - 1000 },
-                                            c1: { rating: "nearly", phase: "review", at: Date.now() - 500 } });
     const e3 = await H.open("A");
-    check(e3.passIds[e3.passIds.length - 1] === "c1" && e3.passIds.length === 6,
-          "reload after the own-words rating: its replay is still to come");
-    H._reset(); localStorage.clear();
-    H.resumeRead = null;
+    check(e3.passIds[e3.passIds.length - 1] === "c1" && e3.passIds.length === 6 && e3.view().pos === 3,
+          "reload after the own-words rating: its replay is still to come, the pass carries on at card 3");
+    H._reset(); localStorage.clear();              // another device: no I-don't-know record
     const e4 = await H.open("A");
-    check(!e4.view().learn, "a new sitting (no resume) forgets the last one's I-don't-know cards");
-  }
-
-  // ── 12d. × mid-pass, then reopen: a new pass (S-b) ───────────────────
-  {
-    const { S, e } = await fresh();
-    answer(e, "newton"); e.rate("got_it");
-    answer(e, "water"); e.rate("not_yet");
-    e.finish();
-    H.close();
-    await tick(5); await e.flush(); await tick(5);
-    check(S.events.some((x) => x.type === "session_finish"), "× sent session_finish");
-    const again = await H.open("A");
-    const v = again.view();
-    check(again === e && v.headline === "0 of 5 right" && v.pos === 1,
-          "reopening after × starts a new pass, not the old one across a closed sitting (" + v.headline + ")");
+    check(!e4.view().learn && e4.passIds.length === 5 && e4.view().pos === 3,
+          "another device: the same place in the pass, no replay (decision 8)");
   }
 
   // ── 13. "I don't know" twice on one card → no third showing ─────────
@@ -598,6 +586,250 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     H.transport = () => Promise.reject(new Error("Failed to fetch"));
     const back = await H.open("A");
     check(back === again.e && H.active === again.e, "offline, the deck on the device opens as before");
+  }
+
+  // ══ ⊕ STAGE D — progress is never lost (STAGE-D-PLAN.md §2.9) ═════════
+  const MIN = 60 * 1000;
+  const STORE = "mrbadmusai.fchw.v1.";
+  const deck5 = () => FIVE.map((c, i) => ({ id: "c" + i, position: i, last: null, secured: false }));
+  const row = (card, rating, at, phase) => ({ card_id: card, rating, phase: phase || "review", rated_at: at });
+  const rightOf = (r) => Object.keys(r.pass).filter((k) => r.pass[k].rating === "got_it").length;
+
+  // ── 17. reconstruct, pure ───────────────────────────────────────────
+  {
+    const now = Date.now();
+    const R = (rows, mode, idk) => H.reconstruct(rows, deck5(), mode || "review", now, idk);
+    // (a) 3 of 5 rated
+    let r = R([row("c0", "got_it", now - 3 * MIN), row("c1", "not_yet", now - 2 * MIN), row("c2", "got_it", now - MIN)]);
+    check(r && r.stage === "review" && r.round.n === 1 && r.round.done.join() === "c0,c1,c2" && rightOf(r) === 2 &&
+          r.ended === null && r.order.join() === "c0,c1,c2,c3,c4", "17a: 3 of 5 → round 1, done in rated order, 2 right, not ended");
+    // (b) all 5, 2 not right, last 5 min ago
+    const five = [row("c0", "got_it", now - 9 * MIN), row("c1", "not_yet", now - 8 * MIN), row("c2", "got_it", now - 7 * MIN),
+                  row("c3", "not_yet", now - 6 * MIN), row("c4", "got_it", now - 5 * MIN)];
+    r = R(five);
+    check(r && r.ended === "retry" && r.round.n === 1 && r.round.done.length === 5 && rightOf(r) === 3,
+          "17b: round 1 complete, not all right, 5 min ago → the Try again screen");
+    // (c) the same an hour on
+    const old = five.map((x) => Object.assign({}, x, { rated_at: x.rated_at - 56 * MIN }));
+    check(R(old) === null, "17c: the same, last rating 61 min ago → a new pass (null)");
+    // (d) round 2 begun 5 min after round 1 finished
+    r = R(five.concat([row("c1", "got_it", now)]));
+    check(r && r.round.n === 2 && r.round.targets.join() === "c1,c3" && r.round.done.join() === "c1" &&
+          rightOf(r) === 4 && !r.pass.c3 && r.ended === null, "17d: round 2 — targets the 2 leftovers, 1 done, 4 right, c3 to come");
+    // (e) a green-chip redo inside round 2
+    r = R(five.concat([row("c1", "got_it", now - MIN), row("c0", "not_yet", now)]));
+    check(r && r.round.n === 2 && r.round.done.join() === "c1" && r.round.targets.join() === "c1,c3" &&
+          r.pass.c0.rating === "not_yet" && rightOf(r) === 3, "17e: a redo of a green card changes the pass, not the round");
+    // (f) all right, then one later rating
+    const all = ["c0", "c1", "c2", "c3", "c4"].map((c, i) => row(c, "got_it", now - (20 - i) * MIN));
+    r = R(all.concat([row("c2", "nearly", now - MIN)]));
+    check(r && r.round.n === 1 && r.round.done.join() === "c2" && Object.keys(r.pass).join() === "c2" && r.order[0] === "c2",
+          "17f: all Got it ends the pass; the open pass is the one later rating");
+    check(R(all) === null, "17f: all Got it and nothing since → a new pass");
+    // (g) make mode
+    r = R([row("c0", "got_it", now - 3 * MIN, "make"), row("c1", "not_yet", now - 2 * MIN, "make"), row("c2", "got_it", now - MIN, "make")], "make");
+    check(r && r.stage === "make" && r.round.done.join() === "c0,c1,c2" && r.order.join() === "c0,c1,c2,c3,c4",
+          "17g: make, 3 of 5 written → the writing pass, 3 done");
+    r = R(["c0", "c1", "c2", "c3", "c4"].map((c, i) => row(c, "got_it", now - (9 - i) * MIN, "make")), "make");
+    check(r && r.stage === "review" && r.round.n === 1 && r.round.done.length === 0 && Object.keys(r.pass).length === 0,
+          "17g: make, all written, no review yet → review round 1, nothing done");
+    // (h) a card rated twice inside round 1
+    r = R([row("c0", "got_it", now - 3 * MIN), row("c1", "not_yet", now - 2 * MIN), row("c0", "not_yet", now - MIN)]);
+    check(r && r.round.n === 1 && r.round.done.join() === "c0,c1" && r.pass.c0.rating === "not_yet" && r.ended === null,
+          "17h: a card rated twice in round 1 counts once toward cover; the latest rating stands");
+    // (h') an "I don't know" replay after the round finished stays in round 1 (on the device that knows)
+    const idkRun = [row("c0", "got_it", now - 9 * MIN), row("c1", "nearly", now - 8 * MIN), row("c2", "got_it", now - 7 * MIN),
+                    row("c3", "not_yet", now - 6 * MIN), row("c4", "got_it", now - 5 * MIN), row("c1", "got_it", now - 4 * MIN)];
+    r = R(idkRun, "review", { seen: { c1: true } });
+    check(r && r.ended === "retry" && r.round.n === 1 && rightOf(r) === 4, "17h': the I-don't-know replay belongs to round 1 → Try again screen, 4 right");
+    r = R(idkRun);
+    check(r && r.round.n === 2 && r.round.done.join() === "c1", "17h': without the device's record it reads as round 2 begun");
+    // (h'') a record from another round or an earlier pass is not this replay
+    r = R(idkRun, "review", { seen: { c1: true }, n: 2, at: now - 4 * MIN });
+    check(r && r.round.n === 2 && r.round.done.join() === "c1", "17h'': a record written in round 2 does not fold a rating into round 1");
+    r = R(idkRun, "review", { seen: { c1: true }, n: 1, at: now - 3 * 60 * MIN });
+    check(r && r.round.n === 2 && r.round.done.join() === "c1", "17h'': a record from before this pass began does not either");
+    r = R(idkRun, "review", { seen: { c1: true }, n: 1, at: now - 9 * MIN - 30 * 1000 });
+    check(r && r.ended === "retry" && r.round.n === 1, "17h'': one written just before the pass's first rating (the first card was the I-don't-know) still counts");
+    // (i) nothing
+    check(R([]) === null && H.reconstruct(null, deck5(), "review", now) === null, "17i: no rows / no read → null");
+  }
+
+  // ── 18. × mid-pass, then reopen: the same place (reverses S-b) ───────
+  {
+    const { S, e } = await fresh();
+    answer(e, "newton"); e.rate("got_it");
+    answer(e, "water"); e.rate("not_yet");
+    e.finish();
+    H.close();
+    await tick(5); await e.flush(); await tick(5);
+    check(S.events.some((x) => x.type === "session_finish"), "18: × still sends session_finish (A13)");
+    const again = await H.open("A");
+    const v = again.view();
+    check(v.headline === "1 of 5 right" && v.pos === 3 && v.canBack &&
+          v.segments.map((g) => g.state).join() === "right,answered,todo,todo,todo" && v.segments[2].current,
+          "18: reopening after × lands on card 3 at '1 of 5 right' (" + v.headline + ", pos " + v.pos + ")");
+
+    // ── 19. the phone dies: another device, nothing on it ──────────────
+    again.setDraft("typed on the dead phone");
+    H._reset(); localStorage.clear();
+    const e2 = await H.open("A");
+    const v2 = e2.view();
+    check(v2.headline === "1 of 5 right" && v2.pos === 3 && v2.draft === "",
+          "19: a new device lands on card 3 at '1 of 5 right'; the other phone's half-typed words are not here");
+
+    // ── 20. offline, then a reload on the same device ──────────────────
+    S.fail = true;
+    answer(e2, "gravity"); e2.rate("got_it");
+    await tick(5);
+    check(e2.pending.length > 0 && S.rows.length === 2, "20: offline — the rating waits on the device");
+    S.fail = false;
+    H._reset();                                   // reload; localStorage kept
+    const e3 = await H.open("A");
+    const v3 = e3.view();
+    check(S.rows.length === 3 && v3.pos === 4 && v3.headline === "2 of 5 right" && v3.segments[2].state === "right",
+          "20: the queue is sent first, then the pass lands on card 4 with card 3 counted (" + v3.headline + ")");
+  }
+
+  // ── 21. the Try again screen survives a reopen, for an hour ─────────
+  {
+    const { S, e } = await fresh();
+    const script = { c0: ["newton", "got_it"], c1: ["water", "not_yet"], c2: ["gravity", "got_it"],
+                     c3: ["stretch", "not_yet"], c4: ["vector", "got_it"] };
+    for (let k = 0; k < 5; k++) { const id = e.view().card.id; answer(e, script[id][0]); e.rate(script[id][1]); }
+    await tick(5); await e.flush(); await tick(5);
+    H.close();
+    let a = await H.open("A");
+    let v = a.view();
+    check(v.phase === "end" && v.end.button === "retry" && v.end.line1 === "3 of 5 right",
+          "21: reopened inside the hour → the same Try again screen, '3 of 5 right'");
+    a.retry();
+    v = a.view();
+    check(a.passIds.join() === "c1,c3" && v.chips.filter((g) => g.state === "right").length === 3 && v.card.id === "c1",
+          "21: Try again → a queue of 2 in first-pass order, 3 green chips");
+    H._reset(); localStorage.clear();
+    a = await H.open("A");
+    check(a.view().phase === "end" && a.view().end.line1 === "3 of 5 right", "21: …and on another device too");
+    S.shift(61 * MIN);
+    H.close();
+    a = await H.open("A");
+    v = a.view();
+    check(v.headline === "0 of 5 right" && v.pos === 1 && v.segments.every((g) => g.state === "todo"),
+          "21: an hour on → a new pass, '0 of 5 right', 5 to do (" + v.headline + ")");
+  }
+
+  // ── 22. reopened mid-retry: the chips view, on what is left ─────────
+  {
+    const { S, e } = await fresh();
+    const script = { c0: ["newton", "got_it"], c1: ["water", "not_yet"], c2: ["gravity", "got_it"],
+                     c3: ["stretch", "not_yet"], c4: ["vector", "got_it"] };
+    for (let k = 0; k < 5; k++) { const id = e.view().card.id; answer(e, script[id][0]); e.rate(script[id][1]); }
+    e.retry();
+    answer(e, "h2o"); e.rate("got_it");
+    await tick(5); await e.flush(); await tick(5);
+    for (const other of [false, true]) {
+      H.close();
+      if (other) { H._reset(); localStorage.clear(); }
+      const a = await H.open("A");
+      const v = a.view();
+      check(v.retry && a.retries === 1 && a.passIds.join() === "c3" && v.card.id === "c3" && v.headline === "4 of 5 right" &&
+            v.chips.length === 5 && v.chips[1].state === "right" && v.chips[3].state === "todo",
+            "22: mid-retry reopen" + (other ? " (another device)" : "") + " → chips, retries 1, queue [c3], '4 of 5 right' (" + v.headline + ")");
+    }
+    check(S.sittings >= 1, "22: sittings " + S.sittings);
+  }
+
+  // ── 23. all right → Done → reopen: a new pass ───────────────────────
+  {
+    const { S, e } = await fresh();
+    const good = { c0: "newton", c1: "h2o", c2: "gravity", c3: "f = ke", c4: "vector" };
+    for (let k = 0; k < 5; k++) { const id = e.view().card.id; answer(e, good[id]); e.rate("got_it"); }
+    await tick(5); await e.flush(); await tick(5);
+    check(e.view().end.button === "done", "23: all right → Done");
+    e.finish(); H.close();
+    await tick(5);
+    const a = await H.open("A");
+    check(a.view().headline === "0 of 5 right" && a.view().pos === 1, "23: reopening after Done → a new pass at '0 of 5 right'");
+    check(S.events.filter((x) => x.type === "session_finish").length === 1, "23: session_finish sent once");
+  }
+
+  // ── 24. make mode: a card written but not rated when the phone died ──
+  {
+    const { S, e } = await fresh({ mode: "make" });
+    answer(e, "newton"); e.rate("got_it");
+    answer(e, "water"); e.rate("not_yet");
+    answer(e, "gravity");                         // made (answer_submitted), not rated
+    await tick(5); await e.flush(); await tick(5);
+    check(S.cards[2].made && S.cards[2].mine === "gravity", "24: the server has card 3's answer");
+    H._reset(); localStorage.clear();              // the phone died; another device
+    const a = await H.open("A");
+    let v = a.view();
+    check(v.phase === "make" && v.card.id === "c2" && !v.revealed && v.draft === "gravity" && v.pos === 3 && v.headline === "1 of 5 right",
+          "24: card 3 reopens in state A with its stored answer in the box (" + v.draft + ", pos " + v.pos + ")");
+    a.check(); a.rate("got_it");
+    check(a.view().card.id === "c3", "24: Check → rate → card 4");
+    answer(a, "f = ke"); a.rate("got_it");
+    answer(a, "vector"); a.rate("got_it");
+    v = a.view();
+    check(v.phase === "end" && v.end.button === "again" && v.end.line1 === "4 of 5 right", "24: the writing pass ends (4 of 5 right)");
+    await tick(5); await a.flush(); await tick(5);
+    H._reset();
+    const b = await H.open("A");
+    check(b.view().phase === "review" && b.view().headline === "0 of 5 right", "24: reopened after the writing pass → the review pass at '0 of 5 right'");
+  }
+
+  // ── 25. every answer is sent at once; the keepalive leaves the queue ──
+  {
+    const { S, e } = await fresh();
+    answer(e, "newton");
+    await tick(5);
+    e.rate("got_it");
+    await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+    check(S.events.some((x) => x.type === "rated" && x.card === "c0"), "25: a rating reaches the transport before the next macrotask");
+    const ka = [];
+    H.transportKeepalive = (id, evs) => { ka.push.apply(ka, evs); };
+    S.fail = true;
+    answer(e, "water"); e.rate("not_yet");
+    await tick(5);
+    const held = e.pending.map((x) => x.id).join();
+    globalThis.document = { visibilityState: "hidden" };
+    e.visibility();
+    delete globalThis.document;
+    check(ka.length > 0 && ka.some((x) => x.type === "rated" && x.card === "c1") && e.pending.map((x) => x.id).slice(0, -1).join() === held,
+          "25: hidden → the keepalive gets the pending batch; the queue is unchanged");
+    S.fail = false;
+    await S.transport("A", ka);                   // the keepalive landed
+    const before = S.events.length;
+    await e.flush(); await tick(5);
+    const ids = S.events.map((x) => x.id);
+    check(new Set(ids).size === ids.length && S.rows.length === 2 && e.pending.length === 0,
+          "25: the next flush resends the same ids and the server keeps one of each (" + (S.events.length - before) + " new)");
+    const many = [];
+    H.transportKeepalive = (id, evs) => { many.push(evs.length); };
+    S.fail = true;
+    for (let k = 0; k < 40; k++) { e.visibility(); }
+    e.flushBeacon();
+    check(many.length === 1 && many[0] <= 60, "25: a keepalive batch is at most 60 events (" + many + ")");
+    S.fail = false;
+    H.transportKeepalive = null;
+  }
+
+  // ── 26. half-typed words survive a reload ───────────────────────────
+  {
+    const { e } = await fresh();
+    e.setDraft("half");
+    H._reset();
+    const a = await H.open("A");
+    check(a.view().card.id === "c0" && a.view().draft === "half", "26: a reload keeps the half-typed answer (" + a.view().draft + ")");
+    a.setDraft("newton"); a.check(); a.rate("got_it");
+    check(localStorage.getItem(STORE + "draft.A") === null, "26: rated → the card's saved draft is gone");
+  }
+
+  // ── 27. retired things stay retired ─────────────────────────────────
+  {
+    const raw = fs.readFileSync(path.join(ROOT, "shared/flashcard-homework.js"), "utf8");
+    ["afterWriting", "RESUME_MS", "newSitting"].forEach((w) =>
+      check(raw.indexOf(w) < 0, "27: absent from the engine source: " + w));
   }
 
   console.log(`\n  ${passes} passed, ${fails} failed`);

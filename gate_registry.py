@@ -416,7 +416,17 @@ GATES = [
                   "shared/student-ds.css",
                   "shared/flashcard-homework.js", "shared/flashcard-keyboard.js",
                   "shared/formulae.js"],
-         why="MRB-351 §4 + PUPIL FLOW (docs/mrb351/PUPIL-FLOW.md §9.2, A11) — "
+         why="⊕ STAGE D1 (docs/mrb351/STAGE-D-PLAN.md §2.9): on a DESKTOP "
+             "(1440×900, 1280×720, no keyboard) focusing the answer box, a "
+             "keystroke's redraw and blurring move none of header/strip/card/"
+             "question/box/Check and never set data-hw-typing; the card is its "
+             "content's height (≤420px, under half the dialog), the box ≥96px; "
+             "on the phones the card is 120px–34% of the visual height under "
+             "the keyboard and its content's height without; clicking a row, "
+             "opening and closing the deck keep scrollY, the row and the width "
+             "with no scroll event, the dialog has no fcUp slide; × mid-pass "
+             "and a reload land on the next card not done. Before Stage D: "
+             "MRB-351 §4 + PUPIL FLOW (docs/mrb351/PUPIL-FLOW.md §9.2, A11) — "
              "the pupil's flashcard homework on a PHONE with the keyboard up: "
              "390×844 and 360×740 `mobile:true`, never shrunk, with a fake "
              "visualViewport of 508 / 404; the question text and answer box "
@@ -441,7 +451,13 @@ GATES = [
          watches=["flashcard_engine_test.py", "flashcard_engine_test.js",
                   "shared/flashcard-homework.js",
                   "tests/fixtures/quickcheck_cases.json"],
-         why="MRB-351 PUPIL FLOW (docs/mrb351/PUPIL-FLOW.md §9.1) — the "
+         why="⊕ STAGE D1: `reconstruct` (the pass rebuilt from the pupil's "
+             "own ratings — rounds, the hour, the I-don't-know replay), × / a "
+             "dead phone / another device / offline-then-reload all landing on "
+             "the next card not done, Try again surviving a reopen for an hour, "
+             "make mode's written-not-rated card, answers sent at once, the "
+             "keepalive leaving the queue intact, drafts surviving a reload. "
+             "Before Stage D: MRB-351 PUPIL FLOW (docs/mrb351/PUPIL-FLOW.md §9.1) — the "
              "flashcard homework ENGINE in Node, no browser: quickCheck agrees "
              "with SQL flashcard_quick_check on every case of a table whose "
              "`sql` column the real function produced on TEST (A12 — else the "

@@ -529,3 +529,26 @@ under *Deviations*.
   for exact / one-word / blank answers (13.1.3).
 - Mide: the answer box above the keyboard on a real iPhone (Safari) and Android (Chrome), learn state
   included.
+
+## §14. Stage D as built (D1 half — Mide's items 1, 2, 4)
+
+Plan and deviations: `docs/mrb351/STAGE-D-PLAN.md` §2 and §6. This section only records what now overrides the
+sections above.
+
+- **Where a reopened deck lands (overrides S-b and §4's resume).** Worked out from the pupil's own
+  `flashcard_reviews` for the whole assignment by `MRBHomework.reconstruct`, not from the server's open sitting.
+  × / a reload / a phone that died / another device / offline-then-reload all land on the next card not done, with
+  the pass's count. A finished round that is not all right shows Try again for an hour, then a new pass; an
+  unfinished round keeps its place however long the pupil is away; all right ends the pass.
+- **Nothing is lost.** Every answer and rating is sent at once; the device queue stays the fallback; a hidden or
+  closing page sends the queue on a `keepalive` request and keeps it queued (ids are idempotent). Half-typed text is
+  kept on the device per card.
+- **The server did not change.** `flashcard_sessions`, the 10-minute silence, `session_finish` on × and Done, the
+  `secure` rule, `sittings` for the teacher — untouched. No SQL.
+- **The homework card sizes to its content** (140–420 px, under half the dialog) and compact mode needs a real
+  keyboard: on a desktop focusing the answer box moves nothing. The answer box is three rows, 96 px on a tall dialog.
+- **Nothing lifts.** The dialog's `fcUp` slide is gone (the scrim still fades); the class page keeps its scrollbar's
+  room; the runtime pins the host's height across a redraw; and the scroll lock hides the root only — hiding html AND
+  body clamped the live page to the top on every open.
+- **Proof:** `flashcard_engine_test.js` 17–27, `flashcard_homework_drive.py` (desktop 1440/1280, phones 390/360,
+  item 4 at 1440/390, fixture resume), `tools/flashcards_stage_d_live.py` on TEST (11 shots).

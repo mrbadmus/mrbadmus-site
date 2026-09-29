@@ -677,6 +677,13 @@
         var keepFocus = focusPath(host);
         var keepFields = fieldState(host);
         var keepScroll = window.scrollY;
+        /* ⊕ Stage D (STAGE-D-PLAN.md §2.4) — the host keeps its height across
+           the swap. Emptying it lets the document shrink for an instant, and
+           a browser that clamps the scroll position to the shorter page
+           would then restore a different place. Pinned, the document never
+           gets shorter than it was; the pin comes off straight after. */
+        var keepMinH = host.style.minHeight;
+        host.style.minHeight = host.offsetHeight + "px";
         host.textContent = "";
         host.appendChild(frag);
         /* ⊕ Theme run, 27 Sep 2026 — MUST run here, before `refocus`, not in
@@ -702,6 +709,7 @@
         restoreFields(host, keepFields);
         refocus(host, keepFocus);
         if (window.scrollY !== keepScroll) { window.scrollTo(0, keepScroll); }
+        host.style.minHeight = keepMinH;
         api.misses = ctx.miss;
 
         /* ⊕ MRB-352 — THE FIGURE OVERFLOW CUE, MEASURED NOW AND NOT BEFORE.

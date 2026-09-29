@@ -3967,6 +3967,15 @@ _CARD_FIT = (
     "{min-height:min(300px,calc(100vh - 240px))!important}"
 )
 
+# ⊕ Stage D (STAGE-D-PLAN.md §2.4, Mide's item 4) — the scrollbar's room is
+# kept whether or not the page can scroll. The flashcard overlay locks the
+# page (`lockScroll` in shared/student-live.js sets overflow:hidden on html
+# and body while it is open); on a desktop with a visible scrollbar that took
+# ~15px of scrollbar away, the page widened, and everything above the fold
+# reflowed on open and again on close. CLASS VIEW ONLY: the only page that
+# locks.
+_GUTTER = "html{scrollbar-gutter:stable}"
+
 
 # ── the question counter, which is now the only thing above the question ──
 #
@@ -4333,7 +4342,7 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
             ((_THEME_BRIDGE + _FOCUS_RING_BENCH + _PAGE_STRONG + _PIP_ROW
               # ⊕ Stage B — `_TAP44` retired: its node (33, the crumb) is
               # pruned with the crumb strip, so the rule could never match.
-              + _CARD_FIT + _ROW_DONE)
+              + _CARD_FIT + _GUTTER + _ROW_DONE)
              if spec["page"] == "class view"
              else (bench_css + _THEME_BRIDGE + _Q_EYEBROW
                    + _FIGURE_SCROLL))),

@@ -46,6 +46,23 @@
  *   · A PASS THAT IS ALL RIGHT ends the sitting (`session_finish`) and
  *     offers one button, Done. × still ends the sitting (A13).
  *
+ * ⊕ STAGE D (29 Sep 2026 — docs/mrb351/STAGE-D-PLAN.md §1 decision 5 wins
+ *   over everything above about where a reopened deck lands).
+ *
+ *   PROGRESS IS NEVER LOST. Every answer and every rating is sent the
+ *   moment it happens, and kept on the device until the server has it. When
+ *   the pupil comes back — after ×, a reload, a phone that died, or on
+ *   another device — they land on the next card they have not done, with
+ *   the count they had. What "the pass they were on" means is worked out
+ *   from their own ratings on the server (`reconstruct`), not from the
+ *   server's sitting, which still closes on × and after ten quiet minutes
+ *   exactly as before (the teacher's numbers do not move).
+ *
+ *   A pass ENDS when every card is Got it, or when its round is finished
+ *   and nothing more happens for an hour. A finished round that is not all
+ *   right shows Try again when they come back inside that hour, and starts
+ *   a fresh pass after it. Half-typed answers are kept on the device.
+ *
  *   events: card_shown, answer_submitted, revealed, rated, session_finish,
  *   visibility — each with a client-generated id, the device clock and
  *   whether the tab was visible. They are queued on the DEVICE (so a flaky
@@ -55,8 +72,9 @@
  * WHAT IT DOES NOT DO: decide completion. `flashcard_record()` does, from the
  * events, and says so in the state it returns.
  *
- * Transport, the model check and the resume read are injected
- * (`MRBHomework.transport` / `.modelCheck` / `.resumeRead`) so the fixture
+ * Transport, the keepalive transport, the model check and the resume read
+ * are injected (`MRBHomework.transport` / `.transportKeepalive` /
+ * `.modelCheck` / `.resumeRead`) so the fixture
  * page and the Node tests run it with no network at all.
  */
 (function (root) {
@@ -65,7 +83,10 @@
   var STORE = "mrbadmusai.fchw.v1.";
   var FLUSH_MS = 2500;
   var MODEL_WAIT_MS = 4000;
-  var RESUME_MS = 10 * 60 * 1000;
+  var HOUR = 60 * 60 * 1000;          // a finished round, then this long quiet → a new pass
+  var IDK_SLACK = 5 * 60 * 1000;      // device clock vs the first rating of the pass
+  var DRAFT_MS = 300;
+  var BEACON_MAX = 60;                // events per keepalive request (64 KB budget)
   var IDK_TEXT = "I don't know";
 
   function uuid() {
@@ -89,18 +110,34 @@
   }
   // ⊕ Sharpen review (Fable, S-c) — which cards met "I don't know" in this
   // pass, and which have had their replay: kept on the device, so a reload
-  // inside a live sitting keeps the Nearly cap and the replay. Honoured only
-  // alongside a resumed sitting (see start()).
+  // keeps the Nearly cap and the replay. ⊕ Stage D: honoured beside any
+  // reconstructed pass (decision 8), for the round it was written in (`n`)
+  // and not from before the pass began (`at` vs the pass's first rating).
   function loadIdk(key) {
     try {
       var v = JSON.parse(root.localStorage.getItem(STORE + "idk." + key) || "null");
       return v && v.seen ? v : null;
     } catch (e) { return null; }
   }
-  function saveIdk(key, seen, done) {
+  function saveIdk(key, seen, done, n) {
     try {
       root.localStorage.setItem(STORE + "idk." + key,
-        JSON.stringify({ at: Date.now(), seen: seen || {}, done: done || {} }));
+        JSON.stringify({ at: Date.now(), n: n || 1, seen: seen || {}, done: done || {} }));
+    } catch (e) { /* private mode */ }
+  }
+  // ⊕ Stage D (decision 4) — half-typed answers, per card, on the device, so
+  // a reload mid-sentence keeps the words. A card's entry goes when it is
+  // rated.
+  function loadDrafts(key) {
+    try {
+      var v = JSON.parse(root.localStorage.getItem(STORE + "draft." + key) || "null");
+      return v && typeof v === "object" ? v : {};
+    } catch (e) { return {}; }
+  }
+  function saveDrafts(key, map) {
+    try {
+      if (Object.keys(map).length) { root.localStorage.setItem(STORE + "draft." + key, JSON.stringify(map)); }
+      else { root.localStorage.removeItem(STORE + "draft." + key); }
     } catch (e) { /* private mode */ }
   }
 
@@ -139,6 +176,121 @@
   // §13.1 — how high a rating may go.
   var RANK = { not_yet: 0, nearly: 1, got_it: 2 };
   var RATINGS = ["not_yet", "nearly", "got_it"];
+
+  // ── ⊕ STAGE D: where a reopened deck lands (decision 5) ──────────────
+  //
+  // `rows`  the pupil's own flashcard_reviews for this assignment, oldest
+  //         first: {card_id, rating, phase, rated_at}. Kept in the order
+  //         given (the read orders by rated_at, id).
+  // `cards` the deck (state.cards: id, position, last, secured).
+  // `idk`   optional: this device's "I don't know" record ({seen: {id}}) —
+  //         a replay's rating straight after its round finished belongs to
+  //         that round, not to a new one.
+  // Returns null for "start a fresh pass", or
+  //   { stage, pass: {id: {rating, phase}}, order: [id], since: ms|null,
+  //     round: {n, targets: [id], done: [id]}, ended: null|"retry" }.
+  function ms(v) {
+    if (typeof v === "number") { return v; }
+    var n = Date.parse(v);
+    return isNaN(n) ? 0 : n;
+  }
+  function reconstruct(rows, cards, mode, now, idk) {
+    if (!rows || !cards || !cards.length) { return null; }
+    var deck = cards.slice().sort(function (a, b) { return a.position - b.position; })
+      .map(function (c) { return c.id; });
+    var inDeck = {};
+    deck.forEach(function (id) { inDeck[id] = true; });
+    var list = [];
+    rows.forEach(function (r) {
+      if (!r || !inDeck[r.card_id] || !(r.rating in RANK)) { return; }
+      list.push({ card: r.card_id, rating: r.rating, phase: r.phase === "make" ? "make" : "review", at: ms(r.rated_at) });
+    });
+    var seen = (idk && idk.seen) || {};
+    // The record is this device's, for ONE round of ONE pass (`n`, `at`) —
+    // start() applies the same two tests before honouring it. Without them a
+    // record left by an earlier pass on this device would fold another
+    // device's round-2 rating of that card back into round 1.
+    var idkN = (idk && idk.n) || 1, idkAt = (idk && idk.at) || 0;
+
+    // 1 · make mode's writing pass: every card rated once in the make phase.
+    if (mode === "make") {
+      var mk = {}, mkSince = null;
+      list.forEach(function (r) {
+        if (r.phase !== "make") { return; }
+        if (mkSince === null) { mkSince = r.at; }
+        mk[r.card] = { rating: r.rating, phase: "make" };
+      });
+      if (deck.some(function (id) { return !mk[id]; })) {
+        return { stage: "make", pass: mk, order: deck.slice(), since: mkSince, ended: null,
+                 round: { n: 1, targets: deck.slice(), done: deck.filter(function (id) { return mk[id]; }) } };
+      }
+    }
+
+    // 2 · walk the review ratings.
+    var latest, first, targets, done, count, n, complete, since, lastAt = 0;
+    function reset() {
+      latest = {}; first = []; targets = deck.slice(); done = {}; count = {}; n = 1; complete = false; since = null;
+    }
+    function allRight() {
+      return deck.every(function (id) { return latest[id] && latest[id].rating === "got_it"; });
+    }
+    reset();
+    list.forEach(function (r) {
+      if (r.phase !== "review") { return; }
+      if (complete) {
+        if (r.at - lastAt >= HOUR) {
+          reset();
+        } else if (seen[r.card] && count[r.card] === 1 && targets.indexOf(r.card) >= 0 &&
+                   idkN === n && (!idkAt || since === null || idkAt >= since - IDK_SLACK)) {
+          // an "I don't know" replay: the last showing of the round it
+          // belongs to. The round stays finished.
+          latest[r.card] = { rating: r.rating, phase: "review" };
+          count[r.card] += 1;
+          lastAt = r.at;
+          if (allRight()) { reset(); }
+          return;
+        } else {
+          targets = deck.filter(function (id) { return !latest[id] || latest[id].rating !== "got_it"; });
+          done = {}; count = {}; n += 1; complete = false;
+        }
+      }
+      if (since === null) { since = r.at; }
+      if (!latest[r.card]) { first.push(r.card); }
+      latest[r.card] = { rating: r.rating, phase: "review" };
+      count[r.card] = (count[r.card] || 0) + 1;
+      if (targets.indexOf(r.card) >= 0) { done[r.card] = true; }
+      lastAt = r.at;
+      if (allRight()) { reset(); return; }
+      if (targets.every(function (id) { return done[id]; })) { complete = true; }
+    });
+
+    // 3 · what is left open.
+    var ended = null;
+    if (!first.length) {
+      if (mode !== "make") { return null; }
+      var fresh = rankedIds(cards);
+      return { stage: "review", pass: {}, order: fresh, since: null, ended: null,
+               round: { n: 1, targets: fresh.slice(), done: [] } };
+    }
+    if (complete) {
+      if ((now || Date.now()) - lastAt >= HOUR) { return null; }
+      ended = "retry";
+    }
+    var order = first.concat(rankedIds(cards).filter(function (id) { return first.indexOf(id) < 0; }));
+    var pass = {};
+    Object.keys(latest).forEach(function (id) {
+      // mid-retry, a card still to be redone in this round is "to come",
+      // not "answered" — exactly as retry() leaves it.
+      if (n > 1 && !ended && targets.indexOf(id) >= 0 && !done[id]) { return; }
+      pass[id] = latest[id];
+    });
+    return {
+      stage: "review", pass: pass, order: order, since: since, ended: ended,
+      round: { n: n,
+               targets: order.filter(function (id) { return targets.indexOf(id) >= 0; }),
+               done: order.filter(function (id) { return done[id]; }) }
+    };
+  }
 
   function Engine(assignmentId, state, opts) {
     this.id = assignmentId;
@@ -192,78 +344,115 @@
     var r = ORDER[c.last || "none"];
     return r === 3 && c.secured ? 4 : r;
   }
-  Engine.prototype.ranked = function () {
-    var cs = this.cards.slice();
+  function rankedIds(cards) {
+    var cs = (cards || []).slice();
     cs.sort(function (a, b) {
       var oa = rank(a), ob = rank(b);
       return oa !== ob ? oa - ob : a.position - b.position;
     });
     return cs.map(function (c) { return c.id; });
-  };
+  }
+  Engine.prototype.ranked = function () { return rankedIds(this.cards); };
   Engine.prototype.byPosition = function (ids) {
     var self = this;
     return ids.filter(function (id) { return self.byId[id]; })
       .sort(function (a, b) { return self.byId[a].position - self.byId[b].position; });
   };
 
-  // A new pass. `resume` = {card_id: {rating, phase}} for the sitting still
-  // open on the server (a reload within ten minutes): those cards count as
-  // done in this pass and it carries on from the first card without one.
+  // A pass. `resume` is `reconstruct()`'s answer (null = a fresh pass): the
+  // stage, the pass's ratings and order, and the round it is on.
   Engine.prototype.start = function (resume) {
     var self = this;
+    var R = resume || null;
     this.ended = false;
     this.end = null;
     this.pass = {};
-    this.drafts = {};
-    this.afterWriting = false;
-    this.retries = 0;          // Try again passes in this sitting
+    this.retries = 0;          // Try again rounds in this pass
     this.replayed = {};        // cards an "I don't know" sent round again
-    this.idkSeen = {};         // cards met with "I don't know" this pass
+    this.idkSeen = {};         // cards met with "I don't know" this round
     this.replayDone = {};      // …whose replay has been rated
     this.detour = null;        // a green card being redone on a retry
     this.learn = false;        // "I don't know": the own-words step
     this.idkNow = false;       // this showing of the card began with it
+    // Half-typed text from the device (decision 4).
+    this.saved = {};
+    var kept0 = loadDrafts(this.id);
+    Object.keys(kept0).forEach(function (id) {
+      if (self.byId[id] && typeof kept0[id] === "string" && kept0[id]) { self.saved[id] = kept0[id].slice(0, 500); }
+    });
+    this.drafts = {};
+    Object.keys(this.saved).forEach(function (id) { self.drafts[id] = self.saved[id]; });
     var mode = this.state && this.state.mode;
     var done = [];
-    var r = resume || {};
-    var entries = Object.keys(r).filter(function (id) { return self.byId[id]; });
-    var makeDone = entries.filter(function (id) { return r[id].phase === "make"; });
-    var reviewDone = entries.filter(function (id) { return r[id].phase !== "make"; });
-    if (mode === "make" && this.unmade().length) {
+    if (R) {
+      this.stage = R.stage === "make" ? "make" : "review";
+      var order = (R.order || []).filter(function (id) { return self.byId[id]; });
+      var tset = {}, dset = {};
+      (R.round.targets || []).forEach(function (id) { tset[id] = true; });
+      (R.round.done || []).forEach(function (id) { dset[id] = true; });
+      Object.keys(R.pass || {}).forEach(function (id) {
+        if (self.byId[id]) { self.pass[id] = { rating: R.pass[id].rating, mine: null, verdict: null, cap: null }; }
+      });
+      if (R.round.n > 1) {
+        // a Try again round: the chips view, on the cards still to redo.
+        this.retries = R.round.n - 1;
+        this.passIds = order.filter(function (id) { return tset[id] && !dset[id]; });
+      } else {
+        done = order.filter(function (id) { return dset[id]; });
+        this.passIds = done.concat(order.filter(function (id) { return !dset[id]; }));
+      }
+      this.order = order;
+      // decision 7 — a card MADE but not rated (the phone died between the
+      // two) reopens with its stored answer in the box.
+      if (this.stage === "make") {
+        this.cards.forEach(function (c) {
+          if (c.made && !self.pass[c.id] && c.mine && c.mine !== IDK_TEXT && !self.drafts[c.id]) {
+            self.drafts[c.id] = c.mine;
+          }
+        });
+      }
+    } else if (mode === "make" && this.unmade().length) {
       this.stage = "make";
-      done = this.byPosition(makeDone);
-      var todo = this.unmade().map(function (c) { return c.id; })
-        .filter(function (id) { return done.indexOf(id) < 0; });
-      this.passIds = done.concat(todo);
+      this.passIds = this.unmade().map(function (c) { return c.id; });
+      this.order = this.passIds.slice();
     } else {
       this.stage = "review";
-      // The writing pass happened in this very sitting: this is its review pass.
-      this.afterWriting = mode === "make" && makeDone.length > 0 && !this.opts.newSitting;
-      done = this.byPosition(reviewDone);
-      this.passIds = done.concat(this.ranked().filter(function (id) { return done.indexOf(id) < 0; }));
+      this.passIds = this.ranked();
+      this.order = this.passIds.slice();
     }
-    done.forEach(function (id) { self.pass[id] = { rating: r[id].rating, mine: null, verdict: null, cap: null }; });
-    // The pass's own order, fixed for the whole sitting: the bar, the chips
-    // and a Try again all read it.
-    this.order = this.passIds.slice();
     this.baseLen = this.passIds.length;
-    // A resumed sitting keeps its "I don't know" cards: an unrated one opens
-    // in the learn state again (show()), a rated one still gets its replay.
-    var kept = resume ? loadIdk(this.id) : null;
-    if (kept && Date.now() - (kept.at || 0) <= RESUME_MS) {
+    // "I don't know" cards of this round, kept on the device: an unrated
+    // one opens in the learn state again (show()), a rated one still gets
+    // its replay.
+    var kept = R ? loadIdk(this.id) : null;
+    if (kept && (kept.n || 1) === R.round.n &&
+        (R.since == null || (kept.at || 0) >= R.since - IDK_SLACK)) {
       this.idkSeen = kept.seen || {};
       this.replayDone = kept.done || {};
       Object.keys(this.idkSeen).forEach(function (id) {
-        if (self.pass[id] && !self.replayDone[id] && self.byId[id]) {
+        if (self.pass[id] && !self.replayDone[id] && self.byId[id] && self.passIds.indexOf(id, done.length) < 0) {
           self.replayed[id] = true;
           self.passIds.push(id);
         }
       });
     }
-    saveIdk(this.id, this.idkSeen, this.replayDone);
-    this.idx = done.length;
-    if (this.idx >= this.passIds.length && this.passIds.length) { this.endPass(); return; }
+    this.keepIdk();
+    this.idx = R && R.round.n > 1 ? 0 : done.length;
+    if (this.idx >= this.passIds.length && (this.passIds.length || (R && R.ended))) { this.endPass(); return; }
     this.show();
+  };
+
+  Engine.prototype.keepIdk = function () {
+    saveIdk(this.id, this.idkSeen, this.replayDone, this.retries + 1);
+  };
+
+  // The device copy of the half-typed answers: soon after typing, at once
+  // when a card is rated or the page is going away.
+  Engine.prototype.keepDrafts = function (now) {
+    var self = this;
+    if (this.draftTimer) { clearTimeout(this.draftTimer); this.draftTimer = null; }
+    if (now) { saveDrafts(this.id, this.saved); return; }
+    this.draftTimer = setTimeout(function () { self.draftTimer = null; saveDrafts(self.id, self.saved); }, DRAFT_MS);
   };
 
   Engine.prototype.current = function () {
@@ -298,7 +487,11 @@
   Engine.prototype.setDraft = function (text) {
     this.draft = String(text == null ? "" : text).slice(0, 500);
     var c = this.current();
-    if (c && !this.revealed) { this.drafts[c.id] = this.draft; }
+    if (c && !this.revealed) {
+      this.drafts[c.id] = this.draft;
+      if (/\S/.test(this.draft)) { this.saved[c.id] = this.draft; } else { delete this.saved[c.id]; }
+      this.keepDrafts(false);
+    }
   };
   Engine.prototype.canCheck = function () { return !this.revealed && /\S/.test(this.draft || ""); };
 
@@ -311,6 +504,9 @@
     if (this.stage === "make" && !c.made) { c.made = true; c.mine = answer; }
     this.mine = answer;
     this.drafts[c.id] = extra && extra.idk ? "" : answer;
+    // Answered, not yet rated: a reopen puts this answer back in the box.
+    if (extra && extra.idk) { delete this.saved[c.id]; } else { this.saved[c.id] = answer; }
+    this.keepDrafts(true);
     this.revealed = true;
     this.learn = false;
     this.acted += 1;
@@ -326,7 +522,7 @@
     // After "I don't know", this is the pupil's answer in their own words.
     this.reveal(answer, local || (waiting ? "pending" : null), this.learn ? { own_words: true } : null);
     this.changed();
-    this.flushSoon(400);
+    this.flush();                          // ⊕ Stage D: sent now, not in 400 ms
     if (waiting) { this.askModel(c, answer); }
   };
 
@@ -345,12 +541,14 @@
     this.learn = true;
     this.idkNow = true;
     this.idkSeen[c.id] = true;
-    saveIdk(this.id, this.idkSeen, this.replayDone);
+    this.keepIdk();
     this.mine = IDK_TEXT;
     this.draft = "";
     this.drafts[c.id] = "";
+    delete this.saved[c.id];
+    this.keepDrafts(true);
     this.changed();
-    this.flushSoon(400);
+    this.flush();                          // ⊕ Stage D: sent now
   };
 
   // §3.2–3.3: the model's verdict, if it lands inside four seconds and the
@@ -410,9 +608,11 @@
     c.last = rating; c.lastLocal = rating;
     if (rating === "got_it") { c.known = true; }
     this.pass[id] = { rating: rating, mine: this.mine, verdict: this.verdict === "pending" ? null : this.verdict, cap: cap };
+    delete this.saved[id];
+    this.keepDrafts(true);
     if (!this.detour && this.idx >= this.baseLen && this.idkSeen[id]) {
       this.replayDone[id] = true;       // this rating IS the replay's
-      saveIdk(this.id, this.idkSeen, this.replayDone);
+      this.keepIdk();
     }
     if (this.detour) {
       // A redo on a retry replaces that card's rating and goes back to the
@@ -427,12 +627,12 @@
         this.passIds.push(id);
         // It comes round to be answered from memory: an empty box.
         delete this.drafts[id];
-        saveIdk(this.id, this.idkSeen, this.replayDone);
+        this.keepIdk();
       }
       this.idx += 1;
       if (this.idx < this.passIds.length) { this.show(); } else { this.endPass(); }
     }
-    this.flushSoon(600);
+    this.flush();                          // ⊕ Stage D: durable the moment it happens
   };
 
   // ‹ Back: the previous card of this pass, in state A, with what the pupil
@@ -500,13 +700,14 @@
     this.replayed = {};
     this.idkSeen = {};
     this.replayDone = {};
-    saveIdk(this.id, this.idkSeen, this.replayDone);
+    this.keepIdk();
     this.detour = null;
     this.passIds = this.order.filter(function (id) { return !self.pass[id]; });
     // A leftover is answered afresh: its wrong answer is not put back in
     // the box for the pupil to send again. (A green card's redo keeps its
     // earlier answer — §13.1.11.)
-    this.passIds.forEach(function (id) { delete self.drafts[id]; });
+    this.passIds.forEach(function (id) { delete self.drafts[id]; delete self.saved[id]; });
+    this.keepDrafts(true);
     this.baseLen = this.passIds.length;
     this.idx = 0;
     this.ended = false;
@@ -522,14 +723,27 @@
   };
 
   Engine.prototype.again = function () {
-    var fromWriting = this.ended && this.end && this.end.writing;
     this.start(null);
-    if (fromWriting) { this.afterWriting = true; }
   };
 
   Engine.prototype.visibility = function () {
     this.event({ type: "visibility" });
-    if (!visibleNow()) { this.flush(); }
+    if (!visibleNow()) { this.flushBeacon(); }
+  };
+
+  // ⊕ Stage D (decision 4) — the page is going away (pagehide, or hidden:
+  // a phone locked or switched away from, which may be the last thing it
+  // ever does). A plain fetch may be cancelled on unload; a `keepalive`
+  // one is not. The events STAY queued — the reply is never awaited — and
+  // the next send repeats them; the server keeps one row per event id.
+  Engine.prototype.flushBeacon = function () {
+    this.keepDrafts(true);
+    var k = Api.transportKeepalive;
+    if (this.pending.length && typeof k === "function") {
+      try { k(this.id, this.pending.slice(0, BEACON_MAX)); } catch (e) { /* the queue is still on the device */ }
+      return;
+    }
+    this.flush();
   };
 
   // ── what the overlay draws ───────────────────────────────────────────
@@ -644,7 +858,7 @@
       save(self.id, self.pending);
       self.error = null;
       if (state) { self.merge(state); }
-      if (self.pending.length) { self.flushSoon(200); }
+      if (self.pending.length) { self.flushSoon(0); }
       else if (self.end) { self.end.settled = true; }
       if (batch.some(function (e) { return e.type === "session_finish"; }) && Api.onSessionEnd) {
         try { Api.onSessionEnd(self.id); } catch (e) { /* fire and forget */ }
@@ -678,51 +892,73 @@
 
   // ── the module ───────────────────────────────────────────────────────
   var engines = {};
+
+  // The pupil's own ratings for the deck → where the pass stands. A read
+  // that fails (RLS, network, no reader) → a fresh pass, today's behaviour.
+  function resumeFor(assignmentId, state) {
+    var read = typeof Api.resumeRead === "function"
+      ? Promise.resolve().then(function () { return Api.resumeRead(assignmentId); }).catch(function () { return null; })
+      : Promise.resolve(null);
+    return read.then(function (rows) {
+      try {
+        return reconstruct(rows, (state && state.cards) || [], state && state.mode, Date.now(), loadIdk(assignmentId));
+      } catch (e) { return null; }
+    });
+  }
+
+  // Send what this device still holds, until it is all sent or sending fails.
+  function drain(e, tries) {
+    return Promise.resolve(e.flush()).then(function () {
+      if (e.pending.length && !e.error && tries > 0) { return drain(e, tries - 1); }
+      return null;
+    });
+  }
+
   var Api = {
     transport: null,          // (assignmentId, events[]) → Promise<state>
+    transportKeepalive: null, // (assignmentId, events[]) → void; survives the page going away
     onSessionEnd: null,       // (assignmentId) → void
     modelCheck: null,         // (assignmentId, cardId, answer, engine) → Promise<verdict|null>
-    resumeRead: null,         // (sessionId) → Promise<{card_id: {rating, phase, at}}>
+    resumeRead: null,         // (assignmentId) → Promise<[{card_id, rating, phase, rated_at, id}]>, oldest first
     modelWaitMs: MODEL_WAIT_MS,
     active: null,
     quickCheck: quickCheck,
+    reconstruct: reconstruct,
     open: function (assignmentId) {
       var t = Api.transport;
       var known = engines[assignmentId];
       if (known) {
-        // A pass that has ended starts afresh on reopening; one left
-        // mid-way carries on where it was.
-        var resume = function () {
-          Api.active = known;
-          // ⊕ Sharpen review (Fable, S-b) — × ended the server sitting
-          // mid-pass: a new pass, not the old one carried across it.
-          if (known.ended || !known.sittingOpen) { known.opts.newSitting = true; known.start(null); }
-          return known;
-        };
-        if (typeof t !== "function") { return Promise.resolve(resume()); }
-        // ⊕ Sharpen §13.6 — ask the server first, even though the deck is
-        // already on the device: the teacher may have deleted it since.
-        // Offline, the device carries on as before.
-        return Promise.resolve().then(function () { return t(assignmentId, []); }).then(function (state) {
+        if (typeof t !== "function") { Api.active = known; return Promise.resolve(known); }
+        // ⊕ Stage D — what this device did goes first; then, if the server
+        // has all of it, the pass is rebuilt from the server exactly as a
+        // first open would (another device may have moved it on). Still
+        // holding events (offline): carry on with the pass in memory.
+        // ⊕ Sharpen §13.6 — the server is asked either way: the teacher may
+        // have deleted the set since.
+        known.keepDrafts(true);
+        return drain(known, 3).then(function () { return t(assignmentId, []); }).then(function (state) {
           if (state) { known.merge(state); }
-          return resume();
+          if (known.pending.length && !(known.end && known.end.all)) { Api.active = known; return known; }
+          return resumeFor(assignmentId, known.state).then(function (r) {
+            known.start(r);
+            Api.active = known;
+            return known;
+          });
         }, function (err) {
           if (err && err.message === "not_your_homework") { delete engines[assignmentId]; throw err; }
-          return resume();
+          if (known.end && known.end.all) { known.start(null); }
+          Api.active = known;
+          return known;
         });
       }
       if (typeof t !== "function") { return Promise.reject(new Error("no_transport")); }
       // Anything still queued on this device from a previous visit goes
-      // first, so the state we start from already includes it.
+      // first, so the ratings we read back already include it.
       var queued = load(assignmentId);
       return Promise.resolve(t(assignmentId, queued)).then(function (state) {
         save(assignmentId, []);
-        var sid = state && state.session_id;
-        var read = (sid && typeof Api.resumeRead === "function")
-          ? Promise.resolve().then(function () { return Api.resumeRead(sid); }).catch(function () { return null; })
-          : Promise.resolve(null);
-        return read.then(function (map) {
-          var e = new Engine(assignmentId, state, { resume: fresh(map) });
+        return resumeFor(assignmentId, state).then(function (r) {
+          var e = new Engine(assignmentId, state, { resume: r });
           engines[assignmentId] = e;
           Api.active = e;
           return e;
@@ -732,30 +968,32 @@
     close: function () {
       var e = Api.active;
       Api.active = null;
-      if (e) { e.flush(); }
+      if (e) { e.keepDrafts(true); e.flush(); }
     },
     flushAll: function () {
       Object.keys(engines).forEach(function (k) { engines[k].flush(); });
     },
+    beaconAll: function () {
+      Object.keys(engines).forEach(function (k) { engines[k].flushBeacon(); });
+    },
     _Engine: Engine,
-    _reset: function () { engines = {}; Api.active = null; }
+    // (tests: a page reload — this page's engines are gone, the device's
+    // storage is not)
+    _reset: function () {
+      Object.keys(engines).forEach(function (k) {
+        var e = engines[k];
+        if (e.timer) { clearTimeout(e.timer); e.timer = null; }
+        if (e.draftTimer) { e.keepDrafts(true); }   // as pagehide would
+      });
+      engines = {}; Api.active = null;
+    }
   };
-
-  // A resume map is only honoured while the sitting is still live on the
-  // server: the last rating inside the last ten minutes.
-  function fresh(map) {
-    if (!map) { return null; }
-    var last = 0, k;
-    for (k in map) { last = Math.max(last, Number(map[k].at) || 0); }
-    if (!last || Date.now() - last > RESUME_MS) { return null; }
-    return map;
-  }
 
   if (root.document && root.addEventListener) {
     root.document.addEventListener("visibilitychange", function () {
       if (Api.active) { Api.active.visibility(); }
     });
-    root.addEventListener("pagehide", function () { Api.flushAll(); });
+    root.addEventListener("pagehide", function () { Api.beaconAll(); });
   }
 
   if (typeof module !== "undefined" && module.exports) { module.exports = Api; }

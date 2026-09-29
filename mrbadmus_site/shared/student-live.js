@@ -773,20 +773,52 @@
           .then(function (j) { return (j && typeof j.verdict === "string") ? j.verdict : null; });
       }).catch(function () { return null; }).then(function (v) { clearTimeout(timer); return v; });
     };
-    /* ⊕ PUPIL FLOW (§4) — a reload inside a sitting carries on where the
-       pupil was: their own ratings in the sitting still open on the server
-       (RLS lets a pupil read their own rows), the latest per card. */
-    H.resumeRead = function (sessionId) {
-      return sb.from("flashcard_reviews").select("card_id, rating, phase, rated_at")
-        .eq("session_id", sessionId).order("rated_at", { ascending: true })
+    /* ⊕ STAGE D (STAGE-D-PLAN.md decision 5) — where a reopened deck lands
+       is worked out from the pupil's OWN ratings for the whole assignment
+       (RLS: pupil_id = auth.uid()), oldest first; the engine's
+       `reconstruct` reads them. Not bound to the server's sitting any more:
+       × / a reload / a dead phone / another device all land on the next
+       card not done. */
+    H.resumeRead = function (assignmentId) {
+      return sb.from("flashcard_reviews").select("card_id, rating, phase, rated_at, id")
+        .eq("assignment_id", assignmentId)
+        .order("rated_at", { ascending: true }).order("id", { ascending: true })
         .then(function (r) {
           if (r.error) { throw r.error; }
-          var map = {};
-          (r.data || []).forEach(function (row) {
-            map[row.card_id] = { rating: row.rating, phase: row.phase, at: Date.parse(row.rated_at) };
-          });
-          return map;
+          return r.data || [];
         });
+    };
+    /* ⊕ STAGE D (decision 4) — the page is going away: the queue goes out on
+       a `keepalive` request, which the browser finishes even after the page
+       is gone. The token is kept to hand (a pagehide cannot wait for
+       getSession); nothing waits for the reply, and the engine keeps the
+       events queued — `flashcard_record` keeps one row per event id, so the
+       next ordinary send repeating them is harmless. */
+    var hwToken = null;
+    try {
+      sb.auth.getSession().then(function (res) {
+        hwToken = (res && res.data && res.data.session && res.data.session.access_token) || hwToken;
+      }).catch(function () {});
+      sb.auth.onAuthStateChange(function (ev, session) {
+        hwToken = (session && session.access_token) || null;
+      });
+    } catch (e) { /* an old client: getSession below */ }
+    H.transportKeepalive = function (id, events) {
+      var C = window.MrBadmusConfig || {};
+      if (!C.SUPABASE_URL || typeof fetch !== "function") { return; }
+      function send(t) {
+        if (!t) { return; }
+        fetch(C.SUPABASE_URL + "/rest/v1/rpc/flashcard_record", {
+          method: "POST", keepalive: true,
+          headers: { "Content-Type": "application/json", Authorization: "Bearer " + t,
+                     apikey: C.SUPABASE_ANON_KEY || "", Prefer: "return=minimal" },
+          body: JSON.stringify({ p_assignment: id, p_events: events || [] })
+        }).catch(function () {});
+      }
+      if (hwToken) { send(hwToken); return; }
+      sb.auth.getSession().then(function (res) {
+        send(res && res.data && res.data.session && res.data.session.access_token);
+      }).catch(function () {});
     };
 
     var opened = false, first = true;
@@ -831,7 +863,9 @@
     /* The overlay is rebuilt on every state change, and Design's entrance
        (`fcIn` / `fcUp`) replays on each rebuild — a flicker on every tap.
        It plays once, when the overlay opens, and not again while it stays
-       open. The practice deck gets the same fix for free. */
+       open. The practice deck gets the same fix for free. ⊕ Stage D: the
+       dialog no longer has `fcUp` at all (student_rulings.py STYLE_EDIT
+       10320), so for it this is a no-op; the scrim's fade still needs it. */
     var overlayWasOpen = false;
     window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
     window.__MRB_AFTER_DRAW__.push(function (host) {
@@ -5967,8 +6001,18 @@
             var lockScroll = function () {
               var st = mountedApp && mountedApp.logic && mountedApp.logic.state;
               var on = !!(st && (st.recall || st.cards));
+              /* ⊕ Stage D (Mide's item 4, "it lifts the page up") — the
+                 ROOT only. This page's html and body are both viewport-tall
+                 and the content overflows them; with BOTH set to hidden the
+                 body clipped its own overflow, the document shrank to one
+                 screen, and the browser clamped the scroll to the top — the
+                 page under the overlay jumped up on every open and stayed
+                 there on close. Measured on TEST at 1440: scrollY 316 → 0.
+                 Hidden on the root alone the page still cannot scroll, and
+                 it keeps its place. (The body's inline overflow is cleared
+                 in case an older draw set it.) */
               document.documentElement.style.overflow = on ? "hidden" : "";
-              document.body.style.overflow = on ? "hidden" : "";
+              if (document.body.style.overflow) { document.body.style.overflow = ""; }
             };
             window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
             window.__MRB_AFTER_DRAW__.push(lockScroll);

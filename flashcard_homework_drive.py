@@ -62,7 +62,14 @@ FAKE = r"""
     {id: "c0000000-0000-4000-8000-000000000004", position: 3, question: "Write the equation for the force on a spring.", answer: "Force = spring constant × extension (F = ke)"},
     {id: "c0000000-0000-4000-8000-000000000005", position: 4, question: "Is velocity a scalar or a vector?", answer: "A vector"}
   ].map(function (c) { return Object.assign({made: false, known: false, secured: false, last: null, mine: null, gm: false, gr: false}, c); });
-  var S = window.__FC_FAKE__ = {events: [], calls: 0, complete: false, mode: "make", sittings: 0, open: false};
+  var S = window.__FC_FAKE__ = {events: [], calls: 0, complete: false, mode: "make", sittings: 0, open: false,
+                                rows: [], seen: {}};
+  // ⊕ Stage D — the pupil's own flashcard_reviews, oldest first: one row per
+  // rating (a make rating only once the card is made). Cleared with events.
+  S.reviews = function () {
+    if (!S.events.length) { S.rows.length = 0; S.seen = {}; }
+    return JSON.parse(JSON.stringify(S.rows));
+  };
   function state() {
     var made = 0, known = 0, secured = 0;
     cards.forEach(function (c) { if (c.made) made++; if (c.known) known++; if (c.secured) secured++; });
@@ -73,6 +80,8 @@ FAKE = r"""
   S.transport = function (id, events) {
     S.calls++;
     (events || []).forEach(function (e) {
+      if (e.id && S.seen[e.id]) { return; }             // on conflict (id) do nothing
+      if (e.id) { S.seen[e.id] = true; }
       S.events.push(e);
       if (!S.open && e.type !== "visibility") { S.open = true; S.sittings++; }
       if (e.type === "session_finish") { S.open = false; }
@@ -80,6 +89,9 @@ FAKE = r"""
       if (!c) return;
       if (e.type === "answer_submitted" && e.phase === "make") { c.made = true; if (c.mine == null) c.mine = e.answer; }
       if (e.type === "rated") {
+        if (e.phase !== "make" || c.made) {
+          S.rows.push({id: e.id, card_id: c.id, rating: e.rating, phase: e.phase, rated_at: e.at});
+        }
         c.last = e.rating;
         if (e.rating === "got_it") {
           c.known = true;
@@ -126,6 +138,7 @@ LOAD = r"""
   await add('/shared/flashcard-homework.js');
   await add('/shared/flashcard-keyboard.js');
   window.MRBHomework.transport = window.__FC_FAKE__.transport;
+  window.MRBHomework.resumeRead = function () { return Promise.resolve(window.__FC_FAKE__.reviews()); };
   window.MRBHomework.modelCheck = function () {
     return new Promise(function (r) { window.__MODEL__ = r; });
   };
@@ -240,6 +253,40 @@ BOXES_JS = r"""
 """
 
 
+# ⊕ Stage D — the homework card's size: its height, the taller face's CONTENT
+# height (measured the way flashcard-keyboard.js measures it), the strip.
+CARD_JS = r"""
+(function () {
+  function content(f) { if (!f) return 0; var b = f.style.bottom, h = f.style.height;
+    f.style.bottom = 'auto'; f.style.height = 'auto'; var n = f.offsetHeight; f.style.bottom = b; f.style.height = h; return n; }
+  var card = document.querySelector('[data-card-fit]'), dlg = document.querySelector('[data-mrb-dialog="flashcards"]');
+  var strip = document.querySelector('[data-hw="strip"]'), ta = document.querySelector('[data-hw="answer"]');
+  var front = document.querySelector('[data-dc-tpl="10334"]');
+  return {card: card ? card.getBoundingClientRect().height : null,
+          content: Math.max(content(front), content(document.querySelector('[data-dc-tpl="10351"]'))),
+          dialog: dlg ? dlg.getBoundingClientRect().height : null,
+          strip: strip ? strip.getBoundingClientRect().height : null,
+          ta: ta ? ta.getBoundingClientRect().height : null,
+          frontClipped: !!front && front.scrollHeight > front.clientHeight + 1,
+          vv: window.visualViewport.height,
+          typing: dlg ? dlg.getAttribute('data-hw-typing') : null,
+          fit: dlg ? dlg.getAttribute('data-hw-fit') : null};
+})()
+"""
+
+# the six rects Mide sees move (header, strip, card, question text, box, Check)
+RECTS_JS = r"""
+(function () {
+  function r(s) { var e = document.querySelector(s); if (!e) return null; var b = e.getBoundingClientRect();
+    return [Math.round(b.top * 100) / 100, Math.round(b.height * 100) / 100]; }
+  var dlg = document.querySelector('[data-mrb-dialog="flashcards"]');
+  return {header: r('[data-dc-tpl="10321"]'), strip: r('[data-hw="strip"]'), card: r('[data-card-fit]'),
+          q: r('[data-dc-tpl="10340"]'), ta: r('[data-hw="answer"]'), check: r('[data-hw="check"]'),
+          typing: dlg ? dlg.getAttribute('data-hw-typing') : null};
+})()
+"""
+
+
 class Phone:
     def __init__(self, page, width, height, kb, shots):
         self.page, self.w, self.h, self.kb, self.shots = page, width, height, kb, shots
@@ -349,10 +396,24 @@ def run(width, height, kb, shots):
             check(s["note"], "the teacher's note shows before the first answer")
             P.no_retired("state A")
             P.shot("A-question")
+            rest = P.q(CARD_JS)
+            check(rest["fit"] == "1" and abs(rest["card"] - max(140, rest["content"])) <= 2,
+                  "%d×%d keyboard down: the card is its content's height (card %.1f, content %.1f)"
+                  % (width, height, rest["card"], rest["content"]))
 
             P.keyboard(True)
             s = P.st()
             check(s["focused"] and s["typing"] == "1", "keyboard up: the dialog goes compact (data-hw-typing=1)")
+            up = P.q(CARD_JS)
+            check(120 - 0.5 <= up["card"] <= max(120, 0.34 * up["vv"]) + 0.5,
+                  "%d×%d keyboard up: the card is 120px to 34%% of the visual height (card %.1f, visual %d)"
+                  % (width, height, up["card"], up["vv"]))
+            P.keyboard(False)
+            down = P.q(CARD_JS)
+            check(down["typing"] is None and abs(down["card"] - rest["card"]) <= 0.5 and abs(down["strip"] - rest["strip"]) <= 0.5,
+                  "%d×%d keyboard down again, box still focused: not compact, card and strip back to full "
+                  "(card %.1f/%.1f, strip %.1f/%.1f)" % (width, height, down["card"], rest["card"], down["strip"], rest["strip"]))
+            P.keyboard(True)
             check(not s["note"] or P.q("document.querySelector('[data-hw=\"note\"]').getBoundingClientRect().height") == 0,
                   "compact: the note is hidden while typing")
             P.boxes("state A, empty")
@@ -637,6 +698,49 @@ def run(width, height, kb, shots):
             P.shot("End-all-right-done")
             P.click('[data-hw="done"]')
 
+            # ══ ⊕ Stage D: × mid-pass, reopen, reload → the same place ═════
+            P.q("window.MRBHomework._reset(); localStorage.clear(); window.__FC_FAKE__.events.length = 0; "
+                "window.__FC_FAKE__.rows.length = 0; window.__FC_FAKE__.seen = {};")
+            P.q("window.__MRB_OPEN_HW__(%s)" % json.dumps(AID))
+            settle(0.6)
+            order = []
+            for verdict in ("got_it", "not_yet", "got_it"):
+                f = P.st()["front"]
+                order.append(f)
+                P.type(answers.get(f, "x") if verdict == "got_it" else "zzz")
+                P.click('[data-hw="check"]')
+                P.click('[data-hw="%s"]' % verdict)
+            fourth = P.st()["front"]
+            settle(0.5)
+            P.click('[data-port-region="flashcards-overlay"] button[title="Close"]')
+            settle(0.5)
+            check(not P.st()["open"], "Stage D: × closes the deck after 3 of 5")
+            ev = P.q("window.__FC_FAKE__.events")
+            check(sum(1 for e in ev if e["type"] == "rated") == 3 and any(e["type"] == "session_finish" for e in ev),
+                  "Stage D: the three ratings reached the server, and × still ended the sitting (A13)")
+            P.q("window.__MRB_OPEN_HW__(%s)" % json.dumps(AID))
+            settle(0.6)
+            s = P.st()
+            check(s["progress"] == "2 of 5 right" and s["front"] == fourth and s["back"] and not s["note"],
+                  "Stage D: reopening after × lands on card 4 at '2 of 5 right' with ‹ Back, no teacher's note (got %r %r)"
+                  % (s["progress"], s["front"]))
+            P.no_retired("reopen after ×")
+            P.shot("D-reopen-card-4")
+            saved = P.q("JSON.stringify(window.__FC_FAKE__.events)")
+            page.goto("http://127.0.0.1:%d/student/class-fixture.html" % port)
+            settle(1.0)
+            P.q(LOAD)                                  # a new page: localStorage cleared too
+            P.q("window.__FC_FAKE__.mode = 'review'; window.__FC_FAKE__.transport(%s, JSON.parse(%s))"
+                % (json.dumps(AID), json.dumps(saved)))
+            settle(0.3)
+            P.q("window.__MRB_OPEN_HW__(%s)" % json.dumps(AID))
+            settle(0.6)
+            s = P.st()
+            check(s["progress"] == "2 of 5 right" and s["front"] == fourth and s["back"],
+                  "Stage D: after a reload (a fresh page, nothing on the device) the same landing (got %r %r)"
+                  % (s["progress"], s["front"]))
+            P.shot("D-reload-card-4")
+
             # ══ × after one Check ends the sitting (A13) ═════════════════════
             P.q("window.MRBHomework._reset(); localStorage.clear(); window.__FC_FAKE__.events.length = 0;")
             P.q("window.__MRB_OPEN_HW__(%s)" % json.dumps(AID))
@@ -665,6 +769,193 @@ def run(width, height, kb, shots):
         server.shutdown()
 
 
+def shot(page, shots, name):
+    if not shots:
+        return
+    res = page.send("Page.captureScreenshot", {"format": "png", "fromSurface": True})
+    with open(os.path.join(shots, name + ".png"), "wb") as fh:
+        fh.write(base64.b64decode(res["data"]))
+
+
+def run_desktop(width, height, shots, expect_tall=True):
+    """⊕ Stage D, item 1 — on a desktop, focusing the answer box moves NOTHING.
+
+    No fake keyboard: the visual viewport is the window, as on every desktop.
+    Four snapshots of the six rects — at rest, focused, after a keystroke
+    that redraws the overlay, blurred — must be identical to the pixel."""
+    print("\n── desktop %d×%d ──" % (width, height))
+    server, port = cdp.serve(ROOT)
+    try:
+        with cdp.Browser() as br:
+            page = br.attach()
+            page.send("Emulation.setDeviceMetricsOverride",
+                      {"width": width, "height": height, "deviceScaleFactor": 1, "mobile": False})
+            try:
+                page.send("Emulation.setFocusEmulationEnabled", {"enabled": True})
+            except cdp.CDPError:
+                pass
+            page.send("Page.addScriptToEvaluateOnNewDocument", {"source": FAKE})
+            page.goto("http://127.0.0.1:%d/student/class-fixture.html" % port)
+            settle(1.0)
+            check(page.eval(LOAD) is True, "desktop %d: the page mounts" % width)
+            page.eval("window.__FC_FAKE__.mode = 'review'")
+            page.eval("window.__MRB_OPEN_HW__(%s)" % json.dumps(AID))
+            settle(0.8)
+            snaps = [page.eval(RECTS_JS)]
+            shot(page, shots, "D-desk-%d-rest" % width)
+            page.eval("document.querySelector('[data-hw=\"answer\"]').focus()")
+            settle(0.5)
+            snaps.append(page.eval(RECTS_JS))
+            shot(page, shots, "D-desk-%d-focus" % width)
+            page.eval("(function(){var t=document.querySelector('[data-hw=\"answer\"]'); t.value='n';"
+                      " t.dispatchEvent(new Event('input',{bubbles:true}));})()")
+            settle(0.5)
+            snaps.append(page.eval(RECTS_JS))
+            focused = page.eval("document.activeElement && document.activeElement.getAttribute('data-hw')")
+            page.eval("document.activeElement.blur()")
+            settle(0.5)
+            snaps.append(page.eval(RECTS_JS))
+            keys = ("header", "strip", "card", "q", "ta", "check")
+            same = all(snaps[i][k] == snaps[0][k] for i in range(1, 4) for k in keys)
+            check(same and all(x[k] for x in snaps for k in keys),
+                  "desktop %d×%d: header, strip, card, question, box and Check identical at rest, focused, "
+                  "typing and blurred (%s)" % (width, height, [[x[k] for k in keys] for x in snaps] if not same else snaps[0]))
+            check(focused == "answer", "desktop %d: the keystroke's redraw kept focus in the box" % width)
+            check(all(x["typing"] is None for x in snaps), "desktop %d: data-hw-typing is never set" % width)
+            c = page.eval(CARD_JS)
+            tall = page.eval("document.querySelector('[data-mrb-dialog=\"flashcards\"]').getAttribute('data-hw-tall')")
+            check((tall == "1") == expect_tall,
+                  "desktop %d×%d: data-hw-tall %s (dialog %.0fpx; got %r)"
+                  % (width, height, "present" if expect_tall else "absent", c["dialog"], tall))
+            if expect_tall:
+                check(96 - 0.5 <= c["ta"] <= 200 + 0.5,
+                      "desktop %d: the answer box takes the room, 96–200px (%.1f)" % (width, c["ta"]))
+            else:
+                check(abs(c["ta"] - 64) <= 0.5, "desktop %d: a short dialog keeps the 64px box (%.1f)" % (width, c["ta"]))
+            check(c["card"] <= 420 + 0.5 and c["card"] < c["dialog"] / 2,
+                  "desktop %d: the card is at most 420px and under half the dialog (%.1f of %.1f)"
+                  % (width, c["card"], c["dialog"]))
+            check(abs(c["card"] - max(140, c["content"])) <= 2 and not c["frontClipped"],
+                  "desktop %d: the card is its content's height and the question is not clipped (%.1f / %.1f)"
+                  % (width, c["card"], c["content"]))
+    finally:
+        server.shutdown()
+
+
+LIFT_JS = r"""
+(function () {
+  var b = document.querySelector('[aria-expanded]');
+  var r = b ? b.getBoundingClientRect() : null;
+  return {y: window.scrollY, top: r ? r.top : null, cw: document.documentElement.clientWidth,
+          scrolls: (window.__SCROLLS__ || []).length,
+          gutter: getComputedStyle(document.documentElement).scrollbarGutter};
+})()
+"""
+
+
+def run_resizes_content(width, height, kb, shots):
+    """⊕ Stage D review (Fable) — Android Chrome under this page's
+    `interactive-widget=resizes-content`: the keyboard shrinks the LAYOUT
+    viewport as well as the visual one, so innerHeight and
+    visualViewport.height both read the room left. Compact mode must still
+    engage and the box and Check must still be in view."""
+    print("\n── Android resizes-content %d×%d, keyboard %d ──" % (width, height, kb))
+    server, port = cdp.serve(ROOT)
+    try:
+        with cdp.Browser() as br:
+            page = br.attach()
+            page.send("Emulation.setDeviceMetricsOverride",
+                      {"width": width, "height": height, "deviceScaleFactor": 1, "mobile": True})
+            try:
+                page.send("Emulation.setFocusEmulationEnabled", {"enabled": True})
+            except cdp.CDPError:
+                pass
+            page.send("Page.addScriptToEvaluateOnNewDocument", {"source": FAKE + FAKE_VV})
+            page.goto("http://127.0.0.1:%d/student/class-fixture.html" % port)
+            settle(1.0)
+            check(page.eval(LOAD) is True, "resizes-content %d: the page mounts" % width)
+            page.eval("window.__FC_FAKE__.mode = 'review'")
+            page.eval("window.__MRB_OPEN_HW__(%s)" % json.dumps(AID))
+            settle(0.8)
+            page.eval("document.querySelector('[data-hw=\"answer\"]').focus()")
+            vis = height - kb
+            page.send("Emulation.setDeviceMetricsOverride",
+                      {"width": width, "height": vis, "deviceScaleFactor": 1, "mobile": True})
+            page.eval("window.__KB__(%d)" % vis)
+            settle(0.8)
+            inner = page.eval("window.innerHeight")
+            check(inner == vis, "resizes-content %d: the layout viewport followed the keyboard (%s)" % (width, inner))
+            st = page.eval(STATE_JS)
+            bx = page.eval(BOXES_JS)
+            c = page.eval(CARD_JS)
+            check(st["typing"] == "1" and st["focused"], "resizes-content %d: compact mode is on (%s)" % (width, st["typing"]))
+            check(bx["tIn"] and bx["checkVisible"] and bx["qIn"],
+                  "resizes-content %d: question, box and Check inside the %dpx left (box %s, vv %s)"
+                  % (width, vis, bx["t"], bx["vv"]))
+            check(c["card"] >= 120 - 0.5 and c["card"] <= max(120, 0.34 * vis) + 0.5,
+                  "resizes-content %d: the card is 120px, or up to 34%% of the visual height (%.1f)" % (width, c["card"]))
+            shot(page, shots, "D-android-rc-%d-keyboard-up" % width)
+            page.eval("document.activeElement.blur()")
+            page.send("Emulation.setDeviceMetricsOverride",
+                      {"width": width, "height": height, "deviceScaleFactor": 1, "mobile": True})
+            page.eval("window.__KB__(null)")
+            settle(0.6)
+            st = page.eval(STATE_JS)
+            check(st["typing"] is None and st["stripShown"], "resizes-content %d: keyboard down → the strip is back" % width)
+    finally:
+        server.shutdown()
+
+
+def run_lift(width, height, mobile, shots):
+    """⊕ Stage D, item 4 — clicking a homework row, opening the deck and
+    closing it lift nothing: scrollY, the row's top and the page width hold,
+    no scroll event fires, and the dialog arrives without Design's slide."""
+    print("\n── item 4, %d×%d ──" % (width, height))
+    server, port = cdp.serve(ROOT)
+    try:
+        with cdp.Browser() as br:
+            page = br.attach()
+            page.send("Emulation.setDeviceMetricsOverride",
+                      {"width": width, "height": height, "deviceScaleFactor": 1, "mobile": mobile})
+            page.send("Page.addScriptToEvaluateOnNewDocument", {"source": FAKE})
+            page.goto("http://127.0.0.1:%d/student/class-fixture.html" % port)
+            settle(1.0)
+            page.eval(LOAD)
+            page.eval("window.__FC_FAKE__.mode = 'review'")
+            page.eval("(function(){var b=document.querySelector('[aria-expanded]');"
+                      " window.scrollTo(0, Math.max(0, b.getBoundingClientRect().top + window.scrollY - %d));})()"
+                      % (height // 2))
+            settle(0.4)
+            a = page.eval(LIFT_JS)
+            page.eval("window.__SCROLLS__ = []; window.addEventListener('scroll', function(){"
+                      " window.__SCROLLS__.push(window.scrollY); }, true);")
+            page.eval("document.querySelector('[aria-expanded]').click()")
+            settle(0.6)
+            b = page.eval(LIFT_JS)
+            shot(page, shots, "D-lift-%d-row-open" % width)
+            page.eval("window.__MRB_OPEN_HW__(%s)" % json.dumps(AID))
+            settle(0.05)
+            anim = page.eval("(function(){var d=document.querySelector('[data-mrb-dialog=\"flashcards\"]'),"
+                             " o=document.querySelector('[data-port-region=\"flashcards-overlay\"]');"
+                             " return [d ? getComputedStyle(d).animationName : null, o ? getComputedStyle(o).animationName : null];})()")
+            settle(0.6)
+            c = page.eval(LIFT_JS)
+            shot(page, shots, "D-lift-%d-deck-open" % width)
+            page.eval("document.querySelector('[data-port-region=\"flashcards-overlay\"] button[title=\"Close\"]').click()")
+            settle(0.6)
+            d = page.eval(LIFT_JS)
+            for step, x in (("the row expands", b), ("the deck opens", c), ("the deck closes", d)):
+                check(abs(x["y"] - a["y"]) <= 1 and abs(x["top"] - a["top"]) <= 1 and abs(x["cw"] - a["cw"]) <= 1,
+                      "%d×%d, %s: scrollY %s→%s, row top %.1f→%.1f, width %s→%s unchanged"
+                      % (width, height, step, a["y"], x["y"], a["top"], x["top"], a["cw"], x["cw"]))
+            check(d["scrolls"] == 0, "%d×%d: no scroll event fired across click, open and close (%d)" % (width, height, d["scrolls"]))
+            check(anim == ["none", "fcIn"], "%d×%d: the dialog has no entrance slide; the scrim keeps its fade (%s)"
+                  % (width, height, anim))
+            check(a["gutter"] == "stable", "%d×%d: the class page keeps its scrollbar's room (%s)" % (width, height, a["gutter"]))
+    finally:
+        server.shutdown()
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--shots", default=None)
@@ -673,13 +964,22 @@ def main():
     os.makedirs(shots, exist_ok=True)
     live = open(os.path.join(ROOT, "shared", "student-live.js"), encoding="utf-8").read()
     check('"/shared/flashcard-keyboard.js"' in live and "H.modelCheck = function" in live
-          and "H.resumeRead = function" in live,
+          and "H.resumeRead = function" in live and "H.transportKeepalive = function" in live
+          and "keepalive: true" in live,
           "the live page loads the keyboard module and wires the model check and the resume read")
     check("e.flip()" not in live, "the live page no longer turns a card with Space")
+    check('document.body.style.overflow = on ? "hidden"' not in live,
+          "Stage D item 4: the scroll lock hides the root only (html+body hidden clamped the page to the top)")
     check('.eq("id", wanted).is("deleted_at", null)' in live and '"pageshow"' in live,
           "§13.6: the kind read skips deleted sets; a page back from the bfcache reloads")
     for w, h, kb in ((390, 844, 508), (360, 740, 404)):
         run(w, h, kb, shots)
+    for w, h, tall in ((1440, 900, True), (1280, 720, True), (1366, 660, False)):
+        run_desktop(w, h, shots, tall)
+    for w, h, kb in ((360, 740, 404), (390, 844, 336)):
+        run_resizes_content(w, h, kb, shots)
+    for w, h, mobile in ((1440, 900, False), (390, 844, True)):
+        run_lift(w, h, mobile, shots)
     print("\n  screenshots: %s" % shots)
     if FAILS:
         print("\n  FAIL — %d check(s) failed" % len(FAILS))

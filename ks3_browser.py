@@ -812,6 +812,26 @@ class Browser:
             except (ProcessLookupError, OSError):
                 return False
 
+    def kill(self) -> None:
+        """⊕ Stage D — a phone that dies: SIGKILL the whole process group, so
+        the page gets no `pagehide`, no `visibilitychange`, no `beforeunload`
+        and no chance to send anything. Then the ordinary teardown (the
+        profile directory goes too — the next Browser is another device)."""
+        if self._ws is not None:
+            try:
+                self._ws.close()
+            except OSError:
+                pass
+            self._ws = None
+        self._page = None
+        if self.proc is not None and self.proc.poll() is None:
+            self._signal_group(signal.SIGKILL)
+            try:
+                self.proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                pass
+        self.close()
+
     def close(self) -> None:
         """Tear down Chrome AND its helpers, then the profile directory.
 
