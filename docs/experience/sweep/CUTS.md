@@ -71,3 +71,34 @@ Pairs: `before-/after-ks3-lesson-390-dark-in.jpg`, `…ks3-lesson-360-light`,
 weekly-challenge.html, my-challenges.html, revision.html: their classic bar
 measured one row, 62px, no sideways scroll, at 360 and 390, light and dark,
 signed in and out, so nothing needed fixing in place.
+
+## Round two — the Fable pupil audit (390px on TEST, 29 Sep 2026)
+
+| # | page | cut / change | why | level |
+|---|---|---|---|---|
+| 10 | class, done bench | "Good week, NAME." | the hero greets | data (`drop`) |
+| 10 | class, done bench | "✓ OPENED · ANSWERED · COMPLETED 3 / 3" row | COMPLETED row + the work list say it | graft `omit` 106 |
+| 10 | class, done bench | "27%" and the RIGHT "4 of 15" row → SCORE "4 / 15" | one score form, the results page's | data + graft `omit` 128 |
+| 10 | class, done bench | MARKED / COMPLETE chip | SCORE and COMPLETED under it | data (`drop`) |
+| 10 | class, done bench | "Practise recall"; "Revisit this week's lessons" only when there is no feedback | ONE primary action: "Read the feedback", else Revisit | graft `omit` 116 + data |
+| 12 | practice round | strip "CLASS · PRACTICE  UNLIMITED ROUNDS", "ROUND 01 · UNLIMITED ROUNDS", the outer "QUESTION 01 / 05" + bar | the pill names the class, the h1 the round, the card carries its own counter and bar | graft `omit` 369/378/379 |
+| 12 | practice round, flashcards | the class page no longer scrolls underneath an open overlay | a full-screen surface | after-draw hook |
+| 1 | class, docket | QUESTIONS row | "0 OF 15 ANSWERED" carries the 15 | data |
+| 2 | class, term spine | "TAP A WEEK TO FILTER" | the bars are buttons | template (PRUNE 114) |
+| 3 | class, work rows | status "DUE" → "OPEN" | matches the spine legend DONE · OPEN · MISSED | data |
+| 4 | class, flashcards card | corner count ("60") | "01 / 60" under it | data (`cardCorner`) |
+| 6 | class, shoutouts | the card when there are none (and its "NONE YET") | an empty heading | WRAP 236 |
+| 6 | class, leaderboard | week chips + "Show top 10" when the board is empty | one "nothing to show here yet" line is the state | WRAP 253 |
+| 7 | assignment | the bare "›" beside "Confirm answer" while a pick is pending | it skipped without saving; a pupil skipped 15 questions | LOGIC |
+| 8 | results | "LOOK AT QUESTION 02 ›" → "Look at it ›" | the card shows 02 | LOGIC |
+| 9 | results | "Back to <class>" | the bar's "‹ class" | template (PRUNE 347) |
+| 11 | class, empty bench | "36 questions" → the ROUND's size ("5 questions") | the button opens a round of 5 | data |
+
+After: `after-class-A-390-light.jpg` (re-shot), `after-audit-assignment-picked-390-light.jpg`
+(footer while a pick is pending: Back · Confirm answer). The done bench and the results
+screen were not re-shot live: reaching either hands in a TEST pupil's work.
+
+Flagged, not changed: (13) the class page's avatar-menu Settings opens Design's in-page
+account sheet (it holds the bench theme) while every other page goes to
+/student/settings.html — for Mide; (14) KS3 leaderboard dashes / the TEST 500; the
+Practice stat tile "—".

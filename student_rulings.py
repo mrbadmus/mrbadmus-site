@@ -6377,3 +6377,85 @@ TYPE_SCALE["class view"] = [e for e in TYPE_SCALE["class view"]
 # live page sends "" for an open piece of work (the button says it) and
 # "MISSED" when it is late. An empty chip is a bordered box with nothing in it.
 WRAP["class view"][94] = "docketFlag"
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# ⊕ STAGE B AUDIT (Fable, 390px on TEST, 29 Sep 2026) — MUST- AND SHOULD-FIX
+# ══════════════════════════════════════════════════════════════════════════
+#
+# Every cut here repeated something on the same screen (CLAUDE.md, "No
+# redundant text"). Template cuts are registered in student_behaviour.py.
+#
+# CLASS VIEW
+#   114    "TAP A WEEK TO FILTER" (the `if noWeekPicked`) — the bars are
+#          buttons; telling a pupil to tap them is the page explaining itself.
+#   10106  the done bench's "✓ OPENED · ANSWERED · COMPLETED  3 / 3" row — the
+#          work list and the COMPLETED row under it say it is done.
+#   10116  the done bench's "Practise recall" — ONE primary action on a
+#          finished bench ("Read the feedback", else "Revisit this week's
+#          lessons"); practice lives on the flashcards card and the bench's
+#          empty state.
+#   10128  the done bench's RIGHT row — SCORE now carries the one form, the
+#          fraction ("4 / 15"), as the results page shows it.
+#   10210  the flashcards card's corner count ("81") — "01 / 81" is under it.
+#   10369  the practice round's strip ("8z/Sc9 · PRACTICE  UNLIMITED ROUNDS").
+#   10378  "ROUND 01 · UNLIMITED ROUNDS" under the h1.
+#   10379  the round's OUTER "QUESTION 01 / 05" counter and bar — the card
+#          carries its own counter, bar and topic.
+PRUNE["class view"].append(114)
+
+# The grafted nodes are cut through their graft's own `omit` (donor
+# numbering): PRUNE walks the live template before any graft has landed.
+def _stage_b_omit(donor, extra):
+    for g in GRAFT["class view"]:
+        if g.get("donor") == donor:
+            g["omit"] = list(g.get("omit") or []) + list(extra)
+            return
+    raise SystemExit("student_rulings Stage B: no graft of donor %d" % donor)
+
+_stage_b_omit(100, [106, 116, 128])    # the done bench
+# (the flashcards card's corner count is cut at the DATA level, `cardCorner`
+# below: Design's amended delivery carries it, and the gate checks both ways)
+_stage_b_omit(366, [369, 378, 379])    # the practice round's header lines
+
+# Empty sections draw nothing rather than a heading over nothing:
+#   236  the Shoutouts card, only when there are shoutouts ("NONE YET" goes
+#        with it — the empty state is the card not being there).
+#   253  the leaderboard's week chips and "Show top 10", only when there is a
+#        board; an empty board keeps its one "nothing to show yet" line.
+WRAP["class view"][236] = "shoutouts.length"
+WRAP["class view"][253] = "hasBoard"
+
+# ASSIGNMENT
+#   347  the done screen's "Back to <class>" — the bar's "‹ class" does it.
+PRUNE["assignment"].append(347)
+
+LOGIC["assignment"].extend([
+    # 7 — the bare "›" (node 364, `showNextQuiet`) used to show beside
+    # "Confirm answer" while an option was picked and not yet confirmed; it
+    # skips WITHOUT saving, and a pupil skipped 15 questions with it. While a
+    # pick is pending, Confirm is the only forward control. It still shows on
+    # the review pass (handed / all done), where there is nothing to confirm.
+    (
+        "showNextQuiet: ((handed || allDone) && idx < total - 1) || "
+        "(!locked && sel != null && idx < total - 1),",
+        "showNextQuiet: ((handed || allDone) && idx < total - 1),",
+    ),
+    # 8 — the wrong-list card already shows its question number.
+    (
+        "jumpLabel: 'LOOK AT QUESTION ' + pad(i + 1),",
+        "jumpLabel: 'Look at it',",
+    ),
+])
+# The RIGHT row's `benchDoneMarked` gate goes with the row (graft 10128);
+# SCORE (10125) keeps the same gate.
+del WRAP["class view"][10128]
+
+# 4 — the flashcards card's corner count ("81"): "01 / 81" under it is the
+# same number. Cut at the DATA level so the fixture keeps Design's "06" —
+# the amended delivery carries it and student_behaviour checks both ways.
+LOGIC["class view"].append((
+    "      cardCount: pad(n),\n",
+    "      /* ⊕ Stage B audit — the corner count is the stack position's total. */\n"
+    "      cardCount: MRB_DATA('cardCorner') ? pad(n) : '',\n",
+))

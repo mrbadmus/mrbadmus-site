@@ -178,7 +178,6 @@ window.__MRB_DATA__ = {
   "pastDeadlineNow": false,
   "weekLabel": 'WEEK 04',
   "assignmentLessonLabel": "Open lesson 02",
-  "backToClass": "Back to 8r/Sc1",
   "className": "8r/Sc1",
   "completeChip": "HANDED IN\n          ",
   "completeHeading": "Handed in",

@@ -643,6 +643,10 @@ RULED_DIVERGENCE = {
          r"8r/Sc1 › [A-Z ]+? AUTUMN TERM · WEEK \d+ (?:/ \d+ )?"),
         ("the docket's countdown and worth line (Stage B)",
          r"2 days left 40 POINTS AT STAKE "),
+        # ⊕ Stage B audit (29 Sep 2026) — PRUNE 114: the spine's bars are
+        # buttons; the hint told a pupil to press them.
+        ("the term spine's TAP A WEEK TO FILTER hint (Stage B audit)",
+         r"TAP A WEEK TO FILTER "),
         # ── ⊕ ONE MARK (Mide's ruling, 13 Sep 2026; one-mark run 27 Sep) ──
         #
         # *"ONE mark on every page … the wordmark "MrBadmus" (no "AI")."*
@@ -1303,6 +1307,13 @@ RULED_CONTROL_EDITS = {
                  "RULED_DIVERGENCE."),
     ],
     "assignment": [
+        dict(label="the bare › beside Confirm while a pick is pending (Stage B audit)",
+             design="", port=None, n=1,
+             why="Stage B audit (29 Sep 2026) — Design's `showNextQuiet` drew "
+                 "an icon-only › beside 'Confirm answer' while an option was "
+                 "picked and not yet confirmed. It skips WITHOUT saving, and a "
+                 "pupil skipped 15 questions with it. While a pick is pending, "
+                 "Confirm is the only forward control (student_rulings LOGIC)."),
         dict(label="the back button gains the one mark's wordmark",
              design="8r/Sc1", port="MrBadmus 8r/Sc1", n=1,
              why="RULED by Mide 13 Sep 2026 — one mark on every page. "

@@ -440,7 +440,10 @@
   function whichPage() {
     var keys = {};
     (window.__MRB_BIND__ || []).forEach(function (b) { keys[b.k] = true; });
-    if (keys.backToClass) { return "assignment"; }
+    /* ⊕ Stage B audit (29 Sep 2026) — `backToClass` left with its button
+       (the done screen's "Back to <class>", pruned). `completeLabel` is the
+       assignment's other page-only binding, so the test stays structural. */
+    if (keys.backToClass || keys.completeLabel) { return "assignment"; }
     if (keys.welcomeLine) { return "class"; }
     return /assignment/i.test(window.location.pathname) ? "assignment" : "class";
   }
@@ -4239,7 +4242,9 @@
          ⛔ WHERE THE PRODUCT DOES NOT RECORD SOMETHING, THE KEY IS EMPTY.
          An empty docket row is honest. "40 POINTS AT STAKE" over an
          assignment with no points is not. */
-      docketQuestions: currentCount ? String(currentCount) : "",
+      /* ⊕ Stage B audit — empty (the row is not drawn): "0 OF 15 ANSWERED" on
+         the bench already carries the 15. */
+      docketQuestions: "",
       /* ⊕ Stage B (phone run, 28 Sep 2026) — the docket keeps QUESTIONS and
          DUE. DRAWS ON repeated the h2 beside it (the topic), and SET is a
          date nobody acts on. Empty here; LOGIC drops a row with no value. */
@@ -4395,6 +4400,9 @@
          read. Practice is read from `__MRB_DATA__` at draw time, because the
          bank arrives after the paint (foldInPractice). */
       benchEmpty: !benchDone && !benchWork,
+      /* ⊕ Stage B audit — no corner count on the flashcards card: "01 / 81"
+         under it already carries the 81 (student_rulings LOGIC). */
+      cardCorner: false,
       benchNextMissed: (function () {
         var dueOf = {};
         (assignmentCards || []).forEach(function (c) { if (c && c.id) { dueOf[c.id] = c.due_at; } });
@@ -4485,7 +4493,9 @@
          The first lesson, not a list: the bench offers one revisit, and the
          assignment draws on its lessons in order, so the first is where the
          week starts. The full list is the sidebar panel, which is unchanged. */
-      benchDoneLessons: benchLessons.length ? benchLessons[0].href : "",
+      /* ⊕ Stage B audit — ONE primary action: "Read the feedback" when there
+         is feedback to read, otherwise this. */
+      benchDoneLessons: (benchLessons.length && !benchWork) ? benchLessons[0].href : "",
       /* The destination for "Read the feedback", and the flag that decides
          whether the link is drawn at all — one string doing both jobs, so
          there is no way to show a link with nowhere to go. It is the
@@ -4498,15 +4508,21 @@
          per-question attempts. */
       benchDoneFeedback: benchWork ? benchWork.href : "",
       benchDoneTitle: benchTopic,
-      benchDoneLead: first ? "Good week, " + first + "." : "Good week.",
-      benchDoneSteps: benchSteps + " / 3",
-      benchDoneFlag: benchMarked ? "MARKED" : "COMPLETE",
+      /* ⊕ Stage B audit (29 Sep 2026) — empty, and both bindings `drop`: the
+         greeting is the hero's job ("Welcome back, NAME"), and MARKED /
+         COMPLETE repeated what the SCORE and COMPLETED rows under it say.
+         What they said: "Good week, NAME." and benchMarked ? "MARKED" :
+         "COMPLETE". `benchDoneSteps` ("3 / 3") went with its pruned row. */
+      benchDoneLead: "",
+      benchDoneFlag: "",
       /* Empty rather than a dash when there is no mark yet: the two rows that
          hold these are gated on `benchDoneMarked` and are not on the page at
          all in that state, so an empty string here can never be rendered. */
-      benchDoneScore: benchPct == null ? "" : benchPct + "%",
-      benchDoneRight: benchMarked
-        ? (benchCard.score + " of " + benchCard.max_score) : "",
+      /* ⊕ Stage B audit — ONE score form, the fraction, as the results page
+         shows it ("4 / 15"). The percentage and the RIGHT row said the same
+         number twice more. */
+      benchDoneScore: benchMarked
+        ? (benchCard.score + " / " + benchCard.max_score) : "",
       /* The completion stamp, in the docket's own mixed-case shape — the same
          `fmtDueMixed` the OPEN docket prints its deadline with, so the two
          dockets speak about time the same way. Lateness rides with it because
@@ -4582,8 +4598,10 @@
          reads "DUE THU 18 SEP, 18:00"), so the word carries only what is true
          of every open row rather than borrowing one row's time for all of
          them. That matters when a class has two things open at once. */
-      dueWordLong: "DUE",
-      dueWordShort: "DUE",
+      /* ⊕ Stage B audit (29 Sep 2026) — OPEN, to match the term spine's own
+         legend (DONE · OPEN · MISSED). The deadline itself is the line below. */
+      dueWordLong: "OPEN",
+      dueWordShort: "OPEN",
 
       subjectLabel: klass.pill_label || "",
       termLabel: termLabelFrom(serverNow, year),
@@ -5163,8 +5181,12 @@
                label: "Finish it", href: d.benchNextMissed.href };
     } else if (d.practiceBank && d.practiceBank.length) {
       var topic = String(d.practiceBank[0].topic || "Practice");
+      /* ⊕ Stage B audit — the ROUND's size, not the bank's: the round the
+         button opens is `recallSize()` long (the bank said 36, the round 5). */
+      var lg0 = mountedApp && mountedApp.logic;
+      var size = (lg0 && typeof lg0.recallSize === "function") ? lg0.recallSize() : 0;
       pick = { h: topic.charAt(0) + topic.slice(1).toLowerCase(),
-               line: d.practiceBank.length + " questions", label: "Practise",
+               line: size ? size + " questions" : "", label: "Practise",
                act: function () {
                  var lg = mountedApp && mountedApp.logic;
                  if (lg && lg.openRecall) { lg.openRecall(); }
@@ -5729,6 +5751,22 @@
             window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
             window.__MRB_AFTER_DRAW__.push(function () { drawReminder(sb, data); });
             drawReminder(sb, data);
+          }
+          /* ⊕ Stage B audit (29 Sep 2026) — while the practice round or the
+             flashcards overlay is open, the class page under it does not
+             scroll: both are full-screen surfaces, and a page moving beneath
+             one reads as the overlay not being there. Re-evaluated after
+             every draw, so closing either gives the scroll straight back. */
+          if (page === "class") {
+            var lockScroll = function () {
+              var st = mountedApp && mountedApp.logic && mountedApp.logic.state;
+              var on = !!(st && (st.recall || st.cards));
+              document.documentElement.style.overflow = on ? "hidden" : "";
+              document.body.style.overflow = on ? "hidden" : "";
+            };
+            window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
+            window.__MRB_AFTER_DRAW__.push(lockScroll);
+            lockScroll();
           }
           if (page === "class" && data && data.benchEmpty) {
             window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];

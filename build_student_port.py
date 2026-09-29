@@ -325,7 +325,11 @@ PAGES = [
                         benchOpen="true", benchDoneMarked="false",
                         benchDoneLessons="false", benchDoneFeedback="''",
                         cardsEmpty="''", benchProgPct="''",
-                        benchProgText="''"),
+                        benchProgText="''",
+                        # ⊕ Stage B audit — Design's card draws its deck size
+                        # in the corner; the fixture keeps it, the live page
+                        # does not (student_rulings, `cardCorner`).
+                        cardCorner="true"),
          # ── ⊕ RULED BY MIDE, 22 Sep 2026 · THE FIXTURE'S PROGRESS NUMBERS ─
          #
          # The completion bar reads `w.answered` and `w.qtotal` off each work
@@ -662,7 +666,10 @@ BINDINGS = {
         # (The `8r/Sc1` on the round's own back button — donor 373 — is its own
         # text node and binds to `className` for free, which is exactly why the
         # binding table is keyed on the literal rather than on an index.)
-        ("8r/Sc1 \u00a0\u00b7\u00a0 RECALL", "practiceBar"),
+        # ⊖ Stage B audit (29 Sep 2026) — `("8r/Sc1 · RECALL", "practiceBar")`
+        # is gone with the strip it bound (graft 10369, pruned in
+        # student_rulings.py): the round's pill already names the class and
+        # the h1 names the round.
         # ⛔ AND THE BENCH BUTTON GOES WHEN THERE IS NOTHING TO PRACTISE.
         #
         # `Practise recall` is live node 77, the bench's route into the round,
@@ -750,11 +757,15 @@ BINDINGS = {
         # `Revisit this week's lessons` and `Read the feedback` are chrome for
         # the same reason: they are labels, not values.
         ("Breathing and gas exchange", "benchDoneTitle"),
-        ("Good week, AY.", "benchDoneLead"),
-        ("3 / 3", "benchDoneSteps"),
-        ("MARKED", "benchDoneFlag"),
+        # ⊕ Stage B audit (29 Sep 2026) — the done bench says each thing ONCE.
+        # The greeting and the MARKED/COMPLETE chip are `drop` (the live page
+        # sends them empty); the OPENED · ANSWERED · COMPLETED row that
+        # carried "3 / 3" is pruned (graft 10106), so its binding goes.
+        ("Good week, AY.", "benchDoneLead", "drop"),
+        ("MARKED", "benchDoneFlag", "drop"),
         ("50%", "benchDoneScore"),
-        ("2 of 4", "benchDoneRight"),
+        # ⊖ Stage B audit — `("2 of 4", "benchDoneRight")` goes with the RIGHT
+        # row (graft 10128, pruned): SCORE now carries the one form, "4 / 15".
         ("Wed 20 Aug, 19:42", "benchDoneAt"),
         # ⊕ RULED 22 Aug 2026 — ANOTHER "04", AND ANOTHER ONE THE SCREENSHOT
         # FOUND. The "Lessons in this topic" badge is the literal text `04`,
@@ -835,7 +846,8 @@ BINDINGS = {
     ],
     "assignment": [
         ("8r/Sc1", "className"),
-        ("Back to 8r/Sc1", "backToClass"),
+        # ⊖ Stage B audit — `("Back to 8r/Sc1", "backToClass")` went with its
+        # button (node 347, pruned): the bar's "‹ class" is the way back.
         ("Cells & microscopy", "topicTitle"),
         # ── W5, RULED 22 Aug 2026 — "Complete" replaces "Hand it in" ───────
         #
