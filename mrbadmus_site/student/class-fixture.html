@@ -437,9 +437,12 @@ class Component extends DCLogic {
       hwCardId: c ? c.id : '',
       hwHeadline: v.headline,
       hwSegGap: many ? '2px' : '4px',
+      /* ⊕ Sharpen review (Fable, S-a) — a card still to come gets a
+         1px edge: --pg-band alone all but vanishes on the dark theme. */
       hwSegs: v.segments.map((g) => ({
         bg: tones[g.state],
-        ring: g.current ? 'box-shadow:inset 0 0 0 2px var(--pg-ink);' : ''
+        ring: (g.current ? 'box-shadow:inset 0 0 0 2px var(--pg-ink);' : '')
+          + (g.state === 'todo' ? 'border:1px solid var(--pg-rule-strong);box-sizing:border-box;' : '')
       })),
       /* ⊕ Sharpen §13.1.10 — on a Try again the bar IS the chips:
          numbered, green ones tappable to redo that card. */
@@ -448,8 +451,9 @@ class Component extends DCLogic {
         num: String(g.num), id: g.id, redo: !!g.redo, still: !g.redo,
         label: 'Card ' + g.num + ', got it. Redo it',
         bg: tones[g.state],
-        ink: { right: 'var(--on-accent)', answered: 'var(--pg-ink)', todo: 'var(--pg-muted)' }[g.state],
-        ring: g.current ? 'box-shadow:inset 0 0 0 2px var(--pg-ink);' : '',
+        ink: { right: 'var(--pg-card)', answered: 'var(--pg-ink)', todo: 'var(--pg-muted)' }[g.state],
+        ring: (g.current ? 'box-shadow:inset 0 0 0 2px var(--pg-ink);' : '')
+          + (g.state === 'todo' ? 'border:1px solid var(--pg-rule-strong);' : ''),
         tap: () => e.redo(g.id)
       })),
       hwSecuredOn: !!v.securedLine, hwSecured: v.securedLine,
@@ -1520,7 +1524,7 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","class-entry.js":"1028dbfb","config.js":"d1fecb43","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-homework.js":"b6b72f19","flashcard-keyboard.js":"7cbaaeef","formulae.js":"e4bfb091","ks3-lesson-urls.js":"98cd0930","ks4-lesson-urls.js":"07963eee","rum.js":"66210c21","shoutouts.js":"23393220","student-bell.js":"f46f4d9b","student-data.js":"c099d45c","student-guard.js":"1da3dc79","theme.js":"6fd6f722","topbar.css":"71a2ed43","topbar.js":"b3379add"};</script>
+<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","class-entry.js":"1028dbfb","config.js":"d1fecb43","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-homework.js":"55bd92f1","flashcard-keyboard.js":"7cbaaeef","formulae.js":"e4bfb091","ks3-lesson-urls.js":"98cd0930","ks4-lesson-urls.js":"07963eee","rum.js":"66210c21","shoutouts.js":"23393220","student-bell.js":"f46f4d9b","student-data.js":"c099d45c","student-guard.js":"1da3dc79","theme.js":"6fd6f722","topbar.css":"71a2ed43","topbar.js":"b3379add"};</script>
 <script src="/shared/student-fixture-class.js?v=7a385566"></script>
 <script>window.__MRB_MOUNT__();</script>
 <script src="/shared/topbar.js?v=b3379add" defer></script>

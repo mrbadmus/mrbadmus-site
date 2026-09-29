@@ -274,7 +274,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     e.again();
     v = e.view();
     check(v.phase === "review" && v.headline === "0 of 3 right" && e.afterWriting, "the review pass opens at '0 of 3 right' (A7), same sitting");
-    check(v.securedLine === "0 secured" && v.helper === "Revise flashcards one more time", "review pass strip: '0 secured' and the helper line");
+    check(v.securedLine === "" && v.helper === "", "mid-pass the strip is the headline and the bar only: no secured line, no helper (M-2)");
     check(e.view().card.id === "c1", "the review pass starts on the Not yet card");
     for (let k = 0; k < 3; k++) {
       const id = e.view().card.id;
@@ -323,6 +323,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(v.end.button === "done" && v.end.line2 === "0 of 2 secured so far" && v.end.helper === "Revise flashcards one more time",
           "all right, nothing secured yet → Done + 'Revise flashcards one more time' (later)");
     check(Object.keys(store).every((k) => k.indexOf(".end.") < 0), "no end time is kept on the device any more");
+    check(v.securedLine === "" && v.helper === "", "the strip's lines are empty; the end screen carries them");
   }
 
   // ── 8. × after one Check ends the sitting (A13) ──────────────────────
@@ -431,6 +432,75 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(subs.length === 3 && subs[0].idk && subs[0].answer === "I don't know" && subs[1].own_words && subs[1].answer === "h2o",
           "events: answer_submitted 'I don't know' (idk), then the own words (own_words)");
     check(evs().filter((x) => x.type === "revealed" && x.card === "c1").length === 3, "each answer is revealed once");
+  }
+
+  // ── 12b. I don't know → ‹ Back → forward: still the learn state (M-1) ─
+  {
+    const { e } = await fresh();
+    answer(e, "newton"); e.rate("got_it");
+    e.idk();
+    e.back();
+    check(e.view().card.id === "c0" && !e.view().learn, "‹ Back from the learn state: the previous card, plain");
+    answer(e, "newton"); e.rate("got_it");
+    let v = e.view();
+    check(v.card.id === "c1" && v.learn && v.learnAnswer === "H2O" && !e.canCheck(),
+          "forward again: the I-don't-know card reopens in the learn state, not uncapped");
+    e.setDraft("h2o"); e.check();
+    v = e.view();
+    check(v.suggest === "nearly" && !v.allowed.got_it, "…and its own words are still capped at Nearly");
+    e.rate("nearly");
+    check(e.passIds.length === 6 && e.passIds[5] === "c1", "…and it is still replayed at the end of the pass");
+    answer(e, "gravity"); e.rate("got_it");
+    answer(e, "f = ke"); e.rate("got_it");
+    answer(e, "vector"); e.rate("got_it");
+    v = e.view();
+    check(v.card.id === "c1" && !v.learn, "the replay is a plain card");
+  }
+
+  // ── 12c. a reload inside the sitting keeps the I-don't-know card (S-c) ─
+  {
+    H._reset(); localStorage.clear();
+    const S = server({ mode: "review", rule: "secure", cards: FIVE });
+    H.transport = S.transport; H.modelCheck = null;
+    const e = await H.open("A");
+    answer(e, "newton"); e.rate("got_it");
+    e.idk();
+    await e.flush(); await tick(5);
+    H._reset();                                   // the page reloads; localStorage survives
+    const now = Date.now();
+    H.resumeRead = () => Promise.resolve({ c0: { rating: "got_it", phase: "review", at: now - 1000 } });
+    const e2 = await H.open("A");
+    let v = e2.view();
+    check(v.card.id === "c1" && v.learn, "reload mid-learn: the card reopens in the learn state");
+    e2.setDraft("h2o"); e2.check();
+    check(!e2.view().allowed.got_it, "reload mid-learn: still capped at Nearly");
+    e2.rate("nearly");
+    check(e2.passIds[e2.passIds.length - 1] === "c1", "reload mid-learn: still replayed");
+    H._reset();
+    H.resumeRead = () => Promise.resolve({ c0: { rating: "got_it", phase: "review", at: Date.now() - 1000 },
+                                            c1: { rating: "nearly", phase: "review", at: Date.now() - 500 } });
+    const e3 = await H.open("A");
+    check(e3.passIds[e3.passIds.length - 1] === "c1" && e3.passIds.length === 6,
+          "reload after the own-words rating: its replay is still to come");
+    H._reset(); localStorage.clear();
+    H.resumeRead = null;
+    const e4 = await H.open("A");
+    check(!e4.view().learn, "a new sitting (no resume) forgets the last one's I-don't-know cards");
+  }
+
+  // ── 12d. × mid-pass, then reopen: a new pass (S-b) ───────────────────
+  {
+    const { S, e } = await fresh();
+    answer(e, "newton"); e.rate("got_it");
+    answer(e, "water"); e.rate("not_yet");
+    e.finish();
+    H.close();
+    await tick(5); await e.flush(); await tick(5);
+    check(S.events.some((x) => x.type === "session_finish"), "× sent session_finish");
+    const again = await H.open("A");
+    const v = again.view();
+    check(again === e && v.headline === "0 of 5 right" && v.pos === 1,
+          "reopening after × starts a new pass, not the old one across a closed sitting (" + v.headline + ")");
   }
 
   // ── 13. "I don't know" twice on one card → no third showing ─────────

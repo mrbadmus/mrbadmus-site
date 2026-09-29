@@ -802,7 +802,13 @@
        back-forward cache is a page from before whatever the teacher did
        since (a deleted set still listed). Load it afresh. */
     window.addEventListener("pageshow", function (ev) {
-      if (ev && ev.persisted) { window.location.reload(); }
+      /* only when a deck was in play — an ordinary back-swipe to the class
+         page keeps the bfcache's instant restore */
+      if (ev && ev.persisted &&
+          (/#cards=/.test(window.location.hash || "") ||
+           document.querySelector('[data-hw="strip"]'))) {
+        window.location.reload();
+      }
     });
 
     function active() { return H.active || null; }

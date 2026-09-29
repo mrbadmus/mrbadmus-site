@@ -87,6 +87,22 @@
   function save(key, list) {
     try { root.localStorage.setItem(STORE + key, JSON.stringify(list)); } catch (e) { /* private mode */ }
   }
+  // ⊕ Sharpen review (Fable, S-c) — which cards met "I don't know" in this
+  // pass, and which have had their replay: kept on the device, so a reload
+  // inside a live sitting keeps the Nearly cap and the replay. Honoured only
+  // alongside a resumed sitting (see start()).
+  function loadIdk(key) {
+    try {
+      var v = JSON.parse(root.localStorage.getItem(STORE + "idk." + key) || "null");
+      return v && v.seen ? v : null;
+    } catch (e) { return null; }
+  }
+  function saveIdk(key, seen, done) {
+    try {
+      root.localStorage.setItem(STORE + "idk." + key,
+        JSON.stringify({ at: Date.now(), seen: seen || {}, done: done || {} }));
+    } catch (e) { /* private mode */ }
+  }
 
   // ── the no-model answer check: an EXACT port of SQL flashcard_quick_check
   // (supabase/migrations/20260924180100_mrb351_flashcards_functions.sql).
@@ -202,6 +218,8 @@
     this.afterWriting = false;
     this.retries = 0;          // Try again passes in this sitting
     this.replayed = {};        // cards an "I don't know" sent round again
+    this.idkSeen = {};         // cards met with "I don't know" this pass
+    this.replayDone = {};      // …whose replay has been rated
     this.detour = null;        // a green card being redone on a retry
     this.learn = false;        // "I don't know": the own-words step
     this.idkNow = false;       // this showing of the card began with it
@@ -228,6 +246,21 @@
     // The pass's own order, fixed for the whole sitting: the bar, the chips
     // and a Try again all read it.
     this.order = this.passIds.slice();
+    this.baseLen = this.passIds.length;
+    // A resumed sitting keeps its "I don't know" cards: an unrated one opens
+    // in the learn state again (show()), a rated one still gets its replay.
+    var kept = resume ? loadIdk(this.id) : null;
+    if (kept && Date.now() - (kept.at || 0) <= RESUME_MS) {
+      this.idkSeen = kept.seen || {};
+      this.replayDone = kept.done || {};
+      Object.keys(this.idkSeen).forEach(function (id) {
+        if (self.pass[id] && !self.replayDone[id] && self.byId[id]) {
+          self.replayed[id] = true;
+          self.passIds.push(id);
+        }
+      });
+    }
+    saveIdk(this.id, this.idkSeen, this.replayDone);
     this.idx = done.length;
     if (this.idx >= this.passIds.length && this.passIds.length) { this.endPass(); return; }
     this.show();
@@ -248,6 +281,13 @@
     this.verdict = null;
     this.mine = null;
     this.draft = c ? (this.drafts[c.id] || "") : "";
+    // ⊕ Sharpen review (Fable, M-1) — a card met with "I don't know" and not
+    // yet rated in this pass (‹ Back then forward again, or a reload) opens
+    // in the learn state again: the cap and the replay still apply.
+    if (c && !this.detour && this.idkSeen[c.id] && !this.pass[c.id]) {
+      this.learn = true;
+      this.idkNow = true;
+    }
     if (c) {
       this.event({ type: "card_shown", card: c.id, phase: this.stage });
     }
@@ -304,6 +344,8 @@
     this.acted += 1;
     this.learn = true;
     this.idkNow = true;
+    this.idkSeen[c.id] = true;
+    saveIdk(this.id, this.idkSeen, this.replayDone);
     this.mine = IDK_TEXT;
     this.draft = "";
     this.drafts[c.id] = "";
@@ -368,6 +410,10 @@
     c.last = rating; c.lastLocal = rating;
     if (rating === "got_it") { c.known = true; }
     this.pass[id] = { rating: rating, mine: this.mine, verdict: this.verdict === "pending" ? null : this.verdict, cap: cap };
+    if (!this.detour && this.idx >= this.baseLen && this.idkSeen[id]) {
+      this.replayDone[id] = true;       // this rating IS the replay's
+      saveIdk(this.id, this.idkSeen, this.replayDone);
+    }
     if (this.detour) {
       // A redo on a retry replaces that card's rating and goes back to the
       // card the queue was on. Rated below Got it it turns grey, but does
@@ -381,6 +427,7 @@
         this.passIds.push(id);
         // It comes round to be answered from memory: an empty box.
         delete this.drafts[id];
+        saveIdk(this.id, this.idkSeen, this.replayDone);
       }
       this.idx += 1;
       if (this.idx < this.passIds.length) { this.show(); } else { this.endPass(); }
@@ -451,12 +498,16 @@
       if (self.pass[id].rating !== "got_it") { delete self.pass[id]; }
     });
     this.replayed = {};
+    this.idkSeen = {};
+    this.replayDone = {};
+    saveIdk(this.id, this.idkSeen, this.replayDone);
     this.detour = null;
     this.passIds = this.order.filter(function (id) { return !self.pass[id]; });
     // A leftover is answered afresh: its wrong answer is not put back in
     // the box for the pupil to send again. (A green card's redo keeps its
     // earlier answer — §13.1.11.)
     this.passIds.forEach(function (id) { delete self.drafts[id]; });
+    this.baseLen = this.passIds.length;
     this.idx = 0;
     this.ended = false;
     this.end = null;
@@ -502,7 +553,6 @@
       return { id: g.id, num: i + 1, state: g.state, current: g.current,
                redo: g.state === "right" && self.canRedo(g.id) };
     });
-    var review = p === "review";
     var end = null;
     if (this.end) {
       var E = this.end;
@@ -526,8 +576,11 @@
     return {
       phase: p, n: n, m: m, right: right, secured: secured,
       headline: right + " of " + m + " right",
-      securedLine: review && s.rule !== "quick" ? secured + " secured" : "",
-      helper: review && secured < n ? "Revise flashcards one more time" : "",
+      // ⊕ Sharpen review (Fable, M-2) — mid-pass the strip is the headline
+      // and the bar/chips only; "secured" and the helper belong to the end
+      // screen, which keeps both.
+      securedLine: "",
+      helper: "",
       segments: segs,
       pos: c ? this.idx + 1 : 0,
       card: c,
@@ -641,7 +694,9 @@
         // mid-way carries on where it was.
         var resume = function () {
           Api.active = known;
-          if (known.ended) { known.opts.newSitting = true; known.start(null); }
+          // ⊕ Sharpen review (Fable, S-b) — × ended the server sitting
+          // mid-pass: a new pass, not the old one carried across it.
+          if (known.ended || !known.sittingOpen) { known.opts.newSitting = true; known.start(null); }
           return known;
         };
         if (typeof t !== "function") { return Promise.resolve(resume()); }

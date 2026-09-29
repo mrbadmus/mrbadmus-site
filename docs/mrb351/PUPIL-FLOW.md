@@ -473,7 +473,7 @@ under *Deviations*.
 - **Keyboard** (`shared/flashcard-keyboard.js`): `data-hw-learn="1"` and the 13.4 rules. At 390×844 with
   the keyboard up the question, the ANSWER block, the box and Check are all on screen; at 360×740 (visual
   404, and 336) the ANSWER block's foot, the box and Check are.
-- **Proof.** `node flashcard_engine_test.js` 115/115 (tests 10–16 of 13.7 plus the deleted-set cases);
+- **Proof.** `node flashcard_engine_test.js` 128/128 (tests 10–16 of 13.7 plus the deleted-set cases);
   `flashcard_homework_drive.py` both phones, every screen of 13.8; `tools/flashcards_sharpen_live.py` on
   TEST, the twelve shots of 13.9 in `$MRB_SHOTS/flashcards-sharpen/`, throwaway world torn down by
   snapshotted ids.
@@ -505,10 +505,26 @@ under *Deviations*.
 - In 13.9, the I-don't-know card's own words (`vector`) are decided by the local check, so no stub was
   needed there; the one stubbed verdict is card 3's Nearly, as planned.
 
-**Still for someone else**
+**After the Fable review (sent back once on `529d11898`; all taken)**
 
-- The strip's `0 secured` and `Revise flashcards one more time` lines (§1.10, Stage A) still show during a
-  pass and during a Try again — for the Fable phone review to judge against the no-redundant-text rule.
+- M-1: a card met with "I don't know" and not yet rated this pass reopens in the learn state (after
+  ‹ Back then forward, or a reload), so its Nearly cap and its replay still apply (`idkSeen`, reset by
+  Try again). Engine test 12b.
+- M-2: mid-pass (first pass and Try again) the strip is the headline and the bar / chips only — no
+  `N secured`, no helper line. The end screen keeps both. (This retires §1's strip lines 2–3.)
+- S-a: a to-come segment / chip has a 1px `--pg-rule-strong` edge (dark mode made `--pg-band` all but
+  vanish); a green chip's digit is `--pg-card` (the dark theme's `--on-accent` was white on light green).
+  Drive shot `Retry-strip-dark`.
+- S-b: reopening after × mid-pass starts a new pass (`!sittingOpen`), not the old one across a closed
+  sitting. Engine test 12d.
+- S-c: `idkSeen` and which replays are done are kept on the device (`mrbadmusai.fchw.v1.idk.<id>`), read
+  only alongside a resumed sitting, so a reload mid-learn keeps the cap and the replay. Engine test 12c.
+- S-d: the `pageshow` reload fires only when the fragment is `#cards=` or the overlay is open, not on
+  every back-swipe.
+- Left as ruled by the commander: the chip still says `Right` after I don't know while Got it is greyed;
+  the Done screen's wording.
+
+**Still for someone else**
 - The chat deploys `flashcard-answer-check` (md5 above) with a key; until then A1 bites on production only
   for exact / one-word / blank answers (13.1.3).
 - Mide: the answer box above the keyboard on a real iPhone (Safari) and Android (Chrome), learn state

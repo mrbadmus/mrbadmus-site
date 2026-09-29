@@ -502,10 +502,9 @@ def run(width, height, kb, shots):
 
             P.click('[data-hw="again"]')
             s = P.st()
-            check(s["progress"] == "0 of 5 right" and s["secured"] == "0 secured"
-                  and s["hint"] == "Revise flashcards one more time",
-                  "review pass: '0 of 5 right', '0 secured', the helper line (got %r %r %r)"
-                  % (s["progress"], s["secured"], s["hint"]))
+            check(s["progress"] == "0 of 5 right" and s["secured"] is None and s["hint"] is None,
+                  "review pass: '0 of 5 right' and the bar only — no secured line, no helper mid-pass "
+                  "(got %r %r %r)" % (s["progress"], s["secured"], s["hint"]))
             check(s["front"] == "What is the formula of water?", "the review pass starts on the Not yet card")
             P.keyboard(True)
             P.boxes("review pass, state A")
@@ -583,8 +582,19 @@ def run(width, height, kb, shots):
                   "the queue opens on the first leftover, with an empty box (got %r)" % s["draft"])
             cur = [c for c in s["chips"] if c["current"]]
             check(len(cur) == 1 and not cur[0]["redo"], "the current chip is ringed")
+            check(s["secured"] is None and s["hint"] is None, "Try again: the strip is the headline and the chips only")
             P.no_retired("retry strip")
             P.shot("Retry-strip")
+            # the dark theme: a chip still to come keeps an edge (Fable S-a)
+            P.q("document.documentElement.setAttribute('data-theme','dark')")
+            settle()
+            edge = P.q("(function(){var c=[].slice.call(document.querySelectorAll('[data-hw=\"chips\"] > span'))"
+                       ".filter(function(x){return !/inset/.test(x.getAttribute('style'))})[0];"
+                       "return c ? getComputedStyle(c).borderTopWidth : null;})()")
+            check(edge == "1px", "dark theme: a to-come chip has a 1px edge (got %r)" % edge)
+            P.shot("Retry-strip-dark")
+            P.q("document.documentElement.removeAttribute('data-theme')")
+            settle()
             first_green = order.index([f for f in order if f not in wrong][0])
             P.click('[data-hw="chip-redo"]')
             s = P.st()
