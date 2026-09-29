@@ -555,7 +555,7 @@ def run(cdp):
                 continue
 
             d_text, ruled = _apply_ruled(
-                name, ds["text"], gs["text"], problems, seen)
+                name, ds["text"], gs["text"], problems, seen, drive=label)
             rows.extend(ruled)
 
             d_ctl, ctl_rows = _apply_ruled_controls(
@@ -585,7 +585,7 @@ def run(cdp):
             # and a span the ruled registry has just stripped is still
             # something Design's original said.
             g_text, radd_rows = _apply_ruled_additions(
-                name, ds["text"], g_text, problems, seen)
+                name, ds["text"], g_text, problems, seen, drive=label)
             rows.extend(radd_rows)
 
             g_ctl, add_ctl_rows = _apply_additions_controls(
@@ -601,7 +601,7 @@ def run(cdp):
             # registries happen to be written in. Nothing it names appears in
             # either of the others — checked, not assumed.
             d_ctl, g_ctl, edit_rows = _apply_ruled_control_edits(
-                name, d_ctl, g_ctl, problems, seen)
+                name, d_ctl, g_ctl, problems, seen, drive=label)
             rows.extend(edit_rows)
 
             # ⊕ 23 Aug 2026 — PHASE 1c. Strips nothing from either side; it
@@ -691,6 +691,11 @@ RULED_DIVERGENCE = {
         # the scope, and the list is the year's work, not one term's.
         ("the work header's term label (Sharpen C3)",
          r"(?<=WORK )AUTUMN TERM "),
+        # ⊕ Sharpen C6 (P3) — under a chosen week the tab counts count that
+        # week. Design's counts never move; scoped to the two drives that
+        # choose a week, because on every other drive both files agree.
+        ("the tab counts under a chosen week (Sharpen C6, P3)",
+         r"(?<=WORK )ALL 6 TO DO 2 MARKED 3 ", ('a week bar filters the spine', 'the composed filters empty the list and offer Clear filters')),
         # ── ⊕ ONE MARK (Mide's ruling, 13 Sep 2026; one-mark run 27 Sep) ──
         #
         # *"ONE mark on every page … the wordmark "MrBadmus" (no "AI")."*
@@ -864,6 +869,11 @@ RULED_DIVERGENCE = {
     # data fills (the right answer's feedback line), so the rendered text was
     # unmoved and there was nothing to declare. These two remove chrome.
     "assignment": [
+        # ⊕ Sharpen C6 (P16) — PRUNE 21: the bar's title and "WEEK 04 · 15
+        # QUESTIONS" at >=820px. The results h1 says the title; the count is
+        # in "Question 07 of 15" and the strip. The bar keeps "‹ class".
+        ("the bar's title and week/count line (Sharpen C6, P16)",
+         r"Cells & microscopy WEEK 04 · \d+ QUESTIONS "),
         # The topic and the deadline, stacked above the question eyebrow. Both
         # are already on the screen: the topic in the crumb bar and in the
         # marker sheet's lead, the deadline in the crumb bar and on the bench
@@ -965,7 +975,16 @@ RULED_CONTROLS = {
 # needs in order to read the competition, not an explanation of the machinery.
 
 
-def _apply_ruled(page, d_text, g_text, problems, seen):
+def _in_scope(entry_drives, drive):
+    """⊕ Sharpen C6 — an entry may name the drives it holds on. A ruling that
+    only shows in ONE STATE (the tab counts follow the chosen week) cannot be
+    asserted on every drive: on the others the port and Design agree, and
+    "forbidden in the port" would fail on a correct page. Unscoped entries
+    (every entry before this) apply everywhere, as they always did."""
+    return entry_drives is None or drive is None or drive in entry_drives
+
+
+def _apply_ruled(page, d_text, g_text, problems, seen, drive=None):
     """Strip ruled divergences from Design's text, asserting each both ways.
 
     ⚠️ THE TWO HALVES ARE ASSERTED AT DIFFERENT SCOPES, and the first draft got
@@ -982,7 +1001,10 @@ def _apply_ruled(page, d_text, g_text, problems, seen):
     """
     import re
     rows = []
-    for label, pat in RULED_DIVERGENCE.get(page, ()):
+    for entry in RULED_DIVERGENCE.get(page, ()):
+        label, pat = entry[0], entry[1]
+        if not _in_scope(entry[2] if len(entry) > 2 else None, drive):
+            continue
         if re.search(pat, d_text):
             seen.add(label)
         if re.search(pat, g_text):
@@ -1073,8 +1095,11 @@ RULED_ADDITIONS = {
         # replaced the term spine. `innerText` of a <select> is every
         # option's text, so the whole option list is the span; anchored
         # after the tabs it follows, so it can only match the select.
+        ("the week-scoped tab counts (Sharpen C6, P3)",
+         r"(?<=WORK )(?:ALL 2 TO DO 0 MARKED 2|ALL 1 TO DO 0 MARKED 0) ",
+         ('a week bar filters the spine', 'the composed filters empty the list and offer Clear filters')),
         ("the week select (Sharpen C3)",
-         r"(?<=MARKED \d )All weeks (?:Week \d+(?: · (?:this week|missed))? )+"),
+         r"(?:(?<=MARKED \d )|(?<=WORK ))All weeks (?:Week \d+(?: · (?:this week|missed))? )+"),
         ("the CORRECT label under a marked row's percentage",
          r"(?<=% )CORRECT ?"),
         # The other half of the same ruling: the breakdown, in the panel the
@@ -1136,7 +1161,7 @@ RULED_ADDITIONS = {
 _RADD_IN_PORT = "radd-in-port:"
 
 
-def _apply_ruled_additions(page, d_text, g_text, problems, seen):
+def _apply_ruled_additions(page, d_text, g_text, problems, seen, drive=None):
     """Strip ruled ADDITIONS from the PORT's text, asserting each both ways.
 
     The exact mirror of `_apply_ruled`, including its split of scopes and for
@@ -1153,7 +1178,10 @@ def _apply_ruled_additions(page, d_text, g_text, problems, seen):
     """
     import re
     rows = []
-    for label, pat in RULED_ADDITIONS.get(page, ()):
+    for entry in RULED_ADDITIONS.get(page, ()):
+        label, pat = entry[0], entry[1]
+        if not _in_scope(entry[2] if len(entry) > 2 else None, drive):
+            continue
         if re.search(pat, g_text):
             seen.add(_RADD_IN_PORT + label)
         if re.search(pat, d_text):
@@ -1173,7 +1201,8 @@ def _apply_ruled_additions(page, d_text, g_text, problems, seen):
 def _ruled_additions_seen(page, seen, problems):
     """Once per page: every registered addition was found ON THE PORT."""
     rows = []
-    for label, _pat in RULED_ADDITIONS.get(page, ()):
+    for entry in RULED_ADDITIONS.get(page, ()):
+        label = entry[0]
         ok = (_RADD_IN_PORT + label) in seen
         rows.append((page, "ruled addition · %s — on the port" % label,
                      "PASS" if ok else "FAIL",
@@ -1291,6 +1320,18 @@ def _apply_ruled_controls(page, d_controls, g_controls, problems, seen):
 # one of them changed for a reason nothing to do with this ruling.
 RULED_CONTROL_EDITS = {
     "class view": [
+        # ⊕ Sharpen C6 (P3) — the tab labels carry the chosen week's counts.
+        # Scoped: only the two drives that choose a week (`drives`).
+    ] + [
+        dict(label="the %s tab under week %d (Sharpen C6, P3)" % (d, wk),
+             design=d, port=p, n=1, drives=(drv,),
+             why="Sharpen C6 (P3) — 'ALL 8' above a single row is a number "
+                 "the screen contradicts; the counts follow the week select.")
+        for (wk, drv, pairs) in (
+            (3, 'a week bar filters the spine', (("ALL 6", "ALL 2"), ("TO DO 2", "TO DO 0"), ("MARKED 3", "MARKED 2"))),
+            (2, 'the composed filters empty the list and offer Clear filters', (("ALL 6", "ALL 1"), ("TO DO 2", "TO DO 0"), ("MARKED 3", "MARKED 0"))))
+        for (d, p) in pairs
+    ] + [
         dict(label="the crumb strip's class button (Stage B)",
              design="8r/Sc1", port=None, n=1,
              why="Stage B (phone run, 28 Sep 2026) — the crumb strip is "
@@ -1394,7 +1435,8 @@ _EDIT_IN_DESIGN = "edit-in-design:"
 _EDIT_IN_PORT = "edit-in-port:"
 
 
-def _apply_ruled_control_edits(page, d_controls, g_controls, problems, seen):
+def _apply_ruled_control_edits(page, d_controls, g_controls, problems, seen,
+                               drive=None):
     """Remove the registered delta from each census. See the note above."""
     rows = []
     edits = RULED_CONTROL_EDITS.get(page) or ()
@@ -1402,6 +1444,8 @@ def _apply_ruled_control_edits(page, d_controls, g_controls, problems, seen):
         return d_controls, g_controls, rows
     for e in edits:
         label = e["label"]
+        if not _in_scope(e.get("drives"), drive):
+            continue
         if "port_suffix" in e:
             # ⊕ 22 Sep 2026 — the mirror of the `suffix` branch below.
             suf = e["port_suffix"]
@@ -1523,7 +1567,8 @@ def _ruled_seen(page, seen, problems):
                 "A relabel with no new label is a removal, and it is "
                 "registered as the wrong thing."
                 % (page, label, e["port"]))
-    for label, _pat in RULED_DIVERGENCE.get(page, ()):
+    for entry in RULED_DIVERGENCE.get(page, ()):
+        label = entry[0]
         ok = label in seen
         rows.append((page, "ruled · %s — still in the delivery" % label,
                      "PASS" if ok else "FAIL",

@@ -1015,7 +1015,7 @@
       return {
         sid: m.student_id,
         scores: [], max: [], pct: [], late: [], stamp: [],
-        stampShort: [], status: [], subId: [], submitted: [],
+        stampShort: [], status: [], subId: [], submitted: [], revised: [],
         inWeek: !!(s && s.in_week),
         // ⊕ Mide's 23 Sep 2026 ruling, item 5 — the SQL rollup's own
         // `on_time_week` (a cell with `late = false` on an in-week paper),
@@ -1053,6 +1053,25 @@
     });
     rows.forEach(function (r) { out.byId[r.sid] = r; });
     return out;
+  }
+
+  /* ⊕ Sharpen C5 (29 Sep 2026) — "REVISED AFTER MARKING".
+     A pupil may change a completed set; the backend rescores the SAME row in
+     place and bumps `updated_at`. The predicate is the backend's own
+     `isRevised()` (server.js), byte for byte in meaning: complete, and
+     `updated_at` more than REVISED_SLACK_MS after the completion stamp. The
+     2-second slack is load-bearing — an answer in flight when Complete lands
+     rescores a moment later, and without the slack that pupil would read
+     "revised" having revised nothing. A row without `updated_at` (an older
+     read) is simply not revised. */
+  var REVISED_SLACK_MS = 2000;
+  function isRevisedSub(sub) {
+    if (!sub || sub.status !== "complete" || !sub.updated_at) { return false; }
+    var done = sub.completed_at || sub.submitted_at;
+    if (!done) { return false; }
+    var u = Date.parse(sub.updated_at), d = Date.parse(done);
+    if (isNaN(u) || isNaN(d)) { return false; }
+    return u > d + REVISED_SLACK_MS;
   }
 
   function buildMatrix(pack, papers, now) {
@@ -1178,7 +1197,9 @@
       var mine = byStudent[sid] || {};
       var scores = blank(), max = blank(), pct = blank(), stamp = blank(),
           stampShort = blank(), status = blank(), late = blank(),
-          subId = blank(), submitted = [];
+          subId = blank(), submitted = [],
+          /* ⊕ Sharpen C5 — "revised after marking", per cell. */
+          revised = blank();
       // ⊕ Mide's 25 Sep 2026 ruling (experience run, item 7) — ACTIVITY,
       // SEPARATE FROM `stamp`. `stamp[]` means "this cell was completed at
       // …" and stays that, because `stampShort` and every existing reader
@@ -1216,6 +1237,7 @@
            submission a teacher may want to write about, and `cellOf` returns
            null for one. */
         if (mine[p]) { subId[p] = mine[p].id || null; }
+        if (mine[p]) { revised[p] = isRevisedSub(mine[p]); }
         if (!c && mine[p]) { activity[p] = mine[p].started_at || null; }
         if (!c) { submitted.push(false); continue; }
         /* `submitted[p]` is the honest predicate for "did this student hand
@@ -1267,7 +1289,7 @@
       return {
         sid: sid, scores: scores, max: max, pct: pct, late: late,
         stamp: stamp, stampShort: stampShort, status: status, activity: activity,
-        subId: subId, inWeek: inWeek, onTimeWeek: onTimeWeek,
+        subId: subId, revised: revised, inWeek: inWeek, onTimeWeek: onTimeWeek,
         startedInWeek: startedInWeek, submitted: submitted,
         fcStatus: fcStatus, fcSecured: fcSecured, fcN: fcN, fcSittings: fcSittings
       };
@@ -4256,7 +4278,10 @@
     // does not also start a second dashboard mount.
     buildPapers: buildPapers,
     buildMatrix: buildMatrix,
-    buildRoster: buildRoster
+    buildRoster: buildRoster,
+    /* ⊕ Sharpen C5 — the "revised after marking" predicate, exposed so a
+       drive can run the real code rather than a copy of it. */
+    isRevised: isRevisedSub
   };
 
   /* ⊕ MRB-326 JOB 4c, 6 Sep 2026 — `drawRemindControl` IS DELETED.

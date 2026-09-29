@@ -5496,7 +5496,9 @@ LOGIC["class view"].extend([
         "      hwPanel: !!end,\n"
         "      hwEnd1: end ? end.line1 : '',\n"
         "      hwEnd2On: !!end && !!end.line2, hwEnd2: end ? end.line2 : '',\n"
-        "      hwEndOffline: !!end && end.offline,\n"
+        "      /* ⊕ Sharpen C6 — SAVED ON THIS PHONE is said once, on the\n"
+        "         strip; the end screen does not repeat it. */\n"
+        "      hwEndOffline: false,\n"
         "      hwEndHelperOn: !!end && !!end.helper, hwEndHelper: end ? end.helper : '',\n"
         "      hwEndDone: !!end && end.button === 'done',\n"
         "      hwEndAgain: !!end && end.button === 'again',\n"
@@ -6889,3 +6891,98 @@ INSERT_AT["assignment"][(106, 251)] = (
      "c": [_C5_CHANGE, _C5_FB[0]]},
     _C5_FB[1] + " ⊕ Sharpen C5 — preceded by 'Change my answer', the one "
     "way into changing an answered question on a completed set.")
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# ⊕ SHARPEN C6 (Fable audit of 6bd5cbc9e, 29 Sep 2026) — THE PUPIL CUTS
+# ══════════════════════════════════════════════════════════════════════════
+#
+# CLAUDE.md "No redundant text on any page". Each is keyed to the audit's id
+# (docs/experience/sweep/CUTS-2.md, "Pupil pages"). Design's fixture rows
+# carry none of `rawMax`, `noClose`, and `benchChecklist` is true there, so
+# every line below computes exactly what her file does on her data.
+LOGIC["class view"].extend([
+    # P2 — under a chosen week the row's "W05 ·" repeats the select.
+    (
+        "        metaLine: 'W' + pad(w.week) + ' \\u00B7 ' + longWord,",
+        "        metaLine: (st.week != null ? '' : 'W' + pad(w.week) + ' \\u00B7 ') + longWord,",
+    ),
+    # P6/P7 — ONE score form, the fraction, as the done bench and the results
+    # page show it; the word under it only says late.
+    (
+        "scoreText: w.score + '%',",
+        "scoreText: w.rawMax != null ? (w.rawScore + ' / ' + w.rawMax) : (w.score + '%'),",
+    ),
+    (
+        "        scoreLabel: 'CORRECT' + (w.late ? ' \\u00B7 late' : ''),",
+        "        scoreLabel: w.rawMax != null ? (w.late ? 'late' : '')\n"
+        "          : 'CORRECT' + (w.late ? ' \\u00B7 late' : ''),",
+    ),
+    # P10 — ONE button on every expanded row; the row's header closes it.
+    (
+        "        showClose: !w.reopen,\n",
+        "        showClose: !w.reopen && !w.noClose,\n",
+    ),
+    # P3 — the tab counts count what the chosen week holds.
+    (
+        "      { id: 'all', label: 'All', n: all.length },\n"
+        "      { id: 'todo', label: 'To do', n: all.filter((w) => w.status === 'open' || w.status === 'missed').length },\n"
+        "      { id: 'marked', label: 'Marked', n: marked.length }\n",
+        "      /* ⊕ Sharpen C6 (P3) — counts follow the week select. */\n"
+        "      { id: 'all', label: 'All', n: inWk.length },\n"
+        "      { id: 'todo', label: 'To do', n: inWk.filter((w) => w.status === 'open' || w.status === 'missed').length },\n"
+        "      { id: 'marked', label: 'Marked', n: inWk.filter((w) => w.status === 'marked').length }\n",
+    ),
+    (
+        "    const tabDefs = [\n",
+        "    const inWk = st.week != null ? all.filter((w) => w.week === st.week) : all;\n"
+        "    const tabDefs = [\n",
+    ),
+    # P9 — no "0 / 3 DONE" when nothing ticks Design's checklist, and a list
+    # with nothing in it at all says so rather than "under this filter".
+    (
+        "      benchPct: MRB_DATA('benchProgPct') || (Math.round((doneCount / 3) * 100) + '%'),\n"
+        "      benchDoneText: MRB_DATA('benchProgText') || (doneCount + ' / 3 DONE'),\n",
+        "      benchPct: MRB_DATA('benchProgPct') || (MRB_DATA('benchChecklist')\n"
+        "        ? (Math.round((doneCount / 3) * 100) + '%') : '0%'),\n"
+        "      benchDoneText: MRB_DATA('benchProgText') || (MRB_DATA('benchChecklist')\n"
+        "        ? (doneCount + ' / 3 DONE') : ''),\n",
+    ),
+    (
+        "      emptyNote: fresh ? 'No work set in this class yet' : 'Nothing under this filter',",
+        "      emptyNote: (fresh || !all.length) ? 'No work set in this class yet' : 'Nothing under this filter',",
+    ),
+])
+
+# ASSIGNMENT
+#   P16  the bar's title + "WEEK 05 · 15 QUESTIONS" (node 21, `if wide`): on
+#        the results the h1 says the title one line under it, the 15 is in
+#        "Question 01 of 15" and the strip, and the week is needed nowhere.
+#        The bar keeps "‹ class", as it already does at 390.
+#   P20  "Look through all 15" (344) under a list of all 15, each with its
+#        own "Look at it".
+PRUNE["assignment"].extend([21, 344])
+LOGIC["assignment"].extend([
+    # P19 — WRONG is the crosses in the list and total − right − missed;
+    # MISSED only when there is one. TIME TAKEN stays.
+    (
+        "      ].map((s, i, a) => Object.assign(s, { edge:",
+        "      ].filter((s) => !MRB_DATA('doneAll') || (s.label !== 'WRONG' &&\n"
+        "        !(s.label === 'MISSED' && s.value === '00')))\n"
+        "      .map((s, i, a) => Object.assign(s, { edge:",
+    ),
+    # P21 — the revised eyebrow drops the clock time (it wrapped at 390; the
+    # date is what matters and TIME TAKEN is the duration).
+    (
+        "      doneEyebrow: 'Completed' + (st.handedAt ? ' ' + st.handedAt : '')",
+        "      doneEyebrow: 'Completed' + (st.handedAt ? ' ' + (st.revised\n"
+        "          ? String(st.handedAt).split(',')[0] : st.handedAt) : '')",
+    ),
+])
+# P22 — a right answer's card no longer stretches to its wrong neighbour's
+# height (the grid's cells start at the top).
+SET_ATTR["assignment"][318] = {"data-mrb-results-grid": "1"}
+PORT_CSS += """
+/* ⊕ Sharpen C6 (P22) — results cards keep their own height. */
+[data-mrb-results-grid] { align-items: start; }
+"""

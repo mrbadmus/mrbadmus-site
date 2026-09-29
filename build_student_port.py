@@ -335,7 +335,11 @@ PAGES = [
                         # so the fixture opens on All weeks and every drive
                         # still compares; the live page sends this week
                         # when this week holds work.
-                        weekDefault="null"),
+                        weekDefault="null",
+                        # ⊕ Sharpen C6 (P9) — Design's bench meter counts her
+                        # three-item checklist; the live page never ticks it,
+                        # so it says nothing there until it knows the count.
+                        benchChecklist="true"),
          # ── ⊕ RULED BY MIDE, 22 Sep 2026 · THE FIXTURE'S PROGRESS NUMBERS ─
          #
          # The completion bar reads `w.answered` and `w.qtotal` off each work
@@ -787,7 +791,7 @@ BINDINGS = {
         # standing over real data. Three of them tonight. The count is now the
         # length of the list it counts, which is the only definition that
         # cannot drift — the same fix `shoutCount` already got.
-        ("04", "lessonCount"),
+        ("04", "lessonCount", "drop"),
         # ⊕ 22 Aug 2026 — TWO SENTENCES A SCREENSHOT CAUGHT AND NO GREP COULD.
         #
         # Both are text nodes in Design's markup, and both are written in

@@ -161,6 +161,7 @@ window.__MRB_DATA__ = {
       ],
   "weekNumber": "04",
   "weekTotal": "12",
+  "benchChecklist": true,
   "benchDone": false,
   "benchDoneFeedback": '',
   "benchDoneLessons": false,

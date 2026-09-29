@@ -3580,6 +3580,9 @@ a:hover { color: var(--st-accent-hover); }
   }
 }
 
+/* ⊕ Sharpen C6 (P22) — results cards keep their own height. */
+[data-mrb-results-grid] { align-items: start; }
+
 
 /* ⊕ D5 (theme-run audit, 27 Sep 2026). The flashcards "Next" button (node
    10363, STYLE_EDIT 'class view') is Design's own inline

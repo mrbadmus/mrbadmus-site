@@ -117,6 +117,18 @@
 a.mrb-topbar__title { color: var(--tb-link); font-weight: 600; }
 a.mrb-topbar__title::before { content: "\2039\00a0"; font-weight: 600; }
 a.mrb-topbar__title:hover { text-decoration: underline; text-underline-offset: 3px; }
+/* ⊕ Sharpen C6 (P31) — on a narrow phone the KS3 lesson bar's parent name
+   was cut to "‹ Health and d…" while the lesson's eyebrow one line below
+   says it whole. Below 420px the bar keeps the "‹" alone; the words stay in
+   the link (font-size 0), so a screen reader still says where it goes. */
+@media (max-width: 420px) {
+  .mrb-topbar.ks3-nav a.mrb-topbar__title {
+    font-size: 0; min-width: 44px; text-align: center; flex: none;
+  }
+  .mrb-topbar.ks3-nav a.mrb-topbar__title::before {
+    content: "\2039"; font: 600 24px/1 var(--tb-ui);
+  }
+}
 a.mrb-topbar__title:focus-visible,
 .mrb-topbar__signin:focus-visible,
 .mrb-topbar__avatar:focus-visible,

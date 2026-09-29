@@ -329,6 +329,10 @@ NET = r"""(function () {
     var isAns = /\/api\/assignment\/answer/.test(u);
     var body = null;
     try { body = init && init.body ? JSON.parse(init.body) : null; } catch (e) {}
+    if (isAns && mode === 'offline') {
+      window.__answers.push({ body: body, status: 0, res: null });
+      return Promise.reject(new TypeError('Failed to fetch'));
+    }
     if (isAns && mode === 'refuse' && body && body.revise === true) {
       window.__answers.push({ body: body, status: 409, res: null });
       return Promise.resolve(new Response(JSON.stringify({ error: 'attempt_already_complete' }),
@@ -644,6 +648,39 @@ def main():
                       json.dumps(rv)[:200])
                 B.shot("c5-390-light-09-finish-answered", ".rd", 390, 844, above=0)
 
+                # ══ C5 — a revision queued offline survives a reload ════════
+                page.goto(f"http://127.0.0.1:{port}/student/settings.html")
+                B.q("sessionStorage.setItem('sharpenNet','offline')")
+                open_page(page, f"http://127.0.0.1:{port}/student/assignment.html?class={klass}&assignment={a_done}",
+                          "document.querySelectorAll('[data-mrb-done-mark]').length > 0")
+                B.q(r"""(function(){var b=[].slice.call(document.querySelectorAll('button')).filter(function(x){return /Look at it/.test(x.innerText)});b[3].click();})()""")
+                time.sleep(0.6)
+                B.q("document.querySelector('[data-mrb-change-answer]').click()")
+                time.sleep(0.4)
+                q4 = served[a_done][3]
+                B.q(PICK_OPT % json.dumps(next(o["letter"] for o in q4["options"] if o.get("correct"))))
+                time.sleep(0.3)
+                B.q(CLICK_TEXT % (json.dumps("Confirm answer"), "null"))
+                time.sleep(1.5)
+                queued = B.q("(function(){for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);"
+                             "if(k.indexOf('mrbadmusai.answerqueue.v1.')===0){var d=JSON.parse(localStorage.getItem(k));"
+                             "var e=d&&d.e&&d.e['3'];if(e)return JSON.stringify({revise:e.revise});}}return null})()")
+                check(bool(queued) and json.loads(queued).get("revise") is True,
+                      "C5 offline: the change is queued on the device, marked as a revision", str(queued))
+                mid = sub_row(c, a_done, pupil["id"])[0]
+                page.goto(f"http://127.0.0.1:{port}/student/settings.html")
+                B.q("sessionStorage.removeItem('sharpenNet')")
+                open_page(page, f"http://127.0.0.1:{port}/student/assignment.html?class={klass}&assignment={a_done}",
+                          "document.querySelectorAll('[data-mrb-done-mark]').length > 0")
+                ans = B.wait("(window.__answers||[]).filter(function(a){return a.body&&a.body.revise===true&&a.status===200})"
+                             ".length ? JSON.stringify(window.__answers) : null", "the queued revision, sent on reload")
+                after_q = sub_row(c, a_done, pupil["id"])[0]
+                result["offline_queue"] = {"before": mid, "after": after_q}
+                check(bool(ans) and mid["score"] == 3 and after_q["score"] == 4 and after_q["id"] == mid["id"],
+                      "C5 offline: on reload the queued revision is sent with revise:true — score 3 → 4, same row",
+                      "%s → %s" % (mid.get("score"), after_q.get("score")))
+                B.shot("c5-390-light-09b-offline-revision-sent", ".rd", 390, 844, above=0)
+
                 # ══ C5 — degrade: an old backend (no `revised`) ═════════════
                 page.goto(f"http://127.0.0.1:{port}/student/settings.html")
                 B.q("sessionStorage.setItem('sharpenNet','strip')")
@@ -680,6 +717,36 @@ def main():
                 after_old = sub_row(c, a_old, pupil["id"])
                 check(after_old and after_old[0]["score"] == 3, "DB: the refused revision changed nothing (3/3)")
 
+                # ══ C6 — a named set the server cannot serve says so ═══════
+                open_page(page, f"http://127.0.0.1:{port}/student/assignment.html?class={klass}"
+                                f"&assignment={uuid.uuid4()}",
+                          "/No work has been set|could not load/i.test(document.body.innerText)")
+                txt = B.q("document.body.innerText") or ""
+                check("No work has been set for this week yet." in txt,
+                      "C6: an assignment the server cannot serve says there is no such work", txt[:160])
+                # ══ C6 — settings and claim-confirm, as the pupil ═══════════
+                for (vw, vh, mob, theme) in ((390, 844, True, "light"), (1440, 900, False, "light"),
+                                             (390, 844, True, "dark"), (1440, 900, False, "dark")):
+                    viewport(page, vw, vh, mob)
+                    page.goto(f"http://127.0.0.1:{port}/student/settings.html")
+                    time.sleep(0.4)
+                    B.q(theme_js(theme))
+                    open_page(page, f"http://127.0.0.1:{port}/student/settings.html",
+                              "/Account settings/.test(document.body.innerText)")
+                    B.shot(f"c6-{vw}-{theme}-settings", None, vw, vh)
+                    open_page(page, f"http://127.0.0.1:{port}/student/claim-confirm.html",
+                              "/can.t be used/.test(document.body.innerText)")
+                    time.sleep(1.0)
+                    if vw == 390 and theme == "light":
+                        t = B.q("document.body.innerText") or ""
+                        check("Ask for a new one in Account settings, or ask your teacher." in t
+                              and "Account settings" in (B.q("document.getElementById('problem-auth-link').innerText") or ""),
+                              "C6: claim-confirm says the one thing, and sends a signed-in pupil to Account settings",
+                              t[:200])
+                        st_txt = ""
+                    B.shot(f"c6-{vw}-{theme}-claim-confirm", None, vw, vh)
+                viewport(page, 390, 844, True)
+
                 # ══ the teacher's screens ═══════════════════════════════════
                 page.send("Page.removeScriptToEvaluateOnNewDocument", {"identifier": sess_id})
                 st, tsess = c._req("POST", f"{url}/auth/v1/token?grant_type=password",
@@ -701,9 +768,9 @@ def main():
                                    "function(e){var r=e.closest('[data-dc-tpl=\"361\"]');return r?r.innerText.replace(/\\s+/g,' '):e.innerText})})()")
                         result["teacher_rows"] = rows
                         joined = " || ".join(rows or [])
-                        check(ok and rows and len(rows) == 2 and "Done set" in joined and "3/4" in joined
+                        check(ok and rows and len(rows) == 2 and "Done set" in joined and "4/4" in joined
                               and "Partly set" in joined and "Older set" not in joined,
-                              "teacher: 'revised after marking' on the two revised sets (Done 3/4, Partly), "
+                              "teacher: 'revised after marking' on the two revised sets (Done 4/4, Partly), "
                               "not on the Older set whose revision was refused", str(rows))
                     B.shot(f"c5-{tag}-12-teacher-row", "[data-mrb-revised]", vw, vh, above=260)
                     B.q(r"""(function(){var e=document.querySelector('[data-mrb-revised]');var r=e&&e.closest('[data-dc-tpl="361"]');if(!r)return;var b=[].slice.call(r.querySelectorAll('button')).find(function(x){return /Breakdown/.test(x.innerText)});if(b)b.click();})()""")

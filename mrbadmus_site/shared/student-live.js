@@ -1885,7 +1885,14 @@
         var src = (questions[Number(k)] && questions[Number(k)].__src) || null;
         var opts = (src && src.options) || [];
         var chosen = opts[e.opt] || null;
-        var ok = !serverHas[k] && !!src && !!chosen &&
+        /* ⊕ Sharpen C5 — A QUEUED REVISION IS NOT A STALE DUPLICATE. The
+           rule above ("the server already has an answer, so this entry is
+           old") was true when an entry could only be written by a page that
+           had found the server holding nothing. A revision is written over
+           an answer the server holds ON PURPOSE, so on a completed set it is
+           kept and sent (with `revise: true`, as it was queued); a backend
+           that refuses it restores the server's answer, read-only. */
+        var ok = (!serverHas[k] || (e.revise && subDone)) && !!src && !!chosen &&
                  (!e.ref || !src.question_ref || e.ref === src.question_ref) &&
                  (chosen.letter || LETTERS[e.opt]) === e.letter;
         if (!ok) { delete pending[k]; changed = true; }
@@ -2548,6 +2555,33 @@
     var feedEarly = opening[5];
     var classTeachers = opening[6] || [];
 
+    /* ⊕ Sharpen C6 (P9) — THE WORK LIST MUST HOLD THE BENCH'S OWN WORK.
+       `current-assignment` composes this week's work LAZILY, on its first
+       read — which runs in the same wave as the work list's read, so on the
+       very first load the bench could show "Forces" over a list reading
+       "ALL 0". When the bench names an assignment the list does not hold,
+       the list (and its teaching weeks) is read once more. One extra round
+       trip, only on the load that composed the work. */
+    if (current && current.assignment && current.assignment.id && detail) {
+      var benchId = current.assignment.id;
+      var listed = [].concat(detail.assignmentsDueNow || [],
+                             detail.assignmentsComingUp || [],
+                             detail.assignmentsDone || [])
+        .some(function (c) { return c && c.id === benchId; });
+      if (!listed) {
+        try {
+          var again = await D.loadStudentClass(klass.id, user.id);
+          if (again && again.assignmentsDueNow) { detail = again; }
+          var aw2 = await _soft(withDbDeadline(WARM_MS, sb.from("assignments")
+            .select("id, academic_week").eq("class_id", klass.id)
+            .is("deleted_at", null)), "the class's assignment rows");
+          if (aw2 && !aw2.error) { aw = aw2; }
+        } catch (againErr) {
+          console.warn("[student-live] the work list could not be re-read", againErr);
+        }
+      }
+    }
+
     /* Whether a piece of work is still open or has been missed is decided
        against the SERVER's clock and nothing else. Without one, this page does
        not guess with the device's — it says it could not load. */
@@ -2963,8 +2997,8 @@
         /* ⊕ RULED 22 Aug 2026 — W5. "Complete" replaces "Hand it in"
            everywhere it appears, and the work rows are one of the places it
            appears. The words change; nothing else does. */
-        detailLine = "COMPLETED " + fmtDay(c.submitted_at) +
-                     " · " + c.score + " OF " + c.max_score + " MARKS";
+        /* ⊕ Sharpen C6 (P6) — the row above already shows "5 / 10". */
+        detailLine = "COMPLETED " + fmtDay(c.submitted_at);
       } else if (status === "pending") {
         detailLine = "COMPLETED " + fmtDay(c.submitted_at) + " · NOT MARKED YET";
       } else if (status === "missed") {
@@ -3585,6 +3619,8 @@
        When the answered count could not be read the label is "See your
        answers" — never a "Finish it" that is not true. */
     work.forEach(function (row) {
+      /* ⊕ Sharpen C6 (P10) — every expanded row has ONE button. */
+      if (row) { row.noClose = true; }
       if (!row || row.fc || row.retake) { return; }
       if (row.status !== "marked" && row.status !== "pending") { return; }
       row.reopenHref = assignmentHrefFor(row.id);
@@ -3619,7 +3655,10 @@
                because a key fact is a statement with no authored front, and
                writing 107 science prompts is Mide's gate rather than an
                export's. A tag with no rows behind it is not emitted. */
-            tag: eq ? "EQUATION" : "DEFINITION",
+            /* ⊕ Sharpen C6 (P23) — no DEFINITION eyebrow over a prompt
+               that already opens "Define:". */
+            tag: eq ? "EQUATION"
+              : (/^\s*define\b/i.test(r.front || "") ? "" : "DEFINITION"),
             topic: String(r.topic || deslug(r.lesson_slug)).toUpperCase(),
             front: r.front || "",
             /* ⚠️ AN EQUATION CARD'S ANSWER IS THE EQUATION ROW, NOT THE PROSE
@@ -3945,11 +3984,9 @@
     var reminderLine = "";
     if (noteRows.length) {
       var senderName = (noteRows[0].sender || "Your teacher");
-      reminderLine = senderName + ": this week's work for " + name + " is waiting";
-      if (benchProg && benchProg.total != null && benchProg.answered != null) {
-        reminderLine += " \u2014 " + benchProg.answered + " of " + benchProg.total + " answered";
-      }
-      reminderLine += ".";
+      /* ⊕ Sharpen C6 (P8) — the class is the h1 and the count is the
+         bench's own meter, both on this screen; the line says who and what. */
+      reminderLine = senderName + ": this week's work is waiting.";
     }
 
     /* ═══════════════════════════════════════════════════════════════════
@@ -4293,6 +4330,9 @@
         return r && r.week === weekNo;
       })) ? weekNo : null,
       weekNumber: weekNo == null ? "—" : pad2(weekNo),
+      /* ⊕ Sharpen C6 (P9) — Design's three-item checklist is never ticked
+         here, so the bench meter does not count it. */
+      benchChecklist: false,
       weekTotal: "39",
 
       className: name,
@@ -4764,7 +4804,9 @@
         : "",
       recallOutOf: "OF " + numWord(questions.length).toUpperCase(),
       /* ⊕ RULED 22 Aug 2026. The count is the length of the list it counts. */
-      lessonCount: pad2(lessonDefs.length),
+      /* ⊕ Sharpen C6 (P4) — the rows are numbered 01…N; the corner count
+         said N again. Design's fixture keeps her "04". */
+      lessonCount: "",
 
       practiceRoundCrumb: questions.length
         ? (numWord(questions.length).toUpperCase() + " A ROUND") : "PRACTICE",
@@ -4939,6 +4981,16 @@
     }
 
     var a = current.assignment;
+
+    /* ⊕ Sharpen C6 — "See your answers" on a set the server cannot serve
+       (a different assignment came back, or one with no questions) says
+       there is no such work, rather than falling through to this week's. */
+    if (wanted && ((a.id && String(a.id) !== String(wanted)) ||
+                   !(current.questions || []).length)) {
+      var gone = new Error("the named assignment is not served");
+      gone.mrbSay = SAY.noWork;
+      throw gone;
+    }
 
     /* ⊕ 22 Aug 2026 — W2. What this student has already answered, FROM THE
        SERVER, read BEFORE the mount so `resume()` can answer synchronously.
