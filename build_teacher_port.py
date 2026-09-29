@@ -5608,6 +5608,20 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         # top of the screen is the free space there: below the 62px bar, and
         # clear of the sheet's own close control, which is at the top LEFT
         # while the toast is centred.
+        # ⊕ Sharpen C1, 29 Sep 2026 — ONE BASELINE ON EVERY TEACHER TABLE.
+        # A table here is a grid PER ROW (Design's), with every track fixed
+        # or `minmax(0,…)` (teacher_rulings BIND_ATTR). The cells finish the
+        # job: `min-width:0` so no cell can push its own track, and every
+        # cell but the first (the title) stays on one line and ellipsises
+        # rather than wrapping or widening. `repeat(` grids are card layouts,
+        # not tables, and are left alone. A cell holding a control is not
+        # clipped (`:has`), so a focus ring is never cut off.
+        "[data-port-region] [style*=\"grid-template-columns\"]"
+        ":not([style*=\"repeat(auto\"]) > *{min-width:0}"
+        "[data-port-region] [style*=\"grid-template-columns\"]"
+        ":not([style*=\"repeat(auto\"]) > :not(:first-child)"
+        ":not(:has(button,a,input,select,[tabindex])){"
+        "white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
         "[data-port-region=\"toast\"]{pointer-events:none}"
         "@media (max-width:560px){"
         "[data-port-region] [style*=\"display:flex\"]"
@@ -5627,6 +5641,16 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "[data-port-region=\"digest\"] [style*=\"white-space:nowrap\"],"
         "[data-port-region=\"insights\"] [style*=\"white-space:nowrap\"]"
         "{white-space:normal!important}"
+        # ⊕ Sharpen C1 — EXCEPT inside a table row. The tables now scroll
+        # sideways in their own card on a phone, so a cell no longer has to
+        # wrap to fit; wrapping it would break the one-baseline rule (a date
+        # on two lines beside a one-line title). More specific than the rule
+        # above, so its `!important` wins; the title cell still wraps.
+        "[data-port-region] [style*=\"grid-template-columns:minmax(0,\"]"
+        " > :not(:first-child):not(:has(button,a,input,select,[tabindex])),"
+        "[data-port-region] [style*=\"grid-template-columns:minmax(0,\"]"
+        " > :not(:first-child):not(:has(button,a,input,select,[tabindex])) *"
+        "{white-space:nowrap!important}"
         "[data-port-region=\"toast\"]{top:74px;bottom:auto}"
         # ⚑ AND `minmax(330px, 1fr)` IS NOT A MINIMUM A 360px PHONE CAN
         # KEEP. Fourth and last of the run's findings, and the one that
@@ -5676,8 +5700,10 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         # shrinking its track lets its own text truncate; the value
         # column's longest real string ("100/100") measures under
         # 54px in the row's own `17px var(--st-mono)`.
-        "[data-port-region] [style*=\"220px 1fr 96px\"]"
-        "{grid-template-columns:minmax(0,84px) 1fr minmax(0,54px)!important}"
+        # ⊕ Sharpen C1 — re-keyed: the row's own track is now
+        # `220px minmax(0,1fr) 96px` (teacher_rulings BIND_ATTR[548]).
+        "[data-port-region] [style*=\"220px minmax(0,1fr) 96px\"]"
+        "{grid-template-columns:minmax(0,84px) minmax(0,1fr) minmax(0,54px)!important}"
         "}"
         # ⊕ Stream M, 25 Sep 2026 (experience run round 3, item 20) — THE TOP
         # BAR WRAPS AT ≤420px INSTEAD OF LEAVING SIGN OUT AND FIND A STUDENT

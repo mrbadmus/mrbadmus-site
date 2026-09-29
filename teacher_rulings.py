@@ -921,6 +921,10 @@ REDUNDANT = (
 # `<button>` with no handler at all, still on every screen) moved four places.
 SET_ON = {
     31: "signOut",
+    # ⊕ Sharpen C4, 29 Sep 2026 — the top-bar crumb goes to the page's
+    # parent. `goCrumb` is its own key (LOGIC) rather than `goClass`, whose
+    # `NAV` entry names the two Back buttons that carry it.
+    17: "goCrumb",
 }
 
 
@@ -1627,7 +1631,10 @@ SET_ATTR = {
     # its own phone sizing. Kept named, this would stop the build on a node
     # that no longer exists — and would have collided with the lockup's
     # class if it had survived.
-    17:  {"class": "mrb-crumb"},
+    # ⊕ Sharpen C4 — the crumb is now a LINK to the page's parent (the
+    # class), so it is a keyboard stop with a link's role, like the roster
+    # row (294). `SET_ON[17]` gives it `goCrumb`.
+    17:  {"class": "mrb-crumb", "role": "link", "tabindex": "0"},
     30:  {"class": "mrb-teachername"},
 
     # ⊕ phone-teacher run, 28 Sep 2026 — THE TWO THINGS THE PHONE BAR KEEPS.
@@ -1825,36 +1832,85 @@ _EYEBROW = ("font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
             "text-transform:uppercase;color:var(--st-accent-text)")
 
 BIND_ATTR = {
-    # ── ⊕ SHARPEN B4 · THE SUBMISSION HISTORY'S SCORE COLUMN ───────────
-    # 100px → 170px so a deck's `10/10 secured` stays on one line (Fable
-    # review asked for 140px; measured, the text is 133px in the cell's own
-    # 17px DM Mono plus 32px of padding, so 140px still wrapped). Header and
-    # row identical.
+    286: ("style", "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden",
+          "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow-x:auto;overflow-y:hidden",
+          "the Students table's card scrolls sideways on a phone (C1)."),
+    310: ("style", "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden",
+          "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow-x:auto;overflow-y:hidden",
+          "the Assignments table's card scrolls sideways on a phone (C1)."),
+    353: ("style", "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden",
+          "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow-x:auto;overflow-y:hidden",
+          "the submission-history card scrolls sideways on a phone (C1)."),
+    445: ("style", "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden",
+          "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow-x:auto;overflow-y:hidden",
+          "the digest's by-class card scrolls sideways on a phone (C1)."),
+    # ── ⊕ SHARPEN C1, 29 Sep 2026 · ONE BASELINE ON EVERY TEACHER TABLE ──
+    #
+    # ⚠️ AND ON A PHONE THE TABLE SCROLLS IN ITS CARD. With no `auto` minimum
+    # left, a `minmax(0,…)` track can reach zero at 390px and cells would
+    # land on top of each other. So every table carries a fixed `min-width`
+    # (on header and row alike) and its card scrolls sideways
+    # (`overflow-x:auto`, was `overflow:hidden`, which cut the last columns
+    # off with no way to reach them) — the flashcards table's pattern.
+    #
+    # Every teacher table is a grid PER ROW, header and rows each their own
+    # grid. A bare `1fr` is `minmax(auto,1fr)` and `auto` sizes to its OWN
+    # row's content, so a long cell in one row gave that row different
+    # tracks from its neighbours and the whole row slid. The rule: every
+    # track is a fixed px or `minmax(0,Nfr)`, header and row identical (both
+    # asserted here); only the first (title) cell wraps — the rest are
+    # nowrap/ellipsis, by the `[data-port-region]` row-grid rule in
+    # build_teacher_port.py. `teacher_tells` refuses a bare `fr` or `auto`.
+    #
+    # Submission history (student screen): SCORE stays Stage B's 170px
+    # (`10/10 secured` measured 133px + 32px padding); only the fr tracks
+    # become `minmax(0,…)`.
     354: ("style",
           "display:grid;grid-template-columns:2.3fr 1fr 1.1fr 100px 1.05fr;"
           "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
-          "display:grid;grid-template-columns:2.3fr 1fr 1.1fr 170px 1.05fr;"
+          "display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.1fr) 170px minmax(0,1.05fr);min-width:760px;"
           "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
-          "the submission-history header strip — a wider SCORE."),
+          "the submission-history header strip (C1)."),
     361: ("style",
           "display:grid;grid-template-columns:2.3fr 1fr 1.1fr 100px 1.05fr;"
           "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
-          "display:grid;grid-template-columns:2.3fr 1fr 1.1fr 170px 1.05fr;"
+          "display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.1fr) 170px minmax(0,1.05fr);min-width:760px;"
           "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
-          "the submission-history row, matching its header."),
+          "the submission-history row, matching its header (C1)."),
+    446: ("style",
+          "display:grid;grid-template-columns:1.5fr 1fr 115px 115px 1.5fr;"
+          "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
+          "display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) 115px 115px minmax(0,1.5fr);min-width:680px;"
+          "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
+          "the digest's by-class header strip (C1)."),
+    453: ("style",
+          "display:grid;grid-template-columns:1.5fr 1fr 115px 115px 1.5fr;"
+          "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
+          "display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) 115px 115px minmax(0,1.5fr);min-width:680px;"
+          "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
+          "the digest's by-class row, matching its header (C1)."),
+    548: ("style",
+          "display:grid;grid-template-columns:220px 1fr 96px;align-items:center;gap:14px",
+          "display:grid;grid-template-columns:220px minmax(0,1fr) 96px;align-items:center;gap:14px",
+          "the Charts screen's bar row (C1)."),
+    568: ("style",
+          "display:grid;grid-template-columns:220px 1fr 165px;align-items:center;gap:14px",
+          "display:grid;grid-template-columns:220px minmax(0,1fr) 165px;align-items:center;gap:14px",
+          "the Charts screen's second bar row (C1)."),
     # ── ⊕ SHARPEN B5 · THE STUDENTS TABLE GROWS A SCORE COLUMN ──────────
     # A fixed 140px track after THIS WEEK, on the header strip AND the row
     # (identical, or every cell slides). See `INSERT_AT[(287, 289)]`.
     287: ("style",
           "display:grid;grid-template-columns:1.7fr 1.3fr 110px 160px 160px;"
           "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
-          "display:grid;grid-template-columns:1.7fr 1.3fr 140px 110px 160px 160px;"
+          "display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1.3fr) 140px 110px 160px 160px;min-width:920px;"
           "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
-          "the Students table's header strip — a THIS WEEK SCORE column."),
+          "the Students table's header strip — a Score column (B5), and every "
+          "track fixed or `minmax(0,…)` (C1)."),
     294: ("style",
           "display:grid;grid-template-columns:1.7fr 1.3fr 110px 160px 160px;"
           "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
-          "display:grid;grid-template-columns:1.7fr 1.3fr 140px 110px 160px 160px;"
+          "display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1.3fr) 140px 110px 160px 160px;min-width:920px;"
           "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
           "the Students table's row, matching the header strip above it."),
     # ── ⊕ MRB-336 §5/§6 · THE ASSIGNMENTS TABLE GROWS AN ACTIONS COLUMN ──
@@ -1870,6 +1926,13 @@ BIND_ATTR = {
     # and share the width; this one is two text buttons and should take
     # exactly what they need, at every breakpoint, so the data columns keep
     # the widths Design gave them.
+    # ⊕ SUPERSEDED, Sharpen C1 (29 Sep 2026). `auto` is sized per ROW (each
+    # row is its own grid), so a row with Edit · Download · Delete got a
+    # wider last track than a row with Edit · Delete and every cell to its
+    # left slid — two OPEN pills 30px apart in Mide's screenshot. Every
+    # track is now a fixed px or `minmax(0,Nfr)`; the actions track is a
+    # fixed 220px (Edit Download Delete at Design's button size, measured),
+    # SUBMITTED 120px and CLASS MEAN 130px (their headers, measured).
     #
     # ⚠️ ASSERTED, WHICH IS WHY THIS IS `BIND_ATTR` AND NOT `SET_ATTR`.
     # `SET_ATTR` refuses to touch an attribute Design already wrote — right,
@@ -1881,7 +1944,7 @@ BIND_ATTR = {
           "display:grid;grid-template-columns:2fr 100px 1fr 1fr 1fr 1fr 1.2fr;"
           "background:var(--st-num-well);"
           "border-bottom:1px solid var(--st-rule-soft)",
-          "display:grid;grid-template-columns:2fr 100px 1fr 1fr 1fr 1fr 1.2fr auto;"
+          "display:grid;grid-template-columns:minmax(0,1.6fr) 150px minmax(0,1fr) minmax(0,1fr) 120px 130px minmax(0,1.7fr) 220px;min-width:1080px;"
           "background:var(--st-num-well);"
           "border-bottom:1px solid var(--st-rule-soft)",
           "the Assignments table's header strip — an eighth column for Edit "
@@ -1890,7 +1953,7 @@ BIND_ATTR = {
           "display:grid;grid-template-columns:2fr 100px 1fr 1fr 1fr 1fr 1.2fr;"
           "align-items:center;border-top:1px solid var(--st-rule-fact);"
           "cursor:pointer",
-          "display:grid;grid-template-columns:2fr 100px 1fr 1fr 1fr 1fr 1.2fr auto;"
+          "display:grid;grid-template-columns:minmax(0,1.6fr) 150px minmax(0,1fr) minmax(0,1fr) 120px 130px minmax(0,1.7fr) 220px;min-width:1080px;"
           "align-items:center;border-top:1px solid var(--st-rule-fact);"
           "cursor:pointer",
           "the Assignments table's row, matching the header strip above it."),
@@ -1963,7 +2026,7 @@ BIND_ATTR = {
           "display:grid;grid-template-columns:56px 1fr 180px 90px;"
           "align-items:center;gap:14px;padding:13px 18px;"
           "border-top:1px solid var(--st-rule-fact)",
-          {"parts": ["display:grid;grid-template-columns:56px 1fr 180px ",
+          {"parts": ["display:grid;grid-template-columns:56px minmax(0,1fr) 180px ",
                      {"e": "paper.labelCol"},
                      ";align-items:center;gap:14px;padding:13px 18px;"
                      "border-top:1px solid var(--st-rule-fact)"]},
@@ -2365,8 +2428,11 @@ _ROW_ACT = ("flex:none;font:600 14.5px/1.2 var(--st-ui);"
 _ROW_ACT_ARMED = ("flex:none;font:600 14.5px/1.2 var(--st-ui);"
                   "color:var(--st-accent-text);background:none;border:none;"
                   "padding:0;cursor:pointer")
-_ROW_ACTS = ("display:flex;align-items:center;gap:12px;flex-wrap:wrap;"
-             "padding:var(--rowpad,14px 16px)")
+# ⊕ Sharpen C1 — right-aligned in its fixed 220px track and never wrapping,
+# so Delete sits at the same x on a row with one control as on a row with
+# three.
+_ROW_ACTS = ("display:flex;align-items:center;justify-content:flex-end;gap:12px;"
+             "flex-wrap:nowrap;padding:var(--rowpad,14px 16px)")
 # ⊕ MRB-340 — the setter's name, under the title. Design's own caption
 # register: the mono eyebrow she uses for a fact about a row rather than a
 # value in it, at the size the table's own secondary text already runs at.
@@ -3616,7 +3682,7 @@ INSERT_AT = {
         "t": "div",
         "a": {"style": "padding:var(--rowpad,14px 16px);"
                        "font:500 15.5px/1.35 var(--st-ui);color:var(--st-ink);"
-                       "font-variant-numeric:tabular-nums;white-space:pre;"
+                       "font-variant-numeric:tabular-nums;white-space:pre!important;"
                        "overflow:hidden;text-overflow:ellipsis",
               "data-mrb-cell": "week-score"},
         "c": [{"t": "#", "v": {"parts": [{"e": "s.weekScore"}]}}]},
@@ -11864,7 +11930,7 @@ componentDidUpdate() {
      "      } : { title: '\u2014', eyebrow: k.code, hasReteach: false, "
      "reteachLine: '', tiles: [], questions: [], qids: [], grid: [] },",
      "        qids: questions.map(qq => ({ id: qq.id })),\n"
-     "        cols: '225px repeat(' + (questions.length || 1) + ',1fr) "
+     "        cols: '225px repeat(' + (questions.length || 1) + ',minmax(0,1fr)) "
      "92px',\n"
      "        hasQuestions: questions.length > 0,\n"
      "        noQuestions: questions.length === 0,\n"
@@ -11873,7 +11939,7 @@ componentDidUpdate() {
      "        grid\n"
      "      } : { title: '\u2014', eyebrow: k.code, hasReteach: false, "
      "reteachLine: '', tiles: [], questions: [], qids: [], grid: [],\n"
-     "          cols: '225px repeat(1,1fr) 92px',\n"
+     "          cols: '225px repeat(1,minmax(0,1fr)) 92px',\n"
      "          hasQuestions: false, noQuestions: true, "
      "labelCol: '90px' },",
      "the class-by-question table's column template, and the pair of flags "
@@ -13032,6 +13098,27 @@ componentDidUpdate() {
         "        emptyLine: c.state === 'empty' ? 'No students yet'\n"
         "          : c.n + (noOpen ? ' students · no work open' : ' students · no work set'),",
         "a class with work set but none open says so in words."
+    ),
+
+    # ══ ⊕ SHARPEN C4, 29 Sep 2026 · THE TOP BAR NEVER REPEATS THE H1 ═════
+    #
+    # The crumb (node 17) read `k.code` on the class, student and marking
+    # screens — `10H/PH1` over an h1 `10h/Ph1` on the class screen. The
+    # rule: the bar carries the PARENT as a `‹` link, and nothing when the
+    # page has no parent or something on screen already says it. So:
+    #   · student, marking → `‹ 10H/PH1`, a link to the class screen;
+    #   · class → nothing: its parent is My classes, and the "My classes"
+    #     tab is lit right beside where the crumb would be;
+    #   · classes, digest, insights → nothing (as before on all three).
+    (
+        "      hasCrumb: inClassSection,\n"
+        "      crumb: k.code,",
+        "      hasCrumb: (s.screen === 'student' || s.screen === 'marking') && !!(k && k.id),\n"
+        "      crumb: '‹ ' + (k.code || ''),\n"
+        "      goCrumb: () => MRB_GO('class', { 'class': k && k.id, year: MRB_DATA('yearParam') }),",
+        "the top-bar crumb: the parent class as a link on the student and "
+        "marking screens, and absent where it would repeat the h1 or the "
+        "lit My classes tab (Sharpen C4)."
     ),
 
 )

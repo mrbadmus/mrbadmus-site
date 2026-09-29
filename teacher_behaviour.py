@@ -1484,6 +1484,17 @@ def drive(page, path, is_empty, cdp, port, shots=None, slug=None):
                     "than a missing one."
                     % (what, d["i"], d["tag"], d["label"]))
 
+            # ⊕ Sharpen C2, 29 Sep 2026 — the Answer Breakdown panel carries
+            # no "Pupil N of M · Due …" line. Read after the sweep has opened
+            # it (every fixture with a Breakdown row presses it): the
+            # subtitle node is there, empty and hidden.
+            bd_sub = pg.eval("(function(){var s=document.querySelector("
+                             "'[data-bd=\"overlay\"] .bd-subtitle');"
+                             "return s ? {t: s.textContent, shown: !!s.offsetParent && !s.hidden} : null;})()")
+            if bd_sub and (bd_sub["t"].strip() or bd_sub["shown"]):
+                problems.append("%s: the Answer Breakdown subtitle reads %r — Sharpen C2 "
+                                "took 'Pupil N of M · Due …' off the panel" % (what, bd_sub["t"]))
+
             # 5b-ii. ⊕ RULED BY MIDE, 3 Sep 2026 — MRB-261, ASSERTED.
             #
             # ⛔ ON A FINISHED ACADEMIC YEAR THE WRITE CONTROLS ARE NOT ON
@@ -1825,6 +1836,17 @@ def drive(page, path, is_empty, cdp, port, shots=None, slug=None):
     return problems, tally
 
 
+def _breakdown_subtitle_source():
+    """⊕ Sharpen C2 — `shared/breakdown.js` no longer writes the position and
+    due line into the visible subtitle (the aria-live announcement keeps the
+    position for a screen reader)."""
+    src = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            "shared", "breakdown.js"), encoding="utf-8").read()
+    bad = 'els.subtitle.textContent = posLabel' in src or '"No due date set")' in src.split("function renderHeader", 1)[-1].split("function announcePupil", 1)[0]
+    return ["shared/breakdown.js still writes 'Pupil N of M · Due …' into the panel's "
+            "subtitle (Sharpen C2)"] if bad else []
+
+
 def main(argv):
     os.chdir(REPO)
     shots = None
@@ -1856,8 +1878,11 @@ def main(argv):
           "driven\n             on load AND after a reload\n"
           % (len(todo), len({f[0] for f in todo}), "/".join(_empties)))
 
+    src_problems = _breakdown_subtitle_source()
+    for sp in src_problems:
+        print("     ❌ " + sp)
     server, port = cdp.serve(REPO)
-    failed = 0
+    failed = len(src_problems)
     total = {"found": 0, "pressed": 0, "added": 0, "search": 0,
              "nosev": 0, "charts": 0}
     try:

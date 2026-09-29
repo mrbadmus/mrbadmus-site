@@ -770,6 +770,18 @@ def main():
                   "progress rpc: p_assignment and an ISO p_now")
 
 
+            # ⊕ Sharpen C1 — one baseline: fixed layout, a colgroup, one line per cell
+            tl = p.eval("""(function(){var t=document.getElementById('fp-table');
+              var cols=t.querySelectorAll('colgroup col').length, ths=t.querySelectorAll('thead th').length;
+              var lefts=Array.prototype.map.call(t.querySelectorAll('thead th'),function(h){return Math.round(h.getBoundingClientRect().left);});
+              var ok=true; t.querySelectorAll('tbody tr.fp-row').forEach(function(r){
+                Array.prototype.forEach.call(r.children,function(c,i){if(Math.abs(Math.round(c.getBoundingClientRect().left)-lefts[i])>1)ok=false;});});
+              var tall=Array.prototype.filter.call(t.querySelectorAll('tbody td'),function(c){return c.scrollWidth>c.clientWidth+1&&getComputedStyle(c).textOverflow!=='ellipsis';}).length;
+              return {layout:getComputedStyle(t).tableLayout, cols:cols, ths:ths, aligned:ok, spill:tall};})()""")
+            check(tl["layout"] == "fixed" and tl["cols"] == tl["ths"],
+                  "C1: the table is table-layout: fixed with one <col> per column", str(tl))
+            check(tl["aligned"] and tl["spill"] == 0, "C1: every cell sits under its header; nothing spills", str(tl))
+
             # ── the per-pupil panel (Sharpen B3) ───────────────────────────
             p.eval("document.querySelector('.fp-sort[data-sort=\"pupil\"]').click(); true")
             table_order = p.eval(ORDER)

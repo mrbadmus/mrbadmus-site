@@ -472,6 +472,9 @@
     eyebrow.id = "bd-panel-heading";
     var title = el("div", "bd-title");
     var subtitle = el("div", "bd-subtitle");
+    /* ⊕ Sharpen C2 — hidden from the start (loading and error states never
+       reach `renderHeader`), kept so the shell keeps its shape. */
+    subtitle.hidden = true;
     main.appendChild(eyebrow); main.appendChild(title); main.appendChild(subtitle);
     sheet.setAttribute("aria-labelledby", "bd-panel-heading");
 
@@ -1039,9 +1042,13 @@
   function renderHeader(student) {
     els.eyebrow.textContent = S.assignment.title || "Set work";
     els.title.textContent = student.name;
-    var posLabel = "Pupil " + (S.idx + 1) + " of " + S.roster.length;
-    els.subtitle.textContent = posLabel + " · " +
-      (S.assignment.due_at ? "Due " + fmtDateTime(S.assignment.due_at) : "No due date set");
+    /* ⊕ Sharpen C2, 29 Sep 2026 — no "Pupil N of M · Due …". The position
+       is what Previous/Next already show (their names), and the due date
+       is the page's, not the pupil's. The node stays, empty and hidden, so
+       the shell keeps its shape; `announcePupil` still says the position
+       to a screen reader. */
+    els.subtitle.textContent = "";
+    els.subtitle.hidden = true;
     els.overlay.setAttribute("data-bd-student", student.id);
 
     var prevName = S.idx > 0 ? S.roster[S.idx - 1].name : "";

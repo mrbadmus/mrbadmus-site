@@ -555,10 +555,94 @@ def strip_comments(body):
     return _LINE_COMMENT.sub(" ", body)
 
 
+# ⊕ Sharpen C1/C4, 29 Sep 2026 — TABLE TRACKS AND THE TOP BAR'S CRUMB.
+#
+# C1: every row-grid (a `grid-template-columns` that is not a `repeat(auto…`
+# card layout) uses only fixed px or `minmax(0,Nfr)` tracks — a bare `fr` is
+# `minmax(auto,1fr)` and `auto` sizes to its own row, which is how rows drift
+# off their header — and each table's header strip and row carry the SAME
+# track list. The pairs are Design's node ids.
+# C4: the bar's crumb never says the page's h1, and on the class screen (whose
+# h1 IS the class) and My classes there is none at all.
+_TRACK_PAIRS = {"class-detail.html": ((287, 294), (311, 320)),
+                "student-detail.html": ((354, 361),),
+                "assignment.html": ((413, 419),),
+                "digest.html": ((446, 453),)}
+_BARE_FR = re.compile(r"\d*\.?\d+fr\b")
+
+
+def _tpl(body):
+    i = body.find("window.__MRB_TPL__=")
+    if i < 0:
+        return None
+    obj, _ = json.JSONDecoder().raw_decode(body[i + len("window.__MRB_TPL__="):])
+    return obj.get("roots")
+
+
+def _flat(v):
+    if isinstance(v, str):
+        return v
+    if isinstance(v, dict) and "parts" in v:
+        return "".join(p if isinstance(p, str) else "{EXPR}" for p in v["parts"])
+    return ""
+
+
+def layout_problems(name, body):
+    out = []
+    roots = _tpl(body)
+    if roots is None:
+        return ["no __MRB_TPL__ to read the table tracks from"]
+    nodes = {}
+
+    def walk(n):
+        if isinstance(n, dict):
+            if n.get("i") is not None:
+                nodes[n["i"]] = n
+            for k in n.get("c") or []:
+                walk(k)
+        elif isinstance(n, list):
+            for k in n:
+                walk(k)
+    walk(roots)
+
+    def tracks(n):
+        st = _flat((n.get("a") or {}).get("style"))
+        m = re.search(r"grid-template-columns:([^;]+)", st)
+        return m.group(1).strip() if m else None
+
+    for i, n in nodes.items():
+        t = tracks(n)
+        if not t or t.startswith("repeat(auto"):
+            continue
+        # a whole-string repeat of a bare fr (the marking grid's own `cols`
+        # is an expression, checked in the logic below)
+        rest = re.sub(r"minmax\(0,\s*\d*\.?\d+fr\)", "", t)
+        if re.search(r"\bauto\b", rest) or _BARE_FR.search(rest):
+            out.append("node %s's grid tracks %r carry a bare `fr` or `auto` — a row "
+                       "can drift off its header (Sharpen C1)" % (i, t))
+    for head, row in _TRACK_PAIRS.get(name, ()):
+        if head in nodes and row in nodes and tracks(nodes[head]) != tracks(nodes[row]):
+            out.append("header %s and row %s have different tracks: %r vs %r (Sharpen C1)"
+                       % (head, row, tracks(nodes[head]), tracks(nodes[row])))
+    if name == "assignment.html" and "',1fr) " in body:
+        out.append("the marking grid's `cols` still repeats a bare 1fr (Sharpen C1)")
+    # C4 — the crumb
+    logic = body
+    hc = re.search(r"hasCrumb: ([^\n]+),", logic)
+    if not hc or "inClassSection" in hc.group(1):
+        out.append("the top-bar crumb is still shown on the class screen, whose h1 is "
+                   "the class it names (Sharpen C4)")
+    if "crumb: k.code," in logic:
+        out.append("the crumb still reads the bare class code instead of the parent "
+                   "link `‹ code` (Sharpen C4)")
+    return out
+
+
 def check_page(path, c):
     """Problems, as strings, for one built page."""
-    body = strip_comments(open(path, encoding="utf-8").read())
-    problems = []
+    raw = open(path, encoding="utf-8").read()
+    body = strip_comments(raw)
+    problems = layout_problems(os.path.basename(path), raw)
 
     for s in c["strings"]:
         if s in body:

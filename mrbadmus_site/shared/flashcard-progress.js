@@ -138,16 +138,19 @@
   /* The sort. Default is least progress first: Missing and Not started,
      then In progress by secured ascending, then Done late, then Done.
      Every column sorts; a missing value always sinks, whichever way. */
+  /* ⊕ Sharpen C1 — every column a FIXED width (`table-layout: fixed` +
+     a <colgroup> from `w`), so no row's content moves a column; only the
+     pupil column is flexible. Header words fit their widths at 12.5px mono. */
   var COLUMNS = [
-    { key: "pupil",    label: "Pupil" },
-    { key: "status",   label: "Status" },
-    { key: "made",     label: "Made",     make: true },
-    { key: "secured",  label: "Secured" },
-    { key: "sittings", label: "Sittings" },
-    { key: "time",     label: "Time" },
-    { key: "percard",  label: "Per card" },
-    { key: "rushed",   label: "Rushed" },
-    { key: "last",     label: "Last active" }
+    { key: "pupil",    label: "Pupil",       w: null },
+    { key: "status",   label: "Status",      w: 150 },
+    { key: "made",     label: "Made",        w: 90, make: true },
+    { key: "secured",  label: "Secured",     w: 180 },
+    { key: "sittings", label: "Sittings",    w: 120 },
+    { key: "time",     label: "Time",        w: 100 },
+    { key: "percard",  label: "Per card",    w: 120 },
+    { key: "rushed",   label: "Rushed",      w: 110 },
+    { key: "last",     label: "Last active", w: 150 }
   ];
 
   function columnsFor(mode) {
@@ -409,6 +412,14 @@
     var cols = columnsFor(a.mode);
     var table = $("fp-table");
     table.classList.toggle("fp-review", a.mode !== "make");
+    var cg = table.querySelector("colgroup");
+    if (!cg) { cg = h("colgroup"); table.insertBefore(cg, table.firstChild); }
+    clear(cg);
+    cols.forEach(function (c) {
+      var col = h("col", "fp-cg-" + c.key);
+      if (c.w) { col.style.width = c.w + "px"; }
+      cg.appendChild(col);
+    });
     var thead = clear(table.tHead || table.createTHead());
     var tr = h("tr");
     cols.forEach(function (c) {

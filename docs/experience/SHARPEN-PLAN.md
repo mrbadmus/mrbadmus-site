@@ -241,3 +241,25 @@ teacher one commit on top (C1, C2, C4).
 - `flashcard_progress_drive` — all checks pass (panel, both degrade branches, B4/B5/B6 probe on teacher-live.js, static checks on the built pages).
 - `tools/sharpen_flashcard_panel_live.py --expect-migration` on TEST — all pass: RPC carries `shown`/`answer`; the panel, the student-screen deck row (`In progress`, `0/4 secured`, Breakdown opens the panel, no Add feedback), the class Score cells, the My classes card (`0 of 2 in`, chase names). Throwaway world torn down by id list; residue query = 0.
 - `teacher_behaviour` (25 fixtures), `teacher_reach` (25 × 390/360), `teacher_tells`, `theme_wiring_check`, `contrast_audit --quick --gate`, `brand_one_mark` — pass.
+
+### Stage C (teacher) — C1, C2, C4
+
+- **C1** Every teacher row-grid now uses only fixed px or `minmax(0,Nfr)` tracks, header and row identical, asserted by `BIND_ATTR` and by a new `teacher_tells` check (it went red on the Stage B build and is green on this one). Tracks as built:
+  - Students `minmax(0,1.7fr) minmax(0,1.3fr) 140px 110px 160px 160px`
+  - Assignments `minmax(0,1.6fr) 150px minmax(0,1fr) minmax(0,1fr) 120px 130px minmax(0,1.7fr) 220px`
+  - Submission history `minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.1fr) 170px minmax(0,1.05fr)`
+  - Digest `minmax(0,1.5fr) minmax(0,1fr) 115px 115px minmax(0,1.5fr)`
+  - chart rows `220px minmax(0,1fr) 96px|165px`
+  - question-breakdown row `56px minmax(0,1fr) 180px <labelCol>`
+  - marking grid `225px repeat(N,minmax(0,1fr)) 92px`
+
+  A port stylesheet rule gives every row-grid cell `min-width:0` and keeps every cell but the title on one line with an ellipsis. Cells that hold a control are left unclipped, so focus rings survive. The Assignments actions sit right-aligned in a fixed 220px track and never wrap. `teacher/flashcards.html`'s table is `table-layout: fixed` with a `<colgroup>`, and `flashcard_progress_drive` asserts the layout, one col per column, every cell under its header, and nothing spilling. Measured on the fixtures at 1440: 0 misaligned cells, 0 clipped headers, 0 clipped body cells on all four tables.
+- **C2** `shared/breakdown.js`: subtitle emptied in `renderHeader` and hidden from `buildShell` on (loading/error states never reach `renderHeader`; the new check caught that), node kept; `announcePupil` still says the position. `teacher_behaviour` asserts it (source check + the opened panel's `.bd-subtitle`).
+- **C4** Node 17 (the top-bar crumb) is now a link to the parent: on the student and marking screens it reads `‹ 8R/SC1` and goes to the class screen via `SET_ON[17]` → `goCrumb` (it has `role=link` and `tabindex=0`). It no longer appears on the class screen. `teacher_tells` asserts both.
+- Deviation: C1 widths differ from the plan. Measured on the fixtures: Assignments STATUS 96→150px ("Scheduled" pill), SUBMITTED 88→120px and CLASS MEAN 96→130px (their headers), title 2fr→1.6fr and weakest 1.2fr→1.7fr (its header clipped). The history SCORE column stays at Stage B's 170px, and the Students Score column at 140px.
+- Deviation: C1 on a phone. With no `auto` minimum left, `minmax(0,…)` tracks collapse at 390 and cells overlapped (seen in the first 390 screenshot). Each table now carries a fixed `min-width` (Students 920, Assignments 1080, history 760, digest 680) and its card scrolls sideways (`overflow-x:auto`, was `overflow:hidden`, which cut the last columns off unreachably), the flashcards table's pattern. The ≤560px "wrap every nowrap caption" rule no longer applies inside a table row, and the chart-row phone rule was re-keyed to the new track string.
+- Deviation: C1 "decks" — `teacher/decks.html` is a flex list (title left, actions right), not a table, so it has no columns to drift. Nothing changed there; the flashcard progress table was treated as the deck table.
+- Deviation: C4 class-detail / digest / insights crumb `‹ My classes` → no crumb, because the "My classes" tab is lit right beside where it would sit, so it would repeat the tab (the no-redundant-text rule). flashcards.html → no bar crumb added: its eyebrow link (`8r/Sc1 · Flashcards`) directly under the bar already is the parent link. decks/today/admin/timetable: no crumb, unchanged.
+- Adjacent fix: Stage B's `.fb-*` chips were 14px, under `breakdown.css`'s own 15px floor (caught by `breakdown_shots.py`), so they are raised to 15px here, since B is already live.
+- Noted, not fixed: `breakdown_shots.py` stops at MUST-5 because its canned set was due 28 Sep 09:00, so from 29 Sep its pupil reads "Missing" rather than "hasn't started". The harness depends on the date; it is not a registered gate and this was not caused by this change.
+- Pupil pages (C4 check): not re-shot here. The teacher phone bar is one row (brand, tabs, menu), so the crumb is not drawn at ≤560px on any teacher page.
