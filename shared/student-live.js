@@ -1854,6 +1854,30 @@
     ((progress || {}).answers || []).forEach(function (a) {
       serverHas[String(a.question_index)] = 1;
     });
+
+    /* ⊕ Sharpen C5 (Mide, 29 Sep 2026) — "MARKED" IS NOT A LOCK.
+       A pupil reopening a COMPLETED set may change any answer or answer the
+       ones they left. The backend revises the SAME attempt in place when the
+       answer carries `revise: true` (API-CONTRACT.md, "Revising a completed
+       set"); without it a completed set still answers 409.
+
+       `canRevise` is a CAPABILITY PROBE, not a guess: only a backend that
+       knows about revising puts a top-level `revised` on its progress
+       payload (both `/api/assignment/progress` and the current-assignment
+       `resume` block). An older backend never gets asked to revise, so the
+       page shows the set read-only exactly as before — no request, no 409.
+
+       `serverOpt` is what the server holds for each question, so an answer
+       the server refuses can be put back on the screen as it was. */
+    var subDone = !!(progress && progress.submission &&
+                     progress.submission.status === "complete");
+    var canRevise = !!(progress &&
+      Object.prototype.hasOwnProperty.call(progress, "revised"));
+    var serverOpt = {};
+    ((progress || {}).answers || []).forEach(function (a) {
+      var li = LETTERS.indexOf(a.selected_option_letter || "");
+      if (li >= 0) { serverOpt[String(a.question_index)] = li; }
+    });
     (function prune() {
       var changed = false;
       Object.keys(pending).forEach(function (k) {
@@ -2013,8 +2037,13 @@
           });
           var k = keys[0];
           var entry = pending[k];
-          await post("/api/assignment/answer",
-                     { assignment_id: assignment.id, answer: entry.body });
+          /* ⊕ Sharpen C5 — `revise: true` (the boolean, nothing else) only on
+             an answer given to a completed set, so an in-progress set sends
+             exactly the body it always did. */
+          var sendBody = { assignment_id: assignment.id, answer: entry.body };
+          if (entry.revise) { sendBody.revise = true; }
+          await post("/api/assignment/answer", sendBody);
+          serverOpt[k] = entry.opt;
           /* ⚠️ REMOVED ONLY IF IT IS STILL THE ANSWER THAT WAS SENT. A newer
              answer to the same question, given while this request was in
              flight, must not be deleted by this request's success — it has not
@@ -2044,7 +2073,31 @@
            ⚠️ `404` ONLY. A `403`, a `409` or a `500` are all "not now" and
            are all still retried; widening this to any 4xx would throw away a
            child's answers over a transient refusal. */
-        if (err && err.status === 404) {
+        if (err && err.status === 409 &&
+            Object.keys(pending).some(function (q) { return pending[q].revise; })) {
+          /* ⊕ Sharpen C5 — A REVISION THE SERVER WILL NOT TAKE. The probe
+             above said this backend revises; a 409 on a revision means it no
+             longer does (a rollback mid-lesson). Retrying cannot succeed, so
+             every queued revision is dropped, the page is told to put the
+             server's answers back and to stop offering changes — read-only,
+             no error on the screen. The set was already complete; nothing
+             the pupil handed in is lost. */
+          var restore = [];
+          Object.keys(pending).forEach(function (q) {
+            if (!pending[q].revise) { return; }
+            restore.push({ index: Number(q),
+                           option: serverOpt[q] == null ? null : serverOpt[q] });
+            delete pending[q];
+          });
+          persist();
+          canRevise = false;
+          console.info("[student-live] this backend refused a revision; the " +
+                       "set is shown read-only");
+          try {
+            window.dispatchEvent(new CustomEvent("mrb:revise-refused",
+              { detail: { restore: restore } }));
+          } catch (evErr) { /* an old browser: the next load is read-only */ }
+        } else if (err && err.status === 404) {
           Object.keys(pending).forEach(function (k) { delete pending[k]; });
           persist();
           console.info("[student-live] assignment " + assignment.id +
@@ -2117,13 +2170,20 @@
           idx = 0;
         }
         var done = !!(sub && sub.status === "complete");
+        /* ⊕ Sharpen C5 — "Finish it": a completed set with questions still
+           unanswered, on a backend that revises, opens ON the first one it
+           left rather than on the results. `idx` above is already it. */
+        var finish = done && canRevise && count < questions.length;
         return {
           answers: answers,
           sels: {},
           held: heldNow,
-          idx: done ? 0 : idx,
+          idx: (done && !finish) ? 0 : idx,
           elapsed: (sub && sub.total_time_seconds) || 0,
-          view: done ? "done" : "q",
+          /* ⊕ Sharpen C5 — the server's own "revised after marking". */
+          revised: !!p.revised,
+          revisedAtLoad: !!p.revised,
+          view: (done && !finish) ? "done" : "q",
           handedAt: done ? fmtStamp(sub.completed_at) : null,
           late: !!(sub && sub.is_late),
           resumed: count > 0 && !done,
@@ -2139,7 +2199,9 @@
         /* A REPLACEMENT, never an addition — see the map note above. */
         pending[k] = {
           ts: ts, opt: ev.option, ref: body.question_ref,
-          letter: body.selected_option_letter, body: body
+          letter: body.selected_option_letter, body: body,
+          /* ⊕ Sharpen C5 — an answer to a COMPLETED set is a revision. */
+          revise: !!(subDone && canRevise)
         };
         seen[k] = 1;
         var kept = persist() && keptOnDevice(ev.index, ts);
@@ -2202,6 +2264,8 @@
           });
         }).then(function (r) {
           var sub = (r && r.submission) || {};
+          /* ⊕ Sharpen C5 — from here on an answer is a revision. */
+          subDone = true;
           return {
             stamp: fmtStamp(sub.completed_at),
             late: !!(r && r.is_late)
@@ -3511,6 +3575,23 @@
        are read by a LOGIC ruling in student_rulings.py, which prefers them
        over Design's checklist expression and falls back to it (unchanged)
        whenever the current bench item's question count is not known. */
+    /* ⊕ Sharpen C5 (Mide, 29 Sep 2026) — "MARKED" IS NOT A LOCK.
+       Every COMPLETED set (marked, or completed and not yet marked) gets ONE
+       way back in: "Finish it" when questions are still unanswered, "See
+       your answers" otherwise. Both open the assignment page, which shows
+       every question, the pupil's answer, the right answer and the
+       teacher's feedback, and lets them change any answer. Decks are not
+       sets (MRB-351) and keep their own button; a retake keeps Design's.
+       When the answered count could not be read the label is "See your
+       answers" — never a "Finish it" that is not true. */
+    work.forEach(function (row) {
+      if (!row || row.fc || row.retake) { return; }
+      if (row.status !== "marked" && row.status !== "pending") { return; }
+      row.reopenHref = assignmentHrefFor(row.id);
+      row.reopen = (row.qtotal && row.answered != null &&
+                    row.answered < row.qtotal) ? "Finish it" : "See your answers";
+    });
+
     var benchProgPct = "", benchProgText = "";
     if (currentId) {
       work.forEach(function (row) {
@@ -4205,6 +4286,12 @@
          either, and `n <= null` / `n === null` are false for every real
          week exactly as `n <= 0` / `n === 0` were. */
       currentWeek: weekNo == null ? null : weekNo,
+      /* ⊕ Sharpen C3 — where the week select opens: this week when this
+         week holds work, else All weeks (null), so a pupil whose only work
+         is last week's is never shown an empty list. */
+      weekDefault: (weekNo != null && (work || []).some(function (r) {
+        return r && r.week === weekNo;
+      })) ? weekNo : null,
       weekNumber: weekNo == null ? "—" : pad2(weekNo),
       weekTotal: "39",
 
@@ -4519,6 +4606,16 @@
          a teacher's written feedback and this page does not read the
          per-question attempts. */
       benchDoneFeedback: benchWork ? benchWork.href : "",
+      /* ⊕ Sharpen C5 — the done bench's ONE button, in the same words as
+         the work row's: "Finish it" or "See your answers". It replaces
+         "Read the feedback"; the page it opens shows the feedback. */
+      benchDoneAction: (function () {
+        var id = benchWork ? benchWork.id : null;
+        for (var i = 0; i < (work || []).length; i++) {
+          if (work[i] && work[i].id === id && work[i].reopen) { return work[i].reopen; }
+        }
+        return "See your answers";
+      })(),
       benchDoneTitle: benchTopic,
       /* ⊕ Stage B audit (29 Sep 2026) — empty, and both bindings `drop`: the
          greeting is the hero's job ("Welcome back, NAME"), and MARKED /
@@ -5147,7 +5244,19 @@
          with the word; see the note in build_student_port.py's BINDINGS. */
       completeLabel: "Complete\n          ",
       completeChip: "COMPLETE\n          ",
-      completeHeading: "Complete"
+      completeHeading: "Complete",
+
+      /* ⊕ Sharpen C5 (Mide, 29 Sep 2026) — "Marked" is not a lock.
+         `canRevise`: this backend revises a completed set (the same probe
+         the sink makes — a top-level `revised` on the progress payload);
+         without it the page shows the set read-only, as before.
+         `doneAll`: the results list every question — its mark, and a way
+         back to it — instead of only the wrong ones, so a pupil sees every
+         question, their answer and the right answer. */
+      canRevise: !!(progress &&
+        Object.prototype.hasOwnProperty.call(progress, "revised")),
+      doneAll: true,
+      doneListTitle: "Your answers"
     };
   }
 
@@ -5677,6 +5786,25 @@
 
           var app = window.__MRB_MOUNT__();
           mountedApp = app;
+
+          /* ⊕ Sharpen C5 — a revision the server refused (see the sink's
+             409 branch): put the server's answers back and stop offering
+             changes. The page stays on the question it was on, read-only. */
+          if (page === "assignment" && app && app.logic &&
+              typeof window.addEventListener === "function") {
+            window.addEventListener("mrb:revise-refused", function (ev) {
+              var list = (ev && ev.detail && ev.detail.restore) || [];
+              app.logic.setState(function (p) {
+                var a = Object.assign({}, p.answers);
+                list.forEach(function (r) {
+                  if (r.option == null) { delete a[r.index]; }
+                  else { a[r.index] = r.option; }
+                });
+                return { answers: a, reviseOff: true, revising: null,
+                         revised: !!p.revisedAtLoad };
+              });
+            });
+          }
 
           /* ⊕ MRB-348 ROUND THREE — THE PRACTICE FOLD-IN, AFTER THE PAINT.
              `buildClass` no longer waits for `/api/class/practice`; it hands

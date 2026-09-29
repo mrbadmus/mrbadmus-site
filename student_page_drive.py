@@ -221,6 +221,18 @@ MARKER_PROBE = r"""(function () {
   return JSON.stringify(out);
 })()"""
 
+# ⊕ Sharpen C3 — the week select that replaced the spine: its value, and
+# which option carries "this week".
+WEEK_SELECT_PROBE = r"""(function () {
+  var s = document.querySelector('[data-mrb-week-select]');
+  if (!s) { return ''; }
+  var now = '';
+  [].forEach.call(s.options, function (o) {
+    if (/this week/.test(o.text)) { now = o.value; }
+  });
+  return JSON.stringify({ value: s.value, now: now });
+})()"""
+
 # What a real student on this account should be seeing tonight. The initials
 # belong to the drive account, so they travel with it.
 EXPECT = ["8r/Sc1", os.environ.get("MRB_DRIVE_INITIALS", "AY")]
@@ -407,26 +419,35 @@ def main():
                 # agrees with the data instead of asserting a hardcoded 1 —
                 # which would go red in September for the right reason and be
                 # "fixed" by someone bumping the constant.
+                # ⊕ Sharpen C3 (29 Sep 2026) — the term spine is ONE week
+                # select now; its dots are gone. The same property, asked of
+                # the control that replaced them: the option marked "this
+                # week" is the REAL current week, and the select opens on it
+                # when that week holds work (else on All weeks — the page's
+                # own `weekDefault`, computed from the data).
                 want = page.eval(
                     "(window.__MRB_DATA__ && window.__MRB_DATA__.currentWeek)"
                     " != null ? String(window.__MRB_DATA__.currentWeek) : ''")
-                probe = page.eval(MARKER_PROBE)
+                sel = page.eval(WEEK_SELECT_PROBE)
                 try:
-                    spine = json.loads(probe) if probe else {"lit": [], "total": 0}
+                    wk = json.loads(sel) if sel else None
                 except Exception:
-                    spine = {"lit": [], "total": 0}
-                if not spine["total"]:
-                    notes.append("%s: the term spine drew no dots to probe "
-                                 "(it is hidden at this width)" % label)
+                    wk = None
+                if not wk:
+                    check(False, "the week select is on the page",
+                          "no [data-mrb-week-select] found")
                 elif not want:
-                    check(False, "the spine's NOW dot can be checked",
-                          "the page exposes no currentWeek to check it against")
+                    notes.append("%s: the page exposes no currentWeek; the "
+                                 "select opens on %r" % (label, wk["value"]))
                 else:
-                    lit = [n.lstrip("0") or "0" for n in spine["lit"]]
-                    check(lit == [want.lstrip("0") or "0"],
-                          "the term spine's NOW dot is on the REAL current week",
-                          "lit=%s want=week %s of %s"
-                          % (spine["lit"], want, spine["total"]))
+                    dflt = page.eval(
+                        "window.__MRB_DATA__.weekDefault == null ? '' "
+                        ": String(window.__MRB_DATA__.weekDefault)")
+                    check(wk["now"] == want and wk["value"] == dflt,
+                          "the week select marks the REAL current week and "
+                          "opens on its default",
+                          "now=%r value=%r want now=%s default=%r"
+                          % (wk["now"], wk["value"], want, dflt))
 
                 if "Breathing and gas exchange" in text:
                     notes.append("%s: this week's real assignment title is on screen"

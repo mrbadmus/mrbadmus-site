@@ -447,10 +447,15 @@ def cellof_check(b, base, check):
           {id: 'm1', title: 'Quiz', due_at: '2026-09-10T14:00:00+00:00', kind: 'mcq_set'},
           {id: 'f1', title: 'Deck', due_at: '2026-09-12T14:00:00+00:00', kind: asFlash ? 'flashcards' : 'mcq_set'}],
         submissions: [
+          /* ⊕ Sharpen C5 — x1 revised a day after it was marked; x2's
+             `updated_at` is 1 s after completion (the in-flight-answer race,
+             inside the 2 s slack), so it is NOT revised. */
           {id: 'x1', assignment_id: 'm1', student_id: 's1', score: 4, max_score: 8, status: 'complete',
-           completed_at: '2026-09-09T10:00:00+00:00', submitted_at: '2026-09-09T10:00:00+00:00', is_late: false},
+           completed_at: '2026-09-09T10:00:00+00:00', submitted_at: '2026-09-09T10:00:00+00:00', is_late: false,
+           updated_at: '2026-09-10T09:00:00+00:00'},
           {id: 'x2', assignment_id: 'm1', student_id: 's2', score: 4, max_score: 8, status: 'complete',
-           completed_at: '2026-09-09T11:00:00+00:00', submitted_at: '2026-09-09T11:00:00+00:00', is_late: false},
+           completed_at: '2026-09-09T11:00:00+00:00', submitted_at: '2026-09-09T11:00:00+00:00', is_late: false,
+           updated_at: '2026-09-09T11:00:01+00:00'},
           {id: 'x3', assignment_id: 'f1', student_id: 's1', score: 10, max_score: 10, status: 'complete',
            completed_at: '2026-09-11T10:00:00+00:00', submitted_at: '2026-09-11T10:00:00+00:00', is_late: false},
           {id: 'x4', assignment_id: 'f1', student_id: 's2', score: 10, max_score: 10, status: 'complete',
@@ -477,7 +482,14 @@ def cellof_check(b, base, check):
               newest: L.newestMarkedIdx(papers), mcqIdx: papers.filter(function (p) { return p.id === 'm1'; })[0].idx,
               s1Last: byId.s1.lastIso, s1LastLabel: byId.s1.last,
               s2Last: byId.s2.lastIso,
-              s3Last: byId.s3.lastIso, s3LastLabel: byId.s3.last};
+              s3Last: byId.s3.lastIso, s3LastLabel: byId.s3.last,
+              revisedMcq: (function () {
+                var mi = papers.filter(function (p) { return p.id === 'm1'; })[0].idx;
+                return mx.rows.map(function (r) { return !!(r.revised && r.revised[mi]); });
+              })(),
+              revisedNoStamp: L.isRevised({status: 'complete', completed_at: '2026-09-09T10:00:00+00:00'}),
+              revisedInProgress: L.isRevised({status: 'in_progress', completed_at: null,
+                                              updated_at: '2026-09-10T09:00:00+00:00'})};
     })(%s)
     """
     got = p.eval(probe % "true")
@@ -497,6 +509,13 @@ def cellof_check(b, base, check):
     check(got and got["newest"] == got["mcqIdx"], "newestMarkedIdx skips the flashcard set")
     check(ctl and ctl["classMean"] == 75, "cellOf control: the same pack as two MCQ sets reads 75",
           "proves the probe can see a difference")
+    # ⊕ Sharpen C5 — "revised after marking": the backend's isRevised(),
+    # run for real through buildMatrix — beyond the 2 s slack only.
+    check(got and got["revisedMcq"] == [True, False, False],
+          "buildMatrix: revised[] is true for a row changed after marking, false inside "
+          "the 2 s slack and for a pupil with no row", got and str(got["revisedMcq"]))
+    check(got and got["revisedNoStamp"] is False and got["revisedInProgress"] is False,
+          "isRevised: no updated_at, or not complete, is never revised")
     # ⊕ MRB-351 landing (27 Sep 2026) — the last-activity rule in supabase/MRB351-APPLY.md, source 2.
     check(got and got["s1Last"] == "2026-09-16T08:00:00+00:00",
           "roster: a flashcard SITTING newer than a completed cell (either MCQ or deck) wins",

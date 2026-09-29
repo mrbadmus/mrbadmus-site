@@ -573,6 +573,10 @@
     for (var i = 0; i < saved.length; i++) {
       var s = saved[i], el = atPath(root, s.path);
       if (!el || el.tagName !== s.tag) { continue; }
+      /* ⊕ Sharpen C3 — a field DRAWN FROM STATE (its `selected`/`value`
+         comes out of the template) opts out: restoring the old value over
+         the rebuild would put back what a state change just cleared. */
+      if (el.hasAttribute && el.hasAttribute("data-mrb-controlled")) { continue; }
       if ((el.getAttribute("type") || "") !== s.type) { continue; }
       if (s.checked !== undefined && (s.type === "checkbox" ||
                                       s.type === "radio")) {

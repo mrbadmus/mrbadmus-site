@@ -13690,3 +13690,36 @@ html[data-theme="dark"] textarea::placeholder {
 } /* @media screen — D8 */
 
 """
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# ⊕ SHARPEN C5 (Mide's ruling, 29 Sep 2026) — "REVISED AFTER MARKING"
+# ══════════════════════════════════════════════════════════════════════════
+#
+# A pupil may now reopen a completed set and change answers; the backend
+# rescores the SAME submission row in place, so the SCORE a teacher sees is
+# always the latest. The student screen's history row says so, in one small
+# line under that score: "revised after marking". The predicate is the
+# backend's `isRevised()` — status complete and `updated_at` more than 2 s
+# after the completion stamp — computed in `buildMatrix` (`revised[]`,
+# shared/teacher-live.js). A row read without `updated_at` is not revised.
+LOGIC = LOGIC + ((
+    "        stDotR: tone === 'warn' ? '1px' : '50%',\n"
+    "        fbCan: !!fbSub,",
+    "        stDotR: tone === 'warn' ? '1px' : '50%',\n"
+    "        /* ⊕ Sharpen C5 — this submission was changed after marking. */\n"
+    "        revised: !!(stRow && stRow.revised && stRow.revised[i]),\n"
+    "        fbCan: !!fbSub,",
+    "Sharpen C5 — the student screen's history row learns whether its "
+    "submission was revised after marking (buildMatrix's `revised[]`)."),)
+
+INSERT_AT[(365, None)] = (
+    {"t": "if", "e": "h.revised", "c": [
+        {"t": "span",
+         "a": {"data-mrb-revised": "1",
+               "style": "display:block;margin-top:5px;font:400 12px/1.3 "
+                        "var(--st-ui);color:var(--st-caption)"},
+         "c": [{"t": "#", "v": "revised after marking"}]}]},
+    "Sharpen C5 — 'revised after marking' under the score on the student "
+    "screen's submission history, when the pupil changed the set after it "
+    "was marked.")

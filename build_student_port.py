@@ -329,7 +329,13 @@ PAGES = [
                         # ⊕ Stage B audit — Design's card draws its deck size
                         # in the corner; the fixture keeps it, the live page
                         # does not (student_rulings, `cardCorner`).
-                        cardCorner="true"),
+                        cardCorner="true",
+                        # ⊕ Sharpen C3 — the week select's default. Null is
+                        # Design's own state (her spine opens on no week),
+                        # so the fixture opens on All weeks and every drive
+                        # still compares; the live page sends this week
+                        # when this week holds work.
+                        weekDefault="null"),
          # ── ⊕ RULED BY MIDE, 22 Sep 2026 · THE FIXTURE'S PROGRESS NUMBERS ─
          #
          # The completion bar reads `w.answered` and `w.qtotal` off each work
@@ -408,6 +414,9 @@ PAGES = [
          # what keeps `student_behaviour`'s visible-text comparison against
          # Design's own file green with no divergence to register.
          constants=dict(weekLabel="'WEEK 04'", lateText="'2 days late'",
+                        # ⊕ Sharpen C5 — both false: Design's page locks a
+                        # handed-in set and lists only the wrong answers.
+                        canRevise="false", doneAll="false",
                         feedbackHas="false", feedbackBody="''",
                         feedbackBy="''", feedbackWhen="''",
                         assignmentLessonHref=
@@ -843,6 +852,9 @@ BINDINGS = {
         # it is Design's typography, and it is what stops the class name
         # wrapping under the word FLASHCARDS on a 360px phone.
         ("FLASHCARDS \u00a0\u00b7\u00a0 8r/Sc1", "flashcardsTitle"),
+        # ⊕ Sharpen C5 — the done bench's one button: Design's "Read the
+        # feedback" on her fixture; "See your answers" / "Finish it" live.
+        ("Read the feedback", "benchDoneAction"),
     ],
     "assignment": [
         ("8r/Sc1", "className"),
@@ -879,6 +891,10 @@ BINDINGS = {
         # by SET_ON (node 348, `openLesson`, WRAP-gated on `assignmentLessonHref`
         # — see student_rulings.py); this is only the word.
         ("Open lesson 02", "assignmentLessonLabel"),
+        # ⊕ Sharpen C5 — the results list's heading: Design's "Where it went
+        # wrong" on her fixture, "Your answers" on the live page, where the
+        # list holds every question.
+        ("Where it went wrong", "doneListTitle"),
     ],
 }
 

@@ -307,8 +307,9 @@
   async function loadSubmissions(sb, assignmentId) {
     return fetchPaged("submissions", function (from, to) {
       return sb.from("assignment_submissions")
+        /* ⊕ Sharpen C5 — `updated_at`, for "revised after marking". */
         .select("id, student_id, score, max_score, status, completed_at, " +
-                "submitted_at, is_late, total_time_seconds, attempts, attempt_no")
+                "submitted_at, updated_at, is_late, total_time_seconds, attempts, attempt_no")
         .eq("assignment_id", assignmentId)
         .is("deleted_at", null)
         .order("id", { ascending: true })
@@ -420,6 +421,19 @@
      ═════════════════════════════════════════════════════════════════════ */
   function paperClosed(assignment) {
     return !!(assignment.due_at && Date.parse(assignment.due_at) <= Date.now());
+  }
+  /* ⊕ Sharpen C5 (29 Sep 2026) — the backend's `isRevised()`, the same
+     predicate teacher-live.js uses: complete, and `updated_at` more than
+     2 s after the completion stamp (an answer in flight when Complete
+     landed rescores a moment later; the slack keeps that out). */
+  var REVISED_SLACK_MS = 2000;
+  function isRevised(sub) {
+    if (!sub || sub.status !== "complete" || !sub.updated_at) { return false; }
+    var done = sub.completed_at || sub.submitted_at;
+    if (!done) { return false; }
+    var u = Date.parse(sub.updated_at), d = Date.parse(done);
+    if (isNaN(u) || isNaN(d)) { return false; }
+    return u > d + REVISED_SLACK_MS;
   }
   function completedIso(sub) {
     return (sub && (sub.completed_at || sub.submitted_at)) || null;
@@ -684,6 +698,14 @@
       handedTile = statTile("HANDED IN", value, fmtShort(completedIso(sub)));
       if (late === true) { handedTile.valueNode.classList.add("is-late"); }
       if (late === false) { handedTile.valueNode.classList.add("is-good"); }
+      /* ⊕ Sharpen C5 — the pupil changed it after it was marked; the SCORE
+         tile is already the latest. When, under when it was handed in. */
+      if (isRevised(sub)) {
+        var rv = el("div", "bd-stat-sub", "Revised after marking " +
+                    fmtDateTime(sub.updated_at));
+        rv.setAttribute("data-bd-revised", "1");
+        handedTile.node.appendChild(rv);
+      }
     } else {
       var st = statusWord(sub, S.assignment);
       handedTile = statTile("HANDED IN", st.word,

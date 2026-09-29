@@ -201,7 +201,16 @@ PAGE_STRONG_TOL = 0.05
 # would have read as a defect in a ruling that had been carried out. It is
 # asserted in `PAGE_OK_MARKS` instead, at its own colour, with its own count
 # and its own contrast floor.
-PAGE_STRONG_MARKS = {"legend-done": 1, "tile-seg": 4}
+# ⊕ Sharpen C3 (Mide, 29 Sep 2026) — THE TABLE IS EMPTY NOW. Both kinds
+# lived on the term spine (the legend's DONE dot and the week tiles' done
+# segments), and the spine is one week select on the port (student_rulings
+# PRUNE 107). It read:
+#
+#     PAGE_STRONG_MARKS = {"legend-done": 1, "tile-seg": 4}
+#
+# The measurement below still runs: with nothing expected, any espresso mark
+# that turns up and is not painted #4A3728 is still a finding.
+PAGE_STRONG_MARKS = {}
 
 
 # ── the DONE dot, which is bright now, and still must not take the theme ──

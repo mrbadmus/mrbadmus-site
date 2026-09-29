@@ -169,7 +169,9 @@ window.__MRB_DATA__ = {
   "assignmentLessonHref": '/ks3/biology/breathing-and-gas-exchange/the-gas-exchange-system.html',
   "assignmentNoteBody": 'Look back at question 4 before you start: it uses the method from the practical.',
   "assignmentNoteHas": true,
+  "canRevise": false,
   "classHref": '/student/class.html',
+  "doneAll": false,
   "feedbackBody": '',
   "feedbackBy": '',
   "feedbackHas": false,
@@ -182,5 +184,6 @@ window.__MRB_DATA__ = {
   "completeChip": "HANDED IN\n          ",
   "completeHeading": "Handed in",
   "completeLabel": "Hand it in\n          ",
+  "doneListTitle": "Where it went wrong",
   "topicTitle": "Cells & microscopy"
 };

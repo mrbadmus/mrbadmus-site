@@ -119,11 +119,21 @@ DRIVES = {
         ("the account sheet opens", [("has", "AY")]),
         ("a work tab filters", [("click", "MARKED 3")]),
         ("a second work tab filters", [("click", "MARKED 3"), ("click", "TO DO 2")]),
-        ("a week bar filters the spine", [("click", "03")]),
+        # ⊕ Sharpen C3 (29 Sep 2026) — the term spine is ONE week select on
+        # the port. `("week", n)` is the same INTENT on both files: on
+        # Design's it presses the spine's bar `pad(n)` (or, for None, SHOW
+        # ALL 12 WEEKS); on the port it chooses option `n` (or All weeks) in
+        # the select. Both land in the same state — `st.week` — so the work
+        # list under it is compared byte for byte exactly as before; what
+        # each file draws to SET the week is registered (RULED_DIVERGENCE,
+        # RULED_CONTROLS, RULED_ADDITIONS).
+        ("a week bar filters the spine", [("week", 3)]),
         ("SHOW ALL 12 WEEKS clears it",
-         [("click", "03"), ("click", "SHOW ALL 12 WEEKS")]),
+         [("week", 3), ("week", None)]),
         ("the composed filters empty the list and offer Clear filters",
-         [("click", "MARKED 3"), ("click", "02")]),
+         [("click", "MARKED 3"), ("week", 2)]),
+        ("Clear filters clears the week too",
+         [("click", "MARKED 3"), ("week", 2), ("click", "Clear filters")]),
         ("a bench task ticks and the meter moves",
          [("click", "Answer the eight questions")]),
         ("two bench tasks tick",
@@ -399,12 +409,33 @@ _STATE = r"""(function () {
 })()"""
 
 
-def drive(page, steps):
+# ⊕ Sharpen C3 — the port's week select. Returns the chosen option's text so
+# a select that ignored the value reads as a miss rather than a pass.
+_WEEK_SELECT = """(function (n) {
+  var s = document.querySelector('[data-mrb-week-select]');
+  if (!s) { return 'MISS'; }
+  var want = n === null ? '' : String(n);
+  var hit = [].some.call(s.options, function (o) { return o.value === want; });
+  if (!hit) { return 'MISS'; }
+  s.value = want;
+  s.dispatchEvent(new Event('change', {bubbles: true}));
+  return 'ok';
+})(%s)"""
+
+
+def drive(page, steps, side="design"):
     """Run one drive. Returns a list of steps that could not be performed."""
     missed = []
     for step in steps:
         kind = step[0]
-        if kind == "click":
+        if kind == "week":
+            if side == "design":
+                got = page.eval(_CLICK % json.dumps(
+                    "SHOW ALL 12 WEEKS" if step[1] is None
+                    else "%02d" % step[1]))
+            else:
+                got = page.eval(_WEEK_SELECT % json.dumps(step[1]))
+        elif kind == "click":
             got = page.eval(_CLICK % json.dumps(step[1]))
         elif kind == "clickAt":
             got = page.eval(_CLICK_AT % (json.dumps(step[1]), step[2]))
@@ -423,7 +454,7 @@ def drive(page, steps):
     return missed
 
 
-def run_one(cdp, root, path, drives):
+def run_one(cdp, root, path, drives, side="design"):
     """Every drive, each from a fresh load. Returns {label: state}."""
     out = {}
     server, port = cdp.serve(root)
@@ -439,7 +470,7 @@ def run_one(cdp, root, path, drives):
                 # any of them being wrong.
                 page.goto(url)
                 time.sleep(2.6)
-                missed = drive(page, steps)
+                missed = drive(page, steps, side)
                 time.sleep(0.5)
                 st = json.loads(page.eval(_STATE))
                 st["missed"] = [list(m) for m in missed]
@@ -489,7 +520,7 @@ def run(cdp):
         name = pair["name"]
         drives = DRIVES[name]
         d = run_one(cdp, REF, pair["design"], drives)
-        g = run_one(cdp, SITE, pair["ported"], drives)
+        g = run_one(cdp, SITE, pair["ported"], drives, side="port")
         amended_states = None
         if _amended_wanted(pair):
             amended_states = run_one(cdp, pair["amended_root"],
@@ -647,6 +678,19 @@ RULED_DIVERGENCE = {
         # buttons; the hint told a pupil to press them.
         ("the term spine's TAP A WEEK TO FILTER hint (Stage B audit)",
          r"TAP A WEEK TO FILTER "),
+        # ⊕ Sharpen C3 (Mide, 29 Sep 2026) — PRUNE 107: the whole term spine
+        # (legend, SHOW ALL 12 WEEKS, the twelve bars) is one week select on
+        # the port. Applied after the TAP A WEEK entry above, which has
+        # already taken its hint out of this span.
+        ("the term spine (Sharpen C3)",
+         r"TERM SPINE (?:SHOW ALL 12 WEEKS )?DONE OPEN MISSED (?:\d\d ){12}"),
+        # PRUNE 149: the "WEEK 03 ONLY ×" chip — the select says the week.
+        ("the work header's WEEK NN ONLY chip (Sharpen C3)",
+         r"(?<=WORK )WEEK \d\d ONLY "),
+        # WRAP 154: "AUTUMN TERM" beside the work header — the select says
+        # the scope, and the list is the year's work, not one term's.
+        ("the work header's term label (Sharpen C3)",
+         r"(?<=WORK )AUTUMN TERM "),
         # ── ⊕ ONE MARK (Mide's ruling, 13 Sep 2026; one-mark run 27 Sep) ──
         #
         # *"ONE mark on every page … the wordmark "MrBadmus" (no "AI")."*
@@ -899,7 +943,12 @@ RULED_DIVERGENCE = {
 # the text, and a ruling that reached only the text would report "controls only
 # in Design: ['Recall']" on all nineteen drives and read like a broken port.
 RULED_CONTROLS = {
-    "class view": ["Start a round", "Recall"],
+    "class view": ["Start a round", "Recall",
+                   # ⊕ Sharpen C3 — the term spine's controls and the work
+                   # header's week chip, all replaced by one <select> (which
+                   # is not a button or a link, so it adds nothing here).
+                   "SHOW ALL 12 WEEKS", "WEEK 03 ONLY", "WEEK 02 ONLY"]
+                  + ["%02d" % n for n in range(1, 13)],
 }
 #
 # ⊕ RULED 21 Aug 2026 (MRB-275). The bar shows the TOTAL and omits the split.
@@ -1020,6 +1069,12 @@ RULED_ADDITIONS = {
         # future Design surface, and stripping it from the port's side
         # wherever it occurred would take real text out of a live comparison.
         # Anchored on `% ` it can only match the label this ruling adds.
+        # ⊕ Sharpen C3 (Mide, 29 Sep 2026) — the one week select that
+        # replaced the term spine. `innerText` of a <select> is every
+        # option's text, so the whole option list is the span; anchored
+        # after the tabs it follows, so it can only match the select.
+        ("the week select (Sharpen C3)",
+         r"(?<=MARKED \d )All weeks (?:Week \d+(?: · (?:this week|missed))? )+"),
         ("the CORRECT label under a marked row's percentage",
          r"(?<=% )CORRECT ?"),
         # The other half of the same ruling: the breakdown, in the panel the

@@ -6598,3 +6598,294 @@ STYLE_EDIT["class view"][10388] = [
 # 40px gap between them is then vertical space above the docket. Same 40px
 # on a wide screen, 20px when it is a stack.
 STYLE_EDIT["class view"][10101] = [("gap:40px;", "gap:clamp(20px,3vw,40px);")]
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# ⊕ SHARPEN C3 (Mide's ruling, 29 Sep 2026) — THE TERM SPINE BECOMES ONE
+# WEEK SELECT
+# ══════════════════════════════════════════════════════════════════════════
+#
+# "The row of week cards (1…12) on the pupil class page takes a fifth of the
+# page and on a phone is the first thing seen. Replace it with one compact
+# control: a select of weeks, default this week, that filters the work list
+# exactly as the spine did."
+#
+# Also the spine drew weeks 1..12 only while `w.week` is `academic_week`
+# (1..39): from week 13 it could not show a pupil's work at all. The select
+# lists the weeks that actually hold work, plus this week.
+#
+#   107  the whole spine section (legend, SHOW ALL 12 WEEKS, the 12 bars). The
+#        old node-114 prune ("TAP A WEEK TO FILTER") was inside it and goes.
+#   149  the work header's "WEEK 03 ONLY ×" chip — the select now says which
+#        week is showing, and "All weeks" clears it.
+#
+# The filter line Design wrote (`if (st.week != null) list = …`) is untouched;
+# only what sets `st.week` changes. `pickWeek`/`clearWeek` stay defined
+# (`resetFilters` — "Clear filters" on an empty list — still clears the week).
+#
+# DEFAULT: this week when this week holds work, else All weeks — a pupil with
+# only last week's marked set must not open onto an empty list. It arrives as
+# DATA (`weekDefault`, shared/student-live.js), so Design's fixture opens on
+# All weeks exactly as her file does and every behaviour drive still compares.
+PRUNE["class view"] = [n for n in PRUNE["class view"] if n != 114] + [107, 149]
+for _n in (107, 118, 128):
+    SET_ATTR["class view"].pop(_n, None)
+
+LOGIC["class view"].extend([
+    (
+        "    tab: 'all', week: null, open: null,",
+        "    /* ⊕ Sharpen C3 — the week select's default (see the section in\n"
+        "       student_rulings.py): this week when it holds work, else all. */\n"
+        "    tab: 'all', week: MRB_DATA('weekDefault'), open: null,",
+    ),
+    (
+        "    const tabDefs = [\n",
+        "    /* ⊕ Sharpen C3 — the options of the one week select that replaced\n"
+        "       the term spine: every week that holds work, plus this week,\n"
+        "       ascending, after All weeks. The suffix is the spine's stack\n"
+        "       state in words (this week / missed). */\n"
+        "    const wkNow = MRB_DATA('currentWeek');\n"
+        "    const wkSet = {};\n"
+        "    all.forEach((w) => { if (w.week != null) wkSet[w.week] = true; });\n"
+        "    if (wkNow != null) wkSet[wkNow] = true;\n"
+        "    const weekOptions = [{ value: '', label: 'All weeks',\n"
+        "      selected: st.week == null ? 'selected' : false }].concat(\n"
+        "      Object.keys(wkSet).map(Number).sort((a, b) => a - b).map((n) => ({\n"
+        "        value: String(n),\n"
+        "        label: 'Week ' + n + (n === wkNow ? ' \\u00B7 this week'\n"
+        "          : (all.some((w) => w.week === n && w.status === 'missed')\n"
+        "            ? ' \\u00B7 missed' : '')),\n"
+        "        selected: st.week === n ? 'selected' : false\n"
+        "      })));\n"
+        "    const tabDefs = [\n",
+    ),
+    (
+        "      weekPicked: st.week != null, noWeekPicked: st.week == null,\n",
+        "      weekPicked: st.week != null, noWeekPicked: st.week == null,\n"
+        "      /* ⊕ Sharpen C3 — the week select. */\n"
+        "      weekOptions: weekOptions,\n"
+        "      pickWeekSelect: (e) => this.setState({\n"
+        "        week: e.target.value === '' ? null : Number(e.target.value) }),\n",
+    ),
+])
+
+# The select, at the end of the work header row (147): "Work", the tabs, then
+# the week. The row already wraps (`flex-wrap:wrap`), so on a phone the select
+# takes the next line under the tabs. The tabs' own look — mono caps on the
+# segmented well — so it reads as part of the same filter bar; no new colour.
+# `data-mrb-controlled`: the runtime restores every field's value over a
+# redraw (MRB-287), which would put back a week "Clear filters" has just
+# cleared; this select is drawn from state, so it opts out.
+INSERT_AT["class view"][(147, None)] = (
+    {"t": "select", "onch": "pickWeekSelect",
+     "a": {"aria-label": "Week", "data-mrb-week-select": "1",
+           "data-mrb-controlled": "1",
+           "style": "min-height:40px;box-sizing:border-box;max-width:100%;"
+                    "padding:0 30px 0 12px;border:1px solid var(--st-rule);"
+                    "border-radius:var(--st-r-control);"
+                    "background-color:var(--st-seg-bg);color:var(--st-ink);"
+                    "font:500 clamp(11px,0.9cqw,12px)/1 var(--st-mono);"
+                    "letter-spacing:0.1em;text-transform:uppercase;"
+                    "cursor:pointer;-webkit-appearance:none;appearance:none;"
+                    "background-image:linear-gradient(45deg,transparent 50%,"
+                    "var(--st-caption) 50%),linear-gradient(135deg,"
+                    "var(--st-caption) 50%,transparent 50%);"
+                    "background-position:calc(100% - 16px) 50%,"
+                    "calc(100% - 11px) 50%;background-size:5px 5px,5px 5px;"
+                    "background-repeat:no-repeat"},
+     "c": [{"t": "for", "e": "weekOptions", "as": "o", "c": [
+         {"t": "option",
+          "a": {"value": {"parts": [{"e": "o.value"}]},
+                "selected": {"parts": [{"e": "o.selected"}]}},
+          "c": [{"t": "#", "v": {"parts": [{"e": "o.label"}]}}]}]}]},
+    "Sharpen C3 — the one week select that replaced the term spine, at the "
+    "end of the work list's header row, after the All / To do / Marked tabs.")
+# The spine's week numerals (133) held the only run of this shorthand on the
+# class view; the entry leaves with the node it scaled.
+TYPE_SCALE["class view"] = [e for e in TYPE_SCALE["class view"]
+                            if e[0] != "font:400 10px/1 var(--st-mono);letter-spacing:0.06em"]
+
+# "AUTUMN TERM" beside the work header (154, shown when no week is picked):
+# the select beside it already says the scope ("All weeks"), and the list it
+# heads is the whole year's work, not one term's. Drawn never — WRAPPED rather
+# than pruned because the text node is also where `termLabel` is bound from
+# (build_student_port BINDINGS), and the crumb and the leaderboard still read
+# that key.
+WRAP["class view"][154] = "showTermChip"
+LOGIC["class view"].append((
+    "      pickWeekSelect: (e) => this.setState({\n",
+    "      showTermChip: false,\n"
+    "      pickWeekSelect: (e) => this.setState({\n",
+))
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# ⊕ SHARPEN C5 (Mide's ruling, 29 Sep 2026) — PUPILS CAN ALWAYS REOPEN THEIR
+# HOMEWORK
+# ══════════════════════════════════════════════════════════════════════════
+#
+# "'Marked' is not a lock. A pupil opening a completed or marked set sees
+# every question, their answer and the right answer, and can change any
+# answer or finish the ones they never answered. … Add 'See your answers' /
+# 'Finish it' as the ONE button per state, no checklist, no extra text.
+# Practice rounds unaffected."
+#
+# The backend revises the SAME attempt in place when an answer carries
+# `revise: true` (shared/student-live.js sends it on a completed set, and only
+# when the backend's progress payload shows it knows how — `canRevise`).
+#
+# CLASS VIEW — the expanded work row and the done bench.
+#   · `w.reopen` ("Finish it" / "See your answers") and `w.reopenHref` come
+#     from the live data for every completed, non-deck row. Design's fixture
+#     rows carry neither, so her own labels stand there.
+#   · the expanded row's "Close" (217) goes on those rows — ONE button; the
+#     row's own header closes it.
+#   · the done bench's "Read the feedback" link says `benchDoneAction`; it
+#     already opened the assignment page, which shows the feedback.
+LOGIC["class view"].extend([
+    (
+        "        primaryLabel: w.retake ? 'Retake it' : isMarked ?",
+        "        /* ⊕ Sharpen C5 — a completed set's ONE button. */\n"
+        "        primaryLabel: w.retake ? 'Retake it' : w.reopen ? w.reopen : isMarked ?",
+    ),
+    (
+        "        primary: (w.status === 'open' || w.status === 'missed' || w.retake)\n",
+        "        primary: (w.reopenHref && !w.retake)\n"
+        "          ? () => { window.location.href = w.reopenHref; }\n"
+        "          : (w.status === 'open' || w.status === 'missed' || w.retake)\n",
+    ),
+    (
+        "        expanded: expanded, caret: expanded ? '225deg' : '45deg',\n",
+        "        expanded: expanded, caret: expanded ? '225deg' : '45deg',\n"
+        "        /* ⊕ Sharpen C5 — a completed set's row has ONE button. */\n"
+        "        showClose: !w.reopen,\n",
+    ),
+])
+WRAP["class view"][217] = "r.showClose"
+
+# ASSIGNMENT — the question screen and the results.
+#   · `locked` no longer means "handed in": on a set the backend can revise,
+#     an unanswered question is simply answerable, and an answered one opens
+#     through ONE button, "Change my answer" (then Confirm, as ever).
+#   · the results list every question (`doneAll`): its number, the stem, one
+#     mark (✓ right, ✗ wrong, — not answered) and "Look at it" / "Answer it".
+#     The YOU CHOSE / THE ANSWER boxes stay, on the wrong ones.
+#   · the eyebrow says "revised after marking" when the server says so, or
+#     once this page has revised it — the words the teacher sees.
+# Design's fixture: `canRevise` and `doneAll` are false, so every line below
+# computes exactly what her file does.
+LOGIC["assignment"].extend([
+    (
+        "  pad(n) { return n < 10 ? '0' + n : String(n); }\n",
+        "  /* ⊕ Sharpen C5 — this set may be changed after hand-in: the backend\n"
+        "     revises (`canRevise`, from the data) and has not refused one. */\n"
+        "  canRevise() { return !!MRB_DATA('canRevise') && !this.state.reviseOff; }\n"
+        "  pad(n) { return n < 10 ? '0' + n : String(n); }\n",
+    ),
+    (
+        "    if (s.answers[s.idx] != null || s.handedAt) return;",
+        "    if ((s.answers[s.idx] != null && s.revising !== s.idx) ||\n"
+        "        (s.handedAt && !this.canRevise())) return;",
+    ),
+    (
+        "    if (oi == null || s.answers[s.idx] != null || s.handedAt) return;",
+        "    if (oi == null || (s.answers[s.idx] != null && s.revising !== s.idx) ||\n"
+        "        (s.handedAt && !this.canRevise())) return;",
+    ),
+    (
+        "      return { answers: a, held: h, notKept: nk, resumed: false, paused: false };",
+        "      return { answers: a, held: h, notKept: nk, resumed: false, paused: false,\n"
+        "        /* ⊕ Sharpen C5 — a confirmed change closes the edit, and an\n"
+        "           answer given after hand-in is a revision. */\n"
+        "        revising: null, revised: !!p.revised || !!p.handedAt };",
+    ),
+    (
+        "    this.setState({ idx: n, view: 'q', sheet: false, zoom: false, resumed: false }, () => this.saveLive());",
+        "    this.setState({ idx: n, view: 'q', sheet: false, zoom: false, resumed: false,\n"
+        "      revising: null }, () => this.saveLive());",
+    ),
+    (
+        "    const locked = pick != null || handed;",
+        "    /* ⊕ Sharpen C5 — handed in is not locked on a set that can be\n"
+        "       revised: an answered question unlocks through Change my answer,\n"
+        "       an unanswered one is simply answerable. */\n"
+        "    const canRevise = handed && this.canRevise();\n"
+        "    const locked = pick != null ? st.revising !== idx : (handed && !canRevise);",
+    ),
+    (
+        "      if (a == null || a === this.questions[i].a) continue;\n",
+        "      /* ⊕ Sharpen C5 — every question when `doneAll`. */\n"
+        "      const doneAll = !!MRB_DATA('doneAll');\n"
+        "      const isLeft = a == null, isRight = !isLeft && a === this.questions[i].a;\n"
+        "      if (!doneAll && (isLeft || isRight)) continue;\n",
+    ),
+    (
+        "        jumpLabel: 'Look at it',\n",
+        "        jumpLabel: isLeft && canRevise ? 'Answer it' : 'Look at it',\n"
+        "        isWrong: !isLeft && !isRight, hasMark: doneAll,\n"
+        "        markText: isRight ? '\\u2713' : isLeft ? '\\u2014' : '\\u2717',\n"
+        "        markLabel: isRight ? 'Right' : isLeft ? 'Not answered' : 'Wrong',\n"
+        "        markColor: isRight ? 'var(--ks3-ok-text)' : isLeft ? 'var(--st-caption)' : 'var(--err)',\n",
+    ),
+    (
+        "        { label: 'WRONG', value: pad(wrongList.length) },\n",
+        "        { label: 'WRONG', value: pad(nDone - nRight) },\n",
+    ),
+    (
+        "      doneEyebrow: 'Completed' + (st.handedAt ? ' ' + st.handedAt : '') + (st.late ? ' \\u00B7 ' + MRB_DATA('lateText') : ''),",
+        "      doneEyebrow: 'Completed' + (st.handedAt ? ' ' + st.handedAt : '') + (st.late ? ' \\u00B7 ' + MRB_DATA('lateText') : '')\n"
+        "        /* ⊕ Sharpen C5 — what the teacher's row says, said here too. */\n"
+        "        + (st.revised ? ' \\u00B7 revised after marking' : ''),",
+    ),
+    (
+        "      showBrand: true,\n",
+        "      showBrand: true,\n"
+        "      /* ⊕ Sharpen C5 — the one way into changing an answered question. */\n"
+        "      showChange: onQ && canRevise && pick != null && st.revising !== idx,\n"
+        "      changeAnswer: () => this.setState((p) => {\n"
+        "        const sl = Object.assign({}, p.sels); delete sl[p.idx];\n"
+        "        return { revising: p.idx, sels: sl };\n"
+        "      }),\n",
+    ),
+])
+
+# The results card's boxes (YOU CHOSE / THE ANSWER) only on a wrong answer.
+WRAP["assignment"][324] = "w.isWrong"
+
+# The mark, at the end of each results card's header row (321), after the stem.
+INSERT_AT["assignment"][(321, 323)] = (
+    {"t": "if", "e": "w.hasMark", "c": [
+        {"t": "span",
+         "a": {"data-mrb-done-mark": "1", "role": "img",
+               "aria-label": {"parts": [{"e": "w.markLabel"}]},
+               "style": {"parts": [
+                   "margin-left:auto;flex:none;font:700 17px/1.2 var(--st-ui);"
+                   "color:", {"e": "w.markColor"}]}},
+         "c": [{"t": "#", "v": {"parts": [{"e": "w.markText"}]}}]}]},
+    "Sharpen C5 — each results card's mark: tick, cross or dash.")
+
+# "Change my answer" — under the options, on the question card itself (the
+# action bar is already full at 390: Back, ›, Summary). Secondary, so it
+# never competes with Confirm, which appears once a new option is picked.
+_C5_CHANGE = {"t": "if", "e": "showChange", "c": [
+        {"t": "div", "a": {"style": "margin-top:14px"}, "c": [
+            {"t": "button", "on": "changeAnswer",
+             "a": {"type": "button", "data-mrb-change-answer": "1",
+                   "style": "all:unset;cursor:pointer;display:inline-flex;"
+                            "align-items:center;min-height:46px;box-sizing:"
+                            "border-box;padding:0 clamp(14px,1.5cqw,18px);"
+                            "border:1.5px solid var(--st-btn-border);"
+                            "border-radius:var(--st-r-btn);font:600 15px/1 "
+                            "var(--st-ui);color:var(--st-body);"
+                            "white-space:nowrap"},
+             "c": [{"t": "#", "v": "Change my answer"}]}]}]}
+# INSERT_AT holds ONE entry per (parent, after), and (106, 251) already
+# carries the question screen's feedback panel — so both travel as one
+# insertion, in a `display:contents` wrapper: the button first (it belongs
+# to the options above it), then the feedback panel, unchanged.
+_C5_FB = INSERT_AT["assignment"][(106, 251)]
+INSERT_AT["assignment"][(106, 251)] = (
+    {"t": "span", "a": {"style": "display:contents"},
+     "c": [_C5_CHANGE, _C5_FB[0]]},
+    _C5_FB[1] + " ⊕ Sharpen C5 — preceded by 'Change my answer', the one "
+    "way into changing an answered question on a completed set.")

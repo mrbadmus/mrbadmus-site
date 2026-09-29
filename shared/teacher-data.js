@@ -2290,9 +2290,14 @@ window.MrBadmusTeacherData = (function () {
                timestamp an IN-PROGRESS row has (`completed_at`/`submitted_at`
                are both null until the paper is finished); `buildMatrix`'s
                `activity[]` reads it so "last active" stops being blind to a
-               pupil still mid-way through an open paper. */
+               pupil still mid-way through an open paper.
+
+               ⊕ Sharpen C5 (29 Sep 2026) — `updated_at` ADDED. A pupil may
+               now revise a completed set in place (the backend rescoring the
+               SAME row), and `buildMatrix`'s `revised[]` reads it to say
+               "revised after marking" on the student screen. */
             .select('id, assignment_id, student_id, score, max_score, ' +
-                    'submitted_at, completed_at, started_at, status, is_late, attempts, attempt_no')
+                    'submitted_at, completed_at, started_at, updated_at, status, is_late, attempts, attempt_no')
             .in('assignment_id', chunk)
             .is('deleted_at', null);
           if (r.error) throw r.error;
