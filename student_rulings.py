@@ -5364,11 +5364,18 @@ LOGIC["class view"].extend([
         "  openHomework = (id) => {\n"
         "    const H = (typeof window !== 'undefined') ? window.MRBHomework : null;\n"
         "    if (!H || !id) { return; }\n"
-        "    this.setState({ cards: true, account: false, flipped: false, recall: false, hw: id, hwErr: false });\n"
+        "    this.setState({ cards: true, account: false, flipped: false, recall: false, hw: id, hwErr: false, hwGone: false });\n"
+        "    /* ⊕ Sharpen (PUPIL-FLOW §13.6) — a set the teacher deleted after\n"
+        "       this page loaded: the server says `not_your_homework`, and the\n"
+        "       overlay says the work was taken down instead of offering a\n"
+        "       Try again that can never work. */\n"
         "    H.open(id).then((e) => { e.onChange = this.hwTick; this.hwTick(); },\n"
-        "                    () => this.setState({ hwErr: true }));\n"
+        "                    (err) => this.setState({ hwErr: true,\n"
+        "                      hwGone: !!err && err.message === 'not_your_homework' }));\n"
         "  };\n"
         "  hwRetry = () => { if (this.state.hw) { this.openHomework(this.state.hw); } };\n"
+        "  hwRetryPass = () => { const e = this.hwEngine(); if (e) { e.retry(); } };\n"
+        "  hwGoHome = () => { location.replace(location.pathname + location.search); };\n"
         "  /* ⊕ PUPIL FLOW (docs/mrb351/PUPIL-FLOW.md §11, A13) — × ends the\n"
         "     sitting whenever the pupil did anything in it: a Check, an\n"
         "     \"I don't know\" or a rating. The engine decides. */\n"
@@ -5397,19 +5404,23 @@ LOGIC["class view"].extend([
         "  hwDoneTap = () => this.closeAll();\n"
         "  hwNoop = () => {};\n"
         "  /* A rating button: FILLED when it is the one chosen for the pupil\n"
-        "     (A1 — tapping it is the tap that advances), outlined otherwise. */\n"
-        "  hwRateStyle(tone, on) {\n"
-        "    return on\n"
+        "     (A1 — tapping it is the tap that advances), outlined otherwise,\n"
+        "     faded when the verdict does not allow it (Sharpen §13.1). */\n"
+        "  hwRateStyle(tone, on, off) {\n"
+        "    return (on\n"
         "      ? 'border:1.5px solid ' + tone + ';background:' + tone + ';color:var(--on-accent);'\n"
-        "      : 'border:1.5px solid ' + tone + ';background:var(--pg-card);color:' + tone + ';';\n"
+        "      : 'border:1.5px solid ' + tone + ';background:var(--pg-card);color:' + tone + ';')\n"
+        "      + (off ? 'opacity:.4;cursor:default;' : '');\n"
         "  }\n"
         "\n"
         "  hwVals() {\n"
         "    const e = this.hwEngine();\n"
         "    const blank = { tag: '', topic: '', front: '', back: '', mine: false };\n"
-        "    if (!e || !e.state) {\n"
+        "    const gone = !!this.state.hwGone || (!!e && e.error === 'gone');\n"
+        "    if (!e || !e.state || gone) {\n"
         "      return { hwOn: true, hwNotOn: false, hwShowCard: false, hwLoading: true,\n"
-        "        hwErr: !!this.state.hwErr, hwWriting: false, hwRating: false,\n"
+        "        hwErr: !!this.state.hwErr && !gone, hwGone: gone, hwGoHome: this.hwGoHome,\n"
+        "        hwWriting: false, hwRating: false,\n"
         "        hwPanel: false, hwMineOn: false, hwPlay: false, hwStripHide: 'display:none;',\n"
         "        hwNoteOn: false, hwSecuredOn: false, hwHelperOn: false, hwOffline: false,\n"
         "        hwHeadline: '', hwSegs: [], hwCardId: '',\n"
@@ -5433,11 +5444,30 @@ LOGIC["class view"].extend([
         "        bg: tones[g.state],\n"
         "        ring: g.current ? 'box-shadow:inset 0 0 0 2px var(--pg-ink);' : ''\n"
         "      })),\n"
+        "      /* ⊕ Sharpen §13.1.10 — on a Try again the bar IS the chips:\n"
+        "         numbered, green ones tappable to redo that card. */\n"
+        "      hwChipsOn: !!v.retry, hwChipsOff: !v.retry,\n"
+        "      hwChips: v.chips.map((g) => ({\n"
+        "        num: String(g.num), id: g.id, redo: !!g.redo, still: !g.redo,\n"
+        "        label: 'Card ' + g.num + ', got it. Redo it',\n"
+        "        bg: tones[g.state],\n"
+        "        ink: { right: 'var(--on-accent)', answered: 'var(--pg-ink)', todo: 'var(--pg-muted)' }[g.state],\n"
+        "        ring: g.current ? 'box-shadow:inset 0 0 0 2px var(--pg-ink);' : '',\n"
+        "        tap: () => e.redo(g.id)\n"
+        "      })),\n"
         "      hwSecuredOn: !!v.securedLine, hwSecured: v.securedLine,\n"
         "      hwHelperOn: !!v.helper, hwHelper: v.helper,\n"
         "      hwNote: v.note || '', hwNoteOn: !!v.note && !e.acted && !!c,\n"
         "      hwOffline: e.error === 'offline' && !!c,\n"
         "      hwWriting: !!c && !v.revealed,\n"
+        "      /* ⊕ Sharpen §13.1.4 — \"I don't know\": the model answer under\n"
+        "         the card, the box asks for it in the pupil's own words. The\n"
+        "         card key changes so the box opens empty. */\n"
+        "      hwLearn: !!c && v.learn, hwLearnAnswer: v.learnAnswer || '',\n"
+        "      hwPlaceholder: v.learn ? 'Now write it in your own words' : 'Your answer',\n"
+        "      hwIdkOn: !v.learn,\n"
+        "      hwCardKey: c ? c.id + (v.learn ? ':learn' : '') : '',\n"
+        "      hwGone: false,\n"
         "      hwCheckOff: !e.canCheck(),\n"
         "      hwCheckOpacity: e.canCheck() ? '1' : '.45',\n"
         "      hwBackOn: !!v.canBack,\n"
@@ -5445,9 +5475,15 @@ LOGIC["class view"].extend([
         "      hwChipOn: !!c && v.revealed && !!v.chip,\n"
         "      hwChip: v.chip,\n"
         "      hwChipStyle: 'color:' + chipTone + ';border:1.5px solid ' + chipTone + ';',\n"
-        "      hwNotYetStyle: this.hwRateStyle('var(--pg-accent-text)', v.suggest === 'not_yet'),\n"
-        "      hwNearlyStyle: this.hwRateStyle('var(--pg-ink)', v.suggest === 'nearly'),\n"
-        "      hwGotStyle: this.hwRateStyle('var(--pg-ok-text)', v.suggest === 'got_it'),\n"
+        "      hwNotYetStyle: this.hwRateStyle('var(--pg-accent-text)', v.suggest === 'not_yet', !v.allowed.not_yet),\n"
+        "      hwNearlyStyle: this.hwRateStyle('var(--pg-ink)', v.suggest === 'nearly', !v.allowed.nearly),\n"
+        "      hwGotStyle: this.hwRateStyle('var(--pg-ok-text)', v.suggest === 'got_it', !v.allowed.got_it),\n"
+        "      /* ⊕ Sharpen §13.1.1–2 — a rating above the verdict's cap, or any\n"
+        "         rating while the check is out, is drawn but disabled. */\n"
+        "      hwNotYetOff: !v.allowed.not_yet, hwNearlyOff: !v.allowed.nearly, hwGotOff: !v.allowed.got_it,\n"
+        "      hwNotYetDis: v.allowed.not_yet ? 'false' : 'true',\n"
+        "      hwNearlyDis: v.allowed.nearly ? 'false' : 'true',\n"
+        "      hwGotDis: v.allowed.got_it ? 'false' : 'true',\n"
         "      hwNotYetOn: v.suggest === 'not_yet' ? 'true' : 'false',\n"
         "      hwNearlyOn: v.suggest === 'nearly' ? 'true' : 'false',\n"
         "      hwGotOn: v.suggest === 'got_it' ? 'true' : 'false',\n"
@@ -5460,9 +5496,11 @@ LOGIC["class view"].extend([
         "      hwEndHelperOn: !!end && !!end.helper, hwEndHelper: end ? end.helper : '',\n"
         "      hwEndDone: !!end && end.button === 'done',\n"
         "      hwEndAgain: !!end && end.button === 'again',\n"
+        "      hwEndRetry: !!end && end.button === 'retry',\n"
         "      hwCheck: this.hwCheck, hwDraftIn: this.hwDraftIn, hwIdk: this.hwIdk, hwBack: this.hwBack,\n"
         "      hwGot: this.hwGot, hwNearly: this.hwNearly, hwNotYet: this.hwNotYet,\n"
         "      hwAgain: this.hwAgain, hwDoneTap: this.hwDoneTap, hwRetry: this.hwRetry,\n"
+        "      hwRetryPass: this.hwRetryPass, hwGoHome: this.hwGoHome,\n"
         "      card: c ? { tag: 'HOMEWORK', topic: (v.title || '').toUpperCase(),\n"
         "                  front: c.question, back: c.answer, mine: false,\n"
         "                  plain: !this.hwChem() } : blank,\n"
@@ -5487,6 +5525,9 @@ _HW_BTN = ("font:inherit;font-size:17px;font-weight:700;min-height:52px;"
 _HW_MONO = ("font-family:'DM Mono',monospace;font-size:12px;"
             "letter-spacing:.12em;")
 _HW_UI = "font-family:'Instrument Sans',system-ui,sans-serif;font-size:15px;line-height:1.45;"
+_HW_CHIP = ("display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;"
+            "padding:0 6px;border-radius:8px;box-sizing:border-box;font:inherit;"
+            "font-family:'DM Mono',monospace;font-size:13px;font-weight:600;")
 
 
 def _hw_text(expr):
@@ -5513,10 +5554,15 @@ def _hw_link(on, label, hw):
 
 # ⊕ PUPIL FLOW — a rating button whose look says whether it is the one
 # chosen for the pupil (filled) or not (outlined). `aria-pressed` says it too.
-def _hw_rate(on, label, style_expr, pressed_expr, hw):
+# ⊕ Sharpen §13.1 — `disabled` when the verdict caps it below this rating (or
+# while the check is out); the engine refuses it too, so keys and the swipe
+# obey the same cap.
+def _hw_rate(on, label, style_expr, pressed_expr, hw, off_expr, dis_expr):
     return {"t": "button", "on": on,
             "a": {"type": "button", "data-hw": hw,
                   "aria-pressed": {"parts": [{"e": pressed_expr}]},
+                  "disabled": {"parts": [{"e": off_expr}]},
+                  "aria-disabled": {"parts": [{"e": dis_expr}]},
                   "style": {"parts": [_HW_BTN, {"e": style_expr}]}},
             "c": [{"t": "#", "v": label}]}
 
@@ -5551,7 +5597,7 @@ INSERT_AT["class view"].update({
                        "style": "font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;"
                                 "font-size:19px;letter-spacing:-.02em;color:var(--pg-ink);"},
                  "c": [_hw_text("hwHeadline")]},
-                {"t": "span",
+                {"t": "if", "e": "hwChipsOff", "c": [{"t": "span",
                  "a": {"data-hw": "bar", "role": "presentation",
                        "style": {"parts": ["display:flex;gap:", {"e": "hwSegGap"}, ";height:8px;"]}},
                  "c": [{"t": "for", "e": "hwSegs", "as": "g", "c": [{
@@ -5559,7 +5605,29 @@ INSERT_AT["class view"].update({
                      "a": {"data-hw": "seg",
                            "style": {"parts": ["flex:1 1 0;min-width:0;border-radius:3px;background:",
                                                {"e": "g.bg"}, ";", {"e": "g.ring"}]}},
-                     "c": []}]}]},
+                     "c": []}]}]}]},
+                # ⊕ Sharpen §13.1.10 — a Try again: the bar becomes numbered
+                # chips, one per card of the pass; a green one redoes it.
+                {"t": "if", "e": "hwChipsOn", "c": [{"t": "div",
+                 "a": {"data-hw": "chips", "style": "display:flex;flex-wrap:wrap;gap:6px;"},
+                 "c": [{"t": "for", "e": "hwChips", "as": "g", "c": [
+                     {"t": "if", "e": "g.redo", "c": [{
+                         "t": "button", "on": "g.tap",
+                         "a": {"type": "button", "data-hw": "chip-redo",
+                               "data-card": {"parts": [{"e": "g.id"}]},
+                               "aria-label": {"parts": [{"e": "g.label"}]},
+                               "style": {"parts": [_HW_CHIP + "border:0;cursor:pointer;background:",
+                                                   {"e": "g.bg"}, ";color:", {"e": "g.ink"}, ";",
+                                                   {"e": "g.ring"}]}},
+                         "c": [_hw_text("g.num")]}]},
+                     {"t": "if", "e": "g.still", "c": [{
+                         "t": "span",
+                         "a": {"data-hw": "chip",
+                               "style": {"parts": [_HW_CHIP + "background:",
+                                                   {"e": "g.bg"}, ";color:", {"e": "g.ink"}, ";",
+                                                   {"e": "g.ring"}]}},
+                         "c": [_hw_text("g.num")]}]},
+                 ]}]}]},
                 {"t": "if", "e": "hwSecuredOn", "c": [{
                     "t": "span", "a": {"data-hw": "secured", "style": _HW_UI + "color:var(--pg-muted);"},
                     "c": [_hw_text("hwSecured")]}]},
@@ -5594,9 +5662,26 @@ INSERT_AT["class view"].update({
         {"t": "if", "e": "hwWriting", "c": [{
             "t": "div", "a": {"data-hw": "write", "style": "display:flex;flex-direction:column;gap:10px;"},
             "c": [
+                # ⊕ Sharpen §13.1.4 — after "I don't know": the model answer,
+                # under the card that still shows the question.
+                {"t": "if", "e": "hwLearn", "c": [{
+                    "t": "div",
+                    "a": {"data-hw": "learn",
+                          "style": "display:flex;flex-direction:column;gap:6px;padding:12px 14px;"
+                                   "border-radius:14px;background:var(--b-ground);color:var(--b-ink);"},
+                    "c": [
+                        {"t": "span", "a": {"style": _HW_MONO + "color:var(--b-muted);"},
+                         "c": [{"t": "#", "v": "ANSWER"}]},
+                        {"t": "span",
+                         "a": {"style": "display:block;font-size:17px;line-height:1.45;color:var(--b-ink);"
+                                        "white-space:pre-wrap;overflow-wrap:anywhere;max-height:30vh;overflow:auto;"},
+                         "c": [{"t": "fx", "e": "hwLearnAnswer"}]},
+                    ]}]},
                 {"t": "textarea", "onch": "hwDraftIn",
-                 "a": {"data-hw": "answer", "aria-label": "Your answer", "placeholder": "Your answer",
-                       "data-hw-card": {"parts": [{"e": "hwCardId"}]},
+                 "a": {"data-hw": "answer",
+                       "aria-label": {"parts": [{"e": "hwPlaceholder"}]},
+                       "placeholder": {"parts": [{"e": "hwPlaceholder"}]},
+                       "data-hw-card": {"parts": [{"e": "hwCardKey"}]},
                        "maxlength": "500", "rows": "2", "autocomplete": "off",
                        "style": "font:inherit;font-size:17px;line-height:1.4;padding:10px 14px;"
                                 "border-radius:14px;border:1.5px solid var(--pg-rule-strong);"
@@ -5606,7 +5691,7 @@ INSERT_AT["class view"].update({
                 {"t": "div", "a": {"data-hw": "act", "style": "display:flex;align-items:center;gap:6px;"},
                  "c": [
                      {"t": "if", "e": "hwBackOn", "c": [_hw_link("hwBack", "‹ Back", "back")]},
-                     _hw_link("hwIdk", "I don't know", "idk"),
+                     {"t": "if", "e": "hwIdkOn", "c": [_hw_link("hwIdk", "I don't know", "idk")]},
                      {"t": "button", "on": "hwCheck",
                       "a": {"type": "button", "data-hw": "check",
                             "disabled": {"parts": [{"e": "hwCheckOff"}]},
@@ -5635,9 +5720,12 @@ INSERT_AT["class view"].update({
                  "a": {"data-hw": "rate", "role": "group", "aria-label": "Rate this card",
                        "style": "display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;"},
                  "c": [
-                     _hw_rate("hwNotYet", "Not yet", "hwNotYetStyle", "hwNotYetOn", "not_yet"),
-                     _hw_rate("hwNearly", "Nearly", "hwNearlyStyle", "hwNearlyOn", "nearly"),
-                     _hw_rate("hwGot", "Got it", "hwGotStyle", "hwGotOn", "got_it"),
+                     _hw_rate("hwNotYet", "Not yet", "hwNotYetStyle", "hwNotYetOn", "not_yet",
+                              "hwNotYetOff", "hwNotYetDis"),
+                     _hw_rate("hwNearly", "Nearly", "hwNearlyStyle", "hwNearlyOn", "nearly",
+                              "hwNearlyOff", "hwNearlyDis"),
+                     _hw_rate("hwGot", "Got it", "hwGotStyle", "hwGotOn", "got_it",
+                              "hwGotOff", "hwGotDis"),
                  ]},
             ]}]},
         # The end of a pass (A6/A8): two lines, the helper when it applies,
@@ -5667,6 +5755,10 @@ INSERT_AT["class view"].update({
                     {"t": "if", "e": "hwEndAgain", "c": [
                         _hw_btn("hwAgain", "Revise flashcards one more time",
                                 "flex:1 1 200px;border:0;background:var(--b-cta);color:var(--b-cta-ink);", "again")]},
+                    {"t": "if", "e": "hwEndRetry", "c": [
+                        _hw_btn("hwRetryPass", "Try again",
+                                "flex:1 1 200px;border:0;background:var(--b-cta);color:var(--b-cta-ink);",
+                                "retry-pass")]},
                     {"t": "if", "e": "hwEndDone", "c": [
                         _hw_btn("hwDoneTap", "Done",
                                 "flex:1 1 140px;border:0;background:var(--b-cta);color:var(--b-cta-ink);", "done")]},
@@ -5675,6 +5767,13 @@ INSERT_AT["class view"].update({
         {"t": "if", "e": "hwLoading", "c": [{
             "t": "div", "a": {"data-hw": "loading", "style": "display:flex;flex-direction:column;gap:12px;align-items:flex-start;"},
             "c": [
+                # ⊕ Sharpen §13.6 — the teacher deleted this set after the
+                # page loaded.
+                {"t": "if", "e": "hwGone", "c": [
+                    {"t": "span", "a": {"data-hw": "gone-text", "style": _HW_UI + "color:var(--pg-body);"},
+                     "c": [{"t": "#", "v": "Your teacher has taken this work down."}]},
+                    _hw_btn("hwGoHome", "Back to my class", "border:1.5px solid var(--pg-ink);background:var(--pg-card);"
+                                                            "color:var(--pg-ink);", "gone")]},
                 {"t": "if", "e": "hwErr", "c": [
                     {"t": "span", "a": {"style": _HW_UI + "color:var(--pg-body);"},
                      "c": [{"t": "#", "v": "Your cards did not load."}]},

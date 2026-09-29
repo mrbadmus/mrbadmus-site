@@ -26,8 +26,25 @@
  *   (the server keeps every event; its latest `rated` wins).
  *
  *   Make mode = two passes in the first sitting: the writing pass, its end
- *   screen, then the review pass of the SAME sitting. Every other pass ends
- *   its sitting with `session_finish`.
+ *   screen, then the review pass of the SAME sitting.
+ *
+ * ⊕ SHARPEN (29 Sep 2026 — PUPIL-FLOW.md §13 wins over everything above).
+ *
+ *   · THE VERDICT CAPS THE RATING. Right → up to Got it, Nearly → up to
+ *     Nearly, Wrong / No answer → Not yet only. Enforced here, in `rate()`,
+ *     so the buttons, keys 1·2·3 and the swipe all obey it. While the check
+ *     is out ("Checking…") nothing can be rated; no verdict → no cap.
+ *   · "I DON'T KNOW" IS A LEARNING STEP. The card stays on its question,
+ *     the model answer shows under it, and the pupil writes it in their own
+ *     words; that answer is checked, capped at Nearly. The card comes round
+ *     once more at the end of the pass as a plain card.
+ *   · A PASS THAT IS NOT ALL RIGHT ENDS ON "Try again", which replays only
+ *     the cards that are not Got it, in the pass's own order, in the SAME
+ *     server sitting (no `session_finish`). On that retry the bar becomes
+ *     numbered chips; a green one can be tapped to redo that card (a
+ *     "detour") without leaving the queue.
+ *   · A PASS THAT IS ALL RIGHT ends the sitting (`session_finish`) and
+ *     offers one button, Done. × still ends the sitting (A13).
  *
  *   events: card_shown, answer_submitted, revealed, rated, session_finish,
  *   visibility — each with a client-generated id, the device clock and
@@ -48,7 +65,6 @@
   var STORE = "mrbadmusai.fchw.v1.";
   var FLUSH_MS = 2500;
   var MODEL_WAIT_MS = 4000;
-  var HOUR_MS = 60 * 60 * 1000;
   var RESUME_MS = 10 * 60 * 1000;
   var IDK_TEXT = "I don't know";
 
@@ -70,13 +86,6 @@
   }
   function save(key, list) {
     try { root.localStorage.setItem(STORE + key, JSON.stringify(list)); } catch (e) { /* private mode */ }
-  }
-  // When this assignment's last sitting ended ON THIS DEVICE (A8b).
-  function loadEnd(key) {
-    try { var v = Number(root.localStorage.getItem(STORE + "end." + key)); return v > 0 ? v : null; } catch (e) { return null; }
-  }
-  function saveEnd(key, at) {
-    try { root.localStorage.setItem(STORE + "end." + key, String(at)); } catch (e) { /* private mode */ }
   }
 
   // ── the no-model answer check: an EXACT port of SQL flashcard_quick_check
@@ -111,6 +120,9 @@
   var CHIP = { pending: "Checking…", match: "Right", partial: "Nearly", no: "Wrong", blank: "No answer" };
   var SUGGEST = { match: "got_it", partial: "nearly", no: "not_yet", blank: "not_yet" };
   var ORDER = { not_yet: 0, nearly: 1, none: 2, got_it: 3 };
+  // §13.1 — how high a rating may go.
+  var RANK = { not_yet: 0, nearly: 1, got_it: 2 };
+  var RATINGS = ["not_yet", "nearly", "got_it"];
 
   function Engine(assignmentId, state, opts) {
     this.id = assignmentId;
@@ -188,6 +200,11 @@
     this.pass = {};
     this.drafts = {};
     this.afterWriting = false;
+    this.retries = 0;          // Try again passes in this sitting
+    this.replayed = {};        // cards an "I don't know" sent round again
+    this.detour = null;        // a green card being redone on a retry
+    this.learn = false;        // "I don't know": the own-words step
+    this.idkNow = false;       // this showing of the card began with it
     var mode = this.state && this.state.mode;
     var done = [];
     var r = resume || {};
@@ -207,20 +224,27 @@
       done = this.byPosition(reviewDone);
       this.passIds = done.concat(this.ranked().filter(function (id) { return done.indexOf(id) < 0; }));
     }
-    done.forEach(function (id) { self.pass[id] = { rating: r[id].rating, mine: null, verdict: null }; });
+    done.forEach(function (id) { self.pass[id] = { rating: r[id].rating, mine: null, verdict: null, cap: null }; });
+    // The pass's own order, fixed for the whole sitting: the bar, the chips
+    // and a Try again all read it.
+    this.order = this.passIds.slice();
     this.idx = done.length;
     if (this.idx >= this.passIds.length && this.passIds.length) { this.endPass(); return; }
     this.show();
   };
 
   Engine.prototype.current = function () {
-    return this.ended ? null : (this.byId[this.passIds[this.idx]] || null);
+    if (this.ended) { return null; }
+    if (this.detour) { return this.byId[this.detour] || null; }
+    return this.byId[this.passIds[this.idx]] || null;
   };
 
   Engine.prototype.show = function () {
     var c = this.current();
     this.tok += 1;
     this.revealed = false;
+    this.learn = false;
+    this.idkNow = false;
     this.verdict = null;
     this.mine = null;
     this.draft = c ? (this.drafts[c.id] || "") : "";
@@ -248,6 +272,7 @@
     this.mine = answer;
     this.drafts[c.id] = extra && extra.idk ? "" : answer;
     this.revealed = true;
+    this.learn = false;
     this.acted += 1;
     this.verdict = local;
   };
@@ -258,18 +283,30 @@
     var answer = this.draft;
     var local = quickCheck(answer, c.answer);
     var waiting = !local && typeof Api.modelCheck === "function";
-    this.reveal(answer, local || (waiting ? "pending" : null));
+    // After "I don't know", this is the pupil's answer in their own words.
+    this.reveal(answer, local || (waiting ? "pending" : null), this.learn ? { own_words: true } : null);
     this.changed();
     this.flushSoon(400);
     if (waiting) { this.askModel(c, answer); }
   };
 
-  // A4: "I don't know" reveals the model answer and lands in state C with
-  // chip "No answer" and Not yet filled; the pupil still taps to go on.
+  // §13.1.4: "I don't know" is a learning step. The card stays on its
+  // question, the model answer shows under it, and the pupil writes it in
+  // their own words (the next Check). The press itself is recorded as it
+  // always was — `answer_submitted` "I don't know" (idk) + `revealed` — so a
+  // make-mode card is made, and the teacher sees what was pressed.
   Engine.prototype.idk = function () {
     var c = this.current();
-    if (!c || this.revealed) { return; }
-    this.reveal(IDK_TEXT, "blank", { idk: true });
+    if (!c || this.revealed || this.learn) { return; }
+    this.event({ type: "answer_submitted", card: c.id, phase: this.stage, answer: IDK_TEXT, idk: true });
+    this.event({ type: "revealed", card: c.id, phase: this.stage });
+    if (this.stage === "make" && !c.made) { c.made = true; c.mine = IDK_TEXT; }
+    this.acted += 1;
+    this.learn = true;
+    this.idkNow = true;
+    this.mine = IDK_TEXT;
+    this.draft = "";
+    this.drafts[c.id] = "";
     this.changed();
     this.flushSoon(400);
   };
@@ -293,64 +330,138 @@
       .then(function (v) { land(typeof v === "string" ? v : null); }, function () { land(null); });
   };
 
+  // §13.1.1–3 — the highest rating this answer may have.
+  //   null    no cap (no verdict: a timeout, no key, an old function)
+  //   "none"  nothing may be rated yet (the check is still out)
+  //   else    the highest allowed rating; after "I don't know", Nearly.
+  Engine.prototype.cap = function () {
+    if (!this.revealed) { return null; }
+    if (this.verdict === "pending") { return "none"; }
+    if (VERDICTS.indexOf(this.verdict) >= 0) {
+      var s = SUGGEST[this.verdict];
+      return this.idkNow && RANK[s] > RANK.nearly ? "nearly" : s;
+    }
+    return this.idkNow ? "nearly" : null;
+  };
+  Engine.prototype.allowed = function (rating) {
+    if (!this.revealed || RATINGS.indexOf(rating) < 0) { return false; }
+    var cap = this.cap();
+    return cap === null || (cap !== "none" && RANK[rating] <= RANK[cap]);
+  };
+
+  // The filled rating: the cap, and only when there is a verdict (after
+  // "I don't know" with no verdict, Got it is greyed and nothing is filled).
   Engine.prototype.suggestion = function () {
-    return (this.revealed && this.verdict && SUGGEST[this.verdict]) || null;
+    if (!this.revealed || VERDICTS.indexOf(this.verdict) < 0) { return null; }
+    return this.cap();
   };
 
   Engine.prototype.rate = function (rating) {
     var c = this.current();
-    if (["got_it", "nearly", "not_yet"].indexOf(rating) < 0 || !c || !this.revealed) { return; }
+    if (!c || !this.allowed(rating)) { return; }
+    var id = c.id;
     var suggested = this.suggestion();
+    var cap = this.cap();
     this.acted += 1;
-    this.event({ type: "rated", card: c.id, phase: this.stage, rating: rating,
+    this.event({ type: "rated", card: id, phase: this.stage, rating: rating,
                  via: suggested === rating ? "auto" : "tap" });
     c.last = rating; c.lastLocal = rating;
     if (rating === "got_it") { c.known = true; }
-    this.pass[c.id] = { rating: rating, mine: this.mine, verdict: this.verdict === "pending" ? null : this.verdict };
-    this.idx += 1;
-    if (this.idx < this.passIds.length) { this.show(); } else { this.endPass(); }
+    this.pass[id] = { rating: rating, mine: this.mine, verdict: this.verdict === "pending" ? null : this.verdict, cap: cap };
+    if (this.detour) {
+      // A redo on a retry replaces that card's rating and goes back to the
+      // card the queue was on. Rated below Got it it turns grey, but does
+      // not join this pass's queue: a pass always ends.
+      this.detour = null;
+      this.show();
+    } else {
+      // A card met with "I don't know" comes round once more, at the end.
+      if (this.idkNow && !this.replayed[id] && this.passIds.indexOf(id, this.idx + 1) < 0) {
+        this.replayed[id] = true;
+        this.passIds.push(id);
+        // It comes round to be answered from memory: an empty box.
+        delete this.drafts[id];
+      }
+      this.idx += 1;
+      if (this.idx < this.passIds.length) { this.show(); } else { this.endPass(); }
+    }
     this.flushSoon(600);
   };
 
   // ‹ Back: the previous card of this pass, in state A, with what the pupil
-  // wrote last time already in the box. No event of its own.
-  Engine.prototype.canBack = function () { return !this.ended && this.idx > 0; };
+  // wrote last time already in the box. During a redo, back to the queue's
+  // card with the green rating untouched. No event of its own.
+  Engine.prototype.canBack = function () { return !this.ended && (!!this.detour || this.idx > 0); };
   Engine.prototype.back = function () {
     if (!this.canBack()) { return; }
+    if (this.detour) { this.detour = null; this.show(); return; }
     this.idx -= 1;
     this.show();
   };
 
-  Engine.prototype.right = function () {
-    var self = this;
-    return this.passIds.filter(function (id) { return self.pass[id] && self.pass[id].rating === "got_it"; }).length;
+  // §13.1.11 — redo a green card on a retry pass, from state A of the
+  // queue's card only.
+  Engine.prototype.canRedo = function (id) {
+    return !this.ended && !this.revealed && !this.learn && !this.detour &&
+      !!this.pass[id] && this.pass[id].rating === "got_it";
+  };
+  Engine.prototype.redo = function (id) {
+    if (!this.canRedo(id)) { return; }
+    this.detour = id;
+    this.show();
   };
 
-  // The end of a pass. The writing pass of make mode keeps its sitting open
-  // (its review pass follows in the same sitting); every other pass ends it.
+  // Right in this pass, over the whole deck of the pass (`order`): green
+  // cards carried into a Try again still count.
+  Engine.prototype.right = function () {
+    var self = this;
+    return (this.order || []).filter(function (id) { return self.pass[id] && self.pass[id].rating === "got_it"; }).length;
+  };
+
+  // The end of a pass (§13.1.6–8).
+  //   writing pass (make mode)  keeps the sitting open; its review follows.
+  //   all right                 ends the sitting; Done.
+  //   anything else             Try again, in the SAME sitting.
   Engine.prototype.endPass = function () {
-    var s = this.state || {};
     var writing = this.stage === "make";
-    var now = Date.now();
-    var prev = loadEnd(this.id);
-    // A8b: another pass now cannot secure anything when this was a review
-    // sitting (not make's own review pass) and no earlier sitting ended an
-    // hour or more ago. No record on this device → trust the server's count.
-    var tooSoon = !writing && s.rule !== "quick" && !this.afterWriting &&
-      (prev ? (now - prev) < HOUR_MS : (s.sittings || 0) <= 1);
+    var right = this.right();
+    var m = this.order.length;
+    var all = !writing && right === m;
     this.ended = true;
     this.revealed = false;
+    this.learn = false;
+    this.detour = null;
     this.tok += 1;
-    this.end = { right: this.right(), m: this.passIds.length, writing: writing,
-                 tooSoon: tooSoon, settled: false };
-    if (!writing) { this.sessionFinish(now); }
+    this.end = { right: right, m: m, writing: writing, all: all, settled: false };
+    if (all) { this.sessionFinish(); }
     this.changed();
     this.flush();
   };
 
-  Engine.prototype.sessionFinish = function (now) {
+  Engine.prototype.sessionFinish = function () {
     this.event({ type: "session_finish" });
-    saveEnd(this.id, now || Date.now());
+  };
+
+  // Try again: only the cards that are not Got it, in the pass's own order.
+  Engine.prototype.retry = function () {
+    if (!this.ended || !this.end || this.end.all || this.end.writing) { return; }
+    var self = this;
+    this.retries += 1;
+    Object.keys(this.pass).forEach(function (id) {
+      if (self.pass[id].rating !== "got_it") { delete self.pass[id]; }
+    });
+    this.replayed = {};
+    this.detour = null;
+    this.passIds = this.order.filter(function (id) { return !self.pass[id]; });
+    // A leftover is answered afresh: its wrong answer is not put back in
+    // the box for the pupil to send again. (A green card's redo keeps its
+    // earlier answer — §13.1.11.)
+    this.passIds.forEach(function (id) { delete self.drafts[id]; });
+    this.idx = 0;
+    this.ended = false;
+    this.end = null;
+    this.tok += 1;
+    this.show();
   };
 
   // × — ends the sitting if the pupil did anything in it (A13).
@@ -378,32 +489,40 @@
     var secured = s.secured || 0;
     var p = this.phase();
     var c = this.current();
-    var m = (this.passIds || []).length;
+    var order = this.order || [];
+    var m = order.length;
     var right = this.right();
-    var segs = (this.passIds || []).map(function (id, i) {
+    var here = this.ended ? null : (this.detour || (this.passIds || [])[this.idx]);
+    var segs = order.map(function (id) {
       var e = self.pass[id];
-      return { state: e ? (e.rating === "got_it" ? "right" : "answered") : "todo",
-               current: !self.ended && i === self.idx };
+      return { id: id, state: e ? (e.rating === "got_it" ? "right" : "answered") : "todo",
+               current: id === here };
+    });
+    var chips = segs.map(function (g, i) {
+      return { id: g.id, num: i + 1, state: g.state, current: g.current,
+               redo: g.state === "right" && self.canRedo(g.id) };
     });
     var review = p === "review";
     var end = null;
     if (this.end) {
       var E = this.end;
       var ready = E.settled && !this.pending.length;
-      var offline = !ready && this.error === "offline";
-      var known = ready || offline;
-      var all = secured >= n && n > 0;
-      var button = !known ? null : (all || E.tooSoon) ? "done" : "again";
+      var offline = E.all && !ready && this.error === "offline";
+      var button = E.writing ? "again" : E.all ? "done" : "retry";
       end = {
-        line1: E.right + " of " + E.m + " right this time",
-        line2: ready ? (secured + " of " + n + " secured so far") : "",
+        line1: E.right + " of " + E.m + " right",
+        // Line 2 and the helper only on the all-right screen, and only once
+        // the server has the pass (A8a); nothing else waits on the server.
+        line2: E.all && ready ? (secured + " of " + n + " secured so far") : "",
         offline: offline,
-        helper: button === "done" && E.tooSoon && !all ? "Revise flashcards one more time" : "",
+        helper: E.all && ready && secured < n ? "Revise flashcards one more time" : "",
         button: button,
-        buttonLabel: button === "done" ? "Done" : button === "again" ? "Revise flashcards one more time" : ""
+        buttonLabel: { done: "Done", again: "Revise flashcards one more time", retry: "Try again" }[button]
       };
     }
     var chip = this.revealed && this.verdict ? CHIP[this.verdict] : "";
+    var allowed = {};
+    RATINGS.forEach(function (r) { allowed[r] = self.allowed(r); });
     return {
       phase: p, n: n, m: m, right: right, secured: secured,
       headline: right + " of " + m + " right",
@@ -417,6 +536,13 @@
       verdict: this.verdict,
       chip: chip,
       suggest: this.suggestion(),
+      cap: this.cap(),
+      allowed: allowed,
+      learn: !!c && !!this.learn,
+      learnAnswer: c && this.learn ? c.answer : "",
+      retry: this.retries > 0,
+      chips: chips,
+      detour: !!this.detour,
       mine: this.revealed ? this.mine : null,
       draft: this.draft || "",
       canBack: this.canBack(),
@@ -471,10 +597,19 @@
         try { Api.onSessionEnd(self.id); } catch (e) { /* fire and forget */ }
       }
       self.changed();
-    }, function () {
+    }, function (err) {
+      self.sending = false;
+      // §13.6 — the teacher deleted this set while it was open. Nothing
+      // sent now can land, so stop trying and say so.
+      if (err && err.message === "not_your_homework") {
+        self.error = "gone";
+        self.pending = [];
+        save(self.id, []);
+        self.changed();
+        return;
+      }
       // Kept on the device; retried with a longer wait. Idempotent ids mean a
       // batch that DID land but whose reply was lost is harmless to resend.
-      self.sending = false;
       self.error = "offline";
       self.flushSoon(8000);
       self.changed();
@@ -499,14 +634,28 @@
     active: null,
     quickCheck: quickCheck,
     open: function (assignmentId) {
-      if (engines[assignmentId]) {
-        Api.active = engines[assignmentId];
+      var t = Api.transport;
+      var known = engines[assignmentId];
+      if (known) {
         // A pass that has ended starts afresh on reopening; one left
         // mid-way carries on where it was.
-        if (Api.active.ended) { Api.active.opts.newSitting = true; Api.active.start(null); }
-        return Promise.resolve(Api.active);
+        var resume = function () {
+          Api.active = known;
+          if (known.ended) { known.opts.newSitting = true; known.start(null); }
+          return known;
+        };
+        if (typeof t !== "function") { return Promise.resolve(resume()); }
+        // ⊕ Sharpen §13.6 — ask the server first, even though the deck is
+        // already on the device: the teacher may have deleted it since.
+        // Offline, the device carries on as before.
+        return Promise.resolve().then(function () { return t(assignmentId, []); }).then(function (state) {
+          if (state) { known.merge(state); }
+          return resume();
+        }, function (err) {
+          if (err && err.message === "not_your_homework") { delete engines[assignmentId]; throw err; }
+          return resume();
+        });
       }
-      var t = Api.transport;
       if (typeof t !== "function") { return Promise.reject(new Error("no_transport")); }
       // Anything still queued on this device from a previous visit goes
       // first, so the state we start from already includes it.

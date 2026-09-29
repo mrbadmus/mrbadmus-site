@@ -798,6 +798,12 @@
       }
     }
     window.addEventListener("hashchange", openFromHash);
+    /* ⊕ Sharpen (PUPIL-FLOW §13.6) — a class page restored from the
+       back-forward cache is a page from before whatever the teacher did
+       since (a deleted set still listed). Load it afresh. */
+    window.addEventListener("pageshow", function (ev) {
+      if (ev && ev.persisted) { window.location.reload(); }
+    });
 
     function active() { return H.active || null; }
 
@@ -4782,7 +4788,7 @@
        code paid the sum, serially, on every single load. */
     var kindPromise = (wanted && sbForKind)
       ? Promise.resolve(sbForKind.from("assignments").select("quiz_type, class_id")
-          .eq("id", wanted).maybeSingle())
+          .eq("id", wanted).is("deleted_at", null).maybeSingle())
           .catch(function () { return null; })
       : null;
 

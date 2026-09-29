@@ -614,7 +614,8 @@ window.MrBadmusStudentData = (function () {
     const flashcardExtra = new Map();
     if (flashcardIds.length > 0) {
       try {
-        const fx = await sb.from('assignments').select('id, flashcard_mode').in('id', flashcardIds);
+        const fx = await sb.from('assignments').select('id, flashcard_mode').in('id', flashcardIds)
+          .is('deleted_at', null);
         if (!fx.error) {
           (fx.data || []).forEach(function (r) { flashcardExtra.set(r.id, r); });
         }

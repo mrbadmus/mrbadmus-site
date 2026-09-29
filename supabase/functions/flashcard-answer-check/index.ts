@@ -54,9 +54,14 @@ Deno.serve(async (req) => {
   if (!body.assignment_id) return json(400, { error: "no_assignment" });
   if (body.card_id !== undefined) return syncCheck(svc, who, body);
 
+  // ⊕ Sharpen run (PUPIL-FLOW §13.6) — a deleted or not-yet-released set is
+  // not checked, exactly as the sync mode refuses it below. The pupil's page
+  // can still call this for a set deleted while it was open.
   const { data: a } = await svc.from("assignments")
-    .select("id, class_id, school_id, set_by, kind").eq("id", body.assignment_id).maybeSingle();
-  if (!a || a.kind !== "flashcards") return json(404, { error: "not_found" });
+    .select("id, class_id, school_id, set_by, kind, deleted_at, release_at")
+    .eq("id", body.assignment_id).maybeSingle();
+  if (!a || a.kind !== "flashcards" || a.deleted_at ||
+      (a.release_at && new Date(a.release_at).getTime() > Date.now())) return json(404, { error: "not_found" });
 
   // Who may ask: the pupil (their own rows only) or a teacher of the class.
   let pupilOnly: string | null = null;

@@ -134,7 +134,7 @@ LOAD = r"""
 """
 
 RETIRED = ("FOR NOW", "Go again", "Made ", "later on", "Finish for now", "Compare it yourself",
-           "Not quite", "Keep revising", "YOUR DECK IS READY", "DECK SECURED")
+           "Not quite", "Keep revising", "YOUR DECK IS READY", "DECK SECURED", "right this time")
 
 FAILS = []
 
@@ -161,6 +161,14 @@ STATE_JS = r"""
   var dlg = $('[data-mrb-dialog="flashcards"]');
   var pressed = Array.prototype.map.call(document.querySelectorAll('[data-hw="rate"] button[aria-pressed="true"]'),
                                          function (b) { return b.getAttribute('data-hw'); });
+  var enabled = Array.prototype.filter.call(document.querySelectorAll('[data-hw="rate"] button'),
+                                            function (b) { return !b.disabled; })
+                  .map(function (b) { return b.getAttribute('data-hw'); });
+  var chipEls = document.querySelectorAll('[data-hw="chips"] > *');
+  var chips = Array.prototype.map.call(chipEls, function (c) {
+    return {num: c.innerText.trim(), redo: c.getAttribute('data-hw') === 'chip-redo',
+            current: /inset/.test(c.getAttribute('style') || '')};
+  });
   return {
     open: !!ov,
     strip: !!strip,
@@ -178,6 +186,15 @@ STATE_JS = r"""
     back: !!$('[data-hw="back"]'),
     idk: !!$('[data-hw="idk"]'),
     rating: !!$('[data-hw="rate"]'),
+    enabled: enabled,
+    learn: txt('[data-hw="learn"]'),
+    placeholder: ta ? ta.getAttribute('placeholder') : null,
+    chips: chips,
+    chipsShown: !!$('[data-hw="chips"]'),
+    greens: chips.filter(function (c) { return c.redo; }).length,
+    gone: txt('[data-hw="gone-text"]'),
+    goneBtn: txt('[data-hw="gone"]'),
+    retryPass: txt('[data-hw="retry-pass"]'),
     chip: txt('[data-hw="chip"]'),
     pressed: pressed,
     panel: txt('[data-hw="panel"]'),
@@ -210,9 +227,12 @@ BOXES_JS = r"""
     var r = e.getBoundingClientRect(); return {top: r.top, bottom: r.bottom, h: r.height};
   }
   var q = box('[data-dc-tpl="10340"]'), t = box('[data-hw="answer"]'), c = document.querySelector('[data-hw="check"]');
+  var l = box('[data-hw="learn"]');
   var cr = c ? c.getBoundingClientRect() : null;
   var hit = cr ? document.elementFromPoint(cr.left + cr.width / 2, cr.top + cr.height / 2) : null;
-  return {vv: [top, bot], q: q, t: t,
+  return {vv: [top, bot], q: q, t: t, l: l,
+          lIn: !!l && l.h > 0 && l.top >= top - 0.5 && l.bottom <= bot + 0.5,
+          lFootIn: !!l && l.h > 0 && l.bottom >= top - 0.5 && l.bottom <= bot + 0.5,
           qIn: !!q && q.h > 0 && q.top >= top - 0.5 && q.bottom <= bot + 0.5,
           tIn: !!t && t.h > 0 && t.top >= top - 0.5 && t.bottom <= bot + 0.5,
           checkVisible: !!cr && cr.top >= top - 0.5 && cr.bottom <= bot + 0.5 && !!hit && (hit === c || c.contains(hit))};
@@ -243,11 +263,23 @@ class Phone:
         settle(0.25)
         return ok
 
-    def keyboard(self, up):
+    def keyboard(self, up, kb=None):
         if up:
             self.q("(function(){var t=document.querySelector('[data-hw=\"answer\"]'); if(t) t.focus();})()")
-        self.q("window.__KB__(%s)" % (self.kb if up else "null"))
+        self.q("window.__KB__(%s)" % ((kb or self.kb) if up else "null"))
         settle(0.45)
+
+    def learn_boxes(self, kb):
+        """§13.4 acceptance for the "I don't know" learn state."""
+        b = self.q(BOXES_JS)
+        if self.w >= 390:
+            ok = b["qIn"] and b["lIn"] and b["tIn"] and b["checkVisible"]
+            need = "question, ANSWER block and box inside, Check visible"
+        else:
+            ok = b["lFootIn"] and b["tIn"] and b["checkVisible"]
+            need = "ANSWER block's foot and box inside, Check visible"
+        check(ok, "%d×%d learn state, keyboard up (visual %d): %s (q=%s l=%s t=%s check=%s)"
+              % (self.w, self.h, kb, need, b["q"], b["l"], b["t"], b["checkVisible"]))
 
     def shot(self, name):
         if not self.shots:
@@ -355,15 +387,23 @@ def run(width, height, kb, shots):
             P.click('[data-hw="check"]')
             P.keyboard(False)
             s = P.st()
-            check(s["chip"] == "Checking…" and s["rating"] and s["pressed"] == [],
-                  "state B: 'Checking…', ratings showing, none filled (A2) (got %r %r)" % (s["chip"], s["pressed"]))
+            check(s["chip"] == "Checking…" and s["rating"] and s["pressed"] == [] and s["enabled"] == [],
+                  "state B: 'Checking…', ratings showing, none filled, all three disabled (§13.1.2) (got %r %r %r)"
+                  % (s["chip"], s["pressed"], s["enabled"]))
             check(s["backSubs"] == 1 and s["back_"] == "H2O", "H2O renders with a real <sub> (text unchanged)")
             P.shot("B-checking")
             P.q("window.__MODEL__('partial')")
             settle()
             s = P.st()
-            check(s["chip"] == "Nearly" and s["pressed"] == ["nearly"], "the model's verdict: chip 'Nearly', Nearly filled (got %r %r %r)" % (s["chip"], s["pressed"], P.q("[typeof window.__MODEL__, window.MRBHomework.active.verdict]")))
-            P.shot("C-verdict-nearly")
+            check(s["chip"] == "Nearly" and s["pressed"] == ["nearly"] and s["enabled"] == ["not_yet", "nearly"],
+                  "partial: chip 'Nearly', Nearly filled, Got it disabled (got %r %r %r)"
+                  % (s["chip"], s["pressed"], s["enabled"]))
+            P.shot("C-nearly-capped")
+            P.click('[data-hw="got_it"]')
+            check(P.st()["chip"] == "Nearly", "tapping the disabled Got it does nothing")
+            P.q("document.dispatchEvent(new KeyboardEvent('keydown', {key: '3', bubbles: true}))")
+            settle()
+            check(P.st()["chip"] == "Nearly", "key 3 (Got it) is refused above the cap too")
             P.click('[data-hw="nearly"]')
 
             # card 3, then ‹ Back to card 2 from state C
@@ -378,11 +418,13 @@ def run(width, height, kb, shots):
                   "‹ Back: card 2 in state A with the earlier answer in the box (got %r)" % s["draft"])
             check(s["progress"] == "1 of 5 right", "the count holds until the card is re-rated")
             P.shot("Back-card-2")
-            P.click('[data-hw="idk"]')
+            P.type("water")
+            P.click('[data-hw="check"]')
             s = P.st()
-            check(s["chip"] == "No answer" and s["pressed"] == ["not_yet"] and s["flipped"] == "1",
-                  "I don't know: the model answer, chip 'No answer', Not yet filled (A4)")
-            P.shot("C-idk")
+            check(s["chip"] == "Wrong" and s["pressed"] == ["not_yet"] and s["enabled"] == ["not_yet"],
+                  "Wrong: only Not yet enabled (got %r %r)" % (s["chip"], s["enabled"]))
+            P.no_retired("wrong capped")
+            P.shot("C-wrong-capped")
             P.click('[data-hw="not_yet"]')
             s = P.st()
             check(s["front"] == "What is weight?" and s["draft"] == "gravity",
@@ -390,31 +432,71 @@ def run(width, height, kb, shots):
             P.keyboard(True)
             P.boxes("state A after ‹ Back")
             P.keyboard(False)
-            P.q("window.MRBHomework.modelCheck = null")
             P.click('[data-hw="check"]')
             P.click('[data-hw="got_it"]')
+
+            # card 4: I don't know → the learn state → own words, capped at Nearly
+            P.click('[data-hw="idk"]')
+            s = P.st()
+            check(s["front"] == "Write the equation for the force on a spring." and s["flipped"] != "1"
+                  and s["learn"] and "F = ke" in s["learn"] and s["learn"].startswith("ANSWER"),
+                  "I don't know: the card stays on its question, the model answer shows under it (got %r)" % s["learn"])
+            check(s["placeholder"] == "Now write it in your own words" and not s["idk"] and s["back"] and not s["rating"],
+                  "learn state: 'Now write it in your own words', no second I don't know, ‹ Back kept, no ratings")
+            check(s["draft"] == "", "the own-words box opens empty")
             P.keyboard(True)
+            s = P.st()
+            check(s["typing"] == "1" and P.q("document.querySelector('[data-mrb-dialog=\"flashcards\"]').getAttribute('data-hw-learn')") == "1",
+                  "learn state with the keyboard up: compact + data-hw-learn")
+            P.learn_boxes(kb)
+            P.shot("A2-learn")
+            if width < 390:
+                P.keyboard(True, 336)
+                P.learn_boxes(336)
+                P.shot("A2-learn-336")
             P.type("F = ke")
+            P.q("window.MRBHomework.modelCheck = function () { return new Promise(function (r) { window.__MODEL__ = r; }); }")
             P.click('[data-hw="check"]')
             P.keyboard(False)
+            P.q("window.__MODEL__('match')")
+            settle()
             s = P.st()
-            check(s["chip"] is None and s["pressed"] == [], "no verdict (no model check): no chip, nothing filled (A3)")
-            P.click('[data-hw="got_it"]')
+            check(s["chip"] == "Right" and s["pressed"] == ["nearly"] and s["enabled"] == ["not_yet", "nearly"],
+                  "own words Right after I don't know: chip Right, Nearly filled, Got it disabled (got %r %r %r)"
+                  % (s["chip"], s["pressed"], s["enabled"]))
+            P.shot("C-idk-capped")
+            P.click('[data-hw="nearly"]')
             P.keyboard(True)
             P.type("vector")
             P.click('[data-hw="check"]')
             P.keyboard(False)
             P.click('[data-hw="got_it"]')
+            s = P.st()
+            check(s["front"] == "Write the equation for the force on a spring." and s["idk"] and not s["learn"]
+                  and s["placeholder"] == "Your answer" and s["progress"] == "3 of 5 right" and s["draft"] == "",
+                  "the I-don't-know card comes round again, as a plain card, before the pass ends (got %r %r)"
+                  % (s["front"], s["progress"]))
+            P.shot("A-idk-replay")
+            P.q("window.MRBHomework.modelCheck = null")
+            P.type("F = ke")
+            P.click('[data-hw="check"]')
+            s = P.st()
+            check(s["chip"] is None and s["pressed"] == [] and len(s["enabled"]) == 3,
+                  "no verdict (no model check): no chip, nothing filled, all three enabled (A3)")
+            P.click('[data-hw="got_it"]')
             settle(0.8)
             s = P.st()
-            check(s["end1"] == "4 of 5 right this time" and s["end2"] == "0 of 5 secured so far",
-                  "writing pass end screen: '4 of 5 right this time' / '0 of 5 secured so far' (got %r / %r)"
-                  % (s["end1"], s["end2"]))
-            check(s["again"] == "Revise flashcards one more time" and s["done"] is None and s["endHint"] is None,
+            check(s["end1"] == "4 of 5 right" and s["end2"] is None,
+                  "writing pass end screen: '4 of 5 right', no line 2 (got %r / %r)" % (s["end1"], s["end2"]))
+            check(s["again"] == "Revise flashcards one more time" and s["done"] is None and s["endHint"] is None
+                  and s["retryPass"] is None,
                   "writing pass: the button is 'Revise flashcards one more time'")
             check(not s["stripShown"], "the strip steps aside on the end screen (its numbers would repeat)")
             ev = P.q("window.__FC_FAKE__.events")
             check(not any(e["type"] == "session_finish" for e in ev), "the writing pass does not end the sitting")
+            idk_ev = [e for e in ev if e["type"] == "answer_submitted" and e.get("card", "").endswith("04")]
+            check([bool(e.get("idk")) for e in idk_ev][:2] == [True, False] and idk_ev[1].get("own_words") is True,
+                  "events: 'I don't know' (idk) then the own words (own_words)")
             P.no_retired("writing end screen")
             P.shot("End-writing")
 
@@ -432,7 +514,7 @@ def run(width, height, kb, shots):
                   "compact: the helper line hides while typing")
             P.shot("Review-keyboard-up")
             P.keyboard(False)
-            answers = {"What is the formula of water?": "idk", "What is the unit of force?": "newton",
+            answers = {"What is the formula of water?": "h2o", "What is the unit of force?": "newton",
                        "What is weight?": "gravity", "Write the equation for the force on a spring.": "ke",
                        "Is velocity a scalar or a vector?": "vector"}
             for _ in range(5):
@@ -442,53 +524,113 @@ def run(width, height, kb, shots):
                 P.click('[data-hw="got_it"]')
             settle(0.8)
             s = P.st()
-            check(s["end1"] == "5 of 5 right this time" and s["end2"] == "4 of 5 secured so far",
-                  "make's review pass: '5 of 5 right this time' / '4 of 5 secured so far' (got %r / %r)"
+            check(s["end1"] == "5 of 5 right" and s["end2"] == "4 of 5 secured so far",
+                  "make's review pass all right: '5 of 5 right' / '4 of 5 secured so far' (got %r / %r)"
                   % (s["end1"], s["end2"]))
-            check(s["again"] == "Revise flashcards one more time" and s["endHint"] is None,
-                  "make's own review pass is never 'too soon': Revise is the button")
-            P.shot("End-review")
-
-            # A second sitting, an hour later: the last card secures.
-            P.q("window.__FC_FAKE__.later = true")
-            P.click('[data-hw="again"]')
-            s = P.st()
-            check(s["progress"] == "0 of 5 right", "a new sitting opens at '0 of 5 right'")
-            P.shot("Sitting-2")
-            for _ in range(5):
-                f = P.st()["front"]
-                P.type(answers.get(f, "x"))
-                P.click('[data-hw="check"]')
-                P.click('[data-hw="got_it"]')
-            settle(0.8)
-            s = P.st()
-            check(s["end2"] == "5 of 5 secured so far" and s["done"] == "Done" and s["again"] is None
-                  and s["endHint"] is None,
-                  "every card secured → '5 of 5 secured so far' and Done (got %r %r)" % (s["end2"], s["done"]))
-            P.no_retired("secured end screen")
-            P.shot("Secured")
-            check(not s["overflowX"], "no sideways scroll at %dpx" % width)
+            check(s["done"] == "Done" and s["again"] is None and s["retryPass"] is None
+                  and s["endHint"] == "Revise flashcards one more time",
+                  "all right, not all secured: ONE button Done, with 'Revise flashcards one more time' above it")
             ev = P.q("window.__FC_FAKE__.events")
-            ids = [e["id"] for e in ev]
-            check(len(ids) == len(set(ids)), "every event has its own id (idempotent resend)")
-            check(sum(1 for e in ev if e["type"] == "session_finish") == 2, "two sittings ended with session_finish")
+            check(sum(1 for e in ev if e["type"] == "session_finish") == 1, "the all-right pass ended the sitting, once")
             check(all(e.get("via") in ("auto", "tap") for e in ev if e["type"] == "rated"), "every rating says auto/tap")
             check(not any("think_ms" in e or "active_ms" in e for e in ev), "no event carries a duration")
+            ids = [e["id"] for e in ev]
+            check(len(ids) == len(set(ids)), "every event has its own id (idempotent resend)")
+            P.no_retired("make all-right end screen")
+            P.shot("End-review")
+            check(not s["overflowX"], "no sideways scroll at %dpx" % width)
             P.click('[data-hw="done"]')
             check(not P.st()["open"], "Done closes the overlay")
 
-            # ══ REVIEW MODE, one sitting, × part-way and back ═════════════
+            # ══ REVIEW MODE: leftovers → Try again → a redo → Done ══════════
             P.q("window.MRBHomework._reset(); localStorage.clear(); window.__FC_FAKE__.mode = 'review'; "
-                "window.__FC_FAKE__.later = false;")
+                "window.__FC_FAKE__.later = false; window.MRBHomework.modelCheck = null;")
             P.q("window.__FC_FAKE__.events.length = 0")
             P.q("window.__MRB_OPEN_HW__(%s)" % json.dumps(AID))
             settle(0.6)
             s = P.st()
-            check(s["writing"] and s["progress"] == "0 of 5 right" and s["secured"] == "5 secured",
-                  "review mode: typing in review too; '5 secured' carried over (got %r)" % s["secured"])
+            check(s["writing"] and s["progress"] == "0 of 5 right" and s["segs"] == 5 and not s["chipsShown"],
+                  "review mode: a first pass has the plain bar, no chips (got %r)" % s["progress"])
             P.keyboard(True)
             P.boxes("review mode, state A")
             P.keyboard(False)
+            wrong = {"What is the formula of water?": "water", "Write the equation for the force on a spring.": "stretch"}
+            order = []
+            for _ in range(5):
+                f = P.st()["front"]
+                order.append(f)
+                P.type(wrong.get(f) or answers.get(f, "x"))
+                P.click('[data-hw="check"]')
+                P.click('[data-hw="not_yet"]' if f in wrong else '[data-hw="got_it"]')
+            settle(0.8)
+            s = P.st()
+            check(s["end1"] == "3 of 5 right" and s["retryPass"] == "Try again" and s["end2"] is None
+                  and s["done"] is None and s["again"] is None and s["endHint"] is None,
+                  "leftovers: '3 of 5 right' and ONE button 'Try again', no line 2 (got %r %r %r)"
+                  % (s["end1"], s["retryPass"], s["end2"]))
+            ev = P.q("window.__FC_FAKE__.events")
+            check(not any(e["type"] == "session_finish" for e in ev), "the leftovers screen does not end the sitting")
+            P.no_retired("leftovers screen")
+            P.shot("End-try-again")
+            P.click('[data-hw="retry-pass"]')
+            s = P.st()
+            check(s["chipsShown"] and s["segs"] == 0 and len(s["chips"]) == 5 and s["greens"] == 3
+                  and s["progress"] == "3 of 5 right",
+                  "Try again: 5 numbered chips, 3 green (tappable), headline '3 of 5 right' (got %r %r)"
+                  % (s["chips"], s["progress"]))
+            check([c["num"] for c in s["chips"]] == ["1", "2", "3", "4", "5"], "the chips are numbered 1…5")
+            check(s["front"] == [f for f in order if f in wrong][0] and s["draft"] == "",
+                  "the queue opens on the first leftover, with an empty box (got %r)" % s["draft"])
+            cur = [c for c in s["chips"] if c["current"]]
+            check(len(cur) == 1 and not cur[0]["redo"], "the current chip is ringed")
+            P.no_retired("retry strip")
+            P.shot("Retry-strip")
+            first_green = order.index([f for f in order if f not in wrong][0])
+            P.click('[data-hw="chip-redo"]')
+            s = P.st()
+            check(s["front"] == order[first_green] and s["writing"] and s["draft"] == answers[order[first_green]]
+                  and s["greens"] == 0 and s["back"],
+                  "tap a green chip: that card in state A with its earlier answer, ‹ Back offered (got %r %r)"
+                  % (s["front"], s["draft"]))
+            P.shot("Redo")
+            P.type("water" if order[first_green] == "What is the formula of water?" else "zzz")
+            P.click('[data-hw="check"]')
+            P.click('[data-hw="not_yet"]')
+            s = P.st()
+            check(s["progress"] == "2 of 5 right" and s["greens"] == 2 and s["front"] == [f for f in order if f in wrong][0],
+                  "rated Not yet: the chip turns grey (2 of 5), back on the queue's card (got %r %r)"
+                  % (s["progress"], s["front"]))
+            P.shot("Redo-grey")
+            for _ in range(2):
+                f = P.st()["front"]
+                P.type(answers.get(f, "x"))
+                P.click('[data-hw="check"]')
+                P.click('[data-hw="got_it"]')
+            settle(0.6)
+            s = P.st()
+            check(s["end1"] == "4 of 5 right" and s["retryPass"] == "Try again", "the redone card is left: Try again (got %r)" % s["end1"])
+            P.click('[data-hw="retry-pass"]')
+            s = P.st()
+            check(s["front"] == order[first_green] and s["greens"] == 4, "a second Try again: only the still-grey card")
+            P.type(answers[order[first_green]])
+            P.click('[data-hw="check"]')
+            P.click('[data-hw="got_it"]')
+            settle(0.8)
+            s = P.st()
+            check(s["end1"] == "5 of 5 right" and s["done"] == "Done" and s["end2"] == "4 of 5 secured so far"
+                  and s["retryPass"] is None and s["endHint"] == "Revise flashcards one more time",
+                  "all right: Done, line 2 from the server (got %r %r %r)" % (s["end1"], s["done"], s["end2"]))
+            ev = P.q("window.__FC_FAKE__.events")
+            check(sum(1 for e in ev if e["type"] == "session_finish") == 1,
+                  "ONE session_finish across the pass and both Try agains")
+            P.no_retired("all-right screen")
+            P.shot("End-all-right-done")
+            P.click('[data-hw="done"]')
+
+            # ══ × after one Check ends the sitting (A13) ═════════════════════
+            P.q("window.MRBHomework._reset(); localStorage.clear(); window.__FC_FAKE__.events.length = 0;")
+            P.q("window.__MRB_OPEN_HW__(%s)" % json.dumps(AID))
+            settle(0.6)
             P.type("newton")
             P.click('[data-hw="check"]')
             P.click('[data-port-region="flashcards-overlay"] button[title="Close"]')
@@ -496,6 +638,19 @@ def run(width, height, kb, shots):
             ev = P.q("window.__FC_FAKE__.events")
             check(any(e["type"] == "session_finish" for e in ev), "A13: × after one Check in review ends the sitting")
             check(not P.st()["open"], "× closes the overlay")
+
+            # ══ a set deleted after the page loaded (§13.6) ══════════════════
+            P.q("window.MRBHomework._reset(); window.MRBHomework.transport = function () {"
+                " return Promise.reject(Object.assign(new Error('not_your_homework'), {code: 'P0001'})); };")
+            P.q("window.__MRB_OPEN_HW__(%s)" % json.dumps(AID))
+            settle(0.6)
+            s = P.st()
+            check(s["gone"] == "Your teacher has taken this work down." and s["goneBtn"] == "Back to my class"
+                  and "did not load" not in s["text"] and "Try again" not in s["text"],
+                  "not_your_homework: 'Your teacher has taken this work down.' + 'Back to my class', no Try again (got %r)"
+                  % s["gone"])
+            P.no_retired("taken down")
+            P.shot("Gone")
     finally:
         server.shutdown()
 
@@ -511,6 +666,8 @@ def main():
           and "H.resumeRead = function" in live,
           "the live page loads the keyboard module and wires the model check and the resume read")
     check("e.flip()" not in live, "the live page no longer turns a card with Space")
+    check('.eq("id", wanted).is("deleted_at", null)' in live and '"pageshow"' in live,
+          "§13.6: the kind read skips deleted sets; a page back from the bfcache reloads")
     for w, h, kb in ((390, 844, 508), (360, 740, 404)):
         run(w, h, kb, shots)
     print("\n  screenshots: %s" % shots)

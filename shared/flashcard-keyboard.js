@@ -24,6 +24,10 @@
  * set once: it is all re-derived in `__MRB_AFTER_DRAW__` from
  * `document.activeElement`, and on every `visualViewport` resize/scroll.
  *
+ * ⊕ Sharpen (§13.4): in the "I don't know" learn state the dialog also
+ * carries `data-hw-learn="1"`, and the card shrinks further to make room
+ * for the ANSWER block above the box.
+ *
  * It also owns one more thing about the answer box: when the card in front
  * changes while the box stays on screen (‹ Back), the runtime would carry
  * the old card's text into the new box. The box is given the text the
@@ -46,7 +50,14 @@
     '[data-mrb-dialog="flashcards"][data-hw-typing="1"] [data-dc-tpl="10334"]{padding:14px 18px!important;gap:8px!important}' +
     '[data-mrb-dialog="flashcards"][data-hw-typing="1"] [data-dc-tpl="10340"]{font-size:18px!important;line-height:1.3!important}' +
     '[data-mrb-dialog="flashcards"][data-hw-typing="1"] [data-dc-tpl="10350"]{display:none!important}' +
-    '[data-mrb-dialog="flashcards"][data-hw-typing="1"] [data-hw="check"]{min-height:44px!important}';
+    '[data-mrb-dialog="flashcards"][data-hw-typing="1"] [data-hw="check"]{min-height:44px!important}' +
+    // ⊕ Sharpen §13.4 — the "I don't know" learn state adds the ANSWER block
+    // between the card and the box: the card gives up the room for it.
+    '[data-mrb-dialog="flashcards"][data-hw-typing="1"][data-hw-learn="1"] [data-card-fit]{' +
+      'min-height:96px!important;height:max(96px,min(calc(var(--fc-vh) * .24),calc(var(--fc-vh) - 380px)))!important;' +
+      'max-height:max(96px,calc(var(--fc-vh) * .24))!important}' +
+    '[data-mrb-dialog="flashcards"][data-hw-typing="1"] [data-hw="learn"] > :last-child{' +
+      'max-height:calc(var(--fc-vh) * .22)!important;overflow:auto!important}';
 
   function injectCss() {
     if (doc.getElementById("mrb-fc-keyboard-css")) { return; }
@@ -76,6 +87,7 @@
 
   var lastCard = null;
   var wasTyping = false;
+  var lastH = 0;
 
   function apply() {
     var p = parts();
@@ -106,26 +118,35 @@
       lastCard = null;
     }
 
+    if (p.dialog.querySelector('[data-hw="learn"]')) { p.dialog.setAttribute("data-hw-learn", "1"); }
+    else { p.dialog.removeAttribute("data-hw-learn"); }
+
     var typing = !!(p.box && doc.activeElement === p.box);
     if (typing) { p.dialog.setAttribute("data-hw-typing", "1"); }
     else { p.dialog.removeAttribute("data-hw-typing"); }
-    if (typing && !wasTyping) { reveal(p.box); }
+    // ⊕ Sharpen §13.4 — also when the keyboard changes height while the
+    // pupil is typing (iOS animates it in; the learn state is taller).
+    if (typing && (!wasTyping || m.height !== lastH)) { reveal(); }
     wasTyping = typing;
+    lastH = m.height;
   }
 
-  function reveal(box) {
-    try { box.scrollIntoView({ block: "nearest" }); } catch (e) { /* old engines */ }
-    setTimeout(function () {
-      var p = parts();
-      if (p && p.box && doc.activeElement === p.box) {
-        try { p.box.scrollIntoView({ block: "nearest" }); } catch (e) { /* old engines */ }
-      }
-    }, 300);
+  // The row holding Check sits right under the box: bringing IT into view
+  // ("nearest" = its foot to the visible foot) shows the box and Check both.
+  function scrollBox() {
+    var p = parts();
+    if (!p || !p.box || doc.activeElement !== p.box) { return; }
+    var row = p.ov.querySelector('[data-hw="act"]') || p.box;
+    try { row.scrollIntoView({ block: "nearest" }); } catch (e) { /* old engines */ }
+  }
+  function reveal() {
+    scrollBox();
+    setTimeout(scrollBox, 300);
   }
 
   function restore() {
     // The overlay closing takes its element with it; nothing is left to undo.
-    lastCard = null; wasTyping = false;
+    lastCard = null; wasTyping = false; lastH = 0;
   }
 
   root.__MRB_AFTER_DRAW__ = root.__MRB_AFTER_DRAW__ || [];
