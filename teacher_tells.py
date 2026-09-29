@@ -624,6 +624,30 @@ def layout_problems(name, body):
         if head in nodes and row in nodes and tracks(nodes[head]) != tracks(nodes[row]):
             out.append("header %s and row %s have different tracks: %r vs %r (Sharpen C1)"
                        % (head, row, tracks(nodes[head]), tracks(nodes[row])))
+    # ⊕ re-audit (C1 at 390) — below 720px each table's header strip and
+    # rows share ONE fixed track list, so a header and its cells start at the
+    # same x: the table tag is on both nodes of the pair, and the phone rule
+    # for that tag uses only px and minmax(0,Nfr) — never max-content,
+    # min-content or auto, which size per row.
+    _TAGS = {"class-detail.html": ("students", "assignments"),
+             "student-detail.html": ("history",), "digest.html": ("digest",)}
+    for head, row in _TRACK_PAIRS.get(name, ()):
+        if head in nodes and row in nodes:
+            th = (nodes[head].get("a") or {}).get("data-mrb-table")
+            tr = (nodes[row].get("a") or {}).get("data-mrb-table")
+            # (the marking grid has no phone table tag: it scrolls in its card)
+            if name != "assignment.html" and (th != tr or th is None):
+                out.append("header %s and row %s do not carry the same table tag (%r / %r) — "
+                           "the phone columns would differ (Sharpen C6)" % (head, row, th, tr))
+    for tag in _TAGS.get(name, ()):
+        m = re.search(r'\[data-mrb-table=\\?"%s\\?"\]\{grid-template-columns:([^!}]+)!important' % tag, body)
+        if not m:
+            out.append("no phone track rule for the %s table (Sharpen C6)" % tag)
+            continue
+        rest = re.sub(r"minmax\(0,\s*\d*\.?\d+fr\)|\b\d+px\b", "", m.group(1)).strip()
+        if rest:
+            out.append("the %s table's phone tracks %r are not all fixed px / minmax(0,fr) — header "
+                       "and cells can slide apart (Sharpen C6 re-audit)" % (tag, m.group(1)))
     if name == "assignment.html" and "',1fr) " in body:
         out.append("the marking grid's `cols` still repeats a bare 1fr (Sharpen C1)")
     # C4 — the crumb

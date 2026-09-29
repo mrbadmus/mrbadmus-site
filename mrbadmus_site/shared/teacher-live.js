@@ -4333,8 +4333,13 @@
   try {
     /* ⊕ Sharpen C6 (T4) — the configured backend, not a hardcoded host
        (on TEST/localhost the old URL was a CORS error on every load). */
-    var hb = window.MrBadmusConfig && window.MrBadmusConfig.BACKEND_URL;
-    if (hb) { fetch(hb + "/api/health").catch(function () {}); }
+    /* Production only: the warm-up is for Render's cold start; on TEST the
+       configured backend is a developer's localhost, and pinging it when it
+       is not running is a console error on every teacher page. */
+    var cfg = window.MrBadmusConfig || {};
+    if (cfg.BACKEND_URL && cfg.environment === "prod") {
+      fetch(cfg.BACKEND_URL + "/api/health").catch(function () {});
+    }
   } catch (e) {}
 
   /* ⊕ Stream L, 25 Sep 2026 (experience run, item 1) — LIBRARY MODE.

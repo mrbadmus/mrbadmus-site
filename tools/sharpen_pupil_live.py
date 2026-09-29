@@ -25,7 +25,7 @@ localhost:3000):
       old backend), the set is read-only with no error; and a revision
       refused 409 puts the old answer back, read-only, no error
   C5  teacher: the student screen's history row says "revised after marking"
-      and the Breakdown panel's HANDED IN tile carries "Revised after marking …"
+      and the Breakdown panel's HANDED IN tile carries "Revised …"
 
     MRB_SHOTS=~/tmp/ks3-gates python3 tools/sharpen_pupil_live.py
 
@@ -778,8 +778,8 @@ def main():
                     if theme == "light" and vw == 1440:
                         line = B.q("(function(){var e=document.querySelector('[data-bd-revised]');return e?e.innerText:null})()")
                         result["breakdown_line"] = line
-                        check(bool(ok) and (line or "").startswith("Revised after marking"),
-                              "teacher: the Breakdown's HANDED IN tile says 'Revised after marking <when>'", str(line))
+                        check(bool(ok) and (line or "").startswith("Revised "),
+                              "teacher: the Breakdown's HANDED IN tile says 'Revised <when>' (re-audit: the time alone the same day)", str(line))
                     B.shot(f"c5-{tag}-13-teacher-breakdown", "[data-bd-revised]", vw, vh, above=300)
         finally:
             server.shutdown()

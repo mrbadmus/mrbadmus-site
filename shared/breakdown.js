@@ -701,8 +701,12 @@
       /* ⊕ Sharpen C5 — the pupil changed it after it was marked; the SCORE
          tile is already the latest. When, under when it was handed in. */
       if (isRevised(sub)) {
-        var rv = el("div", "bd-stat-sub", "Revised after marking " +
-                    fmtShort(sub.updated_at));
+        /* ⊕ re-audit — revised the same day it was handed in: the time
+           alone ("Revised 22:31"); another day: "Revised 29 Sep, 21:10". */
+        var handedS = fmtShort(completedIso(sub)), revS = fmtShort(sub.updated_at);
+        var sameDay = handedS.split(",")[0] === revS.split(",")[0];
+        var rv = el("div", "bd-stat-sub", "Revised " +
+                    (sameDay ? (revS.split(", ")[1] || revS) : revS));
         rv.setAttribute("data-bd-revised", "1");
         handedTile.node.appendChild(rv);
       }

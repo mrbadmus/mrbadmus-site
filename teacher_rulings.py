@@ -1966,7 +1966,8 @@ BIND_ATTR = {
     # left slid — two OPEN pills 30px apart in Mide's screenshot. Every
     # track is now a fixed px or `minmax(0,Nfr)`; the actions track is a
     # fixed 220px (Edit Download Delete at Design's button size, measured),
-    # SUBMITTED 120px and CLASS MEAN 130px (their headers, measured).
+    # SUBMITTED 120px and CLASS MEAN 130px (their headers, measured); SET and
+    # DUE a fixed 160px (re-audit: "Tue 29 Sep 21:14" was ellipsised).
     #
     # ⚠️ ASSERTED, WHICH IS WHY THIS IS `BIND_ATTR` AND NOT `SET_ATTR`.
     # `SET_ATTR` refuses to touch an attribute Design already wrote — right,
@@ -1978,7 +1979,7 @@ BIND_ATTR = {
           "display:grid;grid-template-columns:2fr 100px 1fr 1fr 1fr 1fr 1.2fr;"
           "background:var(--st-num-well);"
           "border-bottom:1px solid var(--st-rule-soft)",
-          "display:grid;grid-template-columns:minmax(0,1.6fr) 150px minmax(0,1fr) minmax(0,1fr) 120px 130px minmax(0,1.7fr) 220px;min-width:1080px;"
+          "display:grid;grid-template-columns:minmax(0,1.6fr) 150px 160px 160px 120px 130px minmax(0,1.7fr) 220px;min-width:1080px;"
           "background:var(--st-num-well);"
           "border-bottom:1px solid var(--st-rule-soft)",
           "the Assignments table's header strip — an eighth column for Edit "
@@ -1987,7 +1988,7 @@ BIND_ATTR = {
           "display:grid;grid-template-columns:2fr 100px 1fr 1fr 1fr 1fr 1.2fr;"
           "align-items:center;border-top:1px solid var(--st-rule-fact);"
           "cursor:pointer",
-          "display:grid;grid-template-columns:minmax(0,1.6fr) 150px minmax(0,1fr) minmax(0,1fr) 120px 130px minmax(0,1.7fr) 220px;min-width:1080px;"
+          "display:grid;grid-template-columns:minmax(0,1.6fr) 150px 160px 160px 120px 130px minmax(0,1.7fr) 220px;min-width:1080px;"
           "align-items:center;border-top:1px solid var(--st-rule-fact);"
           "cursor:pointer",
           "the Assignments table's row, matching the header strip above it."),

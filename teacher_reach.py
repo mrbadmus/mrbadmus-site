@@ -599,6 +599,67 @@ _REACH_JS = r"""
 """
 
 
+# ⊕ Sharpen C1 re-audit, 29 Sep 2026 — header and cells SHARE their columns.
+#
+# At 390 the tables drop to their deciding columns, and each used to size
+# those columns per row (`max-content`), so a header and the cells under it
+# started at different x — "AVERAGE" over nothing, "72%" under nothing. The
+# fix is one fixed px track list per table (build_teacher_port's ≤719px
+# block), and `teacher_tells` checks that list statically. This measures the
+# thing a teacher actually sees, on the page as loaded: every visible header
+# cell's left edge equals the left edge of the cell under it in every row
+# (±1px), and no kept cell is clipped or ellipsised. And T29: a marking-screen
+# question stem is never cut off — it wraps.
+_ALIGN_JS = r"""
+(function () {
+  var bad = [];
+  function vis(c) { return getComputedStyle(c).display !== 'none' && c.getBoundingClientRect().width > 0; }
+  function clipped(c) {
+    if (c.scrollWidth > c.clientWidth + 1 && getComputedStyle(c).overflowX !== 'visible') return true;
+    var hit = false;
+    c.querySelectorAll('*').forEach(function (x) {
+      var cs = getComputedStyle(x);
+      if (cs.overflowX !== 'visible' && x.scrollWidth > x.clientWidth + 1) hit = true;
+    });
+    return hit;
+  }
+  var byTag = {};
+  document.querySelectorAll('[data-mrb-table]').forEach(function (t) {
+    if (!vis(t)) return;
+    var tag = t.getAttribute('data-mrb-table');
+    var g = byTag[tag] = byTag[tag] || {head: null, rows: []};
+    if (/cursor:pointer/.test(t.getAttribute('style') || '')) g.rows.push(t);
+    else if (!g.head) g.head = t;
+  });
+  Object.keys(byTag).forEach(function (tag) {
+    var g = byTag[tag];
+    g.rows.forEach(function (r, ri) {
+      [].forEach.call(r.children, function (c, i) {
+        if (!vis(c)) return;
+        if (i > 0 && clipped(c))
+          bad.push(tag + ' row ' + ri + ' column ' + i + ' (' + c.innerText.slice(0, 24).replace(/\s+/g, ' ') + ') is clipped');
+        if (!g.head) return;
+        var h = g.head.children[i];
+        if (!h || !vis(h)) return;
+        var dl = Math.abs(h.getBoundingClientRect().left - c.getBoundingClientRect().left);
+        if (dl > 1)
+          bad.push(tag + ' row ' + ri + ' column ' + i + ' starts ' + Math.round(dl) +
+                   'px off its header (' + h.innerText.trim() + ')');
+      });
+    });
+    if (g.head) [].forEach.call(g.head.children, function (h, i) {
+      if (i > 0 && vis(h) && clipped(h)) bad.push(tag + ' header ' + h.innerText.trim() + ' is clipped');
+    });
+  });
+  document.querySelectorAll('[data-mrb-qrow]').forEach(function (q, i) {
+    var st = q.children[1];
+    if (st && vis(st) && clipped(st)) bad.push('question row ' + (i + 1) + "'s stem is clipped");
+  });
+  return JSON.stringify(bad.slice(0, 12));
+})()
+"""
+
+
 def drive(screen, path, slug, cdp, port, width, height, shots=None):
     """Problems, as strings, for one fixture at one width."""
     problems = []
@@ -618,6 +679,9 @@ def drive(screen, path, slug, cdp, port, width, height, shots=None):
             pg.screenshot(os.path.join(shots, "%s-%s-%d.png"
                                        % (screen, slug, width)),
                           width=width, height=height, full_page=True)
+
+        for d in json.loads(pg.eval(_ALIGN_JS)):
+            problems.append("%s: %s (Sharpen C1/T29 re-audit)" % (what, d))
 
         import teacher_behaviour as TB
         raw = pg.eval(_REACH_JS.replace(

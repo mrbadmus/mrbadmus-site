@@ -5641,25 +5641,38 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         # Each keeps the columns a teacher decides with — Students: name ·
         # THIS WEEK · AVERAGE; Assignments: title · STATUS · SUBMITTED;
         # history: title · SCORE · STATUS; digest: class · SUBMITTED · NEEDS
-        # A LOOK — sized to their content so nothing is ellipsised; only
-        # the first column wraps. Header strip and row carry the same tag.
+        # A LOOK — on FIXED px tracks the header and rows share, wide
+        # enough that nothing is ellipsised; only the first column wraps. Header strip and row carry the same tag.
         "@media (max-width:719px){"
         "[data-mrb-table]{min-width:0!important}"
         "[data-port-region] div:has(> [data-mrb-table]){overflow:hidden!important}"
-        "[data-mrb-table] > *{padding-left:10px!important;padding-right:10px!important}"
+        # ⊕ re-audit (C1 at 390) — FIXED px tracks shared by the header strip
+        # and every row (one rule per table), never max-content, which sized
+        # per row and slid cells off their headers. Widths measured at 390:
+        # the widest header word or value in each column, plus padding.
+        "[data-mrb-table] > *{padding-left:8px!important;padding-right:8px!important}"
+        "[data-mrb-table]:not([style*=\"cursor:pointer\"]) > *{font-size:12px!important;letter-spacing:.04em!important}"
         "[data-mrb-table] > :not(:first-child){overflow:visible!important;"
         "text-overflow:clip!important;white-space:nowrap!important}"
-        "[data-mrb-table=\"students\"]{grid-template-columns:minmax(min-content,1fr) max-content max-content!important}"
+        "[data-mrb-table=\"students\"]{grid-template-columns:minmax(0,1fr) 98px 72px!important}"
         # the initials disc beside a pupil's name says nothing the name
         # does not; on a phone its 41px go to the name.
         "[data-mrb-table=\"students\"] > :first-child > :first-child:not(:only-child){display:none!important}"
         "[data-mrb-table=\"students\"] > :nth-child(3),"
         "[data-mrb-table=\"students\"] > :nth-child(n+5){display:none!important}"
-        "[data-mrb-table=\"assignments\"]{grid-template-columns:minmax(min-content,1fr) max-content max-content!important}"
+        "[data-mrb-table=\"assignments\"]{grid-template-columns:minmax(0,1fr) 88px 86px!important}"
         "[data-mrb-table=\"assignments\"] > :nth-child(3),"
         "[data-mrb-table=\"assignments\"] > :nth-child(4),"
         "[data-mrb-table=\"assignments\"] > :nth-child(n+6){display:none!important}"
-        "[data-mrb-table=\"history\"]{grid-template-columns:minmax(min-content,1fr) max-content!important}"
+        # ⊕ re-audit — dropping column 8 dropped Edit / Download / Delete with
+        # it, and a teacher on a phone could no longer change or remove a set
+        # (teacher_reach: "has no box"). Like the history row's actions, they
+        # go on their own line under the row, left-aligned under the title.
+        "[data-mrb-table=\"assignments\"][style*=\"cursor:pointer\"] > :nth-child(8){display:flex!important;"
+        "grid-column:1 / -1;justify-content:flex-start!important;flex-wrap:wrap!important;"
+        "gap:8px 18px!important;padding-top:0!important}"
+        "[data-mrb-table=\"assignments\"][style*=\"cursor:pointer\"] > :nth-child(8):empty{display:none!important}"
+        "[data-mrb-table=\"history\"]{grid-template-columns:minmax(0,1fr) 150px!important}"
         "[data-mrb-table=\"history\"] [data-mrb-revised]{display:block!important;"
         "margin:4px 0 0!important;text-align:right}"
         "[data-mrb-table=\"history\"] > :nth-child(2),"
@@ -5675,9 +5688,10 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "[data-mrb-table=\"history\"][style*=\"cursor:pointer\"] > :nth-child(5) > div{gap:18px!important}"
         # the first (deciding) column wraps its own content; nothing in it
         # is cut off or spills into the next column.
+        "[data-mrb-table] > :first-child > *{min-width:0!important}"
         "[data-mrb-table] > :first-child *{white-space:normal!important;"
         "overflow:visible!important;text-overflow:clip!important;overflow-wrap:break-word}"
-        "[data-mrb-table=\"digest\"]{grid-template-columns:minmax(min-content,1fr) max-content minmax(0,max-content)!important}"
+        "[data-mrb-table=\"digest\"]{grid-template-columns:minmax(0,1fr) 88px 118px!important}"
         # (specific enough to beat the ≤560px one-line-cell rule above)
         "[data-port-region] [data-mrb-table=\"digest\"][data-mrb-table] > :nth-child(5):not(:first-child),"
         "[data-port-region] [data-mrb-table=\"digest\"][data-mrb-table] > :nth-child(5):not(:first-child) *"
@@ -5686,12 +5700,23 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "[data-mrb-table=\"digest\"] > :nth-child(3),"
         "[data-mrb-table=\"digest\"] > :nth-child(4){display:none!important}"
         # T22: the week bar — caption on its own line, the chips own the row.
-        "[data-mrb-weekbar]{flex-wrap:wrap!important}"
-        "[data-mrb-weekbar] > :first-child{flex-basis:100%%}"
+        # ⊕ re-audit — `!important`: Design's caption carries an inline
+        # `flex:none`. The caption owns the first line; ‹ strip › the second,
+        # the strip taking every pixel between the chevrons, and the chips
+        # drawn smaller so several show at 390.
+        "[data-mrb-weekbar]{flex-wrap:wrap!important;padding:10px!important;gap:10px 8px!important}"
+        "[data-mrb-weekbar] > :first-child{flex:0 0 100%%!important}"
+        "[data-mrb-weekbar] [data-rail=\"weeks\"]{flex:1 1 0!important;min-width:0!important}"
+        "[data-mrb-weekbar] [data-rail=\"weeks\"] > *{padding:6px 9px!important;min-height:46px!important}"
+        "[data-mrb-weekbar] [data-rail=\"weeks\"] > * > :first-child{font-size:14px!important}"
+        "[data-mrb-weekbar] > button{width:30px!important;height:46px!important}"
         # T29: a question row keeps its number and percentage; the stem
         # goes under them, full width.
         "[data-mrb-qrow]{grid-template-columns:44px minmax(0,1fr) max-content!important;row-gap:8px!important}"
         "[data-mrb-qrow] > :nth-child(2){grid-column:1 / -1;grid-row:2}"
+        # ⊕ re-audit — the stem is prose; the one-line-cell rule must not reach it.
+        "[data-mrb-qrow] > :nth-child(2),[data-mrb-qrow] > :nth-child(2) *"
+        "{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}"
         # T59: a chart row stacks — its label full width, the bar and the
         # count under it.
         "[data-port-region] [style*=\"220px minmax(0,1fr) 96px\"],"
@@ -5720,10 +5745,10 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "[data-port-region=\"digest\"] [style*=\"white-space:nowrap\"],"
         "[data-port-region=\"insights\"] [style*=\"white-space:nowrap\"]"
         "{white-space:normal!important}"
-        # ⊕ Sharpen C1 — EXCEPT inside a table row. The tables now scroll
-        # sideways in their own card on a phone, so a cell no longer has to
-        # wrap to fit; wrapping it would break the one-baseline rule (a date
-        # on two lines beside a one-line title). More specific than the rule
+        # ⊕ Sharpen C1/C6 — EXCEPT inside a table row. Below 720px a table
+        # DROPS to its deciding columns (the `max-width:719px` block above,
+        # fixed px tracks), so a kept cell never has to wrap to fit; wrapping
+        # it would break the one-baseline rule. More specific than the rule
         # above, so its `!important` wins; the title cell still wraps.
         "[data-port-region] [style*=\"grid-template-columns:minmax(0,\"]"
         " > :not(:first-child):not(:has(button,a,input,select,[tabindex])),"
