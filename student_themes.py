@@ -2441,17 +2441,30 @@ def check_round(rd):
                      _re.search(r"\d+ / \d+ right",
                                 done.get("text") or "").group(0)))
 
+    # ⊕ Stage B audit (29 Sep 2026) — THE ROUND NUMBER IS NOT DRAWN ANY MORE
+    # ("ROUND 01 · UNLIMITED ROUNDS", donor 378, is omitted from the graft),
+    # so "ROUND 02" can no longer be read. What a pupil CAN see of a fresh
+    # round is asserted instead, and it is the same property: round two opens
+    # on its first question — the card's own "QUESTION 01 / NN" — with exactly
+    # one pip lit, and on a DIFFERENT first question from round one's (a round
+    # is `size` consecutive items of the bank and round two starts where round
+    # one stopped, so a bank longer than the round cannot repeat its opener).
     again = rd.get("after_another") or {}
-    if "ROUND 02" not in (again.get("text") or ""):
+    first_prev = ((rd.get("steps") or [{}])[0] or {}).get("question")
+    lit = [p for p in (again.get("pips") or []) if p == "1"]
+    fresh = ("QUESTION 01 /" in (again.get("text") or "") and len(lit) == 1)
+    if not fresh:
         rows.append((disp, "`Another round` starts a fresh round", "FAIL",
-                     "the round number did not move"))
+                     "not on question 01 with one pip lit (%d lit)" % len(lit)))
         problems.append(
-            "pressing `Another round` did not increment the round number. A "
-            "round that does not renumber is the same round with its score "
-            "reset, under a heading that says ROUND 01.")
+            "pressing `Another round` did not open a fresh round: the card "
+            "should read QUESTION 01 with exactly one pip lit. A round that "
+            "does not restart is the same round with its score reset.")
     else:
         rows.append((disp, "`Another round` starts a fresh round", "PASS",
-                     "ROUND 02, question 01"))
+                     "question 01, one pip lit"
+                     + ("" if not first_prev or again.get("question") != first_prev
+                        else " (same opener — bank no longer than the round)")))
     if "STREAK BROKEN" in (again.get("text") or ""):
         rows.append((disp, "a fresh round does not open broken", "FAIL",
                      "STREAK BROKEN on the first screen of round 2"))
@@ -2522,34 +2535,37 @@ def check_round(rd):
         # RAW step index, which is right for a round of six and wrong for
         # every other length. The drawn fraction has to track the fraction of
         # the round that is actually DONE, at every length.
+        # ⊕ Stage B audit (29 Sep 2026) — THE BAR IS NOW THE CARD'S PIPS. The
+        # outer `.rprog` bar (donor 382) is omitted from the graft with the
+        # outer counter it sat beside; the card's own pip row (donor 391,
+        # `qpips`) is the progress a pupil sees. Same honesty, measured on
+        # the element that is there: at every length there are exactly
+        # `size` pips, and on question i exactly i+1 are lit — never the
+        # raw-six arithmetic the scaled `.rprog` existed to correct.
         bad = []
         for i, st in enumerate(steps):
-            if st["barW"] is None or not st["trackPx"]:
-                bad.append((i, "no bar"))
+            if "Another round" in (st["controls"] or []):
+                continue                     # the done card has no pip row
+            pips = st.get("pips") or []
+            if len(pips) != size:
+                bad.append((i, "%d pip(s) for a round of %d" % (len(pips), size)))
                 continue
-            frac = float(st["barPx"]) / float(st["trackPx"])
-            done_n = size if ("Another round" in (st["controls"] or [])) else i
-            want_f = done_n / float(size)
-            # Half a bucket. The buckets are 1/6 apart, so a correctly scaled
-            # step can land at most half a bucket from its true fraction; a
-            # RAW index at a short pool lands whole buckets away.
-            if abs(frac - want_f) > (1.0 / 12.0) + 0.02:
-                bad.append((i, "%.3f drawn vs %.3f done" % (frac, want_f)))
+            on = sum(1 for p in pips if p == "1")
+            if on != i + 1:
+                bad.append((i, "%d lit on question %d" % (on, i + 1)))
         if bad:
             rows.append((disp, "a pool of %d fills the bar honestly" % n,
                          "FAIL", str(bad[:3])))
             problems.append(
-                "the `.rprog` bar does not track the round at a pool of %d: "
-                "%s. The step is scaled onto Design's six buckets in "
-                "`recallVals`; if this is red that scaling has been lost, and "
-                "a student finishing a short round is shown a bar that is not "
-                "full — 4 of 4 drawn at 67%%." % (n, bad[:3]))
+                "the card's pip row does not track the round at a pool of %d: "
+                "%s. `qpips` is `round.map(...)` with `on: i <= rqi`; if this "
+                "is red the row has stopped being one pip per question of THIS "
+                "round, and a short round shows a progress row that is not "
+                "its own length." % (n, bad[:3]))
         else:
-            last = steps[-1]
-            full = (float(last["barPx"]) / float(last["trackPx"])) if last["trackPx"] else 0
             rows.append((disp, "a pool of %d fills the bar honestly" % n,
-                         "PASS", "%d step(s), ends at %.0f%%"
-                         % (len(steps), full * 100)))
+                         "PASS", "%d step(s), %d pip(s), one more lit each "
+                         "question" % (len(steps), size)))
     return rows, problems
 
 
@@ -2821,41 +2837,14 @@ _DONE_READ = r"""
 # case. The row holds two text leaves at the same pair — the labels and the
 # count — and one registration would excuse the first while failing the
 # second, which is the behaviour that stops a blanket exemption forming.
-DONE_BENCH_TEXT_EXCEPTIONS = [
-    {
-        "name": "the done bench's milestone labels (chalk)",
-        # ⚠️ THE REGISTERED TEXT IS THE COLLAPSED FORM, and that is not a
-        # transcription slip. Design types this row with NON-BREAKING spaces
-        # around its separators (`OPENED \u00a0·\u00a0 ANSWERED …`), and the
-        # sweep normalises every leaf with `replace(/\s+/g, ' ')` — which in
-        # JavaScript matches U+00A0. So what the comparison sees, and what has
-        # to be written here, is the ordinary-space form.
-        "text": "OPENED · ANSWERED · COMPLETED",
-        "fg": "#6A5C4C",
-        "bg": "#E5D4B6",
-        "ratio": 4.44,
-        "tol": 0.06,
-        "cases": ["chalk"],
-        "why": "Design's own --b-muted on Design's own --b-inset, on the one "
-               "light theme. The same pair and the same 4.44 the recall "
-               "round's option chips were registered at in Phase 3; it is "
-               "Design's to move, and it is on the report as a second "
-               "instance.",
-    },
-    {
-        "name": "the done bench's milestone count (chalk)",
-        "text": "3 / 3",
-        "fg": "#6A5C4C",
-        "bg": "#E5D4B6",
-        "ratio": 4.44,
-        "tol": 0.06,
-        "cases": ["chalk"],
-        "why": "The same row's figure, at the same pair. Registered "
-               "separately because an exception is spent once per case and a "
-               "single entry would silently excuse whichever leaf was walked "
-               "first.",
-    },
-]
+# ⊕ Stage B audit (29 Sep 2026) — BOTH ENTRIES RETIRED, because the row they
+# excused is gone: the done bench's OPENED · ANSWERED · COMPLETED row (donor
+# 106/110/111) is omitted from the graft (student_rulings, `_stage_b_omit`),
+# so neither string is on any theme and a registration that outlived its
+# element would go red as stale. The finding above stays true of Design's
+# pair and stays on Mide's report; the chalk contrast of every OTHER leaf on
+# the done bench is still measured, unaided, on all seven cases.
+DONE_BENCH_TEXT_EXCEPTIONS = []
 
 
 def _done_bench(page, url):
