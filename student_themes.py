@@ -2904,18 +2904,31 @@ def check_done_bench(case, m):
         rows.append((disp, "only one bench is drawn", "PASS",
                      "no open-bench node or word"))
 
-    # ── the reward slot: present, 64px, and EMPTY ────────────────────────
+    # ── the reward slot: RETIRED, and asserted retired ───────────────────
+    # ⊕ Stage B re-audit (29 Sep 2026, S1). Design reserved 64px (donor 117,
+    # "reserved for the score-gated reward surface — nothing drawn") for a
+    # surface that does not exist. On a phone that reservation, with the
+    # pruned greeting and checklist around it, was a ~130px empty navy band
+    # between the topic and the docket, and the audit ruled it closed. The
+    # slot is omitted from the graft (student_rulings, `_stage_b_omit`), so
+    # this now asserts the ruled state as strictly as it asserted the old one:
+    # NO slot on the page, on every theme. The reward surface, when it is
+    # built, brings its own space. ⚑ On Mide's report as a Design reservation
+    # removed.
     rw = d.get("reward") or {}
-    if rw.get("n") != 1 or not rw.get("m"):
-        rows.append((disp, "the reward slot is reserved", "FAIL",
+    if rw.get("n"):
+        rows.append((disp, "the reward slot is not drawn (Stage B S1)", "FAIL",
                      "%d slot(s)" % rw.get("n", 0)))
         problems.append(
-            "%s — Design's reserved reward slot (donor 117, "
-            "data-port-note=\"reserved for the score-gated reward surface — "
-            "nothing drawn\") matched %d elements, not 1. A reserved space "
-            "that is not on the page is a space nobody is holding."
-            % (disp, rw.get("n", 0)))
-        return rows, problems
+            "%s — Design's empty 64px reward slot (donor 117) is back on the "
+            "done bench. It was ruled out on 29 Sep 2026 (Stage B re-audit "
+            "S1): an empty reservation for a surface that does not exist is "
+            "the gap a pupil saw between the topic and the docket."
+            % (disp,))
+    else:
+        rows.append((disp, "the reward slot is not drawn (Stage B S1)", "PASS",
+                     "no slot"))
+    return rows, problems
     mm = rw["m"]
     if mm.get("minHeight") != "64px" or mm.get("height", 0) < 64:
         rows.append((disp, "the reward slot is reserved", "FAIL",

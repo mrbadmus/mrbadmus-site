@@ -19,7 +19,7 @@ TEST pupils `mrb326_pupil_a` / `_b`, real data, local backend at origin/main.
 | Assignment | 124px incl. readout; no brand below 820px; back button went to /ks3/ | bar one row with brand · class code · bell · avatar · theme; back goes to the class |
 
 Pairs: `before-/after-ks3-lesson-390-dark-in.jpg`, `…ks3-lesson-360-light`,
-`…ks3-unit-390-light-in`, `…ks3-index-390-light`, `…ks4-pilot-390-light`,
+`…ks3-unit-390-light-in`, `…ks4-pilot-390-light`,
 `…ks4-pilot-360-dark-in`, `…leaderboard-360-light-in`,
 `…student-classes-390-light-in`, `…assignment-A-360-light`,
 `…assignment-A-390-dark`.
@@ -102,3 +102,18 @@ Flagged, not changed: (13) the class page's avatar-menu Settings opens Design's 
 account sheet (it holds the bench theme) while every other page goes to
 /student/settings.html — for Mide; (14) KS3 leaderboard dashes / the TEST 500; the
 Practice stat tile "—".
+
+## Round three — the Fable re-audit follow-ups (29 Sep 2026)
+
+| # | screen | cut / change | why | level |
+|---|---|---|---|---|
+| S1 | class, done bench | the ~120px empty band between the topic and the docket → 36px at 390 | the pruned greeting/checklist left Design's 64px reward-slot reservation (donor 117), an empty 28px action row and a 40px column gap. Slot omitted (**⚑ a Design reservation removed — for Mide**), the row draws only when it holds "Revisit…", the gap is 20px when the columns stack | graft `omit` 117 + WRAP 10112 + STYLE_EDIT 10101 |
+| S2 | class, done bench | "THE WEEK'S WORK" eyebrow | the docket says THIS WEEK'S ASSIGNMENT; the open bench has none | graft `omit` 103 |
+| S3 | class, empty bench | the practice card named ONE lesson for a round drawn from several | titled from the round it opens (`recallRound()`): one lesson → its name; several → "Mixed practice", line "5 questions from 3 lessons" | data |
+| S4 | practice round end | "Back to my class" | the "‹ class" pill above it | graft `omit` 424 |
+| S4 | practice round end | "Go again as many times as you like. Nothing here is handed in." → "Nothing here is handed in." | "go again" is the button under it | SET_TEXT 10419 |
+| C1 | practice round | "QUESTION 01 / 05 ·" / "LEVELS OF ORGANISATION" wrapped with an orphan dot | one line, ellipsised; the pips drop below when they must | STYLE_EDIT 10388 |
+
+After: `after-reaudit-done-bench-390-light.jpg` (fixture, with the two nodes the live
+data empties removed, to show the live layout), `after-reaudit-practice-end-390-light.jpg`.
+(`before/after-ks3-index-390-light.jpg` were dropped to keep the folder at 24 images.)

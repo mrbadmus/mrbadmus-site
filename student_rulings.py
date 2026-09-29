@@ -6459,3 +6459,39 @@ LOGIC["class view"].append((
     "      /* ⊕ Stage B audit — the corner count is the stack position's total. */\n"
     "      cardCount: MRB_DATA('cardCorner') ? pad(n) : '',\n",
 ))
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# ⊕ STAGE B RE-AUDIT FOLLOW-UPS (Fable, 29 Sep 2026)
+# ══════════════════════════════════════════════════════════════════════════
+#
+# S1  the done bench's ~130px empty band between the topic and the docket:
+#     what the pruned greeting and checklist left behind — Design's 64px
+#     spacer (donor 117) and the action row's own 28px top margin (112) with
+#     nothing in it when there is feedback to read. The spacer goes; the row
+#     draws only when it holds "Revisit this week's lessons".
+# S2  "THE WEEK'S WORK" eyebrow (donor 103) — the docket beside it says
+#     "THIS WEEK'S ASSIGNMENT"; the open bench carries no eyebrow either.
+# S4  the round-done card's "Back to my class" (donor 424) — the "‹ class"
+#     pill above it does it, the same rule as the results screen.
+_stage_b_omit(100, [103, 117])
+_stage_b_omit(366, [424])
+WRAP["class view"][10112] = "benchDoneLessons"
+
+# S4 (cont.) — one short line: the half that is news is that nothing is
+# handed in; "go again" is the "Another round" button under it.
+SET_TEXT["class view"][10419] = (
+    "Go again as many times as you like. Nothing here is handed in.",
+    "Nothing here is handed in.")
+
+# C1  the card counter "QUESTION 01 / 05 · LEVELS OF ORGANISATION" wrapped at
+#     390 and left the "·" orphaned at the end of line one. It is one run
+#     now, ellipsised; the pip row takes the next line when it must.
+STYLE_EDIT["class view"][10388] = [
+    ("color:var(--b-ember);",
+     "color:var(--b-ember);flex:1 1 auto;min-width:0;white-space:nowrap;"
+     "overflow:hidden;text-overflow:ellipsis;")]
+# S1 (cont.) — the done bench's two columns stack on a phone, and Design's
+# 40px gap between them is then vertical space above the docket. Same 40px
+# on a wide screen, 20px when it is a stack.
+STYLE_EDIT["class view"][10101] = [("gap:40px;", "gap:clamp(20px,3vw,40px);")]

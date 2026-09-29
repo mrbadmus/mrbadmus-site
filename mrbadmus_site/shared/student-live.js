@@ -5180,13 +5180,27 @@
       pick = { h: d.benchNextMissed.title, line: d.benchNextMissed.line,
                label: "Finish it", href: d.benchNextMissed.href };
     } else if (d.practiceBank && d.practiceBank.length) {
-      var topic = String(d.practiceBank[0].topic || "Practice");
       /* ⊕ Stage B audit — the ROUND's size, not the bank's: the round the
-         button opens is `recallSize()` long (the bank said 36, the round 5). */
+         button opens is `recallSize()` long (the bank said 36, the round 5).
+         ⊕ Re-audit S3 — and its TITLE is what that round draws from. Round
+         one is `recallRound()` (the bank's first `size` items), which can
+         span several lessons; naming only the first one told a pupil the
+         round was about one lesson when it was not. One lesson → its name;
+         several → "Mixed practice", and the line says how many. */
       var lg0 = mountedApp && mountedApp.logic;
       var size = (lg0 && typeof lg0.recallSize === "function") ? lg0.recallSize() : 0;
-      pick = { h: topic.charAt(0) + topic.slice(1).toLowerCase(),
-               line: size ? size + " questions" : "", label: "Practise",
+      var round = (lg0 && typeof lg0.recallRound === "function") ? lg0.recallRound() : [];
+      var names = [];
+      (round.length ? round : d.practiceBank.slice(0, 1)).forEach(function (q) {
+        var t = String((q && q.topic) || "").trim();
+        if (t && names.indexOf(t) < 0) { names.push(t); }
+      });
+      var one = names.length === 1
+        ? names[0].charAt(0) + names[0].slice(1).toLowerCase() : "";
+      pick = { h: one || "Mixed practice",
+               line: size ? size + " questions" +
+                 (names.length > 1 ? " from " + names.length + " lessons" : "") : "",
+               label: "Practise",
                act: function () {
                  var lg = mountedApp && mountedApp.logic;
                  if (lg && lg.openRecall) { lg.openRecall(); }
