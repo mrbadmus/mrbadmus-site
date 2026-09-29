@@ -193,3 +193,9 @@ Stage A, 28 Sep 2026. Everything in §10 was built; where it differs from §1–
   with the migration applied: after sitting 1, 4 of 5 secured vs 3 of 5 — the replaced Got it).
 - **For Mide**: check on a real iPhone (Safari) and Android (Chrome) that the answer box stays above the
   keyboard; a headless browser cannot raise a real keyboard.
+
+### After Stage A
+
+- Stage B (6344e304b) retitled the overlay header "Flashcards" (was "FLASHCARDS · class") and stops the class page scrolling beneath an open overlay. The homework-mode counter stays blank (A5).
+- Still for the chat: apply the migration on `feat/mrb351-pupil-flow-migrations` (md5s in `docs/experience/PHONE-REPORT.md`) and deploy `flashcard-answer-check` (md5 `94f7c9d5b4d1cefdcaf8f2bfef0079a6`). TEST currently has the migration applied.
+- Still for Mide: check the answer box stays above the keyboard on a real iPhone (Safari) and Android phone (Chrome).
