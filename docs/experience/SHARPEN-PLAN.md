@@ -263,3 +263,13 @@ teacher one commit on top (C1, C2, C4).
 - Adjacent fix: Stage B's `.fb-*` chips were 14px, under `breakdown.css`'s own 15px floor (caught by `breakdown_shots.py`), so they are raised to 15px here, since B is already live.
 - Noted, not fixed: `breakdown_shots.py` stops at MUST-5 because its canned set was due 28 Sep 09:00, so from 29 Sep its pupil reads "Missing" rather than "hasn't started". The harness depends on the date; it is not a registered gate and this was not caused by this change.
 - Pupil pages (C4 check): not re-shot here. The teacher phone bar is one row (brand, tabs, menu), so the crumb is not drawn at ≤560px on any teacher page.
+
+### Stage C teacher — C6 cuts (Fable's teacher audit, 29 Sep)
+
+All 18 musts and the named shoulds applied; the per-item table (done / skipped and why) is
+`docs/experience/sweep/CUTS-2-teacher.md`.
+- Deviation OVERRULED and replaced: tables no longer scroll sideways on a phone. Below 720px each drops to its deciding columns (T50) — see CUTS-2-teacher.md.
+- Deviation: T31 on a phone — title · SCORE on the row's line and the status chip with Add feedback / Breakdown on one line under it, rather than a third STATUS column (a "COMPLETE · LATE" chip plus two links does not fit a 390 row beside a title).
+- Deviation: Students on a phone hides the initials disc beside the name (41px back to the name so no surname is cut off).
+- Deviation: T46 — the flashcards page's bar crumb is hidden below 560px, as the generated pages' crumb is.
+- Adjacent fix: the class-detail fixture's feed rows gained `byLine` (the new binding), or they would have been unresolved bindings.

@@ -105,6 +105,21 @@
       });
     } catch (e) { return d.toISOString(); }
   }
+  /* "21 May, 05:19" — day, month and time; the year is noise on a panel
+     about this term's work. */
+  function fmtShort(iso) {
+    if (!iso) { return ""; }
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) { return ""; }
+    try {
+      var p = {};
+      new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", day: "numeric",
+        month: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
+        .formatToParts(d).forEach(function (x) { p[x.type] = x.value; });
+      var M = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      return (+p.day) + " " + M[(+p.month) - 1] + ", " + p.hour + ":" + p.minute;
+    } catch (e) { return fmtDateTime(iso); }
+  }
   function fmtDate(iso) {
     if (!iso) { return ""; }
     var d = new Date(iso);
@@ -636,8 +651,8 @@
     var correctSoFar = myAttempts.filter(function (a) { return a.is_correct === true; }).length;
     var scoreTile;
     if (complete && sub.score != null && sub.max_score != null) {
-      scoreTile = statTile("SCORE", sub.score + " / " + sub.max_score,
-        sub.max_score > 0 ? Math.round((sub.score / sub.max_score) * 100) + "%" : null);
+      /* ⊕ Sharpen C6 (T40) — the score in one form, no "90%" under "9 / 10". */
+      scoreTile = statTile("SCORE", sub.score + " / " + sub.max_score, null);
     } else {
       /* S3 — never mislead an in-progress pupil with a 0% over one answer.
          Always the SET's own question count as the denominator, no
@@ -665,8 +680,8 @@
       var value = late === true
         ? "Late: " + (days === 1 ? "1 day" : days + " days")
         : (late === false ? "On time" : "Handed in");
-      handedTile = statTile("HANDED IN", value,
-        "Handed in " + fmtDateTime(completedIso(sub)));
+      /* ⊕ Sharpen C6 (T41) — the moment alone; the label says "handed in". */
+      handedTile = statTile("HANDED IN", value, fmtShort(completedIso(sub)));
       if (late === true) { handedTile.valueNode.classList.add("is-late"); }
       if (late === false) { handedTile.valueNode.classList.add("is-good"); }
     } else {
@@ -1083,7 +1098,8 @@
     var mapRow = el("div", "bd-qmap-wrap");
     mapRow.appendChild(buildQuestionMap(rows));
     mapRow.appendChild(buildToggle(rows));
-    els.body.appendChild(mapRow);
+    /* ⊕ Sharpen C6 (T43) — no map and no "All 0 / Wrong 0" over nothing. */
+    if (rows.length) { els.body.appendChild(mapRow); }
 
     /* MUST-5 — a pupil with genuinely nothing answered gets the empty
        state, then the real questions with blank answers behind a
@@ -1092,6 +1108,12 @@
        sees their real cards at rest; this only fires at zero. */
     if (!myAttempts.length) {
       var st = statusWord(sub, S.assignment);
+      /* ⊕ Sharpen C6 (T42) — a sitting WITH a score but no per-question
+         rows is not "hasn't started": the tiles above show its score. */
+      if (isComplete(sub) && sub.score != null) {
+        els.body.appendChild(el("div", "bd-empty", "No question-by-question marks for this sitting."));
+        return;
+      }
       var msg = st.word === "Missing"
         ? student.name + " didn't hand this in. It was due " + fmtDateTime(S.assignment.due_at) + "."
         : student.name + " hasn't started this set yet.";

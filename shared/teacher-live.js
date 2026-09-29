@@ -3212,6 +3212,10 @@
         id: s.id,
         name: name || "—",
         by: "by " + (by || "a teacher"),
+        /* ⊕ Sharpen C6 (T20) — your own shoutout is not signed with your
+           own name; a colleague's still is. */
+        byLine: (viewerId && s.author_id === viewerId ? "" : "by " + (by || "a teacher") + " · ")
+          + relativeTime(s.created_at, now),
         initials: initialsOf(r.first_name, r.last_name),
         hue: hueFor(name),
         when: relativeTime(s.created_at, now),
@@ -4302,7 +4306,10 @@
      forget: no retry, no logging, no await, and a failure is not a fact about
      this page. */
   try {
-    fetch("https://mrbadmus-backend.onrender.com/api/health").catch(function () {});
+    /* ⊕ Sharpen C6 (T4) — the configured backend, not a hardcoded host
+       (on TEST/localhost the old URL was a CORS error on every load). */
+    var hb = window.MrBadmusConfig && window.MrBadmusConfig.BACKEND_URL;
+    if (hb) { fetch(hb + "/api/health").catch(function () {}); }
   } catch (e) {}
 
   /* ⊕ Stream L, 25 Sep 2026 (experience run, item 1) — LIBRARY MODE.

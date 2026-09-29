@@ -53,6 +53,17 @@
       border-radius: 9px; cursor: pointer;
     }
     .signout:hover { color: var(--st-ink); border-color: var(--st-edge); }
+    .fp-bar-crumb {
+      flex: 0 1 auto; min-width: 0; padding-left: 12px; margin-right: auto;
+      border-left: 1px solid var(--st-rule-soft); white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; text-decoration: none;
+      font: 500 13px/1.2 var(--st-mono); letter-spacing: .16em; text-transform: uppercase;
+      color: var(--st-ink);
+    }
+    .fp-bar-crumb:hover { color: var(--st-accent-text); }
+    .fp-bar-crumb[hidden] { display: none; }
+    .tb-seg:has(+ .fp-bar-crumb:not([hidden])) { margin-right: 0; }
+    @media (max-width: 560px) { .fp-bar-crumb { display: none; } }
     @media print { .noprint { display: none !important; } }
   </style>
   <!-- ⊕ phone-teacher run — AFTER the page's own <style>, so the phone
@@ -73,6 +84,8 @@
     <a class="tb-tab" data-mrb-today-nav="1" href="/teacher/today.html">Today</a>
     <a class="tb-tab" href="/teacher/classes.html">My classes</a>
   </div>
+  <!-- ⊕ Sharpen C6 (T46) — the parent class, as the generated pages' crumb. -->
+  <a class="mrb-crumb fp-bar-crumb" id="fp-bar-crumb" hidden></a>
   <!-- ⊕ phone-teacher run, 28 Sep 2026 — the phone menu. Invisible above
        560px; below it the bar is ONE row (brand, segment, this) and the
        rest of the bar is reached through it. shared/teacher-topbar.js.
@@ -156,7 +169,7 @@
      one conversion every Set work surface uses. It builds nothing until
      opened. -->
 <script src="/shared/set-work.js?v=2ed11396"></script>
-<script src="/shared/flashcard-progress.js?v=ce08b440"></script>
+<script src="/shared/flashcard-progress.js?v=17067a0a"></script>
 <script>
 MrBadmusTeacherGuard.requireTeacherRole({
   onDenied: function () { /* the guard redirects */ },

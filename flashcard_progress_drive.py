@@ -661,7 +661,8 @@ def static_checks(check):
     check("' secured' : '—')" in sd, "B4: a deck row's score is N/M secured")
     check("stRow.fcStatus[i] === 'in_progress'" in sd, "B4: a deck in progress reads In progress")
     check('/shared/flashcard-breakdown.js' in sd, "B4: the student screen loads the flashcard panel")
-    check("weekScore: MRB_WEEK_SCORE(kMx.byId[r.id], wIdxs, kPapers)" in cd, "B5: the roster row carries weekScore")
+    check("weekScore: wIdxs.length ? MRB_WEEK_SCORE(kMx.byId[r.id], wIdxs, kPapers) : ''" in cd,
+          "B5: the roster row carries weekScore (blank when nothing is in the week, C6 T13)")
     check('"data-mrb-cell":"week-score"' in cd.replace(" ", ""), "B5: the class screen draws the score cell")
     cl = read("teacher/classes.html")
     check("const cardW = ('cardWeek' in c) ? c.cardWeek : c.week;" in cl, "B6: the card reads the current set")
@@ -705,7 +706,13 @@ def main():
             p.eval("window.__fp_marker = 1; true")
 
             head = p.eval("document.getElementById('fp-head').innerText")
-            check("Atomic structure" in head and "8r/Sc1" in head, "header: title and class")
+            check("Atomic structure" in head, "header: the title")
+            bc = p.eval("(function(){var a=document.getElementById('fp-bar-crumb');"
+                        "return a&&!a.hidden?{t:a.textContent,h:a.getAttribute('href')}:null;})()")
+            check(bool(bc) and bc["t"] == "‹ 8r/Sc1" and "class-detail.html?class=" + CLASS in bc["h"],
+                  "C6 T46: the bar carries the parent class, not an eyebrow", str(bc))
+            check("8r/Sc1" not in head and "FLASHCARDS" not in head.upper().split("\n")[0:1],
+                  "C6 T46: no class eyebrow above the title", head.replace("\n", " | "))
             check("Due Sat 3 Oct, 15:00" in head, "header: due in London time", head.replace("\n", " | "))
             # ⊕ Sharpen B1 — the chips under the title are gone.
             check(not any(x in head for x in ("Pupils write the answers", "Secure", "10 cards")),
@@ -717,7 +724,8 @@ def main():
             check(p.eval("!!document.getElementById('fp-edit') && !!document.getElementById('fp-csv')"),
                   "header: Edit and Export CSV")
             strip = p.eval("document.getElementById('fp-strip').innerText")
-            check("2/6" in strip and "33%" in strip and "1.6" in strip, "strip: done, % and average sittings",
+            check("2/6" in strip and "33%" not in strip and "1.6" in strip,
+                  "strip: done (one form, C6 T44) and average sittings",
                   strip.replace("\n", " | "))
             check("Name the particle with no charge" in strip, "strip: reteach list")
             check(p.eval("!!document.querySelector('#fp-reteach sub')"), "strip: formulae render with <sub>")

@@ -472,28 +472,20 @@
 
   <div class="card">
     <h2>Build it here</h2>
-    <p class="empty" style="margin-bottom:14px;">
-      Days run across the top and periods down the side, the same way your school prints it.
-      Pick a class for each period you teach. Leave the rest empty.
-      Periods are numbered because the school&rsquo;s bell times aren&rsquo;t on the system yet.
-    </p>
+    <!-- ⊕ Sharpen C6 (T63) — the grid shows days across and periods down. -->
+    <p class="empty" style="margin-bottom:14px;">Pick a class for each period you teach.</p>
     <div class="grid-wrap"><table class="grid" id="grid"></table></div>
     <div class="actions">
       <button class="btn" id="save">Save timetable</button>
       <button class="btn" id="clear">Clear all</button>
-      <a class="btn" href="/teacher/today.html">Back to Today</a>
     </div>
     <div class="msg" id="msg"></div>
   </div>
 
   <div class="card">
     <h2>Or upload a file</h2>
-    <p class="empty" style="margin-bottom:14px;">
-      A CSV with a row per lesson. Two shapes are recognised:
-      <code>day,period,class</code>, or a school MIS export with
-      <code>Day</code>, <code>Period</code> and <code>Class</code> columns.
-      Class codes are matched to your own classes; anything that isn&rsquo;t yours is listed and skipped.
-    </p>
+    <!-- ⊕ Sharpen C6 (T64) — one line on the file shape. -->
+    <p class="empty" style="margin-bottom:14px;">A CSV with day, period and class columns (or your MIS export).</p>
     <div class="drop">
       Choose a CSV file
       <div><input type="file" id="file" accept=".csv,text/csv"/></div>

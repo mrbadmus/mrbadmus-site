@@ -876,6 +876,13 @@ REDUNDANT = (
           "right about the four parts it dropped and did not ask whether "
           "the two it kept were said elsewhere. They are."),
 
+    (343, "⊕ Sharpen C6 (T32) — the student screen's summary band \"4 of 5 "
+          "sets handed in · 1 never submitted · averaging 90% against a "
+          "class mean of 78% · last active 21 May\". Every number in it is "
+          "in the four tiles directly under it, in another form."),
+    (537, "⊕ Sharpen C6 (T56) — the Charts card's corner scope tag (\"10A\"). "
+          "The scope toggle above already carries it, and the card title no "
+          "longer names the class either."),
     (237, "\"Everyone's in \u2014 nothing to chase.\" in the homework "
           "card. MRB-326 JOB 5b. The card's own 34px number, three lines "
           "above it, already reads \"4 of 4 in\" \u2014 the sentence is "
@@ -1577,6 +1584,25 @@ NAV = {
 # were, below.
 SET_ATTR = {
     10:  {"data-port-region": "topbar"},
+    # ── ⊕ Sharpen C6 (T50), 29 Sep 2026 · WHICH TABLE A ROW-GRID IS ──
+    # Below 720px a teacher table drops to the columns a teacher decides
+    # with (build_teacher_port.py's `[data-mrb-table]` rules) instead of
+    # scrolling sideways; the tag names the table so the rule can say which
+    # columns stay. Header strip and row carry the same tag.
+    287: {"data-mrb-table": "students"},
+    311: {"data-mrb-table": "assignments"},
+    320: {"data-mrb-table": "assignments"},
+    354: {"data-mrb-table": "history"},
+    361: {"data-mrb-table": "history"},
+    446: {"data-mrb-table": "digest"},
+    453: {"data-mrb-table": "digest"},
+    # ⊕ Sharpen C6 (T1) — "‹ Back to 8X1" under the bar that already says
+    # "‹ 8X1". Hidden above 560px, where the bar's crumb is drawn; kept on a
+    # phone, where the bar is one row and has no crumb.
+    331: {"data-mrb-back": "1"},
+    371: {"data-mrb-back": "1"},
+    # ⊕ Sharpen C6 (T29) — the question-breakdown row, restacked on a phone.
+    392: {"data-mrb-qrow": "1"},
 
     # ── ⊕ MRB-340, 12 Sep 2026 · A HOOK FOR THE NARROW TOP BAR ─────────
     #
@@ -1775,7 +1801,7 @@ SET_ATTR = {
     179: {"tabindex": "0", "role": "link"},
     259: {"tabindex": "0", "role": "link"},
     270: {"tabindex": "0", "role": "link"},
-    294: {"tabindex": "0", "role": "link"},
+    294: {"tabindex": "0", "role": "link", "data-mrb-table": "students"},
     663: {"role": "listbox", "aria-label": "Search results"},
     665: {"role": "option", "aria-selected": "false"},
 }
@@ -1832,6 +1858,14 @@ _EYEBROW = ("font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
             "text-transform:uppercase;color:var(--st-accent-text)")
 
 BIND_ATTR = {
+    # ── ⊕ Sharpen C6 (T31) · SUBMISSION HISTORY STATUS ON ONE BASELINE ──
+    # The chip, Add feedback and Breakdown sat stacked (106px rows against
+    # 57px). One flex row in a fixed 400px STATUS track (chip · two links,
+    # measured ~360px + padding).
+    366: ("style", "padding:var(--rowpad,14px 16px)",
+          "display:flex;align-items:center;gap:14px;flex-wrap:nowrap;"
+          "padding:var(--rowpad,14px 16px)",
+          "the submission-history STATUS cell: chip and row actions on one line."),
     286: ("style", "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden",
           "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow-x:auto;overflow-y:hidden",
           "the Students table's card scrolls sideways on a phone (C1)."),
@@ -1868,13 +1902,13 @@ BIND_ATTR = {
     354: ("style",
           "display:grid;grid-template-columns:2.3fr 1fr 1.1fr 100px 1.05fr;"
           "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
-          "display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.1fr) 170px minmax(0,1.05fr);min-width:760px;"
+          "display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.1fr) 170px 400px;min-width:1000px;"
           "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
           "the submission-history header strip (C1)."),
     361: ("style",
           "display:grid;grid-template-columns:2.3fr 1fr 1.1fr 100px 1.05fr;"
           "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
-          "display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.1fr) 170px minmax(0,1.05fr);min-width:760px;"
+          "display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.1fr) 170px 400px;min-width:1000px;"
           "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
           "the submission-history row, matching its header (C1)."),
     446: ("style",
@@ -2374,7 +2408,7 @@ REPEAT = {
             # Every row key the repeated subtree may produce. An undeclared
             # one renders as a blank rather than as an error, so it is an
             # error here.
-            keys=("g.eyebrow", "g.title", "g.count", "g.pct",
+            keys=("g.eyebrow", "g.title", "g.count", "g.pct", "g.hasBar",
                   "g.hasChase", "g.chase", "g.remindLabel", "g.remind",
                   "g.hasMore", "g.moreLabel", "g.more"),
             rebind={
@@ -3063,7 +3097,7 @@ _SO_FEED_EMPTY = ("padding:26px 18px;background:var(--st-paper);"
 # things reading as one phrase — and `margin-top` on an inline element does
 # nothing at all, so the declaration that was supposed to separate them was
 # inert. Block, and the margin then works.
-_FB_ROW_BTN = ("display:block;margin-top:7px;font:600 14.5px/1.2 var(--st-ui);"
+_FB_ROW_BTN = ("display:inline-block;margin-top:0;font:600 14.5px/1.2 var(--st-ui);"
                "background:none;border:none;padding:0;cursor:pointer;"
                "text-align:left;white-space:nowrap;color:")
 
@@ -3234,7 +3268,7 @@ def _fb_open_button(row, style, glyph=False):
 # there is no "already has one" / "empty" distinction to carry — a
 # submission either has answers to break down or the control is not drawn
 # at all.
-_BD_ROW_BTN = ("display:block;margin-top:7px;font:600 14.5px/1.2 var(--st-ui);"
+_BD_ROW_BTN = ("display:inline-block;margin-top:0;font:600 14.5px/1.2 var(--st-ui);"
                "background:none;border:none;padding:0;cursor:pointer;"
                "text-align:left;white-space:nowrap;color:var(--st-accent-text)")
 
@@ -4234,7 +4268,7 @@ INSERT_AT = {
         "t": "if", "e": "klass.hasWork",
         "c": [
             {"t": "div",
-             "a": {"class": "noprint", "style": _WK_BAR},
+             "a": {"class": "noprint", "style": _WK_BAR, "data-mrb-weekbar": "1"},
              "c": [
                  # ⊕ Stream D, 24 Sep 2026 (experience run, item 10) — bound
                  # to `weekCaption` (LOGIC, anchored on `rosterWeekCol`) so
@@ -4861,9 +4895,10 @@ INSERT_AT = {
                                      # to say whose sentence each one is.
                                      {"t": "div",
                                       "a": {"style": _SO_FEED_BY},
+                                      # ⊕ Sharpen C6 (T20) — `byLine` drops
+                                      # "by <you>" on your own shoutout.
                                       "c": [{"t": "#", "v": {"parts": [
-                                          {"e": "f.by"}, " \u00b7 ",
-                                          {"e": "f.when"}]}}]},
+                                          {"e": "f.byLine"}]}}]},
                                  ]},
                                 # ⛔ ONLY ON A SHOUTOUT THIS TEACHER WROTE,
                                 # AND ONLY ON A YEAR THAT CAN BE WRITTEN TO.
@@ -5057,7 +5092,8 @@ INSERT_AT = {
     # `(366, 367)` pair would silently OVERWRITE this one in the dict rather
     # than adding beside it. So the one entry at this anchor now inserts
     # BOTH controls, stacked, in one wrapper.
-    (366, 367): ({"t": "div", "c": [_fb_open_button("h", _FB_ROW_BTN),
+    (366, 367): ({"t": "div", "a": {"style": "display:flex;align-items:center;gap:12px;flex-wrap:nowrap"},
+                  "c": [_fb_open_button("h", _FB_ROW_BTN),
                                      _bd_open_button()]},
                  "the feedback control AND (⊕ Mide's item 9, 24 Sep 2026) "
                  "the Answer Breakdown control, on one row of the student "
@@ -5340,6 +5376,10 @@ WRAP = {
     # written against v2 and had silently stopped being true. It is
     # corrected there in the same change.
     "class-detail.html": {
+        # ⊕ Sharpen C6 (T13) — the empty homework card draws no "—" and no
+        # empty bar; its title already says there is no work this week.
+        227: "g.hasBar",
+        228: "g.hasBar",
         215: "canWrite",
         276: "canWrite",
         # ⊕ MRB-335, 7 Sep 2026 — THE CLASS SCREEN'S "SET WORK" AND ITS
@@ -13121,6 +13161,58 @@ componentDidUpdate() {
         "lit My classes tab (Sharpen C4)."
     ),
 
+    # ══ ⊕ SHARPEN C6, 29 Sep 2026 · FABLE'S TEACHER AUDIT (CUTS-2-teacher) ══
+    ("        count: cAsk ? cSub + ' of ' + cAsk + ' in' : '—',",
+     "        count: cAsk ? cSub + ' of ' + cAsk + ' in' : '—',\n        hasBar: true,",
+     'Sharpen C6 T13 — a live card keeps its number and bar.'),
+    ("        count: '—', pct: 0,",
+     "        count: '', pct: 0, hasBar: false,",
+     'Sharpen C6 T13 — the empty homework card says it once, in its title.'),
+    ('    const rosterSorted = kRoster.slice().sort((a, b) => rosterWeight(b) - rosterWeight(a));',
+     '    const rosterSorted = kRoster.slice().sort((a, b) => rosterWeight(b) - rosterWeight(a));\n    /* ⊕ Sharpen C6 (T15) — a flag true of the whole roster flags nobody. */\n    const allFlagged = kRoster.length > 1 && kRoster.every(r => r.flag);',
+     'Sharpen C6 T15 — the NEEDS A LOOK chip is suppressed when it would be on every row.'),
+    ("      flag: r.flag,\n      open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })\n    }));",
+     "      flag: r.flag && !allFlagged,\n      open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })\n    }));",
+     'Sharpen C6 T15.'),
+    ("      week: !kPapers.length ? '—'\n        : (!wTally[r.id].asked ? 'Nothing set'",
+     "      week: !kPapers.length ? ''\n        : (!wTally[r.id].asked ? ''",
+     'Sharpen C6 T13 — THIS WEEK is blank (no dot, no words) when no work is in the week; the homework card says so once.'),
+    ("      dot: (!kPapers.length || !wTally[r.id].asked) ? 'var(--st-rule-strong)'",
+     "      dot: (!kPapers.length || !wTally[r.id].asked) ? 'transparent'",
+     'Sharpen C6 T13.'),
+    ('      weekScore: MRB_WEEK_SCORE(kMx.byId[r.id], wIdxs, kPapers),',
+     "      weekScore: wIdxs.length ? MRB_WEEK_SCORE(kMx.byId[r.id], wIdxs, kPapers) : '',",
+     'Sharpen C6 T13 — no Score dashes when nothing is in the week.'),
+    ("        rosterLine: 'Not submitted shown first',",
+     "        rosterLine: wPapers.length ? 'Not submitted shown first' : '',",
+     'Sharpen C6 T14 — nothing to sort by when nothing is set this week.'),
+    ('    const assignments = wPapers.map(p => {',
+     "    /* ⊕ Sharpen C6 (T12) — a week with no papers shows the term's latest\n       five rather than a header strip over nothing. */\n    const wTable = wPapers.length ? wPapers : kPapers.slice(0, 5);\n    const assignments = wTable.map(p => {",
+     'Sharpen C6 T12.'),
+    ("            : 'None in this week · ' + kPapers.length + ' this term')",
+     "            : 'Last ' + Math.min(5, kPapers.length) + ' of ' + kPapers.length + ' this term')",
+     'Sharpen C6 T12 — the eyebrow says what the table now holds.'),
+    ("        eyebrow: k.code + ' · ' + pp.statusLabel\n          + ' · Set ' + pp.set",
+     "        eyebrow: pp.statusLabel\n          + ' · Set ' + pp.set",
+     "Sharpen C6 T25 — the class is already in the bar's crumb."),
+    ("          { label: 'Lowest', value: worst ? worst.id + ' · ' + worst.pct + '%' : '—', sub: worst ? worst.text : '' }\n        ],",
+     '        ],',
+     'Sharpen C6 T26 — the lowest question is the reteach banner and its own row; the tile was the third copy.'),
+    ("          : (hasRow ? 'In progress' : '—'),\n        score: isDeck",
+     "          : '—',\n        score: isDeck",
+     "Sharpen C6 T36 — SUBMITTED is a date or a dash; In progress is the status chip's word."),
+    ("            : sc + '/' + stRow.max[i] + (pct == null ? '' : ' · ' + pct + '%')),",
+     "            : sc + '/' + stRow.max[i]),",
+     'Sharpen C6 T35 — the score in one form (the pupil results precedent kept the fraction).'),
+    ("        subLine: stHistory.length + ' assignments',",
+     "        subLine: stHistory.length + (stHistory.length === 1 ? ' assignment' : ' assignments'),",
+     'Sharpen C6 T37 — singular on one.'),
+    ("          + totalSubs\n          + (totalSubs === 1 ? ' submission' : ' submissions')\n",
+     '',
+     'Sharpen C6 T53 — the submissions count is the tile below.'),
+    ("        scopeLabel: chartScope === 'all' ? 'All classes' : k.code\n      },",
+     "        scopeLabel: chartScope === 'all' ? 'All classes' : k.code,\n        /* ⊕ Sharpen C6 (T56) — the scope toggle names the class; the\n           card title does not repeat it. */\n        title: (k && k.code && String(chart.title || '').indexOf(k.code + ' — ') === 0)\n          ? (t => t.charAt(0).toUpperCase() + t.slice(1))(String(chart.title).slice(k.code.length + 3))\n          : chart.title\n      },",
+     'Sharpen C6 T56.'),
 )
 
 

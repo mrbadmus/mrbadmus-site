@@ -295,13 +295,15 @@
     var st = assignmentState(a, d.now || nowIso());
     var host = clear($("fp-head"));
 
-    var crumb = h("div", "fp-eyebrow");
-    var cls = h("a", "fp-crumb", a.class_name || "");
+    /* ⊕ Sharpen C6 (T46) — the parent class is the bar's "‹ 8r/Sc1" link,
+       as on every generated teacher page; no eyebrow above the title. */
     var env = (window.MrBadmusConfig && window.MrBadmusConfig.environment === "test") ? "&env=test" : "";
-    cls.href = "/teacher/class-detail.html?class=" + encodeURIComponent(a.class_id || "") + env;
-    crumb.appendChild(cls);
-    crumb.appendChild(h("span", "fp-sep", "·"));
-    crumb.appendChild(h("span", null, "Flashcards"));
+    var bar = $("fp-bar-crumb");
+    if (bar) {
+      bar.textContent = "‹ " + (a.class_name || "");
+      bar.href = "/teacher/class-detail.html?class=" + encodeURIComponent(a.class_id || "") + env;
+      bar.hidden = !a.class_name;
+    }
 
     var title = h("h1", "fp-title", a.title || "");
     var meta = h("div", "fp-meta");
@@ -312,7 +314,7 @@
     }
 
     var left = h("div", "fp-head-main");
-    left.appendChild(crumb); left.appendChild(title); left.appendChild(meta);
+    left.appendChild(title); left.appendChild(meta);
     if (a.note) {
       var note = h("p", "fp-note");
       note.setAttribute("data-fp-data", "note");
@@ -347,8 +349,8 @@
     var c = d.class || {};
     var host = clear($("fp-strip"));
     var tiles = h("div", "fp-tiles");
-    tiles.appendChild(tile("Done", (c.done || 0) + "/" + (c.pupils || 0),
-                           c.completion_pct == null ? "—" : c.completion_pct + "%", "fp-done"));
+    /* ⊕ Sharpen C6 (T44) — "2/6", not "2/6" over "33%". */
+    tiles.appendChild(tile("Done", (c.done || 0) + "/" + (c.pupils || 0), null, "fp-done"));
     tiles.appendChild(tile("Average sittings",
                            c.avg_sittings == null ? "—" : String(c.avg_sittings), null, "fp-avg"));
     host.appendChild(tiles);

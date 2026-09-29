@@ -1713,9 +1713,8 @@ MrBadmusTeacherGuard.requireTeacherRole({
     catch (e) { ok = false; }
 
     if (!ok) {
-      notice('This page is for school admins',
-             'Your account doesn’t have school admin access, so there’s ' +
-             'nothing for you here. Your own classes are on the My classes page.');
+      /* ⊕ Sharpen C6 (T62) — one sentence; the My classes tab is lit above. */
+      notice('This page is for school admins.', '');
       return;
     }
 

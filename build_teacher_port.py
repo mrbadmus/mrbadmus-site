@@ -2575,12 +2575,15 @@ __IDS__.forEach(function (id) {
   out.FEED[id] = [
     { id: id + ':shout-1', author_id: '__MRB_FIXTURE_ME__',
       name: pick(9), by: 'by Mr Badmus', when: '2 days ago',
+      // ⊕ Sharpen C6 (T20) — the signed-in teacher's own: no "by <me>".
+      byLine: '2 days ago',
       template: 'Top of the class this week',
       body: 'Highest mean in ' + k.code + ' on the last set — and showed ' +
             'working on every question.',
       initials: c.initials(pick(9)), hue: c.hueFor(pick(9)) },
     { id: id + ':shout-2', author_id: '__MRB_FIXTURE_OTHER__',
       name: pick(12), by: 'by Ms Ademola', when: '1 week ago',
+      byLine: 'by Ms Ademola · 1 week ago',
       template: 'Bounced back strong',
       body: 'Went from 38% to 74% after one reteach of the lowest-scoring ' +
             'question.',
@@ -5622,6 +5625,71 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         ":not([style*=\"repeat(auto\"]) > :not(:first-child)"
         ":not(:has(button,a,input,select,[tabindex])){"
         "white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
+        # ⊕ Sharpen C6, 29 Sep 2026 — Fable's teacher audit (CUTS-2-teacher).
+        # T1: the "‹ Back to 8X1" link is the bar's crumb again above 560px.
+        "@media (min-width:561px){[data-mrb-back]{display:none!important}}"
+        # T50: BELOW 720px A TEACHER TABLE DROPS COLUMNS, it does not scroll.
+        # Each keeps the columns a teacher decides with — Students: name ·
+        # THIS WEEK · AVERAGE; Assignments: title · STATUS · SUBMITTED;
+        # history: title · SCORE · STATUS; digest: class · SUBMITTED · NEEDS
+        # A LOOK — sized to their content so nothing is ellipsised; only
+        # the first column wraps. Header strip and row carry the same tag.
+        "@media (max-width:719px){"
+        "[data-mrb-table]{min-width:0!important}"
+        "[data-port-region] div:has(> [data-mrb-table]){overflow:hidden!important}"
+        "[data-mrb-table] > *{padding-left:10px!important;padding-right:10px!important}"
+        "[data-mrb-table] > :not(:first-child){overflow:visible!important;"
+        "text-overflow:clip!important;white-space:nowrap!important}"
+        "[data-mrb-table=\"students\"]{grid-template-columns:minmax(min-content,1fr) max-content max-content!important}"
+        # the initials disc beside a pupil's name says nothing the name
+        # does not; on a phone its 41px go to the name.
+        "[data-mrb-table=\"students\"] > :first-child > :first-child:not(:only-child){display:none!important}"
+        "[data-mrb-table=\"students\"] > :nth-child(3),"
+        "[data-mrb-table=\"students\"] > :nth-child(n+5){display:none!important}"
+        "[data-mrb-table=\"assignments\"]{grid-template-columns:minmax(min-content,1fr) max-content max-content!important}"
+        "[data-mrb-table=\"assignments\"] > :nth-child(3),"
+        "[data-mrb-table=\"assignments\"] > :nth-child(4),"
+        "[data-mrb-table=\"assignments\"] > :nth-child(n+6){display:none!important}"
+        "[data-mrb-table=\"history\"]{grid-template-columns:minmax(min-content,1fr) max-content!important}"
+        "[data-mrb-table=\"history\"] > :nth-child(2),"
+        "[data-mrb-table=\"history\"] > :nth-child(3){display:none!important}"
+        "[data-mrb-table=\"history\"]:not([style*=\"cursor:pointer\"]) > :nth-child(5){display:none!important}"
+        # the history row's Add feedback / Breakdown go on their own line
+        # under the row (the status cell dissolves into the row's grid), so
+        # the title keeps its width and the chip stays on the row's line.
+        # on a phone the history row is title · score, and the status chip
+        # with its Add feedback / Breakdown is one line under it.
+        "[data-mrb-table=\"history\"][style*=\"cursor:pointer\"] > :nth-child(5){grid-column:1 / -1;"
+        "flex-wrap:wrap!important;gap:8px 18px!important;padding-top:0!important}"
+        "[data-mrb-table=\"history\"][style*=\"cursor:pointer\"] > :nth-child(5) > div{gap:18px!important}"
+        # the first (deciding) column wraps its own content; nothing in it
+        # is cut off or spills into the next column.
+        "[data-mrb-table] > :first-child *{white-space:normal!important;"
+        "overflow:visible!important;text-overflow:clip!important;overflow-wrap:break-word}"
+        "[data-mrb-table=\"digest\"]{grid-template-columns:minmax(min-content,1fr) max-content minmax(0,max-content)!important}"
+        # (specific enough to beat the ≤560px one-line-cell rule above)
+        "[data-port-region] [data-mrb-table=\"digest\"][data-mrb-table] > :nth-child(5):not(:first-child),"
+        "[data-port-region] [data-mrb-table=\"digest\"][data-mrb-table] > :nth-child(5):not(:first-child) *"
+        "{white-space:normal!important;text-align:right}"
+        "[data-mrb-table=\"digest\"] > :first-child{flex-wrap:wrap!important;row-gap:4px}"
+        "[data-mrb-table=\"digest\"] > :nth-child(3),"
+        "[data-mrb-table=\"digest\"] > :nth-child(4){display:none!important}"
+        # T22: the week bar — caption on its own line, the chips own the row.
+        "[data-mrb-weekbar]{flex-wrap:wrap!important}"
+        "[data-mrb-weekbar] > :first-child{flex-basis:100%%}"
+        # T29: a question row keeps its number and percentage; the stem
+        # goes under them, full width.
+        "[data-mrb-qrow]{grid-template-columns:44px minmax(0,1fr) max-content!important;row-gap:8px!important}"
+        "[data-mrb-qrow] > :nth-child(2){grid-column:1 / -1;grid-row:2}"
+        # T59: a chart row stacks — its label full width, the bar and the
+        # count under it.
+        "[data-port-region] [style*=\"220px minmax(0,1fr) 96px\"],"
+        "[data-port-region] [style*=\"220px minmax(0,1fr) 165px\"]"
+        "{grid-template-columns:minmax(0,1fr) max-content!important;row-gap:6px!important}"
+        "[data-port-region] [style*=\"220px minmax(0,1fr) 96px\"] > :first-child,"
+        "[data-port-region] [style*=\"220px minmax(0,1fr) 165px\"] > :first-child"
+        "{grid-column:1 / -1}"
+        "}"
         "[data-port-region=\"toast\"]{pointer-events:none}"
         "@media (max-width:560px){"
         "[data-port-region] [style*=\"display:flex\"]"
@@ -5700,10 +5768,9 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         # shrinking its track lets its own text truncate; the value
         # column's longest real string ("100/100") measures under
         # 54px in the row's own `17px var(--st-mono)`.
-        # ⊕ Sharpen C1 — re-keyed: the row's own track is now
-        # `220px minmax(0,1fr) 96px` (teacher_rulings BIND_ATTR[548]).
-        "[data-port-region] [style*=\"220px minmax(0,1fr) 96px\"]"
-        "{grid-template-columns:minmax(0,84px) minmax(0,1fr) minmax(0,54px)!important}"
+        # ⊕ Sharpen C6 (T59) — superseded by the `max-width:719px` block
+        # below, which stacks the chart row instead of shrinking its label
+        # to 84px (it wrapped to eight lines).
         "}"
         # ⊕ Stream M, 25 Sep 2026 (experience run round 3, item 20) — THE TOP
         # BAR WRAPS AT ≤420px INSTEAD OF LEAVING SIGN OUT AND FIND A STUDENT
