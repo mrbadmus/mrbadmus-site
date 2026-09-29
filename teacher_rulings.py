@@ -1825,6 +1825,38 @@ _EYEBROW = ("font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
             "text-transform:uppercase;color:var(--st-accent-text)")
 
 BIND_ATTR = {
+    # ── ⊕ SHARPEN B4 · THE SUBMISSION HISTORY'S SCORE COLUMN ───────────
+    # 100px → 170px so a deck's `10/10 secured` stays on one line (Fable
+    # review asked for 140px; measured, the text is 133px in the cell's own
+    # 17px DM Mono plus 32px of padding, so 140px still wrapped). Header and
+    # row identical.
+    354: ("style",
+          "display:grid;grid-template-columns:2.3fr 1fr 1.1fr 100px 1.05fr;"
+          "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
+          "display:grid;grid-template-columns:2.3fr 1fr 1.1fr 170px 1.05fr;"
+          "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
+          "the submission-history header strip — a wider SCORE."),
+    361: ("style",
+          "display:grid;grid-template-columns:2.3fr 1fr 1.1fr 100px 1.05fr;"
+          "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
+          "display:grid;grid-template-columns:2.3fr 1fr 1.1fr 170px 1.05fr;"
+          "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
+          "the submission-history row, matching its header."),
+    # ── ⊕ SHARPEN B5 · THE STUDENTS TABLE GROWS A SCORE COLUMN ──────────
+    # A fixed 140px track after THIS WEEK, on the header strip AND the row
+    # (identical, or every cell slides). See `INSERT_AT[(287, 289)]`.
+    287: ("style",
+          "display:grid;grid-template-columns:1.7fr 1.3fr 110px 160px 160px;"
+          "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
+          "display:grid;grid-template-columns:1.7fr 1.3fr 140px 110px 160px 160px;"
+          "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
+          "the Students table's header strip — a THIS WEEK SCORE column."),
+    294: ("style",
+          "display:grid;grid-template-columns:1.7fr 1.3fr 110px 160px 160px;"
+          "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
+          "display:grid;grid-template-columns:1.7fr 1.3fr 140px 110px 160px 160px;"
+          "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
+          "the Students table's row, matching the header strip above it."),
     # ── ⊕ MRB-336 §5/§6 · THE ASSIGNMENTS TABLE GROWS AN ACTIONS COLUMN ──
     #
     # Edit and Delete belong on the ROW, because a teacher deciding to
@@ -3156,7 +3188,10 @@ def _bd_open_button():
     pupil and one submission, not a per-cell control across thirty of them.
     """
     return {
-        "t": "if", "e": "h.fbCan",
+        # ⊕ Sharpen B4 — `h.bdCan`, not `h.fbCan`: a deck row has no
+        # submission until complete but has a breakdown from its first
+        # sitting. On an MCQ row `bdCan` IS `!!fbSub`, so nothing changes.
+        "t": "if", "e": "h.bdCan",
         "c": [{
             "t": "button",
             "a": {"type": "button",
@@ -3550,6 +3585,42 @@ _CLASS_ACTION_BTN = _PICK_ENTRY_BTN
 
 
 INSERT_AT = {
+    # ── ⊕ SHARPEN B5, 29 Sep 2026 · THE STUDENTS TABLE'S SCORE COLUMN ──
+    #
+    # THIS WEEK says whether a pupil handed the week's work in; nothing on
+    # the row said how they did on it. One cell per row, between THIS WEEK
+    # and AVERAGE: one line per paper of the week in view (`MRB_WEEK_SCORE`,
+    # newest first, at most two) — `7/10`, a deck `6/10 secured`, `—` where
+    # nothing is in. Design drew no such column; the track is added to both
+    # grids by `BIND_ATTR[287]`/`[294]` so header and row stay identical.
+    #
+    # ⚠️ NOT A CONTROL, so no `data-mrb-added` (that register is for things a
+    # gate presses). `data-mrb-cell` names it for the drives.
+    #
+    # ⚠️ `white-space:pre`, so the two lines stay two lines and neither wraps;
+    # the fixed track plus `overflow:hidden;text-overflow:ellipsis` means a
+    # long value can never widen its own row's track (C1's rule).
+    (287, 289): ({
+        "t": "div",
+        "a": {"style": "padding:12px 16px;font:500 13px/1.2 var(--st-mono);"
+                       "letter-spacing:.14em;text-transform:uppercase;"
+                       "color:var(--st-caption);white-space:nowrap;"
+                       "overflow:hidden;text-overflow:ellipsis",
+              "data-mrb-cell": "week-score-head"},
+        # ⚠️ "Score", NOT "This week score": the column beside it already
+        # says which week (its header is "This week" or the week's dates),
+        # and the longer word truncated in its own 140px track.
+        "c": [{"t": "#", "v": "Score"}]},
+        "the Students table's score header (Sharpen B5)."),
+    (294, 298): ({
+        "t": "div",
+        "a": {"style": "padding:var(--rowpad,14px 16px);"
+                       "font:500 15.5px/1.35 var(--st-ui);color:var(--st-ink);"
+                       "font-variant-numeric:tabular-nums;white-space:pre;"
+                       "overflow:hidden;text-overflow:ellipsis",
+              "data-mrb-cell": "week-score"},
+        "c": [{"t": "#", "v": {"parts": [{"e": "s.weekScore"}]}}]},
+        "the Students table's THIS WEEK SCORE cell (Sharpen B5)."),
     # ── ⊕ MRB-336 §4.1 · THE THIRD LIVE SET AND EVERY ONE AFTER IT ─────
     #
     # Two cards, and a class can legitimately have more than two live sets.
@@ -12807,6 +12878,160 @@ componentDidUpdate() {
         "`[]` for a non-live class, so the `live ? … : 0` guard is now "
         "redundant rather than dropped: the two conditions said the same "
         "thing under two different names."
+    ),
+
+    # ══ ⊕ SHARPEN B4, 29 Sep 2026 · A DECK ROW ON THE STUDENT SCREEN ═════
+    #
+    # ⛔ THE DEFECT. A flashcard deck writes NO `assignment_submissions` row
+    # until it is complete, so `hasRow` (read off `subId[i]`) was false for a
+    # pupil with eight sittings and the row said "Not started". The matrix
+    # now carries `fcStatus` / `fcSecured` / `fcN` / `fcSittings` per paper
+    # for the focused class (`buildMatrix`, `flashcard_progress` per deck),
+    # and these three rulings read them. An MCQ row is untouched: every
+    # `fc*` entry is null on a paper that is not a deck.
+    #
+    # Status words stay Mide's five: a deck is Complete / Complete · late
+    # from its submission exactly as now, In progress while the RPC says so,
+    # Missing once the deadline has passed, Not started before it.
+    (
+        "      const hasRow = !!(stRow && stRow.subId[i] != null);",
+        "      const isDeck = p.kind === 'flashcards';\n"
+        "      const fcSit = isDeck && stRow && stRow.fcSittings ? stRow.fcSittings[i] : null;\n"
+        "      const hasRow = !!(stRow && (stRow.subId[i] != null\n"
+        "        || (isDeck && stRow.fcStatus && stRow.fcStatus[i] === 'in_progress')));",
+        "`hasRow` — \"has this pupil started\" — for a deck is the progress "
+        "RPC's own `in_progress`, because a deck has no submission row to "
+        "start. Feeds the status chip and the SUBMITTED column's In progress."
+    ),
+    (
+        "        score: sc == null || stRow.max[i] == null ? '—'\n"
+        "          : sc + '/' + stRow.max[i] "
+        "+ (pct == null ? '' : ' · ' + pct + '%'),",
+        "        score: isDeck\n"
+        "          ? (fcSit > 0 ? stRow.fcSecured[i] + '/' + stRow.fcN[i] + ' secured' : '—')\n"
+        "          : (sc == null || stRow.max[i] == null ? '—'\n"
+        "            : sc + '/' + stRow.max[i] "
+        "+ (pct == null ? '' : ' · ' + pct + '%')),",
+        "the SCORE column on a deck row: cards secured out of the deck, once "
+        "the pupil has sat it at all — never a percent (a deck is never "
+        "graded; `cellOf` already keeps it out of every mean)."
+    ),
+    (
+        "          if (window.MRBBreakdown && window.MRBBreakdown.open) {\n"
+        "            window.MRBBreakdown.open({ classId: k && k.id,\n"
+        "              studentId: st && st.id, submissionId: fbSub });\n"
+        "          }\n"
+        "        },",
+        "          if (isDeck) {\n"
+        "            if (window.MRBFlashcardBreakdown && window.MRBFlashcardBreakdown.open) {\n"
+        "              window.MRBFlashcardBreakdown.open({ assignmentId: p.id,\n"
+        "                studentId: st && st.id, classId: k && k.id });\n"
+        "            }\n"
+        "          } else if (window.MRBBreakdown && window.MRBBreakdown.open) {\n"
+        "            window.MRBBreakdown.open({ classId: k && k.id,\n"
+        "              studentId: st && st.id, submissionId: fbSub });\n"
+        "          }\n"
+        "        },\n"
+        "        /* ⊕ Sharpen B4 — Breakdown on a deck row once the pupil has\n"
+        "           sat it (it has no submission until complete); on an MCQ\n"
+        "           row the same `fbCan` it always had. */\n"
+        "        bdCan: isDeck ? fcSit > 0 : !!fbSub,",
+        "the Breakdown control on a deck row opens the flashcard panel "
+        "(`shared/flashcard-breakdown.js`) and appears as soon as the pupil "
+        "has a sitting. Add feedback still binds to the submission and so "
+        "appears on a deck row only once it is complete — no fake row."
+    ),
+
+    # ══ ⊕ SHARPEN B5, 29 Sep 2026 · THE CLASS SCREEN'S THIS WEEK SCORE ═══
+    #
+    # The THIS WEEK chip tallies `wIdxs` — the papers of the week the week
+    # bar has in view — so the score cell reads the same papers, via
+    # `MRB_WEEK_SCORE` (shared/teacher-live.js `weekScoreLines`). And a deck
+    # a pupil has started (no submission until complete) now counts as
+    # started, so the chip says In progress rather than Not started.
+    (
+        "        if (row && row.status && row.status[i] === 'in_progress') wStarted = true;",
+        "        if (row && row.status && row.status[i] === 'in_progress') wStarted = true;\n"
+        "        if (row && row.fcStatus && row.fcStatus[i] === 'in_progress') wStarted = true;",
+        "a pupil mid-way through a deck of the week in view is In progress on "
+        "the THIS WEEK chip (Sharpen B4/B5)."
+    ),
+    (
+        "      avg: r.avg == null ? '—' : r.avg + '%',\n"
+        "      last: r.last,\n"
+        "      flag: r.flag,",
+        "      weekScore: MRB_WEEK_SCORE(kMx.byId[r.id], wIdxs, kPapers),\n"
+        "      avg: r.avg == null ? '—' : r.avg + '%',\n"
+        "      last: r.last,\n"
+        "      flag: r.flag,",
+        "the THIS WEEK SCORE cell's value (Sharpen B5)."
+    ),
+
+    # ══ ⊕ SHARPEN B6, 29 Sep 2026 · THE MY CLASSES CARD COUNTS THE CURRENT SET
+    #
+    # ⛔ THE DEFECT. The card's "N of M in" was `c.week` — pupils with a
+    # complete cell on ANY in-week paper — and a paper due Monday 09:00 is
+    # in-week by due date all week, so on Tuesday seven pupils who did LAST
+    # week's set counted as in, against a class page that said 1 of 17.
+    # `buildClassEntry` now carries `cardWeek` (the current set's submitted
+    # of asked — the numbers the class page's own homework card and the
+    # Assignments table show) and `cardChase` (roster pupils with nothing in
+    # on it). ⚠️ `c.week` itself is untouched: the charts, the class report,
+    # the digest row and the card sort still read it.
+    #
+    # A class with work set but nothing open now reads "no work open" in the
+    # card's no-work state, with its Set work button — UNLESS a set is
+    # scheduled, when the homework line reads "opens Mon 09:00" instead
+    # (Fable review: "no work open" + Set work would invite a duplicate).
+    #
+    # ⚠️ `'cardWeek' in c` — a FIXTURE's classes are Design's sample and
+    # carry no `cardWeek`; they keep reading `c.week` as before rather than
+    # every fixture card claiming there is no work open.
+    (
+        "      const chase = this.chaseFor(c);\n"
+        "      return {\n"
+        "        code: c.code,",
+        "      const chase = this.chaseFor(c);\n"
+        "      const cardW = ('cardWeek' in c) ? c.cardWeek : c.week;\n"
+        "      const cardC = ('cardChase' in c) ? (c.cardChase || []) : chase.map(r => r.name);\n"
+        "      const cardO = c.cardOpens || '';\n"
+        "      const noOpen = c.state === 'live' && !cardW && !cardO;\n"
+        "      return {\n"
+        "        code: c.code,",
+        "the card's own week figures: the current set, not anything in-week."
+    ),
+    (
+        "        live: c.state === 'live',\n"
+        "        noWork: c.state === 'nowork',",
+        "        live: c.state === 'live' && !noOpen,\n"
+        "        noWork: c.state === 'nowork' || noOpen,",
+        "a live class with nothing open draws the card's no-work state."
+    ),
+    (
+        "        weekLabel: c.week[0] + ' of ' + c.week[1] + ' in',\n"
+        "        pct: c.week[1] ? Math.round((c.week[0] / c.week[1]) * 100) : 0,",
+        "        weekLabel: cardW ? cardW[0] + ' of ' + cardW[1] + ' in' : cardO,\n"
+        "        pct: cardW && cardW[1] ? Math.round((cardW[0] / cardW[1]) * 100) : 0,",
+        "the card's N of M in, off the current set."
+    ),
+    (
+        "        weekSub: chase.length\n"
+        "          ? 'Chase ' + chase.slice(0, 2).map(r => this.shortName(r.name)).join(', ')\n"
+        "            + (chase.length > 2 ? ' +' + (chase.length - 2) + ' more' : '')\n"
+        "          : '',\n"
+        "        weekSubFg: chase.length ? 'var(--st-accent-text)' : 'var(--st-muted)',",
+        "        weekSub: cardW && cardC.length\n"
+        "          ? 'Chase ' + cardC.slice(0, 2).map(n => this.shortName(n)).join(', ')\n"
+        "            + (cardC.length > 2 ? ' +' + (cardC.length - 2) + ' more' : '')\n"
+        "          : '',\n"
+        "        weekSubFg: cardW && cardC.length ? 'var(--st-accent-text)' : 'var(--st-muted)',",
+        "the card's chase names: nothing in on the current set."
+    ),
+    (
+        "        emptyLine: c.state === 'empty' ? 'No students yet' : c.n + ' students · no work set',",
+        "        emptyLine: c.state === 'empty' ? 'No students yet'\n"
+        "          : c.n + (noOpen ? ' students · no work open' : ' students · no work set'),",
+        "a class with work set but none open says so in words."
     ),
 
 )

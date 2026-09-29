@@ -202,6 +202,11 @@ EMPTY_SHAPE = {
         "the same student in a FINISHED academic year. MRB-261's rule on the "
         "feedback surface: the opener survives, Save and Remove are "
         "withheld",
+    # ⊕ Sharpen B4, 29 Sep 2026 — `build_teacher_port._shape_deck`.
+    ("student-detail", "deck"):
+        "the newest set is a flashcard deck the pupil is part-way through: "
+        "In progress, 6/10 secured, Breakdown opens the flashcard panel, no "
+        "Add feedback until the deck is complete",
     # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 7) — THE THREE THE CHARTS
     # SCREEN HAD NO ANSWER FOR. `insights-empty` withholds a GRID, which
     # reaches ONE of the six chart kinds; the other five were rendering
@@ -444,20 +449,30 @@ _DRIVE_JS = r"""
      panel on `document.body` and this probe would read no text, no node
      count and no re-render change — a live control reported dead. */
   function breakdown() { return document.querySelector('[data-bd="overlay"]'); }
+  /* ⊕ Sharpen B4, 29 Sep 2026 — the FLASHCARD panel is a third sibling of
+     `host` (shared/flashcard-breakdown.js), opened by the same Breakdown
+     control on a deck row. Same instrument, same reason. */
+  function fcBreakdown() { return document.querySelector('[data-fb="overlay"]'); }
   function snap() {
     var sw = sheet();
     var swOpen = !!(sw && !sw.hidden);
     var bd = breakdown();
     var bdOpen = !!(bd && !bd.hidden);
+    var fb = fcBreakdown();
+    var fbOpen = !!(fb && !fb.hidden);
     return {
       text: (host.innerText || '') +
             (swOpen ? '\n' + (sw.innerText || '') : '') +
-            (bdOpen ? '\n' + (bd.innerText || '') : ''),
+            (bdOpen ? '\n' + (bd.innerText || '') : '') +
+            (fbOpen ? '\n' + (fb.innerText || '') : ''),
       renders: host.getAttribute('data-mrb-renders'),
       misses: host.getAttribute('data-mrb-misses'),
       nodes: host.querySelectorAll('*').length +
              (swOpen ? sw.querySelectorAll('*').length + 1 : 0) +
-             (bdOpen ? bd.querySelectorAll('*').length + 1 : 0),
+             (bdOpen ? bd.querySelectorAll('*').length + 1 : 0) +
+             (fbOpen ? fb.querySelectorAll('*').length + 1 : 0),
+      fb: fb ? ((fb.hidden ? '0' : '1') + ':' +
+                (fb.getAttribute('data-fb-opens') || '')) : '',
       /* ⊕ MRB-335 — THE SHEET'S OWN `data-mrb-renders`. Four buttons open
          one sheet, so the second one pressed in a sweep re-opens a sheet
          that is already on screen, for a different class, before the new
@@ -633,7 +648,7 @@ _DRIVE_JS = r"""
                 after.renders !== before.renders ||
                 after.nodes !== before.nodes ||
                 after.sw !== before.sw ||
-                after.bd !== before.bd ||
+                after.bd !== before.bd || after.fb !== before.fb ||
                 navs.length > navsBefore;
     if (!moved) {
       dead.push({i: idx, label: label, tag: c.tagName.toLowerCase()});
@@ -755,7 +770,8 @@ _DRIVE_JS = r"""
        exercised before. */
     if (aAfter.text === aBefore.text && aAfter.renders === aBefore.renders &&
         aAfter.nodes === aBefore.nodes && aAfter.sw === aBefore.sw &&
-        aAfter.bd === aBefore.bd && navs.length === aNavs) {
+        aAfter.bd === aBefore.bd && aAfter.fb === aBefore.fb &&
+        navs.length === aNavs) {
       addedDead.push({i: want, label: aLabel,
                       tag: el.tagName.toLowerCase()});
     }

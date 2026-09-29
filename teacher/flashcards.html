@@ -21,7 +21,8 @@
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/teacher-ds.css?v=75b0e564"/>
   <link rel="stylesheet" href="/shared/set-work.css?v=1f99af80"/>
-  <link rel="stylesheet" href="/shared/flashcard-progress.css?v=ffc377dd"/>
+  <link rel="stylesheet" href="/shared/flashcard-progress.css?v=8d816a44"/>
+  <link rel="stylesheet" href="/shared/breakdown.css?v=cd2c67cf"/>
   <style>
     html { background: var(--st-ground); }
     * { box-sizing: border-box; }
@@ -106,18 +107,9 @@
   </div>
 </main>
 
-<!-- The pupil drawer: right-hand panel on a desktop, the whole screen on a
-     phone. Read-only. -->
-<div class="fp-drawer-back noprint" id="fp-drawer-back" hidden>
-  <aside class="fp-drawer" role="dialog" aria-modal="true" aria-labelledby="fp-drawer-name">
-    <div class="fp-drawer-head">
-      <h2 class="fp-drawer-name" id="fp-drawer-name"></h2>
-      <span id="fp-drawer-status"></span>
-      <button type="button" class="fp-close" id="fp-drawer-close" aria-label="Close">×</button>
-    </div>
-    <div class="fp-drawer-body" id="fp-drawer-body"></div>
-  </aside>
-</div>
+<!-- ⊕ Sharpen B3, 29 Sep 2026 — the right-hand pupil drawer is gone. A
+     row opens shared/flashcard-breakdown.js, the centred per-pupil panel
+     (breakdown.css's shell), which mounts itself on <body>. -->
 
 <!-- Edit: set-work.css's own overlay and sheet. -->
 <div class="sw-overlay fp-edit noprint" id="fp-edit-back" hidden>
@@ -156,14 +148,15 @@
 <!-- class-entry.js BEFORE teacher-data.js — CLAUDE.md's load-order rule. -->
 <script src="/shared/class-entry.js?v=1028dbfb"></script>
 <script src="/shared/teacher-guard.js?v=f7fbad7c"></script>
-<script src="/shared/teacher-data.js?v=8743d7e1"></script>
+<script src="/shared/teacher-data.js?v=88101464"></script>
 <script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>
 <script src="/shared/formulae.js?v=e4bfb091"></script>
+<script src="/shared/flashcard-breakdown.js?v=6edaa5a5"></script>
 <!-- For its London clock helpers (londonToUtcIso / utcToLondonParts): the
      one conversion every Set work surface uses. It builds nothing until
      opened. -->
 <script src="/shared/set-work.js?v=2ed11396"></script>
-<script src="/shared/flashcard-progress.js?v=87efa4a0"></script>
+<script src="/shared/flashcard-progress.js?v=e69b34b3"></script>
 <script>
 MrBadmusTeacherGuard.requireTeacherRole({
   onDenied: function () { /* the guard redirects */ },

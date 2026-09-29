@@ -2391,6 +2391,41 @@ window.MrBadmusTeacherData = (function () {
           + 'a sitting-only pupil may read "No activity yet" until this recovers)', e);
       }
     }
+    /* ⊕ Sharpen B4, 29 Sep 2026 — PER-PUPIL DECK PROGRESS, on the screens
+       that draw per-pupil CELLS only (`opts.flashcardProgress`, which
+       `base()` in teacher-live.js sets for the focused class of the class /
+       marking / student screens and nowhere else — never Today, My classes,
+       the digest or insights).
+
+       ⛔ WHY. A deck writes NO `assignment_submissions` row until it is
+       complete, so a pupil with eight sittings had no cell at all and the
+       student screen said "Not started". `flashcard_progress` is the one
+       read that knows (status / secured / sittings / made per pupil) —
+       ONE call per released deck of the focused class, in parallel, each
+       allowed to fail on its own (→ that deck reads as before).
+
+       Like the two reads above, it fires only when a deck exists, so a class
+       with no flashcard work makes exactly the requests it always did. */
+    const flashcardsByClass = new Map();   // classId -> {assignmentId: {n, pupils}}
+    if (opts && opts.flashcardProgress && flashcardAssignmentIds.length > 0) {
+      await Promise.all(flashcardAssignmentIds.map(async function (aid) {
+        let data = null;
+        try {
+          const r = await sb.rpc('flashcard_progress', { p_assignment: aid, p_now: nowIso });
+          if (!r.error) { data = r.data; }
+        } catch (e) { data = null; }
+        if (!data) { return; }
+        const pupils = {};
+        (data.pupils || []).forEach(function (p) {
+          pupils[p.pupil_id] = { status: p.status, secured: p.secured || 0,
+                                 sittings: p.sittings || 0, made: p.made || 0 };
+        });
+        const cid = classOfFlashcardAssignment.get(aid);
+        if (!flashcardsByClass.has(cid)) { flashcardsByClass.set(cid, {}); }
+        flashcardsByClass.get(cid)[aid] = { n: data.n || 0, pupils: pupils };
+      }));
+    }
+
     function flashcardLastActiveFor(classId) {
       const out = {};
       const m = flashcardLastByClass.get(classId);
@@ -2498,9 +2533,46 @@ window.MrBadmusTeacherData = (function () {
         // against `activity[]` to get `lastIso`. See the block above and
         // the last-activity rule in supabase/MRB351-APPLY.md.
         flashcardLastActive: flashcardLastActiveFor(id),
+        // ⊕ Sharpen B4 — `{}` unless `opts.flashcardProgress` asked for it.
+        flashcards: flashcardsByClass.get(id) || {},
       };
     });
     return out;
+  }
+
+  /**
+   * loadCompleteFor(assignmentIds) — ⊕ Sharpen B6, 29 Sep 2026.
+   *
+   * Who has COMPLETED each of these assignments: `{assignmentId: {studentId:
+   * true}}`. One read (chunked like every id-scoped read here), for the My
+   * classes card's chase names on classes whose cells were rolled up in SQL.
+   * Resolves `null` on any failure — the caller then shows the count alone.
+   */
+  async function loadCompleteFor(assignmentIds) {
+    const ids = Array.from(new Set((assignmentIds || []).filter(isUuid)));
+    if (!ids.length) { return {}; }
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) { return null; }
+    try {
+      const rows = await inChunks(ids, async function (chunk) {
+        const r = await sb.from('assignment_submissions')
+          .select('assignment_id, student_id')
+          .in('assignment_id', chunk)
+          .eq('status', 'complete')
+          .is('deleted_at', null);
+        if (r.error) { throw r.error; }
+        return r.data || [];
+      });
+      const out = {};
+      rows.forEach(function (r) {
+        (out[r.assignment_id] = out[r.assignment_id] || {})[r.student_id] = true;
+      });
+      return out;
+    } catch (e) {
+      console.warn('[teacher-data] loadCompleteFor failed (names omitted)', e);
+      return null;
+    }
   }
 
   /**
@@ -3665,6 +3737,7 @@ window.MrBadmusTeacherData = (function () {
     loadClassMatrices,
     // ⊕ MRB-348 WS-2 — the server-side aggregate behind the summary screens.
     loadClassSummaries,
+    loadCompleteFor,
     loadPaperQuestions,
     loadFlashcardCounts,
     // ⊕ MRB-328 J3 — whose classes a school admin has asked to look at.

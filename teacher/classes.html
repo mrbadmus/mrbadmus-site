@@ -634,6 +634,27 @@ function MRB_SEARCH_FOOT(matched, shown, pool, q){
    never invent a second scale on top of it. Three shapes, because a delta
    is not always positive even though the one caller today only shows this
    card on improvement: up, down, or unchanged. */
+/* ⊕ Sharpen B5 — the class screen's THIS WEEK SCORE cell, one line per
+   paper of the week in view. `shared/teacher-live.js`'s `weekScoreLines` is
+   the one implementation; the fallback below only keeps a FIXTURE (which
+   ships no teacher-live.js) from drawing an empty column, and says the same
+   words for the same inputs. */
+function MRB_WEEK_SCORE(row, idxs, papers){
+  var L=window.MrBadmusTeacherLive, lines;
+  if(L&&L.weekScoreLines){lines=L.weekScoreLines(row, idxs, papers);}
+  else{
+    lines=[];
+    (idxs||[]).slice(0,2).forEach(function(i){
+      var p=papers&&papers[i];
+      if(p&&p.kind==='flashcards'){
+        var sit=row&&row.fcSittings?row.fcSittings[i]:null;
+        lines.push(sit>0?row.fcSecured[i]+'/'+row.fcN[i]+' secured':'—');
+      }else{
+        var sc=row&&row.scores?row.scores[i]:null, mx=row&&row.max?row.max[i]:null;
+        lines.push(sc!=null&&mx!=null?sc+'/'+mx:'—');}});
+    if(!lines.length){lines=['—'];}}
+  return lines.join('\n');}
+
 function MRB_DELTA_REASON(d){
   var n = Math.round(Math.abs(d));
   if(d > 0){return 'Up ' + n + ' points on the last set';}
@@ -1898,23 +1919,28 @@ class Component extends DCLogic {
     }
     const cards = list.map(c => {
       const chase = this.chaseFor(c);
+      const cardW = ('cardWeek' in c) ? c.cardWeek : c.week;
+      const cardC = ('cardChase' in c) ? (c.cardChase || []) : chase.map(r => r.name);
+      const cardO = c.cardOpens || '';
+      const noOpen = c.state === 'live' && !cardW && !cardO;
       return {
         code: c.code,
         /* ⊕ MRB-326 JOB 5a — the card's eyebrow line is gone,
            and so is the value behind it. Design's node 182 is pruned by
            REDUNDANT: the student count is on the chip below and the
            subject is in the class code above. */
-        live: c.state === 'live',
-        noWork: c.state === 'nowork',
+        live: c.state === 'live' && !noOpen,
+        noWork: c.state === 'nowork' || noOpen,
         empty: c.state === 'empty',
-        weekLabel: c.week[0] + ' of ' + c.week[1] + ' in',
-        pct: c.week[1] ? Math.round((c.week[0] / c.week[1]) * 100) : 0,
-        weekSub: chase.length
-          ? 'Chase ' + chase.slice(0, 2).map(r => this.shortName(r.name)).join(', ')
-            + (chase.length > 2 ? ' +' + (chase.length - 2) + ' more' : '')
+        weekLabel: cardW ? cardW[0] + ' of ' + cardW[1] + ' in' : cardO,
+        pct: cardW && cardW[1] ? Math.round((cardW[0] / cardW[1]) * 100) : 0,
+        weekSub: cardW && cardC.length
+          ? 'Chase ' + cardC.slice(0, 2).map(n => this.shortName(n)).join(', ')
+            + (cardC.length > 2 ? ' +' + (cardC.length - 2) + ' more' : '')
           : '',
-        weekSubFg: chase.length ? 'var(--st-accent-text)' : 'var(--st-muted)',
-        emptyLine: c.state === 'empty' ? 'No students yet' : c.n + ' students · no work set',
+        weekSubFg: cardW && cardC.length ? 'var(--st-accent-text)' : 'var(--st-muted)',
+        emptyLine: c.state === 'empty' ? 'No students yet'
+          : c.n + (noOpen ? ' students · no work open' : ' students · no work set'),
         activity: c.last === 'No activity yet'
           ? c.last
           : 'Last activity ' + c.last,
@@ -1953,6 +1979,7 @@ class Component extends DCLogic {
       let wIn = 0, wLateOne = null, wStarted = false;
       wIdxs.forEach(i => {
         if (row && row.status && row.status[i] === 'in_progress') wStarted = true;
+        if (row && row.fcStatus && row.fcStatus[i] === 'in_progress') wStarted = true;
         if (!(row && row.submitted[i])) return;
         wIn += 1;
         if (row.late[i] === true) wLateOne = true;
@@ -2192,6 +2219,7 @@ class Component extends DCLogic {
       dot: (!kPapers.length || !wTally[r.id].asked) ? 'var(--st-rule-strong)'
         : ((wTally[r.id].in >= wTally[r.id].asked && wTally[r.id].late !== true)
           ? 'var(--ks3-ok)' : 'var(--st-accent)'),
+      weekScore: MRB_WEEK_SCORE(kMx.byId[r.id], wIdxs, kPapers),
       avg: r.avg == null ? '—' : r.avg + '%',
       last: r.last,
       flag: r.flag,
@@ -2310,7 +2338,10 @@ class Component extends DCLogic {
     const stRow = st ? kMx.byId[st.id] : null;
     const stHistory = st && kPapers.length ? kPapers.map((p, i) => {
       const pState = p.state;
-      const hasRow = !!(stRow && stRow.subId[i] != null);
+      const isDeck = p.kind === 'flashcards';
+      const fcSit = isDeck && stRow && stRow.fcSittings ? stRow.fcSittings[i] : null;
+      const hasRow = !!(stRow && (stRow.subId[i] != null
+        || (isDeck && stRow.fcStatus && stRow.fcStatus[i] === 'in_progress')));
       const sc = stRow ? (stRow.scores[i] != null ? stRow.scores[i]
         : (stRow.submitted[i] === true ? '' : null)) : null;
       const lateState = sc != null ? stRow.late[i] : null;
@@ -2335,8 +2366,10 @@ class Component extends DCLogic {
         due: p.due.replace('Due ', ''),
         submitted: sc != null ? (stampS || '—')
           : (hasRow ? 'In progress' : '—'),
-        score: sc == null || stRow.max[i] == null ? '—'
-          : sc + '/' + stRow.max[i] + (pct == null ? '' : ' · ' + pct + '%'),
+        score: isDeck
+          ? (fcSit > 0 ? stRow.fcSecured[i] + '/' + stRow.fcN[i] + ' secured' : '—')
+          : (sc == null || stRow.max[i] == null ? '—'
+            : sc + '/' + stRow.max[i] + (pct == null ? '' : ' · ' + pct + '%')),
         status: sc != null
           ? (lateState === true ? 'Complete · late' : 'Complete')
           : (hasRow ? 'In progress'
@@ -2382,11 +2415,20 @@ class Component extends DCLogic {
         openBreakdown: (e) => {
           if (e && e.stopPropagation) { e.stopPropagation(); }
           if (e && e.preventDefault) { e.preventDefault(); }
-          if (window.MRBBreakdown && window.MRBBreakdown.open) {
+          if (isDeck) {
+            if (window.MRBFlashcardBreakdown && window.MRBFlashcardBreakdown.open) {
+              window.MRBFlashcardBreakdown.open({ assignmentId: p.id,
+                studentId: st && st.id, classId: k && k.id });
+            }
+          } else if (window.MRBBreakdown && window.MRBBreakdown.open) {
             window.MRBBreakdown.open({ classId: k && k.id,
               studentId: st && st.id, submissionId: fbSub });
           }
         },
+        /* ⊕ Sharpen B4 — Breakdown on a deck row once the pupil has
+           sat it (it has no submission until complete); on an MCQ
+           row the same `fbCan` it always had. */
+        bdCan: isDeck ? fcSit > 0 : !!fbSub,
         open: () => p.kind === 'flashcards' ? MRB_GO('flashcards', { assignment: p.id }) : MRB_GO('marking', { 'class': k && k.id, paper: p.idx })
       };
     }) : [];
@@ -3198,11 +3240,11 @@ window.__MRB_MOUNT__ = function () {
   }));
 };
 </script>
-<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","breakdown.css":"9f66d8ce","breakdown.js":"51769f19","class-csv-upload.js":"513ee889","class-entry.js":"1028dbfb","config.js":"d1fecb43","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-decks.css":"3da3c46d","flashcard-decks.js":"2610cf68","formulae.js":"e4bfb091","rum.js":"66210c21","set-work.css":"1f99af80","set-work.js":"2ed11396","shoutouts.js":"23393220","teacher-admin-nav.js":"d48cc15e","teacher-data.js":"8743d7e1","teacher-guard.js":"f7fbad7c","teacher-live.js":"123910f9","teacher-picker.js":"8f2365b7","teacher-topbar.css":"e4a3d0a7","teacher-topbar.js":"466ea5b0","theme.js":"6fd6f722"};</script>
+<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","breakdown.css":"cd2c67cf","breakdown.js":"51769f19","class-csv-upload.js":"513ee889","class-entry.js":"1028dbfb","config.js":"d1fecb43","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-breakdown.js":"6edaa5a5","flashcard-decks.css":"3da3c46d","flashcard-decks.js":"2610cf68","formulae.js":"e4bfb091","rum.js":"66210c21","set-work.css":"1f99af80","set-work.js":"2ed11396","shoutouts.js":"23393220","teacher-admin-nav.js":"d48cc15e","teacher-data.js":"88101464","teacher-guard.js":"f7fbad7c","teacher-live.js":"81d7d90c","teacher-picker.js":"8f2365b7","teacher-topbar.css":"e4a3d0a7","teacher-topbar.js":"466ea5b0","theme.js":"6fd6f722"};</script>
 <script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>
 <link rel="stylesheet" href="/shared/teacher-topbar.css?v=e4a3d0a7">
 <script src="/shared/teacher-topbar.js?v=466ea5b0"></script>
 <script src="/shared/set-work.js?v=2ed11396"></script>
-<script src="/shared/teacher-live.js?v=123910f9"></script>
+<script src="/shared/teacher-live.js?v=81d7d90c"></script>
 </body>
 </html>

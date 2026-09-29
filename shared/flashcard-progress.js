@@ -4,7 +4,7 @@
 
    Reads (all through the signed-in teacher's own client, RLS/definer-gated):
      rpc flashcard_progress      {p_assignment, p_now}   the table + strip
-     rpc flashcard_pupil_detail  {p_assignment, p_pupil} the drawer
+     (one pupil's cards: shared/flashcard-breakdown.js, the per-pupil panel)
      rpc flashcard_edit_assignment {p_id, p_title, p_due_at, p_note,
                                     p_release_at}        Edit
      POST functions/v1/flashcard-answer-check {assignment_id}
@@ -35,11 +35,10 @@
     done_late:   { label: "Done late",   rank: 3, tone: "late" },
     done:        { label: "Done",        rank: 4, tone: "ok" }
   };
-  var MODE = { make: "Pupils write the answers", review: "Ready-made cards" };
-  var RULE = { secure: "Secure", quick: "Quick" };
-  var RATING = { got_it: "Got it", nearly: "Nearly", not_yet: "Not yet" };
-  var CHECK = { match: "Match", partial: "Partial", no: "No match",
-                blank: "Blank", pending: "Checking" };
+  /* ⊕ Sharpen B1/B2/B3, 29 Sep 2026 — MODE/RULE (the header chips),
+     CHECK/RATING (the drawer) and the Answers column are gone: the chips
+     repeated what the table already shows, the verdict split moved to the
+     per-pupil panel (shared/flashcard-breakdown.js), and so did the drawer. */
   var SAY = {
     notFound: "Flashcard set not found",
     failed: "Couldn't load this set",
@@ -148,7 +147,6 @@
     { key: "time",     label: "Time" },
     { key: "percard",  label: "Per card" },
     { key: "rushed",   label: "Rushed" },
-    { key: "answers",  label: "Answers",  make: true },
     { key: "last",     label: "Last active" }
   ];
 
@@ -168,10 +166,6 @@
       case "time": return p.active_ms == null ? null : p.active_ms;
       case "percard": return p.median_think_ms == null ? null : p.median_think_ms;
       case "rushed": return p.rushed ? 1 : 0;
-      case "answers": {
-        var a = p.answers || {};
-        return (a.match || 0) * 1000 + (a.partial || 0);
-      }
       case "last": return p.last_active ? Date.parse(p.last_active) : null;
     }
     return null;
@@ -201,17 +195,6 @@
     });
   }
 
-  function answersText(a) {
-    a = a || {};
-    var bits = [];
-    if (a.match) { bits.push(a.match + " match"); }
-    if (a.partial) { bits.push(a.partial + " partial"); }
-    if (a.no) { bits.push(a.no + " no"); }
-    if (a.blank) { bits.push(a.blank + " blank"); }
-    if (a.pending) { bits.push(a.pending + " pending"); }
-    return bits.join("; ");
-  }
-
   function cellText(p, key, n, mode, rule, nowMs) {
     switch (key) {
       case "pupil": return nameOf(p);
@@ -222,7 +205,6 @@
       case "time": return p.active_ms ? clock(p.active_ms) : "—";
       case "percard": return seconds(p.median_think_ms);
       case "rushed": return p.rushed ? "Rushed" : "";
-      case "answers": return answersText(p.answers);
       case "last": return relative(p.last_active, nowMs);
     }
     return "";
@@ -288,7 +270,7 @@
   /* ── state ────────────────────────────────────────────────────────────── */
   var S = {
     id: null, sb: null, data: null, sortKey: null, sortDir: "asc",
-    timer: null, inflight: false, detailFor: null, lastFocus: null, chem: false
+    timer: null, inflight: false, lastFocus: null, chem: false
   };
 
   function nowIso() { return new Date().toISOString(); }
@@ -305,11 +287,6 @@
   }
 
   /* ── the header ───────────────────────────────────────────────────────── */
-  function chip(text, tone) {
-    var c = h("span", "fp-chip" + (tone ? " fp-chip-" + tone : ""), text);
-    return c;
-  }
-
   function renderHead(d) {
     var a = d.assignment || {};
     var st = assignmentState(a, d.now || nowIso());
@@ -330,15 +307,9 @@
       meta.appendChild(h("span", "fp-sep", "·"));
       meta.appendChild(h("span", "fp-rel", "Opens " + londonWhen(a.release_at)));
     }
-    var chips = h("div", "fp-chips");
-    var stLabel = st === "scheduled" ? "Scheduled" : (st === "open" ? "Open" : "Closed");
-    chips.appendChild(chip(stLabel, "state-" + st));
-    chips.appendChild(chip(MODE[a.mode] || a.mode || ""));
-    chips.appendChild(chip(RULE[a.rule] || a.rule || ""));
-    chips.appendChild(chip(d.n + (d.n === 1 ? " card" : " cards")));
 
     var left = h("div", "fp-head-main");
-    left.appendChild(crumb); left.appendChild(title); left.appendChild(meta); left.appendChild(chips);
+    left.appendChild(crumb); left.appendChild(title); left.appendChild(meta);
     if (a.note) {
       var note = h("p", "fp-note");
       note.setAttribute("data-fp-data", "note");
@@ -356,7 +327,7 @@
     acts.appendChild(edit); acts.appendChild(csv);
 
     host.appendChild(left); host.appendChild(acts);
-    document.title = (a.title || "Flashcards") + " — Mr Badmus AI";
+    document.title = (a.title || "Flashcards") + " — MrBadmus";
   }
 
   /* ── the class strip ──────────────────────────────────────────────────── */
@@ -433,27 +404,6 @@
     return w;
   }
 
-  function answersCell(a) {
-    a = a || {};
-    var w = h("div", "fp-ans");
-    [["match", "✓", "match"], ["partial", "≈", "partial"], ["no", "✗", "no"],
-     ["blank", "○", "blank"]].forEach(function (x) {
-      if (!a[x[0]]) { return; }
-      var s = h("span", "fp-ans-" + x[0], x[1] + a[x[0]]);
-      s.setAttribute("aria-label", a[x[0]] + " " + x[2]);
-      s.title = a[x[0]] + " " + x[2];
-      w.appendChild(s);
-    });
-    if (a.pending) {
-      var p = h("span", "fp-ans-pending", "…" + a.pending);
-      p.setAttribute("aria-label", a.pending + " pending");
-      p.title = a.pending + " pending";
-      w.appendChild(p);
-    }
-    if (!w.firstChild) { w.appendChild(h("span", "fp-ghost", "—")); }
-    return w;
-  }
-
   function renderTable(d) {
     var a = d.assignment || {}, n = d.n || 0;
     var cols = columnsFor(a.mode);
@@ -497,14 +447,12 @@
           td.scope = "row";
           var b = h("button", "fp-name", nameOf(p));
           b.type = "button";
-          b.addEventListener("click", function (e) { e.stopPropagation(); openDrawer(p); });
+          b.addEventListener("click", function (e) { e.stopPropagation(); openPupil(p); });
           td.appendChild(b);
         } else if (c.key === "status") {
           td.appendChild(statusChip(p.status));
         } else if (c.key === "secured") {
           td.appendChild(securedCell(p, n, a.rule));
-        } else if (c.key === "answers") {
-          td.appendChild(answersCell(p.answers));
         } else if (c.key === "rushed") {
           if (p.rushed) { td.appendChild(h("span", "fp-rushed", "Rushed")); }
         } else {
@@ -513,7 +461,7 @@
         }
         row.appendChild(td);
       });
-      row.addEventListener("click", function () { openDrawer(p); });
+      row.addEventListener("click", function () { openPupil(p); });
       tbody.appendChild(row);
     });
   }
@@ -591,134 +539,19 @@
     } catch (e) { console.warn("[flashcards] export failed", e); }
   }
 
-  /* ── the drawer ───────────────────────────────────────────────────────── */
-  function closeDrawer() {
-    var back = $("fp-drawer-back");
-    back.hidden = true;
-    document.body.classList.remove("fp-locked");
-    S.detailFor = null;
-    if (S.lastFocus && S.lastFocus.focus) { try { S.lastFocus.focus(); } catch (e) {} }
-  }
-
-  async function openDrawer(p) {
-    S.lastFocus = document.activeElement;
-    S.detailFor = p.pupil_id;
-    var back = $("fp-drawer-back");
-    back.hidden = false;
-    document.body.classList.add("fp-locked");
-    $("fp-drawer-name").textContent = nameOf(p);
-    var st = clear($("fp-drawer-status"));
-    st.appendChild(statusChip(p.status));
-    var body = clear($("fp-drawer-body"));
-    body.appendChild(h("div", "fp-skel-line"));
-    $("fp-drawer-close").focus();
-    var r;
-    try {
-      r = await S.sb.rpc("flashcard_pupil_detail", { p_assignment: S.id, p_pupil: p.pupil_id });
-    } catch (e) { r = { error: e }; }
-    if (S.detailFor !== p.pupil_id) { return; }
-    clear(body);
-    if (!r || r.error || !r.data) { body.appendChild(h("div", "fp-empty", SAY.detailFailed)); return; }
-    renderDetail(body, r.data, (S.data && S.data.assignment) || {});
-  }
-
-  function renderDetail(body, d, a) {
-    var make = a.mode === "make";
-    body.appendChild(h("div", "fp-dr-label", "Cards"));
-    var list = h("ol", "fp-cards");
-    (d.cards || []).forEach(function (c, i) {
-      var li = h("li", "fp-card");
-      li.setAttribute("data-card", c.id);
-      var top = h("div", "fp-card-top");
-      top.appendChild(h("span", "fp-card-n", "Q" + ((c.position != null ? c.position : i) + 1)));
-      if (c.secured) {
-        var t = h("span", "fp-secured", "✓ Secured");
-        top.appendChild(t);
-      }
-      li.appendChild(top);
-      var q = sci("div", "fp-card-q", c.question);
-      q.setAttribute("data-fp-data", "question");
-      li.appendChild(q);
-
-      var pair = h("div", "fp-pair" + (make ? "" : " fp-pair-one"));
-      if (make) {
-        var mine = h("div", "fp-side fp-mine");
-        mine.appendChild(h("div", "fp-side-label", "Their answer"));
-        var mt = c.mine ? sci("div", "fp-side-text", c.mine) : h("div", "fp-side-text fp-ghost", "—");
-        mt.setAttribute("data-fp-data", "mine");
-        mine.appendChild(mt);
-        var foot = h("div", "fp-side-foot");
-        if (c.check) {
-          var ck = h("span", "fp-check fp-check-" + c.check, CHECK[c.check] || c.check);
-          ck.setAttribute("data-check", c.check);
-          foot.appendChild(ck);
-        }
-        if (c.written_ms != null) { foot.appendChild(h("span", "fp-side-time", clock(c.written_ms))); }
-        if (foot.firstChild) { mine.appendChild(foot); }
-        pair.appendChild(mine);
-      }
-      var model = h("div", "fp-side fp-model");
-      model.appendChild(h("div", "fp-side-label", make ? "Model answer" : "Answer"));
-      var at = sci("div", "fp-side-text", c.answer);
-      at.setAttribute("data-fp-data", "answer");
-      model.appendChild(at);
-      pair.appendChild(model);
-      li.appendChild(pair);
-
-      /* ⊕ phone-teacher run, 28 Sep 2026 — PLAIN PHASE WORDS, NOT "M · ".
-         A rating given while the pupil was writing their own answer (make
-         mode) and one given later in review are different evidence, and the
-         old chip said so with a CSS "M · " prefix nobody could read. Now the
-         ratings are grouped under a small muted "while writing" / "in review"
-         label — but only when the distinction exists on this card (both
-         phases present) or the whole set is make mode. On a plain review
-         set there is one phase and a label would only repeat itself. */
-      var rs = c.ratings || [];
-      var makeR = rs.filter(function (r) { return r.phase === "make"; });
-      var revR = rs.filter(function (r) { return r.phase !== "make"; });
-      var labelled = make || (makeR.length > 0 && revR.length > 0);
-      var rates = h("div", "fp-rates");
-      function chips(group, phaseWord) {
-        if (!group.length) { return; }
-        if (labelled) {
-          var pl = h("span", "fp-phase", phaseWord);
-          pl.setAttribute("data-fp-phase-label", phaseWord);
-          rates.appendChild(pl);
-        }
-        group.forEach(function (r) {
-          var lab = RATING[r.rating] || r.rating;
-          var chipEl = h("span", "fp-rate fp-rate-" + r.rating + (r.phase === "make" ? " fp-rate-make" : ""), lab);
-          chipEl.setAttribute("data-rating", r.rating);
-          chipEl.setAttribute("data-phase", r.phase || "");
-          chipEl.title = lab + (labelled ? " · " + phaseWord : "") + (r.at ? " · " + londonWhen(r.at) : "");
-          if (labelled) { chipEl.setAttribute("aria-label", lab + ", " + phaseWord); }
-          rates.appendChild(chipEl);
-        });
-      }
-      chips(makeR, "while writing");
-      chips(revR, "in review");
-      if (rates.firstChild) { li.appendChild(rates); }
-      list.appendChild(li);
-    });
-    body.appendChild(list);
-
-    body.appendChild(h("div", "fp-dr-label", "Sittings"));
-    var ses = d.sessions || [];
-    if (!ses.length) {
-      body.appendChild(h("div", "fp-empty", "None yet"));
-    } else {
-      var sl = h("ol", "fp-sessions");
-      ses.forEach(function (s) {
-        var li = h("li", "fp-session");
-        li.appendChild(h("span", "fp-ses-when", londonWhen(s.started_at)));
-        li.appendChild(h("span", "fp-ses-len", clock(s.active_ms)));
-        li.appendChild(h("span", "fp-ses-n", (s.cards_rated || 0) + " rated"));
-        if (s.rushed) { li.appendChild(h("span", "fp-rushed", "Rushed")); }
-        if (s.open) { li.appendChild(h("span", "fp-ses-open", "Open")); }
-        sl.appendChild(li);
-      });
-      body.appendChild(sl);
-    }
+  /* ── one pupil: the centred panel (shared/flashcard-breakdown.js) ───────
+     ⊕ Sharpen B3 — replaces the right-hand drawer. Handed THIS page's
+     payload and the table's current order, so prev/next walk the rows as
+     the teacher sees them and opening costs one read. The panel keeps its
+     own snapshot: the 10-second poll repaints the table, never the panel. */
+  function openPupil(p) {
+    var FB = window.MRBFlashcardBreakdown;
+    if (!FB || !S.data) { return; }
+    var order = sortRows(S.data.pupils || [], S.sortKey, S.sortDir)
+      .map(function (x) { return x.pupil_id; });
+    FB.open({ assignmentId: S.id, studentId: p.pupil_id,
+              classId: (S.data.assignment || {}).class_id,
+              progress: S.data, order: order, chem: S.chem });
   }
 
   /* ── Edit ─────────────────────────────────────────────────────────────── */
@@ -818,10 +651,6 @@
 
   /* ── boot ─────────────────────────────────────────────────────────────── */
   function wire() {
-    $("fp-drawer-close").addEventListener("click", closeDrawer);
-    $("fp-drawer-back").addEventListener("click", function (e) {
-      if (e.target === $("fp-drawer-back")) { closeDrawer(); }
-    });
     $("fp-ed-cancel").addEventListener("click", closeEdit);
     $("fp-ed-save").addEventListener("click", saveEdit);
     $("fp-edit-back").addEventListener("click", function (e) {
@@ -830,7 +659,6 @@
     document.addEventListener("keydown", function (e) {
       if (e.key !== "Escape") { return; }
       if (!$("fp-edit-back").hidden) { closeEdit(); }
-      else if (!$("fp-drawer-back").hidden) { closeDrawer(); }
     });
   }
 

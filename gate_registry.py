@@ -457,6 +457,7 @@ GATES = [
          watches=["flashcard_progress_drive.py", "ks3_browser.py",
                   "teacher/flashcards.html",
                   "shared/flashcard-progress.js", "shared/flashcard-progress.css",
+                  "shared/flashcard-breakdown.js", "shared/breakdown.css",
                   "shared/formulae.js", "shared/set-work.js", "shared/set-work.css",
                   "shared/teacher-live.js", "shared/teacher-data.js",
                   "shared/teacher-guard.js", "shared/teacher-admin-nav.js", "shared/teacher-topbar.js",
@@ -468,8 +469,12 @@ GATES = [
                   "teacher/student-detail.html"],
          why="MRB-351 §5 — the teacher's flashcard progress page, DRIVEN with "
              "a stubbed client: least-progress-first default sort and every "
-             "column sorting both ways, make vs review columns, the pupil "
-             "drawer (answer beside model answer, rating history, sittings), "
+             "column sorting both ways, make vs review columns, the per-pupil "
+             "panel (⊕ Sharpen B3: shared/flashcard-breakdown.js — prev/next "
+             "in table order, one state chip, latest answer + verdict, Tries, "
+             "History closed, both sides of the MRB-352 degrade), "
+             "Sharpen B4-B6 on teacher-live.js (deck progress on the matrix, "
+             "the THIS WEEK SCORE lines, the card's current set), "
              "a row flipping to Done by polling without a reload, the CSV as "
              "displayed, the Rushed marker, no page scroll at 360/390 and no "
              "explanatory copy. It also runs teacher-live.js's real "

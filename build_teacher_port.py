@@ -172,6 +172,12 @@ SETWORK_JS_NAME = "set-work.js"
 # compiled runtime, for the reason `shared/breakdown.js`'s own header gives.
 BREAKDOWN_CSS_NAME = "breakdown.css"
 BREAKDOWN_JS_NAME = "breakdown.js"
+# ⊕ Sharpen B4, 29 Sep 2026 — the FLASHCARD twin of the panel, on the same
+# page and behind the same `breakdown` flag: a deck row on the student screen
+# opens `window.MRBFlashcardBreakdown` where an MCQ row opens `MRBBreakdown`.
+# `formulae.js` comes with it (a Chemistry deck draws CO₂ with a subscript);
+# it is a pure global, 4 KB, with no side effects at load.
+FLASHCARD_BREAKDOWN_JS_NAME = "flashcard-breakdown.js"
 
 # ⊕ "Add pupils (CSV)" — the admin-only CSV entry on a class's own page.
 # See `csv_upload` in page_html. A plain <script src>, the same shape as
@@ -307,6 +313,7 @@ STAMPED_DEPS = ("config.js", "class-entry.js", "teacher-guard.js",
                 SETWORK_CSS_NAME, SETWORK_JS_NAME, CSV_JS_NAME,
                 "figures-ks3.js", "figures-ks4.js",
                 BREAKDOWN_CSS_NAME, BREAKDOWN_JS_NAME, "theme.js",
+                FLASHCARD_BREAKDOWN_JS_NAME,
                 # ⊕ MRB-351 — set-work.js loads these on demand when a
                 # teacher picks Flashcards; stamped like every other dep.
                 "formulae.js", "flashcard-decks.js", "flashcard-decks.css",
@@ -3181,6 +3188,11 @@ EMPTY_SHAPES = {
          "not, which is MRB-261's rule (read-only, not invisible) applied to "
          "the surface Phase 2b added.",
          lambda p: _shape_past_year(p)),
+        # ⊕ Sharpen B4, 29 Sep 2026 — see `_shape_deck`.
+        ("deck",
+         "a flashcard deck in the history: In progress with 6/10 secured and "
+         "a Breakdown control, no Add feedback until the deck is complete.",
+         lambda p: _shape_deck(p)),
     ),
 }
 
@@ -3678,6 +3690,42 @@ def _mean(vals):
     """
     vals = [v for v in vals if v is not None]
     return round(sum(vals) / len(vals)) if vals else None
+
+
+# ⊕ Sharpen B4, 29 Sep 2026 — A DECK ROW ON THE STUDENT SCREEN.
+#
+# The newest paper becomes a flashcard deck, in the shape the seam really
+# produces for one: a deck is never graded (`cellOf` keeps its score out of
+# every mean), it has a submission only once complete, and its per-pupil
+# progress arrives as `fcStatus` / `fcSecured` / `fcN` / `fcSittings`
+# (`buildMatrix`, `flashcard_progress` per deck). The fixture's own pupil is
+# mid-way — three sittings, 6 of 10 secured, no submission — which is the
+# row that used to say "Not started". Pupils who had handed the paper in
+# become a completed deck (10/10 secured); the rest have not started.
+def _shape_deck(p):
+    p = json.loads(json.dumps(p))
+    cid, sid = p["classId"], p["studentId"]
+    mx = p["MATRIX"][cid]
+    n = mx["cols"]
+    p["PAPERS"][cid][0]["kind"] = "flashcards"
+    for r in mx["rows"]:
+        for key in ("fcStatus", "fcSecured", "fcN", "fcSittings"):
+            r[key] = [None] * n
+        r["fcN"][0] = 10
+        r["pct"][0] = None
+        r["scores"][0] = None
+        r["max"][0] = None
+        if r["sid"] == sid:
+            r["submitted"][0] = False
+            for key in ("subId", "stampShort", "late", "status", "stamp"):
+                if isinstance(r.get(key), list):
+                    r[key][0] = None
+            r["fcStatus"][0], r["fcSecured"][0], r["fcSittings"][0] = "in_progress", 6, 3
+        elif r["submitted"][0]:
+            r["fcStatus"][0], r["fcSecured"][0], r["fcSittings"][0] = "done", 10, 2
+        else:
+            r["fcStatus"][0], r["fcSecured"][0], r["fcSittings"][0] = "not_started", 0, 0
+    return _reaverage(p, cid)
 
 
 def _reaverage(p, cid):
@@ -4637,6 +4685,27 @@ function MRB_SEARCH_FOOT(matched, shown, pool, q){
    never invent a second scale on top of it. Three shapes, because a delta
    is not always positive even though the one caller today only shows this
    card on improvement: up, down, or unchanged. */
+/* ⊕ Sharpen B5 — the class screen's THIS WEEK SCORE cell, one line per
+   paper of the week in view. `shared/teacher-live.js`'s `weekScoreLines` is
+   the one implementation; the fallback below only keeps a FIXTURE (which
+   ships no teacher-live.js) from drawing an empty column, and says the same
+   words for the same inputs. */
+function MRB_WEEK_SCORE(row, idxs, papers){
+  var L=window.MrBadmusTeacherLive, lines;
+  if(L&&L.weekScoreLines){lines=L.weekScoreLines(row, idxs, papers);}
+  else{
+    lines=[];
+    (idxs||[]).slice(0,2).forEach(function(i){
+      var p=papers&&papers[i];
+      if(p&&p.kind==='flashcards'){
+        var sit=row&&row.fcSittings?row.fcSittings[i]:null;
+        lines.push(sit>0?row.fcSecured[i]+'/'+row.fcN[i]+' secured':'\u2014');
+      }else{
+        var sc=row&&row.scores?row.scores[i]:null, mx=row&&row.max?row.max[i]:null;
+        lines.push(sc!=null&&mx!=null?sc+'/'+mx:'\u2014');}});
+    if(!lines.length){lines=['\u2014'];}}
+  return lines.join('\\n');}
+
 function MRB_DELTA_REASON(d){
   var n = Math.round(Math.abs(d));
   if(d > 0){return 'Up ' + n + ' points on the last set';}
@@ -5367,8 +5436,11 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
     # undefined rather than opening anything.
     breakdown_css = ("<link rel=\"stylesheet\" href=\"/shared/%s\">\n"
                      % BREAKDOWN_CSS_NAME if spec.get("breakdown") else "")
-    breakdown_js = ("<script src=\"/shared/%s\"></script>\n"
-                    % BREAKDOWN_JS_NAME if spec.get("breakdown") else "")
+    breakdown_js = (("<script src=\"/shared/%s\"></script>\n"
+                     "<script src=\"/shared/formulae.js\"></script>\n"
+                     "<script src=\"/shared/%s\"></script>\n")
+                    % (BREAKDOWN_JS_NAME, FLASHCARD_BREAKDOWN_JS_NAME)
+                    if spec.get("breakdown") else "")
     # ⊕ "Add pupils (CSV)", on ONE of the six. Same shape as `picker` above
     # and emitted on the FIXTURES too, for the same reason every other tag
     # here is: the gates describe a fixture as "the same bytes apart from its

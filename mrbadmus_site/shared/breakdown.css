@@ -596,3 +596,131 @@ html[data-theme="dark"] .bd-q-mark.is-right,
 html[data-theme="dark"] .bd-q-mark.is-wrong {
   color: #1A1714;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ⊕ Sharpen B3, 29 Sep 2026 — the FLASHCARD panel (shared/flashcard-
+   breakdown.js). Same shell as the MCQ panel above (`.bd-*`); only the
+   card rows are its own. Same token rule: `--success`/`--success-soft`
+   and `--st-*` only — never `--ks3-ok*`, which do not resolve on <body>.
+   ═══════════════════════════════════════════════════════════════════════ */
+.fb-titlerow {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0;
+}
+.fb-titlerow .bd-title { min-width: 0; }
+.fb-status {
+  flex: none; margin-top: 3px; padding: 3px 9px; border-radius: 7px;
+  font: 600 14px/1.25 var(--st-ui); color: var(--st-ink);
+  background: var(--st-num-well); border: 1px solid var(--st-rule-soft);
+}
+.fb-status:empty { display: none; }
+/* The green tint is mixed from `--success` itself, so it follows the theme:
+   `--success-soft` resolves to a pale light-mode tint under dark (it is
+   `var(--ok-bg)` in one of teacher-ds.css's :root blocks) and put bright
+   dark-mode green on a pale chip. The first `background` is the fallback. */
+.fb-status[data-status="done"], .fb-status[data-status="done_late"] {
+  color: var(--success); border-color: transparent;
+  background: var(--st-num-well);
+  background: color-mix(in srgb, var(--success) 14%, transparent);
+}
+.fb-status[data-status="missing"] {
+  color: var(--st-accent-text); background: var(--st-chip-tint); border-color: var(--st-chip-tint-border);
+}
+.fb-status[data-status="not_started"] { color: var(--st-caption); }
+
+.fb-verdicts { font: 500 16px/1.4 var(--st-ui); color: var(--st-body); margin-top: -6px; }
+.fb-filter { justify-content: flex-start; }
+
+.fb-cards { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.bd-disclosure > .fb-cards { margin-top: 12px; }
+.fb-card {
+  min-width: 0; padding: 14px; background: var(--st-paper);
+  border: 1px solid var(--st-rule-soft); border-radius: 11px;
+}
+.fb-card-head { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
+.fb-qn {
+  flex: none; padding-top: 3px;
+  font: 500 12px/1.3 var(--st-mono); letter-spacing: .08em; color: var(--st-caption);
+}
+.fb-q {
+  flex: 1 1 auto; min-width: 0; font: 600 16px/1.45 var(--st-ui); color: var(--st-ink);
+  overflow-wrap: anywhere;
+}
+.fb-state, .fb-verdict {
+  flex: none; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+  font: 600 14px/1.25 var(--st-ui); color: var(--st-body);
+  background: var(--st-num-well); border: 1px solid var(--st-rule-soft);
+}
+.fb-state-secured, .fb-state-got_it, .fb-verdict-match {
+  color: var(--success); border-color: transparent;
+  background: var(--st-num-well);
+  background: color-mix(in srgb, var(--success) 14%, transparent);
+}
+.fb-state-not_yet, .fb-verdict-no {
+  color: var(--st-accent-text); background: var(--st-chip-tint); border-color: var(--st-chip-tint-border);
+}
+.fb-state-unseen, .fb-verdict-blank, .fb-verdict-pending { color: var(--st-caption); }
+
+.fb-ans {
+  margin-top: 10px; display: flex; align-items: flex-start; gap: 10px; min-width: 0;
+  padding: 10px 12px; border: 1px solid var(--st-rule); border-radius: 9px;
+}
+.fb-ans-text {
+  flex: 1 1 auto; min-width: 0; font: 400 15.5px/1.45 var(--st-ui); color: var(--st-ink);
+  overflow-wrap: anywhere; white-space: pre-wrap;
+}
+.fb-ans.is-none { border-style: dashed; }
+.fb-ans.is-none .fb-ans-text { color: var(--st-muted); }
+.fb-model {
+  margin-top: 8px; padding: 10px 12px; min-width: 0;
+  background: var(--st-ground); border: 1px solid var(--st-rule-soft); border-radius: 9px;
+}
+.fb-model-label {
+  font: 500 12px/1.2 var(--st-mono); letter-spacing: .12em; text-transform: uppercase;
+  color: var(--st-caption);
+}
+.fb-model-text {
+  margin-top: 4px; font: 400 15.5px/1.45 var(--st-ui); color: var(--st-body);
+  overflow-wrap: anywhere; white-space: pre-wrap;
+}
+.fb-tries { margin-top: 8px; font: 500 15px/1.3 var(--st-ui); color: var(--st-muted); }
+
+.fb-history { margin-top: 8px; }
+.fb-history > summary {
+  display: inline-flex; align-items: center; min-height: 32px; cursor: pointer; list-style: none;
+  font: 600 15px/1.2 var(--st-ui); color: var(--st-body);
+}
+.fb-history > summary::-webkit-details-marker { display: none; }
+.fb-history > summary::before { content: "\25B8\2002"; }
+.fb-history[open] > summary::before { content: "\25BE\2002"; }
+.fb-history > summary:focus-visible { outline: 2px solid var(--st-accent); outline-offset: 2px; border-radius: 4px; }
+.fb-rates { margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.fb-phase { font: 500 14px/1.2 var(--st-ui); color: var(--st-caption); }
+.fb-rate + .fb-phase { margin-left: 8px; }
+.fb-rate {
+  padding: 3px 8px; border-radius: 6px; font: 600 14px/1.25 var(--st-ui); color: var(--st-body);
+  background: var(--st-num-well); border: 1px solid var(--st-rule-soft);
+}
+.fb-rate-got_it {
+  color: var(--success); border-color: transparent;
+  background: var(--st-num-well);
+  background: color-mix(in srgb, var(--success) 14%, transparent);
+}
+.fb-rate-not_yet { color: var(--st-accent-text); background: var(--st-chip-tint); border-color: var(--st-chip-tint-border); }
+
+.fb-sittings { margin-top: 0; }
+.fb-sessions { list-style: none; margin: 6px 0 0; padding: 0; }
+.fb-session {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 8px 0;
+  border-top: 1px solid var(--st-rule-soft); font: 400 15px/1.3 var(--st-ui); color: var(--st-body);
+}
+.fb-session:first-child { border-top: none; }
+.fb-ses-when { font-weight: 600; color: var(--st-ink); }
+.fb-ses-len, .fb-ses-n { font-family: var(--st-mono); font-variant-numeric: tabular-nums; font-size: 14px; }
+.fb-rushed, .fb-ses-open { font: 500 13px/1.2 var(--st-mono); letter-spacing: .06em; color: var(--st-accent-text); }
+
+@media (max-width: 520px) {
+  .fb-card { padding: 12px; }
+  .fb-card-head { flex-wrap: wrap; }
+  .fb-card-head .fb-q { flex-basis: calc(100% - 40px); }
+  .fb-card-head .fb-state { margin-left: 32px; }
+}

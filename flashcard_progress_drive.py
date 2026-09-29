@@ -14,9 +14,12 @@ What it proves:
   · the default sort is least progress first (Missing, Not started, In
     progress by secured, Done late, Done), and every column sorts both ways
     with `aria-sort` saying so;
-  · make mode shows Made and Answers, review mode does not;
-  · the drawer shows the pupil's answer beside the model answer, the check
-    chip, the rating history in order (make phase marked) and the sittings;
+  · make mode shows Made, review mode does not; no Answers column in either
+    (Sharpen B2), and no chips under the title (B1);
+  · the per-pupil panel (shared/flashcard-breakdown.js, Sharpen B3): the
+    centred shell, prev/next in table order, per card one state chip, the
+    latest written answer + verdict, the model answer, Tries, a closed
+    History; both the MRB-352 keys and the old function's degrade;
   · polling flips a row to Done on an open tab, without a reload;
   · the CSV is the table as displayed, UTF-8 with a BOM;
   · Rushed is a small inline marker, never a block;
@@ -112,7 +115,7 @@ DETAIL_BEN = {
     "cards": [
         {"id": "c1", "position": 0, "question": "What is the formula of carbon dioxide?",
          "answer": "CO2", "mine": "CO2 gas", "check": "match", "written_ms": 34000,
-         "secured": True, "known": True,
+         "secured": True, "known": True, "shown": 4,
          "ratings": [{"rating": "nearly", "phase": "make", "at": iso(NOW - timedelta(days=1, hours=2)), "think_ms": 3000, "session_id": "s1"},
                      {"rating": "got_it", "phase": "review", "at": iso(NOW - timedelta(days=1, hours=1)), "think_ms": 2000, "session_id": "s1"},
                      {"rating": "got_it", "phase": "review", "at": iso(NOW - timedelta(days=1)), "think_ms": 1800, "session_id": "s2"}]},
@@ -121,7 +124,10 @@ DETAIL_BEN = {
          "secured": False, "known": False,
          "ratings": [{"rating": "not_yet", "phase": "make", "at": iso(NOW - timedelta(days=1, hours=2)), "think_ms": 900, "session_id": "s1"},
                      {"rating": "not_yet", "phase": "review", "at": iso(NOW - timedelta(days=1, hours=1)), "think_ms": 700, "session_id": "s1"},
-                     {"rating": "nearly", "phase": "review", "at": iso(NOW - timedelta(days=1)), "think_ms": 800, "session_id": "s2"}]},
+                     # ⊕ Sharpen B3 — the MRB-352 keys: a review rating that
+                     # carried a typed answer (the panel's latest answer).
+                     {"rating": "nearly", "phase": "review", "at": iso(NOW - timedelta(days=1)), "think_ms": 800, "session_id": "s2",
+                      "answer": "a neutron", "answer_check": "match"}]},
         {"id": "c3", "position": 2, "question": "What is the charge on a proton?",
          "answer": "+1", "mine": "positive", "check": "pending", "written_ms": 8000,
          "secured": False, "known": True, "ratings": []},
@@ -136,6 +142,64 @@ DETAIL_BEN = {
          "active_ms": 60000, "cards_seen": 10, "cards_rated": 10, "cards_made": 0,
          "median_think_ms": 700, "rushed": True},
     ],
+}
+
+# ⊕ Sharpen B3 — a pupil read through the PRE-MRB-352 function: no `shown`,
+# no `answer`/`answer_check` on any rating. Drives the degrade branches.
+DETAIL_CAT = {
+    "pupil": {"id": "p-cat", "first_name": "Cat", "last_name": "Cole", "display_name": "Cat"},
+    "cards": [
+        {"id": "c1", "position": 0, "question": "What is the formula of carbon dioxide?",
+         "answer": "CO2", "mine": "C O 2", "check": "partial", "written_ms": 20000,
+         "secured": False, "known": True,
+         "ratings": [{"rating": "got_it", "phase": "make", "at": iso(NOW - timedelta(hours=2)), "think_ms": 900, "session_id": "s9"},
+                     {"rating": "got_it", "phase": "review", "at": iso(NOW - timedelta(hours=1)), "think_ms": 800, "session_id": "s9"}]},
+        {"id": "c2", "position": 1, "question": "Name the particle with no charge",
+         "answer": "Neutron", "mine": None, "check": None, "written_ms": None,
+         "secured": False, "known": False, "ratings": []},
+        # a BLANK make answer: "" with check `blank` is still an answer
+        {"id": "c3", "position": 2, "question": "What is the charge on a proton?",
+         "answer": "+1", "mine": "", "check": "blank", "written_ms": 4000,
+         "secured": False, "known": False, "ratings": []},
+    ],
+    "sessions": [
+        {"id": "s9", "started_at": iso(NOW - timedelta(hours=2)), "ended_at": iso(NOW - timedelta(hours=1)),
+         "open": False, "active_ms": 125000, "cards_seen": 2, "cards_rated": 2, "cards_made": 1,
+         "median_think_ms": 900, "rushed": True}],
+}
+
+# ⊕ Fable review — a REVIEW-mode pupil read through the pre-MRB-352
+# function: rated cards with no `answer` on any rating and no `mine`. The
+# panel must NOT say "No written answer" on those (it cannot know); only the
+# untouched card says it.
+DETAIL_REVIEW = {
+    "pupil": {"id": "p-ben", "first_name": "Ben", "last_name": "Brown", "display_name": "Ben"},
+    "cards": [
+        {"id": "c1", "position": 0, "question": "What is the formula of carbon dioxide?",
+         "answer": "CO2", "mine": None, "check": None, "written_ms": None,
+         "secured": True, "known": True,
+         "ratings": [{"rating": "got_it", "phase": "review", "at": iso(NOW - timedelta(hours=3)), "think_ms": 2000, "session_id": "r1"},
+                     {"rating": "got_it", "phase": "review", "at": iso(NOW - timedelta(hours=2)), "think_ms": 1800, "session_id": "r1"}]},
+        {"id": "c2", "position": 1, "question": "Name the particle with no charge",
+         "answer": "Neutron", "mine": None, "check": None, "written_ms": None,
+         "secured": False, "known": False,
+         "ratings": [{"rating": "not_yet", "phase": "review", "at": iso(NOW - timedelta(hours=2)), "think_ms": 700, "session_id": "r1"}]},
+        {"id": "c3", "position": 2, "question": "What is the charge on a proton?",
+         "answer": "+1", "mine": None, "check": None, "written_ms": None,
+         "secured": False, "known": False, "ratings": []},
+    ],
+    "sessions": [{"id": "r1", "started_at": iso(NOW - timedelta(hours=3)), "ended_at": iso(NOW - timedelta(hours=2)),
+                  "open": False, "active_ms": 90000, "cards_seen": 3, "cards_rated": 3, "cards_made": 0,
+                  "median_think_ms": 1800, "rushed": False}],
+}
+
+# Anyone else: nothing done yet.
+DETAIL_NONE = {
+    "pupil": {"id": "p-x", "first_name": "X", "last_name": "X", "display_name": "X"},
+    "cards": [{"id": "c1", "position": 0, "question": "What is the formula of carbon dioxide?",
+               "answer": "CO2", "mine": None, "check": None, "written_ms": None,
+               "secured": False, "known": False, "ratings": []}],
+    "sessions": [],
 }
 
 STUB_JS = r"""
@@ -274,7 +338,7 @@ def monotonic(vals, desc):
 COPY_JS = r"""
 (function(){
   var out = [];
-  var roots = [document.getElementById('fp-main'), document.getElementById('fp-drawer-back')];
+  var roots = [document.getElementById('fp-main'), document.querySelector('[data-fb="overlay"]')];
   roots.forEach(function (root) {
     if (!root) return;
     var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -283,7 +347,7 @@ COPY_JS = r"""
       var t = n.nodeValue.replace(/\s+/g, ' ').trim();
       if (!t) continue;
       var e = n.parentElement;
-      if (!e || e.closest('[data-fp-data],.fp-name,.fp-drawer-name,.fp-title,.fp-crumb')) continue;
+      if (!e || e.closest('[data-fp-data],[data-fb-data],.fp-name,.bd-title,.bd-eyebrow,.bd-nav-word,.fp-title,.fp-crumb,.fb-ses-when')) continue;
       if (e.closest('[hidden]')) continue;
       var cs = getComputedStyle(e);
       if (cs.display === 'none' || cs.visibility === 'hidden') continue;
@@ -297,10 +361,48 @@ COPY_JS = r"""
 FORBIDDEN = re.compile(r"(\bthis page\b|\bclick\b|\btap\b|\byou can\b|\bwill\b|\bhere\b|"
                        r"\bhow\b|\bshows?\b|\bwhen\b|\. [A-Z])", re.I)
 
+PANEL_JS = r"""
+(function(){
+  var o=document.querySelector('[data-fb="overlay"]'), sh=o.querySelector('.bd-sheet');
+  var r=sh.getBoundingClientRect(), sub=o.querySelector('.bd-subtitle');
+  function t(q){var e=o.querySelector(q);return e?e.textContent:'';}
+  return {
+    shell: o.parentElement===document.body && getComputedStyle(o).position==='fixed' && !!sh,
+    shellInfo: {parent:o.parentElement.tagName, pos:getComputedStyle(o).position},
+    title:t('.bd-title'), eyebrow:t('.bd-eyebrow'), subtitle:sub.textContent,
+    subVisible: !!sub.offsetParent, chip:t('.fb-status'),
+    text: sh.innerText,
+    tiles: Array.prototype.map.call(o.querySelectorAll('.bd-stat-label'),function(e){return e.textContent;}),
+    tileVals: Array.prototype.map.call(o.querySelectorAll('.bd-stat-value'),function(e){return e.textContent;}),
+    tileSubs: Array.prototype.map.call(o.querySelectorAll('.bd-stat'),function(e){var s=e.querySelector('.bd-stat-sub');return s?s.textContent:null;}),
+    verdicts: t('[data-fb="verdicts"]'),
+    filter: Array.prototype.map.call(o.querySelectorAll('.bd-toggle-btn'),function(e){return e.textContent;}),
+    cards: Array.prototype.map.call(o.querySelectorAll('.fb-card'),function(c){
+      var h=c.querySelector('details.fb-history');
+      return {id:c.getAttribute('data-card'), states:c.querySelectorAll('.fb-state').length,
+        state:(c.querySelector('.fb-state')||{}).textContent,
+        hasAns:!!c.querySelector('.fb-ans'),
+        answer:(c.querySelector('.fb-ans-text')||{}).textContent,
+        none:!!(c.querySelector('.fb-ans')&&c.querySelector('.fb-ans').classList.contains('is-none')),
+        verdict:(c.querySelector('.fb-verdict')||{}).textContent||null,
+        model:(c.querySelector('.fb-model-text')||{}).textContent,
+        modelLabel:(c.querySelector('.fb-model-label')||{}).innerText,
+        tries:(c.querySelector('.fb-tries')||{}).textContent,
+        hasHist:!!h, histOpen:!!(h&&h.open),
+        theirLabel:/their answer/i.test(c.innerText)};}),
+    sub: !!o.querySelector('.fb-card[data-card="c1"] .fb-model-text sub'),
+    sittings: t('.fb-sittings > summary'), sitOpen: !!(o.querySelector('.fb-sittings')||{}).open,
+    rect:{l:r.left,r:r.right,w:r.width,vw:window.innerWidth},
+    centred: Math.abs((r.left) - (window.innerWidth - r.right)) < 4 && r.width < window.innerWidth,
+    docOverflow: document.documentElement.style.overflow
+  };
+})()
+"""
+
 A11Y_JS = r"""
 (function(){
   var small = [], tiny = [];
-  document.querySelectorAll('#fp-main *, #fp-drawer-back *').forEach(function (e) {
+  document.querySelectorAll('#fp-main *, [data-fb="overlay"] *').forEach(function (e) {
     if (e.closest('[hidden]')) return;
     var cs = getComputedStyle(e);
     if (cs.display === 'none') return;
@@ -310,7 +412,7 @@ A11Y_JS = r"""
       small.push(e.className + ' ' + cs.fontSize);
     }
   });
-  document.querySelectorAll('.fp-sort, .fp-name, .fp-actions .btn, .fp-close').forEach(function (b) {
+  document.querySelectorAll('.fp-sort, .fp-name, .fp-actions .btn').forEach(function (b) {
     if (b.closest('[hidden]')) return;
     var r = b.getBoundingClientRect();
     if (r.width && r.height < 43.5) tiny.push((b.className || b.tagName) + ' ' + Math.round(r.height));
@@ -413,6 +515,115 @@ def cellof_check(b, base, check):
           got and got["s3LastLabel"])
 
 
+def sharpen_matrix_check(b, base, check):
+    """⊕ Sharpen B4/B5/B6 — teacher-live.js's real `buildPapers` /
+    `buildMatrix` / `weekScoreLines` / `buildClassEntry`, on fixture packs,
+    with `run()` switched off exactly as `cellof_check` does."""
+    src = open(os.path.join(HERE, "shared", "teacher-live.js"), encoding="utf-8").read()
+    anchor = "  run().catch(function (err) {"
+    src = src.replace(anchor, "  (function () { return Promise.resolve(); })().catch(function (err) {")
+    p = b.page("about:blank", settle=0.2)
+    p.send("Page.addScriptToEvaluateOnNewDocument",
+           {"source": "window.fetch=function(){return Promise.reject(new Error('offline'));};"})
+    p.goto(base + "/teacher/flashcards.html?drive=sharpen", settle=0.3)
+    p.eval(src + "\n;true")
+    got = p.eval(r"""
+    (function () {
+      var L = window.MrBadmusTeacherLive;
+      function mem(n) { var out = []; for (var i = 1; i <= n; i++) {
+        out.push({student_id: 's' + i, first_name: 'P' + i, last_name: 'Pupil' + (i < 10 ? '0' + i : i),
+                  joined_at: '2026-09-01T00:00:00+00:00'}); } return out; }
+      function sub(aid, sid, score, max) { return {id: aid + sid, assignment_id: aid, student_id: sid,
+        score: score, max_score: max, status: 'complete', completed_at: '2026-09-29T09:00:00+00:00',
+        submitted_at: '2026-09-29T09:00:00+00:00', is_late: false}; }
+      var now = Date.parse('2026-09-29T12:00:00Z');   // Tuesday
+      var week = {start_at: '2026-09-27T23:00:00.000Z', end_at: '2026-10-04T23:00:00.000Z'};
+      /* B4/B5 — one open MCQ, one open deck. */
+      var pack = {
+        members: mem(3), week: week, flashcardLastActive: {},
+        assignments: [
+          {id: 'm1', title: 'Quiz', release_at: '2026-09-28T06:00:00+00:00', due_at: '2026-10-05T08:00:00+00:00', kind: 'mcq_set'},
+          {id: 'f1', title: 'Deck', release_at: '2026-09-28T06:00:00+00:00', due_at: '2026-10-05T08:00:00+00:00', kind: 'flashcards'}],
+        submissions: [sub('m1', 's1', 7, 10), sub('m1', 's3', 4, 10), sub('f1', 's3', 10, 10)],
+        flashcards: {f1: {n: 10, pupils: {
+          s1: {status: 'in_progress', secured: 6, sittings: 3, made: 8},
+          s2: {status: 'not_started', secured: 0, sittings: 0, made: 0},
+          s3: {status: 'done', secured: 10, sittings: 2, made: 10}}}}
+      };
+      var papers = L.buildPapers(pack, now);
+      var mx = L.buildMatrix(pack, papers, now);
+      var fi = papers.filter(function (x) { return x.id === 'f1'; })[0].idx;
+      var mi = papers.filter(function (x) { return x.id === 'm1'; })[0].idx;
+      var idxs = [mi, fi].sort(function (a, b) { return a - b; });
+      var r1 = mx.byId.s1, r2 = mx.byId.s2, r3 = mx.byId.s3;
+      /* a pack whose deck read failed: no `flashcards` */
+      var pack0 = JSON.parse(JSON.stringify(pack)); delete pack0.flashcards;
+      var mx0 = L.buildMatrix(pack0, L.buildPapers(pack0, now), now);
+      /* B6 — last week's set due Mon 09:00 (7 in), this week's open set (1 in). */
+      var subs6 = [];
+      for (var i = 1; i <= 7; i++) { subs6.push(sub('old', 's' + i, 5, 10)); }
+      subs6.push(sub('new', 's9', 6, 10));
+      var pack6 = {members: mem(17), week: week, flashcardLastActive: {}, flashcards: {},
+        departed_count: 0,
+        assignments: [
+          {id: 'old', title: 'Changes of state', release_at: '2026-09-21T06:00:00+00:00', due_at: '2026-09-28T08:00:00+00:00', kind: 'mcq_set'},
+          {id: 'new', title: 'Density', release_at: '2026-09-28T06:00:00+00:00', due_at: '2026-10-05T08:00:00+00:00', kind: 'mcq_set'}],
+        submissions: subs6};
+      var cls = {id: 'c6', name: '10h/Ph1', year_group: 10, key_stage: 'KS4'};
+      var e6 = L.buildClassEntry(cls, pack6, [], null, now).entry;
+      var pack7 = JSON.parse(JSON.stringify(pack6));
+      pack7.assignments = pack7.assignments.slice(0, 1);
+      pack7.submissions = pack7.submissions.filter(function (x) { return x.assignment_id === 'old'; });
+      var e7 = L.buildClassEntry(cls, pack7, [], null, now).entry;
+      /* nothing open, one set scheduled for Thursday 09:00 London */
+      var pack9 = JSON.parse(JSON.stringify(pack7));
+      pack9.assignments.push({id: 'sch', title: 'Next', release_at: '2026-10-01T08:00:00+00:00',
+                              due_at: '2026-10-08T08:00:00+00:00', kind: 'mcq_set'});
+      var e9 = L.buildClassEntry(cls, pack9, [], null, now).entry;
+      /* the rolled-up path: a partial matrix, names from `roll.currentDone` */
+      var roll = {papers: [{assignment_id: 'new', sub: 1, on_time: 1, late: 0, unknown: 0, marked_n: 1, mean: 60, off_roster: 0},
+                           {assignment_id: 'old', sub: 7, on_time: 7, late: 0, unknown: 0, marked_n: 7, mean: 50, off_roster: 0}],
+                  students: [], metrics: {}, currentDone: {s9: true}};
+      var e8 = L.buildClassEntry(cls, pack6, [], null, now, roll).entry;
+      return {
+        fc1: [r1.fcStatus[fi], r1.fcSecured[fi], r1.fcN[fi], r1.fcSittings[fi]],
+        fcMcq: [r1.fcStatus[mi], r1.fcSecured[mi]],
+        started1: r1.startedInWeek, started2: r2.startedInWeek,
+        sub3: r3.submitted[fi], sub1: r1.submitted[fi],
+        noRead: [mx0.byId.s1.fcStatus[fi], mx0.byId.s1.startedInWeek],
+        ws1: L.weekScoreLines(r1, idxs, papers), ws2: L.weekScoreLines(r2, idxs, papers),
+        ws3: L.weekScoreLines(r3, idxs, papers), wsNone: L.weekScoreLines(r2, [], papers),
+        cur: (L.currentSet(L.buildPapers(pack6, now)) || {}).id,
+        card6: e6.cardWeek, chase6: (e6.cardChase || []).length, week6: e6.week,
+        card7: e7.cardWeek, chase7: e7.cardChase, curId7: e7.currentSetId,
+        card8: e8.cardWeek, chase8: (e8.cardChase || []).length,
+        card9: e9.cardWeek, opens9: e9.cardOpens, opens7: e7.cardOpens
+      };
+    })()
+    """)
+    print("   sharpen probe:", json.dumps(got))
+    check(got["fc1"] == ["in_progress", 6, 10, 3], "B4: a deck's per-pupil progress lands on the matrix row", str(got["fc1"]))
+    check(got["fcMcq"] == [None, None], "B4: an MCQ paper carries no deck progress")
+    check(got["started1"] is True and got["started2"] is False, "B4: a deck in progress counts as started this week")
+    check(got["sub3"] is True and got["sub1"] is False, "B4: a deck is handed in only once complete (no fake row)")
+    check(got["noRead"] == [None, False], "B4: a failed deck read leaves the row exactly as before")
+    # papers newest-first: both released the same moment, so assert as a set of lines
+    check(sorted(got["ws1"]) == sorted(["7/10", "6/10 secured"]), "B5: MCQ 7/10 and deck 6/10 secured", str(got["ws1"]))
+    check(got["ws2"] == ["—", "—"], "B5: a not-started pupil reads a dash per paper", str(got["ws2"]))
+    check(sorted(got["ws3"]) == sorted(["4/10", "10/10 secured"]), "B5: a finished deck reads its secured count, never a percent", str(got["ws3"]))
+    check(got["wsNone"] == ["—"], "B5: no paper in the week reads one dash")
+    check(got["cur"] == "new", "B6: the current set is the newest OPEN paper")
+    check(got["card6"] == [1, 17], "B6: the card counts the current set (1 of 17), not last week's (7)", str(got["card6"]))
+    check(got["chase6"] == 16, "B6: 16 names to chase on the current set", str(got["chase6"]))
+    check(got["week6"][0] == 8, "B6: `week` (the charts' in-week count) is unchanged", str(got["week6"]))
+    check(got["card7"] is None and got["curId7"] is None and got["opens7"] is None,
+          "B6: nothing open and nothing scheduled → no card count (the card says no work open)")
+    check(got["card9"] is None and got["opens9"] == "opens Thu 09:00",
+          "B6: nothing open but a set scheduled → the card says when it opens", str(got["opens9"]))
+    check(got["card8"] == [1, 17] and got["chase8"] == 16, "B6: the rolled-up path reads the same numbers and names",
+          "%s %s" % (got["card8"], got["chase8"]))
+
+
 def static_checks(check):
     """The generated screens carry the kind split (they are regenerated only
     by build_teacher_port.py; this reads what it wrote)."""
@@ -443,6 +654,17 @@ def static_checks(check):
           "student screen: the average is over graded rows only (via kMx.studentAvg, "
           "not a local stGraded filter — see teacher_rulings.py's 27 Sep note)")
     check("flashcards:'flashcards.html'" in cd, "MRB_PAGE names flashcards.html")
+    # ⊕ Sharpen B4-B6 — the rulings as the generated pages ship them.
+    check("bdCan: isDeck ? fcSit > 0 : !!fbSub" in sd, "B4: Breakdown on a deck row from its first sitting")
+    check('"e":"h.bdCan"' in sd.replace(" ", ""), "B4: the Breakdown control is gated on bdCan")
+    check("window.MRBFlashcardBreakdown.open({ assignmentId: p.id," in sd, "B4: a deck row opens the flashcard panel")
+    check("' secured' : '—')" in sd, "B4: a deck row's score is N/M secured")
+    check("stRow.fcStatus[i] === 'in_progress'" in sd, "B4: a deck in progress reads In progress")
+    check('/shared/flashcard-breakdown.js' in sd, "B4: the student screen loads the flashcard panel")
+    check("weekScore: MRB_WEEK_SCORE(kMx.byId[r.id], wIdxs, kPapers)" in cd, "B5: the roster row carries weekScore")
+    check('"data-mrb-cell":"week-score"' in cd.replace(" ", ""), "B5: the class screen draws the score cell")
+    cl = read("teacher/classes.html")
+    check("const cardW = ('cardWeek' in c) ? c.cardWeek : c.week;" in cl, "B6: the card reads the current set")
     tl = read("shared/teacher-live.js")
     check('window.location.replace(flashcardsUrl(fcHit.id))' in tl,
           "marking screen: a flashcard set redirects to its progress page")
@@ -472,7 +694,7 @@ def main():
             p = b.page("about:blank", settle=0.2)
             p.send("Page.addScriptToEvaluateOnNewDocument",
                    {"source": stub(progress(), progress(phase=2),
-                                   {"p-ben": DETAIL_BEN, "*": DETAIL_BEN})})
+                                   {"p-ben": DETAIL_BEN, "p-cat": DETAIL_CAT, "*": DETAIL_NONE})})
             p.set_viewport(1280, 800)
             p.goto(url, settle=0.5)
             ok = wait_for(p, "document.querySelectorAll('#fp-table tbody tr.fp-row').length===6")
@@ -485,8 +707,12 @@ def main():
             head = p.eval("document.getElementById('fp-head').innerText")
             check("Atomic structure" in head and "8r/Sc1" in head, "header: title and class")
             check("Due Sat 3 Oct, 15:00" in head, "header: due in London time", head.replace("\n", " | "))
-            check("Pupils write the answers" in head and "Secure" in head, "header: mode and rule chips")
-            check("Open" in head, "header: Scheduled/Open/Closed chip")
+            # ⊕ Sharpen B1 — the chips under the title are gone.
+            check(not any(x in head for x in ("Pupils write the answers", "Secure", "10 cards")),
+                  "header: no mode / rule / card-count chips (B1)", head.replace("\n", " | "))
+            check(head.count("Atomic structure") == 1, "header: the title once")
+            check(p.eval("document.querySelectorAll('#fp-head .fp-chip, #fp-head .fp-chips').length") == 0,
+                  "header: no chip nodes at all")
             check("Bring your planner" in head, "header: the teacher's note")
             check(p.eval("!!document.getElementById('fp-edit') && !!document.getElementById('fp-csv')"),
                   "header: Edit and Export CSV")
@@ -505,7 +731,7 @@ def main():
             cols = p.eval("Array.prototype.map.call(document.querySelectorAll('#fp-table thead .fp-sort'),"
                           "function(b){return b.getAttribute('data-sort');})")
             check(cols == ["pupil", "status", "made", "secured", "sittings", "time", "percard",
-                           "rushed", "answers", "last"], "make mode: every column, Made and Answers included",
+                           "rushed", "last"], "make mode: every column, Made included, no Answers (B2)",
                   str(cols))
             byid = {x["pupil_id"]: x for x in fx}
             for key in cols:
@@ -527,8 +753,8 @@ def main():
                   "Rushed: a small inline marker", str(r))
             check(p.eval("document.querySelectorAll('tr.fp-row .fp-rushed').length") == 1,
                   "Rushed: only on the rushed pupil")
-            check(p.eval("document.querySelector('tr[data-pupil=\"p-cat\"] .fp-ans-pending').textContent") == "…2",
-                  "Answers: pending shown as …")
+            hdrs = p.eval("Array.prototype.map.call(document.querySelectorAll('#fp-table thead th'),function(t){return t.textContent.trim();})")
+            check(not any(h_.lower().startswith("answers") for h_ in hdrs), "B2: no Answers header in make mode", str(hdrs))
             check(p.eval("document.querySelector('tr[data-pupil=\"p-ben\"] .fp-sec').getAttribute('data-known')") == "7",
                   "Secured: known-once carried for the secure rule")
 
@@ -544,62 +770,125 @@ def main():
                   "progress rpc: p_assignment and an ISO p_now")
 
 
-            # ── the drawer ─────────────────────────────────────────────────
+            # ── the per-pupil panel (Sharpen B3) ───────────────────────────
             p.eval("document.querySelector('.fp-sort[data-sort=\"pupil\"]').click(); true")
+            table_order = p.eval(ORDER)
             p.eval("document.querySelector('tr[data-pupil=\"p-ben\"]').click(); true")
-            ok = wait_for(p, "document.querySelectorAll('#fp-drawer-body .fp-card').length===3")
-            check(ok, "drawer: opens on a row with every card")
-            d = p.eval(r"""(function(){
-              var c=document.querySelector('#fp-drawer-body .fp-card[data-card="c2"]');
-              var pair=c.querySelector('.fp-pair');
-              return {name:document.getElementById('fp-drawer-name').textContent,
-                mine:pair.querySelector('.fp-mine .fp-side-text').textContent,
-                model:pair.querySelector('.fp-model .fp-side-text').textContent,
-                side: (function(){var a=pair.querySelector('.fp-mine').getBoundingClientRect(),
-                        b=pair.querySelector('.fp-model').getBoundingClientRect();
-                        return Math.abs(a.top-b.top)<2 && b.left>a.left;})(),
-                check:c.querySelector('.fp-check').getAttribute('data-check'),
-                rates:Array.prototype.map.call(c.querySelectorAll('.fp-rate'),function(r){
-                  return r.getAttribute('data-rating')+'/'+r.getAttribute('data-phase');}),
-                rateRow:Array.prototype.map.call(c.querySelectorAll('.fp-rates > *'),function(r){
-                  return r.classList.contains('fp-phase') ? '['+r.textContent+']'
-                    : r.getAttribute('data-rating');}),
-                makeTip:(c.querySelector('.fp-rate[data-phase="make"]')||{}).title||'',
-                prefix:Array.prototype.some.call(c.querySelectorAll('.fp-rate'),function(r){
-                  var b=getComputedStyle(r,'::before').content;
-                  return b && b!=='none' && b!=='normal';}),
-                sub:!!document.querySelector('#fp-drawer-body .fp-card[data-card="c1"] .fp-model sub'),
-                secured:!!document.querySelector('#fp-drawer-body .fp-card[data-card="c1"] .fp-secured'),
-                sessions:document.querySelectorAll('#fp-drawer-body .fp-session').length,
-                sesRushed:document.querySelectorAll('#fp-drawer-body .fp-session .fp-rushed').length,
-                pending:document.querySelector('#fp-drawer-body .fp-card[data-card="c3"] .fp-check').textContent,
-                right:(function(){var r=document.querySelector('.fp-drawer').getBoundingClientRect();
-                        return r.right>=window.innerWidth-1 && r.width<window.innerWidth;})()};
-            })()""")
-            check(d["name"] == "Ben Brown", "drawer: pupil name")
-            check(d["mine"] == "electron" and d["model"] == "Neutron" and d["side"],
-                  "drawer: pupil answer BESIDE the model answer", str(d))
-            check(d["check"] == "no", "drawer: answer-check chip")
-            check(d["rates"] == ["not_yet/make", "not_yet/review", "nearly/review"],
-                  "drawer: rating history in order, make phase marked", str(d["rates"]))
-            # ⊕ phone-teacher run — the phase is said in plain words before
-            # its chips, never as an "M · " prefix, and the tooltip keeps
-            # the phase and the time.
-            check(d["rateRow"] == ["[while writing]", "not_yet", "[in review]", "not_yet", "nearly"],
-                  "drawer: ratings grouped under 'while writing' / 'in review'", str(d["rateRow"]))
-            check(not d["prefix"], "drawer: no CSS prefix on a rating chip")
-            check(d["makeTip"].startswith("Not yet · while writing · "),
-                  "drawer: a make rating's tooltip names the phase and the time", d["makeTip"])
-            check(d["sub"], "drawer: formulae render with <sub>")
-            check(d["secured"], "drawer: secured tick")
-            check(d["sessions"] == 2 and d["sesRushed"] == 1, "drawer: sittings timeline with rushed marker")
-            check(d["pending"] == "Checking", "drawer: pending answer check")
-            check(d["right"], "drawer: a right-hand panel on desktop")
-            p.screenshot(os.path.join(args.shots, "fp-drawer-desktop.png"), width=1280, height=800, full_page=False)
+            ok = wait_for(p, "document.querySelectorAll('[data-fb=\"overlay\"] .fb-card').length===3")
+            check(ok, "panel: opens on a row with every card")
+            d = p.eval(PANEL_JS)
+            check(d["shell"], "panel: the centred breakdown shell ([data-fb=overlay] .bd-sheet, fixed on <body>)", str(d["shellInfo"]))
+            check(d["title"] == "Ben Brown" and d["eyebrow"] == "Atomic structure", "panel: eyebrow = set title, title = pupil",
+                  "%s / %s" % (d["eyebrow"], d["title"]))
+            check(d["subtitle"] == "" and not d["subVisible"], "panel: subtitle empty and hidden (C2 rule)")
+            check(not re.search(r"Pupil \d+ of \d+", d["text"]), "panel: no 'Pupil N of M'")
+            check(d["chip"] == "In progress", "panel: one status chip in the title row", d["chip"])
+            check(d["tiles"] == ["SECURED", "TIME", "HANDED IN"], "panel: three tiles", str(d["tiles"]))
+            check(d["tileVals"][0] == "5 / 10" and d["tileSubs"][0] == "made 10 / 10",
+                  "panel: SECURED 5 / 10, made 10 / 10 (make mode)", str(d["tileVals"]) + str(d["tileSubs"]))
+            check(d["tileVals"][1] == "5:00" and d["tileSubs"][1] == "2 sittings",
+                  "panel: TIME is summed active time, with the sittings count", str(d["tileVals"]) + str(d["tileSubs"]))
+            check(d["tileVals"][2] == "Not yet", "panel: HANDED IN Not yet for an unfinished pupil")
+            check(d["verdicts"] == "5 right · 2 nearly · 2 wrong · 1 blank",
+                  "panel: B2's verdict words under the tiles", d["verdicts"])
+            check(d["filter"] == ["All 3", "Not secured 2"], "panel: All / Not secured filter", str(d["filter"]))
+            cards = {c["id"]: c for c in d["cards"]}
+            check(all(c["states"] == 1 for c in d["cards"]), "panel: exactly one state chip per card",
+                  str([c["states"] for c in d["cards"]]))
+            check(cards["c1"]["state"] == "Secured" and cards["c2"]["state"] == "Nearly"
+                  and cards["c3"]["state"] == "Not seen", "panel: card state = Secured / latest rating / Not seen",
+                  str([c["state"] for c in d["cards"]]))
+            check(cards["c2"]["answer"] == "a neutron" and cards["c2"]["verdict"] == "Right",
+                  "panel: latest written answer comes from a review rating when it carries one (MRB-352 key)",
+                  str(cards["c2"]))
+            check(cards["c1"]["answer"] == "CO2 gas" and cards["c1"]["verdict"] == "Right",
+                  "panel: else the make-pass answer and its verdict", str(cards["c1"]))
+            check(cards["c3"]["verdict"] == "Checking", "panel: a pending check reads Checking")
+            check(cards["c2"]["model"] == "Neutron" and cards["c2"]["modelLabel"] == "MODEL ANSWER",
+                  "panel: the model answer, one label", str(cards["c2"]))
+            check(cards["c1"]["tries"] == "Tries: 4" and cards["c2"]["tries"] == "Tries: 3",
+                  "panel: Tries = shown when present, else rated passes (degrade)",
+                  "%s / %s" % (cards["c1"]["tries"], cards["c2"]["tries"]))
+            check(all(not c["histOpen"] for c in d["cards"] if c["hasHist"]) and cards["c2"]["hasHist"],
+                  "panel: History is closed by default")
+            check("while writing" not in d["text"] and "in review" not in d["text"],
+                  "panel: no phase words visible while History is closed")
+            check(not any(c["theirLabel"] for c in d["cards"]), "panel: no 'Their answer' caption beside a verdict chip")
+            check(d["sub"], "panel: formulae render with <sub>")
+            check(d["sittings"] == "History" and not d["sitOpen"],
+                  "panel: one History disclosure (the sittings) under the cards, closed", d["sittings"])
+            check(d["centred"], "panel: centred on desktop, not a right-hand drawer", str(d["rect"]))
+            check(d["docOverflow"] == "hidden", "panel: the page behind does not scroll while open")
+            p.eval("document.querySelector('[data-fb=\"overlay\"] .fb-card[data-card=\"c2\"] details.fb-history').open = true; true")
+            rr = p.eval(r"""Array.prototype.map.call(document.querySelectorAll('[data-fb="overlay"] .fb-card[data-card="c2"] .fb-rates > *'),function(r){
+                  return r.classList.contains('fb-phase') ? '['+r.textContent+']' : r.getAttribute('data-rating');})""")
+            check(rr == ["[while writing]", "not_yet", "[in review]", "not_yet", "nearly"],
+                  "panel: History holds the rating chips grouped by phase", str(rr))
+            tip = p.eval("(document.querySelector('[data-fb=\"overlay\"] .fb-card[data-card=\"c2\"] .fb-rate[data-phase=\"make\"]')||{}).title||''")
+            check(tip.startswith("Not yet · while writing · "), "panel: a rating's tooltip names the phase and the time", tip)
+            p.eval("document.querySelector('[data-fb=\"overlay\"] .fb-sittings').open = true; true")
+            check(p.eval("document.querySelectorAll('[data-fb=\"overlay\"] .fb-session').length") == 2 and
+                  p.eval("document.querySelectorAll('[data-fb=\"overlay\"] .fb-session .fb-rushed').length") == 1,
+                  "panel: the sittings timeline with a rushed marker")
+            # the filter
+            p.eval("document.querySelector('[data-fb=\"filter-open\"]').click(); true")
+            check(p.eval("document.querySelectorAll('[data-fb=\"overlay\"] .fb-card').length") == 2,
+                  "panel: Not secured hides the secured card")
+            p.eval("document.querySelector('[data-fb=\"filter-all\"]').click(); true")
+            p.screenshot(os.path.join(args.shots, "fb-panel-desktop.png"), width=1280, height=800, full_page=False)
+            # prev / next walk the table's order
+            names = []
+            nxt = "document.querySelector('[data-fb=\"next\"]')"
+            prv = "document.querySelector('[data-fb=\"prev\"]')"
+            check(p.eval(prv + ".querySelector('.bd-nav-word').textContent") == "Ann Able" and
+                  p.eval(nxt + ".querySelector('.bd-nav-word').textContent") == "Cat Cole",
+                  "panel: prev / next carry the neighbours' names")
+            p.eval(nxt + ".click(); true")
+            wait_for(p, "document.querySelector('[data-fb=\"overlay\"]').getAttribute('data-fb-student')==='p-cat' && !!document.querySelector('[data-fb=\"overlay\"] .fb-card')")
+            dc = p.eval(PANEL_JS)
+            check(dc["title"] == "Cat Cole", "panel: next goes to the next row in table order")
+            check(dc["verdicts"] == "2 right · 1 nearly · 1 wrong · 2 checking",
+                  "panel: Cat's verdict words (pending reads checking)", dc["verdicts"])
+            cc = {c["id"]: c for c in dc["cards"]}
+            check(cc["c1"]["answer"] == "C O 2" and cc["c1"]["verdict"] == "Nearly" and cc["c1"]["tries"] == "Tries: 2",
+                  "panel degrade (old function): make answer, Nearly, Tries = rated passes", str(cc["c1"]))
+            check(cc["c2"]["answer"] == "No written answer" and cc["c2"]["none"] and cc["c2"]["tries"] == "Tries: 0",
+                  "panel degrade: no written answer reads 'No written answer'", str(cc["c2"]))
+            check(dc["tileSubs"][1] == "1 sitting · rushed", "panel: a rushed pupil's time line says so", dc["tileSubs"][1])
+            check(cc["c3"]["answer"] == "" and cc["c3"]["verdict"] == "Blank" and cc["c3"]["tries"] == "Tries: 1",
+                  "panel: a blank make answer keeps its Blank verdict, and Tries is never 0 beside an answer",
+                  str(cc["c3"]))
+            walked = [p.eval("document.querySelector('[data-fb=\"overlay\"]').getAttribute('data-fb-student')")]
+            for _ in range(8):
+                if p.eval(nxt + ".disabled"):
+                    break
+                p.eval(nxt + ".click(); true"); time.sleep(0.05)
+                walked.append(p.eval("document.querySelector('[data-fb=\"overlay\"]').getAttribute('data-fb-student')"))
+            check(walked == table_order[2:] and p.eval(nxt + ".disabled"),
+                  "panel: next walks the table order and disables at the end", "%s vs %s" % (walked, table_order))
+            for _ in range(8):
+                if p.eval(prv + ".disabled"):
+                    break
+                p.eval(prv + ".click(); true"); time.sleep(0.05)
+            check(p.eval("document.querySelector('[data-fb=\"overlay\"]').getAttribute('data-fb-student')") == table_order[0]
+                  and p.eval(prv + ".disabled"), "panel: prev disables at the first row")
+            wait_for(p, "!!document.querySelector('[data-fb=\"overlay\"] .fb-card')")
+            check("hasn't started" not in p.eval("document.querySelector('[data-fb=\"overlay\"] .bd-body').innerText"),
+                  "panel: Ann (done) is not described as not started")
+            # the poll must not repaint an open panel
+            opens = p.eval("document.querySelector('[data-fb=\"overlay\"]').getAttribute('data-fb-opens')")
+            p.eval("window.__fb_mark = document.querySelector('[data-fb=\"overlay\"] .bd-title'); true")
+            p.eval("window.MRBFlashcardProgress.refresh(); true")
+            time.sleep(0.6)
+            check(p.eval("window.__fb_mark === document.querySelector('[data-fb=\"overlay\"] .bd-title') && "
+                         "document.querySelector('[data-fb=\"overlay\"]').getAttribute('data-fb-opens')==='%s' && "
+                         "!document.querySelector('[data-fb=\"overlay\"]').hidden" % opens),
+                  "panel: a poll does not repaint or close the open panel")
             copy_drawer = p.eval(COPY_JS)
             a11y_drawer = p.eval(A11Y_JS)
-            p.eval("document.getElementById('fp-drawer-close').click(); true")
-            check(p.eval("document.getElementById('fp-drawer-back').hidden"), "drawer: closes")
+            p.eval("document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true})); true")
+            check(p.eval("document.querySelector('[data-fb=\"overlay\"]').hidden"), "panel: Escape closes it")
+            check(p.eval("document.documentElement.style.overflow") in ("", "visible"), "panel: page scroll restored on close")
 
             # ── CSV ────────────────────────────────────────────────────────
             p.eval("document.querySelector('.fp-sort[data-sort=\"pupil\"]').click(); true")  # pupil desc
@@ -609,7 +898,7 @@ def main():
             check(bool(csv) and csv["text"].startswith("﻿"), "CSV: UTF-8 BOM")
             check(bool(csv) and csv["name"] == "8r-Sc1-Atomic-structure.csv", "CSV: filename from class + title",
                   csv and csv["name"])
-            check(lines and lines[0] == "Pupil,Status,Made,Secured,Known once,Sittings,Time,Per card,Rushed,Answers,Last active",
+            check(lines and lines[0] == "Pupil,Status,Made,Secured,Known once,Sittings,Time,Per card,Rushed,Last active",
                   "CSV: the displayed columns", lines and lines[0])
             check(len(lines) == 7, "CSV: one row per pupil")
             disp = p.eval("Array.prototype.map.call(document.querySelectorAll('#fp-table tbody tr.fp-row .fp-name'),"
@@ -617,7 +906,7 @@ def main():
             check([l.split(",")[0] for l in lines[1:]] == disp, "CSV: in the order displayed", str(disp))
             cat = [l for l in lines if l.startswith("Cat Cole")]
             check(bool(cat) and cat[0].startswith("Cat Cole,In progress,6/10,2/10,3/10,1,2:05,0.9,Yes,")
-                  and "2 pending" in cat[0] and re.search(r",20\d\d-(0[1-9]|1[0-2])-\d\d \d\d:\d\d$", cat[0]),
+                  and "pending" not in cat[0] and re.search(r",20\d\d-(0[1-9]|1[0-2])-\d\d \d\d:\d\d$", cat[0]),
                   "CSV: a row's values", cat and cat[0])
 
             # ── polling flips a row to Done without a reload ───────────────
@@ -678,20 +967,26 @@ def main():
                     check(left, "390px: pupil column stays put while the table scrolls")
                     p.eval("document.getElementById('fp-scroll').scrollLeft = 0; true")
                     p.eval("document.querySelector('tr[data-pupil=\"p-ben\"]').click(); true")
-                    wait_for(p, "document.querySelectorAll('#fp-drawer-body .fp-card').length===3")
-                    full = p.eval("(function(){var r=document.querySelector('.fp-drawer').getBoundingClientRect();"
+                    wait_for(p, "document.querySelectorAll('[data-fb=\"overlay\"] .fb-card').length===3")
+                    full = p.eval("(function(){var r=document.querySelector('[data-fb=\"overlay\"] .bd-sheet').getBoundingClientRect();"
                                   "return r.left<=1 && r.width>=window.innerWidth-1;})()")
-                    check(full, "390px: the drawer is a full-screen sheet")
-                    ov = p.eval("document.documentElement.scrollWidth - document.documentElement.clientWidth")
-                    check(ov <= 1, "390px: no horizontal scroll with the drawer open")
-                    p.screenshot(os.path.join(args.shots, "fp-drawer-390.png"), width=390, height=844, full_page=False)
-                    p.eval("document.getElementById('fp-drawer-close').click(); true")
+                    check(full, "390px: the panel is a full-screen sheet")
+                    ov = p.eval("(function(){var s=document.querySelector('[data-fb=\"overlay\"] .bd-sheet');"
+                                "return Math.max(document.documentElement.scrollWidth - document.documentElement.clientWidth,"
+                                " s.scrollWidth - s.clientWidth);})()")
+                    check(ov <= 1, "390px: no sideways scroll with the panel open", str(ov))
+                    tap = p.eval("(function(){return Array.prototype.map.call(document.querySelectorAll("
+                                 "'[data-fb=\"overlay\"] .bd-close, [data-fb=\"overlay\"] .bd-nav-btn'),"
+                                 "function(b){return Math.round(b.getBoundingClientRect().height);});})()")
+                    check(all(x >= 44 for x in tap), "390px: close / prev / next are 44px targets", str(tap))
+                    p.screenshot(os.path.join(args.shots, "fb-panel-390.png"), width=390, height=844, full_page=False)
+                    p.eval("document.querySelector('[data-fb=\"close\"]').click(); true")
 
             # ── review mode ───────────────────────────────────────────────
             p2 = b.page("about:blank", settle=0.2)
             rv = progress(mode="review", rule="quick")
             p2.send("Page.addScriptToEvaluateOnNewDocument",
-                    {"source": stub(rv, rv, {"*": DETAIL_BEN})})
+                    {"source": stub(rv, rv, {"p-ben": DETAIL_REVIEW, "*": DETAIL_NONE})})
             p2.set_viewport(1280, 800)
             p2.goto(url, settle=0.5)
             wait_for(p2, "document.querySelectorAll('#fp-table tbody tr.fp-row').length===6")
@@ -700,15 +995,26 @@ def main():
             check("made" not in cols2 and "answers" not in cols2 and len(cols2) == 8,
                   "review mode: no Made, no Answers", str(cols2))
             h2 = p2.eval("document.getElementById('fp-head').innerText")
-            check("Ready-made cards" in h2 and "Quick" in h2, "review mode: mode and rule chips")
+            check(not any(x in h2 for x in ("Ready-made cards", "Quick", "10 cards")), "review mode: no chips (B1)")
+            hdr2 = p2.eval("Array.prototype.map.call(document.querySelectorAll('#fp-table thead th'),function(t){return t.textContent.trim();})")
+            check(not any(h_.lower().startswith("answers") for h_ in hdr2), "B2: no Answers header in review mode")
             check(p2.eval("document.querySelector('tr[data-pupil=\"p-ben\"] .fp-sec').getAttribute('data-known')") is None,
                   "review/quick: no known-once layer")
             p2.eval("document.querySelector('tr[data-pupil=\"p-ben\"]').click(); true")
-            wait_for(p2, "document.querySelectorAll('#fp-drawer-body .fp-card').length===3")
-            check(p2.eval("document.querySelectorAll('#fp-drawer-body .fp-mine').length") == 0 and
-                  p2.eval("document.querySelectorAll('#fp-drawer-body .fp-model').length") == 3,
-                  "review mode drawer: the answer only, no pupil answer")
-            p2.eval("document.getElementById('fp-drawer-close').click(); true")
+            wait_for(p2, "document.querySelectorAll('[data-fb=\"overlay\"] .fb-card').length===3")
+            r2 = p2.eval(PANEL_JS)
+            check(r2["verdicts"] == "" and r2["tileSubs"][0] is None,
+                  "review mode panel: no verdict line, no 'made' line", str(r2["tileSubs"]))
+            check(len([c for c in r2["cards"] if c["model"]]) == 3, "review mode panel: every card has its model answer")
+            rc = {c["id"]: c for c in r2["cards"]}
+            check(rc["c1"]["hasAns"] is False and rc["c2"]["hasAns"] is False,
+                  "review mode, old function: a RATED card with no answer in the payload draws no answer box "
+                  "(never a false 'No written answer')", str([rc["c1"], rc["c2"]]))
+            check(rc["c3"]["answer"] == "No written answer",
+                  "review mode: only the untouched card says 'No written answer'", str(rc["c3"]))
+            check(rc["c1"]["tries"] == "Tries: 2" and rc["c2"]["tries"] == "Tries: 1",
+                  "review mode, old function: Tries = rated passes")
+            p2.eval("document.querySelector('[data-fb=\"close\"]').click(); true")
             p2.eval("document.getElementById('fp-csv').click(); true")
             csv2 = p2.eval("window.__MRB_FP_LAST_CSV__")
             check(csv2["text"].lstrip("﻿").split("\r\n")[0] ==
@@ -728,6 +1034,7 @@ def main():
 
             # ── cellOf ────────────────────────────────────────────────────
             cellof_check(b, base, check)
+            sharpen_matrix_check(b, base, check)
     finally:
         server.shutdown()
 

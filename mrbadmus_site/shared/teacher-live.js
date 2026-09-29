@@ -1241,11 +1241,35 @@
           if (late[p] === false) { onTimeWeek = true; }
         }
       }
+      /* ⊕ Sharpen B4, 29 Sep 2026 — A DECK'S PROGRESS, PER PUPIL.
+         A deck writes no submission until it is complete, so the cell
+         arrays above say nothing about a pupil mid-way through one.
+         `pack.flashcards` (teacher-data.js, focused class only) carries
+         `flashcard_progress` per deck; these four arrays sit beside the
+         cell arrays, `null` on every MCQ paper and on a deck whose read
+         failed or was never made (so that deck reads exactly as before).
+         A deck in progress on an in-week paper counts as started this
+         week, the same fact an in-progress MCQ row gives. */
+      var fcStatus = blank(), fcSecured = blank(), fcN = blank(), fcSittings = blank();
+      papers.forEach(function (pp, pi) {
+        if (pp.kind !== "flashcards") { return; }
+        var deck = pack.flashcards && pack.flashcards[pp.id];
+        var me = deck && deck.pupils && deck.pupils[sid];
+        if (!me) { return; }
+        fcStatus[pi] = me.status || null;
+        fcSecured[pi] = me.secured || 0;
+        fcN[pi] = deck.n || 0;
+        fcSittings[pi] = me.sittings || 0;
+        if (me.status === "in_progress" && inWeekPaper[pi] && !submitted[pi]) {
+          startedInWeek = true;
+        }
+      });
       return {
         sid: sid, scores: scores, max: max, pct: pct, late: late,
         stamp: stamp, stampShort: stampShort, status: status, activity: activity,
         subId: subId, inWeek: inWeek, onTimeWeek: onTimeWeek,
-        startedInWeek: startedInWeek, submitted: submitted
+        startedInWeek: startedInWeek, submitted: submitted,
+        fcStatus: fcStatus, fcSecured: fcSecured, fcN: fcN, fcSittings: fcSittings
       };
     });
 
@@ -1372,6 +1396,29 @@
       p.lateUnknown = mx.colLateUnknown[p.idx];
     });
     return papers;
+  }
+
+  /* ⊕ Sharpen B5, 29 Sep 2026 — THE CLASS SCREEN'S "THIS WEEK SCORE" CELL.
+     One line per paper of the week in view (`idxs`, newest first, at most
+     two): an MCQ reads `7/10`, a deck `6/10 secured` once the pupil has sat
+     it, and anything with nothing in reads `—`. The week in view is the
+     one the THIS WEEK chip beside it tallies, so the two cells always talk
+     about the same papers. Never a percent (AVERAGE, next door, is one).
+     The port's prelude `MRB_WEEK_SCORE` delegates here. */
+  function weekScoreLines(row, idxs, papers) {
+    var out = [];
+    (idxs || []).slice(0, 2).forEach(function (i) {
+      var p = papers && papers[i];
+      if (p && p.kind === "flashcards") {
+        var sit = row && row.fcSittings ? row.fcSittings[i] : null;
+        out.push(sit > 0 ? row.fcSecured[i] + "/" + row.fcN[i] + " secured" : "—");
+      } else {
+        var sc = row && row.scores ? row.scores[i] : null;
+        var mx = row && row.max ? row.max[i] : null;
+        out.push(sc != null && mx != null ? sc + "/" + mx : "—");
+      }
+    });
+    return out.length ? out : ["—"];
   }
 
   function buildRoster(pack, mx, now) {
@@ -2374,6 +2421,32 @@
      fetched OUTSIDE that loop — an admin viewing a class they do not teach,
      see `mergeForeignClass` below — is built exactly the same way, rather
      than a second, drifting copy of this shape. */
+  /* ⊕ Sharpen B6, 29 Sep 2026 — THE CURRENT SET, DEFINED ONCE: the newest
+     paper that is released and not yet due (papers are newest-first, so the
+     first `open` one). The My classes card counts THIS set, not "anything
+     in-week" — a paper due Monday 09:00 is in-week all week by due date, so
+     the card used to count last week's set as this week's. */
+  /* "opens Mon 09:00" within the coming week, "opens Mon 12 Oct" beyond it
+     — London time. */
+  var OPEN_DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  var OPEN_MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  function opensLabel(iso, now) {
+    var d = asDate(iso);
+    var p = d ? londonPartsOf(d) : null;
+    if (!p) { return "opens soon"; }
+    var soon = d.getTime() - (now || Date.now()) < 6.5 * 86400000;
+    return "opens " + OPEN_DOW[p.dow] + " " + (soon
+      ? ((p.H < 10 ? "0" : "") + p.H + ":" + (p.M < 10 ? "0" : "") + p.M)
+      : (p.d + " " + OPEN_MON[p.m - 1]));
+  }
+
+  function currentSet(papers) {
+    for (var i = 0; i < (papers || []).length; i++) {
+      if (papers[i].state === "open") { return papers[i]; }
+    }
+    return null;
+  }
+
   function buildClassEntry(c, pack, yearWeeks, viewing, now, roll) {
     var papers = buildPapers(pack, now);
     assignPaperWeeks(papers, yearWeeks, viewing, now);
@@ -2403,6 +2476,44 @@
       if (r.lastIso && (lastIso == null || r.lastIso > lastIso)) { lastIso = r.lastIso; }
     });
 
+    /* ⊕ Sharpen B6 — the card's homework line: the CURRENT set's submitted
+       out of asked, the same two numbers the Assignments table's SUBMITTED
+       cell and the class page's own homework card show for that set, so the
+       three always agree. The names to chase are the roster pupils with no
+       complete cell on it: from the cells when this class has them, from
+       `roll.currentDone` (one extra read in `base()`) when it was rolled up,
+       and omitted (count only) when neither is available.
+       ⚠️ `week` below is NOT changed: it still means "in on any in-week
+       paper" and five other readers (the charts, the class report's tiles,
+       the card sort, the digest row) are ruled on it. */
+    var cur = currentSet(papers);
+    var cardWeek = cur ? [mx.colSub[cur.idx] || 0, mx.colAsked[cur.idx] || 0] : null;
+    /* ⊕ Fable review — nothing open but a set SCHEDULED: the card says when
+       it opens ("opens Mon 09:00"), not "no work open" beside a Set work
+       button that would invite a duplicate. The earliest release wins. */
+    var cardOpens = null;
+    if (!cur) {
+      var soonest = null;
+      papers.forEach(function (p) {
+        if (p.state === "scheduled" && p.release_at && (!soonest || p.release_at < soonest)) {
+          soonest = p.release_at;
+        }
+      });
+      if (soonest) { cardOpens = opensLabel(soonest, now); }
+    }
+    var cardChase = null;
+    if (cur) {
+      if (!mx.partial) {
+        cardChase = roster.filter(function (r) {
+          var row = mx.byId[r.id];
+          return !(row && row.submitted[cur.idx]);
+        }).map(function (r) { return r.name; });
+      } else if (roll && roll.currentDone) {
+        cardChase = roster.filter(function (r) { return !roll.currentDone[r.id]; })
+          .map(function (r) { return r.name; });
+      }
+    }
+
     var entry = {
       id: c.id,
       code: c.name,
@@ -2413,6 +2524,10 @@
       subject: subjectFromCode(c.name, c.key_stage),
       n: pack.members.length,
       week: [inWeekN, pack.members.length],
+      cardWeek: cardWeek,
+      cardChase: cardChase,
+      cardOpens: cardOpens,
+      currentSetId: cur ? cur.id : null,
       last: lastIso ? relativeTime(lastIso, now) : "No activity yet",
       lastIso: lastIso,
       state: state,
@@ -2511,7 +2626,10 @@
      its teacher-facing twin already had. Nothing in JavaScript gates them:
      the page offers the controls and the database decides. */
   async function mergeForeignClass(c, classId) {
-    var packs2 = await window.MrBadmusTeacherData.loadClassMatrices([classId]);
+    // ⊕ Sharpen B4 — a foreign class is always the FOCUSED class, so it
+    // carries per-pupil deck progress like the viewer's own does.
+    var packs2 = await window.MrBadmusTeacherData.loadClassMatrices([classId],
+      { flashcardProgress: true });
     var pack = packs2 && packs2[classId];
     if (!pack || !pack.class) { return false; }
     var yearWeeks = buildWeeks(c.viewing, c.now);
@@ -2584,7 +2702,11 @@
        `null` on an unrecognised caller, which is every caller's behaviour
        before this ticket. See `submissionScope()`. */
     var subsFor = submissionScope();
-    var matrixOpts = { submissionsFor: subsFor };
+    /* ⊕ Sharpen B4 — per-pupil deck progress for the focused class, and
+       only when this screen draws cells for one (`subsFor` is a non-empty
+       list only on the class / marking / student screens). */
+    var matrixOpts = { submissionsFor: subsFor,
+                       flashcardProgress: Array.isArray(subsFor) && subsFor.length > 0 };
 
     var classRows, classIds, packs;
     if (classScope) {
@@ -2722,6 +2844,31 @@
           } catch (e) { /* a console that refuses is not a reason to fail */ }
           var full = await TD.loadClassMatrices(absent, { submissionsFor: absent });
           absent.forEach(function (id) { if (full[id]) { packs[id] = full[id]; } });
+        }
+      }
+    }
+
+    /* ⊕ Sharpen B6 — the chase NAMES for a rolled-up class's card: ONE read
+       of who has completed each class's current set (`currentSet`), for
+       every rolled-up class at once. Any failure → no names, count only. */
+    var rolledIds = Object.keys(rollups);
+    if (rolledIds.length && TD.loadCompleteFor) {
+      var curByClass = {};
+      rolledIds.forEach(function (id) {
+        var cur = currentSet(buildPapers(packs[id], now));
+        if (cur) { curByClass[id] = cur.id; }
+      });
+      var curIds = Object.keys(curByClass).map(function (id) { return curByClass[id]; });
+      if (curIds.length) {
+        try {
+          var done = await TD.loadCompleteFor(curIds);
+          if (done) {
+            Object.keys(curByClass).forEach(function (id) {
+              rollups[id].currentDone = done[curByClass[id]] || {};
+            });
+          }
+        } catch (e) {
+          console.warn("[teacher-live] current-set read unavailable; names omitted", e);
         }
       }
     }
@@ -4065,6 +4212,9 @@
   }
 
   window.MrBadmusTeacherLive = {
+    weekScoreLines: weekScoreLines,
+    currentSet: currentSet,
+    buildClassEntry: buildClassEntry,
     load: load,
     grid: grid,
     grids: grids,
