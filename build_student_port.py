@@ -230,6 +230,9 @@ STAMPED_DEPS = ("config.js", "class-entry.js", "student-guard.js",
                 "formulae.js", "flashcard-homework.js",
                 # ⊕ PUPIL FLOW — the answer box above the phone keyboard.
                 "flashcard-keyboard.js",
+                # ⊕ MRB-352 Stage D2 — the flashcard library and its sheet
+                # (the library injects the stylesheet itself, stamped).
+                "flashcard-library.js", "flashcard-library.css",
                 # ⊕ Stage B — the one pupil top bar's stylesheet and script
                 # (the assignment bar's avatar; see page_html).
                 "topbar.css", "topbar.js")

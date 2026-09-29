@@ -956,9 +956,388 @@ def run_lift(width, height, mobile, shots):
         server.shutdown()
 
 
+# ══ MRB-352 Stage D2 — "Your flashcards" (the library), on the fixture ═════
+#
+# The REAL `shared/flashcard-library.js` + `.css` on the compiled class page,
+# with an in-page stand-in for the pupil's Supabase client (R3–R7 and the
+# names table). `names_missing` makes the names table answer 42P01, which is
+# production today: the degrade mode is proved here, never by DDL.
+LIB_FAKE = r"""
+(function () {
+  var AID = "__AID__";
+  var F = window.__LIB_FAKE__ = {namesMissing: false, names: {}, writes: [], failSets: false};
+  var cards = [
+    {id: "c0000000-0000-4000-8000-000000000001", position: 0, question: "What is the unit of force?", answer: "The newton (N)"},
+    {id: "c0000000-0000-4000-8000-000000000002", position: 1, question: "What is the formula of water?", answer: "H2O"},
+    {id: "c0000000-0000-4000-8000-000000000003", position: 2, question: "What is weight?", answer: "The force acting on an object due to gravity"},
+    {id: "c0000000-0000-4000-8000-000000000004", position: 3, question: "Write the equation for the force on a spring.", answer: "Force = spring constant × extension (F = ke)"},
+    {id: "c0000000-0000-4000-8000-000000000005", position: 4, question: "Is velocity a scalar or a vector?", answer: "A vector"}
+  ];
+  F.cards = cards;
+  function answer(t, op, body, filters) {
+    if (t === "assignments") {
+      if (F.failSets) return {data: null, error: {code: "500", message: "down"}};
+      return {data: [{id: AID, title: "Forces flashcards", class_id: "k1", subject_id: "s1",
+        created_at: "2026-09-21T08:00:00Z", release_at: null, subject: {name: "Physics"}, "class": {name: "10h/Ph1"}}], error: null};
+    }
+    if (t === "flashcard_set_names") {
+      if (F.namesMissing) return {data: null, error: {code: "42P01", message: "relation does not exist"}};
+      if (op === "select") return {data: Object.keys(F.names).map(function (k) { return {assignment_id: k, name: F.names[k]}; }), error: null};
+      F.writes.push({op: op, body: body});
+      if (op === "upsert") { F.names[body.assignment_id] = body.name; }
+      if (op === "delete") { delete F.names[filters.assignment_id]; }
+      return {data: null, error: null};
+    }
+    if (t === "assignment_flashcards") return {data: cards.slice(), error: null};
+    if (t === "flashcard_pupil_cards") return {data: [{card_id: cards[0].id, pupil_answer: "newton"}], error: null};
+    if (t === "flashcard_reviews") return {data: [{card_id: cards[1].id, answer: "h2o", rated_at: "2026-09-22T10:00:00Z"}], error: null};
+    return {data: [], error: null};
+  }
+  F.reads = [];
+  F.sb = {from: function (t) {
+    var op = "select", body = null, filters = {}, sel = null;
+    var b = {
+      select: function (x) { sel = x; return b; },
+      upsert: function (x) { op = "upsert"; body = x; return b; },
+      delete: function () { op = "delete"; return b; },
+      eq: function (k, v) { filters[k] = v; return b; },
+      "in": function () { return b; }, is: function () { return b; }, not: function () { return b; },
+      order: function () { return b; }, range: function () { return b; },
+      then: function (ok, bad) {
+        F.reads.push({t: t, op: op, sel: sel});
+        var r = answer(t, op, body, filters);
+        return new Promise(function (res) { setTimeout(function () { res(r); }, 5); }).then(ok, bad);
+      }
+    };
+    return b;
+  }};
+})();
+""".replace("__AID__", AID)
+
+LIB_STATE = r"""
+(function () {
+  var $ = function (s) { return document.querySelector(s); };
+  var root = $('[data-mrb-library]');
+  var vis = function (e) { return !!e && !e.closest('[hidden]') && e.getBoundingClientRect().height > 0; };
+  var surface = $('[data-bench-surface="cards"]');
+  var rows = Array.prototype.map.call(document.querySelectorAll('[data-lib="set-row"]'), function (r) {
+    return {name: r.children[0].innerText.trim(), meta: r.children[1].innerText.trim()}; });
+  var dlg = $('[data-mrb-library] .mrbl-dlg');
+  return {
+    buttons: document.querySelectorAll('[data-mrb-library-open]').length,
+    inSurface: !!surface && !!surface.querySelector('[data-mrb-library-open]'),
+    open: !!root && !root.hasAttribute('hidden'),
+    hash: location.hash,
+    rows: rows,
+    listShown: vis($('[data-lib="list"]')),
+    front: vis($('[data-lib="q"]')) ? $('[data-lib="q"]').innerText.trim() : null,
+    back: $('[data-lib="a"]') ? $('[data-lib="a"]').innerText.trim() : null,
+    mine: vis($('[data-lib="mine-block"]')) ? $('[data-lib="mine"]').innerText.trim() : null,
+    flip: $('[data-lib="card"]') ? $('[data-lib="card"]').getAttribute('data-flip') : null,
+    pos: vis($('[data-lib="pos"]')) ? $('[data-lib="pos"]').innerText.trim() : null,
+    name: vis($('[data-lib="name"]')) ? $('[data-lib="name"]').innerText.trim() : null,
+    input: vis($('[data-lib="name-input"]')) ? $('[data-lib="name-input"]').value : null,
+    shuffle: $('[data-lib="shuffle"]') ? $('[data-lib="shuffle"]').getAttribute('aria-pressed') : null,
+    err: vis($('[data-lib="err"]')) ? $('[data-lib="err"]').innerText.trim() : null,
+    dlgBg: dlg ? getComputedStyle(dlg).backgroundColor : null,
+    anim: dlg ? getComputedStyle(dlg).animationName : null,
+    scrimAnim: root ? getComputedStyle(root).animationName : null,
+    scrollY: window.scrollY,
+    cw: document.documentElement.clientWidth,
+    text: root && !root.hasAttribute('hidden') ? root.innerText : "",
+    overflowX: document.documentElement.scrollWidth > window.innerWidth + 1
+  };
+})()
+"""
+
+
+def run_library(width, height, mobile, shots):
+    print("\n── library, %d×%d%s ──" % (width, height, " mobile" if mobile else ""))
+    server, port = cdp.serve(ROOT)
+    tag = "%d" % width
+    n = [0]
+
+    def shot(page, name):
+        n[0] += 1
+        res = page.send("Page.captureScreenshot", {"format": "png", "fromSurface": True})
+        path = os.path.join(shots, "lib-%s-%02d-%s.png" % (tag, n[0], name))
+        with open(path, "wb") as fh:
+            fh.write(base64.b64decode(res["data"]))
+
+    try:
+        with cdp.Browser() as br:
+            page = br.attach()
+            page.send("Emulation.setDeviceMetricsOverride",
+                      {"width": width, "height": height, "deviceScaleFactor": 2 if mobile else 1,
+                       "mobile": mobile})
+            page.send("Page.addScriptToEvaluateOnNewDocument", {"source": LIB_FAKE})
+            url = "http://127.0.0.1:%d/student/class-fixture.html" % port
+
+            def boot(ready=True):
+                page.goto(url)
+                settle(1.0)
+                return page.eval(r"""(async function () {
+                  function add(src) { return new Promise(function (ok, bad) {
+                    var s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = bad; document.head.appendChild(s); }); }
+                  await add('/shared/formulae.js');
+                  await add('/shared/flashcard-library.js');
+                  window.__MRB_LIBRARY_READY__ = %s;
+                  window.MRBFlashcardLibrary.offer(window.__LIB_FAKE__.sb, 'pupil-uid', {'%s': 5});
+                  await new Promise(function (r) { setTimeout(r, 300); });
+                  return !!window.MRBFlashcardLibrary;
+                })()""" % (json.dumps([AID] if ready else []), AID))
+
+            def st():
+                return page.eval(LIB_STATE)
+
+            def click(sel):
+                ok = page.eval("(function(){var e=document.querySelector(%s); if(!e) return false; e.click(); return true;})()"
+                               % json.dumps(sel))
+                settle(0.35)
+                return ok
+
+            def key(sel, k):
+                page.eval("(function(){var e=document.querySelector(%s)||document.body;"
+                          "e.dispatchEvent(new KeyboardEvent('keydown',{key:%s,bubbles:true,cancelable:true}));})()"
+                          % (json.dumps(sel), json.dumps(k)))
+                settle(0.35)
+
+            # ── no qualifying set: no button ────────────────────────────
+            check(boot(ready=False) is True, "library script loads on the class page")
+            check(st()["buttons"] == 0, "%s: no set qualifies → no 'View your flashcards' button" % tag)
+            shot(page, "no-sets-no-button")
+
+            # ── one qualifying set ──────────────────────────────────────
+            boot()
+            page.eval("(function(){var s=document.querySelector('[data-bench-surface=\"cards\"]');"
+                      "if(s) window.scrollTo(0, Math.max(0, s.getBoundingClientRect().top + scrollY - 120));})()")
+            settle(0.3)
+            s = st()
+            check(s["buttons"] == 1 and s["inSurface"],
+                  "%s: one 'View your flashcards' button, inside the FLASHCARDS card" % tag)
+            label = page.eval("document.querySelector('[data-mrb-library-open]').innerText.trim()")
+            check(label == "View your flashcards", "%s: the button reads 'View your flashcards' (got %r)" % (tag, label))
+            # a redraw (open and close the practice deck) keeps exactly one button
+            click('[data-port-region="sidebar-flashcards"] button')
+            click('[data-port-region="flashcards-overlay"] button[title="Close"]')
+            s = st()
+            check(s["buttons"] == 1 and s["inSurface"], "%s: the button survives a redraw, once" % tag)
+            shot(page, "class-page-button")
+            y0, cw0 = s["scrollY"], s["cw"]
+
+            # ── the sets ────────────────────────────────────────────────
+            click('[data-mrb-library-open]')
+            settle(0.3)
+            s = st()
+            check(s["open"] and s["hash"] == "#sets" and len(s["rows"]) == 1,
+                  "%s: tap → '#sets', the list of 1 (got %r %r)" % (tag, s["hash"], s["rows"]))
+            check(s["rows"] and s["rows"][0] == {"name": "Forces flashcards", "meta": "5 CARDS"},
+                  "%s: the row is the teacher's title and '5 CARDS', no class name (got %r)" % (tag, s["rows"]))
+            check(s["anim"] == "none" and s["scrimAnim"] == "mrblIn", "%s: the scrim fades, the column does not slide" % tag)
+            check(s["cw"] == cw0, "%s: opening changes no width behind it (%s → %s)" % (tag, cw0, s["cw"]))
+            check("Your flashcards" in s["text"] and not s["overflowX"], "%s: header 'Your flashcards', no sideways scroll" % tag)
+            shot(page, "L-sets")
+
+            # ── one set: front, back, move, wrap ────────────────────────
+            click('[data-lib="set-row"]')
+            s = st()
+            check(s["hash"] == "#set=" + AID and s["front"] == "What is the unit of force?" and s["pos"] == "1 / 5"
+                  and s["name"] == "Forces flashcards" and s["flip"] == "0",
+                  "%s: open → card 1's question, '1 / 5', the set's name in the header (got %r %r %r)"
+                  % (tag, s["front"], s["pos"], s["name"]))
+            pen = page.eval("(function(){var p=document.querySelector('[data-lib=\"name\"] svg');"
+                            "return p ? [p.getAttribute('aria-hidden'), getComputedStyle(p).display] : null;})()")
+            check(pen == ["true", "block"] or (pen and pen[0] == "true" and pen[1] != "none"),
+                  "%s: the set's name carries a small pencil, hidden from screen readers (got %r)" % (tag, pen))
+            hidden_back = page.eval("document.querySelector('[data-lib=\"back-face\"]').getAttribute('aria-hidden')")
+            check(hidden_back == "true", "%s: face up, the answer side is hidden" % tag)
+            shot(page, "L-card-front")
+            click('[data-lib="card"]')
+            settle(0.4)
+            s = st()
+            check(s["flip"] == "1" and s["back"] == "The newton (N)" and s["mine"] == "newton",
+                  "%s: tap → the model answer, with YOUR ANSWER beneath (got %r %r)" % (tag, s["back"], s["mine"]))
+            shot(page, "L-card-back")
+            click('[data-lib="next"]')
+            s = st()
+            check(s["pos"] == "2 / 5" and s["front"] == "What is the formula of water?" and s["flip"] == "0",
+                  "%s: › → card 2, face up (got %r)" % (tag, s["pos"]))
+            click('[data-lib="prev"]')
+            click('[data-lib="prev"]')
+            s = st()
+            check(s["pos"] == "5 / 5" and s["front"] == "Is velocity a scalar or a vector?",
+                  "%s: ‹ from card 1 wraps to card 5 (got %r)" % (tag, s["pos"]))
+            key('body', 'ArrowRight')
+            check(st()["pos"] == "1 / 5", "%s: → key moves on (wraps to 1)" % tag)
+
+            # ── shuffle ─────────────────────────────────────────────────
+            click('[data-lib="shuffle"]')
+            fronts = []
+            for _ in range(5):
+                fronts.append(st()["front"])
+                click('[data-lib="next"]')
+            deck = ["What is the unit of force?", "What is the formula of water?", "What is weight?",
+                    "Write the equation for the force on a spring.", "Is velocity a scalar or a vector?"]
+            check(st()["shuffle"] == "true" and sorted(fronts) == sorted(deck) and fronts != deck,
+                  "%s: Shuffle → every card once, in a new order (got %r)" % (tag, fronts))
+            shot(page, "L-shuffled")
+            click('[data-lib="shuffle"]')
+            check(st()["shuffle"] == "false", "%s: Shuffle again → back to the teacher's order" % tag)
+
+            # ── rename in place ─────────────────────────────────────────
+            click('[data-lib="name"]')
+            s = st()
+            check(s["input"] == "Forces flashcards", "%s: tap the name → a box holding the current name" % tag)
+            page.eval("(function(){var i=document.querySelector('[data-lib=\"name-input\"]'); i.value='My forces set';"
+                      "i.dispatchEvent(new Event('input',{bubbles:true}));})()")
+            shot(page, "L-rename")
+            key('[data-lib="name-input"]', 'Enter')
+            settle(0.3)
+            s = st()
+            F = page.eval("window.__LIB_FAKE__")
+            check(s["name"] == "My forces set" and F["names"].get(AID) == "My forces set"
+                  and any(w["op"] == "upsert" and w["body"]["pupil_id"] == "pupil-uid" for w in F["writes"]),
+                  "%s: Enter → the header says 'My forces set', upserted as the pupil (got %r %r)"
+                  % (tag, s["name"], F["names"]))
+            shot(page, "L-renamed")
+            click('[data-lib="name"]')
+            page.eval("document.querySelector('[data-lib=\"name-input\"]').value='x'")
+            key('[data-lib="name-input"]', 'Escape')
+            s = st()
+            check(s["open"] and s["name"] == "My forces set", "%s: Escape in the box cancels, and does not close" % tag)
+            click('[data-lib="name"]')
+            page.eval("document.querySelector('[data-lib=\"name-input\"]').value='   '")
+            key('[data-lib="name-input"]', 'Enter')
+            settle(0.3)
+            s = st()
+            F = page.eval("window.__LIB_FAKE__")
+            check(s["name"] == "Forces flashcards" and AID not in F["names"],
+                  "%s: a blank name → the teacher's title again, the row deleted (got %r)" % (tag, s["name"]))
+
+            # ── Back steps out: set → sets → the class page ─────────────
+            page.eval("history.back()")
+            settle(0.5)
+            s = st()
+            check(s["open"] and s["hash"] == "#sets" and s["listShown"], "%s: Back → the list (got %r)" % (tag, s["hash"]))
+            check(s["rows"] and s["rows"][0]["name"] == "Forces flashcards", "%s: the list carries the current name" % tag)
+            page.eval("history.back()")
+            settle(0.5)
+            s = st()
+            check(not s["open"] and s["hash"] == "", "%s: Back again → closed, no fragment (got %r)" % (tag, s["hash"]))
+            check(abs(s["scrollY"] - y0) <= 1 and s["cw"] == cw0,
+                  "%s: the class page did not move (scrollY %s → %s)" % (tag, y0, s["scrollY"]))
+
+            # ── × and Escape close from a set ───────────────────────────
+            click('[data-mrb-library-open]')
+            click('[data-lib="set-row"]')
+            click('[data-lib="close"]')
+            settle(0.4)
+            s = st()
+            check(not s["open"] and s["hash"] == "", "%s: × from a set closes, no fragment left (got %r)" % (tag, s["hash"]))
+            click('[data-mrb-library-open]')
+            key('body', 'Escape')
+            settle(0.4)
+            s = st()
+            check(not s["open"] and s["hash"] == "" and abs(s["scrollY"] - y0) <= 1,
+                  "%s: Escape closes; scrollY unchanged across every open/close" % tag)
+
+            # ── a direct link opens the set ─────────────────────────────
+            page.eval("location.hash = '#set=%s'" % AID)
+            settle(0.5)
+            s = st()
+            check(s["open"] and s["front"] == "What is the unit of force?" and s["pos"] == "1 / 5",
+                  "%s: a #set= link opens that set, on card 1 (got %r %r %r)" % (tag, s["open"], s["front"], s["pos"]))
+            click('[data-lib="close"]')
+            check(not st()["open"], "%s: × on a direct link closes" % tag)
+
+            # ── dark ────────────────────────────────────────────────────
+            page.eval("document.documentElement.setAttribute('data-theme','dark')")
+            settle(0.3)
+            click('[data-mrb-library-open]')
+            s = st()
+            check(s["dlgBg"] not in ("rgb(251, 243, 230)", None), "%s: dark theme reaches the library (bg %s)" % (tag, s["dlgBg"]))
+            shot(page, "L-dark-sets")
+            click('[data-lib="set-row"]')
+            shot(page, "L-dark-front")
+            click('[data-lib="card"]')
+            settle(0.5)
+            shot(page, "L-dark-back")
+            click('[data-lib="close"]')
+            page.eval("document.documentElement.removeAttribute('data-theme')")
+
+            # ── the list fails to load ──────────────────────────────────
+            boot()
+            page.eval("window.__LIB_FAKE__.failSets = true")
+            click('[data-mrb-library-open]')
+            s = st()
+            check(s["err"] and s["err"].startswith("Your flashcards did not load.") and "Try again" in s["err"],
+                  "%s: a failed list → 'Your flashcards did not load.' + Try again (got %r)" % (tag, s["err"]))
+            shot(page, "L-list-failed")
+            page.eval("window.__LIB_FAKE__.failSets = false")
+            click('[data-lib="retry"]')
+            s = st()
+            check(s["err"] is None and len(s["rows"]) == 1, "%s: Try again → the list" % tag)
+            click('[data-lib="close"]')
+
+            # ── DEGRADE: no names table (production until the migration) ─
+            boot()
+            page.eval("window.__LIB_FAKE__.namesMissing = true; localStorage.removeItem('mrbadmusai.fcset.v1.names')")
+            click('[data-mrb-library-open]')
+            click('[data-lib="set-row"]')
+            click('[data-lib="name"]')
+            page.eval("document.querySelector('[data-lib=\"name-input\"]').value='Revision: forces'")
+            key('[data-lib="name-input"]', 'Enter')
+            settle(0.3)
+            s = st()
+            stored = page.eval("localStorage.getItem('mrbadmusai.fcset.v1.names')")
+            F = page.eval("window.__LIB_FAKE__")
+            check(s["name"] == "Revision: forces" and stored and json.loads(stored).get(AID) == "Revision: forces"
+                  and not F["writes"],
+                  "%s: no names table → the name is kept on the device, no server write (got %r %r)"
+                  % (tag, s["name"], stored))
+            check(not any(w in s["text"] for w in ("device", "phone", "saved", "offline", "Saved")),
+                  "%s: degrade mode says nothing about it on screen" % tag)
+            shot(page, "L-degrade-renamed")
+            click('[data-lib="close"]')
+            # reload: the device name persists
+            boot()
+            page.eval("window.__LIB_FAKE__.namesMissing = true")
+            click('[data-mrb-library-open]')
+            s = st()
+            check(s["rows"] and s["rows"][0]["name"] == "Revision: forces", "%s: device name survives a reload" % tag)
+            click('[data-lib="close"]')
+            # the table arrives: the device name is written up once and the key cleared
+            boot()
+            click('[data-mrb-library-open]')
+            settle(0.4)
+            s = st()
+            F = page.eval("window.__LIB_FAKE__")
+            stored = page.eval("localStorage.getItem('mrbadmusai.fcset.v1.names')")
+            check(F["names"].get(AID) == "Revision: forces" and stored is None
+                  and s["rows"] and s["rows"][0]["name"] == "Revision: forces"
+                  and sum(1 for w in F["writes"] if w["op"] == "upsert") == 1,
+                  "%s: the table arrives → the device name is upserted once, the local key cleared (got %r %r)"
+                  % (tag, F["names"], stored))
+            click('[data-lib="close"]')
+            page.eval("localStorage.clear()")
+
+            # ── reads: one serving read, no writes but a name ───────────
+            reads = page.eval("window.__LIB_FAKE__.reads")
+            tables = sorted(set(r["t"] for r in reads))
+            check(set(tables) <= {"assignments", "flashcard_set_names", "assignment_flashcards",
+                                  "flashcard_pupil_cards", "flashcard_reviews"},
+                  "%s: the library reads only its five tables (got %r)" % (tag, tables))
+            check(all(r["op"] == "select" for r in reads if r["t"] != "flashcard_set_names"),
+                  "%s: nothing written but a name" % tag)
+    finally:
+        server.shutdown()
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--shots", default=None)
+    ap.add_argument("--library", action="store_true",
+                    help="only the flashcard library section (MRB-352 Stage D2)")
     a = ap.parse_args()
     shots = a.shots or os.path.join(cdp.gate_tmp(), "flashcard-homework")
     os.makedirs(shots, exist_ok=True)
@@ -972,14 +1351,18 @@ def main():
           "Stage D item 4: the scroll lock hides the root only (html+body hidden clamped the page to the top)")
     check('.eq("id", wanted).is("deleted_at", null)' in live and '"pageshow"' in live,
           "§13.6: the kind read skips deleted sets; a page back from the bfcache reloads")
-    for w, h, kb in ((390, 844, 508), (360, 740, 404)):
-        run(w, h, kb, shots)
-    for w, h, tall in ((1440, 900, True), (1280, 720, True), (1366, 660, False)):
-        run_desktop(w, h, shots, tall)
-    for w, h, kb in ((360, 740, 404), (390, 844, 336)):
-        run_resizes_content(w, h, kb, shots)
-    for w, h, mobile in ((1440, 900, False), (390, 844, True)):
-        run_lift(w, h, mobile, shots)
+    if not a.library:
+        for w, h, kb in ((390, 844, 508), (360, 740, 404)):
+            run(w, h, kb, shots)
+        for w, h, tall in ((1440, 900, True), (1280, 720, True), (1366, 660, False)):
+            run_desktop(w, h, shots, tall)
+        for w, h, kb in ((360, 740, 404), (390, 844, 336)):
+            run_resizes_content(w, h, kb, shots)
+        for w, h, mobile in ((1440, 900, False), (390, 844, True)):
+            run_lift(w, h, mobile, shots)
+    # ⊕ MRB-352 Stage D2 — the library, phone and desktop
+    for w, h, mobile in ((390, 844, True), (1440, 900, False)):
+        run_library(w, h, mobile, shots)
     print("\n  screenshots: %s" % shots)
     if FAILS:
         print("\n  FAIL — %d check(s) failed" % len(FAILS))

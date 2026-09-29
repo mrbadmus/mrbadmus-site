@@ -210,6 +210,72 @@ def check_student_live():
              "(ref→lesson), found %d" % len(resolution_ladder))
 
 
+# ── 1b · the flashcard library (MRB-352 Stage D2) ───────────────────────
+#
+# The homework deck (`assignment_flashcards`) is served to a pupil in two
+# ways only: inside the homework, by the `flashcard_record` RPC (a database
+# function, not a read on the site), and in "Your flashcards", by exactly ONE
+# read in `shared/flashcard-library.js`. Every other read of the table on the
+# site names identity columns only (a count, an assignment id) — a question
+# or answer read anywhere else is a second serving read of the deck.
+FC_DECK = "assignment_flashcards"
+FC_CONTENT = re.compile(r"\b(question|answer)\b")
+
+
+def _deck_reads(src):
+    """Every from('assignment_flashcards').select(<arg>) in `src`, comments
+    stripped, with the full select argument."""
+    return re.findall(r"""from\(\s*["']%s["']\s*\)\s*\.select\((.*?)\)""" % FC_DECK,
+                      _strip_js_comments(src), re.S)
+
+
+def check_library():
+    lib_rel = os.path.join("shared", "flashcard-library.js")
+    lib_path = os.path.join(SITE, lib_rel)
+    if not os.path.isfile(lib_path):
+        fail(lib_rel, "is missing — the flashcard library's one serving read "
+             "has moved; re-point this gate at it")
+        return
+    lib = read(lib_path)
+    serving = [sel for sel in _deck_reads(lib) if FC_CONTENT.search(sel)]
+    if len(serving) != 1:
+        fail(lib_rel, "expected exactly 1 serving read of %s (question/answer), "
+             "found %d" % (FC_DECK, len(serving)))
+    code = _strip_js_comments(lib)
+    for pool in POOLS + (RETIRED_NAME, KS4_POOL):
+        if pool in code:
+            fail(lib_rel, "names %s — the library serves the homework deck and "
+                 "no other pool" % pool)
+
+    # every other shared script and every page: identity columns only
+    shared_dir = os.path.join(SITE, "shared")
+    others = [os.path.join("shared", f) for f in sorted(os.listdir(shared_dir))
+              if f.endswith(".js") and f != "flashcard-library.js"]
+    others += [f for f in os.listdir(SITE) if f.endswith(".html")]
+    for rel in others:
+        path = os.path.join(SITE, rel)
+        if not os.path.isfile(path):
+            continue
+        src = read(path)
+        if FC_DECK not in src:
+            continue
+        for sel in _deck_reads(src):
+            if FC_CONTENT.search(sel):
+                fail(rel, "reads %s content (select %s) — the library is the "
+                     "deck's one serving read" % (FC_DECK, sel.strip()))
+    server_path = os.path.join(BACKEND, "server.js")
+    if os.path.isfile(server_path):
+        for sel in _deck_reads(read(server_path)):
+            if FC_CONTENT.search(sel):
+                fail("server.js", "reads %s content (select %s) — the deck is "
+                     "served by flashcard_record and the library, never a "
+                     "route" % (FC_DECK, sel.strip()))
+    live = read(os.path.join(SITE, "shared", "student-live.js"))
+    if not any("assignment_id" in sel for sel in _deck_reads(live)):
+        note("student-live.js", "no identity read of %s found (the card "
+             "counts and the library's qualifying read use one)" % FC_DECK)
+
+
 # ── 2 · the lesson-page ladder serves from the authored source ──────────
 def check_lesson_ladder():
     for rel in (os.path.join("shared", "ks3.js"), "build_ks3.py"):
@@ -1156,6 +1222,7 @@ def check_ks4_pool_collision():
 
 def main():
     check_student_live()
+    check_library()
     check_lesson_ladder()
     check_other_surfaces()
     check_constraint_migration()
@@ -1182,6 +1249,8 @@ def main():
     print("   KS3 ladder page  ← authored ladder (ks3_data, baked at build)")
     print("   KS3 assignment   ← ks3_assignment_bank (backend only)")
     print("   KS3 flashcards   ← ks3_cards (class page, one serving read)")
+    print("   homework deck (library) ← assignment_flashcards "
+          "(flashcard-library.js, one serving read)")
     print("   KS4 lesson page  ← all_subtopics_*.py `quiz` (baked at build, "
           "no runtime read)")
     print("   KS4 assignment   ← ks4_assignment_bank / ks4_data (backend only)")

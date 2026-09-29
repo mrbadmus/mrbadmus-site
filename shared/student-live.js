@@ -98,7 +98,11 @@
     "/shared/flashcard-homework.js",
     /* ⊕ MRB-351 pupil flow — keeps the answer box above the phone keyboard
        (docs/mrb351/PUPIL-FLOW.md §6). */
-    "/shared/flashcard-keyboard.js"
+    "/shared/flashcard-keyboard.js",
+    /* ⊕ MRB-352 Stage D2 — "Your flashcards", the library of sets the pupil
+       has been all the way through (STAGE-D-PLAN.md §3). Offered after the
+       paint by `wireLibrary` below; it loads its own stylesheet. */
+    "/shared/flashcard-library.js"
   ];
 
   /* ── plain words, for when the page cannot render ───────────────────────
@@ -709,6 +713,64 @@
      fragment the page listens for (`#cards=<assignment id>`). */
   function cardsHrefFor(id) {
     return id ? "#cards=" + encodeURIComponent(id) : "";
+  }
+
+  /* ⊕ MRB-352 Stage D2 — THE FLASHCARD LIBRARY'S QUALIFYING READ.
+
+     A set is in the library once the pupil has rated every one of its cards
+     at least once (STAGE-D-PLAN.md decision 10). Two reads, both as the
+     pupil under RLS, both IDENTITY COLUMNS ONLY — the deck's content is
+     served by `shared/flashcard-library.js` and nowhere here
+     (pool_ownership.py):
+       R1  the pupil's own `flashcard_reviews` (assignment_id, card_id)
+       R2  `assignment_flashcards` (assignment_id) for those sets → counts.
+     A deleted or unreleased set's cards are invisible to a pupil (the
+     assignments policy), so its count is 0 and it never qualifies. Paged,
+     because a year of ratings can pass PostgREST's 1,000-row page. */
+  function pagedRows(query) {
+    var PAGE = 1000, out = [];
+    function next(from) {
+      return Promise.resolve(query().range(from, from + PAGE - 1)).then(function (r) {
+        if (r.error) { throw r.error; }
+        var rows = r.data || [];
+        out = out.concat(rows);
+        return rows.length === PAGE && from < 20 * PAGE ? next(from + PAGE) : out;
+      });
+    }
+    return next(0);
+  }
+  function wireLibrary(sb, uid) {
+    var L = window.MRBFlashcardLibrary;
+    if (!L || !sb || !uid) { return; }
+    var rated = {};
+    pagedRows(function () {
+      return sb.from("flashcard_reviews").select("assignment_id, card_id").order("id", { ascending: true });
+    }).then(function (rows) {
+      rows.forEach(function (r) {
+        var id = String(r.assignment_id).toLowerCase();
+        (rated[id] = rated[id] || {})[r.card_id] = 1;
+      });
+      var ids = Object.keys(rated);
+      if (!ids.length) { return {}; }
+      return pagedRows(function () {
+        return sb.from("assignment_flashcards").select("assignment_id").in("assignment_id", ids)
+          .order("id", { ascending: true });
+      }).then(function (cards) {
+        var n = {};
+        cards.forEach(function (c) {
+          var id = String(c.assignment_id).toLowerCase();
+          n[id] = (n[id] || 0) + 1;
+        });
+        return n;
+      });
+    }).then(function (counts) {
+      window.__MRB_LIBRARY_READY__ = Object.keys(counts).filter(function (id) {
+        return counts[id] > 0 && Object.keys(rated[id] || {}).length >= counts[id];
+      });
+      L.offer(sb, uid, counts);
+    }).catch(function (err) {
+      console.info("[student-live] flashcard library unavailable", err && (err.code || err.message));
+    });
   }
 
   /* ⊕ MRB-351 — FLASHCARD HOMEWORK, THE LIVE HALF.
@@ -6017,6 +6079,12 @@
             window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
             window.__MRB_AFTER_DRAW__.push(lockScroll);
             lockScroll();
+          }
+          /* ⊕ MRB-352 Stage D2 — "View your flashcards". Which sets the
+             pupil has been all the way through is worked out AFTER the paint
+             and never awaited: a failed read costs the button, not the page. */
+          if (page === "class") {
+            setTimeout(function () { wireLibrary(sb, ctx.user && ctx.user.id); }, 0);
           }
           if (page === "class" && data && data.benchEmpty) {
             window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];

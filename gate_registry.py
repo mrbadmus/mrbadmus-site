@@ -415,8 +415,11 @@ GATES = [
                   "shared/student-runtime.js", "shared/student-live.js",
                   "shared/student-ds.css",
                   "shared/flashcard-homework.js", "shared/flashcard-keyboard.js",
-                  "shared/formulae.js"],
-         why="⊕ STAGE D1 (docs/mrb351/STAGE-D-PLAN.md §2.9): on a DESKTOP "
+                  "shared/formulae.js",
+                  # ⊕ MRB-352 Stage D2 — the library section (--library)
+                  "shared/flashcard-library.js", "shared/flashcard-library.css"],
+         why="⊕ STAGE D2: the flashcard library on the fixture (--library). "
+             "⊕ STAGE D1 (docs/mrb351/STAGE-D-PLAN.md §2.9): on a DESKTOP "
              "(1440×900, 1280×720, no keyboard) focusing the answer box, a "
              "keystroke's redraw and blurring move none of header/strip/card/"
              "question/box/Check and never set data-hw-typing; the card is its "
@@ -835,7 +838,11 @@ GATES = [
                   "shared/class-entry.js", "shared/mrbadmus.v2.js",
                   "build_ks3.py", "ks4_data/**", "all_subtopics_*.py",
                   "supabase/migrations/*mrb288_one_pool_per_assignment.sql",
-                  "*.html"],
+                  "*.html",
+                  # ⊕ MRB-352 Stage D2 — check 1b sweeps every shared script
+                  # for a second serving read of the homework deck.
+                  "shared/*.js", "shared/flashcard-library.js",
+                  "shared/flashcard-library.css"],
          needs="/Users/midebadmus/Documents/GitHub/mrbadmus---backend/server.js",
          needs_env="MRB_BACKEND",
          why="⚠️ needs_env=MRB_BACKEND SINCE MRB-331, 7 Sep 2026, and for "
