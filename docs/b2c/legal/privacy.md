@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Last updated: 19 September 2026**
+**Last updated: 29 September 2026**
 
 This policy explains what personal information MrBadmus collects, why, and what we do with it. Because MrBadmus is used by children, we've tried to write it so that a parent and a child can both understand it. There's a short version for children at the end.
 
@@ -81,7 +81,7 @@ We share data with nobody else, except: if the law requires it; to protect a chi
 ## 6. How long we keep it
 
 - **While you subscribe:** everything, so the progress record is complete.
-- **After your subscription ends:** the account is read-only for 30 days so you can retrieve reports, then personal data is deleted within 12 months of the end date. Anonymised, aggregated statistics may be kept.
+- **After your subscription ends:** the account is read-only for 30 days so you can retrieve reports, then personal data is deleted within 6 months of the end date. Anonymised, aggregated statistics may be kept.
 - **If you ask us to delete sooner:** we do, within 30 days, apart from billing records we must keep for tax law (six years) and anything we're legally required to retain.
 - **Messages:** kept as above; a message the sender deletes is hidden immediately and purged with the account.
 - **Support emails:** two years.

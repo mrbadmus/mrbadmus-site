@@ -1,6 +1,6 @@
 # Terms of Service
 
-**Last updated: 19 September 2026**
+**Last updated: 29 September 2026**
 
 These terms are the agreement between you and us when you use MrBadmus. Please read them. They're written to be understood, not to hide things.
 
@@ -48,7 +48,9 @@ You must give us accurate information and keep it up to date. You must not share
 
 **Cancel any time** from the "Manage billing" button in your account, or by emailing support@mrbadmus.com. Cancelling stops future payments. You keep full access until the end of the period you've already paid for, then the account becomes read-only.
 
-**Your 14-day right to cancel.** As a consumer you have a legal right to change your mind within 14 days of starting a paid subscription and receive a refund. Because the service starts immediately, that refund would normally be reduced in proportion to the days used — but we keep it simple: **cancel within 14 days of your first payment and we refund that payment in full.**
+**Your 14-day right to cancel.** As a consumer you have a legal right to change your mind within 14 days of starting a paid subscription. Because you asked us to start the service straight away, we may keep an amount in proportion to the service you've already had, and refund the rest. In practice that means a refund of the unused part of the period you paid for.
+
+**If you've barely used it**, tell us. Where a family has genuinely not got going, we'd rather refund the payment in full than argue about days, and we often will. That's our discretion, not your right.
 
 **After 14 days** payments are non-refundable except where the law requires otherwise or something has gone wrong on our side, in which case email us and we'll put it right.
 
@@ -65,7 +67,9 @@ Please don't, and please make sure your child doesn't:
 - upload anything unlawful, abusive or harmful, including in messages;
 - use automated tools to send requests to the service.
 
-Fair use applies to the AI features. Each child has generous daily and monthly limits on AI tutor questions and instant marks, shown in the product when you approach them. Answers sent for personal marking by Mr Badmus are limited to a number per child per month, shown on the exam questions page.
+**Fair use.** The AI features cost us money each time they're used, so each child has a daily limit and a monthly limit on AI tutor questions, and a monthly limit on instant marks. Answers sent for personal marking by Mr Badmus have a separate monthly allowance. If a child reaches a limit, MrBadmus tells them so and tells them when it resets, and the rest of the service keeps working. You can ask us what the current limits are at any time. They are set so that ordinary, even enthusiastic, use never reaches them.
+
+We may change these limits. If we lower one, we'll tell you in the product before it applies to you, and by email if the change is significant. We may also apply a temporary limit to a single account if its use is far outside normal patterns or looks automated — we'll tell you if we do, and talk to you about it.
 
 We may suspend or close accounts that break these rules. If we do, we'll tell you why, and refund any unused annual period unless the breach was serious.
 
