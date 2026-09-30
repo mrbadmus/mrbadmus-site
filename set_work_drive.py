@@ -5092,9 +5092,15 @@ CARDS_JS = """(function(){
 # them PASSED vacuously ("the row leaves the table" is trivially true of a
 # table you cannot see).
 #
-# The eight-column grid template is unique to this table on the page, so it
-# identifies it without needing a hook the page does not have.
-ROW_GRID = '2fr 100px 1fr 1fr 1fr 1fr 1.2fr auto'
+# ⊕ Sharpen C1, 30 Sep 2026 — BY THE TABLE'S OWN TAG, NOT ITS GRID. This used
+# to match the grid template ('2fr 100px 1fr 1fr 1fr 1fr 1.2fr auto'), which
+# was unique on the page but was also exactly what Sharpen C1 had to change
+# (a bare `fr` sizes to its own row, so rows slid off their header): the new
+# tracks matched nothing, and fifteen checks went red about a table that was
+# on the screen. The header strip and every row now carry
+# `data-mrb-table="assignments"` (teacher_rulings SET_ATTR), a hook that says
+# what the element IS rather than how it happens to be laid out.
+ROW_SEL = 'div[data-mrb-table="assignments"]'
 
 # ⊕ phone-teacher run, 28 Sep 2026 — THE TITLE IS THE CELL'S OWN TEXT, NOT
 # ITS WHOLE textContent. The title cell carries sub-lines under the title
@@ -5111,7 +5117,7 @@ TITLE_OF_JS = ("function mrbTitleOf(el){var t='';if(!el){return t;}"
 
 ROWS_JS = """(function(){
   """ + TITLE_OF_JS + """
-  var all = document.querySelectorAll('div[style*=%s]');
+  var all = document.querySelectorAll(%s);
   var out = [];
   for (var i = 0; i < all.length; i++) {
     var r = all[i];
@@ -5133,14 +5139,14 @@ ROWS_JS = """(function(){
     });
   }
   return out;
-})()""" % json.dumps(ROW_GRID)
+})()""" % json.dumps(ROW_SEL)
 
 
 def press_row(p, title, kind):
     """Press one row's Edit / Delete / Cancel, found by its title."""
     return p.eval("""(function(){
       """ + TITLE_OF_JS + """
-      var all = document.querySelectorAll('div[style*=%s]');
+      var all = document.querySelectorAll(%s);
       for (var i = 0; i < all.length; i++) {
         var r = all[i];
         if ((r.getAttribute('style')||'').indexOf('cursor:pointer') === -1) {
@@ -5150,7 +5156,7 @@ def press_row(p, title, kind):
         if (!b) { return 'no control'; }
         b.click(); return 'clicked'; }
       return 'no row';})()"""
-                  % (json.dumps(ROW_GRID), json.dumps(title), kind))
+                  % (json.dumps(ROW_SEL), json.dumps(title), kind))
 
 
 def ldn(dt):
