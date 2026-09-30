@@ -533,7 +533,9 @@ under *Deviations*.
 ## §14. Stage D as built — D1 (Mide's items 1, 2, 4)
 
 Plan and deviations: `docs/mrb351/STAGE-D-PLAN.md` §2 and §6. This section only records what now overrides the
-sections above.
+sections above. D1 and D2 were built on the pupil lane's old tip and replayed onto main after Stage C and its
+re-audit fixes (30 Sep 2026); none of Stage C's changes touched a Stage D source file, so §14 and §15 hold on main
+exactly as written, and every generated page was rebuilt with `build_all.py` after the replay.
 
 - **Where a reopened deck lands (overrides S-b and §4's resume).** Worked out from the pupil's own
   `flashcard_reviews` for the whole assignment by `MRBHomework.reconstruct`, not from the server's open sitting.
