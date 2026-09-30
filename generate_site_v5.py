@@ -5588,25 +5588,45 @@ def _sitemap_xml(entries):
     return "\n".join(out) + "\n"
 
 
+# Cloudflare's own robots.txt, byte for byte as it was served on 29 Sep 2026.
+# It is a comment block only: it names the three content signals and reserves
+# rights under EU 2019/790 Art. 4, but carries NO `Content-Signal:` directive,
+# so it neither grants nor restricts anything. Published robots.txt REPLACES
+# Cloudflare's generated one, so the block is carried across verbatim rather
+# than lost. Do not add a Content-Signal line here without a decision to.
+_CLOUDFLARE_CONTENT_SIGNALS = "# As a condition of accessing this website, you agree to abide by the following\n# content signals:\n\n# (a)  If a content-signal = yes, you may collect content for the corresponding\n#      use.\n# (b)  If a content-signal = no, you may not collect content for the\n#      corresponding use.\n# (c)  If the website operator does not include a content signal for a\n#      corresponding use, the website operator neither grants nor restricts\n#      permission via content signal with respect to the corresponding use.\n\n# The content signals and their meanings are:\n\n# search:   building a search index and providing search results (e.g., returning\n#           hyperlinks and short excerpts from your website's contents). Search does not\n#           include providing AI-generated search summaries.\n# ai-input: inputting content into one or more AI models (e.g., retrieval\n#           augmented generation, grounding, or other real-time taking of content for\n#           generative AI search answers).\n# ai-train: training or fine-tuning AI models.\n\n# ANY RESTRICTIONS EXPRESSED VIA CONTENT SIGNALS ARE EXPRESS RESERVATIONS OF\n# RIGHTS UNDER ARTICLE 4 OF THE EUROPEAN UNION DIRECTIVE 2019/790 ON COPYRIGHT\n# AND RELATED RIGHTS IN THE DIGITAL SINGLE MARKET.\n"
+
+
 def _robots_txt():
     """robots.txt, written only on a launched build.
 
-    Its absence today means "crawl everything", so the Disallow lines below
+    Its absence used to mean "crawl everything", so the Disallow lines below
     are the first thing that has ever asked a crawler to stay out of the
     signed-in product. Every path named is an authenticated app surface with
     nothing to index — and /parents/reset-password is named because it is a
     one-time token URL, and this line is the only protection against it being
     crawled that does not depend on a crawler running our JavaScript.
+
+    ⊕ Flag-on (30 Sep 2026): /go/ (the child's login) and /org/sign-in (the
+    organisation staff login) are PUBLIC front doors and may be crawled.
+    Neither page carries a noindex tag, so this file was the only thing
+    keeping them out. `Allow: /org/sign-in` sits ahead of `Disallow: /org/`;
+    for Google, the longest matching rule wins regardless of order, and the
+    ordering makes the intent legible to every other parser.
     """
     return (
+        _CLOUDFLARE_CONTENT_SIGNALS.rstrip("\n") + "\n\n"
         "# MrBadmus — mrbadmus.com\n"
         "# Written by generate_site_v5.py on a launched build only.\n"
         "User-agent: *\n"
         "\n"
+        "# Public front doors: the child's login and the organisation sign-in.\n"
+        "Allow: /go/\n"
+        "Allow: /org/sign-in\n"
+        "\n"
         "# Signed-in product surfaces. Nothing here is public, nothing here\n"
         "# is worth indexing, and several need a session even to render.\n"
         "Disallow: /consumer/\n"
-        "Disallow: /go/\n"
         "Disallow: /org/\n"
         "Disallow: /teacher/\n"
         "Disallow: /student/\n"
@@ -5705,43 +5725,45 @@ def _status_page(kind, tokens_href):
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
+%(theme_head)s
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta name="theme-color" content="#FBF3E6"/>
 <meta name="robots" content="noindex"/>
 <title>%(title)s</title>
 %(brand_head)s
 <link rel="stylesheet" href="%(tokens)s"/>
+<link rel="stylesheet" href="/shared/ks3-theme.css"/>
 <style>
-  html { background: #FBF3E6; }
-  body { margin: 0; padding: 0; background: #FBF3E6; color: #221E1B;
+  html { background: var(--ks3-ground); }
+  body { margin: 0; padding: 0; background: var(--ks3-ground); color: var(--ks3-ink);
          font-family: 'Instrument Sans', system-ui, sans-serif;
          font-size: 18px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
-  .cs-head { display: flex; align-items: center;
+  .cs-head { display: flex; align-items: center; gap: 12px;
              padding: 20px 20px 0; max-width: 760px; margin: 0 auto; }
   main { max-width: 760px; margin: 0 auto; padding: 64px 20px 96px; }
   .cs-eyebrow { margin: 0; font-family: 'DM Mono', ui-monospace, monospace;
                 font-size: 13px; letter-spacing: .14em; text-transform: uppercase;
-                color: #6B6058; }
+                color: var(--ks3-ink-muted); }
   h1 { margin: 14px 0 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif;
        font-weight: 800; font-size: clamp(38px, 6vw, 60px); line-height: .98;
        letter-spacing: -.04em; }
-  .cs-blurb { margin: 20px 0 0; font-size: 19px; color: #453E38;
+  .cs-blurb { margin: 20px 0 0; font-size: 19px; color: var(--ks3-ink-body);
               max-width: 34em; text-wrap: pretty; }
   .cs-routes { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px; }
   .cs-routes a { display: flex; align-items: center; min-height: 56px; padding: 0 24px;
-                 border: 2px solid #221E1B; border-radius: 14px;
+                 border: 2px solid var(--ks3-ink); border-radius: 14px;
                  font-weight: 700; font-size: 17px; text-decoration: none; }
-  .cs-routes a.primary { background: #221E1B; color: #FFFCF5; box-shadow: 5px 5px 0 #E4572E; }
-  .cs-routes a.secondary { background: #FFFCF5; color: #221E1B; }
+  .cs-routes a.primary { background: var(--ks3-ink); color: var(--ks3-card); box-shadow: 5px 5px 0 var(--ks3-accent); }
+  .cs-routes a.secondary { background: var(--ks3-card); color: var(--ks3-ink); }
   .cs-routes a:hover { color: inherit; }
-  .cs-foot { margin: 56px 0 0; padding-top: 20px; border-top: 2px solid #221E1B;
-             font-size: 15px; color: #6B6058; }
-  .cs-foot a { color: #A93411; font-weight: 700; text-decoration: none; }
+  .cs-foot { margin: 56px 0 0; padding-top: 20px; border-top: 2px solid var(--ks3-ink);
+             font-size: 15px; color: var(--ks3-ink-muted); }
+  .cs-foot a { color: var(--ks3-accent-text); font-weight: 700; text-decoration: none; }
 </style>
 </head>
 <body>
 <div class="rd" data-mode="ks3">
-  <header class="cs-head">%(brand)s</header>
+  <header class="cs-head">%(brand)s%(theme_slot)s</header>
   <main>
     <p class="cs-eyebrow">%(eyebrow)s</p>
     <h1>%(h1)s</h1>
@@ -5752,9 +5774,11 @@ def _status_page(kind, tokens_href):
       were trying to do.</p>
   </main>
 </div>
+<script src="/shared/theme.js" defer></script>
 </body>
 </html>
 """ % {"title": title, "brand_head": brand.BRAND_HEAD, "tokens": tokens_href,
+       "theme_head": THEME_HEAD, "theme_slot": THEME_SLOT,
        "brand": brand.brand_lockup("/parents/"), "eyebrow": eyebrow, "h1": h1, "blurb": blurb, "btns": btns}
 
 

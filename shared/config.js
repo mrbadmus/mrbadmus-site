@@ -41,8 +41,10 @@
     SUPABASE_URL:      'https://urklkrwevjtlfbwnipjn.supabase.co',
     SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg',
     BACKEND_URL:       'https://mrbadmus-backend.onrender.com',
-    // See the CONSUMER_SIGNUP_ENABLED note below. Off here, deliberately.
-    CONSUMER_SIGNUP_ENABLED: false,
+    // See the CONSUMER_SIGNUP_ENABLED note below. ON in production from the
+    // B2C flag-on build (30 Sep 2026); the backend env var and the
+    // platform_flags row were set first, in that order.
+    CONSUMER_SIGNUP_ENABLED: true,
   };
 
   // ── TEST (local dev / Stage 2A sandbox) ────────────────────────────────
