@@ -530,7 +530,7 @@ under *Deviations*.
 - Mide: the answer box above the keyboard on a real iPhone (Safari) and Android (Chrome), learn state
   included.
 
-## §14. Stage D as built (D1 half — Mide's items 1, 2, 4)
+## §14. Stage D as built — D1 (Mide's items 1, 2, 4)
 
 Plan and deviations: `docs/mrb351/STAGE-D-PLAN.md` §2 and §6. This section only records what now overrides the
 sections above.
@@ -552,3 +552,32 @@ sections above.
   body clamped the live page to the top on every open.
 - **Proof:** `flashcard_engine_test.js` 17–27, `flashcard_homework_drive.py` (desktop 1440/1280, phones 390/360,
   item 4 at 1440/390, fixture resume), `tools/flashcards_stage_d_live.py` on TEST (11 shots).
+
+- **One scroll lock.** D1 and D2 found the same html+body clamp independently. `lockScroll` in `student-live.js`
+  (homework overlay, practice round) and the library's `html[data-mrb-library-open]` both hide the ROOT only.
+
+## §15. Stage D as built — D2 (Mide's item 3: "Your flashcards")
+
+Full as-built, migration md5s and deviations: `docs/mrb351/STAGE-D2-AS-BUILT.md` (kept). What now holds:
+
+- **The entry.** One button, `View your flashcards`, directly under the FLASHCARDS card on the class page — only
+  when at least one flashcard homework has had every card rated at least once (decision 10). No qualifying set,
+  no button.
+- **The library** (`shared/flashcard-library.js` + `.css`, an overlay appended to `<body>`, outside the runtime):
+  the sets newest first (name + `N CARDS`, the class only when sets span classes) → one card at a time, tap or
+  Space/Enter to flip; the back is the model answer and, when the pupil wrote one, `YOUR ANSWER` (make mode's
+  first answer wins, else the latest review answer). `‹` `›` and arrows wrap; `3 / 10` is the one position
+  marker; Shuffle toggles. `#sets` / `#set=<id>` are real addresses, so Back steps set → list → class page.
+- **Names.** Tap the name (a muted pencil marks it) to rename; blank or the teacher's own title reverts to the
+  teacher's title. Stored in `flashcard_set_names` (pupil-owned RLS; the UPDATE check also requires a visible
+  assignment) — a parked migration on `feat/mrb352-migrations`, applied on TEST only. Until production has it, names
+  stay on the device, silently, and are uploaded once when the table appears.
+- **Nothing counts.** Revising in the library writes no rating, event or submission (decision 12); the only write
+  is the name.
+- **Pool ownership.** `assignment_flashcards` content (`question, answer`) is read in exactly one place,
+  `flashcard-library.js`; `pool_ownership` check 1b sweeps every `shared/*.js`, root `*.html` and the backend's
+  `server.js` for a second.
+- **Parked.** The qualifying read (R1) pulls every one of the pupil's `flashcard_reviews` rows on each class-page
+  load (paged, capped); a per-set RPC/view needs DDL and is parked.
+- **Proof:** `flashcard_homework_drive.py --library` (390 and 1440, light and dark, degrade mode via a `42P01`
+  stub), `tools/flashcards_library_live.py` and `tools/flashcard_set_names_rls.py` on TEST.
