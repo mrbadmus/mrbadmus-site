@@ -64,7 +64,7 @@
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
 
       <section class="ks3-explainer">
-        <p>Every group in the spectrum is the same kind of wave. Electromagnetic waves are <strong>transverse</strong>: the oscillations are at right angles to the direction the energy travels. They <strong>transfer energy</strong> from a source to an absorber, and they need no material to travel through, so they cross the vacuum of space. Together they form one <strong>continuous spectrum</strong>, grouped by <strong>wavelength</strong> (the length of one complete wave) and <strong>frequency</strong> (the number of waves passing a point each second). You know where visible light sits. Can you place the other six?</p>
+        <p>Every group in the spectrum is the same kind of wave. Electromagnetic waves are <strong>transverse</strong>: the oscillations are at right angles to the direction the energy travels. They <strong>transfer energy</strong> from a source to an absorber, and they need no material to travel through, so they cross the vacuum of space. Together they form one <strong>continuous spectrum</strong>, grouped by <strong>wavelength</strong> (the distance from a point on one wave to the same point on the next wave) and <strong>frequency</strong> (the number of waves passing a point each second). You know where visible light sits. Can you place the other six?</p>
       </section>
 
       <section id="s-spectrum" class="ks3-block" style="scroll-margin-top: 92px;">
@@ -398,7 +398,7 @@ class Component extends DCLogic {
     const cfQuestions = hi ? [
       { tab: 'Question 1', id: 'emw-q1', head: 'A radio wave has a wavelength of 1500 m. Its speed is 3.0 × 10⁸ m/s. Calculate its frequency.', close: 'Check: 2.0 × 10⁵ × 1500 = 3.0 × 10⁸ m/s.',
         steps: QS('Nothing to convert: wavelength in m, speed in m/s.', '3.0 × 10⁸ = f × 1500', 'f = 3.0 × 10⁸ ÷ 1500 = 2.0 × 10⁵', 'f = 2.0 × 10⁵ Hz', ['3.0 × 10⁸ = f × …', 'rearrange: f = …', 'f = … Hz']) },
-      { tab: 'Question 2', id: 'emw-q2', head: 'A mobile phone signal has a frequency of 900 MHz. Its speed is 3.0 × 10⁸ m/s. Calculate its wavelength.', close: 'Unconverted, 3.0 × 10⁸ ÷ 900 gives 330 000 m: an aerial bigger than a city.',
+      { tab: 'Question 2', id: 'emw-q2', head: 'A mobile phone signal has a frequency of 900 MHz. Its speed is 3.0 × 10⁸ m/s. Calculate its wavelength.', close: 'Unconverted, 3.0 × 10⁸ ÷ 900 gives 330 000 m: a wavelength of 330 km for a phone signal.',
         steps: QS('900 MHz × 10⁶ = 9.0 × 10⁸ Hz', '3.0 × 10⁸ = 9.0 × 10⁸ × λ', 'λ = 3.0 × 10⁸ ÷ 9.0 × 10⁸ = 0.333…', 'λ = 0.33 m', ['3.0 × 10⁸ = … × λ', 'rearrange: λ = …', 'λ = … m']) }
     ] : [
       { tab: 'Question 1', id: 'emw-q1', head: 'A radio wave has a frequency of 200 000 Hz and a wavelength of 1500 m. Calculate its speed.', close: 'The same 300 000 000 m/s as every electromagnetic wave in air.',
@@ -431,7 +431,7 @@ class Component extends DCLogic {
       p1Locked: !full, p1Style: 'margin-top:14px;' + (full ? '' : 'opacity:.45;cursor:default;'),
       onP1: () => { if (this.state.placed.length === GROUPS.length) this.setState({ p1: true }); },
       spectrumFig: ready && p1 ? K.fig(this.spectrumSvg(specMode), '') : null,
-      p1Reveal: 'From radio waves to gamma rays, each group’s wavelength is shorter than the last. The groups join with no gaps: one continuous spectrum.',
+      p1Reveal: 'The groups join with no gaps: one continuous spectrum.',
       p1Notes: notes,
       pairNum: String(pi + 1),
       pairFig: ready && p1 ? K.fig(this.pairSvg(pr, pairMode), '') : null,

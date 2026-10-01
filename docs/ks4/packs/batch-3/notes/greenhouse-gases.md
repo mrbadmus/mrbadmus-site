@@ -82,3 +82,16 @@ The content does not overlap. Early-atmosphere ends with burial locking carbon a
 
 ## Body prose
 About 380 words of explainers. Counting the hook, the bench prompts and reveals, the two panels and the report cards, it is about 700 words in all, at the budget. The longest run of prose before a commitment is about 105 words (the footprint and limits explainer).
+
+## Review fixes
+| id | what I did / why not |
+|---|---|
+| Q-1 | All four hook options now have the reviewer's corrective replies. The reveal's last sentence is deleted. |
+| Q-2 | The effects explainer's list is replaced by "Its effects reach the sea, the weather, food and wildlife." The full list still reaches the pupil in `effReveal` and the key note. |
+| Q-3 | `REP[2]` replaced by the reviewer's "Report B was peer reviewed. What does that tell you?" item. It has four options, shuffled by `order()`. |
+| Q-4 | The heading reads "Compare the three runs." once the tabs appear. |
+| A-10 (science) | "mainly methane" is now used in the explainer and in both sort `why` lines. |
+| A-1 | Eyebrow is now "Radiation bench". |
+| A-2 | The "Atmosphere" label is 20 px, starting at x = 10, so it clears the incoming rays. I did not move it to x = 400, because the outgoing infrared rays sit there. |
+| A-3 | Report B's Data row now includes "plus carbon dioxide records". |
+| A-4 / A-5 | Not changed. A-4 follows pilot practice. A-5 (line-up overlap with early-atmosphere) is answered under EA A-4. |

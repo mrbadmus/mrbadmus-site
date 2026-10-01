@@ -85,7 +85,7 @@
                 <div role="group" aria-label="{{ t.aria }}" style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
                   <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 700;">{{ t.label }}</p>
                   <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <sc-for list="{{ t.opts }}" as="o" hint-placeholder-count="2"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+                    <sc-for list="{{ t.opts }}" as="o" hint-placeholder-count="2"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" aria-label="{{ o.aria }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
                   </div>
                 </div>
               </sc-for>
@@ -166,7 +166,7 @@
 
       <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
         <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
-        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Hearing is a conversion: sound waves make the ear drum and the parts behind it vibrate. The conversion only works from 20 Hz to 20 kHz.</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Hearing is a conversion: sound waves make the ear drum and the parts behind it vibrate. In a human ear, the conversion only works from about 20 Hz to 20 kHz.</p>
       </div>
 
       <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
@@ -369,7 +369,7 @@ class Component extends DCLogic {
         { text: 'Its sound cannot travel through the air to her', reply: 'It crosses the whole park to reach the dog, so it travels through air perfectly well.' },
         { text: 'It is not a sound wave, so ears cannot detect it', reply: 'It is a sound wave: compressions and rarefactions in the air, like any other sound.' }
       ],
-      hookReveal: 'The whistle’s frequency is too high for a human ear. The sound reaches the trainer’s ear just as it reaches the dog’s, but a human ear only turns sounds in a certain range of frequencies into something you hear. Below, you find out how the ear does it, and where its range ends.',
+      hookReveal: 'The whistle’s frequency is too high for a human ear. The sound reaches the trainer’s ear just as it reaches the dog’s, but a human ear only turns sounds in a certain range of frequencies into something you hear.',
       onHook: (i) => this.setState({ hook: i }),
       // flagship
       pEyebrow: 'From air to ear · step ' + st + ' of 4',
@@ -381,7 +381,7 @@ class Component extends DCLogic {
       pOpts: S.tones ? [] : S.opts.map((o, i) => ({ letter: LETTERS[i], text: o.text, pressed: pick === i,
         onClick: () => this.setState((ss) => ({ pPred: Object.assign({}, ss.pPred, { [st]: i }) })) })),
       pTones: S.tones ? TONES.map((t, i) => ({ label: t.label, aria: 'Tone of ' + t.label,
-        opts: HEARD.map((l, k) => ({ label: l, pressed: s.tPred[i] === k, style: this.seg(s.tPred[i] === k),
+        opts: HEARD.map((l, k) => ({ label: l, aria: t.label + ': ' + l.toLowerCase(), pressed: s.tPred[i] === k, style: this.seg(s.tPred[i] === k),
           onClick: () => this.setState((ss) => ({ tPred: Object.assign({}, ss.tPred, { [i]: k }) })) })) })) : [],
       pLocked: locked, pRevealStyle: 'margin-top:14px;' + (locked ? 'opacity:.45;cursor:default;' : ''),
       pRevealLabel: S.reveal,
@@ -451,7 +451,7 @@ class Component extends DCLogic {
           points: ['The lorry makes compressions and rarefactions that travel through the air.', 'The pressure changes push and pull on the glass, so the window vibrates at the same frequency.', 'In the ear, the sound waves make the ear drum vibrate in the same way.', 'The vibrations pass through the small bones to the cochlea, causing the sensation of sound.', 'This works because the lorry’s frequencies are within 20 Hz to 20 kHz, the range over which the ear’s conversion works.'],
           reject: ['“The ear drum hears the sound.” The ear drum only vibrates; the sensation needs the parts behind it.', '“Air from the lorry travels to the window.” The air particles only vibrate about fixed positions.'] }
       } : {},
-      keyLines: ['Sound: longitudinal, mechanical, needs medium.', 'Sound waves travelling through a solid make the solid vibrate.', 'In the ear, sound waves make the ear drum and the parts behind it vibrate, causing the sensation of sound.', 'The conversion only works over a limited range of frequencies. Human range: 20 Hz–20 kHz.', 'Speed: solid > liquid > gas.', 'Entering a new material, the frequency stays the same; the speed and wavelength change (v = f λ).'],
+      keyLines: ['Sound: longitudinal, mechanical, needs medium.', 'Sound waves travelling through a solid make the solid vibrate.', 'In the ear, sound waves make the ear drum and the parts behind it vibrate, causing the sensation of sound.', 'The conversion only works over a limited range of frequencies. Human range: 20 Hz–20 kHz.', 'Speed: usually solid > liquid > gas.', 'Entering a new material, the frequency stays the same; the speed and wavelength change (v = f λ).'],
       bank: ready ? K.bank(slug, R.route) : []
     });
   }

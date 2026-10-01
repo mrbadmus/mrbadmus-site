@@ -51,7 +51,7 @@ equation → CFIFA) share nothing with it. The batch-3 neighbours
 | Key fact | Base statement only. | — |
 | Command words | Describe, Explain, Predict; Calculate is `data-route="triple"`. | — |
 | Exam tip | **Omitted.** No `examiner_tip` on any route. | — |
-| Ladder | r1 (all): authored ⚑ Describe, 1 mark — the motion of gas molecules (correct option is not the longest). r2: CF data rung (Predict, 2 marks; trend + predict at 80 °C); CH data rung with uneven intervals (proportional to °C? + predict at 100 °C); TF calc (0.060 → 0.024 m³, 250 kPa, nothing to convert); TH calc (90 → 25 cm³, answer in Pa, convert kPa → Pa). r3: CF/CH chain — the frosty-morning tyre (cooling); TF/TH chain — bigger volume at constant temperature. r4: CF/CH/TF 4-mark Explain (how molecules produce a pressure, starting from their motion); TH 6-mark levels (blocked bicycle pump), from the examination §5. | — |
+| Ladder | r1 (all): authored ⚑ Describe, 1 mark — the motion of gas molecules (correct option is not the longest). r2: CF data rung (Predict, 2 marks; trend + predict at 80 °C); CH data rung with uneven intervals (proportional to °C? + predict at 100 °C); TF calc (0.060 → 0.024 m³, 250 kPa, nothing to convert); TH calc (0.0090 m³ → 2500 cm³, convert cm³ → m³, 360 kPa; review fix S-2/Q-PMP2). r3: CF/CH chain — the frosty-morning tyre (cooling); TF/TH chain — bigger volume at constant temperature. r4: CF/CH/TF 4-mark Explain (how molecules produce a pressure, starting from their motion); TH 6-mark levels (blocked bicycle pump), from the examination §5. | — |
 | Key note | `K.keyLines(slug)` verbatim, filtered in logic: the two kelvin/absolute-zero lines never show; "Smaller V…" and "Boyle's Law: pV = constant." show on Triple only. | — |
 | Bank | `K.bank(slug, route)` — q1 only once q2 is withheld. | — |
 | End | Tutor line + a route-dependent legal line (16 molecules in 2D; gauge scaled to 100 kPa; slow piston keeps 20 °C on Triple; on TH the fast push loses no energy and its temperature rise is scaled to match air). | — |
@@ -110,7 +110,7 @@ T(K) = T(°C) + 273) are never rendered (examination C16).
 - ⚑ Examiner sort: eight cards and their credit/no-credit rulings (credit: KE up, faster, more frequent wall hits, bigger force per hit — all examination §5 marking points).
 - ⚑ Triple explainer wording of 4.3.3.2.
 - ⚑ CFIFA: TF second example (frozen theory example re-cut, 100 kPa 2 m³ → 0.5 m³ = 400 kPa), TF convert example (bubble 250 kPa × 4.0 cm³ ÷ 100 kPa = 10 cm³), TH examples (150 × 0.80 ÷ 120 = 1.0 m³; 100 × 60 ÷ 240 = 25 cm³ = 2.5 × 10⁻⁵ m³), attempts (TF 120 × 0.40 ÷ 0.60 = 80 kPa; 100 × 3.0 ÷ 75 = 4.0 m³; TH 2400 × 0.050 ÷ 100 = 1.2 m³; 100 × 45 ÷ 150 = 30 cm³). All rechecked.
-- ⚑ Ladder r1 (authored at parity), r2 all four (CF table 92/99/105/112 kPa at 0/20/40/60 °C → 119 kPa at 80 °C; CH table 95/105/109 kPa at 10/40/50 °C → 126 kPa at 100 °C — both generated from p ∝ (θ + 273) and rounded; TF 250 kPa; TH 360 000 Pa), r3 both chains, r4 4-mark points and the TH 6-mark levels (examination §5 descriptor, worded as levels).
+- ⚑ Ladder r1 (authored at parity), r2 all four (CF table 92/99/105/112 kPa at 0/20/40/60 °C → 119 kPa at 80 °C; CH table 95/105/109 kPa at 10/40/50 °C → 126 kPa at 100 °C — both generated from p ∝ (θ + 273) and rounded; TF 250 kPa; TH 360 kPa), r3 both chains, r4 4-mark points and the TH 6-mark levels (examination §5 descriptor, worded as levels).
 - ⚑ Key fact.
 
 ## Frozen items flagged wrong, and how they are handled
@@ -144,3 +144,18 @@ Chrome on all four routes at 390 px, motion on and reduced: every bench stage,
 the piston stages (TF, TH), CFIFA, ladder render; no `undefined`/`NaN`/`{{`/
 `null` text, no sideways scroll, zero console errors (other than the
 CORS-blocked health ping every localhost page makes).
+
+## Review fixes
+
+Reviews: `docs/ks4/packs/batch-3/review/science-phys-a.md` §3, `quality-a.md` (particle-motion-pressure).
+
+| row | what I did / why not |
+|---|---|
+| S-2 / Q-PMP2 (REQUIRED) | TH r2 rewritten to the quality reviewer's item: a 0.0090 m³ balloon at 100 kPa squeezed to 2500 cm³; convert cm³ → m³ (÷ 1 000 000); answer 360, unit kPa. Every numeric ladder answer is now < 1000. Driven in a scratch build: typing 360 + kPa grades Correct. |
+| Q-PMP1 (REQUIRED) | Every wrong hook option now has a corrective reply ("Molecules do not change size when they are heated." / "Even a can holding only air would burst…" / "The metal is not what changes most: the gas pushing on it is."). The swell reply deliberately stops short of "they move faster", which bench stage 1 asks. The shared reveal was reworded so it no longer repeats any reply. |
+| S-A9 | Applied: Triple explainer now says the molecules keep "the same average speed". |
+| S-A10 | Applied: TH Question 1 now asks for "the volume the gas would occupy at 100 kPa". |
+| A-PMP1 | Applied: on TH the stage-3 verdict and bars hide once the fast push starts (`p3Show`). |
+| A-PMP2 | Applied: when the "bump into each other" confrontation opens, the empty verdict line is not drawn (`bShowVerdict`). |
+| S-A8 | Not changed: the frozen key-note line "Boyle's Law: pV = constant." is not wrong, and the equation card states the conditions. |
+| A-PMP3 | Not changed: the equation-sheet link is part of the brief's fixed lesson head on every physics page; Combined pupils use the same sheet across the topic. |

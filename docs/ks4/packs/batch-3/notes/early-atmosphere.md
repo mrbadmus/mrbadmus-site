@@ -73,3 +73,15 @@ These all live inside the lesson's own Component; there is no `_ext` file:
 
 ## Body prose
 About 120 words of explainers. Counting the hook text, the stage texts and reveals, the panel, and the sort and chain prompts, it comes to about 600 words in all, under the ~700 budget. The longest run of prose before a commitment is about 90 words.
+
+## Review fixes
+| id | what I did / why not |
+|---|---|
+| Q-1 | First explainer cut to its first sentence, "AQA examines one theory …". |
+| Q-2 | Rung 2 part (b) replaced with the reviewer's graph-reading part: how the percentage of oxygen changed after 2.7 billion years ago. `model[1]` and `wrong` replaced with the reviewer's text. Rung 2's command chip changed from Suggest to Describe to match the new parts. In the command-words block, the Suggest card is replaced with Give, which rung 1 uses. |
+| Q-3 | Hook figure segment labels drop to 19 px when the segment is narrower than 120 units. |
+| A-9 (science) | Hook heading now reads "Venus and Mars **may** still have the kind of air Earth started with" (spec 5.9.1.2 wording). |
+| A-1 | Rung 3 oceans herring now has its own feedback, so it no longer repeats clock stage 6. The Explain command card is now generic: "link each step to the next with so or because". |
+| A-2 | Eyebrow is now just "Equation". The chip reads "Learn it · no chemistry equation sheet". |
+| A-3 / A-4 | Not changed. A-3 is a structural change to the stepper. A-4 (shared stepper shape): the two lessons' instruments differ in family and content. |
+| A-8 (science) | Kept, as the reviewer and the examination advised. |

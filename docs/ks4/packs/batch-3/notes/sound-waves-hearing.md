@@ -190,3 +190,16 @@ programmatic click, 1280 dark with reduced motion): every stepper step,
 Play buttons, chain, sort, both CFIFA attempts and all four rungs completed
 (Score 4 of 4); no `undefined`/`NaN`/`null`/`{{`/`[object` text; no sideways
 scroll at 390 px; only the usual CORS-blocked health call in the console.
+
+## Review fixes (science-phys-b, quality-a)
+
+| row | change |
+|---|---|
+| A-4 | Key note: "Speed: solid > liquid > gas." → "Speed: usually solid > liquid > gas." |
+| A-5 | Not applied: commander ruling, sound q1 (SONAR) stays in this bank. |
+| A-6 | Key fact: "…The conversion only works from 20 Hz to 20 kHz." → "…In a human ear, the conversion only works from about 20 Hz to 20 kHz." |
+| A-SW1 | Hook reveal: cut the signpost "Below, you find out how the ear does it, and where its range ends." |
+| A-SW2 | Each tone button now carries `aria-label="<tone>: heard"` / `"<tone>: not heard"`. |
+| A-SW3 | Not applied. Neither the hook reveal nor an explainer gives the numbers, so without them step 4 could not be answered. Its demand is to apply the stated range with unit conversion. |
+
+Validated in a scratch clone: `build_ks4.py --batch batch-3` passed with zero console errors. A drive through the stepper to step 4 confirmed the labels, with no bad text and no sideways scroll at 390 px.

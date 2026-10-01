@@ -322,12 +322,12 @@ class Component extends DCLogic {
     const w1c = s.w1 !== null ? W1[s.w1] : null;
     const w2c = s.w2 !== null ? W2[s.w2] : null;
     const cfEx = [
-      { tab: 'Nothing to convert', head: '10.0 g of calcium carbonate is heated in a closed container and decomposes completely: CaCO₃ → CaO + CO₂. 5.6 g of calcium oxide forms. Calculate the mass of carbon dioxide formed.', next: 'Now one with the masses in kilograms.', steps: [
+      { tab: 'Nothing to convert', head: '25.0 g of calcium carbonate is heated in a closed container and decomposes completely: CaCO₃ → CaO + CO₂. 14.0 g of calcium oxide forms. Calculate the mass of carbon dioxide formed.', next: 'Now one with the masses in kilograms.', steps: [
         { letter: 'C', label: 'Convert', line: 'Nothing to convert: both masses are in grams.', note: '' },
         { letter: 'F', label: 'Formula', line: 'total mass of reactants = total mass of products', note: '' },
-        { letter: 'I', label: 'Insert', line: '10.0 = 5.6 + mass of CO₂', note: '' },
-        { letter: 'F', label: 'Fine-tune', line: 'mass of CO₂ = 10.0 − 5.6', note: '' },
-        { letter: 'A', label: 'Answer', line: '4.4 g', note: '' } ] },
+        { letter: 'I', label: 'Insert', line: '25.0 = 14.0 + mass of CO₂', note: '' },
+        { letter: 'F', label: 'Fine-tune', line: 'mass of CO₂ = 25.0 − 14.0', note: '' },
+        { letter: 'A', label: 'Answer', line: '11.0 g', note: '' } ] },
       { tab: 'Convert first', head: '1.20 kg of magnesium burns completely in oxygen: 2Mg + O₂ → 2MgO. 2.00 kg of magnesium oxide forms. Calculate the mass of oxygen that reacted, in grams.', next: 'Now yours, below.', steps: [
         { letter: 'C', label: 'Convert', line: '1.20 kg = 1200 g · 2.00 kg = 2000 g', note: 'The answer is wanted in grams, so convert before anything else.' },
         { letter: 'F', label: 'Formula', line: 'total mass of reactants = total mass of products', note: '' },
@@ -350,8 +350,8 @@ class Component extends DCLogic {
     ] : [
       { tab: 'Question 1', id: 'cm-q1', head: '12.5 g of zinc carbonate is heated in a closed container and decomposes completely: ZnCO₃ → ZnO + CO₂. 8.1 g of zinc oxide forms. Calculate the mass of carbon dioxide.', close: 'Subtract the product you know from the reactant. 8.1 − 12.5 gives a negative mass, which cannot be right.',
         steps: qStep('Nothing to convert: both masses are in grams.', FM, '12.5 = 8.1 + mass of CO₂', 'mass of CO₂ = 12.5 − 8.1', '4.4 g') },
-      { tab: 'Question 2', id: 'cm-q2', head: '0.50 kg of calcium carbonate decomposes completely in a closed container: CaCO₃ → CaO + CO₂. 280 g of calcium oxide forms. Calculate the mass of carbon dioxide, in grams.', close: 'Without converting, 0.50 − 280 mixes kilograms and grams and makes no sense.',
-        steps: qStep('0.50 kg = 500 g', FM, '500 = 280 + mass of CO₂', 'mass of CO₂ = 500 − 280', '220 g') }
+      { tab: 'Question 2', id: 'cm-q2', head: '0.84 kg of magnesium carbonate decomposes completely in a closed container: MgCO₃ → MgO + CO₂. 400 g of magnesium oxide forms. Calculate the mass of carbon dioxide, in grams.', close: 'Without converting, 0.84 − 400 mixes kilograms and grams and makes no sense.',
+        steps: qStep('0.84 kg = 840 g', FM, '840 = 400 + mass of CO₂', 'mass of CO₂ = 840 − 400', '440 g') }
     ];
     return Object.assign({}, R, {
       video: K && s.hook !== null ? K.video(slug) : null,
@@ -432,10 +432,10 @@ class Component extends DCLogic {
             { text: 'The total mass of the products equals the total mass of the reactants', correct: true, reply: '' },
             { text: 'The mass of each product equals the mass of the reactant it came from', correct: false, reply: 'Atoms swap partners, so one product is built from atoms of several reactants. Only the totals match.' }
           ] },
-        r2: higher ? { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'In a sealed container, methane burns completely in oxygen: CH₄ + 2O₂ → CO₂ + 2H₂O. 0.40 kg of methane forms 1.10 kg of carbon dioxide and 0.90 kg of water. Calculate the mass of oxygen used, in grams. Work it on paper, then choose the conversion and give the answer and unit.',
-          convOptions: ['Nothing to convert', 'Convert kg to g: multiply by 1000', 'Convert kg to g: divide by 1000'], convAnswer: 1, answer: 1600, tol: 5, unit: 'g', units: ['g', 'kg', 'mol', 'g/mol'],
-          right: 'Both products count on the right: 2000 g in all, and 400 g of it came from the methane.', wrong: 'Convert first: 400 g, 1100 g and 900 g. Then 400 + mass of O₂ = 1100 + 900.',
-          model: ['C · 0.40 kg = 400 g · 1.10 kg = 1100 g · 0.90 kg = 900 g', 'F · total mass of reactants = total mass of products', 'I · 400 + mass of O₂ = 1100 + 900', 'F · mass of O₂ = 2000 − 400', 'A · 1600 g'] }
+        r2: higher ? { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'In a sealed container, methane burns completely in oxygen: CH₄ + 2O₂ → CO₂ + 2H₂O. 0.16 kg of methane forms 0.44 kg of carbon dioxide and 0.36 kg of water. Calculate the mass of oxygen used, in grams. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert kg to g: multiply by 1000', 'Convert kg to g: divide by 1000'], convAnswer: 1, answer: 640, tol: 2, unit: 'g', units: ['g', 'kg', 'mol', 'g/mol'],
+          right: 'Both products count on the right: 800 g in all, and 160 g of it came from the methane.', wrong: 'Convert first: 160 g, 440 g and 360 g. Then 160 + mass of O₂ = 440 + 360.',
+          model: ['C · 0.16 kg = 160 g · 0.44 kg = 440 g · 0.36 kg = 360 g', 'F · total mass of reactants = total mass of products', 'I · 160 + mass of O₂ = 440 + 360', 'F · mass of O₂ = 800 − 160', 'A · 640 g'] }
           : { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'A student heats 6.2 g of copper carbonate in a closed tube: CuCO₃ → CuO + CO₂. 4.0 g of copper oxide forms. Calculate the mass of carbon dioxide formed. Work it on paper, then choose the conversion and give the answer and unit.',
           convOptions: ['Nothing to convert', 'Convert g to kg: divide by 1000', 'Convert g to kg: multiply by 1000'], convAnswer: 0, answer: 2.2, tol: 0.05, unit: 'g', units: ['g', 'kg', 'mol', 'g/mol'],
           right: 'Every gram of copper carbonate is still there: 4.0 g in the solid and 2.2 g in the gas.', wrong: 'The reactant’s mass equals the two products’ masses together: 6.2 = 4.0 + mass of CO₂.',

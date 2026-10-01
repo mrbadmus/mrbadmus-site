@@ -197,3 +197,14 @@ both CFIFA attempts, all four rungs (Score 4 of 4); no `undefined`/`NaN`/
 `null`/`{{`/`[object` text; no sideways scroll at 390 px; only the usual
 CORS-blocked health call in the console. Figures re-laid out on 640-wide
 plates after the first 390 px screenshots showed labels too small.
+
+## Review fixes (science-phys-b, quality-a)
+
+| row | change |
+|---|---|
+| A-7 | Hook: "…how big the core is, and which part of it is solid and which is liquid." → "…how big the core is, and that part of it is liquid." |
+| A-8 | The P-wave path to 150° now enters the core at 44° (was 47°), so the two core-crossing paths no longer cross. |
+| A-WD1 | At step 4 (bigger core), the earlier S paths are dimmed with their ✕ marks removed, and the station badges are dimmed to 35 %, so the moved shadow edge and the 78° tick stand out. |
+| A-WD2 | Hook reveal: cut the signpost "Below, you read them yourself." |
+
+Validated in a scratch clone: `build_ks4.py --batch batch-3` passed with zero console errors. A drive through all four bench steps at 1280 px gave no bad text, and screenshots of steps 3 and 4 were checked.

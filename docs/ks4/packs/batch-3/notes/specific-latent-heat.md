@@ -140,3 +140,23 @@ The longest stretch before a commitment is 93 words.
   - CF with reduced motion: the wrong paths. These were the ledger "Neither" (the confrontation opens), logger 90 °C and 10 min, and L = 3500 (the minutes message).
 - **Text and console.** No `undefined`, `NaN`, `{{`, `[object` or `null` text on the page. The only console messages are the expected localhost CORS errors on `/api/health`.
 - **Bug found and fixed.** The first drive found a negative `<rect>` height in the freezing tube once Y was fully frozen. I fixed it and re-drove.
+
+## Review fixes (science-phys-a, quality-a, 1 Oct 2026)
+
+| row | what I did / why not |
+|---|---|
+| S-1 / Q-SLH2 (REQUIRED) | Used the science reviewer's text for the H "Convert first" Answer note: "Converting only L gives 45.2 ÷ 2 260 000 = 0.00002 kg (0.02 g): a thousand times too small." The old note mislabelled the error. |
+| Q-SLH3 (REQUIRED) | F "Convert first" now gives Lf = 334 000 J/kg, so only the mass converts. The Convert line is "250 g ÷ 1000 = 0.25 kg", with the note "L is in joules per kilogram, so the mass goes in kilograms." The Answer note is "Left in grams, 250 × 334 000 = 83 500 000 J: a thousand times too big." This also settles S-A4. |
+| Q-SLH1 (REQUIRED) | The ledger plate title is anchored to the right edge (x 630, end-anchored, font 20). The legend is stacked: condensing on the first row, cooling on the second. Re-checked at 390 px: nothing clips or overlaps. |
+| Q-SLH4 (REQUIRED) | Explainer 2's "Run it backwards on a cooling graph…" sentence is deleted. The eyebrow (and rail label) is now "Energy from a flat section". Logger step 1 is replaced with the reviewer's "Which section of the graph does E = m L describe?" (A to B / B to C / C to D, with the reviewer's replies and right text). The duration step and the calculation are kept. The "freezing point = melting point" misconception is therefore no longer confronted on this page; internal-energy covers that graph reading. |
+| Q-SLH5 (REQUIRED) | In `curve()` (the logger and the H r2 figure), tick labels are 24 in the 640 plate, labelled every 20 °C and every 2 min, with axis titles at 24. The left margin was widened so the rotated axis title clears the numbers. Minute and 10 °C gridlines are kept for reading durations. |
+| A-SLH1 | The confrontation now reads "its particles come together and are held by the forces between them, which releases energy". This matches batch-2 internal-energy's "forces between particles". ⚑ item 3 above is superseded: the page no longer says "bonds". |
+| A-SLH2 | Dropped "in kilograms" from the r2-H prompt; the unit is now the pupil's choice. |
+| A-SLH3 | Cut "The ledger below counts both." from the hook reveal. |
+| A-SLH4 | No change. The reviewer accepts it; the content differs. |
+| A-SLH5 | Added a Key fact card before the ladder: E = m L when the state changes at constant temperature, ΔE = m c Δθ when the temperature changes, and the SLH definition. |
+| S-A5 | Covered by Q-SLH1. |
+| S-A6 | No change. It is a frozen bank item, and its wording is for Mide or DEPARTURES. |
+| S-A7 | No change. The key note is frozen. |
+
+Validated in a scratch APFS clone: the full batch-3 build, `ks4_batch_check` clean, parity 616/616, and drives at 390 px on TH (motion) and CF (reduced motion). No new `block_map` need: `s-ledger` and `s-logger` are unchanged, and the key-fact card is auto-classified.

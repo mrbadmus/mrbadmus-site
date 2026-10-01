@@ -108,15 +108,14 @@
           <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ slideFig }}</div>
           <ol style="margin: 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 6px; font-size: 18px; line-height: 1.5;">
             <li>Peel a thin layer of epidermis from a piece of onion with forceps. Lay it flat in a drop of iodine solution on a microscope slide.</li>
-            <li>Lower a coverslip onto it at an angle, using a mounted needle, so that no air bubbles are trapped.</li>
+            <li>Lower a coverslip at an angle with a mounted needle, so no air bubbles are trapped.</li>
             <li>Put the slide on the stage and start with the lowest-power objective.</li>
             <li>Watching from the side, raise the stage until the slide is just below the lens. Then, looking through the eyepiece, lower it with the coarse focus until the cells appear. Sharpen them with the fine focus.</li>
             <li>Switch to a higher-power objective and refocus with the fine focus only.</li>
             <li>Draw what you see with a sharp pencil: clear, continuous lines and no shading. Label with ruled lines, and add a title and the magnification or a scale bar.</li>
           </ol>
         </div>
-        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;"><strong>Variables.</strong> None to control: this practical is about observing and recording, not testing how one thing affects another.</p>
-        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;"><strong>Risks.</strong> Iodine solution irritates the eyes and stains skin: wear eye protection. Slides and coverslips are thin glass, so handle them by the edges and report any breakage. The microscope lamp can get hot.</p>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;"><strong>Risks.</strong> Iodine solution irritates the eyes and stains skin: wear eye protection. Slides and coverslips are thin glass: hold them by the edges.</p>
       </section>
 
       <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
@@ -206,7 +205,7 @@
             <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">The magnifications multiply: ×10 with ×40 is ×400.</p>
           </div>
           <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
-            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 18px;">mm —×1000→ µm —×1000→ nm</p>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 18px;">mm ×1000 → µm<br>µm ×1000 → nm</p>
             <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">Image size and real size in the same unit before you divide. Magnification has no unit.</p>
           </div>
         </div>
@@ -409,7 +408,7 @@ class Component extends DCLogic {
     const D = window.KS4D;
     const ink = '#3A3A3A';
     let b = '<rect x="12" y="12" width="456" height="336" rx="10" fill="#FFFDF8" stroke="' + D.C.stroke + '" stroke-width="1.5"/>';
-    b += D.T(240, 52, 'Onion epidermis cells ×400', 24, { fill: ink, weight: 'normal' });
+    b += D.T(240, 52, 'Onion epidermis cells, seen at ×400', 24, { fill: ink, weight: 'normal' });
     b += '<rect x="28" y="90" width="122" height="170" fill="none" stroke="' + ink + '" stroke-width="2.5"/>';
     b += '<rect x="150" y="90" width="122" height="170" fill="none" stroke="' + ink + '" stroke-width="2.5"/>';
     b += '<rect x="36" y="98" width="106" height="154" fill="none" stroke="' + ink + '" stroke-width="1.3"/>';
@@ -469,7 +468,7 @@ class Component extends DCLogic {
         { href: K.hrefFor('cell-specialisation', R), label: 'Cell specialisation' }
       ].filter((c) => c.href) : [],
       hookOptions: [
-        { text: 'A lens that magnifies far more, say ×20 000', reply: '' },
+        { text: 'A lens that magnifies far more, say ×20 000', reply: 'More magnification alone gives a bigger blur, not more detail. Resolve it, below, tests this.' },
         { text: 'A better stain, so the ribosomes stand out', reply: 'Stain adds colour, not detail. A stained ribosome is still too small to show up as a separate dot.' },
         { text: 'A microscope that can separate much closer points', reply: '' },
         { text: 'A living cell, so the ribosomes are moving', reply: 'Movement does not help. Ribosomes are in living and dead cells alike: the problem is their size.' }
@@ -540,7 +539,7 @@ class Component extends DCLogic {
       meanVerdictStyle: this.verdict(!!(mean && mean.ok)),
       /* drawing check */
       drawFig: ready ? this.drawSvg() : '',
-      drawAlt: 'A pencil drawing of two onion epidermis cells, titled Onion epidermis cells ×400, with four ruled labels on the right. From top to bottom: cell wall, cytoplasm, nucleus, chloroplast.',
+      drawAlt: 'A pencil drawing of two onion epidermis cells, titled Onion epidermis cells, seen at ×400, with four ruled labels on the right. From top to bottom: cell wall, cytoplasm, nucleus, chloroplast.',
       drawOptions: [
         { text: 'Cell wall', correct: false, reply: 'Onion cells are plant cells: the wall is the thick outline you see around each one.' },
         { text: 'Cytoplasm', correct: false, reply: 'It is there, as a thin layer between the wall and the large vacuole.' },
@@ -556,7 +555,7 @@ class Component extends DCLogic {
       thinkOptions: [
         { text: '×0.3', correct: false, reply: 'That is the mistake as written: millimetres divided by micrometres.' },
         { text: '×300', correct: true, reply: '' },
-        { text: '×3.3', correct: false, reply: 'That divides the wrong way: real size ÷ image size. Magnification is image ÷ real.' },
+        { text: '×3.3', correct: false, reply: 'That divides the wrong way, real ÷ image, and still mixes µm with mm. Magnification is image ÷ real.' },
         { text: '×30', correct: false, reply: '1 mm is 1000 µm, not 100 µm, so 12 mm is 12 000 µm.' }
       ],
       thinkReveal: '×0.3 would make the image smaller than the cell. Put both sizes in the same unit first: 12 mm = 12 000 µm, so M = 12 000 ÷ 40 = ×300.',
@@ -564,12 +563,12 @@ class Component extends DCLogic {
       /* CFIFA */
       cfExamples: ready && F.length >= 3 ? [
         { tab: 'Nothing to convert', head: F[0].question, next: 'Next: a size that arrives in the wrong unit.', steps: fq(F[0], 'Nothing to convert.') },
-        { tab: 'Convert first', head: 'A chloroplast is 5 µm long. In a drawing it is 25 mm long. Calculate the magnification of the drawing.', next: 'Next: rearranged to find the actual size.', steps: [
-          { letter: 'C', label: 'Convert', line: '25 mm × 1000 = 25 000 µm', note: 'Now both lengths are in µm.' },
+        { tab: 'Convert first', head: 'A chloroplast is 4 µm long. In a drawing it is 30 mm long. Calculate the magnification of the drawing.', next: 'Next: rearranged to find the actual size.', steps: [
+          { letter: 'C', label: 'Convert', line: '30 mm × 1000 = 30 000 µm', note: 'Now both lengths are in µm.' },
           { letter: 'F', label: 'Formula', line: 'M = image size ÷ actual size', note: '' },
-          { letter: 'I', label: 'Insert', line: 'M = 25 000 ÷ 5', note: '' },
-          { letter: 'F', label: 'Fine-tune', line: '25 000 ÷ 5 = 5000', note: '' },
-          { letter: 'A', label: 'Answer', line: 'Magnification = ×5000', note: 'Magnification has no unit.' } ] },
+          { letter: 'I', label: 'Insert', line: 'M = 30 000 ÷ 4', note: '' },
+          { letter: 'F', label: 'Fine-tune', line: '30 000 ÷ 4 = 7500', note: '' },
+          { letter: 'A', label: 'Answer', line: 'Magnification = ×7500', note: 'Magnification has no unit.' } ] },
         { tab: 'Actual size', head: F[1].question, next: 'Next: rearranged to find the image size.', steps: fq(F[1], 'Nothing to convert before you substitute: the answer is converted at the end.', '', 'In standard form: 1.5 × 10⁻¹ µm.') },
         { tab: 'Image size', head: F[2].question, next: 'Next: nanometres and standard form.', steps: fq(F[2], 'Nothing to convert before you substitute: the answer is converted at the end.') },
         { tab: 'nm · standard form', head: 'A cell membrane is 7 nm thick. In an electron micrograph it is 0.35 mm thick. Calculate the magnification. Give your answer in standard form.', next: 'Now yours, below.', steps: [
@@ -620,7 +619,7 @@ class Component extends DCLogic {
             reject: ['“Shade the cells to show the stain.” A scientific drawing uses clear lines and no shading.', '“Label the chloroplasts.” Onion epidermis cells have none.'] }
         };
       })() : {},
-      keyLines: (ready ? K.keyLines(slug) : []).map((l) => l === 'Resolution = sharpness.' ? 'Resolution = the ability to distinguish two points that are close together.' : l).concat([
+      keyLines: (ready ? K.keyLines(slug) : []).map((l) => l === 'Resolution = sharpness.' ? 'Resolution = the ability to distinguish two points that are close together.' : (l === 'Magnification = size increase.' ? 'Magnification = how many times bigger the image is than the real object.' : l)).concat([
         'M = image size ÷ real size, both in the same unit: 1 mm = 1000 µm, 1 µm = 1000 nm.',
         'Total magnification = eyepiece × objective.',
         'Required practical (RP1 Combined / RP1 Biology): onion epidermis in iodine, lowest power first, a clear pencil drawing with a title and a magnification or scale bar.'

@@ -79,7 +79,7 @@
           </div>
           <button type="button" class="ks3-reveal-btn" onClick="{{ onBRun }}" disabled="{{ bRunLocked }}" style="{{ bRunStyle }}">{{ bRunLabel }}</button>
         </sc-if>
-        <sc-if value="{{ bDone }}">
+        <sc-if value="{{ bShowVerdict }}">
           <p data-arrive="1" role="status" style="{{ bVerdictStyle }}"><strong>{{ bVerdictWord }}</strong> {{ bVerdictText }}</p>
         </sc-if>
         <sc-if value="{{ bShowBars }}">
@@ -115,7 +115,7 @@
       </section>
 
       <section class="ks3-explainer" data-route="triple">
-        <p>A gas can be compressed or expanded by changing the pressure on it. The pressure of a gas produces a <strong>net force at right angles</strong> to the wall of its container, and to any surface the gas touches. Here the right-hand wall is a piston, moved slowly enough for the gas to stay at the same temperature: its molecules keep the same speeds. Predict the gauge before the piston moves.</p>
+        <p>A gas can be compressed or expanded by changing the pressure on it. The pressure of a gas produces a <strong>net force at right angles</strong> to the wall of its container, and to any surface the gas touches. Here the right-hand wall is a piston, moved slowly enough for the gas to stay at the same temperature: its molecules keep the same average speed. Predict the gauge before the piston moves.</p>
       </section>
 
       <section id="s-piston" class="ks3-block" data-route="triple" style="scroll-margin-top: 92px;">
@@ -131,7 +131,7 @@
           </div>
           <button type="button" class="ks3-reveal-btn" onClick="{{ onP3Run }}" disabled="{{ p3RunLocked }}" style="{{ p3RunStyle }}">{{ p3RunLabel }}</button>
         </sc-if>
-        <sc-if value="{{ p3Done }}">
+        <sc-if value="{{ p3Show }}">
           <p data-arrive="1" role="status" style="{{ p3VerdictStyle }}"><strong>{{ p3VerdictWord }}</strong> {{ p3VerdictText }}</p>
           <div data-arrive="1" style="margin-top: 14px; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border); display: flex; flex-direction: column; gap: 12px;">
             <sc-for list="{{ p3Bars }}" as="r" hint-placeholder-count="2">
@@ -479,12 +479,12 @@ class Component extends DCLogic {
         ],
         why: 'Gas molecules are in constant random motion: in all directions, at a range of speeds, colliding with each other and with the walls.' },
       r2: tri ? (hi ? { kind: 'calc', command: 'Calculate', marks: 3,
-          prompt: 'A syringe holds 90 cm³ of air at 100 kPa. Its end is sealed and the plunger is pushed in slowly, so the temperature stays constant, until the volume is 25 cm³. Calculate the new pressure in pascals. Work it on paper, then choose the conversion and give the answer and unit.',
-          convOptions: ['Nothing to convert', 'Convert 100 kPa to 100 000 Pa; the cm³ can stay', 'Convert both volumes to m³; the kPa can stay'], convAnswer: 1,
-          answer: 360000, tol: 500, unit: 'Pa', units: ['Pa', 'kPa', 'm³', 'N'],
-          right: 'The pressure is wanted in pascals, so 100 kPa becomes 100 000 Pa before the equation.',
-          wrong: 'The answer is asked for in pascals, so convert 100 kPa to 100 000 Pa first. The volumes can stay in cm³ because both are in cm³.',
-          model: ['C · 100 kPa × 1000 = 100 000 Pa; both volumes already in cm³', 'F · p₁V₁ = p₂V₂', 'I · 100 000 × 90 = p₂ × 25', 'F · p₂ = 9 000 000 ÷ 25 = 360 000', 'A · p₂ = 360 000 Pa'] }
+          prompt: 'A balloon holds 0.0090 m³ of air at 100 kPa. It is squeezed slowly, at constant temperature, until its volume is 2500 cm³. Calculate the new pressure in kPa. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert 2500 cm³ to m³: divide by 1 000 000', 'Convert 2500 cm³ to m³: multiply by 1 000 000'], convAnswer: 1,
+          answer: 360, tol: 1, unit: 'kPa', units: ['kPa', 'Pa', 'm³', 'N'],
+          right: 'Both volumes in m³, so the answer comes out in kPa, the unit of p₁.',
+          wrong: 'The two volumes arrive in different units: 2500 cm³ ÷ 1 000 000 = 0.0025 m³. Then p₂ = p₁V₁ ÷ V₂.',
+          model: ['C · 2500 cm³ ÷ 1 000 000 = 0.0025 m³', 'F · p₁V₁ = p₂V₂', 'I · 100 × 0.0090 = p₂ × 0.0025', 'F · p₂ = 0.90 ÷ 0.0025 = 360', 'A · p₂ = 360 kPa'] }
         : { kind: 'calc', command: 'Calculate', marks: 3,
           prompt: 'A fixed mass of gas at constant temperature has a volume of 0.060 m³ at a pressure of 100 kPa. It is compressed to 0.024 m³. Calculate the new pressure. Work it on paper, then choose the conversion and give the answer and unit.',
           convOptions: ['Nothing to convert: same units on both sides', 'Convert 100 kPa to Pa, or the answer will be wrong', 'Convert both volumes to cm³ first'], convAnswer: 0,
@@ -540,12 +540,12 @@ class Component extends DCLogic {
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: [{ href: href('internal-energy'), label: 'Internal energy' }, { href: href('temperature-changes-shc'), label: 'Specific heat capacity' }, { href: href('pressure-in-a-fluid'), label: 'Pressure in a fluid' }, { href: href('work-done-energy-transfer'), label: 'Work done and energy transfer' }].filter((c) => c.href),
       hookOptions: [
-        { text: 'Heating makes the gas particles swell until they split the can open', reply: '' },
+        { text: 'Heating makes the gas particles swell until they split the can open', reply: 'Molecules do not change size when they are heated.' },
         { text: 'Heating makes the gas inside push harder on the walls, until the can bursts', reply: '' },
-        { text: 'The leftover gas catches fire inside the can and burns through it', reply: '' },
-        { text: 'Heating softens the metal, so the normal push of the gas splits it', reply: '' }
+        { text: 'The leftover gas catches fire inside the can and burns through it', reply: 'Even a can holding only air would burst. The danger is the push of the hot gas.' },
+        { text: 'Heating softens the metal, so the normal push of the gas splits it', reply: 'The metal is not what changes most: the gas pushing on it is.' }
       ],
-      hookReveal: 'The hotter the gas inside, the harder it pushes on the walls. The can is sealed, so the gas cannot escape, and the push keeps growing until the metal splits. The bench shows what the molecules do differently to push harder.',
+      hookReveal: 'The can is sealed, so the gas cannot escape as it heats, and its push on the walls keeps growing until the metal splits. The bench shows what the molecules do differently to push harder.',
       onHook: (i) => this.setState({ hook: i }),
 
       bNum: String(k + 1), bTitle: st.title,
@@ -554,7 +554,7 @@ class Component extends DCLogic {
       bOpts: optList(st, bp, s.bRun, (i) => this.setState((ss) => ({ bPick: Object.assign({}, ss.bPick, { [ss.b]: i }) }))),
       bRunLocked: bp === undefined || s.bRun, bRunStyle: 'margin-top:12px;' + (bp === undefined || s.bRun ? 'opacity:.45;cursor:default;' : ''),
       bRunLabel: s.bRun ? 'Heating…' : st.run, onBRun: runBench,
-      bDone, bVerdictStyle: this.verdictStyle(bOk),
+      bShowVerdict: bDone && !(k === 1 && bp === 3), bVerdictStyle: this.verdictStyle(bOk),
       bVerdictWord: bDone ? (bOk ? 'Yes.' : 'Watch what happened instead.') : '',
       bVerdictText: bDone ? (bOk ? st.why : (bWrongText ? bWrongText + ' ' : '') + (k === 1 && bp === 3 ? '' : st.why)) : '',
       bShowBars: k === 1 && bDone,
@@ -583,7 +583,7 @@ class Component extends DCLogic {
       p3Opts: optList(P3, s.p3Pick, s.p3Run || s.p3Done, (i) => this.setState({ p3Pick: i })),
       p3RunLocked: s.p3Pick === null || s.p3Run, p3RunStyle: 'margin-top:12px;' + (s.p3Pick === null || s.p3Run ? 'opacity:.45;cursor:default;' : ''),
       p3RunLabel: s.p3Run ? 'Pulling…' : 'Pull the piston', onP3Run: runP3,
-      p3Done: s.p3Done, p3VerdictStyle: this.verdictStyle(p3Ok),
+      p3Show: s.p3Done && !(th && s.p4Started), p3VerdictStyle: this.verdictStyle(p3Ok),
       p3VerdictWord: s.p3Done ? (p3Ok ? 'Yes.' : 'Watch what happened instead.') : '',
       p3VerdictText: s.p3Done ? (p3Ok ? P3.why : P3.opts[s.p3Pick].r + ' ' + P3.why) : '',
       p3Bars: this.bars(0.5, 1),
@@ -631,7 +631,7 @@ class Component extends DCLogic {
           ] }
       ] : [],
       cfQuestions: hi ? [
-        { tab: 'Question 1', id: 'pg-q1', head: 'A gas cylinder holds 0.050 m³ of gas at 2400 kPa. The gas is let out slowly into a balloon at 100 kPa, at constant temperature. Calculate the volume the gas fills at 100 kPa.', close: 'Check: 100 × 1.2 = 120 = 2400 × 0.050.',
+        { tab: 'Question 1', id: 'pg-q1', head: 'A gas cylinder holds 0.050 m³ of gas at 2400 kPa. The gas is let out slowly into a balloon at 100 kPa, at constant temperature. Calculate the volume the gas would occupy at 100 kPa.', close: 'Check: 100 × 1.2 = 120 = 2400 × 0.050.',
           steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert: kPa on both sides.' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'p₁V₁ = p₂V₂' }, { letter: 'I', label: 'Insert', placeholder: '… × … = … × V₂', line: '2400 × 0.050 = 100 × V₂' }, { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange: V₂ = …', line: 'V₂ = 120 ÷ 100 = 1.2' }, { letter: 'A', label: 'Answer', placeholder: 'V₂ = … with unit', line: 'V₂ = 1.2 m³' }] },
         { tab: 'Question 2', id: 'pg-q2', head: 'A syringe holds 45 cm³ of air at 100 kPa. The plunger is pushed in slowly, at constant temperature, until the pressure is 1.5 × 10⁵ Pa. Calculate the new volume.', close: 'Mixing 100 (kPa) with 150 000 (Pa) gives 0.03 cm³: a thousand times too small.',
           steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '1.5 × 10⁵ Pa = 150 kPa' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'p₁V₁ = p₂V₂' }, { letter: 'I', label: 'Insert', placeholder: '… × … = … × V₂', line: '100 × 45 = 150 × V₂' }, { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange: V₂ = …', line: 'V₂ = 4500 ÷ 150 = 30' }, { letter: 'A', label: 'Answer', placeholder: 'V₂ = … with unit', line: 'V₂ = 30 cm³' }] }

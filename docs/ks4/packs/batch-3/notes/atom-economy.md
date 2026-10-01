@@ -109,3 +109,20 @@ About 230 words on TF and about 290 on TH.
 The build passed in a scratch clone: zero console errors on TF and TH at 1280 and 360. No undefined, NaN or "{{" text, and no horizontal scroll. The withheld item is absent. The strip, brine and route were driven and screenshotted at 390 px, in light and dark.
 
 During the self-check I replaced the first version of the route table, a `<table>` with `sc-for` inside `<tbody>`. It rendered no rows, because the HTML parser foster-parents the loop out of `<tbody>`. The current version is a div grid with ARIA table roles. Future authors should avoid `sc-for` inside `<table>`.
+
+## Review fixes
+
+| id | where | old → new | reason |
+|---|---|---|---|
+| S-3 | practice-bank section | `sc-if value="{{ ready }}"` → `sc-if value="{{ bankOn }}"` (`bankOn = ready && bank.length > 0`) | The engine now withholds q1 (B3-W9) as well as q2 (B3-W6), so the bank is empty on TF and TH. The block, including its heading, is not rendered, so there is no "0 of 0". No rung or text refers to the bank. |
+| A-7 | ethanol CFIFA tab | unchanged: the frozen Formula step stays verbatim, with the reconciling AQA-reactants note under it | accepted under the frozen policy |
+| Q-1 | `rungs.r3` | marks 2 → **3** | three-link chain |
+| Q-2 | `row()` unit dividers | full-height line → short ticks at the top and bottom of the bar | the dividers were cutting through the centred labels (2F\|e, 2Na\|Cl) |
+| Q-3 | CFIFA worked example 2 | Iron (Fe₂O₃ + 3CO, 45.9%, repeating the strip) → **Copper: 2CuO + C → 2Cu + CO₂**, (2 × 63.5) ÷ (2 × 79.5 + 12) × 100 = 127 ÷ 171 × 100 = **74.3%** ✓ (products 127 + 44 = 171) | the strip's Iron tab printed the same working |
+
+Validated in a scratch clone with q1 and q2 withheld:
+- the build passed;
+- the bank block is absent;
+- no "0 of 0", undefined or NaN;
+- no horizontal scroll at 390 px;
+- r3 shows 3 marks.

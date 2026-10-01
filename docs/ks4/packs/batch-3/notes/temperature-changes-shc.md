@@ -129,3 +129,25 @@ The longest stretch before a commitment is about 82 words. The RP method list (~
 ## Engine note (not this lesson's to fix)
 
 `Ks4Ladder`'s calc rung parses with `parseFloat(s.replace(',', '.'))`. "63,000" therefore reads as 63, and "63 000" reads as 63. Both r2 answers here are chosen below 1000 (770 J; 18.7 °C) so a pupil cannot be marked wrong for typing a thousands separator. The instruments' own inputs use `num()`.
+
+## Review fixes (science-phys-a, quality-a, 1 Oct 2026)
+
+| row | what I did / why not |
+|---|---|
+| Q-SHC1 (REQUIRED) | Changed `offVerdictText` so it ends "Record the highest temperature." The number is no longer repeated; "Process your data" directly below prints it. |
+| S-A1 | Added "Assume all the energy heats the block." to the head of H Question 2. |
+| S-A2 | RP step 5 now reads "Record the energy supplied (the joulemeter reading, or E = V × I × t) and the highest temperature…". |
+| S-A3 | No change. The key note is frozen text; recorded only. |
+| A-SHC1 | Added a Key fact card before the ladder with the reviewer's text: ΔE = m c Δθ, Δθ = final − initial, and the definition. It is auto-classified (`data-key-fact`), so no `block_map` change is needed. |
+| A-SHC2 | Removed "Aluminium's is 900 J/kg °C." from the explainer. The ranking lead gives it where it is used. |
+| A-SHC3 | The unlagged run no longer hides the lagged result. The off-question verdict, the processing panel (headed "Your lagged run" during the second run), the comparison and the unlagged line all stay visible together. |
+| A-SHC4 | The placed 1st–4th slots stay visible and locked after the reveal. "Take back" shows only before heating. |
+| A-SHC5 | Moved the graph's "lagged" and "no lagging" labels mid-graph (5 min above the lagged crosses, 7 min below the unlagged), clear of the 11–12 min crosses. |
+
+Validated in a scratch APFS clone, not the shared tree:
+- the full `build_ks4.py --batch batch-3` (44 pages, zero console errors);
+- `ks4_batch_check` clean;
+- `ks4_parity --batch batch-3` at 616/616;
+- driven at 390 px on TH with motion and on CF with reduced motion. Both runs showed no bad text and no console errors other than `/api/health`.
+
+No new `block_map` need.

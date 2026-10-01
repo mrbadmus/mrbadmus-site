@@ -97,7 +97,7 @@
           <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
             <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
             <p class="ks3-mis-quote">&ldquo;It stays at 100 °C, so no energy is transferred.&rdquo;</p>
-            <p style="margin: 0;">A steady temperature means the particles&rsquo; average kinetic energy is not changing. It does not mean no energy is moving. As steam condenses, its particles come together and the bonds between them form, which releases energy while the temperature holds at 100 °C. That energy is E = m L. With Δθ = 0, m c Δθ cannot see it.</p>
+            <p style="margin: 0;">A steady temperature means the particles&rsquo; average kinetic energy is not changing. It does not mean no energy is moving. As steam condenses, its particles come together and are held by the forces between them, which releases energy while the temperature holds at 100 °C. That energy is E = m L. With Δθ = 0, m c Δθ cannot see it.</p>
           </div>
         </sc-if>
         <sc-if value="{{ canNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onNext }}" style="margin-top: 14px;">Next stage</button></sc-if>
@@ -129,11 +129,11 @@
       </section>
 
       <section class="ks3-explainer">
-        <p>On a temperature&ndash;time graph, a sloping section means the temperature is changing: ΔE = m c Δθ. A flat section means the state is changing: E = m L. Run it backwards on a cooling graph, and the flat sections are where the substance condenses or freezes, giving energy out. When energy goes in or out at a steady rate, the length of a flat section measures the energy, through E = P t.</p>
+        <p>On a temperature&ndash;time graph, a sloping section means the temperature is changing: ΔE = m c Δθ. A flat section means the state is changing: E = m L. When energy goes in or out at a steady rate, the length of a flat section measures the energy, through E = P t.</p>
       </section>
 
       <section id="s-logger" class="ks3-block" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Read the cooling curve</p>
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Energy from a flat section</p>
         <h2 style="margin: 6px 0 0;">60 g of liquid Y cools in a cold room.</h2>
         <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.55; max-width: 62ch;">Y transfers energy to the room at a steady 30 J every second. A data logger records its temperature.</p>
         <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ loggerFig }}</div>
@@ -177,6 +177,11 @@
         </dl>
       </section>
 
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">State changing at constant temperature: E = m L. Temperature changing: ΔE = m c Δθ. Specific latent heat is the energy needed to change the state of 1 kg with no change in temperature.</p>
+      </div>
+
       <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
         <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
           <dc-import name="Ks4Ladder" slug="specific-latent-heat" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
@@ -202,7 +207,7 @@
 const RAIL = [
   { id: 's-hook', label: 'Steam burns', short: 'HOOK' },
   { id: 's-ledger', label: 'The energy ledger', short: 'LEDGER' },
-  { id: 's-logger', label: 'The cooling curve', short: 'GRAPH' },
+  { id: 's-logger', label: 'Energy from a flat section', short: 'GRAPH' },
   { id: 's-calc', label: 'Calculate it', short: 'CFIFA' },
   { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
 ];
@@ -297,22 +302,22 @@ class Component extends DCLogic {
     if (cE > 0) b += bar(540, base, cE, C.gold); else b += '<rect x="540" y="' + (base - 40) + '" width="62" height="40" fill="none" stroke="' + C.muted + '" stroke-width="2" stroke-dasharray="6 5"/>' + D.T(571, base - 14, '?', 22, { fill: C.muted });
     if (kE > 0) b += bar(540, base - cE * sc, kE, C.arrow);
     b += D.T(471, base + 28, 'water', 22, { fill: C.stroke }) + D.T(571, base + 28, 'steam', 22, { fill: C.stroke });
-    b += D.T(522, 30, 'energy given to the skin', 21);
+    b += D.T(630, 30, 'energy given to the skin', 20, { anchor: 'end' });
     b += '<rect x="430" y="44" width="14" height="14" fill="' + C.gold + '" stroke="' + C.stroke + '" stroke-width="1.5"/>' + D.T(450, 56, 'condensing', 19, { anchor: 'start', weight: 'normal', fill: C.stroke });
-    b += '<rect x="536" y="44" width="14" height="14" fill="' + C.arrow + '" stroke="' + C.stroke + '" stroke-width="1.5"/>' + D.T(556, 56, 'cooling', 19, { anchor: 'start', weight: 'normal', fill: C.stroke });
+    b += '<rect x="430" y="68" width="14" height="14" fill="' + C.arrow + '" stroke="' + C.stroke + '" stroke-width="1.5"/>' + D.T(450, 80, 'cooling', 19, { anchor: 'start', weight: 'normal', fill: C.stroke });
     const alt = (gated ? '' : 'Before any transfer. ') + st.title + ' Thermometer ' + Math.round(T) + ' degrees Celsius. Energy bars: boiling water ' + (wE > 0 ? 'short' : 'empty') + '; steam ' + (cE > 0 ? (kE > 0 ? 'tall, mostly from condensing, plus a short cooling part' : 'tall, from condensing') : 'empty') + '.';
     return D.svg(640, 320, b, alt);
   }
   /* a temperature-time graph; pts in minutes and °C, drawn up to tEnd */
   curve(pts, o) {
     const D = window.KS4D; const C = D.C;
-    const W = o.w || 640, H = 380, L = 76, Rt = o.right || 600, Tp = 28, B = 310;
+    const W = o.w || 640, H = 380, L = 92, Rt = o.right || 600, Tp = 28, B = 310;
     const X = (x) => L + (Rt - L) * (x / 12), Y = (T) => B - (B - Tp) * (T / 100);
     let b = '';
-    for (let T = 0; T <= 100; T += 10) b += D.line(L, Y(T), Rt, Y(T), 1, '#C9C3B2') + D.line(L - 7, Y(T), L, Y(T), 2) + D.T(L - 11, Y(T) + 6, String(T), 21, { weight: 'normal', fill: C.stroke, anchor: 'end' });
-    for (let m = 0; m <= 12; m++) b += D.line(X(m), Tp, X(m), B, 1, '#C9C3B2') + (m % 2 === 0 ? D.T(X(m), B + 26, String(m), 21, { weight: 'normal', fill: C.stroke }) : '');
+    for (let T = 0; T <= 100; T += 10) b += D.line(L, Y(T), Rt, Y(T), 1, '#C9C3B2') + D.line(L - 7, Y(T), L, Y(T), 2) + (T % 20 === 0 ? D.T(L - 11, Y(T) + 8, String(T), 24, { weight: 'normal', fill: C.stroke, anchor: 'end' }) : '');
+    for (let m = 0; m <= 12; m++) b += D.line(X(m), Tp, X(m), B, 1, '#C9C3B2') + (m % 2 === 0 ? D.T(X(m), B + 30, String(m), 24, { weight: 'normal', fill: C.stroke }) : '');
     b += D.line(L, Tp, L, B, 2.5) + D.line(L, B, Rt, B, 2.5);
-    b += D.T((L + Rt) / 2, H - 12, 'Time / minutes', 22) + '<text x="22" y="' + ((Tp + B) / 2) + '" transform="rotate(-90 22 ' + ((Tp + B) / 2) + ')" font-family="' + D.F + '" font-size="22" font-weight="bold" fill="' + C.label + '" text-anchor="middle">Temperature / °C</text>';
+    b += D.T((L + Rt) / 2, H - 12, 'Time / minutes', 24) + '<text x="22" y="' + ((Tp + B) / 2) + '" transform="rotate(-90 22 ' + ((Tp + B) / 2) + ')" font-family="' + D.F + '" font-size="24" font-weight="bold" fill="' + C.label + '" text-anchor="middle">Temperature / °C</text>';
     const tEnd = o.tEnd === undefined ? 12 : o.tEnd;
     let d = '', last = null;
     for (let i = 0; i < pts.length - 1; i++) {
@@ -355,9 +360,9 @@ class Component extends DCLogic {
     /* logger */
     const tEnd = s.logDone ? 12 : s.logP * 12;
     const steps = [
-      { command: 'Determine', prompt: 'The melting point of Y.', opts: ['90 °C', '50 °C', '20 °C', 'None: this curve shows freezing, not melting'], truth: 1,
-        right: 'The flat section B to C. A pure substance freezes and melts at the same temperature.',
-        replies: ['That is where logging began, with Y still a hot liquid.', '', 'That is the last reading: Y is solid by then and still cooling.', 'A pure substance freezes and melts at the same temperature, so the freezing plateau gives the melting point.'], word: 'It is 50 °C.' },
+      { command: 'Determine', prompt: 'Which section of the graph does E = m L describe?', opts: ['A to B', 'B to C', 'C to D'], truth: 1,
+        right: 'B to C: the flat section, where Y freezes at constant temperature.',
+        replies: ['Sloping: Y is a liquid cooling, so that is m c Δθ.', '', 'Sloping: solid Y is cooling, so that is m c Δθ.'], word: 'It is B to C.' },
       { command: 'Determine', prompt: 'How long Y takes to freeze.', opts: ['3 minutes', '7 minutes', '10 minutes'], truth: 1,
         right: 'From B at 3 minutes to C at 10 minutes.',
         replies: ['That is how long the liquid took to cool to 50 °C.', '', 'That is the clock time when freezing ends. It began at 3 minutes.'], word: 'It is 7 minutes.' }
@@ -384,7 +389,7 @@ class Component extends DCLogic {
         { text: 'Steam particles move faster, so they hit the skin harder', reply: 'At the same temperature, the particles have the same average kinetic energy.' },
         { text: 'Steam is a gas, so it spreads over more of the skin', reply: 'Even the same mass on the same patch of skin burns worse.' }
       ],
-      hookReveal: 'Before steam can cool on your skin, it has to condense into water, and condensing releases energy with no change in temperature. Then that water cools, just as the boiling water does. The ledger below counts both.',
+      hookReveal: 'Before steam can cool on your skin, it has to condense into water, and condensing releases energy with no change in temperature. Then that water cools, just as the boiling water does.',
       onHook: (i) => this.setState({ hook: i }),
       /* ledger */
       ledgerTitle: s.gate === null ? '10 g of boiling water and 10 g of steam each land on skin at 37 °C.' : st.title,
@@ -462,15 +467,15 @@ class Component extends DCLogic {
             { letter: 'F', label: 'Formula', line: 'E = m × L', note: '' },
             { letter: 'I', label: 'Insert', line: '45 200 = m × 2 260 000', note: '' },
             { letter: 'F', label: 'Fine-tune', line: 'm = 45 200 ÷ 2 260 000 = 0.020', note: 'Rearrange so m is the subject.' },
-            { letter: 'A', label: 'Answer', line: 'm = 0.020 kg (20 g)', note: 'Mixing kJ with MJ/kg gives 0.02 g: a thousand times too small.' }
+            { letter: 'A', label: 'Answer', line: 'm = 0.020 kg (20 g)', note: 'Converting only L gives 45.2 ÷ 2 260 000 = 0.00002 kg (0.02 g): a thousand times too small.' }
           ] }
-          : { tab: 'Convert first', head: 'Calculate the energy needed to melt 250 g of ice at 0 °C. (Lf = 334 kJ/kg)', next: 'Convert first, then the same four lines. Your turn below.',
+          : { tab: 'Convert first', head: 'Calculate the energy needed to melt 250 g of ice at 0 °C. (Lf = 334 000 J/kg)', next: 'Convert first, then the same four lines. Your turn below.',
           steps: [
-            { letter: 'C', label: 'Convert', line: '250 g ÷ 1000 = 0.25 kg; 334 kJ/kg × 1000 = 334 000 J/kg', note: 'Mass in kilograms, L in joules per kilogram.' },
+            { letter: 'C', label: 'Convert', line: '250 g ÷ 1000 = 0.25 kg', note: 'L is in joules per kilogram, so the mass goes in kilograms.' },
             { letter: 'F', label: 'Formula', line: 'E = m × L', note: '' },
             { letter: 'I', label: 'Insert', line: 'm = 0.25 kg, L = 334 000 J/kg', note: '' },
             { letter: 'F', label: 'Fine-tune', line: 'E = 0.25 × 334 000', note: '' },
-            { letter: 'A', label: 'Answer', line: 'E = 83 500 J (83.5 kJ)', note: 'Left as 250 × 334, the answer is 83 500 with no idea which unit it is in.' }
+            { letter: 'A', label: 'Answer', line: 'E = 83 500 J (83.5 kJ)', note: 'Left in grams, 250 × 334 000 = 83 500 000 J: a thousand times too big.' }
           ] }
       ] : [],
       cfQuestions: hi ? [
@@ -494,7 +499,7 @@ class Component extends DCLogic {
             { text: 'Specific latent heat of vaporisation', correct: true, reply: '' },
             { text: 'Internal energy of the gas', correct: false, reply: 'Internal energy is the total kinetic and potential energy of all the particles, not energy per kilogram for a change of state.' }
           ] },
-        r2: hi ? { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'Solid Z is heated by a 50 W heater, and all of the energy goes into Z. The graph shows its temperature. Z’s specific latent heat of fusion is 84 000 J/kg. Calculate the mass of Z, in kilograms. Work it on paper, then choose the conversion and give the answer and unit.',
+        r2: hi ? { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'Solid Z is heated by a 50 W heater, and all of the energy goes into Z. The graph shows its temperature. Z’s specific latent heat of fusion is 84 000 J/kg. Calculate the mass of Z. Work it on paper, then choose the conversion and give the answer and unit.',
           figureSvg: this.curve(Z_PTS, { letters: true, alt: 'Heating curve for Z. A at 20 degrees at 0 minutes, rising to B at 60 degrees at 3 minutes; flat from B to C at 60 degrees until 10 minutes; rising to D at 90 degrees at 12 minutes.' }),
           figureAlt: 'Heating curve for Z with a flat section at 60 degrees Celsius from 3 to 10 minutes',
           convOptions: ['Nothing to convert', 'Convert minutes to seconds: multiply by 60', 'Convert minutes to seconds: divide by 60'], convAnswer: 1, answer: 0.25, tol: 0.005, unit: 'kg', units: ['kg', 'J', 'J/kg', 'W'],

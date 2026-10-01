@@ -64,7 +64,7 @@
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
 
       <section class="ks3-explainer">
-        <p>Heat a material and its temperature rises. How far it rises depends on three things: the <strong>mass</strong> being heated, the <strong>material</strong>, and the <strong>energy</strong> put in. The material&rsquo;s part is its <strong>specific heat capacity</strong>, c: the energy needed to raise the temperature of 1 kg of the substance by 1 °C. Water&rsquo;s is 4200 J/kg °C, one of the highest of any common substance. Aluminium&rsquo;s is 900 J/kg °C. One equation links all three to the temperature change, Δθ.</p>
+        <p>Heat a material and its temperature rises. How far it rises depends on three things: the <strong>mass</strong> being heated, the <strong>material</strong>, and the <strong>energy</strong> put in. The material&rsquo;s part is its <strong>specific heat capacity</strong>, c: the energy needed to raise the temperature of 1 kg of the substance by 1 °C. Water&rsquo;s is 4200 J/kg °C, one of the highest of any common substance. One equation links all three to the temperature change, Δθ.</p>
       </section>
 
       <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
@@ -94,9 +94,11 @@
           <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 8px;">
             <sc-for list="{{ raceCards }}" as="c" hint-placeholder-count="4"><button type="button" onClick="{{ c.onClick }}" disabled="{{ c.disabled }}" aria-label="{{ c.aria }}" style="{{ c.style }}"><span style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; margin-right: 10px;">{{ c.letter }}</span>{{ c.text }}</button></sc-for>
           </div>
+        </sc-if>
           <ol style="margin: 14px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
-            <sc-for list="{{ raceSlots }}" as="r" hint-placeholder-count="4"><li style="{{ r.style }}"><span style="font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted); min-width: 3.2em;">{{ r.place }}</span><span style="flex: 1 1 auto;">{{ r.text }}</span><sc-if value="{{ r.filled }}"><button type="button" onClick="{{ r.onClick }}" aria-label="{{ r.aria }}" style="{{ r.btnStyle }}">Take back</button></sc-if></li></sc-for>
+            <sc-for list="{{ raceSlots }}" as="r" hint-placeholder-count="4"><li style="{{ r.style }}"><span style="font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted); min-width: 3.2em;">{{ r.place }}</span><span style="flex: 1 1 auto;">{{ r.text }}</span><sc-if value="{{ r.canTake }}"><button type="button" onClick="{{ r.onClick }}" aria-label="{{ r.aria }}" style="{{ r.btnStyle }}">Take back</button></sc-if></li></sc-for>
           </ol>
+        <sc-if value="{{ raceAsking }}">
           <button type="button" class="ks3-reveal-btn" onClick="{{ onRaceHeat }}" disabled="{{ raceLocked }}" style="{{ raceHeatStyle }}">{{ raceHeatLabel }}</button>
         </sc-if>
         <sc-if value="{{ raceDone }}">
@@ -115,7 +117,7 @@
           <li>Put the heater and the thermometer in the block&rsquo;s two holes, with a few drops of water in the thermometer hole for good contact. Wrap the block in insulation.</li>
           <li>Connect the heater to a low-voltage supply through a joulemeter, or with an ammeter and a voltmeter. Record the starting temperature.</li>
           <li>Switch on and start the stopclock. Record the temperature every minute for 10 minutes.</li>
-          <li>Switch off. Record the energy supplied and the highest temperature the block reaches.</li>
+          <li>Switch off. Record the energy supplied (the joulemeter reading, or E = V × I × t) and the highest temperature the block reaches.</li>
           <li>Work out Δθ, then c = ΔE ÷ (m × Δθ).</li>
         </ol>
         <dl style="margin: 16px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 10px; font-size: 17px; line-height: 1.5;">
@@ -159,7 +161,7 @@
             </sc-if>
             <sc-if value="{{ processOn }}">
               <div data-arrive="1" style="margin-top: 14px; padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
-                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Process your data</p>
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ procHead }}</p>
                 <p style="margin: 6px 0 0; font-size: 18px; line-height: 1.55;">Starting temperature {{ procStart }}. Highest temperature {{ procHigh }}. Take the energy from the joulemeter.</p>
                 <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
                   <label for="shc-c" style="font-family: var(--ks3-font-mono); font-size: 17px;">c =</label>
@@ -209,6 +211,11 @@
           <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe a method</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Equipment, what you measure and how, in order, and how you work out the result.</dd></div>
         </dl>
       </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">ΔE = m c Δθ, with Δθ = final − initial. Specific heat capacity is the energy needed to raise the temperature of 1 kg by 1 °C.</p>
+      </div>
 
       <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
         <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
@@ -381,7 +388,7 @@ class Component extends DCLogic {
         b += D.line(x - 6, y - 6, x + 6, y + 6, 2.6, col) + D.line(x - 6, y + 6, x + 6, y - 6, 2.6, col);
       }
     });
-    if (reached.bare > 0) b += D.T(X(12.4), Y(HI.lag) - 12, 'lagged', 19, { anchor: 'end', fill: cur === 'lag' ? C.arrow : C.muted }) + D.T(X(12.4), Y(HI.bare) + 26, 'no lagging', 19, { anchor: 'end', fill: cur === 'bare' ? C.arrow : C.muted });
+    if (reached.bare > 0) b += D.T(X(5), Y(temp('lag', 300)) - 22, 'lagged', 19, { fill: cur === 'lag' ? C.arrow : C.muted }) + D.T(X(7), Y(temp('bare', 420)) + 34, 'no lagging', 19, { fill: cur === 'bare' ? C.arrow : C.muted });
     return D.svg(560, 360, b, 'Temperature against time, ' + n + ' readings plotted, one a minute.');
   }
   renderVals() {
@@ -409,7 +416,7 @@ class Component extends DCLogic {
     const run = s.run; const t = s.simT; const phase = s.phase;
     const dTh = r1(HI.lag - T0); const cTrue = PW * OFF / (MB * dTh);
     const dThB = r1(HI.bare - T0); const cBare = PW * OFF / (MB * dThB);
-    const processOn = run === 'lag' && phase === 'done' && s.offPick !== null;
+    const processOn = s.offPick !== null && (run === 'bare' || phase === 'done');
     const cOk = s.cCode === 'ok';
     const cGiven = s.cCode !== null && (cOk || s.cTries >= 2);
     const cMsgs = {
@@ -454,10 +461,10 @@ class Component extends DCLogic {
       }),
       raceSlots: ['1st', '2nd', '3rd', '4th'].map((pl, k) => {
         const i = order[k]; const filled = i !== undefined;
-        return { place: pl, filled, text: filled ? SAMPLES[i].k + ' · ' + SAMPLES[i].text : '', aria: filled ? 'Take back sample ' + SAMPLES[i].k + ' from ' + pl : '',
+        return { place: pl, filled, canTake: filled && !s.raceDone, text: filled ? SAMPLES[i].k + ' · ' + SAMPLES[i].text : '', aria: filled ? 'Take back sample ' + SAMPLES[i].k + ' from ' + pl : '',
           style: 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 12px;min-height:48px;border-radius:12px;font-size:17px;border:2px ' + (filled ? 'solid var(--ks3-ink);background:var(--ks3-card);' : 'dashed var(--ks3-option-border);background:transparent;'),
           btnStyle: 'font:inherit;font-size:15px;font-weight:700;padding:8px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid var(--ks3-option-border);background:var(--ks3-ground);',
-          onClick: () => { if (!this.state.raceRunning) this.setState((ss) => ({ order: ss.order.filter((v) => v !== i) })); } };
+          onClick: () => { if (!this.state.raceRunning && !this.state.raceDone) this.setState((ss) => ({ order: ss.order.filter((v) => v !== i) })); } };
       }),
       raceLocked: !full || s.raceRunning,
       raceHeatStyle: 'margin-top:12px;' + (!full || s.raceRunning ? 'opacity:.45;cursor:default;' : ''),
@@ -489,15 +496,16 @@ class Component extends DCLogic {
           else this.setState((ss) => ({ simT: END, reached: Object.assign({}, ss.reached, { bare: END }), phase: 'done', bareDone: true }));
         } else { this.heatStart = Date.now(); this.setState({ phase: 'heat' }); }
       },
-      offAsk: run === 'lag' && (phase === 'off' || phase === 'watch' || phase === 'done'),
+      offAsk: run === 'bare' || phase === 'off' || phase === 'watch' || phase === 'done',
       offOpts: ['The reading now, at 10 minutes', 'The highest reading, once it stops rising', 'The reading once it has cooled a little'].map((lab, i) => ({
         label: lab, pressed: s.offPick === i, disabled: s.offPick !== null, style: this.optStyle(s.offPick === i, s.offPick !== null),
         onClick: () => { if (this.state.offPick === null && this.state.phase === 'off') { this.setState({ offPick: i }); this.startWatch(); } } })),
-      offDone: run === 'lag' && phase === 'done' && s.offPick !== null,
+      offDone: s.offPick !== null && (run === 'bare' || phase === 'done'),
       offVerdictStyle: this.verdict(offRight),
       offVerdictWord: offRight ? 'Yes.' : 'Watch the thermometer: it kept rising.',
-      offVerdictText: 'The heater was hotter than the block when it switched off, so energy kept flowing into the block for over a minute. Record the highest temperature, ' + HI.lag.toFixed(1) + ' °C.',
+      offVerdictText: 'The heater was hotter than the block when it switched off, so energy kept flowing into the block for over a minute. Record the highest temperature.',
       processOn,
+      procHead: run === 'bare' ? 'Your lagged run' : 'Process your data',
       procStart: T0.toFixed(1) + ' °C', procHigh: HI.lag.toFixed(1) + ' °C',
       cText: s.cText, cLocked: cGiven,
       onCText: (e) => this.setState({ cText: e.target.value }),
@@ -513,7 +521,7 @@ class Component extends DCLogic {
       cFbStyle: this.verdict(cOk).replace('margin:14px 0 0;', 'margin:12px 0 0;'),
       cFbWord: shownWord, cFbText: shownText,
       cConfront: run === 'lag' && s.cCode === 'final',
-      compareOn: cGiven && run === 'lag',
+      compareOn: cGiven,
       compareStyle: this.verdict(gateRight).replace('margin:14px 0 0;', 'margin:14px 0 0;'),
       compareWord: gateRight ? 'Higher, as you called it.' : 'Higher, not ' + gateWords[s.gate] + '.',
       compareText: 'Some of the heater’s energy warms the surroundings, the heater itself and the thermometer instead of the block. So Δθ is smaller than it should be, and c = ΔE ÷ (m Δθ) comes out too big. Lagging reduces the loss; it cannot remove it.',
@@ -553,7 +561,7 @@ class Component extends DCLogic {
       cfQuestions: hi ? [
         { tab: 'Question 1', id: 'shc-q1', head: 'A 1.5 kg iron block at 20 °C is supplied with 27 000 J. Calculate its final temperature. (c = 450 J/kg °C)', close: '40 °C is the rise, not the answer: add it to the starting 20 °C.',
           steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert: kg, J and J/kg °C already.' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'ΔE = m × c × Δθ' }, { letter: 'I', label: 'Insert', placeholder: '… = … × … × Δθ', line: '27 000 = 1.5 × 450 × Δθ' }, { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange: Δθ = …', line: 'Δθ = 27 000 ÷ 675 = 40 °C' }, { letter: 'A', label: 'Answer', placeholder: 'final temperature = … with unit', line: 'Final temperature = 20 + 40 = 60 °C' }] },
-        { tab: 'Question 2', id: 'shc-q2', head: 'A 50 W heater runs for 5.0 minutes and raises the temperature of a 1.2 kg metal block by 13 °C. Calculate the specific heat capacity of the metal.', close: 'Left in minutes, E comes out 250 J and c sixty times too small.',
+        { tab: 'Question 2', id: 'shc-q2', head: 'A 50 W heater runs for 5.0 minutes and raises the temperature of a 1.2 kg metal block by 13 °C. Assume all the energy heats the block. Calculate the specific heat capacity of the metal.', close: 'Left in minutes, E comes out 250 J and c sixty times too small.',
           steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '5.0 min × 60 = 300 s' }, { letter: 'F', label: 'Formula', placeholder: 'two equations', line: 'E = P t, then ΔE = m × c × Δθ' }, { letter: 'I', label: 'Insert', placeholder: 'E = … × …; … = … × c × …', line: 'E = 50 × 300 = 15 000 J; 15 000 = 1.2 × c × 13' }, { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange: c = …', line: 'c = 15 000 ÷ (1.2 × 13) = 15 000 ÷ 15.6 = 962' }, { letter: 'A', label: 'Answer', placeholder: 'c = … with unit', line: 'c = 962 J/kg °C (3 significant figures)' }] }
       ] : [
         { tab: 'Question 1', id: 'shc-q1', head: 'A 2.0 kg aluminium block is heated from 15 °C to 35 °C. Calculate the energy supplied. (c = 900 J/kg °C)', close: 'Using 35 °C as Δθ gives 63 000 J: the commonest lost mark.',

@@ -88,3 +88,20 @@ All inside the lesson's own logic: `resSvg` (two-dot view with SVG Gaussian blur
 ## Body prose
 
 Hook ~45 words, explainer 1 ~105, explainer 2 ~50: ~200 words of explainer + hook prose; longest run before a commitment ~105.
+
+## Review fixes (1 Oct 2026)
+
+| row | change |
+|---|---|
+| science A-3 | `s-think` "×3.3" reply → "That divides the wrong way, real ÷ image, and still mixes µm with mm. Magnification is image ÷ real." |
+| science A-2 | Not applied: FIFA 2 (0.15 µm mitochondrion) is a frozen worked example and stays verbatim. |
+| science A-1 | Left, as the reviewer advised. |
+| quality Q-1 | `hookOptions[0].reply` → "More magnification alone gives a bigger blur, not more detail. Resolve it, below, tests this." |
+| quality Q-2 | `#s-rp` trimmed: Variables paragraph deleted; step 2 and Risks shortened to the reviewer's text. |
+| quality Q-3 | Drawing title and `drawAlt` → "Onion epidermis cells, seen at ×400". |
+| quality A-1 | Convert-first worked example → chloroplast 4 µm, drawing 30 mm, ×7500 (was 5 µm / 25 mm / ×5000, which mirrored eukaryotes-prokaryotes). ⚑ |
+| quality A-2 | Key-note line "Magnification = size increase." shown as "Magnification = how many times bigger the image is than the real object." |
+| quality A-3 | Unit-ladder card split onto two lines ("mm ×1000 → µm" / "µm ×1000 → nm"), so it no longer wraps mid-arrow. |
+| quality A-4 | Not applied (number format in the frozen key note). |
+
+Rebuilt in a scratch clone (batch-3, 44 pages, zero console errors) and driven at 390 px: no stray text, no overflow.

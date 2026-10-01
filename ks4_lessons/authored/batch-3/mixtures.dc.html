@@ -115,7 +115,7 @@
       </section>
 
       <section class="ks3-explainer">
-        <p>In the lab, <strong>fractional distillation</strong> uses a column packed with glass beads above the flask. Vapour condenses on the beads and boils again many times on its way up, so the liquid with the lowest boiling point reaches the top first and passes into the condenser. The liquids are collected one after another, as the temperature rises: change the collecting beaker each time.</p>
+        <p>In the lab, the <strong>fractional distillation</strong> column is packed with glass beads: the vapour condenses and boils again many times on its way up. The fractions are collected one after another as the thermometer reading rises, changing the beaker each time.</p>
       </section>
 
       <section id="s-kit" class="ks3-block" style="scroll-margin-top: 92px;">
@@ -170,21 +170,24 @@ const RAIL = [
 const TECH = ['Filtration', 'Crystallisation', 'Simple distillation', 'Fractional distillation', 'Chromatography'];
 /* a = index into TECH. no[i] corrects a wrong pick i. right is read by everyone once they commit. */
 const ROUNDS = [
+  { title: 'Blue ink: dyes dissolved in water', want: 'pure water', a: 2, liquid: '#2F4A9A',
+    no: ['The dyes are dissolved, so they pass through the filter paper with the water.', 'Crystallisation keeps the solid and lets the water escape into the air. You want the water.', '', 'There is only one liquid to collect from dissolved solids, and simple distillation does that.', 'Chromatography separates the dyes from each other on paper. It does not collect the water.'],
+    right: 'Heat the ink: the water boils, its vapour is cooled in the condenser, and it drips out as pure water. The dyes stay in the flask.' },
   { title: 'Sand stirred into water', want: 'the sand', a: 0, liquid: '#DCEBF5', sand: true,
-    no: ['', 'Crystallisation gets a dissolved solid out of a solution. Sand does not dissolve: it just sinks.', 'Boiling off all the water would leave the sand, but slowly, and the water is lost. A filter catches insoluble sand in seconds.', 'Fractional distillation separates liquids that mix. Sand is an insoluble solid.', 'Chromatography separates dissolved substances, a tiny spot at a time. Sand is not dissolved.'],
+    no: ['', 'Crystallisation gets a dissolved solid out of a solution. Sand does not dissolve: it just sinks.', 'Distilling off all the water would leave the sand behind, but it takes a long time and a lot of energy. A filter catches insoluble sand in seconds.', 'Fractional distillation separates liquids that mix. Sand is an insoluble solid.', 'Chromatography separates dissolved substances, a tiny spot at a time. Sand is not dissolved.'],
     right: 'Sand does not dissolve, so the filter paper holds it back as the residue. The water runs through as the filtrate.' },
   { title: 'Copper sulfate dissolved in water', want: 'copper sulfate crystals', a: 1, liquid: '#7FB2E5',
     no: ['The copper sulfate is dissolved, so it passes straight through the filter paper with the water.', '', 'Simple distillation collects the water. To keep crystals, you need the solid to form slowly from the solution.', 'There is only one liquid here, water. Fractional distillation separates liquids from each other.', 'Chromatography shows which substances a solution contains. It does not give you a sample of crystals.'],
     right: 'Heat to evaporate some of the water, then leave the solution to cool: less copper sulfate can stay dissolved, so crystals form. Filter them off and dry them.' },
-  { title: 'Blue ink: dyes dissolved in water', want: 'pure water', a: 2, liquid: '#2F4A9A',
-    no: ['The dyes are dissolved, so they pass through the filter paper with the water.', 'Crystallisation keeps the solid and lets the water escape into the air. You want the water.', '', 'There is only one liquid to collect from dissolved solids, and simple distillation does that.', 'Chromatography separates the dyes from each other on paper. It does not collect the water.'],
-    right: 'Heat the ink: the water boils, its vapour is cooled in the condenser, and it drips out as pure water. The dyes stay in the flask.' },
+  { title: 'Muddy pond water', want: 'clear water', a: 0, liquid: '#C9B48A', sand: true,
+    no: ['', 'Crystallisation keeps a dissolved solid and lets the water escape. The mud is not dissolved, and you want the water.', 'Distilling would give water, but slowly and with energy you do not need: the mud does not dissolve, so a filter holds it back.', 'Fractional distillation separates liquids that mix. Mud is an insoluble solid.', 'Chromatography separates dissolved substances a spot at a time. It cannot clean a beaker of water.'],
+    right: 'The mud does not dissolve, so the filter paper holds it back as the residue, and the clear water runs through as the filtrate.' },
   { title: 'Ethanol (boils at 78 °C) mixed with water (100 °C)', want: 'the ethanol', a: 3, liquid: '#EEF4F2',
     no: ['Ethanol and water mix completely, so both pass through the paper.', 'There is no dissolved solid to crystallise: both substances are liquids.', 'Simple distillation only separates liquids whose boiling points are very different. At 78 °C and 100 °C the distillate would still contain a lot of water.', '', 'Chromatography identifies the dissolved substances in a spot. It cannot collect a sample of ethanol.'],
     right: 'The boiling points are close together, so you need the column. Ethanol, with the lower boiling point, reaches the top first and is collected first, while the thermometer reads about 78 °C.' },
   { title: 'The same blue ink', want: 'to find out which dyes it contains', a: 4, liquid: '#2F4A9A',
     no: ['The dyes are all dissolved, so they pass through the filter paper together.', 'Crystallisation would leave all the dyes together in one solid.', 'Simple distillation leaves all the dyes together in the flask.', 'The dyes are dissolved solids, not liquids that boil off one by one.', ''],
-    right: 'A spot of ink on paper, with a solvent soaking up through it: each dye is carried a different distance, so they separate into spots. How the paper does this, and Rf values, are in the chromatography lesson.' }
+    right: 'A spot of ink on paper, with a solvent soaking up through it: each dye is carried a different distance, so they separate into spots.' }
 ];
 
 class Component extends DCLogic {
@@ -443,7 +446,7 @@ class Component extends DCLogic {
           reject: ['“Evaporate the filtrate and collect the water.” Evaporated water escapes into the air: collecting it needs a condenser.', '“Filter the salt water to get the salt.” Dissolved salt passes through the paper.'] }
       } : {},
       keyLines: ['Mixture: two or more elements or compounds not chemically combined; separated by physical processes that make no new substances.']
-        .concat((ready ? K.keyLines(slug) : []).map((l) => l.indexOf('Chromatography:') === 0 ? 'Chromatography: dissolved substances.' : l)),
+        .concat((ready ? K.keyLines(slug) : []).map((l) => l.indexOf('Chromatography:') === 0 ? 'Chromatography: dissolved substances.' : (l.indexOf('Fractional distillation:') === 0 ? 'Fractional distillation: liquids whose boiling points are close together.' : l))),
       bank: ready ? K.bank(slug, R.route) : []
     });
   }

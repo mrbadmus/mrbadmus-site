@@ -79,3 +79,18 @@ All in the lesson's logic: `flame`, `beaker`, `flask`, `thermo`, `condenser` (co
 ## Body prose
 
 Hook ~17 words, explainer 1 ~95, explainer 2 ~60: ~172 words; longest run before a commitment ~95.
+
+## Review fixes (1 Oct 2026)
+
+| row | change |
+|---|---|
+| science S-1 | `ROUNDS` sand round, Simple-distillation reply → "Distilling off all the water would leave the sand behind, but it takes a long time and a lot of energy. A filter catches insoluble sand in seconds." |
+| science A-4 | Key-note line "Fractional distillation: liquids with different boiling points." shown as "Fractional distillation: liquids whose boiling points are close together." |
+| science A-5 | Not applied by the author: withholding q2 (Rf) from the bank is the commander's call (needle `a spot travels 4.5 cm`). |
+| science A-6 | Kept, as advised. |
+| quality Q-1 | Desk reordered to blue ink → water, sand, copper sulfate, muddy pond water (NEW, filtration again ⚑), ethanol, same ink → dyes. Answers are no longer in button order, and filtration repeats, so the last round cannot be solved by elimination. Six rounds. |
+| quality A-1 | Second explainer cut to the new content only: bead column; fractions collected one after another as the thermometer reading rises. |
+| quality A-2 | The chromatography-lesson signpost cut from the last round's reveal. |
+| quality A-3 | Not changed (labels were raised from 22 to 26 px before review). |
+
+Rebuilt in a scratch clone (batch-3, 44 pages, zero console errors), and all six desk rounds driven at 390 px: no stray text, no overflow.

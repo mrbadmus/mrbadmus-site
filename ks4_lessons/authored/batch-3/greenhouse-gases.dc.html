@@ -63,7 +63,7 @@
       </section>
 
       <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Radiation bench · predict, then run</p>
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Radiation bench</p>
         <h2 style="margin: 6px 0 0;">{{ bHead }}</h2>
         <sc-if value="{{ bTabsShow }}">
           <div role="group" aria-label="Compare the three set-ups" style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
@@ -103,7 +103,7 @@
       </section>
 
       <section class="ks3-explainer">
-        <p>Human activities add more of two greenhouse gases. <strong>Carbon dioxide</strong> comes from burning any fuel that contains carbon, and from <strong>deforestation</strong>: fewer trees take it in, and felled trees release it when burned or left to rot. <strong>Methane</strong> is given off when some living things digest food or rot with little air, and natural gas is itself methane.</p>
+        <p>Human activities add more of two greenhouse gases. <strong>Carbon dioxide</strong> comes from burning any fuel that contains carbon, and from <strong>deforestation</strong>: fewer trees take it in, and felled trees release it when burned or left to rot. <strong>Methane</strong> is given off when some living things digest food or rot with little air, and natural gas is mainly methane.</p>
       </section>
 
       <section id="s-sources" class="ks3-block" style="scroll-margin-top: 92px;">
@@ -111,7 +111,7 @@
       </section>
 
       <section class="ks3-explainer">
-        <p>An increase in average global temperature is a major cause of <strong>climate change</strong>. Potential effects include: sea levels rising as land ice melts and seawater expands, flooding low-lying coasts; more frequent and more severe storms; changes to the amount, timing and distribution of rainfall; heat and water stress for people and wildlife; changes to how much food a region can produce; and changes to where species can live. Scientists weigh each effect by its scale, its risk and what it does to the environment.</p>
+        <p>An increase in average global temperature is a major cause of <strong>climate change</strong>. Its effects reach the sea, the weather, food and wildlife. Scientists weigh each effect by its scale, its risk and what it does to the environment.</p>
       </section>
 
       <section id="s-effects" class="ks3-block" style="scroll-margin-top: 92px;">
@@ -316,7 +316,7 @@ class Component extends DCLogic {
     const D = window.KS4D; const su = SETUPS[k]; const anim = committed && !this.reduced();
     let b = '<desc>' + k + '-' + play + '</desc>';
     b += '<rect x="0" y="66" width="' + W + '" height="264" fill="#E3EEF8"/>';
-    b += D.T(170, 42, 'Space', 24, { anchor: 'start', fill: D.C.stroke }) + D.T(14, 318, 'Atmosphere', 24, { anchor: 'start', fill: D.C.stroke });
+    b += D.T(170, 42, 'Space', 24, { anchor: 'start', fill: D.C.stroke }) + D.T(10, 318, 'Atmosphere', 20, { anchor: 'start', fill: D.C.stroke });
     b += '<rect x="0" y="330" width="' + W + '" height="56" fill="#C9B79C"/>' + D.line(0, 330, W, 330, 3, D.C.stroke);
     b += D.T(14, 368, 'Earth’s surface', 24, { anchor: 'start', fill: D.C.stroke });
     b += D.circ(110, 34, 26, '#FBBF24', D.C.stroke, 2.5);
@@ -384,7 +384,7 @@ class Component extends DCLogic {
     const REP = [
       { label: 'Which report’s data better represents the whole planet’s climate?', options: ['Report A', 'Report B'], answer: 1, why: 'Thousands of stations over 120 years cover the globe and the long term. Twelve stations in one country over 5 years cannot.' },
       { label: 'Which report has a possible source of bias?', options: ['Report A', 'Report B'], answer: 0, why: 'A company that sells coal gains if people believe warming is natural. That does not make it wrong, but it is a reason to check its evidence carefully.' },
-      { label: 'Which report has been checked by other scientists?', options: ['Report A', 'Report B'], answer: 1, why: 'Peer review: other experts checked report B’s work before it was published.' },
+      { label: 'Report B was peer reviewed. What does that tell you?', options: ['Other experts checked its methods and conclusions before it was published', 'Its conclusion has been proved true and can never change', 'It was paid for by a government, so it cannot be biased', 'Its data cannot contain any errors or uncertainty'], answer: 0, why: 'Peer review is a check by other experts before publication. It makes the work more trustworthy; it does not prove it.' },
       { label: 'Report B shows that carbon dioxide and temperature have both risen since 1900. What turns that correlation into evidence of a cause?', options: ['A tested mechanism linking them, such as the greenhouse effect', 'Both lines rising together on the same graph', 'A larger, bolder headline on the report', 'One more year of the same measurements'], answer: 0, why: 'Two things can rise together by chance. A tested mechanism explains how one causes the other.' }
     ];
     const repAll = REP.every((q, i) => s.rep[i] !== undefined);
@@ -401,15 +401,15 @@ class Component extends DCLogic {
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: ready ? [{ href: K.hrefFor('early-atmosphere', R), label: 'The Earth’s early atmosphere and how it changed' }, { href: K.hrefFor('atmospheric-pollutants', R), label: 'Atmospheric pollutants from fuels' }, { href: K.hrefFor('carbon-cycle', R), label: 'The carbon cycle' }, { href: K.hrefFor('types-of-em-waves', R), label: 'Types of electromagnetic waves' }].filter((x) => x.href) : [],
       hookOptions: [
-        { text: 'They absorb heat given off by the ground and send some back', reply: '' },
-        { text: 'They reflect the sunlight back down onto the ground', reply: '' },
-        { text: 'They block the Sun’s ultraviolet rays like a shield', reply: '' },
-        { text: 'They soak up sunlight on its way in, warming the air', reply: '' }
+        { text: 'They absorb heat given off by the ground and send some back', reply: 'Hold that thought, and test it on the bench below.' },
+        { text: 'They reflect the sunlight back down onto the ground', reply: 'Reflecting is the most common wrong answer in the exam. Watch what the gases really do on the bench.' },
+        { text: 'They block the Sun’s ultraviolet rays like a shield', reply: 'Ozone and ultraviolet are a separate problem from the greenhouse effect.' },
+        { text: 'They soak up sunlight on its way in, warming the air', reply: 'Run the bench and watch where the sunlight goes.' }
       ],
-      hookReveal: 'The bench below runs the Earth three ways: with no greenhouse gases, with today’s natural amount, and with extra. Each run tests one part of your answer.',
+      hookReveal: 'The bench below runs the Earth three ways: with no greenhouse gases, with today’s natural amount, and with extra.',
       onHook: (i) => this.setState({ hook: i }),
       // bench
-      bHead: su.name,
+      bHead: allRun ? 'Compare the three runs.' : su.name,
       bTabsShow: allRun,
       bTabs: SETUPS.map((x, i) => ({ label: x.name, pressed: k === i, style: this.seg(k === i), onClick: () => this.setState((ss) => ({ view: i, play: ss.play + 1 })) })),
       bFig: ready ? K.fig(this.benchSvg(k, committed, s.play), '') : null,
@@ -429,8 +429,8 @@ class Component extends DCLogic {
       // sort
       srcBins: [{ id: 'co2', label: 'Mainly adds carbon dioxide' }, { id: 'ch4', label: 'Mainly adds methane' }],
       srcItems: [
-        { text: 'A gas boiler burning natural gas to heat a home', bin: 'co2', why: 'Natural gas is methane, but burning it turns its carbon into carbon dioxide.' },
-        { text: 'Natural gas leaking from a pipeline', bin: 'ch4', why: 'Unburned natural gas is methane, escaping straight into the air.' },
+        { text: 'A gas boiler burning natural gas to heat a home', bin: 'co2', why: 'Natural gas is mainly methane, but burning it turns its carbon into carbon dioxide.' },
+        { text: 'Natural gas leaking from a pipeline', bin: 'ch4', why: 'Unburned natural gas is mainly methane, escaping straight into the air.' },
         { text: 'Cattle digesting grass', bin: 'ch4', why: 'Cattle and sheep produce methane as they digest their food.' },
         { text: 'Food waste rotting in a landfill site', bin: 'ch4', why: 'Rubbish buried in landfill decomposes with little air and gives off methane.' },
         { text: 'Clearing a rainforest to make farmland', bin: 'co2', why: 'Fewer trees take in carbon dioxide, and felled trees release it when burned or left to rot.' },
@@ -451,7 +451,7 @@ class Component extends DCLogic {
       // reports
       repCards: [
         { tag: 'Report A · blog post', title: '“Warming is natural, not caused by us”', rows: [{ k: 'Paid for by', v: 'A company that sells coal' }, { k: 'Data', v: '12 weather stations in one country, over 5 years' }, { k: 'Checked before publishing', v: 'No' }] },
-        { tag: 'Report B · science journal', title: '“Global surface temperature since 1900”', rows: [{ k: 'Paid for by', v: 'A university research fund' }, { k: 'Data', v: 'Thousands of land stations, ships and buoys, over 120 years' }, { k: 'Checked before publishing', v: 'Yes, peer reviewed' }] }
+        { tag: 'Report B · science journal', title: '“Global surface temperature since 1900”', rows: [{ k: 'Paid for by', v: 'A university research fund' }, { k: 'Data', v: 'Thousands of land stations, ships and buoys, plus carbon dioxide records, over 120 years' }, { k: 'Checked before publishing', v: 'Yes, peer reviewed' }] }
       ],
       repQs: REP.map((q, i) => {
         const v = s.rep[i]; const bad = s.repChecked && v !== undefined && v !== q.answer;

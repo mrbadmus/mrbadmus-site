@@ -105,3 +105,13 @@ Done in a scratch APFS clone, with a temporary `ks4_lessons/batch_3.py` for my t
 - 390 px screenshots of the instruments were checked.
 
 The clone was deleted afterwards.
+
+## Review fixes
+
+| id | where | old → new | reason |
+|---|---|---|---|
+| S-2 (= quality Q-1, commander ruling: science numbers) | `rungs.r2` (CH, TH) | 0.40 kg CH₄ / 1.10 kg CO₂ / 0.90 kg H₂O, answer 1600 g, tol 5 → 0.16 kg / 0.44 kg / 0.36 kg, answer **640 g**, tol 2; right/wrong/model lines as written in the review | The ladder parser reads "1,600" as 1. The new set is still stoichiometric: 160 + 640 = 440 + 360. |
+| Q-2a | Foundation CFIFA Question 2 | 0.50 kg CaCO₃ → 280 g CaO (220 g) → 0.84 kg MgCO₃ → 400 g MgO (**440 g**) | Duplicated relative-formula-mass's live rung 2 (MgCO₃ 84 : 40 : 44). |
+| Q-2b | worked example 1 | 10.0 g → 5.6 g CaO (4.4 g) → 25.0 g → 14.0 g CaO (**11.0 g**) | Shared 5.6 g CaO with percentage-yield. The worked answer also repeated F Q1/H Q1's 4.4 g. |
+
+Validated in a scratch clone with q2 withheld (B3-W5): the build passed, there was no undefined/NaN, and there was no horizontal scroll at 390 px.

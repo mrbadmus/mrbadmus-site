@@ -51,7 +51,7 @@ block (A-CE1 advisory from batch 2).
 | Mid (M) | `Ks4Sort` **Rate the machines** (`#s-rate`): eight cards "energy in a time" (J/kJ/MJ with s/minutes/hour), three bins (< 1 kW, 1–10 kW, > 10 kW). Units are spread across bins on purpose, so no unit predicts the bin (e.g. 1.8 MJ in 1 hour = 500 W); cards carry no device names, so world knowledge cannot solve them. | Convert, calculate and compare — fluency at rising stakes. |
 | Key fact, command words | Define, Calculate, Explain, Describe — the four the ladder uses. | — |
 | Exam tip | **Omitted.** No `examiner_tip` on any route. | — |
-| Ladder | r1 authored ⚑ Define, 1 mark (definition of power; four options at parity, the key is not the longest). r2 Calculate, 3 marks: Foundation 54 kJ in 90 s → 600 W (convert kJ); Higher 1.2 kW for 2.5 min → 180 000 J (convert both, rearrange). r3 chain, Explain, 3 marks: motors X (6 s) and Y (9 s), two red herrings. r4 Describe, 4 marks: measuring your own power on a flight of stairs (points + reject list). | — |
+| Ladder | r1 authored ⚑ Define, 1 mark (definition of power; four options at parity, the key is not the longest). r2 Calculate, 3 marks: Foundation 54 kJ in 90 s → 600 W (convert kJ); Higher 1.2 kW for 2.5 min → 180 kJ (convert minutes, rearrange; review fix S-3/Q-PW2). r3 chain, Explain, 3 marks: motors X (6 s) and Y (9 s), two red herrings. r4 Describe, 4 marks: measuring your own power on a flight of stairs (points + reject list). | — |
 | Key note | `K.keyLines(slug)` verbatim (examination C14 OK). | — |
 | Bank | `K.bank(slug, route)` — both frozen items. | — |
 | End | Tutor line; legal line (g = 9.8 N/kg, steady lifting, nothing dissipated; kettles transfer all their energy to the water). | — |
@@ -91,7 +91,7 @@ themselves.
 - ⚑ Spot-the-flaw (power vs force) options, replies and reveal.
 - ⚑ CFIFA: F 4800 ÷ 12 = 400 W; F convert 36 000 ÷ 120 = 300 W (theory example 2, re-cut); H 1500 × 40 = 60 000 J; H convert 360 000 ÷ 2400 = 150 s; attempts F 1500 ÷ 25 = 60 W, 18 000 ÷ 180 = 100 W; H 400 × 9.8 × 15 = 58 800 J ÷ 2000 = 29.4 s, 540 000 ÷ 360 = 1500 W = 1.5 kW.
 - ⚑ Rate-the-machines cards: 1200 W, 30 000 W, 500 W, 1200 W, 300 W, 18 000 W, 150 W, ≈ 6700 W.
-- ⚑ Ladder: r1 (authored at parity), r2 F 600 W and H 180 000 J (the H item is the examination's typical question), r3 links (examination §5's 2-mark question, set as a 3-link chain), r4 points (personal power by stair-running — the examination notes it is a class activity, not an AQA RP).
+- ⚑ Ladder: r1 (authored at parity), r2 F 600 W and H 180 kJ (adapted from the examination's typical question), r3 links (examination §5's 2-mark question, set as a 3-link chain), r4 points (personal power by stair-running — the examination notes it is a class activity, not an AQA RP).
 - ⚑ Key fact; equation-card wording "Here W on the right is work done, not watts".
 
 ## Frozen items flagged wrong
@@ -120,3 +120,15 @@ Driven in headless Chrome on all four routes at 390 px, motion on and
 reduced: all three races (figure readings checked), the flaw, CFIFA, ladder,
 bank; no `undefined`/`NaN`/`{{`/`null` text, no sideways scroll, zero console
 errors (other than the CORS-blocked health ping).
+
+## Review fixes
+
+Reviews: `docs/ks4/packs/batch-3/review/science-phys-a.md` §4, `quality-a.md` (power).
+
+| row | what I did / why not |
+|---|---|
+| S-3 / Q-PW2 (REQUIRED) | Higher r2 rewritten to the quality reviewer's item: 1.2 kW for 2.5 minutes, energy in kilojoules; convert minutes → s (× 60); answer 180, unit kJ (kW × s = kJ). Every numeric ladder answer is now < 1000. Driven in a scratch build: typing 180 + kJ grades Correct. |
+| Q-PW1 (REQUIRED) | Every wrong hook option now has a corrective reply ("More watts means faster, not more." / "Running longer at a lower rate ends at the same total energy." / "The times only say how fast the energy went in, not how much."). The shared reveal was reworded ("same water, same temperature rise … more of is power") so it does not repeat any reply. |
+| S-A11 | Applied: an Ep = m g h card, chip "On the sheet" (printed on both June 2026 sheets), in the equation block on every route — the source FIFA (all routes) and Higher Q1 both use it. |
+| A-PW1 | Not changed: recorded for the family review; the order and demands already differ from changes-in-energy. |
+| A-PW2 | Not changed: 588 × 120 already uses seconds, so "leaves the minutes as seconds" would not describe that error; the existing reply ("multiplies the energy by the time") is the accurate diagnosis. |

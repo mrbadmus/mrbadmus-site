@@ -190,7 +190,7 @@
       </section>
 
       <section style="margin-top: 34px;">
-        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+        <sc-if value="{{ bankOn }}" hint-placeholder-val="{{ true }}">
           <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
         </sc-if>
       </section>
@@ -260,7 +260,7 @@ class Component extends DCLogic {
       const fill = opts.colour(g);
       const dash = opts.dashed && opts.dashed(g) ? ' stroke-dasharray="6 5"' : '';
       b += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + Math.max(2, w).toFixed(1) + '" height="' + H + '" fill="' + fill + '" stroke="' + D.C.stroke + '" stroke-width="2"' + dash + (opts.opacity !== undefined ? ' opacity="' + opts.opacity.toFixed(2) + '"' : '') + '/>';
-      for (let k = 1; k < g.n; k++) { const xx = x + w * k / g.n; b += D.line(xx, y + 6, xx, y + H - 6, 1.5, D.C.stroke); }
+      for (let k = 1; k < g.n; k++) { const xx = x + w * k / g.n; b += D.line(xx, y + 1, xx, y + 8, 1.5, D.C.stroke) + D.line(xx, y + H - 7, xx, y + H - 1, 1.5, D.C.stroke); }
       const sub = g.n > 1 ? g.n + ' × ' + g.mr : String(g.mr);
       if (w >= 90) {
         b += D.T(x + w / 2, y + 29, g.f, 24, { fill: D.C.stroke }) + D.T(x + w / 2, y + 54, sub, 19, { fill: D.C.stroke, weight: 'normal' });
@@ -307,6 +307,7 @@ class Component extends DCLogic {
     const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
     const pn = this.props.mrbPrevNext || {};
     const F = ready ? K.fifas(slug) : [];
+    const bankList = ready ? K.bank(slug, R.route) : [];
     const busy = s.running >= 0;
     const okStrip = pick !== null && pick === rx.band;
     const BOPTS = [
@@ -412,12 +413,12 @@ class Component extends DCLogic {
       onRoute: () => this.setState({ route: true }),
       cfExamples: ready && ethanolSteps.length ? [
         { tab: 'Ethanol · addition', head: F[0].question, next: 'Now one where the numbers in the equation count.', steps: ethanolSteps },
-        { tab: 'Iron · numbers count', head: 'Calculate the percentage atom economy for making iron: Fe₂O₃ + 3CO → 2Fe + 3CO₂. (Mr: Fe₂O₃ = 160, CO = 28; Ar: Fe = 56)', next: 'Now yours, below.', steps: [
+        { tab: 'Copper · numbers count', head: 'Calculate the percentage atom economy for making copper: 2CuO + C → 2Cu + CO₂. (Mr: CuO = 79.5; Ar: Cu = 63.5, C = 12)', next: 'Now yours, below.', steps: [
           { letter: 'C', label: 'Convert', line: 'Nothing to convert: Mr values have no units.', note: '' },
           { letter: 'F', label: 'Formula', line: AEF, note: '' },
-          { letter: 'I', label: 'Insert', line: '(2 × 56) ÷ (160 + 3 × 28) × 100', note: 'The equation makes 2Fe and uses 3CO: both numbers go in.' },
-          { letter: 'F', label: 'Fine-tune', line: '= 112 ÷ 244 × 100', note: '' },
-          { letter: 'A', label: 'Answer', line: '45.9%', note: 'Mr values are whole numbers here, so give 3 significant figures.' } ] }
+          { letter: 'I', label: 'Insert', line: '(2 × 63.5) ÷ (2 × 79.5 + 12) × 100', note: 'The equation makes 2Cu and uses 2CuO: both numbers go in.' },
+          { letter: 'F', label: 'Fine-tune', line: '= 127 ÷ 171 × 100', note: '' },
+          { letter: 'A', label: 'Answer', line: '74.3%', note: 'Give the answer to 3 significant figures.' } ] }
       ] : [],
       cfQuestions: cfQ,
       onCalc: (n2) => this.setState({ calc: n2 }),
@@ -438,7 +439,7 @@ class Component extends DCLogic {
           convOptions: ['Nothing to convert: Mr values have no units', 'Convert each Mr to grams: multiply by 1000', 'Convert the answer to a decimal: divide by 100'], convAnswer: 0, answer: 72.0, tol: 0.15, unit: '%', units: ['%', 'g', 'g/mol', 'no unit'],
           right: 'The water and carbon dioxide take the other 28%.', wrong: 'Add both reactants underneath: 123.5 + 98 = 221.5. Copper sulfate goes on top.',
           model: ['C · Nothing to convert: Mr values have no units', 'F · % atom economy = Mr of desired product ÷ sum of Mr of all reactants × 100', 'I · 159.5 ÷ (123.5 + 98) × 100', 'F · = 159.5 ÷ 221.5 × 100', 'A · 72.0%'] },
-        r3: { command: 'Explain', marks: 2, prompt: 'Explain why making ethanol from ethene and steam has an atom economy of 100%. Put the links in order.',
+        r3: { command: 'Explain', marks: 3, prompt: 'Explain why making ethanol from ethene and steam has an atom economy of 100%. Put the links in order.',
           links: ['Ethene and steam react by addition: C₂H₄ + H₂O → C₂H₅OH.', 'Ethanol is the only product formed.', 'So all the atoms in the reactants end up in the desired product, and there is no waste product.'],
           herrings: [{ text: 'All of the ethene reacts, so none of it is left over.', why: 'That describes a complete reaction, which is about yield. Atom economy is about whether other products form.' },
             { text: 'Ethanol has a bigger Mr than ethene, so mass is gained.', why: 'No mass is gained: 28 + 18 = 46. Ethanol is heavier than ethene because it holds the water’s atoms too.' }] },
@@ -450,7 +451,8 @@ class Component extends DCLogic {
           reject: ['“56 ÷ 356 × 100 = 15.7%”: the equation makes 4Fe, so the top is 4 × 56.', '“It makes the reaction faster” or “it gives a higher yield”: atom economy says neither.'] }
       } : {},
       keyLines: ready ? ['% atom economy = (Mr of desired product from the equation ÷ sum of Mr of all reactants) × 100.'].concat(K.keyLines(slug).slice(1)) : [],
-      bank: ready ? K.bank(slug, R.route) : []
+      bank: bankList,
+      bankOn: ready && bankList.length > 0
     });
   }
 }

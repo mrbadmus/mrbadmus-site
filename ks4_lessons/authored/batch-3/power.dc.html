@@ -115,6 +115,11 @@
             <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 16px;">W = P × t · t = W ÷ P</p>
           </div>
           <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">On the sheet</span>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">E<sub>p</sub> = m g h</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">gravitational potential energy (J) = mass (kg) × gravitational field strength (N/kg) × height (m): the work done lifting a load.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
             <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Units first</span>
             <p style="margin: 0; font-size: 17px; line-height: 1.5;">Joules and seconds go in; watts come out. Convert anything else before the equation.</p>
             <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 16px;">1 kW = 1000 W · 1 MW = 1 000 000 W · 1 kJ = 1000 J · 1 MJ = 1 000 000 J · 1 minute = 60 s · 1 hour = 3600 s</p>
@@ -281,12 +286,12 @@ class Component extends DCLogic {
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: [{ href: href('changes-in-energy'), label: 'Changes in energy' }, { href: href('work-done-energy-transfer'), label: 'Work done and energy transfer' }, { href: href('efficiency'), label: 'Efficiency' }, { href: href('power-electricity'), label: 'Power in circuits' }].filter((c) => c.href),
       hookOptions: [
-        { text: 'The 3000 W kettle: a bigger number means more energy', reply: '' },
-        { text: 'The 1500 W kettle: it runs for longer, so works harder', reply: '' },
+        { text: 'The 3000 W kettle: a bigger number means more energy', reply: 'More watts means faster, not more.' },
+        { text: 'The 1500 W kettle: it runs for longer, so works harder', reply: 'Running longer at a lower rate ends at the same total energy.' },
         { text: 'The same: the 3000 W kettle just transfers it faster', reply: '' },
-        { text: 'You cannot tell without knowing how long each one takes', reply: '' }
+        { text: 'You cannot tell without knowing how long each one takes', reply: 'The times only say how fast the energy went in, not how much.' }
       ],
-      hookReveal: 'The same. Warming the same water through the same temperature rise needs the same energy, whichever kettle does it. What the 3000 W kettle has more of is power.',
+      hookReveal: 'Both transfer the same energy: the same water, warmed through the same temperature rise. What the 3000 W kettle has more of is power.',
       onHook: (i) => this.setState({ hook: i }),
       roundNum: String(r + 1), roundTitle: rd.title, roundAsk: rd.ask,
       liftFig: ready ? K.fig(this.liftSvg(rd, shownT, revealed), '') : null,
@@ -365,10 +370,10 @@ class Component extends DCLogic {
             { text: 'The energy transferred for each kilogram lifted', correct: false, reply: 'Power is energy per second, not per kilogram.' }
           ],
           why: 'Power is the rate of energy transfer, or the rate of doing work: joules per second, measured in watts.' },
-        r2: hi ? { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'A 1.2 kW microwave oven is used for 2.5 minutes. Calculate the energy it transfers. Work it on paper, then choose the conversion and give the answer and unit.',
-          convOptions: ['Nothing to convert', 'Convert kW to W (× 1000) and minutes to s (× 60)', 'Convert minutes to s (× 60) only'], convAnswer: 1, answer: 180000, tol: 100, unit: 'J', units: ['J', 'W', 'N', 's'],
-          right: 'Both quantities needed converting before E = P × t.', wrong: 'Convert both: 1.2 kW = 1200 W and 2.5 minutes = 150 s. Then E = P × t.',
-          model: ['C · 1.2 kW × 1000 = 1200 W; 2.5 × 60 = 150 s', 'F · P = E ÷ t, so E = P × t', 'I · E = 1200 × 150', 'F · E = 180 000', 'A · E = 180 000 J'] }
+        r2: hi ? { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'A 1.2 kW microwave oven runs for 2.5 minutes. Calculate the energy it transfers, in kilojoules. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert minutes to seconds: multiply by 60', 'Convert minutes to seconds: divide by 60'], convAnswer: 1, answer: 180, tol: 1, unit: 'kJ', units: ['kJ', 'J', 'W', 's'],
+          right: 'Kilowatts × seconds give kilojoules, so the kW can stay.', wrong: 'The time must be in seconds: 2.5 × 60 = 150 s. Then E = P × t, and kilowatts × seconds give kilojoules.',
+          model: ['C · 2.5 min × 60 = 150 s', 'F · P = E ÷ t, so E = P × t', 'I · E = 1.2 × 150', 'F · E = 180', 'A · E = 180 kJ'] }
           : { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'An electric motor transfers 54 kJ of energy in 90 s. Calculate its power. Work it on paper, then choose the conversion and give the answer and unit.',
           convOptions: ['Nothing to convert', 'Convert kJ to J: multiply by 1000', 'Convert kJ to J: divide by 1000'], convAnswer: 1, answer: 600, tol: 1, unit: 'W', units: ['W', 'J', 's', 'N'],
           right: 'Kilojoules became joules before the division.', wrong: 'Multiply 54 kJ by 1000 to get 54 000 J, then divide by the time in seconds.',

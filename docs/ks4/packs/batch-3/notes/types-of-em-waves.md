@@ -219,3 +219,19 @@ That is about 231 words. Adding the reveals and replies (hook reveal 40, pair "w
 - **Keyboard:** CF placement by focus + Enter.
 - **Reduced motion:** no `<animate>` in any figure.
 - **Dark theme:** checked at 390 px.
+
+## Review fixes
+
+The lesson passed both reviews (SHIP). Frozen q1 is withheld by the engine (B3-W7). Applied advisories:
+
+| id | routes | where | old → new |
+|---|---|---|---|
+| science A-1 | all | explainer | "**wavelength** (the length of one complete wave)" → "**wavelength** (the distance from a point on one wave to the same point on the next wave)" — the spec's definition (8463 4.6.1.2 / 8464 6.6.1.2), the wording mark schemes credit |
+| science A-2 | CH, TH | `cfQuestions` (hi) Question 2 `close` | "…gives 330 000 m: an aerial bigger than a city." → "…gives 330 000 m: a wavelength of 330 km for a phone signal." |
+| quality A-EM1 | all | `p1Reveal` | "From radio waves to gamma rays, each group’s wavelength is shorter than the last. The groups join with no gaps: one continuous spectrum." → "The groups join with no gaps: one continuous spectrum." (the figure's heading already says it) |
+
+Not changed: science A-3 (frozen q2 wx3, no action asked); quality A-EM2 and A-EM3 (both marked acceptable by the reviewer).
+
+Explainer is now 97 words; total body prose about 315.
+
+Validated in a scratch APFS clone: `build_ks4.py --batch batch-3` clean, with zero console errors in its own sweep. CF and TH at 390 px: the bench reveal shows the trimmed text, there is no broken text and no sideways scroll, and there are no console errors other than `/api/health`. The new strings are present on the built pages. The scratch clone is deleted.

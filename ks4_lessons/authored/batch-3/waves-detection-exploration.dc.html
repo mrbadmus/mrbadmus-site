@@ -56,7 +56,7 @@
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
         <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
         <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Nobody has ever seen the Earth's core.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">It lies thousands of kilometres beneath your feet, and no drill has come anywhere near it. Yet geologists can tell you how big the core is, and which part of it is solid and which is liquid.</p>
+        <p style="margin: 14px 0 0; max-width: 58ch;">It lies thousands of kilometres beneath your feet, and no drill has come anywhere near it. Yet geologists can tell you how big the core is, and that part of it is liquid.</p>
         <div style="margin-top: 18px;">
           <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What evidence could they possibly have?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
         </div>
@@ -345,15 +345,15 @@ class Component extends DCLogic {
       s += this.arc(103, 180, EC.R + 10, COLS);
       STATIONS.forEach((th) => {
         const r = stopAt(bez(th), EC.rc);
-        s += this.ray(r.pts, COLS, { anim: anim && !v.fadeS && !v.bigCore, faded: v.fadeS });
-        if (r.hit && !v.fadeS) s += this.late(this.xmark(r.pts[r.pts.length - 1], COLS), anim && !v.bigCore, 1.4);
+        s += this.ray(r.pts, COLS, { anim: anim && !v.fadeS && !v.bigCore, faded: v.fadeS || v.bigCore });
+        if (r.hit && !v.fadeS && !v.bigCore) s += this.late(this.xmark(r.pts[r.pts.length - 1], COLS), anim && !v.bigCore, 1.4);
       });
     }
     if (v.pRays) {
       s += this.arc(103, 140, EC.R + 22, COLP);
       const paths = [bez(30), bez(60), bez(90), bez(100),
         [pt(0, EC.R), pt(48, EC.rc), pt(92, EC.rc), pt(140, EC.R)],
-        [pt(0, EC.R), pt(47, EC.rc), pt(103, EC.rc), pt(150, EC.R)],
+        [pt(0, EC.R), pt(44, EC.rc), pt(103, EC.rc), pt(150, EC.R)],
         [pt(0, EC.R), pt(180, EC.R)]];
       paths.forEach((p) => { s += this.ray(p, COLP, { anim: anim }); });
     }
@@ -371,7 +371,7 @@ class Component extends DCLogic {
     STATIONS.forEach((th, i) => {
       const p = pt(th, EC.R), l = pt(th, EC.R + 38);
       s += D.circ(p[0], p[1], 9, '#FFFFFF', INK, 3) + D.T(l[0], l[1] + 10, th + '°', 28, { fill: INK });
-      if (v.records) s += this.badge(th, 'P', GOT.P[i]) + this.badge(th, 'S', GOT.S[i]);
+      if (v.records) s += (v.bigCore ? '<g opacity="0.35">' : '') + this.badge(th, 'P', GOT.P[i]) + this.badge(th, 'S', GOT.S[i]) + (v.bigCore ? '</g>' : '');
     });
     const alt = 'A cross-section of the Earth with an earthquake at the top and six seismometers round the right-hand side, at 30°, 60°, 90°, 120°, 150° and 180° from it. ' +
       (v.hidden ? 'The inside is hidden. ' : 'The inside shows the mantle, the outer core and the inner core, to scale. ') +
@@ -474,7 +474,7 @@ class Component extends DCLogic {
         { text: 'Records of earthquake waves from all over the world', reply: '' },
         { text: 'Lava from volcanoes, which flows up from the core', reply: 'Lava comes from far nearer the surface than the core, so it carries no sample of it.' }
       ],
-      hookReveal: 'Earthquakes send waves right through the Earth, and seismometers all over the world record which waves arrive, and when. Those records are evidence about a place no one can observe directly. Below, you read them yourself.',
+      hookReveal: 'Earthquakes send waves right through the Earth, and seismometers all over the world record which waves arrive, and when. Those records are evidence about a place no one can observe directly.',
       onHook: (i) => this.setState({ hook: i }),
       // seismic bench
       qEyebrow: 'Read the Earth · step ' + qs + ' of 4',
