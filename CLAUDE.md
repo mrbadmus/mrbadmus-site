@@ -441,7 +441,35 @@ The script reads structured data from `all_subtopics_*.py` files (topics, subtop
 
 **If you want to edit hand-written pages (weekly-challenge.html, leaderboard.html, etc.):** edit the root-level file, then run the generator so it copies into `mrbadmus_site/`.
 
-### KS4 lessons — Code writes them ⊕ (Mide's ruling, 1 Oct 2026)
+### KS4 lessons — Design writes them ⊕ (Mide's ruling, 2 Oct 2026, reversing 1 Oct)
+
+Mide on batches 2 and 3 (29 lessons, Code-authored under the 1 Oct ruling):
+"a lot of things there just aren't working rightly, pupils won't be able to
+follow the lessons properly, there's a lot going on." His example, specific
+heat capacity: two simple worked examples, then a question that needs two
+equations, with no teaching of how to chain them; and the end-of-lesson
+practice was inconsistent (one question on SHC, two on latent heat).
+
+- **Design authors and draws every KS4 lesson from batch 4 on**, exactly as
+  for the pilot. Code builds Design's input packs
+  (`docs/ks4/packs/batch-N/`: `00-BRIEF.md`, `04-checked-science-source/`,
+  `05-diagram-library/`, `FLAGS.md`, `DESIGN-BRIEF.txt`), ports her pages,
+  checks the science against AQA and ships them.
+- **Code does not author or redesign lessons, instruments or layouts.** A
+  pack's brief suggests a flagship in one line per lesson, nothing more.
+- **The four lesson rules** (Mide, 2 Oct 2026 — full text in
+  `docs/ks4/architecture.md`'s "Amendment, 2 Oct 2026 — four lesson rules"),
+  one line each: (1) "Start here" is a two-option guess, not a four-option
+  test; (2) equations are shown as formula triangles you can cover; (3) teach
+  every step before you test it; (4) practice is the same size in every
+  lesson.
+- **Batches 2 and 3 (29 lessons) stay live as they are for now**, listed in
+  `docs/ks4/BATCH-PLAN.md` as "to be rebuilt by Design later", after the
+  unbuilt batches.
+- The binding architecture, with both 2 Oct amendments, is
+  `docs/ks4/architecture.md`; batch status is `docs/ks4/BATCHES-REPORT.md`.
+
+⊕ Superseded 2 Oct 2026. This used to read:
 
 > "Let Code write the lessons. I think it understands the structure a lot better now." — Mide, 1 Oct 2026
 
@@ -458,11 +486,16 @@ how a batch is built is `docs/ks4/batch-engine.md`; batch status is
   passed the science examiner and the quality review.
 - The pilot's built pages stay byte-identical as batches are added: a batch
   brings its own `shared/ks4-*-<batch>` assets and never edits the pilot's
-  shared KS4 assets (their `?v=` stamps are in all 54 pilot pages).
+  shared KS4 assets (their `?v=` stamps are in all 54 pilot pages). Still
+  true.
 - `ks4_data/` (the question pools), frozen quiz rows and `scheme_of_work*`
   are never edited by lesson work. Quizzes, examiner tips, FIFA examples,
   equations and RP data are copied verbatim; a wrong frozen item is kept and
-  flagged, never silently fixed.
+  flagged, never silently fixed. Still true, with one approved, logged
+  exception as of 2 Oct 2026: the 19 wrong frozen quiz items B2-W1…W10,
+  B3-W1…W9 and atom economy's frozen formula/common-mistake text, corrected
+  in the `all_subtopics_*.py` data (no database table holds them) on
+  `feat/ks4-frozen-corrections` — see `docs/ks4/FROZEN-CORRECTIONS.md`.
 
 ### ⚠️ 3D Studio has a manual build step BEFORE the generator
 

@@ -192,7 +192,9 @@ Every KS4 calculation runs **CFIFA: Convert, Formula, Insert, Fine-tune, Answer.
 - The existing FIFA worked examples keep their four steps word for word. A Convert step goes in front of them: either the conversion, or "nothing to convert".
 - This applies to the `equation` block, the QUANTITATIVE family's flagship, required-practical data processing, and every Apply rung on the exam ladder.
 
-## Amendment, 1 Oct 2026 — Code writes the KS4 lessons (Mide)
+## Amendment, 1 Oct 2026 — Code writes the KS4 lessons (Mide) — ⊘ SUPERSEDED 2 Oct 2026
+
+Superseded by Mide's ruling of 2 Oct 2026 (below). Kept as the record of how batches 2 and 3 were made.
 
 > "Let Code write the lessons. I think it understands the structure a lot better now." — Mide, 1 Oct 2026
 
@@ -203,3 +205,22 @@ This replaces "Design builds the lessons" in **Build order** for every KS4 lesso
 - **Per batch:** a checked science source (`docs/ks4/packs/batch-N/`, verbatim quizzes, tips, worked examples, equations and RP data, examined against AQA 8461/8462/8463/8464 with every point tagged to its true route) → lessons written to this document's laws → built by `build_ks4.py --batch` → a fresh Opus science examiner on all four routes (changes in `docs/ks4/packs/batch-N/DEPARTURES.md`) and a fresh quality reviewer against the pilot and these laws → page checks → live, proved by hash.
 - The pilot's built pages stay byte-identical unless a science fix is logged in DEPARTURES. The old KS4 page for a lesson stays live until its replacement lands.
 - Design's pilot delivery stays in `docs/ks4/design-reference/pilot/`, unmodified.
+
+## Amendment, 2 Oct 2026 — Design writes the KS4 lessons again (Mide)
+
+This supersedes the 1 Oct 2026 amendment above and restores "Design builds the lessons" in **Build order** for every KS4 lesson from batch 4 on.
+
+Mide on batches 2 and 3 (29 lessons, Code-authored under the 1 Oct ruling): "a lot of things there just aren't working rightly, pupils won't be able to follow the lessons properly, there's a lot going on." His example, specific heat capacity: two simple worked examples, then a question that needs two equations, with no teaching of how to chain them; and the end-of-lesson practice was inconsistent (one question on SHC, two on latent heat).
+
+- **Design authors and draws every KS4 lesson from batch 4 on.** Code builds Design's input packs (`docs/ks4/packs/batch-N/`: `00-BRIEF.md`, `04-checked-science-source/`, `05-diagram-library/`, `FLAGS.md`, `DESIGN-BRIEF.txt`), ports her pages, checks the science and ships them, exactly as for the pilot.
+- **Code does not author or redesign lessons, instruments or layouts.** A pack's brief suggests a flagship in one line per lesson, nothing more.
+- **Batches 2 and 3 (29 lessons) stay live as they are for now**, and are listed in `BATCH-PLAN.md` as "to be rebuilt by Design later", after the unbuilt batches.
+
+## Amendment, 2 Oct 2026 — four lesson rules (Mide)
+
+Apply to every lesson from batch 4 on. The pilot and batches 2–3 keep their current openers for now.
+
+1. **"Start here" is a two-option guess, not a four-option test.** Mide: "we're asking students to commit to things they have no idea about… if we put four options in front of them, that feels really hard… they just give up." It works like a lesson starter: if pupils can't access it, the lesson goes down from there. So: exactly two options, either/or; framed as a guess (e.g. "If you had to guess, which do you think?"); as accessible as possible on every route (Combined and Triple, Foundation and Higher) — answerable from everyday experience, with nothing they haven't been taught needed to make a sensible guess; not patronising for Triple Higher, but never a test; the reveal is encouraging whichever they picked, and leads straight into the teaching.
+2. **Equations are shown as formula triangles you can cover.** For each equation, a triangle: the quantity on top, the others on the bottom. The pupil covers (taps) the quantity they want and sees the rearranged form, e.g. E = m c Δθ → cover m → m = E ÷ (c Δθ). Used in the equation block, the equation-sheet panel and CFIFA's Formula step. For an equation with a square or a ½ (Ek = ½ m v², Ee = ½ k e²), the triangle still applies and the extra step (square-root, ×2) is taught as its own line. Design draws it; the rule goes in her brief.
+3. **Teach every step before you test it.** A question may only use a step the lesson has already taught with a worked example. A calculation that chains two equations (e.g. find the energy with one, then use it in another) gets its own worked example, set out as "Step 1 … Step 2 …", before any pupil is asked to do one. CFIFA applies to each step.
+4. **Practice is the same size in every lesson.** The end-of-lesson practice and the exam ladder have the same number of questions at each rung in every lesson. Design sets the number once (at least the content-standards floor) and keeps it.

@@ -1,5 +1,27 @@
 # Writing a KS4 lesson — the brief every author works from
 
+⊕ **Superseded 2 Oct 2026 (Mide's ruling, 2 Oct 2026).** This brief was Code's
+authoring brief under the 1 Oct 2026 ruling. It records how batches 2 and 3
+were written and is no longer used to author lessons. From batch 4, Design
+authors from the batch's pack, and her brief is the pack's
+`DESIGN-BRIEF.txt` plus `docs/ks4/architecture.md`'s two 2 Oct amendments
+("Design writes the KS4 lessons again" and "four lesson rules"). Kept below
+unmodified as the record of batches 2 and 3.
+
+## 2 Oct 2026 — the four lesson rules
+
+See `docs/ks4/architecture.md`'s "Amendment, 2 Oct 2026 — four lesson rules
+(Mide)" for the full text. In one line each:
+
+1. "Start here" is a two-option guess, not a four-option test.
+2. Equations are shown as formula triangles you can cover.
+3. Teach every step before you test it.
+4. Practice is the same size in every lesson.
+
+Rule 2 (formula triangles) must be in every Design brief.
+
+---
+
 Since Mide's ruling of 1 Oct 2026, Code writes the KS4 lessons. This is the
 brief each lesson author follows. It is binding together with
 `docs/ks4/architecture.md` (the ten laws, the families, the CFIFA amendment),

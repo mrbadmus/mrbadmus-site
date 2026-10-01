@@ -913,8 +913,12 @@ def render(subs, pilot, plan, oddities):
             t = "%s/%s" % (r["subject"][:2].title(), r["topic"])
             if t not in topics:
                 topics.append(t)
+        label = {1: "1 (pilot, live)",
+                 2: "2 (live, Code-authored 1 Oct — to be rebuilt by Design)",
+                 3: "3 (live, Code-authored 1 Oct — to be rebuilt by Design)",
+                 }.get(i, str(i))
         A("| %s | %d | %s | %s | %s | %s | %s |" % (
-            "1 (pilot, live)" if i == 1 else str(i), len(b),
+            label, len(b),
             cnt["biology"] or "", cnt["chemistry"] or "", cnt["physics"] or "",
             ("w%d" % min(wk)) if wk else "—", ", ".join(topics)))
 
@@ -938,6 +942,24 @@ def render(subs, pilot, plan, oddities):
         for n, r in enumerate(b, 1):
             A(lesson_row(n, r))
         A("")
+
+    A("## To be rebuilt by Design later")
+    A("")
+    A("Mide's ruling, 2 Oct 2026: Design writes the KS4 lessons again; Code "
+      "does not author lessons (see `docs/ks4/architecture.md`'s 2 Oct "
+      "amendments). Batches 2 and 3 below (29 lessons) were Code-authored "
+      "under the 1 Oct ruling and stay live as they are for now. They are "
+      "listed here to be rebuilt by Design later, after the batches above "
+      "that are not yet built.")
+    A("")
+    A("| batch | # | slug | title | subject | routes |")
+    A("|---|---|---|---|---|---|")
+    for i, b in ((2, plan[0]), (3, plan[1])):
+        for n, r in enumerate(b, 1):
+            A("| %d | %d | `%s` | %s | %s | %s |" % (
+                i, n, r["slug"], r["title"], r["subject"].title(),
+                " ".join(r["routes"])))
+    A("")
 
     A("## Odd things")
     A("")
