@@ -26,6 +26,12 @@ is on the pages, not on the pool.
 | 4 | Braking force from ½mv² | HT-only | `stopping-distance-braking` — prints `F × d = ½mv²` | `ks4-work-done-energy-transfer-h04` |
 | 5 | Change in momentum, `F = Δp/t` | **Physics-only** (§5.5.5.3) | `momentum` is flagged `tier='higher', triple_only=False`, so a **Combined Higher** class sits it; the page teaches impulse, crumple zones and air bags in full | `ks4-momentum-s04`, `-h03` |
 
+> ⊕ **1 Oct 2026, KS4 batch 2 — row 3 does not hold.** Two batch-2 examiners read the spec
+> text: 8463 4.1.1.2 / 4.5.3 and 8464 6.1.1.2 carry no HT marker on Ee = ½ke², Appendix A
+> lists it as sheet equation 4 with no Higher flag, and both June 2026 equation sheets print
+> it unmarked. Batch 2's `changes-in-energy` teaches it to every route. Details:
+> `docs/ks4/packs/batch-2/review/science-bio-phys.md`. For Mide to confirm.
+
 A second reviewer, working independently on Energy, Electricity and Particle
 Model, found the same pattern again — six more:
 
