@@ -1,0 +1,55 @@
+# Batch 6 — diagram library audit
+
+Method: grepped `figlib/biology.py`, `figlib/biochem.py`, `figlib/chemistry.py`,
+`figlib/physics.py`, `figlib/ks4phys.py`, `figlib/charts.py`,
+`shared/ks4-diagrams.js`, `ks3_art/*.py` and `ks4_lessons/authored/batch-2/`
++ `batch-3/*.dc.html` for function names and docstrings naming each lesson's
+subject matter, then read the matching function/docstring to confirm it is a
+real match and not a substring collision. Near-hits checked and ruled out:
+`figlib/physics.py:2575`'s "treating cancer" is one line inside `em_spectrum()`'s
+gamma-ray use-case label, not a cancer-biology figure; `ks3_art/b7.py`'s
+photosynthesis-rate instruments (`r_reactant_remover`, `r_leaf_tuner`) are a
+different unit's bench, counted only where their STATIC drawer
+(`_leaf_section`) genuinely overlaps a lesson's content (transpiration, #13
+below); `ks4_lessons/authored/batch-2/chromosomes-mitosis.dc.html` links to a
+`stem-cells` page by slug (`K.hrefFor('stem-cells', R)`) — that is a
+forward-reference to a page that does not yet exist, not drawing code, and is
+not counted as a match. Function names and line numbers below are exact, from
+this worktree's working tree.
+
+`shared/ks4-diagrams.js` was checked in full again and remains entirely
+circuit-symbol and bonding/particle-model primitives — nothing in it concerns
+any Batch-6 topic; listed here as checked, not cited again below.
+
+| # | Lesson | Existing drawing code that already covers it |
+|---|---|---|
+| 1 | factors-affecting-food-security | None found anywhere searched (figlib, ks3_art, batch-2/3 `.dc.html`). No new-pest/pathogen/changing-climate/cost-of-production figure exists. |
+| 2 | group-1 | **Partial match:** `figlib/chemistry.py:1181 reactivity_series()` places Potassium, Sodium and Lithium at the top of its ladder (`_REACTIVITY = [("Potassium","K"), ("Sodium","Na"), ("Lithium","Li"), ...]`) — the correct reactivity ORDER for this lesson, but drawn as a general metal ladder, not a Group-1-specific trend-with-electron-shells figure. `figlib/chemistry.py:934 electronic_configuration(symbol)` is general-purpose and can draw any alkali metal's shell structure on request — reusable for the "distance of outer electron" explanation, not alkali-metal-specific. |
+| 3 | reactions-of-acids | No direct match for the salt-formation reactions themselves. `figlib/chemistry.py:1225 ph_scale()` ("0-14 pH scale with acid / neutral / alkali zones") covers the acid/alkali classification backdrop. `figlib/chemistry.py:1318 gas_syringe()` ("conical flask + delivery tube + gas syringe to measure gas") is the standard set-up for collecting hydrogen gas from a metal-acid reaction — a genuine fit for that sub-practical, not salt-formation generally. `ks4_lessons/authored/batch-2/titrations.dc.html` is the sibling KS4 acid-base lesson's Design delivery, worth opening for visual-style consistency (titration is a related but distinct sub-topic from this lesson). |
+| 4 | stellar-evolution | **Direct match:** `figlib/physics.py:2510 star_life_cycle()` — "Two branches: low/medium-mass star and high-mass star" — exactly this lesson's two-branch life-cycle content. |
+| 5 | animal-plant-cells | **Partial match:** `figlib/biology.py:913 plant_cell(W, labels)` — "A leaf (palisade-type) plant cell, schematic: cell wall, cell membrane, cytoplasm, a large permanent vacuole … nucleus … chloroplasts" — covers the PLANT half of this lesson exactly. No equivalent `animal_cell()` figure exists anywhere searched — the animal-cell half (and any side-by-side comparison) has no drawing code. `ks4_lessons/authored/batch-3/microscopy.dc.html:467` links to this same lesson as a sibling (`K.hrefFor('animal-plant-cells', R)`) and its own content is an onion-epidermis observation exercise, not a labelled-cell figure — worth opening for style consistency, not content. |
+| 6 | cell-specialisation | None found anywhere searched. `ks3_art/b5.py:882` names "testes … Make sperm cells" in an unrelated reproductive-organs context (one line of prose, not a specialised-cell structure figure); `ks3_art/b7.py`'s guard cells are drawn as part of `_leaf_section()` (counted under lesson #13 below) but not as a standalone "structure fits function" specialised-cell figure. No sperm/nerve/root-hair/red-blood-cell specialised-structure figure exists anywhere. |
+| 7 | culturing-microorganisms | None found anywhere searched for agar/Petri/aseptic-technique content specifically (figlib, ks3_art). This lesson's own FIFA/RP content (inhibition-zone area, agar-plate method) has no existing drawing code at all — not even a KS3-styled interactive bench, unlike most other RP-bearing lessons in this estate. |
+| 8 | stem-cells | None found anywhere searched. No embryonic/adult/meristem stem-cell figure exists; the only hit anywhere in the codebase naming "stem-cells" is the forward link noted above, which draws nothing. |
+| 9 | principles-of-organisation | No direct match. `ks3_art/b3.py:1881`'s `r_system_switch` levelled chain (`Cell`/`Tissue`/`Organ`/`Organism` chips) is the closest near-hit, but it is wired to one specific immune-system job-sort scenario ("harmful species have nowhere to settle") and its own comment says that job "sits at no level of organisation at all" — not a general, reusable hierarchy figure. |
+| 10 | digestive-system | None found anywhere searched. No gut/stomach/small-intestine/enzyme-by-organ figure exists in figlib or ks3_art. `ks4_lessons/authored/batch-2/enzymes.dc.html` is a sibling KS4 biology lesson (lock-and-key enzyme model bench) worth opening for visual-style consistency — it teaches enzyme action generally, not the digestive system's organs/food tests, so it covers no content here. |
+| 11 | health-disease | None found anywhere searched. No risk-factor, correlation-vs-causation or lifestyle-disease figure exists. |
+| 12 | cancer | None found anywhere searched. The only "cancer" hit in the entire codebase is the word "cancer" inside `em_spectrum()`'s gamma-ray use-case label (`figlib/physics.py:2575`) — unrelated to this lesson's benign/malignant tumour biology. No tumour/cell-division-gone-wrong figure exists. |
+| 13 | transpiration | **Reusable match:** `ks3_art/b7.py:99 _leaf_section()` — the same leaf cross-section matched for batch-5's plant-tissues (cuticle, epidermis, palisade/spongy mesophyll, vein, stoma, water up the vein and CO₂ in through the pore) — directly relevant to water loss through stomata. `ks3_art/b7.py:595 r_leaf_tuner()` ("b7-02 `#s-tuner`") is a KS3 interactive instrument with linked rate/water-loss readouts that respond to leaf size, thickness, stomata count and cuticle — the same factors this lesson teaches (temperature, humidity, wind, light), but as a DOM instrument tuned for a different contrast, not a potometer-practical figure. |
+| 14 | translocation | No direct match. `_leaf_section()` (above) draws the vein (xylem, water transport) but does not distinguish it from phloem, and this lesson's content is specifically the xylem-vs-phloem CONTRAST (direction of flow, what each carries). No figure anywhere draws phloem or a source-to-sink translocation diagram. |
+
+## Figures still needed
+
+1. **factors-affecting-food-security** — a figure classifying threats to food security into categories (new pests/pathogens, changing environmental conditions/climate, sustainability and cost of farming, conflict) with a one-line consequence per category.
+2. **group-1** — (contingent on reusing `reactivity_series()` and `electronic_configuration()`) a dedicated trend figure down Group 1 — outer electron further from the nucleus, weaker attraction, more easily lost, hence increasing reactivity — paired with the already-available water-reaction equations.
+3. **reactions-of-acids** — a salt-formation summary figure: acid + metal/metal oxide/metal hydroxide/metal carbonate → salt + (hydrogen/water/water/water+CO₂), with the naming rule for the salt (e.g. hydrochloric acid → chloride salt) made visible.
+4. **animal-plant-cells** — an `animal_cell()` figure to pair with the existing `plant_cell()` (nucleus, cytoplasm, cell membrane, mitochondria, ribosomes — no cell wall, chloroplasts or permanent vacuole), ideally drawn side by side with the plant cell so the "extra structures" contrast is visible in one figure.
+5. **cell-specialisation** — a "structure fits function" figure showing three or four specialised cells (sperm cell: tail + many mitochondria; nerve cell: long axon; root hair cell: large surface area; red blood cell: biconcave, no nucleus) each paired with its one-line structure-to-function link.
+6. **culturing-microorganisms** — a labelled agar-plate set-up (Petri dish, agar, bacterial lawn, antibiotic/antiseptic-soaked discs, control disc) with the inhibition zones visible and measurable, matching this lesson's RP6 and its one FIFA question — the only lesson in batches 4–6 so far with zero existing drawing code of any kind (not even a KS3 interactive bench).
+7. **stem-cells** — a figure contrasting embryonic (totipotent/pluripotent — can become almost any cell), adult (multipotent — limited range, e.g. bone marrow → blood cells) and plant meristem (can become any plant cell, at any stage) stem cells, each with what it can become.
+8. **principles-of-organisation** — a general, reusable hierarchy figure: cell → tissue → organ → organ system → organism, each level shown with a generic example (distinct from `r_system_switch`'s one-off immune-system wiring, which is not reusable here).
+9. **digestive-system** — an organ-by-organ figure (mouth, stomach, small intestine, large intestine, pancreas, liver/gall bladder) with the enzyme each organ produces/releases and what it digests, plus a separate food-tests figure (iodine/Benedict's/Biuret/ethanol-emulsion, colour change for each).
+10. **health-disease** — a correlation-vs-causation figure using real-feeling data (e.g. a scatter graph with an obvious correlation) paired with the "correlation is not causation — a confounding/third variable may explain it" caption, plus a classification figure (communicable vs non-communicable, and the main risk-factor categories: lifestyle, genetic, environmental).
+11. **cancer** — a benign-vs-malignant tumour comparison figure (contained, slow-growing, non-invasive vs uncontrolled, invasive, metastasising to other tissues via the bloodstream/lymph) with the main risk factors and treatments (surgery, radiotherapy, chemotherapy) named.
+12. **transpiration** — (contingent on reusing `_leaf_section()`) a labelled potometer set-up (capillary tube, air bubble, graduated scale, leafy shoot, water reservoir) showing how the rate of water uptake is measured, for the base potometer investigation (not a required practical on either spec — examiner, batch-6 transpiration flags).
+13. **translocation** — a xylem-vs-phloem contrast figure: xylem (dead cells, one-way, roots → leaves, water and minerals, no energy needed) vs phloem (living cells, two-way, source → sink, sugars/amino acids, needs energy) — the one genuinely missing figure for this lesson, since `_leaf_section()` only draws the vein generically.

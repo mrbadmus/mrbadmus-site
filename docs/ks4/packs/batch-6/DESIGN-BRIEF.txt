@@ -1,0 +1,22 @@
+KS4 batch 6 — 14 lessons.
+
+Pack: docs/ks4/packs/batch-6/ in the mrbadmus-site repo (main branch).
+Read 00-BRIEF.md first, then FLAGS.md, then each lesson's file in 04-checked-science-source/, then 05-diagram-library/README.md.
+
+Lessons:
+  1. Factors Affecting Food Security (factors-affecting-food-security)
+  2. Group 1 — Alkali Metals (group-1)
+  3. Reactions of Acids with Metals and Bases (reactions-of-acids)
+  4. The Life Cycle of a Star (stellar-evolution)
+  5. Animal and Plant Cells (animal-plant-cells)
+  6. Cell Specialisation and Differentiation (cell-specialisation)
+  7. Culturing Microorganisms (culturing-microorganisms)
+  8. Stem Cells (stem-cells)
+  9. Principles of Organisation (principles-of-organisation)
+  10. The Digestive System (digestive-system)
+  11. Health, Disease and Risk Factors (health-disease)
+  12. Cancer (cancer)
+  13. Transpiration (transpiration)
+  14. Translocation (translocation)
+
+Deliver one runnable .dc.html per lesson, as for the pilot, with NOTES (numbered science flags), README, _ds and support.js.
