@@ -10,7 +10,8 @@ updated after each batch. Plan: `docs/ks4/BATCH-PLAN.md`. Engine:
 |---|---|---|
 | 1 (pilot) | 14 | live since 26 Sep 2026 |
 | 2 | 16 | pushed 1 Oct 2026 (`64a0cb303..09c6146a2`); live hash proof pending (see below) |
-| 3 | 13 | in progress |
+| 3 | 13 | pushed 1 Oct 2026 (commit below); live hash proof pending |
+| 4–18 | 222 | not started (budget) |
 
 ## Batch 2
 
@@ -67,6 +68,39 @@ polling of mrbadmus.com. Run: `python3 check_ks4_live.py --batch batch-2`
 **Teacher Lessons cards** link by URL (`ks4TopicHref`), and the URLs are the
 old pages' URLs, so the cards now open the new lessons with no change.
 
+## Batch 3
+
+13 lessons, 44 pages (10 on all four routes, atom-economy on TF TH, sound and
+detection on TH only). First Rainford teaching week: 6.
+
+| lesson | family | routes | flagship | live (Triple Higher) |
+|---|---|---|---|---|
+| Temperature changes and specific heat capacity | Quantitative | CF CH TF TH | SHC required practical rig (RP14 Combined / RP1 Physics), results always high | https://mrbadmus.com/triple/higher/physics/particle-model/temperature-changes-shc.html |
+| Changes of state and specific latent heat | Quantitative | CF CH TF TH | energy ledger: steam vs boiling water on skin | https://mrbadmus.com/triple/higher/physics/particle-model/specific-latent-heat.html |
+| Particle motion in gases | Model | CF CH TF TH | live gas bench; Triple piston (pV = constant); TH bicycle pump | https://mrbadmus.com/triple/higher/physics/particle-model/particle-motion-pressure.html |
+| Power | Quantitative | CF CH TF TH | the lift test (two-lane motor race) | https://mrbadmus.com/triple/higher/physics/energy/power.html |
+| Types of electromagnetic waves | Model | CF CH TF TH | spectrum bench: build, then compare pairs at one speed | https://mrbadmus.com/triple/higher/physics/waves/types-of-em-waves.html |
+| Sound waves and hearing | Process | TH | from air to ear stepper | https://mrbadmus.com/triple/higher/physics/waves/sound-waves-hearing.html |
+| Waves for detection and exploration | Investigation | TH | read the Earth (seismic shadow zones) + ultrasound scan | https://mrbadmus.com/triple/higher/physics/waves/waves-detection-exploration.html |
+| Microscopy | Quantitative | CF CH TF TH | RP1 microscope bench | https://mrbadmus.com/triple/higher/biology/cell-biology/microscopy.html |
+| Mixtures and separation techniques | Classify | CF CH TF TH | separation desk | https://mrbadmus.com/triple/higher/chemistry/atomic-structure/mixtures.html |
+| Conservation of mass and balanced equations | Quantitative | CF CH TF TH | sealed flask on a balance | https://mrbadmus.com/triple/higher/chemistry/quantitative/conservation-of-mass.html |
+| Atom economy | Quantitative | TF TH | mass strip (AQA reactants form); TH route choice | https://mrbadmus.com/triple/higher/chemistry/quantitative/atom-economy.html |
+| The Earth's early atmosphere and how it changed | Process | CF CH TF TH | run the clock | https://mrbadmus.com/triple/higher/chemistry/atmosphere/early-atmosphere.html |
+| Greenhouse gases and climate change | Model | CF CH TF TH | radiation bench | https://mrbadmus.com/triple/higher/chemistry/atmosphere/greenhouse-gases.html |
+
+**Science.** Source examination (2 Opus) found sound-waves-hearing's own spec
+core missing from the frozen pack (written from the spec) and atom economy's
+frozen common-mistake text teaching the wrong formula. Fresh examiners (3):
+round 1 — 7 required changes; round 2 — SCIENCE PASS on all 13.
+`packs/batch-3/DEPARTURES.md`: 9 frozen quiz items withheld, 36 frozen
+source lines not shown, 68 review changes, 6 considered-not-changed.
+
+**Quality.** Fresh reviewers (2): round 1 SHIP 3 / FIX 10; round 2 SHIP 13.
+
+**Pages.** `ks4_parity.py --batch batch-3` 616/616. After the full build:
+pilot 54/54, batch-2 52/52, batch-3 44/44 equal their manifests.
+
 ## For Mide
 
 1. **Ee = ½ke² is base, not HT.** Two examiners read 8463 4.1.1.2/4.5.3 and
@@ -110,6 +144,18 @@ old pages' URLs, so the cards now open the new lessons with no change.
 14. **Live proof for batch 2** needs running (`python3 check_ks4_live.py
     --batch batch-2`): this session was not permitted to poll the live site.
 
+15. **Pilot-block defects found by batch 3** (each needs the shared block,
+    so a pilot-page change): the ladder's calc rung reads "63,000"/"63 000"
+    as 63 (batch lessons keep every numeric answer below 1000); `sc-for`
+    inside `<table>` renders no rows.
+16. **`findings-for-mide.md` row 8 holds only in part** (annotated): pV =
+    constant is Physics-only but not HT; the qualitative p–T relation is base;
+    only kelvin and the quantitative p/T law are outside AQA.
+17. **Frozen data for batch 3**: sound-waves-hearing's pack held 4.6.1.5
+    content, not its own spec point; atom-economy's frozen equation and
+    common-mistake divide by products (AQA divides by reactants); nine quiz
+    items withheld (B3-W1…W9); atom-economy now has no practice bank.
+
 ## Decisions I made
 
 1. **Lesson format.** Code-authored lessons use Design's own `.dc.html`
@@ -136,3 +182,29 @@ old pages' URLs, so the cards now open the new lessons with no change.
 7. **Full-build proofs set `CONSUMER_SIGNUP_ENABLED=true`**, matching what
    main's committed tree was built with; without it the B2C pages differ and
    swamp the diff.
+8. **Withhold, don't show, wrong frozen quiz items** (engine `withhold`
+   field). Kept verbatim in the data; never served. True-but-off-topic items
+   (detritivores, SONAR in sound, Rf in mixtures, the Na/Cl₂ "Neither" key)
+   stay in the bank so banks are not emptied for no science reason.
+9. **Equation labels follow the June 2026 sheet the page links to** (pilot
+   ruling resistors-C9): Ek, Ep, P = E/t, P = W/t, pV = constant are "On
+   the sheet" even where the spec lists them as recall. The quality
+   reviewer's contrary Q-CE3 was overruled.
+10. **Science reviewer wins a conflict with the quality reviewer** on numbers
+    (conservation-of-mass rung 2 = 640 g); quality wins on presentation.
+11. **B2C files restored to main's state on both pushes.** Main's latest
+    build output (64a0cb303) has the consumer flag off; this lane does not
+    change another lane's surface (reported in For Mide 13).
+12. **Live hash proof not run.** The session's permission classifier
+    refused polling mrbadmus.com; per its instruction I did not route around
+    it. Cloudflare deploys from main automatically; the proof command is in
+    For Mide 14.
+13. **Batch 3 started after batch 2 was pushed and its full build, gates and
+    manifests were proved**, not after a live proof (see 12).
+14. **Adjacent-lesson rule enforced**: lessons taught close together in one
+    topic may not share a hook, flagship or line-up (decomposition's hook was
+    rewritten; slh's cooling-curve step replaced).
+15. **Ladder answers kept below 1000** to dodge the shared parser defect
+    rather than editing the pilot block.
+16. **Reviewers time-boxed** after two stalled for hours on hung headless
+    Chrome calls; round-2 confirmations read source and rendered text first.
