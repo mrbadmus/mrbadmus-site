@@ -1,0 +1,21 @@
+KS4 batch 4 — 13 lessons.
+
+Pack: docs/ks4/packs/batch-4/ in the mrbadmus-site repo (main branch).
+Read 00-BRIEF.md first, then FLAGS.md, then each lesson's file in 04-checked-science-source/, then 05-diagram-library/README.md.
+
+Lessons:
+  1. The Heart and Blood Vessels (heart-blood-vessels)
+  2. The Water Cycle (water-cycle)
+  3. Atmospheric Pollutants from Fuels (atmospheric-pollutants)
+  4. Efficiency (efficiency)
+  5. Infrared Emission, Absorption and Black Bodies (infrared-black-bodies)
+  6. Diffusion, Osmosis and Active Transport (transport-in-cells)
+  7. Blood (blood)
+  8. The Periodic Table (periodic-table)
+  9. Thermal Conductivity and Reducing Unwanted Energy Transfers (thermal-conductivity)
+  10. Coronary Heart Disease (coronary-heart-disease)
+  11. Biodiversity (biodiversity)
+  12. Development of the Periodic Table (development-periodic-table)
+  13. Uses and Applications of Electromagnetic Waves (uses-em-waves)
+
+Deliver one runnable .dc.html per lesson, as for the pilot, with NOTES (numbered science flags), README, _ds and support.js.
