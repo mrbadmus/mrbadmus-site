@@ -307,3 +307,55 @@ Other lens changes:
 | internal-energy | **SCIENCE PASS** |
 | lenses | **SCIENCE PASS** |
 | decomposition | **SCIENCE PASS** |
+
+---
+
+## Round 3 — commit 7c1710936 (lenses and decomposition)
+
+**What I checked:**
+- the source diff `36fd4c877..7c1710936`;
+- that the branch tip (330e78396) is identical to it for both files;
+- the rebuilt pages on port 8712.
+
+On TF and TH I pressed every ring in every constructor step, in its new order, until the correct one advanced.
+
+**Lenses: ray task.** Coordinates are unchanged except for one new target. The sort is by x, then y, which changes only the order. The positional labels from `where()` all describe their points accurately, and none gives the answer away.
+
+| step | target (cm) | label | expected | driven |
+|---|---|---|---|---|
+| 1 | (−10, 0) | on the axis, at F, object's side | wrong | wrong ✓ |
+| 1 | (10, 0) | on the axis, at F, far side | **correct**: the parallel ray goes through F | correct ✓ |
+| 1 | (20, 0) / (25, 4) | at 2F, far side / above the axis, beyond 2F | wrong | (source) ✓ |
+| 2 | (10, 0) / (25, 0) | at F / on the axis, beyond 2F | wrong | wrong ✓ |
+| 2 | (25, −4) | below the axis, beyond 2F, far side | **correct**: the undeviated line from (−25, 4) through (0, 0) | correct ✓ |
+| 3 | (0, 4) / (10, 0) | above the axis, at the lens / at F | wrong | wrong ✓ |
+| 3 | (16.67, −2.67) | below the axis, between F and 2F, far side | **correct**: v = 16.67 cm, h = −2.67 cm | correct ✓ |
+| 3 | (20, 0) | at 2F, far side | wrong | (source) ✓ |
+| 4 | **(−20, 0) NEW** | on the axis, at 2F, object's side | wrong. The traced-back rays pass (−20, 12) and (−20, 16), so nothing meets there, and the feedback "Nothing meets at 2F. Trace both rays back until they cross." is true. | wrong ✓ |
+| 4 | (−10, 8) | above the axis, at F, object's side | **correct**: virtual image at v = −10 cm, h = +8 cm | correct ✓ |
+| 4 | (10, 0) / (32, −12) | at F / below the axis, beyond 2F | wrong | (source) ✓ |
+
+Nearest-ring tap selection (within 40 px) cannot change which point is correct. The closest ring pair, the step-3 crossing and 2F, is about 52 plate px apart, and step 4's correct ring is about 155 px from the new 2F ring. There were no console errors on TF or TH.
+
+**Decomposition**
+- "Sugar in a leaf that has fallen and died" → air. Why: "respire the sugar, releasing its carbon as carbon dioxide" ✓.
+- Nitrate in droppings → soil ✓.
+- Fern buried before it could rot → locked away ✓.
+- "Magnesium in a fallen leaf" → soil ✓.
+- Fungus on a log → air ✓.
+- Nitrogen compounds in a dead mouse → soil ✓.
+- Prompt "Each one starts in a living thing." True for all six.
+- Explainer "every atom in a dead leaf… Follow one fallen leaf" ✓. This resolves R2-A2.
+- Hook reply "The ground under the heap is colder than its middle, so heat flows out of the heap, not in." ✓. This resolves R2-A1.
+- The new text renders on CF.
+
+No new issues.
+
+### Final verdicts (round 3)
+
+| lesson | verdict |
+|---|---|
+| lenses | **SCIENCE PASS** |
+| decomposition | **SCIENCE PASS** |
+
+(changes-in-energy and internal-energy are unchanged since round 2: **SCIENCE PASS**.)

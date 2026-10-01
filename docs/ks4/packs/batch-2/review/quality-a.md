@@ -472,3 +472,65 @@ Three changed parts got their own scripted drives:
 | changes-in-energy | **SHIP** — Q-CE1, 2, 4 confirmed; Q-CE3 withdrawn by commander ruling (on Mide's list) |
 | internal-energy | **SHIP** — Q-IE1–3 confirmed |
 | lenses | **FIX** — Q2-L1 (key is always first in Tab order, and its aria-label names the answer), Q2-L2 (targets overlap and cover the crossing at 390 px) |
+
+---
+
+## Round 3 — re-review of commit 7c1710936
+
+**Built pages.** The built pages under `mrbadmus_site/` match the commit. The draft banner is no longer rendered on any of the three pages (checked live; the `.ks3-review-flag` element is absent).
+
+### Lenses (TF and TH)
+
+**How it was driven.** The ray task ran start to finish four ways:
+- by tap (CDP mouse events) at 390 px, light on TH and dark on TF;
+- by keyboard (Tab from the prompt, then Enter) at 1280 px, dark on TH and light on TF.
+
+**Q2-L1 — confirmed.**
+- Targets are now ordered left to right, so the key sits at Tab positions 2, 3, 3 and 2 across the four steps.
+- Every label is purely positional and none names the answer, for example "Point C, below the axis, between F and 2F, far side".
+- Step 4 has the new 2F distractor, which gives a correct "Nothing meets at 2F…" reply.
+- The focus outline shows on every ring.
+
+**Q2-L2 — confirmed.**
+- At 390 px the rings are 22 px, unfilled and do not overlap. The crossing point stays visible inside its ring.
+- The rings ignore the pointer (`pointer-events: none`). A tap on the figure goes to the nearest target within 40 px.
+- I tested the case you named:
+  - a tap exactly on 2F gives the 2F correction;
+  - a tap 8 px from the crossing, towards 2F (the two are 20 px apart on screen), registers as the crossing and returns "Yes";
+  - a tap on empty space far from any target is ignored.
+- A keyboard-triggered click (where `e.detail` is 0) does not double-fire through the figure handler.
+
+All four runs: zero console errors, no sideways scroll.
+
+### Eukaryotes-prokaryotes
+
+**Q2-EP1 and Q2-EP2 — confirmed** on the built CF and TH pages. All three comparisons were driven at 390 px with a wrong pick each time:
+- the comparison-2 reply is now "×10 would make each ribosome 200 nm. Convert 2 µm to nm first.";
+- the "10 bacteria fit across" caption is gone;
+- the inset figures still read clearly.
+
+ADVISORY
+- **A3-EP1.** The comparison-3 trim produced `FIT[2].why[2]` = `Check the conversion: 2 mm = 2000 µm.`, which now only repeats the working line printed below it (`2 mm = 2000 µm · …`). `FIT[0].why[1]`, `20 ÷ 2 = 10, not 100. Both are already in µm.`, likewise repeats `20 µm ÷ 2 µm = 10`.
+  - Suggested replacements: `Not 1000: check how many µm are in a mm.` and `Both are already in µm: no conversion needed.`
+  - The second line was there in rounds 1 and 2, and I should have caught it then. Both are minor, so they do not hold the lesson.
+
+### Decomposition
+
+**The "Air, soil, or locked away?" sort — confirmed.**
+- The prompt now reads "Each one starts in a living thing."
+- The cards no longer have a keyword that predicts the bin:
+  - "Carbon …" appears in both the air bin and the locked-away bin;
+  - "leaf" appears in both the air bin and the soil bin.
+- I solved it by keyboard on CH: one deliberate misplacement showed its corrective note, then it reached "Every card is where it belongs."
+- The other rewording (the hook's ground-warmth reply) adds no repeated text.
+
+**ENGINE NOTE (not a lesson defect).** Finishing a Ks4Sort never ticks its rail item. I checked this in this lesson's `s-return` and `s-compost`, chromosomes-mitosis `s-where`, and the pilot's own metallic-bonding `s-sort`: the rail stays "0 of N done" after the check, while a Ks4Choice commit does tick. The lesson wiring is correct (`on-done` → `onReturn`), so the shared Ks4Sort's `onDone` is not reaching the page. This needs a look at engine level.
+
+### Final verdicts (round 3)
+| lesson | verdict |
+|---|---|
+| lenses | **SHIP**: Q2-L1 and Q2-L2 confirmed by tap at 390 px and by keyboard at 1280 px on TF and TH; a tap meant for the crossing is not taken by 2F |
+| eukaryotes-prokaryotes | **SHIP**: Q2-EP1 and Q2-EP2 confirmed; A3-EP1 is advisory only |
+| decomposition | **SHIP**: sort rewording confirmed, no new repeated text |
+
+The other five group-A lessons stand at SHIP from round 2. For the whole group: all eight lessons now ship.

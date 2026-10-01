@@ -226,13 +226,13 @@ const PARTS = [
 /* "How many fit across": n is the exact count, p the power of ten */
 const FIT = [
   { name: 'comparison 1 of 3', title: 'Bacteria (2 µm) across a liver cell (20 µm)', a: 0,
-    why: ['', '20 ÷ 2 = 10, not 100. Both are already in µm.', '20 ÷ 2 = 10, not 1000. Both are already in µm.'],
+    why: ['', 'Both are already in µm: no conversion needed.', '20 ÷ 2 = 10, not 1000. Both are already in µm.'],
     working: '20 µm ÷ 2 µm = 10 = 10¹ · one order of magnitude' },
   { name: 'comparison 2 of 3', title: 'Ribosomes (20 nm) across a bacterium (2 µm)', a: 1,
     why: ['×10 would make each ribosome 200 nm. Convert 2 µm to nm first.', '', 'Check the conversion: 1 µm = 1000 nm, so 2 µm = 2000 nm, not 20 000 nm.'],
     working: '2 µm = 2000 nm · 2000 nm ÷ 20 nm = 100 = 10² · two orders of magnitude' },
   { name: 'comparison 3 of 3', title: 'Liver cells (20 µm) across a 2 mm line', a: 1,
-    why: ['Did you use 1 mm = 100 µm? It is 1000 µm, so 2 mm = 2000 µm.', '', 'Check the conversion: 2 mm = 2000 µm.'],
+    why: ['Did you use 1 mm = 100 µm? It is 1000 µm, so 2 mm = 2000 µm.', '', 'Not 1000: check how many µm are in a mm.'],
     working: '2 mm = 2000 µm · 2000 µm ÷ 20 µm = 100 = 10² · two orders of magnitude' }
 ];
 const FIT_OPTS = ['×10 (10¹)', '×100 (10²)', '×1000 (10³)'];
