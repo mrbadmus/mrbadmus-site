@@ -85,15 +85,26 @@
   }
 
   /* B2 — the verdict split, in words, zero buckets left out. */
-  function verdictLine(a) {
+  function verdictLine(a, seenAt) {
     a = a || {};
     var bits = [];
     if (a.match) { bits.push(a.match + " right"); }
     if (a.partial) { bits.push(a.partial + " nearly"); }
     if (a.no) { bits.push(a.no + " wrong"); }
     if (a.blank) { bits.push(a.blank + " blank"); }
-    if (a.pending) { bits.push(a.pending + " checking"); }
+    if (a.pending && inFlight(seenAt)) { bits.push(a.pending + " checking"); }
     return bits.join(" · ");
+  }
+
+  /* ⊕ MRB-353 — "Checking" is shown only while a check can actually be in
+     flight: the answer is under a minute old. A pending answer older than
+     that has no check running for it (the batch picks it up on the next
+     open of this page), so it shows no chip rather than a false
+     "Checking". */
+  var CHECK_FRESH_MS = 60 * 1000;
+  function inFlight(iso) {
+    var t = iso ? Date.parse(iso) : NaN;
+    return isFinite(t) && Date.now() - t < CHECK_FRESH_MS;
   }
 
   function latestRating(c) {
@@ -120,12 +131,16 @@
     });
     if (rs.length) {
       var r = rs.reduce(function (a, b) { return String(b.at || "") >= String(a.at || "") ? b : a; });
-      return { text: String(r.answer), check: r.answer_check || null, from: "review" };
+      return { text: String(r.answer), check: r.answer_check || null, from: "review", at: r.at || null };
     }
     /* A blank make-pass answer ("" with check `blank`) IS an answer — the
        pupil wrote nothing and the Blank verdict says so. */
     if (c && c.mine != null && (String(c.mine) !== "" || c.check === "blank")) {
-      return { text: String(c.mine), check: c.check || null, from: "make" };
+      /* its time: the make-phase rating that follows it, else (not rated
+         yet) the pupil's latest activity on this set. */
+      var mk = ((c && c.ratings) || []).filter(function (r) { return r.phase === "make" && r.at; });
+      return { text: String(c.mine), check: c.check || null, from: "make",
+               at: mk.length ? mk[0].at : (S && S.seenAt) || null };
     }
     return null;
   }
@@ -278,6 +293,7 @@
     if (!els) { return; }
     session += 1;
     els.overlay.hidden = true;
+    if (S) { clearTimeout(S.recheck); }
     S = null;
     if (prevOverflow != null) { document.documentElement.style.overflow = prevOverflow; prevOverflow = null; }
     if (opener && opener.focus) { try { opener.focus({ preventScroll: true }); } catch (e) { /* gone */ } }
@@ -376,12 +392,15 @@
 
   function ratingChips(c) {
     /* Moved verbatim from flashcard-progress.js's old drawer: ratings are
-       grouped under a small "while writing" / "in review" label, but only
-       when the distinction exists on this card or the set is make mode. */
+       grouped under a small label, in make mode only. ⊕ MRB-353 (Mide,
+       1 Oct 2026): "First try" is the make-phase rating — the pupil's
+       first go, written before they had seen the model answer; "Later
+       tries" is every rating after it. A ready-made deck has no first try,
+       so its ratings carry no label. */
     var rs = c.ratings || [];
     var makeR = rs.filter(function (r) { return r.phase === "make"; });
     var revR = rs.filter(function (r) { return r.phase !== "make"; });
-    var labelled = S.make || (makeR.length > 0 && revR.length > 0);
+    var labelled = !!S.make;
     var rates = el("div", "fb-rates");
     function chips(group, phaseWord) {
       if (!group.length) { return; }
@@ -400,8 +419,8 @@
         rates.appendChild(chipEl);
       });
     }
-    chips(makeR, "while writing");
-    chips(revR, "in review");
+    chips(makeR, "First try");
+    chips(revR, "Later tries");
     return rates;
   }
 
@@ -446,7 +465,9 @@
          the two boxes read as a symmetric pair. */
       var ansHead = el("div", "fb-box-h");
       ansHead.appendChild(el("span", "fb-model-label", "Latest answer"));
-      if (ans && ans.check) {
+      var showCheck = ans && ans.check && (ans.check !== "pending" || inFlight(ans.at));
+      if (ans && ans.check === "pending" && showCheck && S) { S.checking = true; }
+      if (showCheck) {
         var v = el("span", "fb-verdict fb-verdict-" + ans.check, VERDICT[ans.check] || ans.check);
         v.setAttribute("data-check", ans.check);
         ansHead.appendChild(v);
@@ -518,7 +539,7 @@
     }
     els.body.appendChild(buildTiles(p, d));
     if (S.make) {
-      var words = verdictLine(p.answers);
+      var words = verdictLine(p.answers, p.last_active);
       if (words) {
         var vl = el("div", "fb-verdicts", words);
         vl.setAttribute("data-fb", "verdicts");
@@ -527,6 +548,9 @@
     }
     var cards = d.cards || [];
     var ses = d.sessions || [];
+    S.seenAt = ses.reduce(function (m, s) { return s.ended_at && String(s.ended_at) > String(m || "") ? s.ended_at : m; }, null);
+    S.checking = false;
+    clearTimeout(S.recheck);
     var started = ses.length > 0 || cards.some(function (c) { return (c.ratings || []).length || c.mine; });
     if (!started && (p.status === "not_started" || p.status === "missing" || !p.status)) {
       els.body.appendChild(el("div", "bd-empty", p.status === "missing"
@@ -548,6 +572,12 @@
     shown.forEach(function (c) { list.appendChild(buildCard(c, cards.indexOf(c))); });
     els.body.appendChild(list);
     if (ses.length) { els.body.appendChild(buildSittings(ses)); }
+    /* ⊕ MRB-353 — a check in flight lands within seconds; re-read this
+       pupil quietly until it has (or the answer passes a minute old). */
+    if (S.checking) {
+      var pid = p.pupil_id, mine = session;
+      S.recheck = setTimeout(function () { reloadDetail(pid, mine); }, 5000);
+    }
   }
 
   function render() { renderHeader(); renderBody(); }
@@ -568,6 +598,22 @@
         if (S.roster[S.idx] && S.roster[S.idx].pupil_id === pid) { renderBody(); }
       });
     return S.pending[pid];
+  }
+
+  /* The same read, replacing a cached pupil in place (no "Loading…"). */
+  function reloadDetail(pid, mySession) {
+    if (!S || mySession !== session || S.pending[pid]) { return; }
+    var sb = S.sb;
+    S.pending[pid] = Promise.resolve()
+      .then(function () { return sb.rpc("flashcard_pupil_detail", { p_assignment: S.id, p_pupil: pid }); })
+      .then(function (r) { return (r && !r.error && r.data) ? r.data : null; },
+            function () { return null; })
+      .then(function (data) {
+        if (mySession !== session || !S) { return; }
+        delete S.pending[pid];
+        if (data) { S.detail[pid] = data; }
+        if (S.roster[S.idx] && S.roster[S.idx].pupil_id === pid) { renderBody(); }
+      });
   }
 
   function loadAround(mySession) {

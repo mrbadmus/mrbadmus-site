@@ -195,6 +195,33 @@ DETAIL_REVIEW = {
                   "median_think_ms": 1800, "rushed": False}],
 }
 
+# ⊕ MRB-353 — a ready-made (review) deck read through the CURRENT function:
+# typed review answers, one checked 20 s ago and still pending (a check IS
+# in flight → "Checking"), one pending from 3 minutes ago (no check in
+# flight → no chip), one decided.
+DETAIL_FRESH = {
+    "pupil": {"id": "p-cat", "first_name": "Cat", "last_name": "Cole", "display_name": "Cat"},
+    "cards": [
+        {"id": "f1", "position": 0, "question": "What is the unit of charge?", "answer": "The coulomb (C)",
+         "mine": None, "check": None, "written_ms": None, "secured": False, "known": False, "shown": 1,
+         "ratings": [{"rating": "nearly", "phase": "review", "at": iso(NOW - timedelta(seconds=20)), "think_ms": 900,
+                      "session_id": "q1", "answer": "coulombs I think", "answer_check": "pending"}]},
+        {"id": "f2", "position": 1, "question": "What is the unit of current?", "answer": "The ampere (A)",
+         "mine": None, "check": None, "written_ms": None, "secured": False, "known": False, "shown": 1,
+         "ratings": [{"rating": "not_yet", "phase": "review", "at": iso(NOW - timedelta(minutes=3)), "think_ms": 900,
+                      "session_id": "q1", "answer": "volts maybe", "answer_check": "pending"}]},
+        {"id": "f3", "position": 2, "question": "What is the unit of resistance?", "answer": "The ohm",
+         "mine": None, "check": None, "written_ms": None, "secured": False, "known": True, "shown": 2,
+         "ratings": [{"rating": "got_it", "phase": "review", "at": iso(NOW - timedelta(minutes=4)), "think_ms": 900,
+                      "session_id": "q1", "answer": "it is the ohm", "answer_check": "match"},
+                     {"rating": "got_it", "phase": "review", "at": iso(NOW - timedelta(minutes=2)), "think_ms": 800,
+                      "session_id": "q1", "answer": "ohms", "answer_check": "match"}]},
+    ],
+    "sessions": [{"id": "q1", "started_at": iso(NOW - timedelta(minutes=5)), "ended_at": iso(NOW - timedelta(seconds=15)),
+                  "open": True, "active_ms": 90000, "cards_seen": 3, "cards_rated": 4, "cards_made": 0,
+                  "median_think_ms": 900, "rushed": False}],
+}
+
 # ⊕ Design port A five-state follow-up, 30 Sep 2026 — Fay's real per-card
 # detail: exactly two of each state (Secured/Got it/Nearly/Not yet/Not
 # seen), so the progress table's strip is proved drawing all five kinds of
@@ -933,7 +960,10 @@ def main():
                   str(cards["c2"]))
             check(cards["c1"]["answer"] == "CO2 gas" and cards["c1"]["verdict"] == "Right",
                   "panel: else the make-pass answer and its verdict", str(cards["c1"]))
-            check(cards["c3"]["verdict"] == "Checking", "panel: a pending check reads Checking")
+            # ⊕ MRB-353 — Ben's c3 answer is pending but 23 hours old: no
+            # check is in flight for it, so no chip (never a false Checking).
+            check(cards["c3"]["answer"] == "positive" and cards["c3"]["verdict"] is None,
+                  "panel: a pending answer over a minute old shows no chip (MRB-353)", str(cards["c3"]))
             check(cards["c2"]["model"] == "Neutron" and cards["c2"]["modelLabel"] == "MODEL ANSWER",
                   "panel: the model answer, one label", str(cards["c2"]))
             check(cards["c1"]["tries"] == "Tries: 4" and cards["c2"]["tries"] == "Tries: 3",
@@ -941,7 +971,7 @@ def main():
                   "%s / %s" % (cards["c1"]["tries"], cards["c2"]["tries"]))
             check(all(not c["histOpen"] for c in d["cards"] if c["hasHist"]) and cards["c2"]["hasHist"],
                   "panel: History is closed by default")
-            check("while writing" not in d["text"] and "in review" not in d["text"],
+            check("First try" not in d["text"] and "Later tries" not in d["text"],
                   "panel: no phase words visible while History is closed")
             check(not any(c["theirLabel"] for c in d["cards"]), "panel: no 'Their answer' caption beside a verdict chip")
             check(d["sub"], "panel: formulae render with <sub>")
@@ -952,10 +982,10 @@ def main():
             p.eval("document.querySelector('[data-fb=\"overlay\"] .fb-card[data-card=\"c2\"] details.fb-history').open = true; true")
             rr = p.eval(r"""Array.prototype.map.call(document.querySelectorAll('[data-fb="overlay"] .fb-card[data-card="c2"] .fb-rates > *'),function(r){
                   return r.classList.contains('fb-phase') ? '['+r.textContent+']' : r.getAttribute('data-rating');})""")
-            check(rr == ["[while writing]", "not_yet", "[in review]", "not_yet", "nearly"],
-                  "panel: History holds the rating chips grouped by phase", str(rr))
+            check(rr == ["[First try]", "not_yet", "[Later tries]", "not_yet", "nearly"],
+                  "panel: History groups the ratings under First try / Later tries (MRB-353)", str(rr))
             tip = p.eval("(document.querySelector('[data-fb=\"overlay\"] .fb-card[data-card=\"c2\"] .fb-rate[data-phase=\"make\"]')||{}).title||''")
-            check(tip.startswith("Not yet · while writing · "), "panel: a rating's tooltip names the phase and the time", tip)
+            check(tip.startswith("Not yet · First try · "), "panel: a rating's tooltip names the phase and the time", tip)
             p.eval("document.querySelector('[data-fb=\"overlay\"] .fb-sittings').open = true; true")
             check(p.eval("document.querySelectorAll('[data-fb=\"overlay\"] .fb-session').length") == 2 and
                   p.eval("document.querySelectorAll('[data-fb=\"overlay\"] .fb-session .fb-rushed').length") == 1,
@@ -977,8 +1007,10 @@ def main():
             wait_for(p, "document.querySelector('[data-fb=\"overlay\"]').getAttribute('data-fb-student')==='p-cat' && !!document.querySelector('[data-fb=\"overlay\"] .fb-card')")
             dc = p.eval(PANEL_JS)
             check(dc["title"] == "Cat Cole", "panel: next goes to the next row in table order")
-            check(dc["verdicts"] == "2 right · 1 nearly · 1 wrong · 2 checking",
-                  "panel: Cat's verdict words (pending reads checking)", dc["verdicts"])
+            # ⊕ MRB-353 — Cat's 2 pending answers are from 70 minutes ago:
+            # nothing is checking them now, so the line does not say so.
+            check(dc["verdicts"] == "2 right · 1 nearly · 1 wrong",
+                  "panel: Cat's verdict words (an old pending answer is not 'checking')", dc["verdicts"])
             cc = {c["id"]: c for c in dc["cards"]}
             check(cc["c1"]["answer"] == "C O 2" and cc["c1"]["verdict"] == "Nearly" and cc["c1"]["tries"] == "Tries: 2",
                   "panel degrade (old function): make answer, Nearly, Tries = rated passes", str(cc["c1"]))
@@ -1131,7 +1163,7 @@ def main():
             p2 = b.page("about:blank", settle=0.2)
             rv = progress(mode="review", rule="quick")
             p2.send("Page.addScriptToEvaluateOnNewDocument",
-                    {"source": stub(rv, rv, {"p-ben": DETAIL_REVIEW, "*": DETAIL_NONE})})
+                    {"source": stub(rv, rv, {"p-ben": DETAIL_REVIEW, "p-cat": DETAIL_FRESH, "*": DETAIL_NONE})})
             p2.set_viewport(1280, 800)
             p2.goto(url, settle=0.5)
             wait_for(p2, "document.querySelectorAll('#fp-table tbody tr.fp-row').length===6")
@@ -1161,6 +1193,24 @@ def main():
                   "review mode: only the untouched card says 'No written answer'", str(rc["c3"]))
             check(rc["c1"]["tries"] == "Tries: 2" and rc["c2"]["tries"] == "Tries: 1",
                   "review mode, old function: Tries = rated passes")
+            p2.eval("document.querySelector('[data-fb=\"overlay\"] .fb-card[data-card=\"c1\"] details.fb-history').open = true; true")
+            rr2 = p2.eval(r"""Array.prototype.map.call(document.querySelectorAll('[data-fb="overlay"] .fb-card[data-card="c1"] .fb-rates > *'),function(r){
+                  return r.classList.contains('fb-phase') ? '['+r.textContent+']' : r.getAttribute('data-rating');})""")
+            tip2 = p2.eval("(document.querySelector('[data-fb=\"overlay\"] .fb-card[data-card=\"c1\"] .fb-rate')||{}).title||''")
+            check(rr2 == ["got_it", "got_it"] and "try" not in tip2.lower() and "tries" not in tip2.lower(),
+                  "ready-made deck: History shows only the ratings, no First try / Later tries label (MRB-353)",
+                  "%s / %s" % (rr2, tip2))
+            p2.eval("document.querySelector('[data-fb=\"close\"]').click(); true")
+            # ⊕ MRB-353 — Checking only while a check is in flight.
+            p2.eval("document.querySelector('tr[data-pupil=\"p-cat\"]').click(); true")
+            wait_for(p2, "document.querySelector('[data-fb=\"overlay\"]').getAttribute('data-fb-student')==='p-cat' && document.querySelectorAll('[data-fb=\"overlay\"] .fb-card').length===3")
+            fc = {c["id"]: c for c in p2.eval(PANEL_JS)["cards"]}
+            check(fc["f1"]["answer"] == "coulombs I think" and fc["f1"]["verdict"] == "Checking",
+                  "MRB-353: a typed review answer checked 20 s ago and still pending reads Checking", str(fc["f1"]))
+            check(fc["f2"]["answer"] == "volts maybe" and fc["f2"]["verdict"] is None,
+                  "MRB-353: a pending review answer 3 minutes old shows no chip", str(fc["f2"]))
+            check(fc["f3"]["answer"] == "ohms" and fc["f3"]["verdict"] == "Right",
+                  "MRB-353: a decided review answer shows its verdict", str(fc["f3"]))
             p2.eval("document.querySelector('[data-fb=\"close\"]').click(); true")
             p2.eval("document.getElementById('fp-csv').click(); true")
             csv2 = p2.eval("window.__MRB_FP_LAST_CSV__")
