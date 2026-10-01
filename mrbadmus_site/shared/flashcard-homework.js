@@ -69,8 +69,19 @@
  *   connection or a closed tab loses nothing), sent in batches, and are
  *   idempotent on the server by id. The SERVER computes every duration.
  *
- * WHAT IT DOES NOT DO: decide completion. `flashcard_record()` does, from the
- * events, and says so in the state it returns.
+ * ⊕ FLASHCARD HOMEWORK COMPLETION (Mide, 1 Oct 2026 — docs/experience/
+ *   DESIGN-PORT-REPORT.md "Follow-up 1 Oct"). DONE = the pupil has reached
+ *   this engine's own Done screen once (a review pass where every card's
+ *   latest rating in the walk is Got it; in make mode, the writing pass
+ *   first). `finishedAt()` below reads that same fact from the pupil's own
+ *   `flashcard_reviews`, with no live Engine — it is the single definition
+ *   `student-live.js`'s `recordFinish` writes from. `endPass()` flags
+ *   `this.end.finished` the moment it happens here; once the flush settles,
+ *   `Api.onFinish(id)` fires so the page can write the submission at once.
+ *   SECURED (below) stays separate and smaller — never required for DONE.
+ *
+ * WHAT IT STILL DOES NOT DO: decide SECURED. `flashcard_record()` does
+ * that, from `flashcard_card_state`, and says so in the state it returns.
  *
  * Transport, the keepalive transport, the model check and the resume read
  * are injected (`MRBHomework.transport` / `.transportKeepalive` /
@@ -290,6 +301,38 @@
                targets: order.filter(function (id) { return targets.indexOf(id) >= 0; }),
                done: order.filter(function (id) { return done[id]; }) }
     };
+  }
+
+  // ⊕ 1 Oct 2026 — "finished the homework", read from data with no live
+  // Engine. The FIRST point (cumulative over the pupil's whole history,
+  // never reset — unlike reconstruct()'s round-aware walk, which resets at
+  // every all-right so it can find the START of the NEXT pass) at which
+  // every card's latest review rating is Got it. In make mode, a review
+  // row only counts once every card has at least one make-phase row too
+  // (the writing pass is done).
+  // `rows`: oldest first, {card_id, rating, phase, rated_at, event_id}.
+  // Returns {at, event_id} | null.
+  // Known accepted divergence (documented, not "fixed"): if a pupil uses
+  // ‹ Back to make an "I don't know" card Got it before its replay comes
+  // round, this walk sees all-right one card earlier than the Done screen
+  // does — the pupil is one replay away from the screen; the record wins.
+  function finishedAt(rows, cards, mode /*, idk — unused: the IDK-replay
+      edge above is an accepted divergence, not corrected here */) {
+    if (!rows || !cards || !cards.length) { return null; }
+    var deck = cards.slice().sort(function (a, b) { return a.position - b.position; })
+      .map(function (c) { return c.id; });
+    var madeSeen = {}, latest = {}, hit = null;
+    rows.forEach(function (r) {
+      if (hit || !r || deck.indexOf(r.card_id) < 0 || !(r.rating in RANK)) { return; }
+      if (r.phase === "make") { madeSeen[r.card_id] = true; return; }
+      if (r.phase !== "review") { return; }
+      latest[r.card_id] = r.rating;
+      if (mode === "make" && deck.some(function (id) { return !madeSeen[id]; })) { return; }
+      if (deck.every(function (id) { return latest[id] === "got_it"; })) {
+        hit = { at: ms(r.rated_at), event_id: r.event_id || r.id || null };
+      }
+    });
+    return hit;
   }
 
   function Engine(assignmentId, state, opts) {
@@ -679,7 +722,7 @@
     this.learn = false;
     this.detour = null;
     this.tok += 1;
-    this.end = { right: right, m: m, writing: writing, all: all, settled: false };
+    this.end = { right: right, m: m, writing: writing, all: all, settled: false, finished: all };
     if (all) { this.sessionFinish(); }
     this.changed();
     this.flush();
@@ -687,6 +730,20 @@
 
   Engine.prototype.sessionFinish = function () {
     this.event({ type: "session_finish" });
+  };
+
+  // ⊕ 1 Oct 2026 — the end screen settles once the server has the pass
+  // (flush has nothing left queued). The FIRST time it settles for a
+  // finished pass, tell the page so it can write the submission at once
+  // (`student-live.js`'s `recordFinish`, the same write the heal makes on
+  // every class-page load). Fires once per pass: `settled` guards it, and a
+  // new pass gets a new `this.end` object.
+  Engine.prototype.settleEnd = function () {
+    if (!this.end || this.end.settled) { return; }
+    if (this.end.finished && typeof Api.onFinish === "function") {
+      try { Api.onFinish(this.id); } catch (e) { /* fire and forget; the heal covers it */ }
+    }
+    this.end.settled = true;
   };
 
   // Try again: only the cards that are not Got it, in the pass's own order.
@@ -845,7 +902,7 @@
     if (this.sending) { return this.sending; }
     if (!this.pending.length || typeof t !== "function") {
       if (this.end && !this.end.settled && !this.pending.length && typeof t === "function") {
-        this.end.settled = true; this.changed();
+        this.settleEnd(); this.changed();
       }
       return Promise.resolve();
     }
@@ -859,7 +916,7 @@
       self.error = null;
       if (state) { self.merge(state); }
       if (self.pending.length) { self.flushSoon(0); }
-      else if (self.end) { self.end.settled = true; }
+      else if (self.end) { self.settleEnd(); }
       if (batch.some(function (e) { return e.type === "session_finish"; }) && Api.onSessionEnd) {
         try { Api.onSessionEnd(self.id); } catch (e) { /* fire and forget */ }
       }
@@ -918,12 +975,14 @@
     transport: null,          // (assignmentId, events[]) → Promise<state>
     transportKeepalive: null, // (assignmentId, events[]) → void; survives the page going away
     onSessionEnd: null,       // (assignmentId) → void
+    onFinish: null,           // ⊕ 1 Oct 2026: (assignmentId) → void, once the Done screen's pass has settled
     modelCheck: null,         // (assignmentId, cardId, answer, engine) → Promise<verdict|null>
     resumeRead: null,         // (assignmentId) → Promise<[{card_id, rating, phase, rated_at, id}]>, oldest first
     modelWaitMs: MODEL_WAIT_MS,
     active: null,
     quickCheck: quickCheck,
     reconstruct: reconstruct,
+    finishedAt: finishedAt,
     open: function (assignmentId) {
       var t = Api.transport;
       var known = engines[assignmentId];

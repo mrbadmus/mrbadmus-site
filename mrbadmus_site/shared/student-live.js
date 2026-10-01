@@ -739,27 +739,191 @@
     }
     return next(0);
   }
+  /* ⊕ 1 Oct 2026 — FLASHCARD HOMEWORK COMPLETION, THE DATA HALF.
+     (docs/experience/DESIGN-PORT-REPORT.md, "Follow-up 1 Oct": Mide ruled
+     that finishing the homework — reaching the engine's own Done screen —
+     is done/handed in, on both the pupil and teacher side; SECURED stays
+     separate and smaller.) `shared/flashcard-homework.js`'s `finishedAt()`
+     reads that same fact from the pupil's own ratings, with no live Engine.
+     This is the ONE place the write happens: at the live Done moment
+     (`recordFinish`, below) and as a heal on every class-page load for a
+     pupil who finished before this fix (`wireLibrary`'s widened read). Both
+     call `writeFinishedSubmission`, which writes `assignment_submissions`
+     in EXACTLY the shape `flashcard_record` writes on secure — every other
+     reader (teacher-live, teacher-data, flashcard_progress, the rollup, the
+     bell, reminders) already keys on that row, so one write fixes all of
+     them. Idempotent: a row that already has `submitted_at` is NEVER
+     touched — never downgraded, never re-stamped, whether it was written by
+     `flashcard_record`'s own (stricter, secured-everything) rule or by an
+     earlier run of this same code. A failed write (RLS, offline) breaks
+     nothing visible and simply retries on the next load (the heal). */
+
+  /* The server time of the rating that finished the pass: `flashcard_
+     reviews.event_id` → `flashcard_events.server_at` (RLS: a pupil reads
+     their own events). Falls back to the device clock only if the event
+     row cannot be read — never to `now()`, which would stamp a finish that
+     may have happened minutes or hours ago. */
+  function fcTimeFromEvent(sb, hit) {
+    var fallback = new Date((hit && hit.at) || Date.now()).toISOString();
+    if (!hit || !hit.event_id) { return Promise.resolve(fallback); }
+    return sb.from("flashcard_events").select("server_at").eq("id", hit.event_id)
+      .maybeSingle().then(function (r) {
+        return (r && !r.error && r.data && r.data.server_at) || fallback;
+      }, function () { return fallback; });
+  }
+
+  /* `started_at` (earliest sitting) and `total_time_seconds` (every
+     sitting's active time), the same pair `flashcard_record` computes —
+     for one or many assignment ids at once (the heal batches). Keyed by
+     lower-cased assignment id. A read that fails costs only the two
+     numbers: `writeFinishedSubmission` still writes the row, from the
+     finish moment itself as `started_at`. */
+  function fcSessionAgg(sb, assignmentIds) {
+    if (!assignmentIds.length) { return Promise.resolve({}); }
+    return pagedRows(function () {
+      return sb.from("flashcard_sessions").select("assignment_id, started_at, active_ms")
+        .in("assignment_id", assignmentIds);
+    }).then(function (rows) {
+      var agg = {};
+      (rows || []).forEach(function (r) {
+        var id = String(r.assignment_id).toLowerCase();
+        var a = agg[id] || (agg[id] = { started: null, seconds: 0 });
+        var st = r.started_at ? Date.parse(r.started_at) : null;
+        if (st != null && !isNaN(st) && (a.started == null || st < a.started)) { a.started = st; }
+        a.seconds += (r.active_ms || 0) / 1000;
+      });
+      return agg;
+    }, function () { return {}; });
+  }
+
+  /* The write itself. `dueAt` and `agg` are both optional (the live path
+     reads `agg` fresh for one id; a caller with nothing for either still
+     gets a correct, if timing-light, row). Resolves `true` only when THIS
+     call wrote or updated the row — the signal callers use to refresh the
+     page; `false` for "already done" or "could not write this time". */
+  function writeFinishedSubmission(sb, assignmentId, uid, n, hit, dueAt, agg) {
+    return sb.from("assignment_submissions").select("id, submitted_at")
+      .eq("assignment_id", assignmentId).eq("student_id", uid).eq("attempt_no", 1)
+      .is("deleted_at", null).maybeSingle()
+      .then(function (res) {
+        if (res.error) { throw res.error; }
+        var row0 = res.data;
+        if (row0 && row0.submitted_at) { return false; }   // already done: never touched
+        return fcTimeFromEvent(sb, hit).then(function (serverAt) {
+          var isLate = !!(dueAt && Date.parse(serverAt) > Date.parse(dueAt));
+          var startedAt = (agg && agg.started != null) ? new Date(agg.started).toISOString() : serverAt;
+          var payload = {
+            assignment_id: assignmentId, student_id: uid, score: n, max_score: n,
+            total_time_seconds: Math.round((agg && agg.seconds) || 0),
+            submitted_at: serverAt, completed_at: serverAt, started_at: startedAt,
+            status: "complete", is_late: isLate, attempts: 1, attempt_no: 1
+          };
+          if (row0 && row0.id) {
+            return sb.from("assignment_submissions").update(payload).eq("id", row0.id)
+              .then(function (r) { if (r.error) { throw r.error; } return true; });
+          }
+          return sb.from("assignment_submissions").insert(payload)
+            .then(function (r) {
+              if (r.error) {
+                if (r.error.code === "23505") { return false; }  // another path won the race
+                throw r.error;
+              }
+              return true;
+            });
+        });
+      })
+      .catch(function (err) {
+        console.info("[student-live] flashcard finish write deferred",
+          err && (err.code || err.message));
+        return false;
+      });
+  }
+
+  /* So a finished deck moves out of To do THE SAME VISIT, with no reload:
+     the mounted page's own `work` row, patched in place (Design's template
+     reads `w.status`/`w.detail`/`w.fc` off `this.state.work` to choose the
+     row's bucket, detail line and button — see `student_rulings.py`'s
+     "Give it another go" and "COMPLETED <day>" tuples). The server copy is
+     always right on the next load either way; this only saves the pupil a
+     refresh. */
+  function fcPatchWorkRow(id) {
+    var lg = mountedApp && mountedApp.logic;
+    if (!lg || typeof lg.setState !== "function") { return; }
+    lg.setState(function (p) {
+      var work = (p.work || []).map(function (w) {
+        if (!w || w.id !== id) { return w; }
+        return Object.assign({}, w, { status: "marked", detail: "COMPLETED " + fmtDay(new Date().toISOString()) });
+      });
+      return { work: work };
+    });
+  }
+
   function wireLibrary(sb, uid) {
     var L = window.MRBFlashcardLibrary;
     if (!L || !sb || !uid) { return; }
-    var rated = {};
+    var rated = {}, reviewRows = {}, idOriginal = {};
     pagedRows(function () {
-      return sb.from("flashcard_reviews").select("assignment_id, card_id").order("id", { ascending: true });
+      return sb.from("flashcard_reviews")
+        .select("assignment_id, card_id, rating, phase, rated_at, event_id, id")
+        .order("rated_at", { ascending: true }).order("id", { ascending: true });
     }).then(function (rows) {
       rows.forEach(function (r) {
         var id = String(r.assignment_id).toLowerCase();
         (rated[id] = rated[id] || {})[r.card_id] = 1;
+        (reviewRows[id] = reviewRows[id] || []).push(r);
+        idOriginal[id] = idOriginal[id] || r.assignment_id;
       });
       var ids = Object.keys(rated);
       if (!ids.length) { return {}; }
       return pagedRows(function () {
-        return sb.from("assignment_flashcards").select("assignment_id").in("assignment_id", ids)
+        return sb.from("assignment_flashcards").select("assignment_id, id, position").in("assignment_id", ids)
           .order("id", { ascending: true });
-      }).then(function (cards) {
-        var n = {};
-        cards.forEach(function (c) {
+      }).then(function (cardsRows) {
+        var n = {}, deckCards = {};
+        cardsRows.forEach(function (c) {
           var id = String(c.assignment_id).toLowerCase();
           n[id] = (n[id] || 0) + 1;
+          (deckCards[id] = deckCards[id] || []).push({ id: c.id, position: c.position });
+        });
+        /* ⊕ 1 Oct 2026 — HEAL. A pupil who finished before this fix (no
+           submission, because `flashcard_record` only wrote one once every
+           card was SECURED) has their deck caught up here, on every
+           class-page load. A deleted/unreleased deck's cards are invisible
+           under RLS, so it is simply absent from `deckCards` and skipped —
+           the same safety `n`'s qualifying count already relies on. */
+        var realIds = ids.map(function (lo) { return idOriginal[lo] || lo; });
+        Promise.all([
+          pagedRows(function () {
+            return sb.from("assignments").select("id, flashcard_mode, due_at").in("id", realIds);
+          }).catch(function () { return []; }),
+          pagedRows(function () {
+            return sb.from("assignment_submissions").select("assignment_id, submitted_at")
+              .eq("student_id", uid).in("assignment_id", realIds);
+          }).catch(function () { return []; }),
+          fcSessionAgg(sb, realIds)
+        ]).then(function (res) {
+          var asg = {}; (res[0] || []).forEach(function (a) { asg[String(a.id).toLowerCase()] = a; });
+          var done = {}; (res[1] || []).forEach(function (s) {
+            if (s.submitted_at) { done[String(s.assignment_id).toLowerCase()] = true; }
+          });
+          var agg = res[2] || {};
+          var H = window.MRBHomework;
+          var writes = [];
+          ids.forEach(function (lo) {
+            if (done[lo]) { return; }
+            var a = asg[lo];
+            var cards = deckCards[lo];
+            if (!a || !cards || !cards.length) { return; }
+            var hit = H && typeof H.finishedAt === "function"
+              ? H.finishedAt(reviewRows[lo] || [], cards, a.flashcard_mode) : null;
+            if (!hit) { return; }
+            var rid = idOriginal[lo] || lo;
+            writes.push(writeFinishedSubmission(sb, rid, uid, cards.length, hit, a.due_at, agg[lo])
+              .then(function (wrote) { if (wrote) { fcPatchWorkRow(rid); } }));
+          });
+          if (writes.length) { Promise.all(writes).catch(function () {}); }
+        }).catch(function (err) {
+          console.info("[student-live] flashcard heal unavailable", err && (err.code || err.message));
         });
         return n;
       });
@@ -794,6 +958,48 @@
     /* A sitting has ended: have what the pupil WROTE checked against the
        model answer, in the background. Fire and forget — the flag is the
        teacher's, and nothing on this page waits for it. */
+    /* ⊕ 1 Oct 2026 — the engine's own Done screen, settled: write (or find
+       already written) the submission at once. See the block above
+       `wireLibrary` for the shared write and why it is the one place. */
+    function fcDeckState(id) {
+      var active = H.active;
+      if (active && active.id === id && active.state) { return Promise.resolve(active.state); }
+      return sb.rpc("flashcard_record", { p_assignment: id, p_events: [] })
+        .then(function (r) { if (r.error) { throw r.error; } return r.data; });
+    }
+    function recordFinish(id) {
+      if (!id) { return; }
+      sb.auth.getSession().then(function (res) {
+        var uid = res && res.data && res.data.session && res.data.session.user
+          && res.data.session.user.id;
+        if (!uid) { return false; }
+        return fcDeckState(id).then(function (state) {
+          var cards = (state && state.cards) || [];
+          if (!cards.length) { return false; }
+          return sb.from("flashcard_reviews")
+            .select("card_id, rating, phase, rated_at, event_id, id")
+            .eq("assignment_id", id)
+            .order("rated_at", { ascending: true }).order("id", { ascending: true })
+            .then(function (r) {
+              if (r.error) { throw r.error; }
+              var hit = typeof H.finishedAt === "function"
+                ? H.finishedAt(r.data || [], cards, state && state.mode) : null;
+              if (!hit) { return false; }
+              return fcSessionAgg(sb, [id]).then(function (agg) {
+                return writeFinishedSubmission(sb, id, uid, cards.length, hit,
+                  state && state.due_at, agg[String(id).toLowerCase()]);
+              });
+            });
+        });
+      }).then(function (wrote) {
+        if (wrote) { fcPatchWorkRow(id); }
+      }).catch(function (err) {
+        /* Offline / RLS: nothing visible breaks. The heal (wireLibrary, on
+           the next class-page load) retries from the pupil's own rows. */
+        console.info("[student-live] flashcard finish deferred", err && (err.code || err.message));
+      });
+    }
+    H.onFinish = recordFinish;
     H.onSessionEnd = function (id) {
       var C = window.MrBadmusConfig || {};
       if (!C.SUPABASE_URL) { return; }
@@ -3087,8 +3293,12 @@
 
       var detailLine;
       if (status === "marked" && c.kind === "flashcards") {
-        /* ⊕ MRB-351 — a finished deck has no marks; it is secured. */
-        detailLine = "COMPLETED " + fmtDay(c.submitted_at) + " · DECK SECURED";
+        /* ⊕ RULED 1 Oct 2026 — a finished deck has no marks, and "DECK
+           SECURED" is false the moment "done" means the Done screen rather
+           than every card secured (secured is a smaller, separate, teacher-
+           side fact; no redundant text on a pupil screen that is already
+           true). This used to read "COMPLETED <day> · DECK SECURED". */
+        detailLine = "COMPLETED " + fmtDay(c.submitted_at);
       } else if (status === "marked") {
         /* ⊕ RULED 22 Aug 2026 — W5. "Complete" replaces "Hand it in"
            everywhere it appears, and the work rows are one of the places it
@@ -3609,6 +3819,10 @@
        `answeredFor[assignment_id]` — how many questions this child has actually
        answered, off the SAME two reads, with no third one added. See the block
        below the catch for why the rows are filled there and not in `work`. */
+    /* ⊕ 1 Oct 2026 — filled below, alongside `mySubs` (free on the same
+       read): which assignment ids this pupil has HANDED IN, for the
+       reminder filter (`noteRows`, further down this function). */
+    var completedAssignmentIds = {};
     var answeredFor = null;
     try {
       if (assignmentIds.length) {
@@ -3618,10 +3832,17 @@
            submission for the same one, so it is the LATEST attempt that
            describes where the child is. */
         var mySubs = await withDbDeadline(WARM_MS, sb.from("assignment_submissions")
-          .select("id, assignment_id, attempt_no").eq("student_id", user.id)
+          .select("id, assignment_id, attempt_no, submitted_at").eq("student_id", user.id)
           .in("assignment_id", assignmentIds));
         if (mySubs.error) { throw mySubs.error; }
         var subIds = (mySubs.data || []).map(function (r) { return r.id; });
+        /* ⊕ 1 Oct 2026 — same rows, one more free field: which assignments
+           this pupil has a COMPLETED submission for, for the reminder
+           filter below (`noteRows`). A deck done under the new rule, or any
+           other completed set, drops its reminder here. */
+        (mySubs.data || []).forEach(function (r) {
+          if (r.submitted_at) { completedAssignmentIds[r.assignment_id] = true; }
+        });
         /* The latest submission per assignment, and the assignment each
            submission belongs to. `attempt_no` is null on the hand-seeded May
            work, so a missing one sorts as 0 rather than throwing the row out. */
@@ -4092,8 +4313,18 @@
        "0 of 0 answered" in that case would be a made-up number about a piece
        of work that does not exist, so the clause is dropped and the line
        still reads as a sentence. */
-    var noteRows = (unreadNotes && !unreadNotes.error && unreadNotes.data
-                     && unreadNotes.data.reminders) || [];
+    var noteRows = ((unreadNotes && !unreadNotes.error && unreadNotes.data
+                     && unreadNotes.data.reminders) || [])
+      /* ⊕ RULED 1 Oct 2026 (in scope, flashcard-completion follow-up, §9) —
+         `student_reminders_for_viewer` has no done check of its own (it
+         only reads "unread"), so a pupil who hands work in still saw the
+         banner and the bell dot until they dismissed it by hand — for a
+         flashcard deck and for every other kind of work alike. Hide a
+         reminder whose assignment already has a completed submission
+         (`completedAssignmentIds`, built above alongside `mySubs`). A
+         reminder with no `assignment_id` (none exist today, but the
+         column is nullable) is kept — nothing to check it against. */
+      .filter(function (r) { return !r.assignment_id || !completedAssignmentIds[r.assignment_id]; });
     var reminderLine = "";
     if (noteRows.length) {
       var senderName = (noteRows[0].sender || "Your teacher");

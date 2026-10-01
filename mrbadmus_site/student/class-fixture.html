@@ -942,8 +942,18 @@ class Component extends DCLogic {
     const onTime = handed.filter((w) => !w.late).length;
     /* ⊕ RULED 25 Sep 2026 (stream H) — P1. Sum the marks, not
        the percentages; see the section header above this
-       tuple for the fixture-fallback proof. */
-    const avgMarks = marked.reduce((s, w) => {
+       tuple for the fixture-fallback proof.
+       ⊕ RULED 1 Oct 2026 (flashcard-completion follow-up) — a
+       done deck is now `marked` (score = max = n, Mide's 1 Oct
+       ruling) but has no `rawMax` (student-live.js never sets
+       one for a flashcards row) and no `score` percentage
+       either, so the old fallback (`w.score || 0` out of a
+       assumed 100) silently added a 0 for every done deck and
+       dragged the average down. A deck was never a mark out of
+       100 before this ruling and still is not one now — it is
+       excluded from Avg score exactly as it always has been
+       from `rawScore`/`rawMax`. */
+    const avgMarks = marked.filter((w) => !w.fc).reduce((s, w) => {
       s.score += (w.rawMax != null ? w.rawScore : (w.score || 0));
       s.max += (w.rawMax != null ? w.rawMax : 100);
       return s;
@@ -1038,14 +1048,21 @@ class Component extends DCLogic {
         wk: 'W' + pad(w.week), title: w.title, brief: w.brief,
         metaLine: (st.week != null ? '' : 'W' + pad(w.week) + ' \u00B7 ') + longWord,
         isMarked: isMarked, isPending: w.status === 'pending', isMissed: w.status === 'missed', isOpen: w.status === 'open',
-        showScore: showScore, scoreText: w.rawMax != null ? (w.rawScore + ' / ' + w.rawMax) : (w.score + '%'),
+        showScore: showScore, /* ⊕ RULED 1 Oct 2026 (flashcard-completion follow-up) — a flashcard
+   row has no marks (it is completion, not a score) and now reaches
+   'marked' far sooner than it used to (finishing, not securing), so
+   this chip — previously almost never reached by a deck — would
+   otherwise read 'undefined%' on every done deck: `w.score` is
+   never set for a flashcards row (shared/student-live.js), and
+   `w.rawMax` isn't either, so neither branch had a real value. */
+scoreText: w.fc ? '' : (w.rawMax != null ? (w.rawScore + ' / ' + w.rawMax) : (w.score + '%')),
         /* ⊕ RULED by Mide 22 Sep 2026 — first-week fixes.
            The bare percentage gets a word, and the row gets a
            completion bar that is NOT the same number. */
         /* ⊕ RULED 25 Sep 2026 (stream H) — P2, wide-width half.
            See the section header above this tuple. */
-        scoreLabel: w.rawMax != null ? (w.late ? 'late' : '')
-          : 'CORRECT' + (w.late ? ' \u00B7 late' : ''),
+        scoreLabel: w.fc ? '' : (w.rawMax != null ? (w.late ? 'late' : '')
+          : 'CORRECT' + (w.late ? ' \u00B7 late' : '')),
         hasBar: qTotal > 0,
         /* ⊕ RULED 25 Sep 2026 (stream H) — P6. See the section
            header above this tuple. */
@@ -1090,7 +1107,7 @@ class Component extends DCLogic {
         /* ⊕ RULED 25 Sep 2026 (stream H) — P9. See the section
            header above this tuple. */
         /* ⊕ Sharpen C5 — a completed set's ONE button. */
-        primaryLabel: w.retake ? 'Retake it' : w.reopen ? w.reopen : isMarked ? (w.fc ? 'Revise your cards' : 'Open the lesson') : w.status === 'pending' ? 'See what you sent' : (qDone > 0 ? 'Continue' : 'Complete homework'),
+        primaryLabel: w.retake ? 'Retake it' : w.reopen ? w.reopen : isMarked ? (w.fc ? 'Give it another go' : 'Open the lesson') : w.status === 'pending' ? 'See what you sent' : (qDone > 0 ? 'Continue' : 'Complete homework'),
         primary: (w.reopenHref && !w.retake)
           ? () => { window.location.href = w.reopenHref; }
           : (w.status === 'open' || w.status === 'missed' || w.retake)
@@ -1585,7 +1602,7 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","class-entry.js":"1028dbfb","config.js":"40813eb2","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-homework.js":"7287fd7b","flashcard-keyboard.js":"443903c5","flashcard-library.css":"7c4a483f","flashcard-library.js":"aa256a97","formulae.js":"e4bfb091","ks3-lesson-urls.js":"98cd0930","ks4-lesson-urls.js":"07963eee","rum.js":"66210c21","shoutouts.js":"23393220","student-bell.js":"f46f4d9b","student-data.js":"c099d45c","student-guard.js":"1da3dc79","theme.js":"6fd6f722","topbar.css":"3f7041f1","topbar.js":"b3379add"};</script>
+<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","class-entry.js":"1028dbfb","config.js":"40813eb2","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-homework.js":"74bfcc35","flashcard-keyboard.js":"443903c5","flashcard-library.css":"7c4a483f","flashcard-library.js":"aa256a97","formulae.js":"e4bfb091","ks3-lesson-urls.js":"98cd0930","ks4-lesson-urls.js":"07963eee","rum.js":"66210c21","shoutouts.js":"23393220","student-bell.js":"f46f4d9b","student-data.js":"c099d45c","student-guard.js":"1da3dc79","theme.js":"6fd6f722","topbar.css":"3f7041f1","topbar.js":"b3379add"};</script>
 <script src="/shared/student-fixture-class.js?v=b4f48ab1"></script>
 <script>window.__MRB_MOUNT__();</script>
 <script src="/shared/topbar.js?v=b3379add" defer></script>

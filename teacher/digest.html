@@ -1466,7 +1466,7 @@ class Component extends DCLogic {
   }
   reasonFor(r, row, closedIdx) {
     const missed = (row && closedIdx)
-      ? closedIdx.filter((i) => row.scores[i] == null).length
+      ? closedIdx.filter((i) => !row.submitted[i]).length
       : 0;
     if (missed && r.avg != null && r.avg < 50) return missed + ' missed this term · avg ' + r.avg + '%';
     if (missed) return missed + ' missed this term';
@@ -3227,10 +3227,10 @@ window.__MRB_MOUNT__ = function () {
   }));
 };
 </script>
-<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","breakdown.css":"87c6fa1b","breakdown.js":"8bbaf006","class-csv-upload.js":"513ee889","class-entry.js":"1028dbfb","config.js":"40813eb2","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-breakdown.js":"d88bf399","flashcard-decks.css":"3da3c46d","flashcard-decks.js":"2610cf68","formulae.js":"e4bfb091","rum.js":"66210c21","set-work.css":"1f99af80","set-work.js":"2ed11396","shoutouts.js":"23393220","teacher-admin-nav.js":"d48cc15e","teacher-data.js":"5be39ba7","teacher-guard.js":"f7fbad7c","teacher-live.js":"df6b85f4","teacher-picker.js":"8f2365b7","teacher-topbar.css":"e4a3d0a7","teacher-topbar.js":"466ea5b0","theme.js":"6fd6f722"};</script>
+<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","breakdown.css":"87c6fa1b","breakdown.js":"8bbaf006","class-csv-upload.js":"513ee889","class-entry.js":"1028dbfb","config.js":"40813eb2","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-breakdown.js":"d88bf399","flashcard-decks.css":"3da3c46d","flashcard-decks.js":"2610cf68","formulae.js":"e4bfb091","rum.js":"66210c21","set-work.css":"1f99af80","set-work.js":"2ed11396","shoutouts.js":"23393220","teacher-admin-nav.js":"d48cc15e","teacher-data.js":"7257a437","teacher-guard.js":"f7fbad7c","teacher-live.js":"db1e783d","teacher-picker.js":"8f2365b7","teacher-topbar.css":"e4a3d0a7","teacher-topbar.js":"466ea5b0","theme.js":"6fd6f722"};</script>
 <script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>
 <link rel="stylesheet" href="/shared/teacher-topbar.css?v=e4a3d0a7">
 <script src="/shared/teacher-topbar.js?v=466ea5b0"></script>
-<script src="/shared/teacher-live.js?v=df6b85f4"></script>
+<script src="/shared/teacher-live.js?v=db1e783d"></script>
 </body>
 </html>

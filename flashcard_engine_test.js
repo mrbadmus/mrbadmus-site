@@ -832,6 +832,117 @@ function answer(e, text) { e.setDraft(text); e.check(); }
       check(raw.indexOf(w) < 0, "27: absent from the engine source: " + w));
   }
 
+  // ══ ⊕ 1 Oct 2026 — "finished the homework" (Mide's ruling: reaching the
+  //    engine's own Done screen = done, on both the pupil and teacher
+  //    side). `finishedAt()` reads that fact from the pupil's own ratings,
+  //    with no live Engine; `onFinish` fires once the settled Done screen
+  //    has told the page. See docs/experience/DESIGN-PORT-REPORT.md,
+  //    "Follow-up 1 Oct", for the rule and the write it feeds. ═══════════
+
+  // ── 28. finishedAt agrees with endPass().all — including "done on
+  //        round 2" (a leftovers screen, Try again, then all-right) ────
+  {
+    const { S, e } = await fresh();
+    answer(e, "newton"); e.rate("got_it");
+    answer(e, "water"); e.rate("not_yet");
+    check(H.finishedAt(S.reviews(), S.cards, "review") === null,
+          "28: finishedAt null before any pass is all-right");
+    answer(e, "gravity"); e.rate("got_it");
+    answer(e, "f = ke"); e.rate("got_it");
+    answer(e, "vector"); e.rate("got_it");
+    let v = e.view();
+    check(v.end.button === "retry" && H.finishedAt(S.reviews(), S.cards, "review") === null,
+          "28: the leftovers screen (endPass().all === false): finishedAt agrees, null");
+    e.retry();
+    answer(e, "h2o"); e.rate("got_it");                 // round 2 finishes it
+    await e.flush(); await tick(5);
+    v = e.view();
+    check(v.end.button === "done", "28: round 2 completes the pass (endPass().all === true)");
+    const hit = H.finishedAt(S.reviews(), S.cards, "review");
+    const lastRow = S.rows[S.rows.length - 1];
+    check(!!hit && hit.at === lastRow.rated_at && lastRow.card_id === "c1",
+          "28: finishedAt agrees — done on round 2, at c1's round-2 rating, not round 1's partial all-right");
+  }
+
+  // ── 29. finishedAt, make mode: the writing pass gates the review's
+  //        completion (a pure check, same shape as §17g) ───────────────
+  {
+    const now = Date.now();
+    const reviewAllRight = ["c0", "c1", "c2", "c3", "c4"]
+      .map((c, i) => row(c, "got_it", now - (5 - i) * MIN));
+    check(H.finishedAt(reviewAllRight, deck5(), "review") !== null,
+          "29: review mode, every card got_it → finished");
+    check(H.finishedAt(reviewAllRight, deck5(), "make") === null,
+          "29: make mode, the SAME review rows but no make-phase row at all → not finished (the writing pass is missing)");
+    const writingPass = ["c0", "c1", "c2", "c3", "c4"]
+      .map((c, i) => row(c, "got_it", now - (15 - i) * MIN, "make"));
+    check(H.finishedAt(writingPass.concat(reviewAllRight), deck5(), "make") !== null,
+          "29: make mode, writing pass present + review all got_it → finished");
+    check(H.finishedAt(writingPass, deck5(), "make") === null,
+          "29: make mode, writing pass alone (no review yet) → not finished");
+  }
+
+  // ── 30. the hour-gap reset moves reconstruct to a new pass; it does NOT
+  //        un-finish a pupil (finishedAt is cumulative, never reset) ───
+  {
+    const now = Date.now();
+    const allRight = ["c0", "c1", "c2", "c3", "c4"]
+      .map((c, i) => row(c, "got_it", now - (20 - i) * MIN));
+    const firstHit = H.finishedAt(allRight, deck5(), "review");
+    check(!!firstHit && firstHit.at === allRight[4].rated_at,
+          "30: finishedAt fires at the all-right row itself");
+    const later = allRight.concat([row("c2", "nearly", now)]);   // mirrors §17f: one later rating
+    check(H.reconstruct(later, deck5(), "review", now) !== null,
+          "30: sanity — reconstruct sees an OPEN pass after the later rating (round-aware)");
+    const stillHit = H.finishedAt(later, deck5(), "review");
+    check(!!stillHit && stillHit.at === firstHit.at,
+          "30: finishedAt is unchanged by the later rating or any hour gap — once finished, always finished, unlike reconstruct's round-aware walk");
+  }
+
+  // ── 31. the documented ‹ Back + "I don't know" edge: finishedAt fires
+  //        one replay early, exactly as the comment above it says ──────
+  {
+    const now = Date.now();
+    const rows = [
+      row("c0", "got_it", now - 50 * MIN), row("c2", "got_it", now - 40 * MIN),
+      row("c3", "got_it", now - 30 * MIN), row("c4", "got_it", now - 20 * MIN),
+      row("c1", "nearly", now - 10 * MIN),   // the I-don't-know own-words step, capped at Nearly
+      row("c1", "got_it", now - 5 * MIN),    // ‹ Back: re-answered and rated Got it BEFORE the scheduled replay
+      row("c1", "got_it", now),              // the replay still happens, redundantly, later
+    ];
+    const hit = H.finishedAt(rows, deck5(), "review");
+    check(!!hit && hit.at === now - 5 * MIN,
+          "31: finishedAt fires at the back-rerate, one replay before the engine's own Done screen would show it — the accepted, documented divergence");
+  }
+
+  // ── 32. Api.onFinish fires once the Done screen settles, and only then ─
+  {
+    const { e } = await fresh();
+    let fired = [];
+    H.onFinish = (id) => { fired.push(id); };
+    const good = { c0: "newton", c1: "h2o", c2: "gravity", c3: "f = ke", c4: "vector" };
+    for (let k = 0; k < 5; k++) { const id = e.view().card.id; answer(e, good[id]); e.rate("got_it"); }
+    await e.flush(); await tick(5); await e.flush(); await tick(5);
+    check(e.view().end.button === "done", "32: all right → Done");
+    check(fired.length === 1 && fired[0] === "A", "32: onFinish fired exactly once, with the assignment id (" + fired.length + ")");
+    await e.flush(); await tick(5); e.view();
+    check(fired.length === 1, "32: a later flush with nothing left to settle does not refire onFinish");
+    H.onFinish = null;
+  }
+  {
+    const { e } = await fresh();
+    let fired = 0;
+    H.onFinish = () => { fired++; };
+    answer(e, "newton"); e.rate("not_yet");
+    answer(e, "water"); e.rate("not_yet");
+    answer(e, "gravity"); e.rate("not_yet");
+    answer(e, "stretch"); e.rate("not_yet");
+    answer(e, "vector"); e.rate("not_yet");
+    await e.flush(); await tick(5);
+    check(e.view().end.button === "retry" && fired === 0, "32b: the leftovers (Try again) screen never fires onFinish");
+    H.onFinish = null;
+  }
+
   console.log(`\n  ${passes} passed, ${fails} failed`);
   if (fails) { console.log("  FAIL — flashcard engine"); process.exit(1); }
   console.log("  PASS — flashcard engine (pupil flow)");

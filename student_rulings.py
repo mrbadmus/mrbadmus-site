@@ -2206,8 +2206,18 @@ LOGIC = {
             " => s + w.score, 0) / marked.length) : null;",
             "    /* ⊕ RULED 25 Sep 2026 (stream H) — P1. Sum the marks, not\n"
             "       the percentages; see the section header above this\n"
-            "       tuple for the fixture-fallback proof. */\n"
-            "    const avgMarks = marked.reduce((s, w) => {\n"
+            "       tuple for the fixture-fallback proof.\n"
+            "       ⊕ RULED 1 Oct 2026 (flashcard-completion follow-up) — a\n"
+            "       done deck is now `marked` (score = max = n, Mide's 1 Oct\n"
+            "       ruling) but has no `rawMax` (student-live.js never sets\n"
+            "       one for a flashcards row) and no `score` percentage\n"
+            "       either, so the old fallback (`w.score || 0` out of a\n"
+            "       assumed 100) silently added a 0 for every done deck and\n"
+            "       dragged the average down. A deck was never a mark out of\n"
+            "       100 before this ruling and still is not one now — it is\n"
+            "       excluded from Avg score exactly as it always has been\n"
+            "       from `rawScore`/`rawMax`. */\n"
+            "    const avgMarks = marked.filter((w) => !w.fc).reduce((s, w) => {\n"
             "      s.score += (w.rawMax != null ? w.rawScore : (w.score || 0));\n"
             "      s.max += (w.rawMax != null ? w.rawMax : 100);\n"
             "      return s;\n"
@@ -5641,12 +5651,17 @@ def _hw_close():
     }
 
 
-# The finished row's button: a deck is revised, not read about.
+# The finished row's button: finishing a deck is done/handed in (Mide, 1 Oct
+# 2026 — "finishing the homework = done", on both the pupil and teacher
+# side; see docs/experience/DESIGN-PORT-REPORT.md "Follow-up 1 Oct"). The
+# button never asks a question — reopening starts a fresh revision pass, it
+# never un-dones the row. ⊕ RULED 1 Oct 2026: "Revise your cards" → "Give it
+# another go" (Mide's own words, no "?").
 LOGIC["class view"].append((
     "        primaryLabel: w.retake ? 'Retake it' : isMarked ?"
     " 'Open the lesson' : w.status === 'pending' ?",
     "        primaryLabel: w.retake ? 'Retake it' : isMarked ?"
-    " (w.fc ? 'Revise your cards' : 'Open the lesson') : w.status === 'pending' ?",
+    " (w.fc ? 'Give it another go' : 'Open the lesson') : w.status === 'pending' ?",
 ))
 
 INSERT_AT["class view"].update({
@@ -7083,12 +7098,19 @@ LOGIC["class view"].extend([
     # page show it; the word under it only says late.
     (
         "scoreText: w.score + '%',",
-        "scoreText: w.rawMax != null ? (w.rawScore + ' / ' + w.rawMax) : (w.score + '%'),",
+        "/* ⊕ RULED 1 Oct 2026 (flashcard-completion follow-up) — a flashcard\n"
+        "   row has no marks (it is completion, not a score) and now reaches\n"
+        "   'marked' far sooner than it used to (finishing, not securing), so\n"
+        "   this chip — previously almost never reached by a deck — would\n"
+        "   otherwise read 'undefined%' on every done deck: `w.score` is\n"
+        "   never set for a flashcards row (shared/student-live.js), and\n"
+        "   `w.rawMax` isn't either, so neither branch had a real value. */\n"
+        "scoreText: w.fc ? '' : (w.rawMax != null ? (w.rawScore + ' / ' + w.rawMax) : (w.score + '%')),",
     ),
     (
         "        scoreLabel: 'CORRECT' + (w.late ? ' \\u00B7 late' : ''),",
-        "        scoreLabel: w.rawMax != null ? (w.late ? 'late' : '')\n"
-        "          : 'CORRECT' + (w.late ? ' \\u00B7 late' : ''),",
+        "        scoreLabel: w.fc ? '' : (w.rawMax != null ? (w.late ? 'late' : '')\n"
+        "          : 'CORRECT' + (w.late ? ' \\u00B7 late' : '')),",
     ),
     # P10 — ONE button on every expanded row; the row's header closes it.
     (

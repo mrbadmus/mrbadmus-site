@@ -6626,10 +6626,16 @@ LOGIC = (
         "null).length : 0;",
         "  reasonFor(r, row, closedIdx) {\n"
         "    const missed = (row && closedIdx)\n"
-        "      ? closedIdx.filter((i) => row.scores[i] == null).length\n"
+        "      ? closedIdx.filter((i) => !row.submitted[i]).length\n"
         "      : 0;",
         "the count itself: CLOSED papers with no cell, not every column "
-        "but the newest."
+        "but the newest. ⊕ RULED 1 Oct 2026 (flashcard-completion follow-"
+        "up) — `row.scores[i] == null` is now `!row.submitted[i]`: a "
+        "flashcard deck's score cell is ALWAYS null (a deck is completion, "
+        "not marks), so the scores test counted every closed deck as "
+        "missed even once the pupil had finished it. `row.submitted[i]` is "
+        "the same flag `cardWeek`/`colSub` and every other reader on this "
+        "page already use for \"in\"."
     ),
 
     # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 10) · "NOTHING IN THIS
@@ -13337,8 +13343,11 @@ componentDidUpdate() {
         "the card's chase names: nothing in on the current set. ⊕ design-"
         "port-b, 30 Sep 2026 — a flashcard set's second fact is its secured "
         "count instead (`N secured`, muted like the no-chase state — a "
-        "count is not a warning), because the card's main number no longer "
-        "means \"secured\" (it means \"started\" now; see above)."
+        "count is not a warning). ⊕ RULED 1 Oct 2026 (flashcard-completion "
+        "follow-up): the card's MAIN number is `colSub` again — pupils who "
+        "finished the homework, the same \"in\" every other reader on the "
+        "platform uses, not \"started\" — because finishing now writes the "
+        "submission at once; secured stays this smaller, separate fact."
     ),
     (
         "        emptyLine: c.state === 'empty' ? 'No students yet' : c.n + ' students · no work set',",

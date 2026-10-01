@@ -2539,29 +2539,28 @@
        the card sort, the digest row) are ruled on it. */
     var cur = currentSet(papers);
     var cardWeek = cur ? [mx.colSub[cur.idx] || 0, mx.colAsked[cur.idx] || 0] : null;
-    /* ⊕ design-port-b, 30 Sep 2026 — A FLASHCARD CARD COUNTS STARTED, NOT
-       SECURED. `colSub` (above) is `submitted[cur.idx]` summed — true only
-       once an `assignment_submissions` row exists, and a deck writes NO
-       such row until every card is secured (MRB-351 §1). So the card's "N
-       of M in" read near-zero all week for an open deck (SHARPEN-REPORT
-       item 6: "counts pupils who have secured every card"), while the
-       class page it links to already said something else. STARTED — any
-       sitting at all — is the same fact an in-progress MCQ submission
-       already gives the card, and `pack.flashcardStarted` is an EXISTING
-       read (teacher-data.js's `flashcard_sessions` query, already made for
-       `flashcardLastActive` on this exact screen; this only keeps the
-       `assignment_id` that loop was discarding — no new request). The old
-       number (fully secured) becomes `cardSecured`, the card's smaller
-       second fact, in the same register as MCQ's "Chase …" line. */
+    /* ⊕ RULED 1 Oct 2026 (flashcard-completion follow-up) — SUPERSEDES
+       design-port-b's "A FLASHCARD CARD COUNTS STARTED, NOT SECURED" (30 Sep
+       2026). That ruling existed because a deck wrote NO
+       `assignment_submissions` row until every card was SECURED, so
+       `colSub` (above — `submitted[cur.idx]` summed) read near-zero all
+       week for an open deck; it worked around that by substituting a
+       "started any sitting" count instead.
+       Mide's 1 Oct ruling changes what "done" means: finishing the
+       homework (the engine's own Done screen) now writes the submission at
+       once (`student-live.js`'s `recordFinish`/heal) — the same moment the
+       class page's own homework card, THIS WEEK and every other `colSub`
+       reader already call "in". `colSub` is therefore correct again, and
+       is restored as the card's MAIN count, with the same meaning
+       everywhere else on the platform. `cardSecured` — a smaller, separate,
+       teacher-only fact (how many pupils have secured every card, not just
+       finished the deck) — is filled in by `base()` below, from
+       `flashcard_progress`, for the current set only; `null` (no second
+       line: no redundant text) until/unless that fetch lands. The "started"
+       plumbing this replaced (`pack.flashcardStarted`) is removed —
+       teacher-data.js confirms nothing else read it. */
+    var cardIsFlashcards = !!(cur && cur.kind === "flashcards");
     var cardSecured = null;
-    if (cur && cur.kind === "flashcards") {
-      cardSecured = cardWeek[0];
-      var fcStartedIds = (pack.flashcardStarted && pack.flashcardStarted[cur.id]) || [];
-      var fcStartedSet = {};
-      fcStartedIds.forEach(function (sid) { fcStartedSet[sid] = true; });
-      var fcStartedN = roster.filter(function (r) { return fcStartedSet[r.id]; }).length;
-      cardWeek = [fcStartedN, cardWeek[1]];
-    }
     /* ⊕ Fable review — nothing open but a set SCHEDULED: the card says when
        it opens ("opens Mon 09:00"), not "no work open" beside a Set work
        button that would invite a duplicate. The earliest release wins. */
@@ -2602,6 +2601,11 @@
       cardChase: cardChase,
       cardOpens: cardOpens,
       cardSecured: cardSecured,
+      // ⊕ 1 Oct 2026 — for `base()`'s post-step below, which batches a
+      // `flashcard_progress` call per CURRENT flashcards set only, and
+      // fills `cardSecured` from it. Not Design's shape; read by this file
+      // alone.
+      cardIsFlashcards: cardIsFlashcards,
       currentSetId: cur ? cur.id : null,
       last: lastIso ? relativeTime(lastIso, now) : "No activity yet",
       lastIso: lastIso,
@@ -2710,6 +2714,18 @@
     var yearWeeks = buildWeeks(c.viewing, c.now);
     var built = buildClassEntry(pack.class, pack, yearWeeks, c.viewing, c.now);
     built.entry.actingAsAdmin = true;
+    /* ⊕ 1 Oct 2026 — this path already asked for the full per-pupil
+       breakdown (`{flashcardProgress: true}` above), so the current set's
+       secured count is sitting in `pack.flashcards` already. No new
+       request, unlike `base()`'s own post-step below. */
+    if (built.entry.cardIsFlashcards && built.entry.currentSetId) {
+      var fc0 = pack.flashcards && pack.flashcards[built.entry.currentSetId];
+      if (fc0 && fc0.n > 0) {
+        built.entry.cardSecured = Object.keys(fc0.pupils || {}).filter(function (pid) {
+          return (fc0.pupils[pid].secured || 0) >= fc0.n;
+        }).length;
+      }
+    }
     c.PAPERS[classId] = built.papers;
     c.MATRIX[classId] = built.mx;
     c.ROSTER[classId] = built.roster;
@@ -3036,6 +3052,27 @@
       WEEKS[c.id] = yearWeeks;
       CLASSES.push(built.entry);
     });
+
+    /* ⊕ 1 Oct 2026 — the My classes card's smaller second fact, "N secured".
+       ONE `flashcard_progress` call per class whose CURRENT set is a
+       flashcards deck (never per class, never per historical deck — see
+       `loadFlashcardSecuredCounts`'s own comment for why that bound matters).
+       A class with no flashcards work today, which is most of them, pays
+       nothing here: the `filter` below is empty and `Promise.all([])`
+       resolves at once. A failed count simply leaves `cardSecured` null —
+       the card omits the second line rather than showing a wrong one. */
+    var fcEntries = CLASSES.filter(function (e) { return e.cardIsFlashcards && e.currentSetId; });
+    if (fcEntries.length) {
+      try {
+        var secured = await TD.loadFlashcardSecuredCounts(
+          fcEntries.map(function (e) { return e.currentSetId; }));
+        fcEntries.forEach(function (e) {
+          if (secured[e.currentSetId] != null) { e.cardSecured = secured[e.currentSetId]; }
+        });
+      } catch (e) {
+        console.warn("[teacher-live] flashcard secured counts unavailable", e);
+      }
+    }
 
     // Class code order, natural-number aware, so 9h/Sc5 comes before 10h/Ph1.
     CLASSES.sort(function (a, b) {

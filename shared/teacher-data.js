@@ -2374,10 +2374,20 @@ window.MrBadmusTeacherData = (function () {
     flashcardAssignments.forEach(function (a) { classOfFlashcardAssignment.set(a.id, a.class_id); });
     const flashcardAssignmentIds = flashcardAssignments.map(function (a) { return a.id; });
     const flashcardLastByClass = new Map();   // classId -> Map(studentId -> ISO last_seen_at)
-    // ⊕ design-port-b, 30 Sep 2026 — assignmentId -> Set(studentId), every
-    // pupil with at least one `flashcard_sessions` row for that set. See the
-    // comment beside where this is filled, below.
-    const flashcardStartedByAssignment = new Map();
+    /* ⊕ RULED 1 Oct 2026 (flashcard-completion follow-up) — the "STARTED"
+       plumbing that used to live alongside this read (`flashcardStartedByAssignment`
+       / `flashcardStartedFor` / `pack.flashcardStarted`) is REMOVED. It was
+       design-port-b's (30 Sep) stand-in for the My classes card's main
+       count, needed only because a deck wrote no `assignment_submissions`
+       row until every card was SECURED. Mide's 1 Oct ruling changes what
+       counts as done to "finished the homework" (reached the engine's Done
+       screen), which DOES write a submission at that moment (see
+       `student-live.js`'s `recordFinish`/heal) — so the card's main count
+       goes back to being `colSub` (the submission count, the same "in" the
+       class page's own homework card and THIS WEEK already read), and this
+       sessions read is kept for `flashcardLastByClass` ("last activity")
+       alone. Confirmed nothing else read the started plumbing (grepped the
+       whole repo) before removing it. */
     if (flashcardAssignmentIds.length > 0) {
       try {
         const sessionRows = await inChunks(flashcardAssignmentIds, async function (chunk) {
@@ -2394,18 +2404,6 @@ window.MrBadmusTeacherData = (function () {
           const m = flashcardLastByClass.get(cid);
           const prev = m.get(s.pupil_id);
           if (!prev || s.last_seen_at > prev) { m.set(s.pupil_id, s.last_seen_at); }
-          // ⊕ design-port-b, 30 Sep 2026 — WHO HAS HAD A SITTING, PER SET.
-          // The SAME row `flashcardLastByClass` just folded by class, kept
-          // this time by its own `assignment_id`: a row here is one pupil's
-          // one sitting of one deck, so a pupil with ANY row for THIS
-          // assignment has STARTED it — no matter how many cards they have
-          // secured. No second request: `sessionRows` already carries
-          // `assignment_id` (the select above asks for it), this loop was
-          // just discarding it. See `flashcardStartedFor`, below.
-          if (!flashcardStartedByAssignment.has(s.assignment_id)) {
-            flashcardStartedByAssignment.set(s.assignment_id, new Set());
-          }
-          flashcardStartedByAssignment.get(s.assignment_id).add(s.pupil_id);
         });
       } catch (e) {
         console.error('[teacher-data] flashcard sessions query failed (soft-fail: '
@@ -2451,22 +2449,6 @@ window.MrBadmusTeacherData = (function () {
       const out = {};
       const m = flashcardLastByClass.get(classId);
       if (m) { m.forEach(function (v, sid) { out[sid] = v; }); }
-      return out;
-    }
-
-    // ⊕ design-port-b, 30 Sep 2026 — {assignmentId: [studentId, …]}, one
-    // entry per flashcard assignment THIS class has ever had, for every
-    // pupil who has had a sitting of it. Read by `shared/teacher-live.js`'s
-    // `buildClassEntry` for the "My classes" card's started count — see
-    // MRB-352 SHARPEN-REPORT item 6 ("N of M in" on a flashcard card counted
-    // pupils who had SECURED every card, so it sat near zero all week).
-    function flashcardStartedFor(classId) {
-      const out = {};
-      (assignmentsByClass.get(classId) || []).forEach(function (a) {
-        if (a.kind !== "flashcards") { return; }
-        const s = flashcardStartedByAssignment.get(a.id);
-        out[a.id] = s ? Array.from(s) : [];
-      });
       return out;
     }
 
@@ -2570,7 +2552,6 @@ window.MrBadmusTeacherData = (function () {
         // against `activity[]` to get `lastIso`. See the block above and
         // the last-activity rule in supabase/MRB351-APPLY.md.
         flashcardLastActive: flashcardLastActiveFor(id),
-        flashcardStarted: flashcardStartedFor(id),
         // ⊕ Sharpen B4 — `{}` unless `opts.flashcardProgress` asked for it.
         flashcards: flashcardsByClass.get(id) || {},
       };
@@ -2871,6 +2852,43 @@ window.MrBadmusTeacherData = (function () {
       console.warn('[teacher-data] flashcard counts unavailable', e);
       return {};
     }
+    return out;
+  }
+
+  /* ⊕ 1 Oct 2026 — HOW MANY PUPILS HAVE SECURED A WHOLE FLASHCARD DECK, one
+     per assignment id, for the My classes card's SMALLER second fact.
+
+     ⚠️ WHY THIS EXISTS RATHER THAN REUSING `opts.flashcardProgress`. That
+     option (`loadClassMatrices`, Sharpen B4) is deliberately gated to "never
+     Today, My classes, the digest or insights" — it pulls every pupil's
+     full breakdown (answers, think-time, reteach) for EVERY flashcards
+     assignment a class has ever had, which is the expensive thing that
+     ruling avoids paying on a screen with many classes. This calls the same
+     `flashcard_progress` RPC (already live; no new SQL) but for ONE id at a
+     time — the class's CURRENT flashcards set only, picked by the caller
+     after `currentSet()` — and keeps only the one number the card shows.
+     Still not free (the RPC's own cost is unchanged), but bounded by how
+     many of a teacher's classes have a flashcards deck open THIS WEEK,
+     which is the same order of magnitude as the reminders-log read `base()`
+     already pays per focused class — never by a class's whole history. A
+     failed count for one id costs that one class's second line (no
+     redundant text: the card simply omits it), never the page. */
+  async function loadFlashcardSecuredCounts(assignmentIds) {
+    const ids = Array.from(new Set((assignmentIds || []).filter(isUuid)));
+    const out = {};
+    if (!ids.length) return out;
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) return out;
+    await Promise.all(ids.map(async function (id) {
+      try {
+        const r = await sb.rpc('flashcard_progress', { p_assignment: id });
+        if (r.error || !r.data) { return; }
+        const n = r.data.n || 0;
+        const pupils = (r.data.pupils || []);
+        out[id] = n > 0 ? pupils.filter(function (p) { return (p.secured || 0) >= n; }).length : 0;
+      } catch (e) { /* that class's card simply omits "N secured" */ }
+    }));
     return out;
   }
 
@@ -3810,6 +3828,7 @@ window.MrBadmusTeacherData = (function () {
     loadCompleteFor,
     loadPaperQuestions,
     loadFlashcardCounts,
+    loadFlashcardSecuredCounts,
     loadQuizQuestionCounts,
     // ⊕ MRB-328 J3 — whose classes a school admin has asked to look at.
     // Additive; no existing caller changes.

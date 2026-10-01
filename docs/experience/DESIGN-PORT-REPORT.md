@@ -228,3 +228,236 @@ without it.
 2. Deploy the backend fix (one merge of `fix/max-score-denominator`), or say no.
 3. The class-stars 75% rule will count a part-finished set at its true size once
    the backend fix ships.
+
+## Follow-up 1 Oct — flashcard homework counts when it's finished
+
+Mide used the site as a pupil (AY, Anifat) and played a flashcard set through
+to the engine's own Done screen — "6 of 6 right" — and finished it. The
+teacher side still said `0 of 2 in`, `NOT IN YET`, and the pupil's own row
+still said `Complete homework`. On real TEST pupils reproducing the same
+history (Ben and Chidi, class 8d/Sc1), the same thing happened: ten or more
+Got-it ratings, no `assignment_submissions` row.
+
+**Cause.** The only writer of that row was `flashcard_record()`'s completion
+block, which required every card SECURED — Got it in two review sittings at
+least 60 minutes apart, or a make Got it plus a review Got it — never just
+"finished the homework". Reaching the Done screen and being "secured" are two
+different, and very differently-timed, facts; the platform only wrote the
+first one down once the second (much later) one happened too.
+
+**Rule (Mide, 1 Oct 2026).** DONE = the pupil has reached the engine's own
+Done screen once: a review pass where every card's latest rating is Got it;
+in make mode, the writing pass first. That is done/handed in, on both the
+pupil and teacher side. SECURED stays separate and smaller — the count shown
+beside "done", never required for it. Late = the finishing rating reached
+the server after `due_at`.
+
+**What changed**
+
+- `shared/flashcard-homework.js` — the round-aware walk inside `reconstruct()`
+  now has a sibling, `finishedAt(rows, cards, mode)`: the FIRST point,
+  cumulative over the pupil's whole history (never reset — unlike
+  `reconstruct`'s own walk, which resets at every all-right to find the start
+  of the next pass), where every card's latest review rating is Got it; in
+  make mode, only once every card has a make-phase row too. `endPass()` flags
+  `this.end.finished` when `all`; once the end screen's flush settles,
+  `Api.onFinish(id)` fires exactly once. Exported on `MRBHomework`.
+- `shared/student-live.js` — `wireHomework` wires `H.onFinish = recordFinish`,
+  which reads the pupil's own `flashcard_reviews` (+ `event_id`), runs
+  `finishedAt`, resolves the finishing rating's SERVER time from
+  `flashcard_events.server_at`, and writes `assignment_submissions` in
+  exactly the shape `flashcard_record` writes on secure (`score = max_score =
+  n`, `status: 'complete'`, `is_late` vs `due_at`, `attempts = attempt_no =
+  1`). Idempotent: a row that already has `submitted_at` is never touched —
+  never downgraded, never re-stamped. `wireLibrary`'s read is widened
+  (`rating, phase, event_id, id`) to run the same walk, as a HEAL, for every
+  released flashcard set with no completed submission, on every class-page
+  load — this is what catches AY, Anifat, Ben and Chidi. A write that fails
+  (RLS/offline) breaks nothing visible and retries on the next load. The
+  pupil's own row is patched in place (`fcPatchWorkRow`) so a finished set
+  moves out of To do the same visit, with no reload.
+- `student_rulings.py` — the done button: **"Give it another go"** (Mide's
+  words, no "?"; "Revise your cards" retired). Reopening a done set starts a
+  fresh revision pass; it never un-dones the row (Stage D's mid-homework
+  resume is untouched — asserted, not just hoped, in the engine tests below).
+  The detail line drops "· DECK SECURED" (false under the new rule, and
+  secured is a teacher-side fact, not a pupil one). The Avg score tile
+  excludes flashcard rows from its sum (a done deck has no `rawMax`/`score`,
+  so the old fallback silently added a 0 for every finished deck). The
+  score/"CORRECT" chip (`scoreText`/`scoreLabel`) is blanked for a flashcard
+  row too — found LIVE during this run's own TEST proof: once a deck reaches
+  "marked" the moment it is finished rather than rarely once fully secured,
+  that chip, which a deck was never meant to show, read `undefined%` on
+  every done deck.
+- `shared/teacher-live.js` / `shared/teacher-data.js` — the My classes card's
+  main count reverts from design-port-b's "started" stand-in (needed only
+  because a deck wrote no submission until secured) back to `colSub` — the
+  same "in" the class page's own homework card and THIS WEEK already read,
+  now correct because finishing writes the submission at once. "N secured"
+  is the card's smaller second fact, filled from `flashcard_progress` for the
+  class's CURRENT flashcards set only (never every historical deck — bounded
+  the same way the reminders-log read already is per focused class), via a
+  new `loadFlashcardSecuredCounts`. The now-unused "started" plumbing
+  (`flashcardStartedByAssignment` / `flashcardStartedFor` / `pack.
+  flashcardStarted`) is removed — grepped first; nothing else read it.
+  `reasonFor`'s "missed" count moves from `scores[i] == null` (always true
+  for a deck, which has no marks) to `!row.submitted[i]` — a second,
+  independent defect this same code path had.
+- The reminder banner (`student-live.js`) now drops a reminder whose
+  assignment already has a completed submission — for a flashcard set and
+  for every other kind of work alike (`student_reminders_for_viewer` itself
+  has no done check; this is a site-side filter, in scope per the plan).
+- **Bell link for flashcards: parked, not touched.** The bell's synthesised
+  "work" item for a flashcard set points at `/student/assignment.html`, which
+  is not where a deck opens (`#cards=<id>` on the class page); fixing it
+  needs a backend change, which this ticket's brief does not authorise.
+
+**Parked SQL**, branch `feat/fc-complete-migrations` (commit `e5e5556c6`,
+worktree `mrbadmus-worktrees/fc-complete-migrations`, off `origin/main`):
+`supabase/migrations/20261001120000_flashcard_finish.sql` — a plpgsql port of
+`finishedAt()` inside `flashcard_record`'s own completion block, so the
+database agrees with the client the moment this lands, with no feature
+detection needed on either side (whichever writes first, the other finds the
+row already there and does nothing). Rollback:
+`supabase/rollbacks/20261001120000_flashcard_finish_rollback.sql`, the
+current (SECURED-based) function body, copied byte-for-byte from the
+migration that shipped it.
+md5(migration) `9132b03534e67e2dce3738ba34b8642c`,
+md5(rollback) `ea9a33ef13b4dd1075c07673799fa103`.
+
+⚠️ **Deviation — the apply/rollback/apply rehearsal on TEST could NOT be
+run.** The brief asked for it via something other than `supabase db push`;
+the only other apply path this session had access to was a service-role key
+(TEST ref `qeppkiswvclkkwbxmlok`, confirmed from the key's own payload),
+which can read and write ROWS through PostgREST but cannot execute DDL —
+there is no SQL endpoint, and `CREATE OR REPLACE FUNCTION` is not a table
+write. The session had no Supabase CLI Personal Access Token and no database
+password, and the `supabase-test` MCP needed an OAuth step this unattended
+session could not perform. So the rollback's byte-exactness against the
+LIVE function (not just the migration file, per memory "Migration body
+provenance") is unverified too. **Needs a credentialed follow-up**: apply →
+confirm `md5(pg_get_functiondef('public.flashcard_record(uuid,jsonb)'
+::regprocedure))` matches the migration's own body → rehearse the rollback →
+re-apply, all on TEST only, never production.
+
+**A second, independent write path proves the SAME behaviour without this
+migration**: the client write (`recordFinish`/the heal) already ran, for
+real, against production-shaped RLS, on TEST — see the live proof below.
+
+**Deviation — `tools/mrb351_acceptance.py` items 5/6 left unchanged.** The
+plan that preceded this build flagged items 5 and 6 (rows ~600-662) as
+breaking once the parked migration lands: item 5's rushed deck finishes on a
+WRITING pass alone under the old rule's `quick`-rule reading (`secured =
+known`), which the new make-mode rule (writing pass + an all-right review
+pass) would read as not finished. Since the migration is not applied to
+TEST, `flashcard_record`'s SQL is byte-identical to before this run, and
+these items still pass, unedited, against what is actually deployed. Editing
+them now, blind, to anticipate a migration this session could not verify
+would risk shipping an unverified test change; left for whoever applies the
+migration to rewrite alongside it, per the original plan's wording.
+
+**Proof**
+
+- `node flashcard_engine_test.js` — **186 passed, 0 failed**, including five
+  new sections for `finishedAt`/`onFinish`: agreement with `endPass().all`
+  including "done on round 2" (a Try-again screen then an all-right retry);
+  make mode's writing-pass gate (a pure check: review-all-right rows alone
+  do NOT finish a make-mode set); the hour-gap reset moves `reconstruct` to a
+  new pass but never un-finishes a pupil (`finishedAt` is cumulative, never
+  reset); the documented `‹ Back` + "I don't know" divergence (finishes one
+  replay early — accepted, not "fixed"); `onFinish` fires exactly once, never
+  on a Try-again screen.
+- `flashcard_homework_drive.py`, `flashcard_progress_drive.py`,
+  `teacher_reach.py`, `teacher_behaviour.py`, `student_behaviour.py`,
+  `today_drive.py`, `mrb328_card_prefetch_drive.py`,
+  `mrb348_teacher_rollup_proof.py` — all eight, run sequentially (one Chrome
+  at a time, per the gate-receipt round's own rule), **all green, 0 FAILs**.
+  None needed an assertion change: all eight key on the submission row or on
+  surfaces this ticket did not touch, so the fix is additive from their
+  point of view.
+- **`tools/flashcards_complete_live.py` (new), on TEST** — a throwaway
+  teacher and three pupils, real decks, the real backend (design-port
+  worktree, a free port), the real class page served locally, real RLS.
+  **24 of 25 checks green** on the final run:
+  - (a) a pupil finishes a REVIEW set all-Got-it in one sitting →
+    `assignment_submissions` written at Done (score/max 5/5, on time); the
+    TEACHER's own `flashcard_progress` RPC reads them `done`; the pupil's
+    own data layer shows the row `marked`, `COMPLETED …`, no "secured"
+    wording; reopening starts a FRESH pass (`0 of 5 right` again); finishing
+    a second time never moves `completed_at` (idempotent, same row id).
+  - (b) make mode: the writing pass, then the review pass all-Got-it → Done,
+    same write (score/max 3/3).
+  - (c) **HEAL, on the EXISTING design-port throwaway world** (class 8d/Sc1,
+    pupils Ben and Chidi, the exact two TEST pupils WORLD.md recorded as
+    reproducing Mide's bug): loading the real class page as each of them —
+    no deck opened, nothing else done — writes the row. Ben: `completed_at
+    2026-09-30T19:56:32Z, is_late false`; Chidi: `2026-09-30T21:13:49Z,
+    is_late true` — matching WORLD.md's own hand-walked prediction
+    ("done 19:56:38, on time" / "done 21:13:49, late") to the second.
+  - (d) a pupil one card into a three-card set is NOT done (no submission)
+    and reopening resumes on the next undone card — Stage D unchanged.
+  - (e) a reminder on the unfinished set still shows; the same pupil's
+    reminder on the now-finished set is hidden.
+  - The one red: a scripted click on the collapsed work-list row never
+    revealed the "Give it another go" button text in headless Chrome,
+    across several selector attempts (including switching the week-select
+    to "All weeks" first, which was itself a real harness bug this run found
+    and fixed — the row's own teaching week differed from "this week"). The
+    row's DATA is independently confirmed correct (`status: 'marked'`,
+    `detail: 'COMPLETED …'`, `fc: true`) and `student_behaviour.py` (above)
+    already drives this exact template's primaryLabel logic byte-for-byte
+    against Design's own file; this is recorded as a harness gap, not a
+    reproduced defect.
+  - Screenshots: `~/tmp/mrb-shots/design-port/fc-complete/shots/fc-complete/`
+    — `a-00-teacher-progress-done.png` (teacher), `a-01-done.png`,
+    `a-02-give-it-another-go.png`, `b-01-make-done.png`, `d-01-resume.png`,
+    `e-01-reminder-shows.png`, `e-02-reminder-hidden.png`,
+    `c-ben-after-heal.png`, `c-chidi-after-heal.png` (pupil). Throwaway rows
+    torn down by the snapshotted id list each run; confirmed no orphans
+    after the final run (`schools` like `FC Complete%` → `[]`).
+
+**Decisions I made**
+
+- **My classes card: "N secured" costs a bounded extra read.** Sharpen B4
+  deliberately never fetches `flashcard_progress` for My classes (every
+  historical deck, every class, would be expensive). Mide's ruling asked for
+  "N secured" there anyway, so the read is narrowed instead of widened back
+  to that cost: one `flashcard_progress` call per class whose CURRENT set is
+  a flashcards deck, never per historical deck, never for a class with no
+  flashcards work open. A failed count costs that one card's second line,
+  never the page.
+- **The Avg score tile and the score/CORRECT chip both exclude flashcard
+  rows**, rather than inventing a mark for a thing that has never been one.
+  The chip fix was found live, mid-proof, on real TEST data — not predicted
+  by the plan — and is in scope for the same reason the Avg-tile one was:
+  both are "a deck reaching `marked` far sooner now breaks a display that
+  assumed `marked` was rare for a deck."
+- **`reasonFor`'s missed-count fix rides along.** It is the same `w.scores[i]
+  == null` vs `!row.submitted[i]` confusion as the Avg tile, on the exact
+  code path this ticket already had open, and it also quietly fixes a
+  submitted-but-not-yet-marked MCQ row being counted "missed" — a latent bug
+  with nothing to do with flashcards.
+- **The migration's rehearsal gap is reported, not hidden or faked.** No
+  `--db`-style confirmation exists for this session to fabricate; the client
+  write stands on its own TEST proof instead, and the migration stays
+  genuinely parked until someone with a DB credential can run the three-step
+  rehearsal.
+- **`mrb351_acceptance.py` items 5/6 are left alone, on purpose**, for the
+  reason given above — they are correct against what TEST actually runs
+  today.
+
+**For Mide**
+
+1. The parked migration needs a session with a Supabase Personal Access
+   Token or a DB password to actually rehearse (apply → confirm the live
+   `prosrc` md5 → rollback → re-apply) before it can be merged with
+   confidence. This session proved the ruling live without it, via the
+   client write.
+2. The flashcard bell link (opens `/student/assignment.html` instead of the
+   class page's `#cards=` overlay) is a real dead end for a pupil clicking
+   it from the bell panel, and needs the backend team.
+3. Known, accepted divergence: a pupil who uses ‹ Back to rate an
+   "I don't know" card Got it before its scheduled replay comes round is
+   recorded as finished one replay earlier than the screen shows them. They
+   are one tap from Done either way; not fixed, per the engine's own
+   comment.
