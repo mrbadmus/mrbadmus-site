@@ -2094,7 +2094,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A biologist writes the lion's name as Panthera leo and the "
                 "tiger's as Panthera tigris. What does this tell you about "
                 "the two animals?",
@@ -2116,7 +2116,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Put the Linnaean groups in order from the largest group to "
                 "the smallest.",
         "options": [
@@ -2134,7 +2134,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Who proposed the three-domain system, and when?",
         "options": [
             "Linnaeus, in the 18th century",
@@ -2151,7 +2151,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Which domain contains all the organisms whose cells have a "
                 "nucleus?",
         "options": ["Eukarya", "Archaea", "Bacteria", "Protista"],
@@ -2164,7 +2164,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A horse and a donkey can breed together, but the mule they "
                 "produce is sterile. Explain why horses and donkeys are "
                 "classed as two different species.",
@@ -2187,7 +2187,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A prokaryote is found in a hot spring at 90 °C. Its "
                 "ribosomal RNA sequence is more similar to that of yeast than "
                 "to that of E. coli. Which domain does it belong to?",
@@ -2201,7 +2201,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Two beetle species are in the same family but different "
                 "genera. Two other beetle species are in the same genus. "
                 "Which pair is more closely related?",
@@ -2223,7 +2223,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest one reason DNA sequences are now used alongside body "
                 "structure when an organism is classified.",
         "options": [
@@ -2245,7 +2245,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "On an evolutionary tree, species W and X branch from one "
                 "node. That node and species Y branch from an older node. "
                 "That older node and species Z branch from the oldest node of "
@@ -2269,7 +2269,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A student says humans are 'more evolved' than bacteria "
                 "because humans sit at the top of the evolutionary tree. "
                 "Evaluate this.",
@@ -2292,7 +2292,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A new prokaryote is discovered in a salt lake. Suggest what "
                 "evidence a biologist would need to decide whether it is a "
                 "bacterium or an archaeon.",
@@ -2315,7 +2315,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why a tree built from DNA sequences can group two "
                 "organisms differently from a tree built only on what they "
                 "look like.",

@@ -31,7 +31,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A drawing pin is pulled by two threads at right angles to each '
                 'other, one with 6.0 N and one with 8.0 N. Work out the single '
                 'force that would have the same effect.',
@@ -51,7 +51,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Identify the correct description of the two components into '
                 'which a force is resolved.',
         "options": [
@@ -70,7 +70,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "figure": "ks4-fig-force-grid-50n-4r-3u",
         "text": "The diagram shows a pull drawn to scale on a square grid. Determine the vertical component of the pull.",
         "options": [
@@ -87,7 +87,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'State what happens to the two perpendicular components of a '
                 'force as its angle to the horizontal is increased from 0° '
                 'towards 90°.',
@@ -107,7 +107,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A box sits on a ramp. State the direction of the component of '
                 'its weight that tends to make it slide.',
         "options": [
@@ -126,7 +126,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A scale drawing is being used to find the resultant of two '
                 'forces. State what the length of each arrow must represent.',
         "options": [
@@ -145,7 +145,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A force is resolved into two perpendicular components that turn '
                 'out to be equal in size. State the angle between the original '
                 'force and either component.',
@@ -164,7 +164,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Two forces of 9.0 N and 12.0 N act at right angles at the same '
                 'point. Calculate the resultant.',
         "options": [
@@ -182,7 +182,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'State why a vector triangle is drawn with the two force arrows '
                 'joined tip to tail.',
         "options": [
@@ -201,7 +201,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "figure": "ks4-fig-force-grid-100n-8r-6u",
         "text": "A rope pulls a sledge with a force of 100 N. The diagram shows the pull drawn to scale on a square grid. Determine the horizontal component of the pull.",
         "options": [
@@ -218,7 +218,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Describe what happens to the size of the resultant when two '
                 'perpendicular forces are both doubled.',
         "options": [
@@ -237,7 +237,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Two tugs pull on a barge from the same point: one with 30 kN '
                 'due north and one with 40 kN due east. Calculate the size of '
                 'the resultant pull.',
@@ -257,7 +257,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Explain why the horizontal component of an angled rope pull is '
                 'the part that matters when a crate is dragged across level '
                 'ground.',
@@ -277,7 +277,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A 7.0 N force and a 24.0 N force act at right angles at one '
                 'point on a bracket. Work out the resultant.',
         "options": [
@@ -297,7 +297,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "figure": "ks4-fig-force-grid-250n-4r-3d",
         "text": "A garden roller is pushed along its handle with a force of 250 N. The diagram shows the push drawn to scale on a square grid. Determine the downward component of the push.",
         "options": [
@@ -314,7 +314,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Explain why resolving a force into two perpendicular components '
                 'is useful when a crate is dragged along a floor by an angled '
                 'rope.',
@@ -334,7 +334,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A vector triangle is drawn to a scale of 1.0 cm to 5.0 N, and '
                 'the closing side measures 7.4 cm. Calculate the resultant '
                 'force.',
@@ -354,7 +354,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A box of weight 400 N rests on a slope that rises 3.0 m for '
                 'every 5.0 m measured along the slope. Determine the component '
                 'of the weight acting down the slope.',
@@ -374,7 +374,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Describe how the two perpendicular components are drawn from a '
                 'single force arrow on a scale diagram.',
         "options": [
@@ -393,7 +393,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'State one advantage of finding a resultant by scale drawing '
                 'rather than by calculation.',
         "options": [
@@ -412,7 +412,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A model boat is acted on at one point by 3.0 N northwards and '
                 '4.0 N eastwards. Determine the size of the resultant and the '
                 'general direction in which it points.',
@@ -432,7 +432,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A sledge of weight 500 N rests on a slope, and the component of '
                 'its weight acting down the slope is 300 N. Determine the '
                 'component pressing it against the slope surface.',
@@ -452,7 +452,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Explain why the component of weight acting down a slope gets '
                 'bigger as the slope is made steeper.',
         "options": [
@@ -471,7 +471,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Two ropes are attached to a stuck car at the same point: one '
                 'exerts 600 N due north, the other 800 N due east. Calculate the '
                 'single force that would have the same effect.',
@@ -491,7 +491,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A pair of perpendicular components is quoted as 60 N and 80 N '
                 'for a single 100 N force. Describe the test that shows the pair '
                 'is consistent.',
@@ -511,7 +511,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "figure": "ks4-fig-force-grid-260n-12r-5u",
         "text": "A wheelbarrow handle is pulled with a force of 260 N. The diagram shows the pull drawn to scale on a square grid. Determine the vertical component of the pull.",
         "options": [
@@ -528,7 +528,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Describe the resultant of two perpendicular forces that are '
                 'equal in size.',
         "options": [
@@ -547,7 +547,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A 150 N force is resolved along two perpendicular directions, '
                 'and the component along the first comes out as 150 N. Deduce '
                 'the component along the second.',
@@ -568,7 +568,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A loading ramp climbs 7.0 m for each 25 m of its sloping '
                 'surface. A crate weighing 750 N is placed on it. Determine how '
                 'much of that weight acts along the ramp, pulling it down.',
@@ -588,7 +588,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A bracket carries 40 N due west and 9.0 N due south at the same '
                 'point. The resultant makes an angle of 13° with the westward '
                 'direction. Determine the resultant.',
@@ -608,7 +608,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A ladder leans against a wall. A student says the weight of the '
                 'ladder may be resolved into a component along the ladder and a '
                 'component at right angles to it. Evaluate this.',
@@ -628,7 +628,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A trailer is pulled by two cables from the same hitch: one pulls '
                 'with 3.0 kN due north, the other with 4.0 kN due east. Determine '
                 'the single force that could replace them.',
@@ -648,7 +648,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A sledge of weight 1300 N is held at rest by a rope running '
                 'straight up a slope that rises 5.0 m for every 13 m along its '
                 'surface. Determine the tension, taking friction as negligible.',
@@ -668,7 +668,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A student draws a vector triangle for two forces but joins the '
                 'arrows tail to tail instead of tip to tail. Explain what goes '
                 'wrong.',
@@ -689,7 +689,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A skier of weight 800 N stands on a piste. The component of her '
                 'weight at right angles to the snow surface is 640 N. Determine '
                 'the component acting down the slope.',
@@ -709,7 +709,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Explain why a wheelchair ramp is built long and shallow rather '
                 'than short and steep.',
         "options": [
@@ -728,7 +728,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Two perpendicular forces acting at a point give a resultant of '
                 '25 N, and one of them is 24 N. Determine the other.',
         "options": [
@@ -747,7 +747,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Two tugs pull a barge at equal angles either side of its axis, '
                 'each with 5.0 kN, and each contributes 4.0 kN along the axis. '
                 'Determine the total forward force on the barge.',
@@ -767,7 +767,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A framed photograph of weight 90 N is supported by two identical '
                 'cords. Show why the upward part of the pull in each cord must be '
                 '45 N.',
@@ -787,7 +787,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "figure": "ks4-fig-force-grid-500n-4r-3u",
         "text": "The diagram shows a pull drawn to scale on a square grid. Determine both components of the pull and state which is larger.",
         "options": [
@@ -804,7 +804,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A student states that a resultant can never be smaller than the '
                 'larger of the two forces making it. Evaluate that statement for '
                 'two perpendicular forces.',
@@ -824,7 +824,7 @@ QUESTIONS = [
         "subtopic_slug": 'resolving-forces',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Two people push a heavy crate from the same corner, one with '
                 '120 N due east and one with 160 N due north, hoping to send it '
                 'exactly north-east. Determine what is wrong with the plan.',

@@ -32,7 +32,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A conker is whirled round steadily on the end of a string. '
                 'State the direction of the force the string exerts on it.',
         "options": [
@@ -51,7 +51,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Name the force that keeps the Moon in its near-circular path '
                 'around the Earth.',
         "options": [
@@ -70,7 +70,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A child sits 2.0 m from the centre of a playground roundabout '
                 'that completes one turn in 4.0 s. Calculate her speed.',
         "options": [
@@ -89,7 +89,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'State what happens to the velocity of an object driven round a '
                 'circular track at a steady speed.',
         "options": [
@@ -108,7 +108,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A car is driven round a bend on a flat, level road. Identify '
                 'what provides the centripetal force.',
         "options": [
@@ -127,7 +127,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A satellite travels around the Earth in a circular orbit at a '
                 'steady speed. State whether it is accelerating.',
         "options": [
@@ -146,7 +146,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A bucket of water is swung quickly in a vertical circle and the '
                 'water stays in the bucket even at the top. Identify the reason.',
         "options": [
@@ -165,7 +165,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A racing car takes a bend too quickly and slides off the track. '
                 'Explain what has happened to the centripetal force.',
         "options": [
@@ -184,7 +184,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Mud thrown off the tyre of a moving bicycle travels away in a '
                 'straight line. State why.',
         "options": [
@@ -203,7 +203,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A satellite covers a circular orbit of total path length '
                 '42 000 km in 5000 s. Calculate its average speed in m/s.',
         "options": [
@@ -222,7 +222,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A hammer thrower lets go of the hammer. Describe the path it '
                 'takes at the instant of release.',
         "options": [
@@ -241,7 +241,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Complete the sentence: the centripetal force on a body moving '
                 'in a circle is ...',
         "options": [
@@ -260,7 +260,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A spin dryer turns wet clothes rapidly inside a drum with holes '
                 'in its wall. Explain how the water leaves the clothes.',
         "options": [
@@ -279,7 +279,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'easier',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'State how the centripetal force needed changes when the same '
                 'bend is taken at a higher speed.',
         "options": [
@@ -299,7 +299,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A ball on a string is whirled in a horizontal circle. Describe '
                 'how the tension changes if the ball is whirled faster on the '
                 'same length of string.',
@@ -319,7 +319,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A student says a satellite in a steady circular orbit has no '
                 'resultant force on it because its speed is constant. Identify '
                 'the flaw.',
@@ -339,7 +339,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Compare the direction of the velocity with the direction of the '
                 'resultant force for a car going round a roundabout at a steady '
                 'speed.',
@@ -359,7 +359,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A stone tied to a 0.80 m string is whirled in a horizontal '
                 'circle and completes 5.0 turns every second. Calculate its '
                 'speed.',
@@ -379,7 +379,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Describe what provides the centripetal force on a train rounding '
                 'a curved section of track.',
         "options": [
@@ -398,7 +398,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A ball is swung above the head on a string; more string is then '
                 'let out while the speed is kept the same. Describe how the '
                 'force required changes.',
@@ -418,7 +418,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Explain why the Moon does not simply drop onto the Earth even '
                 'though the Earth pulls on it constantly.',
         "options": [
@@ -437,7 +437,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A car drives at a steady speed over a humpback bridge. Describe '
                 'the direction of the resultant force on it at the very top of '
                 'the hump.',
@@ -457,7 +457,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A big wheel of radius 12 m turns steadily and carries a rider '
                 'once round every 40 s. Calculate the speed of the rider.',
         "options": [
@@ -476,7 +476,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A satellite in a circular orbit carries no working engine. '
                 'Explain why its speed does not rise even though a force acts on '
                 'it.',
@@ -496,7 +496,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'On a steeply banked velodrome a cyclist rides round the bend '
                 'without relying on friction. Identify what supplies the '
                 'centripetal force.',
@@ -516,7 +516,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Two cars take the same bend at the same speed, but one is twice '
                 'as heavy as the other. Compare the centripetal force each '
                 'needs.',
@@ -536,7 +536,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A student writes that a body going round a circle at a steady '
                 'speed has zero acceleration. Give the correction.',
         "options": [
@@ -555,7 +555,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'standard',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'An athlete runs one lap of a circular track of circumference '
                 '400 m in 50 s at a steady speed. Calculate that speed.',
         "options": [
@@ -575,7 +575,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A shopping bag resting on a bus seat slides towards the window '
                 'as the bus goes round a roundabout. Explain the motion in terms '
                 'of forces.',
@@ -595,7 +595,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'The International Space Station circles about 400 km above the '
                 'Earth while the Moon circles about 380 000 km away. Deduce '
                 'which needs the larger inward force for each kilogram of its '
@@ -616,7 +616,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A spacecraft in a circular orbit fires a rocket briefly so that '
                 'it speeds up, while the gravity acting on it is unchanged. '
                 'Predict what happens to its path.',
@@ -636,7 +636,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Explain, in terms of the centripetal force, why drivers are told '
                 'to slow down on an icy bend.',
         "options": [
@@ -655,7 +655,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A ball is whirled on a string in a vertical circle at a steady '
                 'speed. Compare the tension in the string at the top with the '
                 'tension at the bottom.',
@@ -675,7 +675,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A student claims that because the resultant force on an orbiting '
                 'satellite is not zero, the satellite must be gaining speed. '
                 'Evaluate the claim.',
@@ -695,7 +695,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A cyclist rides eight complete laps of a circular track of '
                 'circumference 250 m in 200 s at a steady speed. Determine her '
                 'speed, and state whether she is accelerating.',
@@ -715,7 +715,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A car is driven at a steady speed once around a large circular '
                 'test track. State the total work done on it by the centripetal '
                 'force, and explain.',
@@ -735,7 +735,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Describe what a road engineer must change about a bend so that '
                 'vehicles can take it safely at a higher speed, without any gain '
                 'in grip.',
@@ -755,7 +755,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A bucket of water is swung in a vertical circle and the swing is '
                 'then slowed right down. Predict what happens as the bucket '
                 'passes the highest point, and explain.',
@@ -775,7 +775,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'In a thought experiment, the gravity of a planet is switched off '
                 'while a probe circles it. Describe the motion of the probe from '
                 'that moment on.',
@@ -795,7 +795,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Explain how a satellite can be accelerating towards the Earth at '
                 'every instant and yet never get any closer to it.',
         "options": [
@@ -814,7 +814,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'Two identical coins rest on a turntable, one near the spindle '
                 'and one near the rim. As the turntable is speeded up, predict '
                 'which slides off first.',
@@ -834,7 +834,7 @@ QUESTIONS = [
         "subtopic_slug": 'motion-in-a-circle',
         "band": 'harder',
         "tier": 'higher',
-        "triple_only": True,
+        "triple_only": False,
         "text": 'A theme park designer wants riders to go round a horizontal '
                 'circle faster than before, using the same restraints. State '
                 'what must be done to the ride.',

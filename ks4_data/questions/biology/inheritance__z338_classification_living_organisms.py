@@ -28,7 +28,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what Linnaeus grouped living things by.",
         "options": [
             "Their structure and characteristics only, since DNA was unknown then",
@@ -44,7 +44,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Name the two groups used to make up an organism's scientific name.",
         "options": [
             "The kingdom that it belongs to, followed by the phylum that sits inside that kingdom",
@@ -60,7 +60,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State how the genus part of a scientific name is written.",
         "options": [
             "In lower case throughout, to show that it is the smaller of the two groups named",
@@ -76,7 +76,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Name the three domains of the three-domain system.",
         "options": [
             "Plants, animals and fungi, which are the three kingdoms that Linnaeus first described",
@@ -92,7 +92,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Name the largest of the groups in the Linnaean system.",
         "options": [
             "The species",
@@ -108,7 +108,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State which kinds of organism belong in the domain Eukaryota.",
         "options": [
             "Protists, fungi, plants and animals",
@@ -124,7 +124,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Name the invention that first allowed scientists to improve on Linnaeus's groupings.",
         "options": [
             "The telescope, which let astronomers see much further out into space than before",
@@ -140,7 +140,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what is used to work out the evolutionary tree of organisms that are now extinct.",
         "options": [
             "The DNA taken from living members of the species, compared with that of other species",
@@ -156,7 +156,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why a scientific name is used instead of a common name in a research paper.",
         "options": [
             "Because a common name is far harder for most people to remember than a Latin one",
@@ -172,7 +172,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Describe how the scientific name of the domestic dog, Canis familiaris, should be printed.",
         "options": [
             "Both of the words written entirely in capital letters so that they can be picked out easily",
@@ -188,7 +188,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why archaea were separated from bacteria when the three-domain system was introduced.",
         "options": [
             "Because their molecules turned out to differ, even though the two look alike",
@@ -204,7 +204,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State which group two organisms share if they belong to the same family but different genera.",
         "options": [
             "The species, since organisms of one family are able to breed together to produce fertile young",
@@ -220,7 +220,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why two very different-looking animals may be placed in the same group.",
         "options": [
             "Because the two animals happen to live in exactly the same habitat as each other",
@@ -236,7 +236,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Describe what an evolutionary tree is used to show.",
         "options": [
             "The number of individuals of each species that are alive in a habitat at one time",
@@ -252,7 +252,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what a scientist compares to build an evolutionary tree for species alive today.",
         "options": [
             "The number of offspring that each of the species produces in a breeding season",
@@ -268,7 +268,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why the classification system used today is not the one Linnaeus wrote down.",
         "options": [
             "Because new evidence showed some groupings were wrong",
@@ -284,7 +284,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what all the organisms in one phylum have in common.",
         "options": [
             "They all belong to the same kingdom and share a basic body plan",
@@ -300,7 +300,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why scientists agreed to use one naming system across the whole world.",
         "options": [
             "Because a single system stops anyone from discovering any new species of their own",
@@ -316,7 +316,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Describe what happens to the number of organisms in each group as you move from kingdom towards species.",
         "options": [
             "It rises steadily, because each group contains all of the groups that lie above it",
@@ -332,7 +332,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why a whale is classified with the mammals rather than with the fish.",
         "options": [
             "Because a whale is very much larger than any of the fish that live in the sea",
@@ -348,7 +348,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what the second word of a binomial name tells you.",
         "options": [
             "The kingdom that the organism belongs to, which is the largest of all the groups",
@@ -364,7 +364,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why DNA sequencing changed classification more than microscopes had.",
         "options": [
             "Because it compares the genetic material itself, which records ancestry directly",
@@ -380,7 +380,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why two species in the same genus are expected to be very similar.",
         "options": [
             "Because every species in a genus is able to breed with every other one in it",
@@ -396,7 +396,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what the branching points of an evolutionary tree represent.",
         "options": [
             "The moments at which a species became extinct and disappeared from the fossil record",
@@ -412,7 +412,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why a newly discovered organism may be placed in a new genus of its own.",
         "options": [
             "Because a new organism is always given a genus that nobody else has ever used before",
@@ -428,7 +428,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Describe what biochemistry contributed to classification before DNA sequencing existed.",
         "options": [
             "It showed which organisms were able to breed together and produce fertile offspring",
@@ -444,7 +444,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State which group comes immediately below class in the Linnaean system.",
         "options": [
             "Order",
@@ -460,7 +460,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why classification is described as a model rather than a fact.",
         "options": [
             "Because scientists are not able to agree on the name of any organism at all",
@@ -476,7 +476,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why the number of kingdoms recognised by scientists has changed over time.",
         "options": [
             "Because scientists have run out of names for the kingdoms that they have already made",
@@ -492,7 +492,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Describe what a domain is in modern classification.",
         "options": [
             "The habitat in which the organism lives out most of its life from day to day",
@@ -508,7 +508,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A dolphin and a shark have a similar streamlined shape. Explain why they are not classified together.",
         "options": [
             "Because a shark is very much older as a species than a dolphin is known to be",
@@ -524,7 +524,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Evaluate the claim that classification would be unnecessary if every organism had a DNA sequence on record.",
         "options": [
             "It is doubtful — the sequences would still have to be grouped for anyone to make sense of them",
@@ -540,7 +540,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Compare what an evolutionary tree shows with what a Linnaean list of groups shows.",
         "options": [
             "The tree shows when lines separated; the list shows the groups",
@@ -556,7 +556,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A prokaryote from a deep-sea vent has membrane chemistry unlike any bacterium. Deduce its likely domain.",
         "options": [
             "Eukaryota, because an organism living at a deep-sea vent must have a nucleus to survive there",
@@ -572,7 +572,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why a species can be moved into a different genus many years after it was first named.",
         "options": [
             "Because the organism changes so much over the years that it no longer fits its old genus",
@@ -588,7 +588,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why a classification based only on where organisms live would be scientifically useless.",
         "options": [
             "Because an organism is unable to move from the place in which it was first found",
@@ -604,7 +604,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Two beetles look identical but cannot produce fertile offspring together. Deduce how they should be classified.",
         "options": [
             "As one species, because two organisms that look identical must belong to the same species",
@@ -620,7 +620,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why the domain Eukaryota contains organisms as different as an oak tree and a lion.",
         "options": [
             "Because a domain is a very large group with one ancestor",
@@ -636,7 +636,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why an evolutionary tree built from DNA can be tested against one built from fossils.",
         "options": [
             "Because the two trees are drawn by the same scientists working in the same laboratory",
@@ -652,7 +652,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why the classification of bacteria was particularly hard before biochemical evidence was available.",
         "options": [
             "Because bacteria are far too small to be seen under any microscope that has been built",
@@ -668,7 +668,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why the names of the Linnaean groups are still used even though the system has changed.",
         "options": [
             "Because the names are protected by law and cannot be replaced by anybody at all",
@@ -684,7 +684,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A student says Eukaryota must be the newest domain because its organisms are the most complex. Evaluate this.",
         "options": [
             "It is correct, because complexity increases steadily over time in every line of descent",
@@ -700,7 +700,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why a scientist checks several kinds of evidence before placing an organism in a group.",
         "options": [
             "Because any single kind of evidence can mislead on its own",
@@ -716,7 +716,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why two species with the same genus name share more of their DNA than two in the same family.",
         "options": [
             "Because the species of a genus are all kept in the same habitat by the scientists studying them",
@@ -732,7 +732,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why classification matters to a conservation scientist.",
         "options": [
             "Because a scientist cannot study any organism until it has been given a scientific name",
@@ -748,7 +748,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Compare the evidence Linnaeus could use with the evidence available to a scientist today.",
         "options": [
             "Linnaeus had DNA evidence but no microscope, while today a scientist has both of them",
@@ -764,7 +764,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why a three-domain tree places the root before the split between archaea and eukaryotes.",
         "options": [
             "Because eukaryotes were the first organisms to appear on Earth during its early history",
@@ -780,7 +780,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why scientists accepted Woese's three domains even though the older system worked.",
         "options": [
             "Because the evidence from molecules showed a division the old system had missed entirely",
@@ -796,7 +796,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A fossil animal cannot be assigned to any living family. Suggest how it may still be placed on a tree.",
         "options": [
             "By comparing its structure with living and extinct animals to find its nearest relatives",
@@ -812,7 +812,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why a common name such as robin causes problems in an international study.",
         "options": [
             "Because a robin is a bird that has never been given a scientific name of its own",
@@ -828,7 +828,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why two scientists may disagree about how many species a group of similar organisms contains.",
         "options": [
             "Because one of them has counted the individual organisms in the group incorrectly",
@@ -844,7 +844,7 @@ QUESTIONS = [
         "subtopic_slug": "classification-living-organisms",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why classification and evolution are described as two sides of the same idea.",
         "options": [
             "Because classification came first and evolution was invented much later to explain it",

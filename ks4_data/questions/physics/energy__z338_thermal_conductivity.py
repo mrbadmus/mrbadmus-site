@@ -45,7 +45,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State which of these materials transfers thermal energy by "
                 "conduction the fastest.",
         "options": [
@@ -68,7 +68,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State the reason metals such as copper and aluminium conduct "
                 "thermal energy so well.",
         "options": [
@@ -89,7 +89,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State why a material such as wood or polystyrene conducts "
                 "thermal energy poorly.",
         "options": [
@@ -111,7 +111,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Name the material in this list that would make the best "
                 "thermal insulator for a loft.",
         "options": [
@@ -134,7 +134,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Copper has a thermal conductivity of about 400 W/m K and "
                 "glass about 1 W/m K. State which of them transfers energy "
                 "faster through a layer of the same thickness.",
@@ -157,7 +157,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State the effect on the rate of energy transfer through a "
                 "window of fitting a larger pane of the same glass at the "
                 "same thickness.",
@@ -180,7 +180,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A saucepan has a metal base and a plastic handle. State the "
                 "reason the handle is made of plastic.",
         "options": [
@@ -201,7 +201,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State why trapped air is one of the best thermal insulators "
                 "available.",
         "options": [
@@ -224,7 +224,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "In the required practical on thermal insulators, beakers of "
                 "hot water are wrapped in different materials. State the "
                 "independent variable.",
@@ -243,7 +243,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State the effect on a woollen jumper's ability to insulate "
                 "when it becomes soaked through with water.",
         "options": [
@@ -266,7 +266,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what a thermal insulator does to an unwanted energy "
                 "transfer.",
         "options": [
@@ -284,7 +284,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State the direction in which energy is transferred by "
                 "conduction through the wall of a warm house on a cold day.",
         "options": [
@@ -307,7 +307,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "In a standard double-glazed window, name what is sealed in "
                 "the narrow gap between the two panes of glass.",
         "options": [
@@ -325,7 +325,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Two mugs are made of the same pottery, one with a thick wall "
                 "and one with a thin wall. State which keeps a hot drink warm "
                 "for longer.",
@@ -351,7 +351,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A bathroom has a tiled area and a carpeted area, both at the "
                 "same temperature. Explain why the tiles feel colder "
                 "underfoot.",
@@ -374,7 +374,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain how a thick duvet keeps a person warm on a cold "
                 "night.",
         "options": [
@@ -396,7 +396,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A bottle of chilled water is wrapped in a thick duvet and "
                 "left standing in a warm room. Explain what happens to the "
                 "water.",
@@ -420,7 +420,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why the sealed gap between the two panes of a "
                 "double-glazed window is only a few millimetres wide rather "
                 "than several centimetres.",
@@ -444,7 +444,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain how a woollen jumper reduces the energy a person "
                 "loses on a cold day.",
         "options": [
@@ -466,7 +466,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "On a cold morning a metal bench feels much colder to sit on "
                 "than a wooden one beside it, although both are at the same "
                 "temperature. Explain why.",
@@ -489,7 +489,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "In an investigation of insulating materials, explain why the "
                 "same volume of hot water must be used in every beaker.",
         "options": [
@@ -511,7 +511,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Two identical beakers of hot water are wrapped, one in wool "
                 "and one in cotton. The wool-wrapped water takes 15 minutes "
                 "to fall by 20 degrees C; the cotton-wrapped water takes 9 "
@@ -537,7 +537,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "The walls of a refrigerator are filled with a foam holding "
                 "many tiny sealed pockets of gas. Explain why this is a "
                 "better choice than filling them with solid plastic.",
@@ -561,7 +561,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "On a freezing day a small bird fluffs up its feathers until "
                 "it looks almost round. Explain how this helps it to stay "
                 "warm.",
@@ -584,7 +584,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "The stopper of a vacuum flask is made of plastic rather than "
                 "metal. Explain the reason for this choice.",
         "options": [
@@ -607,7 +607,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A wetsuit is made of neoprene, a rubber holding thousands of "
                 "tiny trapped gas bubbles. Explain how it keeps a swimmer "
                 "warm in cold water.",
@@ -631,7 +631,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Mountain rescuers report that a shelter dug into deep snow "
                 "is far warmer inside than the open air. Explain why snow is "
                 "a good insulator.",
@@ -654,7 +654,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A homeowner stacks heavy boxes on top of the loft "
                 "insulation, squashing it flat. Explain the effect on the "
                 "energy transferred through the roof.",
@@ -680,7 +680,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Wall X is 0.20 m thick and made of a material of thermal "
                 "conductivity 1.0 W/m K. Wall Y is 0.10 m thick with a "
                 "conductivity of 0.040 W/m K. Determine which transfers "
@@ -705,7 +705,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Two identical refrigerators each hold their inside at 4 "
                 "degrees C. One stands in a garage at 30 degrees C and the "
                 "other in a kitchen at 18 degrees C. Predict which has more "
@@ -730,7 +730,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Evaluate the claim that a material could be developed which "
                 "stops conduction through a wall completely.",
         "options": [
@@ -752,7 +752,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Compare a 100 mm layer of fibreglass with a 100 mm slab of "
                 "solid glass as a loft insulator.",
         "options": [
@@ -775,7 +775,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A student compares insulators but uses a 250 cm3 beaker for "
                 "one material and a 100 cm3 beaker for another, filling each "
                 "to the brim. Identify the main problem with the "
@@ -800,7 +800,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "In an insulation test a student covers one beaker with a lid "
                 "and leaves the rest open. Explain why the comparison is no "
                 "longer fair.",
@@ -824,7 +824,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A first aider must keep a casualty lying outdoors warm. "
                 "Evaluate lying them on bare concrete against lying them on a "
                 "thick foam mat.",
@@ -848,7 +848,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Pane A has an area of 1.5 m2 and is 4.0 mm thick. Pane B has "
                 "an area of 3.0 m2 and is 8.0 mm thick. Both are the same "
                 "glass with the same temperature difference across them. "
@@ -872,7 +872,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A loft already has 100 mm of insulation. Evaluate the claim "
                 "that adding a further 200 mm of the same material will save "
                 "three times as much energy as the first 100 mm did.",
@@ -896,7 +896,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A student concludes that wool is the best insulator because "
                 "its beaker stayed hottest, but the wool was wrapped twice as "
                 "thickly as every other material. Evaluate the conclusion.",
@@ -919,7 +919,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Liquid nitrogen at -196 degrees C is stored in a laboratory "
                 "at 20 degrees C. Explain why its vessel needs extremely good "
                 "insulation.",
@@ -942,7 +942,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Predict whether two thin jumpers worn together or one thick "
                 "jumper of the same total thickness keeps a walker warmer, "
                 "and explain your answer.",
@@ -966,7 +966,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A beaker of hot water is left to cool in a cool room. "
                 "Predict how the number of degrees it falls in each "
                 "successive minute changes, and explain why.",
@@ -990,7 +990,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A chef claims that a copper-based pan heats food more evenly "
                 "than a steel-based one of the same thickness. Evaluate the "
                 "claim.",
@@ -1019,7 +1019,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why filling a house's cavity wall with foam works "
                 "better than simply leaving the cavity as an air gap of "
                 "the same width.",
@@ -1048,7 +1048,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain the purpose of wrapping foam lagging around a "
                 "hot water pipe that runs through an unheated loft.",
         "options": [
@@ -1074,7 +1074,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "In an older house with little insulation anywhere, "
                 "explain why adding loft insulation is usually "
                 "recommended before adding wall insulation.",
@@ -1103,7 +1103,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "In the required practical on insulators, explain why the "
                 "water in each beaker should be stirred immediately "
                 "before every temperature reading is taken.",
@@ -1130,7 +1130,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why a gap left in the insulating wrapping of one "
                 "beaker, while every other beaker is wrapped without "
                 "any gaps, would make the investigation's results "
@@ -1159,7 +1159,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Aluminium window frames are often fitted with a plastic "
                 "strip that splits the metal into an inner and an "
                 "outer section. Explain why this improves the frame's "
@@ -1190,7 +1190,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Wood has a thermal conductivity of about 0.15 W/m K, "
                 "glass about 1.0 W/m K and steel about 50 W/m K. For "
                 "three walls of the same thickness, area and "
@@ -1212,7 +1212,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why an oven glove is made from a thick, quilted "
                 "fabric holding several layers of trapped air rather "
                 "than a single layer of thin cotton.",
@@ -1245,7 +1245,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Three walls are each tested under the same area and "
                 "temperature difference. Wall P is 0.050 m thick with "
                 "conductivity 0.20 W/m K. Wall Q is 0.10 m thick with "
@@ -1269,7 +1269,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A house has thick, high-quality insulation in its walls "
                 "and roof but retains its original single-piece metal "
                 "window frames. Evaluate the claim that the frames "
@@ -1300,7 +1300,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A pupil tests four insulating materials with a single "
                 "beaker of each, on a bench beside a door that is "
                 "opened and closed throughout the lesson. Evaluate the "
@@ -1330,7 +1330,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A bare copper pipe has a conductivity-to-thickness "
                 "ratio of 25 000 W/m² K. Once lagged, the extra foam "
                 "layer's own ratio is only 2.0 W/m² K, and the foam "
@@ -1352,7 +1352,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A homeowner is told that upgrading their loft "
                 "insulation from 150 mm to 270 mm will cost £180 and "
                 "save £15 a year on heating, while the original "
@@ -1387,7 +1387,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Pane C has an area of 2.0 m2 and is 4.0 mm thick. Pane "
                 "D has an area of 2.0 m2 and is 6.0 mm thick, of the "
                 "same glass and with the same temperature difference "
@@ -1409,7 +1409,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "The inner vessel of a laboratory cryogenic dewar is "
                 "held away from the outer vessel by a small number of "
                 "thin support struts crossing an evacuated gap. "
@@ -1441,7 +1441,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A manufacturer claims that, for one material at a fixed "
                 "area and temperature difference, doubling its "
                 "thickness always halves the rate of energy transfer "

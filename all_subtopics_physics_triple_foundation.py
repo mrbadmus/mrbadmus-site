@@ -7011,6 +7011,133 @@ PHYSICS_SUBTOPICS_ALL = {
   'triple_only': 'Red-shift and Big Bang (physics only) — not in Combined Science.',
   'variables': [('v', 'Recession speed', 'km/s', 'km/s'),
                 ('H₀', 'Hubble constant', 'km/s/Mpc', 'km/s/Mpc'),
-                ('d', 'Distance to galaxy', 'Mpc', 'Mpc')]}],
+                ('d', 'Distance to galaxy', 'Mpc', 'Mpc')]},
+ {'common_mistake': 'Dark matter and dark energy are different: dark matter is a form of MATTER (has mass, interacts '
+                    "gravitationally) but doesn't interact with light. Dark energy is a form of ENERGY causing the "
+                    'accelerating expansion of the universe. Together they make up ~95% of the universe — neither has '
+                    'been directly detected or fully explained.',
+  'equations': [],
+  'fifas': [],
+  'higher': 'HT only — describe the evidence for dark matter (galaxy rotation curves, gravitational lensing) and dark '
+            'energy (accelerating expansion from supernova observations). State the approximate proportions of '
+            'ordinary matter, dark matter and dark energy in the universe.',
+  'id': 'dark-matter-dark-energy',
+  'key_note': 'Dark matter: ~27% of universe, invisible to EM but detected by gravitational effects (galaxy rotation, '
+              'lensing). Dark energy: ~68%, causes accelerating expansion (discovered 1998 from supernova '
+              'observations). Ordinary matter: only ~5%. Both remain current unknowns — major unsolved problems in '
+              'physics.',
+  'matching': {'instruction': 'Match each observation to what it provides evidence for.',
+               'pairs': [('Galaxy rotation curves — outer stars orbit as fast as inner',
+                          'Dark matter — extra unseen mass provides additional gravitational force'),
+                         ('Distant supernovae further than predicted',
+                          'Dark energy — accelerating expansion requires repulsive energy'),
+                         ('Gravitational lensing stronger than visible mass predicts',
+                          'Dark matter — ~27% of universe is unseen gravitating matter'),
+                         ('Composition of universe', '~5% ordinary matter, ~27% dark matter, ~68% dark energy')],
+               'title': 'Dark Matter and Dark Energy'},
+  'quiz': [{'opts': [('Stars at the outer edges of galaxies orbit at similar speeds to inner stars — unlike the solar '
+                      'system where outer planets orbit slower; extra hidden mass must provide the extra gravity',
+                      True),
+                     ('Galaxies rotate faster than expected — dark matter acts as a lubricant speeding up rotation',
+                      False),
+                     ('Dark matter is visible in images of galaxy centres as a dark region', False),
+                     ('Galaxies with more dark matter appear darker in optical telescopes', False)],
+            'q': 'What is the main evidence from galaxy rotation for the existence of dark matter?',
+            'wrong_explanations': {1: "Dark matter has no lubricating effect — it's purely gravitational. The "
+                                      'observation is about the distribution of orbital speeds.',
+                                   2: "Dark matter doesn't absorb or emit any form of EM radiation — it IS dark "
+                                      '(invisible). A dark region in a galaxy centre is more likely a dark dust lane '
+                                      'or black hole.',
+                                   3: "Dark matter doesn't absorb light — it's invisible to ALL EM telescopes, not "
+                                      'just optical.'}},
+           {'opts': [('Observations of distant Type Ia supernovae showed they were further away than expected — '
+                      'implying the universe is expanding faster now than in the past',
+                      True),
+                     ('Dark energy was predicted theoretically by Einstein in general relativity', False),
+                     ('The Cosmic Microwave Background showed regions of unusually high energy — identified as dark '
+                      'energy',
+                      False),
+                     ('Particle accelerators produced dark energy particles at high collision energies', False)],
+            'q': 'How was dark energy first discovered in 1998?',
+            'wrong_explanations': {1: 'Einstein did introduce a cosmological constant (a form of dark energy) but then '
+                                      'abandoned it. The 1998 discovery was observational — from supernova data, not '
+                                      'theoretical prediction.',
+                                   2: 'CMB analysis provides evidence consistent with dark energy existing, but the '
+                                      'discovery came from supernova observations.',
+                                   3: 'Dark energy has not been produced or detected in particle accelerators — it may '
+                                      'not consist of particles at all.'}}],
+  'rp': None,
+  'spec': '6.8.4 (physics only)',
+  'summary': 'Describe the evidence for dark matter and dark energy and their significance for cosmology.',
+  'theory': [{'content': 'DARK MATTER is matter that does not emit, absorb or reflect electromagnetic radiation — it '
+                         'is invisible to all telescopes.\n'
+                         '\n'
+                         'EVIDENCE FOR DARK MATTER:\n'
+                         'GALAXY ROTATION CURVES:\n'
+                         'Stars at the outer edges of galaxies orbit at the same speed as those near the centre.\n'
+                         'Gravitational theory predicts outer stars should orbit slower (like planets in the solar '
+                         'system).\n'
+                         'The extra gravitational force required suggests ~85% of matter in galaxies is invisible.\n'
+                         '\n'
+                         'GRAVITATIONAL LENSING:\n'
+                         'Massive objects bend light (gravitational lensing).\n'
+                         'The amount of lensing observed is much greater than expected from visible matter alone.\n'
+                         "The 'missing mass' is dark matter.\n"
+                         '\n'
+                         'COSMIC MICROWAVE BACKGROUND:\n'
+                         'Analysis of CMB fluctuations is consistent with dark matter making up ~27% of the universe.\n'
+                         '\n'
+                         'WHAT IS IT?\n'
+                         'Unknown — current candidates include: WIMPs (weakly interacting massive particles), axions, '
+                         'sterile neutrinos.\n'
+                         'Has not been directly detected despite many experiments.',
+              'heading': 'Dark Matter'},
+             {'content': 'DARK ENERGY is an unknown form of energy that is causing the expansion of the universe to '
+                         'ACCELERATE.\n'
+                         '\n'
+                         'DISCOVERY:\n'
+                         'In 1998, observations of distant supernovae showed the universe is expanding faster than '
+                         'expected.\n'
+                         'The expansion should be slowing down (due to gravity between all matter).\n'
+                         'Instead, it is SPEEDING UP.\n'
+                         '\n'
+                         'EVIDENCE:\n'
+                         'Type Ia supernovae as standard candles — known luminosity allows distance measurement.\n'
+                         'Distant supernovae found further than expected — universe expanded more than predicted.\n'
+                         "This requires a 'repulsive' energy — dark energy.\n"
+                         '\n'
+                         'WHAT IS IT?\n'
+                         "Unknown — possibly a property of space itself (cosmological constant, Einstein's 'biggest "
+                         "blunder').\n"
+                         'Makes up ~68% of the total energy-mass content of the universe.',
+              'heading': 'Dark Energy'},
+             {'content': "CURRENT BEST ESTIMATES of the universe's content:\n"
+                         'ORDINARY MATTER (stars, gas, planets, everything we can see): ~5%.\n'
+                         'DARM MATTER (unknown, detected by gravity only): ~27%.\n'
+                         'DARK ENERGY (unknown, causes accelerating expansion): ~68%.\n'
+                         '\n'
+                         'Total matter and energy: 100%.\n'
+                         'Only ~5% of the universe is made of stuff we understand — extraordinary.\n'
+                         '\n'
+                         'IMPLICATIONS:\n'
+                         'The ultimate fate of the universe depends on dark energy.\n'
+                         "If dark energy grows: 'Big Rip' — universe tears apart.\n"
+                         'If dark energy constant: universe expands forever, becoming increasingly cold and diffuse.\n'
+                         "If dark energy decreases: universe might eventually collapse ('Big Crunch').\n"
+                         '\n'
+                         'CURRENT RESEARCH:\n'
+                         'Euclid space telescope, Dark Energy Survey — mapping distribution of dark matter and dark '
+                         'energy.\n'
+                         'Large Hadron Collider — searching for dark matter particles.\n'
+                         'Fermi telescope — searching for dark matter annihilation signals.\n'
+                         '\n'
+                         'INTELLECTUAL SIGNIFICANCE:\n'
+                         "The apparent 95% ignorance about the universe's composition is one of the great unsolved "
+                         'problems in physics.\n'
+                         'New discoveries in this area could transform our understanding of fundamental physics.',
+              'heading': 'Composition of the Universe'}],
+  'title': 'Dark Matter and Dark Energy',
+  'triple_only': 'Dark matter and dark energy (physics only) — not in Combined Science.',
+  'variables': []}],
 
 }

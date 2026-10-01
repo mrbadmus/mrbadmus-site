@@ -1767,7 +1767,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what the thermal conductivity of a material measures.",
         "options": [
             "The temperature the material can reach before it melts",
@@ -1785,7 +1785,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State the effect on the rate of energy transfer "
                 "through the wall of a house when the temperature "
                 "difference between the inside and the outside becomes "
@@ -1809,7 +1809,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State the unit of thermal conductivity.",
         "options": [
             "W/m·K",
@@ -1827,7 +1827,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State the effect of making a layer of loft insulation "
                 "thicker.",
         "options": [
@@ -1847,7 +1847,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A metal spoon and a wooden spoon are left standing in a pan "
                 "of hot soup. Explain why the handle of the metal spoon feels "
                 "hotter after a minute.",
@@ -1870,7 +1870,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain how filling a cavity wall with foam reduces the rate "
                 "of energy transfer out of a house.",
         "options": [
@@ -1893,7 +1893,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A hot water tank is fitted with a foam jacket. Describe how "
                 "the rate of energy transfer changes as the jacket is made "
                 "thicker and thicker.",
@@ -1917,7 +1917,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "In the required practical on insulators, a student wraps "
                 "identical beakers of hot water in different materials and "
                 "records the temperature each minute. State the variables "
@@ -1942,7 +1942,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Two identical houses are kept at the same inside "
                 "temperature on the same cold day. House A has 100 mm of loft "
                 "insulation and House B has 200 mm of the same material. "
@@ -1967,7 +1967,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A vacuum flask has a vacuum sealed between its double walls. "
                 "Explain why this is so effective at keeping a drink hot.",
         "options": [
@@ -1989,7 +1989,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "In an insulation investigation, water in a beaker wrapped in "
                 "bubble wrap cooled from 80 °C to 62 °C in 10 minutes. An "
                 "identical beaker wrapped in newspaper cooled from 80 °C to "
@@ -2014,7 +2014,7 @@ QUESTIONS = [
         "subtopic_slug": "thermal-conductivity",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A student writes: 'Fibreglass insulates well because glass "
                 "fibres are poor conductors and they stop the energy "
                 "escaping.' Identify what is wrong with this explanation.",
