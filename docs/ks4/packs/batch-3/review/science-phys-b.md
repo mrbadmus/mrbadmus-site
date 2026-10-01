@@ -268,3 +268,33 @@ the content-standards floor and go on Mide's list as the authors noted, but they
 | types-of-em-waves | **SCIENCE PASS** |
 | sound-waves-hearing | **SCIENCE PASS** |
 | waves-detection-exploration | **SCIENCE PASS** |
+
+---
+
+## Round 2 — commit 2ddea6225 (feat/ks4-batches)
+
+I checked the commit's diff to the three lesson sources, then grepped the built pages. The browser was not needed: every change is either text or a geometry constant I could check by hand.
+
+| lesson | change | check | result |
+|---|---|---|---|
+| types-of-em-waves | Explainer wavelength → "the distance from a point on one wave to the same point on the next wave" (A-1) | This is the spec definition (4.6.1.2 / 6.6.1.2). It is present on all four built routes, and the old gloss is gone. | Correct |
+| types-of-em-waves | Higher Q2 close → "330 000 m: a wavelength of 330 km for a phone signal" (A-2) | 3.0 × 10⁸ ÷ 900 = 333 333 m ≈ 330 km. The aerial claim is gone. The new close is in the logic of every route's page and shows only on Higher, as before. | Correct |
+| types-of-em-waves | `p1Reveal` trimmed to "The groups join with no gaps: one continuous spectrum." | This is still true. The "shorter wavelength going down" point is still carried by the figure title, the key fact and the key note. | Correct |
+| sound-waves-hearing | Key note "Speed: usually solid > liquid > gas." (A-4) | Matches the explainer's "usually". | Correct |
+| sound-waves-hearing | Key fact "In a human ear, the conversion only works from about 20 Hz to 20 kHz." (A-6) | 8463 4.6.1.4 gives the normal human range as 20 Hz – 20 kHz. | Correct |
+| sound-waves-hearing | Tone aria-labels ("<tone>: heard / not heard"); hook reveal's last sentence trimmed | These are accessibility and wording changes only, with no science claim. | Correct |
+| waves-detection-exploration | Hook ends "…how big the core is, and that part of it is liquid." (A-7) | Matches 4.6.1.5 (structure and size of the core; S-waves cannot travel through a liquid). | Correct |
+| waves-detection-exploration | The P-wave ray to 150° now enters the core at 44° (A-8) | **Entry.** The incoming segment reaches the core boundary from outside: the closest approach falls beyond the entry point. The angle of incidence is ≈ 76° and the angle of refraction ≈ 60°, so the ray bends towards the normal (P-waves slow in the outer core). **Exit** at 103°: ≈ 60° inside → ≈ 79° outside, bending away from the normal. **Crossing.** The two core-crossing rays (44°→103°→150° and 48°→92°→140°) no longer cross: the 48–92 chord lies inside the 44–103 arc, and the exit legs keep their order. | Correct, and cleaner |
+| waves-detection-exploration | Step 4: S rays drawn faded, without ✕ marks; station badges dimmed to 35 % | This is presentation only. The records and the dashed bigger core with its grazing S path at ≈ 78° are unchanged. | Correct |
+
+No new science defects. Nothing route-wrong has been introduced: everything taught on the EM page is still base, and the other two pages remain TH-only.
+
+### Final verdicts (round 2)
+
+| lesson | verdict |
+|---|---|
+| types-of-em-waves | **SCIENCE PASS** |
+| sound-waves-hearing | **SCIENCE PASS** |
+| waves-detection-exploration | **SCIENCE PASS** |
+
+A-5 (withholding the SONAR bank item on `sound-waves-hearing`) stays a commander's call. It is not a science defect.

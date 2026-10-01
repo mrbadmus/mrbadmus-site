@@ -351,3 +351,49 @@ Lessons: microscopy, mixtures, conservation-of-mass, atom-economy, early-atmosph
 | greenhouse-gases | **FIX** | Q-1 hook has no replies; Q-2 effects trap solvable from the paragraph above; Q-3 peer-review item is a word match; Q-4 h2 repeats the tab |
 
 Every required row is a text or constant edit inside the lesson's own `.dc.html`. None touches a frozen field or the shared engine.
+
+---
+
+## Round 2 (commit 2ddea6225, built pages)
+
+**How I checked.** I read the source diff of all six lessons against `d80d3d4be`, then drove the built pages on a fresh server.
+- Tap at 390 px: the mixtures desk (CF), the atom-economy strip and brine (TH and TF), and the greenhouse hook, bench and reports (CF).
+- Keyboard at 1280 px: the microscopy hook (TH).
+- Also checked: the early-atmosphere hook figure (CF) and the conservation-of-mass Higher rung 2 (CH).
+- Every page driven was clean: no console errors, no "undefined", "NaN" or "{{", and no horizontal scroll.
+- I did not re-run the 390 dark-theme pass: the round-2 drive forced the dark colour scheme but not the theme setting, so those pages rendered light. Round 1 covered dark mode, and these edits are text and drawing changes only.
+
+| Lesson | Row | Confirmed on the built page |
+| --- | --- | --- |
+| microscopy | Q-1 | Picking "A lens that magnifies far more" now replies "More magnification alone gives a bigger blur, not more detail. Resolve it, below, tests this." |
+| microscopy | Q-2 | The Variables paragraph is deleted and the Risks and step 2 cuts are applied as written. The RP block measures 179 words as built (211 before), counting its heading and figure labels. |
+| microscopy | Q-3 | The drawing is titled "Onion epidermis cells, seen at ×400", and the alt text matches. Advisories A-1 (×7500 worked example), A-2 (key note) and A-3 (two-line unit chain) were also applied. |
+| mixtures | Q-1 | The desk now has six rounds whose answers run 2, 0, 1, 0, 3, 4 (ink, sand, copper sulfate, muddy pond water, ethanol, ink dyes). Filtration repeats, so the last round is no longer forced. All six rounds completed by tap, and the rail ticks. Advisories A-1 and A-2 were applied too. |
+| conservation-of-mass | Q-1 | Following the commander's ruling, the Higher rung 2 uses 0.16 kg CH₄ → 0.44 kg CO₂ + 0.36 kg H₂O, with an answer of **640 g**. That is under 1000 and stoichiometric (10 mol). Entering 640 g is marked "Correct." |
+| conservation-of-mass | Q-2 | Foundation Q2 is now MgCO₃, 0.84 kg → 400 g MgO → 440 g CO₂. Worked example 1 is now 25.0 g → 14.0 g → 11.0 g. |
+| atom-economy | Q-1 | Rung 3 shows "EXPLAIN 3 marks" on both TF and TH. |
+| atom-economy | Q-2 | The unit dividers are short ticks at the top and bottom of each bar. Labels such as "2NaCl", "2 × 58.5" and "2NaOH" are no longer crossed (checked at 390 px). |
+| atom-economy | Q-3 | Worked example 2 is now "Copper · numbers count", giving 74.3%. |
+| atom-economy | (new) | The question-bank section is now hidden when the route's bank is empty (`bankOn`), so no empty practice block renders on TF or TH. |
+| early-atmosphere | Q-1 | The first explainer is now the single sentence "AQA examines one theory of how Earth's atmosphere formed and changed." |
+| early-atmosphere | Q-2 | Rung 2(b) is the oxygen-trend graph-reading part, with a matching model answer and feedback. Its command chip changed to Describe. Advisories A-1 (Explain card made generic) and A-2 (single "Learn it" chip) were also applied. |
+| early-atmosphere | Q-3 | "O₂ 21%" now renders at 19 px inside its segment. |
+| greenhouse-gases | Q-1 | All four hook options reply; the reflect option's reply was shown after tapping it. The reveal no longer ends with "Each run tests…". |
+| greenhouse-gases | Q-2 | The effects explainer no longer lists the effects, so the trap can't be matched against the paragraph above. |
+| greenhouse-gases | Q-3 | The peer-review item asks "What does that tell you?" with four meaning options. Completed, ending on "All four sound. Report B is the stronger evidence." |
+| greenhouse-gases | Q-4 | After all three runs, the heading reads "Compare the three runs." instead of repeating the tab. Advisories A-1 and A-3 were applied, and the "Atmosphere" label is now 20 px at x = 10. |
+
+**Redundancy check on the fixes.** None of the fixes added new redundant text. The new early-atmosphere "Give" command card, the mixtures fractional-distillation key-note line and the Report B "carbon dioxide records" line each carry information not shown elsewhere on their screen.
+
+**Still open (engine, not lessons).** S-1 (a Ks4Sort never ticks its rail node) is unchanged.
+
+### Final verdicts
+
+| Lesson | Verdict |
+| --- | --- |
+| microscopy | **SHIP** |
+| mixtures | **SHIP** |
+| conservation-of-mass | **SHIP** |
+| atom-economy | **SHIP** |
+| early-atmosphere | **SHIP** |
+| greenhouse-gases | **SHIP** |

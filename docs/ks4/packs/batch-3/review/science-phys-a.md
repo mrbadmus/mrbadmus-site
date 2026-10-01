@@ -218,3 +218,73 @@ Examiner: Opus, a fresh reviewer, 1 Oct 2026. Lessons: `temperature-changes-shc`
 | specific-latent-heat | S-1 | S-A4 – S-A7 | **SCIENCE PASS AFTER REQUIRED CHANGES** |
 | particle-motion-pressure | S-2 | S-A8 – S-A10 | **SCIENCE PASS AFTER REQUIRED CHANGES** |
 | power | S-3 | S-A11 | **SCIENCE PASS AFTER REQUIRED CHANGES** |
+
+---
+
+## Round 2: commit 2ddea6225 (feat/ks4-batches)
+
+**Method.** I read the source diffs `d80d3d4be → 2ddea6225` for all four lessons, and grepped the built pages (they are current) for each changed string.
+- The browser was not re-driven. Every change is copy, numbers or a logic constant, so reading them is enough.
+- On the PMP TH page, "kelvin" still appears once. It is the key-note filter regex in the logic, not text shown to pupils.
+
+### REQUIRED rows
+
+| row | status | check |
+|---|---|---|
+| **S-1** (SLH H, convert-example note) | **Closed.** | It now reads "Converting only L gives 45.2 ÷ 2 260 000 = 0.00002 kg (0.02 g): a thousand times too small." The arithmetic and the label are both right. |
+| **S-2** (PMP TH rung 2) | **Closed.** | The rung now starts at 0.0090 m³, 100 kPa, and ends at 2500 cm³ at constant temperature.<br>• Arithmetic: 2500 cm³ ÷ 10⁶ = 0.0025 m³, so p₂ = 0.90 ÷ 0.0025 = **360 kPa** ✓.<br>• Answer 360, tolerance 1, unit kPa: below 1000, so the parser limit is cleared.<br>• Conversion key ("divide by 1 000 000") ✓; the model, right and wrong lines all agree.<br>• The rung is pV, so it stays Triple only.<br>• Advisory: converting V₁ to 9000 cm³ instead is equally valid, and that pupil can still pick the keyed option. No change needed. |
+| **S-3** (power H rung 2) | **Closed.** | The rung is now 1.2 kW × 150 s = **180 kJ**.<br>• kW × s = kJ ✓.<br>• Conversion key "minutes to seconds: × 60" ✓.<br>• Answer 180, tolerance 1, unit kJ; below 1000.<br>• Model and right/wrong lines are correct. |
+
+### Changed pieces, science-checked
+
+**temperature-changes-shc**
+- RP step 5 now reads "Record the energy supplied (the joulemeter reading, or E = V × I × t)…" ✓. This closes S-A2.
+- New key fact: "ΔE = m c Δθ, with Δθ = final − initial. Specific heat capacity is the energy needed to raise the temperature of 1 kg by 1 °C." ✓. The definition uses the spec's wording. Δθ = final − initial is the same convention as the frozen key note; the `#s-flaw` reveal and F Q2 cover cooling.
+- CFIFA H Q2 now says "Assume all the energy heats the block." ✓ This closes S-A1.
+- Aluminium's 900 J/kg °C was removed from the explainer. It is still given in the ranking lead and the sim gate. ✓
+- The sim's "Your lagged run" heading, the moved graph labels and the unlagged-path gating change no science. The off-verdict no longer names 45.4 °C, but "Process your data" still states it. ✓
+
+**specific-latent-heat**
+- Foundation convert example now gives Lf = 334 000 J/kg, so only the mass converts. Note: "Left in grams, 250 × 334 000 = 83 500 000 J: a thousand times too big." ✓ This closes S-A4.
+- New logger step: "Which section of the graph does E = m L describe?" The key is B to C, where Y freezes at constant temperature ✓. The A–B and C–D replies say liquid cooling and solid cooling, so m c Δθ ✓.
+  - The freezing-time step (7 min) and the L calculation (210 000 J/kg) are unchanged. The cooling graph is still interpreted quantitatively, so the spec's "interpret heating and cooling graphs" is still met.
+- New key fact ✓. The spec definition of specific latent heat is verbatim in sense, and the rule for choosing an equation is correct.
+- Confrontation now reads "come together and are held by the forces between them, which releases energy" ✓. That is AQA-acceptable language.
+- Explainer 2 lost its cooling-graph sentence. The explainer's "Freezing and condensing give the same energy back" covers the release of energy. ✓
+- H rung 2 dropped "in kilograms". The unit buttons still require kg ✓.
+- Ledger caption and legend moved inside the figure. This closes S-A5. Layout only.
+
+**particle-motion-pressure**
+- New hook replies:
+  - "Molecules do not change size when they are heated." ✓
+  - "Even a can holding only air would burst. The danger is the push of the hot gas." ✓
+  - "The metal is not what changes most: the gas pushing on it is." ✓
+  - The reveal is unchanged in substance.
+- "Same average speed" ✓. This closes S-A9.
+- CFIFA H Q1 now says "would occupy" ✓. This closes S-A10.
+- Verdict and bar visibility gating changed. No text changed.
+- The round-1 route checks still hold:
+  - kelvin, absolute zero and p/T are not taught;
+  - pV appears on TF and TH only;
+  - the bicycle-pump layer appears on TH only;
+  - q2 is withheld.
+- S-A8 (frozen "Boyle's Law" key-note line) is unchanged. It is acceptable as frozen text.
+
+**power**
+- New card "On the sheet · Ep = m g h": gravitational potential energy (J) = mass (kg) × gravitational field strength (N/kg) × height (m). Ep = m g h is printed on both June 2026 sheets ✓. This closes S-A11.
+- New hook replies:
+  - "More watts means faster, not more." ✓
+  - "Running longer at a lower rate ends at the same total energy." ✓
+  - "The times only say how fast the energy went in, not how much." ✓
+  - The reveal is unchanged in substance.
+
+### Final verdicts, round 2
+
+| lesson | verdict |
+|---|---|
+| temperature-changes-shc | **SCIENCE PASS** |
+| specific-latent-heat | **SCIENCE PASS** (S-1 closed) |
+| particle-motion-pressure | **SCIENCE PASS** (S-2 closed) |
+| power | **SCIENCE PASS** (S-3 closed) |
+
+No new REQUIRED rows. Nothing for Mide.

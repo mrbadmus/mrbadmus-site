@@ -306,3 +306,77 @@ None.
 **Frozen items still served that should be withheld:** atom-economy q1 (S-3) only.
 
 **Items only Mide can rule on:** none. Where the spec texts overlap (8461/8464 4.1.1.5; 8462/8464 for the chemistry), they are word-for-word identical. "Algae" vs "cyanobacteria" and AQA's reactants form for atom economy are both settled by the spec's own text.
+
+---
+
+## Round 2 (commit 2ddea6225)
+
+I re-checked the source diff from d80d3d4be to 2ddea6225 for all six lessons, and the batch_3.py `withhold` list. I spot-checked the built pages (CF, CH, TF and TH as relevant) and `shared/ks4-source-batch-3.js`. No browser run: the logic was readable directly.
+
+**Required rows: all three applied correctly.**
+- **S-1 (mixtures).** The distillation reply now reads "Distilling off all the water would leave the sand behind, but it takes a long time and a lot of energy…". ✓
+- **S-2 (conservation-of-mass, CH and TH).** Rung 2 now uses 0.16 / 0.44 / 0.36 kg and has answer 640, tol 2. The right, wrong and model lines all match. It is live on CH and TH. ✓
+- **S-3 (atom-economy).** The frozen q1 is withheld as B3-W9 and is absent from the served source. `bankOn = ready && bankList.length > 0`, so the empty practice section is not rendered. ✓
+
+**New changes, science-checked.**
+- **conservation-of-mass, Foundation CFIFA Q2.**
+  - The sum: 0.84 kg MgCO₃ → 400 g MgO, CO₂ = 840 − 400 = 440 g.
+  - It is stoichiometric: MgCO₃ 84 → MgO 40 + CO₂ 44, × 10 g. ✓
+  - The close line "0.84 − 400 mixes kilograms and grams" is right. ✓
+- **conservation-of-mass, worked example 1.**
+  - The sum: 25.0 g CaCO₃ → 14.0 g CaO, CO₂ = 11.0 g.
+  - It is stoichiometric: 100 : 56 : 44 × 0.25. ✓
+- **atom-economy, worked example 2.**
+  - The equation 2CuO + C → 2Cu + CO₂ is balanced: Cu 2/2, O 2/2, C 1/1. ✓
+  - Mr: CuO = 63.5 + 16 = 79.5. ✓
+  - The sum: 2 × 63.5 = 127; 2 × 79.5 + 12 = 171; 127 ÷ 171 × 100 = 74.27 → 74.3 % (3 s.f.). ✓
+  - The note "the equation makes 2Cu and uses 2CuO: both numbers go in" is right. ✓
+- **atom-economy, rung 3 at 3 marks.** It has three links (addition, then one product, then all atoms in the desired product), so it is consistent with the examination's 2-mark scheme plus the equation. ✓
+- **mixtures, desk reorder.** Every round keeps its correct key and replies. ✓
+- **mixtures, new "Muddy pond water" round.**
+  - The key is filtration; mud is insoluble, so it is the residue and the clear water is the filtrate. ✓
+  - All four distractor replies are true. ✓
+  - The round asks only for "clear" water, not "pure" water, which is the right word: the filtrate is not pure. ✓
+- **mixtures, fractional distillation explainer.** Trimming it is fine. "Collected one after another as the thermometer reading rises" is kept. The "lowest boiling point reaches the top first" point is still taught in desk round 4 and rung 3. ✓
+- **mixtures, key note.** "Fractional distillation: liquids whose boiling points are close together." closes A-4. ✓
+- **microscopy.**
+  - New hook reply: "More magnification alone gives a bigger blur, not more detail." ✓
+  - The RP block was trimmed (Variables and lamp line removed). Nothing false is left. The 'no variables' point is not examined content. ✓
+  - The drawing title "Onion epidermis cells, seen at ×400" is right. ✓
+  - The ×3.3 reply closes A-3. ✓
+  - New convert-first example: chloroplast 4 µm, drawing 30 mm, so 30 000 ÷ 4 = ×7500. A 4 µm chloroplast is realistic. ✓
+  - Key-note line: "Magnification = how many times bigger the image is than the real object." ✓
+  - The unit ladder reads mm ×1000 → µm, µm ×1000 → nm. ✓
+- **early-atmosphere.**
+  - Hook heading now says "Venus and Mars may still have…" (closes A-9). ✓
+  - New rung 2(b): "Describe how the percentage of oxygen changed from 2.7 billion years ago to today". The keyed option "rose gradually to about 21%" matches the sketch graph, which is 0 at 2.7 bn and rises steadily to 21 at 0. All three distractors contradict the graph. ✓
+  - The ocean herring reply "Oceans dissolve gases from the air; they did not supply the nitrogen" is true. ✓
+  - The command-word card change (Give replaces Suggest) is not a science matter. ✓
+- **greenhouse-gases.**
+  - Hook replies: "reflecting is the most common wrong answer" and "ozone and ultraviolet are a separate problem" are both true. ✓
+  - New peer-review item: the key is "Other experts checked its methods and conclusions before it was published". The why line, "trustworthy… does not prove it", matches 5.9.2.2. Distractors (proved forever, government funding means no bias, no errors) are correctly wrong. ✓
+  - Report B now carries "plus carbon dioxide records", which supports the correlation question. ✓
+  - "Natural gas is mainly methane" in all three places closes A-10. ✓
+
+### ADVISORY (round 2)
+
+| # | where | note |
+|---|---|---|
+| A-12 | greenhouse-gases, explainer 3 (climate change) | The list of effects was cut to "Its effects reach the sea, the weather, food and wildlife." The spec asks pupils to "describe briefly four potential effects" (5.9.2.3). The specific effects are now only in key-note line 04 and the exam-trap options. That is still taught, so this is not required. Optional: restore one short concrete list, e.g. "rising sea levels, more severe storms, changes in rainfall, less food in some regions, and species moving or dying out". |
+
+A-1, A-2, A-5, A-6, A-7, A-8 and A-11 stand as written (all optional).
+
+### Final verdicts (round 2)
+
+| lesson | verdict |
+|---|---|
+| microscopy | SCIENCE PASS |
+| mixtures | SCIENCE PASS |
+| conservation-of-mass | SCIENCE PASS |
+| atom-economy | SCIENCE PASS |
+| early-atmosphere | SCIENCE PASS |
+| greenhouse-gases | SCIENCE PASS |
+
+**Frozen items still served that should be withheld:** none.
+
+**Items for Mide:** none.

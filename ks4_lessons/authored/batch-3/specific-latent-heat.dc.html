@@ -360,7 +360,7 @@ class Component extends DCLogic {
     /* logger */
     const tEnd = s.logDone ? 12 : s.logP * 12;
     const steps = [
-      { command: 'Determine', prompt: 'Which section of the graph does E = m L describe?', opts: ['A to B', 'B to C', 'C to D'], truth: 1,
+      { command: 'Determine', prompt: 'Which section of the graph does E = m L describe?', opts: ['A to B', 'B to C', 'C to D'], truth: 1,
         right: 'B to C: the flat section, where Y freezes at constant temperature.',
         replies: ['Sloping: Y is a liquid cooling, so that is m c Δθ.', '', 'Sloping: solid Y is cooling, so that is m c Δθ.'], word: 'It is B to C.' },
       { command: 'Determine', prompt: 'How long Y takes to freeze.', opts: ['3 minutes', '7 minutes', '10 minutes'], truth: 1,

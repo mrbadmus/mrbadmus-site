@@ -360,3 +360,58 @@ ADVISORY
 | types-of-em-waves | **SHIP** |
 | sound-waves-hearing | **SHIP** |
 | waves-detection-exploration | **SHIP** |
+
+---
+
+## Round 2 — re-review of commit 2ddea6225
+
+**What I checked.**
+
+- I diffed the seven lessons in commit 2ddea6225 against d80d3d4be.
+- I read each notes file's "Review fixes" table.
+- I confirmed the built pages are current: the new strings are present in `mrbadmus_site/`, and the deleted "Run it backwards…" sentence is gone from every route.
+
+**How the pages were driven** (server on port 8724, headless Chrome at 390 px):
+
+- **specific-latent-heat (CF, light, reduced motion):** the ledger played through all three stages, with a wrong pick at stage 2 to open the confrontation. The logger played through: start, a wrong section pick, a wrong duration pick, then L = 210000 J/kg checked.
+- **particle-motion-pressure (TH) and power (CH) (light, motion on, by tap):** a wrong hook option tapped; rung 2 answered with the new numbers.
+
+Machine checks on every run: no sideways scroll, no `undefined`, `NaN`, `{{` or `[object` text, and no console errors except the usual CORS-blocked `/api/health` call.
+
+### Row-by-row confirmation
+
+| row | status |
+|---|---|
+| Q-SHC1 | **Confirmed.** `offVerdictText` ends "Record the highest temperature." The number now appears only in the process line. A-SHC1–5 were also taken. |
+| Q-SLH1 | **Confirmed at 390 px.** The ledger title "energy given to the skin" sits inside the plate. The legend is stacked (condensing / cooling) with no overlap. |
+| Q-SLH2 | **Confirmed.** The note now reads "Converting only L gives 45.2 ÷ 2 260 000 = 0.00002 kg (0.02 g)…", which is correct arithmetic. |
+| Q-SLH3 | **Confirmed.** Lf is given in J/kg, so only the mass converts, and the note names the thousand-fold error. |
+| Q-SLH4 | **Confirmed.** The eyebrow and rail now read "Energy from a flat section", the duplicate explainer sentence is deleted, and step 1 asks which section E = m L describes, with corrective replies. Nothing now repeats internal-energy's cooling-curve beat. |
+| Q-SLH5 | **Confirmed.** Tick labels are larger and sparser, and readable at 390 px. The three readings the steps need (50 °C, 3 min, 10 min) can be read. |
+| A-SLH1 | Taken: "held by the forces between them", which now matches internal-energy. A-SLH2, A-SLH3 and A-SLH5 were also taken. |
+| Q-PMP1 | **Confirmed by tap.** A wrong pick now shows a correction, e.g. "Locked in. Molecules do not change size when they are heated." The reveal follows. |
+| Q-PMP2 | **Confirmed.** On TH, rung 2 graded **Correct** for ÷ 1 000 000, 360, kPa. Every numeric rung is now below 1000. |
+| Q-PW1 | **Confirmed by tap.** A wrong pick now shows a correction, e.g. "Running longer at a lower rate ends at the same total energy." |
+| Q-PW2 | **Confirmed.** On CH, rung 2 graded **Correct** for × 60, 180, kJ. |
+| EM / sound / detection advisories | **Text and markup only; nothing redundant added.** The changes are: signposts cut from two hook reveals; the EM bench reveal trimmed (A-EM1); per-tone `aria-label`s added (A-SW2); step-3 rays and stations faded at the bigger-core step (A-WD1). The sound key line and the "usually solid > liquid > gas" wording are science-reviewer edits. |
+
+**No new redundant text.** I checked every changed string against what is already on its screen:
+
+- The new Key fact cards (shc, slh) follow pilot anatomy.
+- The pmp "Your lagged run" heading labels a panel that now sits beside the unlagged one.
+
+### New advisory (round 2)
+
+- **A2-SLH1:** at 390 px, the logger step prompt "Which section of the graph does E = m L describe?" breaks between "m" and "L". Use non-breaking spaces in `E = m L`, as elsewhere on the page.
+
+### Final verdicts
+
+| lesson | verdict |
+|---|---|
+| temperature-changes-shc | **SHIP** |
+| specific-latent-heat | **SHIP** (A2-SLH1 is an advisory only) |
+| particle-motion-pressure | **SHIP** |
+| power | **SHIP** |
+| types-of-em-waves | **SHIP** |
+| sound-waves-hearing | **SHIP** |
+| waves-detection-exploration | **SHIP** |

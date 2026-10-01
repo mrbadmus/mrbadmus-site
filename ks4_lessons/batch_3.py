@@ -7,7 +7,7 @@ each with a DEPARTURES row (docs/ks4/packs/batch-3/DEPARTURES.md)."""
 B = "batch-3"
 ALL = ["CF", "CH", "TF", "TH"]
 TRIPLE = ["TF", "TH"]
-RS = "draft"
+RS = "examiner-reviewed"
 
 
 def W(needle, dep, routes=None):
