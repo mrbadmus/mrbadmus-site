@@ -137,3 +137,15 @@ About 255 words: the hook paragraph (38), the limiting-reactant explainer (79), 
 - **Logic:** run in Node with the real `ks4-lib.js` and `ks4-diagrams.js` and a source record from `build_source_record`, on CH and TH, with and without reduced motion. Mix A, Mix B and "Your mix" were all driven through their animations. No `undefined` or `NaN`.
 - **Scratch build:** a clone of the worktree with a temporary batch module; `build_ks4.py --batch` gave zero console errors at 1280 and 360.
 - **Headless Chrome:** checked at 390 (light) and 1280 (dark). There is no horizontal scroll, and the `#s-solution` route layer appears on TH and not on CH.
+
+## Review fixes (quality-b, science-chem-a)
+
+- **Q-1 (required).** Title in sentence case, matching the record: "Using moles — calculations and limiting reactants", in `<title>`, `<h1>`, the Ks4Chrome title and the Ks4KeyNote title.
+- **Q-2 (required).** `loadLine` is `''` on "Your mix", where the steppers already show both amounts.
+- **Common_mistake caps text: not applicable.** This lesson never prints `common_mistake`.
+- **science A-6.** r4 now says "n(AlCl₃) = 0.10 × 2 ÷ 3 = 0.0667 mol (keep the unrounded value)" and then "Mass = 0.0667 × 133.5 = 8.9 g".
+- **science A-7.** On CH the eyebrow reads "AQA Combined Science (8464) 5.3.2.3–5.3.2.4 · Quantitative". The keySpec carries no subject label, so it is unchanged.
+- **science A-8.** r1's command word is now "Give", with the prompt "Give the meaning of the term limiting reactant."
+- **quality-b A-1.** `hookReveal` now stops at the method: "Each Mg needs two HCl. Turn both masses into moles, then compare them with that 1 : 2 ratio, not with each other." The arithmetic is left to the bench and CFIFA example 3.
+- **quality-b A-2 (shared line-up with concentration): not done.** It is not a cheap change. Giving one lesson a different mid-size activity is a redesign, so I left it for the commander to decide.
+- **Scratch rebuild (fixed engine), with zero console errors.** `#s-solution` shows on TH only, badged "Triple". No horizontal scroll at 390.

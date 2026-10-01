@@ -99,3 +99,23 @@ About 330 words of body prose in the template, from the hook to the equation (in
 - A node harness confirmed that every `{{ }}` resolves on TF and TH, tags are balanced, every `dc-import` prop is declared by its block or used by a pilot lesson, and no `undefined`/`NaN` text appears. It drove the whole bench to 6.2 g.
 - A scratch-copy `build_ks4.py --batch` run built the lesson with zero console errors.
 - Headless-Chrome drive at 390 px: no horizontal scroll; Higher badges appear only on TH (2 on TH, 0 on TF); the bench completes. Light and dark screenshots were reviewed.
+
+## Review fixes (science-chem-b.md, quality-b.md)
+
+- **S-1 (required):** the r4 reason marking points now accept any two of the three spec reasons: "First reason, any one of: …" and "Second reason: a different one of those three."
+- **Q-1:** the bench's closing box now reads "Theoretical yield 8.0 g · actual yield 6.2 g. Nothing was destroyed." (the 6.2 g repetition is gone).
+- **Q-2:** "Chemistry-only spec point." is dropped from the key note. The key note therefore carries three examiner/reviewer edits to the frozen text (C14, C15, Q-2).
+- **Q-3:** r1 is now an authored "Give" MCQ at length parity, using the reviewer's wording. Each distractor names a misconception: atoms destroyed, catalyst, rounding. The frozen q2 now lives in the bank only.
+- **Q-4:** the base write-it-out questions now differ by tier. TF keeps 40 g / 34 g and 1.20 kg / 960 g. TH gets rearrangement questions instead:
+  - 72% of 45 g → 32.4 g, nothing to convert;
+  - 85% of 2.40 kg → 2040 g, convert kg → g.
+
+  I changed the reviewer's suggested numbers because they reproduced 34 g / 40 g and 1900 g / 2500 g, which already appear in the TF questions and the worked example.
+- **Q-5:** the hard-coded pills are replaced by the route chip, in the same markup as using-moles-calculations. The eyebrow now reads "AQA Chemistry (8462) 4.3.3.1 · Quantitative". The fallback `R` carries `routeWords` and `routeSwitchOptions`.
+- **A-1 (science):** the sort's done-note now says "never the maximum mass of product".
+- **A-2 (science):** the Higher worked answer now reads "83.3% (83%)".
+- **Quality A-2:** stage names lose their numbers ("Dry and weigh", not "5 · Dry and weigh"), so they no longer repeat "n of 5 steps run".
+- **Quality A-1 (binary bench commit) and A-3 (moving `#s-which` after the worked example):** not done. Both are structural changes to the flagship's flow, not cheap fixes. Left for the next pass.
+- **Validated in a scratch copy:**
+  - `build_ks4.py --batch batch-2`: 52 pages, zero console errors.
+  - Headless-Chrome check: the route chip reads "Triple science · Foundation tier" on TF and "… Higher tier" on TH; CFIFA Q1 differs by tier; no undefined/NaN text.

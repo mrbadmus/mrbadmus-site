@@ -182,3 +182,23 @@ set-ups"), the constructor with a wrong pick then completion, the eye predict,
 the CFIFA block (Foundation and Higher numbers differ) and the ladder.
 Screenshots were inspected at 390 px. Dark mode was not checked visually
 (tokens only, cream plates, as in the pilot).
+
+## Review fixes (1 Oct 2026)
+
+- **S-6** (required): the Higher "Convert first" note now reads "…gives 0.65: a diminished image, but the wing looks bigger through the glass, not smaller." It no longer claims that a magnifying glass never makes a diminished image.
+- **Q-L1 / Q-X1** (required): the static pills are replaced by the route chip, the same as using-moles-calculations.
+- **Q-L2** (required): "Complete the ray diagram" is now a production task on the diagram itself. Real `<button>` tap targets (38 px, with `aria-label` "Point: …") are absolutely positioned over `buildFig` at plate coordinates:
+  - steps 1 and 2: tap a point the ray passes through after the lens (F, 2F, straight on, near-side F / along the axis);
+  - step 3: tap the image top (the crossing, F, 2F, lens);
+  - step 4 (object inside F): tap the traced-back meeting point (or F, or the diagram edge), plus a "No image: the rays never meet" button.
+
+  A wrong tap draws the pupil's ray to that point as a grey dashed line with a red ×, and shows the existing misconception feedback. A right tap draws the correct ray and moves on. The incoming half of each ray is drawn before the pupil taps. The text MCQ is removed.
+- **Q-L3** (required): the WHY lines no longer repeat the real/virtual, upright/inverted and magnified/diminished words that the verdicts already state (cx30, cx20, cx15, cx6, cv30, cv6).
+- **Q-L4** (required): the slider label reads "Object distance · F is 10 cm". `aria-valuetext` keeps the full "Object N cm from the lens".
+- **A-L1** (applied): verdicts the pupil was never asked (after a "No image" prediction) use the neutral inset style. A wrong "No image" now reads "Image: real. There is an image." instead of "not no image".
+- **A-8** (applied): explainer 1 reads "one parallel to the axis, which a convex lens bends through F".
+- **A-9** (applied): the eye distractor reply reads "Even with the ciliary muscles relaxed and the lens pulled thin, the eye still focuses distant light in front of the retina."
+- **A-10**: kept, as advised.
+- **A-11**: the 0.625 display and the label overlap at 6 cm are cosmetic and not changed.
+- **A-L2**: no change; the biology section stays with its eyebrow citation, for the examiner to confirm.
+- No new `block_map` entry is needed: `s-build` keeps its id and is still mapped to worked-example.

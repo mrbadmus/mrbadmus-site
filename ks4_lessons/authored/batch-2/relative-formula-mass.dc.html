@@ -51,9 +51,17 @@
   <main class="ks3-main">
     <div class="ks3-lesson">
       <header class="ks3-lesson-head">
-        <p class="ks3-eyebrow">AQA Chemistry {{ specRef }} · Quantitative</p>
+        <p class="ks3-eyebrow">AQA Chemistry ({{ specCode }}) {{ specRef }} · Quantitative</p>
         <h1>Relative formula mass</h1>
         <p class="ks3-bigq">A formula tells you which atoms are in a substance and how many. Can you turn it into a mass, and use that mass to say how much of a compound is each element?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+        </div>
         <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
       </header>
 
@@ -76,7 +84,7 @@
       <section id="s-unpack" class="ks3-block" style="scroll-margin-top: 92px;">
         <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
           <div style="flex: 1 1 22rem; min-width: 0;">
-            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The formula unpacker · {{ upStep }}</p>
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The formula unpacker</p>
             <h2 style="margin: 6px 0 0;">Count the atoms. Then watch them add up to M<sub>r</sub>.</h2>
           </div>
           <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ upProgress }}</p>
@@ -102,8 +110,7 @@
           <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
             <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · brackets</p></div>
             <p class="ks3-mis-quote">&ldquo;The 2 after the bracket sits next to the H, so Mg(OH)₂ has one O and two H.&rdquo;</p>
-            <p style="margin: 0 0 8px;">The bracket says the 2 belongs to the whole OH group, so the group is there twice. Counting the 2 on the H alone gives M<sub>r</sub> = 24 + 16 + 2 = 42 instead of 58.</p>
-            <p style="margin: 0;">{{ cmText }}</p>
+            <p style="margin: 0;">The bracket says the 2 belongs to the whole OH group, so the group is there twice. Counting the 2 on the H alone gives M<sub>r</sub> = 24 + 16 + 2 = 42 instead of 58.</p>
           </div>
         </sc-if>
         <sc-if value="{{ upCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onUpNext }}" style="margin-top: 14px;">Next formula</button></sc-if>
@@ -116,7 +123,7 @@
       <section id="s-pans" class="ks3-block" style="scroll-margin-top: 92px;">
         <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
           <div style="flex: 1 1 22rem; min-width: 0;">
-            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Load the pans · {{ panStep }}</p>
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Load the pans</p>
             <h2 style="margin: 6px 0 0;">{{ panEq }}</h2>
           </div>
           <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ panProgress }}</p>
@@ -203,7 +210,7 @@
 
       <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
         <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
-        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Percentage by mass of an element = A<sub>r</sub> × number of its atoms ÷ M<sub>r</sub> × 100. In magnesium oxide, MgO, that is 24 ÷ 40 × 100 = 60 % magnesium.</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">A number after a bracket multiplies everything inside it: Mg(OH)₂ is one Mg, two O and two H, M<sub>r</sub> = 58. M<sub>r</sub> has no units.</p>
       </div>
 
       <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
@@ -251,7 +258,7 @@ const FORMS = [
 const PANS = [
   { eq: '2Mg + O₂ → 2MgO', L: [['Mg', 24], ['Mg', 24], ['O₂', 32]], R: [['MgO', 40], ['MgO', 40]], tl: 80, tr: 80,
     work: 'Reactants: 2 × 24 + 32 = 80. Products: 2 × 40 = 80.',
-    hint: { l: { 56: '2Mg is two magnesium atoms: 2 × 24 = 48, then add 32 for O₂.', 64: 'O₂ is one molecule here: 2 × 24 + 32 = 80.', 40: 'O₂ has two O atoms: Mᵣ 32, not 16.' }, r: { 40: 'The 2 in front of MgO counts two formula units: 2 × 40 = 80. The Mᵣ of one MgO is still 40.' } } },
+    hint: { l: { 56: '2Mg is two magnesium atoms: 2 × 24 = 48, then add 32 for O₂.', 64: 'O₂ has two O atoms: Mᵣ 32, not 16.', 40: '2Mg is two magnesium atoms (48), and O₂ is 32: 48 + 32 = 80.' }, r: { 40: 'The 2 in front of MgO counts two formula units: 2 × 40 = 80. The Mᵣ of one MgO is still 40.' } } },
   { eq: 'CH₄ + 2O₂ → CO₂ + 2H₂O', L: [['CH₄', 16], ['O₂', 32], ['O₂', 32]], R: [['CO₂', 44], ['H₂O', 18], ['H₂O', 18]], tl: 80, tr: 80,
     work: 'Reactants: 16 + 2 × 32 = 80. Products: 44 + 2 × 18 = 80.',
     hint: { l: { 48: '2O₂ is two oxygen molecules: 2 × 32 = 64.', 32: 'O₂ is 32 each, and there are two of them.' }, r: { 62: '2H₂O is two water molecules: 2 × 18 = 36.', 60: 'H₂O is 2 × 1 + 16 = 18; there are two of them.' } } }
@@ -338,7 +345,7 @@ class Component extends DCLogic {
   }
   renderVals() {
     const s = this.state; const K = window.KS4; const D = window.KS4D;
-    const R = K ? K.route(this) : { route: 'Triple Higher', isTriple: true, isHigher: true, notHigher: false };
+    const R = K ? K.route(this) : { route: 'Triple Higher', isTriple: true, isHigher: true, notHigher: false, routeWords: '', routeSwitchOptions: [] };
     const slug = 'relative-formula-mass';
     const ready = !!(s.libReady && K && D);
     const PN = this.props.mrbPrevNext || {};
@@ -410,7 +417,7 @@ class Component extends DCLogic {
     const keyLines = ready ? K.keyLines(slug).map((l) => (R.notHigher && l === 'Mr is used to calculate mass ratios in reactions.') ? 'The Mr totals on each side of a balanced equation are equal.' : l) : [];
     return Object.assign({}, R, {
       video: K && s.hook !== null ? K.video(slug) : null,
-      railV, theme, ready, specRef, keySpec: 'AQA ' + specRef, draftVisible: this.props.showDraft !== false,
+      railV, theme, ready, specRef, specCode: R.isTriple ? '8462' : '8464', keySpec: 'AQA ' + specRef, draftVisible: this.props.showDraft !== false,
       endPrev: PN.prev || null, endNext: PN.next || null,
       endConnects: ready && K.hrefFor ? [
         { href: K.hrefFor('atoms-elements-compounds', R), label: 'Atoms, elements and compounds' },
@@ -424,7 +431,6 @@ class Component extends DCLogic {
       ],
       hookReveal: 'Add the relative atomic masses. H₂O: 1 + 1 + 16 = 18. O₂: 16 + 16 = 32. The oxygen molecule has nearly twice the mass, with fewer atoms.',
       onHook: (i) => this.setState({ hook: i }),
-      upStep: (ui + 1) + ' of ' + FORMS.length,
       upProgress: Object.keys(s.up).length + ' of ' + FORMS.length + ' unpacked',
       upFig: uFig ? K.fig(uFig.svg, uFig.alt) : null,
       upAsk: !upShown,
@@ -436,10 +442,9 @@ class Component extends DCLogic {
       upVerdictStyle: 'margin:0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (upShown && !upRight ? 'var(--ks3-alert-border);background:var(--ks3-alert-tint);' : 'var(--ks3-accent);background:var(--ks3-accent-tint);'),
       upTally: upShown ? UT.lines : [],
       upConfront: upShown && ui === 2,
-      cmText: ready ? K.commonMistake(slug) : '',
       upCanNext: upShown && ui < FORMS.length - 1,
       onUpNext: () => this.setState((st) => ({ ui: Math.min(FORMS.length - 1, st.ui + 1) })),
-      panStep: 'equation ' + (pi + 1) + ' of ' + PANS.length, panEq: P.eq,
+      panEq: P.eq,
       panProgress: Object.keys(s.pd).length + ' of ' + PANS.length + ' loaded',
       panFig: pFig ? K.fig(pFig.svg, pFig.alt) : null,
       panAsk: !loaded,

@@ -52,10 +52,10 @@
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
         <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">A leaf falls in autumn. By next summer it has gone.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">Nobody swept it up. Over the winter it went soft and dark, crumbled, and vanished into the woodland floor. Most of the leaf was made of carbon compounds.</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">A compost heap steams on a frosty morning.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">The air is below 0 °C, but a thermometer pushed into the middle of the heap of garden waste reads over 50 °C. Nothing is on fire, and there is no heater.</p>
         <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Where did most of the leaf's carbon go?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Where does the heat come from?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
         </div>
       </section>
 
@@ -96,6 +96,10 @@
         <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · eating is not the answer</p></div>
         <p class="ks3-mis-quote">&ldquo;Decomposers eat dead leaves. That is how the carbon gets back into the air.&rdquo;</p>
         <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Explain" prompt="What is missing from this answer?" options="{{ thinkOptions }}" reveal="{{ thinkReveal }}" right-word="That earns the mark." wrong-word="That keeps the wrong idea." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-return" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Where does it end up?" title="Air, soil, or locked away?" prompt="Each one comes from something that died." bins="{{ rBins }}" items="{{ rItems }}" done-note="Decomposers send carbon back to the air by respiring and return mineral ions to the soil. Only material they never reach stays locked away." on-done="{{ onReturn }}" hint-size="100%,460px"></dc-import>
       </section>
 
       <section class="ks3-explainer" data-route="triple">
@@ -162,8 +166,7 @@
                 <p role="status" style="margin: 0; font-size: 17px; line-height: 1.5;">{{ simNote }}</p>
               </div>
             </div>
-            <p style="margin: 16px 0 6px; font-size: 17px; line-height: 1.5;">Your times for the pink to go, in seconds.</p>
-            <div role="table" aria-label="Times for the pink colour to disappear, in seconds">
+            <div role="table" style="margin-top: 16px;" aria-label="Times for the pink colour to disappear, in seconds">
               <div role="row" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--ks3-ink-muted); padding: 0 8px 6px;">
                 <span role="columnheader">Temperature</span><span role="columnheader">Time / s</span><span role="columnheader">Rate / s⁻¹</span>
               </div>
@@ -261,15 +264,17 @@
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
 /* The rail differs by route: Combined pupils have no Triple sections to tick. */
 const RAIL_BASE = [
-  { id: 's-hook', label: 'A fallen leaf', short: 'HOOK' },
+  { id: 's-hook', label: 'A warm compost heap', short: 'HOOK' },
   { id: 's-cycle', label: 'Follow the leaf', short: 'CYCLE' },
   { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-return', label: 'Air, soil or locked away', short: 'SORT' },
   { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
 ];
 const RAIL_TRIPLE = [
-  { id: 's-hook', label: 'A fallen leaf', short: 'HOOK' },
+  { id: 's-hook', label: 'A warm compost heap', short: 'HOOK' },
   { id: 's-cycle', label: 'Follow the leaf', short: 'CYCLE' },
   { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-return', label: 'Air, soil or locked away', short: 'SORT' },
   { id: 's-compost', label: 'A compost heap', short: 'COMPOST' },
   { id: 's-sim', label: 'Run the practical', short: 'RUN' },
   { id: 's-pink', label: 'Why the pink goes', short: 'PINK' },
@@ -291,7 +296,7 @@ const PINK = [224, 103, 158], MILK = [247, 243, 234];
 class Component extends DCLogic {
   state = { active: 0, libReady: false, route: null, hook: null,
     cyc: 0, cycPick: [null, null, null], cycAnim: null, ct: 0,
-    think: null, compost: false,
+    think: null, ret: false, compost: false,
     gate: null, temp: 40, run: {}, own: {}, simT: 0, running: false, note: '', rate: '', rateChecked: false, imp: null,
     pink: null, calc: 0, ladder: false };
   componentDidMount() {
@@ -416,14 +421,16 @@ class Component extends DCLogic {
     [200, 400, 600].forEach((v) => { b += D.line(L - 8, Y(v), L, Y(v), 2) + D.T(L - 12, Y(v) + 7, String(v), 20, { weight: 'normal', fill: D.C.stroke, anchor: 'end' }) + D.line(L, Y(v), Rt, Y(v), 1, '#C9C3B2'); });
     b += D.T((L + Rt) / 2, H - 12, 'temperature / °C', 22) + '<text x="24" y="' + ((Tp + B) / 2) + '" transform="rotate(-90 24 ' + ((Tp + B) / 2) + ')" font-family="' + D.F + '" font-size="22" font-weight="bold" fill="' + D.C.label + '" text-anchor="middle">time / s</text>';
     const pts = TEMPS.map((t) => [X(t), Y(typeof s.own[t] === 'number' ? s.own[t] : 600)]);
-    let d = 'M' + pts[0][0].toFixed(1) + ' ' + pts[0][1].toFixed(1);
-    for (let i = 0; i < pts.length - 1; i++) {
-      const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+    // the curve joins measured times only; a "> 600" point is not joined
+    const fit = pts.filter((q, i) => typeof s.own[TEMPS[i]] === 'number');
+    let d = 'M' + fit[0][0].toFixed(1) + ' ' + fit[0][1].toFixed(1);
+    for (let i = 0; i < fit.length - 1; i++) {
+      const p0 = fit[Math.max(0, i - 1)], p1 = fit[i], p2 = fit[i + 1], p3 = fit[Math.min(fit.length - 1, i + 2)];
       d += ' C' + (p1[0] + (p2[0] - p0[0]) / 6).toFixed(1) + ' ' + Math.max(Tp, p1[1] + (p2[1] - p0[1]) / 6).toFixed(1) + ' ' + (p2[0] - (p3[0] - p1[0]) / 6).toFixed(1) + ' ' + Math.max(Tp, p2[1] - (p3[1] - p1[1]) / 6).toFixed(1) + ' ' + p2[0].toFixed(1) + ' ' + p2[1].toFixed(1);
     }
     b += '<path d="' + d + '" fill="none" stroke="' + D.C.arrow + '" stroke-width="3"/>';
-    TEMPS.forEach((t, i) => { const x = pts[i][0], y = pts[i][1]; b += typeof s.own[t] === 'number' ? D.line(x - 7, y - 7, x + 7, y + 7, 2.6) + D.line(x - 7, y + 7, x + 7, y - 7, 2.6) : D.circ(x, y, 7, D.C.cream, D.C.stroke, 2.4) + D.T(x - 10, y + 30, 'still pink', 19, { anchor: 'end', weight: 'normal' }); });
-    return D.svg(W, H, b, 'Graph of the time for the pink to go against temperature: longest at 20 degrees, shortest at 40, longer again at 50, and no end point at 60');
+    TEMPS.forEach((t, i) => { const x = pts[i][0], y = pts[i][1]; b += typeof s.own[t] === 'number' ? D.line(x - 7, y - 7, x + 7, y + 7, 2.6) + D.line(x - 7, y + 7, x + 7, y - 7, 2.6) : D.circ(x, y, 7, D.C.cream, D.C.stroke, 2.4) + D.T(x - 14, y + 6, '> 600 s', 19, { anchor: 'end', weight: 'normal' }); });
+    return D.svg(W, H, b, 'Graph of the time for the pink to go against temperature: longest at 20 degrees, shortest at 40, longer again at 50, and no end point within 600 seconds at 60, shown at the top of the axis');
   }
   onStart() {
     const st = this.state; if (st.running || st.run[st.temp]) return;
@@ -450,10 +457,10 @@ class Component extends DCLogic {
     const RAIL = tri ? RAIL_TRIPLE : RAIL_BASE;
     // ── the leaf
     const cycQs = [
-      { title: 'The leaf is digested', prompt: 'Bacteria and fungi digest the leaf. What do they use the digested food for?', options: [
-        { text: 'Photosynthesis: it makes them more food to grow', correct: false, reply: 'Photosynthesis takes carbon dioxide in, and needs light and chlorophyll. Decomposers respire.' },
-        { text: 'Respiration: it releases the energy they need to live', correct: true, reply: 'And respiration gives out carbon dioxide, which rises into the air.' },
-        { text: 'Nothing: they store it all in the soil as carbon', correct: false, reply: 'Stored carbon would pile up year after year. Decomposers use their food, as every organism does.' }] },
+      { title: 'The leaf is digested', prompt: 'Bacteria and fungi digest the leaf and respire. Where does most of its carbon go?', options: [
+        { text: 'Into the soil, which gets heavier each year', correct: false, reply: 'Soil in a wood does not gain a leaf’s mass every year. The carbon leaves as a gas.' },
+        { text: 'Into the air, as carbon dioxide', correct: true, reply: 'Respiration gives the carbon out as carbon dioxide.' },
+        { text: 'Nowhere: it is destroyed as the leaf rots', correct: false, reply: 'Atoms are not destroyed in a reaction. Watch where the carbon goes.' }] },
       { title: 'What is left', prompt: 'The leaf also held mineral ions, such as nitrate. Where do they go?', options: [
         { text: 'Into the air, along with the carbon dioxide', correct: false, reply: 'Mineral ions are not gases. They are released into the soil.' },
         { text: 'Nowhere: they are destroyed as the leaf rots', correct: false, reply: 'Ions are not destroyed. They are released into the soil.' },
@@ -475,8 +482,8 @@ class Component extends DCLogic {
     const pNow = this.pinkAt(s.temp, s.simT);
     const runNow = !!s.run[s.temp];
     const recorded = s.own[s.temp] !== undefined;
-    const done = tri ? [s.hook !== null, cycDone, s.think !== null, s.compost, allOwn && rateOk, s.pink !== null, s.calc >= 2, s.ladder]
-      : [s.hook !== null, cycDone, s.think !== null, s.ladder];
+    const done = tri ? [s.hook !== null, cycDone, s.think !== null, s.ret, s.compost, allOwn && rateOk, s.pink !== null, s.calc >= 2, s.ladder]
+      : [s.hook !== null, cycDone, s.think !== null, s.ret, s.ladder];
     const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
     const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
     const shapeRight = s.gate === 0;
@@ -553,7 +560,7 @@ class Component extends DCLogic {
     const kl = ready ? K.keyLines(slug).slice(0, 2) : [];
     return Object.assign({ routeWords: R.route, routeSwitchOptions: [] }, R, {
       eyebrow: tri ? 'AQA Biology (8461) 4.7.2.2–4.7.2.3 · Required practical' : 'AQA Biology (8464) 4.7.2.2',
-      bigQ: 'A fallen leaf is gone within a year. Where do its carbon and its minerals go?' + (tri ? ' And what decides how fast it rots?' : ''),
+      bigQ: 'Dead things rot away. Where do their carbon and their minerals go?' + (tri ? ' And what decides how fast they rot?' : ''),
       keySpec: tri ? 'AQA 4.7.2.2–4.7.2.3 (8461) · RP10' : 'AQA 4.7.2.2 (8464)',
       video: K && s.hook !== null && s.hook !== undefined ? K.video(slug) : null,
       railV, theme, ready, draftVisible: this.props.showDraft !== false,
@@ -561,12 +568,12 @@ class Component extends DCLogic {
       endNext: (this.props.mrbPrevNext || {}).next || null,
       endConnects: ready && K.hrefFor ? [{ href: K.hrefFor('carbon-cycle', R), label: 'The carbon cycle' }].filter((c) => c.href) : [],
       hookOptions: [
-        { text: 'Into the air, as carbon dioxide', reply: 'Hold that. The next section follows it.' },
-        { text: 'Into the soil, which gets heavier', reply: 'Soil in a wood does not gain a leaf’s mass every year. Something carries the carbon away.' },
-        { text: 'Nowhere: it is destroyed as it rots', reply: 'Atoms are not destroyed in a reaction. The carbon went somewhere.' },
-        { text: 'Into worms that ate it, for good', reply: 'Some, for a while. But worms respire too, and they die and decay in turn.' }
+        { text: 'Sunlight absorbed by the heap during the day', reply: 'Winter sun is weak, and the heap is hottest in the middle, where no light reaches.' },
+        { text: 'Living things in the heap, releasing energy as they feed', reply: '' },
+        { text: 'The waste slowly burning without any flames', reply: 'Burning makes ash and smoke; the heap makes neither.' },
+        { text: 'Warmth rising from the ground under the heap', reply: 'Frozen ground is colder than the heap, so heat flows out of the heap, not in.' }
       ],
-      hookReveal: 'Microorganisms in the soil, mainly bacteria and fungi, broke the leaf down. As they respire, they release its carbon into the air as carbon dioxide.',
+      hookReveal: 'Bacteria and fungi in the heap are breaking the waste down. As they feed, they respire, and respiration releases energy: some of it warms the heap.',
       onHook: (i) => this.setState({ hook: i }),
       // leaf cycle
       cycTitle: cycDone ? 'One leaf, start to finish.' : cq.title,
@@ -586,13 +593,24 @@ class Component extends DCLogic {
       cycNextLabel: cs < 2 ? 'Next step' : 'Done',
       onCycNext: () => { if (!this.state.cycAnim) this.setState((x) => ({ cyc: x.cyc + 1 })); },
       thinkOptions: [
-        { text: 'Combustion: the dead leaves slowly burn, releasing carbon dioxide.', correct: false, reply: 'Nothing burns on a woodland floor. Decay is done by living microorganisms.' },
+        { text: 'Combustion: the dead leaves slowly burn, releasing carbon dioxide.', correct: false, reply: 'The leaves are not burning. Decay is done by living microorganisms.' },
         { text: 'Respiration: the decomposers respire, releasing carbon dioxide.', correct: true, reply: 'Eating only moves the carbon into the decomposer. Respiration releases it.' },
         { text: 'Photosynthesis: the decomposers photosynthesise, releasing carbon dioxide.', correct: false, reply: 'Photosynthesis takes carbon dioxide in, and decomposers do not photosynthesise.' },
         { text: 'Evaporation: the carbon evaporates as the dead leaf dries out.', correct: false, reply: 'Carbon does not evaporate. It leaves as carbon dioxide, made in respiration.' }
       ],
       thinkReveal: 'Mark schemes credit the decomposers’ respiration, not their eating. Microorganisms break down dead material and respire, releasing carbon dioxide into the atmosphere; the same breakdown returns mineral ions to the soil.',
       onThink: (i) => this.setState({ think: i }),
+      // base sort: where each material ends up (4.7.2.2)
+      rBins: [{ id: 'air', label: 'Back to the air' }, { id: 'soil', label: 'Back to the soil' }, { id: 'lock', label: 'Locked away' }],
+      rItems: [
+        { text: 'Carbon in the sugars of a dead leaf', bin: 'air', why: 'Decomposers respire it out as carbon dioxide.' },
+        { text: 'Nitrate in an animal’s droppings', bin: 'soil', why: 'Mineral ions are released into the soil, where roots absorb them.' },
+        { text: 'Carbon in a fern buried in mud before it could rot', bin: 'lock', why: 'Decomposers never reached it. Buried for millions of years, it became coal.' },
+        { text: 'Magnesium from a fallen leaf', bin: 'soil', why: 'It is a mineral ion, returned to the soil, not released as a gas.' },
+        { text: 'Carbon in the body of a fungus feeding on a log', bin: 'air', why: 'The fungus respires too, and when it dies other decomposers break it down.' },
+        { text: 'Nitrogen compounds in the body of a dead mouse', bin: 'soil', why: 'Broken down, they are returned to the soil as mineral ions such as nitrate.' }
+      ],
+      onReturn: () => this.setState({ ret: true }),
       // Triple: compost
       cBins: [{ id: 'up', label: 'Speeds up decay' }, { id: 'down', label: 'Slows decay' }],
       cItems: [
@@ -625,10 +643,10 @@ class Component extends DCLogic {
         rate: rateOk ? (typeof s.own[t] === 'number' ? (1 / s.own[t]).toFixed(4) : 'none') : '—',
         style: 'display:grid;grid-template-columns:repeat(3,1fr);gap:6px;align-items:center;padding:8px;border-radius:10px;font-family:var(--ks3-font-mono);font-size:16px;margin-top:4px;background:' + (t === s.temp ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' })),
       procOn: allOwn,
-      rateLabel: 'Calculate the rate at 40 °C from your time: rate = 1 ÷ ' + (typeof s.own[40] === 'number' ? s.own[40] : '…') + ' s.',
+      rateLabel: 'Calculate the rate at 40 °C from your time.',
       rateVal: s.rate, onRate: (e) => this.setState({ rate: e.target.value, rateChecked: false }), onRateCheck: () => this.setState({ rateChecked: true }), rateChecked: s.rateChecked,
       rateWord: rateOk ? 'Correct.' : 'Not this time.',
-      rateText: rateOk ? '1 ÷ ' + s.own[40] + ' = ' + r40.toFixed(4) + ' s⁻¹. Every rate is now in the table, and your graph is drawn below.' : 'Divide 1 by your time in seconds. The answer is small: about 0.007.',
+      rateText: rateOk ? '1 ÷ ' + s.own[40] + ' = ' + r40.toFixed(4) + ' s⁻¹. Every rate is now in the table, and your graph is drawn below.' : 'Divide 1 by your time in seconds; the unit is s⁻¹.',
       graphOn: allOwn && rateOk,
       plotFig: ready && allOwn && rateOk ? K.fig(this.plot(), '') : null,
       shapeWord: s.gate === null ? '' : shapeRight ? 'Graph A, as you called it.' : 'It is graph A, not ' + 'ABCD'[s.gate] + '.',
@@ -642,12 +660,12 @@ class Component extends DCLogic {
       ],
       onImp: (i) => this.setState({ imp: i }),
       pinkOptions: [
-        { text: 'Bacteria in the milk grow and make acid while it is warm', correct: false, reply: 'In ten minutes, that would barely start. The acid comes from the enzyme you added.' },
+        { text: 'Bacteria in the milk grow and make acid while it is warm', correct: false, reply: 'In ten minutes, that would barely start. The acid comes from the fat in the milk, broken down by the lipase you added.' },
         { text: 'Lipase breaks down fat in the milk into fatty acids, lowering the pH', correct: true, reply: 'The indicator is pink in alkali and loses its colour as the pH falls.' },
         { text: 'The sodium carbonate is used up by being warmed in the water bath', correct: false, reply: 'Warming does not use up sodium carbonate. Something in the tube made acid.' },
         { text: 'The lipase breaks down the pink indicator molecules themselves', correct: false, reply: 'Lipase is specific: its substrate is lipid (fat), not the indicator.' }
       ],
-      pinkReveal: 'Lipase breaks lipids (fats) down into fatty acids and glycerol. As fatty acids form, the pH falls, and phenolphthalein turns from pink to colourless. The faster the lipase works, the sooner the pink goes, which is why the time measures the rate of decay.',
+      pinkReveal: 'Lipase breaks lipids (fats) down into fatty acids and glycerol. As fatty acids form, the pH falls, and phenolphthalein turns from pink to colourless. The faster the lipase works, the sooner the pink goes, so 1 ÷ time measures the rate of decay.',
       onPink: (i) => this.setState({ pink: i }),
       cfExamples, cfQuestions,
       onCalc: (n) => this.setState({ calc: n }),

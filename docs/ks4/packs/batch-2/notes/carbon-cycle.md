@@ -163,3 +163,17 @@ including wrong picks and both confront panels, the plant trap, a wrong label
 corrected to "All nine right", ladder rendered). Screenshots were inspected at
 390 px. Dark mode was not checked visually; the page uses only `--ks3-*`
 tokens, and the figure plates are cream in both themes, as in the pilot.
+
+## Review fixes (1 Oct 2026)
+
+- **S-4** (required): the sort `done-note` now reads "Of these processes, only photosynthesis takes carbon dioxide out of the air…". It is scoped to the sorted processes, because oceans also take CO₂ in.
+- **Q-C1 / Q-X1** (required): the static route pills are replaced by the route chip (`<details class="ks3-route-switch">`, `{{ routeWords }}` / `{{ routeSwitchOptions }}`), the same as using-moles-calculations. The fallback `R` carries `routeWords` and `routeSwitchOptions`.
+- **Q-C2** (required): `tReplyText` now shows only on a wrong pick. A right pick shows "Yes." plus the reveal once.
+- **Q-C3** (required): rung 2 Y options are length-matched: "Photosynthesis by algae", "Respiration by microorganisms", "Combustion of the remains", "Fossilisation of the remains".
+- **Q-C4** (required): the key note now uses the five authored lines from the review, replacing `K.keyLines(slug)` and my added line. The source key note is not frozen, per the reviewer. Its "decomposition" (CO₂ returned with no respiration), ocean and volcano lines are no longer displayed. The source text stays in the data, unchanged.
+- **A-12** (advisory, applied): "For thousands of years before people burned fossil fuels on a large scale, carbon dioxide was taken out of the air about as fast as it was put back."
+- **A-13** (advisory, applied): "faster than natural processes can remove it".
+- **A-C2** (advisory, applied): the explainer sentence about oceans and rocks is removed; the `legal` line keeps it.
+- **A-C1** (advisory, not applied): the plate is legible only at the pilot's scale on a phone. Larger sub-labels overflow the store boxes. A sticky diagram or a stepping single select is a structural change and is left for the next pass.
+- **A-14, A-15**: no change, as the reviewer advised.
+- No new `block_map` entry is needed; the section ids are unchanged.

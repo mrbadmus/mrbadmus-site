@@ -49,8 +49,9 @@ The rail has 6 nodes: HOOK, HEAT, THINK, COMPARE, COOL, LADDER.
 There is no CFIFA and no equation block, because the lesson has no
 calculation (examination §5: "Equations: none to calculate in this lesson").
 ΔE = m c Δθ and E = m L are named once in an explainer, as signposts to the
-next lessons, both "on the equation sheet". The header keeps the
-equation-sheet link, as both physics pilot lessons do.
+next lessons, both "on the equation sheet". The header carries the
+equation-sheet link, as both physics pilot lessons do. It was added in the
+review fixes; the first draft lacked it (A-7 / A-IE1).
 
 ## Misconceptions and where each is confronted
 
@@ -139,3 +140,20 @@ Every explainer is ≤150 words before a commitment.
   - at 390 px on CF and TH, no `undefined`, `NaN` or `{{` in the text and
     no overflow, before and after driving the hook and all four bench
     stages, including the confront path.
+
+## Review fixes (1 Oct 2026)
+
+| row | what I did / why not |
+|---|---|
+| S-3 + Q-IE3 | Merged into one rewrite. The keyed iceberg option now says "average **kinetic** energy per particle" and "every particle's kinetic and potential energy" (21 words). Three distractors were lengthened to 18, 20 and 18 words, each still a named misconception, so the key is no longer the longest by ≥4 words. |
+| S-4 | r4 reject 1 now reads "Melting overcomes the forces between the molecules; the molecules themselves do not break." |
+| S-5 | Applied the reviewer's timings: stages 0–0.5, 0.5–3, 3–13 and 13–15. `HEAT_PTS` = [[0,−10],[0.5,0],[3,0],[13,100],[15,100]], with the curve notes at x 1.75 and x 14. The unused `heatTemp()` is deleted. Ice now warms twice as fast as water, a 2:1 gradient. |
+| Q-IE1 / Q-X1 | Replaced the static pills with the `ks3-route-switch` route chip. |
+| Q-IE2 | Deleted "So a large object at a low temperature can hold far more internal energy than a small hot one." from the explainer above the spot-the-flaw. |
+| Q-EN3 pattern | All four hook replies set to `''`. They deferred to the bench and were contradicted by the reveal. |
+| A-IE2 | Applied. The hook reveal now reads "It stays at 100 °C, and the water boils away faster. The bench below shows where the extra energy goes.", so it no longer answers bench stage 4. |
+| A-7 / A-IE1 (link) | Added the equation-sheet link to the header, as in changes-in-energy. The explainer cites two sheet equations. |
+| A-IE1 (key fact) | Not applied. A key fact card would repeat the key note (no-redundant-text rule). |
+| A-4, A-5, A-6 | Not applied. These are frozen items served verbatim, and the reviewer says no change is needed or it is optional. |
+
+Validated in a scratch copy: zero console errors on all 4 routes at 1280 and 360. At 390 px on CF and TH, the route chip is correct, there is no `undefined`, `NaN` or `{{`, and no overflow after driving all four stages. The rendered heating curve shows the 2:1 gradient. The scratch copy has been deleted.

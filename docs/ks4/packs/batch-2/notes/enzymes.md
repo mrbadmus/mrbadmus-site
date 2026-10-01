@@ -77,7 +77,7 @@ min+s conversions and a rearrangement, time = 1 ÷ rate).
 
 | item | verdict | handling |
 |---|---|---|
-| q1 wx1 "Above the optimum … the rate does increase" | WRONG on every route (C19) | Never a rung. **Withheld from the practice bank** by a filter that matches the wrong text itself (`reply.indexOf('Above the optimum') === 0`), so q1 returns to the bank automatically if a DEPARTURES ruling corrects wx1 on the generated copy. Commander: please rule (examination §4 gives replacement text). |
+| q1 wx1 "Above the optimum … the rate does increase" | WRONG on every route (C19) | Never a rung. Withheld from the practice bank by the engine (`batch_2.py` B2-W1); the lesson's own filter was removed in the review pass. |
 | `rp` field "RP3 …" | WRONG number (C17) | Not displayed. RP block written from the spec: RP4 Combined / RP5 Biology, 30 s sampling, water bath. |
 | q4 (substrate concentration) | not a spec factor | kept in bank verbatim; not a rung |
 | q3 wx1 "produced in the mouth", q5 wx3 "reform" | IMPRECISE, keep | kept verbatim; q5 used as r1 (its key is correct) |
@@ -97,3 +97,20 @@ All in the lesson's own Component logic; no `_ext` file.
 
 Hook 33 + explainer 1 (74) + explainer 2 (65) = **172 words** of body prose (RP method list
 and risks ≈ 150 words more, as in the pilot's RP block).
+
+## Review fixes (1 Oct 2026)
+
+| row | what I did / why not |
+|---|---|
+| S-3 (science-bio-a, REQUIRED) | `TRUE_T[6]` 75 → 60. Re-driven in the order pH 6 then 7 (the failing order): pH 6 mean 90 s, pH 7 mean 100 s, so the peak stays at pH 6 and matches the verdict text. |
+| B2-W1 (commander) | Removed the in-lesson q1 bank filter; `bank` is now `K.bank(slug, R.route)` and the engine withholds q1. |
+| Q-EN1 (quality-a, REQUIRED) | Deleted the last sentence of `thinkReveal` ("Cold is different…"), which was said for the third time. |
+| Q-EN2 (REQUIRED) | Deleted the authored key-note line that repeated the source line "Denaturation is permanent…". The key note now has 5 lines. |
+| Q-EN3 (REQUIRED) | `hookOptions[0].reply` → `''`. |
+| A-7 / A-EN2 (ADVISORY) | The curve of best fit now joins the measured means only (pH 5–8). pH 4 stays as a hollow marker on the axis, labelled "no end point / in 10 min". The alt text says so. |
+| A-EN1 (ADVISORY) | That label moved up and right, clear of the y-axis. |
+| A-8 (ADVISORY) | Unsampled wells are now pale orange-brown (`#F2D9A8`, iodine already in them, as in method step 1), not white. Their aria-label still says "Not sampled yet". |
+| A-9, A-10 | Not changed: frozen text, imprecise but not wrong (keep, per the reviewer). |
+| A-11 | Not changed: AQA credits enzyme = lock either way. |
+
+No new section ids, so there is no block_map change.

@@ -314,7 +314,7 @@ const CURVES = ['Rises to a peak, then falls steeply', 'Keeps rising as the temp
 const PH_SHAPES = ['A peak at one pH, lower on either side', 'Rises steadily as the pH rises', 'Falls steadily as the pH rises', 'Flat: the same rate at every pH'];
 /* The practical. TRUE_T is the model amylase's time (s) to digest the starch at 35 °C. */
 const PHS = [4, 5, 6, 7, 8];
-const TRUE_T = { 4: 900, 5: 165, 6: 75, 7: 105, 8: 255 };
+const TRUE_T = { 4: 900, 5: 165, 6: 60, 7: 105, 8: 255 };
 const NOISE = [18, -22, 9, -14, 24, -6, 4, -19, 12, -3];
 const GROUPS = [{ id: 'B', t: { 4: null, 5: 150, 6: 90, 7: 120, 8: 240 } }, { id: 'C', t: { 4: null, 5: 180, 6: 240, 7: 90, 8: 270 } }];
 const ANOM = '6|C';
@@ -503,16 +503,17 @@ class Component extends DCLogic {
     [0.005, 0.010, 0.015].forEach((r) => { b += D.line(L - 8, Y(r), L, Y(r), 2) + D.T(L - 12, Y(r) + 7, r.toFixed(3), 20, { weight: 'normal', fill: D.C.stroke, anchor: 'end' }) + D.line(L, Y(r), Rt, Y(r), 1, '#C9C3B2'); });
     b += D.T((L + Rt) / 2, H - 12, 'pH', 22) + '<text x="22" y="' + ((Tp + B) / 2) + '" transform="rotate(-90 22 ' + ((Tp + B) / 2) + ')" font-family="' + D.F + '" font-size="22" font-weight="bold" fill="' + D.C.label + '" text-anchor="middle">rate / s⁻¹</text>';
     const pts = PHS.map((p) => [X(p), Y(means[p] ? 1 / means[p] : 0)]);
-    // curve of best fit through the means (Catmull-Rom as cubic Bezier)
-    let d = 'M' + pts[0][0].toFixed(1) + ' ' + pts[0][1].toFixed(1);
-    for (let i = 0; i < pts.length - 1; i++) {
-      const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+    // curve of best fit through the measured means only (Catmull-Rom as cubic Bezier); pH 4 had no end point
+    const fit = pts.filter((q, i) => means[PHS[i]]);
+    let d = 'M' + fit[0][0].toFixed(1) + ' ' + fit[0][1].toFixed(1);
+    for (let i = 0; i < fit.length - 1; i++) {
+      const p0 = fit[Math.max(0, i - 1)], p1 = fit[i], p2 = fit[i + 1], p3 = fit[Math.min(fit.length - 1, i + 2)];
       const c1 = [p1[0] + (p2[0] - p0[0]) / 6, Math.min(B, p1[1] + (p2[1] - p0[1]) / 6)], c2 = [p2[0] - (p3[0] - p1[0]) / 6, Math.min(B, p2[1] - (p3[1] - p1[1]) / 6)];
       d += ' C' + c1[0].toFixed(1) + ' ' + c1[1].toFixed(1) + ' ' + c2[0].toFixed(1) + ' ' + c2[1].toFixed(1) + ' ' + p2[0].toFixed(1) + ' ' + p2[1].toFixed(1);
     }
     b += '<path d="' + d + '" fill="none" stroke="' + D.C.arrow + '" stroke-width="3"/>';
-    PHS.forEach((p, i) => { const x = pts[i][0], y = pts[i][1]; b += means[p] ? D.line(x - 7, y - 7, x + 7, y + 7, 2.6) + D.line(x - 7, y + 7, x + 7, y - 7, 2.6) : D.circ(x, y, 7, D.C.cream, D.C.stroke, 2.4) + D.T(x + 12, y - 16, 'not digested', 19, { anchor: 'start', weight: 'normal' }); });
-    return D.svg(W, H, b, 'Graph of rate against pH from the mean times: highest at pH 6, lower at pH 5 and 7, lower still at pH 8, and no rate measured at pH 4');
+    PHS.forEach((p, i) => { const x = pts[i][0], y = pts[i][1]; b += means[p] ? D.line(x - 7, y - 7, x + 7, y + 7, 2.6) + D.line(x - 7, y + 7, x + 7, y - 7, 2.6) : D.circ(x, y, 7, D.C.cream, D.C.stroke, 2.4) + D.T(x + 16, y - 44, 'no end point', 19, { anchor: 'start', weight: 'normal' }) + D.T(x + 16, y - 22, 'in 10 min', 19, { anchor: 'start', weight: 'normal' }); });
+    return D.svg(W, H, b, 'Graph of rate against pH from the mean times: highest at pH 6, lower at pH 5 and 7, lower still at pH 8, and no end point at pH 4, plotted on the axis');
   }
   renderVals() {
     const s = this.state; const K = window.KS4; const D = window.KS4D;
@@ -578,7 +579,7 @@ class Component extends DCLogic {
       const tappable = has && !s.running && run.end && s.own[s.ph] === undefined;
       wells.push({ time: mmss(30 * i), arrive: has && s.running && i === shownN ? '1' : null,
         aria: (has ? (orange ? 'Orange-brown' : 'Blue-black') : 'Not sampled yet') + ' at ' + mmss(30 * i), disabled: !tappable,
-        style: 'width:42px;height:42px;padding:0;border-radius:50%;cursor:' + (tappable ? 'pointer' : 'default') + ';border:2px solid #1A1A1A;background:' + (has ? (orange ? ORANGE : BLUE) : '#FFFFFF') + ';' + (s.own[s.ph] === 30 * i ? 'box-shadow:0 0 0 4px #2E8B7F;' : ''),
+        style: 'width:42px;height:42px;padding:0;border-radius:50%;cursor:' + (tappable ? 'pointer' : 'default') + ';border:2px solid #1A1A1A;background:' + (has ? (orange ? ORANGE : BLUE) : '#F2D9A8') + ';' + (s.own[s.ph] === 30 * i ? 'box-shadow:0 0 0 4px #2E8B7F;' : ''),
         onClick: () => this.onWell(i) });
     }
     const ownTxt = (p) => s.own[p] === undefined ? '—' : s.own[p] === null ? '> 600' : String(s.own[p]);
@@ -628,10 +629,6 @@ class Component extends DCLogic {
       { tab: 'Question 2', id: 'enz-q2', head: 'At pH 8, the starch took 4 minutes to digest. Calculate the rate of reaction in ' + S1 + '.', close: 'Unconverted, 1 ÷ 4 = 0.25 per minute: sixty times too big.',
         steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '4 × 60 = 240 s' }, { letter: 'F', label: 'Formula', placeholder: 'learn it', line: 'rate = 1 ÷ time' }, { letter: 'I', label: 'Insert', placeholder: 'rate = 1 ÷ …', line: 'rate = 1 ÷ 240' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'rate = 0.00416…' }, { letter: 'A', label: 'Answer', placeholder: 'rate = … with unit', line: 'rate = 0.0042 ' + S1 }] }
     ];
-    // ── the bank: frozen q1's wrong-answer explanation 1 says the rate rises above the optimum
-    // (examination C19). Withheld while that text stands; it returns by itself once a ruling corrects it.
-    const bankAll = ready ? K.bank(slug, R.route) : [];
-    const bank = bankAll.filter((it) => !(it && it.prompt.indexOf('heated to 80') >= 0 && it.options.some((o) => o.reply.indexOf('Above the optimum') === 0)));
     return Object.assign({ routeWords: R.route, routeSwitchOptions: [] }, R, {
       eyebrow: R.isTriple ? 'AQA Biology (8461) 4.2.2.1 · Required practical' : 'AQA Biology (8464) 4.2.2.1 · Required practical',
       keySpec: R.isTriple ? 'AQA 4.2.2.1 (8461) · RP5' : 'AQA 4.2.2.1 (8464) · RP4',
@@ -641,7 +638,7 @@ class Component extends DCLogic {
       endNext: (this.props.mrbPrevNext || {}).next || null,
       endConnects: ready && K.hrefFor ? [{ href: K.hrefFor('digestive-system', R), label: 'The digestive system' }].filter((c) => c.href) : [],
       hookOptions: [
-        { text: 'Something in saliva breaks the starch down into sugar', reply: 'Hold that. The lesson names the something, then tests it.' },
+        { text: 'Something in saliva breaks the starch down into sugar', reply: '' },
         { text: 'The starch dissolves in saliva and becomes sugar', reply: 'Dissolving does not turn one substance into another: dissolved salt is still salt.' },
         { text: 'Chewing releases sugar hidden inside the cracker', reply: 'Chewing makes smaller pieces, but the pieces are still starch.' },
         { text: 'Warmth in the mouth cooks the starch into sugar', reply: 'Body temperature is far too cool to cook anything. Something is speeding the reaction up.' }
@@ -675,7 +672,7 @@ class Component extends DCLogic {
         { text: 'The amylase is used up faster, because the hot reaction runs so quickly.', correct: false, reply: 'Enzymes are not used up, and above the optimum the rate falls, not rises.' },
         { text: 'The amylase melts, so it can no longer move around in the mixture.', correct: false, reply: 'Nothing melts. The protein keeps its atoms; its shape, and the active site’s, changes.' }
       ],
-      thinkReveal: 'Enzymes are proteins, not living things, so they are never “killed”. Above the optimum temperature, or at an extreme pH, the active site changes shape: the enzyme is denatured. Cold is different: it slows an enzyme down without changing its shape, and warming it again restores the rate.',
+      thinkReveal: 'Enzymes are proteins, not living things, so they are never “killed”. Above the optimum temperature, or at an extreme pH, the active site changes shape: the enzyme is denatured.',
       onThink: (i) => this.setState({ think: i }),
       curves: ready ? [0, 1, 2, 3].map((k) => ({ letter: 'ABCD'[k], aria: 'Sketch ' + 'ABCD'[k] + ': ' + CURVES[k], pressed: s.curve === k, disabled: s.curve !== null,
         fig: K.fig(this.thumb(this.curveFn(k), 'temperature', CURVES[k]), CURVES[k]),
@@ -756,10 +753,9 @@ class Component extends DCLogic {
           reject: ['“Record the time when the iodine turns blue-black.” Blue-black means starch is still there.', '“Heat the mixture with a Bunsen burner.” The temperature must be kept constant, not raised.'] }
       } : {},
       keyLines: ['Enzymes are biological catalysts: proteins that speed up reactions without being used up.'].concat(ready ? K.keyLines(slug) : []).concat([
-        'Above the optimum temperature, or at an extreme pH, the active site changes shape, so the substrate no longer fits.',
         'Required practical (RP4 Combined / RP5 Biology): amylase + starch + pH buffer at 35 °C; a drop into iodine every 30 s; time until it stays orange-brown.',
         'Rate = 1 ÷ time. The shortest time is the fastest rate: the optimum pH.']),
-      bank
+      bank: ready ? K.bank(slug, R.route) : []
     });
   }
 }

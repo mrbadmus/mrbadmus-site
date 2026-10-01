@@ -18,7 +18,7 @@ Spec: 8461 and 8464 4.1.1.1 (word-for-word identical; examination §1). Supporti
 
 ## Family, and why
 
-**CONTRAST.** The demand is one discriminating difference: is the genetic material enclosed in a nucleus or not? Every other structural difference hangs off it. The flagship is therefore a predict-gated A/B instrument that builds the two cells side by side. The spec's second demand, scale and order-of-magnitude calculation with prefixes and standard form, gets a mid-size estimating instrument and the CFIFA block. I chose CONTRAST over QUANTITATIVE because the calculation serves the comparison ("much smaller"), not the other way round.
+**CONTRAST.** (Throughout these notes, the 20 µm reference cell is now a liver cell, per S-2.) The demand is one discriminating difference: is the genetic material enclosed in a nucleus or not? Every other structural difference hangs off it. The flagship is therefore a predict-gated A/B instrument that builds the two cells side by side. The spec's second demand, scale and order-of-magnitude calculation with prefixes and standard form, gets a mid-size estimating instrument and the CFIFA block. I chose CONTRAST over QUANTITATIVE because the calculation serves the comparison ("much smaller"), not the other way round.
 
 Line-up (deliberately unlike `chromosomes-mitosis`): hook (scale figure + Choice) → video → explainer → **cell builder (L)** with a growing comparison table → units explainer → **"how many fit across?" (M1)** → Triple explainer → equation (Learn it) → **CFIFA** → command words → key fact → ladder → key note → bank → end. There is no chain or sort mid-lesson, but there is an equation block and CFIFA.
 
@@ -43,9 +43,7 @@ Line-up (deliberately unlike `chromosomes-mitosis`): hook (scale figure + Choice
 
 ## Route tags
 
-- `data-route="triple"` on the explainer "A bacterium can divide as often as once every 20 minutes if it has enough nutrients and a suitable temperature." **8461 4.1.1.6 (biology only)**, per examination R8/C14, which marked it WRONG ROUTE in the pack. It is absent on CF/CH and badged Triple on TF/TH. It compiles to an `sc-if` on `isTriple`; I checked this with `build_ks4.apply_route_layers` in a scratch compile.
-- Everything else is base (4.1.1.1 carries no HT and no "biology only" label; examination: "No HT content anywhere"). The calculation tiers differ by `R.isHigher` only in the CFIFA questions and r2 numbers (content standards §2), not in what is taught.
-- The header shows only the route chip (the R12 shape), which is true on every route.
+None after review (see A-EP3 below). Everything taught is base: 4.1.1.1 carries no HT and no "biology only" label (examination: "No HT content anywhere"). The calculation tiers differ by `R.isHigher` only in the CFIFA questions and r2 numbers (content standards §2), not in what is taught. The header shows only the route chip (the R12 shape), which is true on every route. The 8461 4.1.1.6 "every 20 minutes" fact (examination C14, WRONG ROUTE in the pack) is no longer carried here; it belongs to `culturing-microorganisms`.
 
 ## ⚑ Net-new science-bearing items
 
@@ -80,3 +78,20 @@ About 290 words of hook, explainer and misconception prose (66 + 77 + 23 + 27 + 
 ## Checks run
 
 Rendered in Design's runtime harness with `shared/ks4-lib.js`, `shared/ks4-diagrams.js` and this lesson's generated `KS4SRC` record, at 390 and 1280 px. Zero console errors and no `undefined`, `NaN` or `[object Object]` text. The whole builder (including wrong picks and both confront boxes), all three M1 cases and the CFIFA stepper were driven by click. Figures were checked visually at 390 px. The template was compiled with `build_ks4.compile_template_text` and `apply_route_layers` in a scratch run; nothing was written to the repo.
+
+## Review fixes (science-bio-a.md, quality-a.md)
+
+- **S-2** → done. "Cheek cell" → "liver cell" everywhere (bigq, hook h2, figure label and alt, K.fig alt, hook option A, Foundation CFIFA Q1), with every number unchanged. Also renamed in the M1 comparison titles and the fit-figure labels, which had said "animal cell" at 20 µm.
+- **Q-EP1** → done. `hookReveal` replaced with the reviewer's text. The explainer sentence "They are much smaller, and their genetic material is not enclosed in a nucleus." is deleted. The builder's answers are no longer given before it asks.
+- **Q-EP2** → done. Option A and B replies are now empty.
+- **Q-EP3** → done. The hook paragraph is cut to its first sentence; the sizes live in the figure.
+- **Q-EP4** → done. `fitFig` is rebuilt on a 640×400 plate. All labels are 26–28 px in plate units. Case 1 adds a "10 bacteria fit across" caption. Cases 2 and 3 add a dashed inset that magnifies the first 5 of the 100 units ("the first 5 of 100 … magnified"), animated in, with an instant swap under reduced motion. Checked at 390 px.
+- **Q-EP5** → done. Comparison 1's correct feedback reads "×10: both already in µm, so just divide."
+- **Q-EP6** → done. The eyebrow is now "Estimate · {{ fName }}".
+- **Q-EP3/Q-CM3 (duplicate captions), Q-X1 (route chip)** → Q-X1 needed nothing: this lesson already had the route chip.
+- **A-4** → done. `FIT[1].why[0]` now reads "×10 would make each ribosome 200 nm. Convert first: 2 µm = 2000 nm, and 2000 ÷ 20 = 100."
+- **A-EP1** → done. The ribosome corrections are now just the correction ("Bacteria have ribosomes too." / "Animal cells have ribosomes too."), so the verdict no longer repeats itself.
+- **A-EP2** → partly done. The DNA loop is redrawn smaller so its label sits clear of the line, and the mitochondrion and its label are moved off the cell outline. The animal cell's ribosomes stay unlabelled: the one "ribosomes" label names the identical marks in both panels, and a second label would crowd the plate at 390 px.
+- **A-EP3** → done. The Triple-tagged "every 20 minutes" explainer is deleted from this lesson; 8461 4.1.1.6 is `culturing-microorganisms`' content. The lesson now has no route-tagged elements.
+- **A-5, A-6** → no change (the reviewer's own verdict).
+- Revalidated in a scratch harness at 390 and 1280 px: 0 console errors, no undefined/NaN. Recompiled with `compile_template_text` and `apply_route_layers`. **No new `block_map` need**; the optional mapping above still applies (`s-build`, `s-scale` classify as "figure").

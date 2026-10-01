@@ -32,14 +32,17 @@
   <main class="ks3-main">
     <div class="ks3-lesson">
       <header class="ks3-lesson-head">
-        <p class="ks3-eyebrow">AQA Chemistry 4.8.3.2 (chemistry only) · Classify</p>
+        <p class="ks3-eyebrow">AQA Chemistry (8462) 4.8.3.2 · Classify</p>
         <h1>Metal hydroxides</h1>
         <p class="ks3-bigq">A few drops of sodium hydroxide, and a solid appears in the tube. Can its colour name the metal ion, and what do you do when the solid is white?</p>
         <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
-          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-blue); background: var(--ks3-blue-tint); color: var(--ks3-blue-text);">Triple</span>
-          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
-          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-accent); background: var(--ks3-accent-tint); color: var(--ks3-ink);">Required practical 7 · identifying ions</span>
-          <sc-if value="{{ isHigher }}"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-stretch); background: var(--ks3-stretch-tint); color: var(--ks3-stretch-text);">Contains Higher</span></sc-if>
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-accent); background: var(--ks3-accent-tint); color: var(--ks3-ink);">Required practical · identifying ions</span>
         </div>
         <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
       </header>
@@ -393,7 +396,7 @@ class Component extends DCLogic {
   }
   renderVals() {
     const s = this.state; const K = window.KS4; const D = window.KS4D;
-    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true };
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, routeWords: '', routeSwitchOptions: [] };
     const slug = 'metal-hydroxides';
     const ready = !!(s.libReady && K && D);
     const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
@@ -482,7 +485,7 @@ class Component extends DCLogic {
     const done = [s.hook !== null, benchDone, s.think !== null, forgeOk === FORGE.length, s.ladder];
     const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
 
-    const keyLines = ['NaOH test for metal ions: Cu²⁺ = blue, Fe²⁺ = green, Fe³⁺ = brown/rust, Al³⁺ = white (dissolves in excess), Ca²⁺ = white (stays), Mg²⁺ = white (stays).',
+    const keyLines = ['NaOH test for metal ions: Cu²⁺ = blue, Fe²⁺ = green, Fe³⁺ = brown, Al³⁺ = white (dissolves in excess), Ca²⁺ = white (stays), Mg²⁺ = white (stays).',
       'Only aluminium hydroxide dissolves in excess sodium hydroxide solution.',
       'Add sodium hydroxide a few drops at a time first, then in excess.',
       'Calcium or magnesium? A flame test decides: calcium gives an orange-red flame.',
@@ -503,7 +506,7 @@ class Component extends DCLogic {
       ],
       hookReveal: 'The solid is copper(II) hydroxide, Cu(OH)₂. Copper ions from one solution meet hydroxide ions from the other, and the compound they make is insoluble, so it comes out as a solid. A solid that forms when two solutions mix is a precipitate.',
       onHook: (i) => this.setState({ hook: i }),
-      benchTitle: isUnknown ? 'Tube ' + s.cur + ' · run the test, then name the ion' : T.name + ' · call it, then add the sodium hydroxide',
+      benchTitle: isUnknown ? 'Tube ' + s.cur + (r.idOk ? ' · identified' : ' · run the test, then name the ion') : T.name + ' · call it, then add the sodium hydroxide',
       benchProgress: round1 ? idCount + ' of 4 unknowns identified' : KNOWN.filter((t) => this.knownDone(s.rec[t], t)).length + ' of 6 solutions tested',
       tubeTabs: tabs.map((x) => ({ label: x.label, pressed: s.cur === x.id, style: this.btn(s.cur === x.id, false) + 'font-size:16px;', onClick: () => this.setState({ cur: x.id }) })),
       tubeFig: ready ? K.fig(this.view(tKey, r, label), label) : null,

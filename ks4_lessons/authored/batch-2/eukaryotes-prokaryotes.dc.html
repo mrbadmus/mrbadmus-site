@@ -39,7 +39,7 @@
       <header class="ks3-lesson-head">
         <p class="ks3-eyebrow">AQA Biology 4.1.1.1 · Contrast</p>
         <h1>Eukaryotes and prokaryotes</h1>
-        <p class="ks3-bigq">A bacterium and one of your cheek cells are both alive. What does the bacterium not have, and how many of them would fit across your cell?</p>
+        <p class="ks3-bigq">A bacterium and one of your liver cells are both alive. What does the bacterium not have, and how many of them would fit across your cell?</p>
         <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
           <details class="ks3-route-switch">
             <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
@@ -53,8 +53,8 @@
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
         <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">A cheek cell and a bacterium, drawn to the same scale.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">Both are living cells, and both need DNA to make their proteins. The cheek cell is about 20 µm across. The bacterium is about 2 µm long.</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">A liver cell and a bacterium, drawn to the same scale.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">Both are living cells, and both need DNA to make their proteins.</p>
         <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 640px;">{{ hookFig }}</div>
         <div style="margin-top: 18px;">
           <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Where is the bacterium's DNA?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
@@ -64,7 +64,7 @@
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
 
       <section class="ks3-explainer">
-        <p>Plant and animal cells are <strong>eukaryotic</strong>: each has a cell membrane, cytoplasm and genetic material enclosed in a <strong>nucleus</strong>. The cells of fungi and protists are eukaryotic too. Bacterial cells are <strong>prokaryotic</strong>. They are much smaller, and their genetic material is not enclosed in a nucleus. Below, an animal cell and a bacterium are drawn side by side. Decide where each structure belongs before it appears.</p>
+        <p>Plant and animal cells are <strong>eukaryotic</strong>: each has a cell membrane, cytoplasm and genetic material enclosed in a <strong>nucleus</strong>. The cells of fungi and protists are eukaryotic too. Bacterial cells are <strong>prokaryotic</strong>. Below, an animal cell and a bacterium are drawn side by side. Decide where each structure belongs before it appears.</p>
       </section>
 
       <section id="s-build" class="ks3-block" style="scroll-margin-top: 92px;">
@@ -114,7 +114,7 @@
       </section>
 
       <section id="s-scale" class="ks3-block" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Estimate · how many fit across? · {{ fName }}</p>
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Estimate · {{ fName }}</p>
         <h2 style="margin: 6px 0 0;">{{ fTitle }}</h2>
         <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 700px;">{{ fFig }}</div>
         <sc-if value="{{ fAsking }}" hint-placeholder-val="{{ true }}">
@@ -132,10 +132,6 @@
           </div>
         </sc-if>
         <sc-if value="{{ fCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onFNext }}" style="margin-top: 14px;">Next comparison</button></sc-if>
-      </section>
-
-      <section class="ks3-explainer" data-route="triple">
-        <p>Bacteria multiply fast. A bacterium can divide as often as once every 20 minutes if it has enough nutrients and a suitable temperature.</p>
       </section>
 
       <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
@@ -224,18 +220,18 @@ const PARTS = [
     why: ['', 'Bacteria have no mitochondria.', 'Bacteria have no mitochondria.'],
     yes: 'Mitochondria are found in the animal cell only.' },
   { key: 'ribo', name: 'Ribosomes', a: 2,
-    why: ['Bacteria make proteins too, on their own ribosomes.', 'Animal cells make proteins on ribosomes too.', ''],
+    why: ['Bacteria have ribosomes too.', 'Animal cells have ribosomes too.', ''],
     yes: 'Both cells make proteins, and both have ribosomes to do it.' }
 ];
 /* "How many fit across": n is the exact count, p the power of ten */
 const FIT = [
-  { name: 'comparison 1 of 3', title: 'Bacteria (2 µm) across an animal cell (20 µm)', a: 0,
+  { name: 'comparison 1 of 3', title: 'Bacteria (2 µm) across a liver cell (20 µm)', a: 0,
     why: ['', '20 ÷ 2 = 10, not 100. Both are already in µm.', '20 ÷ 2 = 10, not 1000. Both are already in µm.'],
     working: '20 µm ÷ 2 µm = 10 = 10¹ · one order of magnitude' },
   { name: 'comparison 2 of 3', title: 'Ribosomes (20 nm) across a bacterium (2 µm)', a: 1,
-    why: ['Did you divide 2 by 20 without converting? 2 µm is 2000 nm.', '', 'Check the conversion: 1 µm = 1000 nm, so 2 µm = 2000 nm, not 20 000 nm.'],
+    why: ['×10 would make each ribosome 200 nm. Convert first: 2 µm = 2000 nm, and 2000 ÷ 20 = 100.', '', 'Check the conversion: 1 µm = 1000 nm, so 2 µm = 2000 nm, not 20 000 nm.'],
     working: '2 µm = 2000 nm · 2000 nm ÷ 20 nm = 100 = 10² · two orders of magnitude' },
-  { name: 'comparison 3 of 3', title: 'Animal cells (20 µm) across a 2 mm line', a: 1,
+  { name: 'comparison 3 of 3', title: 'Liver cells (20 µm) across a 2 mm line', a: 1,
     why: ['Did you use 1 mm = 100 µm? It is 1000 µm, so 2 mm = 2000 µm.', '', 'Check the conversion: 2 mm = 2000 µm, and 2000 ÷ 20 = 100.'],
     working: '2 mm = 2000 µm · 2000 µm ÷ 20 µm = 100 = 10² · two orders of magnitude' }
 ];
@@ -250,9 +246,9 @@ function hookFig(D) {
   const scale = 15; /* px per µm */
   let s = D.circ(250, 170, 10 * scale, EP.cyto, D.C.stroke, 2.6) + D.circ(232, 160, 40, EP.nuc, D.C.stroke, 2.2) +
     rod(D, 520, 170, 2 * scale, 1 * scale, EP.bact, D.C.stroke, 2) +
-    D.T(250, 352, 'cheek cell ≈ 20 µm', 20, { weight: 'normal' }) + D.T(520, 210, 'bacterium', 20, { weight: 'normal' }) + D.T(520, 234, '≈ 2 µm', 20, { weight: 'normal' }) +
+    D.T(250, 352, 'liver cell ≈ 20 µm', 20, { weight: 'normal' }) + D.T(520, 210, 'bacterium', 20, { weight: 'normal' }) + D.T(520, 234, '≈ 2 µm', 20, { weight: 'normal' }) +
     D.line(450, 330, 450 + 10 * scale, 330, 4) + D.line(450, 322, 450, 338, 3) + D.line(600, 322, 600, 338, 3) + D.T(525, 312, '10 µm', 20, { weight: 'normal' });
-  return D.svg(640, 370, s, 'A cheek cell about 20 micrometres across with a nucleus, beside a rod-shaped bacterium about 2 micrometres long, drawn to the same scale with a 10 micrometre scale bar.');
+  return D.svg(640, 370, s, 'A liver cell about 20 micrometres across with a nucleus, beside a rod-shaped bacterium about 2 micrometres long, drawn to the same scale with a 10 micrometre scale bar.');
 }
 function buildFig(D, shown, newest) {
   const has = (k) => shown.indexOf(k) >= 0;
@@ -264,15 +260,15 @@ function buildFig(D, shown, newest) {
   s += D.circ(ax, ay, 122, EP.cyto, D.C.stroke, has('mem') ? 3.4 : 1.6);
   if (has('mem')) s += wrap('mem', lab(ax, 62, 'cell membrane') + lab(ax + 40, ay + 110, 'cytoplasm'));
   if (has('nuc')) s += wrap('nuc', D.circ(ax - 10, ay - 8, 40, EP.nuc, D.C.stroke, 2.2) + lab(ax - 10, ay - 2, 'nucleus'));
-  if (has('mito')) s += wrap('mito', [[ax - 70, ay + 52, 30], [ax + 62, ay + 48, -40], [ax + 58, ay - 60, 70]].map((m) =>
-    '<ellipse cx="' + m[0] + '" cy="' + m[1] + '" rx="16" ry="8" fill="' + EP.mito + '" stroke="' + D.C.stroke + '" stroke-width="1.6" transform="rotate(' + m[2] + ' ' + m[0] + ' ' + m[1] + ')"/>').join('') + lab(ax - 40, ay + 82, 'mitochondria'));
+  if (has('mito')) s += wrap('mito', [[ax - 78, ay + 40, 30], [ax + 62, ay + 48, -40], [ax + 58, ay - 60, 70]].map((m) =>
+    '<ellipse cx="' + m[0] + '" cy="' + m[1] + '" rx="16" ry="8" fill="' + EP.mito + '" stroke="' + D.C.stroke + '" stroke-width="1.6" transform="rotate(' + m[2] + ' ' + m[0] + ' ' + m[1] + ')"/>').join('') + lab(ax - 12, ay + 86, 'mitochondria'));
   if (has('ribo')) s += wrap('ribo', [[-80, -30], [-60, -70], [30, 80], [80, 10], [10, -80], [90, -30], [-95, 20]].map((d) => D.circ(ax + d[0], ay + d[1], 3.4, D.C.muted)).join(''));
   /* bacterium, drawn enlarged */
   if (has('wall')) s += wrap('wall', rod(D, bx, by, 278, 150, 'none', EP.wall, 6) + lab(bx + 5, by - 88, 'cell wall'));
   s += rod(D, bx, by, 258, 130, EP.bact, D.C.stroke, has('mem') ? 3.4 : 1.6);
   if (has('mem')) s += wrap('mem', lab(bx, by + 100, 'cell membrane · cytoplasm'));
-  if (has('loop')) s += wrap('loop', '<path d="M' + (bx - 70) + ' ' + by + ' C ' + (bx - 60) + ' ' + (by - 50) + ', ' + (bx - 10) + ' ' + (by + 30) + ', ' + (bx + 10) + ' ' + (by - 30) +
-    ' S ' + (bx + 60) + ' ' + (by + 40) + ', ' + (bx + 30) + ' ' + (by + 35) + ' S ' + (bx - 40) + ' ' + (by + 50) + ', ' + (bx - 70) + ' ' + by + ' Z" fill="none" stroke="' + D.C.red + '" stroke-width="3"/>' + lab(bx - 40, by + 56, 'DNA loop'));
+  if (has('loop')) s += wrap('loop', '<path d="M' + (bx - 70) + ' ' + by + ' C ' + (bx - 60) + ' ' + (by - 34) + ', ' + (bx - 10) + ' ' + (by + 22) + ', ' + (bx + 10) + ' ' + (by - 30) +
+    ' S ' + (bx + 50) + ' ' + (by + 26) + ', ' + (bx + 25) + ' ' + (by + 24) + ' S ' + (bx - 40) + ' ' + (by + 32) + ', ' + (bx - 70) + ' ' + by + ' Z" fill="none" stroke="' + D.C.red + '" stroke-width="3"/>' + lab(bx - 30, by + 58, 'DNA loop'));
   if (has('plas')) s += wrap('plas', D.circ(bx + 74, by - 22, 11, 'none', D.C.blue, 3) + D.circ(bx + 84, by + 16, 8, 'none', D.C.blue, 3) + lab(bx + 105, by - 88, 'plasmids'));
   if (has('ribo')) s += wrap('ribo', [[-100, 22], [-85, -30], [50, -48], [-55, 40], [100, -8], [20, 48]].map((d) => D.circ(bx + d[0], by + d[1], 3.4, D.C.muted)).join('') + lab(bx - 98, by - 88, 'ribosomes'));
   s += D.T(ax, 368, 'Animal cell · ≈ 20 µm', 19) + D.T(bx, 362, 'Bacterium · ≈ 2 µm', 19) + D.T(bx, 384, 'drawn 10× larger', 16, { weight: 'normal' });
@@ -280,27 +276,38 @@ function buildFig(D, shown, newest) {
   return { svg: D.svg(640, 400, s, alt), alt };
 }
 function fitFig(D, k, show) {
-  const W = 640, H = 320, cy = 170;
+  /* top: the whole comparison to scale. Bottom (after the reveal): the first five units magnified, so the count reads at 390 px. */
+  const W = 640, H = 400, cy = 130, L = (x, y, txt) => D.T(x, y, txt, 26, { weight: 'normal' });
   let s = '', alt = '';
+  const inset = (draw, label) => {
+    let o = '<rect x="40" y="250" width="560" height="130" rx="14" fill="#FFFDF8" stroke="' + D.C.stroke + '" stroke-width="2" stroke-dasharray="7 6"/>';
+    for (let i = 0; i < 5; i++) o += '<g class="ep-pop" style="animation-delay:' + (0.4 + i * 0.1).toFixed(2) + 's">' + draw(110 + i * 70, 300) + '</g>';
+    return o + D.T(470, 310, '…', 34) + D.T(320, 362, label, 26);
+  };
   if (k === 0) {
-    const r = 120, x0 = 320 - r, w = 2 * r / 10;
-    s += D.circ(320, cy, r, EP.cyto, D.C.stroke, 2.6);
-    if (show) for (let i = 0; i < 10; i++) s += '<g class="ep-pop" style="animation-delay:' + (i * 0.09).toFixed(2) + 's">' + rod(D, x0 + w * (i + 0.5), cy, w - 2, 10, EP.bact, D.C.stroke, 1.4) + '</g>';
-    else s += rod(D, 540, cy, w - 2, 10, EP.bact, D.C.stroke, 1.4) + D.T(540, cy + 32, 'bacterium · 2 µm', 18, { weight: 'normal' });
-    s += D.T(320, 34, 'animal cell · 20 µm', 18, { weight: 'normal' });
-    alt = 'An animal cell 20 micrometres across' + (show ? ' with 10 bacteria, each 2 micrometres long, lined up across it.' : ' and one bacterium 2 micrometres long, to scale.');
+    const r = 100, x0 = 320 - r, w = 2 * r / 10;
+    s += D.circ(320, cy, r, EP.cyto, D.C.stroke, 2.6) + L(320, 262, 'liver cell · 20 µm');
+    if (show) {
+      for (let i = 0; i < 10; i++) s += '<g class="ep-pop" style="animation-delay:' + (i * 0.09).toFixed(2) + 's">' + rod(D, x0 + w * (i + 0.5), cy, w - 2, 10, EP.bact, D.C.stroke, 1.4) + '</g>';
+      s += D.T(320, 330, '10 bacteria fit across', 28);
+    } else s += rod(D, 520, cy, w - 2, 10, EP.bact, D.C.stroke, 1.4) + L(520, cy + 44, 'bacterium · 2 µm');
+    alt = 'A liver cell 20 micrometres across' + (show ? ' with 10 bacteria, each 2 micrometres long, lined up across it.' : ' and one bacterium 2 micrometres long, to scale.');
   } else if (k === 1) {
     const w = 540, x0 = 320 - w / 2, d = w / 100;
-    s += rod(D, 320, cy, w, 110, EP.bact, D.C.stroke, 2.6) + D.T(320, 72, 'bacterium · 2 µm', 18, { weight: 'normal' });
-    if (show) for (let i = 0; i < 100; i++) s += '<g class="ep-pop" style="animation-delay:' + (i * 0.012).toFixed(3) + 's">' + D.circ(x0 + d * (i + 0.5), cy, d / 2 - 0.3, D.C.muted) + '</g>';
-    else s += D.circ(320, cy, d / 2, D.C.muted) + D.T(320, cy + 30, 'one ribosome · 20 nm', 18, { weight: 'normal' });
-    alt = 'A bacterium 2 micrometres long' + (show ? ' with 100 ribosomes, each 20 nanometres, lined up along it.' : ' and one ribosome 20 nanometres across, to scale.');
+    s += rod(D, 320, cy, w, 110, EP.bact, D.C.stroke, 2.6) + L(320, 52, 'bacterium · 2 µm');
+    if (show) {
+      for (let i = 0; i < 100; i++) s += '<g class="ep-pop" style="animation-delay:' + (i * 0.008).toFixed(3) + 's">' + D.circ(x0 + d * (i + 0.5), cy, d / 2 - 0.3, D.C.muted) + '</g>';
+      s += inset((x, y) => D.circ(x, y, 22, D.C.muted), 'the first 5 of 100 ribosomes, magnified');
+    } else s += D.circ(320, cy, d / 2, D.C.muted) + L(320, 228, 'one ribosome · 20 nm (the dot)');
+    alt = 'A bacterium 2 micrometres long' + (show ? ' with 100 ribosomes, each 20 nanometres, lined up along it; an inset magnifies the first five.' : ' and one ribosome 20 nanometres across, to scale.');
   } else {
-    const w = 560, x0 = 320 - w / 2, d = w / 100;
-    s += D.line(x0, cy + 30, x0 + w, cy + 30, 3) + D.line(x0, cy + 20, x0, cy + 40, 3) + D.line(x0 + w, cy + 20, x0 + w, cy + 40, 3) + D.T(320, cy + 66, '2 mm', 20, { weight: 'normal' });
-    if (show) for (let i = 0; i < 100; i++) s += '<g class="ep-pop" style="animation-delay:' + (i * 0.012).toFixed(3) + 's">' + D.circ(x0 + d * (i + 0.5), cy + 10, d / 2 - 0.3, EP.cyto, D.C.stroke, 1) + '</g>';
-    else s += D.circ(320, cy + 10, d / 2, EP.cyto, D.C.stroke, 1) + D.T(320, cy - 14, 'one animal cell · 20 µm', 18, { weight: 'normal' });
-    alt = 'A line 2 millimetres long' + (show ? ' with 100 animal cells, each 20 micrometres across, lined up along it.' : ' and one animal cell 20 micrometres across, to scale.');
+    const w = 560, x0 = 320 - w / 2, d = w / 100, cy = 100;
+    s += D.line(x0, cy + 20, x0 + w, cy + 20, 3) + D.line(x0, cy + 8, x0, cy + 32, 3) + D.line(x0 + w, cy + 8, x0 + w, cy + 32, 3) + L(320, cy + 64, '2 mm');
+    if (show) {
+      for (let i = 0; i < 100; i++) s += '<g class="ep-pop" style="animation-delay:' + (i * 0.008).toFixed(3) + 's">' + D.circ(x0 + d * (i + 0.5), cy, d / 2 - 0.3, EP.cyto, D.C.stroke, 1) + '</g>';
+      s += inset((x, y) => D.circ(x, y, 28, EP.cyto, D.C.stroke, 2.2) + D.circ(x, y, 9, EP.nuc, D.C.stroke, 1.6), 'the first 5 of 100 liver cells, magnified');
+    } else s += D.circ(320, cy, d / 2, EP.cyto, D.C.stroke, 1) + L(320, cy - 28, 'one liver cell · 20 µm (the dot)');
+    alt = 'A line 2 millimetres long' + (show ? ' with 100 liver cells, each 20 micrometres across, lined up along it; an inset magnifies the first five.' : ' and one liver cell 20 micrometres across, to scale.');
   }
   return { svg: D.svg(W, H, s, alt), alt };
 }
@@ -353,14 +360,14 @@ class Component extends DCLogic {
         { href: K.hrefFor('microscopy', R), label: 'Microscopy' },
         { href: K.hrefFor('culturing-microorganisms', R), label: 'Culturing microorganisms' }
       ].filter((c) => c.href) : [],
-      hookFig: ready ? K.fig(hookFig(D), 'A cheek cell and a bacterium drawn to the same scale') : null,
+      hookFig: ready ? K.fig(hookFig(D), 'A liver cell and a bacterium drawn to the same scale') : null,
       hookOptions: [
-        { text: 'Inside a nucleus, like the cheek cell, only smaller', reply: 'Hold that thought: the builder below tests it.' },
-        { text: 'Loose in the cytoplasm, as one loop, with no nucleus', reply: 'Hold that thought: the builder below tests it.' },
+        { text: 'Inside a nucleus, like the liver cell, only smaller', reply: '' },
+        { text: 'Loose in the cytoplasm, as one loop, with no nucleus', reply: '' },
         { text: 'It has none: a bacterium is too small to need DNA', reply: 'Every living cell needs genetic material to make its proteins.' },
         { text: 'Only in its plasmids, which act as its nucleus', reply: 'Plasmids are extra small rings of DNA, not a nucleus.' }
       ],
-      hookReveal: 'A bacterium has no nucleus. Its genetic material is a single DNA loop in the cytoplasm, and it may also have one or more small rings of DNA called plasmids. Whether the genetic material is enclosed in a nucleus is the difference between the two kinds of cell.',
+      hookReveal: 'Not in a nucleus: a bacterium has none. Its DNA is loose in the cytoplasm. What else differs, you decide below.',
       onHook: (i) => this.setState({ hook: i }),
       bCount: 'structure ' + (bk + 1) + ' of ' + PARTS.length,
       bTitle: part.name,
@@ -384,7 +391,7 @@ class Component extends DCLogic {
       fRevealed: fRev,
       fVerdictStyle: this.verdict(fOk).replace('margin:14px 0 0;', 'margin-top:14px;'),
       fWord: fRev ? (fOk ? 'Yes.' : 'Not this.') : '',
-      fText: fRev ? (fOk ? FIT_OPTS[fit.a] + ': convert, then divide.' : fit.why[fp]) : '',
+      fText: fRev ? (fOk ? (fk === 0 ? '×10: both already in µm, so just divide.' : FIT_OPTS[fit.a] + ': convert, then divide.') : fit.why[fp]) : '',
       fWorking: fit.working,
       fCanNext: fRev && fk < FIT.length - 1,
       onFNext: () => this.setState((ss) => ({ fk: Math.min(FIT.length - 1, ss.fk + 1) })),
@@ -409,7 +416,7 @@ class Component extends DCLogic {
         { tab: 'Question 2', id: 'ep-q2', head: 'A ribosome 25 nm across appears 5 mm across in an electron micrograph. Calculate the magnification. Give your answer in standard form.', close: 'Unconverted, 5 ÷ 25 gives ×0.2: an image smaller than the real thing.',
           steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert first?', line: '5 mm = 5000 µm = 5 000 000 nm' }, { letter: 'F', label: 'Formula', placeholder: 'the magnification equation', line: 'Magnification = Image size ÷ Actual size' }, { letter: 'I', label: 'Insert', placeholder: 'M = … ÷ …', line: 'M = 5 000 000 ÷ 25' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'Nothing to rearrange: M = 200 000' }, { letter: 'A', label: 'Answer', placeholder: 'M = × … × 10…', line: 'Magnification = ×2 × 10⁵' }] }
       ] : [
-        { tab: 'Question 1', id: 'ep-q1', head: 'A drawing of a cheek cell is 40 mm wide. The real cell is 0.02 mm wide. Calculate the magnification.', close: 'Check: 0.02 mm is 20 µm, a typical animal cell.',
+        { tab: 'Question 1', id: 'ep-q1', head: 'A drawing of a liver cell is 40 mm wide. The real cell is 0.02 mm wide. Calculate the magnification.', close: 'Check: 0.02 mm is 20 µm, a typical animal cell.',
           steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert first?', line: 'Nothing to convert: both lengths are in mm.' }, { letter: 'F', label: 'Formula', placeholder: 'the magnification equation', line: 'Magnification = Image size ÷ Actual size' }, { letter: 'I', label: 'Insert', placeholder: 'M = … ÷ …', line: 'M = 40 ÷ 0.02' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'Nothing to rearrange: M = 2000' }, { letter: 'A', label: 'Answer', placeholder: 'M = × …', line: 'Magnification = ×2000' }] },
         { tab: 'Question 2', id: 'ep-q2', head: 'A bacterium 3 µm long is drawn 15 mm long. Calculate the magnification.', close: 'Unconverted, 15 ÷ 3 gives ×5: a thousand times too small.',
           steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert first?', line: '15 mm × 1000 = 15 000 µm' }, { letter: 'F', label: 'Formula', placeholder: 'the magnification equation', line: 'Magnification = Image size ÷ Actual size' }, { letter: 'I', label: 'Insert', placeholder: 'M = … ÷ …', line: 'M = 15 000 ÷ 3' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'Nothing to rearrange: M = 5000' }, { letter: 'A', label: 'Answer', placeholder: 'M = × …', line: 'Magnification = ×5000' }] }

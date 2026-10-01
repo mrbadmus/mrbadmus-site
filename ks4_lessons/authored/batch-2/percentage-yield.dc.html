@@ -33,12 +33,16 @@
   <main class="ks3-main">
     <div class="ks3-lesson">
       <header class="ks3-lesson-head">
-        <p class="ks3-eyebrow">AQA Chemistry 4.3.3.1 (chemistry only) · Quantitative</p>
+        <p class="ks3-eyebrow">AQA Chemistry (8462) 4.3.3.1 · Quantitative</p>
         <h1>Percentage yield</h1>
         <p class="ks3-bigq">The equation says you can make 8.0 g. The balance says you made 6.2 g. Where did the rest go, and how do you put a number on the gap?</p>
         <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
-          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-blue); background: var(--ks3-blue-tint); color: var(--ks3-blue-text);">Triple</span>
-          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
         </div>
         <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
       </header>
@@ -98,7 +102,7 @@
           </sc-if>
         </div>
         <sc-if value="{{ benchDone }}">
-          <p data-arrive="1" style="margin: 14px 0 0; padding: 14px 16px; border-radius: 14px; font-size: 18px; line-height: 1.55; border: 2px solid var(--ks3-accent); background: var(--ks3-accent-tint);"><strong>Theoretical yield 8.0 g. Actual yield 6.2 g.</strong> Every gram is accounted for: the missing 1.8 g was left behind in four places, not destroyed.</p>
+          <p data-arrive="1" style="margin: 14px 0 0; padding: 14px 16px; border-radius: 14px; font-size: 18px; line-height: 1.55; border: 2px solid var(--ks3-accent); background: var(--ks3-accent-tint);"><strong>Theoretical yield 8.0 g · actual yield 6.2 g.</strong> Nothing was destroyed.</p>
         </sc-if>
       </section>
 
@@ -109,7 +113,7 @@
       </section>
 
       <section id="s-reasons" class="ks3-block" style="scroll-margin-top: 92px;">
-        <dc-import name="Ks4Sort" eyebrow="Sort the reasons" title="Less product, faster product, or impossible?" prompt="Place each statement." bins="{{ rBins }}" items="{{ rItems }}" done-note="The spec's three reasons all lower the yield. A catalyst or a powder changes how fast, never how much." on-done="{{ onReasons }}" hint-size="100%,520px"></dc-import>
+        <dc-import name="Ks4Sort" eyebrow="Sort the reasons" title="Less product, faster product, or impossible?" prompt="Place each statement." bins="{{ rBins }}" items="{{ rItems }}" done-note="The spec's three reasons all lower the yield. A catalyst or a powder changes how fast, never the maximum mass of product." on-done="{{ onReasons }}" hint-size="100%,520px"></dc-import>
       </section>
 
       <section class="ks3-explainer">
@@ -195,15 +199,15 @@ const RAIL = [
 ];
 /* The yield bench: masses in tenths of a gram, so every sum is exact. Total loss 18 = 1.8 g. */
 const STAGES = [
-  { name: '1 · React', action: 'Warm the dilute sulfuric acid and stir in copper oxide until no more dissolves. The black powder left over is the excess.', lose: 0,
+  { name: 'React', action: 'Warm the dilute sulfuric acid and stir in copper oxide until no more dissolves. The black powder left over is the excess.', lose: 0,
     none: 'No copper sulfate is lost here: this is where it forms. With copper oxide in excess, all of the acid reacts.' },
-  { name: '2 · Filter', action: 'Filter the mixture to remove the excess copper oxide. The blue copper sulfate solution runs through.', lose: 5,
+  { name: 'Filter', action: 'Filter the mixture to remove the excess copper oxide. The blue copper sulfate solution runs through.', lose: 5,
     where: 'filter paper and funnel', some: 'Solution soaks into the filter paper and stays in the funnel: 0.5 g of copper sulfate goes with it.' },
-  { name: '3 · Transfer', action: 'Pour the filtrate from the flask into an evaporating basin.', lose: 3,
+  { name: 'Transfer', action: 'Pour the filtrate from the flask into an evaporating basin.', lose: 3,
     where: 'walls of the flask', some: 'A film of solution clings to the inside of the flask: 0.3 g never reaches the basin.' },
-  { name: '4 · Crystallise', action: 'Heat the solution to evaporate some of the water, then leave it to cool so crystals form. Filter off the crystals.', lose: 8,
+  { name: 'Crystallise', action: 'Heat the solution to evaporate some of the water, then leave it to cool so crystals form. Filter off the crystals.', lose: 8,
     where: 'leftover solution', some: 'Not all of it crystallises. 0.8 g stays dissolved in the solution left behind.' },
-  { name: '5 · Dry and weigh', action: 'Pat the crystals dry between filter papers, then weigh them.', lose: 2,
+  { name: 'Dry and weigh', action: 'Pat the crystals dry between filter papers, then weigh them.', lose: 2,
     where: 'drying paper', some: 'Small crystals stick to the paper: 0.2 g. The balance now reads 6.2 g.' }
 ];
 const ACID = '#7FB8E6';
@@ -270,7 +274,7 @@ class Component extends DCLogic {
   }
   renderVals() {
     const s = this.state; const K = window.KS4; const D = window.KS4D;
-    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true };
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, routeWords: '', routeSwitchOptions: [] };
     const slug = 'percentage-yield';
     const ready = !!(s.libReady && K && D);
     const pn = this.props.mrbPrevNext || {};
@@ -297,7 +301,14 @@ class Component extends DCLogic {
     const q5 = (lines, ph) => ['C', 'F', 'I', 'F', 'A'].map((letter, i) => ({ letter, label: ['Convert', 'Formula', 'Insert', 'Fine-tune', 'Answer'][i], placeholder: ph[i], line: lines[i] }));
     const phPY = ['anything to convert?', '% yield = …', 'actual = …, theoretical = …', '(… ÷ …) × 100', 'percentage yield = …'];
     const phHT = ['anything to convert?', 'the chain of formulae', 'moles of reactant = …', 'ratio, theoretical mass, then % yield', 'percentage yield = …'];
-    const keyBase = ['% yield = (actual ÷ theoretical) × 100.', 'Usually less than 100% in practice.', 'Reasons: reversible reactions, side reactions, practical losses.', 'High yield = less waste, lower cost, more sustainable.', 'Chemistry-only spec point.'];
+    const phRe = ['anything to convert?', '% yield = …', '… = (actual ÷ …) × 100', 'rearrange: actual = …', 'actual yield = …'];
+    const cfQH = [
+      { tab: 'Question 1', id: 'py-q1h', head: 'A reaction has a percentage yield of 72%. The theoretical yield is 45 g. Calculate the actual yield.', close: 'Check: the actual yield must be smaller than 45 g.',
+        steps: q5(['Nothing to convert: the theoretical yield is in g.', 'Percentage yield = (actual yield ÷ theoretical yield) × 100', '72 = (actual ÷ 45) × 100', 'actual = 72 × 45 ÷ 100', 'Actual yield = 32.4 g'], phRe) },
+      { tab: 'Question 2', id: 'py-q2h', head: 'A batch should give 2.40 kg of product. The percentage yield is 85%. Calculate the mass collected, in grams.', close: 'Skip the conversion and you get 2.04: right in kg, wrong for the unit asked.',
+        steps: q5(['2.40 kg × 1000 = 2400 g', 'Percentage yield = (actual yield ÷ theoretical yield) × 100', '85 = (actual ÷ 2400) × 100', 'actual = 85 × 2400 ÷ 100', 'Mass collected = 2040 g'], phRe) }
+    ];
+    const keyBase = ['% yield = (actual ÷ theoretical) × 100.', 'Usually less than 100% in practice.', 'Reasons: reversible reactions, side reactions, practical losses.', 'High yield = less waste, lower cost, more sustainable.'];
     return Object.assign({}, R, {
       video: K && s.hook !== null && s.hook !== undefined ? K.video(slug) : null,
       railV, theme, ready, draftVisible: this.props.showDraft !== false,
@@ -362,7 +373,7 @@ class Component extends DCLogic {
           { letter: 'F', label: 'Fine-tune', line: '% yield = (1900 ÷ 2500) × 100 = 0.76 × 100', note: '' },
           { letter: 'A', label: 'Answer', line: 'Percentage yield = 76%', note: 'Unconverted, 1900 ÷ 2.5 × 100 = 76 000%: impossible, so check the units.' } ] }
       ] : [],
-      cfQuestions: [
+      cfQuestions: R.isHigher ? cfQH : [
         { tab: 'Question 1', id: 'py-q1', head: 'A reaction has a theoretical yield of 40 g. The student collects 34 g of dry product. Calculate the percentage yield.', close: 'If you got 118%, the fraction is upside down.',
           steps: q5(['Nothing to convert: both masses are in g.', 'Percentage yield = (actual yield ÷ theoretical yield) × 100', 'Actual = 34 g, theoretical = 40 g', '% yield = (34 ÷ 40) × 100 = 0.85 × 100', 'Percentage yield = 85%'], phPY) },
         { tab: 'Question 2', id: 'py-q2', head: 'The maximum theoretical mass of a batch of fertiliser is 1.20 kg. The batch collected weighs 960 g. Calculate the percentage yield.', close: 'Unconverted, 960 ÷ 1.20 × 100 = 80 000%.',
@@ -375,7 +386,7 @@ class Component extends DCLogic {
           'n = m ÷ Mr, then the mole ratio, then m = n × Mr; % yield = (actual ÷ theoretical) × 100',
           'n(CaCO₃) = 12.0 ÷ 100 = 0.120 mol',
           '1 : 1 ratio, so n(CaO) = 0.120 mol; theoretical mass = 0.120 × 56 = 6.72 g; % yield = (5.6 ÷ 6.72) × 100',
-          'Percentage yield = 83.3%']) },
+          'Percentage yield = 83.3% (83%)']) },
         { tab: 'Convert first', head: 'A kiln heats 1.00 kg of CaCO₃ and collects 476 g of CaO. Calculate the percentage yield. (Mr: CaCO₃ = 100, CaO = 56)', next: 'Convert first, then the same chain. Your turn below.', steps: [
           { letter: 'C', label: 'Convert', line: '1.00 kg × 1000 = 1000 g', note: 'Mr is in grams per mole, so the mass must be in grams; the actual yield is in grams too.' },
           { letter: 'F', label: 'Formula', line: 'n = m ÷ Mr, then the mole ratio, then m = n × Mr; % yield = (actual ÷ theoretical) × 100', note: '' },
@@ -391,13 +402,19 @@ class Component extends DCLogic {
       ],
       onLadder: () => this.setState({ ladder: true }),
       rungs: ready ? {
-        r1: Object.assign(K.find(slug, R.route, 'Why is the actual yield') || { options: [] }, { command: 'Give', marks: 1, why: 'Product is lost when it is separated, the reaction may not go to completion, and side reactions use up reactants.' }),
+        r1: { command: 'Give', marks: 1, prompt: 'Give one reason why the actual yield of a reaction is less than the theoretical yield.', why: 'Product lost on separation is one of the three spec reasons; the others are a reversible reaction and side reactions.',
+          options: [
+            { text: 'Some of the atoms are destroyed during the chemical reaction', correct: false, reply: 'Atoms are conserved in every reaction: no mass is destroyed.' },
+            { text: 'Some product is left behind when it is separated from the mixture', correct: true, reply: 'This is the answer the mark scheme credits.' },
+            { text: 'The catalyst was not added in a large enough amount', correct: false, reply: 'A catalyst changes the rate, not the maximum mass of product.' },
+            { text: 'The theoretical yield always rounds the answer upwards', correct: false, reply: 'The theoretical yield is calculated exactly from the balanced equation.' }
+          ] },
         r2: R.isHigher ? rungTH : rungTF,
         r3: { command: 'Explain', marks: 3, prompt: 'A student makes zinc sulfate crystals and gets a percentage yield of 70%. Explain why the yield is less than 100%, even though no atoms are lost in the reaction. Put the links in order.',
           links: ['No atoms are gained or lost, so all of the zinc sulfate the reaction made is still somewhere.', 'Some of it is left in the filter paper, on the glassware and in the leftover solution when the crystals are separated.', 'So the mass collected is less than the maximum theoretical mass, and the percentage yield is below 100%.'],
           herrings: [{ text: 'Some of the mass is destroyed when the reactants react.', why: 'Mass is conserved in every chemical reaction.' }, { text: 'Adding a catalyst would have made more zinc sulfate form.', why: 'A catalyst changes the rate, not the maximum mass of product.' }] },
         r4: { command: 'Calculate · Give', marks: 4, question: 'A chemist makes a product. The maximum theoretical mass is 12.0 g. The chemist collects 9.0 g of pure, dry product. Calculate the percentage yield, and give two reasons why it is less than 100%.',
-          points: ['Working: 9.0 ÷ 12.0 × 100.', 'Answer: 75%.', 'Reason: some product is lost when it is separated from the reaction mixture (e.g. left on filter paper or glassware, or in solution).', 'Reason: the reaction may not go to completion because it is reversible, or some reactants react in a different way (side reactions).'],
+          points: ['Working: 9.0 ÷ 12.0 × 100.', 'Answer: 75%.', 'First reason, any one of: some product is lost when it is separated from the reaction mixture (e.g. left on filter paper or glassware, or in solution); the reaction is reversible, so it does not go to completion; some reactants react in a different way (side reactions).', 'Second reason: a different one of those three.'],
           reject: ['“Mass is lost in the reaction.” Mass is conserved.', '“No catalyst was used.” A catalyst changes the rate, not the yield.', '12.0 ÷ 9.0 × 100 = 133%: the fraction is upside down.'] }
       } : {},
       keyLines: R.isHigher ? keyBase.concat('Higher: theoretical yield from a reactant mass: n = m ÷ Mr, then the mole ratio, then m = n × Mr.') : keyBase,

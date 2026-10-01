@@ -37,8 +37,12 @@
         <h1>The carbon cycle</h1>
         <p class="ks3-bigq">The carbon in your body was once carbon dioxide in the air, and one day it will be again. What carries it all the way round?</p>
         <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
-          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
-          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
         </div>
         <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
       </header>
@@ -55,7 +59,7 @@
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
 
       <section class="ks3-explainer">
-        <p>Because the total amount of carbon is fixed, it has to be <strong>recycled</strong>. It sits in <strong>stores</strong>: the air, as carbon dioxide; living things, in carbohydrates, proteins, fats and DNA; dead matter and waste; and fossil fuels deep underground. <strong>Processes</strong> move it from store to store. Oceans and rocks hold carbon too, and you meet those in chemistry. Here, follow one atom and call each process before it happens.</p>
+        <p>Because the total amount of carbon is fixed, it has to be <strong>recycled</strong>. It sits in <strong>stores</strong>: the air, as carbon dioxide; living things, in carbohydrates, proteins, fats and DNA; dead matter and waste; and fossil fuels deep underground. <strong>Processes</strong> move it from store to store. Here, follow one atom and call each process before it happens.</p>
       </section>
 
       <section id="s-trace" class="ks3-block" style="scroll-margin-top: 92px;">
@@ -136,11 +140,11 @@
       </section>
 
       <section class="ks3-explainer">
-        <p>For most of history, carbon dioxide was taken out of the air about as fast as it was put back. Humans are now adding it faster than photosynthesis can remove it. Burning <strong>coal, oil and gas</strong> releases carbon that was locked away for millions of years. <strong>Deforestation</strong> does double damage: fewer trees are left to photosynthesise, and the felled trees are burned or rot, releasing more carbon dioxide. Cattle and rice fields add <strong>methane</strong>. Rising levels of carbon dioxide and methane contribute to <strong>global warming</strong>.</p>
+        <p>For thousands of years before people burned fossil fuels on a large scale, carbon dioxide was taken out of the air about as fast as it was put back. Humans are now adding it faster than natural processes can remove it. Burning <strong>coal, oil and gas</strong> releases carbon that was locked away for millions of years. <strong>Deforestation</strong> does double damage: fewer trees are left to photosynthesise, and the felled trees are burned or rot, releasing more carbon dioxide. Cattle and rice fields add <strong>methane</strong>. Rising levels of carbon dioxide and methane contribute to <strong>global warming</strong>.</p>
       </section>
 
       <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
-        <dc-import name="Ks4Sort" eyebrow="Sort the processes" title="What does it do to the air?" prompt="Each card is one process. Decide what it does to the carbon dioxide in the air." bins="{{ sBins }}" items="{{ sItems }}" done-note="Only photosynthesis takes carbon dioxide out of the air. Respiration, by plants, animals and decomposers, and combustion put it back. Feeding and fossilisation move carbon between other stores." on-done="{{ onSort }}" hint-size="100%,460px"></dc-import>
+        <dc-import name="Ks4Sort" eyebrow="Sort the processes" title="What does it do to the air?" prompt="Each card is one process. Decide what it does to the carbon dioxide in the air." bins="{{ sBins }}" items="{{ sItems }}" done-note="Of these processes, only photosynthesis takes carbon dioxide out of the air. Respiration, by plants, animals and decomposers, and combustion put it back. Feeding and fossilisation move carbon between other stores." on-done="{{ onSort }}" hint-size="100%,460px"></dc-import>
       </section>
 
       <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
@@ -360,7 +364,7 @@ class Component extends DCLogic {
   }
   renderVals() {
     const s = this.state; const K = window.KS4; const D = window.KS4D;
-    const R = K ? K.route(this) : { route: 'Triple Higher' };
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeWords: 'Triple Higher', routeSwitchOptions: [] };
     const slug = 'carbon-cycle';
     const ready = !!(s.libReady && K && D);
     const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
@@ -401,7 +405,7 @@ class Component extends DCLogic {
       tOpts: st.opts.map((o, i) => ({ label: o.t, style: this.seg(false), onClick: () => { if (s.picks[ts] === undefined) this.setState((ss) => ({ picks: Object.assign({}, ss.picks, { [ts]: i }) })); } })),
       tCommitted: committed,
       tReplyWord: right ? 'Yes.' : (committed ? 'No: ' + correctOpt.t.charAt(0).toLowerCase() + correctOpt.t.slice(1) + '.' : ''),
-      tReplyText: committed ? st.opts[pick].r : '',
+      tReplyText: committed && !right ? st.opts[pick].r : '',
       tReveal: committed ? st.reveal : '',
       tReplyStyle: 'margin-top:14px;padding:16px 18px;border-radius:14px;border:2px solid ' + (right ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
       tConfrontFeed: committed && ts === 1,
@@ -448,7 +452,7 @@ class Component extends DCLogic {
         r2: { kind: 'data', command: 'Name', marks: 2, prompt: 'The diagram shows part of the carbon cycle in a pond. Name the processes at X and Y.', figureSvg: this.pondSvg(), figureAlt: 'Carbon cycle in a pond with arrows X and Y',
           parts: [
             { label: 'Process X, from algae to fish', options: ['Feeding', 'Photosynthesis', 'Respiration', 'Combustion'], answer: 0 },
-            { label: 'Process Y, from dead remains to the air', options: ['Photosynthesis', 'Respiration by microorganisms', 'Combustion', 'Fossilisation'], answer: 1 }
+            { label: 'Process Y, from dead remains to the air', options: ['Photosynthesis by algae', 'Respiration by microorganisms', 'Combustion of the remains', 'Fossilisation of the remains'], answer: 1 }
           ],
           right: 'X is feeding: fish eat algae. Y is respiration by the microorganisms that decay the remains.', wrong: 'Read each arrow’s direction. Carbon reaches a fish only in its food. Carbon leaves dead remains for the air when decomposers respire.',
           model: ['X: feeding, or eating (1)', 'Y: respiration by microorganisms, or decay (1)'] },
@@ -465,7 +469,7 @@ class Component extends DCLogic {
           points: ['A plant takes in carbon dioxide by photosynthesis.', 'The carbon becomes part of glucose, then other carbon compounds in the plant, such as starch, cellulose or protein.', 'An animal eats the plant: the carbon passes to the animal as carbon compounds in food.', 'The carbon is built into the animal’s body, for example as protein or fat.', 'The animal respires, releasing carbon dioxide into the air.', 'Or: the animal dies or produces waste; decomposers break it down and respire, releasing carbon dioxide.'],
           reject: ['“The animal breathes in carbon dioxide.” Animals do not take carbon in as carbon dioxide.', '“Decomposers decompose it into carbon dioxide.” Name respiration as the process that releases it.'] }
       } : {},
-      keyLines: ready ? K.keyLines(slug).concat(['Feeding passes carbon compounds along food chains; it does not move carbon dioxide.']) : [],
+      keyLines: ['Photosynthesis takes carbon dioxide out of the air.', 'Feeding passes carbon compounds along food chains.', 'Respiration by plants, animals and decomposers returns carbon dioxide.', 'Combustion of fossil fuels returns carbon locked away for millions of years.', 'Deforestation and burning add carbon dioxide faster than it is removed.'],
       bank: ready ? K.bank(slug, R.route) : []
     });
   }

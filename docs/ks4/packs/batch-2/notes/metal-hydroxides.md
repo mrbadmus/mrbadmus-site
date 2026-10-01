@@ -94,3 +94,11 @@ About 330 words of template prose (hook 40, explainer 72, RP block 87 including 
 ## Self-check done
 
 Compiled through the real `build_ks4.compile_batch_lesson` + `apply_route_layers` + `render_page` in a scratch harness (no repo files written). Rendered on TF and TH and driven in headless Chrome, both animated and with reduced motion: zero console errors at 1280 and 390; no horizontal overflow at 390; no `undefined`/`NaN`/`{{` text; Higher sections and badges present on TH and absent on TF; rung 1 resolves from the route's own quiz; the bench completes all 6 + 4 tubes; the forge and ionic builder grade correctly. Two defects found and fixed during this check: a white unknown could be identified before excess was added, and rapid picks in the forge could be lost to a stale closure (all pick handlers now use functional `setState`).
+
+## Review fixes
+
+- quality-b Q-1 → Removed the `Triple`, `Foundation · Higher` and `Contains Higher` pills. Added the route chip (`ks3-route-switch`, `{{ routeWords }}` / `{{ routeSwitchOptions }}`, as in using-moles-calculations) with fallback defaults on `R`. The RP pill now reads `Required practical · identifying ions`. Eyebrow → `AQA Chemistry (8462) 4.8.3.2 · Classify`. Verified in scratch that TF shows "Triple science · Foundation tier" and TH "Triple science · Higher tier".
+- quality-b A-1 (advisory, cheap) → an identified unknown's bench title now reads "Tube W · identified".
+- quality-b A-2 (advisory) → not done: varying the ladder shape is a design change beyond the requested scope. The forge already trains the balanced-equation skill.
+- science-chem-b A-5 → key-note line 1 `Fe³⁺ = brown/rust` → `Fe³⁺ = brown`. This edits the frozen key-note sentence, on the examiner's advice, to model the answer to write.
+- No new block_map need: the classification is unchanged.

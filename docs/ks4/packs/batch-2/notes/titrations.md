@@ -113,3 +113,38 @@ About 465 words of body prose in the template, from the hook to the Higher secti
 - A node harness confirmed that every `{{ }}` resolves on TF and TH, tags are balanced, `dc-import` props are valid, and no `undefined`/`NaN` text appears. It drove a rough run and three accurate runs, then three picks: rough included → refused; anomalous run included → refused; runs 1 and 3 → accepted, mean 24.68 cm³.
 - A scratch-copy `build_ks4.py --batch` run built the lesson with zero console errors.
 - The same drive in headless Chrome at 390 px: no horizontal scroll; the Higher badge appears only on TH. Light and dark screenshots were reviewed.
+
+## Review fixes (science-chem-b.md, quality-b.md)
+
+- **New section id: `s-errors`.** Its lesson record needs `"s-errors": "check"` added to `block_map`. I did not edit `ks4_lessons/batch_2.py`; the commander must add it.
+- **Q-1 (flagship logic bug):** the bench no longer accepts overshot runs as a concordant mean. Four changes:
+  - Each recorded accurate run stores `over: added > EP + 0.05 cm³`.
+  - An overshot row is labelled "Run n · overshot", and the flask line says "this run overshot".
+  - `judge()` excludes overshot rows from the concordance search and refuses any choice containing one: "These runs overshot. …".
+  - A "Repeat the rough run" button appears between accurate runs. It replaces the rough row. `MAXRUN` rose from 6 to 9 so recovery is always possible.
+
+  **Proved by real CDP mouse taps on TF and TH:**
+  - rough run to 24.00, then +5.00 → 29.00; three run-ins all overshoot;
+  - choosing runs 1–3 → "These runs overshot.";
+  - repeat the rough run, then two dropwise runs, choose them → "Concordant. Mean titre = (24.75 + 24.70) ÷ 2 = 24.73 cm³."
+- **Q-2:** r1 is now an authored "Give" MCQ at length parity, using the reviewer's wording. The frozen q2 lives in the bank only.
+- **Q-3:** the base write-it-out questions now differ by tier.
+  - TH Q1 uses the reviewer's set: rough 23.40, then 22.95 / 23.05 / 22.60 / 23.00 → 23.00 cm³.
+  - TH Q2 is new: titres in dm³, 0.02210 / 0.02275 / 0.02200 / 0.02205 → 22.05 cm³, three concordant.
+  - TF keeps its two questions.
+- **Q-4:** the new mid-size activity is `#s-errors`, a `Ks4Sort` titled "Titre too large, too small, or no effect?". It has 7 cards, each with a `why`:
+  - burette rinsed with water → too large;
+  - pipette rinsed with water → too small;
+  - flask rinsed with distilled water → no effect;
+  - overshoot → too large;
+  - final reading taken at the top of the meniscus → too small;
+  - air bubble in the jet → too large;
+  - washing the flask walls with distilled water → no effect.
+
+  It is added to the rail as ERRORS. Note that quality-b's shared finding S-1 (a solved `Ks4Sort` never ticks its rail stop) applies to it as well, and that is an engine defect. ⚑ The direction of each error is net-new science (RP2 practice, examination §5 misconceptions).
+- **Q-5:** the head now has the route chip plus a single RP pill, "Required practical · titration". The eyebrow reads "AQA Chemistry (8462) 4.4.2.5 · Required practical".
+- **Quality A-1:** the key-note line "RP Chemistry 2 (chemistry-only)." is filtered out, because the key-note spec line already says it.
+- **Quality A-2:** the bench readouts now stack when narrow, using auto-fit minmax(150px).
+- **Science A-3:** the hook now reads "Near the end, each splash makes a colourless patch…".
+- **Science A-4:** the gate prompt now reads "goes in 1 cm³ or more at a time".
+- **Validated in a scratch copy:** `build_ks4.py --batch batch-2` built 52 pages with zero console errors. A headless-Chrome tap drive ran as above, with no undefined/NaN text.

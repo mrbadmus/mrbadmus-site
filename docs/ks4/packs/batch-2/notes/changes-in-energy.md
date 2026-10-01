@@ -147,3 +147,24 @@ panel 57). Every explainer is ≤150 words before a commitment. Under the
     overflow, on CF and TH, before and after driving the hook and all four
     bench changes.
   The scratch copy has been deleted.
+
+## Review fixes (1 Oct 2026)
+
+| row | what I did / why not |
+|---|---|
+| S-1 | Nothing in the lesson. The engine withholds frozen q1 (B2-W10). Rung 1 was already the spring item. |
+| S-2 | r4 point 6 now reads "…by air resistance. The total energy stays the same." The false causal "so" is gone. |
+| Q-CE1 / Q-X1 | Replaced the static pills with the `ks3-route-switch` route chip (`{{ routeWords }}`, `{{ routeSwitchOptions }}`), copied from using-moles-calculations. Added both keys to the fallback `R`. |
+| Q-CE2 | Deleted the explainer sentence that said which quantities are squared. The bench now asks first. |
+| Q-CE3 | **Not applied, by commander ruling.** "Equation sheet" stays on Ek, Ep and Ee, because the June 2026 sheets print all three (as in pilot resistors-C9). The CFIFA placeholder "as on the equation sheet" stays for the same reason. |
+| Q-CE4 | Rounds 1 and 2 now ask only "What happens to the energy in the … store?". Round 4 drops "at the same 6 m/s", which the h2 already says. |
+| Q-EN3 pattern (contradicted replies) | All four hook replies set to `''`. The reveal states the answer at once, so "Hold that" and "Check it" were false. |
+| A-3 | Applied. r4 point 4 now reads "Once the cord pulls up harder than her weight, she slows down…". |
+| A-CE3 | Applied. The Foundation convert example's Insert line is now `Ee = ½ × 40 × 0.15²`, and Fine-tune squares it. |
+| A-CE4 | Applied in part. The after-bar value label is removed, because the working line under the figure repeats it. The before-bar label stays: it is the only number on screen before the pupil commits. |
+| A-1 | Not applied. A "Spec: recall this" line under an "Equation sheet" chip contradicts the ruling's message for this exam year. |
+| A-2 | Not applied. The key note is frozen and served verbatim. This needs a DEPARTURES ruling. |
+| A-CE1 | Not applied. A key fact card would repeat the key note (no-redundant-text rule). |
+| A-CE2 | Not applied. The commander confirmed the spring item for rung 1. |
+
+Validated in a scratch copy (`build_ks4.py --batch`, throwaway module): zero console errors on all 8 pages at 1280 and 360. At 390 px on CF and TH, the route chip reads the right words, there is no `undefined`, `NaN` or `{{`, and no overflow before or after driving the hook and all four bench changes. The scratch copy has been deleted.

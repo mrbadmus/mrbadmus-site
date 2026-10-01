@@ -8,7 +8,7 @@
 <x-dc>
 <helmet>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Using Moles — Calculations and Limiting Reactants · MrBadmus GCSE Chemistry</title>
+<title>Using moles — calculations and limiting reactants · MrBadmus GCSE Chemistry</title>
 <link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
 <link rel="stylesheet" href="ks4-theme.css">
 <script src="ks4-source.js"></script>
@@ -27,13 +27,13 @@
 
 <div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
 
-  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Quantitative chemistry" title="Using Moles — Calculations and Limiting Reactants" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Quantitative chemistry" title="Using moles — calculations and limiting reactants" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
 
   <main class="ks3-main">
     <div class="ks3-lesson">
       <header class="ks3-lesson-head">
         <p class="ks3-eyebrow">{{ eyebrowLine }}</p>
-        <h1>Using Moles — Calculations and Limiting Reactants</h1>
+        <h1>Using moles — calculations and limiting reactants</h1>
         <p class="ks3-bigq">Magnesium fizzes in acid until something runs out. Which one runs out, how much hydrogen do you get, and how do the masses tell you the balanced equation in the first place?</p>
         <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
           <details class="ks3-route-switch">
@@ -176,7 +176,7 @@
       </section>
 
       <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
-        <dc-import name="Ks4KeyNote" title="Using Moles — Calculations and Limiting Reactants" spec="{{ keySpec }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+        <dc-import name="Ks4KeyNote" title="Using moles — calculations and limiting reactants" spec="{{ keySpec }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <section style="margin-top: 34px;">
@@ -294,7 +294,7 @@ class Component extends DCLogic {
     return Object.assign({}, R, {
       video: K && s.hook !== null ? K.video(slug) : null,
       railV, theme, ready, draftVisible: this.props.showDraft !== false,
-      eyebrowLine: R.isTriple ? 'AQA Chemistry (8462) 4.3.2.3–4.3.2.4 · Quantitative' : 'AQA Chemistry (8464) 5.3.2.3–5.3.2.4 · Quantitative',
+      eyebrowLine: R.isTriple ? 'AQA Chemistry (8462) 4.3.2.3–4.3.2.4 · Quantitative' : 'AQA Combined Science (8464) 5.3.2.3–5.3.2.4 · Quantitative',
       keySpec: R.isTriple ? 'AQA 4.3.2.3–4.3.2.4, 4.3.4 (8462)' : 'AQA 5.3.2.3–5.3.2.4 (8464)',
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: ready ? [{ href: K.hrefFor('moles', R), label: 'Moles' }, { href: K.hrefFor('amounts-in-equations', R), label: 'Amounts of substances in equations' }, { href: K.hrefFor('concentration-of-solutions', R), label: 'Concentration of solutions' }, { href: K.hrefFor('titrations', R), label: 'Titrations' }].filter((x) => x.href) : [],
@@ -304,7 +304,7 @@ class Component extends DCLogic {
         { text: 'Both together, because there are equal moles of each', reply: 'Equal moles, yes: 0.1 mol of each. But the equation does not use them one-to-one.' },
         { text: 'Neither: the fizzing stops once the gas escapes', reply: 'Gas escaping does not stop a reaction. It stops when a reactant is used up.' }
       ],
-      hookReveal: 'n(Mg) = 2.4 ÷ 24 = 0.1 mol. n(HCl) = 3.65 ÷ 36.5 = 0.1 mol. Each Mg needs two HCl, so 0.1 mol of Mg needs 0.2 mol of HCl. Only 0.1 mol is there: the hydrogen chloride runs out first, and magnesium is left over.',
+      hookReveal: 'Each Mg needs two HCl. Turn both masses into moles, then compare them with that 1 : 2 ratio, not with each other.',
       onHook: (i) => this.setState({ hook: i }),
       benchProgress: (s.ran[0] ? 1 : 0) + (s.ran[1] ? 1 : 0) + ' of 2 mixes reacted',
       mixTabs: ['Mix A', 'Mix B', 'Your mix'].map((lab, i) => ({ label: lab + (i < 2 && s.ran[i] ? ' ✓' : ''), pressed: s.mix === i, disabled: busy, style: this.seg(s.mix === i, busy),
@@ -312,7 +312,7 @@ class Component extends DCLogic {
       ownOn: s.mix === 2,
       steppers: [stepper('mg', 'Magnesium', 1, 10, 1), stepper('h', 'Hydrogen chloride', 2, 20, 2)],
       benchFig: ready ? K.fig(this.benchSvg(L.mg, L.h, s.prog, started), '') : null,
-      loadLine: 'Magnesium ' + mol(L.mg) + ' mol · Hydrogen chloride ' + mol(L.h) + ' mol',
+      loadLine: s.mix === 2 ? '' : 'Magnesium ' + mol(L.mg) + ' mol · Hydrogen chloride ' + mol(L.h) + ' mol',
       askOn: !started,
       askOptions: ['mg', 'hcl', 'both'].map((k) => ({ label: limiting(k), style: pickStyle,
         onClick: () => {
@@ -374,7 +374,7 @@ class Component extends DCLogic {
       onCalc: (n2) => this.setState({ calc: n2 }),
       onLadder: () => this.setState({ ladder: true }),
       rungs: ready ? {
-        r1: { command: 'State', marks: 1, prompt: 'State what is meant by the limiting reactant in a reaction.', why: 'The limiting reactant is completely used up, so it limits the amount of product.',
+        r1: { command: 'Give', marks: 1, prompt: 'Give the meaning of the term limiting reactant.', why: 'The limiting reactant is completely used up, so it limits the amount of product.',
           options: [
             { text: 'The reactant with the smallest mass at the start', correct: false, reply: 'Mass alone cannot tell you. In the hook, magnesium had the smaller mass and was left over.' },
             { text: 'The reactant with the fewest moles at the start', correct: false, reply: 'Moles must be compared with the equation ratio. In Mix A, magnesium had fewer moles and was still in excess.' },
@@ -389,7 +389,7 @@ class Component extends DCLogic {
           links: ['With the acid in excess, all of the metal reacts and is used up.', 'So the metal is the limiting reactant.', 'The amount of product depends on the amount of the limiting reactant, so the most product is made from the metal used.'],
           herrings: [{ text: 'The acid in excess limits the amount of product.', why: 'The reactant in excess is left over. Only the reactant that runs out limits the product.' }, { text: 'The excess acid makes more product than the equation allows.', why: 'The maximum is fixed by the moles of the limiting reactant and the equation ratio.' }] },
         r4: { command: 'Calculate', marks: 6, question: '5.4 g of aluminium reacts with 21.3 g of chlorine to make 26.7 g of aluminium chloride. (a) Use the masses to balance Al + Cl₂ → AlCl₃. (b) In a second experiment, 2.7 g of aluminium is mixed with 7.1 g of chlorine. Determine the limiting reactant and calculate the maximum mass of aluminium chloride. Show your working. (Ar: Al 27, Cl 35.5)',
-          points: ['Moles: Al 5.4 ÷ 27 = 0.20; Cl₂ 21.3 ÷ 71 = 0.30; AlCl₃ 26.7 ÷ 133.5 = 0.20.', 'Ratio 1 : 1.5 : 1 doubled to 2 : 3 : 2, so 2Al + 3Cl₂ → 2AlCl₃.', 'Second experiment: Al 2.7 ÷ 27 = 0.10 mol; Cl₂ 7.1 ÷ 71 = 0.10 mol.', '0.10 mol of Al needs 0.15 mol of Cl₂ and there is only 0.10 mol, so chlorine is the limiting reactant.', 'n(AlCl₃) = 0.10 × 2 ÷ 3 = 0.067 mol.', 'Mass = 0.067 × 133.5 = 8.9 g.'],
+          points: ['Moles: Al 5.4 ÷ 27 = 0.20; Cl₂ 21.3 ÷ 71 = 0.30; AlCl₃ 26.7 ÷ 133.5 = 0.20.', 'Ratio 1 : 1.5 : 1 doubled to 2 : 3 : 2, so 2Al + 3Cl₂ → 2AlCl₃.', 'Second experiment: Al 2.7 ÷ 27 = 0.10 mol; Cl₂ 7.1 ÷ 71 = 0.10 mol.', '0.10 mol of Al needs 0.15 mol of Cl₂ and there is only 0.10 mol, so chlorine is the limiting reactant.', 'n(AlCl₃) = 0.10 × 2 ÷ 3 = 0.0667 mol (keep the unrounded value).', 'Mass = 0.0667 × 133.5 = 8.9 g.'],
           reject: ['“Al + 1.5Cl₂ → AlCl₃”: balancing numbers must be whole numbers.', '“Aluminium is limiting because it has the smaller mass”: compare moles with the equation ratio.'] }
       } : {},
       keyLines: ['The limiting reactant is completely used up; the other reactant is in excess.', 'Limiting reactant: convert to moles → compare to equation ratio → whichever runs out first limits the amount of product.', 'Balancing from masses: masses → moles → divide by the smallest → simplest whole-number ratio.', 'n = mass ÷ Mr, using the formula as written: H₂ = 2, O₂ = 32, Cl₂ = 71.']

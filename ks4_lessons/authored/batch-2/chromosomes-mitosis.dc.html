@@ -108,18 +108,18 @@
           <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
             <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · two kinds of division</p></div>
             <p class="ks3-mis-quote">&ldquo;Mitosis makes four cells, each with half the chromosomes.&rdquo;</p>
-            <p style="margin: 0;">That describes meiosis, a different division that only makes gametes (sperm and eggs). You meet it in Inheritance, on both tiers. Mitosis is for the body: two cells, each with the full 46, identical to the parent. Meiosis is for gametes: four cells, each with 23, all genetically different.</p>
+            <p style="margin: 0;">That describes meiosis, a different division that only makes gametes (sperm and eggs). Mitosis is for the body: two cells, each with the full 46, identical to the parent. Meiosis is for gametes: four cells, each with 23, all genetically different.</p>
           </div>
         </sc-if>
         <sc-if value="{{ cyCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onCyNext }}" style="margin-top: 14px;">Next stage</button></sc-if>
       </section>
 
       <section id="s-order" class="ks3-block" style="scroll-margin-top: 92px;">
-        <dc-import name="Ks4Chain" eyebrow="Build the sequence" title="Describe the cell cycle, in order" prompt="This is the order the marks follow in a describe question. Leave out anything that does not happen in mitosis." links="{{ orderLinks }}" herrings="{{ orderHerrings }}" done-note="Grow and copy, pull apart, then divide the cytoplasm: AQA's three stages." on-done="{{ onOrder }}" hint-size="100%,520px"></dc-import>
+        <dc-import name="Ks4Chain" eyebrow="Build the sequence" title="Describe the cell cycle, in order" prompt="This is the order the marks follow in a describe question. Leave out anything that does not happen in the cell cycle." links="{{ orderLinks }}" herrings="{{ orderHerrings }}" done-note="Grow and copy, pull apart, then divide the cytoplasm: AQA's three stages." on-done="{{ onOrder }}" hint-size="100%,520px"></dc-import>
       </section>
 
       <section class="ks3-explainer">
-        <p>Mitosis makes cells identical to the parent, so it is used wherever an organism needs more of the same cells: <strong>growth</strong> and development from a fertilised egg, <strong>repair</strong> of damaged tissue, and <strong>replacement</strong> of worn-out cells. In mature animals, cell division is mainly restricted to repair and replacement. Some organisms reproduce <strong>asexually</strong> this way: one parent, no gametes, only mitosis, so every offspring is a clone. The one job mitosis never does is make gametes.</p>
+        <p>Mitosis makes cells identical to the parent, so it is used wherever an organism needs more of the same cells: <strong>growth</strong> and development from a fertilised egg, <strong>repair</strong> of damaged tissue, and <strong>replacement</strong> of worn-out cells. In mature animals, cell division is mainly restricted to repair and replacement. Some organisms reproduce <strong>asexually</strong> this way: one parent, no gametes, only mitosis, so every offspring is a clone. In animals, mitosis never makes gametes.</p>
       </section>
 
       <section id="s-where" class="ks3-block" style="scroll-margin-top: 92px;">
@@ -192,7 +192,7 @@ const STAGES = [
         why: ['', 'Halving the chromosome number is meiosis, which makes gametes. A body cell keeps its full set, so it has to copy it.', 'New DNA can only be copied from DNA that already exists. Split first and each half would get only part of the set.'],
         yes: 'The cell grows and increases its sub-cellular structures, such as ribosomes and mitochondria. Then the DNA replicates: every chromosome becomes two identical copies.' },
       { prompt: 'After copying, how many chromosomes does the model cell hold?', a: 1,
-        opts: ['8 chromosomes', '4 chromosomes, each now two copies', '2 chromosomes'],
+        opts: ['8 chromosomes, each one copy', '4 chromosomes, each two copies', '2 chromosomes, each four copies'],
         why: ['The copies stay joined, so they still count as 4 chromosomes. There are 8 copies, not 8 chromosomes.', '', 'Nothing has been lost. Every chromosome is still there, now doubled.'],
         yes: 'Still 4 chromosomes, each made of two identical copies held together. The mass of DNA has doubled.' }
     ] },
@@ -254,17 +254,15 @@ function cellFig(D, stage) {
   } else if (stage === 1) {
     body = '<g class="cm-grow">' + D.circ(320, cy, 134, CM.cyto, D.C.stroke, 2.6) + '</g>' +
       '<g class="cm-in">' + organelles(D, 320, cy, 134, 6, 12) + '</g>' +
-      D.circ(320, cy, 62, CM.nuc, D.C.stroke, 2.2) + chromSet(D, 320, cy, true, true) +
-      D.T(320, 28, 'Bigger, more organelles, every chromosome copied', 21);
+      D.circ(320, cy, 62, CM.nuc, D.C.stroke, 2.2) + chromSet(D, 320, cy, true, true);
   } else if (stage === 2) {
     const ell = '<ellipse cx="320" cy="' + cy + '" rx="214" ry="122" fill="' + CM.cyto + '" stroke="' + D.C.stroke + '" stroke-width="2.6"/>';
     const side = (sx, dx) => '<g class="cm-in">' + D.circ(sx, cy, 48, CM.nuc, D.C.stroke, 2.2) + '</g>' +
       '<g class="cm-slide" style="--cm-dx:' + dx + 'px;--cm-dy:0px">' + chromSet(D, sx, cy, false, false) + '</g>';
-    body = ell + organelles(D, 320, cy, 200, 8, 14, 112, (x) => Math.abs(x - 196) > 66 && Math.abs(x - 444) > 66) + side(196, 124) + side(444, -124) +
-      D.T(320, 34, 'One set of chromosomes to each end · two nuclei', 21);
+    body = ell + organelles(D, 320, cy, 200, 8, 14, 112, (x) => Math.abs(x - 196) > 66 && Math.abs(x - 444) > 66) + side(196, 124) + side(444, -124);
   } else {
     const half = (cx, dx) => '<g class="cm-slide" style="--cm-dx:' + dx + 'px;--cm-dy:0px">' + oneCell(D, cx, cy, 108, 46, false, 3, 6, false) + '</g>';
-    body = half(178, 52) + half(462, -52) + D.T(320, 34, 'Two cells · 4 chromosomes each', 22);
+    body = half(178, 52) + half(462, -52);
   }
   const alt = ['A model cell with a nucleus holding 4 chromosomes, two long and two short, in red and blue pairs.',
     'The cell is larger with more mitochondria and ribosomes; each of the 4 chromosomes is now two copies joined at the middle.',
@@ -399,7 +397,7 @@ class Component extends DCLogic {
         { text: 'Changes in a cell make it grow and divide out of control', correct: true, reply: 'Mitosis itself is normal. Cancer is the result of changes in cells that lead to uncontrolled growth and division.' },
         { text: 'The cell divides by meiosis instead of mitosis', correct: false, reply: 'Meiosis only makes gametes. A tumour is a mass of body cells dividing without control.' }
       ],
-      cancerReveal: 'The cell cycle normally runs under control. When changes in a cell remove that control, it keeps dividing and forms a tumour. Benign tumours stay in one area; malignant ones spread in the blood and form secondary tumours.',
+      cancerReveal: 'Mitosis is normal; losing control of it is the disease.',
       onCancer: (i) => this.setState({ cancer: i }),
       onLadder: () => this.setState({ ladder: true }),
       rungs: ready ? {

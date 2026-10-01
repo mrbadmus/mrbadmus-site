@@ -143,3 +143,22 @@ About 200 words. That is the hook paragraph (38), the explainer (77), the s-mol 
 - **Logic:** run in Node with the real `shared/ks4-lib.js` and `shared/ks4-diagrams.js` and a source record from `build_source_record`, on all four routes, with and without reduced motion. Every bench option was driven through its animation. No `undefined` or `NaN` anywhere.
 - **Scratch build** (APFS clone of the worktree, a temporary `ks4_lessons/batch_mytest.py`; the real worktree untouched): `build_ks4.py --batch` gave zero console errors at 1280 and 360.
 - **Headless Chrome:** checked at 390 and 1280, light and dark. There is no horizontal scroll at 390. Route layers are present or absent correctly on CF, CH and TH, with badges.
+
+## Review fixes (quality-b, science-chem-a)
+
+- **Q-1 (required).** Title in sentence case, "Concentration of solutions", in `<title>`, `<h1>`, the Ks4Chrome title and the Ks4KeyNote title.
+- **Q-2 (required).** `madeLines` now leaves out the solution just made while its verdict is showing, and `hasMade` counts only earlier ones. The result no longer appears twice.
+- **Q-3 (required).** Higher r3 is now 3 marks and at least as hard as Foundation r3. A is 6.0 g in 150 cm³ and B is 10 g in 250 cm³: convert both, both are 40 g/dm³, so they are equally concentrated. Two new red herrings (more salt; less water). ⚑ The arithmetic was checked.
+- **Common_mistake caps text: not applicable.** This lesson never prints `common_mistake`.
+- **quality-b A-1.** "Give the unit" is folded into the Calculate card.
+- **quality-b A-2.** Foundation Q1 is now 9.0 g in 0.25 dm³ = 36 g/dm³, and the close line now says 250.
+- **quality-b A-3.** The explainer's conversion example is now 500 cm³ = 0.500 dm³, so it no longer repeats the hook's 250 cm³ line.
+- **science A-9.** On CF/CH the eyebrow reads "AQA Combined Science (8464) 5.3.2.5 · Quantitative". The keySpec "AQA 5.3.2.5 (8464)" carries no subject label, so it is unchanged.
+- **science A-11.** r1's command word is now "Give", with the prompt "Give the step that converts a volume in cm³ into dm³."
+- **science A-10.** In r4 (Foundation and Higher), the transfer point now accepts a volumetric flask "(or another container where the volume can be measured)". The make-up point now reads "until the total volume of solution is 250 cm³ / 200 cm³, then mix". The legal line still names the volumetric flask, as the accurate method.
+- **Engine shim removed.** The `'isHigher && isTriple'` key is deleted (the engine now uses reserved flags). The "Engine shim" paragraph above is now historical.
+- **Scratch rebuild (fixed engine), with zero console errors.** Route sections showed as follows:
+  - `#s-mol` and the c = n ÷ V card show on TH only, badged "Higher · Triple".
+  - `#s-pour` shows on CH and TH.
+  - CF and TF show neither.
+  - No horizontal scroll at 390.

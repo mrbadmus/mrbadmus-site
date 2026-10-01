@@ -32,14 +32,17 @@
   <main class="ks3-main">
     <div class="ks3-lesson">
       <header class="ks3-lesson-head">
-        <p class="ks3-eyebrow">AQA Chemistry 4.8.3.3–4.8.3.5 (chemistry only) · Required practical</p>
+        <p class="ks3-eyebrow">AQA Chemistry (8462) 4.8.3.3–4.8.3.5 · Required practical</p>
         <h1>Tests for carbonates, halides and sulfates</h1>
         <p class="ks3-bigq">A white salt with no label. Which tests, in which order and with which acid, prove what it is, and which tests would lie to you?</p>
         <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
-          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-blue); background: var(--ks3-blue-tint); color: var(--ks3-blue-text);">Triple</span>
-          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
-          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-accent); background: var(--ks3-accent-tint); color: var(--ks3-ink);">Required practical 7 · identifying ions</span>
-          <sc-if value="{{ isHigher }}"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-stretch); background: var(--ks3-stretch-tint); color: var(--ks3-stretch-text);">Contains Higher</span></sc-if>
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-accent); background: var(--ks3-accent-tint); color: var(--ks3-ink);">Required practical · identifying ions</span>
         </div>
         <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
       </header>
@@ -408,7 +411,7 @@ class Component extends DCLogic {
   patch(id, obj) { this.setState((st) => { const rec = Object.assign({}, st.rec); rec[id] = Object.assign({}, rec[id] || {}, obj); return { rec }; }); }
   renderVals() {
     const s = this.state; const K = window.KS4; const D = window.KS4D;
-    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true };
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, routeWords: '', routeSwitchOptions: [] };
     const slug = 'carbonates-halides-sulfates';
     const ready = !!(s.libReady && K && D);
     const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
@@ -448,7 +451,7 @@ class Component extends DCLogic {
     const done = [s.hook !== null, s.think !== null, named === SAMPLES.length, s.acid, s.ladder];
     const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
 
-    const keyLines = ['Carbonate: acid → CO₂ → limewater milky.', 'Halides: acidify (HNO₃) + AgNO₃ → Cl=white, Br=cream, I=yellow precipitate.', 'Sulfate: acidify (HCl) + BaCl₂ → white BaSO₄ precipitate.', 'Always acidify first to remove interfering ions.',
+    const keyLines = ['Carbonate: acid → CO₂ → limewater milky.', 'Halides: acidify (HNO₃) + AgNO₃ → Cl=white, Br=cream, I=yellow precipitate.', 'Sulfate: acidify (HCl) + BaCl₂ → white BaSO₄ precipitate.', 'Always acidify first to remove carbonate ions.',
       'Never acidify with the acid whose ion you are testing for: no HCl in the halide test, no H₂SO₄ in the sulfate test.',
       'Naming a salt takes two results: a metal-ion test and an anion test.'].concat(R.isHigher ? ['Ionic: Ag⁺ + X⁻ → AgX; Ba²⁺ + SO₄²⁻ → BaSO₄; CO₃²⁻ + 2H⁺ → H₂O + CO₂.'] : []);
 
@@ -490,9 +493,9 @@ class Component extends DCLogic {
       testsOn: catRight && !r.nameOk,
       tests: TESTS.map((x) => ({ label: x.label + (runs[x.k] === 'done' ? ' · done' : ''), pressed: r.last === x.k, disabled: busy, style: this.btn(r.last === x.k, busy), onClick: () => { if (!busy) this.run(s.cur, x.k); } })),
       resultOn: !!(lastO && runs[r.last] === 'done'), resultHead: lastT ? lastT.short + ':' : '', resultText: lastO ? lastO.text : '',
-      logOn: Object.keys(runs).filter((k) => runs[k] === 'done').length > 1,
-      logHead: 'Salt ' + S.id + ' · results so far',
-      logRows: TESTS.filter((x) => runs[x.k] === 'done').map((x) => ({ test: x.short, obs: outcome(S.an, x.k, !!S.sol).text })),
+      logOn: TESTS.some((x) => runs[x.k] === 'done' && x.k !== r.last),
+      logHead: 'Salt ' + S.id + ' · earlier results',
+      logRows: TESTS.filter((x) => runs[x.k] === 'done' && x.k !== r.last).map((x) => ({ test: x.short, obs: outcome(S.an, x.k, !!S.sol).text })),
       nameOn: catRight && anyRun && !busy && !r.nameOk,
       nameOptions: this.order(S.names, 'n' + S.id).map((o) => ({ label: o.x[0], pressed: r.name === o.i, disabled: false, style: this.pick(r.name === o.i, false), onClick: () => this.patch(s.cur, { name: o.i, nameOk: o.x[1] === 1 }) })),
       nameHasReply: !!nameRep && !busy, nameWord: nameRep && nameRep[1] === 1 ? 'Named.' : 'Not this one.', nameReply: nameRep ? nameRep[2] : '',
@@ -531,7 +534,7 @@ class Component extends DCLogic {
         },
         r4: {
           command: 'Plan', marks: 6,
-          question: 'A student has three white solids: sodium carbonate, sodium sulfate and sodium iodide. Describe tests the student could use to identify each solid. Give the results.',
+          question: 'A student has three white solids: sodium carbonate, sodium sulfate and sodium iodide. Plan tests that would identify each solid. Give the result each one would show.',
           levels: [
             { label: 'Level 3 · 5–6', text: 'A logical sequence that identifies all three, with the correct reagents, including the acid step with the correct acid, and the correct results.', max: 6 },
             { label: 'Level 2 · 3–4', text: 'Identifies two correctly with results, or all three with minor omissions, such as a missing acid step.', max: 4 },

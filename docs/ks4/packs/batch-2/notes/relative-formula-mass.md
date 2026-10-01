@@ -76,3 +76,20 @@ The line-up differs from the pilot's QUANTITATIVE lesson (nanoparticles). Here i
 - **Body prose:** hook 31 words; explainers 105, 59 and 52 words; Higher card 63 words. Total 310 words. Every block is at most 150 words before a commitment.
 - **Self-check:** I rendered the lesson on all four routes in headless Chrome, on the pilot runtime with a scratch source file. Results: 0 console errors, no `undefined`/`NaN`/`{{`, and scrollWidth of 390 at 390 px. A drive confirmed the unpacker's confront appears at Mg(OH)₂ only, the pans' error feedback fires, the key note swaps line 4 on CF/TF only, and the Higher CFIFA tab appears on CH/TH only. The standalone runtime does not strip `data-route`, so the HT card shows on every route there; the build's `apply_route_layers` handles it. `build_ks4.py --batch batch-2` was not run, because no batch-2 module is registered.
 - One harness note: `ks3_browser.Page.goto` timed out waiting for `loadEventFired` on this page under `support.js`, although `document.readyState` was `complete` within 2 s. I drove it with `Page.navigate` and a fixed wait instead. The cause is in the test harness, not the lesson.
+
+## Review fixes (1 Oct 2026)
+
+From `review/science-chem-a.md` (no required rows; A-2…A-4) and `review/quality-b.md` (Q-1…Q-4, A-1…A-3):
+
+- **Science A-2.** Pan 1 hints corrected. A reactant total of 64 now gets "O₂ has two O atoms: Mᵣ 32, not 16." A total of 40 now gets "2Mg is two magnesium atoms (48), and O₂ is 32: 48 + 32 = 80."
+- **Science A-3.** Not applied: it is a frozen-text fix (q1 wx1) for Mide's list. q1 stays as rung 1.
+- **Science A-4.** No change: noted so the Foundation % items are not later duplicated onto Higher.
+- **Q-1.** Eyebrows are now `The formula unpacker` and `Load the pans`. `upStep` and `panStep` are deleted.
+- **Q-2.** The confront panel's verbatim `common_mistake` paragraph is deleted, along with `cmText`. The panel keeps its three beats: the quote, why it is wrong (42, not 58), and the tally beside it as the correct count.
+- **Q-3.** Key fact is now the reviewer's bracket-rule text word for word ("A number after a bracket multiplies everything inside it: Mg(OH)₂ is one Mg, two O and two H, Mᵣ = 58. Mᵣ has no units.").
+- **Q-4.** Added the route chip, copied from `using-moles-calculations.dc.html`. Eyebrow is now `AQA Chemistry ({{ specCode }}) {{ specRef }} · Quantitative`, with 8464 on Combined and 8462 on Triple.
+- **Quality A-1.** Not applied. q1 (CaCO₃) is the only clean verbatim quiz item. q2 is withheld for its self-contradicting wx1, and the H₂SO₄ item is a FIFA, not a quiz item. Repeating Mᵣ(CaCO₃) after CFIFA Q1 is accepted.
+- **Quality A-2.** Not applied. The bar's "Mᵣ = 342" label is the moment the animation lands, and the tally line adds the sum it came from, so I judged both worth keeping.
+- **Quality A-3.** Not applied. The subscript glyphs come from Georgia's own Unicode subscript digits, which is the pilot diagram engine's convention (`ks4-diagrams.js` `T()`). Changing it needs a shared helper.
+- **"State" → "Give".** Nothing to change: no chip on this lesson read "State".
+- **Validation.** Re-run in scratch on all four routes: 0 console errors, no undefined/NaN/`{{`, scrollWidth 390. The new 64 hint fires. The key fact and eyebrows are as above.

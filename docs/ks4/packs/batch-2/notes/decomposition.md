@@ -113,3 +113,20 @@ All in the lesson's own Component logic; no `_ext` file.
 
 Hook 28 + explainer 1 (43) on every route = **71 words** on Combined; plus the Triple
 explainer (71) = **142 words** on Triple (RP method, variables and risks ≈ 170 words more).
+
+## Review fixes (1 Oct 2026)
+
+| row | what I did / why not |
+|---|---|
+| S-7 (science-bio-phys, REQUIRED) | `pinkOptions[0].reply`: "The acid comes from the fat in the milk, broken down by the lipase you added." |
+| Q-D1 (quality-a, REQUIRED) | **New hook:** "A compost heap steams on a frosty morning". Below 0 °C outside, over 50 °C in the middle; "Where does the heat come from?" Options are sunlight, living things releasing energy (key, empty reply), slow burning, warmth from the ground, and the replies correct each idea. **Single telling:** the reveal states respiration once, after the commitment. **Stepper step 1:** now asks where the carbon goes (air as CO₂ / soil / destroyed), so it no longer re-asks respiration. **Other changes:** the big question no longer opens on a fallen leaf, and the rail label is now "A warm compost heap". ⚑ New science: microbial respiration heats a compost heap; heap centres exceed 50 °C (examination C7). |
+| Q-D2 (REQUIRED) | **Added base (all-route) mid-size sort `s-return`**, "Air, soil, or locked away?". The six items mix their wording so the answer cannot be read off a keyword, and each carries a corrective `why`. ⚑ The items are carbon in a leaf's sugars, nitrate in droppings, a fern buried before it could rot (coal), magnesium from a leaf, carbon in a feeding fungus (respired), and nitrogen compounds in a dead mouse. Cites 4.7.2.2. Added to both rails, with state `ret` and done flags. |
+| Q-D3 (REQUIRED) | `rateLabel` → "Calculate the rate at 40 °C from your time." |
+| Q-D4 (REQUIRED) | Wrong-answer `rateText` → "Divide 1 by your time in seconds; the unit is s⁻¹." |
+| Q-D5 (REQUIRED) | Deleted the "Your times for the pink to go, in seconds." caption. The table's aria-label is kept. |
+| A-13 (ADVISORY) | Combustion reply → "The leaves are not burning. Decay is done by living microorganisms." |
+| A-14 (ADVISORY) | `pinkReveal` now ends "…so 1 ÷ time measures the rate of decay." |
+| A-D1 (ADVISORY) | **Curve:** joins measured times only (20–50 °C). **60 °C:** a hollow marker at the top of the axis, labelled "> 600 s" to its left, so it is no longer clipped. |
+| A-12 / A-D2 | Not changed: by the commander's ruling, q1 (detritivores) stays in the bank. |
+
+**New section id `s-return`** (a `Ks4Sort`, base layer). It needs a `block_map` entry in `batch_2.py` if the classifier does not infer it. I suggest `"s-return": "check"`, the same as other mid-lesson sorts, with the commander's choice of type.

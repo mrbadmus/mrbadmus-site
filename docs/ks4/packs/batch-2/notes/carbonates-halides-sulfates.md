@@ -97,3 +97,12 @@ About 400 words of template prose (hook 45, explainer 86, RP block 147 including
 ## Self-check done
 
 Compiled, route-layered and rendered through the real `build_ks4` functions in a scratch harness, then driven in headless Chrome on TF and TH (animated and reduced motion): zero console errors at 1280 and 390, no horizontal overflow at 390, no `undefined`/`{{` text (the one "NaN" match is the formula NaNO₃), Higher section and badge present on TH and absent on TF, rung 1 resolves from the route's own quiz, all five salts can be named, the wrong-name replies fire, and all three spectator equations grade and reveal their ionic equations.
+
+## Review fixes
+
+- quality-b Q-1 → Removed the `Triple`, `Foundation · Higher` and `Contains Higher` pills. Added the route chip as in using-moles-calculations. The RP pill now reads `Required practical · identifying ions`. Eyebrow → `AQA Chemistry (8462) 4.8.3.3–4.8.3.5 · Required practical`.
+- quality-b Q-2 → rung 4 question → "Plan tests that would identify each solid. Give the result each one would show." (the command stays `Plan`).
+- quality-b Q-3 → the rack's results log now lists only earlier tests (`x.k !== r.last`), headed "Salt N · earlier results". The latest result shows once in the result line, plus the figure caption.
+- quality-b A-1, A-2, A-3 (advisory) → not done (A-2 matches the pilot's own pattern; A-1 and A-3 would be design changes).
+- science-chem-b A-8 → key-note line 4 `Always acidify first to remove interfering ions.` → `Always acidify first to remove carbonate ions.` This edits the frozen key-note sentence, on the examiner's advice.
+- No new block_map need: the classification is unchanged.

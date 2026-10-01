@@ -37,8 +37,12 @@
         <h1>Changes in energy</h1>
         <p class="ks3-bigq">Double a car&rsquo;s speed, a ball&rsquo;s height or a spring&rsquo;s stretch. Which of them doubles the energy stored, and which does far more?</p>
         <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
-          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
-          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
         </div>
         <div style="margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;">
           <a href="{{ eqSheetHref }}" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 16px; border-radius: var(--ks3-r-control); border: 2px solid var(--ks3-ink); background: var(--ks3-card); color: var(--ks3-ink); font-size: 16px; font-weight: 700; text-decoration: none;" style-hover="background: var(--ks3-accent-tint); border-color: var(--ks3-accent);">View the full equation sheet<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3H3v10h10v-3"></path><path d="M9 3h4v4"></path><path d="M13 3L7 9"></path></svg></a>
@@ -59,7 +63,7 @@
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
 
       <section class="ks3-explainer">
-        <p>Three energy stores each have their own equation. A <strong>moving</strong> object has energy in its kinetic store. An object <strong>raised</strong> above the ground has energy in its gravitational potential store. A <strong>stretched or compressed</strong> spring has energy in its elastic potential store. Each equation multiplies quantities together, but two of them square one quantity: speed in the kinetic equation, extension in the elastic one. On the bench, change one quantity at a time and call the factor before the store fills.</p>
+        <p>Three energy stores each have their own equation. A <strong>moving</strong> object has energy in its kinetic store. An object <strong>raised</strong> above the ground has energy in its gravitational potential store. A <strong>stretched or compressed</strong> spring has energy in its elastic potential store. On the bench, change one quantity at a time and call the factor before the store fills.</p>
       </section>
 
       <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
@@ -178,12 +182,12 @@ const G = 9.8;
 const UNSQ = 'That leaves the square out.';
 /* One change per round. b = before, a = after. Ep from Ep = m g h, Ee from ½ k e², Ek from ½ m v². */
 const ROUNDS = [
-  { store: 'Ep', title: 'Lift the ball twice as high.', ask: 'The height doubles. What happens to the energy in the gravitational potential store?',
+  { store: 'Ep', title: 'Lift the ball twice as high.', ask: 'What happens to the energy in the gravitational potential store?',
     b: { m: 2, h: 1.5 }, a: { m: 2, h: 3.0 }, factor: '×2', truth: 0,
     opts: [{ t: '×2' }, { t: '×4', r: 'That would need h to be squared. Nothing is squared in Ep = m g h.' }, { t: 'no change', r: 'h is in the equation, so more height means more energy in the store.' }],
     why: 'h appears once in Ep = m g h, so twice the height gives twice the energy.',
     work: 'Before: Ep = 2 × 9.8 × 1.5 = 29.4 J · After: Ep = 2 × 9.8 × 3.0 = 58.8 J', eb: '29.4 J', ea: '58.8 J' },
-  { store: 'Ee', title: 'Stretch the spring twice as far.', ask: 'The extension doubles. What happens to the energy in the elastic potential store?',
+  { store: 'Ee', title: 'Stretch the spring twice as far.', ask: 'What happens to the energy in the elastic potential store?',
     b: { k: 200, e: 0.05 }, a: { k: 200, e: 0.10 }, factor: '×4', truth: 1, unsq: 0,
     opts: [{ t: '×2', r: UNSQ }, { t: '×4' }, { t: '×8', r: 'Only e is squared, and 2² = 4. The ½ and k do not change.' }],
     why: 'e is squared in Ee = ½ k e², and 2² = 4.',
@@ -193,7 +197,7 @@ const ROUNDS = [
     opts: [{ t: '×3', r: UNSQ }, { t: '×6', r: 'Squaring is not doubling: 3² = 3 × 3 = 9, not 3 × 2 = 6.' }, { t: '×9' }],
     why: 'v is squared in Ek = ½ m v², and 3² = 9.',
     work: 'Before: Ek = ½ × 70 × 2² = 140 J · After: Ek = ½ × 70 × 6² = 1260 J', eb: '140 J', ea: '1260 J' },
-  { store: 'Ek', title: 'Same speed, twice the mass.', ask: 'A second 70 kg block is loaded on, at the same 6 m/s. What happens to the energy in the kinetic store?',
+  { store: 'Ek', title: 'Same speed, twice the mass.', ask: 'A second 70 kg block is loaded on. What happens to the energy in the kinetic store?',
     b: { m: 70, v: 6 }, a: { m: 140, v: 6 }, factor: '×2', truth: 0,
     opts: [{ t: '×2' }, { t: '×4', r: 'Only the speed is squared. Mass appears once, so twice the mass gives twice the energy.' }, { t: 'no change', r: 'Mass is in the equation: more mass at the same speed means more kinetic energy.' }],
     why: 'm is not squared, so twice the mass gives twice the energy. In the last change it was the speed, which is squared.',
@@ -269,7 +273,6 @@ class Component extends DCLogic {
     if (shown) {
       const E = mix(Eb, Ea, p);
       b += '<rect x="544" y="' + (base - E * sc).toFixed(1) + '" width="56" height="' + (E * sc).toFixed(1) + '" fill="' + C.arrow + '"/>';
-      if (p >= 1) b += D.T(572, base - E * sc - 10, rd.ea, 20, { fill: C.stroke });
     } else {
       b += '<rect x="544" y="' + (base - 60) + '" width="56" height="60" fill="none" stroke="' + C.muted + '" stroke-width="2" stroke-dasharray="6 5"/>' + D.T(572, base - 22, '?', 26, { fill: C.muted });
     }
@@ -284,7 +287,7 @@ class Component extends DCLogic {
   }
   renderVals() {
     const s = this.state; const K = window.KS4; const D = window.KS4D;
-    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, routeOptions: [], onRoute: () => {}, eqSheetHref: 'https://www.aqa.org.uk/files/resources.physics.AQA-8463-FS-INS-2025_PDF/6b5358e1159b1b6cc2d622fc5eb894320d6fb763.pdf', eqSheetLabel: 'GCSE Physics (8463) · June 2026' };
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, routeWords: '', routeSwitchOptions: [], routeOptions: [], onRoute: () => {}, eqSheetHref: 'https://www.aqa.org.uk/files/resources.physics.AQA-8463-FS-INS-2025_PDF/6b5358e1159b1b6cc2d622fc5eb894320d6fb763.pdf', eqSheetLabel: 'GCSE Physics (8463) · June 2026' };
     const slug = 'changes-in-energy';
     const ready = !!(s.libReady && K && D);
     const hi = !!R.isHigher;
@@ -307,10 +310,10 @@ class Component extends DCLogic {
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: [{ href: href('internal-energy'), label: 'Internal energy' }, { href: href('forces-elasticity'), label: 'Forces and elasticity' }, { href: href('work-done-energy-transfer'), label: 'Work done and energy transfer' }].filter((c) => c.href),
       hookOptions: [
-        { text: 'The same amount', reply: 'Speed is in the equation, so the store must change.' },
-        { text: 'Twice as much', reply: 'That is the obvious guess. Check it against the numbers.' },
-        { text: 'Four times as much', reply: 'Hold that, and see why.' },
-        { text: 'Eight times as much', reply: 'More than double, yes. Check by how much.' }
+        { text: 'The same amount', reply: '' },
+        { text: 'Twice as much', reply: '' },
+        { text: 'Four times as much', reply: '' },
+        { text: 'Eight times as much', reply: '' }
       ],
       hookReveal: 'Four times. Kinetic energy depends on the speed squared: Ek = ½ m v². A 1000 kg car at 10 m/s has 50 000 J in its kinetic store. At 20 m/s it has 200 000 J, so the brakes must transfer four times as much energy.',
       onHook: (i) => this.setState({ hook: i }),
@@ -367,8 +370,8 @@ class Component extends DCLogic {
           steps: [
             { letter: 'C', label: 'Convert', line: '15 cm ÷ 100 = 0.15 m', note: 'k is in newtons per metre, so e must be in metres.' },
             { letter: 'F', label: 'Formula', line: 'Ee = ½ × k × e²', note: '' },
-            { letter: 'I', label: 'Insert', line: 'k = 40 N/m, e = 0.15 m', note: '' },
-            { letter: 'F', label: 'Fine-tune', line: 'e² = 0.15² = 0.0225; Ee = ½ × 40 × 0.0225', note: 'Square the extension first.' },
+            { letter: 'I', label: 'Insert', line: 'Ee = ½ × 40 × 0.15²', note: '' },
+            { letter: 'F', label: 'Fine-tune', line: '0.15² = 0.0225; Ee = ½ × 40 × 0.0225', note: 'Square the extension first.' },
             { letter: 'A', label: 'Answer', line: 'Ee = 0.45 J', note: 'Left in centimetres, ½ × 40 × 15² = 4500 J: ten thousand times too big.' }
           ] }
       ] : [],
@@ -405,7 +408,7 @@ class Component extends DCLogic {
             { label: 'Level 1 · 1–2', text: 'Some stores are named, with few or no links.', max: 2 },
             { label: 'No relevant content · 0', text: '', max: 0 }
           ],
-          points: ['As she falls, her height decreases, so her gravitational potential store decreases.', 'Before the cord tightens, that energy goes to her kinetic store: her speed increases.', 'Once the cord starts to stretch, energy is transferred to the elastic potential store of the cord.', 'The cord slows her down, so her kinetic store decreases while the elastic store keeps increasing.', 'At the lowest point her speed is zero and the elastic potential store is at its greatest.', 'Some energy is dissipated to the thermal store of the surroundings by air resistance, so the total stays the same.'],
+          points: ['As she falls, her height decreases, so her gravitational potential store decreases.', 'Before the cord tightens, that energy goes to her kinetic store: her speed increases.', 'Once the cord starts to stretch, energy is transferred to the elastic potential store of the cord.', 'Once the cord pulls up harder than her weight, she slows down: her kinetic store decreases while the elastic store keeps increasing.', 'At the lowest point her speed is zero and the elastic potential store is at its greatest.', 'Some energy is dissipated to the thermal store of the surroundings by air resistance. The total energy stays the same.'],
           reject: ['“Energy is used up as she falls.” Energy is transferred, never used up.', '“Her kinetic energy is greatest at the lowest point.” She is momentarily stopped there.'] }
       } : {},
       keyLines: K ? K.keyLines(slug) : [],
