@@ -44,6 +44,13 @@ Model, found the same pattern again — six more:
 | 10 | "deposition" as the name of a state change | AQA never uses the term | `changes-of-state-e01` keys it, because the page teaches it |
 | 11 | W/m·K as a unit | not required by AQA | `thermal-conductivity` prints it |
 
+> ⊕ **1 Oct 2026, KS4 batch 3 — row 8 holds only in part.** The batch-3 examiner read
+> 8463 4.3.3.1–4.3.3.3 and 8464 6.3.3.1: pV = constant (4.3.3.2) is Physics-only but carries
+> no HT marker (Appendix A sheet equation 12 unmarked; June 2026 8463 sheet prints it); the
+> QUALITATIVE pressure–temperature relation is base on all routes (6.3.3.1 / 4.3.3.1); only the
+> quantitative p/T law and kelvin are outside AQA. Work done on a gas raising its temperature
+> (4.3.3.3) is Physics-only HT. See `docs/ks4/packs/batch-3/examination/particle-motion-pressure.md`.
+
 **Neither reviewer rewrote any of these, and that was the right call.**
 Rewriting the questions would put a child's homework out of step with the page
 they revise from — the worse of the two failures. The mismatch is between the
