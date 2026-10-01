@@ -778,11 +778,11 @@
      lower-cased assignment id. A read that fails costs only the two
      numbers: `writeFinishedSubmission` still writes the row, from the
      finish moment itself as `started_at`. */
-  function fcSessionAgg(sb, assignmentIds) {
+  function fcSessionAgg(sb, assignmentIds, uid) {
     if (!assignmentIds.length) { return Promise.resolve({}); }
     return pagedRows(function () {
       return sb.from("flashcard_sessions").select("assignment_id, started_at, active_ms")
-        .in("assignment_id", assignmentIds);
+        .eq("pupil_id", uid).in("assignment_id", assignmentIds);
     }).then(function (rows) {
       var agg = {};
       (rows || []).forEach(function (r) {
@@ -796,47 +796,74 @@
     }, function () { return {}; });
   }
 
+  /* ⊕ 1 Oct 2026 (review should-fix 2) — the write refuses unless `uid` is
+     genuinely a PUPIL MEMBER of the class that owns this assignment. RLS
+     (`submissions_self_all`, `student_id = auth_user_id()`) lets ANY
+     signed-in account write a row naming itself as `student_id` — it was
+     built for a real pupil completing their own homework, and it cannot
+     by itself tell that apart from a staff/admin account's own uid being
+     used this way (e.g. a school_admin or SLT viewing the pupil page: the
+     heal's reads, scoped to `uid` below, would find nothing of THEIRS to
+     finish in practice — but a defensive check belongs here, once, rather
+     than trusted to "in practice" at every call site). One extra read per
+     WRITE (never per heal check — writes are rare), on no success path a
+     real pupil's own finish is slowed by more than this. */
+  function pupilMemberOfAssignmentClass(sb, uid, assignmentId) {
+    return sb.from("assignments").select("class_id").eq("id", assignmentId).maybeSingle()
+      .then(function (r) {
+        var classId = r && !r.error && r.data && r.data.class_id;
+        if (!classId) { return false; }
+        return sb.from("class_members").select("student_id")
+          .eq("class_id", classId).eq("student_id", uid)
+          .is("left_at", null).is("deleted_at", null).maybeSingle()
+          .then(function (m) { return !!(m && !m.error && m.data); }, function () { return false; });
+      }, function () { return false; });
+  }
+
   /* The write itself. `dueAt` and `agg` are both optional (the live path
      reads `agg` fresh for one id; a caller with nothing for either still
      gets a correct, if timing-light, row). Resolves `true` only when THIS
      call wrote or updated the row — the signal callers use to refresh the
-     page; `false` for "already done" or "could not write this time". */
+     page; `false` for "already done", "not a pupil of this class", or
+     "could not write this time". */
   function writeFinishedSubmission(sb, assignmentId, uid, n, hit, dueAt, agg) {
-    return sb.from("assignment_submissions").select("id, submitted_at")
-      .eq("assignment_id", assignmentId).eq("student_id", uid).eq("attempt_no", 1)
-      .is("deleted_at", null).maybeSingle()
-      .then(function (res) {
-        if (res.error) { throw res.error; }
-        var row0 = res.data;
-        if (row0 && row0.submitted_at) { return false; }   // already done: never touched
-        return fcTimeFromEvent(sb, hit).then(function (serverAt) {
-          var isLate = !!(dueAt && Date.parse(serverAt) > Date.parse(dueAt));
-          var startedAt = (agg && agg.started != null) ? new Date(agg.started).toISOString() : serverAt;
-          var payload = {
-            assignment_id: assignmentId, student_id: uid, score: n, max_score: n,
-            total_time_seconds: Math.round((agg && agg.seconds) || 0),
-            submitted_at: serverAt, completed_at: serverAt, started_at: startedAt,
-            status: "complete", is_late: isLate, attempts: 1, attempt_no: 1
-          };
-          if (row0 && row0.id) {
-            return sb.from("assignment_submissions").update(payload).eq("id", row0.id)
-              .then(function (r) { if (r.error) { throw r.error; } return true; });
-          }
-          return sb.from("assignment_submissions").insert(payload)
-            .then(function (r) {
-              if (r.error) {
-                if (r.error.code === "23505") { return false; }  // another path won the race
-                throw r.error;
-              }
-              return true;
-            });
+    return pupilMemberOfAssignmentClass(sb, uid, assignmentId).then(function (isPupil) {
+      if (!isPupil) { return false; }
+      return sb.from("assignment_submissions").select("id, submitted_at")
+        .eq("assignment_id", assignmentId).eq("student_id", uid).eq("attempt_no", 1)
+        .is("deleted_at", null).maybeSingle()
+        .then(function (res) {
+          if (res.error) { throw res.error; }
+          var row0 = res.data;
+          if (row0 && row0.submitted_at) { return false; }   // already done: never touched
+          return fcTimeFromEvent(sb, hit).then(function (serverAt) {
+            var isLate = !!(dueAt && Date.parse(serverAt) > Date.parse(dueAt));
+            var startedAt = (agg && agg.started != null) ? new Date(agg.started).toISOString() : serverAt;
+            var payload = {
+              assignment_id: assignmentId, student_id: uid, score: n, max_score: n,
+              total_time_seconds: Math.round((agg && agg.seconds) || 0),
+              submitted_at: serverAt, completed_at: serverAt, started_at: startedAt,
+              status: "complete", is_late: isLate, attempts: 1, attempt_no: 1
+            };
+            if (row0 && row0.id) {
+              return sb.from("assignment_submissions").update(payload).eq("id", row0.id)
+                .then(function (r) { if (r.error) { throw r.error; } return true; });
+            }
+            return sb.from("assignment_submissions").insert(payload)
+              .then(function (r) {
+                if (r.error) {
+                  if (r.error.code === "23505") { return false; }  // another path won the race
+                  throw r.error;
+                }
+                return true;
+              });
+          });
         });
-      })
-      .catch(function (err) {
-        console.info("[student-live] flashcard finish write deferred",
-          err && (err.code || err.message));
-        return false;
-      });
+    }).catch(function (err) {
+      console.info("[student-live] flashcard finish write deferred",
+        err && (err.code || err.message));
+      return false;
+    });
   }
 
   /* So a finished deck moves out of To do THE SAME VISIT, with no reload:
@@ -865,6 +892,7 @@
     pagedRows(function () {
       return sb.from("flashcard_reviews")
         .select("assignment_id, card_id, rating, phase, rated_at, event_id, id")
+        .eq("pupil_id", uid)
         .order("rated_at", { ascending: true }).order("id", { ascending: true });
     }).then(function (rows) {
       rows.forEach(function (r) {
@@ -892,6 +920,16 @@
            under RLS, so it is simply absent from `deckCards` and skipped —
            the same safety `n`'s qualifying count already relies on. */
         var realIds = ids.map(function (lo) { return idOriginal[lo] || lo; });
+        /* ⊕ 1 Oct 2026 (review should-fix 3) — `assignments` and
+           `assignment_submissions` are cheap, needed just to know WHICH
+           decks (if any) even need the walk; `finishedAt` itself is pure
+           JS, free. The THIRD read — `flashcard_sessions`, for
+           `started_at`/`total_time_seconds` — used to run unconditionally
+           for every deck a pupil had ever rated, on every class-page
+           load. It now runs only for the decks this visit actually found
+           a finish for: a pupil whose decks are all already recorded, or
+           none of them finished, costs this function nothing beyond the
+           two reads above. */
         Promise.all([
           pagedRows(function () {
             return sb.from("assignments").select("id, flashcard_mode, due_at").in("id", realIds);
@@ -899,16 +937,14 @@
           pagedRows(function () {
             return sb.from("assignment_submissions").select("assignment_id, submitted_at")
               .eq("student_id", uid).in("assignment_id", realIds);
-          }).catch(function () { return []; }),
-          fcSessionAgg(sb, realIds)
+          }).catch(function () { return []; })
         ]).then(function (res) {
           var asg = {}; (res[0] || []).forEach(function (a) { asg[String(a.id).toLowerCase()] = a; });
           var done = {}; (res[1] || []).forEach(function (s) {
             if (s.submitted_at) { done[String(s.assignment_id).toLowerCase()] = true; }
           });
-          var agg = res[2] || {};
           var H = window.MRBHomework;
-          var writes = [];
+          var toFinish = [];
           ids.forEach(function (lo) {
             if (done[lo]) { return; }
             var a = asg[lo];
@@ -917,11 +953,16 @@
             var hit = H && typeof H.finishedAt === "function"
               ? H.finishedAt(reviewRows[lo] || [], cards, a.flashcard_mode) : null;
             if (!hit) { return; }
-            var rid = idOriginal[lo] || lo;
-            writes.push(writeFinishedSubmission(sb, rid, uid, cards.length, hit, a.due_at, agg[lo])
-              .then(function (wrote) { if (wrote) { fcPatchWorkRow(rid); } }));
+            toFinish.push({ lo: lo, rid: idOriginal[lo] || lo, hit: hit, cards: cards, dueAt: a.due_at });
           });
-          if (writes.length) { Promise.all(writes).catch(function () {}); }
+          if (!toFinish.length) { return; }
+          return fcSessionAgg(sb, toFinish.map(function (t) { return t.rid; }), uid).then(function (agg) {
+            var writes = toFinish.map(function (t) {
+              return writeFinishedSubmission(sb, t.rid, uid, t.cards.length, t.hit, t.dueAt, agg[t.lo])
+                .then(function (wrote) { if (wrote) { fcPatchWorkRow(t.rid); } });
+            });
+            return Promise.all(writes).catch(function () {});
+          });
         }).catch(function (err) {
           console.info("[student-live] flashcard heal unavailable", err && (err.code || err.message));
         });
@@ -978,14 +1019,14 @@
           if (!cards.length) { return false; }
           return sb.from("flashcard_reviews")
             .select("card_id, rating, phase, rated_at, event_id, id")
-            .eq("assignment_id", id)
+            .eq("assignment_id", id).eq("pupil_id", uid)
             .order("rated_at", { ascending: true }).order("id", { ascending: true })
             .then(function (r) {
               if (r.error) { throw r.error; }
               var hit = typeof H.finishedAt === "function"
                 ? H.finishedAt(r.data || [], cards, state && state.mode) : null;
               if (!hit) { return false; }
-              return fcSessionAgg(sb, [id]).then(function (agg) {
+              return fcSessionAgg(sb, [id], uid).then(function (agg) {
                 return writeFinishedSubmission(sb, id, uid, cards.length, hit,
                   state && state.due_at, agg[String(id).toLowerCase()]);
               });

@@ -205,6 +205,83 @@
     var n = Date.parse(v);
     return isNaN(n) ? 0 : n;
   }
+  // ── THE ROUND-AWARE WALK (⊕ MUST-FIX, review 1 Oct 2026) ─────────────
+  //
+  // ONE walker behind both `reconstruct()` (what pass the pupil is in NOW)
+  // and `finishedAt()` (the first time any pass they were in ended all
+  // Right — the Done screen moment). Mirroring this by hand in two places
+  // is exactly how the two drifted: a first `finishedAt`, written as a
+  // simple cumulative "every card's latest rating is Got it" check with no
+  // reset, agreed with `reconstruct` on every scenario this file's own
+  // tests tried — until a pupil left a leftovers round stale for an hour,
+  // came back to a FRESH pass (the engine re-asks the whole deck; see
+  // `rankedIds`), and got the weak card right FIRST. `reconstruct` rightly
+  // shows them 1 of 5 rated; the old `finishedAt`, never resetting, still
+  // saw every card's all-time-latest rating as Got it and called it
+  // finished. That is wrong in the direction that matters: it stamps a
+  // pupil done, permanently, while they are mid-pass.
+  //
+  // `list` is already filtered to the rows this walk should see (review-
+  // phase ratings for this deck, in order — see each caller for how make
+  // mode's writing pass is excluded first). Returns the walk's ending
+  // state (`latest`/`first`/`targets`/`done`/`count`/`n`/`complete`/
+  // `since`/`lastAt` — exactly what `reconstruct`'s step 3 used to read off
+  // its own locals) PLUS `firstFinish`: `{at, card, event_id}` | `null`,
+  // the FIRST row anywhere in the walk at which `allRight()` held — i.e.
+  // the pass showing at that instant reached the Done screen. Once set it
+  // is never replaced: finishing stays finished, whatever happens later
+  // (`finishedAt`'s own contract — a later rating or a stale gap can move
+  // `reconstruct` on to a new pass without ever un-finishing the pupil).
+  function walkReview(list, deck, idk) {
+    var seen = (idk && idk.seen) || {};
+    // The record is this device's, for ONE round of ONE pass (`n`, `at`) —
+    // start() applies the same two tests before honouring it. Without them a
+    // record left by an earlier pass on this device would fold another
+    // device's round-2 rating of that card back into round 1.
+    var idkN = (idk && idk.n) || 1, idkAt = (idk && idk.at) || 0;
+    var latest, first, targets, done, count, n, complete, since, lastAt = 0, firstFinish = null;
+    function reset() {
+      latest = {}; first = []; targets = deck.slice(); done = {}; count = {}; n = 1; complete = false; since = null;
+    }
+    function allRight() {
+      return deck.every(function (id) { return latest[id] && latest[id].rating === "got_it"; });
+    }
+    function finish(r) {
+      if (!firstFinish) { firstFinish = { at: r.at, card: r.card, event_id: r.event_id }; }
+      reset();
+    }
+    reset();
+    list.forEach(function (r) {
+      if (complete) {
+        if (r.at - lastAt >= HOUR) {
+          reset();
+        } else if (seen[r.card] && count[r.card] === 1 && targets.indexOf(r.card) >= 0 &&
+                   idkN === n && (!idkAt || since === null || idkAt >= since - IDK_SLACK)) {
+          // an "I don't know" replay: the last showing of the round it
+          // belongs to. The round stays finished.
+          latest[r.card] = { rating: r.rating, phase: "review" };
+          count[r.card] += 1;
+          lastAt = r.at;
+          if (allRight()) { finish(r); }
+          return;
+        } else {
+          targets = deck.filter(function (id) { return !latest[id] || latest[id].rating !== "got_it"; });
+          done = {}; count = {}; n += 1; complete = false;
+        }
+      }
+      if (since === null) { since = r.at; }
+      if (!latest[r.card]) { first.push(r.card); }
+      latest[r.card] = { rating: r.rating, phase: "review" };
+      count[r.card] = (count[r.card] || 0) + 1;
+      if (targets.indexOf(r.card) >= 0) { done[r.card] = true; }
+      lastAt = r.at;
+      if (allRight()) { finish(r); return; }
+      if (targets.every(function (id) { return done[id]; })) { complete = true; }
+    });
+    return { latest: latest, first: first, targets: targets, done: done, count: count,
+             n: n, complete: complete, since: since, lastAt: lastAt, firstFinish: firstFinish };
+  }
+
   function reconstruct(rows, cards, mode, now, idk) {
     if (!rows || !cards || !cards.length) { return null; }
     var deck = cards.slice().sort(function (a, b) { return a.position - b.position; })
@@ -216,12 +293,6 @@
       if (!r || !inDeck[r.card_id] || !(r.rating in RANK)) { return; }
       list.push({ card: r.card_id, rating: r.rating, phase: r.phase === "make" ? "make" : "review", at: ms(r.rated_at) });
     });
-    var seen = (idk && idk.seen) || {};
-    // The record is this device's, for ONE round of ONE pass (`n`, `at`) —
-    // start() applies the same two tests before honouring it. Without them a
-    // record left by an earlier pass on this device would fold another
-    // device's round-2 rating of that card back into round 1.
-    var idkN = (idk && idk.n) || 1, idkAt = (idk && idk.at) || 0;
 
     // 1 · make mode's writing pass: every card rated once in the make phase.
     if (mode === "make") {
@@ -237,43 +308,10 @@
       }
     }
 
-    // 2 · walk the review ratings.
-    var latest, first, targets, done, count, n, complete, since, lastAt = 0;
-    function reset() {
-      latest = {}; first = []; targets = deck.slice(); done = {}; count = {}; n = 1; complete = false; since = null;
-    }
-    function allRight() {
-      return deck.every(function (id) { return latest[id] && latest[id].rating === "got_it"; });
-    }
-    reset();
-    list.forEach(function (r) {
-      if (r.phase !== "review") { return; }
-      if (complete) {
-        if (r.at - lastAt >= HOUR) {
-          reset();
-        } else if (seen[r.card] && count[r.card] === 1 && targets.indexOf(r.card) >= 0 &&
-                   idkN === n && (!idkAt || since === null || idkAt >= since - IDK_SLACK)) {
-          // an "I don't know" replay: the last showing of the round it
-          // belongs to. The round stays finished.
-          latest[r.card] = { rating: r.rating, phase: "review" };
-          count[r.card] += 1;
-          lastAt = r.at;
-          if (allRight()) { reset(); }
-          return;
-        } else {
-          targets = deck.filter(function (id) { return !latest[id] || latest[id].rating !== "got_it"; });
-          done = {}; count = {}; n += 1; complete = false;
-        }
-      }
-      if (since === null) { since = r.at; }
-      if (!latest[r.card]) { first.push(r.card); }
-      latest[r.card] = { rating: r.rating, phase: "review" };
-      count[r.card] = (count[r.card] || 0) + 1;
-      if (targets.indexOf(r.card) >= 0) { done[r.card] = true; }
-      lastAt = r.at;
-      if (allRight()) { reset(); return; }
-      if (targets.every(function (id) { return done[id]; })) { complete = true; }
-    });
+    // 2 · walk the review ratings — the shared walker, above.
+    var w = walkReview(list.filter(function (r) { return r.phase === "review"; }), deck, idk);
+    var latest = w.latest, first = w.first, targets = w.targets, done = w.done,
+        n = w.n, complete = w.complete, since = w.since, lastAt = w.lastAt;
 
     // 3 · what is left open.
     var ended = null;
@@ -303,36 +341,64 @@
     };
   }
 
-  // ⊕ 1 Oct 2026 — "finished the homework", read from data with no live
-  // Engine. The FIRST point (cumulative over the pupil's whole history,
-  // never reset — unlike reconstruct()'s round-aware walk, which resets at
-  // every all-right so it can find the START of the NEXT pass) at which
-  // every card's latest review rating is Got it. In make mode, a review
-  // row only counts once every card has at least one make-phase row too
-  // (the writing pass is done).
+  // ⊕ 1 Oct 2026, corrected 1 Oct 2026 (review MUST-FIX) — "finished the
+  // homework", read from data with no live Engine. The FIRST point in the
+  // pupil's history at which the PASS THE ENGINE WOULD BE SHOWING AT THAT
+  // INSTANT held every card Got it — `walkReview`, the exact round-aware
+  // walk `reconstruct()` uses to decide what pass a pupil is in, not a
+  // bare cumulative "every card's all-time latest rating is Got it" check.
+  // That distinction is load-bearing: a pupil who leaves a leftovers round
+  // stale for an hour gets a FRESH pass (the engine re-asks the whole
+  // deck — `rankedIds`), and the first card of that new pass is not the
+  // Done screen just because every OTHER card happened to be Got it once,
+  // in some earlier, already-abandoned round. `walkReview` resets exactly
+  // where `reconstruct` would move the pupil into a new round or a new
+  // pass, so the two can never disagree about when a pass actually ended
+  // all right. Once found, `firstFinish` is never replaced — see
+  // `walkReview`'s own comment for why that half is correct to keep.
+  //
+  // In make mode, a review row only counts toward a pass once every card
+  // has at least one make-phase row too (the writing pass is done) —
+  // filtered here, before the walk, rather than inside it, so the shared
+  // walker stays pass-shape-agnostic.
+  //
   // `rows`: oldest first, {card_id, rating, phase, rated_at, event_id}.
+  // `idk`: optional, same shape `reconstruct` takes — real callers
+  // (`student-live.js`'s `recordFinish`/heal, the parked SQL) have no
+  // access to a DEVICE'S OWN localStorage record and so never pass one;
+  // without it, an "I don't know" replay is read as an ordinary rating,
+  // which only matters while a round is still open and is corrected by
+  // the next actual Right rating regardless.
   // Returns {at, event_id} | null.
   // Known accepted divergence (documented, not "fixed"): if a pupil uses
   // ‹ Back to make an "I don't know" card Got it before its replay comes
   // round, this walk sees all-right one card earlier than the Done screen
   // does — the pupil is one replay away from the screen; the record wins.
-  function finishedAt(rows, cards, mode /*, idk — unused: the IDK-replay
-      edge above is an accepted divergence, not corrected here */) {
+  function finishedAt(rows, cards, mode, idk) {
     if (!rows || !cards || !cards.length) { return null; }
     var deck = cards.slice().sort(function (a, b) { return a.position - b.position; })
       .map(function (c) { return c.id; });
-    var madeSeen = {}, latest = {}, hit = null;
+    var inDeck = {};
+    deck.forEach(function (id) { inDeck[id] = true; });
+    var list = [];
     rows.forEach(function (r) {
-      if (hit || !r || deck.indexOf(r.card_id) < 0 || !(r.rating in RANK)) { return; }
-      if (r.phase === "make") { madeSeen[r.card_id] = true; return; }
-      if (r.phase !== "review") { return; }
-      latest[r.card_id] = r.rating;
-      if (mode === "make" && deck.some(function (id) { return !madeSeen[id]; })) { return; }
-      if (deck.every(function (id) { return latest[id] === "got_it"; })) {
-        hit = { at: ms(r.rated_at), event_id: r.event_id || r.id || null };
-      }
+      if (!r || !inDeck[r.card_id] || !(r.rating in RANK)) { return; }
+      list.push({ card: r.card_id, rating: r.rating, phase: r.phase === "make" ? "make" : "review",
+                  at: ms(r.rated_at), event_id: r.event_id || r.id || null });
     });
-    return hit;
+    var reviewRows;
+    if (mode === "make") {
+      var made = {}, eligible = [];
+      list.forEach(function (r) {
+        if (r.phase === "make") { made[r.card] = true; return; }
+        if (deck.every(function (id) { return made[id]; })) { eligible.push(r); }
+      });
+      reviewRows = eligible;
+    } else {
+      reviewRows = list.filter(function (r) { return r.phase === "review"; });
+    }
+    var w = walkReview(reviewRows, deck, idk);
+    return w.firstFinish ? { at: w.firstFinish.at, event_id: w.firstFinish.event_id || null } : null;
   }
 
   function Engine(assignmentId, state, opts) {

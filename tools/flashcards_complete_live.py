@@ -389,13 +389,24 @@ def main():
             P.q("(function(){var s=document.querySelector('[data-mrb-week-select]'); if(!s) return false;"
                 " s.value=''; s.dispatchEvent(new Event('change',{bubbles:true})); return true;})()")
             time.sleep(0.6)
-            P.q("(function(){var b=Array.prototype.filter.call(document.querySelectorAll('button,[role=\"button\"],div'),"
-                " function(e){return (e.innerText||'').trim()==='Units, review' || (e.innerText||'').indexOf('Units, review')===0;})[0];"
-                " if(b) b.click();})()")
+            # ⊕ 1 Oct 2026 (review) — the row's own header IS the toggle
+            # button (student_rulings.py "PROD N4": node 161, one
+            # <button onClick={{r.toggle}}>, which that same ruling gives
+            # aria-expanded so a screen reader has something to announce).
+            # The FIRST build's selector (`button,[role="button"],div`,
+            # first match) could land on an OUTER wrapper that merely
+            # CONTAINS the title text and sorts earlier in document order
+            # than the real button — exactly the review's diagnosis. Scope
+            # to the real toggle by that attribute, not by tag soup.
+            tapped = P.q(
+                "(function(){var bs=Array.prototype.filter.call(document.querySelectorAll('button[aria-expanded]'),"
+                " function(b){return (b.innerText||'').indexOf('Units, review')>=0;});"
+                " var b=bs[0]; if(!b) return false; b.scrollIntoView({block:'center'});"
+                " b.click(); return true;})()")
             time.sleep(0.6)
             row = P.q(WORK_ROW_JS % json.dumps("Give it another go"))
             if not row:
-                print("  [diag] could not find the expanded button; body text:",
+                print("  [diag] tapped=%r; could not find the expanded button; body text:" % tapped,
                       repr((P.q("document.body.innerText") or "")[:600]))
             check(bool(row), "a: the expanded row's button reads 'Give it another go' (got %r)" % row)
             shot(P.page, "a-02-give-it-another-go")

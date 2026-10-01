@@ -943,6 +943,47 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     H.onFinish = null;
   }
 
+  // ── 33. MUST-FIX (review, 1 Oct 2026) — finishedAt must not un-abandon
+  //        a stale leftovers round via a FRESH pass's first card. Mirrors
+  //        the review's own repro (scratchpad/div.js). Before the fix,
+  //        finishedAt never reset: every card's all-time-latest rating
+  //        included c0-c3's ancient Got-its from an abandoned round, so
+  //        getting just c4 right in a brand-new pass read as finished. ──
+  {
+    const now = Date.now();
+    const deck = deck5();
+    // Sitting 1: c0-c3 Got it, c4 Not yet → the leftovers ("Try again")
+    // screen. Walks away.
+    const sitting1 = [row("c0", "got_it", now - 100 * MIN), row("c1", "got_it", now - 99 * MIN),
+                      row("c2", "got_it", now - 98 * MIN), row("c3", "got_it", now - 97 * MIN),
+                      row("c4", "not_yet", now - 96 * MIN)];
+    check(H.finishedAt(sitting1, deck, "review") === null,
+          "33: after the leftovers screen, finishedAt is null");
+    // Later (past the hour): reconstruct starts a FRESH pass — the round
+    // went stale, so rankedIds puts c4 (last Not yet) first in the new one.
+    const later = now;   // sitting1's last rating is 96 min before "now"
+    check(H.reconstruct(sitting1, deck, "review", later) === null,
+          "33: a stale leftovers round (96 min on) → reconstruct starts a fresh pass (null)");
+    // The pupil gets c4 (ranked first in the fresh pass) right. ONE card of
+    // a brand-new 5-card pass is not the Done screen, however the OLD
+    // cards' ancient Got-it ratings read.
+    const oneCard = sitting1.concat([row("c4", "got_it", later)]);
+    check(H.finishedAt(oneCard, deck, "review") === null,
+          "33: MUST-FIX — one card into the fresh pass, finishedAt is still null (was: a false hit)");
+    const rc2 = H.reconstruct(oneCard, deck, "review", later + MIN);
+    check(rc2 && rc2.stage === "review" && Object.keys(rc2.pass).length === 1 && rc2.ended === null,
+          "33: reconstruct agrees — 1 of 5 rated in the new pass, not ended (pass size "
+          + (rc2 && Object.keys(rc2.pass).length) + ")");
+    // Finishing that SAME fresh pass (c0-c3 again) → a hit at ITS last
+    // card — not a hit carried over from sitting 1's abandoned ratings.
+    const finished = oneCard.concat([
+      row("c0", "got_it", later + MIN), row("c1", "got_it", later + 2 * MIN),
+      row("c2", "got_it", later + 3 * MIN), row("c3", "got_it", later + 4 * MIN)]);
+    const hit33 = H.finishedAt(finished, deck, "review");
+    check(!!hit33 && hit33.at === later + 4 * MIN,
+          "33: finishing the fresh pass → finishedAt hits at its own last card (" + (hit33 && hit33.at) + ")");
+  }
+
   console.log(`\n  ${passes} passed, ${fails} failed`);
   if (fails) { console.log("  FAIL — flashcard engine"); process.exit(1); }
   console.log("  PASS — flashcard engine (pupil flow)");

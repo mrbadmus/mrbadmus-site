@@ -2226,6 +2226,32 @@ LOGIC = {
             " ? Math.round((avgMarks.score / avgMarks.max) * 100) : null;",
         ),
         # ══════════════════════════════════════════════════════════════════
+        # ⊕ RULED 1 Oct 2026 (flashcard-completion follow-up, review
+        # should-fix 1) — THE AVG SCORE TILE'S OWN CAPTION STILL COUNTED
+        # DECKS, EVEN THOUGH THE AVERAGE ABOVE IT NO LONGER DOES.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # The tuple above excludes a flashcard row from `avgMarks` — the
+        # NUMBER — but the caption underneath it ("63% · 2 MARKED") still
+        # read `marked.length`, every marked row including decks. A pupil
+        # with one marked MCQ set and one finished deck saw "63% · 2
+        # MARKED" for an average that was really one set's score: the
+        # caption contradicted the number it was captioning. Same filter,
+        # same reasoning as `avgMarks` — a deck was never a mark and still
+        # is not one. (Mide's call, flagged separately: the row word and
+        # the filter tab both still say "Marked" for a finished deck; left
+        # as is here, since changing those is a product decision, not a
+        # caption-contradicts-its-number bug.)
+        (
+            "{ label: 'Avg score', value: avg == null ? dash : avg + '%', "
+            "caption: marked.length ? marked.length + ' MARKED' : "
+            "'NOT MARKED YET', pct: avg == null ? '0%' : avg + '%' },",
+            "{ label: 'Avg score', value: avg == null ? dash : avg + '%', "
+            "caption: marked.filter((w) => !w.fc).length ? "
+            "marked.filter((w) => !w.fc).length + ' MARKED' : "
+            "'NOT MARKED YET', pct: avg == null ? '0%' : avg + '%' },",
+        ),
+        # ══════════════════════════════════════════════════════════════════
         # ⊕ Experience run, 25 Sep 2026 (stream H) — P2. A LATE COMPLETION
         # READ THE SAME AS AN ON-TIME ONE.
         # ══════════════════════════════════════════════════════════════════
