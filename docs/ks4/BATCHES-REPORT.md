@@ -10,7 +10,7 @@ updated after each batch. Plan: `docs/ks4/BATCH-PLAN.md`. Engine:
 |---|---|---|
 | 1 (pilot) | 14 | live since 26 Sep 2026 |
 | 2 | 16 | pushed 1 Oct 2026 (`64a0cb303..09c6146a2`); live hash proof pending (see below) |
-| 3 | 13 | pushed 1 Oct 2026 (commit below); live hash proof pending |
+| 3 | 13 | pushed 1 Oct 2026 (`f928cd136..05cba344a`); live hash proof pending |
 | 4–18 | 222 | not started (budget) |
 
 ## Batch 2
@@ -97,6 +97,8 @@ round 1 — 7 required changes; round 2 — SCIENCE PASS on all 13.
 source lines not shown, 68 review changes, 6 considered-not-changed.
 
 **Quality.** Fresh reviewers (2): round 1 SHIP 3 / FIX 10; round 2 SHIP 13.
+
+**Landing.** Rebased on `f928cd136`; full build; manifests equal; gates green (verify_ks3, ks4_chrome_drive, ks4_parity); pushed `f928cd136..05cba344a`. Live proof: `python3 check_ks4_live.py --batch batch-3`.
 
 **Pages.** `ks4_parity.py --batch batch-3` 616/616. After the full build:
 pilot 54/54, batch-2 52/52, batch-3 44/44 equal their manifests.
