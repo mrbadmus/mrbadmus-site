@@ -2512,6 +2512,44 @@ GATES = [
              "the closed registry, and every /shared/ks4-* ?v= stamp is "
              "current."),
 
+    # ⊕ batch engine (1 Oct 2026, docs/ks4/batch-engine.md) — the fast,
+    # browser-free gate for every batch OTHER than the pilot. A new gate
+    # name, not an extension of `ks4_pilot_check`, because that gate's own
+    # checks 7-9 (R9/R12/R13/R14, build_ks4.SPEC_TEXT, the two physics
+    # lessons' approved exam tip) are pilot-specific and do not generalise;
+    # this one runs ks4_pilot_check's checks 1-6 (manifest-matches-disk, no
+    # React, closed registry, version stamps, freeze) against every OTHER
+    # registered batch at once. SKIPPED cleanly (exit 0) when none is
+    # registered yet — true on main as of this landing.
+    dict(name="ks4_batch_check",
+         cmd=["python3", "ks4_batch_check.py"],
+         speed="fast",
+         watches=["ks4_batch_check.py", "build_ks4.py", "ks4_lessons/**",
+                  "ks4_science_rulings.py",
+                  "shared/ks4-ds.css", "shared/ks4-theme.css",
+                  "shared/ks4-lesson.css", "shared/ks4-lib.js",
+                  "shared/ks4-diagrams.js", "shared/ks4-runtime.js",
+                  "shared/ks4-source-*.js", "shared/ks4-lesson-*.css",
+                  "shared/ks4-ext-*.js",
+                  "ks4_*_manifest.json", "ks4_lessons/frozen_*.json"],
+         why="the batch-engine's generalised sibling of `ks4_pilot_check` "
+             "(docs/ks4/batch-engine.md) — proves every registered batch "
+             "OTHER than the pilot matches its own manifest "
+             "(`ks4_<batch>_manifest.json`), ships no React/Babel/unpkg, "
+             "classifies every dc-import/data-block in the closed registry, "
+             "and every /shared/ks4-*?v= stamp (including that batch's own "
+             "ks4-source-<batch>.js / ks4-lesson-<batch>.css / ks4-ext-"
+             "<batch>.js) is current. ⚠️ NAMED, ACCEPTED GAP: unlike "
+             "`ks4_pilot_check`, this gate cannot hard-code every batch's "
+             "output directories in `watches` — a batch's subject/topic "
+             "pair is only known once it is authored — so it watches the "
+             "batch's manifest and frozen-hash files instead (both are "
+             "rewritten by every build of that batch) as the proxy for its "
+             "pages. A change that touched only a batch's OWN output pages "
+             "without re-running `build_ks4.py --batch <name>` first is not "
+             "a real scenario this build ever produces, so the gap is the "
+             "same shape as `ks3_rail_manifest`'s, not a new kind of hole."),
+
     dict(name="student_lessons_cards_check",
          cmd=["python3", "student_lessons_cards_check.py"],
          speed="fast",
@@ -2962,7 +3000,15 @@ EXCLUDED = {
         "verifies the 54 KS4 pilot pages live on mrbadmus.com AFTER a push, "
         "byte for byte against ks4_pilot_manifest.json (page hash, then "
         "every /shared/ks4-*?v= asset the live page itself names). It "
-        "cannot run before the thing it checks exists.",
+        "cannot run before the thing it checks exists. ⊕ batch engine "
+        "(1 Oct 2026): now a thin wrapper around check_ks4_live.py "
+        "--batch pilot, kept so nothing calling it by name breaks.",
+    "check_ks4_live.py":
+        "the generalised form of check_ks4_pilot_live.py (docs/ks4/batch-"
+        "engine.md) — same byte-for-byte live proof, `--batch <name>` for "
+        "any registered batch (defaults to 'pilot'). Still AFTER a push, "
+        "still cannot run before the thing it checks exists, so it is no "
+        "more a pre-push gate than check_ks4_pilot_live.py ever was.",
 
     # ── MRB-308…321 · the B2C nights' two generators ────────────────────
     #

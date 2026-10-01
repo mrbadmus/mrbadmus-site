@@ -117,7 +117,25 @@ def check_manifest_matches_disk(manifest, errors):
 
 
 def check_no_leakage(manifest, errors):
+    # ⊕ batch engine fix (docs/ks4/batch-engine.md §7b, 1 Oct 2026) — this
+    # check predates `build_ks4.py --batch`, back when the pilot's own
+    # manifest was the only KS4-ported content that could legitimately load
+    # ks4-runtime.js. A registered batch's OWN pages do too, by design, and
+    # are never in the pilot's manifest — so without this, registering ANY
+    # second batch (e.g. batch-2) would permanently fail this gate for a
+    # page that is not a leak at all. A page is only flagged now if it is
+    # outside the pilot's manifest AND outside every OTHER registered
+    # batch's own manifest too — a real orphan is still caught.
     manifest_pages = set(manifest["pages"].keys())
+    for name in ks4_lessons.batch_names():
+        if name == "pilot":
+            continue
+        other_path = build_ks4.batch_manifest_path(name)
+        if not os.path.exists(other_path):
+            continue
+        with open(other_path, encoding="utf-8") as fh:
+            other_manifest = json.load(fh)
+        manifest_pages |= set(other_manifest["pages"].keys())
     for tree in ("combined", "triple"):
         base = os.path.join(OUT_ROOT, tree)
         if not os.path.isdir(base):

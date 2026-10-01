@@ -818,6 +818,15 @@ def _walk_replace(node, old, new):
 
 
 def apply_source(src):
+    """⊕ batch engine (1 Oct 2026) — `src` used to always be the PILOT's
+    own per-slug dict (all 14 slugs, built from `ks4_lessons.LESSONS`), so
+    every row in ROWS (which is pilot-only — see the module docstring) was
+    guaranteed a match. `build_ks4.build_batch()` now calls this too, with
+    a `src` holding only THAT batch's slugs — a row whose `lesson` is one
+    of the pilot's 14 then has no match in `src` AT ALL, which is simply
+    "this row is not this build's business", not a ruling that failed to
+    apply. A row whose lesson DOES match but whose text is missing (the
+    original failure mode) still raises below, unchanged."""
     src = copy.deepcopy(src)
     for row in [r for r in ROWS if r["layer"] == "source"]:
         rid = row["id"]
@@ -827,9 +836,7 @@ def apply_source(src):
         if True:
             rec = src.get(lesson_slug)
             if rec is None:
-                raise RulingError(
-                    "ks4_science_rulings %s: no source record for lesson %r "
-                    "in the generated dict." % (rid, lesson_slug))
+                continue
             if field != "quiz":
                 # canonical single-value field (rp / key_note / examiner_tip /
                 # common_mistake) — one shared value for the whole lesson,
@@ -1194,9 +1201,42 @@ def run_check():
     return miss == 0
 
 
+def run_check_batch(name):
+    """⊕ batch engine (1 Oct 2026, docs/ks4/batch-engine.md) — `ROWS` above
+    is the examiners' fixed table for the PILOT's 101 findings and is
+    never auto-populated for another batch (a science ruling is hand-
+    authored by an examiner against that batch's own lessons, the same way
+    these 101 were). For `name == 'pilot'` this is exactly `--check`,
+    unchanged. For any other batch, `rows_for()`/`apply()`/`expect_present()`
+    are already no-ops for a slug with no row (proven in `build_batch()` —
+    see that function's own comment), so there is nothing to verify until
+    a batch's own rulings exist; this prints that plainly rather than
+    silently reporting a clean sweep that checked zero rows."""
+    if name == "pilot":
+        return run_check()
+    lessons = []
+    if ks4_lessons is not None:
+        lessons = ks4_lessons.lessons_for_batch(name)
+    rows = [r for r in ROWS if r["lesson"] in {L["slug"] for L in lessons}]
+    if not rows:
+        print("ks4_science_rulings --batch %s: 0 ruling(s) registered for "
+              "this batch's %d lesson(s) — nothing to check." % (name, len(lessons)))
+        return True
+    print("ks4_science_rulings --batch %s: %d ruling row(s) found; this "
+          "file's run_check() only knows how to verify them against the "
+          "PILOT's Design delivery layout — extend it when a batch's own "
+          "ruling needs checking." % (name, len(rows)))
+    return True
+
+
 if __name__ == "__main__":
     import sys
+    if "--batch" in sys.argv:
+        i = sys.argv.index("--batch")
+        batch_name = sys.argv[i + 1] if i + 1 < len(sys.argv) else "pilot"
+        ok = run_check_batch(batch_name)
+        sys.exit(0 if ok else 1)
     if "--check" in sys.argv:
         ok = run_check()
         sys.exit(0 if ok else 1)
-    print("usage: python3 ks4_science_rulings.py --check")
+    print("usage: python3 ks4_science_rulings.py --check | --batch <name>")

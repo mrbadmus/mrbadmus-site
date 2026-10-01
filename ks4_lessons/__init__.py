@@ -54,6 +54,7 @@ block_map   — only present when a lesson's own `<section>` ids/classes are not
 """
 
 import os
+import re
 import sys
 
 # ── the 14 lessons, in the contract's unit order ──────────────────────────
@@ -136,12 +137,127 @@ LESSONS = [
          review_state="examiner-reviewed", design_slug="resistors-iv"),
 ]
 
+# ⊕ batch engine (docs/ks4/batch-engine.md, 1 Oct 2026) — the pilot is
+# "batch 1" in code terms, named "pilot". Tagged here rather than on every
+# dict literal above so the 14 lesson records above stay byte-identical to
+# how they read before the batch engine existed.
+for _L in LESSONS:
+    _L.setdefault("batch", "pilot")
+del _L
+
 LESSON_BY_SLUG = {L["slug"]: L for L in LESSONS}
 LESSON_BY_DESIGN_FILE = {L["design_file"]: L for L in LESSONS}
 
 DESIGN_DIR = os.path.join(
     "docs", "ks4", "design-reference", "pilot", "KS4 Lessons",
     "Pilot - Bonding and Electricity")
+
+# ═══════════════════════════════════════════════════════════════════════
+# BATCH REGISTRY (docs/ks4/batch-engine.md) — "pilot" (above) is batch 1.
+# Every OTHER batch is a module `ks4_lessons/batch_<name>.py` exporting a
+# `LESSONS` list in the same shape as the pilot's (each record carrying
+# `batch="batch-<name>"`, `source_file` in place of `design_file`), and
+# discovered by filename alone — there is no second, hand-maintained list
+# of batches to keep in step. `build_ks4.py --batch <name>` builds one;
+# no flag builds every registered batch, pilot first (`batch_names()`'s own
+# order), which is what keeps `build_all.py`'s step 1b (no flag) rebuilding
+# every live batch on every site build.
+# ═══════════════════════════════════════════════════════════════════════
+AUTHORED_ROOT = os.path.join("ks4_lessons", "authored")
+_BATCH_FILE_RE = re.compile(r"^batch_([a-z0-9_]+)\.py$")
+_BATCH_MODULES = None
+
+
+def _discover_batch_modules():
+    import importlib
+    here = os.path.dirname(os.path.abspath(__file__))
+    out = {}
+    for fname in sorted(os.listdir(here)):
+        m = _BATCH_FILE_RE.match(fname)
+        if not m:
+            continue
+        name = "batch-" + m.group(1).replace("_", "-")
+        mod = importlib.import_module("ks4_lessons.%s" % fname[:-3])
+        if not hasattr(mod, "LESSONS"):
+            raise SystemExit(
+                "ks4_lessons: %s has no LESSONS list — every batch module "
+                "must export one (docs/ks4/batch-engine.md)." % fname)
+        out[name] = mod
+    return out
+
+
+def batch_modules():
+    """{batch_name: module}, every batch EXCEPT 'pilot' (which has no
+    module — it is this file). Cached per process."""
+    global _BATCH_MODULES
+    if _BATCH_MODULES is None:
+        _BATCH_MODULES = _discover_batch_modules()
+    return _BATCH_MODULES
+
+
+def batch_names():
+    """Every registered batch, 'pilot' first, then authored batches in
+    filename order — the build order build_ks4.py's no-flag run uses."""
+    return ["pilot"] + sorted(batch_modules().keys())
+
+
+def lessons_for_batch(name):
+    if name == "pilot":
+        return LESSONS
+    return batch_modules()[name].LESSONS
+
+
+def authored_dir(name):
+    """Where a non-pilot batch's `.dc.html` source files live. Defaults to
+    `ks4_lessons/authored/<name>/`; a batch module may override with its
+    own `AUTHORED_DIR`."""
+    mod = batch_modules()[name]
+    return getattr(mod, "AUTHORED_DIR", os.path.join(AUTHORED_ROOT, name))
+
+
+def all_lessons():
+    """Every lesson record across every registered batch, pilot first.
+    This is the ground truth `shared/ks4-lib.js`'s NAV (prev/next/connects
+    resolution, `KS4.hrefFor`) is generated from — see
+    `build_ks4.build_ks4_lib_js()` — so a link written on a pilot page can
+    resolve to a batch lesson and vice versa."""
+    out = list(LESSONS)
+    for name in sorted(batch_modules()):
+        out.extend(lessons_for_batch(name))
+    return out
+
+
+_ALL_LESSON_BY_SLUG = None
+
+
+def _all_lesson_by_slug():
+    global _ALL_LESSON_BY_SLUG
+    if _ALL_LESSON_BY_SLUG is None:
+        _ALL_LESSON_BY_SLUG = {}
+        for L in all_lessons():
+            _ALL_LESSON_BY_SLUG[L["slug"]] = L
+    return _ALL_LESSON_BY_SLUG
+
+
+def verify_no_slug_collisions():
+    """Every lesson's `slug` must be unique across EVERY registered batch —
+    `shared/ks4-lib.js`'s NAV is one flat dict keyed by slug regardless of
+    which batch a lesson came from, so two batches sharing a slug would
+    silently shadow one of them."""
+    seen = {}
+    problems = []
+    for L in all_lessons():
+        prior = seen.get(L["slug"])
+        if prior is not None and prior is not L:
+            problems.append(
+                "slug %r is registered by both batch %r and batch %r"
+                % (L["slug"], prior["batch"], L["batch"]))
+        seen[L["slug"]] = L
+    if problems:
+        raise SystemExit(
+            "ks4_lessons.verify_no_slug_collisions: %d problem(s):\n  %s"
+            % (len(problems), "\n  ".join(problems)))
+    return True
 
 ROUTE_LABELS = {
     "CF": "Combined Foundation", "CH": "Combined Higher",
@@ -155,8 +271,11 @@ ROUTE_URL = {
 
 
 def site_url(slug, route):
-    """The live URL path for `slug` at `route` ('CF'/'CH'/'TF'/'TH')."""
-    L = LESSON_BY_SLUG[slug]
+    """The live URL path for `slug` at `route` ('CF'/'CH'/'TF'/'TH').
+    Resolves against EVERY registered batch (`_all_lesson_by_slug()`), not
+    just the pilot's 14 — a prev/next or connects link may point out of one
+    batch and into another."""
+    L = _all_lesson_by_slug()[slug]
     pathway, tier = ROUTE_URL[route]
     return "/%s/%s/%s/%s/%s.html" % (pathway, tier, L["subject"], L["topic_id"], slug)
 
@@ -218,6 +337,64 @@ def verify_slugs():
         raise SystemExit(
             "ks4_lessons.verify_slugs: %d problem(s):\n  " % len(errors)
             + "\n  ".join(errors))
+    return True
+
+
+# ── the generic slug check a non-pilot batch uses (verify_slugs() above
+# stays pilot-only — it carries pilot-specific spec-range special-casing
+# for states-of-matter/metals-alloys/nanoparticles that a new batch has no
+# business inheriting) ──────────────────────────────────────────────────
+_VERIFY_MODS = {
+    "biology": [
+        ("all_subtopics_biology", "BIOLOGY_SUBTOPICS_ALL"),
+        ("all_subtopics_biology_higher", "BIOLOGY_SUBTOPICS_ALL"),
+        ("all_subtopics_biology_triple_foundation", "BIOLOGY_SUBTOPICS_ALL"),
+        ("all_subtopics_biology_triple_higher", "BIOLOGY_SUBTOPICS_ALL"),
+    ],
+    "chemistry": [
+        ("all_subtopics_chemistry", "CHEMISTRY_SUBTOPICS_ALL"),
+        ("all_subtopics_chemistry_higher", "CHEMISTRY_SUBTOPICS_ALL"),
+        ("all_subtopics_chemistry_triple_foundation", "CHEMISTRY_SUBTOPICS_ALL"),
+        ("all_subtopics_chemistry_triple_higher", "CHEMISTRY_SUBTOPICS_ALL"),
+    ],
+    "physics": [
+        ("all_subtopics_physics", "PHYSICS_SUBTOPICS_ALL"),
+        ("all_subtopics_physics_higher", "PHYSICS_SUBTOPICS_ALL"),
+        ("all_subtopics_physics_triple_foundation", "PHYSICS_SUBTOPICS_ALL"),
+        ("all_subtopics_physics_triple_higher", "PHYSICS_SUBTOPICS_ALL"),
+    ],
+}
+
+
+def verify_batch_slugs(name):
+    """Every lesson in batch `name` must be a real subtopic id under its
+    stated subject/topic_id, on at least one of that subject's four
+    per-route all_subtopics_*.py files. Unlike `verify_slugs()` this never
+    special-cases a spec RANGE — an authored lesson is expected to carry
+    the data's own spec exactly, having been written against it directly
+    rather than reverse-engineered from a Design delivery."""
+    import importlib
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    errors = []
+    for L in lessons_for_batch(name):
+        found = False
+        for modname, attr in _VERIFY_MODS[L["subject"]]:
+            mod = importlib.import_module(modname)
+            data = getattr(mod, attr)
+            topic_list = data.get(L["topic_id"], [])
+            if any(s["id"] == L["slug"] for s in topic_list):
+                found = True
+                break
+        if not found:
+            errors.append(
+                "%s: slug %r not found under topic %r in ANY "
+                "all_subtopics_%s*.py file"
+                % (L.get("source_file", L["slug"]), L["slug"],
+                   L["topic_id"], L["subject"]))
+    if errors:
+        raise SystemExit(
+            "ks4_lessons.verify_batch_slugs(%r): %d problem(s):\n  %s"
+            % (name, len(errors), "\n  ".join(errors)))
     return True
 
 

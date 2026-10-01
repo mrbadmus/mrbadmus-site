@@ -441,6 +441,29 @@ The script reads structured data from `all_subtopics_*.py` files (topics, subtop
 
 **If you want to edit hand-written pages (weekly-challenge.html, leaderboard.html, etc.):** edit the root-level file, then run the generator so it copies into `mrbadmus_site/`.
 
+### KS4 lessons — Code writes them ⊕ (Mide's ruling, 1 Oct 2026)
+
+> "Let Code write the lessons. I think it understands the structure a lot better now." — Mide, 1 Oct 2026
+
+The 14 pilot lessons (Design's, ported 25–26 Sep) are rebuilt by `build_ks4.py`
+(step 1b, after `generate_site_v5.py`, which would otherwise put the old page
+back). From 1 Oct 2026 **Code authors, builds, checks and ships every other
+KS4 lesson**, in batches (`docs/ks4/BATCH-PLAN.md`), in the pilot's own
+`.dc.html` format, using the pilot as template and quality bar. The binding
+architecture, with this ruling as a dated amendment, is `docs/ks4/architecture.md`;
+how a batch is built is `docs/ks4/batch-engine.md`; batch status is
+`docs/ks4/BATCHES-REPORT.md`.
+
+- A lesson replaces its old page on the same URL only when its batch has
+  passed the science examiner and the quality review.
+- The pilot's built pages stay byte-identical as batches are added: a batch
+  brings its own `shared/ks4-*-<batch>` assets and never edits the pilot's
+  shared KS4 assets (their `?v=` stamps are in all 54 pilot pages).
+- `ks4_data/` (the question pools), frozen quiz rows and `scheme_of_work*`
+  are never edited by lesson work. Quizzes, examiner tips, FIFA examples,
+  equations and RP data are copied verbatim; a wrong frozen item is kept and
+  flagged, never silently fixed.
+
 ### ⚠️ 3D Studio has a manual build step BEFORE the generator
 
 3D Studio (`/3d`) is a Vite app in `3d-studio/`. The generator does not build it — it only **publishes** whatever build already exists, copying `3d-studio/dist/` into `mrbadmus_site/3d/`. So if you have changed anything in `3d-studio/`, the full deploy sequence is:

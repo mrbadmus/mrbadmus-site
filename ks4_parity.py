@@ -96,6 +96,7 @@ sys.path.insert(0, os.path.join(REPO_ROOT, "docs", "ks4", "pilot-inventory"))
 
 import ks3_browser as cdp  # noqa: E402
 import ks4_lessons  # noqa: E402
+from ks4_lessons import blocks as ks4_blocks  # noqa: E402
 import ks4_rulings  # noqa: E402
 import build_ks4  # noqa: E402
 import measure_design as MD  # noqa: E402  (reused verbatim per the contract)
@@ -1487,12 +1488,184 @@ def run(only_slug=None, only_width=None):
     return R
 
 
+# ═══════════════════════════════════════════════════════════════════════
+# BATCH ENGINE (1 Oct 2026, docs/ks4/batch-engine.md) — `--batch <name>`
+# for anything OTHER than the pilot. There is no Design reference page for
+# an authored lesson, so this is NOT `run()` with a different lesson list —
+# it is a separate, simpler sweep: zero console errors, no horizontal
+# scroll, every block/section type registered, the prerendered text is
+# present without JS, a `data-route`-tagged element renders ONLY on its
+# routes with its badge, and every interactive control is keyboard-
+# reachable. `run()` above, and everything it calls, is untouched — this
+# function shares only the genuinely generic helpers (`Results`,
+# `check_console`, `check_keyboard`, `measure_design`'s media/overflow/
+# mounted helpers), never `reference.json` or the rulings whitelist.
+# ═══════════════════════════════════════════════════════════════════════
+BATCH_WIDTHS = [1280, 820, 390]
+_ROUTE_BADGE_RE = re.compile(r'data-route-badge="([a-z-]+)"')
+
+
+def _route_layer_expected(kind, route):
+    is_higher, is_triple = ROUTE_FLAGS[route]
+    if kind == "higher":
+        return is_higher
+    if kind == "triple":
+        return is_triple
+    if kind == "triple-higher":
+        return is_higher and is_triple
+    return None
+
+
+def check_batch_no_react(R, slug, route, page):
+    bad = ["unpkg.com", "React.", "ReactDOM", "Babel", "support.js",
+           "createElement(", "dangerouslySetInnerHTML"]
+    html = page.eval("document.documentElement.outerHTML")
+    hits = [b for b in bad if b in html]
+    R.record(slug, route, 1280, "no-react", not hits,
+              "ok" if not hits else "found %s" % hits)
+
+
+def check_batch_overflow(R, slug, route, width, page):
+    o = MD.measure_overflow(page)
+    R.record(slug, route, width, "no-h-scroll", not o["overflow"],
+              "ok" if not o["overflow"] else "scrollWidth=%d innerWidth=%d offender=%s"
+              % (o["scrollWidth"], o["innerWidth"], o["offender"]))
+
+
+def check_batch_prerendered_text(R, slug, route, raw_html):
+    """The page carries its text WITHOUT JS — read straight from the file
+    on disk (no browser, no script execution), the same property
+    `ks4_pilot_check.py` proves for the pilot by a different route (its
+    freeze mechanism). A bare, un-prerendered page would show an empty
+    `<div id="ks4-mount"></div>`."""
+    start = raw_html.find('<div id="ks4-mount">')
+    ok = start != -1 and not raw_html[start:start + 400].startswith(
+        '<div id="ks4-mount"></div>')
+    R.record(slug, route, None, "prerendered-text", ok,
+              "ok" if ok else "ks4-mount is empty in the raw, un-executed HTML")
+
+
+def check_batch_route_layers(R, slug, route, raw_html, lesson_kinds):
+    """Every `data-route-badge="<kind>"` found anywhere in the page's RAW,
+    un-executed HTML (the prerendered bake — see `check_batch_prerendered_
+    text`) must be a kind that genuinely applies to this route, and every
+    kind this LESSON uses anywhere (`lesson_kinds`, the union across all
+    its routes — not every registered kind; a lesson is not required to
+    use all three) must appear on a route where it should. A false
+    positive (badge present on a route it should not be) or a false
+    negative (badge absent on a route it should apply to) is each its own
+    FAIL."""
+    found = set(_ROUTE_BADGE_RE.findall(raw_html))
+    problems = []
+    for kind in found:
+        if kind not in ROUTE_LAYER_EXPR_BATCH:
+            problems.append("unknown data-route kind %r" % kind)
+            continue
+        if not _route_layer_expected(kind, route):
+            problems.append("%r badge present but should not apply on %s" % (kind, route))
+    for kind in lesson_kinds:
+        if _route_layer_expected(kind, route) and kind not in found:
+            problems.append("%r badge missing but should apply on %s" % (kind, route))
+    R.record(slug, route, None, "route-layers", not problems, "; ".join(problems) or "ok")
+
+
+ROUTE_LAYER_EXPR_BATCH = {"higher", "triple", "triple-higher"}
+
+
+def check_batch_registry(R, slug, route, raw_html):
+    import ks4_pilot_check as KPC
+    problems = []
+    for m in KPC._DCIMPORT_RE.finditer(raw_html):
+        if m.group(1) not in ks4_blocks.COMPONENTS:
+            problems.append("unregistered dc-import %r" % m.group(1))
+    for m in KPC._DATABLOCK_RE.finditer(raw_html):
+        if m.group(1) not in ks4_blocks.SECTION_TYPES:
+            problems.append("unregistered data-block %r" % m.group(1))
+    R.record(slug, route, None, "registry", not problems, "; ".join(problems) or "ok")
+
+
+def run_batch(name, only_slug=None):
+    if name == "pilot":
+        raise SystemExit("ks4_parity --batch pilot: use no flag, or omit "
+                          "--batch entirely — the pilot keeps its own run().")
+    if name not in ks4_lessons.batch_names():
+        raise SystemExit("ks4_parity --batch %r is not registered. Known "
+                          "batches: %s" % (name, ", ".join(ks4_lessons.batch_names())))
+    lessons = ks4_lessons.lessons_for_batch(name)
+    if only_slug:
+        lessons = [L for L in lessons if L["slug"] == only_slug]
+    manifest_path = build_ks4.batch_manifest_path(name)
+    if not os.path.exists(manifest_path):
+        raise SystemExit("ks4_parity --batch %s: %s does not exist — run "
+                          "`python3 build_ks4.py --batch %s` first."
+                          % (name, manifest_path, name))
+
+    R = Results()
+    server, port = cdp.serve(REPO_ROOT)
+    try:
+        with cdp.Browser() as b:
+            page = b.attach()
+            for lesson in lessons:
+                slug = lesson["slug"]
+                raw_by_route = {}
+                for route in lesson["routes"]:
+                    url_path = ks4_lessons.site_url(slug, route)
+                    out_path = os.path.join(build_ks4.OUT_ROOT, url_path.lstrip("/"))
+                    if os.path.exists(out_path):
+                        raw_by_route[route] = open(out_path, encoding="utf-8").read()
+                lesson_kinds = set()
+                for html in raw_by_route.values():
+                    lesson_kinds |= set(_ROUTE_BADGE_RE.findall(html))
+
+                for route in lesson["routes"]:
+                    url_path = ks4_lessons.site_url(slug, route)
+                    out_path = os.path.join(build_ks4.OUT_ROOT, url_path.lstrip("/"))
+                    if route not in raw_by_route:
+                        R.record(slug, route, None, "exists", False, "%s missing" % out_path)
+                        continue
+                    raw_html = raw_by_route[route]
+                    check_batch_prerendered_text(R, slug, route, raw_html)
+                    check_batch_route_layers(R, slug, route, raw_html, lesson_kinds)
+                    check_batch_registry(R, slug, route, raw_html)
+
+                    url = "http://127.0.0.1:%d%s" % (port, url_path)
+                    for theme in ("light", "dark"):
+                        page.goto(url, settle=0.8)
+                        MD.set_media(page, scheme=theme)
+                        if not MD.wait_mounted(page):
+                            R.record(slug, route, None, "mounted-%s" % theme, False,
+                                      "page never mounted (.ks3-lesson/[id^=s-])")
+                            continue
+                        for w in BATCH_WIDTHS:
+                            page.set_viewport(w, 1000)
+                            time.sleep(0.4)
+                            check_batch_overflow(R, slug, route, w, page)
+                            if theme == "light":
+                                check_console(R, slug, route, w, page)
+                        if theme == "light":
+                            check_batch_no_react(R, slug, route, page)
+                            page.set_viewport(1280, 1000)
+                            check_keyboard(R, slug, route, page)
+    finally:
+        server.shutdown()
+    return R
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--lesson", default=None, help="restrict to one site slug")
     ap.add_argument("--width", type=int, default=None, help="restrict to one width")
     ap.add_argument("--json", default=None, help="write full results to this path")
+    ap.add_argument("--batch", default=None,
+                     help="'pilot' (default — the full Design-fidelity run "
+                          "below) or another registered batch name (a "
+                          "simpler, reference-free sweep — see run_batch())")
     args = ap.parse_args()
+
+    if args.batch and args.batch != "pilot":
+        R = run_batch(args.batch, only_slug=args.lesson)
+        print("\n" + R.summary())
+        return 1 if R.fail_count else 0
 
     R = run(only_slug=args.lesson, only_width=args.width)
 
