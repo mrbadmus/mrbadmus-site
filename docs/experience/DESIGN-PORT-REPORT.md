@@ -461,3 +461,126 @@ migration to rewrite alongside it, per the original plan's wording.
    recorded as finished one replay earlier than the screen shows them. They
    are one tap from Done either way; not fixed, per the engine's own
    comment.
+
+### Review pass, 1 Oct 2026 — one must-fix, three should-fixes, all closed
+
+Opus 5.5 reviewed commit `bfd266295` and sent it back. Fixed in commit
+`c1adc96bf` (after rebasing `fix/flashcard-completion` onto `origin/main`
+`64a0cb303`, which carries this same design port — the rebase replayed
+clean, no generated-file conflicts, `build_all.py` reproduced byte-identical
+output).
+
+**MUST-FIX — `finishedAt()` disagreed with `reconstruct()` about which pass
+a pupil is in.** `finishedAt` walked the pupil's whole history cumulatively
+and never reset. `reconstruct()` DOES reset: a leftovers ("Try again") round
+left stale for 60+ minutes gets a fresh pass (the engine re-asks the whole
+deck, weak card first — `rankedIds`). The reviewer's repro: sitting 1 rates
+c0–c3 Got it, c4 Not yet (leftovers); a day later the pupil gets c4 (ranked
+first in the new pass) right; `reconstruct` correctly shows 1 of 5 rated,
+not ended — but the old `finishedAt`, never resetting, saw every card's
+all-time-latest rating as Got it and called the pupil done, one card into a
+pass they had not finished. That would have stamped `completed_at`
+permanently wrong (too early — a genuinely late finish could read "on
+time") via the heal, on the very next class-page load, for any real pupil
+who ever left a deck mid-leftovers for an hour.
+
+**Fix:** factored the round-aware walk out of `reconstruct()`'s step 2 into
+one shared `walkReview()` (`latest`/`targets`/`done`/`complete`/`n`/
+`lastAt`, the hour-gap reset, the round advance) — both functions now call
+it, so they cannot drift apart again by being maintained separately.
+`finishedAt` takes `walkReview`'s `firstFinish`: the first row, anywhere in
+history, at which the pass showing AT THAT INSTANT was all Got it. The
+IDK-replay branch is carried into the shared walker (and so into
+`finishedAt` too, for symmetry), though real callers never pass `idk` (it is
+a device-local record with no server equivalent) so it is inert for them in
+practice — documented in the function's own comment rather than left
+implicit.
+
+New engine test 33 (the reviewer's own `scratchpad/div.js` repro, as a
+pure-data test): null after the leftovers screen; null after one card of
+the fresh pass (**the exact case that was wrong**); a hit at that pass's
+own last card. `node scratchpad/div.js` confirms the same sequence directly
+against the fixed module. `node flashcard_engine_test.js`: **191/191**
+(186 + the 5 finishedAt/onFinish sections already in commit `bfd266295`,
++ test 33).
+
+**Parked SQL** (`feat/fc-complete-migrations`, commit `bbd68a144`): the
+same round-aware walk, ported into `flashcard_record`'s completion block —
+`v_targets`/`v_round_done`/`v_n_round`/`v_round_complete`/`v_last_at`
+mirroring the JS locals, the same hour-gap reset and round-advance. The
+IDK-replay branch is NOT ported (no server-side device record exists, and
+`finishedAt`'s real callers never pass one anyway — same reasoning as the
+JS). Still parked, still unrehearsed on TEST — this session has no
+Supabase PAT and no DB password, so there is still no way to execute DDL
+here; unchanged limitation from commit `bfd266295`, reported again rather
+than silently repeated.
+md5(migration) `bce3e7164bcd1a4e9bdcec7a96ad1156` (was
+`9132b03534e67e2dce3738ba34b8642c`). md5(rollback)
+`ea9a33ef13b4dd1075c07673799fa103` (unchanged — the rollback restores the
+PRE-this-ticket body, which this fix does not touch).
+
+**Should-fix 1 — the Avg score tile's own caption contradicted its
+number.** `avgMarks` (the earlier fix) excludes flashcard rows from the
+average; the caption underneath it still read `marked.length`, every
+marked row including decks — "63% · 2 MARKED" for an average that was
+really one set's score. Same filter, same reasoning, now on the caption
+too (`student_rulings.py`). Left alone, flagged for Mide: the row word and
+filter tab both still say "Marked" for a finished deck, which is a product
+wording decision, not this same caption-contradicts-its-number bug.
+
+**Should-fix 2 — the heal's reads had no `pupil_id` filter, and the write
+had no membership check.** RLS already restricts a real pupil to their own
+`flashcard_reviews`/`flashcard_sessions` rows, but nothing stopped a
+staff/admin account's OWN uid, under a broader read policy, from pulling
+rows it should not and then writing a submission naming itself as the
+pupil (`submissions_self_all` only checks `student_id = auth_user_id()` —
+it cannot tell "a real pupil" from "any signed-in account using its own
+id this way"). Added `.eq("pupil_id", uid)` to both reads
+(`shared/student-live.js`), and a new `pupilMemberOfAssignmentClass`
+check inside `writeFinishedSubmission` itself — the write refuses unless
+`uid` is a `class_members` row (not left, not deleted) for the
+assignment's own class. One extra read, per WRITE only (never per heal
+check, since writes are rare).
+
+**Should-fix 3 — the heal read flashcard_sessions unconditionally.** Every
+class-page load used to read sessions/`server_at` for every deck a pupil
+had ever rated, regardless of whether anything needed finishing. Restructured
+so the (cheap) `assignments`/`assignment_submissions` reads run first,
+`finishedAt` is computed from data already in hand, and the session read
+only fires for the resulting (usually empty) "needs a write" list — zero
+extra requests for a pupil whose decks are already recorded or none
+finished.
+
+**Should-fix 4 (the harness) — the "Give it another go" check tapped the
+wrong element.** The row's own header IS the toggle button
+(`student_rulings.py` "PROD N4": node 161, `<button onClick=
+{{r.toggle}}>`, which that ruling also gives `aria-expanded`). The first
+build's probe searched `button,[role="button"],div` for the first element
+whose text started with the title — which could, and did, land on an
+outer wrapper sorting earlier in document order than the real button.
+Scoped the tap to `button[aria-expanded]` instead.
+
+**Proof, after the fixes, rebase and rebuild:**
+- `node flashcard_engine_test.js`: **191 passed, 0 failed**.
+- `node scratchpad/div.js` (the reviewer's repro): confirms the fixed
+  sequence directly (`null`, `null`, `null`, then "reconstruct now: stage
+  review pass size 1 ended null" — the pupil correctly read as 1 of 5
+  rated, not finished).
+- `flashcard_homework_drive.py`, `flashcard_progress_drive.py`,
+  `student_behaviour.py`, `teacher_reach.py`, `today_drive.py`: **all
+  green, 0 FAILs**, each run sequentially post-rebase.
+- `teacher_behaviour.py`: one run hit a transient `chrome closed the
+  websocket mid-frame` (the known CDP flake CLAUDE.md names); retried
+  once, green — **1061 of 994 controls pressed, 0 FAILs**.
+- `tools/flashcards_complete_live.py` on TEST, post-rebase and post-fix:
+  **25 of 25 checks green** — every check from the first pass PLUS the
+  previously-red "Give it another go" tap, now passing (`{'label':
+  "Give it another go", 'context': "Give it another go"}`). The heal
+  re-ran against the same real TEST pupils Ben and Chidi and reproduced
+  the identical `completed_at`/`is_late` from the first pass byte for
+  byte, confirming the write is stable across repeated runs, not just
+  idempotent within one. No orphaned throwaway rows after the run.
+
+Commit: `c1adc96bf` (`fix/flashcard-completion`, rebased onto
+`origin/main` `64a0cb303`). Parked SQL: `bbd68a144`
+(`feat/fc-complete-migrations`).
