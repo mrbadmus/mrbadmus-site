@@ -140,16 +140,20 @@
      Every column sorts; a missing value always sinks, whichever way. */
   /* ⊕ Sharpen C1 — every column a FIXED width (`table-layout: fixed` +
      a <colgroup> from `w`), so no row's content moves a column; only the
-     pupil column is flexible. Header words fit their widths at 12.5px mono. */
+     pupil column is flexible. Header words fit their widths at 12.5px mono.
+
+     ⊕ Design port A, 30 Sep 2026 — "Per card" and "Rushed" are CUT, as
+     ruled and as drawn ("it's Time ÷ cards" / "now a small 'RUSHED'
+     marker in the Time cell"). Rushed rides inside the "time" cell's
+     rendering (`renderTable`) and CSV text (`buildCsv`) instead of
+     owning a column — see both functions' own comments. */
   var COLUMNS = [
     { key: "pupil",    label: "Pupil",       w: null },
     { key: "status",   label: "Status",      w: 150 },
     { key: "made",     label: "Made",        w: 90, make: true },
-    { key: "secured",  label: "Secured",     w: 180 },
+    { key: "secured",  label: "Secured",     w: 200 },
     { key: "sittings", label: "Sittings",    w: 120 },
-    { key: "time",     label: "Time",        w: 100 },
-    { key: "percard",  label: "Per card",    w: 120 },
-    { key: "rushed",   label: "Rushed",      w: 110 },
+    { key: "time",     label: "Time",        w: 150 },
     { key: "last",     label: "Last active", w: 150 }
   ];
 
@@ -167,8 +171,6 @@
       case "secured": return p.secured == null ? null : p.secured * 1000 + (p.known || 0);
       case "sittings": return p.sittings == null ? null : p.sittings;
       case "time": return p.active_ms == null ? null : p.active_ms;
-      case "percard": return p.median_think_ms == null ? null : p.median_think_ms;
-      case "rushed": return p.rushed ? 1 : 0;
       case "last": return p.last_active ? Date.parse(p.last_active) : null;
     }
     return null;
@@ -206,8 +208,6 @@
       case "secured": return (p.secured || 0) + "/" + n;
       case "sittings": return String(p.sittings || 0);
       case "time": return p.active_ms ? clock(p.active_ms) : "—";
-      case "percard": return seconds(p.median_think_ms);
-      case "rushed": return p.rushed ? "Rushed" : "";
       case "last": return relative(p.last_active, nowMs);
     }
     return "";
@@ -233,10 +233,9 @@
       var out = [];
       cols.forEach(function (c) {
         if (c.key === "last") { out.push(p.last_active ? londonYmd(p.last_active) : ""); }
-        else if (c.key === "percard") {
-          out.push(p.median_think_ms == null ? "" : (Math.round(p.median_think_ms / 100) / 10).toFixed(1));
-        } else if (c.key === "time") { out.push(p.active_ms ? clock(p.active_ms) : ""); }
-        else if (c.key === "rushed") { out.push(p.rushed ? "Yes" : ""); }
+        /* ⊕ Design port A — no separate Rushed column; the fact rides in
+           the Time cell's own CSV text, as it does on screen. */
+        else if (c.key === "time") { out.push((p.active_ms ? clock(p.active_ms) : "") + (p.rushed ? " (rushed)" : "")); }
         else { out.push(cellText(p, c.key, n, a.mode, a.rule)); }
         if (c.key === "secured" && a.rule === "secure") { out.push((p.known || 0) + "/" + n); }
       });
@@ -275,6 +274,119 @@
     id: null, sb: null, data: null, sortKey: null, sortDir: "asc",
     timer: null, inflight: false, lastFocus: null, chem: false
   };
+
+  /* ═════════════════════════════════════════════════════════════════════
+     ⊕ Design port A follow-up, 30 Sep 2026 — the Secured strip's real
+     five-state per-card breakdown (Secured/Got it/Nearly/Not yet/Not
+     seen), not the three-bucket approximation the port shipped with.
+
+     THE DERIVATION IS NOT REWRITTEN HERE. `window.MRBFlashcardBreakdown
+     .cardState(card)` — shared/flashcard-breakdown.js, already used by
+     the per-pupil sheet's own card chips — is the ONE place a card's
+     rating history becomes a state word. This file calls it, never
+     re-implements it. flashcard-breakdown.js loads before this file on
+     teacher/flashcards.html (script order), so the global is always
+     present by the time `stripCounts` below runs.
+
+     THE READ: `flashcard_pupil_detail(p_assignment, p_pupil)` — the same
+     RPC the per-pupil sheet already calls, the teacher can already read
+     it, no new grant. `flashcard_progress` (this page's own read) has no
+     per-card list, only per-pupil counts, so a pupil's true 5-state split
+     is not knowable until their detail is fetched.
+
+     THE COST CONTROL — three rules, all load-bearing:
+     · a pupil with 0 sittings is skipped entirely (every card is Not
+       seen by construction; no RPC can tell us anything a zero can't).
+     · DETAIL_SIG remembers the (secured, known, sittings, last_active)
+       tuple the cache reflects; a poll that re-fetches `flashcard_
+       progress` and finds that tuple UNCHANGED for a pupil never queues
+       a re-fetch of their detail — this is what keeps an idle 10s poll
+       at 0 additional RPCs.
+     · DETAIL_MAX caps concurrent `flashcard_pupil_detail` calls; a
+       30-pupil first load queues 30 and drains them 4 at a time rather
+       than firing 30 requests at once.
+
+     UNTIL A PUPIL'S DETAIL ARRIVES (or if the RPC errors), `stripCounts`
+     falls back to the count-based 3-bucket approximation the port
+     shipped with — never a blank cell, never an error string. */
+  var DETAIL_MAX = 4;
+  var DETAIL_CACHE = {};   // pupil_id -> cards[] (real data) | null (fetched, empty/errored)
+  var DETAIL_SIG = {};     // pupil_id -> the progress-row signature this cache entry reflects
+  var DETAIL_QUEUE = [];   // pupil_ids waiting for a free slot
+  var DETAIL_ACTIVE = 0;   // requests currently in flight
+
+  function pupilSig(p) {
+    return [p.secured, p.known, p.sittings, p.last_active].join("|");
+  }
+
+  function pumpDetailQueue() {
+    while (DETAIL_ACTIVE < DETAIL_MAX && DETAIL_QUEUE.length) {
+      fetchDetail(DETAIL_QUEUE.shift());
+    }
+  }
+
+  function fetchDetail(pid) {
+    DETAIL_ACTIVE++;
+    S.sb.rpc("flashcard_pupil_detail", { p_assignment: S.id, p_pupil: pid })
+      .then(function (r) {
+        DETAIL_CACHE[pid] = (r && !r.error && r.data && r.data.cards) ? r.data.cards : null;
+      }, function () { DETAIL_CACHE[pid] = null; })
+      .then(function () {
+        DETAIL_ACTIVE--;
+        /* Redraw now so this one row fills in without waiting for the
+           rest of the queue — never re-triggers ensureDetail (that only
+           runs from a fresh `flashcard_progress` read, in render()). */
+        if (S.data) { renderTable(S.data); }
+        pumpDetailQueue();
+      });
+  }
+
+  /* Called once per real progress read (initial load + every poll) —
+     never from a plain re-sort, which reuses S.data and fetches nothing
+     new. Queues exactly the pupils whose (secured, known, sittings,
+     last_active) tuple has changed since the cache was last filled for
+     them, which is the whole of the "0 RPCs on an idle poll" guarantee:
+     nothing about a pupil's row changing means nothing about their cards
+     could have changed either. */
+  function ensureDetail(pupils) {
+    (pupils || []).forEach(function (p) {
+      if (!p.sittings) { return; }
+      var sig = pupilSig(p);
+      if (DETAIL_SIG[p.pupil_id] === sig) { return; }
+      if (DETAIL_QUEUE.indexOf(p.pupil_id) !== -1) { return; }
+      DETAIL_SIG[p.pupil_id] = sig;
+      DETAIL_QUEUE.push(p.pupil_id);
+    });
+    pumpDetailQueue();
+  }
+
+  /* The five counts for one pupil's strip, best state first. Real data
+     when `flashcard_pupil_detail` has landed for their CURRENT sig;
+     otherwise the count-based fallback (secured/known from `flashcard_
+     progress` only — Nearly and Not yet can't be told apart from Not
+     seen with counts alone, so both read 0 rather than guess). */
+  function stripCounts(p, n) {
+    if (!p.sittings) {
+      return { secured: 0, got_it: 0, nearly: 0, not_yet: 0, unseen: n };
+    }
+    var cards = DETAIL_CACHE[p.pupil_id];
+    if (cards) {
+      var FB = window.MRBFlashcardBreakdown;
+      var counts = { secured: 0, got_it: 0, nearly: 0, not_yet: 0, unseen: 0 };
+      cards.forEach(function (c) {
+        var st = (FB && FB.cardState) ? FB.cardState(c) : { key: "unseen" };
+        var key = Object.prototype.hasOwnProperty.call(counts, st.key) ? st.key : "unseen";
+        counts[key] += 1;
+      });
+      var counted = counts.secured + counts.got_it + counts.nearly + counts.not_yet + counts.unseen;
+      counts.unseen += Math.max(0, n - counted);
+      return counts;
+    }
+    var secured = Math.max(0, Math.min(p.secured || 0, n));
+    var got = Math.max(0, Math.min((p.known || 0) - secured, n - secured));
+    var unseen = Math.max(0, n - secured - got);
+    return { secured: secured, got_it: got, nearly: 0, not_yet: 0, unseen: unseen };
+  }
 
   function nowIso() { return new Date().toISOString(); }
 
@@ -388,20 +500,31 @@
     return c;
   }
 
+  /* ⊕ Design port A, 30 Sep 2026; five-state follow-up same day — a
+     per-card state strip, sorted best to worst, in place of the
+     two-segment progress bar (Design's NOTES.md "✓4 ≈3 ×1 ○2 became the
+     Secured column… each pupil gets one strip with a cell per card").
+     `data-known` is UNCHANGED (still read by flashcard_progress_drive.py)
+     so the "known once" tooltip survives. Five states now, as drawn —
+     `stripCounts` above (real detail when cached, the 3-bucket fallback
+     otherwise) is the one place that decides the numbers; this function
+     only draws them, in the fixed best-to-worst cell order. */
   function securedCell(p, n, rule) {
     var w = h("div", "fp-sec");
-    w.appendChild(h("span", "fp-sec-n", (p.secured || 0) + "/" + n));
-    var bar = h("span", "fp-bar");
-    bar.setAttribute("aria-hidden", "true");
-    if (rule === "secure" && n) {
-      var k = h("span", "fp-bar-known");
-      k.style.width = Math.min(100, Math.round(((p.known || 0) / n) * 100)) + "%";
-      bar.appendChild(k);
-    }
-    var s = h("span", "fp-bar-sec");
-    s.style.width = n ? Math.min(100, Math.round(((p.secured || 0) / n) * 100)) + "%" : "0%";
-    bar.appendChild(s);
-    w.appendChild(bar);
+    var num = h("span", "fp-sec-n");
+    num.appendChild(document.createTextNode(String(p.secured || 0)));
+    num.appendChild(h("small", null, "/" + n));
+    w.appendChild(num);
+    var c = stripCounts(p, n);
+    var strip = h("span", "strip");
+    strip.setAttribute("role", "img");
+    strip.setAttribute("aria-label", c.secured + " secured, " + c.got_it + " got it, " +
+      c.nearly + " nearly, " + c.not_yet + " not yet, " + c.unseen + " not seen");
+    [["k-sec", c.secured], ["k-got", c.got_it], ["k-near", c.nearly],
+     ["k-no", c.not_yet], ["k-un", c.unseen]].forEach(function (pair) {
+      for (var i = 0; i < pair[1]; i++) { strip.appendChild(h("i", pair[0])); }
+    });
+    w.appendChild(strip);
     if (rule === "secure") {
       w.title = (p.known || 0) + " known once";
       w.setAttribute("data-known", String(p.known || 0));
@@ -462,11 +585,22 @@
           b.type = "button";
           b.addEventListener("click", function (e) { e.stopPropagation(); openPupil(p); });
           td.appendChild(b);
+          /* ⊕ Design port A — below 640px the Status COLUMN hides (ruled:
+             "Pupil… and Secured only, nothing ellipsised") and this chip
+             carries the same fact under the name instead. `ph-only` is
+             CSS-only (display:none above 640px); no data any other cell
+             doesn't already have. */
+          var phChip = statusChip(p.status);
+          phChip.classList.add("ph-only");
+          td.appendChild(phChip);
         } else if (c.key === "status") {
           td.appendChild(statusChip(p.status));
         } else if (c.key === "secured") {
           td.appendChild(securedCell(p, n, a.rule));
-        } else if (c.key === "rushed") {
+        } else if (c.key === "time") {
+          td.appendChild(document.createTextNode(cellText(p, c.key, n, a.mode, a.rule, nowMs)));
+          /* ⊕ Design port A — Rushed is a small inline marker INSIDE the
+             Time cell now, never its own column (cut, as ruled). */
           if (p.rushed) { td.appendChild(h("span", "fp-rushed", "Rushed")); }
         } else {
           td.textContent = cellText(p, c.key, n, a.mode, a.rule, nowMs);
@@ -486,6 +620,11 @@
     renderTable(d);
     $("fp-skel").hidden = true;
     $("fp-body").hidden = false;
+    /* Initial load AND every poll land here (both go through render()) —
+       never a bare re-sort, which calls renderTable() directly on the
+       same S.data. See ensureDetail's own comment for the 0-RPCs-when-
+       nothing-changed guarantee this placement is what delivers. */
+    ensureDetail(d.pupils || []);
   }
 
   /* ── live: every 10 s while visible ───────────────────────────────────── */

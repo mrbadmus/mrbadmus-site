@@ -387,11 +387,27 @@
     return rates;
   }
 
+  /* ⊕ Design port A, 30 Sep 2026 — the row is now a hairline-split list
+     item matching the MCQ breakdown's `.bd-q` (Design's NOTES.md: "Rows
+     are split by hairlines, not cards with borders"), with a plain
+     zero-padded number (`.fb-qn`) as its own 34px column — not "Q1"
+     inside the head. `.fb-card-body` is a new wrapper (no class hook any
+     drive reads — confirmed no drive queries `.fb-card-head`/`.fb-pair`
+     structurally) so the number column and the rest can sit in a
+     `34px minmax(0,1fr)` grid, the same shape `.bd-q` uses. Every id,
+     data attribute and class the drives DO read (`data-card`, `.fb-card`, `.fb-state`,
+     `.fb-ans`/`data-fb="answer"`, `.fb-ans-text`/`data-fb-data="mine"`,
+     `.fb-verdict`, `.fb-model`/`.fb-model-text`/`.fb-model-label`,
+     `.fb-tries`, `.fb-history`) is unchanged. */
   function buildCard(c, i) {
     var li = el("li", "fb-card");
     li.setAttribute("data-card", c.id);
+    var n = i + 1;
+    li.appendChild(el("span", "fb-qn", (n < 10 ? "0" : "") + n));
+
+    var col = el("div", "fb-card-body");
+
     var head = el("div", "fb-card-head");
-    head.appendChild(el("span", "fb-qn", "Q" + ((c.position != null ? c.position : i) + 1)));
     var q = sci("div", "fb-q", c.question);
     q.setAttribute("data-fb-data", "question");
     head.appendChild(q);
@@ -399,44 +415,53 @@
     var chip = el("span", "fb-state fb-state-" + st.key, st.word);
     chip.setAttribute("data-state", st.key);
     head.appendChild(chip);
-    li.appendChild(head);
+    col.appendChild(head);
 
+    var pair = el("div", "fb-pair");
     var ab = answerBox(c);
     if (ab.kind !== "omit") {
       var ans = ab.ans;
       var box = el("div", "fb-ans" + (ans ? "" : " is-none"));
       box.setAttribute("data-fb", "answer");
-      if (ans) {
-        var t = sci("div", "fb-ans-text", ans.text);
-        t.setAttribute("data-fb-data", "mine");
-        box.appendChild(t);
-        if (ans.check) {
-          var v = el("span", "fb-verdict fb-verdict-" + ans.check, VERDICT[ans.check] || ans.check);
-          v.setAttribute("data-check", ans.check);
-          box.appendChild(v);
-        }
-      } else {
-        box.appendChild(el("div", "fb-ans-text", "No written answer"));
+      /* ⊕ Design port A — a header row, matching the model box's own
+         (Design's `.fc-box-h`): "Latest answer" beside the verdict, so
+         the two boxes read as a symmetric pair. */
+      var ansHead = el("div", "fb-box-h");
+      ansHead.appendChild(el("span", "fb-model-label", "Latest answer"));
+      if (ans && ans.check) {
+        var v = el("span", "fb-verdict fb-verdict-" + ans.check, VERDICT[ans.check] || ans.check);
+        v.setAttribute("data-check", ans.check);
+        ansHead.appendChild(v);
       }
-      li.appendChild(box);
+      box.appendChild(ansHead);
+      var t = sci("div", "fb-ans-text", ans ? ans.text : "No written answer");
+      if (ans) { t.setAttribute("data-fb-data", "mine"); }
+      box.appendChild(t);
+      pair.appendChild(box);
     }
 
     var model = el("div", "fb-model");
-    model.appendChild(el("div", "fb-model-label", "Model answer"));
+    var modelHead = el("div", "fb-box-h");
+    modelHead.appendChild(el("span", "fb-model-label", "Model answer"));
+    model.appendChild(modelHead);
     var mt = sci("div", "fb-model-text", c.answer);
     mt.setAttribute("data-fb-data", "answer");
     model.appendChild(mt);
-    li.appendChild(model);
+    pair.appendChild(model);
+    col.appendChild(pair);
 
-    li.appendChild(el("div", "fb-tries", "Tries: " + tries(c)));
-
+    var foot = el("div", "fb-foot");
+    foot.appendChild(el("span", "fb-tries", "Tries: " + tries(c)));
     var rates = ratingChips(c);
     if (rates.firstChild) {
       var det = el("details", "fb-history");
       det.appendChild(el("summary", null, "History"));
       det.appendChild(rates);
-      li.appendChild(det);
+      foot.appendChild(det);
     }
+    col.appendChild(foot);
+
+    li.appendChild(col);
     return li;
   }
 

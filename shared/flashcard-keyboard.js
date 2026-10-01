@@ -44,6 +44,18 @@
   var D = '[data-mrb-dialog="flashcards"]';
   var T = D + '[data-hw-typing="1"]';
   var CSS =
+    // ⊕ Design port (05) — the empty header row above the strip (node
+    // 10321: its eyebrow is blank in every mode, its stack counter blank
+    // on a homework) steps aside whenever the strip is drawing its own row
+    // with Close in it (`[data-hw="close"]`, student_rulings.py `_hw_close`).
+    // `:has()` is load-bearing, not decorative: this stylesheet is injected
+    // once and stays on the page, so a plain (unscoped) rule would also hide
+    // 10321 later, after the homework closes and the PRACTICE deck opens —
+    // where 10321 is Design's own header, showing a real eyebrow/counter.
+    // A browser without `:has()` (none the site supports) simply keeps
+    // 10321 on screen underneath the new row: the old, safe look, not a
+    // missing Close. Not `T`-scoped: this applies at every width.
+    D + ':has([data-hw="close"]) [data-dc-tpl="10321"]{display:none!important}' +
     // ── the card: its content's height (Stage D, decision 1) ──
     '.rd[data-mode="ks3"] ' + D + '[data-hw-fit] [data-card-fit],' +
     D + '[data-hw-fit] [data-card-fit]{flex:0 0 auto!important;min-height:0!important;' +
@@ -60,15 +72,37 @@
       D + '[data-hw-fit][data-hw-tall="1"] [data-hw="answer"]{flex:1 1 auto;max-height:200px}}' +
     // ── under a real keyboard only (decision 2) ──
     T + ' [data-hw="strip"]{padding:8px 18px!important;gap:4px!important}' +
-    T + ' [data-hw="strip"] > :not([data-hw="progress"]){display:none!important}' +
+    // ⊕ Design port (05) — Close moved from the (now CSS-hidden) header row
+    // into the strip's own row, `[data-hw="strip-row"]`: that row, not the
+    // bare headline span it used to be keyed on, is the one thing this
+    // compact mode keeps (bar/chips/secured/helper/offline/note still go).
+    T + ' [data-hw="strip"] > :not([data-hw="strip-row"]){display:none!important}' +
     T + ' [data-dc-tpl="10328"]{padding:12px 18px!important;gap:10px!important}' +
     T + ' [data-dc-tpl="10334"]{padding:14px 18px!important;gap:8px!important}' +
     T + ' [data-dc-tpl="10340"]{font-size:18px!important;line-height:1.3!important}' +
     T + ' [data-dc-tpl="10350"]{display:none!important}' +
+    // ⊕ design-port audit, must-fix 3 — Design hides the HOMEWORK tag row
+    // (10335: card.tag "HOMEWORK" + the "FROM YOUR WORK" pill) under a
+    // keyboard, same as she already hides the topic line (10350, above).
+    // Without it, the "I don't know" learn step's model answer — inside
+    // THIS SAME card, under a rule below the question — was measured
+    // clipped at 390×508 (card 122px, content 141px): the tag row was
+    // ~19-30px of the gap between them.
+    T + ' [data-dc-tpl="10335"]{display:none!important}' +
     T + ' [data-hw="check"]{min-height:44px!important}' +
-    // ⊕ Sharpen §13.4 — the "I don't know" learn state adds the ANSWER block
-    // between the card and the box; it scrolls inside itself if long.
-    T + ' [data-hw="learn"] > :last-child{max-height:calc(var(--fc-vh) * .22)!important;overflow:auto!important}';
+    // ⊕ Design port review — Design's `.end-1` is 40px; below 380px "10 of
+    // 10 right" wraps onto two lines at that size (measured, not assumed —
+    // see the drive), so a narrow phone gets 34px instead. A media query,
+    // not an inline width check: `data-hw="end1"`'s inline style can't
+    // answer "does this string wrap at this width" on its own, and this
+    // rule does not depend on the keyboard (`D`, not `T`).
+    '@media (max-width:379px){' + D + ' [data-hw="end1"]{font-size:34px!important}}';
+  // ⊕ Design port (05) — the old `[data-hw="learn"] > :last-child{max-height:
+  // …22vh}` keyboard rule is GONE: the model answer now lives INSIDE 10334
+  // (student_rulings.py, INSERT_AT 10334/10340), which already scrolls its
+  // own overflow (`STYLE_EDIT[10334]`) at every width, keyboard or not — one
+  // scroll region for the question and the answer together, not a second one
+  // nested inside it.
 
   function injectCss() {
     if (doc.getElementById("mrb-fc-keyboard-css")) { return; }

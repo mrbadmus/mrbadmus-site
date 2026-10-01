@@ -57,7 +57,7 @@
 .bd-overlay[hidden] { display: none; }
 
 .bd-sheet {
-  width: 880px;
+  width: 1040px;
   max-width: 100%;
   max-height: 90vh;
   overflow: auto;
@@ -97,42 +97,54 @@
 }
 
 /* ── the sticky header ────────────────────────────────────────────────── */
+/* ⊕ Design port A, 30 Sep 2026 — the sticky header in three parts: Close,
+   then the title with the eyebrow (set title) above it and the pupil's
+   name under it, then ‹ ›. A CSS grid rather than flex so the phone
+   layout below can rearrange the same three children into "close nav" /
+   "main main" without touching the DOM (Design's NOTES.md "One panel
+   shell"). Desktop sizing matches Design's `.pn-head`/`.pn-title`/
+   `.pn-who`/`.btn`: a 44px tap target everywhere, not 32px. */
 .bd-head {
   position: sticky;
   top: 0;
   z-index: 2;
   flex: none;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 32px;
   background: var(--st-paper);
   border-bottom: 1px solid var(--st-rule-soft);
-  flex-wrap: wrap;
 }
 .bd-close {
   flex: none;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  height: 32px;
-  padding: 0 8px;
-  background: none;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  background: var(--st-paper);
   border: 1px solid var(--st-btn-border);
-  border-radius: 8px;
+  border-radius: var(--st-r-btn);
   color: var(--st-ink);
-  font: 600 15px/1 var(--st-ui);
+  font: 600 16px/1.2 var(--st-ui);
   cursor: pointer;
 }
 .bd-close:hover { border-color: var(--st-edge); background: var(--st-note-bg); }
 .bd-close svg { flex: none; width: 16px; height: 16px; }
 /* S10c — the word "Close" is drawn on desktop; the icon carries the
-   affordance below 520px where the button drops to a 44px tap target. */
+   affordance below 520px where the button drops to icon-only. */
 .bd-close-label { white-space: nowrap; }
 
-/* S10 — the header's anchor is now the SET TITLE, not the pupil's name.
-   Previous/Next keeps the set open; the title that never changes across a
-   press is the one that should read loudest at rest. */
+/* S10 — the header's anchor is the SET TITLE (the eyebrow, unchanged —
+   `renderHeader` already set it this way): Previous/Next keeps the set
+   open, so the thing that never changes across a press is the thing
+   that should read loudest. `.bd-title` (the pupil's name, also
+   unchanged in JS) now draws at Design's 28px Bricolage size, under it —
+   only the SIZE relationship changes in this port, not which node holds
+   which text. */
 .bd-head-main { flex: 1 1 220px; min-width: 0; }
 .bd-eyebrow {
   font: 600 15px/1.3 var(--st-ui);
@@ -141,14 +153,15 @@
 }
 .bd-title {
   margin-top: 3px;
-  font: 700 19px/1.25 var(--st-ui);
+  font: 600 28px/1.1 var(--st-display);
+  letter-spacing: -.025em;
   color: var(--st-ink);
   overflow-wrap: anywhere;
 }
 .bd-subtitle {
-  margin-top: 2px;
-  font: 400 15px/1.4 var(--st-ui);
-  color: var(--st-muted);
+  margin-top: 5px;
+  font: 500 17px/1.3 var(--st-ui);
+  color: var(--st-body);
   overflow-wrap: anywhere;
 }
 
@@ -156,21 +169,22 @@
   flex: none;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 .bd-nav-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  height: 32px;
-  padding: 0 10px;
-  font: 600 15px/1 var(--st-ui);
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  font: 600 16px/1.2 var(--st-ui);
   color: var(--st-ink);
   background: var(--st-paper);
   border: 1px solid var(--st-btn-border);
-  border-radius: 8px;
+  border-radius: var(--st-r-btn);
   cursor: pointer;
-  max-width: 160px;
+  max-width: 220px;
 }
 .bd-nav-btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bd-nav-btn:hover:not(:disabled) { border-color: var(--st-edge); background: var(--st-note-bg); }
@@ -178,29 +192,31 @@
 
 /* ── the body ─────────────────────────────────────────────────────────── */
 .bd-body {
-  padding: 18px 16px 30px;
+  padding: 28px 32px 44px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 28px;
   min-width: 0;
 }
 
-/* ── S1/S12 — three tiles: Score · Time · Handed in ──────────────────────
-   Completion is gone from here: the question-map strip beneath it carries
-   that signal AND the per-question detail, in one read, which a fourth
-   equal-weighted tile never did. */
+/* ⊕ Design port A — boxless: three columns between two hairlines, with a
+   34px Bricolage value (Design's NOTES.md "Stats have no boxes… the boxed
+   tiles were most of the 'old and ugly'"). Completion is gone from here:
+   the question-map strip beneath it carries that signal AND the per-
+   question detail, in one read, which a fourth equal-weighted tile
+   never did. */
 .bd-summary {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--st-rule-soft);
+  border-bottom: 1px solid var(--st-rule-soft);
 }
 .bd-stat {
   min-width: 0;
-  padding: 12px 14px;
-  background: var(--st-ground);
-  border: 1px solid var(--st-rule-soft);
-  border-radius: 11px;
+  padding: 18px 0 18px 24px;
+  border-left: 1px solid var(--st-rule-soft);
 }
+.bd-stat:first-child { padding-left: 0; border-left: 0; }
 .bd-stat-label {
   font: 500 12px/1.2 var(--st-mono);
   letter-spacing: .12em;
@@ -208,59 +224,72 @@
   color: var(--st-caption);
 }
 .bd-stat-value {
-  margin-top: 4px;
-  font: 700 20px/1.2 var(--st-ui);
+  margin-top: 8px;
+  font: 600 34px/1 var(--st-display);
+  letter-spacing: -.02em;
   color: var(--st-ink);
+  font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
+.bd-stat-value small { font-size: .6em; color: var(--st-caption); letter-spacing: 0; }
 .bd-stat-value.is-late { color: var(--st-accent-text); }
 .bd-stat-value.is-good { color: var(--success); }
 .bd-stat-sub {
-  margin-top: 2px;
+  margin-top: 6px;
   font: 400 15px/1.35 var(--st-ui);
   color: var(--st-muted);
 }
 
-/* ── S1 — the question map: one square per question ──────────────────── */
+/* ⊕ Design port A, 30 Sep 2026 — S1's question-map square, 34px, matching
+   the per-question mark below it (Design's NOTES.md: "the strip and the
+   list use the same mark, so the strip works as a key for the list below
+   it"). Right is FILLED. Wrong is an outlined square with a heavy accent
+   ring. Not answered is DASHED — fill, ring and dash tell the three
+   states apart without relying on hue alone. Fills use the --ok-fill/
+   --no-fill token pair (teacher-ds.css) so dark mode swaps for free —
+   this REPLACES the old hardcoded-white-glyph + dark-mode-override pair
+   that used to sit at the bottom of this file. The per-question class
+   flag underline (S4, old `.is-flagged`) is cut with the class-wide line
+   — see breakdown.js's own comment on that cut. */
 .bd-qmap-wrap {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 14px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 .bd-qmap {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   flex: 1 1 auto;
   min-width: 0;
 }
 .bd-qmap-sq {
-  position: relative;
+  width: 34px;
+  height: 34px;
   flex: none;
-  width: 28px;
-  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
-  font: 700 15px/1 var(--st-ui);
+  border-radius: 8px;
+  font: 600 15px/1 var(--st-ui);
+  font-variant-numeric: tabular-nums;
   cursor: pointer;
+  background: none;
+  border: 2px solid var(--st-rule-strong);
+  color: var(--st-caption);
+  padding: 0;
+}
+li .bd-qmap-sq { cursor: default; }
+.bd-qmap-sq.is-right { background: var(--ok-fill); border-color: var(--ok-fill); color: var(--on-ok-fill); }
+.bd-qmap-sq.is-wrong {
   background: var(--st-paper);
-  border: 2px solid var(--st-rule-soft);
-  color: var(--st-ink);
+  border-color: var(--no-fill);
+  color: var(--st-accent-text);
+  box-shadow: inset 0 0 0 1px var(--no-fill);
 }
-.bd-qmap-sq.is-right { background: var(--success); border-color: var(--success); color: #fff; }
-.bd-qmap-sq.is-wrong { background: var(--st-accent-text); border-color: var(--st-accent-text); color: #fff; }
-.bd-qmap-sq.is-flagged::after {
-  content: "";
-  position: absolute;
-  left: 3px; right: 3px; bottom: -4px;
-  height: 3px;
-  border-radius: 2px;
-  background: var(--st-accent);
-}
+.bd-qmap-sq.is-blank { border-style: dashed; }
 
 /* ── S13 — "All N" / "Wrong K" ────────────────────────────────────────── */
 .bd-toggle {
@@ -269,57 +298,21 @@
   gap: 2px;
   padding: 3px;
   background: var(--st-seg-bg);
-  border-radius: 9px;
+  border-radius: 10px;
 }
 .bd-toggle-btn {
-  padding: 6px 12px;
+  min-height: 38px;
+  padding: 0 14px;
   font: 600 15px/1 var(--st-ui);
   color: var(--st-body);
   background: none;
   border: none;
-  border-radius: 7px;
+  border-radius: 8px;
   cursor: pointer;
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
-.bd-toggle-btn.is-on { background: var(--st-paper); color: var(--st-ink); box-shadow: var(--st-shadow-pop); }
-
-/* ── MUST-6 — the follow-up, under the tiles/map, not after 20 cards ──── */
-.bd-followup-row {
-  display: flex;
-  justify-content: flex-end;
-}
-.bd-followup {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  height: 38px;
-  padding: 0 16px;
-  font: 600 15px/1 var(--st-ui);
-  color: var(--st-paper);
-  background: var(--st-accent-text);
-  border: none;
-  border-radius: 9px;
-  cursor: pointer;
-}
-.bd-followup:hover { background: var(--st-accent-hover); }
-.bd-followup[hidden] { display: none; }
-
-/* ── S5 — the one line above the topics that names the class-wide misses ─ */
-.bd-classline {
-  font: 500 15px/1.5 var(--st-ui);
-  color: var(--st-body);
-  overflow-wrap: anywhere;
-}
-.bd-classline[hidden] { display: none; }
-.bd-classline button {
-  font: inherit;
-  color: var(--st-accent-text);
-  text-decoration: underline;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-}
+.bd-toggle-btn.is-on { background: var(--st-paper); color: var(--st-ink); box-shadow: 0 1px 2px rgba(40, 26, 10, .18); }
 
 /* ── the not-started / no-answers-yet state (MUST-5) ─────────────────── */
 .bd-empty {
@@ -345,131 +338,50 @@
 .bd-disclosure[open] > summary::before { content: "\25BE\2002"; }
 .bd-disclosure > .bd-qlist { margin-top: 12px; }
 
-/* ── topic groups ─────────────────────────────────────────────────────── */
-.bd-topic + .bd-topic {
-  margin-top: 4px;
-  padding-top: 18px;
-  border-top: 1px solid var(--st-rule-soft);
-}
-.bd-topic-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.bd-topic-name {
-  font: 700 15.5px/1.3 var(--st-ui);
-  color: var(--st-ink);
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-/* COULD-2 — plain 15px UI rather than an uppercase mono chip; coloured by
-   how the topic went, so the read is "how did it go" not "count of five". */
-.bd-topic-tally {
-  flex: none;
-  font: 600 15px/1.3 var(--st-ui);
-  color: var(--st-muted);
-}
-.bd-topic-tally.is-zero { color: var(--st-accent-text); }
-.bd-topic-tally.is-full { color: var(--success); }
-
+/* ⊕ Design port A — one flat, numbered list; the topic-group headers and
+   tallies, the class-wide line and the "Open Set work" follow-up are all
+   CUT (as ruled, as drawn — see breakdown.js's own comment on each).
+   Rows are split by hairlines, not bordered cards (Design's NOTES.md:
+   "Wrong answers stand out by what they say, not by an accent bar").
+   `groupByTopic`'s weakest-topic-first ORDER under Wrong-only survives in
+   `renderBody` — only the section chrome is gone. */
 .bd-qlist {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--st-rule-soft);
 }
 
 /* ── one question ─────────────────────────────────────────────────────── */
 .bd-q {
   min-width: 0;
-  padding: 14px 14px 14px 50px;
-  position: relative;
-  background: var(--st-paper);
-  border: 1px solid var(--st-rule-soft);
-  border-radius: 11px;
-}
-/* S6 — weight goes to WRONG, not right. A correct card recedes to the same
-   quiet border every other neutral card has; a wrong card keeps a paler
-   border than before AND gains a left accent bar, so the eye lands on what
-   needs attention rather than on what is already fine. */
-.bd-q.is-right { border-color: var(--st-rule-soft); }
-.bd-q.is-wrong {
-  border-color: var(--st-chip-tint-border);
-  box-shadow: inset 3px 0 0 var(--st-accent-text);
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 18px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--st-rule-fact);
 }
 .bd-q[data-bd-q] { scroll-margin-top: 84px; }
+.bd-q .bd-qmap-sq { margin-top: 1px; }
 
-/* S7 — a 26px filled disc, readable at arm's length, shape AND colour. */
-.bd-q-mark {
-  position: absolute;
-  left: 14px;
-  top: 14px;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.bd-q-mark svg { display: block; width: 15px; height: 15px; }
-.bd-q-mark.is-right { background: var(--success); color: #fff; }
-.bd-q-mark.is-wrong { background: var(--st-accent-text); color: #fff; }
-.bd-q-mark.is-unscored { background: transparent; border: 2px solid var(--st-caption); }
-
-.bd-q-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.bd-q-num {
-  font: 500 12px/1.3 var(--st-mono);
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--st-caption);
-}
-/* S4 — the class flag moves INTO the header, right-aligned, with numbers,
-   in sentence case and no letter-spacing: a fact, not a warning label. */
-.bd-q-flag {
-  flex: none;
-  max-width: 100%;
-  font: 600 15px/1.3 var(--st-ui);
-  color: var(--st-accent-text);
-  text-align: right;
-}
-.bd-q-flag[hidden] { display: none; }
-.bd-q-meta {
-  flex: none;
-  width: 100%;
-  margin-top: 2px;
-  font: 400 15px/1.3 var(--st-ui);
-  color: var(--st-muted);
-}
-.bd-q-meta[hidden] { display: none; }
-
-.bd-q-body {
-  margin-top: 8px;
-}
-/* S8 — beside the stem at ≥820px, above it below that. */
+/* S8 — a figure sits beside the stem at ≥820px, its own grid column;
+   above it (inside .bd-q-main's flow) below that. */
 @media (min-width: 820px) {
-  .bd-q.has-fig .bd-q-body {
-    display: grid;
-    grid-template-columns: 1fr 240px;
-    gap: 16px;
-    align-items: start;
-  }
-  .bd-q.has-fig .bd-q-main { min-width: 0; }
-  .bd-q.has-fig .bd-q-fig-col { grid-column: 2; }
+  .bd-q.has-fig { grid-template-columns: 34px minmax(0, 1fr) 240px; }
+  .bd-q.has-fig .bd-q-fig-col { margin-top: 5px; }
 }
 
+.bd-q-main { min-width: 0; }
 .bd-q-stem {
   font: 500 16px/1.45 var(--st-ui);
   color: var(--st-ink);
   overflow-wrap: anywhere;
+  padding-top: 5px;
+}
+.bd-q-meta {
+  margin-top: 4px;
+  font: 400 15px/1.3 var(--st-ui);
+  color: var(--st-muted);
 }
 
 /* S8 — capped height, never a whole screen for one drawing. */
@@ -492,46 +404,26 @@
   .bd-q-fig svg, .bd-q-fig img { max-height: 200px; }
 }
 
-/* S9 — a wider, non-mono label; the column no longer wraps "PUPIL'S
-   ANSWER" onto two lines at 92px. */
+/* S9 — the answer key/value as a <dl>, matching Design's `.pn-ans`; the
+   "Correct" label is shortened from "Correct answer" and, as ever, only
+   draws when the pupil's own answer was wrong or blank. */
 .bd-q-answers {
   margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.bd-q-answer {
-  display: flex;
-  gap: 8px;
-  min-width: 0;
-  font: 400 15px/1.4 var(--st-ui);
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 4px 14px;
+  font: 400 16px/1.4 var(--st-ui);
 }
 .bd-q-answer-label {
-  flex: none;
-  width: auto;
-  min-width: 110px;
-  font: 500 15px/1.3 var(--st-ui);
   color: var(--st-muted);
+  font-weight: 500;
+  font-size: 15px;
   padding-top: 1px;
 }
-.bd-q-answer-text {
-  min-width: 0;
-  overflow-wrap: anywhere;
-  color: var(--st-body);
-}
-.bd-q-answer.is-pupil-wrong .bd-q-answer-text { color: var(--st-accent-text); font-weight: 600; }
-.bd-q-answer.is-pupil-right .bd-q-answer-text { color: var(--success); font-weight: 600; }
-.bd-q-answer.is-missing .bd-q-answer-text { color: var(--st-muted); font-style: italic; }
-
-/* S4 — the quiet positive note: this pupil beat a question the class
-   mostly missed. Told apart from the flag by colour AND by sitting under
-   the answers rather than in the header. */
-.bd-q-good-note {
-  margin-top: 8px;
-  font: 500 15px/1.4 var(--st-ui);
-  color: var(--success);
-}
-.bd-q-good-note[hidden] { display: none; }
+.bd-q-answer-text { margin: 0; overflow-wrap: anywhere; }
+.bd-q-answer-text.is-right { color: var(--success); font-weight: 600; }
+.bd-q-answer-text.is-wrong { color: var(--st-accent-text); font-weight: 600; }
+.bd-q-answer-text.is-none { color: var(--st-muted); font-style: italic; }
 
 /* ── the toast ────────────────────────────────────────────────────────── */
 .bd-toast {
@@ -561,40 +453,40 @@
     border-left: 0;
     border-right: 0;
   }
-  .bd-head { border-radius: 0; padding: 12px 14px; }
-  .bd-body { padding: 14px 14px 26px; }
+  /* Close and ‹ › share the top row; the title/pupil block takes the
+     full width under them (Design's "One panel shell"). */
+  .bd-head {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    grid-template-areas: "close nav" "main main";
+    gap: 10px 12px;
+    border-radius: 0;
+    padding: 10px 16px 14px;
+  }
+  .bd-close { grid-area: close; }
+  .bd-head-main { grid-area: main; }
+  .bd-nav { grid-area: nav; justify-self: end; }
+  .bd-title { font-size: 23px; }
+  .bd-subtitle { font-size: 16px; margin-top: 3px; }
+  .bd-body { padding: 18px 16px 32px; gap: 22px; }
   /* S11 — 44px tap targets for Close and Prev/Next; the word drops so the
      icon-only button can still hit 44 without crowding the header. */
-  .bd-close { height: 44px; min-width: 44px; justify-content: center; padding: 0; }
+  .bd-close { width: 44px; padding: 0; }
   .bd-close-label { display: none; }
-  .bd-nav-btn { height: 44px; min-width: 44px; max-width: 96px; padding: 0 8px; }
+  .bd-nav-btn { width: 44px; padding: 0; }
   .bd-nav-btn .bd-nav-word { display: none; }
-  .bd-q { padding: 12px 12px 12px 46px; }
-  .bd-q-mark { left: 12px; top: 12px; }
+  .bd-stat { padding: 14px 0 14px 14px; }
+  .bd-stat-value { font-size: 24px; }
+  .bd-stat-sub { font-size: 14px; }
+  .bd-qmap-wrap { gap: 12px; }
+  .bd-qmap-wrap .bd-toggle { width: 100%; }
+  .bd-qmap-wrap .bd-toggle-btn { flex: 1; }
+  .bd-q { grid-template-columns: 34px minmax(0, 1fr); gap: 12px; padding: 16px 0; }
+  .bd-q-answers { grid-template-columns: minmax(0, 1fr); gap: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .bd-overlay, .bd-sheet, .bd-toast { animation: none !important; transition: none !important; }
-}
-
-/* ⊕ Theme run, 27 Sep 2026 — the four filled marks, dark mode only.
-   `--success` and `--st-accent-text` are tuned BRIGHT for dark (11.7:1 /
-   8.6:1 as plain text — see teacher-ds.css's own dark block for the
-   reasoning), because four of six uses of each are plain text. These
-   four selectors are the other two: a FILL of that same bright colour
-   with a literal `color:#fff` foreground, which was 4.5:1+ against the
-   ORIGINAL dark tokens.css green/pink but is 1.6-2.0:1 against the
-   bright ones. Rather than dim the token back down for these four (and
-   break the eleven text uses across this file and shared/seating.css),
-   the foreground on just these four swaps to a fixed near-black ink —
-   #1A1714, the light theme's own --st-ink value, reused here as "a
-   dark glyph on a light fill" regardless of which theme drew the fill.
-   10.4-11.2:1 against every one of the four fills, verified. */
-html[data-theme="dark"] .bd-qmap-sq.is-right,
-html[data-theme="dark"] .bd-qmap-sq.is-wrong,
-html[data-theme="dark"] .bd-q-mark.is-right,
-html[data-theme="dark"] .bd-q-mark.is-wrong {
-  color: #1A1714;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -607,84 +499,134 @@ html[data-theme="dark"] .bd-q-mark.is-wrong {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0;
 }
 .fb-titlerow .bd-title { min-width: 0; }
-.fb-status {
-  flex: none; margin-top: 3px; padding: 3px 9px; border-radius: 7px;
-  font: 600 15px/1.25 var(--st-ui); color: var(--st-ink);
-  background: var(--st-num-well); border: 1px solid var(--st-rule-soft);
-}
-.fb-status:empty { display: none; }
-/* The green tint is mixed from `--success` itself, so it follows the theme:
-   `--success-soft` resolves to a pale light-mode tint under dark (it is
-   `var(--ok-bg)` in one of teacher-ds.css's :root blocks) and put bright
-   dark-mode green on a pale chip. The first `background` is the fallback. */
-.fb-status[data-status="done"], .fb-status[data-status="done_late"] {
-  color: var(--success); border-color: transparent;
-  background: var(--st-num-well);
-  background: color-mix(in srgb, var(--success) 14%, transparent);
-}
-.fb-status[data-status="missing"] {
-  color: var(--st-accent-text); background: var(--st-chip-tint); border-color: var(--st-chip-tint-border);
-}
-.fb-status[data-status="not_started"] { color: var(--st-caption); }
+/* ⊕ Design port A, 30 Sep 2026 — the status chip beside the title is CUT,
+   as ruled ("the Secured tile already says it" — Design's NOTES.md).
+   `.fb-status`'s text is left UNCHANGED in flashcard-breakdown.js (so
+   `flashcard_progress_drive.py`'s existing assertion on its text still
+   passes, and `tools/sharpen_flashcard_panel_live.py`'s unguarded read
+   of it still finds a real node) — it is hidden here, not removed. */
+.fb-status { display: none; }
 
-.fb-verdicts { font: 500 16px/1.4 var(--st-ui); color: var(--st-body); margin-top: -6px; }
-.fb-filter { justify-content: flex-start; }
+/* ⊕ Design port A — the "4 right · 3 nearly…" verdict line is CUT, as
+   ruled ("the state chips already give the split at a glance" — Design's
+   NOTES.md). Same approach as `.fb-status`: text stays, node hides. */
+.fb-verdicts { display: none; }
+/* ⊕ Design port A — the "All N / Not secured N" toggle is CUT, as ruled
+   ("Neither is in the brief"). Same approach: `buildToggle`'s DOM and
+   `S.notSecured` filtering behaviour are UNTOUCHED (a logic change was
+   out of scope for this port), the bar is hidden. */
+.fb-filter { display: none; }
 
-.fb-cards { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.bd-disclosure > .fb-cards { margin-top: 12px; }
+.fb-cards { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--st-rule-soft); }
+.bd-disclosure > .fb-cards { margin-top: 12px; border-top: 1px solid var(--st-rule-soft); }
+/* ⊕ Design port A — a hairline-split row, matching the MCQ breakdown's
+   `.bd-q` (Design's NOTES.md "Rows are split by hairlines, not cards
+   with borders"); `.fb-qn` is the row's own 34px number column, no
+   longer "Q1" inside the head. */
 .fb-card {
-  min-width: 0; padding: 14px; background: var(--st-paper);
-  border: 1px solid var(--st-rule-soft); border-radius: 11px;
+  min-width: 0; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 18px;
+  padding: 22px 0; border-bottom: 1px solid var(--st-rule-fact);
 }
-.fb-card-head { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
 .fb-qn {
-  flex: none; padding-top: 3px;
-  font: 500 12px/1.3 var(--st-mono); letter-spacing: .08em; color: var(--st-caption);
+  font: 500 13px/1 var(--st-mono); letter-spacing: .06em; color: var(--st-caption);
+  padding-top: 3px; font-variant-numeric: tabular-nums;
 }
+.fb-card-body { min-width: 0; }
+.fb-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; min-width: 0; }
 .fb-q {
-  flex: 1 1 auto; min-width: 0; font: 600 16px/1.45 var(--st-ui); color: var(--st-ink);
-  overflow-wrap: anywhere;
+  flex: 1 1 auto; min-width: 0; font: 600 17px/1.45 var(--st-ui); color: var(--st-ink);
+  overflow-wrap: anywhere; padding-top: 3px;
 }
-.fb-state, .fb-verdict {
-  flex: none; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
-  font: 600 15px/1.25 var(--st-ui); color: var(--st-body);
+/* S — "Secured" is FILLED (the same fill+glyph pair as a right question
+   mark, `--ok-fill`/`--on-ok-fill`). "Got it" is TINTED. Before this
+   port both drew identically, which relied on the word alone (Design's
+   NOTES.md). "Nearly" stays the neutral base chip, as drawn. "Not yet"
+   keeps the accent tint it always had. "Not seen" is DASHED. */
+.fb-state {
+  flex: none; padding: 4px 10px; border-radius: 7px; white-space: nowrap;
+  font: 600 14px/1.25 var(--st-ui); color: var(--st-body);
   background: var(--st-num-well); border: 1px solid var(--st-rule-soft);
 }
-.fb-state-secured, .fb-state-got_it, .fb-verdict-match {
+.fb-state-secured { background: var(--ok-fill); border-color: var(--ok-fill); color: var(--on-ok-fill); }
+.fb-state-got_it {
   color: var(--success); border-color: transparent;
-  background: var(--st-num-well);
   background: color-mix(in srgb, var(--success) 14%, transparent);
 }
-.fb-state-not_yet, .fb-verdict-no {
+.fb-state-not_yet {
   color: var(--st-accent-text); background: var(--st-chip-tint); border-color: var(--st-chip-tint-border);
 }
-.fb-state-unseen, .fb-verdict-blank, .fb-verdict-pending { color: var(--st-caption); }
+.fb-state-unseen { background: none; border-style: dashed; border-color: var(--st-rule-strong); color: var(--st-caption); }
 
+/* S — the verdict beside "Latest answer" is a DOT + word, not a chip
+   (Design's `.verdict`), told apart by shape as well as colour: a filled
+   dot for Right, a ring for Nearly, a small square for Wrong. */
+.fb-verdict {
+  display: inline-flex; align-items: center; gap: 6px;
+  font: 600 14px/1 var(--st-ui); color: var(--st-body); white-space: nowrap;
+}
+.fb-verdict::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--st-caption); flex: none; }
+.fb-verdict-match { color: var(--success); }
+.fb-verdict-match::before { background: var(--ok-fill); }
+/* ⊕ design-port audit, must-fix 7 — dark mode's "Got it" chip and "Right"
+   verdict measured 2.69:1 (var(--success) as it actually renders on the
+   dark sheet), below the 4.5:1 AA floor for normal text — Design's own
+   dark "Got it" chip is mint on a dark-green tint at 8.97:1. `--ok-fill`
+   is the SAME dark-mode mint (#6FE3A0, `html[data-theme="dark"]`,
+   shared/teacher-ds.css) already used as the FILLED mark's foreground
+   (`.fb-state-secured`, the verdict dot below) — reused here directly as
+   the TEXT colour rather than chasing why `--success` itself measured
+   dim on this page, so this does not depend on that cascade at all. */
+html[data-theme="dark"] .fb-state-got_it,
+html[data-theme="dark"] .fb-rate-got_it {
+  color: var(--ok-fill);
+  background: color-mix(in srgb, var(--ok-fill) 18%, transparent);
+}
+html[data-theme="dark"] .fb-verdict-match { color: var(--ok-fill); }
+.fb-verdict-no { color: var(--st-accent-text); }
+.fb-verdict-no::before { background: var(--st-accent); border-radius: 1px; }
+.fb-verdict-partial::before { background: none; border: 2px solid var(--st-caption); width: 6px; height: 6px; }
+
+/* S — the latest answer and the model answer sit SIDE BY SIDE at
+   ≥820px (Design's `.fc-pair`), stacked on a phone. `.fb-ans` is
+   sometimes entirely absent (review mode with no answer in the payload —
+   `answerBox`'s "omit" case); `:has()` lets the lone `.fb-model` take the
+   full row rather than sitting at half width. */
+.fb-pair { margin-top: 14px; display: flex; flex-direction: column; gap: 12px; }
+/* ⊕ Design port A — a header row on BOTH boxes (Design's `.fc-box-h`):
+   "Latest answer" beside its verdict, "Model answer" alone — the two
+   boxes now read as a symmetric pair, not one labelled and one not. */
+.fb-box-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 22px; }
 .fb-ans {
-  margin-top: 10px; display: flex; align-items: flex-start; gap: 10px; min-width: 0;
-  padding: 10px 12px; border: 1px solid var(--st-rule); border-radius: 9px;
+  padding: 12px 14px; min-width: 0;
+  border: 1px solid var(--st-rule); border-radius: 10px;
 }
 .fb-ans-text {
-  flex: 1 1 auto; min-width: 0; font: 400 15.5px/1.45 var(--st-ui); color: var(--st-ink);
+  margin-top: 6px; min-width: 0; font: 400 16px/1.45 var(--st-ui); color: var(--st-ink);
   overflow-wrap: anywhere; white-space: pre-wrap;
 }
 .fb-ans.is-none { border-style: dashed; }
 .fb-ans.is-none .fb-ans-text { color: var(--st-muted); }
 .fb-model {
-  margin-top: 8px; padding: 10px 12px; min-width: 0;
-  background: var(--st-ground); border: 1px solid var(--st-rule-soft); border-radius: 9px;
+  padding: 12px 14px; min-width: 0;
+  background: var(--st-ground); border: 1px solid var(--st-rule-soft); border-radius: 10px;
 }
 .fb-model-label {
   font: 500 12px/1.2 var(--st-mono); letter-spacing: .12em; text-transform: uppercase;
   color: var(--st-caption);
 }
 .fb-model-text {
-  margin-top: 4px; font: 400 15.5px/1.45 var(--st-ui); color: var(--st-body);
+  margin-top: 6px; font: 400 16px/1.45 var(--st-ui); color: var(--st-body);
   overflow-wrap: anywhere; white-space: pre-wrap;
 }
-.fb-tries { margin-top: 8px; font: 500 15px/1.3 var(--st-ui); color: var(--st-muted); }
+@media (min-width: 820px) {
+  .fb-pair { flex-direction: row; gap: 12px; }
+  .fb-pair > .fb-ans, .fb-pair > .fb-model { flex: 1 1 0; min-width: 0; }
+}
 
-.fb-history { margin-top: 8px; }
+.fb-foot { margin-top: 12px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font: 500 15px/1.3 var(--st-ui); color: var(--st-muted); }
+.fb-tries { margin: 0; }
+
+.fb-history { margin: 0; }
 .fb-history > summary {
   display: inline-flex; align-items: center; min-height: 32px; cursor: pointer; list-style: none;
   font: 600 15px/1.2 var(--st-ui); color: var(--st-body);
@@ -693,7 +635,7 @@ html[data-theme="dark"] .bd-q-mark.is-wrong {
 .fb-history > summary::before { content: "\25B8\2002"; }
 .fb-history[open] > summary::before { content: "\25BE\2002"; }
 .fb-history > summary:focus-visible { outline: 2px solid var(--st-accent); outline-offset: 2px; border-radius: 4px; }
-.fb-rates { margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.fb-rates { margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; width: 100%; }
 .fb-phase { font: 500 15px/1.2 var(--st-ui); color: var(--st-caption); }
 .fb-rate + .fb-phase { margin-left: 8px; }
 .fb-rate {
@@ -702,7 +644,6 @@ html[data-theme="dark"] .bd-q-mark.is-wrong {
 }
 .fb-rate-got_it {
   color: var(--success); border-color: transparent;
-  background: var(--st-num-well);
   background: color-mix(in srgb, var(--success) 14%, transparent);
 }
 .fb-rate-not_yet { color: var(--st-accent-text); background: var(--st-chip-tint); border-color: var(--st-chip-tint-border); }
@@ -719,8 +660,6 @@ html[data-theme="dark"] .bd-q-mark.is-wrong {
 .fb-rushed, .fb-ses-open { font: 500 13px/1.2 var(--st-mono); letter-spacing: .06em; color: var(--st-accent-text); }
 
 @media (max-width: 520px) {
-  .fb-card { padding: 12px; }
-  .fb-card-head { flex-wrap: wrap; }
-  .fb-card-head .fb-q { flex-basis: calc(100% - 40px); }
-  .fb-card-head .fb-state { margin-left: 32px; }
+  .fb-card { grid-template-columns: 34px minmax(0, 1fr); gap: 12px; padding: 16px 0; }
+  .fb-card-head { flex-direction: column; gap: 8px; }
 }

@@ -81,7 +81,9 @@ def progress(mode="make", rule="secure", phase=1):
               None, [0, 0, 0, 0, 0]),
         pupil("p-eve", "Eve", "Eyre", "done_late", 10, 10, 10, 3, 900000, 5100, False,
               timedelta(days=2), [9, 1, 0, 0, 0], iso(NOW)),
-        pupil("p-fay", "Fay", "Ford", "missing", 3, 1, 0, 1, 60000, 3000, False,
+        # ⊕ Design port A five-state follow-up — made/known/secured match
+        # DETAIL_MIX exactly (2 secured + 2 got_it = 4 known, 8/10 made).
+        pupil("p-fay", "Fay", "Ford", "missing", 8, 4, 2, 1, 60000, 3000, False,
               timedelta(days=3), [1, 0, 1, 1, 0]),
     ]
     if phase == 2:
@@ -191,6 +193,52 @@ DETAIL_REVIEW = {
     "sessions": [{"id": "r1", "started_at": iso(NOW - timedelta(hours=3)), "ended_at": iso(NOW - timedelta(hours=2)),
                   "open": False, "active_ms": 90000, "cards_seen": 3, "cards_rated": 3, "cards_made": 0,
                   "median_think_ms": 1800, "rushed": False}],
+}
+
+# ⊕ Design port A five-state follow-up, 30 Sep 2026 — Fay's real per-card
+# detail: exactly two of each state (Secured/Got it/Nearly/Not yet/Not
+# seen), so the progress table's strip is proved drawing all five kinds of
+# cell from one row, not just exercising each state across different rows.
+# Fay's own `pupil(...)` row below is updated to made=8/known=4/secured=2
+# to match (2 secured + 2 got_it = 4 known; 8 of 10 cards have a written
+# answer).
+DETAIL_MIX = {
+    "pupil": {"id": "p-fay", "first_name": "Fay", "last_name": "Ford", "display_name": "Fay"},
+    "cards": [
+        {"id": "m1", "position": 0, "question": "Mix Q1 — secured", "answer": "A1",
+         "mine": "a1", "check": "match", "written_ms": 4000, "secured": True, "known": True, "shown": 2,
+         "ratings": [{"rating": "got_it", "phase": "review", "at": iso(NOW - timedelta(hours=5)), "think_ms": 900, "session_id": "sm"},
+                     {"rating": "got_it", "phase": "review", "at": iso(NOW - timedelta(hours=4)), "think_ms": 800, "session_id": "sm"}]},
+        {"id": "m2", "position": 1, "question": "Mix Q2 — secured", "answer": "A2",
+         "mine": "a2", "check": "match", "written_ms": 4000, "secured": True, "known": True, "shown": 2,
+         "ratings": [{"rating": "got_it", "phase": "review", "at": iso(NOW - timedelta(hours=5)), "think_ms": 900, "session_id": "sm"},
+                     {"rating": "got_it", "phase": "review", "at": iso(NOW - timedelta(hours=4)), "think_ms": 800, "session_id": "sm"}]},
+        {"id": "m3", "position": 2, "question": "Mix Q3 — got it", "answer": "A3",
+         "mine": "a3", "check": "match", "written_ms": 3500, "secured": False, "known": True, "shown": 1,
+         "ratings": [{"rating": "got_it", "phase": "review", "at": iso(NOW - timedelta(hours=2)), "think_ms": 700, "session_id": "sm"}]},
+        {"id": "m4", "position": 3, "question": "Mix Q4 — got it", "answer": "A4",
+         "mine": "a4", "check": "match", "written_ms": 3500, "secured": False, "known": True, "shown": 1,
+         "ratings": [{"rating": "got_it", "phase": "review", "at": iso(NOW - timedelta(hours=2)), "think_ms": 700, "session_id": "sm"}]},
+        {"id": "m5", "position": 4, "question": "Mix Q5 — nearly", "answer": "A5",
+         "mine": "a5", "check": "partial", "written_ms": 3000, "secured": False, "known": False, "shown": 1,
+         "ratings": [{"rating": "nearly", "phase": "review", "at": iso(NOW - timedelta(hours=1)), "think_ms": 700, "session_id": "sm"}]},
+        {"id": "m6", "position": 5, "question": "Mix Q6 — nearly", "answer": "A6",
+         "mine": "a6", "check": "partial", "written_ms": 3000, "secured": False, "known": False, "shown": 1,
+         "ratings": [{"rating": "nearly", "phase": "review", "at": iso(NOW - timedelta(hours=1)), "think_ms": 700, "session_id": "sm"}]},
+        {"id": "m7", "position": 6, "question": "Mix Q7 — not yet", "answer": "A7",
+         "mine": "a7", "check": "no", "written_ms": 3000, "secured": False, "known": False, "shown": 1,
+         "ratings": [{"rating": "not_yet", "phase": "review", "at": iso(NOW - timedelta(minutes=50)), "think_ms": 700, "session_id": "sm"}]},
+        {"id": "m8", "position": 7, "question": "Mix Q8 — not yet", "answer": "A8",
+         "mine": "a8", "check": "no", "written_ms": 3000, "secured": False, "known": False, "shown": 1,
+         "ratings": [{"rating": "not_yet", "phase": "review", "at": iso(NOW - timedelta(minutes=50)), "think_ms": 700, "session_id": "sm"}]},
+        {"id": "m9", "position": 8, "question": "Mix Q9 — not seen", "answer": "A9",
+         "mine": None, "check": None, "written_ms": None, "secured": False, "known": False, "ratings": []},
+        {"id": "m10", "position": 9, "question": "Mix Q10 — not seen", "answer": "A10",
+         "mine": None, "check": None, "written_ms": None, "secured": False, "known": False, "ratings": []},
+    ],
+    "sessions": [{"id": "sm", "started_at": iso(NOW - timedelta(hours=5)), "ended_at": iso(NOW - timedelta(minutes=50)),
+                  "open": False, "active_ms": 60000, "cards_seen": 8, "cards_rated": 8, "cards_made": 8,
+                  "median_think_ms": 800, "rushed": False}],
 }
 
 # Anyone else: nothing done yet.
@@ -311,10 +359,6 @@ def value_of(p, key):
         return p["sittings"]
     if key == "time":
         return p["active_ms"]
-    if key == "percard":
-        return p["median_think_ms"]
-    if key == "rushed":
-        return 1 if p["rushed"] else 0
     if key == "answers":
         return p["answers"]["match"]
     if key == "last":
@@ -386,7 +430,16 @@ PANEL_JS = r"""
         none:!!(c.querySelector('.fb-ans')&&c.querySelector('.fb-ans').classList.contains('is-none')),
         verdict:(c.querySelector('.fb-verdict')||{}).textContent||null,
         model:(c.querySelector('.fb-model-text')||{}).textContent,
-        modelLabel:(c.querySelector('.fb-model-label')||{}).innerText,
+        // ⊕ design-port-fix, 30 Sep 2026 — scoped to `.fb-model` specifically.
+        // Design port A (shared/flashcard-breakdown.js) gave the ANSWER
+        // box's own header the SAME class, `.fb-model-label` ("Latest
+        // answer"), to read as a symmetric pair with the model box's
+        // header ("Model answer") — so a bare `.fb-model-label` query
+        // returns whichever renders FIRST in DOM order (the answer box,
+        // always, when both exist), never the model box this assertion is
+        // actually about. Pre-existing on the merged port, found while
+        // verifying this fix run; unrelated to any of the nine must-fixes.
+        modelLabel:(c.querySelector('.fb-model .fb-model-label')||{}).innerText,
         tries:(c.querySelector('.fb-tries')||{}).textContent,
         hasHist:!!h, histOpen:!!(h&&h.open),
         theirLabel:/their answer/i.test(c.innerText)};}),
@@ -714,7 +767,8 @@ def main():
             p = b.page("about:blank", settle=0.2)
             p.send("Page.addScriptToEvaluateOnNewDocument",
                    {"source": stub(progress(), progress(phase=2),
-                                   {"p-ben": DETAIL_BEN, "p-cat": DETAIL_CAT, "*": DETAIL_NONE})})
+                                   {"p-ben": DETAIL_BEN, "p-cat": DETAIL_CAT, "p-fay": DETAIL_MIX,
+                                    "*": DETAIL_NONE})})
             p.set_viewport(1280, 800)
             p.goto(url, settle=0.5)
             ok = wait_for(p, "document.querySelectorAll('#fp-table tbody tr.fp-row').length===6")
@@ -757,9 +811,13 @@ def main():
 
             cols = p.eval("Array.prototype.map.call(document.querySelectorAll('#fp-table thead .fp-sort'),"
                           "function(b){return b.getAttribute('data-sort');})")
-            check(cols == ["pupil", "status", "made", "secured", "sittings", "time", "percard",
-                           "rushed", "last"], "make mode: every column, Made included, no Answers (B2)",
-                  str(cols))
+            # ⊕ Design port A, 30 Sep 2026 — Per card / Rushed are CUT, as
+            # ruled and as drawn (Rushed rides in the Time cell now; see
+            # the check on tr[data-pupil="p-cat"] .fp-rushed below, which
+            # is unchanged because it never named a column).
+            check(cols == ["pupil", "status", "made", "secured", "sittings", "time",
+                           "last"], "make mode: every column, Made included, no Answers (B2), "
+                  "no Per card/Rushed (design port A)", str(cols))
             byid = {x["pupil_id"]: x for x in fx}
             for key in cols:
                 for want in ("ascending", "descending"):
@@ -784,6 +842,26 @@ def main():
             check(not any(h_.lower().startswith("answers") for h_ in hdrs), "B2: no Answers header in make mode", str(hdrs))
             check(p.eval("document.querySelector('tr[data-pupil=\"p-ben\"] .fp-sec').getAttribute('data-known')") == "7",
                   "Secured: known-once carried for the secure rule")
+
+            # ⊕ Design port A five-state follow-up, 30 Sep 2026 — the
+            # Secured strip's real per-card breakdown, via
+            # flashcard_pupil_detail (reusing shared/flashcard-breakdown.js's
+            # own cardState() — see stripCounts() in flashcard-progress.js).
+            # Fay's row (DETAIL_MIX) carries exactly two of each state; wait
+            # for her detail fetch (queued on first render — she has
+            # sittings=1) to land and repaint before asserting.
+            ok = wait_for(p, "document.querySelectorAll('tr[data-pupil=\"p-fay\"] .strip i').length===10")
+            check(ok, "five-state strip: Fay's detail fetch landed and repainted")
+            kinds = p.eval("Array.prototype.map.call(document.querySelectorAll("
+                           "'tr[data-pupil=\"p-fay\"] .strip i'),function(e){return e.className;})")
+            counts = {k: kinds.count(k) for k in ("k-sec", "k-got", "k-near", "k-no", "k-un")}
+            check(counts == {"k-sec": 2, "k-got": 2, "k-near": 2, "k-no": 2, "k-un": 2},
+                  "five-state strip: one row draws all five kinds of cell, two each", str(counts))
+            check(kinds == ["k-sec"] * 2 + ["k-got"] * 2 + ["k-near"] * 2 + ["k-no"] * 2 + ["k-un"] * 2,
+                  "five-state strip: cells sorted best to worst", str(kinds))
+            aria = p.eval("document.querySelector('tr[data-pupil=\"p-fay\"] .strip').getAttribute('aria-label')")
+            check(aria == "2 secured, 2 got it, 2 nearly, 2 not yet, 2 not seen",
+                  "five-state strip: aria-label names all five counts", aria)
 
             # the answer-check edge function was fired, with the assignment id
             f = p.eval("window.__FP__.fetches")
@@ -937,16 +1015,19 @@ def main():
             check(bool(csv) and csv["text"].startswith("﻿"), "CSV: UTF-8 BOM")
             check(bool(csv) and csv["name"] == "8r-Sc1-Atomic-structure.csv", "CSV: filename from class + title",
                   csv and csv["name"])
-            check(lines and lines[0] == "Pupil,Status,Made,Secured,Known once,Sittings,Time,Per card,Rushed,Last active",
+            # ⊕ Design port A — Per card/Rushed dropped from the CSV header
+            # too (COLUMNS is the one source for both the table and the
+            # export); Rushed's fact rides inside the Time cell's own text.
+            check(lines and lines[0] == "Pupil,Status,Made,Secured,Known once,Sittings,Time,Last active",
                   "CSV: the displayed columns", lines and lines[0])
             check(len(lines) == 7, "CSV: one row per pupil")
             disp = p.eval("Array.prototype.map.call(document.querySelectorAll('#fp-table tbody tr.fp-row .fp-name'),"
                           "function(b){return b.textContent;})")
             check([l.split(",")[0] for l in lines[1:]] == disp, "CSV: in the order displayed", str(disp))
             cat = [l for l in lines if l.startswith("Cat Cole")]
-            check(bool(cat) and cat[0].startswith("Cat Cole,In progress,6/10,2/10,3/10,1,2:05,0.9,Yes,")
+            check(bool(cat) and cat[0].startswith("Cat Cole,In progress,6/10,2/10,3/10,1,2:05 (rushed),")
                   and "pending" not in cat[0] and re.search(r",20\d\d-(0[1-9]|1[0-2])-\d\d \d\d:\d\d$", cat[0]),
-                  "CSV: a row's values", cat and cat[0])
+                  "CSV: a row's values, Rushed folded into the Time cell", cat and cat[0])
 
             # ── polling flips a row to Done without a reload ───────────────
             p.eval("window.__FP__.phase = 2; true")
@@ -991,10 +1072,22 @@ def main():
                 p.set_viewport(w, 844, settle=0.3)
                 m = p.eval("({page: document.documentElement.scrollWidth - document.documentElement.clientWidth,"
                            "box: (function(){var s=document.getElementById('fp-scroll');"
-                           "return s.scrollWidth > s.clientWidth;})(),"
-                           "sticky: getComputedStyle(document.querySelector('tbody .fp-col-pupil')).position})")
+                           "return s.scrollWidth - s.clientWidth;})(),"
+                           "sticky: getComputedStyle(document.querySelector('tbody .fp-col-pupil')).position,"
+                           "hidden: Array.prototype.map.call(document.querySelectorAll('#fp-table thead th'),"
+                           "function(t){return getComputedStyle(t).display;})})")
                 check(m["page"] <= 1, "%dpx: no horizontal page scroll" % w, str(m))
-                check(m["box"], "%dpx: the table scrolls in its own box" % w)
+                # ⊕ Design port A, 30 Sep 2026 — ruled: "Phone: Pupil (with a
+                # status chip under the name) and Secured only, nothing
+                # ellipsised." Every other column hides below 640px, and the
+                # table's own min-width floor lifts with it, so the two that
+                # remain fit the box exactly — no INTERNAL scroll either now,
+                # which used to be the point of this check (five more
+                # columns lived off-screen to the right). The real thing
+                # being proved is now the column count, not a scrollbar.
+                check(m["box"] <= 1, "%dpx: the table needs no scroll either — only Pupil/Secured remain" % w, str(m))
+                check(m["hidden"].count("none") == 5 and m["hidden"][0] != "none",
+                      "%dpx: Status/Made/Sittings/Time/Last active hidden, Pupil/Secured shown" % w, str(m["hidden"]))
                 check(m["sticky"] == "sticky", "%dpx: the pupil column is sticky" % w)
                 if w == 390:
                     p.screenshot(os.path.join(args.shots, "fp-phone-390.png"), width=390, height=844, full_page=True)
@@ -1031,8 +1124,10 @@ def main():
             wait_for(p2, "document.querySelectorAll('#fp-table tbody tr.fp-row').length===6")
             cols2 = p2.eval("Array.prototype.map.call(document.querySelectorAll('#fp-table thead .fp-sort'),"
                             "function(b){return b.getAttribute('data-sort');})")
-            check("made" not in cols2 and "answers" not in cols2 and len(cols2) == 8,
-                  "review mode: no Made, no Answers", str(cols2))
+            # ⊕ Design port A — 6, not 8: Per card/Rushed cut (see the make
+            # mode check above for the same change).
+            check("made" not in cols2 and "answers" not in cols2 and len(cols2) == 6,
+                  "review mode: no Made, no Answers, no Per card/Rushed", str(cols2))
             h2 = p2.eval("document.getElementById('fp-head').innerText")
             check(not any(x in h2 for x in ("Ready-made cards", "Quick", "10 cards")), "review mode: no chips (B1)")
             hdr2 = p2.eval("Array.prototype.map.call(document.querySelectorAll('#fp-table thead th'),function(t){return t.textContent.trim();})")
@@ -1057,8 +1152,8 @@ def main():
             p2.eval("document.getElementById('fp-csv').click(); true")
             csv2 = p2.eval("window.__MRB_FP_LAST_CSV__")
             check(csv2["text"].lstrip("﻿").split("\r\n")[0] ==
-                  "Pupil,Status,Secured,Sittings,Time,Per card,Rushed,Last active",
-                  "review CSV: the displayed columns")
+                  "Pupil,Status,Secured,Sittings,Time,Last active",
+                  "review CSV: the displayed columns (design port A: no Per card/Rushed)")
             p2.screenshot(os.path.join(args.shots, "fp-review-desktop.png"), width=1280, height=800, full_page=True)
 
             # ── not found ─────────────────────────────────────────────────

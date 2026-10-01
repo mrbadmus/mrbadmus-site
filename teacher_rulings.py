@@ -1604,6 +1604,72 @@ SET_ATTR = {
     # ⊕ Sharpen C6 (T29) — the question-breakdown row, restacked on a phone.
     392: {"data-mrb-qrow": "1"},
 
+    # ── ⊕ design-port-b, 30 Sep 2026 · SCREEN 04 — ONE SIX-TRACK GRID ───
+    #
+    # Design's "Class page tables" screen puts Students, Assignments and
+    # Submission history on the SAME six tracks (1fr / 150 / 170 / 130 /
+    # 150 / 220), so Status, Due, Submitted and Score land at the same x on
+    # every table. Two things the grid alone cannot do: (1) the Assignments
+    # table's SET column (the release instant — MRB-336 §5's `a.set`, NOT
+    # a question-set identity) is cut, because Due is the date that
+    # matters and the instant lives in Edit; (2) the History table
+    # reorders its facts (Design draws Status second; the port had Status
+    # last, merged with the row's feedback/breakdown controls).
+    #
+    # ⚠️ `data-mrb-cut` HIDES A NODE, IT DOES NOT REMOVE IT. `set_work_drive.
+    # py`'s `ROWS_JS` reads the Set column by DOM position (`c[2].
+    # textContent`, asserted at `set_column_is_london`) — a real assertion
+    # on a real column, kept alive on purpose. `display:none` (added below,
+    # in `build_teacher_port.py`) drops the node out of grid layout (so the
+    # six visible cells still land on the six tracks) without moving it out
+    # of the DOM, so `c[2]` is still the Set cell and the drive still reads
+    # its text — it is just never drawn. See COMMON.md's own rule: "keep
+    # the element (hidden…) … and LIST it." Listed here and in the report.
+    314: {"data-mrb-cut": "1"},   # Assignments header — "Set"
+    324: {"data-mrb-cut": "1"},   # Assignments row — a.set
+
+    # ⚠️ `data-mrb-col` PLACES A CELL WITHOUT MOVING IT IN THE DOM. The
+    # History row's Status chip (367) and its feedback/breakdown controls
+    # (inserted at (361, 365), below) sit in DOM order after Due/Submitted/
+    # Score — CSS Grid's explicit `grid-column` (added below) draws them at
+    # Design's x position regardless of where they sit in the markup, so no
+    # existing `r.children[n]` read anywhere in the estate has to change.
+    # (Nothing does — grepped; only `set_column_is_london` reads a fixed
+    # index on either table, and it reads the Assignments row, not this
+    # one.) The one real cost, named in the report: a screen-reader's TAB
+    # order still follows the DOM (Title → Due → Submitted → Score →
+    # Status → links), one step behind the drawn order (Status moves
+    # second) — same as it was before this run for the trailing two.
+    365: {"data-mrb-col": "5"},   # History row — Score
+    358: {"data-mrb-col": "5"},   # History header — "Score"
+    359: {"data-mrb-col": "2"},   # History header — "Status"
+
+    # ⚠️ `data-mrb-phone-hide` DROPS A CELL BELOW 720px ONLY (`build_teacher_
+    # port.py`'s `@media (max-width:719px)`), same non-destructive reasoning
+    # as `data-mrb-cut` above — every one of these cells stays in the DOM,
+    # nothing that reads it by position or by `data-mrb-added` changes.
+    # Design's own kept columns, screen 04: Students = Student/week-dot/
+    # Score; Assignments = Title/Submitted/Class mean; History = Title/
+    # Status/Score (links on their own line under it).
+    296: {"data-mrb-phone-hide": "1"},   # Students row — the initials disc
+    300: {"data-mrb-phone-hide": "1"},   # Students row — "This week" text (keep the dot)
+    301: {"data-mrb-phone-hide": "1"},   # Students row — Average
+    302: {"data-mrb-phone-hide": "1"},   # Students row — Last active
+    303: {"data-mrb-phone-hide": "1"},   # Students row — the flag tag
+    289: {"data-mrb-phone-hide": "1"},   # Students header — "This week" / rosterWeekCol
+    290: {"data-mrb-phone-hide": "1"},   # Students header — "Average"
+    291: {"data-mrb-phone-hide": "1"},   # Students header — "Last active"
+    322: {"data-mrb-phone-hide": "1"},   # Assignments row — Status
+    325: {"data-mrb-phone-hide": "1"},   # Assignments row — Due
+    328: {"data-mrb-phone-hide": "1"},   # Assignments row — Weakest question
+    313: {"data-mrb-phone-hide": "1"},   # Assignments header — "Status"
+    315: {"data-mrb-phone-hide": "1"},   # Assignments header — "Due"
+    318: {"data-mrb-phone-hide": "1"},   # Assignments header — "Weakest question"
+    363: {"data-mrb-col": "3", "data-mrb-phone-hide": "1"},   # History row — Due
+    364: {"data-mrb-col": "4", "data-mrb-phone-hide": "1"},   # History row — Submitted
+    356: {"data-mrb-col": "3", "data-mrb-phone-hide": "1"},   # History header — "Due"
+    357: {"data-mrb-col": "4", "data-mrb-phone-hide": "1"},   # History header — "Submitted"
+
     # ── ⊕ MRB-340, 12 Sep 2026 · A HOOK FOR THE NARROW TOP BAR ─────────
     #
     # ⚠️ A CLASS, BECAUSE THERE IS NOTHING ELSE TO AIM AT. Design's top bar
@@ -1862,19 +1928,38 @@ BIND_ATTR = {
     # The chip, Add feedback and Breakdown sat stacked (106px rows against
     # 57px). One flex row in a fixed 400px STATUS track (chip · two links,
     # measured ~360px + padding).
+    # ⊕ SUPERSEDED, design-port-b (30 Sep 2026) — screen 04 moves the row's
+    # feedback/breakdown controls OUT of this cell into their own column
+    # (`INSERT_AT[(361, 365)]`, below, `data-mrb-col="6"`), so this cell
+    # goes back to holding only the Status chip — `grid-column:2` places it
+    # at Design's x without moving it in the DOM (`data-mrb-col`, above).
+    # ⚠️ `grid-row:1` HERE TOO, SAME REASON AS `[data-mrb-col]`'s CSS rule
+    # (build_teacher_port.py): this cell sits at column 2 but AFTER Due/
+    # Submitted/Score (3/4/5) in the DOM, so the auto-placement cursor
+    # would otherwise bump it to a silent second row. Proved live and
+    # fixed together with the `data-mrb-col` cells.
     366: ("style", "padding:var(--rowpad,14px 16px)",
-          "display:flex;align-items:center;gap:14px;flex-wrap:nowrap;"
-          "padding:var(--rowpad,14px 16px)",
-          "the submission-history STATUS cell: chip and row actions on one line."),
+          "display:flex;align-items:center;padding:var(--rowpad,14px 16px);"
+          "grid-column:2;grid-row:1",
+          "the submission-history STATUS cell — the chip alone, at Design's "
+          "column (screen 04)."),
+    # ⊕ design-port-b, 30 Sep 2026 — REVERTED TO `overflow:hidden`, Design's
+    # own card style. C1's sideways scroll existed because the desktop
+    # grid's fixed tracks could outgrow a narrow card; screen 04's own
+    # tracks (below) are sized so the card never needs to scroll at any
+    # width from 390 up — a tablet-width grid at 720–1179px, Design's
+    # six-track grid at 1180px+, and the phone layout drops columns
+    # instead of scrolling, exactly as C1's own comment already read
+    # ("BELOW 720px A TEACHER TABLE DROPS COLUMNS, it does not scroll").
     286: ("style", "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden",
-          "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow-x:auto;overflow-y:hidden",
-          "the Students table's card scrolls sideways on a phone (C1)."),
+          "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden",
+          "the Students table's card — Design's own overflow, screen 04."),
     310: ("style", "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden",
-          "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow-x:auto;overflow-y:hidden",
-          "the Assignments table's card scrolls sideways on a phone (C1)."),
+          "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden",
+          "the Assignments table's card — Design's own overflow, screen 04."),
     353: ("style", "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden",
-          "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow-x:auto;overflow-y:hidden",
-          "the submission-history card scrolls sideways on a phone (C1)."),
+          "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden",
+          "the submission-history card — Design's own overflow, screen 04."),
     445: ("style", "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden",
           "background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow-x:auto;overflow-y:hidden",
           "the digest's by-class card scrolls sideways on a phone (C1)."),
@@ -1899,18 +1984,32 @@ BIND_ATTR = {
     # Submission history (student screen): SCORE stays Stage B's 170px
     # (`10/10 secured` measured 133px + 32px padding); only the fr tracks
     # become `minmax(0,…)`.
+    # ⊕ design-port-b, 30 Sep 2026 — screen 04's ONE SIX-TRACK GRID, on all
+    # three tables (`--cols` in her CSS: `minmax(0,1fr) 150px 170px 130px
+    # 150px 220px`). `align-items:baseline` replaces C1's `center`, Design's
+    # own rule ("cells align on the text BASELINE") so a 17px name, a 17px
+    # mono number and a 15.5px muted date read as one line. No `min-width`:
+    # the card reverts to Design's own `overflow:hidden` above — the
+    # 720–1179px and ≤719px breakpoints below (build_teacher_port.py) keep
+    # every table inside its card at every width, so nothing needs to
+    # scroll. History's columns are also REORDERED to Design's order
+    # (Title, Status, Due, Submitted, Score, links) — the row's DOM stays
+    # Design's own order (Title, Due, Submitted, Score, [Status+actions]);
+    # `data-mrb-col` (SET_ATTR, above) places the Status chip and the
+    # actions cell by explicit `grid-column` instead.
     354: ("style",
           "display:grid;grid-template-columns:2.3fr 1fr 1.1fr 100px 1.05fr;"
           "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
-          "display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.1fr) 210px 400px;min-width:1000px;"
+          "display:grid;grid-template-columns:minmax(0,1fr) 150px 170px 130px 170px 220px;"
+          "align-items:baseline;"
           "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
-          "the submission-history header strip (C1)."),
+          "the submission-history header strip — screen 04's six-track grid."),
     361: ("style",
           "display:grid;grid-template-columns:2.3fr 1fr 1.1fr 100px 1.05fr;"
           "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
-          "display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.1fr) 210px 400px;min-width:1000px;"
-          "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
-          "the submission-history row, matching its header (C1)."),
+          "display:grid;grid-template-columns:minmax(0,1fr) 150px 170px 130px 170px 220px;"
+          "align-items:baseline;border-top:1px solid var(--st-rule-fact);cursor:pointer",
+          "the submission-history row, matching its header strip above it."),
     446: ("style",
           "display:grid;grid-template-columns:1.5fr 1fr 115px 115px 1.5fr;"
           "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
@@ -1937,15 +2036,16 @@ BIND_ATTR = {
     287: ("style",
           "display:grid;grid-template-columns:1.7fr 1.3fr 110px 160px 160px;"
           "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
-          "display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1.3fr) 140px 110px 160px 160px;min-width:920px;"
+          "display:grid;grid-template-columns:minmax(0,1fr) 150px 170px 130px 170px 220px;"
+          "align-items:baseline;"
           "background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)",
-          "the Students table's header strip — a Score column (B5), and every "
-          "track fixed or `minmax(0,…)` (C1)."),
+          "the Students table's header strip — screen 04's six-track grid "
+          "(Student/This week/Score/Average/Last active/flag)."),
     294: ("style",
           "display:grid;grid-template-columns:1.7fr 1.3fr 110px 160px 160px;"
           "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
-          "display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1.3fr) 140px 110px 160px 160px;min-width:920px;"
-          "align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer",
+          "display:grid;grid-template-columns:minmax(0,1fr) 150px 170px 130px 170px 220px;"
+          "align-items:baseline;border-top:1px solid var(--st-rule-fact);cursor:pointer",
           "the Students table's row, matching the header strip above it."),
     # ── ⊕ MRB-336 §5/§6 · THE ASSIGNMENTS TABLE GROWS AN ACTIONS COLUMN ──
     #
@@ -1975,21 +2075,32 @@ BIND_ATTR = {
     # value is now and fails the build if it is anything else, so a Design
     # redraw that changes the column widths cannot be silently overwritten
     # with a stale copy of them.
+    # ⊕ SUPERSEDED, design-port-b (30 Sep 2026) — screen 04 CUTS the Set
+    # column (the release instant lives in Edit now, and Due is the date
+    # that matters) and moves Edit/Download/Delete OFF the grid entirely,
+    # onto a quiet line under the title next to the kind ("Quiz · 10
+    # questions") — Design's own drawing, and "where Code already put them
+    # on a phone" (her note), now true at every width. `INSERT_AT[(320,
+    # 328)]`'s eighth-column actions cell and `INSERT_AT[(311, 318)]`'s
+    # blank eighth header cell are both gone (see `(321, None)`, below);
+    # `data-mrb-cut` (SET_ATTR, above) hides the Set cell rather than
+    # removing it, for `set_work_drive.set_column_is_london`.
     311: ("style",
           "display:grid;grid-template-columns:2fr 100px 1fr 1fr 1fr 1fr 1.2fr;"
           "background:var(--st-num-well);"
           "border-bottom:1px solid var(--st-rule-soft)",
-          "display:grid;grid-template-columns:minmax(0,1.6fr) 150px 160px 160px 120px 130px minmax(0,1.7fr) 220px;min-width:1080px;"
+          "display:grid;grid-template-columns:minmax(0,1fr) 150px 170px 130px 170px 220px;"
+          "align-items:baseline;"
           "background:var(--st-num-well);"
           "border-bottom:1px solid var(--st-rule-soft)",
-          "the Assignments table's header strip — an eighth column for Edit "
-          "and Delete."),
+          "the Assignments table's header strip — screen 04's six-track "
+          "grid (Title/Status/Due/Submitted/Class mean/Weakest question)."),
     320: ("style",
           "display:grid;grid-template-columns:2fr 100px 1fr 1fr 1fr 1fr 1.2fr;"
           "align-items:center;border-top:1px solid var(--st-rule-fact);"
           "cursor:pointer",
-          "display:grid;grid-template-columns:minmax(0,1.6fr) 150px 160px 160px 120px 130px minmax(0,1.7fr) 220px;min-width:1080px;"
-          "align-items:center;border-top:1px solid var(--st-rule-fact);"
+          "display:grid;grid-template-columns:minmax(0,1fr) 150px 170px 130px 170px 220px;"
+          "align-items:baseline;border-top:1px solid var(--st-rule-fact);"
           "cursor:pointer",
           "the Assignments table's row, matching the header strip above it."),
 
@@ -2473,6 +2584,24 @@ _ROW_ACTS = ("display:flex;align-items:center;justify-content:flex-end;gap:12px;
 # value in it, at the size the table's own secondary text already runs at.
 _ROW_SETBY = ("margin-top:4px;font:400 12px/1.3 var(--st-mono);"
               "letter-spacing:.08em;color:var(--st-caption)")
+# ⊕ design-port-b, 30 Sep 2026 — screen 04's Assignments row: the kind
+# ("Quiz · 10 questions" / "Flashcards · 10 cards") and Edit/Download/
+# Delete on ONE quiet line, wrapping on a narrow row rather than pushing
+# the row taller. `_ROW_KIND_TEXT` is `_ROW_SETBY` without the block
+# `margin-top` — it sits beside the actions in a flex row, not stacked.
+
+# ⊕ design-port-fix, 30 Sep 2026 (nice-to-have 2) — `flex-start` and a 20px
+# gap, Design's own `.sub` spacing: her drawing sits Edit/Download/Delete
+# right after the kind text, not pushed to the row's far edge.
+_ROW_KIND_LINE = ("display:flex;align-items:center;justify-content:flex-start;"
+                   "gap:10px 20px;flex-wrap:wrap;margin-top:4px")
+_ROW_KIND_TEXT = ("font:400 12px/1.3 var(--st-mono);"
+                   "letter-spacing:.08em;color:var(--st-caption)")
+# The same three/four controls as `_ROW_ACTS`, without that constant's own
+# grid-cell padding and right alignment — this copy lives INSIDE the title
+# cell now (screen 04), not in its own 220px track, so it only needs to lay
+# its buttons out in a row.
+_ROW_ACTS_INLINE = "display:flex;align-items:center;gap:12px;flex-wrap:wrap"
 # The marking screen's pair, in Design's own header-action register: the row
 # is node 213's declaration and the buttons are node 215's — the class
 # screen's secondary header button, verbatim.
@@ -2597,6 +2726,19 @@ PORT_CSS = """
 
 [data-dc-tpl="665"].mrb-active {
   background: var(--st-note-bg);
+}
+
+/* ⊕ Design port A, 30 Sep 2026 — the LIGHT half of --ok-fill/--on-ok-fill/
+   --no-fill/--on-no-fill; see THEME_DARK_CSS's own comment on this same
+   pair for the dark half and the reasoning. Values equal --success/
+   --st-accent-text — not new colours, just a named "fill + the glyph
+   that sits on it" pair for a filled mark (breakdown.css's numbered
+   squares and "Secured" chip, flashcard-progress.css's strip). */
+:root {
+  --ok-fill: #237A3B;
+  --on-ok-fill: #FFFFFF;
+  --no-fill: #A93411;
+  --on-no-fill: #FFFFFF;
 }
 """
 
@@ -3701,13 +3843,27 @@ INSERT_AT = {
     # ⚠️ `white-space:pre`, so the two lines stay two lines and neither wraps;
     # the fixed track plus `overflow:hidden;text-overflow:ellipsis` means a
     # long value can never widen its own row's track (C1's rule).
+    # ⊕ design-port-fix, 30 Sep 2026 — `data-mrb-col="3"` on both this
+    # header cell and the row cell below, pinned to `grid-column:3` at
+    # ≤719px (build_teacher_port.py). Without it, the phone grid's
+    # auto-placement cursor put this cell one track apart on the header
+    # vs the row: the header's "This week" cell (289) is fully
+    # `data-mrb-phone-hide`d (drops out of grid flow), but the row's own
+    # "this week" cell keeps its dot visible (only its TEXT, node 300, is
+    # hidden) — so on the header the cursor skips straight from Student
+    # to Score (track 2), while on the row it lands on the dot first
+    # (track 2) and Score after it (track 3). `teacher_reach` caught it
+    # as "students row column 2 starts 30px off its header (SCORE)" at
+    # 390. Pinning both sides to the same explicit column is immune to
+    # whichever of them the auto-placement cursor would otherwise favour.
     (287, 289): ({
         "t": "div",
         "a": {"style": "padding:12px 16px;font:500 13px/1.2 var(--st-mono);"
                        "letter-spacing:.14em;text-transform:uppercase;"
                        "color:var(--st-caption);white-space:nowrap;"
                        "overflow:hidden;text-overflow:ellipsis",
-              "data-mrb-cell": "week-score-head"},
+              "data-mrb-cell": "week-score-head",
+              "data-mrb-col": "3"},
         # ⚠️ "Score", NOT "This week score": the column beside it already
         # says which week (its header is "This week" or the week's dates),
         # and the longer word truncated in its own 140px track.
@@ -3719,7 +3875,8 @@ INSERT_AT = {
                        "font:500 15.5px/1.35 var(--st-ui);color:var(--st-ink);"
                        "font-variant-numeric:tabular-nums;white-space:pre!important;"
                        "overflow:hidden;text-overflow:ellipsis",
-              "data-mrb-cell": "week-score"},
+              "data-mrb-cell": "week-score",
+              "data-mrb-col": "3"},
         "c": [{"t": "#", "v": {"parts": [{"e": "s.weekScore"}]}}]},
         "the Students table's THIS WEEK SCORE cell (Sharpen B5)."),
     # ── ⊕ MRB-336 §4.1 · THE THIRD LIVE SET AND EVERY ONE AFTER IT ─────
@@ -3832,78 +3989,19 @@ INSERT_AT = {
     # `a.open`, which navigates to the marking screen; without
     # `stopPropagation` pressing Delete would arm the row and leave the page
     # in the same gesture.
-    (320, 328): ({
-        "t": "if", "e": "a.canEdit",
-        "c": [{
-            "t": "div", "a": {"style": _ROW_ACTS,
-                              "data-mrb-added": "set-work-row-actions"},
-            "c": [
-                {"t": "if", "e": "a.showEdit", "c": [{
-                    "t": "button", "on": "a.edit",
-                    "a": {"type": "button", "style": _ROW_ACT,
-                          "data-mrb-added": "set-work-edit"},
-                    "hov": "color:var(--st-ink)",
-                    "c": [{"t": "#", "v": "Edit"}]}]},
-                # ── ⊕ MRB-342 · DOWNLOAD, AS THE SAME TWO-TAP ───────────
-                #
-                # ⚠️ IT IS THE DELETE CONFIRM'S OWN IDIOM, REUSED, AND NOT A
-                # MENU. The generated pages are drawn by
-                # `shared/student-runtime.js`, whose `draw()` empties the
-                # mount host and rebuilds the whole template on every
-                # `setState` — so a popover appended into a table row by
-                # `shared/set-work.js` would be destroyed by the next redraw
-                # and its listeners with it. The row already answers a
-                # two-way question in place (Delete → Delete · Cancel); this
-                # asks a two-way question the same way, and the template
-                # renders both states so a redraw simply redraws them.
-                #
-                # ⚠️ `Answers` IS NOT OFFERED HERE. The contract's default is
-                # `answers: true` and a table row is not the place to choose
-                # a property of a file; the sheet's own Download carries the
-                # toggle. One less control in a seven-column row.
-                {"t": "if", "e": "a.showDl", "c": [{
-                    "t": "button", "on": "a.dl",
-                    "a": {"type": "button", "style": _ROW_ACT,
-                          "data-mrb-added": "set-work-download"},
-                    "hov": "color:var(--st-ink)",
-                    "c": [{"t": "#", "v": "Download"}]}]},
-                {"t": "if", "e": "a.dlArmed", "c": [
-                    {"t": "button", "on": "a.dlPdf",
-                     "a": {"type": "button", "style": _ROW_ACT_ARMED,
-                           "data-mrb-added": "set-work-download-pdf"},
-                     "c": [{"t": "#", "v": "PDF"}]},
-                    {"t": "button", "on": "a.dlWord",
-                     "a": {"type": "button", "style": _ROW_ACT_ARMED,
-                           "data-mrb-added": "set-work-download-word"},
-                     "c": [{"t": "#", "v": "Word"}]},
-                    {"t": "button", "on": "a.cancelDl",
-                     "a": {"type": "button", "style": _ROW_ACT,
-                           "data-mrb-added": "set-work-download-cancel"},
-                     "c": [{"t": "#", "v": "Cancel"}]},
-                ]},
-                {"t": "if", "e": "a.showDel", "c": [{
-                    "t": "button", "on": "a.del",
-                    "a": {"type": "button", "style": _ROW_ACT,
-                          "data-mrb-added": "set-work-delete"},
-                    "hov": "color:var(--st-accent-text)",
-                    "c": [{"t": "#", "v": "Delete"}]}]},
-                {"t": "if", "e": "a.armed", "c": [{
-                    "t": "button", "on": "a.cancelDel",
-                    "a": {"type": "button", "style": _ROW_ACT_ARMED,
-                          "data-mrb-added": "set-work-delete-cancel"},
-                    "c": [{"t": "#", "v": "Cancel"}]}]},
-            ]}]},
-        "the Assignments table's row controls. Design drew seven columns of "
-        "facts and no way to change any of them; MRB-336 §5 and §6 put Edit "
-        "and Delete on the row they are about, and MRB-342 puts Download "
-        "beside them."),
+    #
+    # ⊕ SUPERSEDED, design-port-b (30 Sep 2026). This used to be its own
+    # eighth grid column, `INSERT_AT[(320, 328)]`. Screen 04 cuts that
+    # column: Edit/Download/Delete move onto the quiet line under the
+    # title, next to the kind — see `(321, None)`, below, which is now
+    # where this whole block lives (unchanged inside, just re-anchored).
 
     # ── ⊕ MRB-340 · WHO SET IT, ON THE ROW ─────────────────────────────
     #
-    # ⚠️ A SECOND LINE IN THE TITLE CELL, NOT AN EIGHTH COLUMN. The table is
-    # already seven columns of facts plus a controls cell, and a school with
-    # co-teaching wants this on one row in four rather than on a column that
-    # is blank the rest of the time. Design's own caption register.
+    # ⚠️ A SECOND LINE IN THE TITLE CELL, NOT A SEPARATE COLUMN. A school
+    # with co-teaching wants this on one row in four rather than on a
+    # column that is blank the rest of the time. Design's own caption
+    # register.
     #
     # ⚠️ AND IT IS ABSENT WHEN THERE IS NO NAME TO PRINT. `setByLine` is the
     # empty string on an automatically composed set (nobody set it) and on a
@@ -3915,24 +4013,79 @@ INSERT_AT = {
     # set's "Flashcards · N cards" used to sit in the Weakest-question column,
     # where it read as a result. It is a fact about the set, so it is a quiet
     # sub-line under the title, in the same register as "Set by", above it.
-    # One INSERT_AT key per (parent, after), so both lines ride in one
-    # unstyled wrapper; an empty wrapper takes no height.
+    #
+    # ⊕ SUPERSEDED, design-port-b (30 Sep 2026) — screen 04 draws this line
+    # for EVERY kind, not flashcards only ("Quiz · 10 questions" /
+    # "Flashcards · 10 cards" — `a.deckLine`, now filled for an MCQ set too;
+    # see `shared/teacher-live.js`), and puts Edit/Download/Delete on the
+    # SAME line, after it — her own drawing, "a quiet line under the title,
+    # next to the kind". The Set column these controls used to occupy as an
+    # eighth track is cut (`data-mrb-cut`, SET_ATTR above); this line now
+    # carries what that whole track used to. One INSERT_AT key per (parent,
+    # after), so every line rides in one unstyled wrapper; an empty wrapper
+    # takes no height.
     (321, None): ({
         "t": "div", "a": {"data-mrb-added": "row-sublines"},
         "c": [
-            {"t": "if", "e": "a.deckLine",
-             "c": [{"t": "div", "a": {"style": _ROW_SETBY,
-                                      "data-mrb-added": "row-deck-line"},
-                    "c": [{"t": "#", "v": {"parts": [{"e": "a.deckLine"}]}}]}]},
             {"t": "if", "e": "a.setByLine",
              "c": [{"t": "div", "a": {"style": _ROW_SETBY,
                                       "data-mrb-added": "set-work-set-by"},
                     "c": [{"t": "#", "v": {"parts": [{"e": "a.setByLine"}]}}]}]},
+            {"t": "div", "a": {"style": _ROW_KIND_LINE,
+                               "data-mrb-added": "row-kind-line"},
+             "c": [
+                {"t": "if", "e": "a.deckLine",
+                 "c": [{"t": "div", "a": {"style": _ROW_KIND_TEXT,
+                                          "data-mrb-added": "row-deck-line"},
+                        "c": [{"t": "#", "v": {"parts": [{"e": "a.deckLine"}]}}]}]},
+                {"t": "if", "e": "a.canEdit", "c": [{
+                    "t": "div", "a": {"style": _ROW_ACTS_INLINE,
+                                      "data-mrb-added": "set-work-row-actions"},
+                    "c": [
+                        {"t": "if", "e": "a.showEdit", "c": [{
+                            "t": "button", "on": "a.edit",
+                            "a": {"type": "button", "style": _ROW_ACT,
+                                  "data-mrb-added": "set-work-edit"},
+                            "hov": "color:var(--st-ink)",
+                            "c": [{"t": "#", "v": "Edit"}]}]},
+                        {"t": "if", "e": "a.showDl", "c": [{
+                            "t": "button", "on": "a.dl",
+                            "a": {"type": "button", "style": _ROW_ACT,
+                                  "data-mrb-added": "set-work-download"},
+                            "hov": "color:var(--st-ink)",
+                            "c": [{"t": "#", "v": "Download"}]}]},
+                        {"t": "if", "e": "a.dlArmed", "c": [
+                            {"t": "button", "on": "a.dlPdf",
+                             "a": {"type": "button", "style": _ROW_ACT_ARMED,
+                                   "data-mrb-added": "set-work-download-pdf"},
+                             "c": [{"t": "#", "v": "PDF"}]},
+                            {"t": "button", "on": "a.dlWord",
+                             "a": {"type": "button", "style": _ROW_ACT_ARMED,
+                                   "data-mrb-added": "set-work-download-word"},
+                             "c": [{"t": "#", "v": "Word"}]},
+                            {"t": "button", "on": "a.cancelDl",
+                             "a": {"type": "button", "style": _ROW_ACT,
+                                   "data-mrb-added": "set-work-download-cancel"},
+                             "c": [{"t": "#", "v": "Cancel"}]},
+                        ]},
+                        {"t": "if", "e": "a.showDel", "c": [{
+                            "t": "button", "on": "a.del",
+                            "a": {"type": "button", "style": _ROW_ACT,
+                                  "data-mrb-added": "set-work-delete"},
+                            "hov": "color:var(--st-accent-text)",
+                            "c": [{"t": "#", "v": "Delete"}]}]},
+                        {"t": "if", "e": "a.armed", "c": [{
+                            "t": "button", "on": "a.cancelDel",
+                            "a": {"type": "button", "style": _ROW_ACT_ARMED,
+                                  "data-mrb-added": "set-work-delete-cancel"},
+                            "c": [{"t": "#", "v": "Cancel"}]}]},
+                    ]}]},
+             ]},
         ]},
-        "MRB-340 — who set this work, under its title. The table said when "
-        "a set was released and never who released it, which on a shared "
-        "class is the first question a teacher asks about a row they do not "
-        "recognise."),
+        "MRB-340/screen 04 — who set this work and what kind it is, under "
+        "its title, with Edit/Download/Delete on the same quiet line as "
+        "the kind (design-port-b, 30 Sep 2026) — Design's own drawing, at "
+        "every width, not just a phone."),
 
     # ── ⊕ phone-teacher run, 28 Sep 2026 · A FLASHCARD SET IS NOT GRADED ──
     #
@@ -3948,14 +4101,21 @@ INSERT_AT = {
         "phone-teacher run — a flashcard set has no class mean; the cell "
         "shows a dash that says \"Not graded\" on hover and aloud."),
 
-    # The header cell above them. No text: an actions column has no name.
-    (311, 318): ({
-        "t": "div", "a": {"style": _ROW_ACTS_HEAD,
-                          "data-mrb-added": "set-work-actions-head"},
+    # ⊕ design-port-b, 30 Sep 2026 — a blank 6th header cell for the
+    # submission-history table's links column (screen 04), the History
+    # header's own equivalent of `set-work-actions-head` below: an actions
+    # column has no name.
+    (354, 359): ({
+        "t": "div", "a": {"style": _ROW_ACTS_HEAD, "data-mrb-col": "6",
+                          "data-mrb-phone-hide": "1"},
         "c": []},
-        "the eighth header cell, so the header strip and the rows below it "
-        "have the same number of columns. Design's own header-cell "
-        "declaration, with nothing in it."),
+        "the submission-history header's sixth cell, over the row's "
+        "feedback/breakdown column — Design's own header-cell declaration, "
+        "with nothing in it. Hidden on a phone, where the header is three "
+        "tracks and the row's own links cell spans full width instead of "
+        "sitting under a sixth header."),
+
+    # ⊕ SUPERSEDED, design-port-b (30 Sep 2026) — DELETED. This used to insert an eighth header cell (`set-work-actions-head`) matching the eighth (now-cut) row column. Screen 04's Assignments table is six columns (Title/Status/Due/Submitted/Class mean/Weakest question), with Edit/Download/Delete moved onto the title cell's own sub-line (see `(321, None)`, above) rather than living in a column at all, so there is no eighth header cell to match any more.
 
     (224, 230): ({
         "t": "if", "e": "g.hasMore",
@@ -5075,36 +5235,67 @@ INSERT_AT = {
     # builders — `_fb_open_button` and `_fb_sheet` — so the two screens
     # cannot drift apart.
     #
-    # ⚠️ WHERE EACH ROW CONTROL GOES, AND WHY IT IS NOT A NEW COLUMN. The
-    # student screen's history table is a five-track CSS grid declared twice
-    # (the header at 354 and the row at 361); a sixth cell would need both
-    # track lists rewritten and would push a five-column table past 390px in
-    # a place Design sized. So the control goes INSIDE the Status cell (366,
-    # after her chip at 367), where there is vertical room and where "was
-    # this marked, and did anyone say anything" reads as one column. On the
-    # marking screen it goes inside her student cell (420, after the name at
-    # 422), pushed right by `margin-left:auto` — the cell is already a flex
-    # row and already has the space.
+    # ⚠️ WHERE EACH ROW CONTROL GOES, AND WHY IT IS ITS OWN COLUMN NOW. This
+    # used to read "not a new column" — the student screen's history table
+    # was a five-track grid and a sixth cell would have pushed it past
+    # 390px. ⊕ SUPERSEDED, design-port-b (30 Sep 2026): screen 04 is a
+    # SIX-track grid (`minmax(0,1fr) 150 170 130 150 220`) with a 220px
+    # column that is exactly this pair of links and nothing else, so the
+    # control now goes there instead of inside the Status cell — anchored
+    # on `(361, 365)` (after Score, the row's own parent) rather than
+    # `(366, 367)` (inside the chip's cell), and placed at Design's x with
+    # `grid-column:6` (`data-mrb-col`, SET_ATTR above) rather than by DOM
+    # order. On the marking screen it is unchanged: still inside her
+    # student cell (420, after the name at 422), pushed right by
+    # `margin-left:auto` — that row has no six-track grid to move it onto.
     # ⊕ Mide's item 9, 24 Sep 2026 — WRAPPED IN A PLAIN <div> RATHER THAN A
     # SECOND INSERT_AT ENTRY, and that is a mechanical necessity rather than
     # a style choice: INSERT_AT is keyed by (parent, after-sibling), an
     # inserted node carries no `i` (Design's numbering must not move — see
     # the header above INSERT_AT), and a second entry keyed on the same
-    # `(366, 367)` pair would silently OVERWRITE this one in the dict rather
+    # `(361, 365)` pair would silently OVERWRITE this one in the dict rather
     # than adding beside it. So the one entry at this anchor now inserts
     # BOTH controls, stacked, in one wrapper.
-    (366, 367): ({"t": "div", "a": {"style": "display:flex;align-items:center;gap:12px;flex-wrap:nowrap"},
+    (361, 365): ({"t": "div", "a": {"style": "display:flex;align-items:center;"
+                                    "gap:12px;flex-wrap:nowrap;"
+                                    "padding:var(--rowpad,14px 16px);"
+                                    "grid-column:6",
+                                    "data-mrb-col": "6"},
                   "c": [_fb_open_button("h", _FB_ROW_BTN),
                                      _bd_open_button()]},
                  "the feedback control AND (⊕ Mide's item 9, 24 Sep 2026) "
                  "the Answer Breakdown control, on one row of the student "
                  "screen's submission history. Design drew no comment "
                  "affordance and no breakdown affordance anywhere; the "
-                 "feedback half is Mide's ruling of 3 Sep 2026 and it is "
-                 "inside her Status cell rather than in a sixth column "
-                 "because her table's track list is declared twice and sized "
-                 "for five. The breakdown control joins it in the same cell "
-                 "for the identical reason."),
+                 "feedback half is Mide's ruling of 3 Sep 2026. Screen 04 "
+                 "(design-port-b, 30 Sep 2026) gives this pair its own "
+                 "sixth column — Design's own drawing — so it no longer "
+                 "shares the Status cell."),
+    # ⊕ design-port-fix, 30 Sep 2026 — an EMPTY mirror of the row's sixth
+    # (links) cell, on the HEADER. Without it the header strip has five
+    # children (Title/Due/Submitted/Score/Status) where the row has six
+    # (…/Score/Links/Status) — `teacher_reach.py`'s alignment check pairs
+    # header and row cells by their plain DOM sibling INDEX, not by
+    # `grid-column`, so from index 4 on every pairing was one cell off:
+    # the row's Links cell (index 4) measured against the header's Status
+    # cell (also index 4, its last child) — exactly the "history row
+    # column 4 starts …px off its header (STATUS)" red teacher_reach
+    # reported at 390 and 360. Adding this placeholder right after Score
+    # (358) — empty, explicit `grid-column:6` so it sits in the SAME
+    # empty-of-label sixth track the row's links occupy at ≥720px, and
+    # `data-mrb-phone-hide` so it drops out of layout at ≤719px exactly
+    # where the row's own links cell stops being a normal column too
+    # (it becomes a row-2 span there instead) — restores the header to
+    # SIX children in the same order as the row, so index 5 (Status) lines
+    # up on both sides at every width again.
+    (354, 358): ({"t": "div",
+                  "a": {"style": "grid-column:6;grid-row:1",
+                        "data-mrb-phone-hide": "1", "aria-hidden": "true"},
+                  "c": []},
+                 "an empty header cell mirroring the row's links column, "
+                 "so the header and the row stay the same length and "
+                 "`teacher_reach`'s by-index alignment check keeps pairing "
+                 "Status against Status, not Status against Links."),
     (420, 422): (_fb_open_button("r", _FB_CELL_BTN, glyph=True),
                  "the same control on one row of the marking screen's "
                  "class-by-question grid — the second of Mide's two "
@@ -5694,16 +5885,15 @@ AMENDED_ADDITIONS = (
     # panel is proven by its own drive, `breakdown_drive.py` — the same
     # split `set_work_drive.py` takes for the Set work sheet.
     dict(marker="breakdown-open", pages=("student-detail.html",),
-         node=366, needs_data=True,
+         node=361, needs_data=True,
          label="Breakdown",
          why="the control that opens the Answer Breakdown panel, on a "
              "submission history row. Design drew no breakdown surface at "
-             "all — this is Mide's item 9 of 24 Sep 2026 — and it is inside "
-             "the same Status cell the feedback control occupies (366, "
-             "after node 367) for the identical reason: the table's track "
-             "list is declared twice and sized for five columns, and a "
-             "sixth would need both rewritten. Absent on a row with no "
-             "submission: there is nothing to break down."),
+             "all — this is Mide's item 9 of 24 Sep 2026. Since screen 04 "
+             "(design-port-b, 30 Sep 2026) it sits in the row's own sixth "
+             "column, `INSERT_AT[(361, 365)]`, beside the feedback control. "
+             "Absent on a row with no submission: there is nothing to "
+             "break down."),
     dict(marker="feedback-close",
          pages=("student-detail.html", "assignment.html"),
          node=330, needs_data=True,
@@ -12534,7 +12724,14 @@ componentDidUpdate() {
           && s.dlArm !== p.id,
         armed: s.delArm === p.id,
         setByLine: p.set_by_name ? ('Set by ' + p.set_by_name) : '',
-        deckLine: p.kind === 'flashcards' ? (p.kindLabel || 'Flashcards') : '',
+        // ⊕ design-port-b, 30 Sep 2026 — EVERY kind now, not flashcards
+        // only. This used to read `p.kind === 'flashcards' ? (p.kindLabel
+        // || 'Flashcards') : ''`; screen 04 draws "Quiz · 10 questions"
+        // next to "Flashcards · 10 cards" as the same register on the same
+        // line, so `p.kindLabel` is now filled for an MCQ set too (the
+        // question count, `shared/teacher-live.js`'s `loadQuizQuestionCounts`
+        // beside the existing flashcard-count read) and this just reads it.
+        deckLine: p.kindLabel || '',
         mean: p.kind === 'flashcards' ? '' : p.mean,
         notGraded: p.kind === 'flashcards',
         showDl: p.kind !== 'flashcards' && p.source === 'teacher'
@@ -13102,10 +13299,13 @@ componentDidUpdate() {
         "      const cardW = ('cardWeek' in c) ? c.cardWeek : c.week;\n"
         "      const cardC = ('cardChase' in c) ? (c.cardChase || []) : chase.map(r => r.name);\n"
         "      const cardO = c.cardOpens || '';\n"
+        "      const cardSec = ('cardSecured' in c) ? c.cardSecured : null;\n"
         "      const noOpen = c.state === 'live' && !cardW && !cardO;\n"
         "      return {\n"
         "        code: c.code,",
-        "the card's own week figures: the current set, not anything in-week."
+        "the card's own week figures: the current set, not anything in-week — "
+        "and (design-port-b, 30 Sep 2026) `cardSec`, a flashcard set's "
+        "secured count, now the card's SECOND fact rather than its main one."
     ),
     (
         "        live: c.state === 'live',\n"
@@ -13127,12 +13327,18 @@ componentDidUpdate() {
         "            + (chase.length > 2 ? ' +' + (chase.length - 2) + ' more' : '')\n"
         "          : '',\n"
         "        weekSubFg: chase.length ? 'var(--st-accent-text)' : 'var(--st-muted)',",
-        "        weekSub: cardW && cardC.length\n"
-        "          ? 'Chase ' + cardC.slice(0, 2).map(n => this.shortName(n)).join(', ')\n"
-        "            + (cardC.length > 2 ? ' +' + (cardC.length - 2) + ' more' : '')\n"
-        "          : '',\n"
-        "        weekSubFg: cardW && cardC.length ? 'var(--st-accent-text)' : 'var(--st-muted)',",
-        "the card's chase names: nothing in on the current set."
+        "        weekSub: cardSec != null ? (cardSec + ' secured')\n"
+        "          : (cardW && cardC.length\n"
+        "            ? 'Chase ' + cardC.slice(0, 2).map(n => this.shortName(n)).join(', ')\n"
+        "              + (cardC.length > 2 ? ' +' + (cardC.length - 2) + ' more' : '')\n"
+        "            : ''),\n"
+        "        weekSubFg: cardSec != null ? 'var(--st-muted)'\n"
+        "          : (cardW && cardC.length ? 'var(--st-accent-text)' : 'var(--st-muted)'),",
+        "the card's chase names: nothing in on the current set. ⊕ design-"
+        "port-b, 30 Sep 2026 — a flashcard set's second fact is its secured "
+        "count instead (`N secured`, muted like the no-chase state — a "
+        "count is not a warning), because the card's main number no longer "
+        "means \"secured\" (it means \"started\" now; see above)."
     ),
     (
         "        emptyLine: c.state === 'empty' ? 'No students yet' : c.n + ' students · no work set',",
@@ -13622,6 +13828,16 @@ html[data-theme="dark"] .rd[data-mode="ks3"] {
 html[data-theme="dark"] {
   --danger: #FF9187;
   --success: #6FE3A0;
+  /* ⊕ Design port A, 30 Sep 2026 — the fill+glyph pair for a FILLED mark
+     (a right/wrong numbered square in breakdown.css, a "Secured" chip, a
+     progress-strip cell), formalising what breakdown.css used to hardcode
+     as a dark-mode-only override on four selectors (#1A1714 ink on a
+     bright fill) into two real tokens. --ok-fill/--no-fill are the SAME
+     colours as --success/--st-accent-text respectively, not new ones. */
+  --ok-fill: #6FE3A0;
+  --on-ok-fill: #1A1714;
+  --no-fill: #FFA167;
+  --on-no-fill: #1A1714;
 }
 
 /* FOUND LIVE — contrast_audit, teacher and leaderboard both (avatars are
@@ -13718,12 +13934,19 @@ INSERT_AT[(365, None)] = (
     {"t": "if", "e": "h.revised", "c": [
         {"t": "span",
          "a": {"data-mrb-revised": "1",
-               # ⊕ integration with lane T (C1/C6) — beside the score on the
-               # SAME line (the history row is one baseline; SCORE is 210px
-               # for it), and under it on a phone (build_teacher_port.py).
-               "style": "display:inline-block;margin-left:10px;font:400 12.5px/1.3 "
+               # ⊕ design-port-b, 30 Sep 2026 — UNDER the score at every
+               # width now, not beside it. This used to be
+               # `display:inline-block;margin-left:10px` (beside, on the
+               # SAME baseline as the score, matching C1's fixed 210px
+               # SCORE track) with a phone-only override to `block`. Screen
+               # 04 draws it under the score everywhere ("Submission
+               # history moves 'revised after marking' under the score
+               # instead of beside it, so the column doesn't widen") —
+               # true now at 1180px+ too, since SCORE is a shared 150px
+               # track and no longer has 210px of its own to spare.
+               "style": "display:block;margin-top:4px;font:400 12.5px/1.3 "
                         "var(--st-ui);color:var(--st-caption);white-space:nowrap"},
          "c": [{"t": "#", "v": "revised after marking"}]}]},
-    "Sharpen C5 — 'revised after marking' under the score on the student "
-    "screen's submission history, when the pupil changed the set after it "
-    "was marked.")
+    "Sharpen C5 / screen 04 — 'revised after marking' under the score on "
+    "the student screen's submission history, at every width, when the "
+    "pupil changed the set after it was marked.")

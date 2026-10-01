@@ -441,6 +441,17 @@ def run(width, height, kb, shots):
             check(s["progress"] == "1 of 5 right" and s["front"] == "What is the formula of water?" and s["back"],
                   "Got it → '1 of 5 right', card 2, ‹ Back now offered (got %r)" % s["progress"])
             check(not s["note"], "the note goes once the pupil has started")
+            # ⊕ design-port audit, must-fix 2 — card 1 is now green (got_it)
+            # and card 2 is unrevealed: exactly the state the audit caught
+            # the redo hint leaking into, because `hwRetryHintOn` only
+            # checked `v.chips.some(g => g.redo)` and never `!!v.retry`, so
+            # a green card during the FIRST pass (not a retry) satisfied it.
+            # Nothing on this bar can be tapped in the first pass — its
+            # chips are plain spans, not buttons — so the hint would have
+            # promised a tap that does nothing.
+            check(s["hint"] is None,
+                  "first pass, a green card behind it: still no redo hint "
+                  "(nothing on this bar is tappable yet) (got %r)" % s["hint"])
 
             # state B: the model is asked, and has not answered yet
             P.keyboard(True)
@@ -643,7 +654,13 @@ def run(width, height, kb, shots):
                   "the queue opens on the first leftover, with an empty box (got %r)" % s["draft"])
             cur = [c for c in s["chips"] if c["current"]]
             check(len(cur) == 1 and not cur[0]["redo"], "the current chip is ringed")
-            check(s["secured"] is None and s["hint"] is None, "Try again: the strip is the headline and the chips only")
+            # ⊕ Design port review — a hint that promises a tap that does
+            # nothing is worse than none, so it moved OFF the end screen
+            # (where the same chips are plain spans) and onto an ACTIVE
+            # retry pass instead, where a green chip really is `redo:true`
+            # right now (line above: 3 of them, here).
+            check(s["secured"] is None and s["hint"] == "Tap a green card to redo it",
+                  "Try again (an active retry pass): the strip is the headline, the chips, and the redo hint")
             P.no_retired("retry strip")
             P.shot("Retry-strip")
             # the dark theme: a chip still to come keeps an edge (Fable S-a)

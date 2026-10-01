@@ -3691,6 +3691,19 @@ a:hover { color: var(--st-accent-hover); }
   background: var(--st-note-bg);
 }
 
+/* ⊕ Design port A, 30 Sep 2026 — the LIGHT half of --ok-fill/--on-ok-fill/
+   --no-fill/--on-no-fill; see THEME_DARK_CSS's own comment on this same
+   pair for the dark half and the reasoning. Values equal --success/
+   --st-accent-text — not new colours, just a named "fill + the glyph
+   that sits on it" pair for a filled mark (breakdown.css's numbered
+   squares and "Secured" chip, flashcard-progress.css's strip). */
+:root {
+  --ok-fill: #237A3B;
+  --on-ok-fill: #FFFFFF;
+  --no-fill: #A93411;
+  --on-no-fill: #FFFFFF;
+}
+
 /* ⊕ D8 (theme-run audit, 27 Sep 2026). Every `html[data-theme="dark"]`
    rule below (the whole rest of this file) is now wrapped in `@media
    screen`. `data-theme="dark"` is unconditional — THEME_HEAD/theme.js
@@ -3909,6 +3922,16 @@ html[data-theme="dark"] .rd[data-mode="ks3"] {
 html[data-theme="dark"] {
   --danger: #FF9187;
   --success: #6FE3A0;
+  /* ⊕ Design port A, 30 Sep 2026 — the fill+glyph pair for a FILLED mark
+     (a right/wrong numbered square in breakdown.css, a "Secured" chip, a
+     progress-strip cell), formalising what breakdown.css used to hardcode
+     as a dark-mode-only override on four selectors (#1A1714 ink on a
+     bright fill) into two real tokens. --ok-fill/--no-fill are the SAME
+     colours as --success/--st-accent-text respectively, not new ones. */
+  --ok-fill: #6FE3A0;
+  --on-ok-fill: #1A1714;
+  --no-fill: #FFA167;
+  --on-no-fill: #1A1714;
 }
 
 /* FOUND LIVE — contrast_audit, teacher and leaderboard both (avatars are

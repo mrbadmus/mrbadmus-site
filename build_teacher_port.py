@@ -5637,12 +5637,65 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         # ⊕ Sharpen C6, 29 Sep 2026 — Fable's teacher audit (CUTS-2-teacher).
         # T1: the "‹ Back to 8X1" link is the bar's crumb again above 560px.
         "@media (min-width:561px){[data-mrb-back]{display:none!important}}"
+        # ⊕ design-port-b, 30 Sep 2026 — screen 04's own tracks, UNSCOPED (no
+        # media query): `data-mrb-cut` hides a kept-for-a-drive cell at
+        # every width (the Assignments Set column — see teacher_rulings
+        # SET_ATTR's comment above it); `data-mrb-col` places a cell by an
+        # explicit column number rather than by where it sits in the DOM,
+        # for the History table's reordered Status chip, Score and links
+        # (again, SET_ATTR/the two `INSERT_AT` entries it decorates).
+        "[data-mrb-cut]{display:none!important}"
+        # ⚠️ `grid-row:1` ON EVERY ONE OF THESE, AND IT IS NOT DECORATION.
+        # CSS Grid's auto-placement cursor only moves FORWARD: an item
+        # placed at an explicit column LOWER than the cursor's current
+        # column bumps the ROW instead (spec 8.5, "if this is less than the
+        # previous column position of the cursor, increment the row
+        # position by 1"). The Status chip sits at column 2 but AFTER
+        # Due/Submitted/Score (columns 3/4/5) in the DOM (it was Design's
+        # own last cell before this run moved it), so without a pinned row
+        # it landed on a silent SECOND grid row of its own — proved live:
+        # `student-detail-fixture.html` drew "STATUS" under the header's
+        # first line instead of beside it. Every history table row is
+        # genuinely ONE row, so `grid-row:1` is always correct here, not a
+        # guess.
+        "[data-mrb-col=\"2\"]{grid-column:2;grid-row:1}"
+        "[data-mrb-col=\"3\"]{grid-column:3;grid-row:1}"
+        "[data-mrb-col=\"4\"]{grid-column:4;grid-row:1}"
+        "[data-mrb-col=\"5\"]{grid-column:5;grid-row:1}"
+        "[data-mrb-col=\"6\"]{grid-column:6;grid-row:1}"
+        # ⊕ design-port-b, 30 Sep 2026 — Design's own 720–1179px tracks
+        # ("her 720–1180 tracks" — COMMON.md), narrower than the 1180px+
+        # grid (below the BIND_ATTR values in teacher_rulings.py) so the
+        # card never has to scroll sideways at a tablet width either.
+        # Scoped to the three tables screen 04 actually redraws — NOT
+        # digest (446/453), which keeps its own five-track C1 grid.
+        "@media (min-width:720px) and (max-width:1179px){"
+        "[data-mrb-table=\"students\"],[data-mrb-table=\"assignments\"],"
+        "[data-mrb-table=\"history\"]{grid-template-columns:minmax(0,1fr) "
+        # ⊕ design-port-fix, 30 Sep 2026 — Status (col2) 128→150 and Links
+        # (col6) 160→200. The audit's tablet shot (1024) showed "Breakdown"
+        # clipped in a 160px links track (~200px of real content) and
+        # "NOT STARTED" clipped in a 128px status track; both are widened
+        # here, nothing else on this row moved.
+        "150px 132px 100px 120px 200px!important}"
+        # Header labels wrap rather than ellipsise at this width (rows keep
+        # `cursor:pointer` in their inline style, so this leaves row cells
+        # untouched — only the header strip's own cells wrap). Design's own
+        # tablet drawing wraps a header onto two lines rather than cutting
+        # a word in half.
+        "[data-mrb-table]:not([style*=\"cursor:pointer\"]) > *{"
+        "white-space:normal!important}"
+        "}"
         # T50: BELOW 720px A TEACHER TABLE DROPS COLUMNS, it does not scroll.
         # Each keeps the columns a teacher decides with — Students: name ·
-        # THIS WEEK · AVERAGE; Assignments: title · STATUS · SUBMITTED;
-        # history: title · SCORE · STATUS; digest: class · SUBMITTED · NEEDS
-        # A LOOK — on FIXED px tracks the header and rows share, wide
-        # enough that nothing is ellipsised; only the first column wraps. Header strip and row carry the same tag.
+        # week dot · SCORE; Assignments: title · SUBMITTED · CLASS MEAN;
+        # history: title · STATUS · SCORE (its links on their own line
+        # under it); digest: class · SUBMITTED · NEEDS A LOOK (unchanged) —
+        # on FIXED px tracks the header and rows share, wide enough that
+        # nothing is ellipsised; only the first column wraps. Header strip
+        # and row carry the same tag. ⊕ design-port-b, 30 Sep 2026 —
+        # Students/Assignments/History's kept columns changed (screen 04);
+        # digest did not.
         "@media (max-width:719px){"
         "[data-mrb-table]{min-width:0!important}"
         "[data-port-region] div:has(> [data-mrb-table]){overflow:hidden!important}"
@@ -5654,38 +5707,75 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "[data-mrb-table]:not([style*=\"cursor:pointer\"]) > *{font-size:12px!important;letter-spacing:.04em!important}"
         "[data-mrb-table] > :not(:first-child){overflow:visible!important;"
         "text-overflow:clip!important;white-space:nowrap!important}"
-        "[data-mrb-table=\"students\"]{grid-template-columns:minmax(0,1fr) 98px 72px!important}"
-        # the initials disc beside a pupil's name says nothing the name
-        # does not; on a phone its 41px go to the name.
-        "[data-mrb-table=\"students\"] > :first-child > :first-child:not(:only-child){display:none!important}"
-        "[data-mrb-table=\"students\"] > :nth-child(3),"
-        "[data-mrb-table=\"students\"] > :nth-child(n+5){display:none!important}"
-        "[data-mrb-table=\"assignments\"]{grid-template-columns:minmax(0,1fr) 88px 86px!important}"
-        "[data-mrb-table=\"assignments\"] > :nth-child(3),"
-        "[data-mrb-table=\"assignments\"] > :nth-child(4),"
-        "[data-mrb-table=\"assignments\"] > :nth-child(n+6){display:none!important}"
-        # ⊕ re-audit — dropping column 8 dropped Edit / Download / Delete with
-        # it, and a teacher on a phone could no longer change or remove a set
-        # (teacher_reach: "has no box"). Like the history row's actions, they
-        # go on their own line under the row, left-aligned under the title.
-        "[data-mrb-table=\"assignments\"][style*=\"cursor:pointer\"] > :nth-child(8){display:flex!important;"
-        "grid-column:1 / -1;justify-content:flex-start!important;flex-wrap:wrap!important;"
-        "gap:8px 18px!important;padding-top:0!important}"
-        "[data-mrb-table=\"assignments\"][style*=\"cursor:pointer\"] > :nth-child(8):empty{display:none!important}"
-        "[data-mrb-table=\"history\"]{grid-template-columns:minmax(0,1fr) 150px!important}"
-        "[data-mrb-table=\"history\"] [data-mrb-revised]{display:block!important;"
-        "margin:4px 0 0!important;text-align:right}"
-        "[data-mrb-table=\"history\"] > :nth-child(2),"
-        "[data-mrb-table=\"history\"] > :nth-child(3){display:none!important}"
-        "[data-mrb-table=\"history\"]:not([style*=\"cursor:pointer\"]) > :nth-child(5){display:none!important}"
-        # the history row's Add feedback / Breakdown go on their own line
-        # under the row (the status cell dissolves into the row's grid), so
-        # the title keeps its width and the chip stays on the row's line.
-        # on a phone the history row is title · score, and the status chip
-        # with its Add feedback / Breakdown is one line under it.
-        "[data-mrb-table=\"history\"][style*=\"cursor:pointer\"] > :nth-child(5){grid-column:1 / -1;"
+        # ⊕ design-port-fix, 30 Sep 2026 — header labels wrap rather than
+        # ellipsise at 390/360 too (rows carry `cursor:pointer` inline and
+        # are untouched). "CLASS MEAN" was ellipsising to "CLASS MEA…".
+        "[data-mrb-table]:not([style*=\"cursor:pointer\"]) > *{"
+        "white-space:normal!important}"
+        # ⊕ design-port-b, 30 Sep 2026 — screen 04's phone columns, by the
+        # `data-mrb-phone-hide` / `data-mrb-cut` / `data-mrb-col` markers
+        # (teacher_rulings SET_ATTR) rather than `:nth-child`. The old
+        # `:nth-child` rules counted DOM position, which screen 04 changes
+        # for two of the three tables (Assignments drops a column;
+        # History's Status chip and links move out of a combined cell into
+        # their own grid items) — a marker naming WHAT a cell is survives
+        # that, a position count does not. `data-mrb-cut` cells (the
+        # Assignments Set column) are already `display:none` at every
+        # width (build_teacher_port.py's global rule, below); nothing
+        # further is needed for them here.
+        "[data-mrb-table=\"students\"]{grid-template-columns:minmax(0,1fr) 30px 128px!important}"
+        # ⊕ design-port-fix, 30 Sep 2026 — 76px→96px: "0/10 secured" and
+        # "revised after marking" were clipped to "0/10 se…" / "revised
+        # afte…" in a 76px track (the audit's must-fix 6). The cell itself
+        # is now allowed to wrap (below) so a second line, not a clip,
+        # catches whatever still doesn't fit 96px.
+        "[data-mrb-table=\"assignments\"]{grid-template-columns:minmax(0,1fr) 104px 96px!important}"
+        "[data-mrb-table=\"history\"]{grid-template-columns:minmax(0,1fr) 104px 96px!important}"
+        # The Score/Class-mean cell wraps instead of clipping: History's is
+        # `data-mrb-col=\"5\"` (re-placed to col3 below); Assignments' Class
+        # mean has no marker (it is never reordered), so it is addressed by
+        # DOM position — Title(1)/Status(2,hidden)/Set(3,hidden always)/
+        # Due(4,hidden)/Submitted(5)/Class mean(6)/Weakest question
+        # (7,hidden) — the 6th child, per teacher_rulings SET_ATTR's own
+        # comments on nodes 322/324/325/328.
+        "[data-mrb-table=\"history\"] [data-mrb-col=\"5\"],"
+        "[data-mrb-table=\"assignments\"] > :nth-child(6){"
+        "white-space:normal!important}"
+        "[data-mrb-phone-hide]{display:none!important}"
+        # ⊕ design-port-fix, 30 Sep 2026 — the Students table's inserted
+        # Score cell (`data-mrb-col=\"3\"`, teacher_rulings INSERT_AT
+        # (287,289)/(294,298)) pinned to its own explicit column, same
+        # reasoning as History's `data-mrb-col` cells just above: the
+        # header's \"This week\" cell is fully `data-mrb-phone-hide`d, but
+        # the row's own \"this week\" cell keeps its dot (only its text is
+        # hidden), so without a pin the auto-placement cursor put Score one
+        # track apart on the header vs the row — `teacher_reach` caught it
+        # as \"students row column 2 starts 30px off its header (SCORE)\".
+        "[data-mrb-table=\"students\"] [data-mrb-col=\"3\"]{"
+        "grid-column:3!important;grid-row:1!important}"
+        # History's Status chip (`data-mrb-col=\"2\"`, an inline `grid-column`
+        # on Design's own node) and Score (`data-mrb-col=\"5\"`, the generic
+        # rule below) are placed for the SIX-track desktop/tablet grid;
+        # re-placed here for the three-track phone one. The links cell
+        # (`data-mrb-col=\"6\"`, `INSERT_AT[(361, 365)]`) spans the row,
+        # under Title/Status/Score, same idiom as the Assignments actions
+        # line below — on its own line, left-aligned, empty when there is
+        # nothing to show.
+        "[data-mrb-table=\"history\"] [data-mrb-col=\"5\"]{grid-column:3!important}"
+        # ⚠️ `grid-row:2!important` — WITHOUT IT THIS OVERLAPS THE ROW ABOVE.
+        # The general `[data-mrb-col="6"]` rule pins `grid-row:1` (needed at
+        # 720px+ so the auto-placement cursor does not bump it — see that
+        # rule's own comment); on a phone this cell stops being a sixth
+        # COLUMN and becomes a second ROW instead, so the pin has to move
+        # with it or Title/Status/Score (row 1) and the links (also row 1,
+        # spanning every column) draw on top of each other. Proved live:
+        # `student-detail-fixture.html` at 390 drew "Edit feedback ·
+        # Breakdown" laid over the chip and the title before this line.
+        "[data-mrb-table=\"history\"][style*=\"cursor:pointer\"] [data-mrb-col=\"6\"]{"
+        "grid-column:1 / -1!important;grid-row:2!important;display:flex!important;"
         "flex-wrap:wrap!important;gap:8px 18px!important;padding-top:0!important}"
-        "[data-mrb-table=\"history\"][style*=\"cursor:pointer\"] > :nth-child(5) > div{gap:18px!important}"
+        "[data-mrb-table=\"history\"][style*=\"cursor:pointer\"] [data-mrb-col=\"6\"] > div{gap:18px!important}"
+        "[data-mrb-table=\"history\"][style*=\"cursor:pointer\"] [data-mrb-col=\"6\"]:empty{display:none!important}"
         # the first (deciding) column wraps its own content; nothing in it
         # is cut off or spills into the next column.
         "[data-mrb-table] > :first-child > *{min-width:0!important}"

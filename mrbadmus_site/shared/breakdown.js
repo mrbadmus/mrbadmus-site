@@ -634,6 +634,19 @@
     if (sub) { d.appendChild(el("div", "bd-stat-sub", sub)); }
     return { node: d, valueNode: v };
   }
+  /* ⊕ Design port A — "7 / 10" with the denominator de-emphasised
+     (Design's `.pn-stat-v small`), same content as `statTile`, just the
+     "/ N" portion wrapped so CSS can size it down. */
+  function statTileSplit(label, main, suffix, sub) {
+    var d = el("div", "bd-stat");
+    d.appendChild(el("div", "bd-stat-label", label));
+    var v = el("div", "bd-stat-value");
+    v.appendChild(document.createTextNode(main));
+    if (suffix) { v.appendChild(el("small", null, suffix)); }
+    d.appendChild(v);
+    if (sub) { d.appendChild(el("div", "bd-stat-sub", sub)); }
+    return { node: d, valueNode: v };
+  }
 
   function timeTakenFor(sub, myAttempts) {
     if (sub && sub.total_time_seconds != null && sub.total_time_seconds > 0) {
@@ -665,8 +678,18 @@
     var correctSoFar = myAttempts.filter(function (a) { return a.is_correct === true; }).length;
     var scoreTile;
     if (complete && sub.score != null && sub.max_score != null) {
-      /* ⊕ Sharpen C6 (T40) — the score in one form, no "90%" under "9 / 10". */
-      scoreTile = statTile("SCORE", sub.score + " / " + sub.max_score, null);
+      /* ⊕ Sharpen C6 (T40) — the score in one form, no "90%" under "9 / 10".
+         ⊕ design-port-b, 30 Sep 2026 — `totalQ` (this panel's OWN
+         `S.questions.length`, loaded two lines up), not `sub.max_score`.
+         `max_score` is written by the backend's `rescore()` as "however
+         many questions were marked the LAST TIME it ran", which for a
+         submission completed after being left part-way and resumed (C5's
+         "Finish it") can be smaller than the set's real size if a caller
+         ever reads it between a partial save and the final one — the same
+         defect SHARPEN-REPORT item 7 names for the class page's score
+         cells. `totalQ` is the set's own row count and cannot be stale.
+         Falls back to `max_score` only if `totalQ` is somehow 0/unknown. */
+      scoreTile = statTileSplit("SCORE", String(sub.score), " / " + (totalQ || sub.max_score), null);
     } else {
       /* S3 — never mislead an in-progress pupil with a 0% over one answer.
          Always the SET's own question count as the denominator, no
@@ -720,21 +743,22 @@
     return wrap;
   }
 
-  /* S1 — one 28x28 square per question: filled ok/tick, filled wrong/cross,
-     outlined for unanswered, with a 3px accent underline when the class
-     mostly missed it. Each square scrolls to its card. */
+  /* ⊕ Design port A — one 34x34 square per question: filled right, ring
+     wrong, dashed not-answered. The SAME mark (`.bd-qmap-sq`) draws the
+     per-question row below (`buildQuestionRow`), so the strip works as a
+     key for the list under it, as drawn. The class-wide "most of the
+     class got this wrong" underline/label is cut with the classline/
+     follow-up above — see that comment. Each square scrolls to its row. */
   function buildQuestionMap(rows) {
     var wrap = el("div", "bd-qmap");
     rows.forEach(function (row) {
       var state = row.answered
         ? (row.isCorrect === true ? "right" : (row.isCorrect === false ? "wrong" : "unscored"))
         : "unscored";
-      var sq = btn("bd-qmap-sq" + (state === "right" ? " is-right" : state === "wrong" ? " is-wrong" : ""));
-      if (row.classFlag) { sq.classList.add("is-flagged"); }
+      var sq = btn("bd-qmap-sq" + (state === "right" ? " is-right" : state === "wrong" ? " is-wrong" : " is-blank"));
       sq.textContent = String(row.position);
       var label = "Question " + row.position + ": " +
-        (state === "right" ? "right" : state === "wrong" ? "wrong" : "not answered") +
-        (row.classFlag ? ". Most of the class got this wrong." : "");
+        (state === "right" ? "right" : state === "wrong" ? "wrong" : "not answered");
       sq.setAttribute("aria-label", label);
       sq.addEventListener("click", function () { scrollToQuestion(row.position); });
       wrap.appendChild(sq);
@@ -848,46 +872,35 @@
     return order;
   }
 
+  /* ⊕ Design port A — the numbered square IS the mark (S7's separate
+     tick/cross disc is cut, as ruled: "the numbered square does both
+     jobs, and it matches the strip" — Design's NOTES.md). S4's per-
+     question class flag and "quiet positive" note are cut with the
+     class-wide line above (see that comment) — Design's own drawing of
+     this row carries neither. Answers render as a <dl> (Answered/Correct,
+     shortened from "Correct answer") matching Design's `.pn-ans`. */
   function buildQuestionRow(row) {
     var markState = row.answered
       ? (row.isCorrect === true ? "right" : (row.isCorrect === false ? "wrong" : "unscored"))
       : "unscored";
-    var card = el("div", "bd-q" +
+    var li = el("li", "bd-q" +
       (markState === "right" ? " is-right" : (markState === "wrong" ? " is-wrong" : "")) +
       (row.figure ? " has-fig" : ""));
-    card.setAttribute("data-bd-q", String(row.position));
-    if (row.sourceRef) { card.setAttribute("data-bd-qref", row.sourceRef); }
-    if (row.figure) { card.setAttribute("data-bd-figure", row.figure); }
+    li.setAttribute("data-bd-q", String(row.position));
+    if (row.sourceRef) { li.setAttribute("data-bd-qref", row.sourceRef); }
+    if (row.figure) { li.setAttribute("data-bd-figure", row.figure); }
 
-    /* S7 — a 26px filled disc, shape AND colour, with hidden text for a
-       screen reader. */
-    var mark = el("div", "bd-q-mark is-" + markState);
-    var markWord = markState === "right" ? "Right" : markState === "wrong" ? "Wrong" : "Not answered";
-    mark.appendChild(el("span", "bd-sr", markWord));
-    var markIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    markIcon.setAttribute("viewBox", "0 0 16 16");
-    markIcon.setAttribute("fill", "none");
-    markIcon.setAttribute("aria-hidden", "true");
-    if (markState === "right") {
-      markIcon.innerHTML = '<path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" ' +
-        'stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
-    } else if (markState === "wrong") {
-      markIcon.innerHTML = '<path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" ' +
-        'stroke-width="2" stroke-linecap="round"/>';
-    }
-    mark.appendChild(markIcon);
-    card.appendChild(mark);
+    var markWord = markState === "right" ? "right" : markState === "wrong" ? "wrong" : "not answered";
+    var sq = el("span", "bd-qmap-sq" + (markState === "right" ? " is-right" : markState === "wrong" ? " is-wrong" : " is-blank"));
+    sq.setAttribute("aria-hidden", "true");
+    sq.textContent = String(row.position);
+    li.appendChild(sq);
+    li.appendChild(el("span", "bd-sr", "Question " + row.position + ", " + markWord));
 
-    var head = el("div", "bd-q-head");
-    head.appendChild(el("div", "bd-q-num", "Question " + row.position));
-    /* S4 — the class flag lives in the header now, with real numbers, in
-       sentence case. */
-    var flag = el("div", "bd-q-flag");
-    flag.hidden = !row.classFlag;
-    if (row.classFlag) {
-      flag.textContent = row.classWrong + " of " + row.classAnswered + " in the class got this wrong";
-    }
-    head.appendChild(flag);
+    var mainCol = el("div", "bd-q-main");
+    mainCol.appendChild(el("div", "bd-q-stem",
+      row.stem || ("Question " + row.position + " — not yet available")));
+
     var metaBits = [];
     if (row.attemptNumber != null && row.attemptNumber > 1) {
       /* COULD-3 — the retake as a short story rather than a bare count.
@@ -900,133 +913,72 @@
     }
     var dur = fmtDuration(row.timeSpent);
     if (dur) { metaBits.push(dur); }
-    var meta = el("div", "bd-q-meta", metaBits.join(" · "));
-    meta.hidden = !metaBits.length;
-    head.appendChild(meta);
-    card.appendChild(head);
+    if (metaBits.length) { mainCol.appendChild(el("div", "bd-q-meta", metaBits.join(" · "))); }
 
-    var body = el("div", "bd-q-body");
-    var mainCol = el("div", "bd-q-main");
-    mainCol.appendChild(el("div", "bd-q-stem",
-      row.stem || ("Question " + row.position + " — not yet available")));
-
-    var answers = el("div", "bd-q-answers");
+    var answers = el("dl", "bd-q-answers");
     if (!row.answered) {
-      var a1 = el("div", "bd-q-answer is-missing");
-      a1.appendChild(el("div", "bd-q-answer-label", "Answered"));
-      a1.appendChild(el("div", "bd-q-answer-text", "No answer given"));
-      answers.appendChild(a1);
+      answers.appendChild(el("dt", "bd-q-answer-label", "Answered"));
+      answers.appendChild(el("dd", "bd-q-answer-text is-none", "Not answered"));
     } else {
-      var pupilCls = row.isCorrect === true ? " is-pupil-right"
-        : (row.isCorrect === false ? " is-pupil-wrong" : "");
-      var a2 = el("div", "bd-q-answer" + pupilCls);
-      a2.appendChild(el("div", "bd-q-answer-label", "Answered"));
-      a2.appendChild(el("div", "bd-q-answer-text", row.pupilAnswer || "—"));
-      answers.appendChild(a2);
+      var pupilCls = row.isCorrect === true ? " is-right"
+        : (row.isCorrect === false ? " is-wrong" : "");
+      answers.appendChild(el("dt", "bd-q-answer-label", "Answered"));
+      answers.appendChild(el("dd", "bd-q-answer-text" + pupilCls, row.pupilAnswer || "—"));
     }
     if (row.isCorrect === false && row.correctAnswer) {
-      var a3 = el("div", "bd-q-answer is-pupil-right");
-      a3.appendChild(el("div", "bd-q-answer-label", "Correct answer"));
-      a3.appendChild(el("div", "bd-q-answer-text", row.correctAnswer));
-      answers.appendChild(a3);
+      answers.appendChild(el("dt", "bd-q-answer-label", "Correct"));
+      answers.appendChild(el("dd", "bd-q-answer-text is-right", row.correctAnswer));
     }
     if (row.criteriaTotal != null) {
-      var a4 = el("div", "bd-q-answer");
-      a4.appendChild(el("div", "bd-q-answer-label", "Self-marked"));
-      a4.appendChild(el("div", "bd-q-answer-text",
+      answers.appendChild(el("dt", "bd-q-answer-label", "Self-marked"));
+      answers.appendChild(el("dd", "bd-q-answer-text",
         (row.criteriaMet == null ? "—" : row.criteriaMet) +
         " of " + row.criteriaTotal + " criteria met"));
-      answers.appendChild(a4);
     }
     mainCol.appendChild(answers);
 
-    /* S4 — the quiet positive: this pupil beat a question most of the
-       class missed. Only meaningful when they actually got it right. */
-    var goodNote = el("div", "bd-q-good-note");
-    var showGood = row.classFlag && row.isCorrect === true;
-    goodNote.hidden = !showGood;
-    if (showGood) { goodNote.textContent = "Most of the class missed this. " + S.firstName + " got it."; }
-    mainCol.appendChild(goodNote);
-
-    body.appendChild(mainCol);
+    li.appendChild(mainCol);
 
     var fig = row.figure ? figureNode(row.figure) : null;
     if (fig) {
       var figCol = el("div", "bd-q-fig-col");
       figCol.appendChild(fig);
-      body.appendChild(figCol);
+      li.appendChild(figCol);
     }
-    card.appendChild(body);
-    return card;
+    return li;
   }
 
-  function renderGroups(groups) {
-    var container = el("div", "");
-    if (!groups.length) {
-      container.appendChild(el("div", "bd-empty", "No questions in this set."));
-      return container;
+  /* ⊕ Design port A, 30 Sep 2026 — the topic-group headers and tallies are
+     CUT, as ruled and as drawn: one flat, numbered list, matching the
+     question-map strip above it. `groupByTopic` is UNCHANGED and still
+     runs (see renderBody's "weakest topic first" sort under Wrong-only,
+     COULD-1) — only the render side stops turning a group into a visible
+     section. */
+  function renderQuestionList(rows) {
+    if (!rows.length) {
+      return el("div", "bd-empty", "No questions in this set.");
     }
-    groups.forEach(function (g) {
-      var section = el("div", "bd-topic");
-      var head = el("div", "bd-topic-head");
-      head.appendChild(el("div", "bd-topic-name", g.title));
-      var tally = el("div", "bd-topic-tally", g.right + " of " + g.total + " right");
-      if (g.right === 0) { tally.classList.add("is-zero"); }
-      if (g.right === g.total && g.total > 0) { tally.classList.add("is-full"); }
-      head.appendChild(tally);
-      section.appendChild(head);
-      var qlist = el("div", "bd-qlist");
-      g.rows.forEach(function (row) { qlist.appendChild(buildQuestionRow(row)); });
-      section.appendChild(qlist);
-      container.appendChild(section);
-    });
-    return container;
+    var ol = el("ol", "bd-qlist");
+    ol.setAttribute("aria-label", "Answers");
+    rows.forEach(function (row) { ol.appendChild(buildQuestionRow(row)); });
+    return ol;
   }
 
-  /* MUST-6 — under the tiles/map, not after twenty cards; honest about
-     what it does (opens the class's sheet, unfiltered — there is no
-     `preselect` on `MRBSetWork.open()` yet) and who it is for (the CLASS,
-     never one pupil — Set work sets to a class). */
-  function buildFollowupRow(groups) {
-    var missed = groups.filter(function (g) { return g.total > 0 && g.right < g.total; });
-    var row = el("div", "bd-followup-row");
-    var b = btn("bd-followup");
-    b.textContent = "Open Set work for " + (S.className || "this class");
-    b.setAttribute("data-mrb-added", "breakdown-followup");
-    b.hidden = !missed.length;
-    b.addEventListener("click", function () {
-      if (!(window.MRBSetWork && window.MRBSetWork.open)) {
-        pushToast("Set work isn't available on this page right now.");
-        return;
-      }
-      window.MRBSetWork.open({ classId: S.classId });
-      pushToast("Opened Set work for " + (S.className || "this class") + ".");
-    });
-    row.appendChild(b);
-    return row;
-  }
+  /* ⊕ Design port A, 30 Sep 2026 — MUST-6's "Open Set work for…" follow-up
+     and S5's "The class struggled with…" line are CUT from this PUPIL
+     panel (Mide's ruling via the design-port brief, 30 Sep 2026): both are
+     class-wide facts, and Design's redrawn panel — built pupil-first —
+     carries neither. The assignment page's own Reteach banner already
+     says both things at the class level; this panel never repeated it
+     structurally (MUST-6 only ever opened Set work unfiltered), so
+     nothing downstream loses a capability. `S.classStruggled` is still
+     COMPUTED in `computeFlags` below (cheap, and `S.repByQ` in the same
+     function is load-bearing — see its own comment) but nothing renders
+     it any more. `buildFollowupRow`/`buildClassLine` are deleted rather
+     than left dead, per the same reasoning `MRBSetWork.open` calls
+     nowhere else in this file rely on them.
 
-  /* S5 — "The class struggled with Q1, Q7 and Q12", computed once in
-     open() (S.classStruggled) and reused on every render/pupil, since it
-     is a fact about the CLASS, not about whoever is on screen. */
-  function buildClassLine() {
-    var line = el("div", "bd-classline");
-    if (!S.classStruggled.length) { line.hidden = true; return line; }
-    line.appendChild(document.createTextNode("The class struggled with "));
-    S.classStruggled.forEach(function (pos, i) {
-      var b = document.createElement("button");
-      b.type = "button";
-      b.textContent = "Q" + pos;
-      b.addEventListener("click", function () { scrollToQuestion(pos); });
-      line.appendChild(b);
-      if (i < S.classStruggled.length - 2) { line.appendChild(document.createTextNode(", ")); }
-      else if (i === S.classStruggled.length - 2) { line.appendChild(document.createTextNode(" and ")); }
-    });
-    line.appendChild(document.createTextNode("."));
-    return line;
-  }
-
-  /* S13 — remembered on S, which lives for the length of one open()
+     S13 — remembered on S, which lives for the length of one open()
      session (survives Previous/Next, resets on the next open()). */
   function buildToggle(rows) {
     var wrongCount = rows.filter(function (r) { return r.isCorrect === false; }).length;
@@ -1144,56 +1096,45 @@
         ? student.name + " didn't hand this in. It was due " + fmtDateTime(S.assignment.due_at) + "."
         : student.name + " hasn't started this set yet.";
       els.body.appendChild(el("div", "bd-empty", msg));
-      var groups = groupByTopic(rows);
       var details = document.createElement("details");
       details.className = "bd-disclosure";
       var summary = document.createElement("summary");
       summary.textContent = "Show the questions";
       details.appendChild(summary);
-      var glist = renderGroups(groups);
-      glist.querySelectorAll("[data-bd-q]").forEach(function (c) {
-        c.setAttribute("data-bd-collapsed", "1");
-      });
+      var glist = renderQuestionList(rows);
+      if (glist.tagName === "OL") {
+        Array.prototype.forEach.call(glist.querySelectorAll("[data-bd-q]"), function (c) {
+          c.setAttribute("data-bd-collapsed", "1");
+        });
+      }
       details.appendChild(glist);
       els.body.appendChild(details);
       return;
     }
 
-    els.body.appendChild(buildFollowupRow(groupByTopic(rows)));
-    els.body.appendChild(buildClassLine());
-
     var visible = S.wrongOnly ? rows.filter(function (r) { return r.isCorrect === false; }) : rows;
-    var groups2 = groupByTopic(visible);
-    /* ⊕ Stream L, 25 Sep 2026 (experience run, item N6) — THE HEADING'S
-       TALLY IS THE PUPIL'S REAL SCORE ON THE TOPIC, NOT A COUNT OF
-       WHATEVER THE FILTER HAPPENS TO SHOW. `groups2` above is grouped from
-       `visible`, which under "Wrong only" is every WRONG row and nothing
-       else — so `g.right` (a count of `isCorrect === true` rows) is
-       structurally 0 and `g.total` is the wrong-count, not the topic's
-       question count. "Circuit symbols · 0 of 7 right" was true about the
-       seven rows on screen and false about the pupil, who got 3 of 10
-       right on the topic as a whole. Regrouping the UNFILTERED rows gives
-       the real right/total per topic; only which ROWS are drawn stays
-       filtered. */
+    var ordered = visible;
+    /* COULD-1 — weakest topic first, but only while filtering to Wrong;
+       the ordinary read keeps the set's own teaching order. `groupByTopic`
+       is used purely as a SORT KEY here — ⊕ Design port A cut the
+       rendered topic sections (see renderQuestionList's comment), so the
+       grouping never reaches the screen, only the row order does. Right/
+       total is restored from the UNFILTERED rows (Stream L, N6) so the
+       sort reflects the pupil's actual weakest topics, not a degenerate
+       0/N tie across every group of purely-wrong rows. */
     if (S.wrongOnly) {
+      var groups2 = groupByTopic(visible);
       var fullByTopic = {};
       groupByTopic(rows).forEach(function (g) { fullByTopic[g.key] = g; });
       groups2.forEach(function (g) {
         var full = fullByTopic[g.key];
         if (full) { g.right = full.right; g.total = full.total; }
       });
+      groups2.sort(function (a, b) { return (a.right / a.total) - (b.right / b.total); });
+      ordered = [];
+      groups2.forEach(function (g) { g.rows.forEach(function (r) { ordered.push(r); }); });
     }
-    /* COULD-1 — weakest topic first, but only while filtering to Wrong;
-       the ordinary read keeps the set's own teaching order. Now sorts on
-       the REAL right/total the block above just restored, so it reflects
-       the pupil's actual weakest topics rather than a degenerate 0/N tie
-       across every group. */
-    if (S.wrongOnly) {
-      groups2.sort(function (a, b) {
-        return (a.right / a.total) - (b.right / b.total);
-      });
-    }
-    els.body.appendChild(renderGroups(groups2));
+    els.body.appendChild(renderQuestionList(ordered));
   }
 
   function render() {

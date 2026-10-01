@@ -2374,6 +2374,10 @@ window.MrBadmusTeacherData = (function () {
     flashcardAssignments.forEach(function (a) { classOfFlashcardAssignment.set(a.id, a.class_id); });
     const flashcardAssignmentIds = flashcardAssignments.map(function (a) { return a.id; });
     const flashcardLastByClass = new Map();   // classId -> Map(studentId -> ISO last_seen_at)
+    // ⊕ design-port-b, 30 Sep 2026 — assignmentId -> Set(studentId), every
+    // pupil with at least one `flashcard_sessions` row for that set. See the
+    // comment beside where this is filled, below.
+    const flashcardStartedByAssignment = new Map();
     if (flashcardAssignmentIds.length > 0) {
       try {
         const sessionRows = await inChunks(flashcardAssignmentIds, async function (chunk) {
@@ -2390,6 +2394,18 @@ window.MrBadmusTeacherData = (function () {
           const m = flashcardLastByClass.get(cid);
           const prev = m.get(s.pupil_id);
           if (!prev || s.last_seen_at > prev) { m.set(s.pupil_id, s.last_seen_at); }
+          // ⊕ design-port-b, 30 Sep 2026 — WHO HAS HAD A SITTING, PER SET.
+          // The SAME row `flashcardLastByClass` just folded by class, kept
+          // this time by its own `assignment_id`: a row here is one pupil's
+          // one sitting of one deck, so a pupil with ANY row for THIS
+          // assignment has STARTED it — no matter how many cards they have
+          // secured. No second request: `sessionRows` already carries
+          // `assignment_id` (the select above asks for it), this loop was
+          // just discarding it. See `flashcardStartedFor`, below.
+          if (!flashcardStartedByAssignment.has(s.assignment_id)) {
+            flashcardStartedByAssignment.set(s.assignment_id, new Set());
+          }
+          flashcardStartedByAssignment.get(s.assignment_id).add(s.pupil_id);
         });
       } catch (e) {
         console.error('[teacher-data] flashcard sessions query failed (soft-fail: '
@@ -2435,6 +2451,22 @@ window.MrBadmusTeacherData = (function () {
       const out = {};
       const m = flashcardLastByClass.get(classId);
       if (m) { m.forEach(function (v, sid) { out[sid] = v; }); }
+      return out;
+    }
+
+    // ⊕ design-port-b, 30 Sep 2026 — {assignmentId: [studentId, …]}, one
+    // entry per flashcard assignment THIS class has ever had, for every
+    // pupil who has had a sitting of it. Read by `shared/teacher-live.js`'s
+    // `buildClassEntry` for the "My classes" card's started count — see
+    // MRB-352 SHARPEN-REPORT item 6 ("N of M in" on a flashcard card counted
+    // pupils who had SECURED every card, so it sat near zero all week).
+    function flashcardStartedFor(classId) {
+      const out = {};
+      (assignmentsByClass.get(classId) || []).forEach(function (a) {
+        if (a.kind !== "flashcards") { return; }
+        const s = flashcardStartedByAssignment.get(a.id);
+        out[a.id] = s ? Array.from(s) : [];
+      });
       return out;
     }
 
@@ -2538,6 +2570,7 @@ window.MrBadmusTeacherData = (function () {
         // against `activity[]` to get `lastIso`. See the block above and
         // the last-activity rule in supabase/MRB351-APPLY.md.
         flashcardLastActive: flashcardLastActiveFor(id),
+        flashcardStarted: flashcardStartedFor(id),
         // ⊕ Sharpen B4 — `{}` unless `opts.flashcardProgress` asked for it.
         flashcards: flashcardsByClass.get(id) || {},
       };
@@ -2836,6 +2869,38 @@ window.MrBadmusTeacherData = (function () {
       counts.forEach(function (c) { if (c[1] != null) out[c[0]] = c[1]; });
     } catch (e) {
       console.warn('[teacher-data] flashcard counts unavailable', e);
+      return {};
+    }
+    return out;
+  }
+
+  /* ⊕ design-port-b, 30 Sep 2026 — HOW MANY QUESTIONS EACH MCQ SET HOLDS,
+     the same one-read-per-set shape as `loadFlashcardCounts` immediately
+     above (a HEAD count, never throws, resolves `{assignment_id: n}`).
+     `assignment_questions` already carries the row set Set work writes and
+     the marking grid/worksheet count against (MRB-335); this just counts
+     it, for the Assignments table's "Quiz · N questions" sub-line. A
+     `loadPaperQuestions` call would answer the same question but also
+     fetches every submission and every attempt for the set — the marking
+     screen's shape, not a table row's. */
+  async function loadQuizQuestionCounts(assignmentIds) {
+    const ids = Array.from(new Set((assignmentIds || []).filter(isUuid)));
+    const out = {};
+    if (!ids.length) return out;
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) return out;
+    try {
+      const counts = await Promise.all(ids.map(async function (id) {
+        const r = await sb.from('assignment_questions')
+          .select('id', { count: 'exact', head: true })
+          .eq('assignment_id', id);
+        if (r.error) throw r.error;
+        return [id, r.count];
+      }));
+      counts.forEach(function (c) { if (c[1] != null) out[c[0]] = c[1]; });
+    } catch (e) {
+      console.warn('[teacher-data] quiz question counts unavailable', e);
       return {};
     }
     return out;
@@ -3745,6 +3810,7 @@ window.MrBadmusTeacherData = (function () {
     loadCompleteFor,
     loadPaperQuestions,
     loadFlashcardCounts,
+    loadQuizQuestionCounts,
     // ⊕ MRB-328 J3 — whose classes a school admin has asked to look at.
     // Additive; no existing caller changes.
     loadStaffClassScope,

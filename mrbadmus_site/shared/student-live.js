@@ -3189,7 +3189,24 @@
       /* ⊕ MRB-351 — a secured deck's "N of N" is completion, not a mark:
          no percentage and no CORRECT under a flashcard row. */
       if (status === "marked" && c.max_score > 0 && c.kind !== "flashcards") {
-        row.score = Math.round((c.score / c.max_score) * 100);
+        /* ⊕ design-port-fix, 30 Sep 2026 — THE SAME DENOMINATOR RULING AS
+           THE TEACHER SIDE (`shared/teacher-live.js`'s `buildMatrix`,
+           design-port-b): `c.max_score` is "how many questions have been
+           MARKED SO FAR" (backend `rescore()`), not the set's real size, so
+           a pupil who answered 2 of an 8-question set and stopped read
+           "1/2" on their own Work row while the teacher's Breakdown panel
+           — reading the same submission off `assignment_questions` — said
+           "1/8" (design-port audit, must-fix 8's follow-up). `qTotalFor`
+           is already read here for free (the completion bar's
+           denominator, ruled 22 Sep 2026, a few hundred lines up — the
+           same `assignment_questions` row count, off the same `aq` read,
+           keyed the same way by assignment id), so this reuses it rather
+           than adding a query. Falls back to `c.max_score` exactly where
+           the teacher side does: the count was never fetched, or came back
+           zero. */
+        var qTotal = qTotalFor[c.id];
+        var max = (qTotal != null && qTotal > 0) ? qTotal : c.max_score;
+        row.score = Math.round((c.score / max) * 100);
         /* ⊕ Experience run, 25 Sep 2026 (stream H) — P1. The class page's
            Average tile averaged these PER-ROW PERCENTAGES (56% over a
            40/60/80/50/50 spread) where Mide's ruled definition is total
@@ -3200,7 +3217,7 @@
            `avg` in student_rulings.py, which sums these rather than
            averaging the percentages. */
         row.rawScore = c.score;
-        row.rawMax = c.max_score;
+        row.rawMax = max;
       }
       if (c.is_submitted && c.due_at && !c.on_time) { row.late = true; }
       return row;
@@ -4766,8 +4783,21 @@
       /* ⊕ Stage B audit — ONE score form, the fraction, as the results page
          shows it ("4 / 15"). The percentage and the RIGHT row said the same
          number twice more. */
+      /* ⊕ design-port-b, 30 Sep 2026 — `currentCount` (this bench's OWN
+         `current.questions.length`, set at `benchWork.count` above), not
+         `benchCard.max_score`, when it is known. `max_score` is the
+         backend's `rescore()` writing "however many questions were marked
+         the LAST time it ran" — for a set completed after being left
+         part-way and resumed (C5's "Finish it"), that can undercount the
+         set's real size if anything ever reads it between the resume and
+         the final save (the same defect SHARPEN-REPORT item 7 names on
+         the class page). `currentCount` is 0 when this bench is a
+         teacher-set piece of work that is already done (the `week_work`
+         branch above drops a submitted row before it ever builds a
+         `count`) — the ONLY case this falls back to `max_score`, exactly
+         as it did before. */
       benchDoneScore: benchMarked
-        ? (benchCard.score + " / " + benchCard.max_score) : "",
+        ? (benchCard.score + " / " + (currentCount || benchCard.max_score)) : "",
       /* The completion stamp, in the docket's own mixed-case shape — the same
          `fmtDueMixed` the OPEN docket prints its deadline with, so the two
          dockets speak about time the same way. Lateness rides with it because

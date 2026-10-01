@@ -868,6 +868,12 @@
         deck_id: a.deck_id || null,
         teacher_note: a.teacher_note == null ? null : a.teacher_note,
         cards: null,
+        // ⊕ design-port-b, 30 Sep 2026 — the MCQ counterpart of `cards`:
+        // how many rows `assignment_questions` holds for this set, filled
+        // the same way (one HEAD count, below) so the Assignments table's
+        // title cell can say "Quiz · N questions" next to "Flashcards · N
+        // cards" — the same register, the same line, Design's own drawing.
+        qCount: null,
         kindLabel: "",
         // ⊕ Stream J, 25 Sep 2026 (experience run, item 4) — the fourth
         // answer Edit re-opens the sheet on. `shared/set-work.js`'s `edit()`
@@ -1158,8 +1164,22 @@
       var score = null, max = null, pct = null;
       if (graded && s.score != null && s.max_score != null && s.max_score > 0) {
         score = s.score;
-        max = s.max_score;
-        pct = Math.round((s.score / s.max_score) * 100);
+        // ⊕ design-port-b, 30 Sep 2026 — THE DENOMINATOR IS THE SET'S
+        // QUESTION COUNT, NOT `max_score`, WHEN THE COUNT IS KNOWN.
+        // `rescore()` (backend `server.js`) writes `max_score` as "how many
+        // questions have been MARKED SO FAR" and runs on every answer, so a
+        // pupil who answered 2 of a 4-question set and stopped there — now
+        // an ordinary, expected state since C5's "Finish it" lets them
+        // resume — reads "1/2" everywhere this cell feeds, not "1/4"
+        // (SHARPEN-REPORT item 7). `paper.qCount` is `assignment_questions`'
+        // own row count for this set (`shared/teacher-data.js`'s
+        // `loadQuizQuestionCounts`, fetched alongside the flashcard deck
+        // count this screen already reads) — the true size, complete or
+        // not. Falls back to `s.max_score` when the count was never fetched
+        // (a screen outside `CELL_SCREENS`, or the read failed) — the OLD
+        // behaviour, not a new one.
+        max = (paper && paper.qCount != null) ? paper.qCount : s.max_score;
+        pct = max > 0 ? Math.round((s.score / max) * 100) : null;
       }
 
       var late = null;
@@ -1852,8 +1872,17 @@
       });
       return Object.assign(base, {
         raw: raw,
-        score: (s.score != null && s.max_score != null)
-          ? s.score + "/" + s.max_score
+        // ⊕ design-port-b, 30 Sep 2026 — `stems.length`, NOT `s.max_score`.
+        // This grid already has the paper's own question array in `stems`
+        // (that is what builds every `raw`/`qpct` cell above); `max_score`
+        // is "however many `rescore()` had marked the last time it ran",
+        // which for a pupil who answered 2 of 4 and stopped (an ordinary
+        // state since C5's "Finish it") is 2, not 4 (SHARPEN-REPORT item
+        // 7). Falls back to `max_score` only when `stems` is somehow empty
+        // — never true in practice, since a grid with no stems draws no
+        // rows to read this from.
+        score: (s.score != null)
+          ? s.score + "/" + (stems.length || s.max_score)
           : "—",
         submitted: true
       });
@@ -2510,6 +2539,29 @@
        the card sort, the digest row) are ruled on it. */
     var cur = currentSet(papers);
     var cardWeek = cur ? [mx.colSub[cur.idx] || 0, mx.colAsked[cur.idx] || 0] : null;
+    /* ⊕ design-port-b, 30 Sep 2026 — A FLASHCARD CARD COUNTS STARTED, NOT
+       SECURED. `colSub` (above) is `submitted[cur.idx]` summed — true only
+       once an `assignment_submissions` row exists, and a deck writes NO
+       such row until every card is secured (MRB-351 §1). So the card's "N
+       of M in" read near-zero all week for an open deck (SHARPEN-REPORT
+       item 6: "counts pupils who have secured every card"), while the
+       class page it links to already said something else. STARTED — any
+       sitting at all — is the same fact an in-progress MCQ submission
+       already gives the card, and `pack.flashcardStarted` is an EXISTING
+       read (teacher-data.js's `flashcard_sessions` query, already made for
+       `flashcardLastActive` on this exact screen; this only keeps the
+       `assignment_id` that loop was discarding — no new request). The old
+       number (fully secured) becomes `cardSecured`, the card's smaller
+       second fact, in the same register as MCQ's "Chase …" line. */
+    var cardSecured = null;
+    if (cur && cur.kind === "flashcards") {
+      cardSecured = cardWeek[0];
+      var fcStartedIds = (pack.flashcardStarted && pack.flashcardStarted[cur.id]) || [];
+      var fcStartedSet = {};
+      fcStartedIds.forEach(function (sid) { fcStartedSet[sid] = true; });
+      var fcStartedN = roster.filter(function (r) { return fcStartedSet[r.id]; }).length;
+      cardWeek = [fcStartedN, cardWeek[1]];
+    }
     /* ⊕ Fable review — nothing open but a set SCHEDULED: the card says when
        it opens ("opens Mon 09:00"), not "no work open" beside a Set work
        button that would invite a duplicate. The earliest release wins. */
@@ -2549,6 +2601,7 @@
       cardWeek: cardWeek,
       cardChase: cardChase,
       cardOpens: cardOpens,
+      cardSecured: cardSecured,
       currentSetId: cur ? cur.id : null,
       last: lastIso ? relativeTime(lastIso, now) : "No activity yet",
       lastIso: lastIso,
@@ -3508,6 +3561,53 @@
             p.kindLabel = "Flashcards · " + p.cards + (p.cards === 1 ? " card" : " cards");
           }
         });
+      }
+
+      /* ⊕ design-port-b, 30 Sep 2026 — "Quiz · N questions", the MCQ
+         counterpart, by the same one-HEAD-count-per-set pattern. A `mcq_set`
+         is the only other kind `base()` derives (`kind: a.kind ||
+         "mcq_set"`), so this is every non-flashcard row on the screen. */
+      var qSets = (c.PAPERS[classId] || []).filter(function (p) {
+        return p.kind !== "flashcards" && p.qCount == null;
+      });
+      if (qSets.length && window.MrBadmusTeacherData.loadQuizQuestionCounts) {
+        var qN = await window.MrBadmusTeacherData.loadQuizQuestionCounts(
+          qSets.map(function (p) { return p.id; }));
+        var qChanged = false;
+        qSets.forEach(function (p) {
+          if (qN[p.id] != null) {
+            p.qCount = qN[p.id];
+            p.kindLabel = "Quiz · " + p.qCount + (p.qCount === 1 ? " question" : " questions");
+            qChanged = true;
+          }
+        });
+        /* ⊕ design-port-fix, 30 Sep 2026 — THE DENOMINATOR RULING (above,
+           `max = paper.qCount != null ? paper.qCount : s.max_score`) ONLY
+           TOOK EFFECT WHERE `buildMatrix` RAN AFTER THIS FETCH. It runs
+           here — line ~1181, inside `buildMatrix` — but `buildMatrix` was
+           already called, with every `qCount` still null, by
+           `buildClassEntry` inside `base()` (~line 3024) and
+           `mergeForeignClass` (~line 2711), both of which return long
+           before this `classId`-scoped fetch exists. The submission
+           history row, the AVG SCORE tile and the Students table's
+           AVERAGE all read `c.MATRIX[classId]`, built once back there
+           with the `s.max_score` fallback — so a pupil who stopped at 2
+           of 8 read "1/8" in the Breakdown panel (which asks the grid
+           fresh) but "1/2" · 50% everywhere that read the stale matrix.
+           Audited (design-port audit, must-fix 8) on Dev and Ben, both
+           showing a different denominator on two screens for the SAME
+           submission.
+           The fix re-runs `buildMatrix` for this one classId, now that
+           `c.PAPERS[classId]` carries real `qCount`s, and replaces the
+           stale entry — `c.packs[classId]` is the same pack object
+           `buildClassEntry` closed over (cached on `base()`'s return,
+           `cache.packs`), so this is the exact recomputation, not a new
+           shape. Every other class on a multi-class screen (classes.html)
+           is untouched: this fetch, like the one above it, is already
+           scoped to `classId` alone. */
+        if (qChanged && classId && c.MATRIX[classId] && c.packs && c.packs[classId]) {
+          c.MATRIX[classId] = buildMatrix(c.packs[classId], c.PAPERS[classId], c.now);
+        }
       }
     }
 

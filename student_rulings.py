@@ -5434,9 +5434,16 @@ LOGIC["class view"].extend([
         "    const chipTone = { match: 'var(--pg-ok-text)', partial: 'var(--pg-ink)', no: 'var(--pg-accent-text)',\n"
         "                       blank: 'var(--pg-accent-text)', pending: 'var(--pg-muted)' }[v.verdict] || 'var(--pg-muted)';\n"
         "    const many = v.m > 30;\n"
+        "    /* ⊕ Design port (screens 05/06) — the strip is on screen whenever\n"
+        "       it has something to say: mid-pass (the headline), or the end\n"
+        "       screen offering Done or Try again (the set title / the redo\n"
+        "       hint). The writing pass's own end screen (decision 7, not\n"
+        "       redrawn) keeps the strip stepping aside, exactly as before. */\n"
+        "    const stripOn = !!c || (!!end && (end.button === 'done' || end.button === 'retry'));\n"
         "    return {\n"
         "      hwOn: true, hwNotOn: false, hwLoading: false, hwErr: false,\n"
-        "      hwShowCard: !!c, hwPlay: !!c, hwStripHide: c ? '' : 'display:none;',\n"
+        "      hwShowCard: !!c, hwPlay: !!c, hwStripOn: stripOn,\n"
+        "      hwStripHide: stripOn ? '' : 'display:none;',\n"
         "      hwCardId: c ? c.id : '',\n"
         "      hwHeadline: v.headline,\n"
         "      hwSegGap: many ? '2px' : '4px',\n"
@@ -5505,6 +5512,24 @@ LOGIC["class view"].extend([
         "      hwEndDone: !!end && end.button === 'done',\n"
         "      hwEndAgain: !!end && end.button === 'again',\n"
         "      hwEndRetry: !!end && end.button === 'retry',\n"
+        "      /* ⊕ Design port (screen 06) — Done: the strip names the set\n"
+        "         instead of repeating the headline the bench panel already\n"
+        "         gives (data the overlay already has, `v.title` — the same\n"
+        "         field the card's own topic line already reads). */\n"
+        "      hwStripTitle: v.title || '',\n"
+        "      /* ⊕ Design port review — the redo hint belongs to an ACTIVE\n"
+        "         retry pass (state A, where a tap really does something),\n"
+        "         never the end screen: there the same chips are plain spans\n"
+        "         (`canRedo` needs `!ended`), and a hint promising a tap that\n"
+        "         does nothing is worse than none. `v.chips` already encodes\n"
+        "         exactly that — `g.redo` is false for every chip once ended\n"
+        "         or once the current card is revealed — so this is true only\n"
+        "         when at least one green card can really be tapped right now.\n"
+        "         The headline the hint would otherwise crowd out of the row\n"
+        "         is not said anywhere else mid-pass (no bench panel yet), so\n"
+        "         the hint gets its OWN line under the row instead of one of\n"
+        "         the two sharing it — see the strip-row markup below. */\n"
+        "      hwRetryHintOn: !!v.retry && v.chips.some((g) => g.redo),\n"
         "      hwCheck: this.hwCheck, hwDraftIn: this.hwDraftIn, hwIdk: this.hwIdk, hwBack: this.hwBack,\n"
         "      hwGot: this.hwGot, hwNearly: this.hwNearly, hwNotYet: this.hwNotYet,\n"
         "      hwAgain: this.hwAgain, hwDoneTap: this.hwDoneTap, hwRetry: this.hwRetry,\n"
@@ -5528,14 +5553,27 @@ LOGIC["class view"].extend([
 # The shapes reused below, written once. Colours are Design's own tokens:
 # the overlay chrome is `--pg-*`, the card and the panel are the pupil's
 # bench theme (`--b-*`), exactly as the card and the scorecard already are.
+# ⊕ design-port audit, nice-to-have 4 — `display:flex;align-items:center;
+# justify-content:center`, not relying on a bare <button>'s own centring:
+# Check/Try again/Done were measured left-aligned (a global button reset
+# elsewhere sets `text-align:left`), where Design centres every label.
 _HW_BTN = ("font:inherit;font-size:17px;font-weight:700;min-height:52px;"
-           "border-radius:14px;cursor:pointer;padding:0 12px;")
+           "border-radius:14px;cursor:pointer;padding:0 12px;"
+           "display:flex;align-items:center;justify-content:center;text-align:center;")
 _HW_MONO = ("font-family:'DM Mono',monospace;font-size:12px;"
             "letter-spacing:.12em;")
 _HW_UI = "font-family:'Instrument Sans',system-ui,sans-serif;font-size:15px;line-height:1.45;"
-_HW_CHIP = ("display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;"
-            "padding:0 6px;border-radius:8px;box-sizing:border-box;font:inherit;"
-            "font-family:'DM Mono',monospace;font-size:13px;font-weight:600;")
+# ⊕ Design port (screens 05/06) — the strip's one label (this pass's
+# headline, or, once the pass ends, the set title): the exact type Design's
+# `.sit-head` draws, shared by both.
+_HW_HEAD = ("font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;"
+            "font-size:19px;letter-spacing:-.02em;color:var(--pg-ink);")
+# ⊕ Design port — 40px tall, filling the strip's width (`grid-auto-flow:
+# column` on the container below needs no fixed column count, unlike
+# Design's `repeat(10, …)`, since a homework can be any size deck).
+_HW_CHIP = ("display:inline-flex;align-items:center;justify-content:center;height:40px;"
+            "border-radius:9px;box-sizing:border-box;font:inherit;font-variant-numeric:tabular-nums;"
+            "font-family:'DM Mono',monospace;font-size:14px;font-weight:600;")
 
 
 def _hw_text(expr):
@@ -5575,6 +5613,34 @@ def _hw_rate(on, label, style_expr, pressed_expr, hw, off_expr, dis_expr):
             "c": [{"t": "#", "v": label}]}
 
 
+# ⊕ Design port (screen 05) — Close, moved into the strip row from the empty
+# header row above it (node 10321: an eyebrow that is blank in every mode,
+# and a stack counter that is blank on a homework — see SET_ATTR/hwVals'
+# `stackPos`). Design's own button, byte-for-byte (`aria-label`, `title`,
+# the cross svg, the hover): node 10325 is UNTOUCHED (never hand-copy a
+# node's content into two places by hand — this is Design's literal markup,
+# reused, not redrawn). `closeAll` is Design's own handler, already wired to
+# 10325; reused here by name, not reinvented. `shared/flashcard-keyboard.js`
+# hides 10321 by CSS (`:has([data-hw="close"])`) whenever this one is on
+# screen, so Close exists in exactly one place at a time; when it is not
+# (loading/error/gone), 10321 stays and Close is there, as before.
+def _hw_close():
+    return {
+        "t": "button", "on": "closeAll",
+        "a": {"type": "button", "data-hw": "close", "title": "Close",
+              "aria-label": "Close flashcards",
+              "style": "width:44px;height:44px;border-radius:12px;border:1px solid var(--pg-rule);"
+                       "background:var(--pg-ground);color:var(--pg-ink);display:grid;place-items:center;"
+                       "cursor:pointer;flex:none;margin-left:auto;"},
+        "hov": "background:var(--pg-band)",
+        "c": [{"t": "svg",
+               "a": {"aria-hidden": "true", "fill": "none", "height": "16", "stroke": "currentColor",
+                     "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2.4",
+                     "viewBox": "0 0 24 24", "width": "16"},
+               "c": [{"t": "path", "a": {"d": "M6 6l12 12M18 6L6 18"}}]}],
+    }
+
+
 # The finished row's button: a deck is revised, not read about.
 LOGIC["class view"].append((
     "        primaryLabel: w.retake ? 'Retake it' : isMarked ?"
@@ -5599,12 +5665,44 @@ INSERT_AT["class view"].update({
                                   "background:var(--pg-card);display:flex;flex-direction:column;gap:8px;",
                                   {"e": "hwStripHide"}]}},
         "c": [
-            {"t": "if", "e": "hwPlay", "c": [
-                {"t": "span",
-                 "a": {"data-hw": "progress", "aria-live": "polite",
-                       "style": "font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;"
-                                "font-size:19px;letter-spacing:-.02em;color:var(--pg-ink);"},
-                 "c": [_hw_text("hwHeadline")]},
+            # ⊕ Design port (05/06) — the row: the strip's one label and
+            # Close, which used to sit alone in the otherwise-empty header
+            # row above the strip (node 10321 — its eyebrow, 10322, is
+            # blank in every mode; its stack counter, 10324, is blank on a
+            # homework, `stackPos: ''` above). shared/flashcard-keyboard.js
+            # CSS-hides 10321 whenever this row is on screen.
+            {"t": "if", "e": "hwStripOn", "c": [
+                {"t": "div", "a": {"data-hw": "strip-row",
+                                   "style": "display:flex;align-items:center;gap:12px;"},
+                 "c": [
+                     {"t": "if", "e": "hwPlay", "c": [{
+                         "t": "span", "a": {"data-hw": "progress", "aria-live": "polite", "style": _HW_HEAD},
+                         "c": [_hw_text("hwHeadline")]}]},
+                     # ⊕ Design port (06) — Done: the set title, so the
+                     # headline is not said twice (the bench panel already
+                     # gives "N of N right"). Design has no title in the
+                     # strip today's build; `v.title` is data the overlay
+                     # already has (the card's own topic line reads it too).
+                     # Try again's end screen (button retry, not an active
+                     # pass) names nothing here — the bench panel already has
+                     # "N of M right", and the redo hint belongs to the pass,
+                     # not the offer to start one (below).
+                     {"t": "if", "e": "hwEndDone", "c": [{
+                         "t": "span", "a": {"data-hw": "strip-title", "style": _HW_HEAD},
+                         "c": [_hw_text("hwStripTitle")]}]},
+                     _hw_close(),
+                 ]},
+                # ⊕ Design port review — the redo hint, on its OWN line under
+                # the row: mid-pass there is no bench panel to already say
+                # "N of M right", so the headline stays in the row and the
+                # hint does not compete with it (or with Close) for space —
+                # true only during an active retry pass with a tappable green
+                # chip on screen right now (`hwRetryHintOn`, hwVals above);
+                # never on the end screen, where the same chips are spans.
+                {"t": "if", "e": "hwRetryHintOn", "c": [{
+                    "t": "span", "a": {"data-hw": "hint",
+                                       "style": _HW_UI + "font-weight:500;color:var(--pg-muted);"},
+                    "c": [{"t": "#", "v": "Tap a green card to redo it"}]}]},
                 {"t": "if", "e": "hwChipsOff", "c": [{"t": "span",
                  "a": {"data-hw": "bar", "role": "presentation",
                        "style": {"parts": ["display:flex;gap:", {"e": "hwSegGap"}, ";height:8px;"]}},
@@ -5616,8 +5714,21 @@ INSERT_AT["class view"].update({
                      "c": []}]}]}]},
                 # ⊕ Sharpen §13.1.10 — a Try again: the bar becomes numbered
                 # chips, one per card of the pass; a green one redoes it.
+                # ⊕ Design port (06) — the SAME chips row, now also drawn on
+                # the end screen offering Try again ("one representation of
+                # one fact"): `hwChipsOn`/`hwChips` are unchanged.
+                # `auto-fit` + a floor rather than Design's fixed `repeat(10,…)`
+                # (no deck is guaranteed to be 10 cards): a typical deck fills
+                # the width as one row of equal columns; a big one wraps
+                # rather than squeezing every chip unreadably thin.
+                # ⊕ design-port audit, must-fix 9 — 32px+5px gap needed 365px
+                # for the commonest deck size (ten cards) and only 354px was
+                # available at 390 (and in the 390-wide dialog at 1440), so
+                # the tenth chip wrapped onto its own line. 28px+4px gap
+                # needs 356px, which fits both 390 and 360.
                 {"t": "if", "e": "hwChipsOn", "c": [{"t": "div",
-                 "a": {"data-hw": "chips", "style": "display:flex;flex-wrap:wrap;gap:6px;"},
+                 "a": {"data-hw": "chips",
+                       "style": "display:grid;grid-template-columns:repeat(auto-fit,minmax(28px,1fr));gap:4px;"},
                  "c": [{"t": "for", "e": "hwChips", "as": "g", "c": [
                      {"t": "if", "e": "g.redo", "c": [{
                          "t": "button", "on": "g.tap",
@@ -5636,6 +5747,8 @@ INSERT_AT["class view"].update({
                                                    {"e": "g.ring"}]}},
                          "c": [_hw_text("g.num")]}]},
                  ]}]}]},
+            ]},
+            {"t": "if", "e": "hwPlay", "c": [
                 {"t": "if", "e": "hwSecuredOn", "c": [{
                     "t": "span", "a": {"data-hw": "secured", "style": _HW_UI + "color:var(--pg-muted);"},
                     "c": [_hw_text("hwSecured")]}]},
@@ -5670,21 +5783,13 @@ INSERT_AT["class view"].update({
         {"t": "if", "e": "hwWriting", "c": [{
             "t": "div", "a": {"data-hw": "write", "style": "display:flex;flex-direction:column;gap:10px;"},
             "c": [
-                # ⊕ Sharpen §13.1.4 — after "I don't know": the model answer,
-                # under the card that still shows the question.
-                {"t": "if", "e": "hwLearn", "c": [{
-                    "t": "div",
-                    "a": {"data-hw": "learn",
-                          "style": "display:flex;flex-direction:column;gap:6px;padding:12px 14px;"
-                                   "border-radius:14px;background:var(--b-ground);color:var(--b-ink);"},
-                    "c": [
-                        {"t": "span", "a": {"style": _HW_MONO + "color:var(--b-muted);"},
-                         "c": [{"t": "#", "v": "ANSWER"}]},
-                        {"t": "span",
-                         "a": {"style": "display:block;font-size:17px;line-height:1.45;color:var(--b-ink);"
-                                        "white-space:pre-wrap;overflow-wrap:anywhere;max-height:30vh;overflow:auto;"},
-                         "c": [{"t": "fx", "e": "hwLearnAnswer"}]},
-                    ]}]},
+                # ⊕ Sharpen §13.1.4, reshaped by the Design port (05) — after
+                # "I don't know": the model answer used to sit HERE, a
+                # separate block under the card. It now lives INSIDE the
+                # card itself, under a rule (INSERT_AT 10334 after 10340,
+                # below) — Design's "one bench card". The `[data-hw="learn"]`
+                # hook moves with it; flashcard-keyboard.js and the drives
+                # still find it by that attribute, wherever it is.
                 {"t": "textarea", "onch": "hwDraftIn",
                  "a": {"data-hw": "answer",
                        "aria-label": {"parts": [{"e": "hwPlaceholder"}]},
@@ -5739,42 +5844,62 @@ INSERT_AT["class view"].update({
                               "hwGotOff", "hwGotDis"),
                  ]},
             ]}]},
-        # The end of a pass (A6/A8): two lines, the helper when it applies,
-        # one button. Line 2 waits for the server's number.
-        {"t": "if", "e": "hwPanel", "c": [{
-            "t": "div",
-            "a": {"data-hw": "panel",
-                  "style": "flex:1 1 auto;min-height:260px;border-radius:22px;padding:28px 24px;"
-                           "background:var(--b-ground);color:var(--b-ink);display:flex;"
-                           "flex-direction:column;justify-content:center;gap:12px;"},
-            "c": [
-                {"t": "span",
-                 "a": {"data-hw": "end1",
-                       "style": "font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;"
-                                "font-size:30px;line-height:1.1;letter-spacing:-.03em;"},
-                 "c": [_hw_text("hwEnd1")]},
-                {"t": "if", "e": "hwEnd2On", "c": [{
-                    "t": "span", "a": {"data-hw": "end2", "style": "font-size:19px;line-height:1.4;color:var(--b-ink);"},
-                    "c": [_hw_text("hwEnd2")]}]},
-                {"t": "if", "e": "hwEndOffline", "c": [{
-                    "t": "span", "a": {"data-hw": "offline", "style": _HW_MONO + "color:var(--b-muted);"},
-                    "c": [{"t": "#", "v": "SAVED ON THIS PHONE"}]}]},
-                {"t": "if", "e": "hwEndHelperOn", "c": [{
-                    "t": "span", "a": {"data-hw": "hint", "style": _HW_UI + "color:var(--b-muted);margin-top:6px;"},
-                    "c": [_hw_text("hwEndHelper")]}]},
-                {"t": "span", "a": {"style": "display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;"}, "c": [
-                    {"t": "if", "e": "hwEndAgain", "c": [
-                        _hw_btn("hwAgain", "Revise flashcards one more time",
-                                "flex:1 1 200px;border:0;background:var(--b-cta);color:var(--b-cta-ink);", "again")]},
-                    {"t": "if", "e": "hwEndRetry", "c": [
-                        _hw_btn("hwRetryPass", "Try again",
-                                "flex:1 1 200px;border:0;background:var(--b-cta);color:var(--b-cta-ink);",
-                                "retry-pass")]},
-                    {"t": "if", "e": "hwEndDone", "c": [
-                        _hw_btn("hwDoneTap", "Done",
-                                "flex:1 1 140px;border:0;background:var(--b-cta);color:var(--b-cta-ink);", "done")]},
-                ]},
-            ]}]},
+        # The end of a pass (A6/A8): two lines, the helper when it applies
+        # — and, pinned at the bottom of the dialog (Design port 06: "thumb
+        # reach, same place as Check"), one full-width button. The button
+        # is now a SEPARATE sibling after the panel rather than part of its
+        # own centred content: the panel keeps `flex:1 1 auto` (fills the
+        # space above), the button row is `flex:none` (its own content
+        # height) — the same pairing as Design's `.end` + `.end-foot`, so
+        # the button lands at the visible bottom of the dialog rather than
+        # vertically centred with the text. Line 2 waits for the server's
+        # number. Applied identically to the writing pass's own end screen
+        # (decision 7, not redrawn) for one consistent look, as the brief
+        # asks — its button is a real CTA there, not a ruled cut.
+        {"t": "if", "e": "hwPanel", "c": [
+            {"t": "div",
+             "a": {"data-hw": "panel",
+                   "style": "flex:1 1 auto;min-height:260px;border-radius:22px;padding:28px 24px;"
+                            "background:var(--b-ground);color:var(--b-ink);display:flex;"
+                            "flex-direction:column;justify-content:center;gap:12px;"},
+             "c": [
+                 # ⊕ Design port review — Design's `.end-1` is 40px/1.05
+                 # (matched here, not the 30px Stage A shipped); the 34px
+                 # floor below 380px is `shared/flashcard-keyboard.js`'s CSS
+                 # (not inline: a fixed inline size can't answer "does '10 of
+                 # 10 right' wrap at 360?" — a media query can), so a phone
+                 # that would wrap two digits + "of" + two digits onto a
+                 # second line gets the smaller size instead.
+                 {"t": "span",
+                  "a": {"data-hw": "end1",
+                        "style": "font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;"
+                                 "font-size:40px;line-height:1.05;letter-spacing:-.03em;"},
+                  "c": [_hw_text("hwEnd1")]},
+                 {"t": "if", "e": "hwEnd2On", "c": [{
+                     "t": "span", "a": {"data-hw": "end2", "style": "font-size:19px;line-height:1.4;color:var(--b-ink);"},
+                     "c": [_hw_text("hwEnd2")]}]},
+                 {"t": "if", "e": "hwEndOffline", "c": [{
+                     "t": "span", "a": {"data-hw": "offline", "style": _HW_MONO + "color:var(--b-muted);"},
+                     "c": [{"t": "#", "v": "SAVED ON THIS PHONE"}]}]},
+                 {"t": "if", "e": "hwEndHelperOn", "c": [{
+                     "t": "span", "a": {"data-hw": "hint", "style": _HW_UI + "color:var(--b-muted);margin-top:6px;"},
+                     "c": [_hw_text("hwEndHelper")]}]},
+             ]},
+            {"t": "div", "a": {"data-hw": "end-foot", "style": "flex:none;"}, "c": [
+                {"t": "if", "e": "hwEndAgain", "c": [
+                    _hw_btn("hwAgain", "Revise flashcards one more time",
+                            "width:100%;box-sizing:border-box;border:0;background:var(--b-cta);"
+                            "color:var(--b-cta-ink);", "again")]},
+                {"t": "if", "e": "hwEndRetry", "c": [
+                    _hw_btn("hwRetryPass", "Try again",
+                            "width:100%;box-sizing:border-box;border:0;background:var(--b-cta);"
+                            "color:var(--b-cta-ink);", "retry-pass")]},
+                {"t": "if", "e": "hwEndDone", "c": [
+                    _hw_btn("hwDoneTap", "Done",
+                            "width:100%;box-sizing:border-box;border:0;background:var(--b-cta);"
+                            "color:var(--b-cta-ink);", "done")]},
+            ]},
+        ]},
         {"t": "if", "e": "hwLoading", "c": [{
             "t": "div", "a": {"data-hw": "loading", "style": "display:flex;flex-direction:column;gap:12px;align-items:flex-start;"},
             "c": [
@@ -5812,6 +5937,35 @@ INSERT_AT["class view"].update({
         ]}]},
         "MRB-351: the pupil's written answer under the model answer on the "
         "card's back — make phase, and in review for cards they wrote."),
+
+    # ── Design port (05) — the model answer, INSIDE the front face, under
+    #    the question it belongs to ──────────────────────────────────────
+    #
+    # Was a separate block under the card (removed above, at 10328/10361's
+    # `hwWriting`). Design's mockup nests `.card-ans` inside `.card` itself,
+    # and the brief is explicit: "share ONE bench card... under a rule
+    # inside the card, instead of a separate block under it." 10334 is the
+    # front face (Design's own node, the same button `flip` is a no-op on
+    # during a homework — see `hwVals`'s `flip: this.hwNoop` — so nothing a
+    # pupil does inside this block can trigger a flip), and it already
+    # scrolls its own overflow (`STYLE_EDIT[10334]`, below), so the merged
+    # card handles a long question + a long model answer the same way
+    # Design's own `.card{overflow-y:auto}` does — no second inner scroll
+    # on the answer text, unlike the old separate block's `max-height:30vh`.
+    (10334, 10340): ({"t": "if", "e": "hwLearn", "c": [{
+        "t": "div",
+        "a": {"data-hw": "learn",
+              "style": "display:flex;flex-direction:column;gap:6px;padding-top:12px;"
+                       "border-top:1px solid var(--b-rule);"},
+        "c": [
+            {"t": "span", "a": {"style": _HW_MONO + "color:var(--b-muted);"}, "c": [{"t": "#", "v": "ANSWER"}]},
+            {"t": "span", "a": {"style": "display:block;font-size:18px;font-weight:600;line-height:1.45;"
+                                         "color:var(--b-ink);white-space:pre-wrap;overflow-wrap:anywhere;"},
+             "c": [{"t": "fx", "e": "hwLearnAnswer"}]},
+        ]}]},
+        "MRB-351 Design port (05) — 'I don't know': the model answer, under "
+        "a rule inside the same bench card as the question, instead of a "
+        "second block below it."),
 })
 
 WRAP["class view"].update({
