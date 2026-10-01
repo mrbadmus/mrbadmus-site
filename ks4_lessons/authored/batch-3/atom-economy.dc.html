@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atom economy · MrBadmus GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Quantitative chemistry" title="Atom economy" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry (8462) 4.3.3.2 · Quantitative</p>
+        <h1>Atom economy</h1>
+        <p class="ks3-bigq">Every atom you start with ends up somewhere. How much of the starting mass becomes the product you actually want, and why does industry care?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Two factories. One product.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">Both factories make ethanol, C₂H₅OH. Factory A ferments sugar: C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂. Factory B adds steam to ethene: C₂H₄ + H₂O → C₂H₅OH. Both run perfectly: every molecule of starting material reacts.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Which factory turns the bigger share of its starting materials’ mass into ethanol?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>That share is the <strong>atom economy</strong> (also called atom utilisation): a measure of the amount of starting materials that end up as useful products. It comes from the balanced equation and relative formula masses, so a chemist can work it out before the reaction is ever run.</p>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equations</p>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Learn it · no chemistry equation sheet</span>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; line-height: 1.3;">% atom economy = M<sub>r</sub> of desired product ÷ sum of M<sub>r</sub> of all reactants × 100</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">Both from the balanced equation.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; line-height: 1.3;">sum of M<sub>r</sub> of reactants = sum of M<sub>r</sub> of products</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">Mass is conserved, so dividing by the products’ total gives the same answer.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-strip" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The mass strip · drawn to scale</p>
+        <h2 style="margin: 6px 0 0;">Call the share. Then run the reaction.</h2>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ stripTabs }}" as="t" hint-placeholder-count="3"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" disabled="{{ t.disabled }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+        </div>
+        <p style="margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 21px; font-weight: 500;">{{ stripEq }}</p>
+        <p style="margin: 2px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ stripMr }}</p>
+        <div style="margin-top: 12px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 680px;">{{ stripFig }}</div>
+        <sc-if value="{{ stripAskOn }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px;">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">{{ stripAsk }}</p>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <sc-for list="{{ stripOptions }}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ stripDoneNow }}">
+          <div data-arrive="1" role="status" style="{{ stripVerdictStyle }}">
+            <p style="margin: 0; font-size: 18px; line-height: 1.55;"><strong>{{ stripWord }}</strong> {{ stripReply }}</p>
+            <p style="margin: 8px 0 0; font-family: var(--ks3-font-mono); font-size: 17px; line-height: 1.5;">{{ stripWorking }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+        <p class="ks3-mis-quote">&ldquo;Sodium is made by electrolysing molten salt: 2NaCl → 2Na + Cl₂. M<sub>r</sub> of Na is 23, so 23 ÷ 117 × 100 = 19.7%.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Calculate" prompt="Where does the working go wrong? (Ar: Na = 23, Cl = 35.5)" options="{{ thinkOptions }}" reveal="{{ thinkReveal }}" right-word="That is it." wrong-word="That keeps the mistake." on-commit="{{ onThink }}" hint-size="100%,320px"></dc-import>
+      </section>
+
+      <section id="s-brine" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">One equation, three products</p>
+        <h2 style="margin: 6px 0 0;">Electrolysing brine makes three useful products.</h2>
+        <p style="margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 21px; font-weight: 500;">2NaCl + 2H₂O → 2NaOH + Cl₂ + H₂</p>
+        <p style="margin: 2px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">Mr: NaCl 58.5 · H₂O 18 · NaOH 40 · Cl₂ 71 · H₂ 2</p>
+        <div style="margin-top: 12px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 680px;">{{ brineFig }}</div>
+        <sc-if value="{{ brineAskOn }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px;">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">Commit first. Taken as the desired product, which one gives the lowest atom economy?</p>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <sc-for list="{{ brineOptions }}" as="o" hint-placeholder-count="4"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ brineDone }}">
+          <div data-arrive="1" style="margin-top: 14px; display: flex; flex-direction: column; gap: 12px;">
+            <p role="status" style="{{ brineVerdictStyle }}"><strong>{{ brineWord }}</strong> {{ brineReply }}</p>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <sc-for list="{{ brineTabs }}" as="t" hint-placeholder-count="3"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+            </div>
+            <p aria-live="polite" style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; line-height: 1.5;">{{ brineWorking }}</p>
+            <p data-route="higher" style="margin: 0; max-width: 62ch; font-size: 18px;">All three products are sold, so little of the mass is really wasted. That is why the usefulness of by-products counts when a route is chosen.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A high atom economy matters for sustainable development and for economic reasons: fewer raw materials are wasted, and there is less waste to dispose of. A reaction with only one product, such as an addition reaction, has an atom economy of 100%.</p>
+        <p style="margin-top: 12px;">Atom economy is not percentage yield. Atom economy belongs to the balanced equation, so it is the same every time the reaction runs. Percentage yield depends on how the reaction is carried out: how much product is actually collected.</p>
+      </section>
+
+      <section id="s-route" class="ks3-block" data-route="higher" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-stretch);">
+        <p class="ks3-eyebrow" style="color: var(--ks3-stretch-text);">Choose a route</p>
+        <h2 style="margin: 6px 0 0;">Ethanol, two ways.</h2>
+        <p style="margin: 10px 0 0; max-width: 62ch;">Chemists choose a reaction pathway from the atom economy together with the yield, the rate, the equilibrium position and how useful any by-products are. Atom economy alone never decides it.</p>
+        <div role="table" aria-label="Fermentation compared with the hydration of ethene" style="margin-top: 14px; border: 2px solid var(--ks3-ink); border-radius: 14px; overflow: hidden; background: var(--ks3-card); font-size: 16px; line-height: 1.4;">
+          <div role="row" style="display: grid; grid-template-columns: minmax(6rem, .8fr) 1fr 1fr; border-bottom: 2px solid var(--ks3-ink);">
+            <span role="columnheader" style="padding: 8px 10px;"></span>
+            <span role="columnheader" style="padding: 8px 10px; font-family: var(--ks3-font-display); font-weight: 800;">Fermentation</span>
+            <span role="columnheader" style="padding: 8px 10px; font-family: var(--ks3-font-display); font-weight: 800;">Hydration of ethene</span>
+          </div>
+          <sc-for list="{{ routeRows }}" as="r" hint-placeholder-count="6">
+            <div role="row" style="display: grid; grid-template-columns: minmax(6rem, .8fr) 1fr 1fr; border-top: 1px solid var(--ks3-rule);">
+              <span role="rowheader" style="padding: 8px 10px; font-weight: 700;">{{ r.k }}</span>
+              <span role="cell" style="padding: 8px 10px;">{{ r.a }}</span>
+              <span role="cell" style="padding: 8px 10px;">{{ r.b }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top: 16px;">
+          <dc-import name="Ks4Sort" eyebrow="Weigh it" title="Which route does each row favour?" prompt="Read across each row of the table." bins="{{ routeBins }}" items="{{ routeItems }}" done-note="Hydration wins more rows, but rows are not votes. A finite raw material, or a high energy cost, can outweigh them; and if the carbon dioxide can be captured and used, its row weighs less. An evaluation weighs the rows and ends with a justified choice." on-done="{{ onRoute }}" hint-size="100%,460px"></dc-import>
+        </div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Show the working from the equation and give the answer as a percentage, usually to 3 significant figures.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Give</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">One short answer, no explanation needed.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give the reason as linked steps, each one leading to the next.</dd></div>
+          <div data-route="higher" style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Evaluate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Use the data for both sides, weigh them against each other, and finish with a justified conclusion.</dd></div>
+        </dl>
+      </section>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="atom-economy" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Atom economy" spec="AQA 4.3.3.2 (8462)" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure what goes on the top and bottom of the fraction?" legal="The mass strip draws each formula unit as a bar whose length is its relative formula mass, and shows the products forming in one move. It says nothing about how fast a reaction goes or how much product is collected." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Two factories', short: 'HOOK' },
+  { id: 's-strip', label: 'The mass strip', short: 'STRIP' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-brine', label: 'Three products', short: 'BRINE' },
+  { id: 's-calc', label: 'Calculate it', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const RUN_MS = 1400;
+const BANDS = ['All of it: 100%', 'More than half, but not all', 'Less than half'];
+/* Groups: f = formula as written in the equation, n = its number, mr = Mr of one unit. want = the desired product. */
+const RX = [
+  { tab: 'Ethanol', product: 'ethanol', eq: 'C₂H₄ + H₂O → C₂H₅OH', mr: 'Mr: C₂H₄ 28 · H₂O 18 · C₂H₅OH 46', band: 0,
+    reactants: [{ f: 'C₂H₄', n: 1, mr: 28 }, { f: 'H₂O', n: 1, mr: 18 }], products: [{ f: 'C₂H₅OH', n: 1, mr: 46, want: true }],
+    replies: ['', 'Nothing else forms, so nothing is wasted: every atom ends up in the ethanol.', 'The water is not lost: its atoms join the ethene to make the ethanol.'],
+    working: '46 ÷ (28 + 18) × 100 = 100%' },
+  { tab: 'Lime', product: 'calcium oxide', eq: 'CaCO₃ → CaO + CO₂', mr: 'Mr: CaCO₃ 100 · CaO 56 · CO₂ 44', band: 1,
+    reactants: [{ f: 'CaCO₃', n: 1, mr: 100 }], products: [{ f: 'CaO', n: 1, mr: 56, want: true }, { f: 'CO₂', n: 1, mr: 44 }],
+    replies: ['Carbon dioxide forms as well, and it is not the product you want.', '', 'Calcium oxide keeps the bigger part of the mass.'],
+    working: '56 ÷ 100 × 100 = 56%' },
+  { tab: 'Iron', product: 'iron', eq: 'Fe₂O₃ + 3CO → 2Fe + 3CO₂', mr: 'Mr: Fe₂O₃ 160 · CO 28 · CO₂ 44 · Ar: Fe 56', band: 2,
+    reactants: [{ f: 'Fe₂O₃', n: 1, mr: 160 }, { f: '3CO', n: 3, mr: 28 }], products: [{ f: '2Fe', n: 2, mr: 56, want: true }, { f: '3CO₂', n: 3, mr: 44 }],
+    replies: ['Carbon dioxide forms as well and carries off part of the mass.', 'Three carbon dioxide molecules form alongside every two iron atoms, and they are heavier.', ''],
+    working: '(2 × 56) ÷ (160 + 3 × 28) × 100 = 45.9%' }
+];
+const BRINE = {
+  reactants: [{ f: '2NaCl', n: 2, mr: 58.5 }, { f: '2H₂O', n: 2, mr: 18 }],
+  products: [{ f: '2NaOH', n: 2, mr: 40, name: 'Sodium hydroxide' }, { f: 'Cl₂', n: 1, mr: 71, name: 'Chlorine' }, { f: 'H₂', n: 1, mr: 2, name: 'Hydrogen' }],
+  working: ['(2 × 40) ÷ (2 × 58.5 + 2 × 18) × 100 = 52.3%', '71 ÷ (2 × 58.5 + 2 × 18) × 100 = 46.4%', '2 ÷ (2 × 58.5 + 2 × 18) × 100 = 1.3%']
+};
+const ease = (t) => t * t * (3 - 2 * t);
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, hook: null, tab: 0, picks: [null, null, null], prog: [0, 0, 0], running: -1, think: null, brine: null, brineView: 2, route: false, calc: 0, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+    this.reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.tick = setInterval(() => {
+      const k = this.state.running;
+      if (k < 0) return;
+      const p = (Date.now() - this.start) / RUN_MS;
+      this.setState((st) => { const prog = st.prog.slice(); prog[k] = Math.min(1, p); return p >= 1 ? { prog: prog, running: -1 } : { prog: prog }; });
+    }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); clearInterval(this.tick); }
+  btn() { return 'font:inherit;font-size:17px;font-weight:600;text-align:left;padding:12px 14px;min-height:48px;border-radius:14px;cursor:pointer;color:var(--ks3-ink);background:var(--ks3-card);border:2px solid var(--ks3-option-border);'; }
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' + (dis && !on ? 'opacity:.55;' : '');
+  }
+  /* One row of formula-unit bars. Each group is one block (n units, split by thin lines), length proportional to n × Mr. */
+  row(groups, total, y, opts) {
+    const D = window.KS4D; const X0 = 40, L = 560, H = 64;
+    let x = X0, b = '';
+    groups.forEach((g) => {
+      const w = g.n * g.mr / total * L;
+      const fill = opts.colour(g);
+      const dash = opts.dashed && opts.dashed(g) ? ' stroke-dasharray="6 5"' : '';
+      b += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + Math.max(2, w).toFixed(1) + '" height="' + H + '" fill="' + fill + '" stroke="' + D.C.stroke + '" stroke-width="2"' + dash + (opts.opacity !== undefined ? ' opacity="' + opts.opacity.toFixed(2) + '"' : '') + '/>';
+      for (let k = 1; k < g.n; k++) { const xx = x + w * k / g.n; b += D.line(xx, y + 6, xx, y + H - 6, 1.5, D.C.stroke); }
+      const sub = g.n > 1 ? g.n + ' × ' + g.mr : String(g.mr);
+      if (w >= 90) {
+        b += D.T(x + w / 2, y + 29, g.f, 24, { fill: D.C.stroke }) + D.T(x + w / 2, y + 54, sub, 19, { fill: D.C.stroke, weight: 'normal' });
+      } else {
+        b += D.T(x + w, y + H + 24, g.f + ' ' + sub, 19, { fill: D.C.stroke, anchor: 'end' });
+      }
+      x += w;
+    });
+    return b;
+  }
+  stripSvg(reactants, products, t, wantIdx) {
+    const D = window.KS4D; const W = 640, H = 356, X0 = 40, L = 560;
+    const total = reactants.reduce((a, g) => a + g.n * g.mr, 0);
+    const isWant = (g) => (wantIdx === undefined ? !!g.want : products.indexOf(g) === wantIdx);
+    const ordered = products.filter(isWant).concat(products.filter((g) => !isWant(g)));
+    const share = ordered.filter(isWant).reduce((a, g) => a + g.n * g.mr, 0) / total;
+    let b = D.T(X0, 36, 'Reactants', 22, { anchor: 'start' }) + D.T(X0, 148, 'Products', 22, { anchor: 'start' });
+    b += this.row(reactants, total, 48, { colour: () => '#F2C9AE' });
+    if (t <= 0) {
+      b += '<rect x="' + X0 + '" y="160" width="' + L + '" height="64" fill="none" stroke="' + D.C.muted + '" stroke-width="2" stroke-dasharray="8 6"/>';
+    } else {
+      const e = ease(Math.min(1, t));
+      b += this.row(ordered, total, 48 + 112 * e, { colour: (g) => (isWant(g) ? '#A9D9BE' : '#E6E1D6'), dashed: (g) => !isWant(g), opacity: 0.25 + 0.75 * e });
+    }
+    b += D.line(X0, 270, X0 + L, 270, 2, D.C.stroke);
+    [0, 0.5, 1].forEach((f) => { const x = X0 + L * f; b += D.line(x, 264, x, 276, 2, D.C.stroke) + D.T(x, 298, Math.round(f * 100) + '%', 19, { fill: D.C.stroke, weight: 'normal' }); });
+    if (t >= 1) { const mx = X0 + L * share; b += D.line(mx, 152, mx, 280, 4, D.C.red); }
+    b += '<rect x="' + X0 + '" y="318" width="22" height="22" fill="#A9D9BE" stroke="' + D.C.stroke + '" stroke-width="2"/>' + D.T(X0 + 30, 336, 'desired product', 19, { anchor: 'start', fill: D.C.stroke, weight: 'normal' });
+    b += '<rect x="270" y="318" width="22" height="22" fill="#E6E1D6" stroke="' + D.C.stroke + '" stroke-width="2" stroke-dasharray="4 3"/>' + D.T(300, 336, 'other products', 19, { anchor: 'start', fill: D.C.stroke, weight: 'normal' });
+    const alt = 'Bars for the reactants, total Mr ' + total + '.' + (t >= 1 ? ' Product bars of the same total length; the desired product fills ' + Math.round(share * 1000) / 10 + '% of it.' : ' The products bar is still empty.');
+    return D.svg(W, H, b, alt);
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, isTH: true, routeWords: '', routeSwitchOptions: [] };
+    const slug = 'atom-economy';
+    const ready = !!(s.libReady && K && D);
+    const higher = !!R.isHigher;
+    const rx = RX[s.tab];
+    const pick = s.picks[s.tab];
+    const ran = s.prog.map((p) => p >= 1);
+    const done = [s.hook !== null, ran[0] && ran[1] && ran[2], s.think !== null, s.brine !== null, s.calc >= 2, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const pn = this.props.mrbPrevNext || {};
+    const F = ready ? K.fifas(slug) : [];
+    const busy = s.running >= 0;
+    const okStrip = pick !== null && pick === rx.band;
+    const BOPTS = [
+      { label: 'Sodium hydroxide, 2NaOH', k: 0, ok: false, reply: '2NaOH is 80 of the 153, the biggest share, so it gives the highest of the three.' },
+      { label: 'Chlorine, Cl₂', k: 1, ok: false, reply: 'Cl₂ is 71 of the 153, just under half.' },
+      { label: 'Hydrogen, H₂', k: 2, ok: true, reply: '' },
+      { label: 'None: one equation has one atom economy', k: -1, ok: false, reply: 'The bottom stays 153, but the top is whichever product you want, so the answer changes.' }
+    ];
+    const bc = s.brine !== null ? BOPTS[s.brine] : null;
+    const ethanolSteps = ready && F.length ? K.cfifa(F[0], 'Nothing to convert: Mr values have no units.') : [];
+    if (ethanolSteps.length > 1) ethanolSteps[1] = Object.assign({}, ethanolSteps[1], { note: 'AQA divides by the reactants: C₂H₄ + H₂O = 28 + 18 = 46. Mass is conserved, so the products’ total is the same 46.' });
+    const AEF = '% atom economy = Mr of desired product ÷ sum of Mr of all reactants × 100';
+    const qSteps = (ins, ft, a) => [
+      { letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert: Mr values have no units.' },
+      { letter: 'F', label: 'Formula', placeholder: 'the atom economy formula', line: AEF },
+      { letter: 'I', label: 'Insert', placeholder: 'numbers from the equation', line: ins },
+      { letter: 'F', label: 'Fine-tune', placeholder: 'work out top and bottom', line: ft },
+      { letter: 'A', label: 'Answer', placeholder: 'answer and unit', line: a }];
+    const cfQ = higher ? [
+      { tab: 'Question 1', id: 'ae-q1', head: 'Ammonia can be made in the lab: 2NH₄Cl + Ca(OH)₂ → CaCl₂ + 2NH₃ + 2H₂O. Calculate the percentage atom economy for making ammonia. (Mr: NH₄Cl = 53.5, Ca(OH)₂ = 74, NH₃ = 17)', close: 'One NH₃ on top and one NH₄Cl underneath gives 17 ÷ 127.5 × 100 = 13.3%. Both numbers in front count.',
+        steps: qSteps('(2 × 17) ÷ (2 × 53.5 + 74) × 100', '= 34 ÷ 181 × 100', '18.8%') },
+      { tab: 'Question 2', id: 'ae-q2', head: 'Hydrogen is made from methane and steam: CH₄ + H₂O → CO + 3H₂. Calculate the percentage atom economy for making hydrogen. (Mr: CH₄ = 16, H₂O = 18, H₂ = 2)', close: 'With one H₂ on top you get 2 ÷ 34 × 100 = 5.9%. The equation makes three.',
+        steps: qSteps('(3 × 2) ÷ (16 + 18) × 100', '= 6 ÷ 34 × 100', '17.6%') }
+    ] : [
+      { tab: 'Question 1', id: 'ae-q1', head: 'Hydrogen can be made by electrolysing water: 2H₂O → 2H₂ + O₂. Calculate the percentage atom economy for making hydrogen. (Mr: H₂O = 18, H₂ = 2, O₂ = 32)', close: 'With one H₂ on top you get 2 ÷ 36 × 100 = 5.6%, half the right answer. The equation makes two.',
+        steps: qSteps('(2 × 2) ÷ (2 × 18) × 100', '= 4 ÷ 36 × 100', '11.1%') },
+      { tab: 'Question 2', id: 'ae-q2', head: 'Magnesium chloride can be made from magnesium and hydrochloric acid: Mg + 2HCl → MgCl₂ + H₂. Calculate the percentage atom economy for making magnesium chloride. (Ar: Mg = 24; Mr: HCl = 36.5, MgCl₂ = 95)', close: 'Forget the 2 in front of HCl and the bottom is 60.5, giving 157%. Over 100% always means the working is wrong.',
+        steps: qSteps('95 ÷ (24 + 2 × 36.5) × 100', '= 95 ÷ 97 × 100', '97.9%') }
+    ];
+    const lvl = [
+      { label: 'Level 3 · 5–6', text: 'Compares both methods on at least four factors, including atom economy, and reaches a justified conclusion.', max: 6 },
+      { label: 'Level 2 · 3–4', text: 'Compares both methods on some factors; the conclusion is weak or missing.', max: 4 },
+      { label: 'Level 1 · 1–2', text: 'Isolated points about one method, not compared.', max: 2 },
+      { label: 'No relevant content · 0', text: '', max: 0 }
+    ];
+    return Object.assign({}, R, {
+      video: K && s.hook !== null ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      endPrev: pn.prev || null, endNext: pn.next || null,
+      endConnects: ready ? [{ href: K.hrefFor('relative-formula-mass', R), label: 'Relative formula mass' }, { href: K.hrefFor('conservation-of-mass', R), label: 'Conservation of mass' }, { href: K.hrefFor('percentage-yield', R), label: 'Percentage yield' }, { href: K.hrefFor('addition-polymerisation', R), label: 'Addition polymerisation' }].filter((x) => x.href) : [],
+      hookOptions: [
+        { text: 'Factory A, because each sugar molecule makes two ethanol molecules', correct: false, reply: 'Two ethanol molecules, yes, but two carbon dioxide molecules leave with them.' },
+        { text: 'Factory B, because ethanol is the only substance it makes', correct: true, reply: '' },
+        { text: 'Neither: every molecule reacts in both, so both use all of it', correct: false, reply: 'Every molecule reacting describes the yield. Factory A still sends part of the mass out as carbon dioxide.' },
+        { text: 'Factory A, because sugar is a renewable raw material', correct: false, reply: 'True, and it matters when a route is chosen. It does not change how much of the mass ends up as ethanol.' }
+      ],
+      hookReveal: 'In Factory B every atom of the ethene and steam ends up in ethanol. In Factory A, the carbon dioxide carries off almost half of the sugar’s mass.',
+      onHook: (i) => this.setState({ hook: i }),
+      stripTabs: RX.map((r, i) => ({ label: r.tab + (ran[i] ? ' ✓' : ''), pressed: s.tab === i, disabled: busy, style: this.seg(s.tab === i, busy),
+        onClick: () => { if (this.state.running < 0) this.setState({ tab: i }); } })),
+      stripEq: rx.eq, stripMr: rx.mr,
+      stripFig: ready ? K.fig(this.stripSvg(rx.reactants, rx.products, pick === null ? 0 : s.prog[s.tab]), '') : null,
+      stripAskOn: pick === null,
+      stripAsk: 'Commit first. What share of the reactants’ mass ends up in the ' + rx.product + '?',
+      stripOptions: BANDS.map((lab, i) => ({ label: lab, style: this.btn(),
+        onClick: () => {
+          if (this.state.picks[this.state.tab] !== null || this.state.running >= 0) return;
+          const k = this.state.tab;
+          const picks = this.state.picks.slice(); picks[k] = i;
+          if (this.reduced) { const prog = this.state.prog.slice(); prog[k] = 1; this.setState({ picks: picks, prog: prog }); }
+          else { this.start = Date.now(); this.setState({ picks: picks, running: k }); }
+        } })),
+      stripDoneNow: pick !== null && s.prog[s.tab] >= 1,
+      stripWord: okStrip ? 'Called it.' : 'Not this time.',
+      stripReply: pick !== null ? rx.replies[pick] : '',
+      stripWorking: rx.working,
+      stripVerdictStyle: 'margin-top:14px;padding:14px 16px;border-radius:14px;border:2px solid ' + (okStrip ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      thinkOptions: [
+        { text: 'Nowhere: one sodium atom has a mass of 23, so 19.7% is right', correct: false, reply: 'The equation makes 2Na. The desired product counts as many times as the equation makes it.' },
+        { text: 'The top should be 2 × 23, because the equation makes two sodium atoms', correct: true, reply: '' },
+        { text: 'The bottom should be the waste chlorine, 71, not the reactants', correct: false, reply: 'Dividing by the waste gives a different ratio. The bottom is the total of all the reactants.' },
+        { text: 'The fraction is upside down, so it should be 117 ÷ 23 × 100', correct: false, reply: 'That gives 509%. Over 100% is impossible: the product can never outweigh all the reactants.' }
+      ],
+      thinkReveal: 'Desired product from the equation: 2Na = 46. All reactants: 2NaCl = 117. 46 ÷ 117 × 100 = 39.3%.',
+      onThink: (i) => this.setState({ think: i }),
+      brineFig: ready ? K.fig(this.stripSvg(BRINE.reactants, BRINE.products, s.brine === null ? 0 : 1, s.brineView), '') : null,
+      brineAskOn: s.brine === null,
+      brineOptions: BOPTS.map((o, i) => ({ label: o.label, style: this.btn(),
+        onClick: () => { if (this.state.brine === null) this.setState({ brine: i, brineView: o.k >= 0 ? o.k : 2 }); } })),
+      brineDone: s.brine !== null,
+      brineWord: bc && bc.ok ? 'Called it.' : 'Not this time.',
+      brineReply: bc ? (bc.ok ? 'Its 2 is the smallest share of the 153.' : bc.reply) : '',
+      brineVerdictStyle: 'margin:0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (bc && bc.ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      brineTabs: BRINE.products.map((g, i) => ({ label: g.name, pressed: s.brineView === i, style: this.seg(s.brineView === i, false), onClick: () => this.setState({ brineView: i }) })),
+      brineWorking: BRINE.working[s.brineView],
+      routeRows: [
+        { k: 'Raw material', a: 'Sugar from crops (renewable)', b: 'Ethene from crude oil (finite)' },
+        { k: 'Atom economy', a: '51%', b: '100%' },
+        { k: 'Conditions', a: 'About 30 °C, normal pressure', b: '300 °C and 60–70 atm' },
+        { k: 'Rate', a: 'Slow, in batches', b: 'Fast and continuous' },
+        { k: 'Product', a: 'Dilute ethanol that must be distilled', b: 'Pure ethanol' },
+        { k: 'By-product', a: 'Carbon dioxide', b: 'None' }
+      ],
+      routeBins: [{ id: 'f', label: 'Favours fermentation' }, { id: 'h', label: 'Favours hydration' }],
+      routeItems: [
+        { text: 'Raw material', bin: 'f', why: 'Sugar can be grown again; crude oil will run out.' },
+        { text: 'Atom economy', bin: 'h', why: '100% against 51%: hydration wastes none of the starting mass.' },
+        { text: 'Conditions', bin: 'f', why: 'High temperature and pressure cost energy and money; fermentation runs warm, at normal pressure.' },
+        { text: 'Rate', bin: 'h', why: 'A fast, continuous process makes more ethanol per day.' },
+        { text: 'Product', bin: 'h', why: 'Distilling a dilute solution costs extra energy; hydration needs no distilling.' },
+        { text: 'By-product', bin: 'h', why: 'Fermentation also makes carbon dioxide; hydration makes nothing else.' }
+      ],
+      onRoute: () => this.setState({ route: true }),
+      cfExamples: ready && ethanolSteps.length ? [
+        { tab: 'Ethanol · addition', head: F[0].question, next: 'Now one where the numbers in the equation count.', steps: ethanolSteps },
+        { tab: 'Iron · numbers count', head: 'Calculate the percentage atom economy for making iron: Fe₂O₃ + 3CO → 2Fe + 3CO₂. (Mr: Fe₂O₃ = 160, CO = 28; Ar: Fe = 56)', next: 'Now yours, below.', steps: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert: Mr values have no units.', note: '' },
+          { letter: 'F', label: 'Formula', line: AEF, note: '' },
+          { letter: 'I', label: 'Insert', line: '(2 × 56) ÷ (160 + 3 × 28) × 100', note: 'The equation makes 2Fe and uses 3CO: both numbers go in.' },
+          { letter: 'F', label: 'Fine-tune', line: '= 112 ÷ 244 × 100', note: '' },
+          { letter: 'A', label: 'Answer', line: '45.9%', note: 'Mr values are whole numbers here, so give 3 significant figures.' } ] }
+      ] : [],
+      cfQuestions: cfQ,
+      onCalc: (n2) => this.setState({ calc: n2 }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: { command: 'Give', marks: 1, prompt: 'Give the meaning of the term atom economy.', why: 'It is the useful share of the starting materials, worked out from the balanced equation.',
+          options: [
+            { text: 'The percentage of the maximum mass of product that is actually collected', correct: false, reply: 'That is percentage yield. Atom economy comes from the equation, not from what you collect.' },
+            { text: 'The percentage of the mass of the products that ends up as waste', correct: false, reply: 'That is the waste share, the other part of the strip. Atom economy is the useful share.' },
+            { text: 'The percentage of the reactant particles that have reacted when it stops', correct: false, reply: 'That is how complete the reaction is. A complete reaction can still make waste products.' },
+            { text: 'The percentage of the mass of the reactants that ends up in the desired product', correct: true, reply: '' }
+          ] },
+        r2: higher ? { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'Titanium is extracted from titanium chloride using magnesium: TiCl₄ + 2Mg → Ti + 2MgCl₂. Calculate the percentage atom economy for making titanium. (Ar: Ti = 48, Mg = 24; Mr: TiCl₄ = 190) Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert: Mr values have no units', 'Convert each Mr to grams: multiply by 1000', 'Convert the answer to a decimal: divide by 100'], convAnswer: 0, answer: 20.2, tol: 0.15, unit: '%', units: ['%', 'g', 'g/mol', 'no unit'],
+          right: 'Four-fifths of the mass leaves as magnesium chloride.', wrong: 'The bottom is every reactant, with its number: 190 + 2 × 24 = 238. Then 48 ÷ 238 × 100.',
+          model: ['C · Nothing to convert: Mr values have no units', 'F · % atom economy = Mr of desired product ÷ sum of Mr of all reactants × 100', 'I · 48 ÷ (190 + 2 × 24) × 100', 'F · = 48 ÷ 238 × 100', 'A · 20.2%'] }
+          : { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'Copper sulfate can be made from copper carbonate: CuCO₃ + H₂SO₄ → CuSO₄ + H₂O + CO₂. Calculate the percentage atom economy for making copper sulfate. (Mr: CuCO₃ = 123.5, H₂SO₄ = 98, CuSO₄ = 159.5) Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert: Mr values have no units', 'Convert each Mr to grams: multiply by 1000', 'Convert the answer to a decimal: divide by 100'], convAnswer: 0, answer: 72.0, tol: 0.15, unit: '%', units: ['%', 'g', 'g/mol', 'no unit'],
+          right: 'The water and carbon dioxide take the other 28%.', wrong: 'Add both reactants underneath: 123.5 + 98 = 221.5. Copper sulfate goes on top.',
+          model: ['C · Nothing to convert: Mr values have no units', 'F · % atom economy = Mr of desired product ÷ sum of Mr of all reactants × 100', 'I · 159.5 ÷ (123.5 + 98) × 100', 'F · = 159.5 ÷ 221.5 × 100', 'A · 72.0%'] },
+        r3: { command: 'Explain', marks: 2, prompt: 'Explain why making ethanol from ethene and steam has an atom economy of 100%. Put the links in order.',
+          links: ['Ethene and steam react by addition: C₂H₄ + H₂O → C₂H₅OH.', 'Ethanol is the only product formed.', 'So all the atoms in the reactants end up in the desired product, and there is no waste product.'],
+          herrings: [{ text: 'All of the ethene reacts, so none of it is left over.', why: 'That describes a complete reaction, which is about yield. Atom economy is about whether other products form.' },
+            { text: 'Ethanol has a bigger Mr than ethene, so mass is gained.', why: 'No mass is gained: 28 + 18 = 46. Ethanol is heavier than ethene because it holds the water’s atoms too.' }] },
+        r4: higher ? { command: 'Evaluate', marks: 6, question: 'Ethanol can be made by fermentation or by the hydration of ethene. Use the data in the Choose a route table to evaluate the two methods.', levels: lvl,
+          points: ['Hydration has the higher atom economy, 100% against 51%: no waste product.', 'Fermentation makes carbon dioxide as a by-product, which is waste unless it can be captured and used.', 'Fermentation uses sugar from crops, which is renewable; ethene comes from crude oil, which is finite.', 'Hydration needs 300 °C and 60–70 atm, so it uses more energy than fermentation at about 30 °C.', 'Hydration is fast and continuous; fermentation is slow and runs in batches.', 'Fermentation gives dilute ethanol that must be distilled; hydration gives pure ethanol.', 'A conclusion that weighs these, such as: hydration is better while crude oil is available, but fermentation is more sustainable.'],
+          reject: ['“Hydration is better because its atom economy is 100%”, with no other factor: an evaluation weighs several.', '“Fermentation has a 100% yield”: neither the yield nor completeness is given in the data.'] }
+          : { command: 'Calculate', marks: 4, question: 'Iron can be made by heating iron oxide with carbon: 2Fe₂O₃ + 3C → 4Fe + 3CO₂. (a) Calculate the percentage atom economy for making iron. (Mr: Fe₂O₃ = 160; Ar: Fe = 56, C = 12) (b) Give one reason why a company wants a reaction with a high atom economy.',
+          points: ['Desired product from the equation: 4 × 56 = 224.', 'All the reactants: 2 × 160 + 3 × 12 = 356.', '224 ÷ 356 × 100 = 62.9% (allow 63%).', 'Any one: less waste to dispose of; fewer raw materials wasted, so more sustainable; lower costs.'],
+          reject: ['“56 ÷ 356 × 100 = 15.7%”: the equation makes 4Fe, so the top is 4 × 56.', '“It makes the reaction faster” or “it gives a higher yield”: atom economy says neither.'] }
+      } : {},
+      keyLines: ready ? ['% atom economy = (Mr of desired product from the equation ÷ sum of Mr of all reactants) × 100.'].concat(K.keyLines(slug).slice(1)) : [],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waves for detection and exploration · MrBadmus GCSE Physics</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  .wd-key { display: inline-block; width: 16px; height: 16px; border-radius: 50%; vertical-align: -2px; margin-right: 8px; box-sizing: border-box; }
+  .wd-bar { display: inline-block; width: 26px; height: 10px; border-radius: 5px; vertical-align: 1px; margin-right: 8px; }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Physics" unit="Waves" title="Waves for detection and exploration" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Physics (8463) 4.6.1.5 · Investigation</p>
+        <h1>Waves for detection and exploration</h1>
+        <p class="ks3-bigq">Doctors watch a baby before it is born, and geologists map a core that no one will ever reach. How can waves reveal a structure that is hidden from view?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+        </div>
+        <div style="margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;">
+          <a href="{{ eqSheetHref }}" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 16px; border-radius: var(--ks3-r-control); border: 2px solid var(--ks3-ink); background: var(--ks3-card); color: var(--ks3-ink); font-size: 16px; font-weight: 700; text-decoration: none;" style-hover="background: var(--ks3-accent-tint); border-color: var(--ks3-accent);">View the full equation sheet<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3H3v10h10v-3"></path><path d="M9 3h4v4"></path><path d="M13 3L7 9"></path></svg></a>
+          <span style="font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">AQA · {{ eqSheetLabel }} · PDF</span>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Nobody has ever seen the Earth's core.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">It lies thousands of kilometres beneath your feet, and no drill has come anywhere near it. Yet geologists can tell you how big the core is, and which part of it is solid and which is liquid.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What evidence could they possibly have?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>Earthquakes produce <strong>seismic waves</strong> that travel right through the Earth. There are two kinds. <strong>P-waves</strong> are longitudinal: they travel through solids and through liquids, at different speeds in each, and arrive first. <strong>S-waves</strong> are transverse: they travel through solids but cannot travel through a liquid. Seismometers all round the world record which waves arrive, and when. Use those records to work out what is inside.</p>
+      </section>
+
+      <section id="s-quake" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">{{ qEyebrow }}</p>
+        <h2 style="margin: 6px 0 0;">{{ qTitle }}</h2>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 560px;">{{ quakeFig }}</div>
+        <sc-if value="{{ qHasKey }}">
+          <ul role="list" style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink);">
+            <sc-for list="{{ qKey }}" as="k" hint-placeholder-count="3"><li><span class="{{ k.cls }}" style="{{ k.style }}" aria-hidden="true"></span>{{ k.label }}</li></sc-for>
+          </ul>
+        </sc-if>
+        <sc-if value="{{ qAsking }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-commit" style="color: var(--ks3-ink); margin: 14px 0 0;">{{ qPrompt }}</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ qOpts }}" as="o" hint-placeholder-count="3">
+              <li><button type="button" class="ks3-option" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}"><span class="ks3-opt-mark" aria-hidden="true">{{ o.letter }}</span><span class="ks3-opt-label">{{ o.text }}</span></button></li>
+            </sc-for>
+          </ul>
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onQReveal }}" disabled="{{ qLocked }}" style="{{ qRevealStyle }}">{{ qRevealLabel }}</button>
+        </sc-if>
+        <sc-if value="{{ qShown }}">
+          <div data-arrive="1" role="status" style="margin-top: 14px; display: flex; flex-direction: column; gap: 10px;">
+            <p style="{{ qVerdictStyle }}"><strong>{{ qVerdictWord }}</strong> {{ qVerdictText }}</p>
+            <p style="margin: 0; font-size: 18px; line-height: 1.55;">{{ qWhy }}</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ qConfront }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+            <p class="ks3-mis-quote">&ldquo;S-waves can't pass through the core.&rdquo;</p>
+            <p style="margin: 0;">Only half right, and it costs marks. P-waves do pass through the core: that is how they reach 180°. What stops S-waves is the <em>liquid outer</em> core. Write it as: S-waves cannot travel through the liquid outer core; P-waves can.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ qCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onQNext }}" style="margin-top: 14px;">Next step</button></sc-if>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>No one can drill to the core or look at it. The study of seismic waves gave scientists <strong>new evidence</strong> about parts of the Earth that cannot be observed directly: the liquid outer core and the size of the core were both worked out from records like these.</p>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort the evidence" title="P-wave, S-wave, or both?" prompt="Decide which kind of seismic wave each statement describes." bins="{{ sBins }}" items="{{ sItems }}" on-done="{{ onSort }}" hint-size="100%,520px"></dc-import>
+      </section>
+
+      <section class="ks3-explainer">
+        <p><strong>Ultrasound</strong> is sound with a frequency above the upper limit of human hearing, 20 kHz. To scan an unborn baby, a probe held on the skin sends short pulses of ultrasound into the body and listens for echoes. On the way to the baby, the pulse meets several boundaries where one kind of tissue meets another.</p>
+      </section>
+
+      <section id="s-scan" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The scan · step {{ uStep }} of 2</p>
+        <h2 style="margin: 6px 0 0;">{{ uTitle }}</h2>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 640px;">{{ scanFig }}</div>
+        <sc-if value="{{ uAsking }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-commit" style="color: var(--ks3-ink); margin: 14px 0 0;">{{ uPrompt }}</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ uOpts }}" as="o" hint-placeholder-count="3">
+              <li><button type="button" class="ks3-option" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}"><span class="ks3-opt-mark" aria-hidden="true">{{ o.letter }}</span><span class="ks3-opt-label">{{ o.text }}</span></button></li>
+            </sc-for>
+          </ul>
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onUReveal }}" disabled="{{ uLocked }}" style="{{ uRevealStyle }}">{{ uRevealLabel }}</button>
+        </sc-if>
+        <sc-if value="{{ uShown }}">
+          <div data-arrive="1" role="status" style="margin-top: 14px; display: flex; flex-direction: column; gap: 10px;">
+            <p style="{{ uVerdictStyle }}"><strong>{{ uVerdictWord }}</strong> {{ uVerdictText }}</p>
+            <p style="margin: 0; font-size: 18px; line-height: 1.55;">{{ uWhy }}</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ uConfront }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+            <p class="ks3-mis-quote">&ldquo;The ultrasound bounces straight back off the first thing it meets.&rdquo;</p>
+            <p style="margin: 0;">If it did, nothing deeper could ever be seen. Ultrasound is only <em>partially</em> reflected at a boundary; the rest is transmitted and reaches the deeper boundaries, which is how a scan shows layer after layer.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ uCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onUNext }}" style="margin-top: 14px;">Next step</button></sc-if>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Ultrasound is not ionising, so unlike X-rays it can safely scan an unborn baby. The same echo timing finds hidden cracks inside metal parts: <strong>industrial imaging</strong>. At sea, <strong>echo sounding</strong> uses pulses of high-frequency sound to measure the depth of water and to detect objects in deep water, such as shoals of fish or a wreck. Every time, the pulse goes there and back, so the boundary is half the distance travelled away.</p>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equations</p>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">On the sheet</span>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">s = v t</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">distance travelled (s, metres) = speed (v, metres per second) × time (t, seconds)</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 16px;">v = s ÷ t · t = s ÷ v</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">For an echo</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">The time is for the trip there and back. Depth of the boundary = distance travelled ÷ 2. This is a method step, not a separate equation.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Units first</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">Echo times are often given in milliseconds. 1 ms = 0.001 s: divide by 1000 before you insert it.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Link a property of the wave to what it reveals, with "so" or "because" between them.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Apply what you know to a situation you have not met. More than one answer can earn the mark.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Use the information</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Take the pattern or the numbers from the diagram or trace you are given, and quote them.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Show every line. Convert ms to s first, and halve for an echo.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">S-waves cannot cross the liquid outer core; P-waves can, but refract. An echo's time gives a boundary's depth: depth = speed × time ÷ 2.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="waves-detection-exploration" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Waves for detection and exploration" spec="AQA 4.6.1.5 (8463)" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Physics" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure how a wave can show you something hidden?" legal="The Earth's layers are drawn to scale, but the wave paths are smooth curves and straight segments drawn to show the idea, and the shadow-zone edges (about 104° and 140°) are rounded figures. The scan's layers are simplified and every tissue is given the same speed, 1540 m/s; real tissues differ slightly, and real echoes are far weaker than the pulse." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Nobody has seen the core', short: 'HOOK' },
+  { id: 's-quake', label: 'Read the Earth', short: 'QUAKE' },
+  { id: 's-sort', label: 'P-wave, S-wave or both', short: 'SORT' },
+  { id: 's-scan', label: 'The ultrasound scan', short: 'SCAN' },
+  { id: 's-calc', label: 'Calculate a depth', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+/* Earth cross-section, plate 640 x 700. Radii to scale: outer core 0.546 R, inner core 0.19 R. */
+const EC = { x: 270, y: 330, R: 255, rc: 139, ri: 48, rc2: 173, k: 0.75 };
+const LAYER = { mantle: '#F2C9AE', outer: '#F6D58E', inner: '#E8A35C' };
+const INK = '#1A1A1A', MUTED = '#5B6B82', COLP = '#3B82F6', COLS = '#B7791F', HOT = '#C8102E';
+const STATIONS = [30, 60, 90, 120, 150, 180];
+const GOT = { P: [true, true, true, false, true, true], S: [true, true, true, false, false, false] };
+const rad = (d) => d * Math.PI / 180;
+function pt(th, r) { return [EC.x + r * Math.sin(rad(th)), EC.y - r * Math.cos(rad(th))]; }
+/* A curved seismic path from the earthquake to the surface at angle th: it dips deeper than a straight chord, as a wave that speeds up with depth does. */
+function bez(th) {
+  const P0 = pt(0, EC.R), P2 = pt(th, EC.R), C = pt(th / 2, EC.R * Math.cos(rad(th / 2)) * EC.k);
+  const out = [];
+  for (let i = 0; i <= 60; i++) { const t = i / 60, u = 1 - t; out.push([u * u * P0[0] + 2 * u * t * C[0] + t * t * P2[0], u * u * P0[1] + 2 * u * t * C[1] + t * t * P2[1]]); }
+  return out;
+}
+function stopAt(pts, rlim) {
+  for (let i = 1; i < pts.length; i++) { if (Math.hypot(pts[i][0] - EC.x, pts[i][1] - EC.y) < rlim) return { pts: pts.slice(0, i + 1), hit: true }; }
+  return { pts: pts, hit: false };
+}
+const QSTAGES = [
+  { title: 'Test a solid Earth', reveal: 'Send the S-waves',
+    prompt: 'Suppose the Earth were solid rock all the way through. Which seismometers would record S-waves from this earthquake?',
+    opts: [
+      { text: 'Only the three nearest the earthquake', r: 'In an all-solid Earth nothing would stop them: S-waves travel through solids.' },
+      { text: 'All six, right round to the far side', ok: true },
+      { text: 'None, because S-waves only travel along the surface', r: 'S-waves travel through the inside of the Earth, not just along its surface.' }
+    ],
+    why: 'A solid carries S-waves, so in an all-solid Earth they would reach every station. Their paths curve because the waves speed up gradually with depth, so they refract all the way.' },
+  { title: 'The real records', reveal: 'Cut the Earth open',
+    prompt: 'These are the real records from the six seismometers. Which hidden structure explains them?',
+    opts: [
+      { text: 'Nothing: the S-waves fade out before they get that far', r: 'Fading would be gradual. These S-waves stop sharply beyond about 104°, while P-waves still reach 180°.' },
+      { text: 'A hollow centre with no material in it at all', r: 'P-waves need material to travel through, and they arrive at 180°, so the centre is not empty.' },
+      { text: 'A liquid layer deep inside that S-waves cannot cross', ok: true }
+    ],
+    why: 'S-waves are transverse and cannot travel through a liquid. Every S-wave that heads into the outer core is stopped there, leaving an S-wave shadow zone over the far side of the Earth. So the outer core must be liquid.' },
+  { title: 'The P-wave gap', reveal: 'Send the P-waves',
+    prompt: 'Why does no P-wave arrive at 120°?',
+    opts: [
+      { text: 'P-waves cannot travel through a liquid at all', r: 'They can: the P-waves reaching 150° and 180° have crossed the liquid outer core.' },
+      { text: 'They change speed at the core boundary and refract', ok: true },
+      { text: 'The outer core absorbs every P-wave heading there', r: 'Then the P-waves crossing the core would be absorbed too, yet they reach 150° and 180°.' }
+    ],
+    why: 'P-waves slow down as they enter the outer core, so they refract sharply at its boundary. Paths that just miss the core land before about 104°; paths that enter it are bent and land beyond about 140°. In between, none arrive: the P-wave shadow zone.' },
+  { title: 'How big is the core?', reveal: 'Grow the core',
+    prompt: 'If the core were bigger, where would the S-wave shadow zone begin?',
+    opts: [
+      { text: 'Further from the earthquake', r: 'A bigger core is in the way of more S-wave paths, not fewer.' },
+      { text: 'In the same place as now', r: 'The edge is where an S-wave path just grazes the core, so it moves when the core’s size changes.' },
+      { text: 'Closer to the earthquake', ok: true }
+    ],
+    why: 'A bigger core would block S-waves on shallower paths too, so the shadow would start closer to the earthquake. Turned round, the measured edges of the shadow zones tell seismologists how big the core really is.' }
+];
+/* Ultrasound scan, plate 640 x 460: probe face at x = 98; boundaries A, B, C at depths 2, 5 and 8 cm (50 px per cm). Echo times at 1540 m/s. */
+const SCN = { face: 98, v: 300, bounds: [200, 350, 500], end: 620 };
+const ECHO = [{ t: 0.026, h: 80 }, { t: 0.065, h: 55 }, { t: 0.104, h: 36 }].map((e) => Object.assign(e, { x: 100 + e.t / 0.12 * 520 }));
+const USTEPS = [
+  { title: 'One pulse, three boundaries', reveal: 'Send the pulse',
+    prompt: 'The pulse will meet three boundaries on its way in. How many echoes come back to the probe?',
+    opts: [
+      { text: 'One: the pulse reflects completely at the first boundary', r: '' },
+      { text: 'Three: part of the pulse reflects at each boundary', ok: true },
+      { text: 'None: the body absorbs the whole pulse', r: 'Some energy is absorbed on the way, but part of the pulse reflects at every boundary and returns.' }
+    ],
+    why: 'Ultrasound is partially reflected at each boundary between two different media, and the rest travels on to the next. The deeper the boundary, the later its echo.' },
+  { title: 'Reading the echoes', reveal: 'Show the depths',
+    prompt: 'Use the trace. How deep is boundary C compared with boundary A?',
+    opts: [
+      { text: 'Twice as deep', r: 'The halving for the trip there and back applies to both echoes, so it cancels out.' },
+      { text: 'Four times as deep', ok: true },
+      { text: 'Eight times as deep', r: 'Nothing doubles here: the echo time and the depth grow in the same proportion.' }
+    ],
+    why: 'At a steady speed, distance is proportional to time. C’s echo takes four times as long as A’s, so C is four times as deep. Echo times from pulses sent in many directions build up the image.' }
+];
+/* The SONAR FIFA lives in the sound-waves-hearing source record (it is 4.6.1.5 content: examination C18). Read from there; the literal is the same verbatim text, in case that record is not loaded. */
+const SONAR = { label: 'SONAR Distance', question: 'A ship sends an ultrasound pulse. The echo returns after 0.06 s. Speed of sound in water = 1500 m/s. Calculate the depth of the seabed.',
+  steps: [['F', 'd = v × t / 2'], ['I', 'v = 1500 m/s, t = 0.06 s'], ['F', 'd = 1500 × 0.06 / 2 = 90 / 2'], ['A', 'd = 45 m']] };
+const LETTERS = ['A', 'B', 'C', 'D'];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, qStage: 1, qPred: {}, qShown: {}, sort: false, uStage: 1, uPred: {}, uShown: {}, calc: 0, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  reduced() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
+  vstyle(ok) {
+    return 'margin:0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);');
+  }
+  late(inner, anim, at) { return anim ? '<g opacity="0">' + inner + '<set attributeName="opacity" to="1" begin="' + at + 's" fill="freeze"/></g>' : inner; }
+  /* A path through a list of points; drawn on over 1.4 s when anim. */
+  ray(pts, col, o) {
+    o = o || {};
+    const d = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+    const base = ' fill="none" stroke="' + col + '" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"' + (o.faded ? ' opacity="0.3"' : '');
+    if (o.dashed) return '<path d="' + d + '"' + base + ' stroke-dasharray="11 8"/>';
+    if (o.anim) return '<path d="' + d + '"' + base + ' pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"><animate attributeName="stroke-dashoffset" from="100" to="0" dur="1.4s" fill="freeze"/></path>';
+    return '<path d="' + d + '"' + base + '/>';
+  }
+  xmark(p, col) {
+    const x = p[0], y = p[1];
+    return '<g stroke="' + col + '" stroke-width="4" stroke-linecap="round"><line x1="' + (x - 8).toFixed(1) + '" y1="' + (y - 8).toFixed(1) + '" x2="' + (x + 8).toFixed(1) + '" y2="' + (y + 8).toFixed(1) + '"/><line x1="' + (x - 8).toFixed(1) + '" y1="' + (y + 8).toFixed(1) + '" x2="' + (x + 8).toFixed(1) + '" y2="' + (y - 8).toFixed(1) + '"/></g>';
+  }
+  arc(t1, t2, r, col) {
+    const a = pt(t1, r), b = pt(t2, r);
+    return '<path d="M ' + a[0].toFixed(1) + ' ' + a[1].toFixed(1) + ' A ' + r + ' ' + r + ' 0 0 1 ' + b[0].toFixed(1) + ' ' + b[1].toFixed(1) + '" fill="none" stroke="' + col + '" stroke-width="10" stroke-linecap="round" opacity="0.6"/>';
+  }
+  badge(th, k, got) {
+    const D = window.KS4D; const b = pt(th, EC.R + 88); const tx = Math.cos(rad(th)), ty = Math.sin(rad(th));
+    const off = k === 'P' ? -17 : 17; const x = b[0] + tx * off, y = b[1] + ty * off; const col = k === 'P' ? COLP : COLS;
+    return got ? D.circ(x, y, 16, col) + D.T(x, y + 7, k, 20, { fill: '#FFFFFF' })
+      : D.circ(x, y, 15, '#F3F0E7', MUTED, 2.5, ' stroke-dasharray="4 3"') + D.T(x, y + 7, k, 20, { fill: MUTED });
+  }
+  /* v: { hidden, solidS, records, sRays, pRays, bigCore, fadeS, anim } */
+  earthSvg(v) {
+    const D = window.KS4D; let s = ''; const anim = !!v.anim && !this.reduced();
+    if (v.hidden) {
+      s += D.circ(EC.x, EC.y, EC.R, '#DDD3C4', INK, 3) + D.T(EC.x, EC.y + 24, '?', 76, { fill: MUTED });
+    } else {
+      s += D.circ(EC.x, EC.y, EC.R, LAYER.mantle, INK, 3) + D.circ(EC.x, EC.y, EC.rc, LAYER.outer, INK, 2.5) + D.circ(EC.x, EC.y, EC.ri, LAYER.inner, INK, 2.5);
+    }
+    if (v.sRays) {
+      s += this.arc(103, 180, EC.R + 10, COLS);
+      STATIONS.forEach((th) => {
+        const r = stopAt(bez(th), EC.rc);
+        s += this.ray(r.pts, COLS, { anim: anim && !v.fadeS && !v.bigCore, faded: v.fadeS });
+        if (r.hit && !v.fadeS) s += this.late(this.xmark(r.pts[r.pts.length - 1], COLS), anim && !v.bigCore, 1.4);
+      });
+    }
+    if (v.pRays) {
+      s += this.arc(103, 140, EC.R + 22, COLP);
+      const paths = [bez(30), bez(60), bez(90), bez(100),
+        [pt(0, EC.R), pt(48, EC.rc), pt(92, EC.rc), pt(140, EC.R)],
+        [pt(0, EC.R), pt(47, EC.rc), pt(103, EC.rc), pt(150, EC.R)],
+        [pt(0, EC.R), pt(180, EC.R)]];
+      paths.forEach((p) => { s += this.ray(p, COLP, { anim: anim }); });
+    }
+    if (v.solidS) STATIONS.forEach((th) => { s += this.ray(bez(th), COLS, { anim: anim }); });
+    if (v.bigCore) {
+      const g = '<circle cx="' + EC.x + '" cy="' + EC.y + '" r="' + EC.rc2 + '" fill="none" stroke="' + INK + '" stroke-width="3" stroke-dasharray="10 7"/>' +
+        this.ray(bez(78), COLS, { dashed: true }) + D.line(pt(78, EC.R - 14)[0], pt(78, EC.R - 14)[1], pt(78, EC.R + 14)[0], pt(78, EC.R + 14)[1], 6, HOT) +
+        D.T(EC.x - 112, EC.y + EC.rc2 - 6, 'bigger core', 26, { fill: INK });
+      s += this.late(g, anim, 0.2);
+    }
+    // the earthquake and the seismometers
+    const q = pt(0, EC.R); let star = '';
+    for (let i = 0; i < 10; i++) { const a = rad(i * 36), r = i % 2 ? 7 : 17; star += (q[0] + r * Math.sin(a)).toFixed(1) + ',' + (q[1] - r * Math.cos(a)).toFixed(1) + ' '; }
+    s += '<polygon points="' + star.trim() + '" fill="' + HOT + '" stroke="' + INK + '" stroke-width="2"/>' + D.T(EC.x - 26, q[1] - 20, 'earthquake', 30, { fill: INK, anchor: 'end' });
+    STATIONS.forEach((th, i) => {
+      const p = pt(th, EC.R), l = pt(th, EC.R + 38);
+      s += D.circ(p[0], p[1], 9, '#FFFFFF', INK, 3) + D.T(l[0], l[1] + 10, th + '°', 28, { fill: INK });
+      if (v.records) s += this.badge(th, 'P', GOT.P[i]) + this.badge(th, 'S', GOT.S[i]);
+    });
+    const alt = 'A cross-section of the Earth with an earthquake at the top and six seismometers round the right-hand side, at 30°, 60°, 90°, 120°, 150° and 180° from it. ' +
+      (v.hidden ? 'The inside is hidden. ' : 'The inside shows the mantle, the outer core and the inner core, to scale. ') +
+      (v.solidS ? 'Curved S-wave paths reach all six seismometers. ' : '') +
+      (v.records ? 'Records: P-waves arrive at 30°, 60°, 90°, 150° and 180° but not at 120°. S-waves arrive at 30°, 60° and 90° only. ' : '') +
+      (v.sRays ? 'S-wave paths that meet the outer core stop there; the S-wave shadow zone runs from about 104° to 180°. ' : '') +
+      (v.pRays ? 'P-wave paths that miss the core land before about 104°; paths through the core bend at its boundary and land at 140° and beyond, leaving a P-wave shadow zone from about 104° to 140°. ' : '') +
+      (v.bigCore ? 'A dashed bigger core: an S-wave path that just grazes it lands at about 78°, so the S-wave shadow would start closer to the earthquake.' : '');
+    return D.svg(640, 700, s, alt.trim());
+  }
+  /* o: { echoes, ruler, anim } */
+  scanSvg(o) {
+    const D = window.KS4D; let s = ''; const anim = !!o.anim && !this.reduced();
+    const bands = [[100, 200, 'fat', '#F2C9AE'], [200, 350, 'muscle', '#E8B4A0'], [350, 500, 'fluid', '#CFE0F5'], [500, 620, 'fetus', '#F6D58E']];
+    bands.forEach(([a, b, t, c]) => { s += '<rect x="' + a + '" y="64" width="' + (b - a) + '" height="156" fill="' + c + '"/>' + D.T((a + b) / 2, 100, t, 28, { fill: INK }); });
+    SCN.bounds.forEach((x, i) => { s += D.line(x, 64, x, 220, 3, INK) + D.T(x, 254, 'ABC'[i], 30, { fill: INK }); });
+    s += '<rect x="30" y="104" width="68" height="72" rx="8" fill="' + INK + '"/>' + D.line(30, 140, 10, 80, 4, INK) + D.T(56, 254, 'probe', 28, { fill: INK });
+    // the trace
+    s += D.line(100, 390, 620, 390, 3, INK) + D.line(100, 296, 100, 390, 3, INK);
+    [0, 0.04, 0.08, 0.12].forEach((t, i) => { const x = 100 + t / 0.12 * 520; s += D.line(x, 390, x, 398, 3, INK) + D.T(i === 3 ? 632 : x, 422, String(t), 24, { fill: INK, weight: 'normal', anchor: i === 3 ? 'end' : 'middle' }); });
+    s += D.T(632, 452, 'time / ms', 26, { fill: INK, anchor: 'end' });
+    if (o.echoes) {
+      const ts = SCN.bounds.map((x) => (x - SCN.face) / SCN.v);
+      ECHO.forEach((e, i) => {
+        const spike = D.line(e.x, 390, e.x, 390 - e.h, 5, HOT) + D.T(e.x, 390 - e.h - 10, String(e.t), 26, { fill: INK });
+        s += this.late(spike, anim, (2 * ts[i]).toFixed(3));
+      });
+      if (anim) {
+        const pk = 'M -18 0 q 4.5 -16 9 0 t 9 0 t 9 0 t 9 0';
+        const tEnd = ((SCN.end - SCN.face) / SCN.v).toFixed(3);
+        s += '<g><path d="' + pk + '" fill="none" stroke="' + HOT + '" stroke-width="4"/><animateTransform attributeName="transform" type="translate" values="' + SCN.face + ' 128;' + SCN.end + ' 128" dur="' + tEnd + 's" fill="freeze"/><animate attributeName="opacity" values="1;0.4;0" keyTimes="0;0.95;1" dur="' + tEnd + 's" fill="freeze"/></g>';
+        SCN.bounds.forEach((x, i) => {
+          const tk = ts[i].toFixed(3), t2 = (2 * ts[i]).toFixed(3);
+          s += '<g opacity="0" transform="translate(' + x + ' 176)"><path d="' + pk + '" fill="none" stroke="' + HOT + '" stroke-width="3" transform="scale(' + (0.85 - i * 0.15) + ')"/>' +
+            '<set attributeName="opacity" to="1" begin="' + tk + 's" fill="freeze"/>' +
+            '<animateTransform attributeName="transform" type="translate" values="' + x + ' 176;' + SCN.face + ' 176" begin="' + tk + 's" dur="' + tk + 's" fill="freeze"/>' +
+            '<set attributeName="opacity" to="0" begin="' + t2 + 's" fill="freeze"/></g>';
+        });
+      }
+    }
+    if (o.ruler) {
+      s += D.line(100, 44, 500, 44, 3, INK);
+      [[100, '0'], [200, '2 cm'], [350, '5 cm'], [500, '8 cm']].forEach(([x, t]) => { s += D.line(x, 38, x, 50, 3, INK) + D.T(x, 30, t, 26, { fill: INK }); });
+    }
+    const alt = 'An ultrasound probe on the skin sends a pulse to the right through four layers: fat, muscle, fluid and the fetus, with boundaries A, B and C between them. Below is a trace of echo strength against time in milliseconds.' +
+      (o.echoes ? ' Part of the pulse reflects at each boundary: echoes arrive at 0.026 ms from A, 0.065 ms from B and 0.104 ms from C, each weaker than the one before.' : ' The trace is empty.') +
+      (o.ruler ? ' A depth scale shows A at 2 cm, B at 5 cm and C at 8 cm below the skin.' : '');
+    return D.svg(640, 470, s, alt);
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, eqSheetHref: '', eqSheetLabel: '', routeWords: 'Triple Higher', routeSwitchOptions: [] };
+    const slug = 'waves-detection-exploration';
+    const ready = !!(s.libReady && K && D);
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const pn = this.props.mrbPrevNext || {};
+    // ── seismic bench ──
+    const qs = s.qStage; const Q = QSTAGES[qs - 1]; const qShown = !!s.qShown[qs]; const qPick = s.qPred[qs];
+    const qO = qShown ? (Q.opts[qPick] || {}) : {};
+    const view = {
+      hidden: qs < 2 || (qs === 2 && !qShown),
+      solidS: qs === 1 && qShown,
+      records: qs >= 2,
+      sRays: qs > 2 || (qs === 2 && qShown),
+      pRays: qs === 3 ? qShown : false,
+      fadeS: qs === 3 && qShown,
+      bigCore: qs === 4 && qShown,
+      anim: qShown
+    };
+    const key = [];
+    if (!view.hidden) key.push({ cls: 'wd-bar', style: 'height:16px;border-radius:4px;border:1px solid var(--ks3-ink);background:' + LAYER.mantle + ';', label: 'mantle' }, { cls: 'wd-bar', style: 'height:16px;border-radius:4px;border:1px solid var(--ks3-ink);background:' + LAYER.outer + ';', label: 'outer core' }, { cls: 'wd-bar', style: 'height:16px;border-radius:4px;border:1px solid var(--ks3-ink);background:' + LAYER.inner + ';', label: 'inner core' });
+    if (view.records) {
+      key.push({ cls: 'wd-key', style: 'background:' + COLP + ';', label: 'P-wave recorded' }, { cls: 'wd-key', style: 'background:' + COLS + ';', label: 'S-wave recorded' }, { cls: 'wd-key', style: 'border:2px dashed ' + MUTED + ';', label: 'not recorded' });
+    }
+    if (view.sRays) key.push({ cls: 'wd-bar', style: 'background:' + COLS + ';opacity:.6;', label: 'S-wave shadow zone' });
+    if (view.pRays) key.push({ cls: 'wd-bar', style: 'background:' + COLP + ';opacity:.6;', label: 'P-wave shadow zone' });
+    // ── ultrasound scan ──
+    const us = s.uStage; const U = USTEPS[us - 1]; const uShown = !!s.uShown[us]; const uPick = s.uPred[us];
+    const uO = uShown ? (U.opts[uPick] || {}) : {};
+    const done = [s.hook !== null, !!s.qShown[4], s.sort, !!s.uShown[2], s.calc >= 2, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const connects = ready && K.hrefFor ? [['sound-waves-hearing', 'Sound waves and hearing'], ['transverse-longitudinal-waves', 'Transverse and longitudinal waves'], ['wave-front-refraction', 'Wave front diagrams and refraction']]
+      .map(([sl, label]) => ({ href: K.hrefFor(sl, R), label })).filter((c) => !!c.href) : [];
+    // ── CFIFA ──
+    const F0 = (ready && K.fifas('sound-waves-hearing')[0]) || SONAR;
+    const ST = (C, Fm, I, Fi, A, n) => [
+      { letter: 'C', label: 'Convert', line: C, note: n || '' }, { letter: 'F', label: 'Formula', line: Fm, note: '' },
+      { letter: 'I', label: 'Insert', line: I, note: '' }, { letter: 'F', label: 'Fine-tune', line: Fi, note: '' }, { letter: 'A', label: 'Answer', line: A, note: '' }];
+    const QS = (C, Fm, I, Fi, A, ph) => [
+      { letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: C }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet, then the echo step', line: Fm },
+      { letter: 'I', label: 'Insert', placeholder: ph[0], line: I }, { letter: 'F', label: 'Fine-tune', placeholder: ph[1], line: Fi }, { letter: 'A', label: 'Answer', placeholder: ph[2], line: A }];
+    const SF = 's = v t; depth = s ÷ 2';
+    const PH = ['s = … × …', 's = …; depth = … ÷ 2 = …', 'depth = … m'];
+    return Object.assign({}, R, {
+      video: K && s.hook !== null ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      endPrev: pn.prev || null, endNext: pn.next || null, endConnects: connects,
+      hookOptions: [
+        { text: 'Rock samples brought up from the core by drilling', reply: 'No drill reaches anywhere near the core: it is thousands of kilometres down.' },
+        { text: 'Records of earthquake waves from all over the world', reply: '' },
+        { text: 'Lava from volcanoes, which flows up from the core', reply: 'Lava comes from far nearer the surface than the core, so it carries no sample of it.' }
+      ],
+      hookReveal: 'Earthquakes send waves right through the Earth, and seismometers all over the world record which waves arrive, and when. Those records are evidence about a place no one can observe directly. Below, you read them yourself.',
+      onHook: (i) => this.setState({ hook: i }),
+      // seismic bench
+      qEyebrow: 'Read the Earth · step ' + qs + ' of 4',
+      qTitle: Q.title,
+      quakeFig: ready ? K.fig(this.earthSvg(view), '') : null,
+      qHasKey: key.length > 0, qKey: key,
+      qAsking: !qShown, qPrompt: Q.prompt,
+      qOpts: Q.opts.map((o, i) => ({ letter: LETTERS[i], text: o.text, pressed: qPick === i, onClick: () => this.setState((ss) => ({ qPred: Object.assign({}, ss.qPred, { [qs]: i }) })) })),
+      qLocked: qPick === undefined, qRevealStyle: 'margin-top:14px;' + (qPick === undefined ? 'opacity:.45;cursor:default;' : ''), qRevealLabel: Q.reveal,
+      onQReveal: () => { if (qPick !== undefined) this.setState((ss) => ({ qShown: Object.assign({}, ss.qShown, { [qs]: true }) })); },
+      qShown, qVerdictWord: qO.ok ? 'Yes.' : 'Not that one.', qVerdictText: qO.ok ? '' : (qO.r || ''), qVerdictStyle: this.vstyle(!!qO.ok), qWhy: Q.why,
+      qConfront: qShown && qs === 2,
+      qCanNext: qShown && qs < 4,
+      onQNext: () => this.setState((ss) => ({ qStage: Math.min(4, ss.qStage + 1) })),
+      // sort
+      sBins: [{ id: 'p', label: 'P-waves only' }, { id: 's', label: 'S-waves only' }, { id: 'b', label: 'Both' }],
+      sItems: [
+        { text: 'Vibrations parallel to the direction the wave travels', bin: 'p', why: 'That makes it longitudinal: a P-wave.' },
+        { text: 'Vibrations at right angles to the direction the wave travels', bin: 's', why: 'That makes it transverse: an S-wave.' },
+        { text: 'Can travel through the liquid outer core', bin: 'p', why: 'S-waves cannot travel through a liquid.' },
+        { text: 'Stopped when it reaches a liquid', bin: 's', why: 'P-waves pass through liquids; only S-waves are stopped.' },
+        { text: 'Produced by an earthquake', bin: 'b', why: 'Both are seismic waves from the same earthquake.' },
+        { text: 'Changes speed and refracts on entering a new material', bin: 'b', why: 'Both refract, which is why both travel on curved paths.' },
+        { text: 'Arrives first at a seismometer', bin: 'p', why: 'P-waves are faster, so they arrive first.' },
+        { text: 'Never recorded more than about 104° from the earthquake', bin: 's', why: 'P-waves are recorded at 150° and 180°, beyond their own shadow zone.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      // ultrasound scan
+      uStep: us, uTitle: U.title,
+      scanFig: ready ? K.fig(this.scanSvg({ echoes: us > 1 || uShown, ruler: us === 2 && uShown, anim: us === 1 && uShown }), '') : null,
+      uAsking: !uShown, uPrompt: U.prompt,
+      uOpts: U.opts.map((o, i) => ({ letter: LETTERS[i], text: o.text, pressed: uPick === i, onClick: () => this.setState((ss) => ({ uPred: Object.assign({}, ss.uPred, { [us]: i }) })) })),
+      uLocked: uPick === undefined, uRevealStyle: 'margin-top:14px;' + (uPick === undefined ? 'opacity:.45;cursor:default;' : ''), uRevealLabel: U.reveal,
+      onUReveal: () => { if (uPick !== undefined) this.setState((ss) => ({ uShown: Object.assign({}, ss.uShown, { [us]: true }) })); },
+      uShown, uVerdictWord: uO.ok ? 'Yes.' : 'Not that one.', uVerdictText: uO.ok ? '' : (uO.r || ''), uVerdictStyle: this.vstyle(!!uO.ok), uWhy: U.why,
+      uConfront: uShown && us === 1,
+      uCanNext: uShown && us < 2,
+      onUNext: () => this.setState({ uStage: 2 }),
+      // CFIFA
+      cfExamples: ready ? [
+        { tab: 'Nothing to convert', head: F0.question, steps: K.cfifa(F0, 'Nothing to convert: the time is in s and the speed in m/s.') },
+        { tab: 'Convert first', head: 'An ultrasound pulse is sent into the body. The echo from a boundary returns after 0.080 ms. Ultrasound travels at 1540 m/s in soft tissue. Calculate the depth of the boundary.', next: 'Convert first, then the same four lines. Your turn below.',
+          steps: ST('0.080 ms ÷ 1000 = 0.000080 s', SF, 's = 1540 × 0.000080', 's = 0.1232 m; depth = 0.1232 ÷ 2 = 0.0616', 'depth = 0.062 m (6.2 cm)', 'The speed is in metres per second, so the time must be in seconds. Unconverted, 1540 × 0.080 ÷ 2 gives about 62 m: a boundary sixty metres inside a body.') }
+      ] : [],
+      cfQuestions: [
+        { tab: 'Question 1', id: 'wd-q1', head: 'A fishing boat’s echo sounder picks up a shoal of fish. The echo returns 0.12 s after the pulse is sent. Sound travels at 1500 m/s in sea water. Calculate how deep the shoal is.', close: 'Check: there and back is 2 × 90 = 180 m, and 180 ÷ 1500 = 0.12 s.',
+          steps: QS('Nothing to convert: s and m/s already.', SF, 's = 1500 × 0.12', 's = 180 m; depth = 180 ÷ 2 = 90', 'depth = 90 m', PH) },
+        { tab: 'Question 2', id: 'wd-q2', head: 'An ultrasound pulse is sent into a steel beam to look for cracks. An echo returns 0.020 ms after the pulse. Ultrasound travels at 6000 m/s in this steel. Calculate how far below the surface the crack is.', close: 'Unconverted, 6000 × 0.020 ÷ 2 gives 60 m: far deeper than the beam is thick.',
+          steps: QS('0.020 ms ÷ 1000 = 0.000020 s', SF, 's = 6000 × 0.000020', 's = 0.12 m; depth = 0.12 ÷ 2 = 0.060', 'depth = 0.060 m (6.0 cm)', PH) }
+      ],
+      onCalc: (n) => this.setState({ calc: n }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'S-waves are not detected on the opposite side') || { options: [] }, { command: 'Give', marks: 1, why: 'S-waves are transverse and cannot travel through a liquid, so the liquid outer core stops them.' }),
+        r2: { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'A ship’s echo sounder sends a pulse of high-frequency sound down to the seabed. The echo returns 160 ms later. Sound travels at 1500 m/s in sea water. Calculate the depth of the water. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert 160 ms to 0.16 s: divide by 1000', 'Convert 160 ms to 160 000 s: multiply by 1000'], convAnswer: 1, answer: 120, tol: 0.5, unit: 'm', units: ['m', 's', 'm/s', 'Hz'],
+          right: '1500 × 0.16 = 240 m there and back, so the water is 120 m deep.', wrong: 'Convert 160 ms to 0.16 s. Distance travelled = 1500 × 0.16 = 240 m, and the depth is half of that.',
+          model: ['C · 160 ms ÷ 1000 = 0.16 s', 'F · ' + SF, 'I · s = 1500 × 0.16', 'F · s = 240 m; depth = 240 ÷ 2 = 120', 'A · depth = 120 m'] },
+        r3: { command: 'Explain', marks: 4, prompt: 'Explain how ultrasound can be used to find the depth of a boundary inside the body. Put the links in order.',
+          links: ['A pulse of ultrasound, above 20 kHz, is sent into the body.', 'At a boundary between two different tissues, part of the pulse is reflected back to a detector.', 'The time between sending the pulse and detecting its echo is measured.', 'Distance = speed × time gives the distance there and back, so the depth is half of it.'],
+          herrings: [{ text: 'The whole pulse reflects at the first boundary, so only that one depth can be found.', why: 'Ultrasound is only partially reflected; the rest reaches deeper boundaries.' }, { text: 'The louder the echo, the deeper the boundary it came from.', why: 'Depth comes from the echo’s time. Deeper echoes are usually weaker, not louder.' }] },
+        r4: { command: 'Explain', marks: 6, question: 'Explain how seismic waves provide evidence about the structure of the Earth.',
+          levels: [
+            { label: 'Level 3 · 5–6', text: 'A detailed, linked explanation: S-waves cannot travel through liquids, so the S-wave shadow zone shows the outer core is liquid; P-waves change speed and refract at the core boundary, giving a P-wave shadow zone; the shadow zones give the size of the core.', max: 6 },
+            { label: 'Level 2 · 3–4', text: 'The S-wave evidence for a liquid outer core is explained, with some reference to P-waves.', max: 4 },
+            { label: 'Level 1 · 1–2', text: 'Properties of P-waves and S-waves are stated but not linked to the structure of the Earth.', max: 2 },
+            { label: 'No relevant content · 0', text: '', max: 0 }
+          ],
+          points: ['Earthquakes produce P-waves and S-waves, which are detected by seismometers around the world.', 'S-waves are transverse and cannot travel through a liquid.', 'No S-waves arrive on the far side of the Earth (the S-wave shadow zone), so the outer core must be liquid.', 'P-waves are longitudinal and travel through solids and liquids, at different speeds.', 'P-waves change speed and refract at the core boundary, leaving a P-wave shadow zone.', 'The positions of the shadow-zone edges give the size of the core.', 'The paths curve because the speed of the waves changes gradually with depth.'],
+          reject: ['“S-waves cannot pass through the core.” It is the liquid outer core that stops them; P-waves do pass through.', '“S-waves are too weak to reach the far side.” The shadow zone has a sharp edge, which gradual fading would not give.'] }
+      } : {},
+      keyLines: ['P-waves: longitudinal, solid + liquid.', 'S-waves: transverse, solid only.', 'S-waves blocked by outer core → outer core = liquid.', 'Ultrasound (above 20 kHz) is partially reflected at boundaries; the echo times give their depths: medical and industrial imaging.', 'Echo sounding: d = vt/2.', 'Refraction at boundaries: wave changes speed → changes direction.'],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

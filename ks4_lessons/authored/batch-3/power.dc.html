@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Power · MrBadmus GCSE Physics</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Physics" unit="Energy" title="Power" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">{{ eyebrowText }}</p>
+        <h1>Power</h1>
+        <p class="ks3-bigq">Two motors lift the same load to the same height, and one takes twice as long. If they transfer the same energy, what is different about them?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+        </div>
+        <div style="margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;">
+          <a href="{{ eqSheetHref }}" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 16px; border-radius: var(--ks3-r-control); border: 2px solid var(--ks3-ink); background: var(--ks3-card); color: var(--ks3-ink); font-size: 16px; font-weight: 700; text-decoration: none;" style-hover="background: var(--ks3-accent-tint); border-color: var(--ks3-accent);">View the full equation sheet<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3H3v10h10v-3"></path><path d="M9 3h4v4"></path><path d="M13 3L7 9"></path></svg></a>
+          <span style="font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">AQA · {{ eqSheetLabel }} · PDF</span>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Two kettles, one cup of tea.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">A 3000 W kettle and a 1500 W kettle each heat 0.5 kg of water from 20 °C to 100 °C. The 3000 W kettle finishes first.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Which kettle transfers more energy to the water?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p><strong>Power</strong> is the rate at which energy is transferred, or the rate at which work is done. Its unit is the <strong>watt</strong> (W): a transfer of 1 joule every second. So the 3000 W kettle transfers 3000 J each second, and the 1500 W kettle 1500 J. When a motor lifts a crate, the work it does goes into the crate&rsquo;s gravitational potential store, E<sub>p</sub> = m g h. On the bench, two motors lift crates side by side. Call the result before they run.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The lift test · race {{ roundNum }} of 3</p>
+        <h2 style="margin: 6px 0 0;">{{ roundTitle }}</h2>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ liftFig }}</div>
+        <sc-if value="{{ hasClockNote }}"><p style="margin: 8px 0 0; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">The clocks run 40 times faster than real time.</p></sc-if>
+        <sc-if value="{{ asking }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px; padding: 14px 16px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0 0 8px; font-weight: 700;">{{ roundAsk }}</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 8px;">
+              <sc-for list="{{ roundOpts }}" as="o" hint-placeholder-count="4"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+          </div>
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onRun }}" disabled="{{ runLocked }}" style="{{ runStyle }}">{{ runLabel }}</button>
+        </sc-if>
+        <sc-if value="{{ revealed }}">
+          <p data-arrive="1" role="status" style="{{ verdictStyle }}"><strong>{{ verdictWord }}</strong> {{ verdictText }}</p>
+        </sc-if>
+        <sc-if value="{{ confront }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+            <p class="ks3-mis-quote">&ldquo;It took 2 minutes, so P = 588 ÷ 2 = 294 W.&rdquo;</p>
+            <p style="margin: 0;">A watt is one joule per second, so the time has to be in seconds before you divide. 2 minutes is 120 s. Left in minutes, the answer comes out sixty times too big.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ canNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onNext }}" style="margin-top: 14px;">Next race</button></sc-if>
+      </section>
+
+      <section id="s-flaw" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · power is not force</p></div>
+        <p class="ks3-mis-quote">&ldquo;Motor X has the bigger power, so it can lift the heavier load.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Explain" prompt="Motor X is rated 500 W and motor Y 250 W. What is wrong with the student’s claim?" options="{{ flawOptions }}" reveal="{{ flawReveal }}" right-word="That is it." wrong-word="That keeps the wrong idea." on-commit="{{ onFlaw }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equations</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">On the sheet</span>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">P = E ÷ t</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">power (W) = energy transferred (J) ÷ time (s)</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 16px;">E = P × t · t = E ÷ P</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">On the sheet</span>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">P = W ÷ t</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">power (W) = work done (J) ÷ time (s). Here W on the right is work done, not watts.</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 16px;">W = P × t · t = W ÷ P</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Units first</span>
+            <p style="margin: 0; font-size: 17px; line-height: 1.5;">Joules and seconds go in; watts come out. Convert anything else before the equation.</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 16px;">1 kW = 1000 W · 1 MW = 1 000 000 W · 1 kJ = 1000 J · 1 MJ = 1 000 000 J · 1 minute = 60 s · 1 hour = 3600 s</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-rate" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Rate the machines" title="How powerful is each machine?" prompt="Each card gives the energy one machine transfers and the time it takes. Work out its power, then place it." bins="{{ rBins }}" items="{{ rItems }}" done-note="Joules and seconds first, then P = E ÷ t. The units on a card never give the answer away: 1.8 MJ in an hour is only 500 W." on-done="{{ onRate }}" hint-size="100%,520px"></dc-import>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Power is how fast energy is transferred: 1 watt is 1 joule every second. The same work done in less time means more power.</p>
+      </div>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Define</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give the exact meaning in one sentence. An example is not a definition.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Convert, write the equation, substitute, rearrange, then give the answer with its unit.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Link the work done and the time taken to the rate of energy transfer.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give the steps in order: what is measured, with what, and what is calculated.</dd></div>
+        </dl>
+      </section>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="power" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Power" spec="{{ keySpec }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Physics" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Mixing up power and energy, or stuck on a unit?" legal="The lift test uses g = 9.8 N/kg and treats each motor as lifting at a steady speed with nothing dissipated, so all the work done goes into the crate’s gravitational potential store. In the hook, each kettle is treated as transferring all of its energy to the water." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Two kettles', short: 'HOOK' },
+  { id: 's-bench', label: 'The lift test', short: 'LIFT' },
+  { id: 's-flaw', label: 'Power is not force', short: 'FLAW' },
+  { id: 's-calc', label: 'Calculate it', short: 'CFIFA' },
+  { id: 's-rate', label: 'Rate the machines', short: 'RATE' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const G = 9.8, H = 3.0;
+/* Three races. Each lane: a motor lifting a crate of mass m through H in t seconds. speed = how much faster the clocks run than real time. */
+const ROUNDS = [
+  { title: 'Motors A and B each lift a 20 kg crate through 3.0 m. A takes 4.0 s; B takes 8.0 s.', ask: 'How do their powers compare?',
+    lanes: [{ name: 'A', m: 20, t: 4 }, { name: 'B', m: 20, t: 8 }], speed: 2, truth: 2,
+    opts: [{ t: 'The same: they do the same work', r: 'Same work, yes, but not in the same time.' },
+      { t: 'B has more: it works for longer', r: 'Taking longer to do the same work is a lower rate, not a higher one.' },
+      { t: 'A has twice B’s power' },
+      { t: 'A has four times B’s power', r: 'Only the time changes, and nothing is squared.' }],
+    why: 'Both crates gain the same energy, but A transfers it in half the time. Power is the rate of energy transfer, so A’s power is twice B’s.' },
+  { title: 'Motor C lifts a 40 kg crate through the same 3.0 m, also in 4.0 s.', ask: 'How does C’s power compare with A’s?',
+    lanes: [{ name: 'A', m: 20, t: 4 }, { name: 'C', m: 40, t: 4 }], speed: 2, truth: 1,
+    opts: [{ t: 'The same: the times are equal', r: 'Equal times, but not equal energy.' },
+      { t: 'C has twice A’s power' },
+      { t: 'C has half: it carries more', r: 'A heavier load in the same time needs more energy every second, not less.' },
+      { t: 'C has four times A’s power', r: 'Only the mass doubles, not the time as well.' }],
+    why: 'Lifting a crate twice as heavy through the same height takes twice the energy. Twice the energy in the same time is twice the power.' },
+  { title: 'Winch D lifts the 20 kg crate through 3.0 m in 2 minutes.', ask: 'The crate gains 588 J. What is the winch’s power?',
+    lanes: [{ name: 'A', m: 20, t: 4 }, { name: 'D', m: 20, t: 120 }], speed: 40, truth: 3, trap: 0,
+    opts: [{ t: '294 W', r: '' }, { t: '70 560 W', r: 'That multiplies the energy by the time.' },
+      { t: '0.20 W', r: 'That divides the time by the energy: upside down.' }, { t: '4.9 W' }],
+    why: 'Two minutes is 120 s, and P = E ÷ t. The winch does the same work as A, thirty times more slowly.' }
+];
+const fmtT = (x) => x < 60 ? x.toFixed(1) + ' s' : (Math.floor(x / 60) + ' min' + (Math.round(x % 60) ? ' ' + Math.round(x % 60) + ' s' : ''));
+const fmtN = (x) => { const r = Math.round(x * 10) / 10; const s = (Math.abs(r - Math.round(r)) < 1e-9 ? String(Math.round(r)) : r.toFixed(1)); return s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); };
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, round: 0, picks: {}, revealed: {}, running: false, simT: 0, flaw: null, calc: 0, rate: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+    this.reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.tick = setInterval(() => {
+      const st = this.state;
+      if (!st.running) return;
+      const rd = ROUNDS[st.round];
+      const tMax = Math.max.apply(null, rd.lanes.map((l) => l.t));
+      const simT = Math.min(tMax, (Date.now() - this.start) / 1000 * rd.speed);
+      if (simT >= tMax) this.setState((ss) => ({ simT: tMax, running: false, revealed: Object.assign({}, ss.revealed, { [ss.round]: true }) }));
+      else this.setState({ simT });
+    }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); clearInterval(this.tick); }
+  optStyle(on, locked) {
+    return 'font:inherit;font-size:17px;font-weight:600;line-height:1.35;text-align:left;padding:10px 14px;min-height:48px;border-radius:var(--ks3-r-control);cursor:' + (locked ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  /* two lanes: motor, rope, crate, height marker, and the energy / time / power readouts under each */
+  liftSvg(rd, simT, finished) {
+    const D = window.KS4D; const C = D.C; let b = '';
+    const ground = 300, lift = 140, ch = 54, cw = 96;
+    b += D.line(16, 30, 624, 30, 5);
+    for (let x = 26; x < 624; x += 22) b += D.line(x, 30, x + 10, 18, 1.6);
+    b += D.line(16, ground, 624, ground, 3);
+    for (let x = 26; x < 624; x += 22) b += D.line(x, ground, x - 10, ground + 12, 1.6);
+    const alt = [];
+    rd.lanes.forEach((ln, i) => {
+      const cx = i ? 470 : 170;
+      const f = Math.min(1, simT / ln.t);
+      const top = ground - ch - lift * f;
+      b += '<rect x="' + (cx - 48) + '" y="36" width="96" height="46" rx="8" fill="' + C.metal + '" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+      b += D.T(cx, 67, (ln.name === 'D' ? 'Winch ' : 'Motor ') + ln.name, 21, { fill: C.stroke });
+      b += D.circ(cx, 94, 10, C.cream, C.stroke, 2.5) + D.line(cx, 104, cx, top, 2.5);
+      b += '<rect x="' + (cx - cw / 2) + '" y="' + top.toFixed(1) + '" width="' + cw + '" height="' + ch + '" rx="6" fill="' + C.nm + '" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+      b += D.T(cx, top + 36, ln.m + ' kg', 24, { fill: C.stroke });
+      const ax = cx + 78;
+      b += D.line(cx + 52, ground - ch - lift, ax + 8, ground - ch - lift, 1.6, C.muted, ' stroke-dasharray="5 5"');
+      b += D.arrow(ax, ground - 4, ax, ground - lift + 6, C.label, 3) + D.arrow(ax, ground - lift + 8, ax, ground - 2, C.label, 3);
+      b += D.T(ax + 8, ground - lift / 2 + 8, '3.0 m', 22, { anchor: 'start' });
+      const E = ln.m * G * H * f;
+      b += D.T(cx, ground + 40, 'E = ' + fmtN(Math.round(E)) + ' J', 26, { fill: C.stroke }) + D.T(cx, ground + 74, 't = ' + fmtT(Math.min(simT, ln.t)), 26, { fill: C.stroke });
+      const P = ln.m * G * H / ln.t;
+      if (f >= 1 && finished) b += D.T(cx, ground + 112, 'P = ' + fmtN(P) + ' W', 30, { fill: C.arrow });
+      alt.push((ln.name === 'D' ? 'Winch ' : 'Motor ') + ln.name + ': ' + ln.m + ' kilogram crate, ' + (f >= 1 ? 'lifted 3.0 metres, ' + fmtN(ln.m * G * H) + ' joules in ' + fmtT(ln.t) + (finished ? ', power ' + fmtN(P) + ' watts' : '') : 'not yet lifted'));
+    });
+    return D.svg(640, 432, b, alt.join('. ') + '.');
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, routeWords: '', routeSwitchOptions: [], routeOptions: [], onRoute: () => {}, eqSheetHref: 'https://www.aqa.org.uk/files/resources.physics.AQA-8463-FS-INS-2025_PDF/6b5358e1159b1b6cc2d622fc5eb894320d6fb763.pdf', eqSheetLabel: 'GCSE Physics (8463) · June 2026' };
+    const slug = 'power';
+    const ready = !!(s.libReady && K && D);
+    const hi = !!R.isHigher, tri = !!R.isTriple;
+    const r = s.round; const rd = ROUNDS[r];
+    const pick = s.picks[r];
+    const revealed = !!s.revealed[r];
+    const nRev = Object.keys(s.revealed).length;
+    const done = [s.hook !== null, nRev === 3, s.flaw !== null, s.calc >= 2, s.rate, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const ok = revealed && pick === rd.truth;
+    const trapped = revealed && rd.trap !== undefined && pick === rd.trap;
+    const shownT = revealed ? Math.max.apply(null, rd.lanes.map((l) => l.t)) : (s.running ? s.simT : 0);
+    const F = ready ? K.fifas(slug) : [];
+    const pn = this.props.mrbPrevNext || {};
+    const href = (x) => (K && K.hrefFor ? K.hrefFor(x, R) : null);
+    const step = (letter, label, line, note) => ({ letter, label, line, note: note || '' });
+    return Object.assign({}, R, {
+      video: K && s.hook !== null && s.hook !== undefined ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      eyebrowText: tri ? 'AQA Physics (8463) 4.1.1.4 · Quantitative' : 'AQA Combined Science (8464) 6.1.1.4 · Quantitative',
+      keySpec: tri ? 'AQA 4.1.1.4 (8463)' : 'AQA 6.1.1.4 (8464)',
+      endPrev: pn.prev || null, endNext: pn.next || null,
+      endConnects: [{ href: href('changes-in-energy'), label: 'Changes in energy' }, { href: href('work-done-energy-transfer'), label: 'Work done and energy transfer' }, { href: href('efficiency'), label: 'Efficiency' }, { href: href('power-electricity'), label: 'Power in circuits' }].filter((c) => c.href),
+      hookOptions: [
+        { text: 'The 3000 W kettle: a bigger number means more energy', reply: '' },
+        { text: 'The 1500 W kettle: it runs for longer, so works harder', reply: '' },
+        { text: 'The same: the 3000 W kettle just transfers it faster', reply: '' },
+        { text: 'You cannot tell without knowing how long each one takes', reply: '' }
+      ],
+      hookReveal: 'The same. Warming the same water through the same temperature rise needs the same energy, whichever kettle does it. What the 3000 W kettle has more of is power.',
+      onHook: (i) => this.setState({ hook: i }),
+      roundNum: String(r + 1), roundTitle: rd.title, roundAsk: rd.ask,
+      liftFig: ready ? K.fig(this.liftSvg(rd, shownT, revealed), '') : null,
+      hasClockNote: rd.speed > 2,
+      asking: !revealed,
+      roundOpts: rd.opts.map((o, i) => ({ label: o.t, pressed: pick === i, style: this.optStyle(pick === i, s.running),
+        onClick: () => { if (!this.state.running) this.setState((ss) => ({ picks: Object.assign({}, ss.picks, { [ss.round]: i }) })); } })),
+      runLocked: pick === undefined || s.running,
+      runStyle: 'margin-top:12px;' + (pick === undefined || s.running ? 'opacity:.45;cursor:default;' : ''),
+      runLabel: s.running ? 'Lifting…' : 'Run the motors',
+      onRun: () => {
+        const ss = this.state;
+        if (ss.picks[ss.round] === undefined || ss.running || ss.revealed[ss.round]) return;
+        if (this.reduced) this.setState((s2) => ({ revealed: Object.assign({}, s2.revealed, { [s2.round]: true }) }));
+        else { this.start = Date.now(); this.setState({ running: true, simT: 0 }); }
+      },
+      revealed,
+      verdictWord: revealed ? (ok ? 'Yes.' : 'Watch the readings.') : '',
+      verdictText: revealed ? (ok ? rd.why : (trapped ? '' : rd.opts[pick].r + ' ' + rd.why)) : '',
+      verdictStyle: 'margin:14px 0 0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      confront: trapped,
+      canNext: revealed && r < 2, onNext: () => this.setState((ss) => ({ round: Math.min(2, ss.round + 1), simT: 0 })),
+
+      flawOptions: [
+        { text: 'Nothing: a bigger power means a bigger force, so X can lift more.', correct: false, reply: 'Power is not force. Power is energy transferred per second, in watts; force is a push or a pull, in newtons.' },
+        { text: 'It is backwards: Y lifts more, because it works for longer.', correct: false, reply: 'Working for longer does not mean a bigger force or more power. Y transfers energy at half X’s rate.' },
+        { text: 'Power is how fast energy is transferred, not how big a load can be lifted.', correct: true, reply: '' },
+        { text: 'Power only applies to electrical devices, so it cannot compare lifts.', correct: false, reply: 'Power applies to any energy transfer, including the work done lifting a load: P = W ÷ t.' }
+      ],
+      flawReveal: 'Give both motors the same load and the same height: they do the same work, and X does it in half the time. How heavy a load a motor can lift depends on the force it can exert, and its power does not tell you that.',
+      onFlaw: (i) => this.setState({ flaw: i }),
+
+      cfExamples: ready && F.length >= 1 ? [
+        { tab: 'Stair climb · nothing to convert', head: F[0].question, next: 'Now another with nothing to convert.', steps: K.cfifa(F[0], 'Nothing to convert: kg, m and s already.') },
+        hi ? { tab: 'Find the work · nothing to convert', head: 'A 1500 W motor runs for 40 s. Calculate the work it does.', next: 'Now one that needs converting.',
+          steps: [step('C', 'Convert', 'Nothing to convert: W and s already.'), step('F', 'Formula', 'P = W ÷ t, so W = P × t', 'Rearrange before you substitute.'), step('I', 'Insert', 'W = 1500 × 40'), step('F', 'Fine-tune', 'W = 60 000'), step('A', 'Answer', 'W = 60 000 J', 'Work done is energy, so its unit is the joule.')] }
+          : { tab: 'Motor · nothing to convert', head: 'A motor does 4800 J of work in 12 s. Calculate its power.', next: 'Now one that needs converting.',
+          steps: [step('C', 'Convert', 'Nothing to convert: J and s already.'), step('F', 'Formula', 'P = W ÷ t'), step('I', 'Insert', 'P = 4800 ÷ 12'), step('F', 'Fine-tune', 'P = 400'), step('A', 'Answer', 'P = 400 W', 'Joules divided by seconds give watts.')] },
+        hi ? { tab: 'Convert first', head: 'A 2.4 kW kettle transfers 360 kJ of energy to the water. Calculate how long this takes.', next: 'Convert first, then the same four lines. Your turn below.',
+          steps: [step('C', 'Convert', '2.4 kW × 1000 = 2400 W; 360 kJ × 1000 = 360 000 J', 'Both need converting: watts and joules.'), step('F', 'Formula', 'P = E ÷ t, so t = E ÷ P'), step('I', 'Insert', 't = 360 000 ÷ 2400'), step('F', 'Fine-tune', 't = 150'), step('A', 'Answer', 't = 150 s', 'Converting only one of them gives 0.15 s or 150 000 s.')] }
+          : { tab: 'Convert first', head: 'A motor transfers 36 000 J in 2 minutes. Calculate its power.', next: 'Convert first, then the same four lines. Your turn below.',
+          steps: [step('C', 'Convert', '2 minutes × 60 = 120 s', 'A watt is a joule per second, so the time must be in seconds.'), step('F', 'Formula', 'P = E ÷ t'), step('I', 'Insert', 'P = 36 000 ÷ 120'), step('F', 'Fine-tune', 'P = 300'), step('A', 'Answer', 'P = 300 W', 'Left in minutes, 36 000 ÷ 2 = 18 000 W: sixty times too big.')] }
+      ] : [],
+      cfQuestions: hi ? [
+        { tab: 'Question 1', id: 'pw-q1', head: 'A crane motor has a useful power output of 2000 W. It lifts a 400 kg load through 15 m. Calculate how long this takes. (g = 9.8 N/kg)', close: 'Check: 2000 J every second for 29.4 s is 58 800 J.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert: kg, m and W already.' }, { letter: 'F', label: 'Formula', placeholder: 'two equations this time', line: 'Ep = m g h; P = E ÷ t, so t = E ÷ P' }, { letter: 'I', label: 'Insert', placeholder: 'Ep = …; t = … ÷ …', line: 'Ep = 400 × 9.8 × 15 = 58 800 J; t = 58 800 ÷ 2000' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 't = 29.4' }, { letter: 'A', label: 'Answer', placeholder: 't = … with unit', line: 't = 29.4 s' }] },
+        { tab: 'Question 2', id: 'pw-q2', head: 'An electric heater transfers 0.54 MJ of energy in 6 minutes. Calculate its power in kilowatts.', close: 'Unconverted, 0.54 ÷ 6 = 0.09: two conversions missed.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '0.54 MJ × 1 000 000 = 540 000 J; 6 × 60 = 360 s' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'P = E ÷ t' }, { letter: 'I', label: 'Insert', placeholder: 'P = … ÷ …', line: 'P = 540 000 ÷ 360' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out, in W', line: 'P = 1500 W' }, { letter: 'A', label: 'Answer', placeholder: 'P = … kW', line: 'P = 1.5 kW' }] }
+      ] : [
+        { tab: 'Question 1', id: 'pw-q1', head: 'A lamp transfers 1500 J of energy in 25 s. Calculate its power.', close: 'Check: 60 J every second for 25 s is 1500 J.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert: J and s already.' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'P = E ÷ t' }, { letter: 'I', label: 'Insert', placeholder: 'P = … ÷ …', line: 'P = 1500 ÷ 25' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'P = 60' }, { letter: 'A', label: 'Answer', placeholder: 'P = … with unit', line: 'P = 60 W' }] },
+        { tab: 'Question 2', id: 'pw-q2', head: 'A motor does 18 000 J of work in 3 minutes. Calculate its power.', close: 'Left in minutes, 18 000 ÷ 3 = 6000 W: sixty times too big.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '3 minutes × 60 = 180 s' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'P = W ÷ t' }, { letter: 'I', label: 'Insert', placeholder: 'P = … ÷ …', line: 'P = 18 000 ÷ 180' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'P = 100' }, { letter: 'A', label: 'Answer', placeholder: 'P = … with unit', line: 'P = 100 W' }] }
+      ],
+      onCalc: (n) => this.setState({ calc: n }),
+
+      rBins: [{ id: 'lo', label: 'Less than 1 kW' }, { id: 'mid', label: '1 kW to 10 kW' }, { id: 'hi', label: 'More than 10 kW' }],
+      rItems: [
+        { text: '72 kJ in 1 minute', bin: 'mid', why: '72 000 J ÷ 60 s = 1200 W.' },
+        { text: '1.5 MJ in 50 s', bin: 'hi', why: '1 500 000 J ÷ 50 s = 30 000 W.' },
+        { text: '1.8 MJ in 1 hour', bin: 'lo', why: '1 800 000 J ÷ 3600 s = 500 W.' },
+        { text: '2400 J in 2.0 s', bin: 'mid', why: '2400 J ÷ 2.0 s = 1200 W.' },
+        { text: '900 J in 3.0 s', bin: 'lo', why: '900 J ÷ 3.0 s = 300 W.' },
+        { text: '540 kJ in 30 s', bin: 'hi', why: '540 000 J ÷ 30 s = 18 000 W.' },
+        { text: '45 kJ in 5 minutes', bin: 'lo', why: '45 000 J ÷ 300 s = 150 W.' },
+        { text: '12 MJ in 30 minutes', bin: 'mid', why: '12 000 000 J ÷ 1800 s ≈ 6700 W.' }
+      ],
+      onRate: () => this.setState({ rate: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: { command: 'Define', marks: 1, prompt: 'Which of these is the definition of power?',
+          options: [
+            { text: 'The total energy transferred by a device', correct: false, reply: 'That is energy, in joules. Power is how quickly the energy is transferred.' },
+            { text: 'The force a machine can apply to a load', correct: false, reply: 'That is force, in newtons. Power says how fast energy is transferred, not how hard something pushes.' },
+            { text: 'The rate at which energy is transferred', correct: true, reply: '' },
+            { text: 'The energy transferred for each kilogram lifted', correct: false, reply: 'Power is energy per second, not per kilogram.' }
+          ],
+          why: 'Power is the rate of energy transfer, or the rate of doing work: joules per second, measured in watts.' },
+        r2: hi ? { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'A 1.2 kW microwave oven is used for 2.5 minutes. Calculate the energy it transfers. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert kW to W (× 1000) and minutes to s (× 60)', 'Convert minutes to s (× 60) only'], convAnswer: 1, answer: 180000, tol: 100, unit: 'J', units: ['J', 'W', 'N', 's'],
+          right: 'Both quantities needed converting before E = P × t.', wrong: 'Convert both: 1.2 kW = 1200 W and 2.5 minutes = 150 s. Then E = P × t.',
+          model: ['C · 1.2 kW × 1000 = 1200 W; 2.5 × 60 = 150 s', 'F · P = E ÷ t, so E = P × t', 'I · E = 1200 × 150', 'F · E = 180 000', 'A · E = 180 000 J'] }
+          : { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'An electric motor transfers 54 kJ of energy in 90 s. Calculate its power. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert kJ to J: multiply by 1000', 'Convert kJ to J: divide by 1000'], convAnswer: 1, answer: 600, tol: 1, unit: 'W', units: ['W', 'J', 's', 'N'],
+          right: 'Kilojoules became joules before the division.', wrong: 'Multiply 54 kJ by 1000 to get 54 000 J, then divide by the time in seconds.',
+          model: ['C · 54 kJ × 1000 = 54 000 J', 'F · P = E ÷ t', 'I · P = 54 000 ÷ 90', 'F · P = 600', 'A · P = 600 W'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'Two motors lift identical loads through the same height. Motor X takes 6 s; motor Y takes 9 s. Explain which motor has the greater power. Put the links in order.',
+          links: ['Both motors lift the same weight through the same height, so they do the same work.', 'Motor X does that work in less time.', 'So X transfers energy at a greater rate: X has the greater power.'],
+          herrings: [{ text: 'Motor Y takes longer, so it works harder and has the greater power.', why: 'More time for the same work means a lower rate of energy transfer: less power.' }, { text: 'Motor X lifts the load faster, so it does more work on the load.', why: 'Both lift the same weight through the same height, so both do the same work. Only the time differs.' }] },
+        r4: { command: 'Describe', marks: 4, question: 'Describe how a student could find her power output as she runs up a flight of stairs.',
+          points: ['Measure her mass with bathroom scales (and find her weight, mass × g).', 'Measure the vertical height of the stairs: one step with a metre rule, times the number of steps.', 'Time how long she takes to run up, with a stopwatch.', 'Work out the work done: weight × vertical height (Ep = m g h).', 'Work out her power: work done ÷ time taken.'],
+          reject: ['“Measure the length along the stairs.” The vertical height is what counts.', '“Use her mass as the force.” Her weight in newtons is mass × g.'] }
+      } : {},
+      keyLines: K ? K.keyLines(slug) : [],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

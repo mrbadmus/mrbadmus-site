@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microscopy · MrBadmus GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+<style>
+  /* microscopy · the view in Resolve it fades in after the bet; the bench view zooms when the objective changes and slides when the field changes. */
+  .mic-in { transform-box: view-box; transform-origin: 280px 170px; animation: mic-in .8s ease-out backwards; }
+  @keyframes mic-in { from { opacity: 0; transform: scale(.7); } }
+  .mic-zoom { transform-box: view-box; transform-origin: 220px 210px; animation: mic-zoom .8s cubic-bezier(.3, .7, .3, 1) backwards; }
+  @keyframes mic-zoom { from { transform: scale(.4); opacity: .35; } }
+  .mic-pan { animation: mic-pan .6s ease-out backwards; }
+  @keyframes mic-pan { from { transform: translateX(60px); opacity: .2; } }
+  @media (prefers-reduced-motion: reduce) { .mic-in, .mic-zoom, .mic-pan { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Cell biology" title="Microscopy" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA {{ specName }} ({{ specCode }}) 4.1.1.5 · Quantitative</p>
+        <h1>Microscopy</h1>
+        <p class="ks3-bigq">A school microscope shows you a cell’s nucleus but never its ribosomes. What does a microscope need in order to show smaller things, and how do you work out how big a cell really is?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-accent); background: var(--ks3-accent-tint); color: var(--ks3-ink);">Required practical · observing cells</span>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Every cell is full of ribosomes. For nearly 300 years, nobody saw one.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">Robert Hooke looked at cork through a microscope in 1665 and named the tiny boxes he saw <strong>cells</strong>. Better and better light microscopes followed. Ribosomes were there in every cell the whole time, and none of those microscopes ever showed one.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What would it take to see a ribosome?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>A <strong>light microscope</strong> passes light through a thin specimen and magnifies it with glass lenses, up to about ×2000. It can show living cells, but it cannot separate two points closer together than about 200 nm. The <strong>electron microscope</strong>, invented in the 1930s, uses a beam of electrons instead. It magnifies up to about ×2 000 000 and separates points about 0.1 nm apart, but the specimen sits in a vacuum, so it must be dead.</p>
+        <p><strong>Magnification</strong> is how many times bigger the image is than the real object. <strong>Resolution</strong> is the ability to distinguish two points that are close together as separate points.</p>
+      </section>
+
+      <section id="s-resolve" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Resolve it · {{ rName }}</p>
+            <h2 style="margin: 6px 0 0;">{{ rTitle }}</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ rProgress }}</p>
+        </div>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 560px;">{{ rFig }}</div>
+        <sc-if value="{{ rAsking }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px;">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">Commit first. What will the view show?</p>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <sc-for list="{{ rOpts }}" as="o" hint-placeholder-count="2"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ rShown }}"><p data-arrive="1" role="status" style="{{ rVerdictStyle }}"><strong>{{ rWord }}</strong> {{ rText }}</p></sc-if>
+        <sc-if value="{{ rConfront }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · empty magnification</p></div>
+            <p class="ks3-mis-quote">&ldquo;Zoom in further and the blur will split into two ribosomes.&rdquo;</p>
+            <p style="margin: 0;">Enlarging an image adds no detail. The light microscope never recorded two separate points, so a bigger copy is just a bigger blur. Detail comes from resolution: to see two ribosomes 40 nm apart you need a microscope that can resolve them, and that means an electron microscope.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ rCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onRNext }}" style="margin-top: 14px;">Next view</button></sc-if>
+      </section>
+
+      <section id="s-rp" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-accent);">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Required practical · RP1 Combined Science · RP1 Biology</p>
+        <h2 style="margin: 6px 0 0;">Prepare a slide. Focus. Draw what you see.</h2>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ slideFig }}</div>
+          <ol style="margin: 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 6px; font-size: 18px; line-height: 1.5;">
+            <li>Peel a thin layer of epidermis from a piece of onion with forceps. Lay it flat in a drop of iodine solution on a microscope slide.</li>
+            <li>Lower a coverslip onto it at an angle, using a mounted needle, so that no air bubbles are trapped.</li>
+            <li>Put the slide on the stage and start with the lowest-power objective.</li>
+            <li>Watching from the side, raise the stage until the slide is just below the lens. Then, looking through the eyepiece, lower it with the coarse focus until the cells appear. Sharpen them with the fine focus.</li>
+            <li>Switch to a higher-power objective and refocus with the fine focus only.</li>
+            <li>Draw what you see with a sharp pencil: clear, continuous lines and no shading. Label with ruled lines, and add a title and the magnification or a scale bar.</li>
+          </ol>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;"><strong>Variables.</strong> None to control: this practical is about observing and recording, not testing how one thing affects another.</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;"><strong>Risks.</strong> Iodine solution irritates the eyes and stains skin: wear eye protection. Slides and coverslips are thin glass, so handle them by the edges and report any breakage. The microscope lamp can get hot.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Run the practical · onion epidermis in iodine</p>
+        <h2 style="margin: 6px 0 0;">{{ benchTitle }}</h2>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 440px;">{{ benchFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0;">
+            <div role="group" aria-label="Objective lens" style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <sc-for list="{{ objTabs }}" as="t" hint-placeholder-count="3"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" disabled="{{ t.disabled }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+            </div>
+            <p aria-live="polite" style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px;">{{ readout }}</p>
+            <sc-if value="{{ gateOn }}" hint-placeholder-val="{{ true }}">
+              <div>
+                <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">{{ gatePrompt }}</p>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <sc-for list="{{ gateOpts }}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ gateShown }}"><p data-arrive="1" role="status" style="{{ gateVerdictStyle }}"><strong>{{ gateWord }}</strong> {{ gateText }}</p></sc-if>
+            <sc-if value="{{ countOn }}">
+              <div data-arrive="1" style="display: flex; flex-direction: column; gap: 10px;">
+                <div role="group" aria-label="Field of view" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <sc-for list="{{ fieldTabs }}" as="t" hint-placeholder-count="3"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+                </div>
+                <sc-if value="{{ countAsk }}">
+                  <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0;">How many cells does the line cross?</p>
+                  <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <sc-for list="{{ countOpts }}" as="o" hint-placeholder-count="4"><button type="button" onClick="{{ o.onClick }}" aria-label="{{ o.aria }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ countHasMsg }}"><p role="status" style="margin: 0; font-size: 17px; line-height: 1.5;">{{ countMsg }}</p></sc-if>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+        <sc-if value="{{ dataOn }}">
+          <div data-arrive="1" style="margin-top: 16px;">
+            <div role="table" aria-label="Cells counted across each field" style="max-width: 360px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink); padding: 4px 14px;">
+              <div role="row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px 0; border-bottom: 2px solid var(--ks3-rule-strong); font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: var(--ks3-ink-muted);">
+                <span role="columnheader">Field</span><span role="columnheader">Cells across</span>
+              </div>
+              <sc-for list="{{ dataRows }}" as="r" hint-placeholder-count="3">
+                <div role="row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--ks3-rule); font-family: var(--ks3-font-mono); font-size: 17px;">
+                  <span role="rowheader">{{ r.f }}</span><span role="cell">{{ r.n }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ meanAsk }}">
+              <p class="ks3-commit" style="color: var(--ks3-ink); margin: 14px 0 10px;">Commit first. Estimate the mean length of one onion cell.</p>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <sc-for list="{{ meanOpts }}" as="o" hint-placeholder-count="4"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ meanShown }}">
+              <div data-arrive="1" role="status" style="{{ meanVerdictStyle }}">
+                <p style="margin: 0; font-size: 18px; line-height: 1.55;"><strong>{{ meanWord }}</strong> {{ meanText }}</p>
+                <p style="margin: 8px 0 0; font-family: var(--ks3-font-mono); font-size: 17px; line-height: 1.5;">{{ meanWorking }}</p>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-draw" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Choice" eyebrow="Check the drawing" command="Identify" figure-svg="{{ drawFig }}" figure-alt="{{ drawAlt }}" prompt="A student drew onion epidermis cells seen at ×400. Which label should come off?" options="{{ drawOptions }}" reveal="{{ drawReveal }}" right-word="Yes." wrong-word="That one stays." on-commit="{{ onDraw }}" hint-size="100%,520px"></dc-import>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A drawing or a photograph also tells you a real size, if you know its magnification. Cells are measured in micrometres (µm), and the structures inside them in nanometres (nm). Very large and very small answers go in <strong>standard form</strong>: ×2 000 000 is ×2 × 10⁶, and 0.00015 mm is 1.5 × 10⁻⁴ mm.</p>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equations</p>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Learn it · no biology equation sheet</span>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">{{ eqMain }}</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">magnification = size of image ÷ size of real object</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 16px;">{{ eqRearranged }}</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px;">total = eyepiece × objective</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">The magnifications multiply: ×10 with ×40 is ×400.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 18px;">mm —×1000→ µm —×1000→ nm</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">Image size and real size in the same unit before you divide. Magnification has no unit.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+        <p class="ks3-mis-quote">&ldquo;The image is 12 mm and the cell is 40 µm, so the magnification is 12 ÷ 40 = ×0.3.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Calculate" prompt="What should the magnification be?" options="{{ thinkOptions }}" reveal="{{ thinkReveal }}" right-word="That is it." wrong-word="That keeps a slip." on-commit="{{ onThink }}" hint-size="100%,320px"></dc-import>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">State</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">A short answer with no reason: for resolution, “distinguish two points close together”, not “clearer”.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Every line written: units matched first, the equation, the numbers, the answer with its unit, or none for magnification.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Link each step to the next: resolution, then what can be distinguished, then what was discovered.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">For a method: the steps in order, with the equipment, so someone else could follow it.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">More magnification without more resolution only makes a bigger blur. The electron microscope’s far higher resolution is what let biologists see ribosomes and the inside of mitochondria.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="microscopy" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Microscopy" spec="{{ keySpec }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Stuck on magnification, or on converting between mm, µm and nm?" legal="The views are models. In Resolve it the blur is drawn to show the idea, not calculated from the optics. On the bench the cells are flat outlines laid out like bricks, the field of view is set at 0.45 mm across at ×400, and each field is chosen to give a whole number of cells along the line. Real cells, stains and microscopes vary." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The ribosome nobody saw', short: 'HOOK' },
+  { id: 's-resolve', label: 'Resolve it', short: 'RESOLVE' },
+  { id: 's-bench', label: 'The microscope bench', short: 'BENCH' },
+  { id: 's-draw', label: 'Check the drawing', short: 'DRAW' },
+  { id: 's-calc', label: 'Calculate it', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+/* ── Resolve it: four views. sep = centre-to-centre gap; the drawn blur is schematic. ── */
+const RES = [
+  { name: 'light microscope, ×1500', title: 'Two mitochondria, 2 µm apart', scope: 'light', ans: 'two',
+    dots: [[228, 170], [332, 170]], r: 16, blur: 4,
+    text: '2 µm is 2000 nm: ten times the light microscope’s limit of about 200 nm.' },
+  { name: 'light microscope, ×1500', title: 'Two ribosomes, 40 nm apart', scope: 'light', ans: 'one',
+    dots: [[276, 170], [284, 170]], r: 9, blur: 13,
+    text: '40 nm is far closer together than the 200 nm limit, so the two ribosomes merge into one spot.' },
+  { name: 'the light image, enlarged ten times on screen', title: 'The same two ribosomes, ten times bigger', scope: 'light', ans: 'one',
+    dots: [[266, 170], [294, 170]], r: 30, blur: 30, confront: true,
+    text: 'Still one spot, just bigger.' },
+  { name: 'electron microscope, ×100 000', title: 'The same two ribosomes again', scope: 'electron', ans: 'two',
+    dots: [[224, 170], [336, 170]], r: 30, blur: 1.2,
+    text: 'An electron microscope resolves points about 0.1 nm apart, so 40 nm is a wide gap.' }
+];
+const RES_OPTS = [{ k: 'two', label: 'Two separate structures' }, { k: 'one', label: 'One blurred spot' }];
+/* ── The bench: eyepiece ×10 throughout. Cell sizes in px at each objective; the ×40 view is 0.45 mm across (360 px). ── */
+const OBJ = [4, 10, 40];
+const CELL = [{ L: 11, h: 3.2 }, { L: 28, h: 8 }, { L: 112, h: 30 }];
+const COUNTS = [3, 4, 3];
+const GATES = [
+  { prompt: 'Commit first. Eyepiece ×10, objective ×10. What is the total magnification?',
+    opts: [{ t: '×20', ok: false, why: 'Magnifications multiply, they do not add: the eyepiece magnifies the objective’s image ten times again.' },
+           { t: '×10', ok: false, why: 'That is the objective alone. The eyepiece magnifies its image ten times again.' },
+           { t: '×100', ok: true, why: '' }] },
+  { prompt: 'Commit first. You switch to the ×40 objective. What will the view show?',
+    opts: [{ t: 'Fewer cells, each one bigger', ok: true, why: '' },
+           { t: 'More cells, each one smaller', ok: false, why: 'Higher magnification spreads a smaller area of the slide across the same view, so fewer cells fill it.' },
+           { t: 'The same cells, with ribosomes now visible', ok: false, why: 'No light-microscope setting shows ribosomes: their limit is resolution, about 200 nm.' }] }
+];
+const MEAN_OPTS = [
+  { t: '140 µm', ok: true, why: '' },
+  { t: '150 µm', ok: false, why: 'That uses field 1 alone, 0.45 ÷ 3. A mean uses all three fields.' },
+  { t: '110 µm', ok: false, why: 'That uses the largest count only, 0.45 ÷ 4.' },
+  { t: '1400 µm', ok: false, why: '1 mm is 1000 µm, so 0.14 mm is 140 µm. Multiplying by 10 000 makes a cell longer than the whole view.' }
+];
+function rnd(i, seed) { const x = Math.sin(i * 12.9898 + seed * 78.233) * 43758.5453; return x - Math.floor(x); }
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, hook: null, ri: 0, rp: {}, obj: 0, gate: [null, null], pending: null, field: 0, counts: {}, cmsg: {}, panned: false, mean: null, draw: null, think: null, calc: 0, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  btn(on, dis) {
+    return 'font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:48px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' + (dis && !on ? 'opacity:.45;' : '');
+  }
+  pick() { return 'font:inherit;font-size:17px;font-weight:600;text-align:left;padding:12px 14px;min-height:48px;border-radius:14px;cursor:pointer;color:var(--ks3-ink);background:var(--ks3-card);border:2px solid var(--ks3-option-border);'; }
+  verdict(ok) { return 'margin:14px 0 0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'); }
+  /* ── Resolve it view ── */
+  resSvg(k, shown) {
+    const D = window.KS4D; const R = RES[k];
+    const em = R.scope === 'electron';
+    let b = '<defs><filter id="mic-blur-' + k + '" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="' + R.blur + '"/></filter>' +
+      '<clipPath id="mic-res-clip"><circle cx="280" cy="170" r="140"/></clipPath></defs>';
+    b += D.circ(280, 170, 140, em ? '#DDDDDA' : '#FBF4DF', 'none', 0);
+    let alt = 'A circular microscope view.';
+    if (shown) {
+      let g = '';
+      R.dots.forEach((p) => { g += D.circ(p[0], p[1], R.r, em ? '#262626' : '#5B4636', 'none', 0); });
+      b += '<g clip-path="url(#mic-res-clip)"><g class="mic-in"><g filter="url(#mic-blur-' + k + ')">' + g + '</g></g></g>';
+      alt += R.ans === 'two' ? ' Two separate dark dots.' : ' One blurred spot.';
+    } else {
+      alt += ' Empty until you commit.';
+    }
+    b += D.circ(280, 170, 144, 'none', D.C.stroke, 8);
+    return D.svg(560, 340, b, alt);
+  }
+  /* ── the bench field of view ── */
+  fieldSvg(obj, counting, field) {
+    const D = window.KS4D;
+    const cx = 220, cy = 210, R = 180;
+    const C = CELL[obj];
+    const seed = counting ? field + 1 : 0;
+    const wall = '#7A5A22', fill = '#F6EBC4', nuc = '#B8862E';
+    const sw = obj === 0 ? 0.8 : (obj === 1 ? 1.4 : 2.2);
+    let g = '';
+    let row = 0;
+    const y0 = cy - C.h / 2 - Math.ceil((R + C.h) / C.h) * C.h;
+    for (let y = y0; y < cy + R + C.h; y += C.h, row++) {
+      const central = counting && Math.abs(y + C.h / 2 - cy) < 0.5;
+      let ws = [];
+      let x;
+      if (central) {
+        const n = COUNTS[field];
+        const wts = []; for (let i = 0; i < n; i++) wts.push(0.8 + 0.4 * rnd(i + 40, seed));
+        const sum = wts.reduce((a, c) => a + c, 0);
+        ws = wts.map((w) => w / sum * 2 * R);
+        x = cx - R;
+      } else {
+        x = cx - R - C.L * (0.2 + 0.8 * rnd(row, seed)) - 4;
+        let i = 0;
+        while (x + ws.reduce((a, c) => a + c, 0) < cx + R + 4) { ws.push(C.L * (0.72 + 0.56 * rnd(row * 31 + i, seed))); i++; }
+      }
+      let xx = x;
+      ws.forEach((w, i) => {
+        g += '<rect x="' + xx.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + w.toFixed(1) + '" height="' + C.h.toFixed(1) + '" fill="' + fill + '" stroke="' + wall + '" stroke-width="' + sw + '"/>';
+        if (obj > 0) {
+          const nx = xx + w * (0.25 + 0.5 * rnd(row * 7 + i, seed + 3));
+          g += '<ellipse cx="' + nx.toFixed(1) + '" cy="' + (y + C.h / 2).toFixed(1) + '" rx="' + (obj === 2 ? 8 : 2.2) + '" ry="' + (obj === 2 ? 6 : 1.7) + '" fill="' + nuc + '" stroke="' + wall + '" stroke-width="' + (obj === 2 ? 1.2 : 0.5) + '"/>';
+        }
+        xx += w;
+      });
+    }
+    let b = '<defs><clipPath id="mic-field-clip"><circle cx="' + cx + '" cy="' + cy + '" r="' + R + '"/></clipPath></defs>';
+    b += '<g clip-path="url(#mic-field-clip)"><g class="' + (counting && this.state.panned ? 'mic-pan' : 'mic-zoom') + '">' + g + '</g>';
+    if (counting) b += D.line(cx - R, cy, cx + R, cy, 3.5, D.C.arrow);
+    b += '</g>' + D.circ(cx, cy, R + 4, 'none', D.C.stroke, 8);
+    let alt = 'The view through the eyepiece: onion epidermis cells, brick-shaped, each with a yellow-brown nucleus' + (obj === 0 ? ', too small to see clearly.' : '.');
+    if (counting) {
+      b += D.line(cx - R, 424, cx + R, 424, 2, D.C.stroke) + D.line(cx - R, 414, cx - R, 434, 2, D.C.stroke) + D.line(cx + R, 414, cx + R, 434, 2, D.C.stroke);
+      b += D.T(cx, 456, '0.45 mm', 22, { fill: D.C.stroke });
+      alt = 'Field ' + (field + 1) + ' at ×400: onion cells in rows, with a straight line drawn across the middle of the view, through one row of cells. The view is 0.45 mm across.';
+    }
+    return D.svg(440, counting ? 470 : 420, b, alt);
+  }
+  /* ── RP figure: lowering the coverslip ── */
+  slideSvg() {
+    const D = window.KS4D;
+    let b = '';
+    b += '<rect x="20" y="200" width="440" height="18" rx="2" fill="#E6F0F3" stroke="' + D.C.stroke + '" stroke-width="2.5"/>';
+    b += '<ellipse cx="220" cy="198" rx="80" ry="8" fill="#E7B95C" stroke="' + D.C.stroke + '" stroke-width="1.5"/>';
+    b += '<rect x="168" y="192" width="104" height="6" fill="#F3E3AE" stroke="#7A5A22" stroke-width="1.2"/>';
+    b += '<polygon points="150,196 312,120 316,128 154,203" fill="#F4FAFC" stroke="' + D.C.stroke + '" stroke-width="2"/>';
+    b += D.line(312, 128, 390, 70, 3, D.C.stroke);
+    b += '<rect x="382" y="34" width="16" height="44" rx="5" transform="rotate(53 390 56)" fill="#C9B79C" stroke="' + D.C.stroke + '" stroke-width="2"/>';
+    b += '<path d="M 346 140 Q 366 166 346 190" fill="none" stroke="' + D.C.arrow + '" stroke-width="4" stroke-linecap="round"/>';
+    b += '<polygon points="346,194 337,178 355,180" fill="' + D.C.arrow + '"/>';
+    b += D.T(20, 56, 'coverslip', 24, { anchor: 'start' }) + D.line(80, 64, 214, 150, 1.5, D.C.label);
+    b += D.T(460, 118, 'mounted', 24, { anchor: 'end' }) + D.T(460, 144, 'needle', 24, { anchor: 'end' });
+    b += D.T(20, 250, 'slide', 24, { anchor: 'start' });
+    b += D.T(460, 250, 'onion epidermis', 24, { anchor: 'end' }) + D.T(460, 276, 'in iodine', 24, { anchor: 'end' }) + D.line(330, 232, 260, 202, 1.5, D.C.label);
+    return D.svg(480, 292, b, 'A coverslip is lowered at an angle onto a layer of onion epidermis in a drop of iodine on a microscope slide. A mounted needle supports its raised edge, and an arrow shows it being lowered.');
+  }
+  /* ── the student drawing ── */
+  drawSvg() {
+    const D = window.KS4D;
+    const ink = '#3A3A3A';
+    let b = '<rect x="12" y="12" width="456" height="336" rx="10" fill="#FFFDF8" stroke="' + D.C.stroke + '" stroke-width="1.5"/>';
+    b += D.T(240, 52, 'Onion epidermis cells ×400', 24, { fill: ink, weight: 'normal' });
+    b += '<rect x="28" y="90" width="122" height="170" fill="none" stroke="' + ink + '" stroke-width="2.5"/>';
+    b += '<rect x="150" y="90" width="122" height="170" fill="none" stroke="' + ink + '" stroke-width="2.5"/>';
+    b += '<rect x="36" y="98" width="106" height="154" fill="none" stroke="' + ink + '" stroke-width="1.3"/>';
+    b += '<rect x="158" y="98" width="106" height="154" fill="none" stroke="' + ink + '" stroke-width="1.3"/>';
+    b += '<ellipse cx="70" cy="140" rx="15" ry="11" fill="none" stroke="' + ink + '" stroke-width="2"/>';
+    b += '<ellipse cx="236" cy="214" rx="15" ry="11" fill="none" stroke="' + ink + '" stroke-width="2"/>';
+    [[180, 120], [196, 236], [230, 128], [184, 176]].forEach((p) => { b += '<ellipse cx="' + p[0] + '" cy="' + p[1] + '" rx="9" ry="5" fill="none" stroke="' + ink + '" stroke-width="1.6"/>'; });
+    const lab = (y, t, tx, ty) => D.line(316, y - 8, tx, ty, 1.6, ink) + D.T(322, y, t, 24, { anchor: 'start', fill: ink, weight: 'normal' });
+    b += lab(110, 'cell wall', 272, 118);
+    b += lab(170, 'cytoplasm', 268, 166);
+    b += lab(230, 'nucleus', 251, 216);
+    b += lab(300, 'chloroplast', 200, 240);
+    return D.svg(480, 360, b, '');
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, routeWords: '', routeSwitchOptions: [] };
+    const slug = 'microscopy';
+    const ready = !!(s.libReady && K && D);
+    const PN = this.props.mrbPrevNext || {};
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const hi = !!R.isHigher;
+    const F = ready ? K.fifas(slug) : [];
+    /* Resolve it */
+    const ri = s.ri, RR = RES[ri], rPick = s.rp[ri];
+    const rShown = rPick !== undefined;
+    const rRight = rShown && rPick === RR.ans;
+    const rCalled = Object.keys(s.rp).length;
+    /* bench */
+    const g0 = s.gate[0], g1 = s.gate[1];
+    const counting = s.obj === 2 && g1 !== null;
+    const allCounted = COUNTS.every((n, i) => s.counts[i] !== undefined);
+    const gi = s.pending;
+    const gShownIdx = gi === null ? (s.obj === 2 && g1 !== null && !Object.keys(s.counts).length ? 1 : (s.obj === 1 && g0 !== null && !counting ? 0 : null)) : null;
+    const benchTitle = !counting ? 'Turn up the magnification.' : (allCounted ? 'Work out the size of one cell.' : 'Count the cells across the view.');
+    const lastGate = gShownIdx !== null ? GATES[gShownIdx].opts[s.gate[gShownIdx]] : null;
+    const total = 10 * OBJ[s.obj];
+    const mean = s.mean !== null ? MEAN_OPTS[s.mean] : null;
+    const fieldDone = s.counts[s.field] !== undefined;
+    /* drawing + think */
+    const done = [s.hook !== null, rCalled >= RES.length, s.mean !== null, s.draw !== null, s.calc >= 2, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const fq = (q, conv, convNote, lastNote) => {
+      const st = K.cfifa(q, conv, convNote || '');
+      if (lastNote) st[st.length - 1] = Object.assign({}, st[st.length - 1], { note: lastNote });
+      return st;
+    };
+    return Object.assign({}, R, {
+      video: K && s.hook !== null ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      specName: R.isTriple ? 'Biology' : 'Combined Science', specCode: R.isTriple ? '8461' : '8464',
+      keySpec: R.isTriple ? 'AQA 4.1.1.5 (8461)' : 'AQA 4.1.1.5 (8464)',
+      endPrev: PN.prev || null, endNext: PN.next || null,
+      endConnects: ready && K.hrefFor ? [
+        { href: K.hrefFor('eukaryotes-prokaryotes', R), label: 'Eukaryotes and prokaryotes' },
+        { href: K.hrefFor('animal-plant-cells', R), label: 'Animal and plant cells' },
+        { href: K.hrefFor('cell-specialisation', R), label: 'Cell specialisation' }
+      ].filter((c) => c.href) : [],
+      hookOptions: [
+        { text: 'A lens that magnifies far more, say ×20 000', reply: '' },
+        { text: 'A better stain, so the ribosomes stand out', reply: 'Stain adds colour, not detail. A stained ribosome is still too small to show up as a separate dot.' },
+        { text: 'A microscope that can separate much closer points', reply: '' },
+        { text: 'A living cell, so the ribosomes are moving', reply: 'Movement does not help. Ribosomes are in living and dead cells alike: the problem is their size.' }
+      ],
+      hookReveal: 'Ribosomes are about 20 nm across. They were first seen in the 1950s, with an electron microscope. Below, find out what the light microscope was missing.',
+      onHook: (i) => this.setState({ hook: i }),
+      /* Resolve it */
+      rName: RR.name, rTitle: RR.title,
+      rProgress: rCalled + ' of ' + RES.length + ' called',
+      rFig: ready ? K.fig(this.resSvg(ri, rShown), '') : null,
+      rAsking: !rShown,
+      rOpts: RES_OPTS.map((o) => ({ label: o.label, style: this.pick(), onClick: () => { if (this.state.rp[this.state.ri] === undefined) this.setState((st) => ({ rp: Object.assign({}, st.rp, { [st.ri]: o.k }) })); } })),
+      rShown,
+      rWord: rRight ? 'Called it.' : 'Not this time.',
+      rText: RR.text,
+      rVerdictStyle: this.verdict(rRight),
+      rConfront: rShown && !!RR.confront,
+      rCanNext: rShown && ri < RES.length - 1,
+      onRNext: () => this.setState((st) => ({ ri: Math.min(RES.length - 1, st.ri + 1) })),
+      /* RP + bench */
+      slideFig: ready ? K.fig(this.slideSvg(), '') : null,
+      benchTitle,
+      benchFig: ready ? K.fig(this.fieldSvg(s.obj, counting, s.field), '') : null,
+      objTabs: OBJ.map((o, i) => {
+        const lock = (i === 2 && g0 === null) || gi !== null || counting && i !== 2;
+        return { label: '×' + o + ' objective', pressed: s.obj === i, disabled: lock, style: this.btn(s.obj === i, lock),
+          onClick: () => {
+            const st = this.state;
+            if (st.pending !== null || st.obj === i) return;
+            if (i === 2 && st.gate[0] === null) return;
+            if (st.obj === 2 && st.gate[1] !== null) return;
+            if (i === 1 && st.gate[0] === null) { this.setState({ pending: 0 }); return; }
+            if (i === 2 && st.gate[1] === null) { this.setState({ pending: 1 }); return; }
+            this.setState({ obj: i });
+          } };
+      }),
+      readout: g0 === null ? 'Eyepiece ×10 · objective ×' + OBJ[s.obj] : 'Total = eyepiece × objective = 10 × ' + OBJ[s.obj] + ' = ×' + total,
+      gateOn: gi !== null,
+      gatePrompt: gi !== null ? GATES[gi].prompt : '',
+      gateOpts: gi !== null ? GATES[gi].opts.map((o, k) => ({ label: o.t, style: this.pick(),
+        onClick: () => this.setState((st) => { if (st.pending === null) return null; const gate = st.gate.slice(); gate[st.pending] = k; return { gate: gate, obj: st.pending + 1, pending: null }; }) })) : [],
+      gateShown: !!lastGate,
+      gateWord: lastGate ? (lastGate.ok ? 'Yes.' : 'Not quite.') : '',
+      gateText: lastGate ? lastGate.why : '',
+      gateVerdictStyle: this.verdict(!!(lastGate && lastGate.ok)),
+      countOn: counting,
+      fieldTabs: COUNTS.map((n, i) => ({ label: 'Field ' + (i + 1) + (s.counts[i] !== undefined ? ' ✓' : ''), pressed: s.field === i, style: this.btn(s.field === i, false),
+        onClick: () => this.setState({ field: i, panned: true }) })),
+      countAsk: counting && !fieldDone,
+      countOpts: [2, 3, 4, 5].map((n) => ({ label: String(n), aria: n + ' cells', style: this.btn(false, false) + 'min-width:56px;',
+        onClick: () => this.setState((st) => {
+          const f = st.field;
+          if (st.counts[f] !== undefined) return null;
+          if (n === COUNTS[f]) return { counts: Object.assign({}, st.counts, { [f]: n }), cmsg: Object.assign({}, st.cmsg, { [f]: '' }) };
+          const m = n < COUNTS[f] ? 'Too few. Follow the line from one edge of the view to the other and count every cell it passes through, including the two at the edges.' : 'Too many. Count each cell once: a wall is the boundary between two cells, not a cell.';
+          return { cmsg: Object.assign({}, st.cmsg, { [f]: m }) };
+        }) })),
+      countHasMsg: counting && !!s.cmsg[s.field] && !fieldDone,
+      countMsg: s.cmsg[s.field] || '',
+      dataOn: allCounted,
+      dataRows: COUNTS.map((n, i) => ({ f: String(i + 1), n: String(n) })),
+      meanAsk: allCounted && s.mean === null,
+      meanOpts: MEAN_OPTS.map((o, k) => ({ label: o.t, style: this.btn(false, false), onClick: () => { if (this.state.mean === null) this.setState({ mean: k }); } })),
+      meanShown: !!mean,
+      meanWord: mean ? (mean.ok ? 'Yes.' : 'Not quite.') : '',
+      meanText: mean ? mean.why : '',
+      meanWorking: 'Mean count = (3 + 4 + 3) ÷ 3 = 3.3 cells. Length = 0.45 mm ÷ 3.3 = 0.14 mm = 140 µm.',
+      meanVerdictStyle: this.verdict(!!(mean && mean.ok)),
+      /* drawing check */
+      drawFig: ready ? this.drawSvg() : '',
+      drawAlt: 'A pencil drawing of two onion epidermis cells, titled Onion epidermis cells ×400, with four ruled labels on the right. From top to bottom: cell wall, cytoplasm, nucleus, chloroplast.',
+      drawOptions: [
+        { text: 'Cell wall', correct: false, reply: 'Onion cells are plant cells: the wall is the thick outline you see around each one.' },
+        { text: 'Cytoplasm', correct: false, reply: 'It is there, as a thin layer between the wall and the large vacuole.' },
+        { text: 'Nucleus', correct: false, reply: 'Iodine stains it yellow-brown, so it is one of the easiest structures to see.' },
+        { text: 'Chloroplast', correct: true, reply: '' }
+      ],
+      drawReveal: 'Onion epidermis comes from the bulb, which grows underground in the dark, so its cells have no chloroplasts. Label only what you can see, not what a textbook plant cell has.',
+      onDraw: (i) => this.setState({ draw: i }),
+      /* equations */
+      eqMain: ready && K.src(slug).equations ? K.src(slug).equations[0] : 'M = I ÷ A',
+      eqRearranged: ready && K.src(slug).equations ? K.src(slug).equations.slice(1).join(' · ') : '',
+      /* think */
+      thinkOptions: [
+        { text: '×0.3', correct: false, reply: 'That is the mistake as written: millimetres divided by micrometres.' },
+        { text: '×300', correct: true, reply: '' },
+        { text: '×3.3', correct: false, reply: 'That divides the wrong way: real size ÷ image size. Magnification is image ÷ real.' },
+        { text: '×30', correct: false, reply: '1 mm is 1000 µm, not 100 µm, so 12 mm is 12 000 µm.' }
+      ],
+      thinkReveal: '×0.3 would make the image smaller than the cell. Put both sizes in the same unit first: 12 mm = 12 000 µm, so M = 12 000 ÷ 40 = ×300.',
+      onThink: (i) => this.setState({ think: i }),
+      /* CFIFA */
+      cfExamples: ready && F.length >= 3 ? [
+        { tab: 'Nothing to convert', head: F[0].question, next: 'Next: a size that arrives in the wrong unit.', steps: fq(F[0], 'Nothing to convert.') },
+        { tab: 'Convert first', head: 'A chloroplast is 5 µm long. In a drawing it is 25 mm long. Calculate the magnification of the drawing.', next: 'Next: rearranged to find the actual size.', steps: [
+          { letter: 'C', label: 'Convert', line: '25 mm × 1000 = 25 000 µm', note: 'Now both lengths are in µm.' },
+          { letter: 'F', label: 'Formula', line: 'M = image size ÷ actual size', note: '' },
+          { letter: 'I', label: 'Insert', line: 'M = 25 000 ÷ 5', note: '' },
+          { letter: 'F', label: 'Fine-tune', line: '25 000 ÷ 5 = 5000', note: '' },
+          { letter: 'A', label: 'Answer', line: 'Magnification = ×5000', note: 'Magnification has no unit.' } ] },
+        { tab: 'Actual size', head: F[1].question, next: 'Next: rearranged to find the image size.', steps: fq(F[1], 'Nothing to convert before you substitute: the answer is converted at the end.', '', 'In standard form: 1.5 × 10⁻¹ µm.') },
+        { tab: 'Image size', head: F[2].question, next: 'Next: nanometres and standard form.', steps: fq(F[2], 'Nothing to convert before you substitute: the answer is converted at the end.') },
+        { tab: 'nm · standard form', head: 'A cell membrane is 7 nm thick. In an electron micrograph it is 0.35 mm thick. Calculate the magnification. Give your answer in standard form.', next: 'Now yours, below.', steps: [
+          { letter: 'C', label: 'Convert', line: '0.35 mm × 1000 = 350 µm; 350 µm × 1000 = 350 000 nm', note: '' },
+          { letter: 'F', label: 'Formula', line: 'M = image size ÷ actual size', note: '' },
+          { letter: 'I', label: 'Insert', line: 'M = 350 000 ÷ 7', note: '' },
+          { letter: 'F', label: 'Fine-tune', line: '350 000 ÷ 7 = 50 000', note: '' },
+          { letter: 'A', label: 'Answer', line: 'Magnification = ×5 × 10⁴', note: '50 000 = 5 × 10 000 = 5 × 10⁴' } ] }
+      ] : [],
+      cfQuestions: hi ? [
+        { tab: 'Question 1', id: 'mic-q1', head: 'A nucleus is drawn 33 mm across at a magnification of ×3000. Calculate its real diameter in µm.', close: 'Multiplying instead, 33 × 3000, would make the nucleus 99 metres wide.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert before you substitute: convert the answer at the end.' }, { letter: 'F', label: 'Formula', placeholder: 'actual size = …', line: 'Actual size = image size ÷ magnification' }, { letter: 'I', label: 'Insert', placeholder: 'A = … ÷ …', line: 'A = 33 ÷ 3000 = 0.011 mm' }, { letter: 'F', label: 'Fine-tune', placeholder: 'mm to µm', line: '0.011 mm × 1000 = 11 µm' }, { letter: 'A', label: 'Answer', placeholder: 'answer and unit', line: 'Real diameter = 11 µm' }] },
+        { tab: 'Question 2', id: 'mic-q2', head: 'A mitochondrion is 1.5 µm long. In an electron micrograph it is 45 mm long. Calculate the magnification. Give your answer in standard form.', close: '30 000 is 3 followed by four zeros: 3 × 10⁴, not 3 × 10⁵.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '45 mm × 1000 = 45 000 µm' }, { letter: 'F', label: 'Formula', placeholder: 'M = …', line: 'M = image size ÷ actual size' }, { letter: 'I', label: 'Insert', placeholder: 'M = … ÷ …', line: 'M = 45 000 ÷ 1.5' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: '45 000 ÷ 1.5 = 30 000' }, { letter: 'A', label: 'Answer', placeholder: 'in standard form', line: 'Magnification = ×3 × 10⁴' }] }
+      ] : [
+        { tab: 'Question 1', id: 'mic-q1', head: 'A student draws one onion cell 70 mm long. The cell is really 0.14 mm long. Calculate the magnification of the drawing.', close: 'The drawing’s magnification is not the microscope’s ×400: it depends on how big you draw.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert: both lengths are in mm.' }, { letter: 'F', label: 'Formula', placeholder: 'M = …', line: 'M = image size ÷ actual size' }, { letter: 'I', label: 'Insert', placeholder: 'M = … ÷ …', line: 'M = 70 ÷ 0.14' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: '70 ÷ 0.14 = 500' }, { letter: 'A', label: 'Answer', placeholder: 'magnification', line: 'Magnification = ×500' }] },
+        { tab: 'Question 2', id: 'mic-q2', head: 'A cheek cell is 60 µm across. A drawing of it is 45 mm across. Calculate the magnification of the drawing.', close: 'Unconverted, 45 ÷ 60 gives ×0.75: a drawing smaller than the cell.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '45 mm × 1000 = 45 000 µm' }, { letter: 'F', label: 'Formula', placeholder: 'M = …', line: 'M = image size ÷ actual size' }, { letter: 'I', label: 'Insert', placeholder: 'M = … ÷ …', line: 'M = 45 000 ÷ 60' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: '45 000 ÷ 60 = 750' }, { letter: 'A', label: 'Answer', placeholder: 'magnification', line: 'Magnification = ×750' }] }
+      ],
+      onCalc: (n) => this.setState({ calc: n }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? (() => {
+        const q = K.find(slug, R.route, 'difference between magnification and resolution');
+        const r1 = q ? { command: 'State', marks: 1, prompt: q.prompt, options: q.options, why: 'Magnification is a ratio with no unit; resolution is the smallest gap that can be seen, measured in nm.' }
+          : { command: 'State', marks: 1, prompt: 'State the meaning of resolution.', why: '', options: [] };
+        return {
+          r1,
+          r2: hi ? { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'In an electron micrograph taken at ×30 000, a ribosome is 0.6 mm across. Calculate its real diameter in nm. Work it on paper, then choose the conversion and give the answer and unit.',
+            convOptions: ['Nothing to convert', 'Convert 0.6 mm to nm: multiply by 1 000 000', 'Convert 0.6 mm to nm: multiply by 1000'], convAnswer: 1, answer: 20, tol: 0.5, unit: 'nm', units: ['nm', 'µm', 'mm', '× (no unit)'],
+            right: 'Converted to nm, then divided by the magnification.', wrong: 'Check your convert choice, your number and your unit against the five lines.',
+            model: ['C · 0.6 mm × 1 000 000 = 600 000 nm', 'F · actual size = image size ÷ magnification', 'I · A = 600 000 ÷ 30 000', 'F · 600 000 ÷ 30 000 = 20', 'A · 20 nm (2 × 10¹ nm)'] }
+            : { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'A guard cell is 40 µm long. In a drawing it is 32 mm long. Calculate the magnification of the drawing. Work it on paper, then choose the conversion and give the answer and unit.',
+            convOptions: ['Nothing to convert', 'Convert 32 mm to µm: multiply by 1000', 'Convert 32 mm to µm: divide by 1000'], convAnswer: 1, answer: 800, tol: 1, unit: '× (no unit)', units: ['× (no unit)', 'mm', 'µm'],
+            right: 'Converted first, divided the right way, and no unit.', wrong: 'Check your convert choice, your number and your unit against the five lines.',
+            model: ['C · 32 mm × 1000 = 32 000 µm', 'F · M = image size ÷ actual size', 'I · M = 32 000 ÷ 40', 'F · 32 000 ÷ 40 = 800', 'A · ×800, with no unit'] },
+          r3: { command: 'Explain', marks: 3, prompt: 'Explain how the electron microscope has increased our understanding of cells. Put the links in order.',
+            links: ['An electron microscope has a much higher resolution than a light microscope.', 'So it can distinguish structures far closer together than about 200 nm.', 'So sub-cellular structures, such as ribosomes and the inside of mitochondria, were seen for the first time.'],
+            herrings: [{ text: 'An electron microscope can be used to study living cells.', why: 'The specimen sits in a vacuum, so it must be dead.' }, { text: 'Higher magnification alone makes small structures visible.', why: 'Magnifying a blur makes a bigger blur. It is the resolution that reveals the detail.' }] },
+          r4: { command: 'Describe', marks: 6, question: 'Describe how a student could prepare a slide of onion cells and use a light microscope to produce a labelled drawing.',
+            levels: [
+              { label: 'Level 3 · 5–6', text: 'A logical sequence covering preparing the slide, focusing (lowest power first, coarse then fine) and the conventions of a scientific drawing.', max: 6 },
+              { label: 'Level 2 · 3–4', text: 'A sequence with some omissions, such as no focusing order or no drawing conventions.', max: 4 },
+              { label: 'Level 1 · 1–2', text: 'Isolated steps that would not produce a drawing on their own.', max: 2 },
+              { label: 'No relevant content · 0', text: '', max: 0 }
+            ],
+            points: ['Peel a thin layer of epidermis with forceps and lay it flat on a slide.', 'Add a drop of water or iodine solution.', 'Lower a coverslip at an angle to avoid air bubbles.', 'Start with the lowest-power objective; raise the stage watching from the side.', 'Focus with the coarse focus, then the fine focus.', 'Switch to a higher-power objective and refocus with the fine focus only.', 'Draw with a sharp pencil: clear, continuous lines, no shading.', 'Label with ruled lines; add a title and the magnification or a scale bar.'],
+            reject: ['“Shade the cells to show the stain.” A scientific drawing uses clear lines and no shading.', '“Label the chloroplasts.” Onion epidermis cells have none.'] }
+        };
+      })() : {},
+      keyLines: (ready ? K.keyLines(slug) : []).map((l) => l === 'Resolution = sharpness.' ? 'Resolution = the ability to distinguish two points that are close together.' : l).concat([
+        'M = image size ÷ real size, both in the same unit: 1 mm = 1000 µm, 1 µm = 1000 nm.',
+        'Total magnification = eyepiece × objective.',
+        'Required practical (RP1 Combined / RP1 Biology): onion epidermis in iodine, lowest power first, a clear pencil drawing with a title and a magnification or scale bar.'
+      ]),
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

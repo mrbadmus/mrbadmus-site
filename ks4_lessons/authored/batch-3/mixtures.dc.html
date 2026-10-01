@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mixtures and separation techniques · MrBadmus GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+<style>
+  /* mixtures · the separation desk. Each animated element is drawn in its END state; the keyframe supplies only the start. */
+  .mix-fill { transform-box: fill-box; transform-origin: 50% 100%; animation: mix-fill 1.8s ease-out .4s backwards; }
+  @keyframes mix-fill { from { transform: scaleY(0); } }
+  .mix-drip { animation: mix-drip .9s ease-in 3; }
+  @keyframes mix-drip { from { transform: translateY(0); opacity: 1; } to { transform: translateY(34px); opacity: 0; } }
+  .mix-steam { animation: mix-steam 1.4s ease-out 3; }
+  @keyframes mix-steam { from { transform: translateY(16px); opacity: 0; } 50% { opacity: 1; } }
+  .mix-grow { transform-box: fill-box; transform-origin: center; animation: mix-grow .6s ease-out backwards; }
+  @keyframes mix-grow { from { transform: scale(0); } }
+  .mix-rise { animation: mix-rise 2.2s ease-out .3s backwards; }
+  @keyframes mix-rise { from { transform: translateY(var(--d)); } }
+  .mix-front { animation: mix-front 2.2s ease-out .3s backwards; }
+  @keyframes mix-front { from { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .mix-fill, .mix-drip, .mix-steam, .mix-grow, .mix-rise, .mix-front { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Atomic structure and the periodic table" title="Mixtures and separation techniques" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA {{ specName }} ({{ specCode }}) {{ specRef }} · Classify</p>
+        <h1>Mixtures and separation techniques</h1>
+        <p class="ks3-bigq">Sugar stirred into water is still sugar. So how do you get each substance back out of a mixture, and how do you choose the right method?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Stir sugar into hot water. Where does it go?</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">The crystals vanish. The water looks exactly as clear as before, but it now tastes sweet.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What has happened to the sugar?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>Sugar water is a <strong>mixture</strong>: two or more elements or compounds that are <strong>not chemically combined</strong> together. Each substance keeps its own chemical properties, so a mixture can be separated by <strong>physical processes</strong>, which make no new substances. You need to know five: <strong>filtration</strong>, <strong>crystallisation</strong>, <strong>simple distillation</strong>, <strong>fractional distillation</strong> and <strong>chromatography</strong>.</p>
+        <p>Choosing one comes down to two questions. What is different about the substances: does one dissolve while the other does not, or do they boil at different temperatures? And which substance do you want to keep?</p>
+      </section>
+
+      <section id="s-desk" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The separation desk</p>
+            <h2 style="margin: 6px 0 0;">{{ dTitle }}</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ dProgress }}</p>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 560px;">{{ dFig }}</div>
+          <div style="min-width: 0;">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">{{ dAsk }}</p>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <sc-for list="{{ dOpts }}" as="o" hint-placeholder-count="5"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+            <sc-if value="{{ dShown }}">
+              <div data-arrive="1" role="status" style="{{ dVerdictStyle }}">
+                <p style="margin: 0;"><strong>{{ dWord }}</strong> {{ dReply }}</p>
+                <p style="margin: 8px 0 0;">{{ dRight }}</p>
+              </div>
+            </sc-if>
+            <sc-if value="{{ dCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onDNext }}" style="margin-top: 14px;">Next mixture</button></sc-if>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+        <p class="ks3-mis-quote">&ldquo;Use a fine enough filter paper and it will catch the salt.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Predict" command="Explain" prompt="Salt water is poured through the finest filter paper there is. What comes through?" options="{{ thinkOptions }}" reveal="{{ thinkReveal }}" right-word="That is it." wrong-word="That keeps the mistake." on-commit="{{ onThink }}" hint-size="100%,320px"></dc-import>
+      </section>
+
+      <section id="s-chain" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Chain" eyebrow="Build the method" title="Pure, dry copper sulfate crystals from a mixture of copper sulfate and sand" prompt="Put the steps in order." links="{{ chainLinks }}" herrings="{{ chainHerrings }}" done-note="Dissolve, filter, crystallise, dry: the same sequence works for any soluble solid mixed with an insoluble one." on-done="{{ onChain }}" hint-size="100%,560px"></dc-import>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>In the lab, <strong>fractional distillation</strong> uses a column packed with glass beads above the flask. Vapour condenses on the beads and boils again many times on its way up, so the liquid with the lowest boiling point reaches the top first and passes into the condenser. The liquids are collected one after another, as the temperature rises: change the collecting beaker each time.</p>
+      </section>
+
+      <section id="s-kit" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Choice" eyebrow="Practical skills · setting up apparatus" command="Identify" figure-svg="{{ kitFig }}" figure-alt="{{ kitAlt }}" prompt="A student set up this simple distillation to collect pure water from ink. Which part must be changed?" options="{{ kitOptions }}" reveal="{{ kitReveal }}" right-word="Yes." wrong-word="That part is right." on-commit="{{ onKit }}" hint-size="100%,560px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Give</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The answer only, no reasons: for a mixture, “not chemically combined” is the phrase that scores.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Use the information given, such as boiling points, to choose a method you may not have seen used on that mixture.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Name the property that differs, then say what it lets you collect.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Plan</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">A method that would work: the steps in order, the apparatus, and what you end up with.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">The substances in a mixture are not chemically combined, so each keeps its own properties. Separation uses a difference in a physical property, such as solubility or boiling point, and no new substance is made.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="mixtures" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Mixtures and separation techniques" spec="{{ keySpec }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which separation method to choose?" legal="The apparatus is drawn as simple outlines, without clamps and stands, and each separation runs in seconds and comes out clean. Real filtration, crystallisation and distillation take minutes to hours, and fractional distillation of ethanol and water can never give pure ethanol: some water always comes over with it." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Where does the sugar go?', short: 'HOOK' },
+  { id: 's-desk', label: 'The separation desk', short: 'DESK' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-chain', label: 'Build the method', short: 'METHOD' },
+  { id: 's-kit', label: 'Set up the apparatus', short: 'KIT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const TECH = ['Filtration', 'Crystallisation', 'Simple distillation', 'Fractional distillation', 'Chromatography'];
+/* a = index into TECH. no[i] corrects a wrong pick i. right is read by everyone once they commit. */
+const ROUNDS = [
+  { title: 'Sand stirred into water', want: 'the sand', a: 0, liquid: '#DCEBF5', sand: true,
+    no: ['', 'Crystallisation gets a dissolved solid out of a solution. Sand does not dissolve: it just sinks.', 'Boiling off all the water would leave the sand, but slowly, and the water is lost. A filter catches insoluble sand in seconds.', 'Fractional distillation separates liquids that mix. Sand is an insoluble solid.', 'Chromatography separates dissolved substances, a tiny spot at a time. Sand is not dissolved.'],
+    right: 'Sand does not dissolve, so the filter paper holds it back as the residue. The water runs through as the filtrate.' },
+  { title: 'Copper sulfate dissolved in water', want: 'copper sulfate crystals', a: 1, liquid: '#7FB2E5',
+    no: ['The copper sulfate is dissolved, so it passes straight through the filter paper with the water.', '', 'Simple distillation collects the water. To keep crystals, you need the solid to form slowly from the solution.', 'There is only one liquid here, water. Fractional distillation separates liquids from each other.', 'Chromatography shows which substances a solution contains. It does not give you a sample of crystals.'],
+    right: 'Heat to evaporate some of the water, then leave the solution to cool: less copper sulfate can stay dissolved, so crystals form. Filter them off and dry them.' },
+  { title: 'Blue ink: dyes dissolved in water', want: 'pure water', a: 2, liquid: '#2F4A9A',
+    no: ['The dyes are dissolved, so they pass through the filter paper with the water.', 'Crystallisation keeps the solid and lets the water escape into the air. You want the water.', '', 'There is only one liquid to collect from dissolved solids, and simple distillation does that.', 'Chromatography separates the dyes from each other on paper. It does not collect the water.'],
+    right: 'Heat the ink: the water boils, its vapour is cooled in the condenser, and it drips out as pure water. The dyes stay in the flask.' },
+  { title: 'Ethanol (boils at 78 °C) mixed with water (100 °C)', want: 'the ethanol', a: 3, liquid: '#EEF4F2',
+    no: ['Ethanol and water mix completely, so both pass through the paper.', 'There is no dissolved solid to crystallise: both substances are liquids.', 'Simple distillation only separates liquids whose boiling points are very different. At 78 °C and 100 °C the distillate would still contain a lot of water.', '', 'Chromatography identifies the dissolved substances in a spot. It cannot collect a sample of ethanol.'],
+    right: 'The boiling points are close together, so you need the column. Ethanol, with the lower boiling point, reaches the top first and is collected first, while the thermometer reads about 78 °C.' },
+  { title: 'The same blue ink', want: 'to find out which dyes it contains', a: 4, liquid: '#2F4A9A',
+    no: ['The dyes are all dissolved, so they pass through the filter paper together.', 'Crystallisation would leave all the dyes together in one solid.', 'Simple distillation leaves all the dyes together in the flask.', 'The dyes are dissolved solids, not liquids that boil off one by one.', ''],
+    right: 'A spot of ink on paper, with a solvent soaking up through it: each dye is carried a different distance, so they separate into spots. How the paper does this, and Rf values, are in the chromatography lesson.' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, hook: null, di: 0, dp: {}, think: null, chain: false, kit: null, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  btn(on, dis) {
+    return 'font:inherit;font-size:17px;font-weight:700;text-align:left;padding:11px 16px;min-height:48px;border-radius:14px;cursor:' + (dis ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' + (dis && !on ? 'opacity:.55;' : '');
+  }
+  /* ── drawing helpers ── */
+  flame(x, y) {
+    return '<path d="M ' + x + ' ' + (y - 42) + ' C ' + (x + 20) + ' ' + (y - 16) + ' ' + (x + 17) + ' ' + y + ' ' + x + ' ' + y + ' C ' + (x - 17) + ' ' + y + ' ' + (x - 20) + ' ' + (y - 16) + ' ' + x + ' ' + (y - 42) + ' Z" fill="#F2A03D" stroke="#1A1A1A" stroke-width="2"/>';
+  }
+  label(x, y, t, anchor) { return window.KS4D.T(x, y, t, 26, { anchor: anchor || 'start' }); }
+  lead(x1, y1, x2, y2) { return window.KS4D.line(x1, y1, x2, y2, 1.6, window.KS4D.C.label); }
+  beaker(x, y, w, h, top, fill, cls) {
+    const D = window.KS4D;
+    let b = '<rect class="' + (cls || '') + '" x="' + (x + 2) + '" y="' + top + '" width="' + (w - 4) + '" height="' + (y + h - top - 2) + '" fill="' + fill + '"/>';
+    b += '<path d="M ' + (x - 6) + ' ' + y + ' L ' + x + ' ' + (y + 6) + ' L ' + x + ' ' + (y + h) + ' L ' + (x + w) + ' ' + (y + h) + ' L ' + (x + w) + ' ' + y + '" fill="none" stroke="' + D.C.stroke + '" stroke-width="3" stroke-linejoin="round"/>';
+    return b;
+  }
+  /* a condenser from P1 (top) to P2 (bottom), with water in at the bottom and out at the top */
+  condenser(P1, P2) {
+    const D = window.KS4D;
+    const dx = P2[0] - P1[0], dy = P2[1] - P1[1], L = Math.hypot(dx, dy), u = [dx / L, dy / L], n = [-u[1], u[0]];
+    const at = (p, a, b) => [p[0] + u[0] * a + n[0] * b, p[1] + u[1] * a + n[1] * b];
+    const pts = (arr) => arr.map((q) => q[0].toFixed(1) + ',' + q[1].toFixed(1)).join(' ');
+    let b = '<polygon points="' + pts([at(P1, 0, 22), at(P2, 0, 22), at(P2, 0, -22), at(P1, 0, -22)]) + '" fill="#E3F1F8" stroke="' + D.C.stroke + '" stroke-width="2.5"/>';
+    const i1 = at(P1, -10, 6), i2 = at(P2, 26, 6), j1 = at(P1, -10, -6), j2 = at(P2, 26, -6);
+    b += '<polygon points="' + pts([i1, i2, j2, j1]) + '" fill="#FFFFFF" stroke="' + D.C.stroke + '" stroke-width="2"/>';
+    const wi = at(P2, -34, 22), wo = at(P1, 34, -22);
+    b += D.line(wi[0], wi[1], wi[0], wi[1] + 34, 9, D.C.stroke) + D.line(wi[0], wi[1], wi[0], wi[1] + 34, 4, '#E3F1F8');
+    b += D.line(wo[0], wo[1], wo[0], wo[1] - 34, 9, D.C.stroke) + D.line(wo[0], wo[1], wo[0], wo[1] - 34, 4, '#E3F1F8');
+    b += this.label(wi[0] - 8, wi[1] + 58, 'water in', 'end');
+    b += this.label(wo[0] + 10, wo[1] - 40, 'water out', 'start');
+    return { svg: b, tip: at(P2, 26, 0), mid: at(P1, L / 2, -22) };
+  }
+  flask(cx, cy, r, liquid, granules, clipId) {
+    const D = window.KS4D;
+    let b = '<defs><clipPath id="' + clipId + '"><circle cx="' + cx + '" cy="' + cy + '" r="' + (r - 1.5) + '"/></clipPath></defs>';
+    b += D.circ(cx, cy, r, '#FFFFFF', 'none', 0);
+    b += '<rect x="' + (cx - r) + '" y="' + (cy + r / 4) + '" width="' + (2 * r) + '" height="' + r + '" fill="' + liquid + '" clip-path="url(#' + clipId + ')"/>';
+    if (granules) [[-24, 0.55], [-6, 0.7], [14, 0.6], [28, 0.5]].forEach((g) => { b += D.circ(cx + g[0], cy + r * g[1], 4, '#9A9A9A', D.C.stroke, 1); });
+    b += D.circ(cx, cy, r, 'none', D.C.stroke, 3);
+    return b;
+  }
+  thermo(x, top, bulbY) {
+    const D = window.KS4D;
+    return '<rect x="' + (x - 3) + '" y="' + top + '" width="6" height="' + (bulbY - top - 6) + '" rx="3" fill="#FFFFFF" stroke="' + D.C.stroke + '" stroke-width="1.5"/>' +
+      '<ellipse cx="' + x + '" cy="' + bulbY + '" rx="6" ry="10" fill="#C0504D" stroke="' + D.C.stroke + '" stroke-width="1.5"/>';
+  }
+  /* ── the mixture in a beaker, before the pupil commits ── */
+  mixtureSvg(k) {
+    const D = window.KS4D; const R = ROUNDS[k];
+    let b = this.beaker(220, 150, 160, 230, 190, R.liquid);
+    if (R.sand) [[236, 370], [252, 366], [268, 371], [284, 367], [300, 370], [316, 366], [332, 371], [348, 367], [364, 370], [244, 360], [276, 361], [308, 360], [340, 361], [356, 359]].forEach((p) => { b += D.circ(p[0], p[1], 5, '#B98A4E', D.C.stroke, 1); });
+    return D.svg(600, 420, b, 'A beaker of the mixture: ' + R.title + '.');
+  }
+  filtrationSvg() {
+    const D = window.KS4D;
+    let b = '<polygon points="190,90 410,90 312,214 312,278 288,278 288,214" fill="#FFFFFF" stroke="' + D.C.stroke + '" stroke-width="3" stroke-linejoin="round"/>';
+    b += '<polygon points="204,97 396,97 300,206" fill="#FFFDF5" stroke="#8C8C8C" stroke-width="2"/>';
+    [[292, 190], [300, 184], [308, 190], [296, 197], [304, 197], [300, 174], [289, 180], [311, 180], [282, 170], [318, 170]].forEach((p) => { b += D.circ(p[0], p[1], 5, '#B98A4E', D.C.stroke, 1); });
+    b += '<polygon class="mix-fill" points="251,384 349,384 378,424 222,424" fill="#DCEBF5"/>';
+    b += '<path d="M 284 290 L 284 330 L 218 426 L 382 426 L 316 330 L 316 290" fill="none" stroke="' + D.C.stroke + '" stroke-width="3" stroke-linejoin="round"/>';
+    b += '<circle class="mix-drip" cx="300" cy="288" r="5" fill="#8FB9DC"/>';
+    b += this.label(420, 116, 'filter paper') + this.lead(416, 110, 370, 112);
+    b += this.label(420, 186, 'residue: sand') + this.lead(416, 180, 322, 176);
+    b += this.label(392, 410, 'filtrate: water') + this.lead(388, 402, 358, 404);
+    return D.svg(600, 450, b, 'Filtration: the mixture is poured into a filter funnel lined with filter paper. The sand stays on the paper as the residue; water drips through into a flask below as the filtrate.');
+  }
+  crystalSvg() {
+    const D = window.KS4D;
+    let b = '';
+    b += D.line(88, 262, 232, 262, 5, D.C.stroke) + D.line(108, 262, 92, 372, 3, D.C.stroke) + D.line(212, 262, 228, 372, 3, D.C.stroke);
+    b += '<path d="M 96 214 Q 160 302 224 214 Z" fill="#FFFFFF" stroke="' + D.C.stroke + '" stroke-width="3"/>';
+    b += '<path d="M 106 226 Q 160 288 214 226 Z" fill="#7FB2E5"/>';
+    b += this.flame(160, 372);
+    [[136, 0], [160, .45], [184, .9]].forEach((s) => { b += '<path class="mix-steam" style="animation-delay:' + s[1] + 's" d="M ' + s[0] + ' 204 q -9 -14 0 -28 q 9 -14 0 -28" fill="none" stroke="#8A9AA5" stroke-width="3" stroke-linecap="round"/>'; });
+    b += D.arrow(258, 232, 336, 232, D.C.arrow, 5);
+    b += D.line(372, 296, 560, 296, 3, D.C.stroke);
+    b += '<path d="M 400 214 Q 464 302 528 214 Z" fill="#FFFFFF" stroke="' + D.C.stroke + '" stroke-width="3"/>';
+    b += '<path d="M 410 226 Q 464 288 518 226 Z" fill="#9CC4EA"/>';
+    [[438, 250, 0], [462, 262, .3], [488, 250, .6], [452, 238, .9], [476, 240, 1.2]].forEach((c) => {
+      b += '<polygon class="mix-grow" style="animation-delay:' + (1.2 + c[2]) + 's" points="' + c[0] + ',' + (c[1] - 9) + ' ' + (c[0] + 8) + ',' + c[1] + ' ' + c[0] + ',' + (c[1] + 9) + ' ' + (c[0] - 8) + ',' + c[1] + '" fill="#1F5FAE" stroke="' + D.C.stroke + '" stroke-width="1.5"/>';
+    });
+    b += D.T(160, 410, 'heat: some', 26) + D.T(160, 438, 'water evaporates', 26);
+    b += D.T(464, 340, 'cool: crystals', 26) + D.T(464, 368, 'form', 26);
+    return D.svg(600, 450, b, 'Crystallisation in two stages. Left: a blue solution in an evaporating basin is heated on a tripod and gauze, and steam rises. Right: the basin cools on the bench and blue crystals form in it.');
+  }
+  simpleSvg(bulbIn, liquid, clipId) {
+    const D = window.KS4D;
+    let b = '';
+    b += '<rect x="118" y="182" width="24" height="70" fill="#FFFFFF"/>' + D.line(118, 182, 118, 254, 3, D.C.stroke) + D.line(142, 182, 142, 204, 3, D.C.stroke) + D.line(142, 220, 142, 254, 3, D.C.stroke);
+    b += this.flask(130, 316, 66, liquid, true, clipId);
+    b += D.line(142, 212, 236, 254, 14, D.C.stroke) + D.line(140, 212, 236, 254, 8, '#FFFFFF');
+    const c = this.condenser([236, 254], [452, 348]);
+    b += c.svg;
+    b += '<rect x="112" y="170" width="36" height="14" fill="#6B5A48" stroke="' + D.C.stroke + '" stroke-width="2"/>';
+    b += this.thermo(130, 92, bulbIn ? 352 : 212);
+    b += this.flame(130, 434);
+    b += this.beaker(468, 376, 96, 64, 404, '#E3F0F6', 'mix-fill');
+    b += '<circle class="mix-drip" cx="' + (c.tip[0] + 4).toFixed(1) + '" cy="' + (c.tip[1] + 8).toFixed(1) + '" r="5" fill="#8FB9DC"/>';
+    b += this.label(146, 100, 'thermometer');
+    b += this.label(300, 346, 'condenser', 'middle');
+    b += this.label(516, 470, 'pure water', 'middle');
+    return b;
+  }
+  fractionalSvg() {
+    const D = window.KS4D;
+    let b = '<rect x="138" y="110" width="24" height="168" fill="#FFFFFF" stroke="' + D.C.stroke + '" stroke-width="3"/>';
+    for (let y = 150; y < 272; y += 12) for (let x = 144; x < 160; x += 10) b += D.circ(x + (y % 24 ? 3 : 0), y, 4.5, '#EDE7DA', D.C.stroke, 1);
+    b += this.flask(150, 334, 60, '#EEF4F2', false, 'mix-frac-clip');
+    b += D.line(162, 120, 248, 156, 14, D.C.stroke) + D.line(160, 120, 248, 156, 8, '#FFFFFF');
+    const c = this.condenser([248, 156], [452, 246]);
+    b += c.svg;
+    b += '<rect x="132" y="98" width="36" height="14" fill="#6B5A48" stroke="' + D.C.stroke + '" stroke-width="2"/>';
+    b += this.thermo(150, 34, 120);
+    b += this.label(162, 46, '78 °C');
+    b += this.flame(150, 446);
+    b += this.beaker(470, 272, 96, 64, 300, '#EEF4F2', 'mix-fill');
+    b += '<circle class="mix-drip" cx="' + (c.tip[0] + 4).toFixed(1) + '" cy="' + (c.tip[1] + 8).toFixed(1) + '" r="5" fill="#CFE0E8"/>';
+    b += this.label(196, 436, 'fractionating column') + this.lead(210, 412, 166, 252);
+    b += this.label(518, 366, 'ethanol', 'middle');
+    return D.svg(600, 460, b, 'Fractional distillation: a flask of ethanol and water is heated under a column packed with glass beads. A thermometer at the top reads 78 °C, and ethanol vapour passes into a sloping water-cooled condenser and drips into a beaker.');
+  }
+  chromSvg() {
+    const D = window.KS4D;
+    let b = this.beaker(200, 230, 200, 196, 380, '#E3F0F6');
+    b += D.line(180, 70, 420, 70, 6, D.C.stroke);
+    b += '<rect x="262" y="72" width="76" height="340" fill="#FFFFFF" stroke="' + D.C.stroke + '" stroke-width="2"/>';
+    b += '<rect class="mix-front" x="263" y="122" width="74" height="288" fill="#E3F0F6" opacity=".55"/>';
+    b += D.line(266, 356, 334, 356, 1.6, '#555555');
+    b += '<line class="mix-front" x1="266" y1="122" x2="334" y2="122" stroke="#555555" stroke-width="1.6" stroke-dasharray="6 5"/>';
+    [[160, '#2BA3C9'], [230, '#C13B8E'], [300, '#28306E']].forEach((sp) => { b += '<circle class="mix-rise" style="--d:' + (356 - sp[0]) + 'px" cx="300" cy="' + sp[0] + '" r="10" fill="' + sp[1] + '"/>'; });
+    b += this.label(412, 128, 'solvent front') + this.lead(408, 122, 340, 122);
+    b += this.label(412, 362, 'pencil line') + this.lead(408, 356, 340, 356);
+    b += this.label(412, 410, 'solvent') + this.lead(408, 404, 396, 404);
+    return D.svg(600, 450, b, 'Paper chromatography: a strip of paper hangs from a rod into a beaker of solvent. A pencil line is drawn above the solvent. The ink spot on the line has separated into three coloured spots at different heights below the solvent front.');
+  }
+  apparatusSvg(k) {
+    const D = window.KS4D;
+    if (k === 0) return this.filtrationSvg();
+    if (k === 1) return this.crystalSvg();
+    if (k === 2) return D.svg(600, 486, this.simpleSvg(false, '#2F4A9A', 'mix-desk-clip'), 'Simple distillation: blue ink is heated in a flask. The thermometer bulb is level with the side arm. Water vapour passes into a sloping condenser, cooled by water in at the bottom and out at the top, and pure water drips into a beaker.');
+    if (k === 3) return this.fractionalSvg();
+    return this.chromSvg();
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, routeWords: '', routeSwitchOptions: [] };
+    const slug = 'mixtures';
+    const ready = !!(s.libReady && K && D);
+    const PN = this.props.mrbPrevNext || {};
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const hi = !!R.isHigher;
+    const specRef = R.isTriple ? '4.1.1.2' : '5.1.1.2';
+    const di = s.di, DR = ROUNDS[di], dPick = s.dp[di];
+    const dShown = dPick !== undefined;
+    const dOk = dShown && dPick === DR.a;
+    const decided = Object.keys(s.dp).length;
+    const done = [s.hook !== null, decided >= ROUNDS.length, s.think !== null, s.chain, s.kit !== null, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const TECH4 = TECH.slice(0, 4);
+    return Object.assign({}, R, {
+      video: K && s.hook !== null ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      specRef, specCode: R.isTriple ? '8462' : '8464', specName: R.isTriple ? 'Chemistry' : 'Combined Science', keySpec: 'AQA ' + specRef + (R.isTriple ? ' (8462)' : ' (8464)'),
+      endPrev: PN.prev || null, endNext: PN.next || null,
+      endConnects: ready && K.hrefFor ? [
+        { href: K.hrefFor('atoms-elements-compounds', R), label: 'Atoms, elements and compounds' },
+        { href: K.hrefFor('chromatography', R), label: 'Chromatography' },
+        { href: K.hrefFor('fractional-distillation', R), label: 'Fractional distillation of crude oil' },
+        { href: K.hrefFor('potable-water', R), label: 'Potable water' }
+      ].filter((c) => c.href) : [],
+      hookOptions: [
+        { text: 'It has reacted with the water to make a new substance', reply: 'A reaction makes a new substance. This still tastes of sugar.' },
+        { text: 'It is still sugar, spread out through the water', reply: '' },
+        { text: 'It has turned into water, so it cannot come back', reply: 'Sugar and water are made of different atoms: one cannot become the other.' },
+        { text: 'It has been broken down by the heat and is gone', reply: 'Hot water does not destroy sugar: the sweetness is still there.' }
+      ],
+      hookReveal: 'It is still sugar, mixed with the water but not chemically combined with it. Let the water evaporate and the sugar comes back, unchanged. Nothing new was made.',
+      onHook: (i) => this.setState({ hook: i }),
+      /* the desk */
+      dTitle: DR.title,
+      dProgress: decided + ' of ' + ROUNDS.length + ' decided',
+      dAsk: 'You want ' + DR.want + '. Which method?',
+      dFig: ready ? K.fig(dShown ? this.apparatusSvg(DR.a) : this.mixtureSvg(di), '') : null,
+      dOpts: TECH.map((t, i) => ({ label: t, pressed: dPick === i, disabled: dShown, style: this.btn(dPick === i, dShown),
+        onClick: () => { if (this.state.dp[this.state.di] === undefined) this.setState((st) => ({ dp: Object.assign({}, st.dp, { [st.di]: i }) })); } })),
+      dShown,
+      dWord: dOk ? 'Yes.' : 'Not this one.',
+      dReply: dShown ? DR.no[dPick] : '',
+      dRight: DR.right,
+      dVerdictStyle: 'margin-top:14px;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (dOk ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      dCanNext: dShown && di < ROUNDS.length - 1,
+      onDNext: () => this.setState((st) => ({ di: Math.min(ROUNDS.length - 1, st.di + 1) })),
+      /* think */
+      thinkOptions: [
+        { text: 'Pure water: the salt stays on the fine paper', correct: false, reply: 'Dissolved salt is spread through the water as particles far smaller than any hole in filter paper.' },
+        { text: 'Salt water, just as salty as it was before', correct: true, reply: '' },
+        { text: 'Slightly less salty water: some salt is caught', correct: false, reply: 'None is caught. Everything dissolved passes through; only an undissolved solid stays behind.' },
+        { text: 'Nothing: the paper is too fine for the water', correct: false, reply: 'Water passes through filter paper easily, and so does everything dissolved in it.' }
+      ],
+      thinkReveal: 'Filtration separates by whether a solid has dissolved, not by how big its grains looked before. To get the salt back, evaporate or crystallise. To get the water, distil.',
+      onThink: (i) => this.setState({ think: i }),
+      /* chain */
+      chainLinks: ['Add water, stir and warm, so that the copper sulfate dissolves.', 'Filter: the sand stays on the paper as the residue.', 'Heat the filtrate to evaporate some of the water, then leave it to cool so crystals form.', 'Filter off the crystals and dry them between filter papers.'],
+      chainHerrings: [
+        { text: 'Filter the mixture first, so the paper catches the copper sulfate.', why: 'Undissolved copper sulfate would stay on the paper with the sand. Dissolve it first, so only the sand is caught.' },
+        { text: 'Boil the filtrate until all of the water has gone.', why: 'Boiling it dry can spit and leaves a powder, with any dissolved impurities in it. Evaporate only some water, then let it cool.' }
+      ],
+      onChain: () => this.setState({ chain: true }),
+      /* kit */
+      kitFig: ready ? D.svg(600, 486, this.simpleSvg(true, '#2F4A9A', 'mix-kit-clip'), '') : '',
+      kitAlt: 'Simple distillation apparatus. From top to bottom: a thermometer through the stopper with its bulb down in the boiling ink; anti-bumping granules in the flask; a sloping condenser with water in at the bottom and out at the top; and an open beaker collecting the distillate.',
+      kitOptions: [
+        { text: 'The thermometer bulb sits down in the boiling ink', correct: true, reply: '' },
+        { text: 'There are anti-bumping granules in the flask', correct: false, reply: 'They belong there: they make the liquid boil smoothly instead of in sudden bursts.' },
+        { text: 'The condenser water goes in at the bottom', correct: false, reply: 'In at the bottom and out at the top keeps the condenser full of cold water.' },
+        { text: 'The pure water drips into an open beaker', correct: false, reply: 'Once the vapour has condensed, an open beaker collects it safely.' }
+      ],
+      kitReveal: 'Raise the bulb level with the side arm, where the vapour leaves the flask. There it reads the boiling point of the substance being collected; in the liquid it reads the temperature of the ink.',
+      onKit: (i) => this.setState({ kit: i }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: { command: 'Give', marks: 1, prompt: 'Give the meaning of the term mixture.', why: 'Not chemically combined is the phrase the mark needs; “two substances mixed” does not score.',
+          options: [
+            { text: 'Two or more elements chemically combined in fixed proportions', correct: false, reply: 'That describes a compound. In a mixture nothing is chemically combined, and the proportions can vary.' },
+            { text: 'Two or more substances that react to form a new substance', correct: false, reply: 'Reacting makes a compound. Mixing makes no new substance.' },
+            { text: 'Two or more elements or compounds not chemically combined together', correct: true, reply: '' },
+            { text: 'One substance that contains only one type of atom throughout', correct: false, reply: 'That is an element. A mixture always contains two or more substances.' }
+          ] },
+        r2: hi ? { kind: 'data', command: 'Suggest', marks: 2, prompt: 'Suggest the best method to separate each mixture.',
+            parts: [{ label: '(a) Pure water from a sugar solution', options: TECH4, answer: 2 }, { label: '(b) Methanol (boils at 65 °C) from ethanol (boils at 78 °C)', options: TECH4, answer: 3 }],
+            right: 'Both match the property that differs.', wrong: 'Find the property that differs in each mixture, then check the mark scheme.',
+            model: ['(a) Simple distillation: the water boils off and condenses; the sugar stays in the flask. (1)', '(b) Fractional distillation: the two boiling points are close together. (1)'] }
+          : { kind: 'data', command: 'Suggest', marks: 2, prompt: 'Suggest the best method to separate each mixture.',
+            parts: [{ label: '(a) Chalk powder from water', options: TECH4, answer: 0 }, { label: '(b) Solid copper chloride from copper chloride solution', options: TECH4, answer: 1 }],
+            right: 'Both match the property that differs.', wrong: 'Find the property that differs in each mixture, then check the mark scheme.',
+            model: ['(a) Filtration: chalk does not dissolve, so the paper holds it back. (1)', '(b) Crystallisation: the copper chloride is dissolved; evaporate some water, then cool. (1)'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'Explain why fractional distillation, not simple distillation, is used to separate ethanol from water. Put the links in order.',
+          links: ['Ethanol (78 °C) and water (100 °C) have boiling points that are close together.', 'Simple distillation would let a lot of water boil over with the ethanol, so the distillate would still be a mixture.', 'In the column the vapour condenses and boils again many times, so ethanol, with the lower boiling point, reaches the top first and is collected first.'],
+          herrings: [{ text: 'Ethanol and water do not mix, so they have to be boiled apart.', why: 'They mix completely. That is why filtration cannot separate them either.' }, { text: 'The heaviest molecules rise to the top of the column and are collected first.', why: 'The liquid with the lowest boiling point reaches the top first, not the heaviest.' }] },
+        r4: { command: 'Plan', marks: 6, question: 'Rock salt is a mixture of sodium chloride and sand. Plan a method to obtain a sample of pure water and a sample of pure sodium chloride from rock salt.',
+          levels: [
+            { label: 'Level 3 · 5–6', text: 'A logical sequence: dissolve, filter, then split the filtrate; distil one part with a condenser to collect the water, and evaporate or crystallise the other to get the salt. Includes at least one safety or quality point.', max: 6 },
+            { label: 'Level 2 · 3–4', text: 'Most of the steps, but with an omission or a flawed step, such as evaporating the solution to collect the water.', max: 4 },
+            { label: 'Level 1 · 1–2', text: 'Separation techniques named, but not linked into a method.', max: 2 },
+            { label: 'No relevant content · 0', text: '', max: 0 }
+          ],
+          points: ['Add water to the rock salt and stir (and warm) so the sodium chloride dissolves.', 'Filter: the sand stays on the paper; the salt solution passes through as the filtrate.', 'Pure water: heat part of the filtrate in a flask; the water boils and its vapour is cooled in a condenser and collected.', 'Pure salt: heat the rest of the filtrate in an evaporating basin to evaporate the water until salt crystals form.', 'Dry the salt crystals (between filter papers or in a warm oven).', 'A safety or quality point: eye protection; heat gently so the solution does not spit; thermometer at the side arm reads 100 °C.'],
+          reject: ['“Evaporate the filtrate and collect the water.” Evaporated water escapes into the air: collecting it needs a condenser.', '“Filter the salt water to get the salt.” Dissolved salt passes through the paper.'] }
+      } : {},
+      keyLines: ['Mixture: two or more elements or compounds not chemically combined; separated by physical processes that make no new substances.']
+        .concat((ready ? K.keyLines(slug) : []).map((l) => l.indexOf('Chromatography:') === 0 ? 'Chromatography: dissolved substances.' : l)),
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sound waves and hearing · MrBadmus GCSE Physics</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Physics" unit="Waves" title="Sound waves and hearing" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Physics (8463) 4.6.1.4 · Process</p>
+        <h1>Sound waves and hearing</h1>
+        <p class="ks3-bigq">A sound is only squeezes and stretches travelling through the air. How does your ear turn that into something you hear, and why are some sounds silent to you but not to a dog?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+        </div>
+        <div style="margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;">
+          <a href="{{ eqSheetHref }}" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 16px; border-radius: var(--ks3-r-control); border: 2px solid var(--ks3-ink); background: var(--ks3-card); color: var(--ks3-ink); font-size: 16px; font-weight: 700; text-decoration: none;" style-hover="background: var(--ks3-accent-tint); border-color: var(--ks3-accent);">View the full equation sheet<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3H3v10h10v-3"></path><path d="M9 3h4v4"></path><path d="M13 3L7 9"></path></svg></a>
+          <span style="font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">AQA · {{ eqSheetLabel }} · PDF</span>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">A whistle that only the dog can hear.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">A trainer blows a dog whistle. Across the park, the dog's head snaps round. The trainer, with the whistle at her lips, hears nothing at all.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Why does the trainer hear nothing?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>Sound in air is a <strong>longitudinal</strong> wave: a pattern of <strong>compressions</strong>, where the air is squeezed together, and <strong>rarefactions</strong>, where it is spread out. It needs particles to travel through, so it cannot cross a vacuum. To be heard, that pattern has to be turned into something your body can sense. Follow one note from a loudspeaker into the ear, and predict each step before you see it.</p>
+      </section>
+
+      <section id="s-path" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">{{ pEyebrow }}</p>
+        <h2 style="margin: 6px 0 0;">{{ pTitle }}</h2>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 760px;">{{ pathFig }}</div>
+        <sc-if value="{{ pAsking }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-commit" style="color: var(--ks3-ink); margin: 14px 0 0;">{{ pPrompt }}</p>
+          <sc-if value="{{ pIsChoice }}" hint-placeholder-val="{{ true }}">
+            <ul class="ks3-options">
+              <sc-for list="{{ pOpts }}" as="o" hint-placeholder-count="3">
+                <li><button type="button" class="ks3-option" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}"><span class="ks3-opt-mark" aria-hidden="true">{{ o.letter }}</span><span class="ks3-opt-label">{{ o.text }}</span></button></li>
+              </sc-for>
+            </ul>
+          </sc-if>
+          <sc-if value="{{ pIsTones }}">
+            <div style="margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 10px;">
+              <sc-for list="{{ pTones }}" as="t" hint-placeholder-count="5">
+                <div role="group" aria-label="{{ t.aria }}" style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+                  <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 700;">{{ t.label }}</p>
+                  <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <sc-for list="{{ t.opts }}" as="o" hint-placeholder-count="2"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onPReveal }}" disabled="{{ pLocked }}" style="{{ pRevealStyle }}">{{ pRevealLabel }}</button>
+        </sc-if>
+        <sc-if value="{{ pShown }}">
+          <div data-arrive="1" role="status" style="margin-top: 14px; display: flex; flex-direction: column; gap: 10px;">
+            <sc-for list="{{ pVerdicts }}" as="v" hint-placeholder-count="1"><p style="{{ v.style }}"><strong>{{ v.word }}</strong> {{ v.text }}</p></sc-for>
+            <p style="margin: 0; font-size: 18px; line-height: 1.55;">{{ pWhy }}</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ pConfront }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+            <p class="ks3-mis-quote">&ldquo;The ear drum is the part that hears the sound.&rdquo;</p>
+            <p style="margin: 0;">The ear drum only vibrates; on its own it senses nothing. Hearing needs the whole chain: sound waves make the ear drum <em>and the parts behind it</em> vibrate, and that causes the sensation of sound.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ pPlayable }}">
+          <div role="group" aria-label="Play a tone on the ear" style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+            <sc-for list="{{ pPlay }}" as="b" hint-placeholder-count="5"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ pCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onPNext }}" style="margin-top: 14px;">Next step</button></sc-if>
+      </section>
+
+      <section id="s-build" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Chain" eyebrow="Your turn · build the path" title="From the speaker to the brain" prompt="A phone plays a voice message. Put the steps from the phone's speaker to the listener's brain in order." links="{{ buildLinks }}" herrings="{{ buildHerrings }}" on-done="{{ onBuild }}" hint-size="100%,520px"></dc-import>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Turning sound waves into vibrations of a solid is not special to the ear. Any solid that sound reaches is pushed and pulled by the compressions and rarefactions, so it vibrates at the sound's frequency. It works the other way round too: a vibrating solid pushes and pulls on the air next to it and sends out sound waves.</p>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Describe, with examples" title="Which way is the conversion?" prompt="Each card is a solid vibrating. Did sound waves make it vibrate, or is its vibration making sound waves?" bins="{{ sBins }}" items="{{ sItems }}" on-done="{{ onSort }}" hint-size="100%,460px"></dc-import>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>When sound passes into a new material, its <strong>frequency stays the same</strong>: each compression still arrives once per cycle, which is why the ear drum vibrates at the sound's frequency. The <strong>speed</strong> changes, so the <strong>wavelength</strong> changes with it. Sound usually travels fastest in solids and slowest in gases, because the particles in a solid are closer together and more strongly linked, so each vibration is passed on more quickly: about 340 m/s in air and 1500 m/s in water.</p>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equations</p>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">On the sheet</span>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">v = f λ</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">wave speed (v, metres per second) = frequency (f, hertz) × wavelength (λ, metres)</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 16px;">λ = v ÷ f · f = v ÷ λ</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Units first</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">Frequency must be in hertz. 1 kHz = 1000 Hz: multiply a kilohertz value by 1000 before you insert it.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">State</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give the fact and nothing more. A range needs both limits, each with its unit.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe, with examples</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Say what happens, in order, and name real solids that vibrate.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Link each step to the next with a reason: sound wave, vibration, and why the range is limited.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Show every line. Convert kHz to Hz first. The unit earns its own mark.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Hearing is a conversion: sound waves make the ear drum and the parts behind it vibrate. The conversion only works from 20 Hz to 20 kHz.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="sound-waves-hearing" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Sound waves and hearing" spec="AQA 4.6.1.4 (8463)" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Physics" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure how a sound wave becomes something you hear?" legal="The ear is a simplified diagram, not to scale. In it, the ear drum responds fully from 20 Hz to 20 kHz and not at all outside that range; a real ear's response fades towards both limits, differs between people, and its upper limit falls with age. The air particles move far more slowly than in a real sound, so you can follow them." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A whistle only the dog hears', short: 'HOOK' },
+  { id: 's-path', label: 'From air to ear', short: 'PATH' },
+  { id: 's-build', label: 'Build the path', short: 'BUILD' },
+  { id: 's-sort', label: 'Which way is the conversion?', short: 'SORT' },
+  { id: 's-calc', label: 'Calculate the wavelength', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const PL = { ink: '#1A1A1A', teal: '#2E8B7F', red: '#C8102E', grey: '#8A8F98', drum: '#F2C9AE', bone: '#FFFFFF', cone: '#D9D3C7' };
+const X0 = 84, X1 = 316;
+const inRange = (hz) => hz >= 20 && hz <= 20000;
+/* Symbolic motion only: a slower, longer-wavelength pattern for a low note, a faster, shorter one for a high note. Not to scale. */
+function look(hz) {
+  if (hz < 20) return { T: 1.6, L: 340 };
+  if (hz <= 1000) return { T: 0.8, L: 150 };
+  if (hz <= 20000) return { T: 0.4, L: 80 };
+  return { T: 0.18, L: 40 };
+}
+/* The four steps of the flagship. Option order is fixed so the key moves between positions. */
+const STAGES = [
+  { title: 'A note leaves the loudspeaker', reveal: 'Play the note',
+    prompt: 'The loudspeaker cone moves out and back 500 times a second. What do the air particles between the loudspeaker and the ear do?',
+    opts: [
+      { text: 'Travel across the room from the loudspeaker to the ear', r: 'Then a loudspeaker would blow a wind at you. Each particle only moves back and forth.' },
+      { text: 'Vibrate back and forth about one place, 500 times a second', ok: true },
+      { text: 'Stay where they are, since only energy moves along a wave', r: 'The particles do move, back and forth about one place. That movement is what passes the energy on.' }
+    ],
+    why: 'Each particle pushes on the next, so the compressions and rarefactions travel to the ear while every particle stays near where it started.' },
+  { title: 'The sound reaches the ear drum', reveal: 'Show the ear drum',
+    prompt: 'The 500 Hz note reaches the ear drum. How many times a second does the ear drum move in and out?',
+    opts: [
+      { text: 'More than 500, because sound is faster in a solid', r: 'Speed and frequency are different things. A faster wave is not a more frequent one.' },
+      { text: 'Once: the first compression pushes it in and it stays', r: 'Each rarefaction lets the ear drum move back out, so it keeps moving in and out.' },
+      { text: '500 times, the same as the sound wave', ok: true }
+    ],
+    why: 'Each compression pushes the ear drum in and each rarefaction lets it move out. The sound wave in the air has become a vibration of a solid, at the same frequency.' },
+  { title: 'Beyond the ear drum', reveal: 'Look inside',
+    prompt: 'What passes the ear drum’s vibrations on?',
+    opts: [
+      { text: 'A nerve, which carries the sound wave to the brain', r: 'Not yet. The vibrations pass through more solid parts first; nerve signals come later.' },
+      { text: 'Three tiny bones, which vibrate in turn', ok: true },
+      { text: 'Nothing: the ear drum itself senses the sound', r: '' }
+    ],
+    why: 'The small bones pass the vibrations to the cochlea, which turns them into electrical impulses that travel along a nerve to the brain.' },
+  { title: 'Five tones, one ear', reveal: 'Play the tones', tones: true,
+    prompt: 'The normal range of human hearing is 20 Hz to 20 kHz. Which of these tones would a person hear?',
+    why: 'The ear drum and the parts behind it only vibrate enough to cause the sensation of sound over a limited range of frequencies. Outside that range the sound still reaches the ear, but there is no sensation.' }
+];
+const TONES = [
+  { label: '15 000 Hz', hz: 15000, conv: '' },
+  { label: '25 kHz', hz: 25000, conv: '25 000 Hz' },
+  { label: '12 Hz', hz: 12, conv: '' },
+  { label: '19.5 kHz', hz: 19500, conv: '19 500 Hz' },
+  { label: '0.8 kHz', hz: 800, conv: '800 Hz' }
+];
+const HEARD = ['Heard', 'Not heard'];
+const LETTERS = ['A', 'B', 'C', 'D'];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, pStage: 1, pPred: {}, tPred: {}, pShown: {}, play: null, build: false, sort: false, calc: 0, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  reduced() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:9px 15px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  vstyle(ok) {
+    return 'margin:0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);');
+  }
+  /* The hearing path, drawn from the loudspeaker to the nerve, on a 640 x 300 plate so its labels stay legible on a phone. o: { airOn, drumOn, inner, hz } */
+  pathSvg(o) {
+    const D = window.KS4D; const lk = look(o.hz); const A = 6; const mov = !this.reduced();
+    const ph = (x) => ((((x - X0) / lk.L) % 1) + 1) % 1;
+    const beg = (x) => (-(lk.T - ph(x) * lk.T)).toFixed(3) + 's';
+    const osc = (inner, amp, x) => '<g>' + inner + '<animateTransform attributeName="transform" type="translate" values="' + (-amp) + ' 0;' + amp + ' 0;' + (-amp) + ' 0" dur="' + lk.T + 's" begin="' + beg(x) + '" repeatCount="indefinite"/></g>';
+    let s = '';
+    // loudspeaker: magnet and cone
+    s += '<rect x="12" y="134" width="26" height="76" rx="4" fill="' + PL.ink + '"/>';
+    const cone = '<polygon points="36,138 66,106 66,238 36,206" fill="' + PL.cone + '" stroke="' + PL.ink + '" stroke-width="3" stroke-linejoin="round"/>';
+    s += o.airOn && mov ? osc(cone, 3, X0 - 16) : cone;
+    // air particles
+    for (let x = X0; x <= X1; x += 16) {
+      for (let r = 0; r < 6; r++) {
+        const y = 106 + r * 26;
+        if (!o.airOn) { s += D.circ(x, y, 4.2, PL.teal); continue; }
+        if (mov) s += '<circle cx="' + x + '" cy="' + y + '" r="4.2" fill="' + PL.teal + '"><animate attributeName="cx" values="' + (x - A) + ';' + (x + A) + ';' + (x - A) + '" dur="' + lk.T + 's" begin="' + beg(x) + '" repeatCount="indefinite"/></circle>';
+        else s += D.circ(x - A * Math.cos(2 * Math.PI * ph(x)), y, 4.2, PL.teal);
+      }
+    }
+    // ear canal and ear drum
+    s += D.line(332, 104, 418, 130, 3, PL.ink) + D.line(332, 240, 418, 214, 3, PL.ink);
+    const drum = '<ellipse cx="428" cy="172" rx="7" ry="44" fill="' + PL.drum + '" stroke="' + PL.ink + '" stroke-width="3"/>';
+    if (o.drumOn && mov) s += osc(drum, 5, 428);
+    else {
+      s += drum;
+      if (o.drumOn) s += D.line(408, 98, 448, 98, 3, PL.ink) + '<polygon points="404,98 414,92 414,104" fill="' + PL.ink + '"/><polygon points="452,98 442,92 442,104" fill="' + PL.ink + '"/>';
+    }
+    if (o.inner) {
+      const bones = '<ellipse cx="456" cy="160" rx="14" ry="9" fill="' + PL.bone + '" stroke="' + PL.ink + '" stroke-width="2.5"/>' +
+        D.line(468, 164, 478, 170, 2.5, PL.ink) + '<ellipse cx="488" cy="174" rx="11" ry="8" fill="' + PL.bone + '" stroke="' + PL.ink + '" stroke-width="2.5"/>' +
+        D.line(498, 177, 508, 180, 2.5, PL.ink) + '<path d="M 508 172 L 528 182 L 508 192 Z" fill="' + PL.bone + '" stroke="' + PL.ink + '" stroke-width="2.5" stroke-linejoin="round"/>';
+      s += o.drumOn && mov ? osc(bones, 3, 470) : bones;
+      s += D.line(528, 182, 540, 186, 2.5, PL.ink);
+      s += '<path d="M 561 186 a 5 5 0 1 1 10 0 a 10 10 0 1 1 -20 0 a 15 15 0 1 1 30 0 a 20 20 0 1 1 -40 0 a 25 25 0 1 1 50 0" fill="none" stroke="' + PL.ink + '" stroke-width="3.5" stroke-linecap="round"/>';
+      const nerve = 'M 591 186 C 606 170, 614 132, 628 96';
+      s += '<path d="' + nerve + '" fill="none" stroke="' + PL.red + '" stroke-width="4" stroke-linecap="round"/>';
+      if (o.drumOn && mov) {
+        [0, -0.55].forEach((b) => { s += '<circle r="7" fill="' + PL.red + '" stroke="#FFFFFF" stroke-width="2"><animateMotion dur="1.1s" begin="' + b + 's" repeatCount="indefinite" path="' + nerve + '"/></circle>'; });
+      } else if (o.drumOn) {
+        s += D.arrow(604, 170, 622, 112, PL.red, 4);
+      }
+      s += D.T(492, 80, 'small bones', 30, { fill: PL.ink }) + D.T(632, 42, 'nerve to the brain', 28, { fill: PL.red, anchor: 'end' });
+    } else {
+      s += '<rect x="450" y="62" width="182" height="190" rx="16" fill="none" stroke="' + PL.grey + '" stroke-width="3" stroke-dasharray="10 8"/>' + D.T(541, 180, '?', 64, { fill: PL.grey });
+    }
+    s += D.T(8, 290, 'loudspeaker', 30, { fill: PL.ink, anchor: 'start' }) + D.T(262, 290, 'air', 30, { fill: PL.ink }) + D.T(404, 290, 'ear drum', 30, { fill: PL.ink });
+    if (o.inner) s += D.T(570, 290, 'cochlea', 30, { fill: PL.ink });
+    const alt = 'A loudspeaker, the air between it and an ear, the ear canal and the ear drum' + (o.inner ? ', then three small bones, the coiled cochlea and a nerve to the brain.' : '; the parts behind the ear drum are hidden.') +
+      (o.airOn ? ' The loudspeaker is playing ' + (o.hz >= 1000 ? (o.hz / 1000) + ' kHz' : o.hz + ' Hz') + ': the air particles vibrate back and forth, making compressions and rarefactions that travel towards the ear.' : ' The loudspeaker is silent and the air particles are evenly spaced.') +
+      (o.airOn ? (o.drumOn ? ' The ear drum vibrates' + (o.inner ? ', the small bones vibrate and signals travel along the nerve.' : '.') : ' The ear drum does not vibrate' + (o.inner ? ' and no signals travel along the nerve.' : '.')) : '');
+    return D.svg(640, 300, s, alt);
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, eqSheetHref: '', eqSheetLabel: '', routeWords: 'Triple Higher', routeSwitchOptions: [] };
+    const slug = 'sound-waves-hearing';
+    const ready = !!(s.libReady && K && D);
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const pn = this.props.mrbPrevNext || {};
+    // ── the hearing path ──
+    const st = s.pStage; const S = STAGES[st - 1]; const shown = !!s.pShown[st];
+    const pick = s.pPred[st];
+    const tonesIn = TONES.every((t, i) => s.tPred[i] !== undefined);
+    const locked = S.tones ? !tonesIn : pick === undefined;
+    const hz = st === 4 && shown && s.play !== null ? TONES[s.play].hz : 500;
+    const fig = {
+      airOn: st > 1 || shown,
+      drumOn: (st > 2 || (st === 2 && shown)) && inRange(hz),
+      inner: st > 3 || (st === 3 && shown),
+      hz
+    };
+    let verdicts = [];
+    if (shown && !S.tones) {
+      const o = S.opts[pick] || {};
+      verdicts = [{ word: o.ok ? 'Yes.' : 'Not that one.', text: o.ok ? '' : (o.r || ''), style: this.vstyle(!!o.ok) }];
+    }
+    if (shown && S.tones) {
+      verdicts = TONES.map((t, i) => {
+        const truth = inRange(t.hz) ? 0 : 1; const ok = s.tPred[i] === truth;
+        return { word: t.label + (t.conv ? ' = ' + t.conv : '') + ': ' + HEARD[truth].toLowerCase() + (ok ? ', as you said.' : '.'), text: '', style: this.vstyle(ok) };
+      });
+    }
+    const done = [s.hook !== null, !!s.pShown[4], s.build, s.sort, s.calc >= 2, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const connects = ready && K.hrefFor ? [['transverse-longitudinal-waves', 'Transverse and longitudinal waves'], ['properties-of-waves', 'Properties of waves'], ['waves-detection-exploration', 'Waves for detection and exploration']]
+      .map(([sl, label]) => ({ href: K.hrefFor(sl, R), label })).filter((c) => !!c.href) : [];
+    // ── CFIFA ──
+    const ST = (C, Fm, I, Fi, A, n) => [
+      { letter: 'C', label: 'Convert', line: C, note: n || '' }, { letter: 'F', label: 'Formula', line: Fm, note: '' },
+      { letter: 'I', label: 'Insert', line: I, note: '' }, { letter: 'F', label: 'Fine-tune', line: Fi, note: '' }, { letter: 'A', label: 'Answer', line: A, note: '' }];
+    const QS = (C, Fm, I, Fi, A, ph) => [
+      { letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: C }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: Fm },
+      { letter: 'I', label: 'Insert', placeholder: ph[0], line: I }, { letter: 'F', label: 'Fine-tune', placeholder: ph[1], line: Fi }, { letter: 'A', label: 'Answer', placeholder: ph[2], line: A }];
+    const VF = 'v = f λ';
+    const PH = ['… = … × λ', 'rearrange: λ = … ÷ … = …', 'λ = … m'];
+    return Object.assign({}, R, {
+      video: K && s.hook !== null ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      endPrev: pn.prev || null, endNext: pn.next || null, endConnects: connects,
+      hookOptions: [
+        { text: 'It is too quiet to hear from so close by', reply: 'Loudness is not the problem: the dog hears it from right across the park.' },
+        { text: 'Its pitch is too high for a human ear', reply: '' },
+        { text: 'Its sound cannot travel through the air to her', reply: 'It crosses the whole park to reach the dog, so it travels through air perfectly well.' },
+        { text: 'It is not a sound wave, so ears cannot detect it', reply: 'It is a sound wave: compressions and rarefactions in the air, like any other sound.' }
+      ],
+      hookReveal: 'The whistle’s frequency is too high for a human ear. The sound reaches the trainer’s ear just as it reaches the dog’s, but a human ear only turns sounds in a certain range of frequencies into something you hear. Below, you find out how the ear does it, and where its range ends.',
+      onHook: (i) => this.setState({ hook: i }),
+      // flagship
+      pEyebrow: 'From air to ear · step ' + st + ' of 4',
+      pTitle: S.title,
+      pathFig: ready ? K.fig(this.pathSvg(fig), '') : null,
+      pAsking: !shown,
+      pPrompt: S.prompt,
+      pIsChoice: !S.tones, pIsTones: !!S.tones,
+      pOpts: S.tones ? [] : S.opts.map((o, i) => ({ letter: LETTERS[i], text: o.text, pressed: pick === i,
+        onClick: () => this.setState((ss) => ({ pPred: Object.assign({}, ss.pPred, { [st]: i }) })) })),
+      pTones: S.tones ? TONES.map((t, i) => ({ label: t.label, aria: 'Tone of ' + t.label,
+        opts: HEARD.map((l, k) => ({ label: l, pressed: s.tPred[i] === k, style: this.seg(s.tPred[i] === k),
+          onClick: () => this.setState((ss) => ({ tPred: Object.assign({}, ss.tPred, { [i]: k }) })) })) })) : [],
+      pLocked: locked, pRevealStyle: 'margin-top:14px;' + (locked ? 'opacity:.45;cursor:default;' : ''),
+      pRevealLabel: S.reveal,
+      onPReveal: () => { if (!locked) this.setState((ss) => ({ pShown: Object.assign({}, ss.pShown, { [st]: true }) })); },
+      pShown: shown, pVerdicts: verdicts, pWhy: S.why,
+      pConfront: shown && st === 3,
+      pPlayable: shown && st === 4,
+      pPlay: TONES.map((t, i) => ({ label: 'Play ' + t.label, pressed: s.play === i, style: this.seg(s.play === i), onClick: () => this.setState({ play: i }) })),
+      pCanNext: shown && st < 4,
+      onPNext: () => this.setState((ss) => ({ pStage: Math.min(4, ss.pStage + 1) })),
+      // build the path
+      buildLinks: [
+        'The phone’s speaker cone vibrates, squeezing and stretching the air next to it.',
+        'Compressions and rarefactions travel through the air to the ear.',
+        'The pressure changes push and pull the ear drum, so it vibrates at the same frequency.',
+        'The small bones pass the vibrations on to the cochlea.',
+        'The cochlea sends electrical impulses along a nerve to the brain.'
+      ],
+      buildHerrings: [
+        { text: 'Air from the speaker flows down the ear canal and pushes the ear drum in.', why: 'The air does not travel. Each particle vibrates about one place and passes the squeeze on.' },
+        { text: 'The ear drum turns the sound into impulses that travel along a nerve to the brain.', why: 'The ear drum only vibrates. The impulses start in the cochlea, after the small bones.' }
+      ],
+      onBuild: () => this.setState({ build: true }),
+      // sort
+      sBins: [{ id: 'in', label: 'Sound waves → vibrating solid' }, { id: 'out', label: 'Vibrating solid → sound waves' }],
+      sItems: [
+        { text: 'A microphone’s thin diaphragm, as someone sings into it', bin: 'in', why: 'The singer’s sound waves push the diaphragm to and fro.' },
+        { text: 'Your ear drum, while a friend is talking', bin: 'in', why: 'The friend’s sound waves make it vibrate.' },
+        { text: 'A shop window rattling as a noisy lorry goes by', bin: 'in', why: 'The lorry’s sound waves push and pull on the glass.' },
+        { text: 'A table top trembling while a loud bass note plays', bin: 'in', why: 'The bass note’s sound waves reach the table and make it vibrate.' },
+        { text: 'A loudspeaker cone playing music', bin: 'out', why: 'The cone is driven to and fro and pushes on the air, sending out sound waves.' },
+        { text: 'A tuning fork just after it is struck', bin: 'out', why: 'Its vibrating prongs push on the air around them.' },
+        { text: 'A guitar string just after it is plucked', bin: 'out', why: 'The vibrating string pushes on the air, and the sound spreads out.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      // CFIFA
+      cfExamples: [
+        { tab: 'Nothing to convert', head: 'A 500 Hz sound passes from air into water, where sound travels at 1500 m/s. Calculate its wavelength in the water.',
+          steps: ST('Nothing to convert: the frequency is in Hz and the speed in m/s.', VF, '1500 = 500 × λ', 'λ = 1500 ÷ 500 = 3.0', 'λ = 3.0 m', '') },
+        { tab: 'Convert first', head: 'The highest frequency a young person can hear is about 20 kHz. Sound travels at 340 m/s in air. Calculate the wavelength of this sound in air.', next: 'Convert first, then the same four lines. Your turn below.',
+          steps: ST('20 kHz × 1000 = 20 000 Hz', VF, '340 = 20 000 × λ', 'λ = 340 ÷ 20 000 = 0.017', 'λ = 0.017 m (1.7 cm)', 'v = f λ needs the frequency in hertz. Unconverted, 340 ÷ 20 gives 17 m: that is the wavelength of a 20 Hz sound, the other end of the range.') }
+      ],
+      cfQuestions: [
+        { tab: 'Question 1', id: 'sw-q1', head: 'A 250 Hz note travels along a steel rail, where sound travels at 5000 m/s. Calculate the wavelength of the note in the steel.', close: 'Check: 250 × 20 = 5000 m/s, the speed you started with.',
+          steps: QS('Nothing to convert: Hz and m/s already.', VF, '5000 = 250 × λ', 'λ = 5000 ÷ 250 = 20', 'λ = 20 m', PH) },
+        { tab: 'Question 2', id: 'sw-q2', head: 'A 1.5 kHz whistle is heard by a diver under water, where sound travels at 1500 m/s. Calculate the wavelength of the sound in the water.', close: 'Unconverted, 1500 ÷ 1.5 gives 1000 m: a thousand times too long.',
+          steps: QS('1.5 kHz × 1000 = 1500 Hz', VF, '1500 = 1500 × λ', 'λ = 1500 ÷ 1500 = 1.0', 'λ = 1.0 m', PH) }
+      ],
+      onCalc: (n) => this.setState({ calc: n }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: { command: 'State', marks: 1, prompt: 'State the range of normal human hearing.', why: 'The mark needs both limits, each with its unit.',
+          options: [
+            { text: '20 Hz to 20 000 kHz', correct: false, reply: '20 000 kHz is 20 million hertz. The upper limit is 20 kHz, which is 20 000 Hz.' },
+            { text: '0 Hz to 20 kHz', correct: false, reply: 'There is a lower limit too. Below about 20 Hz the ear does not respond, although very low sounds can be felt as vibrations.' },
+            { text: '20 Hz to 20 kHz', correct: true, reply: '' },
+            { text: '20 Hz to 2 kHz', correct: false, reply: 'Ten times too low. The upper limit is 20 kHz, or 20 000 Hz.' }
+          ] },
+        r2: { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'A 2.0 kHz sound passes from the air into a wooden door. Sound travels at 3400 m/s in the wood. Calculate the wavelength of the sound in the wood. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert 2.0 kHz to 2000 Hz: multiply by 1000', 'Convert 2.0 kHz to 0.0020 Hz: divide by 1000'], convAnswer: 1, answer: 1.7, tol: 0.02, unit: 'm', units: ['m', 'Hz', 'm/s', 's'],
+          right: '3400 ÷ 2000 = 1.7 m. The frequency is still 2.0 kHz inside the door.', wrong: 'Convert 2.0 kHz to 2000 Hz. The frequency does not change when the sound enters the wood, so λ = 3400 ÷ 2000.',
+          model: ['C · 2.0 kHz × 1000 = 2000 Hz', 'F · ' + VF, 'I · 3400 = 2000 × λ', 'F · λ = 3400 ÷ 2000 = 1.7', 'A · λ = 1.7 m'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'Explain why a person cannot hear a sound of frequency 40 kHz. Put the links in order.',
+          links: ['Sound waves reaching the ear make the ear drum, a solid, vibrate.', 'This conversion of sound waves into vibrations only works over a limited range of frequencies.', '40 kHz is above the upper limit of 20 kHz, so the ear drum does not vibrate enough.'],
+          herrings: [{ text: 'A 40 kHz sound cannot travel through air, so it never reaches the ear.', why: 'It travels through air like any sound; a dog nearby can hear it.' }, { text: 'The amplitude of a 40 kHz sound is too small for the ear to pick up.', why: 'Amplitude sets loudness. Even a loud 40 kHz sound is not heard: the limit is frequency.' }] },
+        r4: { command: 'Describe', marks: 4, question: 'A noisy lorry drives past a house. Describe how the lorry’s sound makes a window vibrate, and how the same kind of process lets a person in the house hear the lorry.',
+          points: ['The lorry makes compressions and rarefactions that travel through the air.', 'The pressure changes push and pull on the glass, so the window vibrates at the same frequency.', 'In the ear, the sound waves make the ear drum vibrate in the same way.', 'The vibrations pass through the small bones to the cochlea, causing the sensation of sound.', 'This works because the lorry’s frequencies are within 20 Hz to 20 kHz, the range over which the ear’s conversion works.'],
+          reject: ['“The ear drum hears the sound.” The ear drum only vibrates; the sensation needs the parts behind it.', '“Air from the lorry travels to the window.” The air particles only vibrate about fixed positions.'] }
+      } : {},
+      keyLines: ['Sound: longitudinal, mechanical, needs medium.', 'Sound waves travelling through a solid make the solid vibrate.', 'In the ear, sound waves make the ear drum and the parts behind it vibrate, causing the sensation of sound.', 'The conversion only works over a limited range of frequencies. Human range: 20 Hz–20 kHz.', 'Speed: solid > liquid > gas.', 'Entering a new material, the frequency stays the same; the speed and wavelength change (v = f λ).'],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

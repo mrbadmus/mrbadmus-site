@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Earth's early atmosphere and how it changed · MrBadmus GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Chemistry of the atmosphere" title="The Earth's early atmosphere and how it changed" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">{{ eyebrowLine }}</p>
+        <h1>The Earth's early atmosphere and how it changed</h1>
+        <p class="ks3-bigq">Four billion years ago the air had almost no oxygen. Where did today's oxygen come from, and where did all that carbon dioxide go?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Venus and Mars still have the kind of air Earth started with.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">Scientists think Earth's air, about 4 billion years ago, was mainly carbon dioxide, like theirs. Compare it with Earth's air today.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" figure-svg="{{ hookFig }}" prompt="So where is most of Earth's carbon now?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,520px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>AQA examines one <strong>theory</strong> of how Earth's atmosphere formed and changed. Run the clock forward from the Earth's first billion years to today, and predict each change before you see it. The bar under the picture shows each gas's share of the air.</p>
+      </section>
+
+      <section id="s-clock" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Run the clock · {{ cWhen }}</p>
+        <h2 style="margin: 6px 0 0;">{{ cHead }}</h2>
+        <p style="margin: 10px 0 0; max-width: 60ch;">{{ cText }}</p>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 720px;">{{ cFig }}</div>
+        <sc-if value="{{ cAsking }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px;">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">{{ cPrompt }}</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 10px;">
+              <sc-for list="{{ cOpts }}" as="o" hint-placeholder-count="4"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ cCommitted }}">
+          <div data-arrive="1" role="status" style="{{ cReplyStyle }}">
+            <p style="margin: 0; font-size: 18px; line-height: 1.55;"><strong>{{ cReplyWord }}</strong> {{ cReplyText }}</p>
+            <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.55;">{{ cReveal }}</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ cConfrontVolcano }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · where the oxygen came from</p></div>
+            <p class="ks3-mis-quote">&ldquo;The volcanoes gave the Earth its oxygen.&rdquo;</p>
+            <p style="margin: 0;">Volcanoes release gases from inside the Earth, and oxygen was not among them in any real amount. That is why the early atmosphere had little or no oxygen, even while volcanoes were at their most active. The oxygen came later, from <strong>photosynthesis</strong> by algae and plants.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ cCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onCNext }}" style="margin-top: 14px;">{{ cNextLabel }}</button></sc-if>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equation · chemistry has no equation sheet</p>
+        <div style="margin-top: 14px; padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border); max-width: 640px;">
+          <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Learn it</span>
+          <p style="margin: 0; font-size: 19px; line-height: 1.5;">carbon dioxide + water → glucose + oxygen</p>
+          <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; line-height: 1.3;">{{ eqSymbol }}</p>
+          <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ eqNote }}</p>
+        </div>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Explain" prompt="To explain where the oxygen came from, a student writes: C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O. What is wrong?" options="{{ eqOptions }}" reveal="{{ eqReveal }}" right-word="That is the flaw." wrong-word="Not the flaw." on-commit="{{ onEq }}" hint-size="100%,420px"></dc-import>
+        </div>
+      </section>
+
+      <section id="s-oil" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Chain" eyebrow="Build the chain" title="How crude oil and natural gas formed" prompt="Coal formed from plants on land. Crude oil and natural gas formed in the sea. Put the links in order." links="{{ oilLinks }}" herrings="{{ oilHerrings }}" done-note="Every drop of crude oil holds carbon that was once carbon dioxide in the air. Burning it puts that carbon back." on-done="{{ onOil }}" hint-size="100%,560px"></dc-import>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>No sample of the early atmosphere survives: <strong>evidence is limited</strong> because of the 4.6-billion-year time scale. So scientists build the theory from indirect evidence, such as the minerals in the oldest rocks, the gases volcanoes give out today and the atmospheres of other planets. Theories about the early atmosphere have changed over time as new evidence arrived. In the exam you may be given evidence and asked to <strong>evaluate</strong> a theory: what supports it, what weakens it, then a judgement.</p>
+      </section>
+
+      <section id="s-evidence" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Weigh the evidence" title="Was early Earth's air like Mars's air today?" prompt="Decide what each piece of evidence does to that idea." bins="{{ evBins }}" items="{{ evItems }}" done-note="There is evidence on both sides, so an evaluation must end with a judgement: Mars supports the idea that early Earth's air was mainly carbon dioxide, but it cannot prove it." on-done="{{ onEv }}" hint-size="100%,520px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The changes in order, each with its cause: oceans, then algae, then plants.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give the reason and link it: unreactive, so not removed, so it built up.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Use what you know on a case you have not met, such as a new graph.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Evaluate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Evidence for, evidence against, then your judgement.</dd></div>
+        </dl>
+      </section>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="early-atmosphere" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="The Earth's early atmosphere and how it changed" spec="{{ keySpec }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure what took the carbon dioxide out of the air?" legal="The air bar in Run the clock is a sketch: it shows which way each gas changed, not measured percentages, and in reality the stages overlapped rather than following one at a time. This is the one theory AQA examines; scientists still debate its details." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Where did the carbon go?', short: 'HOOK' },
+  { id: 's-clock', label: 'Run the clock', short: 'CLOCK' },
+  { id: 's-equation', label: 'The photosynthesis equation', short: 'EQUATION' },
+  { id: 's-oil', label: 'How crude oil formed', short: 'CHAIN' },
+  { id: 's-evidence', label: 'Weigh the evidence', short: 'EVIDENCE' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+/* The air bar: one segment per gas, fixed left-to-right order. Shares are a sketch (see the legal line). */
+const GASES = [
+  { k: 'co2', f: 'CO₂', name: 'carbon dioxide', fill: '#C9C2B6' },
+  { k: 'h2o', f: 'H₂O', name: 'water vapour', fill: '#BFE3E0' },
+  { k: 'n2', f: 'N₂', name: 'nitrogen', fill: '#CFE0F5' },
+  { k: 'o2', f: 'O₂', name: 'oxygen', fill: '#CDE8D2' },
+  { k: 'oth', f: '', name: 'other gases', fill: '#F6D9C6' }
+];
+/* Six stages. Each is predict-gated: the scene and the bar move only after the pupil commits. */
+const STAGES = [
+  { when: 'the first billion years', head: 'Volcanoes everywhere',
+    text: 'During its first billion years the Earth has intense volcanic activity. The volcanoes release the gases that form the early atmosphere.',
+    prompt: 'Which gas is missing from what the volcanoes release?',
+    opts: [
+      { t: 'Oxygen', ok: true, r: '' },
+      { t: 'Carbon dioxide', r: 'Carbon dioxide is the main gas they release.' },
+      { t: 'Nitrogen', r: 'They do release nitrogen. Watch what happens to it later.' },
+      { t: 'Water vapour', r: 'They release a lot of it. Watch where it goes in the next stage.' }
+    ],
+    reveal: 'The early atmosphere is mainly carbon dioxide, with water vapour and nitrogen, and perhaps small amounts of methane and ammonia. Like Mars and Venus today.',
+    air: { co2: 62, h2o: 24, n2: 11, o2: 0, oth: 3 } },
+  { when: 'about 4 billion years ago', head: 'The Earth cools',
+    text: 'As the Earth cools, the water vapour condenses and falls as rain for a very long time. The oceans form.',
+    prompt: 'What happens to the carbon dioxide in the air?',
+    opts: [
+      { t: 'Much of it dissolves in the new oceans', ok: true, r: '' },
+      { t: 'It condenses and rains into the oceans', r: 'Carbon dioxide does not condense at Earth temperatures. It dissolves in the water instead.' },
+      { t: 'It reacts with the water to make oxygen', r: 'Carbon dioxide and water do not react to give oxygen. There is still none.' },
+      { t: 'Nothing: only living things can remove it', r: 'The oceans removed carbon dioxide long before there was life to do it.' }
+    ],
+    reveal: 'Carbonates then precipitate out of the seawater and settle as sediment on the sea bed. Water vapour and carbon dioxide both fall in the air.',
+    air: { co2: 50, h2o: 4, n2: 42, o2: 0, oth: 4 } },
+  { when: 'about 2.7 billion years ago', head: 'Algae appear',
+    text: 'Simple living things called algae live in the oceans. They begin to photosynthesise.',
+    prompt: 'What happens to the air?',
+    opts: [
+      { t: 'Oxygen appears, and carbon dioxide keeps falling', ok: true, r: '' },
+      { t: 'Carbon dioxide rises, because algae give it out', r: 'Photosynthesis takes carbon dioxide in. Giving it out is respiration.' },
+      { t: 'Nitrogen rises, because the algae produce it', r: 'Photosynthesis produces glucose and oxygen, not nitrogen.' },
+      { t: 'Nothing changes: the air already had oxygen', r: 'Before the algae there was little or no oxygen in the air.' }
+    ],
+    reveal: 'Photosynthesis takes in carbon dioxide and gives out oxygen: the source of the oxygen in our air. Some books call these first organisms cyanobacteria; AQA calls them algae, so write algae in the exam.',
+    air: { co2: 38, h2o: 3, n2: 54, o2: 3, oth: 2 } },
+  { when: 'the next billion years', head: 'Plants evolve',
+    text: 'Over the next billion years plants evolve. They photosynthesise too, so the percentage of oxygen in the air gradually increases.',
+    prompt: 'What does the rising oxygen make possible?',
+    opts: [
+      { t: 'Animals are able to evolve', ok: true, r: '' },
+      { t: 'The first oceans can form', r: 'The oceans formed much earlier, as the young Earth cooled.' },
+      { t: 'Oxygen removes the carbon dioxide', r: 'Oxygen does not react with carbon dioxide. Photosynthesis and burial removed it.' },
+      { t: 'Plants can begin to evolve', r: 'Plants were already evolving. They are part of the reason oxygen rose.' }
+    ],
+    reveal: 'The rise was gradual, over about a billion years, and plants and algae kept taking in carbon dioxide all the while.',
+    air: { co2: 16, h2o: 2, n2: 66, o2: 15, oth: 1 } },
+  { when: 'hundreds of millions of years', head: 'Remains are buried',
+    text: 'Living things die. Shells and skeletons of sea creatures, and the remains of plants and plankton, are buried under layers of mud and sediment.',
+    prompt: 'Why do these remains not rot away and return their carbon to the air?',
+    opts: [
+      { t: 'They are buried before they can fully decay', ok: true, r: '' },
+      { t: 'Decomposers cannot feed on dead plants', r: 'Decomposers feed on dead plants all the time. Burial is what stopped them here.' },
+      { t: 'The remains contain no carbon to return', r: 'All of these remains are made of carbon compounds.' },
+      { t: 'The cold sea floor freezes them solid', r: 'Ice is not the reason. Burial cut the remains off from oxygen.' }
+    ],
+    reveal: 'Mud kept oxygen out, so decay stopped part-way. Over millions of years shells and skeletons became limestone, plants became coal, and plankton became crude oil and natural gas. Their carbon had come from carbon dioxide in the air, so it fell again.',
+    air: { co2: 4, h2o: 2, n2: 74, o2: 19, oth: 1 } },
+  { when: 'all along, to today', head: 'Nitrogen takes over',
+    text: 'All this time the volcanoes kept releasing nitrogen into the air.',
+    prompt: 'Why did nitrogen build up instead of being removed?',
+    opts: [
+      { t: 'It is unreactive, so very little was removed', ok: true, r: '' },
+      { t: 'Photosynthesis released it along with oxygen', r: 'Photosynthesis releases oxygen only.' },
+      { t: 'The oceans gave it out as they cooled', r: 'The oceans took gases out of the air. The nitrogen came from volcanoes.' },
+      { t: 'Oxygen slowly turned into nitrogen', r: 'Atoms of one element never turn into another in a chemical change.' }
+    ],
+    reveal: 'As carbon dioxide was removed, nitrogen’s share rose too. Today the air is about 80% nitrogen and 20% oxygen, with small amounts of other gases such as carbon dioxide, water vapour and argon.',
+    air: { co2: 0.6, h2o: 0.7, n2: 78, o2: 20, oth: 0.7 } }
+];
+const W = 640;
+/* Scene + bar geometry in a 640 x 520 plate. */
+const BAR = { x: 20, y: 322, w: 600, h: 58 };
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, cs: 0, picks: {}, eq: null, oil: false, ev: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  reduced() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
+  seg(on) {
+    return 'font:inherit;font-size:17px;font-weight:700;text-align:left;line-height:1.35;padding:11px 15px;min-height:48px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  /* Deterministic option order, so the key is never always first. */
+  order(list, salt) {
+    const K = window.KS4; const h = (t) => (K ? K.hash(salt + '|' + t) : t.length);
+    return list.map((o, i) => ({ o: o, i: i })).sort((a, b) => h(a.o.t) - h(b.o.t));
+  }
+  /* The hook: three planets' air as share bars, drawn to scale. */
+  hookSvg() {
+    const D = window.KS4D; let b = '';
+    const rows = [
+      { name: 'Venus', y: 30, segs: [['CO₂ 96%', 96, '#C9C2B6'], ['', 4, '#CFE0F5']] },
+      { name: 'Mars', y: 120, segs: [['CO₂ 95%', 95, '#C9C2B6'], ['', 5, '#F6D9C6']] },
+      { name: 'Earth today', y: 210, segs: [['N₂ 78%', 78, '#CFE0F5'], ['O₂ 21%', 21, '#CDE8D2'], ['', 1, '#F6D9C6']] }
+    ];
+    const x0 = 196, bw = 424, h = 64;
+    rows.forEach((r) => {
+      b += D.T(20, r.y + 41, r.name, 26, { anchor: 'start', fill: D.C.stroke });
+      let x = x0;
+      r.segs.forEach((sg) => {
+        const w = bw * sg[1] / 100;
+        b += '<rect x="' + x.toFixed(1) + '" y="' + r.y + '" width="' + w.toFixed(1) + '" height="' + h + '" fill="' + sg[2] + '" stroke="' + D.C.stroke + '" stroke-width="2"/>';
+        if (sg[0]) b += D.T(x + w / 2, r.y + 42, sg[0], 26, { fill: D.C.stroke });
+        x += w;
+      });
+    });
+    b += D.T(20, 322, 'Earth today: carbon dioxide is about 0.04%', 24, { anchor: 'start', weight: 'normal', fill: D.C.stroke });
+    return D.svg(W, 344, b, 'Bars showing the share of each gas in three atmospheres. Venus: carbon dioxide 96%. Mars: carbon dioxide 95%. Earth today: nitrogen 78%, oxygen 21%, carbon dioxide about 0.04%.');
+  }
+  /* One volcano: a cone with a crater; puffs rise from it once the first stage is committed. */
+  volcano(cx, base, w, h, puffs, animate) {
+    const D = window.KS4D; let b = '';
+    const top = base - h;
+    b += '<path d="M' + (cx - w / 2) + ' ' + base + ' L' + (cx - 14) + ' ' + top + ' L' + (cx + 14) + ' ' + top + ' L' + (cx + w / 2) + ' ' + base + ' Z" fill="#9C7F68" stroke="' + D.C.stroke + '" stroke-width="2.5" stroke-linejoin="round"/>';
+    b += '<ellipse cx="' + cx + '" cy="' + top + '" rx="14" ry="5" fill="#C8102E"/>';
+    if (puffs) {
+      [[-8, 0], [10, 0.6], [0, 1.2]].forEach((p, i) => {
+        const x = cx + p[0], y0 = top - 16 - i * 22;
+        if (animate) {
+          b += '<circle cx="' + x + '" cy="' + (top - 10) + '" r="' + (12 + i * 3) + '" fill="#D8D2C8" stroke="#8A8378" stroke-width="1.5" opacity="0">' +
+            '<animate attributeName="cy" values="' + (top - 10) + ';' + (top - 90) + '" dur="2.4s" begin="' + p[1] + 's" repeatCount="2"/>' +
+            '<animate attributeName="opacity" values="0.95;0" dur="2.4s" begin="' + p[1] + 's" repeatCount="2"/></circle>';
+          b += '<circle cx="' + x + '" cy="' + y0 + '" r="' + (12 + i * 3) + '" fill="#D8D2C8" stroke="#8A8378" stroke-width="1.5" opacity="0"><set attributeName="opacity" to="0.9" begin="6.2s" fill="freeze"/></circle>';
+        } else {
+          b += '<circle cx="' + x + '" cy="' + y0 + '" r="' + (12 + i * 3) + '" fill="#D8D2C8" stroke="#8A8378" stroke-width="1.5" opacity="0.9"/>';
+        }
+      });
+    }
+    return b;
+  }
+  tree(x, base, s) {
+    const D = window.KS4D;
+    return D.line(x, base, x, base - 34 * s, 4, '#6B4F3A') + '<circle cx="' + x + '" cy="' + (base - 44 * s) + '" r="' + (18 * s) + '" fill="#7FB98A" stroke="' + D.C.stroke + '" stroke-width="2"/>';
+  }
+  /* The air bar, from the previous stage's shares to this stage's. */
+  barSvg(prev, cur, animate) {
+    const D = window.KS4D; let b = '';
+    b += D.T(BAR.x, BAR.y - 10, 'The air (sketch, not to scale)', 24, { anchor: 'start', fill: D.C.stroke });
+    b += '<rect x="' + BAR.x + '" y="' + BAR.y + '" width="' + BAR.w + '" height="' + BAR.h + '" fill="#FFFDF8" stroke="' + D.C.stroke + '" stroke-width="2.5"/>';
+    if (!cur) return b + D.T(BAR.x + BAR.w / 2, BAR.y + 40, '?', 30, { fill: D.C.muted });
+    const geo = (air) => { const out = {}; let x = BAR.x; GASES.forEach((g) => { const w = air ? BAR.w * air[g.k] / 100 : 0; out[g.k] = { x: x, w: w }; x += w; }); return out; };
+    const A = geo(prev), B = geo(cur);
+    GASES.forEach((g) => {
+      const a = A[g.k], z = B[g.k];
+      if (z.w <= 0 && a.w <= 0) return;
+      if (animate) {
+        b += '<rect x="' + a.x.toFixed(1) + '" y="' + BAR.y + '" width="' + a.w.toFixed(1) + '" height="' + BAR.h + '" fill="' + g.fill + '" stroke="' + D.C.stroke + '" stroke-width="2">' +
+          '<animate attributeName="x" from="' + a.x.toFixed(1) + '" to="' + z.x.toFixed(1) + '" dur="1.4s" begin="0.2s" fill="freeze"/>' +
+          '<animate attributeName="width" from="' + a.w.toFixed(1) + '" to="' + z.w.toFixed(1) + '" dur="1.4s" begin="0.2s" fill="freeze"/></rect>';
+      } else {
+        b += '<rect x="' + z.x.toFixed(1) + '" y="' + BAR.y + '" width="' + z.w.toFixed(1) + '" height="' + BAR.h + '" fill="' + g.fill + '" stroke="' + D.C.stroke + '" stroke-width="2"/>';
+      }
+      if (g.f && z.w >= 52) {
+        const lab = D.T(z.x + z.w / 2, BAR.y + 39, g.f, 27, { fill: D.C.stroke });
+        b += animate ? '<g opacity="0">' + lab + '<set attributeName="opacity" to="1" begin="1.6s" fill="freeze"/></g>' : lab;
+      }
+    });
+    return b;
+  }
+  legendSvg() {
+    const D = window.KS4D; let b = '';
+    GASES.forEach((g, i) => {
+      const col = i < 3 ? 0 : 1, row = i < 3 ? i : i - 3;
+      const x = 20 + col * 330, y = 420 + row * 40;
+      b += '<rect x="' + x + '" y="' + (y - 23) + '" width="28" height="28" rx="4" fill="' + g.fill + '" stroke="' + D.C.stroke + '" stroke-width="2"/>';
+      b += D.T(x + 40, y, (g.f ? g.f + ' ' : '') + g.name, 25, { anchor: 'start', weight: 'normal', fill: D.C.stroke });
+    });
+    return b;
+  }
+  /* The whole clock figure. `reached` = the last stage whose change has happened. */
+  clockSvg(stage, committed) {
+    const D = window.KS4D; const rm = this.reduced();
+    const reached = committed ? stage : stage - 1;
+    const fresh = (k) => committed && stage === k && !rm;
+    let b = '';
+    const ground = 200;
+    // ground and (after stage 1) the ocean
+    b += '<rect x="0" y="' + ground + '" width="' + W + '" height="52" fill="' + (reached >= 1 ? '#C9B79C' : '#8C7B6B') + '"/>';
+    if (reached >= 1) {
+      const oc = '<rect x="340" y="' + (ground + 4) + '" width="300" height="48" fill="#9CC3E6"/>' +
+        '<path d="M340 ' + (ground + 6) + ' q 18 -8 36 0 t 36 0 t 36 0 t 36 0 t 36 0 t 36 0 t 36 0 t 36 0" fill="none" stroke="#3B6E9E" stroke-width="2.5"/>';
+      b += fresh(1) ? '<g opacity="0">' + oc + '<animate attributeName="opacity" from="0" to="1" dur="1.6s" begin="0.4s" fill="freeze"/></g>' : oc;
+      if (fresh(1)) {
+        for (let i = 0; i < 10; i++) {
+          const x = 350 + i * 29;
+          b += '<line x1="' + x + '" y1="40" x2="' + (x - 6) + '" y2="58" stroke="#3B6E9E" stroke-width="3" stroke-linecap="round" opacity="0">' +
+            '<animate attributeName="opacity" values="0;1;1;0" dur="0.9s" begin="' + (i % 3) * 0.3 + 's" repeatCount="3"/>' +
+            '<animateTransform attributeName="transform" type="translate" values="0 0;0 130" dur="0.9s" begin="' + (i % 3) * 0.3 + 's" repeatCount="3"/></line>';
+        }
+      }
+    }
+    b += D.line(0, ground, W, ground, 3, D.C.stroke);
+    // volcanoes, puffing from the first committed stage
+    b += this.volcano(90, ground, 150, 104, reached >= 0, fresh(0)) + this.volcano(225, ground, 110, 70, reached >= 0, fresh(0));
+    // algae in the ocean
+    if (reached >= 2) {
+      let al = '';
+      [[372, 222], [420, 238], [468, 218], [515, 236], [560, 224], [604, 240], [395, 244], [540, 244]].forEach((p) => { al += D.circ(p[0], p[1], 6, '#4E9A5B', D.C.stroke, 1.5); });
+      b += fresh(2) ? '<g opacity="0">' + al + '<animate attributeName="opacity" from="0" to="1" dur="1.2s" begin="0.3s" fill="freeze"/></g>' : al;
+      b += D.T(490, 190, 'algae', 25, { fill: D.C.label });
+    }
+    // plants on land
+    if (reached >= 3) {
+      const pl = this.tree(298, ground, 1) + this.tree(324, ground, 0.8);
+      b += fresh(3) ? '<g opacity="0">' + pl + '<animate attributeName="opacity" from="0" to="1" dur="1.2s" begin="0.3s" fill="freeze"/></g>' : pl;
+    }
+    // buried stores under the surface
+    b += '<rect x="0" y="252" width="' + W + '" height="40" fill="#6B5B4B"/>';
+    if (reached >= 4) {
+      let st = '<rect x="30" y="257" width="270" height="30" rx="4" fill="#1A1A1A"/>' + D.T(165, 280, 'coal', 22, { fill: '#FFFFFF' });
+      st += '<rect x="342" y="257" width="132" height="30" rx="4" fill="#E8E4DA"/>' + D.T(408, 280, 'limestone', 22, { fill: D.C.stroke });
+      st += '<rect x="482" y="257" width="148" height="30" rx="4" fill="#3A2A1E"/>' + D.T(556, 280, 'oil and gas', 22, { fill: '#FFFFFF' });
+      b += fresh(4) ? '<g opacity="0">' + st + '<animate attributeName="opacity" from="0" to="1" dur="1.4s" begin="0.3s" fill="freeze"/></g>' : st;
+    }
+    // the air bar
+    const prev = reached - 1 >= 0 ? STAGES[reached - 1].air : null;
+    const cur = reached >= 0 ? STAGES[reached].air : null;
+    b += this.barSvg(committed ? prev : cur, cur, committed && !rm);
+    b += this.legendSvg();
+    const share = cur ? GASES.map((g) => g.name + ' ' + (cur[g.k] >= 1 ? 'about ' + Math.round(cur[g.k]) + '%' : 'a trace')).join(', ') : 'not yet formed';
+    const scene = ['volcanoes'].concat(reached >= 1 ? ['oceans'] : [], reached >= 2 ? ['algae in the oceans'] : [], reached >= 3 ? ['plants on land'] : [], reached >= 4 ? ['buried coal, limestone, oil and gas'] : []).join(', ');
+    return D.svg(W, 540, b, 'Early Earth scene: ' + scene + '. Sketch of the air: ' + share + '.');
+  }
+  /* Rung 2: a sketch graph of carbon dioxide and oxygen against time. */
+  graphSvg() {
+    const D = window.KS4D; let b = '';
+    const X = (t) => 100 + (4.5 - t) / 4.5 * 500, Y = (p) => 320 - p / 100 * 270;
+    b += D.line(100, 320, 610, 320, 3, D.C.stroke) + D.line(100, 320, 100, 40, 3, D.C.stroke);
+    [4, 3, 2, 1, 0].forEach((t) => { b += D.line(X(t), 320, X(t), 330, 2.5, D.C.stroke) + D.T(X(t), 358, String(t), 25, { fill: D.C.stroke, weight: 'normal' }); });
+    b += D.T(355, 394, 'Time (billions of years ago)', 25, { fill: D.C.stroke });
+    b += '<text x="44" y="180" font-family="' + D.F + '" font-size="25" font-weight="bold" fill="' + D.C.stroke + '" text-anchor="middle" transform="rotate(-90 44 180)">Percentage of the air</text>';
+    const pts = (arr) => arr.map((p, i) => (i ? 'L' : 'M') + X(p[0]).toFixed(1) + ' ' + Y(p[1]).toFixed(1)).join(' ');
+    const co2 = [[4.5, 90], [4.0, 72], [3.5, 52], [3.0, 40], [2.7, 34], [2.0, 18], [1.5, 10], [1.0, 5], [0.5, 2], [0, 0.6]];
+    const o2 = [[4.5, 0], [3.0, 0], [2.7, 0], [2.4, 2], [2.0, 4], [1.5, 7], [1.0, 11], [0.6, 15], [0.3, 19], [0, 21]];
+    b += '<path d="' + pts(co2) + '" fill="none" stroke="' + D.C.stroke + '" stroke-width="4" stroke-linejoin="round"/>';
+    b += '<path d="' + pts(o2) + '" fill="none" stroke="' + D.C.arrow + '" stroke-width="4" stroke-dasharray="12 8" stroke-linejoin="round"/>';
+    b += D.T(X(4.1) + 10, Y(80), 'carbon dioxide', 25, { anchor: 'start', fill: D.C.stroke });
+    b += D.T(X(0.9), Y(24), 'oxygen', 25, { fill: D.C.arrow });
+    return D.svg(W, 410, b, 'Sketch graph against time from 4.5 billion years ago to today. Carbon dioxide starts high and falls steeply between 4 and 3 billion years ago, then keeps falling to almost zero. Oxygen is zero until about 2.7 billion years ago, then rises gradually to about 21 percent.');
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, isTH: true, routeWords: '', routeSwitchOptions: [] };
+    const slug = 'early-atmosphere';
+    const ready = !!(s.libReady && K && D);
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const pn = this.props.mrbPrevNext || {};
+    // the clock
+    const cs = s.cs; const st = STAGES[cs];
+    const pick = s.picks[cs];
+    const committed = pick !== undefined;
+    const right = committed && !!st.opts[pick].ok;
+    const key = st.opts.filter((o) => o.ok)[0];
+    const clockDone = s.picks[STAGES.length - 1] !== undefined;
+    const done = [s.hook !== null, clockDone, s.eq !== null, s.oil, s.ev, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const eqSrc = (ready && (K.src(slug).equations || [])[0]) || '6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂';
+    const eqParts = eqSrc.split('(');
+    return Object.assign({}, R, {
+      video: K && s.hook !== null ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      eyebrowLine: R.isTriple ? 'AQA Chemistry (8462) 4.9.1.2–4.9.1.4 · Process' : 'AQA Combined Science (8464) 5.9.1.2–5.9.1.4 · Process',
+      keySpec: R.isTriple ? 'AQA 4.9.1.2–4.9.1.4 (8462)' : 'AQA 5.9.1.2–5.9.1.4 (8464)',
+      endPrev: pn.prev || null, endNext: pn.next || null,
+      endConnects: ready ? [{ href: K.hrefFor('composition-of-atmosphere', R), label: 'The composition of the atmosphere' }, { href: K.hrefFor('greenhouse-gases', R), label: 'Greenhouse gases and climate change' }, { href: K.hrefFor('crude-oil-hydrocarbons', R), label: 'Crude oil and hydrocarbons' }, { href: K.hrefFor('photosynthesis', R), label: 'Photosynthesis' }].filter((x) => x.href) : [],
+      hookFig: ready ? this.hookSvg() : '',
+      hookOptions: [
+        { text: 'Locked in rocks and fossil fuels underground', correct: true, reply: '' },
+        { text: 'Turned into the oxygen that we breathe today', correct: false, reply: 'Carbon atoms cannot turn into oxygen atoms. The oxygen came from somewhere else.' },
+        { text: 'Inside the plants and animals alive today', correct: false, reply: 'Living things hold some of it, but only a small share. Far more is underground.' },
+        { text: 'Still in the air, just spread more thinly', correct: false, reply: 'The share really did fall: from most of the air to about 0.04%.' }
+      ],
+      hookReveal: 'Most of it is underground: in sedimentary rocks such as limestone, and in fossil fuels. Getting it there took about 4 billion years.',
+      onHook: (i) => this.setState({ hook: i }),
+      // clock
+      cWhen: st.when, cHead: st.head, cText: st.text, cPrompt: st.prompt,
+      cFig: ready ? K.fig(this.clockSvg(cs, committed), '') : null,
+      cAsking: !committed,
+      cOpts: this.order(st.opts, 'clock' + cs).map((x) => ({ label: x.o.t, style: this.seg(false), onClick: () => { if (this.state.picks[cs] === undefined) this.setState((ss) => ({ picks: Object.assign({}, ss.picks, { [cs]: x.i }) })); } })),
+      cCommitted: committed,
+      cReplyWord: right ? 'Yes.' : (committed ? 'No: ' + key.t.charAt(0).toLowerCase() + key.t.slice(1) + '.' : ''),
+      cReplyText: committed && !right ? st.opts[pick].r : '',
+      cReveal: committed ? st.reveal : '',
+      cReplyStyle: 'margin-top:14px;padding:16px 18px;border-radius:14px;border:2px solid ' + (right ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      cConfrontVolcano: committed && cs === 0,
+      cCanNext: committed && cs < STAGES.length - 1,
+      cNextLabel: 'Wind the clock forward',
+      onCNext: () => this.setState((ss) => ({ cs: Math.min(STAGES.length - 1, ss.cs + 1) })),
+      // equation
+      eqSymbol: eqParts[0].trim(),
+      eqNote: eqParts.length > 1 ? eqParts.slice(1).join('(').replace(/\)\s*$/, '') : '',
+      eqOptions: [
+        { text: 'It is respiration: it uses oxygen up, not releases it', correct: true, reply: '' },
+        { text: 'Nothing is wrong: both sides have the same atoms', correct: false, reply: 'Balanced is not the test. Read which side the oxygen is on.' },
+        { text: 'Oxygen gas should be written as O, not as O₂', correct: false, reply: 'Oxygen gas is made of O₂ molecules, so O₂ is right.' },
+        { text: 'Glucose should not appear in this equation', correct: false, reply: 'Glucose does appear: it is the product of photosynthesis.' }
+      ],
+      eqReveal: 'The student has written respiration, where oxygen is a reactant and is used up. Photosynthesis is the reverse: carbon dioxide and water are the reactants, and oxygen is a product released into the air.',
+      onEq: (i) => this.setState({ eq: i }),
+      // chain
+      oilLinks: [
+        'Plankton in the sea died and sank to the sea bed.',
+        'They were buried in mud, which kept oxygen out, so they did not fully decay.',
+        'More layers of sediment built up on top, compressing them under heat and pressure.',
+        'Over millions of years the remains changed into crude oil and natural gas.'
+      ],
+      oilHerrings: [
+        { text: 'Trees and ferns in swamps were buried and squashed.', why: 'That is how coal formed. Crude oil came from plankton in the sea.' },
+        { text: 'Decomposers broke the plankton down into carbon dioxide.', why: 'Fully decayed remains leave no fuel. The mud kept oxygen out.' },
+        { text: 'Dinosaur bodies were buried and changed into oil.', why: 'Crude oil formed from plankton, tiny sea organisms, not dinosaurs.' }
+      ],
+      onOil: () => this.setState({ oil: true }),
+      // evidence
+      evBins: [{ id: 'for', label: 'Supports the idea' }, { id: 'against', label: 'Weakens the idea' }],
+      evItems: [
+        { text: 'Mars’s atmosphere is mainly carbon dioxide, with very little oxygen.', bin: 'for', why: 'That matches the theory of a carbon dioxide atmosphere with little or no oxygen.' },
+        { text: 'Volcanoes today give out mainly water vapour and carbon dioxide.', bin: 'for', why: 'If early volcanoes did the same, the early air would be rich in carbon dioxide.' },
+        { text: 'Very old rocks contain minerals that only form when there is little oxygen.', bin: 'for', why: 'The rocks record a time with almost no oxygen in the air.' },
+        { text: 'Mars has no oceans and no life to remove carbon dioxide.', bin: 'against', why: 'Earth’s oceans and living things changed its air, so Mars may not show how Earth developed.' },
+        { text: 'No sample of Earth’s air from 4 billion years ago exists.', bin: 'against', why: 'Without direct evidence the idea cannot be checked against the real early air.' },
+        { text: 'Mars is smaller than Earth and has lost much of its atmosphere to space.', bin: 'against', why: 'Mars’s air today may differ from what it started with, so it is a weaker model.' }
+      ],
+      onEv: () => this.setState({ ev: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'Why did CO₂ levels decrease') || { options: [] }, { command: 'Give', marks: 1, why: 'Carbon dioxide dissolves in water, so the new oceans took large amounts of it out of the air.' }),
+        r2: { kind: 'data', command: 'Suggest', marks: 2, prompt: 'The sketch graph shows how the percentages of carbon dioxide and oxygen in the atmosphere changed. Use the graph.', figureSvg: this.graphSvg(), figureAlt: 'Sketch graph of carbon dioxide and oxygen in the atmosphere against time',
+          parts: [
+            { label: 'When did oxygen first appear in the atmosphere?', options: ['About 4.5 billion years ago', 'About 2.7 billion years ago', 'About 1.0 billion years ago', 'About 0.1 billion years ago'], answer: 1 },
+            { label: 'Suggest why carbon dioxide fell between 4 and 3 billion years ago.', options: ['It dissolved in the newly formed oceans', 'Plants took it in by photosynthesis', 'Animals breathed it in as they evolved', 'Hot volcanoes burned it away'], answer: 0 }
+          ],
+          right: '', wrong: 'Oxygen starts where its line leaves zero. Before then nothing was releasing oxygen by photosynthesis, so something else took the carbon dioxide out of the air.',
+          model: ['About 2.7 billion years ago (1)', 'Carbon dioxide dissolved in the oceans, forming carbonate sediments (1); not photosynthesis, because no oxygen was being released yet'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'Explain why nitrogen became the main gas in the Earth’s atmosphere. Put the links in order.',
+          links: ['Volcanoes released nitrogen into the early atmosphere.', 'Nitrogen is unreactive, so very little of it was removed.', 'As carbon dioxide was removed, nitrogen built up to about 80% of the air.'],
+          herrings: [{ text: 'Algae and plants released nitrogen by photosynthesis.', why: 'Photosynthesis releases oxygen, not nitrogen.' }, { text: 'The oceans gave out nitrogen as they formed.', why: 'The oceans took gases out of the air. The nitrogen came from volcanoes.' }] },
+        r4: { command: 'Describe', marks: 6, question: 'Describe how the Earth’s atmosphere changed from the early atmosphere to the atmosphere today.',
+          levels: [
+            { label: 'Level 3 · 5–6', text: 'A sequenced account from the volcanic atmosphere to today, giving the main changes in the gases and a cause for each.', max: 6 },
+            { label: 'Level 2 · 3–4', text: 'Several correct changes with causes, but the sequence is incomplete or partly out of order.', max: 4 },
+            { label: 'Level 1 · 1–2', text: 'One or two relevant facts, given in isolation.', max: 2 },
+            { label: 'No relevant content · 0', text: '', max: 0 }
+          ],
+          points: ['Volcanoes released the early atmosphere: mainly carbon dioxide, with water vapour and nitrogen, and little or no oxygen.', 'As the Earth cooled, water vapour condensed to form the oceans.', 'Carbon dioxide dissolved in the oceans and carbonates precipitated, forming sediments.', 'From about 2.7 billion years ago algae, then plants, photosynthesised: oxygen increased and carbon dioxide decreased.', 'Oxygen rose gradually to a level that enabled animals to evolve.', 'Carbon was locked in sedimentary rocks such as limestone and in fossil fuels: coal, crude oil and natural gas.', 'Nitrogen, released by volcanoes and unreactive, built up to about 80%; oxygen is about 20%.'],
+          reject: ['“Volcanoes released oxygen.” They released little or no oxygen.', '“Carbon dioxide turned into oxygen.” Photosynthesis takes in carbon dioxide and releases oxygen; the carbon stays in living things, then rocks and fuels.'] }
+      } : {},
+      keyLines: [
+        'Early atmosphere (one theory): gases released by volcanoes; mainly carbon dioxide, with water vapour and some nitrogen, little or no oxygen, perhaps some methane and ammonia.',
+        'Oceans formed when the Earth cooled and water vapour condensed; carbon dioxide dissolved and carbonates formed sediments.',
+        'Oxygen increased from about 2.7 billion years ago, by photosynthesis by algae and later plants, to a level that let animals evolve.',
+        'Carbon dioxide decreased: dissolved in the oceans, photosynthesis, and locked in sedimentary rocks (limestone) and fossil fuels (coal, crude oil, natural gas).',
+        'Nitrogen built up: released by volcanoes and unreactive, so little was removed.',
+        'Evidence is limited because of the 4.6-billion-year time scale.'
+      ],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

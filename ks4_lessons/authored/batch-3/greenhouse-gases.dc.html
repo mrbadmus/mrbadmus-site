@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Greenhouse gases and climate change · MrBadmus GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Chemistry of the atmosphere" title="Greenhouse gases and climate change" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">{{ eyebrowLine }}</p>
+        <h1>Greenhouse gases and climate change</h1>
+        <p class="ks3-bigq">The same few gases keep Earth warm enough for life, and are now warming it further. How do they hold on to heat, and why is cutting them so hard?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Take away three gases and Earth would average about −18 °C.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">Today the Earth's surface averages about 15 °C. Same Sun, same distance, same ground. The difference is made by water vapour, carbon dioxide and methane in the air.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="How do those gases keep the surface warmer?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>The Sun is very hot, and most of its radiation is <strong>short wavelength</strong>: visible light, with some ultraviolet. It reaches the Earth and warms the surface. The warmed surface then gives out radiation of its own, but at <strong>long wavelengths</strong>: infrared. What happens to that infrared on its way out decides how warm the surface stays.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Radiation bench · predict, then run</p>
+        <h2 style="margin: 6px 0 0;">{{ bHead }}</h2>
+        <sc-if value="{{ bTabsShow }}">
+          <div role="group" aria-label="Compare the three set-ups" style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+            <sc-for list="{{ bTabs }}" as="t" hint-placeholder-count="3"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+          </div>
+        </sc-if>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 720px;">{{ bFig }}</div>
+        <sc-if value="{{ bAsking }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px;">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">{{ bPrompt }}</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 10px;">
+              <sc-for list="{{ bOpts }}" as="o" hint-placeholder-count="4"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ bCommitted }}">
+          <div data-arrive="1" role="status" style="{{ bReplyStyle }}">
+            <p style="margin: 0; font-size: 18px; line-height: 1.55;"><strong>{{ bReplyWord }}</strong> {{ bReplyText }}</p>
+            <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.55;">{{ bReveal }}</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ bConfrontReflect }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · the verb that earns the mark</p></div>
+            <p class="ks3-mis-quote">&ldquo;Greenhouse gases reflect the heat back down to Earth.&rdquo;</p>
+            <p style="margin: 0;">A mirror bounces radiation off without taking it in. A greenhouse gas molecule takes the infrared in, then gives it out again in any direction, so some goes back to space. Write: greenhouse gases <strong>absorb</strong> long-wavelength (infrared) radiation and <strong>re-emit</strong> it in all directions, including back towards the Earth.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ bConfrontNatural }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · natural or extra?</p></div>
+            <p class="ks3-mis-quote">&ldquo;The greenhouse effect is bad. We need to get rid of it.&rdquo;</p>
+            <p style="margin: 0;">The first set-up showed Earth without it: far too cold for life. The greenhouse effect is natural and necessary. The problem is the extra warming from human activities adding more greenhouse gases than there would naturally be.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ bCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onBNext }}" style="margin-top: 14px;">{{ bNextLabel }}</button></sc-if>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Human activities add more of two greenhouse gases. <strong>Carbon dioxide</strong> comes from burning any fuel that contains carbon, and from <strong>deforestation</strong>: fewer trees take it in, and felled trees release it when burned or left to rot. <strong>Methane</strong> is given off when some living things digest food or rot with little air, and natural gas is itself methane.</p>
+      </section>
+
+      <section id="s-sources" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort the sources" title="Which gas does it add?" prompt="Each card is a human activity. Decide which greenhouse gas it mainly adds to the air." bins="{{ srcBins }}" items="{{ srcItems }}" done-note="The exam asks for two activities for each gas. Carbon dioxide: burning fossil fuels, deforestation. Methane: cattle farming, landfill sites." on-done="{{ onSrc }}" hint-size="100%,520px"></dc-import>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>An increase in average global temperature is a major cause of <strong>climate change</strong>. Potential effects include: sea levels rising as land ice melts and seawater expands, flooding low-lying coasts; more frequent and more severe storms; changes to the amount, timing and distribution of rainfall; heat and water stress for people and wildlife; changes to how much food a region can produce; and changes to where species can live. Scientists weigh each effect by its scale, its risk and what it does to the environment.</p>
+      </section>
+
+      <section id="s-effects" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Choice" eyebrow="Exam trap" command="Describe" prompt="A student lists four effects of global climate change. Which one would not earn a mark as an effect of climate change?" options="{{ effOptions }}" reveal="{{ effReveal }}" right-word="Yes." wrong-word="That one earns a mark." on-commit="{{ onEff }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Based on <strong>peer-reviewed</strong> evidence, many scientists believe human activities will raise the temperature of the atmosphere at the Earth's surface, causing global climate change. Peer review means other experts check the work before it is published. But the climate is a complex system and hard to model, so models are simplified and predictions are uncertain. Media reports may use only part of the evidence, and may be biased. That is why results must be communicated clearly, to everyone.</p>
+      </section>
+
+      <section id="s-reports" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Judge the evidence · two practice reports</p>
+        <h2 style="margin: 6px 0 0;">Which report is better evidence about climate?</h2>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 12px;">
+          <sc-for list="{{ repCards }}" as="c" hint-placeholder-count="2">
+            <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ c.tag }}</p>
+              <p style="margin: 6px 0 10px; font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px; line-height: 1.3;">{{ c.title }}</p>
+              <dl style="margin: 0; display: grid; gap: 8px;">
+                <sc-for list="{{ c.rows }}" as="r" hint-placeholder-count="3">
+                  <div><dt style="font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ r.k }}</dt><dd style="margin: 2px 0 0; font-size: 17px; line-height: 1.45;">{{ r.v }}</dd></div>
+                </sc-for>
+              </dl>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 14px;">
+          <sc-for list="{{ repQs }}" as="q" hint-placeholder-count="4">
+            <div role="group" aria-labelledby="{{ q.id }}" style="{{ q.style }}">
+              <p id="{{ q.id }}" style="margin: 0 0 8px; font-size: 18px; font-weight: 600; line-height: 1.45;">{{ q.label }}</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <sc-for list="{{ q.options }}" as="o" hint-placeholder-count="2"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+              </div>
+              <sc-if value="{{ q.hasWhy }}"><p data-arrive="1" style="margin: 8px 0 0; font-size: 16px; line-height: 1.5;">{{ q.why }}</p></sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top: 16px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onRepCheck }}" disabled="{{ repCheckLocked }}" style="{{ repCheckStyle }}">Check my judgements</button>
+          <span role="status" style="font-size: 18px; font-weight: 700; color: var(--ks3-ink-body);">{{ repStatus }}</span>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>The <strong>carbon footprint</strong> is the total amount of carbon dioxide and other greenhouse gases emitted over the full life cycle of a product, service or event. It is reduced by cutting emissions of carbon dioxide and methane: renewable energy, saving energy with insulation and efficient vehicles, capturing and storing carbon dioxide, carbon taxes, offsetting such as tree planting, and less waste sent to landfill. Actions may be <strong>limited</strong>: they cost money, some technology is not ready, people are reluctant to change their lifestyles, not everyone is informed, some doubt the evidence, and countries find it hard to agree.</p>
+      </section>
+
+      <section id="s-limits" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Suggest" prompt="A town replaces its diesel buses with electric ones to cut its carbon footprint. Which reason could limit the cut?" options="{{ limOptions }}" reveal="{{ limReveal }}" right-word="Yes." wrong-word="Not quite." on-commit="{{ onLim }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Give</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">A short answer, no reason: two activities for each gas.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Four effects means four different ones, not four ways of saying hotter.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The radiation chain in order: short in, long out, absorbed, re-emitted.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Evaluate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Use the data and the quality of the source, then judge the claim.</dd></div>
+        </dl>
+      </section>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="greenhouse-gases" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Greenhouse gases and climate change" spec="{{ keySpec }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure why the gases absorb the infrared but not the sunlight?" legal="The bench draws a few rays and molecules. Real radiation is a continuous flow, some sunlight is reflected or absorbed on the way in, and the temperatures are global averages. The two reports and the T-shirt data are made up for practice." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Minus 18 degrees', short: 'HOOK' },
+  { id: 's-bench', label: 'Radiation bench', short: 'BENCH' },
+  { id: 's-sources', label: 'Which gas does it add?', short: 'SORT' },
+  { id: 's-effects', label: 'Effects of climate change', short: 'EFFECTS' },
+  { id: 's-reports', label: 'Judge the evidence', short: 'EVIDENCE' },
+  { id: 's-limits', label: 'Why cuts are limited', short: 'LIMITS' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const W = 640;
+const SHORT = '#D97706', LONG = '#C8102E';
+/* Greenhouse gas molecules. The first three are the absorbers; `on` = the set-ups they appear in (1 natural, 2 extra). */
+const MOLS = [
+  { x: 300, y: 205, k: 'ch4', on: [2] },
+  { x: 400, y: 165, k: 'co2', on: [1, 2] },
+  { x: 500, y: 135, k: 'h2o', on: [1, 2] },
+  { x: 205, y: 100, k: 'co2', on: [1, 2] },
+  { x: 350, y: 100, k: 'h2o', on: [1, 2] },
+  { x: 455, y: 222, k: 'co2', on: [1, 2] },
+  { x: 540, y: 205, k: 'ch4', on: [1, 2] },
+  { x: 250, y: 160, k: 'co2', on: [2] },
+  { x: 350, y: 228, k: 'co2', on: [2] },
+  { x: 455, y: 92, k: 'ch4', on: [2] },
+  { x: 250, y: 228, k: 'h2o', on: [2] }
+];
+/* Each set-up: what happens to each of the three infrared rays leaving the surface at x = 300, 400, 500. */
+const SETUPS = [
+  { name: 'No greenhouse gases', temp: 'about −18 °C', level: 286,
+    rays: [{ x: 300, out: true }, { x: 400, out: true }, { x: 500, out: true }],
+    prompt: 'Sunlight warms the ground, and the ground gives out infrared. Where does the infrared go?',
+    opts: [
+      { t: 'All of it escapes to space', ok: true, r: '' },
+      { t: 'It bounces off the top of the sky', r: 'There is nothing up there to send it back. With no greenhouse gases, it simply leaves.' },
+      { t: 'The ozone layer traps it', r: 'The ozone layer absorbs some of the Sun’s ultraviolet, not the Earth’s infrared. It is not the greenhouse effect.' },
+      { t: 'It stays in the ground as heat', r: 'Warm ground keeps giving out infrared. Unless something sends some back, that energy leaves.' }
+    ],
+    reveal: 'With nothing to send any of it back, the surface settles far below freezing.' },
+  { name: 'Today’s natural amount', temp: 'about 15 °C', level: 206,
+    rays: [{ x: 300, out: true }, { x: 400, hit: 1, to: [440, 330] }, { x: 500, hit: 2, to: [470, 20] }],
+    prompt: 'Now add water vapour, carbon dioxide and methane at their natural levels. Which radiation do the gases absorb?',
+    opts: [
+      { t: 'The long-wavelength infrared from the ground', ok: true, r: '' },
+      { t: 'The short-wavelength radiation from the Sun', r: 'Sunlight passes through these gases almost untouched. That is how it reaches the ground at all.' },
+      { t: 'Both kinds of radiation, equally strongly', r: 'They are almost transparent to the Sun’s short wavelengths. Only the long wavelengths are absorbed.' },
+      { t: 'Neither: they reflect the infrared down', r: 'Reflecting would mean bouncing off. The molecules take the energy in, then give it out again.' }
+    ],
+    reveal: 'Each molecule that absorbs a ray re-emits it in a random direction. Some escapes; some comes back down and warms the surface again, keeping Earth warm enough for life.' },
+  { name: 'Extra greenhouse gases', temp: 'above 15 °C', level: 172,
+    rays: [{ x: 300, hit: 0, to: [340, 330] }, { x: 400, hit: 1, to: [440, 330] }, { x: 500, hit: 2, to: [470, 20] }],
+    prompt: 'Human activities add more carbon dioxide and methane. Predict the effect.',
+    opts: [
+      { t: 'More infrared is absorbed and sent back, so it warms', ok: true, r: '' },
+      { t: 'More sunlight is blocked on the way in, so it cools', r: 'The gases barely touch incoming sunlight. Extra gas absorbs more of the outgoing infrared.' },
+      { t: 'The ozone hole grows and lets more heat in', r: 'Ozone is a separate problem. Carbon dioxide and methane do not make a hole in anything.' },
+      { t: 'Nothing changes, because the effect is natural', r: 'The natural effect is real, and adding more gas makes it stronger.' }
+    ],
+    reveal: 'The average temperature at the surface rises, and that rise is a major cause of global climate change.' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, bs: 0, bpicks: {}, view: null, play: 0, src: false, eff: null, rep: {}, repChecked: false, repDone: false, repTried: false, lim: null, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  reduced() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
+  seg(on) {
+    return 'font:inherit;font-size:17px;font-weight:700;text-align:left;line-height:1.35;padding:11px 15px;min-height:48px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  order(list, salt) {
+    const K = window.KS4; const h = (t) => (K ? K.hash(salt + '|' + t) : t.length);
+    return list.map((o, i) => ({ o: o, i: i })).sort((a, b) => h(a.o.t) - h(b.o.t));
+  }
+  /* A ray drawn as a wave along a straight line: tight for short wavelength, loose for long. */
+  wave(x1, y1, x2, y2, lam, amp) {
+    const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, px = -uy, py = ux;
+    const n = Math.max(8, Math.round(L / (lam / 8))); let d = '';
+    for (let i = 0; i <= n; i++) {
+      const s = L * i / n, fade = Math.min(1, s / 12, (L - s) / 12), o = amp * fade * Math.sin(2 * Math.PI * s / lam);
+      d += (i ? 'L' : 'M') + (x1 + ux * s + px * o).toFixed(1) + ' ' + (y1 + uy * s + py * o).toFixed(1);
+    }
+    return d;
+  }
+  head(x1, y1, x2, y2, col) {
+    const a = Math.atan2(y2 - y1, x2 - x1), h = 16;
+    return '<polygon points="' + x2 + ',' + y2 + ' ' + (x2 - h * Math.cos(a - 0.45)).toFixed(1) + ',' + (y2 - h * Math.sin(a - 0.45)).toFixed(1) + ' ' + (x2 - h * Math.cos(a + 0.45)).toFixed(1) + ',' + (y2 - h * Math.sin(a + 0.45)).toFixed(1) + '" fill="' + col + '"/>';
+  }
+  /* One ray: drawn on from its start at `begin` seconds over `dur` (or drawn whole when still). */
+  ray(x1, y1, x2, y2, kind, begin, dur, anim, arrow) {
+    const col = kind === 'short' ? SHORT : LONG;
+    const d = kind === 'short' ? this.wave(x1, y1, x2, y2, 16, 6) : this.wave(x1, y1, x2, y2, 38, 9);
+    if (!anim) return '<path d="' + d + '" fill="none" stroke="' + col + '" stroke-width="3.5" stroke-linecap="round"/>' + (arrow ? this.head(x1, y1, x2, y2, col) : '');
+    let b = '<path d="' + d + '" pathLength="1" fill="none" stroke="' + col + '" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="1 1" stroke-dashoffset="1">' +
+      '<animate attributeName="stroke-dashoffset" from="1" to="0" dur="' + dur + 's" begin="' + begin + 's" fill="freeze"/></path>';
+    if (arrow) b += '<g opacity="0">' + this.head(x1, y1, x2, y2, col) + '<set attributeName="opacity" to="1" begin="' + (begin + dur) + 's" fill="freeze"/></g>';
+    return b;
+  }
+  mol(x, y, k, s) {
+    const D = window.KS4D; s = s || 1;
+    const O = (cx, cy) => D.circ(cx, cy, 8 * s, '#E8836B', D.C.stroke, 1.5), C = (cx, cy) => D.circ(cx, cy, 8 * s, '#5B5B5B', D.C.stroke, 1.5), H = (cx, cy) => D.circ(cx, cy, 5.5 * s, '#FFFFFF', D.C.stroke, 1.5);
+    if (k === 'co2') return O(x - 15 * s, y) + C(x, y) + O(x + 15 * s, y);
+    if (k === 'h2o') return H(x - 11 * s, y + 8 * s) + H(x + 11 * s, y + 8 * s) + O(x, y);
+    return H(x - 10 * s, y - 10 * s) + H(x + 10 * s, y - 10 * s) + H(x - 10 * s, y + 10 * s) + H(x + 10 * s, y + 10 * s) + C(x, y);
+  }
+  thermo(level, prevLevel, label, anim) {
+    const D = window.KS4D; const x = 583, top = 106, bot = 318; let b = '';
+    b += '<rect x="' + x + '" y="' + top + '" width="24" height="' + (bot - top + 8) + '" rx="12" fill="#FFFFFF" stroke="' + D.C.stroke + '" stroke-width="2.5"/>';
+    const from = prevLevel === null ? bot : prevLevel;
+    if (anim) b += '<rect x="' + (x + 6) + '" y="' + from + '" width="12" height="' + (bot - from + 8) + '" fill="' + LONG + '"><animate attributeName="y" from="' + from + '" to="' + level + '" dur="1.2s" begin="3.4s" fill="freeze"/><animate attributeName="height" from="' + (bot - from + 8) + '" to="' + (bot - level + 8) + '" dur="1.2s" begin="3.4s" fill="freeze"/></rect>';
+    else b += '<rect x="' + (x + 6) + '" y="' + level + '" width="12" height="' + (bot - level + 8) + '" fill="' + LONG + '"/>';
+    b += D.circ(x + 12, bot + 16, 20, LONG, D.C.stroke, 2.5);
+    const lab = D.T(632, 374, label, 26, { anchor: 'end', fill: D.C.stroke });
+    b += anim ? '<g opacity="0">' + lab + '<set attributeName="opacity" to="1" begin="4.6s" fill="freeze"/></g>' : lab;
+    return b;
+  }
+  /* The bench: Sun, atmosphere, surface, thermometer; rays run once the set-up has a prediction. */
+  benchSvg(k, committed, play) {
+    const D = window.KS4D; const su = SETUPS[k]; const anim = committed && !this.reduced();
+    let b = '<desc>' + k + '-' + play + '</desc>';
+    b += '<rect x="0" y="66" width="' + W + '" height="264" fill="#E3EEF8"/>';
+    b += D.T(170, 42, 'Space', 24, { anchor: 'start', fill: D.C.stroke }) + D.T(14, 318, 'Atmosphere', 24, { anchor: 'start', fill: D.C.stroke });
+    b += '<rect x="0" y="330" width="' + W + '" height="56" fill="#C9B79C"/>' + D.line(0, 330, W, 330, 3, D.C.stroke);
+    b += D.T(14, 368, 'Earth’s surface', 24, { anchor: 'start', fill: D.C.stroke });
+    b += D.circ(110, 34, 26, '#FBBF24', D.C.stroke, 2.5);
+    MOLS.forEach((m) => { if (k > 0 && m.on.indexOf(k) >= 0) b += this.mol(m.x, m.y, m.k); });
+    const prev = k > 0 ? SETUPS[k - 1].level : null;
+    if (!committed) {
+      b += this.thermo(prev === null ? 318 : prev, null, '?', false);
+    } else {
+      [150, 210, 270].forEach((x, i) => { b += this.ray(124, 60, x, 328, 'short', i * 0.25, 1.0, anim, true); });
+      su.rays.forEach((r, i) => {
+        const t0 = 1.4 + i * 0.25;
+        if (r.out) { b += this.ray(r.x, 328, r.x, 14, 'long', t0, 1.2, anim, true); return; }
+        const m = MOLS[r.hit];
+        b += this.ray(r.x, 328, m.x, m.y + 14, 'long', t0, 0.7, anim, false);
+        const ring = '<circle cx="' + m.x + '" cy="' + m.y + '" r="24" fill="none" stroke="' + LONG + '" stroke-width="2.5" stroke-dasharray="5 4"/>';
+        if (anim) b += '<g opacity="0">' + ring + '<set attributeName="opacity" to="1" begin="' + (t0 + 0.7) + 's" fill="freeze"/></g>' +
+          '<circle cx="' + m.x + '" cy="' + m.y + '" r="10" fill="none" stroke="' + LONG + '" stroke-width="3" opacity="0"><animate attributeName="r" from="10" to="34" dur="0.6s" begin="' + (t0 + 0.7) + 's"/><animate attributeName="opacity" values="1;0" dur="0.6s" begin="' + (t0 + 0.7) + 's"/></circle>';
+        else b += ring;
+        b += this.ray(m.x, m.y, r.to[0], r.to[1], 'long', t0 + 1.0, 1.0, anim, true);
+      });
+      b += this.thermo(su.level, prev, su.temp, anim);
+    }
+    // legend
+    b += '<rect x="0" y="386" width="' + W + '" height="114" fill="#F3F0E7"/>';
+    b += '<path d="' + this.wave(20, 414, 92, 414, 16, 6) + '" fill="none" stroke="' + SHORT + '" stroke-width="3.5"/>' + D.T(104, 422, 'short wavelength, from the Sun', 23, { anchor: 'start', weight: 'normal', fill: D.C.stroke });
+    b += '<path d="' + this.wave(20, 448, 92, 448, 38, 9) + '" fill="none" stroke="' + LONG + '" stroke-width="3.5"/>' + D.T(104, 456, 'long wavelength (infrared), from the surface', 23, { anchor: 'start', weight: 'normal', fill: D.C.stroke });
+    b += this.mol(36, 482, 'co2', 0.8) + this.mol(80, 480, 'h2o', 0.8) + D.T(104, 490, 'greenhouse gas molecules: CO₂, H₂O, CH₄', 23, { anchor: 'start', weight: 'normal', fill: D.C.stroke });
+    const absorbed = su.rays.filter((r) => !r.out).length;
+    const alt = su.name + '. Short-wavelength rays from the Sun pass through the atmosphere to the surface. ' + (committed ? (absorbed === 0 ? 'All three infrared rays from the surface escape to space. ' : absorbed + ' of 3 infrared rays are absorbed by greenhouse gas molecules and re-emitted, ' + su.rays.filter((r) => !r.out && r.to[1] > 300).length + ' of them back down to the surface. ') + 'Thermometer: ' + su.temp + '.' : 'Thermometer not yet read.');
+    return D.svg(W, 500, b, alt);
+  }
+  tshirtTable() {
+    const D = window.KS4D;
+    return D.table(['Stage of its life', 'Gases emitted in kg'], [['Growing the cotton', '2.1'], ['Making the T-shirt', '1.3'], ['Transport to the shop', '0.2'], ['Washing and drying, all its life', '1.9'], ['Throwing it away', '0.1']], { widths: [360, 240], alt: 'Table of greenhouse gases emitted at each stage of a T-shirt’s life: growing the cotton 2.1 kg; making the T-shirt 1.3 kg; transport to the shop 0.2 kg; washing and drying, all its life, 1.9 kg; throwing it away 0.1 kg.' });
+  }
+  /* Rung 4: a sketch of global average temperature, year by year. */
+  tempGraph() {
+    const D = window.KS4D; let b = '';
+    const X = (yr) => 100 + (yr - 1975) / 50 * 500;
+    const dev = [0.0, 0.10, -0.06, 0.12, 0.05, 0.20, 0.08, 0.02, 0.24, 0.16, 0.10, 0.30, 0.22, 0.36, 0.18, 0.34, 0.44, 0.30, 0.40, 0.52, 0.46, 0.38, 0.56, 0.62, 0.50, 0.66, 0.58, 0.72, 0.64, 0.80, 0.70, 0.76, 0.86, 0.80, 0.92, 0.84, 0.98, 1.04, 0.90, 1.06, 1.12, 1.00, 1.16, 1.10, 1.24, 1.18, 1.30, 1.22, 1.36, 1.40, 1.20];
+    const Y = (v) => 300 - v / 1.5 * 240;
+    b += D.line(100, 312, 610, 312, 3, D.C.stroke) + D.line(100, 312, 100, 40, 3, D.C.stroke);
+    [1975, 2000, 2025].forEach((yr) => { b += D.line(X(yr), 312, X(yr), 322, 2.5, D.C.stroke) + D.T(X(yr), 350, String(yr), 25, { weight: 'normal', fill: D.C.stroke }); });
+    b += D.T(355, 386, 'Year', 25, { fill: D.C.stroke });
+    b += '<text x="40" y="176" font-family="' + D.F + '" font-size="23" font-weight="bold" fill="' + D.C.stroke + '" text-anchor="middle" transform="rotate(-90 40 176)">Global average temperature</text>';
+    b += D.arrow(76, 110, 76, 50, D.C.stroke, 3);
+    b += '<path d="' + dev.map((v, i) => (i ? 'L' : 'M') + X(1975 + i).toFixed(1) + ' ' + Y(v).toFixed(1)).join(' ') + '" fill="none" stroke="' + LONG + '" stroke-width="3" stroke-linejoin="round"/>';
+    return D.svg(W, 400, b, 'Sketch graph of global average temperature each year from 1975 to 2025. It goes up and down from year to year but rises overall; the last year is lower than the year before.');
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, isTH: true, routeWords: '', routeSwitchOptions: [] };
+    const slug = 'greenhouse-gases';
+    const ready = !!(s.libReady && K && D);
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const pn = this.props.mrbPrevNext || {};
+    // bench
+    const allRun = s.bpicks[SETUPS.length - 1] !== undefined;
+    const k = s.view !== null ? s.view : s.bs; const su = SETUPS[k];
+    const pick = s.bpicks[k]; const committed = pick !== undefined;
+    const right = committed && !!su.opts[pick].ok;
+    const key = su.opts.filter((o) => o.ok)[0];
+    const live = s.view === null;
+    // reports
+    const REP = [
+      { label: 'Which report’s data better represents the whole planet’s climate?', options: ['Report A', 'Report B'], answer: 1, why: 'Thousands of stations over 120 years cover the globe and the long term. Twelve stations in one country over 5 years cannot.' },
+      { label: 'Which report has a possible source of bias?', options: ['Report A', 'Report B'], answer: 0, why: 'A company that sells coal gains if people believe warming is natural. That does not make it wrong, but it is a reason to check its evidence carefully.' },
+      { label: 'Which report has been checked by other scientists?', options: ['Report A', 'Report B'], answer: 1, why: 'Peer review: other experts checked report B’s work before it was published.' },
+      { label: 'Report B shows that carbon dioxide and temperature have both risen since 1900. What turns that correlation into evidence of a cause?', options: ['A tested mechanism linking them, such as the greenhouse effect', 'Both lines rising together on the same graph', 'A larger, bolder headline on the report', 'One more year of the same measurements'], answer: 0, why: 'Two things can rise together by chance. A tested mechanism explains how one causes the other.' }
+    ];
+    const repAll = REP.every((q, i) => s.rep[i] !== undefined);
+    const repWrong = REP.filter((q, i) => s.rep[i] !== undefined && s.rep[i] !== q.answer).length;
+    const pickStyle = (on, dis) => 'font:inherit;font-size:17px;font-weight:600;text-align:left;max-width:100%;white-space:normal;padding:10px 14px;min-height:46px;border-radius:12px;cursor:' + (dis ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';';
+    const done = [s.hook !== null, allRun, s.src, s.eff !== null, s.repTried, s.lim !== null, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    return Object.assign({}, R, {
+      video: K && s.hook !== null ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      eyebrowLine: R.isTriple ? 'AQA Chemistry (8462) 4.9.2.1–4.9.2.4 · Model' : 'AQA Combined Science (8464) 5.9.2.1–5.9.2.4 · Model',
+      keySpec: R.isTriple ? 'AQA 4.9.2.1–4.9.2.4 (8462)' : 'AQA 5.9.2.1–5.9.2.4 (8464)',
+      endPrev: pn.prev || null, endNext: pn.next || null,
+      endConnects: ready ? [{ href: K.hrefFor('early-atmosphere', R), label: 'The Earth’s early atmosphere and how it changed' }, { href: K.hrefFor('atmospheric-pollutants', R), label: 'Atmospheric pollutants from fuels' }, { href: K.hrefFor('carbon-cycle', R), label: 'The carbon cycle' }, { href: K.hrefFor('types-of-em-waves', R), label: 'Types of electromagnetic waves' }].filter((x) => x.href) : [],
+      hookOptions: [
+        { text: 'They absorb heat given off by the ground and send some back', reply: '' },
+        { text: 'They reflect the sunlight back down onto the ground', reply: '' },
+        { text: 'They block the Sun’s ultraviolet rays like a shield', reply: '' },
+        { text: 'They soak up sunlight on its way in, warming the air', reply: '' }
+      ],
+      hookReveal: 'The bench below runs the Earth three ways: with no greenhouse gases, with today’s natural amount, and with extra. Each run tests one part of your answer.',
+      onHook: (i) => this.setState({ hook: i }),
+      // bench
+      bHead: su.name,
+      bTabsShow: allRun,
+      bTabs: SETUPS.map((x, i) => ({ label: x.name, pressed: k === i, style: this.seg(k === i), onClick: () => this.setState((ss) => ({ view: i, play: ss.play + 1 })) })),
+      bFig: ready ? K.fig(this.benchSvg(k, committed, s.play), '') : null,
+      bAsking: live && !committed,
+      bPrompt: su.prompt,
+      bOpts: this.order(su.opts, 'bench' + k).map((x) => ({ label: x.o.t, style: this.seg(false), onClick: () => { if (this.state.bpicks[k] === undefined) this.setState((ss) => ({ bpicks: Object.assign({}, ss.bpicks, { [k]: x.i }) })); } })),
+      bCommitted: live && committed,
+      bReplyWord: right ? 'Yes.' : (committed ? 'No: ' + key.t.charAt(0).toLowerCase() + key.t.slice(1) + '.' : ''),
+      bReplyText: committed && !right ? su.opts[pick].r : '',
+      bReveal: committed ? su.reveal : '',
+      bReplyStyle: 'margin-top:14px;padding:16px 18px;border-radius:14px;border:2px solid ' + (right ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      bConfrontReflect: live && committed && k === 1,
+      bConfrontNatural: live && committed && k === 2,
+      bCanNext: live && committed && k < SETUPS.length - 1,
+      bNextLabel: k === 0 ? 'Add the natural greenhouse gases' : 'Add extra greenhouse gases',
+      onBNext: () => this.setState((ss) => ({ bs: Math.min(SETUPS.length - 1, ss.bs + 1) })),
+      // sort
+      srcBins: [{ id: 'co2', label: 'Mainly adds carbon dioxide' }, { id: 'ch4', label: 'Mainly adds methane' }],
+      srcItems: [
+        { text: 'A gas boiler burning natural gas to heat a home', bin: 'co2', why: 'Natural gas is methane, but burning it turns its carbon into carbon dioxide.' },
+        { text: 'Natural gas leaking from a pipeline', bin: 'ch4', why: 'Unburned natural gas is methane, escaping straight into the air.' },
+        { text: 'Cattle digesting grass', bin: 'ch4', why: 'Cattle and sheep produce methane as they digest their food.' },
+        { text: 'Food waste rotting in a landfill site', bin: 'ch4', why: 'Rubbish buried in landfill decomposes with little air and gives off methane.' },
+        { text: 'Clearing a rainforest to make farmland', bin: 'co2', why: 'Fewer trees take in carbon dioxide, and felled trees release it when burned or left to rot.' },
+        { text: 'A coal-fired power station', bin: 'co2', why: 'Burning coal releases the carbon it holds as carbon dioxide.' },
+        { text: 'Rice growing in flooded paddy fields', bin: 'ch4', why: 'Plant matter rotting in waterlogged soil, with little air, gives off methane.' },
+        { text: 'Driving a petrol car', bin: 'co2', why: 'Burning petrol releases carbon dioxide.' }
+      ],
+      onSrc: () => this.setState({ src: true }),
+      // effects
+      effOptions: [
+        { text: 'Sea levels rise and flood low-lying land', correct: false, reply: 'Credited. Look for the one that does not depend on temperature.' },
+        { text: 'Storms become more frequent and more severe', correct: false, reply: 'Credited. Look for the one that does not depend on temperature.' },
+        { text: 'The oceans become more acidic', correct: true, reply: '' },
+        { text: 'Some regions can grow less food', correct: false, reply: 'Credited. Look for the one that does not depend on temperature.' }
+      ],
+      effReveal: 'Ocean acidification is real, but it is caused by extra carbon dioxide dissolving in seawater, not by the rise in temperature. In a four-effects answer, give four different effects of the warming, such as sea level, storms, rainfall and food production.',
+      onEff: (i) => this.setState({ eff: i }),
+      // reports
+      repCards: [
+        { tag: 'Report A · blog post', title: '“Warming is natural, not caused by us”', rows: [{ k: 'Paid for by', v: 'A company that sells coal' }, { k: 'Data', v: '12 weather stations in one country, over 5 years' }, { k: 'Checked before publishing', v: 'No' }] },
+        { tag: 'Report B · science journal', title: '“Global surface temperature since 1900”', rows: [{ k: 'Paid for by', v: 'A university research fund' }, { k: 'Data', v: 'Thousands of land stations, ships and buoys, over 120 years' }, { k: 'Checked before publishing', v: 'Yes, peer reviewed' }] }
+      ],
+      repQs: REP.map((q, i) => {
+        const v = s.rep[i]; const bad = s.repChecked && v !== undefined && v !== q.answer;
+        const opts = q.options.length > 2 ? this.order(q.options.map((t) => ({ t: t })), 'rep' + i).map((x) => ({ t: x.o.t, i: x.i })) : q.options.map((t, j) => ({ t: t, i: j }));
+        return { id: 'gh-rep-' + i, label: q.label, hasWhy: bad, why: q.why,
+          style: 'padding:12px 14px;border-radius:14px;background:var(--ks3-inset);border:2px solid ' + (s.repChecked && v === q.answer ? 'var(--ks3-ok)' : (bad ? 'var(--ks3-alert-border)' : 'var(--ks3-option-border)')) + ';',
+          options: opts.map((o) => ({ label: o.t, pressed: v === o.i, disabled: s.repDone, style: pickStyle(v === o.i, s.repDone),
+            onClick: () => { if (!this.state.repDone) this.setState((ss) => ({ rep: Object.assign({}, ss.rep, { [i]: o.i }), repChecked: false })); } })) };
+      }),
+      repCheckLocked: !repAll || s.repChecked || s.repDone,
+      repCheckStyle: (!repAll || s.repChecked || s.repDone) ? 'opacity:.45;cursor:default;' : '',
+      onRepCheck: () => { if (repAll && !s.repDone) this.setState({ repChecked: true, repTried: true, repDone: repWrong === 0 }); },
+      repStatus: s.repDone ? 'All four sound. Report B is the stronger evidence.' : (s.repChecked ? (repWrong === 1 ? 'One judgement needs another look. Its note says why.' : repWrong + ' judgements need another look. Their notes say why.') : ''),
+      // limits
+      limOptions: [
+        { text: 'Its electricity may come from power stations burning fossil fuels', correct: true, reply: '' },
+        { text: 'Electric buses give out methane instead of carbon dioxide', correct: false, reply: 'An electric bus burns no fuel, so it gives out no methane itself.' },
+        { text: 'A carbon footprint only counts the fuel that a bus burns', correct: false, reply: 'A footprint covers the full life cycle, including building the bus and its battery.' },
+        { text: 'Diesel buses add nothing at all to the carbon footprint', correct: false, reply: 'Burning diesel releases carbon dioxide. That is why the swap can help.' }
+      ],
+      limReveal: 'The swap moves the burning from the bus to the power station. It only cuts emissions by much if the electricity comes from low-carbon sources such as wind or solar: a technology limit.',
+      onLim: (i) => this.setState({ lim: i }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'contributes most directly to increased methane') || { options: [] }, { command: 'Give', marks: 1, why: 'Cattle and sheep produce methane as they digest their food.' }),
+        r2: { kind: 'data', command: 'Use', marks: 2, prompt: 'The table shows the greenhouse gases emitted at each stage of one cotton T-shirt’s life. Use the table.', figureSvg: this.tshirtTable(), figureAlt: 'Table of greenhouse gases emitted at each stage of a T-shirt’s life',
+          parts: [
+            { label: 'Which stage emits the most?', options: ['Growing the cotton', 'Making the T-shirt', 'Washing and drying', 'Throwing it away'], answer: 0 },
+            { label: 'The factory says the T-shirt’s carbon footprint is 1.3 kg. Why is that wrong?', options: ['It counts one stage, not the full life cycle', 'It should count carbon dioxide only, not other gases', 'It should be the transport figure of 0.2 kg', 'A footprint is measured in litres, not in kg'], answer: 0 }
+          ],
+          right: '', wrong: 'Compare every row, not just the obvious ones. A carbon footprint adds up every stage, from growing to throwing away.',
+          model: ['Growing the cotton, 2.1 kg (1)', 'A carbon footprint covers the full life cycle: 2.1 + 1.3 + 0.2 + 1.9 + 0.1 = 5.6 kg, not just the making stage (1)'] },
+        r3: { command: 'Explain', marks: 4, prompt: 'Explain how greenhouse gases keep the Earth’s surface warmer than it would be without them. Put the links in order.',
+          links: ['Short-wavelength radiation from the Sun passes through the atmosphere.', 'The Earth’s surface absorbs it, warms up and emits long-wavelength (infrared) radiation.', 'Greenhouse gases in the atmosphere absorb the long-wavelength radiation.', 'They re-emit it in all directions, including back towards the Earth, so the surface stays warmer.'],
+          herrings: [{ text: 'Greenhouse gases reflect the infrared back down like a mirror.', why: 'The marking point is absorb, then re-emit. Reflect earns nothing.' }, { text: 'Greenhouse gases absorb the Sun’s short-wavelength radiation on the way in.', why: 'Short wavelengths pass through. Only the outgoing long wavelengths are absorbed.' }, { text: 'The ozone layer traps the Sun’s ultraviolet radiation.', why: 'Ozone and ultraviolet are not part of the greenhouse effect.' }] },
+        r4: { command: 'Evaluate', marks: 6, question: 'A newspaper says: “Last winter was the coldest for ten years where we live. This proves global warming is not happening.” The graph shows the global average temperature each year. Over the same 50 years, the amount of carbon dioxide in the atmosphere rose every year. Evaluate the newspaper’s claim.', figureSvg: this.tempGraph(),
+          levels: [
+            { label: 'Level 3 · 5–6', text: 'Separates one local winter from the long-term global trend, uses the data (a rising trend with year-to-year variation), considers the quality and source of the evidence, and reaches a justified conclusion.', max: 6 },
+            { label: 'Level 2 · 3–4', text: 'Uses the data or the quality of the evidence, but not both, with a conclusion that is partly supported.', max: 4 },
+            { label: 'Level 1 · 1–2', text: 'An opinion with one or two relevant facts and no real use of the evidence.', max: 2 },
+            { label: 'No relevant content · 0', text: '', max: 0 }
+          ],
+          points: ['One cold winter in one place is weather; global warming is about the long-term global average.', 'The graph rises overall, although some years are cooler than the year before.', 'Carbon dioxide rose over the same period, and the greenhouse effect explains how it causes warming.', 'One winter in one place is a tiny sample compared with 50 years of global data.', 'A newspaper may use only part of the evidence or be biased; peer-reviewed studies by many scientists support warming.', 'Conclusion: the claim is not supported by the evidence.'],
+          reject: ['“Global warming means every year must be hotter.” Natural variation still gives some cold years.', '“The ozone hole proves it.” Ozone is a separate problem and earns no marks here.'] }
+      } : {},
+      keyLines: [
+        'Greenhouse gases (water vapour, carbon dioxide and methane) keep the Earth warm enough to support life.',
+        'Short-wavelength radiation from the Sun passes through the atmosphere and warms the surface; the surface emits long-wavelength (infrared) radiation; greenhouse gases absorb it and re-emit it in all directions, including back to Earth.',
+        'Human activities: carbon dioxide from burning fossil fuels and deforestation; methane from cattle farming and landfill.',
+        'Effects of climate change: rising sea levels, more severe storms, changed rainfall, changes to food production and to where species live.',
+        'Carbon footprint: the total carbon dioxide and other greenhouse gases emitted over the full life cycle of a product, service or event.',
+        'Cutting emissions may be limited by cost, technology, lifestyle, lack of information and countries failing to agree.'
+      ],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

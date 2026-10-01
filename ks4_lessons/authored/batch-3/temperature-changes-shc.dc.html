@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Temperature changes and specific heat capacity · MrBadmus GCSE Physics</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Physics" unit="Particle model of matter" title="Temperature changes and specific heat capacity" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">{{ eyebrowText }}</p>
+        <h1>Temperature changes and specific heat capacity</h1>
+        <p class="ks3-bigq">Heat two things with the same energy and one ends up far hotter. What decides how far a temperature rises, and how do you measure the property that decides it?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-accent); background: var(--ks3-accent-tint); color: var(--ks3-ink);">Required practical {{ rpNum }} · specific heat capacity</span>
+        </div>
+        <div style="margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;">
+          <a href="{{ eqSheetHref }}" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 16px; border-radius: var(--ks3-r-control); border: 2px solid var(--ks3-ink); background: var(--ks3-card); color: var(--ks3-ink); font-size: 16px; font-weight: 700; text-decoration: none;" style-hover="background: var(--ks3-accent-tint); border-color: var(--ks3-accent);">View the full equation sheet<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3H3v10h10v-3"></path><path d="M9 3h4v4"></path><path d="M13 3L7 9"></path></svg></a>
+          <span style="font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">AQA · {{ eqSheetLabel }} · PDF</span>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Scorching sand, cool sea.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">On a sunny afternoon, dry sand on a beach gets too hot to walk on, while the sea next to it hardly warms up. Both have had the same sunshine all day.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Give 1 kg of dry sand and 1 kg of seawater exactly the same energy. Which warms up more?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>Heat a material and its temperature rises. How far it rises depends on three things: the <strong>mass</strong> being heated, the <strong>material</strong>, and the <strong>energy</strong> put in. The material&rsquo;s part is its <strong>specific heat capacity</strong>, c: the energy needed to raise the temperature of 1 kg of the substance by 1 °C. Water&rsquo;s is 4200 J/kg °C, one of the highest of any common substance. Aluminium&rsquo;s is 900 J/kg °C. One equation links all three to the temperature change, Δθ.</p>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equations</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">On the sheet</span>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">ΔE = m c Δθ</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">change in thermal energy (J) = mass (kg) × specific heat capacity (J/kg °C) × temperature change (°C)</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 16px;">Δθ = ΔE ÷ (m c) · c = ΔE ÷ (m Δθ) · m = ΔE ÷ (c Δθ)</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">On the sheet</span>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">E = P t</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">energy transferred (J) = power (W) × time (s). How an electric heater&rsquo;s energy is found.</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 16px;">P = E ÷ t · t = E ÷ P</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-race" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Mass, material, energy</p>
+        <h2 style="margin: 6px 0 0;">Rank the temperature rises.</h2>
+        <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.55; max-width: 62ch;">Identical heaters give each sample the energy on its card. Water: c = 4200 J/kg °C. Aluminium: c = 900 J/kg °C. Tap the samples in order, biggest rise first.</p>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ raceFig }}</div>
+        <sc-if value="{{ raceAsking }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 8px;">
+            <sc-for list="{{ raceCards }}" as="c" hint-placeholder-count="4"><button type="button" onClick="{{ c.onClick }}" disabled="{{ c.disabled }}" aria-label="{{ c.aria }}" style="{{ c.style }}"><span style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; margin-right: 10px;">{{ c.letter }}</span>{{ c.text }}</button></sc-for>
+          </div>
+          <ol style="margin: 14px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+            <sc-for list="{{ raceSlots }}" as="r" hint-placeholder-count="4"><li style="{{ r.style }}"><span style="font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted); min-width: 3.2em;">{{ r.place }}</span><span style="flex: 1 1 auto;">{{ r.text }}</span><sc-if value="{{ r.filled }}"><button type="button" onClick="{{ r.onClick }}" aria-label="{{ r.aria }}" style="{{ r.btnStyle }}">Take back</button></sc-if></li></sc-for>
+          </ol>
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onRaceHeat }}" disabled="{{ raceLocked }}" style="{{ raceHeatStyle }}">{{ raceHeatLabel }}</button>
+        </sc-if>
+        <sc-if value="{{ raceDone }}">
+          <div data-arrive="1" role="status" style="margin-top: 14px; display: flex; flex-direction: column; gap: 10px;">
+            <p style="{{ raceVerdictStyle }}"><strong>{{ raceVerdictWord }}</strong> {{ raceVerdictText }}</p>
+            <sc-for list="{{ raceNotes }}" as="n" hint-placeholder-count="1"><p style="margin: 0; font-size: 17px; line-height: 1.5; color: var(--ks3-ink-body);">{{ n }}</p></sc-for>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-rp" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-accent);">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Required practical {{ rpNum }} · the AQA method</p>
+        <h2 style="margin: 6px 0 0;">Heat a block with a known energy. Measure its temperature rise.</h2>
+        <ol style="margin: 14px 0 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 6px; font-size: 18px; line-height: 1.5; max-width: 66ch;">
+          <li>Measure the mass of the metal block on a balance.</li>
+          <li>Put the heater and the thermometer in the block&rsquo;s two holes, with a few drops of water in the thermometer hole for good contact. Wrap the block in insulation.</li>
+          <li>Connect the heater to a low-voltage supply through a joulemeter, or with an ammeter and a voltmeter. Record the starting temperature.</li>
+          <li>Switch on and start the stopclock. Record the temperature every minute for 10 minutes.</li>
+          <li>Switch off. Record the energy supplied and the highest temperature the block reaches.</li>
+          <li>Work out Δθ, then c = ΔE ÷ (m × Δθ).</li>
+        </ol>
+        <dl style="margin: 16px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 10px; font-size: 17px; line-height: 1.5;">
+          <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Independent</dt><dd style="margin: 4px 0 0;">Time of heating, which sets the energy supplied.</dd></div>
+          <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Dependent</dt><dd style="margin: 4px 0 0;">The temperature of the block.</dd></div>
+          <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Control</dt><dd style="margin: 4px 0 0;">The block&rsquo;s mass and material, the heater&rsquo;s power, the insulation.</dd></div>
+          <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Risks</dt><dd style="margin: 4px 0 0;">The heater and block get hot enough to burn: do not touch them, and let them cool on a heat-proof mat. Clamp the thermometer so it cannot roll off and break.</dd></div>
+        </dl>
+      </section>
+
+      <section id="s-sim" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Run the practical</p>
+        <h2 style="margin: 6px 0 0;">{{ simTitle }}</h2>
+        <sc-if value="{{ gateOn }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px; padding: 14px 16px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">Commit first. The data-book value for aluminium is 900 J/kg °C. The value you measure will be&hellip;</p>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <sc-for list="{{ gateOpts }}" as="g" hint-placeholder-count="3"><button type="button" onClick="{{ g.onClick }}" style="{{ g.style }}">{{ g.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ benchOn }}">
+          <div data-arrive="1" style="margin-top: 14px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px; align-items: start;">
+              <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ rigFig }}</div>
+              <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ graphFig }}</div>
+            </div>
+            <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+              <button type="button" class="ks3-reveal-btn" onClick="{{ onRun }}" disabled="{{ runLocked }}" style="{{ runStyle }}">{{ runLabel }}</button>
+            </div>
+            <sc-if value="{{ offAsk }}">
+              <div data-arrive="1" style="margin-top: 14px; padding: 14px 16px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+                <p style="margin: 0 0 8px; font-weight: 700;">The heater has switched off. Which temperature do you record as the final one?</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 8px;">
+                  <sc-for list="{{ offOpts }}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ offDone }}">
+              <p data-arrive="1" role="status" style="{{ offVerdictStyle }}"><strong>{{ offVerdictWord }}</strong> {{ offVerdictText }}</p>
+            </sc-if>
+            <sc-if value="{{ processOn }}">
+              <div data-arrive="1" style="margin-top: 14px; padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Process your data</p>
+                <p style="margin: 6px 0 0; font-size: 18px; line-height: 1.55;">Starting temperature {{ procStart }}. Highest temperature {{ procHigh }}. Take the energy from the joulemeter.</p>
+                <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                  <label for="shc-c" style="font-family: var(--ks3-font-mono); font-size: 17px;">c =</label>
+                  <input id="shc-c" type="text" inputmode="decimal" value="{{ cText }}" onInput="{{ onCText }}" onChange="{{ onCText }}" disabled="{{ cLocked }}" placeholder="your value" style="font:inherit;font-family:var(--ks3-font-mono);font-size:18px;width:9em;box-sizing:border-box;padding:10px 12px;min-height:48px;border-radius:var(--ks3-r-option);border:2px solid var(--ks3-option-border);background:var(--ks3-ground);color:var(--ks3-ink);">
+                  <span style="font-family: var(--ks3-font-mono); font-size: 17px;">J/kg °C</span>
+                  <button type="button" class="ks3-reveal-btn" onClick="{{ onCCheck }}" disabled="{{ cCheckLocked }}" style="{{ cCheckStyle }}">Check</button>
+                </div>
+                <sc-if value="{{ cShowFb }}"><p role="status" style="{{ cFbStyle }}"><strong>{{ cFbWord }}</strong> {{ cFbText }}</p></sc-if>
+              </div>
+            </sc-if>
+            <sc-if value="{{ cConfront }}">
+              <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+                <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+                <p class="ks3-mis-quote">&ldquo;Δθ is the temperature it ended at.&rdquo;</p>
+                <p style="margin: 0;">Δθ is a change: how far the temperature moved, not where it finished. The block started well above 0 °C, so the finishing temperature overstates the rise and c comes out too small. Δθ = highest − starting temperature.</p>
+              </div>
+            </sc-if>
+            <sc-if value="{{ compareOn }}">
+              <div data-arrive="1" role="status" style="{{ compareStyle }}">
+                <p style="margin: 0;"><strong>{{ compareWord }}</strong> {{ compareText }}</p>
+              </div>
+            </sc-if>
+            <sc-if value="{{ bareBtnOn }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onBare }}" style="margin-top: 14px;">Run it again without lagging</button></sc-if>
+            <sc-if value="{{ bareOn }}"><p data-arrive="1" role="status" style="margin: 14px 0 0; font-size: 18px; line-height: 1.55;">{{ bareText }}</p></sc-if>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-flaw" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · before you substitute</p></div>
+        <p class="ks3-mis-quote">&ldquo;Just put the numbers from the question straight in.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Identify" prompt="500 g of water is heated from 20 °C to 60 °C. A student writes ΔE = 500 × 4200 × 60. What is wrong?" options="{{ flawOptions }}" reveal="{{ flawReveal }}" right-word="That is it." wrong-word="That misses an error." on-commit="{{ onFlaw }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Define</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give the exact meaning: for c, energy, 1 kg and 1 °C all appear.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Write every line: convert, equation, substitute, rearrange, answer with its unit.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Link cause to effect: where the energy went, what that did to Δθ, what that did to c.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe a method</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Equipment, what you measure and how, in order, and how you work out the result.</dd></div>
+        </dl>
+      </section>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="temperature-changes-shc" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Temperature changes and specific heat capacity" spec="{{ keySpec }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Physics" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Stuck on Δθ, or on which units to convert?" legal="The practical simulates a 1.00 kg aluminium block (data-book c = 900 J/kg °C) and a 48 W heater. A fixed share of the heater&rsquo;s energy escapes to the surroundings, a larger share without lagging, and the heater takes a little time to warm up. Readings carry a small random scatter. In the ranking, every sample is heated evenly and loses no energy. Real sand and sea also differ in how they absorb sunlight, and the sea mixes and evaporates." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Sand and sea', short: 'HOOK' },
+  { id: 's-race', label: 'Rank the rises', short: 'RANK' },
+  { id: 's-sim', label: 'Run the practical', short: 'RUN' },
+  { id: 's-flaw', label: 'Before you substitute', short: 'FLAW' },
+  { id: 's-calc', label: 'Calculate it', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+/* The ranking: identical heaters, so a sample given twice the energy is heated for twice as long. */
+const SAMPLES = [
+  { k: 'P', text: '1.0 kg of water · 42 000 J', m: 1.0, c: 4200, E: 42000 },
+  { k: 'Q', text: '1.0 kg of aluminium · 42 000 J', m: 1.0, c: 900, E: 42000 },
+  { k: 'R', text: '2.0 kg of water · 42 000 J', m: 2.0, c: 4200, E: 42000 },
+  { k: 'S', text: '1.0 kg of water · 84 000 J', m: 1.0, c: 4200, E: 84000 }
+];
+const RISE = SAMPLES.map((x) => x.E / (x.m * x.c));
+const TRUE_ORDER = [1, 3, 0, 2];
+/* why a pair belongs the other way round, keyed by the two indices (lower first) */
+const PAIR_WHY = {
+  '0-1': 'Q beats P: same mass, same energy, but aluminium’s c is under a quarter of water’s, so its rise is over four times bigger.',
+  '0-2': 'P beats R: the same energy shared by twice the mass gives half the rise.',
+  '0-3': 'S beats P: twice the energy into the same mass gives twice the rise.',
+  '1-2': 'Q beats R: R has twice the mass and over four times the c of Q.',
+  '1-3': 'Q beats S: doubling the energy doubles the rise, but switching water for aluminium multiplies it by 4200 ÷ 900 ≈ 4.7.',
+  '2-3': 'S beats R: S has twice the energy and half the mass, four times the rise.'
+};
+/* The practical: a 1.00 kg aluminium block, a 48 W heater, 10 minutes. */
+const PW = 48, MB = 1.0, CAL = 900, T0 = 20.3, TAU = 40, OFF = 600, END = 750;
+const RUNS = { lag: { f: 0.20, k: 0.004 }, bare: { f: 0.38, k: 0.006 } };
+function rise(run, t) {
+  const r = RUNS[run]; const s = PW * (1 - r.f) / (MB * CAL);
+  const lagE = TAU * (1 - Math.exp(-Math.min(t, OFF) / TAU));
+  if (t <= OFF) return s * (t - lagE);
+  const u = t - OFF;
+  return s * (OFF - lagE) + s * lagE * (1 - Math.exp(-u / TAU)) - r.k * u;
+}
+const r1 = (x) => Math.round(x * 10) / 10;
+function temp(run, t) { return r1(T0 + rise(run, t)); }
+function highest(run) { let h = -1; for (let t = OFF; t <= END; t++) h = Math.max(h, temp(run, t)); return h; }
+const HI = { lag: highest('lag'), bare: highest('bare') };
+const jit = (run, m) => (((m * 37 + (run === 'bare' ? 11 : 3)) % 5) - 2) * 0.05;
+const fmtJ = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+const clock = (t) => Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0');
+function num(str) {
+  let t = String(str || '').trim().replace(/\s+/g, '');
+  if (/^\d{1,3}(,\d{3})+(\.\d+)?$/.test(t)) t = t.replace(/,/g, '');
+  else t = t.replace(',', '.');
+  const m = t.match(/^(-?\d*\.?\d+)(?:[x×*]10\^?(-?\d+)|e(-?\d+))?$/i);
+  if (!m) return NaN;
+  const p = m[2] !== undefined ? +m[2] : m[3] !== undefined ? +m[3] : 0;
+  return parseFloat(m[1]) * Math.pow(10, p);
+}
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, order: [], raceRunning: false, raceP: 0, raceDone: false, gate: null, run: 'lag', lagOn: true, phase: 'ready', simT: 0, reached: { lag: 0, bare: 0 }, offPick: null, cText: '', cCode: null, cTries: 0, bareDone: false, flaw: null, calc: 0, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+    this.reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.tick = setInterval(() => {
+      const st = this.state;
+      if (st.raceRunning) {
+        const p = Math.min(1, (Date.now() - this.raceStart) / 3000);
+        this.setState(p >= 1 ? { raceP: 1, raceRunning: false, raceDone: true } : { raceP: p });
+      }
+      if (st.phase === 'heat') {
+        const t = Math.min(OFF, (Date.now() - this.heatStart) / 9000 * OFF);
+        this.advance(t);
+      } else if (st.phase === 'watch') {
+        const t = Math.min(END, OFF + (Date.now() - this.watchStart) / 3000 * (END - OFF));
+        this.advance(t);
+      }
+    }, 50);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); clearInterval(this.tick); }
+  advance(t) {
+    const st = this.state; const reached = Object.assign({}, st.reached, { [st.run]: t });
+    if (st.phase === 'heat' && t >= OFF) {
+      if (st.run === 'lag') this.setState({ simT: OFF, reached, phase: 'off' });
+      else { this.watchStart = Date.now(); this.setState({ simT: OFF, reached, phase: 'watch' }); }
+    } else if (st.phase === 'watch' && t >= END) {
+      this.setState({ simT: END, reached, phase: 'done', bareDone: st.run === 'bare' ? true : st.bareDone });
+    } else this.setState({ simT: t, reached });
+  }
+  startWatch() {
+    if (this.reduced) this.setState((ss) => ({ simT: END, reached: Object.assign({}, ss.reached, { [ss.run]: END }), phase: 'done', bareDone: ss.run === 'bare' ? true : ss.bareDone }));
+    else { this.watchStart = Date.now(); this.setState({ phase: 'watch' }); }
+  }
+  seg(on) {
+    return 'font:inherit;font-size:17px;font-weight:700;padding:9px 18px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  optStyle(on, dim) {
+    return 'font:inherit;font-size:17px;font-weight:600;line-height:1.35;text-align:left;padding:10px 14px;min-height:48px;border-radius:var(--ks3-r-control);cursor:' + (dim ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' + (dim && !on ? 'opacity:.62;' : '');
+  }
+  verdict(ok) {
+    return 'margin:14px 0 0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);');
+  }
+  /* four thermometers; p = heater progress (0..1). A sample's heater stops once its energy is delivered. */
+  raceSvg(p, done) {
+    const D = window.KS4D; const C = D.C; let b = '';
+    const xs = [86, 242, 398, 554], top = 46, bot = 236, scale = (bot - top) / 50;
+    SAMPLES.forEach((x, i) => {
+      const share = x.E / 84000; const q = Math.min(1, p / share); const on = p > 0 && q < 1;
+      const h = RISE[i] * q * scale;
+      b += '<rect x="' + (xs[i] - 9) + '" y="' + top + '" width="18" height="' + (bot - top + 8) + '" rx="9" fill="#FFFDF8" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+      b += '<rect x="' + (xs[i] - 4) + '" y="' + (bot - h).toFixed(1) + '" width="8" height="' + (h + 10).toFixed(1) + '" fill="' + C.red + '"/>' + D.circ(xs[i], bot + 16, 15, C.red, C.stroke, 2.5);
+      b += D.T(xs[i], 306, x.k, 28, { fill: C.stroke });
+      b += D.circ(xs[i] + 34, bot + 16, 7, on ? C.gold : 'none', on ? C.stroke : C.muted, 2);
+      if (done) b += D.T(xs[i], top - 14, '+' + (Math.round(RISE[i] * 10) / 10) + ' °C', 24, { fill: C.stroke });
+    });
+    for (let d = 0; d <= 50; d += 10) b += D.line(18, bot - d * scale, 30, bot - d * scale, 2) + D.T(36, bot - d * scale + 6, String(d), 18, { weight: 'normal', fill: C.stroke, anchor: 'start' });
+    const alt = done ? 'Temperature rises: P 10 degrees, Q 46.7 degrees, R 5 degrees, S 20 degrees.' : (p > 0 ? 'The four samples are being heated.' : 'Four thermometers, P, Q, R and S, all at the starting mark.');
+    return D.svg(640, 320, b, alt);
+  }
+  rigSvg(run, t, lagOn, heating) {
+    const D = window.KS4D; const C = D.C; let b = '';
+    const bx = 150, by = 118, bw = 190, bh = 150;
+    if (lagOn) b += '<rect x="' + (bx - 18) + '" y="' + (by - 12) + '" width="' + (bw + 36) + '" height="' + (bh + 30) + '" rx="12" fill="' + C.gold + '" fill-opacity="0.35" stroke="' + C.stroke + '" stroke-width="2" stroke-dasharray="7 6"/>' + D.T(bx + bw / 2, by + bh + 42, 'lagging', 21, { weight: 'normal', fill: C.stroke });
+    b += '<rect x="' + bx + '" y="' + by + '" width="' + bw + '" height="' + bh + '" rx="6" fill="' + C.metal + '" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    b += D.T(bx + bw / 2, by + bh - 18, '1.00 kg aluminium', 21, { fill: C.stroke });
+    const hx = bx + 56; b += '<rect x="' + (hx - 11) + '" y="' + (by - 40) + '" width="22" height="' + (bh * 0.62 + 40) + '" rx="6" fill="' + (heating ? C.red : '#FFFDF8') + '" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    b += D.T(hx + 16, by - 20, 'heater', 21, { anchor: 'start', weight: 'normal', fill: C.stroke });
+    const tx = bx + 140; b += D.line(tx, 70, tx, by + bh * 0.55, 4) + D.circ(tx, by + bh * 0.55, 8, C.red, C.stroke, 2);
+    b += D.line(tx, 70, tx + 60, 70, 2.5) + D.line(hx, by - 40, hx, 54, 2.5) + D.line(hx, 54, 108, 54, 2.5);
+    b += '<rect x="' + (tx + 60) + '" y="40" width="150" height="60" rx="8" fill="#FFFDF8" stroke="' + C.stroke + '" stroke-width="2.5"/>' + D.T(tx + 135, 34, 'thermometer', 19, { weight: 'normal', fill: C.stroke }) + D.T(tx + 135, 80, temp(run, t).toFixed(1) + ' °C', 26, { fill: C.stroke });
+    b += '<rect x="8" y="24" width="150" height="60" rx="8" fill="#FFFDF8" stroke="' + C.stroke + '" stroke-width="2.5"/>' + D.T(83, 18, 'joulemeter', 19, { weight: 'normal', fill: C.stroke }) + D.T(83, 64, fmtJ(PW * Math.min(t, OFF)) + ' J', 24, { fill: C.stroke });
+    const cx = 452, cy = 232, a = (t % 60) / 60 * 2 * Math.PI;
+    b += D.circ(cx, cy, 34, '#FFFDF8', C.stroke, 2.5) + D.line(cx, cy, cx + 26 * Math.sin(a), cy - 26 * Math.cos(a), 3) + D.T(cx, cy + 58, clock(t), 24, { fill: C.stroke });
+    const alt = 'Aluminium block' + (lagOn ? ' wrapped in lagging' : ' with no lagging') + ', heater ' + (heating ? 'on' : 'off') + '. Thermometer ' + temp(run, t).toFixed(1) + ' degrees Celsius; joulemeter ' + Math.round(PW * Math.min(t, OFF)) + ' joules; stopclock ' + clock(t) + '.';
+    return D.svg(520, 320, b, alt);
+  }
+  graphSvg(reached, cur) {
+    const D = window.KS4D; const C = D.C;
+    const L = 64, Rt = 540, Tp = 22, B = 290, X = (m) => L + (Rt - L) * m / 12.5, Y = (T) => B - (B - Tp) * (T - 15) / 35;
+    let b = D.line(L, Tp, L, B, 2.5) + D.line(L, B, Rt, B, 2.5);
+    for (let T = 15; T <= 50; T += 5) b += D.line(L - 7, Y(T), L, Y(T), 2) + D.T(L - 11, Y(T) + 6, String(T), 20, { weight: 'normal', fill: C.stroke, anchor: 'end' }) + D.line(L, Y(T), Rt, Y(T), 1, '#C9C3B2');
+    for (let m = 0; m <= 12; m += 2) b += D.line(X(m), B, X(m), B + 7, 2) + D.T(X(m), B + 25, String(m), 20, { weight: 'normal', fill: C.stroke });
+    b += D.T((L + Rt) / 2, 346, 'Time / minutes', 21) + '<text x="18" y="' + ((Tp + B) / 2) + '" transform="rotate(-90 18 ' + ((Tp + B) / 2) + ')" font-family="' + D.F + '" font-size="21" font-weight="bold" fill="' + C.label + '" text-anchor="middle">Temperature / °C</text>';
+    b += D.line(X(10), Tp, X(10), B, 2, C.muted, ' stroke-dasharray="6 6"') + D.T(X(10) - 6, Tp + 16, 'heater off', 19, { anchor: 'end', weight: 'normal', fill: C.muted });
+    let n = 0;
+    ['lag', 'bare'].forEach((run) => {
+      const col = run === cur ? C.arrow : C.muted;
+      for (let m = 0; m <= 12; m++) {
+        if (m * 60 > reached[run]) break;
+        const x = X(m), y = Y(temp(run, m * 60) + jit(run, m)); n++;
+        b += D.line(x - 6, y - 6, x + 6, y + 6, 2.6, col) + D.line(x - 6, y + 6, x + 6, y - 6, 2.6, col);
+      }
+    });
+    if (reached.bare > 0) b += D.T(X(12.4), Y(HI.lag) - 12, 'lagged', 19, { anchor: 'end', fill: cur === 'lag' ? C.arrow : C.muted }) + D.T(X(12.4), Y(HI.bare) + 26, 'no lagging', 19, { anchor: 'end', fill: cur === 'bare' ? C.arrow : C.muted });
+    return D.svg(560, 360, b, 'Temperature against time, ' + n + ' readings plotted, one a minute.');
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, routeWords: '', routeSwitchOptions: [], routeOptions: [], onRoute: () => {}, eqSheetHref: 'https://www.aqa.org.uk/files/resources.physics.AQA-8463-FS-INS-2025_PDF/6b5358e1159b1b6cc2d622fc5eb894320d6fb763.pdf', eqSheetLabel: 'GCSE Physics (8463) · June 2026' };
+    const slug = 'temperature-changes-shc';
+    const ready = !!(s.libReady && K && D);
+    const hi = !!R.isHigher;
+    const rpNum = R.isTriple ? '1' : '14';
+    const pn = this.props.mrbPrevNext || {};
+    const href = (x) => (K && K.hrefFor ? K.hrefFor(x, R) : null);
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    /* ranking */
+    const order = s.order;
+    const full = order.length === 4;
+    const raceRight = full && order.every((v, i) => v === TRUE_ORDER[i]);
+    const notes = [];
+    if (s.raceDone && !raceRight) {
+      for (let a = 0; a < 4; a++) for (let c = a + 1; c < 4; c++) {
+        const ia = order[a], ic = order[c];
+        if (RISE[ia] < RISE[ic]) notes.push(PAIR_WHY[Math.min(ia, ic) + '-' + Math.max(ia, ic)]);
+      }
+    }
+    /* practical */
+    const run = s.run; const t = s.simT; const phase = s.phase;
+    const dTh = r1(HI.lag - T0); const cTrue = PW * OFF / (MB * dTh);
+    const dThB = r1(HI.bare - T0); const cBare = PW * OFF / (MB * dThB);
+    const processOn = run === 'lag' && phase === 'done' && s.offPick !== null;
+    const cOk = s.cCode === 'ok';
+    const cGiven = s.cCode !== null && (cOk || s.cTries >= 2);
+    const cMsgs = {
+      ok: ['Yes.', 'Δθ = ' + HI.lag.toFixed(1) + ' − ' + T0.toFixed(1) + ' = ' + dTh.toFixed(1) + ' °C, so c = ' + fmtJ(PW * OFF) + ' ÷ (1.00 × ' + dTh.toFixed(1) + ') = ' + Math.round(cTrue) + ' J/kg °C.'],
+      final: ['Not yet.', 'That uses the highest temperature as Δθ.'],
+      noTheta: ['Not yet.', 'That is the energy supplied. Divide it by m × Δθ.'],
+      other: ['Not yet.', 'Δθ = highest − starting temperature. Then c = E ÷ (m × Δθ), with E from the joulemeter.']
+    };
+    const cMsg = s.cCode ? cMsgs[s.cCode] : ['', ''];
+    const shownWord = cOk ? cMsg[0] : (s.cTries >= 2 ? 'Here is the working.' : cMsg[0]);
+    const shownText = cOk ? cMsg[1] : (s.cTries >= 2 ? cMsgs.ok[1] : cMsg[1]);
+    const gateRight = s.gate === 0;
+    const gateWords = ['higher', 'about the same', 'lower'];
+    const done = [s.hook !== null, s.raceDone, cGiven, s.flaw !== null, s.calc >= 2, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const F = ready ? K.fifas(slug) : [];
+    const offRight = s.offPick === 1;
+    return Object.assign({}, R, {
+      video: K && s.hook !== null && s.hook !== undefined ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      eyebrowText: R.isTriple ? 'AQA Physics (8463) 4.3.2.2 · Quantitative' : 'AQA Combined Science (8464) 6.3.2.2 · Quantitative',
+      keySpec: R.isTriple ? 'AQA 4.3.2.2 (8463) · RP1' : 'AQA 6.3.2.2 (8464) · RP14',
+      rpNum,
+      endPrev: pn.prev || null, endNext: pn.next || null,
+      endConnects: [{ href: href('internal-energy'), label: 'Internal energy' }, { href: href('specific-latent-heat'), label: 'Changes of state and specific latent heat' }, { href: href('energy-changes-in-systems'), label: 'Energy changes in systems' }].filter((c) => c.href),
+      hookOptions: [
+        { text: 'The sand: it needs less energy for each degree it warms', reply: '' },
+        { text: 'The seawater: liquids always warm up faster than solids', reply: 'Being a liquid is not what decides it. Water needs more energy per degree than sand.' },
+        { text: 'Neither: the same energy gives the same temperature rise', reply: 'Same energy, different materials: the material changes the rise too.' },
+        { text: 'The sand: it is darker, so more of the energy reaches it', reply: 'Both get exactly the same energy here, so colour plays no part.' }
+      ],
+      hookReveal: 'The sand. Warming 1 kg of water by 1 °C takes 4200 J; dry sand needs only about a fifth of that. The energy each kilogram needs per degree is a property of the material, its specific heat capacity. Water’s is unusually high, which is one reason coastal places have milder temperatures than places inland.',
+      onHook: (i) => this.setState({ hook: i }),
+      /* ranking */
+      raceFig: ready ? K.fig(this.raceSvg(s.raceDone ? 1 : s.raceP, s.raceDone), '') : null,
+      raceAsking: !s.raceDone,
+      raceCards: SAMPLES.map((x, i) => {
+        const used = order.indexOf(i) >= 0; const lock = used || s.raceRunning;
+        return { letter: x.k, text: x.text, disabled: lock, aria: 'Sample ' + x.k + ', ' + x.text.replace(' · ', ', ') + (used ? ', placed' : ''),
+          style: 'display:flex;align-items:center;text-align:left;font:inherit;font-size:17px;font-weight:600;line-height:1.35;padding:10px 14px;min-height:48px;border-radius:var(--ks3-r-control);color:var(--ks3-ink);border:2px solid var(--ks3-option-border);background:var(--ks3-card);cursor:' + (lock ? 'default;opacity:.5;' : 'pointer;'),
+          onClick: () => { if (!this.state.raceRunning && this.state.order.indexOf(i) < 0 && this.state.order.length < 4) this.setState((ss) => ({ order: ss.order.concat(i) })); } };
+      }),
+      raceSlots: ['1st', '2nd', '3rd', '4th'].map((pl, k) => {
+        const i = order[k]; const filled = i !== undefined;
+        return { place: pl, filled, text: filled ? SAMPLES[i].k + ' · ' + SAMPLES[i].text : '', aria: filled ? 'Take back sample ' + SAMPLES[i].k + ' from ' + pl : '',
+          style: 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 12px;min-height:48px;border-radius:12px;font-size:17px;border:2px ' + (filled ? 'solid var(--ks3-ink);background:var(--ks3-card);' : 'dashed var(--ks3-option-border);background:transparent;'),
+          btnStyle: 'font:inherit;font-size:15px;font-weight:700;padding:8px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid var(--ks3-option-border);background:var(--ks3-ground);',
+          onClick: () => { if (!this.state.raceRunning) this.setState((ss) => ({ order: ss.order.filter((v) => v !== i) })); } };
+      }),
+      raceLocked: !full || s.raceRunning,
+      raceHeatStyle: 'margin-top:12px;' + (!full || s.raceRunning ? 'opacity:.45;cursor:default;' : ''),
+      raceHeatLabel: s.raceRunning ? 'Heating…' : 'Heat all four',
+      onRaceHeat: () => {
+        if (this.state.order.length < 4 || this.state.raceRunning) return;
+        if (this.reduced) this.setState({ raceP: 1, raceDone: true });
+        else { this.raceStart = Date.now(); this.setState({ raceRunning: true, raceP: 0 }); }
+      },
+      raceDone: s.raceDone,
+      raceVerdictStyle: this.verdict(raceRight).replace('margin:14px 0 0;', 'margin:0;'),
+      raceVerdictWord: raceRight ? 'Right order.' : 'The order is Q, S, P, R.',
+      raceVerdictText: raceRight ? 'Δθ = ΔE ÷ (m c): twice the mass halves the rise, twice the energy doubles it, and a smaller c gives a bigger rise.' : 'Each pair you had the wrong way round:',
+      raceNotes: notes,
+      /* practical */
+      simTitle: s.gate === null ? 'Measure c for aluminium. Call it first.' : (run === 'lag' ? '1.00 kg aluminium block, lagged' : 'The same block, no lagging'),
+      gateOn: s.gate === null,
+      gateOpts: ['Higher than 900', 'About 900', 'Lower than 900'].map((lab, i) => ({ label: lab, style: this.seg(false), onClick: () => this.setState({ gate: i }) })),
+      benchOn: s.gate !== null,
+      rigFig: ready ? K.fig(this.rigSvg(run, t, s.lagOn, phase === 'heat'), '') : null,
+      graphFig: ready ? K.fig(this.graphSvg(s.reached, run), '') : null,
+      runLabel: phase === 'heat' ? 'Heating…' : phase === 'ready' ? 'Switch on' : 'Heater off',
+      runLocked: phase !== 'ready',
+      runStyle: phase !== 'ready' ? 'opacity:.45;cursor:default;' : '',
+      onRun: () => {
+        if (this.state.phase !== 'ready') return;
+        if (this.reduced) {
+          if (this.state.run === 'lag') this.setState((ss) => ({ simT: OFF, reached: Object.assign({}, ss.reached, { lag: OFF }), phase: 'off' }));
+          else this.setState((ss) => ({ simT: END, reached: Object.assign({}, ss.reached, { bare: END }), phase: 'done', bareDone: true }));
+        } else { this.heatStart = Date.now(); this.setState({ phase: 'heat' }); }
+      },
+      offAsk: run === 'lag' && (phase === 'off' || phase === 'watch' || phase === 'done'),
+      offOpts: ['The reading now, at 10 minutes', 'The highest reading, once it stops rising', 'The reading once it has cooled a little'].map((lab, i) => ({
+        label: lab, pressed: s.offPick === i, disabled: s.offPick !== null, style: this.optStyle(s.offPick === i, s.offPick !== null),
+        onClick: () => { if (this.state.offPick === null && this.state.phase === 'off') { this.setState({ offPick: i }); this.startWatch(); } } })),
+      offDone: run === 'lag' && phase === 'done' && s.offPick !== null,
+      offVerdictStyle: this.verdict(offRight),
+      offVerdictWord: offRight ? 'Yes.' : 'Watch the thermometer: it kept rising.',
+      offVerdictText: 'The heater was hotter than the block when it switched off, so energy kept flowing into the block for over a minute. Record the highest temperature, ' + HI.lag.toFixed(1) + ' °C.',
+      processOn,
+      procStart: T0.toFixed(1) + ' °C', procHigh: HI.lag.toFixed(1) + ' °C',
+      cText: s.cText, cLocked: cGiven,
+      onCText: (e) => this.setState({ cText: e.target.value }),
+      cCheckLocked: cGiven || !s.cText.trim(),
+      cCheckStyle: cGiven || !s.cText.trim() ? 'opacity:.45;cursor:default;' : '',
+      onCCheck: () => {
+        const st = this.state; if (!st.cText.trim() || st.cCode === 'ok' || st.cTries >= 2) return;
+        const v = num(st.cText); const near = (x) => isFinite(v) && Math.abs(v - x) <= Math.abs(x) * 0.02;
+        const code = near(cTrue) ? 'ok' : near(PW * OFF / (MB * HI.lag)) ? 'final' : near(PW * OFF) ? 'noTheta' : 'other';
+        this.setState({ cCode: code, cTries: code === 'ok' ? st.cTries : st.cTries + 1 });
+      },
+      cShowFb: s.cCode !== null,
+      cFbStyle: this.verdict(cOk).replace('margin:14px 0 0;', 'margin:12px 0 0;'),
+      cFbWord: shownWord, cFbText: shownText,
+      cConfront: run === 'lag' && s.cCode === 'final',
+      compareOn: cGiven && run === 'lag',
+      compareStyle: this.verdict(gateRight).replace('margin:14px 0 0;', 'margin:14px 0 0;'),
+      compareWord: gateRight ? 'Higher, as you called it.' : 'Higher, not ' + gateWords[s.gate] + '.',
+      compareText: 'Some of the heater’s energy warms the surroundings, the heater itself and the thermometer instead of the block. So Δθ is smaller than it should be, and c = ΔE ÷ (m Δθ) comes out too big. Lagging reduces the loss; it cannot remove it.',
+      bareBtnOn: cGiven && run === 'lag',
+      onBare: () => this.setState({ run: 'bare', lagOn: false, phase: 'ready', simT: 0 }),
+      bareOn: s.bareDone,
+      bareText: 'No lagging: highest ' + HI.bare.toFixed(1) + ' °C, so Δθ = ' + dThB.toFixed(1) + ' °C and c = ' + fmtJ(PW * OFF) + ' ÷ (1.00 × ' + dThB.toFixed(1) + ') = ' + Math.round(cBare) + ' J/kg °C, even further above 900.',
+      /* flaw */
+      flawOptions: [
+        { text: 'Only Δθ: it should be 60 − 20 = 40 °C', correct: false, reply: 'Right about Δθ, but 500 is in grams and c is per kilogram.' },
+        { text: 'Only the mass: it should be 0.5 kg', correct: false, reply: 'Right about the mass, but 60 °C is where it finished, not how far it rose.' },
+        { text: 'Both: m = 0.5 kg and Δθ = 40 °C', correct: true, reply: '' },
+        { text: 'Nothing: the numbers are all in the question', correct: false, reply: 'Two numbers need changing before they go in.' }
+      ],
+      flawReveal: 'Δθ is how far the temperature changed, final − initial: 60 − 20 = 40 °C. c is in J per kilogram, so 500 g becomes 0.5 kg. ΔE = 0.5 × 4200 × 40 = 84 000 J. The student’s line gives 126 000 000 J, 1500 times too big. When something cools, Δθ is initial − final.',
+      onFlaw: (i) => this.setState({ flaw: i }),
+      /* CFIFA */
+      cfExamples: ready && F.length ? [
+        { tab: 'Nothing to convert', head: F[0].question, next: 'Now one that needs converting.', steps: K.cfifa(F[0], 'Nothing to convert: kg, J/kg °C and °C already.') },
+        hi ? { tab: 'Convert first', head: 'A 500 g copper pan is given 7.7 kJ of energy. Calculate its temperature rise. (c = 385 J/kg °C)', next: 'Convert first, then the same four lines. Your turn below.',
+          steps: [
+            { letter: 'C', label: 'Convert', line: '500 g ÷ 1000 = 0.5 kg; 7.7 kJ × 1000 = 7700 J', note: 'c is in joules per kilogram, so the energy goes in joules and the mass in kilograms.' },
+            { letter: 'F', label: 'Formula', line: 'ΔE = m × c × Δθ', note: '' },
+            { letter: 'I', label: 'Insert', line: '7700 = 0.5 × 385 × Δθ', note: '' },
+            { letter: 'F', label: 'Fine-tune', line: 'Δθ = 7700 ÷ (0.5 × 385) = 7700 ÷ 192.5 = 40', note: 'Rearrange so Δθ is the subject, then work it out.' },
+            { letter: 'A', label: 'Answer', line: 'Δθ = 40 °C', note: 'Left in kJ, 7.7 ÷ 192.5 = 0.04 °C: a thousand times too small.' }
+          ] }
+          : { tab: 'Convert first', head: '250 g of water is heated from 18 °C to 65 °C. Calculate the energy needed. (c = 4200 J/kg °C)', next: 'Convert first, then the same four lines. Your turn below.',
+          steps: [
+            { letter: 'C', label: 'Convert', line: '250 g ÷ 1000 = 0.25 kg', note: 'c is in joules per kilogram, so the mass goes in kilograms.' },
+            { letter: 'F', label: 'Formula', line: 'ΔE = m × c × Δθ', note: '' },
+            { letter: 'I', label: 'Insert', line: 'm = 0.25 kg, c = 4200, Δθ = 65 − 18 = 47 °C', note: '' },
+            { letter: 'F', label: 'Fine-tune', line: 'ΔE = 0.25 × 4200 × 47', note: '' },
+            { letter: 'A', label: 'Answer', line: 'ΔE = 49 350 J', note: 'Left in grams, 250 × 4200 × 47 = 49 350 000 J: a thousand times too big.' }
+          ] }
+      ] : [],
+      cfQuestions: hi ? [
+        { tab: 'Question 1', id: 'shc-q1', head: 'A 1.5 kg iron block at 20 °C is supplied with 27 000 J. Calculate its final temperature. (c = 450 J/kg °C)', close: '40 °C is the rise, not the answer: add it to the starting 20 °C.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert: kg, J and J/kg °C already.' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'ΔE = m × c × Δθ' }, { letter: 'I', label: 'Insert', placeholder: '… = … × … × Δθ', line: '27 000 = 1.5 × 450 × Δθ' }, { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange: Δθ = …', line: 'Δθ = 27 000 ÷ 675 = 40 °C' }, { letter: 'A', label: 'Answer', placeholder: 'final temperature = … with unit', line: 'Final temperature = 20 + 40 = 60 °C' }] },
+        { tab: 'Question 2', id: 'shc-q2', head: 'A 50 W heater runs for 5.0 minutes and raises the temperature of a 1.2 kg metal block by 13 °C. Calculate the specific heat capacity of the metal.', close: 'Left in minutes, E comes out 250 J and c sixty times too small.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '5.0 min × 60 = 300 s' }, { letter: 'F', label: 'Formula', placeholder: 'two equations', line: 'E = P t, then ΔE = m × c × Δθ' }, { letter: 'I', label: 'Insert', placeholder: 'E = … × …; … = … × c × …', line: 'E = 50 × 300 = 15 000 J; 15 000 = 1.2 × c × 13' }, { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange: c = …', line: 'c = 15 000 ÷ (1.2 × 13) = 15 000 ÷ 15.6 = 962' }, { letter: 'A', label: 'Answer', placeholder: 'c = … with unit', line: 'c = 962 J/kg °C (3 significant figures)' }] }
+      ] : [
+        { tab: 'Question 1', id: 'shc-q1', head: 'A 2.0 kg aluminium block is heated from 15 °C to 35 °C. Calculate the energy supplied. (c = 900 J/kg °C)', close: 'Using 35 °C as Δθ gives 63 000 J: the commonest lost mark.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert: kg, J/kg °C and °C already.' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'ΔE = m × c × Δθ' }, { letter: 'I', label: 'Insert', placeholder: 'm = …, c = …, Δθ = … − …', line: 'm = 2.0 kg, c = 900, Δθ = 35 − 15 = 20 °C' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'ΔE = 2.0 × 900 × 20' }, { letter: 'A', label: 'Answer', placeholder: 'ΔE = … with unit', line: 'ΔE = 36 000 J' }] },
+        { tab: 'Question 2', id: 'shc-q2', head: '800 g of water cools from 70 °C to 25 °C. Calculate the energy it transfers to the surroundings. (c = 4200 J/kg °C)', close: 'Cooling: Δθ is the size of the drop, 70 − 25 = 45 °C.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '800 g ÷ 1000 = 0.80 kg' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'ΔE = m × c × Δθ' }, { letter: 'I', label: 'Insert', placeholder: 'm = …, c = …, Δθ = … − …', line: 'm = 0.80 kg, c = 4200, Δθ = 70 − 25 = 45 °C' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'ΔE = 0.80 × 4200 × 45' }, { letter: 'A', label: 'Answer', placeholder: 'ΔE = … with unit', line: 'ΔE = 151 200 J' }] }
+      ],
+      onCalc: (n) => this.setState({ calc: n }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: { command: 'Define', marks: 1, prompt: 'Define the specific heat capacity of a substance.', why: 'Energy per kilogram per degree: the spec’s definition, measured in J/kg °C.',
+          options: [
+            { text: 'The energy needed to change the state of 1 kg of the substance with no temperature change', correct: false, reply: 'That is specific latent heat: the state changes and the temperature does not.' },
+            { text: 'The temperature rise of 1 kg of the substance when 1 J of energy is supplied to it', correct: false, reply: 'Upside down. Specific heat capacity is energy per kilogram per degree, not degrees per joule.' },
+            { text: 'The energy needed to raise the temperature of 1 kg of the substance by 1 °C', correct: true, reply: '' },
+            { text: 'The total energy stored by the particles in 1 kg of the substance at 1 °C', correct: false, reply: 'That is internal energy. Specific heat capacity is about a change of 1 °C.' }
+          ] },
+        r2: hi ? { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'A 2.0 kg copper block is heated by a 60 W heater for 4.0 minutes. All the energy goes into the block. Calculate its temperature rise. (c = 385 J/kg °C) Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert minutes to seconds: multiply by 60', 'Convert minutes to seconds: divide by 60'], convAnswer: 1, answer: 18.7, tol: 0.2, unit: '°C', units: ['°C', 'J', 'J/kg °C', 'W'],
+          right: 'E = 60 × 240 = 14 400 J; Δθ = 14 400 ÷ (2.0 × 385) = 18.7 °C.', wrong: 'Multiply 4.0 minutes by 60 to get 240 s, find E = P t, then rearrange ΔE = m c Δθ for Δθ.',
+          model: ['C · 4.0 min × 60 = 240 s', 'F · E = P t; ΔE = m c Δθ', 'I · E = 60 × 240 = 14 400 J; 14 400 = 2.0 × 385 × Δθ', 'F · Δθ = 14 400 ÷ 770 = 18.7', 'A · Δθ = 18.7 °C'] }
+          : { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'A 40 g copper spoon warms from 20 °C to 70 °C in a hot drink. Calculate the energy it takes in. (c = 385 J/kg °C) Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert g to kg: divide by 1000', 'Convert g to kg: multiply by 1000'], convAnswer: 1, answer: 770, tol: 5, unit: 'J', units: ['J', '°C', 'J/kg °C', 'W'],
+          right: '0.040 × 385 × 50 = 770 J.', wrong: 'Divide 40 g by 1000 to get 0.040 kg, and use Δθ = 70 − 20 = 50 °C, not 70 °C.',
+          model: ['C · 40 g ÷ 1000 = 0.040 kg', 'F · ΔE = m c Δθ', 'I · ΔE = 0.040 × 385 × (70 − 20)', 'F · ΔE = 0.040 × 385 × 50 = 770', 'A · ΔE = 770 J'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'A student’s value for the specific heat capacity of aluminium is higher than the data-book value. Explain why. Put the links in order.',
+          links: ['Some of the energy from the heater is transferred to the surroundings, not to the block.', 'So the block’s temperature rise is smaller than it would be if all the energy heated it.', 'c = ΔE ÷ (m × Δθ), so a smaller Δθ for the same energy gives a larger value of c.'],
+          herrings: [{ text: 'The thermometer read too high, so the temperature rise was too large.', why: 'A larger Δθ would make c smaller, not larger.' }, { text: 'The block’s mass increased as it was heated.', why: 'Heating does not change the mass of the block.' }] },
+        r4: { command: 'Describe', marks: 6, question: 'Describe a method to determine the specific heat capacity of a metal block. You are given an immersion heater and a joulemeter.',
+          levels: [
+            { label: 'Level 3 · 5–6', text: 'A coherent method that would produce a valid value: mass measured, heater and thermometer in the block, block insulated, energy measured, temperature rise found, and c calculated.', max: 6 },
+            { label: 'Level 2 · 3–4', text: 'A method with the key measurements, but one omission (such as how the energy is found) or not fully in order.', max: 4 },
+            { label: 'Level 1 · 1–2', text: 'Some relevant steps, but they would not give a value of c.', max: 2 },
+            { label: 'No relevant content · 0', text: '', max: 0 }
+          ],
+          points: ['Measure the mass of the block on a balance.', 'Put the heater and the thermometer in the holes in the block (a drop of water in the thermometer hole).', 'Wrap the block in insulation to reduce energy lost to the surroundings.', 'Record the starting temperature, switch on and start the stopclock.', 'Switch off after a set time (e.g. 10 minutes); record the joulemeter reading and the highest temperature.', 'Δθ = highest − starting temperature; c = E ÷ (m × Δθ).'],
+          reject: ['“Measure the temperature of the heater.”', '“c = E × m × Δθ.”'] }
+      } : {},
+      keyLines: K ? K.keyLines(slug).map((l) => (/^RP\d+:/.test(l) ? 'Required practical ' + rpNum + ': ' + l.replace(/^RP\d+:\s*/, '') : l)) : [],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conservation of mass and balanced equations · MrBadmus GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Quantitative chemistry" title="Conservation of mass and balanced equations" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">{{ eyebrowLine }}</p>
+        <h1>Conservation of mass and balanced equations</h1>
+        <p class="ks3-bigq">Bonds break, new substances form, a flame flashes inside a sealed flask. Why does the balance underneath not move, and how does a balanced equation prove it?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">A spark in a sealed flask.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">A thick glass flask holds methane and oxygen. The stopper is clamped shut, and the flask sits on a balance reading 312.48 g. A spark sets the methane burning. A flash, and then droplets of water run down the inside of the glass.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What does the balance read once the flask has cooled?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>This is the <strong>law of conservation of mass</strong>: no atoms are lost or made during a chemical reaction, so the mass of the products equals the mass of the reactants. Bonds break and new bonds form, but the same atoms are only rearranged into new substances. That is why a symbol equation must be <strong>balanced</strong>: it shows the same number of atoms of each element on both sides.</p>
+      </section>
+
+      <section id="s-flask" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Inside the flask</p>
+        <h2 style="margin: 6px 0 0;">Count the atoms. Then fire the spark.</h2>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 520px;">{{ flaskFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <sc-for list="{{ flaskTabs }}" as="t" hint-placeholder-count="2"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" disabled="{{ t.disabled }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+            </div>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500;">{{ flaskEq }}</p>
+            <sc-if value="{{ flaskAskOn }}" hint-placeholder-val="{{ true }}">
+              <div>
+                <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">{{ flaskAsk }}</p>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <sc-for list="{{ flaskOptions }}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ flaskDoneNow }}">
+              <div data-arrive="1" role="status" style="{{ flaskVerdictStyle }}">
+                <p style="margin: 0; font-size: 18px; line-height: 1.55;"><strong>{{ flaskWord }}</strong> {{ flaskReply }}</p>
+                <p style="margin: 8px 0 0; font-family: var(--ks3-font-mono); font-size: 17px; line-height: 1.5;">{{ flaskLedger }}</p>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">A big number in front multiplies the whole formula: 2H₂O is 4 H and 2 O. A small number inside belongs to the substance, and you never change it to balance.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+        <p class="ks3-mis-quote">&ldquo;2H₂ + O₂ → 2H₂O has three molecules on the left and only two on the right. So it is not balanced, and the water must weigh less.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Explain" prompt="What is wrong with that reasoning?" options="{{ thinkOptions }}" reveal="{{ thinkReveal }}" right-word="That is it." wrong-word="That keeps the mistake." on-commit="{{ onThink }}" hint-size="100%,320px"></dc-import>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A <strong>word equation</strong> names the substances. A <strong>symbol equation</strong> uses their formulae, and can add <strong>state symbols</strong>: (s) solid, (l) liquid, (g) gas and (aq) aqueous, meaning dissolved in water. The balancing numbers give the ratio of formula units that react, not the number of grams.</p>
+        <p data-route="higher" style="margin-top: 12px;">The same numbers are amounts in moles: 2H₂ + O₂ → 2H₂O means 2 moles of H₂ react with 1 mole of O₂ to give 2 moles of H₂O.</p>
+      </section>
+
+      <section id="s-write" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Word to symbol · three moves</p>
+        <h2 style="margin: 6px 0 0;">Marble chips fizz in hydrochloric acid.</h2>
+        <p style="margin: 10px 0 0; max-width: 60ch;">calcium carbonate + hydrochloric acid → calcium chloride + water + carbon dioxide</p>
+
+        <div style="margin-top: 16px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+          <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">1 · Which line has the right formulae?</p>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <sc-for list="{{ w1Options }}" as="o" hint-placeholder-count="4"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+          </div>
+          <sc-if value="{{ w1Done }}"><p data-arrive="1" role="status" style="{{ w1Style }}"><strong>{{ w1Word }}</strong> {{ w1Reply }}</p></sc-if>
+        </div>
+
+        <sc-if value="{{ w2On }}">
+          <div data-arrive="1" style="margin-top: 12px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 20px;">CaCO₃ + <span style="color: var(--ks3-accent-text);">__</span>HCl → CaCl₂ + H₂O + CO₂</p>
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">2 · What number balances the hydrogen chloride?</p>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <sc-for list="{{ w2Options }}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+            <sc-if value="{{ w2Done }}"><p data-arrive="1" role="status" style="{{ w2Style }}"><strong>{{ w2Word }}</strong> {{ w2Reply }}</p></sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ w3On }}">
+          <div data-arrive="1" style="margin-top: 12px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">3 · Give each substance its state symbol.</p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{ w3Rows }}" as="r" hint-placeholder-count="5">
+                <div role="group" aria-label="{{ r.group }}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+                  <span style="min-width: 5.5rem; font-family: var(--ks3-font-mono); font-size: 20px; font-weight: 500;">{{ r.formula }}</span>
+                  <sc-for list="{{ r.options }}" as="o" hint-placeholder-count="4"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" aria-label="{{ o.aria }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+                  <sc-if value="{{ r.hasWhy }}"><p data-arrive="1" style="flex: 1 1 100%; margin: 0; padding: 9px 12px; border-radius: 12px; background: var(--ks3-alert-tint); border: 2px solid var(--ks3-alert-border); font-size: 16px; line-height: 1.5;">{{ r.why }}</p></sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-top: 14px;">
+              <button type="button" class="ks3-reveal-btn" onClick="{{ onW3Check }}" disabled="{{ w3CheckOff }}" style="{{ w3CheckStyle }}">Check the state symbols</button>
+            </div>
+            <sc-if value="{{ w3Checked }}">
+              <div data-arrive="1" role="status" style="{{ w3Style }}">
+                <p style="margin: 0; font-size: 18px; line-height: 1.55;"><strong>{{ w3Word }}</strong></p>
+                <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 19px; line-height: 1.5;">CaCO₃(s) + 2HCl(aq) → CaCl₂(aq) + H₂O(l) + CO₂(g)</p>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equation</p>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Learn it · no chemistry equation sheet</span>
+        </div>
+        <div style="margin-top: 14px; padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px; line-height: 1.3;">total mass of reactants = total mass of products</p>
+          <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">Rearranged, it finds any one missing mass: add up the side you know, then subtract the masses you have on the other side.</p>
+        </div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Balance</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Put numbers in front of formulae until every element has the same number of atoms on each side.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Write</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">For a symbol equation: correct formulae, balancing numbers, and state symbols when the question asks.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Show each line of working and finish with the unit.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give reasons as linked steps, each one leading to the next with “so” or “because”.</dd></div>
+        </dl>
+      </section>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="conservation-of-mass" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Conservation of mass and balanced equations" spec="{{ keySpec }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure why the balance does not move?" legal="The flask draws each atom as a ball that slides to its new partner in one smooth move, and draws calcium hydroxide as single formula units. In a real reaction countless particles react at once, and ionic substances are not separate molecules." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A spark in a sealed flask', short: 'HOOK' },
+  { id: 's-flask', label: 'Inside the flask', short: 'FLASK' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-write', label: 'Word to symbol', short: 'WRITE' },
+  { id: 's-calc', label: 'Calculate it', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const RUN_MS = 1500;
+/* Atom fills: plates stay cream in both themes, so these never change. */
+const FILL = { C: '#BFC5CC', H: '#FFFDF8', O: '#F4B6B6', Ca: '#A9D9BE' };
+const RAD = { C: 24, H: 16, O: 21, Ca: 28 };
+/* Each atom: element, start x, start y (in a reactant), end x, end y (in a product). */
+const RX = [
+  { tab: 'Methane + oxygen', eq: 'CH₄ + 2O₂ → CO₂ + 2H₂O', read: '312.48 g',
+    ask: 'Commit first. How many oxygen atoms are on the right-hand side?',
+    opts: [
+      { label: '3 oxygen atoms', ok: false, reply: '2H₂O is two whole water molecules: 2 oxygen atoms there, plus the 2 in CO₂.' },
+      { label: '4 oxygen atoms', ok: true, reply: '' },
+      { label: '6 oxygen atoms', ok: false, reply: 'The 2 in front of H₂O multiplies only the water, not the CO₂ as well.' }
+    ],
+    ledger: 'Left: 1 C · 4 H · 4 O    Right: 1 C · 4 H · 4 O',
+    atoms: [['C', 210, 200, 220, 150], ['O', 381, 150, 180, 150], ['O', 419, 150, 260, 150], ['O', 401, 270, 400, 200], ['O', 439, 270, 260, 280],
+      ['H', 210, 164, 372, 224], ['H', 246, 200, 428, 224], ['H', 210, 236, 232, 304], ['H', 174, 200, 288, 304]] },
+  { tab: 'Calcium + water', eq: 'Ca + 2H₂O → Ca(OH)₂ + H₂', read: '186.20 g',
+    ask: 'Commit first. How many hydrogen atoms are on the right-hand side?',
+    opts: [
+      { label: '2 hydrogen atoms', ok: false, reply: 'The H₂ gives 2, but Ca(OH)₂ holds hydrogen too.' },
+      { label: '3 hydrogen atoms', ok: false, reply: 'The 2 after the bracket doubles everything inside it: (OH)₂ is 2 O and 2 H.' },
+      { label: '4 hydrogen atoms', ok: true, reply: '' }
+    ],
+    ledger: 'Left: 1 Ca · 2 O · 4 H    Right: 1 Ca · 2 O · 4 H',
+    atoms: [['Ca', 200, 200, 270, 220], ['O', 380, 140, 220, 220], ['O', 410, 260, 320, 220],
+      ['H', 352, 164, 185, 220], ['H', 408, 164, 414, 130], ['H', 382, 284, 355, 220], ['H', 438, 284, 446, 130]] }
+];
+const STATES = ['(s)', '(l)', '(g)', '(aq)'];
+const W3 = [
+  { formula: 'CaCO₃', name: 'calcium carbonate', ans: 0, why: 'Marble chips are a solid: (s).' },
+  { formula: 'HCl', name: 'hydrochloric acid', ans: 3, why: 'Hydrochloric acid is hydrogen chloride dissolved in water: (aq).' },
+  { formula: 'CaCl₂', name: 'calcium chloride', ans: 3, why: 'The calcium chloride that forms dissolves in the water: (aq).' },
+  { formula: 'H₂O', name: 'water', ans: 1, why: 'Water is a pure liquid: (l). (aq) means dissolved in water, which water itself cannot be.' },
+  { formula: 'CO₂', name: 'carbon dioxide', ans: 2, why: 'The fizz is carbon dioxide gas: (g).' }
+];
+const ease = (t) => t * t * (3 - 2 * t);
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, hook: null, tab: 0, picks: [null, null], prog: [0, 0], running: -1, think: null, w1: null, w2: null, w3: {}, w3Checked: false, calc: 0, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+    this.reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.tick = setInterval(() => {
+      const k = this.state.running;
+      if (k < 0) return;
+      const p = (Date.now() - this.start) / RUN_MS;
+      this.setState((st) => { const prog = st.prog.slice(); prog[k] = Math.min(1, p); return p >= 1 ? { prog: prog, running: -1 } : { prog: prog }; });
+    }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); clearInterval(this.tick); }
+  btn(on, dis) {
+    return 'font:inherit;font-size:17px;font-weight:600;text-align:left;padding:12px 14px;min-height:48px;border-radius:14px;cursor:' + (dis ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' + (dis && !on ? 'opacity:.6;' : '');
+  }
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' + (dis && !on ? 'opacity:.55;' : '');
+  }
+  verdictStyle(ok) {
+    return 'margin:10px 0 0;padding:12px 14px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);');
+  }
+  flaskSvg(rx, t) {
+    const D = window.KS4D; const W = 640, H = 440;
+    let b = '';
+    b += '<rect x="290" y="26" width="60" height="40" rx="6" fill="#C9B79C" stroke="' + D.C.stroke + '" stroke-width="2.5"/>';
+    b += '<rect x="80" y="60" width="480" height="292" rx="44" fill="#FFFDF8" stroke="' + D.C.stroke + '" stroke-width="3"/>';
+    b += D.T(108, 100, t >= 1 ? 'After' : (t > 0 ? 'Reacting' : 'Before'), 24, { anchor: 'start', fill: D.C.label });
+    const e = ease(Math.max(0, Math.min(1, t)));
+    const order = rx.atoms.slice().sort((a, c) => RAD[c[0]] - RAD[a[0]]);
+    order.forEach((a) => {
+      const x = a[1] + (a[3] - a[1]) * e, y = a[2] + (a[4] - a[2]) * e, r = RAD[a[0]];
+      b += D.circ(x, y, r, FILL[a[0]], D.C.stroke, 2) + D.T(x, y + (r > 18 ? 7 : 6), a[0], r > 18 ? 20 : 17, { fill: D.C.stroke });
+    });
+    b += '<rect x="60" y="356" width="520" height="16" rx="4" fill="#D8D2C4" stroke="' + D.C.stroke + '" stroke-width="2.5"/>';
+    b += '<rect x="140" y="372" width="360" height="56" rx="10" fill="#E6E1D6" stroke="' + D.C.stroke + '" stroke-width="2.5"/>';
+    b += '<rect x="236" y="382" width="168" height="36" rx="5" fill="' + D.C.stroke + '"/>';
+    b += '<text x="320" y="408" font-family="ui-monospace, Menlo, monospace" font-size="22" fill="#A9D9BE" text-anchor="middle">' + D.esc(rx.read) + '</text>';
+    const alt = 'Sealed flask on a balance reading ' + rx.read + '. ' + (t >= 1 ? 'After the reaction: ' : 'Before the reaction: ') + rx.eq + '.';
+    return D.svg(W, H, b, alt);
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, isTH: true, routeWords: '', routeSwitchOptions: [] };
+    const slug = 'conservation-of-mass';
+    const ready = !!(s.libReady && K && D);
+    const rx = RX[s.tab];
+    const pick = s.picks[s.tab];
+    const flaskRan = s.prog.map((p) => p >= 1);
+    const done = [s.hook !== null, flaskRan[0] && flaskRan[1], s.think !== null, s.w3Checked, s.calc >= 2, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const pn = this.props.mrbPrevNext || {};
+    const busy = s.running >= 0;
+    const chosen = pick !== null ? rx.opts[pick] : null;
+    const higher = !!R.isHigher;
+    const w3All = W3.every((r, i) => s.w3[i] !== undefined);
+    const w3Right = W3.filter((r, i) => s.w3[i] === r.ans).length;
+    const W1 = [
+      { label: 'CaCO₃ + HCl → CaCl + H₂O + CO₂', ok: false, reply: 'Calcium chloride is CaCl₂. A formula belongs to the compound; you never change it to make balancing easier.' },
+      { label: 'CaCO₃ + Cl → CaCl₂ + H₂O + CO₂', ok: false, reply: 'Hydrochloric acid is hydrogen chloride, HCl, dissolved in water. Cl on its own is a chlorine atom.' },
+      { label: 'CaCO₃ + HCl → CaCl₂ + H₂O + CO₂', ok: true, reply: '' },
+      { label: 'CaCO₃ + HCl → CaCl₂ + H₂O + CO', ok: false, reply: 'Carbon dioxide has two oxygen atoms: CO₂. CO is carbon monoxide.' }
+    ];
+    const W2 = [
+      { label: '1', ok: false, reply: 'Count the chlorine: 1 on the left, 2 in CaCl₂ on the right.' },
+      { label: '2', ok: true, reply: 'Each side now has 1 Ca, 1 C, 3 O, 2 H and 2 Cl.' },
+      { label: '4', ok: false, reply: '4HCl puts 4 H and 4 Cl on the left; the right has only 2 of each.' }
+    ];
+    const w1c = s.w1 !== null ? W1[s.w1] : null;
+    const w2c = s.w2 !== null ? W2[s.w2] : null;
+    const cfEx = [
+      { tab: 'Nothing to convert', head: '10.0 g of calcium carbonate is heated in a closed container and decomposes completely: CaCO₃ → CaO + CO₂. 5.6 g of calcium oxide forms. Calculate the mass of carbon dioxide formed.', next: 'Now one with the masses in kilograms.', steps: [
+        { letter: 'C', label: 'Convert', line: 'Nothing to convert: both masses are in grams.', note: '' },
+        { letter: 'F', label: 'Formula', line: 'total mass of reactants = total mass of products', note: '' },
+        { letter: 'I', label: 'Insert', line: '10.0 = 5.6 + mass of CO₂', note: '' },
+        { letter: 'F', label: 'Fine-tune', line: 'mass of CO₂ = 10.0 − 5.6', note: '' },
+        { letter: 'A', label: 'Answer', line: '4.4 g', note: '' } ] },
+      { tab: 'Convert first', head: '1.20 kg of magnesium burns completely in oxygen: 2Mg + O₂ → 2MgO. 2.00 kg of magnesium oxide forms. Calculate the mass of oxygen that reacted, in grams.', next: 'Now yours, below.', steps: [
+        { letter: 'C', label: 'Convert', line: '1.20 kg = 1200 g · 2.00 kg = 2000 g', note: 'The answer is wanted in grams, so convert before anything else.' },
+        { letter: 'F', label: 'Formula', line: 'total mass of reactants = total mass of products', note: '' },
+        { letter: 'I', label: 'Insert', line: '1200 + mass of O₂ = 2000', note: '' },
+        { letter: 'F', label: 'Fine-tune', line: 'mass of O₂ = 2000 − 1200', note: '' },
+        { letter: 'A', label: 'Answer', line: '800 g', note: '' } ] }
+    ];
+    const qStep = (c, f, i, ft, a) => [
+      { letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: c },
+      { letter: 'F', label: 'Formula', placeholder: 'what is conserved', line: f },
+      { letter: 'I', label: 'Insert', placeholder: 'put the masses in', line: i },
+      { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange for the missing mass', line: ft },
+      { letter: 'A', label: 'Answer', placeholder: 'number and unit', line: a }];
+    const FM = 'total mass of reactants = total mass of products';
+    const cfQ = higher ? [
+      { tab: 'Question 1', id: 'cm-q1', head: '16.8 g of sodium hydrogencarbonate is heated in a closed container: 2NaHCO₃ → Na₂CO₃ + H₂O + CO₂. 10.6 g of sodium carbonate and 1.8 g of water form. Calculate the mass of carbon dioxide.', close: 'Every product counts. Leave out the water and you get 6.2 g.',
+        steps: qStep('Nothing to convert: every mass is in grams.', FM, '16.8 = 10.6 + 1.8 + mass of CO₂', 'mass of CO₂ = 16.8 − 10.6 − 1.8', '4.4 g') },
+      { tab: 'Question 2', id: 'cm-q2', head: 'In a blast furnace, 1.60 kg of iron oxide reacts with 840 g of carbon monoxide: Fe₂O₃ + 3CO → 2Fe + 3CO₂. 1.12 kg of iron forms. Calculate the mass of carbon dioxide, in grams.', close: 'Both reactants count on the left. Leave out the carbon monoxide and you get 480 g.',
+        steps: qStep('1.60 kg = 1600 g · 1.12 kg = 1120 g', FM, '1600 + 840 = 1120 + mass of CO₂', 'mass of CO₂ = 2440 − 1120', '1320 g') }
+    ] : [
+      { tab: 'Question 1', id: 'cm-q1', head: '12.5 g of zinc carbonate is heated in a closed container and decomposes completely: ZnCO₃ → ZnO + CO₂. 8.1 g of zinc oxide forms. Calculate the mass of carbon dioxide.', close: 'Subtract the product you know from the reactant. 8.1 − 12.5 gives a negative mass, which cannot be right.',
+        steps: qStep('Nothing to convert: both masses are in grams.', FM, '12.5 = 8.1 + mass of CO₂', 'mass of CO₂ = 12.5 − 8.1', '4.4 g') },
+      { tab: 'Question 2', id: 'cm-q2', head: '0.50 kg of calcium carbonate decomposes completely in a closed container: CaCO₃ → CaO + CO₂. 280 g of calcium oxide forms. Calculate the mass of carbon dioxide, in grams.', close: 'Without converting, 0.50 − 280 mixes kilograms and grams and makes no sense.',
+        steps: qStep('0.50 kg = 500 g', FM, '500 = 280 + mass of CO₂', 'mass of CO₂ = 500 − 280', '220 g') }
+    ];
+    return Object.assign({}, R, {
+      video: K && s.hook !== null ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      eyebrowLine: R.isTriple ? 'AQA Chemistry (8462) 4.3.1.1 · Quantitative' : 'AQA Combined Science (8464) 5.3.1.1 · Quantitative',
+      keySpec: R.isTriple ? 'AQA 4.3.1.1 (8462)' : 'AQA 5.3.1.1 (8464)',
+      endPrev: pn.prev || null, endNext: pn.next || null,
+      endConnects: ready ? [{ href: K.hrefFor('atoms-elements-compounds', R), label: 'Atoms, elements and compounds' }, { href: K.hrefFor('relative-formula-mass', R), label: 'Relative formula mass' }, { href: K.hrefFor('mass-changes-reactions', R), label: 'Mass changes when a gas is involved' }, { href: K.hrefFor('amounts-in-equations', R), label: 'Amounts of substances in equations' }].filter((x) => x.href) : [],
+      hookOptions: [
+        { text: 'More than 312.48 g, because new substances have been made', correct: false, reply: 'New substances, yes, but built from the same atoms. Nothing was added to the flask.' },
+        { text: 'Less than 312.48 g, because some mass burned away as energy', correct: false, reply: 'Energy leaves as heat, but energy is not a substance. No atoms left the sealed flask.' },
+        { text: 'Exactly 312.48 g, because nothing entered or left the flask', correct: true, reply: '' },
+        { text: 'Less than 312.48 g, because the methane and oxygen were used up', correct: false, reply: 'Used up as reactants, but every one of their atoms is now in the carbon dioxide and water.' }
+      ],
+      hookReveal: 'The reading does not change. The flask below shows where every atom went.',
+      onHook: (i) => this.setState({ hook: i }),
+      flaskTabs: RX.map((r, i) => ({ label: r.tab + (flaskRan[i] ? ' ✓' : ''), pressed: s.tab === i, disabled: busy, style: this.seg(s.tab === i, busy),
+        onClick: () => { if (this.state.running < 0) this.setState({ tab: i }); } })),
+      flaskEq: rx.eq,
+      flaskFig: ready ? K.fig(this.flaskSvg(rx, s.prog[s.tab]), '') : null,
+      flaskAskOn: pick === null,
+      flaskAsk: rx.ask,
+      flaskOptions: rx.opts.map((o, i) => ({ label: o.label, style: this.btn(false, false),
+        onClick: () => {
+          if (this.state.picks[this.state.tab] !== null || this.state.running >= 0) return;
+          const k = this.state.tab;
+          const picks = this.state.picks.slice(); picks[k] = i;
+          if (this.reduced) { const prog = this.state.prog.slice(); prog[k] = 1; this.setState({ picks: picks, prog: prog }); }
+          else { this.start = Date.now(); this.setState({ picks: picks, running: k }); }
+        } })),
+      flaskDoneNow: pick !== null && s.prog[s.tab] >= 1,
+      flaskWord: chosen && chosen.ok ? 'Called it.' : 'Not this time.',
+      flaskReply: chosen ? chosen.reply : '',
+      flaskLedger: rx.ledger,
+      flaskVerdictStyle: 'padding:14px 16px;border-radius:14px;border:2px solid ' + (chosen && chosen.ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      thinkOptions: [
+        { text: 'Nothing: fewer molecules after a reaction means less mass', correct: false, reply: 'Mass comes from atoms, not from how they are grouped into molecules.' },
+        { text: 'Balancing counts atoms, not molecules, and the atoms match', correct: true, reply: '' },
+        { text: 'It needs 2O₂ so there are three molecules on each side', correct: false, reply: '2H₂ + 2O₂ → 2H₂O has 4 O on the left and only 2 on the right. Now the atoms do not balance.' },
+        { text: 'Water is a liquid, so it weighs more than the gases did', correct: false, reply: 'A change of state does not change mass. Same atoms, same mass.' }
+      ],
+      thinkReveal: '2H₂ + O₂ → 2H₂O is balanced: 4 H and 2 O on each side. Three molecules become two, and the mass stays exactly the same.',
+      onThink: (i) => this.setState({ think: i }),
+      w1Options: W1.map((o, i) => ({ label: o.label, pressed: s.w1 === i, disabled: s.w1 !== null, style: this.btn(s.w1 === i, s.w1 !== null) + 'font-family:var(--ks3-font-mono);font-weight:500;',
+        onClick: () => { if (this.state.w1 === null) this.setState({ w1: i }); } })),
+      w1Done: s.w1 !== null,
+      w1Word: w1c && w1c.ok ? 'Yes.' : 'Not this one.',
+      w1Reply: w1c ? w1c.reply : '',
+      w1Style: this.verdictStyle(!!(w1c && w1c.ok)),
+      w2On: s.w1 !== null,
+      w2Options: W2.map((o, i) => ({ label: o.label, pressed: s.w2 === i, disabled: s.w2 !== null, style: this.seg(s.w2 === i, s.w2 !== null) + 'min-width:64px;font-size:20px;',
+        onClick: () => { if (this.state.w2 === null) this.setState({ w2: i }); } })),
+      w2Done: s.w2 !== null,
+      w2Word: w2c && w2c.ok ? 'Balanced.' : 'Not this one.',
+      w2Reply: w2c ? (w2c.ok ? w2c.reply : w2c.reply + ' It takes 2HCl.') : '',
+      w2Style: this.verdictStyle(!!(w2c && w2c.ok)),
+      w3On: s.w2 !== null,
+      w3Rows: W3.map((r, i) => ({ formula: r.formula, group: 'State symbol for ' + r.name,
+        hasWhy: s.w3Checked && s.w3[i] !== r.ans, why: r.why,
+        options: STATES.map((lab, k) => ({ label: lab, pressed: s.w3[i] === k, aria: lab + ' for ' + r.name, disabled: s.w3Checked,
+          style: this.seg(s.w3[i] === k, s.w3Checked) + 'font-family:var(--ks3-font-mono);min-width:58px;padding:8px 10px;' + (s.w3Checked && k === r.ans ? 'border-color:var(--ks3-accent-text);' : ''),
+          onClick: () => { if (!this.state.w3Checked) this.setState((st) => ({ w3: Object.assign({}, st.w3, { [i]: k }) })); } })) })),
+      w3CheckOff: !w3All || s.w3Checked,
+      w3CheckStyle: (!w3All || s.w3Checked) ? 'opacity:.45;cursor:default;' : '',
+      onW3Check: () => { if (W3.every((r, i) => this.state.w3[i] !== undefined)) this.setState({ w3Checked: true }); },
+      w3Checked: s.w3Checked,
+      w3Word: w3Right === W3.length ? 'All five right. The finished equation:' : w3Right + ' of 5 right. The finished equation:',
+      w3Style: 'margin-top:14px;padding:14px 16px;border-radius:14px;border:2px solid ' + (w3Right === W3.length ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-ink);background:var(--ks3-card);'),
+      cfExamples: ready ? cfEx : [],
+      cfQuestions: cfQ,
+      onCalc: (n2) => this.setState({ calc: n2 }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: { command: 'State', marks: 1, prompt: 'State the law of conservation of mass.', why: 'No atoms are lost or made in a reaction, so the totals match.',
+          options: [
+            { text: 'The total mass of the products is less than the total mass of the reactants', correct: false, reply: 'That is the “mass burns away” idea. No atoms leave a sealed flask, so the total cannot fall.' },
+            { text: 'The total number of molecules is the same on both sides of the equation', correct: false, reply: 'Molecules can change in number: 2H₂ + O₂ → 2H₂O has three on the left and two on the right. Atoms are what is conserved.' },
+            { text: 'The total mass of the products equals the total mass of the reactants', correct: true, reply: '' },
+            { text: 'The mass of each product equals the mass of the reactant it came from', correct: false, reply: 'Atoms swap partners, so one product is built from atoms of several reactants. Only the totals match.' }
+          ] },
+        r2: higher ? { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'In a sealed container, methane burns completely in oxygen: CH₄ + 2O₂ → CO₂ + 2H₂O. 0.40 kg of methane forms 1.10 kg of carbon dioxide and 0.90 kg of water. Calculate the mass of oxygen used, in grams. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert kg to g: multiply by 1000', 'Convert kg to g: divide by 1000'], convAnswer: 1, answer: 1600, tol: 5, unit: 'g', units: ['g', 'kg', 'mol', 'g/mol'],
+          right: 'Both products count on the right: 2000 g in all, and 400 g of it came from the methane.', wrong: 'Convert first: 400 g, 1100 g and 900 g. Then 400 + mass of O₂ = 1100 + 900.',
+          model: ['C · 0.40 kg = 400 g · 1.10 kg = 1100 g · 0.90 kg = 900 g', 'F · total mass of reactants = total mass of products', 'I · 400 + mass of O₂ = 1100 + 900', 'F · mass of O₂ = 2000 − 400', 'A · 1600 g'] }
+          : { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'A student heats 6.2 g of copper carbonate in a closed tube: CuCO₃ → CuO + CO₂. 4.0 g of copper oxide forms. Calculate the mass of carbon dioxide formed. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert g to kg: divide by 1000', 'Convert g to kg: multiply by 1000'], convAnswer: 0, answer: 2.2, tol: 0.05, unit: 'g', units: ['g', 'kg', 'mol', 'g/mol'],
+          right: 'Every gram of copper carbonate is still there: 4.0 g in the solid and 2.2 g in the gas.', wrong: 'The reactant’s mass equals the two products’ masses together: 6.2 = 4.0 + mass of CO₂.',
+          model: ['C · Nothing to convert: both masses in grams', 'F · total mass of reactants = total mass of products', 'I · 6.2 = 4.0 + mass of CO₂', 'F · mass of CO₂ = 6.2 − 4.0', 'A · 2.2 g'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'Explain why the balance reading does not change when a reaction happens in a sealed flask. Put the links in order.',
+          links: ['No atoms are made or destroyed: the atoms of the reactants are only rearranged into the products.', 'The flask is sealed, so no atoms can get in or out.', 'So the total mass inside the flask stays the same.'],
+          herrings: [{ text: 'The number of molecules stays the same, so the mass stays the same.', why: 'The number of molecules can change. The mass stays the same because the atoms do.' },
+            { text: 'The products are packed more tightly, so they make up for the gases used.', why: 'Packing changes the volume, not the mass. The atoms alone set the mass.' }] },
+        r4: { command: 'Write', marks: 4, question: 'Magnesium ribbon reacts with dilute hydrochloric acid in a sealed flask on a balance, forming magnesium chloride solution and hydrogen gas. (a) Write a balanced symbol equation, with state symbols, for the reaction. (b) Explain why the balance reading does not change.',
+          points: ['Correct formulae: Mg, HCl, MgCl₂ and H₂.', 'Balanced with 2HCl: Mg + 2HCl → MgCl₂ + H₂.', 'State symbols: Mg(s), HCl(aq), MgCl₂(aq), H₂(g).', 'Atoms are not made or destroyed, only rearranged, and none can leave the sealed flask, so the total mass stays the same.'],
+          reject: ['“H” for hydrogen gas: it is made of H₂ molecules.', '“MgCl”, or changing any formula to make the equation balance.', '“H₂(aq)”: the hydrogen escapes the liquid as a gas, (g).'] }
+      } : {},
+      keyLines: ready ? K.keyLines(slug) : [],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>
