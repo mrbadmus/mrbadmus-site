@@ -31,17 +31,33 @@
 -- `tools/flashcards_complete_live.py` prove the SAME behaviour whether or
 -- not this migration is applied there.
 --
--- THE WALK, IN SQL. A direct port of `finishedAt()` in
--- `shared/flashcard-homework.js` (1 Oct 2026): walk the pupil's own
--- `flashcard_reviews` for this assignment, oldest first (`rated_at`, `id`);
--- a `make`-phase row only marks that card written; a `review`-phase row
--- updates that card's LATEST rating; the first `review` row at which
--- EVERY card in the deck has latest = `got_it` — and, in make mode, every
--- card already has a make-phase row — is the finish. `jsonb` stands in for
--- the engine's plain JS objects (`v_latest`/`v_made`), because plpgsql has
--- no local hash map; the loop is the same shape as the batch-processing
--- loop already in this function, just over history instead of one batch.
--- `v_finish_event_id` resolves to `flashcard_events.server_at` exactly as
+-- THE WALK, IN SQL. A port of `finishedAt()` / `walkReview()` in
+-- `shared/flashcard-homework.js` (1 Oct 2026, corrected 1 Oct 2026 after
+-- review) — NOT the bare "every card's latest rating is Got it" version
+-- that function started as. That version disagreed with `reconstruct()`
+-- (what pass the pupil is actually in): a pupil who leaves a leftovers
+-- round stale for over an hour gets a FRESH pass from the engine (it
+-- re-asks the whole deck), and getting just the one weak card right FIRST
+-- in that new pass is not the Done screen, however old Got-it ratings from
+-- the abandoned round still read. So this walk is ROUND-AWARE, exactly as
+-- `walkReview` is: it tracks which cards still TARGET this round
+-- (`v_targets`), resets to a fresh pass when a completed-but-not-all-right
+-- round goes 60+ minutes without a further rating (`v_last_at`), and
+-- otherwise narrows to the leftovers and advances the round number. The
+-- "I don't know" replay branch `walkReview` has is NOT ported: it needs a
+-- DEVICE'S OWN localStorage record that has no server-side equivalent, and
+-- `finishedAt`'s real callers (this function; `student-live.js`'s
+-- `recordFinish`/heal) never have one either — an IDK replay is read here
+-- as an ordinary rating, exactly as those callers read it.
+--
+-- `jsonb` stands in for the engine's plain JS objects (`v_latest`/
+-- `v_made`/`v_done`), because plpgsql has no local hash map. The first
+-- `review` row at which EVERY card in the CURRENT round's targets is
+-- Got it — and, in make mode, every card already has a make-phase row —
+-- is the finish; once found the loop exits (this function has no use for
+-- the walk's state AFTER that point, unlike `reconstruct`, which keeps
+-- walking to answer "what pass is the pupil in now").
+-- `v_finish_server` resolves to `flashcard_events.server_at` exactly as
 -- the client write does, for the same reason: `rated_at` is `client_at`
 -- (the device's clock), and only the server's own clock may stamp
 -- completion (the rule `20260821115148_assignment_submissions_progress_
@@ -66,10 +82,16 @@ declare
   v_n            int;
   v_state        jsonb;
   v_sub          public.assignment_submissions;
-  -- ⊕ 1 Oct 2026 — the finishedAt() walk, in SQL.
+  -- ⊕ 1 Oct 2026, corrected 1 Oct 2026 (review MUST-FIX) — the round-aware
+  -- walkReview()/finishedAt() walk, in SQL.
   v_deck_ids     uuid[];
   v_latest       jsonb := '{}'::jsonb;
   v_made         jsonb := '{}'::jsonb;
+  v_targets      uuid[];
+  v_round_done   jsonb := '{}'::jsonb;
+  v_n_round      int := 1;
+  v_round_complete boolean := false;
+  v_last_at      timestamptz;
   v_finish_at    timestamptz;
   v_finish_event uuid;
   v_finish_server timestamptz;
@@ -178,9 +200,10 @@ begin
     perform public.mrb351_session_refresh(v_sess.id);
   end if;
 
-  -- ── completion: FINISHED, not secured (⊕ 1 Oct 2026) ─────────────────
+  -- ── completion: FINISHED, not secured (⊕ 1 Oct 2026, round-aware) ────
   select count(*) into v_n from public.assignment_flashcards where assignment_id = p_assignment;
   select array_agg(id) into v_deck_ids from public.assignment_flashcards where assignment_id = p_assignment;
+  v_targets := v_deck_ids;
 
   if v_n > 0 then
     for r in select rv.card_id, rv.rating, rv.phase, rv.event_id, rv.rated_at
@@ -193,17 +216,46 @@ begin
         v_made := v_made || jsonb_build_object(r.card_id::text, true);
         continue;
       end if;
-      v_latest := v_latest || jsonb_build_object(r.card_id::text, r.rating);
       -- make mode: a review row only counts once every card has a
       -- make-phase row too (the writing pass is done) — same gate as the
       -- JS `finishedAt()`.
       continue when v_a.flashcard_mode = 'make'
         and exists (select 1 from unnest(v_deck_ids) d(id) where not (v_made ? d.id::text));
+
+      -- a round that finished but was not all right: either the pupil is
+      -- back within the hour (narrow to the leftovers, round n+1) or they
+      -- went stale (a brand-new pass — walkReview's `reset()`).
+      if v_round_complete then
+        if v_last_at is not null and r.rated_at - v_last_at >= interval '60 minutes' then
+          v_latest := '{}'::jsonb; v_targets := v_deck_ids; v_round_done := '{}'::jsonb;
+          v_n_round := 1; v_round_complete := false;
+        else
+          select coalesce(array_agg(d.id), '{}'::uuid[]) into v_targets
+            from unnest(v_deck_ids) d(id)
+           where coalesce(v_latest ->> d.id::text, '') <> 'got_it';
+          v_round_done := '{}'::jsonb;
+          v_n_round := v_n_round + 1;
+          v_round_complete := false;
+        end if;
+      end if;
+
+      v_latest := v_latest || jsonb_build_object(r.card_id::text, r.rating);
+      if exists (select 1 from unnest(v_targets) t(id) where t.id = r.card_id) then
+        v_round_done := v_round_done || jsonb_build_object(r.card_id::text, true);
+      end if;
+      v_last_at := r.rated_at;
+
+      -- the pass showing AT THIS INSTANT is all right → the Done screen.
+      -- The FIRST time this happens, ever; nothing after it can un-set it.
       if not exists (select 1 from unnest(v_deck_ids) d(id)
                       where coalesce(v_latest ->> d.id::text, '') <> 'got_it') then
         v_finish_event := r.event_id;
         v_finish_at := r.rated_at;
-        exit;      -- the FIRST point all-right holds — never reset by what follows
+        exit;
+      end if;
+
+      if not exists (select 1 from unnest(v_targets) t(id) where not (v_round_done ? t.id::text)) then
+        v_round_complete := true;
       end if;
     end loop;
   end if;
