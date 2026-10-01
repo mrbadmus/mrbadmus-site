@@ -219,8 +219,10 @@ mrbadmus-site/
 ├── triple/                 — Triple Science pages (auto-generated)
 ├── combined/               — Combined Science pages (auto-generated)
 │
-├── consumer/ parents/ go/ org/  — the B2C product (MRB-308…318), behind CONSUMER_SIGNUP_ENABLED;
-│                             copied and round-tripped by generate_site_v5.py like teacher/ and student/.
+├── consumer/ parents/ go/ org/  — the B2C product (MRB-308…318); whether it's launched is
+│                             COMMITTED CONFIG in launch.json, not the CONSUMER_SIGNUP_ENABLED
+│                             env var alone (⊕ 1 Oct 2026 — see "How the Site is Generated" below).
+│                             Copied and round-tripped by generate_site_v5.py like teacher/ and student/.
 │                             See docs/b2c/worktree.md before touching any of them.
 ├── build_all.py            — ⭐ THE ENTRY POINT. Runs all SEVEN generators (was SIX until MRB-352), in the correct order.
 ├── generate_site_v5.py     — KS4 generator: topic pages + copies root HTML into mrbadmus_site/
@@ -515,6 +517,33 @@ git add -A && git commit && git push     # 3. commit + push (authorised, see the
 **Why the generator does not just run `npm run build` itself:** a Node or npm problem would then be able to fail the whole site build, and KS3 and KS4 have nothing to do with the studio. The warnings are loud; neither is fatal. If there is no build at all, the generator leaves `mrbadmus_site/3d/` exactly as it is rather than deleting it, so a machine without Node can never wipe the deployed studio.
 
 To check the isolation still holds: `python3 3d_isolation_check.py`.
+
+### ⊕ (1 Oct 2026) The consumer launch is committed config, not a build argument
+
+Whether the B2C consumer product is live (`/parents/*` indexable,
+`sitemap.xml` + `robots.txt` present, the consumer 404/error pages
+published) used to be decided solely by the `CONSUMER_SIGNUP_ENABLED`
+environment variable at build time — nothing remembered the decision between
+runs. That is why `64a0cb303` (a Design-port commit with no reason to touch
+B2C at all) silently un-launched `/parents/` on `main`: it ran
+`python3 build_all.py` with the variable unset, which meant "off", and
+nobody noticed because nothing printed that a launched product had just been
+built un-launched.
+
+The decision now lives in **`launch.json`** at the repo root — committed
+config, not a build argument:
+
+- `python3 build_all.py`, with nothing set, reproduces whatever `launch.json`
+  says, every time, and prints the decision at the top of the run
+  (`launch_config.describe()`).
+- `CONSUMER_SIGNUP_ENABLED=true|false` still works, but only as an **explicit
+  override for that one build**, and it prints a loud `!!!!` banner when it
+  disagrees with `launch.json`. Never push an overridden build to `main`
+  unless the override IS the deliberate launch/un-launch decision.
+- The `consumer_launch_state` gate (fast, every push) fails if the
+  **committed** `mrbadmus_site/` tree disagrees with the **committed**
+  `launch.json` decision — it is what would have caught `64a0cb303`.
+- To deliberately launch or un-launch: see `docs/b2c/runbook.md` §14.
 
 ---
 

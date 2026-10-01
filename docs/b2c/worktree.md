@@ -40,6 +40,19 @@ on 3000 it will either refuse to bind or, worse, quietly shadow the other.
 
 ### CONSUMER_SIGNUP_ENABLED is OFF, in TWO places
 
+⊕ **Superseded.** This section describes the pre-launch state: both switches
+defaulting to off. The consumer product launched on 30 Sep 2026 (`37284388a`)
+and both switches are now ON in production. More importantly, the FRONTEND
+half below stopped being "an env var that defaults to off" on 1 Oct 2026 —
+the build-time decision is now COMMITTED CONFIG in `launch.json`
+(`launch_config.py`), and `CONSUMER_SIGNUP_ENABLED` is an explicit
+one-build override rather than the thing that decides anything by default.
+See CLAUDE.md's "How the Site is Generated" → "The consumer launch is
+committed config, not a build argument" and `docs/b2c/runbook.md` §14. Kept
+here rather than deleted because it still correctly describes the DATABASE
+half (`platform_flags.consumer_signup_enabled`, read by
+`hook_before_user_created`) and the ANDed-together contract between the two.
+
 Consumer signup is behind **two independent switches, and both default to off.
 Both must be on before any consumer surface works.**
 

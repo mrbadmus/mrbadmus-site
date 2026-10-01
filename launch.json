@@ -1,0 +1,4 @@
+{
+  "consumer_signup_enabled": true,
+  "_why": "Launch decision, committed 30 Sep 2026 (37284388a); change only by a launch/un-launch ruling from Mide; env CONSUMER_SIGNUP_ENABLED=true|false overrides one build, loudly."
+}

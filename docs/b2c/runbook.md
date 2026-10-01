@@ -446,6 +446,50 @@ they agreed to, so it changes whenever the wording does.
 
 ---
 
+## 14. The consumer launch state, and how to deliberately un-launch
+
+⊕ 1 Oct 2026. Whether the consumer product is live on mrbadmus.com —
+`/parents/*` indexable, `sitemap.xml` and `robots.txt` present, the consumer
+404/error pages published — is **committed config**, not a build argument.
+It lives in `launch.json` at the repo root (`{"consumer_signup_enabled": true}`
+as of the 30 Sep 2026 launch, `37284388a`), read by `launch_config.py`.
+
+- A plain `python3 build_all.py` — no environment variable set, nothing typed
+  — reproduces whatever `launch.json` says, every time, and prints that
+  decision at the top of the run (`consumer launch: ON (launch.json)`).
+- `CONSUMER_SIGNUP_ENABLED=true|false python3 build_all.py` overrides the
+  committed decision **for that one build only**, and prints a loud `!!!!`
+  banner when it disagrees with `launch.json`. That output must never be
+  pushed to `main` unless the override IS the deliberate decision — an
+  overridden build landing on `main` by accident is exactly how `64a0cb303`
+  (a Design-port commit with no reason to touch B2C at all) silently
+  un-launched `/parents/` on 1 Oct 2026: the committed deploy tree grew back
+  its noindex tags and lost `sitemap.xml`, `robots.txt` and the consumer
+  404/error pages, with nothing in the commit message saying so.
+- The `consumer_launch_state` gate (fast, runs on every push) fails the push
+  the moment the **committed** `mrbadmus_site/` tree disagrees with the
+  **committed** `launch.json` decision, in either direction — it is what
+  would have caught `64a0cb303`.
+
+**To deliberately un-launch (or re-launch)** — this is a product decision,
+Mide's to make, not a build operator's:
+
+1. Flip `launch.json`'s `"consumer_signup_enabled"` value.
+2. Flip `shared/config.js`'s `PROD.CONSUMER_SIGNUP_ENABLED` to match — the two
+   must agree; `consumer_launch_state` checks both.
+3. `python3 build_all.py` with no environment override, so the build produces
+   the new committed value rather than whatever the previous build left lying
+   around in `mrbadmus_site/`.
+4. Commit `launch.json`, `shared/config.js` and the whole resulting
+   `mrbadmus_site/` diff **together, in one commit** — a launch or un-launch
+   should read as one deliberate change, not be spread across unrelated
+   commits where nobody can see it happened.
+5. Push, then verify live: `curl -s https://mrbadmus.com/robots.txt` and
+   `.../sitemap.xml` should (dis)appear accordingly within Cloudflare's
+   deploy time.
+
+---
+
 ## Two things that have no screen at all
 
 Named here so nobody hunts for a button that does not exist:

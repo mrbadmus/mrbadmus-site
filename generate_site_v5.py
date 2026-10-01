@@ -13,6 +13,7 @@ import os, shutil, json, glob, sys, re, base64
 from theme_head import THEME_HEAD, THEME_SLOT
 import brand  # the ONE brand mark (one-mark ruling, 13 Sep 2026)
 import topbar  # the ONE pupil top bar (Stage B, phone run 28 Sep 2026)
+import launch_config  # the consumer launch decision — committed config, 1 Oct 2026
 
 # Bonding redesign (MRB-113 Phase B) — theory-block decomposition for the
 # redesigned bonding pages. Frozen source fields are never edited; blocks are
@@ -5331,14 +5332,21 @@ def make_pathway_topic_page_with_subtopics(pathway, tier, subject, topic, subtop
 # ══════════════════════════════════════════════════════════════════════════
 # ── B2C LAUNCH PUBLICATION (MRB-327 lane C) ───────────────────────────────
 #
-# Everything in this section is gated on ONE build-time switch and does
-# NOTHING unless it is set. With the switch off — which is every normal
-# `python3 build_all.py` — the output of this generator is byte-identical to
-# what it produced before this section existed. That is the whole design, and
-# it is provable in one command:
+# ⊕ 1 Oct 2026 — the launch decision is COMMITTED CONFIG, not a build
+# argument. See `launch_config.py`. `launch.json` carries the decision
+# (`consumer_signup_enabled`), and `launch_config.consumer_signup_enabled()`
+# is what `consumer_launch_enabled()` below delegates to.
 #
-#     python3 generate_site_v5.py && git status --short     # → clean
-#     CONSUMER_SIGNUP_ENABLED=true python3 generate_site_v5.py
+# This REPLACES what this section used to claim: that the output of a normal
+# `python3 build_all.py` was byte-identical to a pre-B2C build because the
+# switch was off by default, with no committed memory of a decision at all.
+# That was true right up until `launch.json` was committed ON (30 Sep 2026,
+# `37284388a`) — launched is now the NORMAL build of `main`, and a build
+# that produces the OLD (un-launched) output is the one that needs an
+# explicit override, not the other way round:
+#
+#     python3 generate_site_v5.py                        # → launched (committed ON)
+#     CONSUMER_SIGNUP_ENABLED=false python3 generate_site_v5.py   # → un-launched, for THIS build only, loudly
 #
 # ── WHY ANY OF THIS IS AT BUILD TIME ──────────────────────────────────────
 #
@@ -5384,16 +5392,21 @@ SITE_ORIGIN = "https://mrbadmus.com"
 
 
 def consumer_launch_enabled():
-    """The BUILD-TIME half of CONSUMER_SIGNUP_ENABLED. Fail-closed.
+    """The BUILD-TIME half of the consumer launch decision. Fail-closed.
 
-    Deliberately the same contract shared/config.js states for the runtime
-    half: "absent, undefined or anything other than exactly `true` means
-    OFF". So `CONSUMER_SIGNUP_ENABLED=1`, `=yes`, `=TRUE ` and an unset
-    variable all mean off, and there is exactly one spelling that launches
-    anything. A launch switch that answers to four spellings is a launch
-    switch somebody flips by accident.
+    ⊕ 1 Oct 2026 — delegates to `launch_config.consumer_signup_enabled()`.
+    The decision is COMMITTED CONFIG (`launch.json`), not a build argument:
+    an unset `CONSUMER_SIGNUP_ENABLED` now means "use the committed
+    decision" rather than "off", because off was never the thing anyone
+    actually wanted a plain `python3 build_all.py` to do once `launch.json`
+    was committed ON (30 Sep 2026, `37284388a`) — see `launch_config.py`'s
+    own docstring for the regression (`64a0cb303`) that made this necessary.
+
+    The spelling discipline is unchanged: exactly `true` or exactly `false`
+    overrides the committed decision for one build, loudly; anything else
+    (`1`, `yes`, `TRUE `) stops the build rather than guess.
     """
-    return os.environ.get("CONSUMER_SIGNUP_ENABLED", "") == "true"
+    return launch_config.consumer_signup_enabled()
 
 
 def _canon(site_path):
@@ -5798,11 +5811,12 @@ def publish_consumer_launch(output_dir, asset_ver):
         # Nothing to undo: build_site() wipes output_dir on entry (except the
         # foreign trees), so a sitemap or a 404 left by a previous launched
         # build in this same directory is already gone before we get here.
-        print("  ○ consumer launch: CONSUMER_SIGNUP_ENABLED is not \"true\" — "
-              "no sitemap, no robots.txt, no consumer 404s, noindex left in place")
+        print("  ○ %s — "
+              "no sitemap, no robots.txt, no consumer 404s, noindex left in place"
+              % launch_config.describe())
         return
 
-    print("\n  🚀 CONSUMER_SIGNUP_ENABLED=true — publishing the launched public site")
+    print("\n  🚀 %s — publishing the launched public site" % launch_config.describe())
 
     tokens_href = "/shared/tokens.css"
     if asset_ver.get("tokens.css"):

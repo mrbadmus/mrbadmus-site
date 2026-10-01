@@ -202,6 +202,26 @@ GATES = [
              "title/og/brand link, a stale brand.js, a kit file that differs "
              "from Design's original, or a source spelling out the chevron."),
 
+    dict(name="consumer_launch_state",
+         cmd=["python3", "verify_consumer_launch.py"],
+         speed="fast",
+         watches=["verify_consumer_launch.py", "launch.json", "launch_config.py",
+                  "generate_site_v5.py", "build_all.py", "shared/config.js",
+                  "parents/**", "consumer/**",
+                  "mrbadmus_site/parents/**", "mrbadmus_site/consumer/**",
+                  "mrbadmus_site/sitemap.xml", "mrbadmus_site/robots.txt",
+                  "mrbadmus_site/shared/config.js"],
+         why="1 Oct 2026. `64a0cb303` (a Design-port commit with no reason to "
+             "think about B2C at all) rebuilt without CONSUMER_SIGNUP_ENABLED "
+             "set and silently un-launched /parents/ on main: the committed "
+             "mrbadmus_site/ tree grew back its noindex tags and lost "
+             "sitemap.xml, robots.txt and the consumer 404/error pages, while "
+             "launch.json and shared/config.js's PROD block still said "
+             "launched. Nothing caught it because the launch decision had no "
+             "gate at all — this is that gate. It fails the push the moment "
+             "the COMMITTED deploy tree disagrees with the COMMITTED "
+             "launch.json decision, in either direction."),
+
     dict(name="answer_positions",
          cmd=["python3", "verify_answer_positions.py"],
          speed="fast",
@@ -2662,6 +2682,14 @@ EXCLUDED = {
         "generator imports, plus `python3 brand.py` to rewrite "
         "shared/brand/brand.js. Asserts nothing; `brand_one_mark` is the gate "
         "that proves every page wears what this module draws.",
+    # ── ⊕ 1 Oct 2026 · the consumer launch decision, as committed config ────
+    "launch_config.py":
+        "the consumer (B2C) launch decision — reads launch.json, the ONE "
+        "committed source of truth `generate_site_v5.py` and `build_all.py` "
+        "both import. A library; asserts nothing itself (fails loudly via "
+        "SystemExit on broken config, but exports no check a gate runs). "
+        "`consumer_launch_state` is the gate that proves the committed "
+        "deploy tree agrees with what this module says was decided.",
     # ── ⊕ Stage B (phone run, 28 Sep 2026) · the one pupil top bar ──────────
     "topbar.py":
         "the ONE pupil top bar's emitter — a library build_ks3.py, build_ks4 "

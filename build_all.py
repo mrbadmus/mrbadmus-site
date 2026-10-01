@@ -42,6 +42,8 @@ import os
 import subprocess
 import sys
 
+import launch_config  # the consumer launch decision — committed config, 1 Oct 2026
+
 STEPS = [
     # ⊕ MRB-352 run 2 — FIRST, and that ordering is load-bearing.
     # build_figures.py writes shared/figures-ks3.js + shared/figures-ks4.js
@@ -137,7 +139,21 @@ def main():
     # builds the checkout it belongs to, whatever the invocation path.
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-    print("\n🏗️  build_all — %d generators, in order\n" % len(STEPS))
+    # ⊕ 1 Oct 2026 — the consumer launch decision is made ONCE here, visibly,
+    # before any generator runs, rather than separately (and possibly
+    # differently) inside each child process. `consumer_signup_enabled()`
+    # raises SystemExit if launch.json is missing/broken or the env override
+    # is ambiguous — that must stop the whole build before step 0, not be
+    # discovered partway through generate_site_v5.py.
+    launch_config.consumer_signup_enabled()
+    print("\n🏗️  build_all — %d generators, in order" % len(STEPS))
+    print("   %s" % launch_config.describe(), flush=True)
+
+    # Every child generator reads the same committed launch.json itself, and
+    # an explicit override set by the caller is inherited by every child
+    # unchanged — so they all agree with the header above without this
+    # process writing anything into the environment.
+    print()
 
     # ⊕ MRB-352 — steps are numbered FROM 0, to agree with CLAUDE.md's table,
     # where build_figures.py is step 0 and generate_site_v5.py stays step 1
