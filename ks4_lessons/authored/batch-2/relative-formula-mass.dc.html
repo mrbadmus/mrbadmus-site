@@ -51,7 +51,7 @@
   <main class="ks3-main">
     <div class="ks3-lesson">
       <header class="ks3-lesson-head">
-        <p class="ks3-eyebrow">AQA Chemistry ({{ specCode }}) {{ specRef }} · Quantitative</p>
+        <p class="ks3-eyebrow">AQA {{ specName }} ({{ specCode }}) {{ specRef }} · Quantitative</p>
         <h1>Relative formula mass</h1>
         <p class="ks3-bigq">A formula tells you which atoms are in a substance and how many. Can you turn it into a mass, and use that mass to say how much of a compound is each element?</p>
         <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
@@ -417,7 +417,7 @@ class Component extends DCLogic {
     const keyLines = ready ? K.keyLines(slug).map((l) => (R.notHigher && l === 'Mr is used to calculate mass ratios in reactions.') ? 'The Mr totals on each side of a balanced equation are equal.' : l) : [];
     return Object.assign({}, R, {
       video: K && s.hook !== null ? K.video(slug) : null,
-      railV, theme, ready, specRef, specCode: R.isTriple ? '8462' : '8464', keySpec: 'AQA ' + specRef, draftVisible: this.props.showDraft !== false,
+      railV, theme, ready, specRef, specCode: R.isTriple ? '8462' : '8464', specName: R.isTriple ? 'Chemistry' : 'Combined Science', keySpec: 'AQA ' + specRef, draftVisible: this.props.showDraft !== false,
       endPrev: PN.prev || null, endNext: PN.next || null,
       endConnects: ready && K.hrefFor ? [
         { href: K.hrefFor('atoms-elements-compounds', R), label: 'Atoms, elements and compounds' },

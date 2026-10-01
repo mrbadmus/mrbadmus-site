@@ -229,10 +229,10 @@ const FIT = [
     why: ['', '20 ÷ 2 = 10, not 100. Both are already in µm.', '20 ÷ 2 = 10, not 1000. Both are already in µm.'],
     working: '20 µm ÷ 2 µm = 10 = 10¹ · one order of magnitude' },
   { name: 'comparison 2 of 3', title: 'Ribosomes (20 nm) across a bacterium (2 µm)', a: 1,
-    why: ['×10 would make each ribosome 200 nm. Convert first: 2 µm = 2000 nm, and 2000 ÷ 20 = 100.', '', 'Check the conversion: 1 µm = 1000 nm, so 2 µm = 2000 nm, not 20 000 nm.'],
+    why: ['×10 would make each ribosome 200 nm. Convert 2 µm to nm first.', '', 'Check the conversion: 1 µm = 1000 nm, so 2 µm = 2000 nm, not 20 000 nm.'],
     working: '2 µm = 2000 nm · 2000 nm ÷ 20 nm = 100 = 10² · two orders of magnitude' },
   { name: 'comparison 3 of 3', title: 'Liver cells (20 µm) across a 2 mm line', a: 1,
-    why: ['Did you use 1 mm = 100 µm? It is 1000 µm, so 2 mm = 2000 µm.', '', 'Check the conversion: 2 mm = 2000 µm, and 2000 ÷ 20 = 100.'],
+    why: ['Did you use 1 mm = 100 µm? It is 1000 µm, so 2 mm = 2000 µm.', '', 'Check the conversion: 2 mm = 2000 µm.'],
     working: '2 mm = 2000 µm · 2000 µm ÷ 20 µm = 100 = 10² · two orders of magnitude' }
 ];
 const FIT_OPTS = ['×10 (10¹)', '×100 (10²)', '×1000 (10³)'];
@@ -289,7 +289,6 @@ function fitFig(D, k, show) {
     s += D.circ(320, cy, r, EP.cyto, D.C.stroke, 2.6) + L(320, 262, 'liver cell · 20 µm');
     if (show) {
       for (let i = 0; i < 10; i++) s += '<g class="ep-pop" style="animation-delay:' + (i * 0.09).toFixed(2) + 's">' + rod(D, x0 + w * (i + 0.5), cy, w - 2, 10, EP.bact, D.C.stroke, 1.4) + '</g>';
-      s += D.T(320, 330, '10 bacteria fit across', 28);
     } else s += rod(D, 520, cy, w - 2, 10, EP.bact, D.C.stroke, 1.4) + L(520, cy + 44, 'bacterium · 2 µm');
     alt = 'A liver cell 20 micrometres across' + (show ? ' with 10 bacteria, each 2 micrometres long, lined up across it.' : ' and one bacterium 2 micrometres long, to scale.');
   } else if (k === 1) {

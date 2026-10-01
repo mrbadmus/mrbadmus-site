@@ -394,3 +394,81 @@ ADVISORY
 | changes-in-energy | FIX — Q-CE1–4 (Eₖ/Eₚ mislabelled "Equation sheet") |
 | internal-energy | FIX — Q-IE1–3 |
 | lenses | FIX — Q-L1–4 (ray-diagram do-task is recognition, not production) |
+
+---
+
+## Round 2 — re-review of commit 36fd4c877
+
+**What I checked.** Commit 36fd4c877 on feat/ks4-batches. I diffed it against fff50ef58 for all eight lessons and read each notes file's "Review fixes" section. I checked that the built pages are current: the new hook, route chip and ray-task strings are present in `mrbadmus_site/`.
+
+**How the pages were driven.** A fresh harness ran a full play-through of every lesson. Each lesson ran on Triple Higher at 390 px light by tap, and on a Foundation or Combined page at 1280 px dark by keyboard. Decomposition also ran on CH (1280 dark, keyboard) and TH (390 dark, keyboard). Lenses ran on TF (390 dark, keyboard) and TH (1280 dark, keyboard).
+
+Three changed parts got their own scripted drives:
+- **Lenses ray task:** all four steps, every target, by keyboard and by tap at 390 px, including the Tab focus ring.
+- **Eukaryotes scale estimator:** all three comparisons, before and after each reveal, at 390 px dark.
+- **Decomposition:** the new hook and the base sort, on CF.
+
+**Machine checks.** All 18 runs passed:
+- zero console errors (apart from the usual CORS-blocked health call);
+- no `undefined`, `NaN`, `{{` or `[object` text;
+- no sideways scroll at 390 px;
+- no clickable non-button element;
+- the theme follows `html[data-theme]`.
+
+### Row-by-row confirmation
+| row | status |
+|---|---|
+| Q-CM1, Q-CM2, Q-CM3 | Confirmed. The stage-0 title is kept because it doubles as the uncaptioned hook figure, which is reasonable. |
+| Q-EP1 – Q-EP6 | Confirmed. The rebuilt scale figures now read at 390 px: 26–28 px plate labels, plus a magnified five-unit inset on comparisons 2 and 3. A-EP1 to A-EP3 were also taken. |
+| Q-EN1, Q-EN2, Q-EN3 | Confirmed. A-EN2 was taken too: the curve now runs through measured means only. |
+| Q-C1, Q-C2, Q-C3, Q-C4 | Confirmed. The route chip renders on all four routes. A right pick now shows "Yes." plus the reveal once. A-C2 was taken. |
+| Q-D1 | Confirmed. The new hook ("A compost heap steams on a frosty morning") is a different phenomenon from carbon-cycle's. Its reveal names respiration releasing energy, not the carbon question, which now belongs to stepper step 1. Options are at length parity. |
+| Q-D2 | Confirmed. The base sort `s-return` (air / soil / locked away) is on all four routes and in both rails, and was solved by tap on CF and by keyboard on CH. |
+| Q-D3, Q-D4, Q-D5 | Confirmed. A-D1 was taken: "> 600" is no longer joined to the curve. |
+| Q-CE1, Q-CE2, Q-CE4 | Confirmed. A-CE3 and A-CE4 were taken too. |
+| Q-CE3 | **Withdrawn by commander ruling.** The examiner says all three equations are printed on the June 2026 sheets, matching the pilot ruling resistors-C9. The label stays, and the question is on Mide's list. |
+| Q-IE1, Q-IE2, Q-IE3 | Confirmed. The equation-sheet link is now in the header (A-IE1). The keyed iceberg option is 21 words against distractors of 18, 20 and 18, so it is at parity. |
+| Q-L1, Q-L3, Q-L4, A-L1 | Confirmed. Unasked verdicts now render in a neutral style. |
+| Q-L2 | **Done, but it brings two new defects** (Q2-L1, Q2-L2 below). The task is now spatial: rings on the diagram, a red cross at a wrong tap, the ray drawn to the chosen point, and the existing corrections. All four steps complete by keyboard and by tap. |
+
+### New defects introduced by the fixes — REQUIRED
+
+**Q2-L1** · lenses · TF, TH · `C_STEPS[*].targets` and `cTargets`
+- **Defect:** the correct target is always `targets[0]`, so it is first in DOM and Tab order at every step. Its `aria-label` names the answer outright: "Point: where the two rays cross", "Point: where the rays meet when traced back", "Point: straight on, in line with its path". A keyboard or screen-reader user meets the answer first, already labelled, which is the same answer-position problem Law 10 forbids.
+- **Fix:**
+  1. Order each step's targets by x position (or a fixed shuffle) so the key is not first.
+  2. Make every label purely positional, for example "Point on the axis at F, far side", "Point below the axis between F and 2F", "Point above the axis, left of F, object's side".
+- **Cite:** Law 10; content_standards §1.
+
+**Q2-L2** · lenses · TF, TH, 390 px · `cTargets` style
+- **Defect:** at 390 px the 38 px rings sit 21–31 px apart. They overlap at step 1 (2F / still parallel), step 2 (straight on / along the axis) and step 3 (crossing / F / 2F). At step 3 the rings cover the ray crossing the pupil must find and the F and 2F labels.
+- **Fix:** below 480 px, use rings of about 24 px with no fill (`background:transparent`) and a 2 px border, keeping a 44 px hit area through transparent padding. Or nudge clashing targets apart.
+- **Cite:** brief §5 "works at 390 px"; Law 10.
+
+**Q2-EP1** · eukaryotes-prokaryotes · all routes · `FIT[1].why[0]`
+- **OLD:** `×10 would make each ribosome 200 nm. Convert first: 2 µm = 2000 nm, and 2000 ÷ 20 = 100.`
+- **NEW:** `×10 would make each ribosome 200 nm. Convert 2 µm to nm first.`
+- **Why:** the working line directly below prints `2000 nm ÷ 20 nm = 100`.
+- **Cite:** no-redundant-text rule.
+
+**Q2-EP2** · eukaryotes-prokaryotes · all routes · `fitFig` k=0
+- **OLD:** `D.T(320, 330, '10 bacteria fit across', 28)`
+- **NEW:** delete it.
+- **Why:** after the reveal, the figure shows the ten bacteria, the verdict says "×10" and the working says "= 10". This caption is the third telling. Comparisons 2 and 3 need their inset label; comparison 1's ten rods are legible at 390 px.
+- **Cite:** no-redundant-text rule.
+
+### Advisory (round 2)
+- **A2-D1 (decomposition `s-return`):** every carbon card except the buried fern goes to the air, and every mineral card goes to the soil. The keyword tracks the concept, which is acceptable, but a second "locked away" carbon card (a leaf in a waterlogged bog) would stop "carbon → air" working as a shortcut. Also, the prompt "Each one comes from something that died" is not true of the living fungus. "Each one starts in a living thing" would fit every card.
+- **A2-L1 (lenses):** the step-4 "No image: the rays never meet" button sits outside the figure. It is reachable and works. Its position is a fixed giveaway that it is the odd one out, but because it is the wrong answer that does no harm.
+
+### Final verdicts
+| lesson | verdict |
+|---|---|
+| chromosomes-mitosis | **SHIP** — Q-CM1–3 confirmed; no new defects |
+| eukaryotes-prokaryotes | **FIX** — Q2-EP1, Q2-EP2 (two one-line text deletions; everything else confirmed, scale figures now legible at 390 px) |
+| enzymes | **SHIP** — Q-EN1–3 confirmed |
+| carbon-cycle | **SHIP** — Q-C1–4 confirmed |
+| decomposition | **SHIP** — Q-D1–5 confirmed; new hook and base sort are sound (A2-D1 advisory only) |
+| changes-in-energy | **SHIP** — Q-CE1, 2, 4 confirmed; Q-CE3 withdrawn by commander ruling (on Mide's list) |
+| internal-energy | **SHIP** — Q-IE1–3 confirmed |
+| lenses | **FIX** — Q2-L1 (key is always first in Tab order, and its aria-label names the answer), Q2-L2 (targets overlap and cover the crossing at 390 px) |

@@ -130,3 +130,9 @@ explainer (71) = **142 words** on Triple (RP method, variables and risks ≈ 170
 | A-12 / A-D2 | Not changed: by the commander's ruling, q1 (detritivores) stays in the bank. |
 
 **New section id `s-return`** (a `Ks4Sort`, base layer). It needs a `block_map` entry in `batch_2.py` if the classifier does not infer it. I suggest `"s-return": "check"`, the same as other mid-lesson sorts, with the commander's choice of type.
+
+## Review fixes round 2 (1 Oct 2026)
+
+| row | what I did |
+|---|---|
+| A2-D1 (quality-a round 2) | **Keyword split:** "carbon" now appears once in the air bin (fungus) and once in locked away (buried fern). The leaf-sugar card no longer says carbon ("Sugar in a leaf that has fallen and died"), and its why says "Decomposers respire the sugar, releasing its carbon as carbon dioxide." "Leaf" now appears in both an air card and a soil card ("Magnesium in a fallen leaf"). **Prompt** is now "Each one starts in a living thing.", which is true of the living fungus too. Every bin and every science claim is unchanged. I kept the commander's edits to the intro and the ground reply. |

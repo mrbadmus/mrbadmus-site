@@ -62,7 +62,7 @@
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
 
       <section class="ks3-explainer">
-        <p>Dead leaves, dead animals and their waste are broken down by <strong>microorganisms</strong>, mainly bacteria and fungi, called <strong>decomposers</strong>. Nothing is lost in the process: every atom in the leaf ends up somewhere. Follow one leaf, and predict each step before you watch it.</p>
+        <p>Dead leaves, dead animals and their waste are broken down by <strong>microorganisms</strong>, mainly bacteria and fungi, called <strong>decomposers</strong>. Nothing is lost in the process: every atom in a dead leaf ends up somewhere. Follow one fallen leaf, and predict each step before you watch it.</p>
       </section>
 
       <section id="s-cycle" class="ks3-block" style="scroll-margin-top: 92px;">
@@ -99,7 +99,7 @@
       </section>
 
       <section id="s-return" class="ks3-block" style="scroll-margin-top: 92px;">
-        <dc-import name="Ks4Sort" eyebrow="Where does it end up?" title="Air, soil, or locked away?" prompt="Each one comes from something that died." bins="{{ rBins }}" items="{{ rItems }}" done-note="Decomposers send carbon back to the air by respiring and return mineral ions to the soil. Only material they never reach stays locked away." on-done="{{ onReturn }}" hint-size="100%,460px"></dc-import>
+        <dc-import name="Ks4Sort" eyebrow="Where does it end up?" title="Air, soil, or locked away?" prompt="Each one starts in a living thing." bins="{{ rBins }}" items="{{ rItems }}" done-note="Decomposers send carbon back to the air by respiring and return mineral ions to the soil. Only material they never reach stays locked away." on-done="{{ onReturn }}" hint-size="100%,460px"></dc-import>
       </section>
 
       <section class="ks3-explainer" data-route="triple">
@@ -571,7 +571,7 @@ class Component extends DCLogic {
         { text: 'Sunlight absorbed by the heap during the day', reply: 'Winter sun is weak, and the heap is hottest in the middle, where no light reaches.' },
         { text: 'Living things in the heap, releasing energy as they feed', reply: '' },
         { text: 'The waste slowly burning without any flames', reply: 'Burning makes ash and smoke; the heap makes neither.' },
-        { text: 'Warmth rising from the ground under the heap', reply: 'Frozen ground is colder than the heap, so heat flows out of the heap, not in.' }
+        { text: 'Warmth rising from the ground under the heap', reply: 'The ground under the heap is colder than its middle, so heat flows out of the heap, not in.' }
       ],
       hookReveal: 'Bacteria and fungi in the heap are breaking the waste down. As they feed, they respire, and respiration releases energy: some of it warms the heap.',
       onHook: (i) => this.setState({ hook: i }),
@@ -603,10 +603,10 @@ class Component extends DCLogic {
       // base sort: where each material ends up (4.7.2.2)
       rBins: [{ id: 'air', label: 'Back to the air' }, { id: 'soil', label: 'Back to the soil' }, { id: 'lock', label: 'Locked away' }],
       rItems: [
-        { text: 'Carbon in the sugars of a dead leaf', bin: 'air', why: 'Decomposers respire it out as carbon dioxide.' },
+        { text: 'Sugar in a leaf that has fallen and died', bin: 'air', why: 'Decomposers respire the sugar, releasing its carbon as carbon dioxide.' },
         { text: 'Nitrate in an animal’s droppings', bin: 'soil', why: 'Mineral ions are released into the soil, where roots absorb them.' },
         { text: 'Carbon in a fern buried in mud before it could rot', bin: 'lock', why: 'Decomposers never reached it. Buried for millions of years, it became coal.' },
-        { text: 'Magnesium from a fallen leaf', bin: 'soil', why: 'It is a mineral ion, returned to the soil, not released as a gas.' },
+        { text: 'Magnesium in a fallen leaf', bin: 'soil', why: 'It is a mineral ion, returned to the soil, not released as a gas.' },
         { text: 'Carbon in the body of a fungus feeding on a log', bin: 'air', why: 'The fungus respires too, and when it dies other decomposers break it down.' },
         { text: 'Nitrogen compounds in the body of a dead mouse', bin: 'soil', why: 'Broken down, they are returned to the soil as mineral ions such as nitrate.' }
       ],

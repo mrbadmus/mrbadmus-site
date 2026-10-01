@@ -45,7 +45,7 @@
   <main class="ks3-main">
     <div class="ks3-lesson">
       <header class="ks3-lesson-head">
-        <p class="ks3-eyebrow">AQA Chemistry ({{ specCode }}) {{ specRef }} · Classify</p>
+        <p class="ks3-eyebrow">AQA {{ specName }} ({{ specCode }}) {{ specRef }} · Classify</p>
         <h1>Atoms, elements and compounds</h1>
         <p class="ks3-bigq">Every substance is atoms. So what makes one substance an element, another a compound and a third a mixture, and how can you tell from a drawing of its particles?</p>
         <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
@@ -121,7 +121,7 @@
       </section>
 
       <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
-        <dc-import name="Ks4Sort" eyebrow="Sort it" title="Element, compound or mixture?" prompt="Ten substances, named but not drawn. Decide from the name or formula." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Name the test you used: one type of atom is an element; two or more elements chemically combined in fixed proportions is a compound; anything not chemically combined is a mixture." on-done="{{ onSort }}" hint-size="100%,460px"></dc-import>
+        <dc-import name="Ks4Sort" eyebrow="Sort it" title="Element, compound or mixture?" prompt="Ten substances, named but not drawn. Decide from the name or formula." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Name the test you used: one type of atom is an element; two or more elements chemically combined in fixed proportions is a compound; two or more substances not chemically combined with each other is a mixture." on-done="{{ onSort }}" hint-size="100%,460px"></dc-import>
       </section>
 
       <section class="ks3-explainer">
@@ -402,7 +402,7 @@ class Component extends DCLogic {
     else if (bv === 'no') { const off = E.els.filter((el) => cnt.L[el] !== cnt.R[el]); vWord = 'Not balanced yet.'; verdict = 'Check the ' + off.join(' and ') + ' count' + (off.length > 1 ? 's' : '') + ' in the tally. Change a number in front, never a formula.'; }
     return Object.assign({}, R, {
       video: K && s.hook !== null ? K.video(slug) : null,
-      railV, theme, ready, specRef, specCode: R.isTriple ? '8462' : '8464', keySpec: 'AQA ' + specRef, draftVisible: this.props.showDraft !== false,
+      railV, theme, ready, specRef, specCode: R.isTriple ? '8462' : '8464', specName: R.isTriple ? 'Chemistry' : 'Combined Science', keySpec: 'AQA ' + specRef, draftVisible: this.props.showDraft !== false,
       endPrev: PN.prev || null, endNext: PN.next || null,
       endConnects: ready && K.hrefFor ? [
         { href: K.hrefFor('relative-formula-mass', R), label: 'Relative formula mass' },

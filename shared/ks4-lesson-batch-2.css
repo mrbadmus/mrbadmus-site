@@ -51,6 +51,20 @@ html, body { margin: 0; padding: 0; background: #FBF3E6; }
   @keyframes aec-fade { from { opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { .aec-mv, .aec-trace, .aec-ring, .aec-fade { animation: none !important; } }
 
+/* from lenses.dc.html */
+html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  .ln-tap { position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px; padding: 0; border: 0; background: transparent; display: grid; place-items: center; pointer-events: none; }
+  .ln-fig { cursor: pointer; }
+  .ln-tap span { display: block; width: 32px; height: 32px; box-sizing: border-box; border-radius: 50%; border: 3px solid var(--ks3-accent); background: transparent; }
+  .ln-tap[data-bad="1"] span { border-color: var(--ks3-alert-border); }
+  @media (max-width: 480px) { .ln-tap span { width: 22px; height: 22px; border-width: 2px; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+
 /* from eukaryotes-prokaryotes.dc.html */
 html, body { margin: 0; padding: 0; background: #FBF3E6; }
   a { color: var(--ks3-accent-text); }

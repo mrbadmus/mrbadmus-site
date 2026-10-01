@@ -95,3 +95,10 @@ Rendered in Design's runtime harness with `shared/ks4-lib.js`, `shared/ks4-diagr
 - **A-EP3** → done. The Triple-tagged "every 20 minutes" explainer is deleted from this lesson; 8461 4.1.1.6 is `culturing-microorganisms`' content. The lesson now has no route-tagged elements.
 - **A-5, A-6** → no change (the reviewer's own verdict).
 - Revalidated in a scratch harness at 390 and 1280 px: 0 console errors, no undefined/NaN. Recompiled with `compile_template_text` and `apply_route_layers`. **No new `block_map` need**; the optional mapping above still applies (`s-build`, `s-scale` classify as "figure").
+
+## Review fixes round 2 (quality-a.md "Round 2")
+
+- **Q2-EP1** → done. `FIT[1].why[0]` now reads "×10 would make each ribosome 200 nm. Convert 2 µm to nm first."; the working line below already prints the division.
+- **Q2-EP2** → done. The "10 bacteria fit across" caption is deleted from `fitFig` k=0.
+- Same defect, not a numbered row → done. `FIT[2].why[2]` repeated "2000 ÷ 20 = 100" above that same working line; it is trimmed to "Check the conversion: 2 mm = 2000 µm."
+- Revalidated in a scratch harness at 390 px with all three comparisons driven: 0 console errors, no undefined/NaN. Recompiled with `compile_template_text` and `apply_route_layers`. No `block_map` change.

@@ -185,3 +185,76 @@ Rung 2 pond diagram (X feeding, Y decomposer respiration). Rung 3 chain. Rung 4 
 
 No frozen item needs to be newly withheld in this group. No HT or separate-science content leaks onto the wrong route.
 Nothing here needs Mide's ruling on conflicting AQA sources.
+
+---
+
+## Round 2 — re-review of commit 36fd4c877 (1 Oct 2026)
+
+**Method.** I diffed each lesson source fff50ef58 → 36fd4c877 and read every changed line, including the logic. I also loaded all 16 built pages (4 lessons × CF/CH/TF/TH) in headless Chrome on :8711 with a forced light colour scheme and checked the client-rendered text:
+- No console errors on any page, apart from the expected localhost CORS block on `/api/health`.
+- Practice-bank counts: chromosomes 5, eukaryotes 5, enzymes 4 (frozen q1, heated to 80 °C, absent on every route), carbon 2.
+- The built pages contain the fixed text. "cheek" now appears nowhere.
+
+### chromosomes-mitosis
+- **S-1 fixed.** The prompt now reads "…does not happen in the cell cycle." on all four routes.
+- **New or changed content checked:**
+  - Stage 1 Q2 options: "8 chromosomes, each one copy", "4 chromosomes, each two copies" (keyed) and "2 chromosomes, each four copies". The key is correct, and both `why` texts still answer their options.
+  - The in-figure titles were removed; the figcaptions still name each stage correctly.
+  - `cancerReveal` now reads "Mitosis is normal; losing control of it is the disease." This is consistent with 4.2.2.7. The benign/malignant and secondary-tumour content is still in the explainer.
+  - The meiosis box was shortened; it is still correct (4.6.1.2).
+  - "In animals, mitosis never makes gametes" is correct.
+- **Verdict: SCIENCE PASS.**
+
+### eukaryotes-prokaryotes
+- **S-2 fixed.** "Liver cell" replaces "cheek cell" in every place listed, and all numbers are unchanged. The rename was extended to the M1 titles, the fit-figure labels and the alts. A liver cell of about 20 µm is a fair typical value (hepatocytes are about 20–30 µm).
+- **New or changed content checked:**
+  - Rebuilt `fitFig`, case 1: the cell has r = 100, so 20 µm is 200 px, and the ten rods are 20 px each (2 µm). This is to scale, and the caption "10 bacteria fit across" is right.
+  - Cases 2 and 3: all 100 units are still drawn to scale, plus a magnified inset of the first 5, labelled "magnified". The inset does not claim to be to scale. The "(the dot)" labels are right.
+  - A-4 was applied: "×10 would make each ribosome 200 nm…". This is correct: 2000 nm ÷ 10 = 200 nm.
+  - `hookReveal` now reads "Not in a nucleus: a bacterium has none. Its DNA is loose in the cytoplasm." This is correct (4.1.1.1). Plasmids are still taught in the builder.
+  - The comparison 1 feedback "×10: both already in µm, so just divide." is correct.
+  - The ribosome corrections are correct.
+  - The repositioned mitochondria and smaller DNA loop stay inside their cells, and the mitochondria stay clear of the nucleus.
+- **Deletion checked.** The Triple-tagged "every 20 minutes" line was removed. That fact belongs to 8461 4.1.1.6 (`culturing-microorganisms`), and it is not required by 4.1.1.1, so removing it loses nothing examinable here. The four routes are now identical, which is correct for a base-only spec point.
+- **Verdict: SCIENCE PASS.**
+
+### enzymes
+- **S-3 fixed.** `TRUE_T[6]` is now 60, and the built page carries it. I checked all ten noise values:
+  - Your own pH 6 time is always 60 s or 90 s, so the pH 6 mean is 75 s or 90 s.
+  - The pH 7 mean is never below 100 s, and the pH 5 and pH 8 means are higher still.
+  - So the peak is at pH 6 in every order of testing, and the "fastest near pH 6" text always holds.
+  - Group C's 240 s at pH 6 is still the obvious anomaly, and the mean task is unchanged.
+- **New or changed content checked:**
+  - Re-plotted graph: the curve of best fit now joins only the measured means (pH 5–8). pH 4 is a hollow marker on the axis labelled "no end point / in 10 min", and the alt text says so. This is correct.
+  - The y-axis range (0–0.016 s⁻¹) still holds the maximum rate (1/75 = 0.0133 s⁻¹).
+  - Unsampled wells are now pale orange-brown, which matches method step 1.
+  - The shortened `thinkReveal` is correct. Low temperatures are still covered in the sketch feedback.
+  - The key note dropped one duplicated authored line, and the remaining five lines are correct. The RP number follows the route (RP4 on Combined, RP5 on Triple).
+  - The bank is now `K.bank` with the engine's withholding. q1 is confirmed absent on all routes.
+- **Verdict: SCIENCE PASS.**
+
+### carbon-cycle
+- **S-4 fixed.** The note now reads "Of these processes, only photosynthesis takes carbon dioxide out of the air…".
+- **New key-note lines checked.** All five are correct and base:
+  1. "Photosynthesis takes carbon dioxide out of the air."
+  2. "Feeding passes carbon compounds along food chains."
+  3. "Respiration by plants, animals and decomposers returns carbon dioxide." This is the mark-earning "decomposers respire" form.
+  4. "Combustion of fossil fuels returns carbon locked away for millions of years."
+  5. "Deforestation and burning add carbon dioxide faster than it is removed." This matches 4.7.3.4–4.7.3.5.
+- **Old key note.** The frozen key note's "decomposition", ocean and volcano lines are no longer displayed. Nothing examinable in 4.7.2.2 is lost, and the earlier contradiction is gone.
+- **Other new or changed content checked:**
+  - A-12 and A-13 were applied ("For thousands of years before people burned fossil fuels on a large scale…"; "faster than natural processes can remove it"). Both are correct.
+  - The rung 2 Y options are length-matched; the keyed answer "Respiration by microorganisms" is correct, and the three distractors are each wrong.
+  - The trace reply now shows only on a wrong pick; no text was lost from the reveal.
+  - The route chip replaces the static pills; this is not a science change.
+- **Verdict: SCIENCE PASS.**
+
+### Round 2 summary
+| lesson | REQUIRED remaining | final verdict |
+|---|---|---|
+| chromosomes-mitosis | none | SCIENCE PASS |
+| eukaryotes-prokaryotes | none | SCIENCE PASS |
+| enzymes | none | SCIENCE PASS |
+| carbon-cycle | none | SCIENCE PASS |
+
+The round-1 advisories that were left unchanged are still advisory. These are A-1, A-3, A-9 and A-10 (frozen text: imprecise, not wrong) and A-5, A-11, A-14 and A-15 (the reviewer's own "no change"). None of them blocks shipping.

@@ -363,3 +363,76 @@ The lessons all wire it the pilot's way (`on-done="{{ onSort }}"` → `setState(
 | carbonates-halides-sulfates | FIX | Q-1…Q-3 (header pills, r4 command mismatch, result shown three times) |
 
 Shared, outside the lessons: S-1, Ks4Sort's onDone does not reach the rail (pilot affected too).
+
+---
+
+## Round 2 (re-review of commit 36fd4c877)
+
+I re-checked commit 36fd4c877 in a browser on the same rules: built pages from port 8716 in headless Chrome, read-only.
+
+- **Built pages are current:** `ks4_batch_check --batch batch-2` reports all 52 pages clean.
+- **Routes and modes:** each lesson was driven on TH at 1280 light by keyboard, and on a Foundation route (CH for using-moles) at 390 dark by tap.
+- **Page health:** no horizontal scroll, no undefined/NaN/`{{`, and zero console errors on any page. The one exception is the expected `/api/health` CORS block from localhost.
+- **Out of scope:** S-1 (the Ks4Sort rail tick) is out of scope by commander decision. It still affects every sort, including the new `#s-errors`.
+
+### Titrations overshoot (Q-1): reproduced and now refused
+
+I replayed the original failing sequence by **tap** at 390 on TF, and again by **keyboard** at 1280 on TH:
+- rough run to 24.00, then +5.00 → 29.00, recorded;
+- three accurate runs, each "Run in to 1 cm³ below the rough titre", all at 28.00.
+
+What the bench does now:
+- The rows read "RUN n · OVERSHOT".
+- Choosing runs 1–3 gives **"These runs overshot. The run-in or a splash went past the end point, so these titres are too large. Leave them out. …"**, and the rail stays un-done.
+- "Repeat the rough run" works. A careful rough run (25.00) and two dropwise runs, chosen together, give "Concordant. Mean titre = (24.75 + 24.70) ÷ 2 = 24.73 cm³", and the bench ticks done.
+
+**Confirmed.**
+
+### New titrations sort (`#s-errors`, Q-4)
+
+- **Structure:** 7 cards in 3 bins (too large / too small / no effect), each with a `why`. I solved it by tap and by keyboard.
+- **No word-shape giveaway:** "rinsed with water" appears in all three bins (burette, pipette, flask), so the wording does not give the bin away.
+- **Done-note:** a single useful question ("does the slip change the amount of alkali in the flask, the strength of the acid, or the reading?").
+- **Real mid-size activity.** `block_map` now has `"s-errors": "check"`.
+
+### Required rows, confirmed in the built pages
+
+| Lesson | Rows | Status |
+| --- | --- | --- |
+| atoms-elements-compounds | Q-1 eyebrow "Zoom in" · Q-2 `balLine` gone · Q-3 Graphite / Rust (iron oxide) / Salt water, NaCl in H₂O, so each bin now mixes formula and no-formula cards · Q-4 r1 is "Which of these is a mixture?" (11 vs 9 words, passes) · Q-5 authored done-note, no caps · Q-6 route chip, "(8462) 4.1.1.1" / "(8464) 5.1.1.1" | all confirmed |
+| relative-formula-mass | Q-1 eyebrows without counters · Q-2 confront panel has its three beats, no caps paragraph · Q-3 bracket-rule key fact · Q-4 route chip and code | all confirmed |
+| using-moles-calculations | Q-1 sentence-case `<title>`, `<h1>`, chrome and key note · Q-2 no load line on "Your mix" | all confirmed |
+| concentration-of-solutions | Q-1 sentence case · Q-2 the current solution shows once (verdict); the log lists only earlier ones · Q-3 Higher r3 is 3 marks, 6.0 g/150 cm³ against 10 g/250 cm³ with conversion, harder than Foundation's | all confirmed |
+| percentage-yield | Q-1 closing box "… actual yield 6.2 g. Nothing was destroyed." · Q-2 key-note line gone · Q-3 authored r1 at parity · Q-4 TH write-it-out questions are rearrangements (72 % of 45 g; 85 % of 2.40 kg), TF unchanged · Q-5 route chip, "(8462) 4.3.3.1" | all confirmed |
+| titrations | Q-1 above · Q-2 authored r1 at parity · Q-3 TH Q1 is the rough-plus-anomaly set to 2 d.p.; TF unchanged · Q-4 above · Q-5 route chip plus one pill "Required practical · titration" | all confirmed |
+| metal-hydroxides | Q-1 pills replaced by the route chip plus "Required practical · identifying ions"; "Contains Higher" gone | confirmed |
+| carbonates-halides-sulfates | Q-1 as metal-hydroxides · Q-2 r4 reads "Plan tests that would identify each solid…" under a PLAN chip · Q-3 log is "Salt N · earlier results" without the latest test | all confirmed |
+
+### New-redundancy sweep
+
+None of the fixes added redundant text:
+- The "OVERSHOT" row label marks the record. The flask line describes only the run in progress.
+- The concentration bench now shows each result once.
+- The carbonates rack shows the latest result once (the result line), plus the drawn tube caption.
+
+### Advisory (round 2, not blocking)
+
+- R2-A1. The eyebrow subject label is inconsistent on Combined pages:
+  - atoms-elements-compounds and relative-formula-mass read "AQA Chemistry (8464) …";
+  - using-moles and concentration read "AQA Combined Science (8464) …".
+
+  Pick one form batch-wide. The science reviewer's "Combined Science (8464)" is the more accurate.
+- R2-A2. The titrations transcript rows are `<button>`s whose `aria-pressed` is only emitted when true. This matches the shared runtime, and the selected state still shows visually.
+
+### Final verdicts
+
+| Lesson | Verdict |
+| --- | --- |
+| atoms-elements-compounds | **SHIP**: all six required rows fixed and verified |
+| relative-formula-mass | **SHIP**: all four required rows fixed and verified |
+| using-moles-calculations | **SHIP**: both required rows fixed; A-2 line-up accepted by the commander |
+| concentration-of-solutions | **SHIP**: all three required rows fixed and verified |
+| percentage-yield | **SHIP**: all five required rows fixed and verified |
+| titrations | **SHIP**: overshoot now refused (reproduced by tap and keyboard), mid-size sort added, other rows fixed |
+| metal-hydroxides | **SHIP**: header fixed |
+| carbonates-halides-sulfates | **SHIP**: all three required rows fixed and verified |

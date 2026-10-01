@@ -223,3 +223,87 @@ None. Nothing in these four lessons sets one AQA source against another. A-6 and
 | titrations | **SCIENCE PASS** |
 | metal-hydroxides | **SCIENCE PASS** |
 | carbonates-halides-sulfates | **SCIENCE PASS** |
+
+---
+
+## Round 2 — re-review of commit 36fd4c877 (1 Oct 2026)
+
+**How I re-checked**
+- Diffed each `.dc.html` from fff50ef58 to 36fd4c877.
+- Read every new or changed string and every changed piece of logic.
+- Ran all 8 built pages again in headless Chrome: light scheme, port 8714, TF compared with TH.
+  - No console errors other than the local CORS health ping.
+  - No "undefined". The only "NaN" hits are the substring of NaNO₃.
+- Route layering still holds on all four lessons. Higher content appears on TH only, as before. The new TH-only write-it-out sets are confirmed absent from TF.
+
+### percentage-yield
+- **S-1 confirmed.** The r4 points now read "First reason, any one of: …" and "Second reason: a different one of those three." Any two of the three spec reasons now score both marks. The new text is present in the built TH page, and the logic is shared by TF.
+- **New authored r1 ("Give one reason…")** is correct:
+  - The key is "Some product is left behind when it is separated from the mixture", which is a spec reason (4.3.3.1).
+  - The distractor replies are all true: atoms are conserved; a catalyst changes the rate, not the maximum mass; the theoretical yield is calculated exactly from the equation.
+  - The `why` names all three spec reasons.
+- **New TH rearrangement questions** are correct:
+  - 72 % × 45 g ÷ 100 = **32.4 g** ✓
+  - 2.40 kg → 2400 g; 85 × 2400 ÷ 100 = **2040 g** ✓
+  - The close note "Skip the conversion and you get 2.04" is right.
+  - Rearranging the % yield equation is legitimate maths-skill use of 4.3.3.1.
+- **A-1 applied:** "never the maximum mass of product".
+- **A-2 applied:** "83.3% (83%)".
+- **Key note:** "Chemistry-only spec point." was dropped. The remaining lines are unchanged and correct.
+- **Bench close box** now reads "Theoretical yield 8.0 g · actual yield 6.2 g. Nothing was destroyed." That is correct.
+
+### titrations
+- **New sort "Titre too large, too small, or no effect?"**: every verdict and every reason is correct.
+
+  | card | verdict | check |
+  |---|---|---|
+  | burette rinsed with water | too large | the acid is diluted ✓ |
+  | pipette rinsed with water | too small | fewer moles of alkali in 25.00 cm³ ✓ |
+  | flask rinsed with distilled water | no effect | the moles of alkali are unchanged ✓ |
+  | overshoot | too large | ✓ |
+  | final reading at the top of the meniscus | too small | the scale increases downwards, so the top sits at a smaller number ✓ |
+  | air bubble in the jet fills during the run | too large | volume is read off the burette but never reaches the flask ✓ |
+  | flask walls washed with distilled water | no effect | ✓ |
+
+  The done-note (amount of alkali / strength of acid / reading) is a sound diagnostic.
+- **Overshoot handling** is correct.
+  - A row is flagged `over` when an accurate run's added volume is more than the end point + 0.05 cm³.
+  - Pure drop-by-drop additions always land exactly on the end point, because every value is a multiple of 0.05 cm³. Only a +0.50 cm³ splash or a run-in that is too long can overshoot.
+  - `judge()` leaves overshot rows out of the concordance search and refuses any choice that contains one. Its reason ("these titres are too large") is right.
+  - "Repeat the rough run" replaces the rough row.
+  - With `MAXRUN` = 9 there are 10 `INIT`/`EP` entries, so the indices are safe.
+  - The authors' driven mean (24.75 + 24.70) ÷ 2 = 24.725 → 24.73 cm³ is correct.
+- **New TH write-it-out numbers** are correct:
+  - Q1: 22.95, 23.05 and 23.00 span 0.10, so they are concordant. The rough 23.40 and the 22.60 are excluded. 69.00 ÷ 3 = **23.00 cm³** ✓
+  - Q2: 0.02210 / 0.02275 / 0.02200 / 0.02205 dm³ → 22.10 / 22.75 / 22.00 / 22.05 cm³. 22.00–22.10 are concordant; 22.75 is out. 66.15 ÷ 3 = **22.05 cm³** ✓
+- **New authored r1 ("drop by drop")** is correct:
+  - The key "So that one drop past the end point is not added" is right.
+  - The distractor replies (swirling, near-instant indicator, tiny temperature change) are all true.
+- **A-3 and A-4 applied.** The key-note line "RP Chemistry 2 (chemistry-only)." is filtered out. That is harmless, because the key-note spec label still names RP2.
+
+### metal-hydroxides
+- **A-5 applied:** key-note line 1 now reads "Fe³⁺ = brown". Correct, and it matches 4.8.3.2 word for word.
+- The other changes do not touch the science: the route chip, the RP pill wording and "Tube W · identified".
+
+### carbonates-halides-sulfates
+- **A-8 applied:** key-note line 4 now reads "Always acidify first to remove carbonate ions." That is correct and is the reason AQA credits.
+- **r4 reworded to "Plan tests that would identify each solid. Give the result each one would show."** The levels and marking points are unchanged and still match.
+- The other changes do not touch the science: the results log now shows earlier results only, plus the route chip and the pill.
+
+### Round 2 REQUIRED
+None.
+
+### Round 2 ADVISORY
+| # | where | note |
+|---|---|---|
+| A-9 | titrations `eItems[4].why` | "the top reads lower" could be read as "lower down the tube", which is the opposite of what is meant. Clearer wording: `The scale increases downwards, so the top of the meniscus sits at a smaller number: the final reading, and the titre, come out too small.` The verdict itself is right. |
+
+A-6 and A-7 (frozen quiz-bank notes for Mide's list) still stand, unchanged.
+
+### Final verdicts (Round 2)
+| lesson | verdict |
+|---|---|
+| percentage-yield | **SCIENCE PASS** |
+| titrations | **SCIENCE PASS** |
+| metal-hydroxides | **SCIENCE PASS** |
+| carbonates-halides-sulfates | **SCIENCE PASS** |

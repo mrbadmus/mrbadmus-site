@@ -181,3 +181,94 @@ None.
 - **Withholds:** all four lessons' `withhold` entries take effect in `shared/ks4-source-batch-2.js` on every route. No withheld item reaches a rung.
 - **Route layers:** every `data-route` layer (`higher`, `triple`, `triple-higher`) renders only on its correct routes in the built pages.
 - **Only Mide can rule:** nothing in this group.
+
+---
+
+## Round 2: re-review of commit 36fd4c877 (feat/ks4-batches)
+
+**What I re-checked**
+- The source diff `fff50ef58..36fd4c877` for all four lessons.
+- Each lesson's "Review fixes" notes.
+- Every built route page, counted for markers, plus a headless render (light scheme, :8713) of:
+  - atoms-elements-compounds on Combined Foundation (CF);
+  - concentration-of-solutions on Combined Higher (CH);
+  - using-moles-calculations on CH.
+
+The server and Chrome are stopped, and the scratch folder is deleted. The withheld items are still absent on every route. The route layers are unchanged and still correct (`s-solution` and `s-mol` on Triple Higher (TH) only; `s-pour` on CH and TH; the reacting-mass block on Higher only).
+
+**Commander decision noted.** A-5 (the Na/Cl₂ "Neither" item) is kept in the bank and goes on Mide's list. I have no further action on it.
+
+### atoms-elements-compounds
+- **S-1 confirmed.** The key fact renders the NEW text word for word on all four routes. The OLD rule is gone.
+- **New sort cards:** all correct. There are still ten cards, and the prompt still matches.
+  - **Graphite → element.** "Graphite is pure carbon: one type of atom." ✓ (4.1.1.1; 4.2.3.2 for graphite as carbon).
+  - **Salt water, NaCl in H₂O → mixture.** "Two compounds … not combined" ✓ (4.1.1.2).
+  - **Rust (iron oxide) → compound.** "Iron and oxygen chemically combined" ✓. Strictly, rust is *hydrated* iron(III) oxide. It is still creditable as a compound at GCSE.
+- **Rung 1** is now frozen q4, "Which of these is a mixture?", keyed bronze. q4 is clean (examination C28–C29). The "Identify" command fits, and the `why` is true. q4 also appears in the practice set, which is a quality matter, not a science one.
+- **Redrawn lattices.**
+  - FeS is 7 × 5 and alternates Fe and S in every row and column.
+  - Each of the four traced pairs is an adjacent Fe–S pair inside the grid: (0,1)–(0,2), (2,4)–(2,5), (3,0)–(3,1), (4,4)–(4,5).
+  - The bronze Sn positions are all inside the 5 × 7 grid.
+- **Balancer.** The "Not balanced yet" verdict text is true.
+
+**REQUIRED**
+
+| # | lesson · route(s) | where | OLD → NEW | reason | citation |
+|---|---|---|---|---|---|
+| S-2 | atoms-elements-compounds · CF CH TF TH | `#s-sort` Ks4Sort `done-note` attribute (new in this round) | OLD: "Name the test you used: one type of atom is an element; two or more elements chemically combined in fixed proportions is a compound; anything not chemically combined is a mixture." → NEW: "Name the test you used: one type of atom is an element; two or more elements chemically combined in fixed proportions is a compound; two or more substances not chemically combined with each other is a mixture." | "Anything not chemically combined is a mixture" is false. A single element, such as the Cu, graphite and O₂ cards in this very sort, is not chemically combined with anything, and it is not a mixture. A mixture needs two or more substances. This is the same class of defect as S-1, in the note shown straight after the sort. | 4.1.1.2 ("A mixture consists of two or more elements or compounds not chemically combined together") |
+
+**ADVISORY**
+
+| # | where | point |
+|---|---|---|
+| A-12 | eyebrow `AQA Chemistry ({{ specCode }})` on CF and CH | It renders "AQA CHEMISTRY (8464) 5.1.1.1". 8464 is Combined Science: Trilogy. The A-7/A-9 fix ("AQA Combined Science (8464)") was applied to using-moles and concentration but not here. The same applies to relative-formula-mass. |
+
+**Verdict: SCIENCE PASS AFTER REQUIRED CHANGES (S-2).** S-1 is closed.
+
+### relative-formula-mass
+- **New key fact.** "Mg(OH)₂ is one Mg, two O and two H, Mᵣ = 58. Mᵣ has no units." ✓ (24 + 32 + 2 = 58).
+- **A-2 applied, and correct.** A total of 64 (2 × 24 + 16) now gets the O₂ = 32 hint. A total of 40 (24 + 16) now gets "2Mg is 48, O₂ is 32: 48 + 32 = 80" ✓.
+- **Confront panel.** The bracket paragraph is unchanged and still correct (42 versus 58).
+- **Withholding.** The Mg(NO₃)₂ item is still withheld. The reacting-mass block is still on Higher only.
+- **Advisory.** A-12 applies here too: the CF/CH eyebrow reads "AQA Chemistry (8464)".
+
+**Verdict: SCIENCE PASS.**
+
+### using-moles-calculations
+- **r4 rounding** now reads "0.10 × 2 ÷ 3 = 0.0667 mol (keep the unrounded value)" and "0.0667 × 133.5 = 8.9 g". The arithmetic is right: 8.904 gives 8.9 g. A-6 is closed.
+- **r1.** The command is "Give", and the prompt is now "Give the meaning of the term limiting reactant". The key is "completely used up" ✓ (4.3.2.4). A-8 is closed.
+- **CH eyebrow** now reads "AQA Combined Science (8464)". A-7 is closed.
+- **hookReveal** now gives the method only (the 1 : 2 ratio; compare moles with the ratio). It is true, and the bench and the CFIFA example still show the full working.
+- **Withholding.** The KOH item is still absent on CH, and `s-solution` is still on TH only.
+
+**Verdict: SCIENCE PASS.**
+
+### concentration-of-solutions
+- **New Higher r3.**
+  - A is 6.0 ÷ 0.150 = 40 g/dm³ and B is 10 ÷ 0.250 = 40 g/dm³, so they are equally concentrated ✓.
+  - The three links are in the right order.
+  - Both herrings ("B more concentrated: more salt"; "A more concentrated: less water") are false, and their `why` replies are true.
+  - It is 3 marks and sits within 4.3.2.5 HT ("explain how the mass of a solute and the volume of a solution is related to the concentration").
+- **r4 mark points (Foundation and Higher).**
+  - The masses are right: 5.0 g and 7.0 g.
+  - The transfer point now accepts "a volumetric flask (or another container where the volume can be measured)".
+  - The make-up point now reads "until the total volume of solution is 250/200 cm³, then mix". This credits the method AQA would accept, and it keeps the volume-of-solution idea. A-10 is closed.
+- **Foundation Q1** is now 9.0 ÷ 0.25 = 36 g/dm³ ✓, and its close line ("divided by 250") ✓.
+- **Explainer conversion.** 500 cm³ = 0.500 dm³ ✓.
+- **r1.** The command is "Give" ✓. A-11 is closed.
+- **CF/CH eyebrow** now reads "AQA Combined Science (8464)" ✓. A-9 is closed.
+- **Routes after the engine-shim removal.** `s-mol` and the c = n ÷ V card are on TH only. `s-pour` is on CH and TH. CF and TF have neither. Confirmed in the built pages.
+- **Withholding.** The 80 g/dm³ item is still withheld everywhere.
+
+**Verdict: SCIENCE PASS.**
+
+### Round 2 summary
+| lesson | final verdict |
+|---|---|
+| atoms-elements-compounds | **SCIENCE PASS AFTER REQUIRED CHANGES** (S-2: the sort done-note; S-1 confirmed fixed) |
+| relative-formula-mass | **SCIENCE PASS** |
+| using-moles-calculations | **SCIENCE PASS** |
+| concentration-of-solutions | **SCIENCE PASS** |
+
+- **Open advisory:** A-12, the eyebrow subject label on the atoms and relative-formula-mass pages for Combined routes.
+- **Only Mide can rule:** none. The A-5 item is on his list by the commander's decision.
