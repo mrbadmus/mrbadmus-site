@@ -243,6 +243,15 @@ Not changed: science A-3 (frozen q2 wx3, photon energy — no action asked, kept
 
 ---
 
+## 3a. Shared-block engine fixes (Mide's approval, 2 Oct 2026)
+
+Every page of this batch (13 lessons, all routes) changes because two shared blocks compiled into every KS4 page were fixed — see `ks4_rulings.py` R16/R17 and `docs/ks4/design-reference/pilot/DEPARTURES-PILOT.md` ("Shared blocks — ladder number parse and sort completion"). Science content, lesson logic and freeze hashes are unchanged.
+
+- **R16 (Ks4Ladder Apply rung):** a typed number with space or comma thousands separators ("63 000", "63,000") is now read as 63000, not 63; a single decimal comma ("6,3") still reads 6.3.
+- **R17 (Ks4Sort):** the block now reports completion when the sort is checked, so the lesson's rail stop ticks. Lessons in this batch that use Ks4Sort: sound-waves-hearing, atom-economy, waves-detection-exploration, early-atmosphere, greenhouse-gases, particle-motion-pressure, power.
+
+---
+
 ## 4. Considered, not changed
 
 **The June 2026 equation-sheet labelling rule, applied across the batch.**

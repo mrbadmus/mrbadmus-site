@@ -879,3 +879,60 @@ def apply_r15_theme_slot(site_slug, template_text):
     _require(template_text, R15_CHROME_NAV_ANCHOR, site_slug, "R15")
     replacement = R15_CHROME_NAV_ANCHOR[:-len('</nav>')] + R15_THEME_SLOT_WRAPPED
     return template_text.replace(R15_CHROME_NAV_ANCHOR, replacement, 1)
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# R16 — Ks4Ladder's Apply rung reads a typed number the way a pupil writes
+# it (Mide's approval, 2 Oct 2026: "fix the exam ladder's reading of
+# '63 000' / '63,000' … in the shared block"). Design's grader did
+# `parseFloat(String(s.r2num).replace(',', '.'))`, so "63 000" parsed as 63
+# (parseFloat stops at the space) and "63,000" as 63.0 (the comma became a
+# decimal point) — both marked a correct 63 000 J answer WRONG. The parse
+# now strips every space (incl. no-break / thin / narrow no-break, which
+# AQA's own number style uses as a thousands separator), treats commas as
+# thousands separators when they group digits in threes after a non-zero
+# lead (1,234 / 63,000 / 1,234,567.5), and otherwise keeps Design's legacy
+# reading of a single comma as a decimal comma (6,3 → 6.3; 0,500 → 0.5).
+# A leading + / − is accepted (parseFloat already did). Shared block, so
+# every pilot and batch page carrying a calc rung gets it; no lesson's
+# constants or freeze hash move. Tested by `tests/ks4_ladder_parse_test.py` (runs this exact string in Node).
+# ═══════════════════════════════════════════════════════════════════════
+R16_LADDER_PARSE_FROM = "const v = parseFloat(String(s.r2num).replace(',', '.'));"
+R16_PARSE_FN = (
+    "function (raw) { var t = String(raw).replace(/[\\s\\u00a0\\u2009\\u202f]/g, ''); "
+    "if (/^[+-]?[1-9]\\d{0,2}(,\\d{3})+(\\.\\d+)?$/.test(t)) t = t.replace(/,/g, ''); "
+    "else t = t.replace(',', '.'); return parseFloat(t); }")
+R16_LADDER_PARSE_TO = "const v = (" + R16_PARSE_FN + ")(s.r2num); // ⊕ R16"
+
+
+def apply_r16_ladder_parse(text):
+    _require(text, R16_LADDER_PARSE_FROM, "Ks4Ladder.dc.html", "R16")
+    return text.replace(R16_LADDER_PARSE_FROM, R16_LADDER_PARSE_TO, 1)
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# R17 — Ks4Sort reports completion, so its rail stop ticks (Mide's
+# approval, 2 Oct 2026: "… and the sorting block's last-stop tick in the
+# shared block"). Design's `onCheck` did
+#     this.setState({ checked: true, reported: true });
+#     if (!s.reported && …) p.onDone(…);
+# reading `s.reported` AFTER the setState. Under React `s` is a snapshot
+# and that read is still false; under `shared/ks4-runtime.js` `setState`
+# assigns into the SAME `this.state` object `s` points at, so `s.reported`
+# is already true, `onDone` never fires, the lesson's `sort` flag never
+# sets, and the rail stop never ticks. The fix reads the flag FIRST — the
+# exact shape Ks4Chain (the sibling block, which ticks correctly) already
+# uses: `const first = !s.reported;` before its own setState.
+# ═══════════════════════════════════════════════════════════════════════
+R17_SORT_REPORT_FROM = (
+    "        this.setState({ checked: true, reported: true });\n"
+    "        if (!s.reported && typeof p.onDone === 'function') p.onDone({ correct: wrong.length === 0 });")
+R17_SORT_REPORT_TO = (
+    "        const first = !s.reported; // ⊕ R17: read before setState, as Ks4Chain does\n"
+    "        this.setState({ checked: true, reported: true });\n"
+    "        if (first && typeof p.onDone === 'function') p.onDone({ correct: wrong.length === 0 });")
+
+
+def apply_r17_sort_report(text):
+    _require(text, R17_SORT_REPORT_FROM, "Ks4Sort.dc.html", "R17")
+    return text.replace(R17_SORT_REPORT_FROM, R17_SORT_REPORT_TO, 1)

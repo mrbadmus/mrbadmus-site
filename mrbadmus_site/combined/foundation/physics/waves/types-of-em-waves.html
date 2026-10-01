@@ -146,8 +146,9 @@ class Component extends DCLogic {
       status: solved ? 'Every card is where it belongs.' : (s.checked ? (wrong.length === 1 ? 'One card is in the wrong box. Its note says why.' : wrong.length + ' cards are in the wrong box. Their notes say why.') : ''),
       onCheck: () => {
         if (!allPlaced) return;
+        const first = !s.reported; // ⊕ R17: read before setState, as Ks4Chain does
         this.setState({ checked: true, reported: true });
-        if (!s.reported && typeof p.onDone === 'function') p.onDone({ correct: wrong.length === 0 });
+        if (first && typeof p.onDone === 'function') p.onDone({ correct: wrong.length === 0 });
       },
       solved, hasDoneNote: !!p.doneNote, doneNote: p.doneNote || ''
     };
@@ -433,7 +434,7 @@ class Component extends DCLogic {
     if (kind === 'data') r2Ready = (r2.parts || []).every((pt, i) => s.r2parts[i] !== undefined && s.r2parts[i] !== '');
     const grade2 = () => {
       if (kind === 'calc') {
-        const v = parseFloat(String(s.r2num).replace(',', '.'));
+        const v = (function (raw) { var t = String(raw).replace(/[\s\u00a0\u2009\u202f]/g, ''); if (/^[+-]?[1-9]\d{0,2}(,\d{3})+(\.\d+)?$/.test(t)) t = t.replace(/,/g, ''); else t = t.replace(',', '.'); return parseFloat(t); })(s.r2num); // ⊕ R16
         const tol = r2.tol !== undefined ? r2.tol : Math.abs(r2.answer) * 0.02;
         return s.r2conv === r2.convAnswer && Math.abs(v - r2.answer) <= tol && s.r2unit === r2.unit;
       }

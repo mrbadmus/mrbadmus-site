@@ -1460,6 +1460,12 @@ def compile_block(page, name):
         logic = ks4_rulings.apply_r_end_connects_filter(logic)
     if name in _BLOCK_R2:
         logic = _BLOCK_R2[name](logic)
+    if name == "Ks4Ladder":
+        # ⊕ R16 (ks4_rulings.py) — the Apply rung reads "63 000"/"63,000".
+        logic = ks4_rulings.apply_r16_ladder_parse(logic)
+    if name == "Ks4Sort":
+        # ⊕ R17 (ks4_rulings.py) — report completion so the rail stop ticks.
+        logic = ks4_rulings.apply_r17_sort_report(logic)
     template = compile_template_text(page, tpl)
     return {"template": template, "logic": logic}
 
