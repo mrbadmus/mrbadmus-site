@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Internal energy · MrBadmus GCSE Physics</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Physics" unit="Particle model of matter" title="Internal energy" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">{{ eyebrowText }}</p>
+        <h1>Internal energy</h1>
+        <p class="ks3-bigq">Heat boiling water harder and the thermometer does not move. Where does the energy go, and why is energy not the same thing as temperature?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Turn the gas up under boiling water.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">A pan of water is boiling on a hob. A thermometer in the water reads 100 °C. You turn the flame up to full and keep it there.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What does the thermometer do while the water keeps boiling?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>The particles that make up a substance store energy in two ways. They move, so they have <strong>kinetic energy</strong>. There are forces between them, so they also have <strong>potential energy</strong>, which depends on how far apart they are. <strong>Internal energy</strong> is the total kinetic energy and potential energy of all the particles that make up a system. Heating a system increases its internal energy, and that does one of two things: it raises the temperature, or it changes the state. Heat the ice on the bench one stage at a time, and call which before it happens.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The heating bench · stage {{ stageNum }} of 4</p>
+        <h2 style="margin: 6px 0 0;">{{ stageTitle }}</h2>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ partFig }}</div>
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ curveFig }}</div>
+        </div>
+        <sc-if value="{{ asking }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px; padding: 14px 16px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0 0 8px; font-weight: 700;">You keep heating. What happens next?</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 8px;">
+              <sc-for list="{{ stageOpts }}" as="o" hint-placeholder-count="4"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+          </div>
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onHeat }}" disabled="{{ heatLocked }}" style="{{ heatStyle }}">{{ heatLabel }}</button>
+        </sc-if>
+        <sc-if value="{{ stageDone }}">
+          <p data-arrive="1" role="status" style="{{ verdictStyle }}"><strong>{{ verdictWord }}</strong> {{ verdictText }}</p>
+        </sc-if>
+        <sc-if value="{{ confront }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+            <p class="ks3-mis-quote">&ldquo;Keep heating it and it must keep getting hotter.&rdquo;</p>
+            <p style="margin: 0;">Heating always raises the internal energy, but not always the temperature. Temperature follows the particles&rsquo; average kinetic energy. While a pure substance melts or boils, the energy supplied goes into the particles&rsquo; potential energy instead, so the thermometer holds still until the change of state is complete. Then the temperature rises again.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ canNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onNext }}" style="margin-top: 14px;">Next stage</button></sc-if>
+        <sc-if value="{{ benchFinished }}"><p data-arrive="1" style="margin: 14px 0 0; font-weight: 700;">The internal energy rose at all four stages. The temperature rose at only two.</p></sc-if>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>The temperature of a gas is related to the <strong>average</strong> kinetic energy of its particles: how energetic a typical particle is. Internal energy is the <strong>total</strong> over every particle, kinetic and potential. So a large object at a low temperature can hold far more internal energy than a small hot one. The two effects of heating each have an equation, both on the equation sheet, which the next lessons use: raising the temperature, ΔE = m c Δθ; changing state, E = m L.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · hotter is not more</p></div>
+        <p class="ks3-mis-quote">&ldquo;The coffee is hotter, so it has more internal energy.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Explain" prompt="An iceberg at −5 °C and a cup of coffee at 80 °C. Lily says the coffee has more internal energy because it is hotter. What is wrong with her reasoning?" options="{{ thinkOptions }}" reveal="{{ thinkReveal }}" right-word="That is it." wrong-word="That keeps the wrong idea." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-compare" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Compare" title="Which has more internal energy?" prompt="Each card names two systems. Decide which one holds more." bins="{{ cBins }}" items="{{ cItems }}" done-note="More particles, a higher temperature, or a change of state from solid towards gas at the same temperature: each means more internal energy." on-done="{{ onCompare }}" hint-size="100%,460px"></dc-import>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Cooling runs the heating curve backwards. Energy leaves, so the internal energy falls the whole way down, and the flat sections are where the substance condenses or freezes.</p>
+      </section>
+
+      <section id="s-cool" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Read the cooling curve</p>
+        <h2 style="margin: 6px 0 0;">A gas cools until it is a solid at room temperature.</h2>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 640px;">{{ coolFig }}</div>
+        <div style="margin-top: 16px;">
+          <dc-import name="Ks4Sort" eyebrow="Section by section" title="What is happening to the particles?" prompt="Place each section of the graph." bins="{{ kBins }}" items="{{ kItems }}" done-note="Internal energy falls along the whole curve. On a slope the particles' kinetic energy falls; on a flat section their potential energy falls." on-done="{{ onCool }}" hint-size="100%,460px"></dc-import>
+        </div>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Determine</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Read it from the graph: a flat section gives a melting or boiling point.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Link each step: energy in or out, which energy of the particles changes, what the temperature does.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Say what happens at each stage, in order, using the particles.</dd></div>
+        </dl>
+      </section>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="internal-energy" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Internal energy" spec="{{ keySpec }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Physics" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Mixing up temperature and internal energy?" legal="The bench follows the GCSE model: warming raises only the particles' kinetic energy, and a change of state raises only their potential energy. Bar lengths and the time axis are not to scale, particles are drawn as spheres, and the water is at normal atmospheric pressure, so it boils at 100 °C. Both graphs are sketches, not measured data." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Boiling water', short: 'HOOK' },
+  { id: 's-bench', label: 'The heating bench', short: 'HEAT' },
+  { id: 's-think', label: 'Hotter is not more', short: 'THINK' },
+  { id: 's-compare', label: 'Which has more?', short: 'COMPARE' },
+  { id: 's-cool', label: 'The cooling curve', short: 'COOL' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+/* Four stages of heating ice at constant power. truth: 0 = temperature rises (kinetic), 1 = temperature constant (potential). */
+const STAGES = [
+  { title: 'Ice at −10 °C. The heater goes on.', truth: 0, t0: 0, t1: 2,
+    why: 'The ice warms from −10 °C to 0 °C. Its particles vibrate faster about fixed positions: more kinetic energy, higher temperature.' },
+  { title: 'The ice has reached 0 °C.', truth: 1, t0: 2, t1: 6,
+    why: 'At 0 °C the ice melts. The energy overcomes the forces holding the particles in fixed positions, so their potential energy rises. The temperature stays at 0 °C until all the ice has melted.' },
+  { title: 'All melted: water at 0 °C.', truth: 0, t0: 6, t1: 11,
+    why: 'The water warms from 0 °C to 100 °C. Its particles move faster: more kinetic energy, higher temperature.' },
+  { title: 'The water has reached 100 °C.', truth: 1, t0: 11, t1: 15,
+    why: 'At 100 °C the water boils. The energy separates the particles, so their potential energy rises while the temperature stays at 100 °C. More energy each second only boils it away faster.' }
+];
+const OPTS = [
+  'Temperature rises: the particles’ kinetic energy increases',
+  'Temperature stays the same: the particles’ potential energy increases',
+  'Temperature rises: the particles’ potential energy increases',
+  'Temperature stays the same: no energy is going in'
+];
+const REPLY = [
+  ['', 'There is no change of state until the next melting or boiling point. Until then the energy speeds the particles up.', 'Faster particles means more kinetic energy, and kinetic energy is what temperature follows.', 'The heater is on, so energy is going in.'],
+  ['The temperature holds steady while the state changes.', '', 'Potential energy, yes. But the temperature does not move while the state changes.', 'The heater never stops. The energy goes into the particles’ potential energy.']
+];
+const N = 20;
+/* temperature, melted fraction and boiled fraction at stage k, progress p */
+function at(k, p) {
+  const T = k === 0 ? -10 + 10 * p : k === 1 ? 0 : k === 2 ? 100 * p : 100;
+  const fm = k === 0 ? 0 : k === 1 ? p : 1;
+  const fb = k < 3 ? 0 : 0.5 * p;
+  return { T, fm, fb, time: STAGES[k].t0 + (STAGES[k].t1 - STAGES[k].t0) * p };
+}
+const KE = (T) => 1 + 0.012 * (T + 10);
+const PE = (fm, fb) => 0.5 + 1.0 * fm + 2.0 * fb;
+function heatTemp(time) {
+  if (time <= 2) return -10 + 5 * time;
+  if (time <= 6) return 0;
+  if (time <= 11) return (time - 6) * 20;
+  return 100;
+}
+const clamp = (x) => Math.max(0, Math.min(1, x));
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, stage: 0, picks: {}, done: {}, prog: 0, running: false, t: 0, think: null, compare: false, cool: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+    this.reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.tick = setInterval(() => {
+      const st = this.state;
+      if (!st.running) return;
+      const p = Math.min(1, (Date.now() - this.start) / 3200);
+      if (p >= 1) this.setState((ss) => ({ prog: 1, running: false, t: ss.t + 1, done: Object.assign({}, ss.done, { [ss.stage]: true }) }));
+      else this.setState({ prog: p, t: st.t + 1 });
+    }, 60);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); clearInterval(this.tick); }
+  optStyle(on) {
+    return 'font:inherit;font-size:17px;font-weight:600;line-height:1.35;text-align:left;padding:10px 14px;min-height:48px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  /* particles in a beaker over a flame, a thermometer, and the internal-energy bar */
+  partsSvg(k, p, t, heating) {
+    const D = window.KS4D; const C = D.C; const s = at(k, p);
+    let b = '<rect x="30" y="30" width="240" height="222" rx="10" fill="none" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    const tt = this.reduced ? 0 : t * 0.9;
+    for (let n = 0; n < N; n++) {
+      const i = n % 5, j = Math.floor(n / 5);
+      const lx = 90 + i * 30, ly = 236 - j * 28;
+      const col = n % 6, row = Math.floor(n / 6);
+      const qx = 58 + col * 35 + ((n * 7) % 5 - 2) * 3, qy = 232 - row * 25 + ((n * 11) % 3 - 1) * 4;
+      const gx = 58 + ((n * 47) % 180), gy = 64 + ((n * 29) % 60);
+      const mRank = (3 - j) * 5 + i;
+      const fM = clamp(s.fm * N - mRank);
+      const bRank = (3 - row) * 6 + col;
+      const fB = clamp(s.fb * N - bRank);
+      let x = lx + (qx - lx) * fM, y = ly + (qy - ly) * fM;
+      x = x + (gx - x) * fB; y = y + (gy - y) * fB;
+      const amp = fB > 0.5 ? 12 : fM > 0.5 ? 2.5 + Math.max(0, s.T) * 0.03 : 1 + (s.T + 10) * 0.12;
+      x += Math.sin(tt * (fM > 0.5 ? 1.1 : 2.2) + n * 1.3) * amp; y += Math.cos(tt * (fM > 0.5 ? 1.3 : 2.6) + n * 0.7) * amp;
+      b += D.circ(x, y, 12, C.nm, C.stroke, 2);
+    }
+    const flame = (h, w) => { const top = 304 - h; return 'M150 ' + top + ' C ' + (150 + w * 0.55) + ' ' + (top + h * 0.35) + ', ' + (150 + w) + ' ' + (304 - h * 0.28) + ', ' + (150 + w * 0.62) + ' 302 C ' + (150 + w * 0.3) + ' 308, ' + (150 - w * 0.3) + ' 308, ' + (150 - w * 0.62) + ' 302 C ' + (150 - w) + ' ' + (304 - h * 0.28) + ', ' + (150 - w * 0.55) + ' ' + (top + h * 0.35) + ', 150 ' + top + ' Z'; };
+    const fl = this.reduced ? 0 : Math.sin(t * 1.7) * 3;
+    b += heating ? '<path d="' + flame(42 + fl, 20) + '" fill="' + C.red + '" stroke="' + C.stroke + '" stroke-width="2"/><path d="' + flame(24, 10) + '" fill="' + C.gold + '"/>'
+      : '<path d="' + flame(42, 20) + '" fill="none" stroke="' + C.muted + '" stroke-width="2.5" stroke-dasharray="5 5"/>';
+    const yT = (T) => 214 - (T + 20) / 140 * 170;
+    b += '<rect x="296" y="34" width="16" height="190" rx="8" fill="#FFFDF8" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    b += '<rect x="300" y="' + yT(s.T).toFixed(1) + '" width="8" height="' + (232 - yT(s.T)).toFixed(1) + '" fill="' + C.red + '"/>' + D.circ(304, 238, 14, C.red, C.stroke, 2.5);
+    b += D.T(304, 286, (s.T < 0 ? '−' : '') + Math.abs(Math.round(s.T)) + ' °C', 24, { fill: C.stroke });
+    const ke = KE(s.T), pe = PE(s.fm, s.fb), sc = 42, base = 280;
+    b += '<rect x="362" y="' + (base - ke * sc).toFixed(1) + '" width="46" height="' + (ke * sc).toFixed(1) + '" fill="' + C.arrow + '" stroke="' + C.stroke + '" stroke-width="2"/>';
+    b += '<rect x="362" y="' + (base - (ke + pe) * sc).toFixed(1) + '" width="46" height="' + (pe * sc).toFixed(1) + '" fill="' + C.gold + '" stroke="' + C.stroke + '" stroke-width="2"/>';
+    b += D.T(416, base - ke * sc / 2 + 6, 'kinetic', 19, { anchor: 'start', fill: C.stroke }) + D.T(416, base - ke * sc - pe * sc / 2 + 6, 'potential', 19, { anchor: 'start', fill: C.stroke });
+    b += D.T(385, base + 24, 'internal', 18) + D.T(385, base + 44, 'energy', 18);
+    const state = s.fb > 0 ? 'boiling' : s.fm >= 1 ? 'liquid water' : s.fm > 0 ? 'melting' : 'solid ice';
+    return D.svg(520, 330, b, (heating ? 'A lit flame heats the beaker. ' : 'The flame is off between stages. ') + 'Particles of ' + state + ' at ' + Math.round(s.T) + ' degrees Celsius, heated by a flame. Internal energy bar: kinetic part ' + (s.T > 50 ? 'large' : 'small') + ', potential part ' + (s.fb > 0 ? 'growing large' : s.fm > 0 ? 'larger' : 'small') + '.');
+  }
+  /* a temperature-time sketch; pts = [[time, T], ...] drawn up to tEnd */
+  curve(pts, o) {
+    const D = window.KS4D; const C = D.C;
+    const W = 640, H = 360, L = 90, Rt = 612, Tp = 30, B = 300;
+    const X = (x) => L + (Rt - L) * (x / o.tmax), Y = (T) => B - (B - Tp) * ((T - o.Tmin) / (o.Tmax - o.Tmin));
+    let b = D.line(L, Tp, L, B, 2.5) + D.line(L, B, Rt, B, 2.5);
+    for (let T = o.Tmin; T <= o.Tmax; T += o.step) b += D.line(L - 8, Y(T), L, Y(T), 2) + D.T(L - 14, Y(T) + 6, (T < 0 ? '−' : '') + Math.abs(T), 20, { weight: 'normal', fill: C.stroke, anchor: 'end' }) + D.line(L, Y(T), Rt, Y(T), 1, '#C9C3B2');
+    b += D.T((L + Rt) / 2, H - 22, 'Time', 22) + '<text x="24" y="' + ((Tp + B) / 2) + '" transform="rotate(-90 24 ' + ((Tp + B) / 2) + ')" font-family="' + D.F + '" font-size="22" font-weight="bold" fill="' + C.label + '" text-anchor="middle">Temperature / °C</text>';
+    let d = '';
+    const tEnd = o.tEnd === undefined ? o.tmax : o.tEnd;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const a = pts[i], c = pts[i + 1];
+      if (a[0] >= tEnd) break;
+      const e = Math.min(c[0], tEnd), f = (e - a[0]) / (c[0] - a[0]);
+      d += (d ? ' L' : 'M') + X(a[0]).toFixed(1) + ' ' + Y(a[1]).toFixed(1) + ' L' + X(e).toFixed(1) + ' ' + Y(a[1] + (c[1] - a[1]) * f).toFixed(1);
+    }
+    if (d) b += '<path d="' + d + '" fill="none" stroke="' + C.arrow + '" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>';
+    (o.letters || []).forEach((lt, i) => { if (lt && lt.t && pts[i] && pts[i][0] <= tEnd) b += D.circ(X(pts[i][0]), Y(pts[i][1]), 6, C.stroke) + D.T(X(pts[i][0]) + (lt.dx || 0), Y(pts[i][1]) + (lt.dy || -14), lt.t, 22, { fill: C.stroke }); });
+    (o.notes || []).forEach((n) => { if (n.at <= tEnd) b += D.T(X(n.x), Y(n.T) - 14, n.t, 21, { fill: C.arrow }); });
+    return D.svg(W, H, b, o.alt);
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, routeOptions: [], onRoute: () => {} };
+    const slug = 'internal-energy';
+    const ready = !!(s.libReady && K && D);
+    const k = s.stage; const st = STAGES[k];
+    const pick = s.picks[k];
+    const stageDone = !!s.done[k];
+    const shownP = stageDone ? 1 : s.running ? s.prog : 0;
+    const nDone = Object.keys(s.done).length;
+    const done = [s.hook !== null, nDone === 4, s.think !== null, s.compare, s.cool, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const ok = stageDone && pick === st.truth;
+    const pn = this.props.mrbPrevNext || {};
+    const href = (x) => (K && K.hrefFor ? K.hrefFor(x, R) : null);
+    const nowTime = at(k, shownP).time;
+    const HEAT_PTS = [[0, -10], [2, 0], [6, 0], [11, 100], [15, 100]];
+    const COOL_PTS = [[0, 140], [1, 112], [2, 96], [3, 90], [6, 90], [7, 70], [8.5, 50], [9.5, 40], [13, 40], [14, 28], [15, 22]];
+    const coolLetters = [{ t: 'A', dx: 14 }, null, null, { t: 'B' }, { t: 'C' }, null, null, { t: 'D' }, { t: 'E' }, null, { t: 'F', dy: -16 }];
+    const X_PTS = [[0, -20], [2, 20], [5, 20], [9, 80], [13, 80], [15, 110]];
+    return Object.assign({}, R, {
+      video: K && s.hook !== null && s.hook !== undefined ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      eyebrowText: R.isTriple ? 'AQA Physics (8463) 4.3.2.1 · Model' : 'AQA Physics (8464) 6.3.2.1 · Model',
+      keySpec: R.isTriple ? 'AQA 4.3.2.1 (8463)' : 'AQA 6.3.2.1 (8464)',
+      endPrev: pn.prev || null, endNext: pn.next || null,
+      endConnects: [{ href: href('states-of-matter'), label: 'States of matter' }, { href: href('changes-in-energy'), label: 'Changes in energy' }, { href: href('changes-of-state'), label: 'Changes of state' }, { href: href('temperature-changes-shc'), label: 'Specific heat capacity' }, { href: href('specific-latent-heat'), label: 'Specific latent heat' }].filter((c) => c.href),
+      hookOptions: [
+        { text: 'It climbs above 100 °C, because more energy is going in', reply: 'That is the obvious bet. The bench below tests it.' },
+        { text: 'It stays at 100 °C, and the water boils away faster', reply: 'Hold that, and find out why.' },
+        { text: 'It falls, because boiling takes energy out of the water', reply: 'Something does take the energy. Find out what.' },
+        { text: 'It creeps up slowly, then settles at a new higher value', reply: 'Watch the thermometer on the bench below.' }
+      ],
+      hookReveal: 'It stays at 100 °C. The extra energy still goes into the water, so its internal energy rises. But it goes into separating the particles, not speeding them up, so the water boils away faster and the temperature does not change.',
+      onHook: (i) => this.setState({ hook: i }),
+      stageNum: String(k + 1), stageTitle: st.title,
+      partFig: ready ? K.fig(this.partsSvg(k, shownP, s.t, s.running), '') : null,
+      curveFig: ready ? K.fig(this.curve(HEAT_PTS, { tmax: 15, Tmin: -20, Tmax: 120, step: 20, tEnd: nowTime,
+        notes: [{ at: 6, x: 4, T: 0, t: 'melting' }, { at: 15, x: 13, T: 100, t: 'boiling' }],
+        alt: 'Heating curve so far: temperature against time. ' + ['It starts at minus 10 degrees.', 'It rose to 0 degrees.', 'It rose to 0 degrees, then stayed flat while the ice melted.', 'It rose to 0, stayed flat while melting, then rose to 100 degrees.'][k] + (stageDone && k === 3 ? ' It then stayed flat at 100 degrees while the water boiled.' : '') }), '') : null,
+      asking: !stageDone,
+      stageOpts: OPTS.map((t, i) => ({ label: t, pressed: pick === i, style: this.optStyle(pick === i) + (s.running ? 'cursor:default;' : ''),
+        onClick: () => { if (!this.state.running) this.setState((ss) => ({ picks: Object.assign({}, ss.picks, { [ss.stage]: i }) })); } })),
+      heatLocked: pick === undefined || s.running,
+      heatStyle: 'margin-top:12px;' + (pick === undefined || s.running ? 'opacity:.45;cursor:default;' : ''),
+      heatLabel: s.running ? 'Heating…' : 'Heat it',
+      onHeat: () => {
+        if (this.state.picks[this.state.stage] === undefined || this.state.running) return;
+        if (this.reduced) this.setState((ss) => ({ prog: 1, done: Object.assign({}, ss.done, { [ss.stage]: true }) }));
+        else { this.start = Date.now(); this.setState({ running: true, prog: 0 }); }
+      },
+      stageDone,
+      verdictWord: stageDone ? (ok ? 'Yes.' : 'Watch what happened instead.') : '',
+      verdictText: stageDone ? (ok ? st.why : REPLY[st.truth][pick] + ' ' + st.why) : '',
+      verdictStyle: 'margin:14px 0 0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      confront: stageDone && st.truth === 1 && pick === 0,
+      canNext: stageDone && k < 3, onNext: () => this.setState((ss) => ({ stage: Math.min(3, ss.stage + 1), prog: 0 })),
+      benchFinished: nDone === 4,
+      thinkOptions: [
+        { text: 'Temperature is linked to the average energy of one particle. Internal energy adds up every particle, and the iceberg has vastly more.', correct: true, reply: 'Average is not total. A huge number of slower particles can out-total a few fast ones.' },
+        { text: 'Nothing is wrong. A hotter object always has more internal energy than a colder object does.', correct: false, reply: 'Hotter means a higher average kinetic energy per particle. Internal energy counts every particle, so size matters too.' },
+        { text: 'Ice has no internal energy at all, because the particles in a solid cannot move.', correct: false, reply: 'Particles in a solid vibrate about fixed positions, so they have kinetic energy. They have potential energy too.' },
+        { text: 'Internal energy is only kinetic energy, so the faster coffee particles must win.', correct: false, reply: 'Internal energy is kinetic and potential energy. Leave out potential energy and the definition loses its mark.' }
+      ],
+      thinkReveal: 'The coffee’s particles have the higher average kinetic energy, so the coffee has the higher temperature. The iceberg has vastly more particles, each with kinetic and potential energy, so its total, its internal energy, is far greater.',
+      onThink: (i) => this.setState({ think: i }),
+      cBins: [{ id: 'a', label: 'The first has more' }, { id: 'b', label: 'The second has more' }],
+      cItems: [
+        { text: 'A bath of water at 40 °C, or a mug of water at 80 °C', bin: 'a', why: 'Far more particles. The total wins, even though each has less kinetic energy on average.' },
+        { text: '1 kg of ice at 0 °C, or 1 kg of water at 0 °C', bin: 'b', why: 'Same particles, same temperature, but melting raised their potential energy.' },
+        { text: '1 kg of water at 20 °C, or 1 kg of water at 60 °C', bin: 'b', why: 'Same particles, so the hotter one: its particles have more kinetic energy.' },
+        { text: '1 kg of steam at 100 °C, or 1 kg of water at 100 °C', bin: 'a', why: 'Boiling raised the particles’ potential energy a lot, at the same temperature.' },
+        { text: '2 kg of water at 30 °C, or 1 kg of water at 30 °C', bin: 'a', why: 'Same temperature, twice as many particles: twice the internal energy.' }
+      ],
+      onCompare: () => this.setState({ compare: true }),
+      coolFig: ready ? K.fig(this.curve(COOL_PTS, { tmax: 15, Tmin: 0, Tmax: 160, step: 20, letters: coolLetters,
+        alt: 'Cooling curve. A at 140 degrees, falling to B at 90 degrees; flat from B to C at 90 degrees; falling from C to D at 40 degrees; flat from D to E at 40 degrees; falling from E to F, towards room temperature.' }), '') : null,
+      kBins: [{ id: 'k', label: 'Temperature falls: the particles’ kinetic energy decreases' }, { id: 'p', label: 'Temperature constant: the particles’ potential energy decreases' }],
+      kItems: [
+        { text: 'A to B', bin: 'k', why: 'Sloping: the gas cools, so its particles slow down.' },
+        { text: 'B to C', bin: 'p', why: 'Flat: the gas condenses. Energy still leaves, from the particles’ potential energy.' },
+        { text: 'C to D', bin: 'k', why: 'Sloping: the liquid cools, so its particles slow down.' },
+        { text: 'D to E', bin: 'p', why: 'Flat: the liquid freezes. Energy leaves from the particles’ potential energy, so the temperature holds.' },
+        { text: 'E to F', bin: 'k', why: 'Sloping: the solid cools towards room temperature.' }
+      ],
+      onCool: () => this.setState({ cool: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'Its temperature stays constant for several minutes') || { options: [] }, { command: 'Identify', marks: 1, why: 'At constant power, a flat section means a change of state: the energy raises the particles’ potential energy, not their kinetic energy.' }),
+        r2: { kind: 'data', command: 'Determine', marks: 3, prompt: 'Substance X is heated at a constant rate. Use the graph to answer each part.',
+          figureSvg: this.curve(X_PTS, { tmax: 15, Tmin: -20, Tmax: 120, step: 20, letters: [{ t: 'A', dx: 18, dy: -4 }, { t: 'B' }, { t: 'C' }, { t: 'D' }, { t: 'E' }, { t: 'F', dx: -14 }],
+            alt: 'Heating curve for X. A at minus 20 degrees rising to B at 20; flat from B to C at 20; rising from C to D at 80; flat from D to E at 80; rising from E to F at 110.' }),
+          figureAlt: 'Heating curve for substance X with flat sections at 20 and 80 degrees Celsius',
+          parts: [
+            { label: 'The melting point of X', options: ['−20 °C', '20 °C', '80 °C'], answer: 1 },
+            { label: 'The state of X at 50 °C', options: ['solid', 'liquid', 'gas'], answer: 1 },
+            { label: 'From D to E, the average kinetic energy of the particles', options: ['increases', 'stays the same', 'decreases'], answer: 1 }
+          ],
+          right: 'All three.', wrong: 'The lower flat section is melting and the higher one boiling. Between them X is a liquid. On a flat section the temperature, and so the particles’ average kinetic energy, does not change.',
+          model: ['Melting point: 20 °C, the lower flat section, B to C.', 'At 50 °C, X is above its melting point and below its boiling point: liquid.', 'D to E is boiling. The temperature is constant, so the average kinetic energy stays the same; the potential energy increases.'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'Liquid stearic acid is left to cool. Its temperature stays at 69 °C for several minutes. Explain why. Put the links in order.',
+          links: ['The stearic acid is freezing: changing state from liquid to solid.', 'Energy is still being transferred to the surroundings, so its internal energy decreases.', 'The energy lost comes from the particles’ potential energy, not their kinetic energy, so the temperature does not change.'],
+          herrings: [{ text: 'No energy is transferred while it freezes.', why: 'It is still warmer than the room, so energy keeps leaving.' }, { text: 'The bonds inside each molecule break as it freezes.', why: 'Nothing inside the molecules changes. Freezing changes the forces between them and how they are arranged.' }] },
+        r4: { command: 'Describe', marks: 6, question: 'Ice at −10 °C is heated until it becomes water at 20 °C. Describe what happens to the particles and to the internal energy.',
+          levels: [
+            { label: 'Level 3 · 5–6', text: 'All three stages described in order, each linked to the particles: kinetic energy rising while the ice warms, potential energy rising at constant temperature while it melts, kinetic energy rising while the water warms. Internal energy increases throughout.', max: 6 },
+            { label: 'Level 2 · 3–4', text: 'The correct sequence, with some particle explanation.', max: 4 },
+            { label: 'Level 1 · 1–2', text: 'Some stages described, with little about the particles.', max: 2 },
+            { label: 'No relevant content · 0', text: '', max: 0 }
+          ],
+          points: ['From −10 °C to 0 °C the ice warms: its particles vibrate faster, so their kinetic energy increases and the temperature rises.', 'At 0 °C the ice melts and the temperature stays constant.', 'While it melts, the energy overcomes the forces holding the particles in fixed positions, so their potential energy increases.', 'From 0 °C to 20 °C the water warms: its particles move faster, so their kinetic energy increases and the temperature rises.', 'The internal energy increases throughout, because energy is supplied the whole time.', 'Internal energy is the total kinetic and potential energy of all the particles.'],
+          reject: ['“The bonds inside the water molecules break when the ice melts.” Melting separates the molecules; it does not break them.', '“The temperature rises while the ice melts.”'] }
+      } : {},
+      keyLines: K ? K.keyLines(slug) : [],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

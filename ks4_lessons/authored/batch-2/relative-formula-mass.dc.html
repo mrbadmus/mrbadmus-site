@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relative Formula Mass · MrBadmus GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+<style>
+  /* relative-formula-mass · unpacker and pan motion. Every element's resting (un-animated) state is the END state. */
+  .rfm-pop { transform-box: fill-box; transform-origin: center; animation: rfm-pop .35s ease-out backwards; }
+  @keyframes rfm-pop { from { transform: scale(0); opacity: 0; } }
+  .rfm-grow { transform-box: fill-box; transform-origin: left center; animation: rfm-grow .3s ease-out backwards; }
+  @keyframes rfm-grow { from { transform: scaleX(0); } }
+  .rfm-fade { animation: rfm-fade .4s ease-out backwards; }
+  @keyframes rfm-fade { from { opacity: 0; } }
+  .rfm-drop { animation: rfm-drop .45s cubic-bezier(.5, 0, .8, .4) backwards; }
+  @keyframes rfm-drop { from { transform: translate(0px, -140px); opacity: 0; } }
+  .rfm-beam { transform-box: view-box; transform-origin: 450px 110px; animation: rfm-tilt 2.4s ease-in-out; }
+  @keyframes rfm-tilt { 40%, 55% { transform: rotate(-7deg); } }
+  .rfm-lpan { animation: rfm-lpan 2.4s ease-in-out; }
+  @keyframes rfm-lpan { 40%, 55% { transform: translate(0px, 36px); } }
+  .rfm-rpan { animation: rfm-rpan 2.4s ease-in-out; }
+  @keyframes rfm-rpan { 40%, 55% { transform: translate(0px, -36px); } }
+  @media (prefers-reduced-motion: reduce) { .rfm-pop, .rfm-grow, .rfm-fade, .rfm-drop, .rfm-beam, .rfm-lpan, .rfm-rpan { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Quantitative chemistry" title="Relative formula mass" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry {{ specRef }} · Quantitative</p>
+        <h1>Relative formula mass</h1>
+        <p class="ks3-bigq">A formula tells you which atoms are in a substance and how many. Can you turn it into a mass, and use that mass to say how much of a compound is each element?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Three atoms against two.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">A water molecule, H₂O, has three atoms. An oxygen molecule, O₂, has two. Atoms of different elements have different masses: on the periodic table, hydrogen is 1 and oxygen is 16.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Which molecule has the greater mass?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>Each element has a <strong>relative atomic mass, A<sub>r</sub></strong>, printed on the periodic table. It compares the masses of atoms, so it has no units. The <strong>relative formula mass, M<sub>r</sub></strong>, of a compound is the sum of the relative atomic masses of the atoms in the numbers shown in the formula. So the whole skill is counting atoms correctly. A small number after a symbol counts that atom only. A small number after a bracket multiplies everything inside the bracket.</p>
+        <p style="font-family: var(--ks3-font-mono); font-size: 16px;">A<sub>r</sub> used here: H 1 · C 12 · N 14 · O 16 · Mg 24 · Al 27 · S 32 · Ca 40</p>
+      </section>
+
+      <section id="s-unpack" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The formula unpacker · {{ upStep }}</p>
+            <h2 style="margin: 6px 0 0;">Count the atoms. Then watch them add up to M<sub>r</sub>.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ upProgress }}</p>
+        </div>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ upFig }}</div>
+        <sc-if value="{{ upAsk }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px;">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">{{ upPrompt }}</p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <sc-for list="{{ upOpts }}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ upShown }}">
+          <div data-arrive="1" style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 14px; align-items: start;">
+            <p role="status" style="{{ upVerdictStyle }}"><strong>{{ upWord }}</strong> {{ upNote }}</p>
+            <div style="padding: 14px 16px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+              <sc-for list="{{ upTally }}" as="t" hint-placeholder-count="3"><p style="margin: 2px 0 0; font-family: var(--ks3-font-mono); font-size: 18px;">{{ t }}</p></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ upConfront }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · brackets</p></div>
+            <p class="ks3-mis-quote">&ldquo;The 2 after the bracket sits next to the H, so Mg(OH)₂ has one O and two H.&rdquo;</p>
+            <p style="margin: 0 0 8px;">The bracket says the 2 belongs to the whole OH group, so the group is there twice. Counting the 2 on the H alone gives M<sub>r</sub> = 24 + 16 + 2 = 42 instead of 58.</p>
+            <p style="margin: 0;">{{ cmText }}</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ upCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onUpNext }}" style="margin-top: 14px;">Next formula</button></sc-if>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>In a balanced equation atoms are only rearranged, so the sum of the relative formula masses of the reactants, in the quantities shown, equals the sum for the products. A number in front of a formula counts whole formula units: 2MgO is two units of M<sub>r</sub> 40, a total of 80. The M<sub>r</sub> of one MgO is still 40.</p>
+      </section>
+
+      <section id="s-pans" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Load the pans · {{ panStep }}</p>
+            <h2 style="margin: 6px 0 0;">{{ panEq }}</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ panProgress }}</p>
+        </div>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ panFig }}</div>
+        <sc-if value="{{ panAsk }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px;">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">Commit first. Which pan will be heavier once each side holds its formula units?</p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <sc-for list="{{ panOpts }}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ panWork }}">
+          <div data-arrive="1" style="margin-top: 14px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px;">
+            <div>
+              <label for="rfm-pan-l" style="display: block; margin: 0 0 6px; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Total M<sub>r</sub>, reactants</label>
+              <input type="text" inputMode="decimal" id="rfm-pan-l" value="{{ panL }}" onInput="{{ onPanL }}" onChange="{{ onPanL }}" disabled="{{ panLocked }}" placeholder="number" style="font: inherit; font-family: var(--ks3-font-mono); font-size: 20px; width: 9rem; padding: 10px 12px; min-height: 48px; border-radius: 12px; border: 2px solid var(--ks3-option-border); background: var(--ks3-ground); color: var(--ks3-ink);">
+            </div>
+            <div>
+              <label for="rfm-pan-r" style="display: block; margin: 0 0 6px; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Total M<sub>r</sub>, products</label>
+              <input type="text" inputMode="decimal" id="rfm-pan-r" value="{{ panR }}" onInput="{{ onPanR }}" onChange="{{ onPanR }}" disabled="{{ panLocked }}" placeholder="number" style="font: inherit; font-family: var(--ks3-font-mono); font-size: 20px; width: 9rem; padding: 10px 12px; min-height: 48px; border-radius: 12px; border: 2px solid var(--ks3-option-border); background: var(--ks3-ground); color: var(--ks3-ink);">
+            </div>
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onLoad }}" disabled="{{ loadOff }}" style="{{ loadStyle }}">Load the pans</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ panLoaded }}">
+          <p data-arrive="1" role="status" style="{{ panVerdictStyle }}"><strong>{{ panWord }}</strong> {{ panVerdict }}</p>
+        </sc-if>
+        <sc-if value="{{ panCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onPanNext }}" style="margin-top: 14px;">Next equation</button></sc-if>
+
+        <div data-route="higher" style="margin-top: 22px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-stretch);">
+          <p style="margin: 0; max-width: 62ch;">Because the totals balance, the equation also gives the ratio of masses. For 2Mg + O₂ → 2MgO: 2 × 24 : 32 : 2 × 40 = 48 : 32 : 80. So 48 g of Mg reacts with 32 g of O₂ to produce 80 g of MgO, and any other mass of magnesium scales every number by the same factor.</p>
+          <div style="margin-top: 14px;">
+            <dc-import name="Ks4Choice" eyebrow="Your call" command="Calculate" prompt="6 g of magnesium burns completely: 2Mg + O₂ → 2MgO. What mass of magnesium oxide forms?" options="{{ massOptions }}" reveal="{{ massReveal }}" right-word="Yes." wrong-word="Not this one." on-commit="{{ onMass }}" hint-size="100%,300px"></dc-import>
+          </div>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>M<sub>r</sub> also tells you how much of a compound's mass comes from each element. Divide the mass of that element's atoms by M<sub>r</sub> and multiply by 100. Multiply the element's A<sub>r</sub> by the number of its atoms first: hydrogen is 2 ÷ 18 of the mass of water, not 1 ÷ 18.</p>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equations · chemistry has no equation sheet</p>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Learn it</span>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; line-height: 1.3;">{{ eqMr }}</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">each A<sub>r</sub> times the number of those atoms. No units.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Learn it</span>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; line-height: 1.3;">% by mass of an element = (A<sub>r</sub> × number of atoms of that element) ÷ M<sub>r</sub> × 100</p>
+          </div>
+          <div data-route="higher" style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Learn it</span>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; line-height: 1.3;">mass ratio = ratio of (number in front × M<sub>r</sub>)</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">read from the balanced equation, then scaled to the mass you are given.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Units first</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">A<sub>r</sub>, M<sub>r</sub> and percentages have nothing to convert. A mass does: when the answer is wanted in grams, change kg to g (× 1000) before you insert it.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Show the count, each A<sub>r</sub> × number, then the total. M<sub>r</sub> has no unit; a percentage or a mass does.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Show that</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The answer is given to you. The marks are for writing every step that reaches it.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give the reason, here the counting rule behind a number, not just the number.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Percentage by mass of an element = A<sub>r</sub> × number of its atoms ÷ M<sub>r</sub> × 100. In magnesium oxide, MgO, that is 24 ÷ 40 × 100 = 60 % magnesium.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="relative-formula-mass" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Relative formula mass" spec="{{ keySpec }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Stuck counting the atoms in a formula with brackets?" legal="The unpacker draws atoms larger for larger Aᵣ only as a cue; real atomic sizes do not follow mass. The mass bar is drawn to one scale for every formula. The pans show the totals of relative formula masses, which have no units; they are not weighing real samples." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Three atoms against two', short: 'HOOK' },
+  { id: 's-unpack', label: 'The formula unpacker', short: 'UNPACK' },
+  { id: 's-pans', label: 'Load the pans', short: 'PANS' },
+  { id: 's-calc', label: 'Calculate it', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const AR = { H: 1, C: 12, N: 14, O: 16, Mg: 24, Al: 27, S: 32, Ca: 40 };
+const FILL = { H: '#FFFDF8', C: '#C9C4B8', N: '#AFCBEF', O: '#F4B4A2', Mg: '#D8E6B0', Al: '#C2CAD3', S: '#F3D467', Ca: '#E7C6F0' };
+/* groups: [multiplier, [[symbol, count], ...], bracketed?] */
+const FORMS = [
+  { f: 'CO₂', name: 'carbon dioxide', target: 'O', tname: 'oxygen', groups: [[1, [['C', 1], ['O', 2]]]], opts: [1, 2, 3],
+    why: { 1: 'The 2 after O counts oxygen atoms: there are two.', 3: 'That counts every atom. The 2 belongs to O only: one C and two O.' } },
+  { f: 'C₂H₅OH', name: 'ethanol', target: 'H', tname: 'hydrogen', groups: [[1, [['C', 2], ['H', 5], ['O', 1], ['H', 1]]]], opts: [1, 5, 6],
+    why: { 1: 'The 5 after H counts five hydrogen atoms, and there is one more at the end, in OH.', 5: 'There is one more H at the end, in OH: 5 + 1 = 6.' } },
+  { f: 'Mg(OH)₂', name: 'magnesium hydroxide', target: 'O', tname: 'oxygen', groups: [[1, [['Mg', 1]]], [2, [['O', 1], ['H', 1]], true]], opts: [1, 2, 4],
+    why: { 1: 'The 2 after the bracket doubles the whole OH group: two O, not one.', 4: 'The 2 doubles the OH group once: 2 O and 2 H, not 4 O.' } },
+  { f: 'Al₂(SO₄)₃', name: 'aluminium sulfate', target: 'O', tname: 'oxygen', groups: [[1, [['Al', 2]]], [3, [['S', 1], ['O', 4]], true]], opts: [4, 7, 12],
+    why: { 4: 'That is one SO₄ group. The 3 outside makes three groups: 3 × 4 = 12.', 7: 'Adding 4 + 3 treats the 3 as extra atoms. It multiplies: 3 × 4 = 12.' } }
+];
+const PANS = [
+  { eq: '2Mg + O₂ → 2MgO', L: [['Mg', 24], ['Mg', 24], ['O₂', 32]], R: [['MgO', 40], ['MgO', 40]], tl: 80, tr: 80,
+    work: 'Reactants: 2 × 24 + 32 = 80. Products: 2 × 40 = 80.',
+    hint: { l: { 56: '2Mg is two magnesium atoms: 2 × 24 = 48, then add 32 for O₂.', 64: 'O₂ is one molecule here: 2 × 24 + 32 = 80.', 40: 'O₂ has two O atoms: Mᵣ 32, not 16.' }, r: { 40: 'The 2 in front of MgO counts two formula units: 2 × 40 = 80. The Mᵣ of one MgO is still 40.' } } },
+  { eq: 'CH₄ + 2O₂ → CO₂ + 2H₂O', L: [['CH₄', 16], ['O₂', 32], ['O₂', 32]], R: [['CO₂', 44], ['H₂O', 18], ['H₂O', 18]], tl: 80, tr: 80,
+    work: 'Reactants: 16 + 2 × 32 = 80. Products: 44 + 2 × 18 = 80.',
+    hint: { l: { 48: '2O₂ is two oxygen molecules: 2 × 32 = 64.', 32: 'O₂ is 32 each, and there are two of them.' }, r: { 62: '2H₂O is two water molecules: 2 × 18 = 36.', 60: 'H₂O is 2 × 1 + 16 = 18; there are two of them.' } } }
+];
+const PAN_OPTS = ['Reactants heavier', 'Products heavier', 'Equal'];
+const rAt = (s) => 11 + Math.sqrt(AR[s]) * 1.9;
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, hook: null, ui: 0, up: {}, pi: 0, pp: {}, pv: {}, pd: {}, mass: null, calc: 0, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  btn(on) {
+    return 'font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:48px;min-width:64px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  atomsOf(F) {
+    const seq = [];
+    F.groups.forEach((g, gi) => { for (let m = 0; m < g[0]; m++) { const copy = []; g[1].forEach((a) => { for (let n = 0; n < a[1]; n++) copy.push(a[0]); }); seq.push({ atoms: copy, box: !!g[2], gi }); } });
+    return seq;
+  }
+  tally(F) {
+    const order = [], cnt = {};
+    this.atomsOf(F).forEach((c) => c.atoms.forEach((s) => { if (!(s in cnt)) { order.push(s); cnt[s] = 0; } cnt[s]++; }));
+    const mr = order.reduce((a, s) => a + cnt[s] * AR[s], 0);
+    return { lines: order.map((s) => s + ' · ' + cnt[s] + ' × ' + AR[s] + ' = ' + cnt[s] * AR[s]).concat(['Mᵣ = ' + order.map((s) => cnt[s] * AR[s]).join(' + ') + ' = ' + mr]), mr, cnt };
+  }
+  unpack(F, shown) {
+    const D = window.KS4D; if (!D) return null;
+    const scale = 820 / 350, x0 = 40, by = 268;
+    let b = D.T(450, 66, F.f, 46);
+    let ruler = D.line(x0, by + 46, x0 + 820, by + 46, 2, D.C.muted);
+    for (let v = 0; v <= 350; v += 50) ruler += D.line(x0 + v * scale, by + 40, x0 + v * scale, by + 52, 2, D.C.muted) + D.T(x0 + v * scale, by + 76, String(v), 16, { weight: 'normal', fill: D.C.muted });
+    b += ruler + '<rect x="' + x0 + '" y="' + by + '" width="820" height="34" fill="none" stroke="' + D.C.muted + '" stroke-width="1.5" stroke-dasharray="6 6"/>';
+    const T = this.tally(F);
+    let alt = 'The formula ' + F.f + ' above an empty mass scale from 0 to 350.';
+    if (!shown) return { svg: D.svg(900, 370, b + D.T(450, 175, 'Count first, then unpack', 22, { weight: 'normal', fill: D.C.muted }), alt), alt };
+    const seq = this.atomsOf(F);
+    const gapA = 4, gapG = 16;
+    let w = 0; seq.forEach((c, k) => { c.atoms.forEach((s, i) => { w += 2 * rAt(s) + (i ? gapA : 0); }); if (k) w += gapG; if (c.box) w += 12; });
+    const k0 = Math.min(1, 860 / w);
+    let x = 450 - w * k0 / 2, cy = 168, n = 0, segX = x0;
+    seq.forEach((c, ci) => {
+      if (ci) x += gapG * k0;
+      const start = x;
+      if (c.box) x += 6 * k0;
+      c.atoms.forEach((s, i) => {
+        const r = rAt(s) * k0; if (i) x += gapA * k0;
+        x += r;
+        b += '<g class="rfm-pop" style="animation-delay:' + (n * 0.07).toFixed(2) + 's">' + D.circ(x, cy, r, FILL[s], D.C.stroke, 2) + D.T(x, cy + 5, s, s.length > 1 ? 14 : 16, { fill: D.C.stroke }) + '</g>';
+        const sw = AR[s] * scale;
+        b += '<rect class="rfm-grow" x="' + segX.toFixed(1) + '" y="' + by + '" width="' + sw.toFixed(1) + '" height="34" fill="' + FILL[s] + '" stroke="' + D.C.stroke + '" stroke-width="1.5" style="animation-delay:' + (0.5 + n * 0.07).toFixed(2) + 's"/>';
+        segX += sw; x += r; n++;
+      });
+      if (c.box) { x += 6 * k0; b += '<rect class="rfm-fade" x="' + start.toFixed(1) + '" y="' + (cy - 34) + '" width="' + (x - start).toFixed(1) + '" height="68" rx="16" fill="none" stroke="' + D.C.arrow + '" stroke-width="2.5" stroke-dasharray="7 6"/>'; }
+    });
+    b += '<g class="rfm-fade" style="animation-delay:' + (0.6 + n * 0.07).toFixed(2) + 's">' + D.T(Math.min(860, segX), by - 12, 'Mᵣ = ' + T.mr, 24, { anchor: Math.min(860, segX) > 200 ? 'end' : 'start' }) + '</g>';
+    alt = F.f + ' unpacked into ' + n + ' atoms' + (seq.some((c) => c.box) ? ', each bracketed group drawn ' + F.groups[1][0] + ' times' : '') + '. Their relative atomic masses stack along the scale to ' + T.mr + '.';
+    return { svg: D.svg(900, 370, b, alt), alt };
+  }
+  pans(P, loaded) {
+    const D = window.KS4D; if (!D) return null;
+    const block = (it, bx, k, delay) => {
+      const w = 44 + it[1] * 0.8;
+      return { w, s: '<g class="rfm-drop" style="animation-delay:' + delay.toFixed(2) + 's"><rect x="' + bx.toFixed(1) + '" y="212" width="' + w.toFixed(1) + '" height="46" rx="8" fill="#FFFDF8" stroke="' + D.C.stroke + '" stroke-width="2"/>' +
+        D.T(bx + w / 2, 232, it[0], 16, { fill: D.C.stroke }) + D.T(bx + w / 2, 251, String(it[1]), 14, { weight: 'normal', fill: D.C.stroke }) + '</g>' };
+    };
+    const row = (items, cx, d0) => {
+      const ws = items.map((it) => 44 + it[1] * 0.8), tot = ws.reduce((a, c) => a + c, 0) + 4 * (items.length - 1);
+      let x = cx - tot / 2, s = '';
+      items.forEach((it, k) => { const bk = block(it, x, k, d0 + k * 0.14); s += bk.s; x += bk.w + 4; });
+      return s;
+    };
+    const pan = (cx) => D.line(cx, 110, cx - 100, 258, 1.8, D.C.muted) + D.line(cx, 110, cx + 100, 258, 1.8, D.C.muted) + D.line(cx - 115, 260, cx + 115, 260, 4);
+    let b = '<rect x="430" y="300" width="40" height="10" fill="' + D.C.stroke + '"/>' + D.line(450, 110, 450, 300, 5) + '<polygon points="438,122 462,122 450,104" fill="' + D.C.stroke + '"/>';
+    const L = loaded ? row(P.L, 150, 0.1) : '', R = loaded ? row(P.R, 750, 1.35) : '';
+    b += '<g class="' + (loaded ? 'rfm-beam' : '') + '">' + D.line(150, 110, 750, 110, 6) + '</g>';
+    b += '<g class="' + (loaded ? 'rfm-lpan' : '') + '">' + pan(150) + L + '</g>';
+    b += '<g class="' + (loaded ? 'rfm-rpan' : '') + '">' + pan(750) + R + '</g>';
+    b += D.T(150, 296, loaded ? 'reactants · ' + P.tl : 'reactants', 20) + D.T(750, 296, loaded ? 'products · ' + P.tr : 'products', 20);
+    const alt = loaded ? 'The reactant formula units drop onto the left pan, which dips, then the products drop onto the right pan and the beam returns level: ' + P.tl + ' and ' + P.tr + '.' : 'A balance with two empty pans: reactants on the left, products on the right.';
+    return { svg: D.svg(900, 330, b, alt), alt };
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isTriple: true, isHigher: true, notHigher: false };
+    const slug = 'relative-formula-mass';
+    const ready = !!(s.libReady && K && D);
+    const PN = this.props.mrbPrevNext || {};
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const specRef = R.isTriple ? '4.3.1.2' : '5.3.1.2';
+    const F = ready ? K.fifas(slug) : [];
+    /* unpacker */
+    const ui = s.ui, UF = FORMS[ui], upPick = s.up[ui], upShown = upPick !== undefined;
+    const UT = this.tally(UF), truth = UT.cnt[UF.target], upRight = upPick === truth;
+    const uFig = ready ? this.unpack(UF, upShown) : null;
+    /* pans */
+    const pi = s.pi, P = PANS[pi], pv = s.pv[pi] || { l: '', r: '' }, loaded = !!s.pd[pi], pred = s.pp[pi];
+    const pFig = ready ? this.pans(P, loaded) : null;
+    const nl = parseFloat(String(pv.l).replace(',', '.')), nr = parseFloat(String(pv.r).replace(',', '.'));
+    const lOk = nl === P.tl, rOk = nr === P.tr;
+    const canLoad = pred !== undefined && !loaded && String(pv.l).trim() !== '' && String(pv.r).trim() !== '';
+    const setPv = (k, v) => this.setState((st) => ({ pv: Object.assign({}, st.pv, { [pi]: Object.assign({}, st.pv[pi] || { l: '', r: '' }, { [k]: v }) }) }));
+    let panVerdict = '';
+    if (loaded) {
+      const notes = [];
+      if (!lOk) notes.push(P.hint.l[nl] || 'Your reactant total was ' + pv.l + '.');
+      if (!rOk) notes.push(P.hint.r[nr] || 'Your product total was ' + pv.r + '.');
+      panVerdict = (lOk && rOk ? 'Both totals right. ' : notes.join(' ') + ' ') + P.work + (pred === 2 ? '' : ' The pans balance: the same atoms are on each side.');
+    }
+    const done = [s.hook !== null, Object.keys(s.up).length >= FORMS.length, Object.keys(s.pd).length >= PANS.length, s.calc >= 2, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const H = !!R.isHigher;
+    const cfExamples = ready && F.length ? [
+      { tab: 'Nothing to convert', head: F[0].question, next: 'Next: a percentage by mass.', steps: K.cfifa(F[0], 'Nothing to convert: Aᵣ values have no units.') },
+      { tab: 'Percentage', head: 'Calculate the percentage by mass of magnesium in magnesium oxide, MgO. Aᵣ: Mg = 24, O = 16.', next: 'Next: one that needs converting.', steps: [
+        { letter: 'C', label: 'Convert', line: 'Nothing to convert: Aᵣ values have no units.', note: '' },
+        { letter: 'F', label: 'Formula', line: '% by mass = (Aᵣ × number of atoms) ÷ Mᵣ × 100', note: '' },
+        { letter: 'I', label: 'Insert', line: 'Mᵣ = 24 + 16 = 40; % Mg = (24 × 1) ÷ 40 × 100', note: '' },
+        { letter: 'F', label: 'Fine-tune', line: 'Nothing to rearrange: 24 ÷ 40 = 0.60; 0.60 × 100 = 60', note: '' },
+        { letter: 'A', label: 'Answer', line: '60 %', note: '' }
+      ] },
+      { tab: 'Convert first', head: 'What mass of magnesium, in grams, is in 2.0 kg of magnesium oxide? Aᵣ: Mg = 24, O = 16.', next: H ? 'Higher: masses from an equation next.' : 'Now yours, below.', steps: [
+        { letter: 'C', label: 'Convert', line: '2.0 kg × 1000 = 2000 g', note: 'The answer is wanted in grams, so the mass goes in as grams.' },
+        { letter: 'F', label: 'Formula', line: 'mass of element = (Aᵣ × number of atoms ÷ Mᵣ) × mass of compound', note: '' },
+        { letter: 'I', label: 'Insert', line: 'mass of Mg = (24 × 1 ÷ 40) × 2000', note: '' },
+        { letter: 'F', label: 'Fine-tune', line: 'Nothing to rearrange: 24 ÷ 40 = 0.60; 0.60 × 2000 = 1200', note: '' },
+        { letter: 'A', label: 'Answer', line: '1200 g', note: 'Skip the conversion and you get 0.60 × 2.0 = 1.2: a mass in kilograms written as if it were grams, a thousand times too small.' }
+      ] }
+    ].concat(H ? [
+      { tab: 'Higher · reacting masses', head: 'Calculate the mass of magnesium oxide made from 12 g of magnesium. 2Mg + O₂ → 2MgO. Aᵣ: Mg = 24, O = 16.', next: 'Now yours, below.', steps: [
+        { letter: 'C', label: 'Convert', line: 'Nothing to convert: the mass is in grams and the answer is wanted in grams.', note: '' },
+        { letter: 'F', label: 'Formula', line: 'mass ratio = ratio of (number in front × Mᵣ)', note: '' },
+        { letter: 'I', label: 'Insert', line: 'Mg : MgO = 2 × 24 : 2 × 40 = 48 : 80', note: '' },
+        { letter: 'F', label: 'Fine-tune', line: 'Scale factor = 12 ÷ 48 = 0.25; mass of MgO = 80 × 0.25', note: '' },
+        { letter: 'A', label: 'Answer', line: '20 g of magnesium oxide', note: '' }
+      ] }] : []) : [];
+    const pq = (id, head, close, lines, ph) => ({ tab: id.slice(-1) === '1' ? 'Question 1' : 'Question 2', id, head, close,
+      steps: ['Convert', 'Formula', 'Insert', 'Fine-tune', 'Answer'].map((lab, k) => ({ letter: 'CFIFA'[k], label: lab, placeholder: ph[k], line: lines[k] })) });
+    const cfQuestions = H ? [
+      pq('rfm-h-q1', 'Calculate the percentage by mass of nitrogen in ammonium nitrate, NH₄NO₃. Aᵣ: N = 14, H = 1, O = 16.', 'Nitrogen appears twice in the formula, so it counts twice: 2 × 14 = 28.',
+        ['Nothing to convert: Aᵣ values have no units.', '% by mass = (Aᵣ × number of atoms) ÷ Mᵣ × 100', 'Mᵣ = 14 + 4 + 14 + 48 = 80; % N = (14 × 2) ÷ 80 × 100', 'Nothing to rearrange: 28 ÷ 80 × 100 = 35', '35 %'],
+        ['anything to convert?', '% by mass = …', 'Mᵣ = …; % N = …', 'work it out', '% N = …']),
+      pq('rfm-h-q2', 'A factory burns 3.0 kg of magnesium: 2Mg + O₂ → 2MgO. Calculate the mass of magnesium oxide formed, in grams. Aᵣ: Mg = 24, O = 16.', 'Check: the oxide must be heavier than the 3000 g of metal, because oxygen has joined it.',
+        ['3.0 kg × 1000 = 3000 g', 'mass ratio = ratio of (number in front × Mᵣ)', 'Mg : MgO = 2 × 24 : 2 × 40 = 48 : 80', 'Scale factor = 3000 ÷ 48 = 62.5; mass of MgO = 80 × 62.5', '5000 g'],
+        ['anything to convert?', 'mass ratio = …', 'Mg : MgO = …', 'scale factor = …', 'mass of MgO = …'])
+    ] : [
+      pq('rfm-f-q1', 'Calculate the percentage by mass of calcium in calcium carbonate, CaCO₃. Aᵣ: Ca = 40, C = 12, O = 16.', 'Check: the three O atoms (48) outweigh the calcium (40), so less than half the mass is calcium.',
+        ['Nothing to convert: Aᵣ values have no units.', '% by mass = (Aᵣ × number of atoms) ÷ Mᵣ × 100', 'Mᵣ = 40 + 12 + 48 = 100; % Ca = (40 × 1) ÷ 100 × 100', 'Nothing to rearrange: 40 ÷ 100 × 100 = 40', '40 %'],
+        ['anything to convert?', '% by mass = …', 'Mᵣ = …; % Ca = …', 'work it out', '% Ca = …']),
+      pq('rfm-f-q2', 'What mass of calcium, in grams, is in 0.50 kg of calcium carbonate? Aᵣ: Ca = 40, C = 12, O = 16.', 'Unconverted, 0.40 × 0.50 gives 0.20: that is kilograms, not grams.',
+        ['0.50 kg × 1000 = 500 g', 'mass of element = (Aᵣ × number of atoms ÷ Mᵣ) × mass of compound', 'mass of Ca = (40 × 1 ÷ 100) × 500', 'Nothing to rearrange: 0.40 × 500 = 200', '200 g'],
+        ['anything to convert?', 'mass of element = …', 'mass of Ca = …', 'work it out', 'mass = …'])
+    ];
+    const keyLines = ready ? K.keyLines(slug).map((l) => (R.notHigher && l === 'Mr is used to calculate mass ratios in reactions.') ? 'The Mr totals on each side of a balanced equation are equal.' : l) : [];
+    return Object.assign({}, R, {
+      video: K && s.hook !== null ? K.video(slug) : null,
+      railV, theme, ready, specRef, keySpec: 'AQA ' + specRef, draftVisible: this.props.showDraft !== false,
+      endPrev: PN.prev || null, endNext: PN.next || null,
+      endConnects: ready && K.hrefFor ? [
+        { href: K.hrefFor('atoms-elements-compounds', R), label: 'Atoms, elements and compounds' },
+        { href: K.hrefFor('using-moles-calculations', R), label: 'Using moles in calculations' }
+      ].filter((c) => c.href) : [],
+      hookOptions: [
+        { text: 'The water molecule, because it has more atoms', reply: 'More atoms does not mean more mass: two of the three are hydrogen, the lightest atom.' },
+        { text: 'They are the same, because both contain oxygen', reply: 'Water has one oxygen atom; O₂ has two.' },
+        { text: 'The oxygen molecule, even though it has fewer atoms', reply: 'Check it with the unpacker below.' },
+        { text: 'You cannot compare molecules of two different substances', reply: 'You can: add up the masses of the atoms in each.' }
+      ],
+      hookReveal: 'Add the relative atomic masses. H₂O: 1 + 1 + 16 = 18. O₂: 16 + 16 = 32. The oxygen molecule has nearly twice the mass, with fewer atoms.',
+      onHook: (i) => this.setState({ hook: i }),
+      upStep: (ui + 1) + ' of ' + FORMS.length,
+      upProgress: Object.keys(s.up).length + ' of ' + FORMS.length + ' unpacked',
+      upFig: uFig ? K.fig(uFig.svg, uFig.alt) : null,
+      upAsk: !upShown,
+      upPrompt: 'Commit first. How many ' + UF.tname + ' atoms are in one ' + UF.f + ', ' + UF.name + '?',
+      upOpts: UF.opts.map((v) => ({ label: String(v), style: this.btn(false), onClick: () => { if (s.up[ui] === undefined) this.setState((st) => ({ up: Object.assign({}, st.up, { [ui]: v }) })); } })),
+      upShown,
+      upWord: upShown ? (upRight ? truth + ', as you said.' : truth + ', not ' + upPick + '.') : '',
+      upNote: upShown ? (upRight ? 'Each atom adds its Aᵣ to the bar.' : UF.why[upPick] || '') : '',
+      upVerdictStyle: 'margin:0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (upShown && !upRight ? 'var(--ks3-alert-border);background:var(--ks3-alert-tint);' : 'var(--ks3-accent);background:var(--ks3-accent-tint);'),
+      upTally: upShown ? UT.lines : [],
+      upConfront: upShown && ui === 2,
+      cmText: ready ? K.commonMistake(slug) : '',
+      upCanNext: upShown && ui < FORMS.length - 1,
+      onUpNext: () => this.setState((st) => ({ ui: Math.min(FORMS.length - 1, st.ui + 1) })),
+      panStep: 'equation ' + (pi + 1) + ' of ' + PANS.length, panEq: P.eq,
+      panProgress: Object.keys(s.pd).length + ' of ' + PANS.length + ' loaded',
+      panFig: pFig ? K.fig(pFig.svg, pFig.alt) : null,
+      panAsk: !loaded,
+      panOpts: PAN_OPTS.map((l, i) => ({ label: l, pressed: pred === i, style: this.btn(pred === i), onClick: () => { if (!loaded) this.setState((st) => ({ pp: Object.assign({}, st.pp, { [pi]: i }) })); } })),
+      panWork: pred !== undefined,
+      panL: pv.l, panR: pv.r, panLocked: loaded,
+      onPanL: (e) => setPv('l', e.target.value), onPanR: (e) => setPv('r', e.target.value),
+      loadOff: !canLoad, loadStyle: canLoad ? '' : 'opacity:.45;cursor:default;',
+      onLoad: () => { if (canLoad) this.setState((st) => ({ pd: Object.assign({}, st.pd, { [pi]: true }) })); },
+      panLoaded: loaded,
+      panWord: loaded ? (pred === 2 ? 'Equal, as you said.' : 'Equal, not ' + PAN_OPTS[pred].toLowerCase() + '.') : '',
+      panVerdict,
+      panVerdictStyle: 'margin:14px 0 0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (loaded && lOk && rOk ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      panCanNext: loaded && pi < PANS.length - 1,
+      onPanNext: () => this.setState((st) => ({ pi: Math.min(PANS.length - 1, st.pi + 1) })),
+      massOptions: [
+        { text: '6 g', correct: false, reply: 'Mass is conserved, but the oxygen that joins adds its mass: the oxide outweighs the magnesium.' },
+        { text: '5 g', correct: false, reply: 'You used 40 for the MgO, but the equation makes 2MgO: 2 × 40 = 80 for every 48 of Mg.' },
+        { text: '10 g', correct: true, reply: '6 ÷ 48 = 0.125, and 80 × 0.125 = 10 g.' },
+        { text: '20 g', correct: false, reply: 'That needs 12 g of magnesium. 6 g is one-eighth of 48 g, so the oxide is one-eighth of 80 g.' }
+      ],
+      massReveal: '48 g of Mg makes 80 g of MgO. 6 g is 6 ÷ 48 = 0.125 of that, so 80 × 0.125 = 10 g of magnesium oxide.',
+      onMass: (i) => this.setState({ mass: i }),
+      eqMr: ready && (K.src(slug).equations || [])[0] ? K.src(slug).equations[0] : '',
+      cfExamples, cfQuestions, onCalc: (n) => this.setState({ calc: n }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'relative formula mass of calcium carbonate') || { options: [] }, { command: 'Calculate', marks: 1, why: 'One Ca, one C and three O: 40 + 12 + (3 × 16) = 100.' }),
+        r2: H ? { kind: 'calc', command: 'Calculate', marks: 3,
+          prompt: 'Calcium carbonate breaks down when heated: CaCO₃ → CaO + CO₂. Calculate the mass of calcium oxide, in grams, made from 0.50 kg of calcium carbonate. Aᵣ: Ca = 40, C = 12, O = 16. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert kg to g: multiply by 1000', 'Convert kg to g: divide by 1000'], convAnswer: 1, answer: 280, tol: 1, unit: 'g', units: ['g', 'kg', '%', 'no unit'],
+          right: '500 g ÷ 100 × 56 = 280 g.', wrong: 'Convert 0.50 kg to 500 g. 100 g of CaCO₃ gives 56 g of CaO, so 500 g gives 5 × 56 = 280 g.',
+          model: ['C · 0.50 kg × 1000 = 500 g', 'F · mass ratio = ratio of (number in front × Mᵣ)', 'I · CaCO₃ : CaO = 100 : 56', 'F · scale factor = 500 ÷ 100 = 5; mass of CaO = 56 × 5', 'A · 280 g'] }
+          : { kind: 'calc', command: 'Calculate', marks: 2,
+          prompt: 'Calculate the percentage by mass of carbon in carbon dioxide, CO₂. Aᵣ: C = 12, O = 16. Give your answer to 3 significant figures. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert g to kg: divide by 1000', 'Convert each Aᵣ to grams first'], convAnswer: 0, answer: 27.3, tol: 0.06, unit: '%', units: ['%', 'g', 'kg', 'no unit'],
+          right: '12 ÷ 44 × 100 = 27.3 %.', wrong: 'Mᵣ(CO₂) = 12 + (2 × 16) = 44. Carbon is 12 of the 44: 12 ÷ 44 × 100 = 27.3 %. Aᵣ values have no units, so nothing converts.',
+          model: ['C · Nothing to convert: Aᵣ values have no units', 'F · % by mass = (Aᵣ × number of atoms) ÷ Mᵣ × 100', 'I · Mᵣ = 12 + 32 = 44; % C = (12 × 1) ÷ 44 × 100', 'F · 12 ÷ 44 × 100 = 27.27…', 'A · 27.3 %'] },
+        r3: { command: 'Explain', marks: 3, prompt: '2Mg + O₂ → 2MgO. Explain why the total Mᵣ of the reactants equals the total Mᵣ of the products. Put the links in order.',
+          links: ['In a reaction, atoms are not created or destroyed, only rearranged.', 'So a balanced equation has the same number of each type of atom on both sides.', 'Each atom adds the same Aᵣ on whichever side it is, so 2 × 24 + 32 = 2 × 40 = 80.'],
+          herrings: [{ text: 'The magnesium takes mass from the air, so the products are heavier.', why: 'The oxygen from the air is a reactant. It is already counted on the left.' }, { text: 'Mᵣ of MgO is 80, because there are two of them.', why: 'The 2 counts formula units. The Mᵣ of one MgO is 40.' }] },
+        r4: { command: 'Explain', marks: 4,
+          question: 'A student calculates the relative formula mass of ammonium sulfate, (NH₄)₂SO₄, as 114. Aᵣ: N = 14, H = 1, S = 32, O = 16. Explain the mistake, then calculate the correct Mᵣ and the percentage by mass of nitrogen.',
+          points: ['The student counted one N and four H: the 2 after the bracket was not applied (14 + 4 + 32 + 64 = 114).', 'The 2 outside the bracket multiplies everything inside: 2 N and 8 H.', 'Mᵣ = (2 × 14) + (8 × 1) + 32 + (4 × 16) = 132.', '% N = 28 ÷ 132 × 100 = 21.2 % (accept 21 %).'],
+          reject: ['“Mᵣ = 114 × 2 = 228.” The 2 multiplies the NH₄ group only, not the whole formula.', '“% N = 14 ÷ 132 × 100.” There are two nitrogen atoms: use 28.'] }
+      } : {},
+      keyLines,
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

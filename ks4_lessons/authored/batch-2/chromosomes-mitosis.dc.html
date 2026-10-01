@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chromosomes, the cell cycle and mitosis · MrBadmus GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+  @keyframes cm-grow { from { transform: scale(.86); } to { transform: scale(1); } }
+  @keyframes cm-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes cm-slide { from { transform: translate(var(--cm-dx, 0px), var(--cm-dy, 0px)); } to { transform: translate(0px, 0px); } }
+  @keyframes cm-draw { from { stroke-dashoffset: var(--cm-len, 400); } to { stroke-dashoffset: 0; } }
+  .cm-grow { transform-box: fill-box; transform-origin: center; animation: cm-grow .9s ease-out both; }
+  .cm-in { animation: cm-in .7s ease-out .55s both; }
+  .cm-slide { animation: cm-slide 1.2s ease-in-out .2s both; }
+  .cm-draw { stroke-dasharray: var(--cm-len, 400); animation: cm-draw 1s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { .cm-grow, .cm-in, .cm-slide, .cm-draw { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Cell biology" title="Chromosomes, the cell cycle and mitosis" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.1.2.1–4.1.2.2 · Process</p>
+        <h1>Chromosomes, the cell cycle and mitosis</h1>
+        <p class="ks3-bigq">You began as one cell. How does one cell become two that carry exactly the same chromosomes, again and again, without losing a single one?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">One fertilised egg. Trillions of cells.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">Every cell in your skin, muscles and gut came from one fertilised egg dividing again and again, and nearly every body cell still carries the same 46 chromosomes it had. Here is a cell cut down to 4 chromosomes so you can follow every one.</p>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 640px;">{{ hookFig }}</div>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="This cell will divide into two cells, and each must end up with all 4 chromosomes. How?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>The <strong>nucleus</strong> of a cell contains <strong>chromosomes</strong>, each one a long molecule of DNA. Each chromosome carries a large number of <strong>genes</strong>: a gene is a small section of DNA that codes for a particular protein. In body cells the chromosomes are found in <strong>pairs</strong>, one of each pair from each parent. A human body cell has 46, in 23 pairs. Sperm and egg cells carry one of each pair, 23 in all, so fertilisation restores 46. In the model, red chromosomes came from one parent and blue from the other.</p>
+      </section>
+
+      <section id="s-cycle" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Run the cell cycle · {{ cyName }}</p>
+        <h2 style="margin: 6px 0 0;">{{ cyTitle }}</h2>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px; align-items: start;">
+          <figure style="margin: 0;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ cyCellFig }}</div><figcaption style="margin-top: 6px; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">{{ cyCellCap }}</figcaption></figure>
+          <figure style="margin: 0;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ cyGraphFig }}</div><figcaption style="margin-top: 6px; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Mass of DNA in the cell, drawn as you run each stage</figcaption></figure>
+        </div>
+        <sc-if value="{{ cyAsking }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 12px;">
+            <sc-for list="{{ cyQs }}" as="q" hint-placeholder-count="1">
+              <div style="padding: 14px 16px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+                <p style="margin: 0 0 8px; font-weight: 700;">{{ q.prompt }}</p>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <sc-for list="{{ q.opts }}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onCyRun }}" disabled="{{ cyRunLocked }}" style="{{ cyRunStyle }}">{{ cyRunLabel }}</button>
+        </sc-if>
+        <sc-if value="{{ cyRevealed }}">
+          <div data-arrive="1" role="status" style="margin-top: 14px; display: flex; flex-direction: column; gap: 10px;">
+            <sc-for list="{{ cyVerdicts }}" as="v" hint-placeholder-count="1"><p style="{{ v.style }}"><strong>{{ v.word }}</strong> {{ v.text }}</p></sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ cyConfront92 }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · counting</p></div>
+            <p class="ks3-mis-quote">&ldquo;After the DNA is copied, a human cell has 92 chromosomes.&rdquo;</p>
+            <p style="margin: 0;">Each chromosome is now two identical copies held together. Count the copies and you get 92; count the chromosomes and you still get 46. The copies only come apart in mitosis, one going to each end of the cell.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ cyConfrontMeiosis }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · two kinds of division</p></div>
+            <p class="ks3-mis-quote">&ldquo;Mitosis makes four cells, each with half the chromosomes.&rdquo;</p>
+            <p style="margin: 0;">That describes meiosis, a different division that only makes gametes (sperm and eggs). You meet it in Inheritance, on both tiers. Mitosis is for the body: two cells, each with the full 46, identical to the parent. Meiosis is for gametes: four cells, each with 23, all genetically different.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ cyCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onCyNext }}" style="margin-top: 14px;">Next stage</button></sc-if>
+      </section>
+
+      <section id="s-order" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Chain" eyebrow="Build the sequence" title="Describe the cell cycle, in order" prompt="This is the order the marks follow in a describe question. Leave out anything that does not happen in mitosis." links="{{ orderLinks }}" herrings="{{ orderHerrings }}" done-note="Grow and copy, pull apart, then divide the cytoplasm: AQA's three stages." on-done="{{ onOrder }}" hint-size="100%,520px"></dc-import>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Mitosis makes cells identical to the parent, so it is used wherever an organism needs more of the same cells: <strong>growth</strong> and development from a fertilised egg, <strong>repair</strong> of damaged tissue, and <strong>replacement</strong> of worn-out cells. In mature animals, cell division is mainly restricted to repair and replacement. Some organisms reproduce <strong>asexually</strong> this way: one parent, no gametes, only mitosis, so every offspring is a clone. The one job mitosis never does is make gametes.</p>
+      </section>
+
+      <section id="s-where" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Suggest" title="Mitosis or meiosis?" prompt="Decide which division is happening in each situation." bins="{{ whereBins }}" items="{{ whereItems }}" done-note="If the new cells must match the parent, it is mitosis. If they are gametes, it is meiosis." on-done="{{ onWhere }}" hint-size="100%,520px"></dc-import>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Every stage of the cycle is controlled. <strong>Cancer</strong> is the result of changes in cells that lead to uncontrolled growth and division, forming a mass of cells called a <strong>tumour</strong>. A <strong>benign</strong> tumour stays in one area, usually within a membrane, and does not invade other parts of the body. <strong>Malignant</strong> tumour cells are cancers: they invade neighbouring tissues and spread in the blood to other parts of the body, where they form secondary tumours.</p>
+      </section>
+
+      <section id="s-cancer" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+        <p class="ks3-mis-quote">&ldquo;Cancer is caused by mitosis.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Explain" prompt="Your cells divide by mitosis every day. So what is actually wrong in a cancer?" options="{{ cancerOptions }}" reveal="{{ cancerReveal }}" right-word="That is it." wrong-word="That keeps the wrong idea." on-commit="{{ onCancer }}" hint-size="100%,320px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Say what happens, stage by stage, in the right order.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give the reason, and link each step to the next with &ldquo;so&rdquo;.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Use</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Base the answer on the graph or data given. Quote it.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">The cell grows and its DNA replicates; in mitosis one set of chromosomes is pulled to each end and the nucleus divides; then the cytoplasm and membrane divide into two identical cells.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="chromosomes-mitosis" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Chromosomes, the cell cycle and mitosis" spec="AQA 4.1.2.1–4.1.2.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure what happens at each stage of the cell cycle?" legal="The model cell has 4 chromosomes in 2 pairs so each one can be followed; a human body cell has 46. Ribosomes and mitochondria are drawn as a few marks, not to scale. The stepper shows AQA's three overall stages; GCSE does not ask for the names of the phases inside mitosis." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'One cell, then two', short: 'HOOK' },
+  { id: 's-cycle', label: 'Run the cell cycle', short: 'CYCLE' },
+  { id: 's-order', label: 'Put it in order', short: 'ORDER' },
+  { id: 's-where', label: 'Mitosis or meiosis?', short: 'WHERE' },
+  { id: 's-cancer', label: 'When control fails', short: 'CANCER' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+
+/* The cell cycle, as a predict-gated stepper. Option `a` is the answer the
+   mark scheme credits; `why[i]` corrects option i; `yes` is the explanation
+   every pupil reads after the stage runs. */
+const STAGES = [
+  { name: 'stage 1 of 3', title: 'What does the cell do before it divides?', run: 'Run stage 1: grow and copy',
+    qs: [
+      { prompt: 'What happens first?', a: 0,
+        opts: ['It grows, makes more ribosomes and mitochondria, and copies its DNA', 'It halves its chromosomes so that each new cell can take a share', 'It splits at once, and each half makes its own chromosomes later'],
+        why: ['', 'Halving the chromosome number is meiosis, which makes gametes. A body cell keeps its full set, so it has to copy it.', 'New DNA can only be copied from DNA that already exists. Split first and each half would get only part of the set.'],
+        yes: 'The cell grows and increases its sub-cellular structures, such as ribosomes and mitochondria. Then the DNA replicates: every chromosome becomes two identical copies.' },
+      { prompt: 'After copying, how many chromosomes does the model cell hold?', a: 1,
+        opts: ['8 chromosomes', '4 chromosomes, each now two copies', '2 chromosomes'],
+        why: ['The copies stay joined, so they still count as 4 chromosomes. There are 8 copies, not 8 chromosomes.', '', 'Nothing has been lost. Every chromosome is still there, now doubled.'],
+        yes: 'Still 4 chromosomes, each made of two identical copies held together. The mass of DNA has doubled.' }
+    ] },
+  { name: 'stage 2 of 3', title: 'Mitosis: where does each copy go?', run: 'Run stage 2: mitosis',
+    qs: [
+      { prompt: 'What happens to the two copies of each chromosome?', a: 1,
+        opts: ['Whole chromosomes are shared out, two to one end and two to the other', 'One copy of every chromosome is pulled to each end of the cell', 'All the copies stay in one nucleus, and only the cytoplasm divides'],
+        why: ['That would leave each end with half a set, like a gamete. Mitosis separates the copies, so each end gets one of every chromosome.', '', 'Then one new cell would get every chromosome and the other none. The nucleus has to divide first.'],
+        yes: 'The copies separate. One set of chromosomes is pulled to each end of the cell and the nucleus divides: two nuclei, 4 chromosomes in each.' }
+    ] },
+  { name: 'stage 3 of 3', title: 'How does the cycle end?', run: 'Run stage 3: the cell divides',
+    qs: [
+      { prompt: 'The cytoplasm and cell membrane divide. What do you get?', a: 2,
+        opts: ['Two cells with 4 chromosomes each, but different from each other', 'Four cells with 2 chromosomes each, all genetically different', 'Two cells with 4 chromosomes each, identical to the parent cell'],
+        why: ['Each cell got one copy of every chromosome, and the copies were identical, so the two cells are identical too.', 'Four cells with half the chromosomes is meiosis, the division that makes gametes. Mitosis makes two.', ''],
+        yes: 'Two genetically identical cells, each with the full set. In a human: 46 chromosomes in the parent, 46 in each new cell.' }
+    ] }
+];
+
+/* ── figures: the model cell, built from the house plate (KS4D) ───────── */
+const CM = { cyto: '#E3F0E6', nuc: '#F7EBD9', mito: '#F2C9AE' };
+const CHROMS = [{ dx: -21, len: 40, col: 'red' }, { dx: -7, len: 40, col: 'blue' }, { dx: 7, len: 24, col: 'red' }, { dx: 21, len: 24, col: 'blue' }];
+function chrom(D, x, y, c, doubled, anim) {
+  const col = D.C[c.col]; const h = c.len / 2;
+  if (!doubled) return D.line(x, y - h, x, y + h, 6, col);
+  return D.line(x - 3.5, y - h, x - 3.5, y + h, 5, col) +
+    '<g' + (anim ? ' class="cm-slide" style="--cm-dx:-7px;--cm-dy:0px"' : '') + '>' + D.line(x + 3.5, y - h, x + 3.5, y + h, 5, col) + '</g>' +
+    D.circ(x, y, 4.5, D.C.stroke);
+}
+function chromSet(D, cx, cy, doubled, anim) {
+  return CHROMS.map((c) => chrom(D, cx + c.dx * (doubled ? 1.55 : 1), cy, c, doubled, anim)).join('');
+}
+function organelles(D, cx, cy, r, nm, nr, ry, keep) {
+  /* marks spread round an ellipse (rx = r, ry defaults to r); `keep(x, y)` drops any that would sit on a nucleus */
+  ry = ry || r; keep = keep || (() => true);
+  let s = '';
+  for (let i = 0; i < nm; i++) {
+    const a = (i / nm) * 2 * Math.PI + 0.4, x = cx + r * 0.72 * Math.cos(a), y = cy + ry * 0.72 * Math.sin(a);
+    if (!keep(x, y)) continue;
+    s += '<ellipse cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" rx="11" ry="6" fill="' + CM.mito + '" stroke="' + D.C.stroke + '" stroke-width="1.6" transform="rotate(' + Math.round(a * 57.3 + 90) + ' ' + x.toFixed(1) + ' ' + y.toFixed(1) + ')"/>';
+  }
+  for (let i = 0; i < nr; i++) {
+    const a = (i / nr) * 2 * Math.PI + 0.1, k = i % 2 ? 0.84 : 0.6, x = cx + r * k * Math.cos(a), y = cy + ry * k * Math.sin(a);
+    if (keep(x, y)) s += D.circ(x, y, 3, D.C.muted);
+  }
+  return s;
+}
+function oneCell(D, cx, cy, r, nucR, doubled, nm, nr, anim) {
+  return D.circ(cx, cy, r, CM.cyto, D.C.stroke, 2.6) + organelles(D, cx, cy, r, nm, nr) +
+    D.circ(cx, cy, nucR, CM.nuc, D.C.stroke, 2.2) + chromSet(D, cx, cy, doubled, anim);
+}
+/* stage: 0 parent cell · 1 grown and copied · 2 after mitosis · 3 two cells */
+function cellFig(D, stage) {
+  const W = 640, H = 330, cy = 172;
+  let body = '';
+  if (stage === 0) {
+    body = oneCell(D, 320, cy, 112, 50, false, 3, 6, false) +
+      D.T(320, 34, 'Parent cell · 4 chromosomes', 22);
+  } else if (stage === 1) {
+    body = '<g class="cm-grow">' + D.circ(320, cy, 134, CM.cyto, D.C.stroke, 2.6) + '</g>' +
+      '<g class="cm-in">' + organelles(D, 320, cy, 134, 6, 12) + '</g>' +
+      D.circ(320, cy, 62, CM.nuc, D.C.stroke, 2.2) + chromSet(D, 320, cy, true, true) +
+      D.T(320, 28, 'Bigger, more organelles, every chromosome copied', 21);
+  } else if (stage === 2) {
+    const ell = '<ellipse cx="320" cy="' + cy + '" rx="214" ry="122" fill="' + CM.cyto + '" stroke="' + D.C.stroke + '" stroke-width="2.6"/>';
+    const side = (sx, dx) => '<g class="cm-in">' + D.circ(sx, cy, 48, CM.nuc, D.C.stroke, 2.2) + '</g>' +
+      '<g class="cm-slide" style="--cm-dx:' + dx + 'px;--cm-dy:0px">' + chromSet(D, sx, cy, false, false) + '</g>';
+    body = ell + organelles(D, 320, cy, 200, 8, 14, 112, (x) => Math.abs(x - 196) > 66 && Math.abs(x - 444) > 66) + side(196, 124) + side(444, -124) +
+      D.T(320, 34, 'One set of chromosomes to each end · two nuclei', 21);
+  } else {
+    const half = (cx, dx) => '<g class="cm-slide" style="--cm-dx:' + dx + 'px;--cm-dy:0px">' + oneCell(D, cx, cy, 108, 46, false, 3, 6, false) + '</g>';
+    body = half(178, 52) + half(462, -52) + D.T(320, 34, 'Two cells · 4 chromosomes each', 22);
+  }
+  const alt = ['A model cell with a nucleus holding 4 chromosomes, two long and two short, in red and blue pairs.',
+    'The cell is larger with more mitochondria and ribosomes; each of the 4 chromosomes is now two copies joined at the middle.',
+    'The cell is stretched; one copy of each chromosome has been pulled to each end, and two nuclei have formed, each with 4 chromosomes.',
+    'The cytoplasm has divided: two separate cells, each with a nucleus holding the same 4 chromosomes.'][stage];
+  return { svg: D.svg(W, H, body, alt), alt };
+}
+/* DNA per cell: 1 unit, doubles in stage 1, stays at 2 in stage 2, halves in stage 3 */
+function dnaGraph(D, upTo) {
+  const W = 640, H = 300, x0 = 92, x1 = 600, y1 = 214, y2 = 104, yAxis = 250;
+  let s = D.line(x0, 60, x0, yAxis) + D.line(x0, yAxis, x1 + 10, yAxis) +
+    D.T(x0 - 14, y1 + 7, '×1', 20, { anchor: 'end', weight: 'normal' }) + D.T(x0 - 14, y2 + 7, '×2', 20, { anchor: 'end', weight: 'normal' }) +
+    D.line(x0 - 6, y1, x0, y1, 2) + D.line(x0 - 6, y2, x0, y2, 2) +
+    D.T(345, 286, 'time', 20, { weight: 'normal' }) + D.T(x0 - 6, 44, 'mass of DNA', 20, { anchor: 'start', weight: 'normal' });
+  const segs = [
+    [[x0, y1], [190, y1]],
+    [[190, y1], [262, y2], [330, y2]],
+    [[330, y2], [452, y2]],
+    [[452, y2], [462, y1], [600, y1]]
+  ];
+  const labels = [null, [262, '1 grow + copy'], [391, '2 mitosis'], [526, '3 divide']];
+  for (let k = 0; k <= upTo; k++) {
+    const pts = segs[k]; let len = 0;
+    for (let i = 1; i < pts.length; i++) len += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    const d = 'M' + pts.map((p) => p[0] + ' ' + p[1]).join(' L');
+    s += '<path d="' + d + '" fill="none" stroke="' + D.C.arrow + '" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"' +
+      (k === upTo && k > 0 ? ' class="cm-draw" style="--cm-len:' + Math.ceil(len) + '"' : '') + '/>';
+    if (labels[k]) s += D.T(labels[k][0], 76, labels[k][1], 18, { weight: 'normal', fill: D.C.label });
+  }
+  const alt = 'Graph of the mass of DNA in the cell against time. ' + ['The line is flat at one unit.', 'It rises to double during stage 1.', 'It stays at double through mitosis.', 'It falls back to one unit when the cell divides, because each new cell has half.'].slice(0, upTo + 1).join(' ');
+  return { svg: D.svg(W, H, s, alt), alt };
+}
+/* Ladder rung 2: two cycles, letters P–T, for "use the graph" */
+function ladderGraph(D) {
+  const W = 640, H = 300, x0 = 80, yA = 250, lo = 200, hi = 110;
+  const P = [[x0, lo], [150, lo], [200, hi], [300, hi], [310, lo], [400, lo], [450, hi], [560, hi], [570, lo], [610, lo]];
+  let s = D.line(x0, 70, x0, yA) + D.line(x0, yA, 620, yA) +
+    '<path d="M' + P.map((p) => p[0] + ' ' + p[1]).join(' L') + '" fill="none" stroke="' + D.C.arrow + '" stroke-width="5" stroke-linejoin="round"/>' +
+    D.T(345, 286, 'time', 20, { weight: 'normal' }) + D.T(x0 - 4, 52, 'mass of DNA per cell', 20, { anchor: 'start', weight: 'normal' });
+  [['P', 150, lo], ['Q', 200, hi], ['R', 305, hi], ['S', 400, lo], ['T', 450, hi]].forEach((m) => {
+    s += D.circ(m[1], m[2], 6, D.C.stroke) + D.T(m[1], m[2] + (m[2] === lo ? 32 : -16), m[0], 22);
+  });
+  return D.svg(W, H, s, 'Graph of mass of DNA per cell against time. Flat, then rising from P to Q to double, flat from Q to R, dropping at R to half, flat from R to S, rising again from S to T.');
+}
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, st: 0, preds: {}, revealed: {}, order: false, where: false, cancer: null, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  opt(on) {
+    return 'display:block;width:100%;text-align:left;font:inherit;font-size:17px;font-weight:600;line-height:1.4;padding:11px 15px;min-height:48px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeWords: 'Triple Higher', routeSwitchOptions: [] };
+    const slug = 'chromosomes-mitosis';
+    const ready = !!(s.libReady && K && D);
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const pn = this.props.mrbPrevNext || {};
+    const st = s.st; const stage = STAGES[st];
+    const p = s.preds[st] || [];
+    const revealed = !!s.revealed[st];
+    const nRev = Object.keys(s.revealed).length;
+    const allPicked = stage.qs.every((q, k) => p[k] !== undefined);
+    const done = [s.hook !== null, nRev === 3, s.order, s.where, s.cancer !== null, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const shown = revealed ? st + 1 : st;
+    const cf = ready ? cellFig(D, shown) : null;
+    const gf = ready ? dnaGraph(D, shown) : null;
+    const cellCaps = ['Before the cycle starts', 'After stage 1 · grown and copied', 'After stage 2 · mitosis', 'After stage 3 · two new cells'];
+    return Object.assign({}, R, {
+      video: K && s.hook !== null ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      endPrev: pn.prev || null,
+      endNext: pn.next || null,
+      endConnects: ready ? [
+        { href: K.hrefFor('meiosis', R), label: 'Meiosis' },
+        { href: K.hrefFor('stem-cells', R), label: 'Stem cells' },
+        { href: K.hrefFor('cancer', R), label: 'Cancer' }
+      ].filter((c) => c.href) : [],
+      hookFig: ready ? K.fig(cellFig(D, 0).svg, cellFig(D, 0).alt) : null,
+      hookOptions: [
+        { text: 'It copies every chromosome first, then shares out the copies', reply: 'Hold that thought and test it below.' },
+        { text: 'It gives two of its four chromosomes to each new cell', reply: 'Then each new cell would hold half a set.' },
+        { text: 'It splits first, then each new cell builds its own four', reply: 'New DNA is only ever copied from DNA that is already there.' },
+        { text: 'One new cell keeps the nucleus; the other grows a new one', reply: 'A nucleus cannot appear from nothing: it needs its own full set of chromosomes.' }
+      ],
+      hookReveal: 'The cell copies its DNA first, so every chromosome becomes two identical copies. Then one copy of each goes into each new cell. That is how a human body cell with 46 chromosomes makes two cells with 46 each.',
+      onHook: (i) => this.setState({ hook: i }),
+      cyName: stage.name, cyTitle: stage.title,
+      cyCellFig: cf ? K.fig(cf.svg, cf.alt) : null, cyCellCap: cellCaps[shown],
+      cyGraphFig: gf ? K.fig(gf.svg, gf.alt) : null,
+      cyAsking: !revealed,
+      cyQs: stage.qs.map((q, k) => ({ prompt: q.prompt,
+        opts: q.opts.map((l, i) => ({ label: l, pressed: p[k] === i, style: this.opt(p[k] === i),
+          onClick: () => this.setState((ss) => { const cur = (ss.preds[ss.st] || []).slice(); cur[k] = i; return { preds: Object.assign({}, ss.preds, { [ss.st]: cur }) }; }) })) })),
+      cyRunLabel: stage.run,
+      cyRunLocked: !allPicked, cyRunStyle: 'margin-top:12px;' + (allPicked ? '' : 'opacity:.45;cursor:default;'),
+      onCyRun: () => { if (allPicked) this.setState((ss) => ({ revealed: Object.assign({}, ss.revealed, { [ss.st]: true }) })); },
+      cyRevealed: revealed,
+      cyVerdicts: revealed ? stage.qs.map((q, k) => {
+        const ok = p[k] === q.a;
+        return { word: ok ? 'As you said.' : 'Not this.', text: (ok ? '' : q.why[p[k]] + ' ') + q.yes,
+          style: 'margin:0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);') };
+      }) : [],
+      cyConfront92: revealed && st === 0,
+      cyConfrontMeiosis: revealed && st === 2,
+      cyCanNext: revealed && st < 2,
+      onCyNext: () => this.setState((ss) => ({ st: Math.min(2, ss.st + 1) })),
+      orderLinks: ['The cell grows and makes more ribosomes and mitochondria.', 'The DNA replicates, forming two copies of each chromosome.', 'One set of chromosomes is pulled to each end of the cell.', 'The nucleus divides, giving two nuclei.', 'The cytoplasm and cell membrane divide, forming two identical cells.'],
+      orderHerrings: [
+        { text: 'The chromosome number halves, from 46 to 23.', why: 'Halving happens only in meiosis, when gametes are made. Mitosis keeps all 46.' },
+        { text: 'The cell divides again, forming four new cells.', why: 'Four cells from one division round is meiosis. One cycle of mitosis makes two cells.' }
+      ],
+      onOrder: () => this.setState({ order: true }),
+      whereBins: [{ id: 'mit', label: 'Mitosis' }, { id: 'mei', label: 'Meiosis' }],
+      whereItems: [
+        { text: 'A graze on your knee is covered by new skin.', bin: 'mit', why: 'Repair: the new skin cells must match the old ones.' },
+        { text: 'A fertilised egg becomes a ball of cells, then an embryo.', bin: 'mit', why: 'Growth: every new body cell needs the full set of chromosomes.' },
+        { text: 'Stem cells in bone marrow divide to replace blood cells.', bin: 'mit', why: 'Replacement: the stem cells divide by mitosis to keep up the supply.' },
+        { text: 'A strawberry plant grows runners that become new plants.', bin: 'mit', why: 'Asexual reproduction: one parent, no gametes, only mitosis.' },
+        { text: 'The tip of a root grows longer into the soil.', bin: 'mit', why: 'Growth again: more of the same cells.' },
+        { text: 'Cells in the testes produce sperm.', bin: 'mei', why: 'Sperm are gametes, made by meiosis with 23 chromosomes.' },
+        { text: 'Cells in the ovaries produce eggs.', bin: 'mei', why: 'Eggs are gametes, made by meiosis with 23 chromosomes.' }
+      ],
+      onWhere: () => this.setState({ where: true }),
+      cancerOptions: [
+        { text: 'Nothing: any cell dividing by mitosis can become a tumour', correct: false, reply: 'Healthy cells divide by mitosis all the time for growth and repair, under control. A tumour forms only when that control is lost.' },
+        { text: 'Changes in a cell make it grow and divide out of control', correct: true, reply: 'Mitosis itself is normal. Cancer is the result of changes in cells that lead to uncontrolled growth and division.' },
+        { text: 'The cell divides by meiosis instead of mitosis', correct: false, reply: 'Meiosis only makes gametes. A tumour is a mass of body cells dividing without control.' }
+      ],
+      cancerReveal: 'The cell cycle normally runs under control. When changes in a cell remove that control, it keeps dividing and forms a tumour. Benign tumours stay in one area; malignant ones spread in the blood and form secondary tumours.',
+      onCancer: (i) => this.setState({ cancer: i }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'How many chromosomes will each daughter cell have') || { options: [] }, { command: 'Give', marks: 1, why: 'Mitosis keeps the full chromosome number: 46 in the parent cell, 46 in each daughter cell.' }),
+        r2: { kind: 'data', command: 'Use', marks: 3, prompt: 'The graph shows the mass of DNA in a cell, and then in one of its daughter cells, over time. Use the graph to answer all three parts.',
+          figureSvg: ladderGraph(D), figureAlt: 'Graph of mass of DNA per cell against time with points P, Q, R, S and T.',
+          parts: [
+            { label: 'Between which two points is the DNA replicating?', options: ['P and Q', 'Q and R', 'R and S'], answer: 0 },
+            { label: 'What happens at R, where the mass of DNA halves?', options: ['The cell breaks down half of its DNA', 'The cytoplasm and membrane divide: one cell becomes two', 'The chromosome number halves, ready to make gametes'], answer: 1 },
+            { label: 'How many chromosomes does a human cell hold at Q?', options: ['92 separate chromosomes', '23, half the full set', '46, each made of two copies'], answer: 2 }
+          ],
+          right: 'All three read from the graph and tied to a stage of the cycle.',
+          wrong: 'Rising line: DNA replicating. Sudden drop: the cell has divided, so each new cell has half. Copying doubles the DNA, not the number of chromosomes.',
+          model: ['P to Q: the DNA replicates, so the mass doubles.', 'At R the cytoplasm and membrane divide, so each new cell has half the DNA the parent cell had at Q.', 'At Q a human cell still has 46 chromosomes, each now two identical copies.'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'Explain why the two cells made by mitosis are genetically identical to the parent cell. Put the links in order.',
+          links: ['Before the cell divides, its DNA replicates, making two identical copies of each chromosome.', 'In mitosis, one copy of every chromosome is pulled to each end of the cell, and the nucleus divides.', 'So each new cell gets a complete set of the same chromosomes, carrying the same genes as the parent.'],
+          herrings: [
+            { text: 'Each new cell receives half of the parent’s chromosomes, one from each pair.', why: 'Halving the chromosomes is meiosis, which makes gametes. Mitosis keeps the full set.' },
+            { text: 'The two new cells share the parent’s cytoplasm, so they share its genes.', why: 'Genes are sections of DNA on the chromosomes in the nucleus, not in the cytoplasm.' }
+          ] },
+        r4: { command: 'Explain', marks: 6, question: 'A human starts as one fertilised egg cell. Explain how the cell cycle produces the huge number of cells in an adult body, and why each new cell made by mitosis has the same 46 chromosomes as the egg.',
+          levels: [
+            { label: 'Level 3 · 5–6', text: 'All three stages described in order, linked to identical copies and the full 46, and to repeated division as the cause of growth.', max: 6 },
+            { label: 'Level 2 · 3–4', text: 'Most of the stages in order with some linking, or the reason for 46 explained with little detail of the stages.', max: 4 },
+            { label: 'Level 1 · 1–2', text: 'Isolated facts, such as “mitosis makes new cells”, with no sequence.', max: 2 },
+            { label: 'No relevant content · 0', text: '', max: 0 }
+          ],
+          points: ['The cell grows and increases its sub-cellular structures, such as ribosomes and mitochondria.', 'The DNA replicates, forming two copies of each chromosome.', 'In mitosis one set of chromosomes is pulled to each end of the cell.', 'The nucleus divides.', 'The cytoplasm and cell membrane divide, forming two cells.', 'Each new cell has the full set of 46 chromosomes, genetically identical to the parent cell.', 'The new cells grow and divide again, so repeated mitosis increases the number of cells: growth and development.'],
+          reject: ['“The egg divides by meiosis to make the body.” Meiosis only makes gametes.', '“Each division halves the chromosomes.” Mitosis keeps all 46.'] }
+      } : {},
+      keyLines: ready ? K.keyLines(slug) : [],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

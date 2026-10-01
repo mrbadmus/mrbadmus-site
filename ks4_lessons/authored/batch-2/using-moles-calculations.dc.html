@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Using Moles — Calculations and Limiting Reactants · MrBadmus GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Quantitative chemistry" title="Using Moles — Calculations and Limiting Reactants" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">{{ eyebrowLine }}</p>
+        <h1>Using Moles — Calculations and Limiting Reactants</h1>
+        <p class="ks3-bigq">Magnesium fizzes in acid until something runs out. Which one runs out, how much hydrogen do you get, and how do the masses tell you the balanced equation in the first place?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">The fizzing stops. Something ran out.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">Magnesium fizzes in hydrochloric acid, giving off hydrogen gas: Mg + 2HCl → MgCl₂ + H₂. A student mixes 2.4 g of magnesium with 3.65 g of hydrogen chloride dissolved in water. After a while the fizzing stops.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Which reactant runs out first?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>When two substances react, the one that is completely used up is the <strong>limiting reactant</strong>: it limits the amount of product. The other is in <strong>excess</strong>, and some of it is left over. Chemists often use an excess of one reactant so that all of the other one reacts. To find the limiting reactant, convert each mass to moles (n = mass ÷ M<sub>r</sub>). Then compare those moles with the ratio in the balanced equation, not with each other.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The reaction bench · each counter is 0.01 mol</p>
+            <h2 style="margin: 6px 0 0;">Load the flask. Call which runs out. Then react.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ benchProgress }}</p>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 440px;">{{ benchFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <sc-for list="{{ mixTabs }}" as="t" hint-placeholder-count="3"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" disabled="{{ t.disabled }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+            </div>
+            <sc-if value="{{ ownOn }}">
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <sc-for list="{{ steppers }}" as="st" hint-placeholder-count="2">
+                  <div role="group" aria-label="{{ st.name }}" style="display: flex; align-items: center; gap: 8px;">
+                    <button type="button" onClick="{{ st.onDown }}" aria-label="{{ st.downAria }}" disabled="{{ st.lock }}" style="{{ st.btnStyle }}">−</button>
+                    <span style="flex: 1 1 auto; font-family: var(--ks3-font-mono); font-size: 16px; text-align: center;">{{ st.text }}</span>
+                    <button type="button" onClick="{{ st.onUp }}" aria-label="{{ st.upAria }}" disabled="{{ st.lock }}" style="{{ st.btnStyle }}">+</button>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <p aria-live="polite" style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px;">{{ loadLine }}</p>
+            <sc-if value="{{ askOn }}" hint-placeholder-val="{{ true }}">
+              <div>
+                <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">Commit first. Which runs out first?</p>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <sc-for list="{{ askOptions }}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ benchDoneNow }}">
+              <div data-arrive="1" role="status" style="{{ benchVerdictStyle }}">
+                <p style="margin: 0; font-size: 18px; line-height: 1.55;"><strong>{{ benchWord }}</strong> {{ benchFeedback }}</p>
+                <p style="margin: 8px 0 0; font-family: var(--ks3-font-mono); font-size: 17px; line-height: 1.5;">{{ benchResult }}</p>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Determine" title="Which reactant is limiting?" prompt="Each mix is magnesium and hydrogen chloride: Mg + 2HCl → MgCl₂ + H₂. Ar: Mg = 24. Mr: HCl = 36.5." bins="{{ lmBins }}" items="{{ lmItems }}" done-note="Convert to moles, double the magnesium, and compare that with the hydrogen chloride. Whichever falls short is limiting." on-done="{{ onSort }}" hint-size="100%,460px"></dc-import>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>The masses in a reaction also tell you its balanced equation. Convert each mass in grams to moles, then divide every amount by the smallest one. That gives the simplest whole-number ratio, and those numbers are the balancing numbers. Use each substance’s formula as written: hydrogen gas is H₂, so its M<sub>r</sub> is 2, not 1; oxygen gas is O₂, M<sub>r</sub> 32.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+        <p class="ks3-mis-quote">&ldquo;The ratio came out as 1 : 1.5 : 1, so I rounded the 1.5 up to 2.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Balance" prompt="Iron reacts with chlorine: Fe + Cl₂ → FeCl₃. From the masses, the moles are Fe 0.10, Cl₂ 0.15 and FeCl₃ 0.10, a ratio of 1 : 1.5 : 1. What is the balanced equation?" options="{{ thinkOptions }}" reveal="{{ thinkReveal }}" right-word="That is it." wrong-word="That keeps the mistake." on-commit="{{ onThink }}" hint-size="100%,320px"></dc-import>
+      </section>
+
+      <section id="s-solution" class="ks3-block" data-route="triple" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Moles in solution · AQA 4.3.4</p>
+        <p style="margin: 8px 0 0; max-width: 60ch;">Many reactions happen in solution, where amounts are measured as concentrations in <strong>mol/dm³</strong>. concentration (mol/dm³) = amount (mol) ÷ volume (dm³), so amount (mol) = concentration × volume. Convert cm³ to dm³ first: 100 cm³ of 2 mol/dm³ hydrochloric acid holds 2 × 0.1 = 0.2 mol.</p>
+        <div style="margin-top: 14px;">
+          <dc-import name="Ks4Choice" eyebrow="Your call" command="Determine" prompt="25.0 cm³ of hydrochloric acid of concentration 0.100 mol/dm³ is added to 0.00200 mol of magnesium. Mg + 2HCl → MgCl₂ + H₂. Which reactant is limiting?" options="{{ solOptions }}" right-word="Yes." wrong-word="Not quite." on-commit="{{ onSol }}" hint-size="100%,340px"></dc-import>
+        </div>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equations</p>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Learn it · no chemistry equation sheet</span>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">n = m ÷ M<sub>r</sub></p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">amount (mol) = mass (g) ÷ relative formula mass</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 18px;">masses → moles → ÷ smallest</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">The simplest whole-number ratio gives the balancing numbers.</p>
+          </div>
+          <div data-route="triple" style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">c = n ÷ V</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">concentration (mol/dm³) = amount (mol) ÷ volume (dm³)</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Balance</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Here, from masses: moles of every substance, divide by the smallest, whole numbers into the equation.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Determine</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Reach the answer from the data given: which reactant runs out, from moles and the equation ratio.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Show the working: moles, ratio, moles of product, then mass with its unit.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Link the limiting reactant to the amount of product, one step to the next.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">The limiting reactant is the one completely used up, and it fixes the amount of product. Find it from moles and the equation ratio, never from the masses alone.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="using-moles-calculations" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Using Moles — Calculations and Limiting Reactants" spec="{{ keySpec }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which reactant runs out first?" legal="On the reaction bench each counter stands for 0.01 mol, and the reaction is shown one Mg + 2HCl → MgCl₂ + H₂ step at a time. In a real flask countless particles react at once, and the hydrogen bubbles away as a gas." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Higher&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The fizzing stops', short: 'HOOK' },
+  { id: 's-bench', label: 'The reaction bench', short: 'BENCH' },
+  { id: 's-sort', label: 'Which is limiting?', short: 'SORT' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-calc', label: 'Calculate it', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+/* Counters of 0.01 mol. HCl always comes in pairs so every Mg + 2HCl step is whole. */
+const MIXES = [{ mg: 8, h: 12 }, { mg: 6, h: 16 }];
+const STEP_MS = 560;
+const mol = (n) => (n * 0.01).toFixed(2);
+function limitOf(mg, h) { return 2 * mg > h ? 'hcl' : (2 * mg < h ? 'mg' : 'both'); }
+const NAMES = { mg: 'magnesium', hcl: 'hydrogen chloride' };
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, hook: null, mix: 0, own: { mg: 5, h: 8 }, pick: null, prog: 0, running: false, ran: [false, false, false], sort: false, think: null, sol: null, calc: 0, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+    this.reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.tick = setInterval(() => {
+      const st = this.state;
+      if (!st.running) return;
+      const L = this.load(), n = Math.min(L.mg, L.h / 2);
+      const p = (Date.now() - this.start) / STEP_MS;
+      if (p >= n + 0.3) this.finish(); else this.setState({ prog: Math.min(n, p) });
+    }, 50);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); clearInterval(this.tick); }
+  load() { const s = this.state; return s.mix === 2 ? s.own : MIXES[s.mix]; }
+  finish() {
+    const L = this.load();
+    this.setState((st) => { const ran = st.ran.slice(); ran[st.mix] = true; return { prog: Math.min(L.mg, L.h / 2), running: false, ran: ran }; });
+  }
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' + (dis && !on ? 'opacity:.55;' : '');
+  }
+  token(x, y, label, fill) {
+    const D = window.KS4D;
+    return '<rect x="' + (x - 30).toFixed(1) + '" y="' + (y - 15).toFixed(1) + '" width="60" height="30" rx="9" fill="' + fill + '" stroke="' + D.C.stroke + '" stroke-width="2"/>' + D.T(x, y + 6, label, 16, { fill: D.C.stroke });
+  }
+  benchSvg(mg, h, prog, started) {
+    const D = window.KS4D; const W = 400, H = 620, MX = 200, MY = 330;
+    const n = Math.min(mg, h / 2), c = Math.floor(prog + 1e-9), f = prog - c;
+    const slot = (i, row0) => ({ x: 56 + (i % 5) * 72, y: row0 + Math.floor(i / 5) * 36 });
+    const ease = (t) => t * t * (3 - 2 * t);
+    let b = D.T(24, 36, 'Magnesium', 18, { anchor: 'start' }) + D.T(24, 144, 'Hydrogen chloride', 18, { anchor: 'start' });
+    b += D.arrow(MX, 306, MX, 360, D.C.arrow, 5);
+    b += D.T(24, 392, 'Magnesium chloride', 18, { anchor: 'start' }) + D.T(24, 494, 'Hydrogen', 18, { anchor: 'start' });
+    const moving = started && c < n;
+    const mv = moving ? ease(Math.min(1, f / 0.75)) : 0;
+    for (let i = 0; i < mg; i++) {
+      if (started && i >= mg - c) continue;
+      const p = slot(i, 64); let x = p.x, y = p.y;
+      if (moving && i === mg - 1 - c) { x += (MX - x) * mv; y += (MY - y) * mv; }
+      b += this.token(x, y, 'Mg', D.C.metal);
+    }
+    for (let j = 0; j < h; j++) {
+      if (started && j >= h - 2 * c) continue;
+      const p = slot(j, 172); let x = p.x, y = p.y;
+      if (moving && (j === h - 1 - 2 * c || j === h - 2 - 2 * c)) { x += (MX + (j % 2 ? 34 : -34) - x) * mv; y += (MY - y) * mv; }
+      b += this.token(x, y, 'HCl', D.C.nm);
+    }
+    const shown = started ? c + (moving && f >= 0.75 ? 1 : 0) : 0;
+    for (let k = 0; k < shown; k++) { const p = slot(k, 420), q = slot(k, 522); b += this.token(p.x, p.y, 'MgCl₂', '#FFFDF8') + this.token(q.x, q.y, 'H₂', '#DCE8F7'); }
+    b += D.T(MX, 604, 'Mg + 2HCl → MgCl₂ + H₂', 20, { fill: D.C.stroke });
+    const left = started && prog >= n ? ' After reacting: ' + (mg - n) + ' magnesium and ' + (h - 2 * n) + ' hydrogen chloride counters left; ' + n + ' of each product.' : '';
+    return D.svg(W, H, b, mg + ' magnesium counters and ' + h + ' hydrogen chloride counters, each 0.01 mol.' + left);
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, isTH: true, routeWords: '', routeSwitchOptions: [] };
+    const slug = 'using-moles-calculations';
+    const ready = !!(s.libReady && K && D);
+    const L = this.load(), n = Math.min(L.mg, L.h / 2), lim = limitOf(L.mg, L.h);
+    const started = s.pick !== null;
+    const madeNow = started && !s.running && s.prog >= n;
+    const benchDone = s.ran[0] && s.ran[1];
+    const done = [s.hook !== null, benchDone, s.sort, s.think !== null, s.calc >= 2, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const pn = this.props.mrbPrevNext || {};
+    const F = ready ? K.fifas(slug) : [];
+    const busy = s.running;
+    const reset = { pick: null, prog: 0, running: false };
+    const pickStyle = 'font:inherit;font-size:17px;font-weight:600;text-align:left;padding:12px 14px;min-height:48px;border-radius:14px;cursor:pointer;color:var(--ks3-ink);background:var(--ks3-card);border:2px solid var(--ks3-option-border);';
+    const stepStyle = 'font:inherit;font-size:22px;font-weight:700;width:48px;min-height:48px;border-radius:12px;cursor:pointer;color:var(--ks3-ink);background:var(--ks3-card);border:2px solid var(--ks3-option-border);';
+    const right = s.pick === lim;
+    const needLine = mol(L.mg) + ' mol of Mg needs ' + mol(2 * L.mg) + ' mol of HCl, and there is ' + mol(L.h) + ' mol.';
+    const verdictText = lim === 'both' ? ' Exactly enough of each: both are used up and neither is in excess.' : ' So the ' + NAMES[lim] + ' runs out first: it is the limiting reactant.';
+    const trap = !right && s.pick === 'mg' && L.mg < L.h && lim === 'hcl' ? 'Fewer moles is not the test. ' : '';
+    const leftLine = lim === 'both' ? 'Nothing is left over.' : (lim === 'hcl' ? 'Left over: ' + mol(L.mg - n) + ' mol of magnesium, in excess.' : 'Left over: ' + mol(L.h - 2 * n) + ' mol of hydrogen chloride, in excess.');
+    const limiting = (x) => x === 'both' ? 'Both run out together' : (x === 'mg' ? 'Magnesium runs out first' : 'Hydrogen chloride runs out first');
+    const stepper = (key, name, lo, hi, by) => ({
+      name: name, text: name + ' ' + mol(s.own[key]) + ' mol', lock: busy, btnStyle: stepStyle + (busy ? 'opacity:.55;cursor:default;' : ''),
+      downAria: 'Less ' + name.toLowerCase(), upAria: 'More ' + name.toLowerCase(),
+      onDown: () => { if (this.state.running) return; this.setState((st) => Object.assign({ own: Object.assign({}, st.own, { [key]: Math.max(lo, st.own[key] - by) }) }, reset)); },
+      onUp: () => { if (this.state.running) return; this.setState((st) => Object.assign({ own: Object.assign({}, st.own, { [key]: Math.min(hi, st.own[key] + by) }) }, reset)); }
+    });
+    return Object.assign({}, R, {
+      video: K && s.hook !== null ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      eyebrowLine: R.isTriple ? 'AQA Chemistry (8462) 4.3.2.3–4.3.2.4 · Quantitative' : 'AQA Chemistry (8464) 5.3.2.3–5.3.2.4 · Quantitative',
+      keySpec: R.isTriple ? 'AQA 4.3.2.3–4.3.2.4, 4.3.4 (8462)' : 'AQA 5.3.2.3–5.3.2.4 (8464)',
+      endPrev: pn.prev || null, endNext: pn.next || null,
+      endConnects: ready ? [{ href: K.hrefFor('moles', R), label: 'Moles' }, { href: K.hrefFor('amounts-in-equations', R), label: 'Amounts of substances in equations' }, { href: K.hrefFor('concentration-of-solutions', R), label: 'Concentration of solutions' }, { href: K.hrefFor('titrations', R), label: 'Titrations' }].filter((x) => x.href) : [],
+      hookOptions: [
+        { text: 'Magnesium, because there is a smaller mass of it', reply: 'Mass is not what reacts one-for-one. Turn both into moles first.' },
+        { text: 'Hydrogen chloride, because each Mg needs two HCl', reply: 'Hold that reason. The bench below tests it.' },
+        { text: 'Both together, because there are equal moles of each', reply: 'Equal moles, yes: 0.1 mol of each. But the equation does not use them one-to-one.' },
+        { text: 'Neither: the fizzing stops once the gas escapes', reply: 'Gas escaping does not stop a reaction. It stops when a reactant is used up.' }
+      ],
+      hookReveal: 'n(Mg) = 2.4 ÷ 24 = 0.1 mol. n(HCl) = 3.65 ÷ 36.5 = 0.1 mol. Each Mg needs two HCl, so 0.1 mol of Mg needs 0.2 mol of HCl. Only 0.1 mol is there: the hydrogen chloride runs out first, and magnesium is left over.',
+      onHook: (i) => this.setState({ hook: i }),
+      benchProgress: (s.ran[0] ? 1 : 0) + (s.ran[1] ? 1 : 0) + ' of 2 mixes reacted',
+      mixTabs: ['Mix A', 'Mix B', 'Your mix'].map((lab, i) => ({ label: lab + (i < 2 && s.ran[i] ? ' ✓' : ''), pressed: s.mix === i, disabled: busy, style: this.seg(s.mix === i, busy),
+        onClick: () => { if (!this.state.running) this.setState(Object.assign({ mix: i }, reset)); } })),
+      ownOn: s.mix === 2,
+      steppers: [stepper('mg', 'Magnesium', 1, 10, 1), stepper('h', 'Hydrogen chloride', 2, 20, 2)],
+      benchFig: ready ? K.fig(this.benchSvg(L.mg, L.h, s.prog, started), '') : null,
+      loadLine: 'Magnesium ' + mol(L.mg) + ' mol · Hydrogen chloride ' + mol(L.h) + ' mol',
+      askOn: !started,
+      askOptions: ['mg', 'hcl', 'both'].map((k) => ({ label: limiting(k), style: pickStyle,
+        onClick: () => {
+          if (this.state.pick !== null) return;
+          if (this.reduced) { this.setState({ pick: k, running: false }, () => this.finish()); }
+          else { this.start = Date.now(); this.setState({ pick: k, prog: 0, running: true }); }
+        } })),
+      benchDoneNow: madeNow,
+      benchWord: right ? 'Called it.' : 'Not this time.',
+      benchFeedback: trap + needLine + verdictText,
+      benchResult: n + ' × (Mg + 2HCl) reacted. Hydrogen formed: ' + mol(n) + ' mol, ' + (n * 0.02).toFixed(2) + ' g. ' + leftLine,
+      benchVerdictStyle: 'padding:14px 16px;border-radius:14px;border:2px solid ' + (right ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      lmBins: [{ id: 'mg', label: 'Magnesium is limiting' }, { id: 'hcl', label: 'Hydrogen chloride is limiting' }],
+      lmItems: [
+        { text: '0.10 mol Mg + 0.30 mol HCl', bin: 'mg', why: '0.10 mol Mg needs 0.20 mol HCl and there is 0.30, so the magnesium runs out.' },
+        { text: '0.10 mol Mg + 0.15 mol HCl', bin: 'hcl', why: '0.10 mol Mg needs 0.20 mol HCl and there is only 0.15.' },
+        { text: '0.05 mol Mg + 0.08 mol HCl', bin: 'hcl', why: 'Fewer moles of Mg, but it needs 0.10 mol HCl and there is only 0.08.' },
+        { text: '0.20 mol Mg + 0.50 mol HCl', bin: 'mg', why: '0.20 mol Mg needs 0.40 mol HCl and there is 0.50.' },
+        { text: '1.2 g Mg + 7.3 g HCl', bin: 'mg', why: '1.2 ÷ 24 = 0.05 mol Mg needs 0.10 mol HCl; 7.3 ÷ 36.5 = 0.20 mol is there.' },
+        { text: '4.8 g Mg + 7.3 g HCl', bin: 'hcl', why: '4.8 ÷ 24 = 0.20 mol Mg needs 0.40 mol HCl; 7.3 ÷ 36.5 = 0.20 mol is not enough.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      thinkOptions: [
+        { text: 'Fe + 2Cl₂ → FeCl₃', correct: false, reply: 'Rounding 1.5 up to 2 changes the ratio, and the chlorine no longer balances: 4 atoms in, 3 out.' },
+        { text: '2Fe + 3Cl₂ → 2FeCl₃', correct: true, reply: 'Doubling 1 : 1.5 : 1 gives whole numbers, 2 : 3 : 2. Check the chlorine: 6 atoms on each side.' },
+        { text: 'Fe + 1.5Cl₂ → FeCl₃', correct: false, reply: 'The ratio is right, but balancing numbers must be whole numbers. Double every number.' },
+        { text: 'Fe + Cl₂ → FeCl₃', correct: false, reply: 'Rounding 1.5 down changes the ratio too: 2 chlorine atoms in, 3 out.' }
+      ],
+      thinkReveal: 'Divide by the smallest number of moles. If a .5 is left, double every number. Never round it.',
+      onThink: (i) => this.setState({ think: i }),
+      solOptions: [
+        { text: 'Magnesium, because it has fewer moles: 0.00200 against 0.00250', correct: false, reply: 'Fewer moles is not the test. Compare with the 1 : 2 ratio: the magnesium needs 0.00400 mol of acid.' },
+        { text: 'Magnesium, because the acid holds 2.5 mol, far more than the metal', correct: false, reply: '0.100 × 25.0 uses cm³. Convert first: 25.0 cm³ = 0.0250 dm³, so the acid holds 0.00250 mol.' },
+        { text: 'Hydrochloric acid: 0.00250 mol, but the magnesium needs 0.00400 mol', correct: true, reply: 'n(HCl) = 0.100 × 0.0250 = 0.00250 mol. 0.00200 mol of Mg needs twice that, 0.00400 mol.' },
+        { text: 'Neither: 0.00200 and 0.00250 are close enough to react completely', correct: false, reply: 'Close is not equal. The reaction stops when the first reactant is used up.' }
+      ],
+      onSol: (i) => this.setState({ sol: i }),
+      cfExamples: ready && F.length ? [
+        { tab: 'Balance · nothing to convert', head: '4.8 g of magnesium reacts with 14.6 g of hydrogen chloride to make 19.0 g of magnesium chloride and 0.4 g of hydrogen. Use these masses to balance the equation Mg + HCl → MgCl₂ + H₂. (Ar: Mg 24, H 1, Cl 35.5)', next: 'Now one with the masses in kilograms.', steps: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert: every mass is in grams.', note: '' },
+          { letter: 'F', label: 'Formula', line: 'n = mass ÷ Mr for each substance', note: 'Mr: HCl 36.5, MgCl₂ 95, H₂ 2.' },
+          { letter: 'I', label: 'Insert', line: 'Mg 4.8 ÷ 24 = 0.20 · HCl 14.6 ÷ 36.5 = 0.40 · MgCl₂ 19.0 ÷ 95 = 0.20 · H₂ 0.4 ÷ 2 = 0.20', note: '' },
+          { letter: 'F', label: 'Fine-tune', line: 'Divide by the smallest, 0.20: 1 : 2 : 1 : 1', note: '' },
+          { letter: 'A', label: 'Answer', line: 'Mg + 2HCl → MgCl₂ + H₂', note: 'Check: 4.8 + 14.6 = 19.4 = 19.0 + 0.4.' } ] },
+        { tab: 'Balance · convert first', head: '0.92 kg of sodium reacts with 0.32 kg of oxygen to make 1.24 kg of sodium oxide. Use the masses to balance Na + O₂ → Na₂O. (Ar: Na 23, O 16)', next: 'Now the limiting reactant, worked.', steps: [
+          { letter: 'C', label: 'Convert', line: '0.92 kg = 920 g · 0.32 kg = 320 g · 1.24 kg = 1240 g', note: 'n = mass ÷ Mr gives moles when the mass is in grams.' },
+          { letter: 'F', label: 'Formula', line: 'n = mass ÷ Mr for each substance', note: 'Mr: O₂ 32, Na₂O 62.' },
+          { letter: 'I', label: 'Insert', line: 'Na 920 ÷ 23 = 40 · O₂ 320 ÷ 32 = 10 · Na₂O 1240 ÷ 62 = 20', note: '' },
+          { letter: 'F', label: 'Fine-tune', line: 'Divide by the smallest, 10: 4 : 1 : 2', note: '' },
+          { letter: 'A', label: 'Answer', line: '4Na + O₂ → 2Na₂O', note: 'Check: 920 + 320 = 1240.' } ] },
+        { tab: 'Limiting reactant', head: F[0].question, next: 'Now yours, below.', steps: K.cfifa(F[0], 'Nothing to convert: masses are already in grams.') }
+      ] : [],
+      cfQuestions: [
+        { tab: 'Question 1', id: 'um-q1', head: '2.8 g of nitrogen reacts with 0.6 g of hydrogen to make 3.4 g of ammonia. Use the masses to balance N₂ + H₂ → NH₃. (Ar: N 14, H 1)', close: 'With Mr(H₂) = 1 by mistake you get 0.60 mol of hydrogen and a ratio of 1 : 6 : 2, which does not balance.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert: every mass is in grams.' }, { letter: 'F', label: 'Formula', placeholder: 'how to get moles', line: 'n = mass ÷ Mr for each substance' }, { letter: 'I', label: 'Insert', placeholder: 'N₂ … · H₂ … · NH₃ …', line: 'N₂ 2.8 ÷ 28 = 0.10 · H₂ 0.6 ÷ 2 = 0.30 · NH₃ 3.4 ÷ 17 = 0.20' }, { letter: 'F', label: 'Fine-tune', placeholder: 'divide by the smallest', line: 'Divide by 0.10: 1 : 3 : 2' }, { letter: 'A', label: 'Answer', placeholder: 'the balanced equation', line: 'N₂ + 3H₂ → 2NH₃' }] },
+        { tab: 'Question 2', id: 'um-q2', head: 'Hydrogen burns in oxygen: 2H₂ + O₂ → 2H₂O. A tank holds 0.40 kg of hydrogen and 2.4 kg of oxygen. Identify the limiting reactant and calculate the maximum mass of water. (Ar: H 1, O 16)', close: 'Hydrogen has the smaller mass, yet it is in excess: 50 mol of it is left over.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '0.40 kg = 400 g · 2.4 kg = 2400 g' }, { letter: 'F', label: 'Formula', placeholder: 'moles, then compare', line: 'n = mass ÷ Mr for each reactant; compare to equation ratio' }, { letter: 'I', label: 'Insert', placeholder: 'n(H₂) = … · n(O₂) = …', line: 'n(H₂) = 400 ÷ 2 = 200 mol. n(O₂) = 2400 ÷ 32 = 75 mol. 200 mol H₂ needs 100 mol O₂: only 75 available.' }, { letter: 'F', label: 'Fine-tune', placeholder: 'moles of water, then mass', line: 'O₂ is limiting. n(H₂O) = 2 × 75 = 150 mol. mass = 150 × 18 = 2700 g' }, { letter: 'A', label: 'Answer', placeholder: 'mass with unit; which is limiting', line: '2700 g (2.7 kg) of water. O₂ is the limiting reactant.' }] }
+      ],
+      onCalc: (n2) => this.setState({ calc: n2 }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: { command: 'State', marks: 1, prompt: 'State what is meant by the limiting reactant in a reaction.', why: 'The limiting reactant is completely used up, so it limits the amount of product.',
+          options: [
+            { text: 'The reactant with the smallest mass at the start', correct: false, reply: 'Mass alone cannot tell you. In the hook, magnesium had the smaller mass and was left over.' },
+            { text: 'The reactant with the fewest moles at the start', correct: false, reply: 'Moles must be compared with the equation ratio. In Mix A, magnesium had fewer moles and was still in excess.' },
+            { text: 'The reactant that is left over when it stops', correct: false, reply: 'That is the reactant in excess. The limiting reactant is the one that runs out.' },
+            { text: 'The reactant that is completely used up', correct: true, reply: '' }
+          ] },
+        r2: { kind: 'calc', command: 'Calculate', marks: 3, prompt: '3.6 g of magnesium is heated with 3.2 g of oxygen: 2Mg + O₂ → 2MgO. Calculate the maximum mass of magnesium oxide that can form. (Ar: Mg 24, O 16) Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert g to kg: divide by 1000', 'Convert g to kg: multiply by 1000'], convAnswer: 0, answer: 6.0, tol: 0.1, unit: 'g', units: ['g', 'mol', 'kg', 'g/mol'],
+          right: 'Magnesium is limiting: 0.15 mol of MgO, 6.0 g.', wrong: 'n(Mg) = 3.6 ÷ 24 = 0.15 mol; n(O₂) = 3.2 ÷ 32 = 0.10 mol. 0.15 mol of Mg needs only 0.075 mol of O₂, so Mg is limiting.',
+          model: ['C · Nothing to convert: masses in grams', 'F · n = mass ÷ Mr; compare to the 2 : 1 ratio', 'I · n(Mg) = 0.15 mol; n(O₂) = 0.10 mol; Mg needs 0.075 mol O₂', 'F · Mg is limiting; n(MgO) = n(Mg) = 0.15 mol; mass = 0.15 × 40', 'A · 6.0 g of magnesium oxide'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'Explain why an excess of acid is used when reacting it with a metal. Put the links in order.',
+          links: ['With the acid in excess, all of the metal reacts and is used up.', 'So the metal is the limiting reactant.', 'The amount of product depends on the amount of the limiting reactant, so the most product is made from the metal used.'],
+          herrings: [{ text: 'The acid in excess limits the amount of product.', why: 'The reactant in excess is left over. Only the reactant that runs out limits the product.' }, { text: 'The excess acid makes more product than the equation allows.', why: 'The maximum is fixed by the moles of the limiting reactant and the equation ratio.' }] },
+        r4: { command: 'Calculate', marks: 6, question: '5.4 g of aluminium reacts with 21.3 g of chlorine to make 26.7 g of aluminium chloride. (a) Use the masses to balance Al + Cl₂ → AlCl₃. (b) In a second experiment, 2.7 g of aluminium is mixed with 7.1 g of chlorine. Determine the limiting reactant and calculate the maximum mass of aluminium chloride. Show your working. (Ar: Al 27, Cl 35.5)',
+          points: ['Moles: Al 5.4 ÷ 27 = 0.20; Cl₂ 21.3 ÷ 71 = 0.30; AlCl₃ 26.7 ÷ 133.5 = 0.20.', 'Ratio 1 : 1.5 : 1 doubled to 2 : 3 : 2, so 2Al + 3Cl₂ → 2AlCl₃.', 'Second experiment: Al 2.7 ÷ 27 = 0.10 mol; Cl₂ 7.1 ÷ 71 = 0.10 mol.', '0.10 mol of Al needs 0.15 mol of Cl₂ and there is only 0.10 mol, so chlorine is the limiting reactant.', 'n(AlCl₃) = 0.10 × 2 ÷ 3 = 0.067 mol.', 'Mass = 0.067 × 133.5 = 8.9 g.'],
+          reject: ['“Al + 1.5Cl₂ → AlCl₃”: balancing numbers must be whole numbers.', '“Aluminium is limiting because it has the smaller mass”: compare moles with the equation ratio.'] }
+      } : {},
+      keyLines: ['The limiting reactant is completely used up; the other reactant is in excess.', 'Limiting reactant: convert to moles → compare to equation ratio → whichever runs out first limits the amount of product.', 'Balancing from masses: masses → moles → divide by the smallest → simplest whole-number ratio.', 'n = mass ÷ Mr, using the formula as written: H₂ = 2, O₂ = 32, Cl₂ = 71.']
+        .concat(R.isTriple ? ['c (mol/dm³) = n ÷ V (V in dm³).'] : []),
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

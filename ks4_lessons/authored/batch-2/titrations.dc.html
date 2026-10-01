@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Titrations · MrBadmus GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Chemical changes" title="Titrations" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 4.4.2.5 (chemistry only) · Required practical</p>
+        <h1>Titrations</h1>
+        <p class="ks3-bigq">One drop of acid turns a flask of alkali from pink to colourless. How do you measure exactly how much acid that took, and show the number can be trusted?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-blue); background: var(--ks3-blue-tint); color: var(--ks3-blue-text);">Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-accent); background: var(--ks3-accent-tint); color: var(--ks3-ink);">Required practical 2 · titration</span>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">One drop turns the whole flask.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">A conical flask holds 25.00 cm³ of sodium hydroxide solution and a few drops of phenolphthalein, so it is pink. Acid runs in from a burette. For a long time each splash makes a colourless patch that vanishes when the flask is swirled. Then, after one more drop, the pink is gone for good.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="The flask has just turned colourless for good. What has happened?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-rp" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-accent);">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Required practical 2 (Chemistry) · the AQA method</p>
+        <h2 style="margin: 6px 0 0;">Pipette the alkali. Burette the acid. Stop on one drop.</h2>
+        <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.5; max-width: 62ch;">AQA titrations use strong acids only (sulfuric, hydrochloric, nitric) and strong alkalis such as sodium hydroxide.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ rigFig }}</div>
+          <ol style="margin: 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 6px; font-size: 18px; line-height: 1.5;">
+            <li>Use a pipette and pipette filler to put 25.00 cm³ of sodium hydroxide solution into a conical flask on a white tile.</li>
+            <li>Add a few drops of a suitable indicator, such as phenolphthalein or methyl orange.</li>
+            <li>Rinse the burette with the acid, then fill it through a funnel, below eye level. Remove the funnel. Record the initial reading to the nearest 0.05 cm³, at the bottom of the meniscus.</li>
+            <li>Do a rough titration first. Then repeat, swirling the flask and adding acid drop by drop near the end point, until one drop gives a permanent colour change.</li>
+            <li>Record the final reading. Titre = final reading − initial reading.</li>
+            <li>Repeat until at least two titres are concordant (within 0.10 cm³ of each other). Calculate the mean of the concordant titres.</li>
+          </ol>
+        </div>
+        <dl style="margin: 16px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 10px; font-size: 17px; line-height: 1.5;">
+          <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Measured</dt><dd style="margin: 4px 0 0;">The titre, in cm³.</dd></div>
+          <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Kept the same</dt><dd style="margin: 4px 0 0;">25.00 cm³ of alkali, the acid's concentration, the indicator and how many drops.</dd></div>
+          <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Risks</dt><dd style="margin: 4px 0 0;">Wear eye protection: sodium hydroxide harms eyes. Never pipette by mouth. Indicators in ethanol are flammable: keep them away from flames.</dd></div>
+        </dl>
+      </section>
+
+      <section id="s-rinse" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · filling the burette</p></div>
+        <p class="ks3-mis-quote">&ldquo;I rinsed the burette with water first, so it was really clean.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Predict" prompt="Water left inside the burette mixes with the acid. What happens to the titre?" options="{{ rinseOptions }}" reveal="{{ rinseReveal }}" right-word="That is it." wrong-word="That keeps the wrong idea." on-commit="{{ onRinse }}" hint-size="100%,380px"></dc-import>
+      </section>
+
+      <section id="s-indicator" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Choice" eyebrow="Choose the indicator" command="Identify" figure-svg="{{ indFig }}" prompt="Each strip shows an indicator's colour as acid is added to the alkali. Which indicator cannot give a sharp end point?" options="{{ indOptions }}" reveal="{{ indReveal }}" right-word="Yes." wrong-word="Look at the strip again." on-commit="{{ onInd }}" hint-size="100%,560px"></dc-import>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Run the practical</p>
+            <h2 style="margin: 6px 0 0;">{{ benchTitle }}</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ benchProgress }}</p>
+        </div>
+        <sc-if value="{{ gateOn }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px;">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">Commit first. The rough run goes in a whole 1 cm³ at a time. Compared with the careful runs, its titre will be…</p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <sc-for list="{{ gateOpts }}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ benchOn }}">
+          <div data-arrive="1" style="margin-top: 14px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 14px; align-items: start;">
+              <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ benchFig }}</div>
+              <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ zoomFig }}</div>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                  <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; color: var(--ks3-ink-muted);">INITIAL READING</p><p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 21px;">{{ initText }}</p></div>
+                  <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; color: var(--ks3-ink-muted);">BURETTE NOW</p><p aria-live="polite" style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 21px;">{{ nowText }}</p></div>
+                </div>
+                <p role="status" style="{{ flaskStyle }}">{{ flaskText }}</p>
+                <sc-if value="{{ runOn }}">
+                  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <sc-for list="{{ addBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" disabled="{{ b.disabled }}" style="{{ b.style }}">{{ b.label }}</button></sc-for>
+                    <button type="button" class="ks3-reveal-btn" onClick="{{ onRecord }}" disabled="{{ recordLocked }}" style="{{ recordStyle }}">Record the final reading</button>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ nextRunOn }}">
+                  <div><button type="button" class="ks3-reveal-btn" onClick="{{ onNextRun }}">{{ nextRunLabel }}</button></div>
+                </sc-if>
+                <sc-if value="{{ gateNoteOn }}">
+                  <p data-arrive="1" style="{{ gateNoteStyle }}"><strong>{{ gateWord }}</strong> {{ gateNote }}</p>
+                </sc-if>
+              </div>
+            </div>
+            <sc-if value="{{ rowsOn }}">
+              <div style="margin-top: 16px;">
+                <p style="margin: 0 0 8px; font-size: 18px; line-height: 1.5;">{{ pickLead }}</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 8px;">
+                  <sc-for list="{{ rowBtns }}" as="r" hint-placeholder-count="3"><button type="button" onClick="{{ r.onClick }}" aria-pressed="{{ r.pressed }}" disabled="{{ r.disabled }}" style="{{ r.style }}"><span style="display: block; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ r.label }}</span><span style="display: block; margin-top: 2px; font-family: var(--ks3-font-mono); font-size: 17px;">{{ r.sum }}</span></button></sc-for>
+                </div>
+                <sc-if value="{{ pickOn }}">
+                  <div style="margin-top: 10px;"><button type="button" class="ks3-reveal-btn" onClick="{{ onPickCheck }}" disabled="{{ pickLocked }}" style="{{ pickBtnStyle }}">Check the titres I chose</button></div>
+                </sc-if>
+                <sc-if value="{{ pickShown }}">
+                  <p data-arrive="1" role="status" style="{{ pickStyle }}"><strong>{{ pickWord }}</strong> {{ pickNote }}</p>
+                </sc-if>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equations · processing the data</p>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Learn it · chemistry has no equation sheet</span>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.35;">Titre = final burette reading − initial burette reading</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.35;">Mean titre = sum of concordant titres ÷ number of concordant titres</p>
+            <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.5;">Never the rough run, never an anomalous titre. Give the mean to 2 decimal places.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-conc" class="ks3-block" data-route="higher" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-stretch);">
+        <p class="ks3-eyebrow" style="color: var(--ks3-stretch-text);">From titre to concentration</p>
+        <p style="margin: 8px 0 0; max-width: 60ch;">On the Higher paper the mean titre starts a calculation. Find the moles in the solution whose concentration you know, with n = c × V and V in dm³. Use the ratio in the balanced equation to get the moles of the other substance, then c = n ÷ V. For g/dm³, multiply the concentration in mol/dm³ by M<sub>r</sub>.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px;">n = c × V</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">moles (mol) = concentration (mol/dm³) × volume (dm³). cm³ ÷ 1000 = dm³.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.35;">g/dm³ = mol/dm³ × M<sub>r</sub></p>
+          </div>
+        </div>
+        <div style="margin-top: 16px;">
+          <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+            <dc-import name="Ks4Cfifa" examples="{{ htExamples }}" questions="{{ htQuestions }}" hint-size="100%,900px"></dc-import>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe a method</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Each step in order, with the apparatus named: pipette, indicator, burette, end point, repeats.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Identify</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Pick out the one that fits, such as the anomalous titre or the unsuitable indicator.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">An improvement or a source of error, applied to this titration.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Show the working. A mean titre is in cm³, to 2 decimal places.</dd></div>
+        </dl>
+      </section>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="titrations" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Titrations" spec="AQA 4.4.2.5 · RP2 (chemistry only)" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which titres are concordant?" legal="The burette simulation uses model solutions: each run has a set end point near 24.70 cm³, and one run is planted as anomalous, as real runs sometimes are. Acid goes in whole drops of 0.05 cm³, and the end point shows as one sharp change; in a real flask, judging the colour adds its own scatter." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'One drop', short: 'HOOK' },
+  { id: 's-rinse', label: 'Filling the burette', short: 'THINK' },
+  { id: 's-indicator', label: 'Choose the indicator', short: 'INDICATOR' },
+  { id: 's-bench', label: 'Run the practical', short: 'RUN' },
+  { id: 's-calc', label: 'Process the data', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+/* Every volume is held in hundredths of a cm³ (one drop = 5), so no reading ever picks up float noise.
+   Run 0 is the rough run. INIT: each run's initial burette reading. EP: the acid needed to reach that run's end point.
+   Run 2 is planted as anomalous (25.05 cm³) so the pupil meets a titre that is not concordant. */
+const INIT = [0, 50, 120, 35, 80, 15, 60];
+const EP = [2470, 2470, 2505, 2465, 2475, 2470, 2465];
+const MAXRUN = 6;
+const PINK = '#EE8DB8', CLEAR = '#EEF3F1', ACIDC = '#D9EAF0';
+const v2 = (h) => (h / 100).toFixed(2);
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, rinse: null, ind: null, gate: null, run: 0, added: 0, shown: 0, live: true, rows: [], sel: {}, pick: null, calc: 0, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.tick = setInterval(() => {
+      const s = this.state; if (s.shown === s.added) return;
+      const diff = s.added - s.shown;
+      if (this.reduced) { this.setState({ shown: s.added }); return; }
+      const step = Math.max(5, Math.ceil(Math.abs(diff) / 6 / 5) * 5);
+      this.setState({ shown: Math.abs(diff) <= step ? s.added : s.shown + Math.sign(diff) * step });
+    }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); clearInterval(this.tick); }
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' + (dis ? 'opacity:.45;' : '');
+  }
+  colour(added, run) { const e = EP[run]; if (added >= e) return 'clear'; if (added > 0 && e - added <= 50) return 'flash'; return 'pink'; }
+  /* Clamp stand, burette (0 at the top, 50 cm³ at the bottom, 7 px per cm³), tap, conical flask on a white tile. */
+  rig(reading, col) {
+    const D = window.KS4D; const C = D.C; let b = '';
+    const lab = (x, y, t) => D.T(x, y, t, 18, { weight: 'normal', anchor: 'start' });
+    b += '<rect x="30" y="600" width="130" height="14" fill="none" stroke="' + C.stroke + '" stroke-width="3"/>' + D.line(80, 600, 80, 40, 6);
+    b += D.line(80, 150, 246, 150, 5) + '<rect x="244" y="140" width="34" height="20" rx="3" fill="none" stroke="' + C.stroke + '" stroke-width="3"/>';
+    const y0 = 70, lvl = y0 + reading / 100 * 7;
+    b += '<rect x="250" y="' + lvl.toFixed(1) + '" width="22" height="' + (430 - lvl).toFixed(1) + '" fill="' + ACIDC + '"/>';
+    b += '<rect x="250" y="40" width="22" height="390" fill="none" stroke="' + C.stroke + '" stroke-width="3"/>';
+    for (let v = 0; v <= 50; v += 5) { const y = y0 + v * 7; b += D.line(250, y, v % 10 ? 258 : 264, y, 2) + (v % 10 ? '' : D.T(242, y + 5, String(v), 14, { weight: 'normal', anchor: 'end', fill: C.stroke })); }
+    b += '<path d="M254 430 L254 446 L268 446 L268 430" fill="' + ACIDC + '" stroke="' + C.stroke + '" stroke-width="3"/>';
+    b += '<rect x="240" y="446" width="42" height="12" rx="3" fill="#FFFDF8" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    b += '<polygon points="257,458 265,458 263,486 259,486" fill="' + ACIDC + '" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    const fill = col === 'pink' || col === 'flash' ? PINK : CLEAR;
+    b += '<polygon points="221,560 301,560 338,600 184,600" fill="' + fill + '"/>';
+    if (col === 'flash') b += '<ellipse cx="261" cy="568" rx="22" ry="6" fill="' + CLEAR + '"/>';
+    b += '<path d="M246 494 L246 524 L184 600 L338 600 L276 524 L276 494" fill="none" stroke="' + C.stroke + '" stroke-width="3"/>';
+    b += '<rect x="168" y="600" width="186" height="12" fill="#FFFFFF" stroke="' + C.stroke + '" stroke-width="2"/>';
+    b += lab(292, 60, 'burette') + lab(292, Math.min(400, lvl + 34), 'acid') + lab(292, 456, 'tap') + lab(346, 560, 'conical flask:') + lab(346, 582, 'alkali + indicator') + lab(366, 612, 'white tile');
+    return D.svg(560, 630, b, 'Titration apparatus: a burette of acid held in a clamp stand above a conical flask of alkali and indicator, standing on a white tile. The burette reads ' + v2(reading) + ' cm³ and the flask is ' + (fill === PINK ? 'pink' : 'colourless') + '.');
+  }
+  /* Close-up of the burette scale: 0.10 cm³ graduations, numbers increase downwards, meniscus bottom on the eye line. */
+  zoom(reading) {
+    const D = window.KS4D; const C = D.C; let b = '';
+    const cy = 200, k = 110, top = 30, bot = 380;
+    b += '<rect x="70" y="' + top + '" width="120" height="' + (bot - top) + '" fill="#FFFDF8"/>';
+    b += '<path d="M70 ' + (cy - 13) + ' Q130 ' + (cy + 13) + ' 190 ' + (cy - 13) + ' L190 ' + bot + ' L70 ' + bot + ' Z" fill="' + ACIDC + '"/>';
+    b += '<path d="M70 ' + (cy - 13) + ' Q130 ' + (cy + 13) + ' 190 ' + (cy - 13) + '" fill="none" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    const r = reading / 100;
+    for (let t = Math.ceil((r - 1.6) * 10); t <= Math.floor((r + 1.6) * 10); t++) {
+      const v = t / 10, y = cy + (v - r) * k;
+      if (y < top + 4 || y > bot - 4 || v < 0) continue;
+      const whole = t % 10 === 0, half = t % 5 === 0;
+      b += D.line(70, y, 70 + (whole ? 60 : half ? 42 : 26), y, whole ? 2.5 : 1.6);
+      if (whole) b += D.T(200, y + 6, String(Math.round(v)), 18, { weight: 'normal', anchor: 'start', fill: C.stroke });
+    }
+    b += '<rect x="70" y="' + top + '" width="120" height="' + (bot - top) + '" fill="none" stroke="' + C.stroke + '" stroke-width="3"/>';
+    b += '<line x1="20" y1="' + cy + '" x2="194" y2="' + cy + '" stroke="' + C.arrow + '" stroke-width="2" stroke-dasharray="6 5"/>';
+    b += D.T(130, 412, 'eye level · bottom of the meniscus', 15, { weight: 'normal' });
+    return D.svg(260, 430, b, 'Close-up of the burette scale with the bottom of the meniscus on the eye line at ' + v2(reading) + ' cm³');
+  }
+  /* Three indicator strips: colour as acid is added to the alkali, end point at the dashed line. */
+  strips() {
+    const D = window.KS4D; const C = D.C; let b = '<defs>';
+    const g = (id, stops) => '<linearGradient id="' + id + '" x1="0" x2="1" y1="0" y2="0">' + stops.map((st) => '<stop offset="' + st[0] + '" stop-color="' + st[1] + '"/>').join('') + '</linearGradient>';
+    b += g('ks4tit-ph', [[0, PINK], [0.69, PINK], [0.71, CLEAR], [1, CLEAR]]);
+    b += g('ks4tit-ui', [[0, '#6B3FA0'], [0.2, '#2F6FDE'], [0.42, '#3FA34D'], [0.6, '#F2D23A'], [0.8, '#F08A24'], [1, '#D7262E']]);
+    b += g('ks4tit-mo', [[0, '#F2D23A'], [0.69, '#F2D23A'], [0.7, '#F08A24'], [0.71, '#D7262E'], [1, '#D7262E']]);
+    b += '</defs>';
+    [['Phenolphthalein', 'ks4tit-ph', 72], ['Universal indicator', 'ks4tit-ui', 162], ['Methyl orange', 'ks4tit-mo', 252]].forEach((r) => {
+      b += D.T(30, r[2] - 12, r[0], 19, { anchor: 'start' });
+      b += '<rect x="30" y="' + r[2] + '" width="580" height="36" rx="6" fill="url(#' + r[1] + ')" stroke="' + C.stroke + '" stroke-width="2"/>';
+    });
+    b += '<line x1="436" y1="44" x2="436" y2="300" stroke="' + C.stroke + '" stroke-width="2" stroke-dasharray="6 5"/>' + D.T(436, 320, 'end point', 16, { weight: 'normal' });
+    b += D.arrow(30, 344, 600, 344, C.arrow, 4) + D.T(30, 372, 'volume of acid added', 16, { weight: 'normal', anchor: 'start' });
+    return D.svg(640, 390, b, 'Colour strips as acid is added. Phenolphthalein: pink, then colourless, changing sharply at the end point. Universal indicator: purple through blue, green, yellow and orange to red, changing gradually. Methyl orange: yellow, then red, changing sharply at the end point.');
+  }
+  judge(rows, sel) {
+    const acc = rows.filter((r) => r.run > 0).map((r) => r.titre).sort((a, b) => a - b);
+    let best = 0;
+    for (let i = 0; i < acc.length; i++) { let j = i; while (j + 1 < acc.length && acc[j + 1] - acc[i] <= 10) j++; best = Math.max(best, j - i + 1); }
+    const chosen = rows.filter((r, i) => sel[i]);
+    if (chosen.some((r) => r.run === 0)) return { ok: false, word: 'Not the rough run.', note: 'It overshoots on purpose, to find roughly where the end point is. It is a guide, never part of the mean.' };
+    if (best < 2) return { ok: false, word: 'Not concordant yet.', note: 'No two accurate titres agree within 0.10 cm³. Run another titration.' };
+    const t = chosen.map((r) => r.titre); const spread = Math.max.apply(null, t) - Math.min.apply(null, t);
+    if (t.length < 2) return { ok: false, word: 'One titre is not a mean.', note: 'Choose every accurate titre that agrees with it within 0.10 cm³.' };
+    if (spread > 10) return { ok: false, word: 'These do not agree.', note: 'Your choice spans ' + v2(spread) + ' cm³: more than 0.10 cm³. Leave out the anomalous titre.' };
+    if (t.length < best) return { ok: false, word: 'One is missing.', note: 'Another accurate titre is within 0.10 cm³ of these. Every concordant titre goes in the mean.' };
+    const sum = t.reduce((a, b) => a + b, 0);
+    return { ok: true, word: 'Concordant.', note: 'Mean titre = (' + t.map(v2).join(' + ') + ') ÷ ' + t.length + ' = ' + v2(Math.round(sum / t.length)) + ' cm³.' };
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true };
+    const slug = 'titrations';
+    const ready = !!(s.libReady && K && D);
+    const pn = this.props.mrbPrevNext || {};
+    const benchDone = !!(s.pick && s.pick.ok);
+    const done = [s.hook !== null, s.rinse !== null, s.ind !== null, benchDone, s.calc >= 2, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const r = s.run; const rough = r === 0;
+    const roughRow = s.rows.filter((x) => x.run === 0)[0];
+    const accRows = s.rows.filter((x) => x.run > 0);
+    const moving = s.shown !== s.added;
+    const col = this.colour(s.shown, r);
+    const ended = this.colour(s.added, r) === 'clear';
+    const add = (h) => () => { if (!moving && !ended && s.live) this.setState((x) => ({ added: x.added + h })); };
+    const btn = (label, h, dis) => ({ label, disabled: !!dis, style: this.seg(false, dis), onClick: dis ? () => {} : add(h) });
+    let addBtns;
+    if (rough) addBtns = [btn('+5.00 cm³', 500, moving || ended), btn('+1.00 cm³', 100, moving || ended)];
+    else {
+      const runIn = roughRow ? roughRow.titre - 100 : 0;
+      addBtns = [
+        { label: 'Run in to 1 cm³ below the rough titre', disabled: s.added > 0 || moving, style: this.seg(false, s.added > 0 || moving), onClick: () => { if (s.added === 0 && !moving) this.setState({ added: runIn }); } },
+        btn('+0.50 cm³', 50, moving || ended), btn('One drop: +0.05 cm³', 5, moving || ended)
+      ];
+    }
+    const flaskText = col === 'clear' ? (s.added > EP[r] ? 'Colourless for good. You cannot see how far past the end point you went.' : 'Colourless for good: end point reached.')
+      : col === 'flash' ? 'A colourless patch flashes and fades as you swirl: you are close. Go drop by drop.' : 'Pink: the flask is still alkaline.';
+    const flaskStyle = 'margin:0;padding:12px 14px;border-radius:14px;font-size:17px;line-height:1.5;border:2px solid ' + (col === 'clear' ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-option-border);background:var(--ks3-card);');
+    const recordLocked = !ended || moving || !s.live;
+    const firstAcc = accRows[0];
+    const gateNoteOn = s.gate !== null && !!roughRow && !!firstAcc;
+    const larger = gateNoteOn && roughRow.titre > firstAcc.titre;
+    const gateRight = gateNoteOn && ((s.gate === 0 && larger) || (s.gate === 2 && !larger));
+    const canPick = !!roughRow && accRows.length >= 2;
+    const nSel = Object.keys(s.sel).filter((k) => s.sel[k]).length;
+    const F = ready ? K.fifas(slug) : [];
+    const steps5 = (lines, notes) => ['C', 'F', 'I', 'F', 'A'].map((letter, i) => ({ letter, label: ['Convert', 'Formula', 'Insert', 'Fine-tune', 'Answer'][i], line: lines[i], note: (notes && notes[i]) || '' }));
+    const q5 = (lines, ph) => ['C', 'F', 'I', 'F', 'A'].map((letter, i) => ({ letter, label: ['Convert', 'Formula', 'Insert', 'Fine-tune', 'Answer'][i], placeholder: ph[i], line: lines[i] }));
+    const phMean = ['anything to convert?', 'what the method is', 'concordant: … discard: …', 'mean = (… + …) ÷ …', 'mean titre = … cm³'];
+    const phConc = ['anything to convert?', 'n = …', 'moles of the known solution', 'ratio, then c = n ÷ V', 'c = … mol/dm³'];
+    const rungTF = { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'A student records these titres: 22.40, 22.10, 22.15, 22.20 cm³. Calculate the mean titre. Work it on paper, then choose the conversion and give the answer and unit.',
+      convOptions: ['Nothing to convert', 'Convert cm³ to dm³: divide by 1000', 'Convert cm³ to dm³: multiply by 1000'], convAnswer: 0, answer: 22.15, tol: 0.005, unit: 'cm³', units: ['cm³', 'dm³', 'mol/dm³', 'g'],
+      right: '22.10, 22.15 and 22.20 are concordant; 22.40 is left out. Mean = 66.45 ÷ 3 = 22.15 cm³.', wrong: 'Leave out 22.40: it is more than 0.10 cm³ from the others. Then average the three that agree.',
+      model: ['C · Nothing to convert: all titres are in cm³', 'F · Identify concordant results (within 0.10 cm³), discard outliers, calculate mean', 'I · Concordant: 22.10, 22.15, 22.20. Discard: 22.40', 'F · Mean = (22.10 + 22.15 + 22.20) ÷ 3 = 66.45 ÷ 3', 'A · Mean titre = 22.15 cm³'] };
+    const rungTH = { kind: 'calc', command: 'Calculate', marks: 3, prompt: '25.00 cm³ of sodium hydroxide solution is neutralised by a mean titre of 22.50 cm³ of 0.100 mol/dm³ hydrochloric acid. HCl + NaOH → NaCl + H₂O. Calculate the concentration of the sodium hydroxide in mol/dm³. Work it on paper, then choose the conversion and give the answer and unit.',
+      convOptions: ['Nothing to convert', 'Convert cm³ to dm³: divide by 1000', 'Convert cm³ to dm³: multiply by 1000'], convAnswer: 1, answer: 0.09, tol: 0.0005, unit: 'mol/dm³', units: ['mol/dm³', 'g/dm³', 'mol', 'cm³'],
+      right: 'n(HCl) = 0.100 × 0.02250 = 0.00225 mol = n(NaOH); c = 0.00225 ÷ 0.02500 = 0.0900 mol/dm³.', wrong: 'Change both volumes to dm³ (÷ 1000), find the moles of acid with n = c × V, use the 1 : 1 ratio, then c = n ÷ V.',
+      model: ['C · 22.50 cm³ ÷ 1000 = 0.02250 dm³; 25.00 cm³ ÷ 1000 = 0.02500 dm³', 'F · n = c × V, then c = n ÷ V', 'I · n(HCl) = 0.100 × 0.02250 = 0.00225 mol', 'F · 1 : 1 ratio, so n(NaOH) = 0.00225 mol; c = 0.00225 ÷ 0.02500', 'A · c(NaOH) = 0.0900 mol/dm³'] };
+    const keyBase = K ? K.keyLines(slug) : [];
+    return Object.assign({}, R, {
+      video: K && s.hook !== null && s.hook !== undefined ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      endPrev: pn.prev || null, endNext: pn.next || null,
+      endConnects: ready ? [{ href: K.hrefFor('concentration-of-solutions', R), label: 'Concentration of solutions' }, { href: K.hrefFor('salts-neutralisation', R), label: 'Salts and neutralisation' }].filter((c) => c.href) : [],
+      hookOptions: [
+        { text: 'The indicator has all been used up by the acid', reply: 'The indicator is not used up. It changes colour because the solution is no longer alkaline.' },
+        { text: 'The acid has exactly neutralised the alkali: the end point', reply: 'Find that volume yourself on the burette below.' },
+        { text: 'The flask is now strongly acidic', reply: 'The colour changes at the end point itself. Only more acid after it would make the flask more acidic, with no further colour change.' },
+        { text: 'Some of the alkali has evaporated from the flask', reply: 'Nothing has boiled off. The change comes from the acid that was added.' }
+      ],
+      hookReveal: 'At the end point the acid has exactly neutralised the alkali, and one drop changes the colour for good. The volume of acid added to get there is the titre. One splash too many and the titre is too large.',
+      onHook: (i) => this.setState({ hook: i }),
+      rigFig: ready ? K.fig(this.rig(0, 'pink'), '') : null,
+      rinseOptions: [
+        { text: 'It is too small: the water helps neutralise the alkali', correct: false, reply: 'Water neutralises nothing. It only dilutes the acid.' },
+        { text: 'It is too large: the acid is diluted, so more is needed', correct: true, reply: 'Each cm³ now holds less acid, so it takes more cm³ to neutralise 25.00 cm³ of alkali.' },
+        { text: 'It is unchanged: water is neutral, so it does nothing', correct: false, reply: 'Neutral or not, the water lowers the acid’s concentration.' }
+      ],
+      rinseReveal: 'Rinse the burette with the acid and the pipette with the alkali, so nothing dilutes them. The conical flask is different: rinse it with distilled water only. Water in the flask does not change the amount of alkali the pipette puts in.',
+      onRinse: (i) => this.setState({ rinse: i }),
+      indFig: ready ? this.strips() : null,
+      indOptions: [
+        { text: 'Phenolphthalein', correct: false, reply: 'Pink to colourless at a single drop: a sharp end point.' },
+        { text: 'Universal indicator', correct: true, reply: 'It changes gradually through many colours, so no single drop marks the end point.' },
+        { text: 'Methyl orange', correct: false, reply: 'Yellow to red within a drop: a sharp end point.' }
+      ],
+      indReveal: 'Use phenolphthalein or methyl orange. Universal indicator suits estimating a pH, but in a titration its gradual change hides the end point.',
+      onInd: (i) => this.setState({ ind: i }),
+      benchTitle: s.gate === null ? 'Call the rough run first' : (rough ? 'Rough run · find roughly where the end point is' : 'Accurate run ' + r + ' · drop by drop near the end'),
+      benchProgress: (roughRow ? 'Rough done' : 'Rough to do') + ' · ' + accRows.length + (accRows.length === 1 ? ' accurate titre' : ' accurate titres'),
+      gateOn: s.gate === null,
+      gateOpts: ['Larger', 'Smaller', 'About the same'].map((l, i) => ({ label: l, style: this.seg(false), onClick: () => this.setState({ gate: i }) })),
+      benchOn: s.gate !== null,
+      benchFig: ready ? K.fig(this.rig(INIT[r] + s.shown, col), '') : null,
+      zoomFig: ready ? K.fig(this.zoom(INIT[r] + s.shown), '') : null,
+      initText: v2(INIT[r]) + ' cm³', nowText: v2(INIT[r] + s.shown) + ' cm³',
+      flaskText, flaskStyle,
+      runOn: s.live, addBtns, recordLocked,
+      recordStyle: recordLocked ? 'opacity:.45;cursor:default;' : '',
+      onRecord: () => { if (recordLocked) return; this.setState((x) => ({ live: false, rows: x.rows.concat({ run: x.run, init: INIT[x.run], fin: INIT[x.run] + x.added, titre: x.added }), pick: null })); },
+      nextRunOn: !s.live && r < MAXRUN && !benchDone,
+      nextRunLabel: 'Refill and start accurate run ' + (r + 1),
+      onNextRun: () => this.setState((x) => ({ run: x.run + 1, added: 0, shown: 0, live: true })),
+      gateNoteOn,
+      gateWord: gateRight ? 'As you called it.' : (larger ? 'Larger.' : 'The same this time.'),
+      gateNote: gateNoteOn ? ('Rough ' + v2(roughRow.titre) + ' cm³, accurate ' + v2(firstAcc.titre) + ' cm³. ' + (larger ? 'Whole 1 cm³ splashes overshoot the end point, so the rough titre is too large. It only tells you where to slow down.' : 'This accurate run overshot too: near the end point, go one drop at a time.')) : '',
+      gateNoteStyle: 'margin:0;padding:12px 14px;border-radius:14px;font-size:17px;line-height:1.5;border:2px solid ' + (gateRight ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      rowsOn: s.rows.length > 0,
+      pickLead: canPick ? 'Tap the titres that go into the mean, then check.' : 'Your results. Titre = final − initial.',
+      rowBtns: s.rows.map((x, i) => ({ label: x.run === 0 ? 'Rough run' : 'Run ' + x.run, sum: v2(x.fin) + ' − ' + v2(x.init) + ' = ' + v2(x.titre) + ' cm³',
+        pressed: !!s.sel[i], disabled: !canPick || benchDone,
+        style: 'text-align:left;font:inherit;padding:10px 14px;min-height:48px;border-radius:14px;cursor:' + (canPick && !benchDone ? 'pointer' : 'default') + ';color:var(--ks3-ink);border:2px solid ' + (s.sel[i] ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (s.sel[i] ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';',
+        onClick: () => { if (canPick && !benchDone) this.setState((st) => ({ sel: Object.assign({}, st.sel, { [i]: !st.sel[i] }), pick: null })); } })),
+      pickOn: canPick && !benchDone,
+      pickLocked: nSel === 0,
+      pickBtnStyle: nSel === 0 ? 'opacity:.45;cursor:default;' : '',
+      onPickCheck: () => { if (nSel > 0) this.setState((st) => ({ pick: this.judge(st.rows, st.sel) })); },
+      pickShown: !!s.pick,
+      pickWord: s.pick ? s.pick.word : '', pickNote: s.pick ? s.pick.note : '',
+      pickStyle: 'margin:10px 0 0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (s.pick && s.pick.ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      cfExamples: ready && F.length ? [
+        { tab: 'Nothing to convert', head: F[0].question, steps: K.cfifa(F[0], 'Nothing to convert: all titres in cm³.') },
+        { tab: 'Convert first', head: 'Three titres are given in dm³: 0.02460, 0.02470 and 0.02530 dm³. Calculate the mean titre in cm³.', next: 'Convert first, then the same four lines. Your turn below.', steps: steps5([
+          '0.02460 dm³ × 1000 = 24.60 cm³; 0.02470 dm³ → 24.70 cm³; 0.02530 dm³ → 25.30 cm³',
+          'Identify concordant results (within 0.10 cm³), discard outliers, calculate mean',
+          'Concordant: 24.60, 24.70. Discard: 25.30 (differs by more than 0.10 cm³)',
+          'Mean = (24.60 + 24.70) ÷ 2 = 49.30 ÷ 2',
+          'Mean titre = 24.65 cm³'], ['The 0.10 cm³ rule only works once the titres are in cm³.', '', '', '', 'Keep 25.30 in and the mean becomes 24.87 cm³: too large.']) }
+      ] : [],
+      cfQuestions: [
+        { tab: 'Question 1', id: 'ti-q1', head: 'A student records a rough titre of 18.20 cm³, then 17.65, 17.70, 17.95 and 17.60 cm³. Calculate the mean titre.', close: 'Two titres left out for two reasons: the rough run is never used, and 17.95 is not within 0.10 cm³.',
+          steps: q5(['Nothing to convert: all titres in cm³.', 'Identify concordant results (within 0.10 cm³), discard outliers, calculate mean', 'Concordant: 17.65, 17.70, 17.60. Discard: the rough 18.20, and 17.95', 'Mean = (17.65 + 17.70 + 17.60) ÷ 3 = 52.95 ÷ 3', 'Mean titre = 17.65 cm³'], phMean) },
+        { tab: 'Question 2', id: 'ti-q2', head: 'Three titres are given in dm³: 0.01815, 0.01880 and 0.01825 dm³. Calculate the mean titre in cm³.', close: 'In dm³ the gaps look tiny: 0.10 cm³ is only 0.00010 dm³.',
+          steps: q5(['× 1000: 18.15 cm³, 18.80 cm³, 18.25 cm³', 'Identify concordant results (within 0.10 cm³), discard outliers, calculate mean', 'Concordant: 18.15, 18.25. Discard: 18.80', 'Mean = (18.15 + 18.25) ÷ 2 = 36.40 ÷ 2', 'Mean titre = 18.20 cm³'], phMean) }
+      ],
+      onCalc: (n) => this.setState({ calc: n }),
+      htExamples: [
+        { tab: 'Nothing to convert', head: '0.0250 dm³ of sodium hydroxide solution is neutralised by 0.0200 dm³ of 0.100 mol/dm³ hydrochloric acid. HCl + NaOH → NaCl + H₂O. Calculate the concentration of the sodium hydroxide in mol/dm³.', steps: steps5([
+          'Nothing to convert: both volumes are already in dm³.', 'n = c × V, then c = n ÷ V', 'n(HCl) = 0.100 × 0.0200 = 0.00200 mol', '1 : 1 ratio, so n(NaOH) = 0.00200 mol; c = 0.00200 ÷ 0.0250', 'c(NaOH) = 0.0800 mol/dm³']) },
+        { tab: 'Convert first', head: '25.00 cm³ of sodium hydroxide solution is neutralised by a mean titre of 20.00 cm³ of 0.100 mol/dm³ sulfuric acid. H₂SO₄ + 2NaOH → Na₂SO₄ + 2H₂O. Calculate the concentration of the NaOH in mol/dm³ and in g/dm³ (Mr NaOH = 40).', next: 'Same volumes as the first example, different acid: the ratio changes the answer. Your turn below.', steps: steps5([
+          '20.00 cm³ → 0.02000 dm³; 25.00 cm³ → 0.02500 dm³', 'n = c × V', 'n(H₂SO₄) = 0.100 × 0.02000 = 0.00200 mol', '1 : 2 ratio, so n(NaOH) = 0.00400 mol; c = n ÷ V = 0.00400 ÷ 0.02500', '0.160 mol/dm³; × 40 = 6.40 g/dm³'], ['Divide each volume in cm³ by 1000.', '', '', 'Forget the 1 : 2 ratio and you get 0.0800 mol/dm³, the commonest Higher slip.', '']) }
+      ],
+      htQuestions: [
+        { tab: 'Question 1', id: 'ti-h1', head: '0.0250 dm³ of 0.200 mol/dm³ sodium hydroxide is neutralised by 0.0200 dm³ of nitric acid. HNO₃ + NaOH → NaNO₃ + H₂O. Calculate the concentration of the nitric acid in mol/dm³.', close: 'This time the alkali is the solution you know, so start from it.',
+          steps: q5(['Nothing to convert: both volumes are in dm³.', 'n = c × V, then c = n ÷ V', 'n(NaOH) = 0.200 × 0.0250 = 0.00500 mol', '1 : 1 ratio, so n(HNO₃) = 0.00500 mol; c = 0.00500 ÷ 0.0200', 'c(HNO₃) = 0.250 mol/dm³'], phConc) },
+        { tab: 'Question 2', id: 'ti-h2', head: '25.00 cm³ of potassium hydroxide solution is neutralised by a mean titre of 18.75 cm³ of 0.100 mol/dm³ sulfuric acid. H₂SO₄ + 2KOH → K₂SO₄ + 2H₂O. Calculate the concentration of the KOH in mol/dm³ and in g/dm³ (Mr KOH = 56).', close: 'mol/dm³ first, then × Mr for g/dm³: never the other way round.',
+          steps: q5(['18.75 cm³ → 0.01875 dm³; 25.00 cm³ → 0.02500 dm³', 'n = c × V, then c = n ÷ V', 'n(H₂SO₄) = 0.100 × 0.01875 = 0.001875 mol', '1 : 2 ratio, so n(KOH) = 0.00375 mol; c = 0.00375 ÷ 0.02500', '0.150 mol/dm³; × 56 = 8.40 g/dm³'], phConc) }
+      ],
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'added dropwise') || { options: [] }, { command: 'Give', marks: 1, why: 'Near the end point one drop changes the colour; a splash would overshoot and make the titre too large.' }),
+        r2: R.isHigher ? rungTH : rungTF,
+        r3: { command: 'Explain', marks: 3, prompt: 'Explain why a student repeats the titration until the titres are concordant, then uses their mean. Put the links in order.',
+          links: ['Each titre is affected by random errors, such as judging the end point or reading the burette.', 'Concordant titres, within 0.10 cm³ of each other, show the results are repeatable.', 'Taking the mean of the concordant titres reduces the effect of random errors on the result.'],
+          herrings: [{ text: 'Repeating a titration makes every single titre more accurate.', why: 'Repeating does not change any one reading. It shows whether the readings agree.' }, { text: 'The rough titre is included so that the mean uses more results.', why: 'The rough titre overshoots on purpose. It is never part of the mean.' }] },
+        r4: { command: 'Describe', marks: 6, question: 'Describe how a student could use titration to find the volume of dilute hydrochloric acid that reacts with 25.0 cm³ of sodium hydroxide solution.',
+          levels: [
+            { label: 'Level 3 · 5–6', text: 'A coherent, logically ordered method that would give accurate results: alkali measured with a pipette, indicator, acid added from a burette with swirling, dropwise near the end point, the colour change, volume read, and repeats to concordant results.', max: 6 },
+            { label: 'Level 2 · 3–4', text: 'The main steps of a titration, with some omissions in the order or in the features that make it accurate.', max: 4 },
+            { label: 'Level 1 · 1–2', text: 'Isolated relevant points that would not give a reliable reacting volume.', max: 2 },
+            { label: 'No relevant content · 0', text: '', max: 0 }
+          ],
+          points: ['Pipette (with a filler) 25.0 cm³ of sodium hydroxide into a conical flask.', 'Add a few drops of a named suitable indicator, e.g. phenolphthalein or methyl orange.', 'Acid in a burette; record the initial reading.', 'Add acid while swirling, with the flask on a white tile.', 'Add acid dropwise near the end point; stop at the colour change (e.g. methyl orange yellow to red).', 'Record the final reading; titre = final − initial.', 'Rough titre first; repeat until titres are concordant (within 0.10 cm³); calculate the mean.'],
+          reject: ['“Add universal indicator.” Its gradual colour change gives no sharp end point.', '“Rinse the burette with water before filling it.” The water dilutes the acid.'] }
+      } : {},
+      keyLines: R.isHigher ? keyBase.concat('Higher: n = c × V with V in dm³; use the mole ratio; c = n ÷ V; g/dm³ = mol/dm³ × Mr.') : keyBase,
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

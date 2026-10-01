@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The carbon cycle · MrBadmus GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Ecology" title="The carbon cycle" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">{{ specEyebrow }}</p>
+        <h1>The carbon cycle</h1>
+        <p class="ks3-bigq">The carbon in your body was once carbon dioxide in the air, and one day it will be again. What carries it all the way round?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">A fallen leaf rots away. Its carbon does not.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">A leaf that drops in autumn has mostly vanished a year later. Yet the amount of carbon on Earth never changes: carbon atoms are not made or destroyed, only moved.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="So where did the leaf's carbon go?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>Because the total amount of carbon is fixed, it has to be <strong>recycled</strong>. It sits in <strong>stores</strong>: the air, as carbon dioxide; living things, in carbohydrates, proteins, fats and DNA; dead matter and waste; and fossil fuels deep underground. <strong>Processes</strong> move it from store to store. Oceans and rocks hold carbon too, and you meet those in chemistry. Here, follow one atom and call each process before it happens.</p>
+      </section>
+
+      <section id="s-trace" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Follow one carbon atom · {{ tTrip }}</p>
+            <h2 style="margin: 6px 0 0;">{{ tHead }}</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ tProgress }}</p>
+        </div>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 820px;">{{ tFig }}</div>
+        <p style="margin: 12px 0 0; max-width: 60ch;">{{ tText }}</p>
+        <sc-if value="{{ tAsking }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 12px;">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">{{ tPrompt }}</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 10px;">
+              <sc-for list="{{ tOpts }}" as="o" hint-placeholder-count="4"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ tCommitted }}">
+          <div data-arrive="1" role="status" style="{{ tReplyStyle }}">
+            <p style="margin: 0; font-size: 18px; line-height: 1.55;"><strong>{{ tReplyWord }}</strong> {{ tReplyText }}</p>
+            <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.55;">{{ tReveal }}</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ tConfrontFeed }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+            <p class="ks3-mis-quote">&ldquo;Animals get their carbon by taking in carbon dioxide.&rdquo;</p>
+            <p style="margin: 0;">Animals cannot build carbon dioxide into their bodies; only photosynthesis can. Every carbon atom in a rabbit arrived as part of a carbon compound in its food. Feeding passes carbon along a food chain as carbohydrate, protein and fat. Carbon dioxide leaves an animal only when it respires.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ tConfrontDecay }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · the mark is in the how</p></div>
+            <p class="ks3-mis-quote">&ldquo;Decomposers release carbon dioxide by decomposing the dead matter.&rdquo;</p>
+            <p style="margin: 0;">That only says that decay happens, not how the carbon dioxide is made. Breaking down dead matter is how decomposers feed. The carbon dioxide comes from their respiration. Write it as a chain: bacteria and fungi break down the dead matter, they respire, and respiration releases carbon dioxide into the air.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ tCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onTNext }}" style="margin-top: 14px;">{{ tNextLabel }}</button></sc-if>
+      </section>
+
+      <section id="s-plants" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · plants and carbon dioxide</p></div>
+        <p class="ks3-mis-quote">&ldquo;Plants take carbon dioxide in. They don't give it out.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Predict" prompt="A bean plant is sealed in a jar and left in the dark overnight. What happens to the carbon dioxide in the jar?" options="{{ plantOptions }}" reveal="{{ plantReveal }}" right-word="Yes." wrong-word="Not quite." on-commit="{{ onPlant }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section id="s-label" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Your turn · name the processes</p>
+            <h2 style="margin: 6px 0 0;">Name the process at every arrow.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ lProgress }}</p>
+        </div>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 820px;">{{ lFig }}</div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 10px;">
+          <sc-for list="{{ lRows }}" as="r" hint-placeholder-count="9">
+            <div style="{{ r.style }}">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span aria-hidden="true" style="flex: 0 0 34px; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 18px;">{{ r.letter }}</span>
+                <label for="{{ r.id }}" style="position: absolute; left: -9999px;">{{ r.aria }}</label>
+                <select id="{{ r.id }}" value="{{ r.value }}" onChange="{{ r.onChange }}" disabled="{{ r.disabled }}" style="flex: 1 1 auto; min-width: 0; font: inherit; font-size: 17px; min-height: 46px; padding: 8px 10px; border-radius: 12px; border: 2px solid var(--ks3-option-border); background: var(--ks3-card); color: var(--ks3-ink);">
+                  <option value="">choose a process</option>
+                  <sc-for list="{{ lChoices }}" as="c" hint-placeholder-count="7"><option value="{{ c }}">{{ c }}</option></sc-for>
+                </select>
+              </div>
+              <sc-if value="{{ r.hasWhy }}"><p data-arrive="1" style="margin: 8px 0 0; font-size: 16px; line-height: 1.5;">{{ r.why }}</p></sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top: 16px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onLCheck }}" disabled="{{ lCheckLocked }}" style="{{ lCheckStyle }}">Check the labels</button>
+          <span role="status" style="font-size: 18px; font-weight: 700; color: var(--ks3-ink-body);">{{ lStatus }}</span>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>For most of history, carbon dioxide was taken out of the air about as fast as it was put back. Humans are now adding it faster than photosynthesis can remove it. Burning <strong>coal, oil and gas</strong> releases carbon that was locked away for millions of years. <strong>Deforestation</strong> does double damage: fewer trees are left to photosynthesise, and the felled trees are burned or rot, releasing more carbon dioxide. Cattle and rice fields add <strong>methane</strong>. Rising levels of carbon dioxide and methane contribute to <strong>global warming</strong>.</p>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort the processes" title="What does it do to the air?" prompt="Each card is one process. Decide what it does to the carbon dioxide in the air." bins="{{ sBins }}" items="{{ sItems }}" done-note="Only photosynthesis takes carbon dioxide out of the air. Respiration, by plants, animals and decomposers, and combustion put it back. Feeding and fossilisation move carbon between other stores." on-done="{{ onSort }}" hint-size="100%,460px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Name</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The process at an arrow, in a word or two: photosynthesis, respiration, combustion.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Say what happens to the carbon, store by store, in order.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give the how: decomposers respire, so carbon dioxide is released.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Photosynthesis takes carbon dioxide out of the air. Feeding passes carbon along food chains. Respiration by every organism, including decomposers, and combustion return it to the air.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="carbon-cycle" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="The carbon cycle" spec="{{ specNote }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which process sits on which arrow?" legal="The cycle shows the stores and processes AQA examines in biology. It leaves out oceans, rocks and volcanoes, which also store and release carbon and are taught in chemistry. Arrows show where carbon goes, not how much moves or how fast." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A fallen leaf', short: 'HOOK' },
+  { id: 's-trace', label: 'Follow one carbon atom', short: 'TRACE' },
+  { id: 's-plants', label: 'Plants respire too', short: 'THINK' },
+  { id: 's-label', label: 'Name the processes', short: 'LABEL' },
+  { id: 's-sort', label: 'What does it do to the air?', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+/* The cycle diagram. Stores are boxes; each process is one arrow. Coordinates in a 920 x 580 plate. */
+const STORES = {
+  air: { x: 400, y: 56, w: 280, h: 70, name: 'Air', sub: 'carbon dioxide', fill: '#CFE0F5' },
+  plants: { x: 135, y: 232, w: 230, h: 70, name: 'Green plants', sub: 'glucose, starch, protein', fill: '#CDE8D2' },
+  animals: { x: 650, y: 232, w: 230, h: 70, name: 'Animals', sub: 'carbohydrate, protein, fat', fill: '#F6D9C6' },
+  dead: { x: 400, y: 372, w: 300, h: 70, name: 'Dead matter and waste', sub: 'remains, droppings', fill: '#E8DCC0' },
+  fossil: { x: 650, y: 474, w: 220, h: 60, name: 'Fossil fuels', sub: 'coal, oil, gas', fill: '#DDD6CB' }
+};
+const ARROWS = {
+  A: { pts: [[300, 91], [170, 197]], name: 'photosynthesis', lab: [230, 130, 'end'], tag: [235, 144], aria: 'from the air to green plants', accept: ['Photosynthesis'],
+    why: 'A points from the air into the plants. Only photosynthesis takes carbon dioxide in.' },
+  B: { pts: [[220, 197], [350, 91]], name: 'respiration', lab: [268, 186, 'start'], tag: [285, 144], aria: 'from green plants to the air', accept: ['Respiration'],
+    why: 'B points from the plants back to the air. Plants respire all the time, releasing carbon dioxide.' },
+  C: { pts: [[250, 232], [535, 232]], name: 'feeding', lab: [325, 222, 'middle'], tag: [325, 232], aria: 'from green plants to animals', accept: ['Feeding'],
+    why: 'Carbon gets from a plant into an animal only by being eaten, as carbon compounds in food.' },
+  D: { pts: [[600, 197], [470, 91]], name: 'respiration', lab: [560, 140, 'start'], tag: [535, 144], aria: 'from animals to the air', accept: ['Respiration'],
+    why: 'D points from animals to the air. Animals return carbon dioxide when they respire.' },
+  E: { pts: [[190, 267], [320, 337]], name: 'death', lab: [240, 320, 'end'], tag: [255, 302], aria: 'from green plants to dead matter and waste', accept: ['Death and waste'],
+    why: 'Carbon reaches dead matter when plants die or shed leaves.' },
+  F: { pts: [[600, 267], [480, 337]], name: 'death and waste', lab: [560, 322, 'start'], tag: [540, 302], aria: 'from animals to dead matter and waste', accept: ['Death and waste'],
+    why: 'Animals pass carbon to dead matter in their droppings and when they die.' },
+  G: { pts: [[400, 337], [400, 91]], name: 'decomposers respire', lab: [412, 284, 'start'], tag: [400, 160], aria: 'from dead matter and waste to the air', accept: ['Decay by microorganisms', 'Respiration'],
+    why: 'G leaves dead matter for the air: microorganisms decay it and respire, releasing carbon dioxide.' },
+  H: { pts: [[520, 407], [590, 444]], name: 'fossilisation', lab: [505, 442, 'end'], tag: [555, 425], aria: 'from dead matter and waste to fossil fuels', accept: ['Fossilisation'],
+    why: 'Dead matter buried before it can decay becomes a fossil fuel over millions of years.' },
+  I: { pts: [[760, 474], [786, 474], [786, 56], [542, 56]], name: 'combustion', lab: [776, 404, 'end'], tag: [786, 265], aria: 'from fossil fuels to the air', accept: ['Combustion'],
+    why: 'Burning a fossil fuel releases its carbon into the air as carbon dioxide.' }
+};
+const ORDER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+const CHOICES = ['Photosynthesis', 'Respiration', 'Feeding', 'Death and waste', 'Decay by microorganisms', 'Fossilisation', 'Combustion'];
+/* The two journeys. Each step travels one or more arrows. */
+const STEPS = [
+  { trip: 1, arrows: ['A'], head: 'In the air', text: 'The atom is in a carbon dioxide molecule, drifting past a leaf in sunlight.',
+    prompt: 'Which process can take it into a living thing?',
+    opts: [
+      { t: 'Photosynthesis by the leaf', ok: true, r: 'Plants and algae take in carbon dioxide and build its carbon into glucose.' },
+      { t: 'Respiration by the leaf', r: 'Respiration releases carbon dioxide. It works the other way.' },
+      { t: 'An animal breathing it in', r: 'An animal breathes carbon dioxide straight back out. Only photosynthesis builds it into a living thing.' },
+      { t: 'Decay in the soil', r: 'Decay releases carbon dioxide into the air. It takes none in.' }
+    ],
+    reveal: 'Photosynthesis. The leaf uses light to turn carbon dioxide and water into glucose. The atom is now in a glucose molecule, and the plant can build it into starch, cellulose or protein.' },
+  { trip: 1, arrows: ['C'], head: 'In the plant', text: 'A rabbit eats the leaf.', prompt: 'How does the carbon move into the rabbit?',
+    opts: [
+      { t: 'In the food it eats', ok: true, r: 'Feeding moves carbon as carbon compounds in food.' },
+      { t: 'As carbon dioxide from the leaf', r: 'Carbon dioxide from a leaf goes into the air, not into a rabbit.' },
+      { t: 'By photosynthesis in the rabbit', r: 'Animals cannot photosynthesise.' },
+      { t: 'By respiration in the leaf', r: 'Respiration in the leaf sends carbon to the air, not to the rabbit.' }
+    ],
+    reveal: 'Feeding. The atom is digested and built into the rabbit’s own body, as protein or fat. It travelled as part of a carbon compound the whole way.' },
+  { trip: 1, arrows: ['F'], head: 'In the rabbit', text: 'Some of the rabbit’s carbon leaves in its droppings. Years later, the rabbit dies.',
+    prompt: 'Where is the carbon in the droppings and the body now?',
+    opts: [
+      { t: 'In dead matter and waste', ok: true, r: 'Droppings and dead bodies are a store of carbon in their own right.' },
+      { t: 'Back in the air straight away', r: 'Not yet. It stays locked in the remains until something breaks them down.' },
+      { t: 'In a fossil fuel by next year', r: 'Fossil fuels take millions of years to form.' },
+      { t: 'Nowhere: death destroys it', r: 'Atoms are never destroyed. The carbon is still there, in the remains.' }
+    ],
+    reveal: 'Death and waste. The carbon now sits in dead tissue and droppings: food for decomposers.' },
+  { trip: 1, arrows: ['G'], head: 'In the remains', text: 'Bacteria and fungi in the soil start to break down the droppings and the body.',
+    prompt: 'How does the carbon get back into the air?',
+    opts: [
+      { t: 'The microorganisms respire', ok: true, r: 'Decomposers feed on the remains and respire, releasing carbon dioxide.' },
+      { t: 'The remains photosynthesise', r: 'Dead matter cannot photosynthesise, and photosynthesis takes carbon dioxide in.' },
+      { t: 'It evaporates as they dry', r: 'Carbon compounds do not evaporate into carbon dioxide. They must be broken down and respired.' },
+      { t: 'It stays in the soil for ever', r: 'Decomposers keep feeding, so most of the carbon returns to the air.' }
+    ],
+    reveal: 'Decay. The decomposers respire, and the atom is back in the air as carbon dioxide, ready for the next leaf. One full turn of the cycle.' },
+  { trip: 2, arrows: ['E', 'H'], head: 'A different atom, 300 million years ago', text: 'This atom is in a giant fern growing in a swamp. The fern dies and sinks into the mud, which buries it before decomposers can break it down.',
+    prompt: 'What happens to its carbon over millions of years?',
+    opts: [
+      { t: 'It forms a fossil fuel, coal', ok: true, r: 'Buried and compressed, the remains slowly become coal.' },
+      { t: 'Decomposers return it to the air', r: 'Buried in mud, it escaped decay. That is what lets a fossil fuel form.' },
+      { t: 'It turns into limestone rock', r: 'Limestone formed from the shells of sea creatures, not from plants.' },
+      { t: 'The mud’s weight destroys it', r: 'Pressure changes the remains into coal. No carbon is destroyed.' }
+    ],
+    reveal: 'Fossilisation. Coal formed from ancient plants like this; oil and gas formed from tiny sea organisms. The carbon is locked out of the cycle for millions of years.' },
+  { trip: 2, arrows: ['I'], head: 'In the coal, today', text: 'The coal is dug up and burned in a power station.', prompt: 'What happens to the atom?',
+    opts: [
+      { t: 'It is released as carbon dioxide', ok: true, r: 'Combustion joins the carbon to oxygen as carbon dioxide.' },
+      { t: 'It is used up as energy', r: 'Burning transfers energy, but the carbon atom is not turned into energy. It leaves as carbon dioxide.' },
+      { t: 'It is released as pure oxygen', r: 'Burning uses oxygen up. The carbon leaves joined to oxygen, as carbon dioxide.' },
+      { t: 'Photosynthesis releases it', r: 'Photosynthesis takes carbon dioxide in.' }
+    ],
+    reveal: 'Combustion. Carbon locked away for 300 million years is back in the air in seconds. Burning fossil fuels adds carbon dioxide faster than photosynthesis removes it.' }
+];
+const PLATE = '#F3F0E7';
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, ts: 0, picks: {}, plant: null, labels: {}, lChecked: false, lDone: false, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  reduced() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
+  seg(on) {
+    return 'font:inherit;font-size:17px;font-weight:700;text-align:left;line-height:1.35;padding:11px 15px;min-height:48px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  pathD(pts) { return pts.map((p, i) => (i ? 'L' : 'M') + p[0] + ' ' + p[1]).join(' '); }
+  /* One arrow: a line (or polyline) with a head at its end. mode: 'lit' | 'faint' | 'plain' */
+  arrowSvg(key, mode) {
+    const D = window.KS4D; const a = ARROWS[key]; const pts = a.pts;
+    const col = mode === 'faint' ? '#B9B2A6' : (mode === 'lit' ? D.C.arrow : D.C.stroke);
+    const w = mode === 'faint' ? 3 : 5;
+    let b = '';
+    if (key === 'C') b += '<path d="' + this.pathD(pts) + '" fill="none" stroke="' + PLATE + '" stroke-width="16"/>';
+    for (let i = 0; i < pts.length - 2; i++) b += D.line(pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1], w, col, mode === 'faint' ? ' stroke-dasharray="7 8"' : '');
+    const p = pts[pts.length - 2], q = pts[pts.length - 1];
+    if (mode === 'faint') b += D.line(p[0], p[1], q[0], q[1], w, col, ' stroke-dasharray="7 8"');
+    else b += D.arrow(p[0], p[1], q[0], q[1], col, w);
+    return b;
+  }
+  halo(x, y, txt, anchor, size) {
+    const D = window.KS4D; const lines = txt === 'decomposers respire' ? ['decomposers', 'respire'] : [txt];
+    return lines.map((ln, i) => {
+      const yy = y + i * (size + 4); const w = ln.length * size * 0.56 + 14;
+      const x0 = anchor === 'end' ? x - w + 7 : (anchor === 'start' ? x - 7 : x - w / 2);
+      return '<rect x="' + x0.toFixed(1) + '" y="' + (yy - size + 2).toFixed(1) + '" width="' + w.toFixed(1) + '" height="' + (size + 8) + '" rx="5" fill="' + PLATE + '" opacity="0.94"/>' +
+        D.T(x, yy, ln, size, { anchor: anchor, fill: D.C.label });
+    }).join('');
+  }
+  storeSvg(k) {
+    const D = window.KS4D; const s = STORES[k];
+    return '<rect x="' + (s.x - s.w / 2) + '" y="' + (s.y - s.h / 2) + '" width="' + s.w + '" height="' + s.h + '" rx="14" fill="' + s.fill + '" stroke="' + D.C.stroke + '" stroke-width="2.5"/>' +
+      D.T(s.x, s.y - 3, s.name, k === 'dead' ? 23 : 27) + D.T(s.x, s.y + 22, s.sub, 18, { weight: 'normal', fill: D.C.stroke });
+  }
+  tag(key) {
+    const D = window.KS4D; const t = ARROWS[key].tag;
+    return D.circ(t[0], t[1], 18, '#FFFFFF', D.C.stroke, 2.5) + D.T(t[0], t[1] + 8, key, 22, { fill: D.C.stroke });
+  }
+  /* The trace figure: travelled arrows lit and named, the rest faint, the atom on its way. */
+  traceSvg(step, committed) {
+    const D = window.KS4D; const rm = this.reduced();
+    const travelled = []; STEPS.forEach((st, i) => { if (i < step || (i === step && committed)) st.arrows.forEach((k) => travelled.push(k)); });
+    let b = '';
+    ORDER.forEach((k) => { if (travelled.indexOf(k) < 0) b += this.arrowSvg(k, 'faint'); });
+    ORDER.forEach((k) => { if (travelled.indexOf(k) >= 0) b += this.arrowSvg(k, 'lit'); });
+    Object.keys(STORES).forEach((k) => { b += this.storeSvg(k); });
+    travelled.forEach((k) => { const a = ARROWS[k]; b += this.halo(a.lab[0], a.lab[1], a.name, a.lab[2], 20); });
+    const st = STEPS[step];
+    const path = []; st.arrows.forEach((k) => ARROWS[k].pts.forEach((p) => path.push(p)));
+    const start = path[0], end = path[path.length - 1];
+    const atom = (x, y, extra) => '<g' + (extra || '') + '><circle cx="' + x + '" cy="' + y + '" r="16" fill="#1A1A1A" stroke="#FFFFFF" stroke-width="3"/><text x="' + x + '" y="' + (y + 7) + '" font-family="' + D.F + '" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">C</text></g>';
+    if (!committed) b += atom(start[0], start[1]);
+    else if (rm) b += atom(end[0], end[1]);
+    else b += atom(0, 0, '').replace('<g>', '<g><animateMotion dur="' + (1.1 * st.arrows.length).toFixed(1) + 's" fill="freeze" path="' + this.pathD(path) + '"/>');
+    const alt = 'Carbon cycle diagram. Stores: air, green plants, animals, dead matter and waste, fossil fuels. Arrows followed so far: ' +
+      (travelled.length ? travelled.map((k) => ARROWS[k].name + ' ' + ARROWS[k].aria).join('; ') : 'none') + '. The carbon atom is ' + (committed ? 'moving along ' + st.arrows.map((k) => ARROWS[k].name).join(' then ') : 'waiting at its start') + '.';
+    return D.svg(800, 530, b, alt);
+  }
+  /* The labelling figure: every arrow drawn, each with a letter instead of a name. */
+  labelSvg() {
+    const D = window.KS4D; let b = '';
+    ORDER.forEach((k) => { b += this.arrowSvg(k, 'plain'); });
+    Object.keys(STORES).forEach((k) => { b += this.storeSvg(k); });
+    ORDER.forEach((k) => { b += this.tag(k); });
+    return D.svg(800, 530, b, 'Carbon cycle diagram with nine lettered arrows. ' + ORDER.map((k) => 'Arrow ' + k + ' goes ' + ARROWS[k].aria).join('. ') + '.');
+  }
+  /* Rung 2: a pond, not the cycle the pupil has just labelled. */
+  pondSvg() {
+    const D = window.KS4D; let b = '';
+    const box = (x, y, w, txt, fill) => '<rect x="' + (x - w / 2) + '" y="' + (y - 32) + '" width="' + w + '" height="64" rx="12" fill="' + fill + '" stroke="' + D.C.stroke + '" stroke-width="2.5"/>' + D.T(x, y + 9, txt, 26);
+    b += D.arrow(270, 86, 170, 166, D.C.stroke, 5) + this.halo(210, 116, 'photosynthesis', 'end', 21);
+    b += D.arrow(380, 306, 380, 86, D.C.stroke, 5);
+    b += '<line x1="260" y1="200" x2="500" y2="200" stroke="' + PLATE + '" stroke-width="16"/>' + D.arrow(260, 200, 500, 200, D.C.stroke, 5);
+    b += D.arrow(600, 234, 480, 306, D.C.stroke, 5) + this.halo(568, 292, 'death', 'start', 21);
+    b += box(380, 52, 300, 'Air: carbon dioxide', '#CFE0F5') + box(150, 200, 220, 'Algae', '#CDE8D2') + box(610, 200, 220, 'Fish', '#F6D9C6') + box(380, 340, 280, 'Dead remains', '#E8DCC0');
+    const lt = (x, y, txt) => D.circ(x, y, 19, '#FFFFFF', D.C.stroke, 2.5) + D.T(x, y + 8, txt, 23, { fill: D.C.stroke });
+    b += lt(320, 200, 'X') + lt(380, 140, 'Y');
+    return D.svg(760, 390, b, 'Carbon cycle in a pond. Stores: air, algae, fish, dead remains. Photosynthesis takes carbon from the air into algae. Arrow X goes from algae to fish. Fish die into dead remains. Arrow Y goes from dead remains to the air.');
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher' };
+    const slug = 'carbon-cycle';
+    const ready = !!(s.libReady && K && D);
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const pn = this.props.mrbPrevNext || {};
+    // trace
+    const ts = s.ts; const st = STEPS[ts];
+    const pick = s.picks[ts];
+    const committed = pick !== undefined;
+    const right = committed && !!st.opts[pick].ok;
+    const correctOpt = st.opts.filter((o) => o.ok)[0];
+    const traceDone = s.picks[STEPS.length - 1] !== undefined;
+    // labels
+    const allChosen = ORDER.every((k) => !!s.labels[k]);
+    const wrongL = ORDER.filter((k) => s.labels[k] && ARROWS[k].accept.indexOf(s.labels[k]) < 0);
+    const done = [s.hook !== null, traceDone, s.plant !== null, s.lDone, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const connects = ready && K.hrefFor ? [['photosynthesis', 'Photosynthesis'], ['aerobic-respiration', 'Aerobic respiration'], ['decomposition', 'Decomposition'], ['deforestation', 'Deforestation'], ['global-warming', 'Global warming']]
+      .map(([sl, label]) => ({ href: K.hrefFor(sl, R), label })).filter((c) => !!c.href) : [];
+    return Object.assign({}, R, {
+      video: K && s.hook !== null ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      specEyebrow: 'AQA Biology (' + (R.isTriple ? '8461' : '8464') + ') 4.7.2.2 · Process',
+      specNote: 'AQA 4.7.2.2 (' + (R.isTriple ? '8461' : '8464') + ')',
+      endPrev: pn.prev || null, endNext: pn.next || null, endConnects: connects,
+      hookOptions: [
+        { text: 'Microorganisms respired it out as carbon dioxide', reply: 'Follow an atom through that step, and the rest of the cycle, below.' },
+        { text: 'It soaked into the soil and stays there for ever', reply: 'Some lingers in the soil for a while, but decomposers keep feeding on it.' },
+        { text: 'Rotting destroyed the carbon atoms completely', reply: 'Rotting breaks molecules apart. The atoms survive, every one.' },
+        { text: 'It turned into coal within a few months', reply: 'Coal takes millions of years, and only forms when decay is stopped.' }
+      ],
+      hookReveal: 'Bacteria and fungi in the soil feed on the leaf and respire. Respiration releases the leaf’s carbon into the air as carbon dioxide, where a plant can take it in again. The same carbon atoms go round and round.',
+      onHook: (i) => this.setState({ hook: i }),
+      tTrip: st.trip === 1 ? 'journey 1' : 'journey 2',
+      tHead: st.head, tText: st.text, tPrompt: st.prompt,
+      tProgress: 'Step ' + (ts + 1) + ' of ' + STEPS.length,
+      tFig: ready ? K.fig(this.traceSvg(ts, committed), '') : null,
+      tAsking: !committed,
+      tOpts: st.opts.map((o, i) => ({ label: o.t, style: this.seg(false), onClick: () => { if (s.picks[ts] === undefined) this.setState((ss) => ({ picks: Object.assign({}, ss.picks, { [ts]: i }) })); } })),
+      tCommitted: committed,
+      tReplyWord: right ? 'Yes.' : (committed ? 'No: ' + correctOpt.t.charAt(0).toLowerCase() + correctOpt.t.slice(1) + '.' : ''),
+      tReplyText: committed ? st.opts[pick].r : '',
+      tReveal: committed ? st.reveal : '',
+      tReplyStyle: 'margin-top:14px;padding:16px 18px;border-radius:14px;border:2px solid ' + (right ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      tConfrontFeed: committed && ts === 1,
+      tConfrontDecay: committed && ts === 3,
+      tCanNext: committed && ts < STEPS.length - 1,
+      tNextLabel: ts === 3 ? 'Start journey 2' : 'Next step',
+      onTNext: () => this.setState((ss) => ({ ts: Math.min(STEPS.length - 1, ss.ts + 1) })),
+      plantOptions: [
+        { text: 'It rises: the plant respires but cannot photosynthesise', correct: true, reply: 'In the dark only respiration happens, so carbon dioxide builds up.' },
+        { text: 'It falls: plants always take carbon dioxide in', correct: false, reply: 'Plants take it in only while they photosynthesise, and that needs light.' },
+        { text: 'It stays the same: plants do nothing at night', correct: false, reply: 'A plant’s cells respire every second, day and night, like yours.' },
+        { text: 'It falls to zero: the plant uses all of it', correct: false, reply: 'Using carbon dioxide needs light. In the dark the plant only adds to it.' }
+      ],
+      plantReveal: 'Plants respire too, all the time, releasing carbon dioxide just as animals do. In daylight, photosynthesis takes in more carbon dioxide than respiration gives out, so overall the plant absorbs it. At night only respiration happens, so the plant gives carbon dioxide out.',
+      onPlant: (i) => this.setState({ plant: i }),
+      lFig: ready ? K.fig(this.labelSvg(), '') : null,
+      lChoices: CHOICES,
+      lRows: ORDER.map((k) => {
+        const v = s.labels[k] || ''; const ok = ARROWS[k].accept.indexOf(v) >= 0; const bad = s.lChecked && !!v && !ok;
+        return { letter: k, id: 'cc-label-' + k, aria: 'Arrow ' + k + ', ' + ARROWS[k].aria, value: v, disabled: s.lDone,
+          onChange: (e) => { const val = e.target.value; this.setState((ss) => ({ labels: Object.assign({}, ss.labels, { [k]: val }), lChecked: false })); },
+          hasWhy: bad, why: ARROWS[k].why,
+          style: 'padding:10px 12px;border-radius:14px;background:var(--ks3-inset);border:2px solid ' + (s.lChecked && ok ? 'var(--ks3-ok)' : (bad ? 'var(--ks3-alert-border)' : 'var(--ks3-option-border)')) + ';' };
+      }),
+      lProgress: ORDER.filter((k) => !!s.labels[k]).length + ' of 9 named',
+      lCheckLocked: !allChosen || s.lChecked || s.lDone,
+      lCheckStyle: (!allChosen || s.lChecked || s.lDone) ? 'opacity:.45;cursor:default;' : '',
+      onLCheck: () => { if (allChosen && !s.lDone) this.setState({ lChecked: true, lDone: wrongL.length === 0 }); },
+      lStatus: s.lDone ? 'All nine right. Only arrow A takes carbon out of the air.' : (s.lChecked ? (wrongL.length === 1 ? 'One label is wrong. Its note says why.' : wrongL.length + ' labels are wrong. Their notes say why.') : ''),
+      sBins: [{ id: 'add', label: 'Adds CO₂ to the air' }, { id: 'take', label: 'Takes CO₂ from the air' }, { id: 'move', label: 'Moves carbon, not via the air' }],
+      sItems: [
+        { text: 'A tree photosynthesising in sunlight', bin: 'take', why: 'Photosynthesis takes carbon dioxide out of the air.' },
+        { text: 'A tree respiring at night', bin: 'add', why: 'Plants respire day and night, releasing carbon dioxide.' },
+        { text: 'A cow eating grass', bin: 'move', why: 'Eating passes carbon compounds from grass to cow. No carbon dioxide is involved.' },
+        { text: 'Fungi feeding on a fallen log', bin: 'add', why: 'The fungi respire, releasing carbon dioxide.' },
+        { text: 'A car burning petrol', bin: 'add', why: 'Combustion of a fuel made from crude oil releases carbon dioxide.' },
+        { text: 'Plant remains in a swamp slowly becoming coal', bin: 'move', why: 'Carbon moves from dead matter into a fossil fuel; the air is not involved.' },
+        { text: 'Felling and burning a rainforest', bin: 'add', why: 'Burning releases carbon dioxide, and fewer trees are left to take it in.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'deforestation affect') || { options: [] }, { command: 'Describe', marks: 1, why: 'Fewer trees photosynthesise, so less carbon dioxide is removed, and burning or rotting the felled trees releases more.' }),
+        r2: { kind: 'data', command: 'Name', marks: 2, prompt: 'The diagram shows part of the carbon cycle in a pond. Name the processes at X and Y.', figureSvg: this.pondSvg(), figureAlt: 'Carbon cycle in a pond with arrows X and Y',
+          parts: [
+            { label: 'Process X, from algae to fish', options: ['Feeding', 'Photosynthesis', 'Respiration', 'Combustion'], answer: 0 },
+            { label: 'Process Y, from dead remains to the air', options: ['Photosynthesis', 'Respiration by microorganisms', 'Combustion', 'Fossilisation'], answer: 1 }
+          ],
+          right: 'X is feeding: fish eat algae. Y is respiration by the microorganisms that decay the remains.', wrong: 'Read each arrow’s direction. Carbon reaches a fish only in its food. Carbon leaves dead remains for the air when decomposers respire.',
+          model: ['X: feeding, or eating (1)', 'Y: respiration by microorganisms, or decay (1)'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'An apple core is thrown onto a compost heap. Explain how the carbon in the apple core is returned to the atmosphere. Put the links in order.',
+          links: ['Microorganisms, bacteria and fungi, feed on the apple core and break it down.', 'The microorganisms respire, using the carbon compounds from the apple.', 'Respiration releases the carbon into the atmosphere as carbon dioxide.'],
+          herrings: [{ text: 'The carbon atoms are destroyed as the apple rots away.', why: 'Atoms are never destroyed. The carbon leaves as carbon dioxide.' }, { text: 'The apple core photosynthesises and gives out carbon dioxide.', why: 'Photosynthesis takes carbon dioxide in, and a dead apple core cannot do it.' }] },
+        r4: { command: 'Describe', marks: 6, question: 'Describe how a carbon atom in carbon dioxide in the air can become part of an animal, and later return to the air.',
+          levels: [
+            { label: 'Level 3 · 5–6', text: 'A full route from air to animal and back, in a logical order, with each process named and linked to the store it moves carbon into.', max: 6 },
+            { label: 'Level 2 · 3–4', text: 'The route is largely correct, with some processes named, but a link is missing or out of order.', max: 4 },
+            { label: 'Level 1 · 1–2', text: 'One or two relevant processes, stated in isolation.', max: 2 },
+            { label: 'No relevant content · 0', text: '', max: 0 }
+          ],
+          points: ['A plant takes in carbon dioxide by photosynthesis.', 'The carbon becomes part of glucose, then other carbon compounds in the plant, such as starch, cellulose or protein.', 'An animal eats the plant: the carbon passes to the animal as carbon compounds in food.', 'The carbon is built into the animal’s body, for example as protein or fat.', 'The animal respires, releasing carbon dioxide into the air.', 'Or: the animal dies or produces waste; decomposers break it down and respire, releasing carbon dioxide.'],
+          reject: ['“The animal breathes in carbon dioxide.” Animals do not take carbon in as carbon dioxide.', '“Decomposers decompose it into carbon dioxide.” Name respiration as the process that releases it.'] }
+      } : {},
+      keyLines: ready ? K.keyLines(slug).concat(['Feeding passes carbon compounds along food chains; it does not move carbon dioxide.']) : [],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

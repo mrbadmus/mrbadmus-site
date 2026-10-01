@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concentration of Solutions · MrBadmus GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Quantitative chemistry" title="Concentration of Solutions" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">{{ eyebrowLine }}</p>
+        <h1>Concentration of Solutions</h1>
+        <p class="ks3-bigq">The same 10 g of sugar can make a drink that is sickly sweet or barely sweet. Which number tells you how strong a solution is, and how do you calculate it?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">60 g of sugar in every litre.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">A sports drink label reads: carbohydrate 60 g/dm³. That number is a concentration: the mass of sugar dissolved in each dm³ of drink. One dm³ is one litre, or 1000 cm³. You pour yourself a 250 cm³ glass.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="How much sugar is in your glass?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p><strong>Concentration</strong> is the mass of solute dissolved in each dm³ of solution, measured in <strong>g/dm³</strong>. A <strong>concentrated</strong> solution has a lot of solute in a given volume; a <strong>dilute</strong> solution has a little. To calculate it, divide the mass of solute by the volume of the solution: concentration (g/dm³) = mass (g) ÷ volume (dm³). The volume must be in dm³. Lab volumes usually come in cm³, so divide by 1000 first: 250 cm³ = 0.250 dm³.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The solution bench</p>
+            <h2 style="margin: 6px 0 0;">Pick a mass and a volume. Call the concentration. Then make it.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ benchProgress }}</p>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 420px;">{{ benchFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0;">
+            <div role="group" aria-labelledby="cs-mass-lab">
+              <p id="cs-mass-lab" style="margin: 0 0 6px; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Mass of solute</p>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <sc-for list="{{ massTabs }}" as="t" hint-placeholder-count="4"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" disabled="{{ t.disabled }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+              </div>
+            </div>
+            <div role="group" aria-labelledby="cs-vol-lab">
+              <p id="cs-vol-lab" style="margin: 0 0 6px; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Volume of solution</p>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <sc-for list="{{ volTabs }}" as="t" hint-placeholder-count="4"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" disabled="{{ t.disabled }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+              </div>
+            </div>
+            <sc-if value="{{ askOn }}" hint-placeholder-val="{{ true }}">
+              <div>
+                <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">{{ askPrompt }}</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); gap: 8px;">
+                  <sc-for list="{{ askOptions }}" as="o" hint-placeholder-count="4"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ benchDoneNow }}">
+              <div data-arrive="1" role="status" style="{{ benchVerdictStyle }}">
+                <p style="margin: 0; font-size: 18px; line-height: 1.55;"><strong>{{ benchWord }}</strong> {{ benchFeedback }}</p>
+                <p style="margin: 8px 0 0; font-family: var(--ks3-font-mono); font-size: 18px;">{{ benchWorking }}</p>
+              </div>
+            </sc-if>
+            <sc-if value="{{ hasMade }}">
+              <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; font-family: var(--ks3-font-mono); font-size: 16px; color: var(--ks3-ink-body);">
+                <sc-for list="{{ madeLines }}" as="m" hint-placeholder-count="2"><li>{{ m }}</li></sc-for>
+              </ul>
+            </sc-if>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+        <p class="ks3-mis-quote">&ldquo;The volume is 250 cm³, so I divide the mass by 250.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Explain" prompt="5.0 g of salt is dissolved to make 250 cm³ of solution. A student writes: concentration = 5.0 ÷ 250 = 0.02 g/dm³. What went wrong?" options="{{ thinkOptions }}" reveal="{{ thinkReveal }}" right-word="That is it." wrong-word="That keeps the mistake." on-commit="{{ onThink }}" hint-size="100%,320px"></dc-import>
+      </section>
+
+      <section id="s-convert" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Convert first" title="How many dm³?" prompt="Sort each volume by its value in dm³. 1 dm³ = 1000 cm³ = 1 litre." bins="{{ cvBins }}" items="{{ cvItems }}" done-note="cm³ to dm³: divide by 1000. A litre and a dm³ are the same size, so litres need no change." on-done="{{ onConvert }}" hint-size="100%,460px"></dc-import>
+      </section>
+
+      <section id="s-pour" class="ks3-block ks3-misconception" data-route="higher" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · mass, volume and concentration</p></div>
+        <p class="ks3-mis-quote">&ldquo;The big beaker has more solution in it, so it must be more concentrated.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Compare" figure-svg="{{ pourFig }}" prompt="Both beakers were filled from the same bottle of 40 g/dm³ salt solution. Which is more concentrated?" options="{{ pourOptions }}" right-word="Yes." wrong-word="Not quite." on-commit="{{ onPour }}" hint-size="100%,520px"></dc-import>
+        <div style="margin-top: 22px;">
+          <dc-import name="Ks4Choice" eyebrow="Then dilute it" command="Calculate" prompt="Water is added to the 50 cm³ beaker until it holds 200 cm³ of solution. What is its concentration now?" options="{{ diluteOptions }}" reveal="{{ diluteReveal }}" right-word="Yes." wrong-word="Not quite." on-commit="{{ onDilute }}" hint-size="100%,320px"></dc-import>
+        </div>
+      </section>
+
+      <section id="s-mol" class="ks3-block" data-route="triple-higher" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Concentration in mol/dm³ · AQA 4.3.4</p>
+        <p style="margin: 8px 0 0; max-width: 60ch;">Concentration can also be measured in <strong>mol/dm³</strong>: the amount of solute, in moles, in each dm³ of solution. concentration (mol/dm³) = amount (mol) ÷ volume (dm³). Mass and concentration in mol/dm³ are linked by M<sub>r</sub>: turn grams into moles first (n = mass ÷ M<sub>r</sub>), then divide by the volume in dm³.</p>
+        <div style="margin-top: 14px;">
+          <dc-import name="Ks4Choice" eyebrow="Your call" command="Calculate" prompt="4.0 g of sodium hydroxide (Mr = 40) is dissolved to make 250 cm³ of solution. Calculate its concentration in mol/dm³." options="{{ molOptions }}" right-word="Yes." wrong-word="Not quite." on-commit="{{ onMol }}" hint-size="100%,320px"></dc-import>
+        </div>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equations</p>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Learn it · no chemistry equation sheet</span>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">c = m ÷ V</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">concentration (g/dm³) = mass (g) ÷ volume (dm³)</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 18px;">m = c × V</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 18px;">V = m ÷ c</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">mass (g) = concentration (g/dm³) × volume (dm³); volume (dm³) = mass (g) ÷ concentration (g/dm³)</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 18px;">cm³ ÷ 1000 = dm³</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">Convert every volume before you insert it.</p>
+          </div>
+          <div data-route="triple-higher" style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">c = n ÷ V</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">concentration (mol/dm³) = amount (mol) ÷ volume (dm³)</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Convert the volume to dm³, then work through the formula to a number with its unit.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Give the unit</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">g/dm³ for a concentration, g for a mass, dm³ or cm³ for a volume: whichever the question asks for.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The steps in order, with the equipment and the measurements. No reasons needed.</dd></div>
+          <div data-route="higher" style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Link the mass of solute and the volume of solution to the concentration, with a reason for each step.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Concentration = mass of solute ÷ volume of solution. With the mass in g and the volume in dm³, the answer is in g/dm³.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="concentration-of-solutions" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Concentration of Solutions" spec="{{ keySpec }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure when to divide by 1000?" legal="The bench draws the solution in a measuring cylinder with one dot for every 0.5 g of dissolved solute, so the number of dots in a given space stands for the concentration. Real dissolved particles are far too small to see, and an accurate solution is made up in a volumetric flask rather than a measuring cylinder." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A glass of sports drink', short: 'HOOK' },
+  { id: 's-bench', label: 'The solution bench', short: 'BENCH' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-convert', label: 'Convert first', short: 'CONVERT' },
+  { id: 's-calc', label: 'Calculate it', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const MASSES = [2, 5, 10, 20];
+const VOLS = [100, 200, 250, 500];
+const MAKE_MS = 1900;
+const NEED = 3;
+function fmt(x) { return x >= 1000 ? String(Math.round(x)) : String(Number(x.toPrecision(3))); }
+function rnd(i) { const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); }
+function hashStr(t) { let h = 2166136261; for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function clamp01(x) { return Math.max(0, Math.min(1, x)); }
+/* The four answers a pupil can reach from m grams and V cm³. Only 'right' converts V to dm³ and divides. */
+function answers(m, V) {
+  const v = V / 1000;
+  return [
+    { kind: 'right', val: m / v },
+    { kind: 'unconv', val: m / V },
+    { kind: 'mult', val: m * v },
+    { kind: 'inv', val: v / m }
+  ];
+}
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, hook: null, mi: 2, vi: 2, pick: null, prog: 0, running: false, made: [], think: null, convert: false, pour: null, dilute: null, mol: null, calc: 0, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+    this.reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.tick = setInterval(() => {
+      if (!this.state.running) return;
+      const p = clamp01((Date.now() - this.start) / MAKE_MS);
+      if (p >= 1) this.finish(); else this.setState({ prog: p });
+    }, 50);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); clearInterval(this.tick); }
+  finish() {
+    this.setState((st) => {
+      const m = MASSES[st.mi], V = VOLS[st.vi];
+      return { prog: 1, running: false, made: st.made.concat({ m: m, V: V, ok: st.pick === 'right' }) };
+    });
+  }
+  seg(on, dis) {
+    return 'font:inherit;font-family:var(--ks3-font-mono);font-size:16px;font-weight:500;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' + (dis && !on ? 'opacity:.55;' : '');
+  }
+  benchSvg(m, V, prog) {
+    const D = window.KS4D; const W = 400, H = 470, xL = 96, xR = 236, base = 432, k = 0.7;
+    const n = m * 2, level = V * k * clamp01(prog / 0.32);
+    let b = '';
+    if (level > 0) b += '<rect x="' + (xL + 3) + '" y="' + (base - level).toFixed(1) + '" width="' + (xR - xL - 6) + '" height="' + level.toFixed(1) + '" fill="' + D.C.blue + '" fill-opacity="0.16"/>';
+    b += '<path d="M' + xL + ' 64 L' + xL + ' ' + (base - 10) + ' Q' + xL + ' ' + base + ' ' + (xL + 10) + ' ' + base + ' L' + (xR - 10) + ' ' + base + ' Q' + xR + ' ' + base + ' ' + xR + ' ' + (base - 10) + ' L' + xR + ' 64" fill="none" stroke="' + D.C.stroke + '" stroke-width="3"/>';
+    b += D.line(xL - 26, base + 12, xR + 26, base + 12, 3);
+    [100, 200, 300, 400, 500].forEach((g) => { const y = base - g * k; b += D.line(xL, y, xL + 18, y, 2) + D.T(xL - 10, y + 6, String(g), 16, { weight: 'normal', fill: D.C.stroke, anchor: 'end' }); });
+    b += D.T(xL - 10, 50, 'cm³', 16, { anchor: 'end' });
+    const ty = base - V * k;
+    b += D.line(xL, ty, xR, ty, 2.5, D.C.red, ' stroke-dasharray="7 5"') + D.T(xR + 8, ty + 6, V + ' cm³', 17, { anchor: 'start', fill: D.C.red });
+    b += '<path d="M276 420 Q326 446 376 420" fill="none" stroke="' + D.C.stroke + '" stroke-width="3"/>' + D.T(326, 462, m + ' g', 17);
+    for (let i = 0; i < n; i++) {
+      const sx = 296 + (i % 8) * 7.5, sy = 418 - Math.floor(i / 8) * 7;
+      const fx = xL + 12 + rnd(i) * (xR - xL - 24), fy = base - 8 - rnd(i + 97) * Math.max(4, V * k - 16);
+      const d0 = 0.3 + 0.5 * (i / Math.max(1, n)), t = clamp01((prog - d0) / 0.2);
+      const x = sx + (fx - sx) * t, y = sy + (fy - sy) * t - Math.sin(Math.PI * t) * 70;
+      b += D.circ(x, y, 4.5, D.C.e, 'none', 0);
+    }
+    const alt = prog >= 1 ? m + ' g of solute dissolved to make ' + V + ' cm³ of solution, drawn as ' + n + ' dots spread through the liquid'
+      : 'An empty measuring cylinder marked at ' + V + ' cm³, with ' + m + ' g of solid solute in a dish beside it';
+    return D.svg(W, H, b, alt);
+  }
+  pourSvg() {
+    const D = window.KS4D; const W = 440, H = 300, base = 250;
+    let b = '';
+    const beaker = (x0, w, hl, n, lab, seed) => {
+      let s = '<rect x="' + (x0 + 3) + '" y="' + (base - hl) + '" width="' + (w - 6) + '" height="' + hl + '" fill="' + D.C.blue + '" fill-opacity="0.16"/>';
+      s += '<path d="M' + x0 + ' 50 L' + x0 + ' ' + base + ' L' + (x0 + w) + ' ' + base + ' L' + (x0 + w) + ' 50" fill="none" stroke="' + D.C.stroke + '" stroke-width="3"/>';
+      for (let i = 0; i < n; i++) s += D.circ(x0 + 12 + rnd(i + seed) * (w - 24), base - 8 - rnd(i + seed + 41) * (hl - 16), 4.5, D.C.e, 'none', 0);
+      return s + D.T(x0 + w / 2, base + 34, lab, 18);
+    };
+    b += beaker(60, 120, 44, 4, '50 cm³', 3) + beaker(250, 120, 176, 16, '200 cm³', 19);
+    return D.svg(W, H, b, 'Two beakers filled from the same bottle: 50 cm³ with 4 dots of solute and 200 cm³ with 16 dots, the dots equally spaced in both');
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, isTH: true, routeWords: '', routeSwitchOptions: [] };
+    const slug = 'concentration-of-solutions';
+    const ready = !!(s.libReady && K && D);
+    const H = !!R.isHigher, TH = !!(R.isHigher && R.isTriple);
+    const m = MASSES[s.mi], V = VOLS[s.vi], v = V / 1000;
+    const ans = answers(m, V);
+    const busy = s.running;
+    const madeNow = s.pick !== null && s.prog >= 1 && !s.running;
+    const done = [s.hook !== null, s.made.length >= NEED, s.think !== null, s.convert, s.calc >= 2, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const pn = this.props.mrbPrevNext || {};
+    const F = ready ? K.fifas(slug) : [];
+    const FB = {
+      right: 'Mass ÷ volume in dm³.',
+      unconv: 'You divided by the volume in cm³, so your answer is 1000 times too small. Convert first: ' + V + ' cm³ = ' + fmt(v) + ' dm³.',
+      mult: 'You multiplied. Concentration is mass ÷ volume.',
+      inv: 'You divided the volume by the mass. It is mass of solute ÷ volume of solution.'
+    };
+    const pickStyle = 'font:inherit;font-family:var(--ks3-font-mono);font-size:18px;text-align:left;padding:12px 14px;min-height:48px;border-radius:14px;cursor:pointer;color:var(--ks3-ink);background:var(--ks3-card);border:2px solid var(--ks3-option-border);';
+    const sel = (list, cur, key) => list.map((x, i) => ({ label: x + (key === 'm' ? ' g' : ' cm³'), pressed: cur === i, disabled: busy, style: this.seg(cur === i, busy),
+      onClick: () => { if (!this.state.running) this.setState(key === 'm' ? { mi: i, pick: null, prog: 0 } : { vi: i, pick: null, prog: 0 }); } }));
+    return Object.assign({}, R, {
+      video: K && s.hook !== null ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      // build_ks4 wraps data-route="triple-higher" in sc-if "isHigher && isTriple"; ks4-runtime's lookup() reads that as a plain key.
+      'isHigher && isTriple': TH,
+      eyebrowLine: R.isTriple ? 'AQA Chemistry (8462) 4.3.2.5' + (TH ? ' · 4.3.4' : '') + ' · Quantitative' : 'AQA Chemistry (8464) 5.3.2.5 · Quantitative',
+      keySpec: R.isTriple ? 'AQA 4.3.2.5' + (TH ? ', 4.3.4' : '') + ' (8462)' : 'AQA 5.3.2.5 (8464)',
+      endPrev: pn.prev || null, endNext: pn.next || null,
+      endConnects: ready ? [{ href: K.hrefFor('using-moles-calculations', R), label: 'Using moles: calculations and limiting reactants' }, { href: K.hrefFor('titrations', R), label: 'Titrations' }].filter((c) => c.href) : [],
+      hookOptions: [
+        { text: '15 g', reply: 'Your glass holds 250 cm³, a quarter of a dm³, so it holds a quarter of 60 g.' },
+        { text: '60 g', reply: '60 g is the sugar in a whole dm³. Your glass holds less than that.' },
+        { text: '240 g', reply: 'That is 60 × 4. A glass smaller than a litre must hold less than 60 g.' },
+        { text: '15 000 g', reply: 'That is 60 × 250, treating cm³ as if they were dm³: 15 kg of sugar in one glass.' }
+      ],
+      hookReveal: '250 cm³ ÷ 1000 = 0.25 dm³. Mass = 60 g/dm³ × 0.25 dm³ = 15 g.',
+      onHook: (i) => this.setState({ hook: i }),
+      benchProgress: Math.min(NEED, s.made.length) + ' of ' + NEED + ' solutions made',
+      benchFig: ready ? K.fig(this.benchSvg(m, V, s.pick === null ? 0 : s.prog), '') : null,
+      massTabs: sel(MASSES, s.mi, 'm'), volTabs: sel(VOLS, s.vi, 'v'),
+      askOn: s.pick === null,
+      askPrompt: 'Commit first. ' + m + ' g of solute is dissolved to make ' + V + ' cm³ of solution. What is its concentration?',
+      askOptions: ans.slice().sort((a, b) => hashStr(fmt(a.val) + m + V) - hashStr(fmt(b.val) + m + V)).map((a) => ({
+        label: fmt(a.val) + ' g/dm³', style: pickStyle,
+        onClick: () => {
+          if (this.state.pick !== null) return;
+          if (this.reduced) { this.setState({ pick: a.kind, prog: 0, running: false }, () => this.finish()); }
+          else { this.start = Date.now(); this.setState({ pick: a.kind, prog: 0, running: true }); }
+        }
+      })),
+      benchDoneNow: madeNow,
+      benchWord: s.pick === 'right' ? 'Called it.' : 'Not this one.',
+      benchFeedback: s.pick ? FB[s.pick] + (s.made.length < NEED ? ' Change the mass or the volume for the next one.' : '') : '',
+      benchWorking: m + ' g ÷ ' + fmt(v) + ' dm³ = ' + fmt(m / v) + ' g/dm³',
+      benchVerdictStyle: 'padding:14px 16px;border-radius:14px;border:2px solid ' + (s.pick === 'right' ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      hasMade: s.made.length > 0,
+      madeLines: s.made.map((x) => x.m + ' g in ' + x.V + ' cm³ → ' + fmt(x.m * 1000 / x.V) + ' g/dm³'),
+      thinkOptions: [
+        { text: '250 cm³ is 0.25 dm³. Dividing by 250 makes the answer 1000 times too small.', correct: true, reply: 'g/dm³ means grams in each dm³, so the volume must be in dm³ before you divide.' },
+        { text: 'The student should have multiplied: 5.0 × 250 = 1250 g/dm³.', correct: false, reply: 'Concentration is mass ÷ volume. Multiplying them gives no concentration at all.' },
+        { text: 'The student should have divided 250 by 5.0 to get 50 g/dm³.', correct: false, reply: 'That is volume ÷ mass, upside down. The mass of solute goes on top.' },
+        { text: 'Nothing went wrong: 0.02 g/dm³ is the correct concentration.', correct: false, reply: '0.02 g in a whole dm³ is barely any salt. 5.0 g in a quarter of a litre is far more concentrated.' }
+      ],
+      thinkReveal: 'Convert first: 250 cm³ ÷ 1000 = 0.25 dm³. Then 5.0 ÷ 0.25 = 20 g/dm³. An answer 1000 times too small is the sign of a missed conversion.',
+      onThink: (i) => this.setState({ think: i }),
+      cvBins: [{ id: 'a', label: '0.025 dm³' }, { id: 'b', label: '0.25 dm³' }, { id: 'c', label: '2.5 dm³' }],
+      cvItems: [
+        { text: '250 cm³', bin: 'b', why: 'cm³ to dm³ is ÷ 1000: 250 ÷ 1000 = 0.25 dm³.' },
+        { text: '25 cm³', bin: 'a', why: '25 ÷ 1000 = 0.025 dm³.' },
+        { text: '2500 cm³', bin: 'c', why: '2500 ÷ 1000 = 2.5 dm³.' },
+        { text: '2.5 litres', bin: 'c', why: 'A litre is a dm³, so nothing changes: 2.5 dm³.' },
+        { text: '0.25 litres', bin: 'b', why: 'A litre is a dm³: 0.25 litres = 0.25 dm³.' }
+      ],
+      onConvert: () => this.setState({ convert: true }),
+      pourFig: ready ? this.pourSvg() : '',
+      pourOptions: [
+        { text: 'The 200 cm³ beaker, because it holds more salt', correct: false, reply: 'It does hold more salt, 8 g against 2 g, but in four times the volume. Concentration is mass per dm³, not the total mass.' },
+        { text: 'Neither: both have the same concentration', correct: true, reply: 'The big beaker holds 8 g in 0.200 dm³; the small one 2 g in 0.050 dm³. Both are 40 g/dm³, the bottle’s concentration.' },
+        { text: 'The 50 cm³ beaker, because it holds less water', correct: false, reply: 'Less water, but also less salt, in exactly the same proportion.' },
+        { text: 'You cannot tell without weighing the salt in each', correct: false, reply: 'Both came from one bottle, so both carry its concentration. Pouring changes the amount, not the concentration.' }
+      ],
+      onPour: (i) => this.setState({ pour: i }),
+      diluteOptions: [
+        { text: '40 g/dm³: adding water changes nothing', correct: false, reply: 'The 2 g of salt is now spread through four times the volume, so each dm³ holds a quarter as much.' },
+        { text: '160 g/dm³: four times the volume, four times stronger', correct: false, reply: 'More water makes it weaker, not stronger. Mass ÷ volume: 2 ÷ 0.200.' },
+        { text: '10 g/dm³: the same 2 g in 0.200 dm³', correct: true, reply: '2 ÷ 0.200 = 10 g/dm³.' },
+        { text: '0 g/dm³: the water washes the salt out', correct: false, reply: 'Adding water removes no solute. All 2 g is still dissolved.' }
+      ],
+      diluteReveal: 'Same mass of solute, larger volume of solution: lower concentration. More solute in the same volume: higher concentration. That is the link an Explain question wants.',
+      onDilute: (i) => this.setState({ dilute: i }),
+      molOptions: [
+        { text: '16 mol/dm³', correct: false, reply: '4.0 ÷ 0.250 = 16 is the concentration in g/dm³. Divide by Mr to turn grams into moles.' },
+        { text: '0.0004 mol/dm³', correct: false, reply: 'That divides 0.10 mol by 250. Convert 250 cm³ to 0.250 dm³ first.' },
+        { text: '0.40 mol/dm³', correct: true, reply: 'n = 4.0 ÷ 40 = 0.10 mol; V = 0.250 dm³; c = 0.10 ÷ 0.250 = 0.40 mol/dm³.' },
+        { text: '640 mol/dm³', correct: false, reply: 'That multiplies 16 g/dm³ by Mr. Going from grams to moles means dividing by Mr.' }
+      ],
+      onMol: (i) => this.setState({ mol: i }),
+      cfExamples: ready && F.length ? [
+        H ? { tab: 'Nothing to convert', head: '8.0 g of glucose is dissolved to make a solution of concentration 16 g/dm³. Calculate the volume of the solution.', next: 'Now the one that needs converting.', steps: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert: grams and g/dm³ already.', note: '' },
+          { letter: 'F', label: 'Formula', line: 'volume (dm³) = mass (g) ÷ concentration (g/dm³)', note: 'Rearranged from concentration = mass ÷ volume.' },
+          { letter: 'I', label: 'Insert', line: 'volume = 8.0 ÷ 16', note: '' },
+          { letter: 'F', label: 'Fine-tune', line: 'volume = 0.50', note: '' },
+          { letter: 'A', label: 'Answer', line: 'volume = 0.50 dm³ (500 cm³)', note: '' } ] }
+          : { tab: 'Nothing to convert', head: '12 g of salt is dissolved to make 0.40 dm³ of solution. Calculate the concentration in g/dm³.', next: 'Now the one that needs converting.', steps: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert: the volume is already in dm³.', note: '' },
+          { letter: 'F', label: 'Formula', line: 'concentration (g/dm³) = mass (g) ÷ volume (dm³)', note: '' },
+          { letter: 'I', label: 'Insert', line: 'concentration = 12 ÷ 0.40', note: '' },
+          { letter: 'F', label: 'Fine-tune', line: 'concentration = 30', note: '' },
+          { letter: 'A', label: 'Answer', line: 'concentration = 30 g/dm³', note: '' } ] },
+        { tab: 'Convert first', head: F[0].question, next: H ? 'One more: convert, then rearrange.' : 'One more: the formula turned round.', steps: K.cfifa(F[0], '500 cm³ ÷ 1000 = 0.5 dm³', 'g/dm³ needs the volume in dm³.') },
+        H ? { tab: 'Convert, then rearrange', head: 'Calculate the mass of copper sulfate needed to make 150 cm³ of a solution of concentration 40 g/dm³.', next: 'Now yours, below.', steps: [
+          { letter: 'C', label: 'Convert', line: '150 cm³ ÷ 1000 = 0.150 dm³', note: '' },
+          { letter: 'F', label: 'Formula', line: 'mass (g) = concentration (g/dm³) × volume (dm³)', note: 'Rearranged from concentration = mass ÷ volume.' },
+          { letter: 'I', label: 'Insert', line: 'mass = 40 × 0.150', note: '' },
+          { letter: 'F', label: 'Fine-tune', line: 'mass = 6.0', note: '' },
+          { letter: 'A', label: 'Answer', line: 'mass = 6.0 g', note: 'Unconverted, 40 × 150 = 6000 g: six kilograms in a small flask.' } ] }
+          : { tab: 'Find the mass', head: 'A solution has a concentration of 50 g/dm³. Calculate the mass of solute in 200 cm³ of it.', next: 'Now yours, below.', steps: [
+          { letter: 'C', label: 'Convert', line: '200 cm³ ÷ 1000 = 0.2 dm³', note: '' },
+          { letter: 'F', label: 'Formula', line: 'mass (g) = concentration (g/dm³) × volume (dm³)', note: '' },
+          { letter: 'I', label: 'Insert', line: 'mass = 50 × 0.2', note: '' },
+          { letter: 'F', label: 'Fine-tune', line: 'mass = 10', note: '' },
+          { letter: 'A', label: 'Answer', line: 'mass = 10 g', note: '' } ] }
+      ] : [],
+      cfQuestions: H ? [
+        { tab: 'Question 1', id: 'cs-h1', head: 'Calculate the mass of sodium chloride in 250 cm³ of a solution of concentration 40 g/dm³.', close: 'Unconverted, 40 × 250 = 10 000 g: ten kilograms of salt in a beaker.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '250 cm³ ÷ 1000 = 0.25 dm³' }, { letter: 'F', label: 'Formula', placeholder: 'rearranged for mass', line: 'mass = concentration × volume' }, { letter: 'I', label: 'Insert', placeholder: 'mass = … × …', line: 'mass = 40 × 0.25' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'mass = 10' }, { letter: 'A', label: 'Answer', placeholder: 'mass = … with unit', line: 'mass = 10 g' }] },
+        { tab: 'Question 2', id: 'cs-h2', head: 'A student needs 3.0 g of solute. The solution has a concentration of 12 g/dm³. Calculate the volume needed, in cm³.', close: 'The question asked for cm³, so the last step multiplies the dm³ answer by 1000.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert going in: g and g/dm³. The answer must end in cm³.' }, { letter: 'F', label: 'Formula', placeholder: 'rearranged for volume', line: 'volume = mass ÷ concentration' }, { letter: 'I', label: 'Insert', placeholder: 'volume = … ÷ …', line: 'volume = 3.0 ÷ 12' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out, then to cm³', line: 'volume = 0.25 dm³ = 0.25 × 1000 cm³' }, { letter: 'A', label: 'Answer', placeholder: 'volume = … with unit', line: 'volume = 250 cm³' }] }
+      ] : [
+        { tab: 'Question 1', id: 'cs-f1', head: '9.0 g of salt is dissolved to make 0.30 dm³ of solution. Calculate the concentration in g/dm³.', close: 'If you divided by 300, you converted a volume that was already in dm³.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert: the volume is already in dm³.' }, { letter: 'F', label: 'Formula', placeholder: 'concentration = …', line: 'concentration = mass ÷ volume' }, { letter: 'I', label: 'Insert', placeholder: 'concentration = … ÷ …', line: 'concentration = 9.0 ÷ 0.30' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'concentration = 30' }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: 'concentration = 30 g/dm³' }] },
+        { tab: 'Question 2', id: 'cs-f2', head: 'A student dissolves 6.0 g of copper sulfate to make 150 cm³ of solution. Calculate the concentration in g/dm³.', close: 'Unconverted, 6.0 ÷ 150 = 0.04: 1000 times too small.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '150 cm³ ÷ 1000 = 0.150 dm³' }, { letter: 'F', label: 'Formula', placeholder: 'concentration = …', line: 'concentration = mass ÷ volume' }, { letter: 'I', label: 'Insert', placeholder: 'concentration = … ÷ …', line: 'concentration = 6.0 ÷ 0.150' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'concentration = 40' }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: 'concentration = 40 g/dm³' }] }
+      ],
+      onCalc: (n) => this.setState({ calc: n }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: { command: 'State', marks: 1, prompt: 'State how to convert a volume in cm³ into dm³.', why: '1 dm³ = 1000 cm³, so divide by 1000.',
+          options: [
+            { text: 'Multiply by 1000', correct: false, reply: 'That goes the wrong way: 250 cm³ would become 250 000 dm³. A dm³ is bigger than a cm³, so the number gets smaller.' },
+            { text: 'Divide by 1000', correct: true, reply: '' },
+            { text: 'Divide by 100', correct: false, reply: 'Dividing by 100 turns centimetres into metres, a length. A dm³ holds 1000 cm³.' },
+            { text: 'Divide by 10', correct: false, reply: '10 cm make 1 dm, but this is a volume: 10 × 10 × 10 = 1000 cm³ in a dm³.' }
+          ] },
+        r2: H ? { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'Calculate the mass of potassium nitrate in 350 cm³ of a solution of concentration 60 g/dm³. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert cm³ to dm³: divide by 1000', 'Convert cm³ to dm³: multiply by 1000'], convAnswer: 1, answer: 21, tol: 0.2, unit: 'g', units: ['g', 'dm³', 'g/dm³', 'cm³'],
+          right: '60 × 0.350 = 21 g.', wrong: '350 cm³ ÷ 1000 = 0.350 dm³, then mass = concentration × volume.',
+          model: ['C · 350 cm³ ÷ 1000 = 0.350 dm³', 'F · mass = concentration × volume', 'I · mass = 60 × 0.350', 'F · mass = 21', 'A · mass = 21 g'] }
+          : { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'A student dissolves 4.0 g of sugar to make 200 cm³ of solution. Calculate the concentration in g/dm³. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert cm³ to dm³: divide by 1000', 'Convert cm³ to dm³: multiply by 1000'], convAnswer: 1, answer: 20, tol: 0.2, unit: 'g/dm³', units: ['g', 'dm³', 'g/dm³', 'cm³'],
+          right: '4.0 ÷ 0.200 = 20 g/dm³.', wrong: '200 cm³ ÷ 1000 = 0.200 dm³, then concentration = mass ÷ volume.',
+          model: ['C · 200 cm³ ÷ 1000 = 0.200 dm³', 'F · concentration = mass ÷ volume', 'I · concentration = 4.0 ÷ 0.200', 'F · concentration = 20', 'A · concentration = 20 g/dm³'] },
+        r3: H ? { command: 'Explain', marks: 2, prompt: 'Solution A: 5 g of salt in 100 cm³ of solution. Solution B: 5 g of salt in 200 cm³ of solution. Explain which is more concentrated. Put the links in order.',
+          links: ['Both solutions contain the same mass of solute, 5 g.', 'Solution A has that mass in a smaller volume of solution.', 'So A has more solute per dm³, 50 g/dm³ against 25 g/dm³: A is more concentrated.'],
+          herrings: [{ text: 'B is more concentrated because it has the bigger volume.', why: 'A bigger volume spreads the same mass further: more volume, lower concentration.' }, { text: 'They are equally concentrated because both contain 5 g.', why: 'Concentration is mass per volume, not mass alone.' }] }
+          : { command: 'Explain', marks: 3, prompt: 'A student dissolves 18 g of salt to make 600 cm³ of solution and writes 18 ÷ 600 = 0.03 g/dm³. Explain what went wrong and give the correct concentration. Put the links in order.',
+          links: ['Concentration in g/dm³ needs the volume of solution in dm³.', '600 cm³ ÷ 1000 = 0.6 dm³, but the student divided by 600.', 'So the concentration is 18 ÷ 0.6 = 30 g/dm³, 1000 times bigger than the student’s answer.'],
+          herrings: [{ text: 'The student should have multiplied 18 by 600.', why: 'That gives 10 800. Concentration is mass divided by volume.' }, { text: 'To convert cm³ to dm³, multiply by 1000.', why: 'A dm³ is bigger than a cm³, so there are fewer of them: divide by 1000.' }] },
+        r4: H ? { command: 'Describe', marks: 4, question: 'Describe how you would make 200 cm³ of a solution of potassium chloride with a concentration of 35 g/dm³.',
+          points: ['Mass needed = 35 × 0.200 = 7.0 g; weigh out 7.0 g of potassium chloride.', 'Dissolve it in a smaller volume of distilled water in a beaker.', 'Transfer the solution to a 200 cm³ volumetric flask, rinsing the beaker into the flask.', 'Add distilled water up to the mark, then stopper and invert to mix.'],
+          reject: ['“Dissolve 35 g in 200 cm³ of water.” 35 g/dm³ is a concentration, not the mass to weigh out.'] }
+          : { command: 'Describe', marks: 4, question: 'Describe how you would make 250 cm³ of a solution of sodium chloride with a concentration of 20 g/dm³.',
+          points: ['Mass needed = 20 × 0.25 = 5.0 g; weigh out 5.0 g of sodium chloride.', 'Dissolve it in a smaller volume of distilled water in a beaker.', 'Transfer the solution to a 250 cm³ volumetric flask, rinsing the beaker into the flask.', 'Add distilled water up to the mark, then stopper and invert to mix.'],
+          reject: ['“Dissolve 20 g in 250 cm³ of water.” 20 g/dm³ is a concentration, not the mass to weigh out.'] }
+      } : {},
+      keyLines: (['Concentration (g/dm³) = mass (g) ÷ volume (dm³).', 'Convert cm³ to dm³: ÷ 1000.', 'Concentrated = lots of solute per volume. Dilute = little solute per volume.', 'mass (g) = concentration (g/dm³) × volume (dm³). volume (dm³) = mass (g) ÷ concentration (g/dm³).']
+        .concat(H ? ['Dilution: same mass, larger volume, lower concentration.'] : [])
+        .concat(TH ? ['Concentration (mol/dm³) = amount (mol) ÷ volume (dm³). Turn grams into moles with Mr first.'] : [])),
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

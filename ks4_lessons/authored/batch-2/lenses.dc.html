@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lenses · MrBadmus GCSE Physics</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Physics" unit="Waves" title="Lenses" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Physics (8463) 4.6.2.5 · Model</p>
+        <h1>Lenses</h1>
+        <p class="ks3-bigq">The same lens can make a page look bigger and a window look small and upside down. What decides which image you get, and can you call it before the rays are drawn?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Triple · physics only</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+        </div>
+        <div style="margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;">
+          <a href="{{ eqSheetHref }}" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 16px; border-radius: var(--ks3-r-control); border: 2px solid var(--ks3-ink); background: var(--ks3-card); color: var(--ks3-ink); font-size: 16px; font-weight: 700; text-decoration: none;" style-hover="background: var(--ks3-accent-tint); border-color: var(--ks3-accent);">View the full equation sheet<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3H3v10h10v-3"></path><path d="M9 3h4v4"></path><path d="M13 3L7 9"></path></svg></a>
+          <span style="font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">AQA · {{ eqSheetLabel }} · PDF</span>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">One magnifying glass, two very different pictures.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">Hold a magnifying glass just above a page and the words look bigger and the right way up. Now hold the same lens at arm's length and look through it at a window across the room.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What do you see through the lens?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>A lens forms an image by <strong>refracting</strong> light. A <strong>convex</strong> (converging) lens brings parallel rays together at the <strong>principal focus</strong>, F; the distance from the lens to F is the <strong>focal length</strong>. A <strong>concave</strong> (diverging) lens spreads parallel rays out, as if they came from F on the near side. To find an image, follow two rays from the top of the object: one parallel to the axis, which leaves through F, and one through the centre of the lens, which goes straight on. Where they meet is the top of the image. If the rays really meet, the image is <strong>real</strong> and a screen can catch it. If they only seem to come from a point, it is <strong>virtual</strong>.</p>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 760px;">{{ focusFig }}</div>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The lens bench · move the object, call the image</p>
+            <h2 style="margin: 6px 0 0;">{{ bTitle }}</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ bProgress }}</p>
+        </div>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ lensTabs }}" as="t" hint-placeholder-count="2"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 820px;">{{ benchFig }}</div>
+        <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 6px; max-width: 560px;">
+          <label for="ln-pos" style="font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ posLabel }}</label>
+          <input id="ln-pos" type="range" min="0" max="{{ maxPos }}" step="1" value="{{ posIdx }}" onInput="{{ onPos }}" onChange="{{ onPos }}" aria-valuetext="{{ posLabel }}" style="width: 100%; min-height: 44px;">
+        </div>
+        <sc-if value="{{ bAsking }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 12px;">
+            <sc-for list="{{ bQs }}" as="q" hint-placeholder-count="3">
+              <div style="padding: 14px 16px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+                <p style="margin: 0 0 8px; font-weight: 700;">{{ q.prompt }}</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <sc-for list="{{ q.opts }}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onDraw }}" disabled="{{ drawLocked }}" style="{{ drawStyle }}">Draw the rays</button>
+        </sc-if>
+        <sc-if value="{{ bRevealed }}">
+          <div data-arrive="1" role="status" style="margin-top: 14px; display: flex; flex-direction: column; gap: 10px;">
+            <sc-for list="{{ bVerdicts }}" as="v" hint-placeholder-count="3"><p style="{{ v.style }}"><strong>{{ v.word }}</strong></p></sc-for>
+            <p style="margin: 0; font-size: 18px; line-height: 1.55;">{{ bWhy }}</p>
+            <sc-if value="{{ bHasNumbers }}"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 16px; line-height: 1.5; color: var(--ks3-ink-body);">{{ bNumbers }}</p></sc-if>
+          </div>
+        </sc-if>
+        <sc-if value="{{ bConfront }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+            <p class="ks3-mis-quote">&ldquo;A convex lens always forms a real image.&rdquo;</p>
+            <p style="margin: 0;">Only when the object is beyond F. Inside the focal length the rays leave the lens still spreading apart, so they never meet. Your eye traces them back to a point on the object's side: a virtual, upright, magnified image that no screen can catch. That is how a magnifying glass works. A concave lens always forms a virtual image.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ bCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onBNext }}" style="margin-top: 14px;">{{ bNextLabel }}</button></sc-if>
+      </section>
+
+      <section id="s-build" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Your turn · complete the ray diagram</p>
+            <h2 style="margin: 6px 0 0;">{{ cHead }}</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ cProgress }}</p>
+        </div>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 820px;">{{ buildFig }}</div>
+        <sc-if value="{{ cAsking }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 12px;">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">{{ cPrompt }}</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 10px;">
+              <sc-for list="{{ cOpts }}" as="o" hint-placeholder-count="4"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ cHasReply }}"><p data-arrive="1" role="status" style="{{ cReplyStyle }}"><strong>{{ cReplyWord }}</strong> {{ cReplyText }}</p></sc-if>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Compare the lenses" title="Convex, concave, or both?" prompt="Each statement is about the image a single lens forms of a real object." bins="{{ sBins }}" items="{{ sItems }}" done-note="Both lenses refract light and both can form a virtual image. Only a convex lens can form a real image, and only a convex lens can magnify." on-done="{{ onSort }}" hint-size="100%,460px"></dc-import>
+      </section>
+
+      <section id="s-eye" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Lenses in spectacles · AQA Biology 4.5.2.3</p>
+        <p style="margin: 8px 0 0; max-width: 60ch;">In <strong>myopia</strong> (short sight) the eyeball is too long or the eye lens too strongly curved, so light from distant objects focuses in front of the retina. In <strong>hyperopia</strong> (long sight) the eyeball is too short or the lens not curved enough, so light from near objects would focus behind it.</p>
+        <div style="margin-top: 14px;">
+          <dc-import name="Ks4Choice" eyebrow="Your call" command="Predict" figure-svg="{{ eyeSvg }}" prompt="This short-sighted eye focuses light from a distant object in front of the retina. Which spectacle lens moves the focus back onto the retina?" options="{{ eyeOptions }}" reveal="{{ eyeReveal }}" right-word="Yes." wrong-word="The opposite." on-commit="{{ onEye }}" hint-size="100%,520px"></dc-import>
+        </div>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equations</p>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">On the sheet</span>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px; line-height: 1.25;">magnification = image height ÷ object height</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 16px;">image height = magnification × object height</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Units first</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">Both heights in the same unit, mm or cm: 1 cm = 10 mm. Magnification is a ratio, so it has no unit. Bigger than 1: magnified. Less than 1: diminished.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe the image</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Real or virtual, upright or inverted, magnified or diminished: one mark each.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Complete the ray diagram</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Two rays from the top of the object, with arrows. Dashed lines for rays traced back.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Show the working. A magnification has no unit.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Say how both lenses differ, in the same sentence.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Convex lens: object beyond F, real and inverted image; object inside F, virtual, upright and magnified; object at F, no image. Concave lens: always virtual, upright and diminished.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="lenses" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Lenses" spec="AQA 4.6.2.5 (8463)" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Physics" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure where the image goes, or what kind it is?" legal="The bench treats each lens as a thin lens with a 10 cm focal length, and draws each ray bending once, at the centre line of the lens, as AQA's ray diagrams do; a real lens bends light at both surfaces. Horizontal and vertical scales differ so tall images fit, which keeps every ray straight and every crossing point true. The eye diagram is simplified." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'One lens, two pictures', short: 'HOOK' },
+  { id: 's-bench', label: 'The lens bench', short: 'BENCH' },
+  { id: 's-build', label: 'Complete the ray diagram', short: 'BUILD' },
+  { id: 's-sort', label: 'Convex, concave or both', short: 'SORT' },
+  { id: 's-calc', label: 'Calculate magnification', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+/* Geometry, in cm, with the lens at x = 0 and the principal axis at y = 0.
+   Plate 820 x 400: x scale 10 px/cm, y scale 15 px/cm (an affine stretch keeps lines straight and crossings true). */
+const LX = 410, AY = 205, SX = 10, SY = 15, H0 = 4, F0 = 10, XMAX = 40;
+const X = (x) => LX + x * SX;
+const Y = (y) => AY - y * SY;
+const POS = { cx: [30, 20, 15, 10, 6], cv: [30, 6] };
+const COL = { r1: '#3B82F6', r2: '#2E8B7F', r3: '#B7791F', obj: '#2E5E45', img: '#C8102E', ink: '#1A1A1A', faint: '#8A8F98' };
+const TYPE = ['Real', 'Virtual', 'No image'], SIZE = ['Magnified', 'Same size', 'Diminished'], WAY = ['Upright', 'Inverted'];
+/* f > 0 convex, f < 0 concave. Returns the image (or null when the rays leave parallel). */
+function image(u, f) {
+  if (Math.abs(u - f) < 1e-9) return null;
+  const v = u * f / (u - f);
+  return { v, h: -H0 * v / u, m: Math.abs(v / u), real: v > 0 };
+}
+function truthOf(lens, u) {
+  const im = image(u, lens === 'cx' ? F0 : -F0);
+  if (!im) return { t: 2 };
+  return { t: im.real ? 0 : 1, s: Math.abs(im.m - 1) < 1e-6 ? 1 : (im.m > 1 ? 0 : 2), w: im.h > 0 ? 0 : 1 };
+}
+const fmt = (x) => { const r = Math.round(x * 100) / 100; return (Math.abs(r - Math.round(r)) < 1e-9 ? r.toFixed(1) : String(r)); };
+const WHY = {
+  cx30: 'Beyond 2F, the rays cross between F and 2F on the far side: a real, inverted, diminished image. That is the window you saw at arm’s length.',
+  cx20: 'At 2F, the image forms at 2F on the far side: real, inverted and exactly the same size.',
+  cx15: 'Between F and 2F, the rays cross beyond 2F: real, inverted and magnified. A screen placed there would show it.',
+  cx10: 'At F, the rays leave the lens parallel. They never meet, so no image forms.',
+  cx6: 'Inside F, the rays are still spreading apart after the lens and never meet. Traced back as dashed lines, they meet on the object’s side: a virtual, upright, magnified image. This is the magnifying glass.',
+  cv30: 'A concave lens spreads the rays apart. They only seem to come from a point on the object’s side, between F and the lens: a virtual, upright, diminished image.',
+  cv6: 'Closer in, the image grows a little, but it is still virtual, upright and diminished. A concave lens gives that kind of image wherever the object is.'
+};
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, lens: 'cx', pos: 0, preds: {}, shown: {}, cStep: 0, cPick: null, cLast: null, sort: false, eye: null, calc: 0, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  reduced() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:9px 15px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  opt() {
+    return 'font:inherit;font-size:17px;font-weight:700;text-align:left;line-height:1.35;padding:11px 15px;min-height:48px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid var(--ks3-option-border);background:var(--ks3-card);';
+  }
+  /* ── drawing helpers (cm in, px out) ───────────────────────────── */
+  head(x1, y1, x2, y2, col) {
+    const a = Math.atan2(y2 - y1, x2 - x1), mx = (x1 + x2) / 2, my = (y1 + y2) / 2, h = 13;
+    const p = (ang) => (mx + h * Math.cos(ang)).toFixed(1) + ',' + (my + h * Math.sin(ang)).toFixed(1);
+    return '<polygon points="' + (mx + 7 * Math.cos(a)).toFixed(1) + ',' + (my + 7 * Math.sin(a)).toFixed(1) + ' ' + p(a + Math.PI - 0.42) + ' ' + p(a + Math.PI + 0.42) + '" fill="' + col + '"/>';
+  }
+  /* A ray: solid segments, each with a direction arrow, drawn on over 1 s unless motion is reduced. */
+  ray(ptsCm, col, anim) {
+    const P = ptsCm.map((p) => [X(p[0]), Y(p[1])]);
+    const d = P.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+    let s = anim ? '<path d="' + d + '" fill="none" stroke="' + col + '" stroke-width="3.5" stroke-linejoin="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"><animate attributeName="stroke-dashoffset" from="100" to="0" dur="1s" fill="freeze"/></path>'
+      : '<path d="' + d + '" fill="none" stroke="' + col + '" stroke-width="3.5" stroke-linejoin="round"/>';
+    let heads = '';
+    for (let i = 0; i < P.length - 1; i++) heads += this.head(P[i][0], P[i][1], P[i + 1][0], P[i + 1][1], col);
+    return s + this.late(heads, anim);
+  }
+  dashed(a, b, col) { return '<line x1="' + X(a[0]).toFixed(1) + '" y1="' + Y(a[1]).toFixed(1) + '" x2="' + X(b[0]).toFixed(1) + '" y2="' + Y(b[1]).toFixed(1) + '" stroke="' + col + '" stroke-width="2.5" stroke-dasharray="9 7"/>'; }
+  late(inner, anim) { return anim ? '<g opacity="0">' + inner + '<animate attributeName="opacity" from="0" to="1" begin="0.9s" dur="0.35s" fill="freeze"/></g>' : inner; }
+  ext(p, dir) { const t = dir[0] > 0 ? (XMAX - p[0]) / dir[0] : 0; return [p[0] + dir[0] * t, p[1] + dir[1] * t]; }
+  arrowUp(xcm, ycm, col, dashed) {
+    const D = window.KS4D; const x = X(xcm), y0 = Y(0), y1 = Y(ycm);
+    if (!dashed) return D.arrow(x, y0, x, y1, col, 5);
+    const dir = y1 < y0 ? 1 : -1;
+    return '<line x1="' + x + '" y1="' + y0 + '" x2="' + x + '" y2="' + (y1 + dir * 12).toFixed(1) + '" stroke="' + col + '" stroke-width="4" stroke-dasharray="8 6"/>' +
+      '<polygon points="' + x + ',' + y1.toFixed(1) + ' ' + (x - 9) + ',' + (y1 + dir * 15).toFixed(1) + ' ' + (x + 9) + ',' + (y1 + dir * 15).toFixed(1) + '" fill="' + col + '"/>';
+  }
+  /* The lens symbol AQA uses: a line with arrowheads; convex points outwards, concave inwards. */
+  lensSym(lens, x, top, bot) {
+    const D = window.KS4D; let s = D.line(x, top, x, bot, 4, COL.ink);
+    const k = lens === 'cx' ? 1 : -1;
+    s += '<polyline points="' + (x - 13) + ',' + (top + 15 * k) + ' ' + x + ',' + top + ' ' + (x + 13) + ',' + (top + 15 * k) + '" fill="none" stroke="' + COL.ink + '" stroke-width="4" stroke-linejoin="round"/>';
+    s += '<polyline points="' + (x - 13) + ',' + (bot - 15 * k) + ' ' + x + ',' + bot + ' ' + (x + 13) + ',' + (bot - 15 * k) + '" fill="none" stroke="' + COL.ink + '" stroke-width="4" stroke-linejoin="round"/>';
+    return s;
+  }
+  stage(lens) {
+    const D = window.KS4D;
+    let s = '<line x1="12" y1="' + AY + '" x2="808" y2="' + AY + '" stroke="' + COL.ink + '" stroke-width="2" stroke-dasharray="10 7"/>';
+    s += this.lensSym(lens, LX, Y(12), Y(-11));
+    [[-20, '2F'], [-10, 'F'], [10, 'F'], [20, '2F']].forEach(([x, t]) => { s += D.circ(X(x), AY, 6, COL.ink) + D.T(X(x), AY + 32, t, 22, { fill: COL.ink }); });
+    return s;
+  }
+  /* Full scene. rays: which of 1,2,3 to draw; showImg: draw the image and any traced-back lines. */
+  scene(lens, u, opt) {
+    const D = window.KS4D; opt = opt || {}; const anim = !!opt.anim && !this.reduced();
+    const f = lens === 'cx' ? F0 : -F0; const im = image(u, f); const rays = opt.rays || [];
+    let s = this.stage(lens);
+    s += this.arrowUp(-u, H0, COL.obj, false) + D.T(X(-u), Y(H0) - 12, 'object', 20, { fill: COL.obj });
+    const tip = [-u, H0];
+    const out1 = lens === 'cx' ? [f, -H0] : [-f, H0]; // direction after the lens for the parallel ray
+    if (rays.indexOf(1) >= 0) s += this.ray([tip, [0, H0], this.ext([0, H0], out1)], COL.r1, anim);
+    if (rays.indexOf(2) >= 0) s += this.ray([tip, [0, 0], this.ext([0, 0], [u, -H0])], COL.r2, anim);
+    let y3 = null;
+    if (rays.indexOf(3) >= 0 && lens === 'cx' && im) { y3 = -H0 * f / (u - f); s += this.ray([tip, [0, y3], [XMAX, y3]], COL.r3, anim); }
+    if (opt.showImg) {
+      let late = '';
+      if (!im) late += D.T(X(26), Y(-9.6), 'rays leave parallel: no image', 20, { fill: COL.img });
+      else if (im.real) late += this.arrowUp(im.v, im.h, COL.img, false) + D.T(X(im.v), Y(im.h) + (im.h < 0 ? 30 : -12), 'image', 20, { fill: COL.img });
+      else {
+        const it = [im.v, im.h];
+        if (lens === 'cx') { late += this.dashed([0, H0], it, COL.r1) + this.dashed(tip, it, COL.r2); if (y3 !== null) late += this.dashed([0, y3], it, COL.r3); }
+        else late += this.dashed([0, H0], [f, 0], COL.r1);
+        late += this.arrowUp(im.v, im.h, COL.img, true) + D.T(X(im.v) - 10, Y(im.h) - 12, 'image', 20, { fill: COL.img, anchor: 'end' });
+      }
+      s += this.late(late, anim);
+    }
+    const alt = (lens === 'cx' ? 'Convex' : 'Concave') + ' lens, focal length 10 cm, object ' + u + ' cm from the lens.' +
+      (opt.showImg ? (im ? ' The image is ' + (im.real ? 'real, inverted, ' : 'virtual, upright, ') + (Math.abs(im.m - 1) < 1e-6 ? 'the same size' : (im.m > 1 ? 'magnified' : 'diminished')) + ', ' + fmt(Math.abs(im.v)) + ' cm from the lens on the ' + (im.real ? 'far side.' : 'object’s side.') : ' The rays leave parallel and no image forms.') : '');
+    return D.svg(820, 400, s, alt);
+  }
+  focusSvg() {
+    const D = window.KS4D; let s = '';
+    const panel = (x0, lens) => {
+      const lx = x0 + 150, fx = lens === 'cx' ? lx + 120 : lx - 120;
+      let p = D.line(x0 + 10, 170, x0 + 370, 170, 2, COL.ink, ' stroke-dasharray="10 7"') + this.lensSym(lens, lx, 70, 270);
+      [-60, -30, 30, 60].forEach((dy) => {
+        p += D.line(x0 + 14, 170 + dy, lx, 170 + dy, 3, COL.r1) + this.head(x0 + 14, 170 + dy, lx, 170 + dy, COL.r1);
+        if (lens === 'cx') { const ex = x0 + 365, ey = 170 + dy + (-dy / 120) * (ex - lx); p += D.line(lx, 170 + dy, ex, ey, 3, COL.r1) + this.head(lx, 170 + dy, ex, ey, COL.r1); }
+        else { const ex = x0 + 365, ey = 170 + dy + (dy / 120) * (ex - lx); p += D.line(lx, 170 + dy, ex, ey, 3, COL.r1) + this.head(lx, 170 + dy, ex, ey, COL.r1) + D.line(fx, 170, lx, 170 + dy, 2.5, COL.r1, ' stroke-dasharray="8 6"'); }
+      });
+      p += D.circ(fx, 170, 6, COL.ink) + D.T(fx, 204, 'F', 23, { fill: COL.ink });
+      p += D.T(x0 + 190, 316, lens === 'cx' ? 'convex: converges' : 'concave: diverges', 22);
+      if (lens === 'cx') p += D.line(lx, 230, fx, 230, 2, COL.ink) + D.T((lx + fx) / 2 + 6, 252, 'focal length', 17, { weight: 'normal', fill: COL.ink });
+      return p;
+    };
+    s += panel(10, 'cx') + panel(400, 'cv');
+    return D.svg(780, 340, s, 'Left: a convex lens symbol, with arrowheads pointing outwards, bends four parallel rays so they meet at the principal focus F on the far side; the focal length is the distance from the lens to F. Right: a concave lens symbol, with arrowheads pointing inwards, spreads four parallel rays apart; dashed lines trace them back to F on the near side.');
+  }
+  eyeSvg() {
+    const D = window.KS4D; let s = '';
+    s += '<circle cx="560" cy="150" r="118" fill="#FFFFFF" stroke="' + COL.ink + '" stroke-width="3"/>';
+    s += '<path d="M 662 90 A 118 118 0 0 1 662 210" fill="none" stroke="' + COL.img + '" stroke-width="7"/>';
+    s += '<ellipse cx="462" cy="150" rx="14" ry="52" fill="#CFE0F5" stroke="' + COL.ink + '" stroke-width="2.5"/>';
+    [-36, 0, 36].forEach((dy) => {
+      s += D.line(40, 150 + dy, 462, 150 + dy, 3, COL.r1) + this.head(40, 150 + dy, 462, 150 + dy, COL.r1);
+      const fx = 600, rx = 676, ry = 150 - dy * (rx - fx) / (fx - 462);
+      s += D.line(462, 150 + dy, fx, 150, 3, COL.r1) + D.line(fx, 150, rx, ry, 3, COL.r1);
+    });
+    s += D.circ(600, 150, 6, COL.ink);
+    s += D.T(600, 290, 'focus: in front of the retina', 20, { fill: COL.ink });
+    s += D.T(700, 60, 'retina', 20, { fill: COL.img, anchor: 'start' });
+    s += D.T(150, 100, 'light from a distant object', 18, { weight: 'normal', fill: COL.ink });
+    return D.svg(820, 310, s, 'A short-sighted eye. Parallel rays from a distant object pass through the eye lens and meet in front of the retina, then spread out again before they reach it.');
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, eqSheetHref: '', eqSheetLabel: '' };
+    const slug = 'lenses';
+    const ready = !!(s.libReady && K && D);
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const pn = this.props.mrbPrevNext || {};
+    const hi = !!R.isHigher;
+    // bench
+    const lens = s.lens; const list = POS[lens]; const pi = Math.min(s.pos, list.length - 1); const u = list[pi];
+    const key = lens + u; const p = s.preds[key] || {}; const shown = !!s.shown[key];
+    const tr = truthOf(lens, u);
+    const needMore = p.t === undefined || (p.t !== 2 && (p.s === undefined || p.w === undefined));
+    const nShown = Object.keys(s.shown).length;
+    const im = image(u, lens === 'cx' ? F0 : -F0);
+    const setP = (k, v) => this.setState((ss) => ({ preds: Object.assign({}, ss.preds, { [key]: Object.assign({}, ss.preds[key] || {}, { [k]: v }) }) }));
+    const nextUnseen = (() => { for (const L of ['cx', 'cv']) for (let i = 0; i < POS[L].length; i++) if (!s.shown[L + POS[L][i]]) return { L, i }; return null; })();
+    const verdict = (lab, words, k) => {
+      const pk = p[k], tk = tr[k];
+      const ok = pk === tk;
+      const word = tk === undefined ? '' : lab + ': ' + words[tk].toLowerCase() + (pk === undefined ? '.' : (ok ? ', as you said.' : ', not ' + words[pk].toLowerCase() + '.'));
+      return { word, style: 'margin:0;padding:12px 16px;border-radius:14px;font-size:18px;line-height:1.5;border:2px solid ' + (ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);') };
+    };
+    // constructor
+    const C_STEPS = [
+      { u: 25, rays: [], showImg: false, head: 'Object beyond 2F', prompt: 'Ray 1 leaves the top of the object parallel to the axis. After the lens, where does it go?',
+        opts: [
+          { t: 'Through F on the far side', ok: true, r: 'A ray arriving parallel to the axis is bent through the principal focus.' },
+          { t: 'Straight on, still parallel', r: 'That is the ray that went in through F. A ray that arrives parallel is bent through F.' },
+          { t: 'Through 2F on the far side', r: 'Parallel rays always meet at F: that is what the principal focus is.' },
+          { t: 'Back through F on the near side', r: 'A convex lens bends light towards the axis on the far side, never back.' }
+        ] },
+      { u: 25, rays: [1], showImg: false, head: 'Object beyond 2F', prompt: 'Ray 2 leaves the same point and heads for the centre of the lens. After the lens, where does it go?',
+        opts: [
+          { t: 'Straight on, not bent at all', ok: true, r: 'A ray through the centre of the lens passes straight through.' },
+          { t: 'Through F on the far side', r: 'Only a ray that arrives parallel is bent through F.' },
+          { t: 'Parallel to the axis', r: 'That is the ray that went through F on the near side.' },
+          { t: 'Along the axis to 2F', r: 'It keeps the direction it had. It does not join the axis.' }
+        ] },
+      { u: 25, rays: [1, 2], showImg: false, head: 'Object beyond 2F', prompt: 'Both rays are drawn. Where is the top of the image?',
+        opts: [
+          { t: 'Where the two rays cross', ok: true, r: 'Every ray from the top of the object passes through that point, so the image’s top is there.' },
+          { t: 'Where ray 1 crosses the axis', r: 'That is F, where parallel rays meet. The image is where rays from one point meet.' },
+          { t: 'At the lens, where rays bend', r: 'The rays are still apart at the lens. The image forms where they meet.' },
+          { t: 'At 2F on the far side', r: 'Only an object at 2F has its image at 2F. This object is beyond 2F.' }
+        ] },
+      { u: 5, rays: [1, 2], showImg: false, head: 'Object inside F', prompt: 'Now the object is inside F. The rays spread apart after the lens and never meet. Where is the image?',
+        opts: [
+          { t: 'Trace the rays back: it is where they meet', ok: true, r: 'Dashed lines traced back meet on the object’s side. The image there is virtual, upright and magnified.' },
+          { t: 'Nowhere: the rays never meet', r: 'That is true only at F, where rays leave parallel. Spreading rays seem to come from a point you can find.' },
+          { t: 'Where the rays leave the diagram', r: 'The edge of the page is not a place in the physics. Trace the rays back.' },
+          { t: 'At F on the far side', r: 'Ray 1 passes through F, but ray 2 does not. The rays do not meet there.' }
+        ] }
+    ];
+    const cs = Math.min(s.cStep, C_STEPS.length); const cDone = cs >= C_STEPS.length;
+    const cur = C_STEPS[Math.min(cs, C_STEPS.length - 1)];
+    const cPick = s.cPick; const cPicked = cPick !== null && !cDone ? cur.opts[cPick] : null;
+    let figStep;
+    if (cDone) figStep = { u: 5, rays: [1, 2], showImg: true };
+    else if (cs === 3) figStep = { u: 5, rays: [1, 2], showImg: false };
+    else figStep = { u: 25, rays: cs === 0 ? [] : (cs === 1 ? [1] : [1, 2]), showImg: false };
+    // calc examples, by tier
+    const ST = (C, Fm, I, Fi, A, n) => [
+      { letter: 'C', label: 'Convert', line: C, note: n || '' }, { letter: 'F', label: 'Formula', line: Fm, note: '' },
+      { letter: 'I', label: 'Insert', line: I, note: '' }, { letter: 'F', label: 'Fine-tune', line: Fi, note: '' }, { letter: 'A', label: 'Answer', line: A, note: '' }];
+    const MF = 'magnification = image height ÷ object height';
+    const cfExamples = hi ? [
+      { tab: 'Nothing to convert', head: 'A lens gives a magnification of 0.40. The object is 15 cm tall. Calculate the height of the image.',
+        steps: ST('Nothing to convert: one height, in cm, and magnification has no unit.', MF, '0.40 = image height ÷ 15', 'image height = 0.40 × 15 = 6.0', 'image height = 6.0 cm') },
+      { tab: 'Convert first', head: 'A magnifying glass makes a 4.0 mm insect wing appear 2.6 cm long. Calculate the magnification.', next: 'Convert first, then the same four lines. Your turn below.',
+        steps: ST('2.6 cm × 10 = 26 mm', MF, 'magnification = 26 ÷ 4.0', 'magnification = 6.5', 'magnification = 6.5 (no unit)', 'Both heights must be in the same unit. Unconverted, 2.6 ÷ 4.0 gives 0.65: a diminished image, which a magnifying glass never makes.') }
+    ] : [
+      { tab: 'Nothing to convert', head: 'An object 4.0 cm tall forms an image 10 cm tall. Calculate the magnification.',
+        steps: ST('Nothing to convert: both heights are in cm.', MF, 'magnification = 10 ÷ 4.0', 'magnification = 2.5', 'magnification = 2.5 (no unit)') },
+      { tab: 'Convert first', head: 'An object 2.0 cm tall forms an image 7.0 mm tall. Calculate the magnification.', next: 'Convert first, then the same four lines. Your turn below.',
+        steps: ST('2.0 cm × 10 = 20 mm', MF, 'magnification = 7.0 ÷ 20', 'magnification = 0.35', 'magnification = 0.35 (no unit)', 'Both heights must be in the same unit. Unconverted, 7.0 ÷ 2.0 gives 3.5: ten times too big.') }
+    ];
+    const QS = (C, Fm, I, Fi, A, ph) => [
+      { letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: C }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: Fm },
+      { letter: 'I', label: 'Insert', placeholder: ph[0], line: I }, { letter: 'F', label: 'Fine-tune', placeholder: ph[1], line: Fi }, { letter: 'A', label: 'Answer', placeholder: ph[2], line: A }];
+    const cfQuestions = hi ? [
+      { tab: 'Question 1', id: 'ln-q1', head: 'A lens gives a magnification of 2.4. The image is 18 cm tall. Calculate the height of the object.', close: 'Check: 7.5 × 2.4 = 18 cm, the image height you started with.',
+        steps: QS('Nothing to convert: one height, in cm.', MF, '2.4 = 18 ÷ object height', 'object height = 18 ÷ 2.4 = 7.5', 'object height = 7.5 cm', ['2.4 = … ÷ object height', 'rearrange: object height = …', 'object height = … cm']) },
+      { tab: 'Question 2', id: 'ln-q2', head: 'A lens gives a magnification of 0.25. The image is 6.0 mm tall. Calculate the height of the object in cm.', close: 'Working in mm also works: 6.0 ÷ 0.25 = 24 mm = 2.4 cm.',
+        steps: QS('6.0 mm ÷ 10 = 0.60 cm', MF, '0.25 = 0.60 ÷ object height', 'object height = 0.60 ÷ 0.25 = 2.4', 'object height = 2.4 cm', ['0.25 = … ÷ object height', 'rearrange: object height = …', 'object height = … cm']) }
+    ] : [
+      { tab: 'Question 1', id: 'ln-q1', head: 'An object 3.0 cm tall forms an image 12 cm tall. Calculate the magnification.', close: 'Check: bigger than 1, so the image is magnified, as 12 cm against 3.0 cm says.',
+        steps: QS('Nothing to convert: both heights are in cm.', MF, 'magnification = 12 ÷ 3.0', 'magnification = 4.0', 'magnification = 4.0 (no unit)', ['magnification = … ÷ …', 'work it out', 'magnification = …']) },
+      { tab: 'Question 2', id: 'ln-q2', head: 'An object 2.4 cm tall forms an image 6.0 mm tall. Calculate the magnification.', close: 'Unconverted, 6.0 ÷ 2.4 gives 2.5, a magnified image, when the image is really smaller than the object.',
+        steps: QS('2.4 cm × 10 = 24 mm', MF, 'magnification = 6.0 ÷ 24', 'magnification = 0.25', 'magnification = 0.25 (no unit)', ['magnification = … ÷ …', 'work it out', 'magnification = …']) }
+    ];
+    const done = [s.hook !== null, nShown >= 7, cDone, s.sort, s.calc >= 2, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const connects = ready && K.hrefFor ? [['wave-front-refraction', 'Refraction'], ['the-eye', 'The eye'], ['defects-of-the-eye', 'Defects of the eye']]
+      .map(([sl, label]) => ({ href: K.hrefFor(sl, R), label })).filter((c) => !!c.href) : [];
+    return Object.assign({}, R, {
+      video: K && s.hook !== null ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      endPrev: pn.prev || null, endNext: pn.next || null, endConnects: connects,
+      hookOptions: [
+        { text: 'The window, upside down and smaller', reply: 'Test that on the bench below, with the object far from the lens.' },
+        { text: 'The window, the right way up and bigger', reply: 'That is what the lens does to a page held close. Far away, it does something else.' },
+        { text: 'The window, the right way up and smaller', reply: 'Smaller, yes. But the lens has also turned it upside down.' },
+        { text: 'Only a blur: a lens works close up', reply: 'A sharp picture appears. A convex lens forms images of distant things too.' }
+      ],
+      hookReveal: 'The window appears small and upside down. Same lens, two different images: the page sat inside the lens’s focal length, and the window was far beyond it. Where the object is, compared with the focal length, decides the image.',
+      onHook: (i) => this.setState({ hook: i }),
+      focusFig: ready ? K.fig(this.focusSvg(), '') : null,
+      bTitle: (lens === 'cx' ? 'Convex lens' : 'Concave lens') + ', object ' + u + ' cm away',
+      bProgress: nShown + ' of 7 set-ups',
+      lensTabs: [['cx', 'Convex lens'], ['cv', 'Concave lens']].map(([k, l]) => ({ label: l, pressed: lens === k, style: this.seg(lens === k), onClick: () => this.setState({ lens: k, pos: 0 }) })),
+      benchFig: ready ? K.fig(this.scene(lens, u, { rays: shown ? [1, 2, 3] : [], showImg: shown, anim: shown }), '') : null,
+      posLabel: 'Object ' + u + ' cm from the lens · F is 10 cm',
+      maxPos: list.length - 1, posIdx: pi,
+      onPos: (e) => { const v = parseInt(e.target.value, 10); if (!isNaN(v)) this.setState({ pos: v }); },
+      bAsking: !shown,
+      bQs: [['Real or virtual?', TYPE, 't'], ['How big?', SIZE, 's'], ['Which way up?', WAY, 'w']]
+        .filter((q) => q[2] === 't' || p.t !== 2)
+        .map(([prompt, words, k]) => ({ prompt, opts: words.map((l, i) => ({ label: l, pressed: p[k] === i, style: this.seg(p[k] === i), onClick: () => setP(k, i) })) })),
+      drawLocked: needMore, drawStyle: 'margin-top:12px;' + (needMore ? 'opacity:.45;cursor:default;' : ''),
+      onDraw: () => { if (!needMore) this.setState((ss) => ({ shown: Object.assign({}, ss.shown, { [key]: true }) })); },
+      bRevealed: shown,
+      bVerdicts: shown ? (tr.t === 2 ? [verdict('Image', TYPE, 't')] : [verdict('Image', TYPE, 't'), verdict('Size', SIZE, 's'), verdict('Way up', WAY, 'w')]) : [],
+      bWhy: WHY[key] || '',
+      bHasNumbers: shown && !!im,
+      bNumbers: im ? 'Image ' + fmt(Math.abs(im.v)) + ' cm from the lens on the ' + (im.real ? 'far side' : 'object\u2019s side') + ', ' + fmt(Math.abs(im.h)) + ' cm tall · magnification = ' + fmt(Math.abs(im.h)) + ' ÷ 4.0 = ' + fmt(im.m) : '',
+      bConfront: shown && key === 'cx6',
+      bCanNext: shown && !!nextUnseen,
+      bNextLabel: nextUnseen && nextUnseen.L !== lens ? 'Swap to the concave lens' : 'Next position',
+      onBNext: () => { if (nextUnseen) this.setState({ lens: nextUnseen.L, pos: nextUnseen.i }); },
+      cHead: cDone ? 'Object inside F: a virtual image' : cur.head,
+      cProgress: cDone ? 'Complete' : 'Step ' + (cs + 1) + ' of 4',
+      buildFig: ready ? K.fig(this.scene('cx', figStep.u, { rays: figStep.rays, showImg: figStep.showImg, anim: false }), '') : null,
+      cAsking: !cDone,
+      cPrompt: cur.prompt,
+      cOpts: cur.opts.map((o, i) => ({ label: o.t, style: this.opt() + (cPick === i ? 'border-color:' + (o.ok ? 'var(--ks3-accent)' : 'var(--ks3-alert-border)') + ';' : ''),
+        onClick: () => { if (o.ok) this.setState((ss) => ({ cStep: ss.cStep + 1, cPick: null, cLast: cur.opts[i].r })); else this.setState({ cPick: i }); } })),
+      cHasReply: !!cPicked || (!!s.cLast && cPick === null),
+      cReplyWord: cPicked ? 'Not that one.' : 'Yes.',
+      cReplyText: cPicked ? cPicked.r + ' Try again.' : (s.cLast || ''),
+      cReplyStyle: 'margin:14px 0 0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (cPicked ? 'var(--ks3-alert-border);background:var(--ks3-alert-tint);' : 'var(--ks3-accent);background:var(--ks3-accent-tint);'),
+      sBins: [{ id: 'cx', label: 'Convex only' }, { id: 'cv', label: 'Concave only' }, { id: 'both', label: 'Both' }],
+      sItems: [
+        { text: 'Can form a real image that a screen can show', bin: 'cx', why: 'A concave lens spreads rays apart, so they never really meet.' },
+        { text: 'Always forms a virtual image', bin: 'cv', why: 'A convex lens forms a real image whenever the object is beyond F.' },
+        { text: 'Can form a magnified image', bin: 'cx', why: 'A concave lens’s image is always diminished.' },
+        { text: 'Forms an image by refracting light', bin: 'both', why: 'Every lens works by refraction.' },
+        { text: 'Its image is always upright and diminished', bin: 'cv', why: 'A convex lens can form inverted and magnified images.' },
+        { text: 'Can form a virtual image', bin: 'both', why: 'A convex lens does too, when the object is inside F.' },
+        { text: 'Brings parallel rays to a focus at F', bin: 'cx', why: 'A concave lens spreads parallel rays apart; they only seem to come from F.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      eyeSvg: ready ? this.eyeSvg() : '',
+      eyeOptions: [
+        { text: 'A concave (diverging) lens', correct: true, reply: 'It spreads the rays slightly before they enter the eye, so the eye brings them together further back, on the retina.' },
+        { text: 'A convex (converging) lens', correct: false, reply: 'A convex lens converges the rays even more, so the focus moves further in front of the retina.' },
+        { text: 'No lens: the focus will move', correct: false, reply: 'The eye cannot push the focus back far enough for distant objects. That is why short sight needs spectacles.' }
+      ],
+      eyeReveal: 'Short sight is corrected with a concave lens. Long sight is the reverse: the image would form behind the retina, and a convex lens adds the extra converging the eye needs.',
+      onEye: (i) => this.setState({ eye: i }),
+      cfExamples, cfQuestions,
+      onCalc: (n) => this.setState({ calc: n }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'magnifying glass') || { options: [] }, { command: 'State', marks: 1, why: 'Inside the focal length, closer than 10 cm, a convex lens forms a virtual, upright, magnified image.' }),
+        r2: hi ? { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'A magnifying glass gives a magnification of 4.0. A printed letter seen through it appears 1.4 cm tall. Calculate the real height of the letter in mm. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert 1.4 cm to 14 mm', 'Convert 1.4 cm to 140 mm'], convAnswer: 1, answer: 3.5, tol: 0.05, unit: 'mm', units: ['mm', 'cm', 'no unit', 'm'],
+          right: '14 mm ÷ 4.0 = 3.5 mm.', wrong: 'Convert 1.4 cm to 14 mm first. The 1.4 cm is the image height, so object height = 14 ÷ 4.0.',
+          model: ['C · 1.4 cm × 10 = 14 mm', 'F · ' + MF, 'I · 4.0 = 14 ÷ object height', 'F · object height = 14 ÷ 4.0 = 3.5', 'A · object height = 3.5 mm'] }
+          : { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'An object 2.5 cm tall forms an image 15 mm tall. Calculate the magnification. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert 2.5 cm to 25 mm', 'Convert 2.5 cm to 250 mm'], convAnswer: 1, answer: 0.6, tol: 0.005, unit: 'no unit', units: ['no unit', 'mm', 'cm', 'm'],
+          right: '15 mm ÷ 25 mm = 0.60, with no unit.', wrong: 'Put both heights in mm: 2.5 cm = 25 mm. Then 15 ÷ 25 = 0.60. Magnification is a ratio, so it has no unit.',
+          model: ['C · 2.5 cm × 10 = 25 mm', 'F · ' + MF, 'I · magnification = 15 ÷ 25', 'F · magnification = 0.60', 'A · magnification = 0.60 (no unit)'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'Explain why the image formed by a concave lens can never be shown on a screen. Put the links in order.',
+          links: ['A concave lens refracts light so the rays spread apart (diverge) after the lens.', 'The rays never meet; they only seem to come from a point on the object’s side of the lens.', 'So the image is virtual: no light actually reaches that point, so a screen there shows nothing.'],
+          herrings: [{ text: 'The image is too small to see on a screen.', why: 'Size is not the reason. A virtual image of any size cannot be projected.' }, { text: 'The concave lens absorbs the light before it can reach the screen.', why: 'A lens refracts light; it does not stop it.' }] },
+        r4: { command: 'Compare', marks: 4, question: 'Compare the images formed by a convex lens and a concave lens.',
+          points: ['A convex lens can form a real or a virtual image; a concave lens always forms a virtual image.', 'A convex lens’s real image is inverted; a concave lens’s image is always upright.', 'A convex lens can form a magnified image; a concave lens’s image is always diminished.', 'A convex lens’s real image can be projected on a screen; a concave lens’s image cannot.', 'Both form images by refracting light.'],
+          reject: ['“Convex lenses make things bigger and concave lenses make them smaller.” A convex lens can form a diminished image too.', 'A list of facts about one lens only, with no comparison, scores nothing.'] }
+      } : {},
+      keyLines: ready ? K.keyLines(slug) : [],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

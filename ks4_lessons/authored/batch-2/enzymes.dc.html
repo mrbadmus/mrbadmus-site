@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enzymes · MrBadmus GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+  input[type="range"] { accent-color: #A93411; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Organisation" title="Enzymes" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">{{ eyebrow }}</p>
+        <h1>Enzymes</h1>
+        <p class="ks3-bigq">Amylase in your saliva turns starch into sugar in a minute. Heat it, or change the pH, and it slows or stops. Why, and how do you measure it the way AQA expects?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <details class="ks3-route-switch">
+            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span><svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>
+            <ul class="ks3-route-menu" role="list">
+              <sc-for list="{{ routeSwitchOptions }}" as="o"><li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>
+            </ul>
+          </details>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-accent); background: var(--ks3-accent-tint); color: var(--ks3-ink);">Required practical · pH and amylase</span>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Chew a plain cracker for a minute. It starts to taste sweet.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">A cracker is mostly starch, and starch does not taste sweet. Keep a piece in your mouth without swallowing, and after a minute or so it tastes sugary. Nothing was added except saliva.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Where has the sugar come from?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>Enzymes are <strong>biological catalysts</strong>: proteins that speed up reactions in living things without being used up. Each enzyme has an <strong>active site</strong>, a region with a specific shape. Only a substrate whose shape fits the active site can bind to it, which is why amylase digests starch but not protein or fat. The <strong>lock and key model</strong> is a simplified picture of this: the active site is the lock, the substrate is the key.</p>
+      </section>
+
+      <section id="s-fit" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The lock and key model</p>
+            <h2 style="margin: 6px 0 0;">{{ fitTitle }}</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ fitTemp }}</p>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ fitFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <sc-if value="{{ fitAsking }}" hint-placeholder-val="{{ true }}">
+              <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0;">{{ fitPrompt }}</p>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <sc-for list="{{ fitOptions }}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.text }}</button></sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ fitHasReply }}">
+              <p data-arrive="1" role="status" style="{{ fitReplyStyle }}"><strong>{{ fitWord }}</strong> {{ fitReply }}</p>
+            </sc-if>
+            <p aria-live="polite" style="margin: 0; font-family: var(--ks3-font-mono); font-size: 16px; line-height: 1.5;">{{ fitCount }}</p>
+            <sc-if value="{{ fitCanNext }}">
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <sc-if value="{{ fitCanAgain }}"><button type="button" onClick="{{ onFitAgain }}" style="{{ fitBtnStyle }}">Send in another starch molecule</button></sc-if>
+                <button type="button" class="ks3-reveal-btn" onClick="{{ onFitNext }}">{{ fitNextLabel }}</button>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · hot enzymes</p></div>
+        <p class="ks3-mis-quote">&ldquo;At 60 °C the amylase is killed, so the reaction stops.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Explain" prompt="What should the answer say instead?" options="{{ thinkOptions }}" reveal="{{ thinkReveal }}" right-word="That is the marking point." wrong-word="That keeps the wrong idea." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+        <div style="margin-top: 22px;">
+          <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Sketch it</p>
+          <p class="ks3-commit" style="color: var(--ks3-ink); margin: 6px 0 10px;">Which sketch shows the rate of an enzyme reaction against temperature?</p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); gap: 10px;">
+            <sc-for list="{{ curves }}" as="g" hint-placeholder-count="4">
+              <button type="button" onClick="{{ g.onClick }}" aria-label="{{ g.aria }}" aria-pressed="{{ g.pressed }}" disabled="{{ g.disabled }}" style="{{ g.style }}">
+                <span style="font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">{{ g.letter }}</span>
+                <span style="display: block; margin-top: 6px; border-radius: 10px; overflow: hidden;">{{ g.fig }}</span>
+              </button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ curveAnswered }}">
+            <p data-arrive="1" role="status" style="{{ curveStyle }}"><strong>{{ curveWord }}</strong> {{ curveText }}</p>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>pH changes the shape of the active site too. Each enzyme has an <strong>optimum pH</strong>, matched to where it works. The protease made in the stomach works best in strong acid; enzymes in the small intestine work best near neutral, because bile, which is alkaline, neutralises the stomach acid. Far from its optimum pH, an enzyme is denatured. AQA's required practical measures this for amylase.</p>
+      </section>
+
+      <section id="s-rp" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-accent);">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Required practical · RP4 Combined Science · RP5 Biology</p>
+        <h2 style="margin: 6px 0 0;">Change the pH. Time how long the starch lasts.</h2>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ rigFig }}</div>
+          <ol style="margin: 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 6px; font-size: 18px; line-height: 1.5;">
+            <li>Put one drop of iodine solution in each well of a spotting tile.</li>
+            <li>Put 2 cm³ of amylase solution and 1 cm³ of a pH buffer in one test tube, and 2 cm³ of starch solution in another. Stand both in a water bath at 35 °C for 5 minutes.</li>
+            <li>Mix the two and start the stopwatch.</li>
+            <li>Every 30 seconds, put one drop of the mixture into a fresh well of iodine.</li>
+            <li>Stop when a drop leaves the iodine orange-brown: the starch is all digested. Record the time.</li>
+            <li>Repeat with buffers of other pH values, and repeat each pH to calculate a mean.</li>
+          </ol>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;"><strong>Risks.</strong> Iodine solution irritates the eyes and stains: wear eye protection. Amylase can irritate skin and eyes, so avoid contact. Keep the water bath below 40 °C so it cannot scald.</p>
+      </section>
+
+      <section id="s-sim" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Run the practical</p>
+            <h2 style="margin: 6px 0 0;">{{ simTitle }}</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ simProgress }}</p>
+        </div>
+        <sc-if value="{{ gateOn }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px;">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">Commit first. Plot rate against pH. Which graph will your results make?</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); gap: 10px;">
+              <sc-for list="{{ phShapes }}" as="g" hint-placeholder-count="4">
+                <button type="button" onClick="{{ g.onClick }}" aria-label="{{ g.aria }}" style="{{ g.style }}">
+                  <span style="font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">{{ g.letter }}</span>
+                  <span style="display: block; margin-top: 6px; border-radius: 10px; overflow: hidden;">{{ g.fig }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ benchOn }}">
+          <div data-arrive="1" style="margin-top: 14px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <sc-for list="{{ phTabs }}" as="t" hint-placeholder-count="5"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+            </div>
+            <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px; align-items: start;">
+              <div style="padding: 14px; border-radius: var(--ks3-r-panel); border: 2px solid var(--ks3-ink); background: #F3F0E7;">
+                <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: #2E5E45;">Spotting tile · one drop every 30 s</p>
+                <div role="group" aria-label="{{ tileAria }}" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px 8px; justify-items: center;">
+                  <sc-for list="{{ wells }}" as="w" hint-placeholder-count="20">
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 3px;">
+                      <button type="button" onClick="{{ w.onClick }}" aria-label="{{ w.aria }}" disabled="{{ w.disabled }}" data-arrive="{{ w.arrive }}" style="{{ w.style }}"></button>
+                      <span style="font-family: var(--ks3-font-mono); font-size: 12px; color: #2E5E45;">{{ w.time }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; color: var(--ks3-ink-muted);">STOPWATCH</p><p aria-live="polite" style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 22px;">{{ watchText }}</p></div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                  <sc-if value="{{ mixOn }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onMix }}" disabled="{{ mixLocked }}" style="{{ mixStyle }}">{{ mixLabel }}</button></sc-if>
+                  <sc-if value="{{ canRepeat }}"><button type="button" onClick="{{ onRepeat }}" style="{{ repeatStyle }}">Repeat this pH</button></sc-if>
+                </div>
+                <p role="status" style="margin: 0; font-size: 17px; line-height: 1.5;">{{ simNote }}</p>
+              </div>
+            </div>
+            <p style="margin: 16px 0 6px; font-size: 17px; line-height: 1.5;">Time for the starch to be digested, in seconds. Groups B and C ran the same practical.</p>
+            <div role="table" aria-label="Time for the starch to be digested, in seconds">
+              <div role="row" style="display: grid; grid-template-columns: 1.1fr repeat(4, 1fr); gap: 6px; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--ks3-ink-muted); padding: 0 8px 6px;">
+                <span role="columnheader">pH</span><span role="columnheader">You</span><span role="columnheader">B</span><span role="columnheader">C</span><span role="columnheader">Mean</span>
+              </div>
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="5">
+                <div role="row" style="{{ r.style }}">
+                  <span role="cell" style="font-weight: 700;">{{ r.ph }}</span><span role="cell">{{ r.you }}</span><span role="cell">{{ r.b }}</span><span role="cell">{{ r.c }}</span><span role="cell">{{ r.mean }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ procOn }}">
+              <div data-arrive="1" style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 14px;">
+                <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+                  <label for="enz-anom" style="display: block; font-weight: 700; margin-bottom: 8px;">1 · One result is anomalous. Which?</label>
+                  <select id="enz-anom" class="ks3-sim-units" value="{{ anomVal }}" onChange="{{ onAnom }}" style="font-size: 18px; min-height: 48px; max-width: 100%;">
+                    <option value="">choose a result</option>
+                    <sc-for list="{{ anomOpts }}" as="o" hint-placeholder-count="12"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+                  </select>
+                  <sc-if value="{{ anomAnswered }}"><p role="status" style="margin: 10px 0 0; font-size: 17px; line-height: 1.5;"><strong>{{ anomWord }}</strong> {{ anomText }}</p></sc-if>
+                </div>
+                <sc-if value="{{ anomOk }}">
+                  <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+                    <label for="enz-mean" style="display: block; font-weight: 700; margin-bottom: 8px;">2 · Calculate the mean time at pH 6, leaving the anomaly out.</label>
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                      <input id="enz-mean" type="text" inputMode="decimal" value="{{ meanVal }}" onInput="{{ onMean }}" onChange="{{ onMean }}" placeholder="number" style="font: inherit; font-family: var(--ks3-font-mono); font-size: 20px; width: 7rem; padding: 10px 12px; min-height: 48px; border-radius: 12px; border: 2px solid var(--ks3-option-border); background: var(--ks3-card); color: var(--ks3-ink);">
+                      <span style="font-family: var(--ks3-font-mono); font-size: 18px;">s</span>
+                      <button type="button" class="ks3-reveal-btn" onClick="{{ onMeanCheck }}">Check</button>
+                    </div>
+                    <sc-if value="{{ meanChecked }}"><p role="status" style="margin: 10px 0 0; font-size: 17px; line-height: 1.5;"><strong>{{ meanWord }}</strong> {{ meanText }}</p></sc-if>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-if>
+            <sc-if value="{{ graphOn }}">
+              <div data-arrive="1" style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px; align-items: start;">
+                <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ plotFig }}</div>
+                <p role="status" style="{{ shapeStyle }}"><strong>{{ shapeWord }}</strong> {{ shapeText }}</p>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-vars" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Variables" title="Independent, dependent or control?" prompt="For the amylase investigation." bins="{{ vBins }}" items="{{ vItems }}" done-note="You change the pH, you measure the time, and you keep everything else the same so that only the pH can change the rate." on-done="{{ onVars }}" hint-size="100%,460px"></dc-import>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equation · processing the data</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Learn it</span>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">rate = 1 ÷ time</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">time in seconds (s); rate in per second (s⁻¹).</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-size: 17px; line-height: 1.5;">A shorter time is a faster rate. Plotted as rate against pH, the optimum shows as a peak; plotted as time, it would be a dip.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe a method</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Equipment, what you change, what you measure and how often, what you keep the same, how you stay safe.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Linked steps: the active site changes shape, so the substrate no longer fits, so the rate falls.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Sketch</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The right shape on labelled axes. No exact values needed.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Rate = 1 ÷ time, with the time in seconds, and the unit s⁻¹.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">An enzyme works fastest at its optimum temperature and optimum pH. Too hot, or too far from its optimum pH, and the active site changes shape: the enzyme is denatured, and the substrate no longer fits.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="enzymes" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Enzymes" spec="{{ keySpec }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure why a denatured enzyme stops working?" legal="The lock and key bench is a simplified model: real active sites are not rigid outlines, and the molecules are not drawn to scale. The practical is simulated. End-point times come from a model amylase with its optimum near pH 6 at 35 °C, with a small random scatter, and sampling every 30 seconds rounds each time up to the next sample. Groups B and C are invented results, and one of them is anomalous on purpose." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A sweet cracker', short: 'HOOK' },
+  { id: 's-fit', label: 'Lock and key', short: 'FIT' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sim', label: 'Run the practical', short: 'RUN' },
+  { id: 's-vars', label: 'Variables', short: 'VARS' },
+  { id: 's-calc', label: 'Process the data', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+/* Lock and key bench. The active site is five points; SITE1 is the same site after denaturing. */
+const SITE0 = [[252, 190], [268, 240], [280, 256], [292, 240], [308, 190]];
+const SITE1 = [[244, 190], [262, 220], [300, 238], [302, 206], [318, 192]];
+const SUB_P = 'M238 150 L322 150 L322 190 L308 190 L292 240 Q280 256 268 240 L252 190 L238 190 Z';
+const SUB_Q = 'M238 150 L322 150 L322 190 L304 190 L304 232 L256 232 L256 190 L238 190 Z';
+const PROD_L = 'M238 150 L280 150 L280 252 Q273 250 268 240 L252 190 L238 190 Z';
+const PROD_R = 'M280 150 L322 150 L322 190 L308 190 L292 240 Q287 250 280 252 Z';
+/* idle offsets: R left, Q middle, P right; dy at which each stops against an active site */
+const IDLE = { P: [170, -118], Q: [0, -118], R: [-170, -118] };
+const STOP = { P: 0, Q: -30, R: -24, Pbent: -62 };
+const DUR = { test: 2600, testWrong: 4200, again: 2500, heat: 2100, cool: 1400 };
+const FIT_ORDER = ['R', 'Q', 'P'];
+const CURVES = ['Rises to a peak, then falls steeply', 'Keeps rising as the temperature rises', 'Rises, then levels off', 'Highest when cold, then falls'];
+const PH_SHAPES = ['A peak at one pH, lower on either side', 'Rises steadily as the pH rises', 'Falls steadily as the pH rises', 'Flat: the same rate at every pH'];
+/* The practical. TRUE_T is the model amylase's time (s) to digest the starch at 35 °C. */
+const PHS = [4, 5, 6, 7, 8];
+const TRUE_T = { 4: 900, 5: 165, 6: 75, 7: 105, 8: 255 };
+const NOISE = [18, -22, 9, -14, 24, -6, 4, -19, 12, -3];
+const GROUPS = [{ id: 'B', t: { 4: null, 5: 150, 6: 90, 7: 120, 8: 240 } }, { id: 'C', t: { 4: null, 5: 180, 6: 240, 7: 90, 8: 270 } }];
+const ANOM = '6|C';
+const SAMPLE_MS = 450;
+const BLUE = '#232B45', ORANGE = '#C8792A';
+const ease = (u) => u <= 0 ? 0 : u >= 1 ? 1 : (1 - Math.cos(Math.PI * u)) / 2;
+const mmss = (s) => Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null,
+    fitStage: 0, fitPick: [null, null, null], fitAnim: null, ft: 0, fitProducts: 0,
+    think: null, curve: null,
+    gate: null, ph: 6, runs: {}, shown: 0, running: false, own: {}, runN: 0, tapNote: '',
+    anom: '', mean: '', meanChecked: false,
+    vars: false, calc: 0, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+    this.reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.tick = setInterval(() => {
+      const st = this.state;
+      if (st.fitAnim) {
+        const ft = Date.now() - this.fitStart;
+        if (ft >= DUR[st.fitAnim]) this.finishFit(); else this.setState({ ft });
+      }
+      if (st.running) {
+        const run = st.runs[st.ph];
+        const n = Math.min(run.total, Math.floor((Date.now() - this.runStart) / SAMPLE_MS) + 1);
+        if (n !== st.shown) this.setState({ shown: n });
+        if (n >= run.total) this.endRun();
+      }
+    }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); clearInterval(this.tick); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  opt(on, dis) {
+    return 'font:inherit;font-size:17px;font-weight:600;line-height:1.4;text-align:left;padding:12px 14px;min-height:48px;border-radius:14px;cursor:' + (dis ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' + (dis && !on ? 'opacity:.62;' : '');
+  }
+  /* ── lock and key bench ─────────────────────────────────── */
+  startFit(kind) {
+    this.fitStart = Date.now();
+    if (this.reduced) { this.setState({ fitAnim: kind, ft: DUR[kind] }, () => this.finishFit()); return; }
+    this.setState({ fitAnim: kind, ft: 0 });
+  }
+  finishFit() {
+    const st = this.state; const kind = st.fitAnim;
+    const add = kind === 'test' || kind === 'testWrong' || kind === 'again' ? 2 : 0;
+    this.setState({ fitAnim: null, ft: DUR[kind] || 0, fitProducts: st.fitProducts + add, fitDone: kind });
+  }
+  sitePts(d) { return SITE0.map((a, i) => [a[0] + (SITE1[i][0] - a[0]) * d, a[1] + (SITE1[i][1] - a[1]) * d]); }
+  enzymePath(d, wob) {
+    const p = this.sitePts(d).map((q, i) => [q[0] + (i % 2 ? wob : -wob), q[1] + (i === 2 ? wob : 0)]);
+    const f = (q) => q[0].toFixed(1) + ' ' + q[1].toFixed(1);
+    return 'M150 318 Q132 250 160 200 Q175 188 200 190 L' + f(p[0]) + ' L' + f(p[1]) + ' Q' + f(p[2]) + ' ' + f(p[3]) + ' L' + f(p[4]) + ' L360 190 Q392 186 405 205 Q428 250 410 318 Z';
+  }
+  mol(key, dx, dy, op) {
+    const D = window.KS4D; const g = (inner) => '<g transform="translate(' + dx.toFixed(1) + ' ' + dy.toFixed(1) + ')"' + (op < 1 ? ' opacity="' + op.toFixed(2) + '"' : '') + '>' + inner + '</g>';
+    if (key === 'R') return g(D.circ(280, 170, 36, D.C.metal, D.C.stroke, 2.5) + D.T(280, 178, 'R', 22));
+    return g('<path d="' + (key === 'P' ? SUB_P : SUB_Q) + '" fill="' + D.C.metal + '" stroke="' + D.C.stroke + '" stroke-width="2.5" stroke-linejoin="round"/>' + D.T(280, 178, key, 22));
+  }
+  /* approach to (0, stop), then either hold (dock) or bounce back to idle */
+  path(key, t, stop, idle, dock) {
+    const a = ease(t / 900);
+    if (t < 900 || dock) return [idle[0] * (1 - a), idle[1] + (stop - idle[1]) * a];
+    const b = ease((t - 900) / 600);
+    return [idle[0] * b, stop + (idle[1] - stop) * b];
+  }
+  fitFigure() {
+    const s = this.state; const D = window.KS4D; const C = D.C;
+    const kind = s.fitAnim; const t = kind ? s.ft : 0;
+    const stage = s.fitStage;
+    const heated = stage >= 2 || (stage === 1 && s.fitPick[1] !== null);
+    const dDen = kind === 'heat' ? (t < 700 ? ease(t / 700) : 1) : heated ? 1 : 0;
+    const wob = kind === 'heat' && t < 700 ? Math.sin(t / 30) * 3 : 0;
+    let b = '<path d="' + this.enzymePath(dDen, wob) + '" fill="' + C.nm + '" stroke="' + C.stroke + '" stroke-width="2.5" stroke-linejoin="round"/>';
+    b += D.T(280, 300, 'amylase (enzyme)', 22);
+    b += D.line(306, 206, 366, 236, 2, C.label) + D.T(370, 244, 'active site', 20, { anchor: 'start' });
+    let label = '';
+    if (stage === 0 && !kind && s.fitPick[0] === null) {
+      FIT_ORDER.forEach((k) => { b += this.mol(k, IDLE[k][0], IDLE[k][1], 1); });
+    } else if (kind === 'test' || kind === 'testWrong' || kind === 'again') {
+      let tp = t;
+      if (kind === 'testWrong') {
+        const k = FIT_ORDER[s.fitPick[0]];
+        if (t < 1600) { const q = this.path(k, t, STOP[k], IDLE[k], false); b += this.mol(k, q[0], q[1], t > 1400 ? 1 - (t - 1400) / 200 : 1); label = t > 700 ? 'does not fit' : ''; }
+        tp = t - 1600;
+      }
+      if (tp >= 0) {
+        const idle = kind === 'again' ? [0, -118] : IDLE.P;
+        if (tp < 1500) { const q = this.path('P', tp, 0, idle, true); b += this.mol('P', q[0], q[1], 1); if (tp >= 900) label = 'enzyme–substrate complex'; }
+        else {
+          const u = ease((tp - 1500) / 1000);
+          b += '<g transform="translate(' + (-190 * u).toFixed(1) + ' ' + (-112 * u).toFixed(1) + ')"><path d="' + PROD_L + '" fill="' + C.gold + '" stroke="' + C.stroke + '" stroke-width="2.5" stroke-linejoin="round"/></g>';
+          b += '<g transform="translate(' + (190 * u).toFixed(1) + ' ' + (-112 * u).toFixed(1) + ')"><path d="' + PROD_R + '" fill="' + C.gold + '" stroke="' + C.stroke + '" stroke-width="2.5" stroke-linejoin="round"/></g>';
+          label = 'products released';
+        }
+      }
+    } else {
+      // products made so far rest in the top corners; the next substrate waits above the site
+      if (s.fitProducts > 0) {
+        b += '<g transform="translate(-190 -112)"><path d="' + PROD_L + '" fill="' + C.gold + '" stroke="' + C.stroke + '" stroke-width="2.5" stroke-linejoin="round"/></g>';
+        b += '<g transform="translate(190 -112)"><path d="' + PROD_R + '" fill="' + C.gold + '" stroke="' + C.stroke + '" stroke-width="2.5" stroke-linejoin="round"/></g>';
+        b += D.T(70, 160, 'products', 20) + D.T(490, 160, 'products', 20);
+      }
+      const t0 = kind === 'heat' ? 700 : 0;
+      if ((kind === 'heat' || kind === 'cool') && t >= t0) { const q = this.path('P', t - t0, STOP.Pbent, [0, -118], false); b += this.mol('P', q[0], q[1], 1); if (t - t0 > 700) label = 'no longer fits'; }
+      else b += this.mol('P', 0, -118, 1);
+    }
+    if (label) b += D.T(280, 356, label, 22, { fill: C.arrow });
+    const alt = stage === 0 && !kind && s.fitPick[0] === null ? 'An enzyme with a shaped active site, and three molecules, R, Q and P, above it' :
+      dDen > 0 ? 'The enzyme’s active site has changed shape; molecule P cannot fit into it' : 'Molecule P fits the active site exactly, then leaves as two product pieces; the enzyme is unchanged';
+    return D.svg(560, 372, b, alt);
+  }
+  /* ── small graph thumbnails ─────────────────────────────── */
+  thumb(fn, xl, alt) {
+    const D = window.KS4D; let b = D.line(30, 140, 186, 140, 2) + D.line(30, 14, 30, 140, 2) + D.T(184, 158, xl, 13, { anchor: 'end' }) + D.T(36, 24, 'rate', 13, { anchor: 'start' });
+    let d = '';
+    for (let i = 0; i <= 60; i++) { const u = i / 60; d += (d ? 'L' : 'M') + (32 + u * 150).toFixed(1) + ' ' + (138 - fn(u) * 1.6).toFixed(1) + ' '; }
+    b += '<path d="' + d + '" fill="none" stroke="' + D.C.arrow + '" stroke-width="4" stroke-linejoin="round"/>';
+    return D.svg(200, 166, b, alt);
+  }
+  curveFn(k) {
+    if (k === 0) return (u) => u < 0.62 ? 66 * Math.pow(u / 0.62, 1.6) : 66 * Math.max(0, 1 - Math.pow((u - 0.62) / 0.24, 2));
+    if (k === 1) return (u) => 70 * Math.pow(u, 1.5);
+    if (k === 2) return (u) => 64 * (1 - Math.exp(-u * 4));
+    return (u) => 64 * Math.pow(1 - u, 1.3) + 3;
+  }
+  phFn(k) {
+    if (k === 0) return (u) => 4 + 62 * Math.exp(-Math.pow((u - 0.5) / 0.2, 2));
+    if (k === 1) return (u) => 6 + 60 * u;
+    if (k === 2) return (u) => 66 - 60 * u;
+    return () => 36;
+  }
+  rig() {
+    const D = window.KS4D; const C = D.C; let b = '';
+    // spotting tile
+    b += '<rect x="24" y="64" width="232" height="150" rx="14" fill="#FFFFFF" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) { const n = r * 4 + c; b += D.circ(58 + c * 54, 100 + r * 42, 15, n < 3 ? BLUE : n < 5 ? ORANGE : '#E9B44C', C.stroke, 2); }
+    b += D.T(140, 244, 'spotting tile with iodine', 19);
+    // dropping pipette
+    b += '<path d="M150 18 L158 18 L158 52 L154 60 L150 52 Z" fill="#FFFFFF" stroke="' + C.stroke + '" stroke-width="2"/>' + D.circ(154, 14, 7, C.muted, C.stroke, 2);
+    // water bath
+    b += '<rect x="300" y="110" width="236" height="128" rx="10" fill="#CFE5F2" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    b += D.line(300, 132, 536, 132, 2, C.blue);
+    [[340, '#F7F2E4', 'amylase + buffer'], [410, '#FFFFFF', 'starch']].forEach((tb) => {
+      b += '<path d="M' + (tb[0] - 14) + ' 60 L' + (tb[0] - 14) + ' 196 Q' + tb[0] + ' 214 ' + (tb[0] + 14) + ' 196 L' + (tb[0] + 14) + ' 60" fill="' + tb[1] + '" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    });
+    b += D.T(330, 32, 'amylase', 18) + D.T(330, 52, '+ buffer', 18) + D.T(414, 52, 'starch', 18);
+    b += '<rect x="468" y="30" width="12" height="170" rx="6" fill="#FFFFFF" stroke="' + C.stroke + '" stroke-width="2"/>' + D.line(474, 120, 474, 196, 6, C.red) + D.circ(474, 198, 9, C.red, C.stroke, 2);
+    b += D.T(418, 266, 'water bath at 35 °C', 19);
+    return D.svg(560, 280, b, 'Apparatus: a spotting tile with iodine in each well and a dropping pipette; a water bath at 35 degrees holding a tube of amylase with buffer, a tube of starch, and a thermometer');
+  }
+  /* ── the practical ─────────────────────────────────────── */
+  onMix() {
+    const st = this.state; if (st.running || st.own[st.ph] !== undefined) return;
+    const T = TRUE_T[st.ph] + NOISE[st.runN % NOISE.length];
+    let end = Math.ceil(T / 30); if (end * 30 > 600) end = null;
+    const total = end ? Math.min(20, end + 2) : 20;
+    const runs = Object.assign({}, st.runs, { [st.ph]: { end, total } });
+    this.runStart = Date.now();
+    if (this.reduced) { this.setState({ runs, shown: total, running: false, runN: st.runN + 1, tapNote: '' }, () => this.endRun()); return; }
+    this.setState({ runs, shown: 1, running: true, runN: st.runN + 1, tapNote: '' });
+  }
+  endRun() {
+    const st = this.state; const run = st.runs[st.ph];
+    const patch = { running: false, shown: run.total };
+    if (!run.end) { patch.own = Object.assign({}, st.own, { [st.ph]: null }); patch.tapNote = 'Every drop went blue-black: the starch was not all digested in 10 minutes. Record it as over 600 s.'; }
+    else patch.tapNote = 'Tap the first well where the iodine stayed orange-brown.';
+    this.setState(patch);
+  }
+  onWell(i) {
+    const st = this.state; const run = st.runs[st.ph];
+    if (!run || st.running || !run.end || st.own[st.ph] !== undefined) return;
+    if (i === run.end) this.setState({ own: Object.assign({}, st.own, { [st.ph]: 30 * i }), tapNote: 'Recorded: ' + (30 * i) + ' s. Before ' + mmss(30 * i) + ' every drop went blue-black; this one stayed orange-brown, so the starch was gone.' });
+    else if (i < run.end) this.setState({ tapNote: 'That drop went blue-black at ' + mmss(30 * i) + ': starch was still there.' });
+    else this.setState({ tapNote: 'Orange-brown, but an earlier drop was too. The time is the first drop that stays orange-brown.' });
+  }
+  plot(means) {
+    const D = window.KS4D; const W = 560, H = 400, L = 92, B = 330, Rt = 530, Tp = 40;
+    const X = (p) => L + (Rt - L) * ((p - 4) / 4), Y = (r) => B - (B - Tp) * (r / 0.016);
+    let b = D.line(L, Tp, L, B, 2.5) + D.line(L, B, Rt, B, 2.5);
+    PHS.forEach((p) => { b += D.line(X(p), B, X(p), B + 8, 2) + D.T(X(p), B + 30, String(p), 22, { weight: 'normal', fill: D.C.stroke }); });
+    [0.005, 0.010, 0.015].forEach((r) => { b += D.line(L - 8, Y(r), L, Y(r), 2) + D.T(L - 12, Y(r) + 7, r.toFixed(3), 20, { weight: 'normal', fill: D.C.stroke, anchor: 'end' }) + D.line(L, Y(r), Rt, Y(r), 1, '#C9C3B2'); });
+    b += D.T((L + Rt) / 2, H - 12, 'pH', 22) + '<text x="22" y="' + ((Tp + B) / 2) + '" transform="rotate(-90 22 ' + ((Tp + B) / 2) + ')" font-family="' + D.F + '" font-size="22" font-weight="bold" fill="' + D.C.label + '" text-anchor="middle">rate / s⁻¹</text>';
+    const pts = PHS.map((p) => [X(p), Y(means[p] ? 1 / means[p] : 0)]);
+    // curve of best fit through the means (Catmull-Rom as cubic Bezier)
+    let d = 'M' + pts[0][0].toFixed(1) + ' ' + pts[0][1].toFixed(1);
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+      const c1 = [p1[0] + (p2[0] - p0[0]) / 6, Math.min(B, p1[1] + (p2[1] - p0[1]) / 6)], c2 = [p2[0] - (p3[0] - p1[0]) / 6, Math.min(B, p2[1] - (p3[1] - p1[1]) / 6)];
+      d += ' C' + c1[0].toFixed(1) + ' ' + c1[1].toFixed(1) + ' ' + c2[0].toFixed(1) + ' ' + c2[1].toFixed(1) + ' ' + p2[0].toFixed(1) + ' ' + p2[1].toFixed(1);
+    }
+    b += '<path d="' + d + '" fill="none" stroke="' + D.C.arrow + '" stroke-width="3"/>';
+    PHS.forEach((p, i) => { const x = pts[i][0], y = pts[i][1]; b += means[p] ? D.line(x - 7, y - 7, x + 7, y + 7, 2.6) + D.line(x - 7, y + 7, x + 7, y - 7, 2.6) : D.circ(x, y, 7, D.C.cream, D.C.stroke, 2.4) + D.T(x + 12, y - 16, 'not digested', 19, { anchor: 'start', weight: 'normal' }); });
+    return D.svg(W, H, b, 'Graph of rate against pH from the mean times: highest at pH 6, lower at pH 5 and 7, lower still at pH 8, and no rate measured at pH 4');
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true };
+    const slug = 'enzymes';
+    const ready = !!(s.libReady && K && D);
+    const hi = !!R.isHigher;
+    // ── practical bookkeeping
+    const run = s.runs[s.ph];
+    const ownDone = PHS.filter((p) => s.own[p] !== undefined).length;
+    const allOwn = ownDone === PHS.length;
+    const anomOk = s.anom === ANOM;
+    const meanTarget = s.own[6] ? (s.own[6] + 90) / 2 : 0;
+    const meanNum = parseFloat(String(s.mean).replace(',', '.'));
+    const meanOk = s.meanChecked && Math.abs(meanNum - meanTarget) <= 0.6;
+    const means = {};
+    PHS.forEach((p) => {
+      const vals = [s.own[p]].concat(GROUPS.map((g) => (anomOk && ANOM === p + '|' + g.id) ? undefined : g.t[p])).filter((v) => typeof v === 'number');
+      means[p] = p === 4 ? null : (vals.length ? Math.round(vals.reduce((a, c) => a + c, 0) / vals.length) : null);
+    });
+    const fitDone = s.fitStage >= 3;
+    const done = [s.hook !== null, fitDone, s.think !== null && s.curve !== null, allOwn && meanOk, s.vars, s.calc >= 2, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    // ── lock and key bench state machine: stage 0 pick the substrate, 1 heat, 2 cool, 3 done
+    const fitQs = [
+      { prompt: 'Three molecules collide with amylase. Which one is its substrate?', options: [
+        { text: 'R', key: 'R', correct: false, reply: 'R is the wrong shape for the active site. Size is not the point; shape is. Watch P.' },
+        { text: 'Q', key: 'Q', correct: false, reply: 'Close is not enough. Q’s flat end cannot sit in the narrowing active site. Watch P.' },
+        { text: 'P', key: 'P', correct: true, reply: 'P’s shape is complementary to the active site, so it binds. AQA’s word is complementary, not “the same shape”.' }] },
+      { prompt: 'The enzyme is now heated to 60 °C. Predict: what happens when P arrives?', options: [
+        { text: 'It binds and reacts faster: hotter particles have more energy', correct: false, reply: 'Up to the optimum, yes. 60 °C is far above it: the active site changes shape.' },
+        { text: 'It cannot bind: the active site has changed shape', correct: true, reply: 'The enzyme is denatured, so the substrate no longer fits.' },
+        { text: 'It binds once, then the enzyme is used up', correct: false, reply: 'Enzymes are not used up: this one was reused before it was heated. Heat changes its shape instead.' }] },
+      { prompt: 'The enzyme is cooled back to 37 °C. Will P fit now?', options: [
+        { text: 'Yes: cooling brings back the shape of the active site', correct: false, reply: 'Denaturing is permanent. Cooling does not restore the active site.' },
+        { text: 'No: the change of shape is permanent', correct: true, reply: 'Denatured for good: the substrate still cannot bind.' }] }
+    ];
+    const st = Math.min(s.fitStage, 2);
+    const q = fitQs[st];
+    const pick = s.fitPick[st];
+    const animating = !!s.fitAnim;
+    const asking = s.fitStage < 3 && pick === null && !animating;
+    const chosen = pick !== null ? q.options[pick] : null;
+    const replyShown = !!chosen && !animating && s.fitStage < 3;
+    const canNext = replyShown && s.fitStage < 3;
+    const fitTemp = s.fitStage === 0 ? '37 °C' : s.fitStage === 1 ? (pick !== null ? '60 °C' : '37 °C') : s.fitStage === 2 && pick === null ? '60 °C' : '37 °C · cooled';
+    const denatured = s.fitStage >= 2 || (s.fitStage === 1 && pick !== null && !animating);
+    // ── curve sketch
+    const curveRight = s.curve === 0;
+    const curveTexts = [
+      'The rate rises as the temperature rises, because the molecules collide more often. It peaks at the optimum, then falls steeply as more and more of the enzyme is denatured.',
+      'A reaction with no enzyme can keep speeding up. An enzyme cannot: above the optimum its active site changes shape, so the rate falls.',
+      'A level line means something has run out or every active site is busy. Here the rate falls, because the enzyme is denatured.',
+      'Cold does not denature an enzyme: it slows it, because molecules collide less often. The rate rises with temperature up to the optimum.'
+    ];
+    // ── practical tiles
+    const shownN = run ? s.shown : 0;
+    const wells = [];
+    for (let i = 1; i <= 20; i++) {
+      const has = run && i <= shownN;
+      const orange = has && run.end && i >= run.end;
+      const tappable = has && !s.running && run.end && s.own[s.ph] === undefined;
+      wells.push({ time: mmss(30 * i), arrive: has && s.running && i === shownN ? '1' : null,
+        aria: (has ? (orange ? 'Orange-brown' : 'Blue-black') : 'Not sampled yet') + ' at ' + mmss(30 * i), disabled: !tappable,
+        style: 'width:42px;height:42px;padding:0;border-radius:50%;cursor:' + (tappable ? 'pointer' : 'default') + ';border:2px solid #1A1A1A;background:' + (has ? (orange ? ORANGE : BLUE) : '#FFFFFF') + ';' + (s.own[s.ph] === 30 * i ? 'box-shadow:0 0 0 4px #2E8B7F;' : ''),
+        onClick: () => this.onWell(i) });
+    }
+    const ownTxt = (p) => s.own[p] === undefined ? '—' : s.own[p] === null ? '> 600' : String(s.own[p]);
+    const cellTxt = (p, g) => g.t[p] === null ? '> 600' : String(g.t[p]) + (anomOk && ANOM === p + '|' + g.id ? ' ✕' : '');
+    const anomOpts = [];
+    PHS.forEach((p) => { if (p === 4) return; if (typeof s.own[p] === 'number') anomOpts.push({ value: p + '|Y', label: 'pH ' + p + ' · You · ' + s.own[p] + ' s' }); GROUPS.forEach((g) => anomOpts.push({ value: p + '|' + g.id, label: 'pH ' + p + ' · Group ' + g.id + ' · ' + g.t[p] + ' s' })); });
+    const shapeRight = s.gate === 0;
+    const shapeTexts = 'A peak: the rate is fastest near pH 6 and falls on either side. Away from the optimum pH, the active site changes shape, so starch binds less often; at pH 4, the starch was not all digested in 10 minutes.';
+    const timeNow = run ? Math.min(run.total, shownN) * 30 : 0;
+    // ── CFIFA, Foundation and Higher numbers differ
+    const S1 = 's⁻¹';
+    const cfExamples = hi ? [
+      { tab: 'Nothing to convert', head: 'At pH 6, the iodine stayed orange-brown after 75 s. Calculate the rate of reaction.', steps: [
+        { letter: 'C', label: 'Convert', line: 'Nothing to convert: the time is already in seconds.', note: '' },
+        { letter: 'F', label: 'Formula', line: 'rate = 1 ÷ time', note: '' },
+        { letter: 'I', label: 'Insert', line: 'rate = 1 ÷ 75', note: '' },
+        { letter: 'F', label: 'Fine-tune', line: 'rate = 0.0133…', note: '' },
+        { letter: 'A', label: 'Answer', line: 'rate = 0.013 ' + S1, note: S1 + ' means “per second”.' }] },
+      { tab: 'Convert first', head: 'At pH 7, the starch took 1 minute 45 seconds to digest. Calculate the rate of reaction in ' + S1 + '.', next: 'Convert first, then the same four lines. Your turn below.', steps: [
+        { letter: 'C', label: 'Convert', line: '1 × 60 + 45 = 105 s', note: 'Minutes to seconds, then add the extra seconds.' },
+        { letter: 'F', label: 'Formula', line: 'rate = 1 ÷ time', note: '' },
+        { letter: 'I', label: 'Insert', line: 'rate = 1 ÷ 105', note: '' },
+        { letter: 'F', label: 'Fine-tune', line: 'rate = 0.00952…', note: '' },
+        { letter: 'A', label: 'Answer', line: 'rate = 0.0095 ' + S1, note: 'Using 1.45 min gives 0.69: wrong on two counts, the unit and the 45 seconds.' }] }
+    ] : [
+      { tab: 'Nothing to convert', head: 'At pH 7, the iodine stayed orange-brown after 90 s. Calculate the rate of reaction.', steps: [
+        { letter: 'C', label: 'Convert', line: 'Nothing to convert: the time is already in seconds.', note: '' },
+        { letter: 'F', label: 'Formula', line: 'rate = 1 ÷ time', note: '' },
+        { letter: 'I', label: 'Insert', line: 'rate = 1 ÷ 90', note: '' },
+        { letter: 'F', label: 'Fine-tune', line: 'rate = 0.0111…', note: '' },
+        { letter: 'A', label: 'Answer', line: 'rate = 0.011 ' + S1, note: S1 + ' means “per second”.' }] },
+      { tab: 'Convert first', head: 'At pH 5, the starch took 2.5 minutes to digest. Calculate the rate of reaction in ' + S1 + '.', next: 'Convert first, then the same four lines. Your turn below.', steps: [
+        { letter: 'C', label: 'Convert', line: '2.5 × 60 = 150 s', note: 'The rate is wanted per second.' },
+        { letter: 'F', label: 'Formula', line: 'rate = 1 ÷ time', note: '' },
+        { letter: 'I', label: 'Insert', line: 'rate = 1 ÷ 150', note: '' },
+        { letter: 'F', label: 'Fine-tune', line: 'rate = 0.00666…', note: '' },
+        { letter: 'A', label: 'Answer', line: 'rate = 0.0067 ' + S1, note: 'Unconverted, 1 ÷ 2.5 = 0.4: that is per minute, sixty times bigger.' }] }
+    ];
+    const cfQuestions = hi ? [
+      { tab: 'Question 1', id: 'enz-q1', head: 'At pH 7, the rate was 0.0125 ' + S1 + '. Calculate the time the starch took to digest.', close: 'Rearranged: time = 1 ÷ rate.',
+        steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert.' }, { letter: 'F', label: 'Formula', placeholder: 'learn it', line: 'rate = 1 ÷ time' }, { letter: 'I', label: 'Insert', placeholder: '… = 1 ÷ time', line: '0.0125 = 1 ÷ time' }, { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange: time = …', line: 'time = 1 ÷ 0.0125 = 80' }, { letter: 'A', label: 'Answer', placeholder: 'time = … with unit', line: 'time = 80 s' }] },
+      { tab: 'Question 2', id: 'enz-q2', head: 'At pH 5, the starch took 3 minutes 15 seconds to digest. Calculate the rate of reaction in ' + S1 + '.', close: 'Convert the minutes, then add the extra 15 s.',
+        steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '3 × 60 + 15 = 195 s' }, { letter: 'F', label: 'Formula', placeholder: 'learn it', line: 'rate = 1 ÷ time' }, { letter: 'I', label: 'Insert', placeholder: 'rate = 1 ÷ …', line: 'rate = 1 ÷ 195' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'rate = 0.00513…' }, { letter: 'A', label: 'Answer', placeholder: 'rate = … with unit', line: 'rate = 0.0051 ' + S1 }] }
+    ] : [
+      { tab: 'Question 1', id: 'enz-q1', head: 'At pH 6, the starch was digested in 60 s. Calculate the rate of reaction.', close: 'Shorter time, faster rate: 0.017 ' + S1 + ' beats 0.011 ' + S1 + ' at pH 7.',
+        steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert.' }, { letter: 'F', label: 'Formula', placeholder: 'learn it', line: 'rate = 1 ÷ time' }, { letter: 'I', label: 'Insert', placeholder: 'rate = 1 ÷ …', line: 'rate = 1 ÷ 60' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'rate = 0.0166…' }, { letter: 'A', label: 'Answer', placeholder: 'rate = … with unit', line: 'rate = 0.017 ' + S1 }] },
+      { tab: 'Question 2', id: 'enz-q2', head: 'At pH 8, the starch took 4 minutes to digest. Calculate the rate of reaction in ' + S1 + '.', close: 'Unconverted, 1 ÷ 4 = 0.25 per minute: sixty times too big.',
+        steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '4 × 60 = 240 s' }, { letter: 'F', label: 'Formula', placeholder: 'learn it', line: 'rate = 1 ÷ time' }, { letter: 'I', label: 'Insert', placeholder: 'rate = 1 ÷ …', line: 'rate = 1 ÷ 240' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'rate = 0.00416…' }, { letter: 'A', label: 'Answer', placeholder: 'rate = … with unit', line: 'rate = 0.0042 ' + S1 }] }
+    ];
+    // ── the bank: frozen q1's wrong-answer explanation 1 says the rate rises above the optimum
+    // (examination C19). Withheld while that text stands; it returns by itself once a ruling corrects it.
+    const bankAll = ready ? K.bank(slug, R.route) : [];
+    const bank = bankAll.filter((it) => !(it && it.prompt.indexOf('heated to 80') >= 0 && it.options.some((o) => o.reply.indexOf('Above the optimum') === 0)));
+    return Object.assign({ routeWords: R.route, routeSwitchOptions: [] }, R, {
+      eyebrow: R.isTriple ? 'AQA Biology (8461) 4.2.2.1 · Required practical' : 'AQA Biology (8464) 4.2.2.1 · Required practical',
+      keySpec: R.isTriple ? 'AQA 4.2.2.1 (8461) · RP5' : 'AQA 4.2.2.1 (8464) · RP4',
+      video: K && s.hook !== null && s.hook !== undefined ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      endPrev: (this.props.mrbPrevNext || {}).prev || null,
+      endNext: (this.props.mrbPrevNext || {}).next || null,
+      endConnects: ready && K.hrefFor ? [{ href: K.hrefFor('digestive-system', R), label: 'The digestive system' }].filter((c) => c.href) : [],
+      hookOptions: [
+        { text: 'Something in saliva breaks the starch down into sugar', reply: 'Hold that. The lesson names the something, then tests it.' },
+        { text: 'The starch dissolves in saliva and becomes sugar', reply: 'Dissolving does not turn one substance into another: dissolved salt is still salt.' },
+        { text: 'Chewing releases sugar hidden inside the cracker', reply: 'Chewing makes smaller pieces, but the pieces are still starch.' },
+        { text: 'Warmth in the mouth cooks the starch into sugar', reply: 'Body temperature is far too cool to cook anything. Something is speeding the reaction up.' }
+      ],
+      hookReveal: 'Saliva contains amylase, an enzyme. Amylase breaks starch down into sugars. Without it, that reaction would be far too slow to notice at body temperature.',
+      onHook: (i) => this.setState({ hook: i }),
+      // lock and key
+      fitTitle: ['Which molecule is the key?', 'Now heat the enzyme.', 'Now cool it down again.', 'Heated, then cooled.'][s.fitStage],
+      fitTemp,
+      fitFig: ready ? K.fig(this.fitFigure(), '') : null,
+      fitAsking: asking, fitPrompt: q.prompt,
+      fitOptions: q.options.map((o, i) => ({ text: o.text, style: this.opt(false, false), onClick: () => {
+        if (this.state.fitAnim || this.state.fitPick[st] !== null) return;
+        const fp = this.state.fitPick.slice(); fp[st] = i;
+        this.setState({ fitPick: fp }, () => this.startFit(st === 0 ? (o.correct ? 'test' : 'testWrong') : st === 1 ? 'heat' : 'cool'));
+      } })),
+      fitHasReply: replyShown || fitDone,
+      fitWord: fitDone ? 'Denatured.' : chosen ? (chosen.correct ? 'Yes.' : 'Watch what happened instead.') : '',
+      fitReply: fitDone ? 'The active site has changed shape for good, so no enzyme–substrate complexes form. Cold would only have slowed it; heat changed its shape.' : chosen ? chosen.reply : '',
+      fitReplyStyle: 'margin:0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (fitDone || (chosen && chosen.correct) ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      fitCount: denatured ?'Enzyme: 1 · denatured · products made: ' + s.fitProducts : 'Enzyme: 1 · unchanged · products made: ' + s.fitProducts,
+      fitCanNext: canNext, fitCanAgain: s.fitStage === 0,
+      fitBtnStyle: this.seg(false),
+      onFitAgain: () => { if (!this.state.fitAnim) this.startFit('again'); },
+      fitNextLabel: ['Heat the enzyme to 60 °C', 'Cool it back to 37 °C', 'Done'][st],
+      onFitNext: () => { if (!this.state.fitAnim) this.setState((x) => ({ fitStage: x.fitStage + 1, fitDone: null })); },
+      // misconception + sketch
+      thinkOptions: [
+        { text: 'The amylase is denatured: its active site changes shape, so starch no longer fits.', correct: true, reply: 'Name the change, then its consequence: both carry marks.' },
+        { text: 'The amylase is killed, but it comes back to life once it is cooled to 37 °C.', correct: false, reply: 'Two errors: nothing was alive to die, and cooling does not undo the change.' },
+        { text: 'The amylase is used up faster, because the hot reaction runs so quickly.', correct: false, reply: 'Enzymes are not used up, and above the optimum the rate falls, not rises.' },
+        { text: 'The amylase melts, so it can no longer move around in the mixture.', correct: false, reply: 'Nothing melts. The protein keeps its atoms; its shape, and the active site’s, changes.' }
+      ],
+      thinkReveal: 'Enzymes are proteins, not living things, so they are never “killed”. Above the optimum temperature, or at an extreme pH, the active site changes shape: the enzyme is denatured. Cold is different: it slows an enzyme down without changing its shape, and warming it again restores the rate.',
+      onThink: (i) => this.setState({ think: i }),
+      curves: ready ? [0, 1, 2, 3].map((k) => ({ letter: 'ABCD'[k], aria: 'Sketch ' + 'ABCD'[k] + ': ' + CURVES[k], pressed: s.curve === k, disabled: s.curve !== null,
+        fig: K.fig(this.thumb(this.curveFn(k), 'temperature', CURVES[k]), CURVES[k]),
+        style: 'text-align:left;font:inherit;padding:10px;border-radius:14px;cursor:' + (s.curve === null ? 'pointer' : 'default') + ';background:' + (s.curve === k ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (s.curve === k ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';color:var(--ks3-ink);' + (s.curve !== null && s.curve !== k ? 'opacity:.62;' : ''),
+        onClick: () => { if (this.state.curve === null) this.setState({ curve: k }); } })) : [],
+      curveAnswered: s.curve !== null,
+      curveWord: curveRight ? 'Sketch A, yes.' : 'It is sketch A.',
+      curveText: s.curve !== null ? curveTexts[s.curve] + (curveRight ? '' : ' ' + curveTexts[0]) : '',
+      curveStyle: 'margin:14px 0 0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (curveRight ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      // practical
+      rigFig: ready ? K.fig(this.rig(), '') : null,
+      simTitle: s.gate === null ? 'Call the graph first.' : 'Buffer at pH ' + s.ph + ' · ' + (s.own[s.ph] !== undefined ? 'recorded' : s.running ? 'sampling' : run ? 'find the end point' : 'ready to mix'),
+      simProgress: ownDone + ' of 5 pH values',
+      gateOn: s.gate === null, benchOn: s.gate !== null,
+      phShapes: ready ? [0, 1, 2, 3].map((k) => ({ letter: 'ABCD'[k], aria: 'Graph ' + 'ABCD'[k] + ': ' + PH_SHAPES[k], fig: K.fig(this.thumb(this.phFn(k), 'pH', PH_SHAPES[k]), PH_SHAPES[k]),
+        style: 'text-align:left;font:inherit;padding:10px;border-radius:14px;cursor:pointer;background:var(--ks3-card);border:2px solid var(--ks3-option-border);color:var(--ks3-ink);',
+        onClick: () => this.setState({ gate: k }) })) : [],
+      phTabs: PHS.map((p) => ({ label: 'pH ' + p, pressed: s.ph === p, style: this.seg(s.ph === p), onClick: () => { if (!this.state.running) this.setState({ ph: p, shown: this.state.runs[p] ? this.state.runs[p].total : 0, tapNote: '' }); } })),
+      wells, tileAria: 'Spotting tile for pH ' + s.ph + ': twenty wells, one every 30 seconds',
+      watchText: mmss(timeNow),
+      mixOn: !run || s.running, onMix: () => this.onMix(), mixLocked: s.running || s.own[s.ph] !== undefined || !!(run && run.end),
+      mixLabel: s.running ? 'Sampling…' : (run ? 'Mixed' : 'Mix and start the stopwatch'),
+      mixStyle: s.running || run ? 'cursor:default;opacity:.55;' : '',
+      canRepeat: !!run && !s.running, repeatStyle: this.seg(false),
+      onRepeat: () => { if (this.state.running) return; const ph = this.state.ph; const runs = Object.assign({}, this.state.runs); delete runs[ph]; const own = Object.assign({}, this.state.own); delete own[ph]; this.setState({ runs, own, shown: 0, tapNote: '', anom: '', mean: '', meanChecked: false }); },
+      simNote: s.tapNote || (run ? '' : 'Choose a buffer, then mix. A blue-black drop means starch is still there.'),
+      rows: PHS.map((p) => ({ ph: 'pH ' + p, you: ownTxt(p), b: cellTxt(p, GROUPS[0]), c: cellTxt(p, GROUPS[1]),
+        mean: meanOk ? (p === 4 ? '> 600' : String(means[p])) : '—',
+        style: 'display:grid;grid-template-columns:1.1fr repeat(4,1fr);gap:6px;align-items:center;padding:8px;border-radius:10px;font-family:var(--ks3-font-mono);font-size:16px;' + (p === s.ph ? 'background:var(--ks3-accent-tint);' : 'background:var(--ks3-card);') + 'margin-top:4px;' })),
+      procOn: allOwn,
+      anomVal: s.anom, onAnom: (e) => this.setState({ anom: e.target.value, mean: '', meanChecked: false }), anomOpts,
+      anomAnswered: s.anom !== '', anomOk,
+      anomWord: anomOk ? 'Yes: Group C at pH 6.' : 'Look again.',
+      anomText: anomOk ? '240 s is far from the other times at pH 6. Leave it out of the mean. It is marked ✕ in the table.' : 'An anomaly does not fit the pattern of the other results for the same pH. Compare each group with the others in its row.',
+      meanVal: s.mean, onMean: (e) => this.setState({ mean: e.target.value, meanChecked: false }), onMeanCheck: () => this.setState({ meanChecked: true }),
+      meanChecked: s.meanChecked,
+      meanWord: meanOk ? 'Correct.' : 'Not this time.',
+      meanText: meanOk ? '(' + s.own[6] + ' + 90) ÷ 2 = ' + (meanTarget % 1 ? meanTarget.toFixed(1) : meanTarget) + ' s. Every mean is now in the table, and the graph is drawn below.' : 'Add the two results that fit, yours and Group B’s, and divide by 2.',
+      graphOn: allOwn && meanOk,
+      plotFig: ready && allOwn && meanOk ? K.fig(this.plot(means), '') : null,
+      shapeWord: s.gate === null ? '' : shapeRight ? 'Graph A, as you called it.' : 'It is graph A, not ' + 'ABCD'[s.gate] + '.',
+      shapeText: shapeTexts,
+      shapeStyle: 'margin:0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (shapeRight ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      vBins: [{ id: 'iv', label: 'Independent' }, { id: 'dv', label: 'Dependent' }, { id: 'cv', label: 'Control' }],
+      vItems: [
+        { text: 'The pH of the buffer', bin: 'iv', why: 'You change it by choosing a different buffer.' },
+        { text: 'The time until a drop stays orange-brown', bin: 'dv', why: 'You measure it with the stopwatch and the iodine.' },
+        { text: 'The temperature of the water bath', bin: 'cv', why: 'Temperature also changes the rate, so it stays at 35 °C.' },
+        { text: 'The volume of amylase solution', bin: 'cv', why: 'More enzyme would digest the starch faster.' },
+        { text: 'The concentration of the starch solution', bin: 'cv', why: 'More starch would take longer to digest.' },
+        { text: 'How often a drop is tested', bin: 'cv', why: 'Every 30 seconds sets how precise each time can be.' }
+      ],
+      onVars: () => this.setState({ vars: true }),
+      cfExamples, cfQuestions,
+      onCalc: (n) => this.setState({ calc: n }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'After an enzyme-catalysed reaction') || { options: [] }, { command: 'State', marks: 1, why: 'The enzyme is released unchanged, so it can catalyse the reaction again.' }),
+        r2: hi ? { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'At pH 8, the starch took 1 minute 20 seconds to digest. Calculate the rate of reaction in ' + S1 + '. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert to seconds: 1 × 60 + 20', 'Convert to minutes: 20 ÷ 60 + 1'], convAnswer: 1, answer: 0.0125, tol: 0.0006, unit: S1, units: ['s', S1, 'min', '°C'],
+          right: '1 ÷ 80 = 0.0125 ' + S1 + '.', wrong: 'Convert to seconds first: 60 + 20 = 80 s. Then rate = 1 ÷ 80, unit ' + S1 + '.',
+          model: ['C · 1 × 60 + 20 = 80 s', 'F · rate = 1 ÷ time', 'I · rate = 1 ÷ 80', 'F · rate = 0.0125', 'A · rate = 0.0125 ' + S1] }
+          : { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'At pH 6, the iodine stayed orange-brown after 120 s. Calculate the rate of reaction. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert to minutes: divide by 60', 'Convert to minutes: multiply by 60'], convAnswer: 0, answer: 0.0083, tol: 0.0004, unit: S1, units: ['s', S1, 'min', '°C'],
+          right: '1 ÷ 120 = 0.0083 ' + S1 + '.', wrong: 'rate = 1 ÷ time, with the time in seconds: 1 ÷ 120. The unit is ' + S1 + ', per second.',
+          model: ['C · nothing to convert', 'F · rate = 1 ÷ time', 'I · rate = 1 ÷ 120', 'F · rate = 0.00833…', 'A · rate = 0.0083 ' + S1] },
+        r3: { command: 'Explain', marks: 3, prompt: 'Explain why the rate of an enzyme-controlled reaction falls when the temperature rises above the optimum. Put the links in order.',
+          links: ['Above the optimum temperature, the enzyme is denatured.', 'The shape of the active site changes.', 'The substrate no longer fits, so fewer enzyme–substrate complexes form and the rate falls.'],
+          herrings: [{ text: 'The heat kills the enzyme.', why: 'Enzymes are proteins, not living things. The marking word is denatured.' }, { text: 'The molecules move more slowly, so they collide less often.', why: 'That explains a slow rate when it is cold. Hotter molecules move faster.' }] },
+        r4: { command: 'Describe', marks: 6, question: 'Describe a method to investigate how pH affects the rate of reaction of amylase with starch.',
+          levels: [
+            { label: 'Level 3 · 5–6', text: 'A coherent method that would give valid results: pH changed with buffers, temperature controlled with a water bath, regular sampling into iodine, a clear end point, and other variables kept the same.', max: 6 },
+            { label: 'Level 2 · 3–4', text: 'A method with most of the steps, but missing some control or detail, such as the end point or how the temperature is kept constant.', max: 4 },
+            { label: 'Level 1 · 1–2', text: 'Some relevant steps, but not in an order that would give a set of times.', max: 2 },
+            { label: 'No relevant content · 0', text: '', max: 0 }
+          ],
+          points: ['Mix amylase with a pH buffer; keep the starch solution separate; stand both in a water bath (e.g. 35 °C) to reach the same temperature.', 'Mix them and start a stopwatch.', 'Every 30 seconds, add a drop of the mixture to iodine on a spotting tile.', 'Record the time when the iodine stays orange-brown (no blue-black): the starch is all digested.', 'Repeat with buffers at a range of pH values (e.g. pH 4 to 8).', 'Keep the volumes and concentrations of amylase and starch the same; repeat and calculate a mean; rate = 1 ÷ time.'],
+          reject: ['“Record the time when the iodine turns blue-black.” Blue-black means starch is still there.', '“Heat the mixture with a Bunsen burner.” The temperature must be kept constant, not raised.'] }
+      } : {},
+      keyLines: ['Enzymes are biological catalysts: proteins that speed up reactions without being used up.'].concat(ready ? K.keyLines(slug) : []).concat([
+        'Above the optimum temperature, or at an extreme pH, the active site changes shape, so the substrate no longer fits.',
+        'Required practical (RP4 Combined / RP5 Biology): amylase + starch + pH buffer at 35 °C; a drop into iodine every 30 s; time until it stays orange-brown.',
+        'Rate = 1 ÷ time. The shortest time is the fastest rate: the optimum pH.']),
+      bank
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changes in energy · MrBadmus GCSE Physics</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Physics" unit="Energy" title="Changes in energy" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">{{ eyebrowText }}</p>
+        <h1>Changes in energy</h1>
+        <p class="ks3-bigq">Double a car&rsquo;s speed, a ball&rsquo;s height or a spring&rsquo;s stretch. Which of them doubles the energy stored, and which does far more?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+        </div>
+        <div style="margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;">
+          <a href="{{ eqSheetHref }}" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 16px; border-radius: var(--ks3-r-control); border: 2px solid var(--ks3-ink); background: var(--ks3-card); color: var(--ks3-ink); font-size: 16px; font-weight: 700; text-decoration: none;" style-hover="background: var(--ks3-accent-tint); border-color: var(--ks3-accent);">View the full equation sheet<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3H3v10h10v-3"></path><path d="M9 3h4v4"></path><path d="M13 3L7 9"></path></svg></a>
+          <span style="font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">AQA · {{ eqSheetLabel }} · PDF</span>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Twice as fast. How much harder to stop?</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">To stop a car, its brakes must transfer away all of its kinetic energy, and the brakes get hot. Now the same car is driven at twice the speed.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="How much energy do the brakes now have to transfer?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>Three energy stores each have their own equation. A <strong>moving</strong> object has energy in its kinetic store. An object <strong>raised</strong> above the ground has energy in its gravitational potential store. A <strong>stretched or compressed</strong> spring has energy in its elastic potential store. Each equation multiplies quantities together, but two of them square one quantity: speed in the kinetic equation, extension in the elastic one. On the bench, change one quantity at a time and call the factor before the store fills.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The store bench · change {{ roundNum }} of 4</p>
+        <h2 style="margin: 6px 0 0;">{{ roundTitle }}</h2>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ benchFig }}</div>
+        <sc-if value="{{ asking }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px; padding: 14px 16px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0 0 8px; font-weight: 700;">{{ roundAsk }}</p>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <sc-for list="{{ roundOpts }}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+          </div>
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onReveal }}" disabled="{{ revealLocked }}" style="{{ revealStyle }}">Fill the store</button>
+        </sc-if>
+        <sc-if value="{{ revealed }}">
+          <div data-arrive="1" role="status" style="margin-top: 14px; display: flex; flex-direction: column; gap: 10px;">
+            <p style="{{ verdictStyle }}"><strong>{{ verdictWord }}</strong> {{ verdictText }}</p>
+            <sc-for list="{{ workingLines }}" as="w" hint-placeholder-count="2"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 16px; line-height: 1.5; color: var(--ks3-ink-body);">{{ w }}</p></sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ confront }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+            <p class="ks3-mis-quote">&ldquo;Twice as much speed, twice as much energy.&rdquo;</p>
+            <p style="margin: 0;">That rule works for m, g, h and k, because each appears once. Speed and extension are squared, so the factor gets squared too: twice the speed gives 2&nbsp;×&nbsp;2 = 4 times the energy, three times the speed gives 3&nbsp;×&nbsp;3 = 9 times. In a calculation, square v or e first, then multiply.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ canNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onNext }}" style="margin-top: 14px;">Next change</button></sc-if>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Every equation here works in joules, kilograms, metres, metres per second and newtons per metre. Exam questions often give a quantity in another unit on purpose. Converting it is the first line of your working, before the equation.</p>
+      </section>
+
+      <section id="s-units" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Units first" title="Ready to insert, or convert first?" prompt="Each value is from an exam question on these three equations." bins="{{ uBins }}" items="{{ uItems }}" done-note="g to kg: divide by 1000. cm to m: divide by 100. kJ to J: multiply by 1000. km/h to m/s: divide by 3.6." on-done="{{ onUnits }}" hint-size="100%,460px"></dc-import>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equations</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Equation sheet</span>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">E<sub>k</sub> = ½ m v²</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">kinetic energy (J) = 0.5 × mass (kg) × speed² (m/s)</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 16px;">m = 2E<sub>k</sub> ÷ v² · v = √(2E<sub>k</sub> ÷ m)</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Equation sheet</span>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">E<sub>p</sub> = m g h</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">gravitational potential energy (J) = mass (kg) × gravitational field strength (N/kg) × height (m). The question always gives g.</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 16px;">h = E<sub>p</sub> ÷ (m g)</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span style="display: inline-block; margin-bottom: 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Equation sheet</span>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">E<sub>e</sub> = ½ k e²</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">elastic potential energy (J) = 0.5 × spring constant (N/m) × extension² (m). e can be a compression. Valid up to the limit of proportionality.</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 16px;">k = 2E<sub>e</sub> ÷ e²</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-flaw" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · weight is not mass</p></div>
+        <p class="ks3-mis-quote">&ldquo;The box weighs 20 N, so m = 20.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Identify" prompt="A box of weight 20 N is lifted 3.0 m. A student writes Ep = 20 × 9.8 × 3.0 = 588 J. What has gone wrong?" options="{{ flawOptions }}" reveal="{{ flawReveal }}" right-word="That is it." wrong-word="That keeps the error." on-commit="{{ onFlaw }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Work out a number. Write each line: convert, equation, substitute, rearrange, answer with its unit.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Say which store changes, which way, and why: height, speed or extension.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Name each store in order as it fills or empties. Reasons are optional.</dd></div>
+        </dl>
+      </section>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="changes-in-energy" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Changes in energy" spec="{{ keySpec }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Physics" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Stuck on which quantity to square, or which unit to convert?" legal="The bench uses g = 9.8 N/kg and treats each store on its own: no energy is dissipated, and the spring stays within its limit of proportionality. Bars are drawn to scale within each change, not between changes." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Twice as fast', short: 'HOOK' },
+  { id: 's-bench', label: 'The store bench', short: 'BENCH' },
+  { id: 's-units', label: 'Units first', short: 'UNITS' },
+  { id: 's-flaw', label: 'Weight is not mass', short: 'FLAW' },
+  { id: 's-calc', label: 'Calculate it', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const G = 9.8;
+const UNSQ = 'That leaves the square out.';
+/* One change per round. b = before, a = after. Ep from Ep = m g h, Ee from ½ k e², Ek from ½ m v². */
+const ROUNDS = [
+  { store: 'Ep', title: 'Lift the ball twice as high.', ask: 'The height doubles. What happens to the energy in the gravitational potential store?',
+    b: { m: 2, h: 1.5 }, a: { m: 2, h: 3.0 }, factor: '×2', truth: 0,
+    opts: [{ t: '×2' }, { t: '×4', r: 'That would need h to be squared. Nothing is squared in Ep = m g h.' }, { t: 'no change', r: 'h is in the equation, so more height means more energy in the store.' }],
+    why: 'h appears once in Ep = m g h, so twice the height gives twice the energy.',
+    work: 'Before: Ep = 2 × 9.8 × 1.5 = 29.4 J · After: Ep = 2 × 9.8 × 3.0 = 58.8 J', eb: '29.4 J', ea: '58.8 J' },
+  { store: 'Ee', title: 'Stretch the spring twice as far.', ask: 'The extension doubles. What happens to the energy in the elastic potential store?',
+    b: { k: 200, e: 0.05 }, a: { k: 200, e: 0.10 }, factor: '×4', truth: 1, unsq: 0,
+    opts: [{ t: '×2', r: UNSQ }, { t: '×4' }, { t: '×8', r: 'Only e is squared, and 2² = 4. The ½ and k do not change.' }],
+    why: 'e is squared in Ee = ½ k e², and 2² = 4.',
+    work: 'Before: Ee = ½ × 200 × 0.05² = 0.25 J · After: Ee = ½ × 200 × 0.10² = 1.0 J', eb: '0.25 J', ea: '1.0 J' },
+  { store: 'Ek', title: 'Make the trolley three times as fast.', ask: 'The speed goes from 2 m/s to 6 m/s. What happens to the energy in the kinetic store?',
+    b: { m: 70, v: 2 }, a: { m: 70, v: 6 }, factor: '×9', truth: 2, unsq: 0,
+    opts: [{ t: '×3', r: UNSQ }, { t: '×6', r: 'Squaring is not doubling: 3² = 3 × 3 = 9, not 3 × 2 = 6.' }, { t: '×9' }],
+    why: 'v is squared in Ek = ½ m v², and 3² = 9.',
+    work: 'Before: Ek = ½ × 70 × 2² = 140 J · After: Ek = ½ × 70 × 6² = 1260 J', eb: '140 J', ea: '1260 J' },
+  { store: 'Ek', title: 'Same speed, twice the mass.', ask: 'A second 70 kg block is loaded on, at the same 6 m/s. What happens to the energy in the kinetic store?',
+    b: { m: 70, v: 6 }, a: { m: 140, v: 6 }, factor: '×2', truth: 0,
+    opts: [{ t: '×2' }, { t: '×4', r: 'Only the speed is squared. Mass appears once, so twice the mass gives twice the energy.' }, { t: 'no change', r: 'Mass is in the equation: more mass at the same speed means more kinetic energy.' }],
+    why: 'm is not squared, so twice the mass gives twice the energy. In the last change it was the speed, which is squared.',
+    work: 'Before: Ek = ½ × 70 × 6² = 1260 J · After: Ek = ½ × 140 × 6² = 2520 J', eb: '1260 J', ea: '2520 J' }
+];
+function energy(store, q) {
+  if (store === 'Ep') return q.m * G * q.h;
+  if (store === 'Ee') return 0.5 * q.k * q.e * q.e;
+  return 0.5 * q.m * q.v * q.v;
+}
+const mix = (x, y, p) => x + (y - x) * p;
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, round: 0, picks: {}, revealed: {}, anim: 1, units: false, flaw: null, calc: 0, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+    this.reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.tick = setInterval(() => {
+      if (this.animStart === null || this.animStart === undefined) return;
+      const p = Math.min(1, (Date.now() - this.animStart) / 1100);
+      if (p >= 1) this.animStart = null;
+      this.setState({ anim: p });
+    }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); clearInterval(this.tick); }
+  seg(on) {
+    return 'font:inherit;font-size:17px;font-weight:700;padding:9px 18px;min-height:44px;min-width:64px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  /* the scene for one round at animation progress p (0 = before, 1 = after) */
+  scene(rd, p, shown) {
+    const D = window.KS4D; const C = D.C; let b = '';
+    const ground = 262;
+    if (rd.store === 'Ep') {
+      const h = mix(rd.b.h, rd.a.h, shown ? p : 0); const y = ground - h * 52;
+      b += D.line(30, ground, 400, ground, 3);
+      for (let x = 40; x < 400; x += 22) b += D.line(x, ground, x - 10, ground + 12, 1.6);
+      b += D.line(150, y, 250, y, 5) + D.line(154, y, 154, ground, 4) + D.line(200, y, 200, ground, 2.5, C.muted, ' stroke-dasharray="6 6"');
+      b += D.circ(200, y - 24, 22, C.nm, C.stroke, 2.5) + D.T(200, y - 17, rd.b.m + ' kg', 19, { fill: C.stroke });
+      b += D.arrow(320, ground - 4, 320, y + 2, C.label, 3) + D.arrow(320, y + 4, 320, ground - 2, C.label, 3);
+      b += D.T(334, (y + ground) / 2 + 6, 'h = ' + h.toFixed(1) + ' m', 22, { anchor: 'start' });
+    } else if (rd.store === 'Ee') {
+      const e = mix(rd.b.e, rd.a.e, shown ? p : 0); const x0 = 52, nat = 236, end = nat + e * 900, yc = 190;
+      b += '<rect x="30" y="110" width="22" height="150" fill="' + C.stroke + '"/>';
+      let d = 'M' + x0 + ' ' + yc; const n = 14, step = (end - x0 - 20) / n;
+      for (let i = 0; i < n; i++) d += ' L' + (x0 + 10 + step * (i + 0.5)).toFixed(1) + ' ' + (yc + (i % 2 ? 16 : -16));
+      d += ' L' + (end - 10).toFixed(1) + ' ' + yc + ' L' + end.toFixed(1) + ' ' + yc;
+      b += '<path d="' + d + '" fill="none" stroke="' + C.stroke + '" stroke-width="3" stroke-linejoin="round"/>';
+      b += '<rect x="' + end.toFixed(1) + '" y="' + (yc - 30) + '" width="44" height="60" rx="6" fill="' + C.metal + '" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+      b += D.line(nat, 128, nat, 250, 2, C.muted, ' stroke-dasharray="6 6"') + D.T(nat, 120, 'unstretched end', 18, { weight: 'normal', fill: C.muted });
+      b += D.arrow(nat + 2, 238, end - 2, 238, C.label, 3) + D.T((nat + end) / 2, 274, 'e = ' + e.toFixed(2) + ' m', 21);
+      b += D.T(140, 156, 'k = ' + rd.b.k + ' N/m', 22);
+    } else {
+      const v = mix(rd.b.v, rd.a.v, shown ? p : 0); const m2 = rd.a.m > rd.b.m ? (shown ? p : 0) : 0;
+      b += D.line(30, ground, 400, ground, 3);
+      const bx = 70, bw = 110, bh = 54, by = ground - 26 - bh;
+      b += '<rect x="' + bx + '" y="' + by + '" width="' + bw + '" height="' + bh + '" rx="8" fill="' + C.metal + '" stroke="' + C.stroke + '" stroke-width="2.5"/>' + D.T(bx + bw / 2, by + 34, '70 kg', 22, { fill: C.stroke });
+      if (rd.a.m > rd.b.m) b += '<g opacity="' + m2.toFixed(2) + '"><rect x="' + bx + '" y="' + (by - bh - 6) + '" width="' + bw + '" height="' + bh + '" rx="8" fill="' + C.metal + '" stroke="' + C.stroke + '" stroke-width="2.5"/>' + D.T(bx + bw / 2, by - bh - 6 + 34, '70 kg', 22, { fill: C.stroke }) + '</g>';
+      b += D.circ(bx + 26, ground - 13, 13, C.cream, C.stroke, 3) + D.circ(bx + bw - 26, ground - 13, 13, C.cream, C.stroke, 3);
+      const ax = bx + bw + 12, len = 22 * v;
+      b += D.arrow(ax, by + bh / 2, ax + len, by + bh / 2, C.arrow, 6) + D.T(ax + len / 2, by + bh / 2 - 16, 'v = ' + (Math.round(v * 10) / 10) + ' m/s', 22, { fill: C.arrow });
+    }
+    return b;
+  }
+  bars(rd, p, shown) {
+    const D = window.KS4D; const C = D.C; let b = '';
+    const Eb = energy(rd.store, rd.b), Ea = energy(rd.store, rd.a);
+    const base = 262, maxH = 170, sc = maxH / Math.max(Eb, Ea);
+    b += D.line(440, base, 624, base, 2.5);
+    b += '<rect x="456" y="' + (base - Eb * sc).toFixed(1) + '" width="56" height="' + (Eb * sc).toFixed(1) + '" fill="' + C.muted + '"/>';
+    b += D.T(484, base - Eb * sc - 10, rd.eb, 20, { fill: C.stroke });
+    b += D.T(484, base + 28, 'before', 19, { weight: 'normal', fill: C.stroke }) + D.T(572, base + 28, 'after', 19, { weight: 'normal', fill: C.stroke });
+    if (shown) {
+      const E = mix(Eb, Ea, p);
+      b += '<rect x="544" y="' + (base - E * sc).toFixed(1) + '" width="56" height="' + (E * sc).toFixed(1) + '" fill="' + C.arrow + '"/>';
+      if (p >= 1) b += D.T(572, base - E * sc - 10, rd.ea, 20, { fill: C.stroke });
+    } else {
+      b += '<rect x="544" y="' + (base - 60) + '" width="56" height="60" fill="none" stroke="' + C.muted + '" stroke-width="2" stroke-dasharray="6 5"/>' + D.T(572, base - 22, '?', 26, { fill: C.muted });
+    }
+    b += D.T(532, 34, (rd.store === 'Ep' ? 'gravitational' : rd.store === 'Ee' ? 'elastic' : 'kinetic') + ' store', 21);
+    return b;
+  }
+  benchSvg(rd, p, shown) {
+    const D = window.KS4D;
+    const names = { Ep: 'gravitational potential', Ee: 'elastic potential', Ek: 'kinetic' };
+    const alt = rd.title + ' Before: ' + rd.eb + ' in the ' + names[rd.store] + ' store.' + (shown && p >= 1 ? ' After: ' + rd.ea + '.' : ' After: not filled yet.');
+    return D.svg(640, 300, this.scene(rd, p, shown) + this.bars(rd, p, shown), alt);
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isHigher: true, isTriple: true, routeOptions: [], onRoute: () => {}, eqSheetHref: 'https://www.aqa.org.uk/files/resources.physics.AQA-8463-FS-INS-2025_PDF/6b5358e1159b1b6cc2d622fc5eb894320d6fb763.pdf', eqSheetLabel: 'GCSE Physics (8463) · June 2026' };
+    const slug = 'changes-in-energy';
+    const ready = !!(s.libReady && K && D);
+    const hi = !!R.isHigher;
+    const r = s.round; const rd = ROUNDS[r];
+    const pick = s.picks[r];
+    const revealed = !!s.revealed[r];
+    const nRev = Object.keys(s.revealed).length;
+    const done = [s.hook !== null, nRev === 4, s.units, s.flaw !== null, s.calc >= 2, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const ok = revealed && pick === rd.truth;
+    const F = ready ? K.fifas(slug) : [];
+    const pn = this.props.mrbPrevNext || {};
+    const href = (x) => (K && K.hrefFor ? K.hrefFor(x, R) : null);
+    return Object.assign({}, R, {
+      video: K && s.hook !== null && s.hook !== undefined ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      eyebrowText: R.isTriple ? 'AQA Physics (8463) 4.1.1.2 · Quantitative' : 'AQA Physics (8464) 6.1.1.2 · Quantitative',
+      keySpec: R.isTriple ? 'AQA 4.1.1.2 (8463)' : 'AQA 6.1.1.2 (8464)',
+      endPrev: pn.prev || null, endNext: pn.next || null,
+      endConnects: [{ href: href('internal-energy'), label: 'Internal energy' }, { href: href('forces-elasticity'), label: 'Forces and elasticity' }, { href: href('work-done-energy-transfer'), label: 'Work done and energy transfer' }].filter((c) => c.href),
+      hookOptions: [
+        { text: 'The same amount', reply: 'Speed is in the equation, so the store must change.' },
+        { text: 'Twice as much', reply: 'That is the obvious guess. Check it against the numbers.' },
+        { text: 'Four times as much', reply: 'Hold that, and see why.' },
+        { text: 'Eight times as much', reply: 'More than double, yes. Check by how much.' }
+      ],
+      hookReveal: 'Four times. Kinetic energy depends on the speed squared: Ek = ½ m v². A 1000 kg car at 10 m/s has 50 000 J in its kinetic store. At 20 m/s it has 200 000 J, so the brakes must transfer four times as much energy.',
+      onHook: (i) => this.setState({ hook: i }),
+      roundNum: String(r + 1), roundTitle: rd.title, roundAsk: rd.ask,
+      benchFig: ready ? K.fig(this.benchSvg(rd, revealed ? s.anim : 0, revealed), '') : null,
+      asking: !revealed,
+      roundOpts: rd.opts.map((o, i) => ({ label: o.t, pressed: pick === i, style: this.seg(pick === i),
+        onClick: () => this.setState((ss) => ({ picks: Object.assign({}, ss.picks, { [ss.round]: i }) })) })),
+      revealLocked: pick === undefined, revealStyle: 'margin-top:12px;' + (pick === undefined ? 'opacity:.45;cursor:default;' : ''),
+      onReveal: () => {
+        if (s.picks[s.round] === undefined) return;
+        if (this.reduced) { this.animStart = null; this.setState((ss) => ({ anim: 1, revealed: Object.assign({}, ss.revealed, { [ss.round]: true }) })); }
+        else { this.animStart = Date.now(); this.setState((ss) => ({ anim: 0, revealed: Object.assign({}, ss.revealed, { [ss.round]: true }) })); }
+      },
+      revealed,
+      verdictWord: revealed ? (ok ? rd.factor + ', as you said.' : 'It is ' + rd.factor + '.') : '',
+      verdictText: revealed ? (ok ? rd.why : rd.opts[pick].r) : '',
+      verdictStyle: 'margin:0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      workingLines: rd.work.split(' \u00b7 '),
+      confront: revealed && rd.unsq !== undefined && pick === rd.unsq,
+      canNext: revealed && r < 3, onNext: () => this.setState((ss) => ({ round: Math.min(3, ss.round + 1), anim: 1 })),
+      uBins: [{ id: 'ok', label: 'Insert as it is' }, { id: 'cv', label: 'Convert first' }],
+      uItems: [
+        { text: 'mass = 500 g', bin: 'cv', why: 'Divide by 1000: 0.5 kg.' },
+        { text: 'speed = 72 km/h', bin: 'cv', why: 'Divide by 3.6: 20 m/s.' },
+        { text: 'extension = 15 cm', bin: 'cv', why: 'Divide by 100: 0.15 m.' },
+        { text: 'kinetic energy = 3.6 kJ', bin: 'cv', why: 'Multiply by 1000: 3600 J.' },
+        { text: 'height = 2.5 m', bin: 'ok', why: 'Metres already.' },
+        { text: 'spring constant = 40 N/m', bin: 'ok', why: 'N/m is the unit Ee = ½ k e² uses.' },
+        { text: 'mass = 1.2 kg', bin: 'ok', why: 'Kilograms already.' },
+        { text: 'speed = 12 m/s', bin: 'ok', why: 'Metres per second already.' }
+      ],
+      onUnits: () => this.setState({ units: true }),
+      flawOptions: [
+        { text: '20 N is the weight, which already includes g. Using it as the mass counts g twice.', correct: true, reply: 'The mass is 20 ÷ 9.8 = 2.04 kg.' },
+        { text: 'The height should be squared, just as the speed is squared in ½ m v².', correct: false, reply: 'Only speed and extension are squared. Ep = m g h has no square in it.' },
+        { text: 'There should be a ½ at the front, as in the other two energy equations.', correct: false, reply: 'Ep = m g h has no ½. That belongs to ½ m v² and ½ k e².' },
+        { text: 'g should be 10 N/kg, so the right answer is 20 × 10 × 3.0 = 600 J.', correct: false, reply: 'Use the g the question gives. 600 J still counts g twice and is ten times too big.' }
+      ],
+      flawReveal: 'Weight is a force in newtons: W = m g. In Ep = m g h, m is the mass in kilograms. Ep = (20 ÷ 9.8) × 9.8 × 3.0 = 60 J, the same as weight × height: 20 × 3.0 = 60 J.',
+      onFlaw: (i) => this.setState({ flaw: i }),
+      cfExamples: ready && F.length >= 2 ? [
+        { tab: 'Kinetic · nothing to convert', head: F[0].question, next: 'Now the gravitational one.', steps: K.cfifa(F[0], 'Nothing to convert: kg and m/s already.') },
+        { tab: 'Gravitational · nothing to convert', head: F[1].question, next: 'Now one that needs converting.', steps: K.cfifa(F[1], 'Nothing to convert: kg, N/kg and m already.') },
+        hi ? { tab: 'Convert first', head: 'A 250 g ball is dropped from a height of 3.2 m. Calculate its speed just before it lands. Ignore air resistance. (g = 9.8 N/kg)', next: 'Convert first, then the same four lines. Your turn below.',
+          steps: [
+            { letter: 'C', label: 'Convert', line: '250 g ÷ 1000 = 0.25 kg', note: 'Every energy equation needs the mass in kilograms.' },
+            { letter: 'F', label: 'Formula', line: 'Ep = m g h; Ek = ½ m v²', note: 'Energy lost from the gravitational store = energy gained by the kinetic store.' },
+            { letter: 'I', label: 'Insert', line: 'Ep = 0.25 × 9.8 × 3.2 = 7.84 J; 7.84 = ½ × 0.25 × v²', note: '' },
+            { letter: 'F', label: 'Fine-tune', line: 'v² = 7.84 ÷ 0.125 = 62.72; v = √62.72 = 7.92', note: 'Rearrange for v² first, then take the square root.' },
+            { letter: 'A', label: 'Answer', line: 'v = 7.9 m/s', note: 'Left in grams, the Ep line reads 7840 J, which loses that mark even though the mass cancels out of v.' }
+          ] }
+          : { tab: 'Convert first', head: 'A spring has a spring constant of 40 N/m. It is stretched by 15 cm. Calculate the elastic potential energy stored.', next: 'Convert first, then the same four lines. Your turn below.',
+          steps: [
+            { letter: 'C', label: 'Convert', line: '15 cm ÷ 100 = 0.15 m', note: 'k is in newtons per metre, so e must be in metres.' },
+            { letter: 'F', label: 'Formula', line: 'Ee = ½ × k × e²', note: '' },
+            { letter: 'I', label: 'Insert', line: 'k = 40 N/m, e = 0.15 m', note: '' },
+            { letter: 'F', label: 'Fine-tune', line: 'e² = 0.15² = 0.0225; Ee = ½ × 40 × 0.0225', note: 'Square the extension first.' },
+            { letter: 'A', label: 'Answer', line: 'Ee = 0.45 J', note: 'Left in centimetres, ½ × 40 × 15² = 4500 J: ten thousand times too big.' }
+          ] }
+      ] : [],
+      cfQuestions: hi ? [
+        { tab: 'Question 1', id: 'ce-q1', head: 'A car of mass 1500 kg has 300 000 J of kinetic energy. Calculate its speed.', close: 'Check: ½ × 1500 × 20² = 300 000 J.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert: kg and J already.' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'Ek = ½ m v²' }, { letter: 'I', label: 'Insert', placeholder: '… = ½ × … × v²', line: '300 000 = ½ × 1500 × v²' }, { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange: v² = …, v = …', line: 'v² = 300 000 ÷ 750 = 400; v = √400 = 20' }, { letter: 'A', label: 'Answer', placeholder: 'v = … with unit', line: 'v = 20 m/s' }] },
+        { tab: 'Question 2', id: 'ce-q2', head: 'A spring stores 0.90 J of elastic potential energy when it is stretched by 6.0 cm. Calculate its spring constant.', close: 'Left in centimetres, k comes out as 0.05 N/m: far too floppy for a spring that stores almost a joule.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '6.0 cm ÷ 100 = 0.060 m' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'Ee = ½ k e²' }, { letter: 'I', label: 'Insert', placeholder: '… = ½ × k × …²', line: '0.90 = ½ × k × 0.060²' }, { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange: k = …', line: 'k = 2 × 0.90 ÷ 0.0036 = 500' }, { letter: 'A', label: 'Answer', placeholder: 'k = … with unit', line: 'k = 500 N/m' }] }
+      ] : [
+        { tab: 'Question 1', id: 'ce-q1', head: 'A 4.0 kg rock is lifted 12 m. Calculate the gravitational potential energy it gains. (g = 9.8 N/kg)', close: 'Check: 4.0 × 9.8 = 39.2 N is its weight, and 39.2 × 12 = 470.4 J.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert: kg, N/kg and m already.' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'Ep = m g h' }, { letter: 'I', label: 'Insert', placeholder: 'Ep = … × … × …', line: 'Ep = 4.0 × 9.8 × 12' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'Ep = 470.4' }, { letter: 'A', label: 'Answer', placeholder: 'Ep = … with unit', line: 'Ep = 470 J (470.4 J)' }] },
+        { tab: 'Question 2', id: 'ce-q2', head: 'A 600 g football is kicked at 15 m/s. Calculate its kinetic energy.', close: 'Left in grams, ½ × 600 × 225 = 67 500 J: a thousand times too big.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '600 g ÷ 1000 = 0.60 kg' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'Ek = ½ m v²' }, { letter: 'I', label: 'Insert', placeholder: 'Ek = ½ × … × …²', line: 'Ek = ½ × 0.60 × 15²' }, { letter: 'F', label: 'Fine-tune', placeholder: 'square first, then multiply', line: '15² = 225; Ek = ½ × 0.60 × 225 = 67.5' }, { letter: 'A', label: 'Answer', placeholder: 'Ek = … with unit', line: 'Ek = 67.5 J' }] }
+      ],
+      onCalc: (n) => this.setState({ calc: n }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'k = 400 N/m') || { options: [] }, { command: 'Calculate', marks: 1, why: 'Square the compression first: 0.1² = 0.01. Then ½ × 400 × 0.01 = 2 J.' }),
+        r2: hi ? { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'A car of mass 800 kg has 90 kJ of kinetic energy. Calculate its speed. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert kJ to J: multiply by 1000', 'Convert kJ to J: divide by 1000'], convAnswer: 1, answer: 15, tol: 0.1, unit: 'm/s', units: ['m/s', 'J', 'm/s²', 'N'],
+          right: '90 000 = ½ × 800 × v², so v² = 225 and v = 15 m/s.', wrong: 'Multiply 90 kJ by 1000 to get 90 000 J, rearrange Ek = ½ m v² for v², then take the square root.',
+          model: ['C · 90 kJ × 1000 = 90 000 J', 'F · Ek = ½ m v²', 'I · 90 000 = ½ × 800 × v²', 'F · v² = 90 000 ÷ 400 = 225; v = √225 = 15', 'A · v = 15 m/s'] }
+          : { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'A 300 g ball rolls at 4.0 m/s. Calculate its kinetic energy. Work it on paper, then choose the conversion and give the answer and unit.',
+          convOptions: ['Nothing to convert', 'Convert g to kg: divide by 1000', 'Convert g to kg: multiply by 1000'], convAnswer: 1, answer: 2.4, tol: 0.05, unit: 'J', units: ['J', 'N', 'kg', 'W'],
+          right: '½ × 0.30 × 4.0² = 2.4 J.', wrong: 'Divide 300 g by 1000 to get 0.30 kg, square the speed, then multiply by ½ and the mass.',
+          model: ['C · 300 g ÷ 1000 = 0.30 kg', 'F · Ek = ½ m v²', 'I · Ek = ½ × 0.30 × 4.0²', 'F · 4.0² = 16; Ek = ½ × 0.30 × 16 = 2.4', 'A · Ek = 2.4 J'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'A ball is dropped from a height. Explain how its energy changes as it falls. Ignore air resistance. Put the links in order.',
+          links: ['As the ball falls its height decreases, so the energy in its gravitational potential store decreases.', 'That energy is transferred to its kinetic store, so its speed increases.', 'With no air resistance, the energy lost from the gravitational store equals the energy gained by the kinetic store.'],
+          herrings: [{ text: 'Energy is used up as the ball falls, so there is less energy in total at the bottom.', why: 'Energy cannot be created or destroyed. It moves between stores.' }, { text: 'Dropped from twice the height, it lands at twice the speed.', why: 'Twice the height gives twice the kinetic energy, and Ek depends on v², so the speed rises by less than double.' }] },
+        r4: { command: 'Describe', marks: 6, question: 'A bungee jumper steps off a platform and falls until the cord stops her at the lowest point. Describe the changes in the energy stores from the moment she steps off to the lowest point.',
+          levels: [
+            { label: 'Level 3 · 5–6', text: 'The correct store is named at each stage, and each transfer is linked to a change in height, speed or extension. Dissipation to the surroundings is included.', max: 6 },
+            { label: 'Level 2 · 3–4', text: 'Most stages are correct, with some links to height, speed or extension.', max: 4 },
+            { label: 'Level 1 · 1–2', text: 'Some stores are named, with few or no links.', max: 2 },
+            { label: 'No relevant content · 0', text: '', max: 0 }
+          ],
+          points: ['As she falls, her height decreases, so her gravitational potential store decreases.', 'Before the cord tightens, that energy goes to her kinetic store: her speed increases.', 'Once the cord starts to stretch, energy is transferred to the elastic potential store of the cord.', 'The cord slows her down, so her kinetic store decreases while the elastic store keeps increasing.', 'At the lowest point her speed is zero and the elastic potential store is at its greatest.', 'Some energy is dissipated to the thermal store of the surroundings by air resistance, so the total stays the same.'],
+          reject: ['“Energy is used up as she falls.” Energy is transferred, never used up.', '“Her kinetic energy is greatest at the lowest point.” She is momentarily stopped there.'] }
+      } : {},
+      keyLines: K ? K.keyLines(slug) : [],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

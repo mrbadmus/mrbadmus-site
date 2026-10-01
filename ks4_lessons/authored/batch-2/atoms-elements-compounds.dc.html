@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atoms, Elements and Compounds · MrBadmus GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+<style>
+  /* atoms-elements-compounds · particle-box motion. The inline transform on .aec-mv is the END state; the keyframe only supplies the start. */
+  .aec-mv { animation: aec-slide 1.1s cubic-bezier(.3, .7, .3, 1) backwards; }
+  @keyframes aec-slide { from { transform: translate(0px, 0px); } }
+  .aec-trace { stroke-dasharray: 100; animation: aec-trace .7s ease-out backwards; }
+  @keyframes aec-trace { from { stroke-dashoffset: 100; } }
+  .aec-ring { transform-box: fill-box; transform-origin: center; animation: aec-ring 1.2s ease-in-out 2; }
+  @keyframes aec-ring { 50% { transform: scale(1.3); opacity: .3; } }
+  .aec-fade { animation: aec-fade .5s ease-out 1.1s backwards; }
+  @keyframes aec-fade { from { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .aec-mv, .aec-trace, .aec-ring, .aec-fade { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Atomic structure and the periodic table" title="Atoms, elements and compounds" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry {{ specRef }} · Classify</p>
+        <h1>Atoms, elements and compounds</h1>
+        <p class="ks3-bigq">Every substance is atoms. So what makes one substance an element, another a compound and a third a mixture, and how can you tell from a drawing of its particles?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">A metal that burns, a gas that poisons, a crystal you eat.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">Sodium is a soft metal that reacts violently with water. Chlorine is a toxic yellow-green gas. When the two react, the product is sodium chloride: table salt, safe to sprinkle on food.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Why is salt safe to eat when sodium and chlorine are not?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>All substances are made of <strong>atoms</strong>. An atom is the smallest part of an element that can exist. An <strong>element</strong> contains only one type of atom. There are about 100 elements (118 are known today), each with a symbol in the periodic table: C is carbon, Fe is iron, Na is sodium.</p>
+        <p>A <strong>compound</strong> forms when two or more elements react and become <strong>chemically combined in fixed proportions</strong>. It is a new substance with different properties, and only a chemical reaction can separate it into its elements. A <strong>mixture</strong> is two or more elements or compounds <strong>not chemically combined</strong>: each keeps its chemical properties, the proportions can vary, and physical processes such as filtration or distillation separate it.</p>
+      </section>
+
+      <section id="s-zoom" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Zoom in · {{ zoomStep }}</p>
+            <h2 style="margin: 6px 0 0;">Call each box of particles before it is named.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ zoomProgress }}</p>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ zoomFig }}</div>
+          <div>
+            <sc-if value="{{ zoomAsk }}" hint-placeholder-val="{{ true }}">
+              <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">{{ zoomPrompt }}</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <sc-for list="{{ zoomOpts }}" as="b" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ b.onClick }}" style="{{ b.style }}">{{ b.label }}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ zoomShown }}">
+              <div data-arrive="1" role="status" style="{{ zoomVerdictStyle }}">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ zoomVerdictHead }}</p>
+                <p style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 24px; line-height: 1.2;">{{ zoomVerdictTitle }}</p>
+                <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.55;">{{ zoomVerdictBody }}</p>
+                <sc-if value="{{ zoomCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onZoomNext }}" style="margin-top: 14px;">Next box</button></sc-if>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+        <sc-if value="{{ zoomConfront }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 14px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+            <p class="ks3-mis-quote">{{ confrontQuote }}</p>
+            <p style="margin: 0;">{{ confrontBody }}</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ zoomHasLog }}">
+          <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px;">
+            <sc-for list="{{ zoomLog }}" as="l" hint-placeholder-count="3">
+              <span style="font-family: var(--ks3-font-mono); font-size: 14px; padding: 5px 11px; border-radius: 99px; background: var(--ks3-band); color: var(--ks3-ink);">{{ l }}</span>
+            </sc-for>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort it" title="Element, compound or mixture?" prompt="Ten substances, named but not drawn. Decide from the name or formula." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="{{ cmText }}" on-done="{{ onSort }}" hint-size="100%,460px"></dc-import>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Every compound has a <strong>formula</strong>. The small number after a symbol counts the atoms of that element only: H₂SO₄ has 2 hydrogen, 1 sulfur and 4 oxygen atoms. A <strong>symbol equation</strong> shows reactants turning into products. Atoms are not created or destroyed in a reaction, only rearranged, so the equation must be <strong>balanced</strong>: the same number of each type of atom on both sides. Written as H₂ + O₂ → H₂O, hydrogen + oxygen → water is not balanced: 2 O on the left, 1 on the right.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+        <p class="ks3-mis-quote">&ldquo;H₂ + O₂ → H₂O has one oxygen too few on the right, so I will write the water as H₂O₂.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Explain" prompt="What is wrong with that fix?" options="{{ thinkOptions }}" reveal="{{ thinkReveal }}" right-word="That is the flaw." wrong-word="That keeps the wrong idea." on-commit="{{ onThink }}" hint-size="100%,320px"></dc-import>
+      </section>
+
+      <section id="s-balance" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Balance it · numbers in front only</p>
+            <h2 style="margin: 6px 0 0;">Watch one balanced. Then balance three yourself.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ balProgress }}</p>
+        </div>
+        <div style="margin-top: 14px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Worked · hydrogen + oxygen → water</p>
+          <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+            <sc-for list="{{ workedSteps }}" as="w" hint-placeholder-count="1">
+              <div data-arrive="1" style="padding: 12px 14px; border-radius: 12px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 20px; font-weight: 500;">{{ w.line }}</p>
+                <p style="margin: 4px 0 0; font-size: 17px; line-height: 1.5; color: var(--ks3-ink-body);">{{ w.note }}</p>
+              </div>
+            </sc-for>
+          </div>
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onWorked }}" disabled="{{ workedDone }}" style="{{ workedBtnStyle }}">{{ workedBtnLabel }}</button>
+        </div>
+        <div style="margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ balTabs }}" as="t" hint-placeholder-count="3"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 18px; font-weight: 700;">{{ balWord }}</p>
+        <div style="margin-top: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+          <sc-for list="{{ balTerms }}" as="t" hint-placeholder-count="5">
+            <sc-if value="{{ t.isSign }}"><span aria-hidden="true" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px; padding: 0 2px;">{{ t.sign }}</span></sc-if>
+            <sc-if value="{{ t.isSpecies }}">
+              <div role="group" aria-label="{{ t.group }}" style="display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+                <button type="button" onClick="{{ t.onDown }}" aria-label="{{ t.downLabel }}" disabled="{{ t.downOff }}" style="{{ t.downStyle }}">−</button>
+                <span aria-live="polite" style="min-width: 22px; text-align: center; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-accent-text);">{{ t.coef }}</span>
+                <button type="button" onClick="{{ t.onUp }}" aria-label="{{ t.upLabel }}" disabled="{{ t.upOff }}" style="{{ t.upStyle }}">+</button>
+                <span style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; padding: 0 4px;">{{ t.formula }}</span>
+              </div>
+            </sc-if>
+          </sc-for>
+        </div>
+        <p style="margin: 14px 0 0; font-family: var(--ks3-font-mono); font-size: 21px; font-weight: 500;">{{ balLine }}</p>
+        <div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
+          <sc-for list="{{ balTally }}" as="c" hint-placeholder-count="3">
+            <span style="{{ c.style }}">{{ c.text }}</span>
+          </sc-for>
+        </div>
+        <div style="margin-top: 14px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onBalCheck }}" disabled="{{ balCheckOff }}" style="{{ balCheckStyle }}">Check the equation</button>
+          <sc-if value="{{ balCanNext }}"><button type="button" onClick="{{ onBalNext }}" style="{{ balNextStyle }}">Next equation</button></sc-if>
+        </div>
+        <sc-if value="{{ balChecked }}"><p data-arrive="1" role="status" style="{{ balVerdictStyle }}"><strong>{{ balVerdictWord }}</strong> {{ balVerdict }}</p></sc-if>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Identify</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Pick out the answer from what you are shown: a particle diagram, a formula or a list.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Give</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Only the answer is needed, not an explanation.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Complete</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Write the missing parts in the spaces: here, the numbers that balance an equation.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give the reason: chemically combined or not, fixed proportions or not, chemical or physical separation.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Reading a particle diagram: more than one kind of particle means a mixture. One kind, with one type of atom, means an element. One kind, with different atoms combined in the same ratio in every particle, means a compound.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="atoms-elements-compounds" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Atoms, elements and compounds" spec="{{ keySpec }}" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure whether a substance is an element, a compound or a mixture?" legal="The particle boxes are flat models: real atoms have no colours or letters, and a real gas is far more spread out than drawn. In the mixture boxes the substances slide apart to show they are not chemically combined; a real separation needs a physical process such as filtration or distillation. The iron sulfide and bronze boxes show one layer of a giant structure." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Salt from two dangers', short: 'HOOK' },
+  { id: 's-zoom', label: 'Zoom in and classify', short: 'ZOOM' },
+  { id: 's-sort', label: 'Sort the substances', short: 'SORT' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-balance', label: 'Balance it', short: 'BALANCE' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+/* ── particle boxes ─────────────────────────────────────────────── */
+const FILL = { O: '#F4B4A2', C: '#C9C4B8', N: '#AFCBEF', He: '#F6E39C', Ne: '#E7C6F0', Fe: '#D2C1B1', S: '#F3D467', Cu: '#E9AE86', Sn: '#C2CAD3' };
+const AR = 18;
+const SX = [80, 190, 300, 410, 520], SY = [92, 210, 328];
+const JIT = [[6, -8], [-9, 5], [4, 10], [-5, -6], [10, 3], [-7, 9], [8, -4], [-10, -3], [3, 7], [-4, -10], [9, 8], [-8, 4], [5, -9], [-3, 6], [7, -5]];
+const slotXY = (i) => [SX[i % 5] + JIT[i][0], SY[Math.floor(i / 5)] + JIT[i][1]];
+const SHAPES = { O2: ['O', 'O'], N2: ['N', 'N'], CO2: ['O', 'C', 'O'], He: ['He'], Ne: ['Ne'] };
+const KINDS = { element: 'Element', compound: 'Compound', mixture: 'Mixture' };
+/* u: [shape, start slot, angle, substance (a|b), target slot for a mixture: a to the left columns, b to the right] */
+const ROUNDS = [
+  { kind: 'compound', name: 'Carbon dioxide, CO₂', alt: 'Eight identical particles, each one C atom joined between two O atoms.',
+    units: [['CO2', 0, 70], ['CO2', 2, -30], ['CO2', 4, 100], ['CO2', 6, 15], ['CO2', 8, -50], ['CO2', 10, 110], ['CO2', 12, 25], ['CO2', 14, 80]],
+    right: 'Every particle is the same: one carbon atom bonded to two oxygen atoms. Two elements chemically combined, always 1 : 2. A compound.',
+    wrong: { element: 'There are two types of atom, C and O, so this cannot be an element.', mixture: 'Every particle is identical, so there is only one substance. The C and O are combined inside each particle, not just side by side.' } },
+  { kind: 'element', name: 'Oxygen, O₂', alt: 'Eight identical particles, each two O atoms joined together.',
+    units: [['O2', 0, 60], ['O2', 2, 0], ['O2', 4, 120], ['O2', 6, 40], ['O2', 8, -20], ['O2', 10, 90], ['O2', 12, 150], ['O2', 14, 30]],
+    right: 'Only one type of atom. The atoms are joined in pairs, O₂, but a molecule made of one element is still an element.',
+    wrong: { compound: 'Two atoms joined make a molecule, not a compound. A compound needs two or more different elements.', mixture: 'Every particle is the same O₂ molecule, so this is one substance.' } },
+  { kind: 'mixture', name: 'Helium and neon', alt: 'Single atoms, not joined: some labelled He and some labelled Ne, scattered together.', labels: ['helium, He', 'neon, Ne'],
+    units: [['He', 0, 0, 'a', 0], ['Ne', 1, 0, 'b', 3], ['He', 2, 0, 'a', 1], ['He', 4, 0, 'a', 5], ['Ne', 6, 0, 'b', 4], ['He', 7, 0, 'a', 6], ['Ne', 8, 0, 'b', 8], ['He', 10, 0, 'a', 10], ['Ne', 12, 0, 'b', 9], ['He', 13, 0, 'a', 11], ['Ne', 14, 0, 'b', 13]],
+    right: 'Two different elements, each atom on its own and nothing joined. A mixture of two elements.',
+    wrong: { element: 'There are two types of atom here, He and Ne.', compound: 'No helium atom is joined to a neon atom. Nothing is chemically combined.' } },
+  { kind: 'mixture', name: 'Nitrogen, N₂, with carbon dioxide, CO₂', alt: 'Two kinds of particle scattered together: pairs of N atoms, and particles of one C between two O.', labels: ['nitrogen, N₂', 'carbon dioxide, CO₂'],
+    units: [['N2', 0, 45, 'a', 0], ['CO2', 2, 90, 'b', 13], ['N2', 4, 120, 'a', 1], ['N2', 6, 0, 'a', 5], ['CO2', 8, 20, 'b', 8], ['N2', 10, 80, 'a', 6], ['CO2', 12, 90, 'b', 14], ['N2', 14, 150, 'a', 10]],
+    right: 'Two substances side by side: nitrogen molecules (an element) and carbon dioxide molecules (a compound), not combined with each other. A mixture, like air.',
+    wrong: { element: 'There are three types of atom and two kinds of particle.', compound: 'Each CO₂ particle is a compound, but none is joined to an N₂. Two substances not combined make a mixture.' } },
+  { kind: 'compound', lattice: 'FeS', name: 'Iron sulfide, FeS', alt: 'A tightly packed layer of atoms in a regular pattern: Fe and S alternate in every row and column.',
+    right: 'Iron and sulfur atoms in a fixed 1 : 1 pattern all the way through, chemically combined. The compound iron sulfide.',
+    wrong: { element: 'Two types of atom, Fe and S.', mixture: 'In a mixture the iron and sulfur would sit in separate grains, in any proportion. Here they alternate in a fixed, repeating pattern: combined.' } },
+  { kind: 'mixture', lattice: 'Cu', name: 'Bronze: copper with tin', alt: 'A tightly packed layer of Cu atoms with a few larger Sn atoms scattered irregularly among them.',
+    right: 'Copper with some tin atoms scattered through it, in no fixed ratio and not chemically combined. An alloy is a mixture.',
+    wrong: { element: 'Two types of atom: Cu and the larger Sn.', compound: 'The tin atoms are scattered with no repeating pattern and no fixed ratio. That is a mixture.' } }
+];
+const SN_AT = { '0,2': 1, '1,6': 1, '2,0': 1, '3,4': 1, '4,8': 1, '5,1': 1 };
+const CONFRONT = {
+  1: ['“O₂ has two atoms, so it must be a compound.”', 'A compound needs two or more different elements, chemically combined. O₂ is two atoms of the same element joined into a molecule, so oxygen gas is an element. So are H₂, N₂ and Cl₂.'],
+  5: ['“Bronze is a metal joined to a metal, so it is a compound.”', 'A compound has a fixed formula and fixed proportions. The tin in bronze is not chemically combined with the copper, and the amount of tin can vary from one bronze to another. An alloy is a mixture.']
+};
+/* ── the balancer ───────────────────────────────────────────────── */
+const SUBS = { 'Mg': { Mg: 1 }, 'O₂': { O: 2 }, 'MgO': { Mg: 1, O: 1 }, 'N₂': { N: 2 }, 'H₂': { H: 2 }, 'NH₃': { N: 1, H: 3 }, 'CH₄': { C: 1, H: 4 }, 'CO₂': { C: 1, O: 2 }, 'H₂O': { H: 2, O: 1 } };
+const EQS = [
+  { word: 'magnesium + oxygen → magnesium oxide', lhs: ['Mg', 'O₂'], rhs: ['MgO'], els: ['Mg', 'O'] },
+  { word: 'nitrogen + hydrogen → ammonia', lhs: ['N₂', 'H₂'], rhs: ['NH₃'], els: ['N', 'H'] },
+  { word: 'methane + oxygen → carbon dioxide + water', lhs: ['CH₄', 'O₂'], rhs: ['CO₂', 'H₂O'], els: ['C', 'H', 'O'] }
+];
+const WORKED = [
+  { line: 'H₂ + O₂ → H₂O', note: 'Count each side: 2 H and 2 O on the left; 2 H and 1 O on the right. Oxygen is short on the right.' },
+  { line: 'H₂ + O₂ → 2H₂O', note: 'A 2 in front of H₂O makes two water molecules: now 4 H and 2 O on the right. Hydrogen is short on the left.' },
+  { line: '2H₂ + O₂ → 2H₂O', note: 'A 2 in front of H₂: 4 H and 2 O on each side. Balanced, and no formula was changed.' }
+];
+const gcd = (a, b) => b ? gcd(b, a % b) : a;
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, hook: null, zi: 0, zp: {}, sort: false, think: null, bw: 0, bi: 0, bc: {}, bv: {}, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  btn(on, dis) {
+    return 'font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:48px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' + (dis ? 'opacity:.45;' : '');
+  }
+  atom(D, x, y, s, r) {
+    return D.circ(x, y, r || AR, FILL[s], D.C.stroke, 2) + D.T(x, y + 5.5, s, s.length > 1 ? 14 : 16, { fill: D.C.stroke });
+  }
+  /* one particle box. shown = the pupil has committed for this round. */
+  box(ri, shown) {
+    const D = window.KS4D; if (!D) return '';
+    const R = ROUNDS[ri];
+    let b = '<rect x="20" y="20" width="560" height="380" rx="14" fill="#FFFDF8" stroke="' + D.C.stroke + '" stroke-width="2.5"/>';
+    let alt = 'Box ' + (ri + 1) + '. ' + R.alt;
+    if (R.lattice) {
+      const x0 = 148, y0 = 115, sp = 38, sn = [];
+      for (let r = 0; r < 6; r++) for (let c = 0; c < 9; c++) {
+        const x = x0 + c * sp, y = y0 + r * sp;
+        if (R.lattice === 'FeS') b += this.atom(D, x, y, (r + c) % 2 === 0 ? 'Fe' : 'S');
+        else if (SN_AT[r + ',' + c]) sn.push([x, y]);
+        else b += this.atom(D, x, y, 'Cu');
+      }
+      sn.forEach((p) => { b += this.atom(D, p[0], p[1], 'Sn', 22); });
+      if (shown && R.lattice === 'FeS') {
+        [[0, 1], [2, 5], [4, 2], [5, 6]].forEach((rc, k) => {
+          const x = x0 + rc[1] * sp - AR - 6, y = y0 + rc[0] * sp - AR - 6;
+          b += '<rect class="aec-trace" pathLength="100" x="' + x + '" y="' + y + '" width="' + (sp + 2 * AR + 12) + '" height="' + (2 * AR + 12) + '" rx="' + (AR + 6) + '" fill="none" stroke="' + D.C.arrow + '" stroke-width="3.5" style="animation-delay:' + (k * 0.25) + 's"/>';
+        });
+        b += '<g class="aec-fade">' + D.T(300, 382, 'Fe : S = 1 : 1 in every part', 20) + '</g>';
+        alt += ' Pairs of one Fe and one S are outlined: the ratio is 1 to 1 everywhere.';
+      }
+      if (shown && R.lattice === 'Cu') {
+        sn.forEach((p, k) => { b += '<circle class="aec-ring" cx="' + p[0] + '" cy="' + p[1] + '" r="29" fill="none" stroke="' + D.C.arrow + '" stroke-width="3" style="animation-delay:' + (k * 0.12) + 's"/>'; });
+        b += '<g class="aec-fade">' + D.T(300, 382, 'Sn scattered: no fixed ratio', 20) + '</g>';
+        alt += ' The Sn atoms are ringed: they sit at random among the copper atoms.';
+      }
+      return { svg: D.svg(600, 420, b, alt), alt };
+    }
+    const sep = shown && R.kind === 'mixture';
+    R.units.forEach((u, k) => {
+      const st = slotXY(u[1]);
+      const atoms = SHAPES[u[0]];
+      const d = AR * 1.64, a = u[2] * Math.PI / 180, n = atoms.length;
+      let g = '';
+      atoms.forEach((s, i) => { const off = (i - (n - 1) / 2) * d; g += this.atom(D, st[0] + off * Math.cos(a), st[1] + off * Math.sin(a), s); });
+      if (sep) {
+        const tg = slotXY(u[4]);
+        const dx = (tg[0] - st[0]).toFixed(1), dy = (tg[1] - st[1]).toFixed(1);
+        b += '<g class="aec-mv" style="transform:translate(' + dx + 'px,' + dy + 'px);animation-delay:' + (k * 0.06).toFixed(2) + 's">' + g + '</g>';
+      } else {
+        b += g;
+        if (shown && n > 1) {
+          const rx = (n - 1) * d / 2 + AR + 7, ry = AR + 7;
+          b += '<ellipse class="aec-trace" pathLength="100" cx="' + st[0] + '" cy="' + st[1] + '" rx="' + rx.toFixed(1) + '" ry="' + ry + '" transform="rotate(' + u[2] + ' ' + st[0] + ' ' + st[1] + ')" fill="none" stroke="' + D.C.arrow + '" stroke-width="3" style="animation-delay:' + (k * 0.12).toFixed(2) + 's"/>';
+        }
+      }
+    });
+    if (sep) {
+      b += '<g class="aec-fade">' + D.line(300, 36, 300, 384, 2.5, D.C.muted, ' stroke-dasharray="8 8"') + D.T(150, 46, R.labels[0], 19) + D.T(450, 46, R.labels[1], 19) + '</g>';
+      alt += ' The particles slide apart: ' + R.labels[0] + ' to the left, ' + R.labels[1] + ' to the right, each particle unchanged.';
+    } else if (shown) {
+      alt += R.kind === 'element' ? ' Each particle is outlined: every one is the same, made of one type of atom.' : ' Each particle is outlined: every one is the same, with atoms of two elements in a fixed ratio.';
+    }
+    return { svg: D.svg(600, 420, b, alt), alt };
+  }
+  balCoefs(i) { return this.state.bc[i] || EQS[i].lhs.concat(EQS[i].rhs).map(() => 1); }
+  balCount(i, cf) {
+    const e = EQS[i], L = {}, Rt = {};
+    e.lhs.forEach((f, k) => { Object.keys(SUBS[f]).forEach((el) => { L[el] = (L[el] || 0) + SUBS[f][el] * cf[k]; }); });
+    e.rhs.forEach((f, k) => { Object.keys(SUBS[f]).forEach((el) => { Rt[el] = (Rt[el] || 0) + SUBS[f][el] * cf[e.lhs.length + k]; }); });
+    return { L, R: Rt };
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', isTriple: true, isHigher: true };
+    const slug = 'atoms-elements-compounds';
+    const ready = !!(s.libReady && K && D);
+    const PN = this.props.mrbPrevNext || {};
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const specRef = R.isTriple ? '4.1.1.1' : '5.1.1.1';
+    /* zoom-in */
+    const zi = s.zi, ZR = ROUNDS[zi], pred = s.zp[zi];
+    const zShown = pred !== undefined;
+    const zRight = zShown && pred === ZR.kind;
+    const zCalled = Object.keys(s.zp).length;
+    const fig = ready ? this.box(zi, zShown) : null;
+    /* balancer */
+    const bi = s.bi, E = EQS[bi], cf = this.balCoefs(bi), cnt = this.balCount(bi, cf);
+    const species = E.lhs.concat(E.rhs);
+    const term = (f, k) => (cf[k] > 1 ? cf[k] : '') + f;
+    const bv = s.bv[bi];
+    const solved = Object.keys(s.bv).filter((k) => s.bv[k] === 'ok').length;
+    const setCoef = (k, dlt) => this.setState((st) => {
+      const cur = (st.bc[bi] || species.map(() => 1)).slice();
+      cur[k] = Math.max(1, Math.min(6, cur[k] + dlt));
+      const nbv = Object.assign({}, st.bv); if (nbv[bi] !== 'ok') delete nbv[bi];
+      return { bc: Object.assign({}, st.bc, { [bi]: cur }), bv: nbv };
+    });
+    const balTerms = [];
+    species.forEach((f, k) => {
+      if (k > 0) balTerms.push({ isSign: true, isSpecies: false, sign: k === E.lhs.length ? '→' : '+' });
+      const lock = bv === 'ok';
+      balTerms.push({ isSign: false, isSpecies: true, formula: f, coef: String(cf[k]), group: 'Number in front of ' + f,
+        downLabel: 'Lower the number in front of ' + f, upLabel: 'Raise the number in front of ' + f,
+        downOff: lock || cf[k] <= 1, upOff: lock || cf[k] >= 6,
+        downStyle: this.step(lock || cf[k] <= 1), upStyle: this.step(lock || cf[k] >= 6),
+        onDown: () => { if (!lock) setCoef(k, -1); }, onUp: () => { if (!lock) setCoef(k, 1); } });
+    });
+    const balanced = E.els.every((el) => cnt.L[el] === cnt.R[el]);
+    const g = cf.reduce((a, b) => gcd(a, b));
+    const done = [s.hook !== null, zCalled >= ROUNDS.length, s.sort, s.think !== null, solved >= 2, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    let verdict = '', vWord = '';
+    if (bv === 'ok') { vWord = 'Balanced.'; verdict = E.els.map((el) => cnt.L[el] + ' ' + el).join(', ') + ' on each side, in the smallest whole numbers.'; }
+    else if (bv === 'mult') { vWord = 'Balanced, not simplest.'; verdict = 'Every number divides by ' + g + '. Equations use the smallest whole numbers that balance.'; }
+    else if (bv === 'no') { const off = E.els.filter((el) => cnt.L[el] !== cnt.R[el]); vWord = 'Not yet.'; verdict = off.map((el) => el + ': ' + cnt.L[el] + ' on the left, ' + cnt.R[el] + ' on the right').join('; ') + '. Change a number in front, never a formula.'; }
+    return Object.assign({}, R, {
+      video: K && s.hook !== null ? K.video(slug) : null,
+      railV, theme, ready, specRef, keySpec: 'AQA ' + specRef, draftVisible: this.props.showDraft !== false,
+      endPrev: PN.prev || null, endNext: PN.next || null,
+      endConnects: ready && K.hrefFor ? [
+        { href: K.hrefFor('relative-formula-mass', R), label: 'Relative formula mass' },
+        { href: K.hrefFor('chemical-bonds', R), label: 'Chemical bonds' }
+      ].filter((c) => c.href) : [],
+      hookOptions: [
+        { text: 'Salt holds only a tiny amount of sodium and chlorine, too little to harm you.', reply: 'Over half the mass of salt is chlorine. Dilution is not the reason.' },
+        { text: 'The sodium and chlorine are still there, but water in the salt keeps them apart.', reply: 'Dry salt contains no water, and its sodium and chlorine are not apart at all.' },
+        { text: 'The elements have chemically combined into a new substance with new properties.', reply: 'Test that idea on the particle boxes below.' },
+        { text: 'Cooking and processing remove the dangerous parts of each element.', reply: 'Nothing is removed. All the sodium and chlorine are still in the salt.' }
+      ],
+      hookReveal: 'Sodium chloride is a compound: sodium and chlorine chemically combined in fixed proportions. A compound is a new substance, so its properties are different from those of its elements. Getting sodium or chlorine back out would take another chemical reaction, not a sieve or a magnet.',
+      onHook: (i) => this.setState({ hook: i }),
+      zoomStep: 'box ' + (zi + 1) + ' of ' + ROUNDS.length,
+      zoomProgress: zCalled + ' of ' + ROUNDS.length + ' called',
+      zoomFig: fig ? K.fig(fig.svg, fig.alt) : null,
+      zoomAsk: !zShown,
+      zoomPrompt: 'Commit first. Is box ' + (zi + 1) + ' an element, a compound or a mixture?',
+      zoomOpts: ['element', 'compound', 'mixture'].map((k) => ({ label: KINDS[k], style: this.btn(false, false),
+        onClick: () => { if (s.zp[zi] === undefined) this.setState((st) => ({ zp: Object.assign({}, st.zp, { [zi]: k }) })); } })),
+      zoomShown: zShown,
+      zoomVerdictHead: zShown ? (zRight ? 'You called ' + pred + ' · the box agrees' : 'You called ' + pred + ' · the box shows otherwise') : '',
+      zoomVerdictTitle: zShown ? KINDS[ZR.kind] + ': ' + ZR.name : '',
+      zoomVerdictBody: zShown ? (zRight ? ZR.right : ((ZR.wrong[pred] || '') + ' ' + ZR.right)) : '',
+      zoomVerdictStyle: 'padding:18px 20px;border-radius:var(--ks3-r-panel);border:2px solid ' + (zShown && !zRight ? 'var(--ks3-alert-border);background:var(--ks3-alert-tint);' : 'var(--ks3-accent);background:var(--ks3-accent-tint);'),
+      zoomCanNext: zShown && zi < ROUNDS.length - 1,
+      onZoomNext: () => this.setState((st) => ({ zi: Math.min(ROUNDS.length - 1, st.zi + 1) })),
+      zoomConfront: zShown && !!CONFRONT[zi] && pred === 'compound',
+      confrontQuote: CONFRONT[zi] ? CONFRONT[zi][0] : '', confrontBody: CONFRONT[zi] ? CONFRONT[zi][1] : '',
+      zoomHasLog: zCalled > 0,
+      zoomLog: Object.keys(s.zp).sort().map((k) => 'Box ' + (+k + 1) + ' · ' + ROUNDS[k].kind + (s.zp[k] === ROUNDS[k].kind ? '' : ' (you said ' + s.zp[k] + ')')),
+      sortBins: [{ id: 'e', label: 'Element' }, { id: 'c', label: 'Compound' }, { id: 'm', label: 'Mixture' }],
+      sortItems: [
+        { text: 'Copper, Cu', bin: 'e', why: 'One symbol, so one type of atom: an element.' },
+        { text: 'Gold, Au', bin: 'e', why: 'Gold is listed in the periodic table: one type of atom.' },
+        { text: 'Oxygen gas, O₂', bin: 'e', why: 'Two atoms of the same element: still an element.' },
+        { text: 'Water, H₂O', bin: 'c', why: 'Hydrogen and oxygen chemically combined, always 2 : 1.' },
+        { text: 'Carbon dioxide, CO₂', bin: 'c', why: 'Carbon and oxygen chemically combined in a fixed ratio.' },
+        { text: 'Magnesium oxide, MgO', bin: 'c', why: 'Two elements in one formula, combined 1 : 1.' },
+        { text: 'Air', bin: 'm', why: 'Nitrogen, oxygen, argon and carbon dioxide, not combined with each other.' },
+        { text: 'Seawater', bin: 'm', why: 'Water with salts dissolved in it, in no fixed amount.' },
+        { text: 'Crude oil', bin: 'm', why: 'A mixture of a very large number of compounds.' },
+        { text: 'Bronze', bin: 'm', why: 'An alloy, copper with tin, not chemically combined.' }
+      ],
+      cmText: ready ? K.commonMistake(slug) : '',
+      onSort: () => this.setState({ sort: true }),
+      thinkOptions: [
+        { text: 'Nothing. The new equation balances, so the answer is correct.', correct: false, reply: 'It does balance, but it now describes a reaction that makes hydrogen peroxide, not water.' },
+        { text: 'Put the 2 on hydrogen instead: H₄ + O₂ → H₂O.', correct: false, reply: 'That changes a formula too, and the oxygen is still unbalanced.' },
+        { text: 'H₂O₂ is hydrogen peroxide, not water. Change only the numbers in front.', correct: true, reply: 'A formula is fixed by the compound itself. 2H₂ + O₂ → 2H₂O balances and still makes water.' },
+        { text: 'Write oxygen as O instead of O₂, so the oxygens match.', correct: false, reply: 'It balances on paper, but oxygen gas is O₂ molecules, so O is the wrong formula.' }
+      ],
+      thinkReveal: 'Balance with numbers in front of formulae, never by changing a subscript: 2H₂ + O₂ → 2H₂O, with 4 H and 2 O on each side.',
+      onThink: (i) => this.setState({ think: i }),
+      workedSteps: WORKED.slice(0, s.bw),
+      workedDone: s.bw >= WORKED.length,
+      workedBtnStyle: 'margin-top:12px;' + (s.bw >= WORKED.length ? 'opacity:.45;cursor:default;' : ''),
+      workedBtnLabel: s.bw === 0 ? 'Show the first step' : (s.bw >= WORKED.length ? 'All three shown' : 'Show the next step'),
+      onWorked: () => this.setState((st) => ({ bw: Math.min(WORKED.length, st.bw + 1) })),
+      balProgress: solved + ' of ' + EQS.length + ' balanced',
+      balTabs: EQS.map((e, i) => ({ label: 'Equation ' + (i + 1) + (s.bv[i] === 'ok' ? ' ✓' : ''), pressed: bi === i, style: this.tab(bi === i), onClick: () => this.setState({ bi: i }) })),
+      balWord: E.word,
+      balTerms,
+      balLine: E.lhs.map((f, k) => term(f, k)).join(' + ') + ' → ' + E.rhs.map((f, k) => term(f, E.lhs.length + k)).join(' + '),
+      balTally: E.els.map((el) => {
+        const eq = cnt.L[el] === cnt.R[el];
+        return { text: el + ' · ' + cnt.L[el] + ' left · ' + cnt.R[el] + ' right',
+          style: 'font-family:var(--ks3-font-mono);font-size:16px;padding:6px 12px;border-radius:99px;color:var(--ks3-ink);border:2px solid ' + (eq ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-option-border);background:var(--ks3-card);') };
+      }),
+      balCheckOff: bv === 'ok',
+      balCheckStyle: bv === 'ok' ? 'opacity:.45;cursor:default;' : '',
+      onBalCheck: () => { if (bv !== 'ok') this.setState((st) => ({ bv: Object.assign({}, st.bv, { [bi]: balanced ? (g === 1 ? 'ok' : 'mult') : 'no' }) })); },
+      balChecked: !!bv,
+      balVerdictWord: vWord, balVerdict: verdict,
+      balVerdictStyle: 'margin:14px 0 0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (bv === 'ok' ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      balCanNext: bv === 'ok' && bi < EQS.length - 1,
+      balNextStyle: this.tab(false),
+      onBalNext: () => this.setState((st) => ({ bi: Math.min(EQS.length - 1, st.bi + 1) })),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'key difference between a compound and a mixture') || K.find(slug, R.route, 'Which of these is a mixture') || { options: [] }, { command: 'Give', marks: 1, why: 'In a compound the elements are chemically combined in fixed proportions. A mixture is not combined, so physical processes can separate it.' }),
+        r2: { kind: 'data', command: 'Complete', marks: 3,
+          prompt: 'Sodium reacts with chlorine: __Na + Cl₂ → __NaCl. Complete the equation by choosing the two missing numbers. Then name the product and say what kind of substance it is.',
+          parts: [
+            { label: 'Number in front of Na', options: ['1', '2', '4'], answer: 1 },
+            { label: 'Number in front of NaCl', options: ['1', '2', '4'], answer: 1 },
+            { label: 'Name of the product', options: ['sodium chloride', 'sodium chlorine', 'sodium chlorate'], answer: 0 },
+            { label: 'The product is', options: ['an element', 'a compound', 'a mixture'], answer: 1 }
+          ],
+          right: '2Na + Cl₂ → 2NaCl: 2 Na and 2 Cl on each side. Sodium chloride is a compound.',
+          wrong: 'Count the Cl first: Cl₂ brings two, so you need 2NaCl, and then 2Na. A compound of a metal with chlorine is named … chloride; …ate names mean oxygen is in it too.',
+          model: ['2Na + Cl₂ → 2NaCl (1 mark, both numbers needed)', 'sodium chloride (1 mark)', 'a compound (1 mark)'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'Air contains nitrogen, oxygen, argon and carbon dioxide. Explain why air is a mixture, not a compound. Put the links in order.',
+          links: ['The gases in air are not chemically combined with each other.', 'So each gas keeps its own chemical properties, and their proportions can vary.', 'So the gases can be separated by a physical process, such as fractional distillation, without a chemical reaction.'],
+          herrings: [{ text: 'Air contains O₂ molecules with two atoms each, so air is a compound.', why: 'O₂ is two atoms of one element: an element, not a compound.' }, { text: 'Air is a gas, and compounds are solids.', why: 'State does not decide it: compounds can be solids, liquids or gases.' }] },
+        r4: { command: 'Explain', marks: 4,
+          question: 'A student heats iron filings and sulfur powder. The product is a black solid that is not attracted to a magnet. Explain how this shows that a compound has formed and not a mixture.',
+          points: ['Iron in a mixture would still be attracted to a magnet.', 'The product has different properties from its elements: not magnetic, and a different colour.', 'A chemical reaction has happened, or a new substance has formed.', 'Iron and sulfur are chemically combined (bonded), in fixed proportions, and cannot be separated by a physical method.'],
+          reject: ['“The iron and sulfur have blended more thoroughly.” Blending is mixing: a magnet would still pull the iron out.', '“The iron has been destroyed.” The iron atoms are still there, now combined with sulfur.'] }
+      } : {},
+      keyLines: ready ? K.keyLines(slug) : [],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+  step(dis) {
+    return 'font:inherit;font-family:var(--ks3-font-display);font-weight:800;font-size:22px;width:44px;height:44px;display:grid;place-items:center;padding:0;border-radius:12px;cursor:' + (dis ? 'default' : 'pointer') +
+      ';color:var(--ks3-ink);border:2px solid var(--ks3-option-border);background:var(--ks3-ground);' + (dis ? 'opacity:.4;' : '');
+  }
+  tab(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+}
+</script>
+</body>
+</html>

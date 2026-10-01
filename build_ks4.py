@@ -385,6 +385,28 @@ def build_source_record(data, lesson):
     return rec
 
 
+def apply_withhold(lesson, rec):
+    """Batch lessons only. `withhold` on a lesson record names frozen quiz
+    items the batch examiner found scientifically wrong, or wrong for a
+    route, so the page does not serve them (practice bank, K.find). The
+    frozen all_subtopics_*.py rows are never edited — this only selects
+    what the generated batch source carries. Each entry is
+    {"needle": <substring of the question>, "routes": [codes] | None,
+    "dep": <DEPARTURES id>}; a needle that matches nothing on a named
+    route fails the build, so a withheld item cannot silently come back
+    or silently stop being withheld."""
+    for w in lesson.get("withhold", []):
+        routes = w.get("routes") or list(rec["quiz"].keys())
+        for r in routes:
+            items = rec["quiz"].get(r, [])
+            keep = [q for q in items if w["needle"] not in q.get("q", "")]
+            if len(keep) == len(items):
+                raise SystemExit(
+                    "build_ks4.apply_withhold: %s %s: needle %r (%s) matches "
+                    "no quiz item" % (lesson["slug"], r, w["needle"], w.get("dep")))
+            rec["quiz"][r] = keep
+
+
 def build_source_js(data, lessons=None, out_name=None):
     """`lessons=None` (the pilot's own call) keeps the exact header this
     function always had, byte for byte. A batch passes its own `lessons`
@@ -421,6 +443,9 @@ def build_source_js(data, lessons=None, out_name=None):
         per_slug[lesson["slug"]] = build_source_record(data, lesson)
 
     per_slug = ks4_science_rulings.apply_source(per_slug)
+    if lessons is not ks4_lessons.LESSONS:
+        for lesson in lessons:
+            apply_withhold(lesson, per_slug[lesson["slug"]])
 
     for lesson in lessons:
         slug = lesson["slug"]
