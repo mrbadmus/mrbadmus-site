@@ -1,0 +1,24 @@
+KS4 batch 7 — 16 lessons.
+
+Pack: docs/ks4/packs/batch-7/ in the mrbadmus-site repo (main branch).
+Read 00-BRIEF.md first, then FLAGS.md, then each lesson's file in 04-checked-science-source/, then 05-diagram-library/README.md.
+
+Lessons:
+  1. Communicable Diseases and Human Defence Systems (communicable-diseases-defence)
+  2. Viral Diseases (viral-diseases)
+  3. Bacterial Diseases (bacterial-diseases)
+  4. Fungal and Protist Diseases (fungal-protist-diseases)
+  5. Vaccination (vaccination)
+  6. Antibiotics and Painkillers (antibiotics-painkillers)
+  7. Drug Discovery and Development (drug-discovery-development)
+  8. Monoclonal Antibodies (monoclonal-antibodies)
+  9. Plant Disease Detection and Defence (plant-disease-detection-defence)
+  10. Photosynthesis (photosynthesis)
+  11. Rate of Photosynthesis (rate-of-photosynthesis)
+  12. Uses of Glucose from Photosynthesis (uses-of-glucose)
+  13. Aerobic Respiration (aerobic-respiration)
+  14. Anaerobic Respiration (anaerobic-respiration)
+  15. Response to Exercise (response-to-exercise)
+  16. Metabolism (metabolism)
+
+Deliver one runnable .dc.html per lesson, as for the pilot, with NOTES (numbered science flags), README, _ds and support.js.
