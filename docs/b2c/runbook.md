@@ -386,6 +386,66 @@ separate sender from Resend and `/api/health` says nothing about it.
 
 ---
 
+## 12. The AI limits, and where each value lives
+
+Three limits apply to every family and organisation child. A school is never
+capped unless its `org_limits.enforce` is true.
+
+| limit | default | what it counts | resets | where the value lives |
+|---|---|---|---|---|
+| AI tutor turns per day | 60 | `tutor_turn` events | London midnight | `platform_settings.consumer_limits` → `tutor_turns_per_day`; per-org override in `org_limits.tutor_turns_per_day` |
+| AI tutor turns per month | 300 | `tutor_turn` events | 1st of the month, London | `platform_settings.consumer_limits` → `tutor_turns_per_month` (**platform-wide only**) |
+| Instant marks per month | 40 | `ai_mark` events | 1st of the month, London | `platform_settings.consumer_limits` → `ai_marks_per_month`; per-org override in `org_limits.ai_marks_per_month` |
+
+Both tutor limits apply and whichever is hit first refuses the turn. If a
+child has spent the day and the month, the month message is the one shown.
+Personal marking by Mr Badmus (`mb_marks_per_month`, default 2) is a separate
+allowance, and `explain_per_day` (60) caps answer explanations.
+
+**Change one with no deploy** (Supabase SQL editor, production). The change
+is live within about a minute:
+
+```sql
+update public.platform_settings
+   set value = value || '{"tutor_turns_per_month": 400}'::jsonb
+ where key = 'consumer_limits';
+```
+
+A key missing from that row falls back to the code default. A value of `0`
+switches the feature off; `null` removes the ceiling.
+
+**What a child sees:** "You've used this month's 300 tutor messages. They
+reset on 1 October." (the daily one ends "…reset at midnight.").
+
+**What a parent sees: nothing yet.** The parent dashboard shows no AI limits,
+so when a parent asks "what is my child's limit, and how much have they
+used?", support answers by hand. Operator console: `GET
+/api/consumer/admin/usage` lists each child's tutor turns for the month next
+to the monthly limit and what is left.
+
+**Backlog (not built):** a per-org override for the monthly tutor limit (needs
+an `org_limits` column, i.e. a migration), and a usage-against-limits display
+on the parent dashboard.
+
+---
+
+## 13. The legal text lives in THREE places
+
+The Terms and the Privacy Policy exist as three byte-identical copies of each
+file. **Change all three together, in one commit:**
+
+1. `docs/b2c/legal/{terms,privacy}.md` — the source of record.
+2. `parents/legal/{terms,privacy}.md` — what the page source loads.
+3. `mrbadmus_site/parents/legal/{terms,privacy}.md` — what Cloudflare serves.
+
+`docs/` is not published, which is why there are three. Check with `md5` that
+the three copies of each file match before pushing. Never edit the wording in
+`parents/legal.js`; it has none, it only renders the markdown. The "Last
+updated" line at the top of each file is what tells a parent which version
+they agreed to, so it changes whenever the wording does.
+
+---
+
 ## Two things that have no screen at all
 
 Named here so nobody hunts for a button that does not exist:
