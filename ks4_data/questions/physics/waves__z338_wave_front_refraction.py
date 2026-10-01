@@ -21,7 +21,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State how a wave front is oriented relative to the path along which the wave moves.",
         "options": [
             "It lies along that direction",
@@ -37,7 +37,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what the distance between two neighbouring wave fronts represents.",
         "options": [
             "The amplitude",
@@ -53,7 +53,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State the shape of the wave fronts produced by a single point source on still water.",
         "options": [
             "Straight parallel lines spreading outwards",
@@ -69,7 +69,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State which property of a wave is unchanged when it refracts.",
         "options": [
             "Its speed",
@@ -85,7 +85,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A wave crosses into a material in which it travels more slowly. State what happens to its wavelength.",
         "options": [
             "It decreases",
@@ -101,7 +101,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A wave has a frequency of 50 Hz. State how many of its wave fronts pass a fixed point each second.",
         "options": [
             "5",
@@ -117,7 +117,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what a single metal rod aerial is able to do.",
         "options": [
             "Only transmit radio waves",
@@ -133,7 +133,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what is needed in an aerial in order to emit a radio wave.",
         "options": [
             "A steady direct current",
@@ -149,7 +149,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what a radio wave produces in an aerial that absorbs it.",
         "options": [
             "A steady direct current",
@@ -165,7 +165,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Compare the frequency of the current induced in a receiving aerial with the frequency of the radio wave that produced it.",
         "options": [
             "It is half as large",
@@ -181,7 +181,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A wave meets a boundary at an angle. State which part of each wave front arrives at the boundary first.",
         "options": [
             "The whole front arrives together",
@@ -197,7 +197,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Name the layer of the upper atmosphere that refracts radio waves back towards the ground.",
         "options": [
             "The troposphere",
@@ -213,7 +213,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Name the type of wave whose wave fronts are straight and parallel to one another.",
         "options": [
             "A point wave",
@@ -229,7 +229,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what happens to the amplitude of a radio wave as it travels further from its transmitter.",
         "options": [
             "It decreases",
@@ -247,7 +247,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why the frequency of a wave cannot change as it crosses a boundary.",
         "options": [
             "The energy of the wave is conserved, and the frequency is another name for the energy it carries",
@@ -263,7 +263,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A water wave of frequency 4.0 Hz travels at 0.40 m/s in deep water. Calculate its wavelength there.",
         "options": [
             "1.6 m",
@@ -279,7 +279,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A sound of wavelength 0.68 m travels through air at 340 m/s. In a second material its wavelength is 3.0 m. Calculate its speed in that material.",
         "options": [
             "1500 m/s",
@@ -295,7 +295,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Plane water waves cross a gradual slope in a ripple tank, so that the water becomes steadily shallower. Describe what happens to the wave fronts.",
         "options": [
             "They fade away, because energy is lost to the sloping bottom as each front passes over it",
@@ -311,7 +311,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A radio wave and a sound wave of the same frequency leave the same site. Explain why the radio wave has by far the longer wavelength.",
         "options": [
             "The radio wave carries much more energy, and a wave of higher energy spreads its cycles further apart",
@@ -327,7 +327,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Describe how a wave front diagram shows a wave passing at an angle from deep water into shallow water.",
         "options": [
             "The fronts are drawn closer together in the shallow water, and turned so they are no longer parallel to those in the deep",
@@ -343,7 +343,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Describe how a radio receiver's aerial turns an arriving radio wave into an electrical signal.",
         "options": [
             "The wave warms the metal of the aerial, and the change in its resistance is measured as the signal",
@@ -359,7 +359,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why a transmitting aerial must be supplied with an alternating current rather than a direct one.",
         "options": [
             "A direct current would overheat the aerial, and an overheated aerial cannot emit radiation",
@@ -375,7 +375,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain how a radio broadcast is received at a place far beyond the horizon from the transmitter.",
         "options": [
             "The wave is refracted by the ionosphere and turned back down towards the surface beyond the horizon",
@@ -391,7 +391,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Some radio frequencies are turned back by the ionosphere while others pass out through it into space. Explain what this shows.",
         "options": [
             "That the ionosphere is thicker in some places than in others, so the same wave behaves differently at different times",
@@ -407,7 +407,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A wave of wavelength 2.0 m travels at 10 m/s in deep water. It moves into shallow water where its speed is 6.0 m/s. Calculate its wavelength there.",
         "options": [
             "3.3 m",
@@ -423,7 +423,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Sound travels faster in warm air than in cold air. Explain why a sound crossing at an angle from a warm layer into a cold one changes direction.",
         "options": [
             "The part of each wave front that reaches the cold air first slows before the rest, so the front pivots",
@@ -439,7 +439,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A wave passes into a new material. Its wave fronts become closer together but its direction does not change. Explain what this tells you.",
         "options": [
             "That the wave arrived along the normal, so it slowed down but had no reason to pivot",
@@ -455,7 +455,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain how a wave front diagram and a ray diagram show the same refraction in two different ways.",
         "options": [
             "The ray diagram shows where the wave is at one instant, while the wave front diagram shows where it will be later",
@@ -473,7 +473,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "On a wave front diagram the fronts are 0.50 m apart, and 20 of them pass a fixed marker every second. Calculate the speed of the wave.",
         "options": [
             "0.025 m/s",
@@ -489,7 +489,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "In a ripple tank the wave fronts are 2.0 cm apart in region A, where the wave travels at 5.0 m/s, and 1.2 cm apart in region B. Calculate the speed in region B.",
         "options": [
             "8.3 m/s",
@@ -505,7 +505,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A wave's speed rises from 1500 m/s to 2000 m/s as it crosses a boundary. Its wavelength in the first material is 6.0 m. Calculate its wavelength in the second.",
         "options": [
             "4.5 m",
@@ -521,7 +521,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A student writes: 'Light slows down in glass, so it has less energy, so its frequency must fall.' Evaluate this reasoning.",
         "options": [
             "Sound, because a slower wave really does carry less energy, and the energy and the frequency always rise and fall together",
@@ -537,7 +537,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "The current in a transmitting aerial oscillates 1.0 × 10⁶ times each second. Radio waves travel at 3.0 × 10⁸ m/s. Calculate the wavelength of the wave emitted.",
         "options": [
             "3.0 × 10¹⁴ m",
@@ -553,7 +553,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "On a hot day a distant road appears to have a pool of water on it, which is really an image of the sky. Suggest how refraction produces this.",
         "options": [
             "The road surface is polished by traffic until it reflects the sky as a mirror would on a hot day",
@@ -569,7 +569,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A long-wave radio station is picked up much further away at night than during the day. Suggest why.",
         "options": [
             "The transmitter is run at a higher power at night, when there is less demand for electricity elsewhere",
@@ -585,7 +585,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain, in terms of how often a front is produced, why wave fronts crowd closer together in a material where the wave travels more slowly.",
         "options": [
             "A new front is produced each period, and in that period the slower wave covers less ground, so the fronts end up nearer one another",
@@ -601,7 +601,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A wave crosses a boundary and its wavelength is halved. Determine what has happened to its speed.",
         "options": [
             "It has doubled, because a shorter wave has to move faster if the frequency is to be kept the same",
@@ -617,7 +617,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "figure": "ks4-fig-wavefronts-student-refraction",
         "text": "A student draws this wave front diagram for a wave passing from material 1 into material 2. Explain why it cannot be right.",
         "options": [
@@ -634,7 +634,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A station is to broadcast at exactly 909 kHz. Explain what determines the frequency of the radio wave that leaves its aerial.",
         "options": [
             "The length of the aerial alone, since a longer aerial always produces a wave of lower frequency",
@@ -650,7 +650,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "The alternating current induced in a receiving aerial is far smaller than the current in the transmitting aerial. Suggest why.",
         "options": [
             "The receiving aerial is made of a different metal, which carries a much smaller current for the same field",
@@ -666,7 +666,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A glass plate is laid on the floor of a ripple tank so that the water above it is shallower, with the plate's edge parallel to the oncoming wave fronts. Predict what is seen.",
         "options": [
             "The fronts bunch closer together over the plate but carry on in the same direction",
@@ -682,7 +682,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Predict what would happen to a wave meeting a boundary at an angle if its speed were exactly the same in both materials.",
         "options": [
             "It would be reflected entirely, since a wave can only enter a material in which its speed differs",

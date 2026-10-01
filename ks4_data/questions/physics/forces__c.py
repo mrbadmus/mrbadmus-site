@@ -989,7 +989,7 @@ QUESTIONS = [
         "subtopic_slug": "motion-in-a-circle",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "An object moves in a circle at a constant speed. State "
                 "which quantity is changing continuously.",
         "options": [
@@ -1007,7 +1007,7 @@ QUESTIONS = [
         "subtopic_slug": "motion-in-a-circle",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State the direction of the acceleration of an object moving "
                 "in a circle at constant speed.",
         "options": [
@@ -1026,7 +1026,7 @@ QUESTIONS = [
         "subtopic_slug": "motion-in-a-circle",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A fairground 'rotor' spins fast enough to hold its riders "
                 "pressed against the inside of its cylindrical wall. State "
                 "what provides the centripetal force on a rider.",
@@ -1046,7 +1046,7 @@ QUESTIONS = [
         "subtopic_slug": "motion-in-a-circle",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what is meant by a centripetal force.",
         "options": [
             "The resultant force on the object, directed towards the centre "
@@ -1067,7 +1067,7 @@ QUESTIONS = [
         "subtopic_slug": "motion-in-a-circle",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why an object moving in a circle at constant speed "
                 "is not in equilibrium.",
         "options": [
@@ -1090,7 +1090,7 @@ QUESTIONS = [
         "subtopic_slug": "motion-in-a-circle",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A ball is whirled in a horizontal circle on the end of a "
                 "string, and the string snaps. Predict the path the ball "
                 "takes immediately afterwards.",
@@ -1110,7 +1110,7 @@ QUESTIONS = [
         "subtopic_slug": "motion-in-a-circle",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A cyclist rides at a steady 8.0 m/s around a circular "
                 "track. Describe her acceleration.",
         "options": [
@@ -1129,7 +1129,7 @@ QUESTIONS = [
         "subtopic_slug": "motion-in-a-circle",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Describe how the centripetal force is provided for a "
                 "roller-coaster car at the lowest point of a vertical loop.",
         "options": [
@@ -1149,7 +1149,7 @@ QUESTIONS = [
         "subtopic_slug": "motion-in-a-circle",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A student says: 'When a car turns a corner, a centrifugal "
                 "force pushes the passengers outwards.' Evaluate this "
                 "statement.",
@@ -1173,7 +1173,7 @@ QUESTIONS = [
         "subtopic_slug": "motion-in-a-circle",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Two satellites are in stable circular orbits around the "
                 "Earth. Satellite A's orbit has a smaller radius than "
                 "satellite B's. Compare their orbital speeds.",
@@ -1196,7 +1196,7 @@ QUESTIONS = [
         "subtopic_slug": "motion-in-a-circle",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A planet moves around the Sun in a circular orbit at "
                 "constant speed. Explain why the Sun's gravitational pull "
                 "does no work on the planet.",
@@ -1217,7 +1217,7 @@ QUESTIONS = [
         "subtopic_slug": "motion-in-a-circle",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A fairground ride carries a car around a horizontal circle "
                 "at constant speed. Compare the car's velocity and "
                 "acceleration at two points half a revolution apart.",

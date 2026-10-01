@@ -33,7 +33,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State where the tails of the arrows are placed on a free body diagram.",
         "options": [
             "Spread evenly around the outside edge of the object so that none of them overlap one another",
@@ -49,7 +49,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain how a complicated object such as a lorry is usually represented on a free body diagram.",
         "options": [
             "By a detailed outline of the lorry, so that each force can be drawn on the correct part",
@@ -65,7 +65,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what should be written beside each arrow on a free body diagram.",
         "options": [
             "The name of the force, and its size in newtons where that is known",
@@ -81,7 +81,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A book lies still on a table. Its free body diagram has two arrows of equal length, one pointing down and one pointing up. Name the upward one.",
         "options": [
             "The weight of the table, which is pressing upwards against the underside of the book",
@@ -97,7 +97,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Give the direction of the normal contact force exerted by a horizontal floor on a crate standing on it.",
         "options": [
             "Sideways along the floor, in whichever direction the crate would slide if it were pushed",
@@ -113,7 +113,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A skydiver is falling through the air before the parachute is opened. Name the upward arrow on the skydiver's free body diagram.",
         "options": [
             "The normal contact force, which the air supplies to the skydiver all the while the fall is going on",
@@ -129,7 +129,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A rowing boat floats motionless on a still lake. Name the upward force on its free body diagram.",
         "options": [
             "Upthrust from the water the hull has pushed aside",
@@ -145,7 +145,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A broken-down car is towed forward by a straight rope. Name the forward force that the rope puts on the car.",
         "options": [
             "The weight of the rope, which acts along its length and drags the car along behind it",
@@ -161,7 +161,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what the direction an arrow points in tells you about the force it represents.",
         "options": [
             "How many newtons the force is worth, since a steeper arrow means a much stronger push",
@@ -177,7 +177,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Decide whether the pull that a hanging pendulum bob exerts on the Earth belongs on the bob's free body diagram.",
         "options": [
             "No, because that force acts on the Earth rather than on the bob, so it goes on the Earth's diagram",
@@ -193,7 +193,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A lamp hangs at rest from the ceiling on one vertical cord. Count the arrows needed on its free body diagram.",
         "options": [
             "Three, on the grounds that the ceiling, the cord and the Earth each supply one force of their own to it",
@@ -209,7 +209,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A magnet is held a short distance above a loose steel pin and the pin lifts up. Decide whether the magnetic force appears on the pin's diagram.",
         "options": [
             "No, because the magnet is not touching the pin, and just contact forces are ever drawn on a diagram of this kind",
@@ -225,7 +225,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "An apple falls from a branch and air resistance on it is small enough to ignore. Count the arrows on its free body diagram.",
         "options": [
             "Two, one for the weight pulling down and one for the branch still pulling upwards on it",
@@ -241,7 +241,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A free body diagram shows exactly two arrows of the same length pointing in opposite directions. State the resultant force.",
         "options": [
             "Zero, because two equal forces in opposite directions cancel one another out completely",
@@ -257,7 +257,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A book rests on a table. Identify the force that belongs on the TABLE's free body diagram rather than on the book's.",
         "options": [
             "The upward push of the table on the book, which is the force holding the book where it is at the moment",
@@ -273,7 +273,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A swimmer pushes the water backwards with her hands and moves forwards. Identify the arrow that belongs on the swimmer's diagram.",
         "options": [
             "The backward push of her hands on the water, drawn pointing behind her as she goes along",
@@ -289,7 +289,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A rocket engine throws hot exhaust gases downwards and the rocket climbs. Determine which force is drawn upwards on the rocket's diagram.",
         "options": [
             "The downward push of the rocket on the exhaust gases, since producing that is what the engine is there for",
@@ -305,7 +305,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A skydiver has reached terminal velocity. Describe the two arrows on the free body diagram at that moment.",
         "options": [
             "Equal arrows, one up and one down",
@@ -321,7 +321,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Immediately after a parachute opens, the falling parachutist slows sharply. Compare the arrow lengths on the diagram at that instant.",
         "options": [
             "The weight arrow is drawn longer than the drag arrow, which is why the fall is slowing down so sharply",
@@ -337,7 +337,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A car speeds up along a straight level road. Four arrows are drawn on its diagram. Describe the horizontal pair.",
         "options": [
             "The driving force arrow and the resistive force arrow are exactly the same length as each other here",
@@ -353,7 +353,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A lift is accelerating upwards from rest. Compare the tension arrow with the weight arrow on the free body diagram of the lift car.",
         "options": [
             "The tension arrow is drawn longer than the weight arrow beneath it on the same diagram",
@@ -369,7 +369,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A lift descends at a steady speed. Compare the two vertical arrows on its free body diagram.",
         "options": [
             "The weight arrow is the longer of the pair, on the grounds that the lift car is travelling downwards at the time",
@@ -385,7 +385,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "An aeroplane cruises in level flight at a constant speed. Four arrows are drawn for its free body diagram. State the relationships between them.",
         "options": [
             "Lift is drawn larger than weight, and thrust is drawn larger than drag as well",
@@ -401,7 +401,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A hammer drives a nail into a plank. Determine which force belongs on the free body diagram of the nail.",
         "options": [
             "The push of the nail back on the hammer head, drawn upwards from the point where they meet",
@@ -417,7 +417,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A crate stays still while two horizontal ropes pull it in opposite directions with 250 N each. Describe the horizontal arrows.",
         "options": [
             "One arrow of 500 N, found by adding the two rope tensions together on the grounds that both are pulling",
@@ -433,7 +433,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "figure": "ks4-fig-free-body-sign-40n",
         "text": "The diagram is the free body diagram for a hanging sign. Deduce the state of the sign.",
         "options": [
@@ -450,7 +450,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A puck glides across level ice at a constant velocity, with friction small enough to ignore. Describe its free body diagram.",
         "options": [
             "A forward arrow that keeps it going, together with a weight arrow and a normal contact force arrow",
@@ -466,7 +466,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A block slides down a rough slope at a steady speed. Determine the set of forces on the block's free body diagram.",
         "options": [
             "Weight, a normal contact force and a friction arrow pointing down the slope in the direction it slides",
@@ -482,7 +482,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "On a diagram of a ball whirled on a string, a student draws the string tension towards the centre and adds a separate centripetal force arrow beside it. Criticise this.",
         "options": [
             "The tension IS the centripetal force here, so drawing both counts the same force twice over",
@@ -498,7 +498,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A trolley is given a shove and then coasts along a bench. A student draws a forward arrow labelled 'the force of motion'. Evaluate the diagram.",
         "options": [
             "It is correct, because something has to keep on pushing the trolley along or it would come to a stop immediately",
@@ -514,7 +514,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A 120 N pull acts at 30° above the horizontal. Determine its horizontal component. (cos 30° = 0.866, sin 30° = 0.500)",
         "options": [
             "139 N",
@@ -530,7 +530,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A box of weight 200 N sits on a slope at 25° to the horizontal. Determine the component of its weight acting down the slope. (sin 25° = 0.423, cos 25° = 0.906)",
         "options": [
             "181 N, taking the component parallel to the slope to be the weight multiplied by cos 25° instead",
@@ -546,7 +546,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "figure": "ks4-fig-force-grid-ring-8n-6n",
         "text": "A small ring is in equilibrium under three forces. The diagram shows two of them, drawn to scale. Determine the third force.",
         "options": [
@@ -563,7 +563,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A lawnmower is pushed by a handle that slopes downwards, so part of the push acts into the ground. Predict the effect on the normal contact force.",
         "options": [
             "It rises, because the ground now has to balance the weight and the downward part of the push as well",
@@ -579,7 +579,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A car drives over the top of a humpback bridge, and its path curves downwards there. Compare the sizes of the weight and the normal contact force on the car at the very top.",
         "options": [
             "The normal contact force is larger than the weight at the top of the hump",
@@ -595,7 +595,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A conker is swung on a string in a horizontal circle at a steady speed. State the direction of the resultant force on it.",
         "options": [
             "Along the direction it is travelling, which is what keeps its speed steady as it goes round",
@@ -611,7 +611,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A satellite circles the Earth well above the atmosphere. Count the arrows its free body diagram needs.",
         "options": [
             "One, its weight, drawn pointing straight towards the centre of the Earth far below it",
@@ -627,7 +627,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A passenger stands on the floor of a lift that is accelerating downwards. Compare the floor's push with the passenger's weight.",
         "options": [
             "The push of the floor is drawn longer than the weight arrow, which is why the passenger feels light",
@@ -643,7 +643,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "One arrow on a book's free body diagram reads 'the table pushes up on the book'. Identify its interaction partner and say where that partner is drawn.",
         "options": [
             "'The weight of the book', drawn downwards on this very same diagram of the book",
@@ -659,7 +659,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Three forces hold an object in equilibrium and are redrawn tip to tail as a scale diagram. Describe the shape they make.",
         "options": [
             "A straight line, because forces in equilibrium have to act along one line as a matter of course",
@@ -675,7 +675,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "figure": "ks4-fig-free-body-parachutist-three-arrows",
         "text": "A student draws this free body diagram for a parachutist and her open parachute, together as one object, as they fall. Assess the arrow labelled 'pull of the parachute'.",
         "options": [
@@ -692,7 +692,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A board rubber is held still against a vertical whiteboard by a horizontal push. Determine the four arrows its free body diagram needs.",
         "options": [
             "Weight down, the push towards the board, and the board's normal contact force back out, with nothing else drawn",
