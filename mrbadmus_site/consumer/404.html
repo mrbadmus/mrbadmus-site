@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#FBF3E6"/>
+<meta name="robots" content="noindex"/>
+<title>Page not found — MrBadmus</title>
+<link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png"><link rel="stylesheet" href="/shared/brand/brand.css">
+<link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
+<link rel="stylesheet" href="/shared/ks3-theme.css"/>
+<style>
+  html { background: var(--ks3-ground); }
+  body { margin: 0; padding: 0; background: var(--ks3-ground); color: var(--ks3-ink);
+         font-family: 'Instrument Sans', system-ui, sans-serif;
+         font-size: 18px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  .cs-head { display: flex; align-items: center; gap: 12px;
+             padding: 20px 20px 0; max-width: 760px; margin: 0 auto; }
+  main { max-width: 760px; margin: 0 auto; padding: 64px 20px 96px; }
+  .cs-eyebrow { margin: 0; font-family: 'DM Mono', ui-monospace, monospace;
+                font-size: 13px; letter-spacing: .14em; text-transform: uppercase;
+                color: var(--ks3-ink-muted); }
+  h1 { margin: 14px 0 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+       font-weight: 800; font-size: clamp(38px, 6vw, 60px); line-height: .98;
+       letter-spacing: -.04em; }
+  .cs-blurb { margin: 20px 0 0; font-size: 19px; color: var(--ks3-ink-body);
+              max-width: 34em; text-wrap: pretty; }
+  .cs-routes { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px; }
+  .cs-routes a { display: flex; align-items: center; min-height: 56px; padding: 0 24px;
+                 border: 2px solid var(--ks3-ink); border-radius: 14px;
+                 font-weight: 700; font-size: 17px; text-decoration: none; }
+  .cs-routes a.primary { background: var(--ks3-ink); color: var(--ks3-card); box-shadow: 5px 5px 0 var(--ks3-accent); }
+  .cs-routes a.secondary { background: var(--ks3-card); color: var(--ks3-ink); }
+  .cs-routes a:hover { color: inherit; }
+  .cs-foot { margin: 56px 0 0; padding-top: 20px; border-top: 2px solid var(--ks3-ink);
+             font-size: 15px; color: var(--ks3-ink-muted); }
+  .cs-foot a { color: var(--ks3-accent-text); font-weight: 700; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="rd" data-mode="ks3">
+  <header class="cs-head"><a class="mrb-brand" href="/parents/" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><span class="mrb-theme-slot" data-mrb-theme></span></header>
+  <main>
+    <p class="cs-eyebrow">Error 404</p>
+    <h1>That page isn’t here.</h1>
+    <p class="cs-blurb">The link you followed doesn’t point at anything — usually because it was typed slightly wrong, or because it pointed at something that has since moved. Nothing has gone wrong with your account.</p>
+    <div class="cs-routes"><a href="/parents/" class="primary">Go to the home page</a><a href="/parents/how-it-works" class="secondary">How it works</a><a href="/parents/sign-in" class="secondary">Sign in</a></div>
+    <p class="cs-foot">Still stuck? Write to
+      <a href="mailto:support@mrbadmus.com">support@mrbadmus.com</a> and say what you
+      were trying to do.</p>
+  </main>
+</div>
+<script src="/shared/theme.js" defer></script>
+</body>
+</html>
