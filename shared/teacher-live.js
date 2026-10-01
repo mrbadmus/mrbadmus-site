@@ -907,6 +907,39 @@
     });
   }
 
+  /* ⊕ 1 Oct 2026 (sweep fix B5) — "THIS WEEK'S" COLUMNS, IN ONE PLACE,
+     FOR BOTH MATRIX BUILDERS.
+
+     `buildMatrix` has always computed its own `inWeekPaper` (below); this
+     is the SAME rule, factored out so `matrixFromRollup` can compute it
+     too. Before this, only `buildMatrix` set `inWeekPaper`, and the digest
+     is a COUNT screen (`COUNT_SCREENS`) — it takes `teacher_class_rollup_v2`
+     via `matrixFromRollup` whenever that function answers, which the
+     sweep's B3 showed it does on TEST. `dgWeekStats`
+     (`teacher_rulings.py`) reads `mxc.inWeekPaper`, so on the rollup path
+     that was always `undefined`, `Object.keys(undefined || {})` always
+     came back empty, and every digest tile scoped to "this week" summed
+     to zero for every class that took the rollup path — not "no data",
+     a wrong zero, over the live population the Submissions tile (which
+     reads `c.week`, a different seam entirely) already answers correctly
+     for (REVIEW.md #2).
+
+     Mide's 23 Sep 2026 ruling: "THIS WEEK'S HOMEWORK" includes whatever is
+     still open, not only what is due inside the window — see the comment
+     on `buildMatrix`'s own call below, which this one carries forward
+     unchanged. It needs only `papers` and `week` (`pack.week`), so both
+     builders can call it identically. */
+  function computeInWeekPaper(papers, week) {
+    var inWeekPaper = {};
+    papers.forEach(function (p) {
+      if (p.state === "open" ||
+          (p.due_at && week && p.due_at >= week.start_at && p.due_at < week.end_at)) {
+        inWeekPaper[p.idx] = true;
+      }
+    });
+    return inWeekPaper;
+  }
+
   /* ⊕ MRB-348 round three — THE MARKED TOTALS, IN ONE PLACE.
 
      Everything below the columns is arithmetic ON the columns, and there are
@@ -1053,6 +1086,11 @@
                        .map(function (p) { return p.idx; }),
       closedIdx: papers.filter(function (p) { return p.closed; })
                        .map(function (p) { return p.idx; }),
+      // ⊕ 1 Oct 2026 (sweep fix B5) — see `computeInWeekPaper`, above
+      // `finishMatrix`. Without this the digest's week-scoped tiles read
+      // `mxc.inWeekPaper` as `undefined` on every class the rollup path
+      // serves and summed to a wrong zero (REVIEW.md #2).
+      inWeekPaper: computeInWeekPaper(papers, pack.week),
       studentAvg: studentAvg,
       partial: true,
       byId: {}
@@ -1103,13 +1141,12 @@
     // (released, not yet closed) is OR'd onto the existing due-date-in-window
     // test, which is kept exactly as it was for a paper that has closed but
     // whose due date still falls in this window.
-    var inWeekPaper = {};
-    papers.forEach(function (p) {
-      if (p.state === "open" ||
-          (p.due_at && p.due_at >= pack.week.start_at && p.due_at < pack.week.end_at)) {
-        inWeekPaper[p.idx] = true;
-      }
-    });
+    //
+    // ⊕ 1 Oct 2026 (sweep fix B5) — this predicate moved into
+    // `computeInWeekPaper`, above `finishMatrix`, so `matrixFromRollup`
+    // can compute the SAME "this week" population. The rule itself is
+    // byte-for-byte what it always was.
+    var inWeekPaper = computeInWeekPaper(papers, pack.week);
 
     /* ── ONE CELL, FOR ANY STUDENT ─────────────────────────────────────
        Written once and read twice — by the roster rows (active students) and
@@ -1725,6 +1762,19 @@
       var wk = null;
       if (p.academic_week != null) {
         wk = Math.max(1, Number(p.academic_week));
+      } else if (p.kind === "flashcards" && p.release_at && startMon) {
+        /* ⊕ 1 Oct 2026 (sweep fix A1) — `flashcard_set_work()` never stamps
+           `academic_week` (the SQL fix is parked — see
+           docs/experience/DESIGN-PORT-REPORT.md), so every flashcard set
+           reaches this fallback, and the generic due_at−7 heuristic below
+           disagreed with the pupil class page's own fallback
+           (shared/student-live.js's `weekOf()`), which has no `due_at−7`
+           idea and reads the RELEASE instant — so the same set landed in
+           two different wrong weeks (SWEEP A1). A flashcard release_at IS
+           the instant the teacher set it, so it is used directly rather
+           than inferred; scoped to `kind === "flashcards"` only so no MCQ
+           paper's existing week bucketing moves. */
+        wk = Math.max(1, weeksBetween(startMon, teachingWeek(asDate(p.release_at)).mon) + 1);
       } else if (p.due_at && startMon) {
         var setD = asDate(p.due_at);
         if (setD) {
@@ -2491,6 +2541,15 @@
       : (p.d + " " + OPEN_MON[p.m - 1]));
   }
 
+  /* ⊕ 1 Oct 2026 (sweep fix C1 — REVERTED, see REVIEW.md #7) — the sweep
+     tried "the soonest deadline, not the first open paper by due-desc":
+     with two open sets, this card named the one due furthest away (8 Oct)
+     over the one due today (SWEEP C1). That is a real product question —
+     which open set leads here, when the class page's own first card
+     (`wOrder`, newest RELEASE) can legitimately disagree — and not one
+     this run is authorised to settle by rewriting the function; see the
+     report's "Decisions I made" for the two questions put to Mide. Reverted
+     to the original pick: the first open paper, in `papers`' own order. */
   function currentSet(papers) {
     for (var i = 0; i < (papers || []).length; i++) {
       if (papers[i].state === "open") { return papers[i]; }
@@ -3644,6 +3703,21 @@
            scoped to `classId` alone. */
         if (qChanged && classId && c.MATRIX[classId] && c.packs && c.packs[classId]) {
           c.MATRIX[classId] = buildMatrix(c.packs[classId], c.PAPERS[classId], c.now);
+          /* ⊕ 1 Oct 2026 (sweep fix B2) — `c.ROSTER[classId]` rebuilt
+             BESIDE the matrix, the same way, for the same reason.
+             `buildRoster`'s per-pupil `avg` is `mx.studentAvg[id]` — read
+             off the matrix this block had just rebuilt with the real
+             `qCount` denominator — but `ROSTER[classId]` itself was never
+             re-run, so it kept the stale `avg` the FIRST `buildMatrix` call
+             computed (back in `buildClassEntry`, before `qCount` existed).
+             The class-detail Students table's AVERAGE column reads
+             `ROSTER[classId]`, not `MATRIX` directly, so the matrix fix
+             alone never reached it: Dev read 50% there (max_score 2) and
+             13% on his own pupil page (max_score 8, from a fresh grid
+             read) for the identical submission. */
+          if (c.packs[classId].members) {
+            c.ROSTER[classId] = buildRoster(c.packs[classId], c.MATRIX[classId], c.now);
+          }
         }
       }
     }

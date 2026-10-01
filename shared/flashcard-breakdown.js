@@ -326,7 +326,25 @@
     var sub = sittings ? (sittings + (sittings === 1 ? " sitting" : " sittings")) + (p.rushed ? " · rushed" : "") : null;
     wrap.appendChild(statTile("TIME", ms ? clock(ms) : "—", sub));
     var st = p.status;
-    var handed = st === "done" ? "On time" : (st === "done_late" ? "Late" : "Not yet");
+    /* ⊕ 1 Oct 2026 (sweep fix C6, corrected) — the ORIGINAL fallback was
+       the single word "Not yet" for EVERY status that was neither done
+       nor done_late — including "missing" (the due date has passed) —
+       while the row pill one screen over (shared/flashcard-progress.js)
+       says "Missing" for that same pupil. SWEEP C6 caught it on Aisha: the
+       table said Missing, this sheet said Not yet, for the identical row.
+
+       ⛔ THE FIRST FIX READ `STATUS[st]`, WHICH IS THE SAME WORD THE
+       STATUS CHIP DIRECTLY ABOVE THIS TILE ALREADY SHOWS (`els.chip`,
+       `renderHeader`, a few lines up) — it fixed the contradiction by
+       making this tile repeat its neighbour, which is exactly the
+       redundant-text rule this estate is held to (CLAUDE.md, 28 Sep;
+       REVIEW.md #6). The chip already says why a pupil has not handed
+       in; this tile does not need to say it a second time in different
+       words. It now reads "—" for every one of those states, the same
+       convention the TIME tile above uses for "nothing to report" (ms
+       falsy → "—") — so the two "not handed in" tiles on this sheet
+       agree with each other as well as with the chip. */
+    var handed = st === "done" ? "On time" : (st === "done_late" ? "Late" : "—");
     wrap.appendChild(statTile("HANDED IN", handed,
       p.completed_at ? "Handed in " + whenLong(p.completed_at) : null,
       st === "done" ? "is-good" : (st === "done_late" ? "is-late" : null)));

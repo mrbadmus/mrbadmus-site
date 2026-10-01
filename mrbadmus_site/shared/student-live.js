@@ -3098,12 +3098,75 @@
     var year = null;
     if (!yrs.error) { year = window.MRBClassEntry.workingAcademicYear(yrs.data); }
 
+    /* ⊕ 1 Oct 2026 (sweep fix A1) — Monday-of-the-teaching-week, SAME
+       algorithm as shared/teacher-live.js's `teachingWeek()` (MRB-330: the
+       week rolls on Sunday 00:00 UK, named by its Monday). Ported rather
+       than imported — this file and teacher-live.js are separate IIFEs
+       with no shared module between them (the same situation
+       student-data.js's `computeWeekWindow` comment already names: "kept
+       byte-for-byte in step with teacher-data.js's copy ... and with
+       `teachingWeek()` in teacher-live.js"). If this drifts from that
+       function, fix both in the same commit. */
+    function teachingMonday(d) {
+      var mon = new Date(d);
+      var dow = d.getDay();                       // 0 = Sunday
+      mon.setDate(d.getDate() - (dow === 0 ? -1 : ((dow + 6) % 7)));
+      mon.setHours(0, 0, 0, 0);
+      return mon;
+    }
+
     function weekOf(card) {
       if (weeks[card.id] != null) { return weeks[card.id]; }
-      if (!card.due_at || !year || !year.start_date) { return 1; }
-      var days = Math.floor(
-        (Date.parse(card.due_at) - Date.parse(year.start_date + "T00:00:00Z")) / 86400000);
-      return Math.max(1, Math.min(39, Math.floor(days / 7) + 1));
+      /* ⊕ 1 Oct 2026 (sweep fix A1, corrected) — THE RELEASE INSTANT, not
+         `due_at`, and teaching-week-aligned, not a plain 7-day block
+         count — but FLASHCARDS ONLY, matching the teacher side's own
+         scope. `flashcard_set_work()` never stamps `academic_week` (the
+         SQL fix is parked — see docs/experience/DESIGN-PORT-REPORT.md),
+         so a flashcard set always reached this fallback; it used
+         `due_at` (a date nobody chose as "when this was set") sliced into
+         raw 7-day blocks from `year.start_date` with no Monday alignment
+         — 1 Sep 2026 was a Tuesday, so those blocks were never teaching
+         weeks at all. The teacher's own class page derives the same
+         fallback week from `release_at`, but ONLY `p.kind === "flashcards"`
+         (`assignPaperWeeks()`, shared/teacher-live.js) — every other paper
+         keeps its original `due_at − 7` heuristic.
+
+         ⛔ THE FIRST FIX APPLIED THE NEW RULE TO EVERY CARD, NOT JUST
+         FLASHCARDS (REVIEW.md should-fix "A1, scope"). A row that carries
+         `academic_week` is unaffected either way (the guard above returns
+         before reaching here), so this only ever bit a LEGACY non-
+         flashcard row with a NULL `academic_week` — but for that row it
+         swapped `due_at − 7-day-block` for `release_at`-teaching-week on
+         the pupil side while the teacher side kept the old heuristic, so
+         the two sides went from disagreeing one way to disagreeing a
+         different way. Gating this branch on `card.kind === "flashcards"`
+         and keeping the ORIGINAL block below for everything else closes
+         that: a flashcard set now agrees with the teacher page exactly as
+         intended, and nothing else changes at all. */
+      if (card.kind !== "flashcards") {
+        if (!card.due_at || !year || !year.start_date) { return 1; }
+        var days = Math.floor(
+          (Date.parse(card.due_at) - Date.parse(year.start_date + "T00:00:00Z")) / 86400000);
+        return Math.max(1, Math.min(39, Math.floor(days / 7) + 1));
+      }
+      var when = card.release_at || card.due_at;
+      if (!when || !year || !year.start_date) { return 1; }
+      var start = new Date(String(year.start_date) + "T00:00:00");
+      var d = new Date(when);
+      if (isNaN(start.getTime()) || isNaN(d.getTime())) { return 1; }
+      /* ⊕ 1 Oct 2026 (should-fix A1, corrected) — ROUNDED, not floored,
+         matching `weeksBetween()` in shared/teacher-live.js byte-for-byte
+         (its own comment: "two Mondays either side of a clock change are
+         7×24h−1h apart, so a floor divides 6.99 weeks down to 6"). The
+         comment just above claimed "SAME algorithm" while this line
+         floored — true on every UK device today, because the academic
+         year starts in BST and every later Monday this maths reaches is
+         either exact or +1h, but not a safe claim to leave written down
+         as fact when it was not yet true in the code (REVIEW.md
+         should-fix "A1, rounding"). */
+      var wk = Math.round(
+        (teachingMonday(d).getTime() - teachingMonday(start).getTime()) / 604800000) + 1;
+      return Math.max(1, Math.min(39, wk));
     }
 
     var cards = detail.assignmentsDueNow
@@ -3188,12 +3251,42 @@
     var benchWork = null;
     if (current && current.assignment) {
       var ca = current.assignment;
+      /* ⊕ 1 Oct 2026 (sweep fix C9, corrected) — `ca.topic` is a single
+         field, and an auto-composed set can span several topics'
+         questions. Naming the bench after `ca.topic` alone named only the
+         first one, silently, on any set that did not fit in one topic
+         (SWEEP C9: the bench title showed only "Energy transfers" for a
+         three-topic set).
+
+         ⛔ THE FIRST FIX READ `current.questions[].topic`, AND THAT FIELD
+         DOES NOT EXIST. `/api/class/current-assignment` (backend
+         `readAssignmentWithQuestions`, server.js ~1234–1249) returns
+         `lesson_slug`, `unit_code`, `text`, `options` — never `topic` — so
+         `caTopics` was always empty and the title silently fell back to
+         `ca.topic`, exactly as before the "fix". Found by code review, not
+         by driving (REVIEW.md #4).
+
+         The real list of distinct topics DOES exist, on the auto row's own
+         `title`: the composer writes it as `topics.join(' · ')` (backend
+         server.js ~2240), the exact separator `scopeName()` already uses
+         for a subtopic's "Topic · Subtopic" name (`shared/set-work.js`).
+         So for an auto set, splitting `ca.title` on `' · '` recovers the
+         real topic list; a teacher-set title has no such structure and is
+         used whole, unchanged from before this fix. Counting distinct
+         `lesson_slug`s instead was considered and rejected: one topic
+         usually spans several lessons, which would call a single-topic set
+         "Mixed topics". */
+      var caTopics = ca.source === "auto"
+        ? String(ca.title || "").split(" · ").map(function (t) { return t.trim(); })
+          .filter(function (t) { return !!t; })
+        : [];
       benchWork = {
         id: ca.id,
         /* Design's heading takes the topic where there is one and the title
            otherwise — `benchTopic` below has always resolved it this way, and
            it is resolved once, here, so both benches read the same fact. */
-        title: ca.topic || ca.title || "",
+        title: caTopics.length > 1 ? "Mixed topics"
+          : (caTopics[0] || ca.topic || ca.title || ""),
         setAt: ca.created_at || null,
         dueAt: ca.due_at || null,
         count: (current.questions || []).length,
@@ -5743,7 +5836,17 @@
   var mountedApp = null;
   function drawBenchNext(data) {
     var d = window.__MRB_DATA__ || data;
-    if (!d || !d.benchEmpty) { return; }
+    /* ⊕ 1 Oct 2026 (sweep fix A4) — ALSO on a DONE bench, not only an empty
+       one. This used to be `!d.benchEmpty` alone, and `benchEmpty` is
+       `!benchDone && !benchWork` — so the moment this week's homework was
+       marked done, the practice round (and a missed set's "Finish it"
+       nudge) stopped being reachable from the bench at all; a pupil with
+       nothing open and something missed saw neither. `benchDone` and
+       `benchEmpty` are mutually exclusive (see the definition above), so
+       this never double-draws the box. Still skipped while homework is
+       genuinely OPEN (`benchWork` true, neither flag set) — that bench
+       slot is doing its one job already. */
+    if (!d || (!d.benchEmpty && !d.benchDone)) { return; }
     var frame = document.querySelector('[data-port-region="bench"]');
     if (!frame || frame.querySelector("[data-mrb-bench-next]")) { return; }
     var pick = null;
@@ -5783,6 +5886,34 @@
     if (!pick) { return; }
     var box = document.createElement("div");
     box.setAttribute("data-mrb-bench-next", "1");
+    /* ⊕ 1 Oct 2026 (should-fix A4) — ON A DONE BENCH, Design's own "done"
+       template is already drawn into this frame — its own heading
+       ("See your answers" etc) and its own big button. A screenshot at
+       390 (REVIEW.md should-fix "A4") showed what that means once this
+       box is ALSO a full empty-bench headline: two h2s and two full-size
+       buttons stacked in one frame, each sized as if it were the only
+       thing on the bench. The bench should read as one done thing with
+       an OPTIONAL next step, not two things of equal weight — so on
+       `benchDone` the box is compact: one line of text (no separate
+       headline) and one link-style action, never a second filled button.
+       An EMPTY bench has no heading of its own yet — this box IS the
+       bench's one thing to say — so it keeps the original full
+       presentation there. */
+    if (d.benchDone) {
+      box.style.cssText = "padding:0 clamp(18px,2.5cqw,36px) clamp(22px,2.4cqw,32px)";
+      var line = document.createElement("p");
+      line.style.cssText = "margin:0;max-width:46ch;font:400 15px/1.5 var(--st-ui);color:var(--st-room-body)";
+      line.textContent = pick.h + (pick.line ? " · " + pick.line : "");
+      box.appendChild(line);
+      var link = document.createElement(pick.href ? "a" : "button");
+      if (pick.href) { link.href = pick.href; } else { link.type = "button"; link.addEventListener("click", pick.act); }
+      link.setAttribute("data-mrb-bench-next-go", "1");
+      link.style.cssText = "all:unset;cursor:pointer;display:inline-block;margin-top:8px;min-height:24px;color:var(--ks3-accent-text);font:600 15px/1.2 var(--st-ui);text-decoration:underline;text-underline-offset:3px";
+      link.textContent = pick.label;
+      box.appendChild(link);
+      frame.appendChild(box);
+      return;
+    }
     box.style.cssText = "padding:clamp(22px,2.4cqw,32px) clamp(18px,2.5cqw,36px) clamp(24px,2.6cqw,36px)";
     var h = document.createElement("h2");
     h.style.cssText = "margin:0;font:600 clamp(27px,3.6cqw,46px)/1 var(--st-display);letter-spacing:-0.04em;color:var(--st-cream)";
@@ -6382,13 +6513,54 @@
             window.__MRB_AFTER_DRAW__.push(lockScroll);
             lockScroll();
           }
+          /* ⊕ 1 Oct 2026 (sweep fix C9) — a flashcard's two faces
+             (`.fcflip`'s two children: the front, and the back carrying
+             the answer) are told apart ONLY by a CSS 3D transform
+             (`backface-visibility:hidden` plus `rotateY`) — which hides
+             the un-flipped face from SIGHT but not from a screen reader,
+             so the answer sat in the accessibility tree before the pupil
+             had revealed it (SWEEP C9). The template's own `data-flip`
+             binding ('0'/'1') is already the one true signal for which
+             face is showing; this reads it back off the DOM rather than
+             threading a second `aria-hidden` binding through Design's
+             compiled render — the same "read the fact the page already
+             drew" approach `lockScroll` just above takes for `st.recall`/
+             `st.cards`. Re-run after every draw, because the runtime
+             rebuilds this subtree from scratch on every `setState`
+             (same reason `drawBenchNext`/`wireLibrary` redo their work
+             each time rather than once). */
+          /* ⊕ 1 Oct 2026 (sweep fix C9, corrected) — `faces[0]` IS NOT A
+             PASSIVE FACE, IT IS THE FLIP BUTTON. `.fcflip`'s first child is
+             the flip `<button>` itself (template node 10334, `on: flip`),
+             so setting `aria-hidden="true"` on it while it still has focus
+             — the runtime restores focus after every draw, and the button
+             remains tabbable regardless of `aria-hidden` — is an
+             `aria-hidden-focus` violation: a screen-reader pupil loses the
+             only control on the card the moment they flip it (REVIEW.md
+             #5). Only `faces[1]`, the back face, is toggled; it holds no
+             focusable elements, and hiding it is the whole of what the
+             sweep asked for. The front face is never hidden while
+             unflipped either way. */
+          var syncFlipAria = function () {
+            document.querySelectorAll(".fcflip[data-flip]").forEach(function (flip) {
+              var flipped = flip.getAttribute("data-flip") === "1";
+              var faces = flip.children;
+              if (faces[1]) { faces[1].setAttribute("aria-hidden", flipped ? "false" : "true"); }
+            });
+          };
+          window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
+          window.__MRB_AFTER_DRAW__.push(syncFlipAria);
+          syncFlipAria();
           /* ⊕ MRB-352 Stage D2 — "View your flashcards". Which sets the
              pupil has been all the way through is worked out AFTER the paint
              and never awaited: a failed read costs the button, not the page. */
           if (page === "class") {
             setTimeout(function () { wireLibrary(sb, ctx.user && ctx.user.id); }, 0);
           }
-          if (page === "class" && data && data.benchEmpty) {
+          /* ⊕ 1 Oct 2026 (sweep fix A4) — the outer gate moves with the one
+             inside `drawBenchNext` (same reasoning there): a done bench
+             must reach it too, or the function is never even called. */
+          if (page === "class" && data && (data.benchEmpty || data.benchDone)) {
             window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
             window.__MRB_AFTER_DRAW__.push(function () { drawBenchNext(data); });
             drawBenchNext(data);

@@ -917,7 +917,11 @@
 
     var answers = el("dl", "bd-q-answers");
     if (!row.answered) {
-      answers.appendChild(el("dt", "bd-q-answer-label", "Answered"));
+      /* ⊕ 1 Oct 2026 (sweep fix C9) — "Answer", not "Answered", labelling
+         a value that already says "Not answered": the row used to read
+         "Answered — Not answered", the same word twice to say one thing
+         (SWEEP C9, `t20-breakdown`). */
+      answers.appendChild(el("dt", "bd-q-answer-label", "Answer"));
       answers.appendChild(el("dd", "bd-q-answer-text is-none", "Not answered"));
     } else {
       var pupilCls = row.isCorrect === true ? " is-right"

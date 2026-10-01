@@ -1968,7 +1968,26 @@ class Component extends DCLogic {
     const wPapers = kPapers.filter(p => wi === 0
       ? (p.weekIdx == null || p.weekIdx <= 0)
       : (wOldest ? p.weekIdx >= wi : p.weekIdx === wi));
-    const wIdxs = wPapers.map(p => p.idx);
+    /* ⊕ 1 Oct 2026 (sweep fix B1, corrected) — THE FIRST FIX FILTERED
+       `wPapers` ITSELF, AND `wPapers` IS NOT ONLY THE "N OF M IN"
+       DENOMINATOR. It is also the source for the Assignments table
+       (`wTable = wPapers.length ? wPapers : …`), the "N assignments · M
+       this term" header, the "Nothing open this week" empty-card line and
+       `openP`/"+N more" — so filtering scheduled work out of it made a
+       teacher's own next-week homework vanish off every one of those the
+       moment they set it (REVIEW.md #1). `wPapers` is restored to every
+       state, exactly as the block comment above it (`:7385-7394`,
+       unchanged) says it must stay.
+
+       The actual defect — a SCHEDULED paper (release_at still ahead, no
+       pupil can see it yet) swelling the "N of M in" denominator — is
+       fixed by deriving `wIdxs` from `wReleased` instead: `wTally`,
+       `wSub`/`wAsk`/`wMean` and the week-scored chase all read `wIdxs`,
+       so excluding scheduled papers from IT (rather than from `wPapers`)
+       reaches every "N of M in" / chase / weekScore input without
+       touching anything that must still show a scheduled paper exists. */
+    const wReleased = wPapers.filter(p => p.state !== 'scheduled');
+    const wIdxs = wReleased.map(p => p.idx);
 
     /* Per child, for the SELECTED week: how many of that week's papers they
        handed in, and whether any of them was late. `late` stays TRI-STATE —
@@ -1976,7 +1995,7 @@ class Component extends DCLogic {
        the unknown into either answer is a claim about a child that the row
        cannot support. */
     const wTally = {};
-    const wAllClosed = wPapers.length > 0 && wPapers.every(p => p.closed);
+    const wAllClosed = wReleased.length > 0 && wReleased.every(p => p.closed);
     kRoster.forEach(r => {
       const row = kMx.byId[r.id];
       let wIn = 0, wLateOne = null, wStarted = false;
@@ -2519,17 +2538,31 @@ class Component extends DCLogic {
       };
     });
     const dgMarkedSub = liveClasses.reduce((a, c) => a + this.matrixFor(c).markedSub, 0);
-    const dgOnTime = liveClasses.reduce((a, c) => a + this.matrixFor(c).markedOnTime, 0);
-    const dgLate = liveClasses.reduce((a, c) => a + this.matrixFor(c).markedLate, 0);
-    const dgUnknown = liveClasses.reduce((a, c) => a + this.matrixFor(c).markedLateUnknown, 0);
+    const dgWeekStats = liveClasses.map(c => {
+      const mxc = this.matrixFor(c);
+      const wIdxs = Object.keys(mxc.inWeekPaper || {}).map(Number);
+      let on = 0, lt = 0, unk = 0;
+      wIdxs.forEach(i => {
+        on += mxc.colOnTime[i] || 0;
+        lt += mxc.colLate[i] || 0;
+        unk += mxc.colLateUnknown[i] || 0;
+      });
+      const wMeans = wIdxs.map(i => mxc.colMean[i]).filter(m => m != null);
+      return { on, lt, unk, mean: wMeans.length
+        ? Math.round(wMeans.reduce((a, v) => a + v, 0) / wMeans.length) : null };
+    });
+    const dgOnTime = dgWeekStats.reduce((a, w) => a + w.on, 0);
+    const dgLate = dgWeekStats.reduce((a, w) => a + w.lt, 0);
+    const dgUnknown = dgWeekStats.reduce((a, w) => a + w.unk, 0);
     const dgKnown = dgOnTime + dgLate;
     const dgOnPct = dgKnown ? Math.round((dgOnTime / dgKnown) * 100) : null;
     /* ⊕ MRB-306 screen 6 — the two figures the tiles used to derive
        for themselves, derived ONCE here instead. `dgMeans` is the
        live classes that actually HAVE a class mean; `dgFlagged` is
        summed off `digestRows`, so the tile cannot count a child the
-       table below it does not. */
-    const dgMeans = liveClasses.map(c => this.meanOf(c))
+       table below it does not.
+       ⊕ 1 Oct 2026 (sweep fix B5) — `dgLate`/`dgUnknown`/`dgMeans` all read `dgWeekStats` (see the tuple above, on `dgOnTime`) instead of `this.matrixFor(c)`/`this.meanOf(c)` directly, so all four digest figures — Submissions, On time, Mean and the counts behind them — are the SAME week's population, not three different ones under one date range. */
+    const dgMeans = dgWeekStats.map(w => w.mean)
                                .filter(m => m != null);
     const dgFlagged = digestRows.reduce((a, d) => a + d.flagN, 0);
 
@@ -3012,7 +3045,7 @@ class Component extends DCLogic {
         : this.CLASSES.length
           + (this.CLASSES.length === 1 ? ' class · ' : ' classes · ')
           + totalStudents
-          + (totalStudents === 1 ? ' student · ' : ' students · ')
+          + (totalStudents === 1 ? ' student' : ' students')
           + (MRB_DATA('termLabel') ? ' · ' + MRB_DATA('termLabel') : ''),
       digestTiles: isClassReport ? [
         { label: 'Submissions', value: MRB_WEEK_IN(k), sub: 'This week' },
@@ -3020,7 +3053,7 @@ class Component extends DCLogic {
         { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: MRB_ONTIME_SUB(kMx.markedOnTime, kMx.markedLate, kMx.markedLateUnknown, 'with results') },
         { label: 'Needs a look', value: String(kFlagged), sub: kFlagged ? 'Nothing in this week, and behind' : 'Everyone accounted for' }
       ] : [
-        { label: 'Submissions', value: String(totalSubs), sub: 'Across ' + liveClasses.length + (liveClasses.length === 1 ? ' active class' : ' active classes') },
+        { label: 'Pupils in', value: String(totalSubs), sub: 'Across ' + liveClasses.length + (liveClasses.length === 1 ? ' active class' : ' active classes') },
         { label: 'Mean score', value: dgMeans.length ? Math.round(dgMeans.reduce((a, m) => a + m, 0) / dgMeans.length) + '%' : '—', sub: 'Mean of ' + dgMeans.length + (dgMeans.length === 1 ? ' class mean' : ' class means') },
         { label: 'On time',
           value: dgOnPct == null ? '—' : dgOnPct + '%',
@@ -3261,11 +3294,11 @@ window.__MRB_MOUNT__ = function () {
   }));
 };
 </script>
-<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","breakdown.css":"87c6fa1b","breakdown.js":"8bbaf006","class-csv-upload.js":"513ee889","class-entry.js":"1028dbfb","config.js":"40813eb2","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-breakdown.js":"d88bf399","flashcard-decks.css":"3da3c46d","flashcard-decks.js":"2610cf68","formulae.js":"e4bfb091","rum.js":"66210c21","set-work.css":"1f99af80","set-work.js":"2ed11396","shoutouts.js":"23393220","teacher-admin-nav.js":"d48cc15e","teacher-data.js":"7257a437","teacher-guard.js":"f7fbad7c","teacher-live.js":"db1e783d","teacher-picker.js":"8f2365b7","teacher-topbar.css":"e4a3d0a7","teacher-topbar.js":"466ea5b0","theme.js":"6fd6f722"};</script>
+<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","breakdown.css":"87c6fa1b","breakdown.js":"ac000e76","class-csv-upload.js":"513ee889","class-entry.js":"1028dbfb","config.js":"40813eb2","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-breakdown.js":"6ab11bac","flashcard-decks.css":"3da3c46d","flashcard-decks.js":"2610cf68","formulae.js":"e4bfb091","rum.js":"66210c21","set-work.css":"1f99af80","set-work.js":"b44f1d00","shoutouts.js":"23393220","teacher-admin-nav.js":"d48cc15e","teacher-data.js":"7257a437","teacher-guard.js":"f7fbad7c","teacher-live.js":"40ec6b10","teacher-picker.js":"8f2365b7","teacher-topbar.css":"e4a3d0a7","teacher-topbar.js":"466ea5b0","theme.js":"6fd6f722"};</script>
 <script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>
 <link rel="stylesheet" href="/shared/teacher-topbar.css?v=e4a3d0a7">
 <script src="/shared/teacher-topbar.js?v=466ea5b0"></script>
-<script src="/shared/set-work.js?v=2ed11396"></script>
-<script src="/shared/teacher-live.js?v=db1e783d"></script>
+<script src="/shared/set-work.js?v=b44f1d00"></script>
+<script src="/shared/teacher-live.js?v=40ec6b10"></script>
 </body>
 </html>

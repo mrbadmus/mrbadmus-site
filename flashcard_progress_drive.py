@@ -905,7 +905,20 @@ def main():
                   "panel: SECURED 5 / 10, made 10 / 10 (make mode)", str(d["tileVals"]) + str(d["tileSubs"]))
             check(d["tileVals"][1] == "5:00" and d["tileSubs"][1] == "2 sittings",
                   "panel: TIME is summed active time, with the sittings count", str(d["tileVals"]) + str(d["tileSubs"]))
-            check(d["tileVals"][2] == "Not yet", "panel: HANDED IN Not yet for an unfinished pupil")
+            # ⊕ 1 Oct 2026 (sweep fix C6, corrected) — HANDED IN reads "—"
+            # for every status that is neither done nor done_late (TIME's
+            # own convention, just above). The first fix made this tile
+            # read "In progress" — the SAME word the status chip two lines
+            # up already shows — which traded the original contradiction
+            # (this tile said "Not yet" while the table pill said
+            # "Missing" for the same row, SWEEP C6 on Aisha) for a
+            # different defect: a label repeating what the chip already
+            # says (REVIEW.md #6, the no-redundant-text rule). Old value
+            # (before either fix) was "Not yet"; this fix's value was
+            # "In progress"; now "—".
+            check(d["tileVals"][2] == "—",
+                  "panel: HANDED IN is '—' for an unfinished pupil (chip says why)",
+                  d["tileVals"][2])
             check(d["verdicts"] == "5 right · 2 nearly · 2 wrong · 1 blank",
                   "panel: B2's verdict words under the tiles", d["verdicts"])
             check(d["filter"] == ["All 3", "Not secured 2"], "panel: All / Not secured filter", str(d["filter"]))

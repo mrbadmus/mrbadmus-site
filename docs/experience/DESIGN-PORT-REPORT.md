@@ -584,3 +584,257 @@ Scoped the tap to `button[aria-expanded]` instead.
 Commit: `c1adc96bf` (`fix/flashcard-completion`, rebased onto
 `origin/main` `64a0cb303`). Parked SQL: `bbd68a144`
 (`feat/fc-complete-migrations`).
+
+---
+
+## Sweep fixes, 1 Oct
+
+An Opus code review of the sweep-fix WIP (`f928cd136..3fe37f1a2`,
+`docs/.../sweep/REVIEW.md`) sent it back: seven must-fixes, two of which
+made the underlying defect worse rather than fixing it, and one of which
+(C1) reversed a quoted Mide ruling on this run's own say-so. This round
+applies the review's findings. No browser was used by the review; every
+item below was then driven for real on TEST against the design-port
+throwaway world (`docs/.../world/WORLD.md`, class `8d/Sc1`) to prove the
+fix reaches the screen, not just the diff.
+
+### 1. B1 — scheduled work was hidden from the whole class page
+
+**What Mide would have seen (the sweep's own fix, before this round):** he
+sets a flashcard pack for next week, and it vanishes — not just from "N of
+M in", but from the Assignments table, the "N assignments" header and the
+Reteach card's own rail, because the first fix filtered `wPapers` itself,
+and everything on the class page reads `wPapers`.
+
+**What changed (`teacher_rulings.py`, the `const openP` tuple and the
+`wTally`/`wAllClosed` tuple just below it):** `wPapers` is restored to
+every state. A new `wReleased` (`wPapers` minus `state === 'scheduled'`)
+is the source for `wIdxs` — and therefore `wTally`, `wSub`/`wAsk`/`wMean`,
+the chase list and `weekScore` — and for `wAllClosed`. The Assignments
+table, the header count, the "Nothing open…" line and `openP`/"+N more"
+all keep reading `wPapers`, untouched.
+
+**Proof (TEST, class-detail.html, `8d/Sc1`):** the Assignments table still
+lists "Animal and plant cells — homework (next week)" with `STATUS
+SCHEDULED`, and the header reads "5 ASSIGNMENTS · 6 THIS TERM" (`wPapers`,
+includes it). Every roster row reads "N of **4** in" (`wReleased` — the
+scheduled set excluded from the denominator); before this fix it would
+have excluded the scheduled set from the TABLE instead, making a
+teacher's own next-week homework disappear.
+Screenshots: `sweep/fix/b1-class-detail-1440.png`, `-390.png`.
+
+### 2. B5 — the digest zeroed on the path most classes take, and mixed two units on one screen
+
+**What Mide would have seen:** a head-of-department's ON TIME and MEAN
+tiles reading "—"/zero on any class the digest reaches via the database
+rollup (`teacher_class_rollup_v2`) rather than the full read — which is
+most classes, on a real roster, most of the time — because only
+`buildMatrix` ever computed `inWeekPaper`, and `matrixFromRollup` read it
+back as `undefined`.
+
+**What changed (`shared/teacher-live.js`):** the "this week" predicate is
+now `computeInWeekPaper(papers, week)`, one function above `finishMatrix`,
+called identically by `buildMatrix` (replacing its inline block,
+byte-for-byte the same rule) and by `matrixFromRollup` (new). **Units:**
+the whole-school Submissions tile is relabelled "Pupils in" —
+`totalSubs` is a PUPIL count (`c.week[0]`), while On time counts
+SUBMISSION CELLS, so the two were sitting side by side under one word
+("Submissions") answering different questions; relabelling was chosen
+over recounting because `totalSubs`/`c.week[0]` feeds other screens'
+vocabulary unchanged (`teacher_rulings.py`).
+
+**Proof (TEST, digest.html, no class filter — the rollup path):**
+`window.__MRB_DATA__.MATRIX['6d6...'].partial === true` (confirms the
+rollup path, not `buildMatrix`) with `inWeekPaper` keys `['1','2','3','4']`
+— populated, not `undefined`. On screen: "PUPILS IN 6 · Across 1 active
+class" beside "ON TIME 64% · 4 late of **11 submissions** with results" —
+nonzero, and the two tiles no longer share one noun.
+Screenshot: `sweep/fix/b5-digest-1440.png`.
+
+### 3. C3 — the Edit sheet's TOPIC line, and why the first fix never painted
+
+**What Mide would have seen:** opening Edit on a released set still reads
+"TOPIC: Sweep respiration set" — the set's own title, not its topic — on
+every edit, because the first fix set `S.roScope` inside `loadScope()`'s
+async callback but nothing ever repainted `els.roScope.textContent` from
+it, and `syncStep()` (the only thing that paints it) had already run,
+synchronously, before `/scope` answered. It also read only
+`S.scopes[0]`, so a multi-topic set would have shown just its first topic
+even once repainted.
+
+**What changed (`shared/set-work.js`, `loadScope()`):** the block moved to
+AFTER `placeStored()` (which is what splits a multi-topic set's stored
+questions across `S.scopes`), now maps `scopeName()` over **every** scope
+and joins the results with " · ", and repaints
+`els.roScope.textContent` directly rather than waiting for a `syncStep()`
+nothing calls again.
+
+**Proof (TEST, class-detail.html → `MRBSetWork.edit()` on the real
+Q1 set, `scope_kind:'topic', scope_ref:'B1'`):**
+`[data-sw="ro-scope"]`.textContent reads "Cells and organisation" — the
+real KS3 topic name from the real `/scope` tree — not "Cells and
+organisation — homework" (the title). Screenshot:
+`sweep/fix/c3-edit-topic-1440.png`.
+
+### 4. C9 bench title — the first fix was dead code
+
+**What Mide would have seen:** a three-topic auto set's bench still reads
+just its first topic ("Energy transfers"), because the first fix read
+`current.questions[].topic`, a field `/api/class/current-assignment`
+never returns (confirmed read-only against the backend,
+`readAssignmentWithQuestions`, server.js ~1234–1249) — so `caTopics` was
+always empty and the fallback to `ca.topic` fired every time, silently.
+
+**What changed (`shared/student-live.js`, the `benchWork` block):** for
+`ca.source === 'auto'`, the topic list is read off `ca.title.split(' · ')`
+instead — the composer's own separator (`server.js` ~2240,
+`topics.join(' · ')`, read-only, confirmed), the same one
+`scopeName()` uses for a "Topic · Subtopic" name. A teacher-set title is
+used whole, as before.
+
+**Proof (TEST, student/class.html, pupil Farah — her real auto set spans
+three topics):** `window.__MRB_DATA__.benchDoneTitle === 'Mixed topics'`.
+Screenshots: `sweep/fix/c9-a4-bench-done-390.png`,
+`a4-bench-compact-scrolled-390.png`.
+
+### 5. C9 aria — the flip button was hidden while focused
+
+**What Mide would have seen:** nothing (a screen-reader-only defect) — a
+pupil using a screen reader loses the only control on a flipped flashcard,
+because `faces[0]` IS the flip `<button>` itself (template node 10334),
+and the first fix set `aria-hidden="true"` on it while it still had focus.
+
+**What changed (`shared/student-live.js`, `syncFlipAria`):** only
+`faces[1]` (the back `<div>`, no focusable elements) is toggled; `faces[0]`
+is never touched. The front face is never hidden while unflipped either
+way, so no drive assertion needed to change.
+
+### 6. C6 — HANDED IN stopped contradicting the chip, then started repeating it
+
+**What Mide would have seen:** the per-pupil sheet's HANDED IN tile read
+"In progress" — the exact word the status chip immediately above it
+already shows — for every pupil who hadn't handed in, trading the
+original bug (HANDED IN said "Not yet" while the row pill said "Missing"
+for the same pupil) for a different one (a label repeating its own
+neighbour, against the standing no-redundant-text rule). Separately, "Done
+late" was a green pill wearing the exact colours of "Missing" (the first
+fix's own over-correction for a green pill with a stray red square).
+
+**What changed:** `shared/flashcard-breakdown.js` — HANDED IN now reads
+"—" for every state that isn't done/done_late (TIME's own convention,
+right beside it), instead of repeating the chip. `shared/
+flashcard-progress.css` — `.fp-st-late` keeps the green/ok tone (it IS
+done) and only its DOT changes to the site's late-dot shape (a square, in
+the warn/orange tone, matching `student-detail.html`'s `stDot`) —
+distinct from both "Missing" (orange pill) and plain "Done" (round green
+dot). `flashcard_progress_drive.py:915`'s assertion updated:
+`"In progress"` → `"—"` (old-before-either-fix value: `"Not yet"`).
+
+**Proof (TEST, flashcards.html, Dev Patel — genuinely Missing on F1):**
+HANDED IN tile reads "—"; the row pill is an orange "Missing" chip with a
+square dot, "Done late" rows are green with a square orange dot, "Done"
+rows are green with a round dot. `flashcard_progress_drive.py`: 0 FAILs.
+Screenshots: `sweep/fix/c6-flashcards-table-1440.png`,
+`c6-breakdown-sheet-1440.png`.
+
+### 7. C1 — reverted; put to Mide
+
+**What Mide would have seen:** with two live sets open, "Reteach from the
+last set" stays on screen (it used to cede its slot to the second set,
+MRB-336 §4.1) — which sounds like a pure improvement, except the ruling it
+overturns quotes Mide's own words ("live assignments should take over the
+reteach from last lesson card"), and the justification for overturning it
+was this run's own gloss on a finding, not a quoted instruction from him.
+Separately, `currentSet()` was changed to pick the open paper due
+soonest rather than the first in the list, which disagreed with the class
+page's own lead card (newest release) the moment two sets were open.
+
+**What changed:** both reverted, byte for byte. `teacher_rulings.py`:
+the `showReteach: true` override tuple removed; MRB-336 §4.1's
+`showReteach: wCards.length < 2` stands. `shared/teacher-live.js`:
+`currentSet()` back to "the first open paper, in `papers`' own order".
+
+**Put to Mide (his calls, not this run's):**
+- Should Reteach keep its slot even behind two live assignment cards, and
+  if so, which of the (at most two) live cards gives way?
+- With two sets open, which one should lead — the class page's own first
+  card (`wOrder`, newest *release*) or "My classes"' `currentSet()`
+  (currently the first *open* paper in list order, which is closed-set-
+  aware but not due-aware)? They can presently show different sets for
+  the same situation.
+
+### 8. A1 — should-fix: rounding and scope
+
+**What changed (`shared/student-live.js`, `weekOf()`):** `Math.floor` →
+`Math.round`, matching `weeksBetween()` in `shared/teacher-live.js`
+byte-for-byte (its own comment explains why: a floor divides 6.99 weeks
+down to 6 across a clock change). The release-instant/teaching-week
+fallback is now gated on `card.kind === 'flashcards'`, matching the
+teacher side's own scope (`assignPaperWeeks()`); every other row keeps
+its original `due_at − 7-day-block` fallback unchanged.
+
+### 9. A4 — should-fix: the done bench reading as two things
+
+**What Mide would have seen:** a done bench showing two full-size
+headings and two full-size buttons — the done card's own ("Mixed topics" /
+"See your answers") and the injected next-step box's (also a full
+headline + a filled pill button) — reading as two things of equal weight
+rather than one done thing with an optional next step.
+
+**What changed (`shared/student-live.js`, `drawBenchNext`):** on
+`benchDone`, the injected box is compact — one line of text (no `<h2>`)
+and one underlined link-style action, never a second filled button. An
+empty bench (no done card of its own yet) keeps the original full
+presentation, since the box IS the bench's one thing to say there.
+
+**Proof (TEST, Farah — a done auto set + a missed set to nudge about):**
+the bench frame holds exactly one `<h2>` ("Mixed topics", the done card's
+own) and the injected box reads "Using a microscope — homework (last
+week) · Was due Wed 23 Sep, 20:55" + one underlined "Finish it" link — no
+second heading, no second filled button. The dead PRACTICE "—" tile (a
+pre-existing defect, not touched by A4) is still on screen awaiting
+Mide's ruling (see below). Screenshot:
+`sweep/fix/a4-bench-compact-scrolled-390.png`.
+
+### Parked (unchanged by this round)
+
+- **A1's SQL fix** — `flashcard_set_work()` still never stamps
+  `academic_week`; the site-side fallback this round tightened is the
+  interim, not a replacement for the migration (`feat/mrb352-migrations`,
+  per the phone/sharpen runs).
+- **B4's backfill** — `max_score = count(assignment_questions)` on
+  existing mcq submission rows; the backend fix (design-port) does not
+  repair rows written before it landed.
+
+### Mide's calls (not this run's to make)
+
+- **C2** — the Set work sheet says "Not set yet" for topics the automatic
+  set already covered this week (`server.js` `teacherSetHistory` is
+  `source='teacher'` only, deliberately — a product ruling, not a bug).
+- **C7** — the pupil class-page Leaderboard is permanently empty by
+  design (`shared/student-live.js` sets `roster=[]` on purpose, pending
+  Mide's ruling); a dead section under the no-redundant-text rule until
+  he rules on it.
+- **C8** — "Revise after marking" shows the pupil the answer, then lets
+  them pick it; no code defect, a product question about whether that is
+  the intended design.
+- **The PRACTICE tile** — `practiceAnswered` reads `""` always; nothing
+  ever writes it. A4 made the bench reachable again from a done state but
+  did not touch this dead tile, per the should-fix's own instruction to
+  park it for Mide.
+- **"Marked" for a done deck** — the row word and filter tab call a
+  finished flashcard deck "Marked", which is not a mark; a wording
+  decision, flagged in the fc-complete section above, still open.
+- **C1's two questions** — see item 7 above.
+- **The "Back to today" link** — class-detail.html's "Back to today"
+  shows even when the teacher arrived from My classes (C9 small item);
+  cosmetic, not touched this round.
+
+**Proof, this round, in full:** `node flashcard_engine_test.js` — 191/191.
+`python3 teacher_tells.py` — 6/6 live pages clean. `python3
+theme_wiring_check.py` — 1331 wired, 0 not wired. `python3
+gate_registry.py --check` — clean. `python3 flashcard_progress_drive.py`
+— all checks green (incl. the updated HANDED-IN assertion), twice
+(before and after the final `build_all.py`). Live TEST screenshots for
+every must-fix and A4, in `sweep/fix/`, against the design-port throwaway
+world — read-only, no new writes.

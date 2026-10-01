@@ -448,8 +448,8 @@ window.MrBadmusStudentData = (function () {
        — it is exactly as safe to name as `due_at`. */
     const assignmentsPromise = settle(sb
       .from('assignments')
-      .select('id, title, subject_id, due_at, deleted_at, quiz_type, ' +
-              'subject:subject_id ( name )')
+      .select('id, title, subject_id, due_at, release_at, deleted_at, ' +
+              'quiz_type, subject:subject_id ( name )')
       .eq('class_id', classId)
       .is('deleted_at', null));
 
@@ -708,6 +708,13 @@ window.MrBadmusStudentData = (function () {
         subject_name: a.subject ? a.subject.name : null,
         subject_colour_var: subjectColourVar(a.subject ? a.subject.name : null),
         due_at: a.due_at || null,
+        // ⊕ 1 Oct 2026 (sweep fix A1) — the RELEASE instant, so
+        // shared/student-live.js's `weekOf()` can put a flashcard set
+        // (whose `academic_week` the backend never stamps — see
+        // docs/experience/DESIGN-PORT-REPORT.md) in the same teaching week
+        // as the teacher's own class page, instead of guessing from
+        // `due_at` with plain 7-day blocks.
+        release_at: a.release_at || null,
         is_submitted: isSubmitted,
         score: isSubmitted ? sub.score : null,
         max_score: isSubmitted ? sub.max_score : null,

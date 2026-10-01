@@ -2606,6 +2606,41 @@
       /* ⊕ 25 Sep 2026 — an edit's stored questions, if they landed first,
          are placed now that the tree can say where each one belongs. */
       placeStored();
+      /* ⊕ 1 Oct 2026 (sweep fix C3, corrected) — THE READ-ONLY "TOPIC" LINE
+         IS THE SCOPE, NOT THE SET'S TITLE, AND IT IS EVERY SCOPE THE SET
+         HOLDS. `edit()` sets `S.roScope` to `o.scopeTitle || o.title` the
+         moment the sheet opens — before the tree has loaded — and no
+         caller has ever passed `scopeTitle` (grepped: zero), so a set's
+         own title stood in for its topic on every edit ("TOPIC: Sweep
+         respiration set" for a Respiration set, SWEEP C3).
+
+         ⛔ THE FIRST FIX NEVER REACHED THE SCREEN (REVIEW.md #3). A locked
+         edit opens straight on step 2 (`editFirst()`), and `syncStep()`
+         paints `els.roScope.textContent` from `S.roScope` BEFORE this
+         `/scope` response lands — setting `S.roScope` here, with nothing
+         else, left the teacher reading the stale title until they changed
+         step. And it read only `S.scopes[0]`: a multi-topic set showed
+         just its first topic, silently dropping the rest.
+
+         So this now runs AFTER `placeStored()` (which is what splits the
+         set's stored questions across `S.scopes`, so a multi-topic edit
+         has more than one scope to name by the time this reads them —
+         `scopeName()` itself only needs `buildTree()`, above, which is
+         why the first fix placed it there), names EVERY scope `scopeName()`
+         resolves (joined with " · ", `scopeName()`'s own separator for a
+         "Topic · Subtopic" name), and repaints `els.roScope` directly
+         rather than waiting for a `syncStep()` nothing here calls again.
+         A scope `scopeName()` cannot resolve (a topic the tree no longer
+         lists) is dropped rather than rendered blank; if every scope fails
+         to resolve, the title fallback `edit()` already set stands. */
+      if (S.editId) {
+        var editScopeNames = S.scopes.map(function (sc) { return scopeName(sc); })
+          .filter(function (n) { return !!n; });
+        if (editScopeNames.length) {
+          S.roScope = editScopeNames.join(" · ");
+          if (els.roScope) { els.roScope.textContent = S.roScope; }
+        }
+      }
       /* ⊕ first-week fixes (22 Sep 2026) — the panel resolves IN PLACE, so a teacher who already
          walked forward to the Topic step watches `Loading` become the tree
          without touching anything. No step change, no toggle, no re-open. */

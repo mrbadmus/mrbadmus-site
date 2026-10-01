@@ -7411,7 +7411,26 @@ LOGIC = (
     const wPapers = kPapers.filter(p => wi === 0
       ? (p.weekIdx == null || p.weekIdx <= 0)
       : (wOldest ? p.weekIdx >= wi : p.weekIdx === wi));
-    const wIdxs = wPapers.map(p => p.idx);
+    /* ⊕ 1 Oct 2026 (sweep fix B1, corrected) — THE FIRST FIX FILTERED
+       `wPapers` ITSELF, AND `wPapers` IS NOT ONLY THE "N OF M IN"
+       DENOMINATOR. It is also the source for the Assignments table
+       (`wTable = wPapers.length ? wPapers : …`), the "N assignments · M
+       this term" header, the "Nothing open this week" empty-card line and
+       `openP`/"+N more" — so filtering scheduled work out of it made a
+       teacher's own next-week homework vanish off every one of those the
+       moment they set it (REVIEW.md #1). `wPapers` is restored to every
+       state, exactly as the block comment above it (`:7385-7394`,
+       unchanged) says it must stay.
+
+       The actual defect — a SCHEDULED paper (release_at still ahead, no
+       pupil can see it yet) swelling the "N of M in" denominator — is
+       fixed by deriving `wIdxs` from `wReleased` instead: `wTally`,
+       `wSub`/`wAsk`/`wMean` and the week-scored chase all read `wIdxs`,
+       so excluding scheduled papers from IT (rather than from `wPapers`)
+       reaches every "N of M in" / chase / weekScore input without
+       touching anything that must still show a scheduled paper exists. */
+    const wReleased = wPapers.filter(p => p.state !== 'scheduled');
+    const wIdxs = wReleased.map(p => p.idx);
 
     /* Per child, for the SELECTED week: how many of that week's papers they
        handed in, and whether any of them was late. `late` stays TRI-STATE —
@@ -7483,9 +7502,14 @@ LOGIC = (
         "      wTally[r.id] = { in: wIn, asked: wIdxs.length, late: "
         "wLateOne };\n"
         "    });",
+        # ⊕ 1 Oct 2026 (sweep fix B1, corrected) — `wAllClosed` reads
+        # `wReleased`, not `wPapers`: a week holding one closed paper and
+        # one still-scheduled paper must still be able to say "Missing"
+        # once the released one has closed, rather than waiting on a
+        # paper nobody can see yet (REVIEW.md #1).
         "    const wTally = {};\n"
-        "    const wAllClosed = wPapers.length > 0 && "
-        "wPapers.every(p => p.closed);\n"
+        "    const wAllClosed = wReleased.length > 0 && "
+        "wReleased.every(p => p.closed);\n"
         "    kRoster.forEach(r => {\n"
         "      const row = kMx.byId[r.id];\n"
         "      let wIn = 0, wLateOne = null, wStarted = false;\n"
@@ -7813,7 +7837,7 @@ LOGIC = (
         { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: MRB_ONTIME_SUB(kMx.markedOnTime, kMx.markedLate, kMx.markedLateUnknown, 'with results') },
         { label: 'Needs a look', value: String(kFlagged), sub: kFlagged ? 'Nothing in this week, and behind' : 'Everyone accounted for' }
       ] : [
-        { label: 'Submissions', value: String(totalSubs), sub: 'Across ' + liveClasses.length + (liveClasses.length === 1 ? ' active class' : ' active classes') },
+        { label: 'Pupils in', value: String(totalSubs), sub: 'Across ' + liveClasses.length + (liveClasses.length === 1 ? ' active class' : ' active classes') },
         { label: 'Mean score', value: dgMeans.length ? Math.round(dgMeans.reduce((a, m) => a + m, 0) / dgMeans.length) + '%' : '—', sub: 'Mean of ' + dgMeans.length + (dgMeans.length === 1 ? ' class mean' : ' class means') },""",
      "the digest's four tiles. The same three corrections as the class "
      "screen's, plus the division by `liveClasses.length` — which is ZERO for "
@@ -7852,7 +7876,25 @@ LOGIC = (
      "NaN and does nothing about this. `dgMeans` is the classes that HAVE a "
      "mean, so the value and the caption's count describe the same "
      "population, and the caption now agrees with the rows a reader can "
-     "count."),
+     "count.\n"
+     "\n"
+     "        ⊕ 1 Oct 2026 (sweep fix B5, units) — the whole-school "
+     "Submissions tile relabelled 'Submissions' → 'Pupils in'. `totalSubs` "
+     "is `liveClasses.reduce((a, c) => a + c.week[0], 0)` — `c.week[0]` is "
+     "`inWeekN`, a PUPIL count — while the On time tile two slots along "
+     "counts SUBMISSION CELLS (`dgWeekStats`' `on`/`lt`/`unk`, summed per "
+     "column, so one pupil with two in-week papers counts twice there and "
+     "once here). Both tiles were called by one name on the SAME screen, "
+     "under one date range, and a head of department reading \"6\" beside "
+     "\"4 late of 11\" had no way to tell the two numbers were not "
+     "measuring the same eleven things (REVIEW.md #2, should-fix 'B5, "
+     "units'). Relabelling is the smaller, safer fix: `totalSubs` already "
+     "feeds other screens' vocabulary (the by-class rows' own `c.week[0]` "
+     "reads, untouched), so recounting it as cells here would make THIS "
+     "tile agree with On time while disagreeing with every other reader "
+     "of `week[0]` on the estate. The per-class report's own Submissions "
+     "tile (`kMx.colSub[0] + '/' + k.n`, above) is already a cell count "
+     "against a single paper and needs no relabelling."),
 
     # ── the whole-school Needs-a-look tile: summed off the rows ──────────
     ("        { label: 'Needs a look', value: String(liveClasses.reduce("
@@ -10044,12 +10086,58 @@ componentDidUpdate() {
      "the student screen's On-time tile. Same shape as the marking screen's: "
      "a bare count that is 0 when nothing is known."),
 
+    # ══ ⊕ 1 Oct 2026 (sweep fix B5) — THE WHOLE-SCHOOL DIGEST MIXED THIS
+    #    WEEK WITH THE WHOLE TERM, ON ONE SCREEN, UNDER ONE DATE RANGE ════
+    #
+    # The digest's heading says "MON 28 SEP – FRI 2 OCT" — this week — and
+    # sits over four tiles. SUBMISSIONS already answers for the week
+    # (`totalSubs` is `liveClasses.reduce((a, c) => a + c.week[0], 0)`,
+    # MRB-306 screen 6's own fix, below). ON TIME and MEAN never got the
+    # same fix: `dgOnTime`/`dgLate`/`dgUnknown` (Design's original, and the
+    # tuple immediately below) summed `this.matrixFor(c).markedOnTime` etc.
+    # — `markedIdx`, EVERY released paper a class has ever had — and
+    # `dgMeans` read `this.meanOf(c)`, the same whole-term `classMean`. A
+    # head of department reading "MON 28 SEP – FRI 2 OCT" over "4 late of 11
+    # submissions with results" was reading five weeks of Q1 and last
+    # week's microscope set, not the dated week above it.
+    #
+    # `dgWeekStats` is ONE pass per class over the SAME population the
+    # Submissions tile already uses — `mx.inWeekPaper`, the matrix's own
+    # "is this column in the current teaching week" map (Mide's 23 Sep 2026
+    # ruling: released-and-open, or due inside the week window) — summing
+    # `colOnTime`/`colLate`/`colLateUnknown`/`colMean` over exactly those
+    # columns instead of every `markedIdx` column. `dgOnTime` is Design's
+    # own original line (never touched by any other ruling); this tuple
+    # replaces it rather than the block below, because the block below
+    # introduces `dgLate`/`dgUnknown`/`dgMeans` and has to read the SAME
+    # per-class stats `dgOnTime` now computes once, not three separate
+    # term-wide sums re-derived three times.
+    (
+        "    const dgOnTime = liveClasses.reduce((a, c) => a + "
+        "this.matrixFor(c).markedOnTime, 0);",
+        "    const dgWeekStats = liveClasses.map(c => {\n"
+        "      const mxc = this.matrixFor(c);\n"
+        "      const wIdxs = Object.keys(mxc.inWeekPaper || {}).map(Number);\n"
+        "      let on = 0, lt = 0, unk = 0;\n"
+        "      wIdxs.forEach(i => {\n"
+        "        on += mxc.colOnTime[i] || 0;\n"
+        "        lt += mxc.colLate[i] || 0;\n"
+        "        unk += mxc.colLateUnknown[i] || 0;\n"
+        "      });\n"
+        "      const wMeans = wIdxs.map(i => mxc.colMean[i]).filter(m => m != null);\n"
+        "      return { on, lt, unk, mean: wMeans.length\n"
+        "        ? Math.round(wMeans.reduce((a, v) => a + v, 0) / wMeans.length) : null };\n"
+        "    });\n"
+        "    const dgOnTime = dgWeekStats.reduce((a, w) => a + w.on, 0);",
+        "THIS WEEK'S on-time count, over the SAME in-week population as "
+        "the Submissions tile (SWEEP B5) — see the section header above "
+        "this tuple."
+    ),
+
     ("""    const dgLate = Math.max(0, dgMarkedSub - dgOnTime);
     const dgOnPct = dgMarkedSub ? Math.round((dgOnTime / dgMarkedSub) * 100) : 0;""",
-     "    const dgLate = liveClasses.reduce((a, c) => a + "
-     "this.matrixFor(c).markedLate, 0);\n"
-     "    const dgUnknown = liveClasses.reduce((a, c) => a + "
-     "this.matrixFor(c).markedLateUnknown, 0);\n"
+     "    const dgLate = dgWeekStats.reduce((a, w) => a + w.lt, 0);\n"
+     "    const dgUnknown = dgWeekStats.reduce((a, w) => a + w.unk, 0);\n"
      "    const dgKnown = dgOnTime + dgLate;\n"
      "    const dgOnPct = dgKnown ? Math.round((dgOnTime / dgKnown) * 100) "
      ": null;\n"
@@ -10057,8 +10145,14 @@ componentDidUpdate() {
      "       for themselves, derived ONCE here instead. `dgMeans` is the\n"
      "       live classes that actually HAVE a class mean; `dgFlagged` is\n"
      "       summed off `digestRows`, so the tile cannot count a child the\n"
-     "       table below it does not. */\n"
-     "    const dgMeans = liveClasses.map(c => this.meanOf(c))\n"
+     "       table below it does not.\n"
+     "       ⊕ 1 Oct 2026 (sweep fix B5) — `dgLate`/`dgUnknown`/`dgMeans` "
+     "all read `dgWeekStats` (see the tuple above, on `dgOnTime`) instead "
+     "of `this.matrixFor(c)`/`this.meanOf(c)` directly, so all four digest "
+     "figures — Submissions, On time, Mean and the counts behind them — "
+     "are the SAME week's population, not three different ones under one "
+     "date range. */\n"
+     "    const dgMeans = dgWeekStats.map(w => w.mean)\n"
      "                               .filter(m => m != null);\n"
      "    const dgFlagged = digestRows.reduce((a, d) => a + d.flagN, 0);",
      "the digest's cross-class lateness. `markedSub - markedOnTime` folds "
@@ -12600,6 +12694,22 @@ componentDidUpdate() {
      "the week, one chase list spanning all of it and one reminder about the "
      "first paper in it."),
 
+    # ⊕ 1 Oct 2026 (sweep fix C1 — REVERTED, see REVIEW.md #7) — a tuple
+    # here once overrode `showReteach: wCards.length < 2` (MRB-336 §4.1,
+    # 8 Sep 2026, immediately above) to `showReteach: true`, on the
+    # reasoning that SWEEP C1 found a real cost: the moment a teacher has
+    # two live sets, the Reteach card disappears with nothing on screen
+    # saying why. That cost is real, but overturning it is a PRODUCT
+    # reversal of a ruling that quotes Mide's own words ("live assignments
+    # should take over the reteach from last lesson card"), and the
+    # sweep's own brief ("this run's brief asks for Reteach to never
+    # disappear") is not Mide's — it is this run's own gloss on the
+    # finding, which is exactly the case REVIEW.md #7 says only Mide may
+    # settle. Reverted; MRB-336 §4.1's `showReteach: wCards.length < 2`
+    # stands unchanged. Put to Mide instead: should Reteach keep its slot
+    # even behind two live sets, and if so, which of the (at most two)
+    # live cards should give way? See the report's "Decisions I made".
+
     # ══ ⊕ MRB-336 · STATUS IS THREE THINGS, AND THE SET COLUMN IS REAL ══
     #
     # ⛔ MIDE'S SCREENSHOT, 8 Sep 2026: three assignments no pupil could see,
@@ -13423,9 +13533,17 @@ componentDidUpdate() {
     ("        subLine: stHistory.length + ' assignments',",
      "        subLine: stHistory.length + (stHistory.length === 1 ? ' assignment' : ' assignments'),",
      'Sharpen C6 T37 — singular on one.'),
-    ("          + totalSubs\n          + (totalSubs === 1 ? ' submission' : ' submissions')\n",
-     '',
-     'Sharpen C6 T53 — the submissions count is the tile below.'),
+    ("          + (totalStudents === 1 ? ' student · ' : ' students · ')\n"
+     "          + totalSubs\n          + (totalSubs === 1 ? ' submission' : ' submissions')\n",
+     "          + (totalStudents === 1 ? ' student' : ' students')\n",
+     'Sharpen C6 T53 — the submissions count is the tile below. '
+     '⊕ 1 Oct 2026 (sweep fix B5) — widened to ALSO drop the '
+     'student(s) word\'s own trailing " · ": that separator existed '
+     'to join onto the submissions count this tuple removes, and left '
+     'bare it joined onto nothing, so the very next line\'s own '
+     '`\' · \' + termLabel` (MRB-306 screen 6, above) supplied a '
+     'SECOND separator on an empty gap — "6 students · · Autumn '
+     'term" (SWEEP B5). The separator is now termLabel\'s alone.'),
     ("        scopeLabel: chartScope === 'all' ? 'All classes' : k.code\n      },",
      "        scopeLabel: chartScope === 'all' ? 'All classes' : k.code,\n        /* ⊕ Sharpen C6 (T56) — the scope toggle names the class; the\n           card title does not repeat it. */\n        title: (k && k.code && String(chart.title || '').indexOf(k.code + ' — ') === 0)\n          ? (t => t.charAt(0).toUpperCase() + t.slice(1))(String(chart.title).slice(k.code.length + 3))\n          : chart.title\n      },",
      'Sharpen C6 T56.'),

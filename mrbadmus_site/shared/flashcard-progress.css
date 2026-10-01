@@ -165,6 +165,24 @@ tbody .fp-row:first-child .fp-td { border-top: none; }
 .fp-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
 .fp-st-ok   { color: var(--ks3-ok-text); background: var(--ks3-ok-tint); border-color: var(--ks3-ok-tint); }
 .fp-st-ok .fp-dot { background: var(--ks3-ok); }
+/* ⊕ 1 Oct 2026 (sweep fix C6, corrected) — "Done late" started as a
+   green pill with an orange SQUARE dot sitting inside it (SWEEP C6:
+   "the 'Done late' pill is green with a red square").
+
+   ⛔ THE FIRST FIX MADE .fp-st-late IDENTICAL TO .fp-st-warn (REVIEW.md
+   should-fix "C6, CSS") — same text colour, same background, same
+   border: "Done late" and "Missing" then read as the exact same pill,
+   losing the one thing the colour was telling a teacher — that the work
+   IS done. That is the wrong direction: a late submission is still a
+   result, not an absence.
+
+   So the pill KEEPS the ok/green tone (copied from `.fp-st-ok`, below —
+   it IS done) and only the DOT changes, to the site's own late-dot
+   convention: a SQUARE, not a circle, in the warn/orange tone
+   (`tone === 'warn'`, the same shape and colour the main Students/
+   Assignments table's late dot already draws — `student-detail.html`'s
+   `stDot`). A green pill, with a late dot — not a green pill wearing
+   "Missing"'s own colours, and not the plain .fp-st-ok circle either. */
 .fp-st-late { color: var(--ks3-ok-text); background: var(--ks3-ok-tint); border-color: var(--ks3-ok-tint); }
 .fp-st-late .fp-dot { background: var(--st-accent); border-radius: 1px; }
 .fp-st-warn { color: var(--st-accent-text); background: var(--st-chip-tint); border-color: var(--st-chip-tint-border); }

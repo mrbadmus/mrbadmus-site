@@ -116,9 +116,28 @@
     btn.type = "button";
     btn.setAttribute("data-mrb-library-open", "");
     btn.setAttribute("data-port-action", "flashcard-library");
+    /* ⊕ 1 Oct 2026 (sweep fix C5) — this button is appended inside
+       `[data-bench-surface="cards"]` (student_rulings.py node 10204, "the
+       flashcards card … painted `background:var(--b-ground)`"), one of six
+       bench themes that is deliberately INDEPENDENT of the page's light/
+       dark toggle — a paper plate on the bench, same rule as the docket
+       (`--st-docket-paper`/`--st-docket-ink`, shared/student-ds.css) and
+       the figure plates. `--st-paper`/`--st-body` are NOT in that fixed
+       family — they are the page's own theme-reactive tokens — so in dark
+       mode the background went to --st-paper's DARK value (#201A13) while
+       the text, `--st-body`, went to ITS dark value too (#D8CCB8, a tan
+       that reads at ~1.3:1 on a background that was supposed to stay the
+       light paper the button was drawn on): SWEEP C5. `--st-docket-paper`/
+       `-ink` already exist for exactly this — a FIXED light pairing,
+       defined only inside `html[data-theme="dark"]` — so this button
+       reads them with `var(--st-paper)`/`var(--st-ink)` as the light-mode
+       fallback (undefined outside dark mode, same light values either
+       way) rather than inventing a third capture of the same fix. */
     btn.setAttribute("style", "position:relative;margin-top:10px;width:100%;min-height:48px;"
-      + "border-radius:14px;border:1.5px solid var(--st-rule);background:var(--st-paper);"
-      + "color:var(--st-body);font:600 15px var(--st-ui);text-align:center;cursor:pointer;");
+      + "border-radius:14px;border:1.5px solid var(--st-rule);"
+      + "background:var(--st-docket-paper, var(--st-paper));"
+      + "color:var(--st-docket-ink, var(--st-ink));font:600 15px var(--st-ui);"
+      + "text-align:center;cursor:pointer;");
     btn.textContent = "View your flashcards";
     btn.addEventListener("click", function () { go("#sets", 1); });
     surface.appendChild(btn);
