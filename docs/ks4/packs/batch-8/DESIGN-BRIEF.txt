@@ -1,0 +1,24 @@
+KS4 batch 8 — 16 lessons.
+
+Pack: docs/ks4/packs/batch-8/ in the mrbadmus-site repo (main branch).
+Read 00-BRIEF.md first, then FLAGS.md, then each lesson's file in 04-checked-science-source/, then 05-diagram-library/README.md.
+
+Lessons:
+  1. Homeostasis (homeostasis)
+  2. The Human Nervous System (nervous-system)
+  3. Reflex Actions (reflex-actions)
+  4. Reaction Time (reaction-time)
+  5. The Brain (the-brain)
+  6. The Eye (the-eye)
+  7. Defects of the Eye (defects-of-the-eye)
+  8. Thermoregulation (thermoregulation)
+  9. The Endocrine System (endocrine-system)
+  10. Blood Glucose Control and Diabetes (blood-glucose-diabetes)
+  11. Human Reproduction and Hormones (human-reproduction-hormones)
+  12. Contraception and Fertility Treatment (contraception-fertility)
+  13. Sexual and Asexual Reproduction (sexual-asexual-reproduction)
+  14. Meiosis (meiosis)
+  15. Advantages and Disadvantages of Sexual and Asexual Reproduction (advantages-sexual-asexual)
+  16. DNA and the Genome (dna-genome)
+
+Deliver one runnable .dc.html per lesson, as for the pilot, with NOTES (numbered science flags), README, _ds and support.js.
