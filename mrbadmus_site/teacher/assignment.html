@@ -1983,8 +1983,25 @@ class Component extends DCLogic {
     const wMean = wMeans.length
       ? Math.round(wMeans.reduce((a, v) => a + v, 0) / wMeans.length) : null;
     const openP = wPapers[0] || null;
-    const lastMarked = kMx.markedIdx.filter(i => (kMx.colSub[i] || 0) > 0
-      && !(kPapers[i] && kPapers[i].kind === 'flashcards'));
+    /* ⊕ MRB-353, 1 Oct 2026 — AND IT IS THE SELECTED WEEK'S LAST
+       MARKED SET, NOT THE CLASS'S. Unscoped, `lastP` picked the
+       newest released-and-submitted paper across the whole class, so
+       picking week 4 on 10h/Ph1 still showed week 5's own card —
+       the same card week 5 shows, because nothing here ever read
+       `wi` or `wPapers`. `wi === 0` (the current week, the bar's own
+       chip 0) keeps the exact old, unscoped computation — this fix's
+       own bar is byte-for-byte on the current week. Every other week
+       reads `wPapers` instead of `kPapers`,
+       and additionally requires `p.closed` rather than merely
+       released — `markedIdx` stopped meaning "deadline passed" on
+       24 Sep (stream A) without this read noticing, so on an open
+       week it was resolving a set nobody had finished sitting yet
+       (10h/Ph1 week 5, 2 of 17 in) as something to reteach FROM. */
+    const lastMarked = (wi === 0)
+      ? kMx.markedIdx.filter(i => (kMx.colSub[i] || 0) > 0
+        && !(kPapers[i] && kPapers[i].kind === 'flashcards'))
+      : wPapers.filter(p => p.closed && (kMx.colSub[p.idx] || 0) > 0
+        && p.kind !== 'flashcards').map(p => p.idx);
     const lastP = lastMarked.length ? (kPapers[lastMarked[0]] || null) : null;
     /* ── ⊕ MRB-336 §4.1 · A CARD IS ONE LIVE ASSIGNMENT ─────────────────
 
@@ -2102,10 +2119,59 @@ class Component extends DCLogic {
         hasMore: false, moreLabel: '', more: () => {}
       };
     };
-    const wCards = wOrder.slice(0, 2).map(cardOf);
-    /* Nothing live is a state and it keeps Design's card rather than
-       emptying the column. `hasChase` is false, so the WRAP takes the
-       footer with it and there is no button offering to remind nobody. */
+    /* ⊕ MRB-353, 1 Oct 2026 — A PAST WEEK'S CARD IS CLOSED, NOT
+       EMPTY. Mide: picking a past week on the strip and finding "Nothing
+       open this week" over a set that plainly ran and closed — 10h/Ph1's
+       week 4 closed with 8 of 17 in, and the card read as if nothing had
+       ever been set, because `wOrder` above is LIVE-only (MRB-336 §4.1's
+       own rule) and a closed paper never qualifies. `cardOf` is kept
+       exactly as it is — it has a working Remind button, which a closed
+       set must not offer — so this is a second, narrower card shape for
+       that one case: the same title and final count, with Remind and the
+       chase chips left off rather than offered and broken.
+       `wi !== 0` is "not the current week" (the bar's own convention —
+       `weekIdxFor`'s `weekIdx: 0` is the chip it opens on), so the CURRENT
+       week is untouched by this branch and keeps today's exact output,
+       live or empty. ONE closed card, never two: `showReteach` is
+       `wCards.length < 2`, and the reteach card for that week is the
+       other thing Mide asked to see there ("+N more" names the rest). `wDone` excludes only `scheduled` — a past week's
+       papers are never scheduled in practice, but the exclusion is stated
+       rather than assumed. */
+    const closedCardOf = (p) => {
+      const cSub = kMx.colSub[p.idx] || 0;
+      const cAsk = kMx.colAsked[p.idx] || 0;
+      const cDue = (p.due || '').replace(/^Due /, '');
+      const cOut = (!k || k.state !== 'live') ? []
+        : kRoster.filter(r => {
+          const row = kMx.byId[r.id];
+          return !(row && row.submitted[p.idx]);
+        });
+      return {
+        eyebrow: p.statusLabel + (cDue ? ' · due ' + cDue : ''),
+        title: p.title,
+        count: cAsk > 0 ? cSub + ' of ' + cAsk + ' in' : '—',
+        pct: cAsk ? Math.round((cSub / cAsk) * 100) : 0,
+        hasBar: true,
+        /* the names stay — who never handed it in is the glance — and
+           the empty label takes the Remind button off (WRAP 236). */
+        hasChase: cOut.length > 0,
+        chase: cOut.map(r => ({
+          name: this.shortName(r.name),
+          open: (e) => { e.stopPropagation(); MRB_GO('student', { student: r.id, 'class': k && k.id }); }
+        })),
+        remindLabel: '', remind: () => {},
+        hasMore: false, moreLabel: '', more: () => {}
+      };
+    };
+    const wDone = (wi === 0) ? [] : wPapers.filter(p => p.state !== 'scheduled')
+      .slice().sort((a, b) => a.idx - b.idx);
+    const wPool = wOrder.length ? wOrder : wDone;
+    const wCards = wOrder.length ? wOrder.slice(0, 2).map(cardOf)
+      : wDone.slice(0, 1).map(closedCardOf);
+    /* Nothing live and nothing closed is a state and it keeps Design's card
+       rather than emptying the column. `hasChase` is false, so the WRAP
+       takes the footer with it and there is no button offering to remind
+       nobody. */
     if (!wCards.length) {
       /* ⊕ Stream J, 25 Sep 2026 (experience run, item 1) — THE EMPTY STATE
          MUST READ THE SAME PAPERS THE TABLE DOES. `wCards` is built from
@@ -2127,7 +2193,7 @@ class Component extends DCLogic {
         hasChase: false, chase: [], remindLabel: '', remind: () => {},
         hasMore: false, moreLabel: '', more: () => {} });
     }
-    const wRest = Math.max(0, wOrder.length - wCards.length);
+    const wRest = Math.max(0, wPool.length - wCards.length);
     if (wRest) {
       const wLastCard = wCards[wCards.length - 1];
       wLastCard.hasMore = true;
@@ -2184,6 +2250,56 @@ class Component extends DCLogic {
       praise
     };
 
+    if (wi !== 0) {
+      const wkLast = wIdxs.length ? Math.max.apply(null, wIdxs) : -1;
+      const wkPct = (r) => {
+        const row = kMx.byId[r.id];
+        const got = wIdxs.filter(i => row && row.submitted[i] && row.pct[i] != null)
+          .map(i => row.pct[i]);
+        return got.length ? Math.round(got.reduce((a, b) => a + b, 0) / got.length) : null;
+      };
+      const wkOut = (r) => !!(wTally[r.id] && wTally[r.id].asked
+        && wTally[r.id].in < wTally[r.id].asked);
+      const wkWatch = kRoster.filter(r => {
+        if (wkOut(r)) return true;
+        const v = wkPct(r);
+        return v != null && v < 50;
+      });
+      glance.watch = wkWatch.slice(0, 4).map(r => {
+        const t = wTally[r.id];
+        return {
+          name: r.name, initials: this.initials(r.name), hue: this.hueFor(r.name),
+          reason: wkOut(r)
+            ? (t.in ? t.in + ' of ' + t.asked + ' in' : (t.closed ? 'Missed it' : 'Not in yet'))
+            : wkPct(r) + '% on it',
+          open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })
+        };
+      });
+      glance.hasWatch = glance.watch.length > 0;
+      glance.noWatch = !glance.hasWatch;
+      glance.watchMore = wkWatch.length > 4 ? '+' + (wkWatch.length - 4) + ' more in the list below' : '';
+      let wkBest = null, wkImp = null;
+      kRoster.forEach(r => {
+        const v = wkPct(r);
+        if (v == null) return;
+        if (!wkBest || v > wkBest.v) wkBest = { r, v };
+        const row = kMx.byId[r.id];
+        let prev = null;
+        for (let i = wkLast + 1; row && i < row.pct.length; i++) {
+          if (row.submitted[i] && row.pct[i] != null) { prev = row.pct[i]; break; }
+        }
+        if (prev == null) return;
+        if (!wkImp || v - prev > wkImp.d) wkImp = { r, d: v - prev };
+      });
+      glance.praise = [];
+      if (wkBest) glance.praise.push({ name: wkBest.r.name, initials: this.initials(wkBest.r.name),
+        hue: this.hueFor(wkBest.r.name), reason: 'Top score · ' + wkBest.v + '%',
+        open: () => MRB_GO('student', { student: wkBest.r.id, 'class': k && k.id }) });
+      if (wkImp && wkImp.d > 0 && (!wkBest || wkImp.r.id !== wkBest.r.id)) glance.praise.push({
+        name: wkImp.r.name, initials: this.initials(wkImp.r.name), hue: this.hueFor(wkImp.r.name),
+        reason: MRB_DELTA_REASON(wkImp.d),
+        open: () => MRB_GO('student', { student: wkImp.r.id, 'class': k && k.id }) });
+    }
     /* Not-submitted first (flagged among them highest), then everyone in. */
     const rosterWeight = (r) => ((wTally[r.id] && wTally[r.id].asked
       && wTally[r.id].in < wTally[r.id].asked) ? 2 : 0) + (r.flag ? 1 : 0);

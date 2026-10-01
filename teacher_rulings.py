@@ -5603,6 +5603,15 @@ WRAP = {
         # until now — and steps aside only when there is a second.
         239: "glance.showReteach",
 
+        # ⊕ MRB-353, 1 Oct 2026 — the Remind BUTTON (node 236, inside node
+        # 235's footer, inside node 230's chase block) is drawn only when
+        # its card has a label for it. A live card always has one ("Remind
+        # all N" / "Reminded today · N"), so the current week is unchanged;
+        # a PAST week's closed card keeps its "Not in yet" names and has an
+        # empty label — a set that has closed is not something to remind
+        # anybody about.
+        236: "glance.remindLabel",
+
         # ⊕ MRB-336 — A WRAP ON NODE 235 WAS WRITTEN HERE AND WITHDRAWN
         # BEFORE IT SHIPPED, and it is recorded because the reasoning was
         # wrong in a way worth naming. It read: "Remind all 0" is a dead
@@ -11099,15 +11108,36 @@ componentDidUpdate() {
     # and the no-roster fixture has no papers. Neither could express "closed,
     # and empty".
     ("    const lastP = kPapers[1] || null;",
-     "    const lastMarked = kMx.markedIdx.filter(i => (kMx.colSub[i] || 0) > 0\n"
-     "      && !(kPapers[i] && kPapers[i].kind === 'flashcards'));\n"
+     "    /* ⊕ MRB-353, 1 Oct 2026 — AND IT IS THE SELECTED WEEK'S LAST\n"
+     "       MARKED SET, NOT THE CLASS'S. Unscoped, `lastP` picked the\n"
+     "       newest released-and-submitted paper across the whole class, so\n"
+     "       picking week 4 on 10h/Ph1 still showed week 5's own card —\n"
+     "       the same card week 5 shows, because nothing here ever read\n"
+     "       `wi` or `wPapers`. `wi === 0` (the current week, the bar's own\n"
+     "       chip 0) keeps the exact old, unscoped computation — this fix's\n"
+     "       own bar is byte-for-byte on the current week. Every other week\n"
+     "       reads `wPapers` instead of `kPapers`,\n"
+     "       and additionally requires `p.closed` rather than merely\n"
+     "       released — `markedIdx` stopped meaning \"deadline passed\" on\n"
+     "       24 Sep (stream A) without this read noticing, so on an open\n"
+     "       week it was resolving a set nobody had finished sitting yet\n"
+     "       (10h/Ph1 week 5, 2 of 17 in) as something to reteach FROM. */\n"
+     "    const lastMarked = (wi === 0)\n"
+     "      ? kMx.markedIdx.filter(i => (kMx.colSub[i] || 0) > 0\n"
+     "        && !(kPapers[i] && kPapers[i].kind === 'flashcards'))\n"
+     "      : wPapers.filter(p => p.closed && (kMx.colSub[p.idx] || 0) > 0\n"
+     "        && p.kind !== 'flashcards').map(p => p.idx);\n"
      "    const lastP = lastMarked.length "
      "? (kPapers[lastMarked[0]] || null) : null;",
      "the class screen's \"last marked set\". Part of #13: `kPapers[1]` is "
      "the index-0 assumption, and `markedIdx` is the seam's own answer to "
      "the same question — narrowed to the closed papers somebody actually "
      "sat, because `markedIdx` is a deadline test and not a submission "
-     "one."),
+     "one. ⊕ MRB-353, 1 Oct 2026 — and narrowed again to the SELECTED "
+     "week on every week but the current one, with the same reasoning "
+     "re-applied against `p.closed` directly rather than through "
+     "`markedIdx`, whose own meaning moved later (stream A, 24 Sep) out "
+     "from under this read."),
 
     # ⚠️ AND THE CARD NEEDS WORDS FOR THAT STATE. `lastTitle` fell back to a
     # bare em-dash, which under the heading "Reteach from the last set" reads
@@ -12591,10 +12621,59 @@ componentDidUpdate() {
         hasMore: false, moreLabel: '', more: () => {}
       };
     };
-    const wCards = wOrder.slice(0, 2).map(cardOf);
-    /* Nothing live is a state and it keeps Design's card rather than
-       emptying the column. `hasChase` is false, so the WRAP takes the
-       footer with it and there is no button offering to remind nobody. */
+    /* ⊕ MRB-353, 1 Oct 2026 — A PAST WEEK'S CARD IS CLOSED, NOT
+       EMPTY. Mide: picking a past week on the strip and finding "Nothing
+       open this week" over a set that plainly ran and closed — 10h/Ph1's
+       week 4 closed with 8 of 17 in, and the card read as if nothing had
+       ever been set, because `wOrder` above is LIVE-only (MRB-336 §4.1's
+       own rule) and a closed paper never qualifies. `cardOf` is kept
+       exactly as it is — it has a working Remind button, which a closed
+       set must not offer — so this is a second, narrower card shape for
+       that one case: the same title and final count, with Remind and the
+       chase chips left off rather than offered and broken.
+       `wi !== 0` is "not the current week" (the bar's own convention —
+       `weekIdxFor`'s `weekIdx: 0` is the chip it opens on), so the CURRENT
+       week is untouched by this branch and keeps today's exact output,
+       live or empty. ONE closed card, never two: `showReteach` is
+       `wCards.length < 2`, and the reteach card for that week is the
+       other thing Mide asked to see there ("+N more" names the rest). `wDone` excludes only `scheduled` — a past week's
+       papers are never scheduled in practice, but the exclusion is stated
+       rather than assumed. */
+    const closedCardOf = (p) => {
+      const cSub = kMx.colSub[p.idx] || 0;
+      const cAsk = kMx.colAsked[p.idx] || 0;
+      const cDue = (p.due || '').replace(/^Due /, '');
+      const cOut = (!k || k.state !== 'live') ? []
+        : kRoster.filter(r => {
+          const row = kMx.byId[r.id];
+          return !(row && row.submitted[p.idx]);
+        });
+      return {
+        eyebrow: p.statusLabel + (cDue ? ' · due ' + cDue : ''),
+        title: p.title,
+        count: cAsk > 0 ? cSub + ' of ' + cAsk + ' in' : '—',
+        pct: cAsk ? Math.round((cSub / cAsk) * 100) : 0,
+        hasBar: true,
+        /* the names stay — who never handed it in is the glance — and
+           the empty label takes the Remind button off (WRAP 236). */
+        hasChase: cOut.length > 0,
+        chase: cOut.map(r => ({
+          name: this.shortName(r.name),
+          open: (e) => { e.stopPropagation(); MRB_GO('student', { student: r.id, 'class': k && k.id }); }
+        })),
+        remindLabel: '', remind: () => {},
+        hasMore: false, moreLabel: '', more: () => {}
+      };
+    };
+    const wDone = (wi === 0) ? [] : wPapers.filter(p => p.state !== 'scheduled')
+      .slice().sort((a, b) => a.idx - b.idx);
+    const wPool = wOrder.length ? wOrder : wDone;
+    const wCards = wOrder.length ? wOrder.slice(0, 2).map(cardOf)
+      : wDone.slice(0, 1).map(closedCardOf);
+    /* Nothing live and nothing closed is a state and it keeps Design's card
+       rather than emptying the column. `hasChase` is false, so the WRAP
+       takes the footer with it and there is no button offering to remind
+       nobody. */
     if (!wCards.length) {
       /* \u2295 Stream J, 25 Sep 2026 (experience run, item 1) \u2014 THE EMPTY STATE
          MUST READ THE SAME PAPERS THE TABLE DOES. `wCards` is built from
@@ -12616,7 +12695,7 @@ componentDidUpdate() {
         hasChase: false, chase: [], remindLabel: '', remind: () => {},
         hasMore: false, moreLabel: '', more: () => {} });
     }
-    const wRest = Math.max(0, wOrder.length - wCards.length);
+    const wRest = Math.max(0, wPool.length - wCards.length);
     if (wRest) {
       const wLastCard = wCards[wCards.length - 1];
       wLastCard.hasMore = true;
@@ -14077,3 +14156,72 @@ INSERT_AT[(365, None)] = (
     "Sharpen C5 / screen 04 — 'revised after marking' under the score on "
     "the student screen's submission history, at every width, when the "
     "pupil changed the set after it was marked.")
+
+
+# ⊕ MRB-353, 1 Oct 2026 (Mide) — "KEEP AN EYE ON" AND "WORTH A SHOUTOUT"
+# FOLLOW THE PICKED WEEK. "Those cards should be specific for the week's
+# assignment." On any week but the current one, both people cards read THAT
+# week's own sets — the same `wIdxs`/`wTally` the Students table's week
+# column is built from, so the cards and the table cannot disagree. Keep an
+# eye on: not everything in for that week, or under 50% on it. Worth a
+# shoutout: the top score on that week's work, and the biggest rise from
+# the pupil's previous set. ⚠️ This SUPERSEDES, for past weeks only, the
+# 25 Sep note above that `flagged`/`watch` are never week-scoped; the
+# current week (`wi === 0`) keeps `r.flag` and the term averages exactly.
+LOGIC = LOGIC + ((
+    "    /* Not-submitted first (flagged among them highest), then everyone in. */",
+    "    if (wi !== 0) {\n"
+    "      const wkLast = wIdxs.length ? Math.max.apply(null, wIdxs) : -1;\n"
+    "      const wkPct = (r) => {\n"
+    "        const row = kMx.byId[r.id];\n"
+    "        const got = wIdxs.filter(i => row && row.submitted[i] && row.pct[i] != null)\n"
+    "          .map(i => row.pct[i]);\n"
+    "        return got.length ? Math.round(got.reduce((a, b) => a + b, 0) / got.length) : null;\n"
+    "      };\n"
+    "      const wkOut = (r) => !!(wTally[r.id] && wTally[r.id].asked\n"
+    "        && wTally[r.id].in < wTally[r.id].asked);\n"
+    "      const wkWatch = kRoster.filter(r => {\n"
+    "        if (wkOut(r)) return true;\n"
+    "        const v = wkPct(r);\n"
+    "        return v != null && v < 50;\n"
+    "      });\n"
+    "      glance.watch = wkWatch.slice(0, 4).map(r => {\n"
+    "        const t = wTally[r.id];\n"
+    "        return {\n"
+    "          name: r.name, initials: this.initials(r.name), hue: this.hueFor(r.name),\n"
+    "          reason: wkOut(r)\n"
+    "            ? (t.in ? t.in + ' of ' + t.asked + ' in' : (t.closed ? 'Missed it' : 'Not in yet'))\n"
+    "            : wkPct(r) + '% on it',\n"
+    "          open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })\n"
+    "        };\n"
+    "      });\n"
+    "      glance.hasWatch = glance.watch.length > 0;\n"
+    "      glance.noWatch = !glance.hasWatch;\n"
+    "      glance.watchMore = wkWatch.length > 4 ? '+' + (wkWatch.length - 4) + ' more in the list below' : '';\n"
+    "      let wkBest = null, wkImp = null;\n"
+    "      kRoster.forEach(r => {\n"
+    "        const v = wkPct(r);\n"
+    "        if (v == null) return;\n"
+    "        if (!wkBest || v > wkBest.v) wkBest = { r, v };\n"
+    "        const row = kMx.byId[r.id];\n"
+    "        let prev = null;\n"
+    "        for (let i = wkLast + 1; row && i < row.pct.length; i++) {\n"
+    "          if (row.submitted[i] && row.pct[i] != null) { prev = row.pct[i]; break; }\n"
+    "        }\n"
+    "        if (prev == null) return;\n"
+    "        if (!wkImp || v - prev > wkImp.d) wkImp = { r, d: v - prev };\n"
+    "      });\n"
+    "      glance.praise = [];\n"
+    "      if (wkBest) glance.praise.push({ name: wkBest.r.name, initials: this.initials(wkBest.r.name),\n"
+    "        hue: this.hueFor(wkBest.r.name), reason: 'Top score · ' + wkBest.v + '%',\n"
+    "        open: () => MRB_GO('student', { student: wkBest.r.id, 'class': k && k.id }) });\n"
+    "      if (wkImp && wkImp.d > 0 && (!wkBest || wkImp.r.id !== wkBest.r.id)) glance.praise.push({\n"
+    "        name: wkImp.r.name, initials: this.initials(wkImp.r.name), hue: this.hueFor(wkImp.r.name),\n"
+    "        reason: MRB_DELTA_REASON(wkImp.d),\n"
+    "        open: () => MRB_GO('student', { student: wkImp.r.id, 'class': k && k.id }) });\n"
+    "    }\n"
+    "    /* Not-submitted first (flagged among them highest), then everyone in. */",
+    "MRB-353 — on a past week, the class glance's \"Keep an eye on\" and "
+    "\"Worth a shoutout\" cards read that week's own sets (`wIdxs`, `wTally` "
+    "— the Students table's week column), not the class's current flag and "
+    "term averages. The current week is unchanged."),)
