@@ -36,6 +36,28 @@ its half of MRB-354 could in principle run standalone, but the migration
 file updates both functions in one transaction, so in practice it's applied
 as a unit, after MRB-353.
 
+## Apply steps (for the chat)
+
+1. Apply MRB-353 first (`supabase/MRB353-APPLY.md`, all its steps).
+2. **Check the base.** `select proname, md5(prosrc) from pg_proc where proname in
+   ('flashcard_record','flashcard_card_state')` must read `flashcard_record`
+   `85643a2b…` and `flashcard_card_state` `2ed66c5f…`. If either differs, stop:
+   something replaced a body since 2 Oct and this migration was built on the
+   wrong base.
+3. Apply `20261002120000_mrb354_one_word_secured.sql` (one transaction; two
+   `create or replace`, no DROP, no data writes).
+4. Verify: `flashcard_card_state` = `eb50f6a2…`, `flashcard_record` = `9f910628…`,
+   ACLs unchanged, then `python3 tools/mrb354_body_diff.py
+   --deployed-card-state-md5 <md5> --deployed-record-md5 <md5>` → PASS.
+5. Nothing to backfill. Secured is computed on read, so every pupil's count
+   follows the new rule the moment step 3 commits. A pupil who is now all
+   secured but has no submission gets one the next time their class page
+   loads (the page's existing heal) or the next time they rate a card.
+
+The site does NOT wait on this migration: the pupil page decides the pupil's
+own state from their rows, and the teacher pages read the RPC's `known`,
+which already is the new rule. Applying it makes the server agree.
+
 ## What changes
 
 1. **`flashcard_card_state`** — production's current body carried forward
