@@ -88,12 +88,15 @@ commit, parked on the branch, never on main:
 - `docs/ks4/FROZEN-CORRECTIONS.md` carries the md5 of every changed file
   before and after, the counts, and every row (before, after, spec, why).
 
-**State at report time:** corrections `c0ee470ff` + review `8bdb6c1eb`, rebased
-onto main `48ec9002d` (after the pilot fix and Prompt T's `launch.json`) and
-rebuilt; KS4 gates green (pilot check, batch check, science rulings, parity
-batch-2 728/0 and batch-3 616/0 on the earlier base). The branch push waits on
-its last browser receipts; until it reaches origin it is local to the
-`ks4-frozen` worktree on this machine.
+**State:** pushed to `feat/ks4-frozen-corrections` at `8bdb6c1eb` (corrections
+`c0ee470ff` + review `8bdb6c1eb`), rebased onto main `48ec9002d` (after the
+pilot fix and Prompt T's `launch.json`); a plain `build_all.py` per
+`launch.json` gives zero diff; B2C files equal main; batch-2/3 re-freeze
+reproduces the committed hashes; all gates green (pilot check, batch check,
+science rulings 101/101, consumer_launch_state 36/36, ks4_chrome_drive,
+ks4_parity, verify_ks3; `prepush_gate --check` green). An earlier parity red
+was a harness artefact (Chrome SIGKILLed under memory pressure from other
+sessions), not the corrections.
 
 To apply: merge the branch (it is site data; the chat merges, no database
 step).
