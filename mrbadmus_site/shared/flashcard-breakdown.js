@@ -47,7 +47,10 @@
     done: "Done", done_late: "Done", in_progress: "In progress",
     not_started: "Not started", missing: "Missing"
   };
-  var RATING = { got_it: "Got it", nearly: "Nearly", not_yet: "Not yet" };
+  /* ⊕ MRB-354 (2 Oct 2026) — "Got it" is gone from every pupil/teacher
+     surface; a got_it rating reads "Secured" wherever a rating chip or
+     history row shows it (`ratingChips` below). */
+  var RATING = { got_it: "Secured", nearly: "Nearly", not_yet: "Not yet" };
   var VERDICT = { match: "Right", partial: "Nearly", no: "Wrong",
                   blank: "Blank", pending: "Checking" };
 
@@ -115,11 +118,17 @@
     return best;
   }
 
-  /* The ONE state chip on a card. */
+  /* The ONE state chip on a card — FOUR states (⊕ MRB-354: "Got it" is gone;
+     a card is Secured the moment any rating of it is got_it, no pairing, no
+     second sitting). `c.known` is the RPC's `flashcard_card_state.known` —
+     already exactly this fact (MRB-354 §6: "Secured count = the RPC's
+     `known`… and per card `c.known || c.secured`" — correct before and
+     after the parked SQL, since `c.secured` only ever narrows `c.known`
+     under the OLD two-sitting rule). */
   function cardState(c) {
-    if (c.secured) { return { key: "secured", word: "Secured" }; }
+    if (c.secured || c.known) { return { key: "secured", word: "Secured" }; }
     var r = latestRating(c);
-    if (r && RATING[r.rating]) { return { key: r.rating, word: RATING[r.rating] }; }
+    if (r && r.rating !== "got_it" && RATING[r.rating]) { return { key: r.rating, word: RATING[r.rating] }; }
     return { key: "unseen", word: "Not seen" };
   }
 
@@ -334,7 +343,9 @@
   function buildTiles(p, d) {
     var wrap = el("div", "bd-summary");
     var n = S.n || 0;
-    wrap.appendChild(statTile("SECURED", (p.secured || 0) + " / " + n,
+    /* ⊕ MRB-354 §6 — secured count = the RPC's `known` (per pupil), not the
+       OLD two-sitting `secured`; correct before and after the parked SQL. */
+    wrap.appendChild(statTile("SECURED", (p.known || 0) + " / " + n,
       S.make ? "made " + (p.made || 0) + " / " + n : null));
     var ses = (d && d.sessions) || [];
     var ms = ses.reduce(function (t, s) { return t + (s.active_ms || 0); }, 0);
@@ -368,7 +379,7 @@
   }
 
   function buildToggle(cards) {
-    var open = cards.filter(function (c) { return !c.secured; }).length;
+    var open = cards.filter(function (c) { return !(c.secured || c.known); }).length;
     var wrap = el("div", "bd-toggle");
     var all = btn("bd-toggle-btn" + (!S.notSecured ? " is-on" : ""));
     all.textContent = "All " + cards.length;
@@ -567,7 +578,7 @@
     var bar = el("div", "bd-qmap-wrap fb-filter");
     bar.appendChild(buildToggle(cards));
     els.body.appendChild(bar);
-    var shown = S.notSecured ? cards.filter(function (c) { return !c.secured; }) : cards;
+    var shown = S.notSecured ? cards.filter(function (c) { return !(c.secured || c.known); }) : cards;
     var list = el("ol", "fb-cards");
     shown.forEach(function (c) { list.appendChild(buildCard(c, cards.indexOf(c))); });
     els.body.appendChild(list);

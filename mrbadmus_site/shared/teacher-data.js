@@ -2436,7 +2436,10 @@ window.MrBadmusTeacherData = (function () {
         if (!data) { return; }
         const pupils = {};
         (data.pupils || []).forEach(function (p) {
-          pupils[p.pupil_id] = { status: p.status, secured: p.secured || 0,
+          /* ⊕ MRB-354 — `secured` here is the one-word rule: the RPC's `known`
+             (a Secured rating, latest per sitting per phase). Correct before
+             and after the parked SQL, which makes the two equal. */
+          pupils[p.pupil_id] = { status: p.status, secured: p.known || 0,
                                  sittings: p.sittings || 0, made: p.made || 0 };
         });
         const cid = classOfFlashcardAssignment.get(aid);
@@ -2886,7 +2889,7 @@ window.MrBadmusTeacherData = (function () {
         if (r.error || !r.data) { return; }
         const n = r.data.n || 0;
         const pupils = (r.data.pupils || []);
-        out[id] = n > 0 ? pupils.filter(function (p) { return (p.secured || 0) >= n; }).length : 0;
+        out[id] = n > 0 ? pupils.filter(function (p) { return (p.known || 0) >= n; }).length : 0; /* ⊕ MRB-354: known = secured */
       } catch (e) { /* that class's card simply omits "N secured" */ }
     }));
     return out;

@@ -1336,6 +1336,8 @@
         var me = deck && deck.pupils && deck.pupils[sid];
         if (!me) { return; }
         fcStatus[pi] = me.status || null;
+        /* ⊕ MRB-354 — `me.secured` is already the one-word rule:
+           teacher-data.js fills it from the RPC's `known`. */
         fcSecured[pi] = me.secured || 0;
         fcN[pi] = deck.n || 0;
         fcSittings[pi] = me.sittings || 0;

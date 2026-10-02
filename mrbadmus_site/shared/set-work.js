@@ -578,10 +578,8 @@
     typeQuestions: "Questions",
     typeFlashcards: "Flashcards",
     labelMode: "Mode",
-    labelRule: "Rule",
     mode: { make: "Pupils write the answers", review: "Ready-made cards" },
     modeTag: { make: "Stretch", review: "Support" },
-    rule: { secure: "Secure", quick: "Quick" },
     cards: function (n) { return n + (n === 1 ? " card" : " cards"); },
     dueOn: function (s) { return "Due " + s; }
   };
@@ -1159,9 +1157,16 @@
     var pDetail = el("div", "sw-panel");
     pDetail.setAttribute("data-sw", "panel-detail");
 
-    /* ⊕ MRB-351 — the flashcard set's mode and rule, at the head of the
-       Detail step. Two cards, titles only, each with a one-word tag; then
-       the rule as a two-chip toggle. Hidden on a question set. */
+    /* ⊕ MRB-351 — the flashcard set's mode, at the head of the Detail step.
+       Two cards, titles only, each with a one-word tag. Hidden on a
+       question set.
+       ⊕ MRB-354, 2 Oct 2026 — the completion-rule (Secure/Quick) chip row
+       that used to follow is REMOVED entirely: completion_rule no longer
+       decides secured/done (one rating, any sitting, secures a card — see
+       RULE.md), so offering a choice here was offering a choice that no
+       longer does anything. `S.fc.rule` stays fixed at "secure" and is
+       still sent as `p_rule` on `flashcard_set_work` (the server still
+       validates it); nothing in this sheet reads or sets it any more. */
     var fcTop = el("div", "fd-top");
     fcTop.setAttribute("data-sw", "fc-top");
     fcTop.appendChild(el("div", "sw-label", SAY.labelMode));
@@ -1177,10 +1182,6 @@
       return { key: k, node: b };
     });
     fcTop.appendChild(fcModes);
-    fcTop.appendChild(el("div", "sw-label", SAY.labelRule));
-    var fcRule = el("div", "sw-chips fd-rule");
-    fcRule.setAttribute("data-sw", "fc-rule");
-    fcTop.appendChild(fcRule);
     pDetail.appendChild(fcTop);
 
     /* ⊕ MRB-336 — WHAT A RELEASED SET SHOWS INSTEAD OF ITS CONTROLS.
@@ -1323,7 +1324,7 @@
       /* ⊕ MRB-351 */
       typeWrap: typeWrap, typeLbl: typeLbl, typeChips: typeChips, typeList: null,
       pDeck: pDeck, deckHost: deckHost, deckNote: deckNote, deckRetry: deckRetry,
-      fcTop: fcTop, fcModeBtns: fcModeBtns, fcRule: fcRule, fcRuleList: null,
+      fcTop: fcTop, fcModeBtns: fcModeBtns,
       fcSummary: fcSummary, fcSumTitle: fcSumTitle, fcSumMeta: fcSumMeta
     };
 
@@ -1411,15 +1412,6 @@
         S.clientRef = uuid();            // a different set, a different key
         syncFlash();
       });
-    });
-    els.fcRuleList = buildChips(els.fcRule, [
-      { key: "secure", label: SAY.rule.secure },
-      { key: "quick", label: SAY.rule.quick }
-    ], function (k) {
-      if (!S || S.fc.rule === k) { return; }
-      S.fc.rule = k;
-      S.clientRef = uuid();
-      syncFlash();
     });
     els.deckRetry.addEventListener("click", function () {
       if (!S) { return; }
@@ -3791,7 +3783,6 @@
       m.node.classList.toggle("is-on", on);
       m.node.setAttribute("aria-pressed", on ? "true" : "false");
     });
-    syncChips(els.fcRuleList, S.fc.rule);
     /* The summary. The deck title is DATA (a teacher's words), drawn with
        its formulae; the rest is labels and numbers. */
     var t = S.fc.deckTitle || (S.fc.deck && S.fc.deck.title) || "";
@@ -3805,7 +3796,6 @@
     var n = S.fc.cards || (S.fc.deck && Number(S.fc.deck.card_count)) || 0;
     if (n) { parts.push(SAY.cards(n)); }
     parts.push(SAY.mode[S.fc.mode] || "");
-    parts.push(SAY.rule[S.fc.rule] || "");
     var names = S.classes.map(classNameOf).filter(Boolean);
     if (names.length) { parts.push(names.join(", ")); }
     var due = dueIso();
@@ -4119,7 +4109,10 @@
       }
       S.noteLoaded = true;
       if (a.flashcard_mode) { S.fc.mode = a.flashcard_mode; }
-      if (a.completion_rule) { S.fc.rule = a.completion_rule; }
+      /* ⊕ MRB-354 — completion_rule is no longer loaded into state: the
+         sheet offers no rule choice any more and `S.fc.rule` stays fixed
+         at "secure" (still sent as `p_rule` on a NEW set; editing never
+         resends it — `flashcard_edit_assignment` has no rule parameter). */
       if (!S.dueDate && a.due_at) { applyFlashTimes(null, a.due_at); els.dueDate.value = S.dueDate; els.dueTime.value = S.dueTime; }
       if (a.deck_id) { S.fc.deck = { id: String(a.deck_id) }; }
       syncFlash();

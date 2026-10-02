@@ -3930,7 +3930,7 @@ html[data-theme="dark"] textarea::placeholder {
 }
 /* ⊕ MRB-351 theme pass, 27 Sep 2026 — FOUND LIVE, contrast_audit's first
    pass over the flashcard homework overlay (nothing had reached this
-   state before this ticket). The Check / Not yet / Got it buttons pair
+   state before this ticket). The Check / Not yet / Secured buttons pair
    `color:var(--on-accent)` with a fill that DOES flip dark
    (`--pg-accent-text` / `--pg-ok-text`, both correctly turning into LIGHT
    tints in dark mode) — the same "text on accent" shape the --st-paper
