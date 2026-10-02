@@ -1,0 +1,23 @@
+KS4 batch 14 — 15 lessons.
+
+Pack: docs/ks4/packs/batch-14/ in the mrbadmus-site repo (main branch).
+Read 00-BRIEF.md first, then FLAGS.md, then each lesson's file in 04-checked-science-source/, then 05-diagram-library/README.md.
+
+Lessons:
+  1. Pure Substances (pure-substances)
+  2. Formulations (formulations)
+  3. Chromatography (chromatography)
+  4. Testing for Gases (testing-for-gases)
+  5. Flame Tests (flame-tests)
+  6. Instrumental Methods and Flame Emission Spectroscopy (instrumental-methods)
+  7. The Composition of the Atmosphere (composition-of-atmosphere)
+  8. Alternative Methods of Extracting Metals (alternative-metal-extraction)
+  9. Life Cycle Assessment (life-cycle-assessment)
+  10. Ways of Reducing the Use of Resources (reducing-use-of-resources)
+  11. Corrosion and Its Prevention (corrosion-prevention)
+  12. Alloys as Useful Materials (alloys-useful-materials)
+  13. Ceramics, Polymers and Composites (ceramics-polymers-composites)
+  14. The Haber Process (haber-process)
+  15. Production and Uses of NPK Fertilisers (npk-fertilisers)
+
+Deliver one runnable .dc.html per lesson, as for the pilot, with NOTES (numbered science flags), README, _ds and support.js.
