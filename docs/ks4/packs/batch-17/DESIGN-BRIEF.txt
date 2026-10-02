@@ -1,0 +1,24 @@
+KS4 batch 17 — 16 lessons.
+
+Pack: docs/ks4/packs/batch-17/ in the mrbadmus-site repo (main branch).
+Read 00-BRIEF.md first, then FLAGS.md, then each lesson's file in 04-checked-science-source/, then 05-diagram-library/README.md.
+
+Lessons:
+  1. Moments, Levers and Gears (moments-levers-gears)
+  2. Pressure in a Fluid (pressure-in-a-fluid)
+  3. Upthrust and Floating (upthrust-floating)
+  4. Distance, Speed and Velocity (distance-speed-velocity)
+  5. Motion in a Circle (motion-in-a-circle)
+  6. Distance–Time Graphs (distance-time-graphs)
+  7. Acceleration (acceleration)
+  8. Newton's Laws of Motion (newtons-laws)
+  9. Stopping Distance and Braking (stopping-distance-braking)
+  10. Momentum (momentum)
+  11. Transverse and Longitudinal Waves (transverse-longitudinal-waves)
+  12. Properties of Waves (properties-of-waves)
+  13. Properties of Electromagnetic Waves 1 (properties-em-waves-1)
+  14. Wave Front Diagrams and Refraction (wave-front-refraction)
+  15. Properties of Electromagnetic Waves 2 and Hazards (properties-em-waves-2)
+  16. Radiation Balance and Earth's Temperature (radiation-balance-temperature)
+
+Deliver one runnable .dc.html per lesson, as for the pilot, with NOTES (numbered science flags), README, _ds and support.js.
