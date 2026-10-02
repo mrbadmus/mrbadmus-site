@@ -1,0 +1,23 @@
+KS4 batch 10 — 15 lessons.
+
+Pack: docs/ks4/packs/batch-10/ in the mrbadmus-site repo (main branch).
+Read 00-BRIEF.md first, then FLAGS.md, then each lesson's file in 04-checked-science-source/, then 05-diagram-library/README.md.
+
+Lessons:
+  1. Ecosystems (ecosystems)
+  2. Population and Competition (population-competition)
+  3. Abiotic and Biotic Factors (abiotic-biotic-factors)
+  4. Adaptations (adaptations)
+  5. Food Chains and Food Webs (food-chains-webs)
+  6. Sampling Techniques (sampling-techniques)
+  7. The Impact of Environmental Change (environmental-change)
+  8. Deforestation (deforestation)
+  9. Maintaining Biodiversity (maintaining-biodiversity)
+  10. Trophic Levels (trophic-levels)
+  11. Pyramids of Biomass (pyramids-of-biomass)
+  12. Transfer of Biomass (transfer-of-biomass)
+  13. Farming Techniques (farming-techniques)
+  14. Sustainable Fisheries (sustainable-fisheries)
+  15. The Role of Biotechnology (role-of-biotechnology)
+
+Deliver one runnable .dc.html per lesson, as for the pilot, with NOTES (numbered science flags), README, _ds and support.js.
