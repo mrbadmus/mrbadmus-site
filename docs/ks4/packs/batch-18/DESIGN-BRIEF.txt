@@ -1,0 +1,21 @@
+KS4 batch 18 — 13 lessons.
+
+Pack: docs/ks4/packs/batch-18/ in the mrbadmus-site repo (main branch).
+Read 00-BRIEF.md first, then FLAGS.md, then each lesson's file in 04-checked-science-source/, then 05-diagram-library/README.md.
+
+Lessons:
+  1. Poles of a Magnet and Permanent Magnetism (poles-of-a-magnet)
+  2. Magnetic Fields (magnetic-fields)
+  3. Electromagnetism (electromagnetism)
+  4. Fleming's Left-Hand Rule and the Motor Effect (flemings-left-hand-rule)
+  5. Electric Motors (electric-motors)
+  6. Loudspeakers and Headphones (loudspeakers-headphones)
+  7. Induced Potential and the Generator Effect (induced-potential)
+  8. Uses of the Generator Effect (uses-generator-effect)
+  9. Microphones (microphones)
+  10. Transformers (transformers)
+  11. Our Solar System and Gravity (solar-system-gravity)
+  12. Gravity, Stable Orbits and Orbital Speed (gravity-stable-orbits)
+  13. Dark Matter and Dark Energy (dark-matter-dark-energy)
+
+Deliver one runnable .dc.html per lesson, as for the pilot, with NOTES (numbered science flags), README, _ds and support.js.
