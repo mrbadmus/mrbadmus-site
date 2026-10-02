@@ -1,0 +1,24 @@
+KS4 batch 11 — 16 lessons.
+
+Pack: docs/ks4/packs/batch-11/ in the mrbadmus-site repo (main branch).
+Read 00-BRIEF.md first, then FLAGS.md, then each lesson's file in 04-checked-science-source/, then 05-diagram-library/README.md.
+
+Lessons:
+  1. Development of the Model of the Atom (model-of-the-atom)
+  2. Subatomic Particles (subatomic-particles)
+  3. Relative Atomic Mass, Atomic Number and Isotopes (relative-atomic-mass)
+  4. Electronic Structure (electronic-structure)
+  5. Group 7 — Halogens (group-7)
+  6. Properties of Transition Metals (transition-metals)
+  7. Mass Changes in Reactions (mass-changes-reactions)
+  8. Chemical Measurements (chemical-measurements)
+  9. Moles (moles)
+  10. Amounts of Substances in Equations (amounts-in-equations)
+  11. Oxidation and Reduction (oxidation-reduction)
+  12. Making Salts and Neutralisation (salts-neutralisation)
+  13. The pH Scale and Neutralisation (ph-scale)
+  14. Strong and Weak Acids (strong-weak-acids)
+  15. The Process of Electrolysis (electrolysis-principles)
+  16. Electrolysis of Molten Ionic Compounds (electrolysis-molten)
+
+Deliver one runnable .dc.html per lesson, as for the pilot, with NOTES (numbered science flags), README, _ds and support.js.
