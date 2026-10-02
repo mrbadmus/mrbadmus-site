@@ -1,0 +1,23 @@
+KS4 batch 15 — 15 lessons.
+
+Pack: docs/ks4/packs/batch-15/ in the mrbadmus-site repo (main branch).
+Read 00-BRIEF.md first, then FLAGS.md, then each lesson's file in 04-checked-science-source/, then 05-diagram-library/README.md.
+
+Lessons:
+  1. Energy Stores and Systems (energy-stores-systems)
+  2. Energy Changes in Systems (energy-changes-in-systems)
+  3. Energy Transfers in a System (energy-transfers-in-a-system)
+  4. Standard Circuit Diagram Symbols (circuit-symbols)
+  5. Electrical Charge and Current (electrical-charge-current)
+  6. Current, Resistance and Potential Difference (current-resistance-pd)
+  7. Direct and Alternating Potential Difference (direct-alternating-pd)
+  8. Mains Electricity (mains-electricity)
+  9. Power (power-electricity)
+  10. Energy Transfers in Everyday Appliances (energy-transfers-appliances)
+  11. The National Grid (national-grid)
+  12. Static Charge (static-charge)
+  13. Electric Fields (electric-fields)
+  14. Density of Materials (density-of-materials)
+  15. Changes of State (changes-of-state)
+
+Deliver one runnable .dc.html per lesson, as for the pilot, with NOTES (numbered science flags), README, _ds and support.js.
