@@ -1,3 +1,5 @@
+> **Raw extraction notes, written before the examination.** Where they disagree with `examination/`, `FLAGS.md` or `00-BRIEF.md` (spec references, required-practical numbers, quiz-key alignment), those win.
+
 # Batch 12 — extraction notes
 
 Facts only, read straight from the 14 extracted files in

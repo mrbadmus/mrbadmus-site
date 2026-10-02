@@ -47,7 +47,28 @@ def frag(d, slug):
     return open(p, encoding="utf-8").read().strip() if os.path.exists(p) else None
 
 
+SUPERSEDED = ("> **Raw extraction notes, written before the examination.** Where they "
+              "disagree with `examination/`, `FLAGS.md` or `00-BRIEF.md` (spec "
+              "references, required-practical numbers, quiz-key alignment), those "
+              "win.\n\n")
+
+
+def stamp_extract_notes(pack):
+    """The extractor's notes repeat the frozen data's own labels (wrong RP
+    numbers, the site's internal spec numbering) and its key-alignment check
+    missed shifted wrong_explanations the examiners caught. Say so at the top."""
+    p = os.path.join(pack, "_extract-notes.md")
+    if os.path.exists(p):
+        s = open(p, encoding="utf-8").read()
+        if not s.startswith(SUPERSEDED[:40]):
+            open(p, "w", encoding="utf-8").write(SUPERSEDED + s)
+
+
 def main():
+    if sys.argv[1:2] == ["--stamp-notes"]:
+        for b in sys.argv[2:]:
+            stamp_extract_notes(os.path.join(ROOT, "docs", "ks4", "packs", b))
+        return
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     keep = "--keep" in sys.argv
     if len(args) != 1 or not re.match(r"^batch-\d+$", args[0]):
@@ -153,6 +174,8 @@ def main():
            "with NOTES (numbered science flags), README, _ds and support.js."]
     open(os.path.join(pack, "DESIGN-BRIEF.txt"), "w", encoding="utf-8").write(
         "\n".join(db) + "\n")
+
+    stamp_extract_notes(pack)
 
     if not keep:
         for d in (bdir, fdir):
