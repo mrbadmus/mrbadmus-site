@@ -1,0 +1,20 @@
+KS4 batch 13 — 12 lessons.
+
+Pack: docs/ks4/packs/batch-13/ in the mrbadmus-site repo (main branch).
+Read 00-BRIEF.md first, then FLAGS.md, then each lesson's file in 04-checked-science-source/, then 05-diagram-library/README.md.
+
+Lessons:
+  1. Crude Oil, Hydrocarbons and Alkanes (crude-oil-hydrocarbons)
+  2. Fractional Distillation of Crude Oil (fractional-distillation)
+  3. Properties of Hydrocarbons (properties-of-hydrocarbons)
+  4. Cracking and Alkenes (cracking-alkenes)
+  5. Structure and Formulae of Alkenes (structure-of-alkenes)
+  6. Reactions of Alkenes (reactions-of-alkenes)
+  7. Alcohols (alcohols)
+  8. Carboxylic Acids (carboxylic-acids)
+  9. Addition Polymerisation (addition-polymerisation)
+  10. Condensation Polymerisation (condensation-polymerisation)
+  11. Amino Acids (amino-acids)
+  12. DNA and Other Naturally Occurring Polymers (dna-naturally-occurring-polymers)
+
+Deliver one runnable .dc.html per lesson, as for the pilot, with NOTES (numbered science flags), README, _ds and support.js.
