@@ -1,0 +1,24 @@
+KS4 batch 16 — 16 lessons.
+
+Pack: docs/ks4/packs/batch-16/ in the mrbadmus-site repo (main branch).
+Read 00-BRIEF.md first, then FLAGS.md, then each lesson's file in 04-checked-science-source/, then 05-diagram-library/README.md.
+
+Lessons:
+  1. Mass Number, Atomic Number and Isotopes (mass-number-isotopes)
+  2. Nuclear Equations (nuclear-equations)
+  3. Half-Lives and Radioactive Decay (half-lives)
+  4. Radioactive Contamination (radioactive-contamination)
+  5. Background Radiation (background-radiation)
+  6. Uses of Nuclear Radiation (uses-of-nuclear-radiation)
+  7. Nuclear Fission (nuclear-fission)
+  8. Nuclear Fusion (nuclear-fusion)
+  9. Scalar and Vector Quantities (scalar-vector-quantities)
+  10. Contact and Non-Contact Forces (contact-noncontact-forces)
+  11. Gravity (gravity)
+  12. Resultant Forces (resultant-forces)
+  13. Resolving Forces and Vector Diagrams (resolving-forces)
+  14. Free Body Diagrams (free-body-diagrams)
+  15. Work Done and Energy Transfer (work-done-energy-transfer)
+  16. Forces and Elasticity (forces-elasticity)
+
+Deliver one runnable .dc.html per lesson, as for the pilot, with NOTES (numbered science flags), README, _ds and support.js.
