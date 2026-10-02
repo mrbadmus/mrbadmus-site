@@ -61,12 +61,14 @@ CHEMISTRY_SUBTOPICS_ALL = {
                                       'cannot, a chemical reaction has occurred.',
                                    2: 'Elements cannot be destroyed by chemical reactions — only rearranged into '
                                       'compounds.',
-                                   3: 'Sulfur is a solid at these temperatures — it does not dissolve into iron.'}},
+                                   3: 'Sulfur melts when it is heated, but it does not dissolve into the iron. The '
+                                      'two have reacted to make a new substance, iron sulfide, which is why a magnet '
+                                      'can no longer separate them.'}},
            {'opts': [('2H₂ + O₂ → 2H₂O', True),
                      ('H₂ + O₂ → H₂O', False),
                      ('H₂ + O₂ → H₂O₂', False),
                      ('2H₂ + 2O₂ → 2H₂O', False)],
-            'q': 'Which equation is correctly balanced?',
+            'q': 'Hydrogen reacts with oxygen to form water. Which equation for this reaction is correctly balanced?',
             'wrong_explanations': {1: 'H₂ + O₂ → H₂O: left has 2 O atoms, right has only 1 O atom — not balanced.',
                                    2: 'H₂ + O₂ → H₂O₂: this equation is balanced (2H and 2O each side) but produces '
                                       'hydrogen peroxide (H₂O₂), not water. The question asks about water formation.',
@@ -4266,14 +4268,14 @@ CHEMISTRY_SUBTOPICS_ALL = {
                                       'convention.'}},
            {'opts': [('16 g — conservation of mass: mass of O₂ = 40 − 24 = 16 g', True),
                      ('40 g — the oxygen has the same mass as the product', False),
-                     ('64 g — double the mass of magnesium', False),
+                     ('64 g — added the mass of magnesium to the mass of product (24 + 40)', False),
                      ('Cannot be determined without the balanced equation', False)],
             'q': '24 g of magnesium reacts completely with oxygen to form magnesium oxide. 40 g of magnesium oxide is '
                  'produced. How much oxygen reacted?',
-            'wrong_explanations': {1: 'Mass in = mass out. If 40 g MgO is made from 24 g Mg, the remaining 40 − 24 = '
-                                      '16 g must have come from oxygen.',
-                                   2: 'The mass of oxygen is only part of the product mass — the product contains both '
-                                      'magnesium AND oxygen.',
+            'wrong_explanations': {1: 'The product contains both magnesium AND oxygen, so the oxygen is only part of '
+                                      'its 40 g. Mass in = mass out: 40 − 24 = 16 g of oxygen.',
+                                   2: 'Adding gives 24 + 40 = 64 g, more than the product itself. The magnesium is '
+                                      'already inside the 40 g of product, so subtract it: 40 − 24 = 16 g.',
                                    3: 'Conservation of mass allows this calculation: mass O₂ = mass product − mass Mg '
                                       '= 40 − 24 = 16 g.'}},
            {'opts': [('4Fe + 3O₂ → 2Fe₂O₃', True),
@@ -4387,9 +4389,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                      ('100 — Mg(24) + 2N(28) + 3O(48)', False),
                      ('116 — Mg(24) + 2N(28) + 4O(64)', False)],
             'q': 'What is the Mr of Mg(NO₃)₂? Ar: Mg=24, N=14, O=16.',
-            'wrong_explanations': {1: 'The subscript 2 outside the bracket means the entire NO₃ group is repeated '
-                                      'twice. So there is 1 N, NOT 2 — wait: NO₃ has 1 N and 3 O, multiplied by 2 = 2N '
-                                      'and 6O.',
+            'wrong_explanations': {1: 'The 2 outside the bracket doubles everything inside it: 2 N and 6 O, not 1 N '
+                                      'and 3 O. Mr = 24 + 28 + 96 = 148.',
                                    2: 'Mg(NO₃)₂ means 2 groups of NO₃: so 2N and 6O total. Only counting 3O ignores '
                                       'the ×2 multiplier.',
                                    3: 'Each NO₃ has 3 O; multiplied by 2 = 6 O total, not 4.'}}],
@@ -4718,11 +4719,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('High yield is desirable', 'Less waste, lower raw material cost, more sustainable process')],
                'title': 'Percentage Yield'},
   'quiz': [{'opts': [('70% — (14 ÷ 20) × 100 = 70%', True),
-                     ('43% — (14 ÷ 20) × 3 = 42%', False),
+                     ('0.7% — 14 ÷ 20 = 0.7 (forgot to multiply by 100)', False),
                      ('143% — (20 ÷ 14) × 100 = 143% (inverted the fraction)', False),
                      ('30% — 100% minus 70% (calculated the loss not the yield)', False)],
             'q': 'A reaction has a theoretical yield of 20 g but only 14 g is obtained. What is the percentage yield?',
-            'wrong_explanations': {1: '% yield = actual ÷ theoretical × 100 = 14 ÷ 20 × 100 = 70%, not 43%.',
+            'wrong_explanations': {1: '14 ÷ 20 = 0.7 is the fraction of the theoretical yield obtained, not a '
+                                      'percentage. Multiply by 100: 0.7 × 100 = 70%.',
                                    2: 'Must divide actual by theoretical — not theoretical by actual. That gives a '
                                       'value over 100%, which is impossible for yield.',
                                    3: '30% is the percentage LOSS — the question asks for the percentage YIELD, which '
@@ -4806,23 +4808,25 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'triple_only': 'Percentage yield (4.3.3.1) is chemistry-only — not in Combined Science. Students must calculate '
                  'percentage yield and explain why actual yield is less than theoretical yield.',
   'variables': []},
- {'common_mistake': 'Atom economy uses the relative formula masses of the PRODUCTS (from the equation) — not the '
-                    'reactants. Divide the Mr of the DESIRED product by the sum of Mr of ALL products. Do not confuse '
-                    'with percentage yield — atom economy is about the equation; percentage yield is about the actual '
-                    'experiment.',
-  'equations': ['Atom economy (%) = (Mr of desired products ÷ sum of Mr of ALL products) × 100'],
+ {'common_mistake': 'Atom economy uses the relative formula masses from the balanced equation. Divide the Mr of the '
+                    'DESIRED product by the sum of Mr of ALL the REACTANTS. Because mass is conserved, this total '
+                    'equals the sum of Mr of all the products, so either total gives the same answer — the common '
+                    'slip is dividing by the waste alone. Do not confuse with percentage yield — atom economy is '
+                    'about the equation; percentage yield is about the actual experiment.',
+  'equations': ['Atom economy (%) = (Mr of desired product from equation ÷ sum of Mr of ALL reactants from equation) '
+                '× 100'],
   'fifas': [{'label': 'Atom Economy Calculation',
              'question': 'Calculate the atom economy for making ethanol (C₂H₅OH, Mr = 46) from the reaction: C₂H₄ + '
                          'H₂O → C₂H₅OH',
-             'steps': [('F', 'Atom economy = (Mr desired product ÷ sum Mr all products) × 100'),
-                       ('I', 'Only one product: C₂H₅OH, Mr = 46. Sum of all products = 46'),
+             'steps': [('F', 'Atom economy = (Mr desired product ÷ sum Mr all reactants) × 100'),
+                       ('I', 'Reactants: C₂H₄ (28) + H₂O (18) = 46. Desired product: C₂H₅OH, Mr = 46'),
                        ('F', 'Atom economy = (46 ÷ 46) × 100'),
                        ('A', 'Atom economy = 100% — addition reaction, one product only')]}],
   'higher': 'Calculate atom economy using Mr values. Compare atom economy of different synthetic routes to the same '
             'product. Evaluate the economic and environmental importance of high atom economy in industrial chemistry. '
             'Explain why pharmaceutical manufacturers are encouraged to use reactions with high atom economy.',
   'id': 'atom-economy',
-  'key_note': 'Atom economy = (Mr desired product ÷ sum Mr all products) × 100. High atom economy = less waste = '
+  'key_note': 'Atom economy = (Mr desired product ÷ sum Mr all reactants) × 100. High atom economy = less waste = '
               'sustainable. Addition reactions: 100% atom economy (one product). Low atom economy = more waste '
               'by-products. Distinct from % yield — atom economy is a property of the reaction equation.',
   'matching': {'instruction': 'Match each scenario to atom economy or a related concept.',
@@ -4835,28 +4839,32 @@ CHEMISTRY_SUBTOPICS_ALL = {
                           'Atom economy: efficiency of the equation. % yield: how much product is actually '
                           'collected.')],
                'title': 'Atom Economy'},
-  'quiz': [{'opts': [('80% — desired product Mr = 80, total products = 80 + 20 = 100; (80 ÷ 100) × 100 = 80%', True),
-                     ('20% — (20 ÷ 100) × 100 (calculated waste not yield)', False),
+  'quiz': [{'opts': [('80% — (Mr of desired product ÷ total Mr of reactants) × 100 = (80 ÷ 100) × 100', True),
+                     ('20% — (20 ÷ 100) × 100 (calculated the waste, not the desired product)', False),
                      ('400% — (80 ÷ 20) × 100 (divided desired by waste)', False),
-                     ('75% — calculated incorrectly', False)],
-            'q': 'A reaction produces 80 g of desired product and 20 g of waste product. What is the atom economy?',
-            'wrong_explanations': {1: '20% is the proportion of WASTE — atom economy = desired ÷ total = 80 ÷ 100 = '
-                                      '80%.',
-                                   2: 'Must divide desired by TOTAL (desired + waste) — not by waste alone.',
-                                   3: 'No standard formula gives 75% here — atom economy = (80 ÷ 100) × 100 = 80%.'}},
+                     ('125% — (100 ÷ 80) × 100 (turned the fraction upside down)', False)],
+            'q': 'In a balanced equation, the reactants have a total Mr of 100. The desired product has a total Mr of '
+                 '80 and the waste product has a total Mr of 20. What is the atom economy?',
+            'wrong_explanations': {1: '20% is the proportion of WASTE — atom economy = desired ÷ total reactants = 80 '
+                                      '÷ 100 = 80%.',
+                                   2: 'Must divide the desired product by the TOTAL Mr of all the reactants — not by '
+                                      'the waste alone.',
+                                   3: 'The fraction is upside down — the desired product goes on top. Atom economy = '
+                                      '(80 ÷ 100) × 100 = 80%, and it can never be more than 100%.'}},
            {'opts': [('Only one product is formed — all atoms from the reactants end up in the single product with no '
                       'by-products',
                       True),
                      ('Addition reactions are always complete — 100% of reactants are converted to products', False),
                      ('Addition reactions release energy — energy counts as a product increasing the total', False),
-                     ('The reactants have the same Mr as the products — so the ratio is always 1', False)],
+                     ('Addition reactions use a catalyst, which is not used up — so no atoms are lost', False)],
             'q': 'Why do addition reactions always have an atom economy of 100%?',
             'wrong_explanations': {1: '100% atom economy relates to NO by-products — not to whether the reaction is '
                                       'complete. A complete reaction with by-products still has less than 100% atom '
                                       'economy.',
                                    2: 'Energy is not counted as a chemical product in atom economy calculations.',
-                                   3: 'In addition reactions the product Mr equals the sum of reactant Mr exactly — '
-                                      'but the key reason is that ALL atoms go into the ONE product.'}}],
+                                   3: 'A catalyst is not a reactant, so it plays no part in the atom economy '
+                                      'calculation. The 100% comes from there being only one product: every reactant '
+                                      'atom ends up in it.'}}],
   'rp': None,
   'spec': '4.3.3.2',
   'summary': 'Calculate atom economy and explain its importance for sustainable and efficient chemistry.',
@@ -4866,13 +4874,15 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          '\n'
                          'EQUATION:\n'
                          '\n'
-                         'Atom economy (%) = (sum of relative formula masses of desired products ÷ sum of relative '
-                         'formula masses of ALL products) × 100\n'
+                         'Atom economy (%) = (relative formula mass of desired product from equation ÷ sum of '
+                         'relative formula masses of ALL reactants from equation) × 100\n'
                          '\n'
-                         'Note: this uses ALL products from the reaction (including waste), not just the desired one.\n'
+                         'Note: the bottom of the fraction is the total Mr of ALL the reactants, not just one of '
+                         'them.\n'
                          '\n'
                          'ALTERNATIVELY:\n'
-                         'Atom economy (%) = (Mr of desired product ÷ sum of Mr of all products) × 100\n'
+                         'Because mass is conserved, the sum of Mr of all the reactants equals the sum of Mr of all '
+                         'the products, so dividing by the total Mr of all the products gives the same answer.\n'
                          '\n'
                          'A HIGH atom economy means:\n'
                          'Most reactant atoms end up in the desired product — efficient.\n'
@@ -4974,11 +4984,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
            {'opts': [('20 g — mass = 80 × 0.25 dm³ = 20 g', True),
                      ('20000 g — mass = 80 × 250 (forgetting to convert cm³ to dm³)', False),
                      ('0.32 g — mass = 80 ÷ 250', False),
-                     ('320 g — mass = 80 × (250 ÷ 10)', False)],
+                     ('2000 g — mass = 80 × (250 ÷ 10)', False)],
             'q': 'A solution has a concentration of 80 g/dm³. What mass of solute is in 250 cm³ of this solution?',
             'wrong_explanations': {1: 'Using 250 directly without converting gives 80 × 250 = 20,000 — not 20. Always '
                                       'convert: 250 cm³ = 0.25 dm³.',
-                                   2: 'Dividing gives volume, not mass. mass = concentration × volume.',
+                                   2: 'Dividing concentration by volume does not give a mass. mass = concentration × '
+                                      'volume = 80 × 0.25 = 20 g.',
                                    3: '250 ÷ 10 = 25 — but the conversion is 250 ÷ 1000 = 0.25 dm³.'}}],
   'rp': None,
   'spec': '5.3.2.5',
@@ -10159,15 +10170,15 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Iodide I⁻', 'Acidify (HNO₃) + AgNO₃ → yellow AgI precipitate'),
                          ('Sulfate SO₄²⁻', 'Acidify (HCl) + BaCl₂ → white BaSO₄ precipitate')],
                'title': 'Anion Test Results'},
-  'quiz': [{'opts': [('To remove carbonate and sulfate ions that would also form precipitates with silver nitrate — '
-                      'ensuring only halide precipitates are observed',
+  'quiz': [{'opts': [('To remove carbonate ions that would also form a precipitate with silver nitrate — ensuring '
+                      'only halide precipitates are observed',
                       True),
                      ('Nitric acid makes the silver nitrate solution work faster as a catalyst', False),
                      ('Silver nitrate is unstable in neutral conditions — acid preserves it', False),
                      ('Nitric acid provides extra silver ions to improve the sensitivity of the test', False)],
             'q': 'Why must solutions be acidified with nitric acid before adding silver nitrate to test for halides?',
             'wrong_explanations': {1: 'Acid is not a catalyst here — its role is REMOVAL OF INTERFERING IONS '
-                                      '(carbonates, sulfates) that would also react with silver nitrate.',
+                                      '(carbonate ions) that would also react with silver nitrate.',
                                    2: 'Silver nitrate is stable in aqueous solution — acid is not needed to preserve '
                                       'it.',
                                    3: 'Nitric acid contains no silver — it cannot provide extra Ag⁺ ions.'}},

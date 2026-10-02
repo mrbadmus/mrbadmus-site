@@ -1,8 +1,11 @@
 """ks4_lessons.batch_3 — Batch 3 (docs/ks4/BATCH-PLAN.md). Sources:
 ks4_lessons/authored/batch-3/<slug>.dc.html; notes and source examination in
 docs/ks4/packs/batch-3/. `withhold` = frozen quiz items the batch examination
-found wrong (or wrong for a route); verbatim in all_subtopics_*.py, not served,
-each with a DEPARTURES row (docs/ks4/packs/batch-3/DEPARTURES.md)."""
+found wrong (or wrong for a route), not served, each with a DEPARTURES row
+(docs/ks4/packs/batch-3/DEPARTURES.md). The nine B3-W1…B3-W9 entries were
+removed on feat/ks4-frozen-corrections: Mide approved correcting those items in
+all_subtopics_*.py itself (2 Oct 2026, docs/ks4/FROZEN-CORRECTIONS.md), so they
+are served again."""
 
 B = "batch-3"
 ALL = ["CF", "CH", "TF", "TH"]
@@ -19,31 +22,24 @@ LESSONS = [
          subject="physics", topic_id="particle-model",
          title="Temperature changes and specific heat capacity", spec="6.3.2.2",
          family="Quantitative", routes=ALL, review_state=RS, batch=B,
-         block_map={"s-race": "check", "s-rp": "required-practical", "s-sim": "required-practical"},
-         withhold=[W("A 2 kg iron block (c = 450 J/kg°C) cools from 200°C to 50°C", "B3-W1")]),
+         block_map={"s-race": "check", "s-rp": "required-practical", "s-sim": "required-practical"}),
     dict(slug="sound-waves-hearing", source_file="sound-waves-hearing.dc.html",
          subject="physics", topic_id="waves", title="Sound waves and hearing",
          spec="8463 4.6.1.4", family="Process", routes=["TH"], review_state=RS, batch=B,
-         block_map={"s-path": "worked-example"},
-         withhold=[W("used for foetal scanning rather than X-rays", "B3-W2")]),
+         block_map={"s-path": "worked-example"}),
     dict(slug="microscopy", source_file="microscopy.dc.html",
          subject="biology", topic_id="cell-biology", title="Microscopy",
          spec="4.1.1.5", family="Quantitative", routes=ALL, review_state=RS, batch=B,
-         block_map={"s-resolve": "check", "s-bench": "required-practical", "s-draw": "check"},
-         withhold=[W("What is the maximum magnification of a light microscope?", "B3-W3"),
-                   W("An image is 45 mm wide. The actual size is 0.009 mm", "B3-W4")]),
+         block_map={"s-resolve": "check", "s-bench": "required-practical", "s-draw": "check"}),
     dict(slug="conservation-of-mass", source_file="conservation-of-mass.dc.html",
          subject="chemistry", topic_id="quantitative",
          title="Conservation of mass and balanced equations", spec="5.3.1.1",
          family="Quantitative", routes=ALL, review_state=RS, batch=B,
-         block_map={"s-flask": "figure", "s-write": "check"},
-         withhold=[W("24 g of magnesium reacts completely with oxygen", "B3-W5")]),
+         block_map={"s-flask": "figure", "s-write": "check"}),
     dict(slug="atom-economy", source_file="atom-economy.dc.html",
          subject="chemistry", topic_id="quantitative", title="Atom economy",
          spec="8462 4.3.3.2", family="Quantitative", routes=TRIPLE, review_state=RS, batch=B,
-         block_map={"s-strip": "figure", "s-brine": "check", "s-route": "comparison"},
-         withhold=[W("Why do addition reactions always have an atom economy of 100%?", "B3-W6"),
-                   W("A reaction produces 80 g of desired product and 20 g of waste product", "B3-W9")]),
+         block_map={"s-strip": "figure", "s-brine": "check", "s-route": "comparison"}),
     dict(slug="waves-detection-exploration", source_file="waves-detection-exploration.dc.html",
          subject="physics", topic_id="waves", title="Waves for detection and exploration",
          spec="8463 4.6.1.5", family="Investigation", routes=["TH"], review_state=RS, batch=B,
@@ -72,13 +68,11 @@ LESSONS = [
     dict(slug="types-of-em-waves", source_file="types-of-em-waves.dc.html",
          subject="physics", topic_id="waves", title="Types of electromagnetic waves",
          spec="6.6.2.1", family="Model", routes=ALL, review_state=RS, batch=B,
-         block_map={"s-spectrum": "figure"},
-         withhold=[W("Which EM wave has the highest frequency?", "B3-W7")]),
+         block_map={"s-spectrum": "figure"}),
     dict(slug="particle-motion-pressure", source_file="particle-motion-pressure.dc.html",
          subject="physics", topic_id="particle-model", title="Particle motion in gases",
          spec="6.3.3.1 (+ 8463 4.3.3.2–4.3.3.3)", family="Model", routes=ALL,
-         review_state=RS, batch=B,
-         withhold=[W("A gas is at 27°C and 100 kPa", "B3-W8")]),
+         review_state=RS, batch=B),
     dict(slug="power", source_file="power.dc.html",
          subject="physics", topic_id="energy", title="Power", spec="6.1.1.4",
          family="Quantitative", routes=ALL, review_state=RS, batch=B),

@@ -487,16 +487,17 @@ BIOLOGY_SUBTOPICS_ALL = {
             'q': 'What is the maximum magnification of a light microscope?',
             'wrong_explanations': {1: '×2,000,000 is the maximum for an ELECTRON microscope — far more powerful than a '
                                       'light microscope.',
-                                   2: '×200 is a common low-power objective on a school microscope — but the total '
-                                      'maximum for light microscopes is around ×2,000.',
+                                   2: '×200 is far below the limit. A school microscope with a ×10 eyepiece and a ×40 '
+                                      'objective already reaches ×400, and the maximum for a light microscope is '
+                                      'about ×2,000.',
                                    3: "×20,000 doesn't correspond to either type — light microscopes reach ~×2,000 and "
                                       'electron microscopes ~×2,000,000.'}},
            {'opts': [('×5,000', True), ('×500', False), ('×50,000', False), ('×4,500', False)],
             'q': 'An image is 45 mm wide. The actual size is 0.009 mm. What is the magnification?',
             'wrong_explanations': {1: 'Check: 45 ÷ 0.09 = 500, but actual size is 0.009 (not 0.09). 45 ÷ 0.009 = 5000.',
                                    2: '45 ÷ 0.009 = 5000 not 50,000. Check you moved the decimal correctly.',
-                                   3: '45 minus 0.009 is not how you calculate magnification! Use M = I ÷ A = 45 ÷ '
-                                      '0.009 = 5000.'}},
+                                   3: 'You rounded 0.009 mm to 0.01 mm: 45 ÷ 0.01 = 4500. Use the exact value: M = I '
+                                      '÷ A = 45 ÷ 0.009 = 5000.'}},
            {'opts': [('Ribosomes (~20 nm) are far below the resolution limit of light microscopes (~200 nm)', True),
                      ('Ribosomes are only visible in living cells and electron microscopes can see living cells',
                       False),
@@ -1531,8 +1532,8 @@ BIOLOGY_SUBTOPICS_ALL = {
                      ('It is killed by the heat', False),
                      ('It becomes temporarily inactive but recovers when cooled', False)],
             'q': 'An enzyme is heated to 80°C. What happens to it?',
-            'wrong_explanations': {1: 'Above the optimum (~37°C for human enzymes), the rate does increase — but 80°C '
-                                      'is far above optimum, causing denaturation, not faster activity.',
+            'wrong_explanations': {1: 'Up to the optimum (~37°C for human enzymes), the rate does increase — but 80°C '
+                                      'is far above the optimum, causing denaturation, not faster activity.',
                                    2: "Enzymes are proteins, not living organisms — they cannot be 'killed'. "
                                       'Denaturation is the correct term.',
                                    3: 'Denaturation is PERMANENT. Once the active site shape is changed, cooling does '

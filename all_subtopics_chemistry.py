@@ -62,12 +62,14 @@ CHEMISTRY_SUBTOPICS_ALL = {
                                       'cannot, a chemical reaction has occurred.',
                                    2: 'Elements cannot be destroyed by chemical reactions — only rearranged into '
                                       'compounds.',
-                                   3: 'Sulfur is a solid at these temperatures — it does not dissolve into iron.'}},
+                                   3: 'Sulfur melts when it is heated, but it does not dissolve into the iron. The '
+                                      'two have reacted to make a new substance, iron sulfide, which is why a magnet '
+                                      'can no longer separate them.'}},
            {'opts': [('2H₂ + O₂ → 2H₂O', True),
                      ('H₂ + O₂ → H₂O', False),
                      ('H₂ + O₂ → H₂O₂', False),
                      ('2H₂ + 2O₂ → 2H₂O', False)],
-            'q': 'Which equation is correctly balanced?',
+            'q': 'Hydrogen reacts with oxygen to form water. Which equation for this reaction is correctly balanced?',
             'wrong_explanations': {1: 'H₂ + O₂ → H₂O: left has 2 O atoms, right has only 1 O atom — not balanced.',
                                    2: 'H₂ + O₂ → H₂O₂: this equation is balanced (2H and 2O each side) but produces '
                                       'hydrogen peroxide (H₂O₂), not water. The question asks about water formation.',
@@ -3594,14 +3596,14 @@ CHEMISTRY_SUBTOPICS_ALL = {
                                       'convention.'}},
            {'opts': [('16 g — conservation of mass: mass of O₂ = 40 − 24 = 16 g', True),
                      ('40 g — the oxygen has the same mass as the product', False),
-                     ('64 g — double the mass of magnesium', False),
+                     ('64 g — added the mass of magnesium to the mass of product (24 + 40)', False),
                      ('Cannot be determined without the balanced equation', False)],
             'q': '24 g of magnesium reacts completely with oxygen to form magnesium oxide. 40 g of magnesium oxide is '
                  'produced. How much oxygen reacted?',
-            'wrong_explanations': {1: 'Mass in = mass out. If 40 g MgO is made from 24 g Mg, the remaining 40 − 24 = '
-                                      '16 g must have come from oxygen.',
-                                   2: 'The mass of oxygen is only part of the product mass — the product contains both '
-                                      'magnesium AND oxygen.',
+            'wrong_explanations': {1: 'The product contains both magnesium AND oxygen, so the oxygen is only part of '
+                                      'its 40 g. Mass in = mass out: 40 − 24 = 16 g of oxygen.',
+                                   2: 'Adding gives 24 + 40 = 64 g, more than the product itself. The magnesium is '
+                                      'already inside the 40 g of product, so subtract it: 40 − 24 = 16 g.',
                                    3: 'Conservation of mass allows this calculation: mass O₂ = mass product − mass Mg '
                                       '= 40 − 24 = 16 g.'}},
            {'opts': [('4Fe + 3O₂ → 2Fe₂O₃', True),
@@ -3713,9 +3715,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                      ('100 — Mg(24) + 2N(28) + 3O(48)', False),
                      ('116 — Mg(24) + 2N(28) + 4O(64)', False)],
             'q': 'What is the Mr of Mg(NO₃)₂? Ar: Mg=24, N=14, O=16.',
-            'wrong_explanations': {1: 'The subscript 2 outside the bracket means the entire NO₃ group is repeated '
-                                      'twice. So there is 1 N, NOT 2 — wait: NO₃ has 1 N and 3 O, multiplied by 2 = 2N '
-                                      'and 6O.',
+            'wrong_explanations': {1: 'The 2 outside the bracket doubles everything inside it: 2 N and 6 O, not 1 N '
+                                      'and 3 O. Mr = 24 + 28 + 96 = 148.',
                                    2: 'Mg(NO₃)₂ means 2 groups of NO₃: so 2N and 6O total. Only counting 3O ignores '
                                       'the ×2 multiplier.',
                                    3: 'Each NO₃ has 3 O; multiplied by 2 = 6 O total, not 4.'}}],
@@ -4055,11 +4056,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
            {'opts': [('20 g — mass = 80 × 0.25 dm³ = 20 g', True),
                      ('20000 g — mass = 80 × 250 (forgetting to convert cm³ to dm³)', False),
                      ('0.32 g — mass = 80 ÷ 250', False),
-                     ('320 g — mass = 80 × (250 ÷ 10)', False)],
+                     ('2000 g — mass = 80 × (250 ÷ 10)', False)],
             'q': 'A solution has a concentration of 80 g/dm³. What mass of solute is in 250 cm³ of this solution?',
             'wrong_explanations': {1: 'Using 250 directly without converting gives 80 × 250 = 20,000 — not 20. Always '
                                       'convert: 250 cm³ = 0.25 dm³.',
-                                   2: 'Dividing gives volume, not mass. mass = concentration × volume.',
+                                   2: 'Dividing concentration by volume does not give a mass. mass = concentration × '
+                                      'volume = 80 × 0.25 = 20 g.',
                                    3: '250 ÷ 10 = 25 — but the conversion is 250 ÷ 1000 = 0.25 dm³.'}}],
   'rp': None,
   'spec': '5.3.2.5',
