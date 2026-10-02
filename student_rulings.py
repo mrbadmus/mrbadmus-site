@@ -5958,10 +5958,12 @@ INSERT_AT["class view"].update({
                 # Done, never on its own. It starts a fresh revision pass of
                 # the whole deck; it never un-secures anything and never
                 # un-does the homework (Done above has already fired).
+                # It sits on the PAGE, not the card: page ink (--pg-ink),
+                # never the card's cream --b-ink, or it reads blank.
                 {"t": "if", "e": "hwEndSecondaryOn", "c": [
                     _hw_btn("hwAgain", "Revise flashcards one more time",
                             "width:100%;box-sizing:border-box;border:1.5px solid var(--b-rule);"
-                            "background:transparent;color:var(--b-ink);font-weight:600;"
+                            "background:transparent;color:var(--pg-ink);font-weight:600;"
                             "min-height:46px;", "again")]},
             ]},
         ]},

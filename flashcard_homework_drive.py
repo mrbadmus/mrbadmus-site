@@ -647,6 +647,22 @@ def run(width, height, kb, shots):
             check(s["done"] == "Done" and s["again"] == "Revise flashcards one more time"
                   and s["retryPass"] is None,
                   "all secured → Done, plus the quieter 'Revise flashcards one more time' secondary — together")
+            # ⊕ MRB-354 — the secondary sits on the PAGE, not the card: its
+            # label once inherited the card's cream ink and read blank on the
+            # cream page while its text still matched above. Measure contrast
+            # against the first opaque background behind it.
+            ink = P.q("""(function(){
+              var b=document.querySelector('[data-hw="again"]'); if(!b) return null;
+              function rgb(c){var m=c.match(/[\\d.]+/g)||[];return m.map(Number);}
+              function lum(c){return c.slice(0,3).map(function(v){v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);})
+                .reduce(function(a,v,i){return a+v*[0.2126,0.7152,0.0722][i];},0);}
+              var fg=rgb(getComputedStyle(b).color), el=b, bg=null;
+              while(el){var c=rgb(getComputedStyle(el).backgroundColor); if(c.length>=3&&(c.length<4||c[3]>0.5)){bg=c;break;} el=el.parentElement;}
+              if(!bg) bg=[255,255,255];
+              var a=lum(fg),z=lum(bg); return (Math.max(a,z)+0.05)/(Math.min(a,z)+0.05);
+            })()""")
+            check(ink is not None and ink >= 4.5,
+                  "the 'Revise flashcards one more time' label is readable on the page behind it (contrast %r ≥ 4.5)" % ink)
             ev = P.q("window.__FC_FAKE__.events")
             check(sum(1 for e in ev if e["type"] == "session_finish") == 1,
                   "securing the last card (via a retry) ends the sitting, once — no review pass was ever needed")
