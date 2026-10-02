@@ -1,0 +1,22 @@
+KS4 batch 12 — 14 lessons.
+
+Pack: docs/ks4/packs/batch-12/ in the mrbadmus-site repo (main branch).
+Read 00-BRIEF.md first, then FLAGS.md, then each lesson's file in 04-checked-science-source/, then 05-diagram-library/README.md.
+
+Lessons:
+  1. Using Electrolysis to Extract Metals (electrolysis-extraction)
+  2. Electrolysis of Aqueous Solutions (electrolysis-aqueous)
+  3. Half Equations for Electrode Reactions (half-equations)
+  4. Exothermic and Endothermic Reactions (exothermic-endothermic)
+  5. Reaction Profiles (reaction-profiles)
+  6. Bond Energy Calculations (bond-energy-calculations)
+  7. Cells and Batteries (cells-and-batteries)
+  8. Fuel Cells (fuel-cells)
+  9. Rate of Reaction and Calculations (calculating-rates)
+  10. Factors Affecting the Rate of Reaction (factors-affecting-rate)
+  11. Collision Theory and Activation Energy (collision-theory)
+  12. Catalysts (catalysts)
+  13. Reversible Reactions and Equilibrium (reversible-reactions-equilibrium)
+  14. Effect of Changing Conditions on Equilibrium (effect-of-conditions-equilibrium)
+
+Deliver one runnable .dc.html per lesson, as for the pilot, with NOTES (numbered science flags), README, _ds and support.js.
