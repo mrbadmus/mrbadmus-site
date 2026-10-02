@@ -646,13 +646,14 @@ def sharpen_matrix_check(b, base, check):
           {id: 'm1', title: 'Quiz', release_at: '2026-09-28T06:00:00+00:00', due_at: '2026-10-05T08:00:00+00:00', kind: 'mcq_set'},
           {id: 'f1', title: 'Deck', release_at: '2026-09-28T06:00:00+00:00', due_at: '2026-10-05T08:00:00+00:00', kind: 'flashcards'}],
         submissions: [sub('m1', 's1', 7, 10), sub('m1', 's3', 4, 10), sub('f1', 's3', 10, 10)],
-        /* ⊕ MRB-354 §6 — secured count = the RPC's `known`, not the OLD
-           two-sitting `secured` (both fields still exist on the real
-           payload; the client reads `known` now). */
+        /* ⊕ MRB-354 — `pack.flashcards` as teacher-data.js builds it: its
+           `secured` is ALREADY the one-word rule (filled from the RPC's
+           `known`, which this pack shape does not carry). The RPC's own
+           old-rule `secured` never reaches here. */
         flashcards: {f1: {n: 10, pupils: {
-          s1: {status: 'in_progress', secured: 2, known: 6, sittings: 3, made: 8},
-          s2: {status: 'not_started', secured: 0, known: 0, sittings: 0, made: 0},
-          s3: {status: 'done', secured: 7, known: 10, sittings: 2, made: 10}}}}
+          s1: {status: 'in_progress', secured: 6, sittings: 3, made: 8},
+          s2: {status: 'not_started', secured: 0, sittings: 0, made: 0},
+          s3: {status: 'done', secured: 10, sittings: 2, made: 10}}}}
       };
       var papers = L.buildPapers(pack, now);
       var mx = L.buildMatrix(pack, papers, now);
