@@ -22,7 +22,8 @@ What it proves, each as a named check (exit 1 on any FAIL):
     retry reuses the same client_ref;
   · a cached reply offers the two buttons and "Read it again" resends with
     force=1; Paste posts {paste,title}; Type opens three blank rows;
-  · My decks → pick → Next → Ready-made + Quick + a later release post those;
+  · My decks → pick → Next → Ready-made + a later release post those (no rule
+    choice any more — MRB-354);
   · MRBSetWork.edit({kind:'flashcards'}) reads the row and saves through
     `flashcard_edit_assignment`, keeping the stored note.
 
@@ -693,17 +694,23 @@ def main():
             check(modes and modes[0][0] == "make" and modes[0][1] and not modes[1][1]
                   and "Pupils write the answers" in modes[0][2] and "Ready-made cards" in modes[1][2],
                   "flash: two mode cards, 'Pupils write the answers' by default", modes)
-            check(p.eval("document.querySelector('[data-sw=fc-rule] .is-on').textContent") == "Secure",
-                  "flash: rule toggle defaults to Secure")
+            # ⊕ MRB-354 (2 Oct 2026) — the completion-rule (Secure/Quick)
+            # chip row is REMOVED from the sheet entirely (completion_rule
+            # no longer decides secured/done): assert it is GONE, not that
+            # it defaults to a value.
+            check(p.eval("!document.querySelector('[data-sw=fc-rule]')"),
+                  "flash: the Secure/Quick rule toggle is gone from the sheet")
             check(p.eval("document.querySelector('[data-sw=download]').closest('.sw-dl').hidden") is True
                   and p.eval("document.querySelector('[data-sw=scopes]').offsetParent") is None,
                   "flash: no Download and no question list on a flashcard set")
             check(p.eval("!document.querySelector('[data-sw=assignment-note-field]').hidden"),
                   "flash: the note field is offered")
             summ = p.eval("document.querySelector('[data-sw=fc-summary]').innerText")
+            # ⊕ MRB-354 — the rule no longer names itself in the summary
+            # (there is no rule to pick any more).
             check("Cells deck" in summ and "4 cards" in summ and "Pupils write the answers" in summ
-                  and "Secure" in summ and "10a/Bi1" in summ and "8r/Sc1" in summ and "Due " in summ,
-                  "flash: the summary card names deck · cards · mode · rule · classes · due", summ)
+                  and "10a/Bi1" in summ and "8r/Sc1" in summ and "Due " in summ and "Secure" not in summ,
+                  "flash: the summary card names deck · cards · classes · due, no rule", summ)
             check(p.eval("document.querySelector('[data-sw=title]').value") == "Cells deck",
                   "flash: the title defaults to the deck's")
             p.eval("(function(){var n=document.querySelector('[data-sw=assignment-note]');"
@@ -828,7 +835,6 @@ def main():
                   "pick: a ready deck enables Next")
             click(p, "[data-sw=primary]")
             click(p, "[data-sw=fc-mode][data-sw-key=review]")
-            click(p, "[data-sw=fc-rule] [data-sw-key=quick]")
             click(p, "[data-sw=release-chips] [data-sw-key=later]")
             rel = p.eval("(function(){var d=new Date(Date.now()+3*864e5);"
                          "return d.toISOString().slice(0,10);})()")
@@ -839,16 +845,18 @@ def main():
                    "u.value=new Date(Date.now()+9*864e5).toISOString().slice(0,10);"
                    "u.dispatchEvent(new Event('input'));})()" % json.dumps(rel))
             summ = p.eval("document.querySelector('[data-sw=fc-summary]').innerText")
-            check("Ready-made cards" in summ and "Quick" in summ and "3 cards" in summ
-                  and "10b/Bi2" in summ, "pick: the summary follows mode and rule", summ)
+            check("Ready-made cards" in summ and "3 cards" in summ
+                  and "10b/Bi2" in summ, "pick: the summary follows mode, no rule", summ)
             click(p, "[data-sw=primary]")
             wait(p, "document.querySelector('[data-sw=overlay]').hidden")
             s3 = (calls(p, "flashcard_set_work") or [{}])[-1].get("args", {})
             want_rel = p.eval("MRBSetWork.londonToUtcIso(%s,'08:30')" % json.dumps(rel))
+            # ⊕ MRB-354 — p_rule is always 'secure' now (the server still
+            # validates it; the sheet offers no other value to pick).
             check(s3.get("p_deck") == D1 and s3.get("p_mode") == "review"
-                  and s3.get("p_rule") == "quick" and s3.get("p_release_at") == want_rel
+                  and s3.get("p_rule") == "secure" and s3.get("p_release_at") == want_rel
                   and s3.get("p_class_ids") == [C2] and s3.get("p_note") is None,
-                  "pick: Ready-made + Quick + a later release are what is posted", s3)
+                  "pick: Ready-made + a later release are what is posted, p_rule always 'secure'", s3)
 
             # ═══ 3b. a failed extraction, and a re-run from the table ══════
             print("\n── sheet: failed extraction ──")
@@ -909,11 +917,14 @@ def main():
                   "edit: opens on Detail with Cancel and Save")
             check(p.eval("document.querySelector('[data-sw=fc-top]').hidden") is True
                   and p.eval("document.querySelector('[data-sw=release-chips]').hidden") is True,
-                  "edit: a released set offers no mode, rule or release")
+                  "edit: a released set offers no mode or release")
             wait(p, "document.querySelector('[data-sw=fc-summary]').innerText.indexOf('Cell biology')>-1")
             summ = p.eval("document.querySelector('[data-sw=fc-summary]').innerText")
-            check("Cell biology" in summ and "Ready-made cards" in summ and "Quick" in summ,
-                  "edit: the summary carries the stored deck, mode and rule", summ)
+            # ⊕ MRB-354 — this row was stored with completion_rule 'quick'
+            # (the fixture's A1); the summary names the deck and mode only —
+            # the rule it was created under is never shown any more.
+            check("Cell biology" in summ and "Ready-made cards" in summ and "Quick" not in summ,
+                  "edit: the summary carries the stored deck and mode, no rule", summ)
             p.eval("(function(){var t=document.querySelector('[data-sw=title]');t.value='Cells HW';"
                    "t.dispatchEvent(new Event('input'));})()")
             click(p, "[data-sw=primary]")

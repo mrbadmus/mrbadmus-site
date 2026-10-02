@@ -108,16 +108,18 @@
     <section class="fp-strip" id="fp-strip" aria-label="Class"></section>
     <!-- ⊕ Design port A, 30 Sep 2026, five-state follow-up same day — ONE
          legend above the table, for the Secured column's per-card strip
-         (ruled: "ONE legend above the table"), all five states as drawn.
-         Static, not built from data — the five cell shapes it names
-         never change; see stripCounts()/securedCell() in
+         (ruled: "ONE legend above the table").
+         ⊕ MRB-354, 2 Oct 2026 — FOUR states now, not five: "Got it" is
+         gone from every pupil/teacher surface (a card secures on one
+         rating, so there is no separate "got it but not yet secured"
+         bucket to show). Static, not built from data — the four cell
+         shapes it names never change; see stripCounts()/securedCell() in
          flashcard-progress.js for where the real per-card counts come
          from. -->
     <div class="fp-tablehead">
       <h2>Pupils</h2>
       <div class="legend" aria-hidden="true">
         <span><i class="k-sec"></i>Secured</span>
-        <span><i class="k-got"></i>Got it</span>
         <span><i class="k-near"></i>Nearly</span>
         <span><i class="k-no"></i>Not yet</span>
         <span><i class="k-un"></i>Not seen</span>
@@ -181,12 +183,12 @@
 <script src="/shared/teacher-data.js?v=7257a437"></script>
 <script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>
 <script src="/shared/formulae.js?v=e4bfb091"></script>
-<script src="/shared/flashcard-breakdown.js?v=077dddcd"></script>
+<script src="/shared/flashcard-breakdown.js?v=baf47828"></script>
 <!-- For its London clock helpers (londonToUtcIso / utcToLondonParts): the
      one conversion every Set work surface uses. It builds nothing until
      opened. -->
-<script src="/shared/set-work.js?v=b44f1d00"></script>
-<script src="/shared/flashcard-progress.js?v=bff01596"></script>
+<script src="/shared/set-work.js?v=fc15f455"></script>
+<script src="/shared/flashcard-progress.js?v=b5e854ff"></script>
 <script>
 MrBadmusTeacherGuard.requireTeacherRole({
   onDenied: function () { /* the guard redirects */ },

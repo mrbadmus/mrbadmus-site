@@ -69,19 +69,40 @@
  *   connection or a closed tab loses nothing), sent in batches, and are
  *   idempotent on the server by id. The SERVER computes every duration.
  *
- * ⊕ FLASHCARD HOMEWORK COMPLETION (Mide, 1 Oct 2026 — docs/experience/
- *   DESIGN-PORT-REPORT.md "Follow-up 1 Oct"). DONE = the pupil has reached
- *   this engine's own Done screen once (a review pass where every card's
- *   latest rating in the walk is Got it; in make mode, the writing pass
- *   first). `finishedAt()` below reads that same fact from the pupil's own
- *   `flashcard_reviews`, with no live Engine — it is the single definition
- *   `student-live.js`'s `recordFinish` writes from. `endPass()` flags
- *   `this.end.finished` the moment it happens here; once the flush settles,
- *   `Api.onFinish(id)` fires so the page can write the submission at once.
- *   SECURED (below) stays separate and smaller — never required for DONE.
+ * ⊕ MRB-354 (Mide, 2 Oct 2026 — "Students need to be able to do flashcards
+ *   and move on … probably has that knowledge secured already"). SECURED,
+ *   DONE AND FINISH ARE REWRITTEN, and the ENGINE now decides all three
+ *   itself — it no longer waits on the server for any of them.
  *
- * WHAT IT STILL DOES NOT DO: decide SECURED. `flashcard_record()` does
- * that, from `flashcard_card_state`, and says so in the state it returns.
+ *   secured(card) = exists a rating of it, latest per (card, session, phase)
+ *   — the SAME grouping ‹ Back already used within one sitting — that is
+ *   got_it. Make phase or review phase, any sitting, no pairing, no hour
+ *   gap, completion_rule ignored. A rating overwritten via ‹ Back (or a
+ *   retry's redo) in the SAME sitting does not count; a later rating in a
+ *   DIFFERENT sitting or phase can never un-secure a card once secured.
+ *   done = the deck has ≥1 card and every card is secured. finish = for
+ *   each card, the earliest counting got_it row; the deck's finish is the
+ *   MAX of those (the moment the LAST card secured) — `finishedAt()` below.
+ *
+ *   `securedMap()`/`securedCount()`/`allSecured()` compute this from TWO
+ *   layers: `historicalSecured` (this pupil's own `flashcard_reviews`, read
+ *   once per resume/reopen — see `resumeFor()`) plus `liveLatest` (what
+ *   THIS open sitting has rated since, keyed by card+phase+the sitting's own
+ *   generation number, bumped on every `sessionFinish()`). A deck already
+ *   fully secured when opened goes straight to the Done screen — see the
+ *   short-circuit at the top of `start()` — never a fresh pass. A pass that
+ *   is not all secured ends on Try again, replaying the cards still not
+ *   secured (never merely "not Got it in this pass"): a card secured
+ *   earlier stays secured and is never replayed. `finishedAt()` no longer
+ *   shares `walkReview`'s round-aware walk — that walk still decides WHERE
+ *   a reopened pass lands (`reconstruct()`, unchanged) — because there is
+ *   no round or pass to reconstruct for "is every card secured"; it is a
+ *   flat fact over the pupil's whole history.
+ *
+ *   NEVER READ `state.secured`/`state.known`/`state.n` FOR PUPIL DISPLAY —
+ *   those are the server's, and the server still computes the OLD
+ *   two-sitting rule until the parked SQL lands. This file's own secured/
+ *   finishedAt are the pupil-facing truth either way.
  *
  * Transport, the keepalive transport, the model check and the resume read
  * are injected (`MRBHomework.transport` / `.transportKeepalive` /
@@ -341,64 +362,75 @@
     };
   }
 
-  // ⊕ 1 Oct 2026, corrected 1 Oct 2026 (review MUST-FIX) — "finished the
-  // homework", read from data with no live Engine. The FIRST point in the
-  // pupil's history at which the PASS THE ENGINE WOULD BE SHOWING AT THAT
-  // INSTANT held every card Got it — `walkReview`, the exact round-aware
-  // walk `reconstruct()` uses to decide what pass a pupil is in, not a
-  // bare cumulative "every card's all-time latest rating is Got it" check.
-  // That distinction is load-bearing: a pupil who leaves a leftovers round
-  // stale for an hour gets a FRESH pass (the engine re-asks the whole
-  // deck — `rankedIds`), and the first card of that new pass is not the
-  // Done screen just because every OTHER card happened to be Got it once,
-  // in some earlier, already-abandoned round. `walkReview` resets exactly
-  // where `reconstruct` would move the pupil into a new round or a new
-  // pass, so the two can never disagree about when a pass actually ended
-  // all right. Once found, `firstFinish` is never replaced — see
-  // `walkReview`'s own comment for why that half is correct to keep.
+  // ── SECURED (⊕ MRB-354, 2 Oct 2026) — one rating, any sitting, any phase ──
   //
-  // In make mode, a review row only counts toward a pass once every card
-  // has at least one make-phase row too (the writing pass is done) —
-  // filtered here, before the walk, rather than inside it, so the shared
-  // walker stays pass-shape-agnostic.
+  // secured(card) = exists a row for that card, latest per (card, session_id,
+  // phase) — the SAME grouping ‹ Back already uses within one sitting —
+  // whose rating is got_it. A rating overwritten via ‹ Back (or a retry's
+  // redo) in the SAME group does not count: the group's LATEST row wins. A
+  // later rating in a DIFFERENT session or phase can never un-secure a card
+  // once some group's latest was got_it — secured is a plain OR over every
+  // group a card has ever had.
   //
-  // `rows`: oldest first, {card_id, rating, phase, rated_at, event_id}.
-  // `idk`: optional, same shape `reconstruct` takes — real callers
-  // (`student-live.js`'s `recordFinish`/heal, the parked SQL) have no
-  // access to a DEVICE'S OWN localStorage record and so never pass one;
-  // without it, an "I don't know" replay is read as an ordinary rating,
-  // which only matters while a round is still open and is corrected by
-  // the next actual Right rating regardless.
-  // Returns {at, event_id} | null.
-  // Known accepted divergence (documented, not "fixed"): if a pupil uses
-  // ‹ Back to make an "I don't know" card Got it before its replay comes
-  // round, this walk sees all-right one card earlier than the Done screen
-  // does — the pupil is one replay away from the screen; the record wins.
-  function finishedAt(rows, cards, mode, idk) {
-    if (!rows || !cards || !cards.length) { return null; }
-    var deck = cards.slice().sort(function (a, b) { return a.position - b.position; })
-      .map(function (c) { return c.id; });
+  // `rows`: the pupil's own flashcard_reviews, OLDEST FIRST (so the last
+  // write to a group's slot in `groups` below is that group's latest row) —
+  // {card_id, rating, phase, session_id, rated_at, event_id|id}. Rows with
+  // no `session_id` (an older read, or a test fixture) are all treated as
+  // one group per (card, phase) — the safe, conservative reading when the
+  // grouping key is missing, not a crash.
+  //
+  // Returns {secured: {card_id: true}, finishAt: {card_id: {at, event_id}}}
+  // — `finishAt[card]` is that card's EARLIEST counting got_it row (the
+  // earliest group whose latest was got_it), which is what `finishedAt()`
+  // below needs: the deck's finish is the MAX of these, the moment the
+  // LAST card secured, not the most recent time any card was re-confirmed.
+  function securedInfo(rows, cards) {
     var inDeck = {};
-    deck.forEach(function (id) { inDeck[id] = true; });
-    var list = [];
-    rows.forEach(function (r) {
+    (cards || []).forEach(function (c) { inDeck[c.id] = true; });
+    var groups = {};
+    (rows || []).forEach(function (r) {
       if (!r || !inDeck[r.card_id] || !(r.rating in RANK)) { return; }
-      list.push({ card: r.card_id, rating: r.rating, phase: r.phase === "make" ? "make" : "review",
-                  at: ms(r.rated_at), event_id: r.event_id || r.id || null });
+      var phase = r.phase === "make" ? "make" : "review";
+      var key = (r.session_id == null ? "" : r.session_id) + "|" + phase;
+      var g = groups[r.card_id] || (groups[r.card_id] = {});
+      g[key] = r;   // oldest-first input: the LAST write to a key is its latest row
     });
-    var reviewRows;
-    if (mode === "make") {
-      var made = {}, eligible = [];
-      list.forEach(function (r) {
-        if (r.phase === "make") { made[r.card] = true; return; }
-        if (deck.every(function (id) { return made[id]; })) { eligible.push(r); }
+    var secured = {}, finishAt = {};
+    Object.keys(groups).forEach(function (cardId) {
+      var best = null;
+      Object.keys(groups[cardId]).forEach(function (key) {
+        var r = groups[cardId][key];
+        if (r.rating !== "got_it") { return; }
+        var at = ms(r.rated_at);
+        if (!best || at < best.at) { best = { at: at, event_id: r.event_id || r.id || null }; }
       });
-      reviewRows = eligible;
-    } else {
-      reviewRows = list.filter(function (r) { return r.phase === "review"; });
+      if (best) { secured[cardId] = true; finishAt[cardId] = best; }
+    });
+    return { secured: secured, finishAt: finishAt };
+  }
+
+  // ⊕ MRB-354 (2 Oct 2026; superseded the 1 Oct round-aware-walk version) —
+  // "finished the homework" = done = every card secured (above), read from
+  // data with no live Engine. finish = the MAX over cards of each card's
+  // EARLIEST counting got_it row — the moment the LAST card became secured.
+  // No round, no hour gap, no make-phase gating: a card secured during the
+  // WRITING pass alone is already secured, so a deck can finish without a
+  // review pass ever running. This is now a FLAT fact over the pupil's whole
+  // history, not a replay of `reconstruct()`'s pass-shaped walk — `mode`/
+  // `idk` are no longer needed and are accepted-but-ignored so existing call
+  // sites (`student-live.js`'s `recordFinish`/heal) need no change.
+  // `rows`: oldest first, {card_id, rating, phase, session_id, rated_at,
+  // event_id|id}. Returns {at, event_id} | null.
+  function finishedAt(rows, cards /* , mode, idk — ignored, kept for callers */) {
+    if (!rows || !cards || !cards.length) { return null; }
+    var info = securedInfo(rows, cards);
+    var best = null;
+    for (var i = 0; i < cards.length; i++) {
+      var f = info.finishAt[cards[i].id];
+      if (!f) { return null; }   // not every card secured yet
+      if (!best || f.at > best.at) { best = f; }
     }
-    var w = walkReview(reviewRows, deck, idk);
-    return w.firstFinish ? { at: w.firstFinish.at, event_id: w.firstFinish.event_id || null } : null;
+    return best;
   }
 
   function Engine(assignmentId, state, opts) {
@@ -412,6 +444,22 @@
     this.acted = 0;           // answers + ratings, this visit (A13)
     this.sittingOpen = false; // events sent since the last session_finish
     this.tok = 0;             // bumps whenever the card in front changes
+    // ⊕ MRB-354 — SECURED, built once from the pupil's own rows at the last
+    // resume/reopen (`historicalSecured`, frozen — see `resumeFor()`), plus
+    // whatever THIS open sitting has rated since (`liveLatest`: cardId →
+    // "phase:sessionGeneration" → rating, so a ‹ Back / redo correction in
+    // the SAME still-open sitting overwrites its own slot, while a NEW
+    // sitting — after `sessionFinish()` bumps `liveSessionN` — gets a slot
+    // of its own and can only ADD to what is secured, never remove).
+    this.historicalSecured = {};
+    if (this.opts.secured) {
+      var self0 = this;
+      Object.keys(this.opts.secured).forEach(function (id) {
+        if (self0.opts.secured[id]) { self0.historicalSecured[id] = true; }
+      });
+    }
+    this.liveLatest = {};
+    this.liveSessionN = 0;
     this.apply(state);
     this.start(this.opts.resume || null);
   }
@@ -438,6 +486,31 @@
 
   Engine.prototype.unmade = function () {
     return this.cards.filter(function (c) { return !c.made; });
+  };
+
+  // ⊕ MRB-354 — THE DISPLAY TRUTH FOR SECURED. Never reads the server's own
+  // `state.secured`/`state.known` (the OLD two-sitting rule, until the
+  // parked SQL lands): a card is secured if the last server read already
+  // showed it secured (`historicalSecured`), OR if this open sitting has
+  // rated it got_it in some phase/session-generation that has not since
+  // been corrected (`liveLatest`).
+  Engine.prototype.securedMap = function () {
+    var self = this;
+    var out = {};
+    this.cards.forEach(function (c) {
+      if (self.historicalSecured[c.id]) { out[c.id] = true; return; }
+      var live = self.liveLatest[c.id];
+      out[c.id] = !!(live && Object.keys(live).some(function (k) { return live[k] === "got_it"; }));
+    });
+    return out;
+  };
+  Engine.prototype.securedCount = function () {
+    var m = this.securedMap(), n = 0;
+    this.cards.forEach(function (c) { if (m[c.id]) { n += 1; } });
+    return n;
+  };
+  Engine.prototype.allSecured = function () {
+    return this.cards.length > 0 && this.securedCount() === this.cards.length;
   };
 
   Engine.prototype.phase = function () {
@@ -470,8 +543,32 @@
 
   // A pass. `resume` is `reconstruct()`'s answer (null = a fresh pass): the
   // stage, the pass's ratings and order, and the round it is on.
-  Engine.prototype.start = function (resume) {
+  // `freshSecured`, when given (a reused engine re-resuming — `Api.open()`),
+  // is secured-per-card computed from a fresh server read; it can only ADD
+  // to `historicalSecured`, never remove (secured never un-secures). ⊕
+  // MRB-354 — if, taking that into account, the WHOLE deck is already
+  // secured, this is the Done screen, full stop — never a fresh pass, and
+  // never the `resume` a stale per-pass reconstruction might otherwise ask
+  // for. The one way PAST this shortcut is `again()`'s own "Revise flashcards
+  // one more time", which sets `forceRevise` for the one `start()` call it
+  // makes.
+  Engine.prototype.start = function (resume, freshSecured) {
     var self = this;
+    if (freshSecured) {
+      Object.keys(freshSecured).forEach(function (id) {
+        if (freshSecured[id]) { self.historicalSecured[id] = true; }
+      });
+    }
+    if (!this.forceRevise && this.cards.length && this.allSecured()) {
+      this.pass = {}; this.retries = 0; this.replayed = {}; this.idkSeen = {}; this.replayDone = {};
+      this.detour = null; this.learn = false; this.idkNow = false;
+      this.saved = {}; this.drafts = {};
+      this.stage = "review";
+      this.order = this.ranked();
+      this.passIds = []; this.baseLen = 0; this.idx = 0; this.frontier = 0;
+      this.endAllSecured();
+      return;
+    }
     var R = resume || null;
     this.ended = false;
     this.end = null;
@@ -547,8 +644,26 @@
     }
     this.keepIdk();
     this.idx = R && R.round.n > 1 ? 0 : done.length;
+    this.frontier = this.idx;   // ⊕ MRB-354 — Forward never goes past this
     if (this.idx >= this.passIds.length && (this.passIds.length || (R && R.ended))) { this.endPass(); return; }
     this.show();
+  };
+
+  // ⊕ MRB-354 — the short-circuit path from `start()`: every card already
+  // secured, so there is no pass to show at all. No `sessionFinish()` (there
+  // is nothing new to close out), but `flush()` below still settles the end
+  // screen and fires `Api.onFinish` if nothing is pending — the heal path
+  // for a pupil whose finish the server has not yet caught up to.
+  Engine.prototype.endAllSecured = function () {
+    this.ended = true;
+    this.revealed = false;
+    this.learn = false;
+    this.detour = null;
+    this.tok += 1;
+    var total = this.cards.length;
+    this.end = { securedCount: total, total: total, writing: false, all: true, settled: false, finished: true };
+    this.changed();
+    this.flush();
   };
 
   Engine.prototype.keepIdk = function () {
@@ -717,6 +832,11 @@
     c.last = rating; c.lastLocal = rating;
     if (rating === "got_it") { c.known = true; }
     this.pass[id] = { rating: rating, mine: this.mine, verdict: this.verdict === "pending" ? null : this.verdict, cap: cap };
+    // ⊕ MRB-354 — this sitting's own secured truth: a ‹ Back / redo
+    // correction overwrites its OWN slot (same card + phase + still-open
+    // sitting generation); a rating made after a `sessionFinish()` lands in
+    // a fresh slot and can only ADD to what is secured.
+    (this.liveLatest[id] || (this.liveLatest[id] = {}))[this.stage + ":" + this.liveSessionN] = rating;
     delete this.saved[id];
     this.keepDrafts(true);
     if (!this.detour && this.idx >= this.baseLen && this.idkSeen[id]) {
@@ -739,6 +859,7 @@
         this.keepIdk();
       }
       this.idx += 1;
+      if (this.idx > this.frontier) { this.frontier = this.idx; }   // ⊕ MRB-354
       if (this.idx < this.passIds.length) { this.show(); } else { this.endPass(); }
     }
     this.flush();                          // ⊕ Stage D: durable the moment it happens
@@ -752,6 +873,21 @@
     if (!this.canBack()) { return; }
     if (this.detour) { this.detour = null; this.show(); return; }
     this.idx -= 1;
+    this.show();
+  };
+
+  // ⊕ MRB-354 — Forward ›: beside ‹ Back. Walks back UP toward the card the
+  // pupil was on (`frontier`, the furthest this pass has reached), one card
+  // per press, changing no rating — it is a pure cursor move, never a
+  // re-rate. Hidden once already at the frontier (the newest card). Never
+  // offered during a retry's redo detour (there is no "forward" from a side
+  // trip; ‹ Back already exits it).
+  Engine.prototype.canForward = function () {
+    return !this.ended && !this.detour && this.idx < this.frontier;
+  };
+  Engine.prototype.forward = function () {
+    if (!this.canForward()) { return; }
+    this.idx += 1;
     this.show();
   };
 
@@ -774,21 +910,26 @@
     return (this.order || []).filter(function (id) { return self.pass[id] && self.pass[id].rating === "got_it"; }).length;
   };
 
-  // The end of a pass (§13.1.6–8).
-  //   writing pass (make mode)  keeps the sitting open; its review follows.
-  //   all right                 ends the sitting; Done.
-  //   anything else             Try again, in the SAME sitting.
+  // The end of a pass (⊕ MRB-354 rewrite of §13.1.6–8: ONE rule now, for
+  // BOTH the writing pass and the review pass — "Make mode's writing pass
+  // end screen follows the SAME rule").
+  //   every card secured   ends the sitting; Done (+ the quieter "Revise
+  //                         flashcards one more time" secondary — see
+  //                         `again()`).
+  //   anything else         Try again, in the SAME sitting, on the cards
+  //                         still not secured (never merely "not Got it in
+  //                         this pass": a card secured earlier is never
+  //                         replayed — see `retry()`).
   Engine.prototype.endPass = function () {
     var writing = this.stage === "make";
-    var right = this.right();
-    var m = this.order.length;
-    var all = !writing && right === m;
+    var securedCount = this.securedCount(), total = this.cards.length;
+    var all = total > 0 && securedCount === total;
     this.ended = true;
     this.revealed = false;
     this.learn = false;
     this.detour = null;
     this.tok += 1;
-    this.end = { right: right, m: m, writing: writing, all: all, settled: false, finished: all };
+    this.end = { securedCount: securedCount, total: total, writing: writing, all: all, settled: false, finished: all };
     if (all) { this.sessionFinish(); }
     this.changed();
     this.flush();
@@ -796,6 +937,7 @@
 
   Engine.prototype.sessionFinish = function () {
     this.event({ type: "session_finish" });
+    this.liveSessionN += 1;   // ⊕ MRB-354 — the NEXT rating starts a fresh sitting's group
   };
 
   // ⊕ 1 Oct 2026 — the end screen settles once the server has the pass
@@ -812,20 +954,24 @@
     this.end.settled = true;
   };
 
-  // Try again: only the cards that are not Got it, in the pass's own order.
+  // Try again (⊕ MRB-354): only the cards that are NOT SECURED — never
+  // merely "not Got it in this pass". A card secured earlier (this sitting
+  // or an older one) stays out of the queue even if it happens to sit in
+  // `this.pass` with a lower rating from a stage this engine re-asked it at.
   Engine.prototype.retry = function () {
-    if (!this.ended || !this.end || this.end.all || this.end.writing) { return; }
+    if (!this.ended || !this.end || this.end.all) { return; }
     var self = this;
     this.retries += 1;
+    var secured = this.securedMap();
     Object.keys(this.pass).forEach(function (id) {
-      if (self.pass[id].rating !== "got_it") { delete self.pass[id]; }
+      if (!secured[id]) { delete self.pass[id]; }
     });
     this.replayed = {};
     this.idkSeen = {};
     this.replayDone = {};
     this.keepIdk();
     this.detour = null;
-    this.passIds = this.order.filter(function (id) { return !self.pass[id]; });
+    this.passIds = this.order.filter(function (id) { return !secured[id]; });
     // A leftover is answered afresh: its wrong answer is not put back in
     // the box for the pupil to send again. (A green card's redo keeps its
     // earlier answer — §13.1.11.)
@@ -833,6 +979,7 @@
     this.keepDrafts(true);
     this.baseLen = this.passIds.length;
     this.idx = 0;
+    this.frontier = 0;   // ⊕ MRB-354
     this.ended = false;
     this.end = null;
     this.tok += 1;
@@ -845,8 +992,17 @@
     this.flush();
   };
 
+  // ⊕ MRB-354 — the quieter secondary offered beside Done once everything is
+  // secured: "Revise flashcards one more time". It never un-secures anything
+  // and never un-does the homework (secured is a one-way OR over every
+  // sitting a card has ever had a got_it rating in — nothing this fresh pass
+  // rates can remove that). `forceRevise` is the one way past `start()`'s
+  // own all-secured shortcut, which would otherwise re-show the same Done
+  // screen the pupil just asked to get past.
   Engine.prototype.again = function () {
+    this.forceRevise = true;
     this.start(null);
+    this.forceRevise = false;
   };
 
   Engine.prototype.visibility = function () {
@@ -873,8 +1029,6 @@
   Engine.prototype.view = function () {
     var self = this;
     var s = this.state || {};
-    var n = s.n || this.cards.length;
-    var secured = s.secured || 0;
     var p = this.phase();
     var c = this.current();
     var order = this.order || [];
@@ -893,29 +1047,31 @@
     var end = null;
     if (this.end) {
       var E = this.end;
-      var ready = E.settled && !this.pending.length;
-      var offline = E.all && !ready && this.error === "offline";
-      var button = E.writing ? "again" : E.all ? "done" : "retry";
+      // ⊕ MRB-354 — ONE line, "N of M secured", computed by this engine from
+      // the pupil's own rows plus this sitting's live ratings; it never
+      // waits on the server (no `ready` gate: `securedCount`/`total` are
+      // already the display truth the instant the pass ends). Not all
+      // secured → ONE button, Try again. All secured → Done, plus the
+      // quieter "Revise flashcards one more time" secondary (`end.secondary`
+      // — the template shows it alongside Done, never on its own).
+      var button = E.all ? "done" : "retry";
       end = {
-        line1: E.right + " of " + E.m + " right",
-        // Line 2 and the helper only on the all-right screen, and only once
-        // the server has the pass (A8a); nothing else waits on the server.
-        line2: E.all && ready ? (secured + " of " + n + " secured so far") : "",
-        offline: offline,
-        helper: E.all && ready && secured < n ? "Revise flashcards one more time" : "",
+        line1: E.securedCount + " of " + E.total + " secured",
+        offline: this.error === "offline",
+        secondary: E.all,
         button: button,
-        buttonLabel: { done: "Done", again: "Revise flashcards one more time", retry: "Try again" }[button]
+        buttonLabel: { done: "Done", retry: "Try again" }[button]
       };
     }
     var chip = this.revealed && this.verdict ? CHIP[this.verdict] : "";
     var allowed = {};
     RATINGS.forEach(function (r) { allowed[r] = self.allowed(r); });
     return {
-      phase: p, n: n, m: m, right: right, secured: secured,
+      phase: p, n: this.cards.length, m: m, right: right, secured: this.securedCount(),
       headline: right + " of " + m + " right",
       // ⊕ Sharpen review (Fable, M-2) — mid-pass the strip is the headline
-      // and the bar/chips only; "secured" and the helper belong to the end
-      // screen, which keeps both.
+      // and the bar/chips only; the secured count belongs to the end
+      // screen, which keeps it.
       securedLine: "",
       helper: "",
       segments: segs,
@@ -936,6 +1092,7 @@
       mine: this.revealed ? this.mine : null,
       draft: this.draft || "",
       canBack: this.canBack(),
+      canForward: this.canForward(),   // ⊕ MRB-354
       end: end,
       complete: !!s.complete,
       note: s.note || null,
@@ -1016,16 +1173,23 @@
   // ── the module ───────────────────────────────────────────────────────
   var engines = {};
 
-  // The pupil's own ratings for the deck → where the pass stands. A read
-  // that fails (RLS, network, no reader) → a fresh pass, today's behaviour.
+  // The pupil's own ratings for the deck → where the pass stands, AND
+  // (⊕ MRB-354) which cards are already secured. A read that fails (RLS,
+  // network, no reader) → a fresh pass and nothing secured yet, today's
+  // behaviour. Returns {R, secured}: `R` is `reconstruct()`'s answer (null =
+  // a fresh pass, for `Engine.start()`'s `resume`); `secured` is
+  // `securedInfo()`'s per-card map (for `historicalSecured`).
   function resumeFor(assignmentId, state) {
+    var cards = (state && state.cards) || [];
     var read = typeof Api.resumeRead === "function"
       ? Promise.resolve().then(function () { return Api.resumeRead(assignmentId); }).catch(function () { return null; })
       : Promise.resolve(null);
     return read.then(function (rows) {
-      try {
-        return reconstruct(rows, (state && state.cards) || [], state && state.mode, Date.now(), loadIdk(assignmentId));
-      } catch (e) { return null; }
+      var secured;
+      try { secured = securedInfo(rows, cards).secured; } catch (e) { secured = {}; }
+      var R;
+      try { R = reconstruct(rows, cards, state && state.mode, Date.now(), loadIdk(assignmentId)); } catch (e) { R = null; }
+      return { R: R, secured: secured };
     });
   }
 
@@ -1049,6 +1213,7 @@
     quickCheck: quickCheck,
     reconstruct: reconstruct,
     finishedAt: finishedAt,
+    securedInfo: securedInfo,   // ⊕ MRB-354 — exposed for tests/drives
     open: function (assignmentId) {
       var t = Api.transport;
       var known = engines[assignmentId];
@@ -1065,7 +1230,7 @@
           if (state) { known.merge(state); }
           if (known.pending.length && !(known.end && known.end.all)) { Api.active = known; return known; }
           return resumeFor(assignmentId, known.state).then(function (r) {
-            known.start(r);
+            known.start(r.R, r.secured);
             Api.active = known;
             return known;
           });
@@ -1083,7 +1248,7 @@
       return Promise.resolve(t(assignmentId, queued)).then(function (state) {
         save(assignmentId, []);
         return resumeFor(assignmentId, state).then(function (r) {
-          var e = new Engine(assignmentId, state, { resume: r });
+          var e = new Engine(assignmentId, state, { resume: r.R, secured: r.secured });
           engines[assignmentId] = e;
           Api.active = e;
           return e;

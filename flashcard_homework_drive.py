@@ -28,13 +28,21 @@ mode), on a PHONE, with the keyboard up.
 
   Both modes (make: the writing pass, its end screen, the review pass; review:
   one sitting), every state (A question, keyboard up, B checking, C verdict,
-  ‹ Back, I don't know, the end screens, a second sitting, secured), and the
+  ‹ Back, Forward ›, I don't know, the end screens, secured), and the
   retired words absent from the page throughout.
 
-  It does NOT prove the server's arithmetic — durations, sittings, the
-  60-minute secure rule, completion writing the submission. Those are proved
-  on TEST with the real database (tools/mrb351_pupil_flow_live.py) and in
-  flashcard_engine_test.js.
+  ⊕ MRB-354 (2 Oct 2026) — secured/done/finish are rewritten: one got_it
+  rating, in any phase, in any sitting, secures a card (no pairing, no
+  second-sitting gap); the writing pass follows the same rule as review (no
+  forced review pass once every card is secured); "Got it" is "Secured"
+  everywhere; Forward › sits beside ‹ Back. The engine computes this itself
+  from the pupil's own rows, never from the stand-in server's own (still OLD
+  two-sitting rule) `secured`/`known` counts — this file's stand-in keeps
+  that old arithmetic ON PURPOSE, to prove the page never reads it.
+
+  It does NOT prove the server's arithmetic — durations, sittings,
+  completion writing the submission. Those are proved on TEST with the real
+  database (tools/mrb351_pupil_flow_live.py) and in flashcard_engine_test.js.
 """
 
 import argparse
@@ -90,7 +98,11 @@ FAKE = r"""
       if (e.type === "answer_submitted" && e.phase === "make") { c.made = true; if (c.mine == null) c.mine = e.answer; }
       if (e.type === "rated") {
         if (e.phase !== "make" || c.made) {
-          S.rows.push({id: e.id, card_id: c.id, rating: e.rating, phase: e.phase, rated_at: e.at});
+          // ⊕ MRB-354 — session_id is the real grouping key the pupil-side
+          // engine now secures by; S.sittings already IS this stand-in's
+          // sitting id.
+          S.rows.push({id: e.id, card_id: c.id, rating: e.rating, phase: e.phase, rated_at: e.at,
+                       session_id: "s" + S.sittings});
         }
         c.last = e.rating;
         if (e.rating === "got_it") {
@@ -147,7 +159,8 @@ LOAD = r"""
 """
 
 RETIRED = ("FOR NOW", "Go again", "Made ", "later on", "Finish for now", "Compare it yourself",
-           "Not quite", "Keep revising", "YOUR DECK IS READY", "DECK SECURED", "right this time")
+           "Not quite", "Keep revising", "YOUR DECK IS READY", "DECK SECURED", "right this time",
+           "Got it", "secured so far")   # ⊕ MRB-354 (2 Oct 2026)
 
 FAILS = []
 
@@ -405,9 +418,16 @@ def run(width, height, kb, shots):
             s = P.st()
             check(s["focused"] and s["typing"] == "1", "keyboard up: the dialog goes compact (data-hw-typing=1)")
             up = P.q(CARD_JS)
-            check(120 - 0.5 <= up["card"] <= max(120, 0.34 * up["vv"]) + 0.5,
-                  "%d×%d keyboard up: the card is 120px to 34%% of the visual height (card %.1f, visual %d)"
-                  % (width, height, up["card"], up["vv"]))
+            # ⊕ MRB-354 unit B commander follow-up — see `run_resizes_content`
+            # for the full reasoning: the card no longer has a fixed 120px
+            # floor under a keyboard, by design (a short card hands the room
+            # it doesn't need straight to the box). This card's question is
+            # long enough that it still lands above 120 here, which is why
+            # this particular case didn't itself go red — but the assertion
+            # must not claim a floor the product no longer has.
+            check(40 - 0.5 <= up["card"] <= max(120, 0.34 * up["vv"]) + 0.5,
+                  "%d×%d keyboard up: the card is at least 40px, at most 120px or 34%% of the visual height "
+                  "(card %.1f, visual %d)" % (width, height, up["card"], up["vv"]))
             P.keyboard(False)
             down = P.q(CARD_JS)
             check(down["typing"] is None and abs(down["card"] - rest["card"]) <= 0.5 and abs(down["strip"] - rest["strip"]) <= 0.5,
@@ -432,7 +452,9 @@ def run(width, height, kb, shots):
             check(s["flipped"] == "1" and s["rating"] and not s["writing"],
                   "Check turns the card to the model answer and shows the three ratings")
             check(s["chip"] == "Right" and s["pressed"] == ["got_it"],
-                  "state C: chip 'Right', Got it filled (got %r %r)" % (s["chip"], s["pressed"]))
+                  "state C: chip 'Right', the got_it button filled (got %r %r)" % (s["chip"], s["pressed"]))
+            check(P.q("document.querySelector('[data-hw=\"got_it\"]').textContent.trim()") == "Secured",
+                  "⊕ MRB-354 — the rating button reads 'Secured', never 'Got it'")
             check("newton" in (s["mine"] or "") and s["back_"] == "The newton (N)", "the pupil's answer under the model answer")
             check(s["typing"] is None, "keyboard gone: compact mode off")
             P.shot("C-verdict-right")
@@ -489,6 +511,19 @@ def run(width, height, kb, shots):
             check(s["front"] == "What is the formula of water?" and s["writing"] and s["draft"] == "made of hydrogen and oxygen",
                   "‹ Back: card 2 in state A with the earlier answer in the box (got %r)" % s["draft"])
             check(s["progress"] == "1 of 5 right", "the count holds until the card is re-rated")
+            check(P.q("!!document.querySelector('[data-hw=\"forward\"]')"),
+                  "⊕ MRB-354 — Forward › sits beside ‹ Back once a step back has been taken")
+            P.click('[data-hw="forward"]')
+            s = P.st()
+            check(s["front"] == "What is weight?" and s["writing"] and s["draft"] == "gravity",
+                  "Forward ›: back up to card 3, state A, its earlier answer intact, no rating changed (got %r)"
+                  % s["draft"])
+            check(not P.q("!!document.querySelector('[data-hw=\"forward\"]')"),
+                  "Forward › is hidden again on the newest card (the frontier)")
+            P.click('[data-hw="back"]')
+            s = P.st()
+            check(s["front"] == "What is the formula of water?" and s["draft"] == "made of hydrogen and oxygen",
+                  "‹ Back again: card 2, in state A, with its own earlier answer (got %r)" % s["draft"])
             P.shot("Back-card-2")
             P.type("water")
             P.click('[data-hw="check"]')
@@ -558,28 +593,87 @@ def run(width, height, kb, shots):
             P.click('[data-hw="got_it"]')
             settle(0.8)
             s = P.st()
-            check(s["end1"] == "4 of 5 right" and s["end2"] is None,
-                  "writing pass end screen: '4 of 5 right', no line 2 (got %r / %r)" % (s["end1"], s["end2"]))
-            check(s["again"] == "Revise flashcards one more time" and s["done"] is None and s["endHint"] is None
-                  and s["retryPass"] is None,
-                  "writing pass: the button is 'Revise flashcards one more time'")
-            check(not s["stripShown"], "the strip steps aside on the end screen (its numbers would repeat)")
+            # ⊕ MRB-354 — c1 (water) was corrected to Wrong/Not yet via ‹ Back
+            # earlier and never got_it since: it is the one card NOT secured.
+            # The writing pass follows the SAME rule as review now: not all
+            # secured → ONE button, Try again (no forced review pass).
+            check(s["end1"] == "4 of 5 secured" and s["end2"] is None,
+                  "writing pass end screen: '4 of 5 secured' (got %r / %r)" % (s["end1"], s["end2"]))
+            check(s["retryPass"] == "Try again" and s["done"] is None and s["again"] is None
+                  and s["endHint"] is None,
+                  "writing pass, not all secured: ONE button Try again, no forced review pass (MRB-354)")
+            # ⊕ MRB-354 — a "retry" end screen (unlike "done") carries no
+            # strip title (hwEndDone-only), but the strip itself stays on
+            # screen for Close and the segmented bar, exactly as the review
+            # mode's own leftovers screen does further down this file — the
+            # writing pass never reached this screen before MRB-354 (it only
+            # ever ended on "again"), so this is new ground, not a changed
+            # assertion.
+            check(s["stripShown"] and not s["chipsShown"],
+                  "leftovers screen: the strip stays (Close + the segmented bar), no title, no chips yet")
             ev = P.q("window.__FC_FAKE__.events")
-            check(not any(e["type"] == "session_finish" for e in ev), "the writing pass does not end the sitting")
+            check(not any(e["type"] == "session_finish" for e in ev), "the leftovers screen does not end the sitting")
             idk_ev = [e for e in ev if e["type"] == "answer_submitted" and e.get("card", "").endswith("04")]
             check([bool(e.get("idk")) for e in idk_ev][:2] == [True, False] and idk_ev[1].get("own_words") is True,
                   "events: 'I don't know' (idk) then the own words (own_words)")
             P.no_retired("writing end screen")
             P.shot("End-writing")
 
+            # Try again RETYPES the leftover (c1) — stays in the writing
+            # stage, never a review of it.
+            P.click('[data-hw="retry-pass"]')
+            s = P.st()
+            check(s["writing"] and s["front"] == "What is the formula of water?",
+                  "Try again on a writing pass retypes c1, in state A (got %r)" % s["front"])
+            P.keyboard(True)
+            P.type("h2o")
+            P.click('[data-hw="check"]')
+            P.keyboard(False)
+            # ⊕ MRB-354 — `[data-hw="chip"]` is ambiguous during an ACTIVE
+            # retry pass: the numbered to-come chips in the strip (§13.1.10)
+            # use the SAME `data-hw="chip"` as the verdict chip on a revealed
+            # card, and `document.querySelector` returns the strip's (DOM
+            # order). This scenario (retyping during a retry) never existed
+            # before MRB-354 — the writing pass never retried — so it never
+            # surfaced; read the suggested rating instead, which is
+            # unambiguous (`[data-hw="rate"] button[aria-pressed]`).
+            s = P.st()
+            check(s["pressed"] == ["got_it"], "retyped correctly this time: Right, Secured filled (got %r)" % s["pressed"])
+            P.click('[data-hw="got_it"]')
+            settle(0.8)
+            s = P.st()
+            check(s["end1"] == "5 of 5 secured" and s["end2"] is None,
+                  "securing the last card from the writing pass alone finishes the deck: '5 of 5 secured'")
+            check(s["done"] == "Done" and s["again"] == "Revise flashcards one more time"
+                  and s["retryPass"] is None,
+                  "all secured → Done, plus the quieter 'Revise flashcards one more time' secondary — together")
+            ev = P.q("window.__FC_FAKE__.events")
+            check(sum(1 for e in ev if e["type"] == "session_finish") == 1,
+                  "securing the last card (via a retry) ends the sitting, once — no review pass was ever needed")
+            check(all(e.get("via") in ("auto", "tap") for e in ev if e["type"] == "rated"), "every rating says auto/tap")
+            check(not any("think_ms" in e or "active_ms" in e for e in ev), "no event carries a duration")
+            ids = [e["id"] for e in ev]
+            check(len(ids) == len(set(ids)), "every event has its own id (idempotent resend)")
+            P.no_retired("writing-pass Done screen")
+            P.shot("End-writing-done")
+
+            # The voluntary "Revise flashcards one more time": a FULL pass of
+            # the whole deck, in review stage — it never un-secures anything.
             P.click('[data-hw="again"]')
             s = P.st()
             check(s["progress"] == "0 of 5 right" and s["secured"] is None and s["hint"] is None,
-                  "review pass: '0 of 5 right' and the bar only — no secured line, no helper mid-pass "
+                  "Revise: '0 of 5 right' and the bar only — no secured line, no helper mid-pass "
                   "(got %r %r %r)" % (s["progress"], s["secured"], s["hint"]))
-            check(s["front"] == "What is the formula of water?", "the review pass starts on the Not yet card")
+            # ⊕ MRB-354 — a review-stage pass is still "type an answer, Check,
+            # rate" (state A), the SAME mechanic as the writing pass; what
+            # changes between the two modes is the PASS STRUCTURE (two passes
+            # vs one), never "typing vs flip-and-rate". `e.stage` (not the
+            # DOM) is the real signal that this is the voluntary full-deck
+            # revise, not a continuation of the writing pass.
+            check(P.q("window.MRBHomework.active.stage") == "review" and s["writing"],
+                  "Revise: a fresh REVIEW-STAGE pass, still state A (type, Check) like any pass")
             P.keyboard(True)
-            P.boxes("review pass, state A")
+            P.boxes("revise pass, state A")
             s = P.st()
             check(s["hint"] is None or P.q("document.querySelector('[data-hw=\"strip\"] [data-hw=\"hint\"]').getBoundingClientRect().height") == 0,
                   "compact: the helper line hides while typing")
@@ -595,19 +689,19 @@ def run(width, height, kb, shots):
                 P.click('[data-hw="got_it"]')
             settle(0.8)
             s = P.st()
-            check(s["end1"] == "5 of 5 right" and s["end2"] == "4 of 5 secured so far",
-                  "make's review pass all right: '5 of 5 right' / '4 of 5 secured so far' (got %r / %r)"
+            check(s["end1"] == "5 of 5 secured" and s["end2"] is None,
+                  "revise pass all right: still '5 of 5 secured' — nothing was un-secured (got %r / %r)"
                   % (s["end1"], s["end2"]))
-            check(s["done"] == "Done" and s["again"] is None and s["retryPass"] is None
-                  and s["endHint"] == "Revise flashcards one more time",
-                  "all right, not all secured: ONE button Done, with 'Revise flashcards one more time' above it")
+            check(s["done"] == "Done" and s["again"] == "Revise flashcards one more time" and s["retryPass"] is None,
+                  "Done + the Revise secondary, still together")
             ev = P.q("window.__FC_FAKE__.events")
-            check(sum(1 for e in ev if e["type"] == "session_finish") == 1, "the all-right pass ended the sitting, once")
+            check(sum(1 for e in ev if e["type"] == "session_finish") == 2,
+                  "two all-secured endings across this phone's visit so far (writing-retry, then this revise)")
             check(all(e.get("via") in ("auto", "tap") for e in ev if e["type"] == "rated"), "every rating says auto/tap")
             check(not any("think_ms" in e or "active_ms" in e for e in ev), "no event carries a duration")
             ids = [e["id"] for e in ev]
             check(len(ids) == len(set(ids)), "every event has its own id (idempotent resend)")
-            P.no_retired("make all-right end screen")
+            P.no_retired("make all-secured end screen")
             P.shot("End-review")
             check(not s["overflowX"], "no sideways scroll at %dpx" % width)
             P.click('[data-hw="done"]')
@@ -635,9 +729,9 @@ def run(width, height, kb, shots):
                 P.click('[data-hw="not_yet"]' if f in wrong else '[data-hw="got_it"]')
             settle(0.8)
             s = P.st()
-            check(s["end1"] == "3 of 5 right" and s["retryPass"] == "Try again" and s["end2"] is None
+            check(s["end1"] == "3 of 5 secured" and s["retryPass"] == "Try again" and s["end2"] is None
                   and s["done"] is None and s["again"] is None and s["endHint"] is None,
-                  "leftovers: '3 of 5 right' and ONE button 'Try again', no line 2 (got %r %r %r)"
+                  "leftovers: '3 of 5 secured' and ONE button 'Try again', no secondary (got %r %r %r)"
                   % (s["end1"], s["retryPass"], s["end2"]))
             ev = P.q("window.__FC_FAKE__.events")
             check(not any(e["type"] == "session_finish" for e in ev), "the leftovers screen does not end the sitting")
@@ -696,7 +790,9 @@ def run(width, height, kb, shots):
                 P.click('[data-hw="got_it"]')
             settle(0.6)
             s = P.st()
-            check(s["end1"] == "4 of 5 right" and s["retryPass"] == "Try again", "the redone card is left: Try again (got %r)" % s["end1"])
+            # ⊕ MRB-354 — the redo downgraded this card to not_yet in the SAME
+            # still-open sitting, so it is genuinely not secured right now.
+            check(s["end1"] == "4 of 5 secured" and s["retryPass"] == "Try again", "the redone card is left: Try again (got %r)" % s["end1"])
             P.click('[data-hw="retry-pass"]')
             s = P.st()
             check(s["front"] == order[first_green] and s["greens"] == 4, "a second Try again: only the still-grey card")
@@ -705,9 +801,10 @@ def run(width, height, kb, shots):
             P.click('[data-hw="got_it"]')
             settle(0.8)
             s = P.st()
-            check(s["end1"] == "5 of 5 right" and s["done"] == "Done" and s["end2"] == "4 of 5 secured so far"
-                  and s["retryPass"] is None and s["endHint"] == "Revise flashcards one more time",
-                  "all right: Done, line 2 from the server (got %r %r %r)" % (s["end1"], s["done"], s["end2"]))
+            check(s["end1"] == "5 of 5 secured" and s["done"] == "Done" and s["end2"] is None
+                  and s["retryPass"] is None and s["again"] == "Revise flashcards one more time",
+                  "all secured: Done, plus the quieter Revise secondary, computed by the device (got %r %r %r)"
+                  % (s["end1"], s["done"], s["again"]))
             ev = P.q("window.__FC_FAKE__.events")
             check(sum(1 for e in ev if e["type"] == "session_finish") == 1,
                   "ONE session_finish across the pass and both Try agains")
@@ -909,8 +1006,24 @@ def run_resizes_content(width, height, kb, shots):
             check(bx["tIn"] and bx["checkVisible"] and bx["qIn"],
                   "resizes-content %d: question, box and Check inside the %dpx left (box %s, vv %s)"
                   % (width, vis, bx["t"], bx["vv"]))
-            check(c["card"] >= 120 - 0.5 and c["card"] <= max(120, 0.34 * vis) + 0.5,
-                  "resizes-content %d: the card is 120px, or up to 34%% of the visual height (%.1f)" % (width, c["card"]))
+            # ⊕ MRB-354 unit B commander follow-up (2 Oct 2026) — this used to
+            # read `c["card"] >= 120 - 0.5` (a FIXED floor, regardless of
+            # content). That was the exact defect the follow-up fixed: a
+            # 120px floor padded a short card past its own content and
+            # starved the box of room it would otherwise have had, even
+            # though `fitBox()` could not know to reclaim it. The card now
+            # gets `min(content, available − a ~96px box floor)`, so a short
+            # review card (this one, 97px) hands the extra room straight to
+            # the box instead — `box {'h': 96}` just above, at its new
+            # floor, is that room landing exactly where it should. The real
+            # invariants are the ones already asserted around this line:
+            # compact mode on, question+box+Check all inside the visible
+            # 336px, the strip back once the keyboard goes down. What's left
+            # to check about the card itself is only the UPPER bound and
+            # that it never collapses to nothing.
+            check(c["card"] >= 40 - 0.5 and c["card"] <= max(120, 0.34 * vis) + 0.5,
+                  "resizes-content %d: the card is at least 40px, at most 120px or 34%% of the visual height (%.1f)"
+                  % (width, c["card"]))
             shot(page, shots, "D-android-rc-%d-keyboard-up" % width)
             page.eval("document.activeElement.blur()")
             page.send("Emulation.setDeviceMetricsOverride",

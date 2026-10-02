@@ -163,12 +163,15 @@
 
   function rank(p) { return (STATUS[p.status] || STATUS.not_started).rank; }
 
+  /* ⊕ MRB-354 §6 — every sort/display reads `p.known`, the RPC's secured
+     count under the new rule (correct before and after the parked SQL);
+     the OLD two-sitting `p.secured` is never shown or sorted on. */
   function sortValue(p, key) {
     switch (key) {
       case "pupil": return ((p.last_name || "") + " " + (p.first_name || "") + " " + (p.display_name || "")).toLowerCase();
-      case "status": return rank(p) * 100000 + (p.secured || 0);
+      case "status": return rank(p) * 100000 + (p.known || 0);
       case "made": return p.made == null ? null : p.made;
-      case "secured": return p.secured == null ? null : p.secured * 1000 + (p.known || 0);
+      case "secured": return p.known == null ? null : p.known;
       case "sittings": return p.sittings == null ? null : p.sittings;
       case "time": return p.active_ms == null ? null : p.active_ms;
       case "last": return p.last_active ? Date.parse(p.last_active) : null;
@@ -179,7 +182,7 @@
   function defaultCompare(a, b) {
     var r = rank(a) - rank(b);
     if (r) { return r; }
-    var s = (a.secured || 0) - (b.secured || 0);
+    var s = (a.known || 0) - (b.known || 0);
     if (s) { return s; }
     return sortValue(a, "pupil") < sortValue(b, "pupil") ? -1
          : (sortValue(a, "pupil") > sortValue(b, "pupil") ? 1 : 0);
@@ -205,7 +208,7 @@
       case "pupil": return nameOf(p);
       case "status": return (STATUS[p.status] || STATUS.not_started).label;
       case "made": return (p.made || 0) + "/" + n;
-      case "secured": return (p.secured || 0) + "/" + n;
+      case "secured": return (p.known || 0) + "/" + n;
       case "sittings": return String(p.sittings || 0);
       case "time": return p.active_ms ? clock(p.active_ms) : "—";
       case "last": return relative(p.last_active, nowMs);
@@ -219,15 +222,14 @@
   }
 
   /* The table as displayed, in the order displayed. `Last active` is the
-     London clock rather than "3 min ago", which means nothing in a file. */
+     London clock rather than "3 min ago", which means nothing in a file.
+     ⊕ MRB-354 §6 — the "Known once" column is GONE (completion_rule no
+     longer means anything to secured/done, so the distinction it existed to
+     show is gone too); the Secured column itself is `p.known`. */
   function buildCsv(data, rows) {
     var a = data.assignment || {}, n = data.n || 0;
     var cols = columnsFor(a.mode);
-    var head = [];
-    cols.forEach(function (c) {
-      head.push(c.label);
-      if (c.key === "secured" && a.rule === "secure") { head.push("Known once"); }
-    });
+    var head = cols.map(function (c) { return c.label; });
     var lines = [head.map(csvEscape).join(",")];
     rows.forEach(function (p) {
       var out = [];
@@ -237,7 +239,6 @@
            the Time cell's own CSV text, as it does on screen. */
         else if (c.key === "time") { out.push((p.active_ms ? clock(p.active_ms) : "") + (p.rushed ? " (rushed)" : "")); }
         else { out.push(cellText(p, c.key, n, a.mode, a.rule)); }
-        if (c.key === "secured" && a.rule === "secure") { out.push((p.known || 0) + "/" + n); }
       });
       lines.push(out.map(csvEscape).join(","));
     });
@@ -360,32 +361,33 @@
     pumpDetailQueue();
   }
 
-  /* The five counts for one pupil's strip, best state first. Real data
-     when `flashcard_pupil_detail` has landed for their CURRENT sig;
-     otherwise the count-based fallback (secured/known from `flashcard_
-     progress` only — Nearly and Not yet can't be told apart from Not
-     seen with counts alone, so both read 0 rather than guess). */
+  /* ⊕ MRB-354 (2 Oct 2026) — FOUR counts for one pupil's strip, best state
+     first ("Got it" is gone — a card secures the moment any rating of it is
+     got_it, so there is no separate "got it but not yet secured" bucket any
+     more). Real data when `flashcard_pupil_detail` has landed for their
+     CURRENT sig; otherwise the count-based fallback (`p.known` from
+     `flashcard_progress` only — Nearly and Not yet can't be told apart from
+     Not seen with counts alone, so both read 0 rather than guess). */
   function stripCounts(p, n) {
     if (!p.sittings) {
-      return { secured: 0, got_it: 0, nearly: 0, not_yet: 0, unseen: n };
+      return { secured: 0, nearly: 0, not_yet: 0, unseen: n };
     }
     var cards = DETAIL_CACHE[p.pupil_id];
     if (cards) {
       var FB = window.MRBFlashcardBreakdown;
-      var counts = { secured: 0, got_it: 0, nearly: 0, not_yet: 0, unseen: 0 };
+      var counts = { secured: 0, nearly: 0, not_yet: 0, unseen: 0 };
       cards.forEach(function (c) {
         var st = (FB && FB.cardState) ? FB.cardState(c) : { key: "unseen" };
         var key = Object.prototype.hasOwnProperty.call(counts, st.key) ? st.key : "unseen";
         counts[key] += 1;
       });
-      var counted = counts.secured + counts.got_it + counts.nearly + counts.not_yet + counts.unseen;
+      var counted = counts.secured + counts.nearly + counts.not_yet + counts.unseen;
       counts.unseen += Math.max(0, n - counted);
       return counts;
     }
-    var secured = Math.max(0, Math.min(p.secured || 0, n));
-    var got = Math.max(0, Math.min((p.known || 0) - secured, n - secured));
-    var unseen = Math.max(0, n - secured - got);
-    return { secured: secured, got_it: got, nearly: 0, not_yet: 0, unseen: unseen };
+    var secured = Math.max(0, Math.min(p.known || 0, n));
+    var unseen = Math.max(0, n - secured);
+    return { secured: secured, nearly: 0, not_yet: 0, unseen: unseen };
   }
 
   function nowIso() { return new Date().toISOString(); }
@@ -500,35 +502,33 @@
     return c;
   }
 
-  /* ⊕ Design port A, 30 Sep 2026; five-state follow-up same day — a
-     per-card state strip, sorted best to worst, in place of the
-     two-segment progress bar (Design's NOTES.md "✓4 ≈3 ×1 ○2 became the
-     Secured column… each pupil gets one strip with a cell per card").
-     `data-known` is UNCHANGED (still read by flashcard_progress_drive.py)
-     so the "known once" tooltip survives. Five states now, as drawn —
-     `stripCounts` above (real detail when cached, the 3-bucket fallback
+  /* ⊕ MRB-354 (2 Oct 2026) — a per-card state strip, sorted best to worst,
+     FOUR states now ("Got it" is gone — a card secures on one rating, so
+     there is no separate "got it but not yet secured" bucket to show).
+     `stripCounts` above (real detail when cached, the count-based fallback
      otherwise) is the one place that decides the numbers; this function
-     only draws them, in the fixed best-to-worst cell order. */
-  function securedCell(p, n, rule) {
+     only draws them, in the fixed best-to-worst cell order. The number is
+     `p.known` — the RPC's `known`, which IS "secured" under the new rule,
+     correct before and after the parked SQL (§6). The completion-rule
+     ("Secure"/"Quick") distinction this cell used to show a tooltip for is
+     gone along with the rest of that choice (§7) — completion_rule no
+     longer means anything to secured/done. */
+  function securedCell(p, n) {
     var w = h("div", "fp-sec");
     var num = h("span", "fp-sec-n");
-    num.appendChild(document.createTextNode(String(p.secured || 0)));
+    num.appendChild(document.createTextNode(String(p.known || 0)));
     num.appendChild(h("small", null, "/" + n));
     w.appendChild(num);
     var c = stripCounts(p, n);
     var strip = h("span", "strip");
     strip.setAttribute("role", "img");
-    strip.setAttribute("aria-label", c.secured + " secured, " + c.got_it + " got it, " +
+    strip.setAttribute("aria-label", c.secured + " secured, " +
       c.nearly + " nearly, " + c.not_yet + " not yet, " + c.unseen + " not seen");
-    [["k-sec", c.secured], ["k-got", c.got_it], ["k-near", c.nearly],
+    [["k-sec", c.secured], ["k-near", c.nearly],
      ["k-no", c.not_yet], ["k-un", c.unseen]].forEach(function (pair) {
       for (var i = 0; i < pair[1]; i++) { strip.appendChild(h("i", pair[0])); }
     });
     w.appendChild(strip);
-    if (rule === "secure") {
-      w.title = (p.known || 0) + " known once";
-      w.setAttribute("data-known", String(p.known || 0));
-    }
     return w;
   }
 
@@ -596,7 +596,7 @@
         } else if (c.key === "status") {
           td.appendChild(statusChip(p.status));
         } else if (c.key === "secured") {
-          td.appendChild(securedCell(p, n, a.rule));
+          td.appendChild(securedCell(p, n));
         } else if (c.key === "time") {
           td.appendChild(document.createTextNode(cellText(p, c.key, n, a.mode, a.rule, nowMs)));
           /* ⊕ Design port A — Rushed is a small inline marker INSIDE the

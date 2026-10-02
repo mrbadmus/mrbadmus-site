@@ -754,9 +754,18 @@
      bell, reminders) already keys on that row, so one write fixes all of
      them. Idempotent: a row that already has `submitted_at` is NEVER
      touched — never downgraded, never re-stamped, whether it was written by
-     `flashcard_record`'s own (stricter, secured-everything) rule or by an
-     earlier run of this same code. A failed write (RLS, offline) breaks
-     nothing visible and simply retries on the next load (the heal). */
+     `flashcard_record`'s own rule or by an earlier run of this same code. A
+     failed write (RLS, offline) breaks nothing visible and simply retries
+     on the next load (the heal).
+
+     ⊕ MRB-354 (2 Oct 2026) — `finishedAt()` no longer needs two sittings or
+     a review phase: ONE got_it rating, in any phase, in any sitting,
+     secures a card, and "done" is every card secured. It is also no longer
+     a replay of `reconstruct()`'s round-aware walk — it is a flat fact over
+     `(card_id, session_id, phase)` groups, which is why every read below
+     now selects `session_id` alongside `rated_at`/`event_id`: without it,
+     a ‹ Back correction in one sitting could not be told apart from an
+     entirely different, later sitting's rating of the same card. */
 
   /* The server time of the rating that finished the pass: `flashcard_
      reviews.event_id` → `flashcard_events.server_at` (RLS: a pupil reads
@@ -891,7 +900,7 @@
     var rated = {}, reviewRows = {}, idOriginal = {};
     pagedRows(function () {
       return sb.from("flashcard_reviews")
-        .select("assignment_id, card_id, rating, phase, rated_at, event_id, id")
+        .select("assignment_id, card_id, rating, phase, rated_at, event_id, id, session_id")
         .eq("pupil_id", uid)
         .order("rated_at", { ascending: true }).order("id", { ascending: true });
     }).then(function (rows) {
@@ -1018,7 +1027,7 @@
           var cards = (state && state.cards) || [];
           if (!cards.length) { return false; }
           return sb.from("flashcard_reviews")
-            .select("card_id, rating, phase, rated_at, event_id, id")
+            .select("card_id, rating, phase, rated_at, event_id, id, session_id")
             .eq("assignment_id", id).eq("pupil_id", uid)
             .order("rated_at", { ascending: true }).order("id", { ascending: true })
             .then(function (r) {
@@ -1089,7 +1098,7 @@
        × / a reload / a dead phone / another device all land on the next
        card not done. */
     H.resumeRead = function (assignmentId) {
-      return sb.from("flashcard_reviews").select("card_id, rating, phase, rated_at, id")
+      return sb.from("flashcard_reviews").select("card_id, rating, phase, rated_at, id, session_id")
         .eq("assignment_id", assignmentId)
         .order("rated_at", { ascending: true }).order("id", { ascending: true })
         .then(function (r) {

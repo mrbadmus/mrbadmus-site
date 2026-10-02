@@ -119,7 +119,9 @@ function server(opts) {
         c.last = e.rating; S.sittingRatings[c.id + e.phase] = { rating: e.rating, phase: e.phase };
         // flashcard_reviews: one row per rating; a make rating only once the card is made
         if (e.phase !== "make" || c.made) {
-          S.rows.push({ id: e.id, card_id: c.id, rating: e.rating, phase: e.phase, rated_at: e.at });
+          // ⊕ MRB-354 — `session_id` is the real grouping key for secured
+          // now; `S.open` already IS this stand-in's sitting id.
+          S.rows.push({ id: e.id, card_id: c.id, rating: e.rating, phase: e.phase, rated_at: e.at, session_id: S.open });
         }
       }
       if (e.type === "session_finish") { S.history.push(S.sittingRatings); S.open = null; }
@@ -143,6 +145,13 @@ const FIVE = [
 ];
 
 async function fresh(opts) {
+  // ⊕ MRB-354 test-harness hardening — a straggling microtask/short-timer
+  // chain from the PREVIOUS test's flush() can still be in flight (it
+  // captured the OLD Api.transport, which is harmless to IT, but its own
+  // requeue (flushSoon(0)/(8000)) reads Api.transport FRESH when it later
+  // fires). Give any such chain a moment to settle against the transport
+  // that is still live for it, before `_reset()` swaps in a new one.
+  await tick(20);
   H._reset();
   localStorage.clear();
   const S = server(Object.assign({ mode: "review", rule: "secure", cards: FIVE }, opts || {}));
@@ -188,12 +197,14 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     answer(e, "f = ke"); e.rate("not_yet");
     answer(e, "vector"); e.rate("got_it");
     v = e.view();
-    check(v.phase === "end" && v.end && v.end.line1 === "2 of 5 right", "end screen line 1 '2 of 5 right' (" + (v.end && v.end.line1) + ")");
-    check(v.end.button === "retry" && v.end.buttonLabel === "Try again" && v.end.line2 === "" && v.end.helper === "",
-          "not all right: ONE button 'Try again', no line 2, no helper, nothing waits");
+    // ⊕ MRB-354 — the end screen is "N of M secured" (not "right"): c0 and
+    // c4 are got_it, nothing was ever secured before this pass, so 2 of 5.
+    check(v.phase === "end" && v.end && v.end.line1 === "2 of 5 secured", "end screen line 1 '2 of 5 secured' (" + (v.end && v.end.line1) + ")");
+    check(v.end.button === "retry" && v.end.buttonLabel === "Try again" && !v.end.secondary,
+          "not all secured: ONE button 'Try again', no secondary, nothing waits on the server");
     await e.flush(); await tick(5); await e.flush(); await tick(5);
     v = e.view();
-    check(v.end.line2 === "" && v.end.button === "retry", "the server's reply adds nothing to the leftovers screen");
+    check(v.end.line1 === "2 of 5 secured" && v.end.button === "retry", "the server's reply adds nothing to the leftovers screen");
     check(!S.events.some((x) => x.type === "session_finish"), "a pass that is not all right does NOT end the sitting");
     const rated = S.events.filter((x) => x.type === "rated");
     check(rated.length === 5 && rated.every((x) => x.via === "auto" || x.via === "tap"), "every rating says how it was chosen (via)");
@@ -262,59 +273,64 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(S.rows.length === 1, "the stand-in kept the one rating as a flashcard_reviews row");
   }
 
-  // ── 6. make mode: the writing pass, its end screen, the review pass ──
+  // ── 6. ⊕ MRB-354 — make mode: the writing pass follows the SAME rule as
+  //      review (all secured → Done; else Try again on the leftovers,
+  //      which stays in the WRITING stage — retyping, not reviewing). A
+  //      card secured during the writing pass alone needs no review pass
+  //      at all; "Revise flashcards one more time" afterward is the only
+  //      way into one, voluntarily, over the whole deck. ──────────────────
   {
     const { S, e } = await fresh({ mode: "make", cards: FIVE.slice(0, 3) });
     let v = e.view();
     check(v.phase === "make" && v.headline === "0 of 3 right", "make mode opens on the writing pass");
-    answer(e, "newton"); e.rate("got_it");
-    e.idk(); answer(e, "water"); e.rate("not_yet");     // I don't know → own words → Wrong
-    answer(e, "gravity"); e.rate("got_it");
+    answer(e, "newton"); e.rate("got_it");                 // c0 secures in the writing pass
+    answer(e, "water"); e.rate("not_yet");                 // c1 (model "H2O") is wrong
+    answer(e, "gravity"); e.rate("got_it");                // c2 secures too ("gravity" is a word of its model answer)
     v = e.view();
-    check(v.phase === "make" && v.card.id === "c1", "the I-don't-know card comes round once more in the writing pass");
-    answer(e, "water"); e.rate("not_yet");
-    v = e.view();
-    check(v.phase === "end" && v.end.line1 === "2 of 3 right", "writing pass end screen: '2 of 3 right'");
-    check(v.end.button === "again" && v.end.buttonLabel === "Revise flashcards one more time" && v.end.helper === "" && v.end.line2 === "",
-          "writing pass: the button is 'Revise flashcards one more time', straight away");
-    check(!S.events.concat(e.pending).some((x) => x.type === "session_finish"), "the writing pass does NOT end the sitting");
+    check(v.phase === "end" && v.end.line1 === "2 of 3 secured", "writing pass end screen: '2 of 3 secured' (2 cards got it)");
+    check(v.end.button === "retry" && !v.end.secondary,
+          "writing pass, not all secured: Try again, no secondary (MRB-354 — no forced review pass)");
+    check(!S.events.concat(e.pending).some((x) => x.type === "session_finish"), "the leftovers screen does NOT end the sitting");
     await e.flush(); await tick(5);
-    check(S.cards.every((c) => c.made) && S.cards[1].mine === "I don't know", "every card made; I don't know is what the teacher sees");
-    e.again();
-    v = e.view();
-    check(v.phase === "review" && v.headline === "0 of 3 right", "the review pass opens at '0 of 3 right' (A7), same sitting");
-    check(v.securedLine === "" && v.helper === "", "mid-pass the strip is the headline and the bar only: no secured line, no helper (M-2)");
-    check(e.view().card.id === "c1", "the review pass starts on the Not yet card");
-    for (let k = 0; k < 3; k++) {
-      const id = e.view().card.id;
-      answer(e, id === "c1" ? "water" : "no idea at all really");
-      e.rate(id === "c1" ? "not_yet" : "got_it");
-    }
-    v = e.view();
-    check(v.end.button === "retry" && !S.events.concat(e.pending).some((x) => x.type === "session_finish"),
-          "make's review pass with a card left: Try again, sitting still open");
+    check(S.cards.every((c) => c.made), "every card made, even the one left not secured");
     e.retry();
-    check(e.view().card.id === "c1" && e.view().headline === "2 of 3 right", "Try again replays only c1, opening at '2 of 3 right'");
-    answer(e, "h2o"); e.rate("got_it");
+    v = e.view();
+    check(v.phase === "make" && e.passIds.join() === "c1" && v.card.id === "c1",
+          "Try again on a writing pass RETYPES the leftover (stage stays make), not a review of it");
+    answer(e, "h2o"); e.rate("got_it");                    // now every card has a got_it rating
     await e.flush(); await tick(5); await e.flush(); await tick(5);
     v = e.view();
-    check(S.events.filter((x) => x.type === "session_finish").length === 1, "the all-right pass ends the sitting, once");
-    check(v.end.line1 === "3 of 3 right" && v.end.line2 === "2 of 3 secured so far", "two cards secure (c1 had no make Got it): " + v.end.line2);
-    check(v.end.button === "done" && v.end.helper === "Revise flashcards one more time", "all right, secured < n → Done with the helper line");
+    check(S.events.filter((x) => x.type === "session_finish").length === 1,
+          "securing the last card ends the sitting, once — no review pass was ever needed");
+    check(v.end.line1 === "3 of 3 secured" && v.end.button === "done" && v.end.secondary,
+          "all three secured from the writing pass alone → Done + the Revise secondary");
+    // the voluntary "Revise flashcards one more time": a FULL pass of the
+    // whole deck, in review stage — it never un-secures anything.
+    e.again();
+    v = e.view();
+    check(v.phase === "review" && v.headline === "0 of 3 right" && v.secured === 3,
+          "Revise: a fresh review pass of the whole deck; still 3 of 3 secured throughout");
+    answer(e, "no idea at all really"); e.rate("not_yet");  // a deliberately wrong rating this time
+    v = e.view();
+    check(v.secured === 3, "rating a card badly on a voluntary revise does not un-secure it (different sitting's group)");
+    await e.flush(); await tick(5); await e.flush(); await tick(5);
   }
 
-  // ── 7. end screen: all secured → Done; offline; all right, not secured ─
+  // ── 7. ⊕ MRB-354 — end screen: ONE rating secures a card at once (no
+  //      second sitting); all secured → Done + the quieter secondary;
+  //      reopening an already-fully-secured deck skips straight to Done,
+  //      never a fresh pass; the rule (secure/quick) changes nothing. ────
   {
     const { e } = await fresh({ rule: "quick", cards: FIVE.slice(0, 2) });
     answer(e, "newton"); e.rate("got_it");
     answer(e, "h2o"); e.rate("got_it");
     let v = e.view();
-    check(v.end.button === "done" && v.end.line2 === "", "all right: Done at once; line 2 waits for the server (A8a)");
+    check(v.end.line1 === "2 of 2 secured" && v.end.button === "done" && v.end.secondary,
+          "both right, this is the FIRST sitting ever → Done at once (no second sitting needed, rule ignored)");
+    // drain fully before the next fresh() reassigns Api.transport — a
+    // flush() queued behind an in-flight one re-sends via flushSoon(0),
+    // which would otherwise land on the NEXT test's stub.
     await e.flush(); await tick(5); await e.flush(); await tick(5);
-    v = e.view();
-    check(v.end.line2 === "2 of 2 secured so far" && v.end.button === "done" && v.end.helper === "",
-          "everything secured → 'Done', no helper line");
-    check(v.securedLine === "", "rule quick shows no 'secured' line in the strip");
 
     const r = await fresh({ cards: FIVE.slice(0, 2) });
     answer(r.e, "newton"); r.e.rate("got_it");
@@ -322,17 +338,19 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     answer(r.e, "h2o"); r.e.rate("got_it");
     await r.e.flush(); await tick(5);
     v = r.e.view();
-    check(v.end.offline && v.end.line2 === "", "offline at the end: SAVED ON THIS PHONE in place of line 2, never a stale number");
+    check(v.end.line1 === "2 of 2 secured" && v.end.offline,
+          "offline at the end: still shows the secured count the device already knows, never waits on the server");
 
-    const h = await fresh({ cards: FIVE.slice(0, 2) });
-    answer(h.e, "newton"); h.e.rate("got_it");
-    answer(h.e, "h2o"); h.e.rate("got_it");
-    await h.e.flush(); await tick(5); await h.e.flush(); await tick(5);
-    v = h.e.view();
-    check(v.end.button === "done" && v.end.line2 === "0 of 2 secured so far" && v.end.helper === "Revise flashcards one more time",
-          "all right, nothing secured yet → Done + 'Revise flashcards one more time' (later)");
-    check(Object.keys(store).every((k) => k.indexOf(".end.") < 0), "no end time is kept on the device any more");
-    check(v.securedLine === "" && v.helper === "", "the strip's lines are empty; the end screen carries them");
+    // ⊕ MRB-354 — reopening a deck that is ALREADY all secured (every card
+    // got_it in an earlier, closed sitting) lands straight on Done — never
+    // a fresh pass — and the secondary is still offered.
+    r.S.fail = false;
+    await r.e.flush(); await tick(5);
+    const again = await H.open("A");
+    v = again.view();
+    check(v.phase === "end" && v.end.button === "done" && v.end.secondary && v.end.line1 === "2 of 2 secured",
+          "reopening an already-fully-secured deck: straight to Done, no fresh pass");
+    check(!again.passIds.length, "…with no pass ever built (the shortcut in start())");
   }
 
   // ── 8. × after one Check ends the sitting (A13) ──────────────────────
@@ -435,8 +453,8 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(v.allowed.got_it && v.suggest === "got_it", "on the replay a Right answer may be Got it");
     e.rate("got_it");
     v = e.view();
-    check(v.phase === "end" && v.end.line1 === "5 of 5 right" && v.headline === "5 of 5 right",
-          "the replay's rating is the pass rating; headline counts 5, not 6");
+    check(v.phase === "end" && v.end.line1 === "5 of 5 secured" && v.headline === "5 of 5 right",
+          "the headline counts THIS pass (5, not 6 — the replay); the end screen counts secured (also 5)");
     const subs = evs().filter((x) => x.type === "answer_submitted" && x.card === "c1");
     check(subs.length === 3 && subs[0].idk && subs[0].answer === "I don't know" && subs[1].own_words && subs[1].answer === "h2o",
           "events: answer_submitted 'I don't know' (idk), then the own words (own_words)");
@@ -499,7 +517,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(e.view().card.id === "c0", "c0 comes round");
     e.idk(); e.setDraft("newton"); e.check(); e.rate("nearly");
     const v = e.view();
-    check(v.phase === "end" && e.passIds.length === 3 && v.end.line1 === "1 of 2 right", "second I don't know: no third showing, the pass ends");
+    check(v.phase === "end" && e.passIds.length === 3 && v.end.line1 === "1 of 2 secured", "second I don't know: no third showing, the pass ends");
   }
 
   // ── 14 + 15. Try again: only the leftovers, the chips, a redo ────────
@@ -512,7 +530,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     answer(e, "stretch"); e.rate("not_yet");          // c3 grey
     answer(e, "vector"); e.rate("got_it");            // c4 green
     let v = e.view();
-    check(v.end.line1 === "3 of 5 right" && v.end.button === "retry" && v.end.line2 === "", "leftovers: '3 of 5 right', Try again, no line 2");
+    check(v.end.line1 === "3 of 5 secured" && v.end.button === "retry" && !v.end.secondary, "leftovers: '3 of 5 secured', Try again, no secondary");
     check(!evs().some((x) => x.type === "session_finish"), "no session_finish on the leftovers screen");
     e.retry();
     v = e.view();
@@ -543,14 +561,17 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     answer(e, "h2o"); e.rate("got_it");
     answer(e, "f = ke"); e.rate("got_it");
     v = e.view();
-    check(v.end.line1 === "4 of 5 right" && v.end.button === "retry", "c2 is left: Try again again");
+    // ⊕ MRB-354 — c2 was downgraded to not_yet via the redo, in the SAME
+    // still-open sitting: it is genuinely not secured right now (only
+    // c0/c1/c3/c4 are), not merely "not Got it in this pass".
+    check(v.end.line1 === "4 of 5 secured" && v.end.button === "retry", "c2 is left: Try again again");
     e.retry();
     check(e.passIds.join() === "c2" && e.view().headline === "4 of 5 right", "a second retry replays only the still-grey card");
     answer(e, "gravity"); e.rate("got_it");
     await e.flush(); await tick(5); await e.flush(); await tick(5);
     v = e.view();
-    check(v.end.line1 === "5 of 5 right" && v.end.button === "done" && v.end.line2 === "0 of 5 secured so far",
-          "finishing all right: Done, line 2 from the server");
+    check(v.end.line1 === "5 of 5 secured" && v.end.button === "done" && v.end.secondary,
+          "finishing all secured: Done + the Revise secondary, computed by the device, not the server");
     check(S.events.filter((x) => x.type === "session_finish").length === 1, "exactly ONE session_finish across the pass and both retries");
     const c2 = S.events.filter((x) => x.type === "rated" && x.card === "c2").map((x) => x.rating);
     check(c2.join() === "got_it,not_yet,got_it", "every rating of the redone card is an event (" + c2 + ")");
@@ -592,7 +613,11 @@ function answer(e, text) { e.setDraft(text); e.check(); }
   const MIN = 60 * 1000;
   const STORE = "mrbadmusai.fchw.v1.";
   const deck5 = () => FIVE.map((c, i) => ({ id: "c" + i, position: i, last: null, secured: false }));
-  const row = (card, rating, at, phase) => ({ card_id: card, rating, phase: phase || "review", rated_at: at });
+  // ⊕ MRB-354 — `session` defaults to one shared sitting ("s"): most of
+  // these rows don't care about the grouping key at all. Tests that DO
+  // (secured's own session+phase grouping) pass distinct session ids.
+  const row = (card, rating, at, phase, session) =>
+    ({ card_id: card, rating, phase: phase || "review", rated_at: at, session_id: session == null ? "s" : session });
   const rightOf = (r) => Object.keys(r.pass).filter((k) => r.pass[k].rating === "got_it").length;
 
   // ── 17. reconstruct, pure ───────────────────────────────────────────
@@ -701,15 +726,15 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     H.close();
     let a = await H.open("A");
     let v = a.view();
-    check(v.phase === "end" && v.end.button === "retry" && v.end.line1 === "3 of 5 right",
-          "21: reopened inside the hour → the same Try again screen, '3 of 5 right'");
+    check(v.phase === "end" && v.end.button === "retry" && v.end.line1 === "3 of 5 secured",
+          "21: reopened inside the hour → the same Try again screen, '3 of 5 secured'");
     a.retry();
     v = a.view();
     check(a.passIds.join() === "c1,c3" && v.chips.filter((g) => g.state === "right").length === 3 && v.card.id === "c1",
           "21: Try again → a queue of 2 in first-pass order, 3 green chips");
     H._reset(); localStorage.clear();
     a = await H.open("A");
-    check(a.view().phase === "end" && a.view().end.line1 === "3 of 5 right", "21: …and on another device too");
+    check(a.view().phase === "end" && a.view().end.line1 === "3 of 5 secured", "21: …and on another device too (secured is read from the server's rows, not a local record)");
     S.shift(61 * MIN);
     H.close();
     a = await H.open("A");
@@ -739,43 +764,56 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(S.sittings >= 1, "22: sittings " + S.sittings);
   }
 
-  // ── 23. all right → Done → reopen: a new pass ───────────────────────
+  // ── 23. ⊕ MRB-354 — all secured → Done → reopen: STRAIGHT BACK TO DONE,
+  //        never a fresh pass (secured never un-secures, so there is
+  //        nothing left for a fresh pass to ask). "Revise flashcards one
+  //        more time" is the only way into one, voluntarily. ────────────
   {
     const { S, e } = await fresh();
     const good = { c0: "newton", c1: "h2o", c2: "gravity", c3: "f = ke", c4: "vector" };
     for (let k = 0; k < 5; k++) { const id = e.view().card.id; answer(e, good[id]); e.rate("got_it"); }
     await tick(5); await e.flush(); await tick(5);
-    check(e.view().end.button === "done", "23: all right → Done");
+    check(e.view().end.button === "done" && e.view().end.secondary, "23: all secured → Done + the Revise secondary");
     e.finish(); H.close();
     await tick(5);
     const a = await H.open("A");
-    check(a.view().headline === "0 of 5 right" && a.view().pos === 1, "23: reopening after Done → a new pass at '0 of 5 right'");
+    check(a.view().phase === "end" && a.view().end.button === "done" && a.view().end.line1 === "5 of 5 secured" && !a.passIds.length,
+          "23: reopening an already-fully-secured deck → straight to Done, no fresh pass");
     check(S.events.filter((x) => x.type === "session_finish").length === 1, "23: session_finish sent once");
+    a.again();
+    check(a.view().phase === "review" && a.view().headline === "0 of 5 right" && a.view().secured === 5,
+          "23: 'Revise flashcards one more time' is the only way into a fresh pass — still 5 of 5 secured throughout");
   }
 
   // ── 24. make mode: a card written but not rated when the phone died ──
   {
     const { S, e } = await fresh({ mode: "make" });
     answer(e, "newton"); e.rate("got_it");
-    answer(e, "water"); e.rate("not_yet");
+    answer(e, "h2o"); e.rate("got_it");
     answer(e, "gravity");                         // made (answer_submitted), not rated
     await tick(5); await e.flush(); await tick(5);
     check(S.cards[2].made && S.cards[2].mine === "gravity", "24: the server has card 3's answer");
     H._reset(); localStorage.clear();              // the phone died; another device
     const a = await H.open("A");
     let v = a.view();
-    check(v.phase === "make" && v.card.id === "c2" && !v.revealed && v.draft === "gravity" && v.pos === 3 && v.headline === "1 of 5 right",
+    check(v.phase === "make" && v.card.id === "c2" && !v.revealed && v.draft === "gravity" && v.pos === 3 && v.headline === "2 of 5 right",
           "24: card 3 reopens in state A with its stored answer in the box (" + v.draft + ", pos " + v.pos + ")");
     a.check(); a.rate("got_it");
     check(a.view().card.id === "c3", "24: Check → rate → card 4");
     answer(a, "f = ke"); a.rate("got_it");
     answer(a, "vector"); a.rate("got_it");
     v = a.view();
-    check(v.phase === "end" && v.end.button === "again" && v.end.line1 === "4 of 5 right", "24: the writing pass ends (4 of 5 right)");
+    // ⊕ MRB-354 — every card got_it from the writing pass alone → Done at
+    // once, no forced review pass (the OLD "again" bucket is gone).
+    check(v.phase === "end" && v.end.button === "done" && v.end.secondary && v.end.line1 === "5 of 5 secured",
+          "24: the writing pass secures every card → Done + Revise, straight away");
     await tick(5); await a.flush(); await tick(5);
     H._reset();
     const b = await H.open("A");
-    check(b.view().phase === "review" && b.view().headline === "0 of 5 right", "24: reopened after the writing pass → the review pass at '0 of 5 right'");
+    check(b.view().phase === "end" && b.view().end.button === "done", "24: reopened after Done → straight back to Done, no fresh pass");
+    b.again();
+    check(b.view().phase === "review" && b.view().headline === "0 of 5 right" && b.view().secured === 5,
+          "24: 'Revise flashcards one more time' is the only way into a review pass — still 5 of 5 secured");
   }
 
   // ── 25. every answer is sent at once; the keepalive leaves the queue ──
@@ -839,80 +877,84 @@ function answer(e, text) { e.setDraft(text); e.check(); }
   //    has told the page. See docs/experience/DESIGN-PORT-REPORT.md,
   //    "Follow-up 1 Oct", for the rule and the write it feeds. ═══════════
 
-  // ── 28. finishedAt agrees with endPass().all — including "done on
-  //        round 2" (a leftovers screen, Try again, then all-right) ────
+  // ── 28. ⊕ MRB-354 — finishedAt agrees with endPass().all: every card
+  //        secured (across the leftovers screen AND its retry, the SAME
+  //        sitting) is what finishes the deck, not a round or a pass. ────
   {
     const { S, e } = await fresh();
     answer(e, "newton"); e.rate("got_it");
     answer(e, "water"); e.rate("not_yet");
-    check(H.finishedAt(S.reviews(), S.cards, "review") === null,
-          "28: finishedAt null before any pass is all-right");
+    check(H.finishedAt(S.reviews(), S.cards) === null,
+          "28: finishedAt null before every card is secured (1 of 5)");
     answer(e, "gravity"); e.rate("got_it");
     answer(e, "f = ke"); e.rate("got_it");
     answer(e, "vector"); e.rate("got_it");
     let v = e.view();
-    check(v.end.button === "retry" && H.finishedAt(S.reviews(), S.cards, "review") === null,
-          "28: the leftovers screen (endPass().all === false): finishedAt agrees, null");
+    check(v.end.button === "retry" && H.finishedAt(S.reviews(), S.cards) === null,
+          "28: the leftovers screen (endPass().all === false): finishedAt agrees, null (4 of 5)");
     e.retry();
-    answer(e, "h2o"); e.rate("got_it");                 // round 2 finishes it
+    answer(e, "h2o"); e.rate("got_it");                 // secures the last card
     await e.flush(); await tick(5);
     v = e.view();
-    check(v.end.button === "done", "28: round 2 completes the pass (endPass().all === true)");
-    const hit = H.finishedAt(S.reviews(), S.cards, "review");
+    check(v.end.button === "done", "28: securing the last card completes the pass (endPass().all === true)");
+    const hit = H.finishedAt(S.reviews(), S.cards);
     const lastRow = S.rows[S.rows.length - 1];
     check(!!hit && hit.at === lastRow.rated_at && lastRow.card_id === "c1",
-          "28: finishedAt agrees — done on round 2, at c1's round-2 rating, not round 1's partial all-right");
+          "28: finishedAt agrees — the moment c1 (the last unsecured card) got got_it");
   }
 
-  // ── 29. finishedAt, make mode: the writing pass gates the review's
-  //        completion (a pure check, same shape as §17g) ───────────────
+  // ── 29. ⊕ MRB-354 — secured needs ONE got_it rating, in EITHER phase, in
+  //        ANY sitting — no pairing with the other phase, no second sitting.
+  //        A card secured in the make (writing) phase alone is enough; the
+  //        whole deck can finish without a review pass ever running. ─────
   {
     const now = Date.now();
-    const reviewAllRight = ["c0", "c1", "c2", "c3", "c4"]
-      .map((c, i) => row(c, "got_it", now - (5 - i) * MIN));
-    check(H.finishedAt(reviewAllRight, deck5(), "review") !== null,
-          "29: review mode, every card got_it → finished");
-    check(H.finishedAt(reviewAllRight, deck5(), "make") === null,
-          "29: make mode, the SAME review rows but no make-phase row at all → not finished (the writing pass is missing)");
-    const writingPass = ["c0", "c1", "c2", "c3", "c4"]
-      .map((c, i) => row(c, "got_it", now - (15 - i) * MIN, "make"));
-    check(H.finishedAt(writingPass.concat(reviewAllRight), deck5(), "make") !== null,
-          "29: make mode, writing pass present + review all got_it → finished");
-    check(H.finishedAt(writingPass, deck5(), "make") === null,
-          "29: make mode, writing pass alone (no review yet) → not finished");
+    const makeOnly = ["c0", "c1", "c2", "c3", "c4"]
+      .map((c, i) => row(c, "got_it", now - (5 - i) * MIN, "make"));
+    check(H.finishedAt(makeOnly, deck5()) !== null,
+          "29: every card got_it in the WRITING phase alone → finished, no review pass needed");
+    const mixedPhases = ["c0", "c1"].map((c, i) => row(c, "got_it", now - (5 - i) * MIN, "make"))
+      .concat(["c2", "c3", "c4"].map((c, i) => row(c, "got_it", now - (3 - i) * MIN, "review")));
+    check(H.finishedAt(mixedPhases, deck5()) !== null,
+          "29: a mix of make-phase and review-phase got_it rows, one each, still finishes");
+    const fourOfFive = ["c0", "c1", "c2", "c3"].map((c, i) => row(c, "got_it", now - (4 - i) * MIN));
+    check(H.finishedAt(fourOfFive, deck5()) === null, "29: 4 of 5 secured → not finished");
   }
 
-  // ── 30. the hour-gap reset moves reconstruct to a new pass; it does NOT
-  //        un-finish a pupil (finishedAt is cumulative, never reset) ───
+  // ── 30. ⊕ MRB-354 — a LATER rating, in a DIFFERENT sitting, can only ADD
+  //        a new group; it never removes an existing one, so it cannot
+  //        un-finish a pupil. finishedAt has no round or hour-gap logic at
+  //        all any more — this is just "every card has a counting row". ──
   {
     const now = Date.now();
     const allRight = ["c0", "c1", "c2", "c3", "c4"]
-      .map((c, i) => row(c, "got_it", now - (20 - i) * MIN));
-    const firstHit = H.finishedAt(allRight, deck5(), "review");
+      .map((c, i) => row(c, "got_it", now - (20 - i) * MIN, "review", "sA"));
+    const firstHit = H.finishedAt(allRight, deck5());
     check(!!firstHit && firstHit.at === allRight[4].rated_at,
-          "30: finishedAt fires at the all-right row itself");
-    const later = allRight.concat([row("c2", "nearly", now)]);   // mirrors §17f: one later rating
+          "30: finishedAt fires at the last card's own got_it row");
+    const later = allRight.concat([row("c2", "nearly", now, "review", "sB")]);   // a DIFFERENT sitting
     check(H.reconstruct(later, deck5(), "review", now) !== null,
-          "30: sanity — reconstruct sees an OPEN pass after the later rating (round-aware)");
-    const stillHit = H.finishedAt(later, deck5(), "review");
+          "30: sanity — reconstruct opens a fresh pass after the later rating");
+    const stillHit = H.finishedAt(later, deck5());
     check(!!stillHit && stillHit.at === firstHit.at,
-          "30: finishedAt is unchanged by the later rating or any hour gap — once finished, always finished, unlike reconstruct's round-aware walk");
+          "30: finishedAt is unchanged — a new sitting's rating forms its OWN group and cannot remove an earlier one");
   }
 
-  // ── 31. the documented ‹ Back + "I don't know" edge: finishedAt fires
-  //        one replay early, exactly as the comment above it says ──────
+  // ── 31. ⊕ MRB-354 — a ‹ Back correction in the SAME sitting excludes the
+  //        overwritten got_it row (the group's LATEST row wins); a got_it
+  //        in a DIFFERENT, later sitting secures the card at ITS OWN time,
+  //        never retroactively from the corrected sitting. ───────────────
   {
     const now = Date.now();
-    const rows = [
-      row("c0", "got_it", now - 50 * MIN), row("c2", "got_it", now - 40 * MIN),
-      row("c3", "got_it", now - 30 * MIN), row("c4", "got_it", now - 20 * MIN),
-      row("c1", "nearly", now - 10 * MIN),   // the I-don't-know own-words step, capped at Nearly
-      row("c1", "got_it", now - 5 * MIN),    // ‹ Back: re-answered and rated Got it BEFORE the scheduled replay
-      row("c1", "got_it", now),              // the replay still happens, redundantly, later
-    ];
-    const hit = H.finishedAt(rows, deck5(), "review");
-    check(!!hit && hit.at === now - 5 * MIN,
-          "31: finishedAt fires at the back-rerate, one replay before the engine's own Done screen would show it — the accepted, documented divergence");
+    const sameSitting = ["c0", "c1", "c2", "c3"].map((c, i) => row(c, "got_it", now - (10 - i) * MIN, "review", "s1"))
+      .concat([row("c4", "got_it", now - 5 * MIN, "review", "s1"),
+               row("c4", "not_yet", now - 4 * MIN, "review", "s1")]);   // ‹ Back: corrected in the SAME sitting
+    check(H.finishedAt(sameSitting, deck5()) === null,
+          "31: the ‹ Back correction wins — c4's s1 group is not_yet, so c4 is not secured");
+    check(!H.securedInfo(sameSitting, deck5()).secured.c4, "31: securedInfo agrees — c4 is not in the secured set");
+    const nextSitting = sameSitting.concat([row("c4", "got_it", now, "review", "s2")]);   // a NEW sitting
+    const hit = H.finishedAt(nextSitting, deck5());
+    check(!!hit && hit.at === now, "31: a got_it in a new sitting secures c4, at its own time — not the corrected sitting's");
   }
 
   // ── 32. Api.onFinish fires once the Done screen settles, and only then ─
@@ -943,45 +985,37 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     H.onFinish = null;
   }
 
-  // ── 33. MUST-FIX (review, 1 Oct 2026) — finishedAt must not un-abandon
-  //        a stale leftovers round via a FRESH pass's first card. Mirrors
-  //        the review's own repro (scratchpad/div.js). Before the fix,
-  //        finishedAt never reset: every card's all-time-latest rating
-  //        included c0-c3's ancient Got-its from an abandoned round, so
-  //        getting just c4 right in a brand-new pass read as finished. ──
+  // ── 33. ⊕ MRB-354 (superseded the old MUST-FIX) — finishedAt is a FLAT
+  //        fact with no round or hour-gap logic at all any more: an old
+  //        got_it row from an ABANDONED round (one reconstruct() itself
+  //        would start a fresh pass over — see 17c) still counts, because
+  //        under the new rule it was never un-secured. Securing just the
+  //        leftover card, however much later, finishes the deck — this is
+  //        the INTENDED behaviour (Mide: "probably has that knowledge
+  //        secured already"), not the bug the old round-walk had to guard
+  //        against. ──────────────────────────────────────────────────────
   {
     const now = Date.now();
     const deck = deck5();
     // Sitting 1: c0-c3 Got it, c4 Not yet → the leftovers ("Try again")
-    // screen. Walks away.
+    // screen. Walks away for over an hour — reconstruct would start a
+    // fresh pass (test 17c's own rule, unchanged).
     const sitting1 = [row("c0", "got_it", now - 100 * MIN), row("c1", "got_it", now - 99 * MIN),
                       row("c2", "got_it", now - 98 * MIN), row("c3", "got_it", now - 97 * MIN),
                       row("c4", "not_yet", now - 96 * MIN)];
-    check(H.finishedAt(sitting1, deck, "review") === null,
-          "33: after the leftovers screen, finishedAt is null");
-    // Later (past the hour): reconstruct starts a FRESH pass — the round
-    // went stale, so rankedIds puts c4 (last Not yet) first in the new one.
-    const later = now;   // sitting1's last rating is 96 min before "now"
-    check(H.reconstruct(sitting1, deck, "review", later) === null,
-          "33: a stale leftovers round (96 min on) → reconstruct starts a fresh pass (null)");
-    // The pupil gets c4 (ranked first in the fresh pass) right. ONE card of
-    // a brand-new 5-card pass is not the Done screen, however the OLD
-    // cards' ancient Got-it ratings read.
-    const oneCard = sitting1.concat([row("c4", "got_it", later)]);
-    check(H.finishedAt(oneCard, deck, "review") === null,
-          "33: MUST-FIX — one card into the fresh pass, finishedAt is still null (was: a false hit)");
-    const rc2 = H.reconstruct(oneCard, deck, "review", later + MIN);
-    check(rc2 && rc2.stage === "review" && Object.keys(rc2.pass).length === 1 && rc2.ended === null,
-          "33: reconstruct agrees — 1 of 5 rated in the new pass, not ended (pass size "
-          + (rc2 && Object.keys(rc2.pass).length) + ")");
-    // Finishing that SAME fresh pass (c0-c3 again) → a hit at ITS last
-    // card — not a hit carried over from sitting 1's abandoned ratings.
-    const finished = oneCard.concat([
-      row("c0", "got_it", later + MIN), row("c1", "got_it", later + 2 * MIN),
-      row("c2", "got_it", later + 3 * MIN), row("c3", "got_it", later + 4 * MIN)]);
-    const hit33 = H.finishedAt(finished, deck, "review");
-    check(!!hit33 && hit33.at === later + 4 * MIN,
-          "33: finishing the fresh pass → finishedAt hits at its own last card (" + (hit33 && hit33.at) + ")");
+    check(H.finishedAt(sitting1, deck) === null, "33: c4 is the only unsecured card → not finished");
+    check(H.reconstruct(sitting1, deck, "review", now) === null,
+          "33: sanity — reconstruct starts a fresh pass (stale, unaffected by MRB-354)");
+    // The pupil gets c4 right, later, in what reconstruct() considers a
+    // brand-new pass. The deck finishes anyway — c0-c3's old got_it rows
+    // are still good.
+    const finished = sitting1.concat([row("c4", "got_it", now)]);
+    const hit = H.finishedAt(finished, deck);
+    check(!!hit && hit.at === now, "33: securing the leftover card (even in a 'fresh' pass) finishes the deck, at its own time");
+    const rc = H.reconstruct(finished, deck, "review", now + MIN);
+    check(rc && rc.stage === "review" && Object.keys(rc.pass).length === 1 && rc.ended === null,
+          "33: reconstruct still sees its own fresh pass, 1 of 5 rated so far, not ended — the two never need to agree "
+          + "on ROUNDS for finishedAt to agree with them on DONE");
   }
 
   console.log(`\n  ${passes} passed, ${fails} failed`);

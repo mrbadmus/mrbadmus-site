@@ -5291,7 +5291,7 @@ TYPE_SCALE = {
 #
 #   · a progress strip under the header    (INSERT_AT 10320 after 10321)
 #   · the answer box and Check              (INSERT_AT 10328 after 10361)
-#   · Got it / Nearly / Not yet             (same insertion)
+#   · Secured / Nearly / Not yet           (same insertion)
 #   · the between-sittings / secured panel  (same insertion), themed with the
 #     scorecard's own bench tokens
 #   · the pupil's own answer on the back    (INSERT_AT 10351 after 10353)
@@ -5432,6 +5432,9 @@ LOGIC["class view"].extend([
         "  hwCheck = () => { const e = this.hwEngine(); if (e) { e.check(); } };\n"
         "  hwIdk = () => { const e = this.hwEngine(); if (e) { e.idk(); } };\n"
         "  hwBack = () => { const e = this.hwEngine(); if (e) { e.back(); } };\n"
+        "  /* ⊕ MRB-354 — Forward ›: beside ‹ Back, same style; moves one card\n"
+        "     toward the card the pupil was on, changing no rating. */\n"
+        "  hwForward = () => { const e = this.hwEngine(); if (e) { e.forward(); } };\n"
         "  hwRate = (r) => { const e = this.hwEngine(); if (e) { e.rate(r); } };\n"
         "  hwGot = () => this.hwRate('got_it');\n"
         "  hwNearly = () => this.hwRate('nearly');\n"
@@ -5495,7 +5498,7 @@ LOGIC["class view"].extend([
         "      hwChipsOn: !!v.retry, hwChipsOff: !v.retry,\n"
         "      hwChips: v.chips.map((g) => ({\n"
         "        num: String(g.num), id: g.id, redo: !!g.redo, still: !g.redo,\n"
-        "        label: 'Card ' + g.num + ', got it. Redo it',\n"
+        "        label: 'Card ' + g.num + ', secured. Redo it',\n"
         "        bg: tones[g.state],\n"
         "        ink: { right: 'var(--pg-card)', answered: 'var(--pg-ink)', todo: 'var(--pg-muted)' }[g.state],\n"
         "        ring: (g.current ? 'box-shadow:inset 0 0 0 2px var(--pg-ink);' : '')\n"
@@ -5520,6 +5523,9 @@ LOGIC["class view"].extend([
         "      hwCheckOff: !e.canCheck(),\n"
         "      hwCheckOpacity: e.canCheck() ? '1' : '.45',\n"
         "      hwBackOn: !!v.canBack,\n"
+        "      /* ⊕ MRB-354 — Forward ›: beside ‹ Back, same style, hidden on\n"
+        "         the newest card (`canForward` is false once idx===frontier). */\n"
+        "      hwForwardOn: !!v.canForward,\n"
         "      hwRating: !!c && v.revealed,\n"
         "      hwChipOn: !!c && v.revealed && !!v.chip,\n"
         "      hwChip: v.chip,\n"
@@ -5539,14 +5545,19 @@ LOGIC["class view"].extend([
         "      hwMineOn: !!c && v.revealed && !!v.mine,\n"
         "      hwMine: v.mine || '',\n"
         "      hwPanel: !!end,\n"
+        "      /* ⊕ MRB-354 — ONE line, 'N of M secured'; no line 2, no helper\n"
+        "         text (the quieter secondary button below says the one thing\n"
+        "         there was to say). */\n"
         "      hwEnd1: end ? end.line1 : '',\n"
-        "      hwEnd2On: !!end && !!end.line2, hwEnd2: end ? end.line2 : '',\n"
+        "      hwEnd2On: false, hwEnd2: '',\n"
         "      /* ⊕ Sharpen C6 — SAVED ON THIS PHONE is said once, on the\n"
         "         strip; the end screen does not repeat it. */\n"
         "      hwEndOffline: false,\n"
-        "      hwEndHelperOn: !!end && !!end.helper, hwEndHelper: end ? end.helper : '',\n"
+        "      hwEndHelperOn: false, hwEndHelper: '',\n"
         "      hwEndDone: !!end && end.button === 'done',\n"
-        "      hwEndAgain: !!end && end.button === 'again',\n"
+        "      /* ⊕ MRB-354 — all secured: Done (primary) plus a quieter\n"
+        "         'Revise flashcards one more time' secondary, always together. */\n"
+        "      hwEndSecondaryOn: !!end && !!end.secondary,\n"
         "      hwEndRetry: !!end && end.button === 'retry',\n"
         "      /* ⊕ Design port (screen 06) — Done: the strip names the set\n"
         "         instead of repeating the headline the bench panel already\n"
@@ -5567,6 +5578,7 @@ LOGIC["class view"].extend([
         "         the two sharing it — see the strip-row markup below. */\n"
         "      hwRetryHintOn: !!v.retry && v.chips.some((g) => g.redo),\n"
         "      hwCheck: this.hwCheck, hwDraftIn: this.hwDraftIn, hwIdk: this.hwIdk, hwBack: this.hwBack,\n"
+        "      hwForward: this.hwForward,\n"
         "      hwGot: this.hwGot, hwNearly: this.hwNearly, hwNotYet: this.hwNotYet,\n"
         "      hwAgain: this.hwAgain, hwDoneTap: this.hwDoneTap, hwRetry: this.hwRetry,\n"
         "      hwRetryPass: this.hwRetryPass, hwGoHome: this.hwGoHome,\n"
@@ -5848,6 +5860,7 @@ INSERT_AT["class view"].update({
                 {"t": "div", "a": {"data-hw": "act", "style": "display:flex;align-items:center;gap:6px;"},
                  "c": [
                      {"t": "if", "e": "hwBackOn", "c": [_hw_link("hwBack", "‹ Back", "back")]},
+                     {"t": "if", "e": "hwForwardOn", "c": [_hw_link("hwForward", "Forward ›", "forward")]},
                      {"t": "if", "e": "hwIdkOn", "c": [_hw_link("hwIdk", "I don't know", "idk")]},
                      {"t": "button", "on": "hwCheck",
                       "a": {"type": "button", "data-hw": "check",
@@ -5865,6 +5878,7 @@ INSERT_AT["class view"].update({
             "c": [
                 {"t": "span", "a": {"style": "display:flex;align-items:center;gap:10px;min-height:30px;"}, "c": [
                     {"t": "if", "e": "hwBackOn", "c": [_hw_link("hwBack", "‹ Back", "back")]},
+                    {"t": "if", "e": "hwForwardOn", "c": [_hw_link("hwForward", "Forward ›", "forward")]},
                     {"t": "if", "e": "hwChipOn", "c": [{
                         "t": "span",
                         "a": {"data-hw": "chip", "aria-live": "polite",
@@ -5881,22 +5895,26 @@ INSERT_AT["class view"].update({
                               "hwNotYetOff", "hwNotYetDis"),
                      _hw_rate("hwNearly", "Nearly", "hwNearlyStyle", "hwNearlyOn", "nearly",
                               "hwNearlyOff", "hwNearlyDis"),
-                     _hw_rate("hwGot", "Got it", "hwGotStyle", "hwGotOn", "got_it",
+                     _hw_rate("hwGot", "Secured", "hwGotStyle", "hwGotOn", "got_it",
                               "hwGotOff", "hwGotDis"),
                  ]},
             ]}]},
-        # The end of a pass (A6/A8): two lines, the helper when it applies
-        # — and, pinned at the bottom of the dialog (Design port 06: "thumb
-        # reach, same place as Check"), one full-width button. The button
-        # is now a SEPARATE sibling after the panel rather than part of its
-        # own centred content: the panel keeps `flex:1 1 auto` (fills the
-        # space above), the button row is `flex:none` (its own content
-        # height) — the same pairing as Design's `.end` + `.end-foot`, so
-        # the button lands at the visible bottom of the dialog rather than
-        # vertically centred with the text. Line 2 waits for the server's
-        # number. Applied identically to the writing pass's own end screen
-        # (decision 7, not redrawn) for one consistent look, as the brief
-        # asks — its button is a real CTA there, not a ruled cut.
+        # The end of a pass (⊕ MRB-354 — RULE.md's "N of M secured", ONE
+        # line, no helper text) — and, pinned at the bottom of the dialog
+        # (Design port 06: "thumb reach, same place as Check"), one
+        # full-width button, Done or Try again. The button row is a
+        # SEPARATE sibling after the panel rather than part of its own
+        # centred content: the panel keeps `flex:1 1 auto` (fills the space
+        # above), the button row is `flex:none` (its own content height) —
+        # the same pairing as Design's `.end` + `.end-foot`, so the button
+        # lands at the visible bottom of the dialog rather than vertically
+        # centred with the text. All secured → Done, plus a quieter
+        # secondary "Revise flashcards one more time" underneath it
+        # (`hwEndSecondaryOn`) that starts a fresh pass without un-securing
+        # anything. Applied identically to the writing pass's own end
+        # screen (decision 7, not redrawn) — MRB-354 unified the two: a
+        # writing pass that secures every card ends here too, with no
+        # forced review pass.
         {"t": "if", "e": "hwPanel", "c": [
             {"t": "div",
              "a": {"data-hw": "panel",
@@ -5926,11 +5944,8 @@ INSERT_AT["class view"].update({
                      "t": "span", "a": {"data-hw": "hint", "style": _HW_UI + "color:var(--b-muted);margin-top:6px;"},
                      "c": [_hw_text("hwEndHelper")]}]},
              ]},
-            {"t": "div", "a": {"data-hw": "end-foot", "style": "flex:none;"}, "c": [
-                {"t": "if", "e": "hwEndAgain", "c": [
-                    _hw_btn("hwAgain", "Revise flashcards one more time",
-                            "width:100%;box-sizing:border-box;border:0;background:var(--b-cta);"
-                            "color:var(--b-cta-ink);", "again")]},
+            {"t": "div", "a": {"data-hw": "end-foot",
+                               "style": "flex:none;display:flex;flex-direction:column;gap:10px;"}, "c": [
                 {"t": "if", "e": "hwEndRetry", "c": [
                     _hw_btn("hwRetryPass", "Try again",
                             "width:100%;box-sizing:border-box;border:0;background:var(--b-cta);"
@@ -5939,6 +5954,15 @@ INSERT_AT["class view"].update({
                     _hw_btn("hwDoneTap", "Done",
                             "width:100%;box-sizing:border-box;border:0;background:var(--b-cta);"
                             "color:var(--b-cta-ink);", "done")]},
+                # ⊕ MRB-354 — every card secured: a quieter secondary beside
+                # Done, never on its own. It starts a fresh revision pass of
+                # the whole deck; it never un-secures anything and never
+                # un-does the homework (Done above has already fired).
+                {"t": "if", "e": "hwEndSecondaryOn", "c": [
+                    _hw_btn("hwAgain", "Revise flashcards one more time",
+                            "width:100%;box-sizing:border-box;border:1.5px solid var(--b-rule);"
+                            "background:transparent;color:var(--b-ink);font-weight:600;"
+                            "min-height:46px;", "again")]},
             ]},
         ]},
         {"t": "if", "e": "hwLoading", "c": [{
@@ -5960,7 +5984,7 @@ INSERT_AT["class view"].update({
     ]},
         "MRB-351 pupil flow: the homework's controls under Design's card — "
         "the answer box with Check, '‹ Back' and 'I don't know' (state A); "
-        "the verdict chip and Not yet / Nearly / Got it with the suggested "
+        "the verdict chip and Not yet / Nearly / Secured with the suggested "
         "one filled (states B-C); and the end-of-pass screen in the bench "
         "theme."),
 
@@ -6483,7 +6507,7 @@ html[data-theme="dark"] textarea::placeholder {
 }
 /* ⊕ MRB-351 theme pass, 27 Sep 2026 — FOUND LIVE, contrast_audit's first
    pass over the flashcard homework overlay (nothing had reached this
-   state before this ticket). The Check / Not yet / Got it buttons pair
+   state before this ticket). The Check / Not yet / Secured buttons pair
    `color:var(--on-accent)` with a fill that DOES flip dark
    (`--pg-accent-text` / `--pg-ok-text`, both correctly turning into LIGHT
    tints in dark mode) — the same "text on accent" shape the --st-paper

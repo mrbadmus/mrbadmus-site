@@ -223,12 +223,14 @@ DETAIL_FRESH = {
 }
 
 # ⊕ Design port A five-state follow-up, 30 Sep 2026 — Fay's real per-card
-# detail: exactly two of each state (Secured/Got it/Nearly/Not yet/Not
-# seen), so the progress table's strip is proved drawing all five kinds of
-# cell from one row, not just exercising each state across different rows.
-# Fay's own `pupil(...)` row below is updated to made=8/known=4/secured=2
-# to match (2 secured + 2 got_it = 4 known; 8 of 10 cards have a written
-# answer).
+# detail, originally exactly two of each of FIVE states (Secured/Got it/
+# Nearly/Not yet/Not seen).
+# ⊕ MRB-354, 2 Oct 2026 — "Got it" is gone: a card secures the moment any
+# rating of it is got_it, so m1-m4 (two OLD "secured", two OLD "got it but
+# not yet secured") all read Secured now — FOUR states, 4/2/2/2. Fay's own
+# `pupil(...)` row below (made=8, known=4) already matched this (2 secured
+# + 2 got_it = 4 known under the OLD rule's own arithmetic), so it needs no
+# change: `known` was always going to be the number MRB-354 displays.
 DETAIL_MIX = {
     "pupil": {"id": "p-fay", "first_name": "Fay", "last_name": "Ford", "display_name": "Fay"},
     "cards": [
@@ -644,10 +646,13 @@ def sharpen_matrix_check(b, base, check):
           {id: 'm1', title: 'Quiz', release_at: '2026-09-28T06:00:00+00:00', due_at: '2026-10-05T08:00:00+00:00', kind: 'mcq_set'},
           {id: 'f1', title: 'Deck', release_at: '2026-09-28T06:00:00+00:00', due_at: '2026-10-05T08:00:00+00:00', kind: 'flashcards'}],
         submissions: [sub('m1', 's1', 7, 10), sub('m1', 's3', 4, 10), sub('f1', 's3', 10, 10)],
+        /* ⊕ MRB-354 §6 — secured count = the RPC's `known`, not the OLD
+           two-sitting `secured` (both fields still exist on the real
+           payload; the client reads `known` now). */
         flashcards: {f1: {n: 10, pupils: {
-          s1: {status: 'in_progress', secured: 6, sittings: 3, made: 8},
-          s2: {status: 'not_started', secured: 0, sittings: 0, made: 0},
-          s3: {status: 'done', secured: 10, sittings: 2, made: 10}}}}
+          s1: {status: 'in_progress', secured: 2, known: 6, sittings: 3, made: 8},
+          s2: {status: 'not_started', secured: 0, known: 0, sittings: 0, made: 0},
+          s3: {status: 'done', secured: 7, known: 10, sittings: 2, made: 10}}}}
       };
       var papers = L.buildPapers(pack, now);
       var mx = L.buildMatrix(pack, papers, now);
@@ -867,28 +872,38 @@ def main():
                   "Rushed: only on the rushed pupil")
             hdrs = p.eval("Array.prototype.map.call(document.querySelectorAll('#fp-table thead th'),function(t){return t.textContent.trim();})")
             check(not any(h_.lower().startswith("answers") for h_ in hdrs), "B2: no Answers header in make mode", str(hdrs))
-            check(p.eval("document.querySelector('tr[data-pupil=\"p-ben\"] .fp-sec').getAttribute('data-known')") == "7",
-                  "Secured: known-once carried for the secure rule")
+            # ⊕ MRB-354 (2 Oct 2026) — the "known once" tooltip/attribute is
+            # GONE along with the Secure/Quick rule distinction it existed
+            # to show (a card secures on one rating now; there is no
+            # weaker "known once" state to call out). The Secured number
+            # itself is `p.known` (Ben: known=7).
+            check(p.eval("document.querySelector('tr[data-pupil=\"p-ben\"] .fp-sec').getAttribute('data-known')") is None,
+                  "Secured: no 'known once' attribute any more")
+            check(p.eval("document.querySelector('tr[data-pupil=\"p-ben\"] .fp-sec-n').textContent") == "7/10",
+                  "Secured: the number is p.known (Ben: 7/10)")
 
-            # ⊕ Design port A five-state follow-up, 30 Sep 2026 — the
-            # Secured strip's real per-card breakdown, via
-            # flashcard_pupil_detail (reusing shared/flashcard-breakdown.js's
-            # own cardState() — see stripCounts() in flashcard-progress.js).
-            # Fay's row (DETAIL_MIX) carries exactly two of each state; wait
-            # for her detail fetch (queued on first render — she has
-            # sittings=1) to land and repaint before asserting.
+            # ⊕ MRB-354 — FOUR states now, not five: "Got it" is gone (a
+            # card secures the moment any rating of it is got_it — see
+            # cardState() in shared/flashcard-breakdown.js). Fay's row
+            # (DETAIL_MIX) has 4 cards with a got_it rating (m1-m4, two of
+            # which were the OLD "secured" and two the OLD "got it but not
+            # yet secured") — all four now read Secured, so the strip is
+            # 4 secured, 2 nearly (m5/m6), 2 not yet (m7/m8), 2 not seen
+            # (m9/m10). Wait for her detail fetch (queued on first render —
+            # she has sittings=1) to land and repaint before asserting.
             ok = wait_for(p, "document.querySelectorAll('tr[data-pupil=\"p-fay\"] .strip i').length===10")
-            check(ok, "five-state strip: Fay's detail fetch landed and repainted")
+            check(ok, "four-state strip: Fay's detail fetch landed and repainted")
             kinds = p.eval("Array.prototype.map.call(document.querySelectorAll("
                            "'tr[data-pupil=\"p-fay\"] .strip i'),function(e){return e.className;})")
-            counts = {k: kinds.count(k) for k in ("k-sec", "k-got", "k-near", "k-no", "k-un")}
-            check(counts == {"k-sec": 2, "k-got": 2, "k-near": 2, "k-no": 2, "k-un": 2},
-                  "five-state strip: one row draws all five kinds of cell, two each", str(counts))
-            check(kinds == ["k-sec"] * 2 + ["k-got"] * 2 + ["k-near"] * 2 + ["k-no"] * 2 + ["k-un"] * 2,
-                  "five-state strip: cells sorted best to worst", str(kinds))
+            check(not any(k == "k-got" for k in kinds), "four-state strip: no k-got cell is ever drawn", str(kinds))
+            counts = {k: kinds.count(k) for k in ("k-sec", "k-near", "k-no", "k-un")}
+            check(counts == {"k-sec": 4, "k-near": 2, "k-no": 2, "k-un": 2},
+                  "four-state strip: one row draws all four kinds of cell", str(counts))
+            check(kinds == ["k-sec"] * 4 + ["k-near"] * 2 + ["k-no"] * 2 + ["k-un"] * 2,
+                  "four-state strip: cells sorted best to worst", str(kinds))
             aria = p.eval("document.querySelector('tr[data-pupil=\"p-fay\"] .strip').getAttribute('aria-label')")
-            check(aria == "2 secured, 2 got it, 2 nearly, 2 not yet, 2 not seen",
-                  "five-state strip: aria-label names all five counts", aria)
+            check(aria == "4 secured, 2 nearly, 2 not yet, 2 not seen",
+                  "four-state strip: aria-label names all four counts, no 'got it'", aria)
 
             # the answer-check edge function was fired, with the assignment id
             f = p.eval("window.__FP__.fetches")
@@ -928,8 +943,10 @@ def main():
             check(not re.search(r"Pupil \d+ of \d+", d["text"]), "panel: no 'Pupil N of M'")
             check(d["chip"] == "In progress", "panel: one status chip in the title row", d["chip"])
             check(d["tiles"] == ["SECURED", "TIME", "HANDED IN"], "panel: three tiles", str(d["tiles"]))
-            check(d["tileVals"][0] == "5 / 10" and d["tileSubs"][0] == "made 10 / 10",
-                  "panel: SECURED 5 / 10, made 10 / 10 (make mode)", str(d["tileVals"]) + str(d["tileSubs"]))
+            # ⊕ MRB-354 §6 — the SECURED tile is `p.known` (7), not the OLD
+            # two-sitting `p.secured` (5).
+            check(d["tileVals"][0] == "7 / 10" and d["tileSubs"][0] == "made 10 / 10",
+                  "panel: SECURED 7 / 10 (known), made 10 / 10 (make mode)", str(d["tileVals"]) + str(d["tileSubs"]))
             check(d["tileVals"][1] == "5:00" and d["tileSubs"][1] == "2 sittings",
                   "panel: TIME is summed active time, with the sittings count", str(d["tileVals"]) + str(d["tileSubs"]))
             # ⊕ 1 Oct 2026 (sweep fix C6, corrected) — HANDED IN reads "—"
@@ -948,12 +965,19 @@ def main():
                   d["tileVals"][2])
             check(d["verdicts"] == "5 right · 2 nearly · 2 wrong · 1 blank",
                   "panel: B2's verdict words under the tiles", d["verdicts"])
-            check(d["filter"] == ["All 3", "Not secured 2"], "panel: All / Not secured filter", str(d["filter"]))
+            # ⊕ MRB-354 — c3 is now Secured too (known: true), so only c2
+            # is left "Not secured".
+            check(d["filter"] == ["All 3", "Not secured 1"], "panel: All / Not secured filter", str(d["filter"]))
             cards = {c["id"]: c for c in d["cards"]}
             check(all(c["states"] == 1 for c in d["cards"]), "panel: exactly one state chip per card",
                   str([c["states"] for c in d["cards"]]))
+            # ⊕ MRB-354 — c3 carries `known: true` with no ratings array (the
+            # pre-MRB-352 degrade branch returns no history); `known` is the
+            # truth regardless, so c3 now reads Secured too, not "Not seen"
+            # (which would be CLAIMING the card was never seen when the
+            # server says otherwise).
             check(cards["c1"]["state"] == "Secured" and cards["c2"]["state"] == "Nearly"
-                  and cards["c3"]["state"] == "Not seen", "panel: card state = Secured / latest rating / Not seen",
+                  and cards["c3"]["state"] == "Secured", "panel: card state = Secured / latest rating / Secured (known)",
                   str([c["state"] for c in d["cards"]]))
             check(cards["c2"]["answer"] == "a neutron" and cards["c2"]["verdict"] == "Right",
                   "panel: latest written answer comes from a review rating when it carries one (MRB-352 key)",
@@ -992,8 +1016,8 @@ def main():
                   "panel: the sittings timeline with a rushed marker")
             # the filter
             p.eval("document.querySelector('[data-fb=\"filter-open\"]').click(); true")
-            check(p.eval("document.querySelectorAll('[data-fb=\"overlay\"] .fb-card').length") == 2,
-                  "panel: Not secured hides the secured card")
+            check(p.eval("document.querySelectorAll('[data-fb=\"overlay\"] .fb-card').length") == 1,
+                  "panel: Not secured hides the secured cards (c1, and c3 via known)")
             p.eval("document.querySelector('[data-fb=\"filter-all\"]').click(); true")
             p.screenshot(os.path.join(args.shots, "fb-panel-desktop.png"), width=1280, height=800, full_page=False)
             # prev / next walk the table's order
@@ -1063,16 +1087,19 @@ def main():
             # ⊕ Design port A — Per card/Rushed dropped from the CSV header
             # too (COLUMNS is the one source for both the table and the
             # export); Rushed's fact rides inside the Time cell's own text.
-            check(lines and lines[0] == "Pupil,Status,Made,Secured,Known once,Sittings,Time,Last active",
-                  "CSV: the displayed columns", lines and lines[0])
+            # ⊕ MRB-354 §6 — "Known once" is GONE (completion_rule no
+            # longer means anything to secured/done); the Secured column
+            # itself is `p.known`.
+            check(lines and lines[0] == "Pupil,Status,Made,Secured,Sittings,Time,Last active",
+                  "CSV: the displayed columns, no 'Known once'", lines and lines[0])
             check(len(lines) == 7, "CSV: one row per pupil")
             disp = p.eval("Array.prototype.map.call(document.querySelectorAll('#fp-table tbody tr.fp-row .fp-name'),"
                           "function(b){return b.textContent;})")
             check([l.split(",")[0] for l in lines[1:]] == disp, "CSV: in the order displayed", str(disp))
             cat = [l for l in lines if l.startswith("Cat Cole")]
-            check(bool(cat) and cat[0].startswith("Cat Cole,In progress,6/10,2/10,3/10,1,2:05 (rushed),")
+            check(bool(cat) and cat[0].startswith("Cat Cole,In progress,6/10,3/10,1,2:05 (rushed),")
                   and "pending" not in cat[0] and re.search(r",20\d\d-(0[1-9]|1[0-2])-\d\d \d\d:\d\d$", cat[0]),
-                  "CSV: a row's values, Rushed folded into the Time cell", cat and cat[0])
+                  "CSV: a row's values (Secured = known = 3), Rushed folded into the Time cell", cat and cat[0])
 
             # ── polling flips a row to Done without a reload ───────────────
             p.eval("window.__FP__.phase = 2; true")
