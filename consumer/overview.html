@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="/shared/ks3.css?v=2f931f9a"/>
 <link rel="stylesheet" href="/shared/ks3-theme.css?v=6e4b9223"/>
   <link rel="stylesheet" href="/consumer/consumer.css"/>
+  <link rel="stylesheet" href="/consumer/topic-picker.css"/>
   <style>
   /* ═══════════════════════════════════════════════════════════════════════
      consumer/overview.html — the parent dashboard. MRB-317 Night 3.
@@ -51,6 +52,9 @@
   :where(html[data-theme="dark"] .rd) a:hover { color: var(--ks3-accent-hover); }
   input, select, textarea, button { font: inherit; }
   input::placeholder, textarea::placeholder { color: #9A8F86; }
+  /* ⊕ B2C onboarding repair: #9A8F86 is 3.08:1 on the light card (Set work's
+     note box and topic search). Inside the token scope, the theme's muted ink. */
+  .rd input::placeholder, .rd textarea::placeholder { color: var(--ks3-ink-muted); }
 
   .dk-root {
     /* Text ON the accent-text fill (the CTAs, the unread pill). White in
@@ -393,6 +397,7 @@
 
 <script src="/shared/config.js?v=40813eb2"></script>
 <script src="/consumer/consumer-common.js"></script>
+<script src="/consumer/topic-picker.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/overview.html — six screens, one page. MRB-317, Night 3.
@@ -558,7 +563,7 @@
     picker: null, pickerFor: null,
     msgs: null, msgsFor: null, threads: null,
     readMarkedFor: null,
-    workKind: 'practice', unitCode: null, due: 'Sat', note: '', draft: '',
+    workKind: 'practice', topic: null, tp: {}, due: 'Sat', note: '', draft: '',
     edit: null, newPass: '', confirmRemove: false,
     prices: null,
     writable: false,
@@ -657,14 +662,25 @@
     return null;
   }
 
+  /* ⊕ B2C onboarding repair (V6). The topic chips were this child's units
+     only, keyed by `unit_code` — which KS4 does not have, so a GCSE child's
+     chips all carried "null" and Set work could not set anything for them.
+     The shared topic picker (consumer/topic-picker.js) replaces them: the
+     whole curriculum, this child's plan choosable, the rest greyed with the
+     year it is taught in. Its data is the child's picker plus the
+     curriculum index, loaded together. */
+  var curriculum = null;
   function loadPicker(c) {
     if (S.pickerFor === c.id) { return Promise.resolve(); }
     S.pickerFor = c.id;
-    return C.api('/api/consumer/children/' + encodeURIComponent(c.id) + '/picker',
-                 { token: ctx.token })
-      .then(function (d) {
-        S.picker = (d && d.units) || [];
-        if (!S.unitCode && S.picker.length) { S.unitCode = S.picker[0].unit_code; }
+    S.picker = null; S.topic = null; S.tp = {};
+    return Promise.all([
+      C.api('/api/consumer/children/' + encodeURIComponent(c.id) + '/picker', { token: ctx.token }),
+      curriculum ? Promise.resolve(curriculum) : window.MrBadmusTopicPicker.loadIndex()
+    ])
+      .then(function (out) {
+        curriculum = out[1];
+        S.picker = (out[0] && out[0].units) || [];
         if (S.view === 'setwork') { render(); }
       })
       .catch(function (e) {
@@ -1354,20 +1370,18 @@
   function viewSetWork() {
     var k = child();
     if (!k) { return noChild(); }
-    var units = Array.isArray(S.picker) ? S.picker : [];
     var pickerErr = S.picker && S.picker.error ? S.picker.error : null;
 
-    var topics = pickerErr
-      ? '<p style="font-size:15px;color:var(--ks3-ink-muted)">' + esc(pickerErr) + '</p>'
-      : (units.length
-          ? units.map(function (u) {
-              var on = String(S.unitCode) === String(u.unit_code);
-              return '<button class="ks3-option" aria-pressed="' + (on ? 'true' : 'false') +
-                '" data-act="pick-unit" data-id="' + esc(u.unit_code) + '" ' +
-                'style="width:auto;padding:10px 14px;font-size:15px;border-radius:99px;min-height:40px">' +
-                esc(u.name || u.unit_code) + '</button>';
-            }).join('')
-          : '<p style="font-size:15px;color:var(--ks3-ink-muted)">Loading…</p>');
+    /* An exam question is picked by the server from where the child is up
+       to (`setWorkFor` ignores a topic for it), so no topic is asked. */
+    var topics = S.workKind === 'exam'
+      ? '<p style="margin:0;font-size:15px;color:var(--ks3-ink-muted)">Mr Badmus picks the question from where ' +
+          esc(k.first_name) + ' is up to.</p>'
+      : pickerErr
+        ? '<p style="font-size:15px;color:var(--ks3-ink-muted)">' + esc(pickerErr) + '</p>'
+        : (Array.isArray(S.picker) && curriculum
+            ? '<div id="dk-topic"></div>'
+            : '<p style="font-size:15px;color:var(--ks3-ink-muted)">Loading…</p>');
 
     return '<div class="dk-narrow">' +
       '<p class="dk-kicker dk-kicker-page">For ' + esc(k.first_name) + '</p>' +
@@ -1387,7 +1401,7 @@
               esc(kind.desc) + '</span></button>';
         }).join('') + '</div>' +
       '<p style="margin:22px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Topic</p>' +
-      '<div style="display:flex;flex-wrap:wrap;gap:8px">' + topics + '</div>' +
+      topics +
       '<p style="margin:22px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Due</p>' +
       '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">' +
         DUE_DAYS.map(function (d) {
@@ -1754,6 +1768,19 @@
              'Exam marking may not be switched on for this environment yet.');
     }
     bindInputs();
+    mountTopic();
+  }
+
+  function mountTopic() {
+    var host = document.getElementById('dk-topic');
+    var k = child();
+    if (!host || !k || !curriculum || !Array.isArray(S.picker)) { return; }
+    window.MrBadmusTopicPicker.mount(host, {
+      index: curriculum, units: S.picker, state: S.tp,
+      child: { year: k.year_group, pathway: k.pathway, tier: k.tier },
+      listLabel: 'Topics for ' + k.first_name,
+      onChange: function (sel) { S.topic = sel; }
+    });
   }
 
   /* Inputs keep their value in state so a re-render never loses a half-typed
@@ -1843,7 +1870,6 @@
     'checkout': function (el) { checkout(el); },
 
     'pick-kind': function (el) { S.workKind = el.getAttribute('data-id'); render(); },
-    'pick-unit': function (el) { S.unitCode = el.getAttribute('data-id'); render(); },
     'pick-due':  function (el) { S.due = el.getAttribute('data-id'); render(); },
 
     'pick-intensity': function (el) { S.edit.intensity = el.getAttribute('data-id'); render(); },
@@ -1887,8 +1913,13 @@
 
     'submit-work': function (el) {
       var k = child();
-      if (!S.unitCode) { return msg('Choose a topic first.', 'error'); }
-      var body = { kind: S.workKind, unit_code: S.unitCode, scheduled_for: dueDate(S.due) };
+      var t = S.topic;
+      if (S.workKind !== 'exam' && !t) { return msg('Choose a topic first.', 'error'); }
+      var body = { kind: S.workKind, scheduled_for: dueDate(S.due) };
+      if (S.workKind !== 'exam') {
+        if (t.level === 'lesson' && t.slug) { body.lesson_slug = t.slug; }
+        else { body.unit_code = t.unitCode || t.unitName; }
+      }
       if (S.note) { body.note = S.note; }
       C.setBusy(el, true, 'Setting…');
       C.api(childPath('/work'), { method: 'POST', token: ctx.token, body: body })

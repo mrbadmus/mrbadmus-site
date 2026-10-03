@@ -6,6 +6,9 @@
     python3 tools/export_curriculum_tree.py --out DIR  # write it somewhere else
     python3 tools/export_curriculum_tree.py --stdout   # print it and write nothing
 
+    Every run that writes also writes consumer/curriculum-index.json (the
+    browser index below), and --check also checks it.
+
 WHY THIS FILE EXISTS
 ────────────────────
 Set work v2 (MRB-335) lets a teacher pick a node of the curriculum — a KS4
@@ -221,6 +224,74 @@ def serialise(tree):
     return json.dumps(tree, indent=2, ensure_ascii=False) + "\n"
 
 
+# ── the browser index (B2C onboarding repair, 3 Oct 2026) ──────────────
+#
+# The parent's topic picker (consumer/topic-picker.js) offers EVERY KS3 unit
+# and lesson and EVERY GCSE topic and subtopic, and greys out the ones a child's
+# year does not teach with "taught in Year N". N has to come from data, so the
+# browser needs the curriculum AND the year each node is taught in — which is
+# the same Python the backend tree above is built from, plus the year split
+# `ks4_seed_sow.build_block()` makes for each (pathway, tier) block.
+#
+# It is a SEPARATE file from curriculum-tree.json on purpose: that file is the
+# backend's and must stay byte-identical to what the backend already holds
+# (`curriculum_tree_mirror`). This one lives in consumer/ — never shared/,
+# which school pages load — and `--check` compares it with a fresh build, so
+# it cannot drift either.
+#
+# Shape (compact; it is fetched by a phone):
+#   { "v": 1,
+#     "ks3": [ { "s": subject, "c": unit code, "n": title, "y": year,
+#                "l": [ [lesson slug, lesson title], … ] }, … ],
+#     "ks4": [ { "s": subject, "id": topic id, "n": title,
+#                "l": [ [subtopic slug, title, { block: year, … }], … ] }, … ] }
+# A KS4 block key is pathway initial + tier initial: cf, ch, tf, th. A
+# subtopic a block does not teach has no key for it. KS3 lessons carry no
+# year of their own: a lesson is taught when its unit is, and the scheme of
+# work places units, not loose lessons.
+
+INDEX_NAME = os.path.join("consumer", "curriculum-index.json")
+
+
+def build_index(tree=None):
+    import ks4_seed_sow as sow
+    tree = tree or build_tree()
+
+    # (subject, slug) -> {block: year}. Omitted rows (past a year's week
+    # ceiling) are still TAUGHT in that year by the sequence — the database
+    # simply cannot hold them — so they count.
+    years = {}
+    for pathway in ("combined", "triple"):
+        for tier in ("foundation", "higher"):
+            key = pathway[0] + tier[0]
+            for subject in SUBJECTS:
+                rows, omitted = sow.build_block(pathway, tier, subject)
+                for r in rows + omitted:
+                    years.setdefault((subject, r["subtopic"]), {})[key] = r["year_group"]
+
+    import ks3_data
+    unit_year = {u["code"]: u["typical_year"] for u in ks3_data.build_units()}
+
+    ks3 = []
+    for subject in SUBJECTS:
+        for u in tree["ks3"][subject]:
+            ks3.append({"s": subject, "c": u["code"], "n": u["name"],
+                        "y": unit_year[u["code"]],
+                        "l": [[l["slug"], l["name"]] for l in u["lessons"]]})
+    ks4 = []
+    for subject in SUBJECTS:
+        for t in tree["ks4"][subject]:
+            ks4.append({"s": subject, "id": t["id"], "n": t["name"],
+                        "l": [[st["slug"], st["name"],
+                               {k: v for k, v in sorted(years.get((subject, st["slug"]), {}).items())}]
+                              for st in t["subtopics"]]})
+    return {"v": 1, "ks3": ks3, "ks4": ks4}
+
+
+def serialise_index(index):
+    return json.dumps(index, ensure_ascii=False, separators=(",", ":")) + "\n"
+
+
 # ── where the backend lives ────────────────────────────────────────────
 
 def default_out_dir():
@@ -265,12 +336,16 @@ def main():
                          "exit 1 on drift")
     ap.add_argument("--out", default=None,
                     help="directory to write %s into" % OUT_NAME)
+    ap.add_argument("--index-only", action="store_true",
+                    help="write only %s (no backend checkout needed)" % INDEX_NAME)
     ap.add_argument("--stdout", action="store_true",
                     help="print the JSON and write nothing")
     args = ap.parse_args()
 
     tree = build_tree()
     text = serialise(tree)
+    index_text = serialise_index(build_index(tree))
+    index_path = os.path.join(REPO, INDEX_NAME)
     ks4_t, ks4_s, ks3_u, ks3_l = counts(tree)
     summary = ("KS4 %d topics / %d subtopics · KS3 %d units / %d lessons"
                % (ks4_t, ks4_s, ks3_u, ks3_l))
@@ -278,6 +353,26 @@ def main():
     if args.stdout:
         sys.stdout.write(text)
         return 0
+
+    # The browser index is checked FIRST and independently of the backend
+    # file: a drifted index is a picker labelling a topic with the wrong year,
+    # and it must fail --check even when the backend mirror is fine.
+    if args.check:
+        have_index = None
+        if os.path.isfile(index_path):
+            with open(index_path, "r", encoding="utf-8") as f:
+                have_index = f.read()
+        if have_index != index_text:
+            print("❌ %s is missing or has DRIFTED from the Python. "
+                  "Rebuild: python3 tools/export_curriculum_tree.py" % INDEX_NAME)
+            return 1
+        print("✅ %s matches the Python (%d bytes)" % (INDEX_NAME, len(index_text.encode("utf-8"))))
+    else:
+        with open(index_path, "w", encoding="utf-8") as f:
+            f.write(index_text)
+        print("wrote %s — %d bytes" % (INDEX_NAME, len(index_text.encode("utf-8"))))
+        if args.index_only:
+            return 0
 
     out_dir = args.out or default_out_dir()
     path = os.path.join(out_dir, OUT_NAME)

@@ -1,0 +1,41 @@
+/* consumer/topic-picker.css — the one topic picker (consumer/topic-picker.js).
+   Tokens only, so both themes come from the KS3 token set the consumer pages
+   already load. Greyed rows are muted by COLOUR, never by opacity: the
+   "taught in Year N" line has to stay readable (AA) in both themes. */
+.tp { display: flex; flex-direction: column; gap: 8px; }
+.tp-browse { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 10px; }
+@media (max-width: 420px) { .tp-browse { grid-template-columns: minmax(0, 1fr); } }
+.tp-lab {
+  display: flex; flex-direction: column; gap: 6px;
+  font-weight: 700; font-size: 15px; color: var(--ks3-ink-muted);
+}
+.tp-sel, .tp-q {
+  width: 100%; box-sizing: border-box; min-height: 48px; padding: 10px 12px;
+  border: 2px solid var(--ks3-option-border); border-radius: var(--ks3-r-control);
+  background: var(--ks3-card); color: var(--ks3-ink); font: inherit; font-size: 16px;
+  text-overflow: ellipsis;
+}
+.tp-q { margin-top: -2px; }
+.tp-sel:focus-visible, .tp-q:focus-visible { outline: 3px solid var(--ks3-accent); outline-offset: 2px; border-color: var(--ks3-ink); }
+.tp-list {
+  list-style: none; margin: 4px 0 0; padding: 4px; max-height: 360px; overflow-y: auto;
+  border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card); background: var(--ks3-card);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.tp-opt {
+  display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 10px;
+  border: 2px solid transparent; cursor: pointer; color: var(--ks3-ink);
+}
+.tp-opt.tp-lesson { padding-left: 26px; }
+.tp-opt:hover, .tp-opt.tp-active { border-color: var(--ks3-rule-strong); }
+.tp-opt[aria-selected="true"] { border-color: var(--ks3-ink); background: var(--ks3-band); }
+.tp-opt.tp-off { cursor: default; color: var(--ks3-ink-muted); background: var(--ks3-inset); }
+.tp-opt.tp-off:hover { border-color: transparent; }
+.tp-opt.tp-off.tp-active { border-color: var(--ks3-rule-strong); }
+.tp-name { font-weight: 700; font-size: 16px; line-height: 1.3; overflow-wrap: anywhere; }
+.tp-off .tp-name { font-weight: 600; }
+.tp-meta { font-size: 13px; color: var(--ks3-ink-muted); overflow-wrap: anywhere; }
+.tp-why { font-weight: 700; color: var(--ks3-ink-body); }
+.tp-empty { padding: 12px; font-size: 15px; color: var(--ks3-ink-muted); }
+.tp-more { margin: 0; font-size: 14px; color: var(--ks3-ink-muted); }
+.tp-more:empty { display: none; }
