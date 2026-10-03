@@ -31,10 +31,20 @@
   body { margin: 0; padding: 0; background: #FBF3E6; font-size: 17px; }
   a { color: #A93411; text-decoration: none; }
   a:hover { color: #7F2408; text-decoration: underline; }
+  /* ⊕ B2C repair (3 Oct 2026, ruling 7): the literals above are the LIGHT
+     accent pair and measured 2.62:1 on the dark card. */
+  /* `:where()` keeps this at the bare `a` rule's own weight, so a link
+     that styles itself with a class (a tile, a filled CTA) still wins —
+     exactly as it does over the light rule above. */
+  :where(html[data-theme="dark"] .rd) a { color: var(--ks3-accent-text); }
+  :where(html[data-theme="dark"] .rd) a:hover { color: var(--ks3-accent-hover); }
   input, select, textarea, button { font: inherit; }
   input::placeholder { color: #9A8F86; }
 
   .ak-root {
+    /* Text on the accent-text fill: white in light, near-black in dark
+       (white on dark mode's peach accent is 2.02:1). */
+    --ak-on-accent: #FFFFFF;
     min-height: 100vh;
     background: var(--ks3-ground);
     color: var(--ks3-ink);
@@ -128,6 +138,24 @@
     font-size: 17px;
     cursor: pointer;
   }
+  html[data-theme="dark"] .ak-root { --ak-on-accent: #16120E; }
+
+  /* ⊕ B2C repair (ruling 5). "Delete this account" is an ordinary text link
+     at the very bottom of the page, not a button that looks like an action
+     a parent is being invited to take. */
+  .ak-delete { margin-top: 36px; padding-top: 18px; border-top: 2px solid var(--ks3-rule); }
+  .ak-textlink {
+    padding: 0; border: 0; background: none;
+    font: inherit; font-size: 15px; font-weight: 400;
+    color: var(--ks3-ink-muted);
+    text-decoration: underline; text-underline-offset: 2px;
+    cursor: pointer;
+  }
+  .ak-textlink:hover { color: var(--ks3-ink); }
+  .ak-tick { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px;
+             font-size: 15px; font-weight: 700; cursor: pointer; }
+  .ak-tick input { width: 22px; height: 22px; margin: 1px 0 0; flex: 0 0 auto;
+                   accent-color: var(--ks3-ink); }
   @media (min-width: 960px) {
     .ak-main { max-width: 1040px; padding: 44px 48px 80px; }
     .ak-cols { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 24px; align-items: start; }
@@ -213,9 +241,8 @@
     },
     none: {
       label: 'Not started', badge: 'band',
-      line: 'Nothing has been charged. The first week is free.',
-      cta: { label: 'Start your free week', kind: 'accent', act: 'checkout',
-             note: 'A card is needed to start. Nothing is taken until the free week ends.' }
+      line: 'Nothing has been charged.',
+      cta: { label: 'Start your free week', kind: 'accent', act: 'checkout', note: '' }
     }
   };
   var BADGES = {
@@ -226,7 +253,7 @@
   var CTAS = {
     outline: { border: 'var(--ks3-ink)',        bg: 'var(--ks3-card)',        fg: 'var(--ks3-ink)' },
     ink:     { border: 'var(--ks3-ink)',        bg: 'var(--ks3-ink)',         fg: 'var(--ks3-on-dark)' },
-    accent:  { border: 'var(--ks3-accent-text)', bg: 'var(--ks3-accent-text)', fg: '#FFFFFF' }
+    accent:  { border: 'var(--ks3-accent-text)', bg: 'var(--ks3-accent-text)', fg: 'var(--ak-on-accent)' }
   };
 
   var MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
@@ -255,7 +282,7 @@
     name: '', email: '',
     digest: true, marking: true,
     saved: false, passSent: false,
-    deleting: false, confirmText: '',
+    deleting: false, delTicked: false, dirty: false,
     prices: null, busy: false
   };
   var ctx = null;
@@ -415,8 +442,11 @@
         'justify-content:center;gap:8px;width:100%;min-height:52px;border:2px solid ' + look.border +
         ';border-radius:var(--ks3-r-control);background:' + look.bg + ';color:' + look.fg +
         ';font-weight:700;font-size:17px;cursor:pointer">' + esc(label) + ' ' + MARK_OUT + '</button>' +
-        '<p style="margin:0;font-size:13px;color:var(--ks3-ink-muted);text-align:center">' +
-        esc(def.cta.note) + '</p>';
+        (def.cta.note
+          ? ('<p style="margin:0;font-size:13px;color:var(--ks3-ink-muted);text-align:center">' +
+             esc(def.cta.note) + '</p>')
+          : '') +
+        '<div class="c-checkout-msg" id="ak-plan-msg" role="alert"></div>';
     } else {
       cta = '<p style="margin:0;font-size:14px;color:var(--ks3-ink-muted);text-align:center">' +
         (wantsPortal
@@ -502,7 +532,18 @@
   }
 
   function dataCard() {
-    var first = S.kids[0];
+    /* ⊕ B2C repair (ruling 4): one row per child. This linked the FIRST
+       child's reports only, so a second child's were unreachable from the
+       one place that promises "all terms". */
+    var reportRows = S.kids.length
+      ? S.kids.map(function (k) {
+          return '<a class="ak-datarow" href="' +
+            esc(C.href('/consumer/report.html', { child: k.id })) + '">' +
+            esc((k.first_name || 'Your child') + '’s termly reports') +
+            '<span style="color:var(--ks3-ink-muted)">Open</span></a>';
+        }).join('')
+      : ('<span class="ak-datarow" style="color:var(--ks3-ink-muted)">Termly reports' +
+         '<span>None yet</span></span>');
     /* Design's third row is a Privacy notice link. It was omitted on Night 3
        because no privacy page existed to point it at; /parents/privacy.html
        exists as of MRB-321, so the row is restored. ⚠️ That page is a SHELL
@@ -511,13 +552,9 @@
     return '<section class="ak-card" style="margin-top:16px">' +
       '<p class="ak-kicker">Your data</p>' +
       '<div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;font-size:16px">' +
-      (first
-        ? ('<a class="ak-datarow" href="' + esc(C.href('/consumer/report.html', { child: first.id })) +
-           '">Termly reports, all terms<span style="color:var(--ks3-ink-muted)">Open</span></a>')
-        : ('<span class="ak-datarow" style="color:var(--ks3-ink-muted)">Termly reports, all terms' +
-           '<span>None yet</span></span>')) +
+      reportRows +
       '<button class="ak-datarow" data-act="export" style="border:0;background:none;padding:0;' +
-        'font:inherit;color:#A93411;cursor:pointer;text-align:left">Download everything we hold' +
+        'font:inherit;color:var(--ks3-accent-text);cursor:pointer;text-align:left">Download everything we hold' +
         '<span style="color:var(--ks3-ink-muted)">JSON</span></button>' +
       '<a class="ak-datarow" href="/parents/privacy.html" target="_blank" rel="noopener">' +
         'Privacy notice<span style="color:var(--ks3-ink-muted)">Open</span></a>' +
@@ -535,8 +572,15 @@
       'portal</button>.</p></section>';
   }
 
+  /* ⊕ B2C repair (Mide's ruling 5). The very bottom of the page, an
+     ordinary text link, behind one deliberate confirm: the consequences, a
+     tick box that must be ticked, then "Delete my account" beside "Keep my
+     account" — and focus lands on Keep, so a stray Enter keeps it. No
+     typing. The request still sends `{confirm: 'DELETE'}`, so the backend
+     contract (consumer/account.js) is unchanged; the word is the page's
+     answer now, not the parent's. */
   function deleteCard() {
-    var head = '<section style="margin-top:28px;padding-top:20px;border-top:2px solid var(--ks3-rule)">';
+    var head = '<section class="ak-delete" id="ak-delete">';
 
     if (S.deletion) {
       var when = dayMonth(S.deletion.execute_after);
@@ -554,36 +598,30 @@
     }
 
     if (!S.deleting) {
-      return head + '<button class="ak-quiet" data-act="ask-delete" style="font-size:15px">' +
-        'Delete this account</button></section>';
+      return head + '<button type="button" class="ak-textlink" data-act="ask-delete">' +
+        'Delete this account</button><div id="ak-del-msg"></div></section>';
     }
 
-    var armed = S.confirmText === 'DELETE';
-    return head + '<div style="padding:18px;border:2px solid var(--ks3-ink);' +
-      'border-radius:var(--ks3-r-panel);background:var(--ks3-alert-tint)">' +
-      '<p style="margin:0;font-weight:700;font-size:18px">Delete your account and every child on it?</p>' +
+    return head + '<div role="group" aria-labelledby="ak-del-h" style="padding:18px;' +
+      'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-panel);background:var(--ks3-card)">' +
+      '<p id="ak-del-h" style="margin:0;font-weight:700;font-size:18px">Delete your account and ' +
+        'every child on it?</p>' +
       '<ul style="margin:10px 0 0;padding:0 0 0 18px;font-size:15px;color:var(--ks3-ink-body);' +
         'display:flex;flex-direction:column;gap:4px">' +
         '<li>The subscription is cancelled today; no further charges.</li>' +
         '<li>Children’s logins stop working immediately.</li>' +
         '<li>Progress, reports, answers and messages are deleted after 30 days. Download reports ' +
-          'first if the council needs them.</li></ul>' +
-      '<label style="display:block;margin-top:14px;font-weight:700;font-size:14px;' +
-        'color:var(--ks3-ink-muted)">Type DELETE to confirm' +
-        '<input id="ak-confirm" autocomplete="off" value="' + esc(S.confirmText) + '" ' +
-        'style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:48px;' +
-        'padding:10px 14px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);' +
-        'background:var(--ks3-card);font-family:var(--ks3-font-mono);font-size:17px;' +
-        'color:var(--ks3-ink)"></label>' +
+          'first if you need them.</li></ul>' +
+      '<label class="ak-tick"><input type="checkbox" id="ak-del-tick"' +
+        (S.delTicked ? ' checked' : '') + '>I understand</label>' +
       '<div id="ak-del-msg"></div>' +
       '<div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px">' +
-        '<button data-act="cancel-delete" style="min-height:48px;border:2px solid var(--ks3-ink);' +
-          'border-radius:var(--ks3-r-control);background:var(--ks3-card);font-weight:700;font-size:15px;' +
-          'color:var(--ks3-ink);cursor:pointer">Keep my account</button>' +
-        '<button data-act="do-delete"' + (armed ? '' : ' disabled') +
-          ' style="min-height:48px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);' +
-          'background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:15px;' +
-          'cursor:pointer;opacity:' + (armed ? '1' : '0.45') + '">Delete everything</button>' +
+        '<button type="button" data-act="cancel-delete" id="ak-keep" style="min-height:48px;' +
+          'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);' +
+          'font-weight:700;font-size:15px;color:var(--ks3-on-dark);cursor:pointer">Keep my account</button>' +
+        '<button type="button" data-act="do-delete" style="min-height:48px;' +
+          'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);' +
+          'color:var(--ks3-ink);font-weight:700;font-size:15px;cursor:pointer">Delete my account</button>' +
       '</div></div></section>';
   }
 
@@ -591,27 +629,20 @@
     renderHead();
     document.getElementById('c-main').innerHTML =
       '<div class="ak-cols"><div>' + planCard() + seatsCard() + '</div>' +
-      '<div>' + youCard() + dataCard() + cancelCard() + deleteCard() + '</div></div>';
+      '<div>' + youCard() + dataCard() + cancelCard() + '</div></div>' + deleteCard();
     bindInputs();
   }
 
   function bindInputs() {
     var n = document.getElementById('ak-name');
-    if (n) { n.addEventListener('input', function () { S.name = n.value; S.saved = false; }); }
+    if (n) { n.addEventListener('input', function () { S.name = n.value; S.saved = false; S.dirty = true; }); }
     var e = document.getElementById('ak-email');
-    if (e) { e.addEventListener('input', function () { S.email = e.value; S.saved = false; }); }
-    var c = document.getElementById('ak-confirm');
-    if (c) {
-      c.addEventListener('input', function () {
-        var was = S.confirmText === 'DELETE';
-        S.confirmText = c.value;
-        /* Re-render only when the button's armed state actually flips, so
-           typing does not rebuild the field under the caret. */
-        if ((S.confirmText === 'DELETE') !== was) {
-          render();
-          var again = document.getElementById('ak-confirm');
-          if (again) { again.focus(); again.setSelectionRange(again.value.length, again.value.length); }
-        }
+    if (e) { e.addEventListener('input', function () { S.email = e.value; S.saved = false; S.dirty = true; }); }
+    var t = document.getElementById('ak-del-tick');
+    if (t) {
+      t.addEventListener('change', function () {
+        S.delTicked = t.checked;
+        if (t.checked) { msg('', null, 'ak-del-msg'); }
       });
     }
   }
@@ -639,10 +670,15 @@
       S.kids = d.children || [];
       S.prefs = d.prefs || {};
       S.deletion = d.deletion || null;
-      S.name = S.parent.name || '';
-      S.email = S.parent.email || (ctx.session && ctx.session.user && ctx.session.user.email) || '';
-      S.digest = S.prefs.digest !== false;
-      S.marking = S.prefs.marking_email !== false;
+      /* A re-read (ruling 4) must not throw away what the parent is in the
+         middle of typing — the "You" card's fields are only refreshed from
+         the server when there is nothing unsaved in them. */
+      if (!S.dirty) {
+        S.name = S.parent.name || '';
+        S.email = S.parent.email || (ctx.session && ctx.session.user && ctx.session.user.email) || '';
+        S.digest = S.prefs.digest !== false;
+        S.marking = S.prefs.marking_email !== false;
+      }
       return d;
     });
   }
@@ -654,8 +690,8 @@
 
   /* ═══ actions ═════════════════════════════════════════════════════════ */
   var ACTS = {
-    'toggle-digest':  function () { S.digest = !S.digest; S.saved = false; render(); },
-    'toggle-marking': function () { S.marking = !S.marking; S.saved = false; render(); },
+    'toggle-digest':  function () { S.digest = !S.digest; S.saved = false; S.dirty = true; render(); },
+    'toggle-marking': function () { S.marking = !S.marking; S.saved = false; S.dirty = true; render(); },
 
     'reset-pass': function () {
       if (!S.email) { return msg('We don’t have an email address for this account.', 'error'); }
@@ -696,6 +732,7 @@
           return 'email';
         });
       }).then(function (which) {
+        S.dirty = false;
         return loadFamily().then(function () {
           S.saved = true;
           render();
@@ -721,33 +758,22 @@
            at the exact moment a parent is typing a card number. */
         if (d && d.url) { window.location.href = d.url; return; }
         C.setBusy(el, false);
-        msg('We couldn’t open the billing page. Please try again in a moment.', 'error');
+        msg('We couldn’t open the billing page. Please try again in a moment.', 'error', planMsgHost(el));
       }).catch(function (e) {
         C.setBusy(el, false);
         msg(e.code === 'no_customer'
           ? 'There’s no billing account to manage yet — start a subscription first.'
-          : e.message, 'error');
+          : e.message, 'error', planMsgHost(el));
       });
     },
 
+    /* The one checkout path (consumer-common.js, ruling 1): spinner on the
+       button, a 25-second limit, and a plain line under it on any failure. */
     'checkout': function (el) {
-      C.setBusy(el, true, 'Opening…');
-      C.api('/api/consumer/checkout', {
-        method: 'POST', token: ctx.token, body: { interval: interval() }
-      }).then(function (d) {
-        if (d && d.url) { window.location.href = d.url; return; }
-        C.setBusy(el, false);
-        msg('We couldn’t open the payment page. Please try again in a moment.', 'error');
-      }).catch(function (e) {
-        C.setBusy(el, false);
-        if (e.code === 'no_children') {
-          return msg('Add a child first — the subscription is priced per child, so there’s nothing ' +
-                     'to start yet.', 'error');
-        }
-        if (e.code === 'already_subscribed') {
-          return msg('This account already has a subscription. Use Manage billing to change it.', 'error');
-        }
-        msg(e.message, 'error');
+      C.startCheckout(el, {
+        token: ctx.token, interval: interval(),
+        addChildHref: C.href('/consumer/signup.html', { step: 'child' }),
+        msgHost: document.getElementById('ak-plan-msg') || undefined
       });
     },
 
@@ -788,27 +814,44 @@
       });
     },
 
-    'ask-delete':    function () { S.deleting = true; S.confirmText = ''; render(); },
-    'cancel-delete': function () { S.deleting = false; S.confirmText = ''; render(); },
+    'ask-delete': function () {
+      S.deleting = true; S.delTicked = false; render();
+      // The safe answer takes focus.
+      var keep = document.getElementById('ak-keep');
+      if (keep) { keep.focus(); }
+    },
+    'cancel-delete': function () {
+      S.deleting = false; S.delTicked = false; render();
+      var link = document.querySelector('[data-act="ask-delete"]');
+      if (link) { link.focus(); }
+    },
 
     'do-delete': function (el) {
-      if (S.confirmText !== 'DELETE') { return; }
-      C.setBusy(el, true, 'Scheduling…');
+      if (!S.delTicked) {
+        msg('Tick “I understand” first.', 'error', 'ak-del-msg');
+        var t = document.getElementById('ak-del-tick');
+        if (t) { t.focus(); }
+        return;
+      }
+      C.setBusy(el, true, 'Deleting…');
       C.api('/api/consumer/family/delete-request', {
         method: 'POST', token: ctx.token, body: { confirm: 'DELETE' }
       }).then(function () {
         S.deleting = false;
-        S.confirmText = '';
+        S.delTicked = false;
         return loadFamily();
-      }).then(function () { render(); })
-        .catch(function (e) { C.setBusy(el, false); msg(e.message, 'error', 'ak-del-msg'); });
+      }).then(function () {
+        render();
+        var sec = document.getElementById('ak-delete');
+        if (sec) { sec.scrollIntoView({ block: 'center' }); }
+      }).catch(function (e) { C.setBusy(el, false); msg(e.message, 'error', 'ak-del-msg'); });
     },
 
     'undo-delete': function (el) {
       C.setBusy(el, true, 'Undoing…');
       C.api('/api/consumer/family/delete-request', { method: 'DELETE', token: ctx.token })
         .then(function () { return loadFamily(); })
-        .then(function () { render(); msg('Your account is staying. Nothing was deleted.', 'ok'); })
+        .then(function () { render(); msg('Your account is staying. Nothing was deleted.', 'ok', 'ak-del-msg'); })
         .catch(function (e) { C.setBusy(el, false); msg(e.message, 'error', 'ak-del-msg'); });
     }
   };
@@ -822,10 +865,33 @@
     act(el);
   });
 
+  /* Where a plan-card failure goes: directly under the button pressed. */
+  function planMsgHost() { return document.getElementById('ak-plan-msg') ? 'ak-plan-msg' : 'ak-msg'; }
+
   C.boot({ requireSession: true, run: function (context) {
     ctx = context;
+
+    /* ⊕ B2C repair (ruling 4, B7). Back from Stripe's portal or checkout
+       (a back/forward-cache restore), or back to this tab: re-read the
+       family. `S.dirty` keeps anything typed and unsaved. */
+    var lastLoad = Date.now();
+    function refresh() {
+      if (Date.now() - lastLoad < 2000) { return; }
+      lastLoad = Date.now();
+      loadFamily().then(function () {
+        var a = document.activeElement;
+        if (!(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))) { render(); }
+      }).catch(function (e) { console.error('[account/refresh]', e); });
+    }
+    window.addEventListener('pageshow', function (ev) {
+      if (ev.persisted) { lastLoad = 0; refresh(); }
+    });
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible') { refresh(); }
+    });
+
     return Promise.all([loadFamily(), loadPrices()])
-      .then(render)
+      .then(function () { lastLoad = Date.now(); render(); })
       .catch(function (e) {
         renderHead();
         C.fail(document.getElementById('c-main'), e.message,

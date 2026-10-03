@@ -36,7 +36,9 @@ way and are reached by SQL, and both are named as such in the report:
 
 In every non-writable state the drive demands all three, together, because any
 one of them alone is not enforcement:
-  · the page disables its `[data-write]` controls (guard()/applyWritable);
+  · the page refuses the write itself — the child pages disable their
+    `[data-write]` controls (guard()/applyWritable); the parent dashboard,
+    since 3 Oct 2026, does not draw them at all;
   · the backend answers 423 `org_locked` (requireWritable / writableHere);
   · RLS refuses underneath — `family_messages_send` carries the conjunct
     `org_access_state(org_id) = 'full'`, so the child's own JWT is refused by
@@ -562,8 +564,12 @@ def page_layer(p, label, writable, kid_sess, shots_prefix, overview_expect,
             check(wc["total"] > 0 and wc["disabled"] == 0,
                   "%s: parent %s leaves its %d write controls live" % (label, vlabel, wc["total"]), wc)
         else:
-            check(wc["total"] > 0 and wc["disabled"] == wc["total"],
-                  "%s: parent %s disables all %d write controls" % (label, vlabel, wc["total"]), wc)
+            # ⊕ B2C repair (3 Oct 2026, Mide's ruling 2): the parent dashboard
+            # no longer greys its write controls with a bare `disabled` — the
+            # ones the backend refuses (Set work, the message box, Send) are
+            # not drawn at all, and one line at the top says why.
+            check(wc["total"] == 0,
+                  "%s: parent %s draws none of its refused write controls" % (label, vlabel), wc)
 
     t2 = visit(p, "/consumer/account.html", "%s · parent account" % label,
                expect=account_expect, shot="%s-account-390.png" % shots_prefix)

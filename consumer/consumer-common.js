@@ -177,6 +177,21 @@
      a parent could read. A raw `fetch` rejection says "Failed to fetch",
      which on a consumer surface is indistinguishable from "your card was
      declined" — so the network case is translated here, once. */
+  /* ⊕ B2C repair, 3 Oct 2026 (Mide's ruling 1). EVERY call now gives up.
+     Before this, a backend that accepted the connection and never answered
+     left the caller's spinner turning forever — "Opening…" on the account
+     page, a dead "Start your free week" on the dashboard. A timeout is an
+     Error like any other, with a sentence on it and `code: 'timeout'`, so
+     every existing `.catch(e => msg(e.message))` shows it without change.
+
+     The default is generous (30s) because Render can be slow to wake; the
+     handful of routes that do real work before answering (AI marking, a
+     week being generated, a bulk import) get two minutes. `opts.timeout`
+     overrides both; 0 means "no limit" and nothing in the estate uses it. */
+  var DEFAULT_TIMEOUT_MS = 30000;
+  var LONG_TIMEOUT_MS = 120000;
+  var LONG_CALL = /\/(mark|generate|mb-mark)$|\/unit-check\/submit$|\/pupils\/bulk$/;
+
   function api(path, opts) {
     opts = opts || {};
     var base = (window.MrBadmusConfig && window.MrBadmusConfig.BACKEND_URL) || '';
@@ -186,22 +201,29 @@
       init.headers['Content-Type'] = 'application/json';
       init.body = JSON.stringify(opts.body);
     }
+    var ms = opts.timeout != null ? Number(opts.timeout)
+           : (LONG_CALL.test(String(path).split('?')[0]) ? LONG_TIMEOUT_MS : DEFAULT_TIMEOUT_MS);
+    var ctl = (ms > 0 && typeof AbortController === 'function') ? new AbortController() : null;
+    var timer = null, timedOut = false;
+    if (ctl) {
+      init.signal = ctl.signal;
+      timer = setTimeout(function () { timedOut = true; ctl.abort(); }, ms);
+    }
+    function settle() { if (timer) { clearTimeout(timer); timer = null; } }
+
     return fetch(base + path, init).then(function (res) {
       return res.text().then(function (text) {
+        settle();
         var data = null;
         try { data = text ? JSON.parse(text) : null; } catch (e) { data = null; }
         if (res.ok) { return data; }
 
-        /* A 404 on /api/consumer/* is the SECOND switch being off, and it is
-           worth naming: with the frontend flag on and the backend one off,
-           every button on every page fails identically and looks like a
-           bug. Saying so here has saved the next person an evening. */
         /* ⊕ MRB-309/315, Night 2. The contract gives every consumer error
            BOTH a machine `error` code and a human `message`, and this used to
            read `error || message` — so a 429 cap arrived on screen as the
            word "cap_reached" and a 423 as "org_locked". A parent reading
            "cap_reached" has been told nothing. `message` wins; the code is
-           still carried, on the Error, for the two pages that branch on it
+           still carried, on the Error, for the pages that branch on it
            (exam.html on quota_reached, every page on org_locked). */
         var code = (data && data.error) || '';
         var msg  = (data && data.message) || '';
@@ -209,9 +231,8 @@
         /* A 404 on /api/consumer/* with nothing in it is the SECOND switch
            being off, and it is worth naming: with the frontend flag on and
            the backend one off, every button on every page fails identically
-           and looks like a bug. Saying so here has saved the next person an
-           evening. A 404 that DID carry words keeps its own words — that is
-           a real missing thing, not a switch. */
+           and looks like a bug. A 404 that DID carry words keeps its own
+           words — that is a real missing thing, not a switch. */
         if (!msg && res.status === 404 && path.indexOf('/api/consumer/') === 0) {
           msg = 'This part of MrBadmus isn’t switched on for this environment yet.';
         }
@@ -225,10 +246,135 @@
         err.data = data;
         throw err;
       });
-    }, function () {
-      throw new Error(
-        'We couldn’t reach MrBadmus. Check your connection and try again.'
-      );
+    }).catch(function (e) {
+      settle();
+      // An answer from the backend (it carries a status) passes straight on.
+      if (e && e.status) { throw e; }
+      var out = timedOut
+        ? new Error('MrBadmus took too long to answer. Please try again.')
+        : new Error('We couldn’t reach MrBadmus. Check your connection and try again.');
+      out.code = timedOut ? 'timeout' : 'network';
+      out.status = 0;
+      throw out;
+    });
+  }
+
+  /* ── startCheckout — THE one way into Stripe (Mide's ruling 1) ─────────
+     Every "Start your free week" / "Restart" control in the estate calls
+     this and nothing else: the dashboard's banner, the account page, the
+     signup plan step. Four copies had four different ideas of what a slow
+     Stripe looked like, and two of them were "spin forever".
+
+     What it guarantees, in order:
+       · the pressed control shows a spinner and NOTHING else (no sentence
+         about Stripe — Mide: the hand-off needs no narration);
+       · a second press does nothing while the first is in flight
+         (aria-disabled + aria-busy; never a bare `disabled`, which would
+         make a busy button look dead);
+       · it gives up after CHECKOUT_TIMEOUT_MS;
+       · on ANY failure — timeout, network, non-2xx, a 200 with no url — the
+         control comes back exactly as it was and a plain line appears
+         directly under it with a way to try again. `no_children` offers
+         "Add a child" instead, because trying again cannot help.
+     Resolves true when the browser is leaving for Stripe, false otherwise.
+
+     opts: { token, interval: 'month'|'year', addChildHref, beforeRedirect,
+             msgHost — where the failure line goes when "directly after the
+             button" would land inside a flex row (the dashboard banner) } */
+  var CHECKOUT_TIMEOUT_MS = 25000;
+  var busyCheckouts = [];
+
+  function restoreCheckout(btn) {
+    if (!btn || btn.getAttribute('aria-busy') !== 'true') { return; }
+    if (btn.dataset.idleHtml != null) { btn.innerHTML = btn.dataset.idleHtml; }
+    delete btn.dataset.idleHtml;
+    btn.style.minWidth = btn.dataset.idleMinWidth || '';
+    delete btn.dataset.idleMinWidth;
+    btn.removeAttribute('aria-busy');
+    btn.removeAttribute('aria-disabled');
+    if (btn.dataset.idleLabel != null) {
+      if (btn.dataset.idleLabel) { btn.setAttribute('aria-label', btn.dataset.idleLabel); }
+      else { btn.removeAttribute('aria-label'); }
+      delete btn.dataset.idleLabel;
+    }
+    busyCheckouts = busyCheckouts.filter(function (b) { return b !== btn; });
+  }
+
+  /* Back from Stripe with the browser's back button restores this page
+     from the back/forward cache exactly as it was left — spinner and all.
+     A control that was mid-hand-off when the page was frozen is idle now. */
+  window.addEventListener('pageshow', function (ev) {
+    if (!ev.persisted) { return; }
+    busyCheckouts.slice().forEach(restoreCheckout);
+  });
+
+  function checkoutMsgHost(btn) {
+    var next = btn.nextElementSibling;
+    if (next && next.classList && next.classList.contains('c-checkout-msg')) { return next; }
+    var el = document.createElement('div');
+    el.className = 'c-checkout-msg';
+    el.setAttribute('role', 'alert');
+    btn.parentNode.insertBefore(el, btn.nextSibling);
+    return el;
+  }
+
+  function startCheckout(btn, opts) {
+    opts = opts || {};
+    if (!btn || btn.getAttribute('aria-busy') === 'true') { return Promise.resolve(false); }
+    var host = opts.msgHost || checkoutMsgHost(btn);
+    host.innerHTML = '';
+
+    btn.dataset.idleHtml = btn.innerHTML;
+    btn.dataset.idleMinWidth = btn.style.minWidth || '';
+    btn.dataset.idleLabel = btn.getAttribute('aria-label') || '';
+    // Hold the width: a button that shrinks to a spinner jumps the layout.
+    if (btn.offsetWidth) { btn.style.minWidth = btn.offsetWidth + 'px'; }
+    btn.setAttribute('aria-label', btn.textContent.trim() || 'Start');
+    btn.innerHTML = '<span class="c-spin" aria-hidden="true"></span>';
+    btn.setAttribute('aria-busy', 'true');
+    btn.setAttribute('aria-disabled', 'true');
+    busyCheckouts.push(btn);
+
+    return api('/api/consumer/checkout', {
+      method: 'POST', token: opts.token, timeout: CHECKOUT_TIMEOUT_MS,
+      body: { interval: opts.interval === 'year' ? 'year' : 'month' }
+    }).then(function (d) {
+      if (!d || !d.url) {
+        var none = new Error('');
+        none.code = 'no_url';
+        throw none;
+      }
+      if (typeof opts.beforeRedirect === 'function') {
+        try { opts.beforeRedirect(); } catch (e) { console.error('[consumer/checkout]', e); }
+      }
+      window.location.href = d.url;
+      return true;
+    }).catch(function (e) {
+      console.error('[consumer/checkout]', e);
+      restoreCheckout(btn);
+      var code = (e && e.code) || '';
+      if (code === 'no_children') {
+        var add = opts.addChildHref || href('/consumer/signup.html', { step: 'child' });
+        host.innerHTML = '<p>No children on the account yet. <a class="c-linkbtn" href="' + escapeHtml(add) +
+          '">Add a child</a></p>';
+        return false;
+      }
+      var line = code === 'timeout' ? 'That took too long.'
+               : code === 'network' ? 'We couldn’t reach MrBadmus.'
+               : code === 'already_subscribed' ? 'This account already has a subscription.'
+               : 'The payment page didn’t open.';
+      host.innerHTML = '<p>' + escapeHtml(line) +
+        (code === 'already_subscribed' ? '' :
+          ' <button type="button" class="c-linkbtn" data-c-retry>Try again</button>') + '</p>';
+      var again = host.querySelector('[data-c-retry]');
+      if (again) {
+        again.addEventListener('click', function (ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          startCheckout(btn, opts);
+        });
+      }
+      return false;
     });
   }
 
@@ -873,6 +1019,7 @@
     fail: fail,
     setMsg: setMsg,
     setBusy: setBusy,
+    startCheckout: startCheckout,
     getClient: getClient,
     notFound: notFound,
     isOperator: isOperator,

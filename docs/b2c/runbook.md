@@ -34,7 +34,7 @@ badge at the top right of the "Your plan" card is the label in column 2.
 | Stripe / our status | Badge the parent sees | Access | What the child can do | What the parent reads, and the button |
 |---|---|---|---|---|
 | `trialing`, trial end still ahead | **Free week** | full | Everything | "Full access. Your card is on file and nothing has been charged." A panel shows **Free week ends** *date*, a progress bar, and "Then £x a month. Cancel before *date* and nothing is charged." Button: **Manage card in Stripe** |
-| `trialing`, trial end passed (Stripe never told us it ended) | **Free week** | **read_only** | Read lessons and past work; cannot hand anything in | Same card, but every write button is greyed and a banner reads **Read only just now**. This state is a fault, not a plan: it means a `customer.subscription.updated` webhook never arrived — see §11 |
+| `trialing`, trial end passed (Stripe never told us it ended) | **Free week** | **read_only** | Read lessons and past work; cannot hand anything in | Same card. On the parent dashboard Set work and the message box are hidden and one line at the top says why; on the child's pages every write button is greyed and a banner reads **Read only just now**. This state is a fault, not a plan: it means a `customer.subscription.updated` webhook never arrived — see §11 |
 | `active` | **Active** | full | Everything | "Next payment *date*. Receipts go to your email each month." Button: **Manage billing in Stripe** |
 | `active`, but they pressed cancel in the Stripe portal | **Cancelled** | full | Everything, to the end of the period | "No further charges." plus "Everything works until *date*. After that, logins open but no new work is set." Button: **Resume subscription** |
 | `past_due`, **inside** the 7-day grace | **Payment failed** | full | Everything | "The last payment didn't go through." plus "Your card was declined on *date*. We'll retry on *date*. Work carries on as normal until *date*. If it still fails, work stops being set and the account pauses. Nothing is deleted." Button: **Update card in Stripe** |
@@ -43,7 +43,7 @@ badge at the top right of the "Your plan" card is the label in column 2.
 | `canceled`, paid period over | **Paused** | **locked** | Read only; the login still works | "The subscription ended and work has stopped being set." plus "Ended *date*. Your children's logins open but show no new work. Reports, marked answers and chat history are all still here." Button: **Restart · from £x a month** |
 | `comped` (our own status — a free account you granted), still in date | **Active** | full | Everything | Reads exactly like Active. There is no card to manage |
 | `comped`, run out | **Paused** | locked | As Paused above | As Paused above |
-| `none` — signed up, never checked out | **Not started** | `none` | Look around; cannot hand in | "Nothing has been charged. The first week is free." Button: **Start your free week** |
+| `none` — signed up, never checked out | **Not started** | `none` | Look around; cannot hand in | Account: "Nothing has been charged." Button: **Start your free week**. Dashboard: one line at the top, "Your family hasn't started yet." with **Start your free week**; Set work and the message box are not shown until they start (everything else — edit, pause, reset password, remove — works). With no children the dashboard offers **Add a child** instead |
 | Organisation (invoiced) | **Active** while the invoiced period runs, else **Paused** | full / read_only / locked | — | No button. Organisations are invoiced by hand |
 
 **The grace period is seven days after the period end**, and it applies only
@@ -265,9 +265,11 @@ as "Pick a queued answer". Everything else is the same page and works at 390px w
 
 ## 10. Someone asks to delete their account
 
-The parent does it themselves: **Account** → to the bottom → **Delete this
-account** → a red panel appears → they must type `DELETE` into "Type DELETE to
-confirm" → **Delete everything**. **Keep my account** backs out.
+The parent does it themselves: **Account** → the very bottom → the plain
+**Delete this account** link → a panel lists what happens → they tick **I
+understand** → **Delete my account**. **Keep my account** (which has the
+focus) backs out. There is no typing any more (3 Oct 2026); the page still
+sends the backend its `confirm: 'DELETE'`.
 
 What that actually does, today:
 

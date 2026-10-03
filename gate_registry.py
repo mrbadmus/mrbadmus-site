@@ -2348,7 +2348,13 @@ GATES = [
                   "triple/higher/physics/electricity/"
                   "series-parallel-circuits.html",
                   "triple/higher/physics/electricity/resistors.html",
-                  "triple/foundation/chemistry/bonding/nanoparticles.html"],
+                  "triple/foundation/chemistry/bonding/nanoparticles.html",
+                  # ⊕ B2C repair, 3 Oct 2026 — the signed-in family pages,
+                  # measured offline through consumer_dash_fixture.py.
+                  "consumer_dash_fixture.py", "consumer/overview.html",
+                  "consumer/account.html", "consumer/consumer.css",
+                  "consumer/consumer-common.js", "shared/config.js",
+                  "shared/brand/brand.css", "shared/brand/brand.js"],
          why="Mide, Experience run item 13: 'much of the dark text on the "
              "cream background isn't clear enough.' Opens every teacher and "
              "student page (plus one KS3 lesson, one KS4 lesson, one KS4 "
@@ -2431,6 +2437,26 @@ GATES = [
              "as the fast gate's own target — this is the same measurement "
              "code and the same floor, on a page list the fast gate cannot "
              "afford to also carry."),
+
+    # ── ⊕ B2C repair, 3 Oct 2026 · the family dashboard and account page ──
+    dict(name="consumer_dash_drive",
+         cmd=["python3", "consumer_dash_drive.py", "--skip-timeout"],
+         speed="slow",
+         watches=["consumer_dash_drive.py", "consumer_dash_fixture.py", "ks3_browser.py",
+                  "consumer/overview.html", "consumer/account.html",
+                  "consumer/signup.html", "consumer/consumer-common.js",
+                  "consumer/consumer.css", "shared/config.js"],
+         why="Mide's B2C repair rulings, 3 Oct 2026, driven OFFLINE (a "
+             "stubbed session and /api/consumer/* — no backend, no TEST "
+             "fixtures, so unlike the mrb327_ drives it cannot collide with "
+             "another lane). One checkout path that never spins forever and "
+             "always says what failed; a pre-trial family sees one line and "
+             "no greyed controls, while edit/pause/reset/remove still work; "
+             "a stale message never outlives the next press; the family is "
+             "re-read on coming back; every child's reports are listed; the "
+             "delete confirm is a tick box and lands on Keep. --skip-timeout "
+             "drops the one 26-second hanging-checkout wait; run without it "
+             "to prove the timeout itself."),
 
     # ── ⊕ Experience run, 24 Sep 2026 (stream G) · keyboard focus ──────
 
@@ -2670,6 +2696,11 @@ GATES = [
 # repo root, so a new script cannot be quietly neither.
 
 EXCLUDED = {
+    "consumer_dash_fixture.py":
+        "Import-only fixture (B2C repair, 3 Oct 2026): the offline signed-in "
+        "parent that contrast_audit.py and consumer_dash_drive.py load "
+        "through addScriptToEvaluateOnNewDocument. No entry point; both of "
+        "its callers are gates and both watch it.",
     # ── ⊕ theme run, 27 Sep 2026 ─────────────────────────────────────────────
     "theme_head.py":
         "the ONE pre-paint theme snippet and header slot every generator "

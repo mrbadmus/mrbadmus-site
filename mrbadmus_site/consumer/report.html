@@ -50,6 +50,11 @@
   body { margin: 0; padding: 0; background: #FBF3E6; }
   a { color: #A93411; text-decoration: none; }
   a:hover { color: #7F2408; }
+  /* ⊕ B2C repair (3 Oct 2026): the light accent pair above is 2.6:1 on the
+     dark card; in dark, links take the theme's own accent text. `:where()`
+     keeps the bare-`a` weight so class-styled links still win. */
+  :where(html[data-theme="dark"] .rd) a { color: var(--ks3-accent-text); }
+  :where(html[data-theme="dark"] .rd) a:hover { color: var(--ks3-accent-hover); }
 
   .rpt-root {
     font-family: var(--ks3-font-body);

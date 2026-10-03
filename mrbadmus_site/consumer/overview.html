@@ -41,10 +41,21 @@
   }
   a { color: #A93411; text-decoration: none; }
   a:hover { color: #7F2408; text-decoration: underline; }
+  /* ⊕ B2C repair (3 Oct 2026, ruling 7): the two literals above are the
+     LIGHT accent pair and do not flip — 2.35:1 on the dark band, 2.62:1 on
+     the dark card. In dark, links take the theme's own accent text. */
+  /* `:where()` keeps this at the bare `a` rule's own weight, so a link
+     that styles itself with a class (a tile, a filled CTA) still wins —
+     exactly as it does over the light rule above. */
+  :where(html[data-theme="dark"] .rd) a { color: var(--ks3-accent-text); }
+  :where(html[data-theme="dark"] .rd) a:hover { color: var(--ks3-accent-hover); }
   input, select, textarea, button { font: inherit; }
   input::placeholder, textarea::placeholder { color: #9A8F86; }
 
   .dk-root {
+    /* Text ON the accent-text fill (the CTAs, the unread pill). White in
+       light; in dark the fill is a light peach and white on it is 2.02:1. */
+    --dk-on-accent: #FFFFFF;
     min-height: 100vh;
     background: var(--ks3-ground);
     color: var(--ks3-ink);
@@ -106,6 +117,9 @@
     place-items: center;
     border-radius: 14px;
     background: var(--ks3-accent);
+    /* A fixed near-black, not --ks3-ink: ink on the accent measured 4.49:1
+       in light and 2.35:1 in dark (where ink turns cream). */
+    color: #16120E;
     border: 2px solid var(--ks3-ink);
     font-family: var(--ks3-font-display);
     font-weight: 800;
@@ -118,7 +132,7 @@
     padding: 0 8px;
     border-radius: 99px;
     background: var(--ks3-accent-text);
-    color: #fff;
+    color: var(--dk-on-accent);
     font-family: var(--ks3-font-mono);
     font-weight: 500;
     font-size: 13px;
@@ -211,6 +225,38 @@
     border-bottom: 2px solid var(--ks3-rule);
     font-size: 15px;
   }
+  /* ⊕ B2C repair (ruling 2). The ONE line a family that cannot write sees —
+     not started, ended, or read-only — with its one action. Unlike
+     .dk-banner it is shown at every width (the sidebar does not repeat it),
+     and it is the only explanation: the controls it would otherwise have
+     to explain are not drawn at all. */
+  .dk-gate {
+    padding: 12px 20px;
+    background: var(--ks3-band);
+    border-bottom: 2px solid var(--ks3-rule);
+    font-size: 15px;
+  }
+  .dk-gate-alert {
+    background: var(--ks3-alert-tint);
+    border-bottom-color: var(--ks3-alert-border);
+    color: var(--ks3-alert-text);
+  }
+  .dk-gate-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 14px; }
+  .dk-gate-row > span { flex: 1 1 220px; }
+  .dk-gate-btn {
+    min-height: 44px;
+    padding: 0 18px;
+    border: 2px solid var(--ks3-accent-text);
+    border-radius: var(--ks3-r-control);
+    background: var(--ks3-accent-text);
+    color: var(--dk-on-accent);
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .dk-gate-link { font-weight: 700; white-space: nowrap; }
+  .dk-gate .c-checkout-msg { max-width: 560px; }
   .dk-banner-alert {
     background: var(--ks3-alert-tint);
     border-bottom-color: var(--ks3-alert-border);
@@ -226,6 +272,22 @@
   /* ⊕ One mark (Mide, 13 Sep 2026): `.dk-brandword` retired — the brand is
      the one lockup (`C.brandLockup`), styled by shared/brand/brand.css. */
   .dk-main { max-width: 560px; margin: 0 auto; padding: 24px 20px 40px; }
+  .dk-cta {
+    margin-top: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+    padding: 0 22px;
+    border: 2px solid var(--ks3-ink);
+    border-radius: var(--ks3-r-control);
+    background: var(--ks3-ink);
+    color: var(--ks3-on-dark);
+    font-weight: 700;
+    font-size: 17px;
+    text-decoration: none;
+  }
+  .dk-cta:hover { color: var(--ks3-on-dark); text-decoration: none; }
   .dk-tabbar {
     position: fixed;
     left: 0; right: 0; bottom: 0;
@@ -266,6 +328,10 @@
       overflow-y: auto;
     }
     .dk-mobilehead, .dk-tabbar, .dk-banner { display: none !important; }
+    /* The action sits right after the sentence, not at the far edge where
+       the fixed theme switcher covers it. */
+    .dk-gate { padding: 14px 48px; }
+    .dk-gate-row > span { flex: 0 1 auto; }
     .dk-main { max-width: 1080px; padding: 44px 48px 80px; }
     .dk-cols { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 24px; align-items: start; }
     .dk-cards { display: grid !important; grid-template-columns: 1fr 1fr; flex-direction: unset !important; }
@@ -273,6 +339,25 @@
     .dk-chat { min-height: calc(100vh - 200px) !important; }
     .dk-composer { position: static !important; }
     .dk-work { margin-top: 0 !important; }
+  }
+
+  /* ⊕ B2C repair (3 Oct 2026, ruling 7). Dark mode. The sidebar was a
+     literal cream (#FFFCF5) under a wordmark and nav that follow the theme,
+     so in dark the brand read 1.08:1 and every nav label 1.15:1. And
+     Design's ink "nudge" card is filled with --ks3-ink, which dark turns
+     cream — the same flip KS3 handles for its own ink panels in
+     ks3-theme.css, so the same remap is applied here, page-locally. */
+  html[data-theme="dark"] .dk-root { --dk-on-accent: #16120E; }
+  @media (min-width: 960px) {
+    html[data-theme="dark"] .dk-side {
+      border-right-color: var(--ks3-ink);
+      background: var(--ks3-card);
+    }
+  }
+  html[data-theme="dark"] .rd .dk-dark {
+    --ks3-on-dark-body: #2E2419;
+    --ks3-on-dark-muted: #4A3C2E;
+    --ks3-alert: #5A430A;
   }
 
   /* MRB-327 a11y (WCAG 2.4.7 Focus Visible). #dk-draft carried
@@ -341,9 +426,17 @@
 
    ── ACCESS vs BILLING ──────────────────────────────────────────────────
    `billing.state` chooses the banner Design drew. `billing.access` decides
-   whether anything may be written, through `guard()`/`applyWritable()`.
-   They are different words for different questions and a card that failed
-   yesterday is `past_due` (billing) and still `full` (access).
+   whether anything may be written, through `guard()`. They are different
+   words for different questions and a card that failed yesterday is
+   `past_due` (billing) and still `full` (access).
+
+   ⊕ B2C repair (3 Oct 2026, Mide's ruling 2). A family that cannot write
+   used to get every `[data-write]` control greyed with a bare `disabled`
+   and no reason — including Reset password, Remove, Edit and Pause, which
+   the backend allows in every state. Now: the controls the backend REFUSES
+   when access is not `full` (Set work, the message box and Send — the only
+   parent routes behind requireWritable/writableHere) are not drawn at all,
+   one line at the top says why (`gateHtml()`), and everything else works.
    ═══════════════════════════════════════════════════════════════════════ */
 (function () {
   var C = window.MrBadmusConsumer;
@@ -717,9 +810,39 @@
     return S.kids.reduce(function (n, k) { return n + (k.unread || 0); }, 0);
   }
 
+  /* ⊕ B2C repair (ruling 2). The one line for a family that cannot write,
+     and its one action. `access` decides (see guard()); `state` only picks
+     the words. With no children there is nothing to start yet — the
+     overview's own "Add a child" is the action — so no line is drawn. */
+  function gateHtml() {
+    var b = S.billing;
+    var access = String(b.access || '').toLowerCase();
+    var st = String(b.state || '').toLowerCase();
+    if (S.writable) { return ''; }
+    if (access === 'none' || (!access && st === 'none')) {
+      if (!S.kids.length) { return ''; }
+      return gateRow('Your family hasn’t started yet.',
+        b.can_checkout === false ? '' :
+        '<button type="button" class="dk-gate-btn" data-act="checkout">Start your free week</button>');
+    }
+    if (access === 'locked' || st === 'locked') {
+      return gateRow('Your subscription has ended. New work and messages are off.',
+        b.can_checkout === false ? '' :
+        '<button type="button" class="dk-gate-btn" data-act="checkout">Restart</button>');
+    }
+    return '';
+  }
+  function gateRow(text, action, alert) {
+    return '<div class="dk-gate' + (alert ? ' dk-gate-alert' : '') + '"><div class="dk-gate-row">' +
+      '<span>' + text + '</span>' + action + '</div>' +
+      '<div class="c-checkout-msg" id="dk-gate-msg" role="alert"></div></div>';
+  }
+
   function bannerHtml() {
     var b = S.billing, st = String(b.state || '').toLowerCase();
     var account = esc(C.href('/consumer/account.html'));
+    var gate = gateHtml();
+    if (gate) { return gate; }
     if (st === 'trialing') {
       var end = dayMonth(b.trial_end);
       var days = b.days_left;
@@ -760,6 +883,10 @@
       } else {
         mid += ' New work, marking and messages are paused until the payment goes through.';
       }
+      if (!inGrace) {
+        return gateRow('<strong>Payment didn’t go through.</strong>' + mid,
+          '<a class="dk-gate-link" href="' + account + '">Fix card</a>', true);
+      }
       return '<div class="dk-banner dk-banner-alert"><span style="flex:1">' +
         '<strong>Payment didn’t go through.</strong>' + mid +
         '</span><a href="' + account + '" style="font-weight:700;white-space:nowrap">Fix card</a></div>';
@@ -784,6 +911,9 @@
         : ('<strong>Cancelled.</strong> You can read everything' +
            (ae ? (' until ' + esc(ae)) : '') +
            ', but new work and messages are paused. Reports stay downloadable after that.');
+      if (String(b.access || '') !== 'full') {
+        return gateRow(body, '<a class="dk-gate-link" href="' + account + '">Resume</a>');
+      }
       return '<div class="dk-banner"><span style="flex:1">' + body + '</span>' +
         '<a href="' + account + '" style="font-weight:700;white-space:nowrap">Resume</a></div>';
     }
@@ -793,7 +923,7 @@
   function renderShell() {
     var c = child();
     var account = esc(C.href('/consumer/account.html'));
-    var addChild = esc(C.href('/consumer/signup.html'));
+    var addChild = esc(addChildHref());
     var onChat = S.view === 'chat';
     var any = totalUnread() > 0;
 
@@ -813,7 +943,7 @@
           'font-weight:700;font-size:16px;color:var(--ks3-ink);cursor:pointer;text-align:left">' +
           svg(MARK.chat, 20) + '<span style="flex:1">Messages</span>' +
           (any ? ('<span style="display:grid;place-items:center;min-width:24px;height:24px;padding:0 6px;' +
-                  'border-radius:99px;background:var(--ks3-accent-text);color:#fff;' +
+                  'border-radius:99px;background:var(--ks3-accent-text);color:var(--dk-on-accent);' +
                   'font-family:var(--ks3-font-mono);font-size:12px">' + esc(String(totalUnread())) +
                   '</span>') : '') +
         '</button>' +
@@ -851,6 +981,8 @@
 
     var sideNote = '';
     var bst = String(S.billing.state || '').toLowerCase();
+    /* Not repeated beside a gate line: one screen, one sentence. */
+    if (!S.writable) { bst = ''; }
     if (bst === 'trialing') {
       sideNote = '<div style="padding:12px 14px;border:2px solid var(--ks3-ink);border-radius:14px;' +
         'background:var(--ks3-band);font-size:14px"><strong>Free week:</strong> ' +
@@ -921,71 +1053,13 @@
 
   /* ═══ screens ═════════════════════════════════════════════════════════ */
 
-  function viewLocked() {
-    var b = S.billing;
-    var st = String(b.state || '').toLowerCase();
-    var isNone = st === 'none';
-    var t = tier('month');
-    var restart = t ? money(t.first) : null;
-    var end = dayMonth(b.access_end);
-    var firstKid = S.kids[0];
-
-    /* The `none` state is NOT one of Design's five: it is a family that has
-       never checked out, and it did not exist when she drew this. It gets
-       her locked screen's shape with the copy that would be untrue removed
-       — no "the subscription ended", no "still yours" list of things that do
-       not exist yet — and her restart CTA re-pointed at the free week. */
-    var kicker = isNone ? 'Not started yet' : 'Account paused';
-    var h1 = isNone ? 'Work hasn’t started being set' : 'Work has stopped being set';
-    var lede = isNone
-      ? 'Your children can sign in, but there is no plan behind them yet. Start the ' +
-        'free week and the first week’s work is set tonight.'
-      : ('The subscription ended' + (end ? (' on ' + esc(end)) : '') +
-         '. Your children’s logins still open but show no new work. Nothing has been deleted.');
-
-    var still = '';
-    if (!isNone) {
-      still = '<div style="margin-top:22px;padding:20px;border:2px solid var(--ks3-ink);' +
-        'border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block)">' +
-        '<p class="dk-kicker">Still yours</p>' +
-        '<ul style="margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;' +
-          'gap:10px;font-size:16px">' +
-          '<li style="display:flex;justify-content:space-between;gap:12px"><span>Termly reports, ' +
-            'for every term so far</span>' +
-            (firstKid ? ('<a href="' + esc(C.href('/consumer/report.html', { child: firstKid.id })) +
-                         '" style="font-weight:700">Open</a>')
-                      : '<span style="color:var(--ks3-ink-muted)">None yet</span>') + '</li>' +
-          '<li style="display:flex;justify-content:space-between;gap:12px"><span>Marked exam answers ' +
-            'and feedback</span>' +
-            (firstKid ? '<button class="dk-btn-quiet" data-act="open-answers">Open</button>'
-                      : '<span style="color:var(--ks3-ink-muted)">None yet</span>') + '</li>' +
-          '<li style="display:flex;justify-content:space-between;gap:12px"><span>Your chat history</span>' +
-            '<span style="color:var(--ks3-ink-muted)">Read only</span></li>' +
-        '</ul></div>';
-    }
-
-    var cta = isNone
-      ? ('<button data-act="checkout" style="margin-top:22px;display:flex;align-items:center;' +
-         'justify-content:center;width:100%;min-height:54px;border:2px solid var(--ks3-accent-text);' +
-         'border-radius:var(--ks3-r-control);background:var(--ks3-accent-text);color:#FFFFFF;' +
-         'font-weight:700;font-size:18px;cursor:pointer">Start your free week</button>' +
-         '<p style="margin:12px 0 0;font-size:14px;color:var(--ks3-ink-muted);text-align:center">' +
-         'Seven days free. A card is needed to start, and nothing is charged until it ends.</p>')
-      : ('<button data-act="checkout" style="margin-top:22px;display:flex;align-items:center;' +
-         'justify-content:center;width:100%;min-height:54px;border:2px solid var(--ks3-accent-text);' +
-         'border-radius:var(--ks3-r-control);background:var(--ks3-accent-text);color:#FFFFFF;' +
-         'font-weight:700;font-size:18px;cursor:pointer">Restart' +
-         (restart ? (' · from ' + esc(restart) + ' a month') : '') + '</button>' +
-         '<p style="margin:12px 0 0;font-size:14px;color:var(--ks3-ink-muted);text-align:center">' +
-         'Picks up exactly where each child left off. Streaks reset; progress doesn’t.</p>');
-
-    return '<div class="dk-narrow" style="max-width:560px;margin:0 auto">' +
-      '<p class="dk-kicker dk-kicker-page">' + esc(kicker) + '</p>' +
-      '<h1 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:36px;' +
-        'line-height:1.02;letter-spacing:-.035em">' + esc(h1) + '</h1>' +
-      '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">' + lede + '</p>' +
-      still + cta + '<div id="dk-msg"></div></div>';
-  }
+  /* ⊕ B2C repair (ruling 2). `viewLocked()` — Design's locked screen,
+     which REPLACED the overview for a family that had not started or had
+     ended — is gone. It told a family with no children that "your children
+     can sign in", offered checkout as the only action, and hid the
+     children a parent had already set up. The overview now renders in every
+     state, and the one line in `gateHtml()` carries the state and its
+     action. */
 
   function viewOverview() {
     var hour = new Date().getHours();
@@ -993,19 +1067,20 @@
     var todayLabel = new Date().toLocaleDateString('en-GB',
       { weekday: 'long', day: 'numeric', month: 'long' });
 
+    /* #dk-msg here too: "X has been removed" lands on this screen, and
+       without a host it was written nowhere (found by the B2C repair drive). */
     var html = '<p class="dk-kicker dk-kicker-page">' + esc(todayLabel) + '</p>' +
-      '<h1 class="dk-h1">' + esc(greeting) + '</h1>';
+      '<h1 class="dk-h1">' + esc(greeting) + '</h1><div id="dk-msg"></div>';
 
     if (!S.kids.length) {
       html += '<div class="dk-dashed" style="margin-top:24px">' +
         '<p style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:24px;' +
           'letter-spacing:-.02em">No children yet</p>' +
-        '<p style="margin:8px 0 0;font-size:16px;color:var(--ks3-ink-body)">Add a child and their ' +
-          'first week’s work is set tonight.</p>' +
-        '<a href="' + esc(C.href('/consumer/signup.html')) + '" style="margin-top:18px;' +
-          'display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 22px;' +
-          'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);' +
-          'color:var(--ks3-on-dark);font-weight:700;font-size:17px;text-decoration:none">Add a child</a>' +
+        (S.writable
+          ? '<p style="margin:8px 0 0;font-size:16px;color:var(--ks3-ink-body)">Add a child and their ' +
+            'first week’s work is set tonight.</p>'
+          : '') +
+        '<a class="dk-cta" href="' + esc(addChildHref()) + '">Add a child</a>' +
         '</div>';
       return html;
     }
@@ -1024,7 +1099,7 @@
             'border-radius:var(--ks3-r-panel);background:var(--ks3-inset);font-size:15px;' +
             'color:var(--ks3-ink-body)"><strong style="color:var(--ks3-ink)">Hasn’t logged in yet.</strong> ' +
             'Username <span style="font-family:var(--ks3-font-mono)">' + esc(k.username || '—') +
-            '</span> at mrbadmus.com/go. First week’s work is waiting.</div>';
+            '</span> at mrbadmus.com/go.' + (S.writable ? ' First week’s work is waiting.' : '') + '</div>';
         } else {
           body = '<div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">' +
             '<div class="dk-mini"><div class="dk-mini-l">This week</div>' +
@@ -1072,7 +1147,7 @@
       '<a class="dk-tile" href="' + esc(C.href('/consumer/report.html', { child: firstKid.id })) + '">' +
         '<span style="font-weight:700">Termly report</span>' +
         '<span class="dk-tile-sub">Prints cleanly</span></a>' +
-      '<a href="' + esc(C.href('/consumer/signup.html')) + '" style="display:flex;flex-direction:column;' +
+      '<a href="' + esc(addChildHref()) + '" style="display:flex;flex-direction:column;' +
         'gap:4px;padding:16px;border:2px dashed var(--ks3-rule-strong);border-radius:var(--ks3-r-card);' +
         'background:none;color:var(--ks3-accent-text);text-decoration:none">' +
         '<span style="font-weight:700">Add a child</span>' +
@@ -1107,7 +1182,8 @@
     var doing = '<section class="dk-card"><p class="dk-kicker">Are they doing the work?</p>';
     if (k.status === 'never') {
       doing += '<p style="margin:10px 0 0;font-size:17px;color:var(--ks3-ink-body)">Not yet. ' +
-        esc(k.first_name) + ' hasn’t logged in. The first week is set and waiting.</p>' +
+        esc(k.first_name) + ' hasn’t logged in.' +
+        (S.writable ? ' The first week is set and waiting.' : '') + '</p>' +
         '<div class="dk-row-band" style="margin-top:12px"><span>Username</span>' +
         '<span class="dk-mono">' + esc(k.username || '—') + '</span></div>';
     } else if (k.status === 'quiet') {
@@ -1153,7 +1229,10 @@
         '</section>';
     }
 
-    var nudge = '<section class="dk-dark" style="margin-top:16px">' +
+    /* Message and Set work both need a writable family (the backend answers
+       423 otherwise), so the whole card is drawn only then. Reading old
+       messages stays one tap away in the Messages tab. */
+    var nudge = !S.writable ? '' : '<section class="dk-dark" style="margin-top:16px">' +
       '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;' +
         'text-transform:uppercase;color:var(--ks3-alert)">Can I nudge them?</p>' +
       '<p style="margin:10px 0 0;font-size:17px;color:var(--ks3-on-dark-body)">' +
@@ -1164,7 +1243,7 @@
           'font-weight:700;font-size:16px;cursor:pointer;display:flex;align-items:center;' +
           'justify-content:center;gap:8px">Message' +
           (k.unread ? ('<span style="display:grid;place-items:center;min-width:24px;height:24px;' +
-            'padding:0 6px;border-radius:99px;background:var(--ks3-accent-text);color:#fff;' +
+            'padding:0 6px;border-radius:99px;background:var(--ks3-accent-text);color:var(--dk-on-accent);' +
             'font-family:var(--ks3-font-mono);font-size:12px">' + esc(String(k.unread)) + '</span>') : '') +
         '</button>' +
         '<button data-act="open-setwork" data-write style="min-height:48px;' +
@@ -1195,15 +1274,16 @@
                finished lesson invites the parent to wonder what they did
                wrong. */
             (it.byParent && !it.done
-              ? ('<button data-act="remove-work" data-id="' + esc(it.id) + '" data-write ' +
+              ? ('<button data-act="remove-work" data-id="' + esc(it.id) + '" ' +
                  'aria-label="Remove" style="display:grid;place-items:center;width:32px;height:32px;' +
                  'border:0;border-radius:8px;background:var(--ks3-band);color:var(--ks3-ink-muted);' +
                  'cursor:pointer">' + svg(MARK.cross) + '</button>')
               : '') +
           '</li>';
         }).join('')
-      : '<li style="padding:16px;font-size:15px;color:var(--ks3-ink-muted)">Nothing set for this ' +
-        'week yet. Work is set on Sunday evening.</li>';
+      : '<li style="padding:16px;font-size:15px;color:var(--ks3-ink-muted)">' +
+        (S.writable ? 'Nothing set for this week yet. Work is set on Sunday evening.' : 'Nothing set yet.') +
+        '</li>';
 
     var work = '<section class="dk-work" style="margin-top:24px">' +
       '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">' +
@@ -1215,7 +1295,7 @@
       '<ul style="margin:12px 0 0;padding:0;list-style:none;border:2px solid var(--ks3-ink);' +
         'border-radius:var(--ks3-r-card);background:var(--ks3-card);overflow:hidden">' + workList + '</ul>' +
       (k.paused ? '' :
-        '<button data-act="pause" data-write style="margin-top:12px;min-height:44px;padding:0 4px;' +
+        '<button data-act="pause" style="margin-top:12px;min-height:44px;padding:0 4px;' +
         'border:0;background:none;font-weight:700;font-size:15px;color:var(--ks3-accent-text);' +
         'cursor:pointer">Pause work for ' + esc(k.first_name) + '</button>') +
       '</section>';
@@ -1232,7 +1312,7 @@
       ? '<div style="margin-top:18px;display:flex;align-items:center;gap:12px;padding:14px 16px;' +
         'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-panel);background:var(--ks3-band);' +
         'font-size:15px"><span style="flex:1"><strong>Paused.</strong> Nothing new is set. ' +
-        'Streak is frozen, not lost.</span><button data-act="pause" data-write ' +
+        'Streak is frozen, not lost.</span><button data-act="pause" ' +
         'style="min-height:40px;padding:0 14px;border:2px solid var(--ks3-ink);border-radius:10px;' +
         'background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:14px;' +
         'cursor:pointer">Resume</button></div>'
@@ -1337,6 +1417,7 @@
         'Only you and ' + esc(k.first_name) + ' can see this.</p>' +
       '<div id="dk-msg"></div>' +
       '<div id="dk-chatlist" style="flex:1;display:flex;flex-direction:column;gap:10px"></div>' +
+      (!S.writable ? '</div>' :
       '<div class="dk-composer" style="position:sticky;bottom:84px;margin-top:16px;display:flex;' +
         'gap:8px;padding:10px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);' +
         'background:var(--ks3-card)">' +
@@ -1347,7 +1428,7 @@
         '<button data-act="send" data-write aria-label="Send" style="display:grid;place-items:center;' +
           'width:44px;height:44px;border:2px solid var(--ks3-ink);border-radius:12px;' +
           'background:var(--ks3-ink);color:var(--ks3-on-dark);cursor:pointer">' +
-          svg(MARK.send) + '</button></div></div>';
+          svg(MARK.send) + '</button></div></div>');
   }
 
   function renderChatList() {
@@ -1362,6 +1443,11 @@
     var msgs = Array.isArray(S.msgs) ? S.msgs : null;
     if (msgs === null) {
       host.innerHTML = '<p style="font-size:15px;color:var(--ks3-ink-muted)">Loading…</p>';
+      return;
+    }
+    if (!msgs.length && !S.writable) {
+      host.innerHTML = '<p style="margin:auto 0;font-size:15px;color:var(--ks3-ink-muted);' +
+        'text-align:center">No messages yet.</p>';
       return;
     }
     if (!msgs.length) {
@@ -1428,7 +1514,8 @@
         '<p style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:22px;' +
           'letter-spacing:-.02em">No exam answers yet</p>' +
         '<p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-body)">They appear here as soon ' +
-          'as ' + esc(k.first_name) + ' writes one. You could set a 4-marker from “Set work”.</p>' +
+          'as ' + esc(k.first_name) + ' writes one.' +
+          (S.writable ? ' You could set a 4-marker from “Set work”.' : '') + '</p>' +
         '</div></div>';
     }
 
@@ -1527,7 +1614,7 @@
         items.map(function (o) {
           return '<button class="ks3-option" aria-pressed="' +
             (String(o.value) === String(val) ? 'true' : 'false') + '" data-act="' + act +
-            '" data-id="' + esc(String(o.value)) + '" data-write ' +
+            '" data-id="' + esc(String(o.value)) + '" ' +
             'style="justify-content:center;padding:10px 4px;font-size:' + (size || 15) + 'px">' +
             esc(o.label) + '</button>';
         }).join('') + '</div>';
@@ -1544,7 +1631,7 @@
         Object.keys(INTENSITY).map(function (key) {
           return '<button class="ks3-option" aria-pressed="' +
             (e.intensity === key ? 'true' : 'false') + '" data-act="pick-intensity" data-id="' + key +
-            '" data-write style="padding:12px 14px">' +
+            '" style="padding:12px 14px">' +
             '<span style="flex:1">' + esc(INTENSITY[key].label) + '</span>' +
             '<span style="font-family:var(--ks3-font-mono);font-size:13px;color:var(--ks3-ink-muted)">' +
               esc(INTENSITY[key].per) + '</span></button>';
@@ -1556,7 +1643,7 @@
         '<p class="dk-kicker">Details</p>' +
         '<label style="display:block;margin-top:12px;font-weight:700;font-size:15px;' +
           'color:var(--ks3-ink-muted)">First name' +
-          '<input id="dk-name" class="dk-field" data-write value="' + esc(e.first_name || '') + '" ' +
+          '<input id="dk-name" class="dk-field" value="' + esc(e.first_name || '') + '" ' +
             'maxlength="60"></label>' +
         '<p style="margin:14px 0 6px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">' +
           'Year group</p>' +
@@ -1580,7 +1667,7 @@
       [{ id: 'alongside_school', label: 'Alongside school' },
        { id: 'home_education', label: 'Home education' }].map(function (m) {
         return '<button class="ks3-option" aria-pressed="' + (e.mode === m.id ? 'true' : 'false') +
-          '" data-act="pick-mode" data-id="' + m.id + '" data-write ' +
+          '" data-act="pick-mode" data-id="' + m.id + '" ' +
           'style="justify-content:center;padding:12px 6px;font-size:15px">' + esc(m.label) + '</button>';
       }).join('') + '</div>' +
       '<p style="margin:12px 0 0;font-size:14px;color:var(--ks3-ink-muted)">Changing year or mode ' +
@@ -1599,7 +1686,7 @@
                'letter-spacing:.02em" id="dk-newpass">' + esc(S.newPass) + '</p>' +
              '<p style="margin:6px 0 0;font-size:14px;color:var(--ks3-ink-body)">It won’t be shown ' +
                'again. ' + esc(k.first_name) + ' can change it after logging in.</p></div>')
-          : ('<button data-act="reset-pass" data-write style="margin-top:12px;width:100%;' +
+          : ('<button data-act="reset-pass" style="margin-top:12px;width:100%;' +
              'min-height:48px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);' +
              'background:var(--ks3-band);font-weight:700;font-size:16px;color:var(--ks3-ink);' +
              'cursor:pointer">Reset password</button>' +
@@ -1607,7 +1694,7 @@
              'shows it here once. The old one stops working straight away.</p>')) +
       '</section>' +
 
-      '<button data-act="save-manage" data-write class="dk-btn-ink" style="margin-top:22px">' +
+      '<button data-act="save-manage" class="dk-btn-ink" style="margin-top:22px">' +
         'Save changes</button>' +
 
       '<section style="margin-top:34px;padding-top:20px;border-top:2px solid var(--ks3-rule)">' +
@@ -1622,7 +1709,7 @@
              '<button data-act="cancel-remove" style="min-height:46px;border:2px solid var(--ks3-ink);' +
                'border-radius:var(--ks3-r-control);background:var(--ks3-card);font-weight:700;' +
                'font-size:15px;color:var(--ks3-ink);cursor:pointer">Keep ' + esc(k.first_name) + '</button>' +
-             '<button data-act="do-remove" data-write style="min-height:46px;' +
+             '<button data-act="do-remove" style="min-height:46px;' +
                'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);' +
                'color:var(--ks3-on-dark);font-weight:700;font-size:15px;cursor:pointer">Remove</button>' +
            '</div></div>')
@@ -1649,17 +1736,13 @@
 
   /* ═══ render ══════════════════════════════════════════════════════════ */
   function render() {
+    /* Set work cannot be used by a family that cannot write, so its screen
+       is not reachable either — a bookmarked ?view=setwork lands on the
+       child it was for. */
+    if (!S.writable && S.view === 'setwork') { S.view = 'child'; }
     renderShell();
-    var st = String(S.billing.state || '').toLowerCase();
     var host = document.getElementById('c-main');
-    /* Design's locked screen REPLACES the dashboard. It replaces the
-       DASHBOARD — the overview — and not the reports, answers and chat
-       history its own copy promises are "still yours". Reaching those from
-       the locked screen therefore works, read-only. */
-    if ((st === 'locked' || st === 'none') && S.view === 'overview') {
-      host.style.maxWidth = '';
-      host.innerHTML = viewLocked();
-    } else if (S.view === 'child')   { host.innerHTML = viewChild(); }
+    if (S.view === 'child')          { host.innerHTML = viewChild(); }
     else if (S.view === 'setwork')   { host.innerHTML = viewSetWork(); }
     else if (S.view === 'chat')      { host.innerHTML = viewChat(); renderChatList(); }
     else if (S.view === 'answers')   { host.innerHTML = viewAnswers(); }
@@ -1670,7 +1753,6 @@
       C.fail(document.getElementById('dk-answers-fail'), S.answers.error,
              'Exam marking may not be switched on for this environment yet.');
     }
-    C.applyWritable(host, S.writable);
     bindInputs();
   }
 
@@ -1725,18 +1807,16 @@
       .catch(function (e) { S.draft = text; if (input) { input.value = text; } msg(e.message, 'error'); });
   }
 
-  function checkout(interval) {
-    C.api('/api/consumer/checkout', {
-      method: 'POST', token: ctx.token, body: { interval: interval || 'month' }
-    }).then(function (d) {
-      if (d && d.url) { window.location.href = d.url; return; }
-      msg('We couldn’t open the payment page. Please try again in a moment.', 'error');
-    }).catch(function (e) {
-      if (e.code === 'no_children') {
-        return msg('Add a child first — the subscription is priced per child, so there’s nothing ' +
-                   'to start yet.', 'error');
-      }
-      msg(e.message, 'error');
+  function addChildHref() { return C.href('/consumer/signup.html', { step: 'child' }); }
+
+  /* The one checkout path (consumer-common.js, ruling 1). The failure line
+     lands in the gate banner's own slot, under the row. */
+  function checkout(el) {
+    return C.startCheckout(el, {
+      token: ctx.token,
+      interval: S.billing.interval === 'year' ? 'year' : 'month',
+      addChildHref: addChildHref(),
+      msgHost: document.getElementById('dk-gate-msg') || undefined
     });
   }
 
@@ -1760,7 +1840,7 @@
       if (d) { d.value = S.draft; d.focus(); }
     },
     'send': function () { send(); },
-    'checkout': function () { checkout('month'); },
+    'checkout': function (el) { checkout(el); },
 
     'pick-kind': function (el) { S.workKind = el.getAttribute('data-id'); render(); },
     'pick-unit': function (el) { S.unitCode = el.getAttribute('data-id'); render(); },
@@ -1906,6 +1986,13 @@
     var act = ACTS[el.getAttribute('data-act')];
     if (!act) { return; }
     ev.preventDefault();
+    /* ⊕ B2C repair (ruling 3). Every new action starts with a clean slate:
+       a message belongs to the press that caused it, and one left over from
+       an earlier press (a stale "Add a child first") reads as the answer to
+       this one. */
+    msg('');
+    var gm = document.getElementById('dk-gate-msg');
+    if (gm && el.getAttribute('data-act') !== 'checkout') { gm.innerHTML = ''; }
     act(el);
   });
 
@@ -1928,8 +2015,33 @@
     });
     window.addEventListener('beforeunload', function () { rt.unsubscribe(); });
 
+    /* ⊕ B2C repair (ruling 4, B7). A parent who comes BACK to this tab —
+       from Stripe with the Back button (the page is restored from the
+       back/forward cache, frozen as it was), or from another tab where they
+       added a child — used to see the family as it was when they left.
+       Re-read it on both. Not while they are typing: then only the shell
+       (banners, badges) is redrawn, so a half-written message keeps its
+       caret. */
+    var lastLoad = Date.now();
+    function refresh() {
+      if (Date.now() - lastLoad < 2000) { return; }
+      lastLoad = Date.now();
+      loadFamily().then(function () {
+        var a = document.activeElement;
+        if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) { renderShell(); }
+        else { render(); afterNav(); }
+      }).catch(function (e) { console.error('[dash/refresh]', e); });
+    }
+    window.addEventListener('pageshow', function (ev) {
+      if (ev.persisted) { lastLoad = 0; refresh(); }
+    });
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible') { refresh(); }
+    });
+
     return Promise.all([loadFamily(), loadPrices()])
       .then(function () {
+        lastLoad = Date.now();
         render();
         afterNav();
         return loadThreads().then(function () { if (S.view === 'child') { render(); } });

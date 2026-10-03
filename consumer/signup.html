@@ -1187,22 +1187,17 @@
   function bindPlan() {
     $('to-stripe').addEventListener('click', function () {
       S.error = '';
-      /* The spinner goes up FIRST. Creating a Checkout session is a round
-         trip to Stripe and it is not always fast; a button that sits there
-         doing nothing gets pressed twice, and two Checkout sessions is two
-         subscriptions waiting to happen. */
-      go('stripe');
-      C.api('/api/consumer/checkout', {
-        method: 'POST', token: S.token, body: { interval: S.plan }
-      }).then(function (d) {
-        if (!d || !d.url) { throw new Error('We couldn’t open the payment page just now.'); }
+      /* ⊕ B2C repair (3 Oct 2026, Mide's ruling 1): the ONE checkout path.
+         It used to swap the whole step for a full-screen "Taking you to
+         Stripe" spinner that never gave up. C.startCheckout puts the spinner
+         on this button, blocks a second press (two Checkout sessions is two
+         subscriptions waiting to happen), stops after 25 seconds and shows a
+         plain line under the button with "Try again" on any failure. */
+      C.startCheckout(this, {
+        token: S.token, interval: S.plan,
+        addChildHref: C.href('/consumer/signup.html', { step: 'child' }),
         // The draft has served its purpose — every child is on the server.
-        clearPending();
-        window.location.href = d.url;
-      }).catch(function (e) {
-        console.error('[signup] checkout', e);
-        S.error = (e && e.message) || 'We couldn’t open the payment page just now.';
-        go('plan');
+        beforeRedirect: clearPending
       });
     });
   }

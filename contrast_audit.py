@@ -417,13 +417,18 @@ BENCH_THEMES = ["harbour", "clay", "chalk", "moss", "damson", "graphite"]
 PAGES = []
 
 
-def _page(label, path, setup=None, wait=0.5, prescript=None):
+def _page(label, path, setup=None, wait=0.5, prescript=None, widths=None):
     """`prescript`: JS injected with `Page.addScriptToEvaluateOnNewDocument`
     BEFORE the page's own scripts run — for a page a real gate drives by
     stubbing its data layer this way rather than through a fixture file
-    (the flashcard surfaces below). `setup` still runs after load, as ever."""
+    (the flashcard surfaces below). `setup` still runs after load, as ever.
+
+    `widths`: measured at exactly these widths even under `--quick` (which
+    otherwise means 1280 only). For a page whose phone and desktop layouts
+    are different DOM — the family dashboard's sidebar exists only from
+    960px, its tab bar and banners only below — one width is half a page."""
     PAGES.append({"label": label, "path": path, "setup": setup, "wait": wait,
-                  "prescript": prescript})
+                  "prescript": prescript, "widths": widths})
 
 
 for _name in ["classes", "class-detail", "student-detail", "assignment", "digest", "insights"]:
@@ -643,6 +648,44 @@ _FC_HW_SETUP = (
 )
 _page("student/class.html [flashcard homework]", "student/class-fixture.html",
       prescript=_FC_PRE, setup=_FC_HW_SETUP, wait=0.8)
+
+
+# ── B2C repair (3 Oct 2026) — the SIGNED-IN family pages ──
+# The two consumer entries above have never measured anything a parent sees:
+# on 127.0.0.1 config.js's TEST block has the consumer flag OFF, so both
+# render "Not found", and neither has a session. `consumer_dash_fixture`
+# turns the flag on, signs a parent in and answers /api/consumer/* offline,
+# per billing state — so the dashboard's ≥960px sidebar (the 1.08:1 dark
+# wordmark nothing ever caught) and the phone layout are both measured, in
+# both themes, including the pre-trial banner and the delete confirm.
+import consumer_dash_fixture as _cdf  # noqa: E402
+
+_CDF_READY = (
+    "(async function(){" + _POLL_JS +
+    "await __poll(function(){var m=document.getElementById('c-main');"
+    "return document.body.style.display==='block'&&m&&m.children.length>0;},6000);"
+    "return true;})()"
+)
+_CDF_DELETE_OPEN = (
+    "(async function(){" + _POLL_JS +
+    "await __poll(function(){return !!document.querySelector('[data-act=ask-delete]');},6000);"
+    "document.querySelector('[data-act=ask-delete]').click();"
+    "await __poll(function(){return !!document.querySelector('[data-act=do-delete]');});"
+    "return true;})()"
+)
+for _lbl, _path, _state, _kids, _setup in (
+    ("consumer/overview [trialing]", "consumer/overview.html", "trialing", 2, _CDF_READY),
+    ("consumer/overview [pre-trial, 2 children]", "consumer/overview.html", "none", 2, _CDF_READY),
+    ("consumer/overview [pre-trial, no children]", "consumer/overview.html", "none", 0, _CDF_READY),
+    ("consumer/overview [pre-trial, child view]",
+     "consumer/overview.html?child=kid-ada&view=child", "none", 2, _CDF_READY),
+    ("consumer/overview [locked]", "consumer/overview.html", "locked", 2, _CDF_READY),
+    ("consumer/account [trialing]", "consumer/account.html", "trialing", 2, _CDF_READY),
+    ("consumer/account [pre-trial]", "consumer/account.html", "none", 2, _CDF_READY),
+    ("consumer/account [delete confirm]", "consumer/account.html", "trialing", 2, _CDF_DELETE_OPEN),
+):
+    _page(_lbl, _path, prescript=_cdf.prescript(_state, _kids), setup=_setup,
+          wait=0.4, widths=[1280, 390])
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -920,7 +963,8 @@ def sweep(widths=WIDTHS, shots=True, only=None, themes=None, page_list=None):
                 if only and only not in spec["label"]:
                     continue
                 url = "http://127.0.0.1:%d/%s" % (port, spec["path"])
-                for width, theme in [(w, t) for t in themes for w in widths]:
+                spec_widths = spec.get("widths") or widths
+                for width, theme in [(w, t) for t in themes for w in spec_widths]:
                     label = "%s {%s}" % (spec["label"], theme)
                     p = b.attach()
                     arm_prescript(p, spec.get("prescript"))
