@@ -1228,7 +1228,8 @@ GATES = [
     dict(name="curriculum_tree_mirror",
          cmd=["python3", "tools/export_curriculum_tree.py", "--check"],
          speed="fast",
-         watches=["tools/export_curriculum_tree.py", "ks3_data/**",
+         watches=["tools/export_curriculum_tree.py", "consumer/curriculum-index.json",
+                  "ks3_data/**",
                   "!ks3_data/**/questions_*.py",
                   "ks4_data/**", "!ks4_data/questions/**",
                   "ks4_seed_sow.py", "generate_site_v5.py",
@@ -2354,7 +2355,14 @@ GATES = [
                   "consumer_dash_fixture.py", "consumer/overview.html",
                   "consumer/account.html", "consumer/consumer.css",
                   "consumer/consumer-common.js", "shared/config.js",
-                  "shared/brand/brand.css", "shared/brand/brand.js"],
+                  "shared/brand/brand.css", "shared/brand/brand.js",
+                  # ⊕ B2C onboarding repair, 3 Oct 2026 — signup, verify,
+                  # sign-in, checkout-return, go/ and the topic picker, in
+                  # the states a parent reaches, on the same fixture.
+                  "consumer/signup.html", "consumer/verify.html",
+                  "consumer/checkout-return.html", "consumer/topic-picker.js",
+                  "consumer/topic-picker.css", "consumer/curriculum-index.json",
+                  "parents/sign-in.html", "parents/public.js", "go/index.html"],
          why="Mide, Experience run item 13: 'much of the dark text on the "
              "cream background isn't clear enough.' Opens every teacher and "
              "student page (plus one KS3 lesson, one KS4 lesson, one KS4 "
@@ -2445,7 +2453,10 @@ GATES = [
          watches=["consumer_dash_drive.py", "consumer_dash_fixture.py", "ks3_browser.py",
                   "consumer/overview.html", "consumer/account.html",
                   "consumer/signup.html", "consumer/consumer-common.js",
-                  "consumer/consumer.css", "shared/config.js"],
+                  "consumer/consumer.css", "shared/config.js",
+                  "consumer/topic-picker.js", "consumer/topic-picker.css",
+                  "consumer/curriculum-index.json", "parents/public.css",
+                  "parents/pricing.html", "parents/how-it-works.html"],
          why="Mide's B2C repair rulings, 3 Oct 2026, driven OFFLINE (a "
              "stubbed session and /api/consumer/* — no backend, no TEST "
              "fixtures, so unlike the mrb327_ drives it cannot collide with "
@@ -2454,7 +2465,14 @@ GATES = [
              "no greyed controls, while edit/pause/reset/remove still work; "
              "a stale message never outlives the next press; the family is "
              "re-read on coming back; every child's reports are listed; the "
-             "delete confirm is a tick box and lands on Keep. --skip-timeout "
+             "delete confirm is a tick box and lands on Keep. ⊕ B2C "
+             "onboarding repair (same day): signup V1–V6 — a verify link "
+             "opened in another browser, 'already have an account', a saved "
+             "step never strands a signed-in parent, the child typed before "
+             "verifying is asked about (not a blank Child 2), two tabs never "
+             "create a child twice, rail buttons + Back, and the shared topic "
+             "picker (greyed 'taught in Year N') in signup and Set work. "
+             "--skip-timeout "
              "drops the one 26-second hanging-checkout wait; run without it "
              "to prove the timeout itself."),
 

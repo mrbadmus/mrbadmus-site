@@ -61,6 +61,31 @@
 .pb-body button { font: inherit; }
 .pb-body input::placeholder { color: #9A8F86; }
 
+/* ⊕ B2C onboarding repair (3 Oct 2026) — AA on the signup, sign-in and
+   checkout-return pages, measured by contrast_audit in both themes.
+   · Placeholders: Design's #9A8F86 is 3.08:1 on the light card. Inside the
+     KS3 token scope they take the theme's muted ink instead (both themes
+     pass); outside it the literal stays.
+   · Links: #A93411 is the LIGHT accent and does not flip — 2.6–2.8:1 on the
+     dark grounds. In dark, links take the theme's own accent text. Same
+     weight as `.pb-body a` and declared after it, so a link that styles
+     itself (a filled CTA, an inline colour) still wins exactly as before.
+   · `.su-ink`: Design's ink panels. Dark turns --ks3-ink cream, so the
+     panel goes light and its "on dark" text tokens must follow it.
+   · `--su-on-accent`: text on the accent-text fill (white in light; in
+     dark the fill is a light peach and white on it is 2.02:1). */
+.pb-body .rd input::placeholder { color: var(--ks3-ink-muted); }
+.pb-body :where(html[data-theme="dark"] .rd) a { color: var(--ks3-accent-text); }
+.pb-body :where(html[data-theme="dark"] .rd) a:hover { color: var(--ks3-accent-hover); }
+.rd { --su-on-accent: #FFFFFF; }
+html[data-theme="dark"] .rd { --su-on-accent: #16120E; }
+html[data-theme="dark"] .rd .su-ink {
+  --ks3-on-dark-body: #2E2419;
+  --ks3-on-dark-muted: #4A3C2E;
+  --ks3-alert: #7A4300;
+  --ks3-dark-panel: rgba(22, 18, 14, .08);
+}
+
 /* ── the shared nav, and the one breakpoint it turns on ─────────────────
    Below 900px the four section links collapse and only the brand, "Sign
    in" and the "Start free" button remain — Design's rule, and the reason

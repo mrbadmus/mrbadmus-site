@@ -56,6 +56,30 @@ KIDS = [
     },
 ]
 
+# B2C onboarding repair (3 Oct 2026): the child's scheme as GET
+# /children/:id/picker really sends it — units with their lessons and the
+# scheme's subject name — so the shared topic picker can be measured and
+# driven offline. Names and slugs are the real curriculum's (the picker
+# matches them against consumer/curriculum-index.json).
+PICKERS = {
+    "kid-ada": [
+        {"unit_code": "B4", "subject": "Biology", "name": "Breathing and gas exchange",
+         "lessons": [{"slug": "the-gas-exchange-system", "title": "The gas exchange system", "week": 1},
+                     {"slug": "how-breathing-works", "title": "How breathing works", "week": 2}]},
+        {"unit_code": "C4", "subject": "Chemistry", "name": "Chemical reactions",
+         "lessons": [{"slug": "chemical-vs-physical-change", "title": "Chemical vs physical change", "week": 1}]},
+        {"unit_code": "P8", "subject": "Physics", "name": "Electric circuits",
+         "lessons": [{"slug": "current-and-circuits", "title": "Current and circuits", "week": 1}]},
+    ],
+    "kid-ben": [
+        {"unit_code": None, "subject": "Biology", "name": "Cell Biology",
+         "lessons": [{"slug": "eukaryotes-prokaryotes", "title": "Eukaryotes prokaryotes", "week": 1},
+                     {"slug": "animal-plant-cells", "title": "Animal plant cells", "week": 2}]},
+        {"unit_code": None, "subject": "Chemistry", "name": "Bonding, Structure and Properties of Matter",
+         "lessons": [{"slug": "chemical-bonds", "title": "Chemical bonds", "week": 9}]},
+    ],
+}
+
 PRICING = {"tiers": {"month": {"first": 999, "rest": 599},
                      "year": {"first": 9990, "rest": 5990}},
            "trial_days": 7}
@@ -115,16 +139,38 @@ _JS = r"""
     }
   });
 
+  /* 1b. The signup draft (B2C onboarding repair): every load starts from
+     exactly the draft the fixture names, or none — the page target is
+     reused across specs and localStorage would otherwise leak between
+     them. A drive that wants the page's OWN writes to survive a reload
+     sets sessionStorage `__cf_keep`. */
+  try {
+    if (!sessionStorage.getItem('__cf_keep')) {
+      if (F.draft) { localStorage.setItem('mrb.consumer.signup', JSON.stringify(F.draft)); }
+      else { localStorage.removeItem('mrb.consumer.signup'); }
+    }
+  } catch (e) {}
+
   /* 2. A Supabase client that is already signed in as a parent. */
   var session = { access_token: 'fixture-token', refresh_token: 'r', token_type: 'bearer',
                   expires_at: Math.floor(Date.now() / 1000) + 3600,
                   user: { id: 'parent-1', email: F.family.parent.email,
-                          email_confirmed_at: '2026-09-01T00:00:00Z' } };
+                          email_confirmed_at: F.unconfirmed ? null : '2026-09-01T00:00:00Z' } };
   var ch = { on: function () { return ch; }, subscribe: function () { return ch; } };
   var ok = function (v) { return Promise.resolve(v); };
   window.supabase = { createClient: function () { return {
     auth: {
-      getSession: function () { return ok({ data: { session: session } }); },
+      getSession: function () { return ok({ data: { session: F.signedIn === false ? null : session } }); },
+      signUp: function (a) {
+        F.calls.push({ method: 'AUTH', path: 'signUp', body: a });
+        return ok({ data: { user: { identities: F.existing ? [] : [{}] }, session: null }, error: null });
+      },
+      signInWithPassword: function (a) {
+        F.calls.push({ method: 'AUTH', path: 'signInWithPassword', body: { email: a && a.email } });
+        if (F.passwordOk) { F.signedIn = true; return ok({ data: { session: session }, error: null }); }
+        return ok({ data: {}, error: { message: 'Email not confirmed' } });
+      },
+      resend: function () { return ok({}); },
       getUser: function () { return ok({ data: { user: session.user } }); },
       onAuthStateChange: function () { return { data: { subscription: { unsubscribe: function () {} } } }; },
       resetPasswordForEmail: function () { return ok({}); },
@@ -174,7 +220,28 @@ _JS = r"""
     if (path === '/api/consumer/chat/messages') { return reply(200, { messages: F.messages || [] }); }
     if (path === '/api/consumer/chat/read') { return reply(200, { ok: true }); }
     if (/\/picker$/.test(path)) {
-      return reply(200, { units: [{ unit_code: 'B1', name: 'Cells' }, { unit_code: 'C1', name: 'Particles' }] });
+      var pk = Object.keys(F.pickers || {}).filter(function (id) { return path.indexOf(id) >= 0; })[0];
+      return reply(200, { units: (F.pickers || {})[pk] || [] });
+    }
+    if (path === '/api/consumer/family/ensure') { return reply(200, { ok: true, terms_accepted_at: '2026-10-03T00:00:00Z' }); }
+    if (path === '/api/consumer/username/check') {
+      var u = (String(url).split('u=')[1] || '').split('&')[0];
+      if ((F.taken || []).indexOf(u) >= 0) {
+        return reply(200, { ok: false, reason: 'That username is taken — try another.', suggestions: [u + '7', u + 'x'] });
+      }
+      return reply(200, { ok: true, reason: null, suggestions: [] });
+    }
+    if (path === '/api/consumer/children' && method === 'POST') {
+      if ((F.taken || []).indexOf(body && body.username) >= 0) {
+        return reply(409, { error: 'username_unavailable', message: 'That username is taken — try another.',
+                            suggestions: [body.username + '7', body.username + 'x'] });
+      }
+      var nid = 'kid-new' + F.family.children.length;
+      F.family.children.push({ id: nid, first_name: body.first_name, year_group: body.year_group,
+        username: body.username, mode: body.mode, tier: body.tier, pathway: body.pathway,
+        exam_board: body.exam_board, position: { cursors: {} } });
+      F.pickers[nid] = F.pickers[body.year_group >= 10 ? 'kid-ben' : 'kid-ada'];
+      return reply(200, { ok: true, child_id: nid });
     }
     if (/\/answers$/.test(path)) { return reply(200, { answers: [] }); }
     if (path === '/api/consumer/checkout') {
@@ -217,9 +284,22 @@ _JS = r"""
 
 
 def prescript(state="trialing", kids=2, checkout="ok", deletion=None, messages=None,
-              fail=None):
+              fail=None, signed_in=True, draft=None, taken=None, existing=False,
+              password_ok=False, unconfirmed=False):
     """`fail`: regexes over the request path that answer 500 — for proving a
-    page's failure line, not for anything a gate measures."""
+    page's failure line, not for anything a gate measures.
+
+    B2C onboarding repair: `signed_in=False` is a visitor with no session
+    (the signup account / verify steps); `draft` seeds the signup draft in
+    localStorage on every load; `taken` lists usernames the checker and the
+    create route refuse, with two suggestions each; `existing` makes
+    signUp answer as Supabase does for an address that already has an
+    account (empty identities); `password_ok` makes signInWithPassword sign
+    the parent in (otherwise it answers "Email not confirmed"); `unconfirmed`
+    signs in a parent whose email is not verified yet."""
     fx = {"family": family(state, kids, deletion), "pricing": PRICING,
-          "checkout": checkout, "messages": messages or [], "fail": fail or []}
+          "checkout": checkout, "messages": messages or [], "fail": fail or [],
+          "pickers": json.loads(json.dumps(PICKERS)), "signedIn": signed_in,
+          "draft": draft, "taken": taken or [], "existing": existing,
+          "passwordOk": password_ok, "unconfirmed": unconfirmed}
     return _JS.replace("__FIXTURE__", json.dumps(fx))

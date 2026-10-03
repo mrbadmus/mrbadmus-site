@@ -148,7 +148,7 @@
     var y = t && C.price(t, 'year', 1);
     var dash = P.PENDING;
     return [
-      { q: 'Why is the card needed for a free week?', a: 'So the week runs the same as a paid one and switches over without a gap. Nothing is charged for seven days and cancelling before then costs nothing. You get an email two days before the first payment.' },
+      { q: 'Why is the card needed for a free week?', a: 'So the week runs the same as a paid one and switches over without a gap. You get an email two days before the first payment.' },
       { q: 'What does the annual plan save?',
         a: (y ? P.money(y.first) : dash) + ' a year for the first child against ' +
            (m ? P.money(m.first * 12) : dash) + ' monthly, and ' +

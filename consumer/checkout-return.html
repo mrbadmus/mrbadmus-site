@@ -31,7 +31,7 @@
 <aside class="su-rail" style="padding:28px 28px 32px">
   <div id="rail-brand" style="display:flex;align-items:center;gap:10px"></div>
   <ol id="rail-steps" style="margin:48px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px"></ol>
-  <div style="margin-top:auto;padding:18px 20px;border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:5px 5px 0 var(--ks3-accent)">
+  <div class="su-ink" style="margin-top:auto;padding:18px 20px;border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:5px 5px 0 var(--ks3-accent)">
     <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-alert)">Free for seven days</p>
   </div>
 </aside>
@@ -151,6 +151,13 @@
          screen they left says everything it said before. */
       return C.go('/consumer/signup.html', { step: 'plan' });
     }
+
+    /* ⊕ B2C onboarding repair (V2). Back from a completed checkout, the
+       signup draft has nothing left to hold — and a kept `step: 'plan'`
+       would put the dashboard's "Add a child" back on a plan that is paid
+       for. signup.html clears it on the way out to Stripe; this is the same
+       for a parent who reached Stripe some other way. */
+    try { localStorage.removeItem('mrb.consumer.signup'); } catch (e) { /* private window */ }
 
     waiting();
 
@@ -276,7 +283,7 @@
             '<div style="display:flex;align-items:center;gap:12px">' +
             '<span style="display:grid;place-items:center;width:40px;height:40px;border-radius:12px;' +
             'background:var(--ks3-accent);border:2px solid var(--ks3-ink);font-family:var(--ks3-font-display);' +
-            'font-weight:800;font-size:18px">' + esc((c.first_name || '?').charAt(0).toUpperCase()) + '</span>' +
+            'font-weight:800;font-size:18px;color:#16120E">' + esc((c.first_name || '?').charAt(0).toUpperCase()) + '</span>' +
             '<span style="flex:1;min-width:0">' +
             '<span style="display:block;font-family:var(--ks3-font-display);font-weight:800;font-size:22px;' +
             'letter-spacing:-.02em">' + esc(c.first_name) + '’s first week</span>' +
@@ -288,7 +295,7 @@
       /* The hand-over. The username, never the password — the password was
          shown once, on the screen where the parent typed it, and this page
          is one a child could be standing behind. */
-      h += '<div style="margin-top:26px;padding:20px 22px;border-radius:var(--ks3-r-dark);' +
+      h += '<div class="su-ink" style="margin-top:26px;padding:20px 22px;border-radius:var(--ks3-r-dark);' +
         'background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:6px 6px 0 var(--ks3-accent)">' +
         '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.14em;' +
         'text-transform:uppercase;color:var(--ks3-alert)">Next: hand over the login</p>' +

@@ -62,11 +62,11 @@
    `ensure` first, always: this is the moment a verified session exists for
    most parents, and it is the call that turns one into a family. Then:
 
-     · a signup draft with a child waiting  → back into signup.html, which
-       creates that child and asks Design's "where are they up to?" question
-       — the one step the parent could not be asked before there was a
-       child to ask about;
-     · anything else                        → the dashboard.
+     · a signup draft with a child waiting,
+       or a family not yet through Stripe   → back into signup.html (no step
+       named), which works out where the parent is from the server, creates
+       any waiting child and asks Design's "where are they up to?" question;
+     · a finished family                    → the dashboard.
 
    `ensure` is idempotent by contract, which is what lets signup.html and
    this page and every future sign-in all call it. If that ever stops being
@@ -138,14 +138,27 @@
 
       screen('You’re verified', 'Setting your family up — this takes a second.');
 
-      C.api('/api/consumer/family/ensure', { method: 'POST', token: session.access_token })
+      /* ⊕ B2C onboarding repair (V1). The link may have been opened in a
+         DIFFERENT browser from the one that signed up — no draft here, so
+         the terms tick comes from the account itself (signup.html puts it
+         there, and its Continue cannot be pressed without the tick). The
+         parent's name rides the same way; /family/ensure copies it. */
+      var meta = session.user.user_metadata || {};
+      var body = meta.terms_accepted === true ? { terms_accepted: true } : {};
+      C.api('/api/consumer/family/ensure', { method: 'POST', token: session.access_token, body: body })
         .then(function () {
-          /* Straight back into Design's flow if a child is waiting on this
-             device. The step is named explicitly so signup.html does not
-             have to guess, and signup.html creates the child and asks the
-             unit question the moment it lands. */
-          if (draftHasChild()) { return C.go('/consumer/signup.html', { step: 'child' }); }
-          C.go('/consumer/overview.html');
+          /* Back into signup — with NO step named — whenever setup is not
+             finished: a child is waiting on this device, or the family has
+             not been through Stripe yet. signup.html works out the step from
+             the server (V2/V3): it creates any waiting child, asks where
+             each one is up to, then shows the children list. Only a family
+             that has finished goes to the dashboard. */
+          if (draftHasChild()) { return C.go('/consumer/signup.html'); }
+          return C.api('/api/consumer/family', { token: session.access_token }).then(function (f) {
+            var st = f && f.billing && f.billing.state;
+            if (!st || st === 'none') { return C.go('/consumer/signup.html'); }
+            C.go('/consumer/overview.html');
+          }, function () { C.go('/consumer/overview.html'); });
         })
         .catch(function (e) {
           /* Verified, but the family could not be created. That is NOT a

@@ -20,6 +20,8 @@
 <link rel="stylesheet" href="/shared/ks3-theme.css?v=6e4b9223"/>
 <link rel="stylesheet" href="/consumer/consumer.css"/>
 <link rel="stylesheet" href="/parents/public.css"/>
+<link rel="stylesheet" href="/consumer/topic-picker.css"/>
+<style>.su-rail-btn{background:none}.su-rail-btn:hover{border-color:var(--ks3-rule-strong)!important}.su-rail-btn:focus-visible{outline:3px solid var(--ks3-accent);outline-offset:2px}</style>
 <style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
 </head>
 <body class="pb-body">
@@ -31,10 +33,6 @@
 <aside class="su-rail" style="padding:28px 28px 32px">
   <div id="rail-brand" style="display:flex;align-items:center;gap:10px"></div>
   <ol id="rail-steps" style="margin:48px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px"></ol>
-  <div style="margin-top:auto;padding:18px 20px;border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:5px 5px 0 var(--ks3-accent)">
-    <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-alert)">Free for seven days</p>
-    <p style="margin:8px 0 0;font-size:16px;color:var(--ks3-on-dark-body)">Work is set every Sunday. Marked against the mark scheme. Cancel before the week is up and you pay nothing.</p>
-  </div>
 </aside>
 
 <header class="su-head" style="display:flex;align-items:center;gap:10px;padding:16px 20px 14px;border-bottom:2px solid var(--ks3-ink)">
@@ -48,13 +46,15 @@
 <script src="/shared/config.js?v=40813eb2"></script>
 <script src="/consumer/consumer-common.js"></script>
 <script src="/parents/public.js"></script>
+<script src="/consumer/topic-picker.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/signup.html — parent signup, end to end. MRB-317 Night 3.
 
    Design's `Parent Signup.dc.html`, on real Supabase auth, the real consumer
-   API and real Stripe Checkout. Her seven screens are all here — account,
-   verify, child, unit, children, plan, Stripe hand-off — and her eighth,
+   API and real Stripe Checkout. Six of her screens are here — account,
+   verify, child, unit, children, plan (her Stripe hand-off screen was
+   retired by the B2C repair, 3 Oct 2026) — and her eighth,
    the welcome/return screen, lives on `checkout-return.html` because that is
    the URL Stripe sends the browser back to.
 
@@ -97,6 +97,18 @@
    ── NO PRICE CONSTANT ──────────────────────────────────────────────────
    Design's `PRICE` object is not transcribed. Every figure on the plan step
    comes from `MrBadmusConsumer.pricing()`. See consumer-common.js.
+
+   ── ⊕ B2C ONBOARDING REPAIR (3 Oct 2026) ───────────────────────────────
+   · The verify link can be opened in ANY browser. This tab then moves on
+     by itself ("I've clicked the link", or simply coming back to it), the
+     account step signs in instead of refusing an address that already has
+     an account, and the name and the terms tick travel on the account.
+   · A signed-in parent lands where the SERVER says they are (settle()).
+     The `unit` step is never resumed and the Stripe hand-off screen is gone.
+   · Children held on the device are created once, whatever the tabs do,
+     and each one is asked "where are they up to?" in turn.
+   · Every step is a history entry; the rail's finished steps are buttons.
+   · "Where are they up to?" is the shared topic picker.
    ═══════════════════════════════════════════════════════════════════════ */
 (function () {
   var C = window.MrBadmusConsumer;
@@ -117,46 +129,23 @@
   ];
   var STEP_LABELS = {
     account: 'Step 1 of 4', verify: 'Step 1 of 4', child: 'Step 2 of 4',
-    unit: 'Step 2 of 4', children: 'Step 3 of 4', plan: 'Step 4 of 4',
-    stripe: 'Stripe'
+    unit: 'Step 2 of 4', children: 'Step 3 of 4', plan: 'Step 4 of 4'
   };
   var COPY = {
     unitIntroSchool: 'Pick the unit school is on right now. Mr Badmus sets the first week to match, not Year 7 week 1.',
     unitIntroHome: 'Pick the unit to start from. Everything before it is treated as covered, and the scheme of work runs from here.'
   };
 
-  /* ── the half-term blocks ───────────────────────────────────────────────
-     Design groups the unit picker into six half-terms. The live picker
-     (`GET /children/:id/picker`) has no notion of a half-term: it returns
-     units carrying `lessons: [{ slug, title, week }]`, where `week` is the
-     per-(year, subject) TEACHING ORDER 1..n from `scheme_of_work_entries`,
-     not a calendar week.
+  /* ⊕ B2C onboarding repair (3 Oct 2026). The half-term blocks that grouped
+     the old unit list are gone with it: the "where are they up to?" step is
+     now the shared topic picker (consumer/topic-picker.js), which lists the
+     whole curriculum and lets the parent pick from the child's own plan. */
 
-     A school year is six half-terms of roughly six teaching weeks, so the
-     order number maps onto the block by division. The last block is wider
-     (31–39) because summer 2 absorbs whatever the sequence has left rather
-     than dropping units off the end of the list — a unit that fell out of
-     the map would be invisible in the picker, and a parent would simply not
-     be able to say their child is on it.
-
-     ⚠️ This mapping is a PRESENTATION choice made here, not a fact the
-     backend asserts. Reported to the commander as such. */
-  var BLOCKS = [
-    { code: 'A1', term: 'Autumn 1', from: 1,  to: 6  },
-    { code: 'A2', term: 'Autumn 2', from: 7,  to: 12 },
-    { code: 'S1', term: 'Spring 1', from: 13, to: 18 },
-    { code: 'S2', term: 'Spring 2', from: 19, to: 24 },
-    { code: 'M1', term: 'Summer 1', from: 25, to: 30 },
-    { code: 'M2', term: 'Summer 2', from: 31, to: 39 }
-  ];
-  function blockFor(week) {
-    var w = Number(week);
-    if (!isFinite(w) || w < 1) { w = 1; }
-    for (var i = 0; i < BLOCKS.length; i++) {
-      if (w <= BLOCKS[i].to) { return BLOCKS[i]; }
-    }
-    return BLOCKS[BLOCKS.length - 1];
-  }
+  /* The steps a page load may land on. `unit` is never resumed (it needs a
+     child chosen in THIS page's memory), and the old `stripe` hand-off
+     screen no longer exists — C.startCheckout keeps the parent on the plan
+     step with a spinner on its button. */
+  var RESUMABLE = { account: 1, verify: 1, child: 1, children: 1, plan: 1 };
 
   /* Night 4 (MRB-317 ruling 7). One string, because the tick gates two
      buttons and they must refuse in the same words. */
@@ -165,7 +154,7 @@
   function blankChild() {
     return { name: '', year: null, board: null, tier: null, route: null,
              mode: null, user: '', pass: '', unit: null, userStatus: 'idle',
-             userReason: '', suggestion: '' };
+             userReason: '', suggestions: [], takenName: '' };
   }
 
   /* ── the draft ──────────────────────────────────────────────────────── */
@@ -177,10 +166,36 @@
   function writeDraft(d) {
     try { localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); } catch (e) { /* private window */ }
   }
-  function clearPending() {
+  /* ⊕ B2C onboarding repair (V4, 3 Oct 2026). `pending` is SHARED between
+     every tab on this device, so it is never written from this tab's memory.
+     It used to be: saveDraft() wrote S.pending on every step change, so a
+     second signup tab still holding a child the first tab had already
+     created put that child back into the draft — and the next flush created
+     it again, and the parent was told their own child's username was taken.
+     Now every change is read-modify-write against the draft itself, and
+     S.pending is only ever a copy of what the draft says. */
+  function sameUser(a, b) {
+    return String(a || '').trim().toLowerCase() === String(b || '').trim().toLowerCase();
+  }
+  function addPending(f) {
     var d = readDraft();
-    delete d.pending;
+    d.pending = (d.pending || []).filter(function (p) { return !sameUser(p.user, f.user); })
+                                 .concat([f]);
     writeDraft(d);
+    S.pending = d.pending;
+  }
+  function dropPending(user) {
+    var d = readDraft();
+    d.pending = (d.pending || []).filter(function (p) { return !sameUser(p.user, user); });
+    if (!d.pending.length) { delete d.pending; }
+    writeDraft(d);
+    S.pending = d.pending || [];
+  }
+  /* After Stripe has the parent: nothing in the draft is needed again, and a
+     leftover `step` would put the dashboard's "Add a child" back on a plan
+     step that has already been paid for. */
+  function clearDraft() {
+    try { localStorage.removeItem(DRAFT_KEY); } catch (e) { /* private window */ }
   }
 
   /* ── state ──────────────────────────────────────────────────────────── */
@@ -201,9 +216,13 @@
     error: '',
     childError: '',
     unitChildId: null,    // whose picker the unit step is showing
-    unitUnits: [],        // grouped picker payload
-    unitPicked: null,     // { unit_code, name }
+    unitUnits: [],        // the child's scheme: GET /children/:id/picker .units
+    unitPicked: null,     // the topic picker's selection (see topic-picker.js)
     unitNote: '',         // "the unit isn't in this year's scheme…"
+    unitQueue: [],        // children created from the draft still to be asked
+    tp: {},               // the topic picker's own state, kept across renders
+    subscribed: false,    // the family has been through Stripe already
+    nameSent: false,
     session: null,
     token: null,
     verified: false,
@@ -221,6 +240,12 @@
 
   var tiers = null;   // pricing payload's .tiers, once it lands
   var sb = null;
+  var curriculum = null;   // /consumer/curriculum-index.json, once it lands
+  /* The parent's password, in MEMORY only, for the one moment it is needed
+     again: after they verify (possibly in another browser), "I've verified"
+     signs this tab in with it. Never in S, never in the draft, gone on reload
+     — after a reload the verify step asks for it instead. */
+  var heldPassword = '';
 
   /* ── small helpers ──────────────────────────────────────────────────── */
   function $(id) { return document.getElementById(id); }
@@ -264,7 +289,7 @@
     $('head-brand').innerHTML = mark;
     $('step-label').textContent = STEP_LABELS[S.step] || '';
 
-    var idx = { account: 0, verify: 0, child: 1, unit: 1, children: 2, plan: 3, stripe: 3 }[S.step];
+    var idx = { account: 0, verify: 0, child: 1, unit: 1, children: 2, plan: 3 }[S.step];
     var labels = ['Your account', 'Your child', 'Anyone else?', 'Plan and card'];
     var names = S.children.concat(S.pending).map(function (c) { return c.name; });
     var total = S.children.length + S.pending.length;
@@ -275,23 +300,40 @@
       ''
     ];
 
+    /* ⊕ B2C onboarding repair (V5). A finished step is a BUTTON that goes
+       back to it. "Your account" stops being one once the email is
+       verified: there is nothing left on that step to change from here. */
     $('rail-steps').innerHTML = labels.map(function (label, i) {
       var done = i < idx, on = i === idx;
+      var back = done && railTarget(i);
       var numBg = done ? 'var(--ks3-ok)' : (on ? 'var(--ks3-ink)' : 'var(--ks3-card)');
-      var numFg = (done || on) ? '#fff' : 'var(--ks3-ink-muted)';
-      return '<li style="display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;' +
+      var numFg = done ? '#fff' : (on ? 'var(--ks3-on-dark)' : 'var(--ks3-ink-muted)');
+      var box = 'display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;' +
         'background:' + (on ? 'var(--ks3-band)' : 'transparent') + ';border:2px solid ' +
-        (on ? 'var(--ks3-ink)' : 'transparent') + '">' +
+        (on ? 'var(--ks3-ink)' : 'transparent');
+      var inner =
         '<span style="display:grid;place-items:center;width:30px;height:30px;border-radius:9px;' +
         'border:2px solid var(--ks3-ink);background:' + numBg + ';color:' + numFg + ';' +
-        'font-family:var(--ks3-font-display);font-weight:800;font-size:14px">' +
+        'font-family:var(--ks3-font-display);font-weight:800;font-size:14px;flex:0 0 auto">' +
         (done ? P.mark(P.PATH.tick, 'width:14px;height:14px') : String(i + 1)) + '</span>' +
-        '<span style="flex:1;min-width:0"><span style="display:block;font-weight:700;font-size:16px;color:' +
+        '<span style="flex:1;min-width:0;text-align:left"><span style="display:block;font-weight:700;font-size:16px;color:' +
         ((on || done) ? 'var(--ks3-ink)' : 'var(--ks3-ink-muted)') + '">' + esc(label) + '</span>' +
-        (done && subs[i] ? '<span style="display:block;font-size:13px;color:var(--ks3-ink-muted)">' +
+        (done && subs[i] ? '<span style="display:block;font-size:13px;color:var(--ks3-ink-muted);overflow-wrap:anywhere">' +
                            esc(subs[i]) + '</span>' : '') +
-        '</span></li>';
+        '</span>';
+      return '<li' + (on ? ' aria-current="step"' : '') + '>' + (back
+        ? '<button type="button" class="su-rail-btn" data-rail="' + i + '" style="' + box +
+          ';width:100%;font:inherit;color:inherit;cursor:pointer">' + inner + '</button>'
+        : '<div style="' + box + '">' + inner + '</div>') + '</li>';
     }).join('');
+  }
+
+  /* Where a finished rail step goes back to, or null when there is nowhere. */
+  function railTarget(i) {
+    if (i === 0) { return S.verified ? null : 'verify'; }
+    if (i === 1) { return S.children.length ? 'edit' : (S.pending.length ? 'children' : 'child'); }
+    if (i === 2) { return 'children'; }
+    return null;
   }
 
   /* ══ STEP: ACCOUNT ════════════════════════════════════════════════════ */
@@ -328,7 +370,7 @@
       '<input type="email" id="email" value="' + esc(S.email) + '" placeholder="you@example.com" autocomplete="email" style="' + input + '"></label>' +
       '<label style="display:block;margin-top:14px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Password' +
       '<input type="password" id="password" placeholder="At least 10 characters" autocomplete="new-password" style="' + input + '"></label>' +
-      (S.error ? '<p style="margin:10px 0 0;font-size:15px;font-weight:700;color:var(--ks3-accent-text)">' + esc(S.error) + '</p>' : '') +
+      (S.error ? '<p id="acct-err" style="margin:10px 0 0;font-size:15px;font-weight:700;color:var(--ks3-accent-text)">' + esc(S.error) + '</p>' : '') +
       /* ── Night 4 (MRB-317 ruling 7) ────────────────────────────────────
          Design drew a sentence — "By continuing you agree to the terms and
          privacy notice" — with two dead `#` links, and Night 3 shipped it as
@@ -362,7 +404,7 @@
       '</label>' +
       '<p id="terms-note" style="margin:8px 0 0;font-size:14px;color:var(--ks3-ink-muted)"' +
         (S.terms ? ' hidden' : '') + '>Tick the box to create your account.</p>' +
-      primaryBtn('continue', 'Continue', S.terms ? '' : ';opacity:.45') +
+      primaryBtn('continue', 'Continue') +
       '<p style="margin:26px 0 0;font-size:16px;text-align:center">Already have an account? <a href="' +
       P.url('signIn') + '" style="font-weight:700">Sign in</a></p>';
   }
@@ -399,27 +441,46 @@
        not mirrored into `S` (see the localStorage note in the header). So a
        render() here would silently empty the password a parent had already
        typed, every time they ticked the box. */
+    /* ⊕ B2C onboarding repair: the two buttons are no longer greyed to
+       .45 opacity and `disabled` until the tick — greyed text measured
+       1.65:1 (light) and 1.96:1 (dark), and a bare `disabled` is a button
+       that looks dead (800be2e0b ruled it out across the consumer pages).
+       They stay pressable and refuse with TERMS_REQUIRED, and the line
+       under the tick says what is missing; the gate itself is unchanged. */
     var termsBox = $('terms');
     function syncTerms() {
       var on = !!termsBox.checked;
       S.terms = on;
-      $('continue').disabled = !on;
-      $('continue').style.opacity = on ? '' : '.45';
-      $('google').disabled = !on;
-      $('google').style.opacity = on ? '' : '.45';
+      if (on && S.error === TERMS_REQUIRED) {
+        S.error = '';
+        var err = $('acct-err'); if (err) { err.remove(); }
+      }
       $('terms-note').hidden = on;
       $('terms-row').style.borderColor = on ? 'var(--ks3-ink)' : 'var(--ks3-option-border)';
       $('terms-row').style.background = on ? 'var(--ks3-band)' : 'var(--ks3-card)';
       saveDraft();
     }
     termsBox.addEventListener('change', syncTerms);
+    /* In place, never render(): a render would empty the password box. */
+    function termsRefused() {
+      S.error = TERMS_REQUIRED;
+      var err = $('acct-err');
+      if (!err) {
+        $('password').parentNode.insertAdjacentHTML('afterend',
+          '<p id="acct-err" role="alert" style="margin:10px 0 0;font-size:15px;font-weight:700;' +
+          'color:var(--ks3-accent-text)"></p>');
+        err = $('acct-err');
+      }
+      err.textContent = TERMS_REQUIRED;
+      termsBox.focus();
+    }
     syncTerms();
 
     $('google').addEventListener('click', function () {
       var btn = this;
       // Belt and braces. The button is already disabled without the tick;
       // this is what stops a re-enabled one being a way round the gate.
-      if (!S.terms) { S.error = TERMS_REQUIRED; return render(); }
+      if (!S.terms) { return termsRefused(); }
       btn.disabled = true;
       sb.auth.signInWithOAuth({
         provider: 'google',
@@ -439,7 +500,7 @@
     $('continue').addEventListener('click', function () {
       var email = $('email').value.trim();
       var password = $('password').value;
-      if (!S.terms) { S.error = TERMS_REQUIRED; return render(); }
+      if (!S.terms) { return termsRefused(); }
       // Design's validation, and her two strings.
       if (email.indexOf('@') === -1) {
         S.error = 'Enter the email you want us to write to.'; return render();
@@ -452,33 +513,51 @@
       var btn = this;
       C.setBusy(btn, true, 'Creating…');
 
+      heldPassword = password;
       sb.auth.signUp({
         email: email,
         password: password,
         options: {
-          // A hint, never a permission — the backend does not trust user
-          // metadata, and must not.
-          data: { account_type: 'parent' },
+          /* Hints, never permissions — the backend does not trust user
+             metadata for anything it guards. They ride on the account so
+             that a verify link opened in a DIFFERENT browser (no draft
+             there) still knows the parent's name and that they ticked the
+             terms: /family/ensure copies `first_name` onto an empty profile,
+             and verify.html sends `terms_accepted` on its ensure when this
+             says the box was ticked — which Continue cannot be pressed
+             without. */
+          data: { account_type: 'parent', first_name: S.name || undefined,
+                  terms_accepted: S.terms === true },
           emailRedirectTo: window.location.origin + C.href('/consumer/verify.html')
         }
       }).then(function (r) {
-        C.setBusy(btn, false);
-        if (r.error) { S.error = signupError(r.error); return render(); }
+        if (r.error) { C.setBusy(btn, false); S.error = signupError(r.error); return render(); }
 
         /* Supabase obfuscates "this address already has an account": no
-           error, a user, and an EMPTY identities array. Without this the
-           button appears to do nothing and the parent presses it again. */
+           error, a user, and an EMPTY identities array.
+           ⊕ B2C onboarding repair (V1). This used to stop here with "try
+           signing in instead" — a dead end for the commonest way to reach
+           it: a parent who verified in another browser and came back to
+           this one. They have just typed the email and password, so sign
+           in with them and carry on from where this tab is. */
         if (r.data.user && Array.isArray(r.data.user.identities) &&
             r.data.user.identities.length === 0) {
-          S.error = 'Looks like you already have an account — try signing in instead.';
-          return render();
+          return signInHere(email, password).then(function (res) {
+            C.setBusy(btn, false);
+            if (res.ok) { return; }
+            if (res.unverified) { saveDraft(); return go('verify'); }
+            S.error = 'There’s already an account for ' + email +
+              ', and that isn’t its password. Sign in instead, or reset the password there.';
+            render();
+          });
         }
 
+        C.setBusy(btn, false);
         saveDraft();
         if (r.data.session) {
           // Confirmation is off on this project, or the address was already
           // confirmed: skip the inbox entirely.
-          return adoptSession(r.data.session).then(function () { go('child'); });
+          return adoptSession(r.data.session).then(settle);
         }
         go('verify');
       }).catch(function (e) {
@@ -490,25 +569,91 @@
     });
   }
 
+  /* Sign THIS tab in with an email and password, then carry on from the
+     step the server says is next. { ok } | { unverified } | { error }. */
+  function signInHere(email, password) {
+    return sb.auth.signInWithPassword({ email: email, password: password }).then(function (r) {
+      if (r.error) {
+        if (/email not confirmed/i.test(r.error.message || '')) { return { unverified: true }; }
+        return { error: r.error.message || 'wrong' };
+      }
+      heldPassword = password;
+      return adoptSession(r.data.session).then(function () { settle(); return { ok: true }; });
+    }, function (e) {
+      console.error('[signup] sign in', e);
+      return { error: 'network' };
+    });
+  }
+
   /* ══ STEP: VERIFY ═════════════════════════════════════════════════════ */
   function viewVerify() {
+    var input = 'margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:50px;' +
+      'padding:12px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);' +
+      'background:var(--ks3-card);font-size:17px;color:var(--ks3-ink)';
     return '<h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.035em">Check your inbox</h1>' +
-      '<p style="margin:14px 0 0;font-size:18px;color:var(--ks3-ink-body)">We\'ve sent a link to <strong style="color:var(--ks3-ink)">' + esc(S.email) + '</strong>. Tap it and come straight back here.</p>' +
+      '<p style="margin:14px 0 0;font-size:18px;color:var(--ks3-ink-body)">We\'ve sent a link to <strong style="color:var(--ks3-ink)">' + esc(S.email) + '</strong>. Tap it, then come back here.</p>' +
+      /* ⊕ B2C onboarding repair (V1). The way on once the link is clicked —
+         in this browser or any other. This tab also checks by itself when it
+         is looked at again; the button is for a parent who does not wait. */
+      (heldPassword ? '' :
+        '<label style="display:block;margin-top:22px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Your password' +
+        '<input type="password" id="v-pass" autocomplete="current-password" style="' + input + '"></label>') +
+      primaryBtn('v-done', 'I’ve clicked the link') +
+      (S.error ? errorLine(S.error) : '') +
       '<div style="margin-top:26px;padding:22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block)">' +
       '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">While you wait</p>' +
       '<p style="margin:8px 0 0;font-size:17px;color:var(--ks3-ink-body)">You can carry on setting up your child now. We\'ll hold your place until the email is verified.</p>' +
-      '<button type="button" id="carry-on" style="margin-top:16px;width:100%;min-height:50px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:17px;cursor:pointer">Carry on</button>' +
+      '<button type="button" id="carry-on" style="margin-top:16px;width:100%;min-height:50px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);color:var(--ks3-ink);font-weight:700;font-size:17px;cursor:pointer">Carry on</button>' +
       '</div>' +
-      (S.error ? errorLine(S.error) : '') +
       '<div style="margin-top:22px;display:flex;flex-direction:column;gap:10px;font-size:16px">' +
       '<a href="#" id="resend" style="font-weight:700">' +
       (S.resent ? 'Sent again. Check spam too.' : 'Send the email again') + '</a>' +
       '<a href="#" id="change-email">Wrong address? Change it</a></div>';
   }
 
+  var NOT_YET = 'That email isn’t verified yet. Open the link in it, then press the button again.';
+
+  /* Is there a verified session for this browser now? Same-browser
+     verification (another tab) leaves one in storage; a link opened in a
+     different browser does not, and only the password can bring it here. */
+  var lastTry = 0;
+  function checkVerified(fromButton, sessionOnly) {
+    if (S.step !== 'verify' || S.busy) { return Promise.resolve(false); }
+    return sb.auth.getSession().then(function (r) {
+      var sess = r && r.data && r.data.session;
+      if (sess && sess.user && sess.user.email_confirmed_at) {
+        return adoptSession(sess).then(function () { settle(); return true; });
+      }
+      if (sessionOnly) { return false; }
+      var pass = heldPassword || (($('v-pass') || {}).value || '');
+      if (!pass || !S.email) {
+        if (fromButton) { S.error = 'Type your password, then press the button.'; render(); }
+        return false;
+      }
+      // Quietly, at most every 15s; the button always tries.
+      if (!fromButton && Date.now() - lastTry < 15000) { return false; }
+      lastTry = Date.now();
+      return signInHere(S.email, pass).then(function (res) {
+        if (res.ok) { return true; }
+        if (!fromButton) { return false; }
+        S.error = res.unverified ? NOT_YET
+                : res.error === 'network' ? 'We couldn’t reach MrBadmus. Check your connection and try again.'
+                : 'That password doesn’t match this email.';
+        render();
+        return false;
+      });
+    });
+  }
+
   function bindVerify() {
-    $('carry-on').addEventListener('click', function () { go('child'); });
-    $('change-email').addEventListener('click', function (e) { e.preventDefault(); go('account'); });
+    $('carry-on').addEventListener('click', function () { S.error = ''; go('child'); });
+    $('change-email').addEventListener('click', function (e) { e.preventDefault(); S.error = ''; go('account'); });
+    $('v-done').addEventListener('click', function () {
+      var btn = this;
+      S.error = '';
+      C.setBusy(btn, true, 'Checking…');
+      checkVerified(true).then(function (ok) { if (!ok && document.body.contains(btn)) { C.setBusy(btn, false); } });
+    });
     $('resend').addEventListener('click', function (e) {
       e.preventDefault();
       sb.auth.resend({
@@ -526,7 +671,10 @@
       'padding:12px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);' +
       'background:var(--ks3-card);font-size:17px;color:var(--ks3-ink)';
     var label = 'margin:20px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)';
-    var total = S.children.length + S.pending.length;
+    // A held child being finished is this form, not "another" one.
+    var total = S.children.length + S.pending.filter(function (p) {
+      return !(f.retryOf && sameUser(p.user, f.retryOf));
+    }).length;
 
     var h = '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">' +
       esc(S.editing >= 0 ? 'Editing' : (total ? 'Child ' + (total + 1) : 'Your child')) + '</p>' +
@@ -625,16 +773,33 @@
       return '<p style="margin:8px 0 0;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;' +
         'color:var(--ks3-ok-text)">' + P.mark(P.PATH.tick) + esc(f.user) + ' is free</p>';
     }
+    if (f.userStatus === 'mine') {
+      return '<p style="margin:8px 0 0;font-size:15px;font-weight:700;color:var(--ks3-accent-text)">' +
+        esc(f.userReason) + '</p>';
+    }
     if (f.userStatus === 'taken') {
-      var reason = f.userReason || 'That username is taken — try another.';
-      var out = '<p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-body)">' +
-        '<strong style="color:var(--ks3-accent-text)">' + esc(reason) + '</strong>';
-      if (f.suggestion) {
-        out += ' How about <button type="button" id="c-take" style="padding:2px 8px;border:2px solid var(--ks3-accent);' +
-          'border-radius:8px;background:var(--ks3-accent-tint);font-weight:700;font-size:15px;' +
-          'color:var(--ks3-accent-text);cursor:pointer">' + esc(f.suggestion) + '</button>?';
+      /* ⊕ B2C onboarding repair (V4). A name someone else already has gets
+         a sentence that says so and two names to try instead, as buttons.
+         Any other refusal ("letters and numbers only…") keeps the checker's
+         own words, which say what is actually wrong. */
+      var sugg = (f.suggestions || []).slice(0, 2);
+      if (sugg.length) {
+        return '<p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-body)">' +
+          '<strong style="color:var(--ks3-accent-text)">Someone already uses ' + esc(f.takenName || f.user) +
+          '.</strong> Try ' + sugg.map(function (x) {
+            return '<button type="button" data-take="' + esc(x) + '" style="padding:2px 8px;border:2px solid var(--ks3-accent);' +
+              'border-radius:8px;background:var(--ks3-accent-tint);font-weight:700;font-size:15px;' +
+              'color:var(--ks3-accent-text);cursor:pointer">' + esc(x) + '</button>';
+          }).join(' or ') + '.</p>';
       }
-      return out + '</p>';
+      if (/taken/i.test(f.userReason || '')) {
+        return '<p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-body)">' +
+          '<strong style="color:var(--ks3-accent-text)">Someone already uses ' + esc(f.takenName || f.user) +
+          '.</strong> Try adding a word or a couple of letters.</p>';
+      }
+      return '<p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-body)">' +
+        '<strong style="color:var(--ks3-accent-text)">' +
+        esc(f.userReason || 'That username can’t be used — try another.') + '</strong></p>';
     }
     if (f.userStatus === 'unknown') {
       /* The checker needs a signed-in caller and there isn't one yet — the
@@ -660,6 +825,19 @@
       $('c-user-state').innerHTML = usernameStateHtml();
       return;
     }
+    /* One of THIS family's children already has it. That is not "someone
+       else" and the checker's "taken" would read as if it were. */
+    var self = S.editing >= 0 ? S.children[S.editing] : null;
+    var own = S.children.filter(function (c) { return c !== self && sameUser(c.username, u); })[0] ||
+              S.pending.filter(function (c) {
+                return sameUser(c.user, u) && !sameUser(c.user, S.form.retryOf);
+              })[0];
+    if (own) {
+      S.form.userStatus = 'mine';
+      S.form.userReason = own.name + ' already has ' + u + '. Pick a different one for this child.';
+      $('c-user-state').innerHTML = usernameStateHtml();
+      return;
+    }
     function run() {
       S.form.userStatus = 'checking';
       $('c-user-state').innerHTML = usernameStateHtml();
@@ -667,11 +845,14 @@
         .then(function (d) {
           if ((S.form.user || '').trim() !== u) { return; }   // typed on since
           if (d && d.ok) {
-            S.form.userStatus = 'free'; S.form.userReason = ''; S.form.suggestion = '';
+            S.form.userStatus = 'free'; S.form.userReason = ''; S.form.suggestions = [];
           } else {
             S.form.userStatus = 'taken';
-            S.form.userReason = (d && d.reason) || 'That username is taken — try another.';
-            S.form.suggestion = (d && d.suggestions && d.suggestions[0]) || '';
+            S.form.userReason = (d && d.reason) || '';
+            S.form.suggestions = (d && d.suggestions) || [];
+            S.form.takenName = u;
+            // Taken with nothing offered: find something to offer.
+            if (!S.form.suggestions.length && /taken/i.test(S.form.userReason)) { findSuggestions(S.form); }
           }
           $('c-user-state').innerHTML = usernameStateHtml();
           bindUsernameChip();
@@ -693,12 +874,14 @@
     if (immediate) { run(); } else { checkTimer = setTimeout(run, 400); }
   }
   function bindUsernameChip() {
-    var chip = $('c-take');
-    if (!chip) { return; }
-    chip.addEventListener('click', function () {
-      S.form.user = S.form.suggestion;
-      $('c-user').value = S.form.user;
-      checkUsername(true);
+    var host = $('c-user-state');
+    if (!host) { return; }
+    Array.prototype.forEach.call(host.querySelectorAll('[data-take]'), function (chip) {
+      chip.addEventListener('click', function () {
+        S.form.user = chip.getAttribute('data-take');
+        $('c-user').value = S.form.user;
+        checkUsername(true);
+      });
     });
   }
 
@@ -766,8 +949,10 @@
        actually has. `userReason` already holds the real sentence and is
        already shown under the field; the summary now says the same thing as
        the field instead of contradicting it. */
-    if (f.userStatus === 'taken')  {
-      S.childError = f.userReason || 'Choose a username that’s free.';
+    if (f.userStatus === 'taken' || f.userStatus === 'mine')  {
+      S.childError = f.userStatus === 'mine' ? f.userReason
+        : ((f.suggestions && f.suggestions.length) ? 'Choose a different username.'
+           : (f.userReason || 'Choose a username that’s free.'));
       return render();
     }
     /* ⊕ DEVIATION: Design validates the child's password at 6 characters.
@@ -784,31 +969,77 @@
        until there is one. Design's verify screen already promises exactly
        this ("We'll hold your place until the email is verified"). */
     if (!S.verified) {
-      S.pending.push(Object.assign({}, f));
+      addPending(Object.assign({}, f, { userStatus: 'idle', userReason: '', suggestions: [] }));
       S.form = blankChild();
-      saveDraft();
       return go('children');
     }
 
     C.setBusy(btn, true, 'Setting up…');
     createChild(f).then(function (res) {
       C.setBusy(btn, false);
+      // A child held from before verification, re-typed after it could not
+      // be created as it was: the held copy is now this one.
+      if (f.retryOf) { dropPending(f.retryOf); }
       S.form = blankChild();
-      startUnitStep(res.child_id, res.name, res.year, res.mode, res.pickerNote);
+      startUnitStep(res);
     }).catch(function (e) {
       C.setBusy(btn, false);
       /* 409 username_unavailable is the one refusal with a recovery path:
-         put the server's first suggestion back on the username line rather
-         than leaving the parent to invent another name. */
+         put the server's suggestions back on the username line rather than
+         leaving the parent to invent another name. */
       if (e && e.status === 409 && e.code === 'username_unavailable') {
-        S.form.userStatus = 'taken';
-        S.form.userReason = e.message;
-        S.form.suggestion = (e.data && e.data.suggestions && e.data.suggestions[0]) || '';
+        takenFrom(S.form, e);
         S.childError = '';
       } else {
         S.childError = (e && e.message) || 'We couldn’t set that child up just now.';
       }
       render();
+    });
+  }
+
+  function takenFrom(form, e) {
+    var sugg = (e.data && e.data.suggestions) || [];
+    form.userStatus = 'taken';
+    form.userReason = sugg.length ? '' : (e.message || '');
+    form.suggestions = sugg;
+    form.takenName = form.user;
+    if (!sugg.length) { findSuggestions(form); }
+  }
+
+  /* The server's checker sometimes has no alternative to offer — every
+     "name + number" it tries for a name that already ends in digits is
+     refused as looking like a phone number. A taken name must still come
+     with something to try, so this asks the same checker about a few
+     letter-led variants and keeps the first two it calls free. */
+  function findSuggestions(form) {
+    var taken = form.takenName || form.user;
+    var base = String(taken || '').toLowerCase().replace(/[^a-z]/g, '').slice(0, 14) || 'star';
+    var n = function () { return String(10 + Math.floor(Math.random() * 89)); };
+    var tries = [base + n(), base + 'x' + n(), base + 'star', base + 'zoom', 'the' + base];
+    var found = [];
+    return tries.reduce(function (chain, c) {
+      return chain.then(function () {
+        if (found.length >= 2 || !S.token) { return; }
+        return C.api('/api/consumer/username/check?u=' + encodeURIComponent(c), { token: S.token })
+          .then(function (d) { if (d && d.ok) { found.push(c); } }, function () {});
+      });
+    }, Promise.resolve()).then(function () {
+      if (S.form !== form || form.takenName !== taken || !found.length) { return; }
+      form.suggestions = found;
+      form.userReason = '';
+      var host = $('c-user-state');
+      if (host) { host.innerHTML = usernameStateHtml(); bindUsernameChip(); }
+    });
+  }
+
+  function editForm(c) {
+    return Object.assign(blankChild(), {
+      name: c.name, year: c.year, board: c.board, tier: c.tierLabel, route: c.routeLabel,
+      mode: c.mode === 'home_education' ? 'home' : 'school',
+      user: c.username, pass: '',
+      // The username already belongs to this child; asking the checker
+      // about it would answer "taken" about themselves.
+      userStatus: 'free'
     });
   }
 
@@ -878,6 +1109,8 @@
             name: f.name.trim(),
             year: f.year,
             mode: mode,
+            pathway: body.pathway,
+            tier: body.tier,
             pickerNote: (picker && picker.applied === false) ? NOT_IN_SCHEME : ''
           };
         });
@@ -888,51 +1121,42 @@
      teach". Design has no state for it; the backend answers
      `position.picker.applied === false`, and saying nothing would leave a
      parent believing their child starts somewhere they do not. */
-  var NOT_IN_SCHEME = 'The unit isn’t in this year’s scheme; work starts at the term week.';
+  var NOT_IN_SCHEME = 'That topic isn’t in this year’s plan, so work starts from this week of the school year.';
 
-  /* ══ STEP: UNIT ═══════════════════════════════════════════════════════ */
-  function startUnitStep(childId, name, year, mode, note) {
-    S.unitChildId = childId;
-    S.unitChildName = name;
-    S.unitChildYear = year;
-    S.unitChildMode = mode;
+  /* ══ STEP: UNIT ═══════════════════════════════════════════════════════
+     ⊕ B2C onboarding repair (V6, Mide's ruling option a). The shared topic
+     picker: the whole curriculum, typed or browsed, with this child's own
+     plan choosable and everything else greyed with the year it is taught
+     in. One selection. A LESSON places the child at that lesson's week in
+     its subject (the scheme's own teaching order, from the picker); a UNIT
+     places them at its first lesson. */
+  function startUnitStep(res, opts) {
+    S.unitChildId = res.child_id;
+    S.unitChildName = res.name;
+    S.unitChildYear = res.year;
+    S.unitChildMode = res.mode;
+    S.unitChild = { year: res.year, pathway: res.pathway || null, tier: res.tier || null };
     S.unitUnits = null;              // null = loading
     S.unitPicked = null;
     S.unitError = '';
-    S.unitNote = note || '';
-    go('unit');
-    C.api('/api/consumer/children/' + childId + '/picker', { token: S.token })
-      .then(function (d) { S.unitUnits = groupUnits((d && d.units) || []); render(); })
-      .catch(function (e) {
-        console.error('[signup] picker', e);
-        S.unitUnits = [];
-        S.unitError = (e && e.message) || 'We couldn’t load this year’s units.';
-        render();
-      });
-  }
-
-  /* The picker's flat unit list, grouped into Design's six half-term blocks
-     by the teaching-order week of each unit's FIRST lesson. */
-  function groupUnits(units) {
-    var byBlock = {};
-    BLOCKS.forEach(function (b) { byBlock[b.code] = { code: b.code, term: b.term, units: [] }; });
-    units.forEach(function (u) {
-      var weeks = (u.lessons || []).map(function (l) { return Number(l.week); })
-                   .filter(function (n) { return isFinite(n); });
-      var first = weeks.length ? Math.min.apply(null, weeks) : 1;
-      var b = blockFor(first);
-      byBlock[b.code].units.push({
-        unit_code: u.unit_code || null,
-        name: u.name,
-        subject: u.subject,
-        first: first
-      });
+    S.unitNote = res.pickerNote || '';
+    S.tp = {};
+    go('unit', opts);
+    Promise.all([
+      C.api('/api/consumer/children/' + res.child_id + '/picker', { token: S.token }),
+      curriculum ? Promise.resolve(curriculum) : window.MrBadmusTopicPicker.loadIndex()
+    ]).then(function (out) {
+      curriculum = out[1];
+      if (S.unitChildId !== res.child_id) { return; }
+      S.unitUnits = (out[0] && out[0].units) || [];
+      if (S.step === 'unit') { render(); }
+    }).catch(function (e) {
+      console.error('[signup] picker', e);
+      if (S.unitChildId !== res.child_id) { return; }
+      S.unitUnits = [];
+      S.unitError = (e && e.message) || 'We couldn’t load the topics just now.';
+      if (S.step === 'unit') { render(); }
     });
-    return BLOCKS.map(function (b) {
-      var g = byBlock[b.code];
-      g.units.sort(function (a, z) { return a.first - z.first; });
-      return g;
-    }).filter(function (g) { return g.units.length; });
   }
 
   function viewUnit() {
@@ -944,84 +1168,88 @@
       '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">' +
       esc(S.unitChildMode === 'home_education' ? COPY.unitIntroHome : COPY.unitIntroSchool) + '</p>';
 
+    var skip = '<button type="button" id="u-skip" style="margin-top:10px;width:100%;min-height:48px;border:0;' +
+      'background:none;font-weight:700;font-size:16px;color:var(--ks3-accent-text);cursor:pointer">' +
+      'Not sure? Skip this</button>';
+
     if (S.unitUnits === null) {
-      return h + '<p style="margin:22px 0 0;color:var(--ks3-ink-muted)">Loading this year’s units…</p>';
+      return h + '<p style="margin:22px 0 0;color:var(--ks3-ink-muted)">Loading topics…</p>' + skip;
     }
-    if (!S.unitUnits.length) {
-      return h + '<div style="margin-top:22px">' +
-        '<p style="font-size:16px;color:var(--ks3-ink-body)">' +
-        esc(S.unitError || 'We don’t have a unit list for this year yet.') + '</p>' +
-        '<p style="margin-top:8px;font-size:15px;color:var(--ks3-ink-muted)">' +
-        'That’s fine — the first week starts at the term week instead.</p></div>' +
-        '<button type="button" id="u-skip" style="margin-top:22px;width:100%;min-height:54px;' +
-        'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);' +
-        'color:var(--ks3-on-dark);font-weight:700;font-size:18px;cursor:pointer">Carry on</button>';
+    if (S.unitError) {
+      return h + errorLine(S.unitError) + skip;
     }
 
-    h += '<div style="margin-top:22px;display:flex;flex-direction:column;gap:22px">' +
-      S.unitUnits.map(function (g) {
-        return '<div><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">' +
-          '<span style="display:grid;place-items:center;width:34px;height:34px;border:2px solid var(--ks3-ink);' +
-          'border-radius:10px;background:var(--ks3-band);font-family:var(--ks3-font-display);font-weight:800;' +
-          'font-size:15px">' + esc(g.code) + '</span>' +
-          '<span style="font-weight:700;font-size:16px">' + esc(g.term) + '</span></div>' +
-          '<div style="display:flex;flex-direction:column;gap:8px">' +
-          g.units.map(function (u) {
-            var on = S.unitPicked && S.unitPicked.name === u.name;
-            return optionBtn('data-unit="' + esc(u.name) + '"', on, 'padding:13px 16px',
-              '<span style="width:10px;height:10px;border-radius:99px;border:2px solid var(--ks3-ink);background:' +
-              (P.SUBJECT_DOT[u.subject] || 'var(--ks3-band)') + ';flex:0 0 auto"></span>' +
-              '<span style="flex:1">' + esc(u.name) + '</span>' +
-              '<span style="font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.08em;' +
-              'text-transform:uppercase;color:var(--ks3-ink-muted)">' + esc(u.subject) + '</span>');
-          }).join('') + '</div></div>';
-      }).join('') + '</div>' +
-
-      '<div style="margin-top:22px;padding:16px 18px;border:2px dashed var(--ks3-rule-strong);' +
-      'border-radius:var(--ks3-r-panel);background:var(--ks3-inset);font-size:15px;color:var(--ks3-ink-body)">' +
-      'Everything before the unit you pick is treated as covered. Mr Badmus still checks it in short retrieval questions, so nothing is lost.</div>' +
-
+    var picked = S.unitPicked;
+    return h + '<div id="u-picker" style="margin-top:22px"></div>' +
       (S.unitNote ? errorLine(S.unitNote) : '') +
-
       '<button type="button" id="u-save" style="margin-top:22px;width:100%;min-height:54px;' +
       'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);' +
-      'color:var(--ks3-on-dark);font-weight:700;font-size:18px;cursor:pointer">' +
-      esc(S.unitPicked ? ('Start ' + name + ' from ' + S.unitPicked.name) : 'Pick a unit to continue') + '</button>' +
-      '<button type="button" id="u-skip" style="margin-top:10px;width:100%;min-height:48px;border:0;' +
-      'background:none;font-weight:700;font-size:16px;color:var(--ks3-accent-text);cursor:pointer">' +
-      'Not sure, start from the beginning of the year</button>';
-    return h;
+      'color:var(--ks3-on-dark);font-weight:700;font-size:18px;cursor:pointer"' +
+      (picked ? '' : ' aria-disabled="true"') + '>' +
+      esc(picked ? ('Start ' + name + ' from ' + picked.name) : 'Pick a topic to continue') + '</button>' +
+      skip;
+  }
+
+  /* After the topic question: the next child created from the draft, if
+     there is one, else the list. */
+  function afterUnit() {
+    var next = S.unitQueue.shift();
+    return loadFamily().then(function () {
+      if (next) { return startUnitStep(next); }
+      go('children');
+    });
   }
 
   function bindUnit() {
+    var host = $('u-picker');
+    if (host && curriculum) {
+      window.MrBadmusTopicPicker.mount(host, {
+        index: curriculum, units: S.unitUnits, child: S.unitChild, state: S.tp,
+        listLabel: 'Topics for ' + (S.unitChildName || 'your child'),
+        onChange: function (sel) {
+          S.unitPicked = sel;
+          S.unitNote = '';
+          var save = $('u-save');
+          if (save) {
+            save.textContent = 'Start ' + (S.unitChildName || 'your child') + ' from ' + sel.name;
+            save.removeAttribute('aria-disabled');
+          }
+          var note = $('u-need'); if (note) { note.remove(); }
+        }
+      });
+    }
+
     var save = $('u-save');
     if (save) {
       save.addEventListener('click', function () {
-        if (!S.unitPicked) { return; }
+        var pick = S.unitPicked;
+        if (!pick) {
+          if (!$('u-need')) {
+            this.insertAdjacentHTML('afterend', '<p id="u-need" role="alert" style="margin:10px 0 0;font-size:15px;' +
+              'font-weight:700;color:var(--ks3-accent-text)">Pick a topic from the list, or skip this.</p>');
+          }
+          return;
+        }
         var btn = this;
         C.setBusy(btn, true, 'Saving…');
-        /* `unit_code` when the picker knows one (KS3), the unit's title
-           otherwise (KS4 has no unit codes). `findUnit` on the backend
-           accepts either, which is what makes one control work at both key
-           stages. */
+        /* A lesson is a place in its subject's sequence — the week the
+           picker gave it. A unit is named by code (KS3) or title (KS4);
+           `findUnit` on the backend takes either. */
+        var body = (pick.level === 'lesson' && pick.week != null)
+          ? { cursors: (function () { var c = {}; c[pick.subject] = pick.week; return c; })() }
+          : { unit_code: pick.unitCode || pick.unitName };
         C.api('/api/consumer/children/' + S.unitChildId + '/position', {
-          method: 'POST', token: S.token,
-          body: { unit_code: S.unitPicked.unit_code || S.unitPicked.name }
+          method: 'POST', token: S.token, body: body
         }).then(function () {
           C.setBusy(btn, false);
-          return loadFamily().then(function () { go('children'); });
+          return afterUnit();
         }).catch(function (e) {
           C.setBusy(btn, false);
-          /* 404 unit_not_found is the same fact as
-             `position.picker.applied === false`: the unit is not in this
-             child's scheme. Said in the same words, in Design's error slot,
-             and the flow carries on — the child is real and their plan is
-             sound at the term week. */
-          if (e && e.status === 404) {
-            S.unitNote = NOT_IN_SCHEME;
-            return loadFamily().then(render);
-          }
-          S.unitNote = (e && e.message) || 'We couldn’t save that just now.';
+          /* 404 unit_not_found: the unit is not in this child's scheme after
+             all (the plan changed under us). Said plainly; the child is real
+             and their plan is sound at the term week. */
+          S.unitNote = (e && e.status === 404) ? NOT_IN_SCHEME
+            : ((e && e.message) || 'We couldn’t save that just now.');
           render();
         });
       });
@@ -1030,10 +1258,9 @@
     var skip = $('u-skip');
     if (skip) {
       skip.addEventListener('click', function () {
-        // Nothing to write: `seedPlan` already put the child at the term
-        // week when they were created. "Start from the beginning of the
-        // year" is the default, so skipping means leaving it alone.
-        loadFamily().then(function () { go('children'); });
+        // Nothing to write: `seedPlan` already placed the child at the term
+        // week when they were created.
+        afterUnit();
       });
     }
   }
@@ -1049,8 +1276,13 @@
     }));
 
     var total = rows.length;
-    var heading = total === 1 ? (rows[0].name + ' is set up')
-                              : (total + ' children set up');
+    /* ⊕ B2C onboarding repair. A child typed in before the email is
+       verified does not exist yet — "is set up" was not true of them. Say
+       what is: they are added, and their login is made on verification. */
+    var waiting = S.verified ? [] : S.pending.map(function (c) { return c.name; });
+    var heading = waiting.length
+      ? (total === 1 ? (rows[0].name + ' is added') : (total + ' children added'))
+      : (total === 1 ? (rows[0].name + ' is set up') : (total + ' children set up'));
 
     var extra = tiers && C.price(tiers, 'month', 2);
     var extraLine = extra
@@ -1059,19 +1291,27 @@
 
     var h = '<h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.035em">' +
       esc(heading) + '</h1>' +
-      '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">' + esc(extraLine) + '</p>' +
+      (waiting.length ? '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">' +
+        esc('We’ll make ' + listNames(waiting) + '’s login once your email is verified.') + '</p>' : '') +
+      (S.subscribed ? '' : '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">' + esc(extraLine) + '</p>') +
       '<div style="margin-top:22px;display:flex;flex-direction:column;gap:12px">' +
       rows.map(function (r) {
         return '<div style="display:flex;align-items:center;gap:14px;padding:16px 18px;border:2px solid var(--ks3-ink);' +
           'border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-card)">' +
           '<span style="display:grid;place-items:center;width:44px;height:44px;border-radius:14px;' +
           'background:var(--ks3-accent);border:2px solid var(--ks3-ink);font-family:var(--ks3-font-display);' +
-          'font-weight:800;font-size:20px">' + esc(r.initial) + '</span>' +
+          'font-weight:800;font-size:20px;color:#16120E">' + esc(r.initial) + '</span>' +
           '<span style="flex:1;min-width:0">' +
           '<span style="display:block;font-family:var(--ks3-font-display);font-weight:800;font-size:20px;' +
           'letter-spacing:-.02em">' + esc(r.name) + '</span>' +
           '<span style="display:block;font-size:14px;color:var(--ks3-ink-muted)">' + esc(r.meta) + '</span></span>' +
-          (r.pending ? '' :
+          /* Signed in, and a held child is still here: it could not be
+             created as typed (its username was taken in the meantime). */
+          (r.pending ? (S.verified
+            ? '<button type="button" data-finish="' + r.idx + '" style="min-height:40px;padding:0 12px;' +
+              'border:2px solid var(--ks3-ink);border-radius:10px;background:var(--ks3-band);' +
+              'font-weight:700;font-size:14px;color:var(--ks3-ink);cursor:pointer">Finish</button>'
+            : '') :
             '<button type="button" data-edit="' + r.idx + '" style="min-height:40px;padding:0 12px;' +
             'border:2px solid var(--ks3-rule-strong);border-radius:10px;background:var(--ks3-band);' +
             'font-weight:700;font-size:14px;color:var(--ks3-ink);cursor:pointer">Edit</button>') +
@@ -1083,8 +1323,14 @@
       P.mark(P.PATH.plus) + 'Add another child</button>' +
       '</div>' +
       errorLine(S.error) +
-      primaryBtn('to-plan', 'Choose a plan', ';margin-top:26px');
+      (S.subscribed ? primaryBtn('to-dash', 'Back to your dashboard', ';margin-top:26px')
+                    : primaryBtn('to-plan', 'Choose a plan', ';margin-top:26px'));
     return h;
+  }
+
+  function listNames(a) {
+    if (a.length < 2) { return a.join(''); }
+    return a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
   }
 
   function pendingMeta(c) {
@@ -1098,6 +1344,10 @@
     $('add-another').addEventListener('click', function () {
       S.form = blankChild(); S.editing = -1; go('child');
     });
+    if ($('to-dash')) {
+      $('to-dash').addEventListener('click', function () { C.go('/consumer/overview.html'); });
+      return;
+    }
     $('to-plan').addEventListener('click', function () {
       if (!S.verified) {
         /* Nothing downstream exists without a family, and a family needs a
@@ -1132,8 +1382,6 @@
 
     return '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">One plan · everything included</p>' +
       '<h1 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.035em">Start your free week</h1>' +
-      '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">Seven days free, full access. Your card isn\'t charged until <strong style="color:var(--ks3-ink)">' +
-      esc(trialEndLabel()) + '</strong>. Cancel any time before then and you pay nothing.</p>' +
 
       '<div style="margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
       [{ id: 'month', label: 'Monthly', price: m ? P.money(m.total_pence) : P.PENDING, sub: 'a month · cancel any time' },
@@ -1162,7 +1410,7 @@
          them, the total is free to be squeezed by the label rather than the
          label by the total. The number is the thing that must never shrink. */
       '<span style="font-weight:700;font-size:17px;min-width:0">' +
-      (annual ? 'Per year, after the free week' : 'Per month, after the free week') + '</span>' +
+      (annual ? 'Per year, from ' : 'Per month, from ') + esc(trialEndLabel()) + '</span>' +
       '<span style="flex:0 0 auto;font-family:var(--ks3-font-display);font-weight:800;font-size:32px;letter-spacing:-.03em">' +
       esc(chosen ? P.money(chosen.total_pence) : P.PENDING) + '</span></div>' +
       '<p style="margin:6px 0 0;font-size:14px;color:var(--ks3-ink-muted);text-align:right">' +
@@ -1180,7 +1428,7 @@
 
       '<button type="button" id="to-stripe" style="margin-top:24px;width:100%;min-height:56px;' +
       'border:2px solid var(--ks3-accent-text);border-radius:var(--ks3-r-control);background:var(--ks3-accent-text);' +
-      'color:#FFFFFF;font-weight:700;font-size:18px;cursor:pointer">Add a card and start the free week</button>' +
+      'color:var(--su-on-accent);font-weight:700;font-size:18px;cursor:pointer">Add a card and start the free week</button>' +
       '<p style="margin:12px 0 0;font-size:14px;color:var(--ks3-ink-muted);text-align:center">Card details are taken securely by Stripe. We never see your card number.</p>';
   }
 
@@ -1196,21 +1444,11 @@
       C.startCheckout(this, {
         token: S.token, interval: S.plan,
         addChildHref: C.href('/consumer/signup.html', { step: 'child' }),
-        // The draft has served its purpose — every child is on the server.
-        beforeRedirect: clearPending
+        // The draft has served its purpose — every child is on the server,
+        // and a kept `step` would reopen this plan after it is paid for.
+        beforeRedirect: clearDraft
       });
     });
-  }
-
-  /* ══ STEP: STRIPE HAND-OFF ════════════════════════════════════════════ */
-  function viewStripe() {
-    return '<div style="margin-top:40px;text-align:center">' +
-      '<div style="margin:0 auto;width:56px;height:56px;border-radius:99px;border:4px solid var(--ks3-rule);' +
-      'border-top-color:var(--ks3-accent);animation:pb-spin 1s linear infinite"></div>' +
-      '<h1 style="margin:24px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:32px;' +
-      'line-height:1.05;letter-spacing:-.03em">Taking you to Stripe</h1>' +
-      '<p style="margin:12px 0 0;font-size:17px;color:var(--ks3-ink-body)">You\'ll add a card there and come straight back. Nothing is charged for seven days.</p>' +
-      '</div>';
   }
 
   /* ══ plumbing ═════════════════════════════════════════════════════════ */
@@ -1220,8 +1458,7 @@
     child:    { view: viewChild,    bind: bindChild },
     unit:     { view: viewUnit,     bind: bindUnit },
     children: { view: viewChildren, bind: bindChildren },
-    plan:     { view: viewPlan,     bind: bindPlan },
-    stripe:   { view: viewStripe,   bind: function () {} }
+    plan:     { view: viewPlan,     bind: bindPlan }
   };
 
   function render() {
@@ -1256,8 +1493,8 @@
          its selected state. */
       var form = $('su-main');
       var b = e.target.closest('button[data-year],button[data-board],button[data-route],' +
-                               'button[data-tier],button[data-mode],button[data-unit],' +
-                               'button[data-edit],button[data-plan]');
+                               'button[data-tier],button[data-mode],' +
+                               'button[data-edit],button[data-plan],button[data-finish]');
       if (!b || !form.contains(b)) { return; }
 
       if (b.hasAttribute('data-plan')) {
@@ -1265,26 +1502,19 @@
         return render();
       }
 
-      if (b.hasAttribute('data-unit')) {
-        var pickedName = b.getAttribute('data-unit');
-        (S.unitUnits || []).forEach(function (g) {
-          g.units.forEach(function (u) { if (u.name === pickedName) { S.unitPicked = u; } });
-        });
-        S.unitNote = '';
-        return render();
+      if (b.hasAttribute('data-finish')) {
+        var p = S.pending[Number(b.getAttribute('data-finish'))];
+        if (!p) { return; }
+        S.form = Object.assign(blankChild(), p, { userStatus: 'idle', retryOf: p.user });
+        S.editing = -1;
+        go('child');
+        return checkUsername(true);
       }
 
       if (b.hasAttribute('data-edit')) {
         var c = S.children[Number(b.getAttribute('data-edit'))];
         if (!c) { return; }
-        S.form = {
-          name: c.name, year: c.year, board: c.board, tier: c.tierLabel, route: c.routeLabel,
-          mode: c.mode === 'home_education' ? 'home' : 'school',
-          user: c.username, pass: '', unit: null,
-          // The username already belongs to this child; asking the checker
-          // about it would answer "taken" about themselves.
-          userStatus: 'free', userReason: '', suggestion: ''
-        };
+        S.form = editForm(c);
         S.editing = S.children.indexOf(c);
         return go('child');
       }
@@ -1299,17 +1529,54 @@
     });
   }
 
-  function go(step) {
+  /* ⊕ B2C onboarding repair (V5). Every step is a history entry, so the
+     browser's Back goes one step back INSIDE the flow instead of leaving it
+     for whatever page came before signup. `opts.replace` is for a step this
+     page chose on its own (where to land after a load or a sign-in), which
+     must not leave a dead entry behind it. */
+  function go(step, opts) {
+    var moved = S.step !== step;
     S.step = step;
     S.childError = '';
     saveDraft();
     recordTerms();          // see the note on recordTerms — retried, not blocking
+    recordName();
+    try {
+      if (opts && opts.replace) { history.replaceState({ mrbStep: step }, ''); }
+      else if (moved || !(history.state && history.state.mrbStep)) {
+        history.pushState({ mrbStep: step }, '');
+      }
+    } catch (e) { /* a sandboxed frame: Back simply leaves, as before */ }
     render();
+    if (moved) { window.scrollTo(0, 0); }
   }
 
+  window.addEventListener('popstate', function (e) {
+    var want = e.state && e.state.mrbStep;
+    if (!want || !VIEWS[want]) { return; }
+    // A step that is no longer reachable goes to the nearest one that is.
+    if (want === 'unit' && !S.unitChildId) { want = 'children'; }
+    if ((want === 'account' || want === 'verify') && S.verified) {
+      want = (S.children.length || S.pending.length) ? 'children' : 'child';
+    }
+    if (want === 'plan' && (!S.verified || !S.children.length || S.subscribed)) { want = 'children'; }
+    if (want === 'children' && !S.children.length && !S.pending.length) {
+      want = S.verified ? 'child' : 'account';
+    }
+    S.step = want;
+    S.childError = '';
+    S.error = '';
+    if (want !== 'child') { S.editing = -1; }
+    saveDraft();
+    render();
+  });
+
+  /* Everything but `pending` — see addPending(). */
   function saveDraft() {
-    writeDraft({ email: S.email, name: S.name, step: S.step, plan: S.plan,
-                 pending: S.pending, terms: S.terms });
+    var d = readDraft();
+    d.email = S.email; d.name = S.name; d.step = S.step; d.plan = S.plan; d.terms = S.terms;
+    writeDraft(d);
+    S.pending = d.pending || [];
   }
 
   /* Read the family back. This is the truth about who exists; the list, the
@@ -1317,6 +1584,8 @@
   function loadFamily() {
     if (!S.token) { return Promise.resolve(); }
     return C.api('/api/consumer/family', { token: S.token }).then(function (d) {
+      var bst = d && d.billing && d.billing.state;
+      S.subscribed = !!(bst && bst !== 'none');
       S.children = ((d && d.children) || []).map(function (c) {
         var mode = c.mode === 'home_education' ? 'Home education' : 'Alongside school';
         var board = c.exam_board || null;
@@ -1375,31 +1644,56 @@
        be a second thing that can fail on its own. Omitted entirely when
        blank, so a parent who skipped the box does not overwrite a name
        Google already gave us. */
-    var patch = { terms_accepted: true };
-    if (S.name) { patch.first_name = S.name; }
     C.api('/api/consumer/parent', {
-      method: 'PATCH', token: S.token, body: patch
+      method: 'PATCH', token: S.token, body: { terms_accepted: true }
     }).catch(function (e) {
       S.termsSent = false;                 // let the next step try again
       console.error('[signup] terms', e);
     });
   }
 
+  /* ⊕ B2C onboarding repair (V1). The parent's name, on its OWN call. It
+     used to ride on the terms PATCH above, and that PATCH is skipped
+     whenever /family/ensure has already stamped the terms — which is every
+     ordinary signup — so the name was never sent and the dashboard opened
+     on "Evening, You". Omitted when blank, so a name Google gave us is never
+     overwritten with nothing. */
+  function recordName() {
+    if (!S.name || S.nameSent || !S.token || !S.ensured) { return; }
+    S.nameSent = true;
+    C.api('/api/consumer/parent', {
+      method: 'PATCH', token: S.token, body: { first_name: S.name }
+    }).catch(function (e) {
+      S.nameSent = false;                  // the next step tries again
+      console.error('[signup] name', e);
+    });
+  }
+
+  var adopting = null;
   function adoptSession(session) {
+    // The button, the poll and the page coming back into view can all find
+    // the same session at once; one adoption is enough.
+    if (adopting && S.token === session.access_token) { return adopting; }
     S.session = session;
     S.token = session.access_token;
     S.email = session.user.email || S.email;
     S.verified = !!session.user.email_confirmed_at;
     if (!S.verified) { return Promise.resolve(); }
 
+    /* A verify link opened in ANOTHER browser has no draft there: the name
+       and the tick came across on the account itself (see bindAccount). */
+    var meta = session.user.user_metadata || {};
+    if (!S.name && typeof meta.first_name === 'string') { S.name = meta.first_name.trim(); }
+    var ticked = S.terms || meta.terms_accepted === true;
+
     /* The acceptance rides on the call that CREATES the profile, because
        that is the first request in the whole flow that is allowed to write
        one. The backend's stamp is write-once, so sending it on every ensure
        — this route is idempotent and runs on every sign-in — cannot walk the
        date forward. */
-    return C.api('/api/consumer/family/ensure', {
+    adopting = C.api('/api/consumer/family/ensure', {
         method: 'POST', token: S.token,
-        body: S.terms ? { terms_accepted: true } : {}
+        body: ticked ? { terms_accepted: true } : {}
       })
       .then(function (d) {
         S.ensured = true;
@@ -1407,30 +1701,111 @@
         return loadFamily();
       })
       .then(flushPending)
-      .then(function () { recordTerms(); });   // retry if ensure did not stamp
+      .then(function () { recordTerms(); recordName(); });   // retry if ensure did not stamp
+    adopting.catch(function () { adopting = null; });
+    return adopting;
   }
 
+  /* Create every child held on this device.
+     ⊕ B2C onboarding repair (V3/V4). Each child is re-read from the draft
+     just before it is created and dropped from it the moment it exists, so
+     two tabs flushing at once cannot create one child twice; a child whose
+     username already belongs to THIS family is one that was created already
+     (by the other tab, or on an earlier visit) and is skipped, never
+     reported as "taken". A child that genuinely cannot be created stays in
+     the draft and comes back as the child form, with the reason. */
   function flushPending() {
-    var d = readDraft();
-    var queue = (d && d.pending) || [];
+    var queue = readDraft().pending || [];
+    S.flushed = []; S.flushFailed = [];
     if (!queue.length) { return Promise.resolve(); }
+
+    function ours(u) { return S.children.some(function (c) { return sameUser(c.username, u); }); }
 
     // One at a time and in order: two creates racing for one seat cap, or
     // for one username, is a refusal nobody can explain afterwards.
-    var made = [];
     return queue.reduce(function (chain, f) {
       return chain.then(function () {
-        return createChild(f).then(function (res) { made.push(res); },
-          function (e) {
-            console.error('[signup] pending child', e);
-            S.error = (e && e.message) || 'We couldn’t set one of your children up.';
-          });
+        var still = (readDraft().pending || []).some(function (p) { return sameUser(p.user, f.user); });
+        if (!still || ours(f.user)) { dropPending(f.user); return; }
+        return createChild(f).then(function (res) {
+          dropPending(f.user);
+          S.flushed.push(res);
+        }, function (e) {
+          console.error('[signup] pending child', e);
+          if (e && e.status === 409 && e.code === 'username_unavailable') {
+            return loadFamily().then(function () {
+              if (ours(f.user)) { dropPending(f.user); return; }
+              S.flushFailed.push({ form: f, err: e });
+            });
+          }
+          S.flushFailed.push({ form: f, err: e });
+        });
       });
-    }, Promise.resolve()).then(function () {
-      S.pending = [];
-      clearPending();
-      S.flushed = made;
-    });
+    }, Promise.resolve());
+  }
+
+  /* ══ where to land ═════════════════════════════════════════════════════
+     ⊕ B2C onboarding repair (V2). Called once the page knows who is here,
+     and again whenever this tab signs in. A signed-in parent's place comes
+     from the SERVER — the children that exist and whether the family has
+     been through Stripe — never from a step this device happened to save:
+     a saved `unit` landed on an empty list with no child to ask about, and
+     a saved `stripe` on a spinner that never ended. */
+  var wanted = null;        // ?step=…, honoured once
+  function settle() {
+    var d = readDraft();
+    var fromUrl = RESUMABLE[wanted] ? wanted : null;
+    wanted = null;
+    var w = fromUrl || d.step || '';
+    if (!RESUMABLE[w]) { w = ''; }
+
+    if (!S.session || !S.verified) {
+      if (w === 'account' || (w === 'verify' && S.email)) { return go(w, { replace: true }); }
+      if (w === 'child' && S.email) { return go('child', { replace: true }); }
+      if (S.pending.length) { return go('children', { replace: true }); }
+      return go(S.email && d.step ? 'verify' : 'account', { replace: true });
+    }
+
+    /* Signed in, but the family could not be set up (/family/ensure
+       refused — a rate limit, the network). Nothing held can be created
+       yet; say why on the list rather than open a blank child form. */
+    if (!S.ensured) {
+      if (S.pending.length || S.children.length) { return go('children', { replace: true }); }
+      S.childError = S.error;
+      go('child', { replace: true });
+      if (S.error) { S.childError = S.error; render(); }
+      return;
+    }
+
+    var failed = S.flushFailed || [];
+    S.flushFailed = [];
+    if (failed.length) {
+      var f = failed[0];
+      S.form = Object.assign(blankChild(), f.form, { retryOf: f.form.user });
+      if (f.err && f.err.status === 409 && f.err.code === 'username_unavailable') {
+        takenFrom(S.form, f.err);
+      } else {
+        S.childError = (f.err && f.err.message) || 'We couldn’t set ' + (f.form.name || 'that child') + ' up just now.';
+      }
+      S.editing = -1;
+      var keepErr = S.childError;
+      go('child', { replace: true });
+      if (keepErr) { S.childError = keepErr; render(); }
+      return;
+    }
+
+    var made = S.flushed || [];
+    S.flushed = [];
+    if (made.length) {
+      S.unitQueue = made.slice(1);
+      return startUnitStep(made[0], { replace: true });
+    }
+
+    if (w === 'plan' && S.children.length && !S.subscribed) { return go('plan', { replace: true }); }
+    // "Add a child" from the dashboard names the step; a step merely left
+    // in the draft does not get to re-open a half-typed form.
+    if (fromUrl === 'child') { S.form = blankChild(); S.editing = -1; return go('child', { replace: true }); }
+    return go(S.children.length ? 'children' : 'child', { replace: true });
   }
 
   /* ══ boot ═════════════════════════════════════════════════════════════ */
@@ -1445,37 +1820,47 @@
     S.pending = draft.pending || [];
     S.terms   = draft.terms === true;
 
-    var wanted = new URLSearchParams(window.location.search).get('step');
+    wanted = new URLSearchParams(window.location.search).get('step');
 
     /* Prices first, but never blocking: the plan step is the only screen
        that needs them and it is four steps away. */
-    C.pricing().then(function (p) { tiers = p.tiers; render(); })
+    C.pricing().then(function (p) { tiers = p.tiers; if (S.step === 'plan' || S.step === 'children') { render(); } })
                .catch(function (e) { console.error('[signup] pricing', e); });
 
-    function settle() {
-      /* Where to land. A URL that names a step wins (Stripe's cancel_url
-         sends the parent back to `?step=plan`), then the draft, then the
-         first step that is actually reachable. */
-      if (wanted && VIEWS[wanted] && (S.verified || wanted === 'account' || wanted === 'verify')) {
-        return go(wanted);
+    /* The rail's finished steps (V5). Outside #su-main, so its own listener. */
+    $('rail-steps').addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('[data-rail]') : null;
+      if (!b) { return; }
+      var to = railTarget(Number(b.getAttribute('data-rail')));
+      if (!to) { return; }
+      S.error = '';
+      if (to === 'edit') {
+        var c = S.children[0];
+        S.form = editForm(c);
+        S.editing = 0;
+        return go('child');
       }
-      if (!S.session) { return go(draft.step === 'verify' ? 'verify' : 'account'); }
-      if (!S.verified) { return go(draft.step === 'child' ? 'child' : 'verify'); }
+      S.editing = -1;
+      if (to === 'child') { S.form = blankChild(); }
+      go(to);
+    });
 
-      /* Verified. If children were just created from the draft, ask the unit
-         question for the first of them — that is the step Design's flow owes
-         them, and it was skipped only because there was no child to ask
-         about at the time. */
-      var made = S.flushed || [];
-      if (made.length) {
-        var first = made[0];
-        return startUnitStep(first.child_id, first.name, first.year, first.mode, first.pickerNote);
-      }
-      if (draft.step && VIEWS[draft.step] && draft.step !== 'account' && draft.step !== 'verify') {
-        return go(draft.step);
-      }
-      return go(S.children.length ? 'children' : 'child');
-    }
+    /* Another tab on this device changed the draft: the children held here
+       are whatever it now says. */
+    window.addEventListener('storage', function (e) {
+      if (e.key !== DRAFT_KEY) { return; }
+      S.pending = readDraft().pending || [];
+      if (S.step === 'children') { render(); }
+    });
+
+    /* "Check your inbox" moves on by itself once the link has been used:
+       a session appearing in this browser (another tab) is noticed within a
+       few seconds, and coming back to this tab after verifying anywhere else
+       signs it in with the password typed a moment ago. */
+    setInterval(function () { if (S.step === 'verify' && !document.hidden) { checkVerified(false, true); } }, 4000);
+    function onLook() { if (S.step === 'verify' && !document.hidden) { checkVerified(false); } }
+    document.addEventListener('visibilitychange', onLook);
+    window.addEventListener('focus', onLook);
 
     if (ctx.session) {
       adoptSession(ctx.session).then(settle, function (e) {
@@ -1484,7 +1869,6 @@
         settle();
       });
     } else {
-      render();
       settle();
     }
   }});

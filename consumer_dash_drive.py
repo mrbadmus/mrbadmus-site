@@ -21,6 +21,13 @@ B2C repair, 3 Oct 2026 — proves Mide's seven rulings on screen:
      Undo, sending {confirm: 'DELETE'};
   6  the removed copy is gone.
 
+B2C onboarding repair (3 Oct 2026) adds signup, verification and the shared
+topic picker: V1 (verified in another browser; "already have an account"),
+V2 (a saved step never strands a signed-in parent), V3 (the child typed
+before verifying is asked about, never a blank Child 2), V4 (two tabs; own
+usernames skipped; taken explains and suggests), V5 (rail buttons, Back),
+V6 (the picker in signup and in Set work), and the removed trial copy.
+
     python3 consumer_dash_drive.py [--shots DIR] [--skip-timeout]
 
 `--skip-timeout` skips the one 26-second wait (the hanging checkout).
@@ -393,6 +400,247 @@ def copy_gone(d):
     check("Seven days free" not in d.text(), "dashboard: \"Seven days free…\" is gone")
 
 
+# ══════════════════════════════════════════════════════════════════════
+# B2C onboarding repair (3 Oct 2026) — signup, verification, the topic
+# picker. V1–V6 are the defects reproduced on TEST; each block names one.
+# ══════════════════════════════════════════════════════════════════════
+ORION = {"name": "Orion", "year": 8, "board": None, "tier": None, "route": None,
+         "mode": "school", "user": "orionrocks", "pass": "comet-saturn-42"}
+
+
+def draft(step, pending=(ORION,), **extra):
+    d = {"email": "sam@example.test", "name": "Sam", "step": step, "terms": True,
+         "pending": list(pending)}
+    d.update(extra)
+    return d
+
+
+def tp_type(d, text):
+    d.js("(function(){var i=document.querySelector('.tp-q');i.focus();i.value=%s;"
+         "i.dispatchEvent(new Event('input'));})()" % json.dumps(text))
+    time.sleep(0.15)
+
+
+def tp_row(d, name):
+    """{off, why, selected} for the first visible option with that name."""
+    return d.js("(function(){var o=[].filter.call(document.querySelectorAll('.tp-opt'),function(li){"
+                "return li.querySelector('.tp-name').textContent===%s;})[0];if(!o)return null;"
+                "var w=o.querySelector('.tp-why');return {off:o.getAttribute('aria-disabled')==='true',"
+                "why:w?w.textContent:'',selected:o.getAttribute('aria-selected')==='true',n:o.getAttribute('data-n')};})()"
+                % json.dumps(name))
+
+
+def tp_click(d, name):
+    return d.js("(function(){var o=[].filter.call(document.querySelectorAll('.tp-opt'),function(li){"
+                "return li.querySelector('.tp-name').textContent===%s;})[0];if(!o)return false;"
+                "o.click();return true;})()" % json.dumps(name))
+
+
+def onboarding(d):
+    print("\n── V3/V4: the pre-verify list says what is true ──")
+    d.open("consumer/signup.html", signed_in=False, state="none", kids=0, draft=draft("children"))
+    d.wait("document.querySelector('#su-main h1')")
+    h = d.text("#su-main h1")
+    check(h == "Orion is added", "pre-verify: the heading does not claim Orion is set up", h)
+    check("We’ll make Orion’s login once your email is verified." in d.text("#su-main"),
+          "pre-verify: …and says when the login is made")
+    d.shot("onb-pre-verify-children-390.png")
+
+    print("\n── V5: rail steps are buttons, Back stays in the flow ──")
+    d.open("consumer/signup.html", width=1280, signed_in=False, state="none", kids=0,
+           draft=draft("children"))
+    d.wait("document.querySelector('[data-rail]')")
+    rails = d.js("[].map.call(document.querySelectorAll('#rail-steps [data-rail]'),function(b){return b.tagName+':'+b.getAttribute('data-rail')})")
+    check(rails == ["BUTTON:0", "BUTTON:1"], "rail: the two finished steps are buttons", rails)
+    d.click("[data-rail='0']")
+    d.wait("!!document.getElementById('v-done')")
+    check(d.js("!!document.getElementById('v-pass')"),
+          "rail → 'Your account' opens Check your inbox, with a way on (password + button)")
+    d.shot("onb-verify-1280.png", 1280)
+    d.js("history.back()")
+    d.wait("document.querySelector('#su-main h1').textContent==='Orion is added'")
+    check(True, "Back from Check your inbox returns to the list, not out of signup")
+    d.click("#add-another")
+    d.wait("!!document.getElementById('c-name')")
+    check(d.text("#su-main h1") == "Add another child" and "CHILD 2" in d.text("#su-main").upper(),
+          "a second child is presented as 'Add another child'", d.text("#su-main h1"))
+    d.js("history.back()")
+    d.wait("!!document.getElementById('add-another')")
+    check(True, "Back from the child form returns to the list")
+
+    print("\n── V1: verified in ANOTHER browser — this tab's way on ──")
+    d.open("consumer/signup.html", signed_in=False, state="none", kids=0,
+           draft=draft("verify"), password_ok=True)
+    d.wait("!!document.getElementById('v-done')")
+    d.js("(function(){var i=document.getElementById('v-pass');i.value='Sam-password-1';})()")
+    d.click("#v-done")
+    try:
+        d.wait("document.querySelector('#su-main h1')&&document.querySelector('#su-main h1').textContent==='Where is Orion up to?'", 8000)
+        check(True, "'I've clicked the link' signs this tab in, creates Orion, asks where Orion is up to")
+    except Exception as e:  # noqa: BLE001
+        check(False, "'I've clicked the link' carries on", d.text("#su-main")[:200])
+    posts = d.calls("/api/consumer/children")
+    check(len(posts) == 1 and posts[0]["body"]["username"] == "orionrocks", "…Orion created once", posts)
+    names = [c for c in d.js("window.__CF__.calls") if c["path"] == "/api/consumer/parent"]
+    check(any((c.get("body") or {}).get("first_name") == "Sam" for c in names),
+          "the parent's name is sent on its own (not only with the terms)", names)
+
+    print("\n── V1: 'already have an account' signs in and continues ──")
+    d.open("consumer/signup.html?step=account", signed_in=False, state="none", kids=0,
+           draft=draft("account"), existing=True, password_ok=True)
+    d.wait("!!document.getElementById('continue')")
+    d.js("(function(){document.getElementById('email').value='sam@example.test';"
+         "document.getElementById('email').dispatchEvent(new Event('input'));"
+         "document.getElementById('password').value='Sam-password-1';})()")
+    d.click("#continue")
+    try:
+        d.wait("document.querySelector('#su-main h1')&&document.querySelector('#su-main h1').textContent==='Where is Orion up to?'", 8000)
+        check(True, "an address that already has an account signs in with what was typed and carries on")
+    except Exception:  # noqa: BLE001
+        check(False, "'already have an account' is not a dead end", d.text("#su-main")[:200])
+    check("try signing in instead" not in d.text(), "…and never says 'try signing in instead'")
+    meta = [c for c in d.js("window.__CF__.calls") if c["path"] == "signUp"]
+    check(meta and meta[0]["body"]["options"]["data"].get("first_name") == "Sam"
+          and meta[0]["body"]["options"]["data"].get("terms_accepted") is True,
+          "signUp carries the name and the tick on the account (for another browser)",
+          meta and meta[0]["body"]["options"]["data"])
+
+    print("\n── V3 + V6: after verifying, the topic step for the child typed before ──")
+    d.open("consumer/signup.html?step=child", state="none", kids=0, draft=draft("verify"))
+    d.wait("document.querySelector('.tp-q')")
+    check(d.text("#su-main h1") == "Where is Orion up to?",
+          "?step=child (the old verify link) still asks about Orion, not a blank Child 2")
+    combo = d.js("(function(){var q=document.querySelector('.tp-q');var l=document.getElementById(q.getAttribute('aria-controls'));"
+                 "return [q.getAttribute('role'),q.getAttribute('aria-expanded'),l&&l.getAttribute('role')];})()")
+    check(combo == ["combobox", "true", "listbox"], "the search box is a combobox over a listbox", combo)
+    r = tp_row(d, "Breathing and gas exchange")
+    check(r and not r["off"], "in-year unit is choosable", r)
+    tp_type(d, "food tests")
+    r = tp_row(d, "Food tests")
+    check(r and r["off"] and r["why"] == "taught in Year 7", "Year 7 lesson is greyed: taught in Year 7", r)
+    tp_click(d, "Food tests")
+    check(not d.js("window.__CF__.calls.some(function(c){return /position$/.test(c.path)})") and
+          d.js("document.getElementById('u-save').getAttribute('aria-disabled')") == "true",
+          "…and cannot be chosen")
+    tp_type(d, "bonding")
+    r = tp_row(d, "Bonding, Structure and Properties of Matter")
+    check(r and r["off"] and r["why"] == "taught in Year 10", "GCSE topic is greyed: taught in Year 10", r)
+    d.shot("onb-picker-greyed-390.png")
+    # browse: Subject → Topic narrows; typing then filters inside it
+    d.js("(function(){var s=document.querySelector('.tp-browse select');s.value='biology';s.dispatchEvent(new Event('change'));"
+         "var t=document.querySelectorAll('.tp-browse select')[1];t.value='ks3-B4';t.dispatchEvent(new Event('change'));})()")
+    time.sleep(0.15)
+    names = d.js("[].map.call(document.querySelectorAll('.tp-opt .tp-name'),function(e){return e.textContent})")
+    check(names and names[0] == "Breathing and gas exchange" and "How breathing works" in names,
+          "browsing Biology → B4 narrows the list to that unit and its lessons", names)
+    tp_type(d, "how")
+    names = d.js("[].map.call(document.querySelectorAll('.tp-opt .tp-name'),function(e){return e.textContent})")
+    check(names == ["How breathing works"], "typing filters inside the browsed unit", names)
+    # keyboard: ArrowDown + Enter chooses
+    d.js("(function(){var q=document.querySelector('.tp-q');q.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true}));"
+         "q.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));})()")
+    time.sleep(0.15)
+    check(d.text("#u-save") == "Start Orion from How breathing works", "keyboard: ArrowDown + Enter chooses",
+          d.text("#u-save"))
+    d.shot("onb-picker-chosen-390.png")
+    d.click("#u-save")
+    d.wait("document.querySelector('#su-main h1').textContent==='Orion is set up'")
+    pos = d.calls("/api/consumer/children/kid-new0/position")
+    check(pos and pos[0]["body"] == {"cursors": {"Biology": 2}},
+          "a lesson places Orion at that lesson's week in its subject", pos)
+    check(len(d.calls("/api/consumer/children")) == 1, "Orion was created once")
+
+    print("\n── V2: a saved step never strands a signed-in parent ──")
+    for st in ("unit", "stripe"):
+        d.open("consumer/signup.html", state="none", kids=2, draft=draft(st, pending=()))
+        d.wait("document.querySelector('#su-main h1')")
+        h = d.text("#su-main h1")
+        check(h == "2 children set up", "draft step '%s' → the children list from the server" % st, h)
+    d.open("consumer/signup.html?step=child", state="trialing", kids=2, draft=draft("plan", pending=()))
+    d.wait("!!document.getElementById('c-name')")
+    check(d.text("#su-main h1") == "Add another child", "dashboard 'Add a child' (paid family) → Add another child")
+    d.click("#c-cancel")
+    d.wait("!!document.getElementById('add-another')")
+    check(d.js("!!document.getElementById('to-dash')") and not d.js("!!document.getElementById('to-plan')"),
+          "a family already through Stripe gets 'Back to your dashboard', never the plan again")
+
+    print("\n── V4: a child already in this family is skipped, never 'taken' ──")
+    ada = dict(ORION, name="Ada", user="ada.comet")
+    d.open("consumer/signup.html", state="none", kids=2, draft=draft("verify", pending=(ada,)))
+    d.wait("document.querySelector('#su-main h1')")
+    check(len(d.calls("/api/consumer/children")) == 0, "no second create for a username this family has")
+    check("taken" not in d.text().lower() and "already uses" not in d.text(),
+          "…and no username-taken message", d.text("#su-main")[:120])
+    check(d.js("JSON.parse(localStorage.getItem('mrb.consumer.signup')||'{}').pending") is None,
+          "…and the draft no longer holds it")
+
+    d.open("consumer/signup.html", state="none", kids=0, draft=draft("verify"), taken=["orionrocks"])
+    d.wait("!!document.getElementById('c-user-state')")
+    t = d.text("#c-user-state")
+    check("Someone already uses orionrocks." in t and "orionrocks7" in t and "orionrocksx" in t,
+          "taken by someone else: explains and offers two names", t)
+    d.shot("onb-username-taken-390.png")
+    d.js("document.querySelector('[data-take]').click()")
+    time.sleep(0.6)
+    check(d.js("document.getElementById('c-user').value") == "orionrocks7", "a suggestion is one tap")
+
+    print("\n── V6: the dashboard's Set work uses the same picker ──")
+    d.open("consumer/overview.html?child=kid-ada&view=setwork", state="trialing", kids=2)
+    d.wait("document.querySelector('.tp-q')")
+    tp_type(d, "how breathing")
+    tp_click(d, "How breathing works")
+    d.click("[data-act=submit-work]")
+    d.wait("window.__CF__.calls.some(function(c){return /kid-ada\\/work$/.test(c.path)})")
+    w = [c for c in d.js("window.__CF__.calls") if c["path"].endswith("kid-ada/work")]
+    check(w and w[0]["body"].get("lesson_slug") == "how-breathing-works" and "unit_code" not in w[0]["body"],
+          "set work: a chosen lesson is sent as that lesson", w and w[0]["body"])
+    d.open("consumer/overview.html?child=kid-ben&view=setwork", state="trialing", kids=2)
+    d.wait("document.querySelector('.tp-q')")
+    r = tp_row(d, "Cell Biology")
+    check(r and not r["off"], "GCSE child: their own topic is choosable", r)
+    tp_type(d, "cells and organisation")
+    r = tp_row(d, "Cells and organisation")
+    check(r and r["off"] and r["why"] == "taught in Year 7", "GCSE child: KS3 unit greyed, taught in Year 7", r)
+    tp_type(d, "space physics")
+    r = tp_row(d, "Space Physics")
+    check(r and r["off"] and r["why"] == "not in Year 10’s plan",
+          "combined child: a triple-only topic says 'not in Year 10’s plan'", r)
+    tp_type(d, "cell biology")
+    tp_click(d, "Cell Biology")
+    d.click("[data-act=submit-work]")
+    d.wait("window.__CF__.calls.some(function(c){return /kid-ben\\/work$/.test(c.path)})")
+    w = [c for c in d.js("window.__CF__.calls") if c["path"].endswith("kid-ben/work")]
+    check(w and w[0]["body"].get("unit_code") == "Cell Biology",
+          "set work: a GCSE topic is sent by its title (KS4 has no unit codes)", w and w[0]["body"])
+    d.shot("onb-setwork-ks4-390.png")
+    d.open("consumer/overview.html?child=kid-ada&view=setwork", state="trialing", kids=2)
+    d.wait("document.querySelector('.tp-q')")
+    d.js("document.querySelector('[data-act=pick-kind][data-id=exam]').click()")
+    time.sleep(0.2)
+    d.click("[data-act=submit-work]")
+    d.wait("window.__CF__.calls.some(function(c){return /kid-ada\\/work$/.test(c.path)})")
+    w = [c for c in d.js("window.__CF__.calls") if c["path"].endswith("kid-ada/work")]
+    check(w and w[0]["body"]["kind"] == "exam" and not d.js("!!document.querySelector('.tp-q')"),
+          "an exam question asks no topic and sets", w and w[0]["body"])
+
+
+def onboarding_copy(d):
+    print("\n── the removed onboarding copy ──")
+    d.open("consumer/signup.html?step=plan", state="none", kids=2)
+    d.wait("!!document.getElementById('to-stripe')")
+    t = d.text()
+    for gone in ("pay nothing", "Seven days free, full access", "isn't charged until",
+                 "Work is set every Sunday", "Nothing is charged for seven days"):
+        check(gone not in t, "signup: \"%s\" is gone" % gone)
+    check(d.js("document.body.innerHTML.indexOf('Free for seven days</p>\\n    <p')") == -1,
+          "signup: the rail's 'Free for seven days' card is gone")
+    for path, gone in (("parents/pricing.html", "costs nothing"),
+                       ("parents/how-it-works.html", "Card needed, nothing charged")):
+        d.p.goto("http://127.0.0.1:%d/%s" % (d.port, path))
+        time.sleep(0.6)
+        check(gone not in (d.js("document.documentElement.innerHTML") or ""), "%s: \"%s\" is gone" % (path, gone))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--shots", default=None)
@@ -415,6 +663,8 @@ def main():
             refresh_b7(d)
             delete_flow(d)
             copy_gone(d)
+            onboarding(d)
+            onboarding_copy(d)
     finally:
         server.shutdown()
     print("\n%s — %d failure(s)" % ("PASS" if not FAILS else "FAIL", len(FAILS)))

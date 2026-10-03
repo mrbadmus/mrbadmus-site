@@ -688,6 +688,67 @@ for _lbl, _path, _state, _kids, _setup in (
           wait=0.4, widths=[1280, 390])
 
 
+# ── B2C onboarding repair (3 Oct 2026) — signup, verification, sign-in,
+# the checkout return and the child's login, in the states a parent actually
+# reaches. The two flag-off entries above ("consumer/signup.html", "go/
+# index.html") only ever measured "Not found". These run on the same offline
+# fixture, signed out where the step is signed out, including the shared
+# topic picker with greyed "taught in Year N" rows and the username-taken
+# line.
+def _cdf_wait(cond, then=""):
+    return ("(async function(){" + _POLL_JS +
+            "await __poll(function(){return document.body.style.display==='block'&&(" + cond + ");},8000);" +
+            then + "return true;})()")
+
+
+_ORION = {"name": "Orion", "year": 8, "board": None, "tier": None, "route": None,
+          "mode": "school", "user": "orionrocks", "pass": "comet-saturn-42"}
+
+
+def _draft(step, pending=(_ORION,)):
+    return {"email": "sam@example.test", "name": "Sam", "step": step, "terms": True,
+            "pending": list(pending)}
+
+
+_H1 = "document.querySelector('#su-main h1')"
+_TP_FOOD = ("var q=document.querySelector('.tp-q');q.value='food';"
+            "q.dispatchEvent(new Event('input'));await new Promise(function(r){setTimeout(r,150)});")
+for _lbl, _path, _kw, _setup in (
+    ("consumer/signup [account]", "consumer/signup.html",
+     dict(signed_in=False, state="none", kids=0), _cdf_wait("!!document.getElementById('continue')")),
+    ("consumer/signup [check your inbox]", "consumer/signup.html",
+     dict(signed_in=False, state="none", kids=0, draft=_draft("verify")),
+     _cdf_wait("!!document.getElementById('v-done')")),
+    ("consumer/signup [children, before verifying]", "consumer/signup.html",
+     dict(signed_in=False, state="none", kids=0, draft=_draft("children")),
+     _cdf_wait("!!document.getElementById('add-another')")),
+    ("consumer/signup [topic picker, greyed rows]", "consumer/signup.html",
+     dict(state="none", kids=0, draft=_draft("verify")),
+     _cdf_wait("!!document.querySelector('.tp-q')", _TP_FOOD)),
+    ("consumer/signup [username taken]", "consumer/signup.html",
+     dict(state="none", kids=0, draft=_draft("verify"), taken=["orionrocks"]),
+     _cdf_wait("!!document.querySelector('[data-take]')")),
+    ("consumer/signup [children, signed in]", "consumer/signup.html",
+     dict(state="none", kids=2), _cdf_wait("!!document.getElementById('to-plan')")),
+    ("consumer/signup [plan]", "consumer/signup.html?step=plan",
+     dict(state="none", kids=2), _cdf_wait("!!document.getElementById('to-stripe')")),
+    ("consumer/overview [set work, topic picker]", "consumer/overview.html?child=kid-ben&view=setwork",
+     dict(state="trialing", kids=2), _cdf_wait("!!document.querySelector('.tp-q')", _TP_FOOD)),
+    ("consumer/verify [not verified yet]", "consumer/verify.html",
+     dict(state="none", kids=0, unconfirmed=True), _cdf_wait("!!document.querySelector('#main a')")),
+    ("parents/sign-in [parent form]", "parents/sign-in.html",
+     dict(signed_in=False, state="none", kids=0),
+     _cdf_wait("!!document.getElementById('card-parent')",
+               "document.getElementById('card-parent').click();")),
+    ("consumer/checkout-return [arrived]", "consumer/checkout-return.html",
+     dict(state="trialing", kids=2), _cdf_wait("!!document.querySelector('#su-main h1:not(.ks3-sr-only)')")),
+    ("go/index [child login]", "go/index.html",
+     dict(signed_in=False, state="none", kids=0), _cdf_wait("!!document.querySelector('input')")),
+):
+    _page(_lbl, _path, prescript=_cdf.prescript(**_kw), setup=_setup,
+          wait=0.4, widths=[1280, 390])
+
+
 # ══════════════════════════════════════════════════════════════════════════
 # INTERACTION STATES (theme-run audit, 27 Sep 2026) — "the contrast gate
 # missed all of these because it measures pages at rest." Every page above

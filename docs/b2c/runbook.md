@@ -492,6 +492,60 @@ Mide's to make, not a build operator's:
 
 ---
 
+## 15. Parent signup, and the "I opened the link on my other phone" call
+
+⊕ B2C onboarding repair, 3 Oct 2026. What a parent sees, step by step, at
+**mrbadmus.com/consumer/signup.html**:
+
+1. **Create your account** — first name, email, password, the terms tick.
+   Without the tick, **Continue** says "Please agree to the terms and
+   privacy policy to carry on." and nothing is sent.
+2. **Check your inbox** — they can press **Carry on** and type their child
+   in while they wait. The child is *added* ("Orion is added", "We'll make
+   Orion's login once your email is verified.") but does not exist yet: it
+   is held on that device only.
+3. They click the link in the email. **Wherever they open it** — the same
+   browser, another browser, another phone — they are signed in there and
+   put back into signup at the right step. On a device that has never seen
+   the signup, that is "Tell us about your child" (the child typed on the
+   first device is not there; nothing could have carried it across).
+4. Back on the first device, **Check your inbox** has an **I've clicked
+   the link** button (with a password box if the page was reloaded), and
+   the page also moves on by itself when they come back to it. Typing the
+   same email and password on **Create your account** again also works now:
+   it signs them in instead of saying "you already have an account". Either
+   way the held child is created and they are asked **Where is Orion up
+   to?** for it.
+5. **Where is X up to?** is the topic picker: search the whole of KS3 and
+   GCSE, or browse Subject → Topic. Only topics in that child's own year
+   plan can be chosen; everything else is greyed with "taught in Year N"
+   (or "not in Year N's plan" when the plan simply does not hold it). **Not
+   sure? Skip this** leaves the child at this week of the school year.
+6. The children list, then **Choose a plan**, then Stripe.
+
+**Signing in at mrbadmus.com/parents/sign-in.html** with a child still held
+on that device sends them through signup, which creates the child, instead
+of to an empty dashboard.
+
+**On the phone.** "It says my child's username is taken" — if the name
+belongs to one of *their own* children it is never reported as taken any
+more (that was the second-tab bug); if someone else has it, the page says
+"Someone already uses orionrocks. Try orionrocks7 or orionrocksx." and one
+tap takes a suggestion. "The dashboard says Evening, You" — the name now
+saves on its own call; Account → the **You** card fixes an old account.
+
+**The same topic picker** is on the dashboard's **Set work** screen. An
+exam question asks no topic: Mr Badmus picks it from where the child is up
+to.
+
+⚠️ **A GCSE child whose tier is "Not decided"** has an empty plan on the
+server (the scheme is chosen by tier, and there is none for "not decided"),
+so every topic shows greyed "not in Year 10's plan" and Set work cannot set
+a topic for them. Until that is fixed on the backend, set their tier
+(Dashboard → the child → **Edit**) and the plan appears.
+
+---
+
 ## Two things that have no screen at all
 
 Named here so nobody hunts for a button that does not exist:

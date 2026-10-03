@@ -279,13 +279,20 @@ def pick_unit(p, who, skip=False):
     check(ok, "B[%s] unit picker step renders" % who, text(p)[:200].replace("\n", " "))
     if not ok:
         return None
-    n = p.eval("document.querySelectorAll('[data-unit]').length")
-    check(n > 0, "B[%s] unit picker lists units from GET /children/:id/picker" % who, n)
+    # ⊕ B2C onboarding repair (3 Oct 2026): the unit list is now the shared
+    # topic picker (consumer/topic-picker.js). The child's own units are the
+    # CHOOSABLE options (no aria-disabled); everything else is greyed.
+    wait_for(p, "document.querySelectorAll('.tp-opt').length > 0", tries=40, gap=0.4)
+    n = p.eval("document.querySelectorAll('.tp-opt:not([aria-disabled])').length")
+    check(n > 0, "B[%s] the topic picker offers units from GET /children/:id/picker" % who, n)
     if skip or not n:
-        check(click(p, "#u-skip") == "clicked", "B[%s] 'start from the beginning' taken" % who)
+        check(click(p, "#u-skip") == "clicked", "B[%s] 'Not sure? Skip this' taken" % who)
         return None
-    unit = p.eval("document.querySelectorAll('[data-unit]')[%d].getAttribute('data-unit')" % min(2, n - 1))
-    check(click(p, '[data-unit=%s]' % json.dumps(unit)) == "clicked", "B[%s] unit '%s' chosen" % (who, unit))
+    unit = p.eval("document.querySelectorAll('.tp-opt:not([aria-disabled])')[%d]"
+                  ".querySelector('.tp-name').textContent" % min(2, n - 1))
+    p.eval("document.querySelectorAll('.tp-opt:not([aria-disabled])')[%d].click()" % min(2, n - 1))
+    check(p.eval("document.getElementById('u-save').getAttribute('aria-disabled')") is None,
+          "B[%s] unit '%s' chosen" % (who, unit))
     time.sleep(0.3)
     check(click(p, "#u-save") == "clicked", "B[%s] unit saved" % who)
     return unit
@@ -309,10 +316,14 @@ def phase_b(p, ids):
     check(not errs(p), "B signup account step: zero console errors", errs(p))
 
     # ── account step ──
-    check(p.eval("document.getElementById('continue').disabled") is True,
-          "B Continue is disabled before the terms box is ticked")
+    # ⊕ B2C onboarding repair: Continue is no longer greyed/disabled (it
+    # failed AA greyed); without the tick it refuses in words and sends nothing.
     setval(p, "#email", email)
     setval(p, "#password", PARENT_PW)
+    click(p, "#continue")
+    time.sleep(0.3)
+    check("agree to the terms" in (p.eval("(document.getElementById('acct-err')||{}).textContent") or ""),
+          "B Continue refuses in words before the terms box is ticked")
     # ⚠️ HARNESS NOTE, not a product finding: #terms sits INSIDE <label
     # id="terms-row">, and a synthetic .click() on an input inside its own
     # label is re-dispatched by the label — it toggles twice and lands back
@@ -321,8 +332,8 @@ def phase_b(p, ids):
                  "b.dispatchEvent(new Event('change',{bubbles:true}));return b.checked;})()") is True,
           "B terms ticked")
     time.sleep(0.3)
-    check(p.eval("document.getElementById('continue').disabled") is False,
-          "B Continue enables once terms are ticked")
+    check(not p.eval("document.getElementById('acct-err')"),
+          "B the refusal clears once terms are ticked")
     shot(p, "B1-signup-account.png", width=1200, height=900)
     check(click(p, "#continue") == "clicked", "B Continue clicked — signUp fires")
 
@@ -418,7 +429,8 @@ def phase_b(p, ids):
     # ── children ──
     if "/consumer/signup.html" not in where:
         # settle() with a verified session and no children lands on 'child'
-        # by itself; no ?step= is needed and ?step= is ignored until verified.
+        # by itself (B2C onboarding repair: verify.html now always hands a
+        # family that has not been through Stripe back to signup.html).
         p.goto(qs("/consumer/signup.html"), settle=2.5)
     ok = wait_for(p, "!!document.getElementById('c-name')", tries=50, gap=0.4)
     check(ok, "B signup resumes at the child step after verification",

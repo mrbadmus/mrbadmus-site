@@ -176,6 +176,13 @@
     var passEl   = document.getElementById('pass');
     var forgotEl = document.getElementById('forgot');
 
+    function draftHasChild() {
+      try {
+        var d = JSON.parse(localStorage.getItem('mrb.consumer.signup') || 'null');
+        return !!(d && d.pending && d.pending.length);
+      } catch (e) { return false; }
+    }
+
     function screen(which) {
       chooseEl.style.display = which === 'choose' ? '' : 'none';
       parentEl.style.display = which === 'parent' ? '' : 'none';
@@ -246,6 +253,11 @@
         return C.api('/api/consumer/family/ensure', {
           method: 'POST', token: r.data.session.access_token
         }).then(function () {
+          /* ⊕ B2C onboarding repair (V1). Children typed in during signup on
+             THIS device, before the email was verified, exist only in its
+             signup draft. Signing in here must not leave them there: signup
+             creates them and carries on from the right step. */
+          if (draftHasChild()) { return C.go('/consumer/signup.html'); }
           C.go('/consumer/overview.html');
         });
       }).catch(function (err) {
