@@ -1,10 +1,10 @@
 {
  "atom-economy": {
-  "hash": "f83314cb05cebf00261a750ec4e78bb10549be807d5e07cff038c5490490c28d",
+  "hash": "4b19fac6e9c64337d2d7bbf27cc38a5fb35be2201c8b2b0c7b688ce002d8dfce",
   "review_state": "examiner-reviewed"
  },
  "conservation-of-mass": {
-  "hash": "e121b6d243a94b14028c8eede37c40244d427021551e927d0577597feabb780d",
+  "hash": "50fc1a218c55f5ad80a937fcd992951377a41e5801da94b0ee99c34fa1fd3c29",
   "review_state": "examiner-reviewed"
  },
  "early-atmosphere": {
@@ -16,7 +16,7 @@
   "review_state": "examiner-reviewed"
  },
  "microscopy": {
-  "hash": "05b54d82adaa042b4bd506d23c54edb87588e5c1dfd108da9a21d7e9ad685ab1",
+  "hash": "ec891aa4ef977917d14c6000ee024785eca38b8b6640a15e5a6d892a42f12548",
   "review_state": "examiner-reviewed"
  },
  "mixtures": {
@@ -24,7 +24,7 @@
   "review_state": "examiner-reviewed"
  },
  "particle-motion-pressure": {
-  "hash": "b6712fc562385a1810d102fe1daef3f4ab4ba14b5273f294e555ef2ce6aa9fa5",
+  "hash": "8845203d7d65b06034a90264e0925250ed1f3791c953653d521615783b113c2b",
   "review_state": "examiner-reviewed"
  },
  "power": {
@@ -32,7 +32,7 @@
   "review_state": "examiner-reviewed"
  },
  "sound-waves-hearing": {
-  "hash": "294585303dd909797481a7051bfa7ef9e2a4edf68bccbee63bad37cf64d51d50",
+  "hash": "eb40ba4fa6453ba5c9a860fba2d933574e9aa53c4c9f6fad8a0414fba7b8b445",
   "review_state": "examiner-reviewed"
  },
  "specific-latent-heat": {
@@ -40,11 +40,11 @@
   "review_state": "examiner-reviewed"
  },
  "temperature-changes-shc": {
-  "hash": "b6bd68af9c455d1105d12660b20448dcef004c192b547d521bc8b2242851eef9",
+  "hash": "5736ab4b1c2ec1bd7ecbe7567378f4fcf89bdabb66294a1435591589eef27db7",
   "review_state": "examiner-reviewed"
  },
  "types-of-em-waves": {
-  "hash": "5c8c607443a415a6a539235906888b4bbeb0c843695e80cc8c02f19144c19be3",
+  "hash": "83f5b62e4947ac63579e628a005e74de5bdbea115bd4016ce4e552205690555a",
   "review_state": "examiner-reviewed"
  },
  "waves-detection-exploration": {

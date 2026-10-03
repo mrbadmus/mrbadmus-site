@@ -492,16 +492,17 @@ BIOLOGY_SUBTOPICS_ALL = {
             'q': 'What is the maximum magnification of a light microscope?',
             'wrong_explanations': {1: '×2,000,000 is the maximum for an ELECTRON microscope — far more powerful than a '
                                       'light microscope.',
-                                   2: '×200 is a common low-power objective on a school microscope — but the total '
-                                      'maximum for light microscopes is around ×2,000.',
+                                   2: '×200 is far below the limit. A school microscope with a ×10 eyepiece and a ×40 '
+                                      'objective already reaches ×400, and the maximum for a light microscope is '
+                                      'about ×2,000.',
                                    3: "×20,000 doesn't correspond to either type — light microscopes reach ~×2,000 and "
                                       'electron microscopes ~×2,000,000.'}},
            {'opts': [('×5,000', True), ('×500', False), ('×50,000', False), ('×4,500', False)],
             'q': 'An image is 45 mm wide. The actual size is 0.009 mm. What is the magnification?',
             'wrong_explanations': {1: 'Check: 45 ÷ 0.09 = 500, but actual size is 0.009 (not 0.09). 45 ÷ 0.009 = 5000.',
                                    2: '45 ÷ 0.009 = 5000 not 50,000. Check you moved the decimal correctly.',
-                                   3: '45 minus 0.009 is not how you calculate magnification! Use M = I ÷ A = 45 ÷ '
-                                      '0.009 = 5000.'}},
+                                   3: 'You rounded 0.009 mm to 0.01 mm: 45 ÷ 0.01 = 4500. Use the exact value: M = I '
+                                      '÷ A = 45 ÷ 0.009 = 5000.'}},
            {'opts': [('Ribosomes (~20 nm) are far below the resolution limit of light microscopes (~200 nm)', True),
                      ('Ribosomes are only visible in living cells and electron microscopes can see living cells',
                       False),
@@ -1416,8 +1417,8 @@ BIOLOGY_SUBTOPICS_ALL = {
                      ('It is killed by the heat', False),
                      ('It becomes temporarily inactive but recovers when cooled', False)],
             'q': 'An enzyme is heated to 80°C. What happens to it?',
-            'wrong_explanations': {1: 'Above the optimum (~37°C for human enzymes), the rate does increase — but 80°C '
-                                      'is far above optimum, causing denaturation, not faster activity.',
+            'wrong_explanations': {1: 'Up to the optimum (~37°C for human enzymes), the rate does increase — but 80°C '
+                                      'is far above the optimum, causing denaturation, not faster activity.',
                                    2: "Enzymes are proteins, not living organisms — they cannot be 'killed'. "
                                       'Denaturation is the correct term.',
                                    3: 'Denaturation is PERMANENT. Once the active site shape is changed, cooling does '
@@ -8414,19 +8415,20 @@ BIOLOGY_SUBTOPICS_ALL = {
                                       'other.',
                                    3: 'Both decomposers and detritivores can work in soil or in leaf litter — the '
                                       'distinction is not about location but about HOW they break down material.'}},
-           {'opts': [('Low temperature slows enzyme activity in decomposer bacteria and fungi — decomposition rate '
-                      'decreases significantly',
+           {'opts': [('They decay dead plants and animals, returning carbon to the air as carbon dioxide and mineral '
+                      'ions to the soil',
                       True),
-                     ('The refrigerator removes oxygen from around the food — decomposers suffocate', False),
-                     ('The cold temperature kills all bacteria in the food immediately', False),
-                     ('Refrigerators produce chemicals that inhibit decomposer activity', False)],
-            'q': 'Why does food last longer in a refrigerator than at room temperature?',
-            'wrong_explanations': {1: "Refrigerators don't remove oxygen — they simply cool the air. The reduced "
-                                      'decomposition rate is due to lower enzyme activity at low temperatures.',
-                                   2: "Refrigeration SLOWS bacteria but doesn't kill them instantly — food still "
-                                      'eventually spoils in the fridge. Freezing is needed to effectively stop '
-                                      'bacteria.',
-                                   3: "Refrigerators only cool — they don't produce inhibitory chemicals."}}],
+                     ('They photosynthesise, taking carbon dioxide out of the air and locking it away in dead material', False),
+                     ('They destroy the carbon and mineral ions in dead material, so those materials are used up', False),
+                     ('They release oxygen into the air, which plants then use for photosynthesis', False)],
+            'q': 'What is the role of microorganisms, such as bacteria and fungi, in cycling materials through an '
+                 'ecosystem?',
+            'wrong_explanations': {1: 'Decomposers do not photosynthesise. As they feed on dead material they '
+                                      'respire, which RELEASES carbon dioxide into the air.',
+                                   2: 'Atoms are never destroyed. Decomposers return the carbon and the mineral ions '
+                                      'to the environment, where plants can use them again.',
+                                   3: 'Plants take in carbon dioxide, not oxygen, for photosynthesis. Decomposers '
+                                      'respire, so they give out carbon dioxide, not oxygen.'}}],
   'rp': 'RP7 — Investigate the effect of temperature on the rate of decay. Place a food sample (e.g. bread) in '
         'different conditions. Record mould growth over time. Or: measure rate of decomposition of organic material at '
         'different temperatures using respirometers.',

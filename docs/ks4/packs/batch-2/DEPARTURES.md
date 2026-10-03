@@ -25,23 +25,25 @@ and `quality-*.md` (both rounds); `docs/ks4/packs/batch-2/notes/<slug>.md`
 
 ## 1. Withheld frozen quiz items — 10 rows
 
+⊕ 2 Oct 2026: Mide approved correcting these items in the frozen `all_subtopics_*.py` data itself — a logged exception to the frozen window, for these rows only. Every row below is now **corrected in frozen data, feat/ks4-frozen-corrections, served again**; the `withhold` entries are gone from `ks4_lessons/batch_2.py`. Before/after text, routes and spec references: `docs/ks4/FROZEN-CORRECTIONS.md`.
+
 Every row is a `withhold` entry in `ks4_lessons/batch_2.py` (dep ids
 B2-W1…B2-W10). The item stays verbatim in the practice bank's source data on
 every route it would otherwise serve; `K.bank`/`K.find` never return it as a
 rung, in the body, or (where "routes" is given) on the named routes at all.
 
-| id | lesson | routes | the question | why | citation |
-|---|---|---|---|---|---|
-| B2-W1 | enzymes | all | "An enzyme is heated to 80°C" | wx1 claims the rate *increases* above the optimum temperature — false | 4.2.2.1 |
-| B2-W2 | atoms-elements-compounds | all | "A student heats a mixture of iron filings" | wx3 states sulfur stays solid when heated with iron — false (sulfur melts ~115 °C) | C25; 4.1.1.1 |
-| B2-W3 | atoms-elements-compounds | all | "Which equation is correctly balanced?" | has two correct answers (H₂+O₂→H₂O₂ also balances); AQA would credit both | C26; 4.3.1.1 |
-| B2-W4 | using-moles-calculations | CH only | "What is the concentration of a solution made by dissolving 0.3 mol" | mol/dm³ is 8462 4.3.4, chemistry-only + HT; never taught or examined on Combined Higher | C18; 4.3.4 |
-| B2-W5 | concentration-of-solutions | all | "A solution has a concentration of 80 g/dm³" | distractor 3's own working gives 2000 not 320; wx2 teaches a false relationship ("dividing gives volume") | C25, C26; 4.3.2.5 |
-| B2-W6 | decomposition | CF, CH | "Why does food last longer in a refrigerator" | tests 8461 4.7.2.3 (biology only); not examinable on Combined | C21; 4.7.2.3 |
-| B2-W7 | relative-formula-mass | all | "What is the Mr of Mg(NO₃)₂?" | wx1 contradicts itself on screen ("1 N, NOT 2 — wait:") | C23; 4.3.1.2 |
-| B2-W8 | percentage-yield | TF, TH | "A reaction has a theoretical yield of 20 g" | distractor 1, "43% — (14÷20)×3=42%", contradicts its own working | C21; 4.3.3.1 |
-| B2-W9 | carbonates-halides-sulfates | TF, TH | "Why must solutions be acidified with nitric acid" | keyed answer and wx1 both say nitric acid removes **sulfate** ions — false; the real reason is carbonate | C24, C25; 4.8.3.4 |
-| B2-W10 | changes-in-energy | all | "An 800 kg car travels at 20 m/s" | the "16,000 J" distractor's label/wx3 misdiagnose the error as "used speed not squared"; wx1 reads as an instruction | C21, C23, C24; 6.1.1.2 |
+| id | lesson | routes | the question | why | citation | status |
+|---|---|---|---|---|---|---|
+| B2-W1 | enzymes | all | "An enzyme is heated to 80°C" | wx1 claims the rate *increases* above the optimum temperature — false | 4.2.2.1 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B2-W2 | atoms-elements-compounds | all | "A student heats a mixture of iron filings" | wx3 states sulfur stays solid when heated with iron — false (sulfur melts ~115 °C) | C25; 4.1.1.1 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B2-W3 | atoms-elements-compounds | all | "Which equation is correctly balanced?" | has two correct answers (H₂+O₂→H₂O₂ also balances); AQA would credit both | C26; 4.3.1.1 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B2-W4 | using-moles-calculations | CH only | "What is the concentration of a solution made by dissolving 0.3 mol" | mol/dm³ is 8462 4.3.4, chemistry-only + HT; never taught or examined on Combined Higher | C18; 4.3.4 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B2-W5 | concentration-of-solutions | all | "A solution has a concentration of 80 g/dm³" | distractor 3's own working gives 2000 not 320; wx2 teaches a false relationship ("dividing gives volume") | C25, C26; 4.3.2.5 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B2-W6 | decomposition | CF, CH | "Why does food last longer in a refrigerator" | tests 8461 4.7.2.3 (biology only); not examinable on Combined | C21; 4.7.2.3 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B2-W7 | relative-formula-mass | all | "What is the Mr of Mg(NO₃)₂?" | wx1 contradicts itself on screen ("1 N, NOT 2 — wait:") | C23; 4.3.1.2 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B2-W8 | percentage-yield | TF, TH | "A reaction has a theoretical yield of 20 g" | distractor 1, "43% — (14÷20)×3=42%", contradicts its own working | C21; 4.3.3.1 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B2-W9 | carbonates-halides-sulfates | TF, TH | "Why must solutions be acidified with nitric acid" | keyed answer and wx1 both say nitric acid removes **sulfate** ions — false; the real reason is carbonate | C24, C25; 4.8.3.4 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B2-W10 | changes-in-energy | all | "An 800 kg car travels at 20 m/s" | the "16,000 J" distractor's label/wx3 misdiagnose the error as "used speed not squared"; wx1 reads as an instruction | C21, C23, C24; 6.1.1.2 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
 
 ---
 

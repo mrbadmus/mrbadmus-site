@@ -1,10 +1,12 @@
 """ks4_lessons.batch_2 — Batch 2 (docs/ks4/BATCH-PLAN.md), the first lessons
 Code authored after Mide's ruling of 1 Oct 2026. Sources:
 ks4_lessons/authored/batch-2/<slug>.dc.html. Per-lesson notes and the source
-examination: docs/ks4/packs/batch-2/. `withhold` entries are frozen quiz items
-the batch examination found wrong (or wrong for a route); they stay verbatim in
-all_subtopics_*.py and are not served on the page — each has a DEPARTURES row
-(docs/ks4/packs/batch-2/DEPARTURES.md) and a line in Mide's list."""
+examination: docs/ks4/packs/batch-2/. `withhold` entries name frozen quiz items
+the batch examination found wrong (or wrong for a route), so the page does not
+serve them — each needs a DEPARTURES row (docs/ks4/packs/batch-2/DEPARTURES.md).
+The ten B2-W1…B2-W10 entries were removed on feat/ks4-frozen-corrections: Mide
+approved correcting those items in all_subtopics_*.py itself (2 Oct 2026,
+docs/ks4/FROZEN-CORRECTIONS.md), so they are served again."""
 
 B = "batch-2"
 ALL = ["CF", "CH", "TF", "TH"]
@@ -24,8 +26,7 @@ LESSONS = [
     dict(slug="enzymes", source_file="enzymes.dc.html",
          subject="biology", topic_id="organisation", title="Enzymes",
          spec="4.2.2.1", family="Required practical", routes=ALL,
-         review_state="examiner-reviewed", batch=B,
-         withhold=[W("An enzyme is heated to 80°C", "B2-W1")]),
+         review_state="examiner-reviewed", batch=B),
     dict(slug="carbon-cycle", source_file="carbon-cycle.dc.html",
          subject="biology", topic_id="ecology", title="The carbon cycle",
          spec="4.7.2.2", family="Process", routes=ALL, review_state="examiner-reviewed",
@@ -34,23 +35,18 @@ LESSONS = [
          subject="chemistry", topic_id="atomic-structure",
          title="Atoms, elements and compounds", spec="5.1.1.1",
          family="Classify", routes=ALL, review_state="examiner-reviewed", batch=B,
-         block_map={"s-balance": "worked-example"},
-         withhold=[W("A student heats a mixture of iron filings", "B2-W2"),
-                   W("Which equation is correctly balanced?", "B2-W3")]),
+         block_map={"s-balance": "worked-example"}),
     dict(slug="using-moles-calculations", source_file="using-moles-calculations.dc.html",
          subject="chemistry", topic_id="quantitative",
          title="Using moles — calculations and limiting reactants",
          spec="5.3.2.3–5.3.2.4", family="Quantitative", routes=["CH", "TH"],
          review_state="examiner-reviewed", batch=B,
-         block_map={"s-bench": "figure", "s-solution": "check"},
-         withhold=[W("What is the concentration of a solution made by dissolving 0.3 mol",
-                     "B2-W4", ["CH"])]),
+         block_map={"s-bench": "figure", "s-solution": "check"}),
     dict(slug="concentration-of-solutions", source_file="concentration-of-solutions.dc.html",
          subject="chemistry", topic_id="quantitative",
          title="Concentration of solutions", spec="5.3.2.5",
          family="Quantitative", routes=ALL, review_state="examiner-reviewed", batch=B,
-         block_map={"s-bench": "figure", "s-mol": "check"},
-         withhold=[W("A solution has a concentration of 80 g/dm³", "B2-W5")]),
+         block_map={"s-bench": "figure", "s-mol": "check"}),
     dict(slug="metal-hydroxides", source_file="metal-hydroxides.dc.html",
          subject="chemistry", topic_id="analysis", title="Metal hydroxides",
          spec="8462 4.8.3.2", family="Classify", routes=TRIPLE,
@@ -59,8 +55,7 @@ LESSONS = [
     dict(slug="changes-in-energy", source_file="changes-in-energy.dc.html",
          subject="physics", topic_id="energy", title="Changes in energy",
          spec="6.1.1.2", family="Quantitative", routes=ALL,
-         review_state="examiner-reviewed", batch=B,
-         withhold=[W("An 800 kg car travels at 20 m/s", "B2-W10")]),
+         review_state="examiner-reviewed", batch=B),
     dict(slug="internal-energy", source_file="internal-energy.dc.html",
          subject="physics", topic_id="particle-model", title="Internal energy",
          spec="6.3.2.1", family="Model", routes=ALL, review_state="examiner-reviewed", batch=B),
@@ -78,22 +73,18 @@ LESSONS = [
          subject="biology", topic_id="ecology", title="Decomposition",
          spec="4.7.2.2 (+ 8461 4.7.2.3, RP10)", family="Required practical",
          routes=ALL, review_state="examiner-reviewed", batch=B,
-         block_map={"s-sim": "required-practical", "s-return": "check"},
-         withhold=[W("Why does food last longer in a refrigerator", "B2-W6",
-                     ["CF", "CH"])]),
+         block_map={"s-sim": "required-practical", "s-return": "check"}),
     dict(slug="relative-formula-mass", source_file="relative-formula-mass.dc.html",
          subject="chemistry", topic_id="quantitative",
          title="Relative formula mass", spec="5.3.1.2", family="Quantitative",
          routes=ALL, review_state="examiner-reviewed", batch=B,
-         block_map={"s-pans": "check"},
-         withhold=[W("What is the Mr of Mg(NO₃)₂?", "B2-W7")]),
+         block_map={"s-pans": "check"}),
     dict(slug="percentage-yield", source_file="percentage-yield.dc.html",
          subject="chemistry", topic_id="quantitative", title="Percentage yield",
          spec="8462 4.3.3.1", family="Quantitative", routes=TRIPLE,
          review_state="examiner-reviewed", batch=B,
          block_map={"s-which": "check", "s-bench": "practical",
-                    "s-reasons": "check", "s-theory": "worked-example"},
-         withhold=[W("A reaction has a theoretical yield of 20 g", "B2-W8")]),
+                    "s-reasons": "check", "s-theory": "worked-example"}),
     dict(slug="titrations", source_file="titrations.dc.html",
          subject="chemistry", topic_id="chemical-changes", title="Titrations",
          spec="8462 4.4.2.5", family="Required practical", routes=TRIPLE,
@@ -106,6 +97,5 @@ LESSONS = [
          title="Tests for carbonates, halides and sulfates",
          spec="8462 4.8.3.3–4.8.3.5", family="Required practical", routes=TRIPLE,
          review_state="examiner-reviewed", batch=B,
-         block_map={"s-rack": "practical", "s-ionic": "check"},
-         withhold=[W("Why must solutions be acidified with nitric acid", "B2-W9")]),
+         block_map={"s-rack": "practical", "s-ionic": "check"}),
 ]

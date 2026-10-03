@@ -32,22 +32,24 @@ frozen items each lesson's author lists as not shown); and
 
 ## 1. Withheld frozen quiz items — 9 rows
 
+⊕ 2 Oct 2026: Mide approved correcting these items in the frozen `all_subtopics_*.py` data itself — a logged exception to the frozen window, for these rows only. Every row below is now **corrected in frozen data, feat/ks4-frozen-corrections, served again**; the `withhold` entries are gone from `ks4_lessons/batch_3.py`. Before/after text, routes and spec references: `docs/ks4/FROZEN-CORRECTIONS.md`.
+
 Every row is a `withhold` entry in `ks4_lessons/batch_3.py` (dep ids
 B3-W1…B3-W9). The item stays verbatim in the practice bank's source data on
 every route it would otherwise serve; `K.bank`/`K.find` never return it as a
 rung, in the body, or on the named routes at all.
 
-| id | lesson | routes | the question | why | citation |
-|---|---|---|---|---|---|
-| B3-W1 | temperature-changes-shc | all | "A 2 kg iron block (c = 450 J/kg°C) cools from 200°C to 50°C…" | option 4's label states false arithmetic (ΔE = m × c, not c × Δθ, = 900 J) and wx3 misdiagnoses the error as a missing mass | 6.3.2.2 |
-| B3-W2 | sound-waves-hearing | TH | "…used for foetal scanning rather than X-rays" (q2) | wx2 says X-rays penetrate soft tissue *less* well than bone — reversed (X-rays pass through soft tissue more easily, which is why bone shows up); the item is also 4.6.1.5 content taught on a 4.6.1.4 page | 6.6.2.2; 8463 4.6.1.5 |
-| B3-W3 | microscopy | all | "What is the maximum magnification of a light microscope?" (q1) | wx2 states a false equipment fact — "×200 is a common low-power objective" — when real school objectives are ×4/×10/×40, and total magnification (eyepiece × objective) is itself examined RP1 content | RP1 |
-| B3-W4 | microscopy | all | "An image is 45 mm wide. The actual size is 0.009 mm" (q2) | wx3 says "45 minus 0.009 is not how you calculate magnification!" for the ×4500 distractor, but 45 − 0.009 ≠ 4500; the distractor actually comes from rounding 0.009 to 0.01, which the feedback never names | 4.1.1.5 |
-| B3-W5 | conservation-of-mass | all | "24 g of magnesium reacts completely with oxygen…" (q2) | the distractor "64 g — double the mass of magnesium" is arithmetically false (double of 24 g is 48 g, not 64 g), and its wx is mismatched — it answers the 40 g error, not the 64 g one | 5.3.1.1 |
-| B3-W6 | atom-economy | TF, TH | "Why do addition reactions always have an atom economy of 100%?" (q2) | option 4 is correct in substance under AQA's own formula (desired Mr ÷ Σ reactant Mr = 1 for a single-product addition reaction), and the item's own wx3 concedes the statement is true — two defensible answers | 8462 4.3.3.2 |
-| B3-W7 | types-of-em-waves | all | "Which EM wave has the highest frequency?" (q1) | wx3 teaches the microwave-resonance myth — that ovens are tuned to water's resonant frequency; they run at 2.45 GHz, nowhere near any resonance of water | 6.6.2.1; 6.6.2.4 |
-| B3-W8 | particle-motion-pressure | all | "A gas is at 27°C and 100 kPa. It is heated to 327°C at constant volume…" (q2) | requires the kelvin scale and p ∝ T; neither is examinable in AQA physics 8463 or 8464 at any tier (whole-text search found no "kelvin" and no "absolute zero" in 8463) | — (not in either spec) |
-| B3-W9 | atom-economy | TF, TH | "A reaction produces 80 g of desired product and 20 g of waste product…" (q1) | atom economy is defined from the balanced equation, not from collected masses the stem conflates the two; option 4's feedback ("calculated incorrectly") names no misconception | 4.3.3.2 |
+| id | lesson | routes | the question | why | citation | status |
+|---|---|---|---|---|---|---|
+| B3-W1 | temperature-changes-shc | all | "A 2 kg iron block (c = 450 J/kg°C) cools from 200°C to 50°C…" | option 4's label states false arithmetic (ΔE = m × c, not c × Δθ, = 900 J) and wx3 misdiagnoses the error as a missing mass | 6.3.2.2 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B3-W2 | sound-waves-hearing | TH | "…used for foetal scanning rather than X-rays" (q2) | wx2 says X-rays penetrate soft tissue *less* well than bone — reversed (X-rays pass through soft tissue more easily, which is why bone shows up); the item is also 4.6.1.5 content taught on a 4.6.1.4 page | 6.6.2.2; 8463 4.6.1.5 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B3-W3 | microscopy | all | "What is the maximum magnification of a light microscope?" (q1) | wx2 states a false equipment fact — "×200 is a common low-power objective" — when real school objectives are ×4/×10/×40, and total magnification (eyepiece × objective) is itself examined RP1 content | RP1 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B3-W4 | microscopy | all | "An image is 45 mm wide. The actual size is 0.009 mm" (q2) | wx3 says "45 minus 0.009 is not how you calculate magnification!" for the ×4500 distractor, but 45 − 0.009 ≠ 4500; the distractor actually comes from rounding 0.009 to 0.01, which the feedback never names | 4.1.1.5 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B3-W5 | conservation-of-mass | all | "24 g of magnesium reacts completely with oxygen…" (q2) | the distractor "64 g — double the mass of magnesium" is arithmetically false (double of 24 g is 48 g, not 64 g), and its wx is mismatched — it answers the 40 g error, not the 64 g one | 5.3.1.1 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B3-W6 | atom-economy | TF, TH | "Why do addition reactions always have an atom economy of 100%?" (q2) | option 4 is correct in substance under AQA's own formula (desired Mr ÷ Σ reactant Mr = 1 for a single-product addition reaction), and the item's own wx3 concedes the statement is true — two defensible answers | 8462 4.3.3.2 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B3-W7 | types-of-em-waves | all | "Which EM wave has the highest frequency?" (q1) | wx3 teaches the microwave-resonance myth — that ovens are tuned to water's resonant frequency; they run at 2.45 GHz, nowhere near any resonance of water | 6.6.2.1; 6.6.2.4 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B3-W8 | particle-motion-pressure | all | "A gas is at 27°C and 100 kPa. It is heated to 327°C at constant volume…" (q2) | requires the kelvin scale and p ∝ T; neither is examinable in AQA physics 8463 or 8464 at any tier (whole-text search found no "kelvin" and no "absolute zero" in 8463) | — (not in either spec) | corrected in frozen data, feat/ks4-frozen-corrections, served again |
+| B3-W9 | atom-economy | TF, TH | "A reaction produces 80 g of desired product and 20 g of waste product…" (q1) | atom economy is defined from the balanced equation, not from collected masses the stem conflates the two; option 4's feedback ("calculated incorrectly") names no misconception | 4.3.3.2 | corrected in frozen data, feat/ks4-frozen-corrections, served again |
 
 ---
 
@@ -72,9 +74,9 @@ ordinary scoping).
 | microscopy | th1 | "Staining kills cells — so stained specimens cannot be living." | IMPRECISE; some stains are used on living cells; not used |
 | conservation-of-mass | th3 | "OR: 2 moles H₂ + 1 mole O₂ → 2 moles H₂O" | WRONG ROUTE as written — HT content (5.3.2.2) shown as base; tagged Higher instead and withheld from CF/TF |
 | conservation-of-mass | `higher` field | atom economy formula; "addition reactions have 100% atom economy" | WRONG ROUTE and WRONG LESSON; chemistry-only content served to Combined Higher; cut entirely, not shown on any route |
-| atom-economy | `equations[0]` | atom economy = (Mr desired ÷ Σ Mr all **products**) × 100 | numerically valid (mass is conserved) but not AQA's printed form; the page shows AQA's reactants-denominator form instead |
-| atom-economy | common_mistake | "…uses the relative formula masses of the PRODUCTS … not the reactants." | WRONG; directly contradicts AQA's formula, whose denominator *is* the reactants; never shown |
-| atom-economy | key_note | line 1 (products-denominator form) | IMPRECISE; replaced with an authored AQA-form line |
+| atom-economy | `equations[0]` | atom economy = (Mr desired ÷ Σ Mr all **products**) × 100 | numerically valid (mass is conserved) but not AQA's printed form; the page shows AQA's reactants-denominator form instead; ⊕ 2 Oct 2026: corrected in the frozen data itself to AQA's reactants form (`docs/ks4/FROZEN-CORRECTIONS.md`, AE-1); the page still shows its own authored text |
+| atom-economy | common_mistake | "…uses the relative formula masses of the PRODUCTS … not the reactants." | WRONG; directly contradicts AQA's formula, whose denominator *is* the reactants; never shown; ⊕ 2 Oct 2026: corrected in the frozen data itself to AQA's reactants form (`docs/ks4/FROZEN-CORRECTIONS.md`, AE-2); the page still shows its own authored text |
+| atom-economy | key_note | line 1 (products-denominator form) | IMPRECISE; replaced with an authored AQA-form line; ⊕ 2 Oct 2026: corrected in the frozen data itself to AQA's reactants form (`docs/ks4/FROZEN-CORRECTIONS.md`, AE-3); the page still shows its own authored text |
 | atom-economy | th2 | "EXAMPLE 1 — high atom economy" (45.9%) / "EXAMPLE 3 — low" (56%) | WRONG; the labels contradict each other (45.9% is the lowest value, not the highest); labels not reproduced |
 | waves-detection-exploration | theory 1 | "P-waves are refracted … → core is DENSER than mantle" | IMPRECISE; refraction shows a boundary and gives the core's size, not density on its own; not displayed |
 | waves-detection-exploration | theory 1 | shadow-zone definitions ("regions … that receive neither P nor S") | IMPRECISE; conflates the separate P-wave and S-wave shadow zones; the bench draws the two zones separately instead |
@@ -307,6 +309,8 @@ heading — is not rendered at all, and no rung or body text refers to it.
 This is a standing engine behaviour applied ahead of formal review rather
 than a lesson-specific text fix, which is why it sits here rather than in
 §3's atom-economy table.
+
+⊕ 2 Oct 2026: q1 (B3-W9) and q2 (B3-W6) are now corrected in the frozen data and served again (`docs/ks4/FROZEN-CORRECTIONS.md`), so on TF and TH the bank holds two items and `bankOn` renders the practice section. The guard stays: it is still the right behaviour for any lesson whose bank is empty.
 
 **The ladder's number-parser limit — answers rewritten below 1000, not
 fixed at the source.** `Ks4Ladder`'s calc-rung grader parses a typed answer

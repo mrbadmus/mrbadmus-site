@@ -128,14 +128,14 @@ PHYSICS_SUBTOPICS_ALL = {
   'quiz': [{'opts': [('160,000 J — Ek = ½ × 800 × 20² = ½ × 800 × 400 = 160,000 J', True),
                      ('8000 J — forgot to square the speed: ½ × 800 × 20 = 8000', False),
                      ('320,000 J — forgot the ½: 800 × 400 = 320,000', False),
-                     ('16,000 J — used speed not speed squared: ½ × 800 × 40', False)],
+                     ('16,000 J — doubled the speed instead of squaring it: ½ × 800 × 40', False)],
             'q': 'An 800 kg car travels at 20 m/s. What is its kinetic energy?',
-            'wrong_explanations': {1: 'Must square the speed first: 20² = 400. Then ½ × 800 × 20 = 8000 — missing the '
-                                      'squared step.',
+            'wrong_explanations': {1: '½ × 800 × 20 = 8000 is what you get if you skip the squaring. Square the speed '
+                                      'first: 20² = 400, so Ek = ½ × 800 × 400 = 160,000 J.',
                                    2: 'The ½ is essential in the kinetic energy formula — without it the answer '
                                       'doubles.',
-                                   3: '16,000 comes from ½ × 800 × 40 — this would be the answer if v = √40, not v = '
-                                      '20.'}},
+                                   3: '16,000 comes from ½ × 800 × 40 — you doubled 20 instead of squaring it. 20² = '
+                                      '20 × 20 = 400, not 40.'}},
            {'opts': [('2 J — Ee = ½ × 400 × 0.1² = ½ × 400 × 0.01 = 2 J', True),
                      ('4 J — forgot the ½: 400 × 0.01 = 4 J', False),
                      ('20 J — forgot to square the extension: ½ × 400 × 0.1 = 20', False),
@@ -2443,12 +2443,13 @@ PHYSICS_SUBTOPICS_ALL = {
   'quiz': [{'opts': [('135,000 J — ΔE = 2 × 450 × 150 = 135,000 J (Δθ = 200 − 50 = 150°C)', True),
                      ('45,000 J — used final temperature (50°C) not temperature change (150°C)', False),
                      ('180,000 J — used initial temperature (200°C) not temperature change', False),
-                     ('900 J — ΔE = c × Δθ (forgot mass)', False)],
+                     ('900 J — ΔE = m × c (forgot the temperature change)', False)],
             'q': 'A 2 kg iron block (c = 450 J/kg°C) cools from 200°C to 50°C. How much energy is released?',
             'wrong_explanations': {1: 'Δθ = 200 − 50 = 150°C (change, not final). Using 50°C: 2 × 450 × 50 = 45,000 J '
                                       '— wrong Δθ.',
                                    2: 'Using 200°C: 2 × 450 × 200 = 180,000 J — using initial temp, not the change.',
-                                   3: 'Must include mass: ΔE = m × c × Δθ = 2 × 450 × 150 = 135,000 J.'}},
+                                   3: '900 J is 2 × 450 — you left out the temperature change. ΔE = m × c × Δθ = 2 × '
+                                      '450 × 150 = 135,000 J.'}},
            {'opts': [("Water's high SHC (4200 J/kg°C) means it absorbs large amounts of thermal energy per kg per °C — "
                       'effective at cooling without a large temperature rise',
                       True),
@@ -2706,17 +2707,18 @@ PHYSICS_SUBTOPICS_ALL = {
                                       'puncture). The pressure rises due to TEMPERATURE increase at constant volume.',
                                    3: "Gas molecules don't change size with temperature — they just move FASTER, "
                                       'increasing collision frequency and force.'}},
-           {'opts': [('200 kPa — T₁ = 300 K, T₂ = 600 K; pressure doubles as temperature doubles', True),
-                     ('1200 kPa — used Celsius values: 327 ÷ 27 × 100', False),
-                     ('50 kPa — temperature increased so pressure decreases', False),
-                     ("100 kPa — pressure doesn't change with temperature", False)],
-            'q': 'A gas is at 27°C and 100 kPa. It is heated to 327°C at constant volume. What is the new pressure?',
-            'wrong_explanations': {1: 'Must convert to KELVIN: 27°C = 300 K, 327°C = 600 K. Ratio = 600/300 = 2. Using '
-                                      'Celsius: 327/27 ≈ 12 — completely wrong ratio.',
-                                   2: 'Pressure INCREASES when temperature increases at constant volume — more '
-                                      'energetic collisions, higher pressure.',
-                                   3: 'Pressure and temperature (in kelvin) are directly proportional at constant '
-                                      'volume — higher temperature = higher pressure.'}}],
+           {'opts': [('It increases — the molecules move faster, so they hit the walls more often and with more force', True),
+                     ('It decreases — the molecules spread out as they get hotter, so fewer of them hit the walls', False),
+                     ('It stays the same — the number of molecules in the container has not changed', False),
+                     ('It increases — the molecules get bigger when heated, so they take up more space', False)],
+            'q': 'A gas is heated in a sealed, rigid container, so its volume stays the same. What happens to the '
+                 'pressure of the gas, and why?',
+            'wrong_explanations': {1: 'The container is rigid, so the volume cannot change and the molecules cannot '
+                                      'spread out. Heating makes them move faster, so the pressure increases.',
+                                   2: 'The number of molecules is the same, but they move faster. Faster molecules '
+                                      'hit the walls more often and with more force, so the pressure increases.',
+                                   3: 'Molecules do not get bigger when heated. The pressure rises because the '
+                                      'molecules move faster — their average kinetic energy increases.'}}],
   'rp': None,
   'spec': '6.3.3.1',
   'summary': 'Explain gas pressure in terms of particle motion and describe how temperature and volume affect '
@@ -6227,8 +6229,9 @@ PHYSICS_SUBTOPICS_ALL = {
             'q': 'Why is ultrasound used for foetal scanning rather than X-rays?',
             'wrong_explanations': {1: 'X-rays actually produce higher resolution images — but the ionising radiation '
                                       'risk outweighs this advantage for foetal scanning.',
-                                   2: 'X-rays DO penetrate soft tissue (though not as well as bone) — but they are not '
-                                      'used because of ionising radiation risk to the fetus.',
+                                   2: 'X-rays DO pass through soft tissue — more easily than through bone, which is '
+                                      'why bones show up on an X-ray — but they are not used because of the ionising '
+                                      'radiation risk to the foetus.',
                                    3: 'Cost and speed are considerations, but the primary reason is SAFETY — avoiding '
                                       'ionising radiation exposure.'}}],
   'rp': None,
@@ -6566,8 +6569,9 @@ PHYSICS_SUBTOPICS_ALL = {
                                       'inversely proportional).',
                                    2: 'Visible light is a narrow band in the middle of the spectrum — far from the '
                                       'highest frequency.',
-                                   3: "Microwave ovens work by matching the frequency to water molecules' resonant "
-                                      'frequency, not because microwaves have the highest energy.'}},
+                                   3: 'Microwaves are used in ovens because water in food absorbs them — not because '
+                                      'they have the highest energy. Microwaves are near the low-frequency end of the '
+                                      'spectrum.'}},
            {'opts': [('Speed — all travel at 3 × 10⁸ m/s regardless of wavelength or frequency', True),
                      ('Wavelength — all EM waves have the same wavelength in vacuum', False),
                      ('Frequency — the frequency is constant for all EM waves', False),
