@@ -409,7 +409,9 @@ def delete_flow(d):
     check(d.js("!!document.querySelector('[data-act=undo-delete]')"), "scheduled, with Undo")
     d.shot("account-delete-scheduled-390.png")
     d.click("[data-act=undo-delete]")
-    d.wait("document.body.innerText.indexOf('Nothing was deleted')>=0")
+    # ⊕ B2C polish (4 Oct 2026): the undo line now says what is TRUE after an
+    # undo — the account stays and the children's logins work again.
+    d.wait("document.body.innerText.indexOf('your children can sign in again')>=0")
     check(d.js("!!document.querySelector('[data-act=ask-delete]')"), "Undo puts it back")
 
 

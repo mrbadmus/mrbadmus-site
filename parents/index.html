@@ -73,7 +73,7 @@
           </div>
           <ul id="hero-points" style="margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:15px"></ul>
         </div>
-        <div style="margin-top:12px;padding:14px 16px;border-radius:var(--ks3-r-panel);background:var(--ks3-ink);color:var(--ks3-on-dark-body);font-size:15px;line-height:1.5"><span style="display:block;font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-alert)">Mr Badmus</span><span style="display:block;margin-top:6px">Your structure is good. Now name things: say "antigen" and say "lymphocyte". In the exam the marks are on the nouns.</span></div>
+        <div class="c-ink" style="margin-top:12px;padding:14px 16px;border-radius:var(--ks3-r-panel);background:var(--ks3-ink);color:var(--ks3-on-dark-body);font-size:15px;line-height:1.5"><span style="display:block;font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-alert)">Mr Badmus</span><span style="display:block;margin-top:6px">Your structure is good. Now name things: say "antigen" and say "lymphocyte". In the exam the marks are on the nouns.</span></div>
       </div>
     </div>
   </section>
@@ -98,7 +98,7 @@
   </section>
 
   <section class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:0 20px 64px">
-    <div style="padding:clamp(28px,4vw,48px);border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:8px 8px 0 var(--ks3-accent)">
+    <div class="c-ink" style="padding:clamp(28px,4vw,48px);border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:8px 8px 0 var(--ks3-accent)">
       <div class="pb-two" style="align-items:center">
         <div>
           <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-alert)">Who marks it</p>
@@ -208,7 +208,7 @@
       return '<div style="padding:22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-ground)">' +
         '<span style="display:grid;place-items:center;width:40px;height:40px;border-radius:12px;' +
         'border:2px solid var(--ks3-ink);background:var(--ks3-accent);font-family:var(--ks3-font-display);' +
-        'font-weight:800;font-size:18px">' + esc(t.n) + '</span>' +
+        'font-weight:800;font-size:18px;color:var(--c-on-fill)">' + esc(t.n) + '</span>' +
         '<h3 style="margin:16px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:24px;' +
         'letter-spacing:-.025em;line-height:1.1">' + esc(t.q) + '</h3>' +
         '<p style="margin:10px 0 0;font-size:17px;color:var(--ks3-ink-body)">' + esc(t.a) + '</p></div>';

@@ -275,6 +275,19 @@ body {
   margin-bottom: 10px;
 }
 .c-notice p { color: var(--muted); font-size: 1rem; line-height: var(--lh-body); }
+/* ⊕ B2C polish: the off page's header band carries the one lockup, and the
+   page offers a way home (consumer-common.js notFound()). */
+.c-notice-head {
+  /* Literal values: on an off page none of the --sp/--card tokens resolve. */
+  display: flex; align-items: center; min-height: 60px;
+  padding: 12px 20px; border-bottom: 2px solid currentColor;
+}
+/* `.c-notice a.c-notice-home`, not the bare class: on the public pages
+   `.pb-body a` (the light accent, 2.83:1 on dark) would otherwise win. */
+.c-notice a.c-notice-home {
+  display: inline-flex; align-items: center; min-height: 44px; margin-top: 8px;
+  font-weight: 700; color: var(--text); text-decoration: underline;
+}
 
 /* ── username availability (add-child) ───────────────────────────────── */
 .c-uname-state { margin-top: 7px; font-size: 0.86rem; min-height: 20px; }
@@ -592,3 +605,53 @@ body {
   cursor: pointer;
 }
 .c-linkbtn:hover { text-decoration-thickness: 2px; }
+
+/* ⊕ B2C polish: a theme slot sitting in a child page's header row. */
+.c-head-theme { display: inline-flex; align-items: center; flex: 0 0 auto; }
+
+/* ⊕ B2C polish (4 Oct 2026). The page-level theme control (the fixed
+   `.mrb-theme-float` hand-stamped into these pages) sat on top of each
+   page's own header controls on a phone — the dashboard's child switcher,
+   the terms page's "Start free", the sign-in links — so a tap meant for them
+   changed the theme instead. Below 900px it leaves the fixed layer and sits
+   in the page flow, a pill at the top right ABOVE the header, where nothing
+   else is. Its colours stay its own (the inline style, and ks3-theme.css's
+   dark rule), so it is the same pill in both themes. The three child pages
+   carry the control inside their header instead (data-mrb-theme="compact").
+   Page-local: this file is loaded only by consumer/parents/org/go pages, and
+   shared/theme.js is untouched. `body >` outranks the float's own <style>. */
+@media (max-width: 900px) {
+  body > .mrb-theme-float {
+    position: static;
+    width: max-content;
+    margin: 8px 12px 0 auto;
+  }
+}
+
+/* ⊕ B2C polish (4 Oct 2026) — DARK MODE, fixed at the token level.
+   Measured live on every consumer / parents / org / go page and signed-in
+   state (contrast_audit's own _MEASURE_JS, 390 and 1280). The gate's own
+   sweep could not see these: with CONSUMER_SIGNUP_ENABLED off in its config
+   every one of these pages renders "Not found" and measures nothing.
+
+   1. INK PANELS. A panel filled with --ks3-ink is dark on a light page and,
+      because dark mode turns --ks3-ink cream, LIGHT on a dark page. Its text
+      tokens (--ks3-on-dark-body/-muted) and the amber it uses AS TEXT
+      (--ks3-alert) must invert with it — exactly the second inversion
+      shared/ks3-theme.css gives KS3's named panels and public.css's
+      `.su-ink` / overview's `.dk-dark` already carry. These were the
+      consumer panels that never got it: cream-on-cream at 1.14–1.64:1
+      (exam's "Want a second opinion?", the child's message card, the unit
+      check rules, /go/'s "Already signed in", and the parents pages' ink
+      sections, which carry `.c-ink`). Same values as those rules. */
+html[data-theme="dark"] .rd :is(.c-ink, .ex-dark, .td-dark-card, .uc-rules, .gl-already) {
+  --ks3-on-dark-body: #2E2419;
+  --ks3-on-dark-muted: #4A3C2E;
+  --ks3-alert: #5A430A;
+  --ks3-dark-panel: rgba(22, 18, 14, .08);
+}
+/* 2. TEXT ON A FILL. A number or letter sitting on the accent or ok fill
+      used --ks3-ink (cream in dark: 2.35:1 on the orange) or white (2.24:1
+      on dark's brighter green, 3.3:1 on light's). The fills keep their
+      brightness in both themes, so the text on them is a dark ink in both. */
+.rd { --c-on-fill: #16120E; }   /* 5.1:1 on the light accent, 5.5:1 on the light ok fill */

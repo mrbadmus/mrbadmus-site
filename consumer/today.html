@@ -108,8 +108,8 @@
     border-radius: 11px; border: 2px solid var(--ks3-ink);
     font-family: var(--ks3-font-display); font-weight: 800;
   }
-  .td-stat-streak { background: var(--ks3-accent); font-size: 18px; }
-  .td-stat-best   { background: var(--ks3-ok); font-size: 15px; color: #fff; }
+  .td-stat-streak { background: var(--ks3-accent); font-size: 18px; color: var(--c-on-fill); }
+  .td-stat-best   { background: var(--ks3-ok); font-size: 15px; color: var(--c-on-fill); }
   .td-stat-text { font-size: 15px; line-height: 1.3; }
   .td-stat-text span { color: var(--ks3-ink-muted); }
 
@@ -288,7 +288,7 @@
     border: 0; background: none; font: inherit; font-size: 18px;
     color: var(--ks3-ink); outline: none;
   }
-  .td-composer input::placeholder { color: var(--ks3-ink-ghost); }
+  .td-composer input::placeholder { color: var(--ks3-ink-muted); }  /* ghost: 4.40:1 in dark */
   .td-send {
     display: grid; place-items: center; width: 44px; height: 44px;
     border: 2px solid var(--ks3-ink); border-radius: 12px;
@@ -833,6 +833,8 @@
 
     function oops(message, hint) {
       var host = screen === 'chat' ? el('td-chat-empty') : el('td-flags');
+      // ⊕ B2C polish: never "try again" twice in one box.
+      if (hint && /try again/i.test(message) && /try again/i.test(hint)) { hint = ''; }
       host.innerHTML = '<div class="td-oops"><p>' + C.escapeHtml(message) + '</p>' +
         (hint ? '<p>' + C.escapeHtml(hint) + '</p>' : '') + '</div>';
     }
@@ -846,8 +848,9 @@
       el('td-items').innerHTML =
         '<div class="td-oops"><p>' + C.escapeHtml(C.plainMessage(e)) + '</p>' +
         /* An account being closed is not a blip: no retry advice. */
-        (C.isClosing(e) ? '' :
-          '<p>Try again in a moment, or ask your grown-up to check the account.</p>') + '</div>';
+        (C.isClosing(e) ? '' : /try again/i.test(C.plainMessage(e))
+          ? '<p>If it keeps happening, ask your grown-up to check the account.</p>'
+          : '<p>Try again in a moment, or ask your grown-up to check the account.</p>') + '</div>';
     });
   }});
 })();

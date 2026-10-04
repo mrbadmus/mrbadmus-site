@@ -357,9 +357,7 @@
       return '<section class="ak-plan">' +
         '<div style="display:flex;align-items:center;gap:10px">' +
           '<p class="ak-kicker">Your plan</p>' +
-          '<span style="margin-left:auto;padding:5px 12px;border-radius:99px;border:2px solid ' +
-            BADGES.alert.border + ';background:' + BADGES.alert.bg + ';font-size:13px;font-weight:700;color:' +
-            BADGES.alert.fg + '">Closing</span></div>' +
+          '</div>' +
         '<p style="margin:12px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:30px;' +
           'line-height:1.05;letter-spacing:-.03em">No more charges</p>' +
         '</section>';
@@ -485,6 +483,8 @@
   }
 
   function seatsCard() {
+    // ⊕ B2C polish: a closing account has no next bill — no monthly total under "No more charges".
+    if (S.deletion) { return ''; }
     var seats = S.billing.seats || [];
     if (!seats.length) {
       return '<section class="ak-card" style="margin-top:16px">' +
@@ -626,10 +626,9 @@
         'every child on it?</p>' +
       '<ul style="margin:10px 0 0;padding:0 0 0 18px;font-size:15px;color:var(--ks3-ink-body);' +
         'display:flex;flex-direction:column;gap:4px">' +
-        /* ⊕ B2C polish: what the backend really does — cancel_at_period_end.
-           Nothing more is taken; the plan runs out at the end of the free
-           week or the time already paid for. */
-        '<li>Nothing more will be charged. Your plan stops at the end of the free week or the time already paid for.</li>' +
+        /* ⊕ B2C polish: what the backend really does — cancel_at_period_end,
+           so nothing more is taken. "Cancelled today" was not true. */
+        '<li>Nothing more is charged.</li>' +
         '<li>Children’s logins stop working immediately.</li>' +
         '<li>Progress, reports, answers and messages are deleted after 30 days. Download reports ' +
           'first if you need them.</li></ul>' +
@@ -764,10 +763,8 @@
         });
       }).catch(function (e) {
         C.setBusy(el, false);
-        msg(e && e.name === 'AbortError' ? 'That took too long. Please try again.'
-          : (e instanceof TypeError ? 'We couldn’t reach MrBadmus. Check your connection and try again.'
-          : C.plainMessage(e, 'We couldn’t put your download together just now.')), 'error');
-      }).then(function () { if (stop) { clearTimeout(stop); } });
+        msg(C.plainMessage(e, 'That didn’t save. Please try again in a moment.'), 'error');
+      });
     },
 
     'portal': function (el) {
@@ -838,8 +835,10 @@
         });
       }).catch(function (e) {
         C.setBusy(el, false);
-        msg(e.message, 'error');
-      });
+        msg(e && e.name === 'AbortError' ? 'That took too long. Please try again.'
+          : (e instanceof TypeError ? 'We couldn’t reach MrBadmus. Check your connection and try again.'
+          : C.plainMessage(e, 'We couldn’t put your download together just now.')), 'error');
+      }).then(function () { if (stop) { clearTimeout(stop); } });
     },
 
     'ask-delete': function () {
@@ -879,7 +878,7 @@
       C.setBusy(el, true, 'Undoing…');
       C.api('/api/consumer/family/delete-request', { method: 'DELETE', token: ctx.token })
         .then(function () { return loadFamily(); })
-        .then(function () { render(); msg('Your account is staying. Nothing was deleted.', 'ok', 'ak-del-msg'); })
+        .then(function () { render(); msg('Your account is staying, and your children can sign in again.', 'ok', 'ak-del-msg'); })
         .catch(function (e) { C.setBusy(el, false); msg(e.message, 'error', 'ak-del-msg'); });
     }
   };

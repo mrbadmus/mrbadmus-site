@@ -79,6 +79,22 @@
     line-height: 1.5;
   }
   .rpt-keep { break-inside: avoid; page-break-inside: avoid; }
+  /* ⊕ B2C polish (4 Oct 2026). The sheet and the action bar are PAPER — a
+     literal #FFFCF5 in both themes, because a report is a printed thing.
+     In dark mode the --ks3-* text tokens inside them flipped to cream, and
+     the whole report read 1.15:1. Paper keeps paper's ink: inside these two
+     the light values are re-asserted (shared/tokens.css), so the report is
+     the same sheet in both themes, exactly as it prints. */
+  html[data-theme="dark"] .rpt-sheet,
+  html[data-theme="dark"] .rpt-actions {
+    --ks3-ground: #FBF3E6; --ks3-card: #FFFCF5; --ks3-band: #F4E9D8; --ks3-inset: #F7EFE1;
+    --ks3-rule: #E0D2B9; --ks3-rule-strong: #C3B191; --ks3-option-border: #DDCFB6;
+    --ks3-ink: #221E1B; --ks3-ink-body: #3B342E; --ks3-ink-muted: #5F564F;
+    --ks3-ink-faint: #6E655D; --ks3-ink-ghost: #9A8F86; --ks3-on-dark: #FBF3E6;
+    --ks3-accent: #E4572E; --ks3-accent-text: #A93411; --ks3-ok: #12A150; --ks3-ok-text: #0A6B36;
+    --ks3-alert-text: #5A430A;
+    color: #221E1B;
+  }
 
   .rpt-h2 {
     margin: 22pt 0 0;
@@ -398,7 +414,10 @@
       ? (h2('Extended writing') +
          '<p style="margin:6pt 0 0;font-size:10.5pt;color:#5F564F">Exam-style 4- and 6-mark ' +
            'questions, marked against the published mark scheme. Answers marked “MB” were marked ' +
-           'by Mr Badmus personally.</p>' +
+           'by Mr Badmus personally.' +
+           (answers.some(function (a) { return / practice$/.test(a.mark || ''); })
+             ? ' Marks with “practice” are placeholders: the AI marker didn’t check them.' : '') +
+           '</p>' +
          '<div style="margin-top:10pt;font-size:11pt">' +
          '<div class="rpt-grid-a rpt-kicker" style="padding:5pt 0;border-bottom:1pt solid #221E1B">' +
            '<span>Date</span><span>Question</span><span style="text-align:right">Mark</span></div>' +

@@ -448,11 +448,12 @@
      network — the parent is told nothing is lost, so the password they typed
      is put back. A refusal that IS about the password clears it. */
   function renderKeepingPassword(keep) {
-    var box = $('password');
-    var typed = keep && box ? box.value : '';
+    var typed = {};
+    if (keep) {
+      ['password', 'v-pass'].forEach(function (id) { if ($(id)) { typed[id] = $(id).value; } });
+    }
     render();
-    var again = $('password');
-    if (typed && again) { again.value = typed; }
+    Object.keys(typed).forEach(function (id) { if (typed[id] && $(id)) { $(id).value = typed[id]; } });
   }
   function aboutPassword(text) { return /password/i.test(String(text || '')); }
 
@@ -675,7 +676,8 @@
         S.error = res.unverified ? NOT_YET
                 : res.error === 'network' ? 'We couldn’t reach MrBadmus. Check your connection and try again.'
                 : 'That password doesn’t match this email.';
-        render();
+        // Only a refused password is cleared; a network failure keeps it.
+        renderKeepingPassword(res.error === 'network');
         return false;
       });
     });
@@ -703,7 +705,7 @@
         S.error = why === 'timeout'
           ? 'That took too long. Check your connection and press the button again.'
           : C.plainMessage(why, 'We couldn’t reach MrBadmus. Check your connection and press the button again.');
-        render();
+        renderKeepingPassword(true);
       }
       var timer = setTimeout(function () { giveUp('timeout'); }, VERIFY_CHECK_MS);
       checkVerified(true).then(function (ok) {

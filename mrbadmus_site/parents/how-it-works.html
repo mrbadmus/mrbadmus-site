@@ -62,7 +62,7 @@
 
   <div id="steps" style="margin-top:56px;display:flex;flex-direction:column;gap:48px"></div>
 
-  <section style="margin-top:72px;padding:clamp(28px,4vw,44px);border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:8px 8px 0 var(--ks3-accent)">
+  <section class="c-ink" style="margin-top:72px;padding:clamp(28px,4vw,44px);border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:8px 8px 0 var(--ks3-accent)">
     <h2 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.035em;line-height:1">Things people ask</h2>
     <div id="faqs" style="margin-top:24px;display:flex;flex-direction:column"></div>
   </section>
@@ -137,7 +137,7 @@
       return '<div class="pb-step" style="padding-top:32px;border-top:2px solid var(--ks3-ink)">' +
         '<span style="display:grid;place-items:center;width:56px;height:56px;border-radius:16px;' +
         'border:2px solid var(--ks3-ink);background:var(--ks3-accent);font-family:var(--ks3-font-display);' +
-        'font-weight:800;font-size:26px">' + esc(s.n) + '</span>' +
+        'font-weight:800;font-size:26px;color:var(--c-on-fill)">' + esc(s.n) + '</span>' +
         '<div>' +
           '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;' +
           'text-transform:uppercase;color:var(--ks3-ink-muted)">' + esc(s.who) + '</p>' +

@@ -860,6 +860,14 @@
   function bannerHtml() {
     var b = S.billing, st = String(b.state || '').toLowerCase();
     var account = esc(C.href('/consumer/account.html'));
+    /* ⊕ B2C polish: a pending deletion outranks every billing sentence —
+       "Everything works until…" was false the moment it was asked for. */
+    if (S.deletion) {
+      var del = dayMonth(S.deletion.execute_after);
+      return '<div class="dk-banner dk-banner-alert"><span style="flex:1"><strong>Account closing.</strong> ' +
+        'Your children can’t sign in.' + (del ? (' Everything is deleted on ' + esc(del) + '.') : '') +
+        '</span><a href="' + account + '" style="font-weight:700;white-space:nowrap">Undo</a></div>';
+    }
     var gate = gateHtml();
     if (gate) { return gate; }
     if (st === 'trialing') {
@@ -1082,7 +1090,9 @@
 
   function viewOverview() {
     var hour = new Date().getHours();
-    var greeting = (hour < 12 ? 'Morning' : hour < 18 ? 'Afternoon' : 'Evening') + ', ' + parentName();
+    // ⊕ B2C polish: "Morning" at 01:50 is wrong; the small hours get "Hello".
+    var greeting = (hour < 5 ? 'Hello' : hour < 12 ? 'Morning' : hour < 18 ? 'Afternoon' : 'Evening') +
+      ', ' + parentName();
     var todayLabel = new Date().toLocaleDateString('en-GB',
       { weekday: 'long', day: 'numeric', month: 'long' });
 
@@ -1488,7 +1498,10 @@
         '<p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-body)">A short message lands on ' +
           esc(k.first_name) + '’s Today screen the next time they open it.</p>' +
         '<div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center">' +
-        CHAT_STARTERS.map(function (t) {
+        /* ⊕ B2C polish: a streak line only when there is a streak. */
+        CHAT_STARTERS.filter(function (t) {
+          return t.indexOf('streak') === -1 || Number(k.streak) > 0;
+        }).map(function (t) {
           return '<button data-act="starter" data-text="' + esc(t) + '" style="padding:8px 14px;' +
             'border:2px solid var(--ks3-rule-strong);border-radius:99px;background:var(--ks3-card);' +
             'font-size:14px;font-weight:600;color:var(--ks3-ink);cursor:pointer">' + esc(t) + '</button>';
@@ -1553,7 +1566,8 @@
     return '<div class="dk-narrow" style="max-width:720px">' + head +
       '<div style="margin-top:20px;display:flex;flex-direction:column;gap:12px">' +
       list.map(function (a) {
-        var status = a.human ? 'Marked by Mr Badmus' : (a.waiting ? 'With Mr Badmus' : 'Instant mark');
+        // ⊕ B2C polish: a stub mark (no AI marker answered) is never passed off as a real one.
+        var status = a.human ? 'Marked by Mr Badmus' : (a.waiting ? 'With Mr Badmus' : (a.practice ? 'Practice mark' : 'Instant mark'));
         var border = a.human ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)';
         var bg = a.human ? 'var(--ks3-ink)' : 'var(--ks3-band)';
         var fg = a.human ? 'var(--ks3-on-dark)' : 'var(--ks3-ink-muted)';
@@ -1603,7 +1617,9 @@
       '<div style="margin-top:14px;padding:18px;border:2px solid var(--ks3-ink);' +
         'border-radius:var(--ks3-r-panel);background:var(--ks3-inset)">' +
         '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">' +
-          '<p class="dk-kicker" style="font-size:12px">Instant mark · against the mark scheme</p>' +
+          '<p class="dk-kicker" style="font-size:12px">' + (a.practice
+            ? 'Practice mark · the AI marker didn’t check this one'
+            : 'Instant mark · against the mark scheme') + '</p>' +
           '<span style="font-family:var(--ks3-font-display);font-weight:800;font-size:26px;' +
             'letter-spacing:-.02em">' + esc(a.aiScore || '') + '</span></div>' +
         (points ? ('<ul style="margin:12px 0 0;padding:0;list-style:none;display:flex;' +

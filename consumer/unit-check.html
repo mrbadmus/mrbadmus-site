@@ -1034,7 +1034,9 @@
     var first = wantHistory ? loadHistory(unitCode) : loadStart();
     return first.catch(function (e) {
       main.innerHTML = '<div class="uc-oops"><p>' + esc(C.plainMessage(e)) + '</p>' +
-        (C.isClosing(e) ? '' : '<p>Try again in a moment, or go back to your Today page.</p>') + '</div>';
+        (C.isClosing(e) ? '' : /try again/i.test(C.plainMessage(e))
+          ? '<p>Or go back to your Today page.</p>'
+          : '<p>Try again in a moment, or go back to your Today page.</p>') + '</div>';
     });
   }});
 })();

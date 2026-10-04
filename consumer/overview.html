@@ -1566,7 +1566,8 @@
     return '<div class="dk-narrow" style="max-width:720px">' + head +
       '<div style="margin-top:20px;display:flex;flex-direction:column;gap:12px">' +
       list.map(function (a) {
-        var status = a.human ? 'Marked by Mr Badmus' : (a.waiting ? 'With Mr Badmus' : 'Instant mark');
+        // ⊕ B2C polish: a stub mark (no AI marker answered) is never passed off as a real one.
+        var status = a.human ? 'Marked by Mr Badmus' : (a.waiting ? 'With Mr Badmus' : (a.practice ? 'Practice mark' : 'Instant mark'));
         var border = a.human ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)';
         var bg = a.human ? 'var(--ks3-ink)' : 'var(--ks3-band)';
         var fg = a.human ? 'var(--ks3-on-dark)' : 'var(--ks3-ink-muted)';
@@ -1616,7 +1617,9 @@
       '<div style="margin-top:14px;padding:18px;border:2px solid var(--ks3-ink);' +
         'border-radius:var(--ks3-r-panel);background:var(--ks3-inset)">' +
         '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">' +
-          '<p class="dk-kicker" style="font-size:12px">Instant mark · against the mark scheme</p>' +
+          '<p class="dk-kicker" style="font-size:12px">' + (a.practice
+            ? 'Practice mark · the AI marker didn’t check this one'
+            : 'Instant mark · against the mark scheme') + '</p>' +
           '<span style="font-family:var(--ks3-font-display);font-weight:800;font-size:26px;' +
             'letter-spacing:-.02em">' + esc(a.aiScore || '') + '</span></div>' +
         (points ? ('<ul style="margin:12px 0 0;padding:0;list-style:none;display:flex;' +

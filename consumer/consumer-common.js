@@ -211,13 +211,15 @@
   /* Is this text a sentence a person wrote, or a machine's word? A code
      (`anon_key_not_configured`), a Postgres/PostgREST error, a stack frame or
      JSON is not, and is never put in front of a parent or a child. */
-  var MACHINE_TEXT = /\bPGRST\d|\b[0-9A-Z]{5}\b.*:|violates|constraint|relation "|column "|null value|syntax error|JWT|jwt|TypeError|ReferenceError|undefined|\bat [A-Za-z_.]+ \(|^\s*[{\[<]/;
+  var MACHINE_TEXT = /\bPGRST\d|\b[0-9A-Z]{5}\b.*:|violates|constraint|relation "|column "|null value|syntax error|JWT|jwt|TypeError|ReferenceError|undefined|\bat [A-Za-z_.]+ \(|^\s*[{\[<]|\b[a-z]+_[a-z0-9_]+\b|schema cache|rows returned|API key|status code|\bpublic\.|ECONN|ETIMEDOUT|ENOTFOUND|fetch failed/;
   function plainSentence(text) {
     var t = String(text || '').trim();
     if (!t || t.indexOf(' ') === -1) { return false; }
-    // "org_access_state read failed" is a log line; "kind is lesson, practice
-    // or exam." is a sentence that happens to start with a field name.
-    if (!/^[A-Z“"‘']/.test(t) && !/[.!?]$/.test(t)) { return false; }
+    /* Every sentence the backend writes for a person ends like one. A log
+       line ("org_access_state read failed", "Invalid API key", "JSON object
+       requested, multiple (or no) rows returned") does not — so a full stop,
+       ? or ! is required, and a snake_case identifier anywhere disqualifies. */
+    if (!/[.!?][”"’')]*$/.test(t)) { return false; }
     return !MACHINE_TEXT.test(t);
   }
   function plainMessage(e, fallback) {

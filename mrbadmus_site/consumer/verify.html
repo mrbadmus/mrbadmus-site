@@ -165,9 +165,10 @@
              verification failure and must not be reported as one: the
              account is fine, and re-clicking the email link would be the
              wrong advice. */
+          /* ⊕ B2C polish: the heading already says what is true; the line
+             under it is only the one thing that went wrong. */
           screen('You’re verified — but we couldn’t finish setting up',
-            'Your email is confirmed. The last step didn’t complete.',
-            '<p style="margin:12px 0 0;font-size:16px;color:var(--ks3-ink-body)">' + esc(e.message) + '</p>' +
+            esc(C.plainMessage(e)),
             '<p style="margin:26px 0 0"><button type="button" onclick="window.location.reload()" ' +
             'style="width:100%;min-height:54px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);' +
             'background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:18px;cursor:pointer">' +

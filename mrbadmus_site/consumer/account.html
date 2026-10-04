@@ -349,6 +349,19 @@
     if (st === 'cancelled') { line = 'No further charges.'; }
 
     var body = '';
+    /* ⊕ B2C polish. While a deletion is pending the account is not
+       "working until" anything: the children are already shut out and the
+       delete card below says so, with the date and Undo. The plan card says
+       only what is true of billing, and offers nothing to restart. */
+    if (S.deletion) {
+      return '<section class="ak-plan">' +
+        '<div style="display:flex;align-items:center;gap:10px">' +
+          '<p class="ak-kicker">Your plan</p>' +
+          '</div>' +
+        '<p style="margin:12px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:30px;' +
+          'line-height:1.05;letter-spacing:-.03em">No more charges</p>' +
+        '</section>';
+    }
     if (st === 'trialing') {
       var tEnd = dayMonth(b.trial_end);
       var trialDays = (S.prices && S.prices.trial_days) || null;
@@ -470,6 +483,8 @@
   }
 
   function seatsCard() {
+    // ⊕ B2C polish: a closing account has no next bill — no monthly total under "No more charges".
+    if (S.deletion) { return ''; }
     var seats = S.billing.seats || [];
     if (!seats.length) {
       return '<section class="ak-card" style="margin-top:16px">' +
@@ -563,6 +578,7 @@
 
   function cancelCard() {
     var st = String(S.billing.state || '').toLowerCase();
+    if (S.deletion) { return ''; }   // ⊕ B2C polish: nothing to cancel — it is closing
     if (st !== 'trialing' && st !== 'active') { return ''; }
     if (!S.billing.can_portal) { return ''; }
     return '<section style="margin-top:28px;padding-top:20px;border-top:2px solid var(--ks3-rule)">' +
@@ -587,9 +603,11 @@
       return head + '<div style="padding:18px;border:2px solid var(--ks3-ink);' +
         'border-radius:var(--ks3-r-panel);background:var(--ks3-band)">' +
         '<p style="margin:0;font-weight:700;font-size:18px">Account scheduled for deletion</p>' +
-        '<p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-body)">We’ve emailed ' +
-          esc(S.email) + ' to confirm. Everything is gone on ' + esc(when || 'the scheduled date') +
-          '. You can undo it here at any point before then.</p>' +
+        /* ⊕ B2C polish: what is true right now. The backend refuses every
+           child login and child request while this row stands. */
+        '<p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-body)">Your children can’t sign in now. ' +
+          'Everything is deleted on <strong style="color:var(--ks3-ink)">' + esc(when || 'the scheduled date') +
+          '</strong>. Undo before then to keep it all.</p>' +
         '<button data-act="undo-delete" style="margin-top:14px;min-height:46px;padding:0 18px;' +
           'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);' +
           'font-weight:700;font-size:15px;color:var(--ks3-ink);cursor:pointer">Undo — keep my ' +
@@ -608,7 +626,9 @@
         'every child on it?</p>' +
       '<ul style="margin:10px 0 0;padding:0 0 0 18px;font-size:15px;color:var(--ks3-ink-body);' +
         'display:flex;flex-direction:column;gap:4px">' +
-        '<li>The subscription is cancelled today; no further charges.</li>' +
+        /* ⊕ B2C polish: what the backend really does — cancel_at_period_end,
+           so nothing more is taken. "Cancelled today" was not true. */
+        '<li>Nothing more is charged.</li>' +
         '<li>Children’s logins stop working immediately.</li>' +
         '<li>Progress, reports, answers and messages are deleted after 30 days. Download reports ' +
           'first if you need them.</li></ul>' +
@@ -743,7 +763,7 @@
         });
       }).catch(function (e) {
         C.setBusy(el, false);
-        msg(e.message, 'error');
+        msg(C.plainMessage(e, 'That didn’t save. Please try again in a moment.'), 'error');
       });
     },
 
@@ -785,8 +805,13 @@
     'export': function (el) {
       var base = (window.MrBadmusConfig && window.MrBadmusConfig.BACKEND_URL) || '';
       C.setBusy(el, true, 'Preparing…');
+      /* ⊕ B2C polish: a raw fetch, so it gets its own deadline and its own
+         plain failure line — "Failed to fetch" is not a sentence. */
+      var ctl = typeof AbortController === 'function' ? new AbortController() : null;
+      var stop = ctl ? setTimeout(function () { ctl.abort(); }, 60000) : null;
       fetch(base + '/api/consumer/family/export', {
-        headers: { Authorization: 'Bearer ' + ctx.token }
+        headers: { Authorization: 'Bearer ' + ctx.token },
+        signal: ctl ? ctl.signal : undefined
       }).then(function (res) {
         if (!res.ok) {
           return res.text().then(function (t) {
@@ -810,8 +835,10 @@
         });
       }).catch(function (e) {
         C.setBusy(el, false);
-        msg(e.message, 'error');
-      });
+        msg(e && e.name === 'AbortError' ? 'That took too long. Please try again.'
+          : (e instanceof TypeError ? 'We couldn’t reach MrBadmus. Check your connection and try again.'
+          : C.plainMessage(e, 'We couldn’t put your download together just now.')), 'error');
+      }).then(function () { if (stop) { clearTimeout(stop); } });
     },
 
     'ask-delete': function () {
@@ -851,7 +878,7 @@
       C.setBusy(el, true, 'Undoing…');
       C.api('/api/consumer/family/delete-request', { method: 'DELETE', token: ctx.token })
         .then(function () { return loadFamily(); })
-        .then(function () { render(); msg('Your account is staying. Nothing was deleted.', 'ok', 'ak-del-msg'); })
+        .then(function () { render(); msg('Your account is staying, and your children can sign in again.', 'ok', 'ak-del-msg'); })
         .catch(function (e) { C.setBusy(el, false); msg(e.message, 'error', 'ak-del-msg'); });
     }
   };

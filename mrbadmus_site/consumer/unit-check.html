@@ -304,7 +304,6 @@
 <style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
 </head>
 <body>
-<div class="mrb-theme-float"><span class="mrb-theme-slot" data-mrb-theme></span></div>
 
 
 <div class="rd uc-root" data-mode="ks3" id="c-main">
@@ -321,6 +320,11 @@
     <!-- Night 4, MRB-317 ruling 3. Hidden while the clock is running, for
          exactly the reason the back arrow is: there is no way out of a
          running check but handing in. -->
+    <!-- ⊕ B2C polish: the theme control lives IN the header here. As a fixed
+         float it sat over Messages and Sign out on a phone, and a tap
+         meant for them landed on the theme. "compact" is one 32px button
+         below 600px (shared/theme.js). -->
+    <span class="mrb-theme-slot c-head-theme" data-mrb-theme="compact"></span>
     <span id="uc-signout"></span>
   </header>
 
@@ -1029,8 +1033,10 @@
 
     var first = wantHistory ? loadHistory(unitCode) : loadStart();
     return first.catch(function (e) {
-      main.innerHTML = '<div class="uc-oops"><p>' + esc(e.message) + '</p>' +
-        '<p>Try again in a moment, or go back to your Today page.</p></div>';
+      main.innerHTML = '<div class="uc-oops"><p>' + esc(C.plainMessage(e)) + '</p>' +
+        (C.isClosing(e) ? '' : /try again/i.test(C.plainMessage(e))
+          ? '<p>Or go back to your Today page.</p>'
+          : '<p>Try again in a moment, or go back to your Today page.</p>') + '</div>';
     });
   }});
 })();

@@ -177,12 +177,12 @@
 
     /* Our side could not be reached. Stripe's redirect to `state=success`
        means the card step finished, so the parent is told not to pay again. */
-    function unreachable(why) {
+    function unreachable() {
       $('su-main').innerHTML =
         '<h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:36px;' +
         'line-height:1;letter-spacing:-.035em">We can’t reach MrBadmus right now</h1>' +
         '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">' +
-        esc(why || 'Check your connection.') + ' Your card details are safe with Stripe, so don’t pay again.</p>' +
+        'Check your connection. Your payment is safe with Stripe — don’t pay again.</p>' +
         '<p style="margin:24px 0 0"><button type="button" id="cr-retry" style="width:100%;min-height:54px;' +
         'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);' +
         'color:var(--ks3-on-dark);font-weight:700;font-size:18px;cursor:pointer">Try again</button></p>';
@@ -203,7 +203,7 @@
         console.error('[checkout-return]', e);
         var noAnswer = e && (e.code === 'network' || e.code === 'timeout');
         if (noAnswer && !reachedOnce && Date.now() - started >= UNREACHABLE_MS) {
-          return unreachable(e.message);
+          return unreachable();
         }
         if (Date.now() - started >= GIVE_UP_MS) { return stillWaiting(e.message); }
         setTimeout(poll, POLL_MS);
@@ -217,11 +217,7 @@
         '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">Our side is still catching up with Stripe, which occasionally takes a minute. Nothing is wrong and you do not need to pay again.</p>' +
         (why ? '<p style="margin:10px 0 0;font-size:15px;color:var(--ks3-ink-muted)">' + esc(why) + '</p>' : '') +
         '<p style="margin:10px 0 0;font-size:15px;color:var(--ks3-ink-muted)">Open your family page in a moment and it will be there. If it still isn’t after ten minutes, email support@mrbadmus.com and we’ll sort it out.</p>' +
-        dashboardBtn() +
-        '<p style="margin:12px 0 0"><button type="button" id="cr-retry" style="width:100%;min-height:50px;' +
-        'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);' +
-        'color:var(--ks3-ink);font-weight:700;font-size:17px;cursor:pointer">Check again</button></p>';
-      $('cr-retry').addEventListener('click', retry);
+        dashboardBtn();
     }
 
     function dashboardBtn() {

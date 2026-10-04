@@ -810,7 +810,8 @@
       expanded['u:' + (q.subject || 'Science') + '|' + (q.topic || q.subject || 'Science')] = true;
       if (q.done && q.answer) {
         result = { score: scoreOf(q), max: q.marks, hits: q.hits || [],
-                   feedback: q.feedback, answer: q.answer };
+                   feedback: q.feedback, answer: q.answer,
+                   practice: !!q.practice };   // ⊕ B2C polish: a stored stub mark says so too
         screen = 'result';
       } else {
         draft = '';
@@ -1127,9 +1128,10 @@
       });
     }).catch(function (e) {
       main.innerHTML = '<div class="ex-oops"><p>' + esc(C.plainMessage(e)) + '</p>' +
-        (C.isClosing(e) ? '' :
-          '<p style="margin-top:6px">Try again in a moment, or ask your grown-up ' +
-          'to check the account.</p>') + '</div>';
+        (C.isClosing(e) ? '' : /try again/i.test(C.plainMessage(e))
+          ? '<p style="margin-top:6px">If it keeps happening, ask your grown-up to check the account.</p>'
+          : '<p style="margin-top:6px">Try again in a moment, or ask your grown-up ' +
+            'to check the account.</p>') + '</div>';
     });
   }});
 })();
