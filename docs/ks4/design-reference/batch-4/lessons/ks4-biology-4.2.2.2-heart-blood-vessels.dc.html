@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The heart and blood vessels · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Organisation" title="The heart and blood vessels" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.2.2.2</p>
+        <h1>The heart and blood vessels</h1>
+        <p class="ks3-bigq">Your heart is two pumps side by side. Follow the blood through both, then see how arteries, veins, capillaries and lungs are each built for their job.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Two fingers on your wrist." scene="Press two fingers lightly on the inside of your wrist, below your thumb. You can feel a pulse: a surge of blood with every heartbeat." question="is the blood you can feel moving away from your heart, or back towards it?" options="{{ hookOptions }}" bridge="Arteries carry blood away from the heart at high pressure, which is why they pulse. Veins carry it back. Next: the pump that drives it." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-heart" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The heart · a double circulation</p>
+        <h2 style="margin: 6px 0 0;">Follow one red blood cell round the circuit.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The right side of the heart pumps blood to the lungs. The left side pumps it to the rest of the body. So blood passes through the heart twice on every complete circuit: a double circulatory system.</p>
+        <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ heartFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ cellProgress }}</p>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 24px; line-height: 1.25; letter-spacing: -.015em;">{{ cellHere }}</p>
+            <sc-if value="{{ cellAsking }}" hint-placeholder-val="{{ true }}">
+              <p class="ks3-commit" style="margin: 0; color: var(--ks3-ink);">Where does it go next?</p>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <sc-for list="{{ cellOptions }}" as="o" hint-placeholder-count="2">
+                  <button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.text }}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ cellHasNote }}"><p data-arrive="1" role="status" style="{{ cellNoteStyle }}">{{ cellNote }}</p></sc-if>
+            <sc-if value="{{ cellDone }}">
+              <button type="button" class="ks3-reveal-btn" onClick="{{ onCellReset }}">Go round again</button>
+            </sc-if>
+          </div>
+        </div>
+        <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Thicker on the left</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Both ventricles pump the same volume of blood. The left ventricle has the thicker, more muscular wall because it pumps blood all round the body, at higher pressure. The right ventricle only pumps to the lungs.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Valves</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Valves between the atria and ventricles, and where the arteries leave the ventricles, stop blood flowing backwards. You don't need their names.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Coronary arteries</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">The heart muscle can't use the blood passing through its chambers. Coronary arteries branch off the aorta and supply the heart muscle with oxygenated blood.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Pacemakers</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">A group of cells in the right atrium acts as a natural pacemaker and controls the resting heart rate. An artificial pacemaker is an electrical device that corrects an irregular heart rate.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-vessels" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Blood vessels · structure and function</p>
+        <h2 style="margin: 6px 0 0;">Arteries away, veins back, capillaries in between.</h2>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ vesselFig }}</div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Artery</p>
+            <ul style="margin: 8px 0 0; padding-left: 1.1em; font-size: 17px; line-height: 1.5; display: flex; flex-direction: column; gap: 4px;">
+              <li>Carries blood away from the heart, at high pressure.</li>
+              <li>Thick muscular wall, with elastic fibres that stretch and recoil with each beat.</li>
+              <li>Narrow lumen. No valves along its length: the pressure keeps blood moving one way.</li>
+            </ul>
+          </div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Vein</p>
+            <ul style="margin: 8px 0 0; padding-left: 1.1em; font-size: 17px; line-height: 1.5; display: flex; flex-direction: column; gap: 4px;">
+              <li>Carries blood back to the heart, at low pressure.</li>
+              <li>Thinner wall and a wide lumen.</li>
+              <li>Valves stop the low-pressure blood flowing backwards.</li>
+            </ul>
+          </div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Capillary</p>
+            <ul style="margin: 8px 0 0; padding-left: 1.1em; font-size: 17px; line-height: 1.5; display: flex; flex-direction: column; gap: 4px;">
+              <li>Links arteries to veins, in a dense network through every tissue.</li>
+              <li>Wall one cell thick: a short diffusion distance.</li>
+              <li>Oxygen and glucose diffuse out to the cells; carbon dioxide and waste diffuse in.</li>
+            </ul>
+          </div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Pressure falls all the way round: highest in the arteries, lower in the capillaries, lowest in the veins.</p>
+      </section>
+
+      <section id="s-lungs" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The lungs · gas exchange</p>
+        <h2 style="margin: 6px 0 0;">Trachea, bronchi, alveoli, capillaries.</h2>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ lungFig }}</div>
+          <div>
+            <p style="margin: 0; max-width: 58ch;">Air passes down the trachea, into the two bronchi, and on to millions of tiny air sacs, the alveoli. Each alveolus is wrapped in a network of capillaries.</p>
+            <p style="margin: 12px 0 0; max-width: 58ch;">Oxygen diffuses from the air in the alveoli into the blood. Carbon dioxide diffuses from the blood into the alveoli, and is breathed out.</p>
+            <ul style="margin: 12px 0 0; padding-left: 1.1em; font-size: 18px; line-height: 1.5; display: flex; flex-direction: column; gap: 6px;">
+              <li><strong>Very large surface area</strong> from so many alveoli.</li>
+              <li><strong>Thin walls</strong>, so a short diffusion distance.</li>
+              <li><strong>A dense capillary network</strong> and good blood supply, which keeps the concentration gradient steep.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · arteries and veins</p></div>
+        <p class="ks3-mis-quote">&ldquo;Arteries carry oxygenated blood and veins carry deoxygenated blood.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="The pulmonary vein carries blood from the lungs to the left atrium. Which blood is in it?" options="{{ thinkOptions }}" reveal="Arteries and veins are named by direction, not by oxygen. Arteries carry blood away from the heart; veins carry it towards the heart. The pulmonary artery carries deoxygenated blood to the lungs, and the pulmonary vein brings oxygenated blood back." right-word="Yes." wrong-word="Not this one." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Artery, vein or capillary?" prompt="Place each feature with the vessel it belongs to." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Arteries are built for high pressure, veins for low pressure, capillaries for exchange." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equations · rate calculations</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Tap the quantity you want to find.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 16px;">
+          <dc-import name="Ks4Triangle" eq="{{ eqFlow }}" variant="full" hint-size="100%,420px"></dc-import>
+          <dc-import name="Ks4Triangle" eq="{{ eqHR }}" variant="full" hint-size="100%,420px"></dc-import>
+        </div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Say what the structure is like or where blood goes. No reasons needed.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Link each feature to what it does: thick wall, so it withstands high pressure.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Rate = amount ÷ time, with the time in minutes for a per-minute answer.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Blood passes through the heart twice on each circuit. Arteries carry it away from the heart, veins carry it back, and capillaries are where substances are exchanged.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="heart-blood-vessels" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="The heart and blood vessels" spec="AQA 4.2.2.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Mixing up which vessel goes where?" legal="Diagrams are schematic and not to scale. The heart is drawn as you face the patient, so the patient's right side is on your left." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Feel your pulse', short: 'HOOK' },
+  { id: 's-heart', label: 'Follow the blood', short: 'HEART' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Sort the vessels', short: 'SORT' },
+  { id: 's-calc', label: 'Rate calculations', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const EQ_FLOW = { name: 'Rate of blood flow', written: 'rate of blood flow = volume of blood \u00f7 time', source: 'none',
+  top: { s: 'V', name: 'volume of blood', unit: 'cm\u00b3 or dm\u00b3' },
+  bottom: [{ s: 'R', name: 'rate of blood flow', unit: 'cm\u00b3/min or dm\u00b3/min' }, { s: 't', name: 'time', unit: 'min' }] };
+const EQ_HR = { name: 'Heart rate', written: 'heart rate = number of beats \u00f7 time', source: 'none',
+  top: { s: 'N', name: 'number of beats', unit: 'beats' },
+  bottom: [{ s: 'HR', name: 'heart rate', unit: 'beats per minute' }, { s: 't', name: 'time', unit: 'min' }] };
+/* stops of the circuit: label, x, y on the heart figure, next-stop options [correct, wrong], reply to the wrong pick */
+const STOPS = [
+  { at: 'Vena cava', x: 120, y: 112, opts: ['Right atrium', 'Left atrium'], no: 'Blood from the body arrives on the right side: the vena cava empties into the right atrium.' },
+  { at: 'Right atrium', x: 240, y: 168, opts: ['Right ventricle', 'Left atrium'], no: 'The two sides never mix. From the right atrium, blood goes down through a valve into the right ventricle.' },
+  { at: 'Right ventricle', x: 240, y: 300, opts: ['Pulmonary artery', 'Aorta'], no: 'The aorta leaves the left ventricle. The right ventricle pumps into the pulmonary artery.' },
+  { at: 'Pulmonary artery', x: 60, y: 200, opts: ['Lungs', 'Body'], no: 'This blood is deoxygenated. The pulmonary artery takes it to the lungs.' },
+  { at: 'Lungs', x: 320, y: 36, opts: ['Pulmonary vein', 'Vena cava'], no: 'The vena cava brings blood from the body. Blood leaves the lungs in the pulmonary vein.' },
+  { at: 'Pulmonary vein', x: 520, y: 100, opts: ['Left atrium', 'Right atrium'], no: 'Oxygenated blood returns to the left side: the pulmonary vein empties into the left atrium.' },
+  { at: 'Left atrium', x: 400, y: 168, opts: ['Left ventricle', 'Right ventricle'], no: 'Down through a valve, on the same side: into the left ventricle.' },
+  { at: 'Left ventricle', x: 400, y: 300, opts: ['Aorta', 'Pulmonary artery'], no: 'The pulmonary artery leaves the right ventricle. The left ventricle pumps into the aorta.' },
+  { at: 'Aorta', x: 580, y: 180, opts: ['Body', 'Lungs'], no: 'This blood has just come from the lungs. The aorta takes it to the body.' },
+  { at: 'Body', x: 580, y: 66, opts: ['Vena cava', 'Pulmonary vein'], no: 'Deoxygenated blood returns from the body in the vena cava.' }
+];
+function shuffle2(arr, k) { return (k % 2) ? [arr[1], arr[0]] : arr.slice(); }
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, stop: 0, laps: 0, wrong: null, think: null, sort: false, calc: 0, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  heart(stop) {
+    const D = window.KS4D, C = D.C;
+    const O = C.red, X = C.blue;
+    const tube = (pts, col) => '<polyline points="' + pts.map((p) => p.join(',')).join(' ') + '" fill="none" stroke="' + col + '" stroke-width="12" stroke-linejoin="round" stroke-linecap="round" opacity=".85"/>';
+    const rot = (x, y, t) => '<text x="' + x + '" y="' + y + '" transform="rotate(-90 ' + x + ' ' + y + ')" font-family="Georgia, serif" font-size="15" font-weight="bold" fill="' + C.label + '" text-anchor="middle">' + D.esc(t) + '</text>';
+    let b = '';
+    b += '<rect x="200" y="18" width="240" height="36" rx="18" fill="#fff" stroke="' + C.stroke + '" stroke-width="2.5"/>' + D.T(320, 42, 'LUNGS', 16);
+    b += tube([[170, 300], [60, 300], [60, 36], [200, 36]], X) + tube([[120, 76], [120, 150], [170, 150]], X);
+    b += tube([[440, 36], [520, 36], [520, 150], [470, 150]], O) + tube([[470, 300], [580, 300], [580, 76]], O);
+    b += '<path d="M500 300 C 470 330, 440 345, 400 352" fill="none" stroke="' + O + '" stroke-width="4"/>' + D.T(400, 394, 'coronary artery', 14, { weight: 'normal' }) + D.line(410, 382, 425, 354, 1.5);
+    b += '<rect x="170" y="110" width="140" height="92" rx="14" fill="#fff" stroke="' + C.stroke + '" stroke-width="3"/>';
+    b += '<rect x="330" y="110" width="140" height="92" rx="14" fill="#fff" stroke="' + C.stroke + '" stroke-width="3"/>';
+    b += '<rect x="170" y="212" width="140" height="160" rx="18" fill="#fff" stroke="' + C.stroke + '" stroke-width="5"/>';
+    b += '<rect x="333" y="215" width="134" height="154" rx="18" fill="#fff" stroke="' + C.stroke + '" stroke-width="11"/>';
+    b += D.T(240, 140, 'Right', 16) + D.T(240, 160, 'atrium', 16) + D.T(400, 140, 'Left', 16) + D.T(400, 160, 'atrium', 16);
+    b += D.T(240, 250, 'Right', 16) + D.T(240, 270, 'ventricle', 16) + D.T(400, 250, 'Left', 16) + D.T(400, 270, 'ventricle', 16);
+    [[226, 205], [386, 205]].forEach((v) => { b += '<path d="M' + v[0] + ' ' + (v[1] - 6) + ' l14 12 l14 -12" fill="none" stroke="' + C.stroke + '" stroke-width="3"/>'; });
+    b += '<path d="M162 290 l-8 10 l8 10" fill="none" stroke="' + C.stroke + '" stroke-width="3"/><path d="M478 290 l8 10 l-8 10" fill="none" stroke="' + C.stroke + '" stroke-width="3"/>';
+    b += D.T(240, 360, 'valve', 13, { weight: 'normal' });
+    b += D.circ(188, 124, 6, C.gold, C.stroke, 2) + D.T(250, 98, 'natural pacemaker', 13, { weight: 'normal' }) + D.line(196, 118, 214, 102, 1.5);
+    b += D.T(120, 68, 'vena cava', 15) + rot(44, 200, 'pulmonary artery') + rot(550, 100, 'pulmonary vein') + D.T(580, 68, 'aorta', 15);
+    b += D.T(20, 394, "patient's right", 13, { weight: 'normal', fill: C.muted, anchor: 'start' }) + D.T(620, 394, "patient's left", 13, { weight: 'normal', fill: C.muted, anchor: 'end' });
+    b += '<g font-family="Georgia, serif" font-size="13"><rect x="236" y="62" width="14" height="6" fill="' + X + '"/><text x="256" y="69" fill="' + C.stroke + '">deoxygenated</text><rect x="352" y="62" width="14" height="6" fill="' + O + '"/><text x="372" y="69" fill="' + C.stroke + '">oxygenated</text></g>';
+    if (stop) b += D.circ(stop.x, stop.y, 13, '#fff', C.stroke, 4) + D.circ(stop.x, stop.y, 6, C.stroke);
+    return D.svg(640, 404, b, 'Section through the heart drawn as you face the patient: right atrium and ventricle on the left, left atrium and thicker-walled left ventricle on the right; vena cava into the right atrium, pulmonary artery from the right ventricle to the lungs, pulmonary vein from the lungs to the left atrium, aorta from the left ventricle to the body; valves between atria and ventricles and at the exits of the ventricles; coronary artery on the heart surface; natural pacemaker in the right atrium.' + (stop ? ' The cell is at the ' + stop.at.toLowerCase() + '.' : ''));
+  }
+  vessels() {
+    const D = window.KS4D, C = D.C;
+    let b = '';
+    b += D.circ(130, 110, 74, '#E9D7C9', C.stroke, 3) + D.circ(130, 110, 56, '#F6E6DA', C.stroke, 2) + D.circ(130, 110, 22, '#fff', C.stroke, 3);
+    b += D.T(130, 210, 'Artery', 20) + D.T(130, 232, 'thick muscle and elastic wall', 14, { weight: 'normal' }) + D.T(130, 250, 'narrow lumen', 14, { weight: 'normal' });
+    b += D.circ(340, 110, 62, '#E9D7C9', C.stroke, 3) + D.circ(340, 110, 50, '#fff', C.stroke, 2);
+    b += '<path d="M300 92 Q 340 120 380 92" fill="none" stroke="' + C.stroke + '" stroke-width="3"/>' + D.T(340, 84, 'valve', 13, { weight: 'normal' });
+    b += D.T(340, 210, 'Vein', 20) + D.T(340, 232, 'thin wall, wide lumen', 14, { weight: 'normal' }) + D.T(340, 250, 'valves', 14, { weight: 'normal' });
+    b += D.circ(520, 110, 16, '#fff', C.stroke, 3) + D.circ(520, 110, 11, '#fff', C.stroke, 1.5);
+    b += D.T(520, 210, 'Capillary', 20) + D.T(520, 232, 'wall one cell thick', 14, { weight: 'normal' }) + D.T(520, 250, 'drawn much larger than scale', 14, { weight: 'normal', fill: C.muted });
+    return D.svg(640, 272, b, 'Cross-sections side by side: an artery with a thick wall of muscle and elastic tissue and a narrow lumen; a vein with a thin wall, a wide lumen and a valve; a capillary with a wall one cell thick.');
+  }
+  lungs() {
+    const D = window.KS4D, C = D.C;
+    let b = '';
+    b += '<path d="M150 30 L150 120 M150 120 L90 170 M150 120 L210 170 M90 170 L70 210 M90 170 L112 214 M210 170 L188 214 M210 170 L232 210" fill="none" stroke="' + C.stroke + '" stroke-width="9" stroke-linecap="round"/>';
+    [[66, 222], [114, 226], [186, 226], [236, 222]].forEach((p) => { b += D.circ(p[0], p[1], 12, '#F6E6DA', C.stroke, 2.5); });
+    b += D.T(170, 52, 'trachea', 16, { anchor: 'start' }) + D.T(232, 150, 'bronchus', 16, { anchor: 'start' }) + D.T(150, 266, 'alveoli', 16);
+    b += D.circ(430, 150, 104, '#fff', C.stroke, 2.5) + D.line(248, 222, 330, 180, 1.5, C.muted);
+    b += D.circ(430, 150, 56, '#F6E6DA', C.stroke, 3) + D.T(430, 156, 'air', 16, { weight: 'normal' });
+    b += '<path d="M352 116 C 380 70, 480 70, 508 116 C 530 160, 500 220, 430 214 C 370 210, 340 170, 352 116" fill="none" stroke="' + C.red + '" stroke-width="7" opacity=".8"/>';
+    b += D.T(430, 238, 'capillary network', 14, { weight: 'normal' });
+    b += D.arrow(470, 128, 520, 96, C.arrow, 4) + D.T(536, 92, 'oxygen', 14, { anchor: 'start' }) + D.T(536, 108, 'into blood', 13, { anchor: 'start', weight: 'normal' });
+    b += D.arrow(520, 196, 470, 170, C.arrow, 4) + D.T(530, 206, 'carbon dioxide', 14, { anchor: 'start' }) + D.T(530, 222, 'into alveolus', 13, { anchor: 'start', weight: 'normal' });
+    return D.svg(640, 284, b, 'Trachea branching into two bronchi that end in alveoli; a magnified alveolus surrounded by a capillary network, with oxygen diffusing into the blood and carbon dioxide diffusing into the alveolus.');
+  }
+  opt(state) {
+    return 'text-align:left;font:inherit;font-size:17px;font-weight:700;padding:12px 14px;min-height:48px;border-radius:14px;cursor:pointer;color:var(--ks3-ink);background:var(--ks3-card);border:2px solid ' + (state === 'no' ? 'var(--ks3-alert-border)' : 'var(--ks3-option-border)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.laps >= 1, s.think !== null, s.sort, s.calc >= 2, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const st = STOPS[s.stop];
+    const lapDone = s.laps >= 1 && s.stop === 0;
+    const opts = shuffle2(st.opts, s.stop + s.laps);
+    const bankSrc = [
+      { q: 'Why does the left ventricle have thicker walls than the right ventricle?', opts: [['It pumps blood to the whole body \u2014 needs much higher pressure than the right ventricle which only pumps to the nearby lungs', true], ['It receives more blood than the right ventricle so needs to be stronger', false], ['The left side of the body is larger so the heart must compensate', false], ['The left ventricle contains oxygenated blood which is heavier', false]],
+        wrong_explanations: { 1: 'Both ventricles receive the same volume of blood per beat \u2014 the difference is in the distance the blood must be pumped, not the volume.', 2: 'Body size has no relationship to heart wall thickness \u2014 it\u2019s purely about pumping distance and pressure.', 3: 'Oxygenated and deoxygenated blood have essentially the same density \u2014 the thickness difference is purely about pressure requirements.' } },
+      { q: 'The pulmonary artery carries blood from the heart to the lungs. What type of blood does it carry?', opts: [['Deoxygenated blood \u2014 it has just returned from the body and needs to be reoxygenated', true], ['Oxygenated blood \u2014 all arteries carry oxygenated blood', false], ['A mixture of oxygenated and deoxygenated blood', false], ['Blood with no red blood cells \u2014 only plasma', false]],
+        wrong_explanations: { 1: 'This is the most common mistake in this topic! Arteries carry blood AWAY from the heart \u2014 but the pulmonary artery specifically carries deoxygenated blood to be oxygenated in the lungs.', 2: 'Blood in the heart is kept completely separate \u2014 left side carries oxygenated, right side carries deoxygenated. There is no mixing.', 3: 'All blood contains red blood cells \u2014 plasma alone would have no oxygen-carrying capacity.' } },
+      { q: 'Why do veins have valves but arteries do not?', opts: [['Blood pressure in veins is low \u2014 valves prevent backflow. Arterial pressure is high enough to keep blood flowing in the right direction', true], ['Arteries have thicker walls so they don\u2019t need valves', false], ['Veins carry deoxygenated blood which needs extra support to flow', false], ['Valves in arteries would slow down the high-pressure blood flow too much', false]],
+        wrong_explanations: { 1: 'Wall thickness helps arteries withstand pressure \u2014 but valves are specifically about preventing BACKFLOW, which is a problem in low-pressure veins, not high-pressure arteries.', 2: 'The oxygen content of blood has nothing to do with the need for valves \u2014 the PRESSURE is what matters.', 3: 'Valves in veins do slightly slow flow, but that\u2019s acceptable \u2014 their role is to prevent dangerous backflow in low-pressure vessels.' } },
+      { q: 'What makes capillaries efficient at exchanging substances?', opts: [['Walls are only one cell thick \u2014 very short diffusion distance. Dense network = large surface area', true], ['They have the highest blood pressure of all blood vessels', false], ['They carry both oxygenated and deoxygenated blood simultaneously', false], ['They have valves to keep substances moving in one direction', false]],
+        wrong_explanations: { 1: 'Arteries have the highest blood pressure. By the time blood reaches the capillaries the pressure has already dropped a lot.', 2: 'Which blood a capillary carries is not what makes it good at exchange \u2014 thin walls and a large surface area are.', 3: 'Capillaries have no valves \u2014 substances move by DIFFUSION driven by concentration gradients.' } },
+      { q: 'What does an artificial pacemaker do?', opts: [['It is an electrical device that corrects irregularities in the heart rate', true], ['It replaces a faulty heart valve', false], ['It supplies the heart muscle with oxygenated blood', false], ['It sets the heart rate in every healthy person', false]],
+        wrong_explanations: { 1: 'Faulty valves are replaced with biological or mechanical valves. A pacemaker deals with the heart rate.', 2: 'That is the job of the coronary arteries.', 3: 'In a healthy heart, a group of cells in the right atrium acts as the natural pacemaker. An artificial one is fitted only when the rate is irregular.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('heart-blood-vessels') : null,
+      hookOptions: [
+        { text: 'Away from the heart', correct: true, reply: 'Each heartbeat pushes a surge of blood out along the arteries. That surge is the pulse.' },
+        { text: 'Back towards the heart', correct: false, reply: 'Blood does come back, in veins. But by then its pressure is low and steady, so veins don\u2019t pulse. The pulse is in an artery.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      heartFig: ready ? K.fig(this.heart(st), '') : null,
+      cellProgress: lapDone ? 'Circuit complete' : 'Stop ' + (s.stop + 1) + ' of 10',
+      cellHere: lapDone ? 'Back at the vena cava. Through the heart twice: right side, lungs, left side, body.' : 'The cell is in the ' + st.at.toLowerCase() + '.',
+      cellAsking: !lapDone,
+      cellOptions: opts.map((t) => ({ text: t, style: this.opt(s.wrong === t ? 'no' : ''),
+        onClick: () => { if (t === st.opts[0]) { const nx = (s.stop + 1) % STOPS.length; this.setState({ stop: nx, wrong: null, laps: nx === 0 ? s.laps + 1 : s.laps }); } else this.setState({ wrong: t }); } })),
+      cellHasNote: !!s.wrong && !lapDone, cellNote: st.no,
+      cellNoteStyle: 'margin:0;padding:12px 14px;border-radius:14px;font-size:17px;line-height:1.55;border:2px solid var(--ks3-alert-border);background:var(--ks3-alert-tint);',
+      cellDone: lapDone, onCellReset: () => this.setState({ stop: 0, laps: 0, wrong: null }),
+      vesselFig: ready ? K.fig(this.vessels(), '') : null,
+      lungFig: ready ? K.fig(this.lungs(), '') : null,
+      thinkOptions: [
+        { text: 'Oxygenated blood', correct: true, reply: 'It has just picked up oxygen in the lungs.' },
+        { text: 'Deoxygenated blood, because it is a vein', correct: false, reply: 'Veins are named for carrying blood towards the heart, not for their oxygen. This blood has just come from the lungs.' },
+        { text: 'A mix of both', correct: false, reply: 'The two sides of the circulation never mix. Blood leaving the lungs is oxygenated.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'a', label: 'Artery' }, { id: 'v', label: 'Vein' }, { id: 'c', label: 'Capillary' }],
+      sortItems: [
+        { text: 'Thick muscular, elastic wall', bin: 'a', why: 'Built to withstand high pressure from the heart.' },
+        { text: 'Carries blood away from the heart', bin: 'a', why: 'Arteries: away.' },
+        { text: 'Valves along its length', bin: 'v', why: 'Valves stop low-pressure blood flowing backwards in veins.' },
+        { text: 'Wide lumen, thin wall', bin: 'v', why: 'Veins carry low-pressure blood back to the heart.' },
+        { text: 'Wall one cell thick', bin: 'c', why: 'A short diffusion distance for exchange.' },
+        { text: 'Where oxygen diffuses into the tissues', bin: 'c', why: 'Exchange happens across capillary walls.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      eqFlow: EQ_FLOW, eqHR: EQ_HR,
+      cfExamples: [
+        { tab: 'Nothing to convert', eq: EQ_FLOW, find: 'R', head: '6.0 dm\u00b3 of blood flows through the aorta in 1.5 minutes. Calculate the rate of blood flow.', steps: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert: dm\u00b3 and minutes, as the answer needs.' },
+          { letter: 'F', label: 'Formula', line: 'rate of blood flow = volume \u00f7 time' },
+          { letter: 'I', label: 'Insert', line: 'rate = 6.0 \u00f7 1.5' },
+          { letter: 'F', label: 'Fine-tune', line: 'rate = 4.0' },
+          { letter: 'A', label: 'Answer', line: 'rate of blood flow = 4.0 dm\u00b3/min' }] },
+        { tab: 'Seconds to minutes', eq: EQ_HR, find: 'HR', head: 'A pupil counts 21 beats of their pulse in 15 seconds. Calculate their heart rate in beats per minute.', steps: [
+          { letter: 'C', label: 'Convert', line: '15 s \u00f7 60 = 0.25 min', note: 'Beats per minute needs the time in minutes.' },
+          { letter: 'F', label: 'Formula', line: 'heart rate = number of beats \u00f7 time' },
+          { letter: 'I', label: 'Insert', line: 'heart rate = 21 \u00f7 0.25' },
+          { letter: 'F', label: 'Fine-tune', line: 'heart rate = 84' },
+          { letter: 'A', label: 'Answer', line: 'heart rate = 84 beats per minute', note: 'Unconverted, 21 \u00f7 15 = 1.4: beats per second, not per minute.' }] },
+        { tab: 'cm\u00b3 to dm\u00b3', eq: EQ_FLOW, find: 'R', next: 'Now yours, below.', head: '1500 cm\u00b3 of blood flows through the pulmonary artery in 0.30 minutes. Calculate the rate of blood flow in dm\u00b3/min.', steps: [
+          { letter: 'C', label: 'Convert', line: '1500 cm\u00b3 \u00f7 1000 = 1.5 dm\u00b3', note: '1 dm\u00b3 = 1000 cm\u00b3.' },
+          { letter: 'F', label: 'Formula', line: 'rate of blood flow = volume \u00f7 time' },
+          { letter: 'I', label: 'Insert', line: 'rate = 1.5 \u00f7 0.30' },
+          { letter: 'F', label: 'Fine-tune', line: 'rate = 5.0' },
+          { letter: 'A', label: 'Answer', line: 'rate of blood flow = 5.0 dm\u00b3/min' }] }
+      ],
+      cfQuestions: [
+        { tab: 'Question 1', id: 'hbv-q1', head: 'A pupil counts 36 beats of their pulse in 30 seconds. Calculate their heart rate in beats per minute.', close: '36 \u00f7 30 = 1.2 would be beats per second. Convert the time first.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '30 s \u00f7 60 = 0.5 min' }, { letter: 'F', label: 'Formula', placeholder: 'heart rate = \u2026', line: 'heart rate = number of beats \u00f7 time' }, { letter: 'I', label: 'Insert', placeholder: 'heart rate = \u2026 \u00f7 \u2026', line: 'heart rate = 36 \u00f7 0.5' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'heart rate = 72' }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: 'heart rate = 72 beats per minute' }] },
+        { tab: 'Question 2', id: 'hbv-q2', head: '2400 cm\u00b3 of blood flows through an artery in 4.0 minutes. Calculate the rate of blood flow in dm\u00b3/min.', close: 'Left in cm\u00b3 you get 600 cm\u00b3/min: the same rate, in the wrong unit.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '2400 cm\u00b3 \u00f7 1000 = 2.4 dm\u00b3' }, { letter: 'F', label: 'Formula', placeholder: 'rate = \u2026', line: 'rate of blood flow = volume \u00f7 time' }, { letter: 'I', label: 'Insert', placeholder: 'rate = \u2026 \u00f7 \u2026', line: 'rate = 2.4 \u00f7 4.0' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'rate = 0.60' }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: 'rate of blood flow = 0.60 dm\u00b3/min' }] }
+      ],
+      onCalc: (n) => this.setState({ calc: n }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name the blood vessel that carries blood from the body to the right atrium.', why: 'The vena cava returns deoxygenated blood from the body to the right atrium.', options: [
+            { text: 'Aorta', correct: false, reply: 'The aorta carries blood away from the left ventricle to the body.' },
+            { text: 'Vena cava', correct: true },
+            { text: 'Pulmonary vein', correct: false, reply: 'The pulmonary vein brings blood from the lungs to the left atrium.' },
+            { text: 'Pulmonary artery', correct: false, reply: 'The pulmonary artery carries blood from the right ventricle to the lungs.' }] },
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Where are the cells that control the natural resting heart rate?', why: 'A group of cells in the right atrium acts as the natural pacemaker.', options: [
+            { text: 'Right atrium', correct: true },
+            { text: 'Left ventricle', correct: false, reply: 'The left ventricle pumps blood to the body; it doesn\u2019t set the rate.' },
+            { text: 'Aorta', correct: false, reply: 'The aorta is a blood vessel, not part of the heart\u2019s pacemaker.' },
+            { text: 'Left atrium', correct: false, reply: 'Close, but the pacemaker cells are on the right side.' }] }
+        ],
+        r2: [
+          { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'A pupil counts 18 beats of their pulse in 15 seconds. Calculate their heart rate in beats per minute.',
+            convOptions: ['Nothing to convert', 'Convert seconds to minutes: divide by 60', 'Convert seconds to minutes: multiply by 60'], convAnswer: 1, answer: 72, unit: 'beats per minute', units: ['beats per minute', 'beats', 'min', 's'],
+            right: '18 \u00f7 0.25 = 72 beats per minute.', wrong: '15 s \u00f7 60 = 0.25 min, then heart rate = 18 \u00f7 0.25.',
+            model: ['C \u00b7 15 s \u00f7 60 = 0.25 min', 'F \u00b7 heart rate = number of beats \u00f7 time', 'I \u00b7 heart rate = 18 \u00f7 0.25', 'F \u00b7 heart rate = 72', 'A \u00b7 72 beats per minute'] },
+          { kind: 'calc', command: 'Calculate', marks: 2, prompt: '900 cm\u00b3 of blood flows through an artery in 0.20 minutes. Calculate the rate of blood flow in dm\u00b3/min.',
+            convOptions: ['Nothing to convert', 'Convert cm\u00b3 to dm\u00b3: divide by 1000', 'Convert cm\u00b3 to dm\u00b3: multiply by 1000'], convAnswer: 1, answer: 4.5, tol: 0.01, unit: 'dm\u00b3/min', units: ['dm\u00b3/min', 'cm\u00b3', 'dm\u00b3', 'min'],
+            right: '0.90 \u00f7 0.20 = 4.5 dm\u00b3/min.', wrong: '900 cm\u00b3 \u00f7 1000 = 0.90 dm\u00b3, then rate = 0.90 \u00f7 0.20.',
+            model: ['C \u00b7 900 cm\u00b3 \u00f7 1000 = 0.90 dm\u00b3', 'F \u00b7 rate of blood flow = volume \u00f7 time', 'I \u00b7 rate = 0.90 \u00f7 0.20', 'F \u00b7 rate = 4.5', 'A \u00b7 4.5 dm\u00b3/min'] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why the wall of the left ventricle is thicker than the wall of the right ventricle. Put the links in order.',
+            links: ['The left ventricle pumps blood all round the body.', 'The right ventricle only pumps blood to the lungs, which are close by.', 'So the left ventricle must pump at a higher pressure, which needs more muscle.'],
+            herrings: [{ text: 'The left ventricle holds more blood than the right.', why: 'Both ventricles pump the same volume.' }, { text: 'Oxygenated blood is heavier, so it needs a stronger pump.', why: 'Oxygenated and deoxygenated blood weigh about the same. The difference is distance and pressure.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how the alveoli are adapted for gas exchange. Put the links in order.',
+            links: ['There are millions of alveoli, giving a very large surface area.', 'Their walls are thin, so the diffusion distance is short.', 'A dense capillary network carries oxygen away, keeping the concentration gradient steep.'],
+            herrings: [{ text: 'The alveoli pump oxygen into the blood.', why: 'Oxygen moves by diffusion. Nothing pumps it.' }, { text: 'The alveoli have thick walls so they don\u2019t burst.', why: 'Thin walls are the adaptation: a short diffusion distance.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 6, prompt: 'Describe how the structures of arteries, veins and capillaries are related to their functions.',
+            levels: [
+              { label: 'Level 3 \u00b7 5\u20136', text: 'All three vessels described, each structure clearly linked to its function.', max: 6 },
+              { label: 'Level 2 \u00b7 3\u20134', text: 'At least two vessels described with some features linked to function.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'Some correct features or functions, with few links between them.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Arteries carry blood away from the heart at high pressure.', 'Arteries have thick muscular walls with elastic fibres to withstand and even out the pressure.', 'Veins carry blood back to the heart at low pressure.', 'Veins have valves to prevent backflow, a thinner wall and a wide lumen.', 'Capillaries have walls one cell thick, so the diffusion distance is short.', 'Capillaries form a dense network with a large surface area for exchange with the tissues.'],
+            reject: ['\u201cCapillaries have the lowest blood pressure.\u201d', '\u201cArteries always carry oxygenated blood.\u201d'] }
+        ]
+      },
+      keyLines: ['Double circulation: right side \u2192 lungs \u2192 left side \u2192 body. Blood passes through the heart twice per circuit.', 'Four chambers. Vena cava \u2192 right atrium; right ventricle \u2192 pulmonary artery; pulmonary vein \u2192 left atrium; left ventricle \u2192 aorta.', 'Left ventricle has the thickest wall: it pumps to the whole body at higher pressure. Valves stop backflow.', 'Coronary arteries supply the heart muscle. Natural pacemaker: cells in the right atrium. Artificial pacemaker: electrical device for an irregular rate.', 'Arteries: away, thick elastic wall, high pressure. Veins: towards, valves, low pressure. Capillaries: one cell thick, exchange.', 'Lungs: trachea \u2192 bronchi \u2192 alveoli. Large surface area, thin walls, dense capillary network. Rate = amount \u00f7 time.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: null,
+      endNext: { href: 'ks4-biology-4.2.2.3-blood.dc.html', label: 'Blood' },
+      endConnects: [{ href: 'ks4-biology-4.2.2.3-blood.dc.html', label: 'Blood' }, { href: 'ks4-biology-4.2.2.4-coronary-heart-disease.dc.html', label: 'Coronary heart disease' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

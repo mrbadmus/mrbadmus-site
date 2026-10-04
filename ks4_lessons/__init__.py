@@ -202,9 +202,30 @@ def batch_names():
 
 
 def lessons_for_batch(name):
+    """The lessons a batch BUILDS. A record marked `staged=True` is
+    registered (so its slug/route/topic mapping is reviewed) but is hidden
+    here until the stage that has checked it removes the flag."""
     if name == "pilot":
         return LESSONS
-    return batch_modules()[name].LESSONS
+    return [L for L in batch_modules()[name].LESSONS if not L.get("staged")]
+
+
+def staged_for_batch(name):
+    if name == "pilot":
+        return []
+    return [L for L in batch_modules()[name].LESSONS if L.get("staged")]
+
+
+def batch_blocks(name):
+    """(block names, directory the block .dc.html files are read from) for a
+    batch that brings its own shared blocks (batch 4+), else None — meaning
+    the pilot's BLOCK_NAMES / DESIGN_DIR, exactly as before."""
+    if name == "pilot":
+        return None
+    mod = batch_modules()[name]
+    if hasattr(mod, "BLOCK_NAMES"):
+        return list(mod.BLOCK_NAMES), mod.BLOCKS_DIR, list(getattr(mod, "OWN_CSS_BLOCKS", []))
+    return None
 
 
 def authored_dir(name):
@@ -376,7 +397,7 @@ def verify_batch_slugs(name):
     import importlib
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     errors = []
-    for L in lessons_for_batch(name):
+    for L in lessons_for_batch(name) + staged_for_batch(name):
         found = False
         for modname, attr in _VERIFY_MODS[L["subject"]]:
             mod = importlib.import_module(modname)

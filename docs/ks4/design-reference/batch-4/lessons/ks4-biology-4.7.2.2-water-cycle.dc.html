@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The water cycle · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Ecology" title="The water cycle" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.7.2.2</p>
+        <h1>The water cycle</h1>
+        <p class="ks3-bigq">The same water has been going round for millions of years. Follow one drop from the sea and back, and find out why the rain on land is fresh when the sea is salty.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A puddle on a sunny afternoon." scene="After a morning shower there is a puddle on the playground. By the end of a warm, sunny afternoon it has gone, and the ground under it is dry." question="did most of the water go down into the ground, or up into the air?" options="{{ hookOptions }}" bridge="Liquid water turning to vapour is evaporation, and it is where the water cycle starts. Next: where that vapour goes." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-cycle" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The cycle · one drop</p>
+        <h2 style="margin: 6px 0 0;">Follow a drop from the sea and back.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Water is not used up. It is continuously evaporated and precipitated, moving between the sea, the air, the land and living things. At each step, pick the process.</p>
+        <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ cycleFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ dropProgress }}</p>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 24px; line-height: 1.25; letter-spacing: -.015em;">{{ dropHere }}</p>
+            <sc-if value="{{ dropAsking }}" hint-placeholder-val="{{ true }}">
+              <p class="ks3-commit" style="margin: 0; color: var(--ks3-ink);">What happens next?</p>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <sc-for list="{{ dropOptions }}" as="o" hint-placeholder-count="2">
+                  <button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.text }}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ dropHasNote }}"><p data-arrive="1" role="status" style="{{ dropNoteStyle }}">{{ dropNote }}</p></sc-if>
+            <sc-if value="{{ dropDone }}">
+              <button type="button" class="ks3-reveal-btn" onClick="{{ onDropReset }}">Follow it again</button>
+            </sc-if>
+          </div>
+        </div>
+        <dl style="margin: 18px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Evaporation</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Energy from the Sun turns liquid water from seas, lakes and soil into water vapour.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Transpiration</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Plants lose water vapour from their leaves, through the stomata.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Condensation</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Rising vapour cools and turns into tiny liquid droplets. Clouds are made of these droplets.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Precipitation</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Droplets join into larger drops and fall as rain, snow, sleet or hail.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Runoff and groundwater</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Water flows over the land into rivers, or soaks into the ground, and drains back to the sea.</dd></div>
+        </dl>
+      </section>
+
+      <section id="s-fresh" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Why it matters · fresh water</p>
+        <h2 style="margin: 6px 0 0;">The sea is salty. The rain is not.</h2>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div>
+            <p style="margin: 0; max-width: 58ch;">When sea water evaporates, only the water turns to vapour. The dissolved salts are left behind in the sea. So the vapour, and the rain or snow it becomes, is fresh water.</p>
+            <p style="margin: 12px 0 0; max-width: 58ch;">That fresh water lands on the land, where plants and animals can use it, before it drains back into the sea. This is why the water cycle matters to living things on land.</p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Plants</p>
+              <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Take in water from the soil through their roots, carry it up to the leaves, and lose water vapour by transpiration.</p>
+            </div>
+            <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Animals</p>
+              <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Take in water by drinking and in food. Return it in urine and faeces, in sweat, and as water vapour in the air they breathe out.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · clouds</p></div>
+        <p class="ks3-mis-quote">&ldquo;Clouds are made of water vapour, like steam.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="What is a cloud made of?" options="{{ thinkOptions }}" reveal="Water vapour is an invisible gas. You see a cloud because the vapour has cooled and condensed into tiny liquid droplets. The white plume above a kettle is the same: droplets, not vapour." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Which way is the water going?" prompt="Place each process by what it does to the water." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Evaporation, transpiration and breathing out put vapour into the air; condensation turns it to droplets; precipitation, runoff and groundwater bring it back down and round to the sea." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Name each process in order: where the water goes, and in what form.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give the reason: salts are left behind, so the rain is fresh water.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Interpret</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Name the process each arrow on a cycle diagram shows.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">The water cycle provides fresh water for plants and animals on land before it drains into the seas. Water is continuously evaporated and precipitated.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="water-cycle" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="The water cycle" spec="AQA 4.7.2.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which arrow is which?" legal="The cycle diagram is schematic and not to scale." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A vanishing puddle', short: 'HOOK' },
+  { id: 's-cycle', label: 'Follow a drop', short: 'CYCLE' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Sort the processes', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const STOPS = [
+  { at: 'The drop is in the sea, which is salty.', x: 90, y: 345, opts: ['Evaporation', 'Precipitation'], no: 'Precipitation brings water down. To leave the sea, the water evaporates.', yes: 'The water evaporates. The salt stays behind in the sea.' },
+  { at: 'The drop is water vapour, rising and cooling.', x: 150, y: 200, opts: ['Condensation', 'Transpiration'], no: 'Transpiration happens at leaves. Cooling vapour condenses into droplets.' },
+  { at: 'The drop is part of a cloud: a tiny liquid droplet.', x: 330, y: 80, opts: ['Precipitation', 'Evaporation'], no: 'Droplets join into larger drops and fall: precipitation.' },
+  { at: 'The drop has soaked into the soil beside a tree.', x: 418, y: 318, opts: ['Taken up by the roots', 'Straight into a cloud'], no: 'Water in soil can\u2019t reach a cloud directly. The roots take it up and it travels to the leaves.' },
+  { at: 'The drop has reached a leaf.', x: 400, y: 214, opts: ['Transpiration', 'Precipitation'], no: 'Leaves lose water vapour through their stomata: transpiration.' },
+  { at: 'The drop is water vapour again, rising and cooling.', x: 372, y: 150, opts: ['Condensation', 'Evaporation'], no: 'It is already vapour. As it cools, it condenses into droplets.' },
+  { at: 'The drop is in a cloud over the hill.', x: 420, y: 84, opts: ['Precipitation', 'Transpiration'], no: 'It falls from the cloud: precipitation. This time as snow on the hilltop.' },
+  { at: 'The drop has landed on a steep rocky slope and melted.', x: 500, y: 200, opts: ['Runoff into a river', 'Condensation'], no: 'Liquid on the ground flows downhill: runoff.' },
+  { at: 'The drop is in a river.', x: 330, y: 304, opts: ['Drains into the sea', 'Transpiration'], no: 'Rivers carry runoff back to the sea.' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, stop: 0, laps: 0, wrong: null, think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  cycle(stop) {
+    const D = window.KS4D, C = D.C;
+    let b = '';
+    b += '<rect x="0" y="300" width="270" height="104" fill="#BFD9E6"/>';
+    b += '<path d="M250 330 Q 330 300 400 270 L 520 170 L 640 230 L 640 404 L 230 404 Z" fill="#D9CBAA" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    b += '<path d="M500 186 L520 170 L540 186 Z" fill="#fff" stroke="' + C.stroke + '" stroke-width="2"/>';
+    b += '<rect x="395" y="230" width="10" height="44" fill="#7A5A3A"/>' + D.circ(400, 214, 26, '#9CC79A', C.stroke, 2.5);
+    b += '<path transform="translate(80 0)" d="M200 90 a32 26 0 0 1 56 -22 a38 30 0 0 1 72 4 a30 24 0 0 1 40 30 a30 22 0 0 1 -16 40 h-142 a28 24 0 0 1 -10 -52 z" fill="#fff" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    b += '<path d="M480 236 C 440 270, 380 300, 262 322" fill="none" stroke="#5E9CC0" stroke-width="7"/>';
+    b += D.arrow(110, 296, 150, 176, C.arrow, 5) + D.T(120, 160, 'evaporation', 15, { anchor: 'middle' });
+    b += D.arrow(392, 186, 372, 140, C.arrow, 5) + D.T(362, 176, 'transpiration', 15, { anchor: 'end' });
+    b += D.T(362, 112, 'condensation', 15);
+    [[410, 150], [432, 156], [454, 150]].forEach((p) => { b += D.line(p[0], p[1], p[0] + 18, p[1] + 36, 2.5, C.arrow, ' stroke-dasharray="6 6"'); });
+    b += D.T(480, 150, 'precipitation', 15, { anchor: 'start' });
+    b += D.T(370, 282, 'runoff', 15, { anchor: 'middle' });
+    b += '<path d="M430 350 C 370 370, 300 380, 236 372" fill="none" stroke="' + C.arrow + '" stroke-width="3" stroke-dasharray="8 7"/>' + D.T(360, 396, 'groundwater', 14, { weight: 'normal' });
+    b += D.T(120, 380, 'sea \u00b7 salt stays here', 15);
+    if (stop) b += D.circ(stop.x, stop.y, 12, '#fff', C.stroke, 4) + D.circ(stop.x, stop.y, 5, C.stroke);
+    return D.svg(640, 404, b, 'The water cycle: evaporation from the salty sea, transpiration from a tree, condensation into a cloud, precipitation onto a hill, runoff in a river back to the sea, and groundwater flowing underground to the sea. Salt stays in the sea.');
+  }
+  opt(bad) {
+    return 'text-align:left;font:inherit;font-size:17px;font-weight:700;padding:12px 14px;min-height:48px;border-radius:14px;cursor:pointer;color:var(--ks3-ink);background:var(--ks3-card);border:2px solid ' + (bad ? 'var(--ks3-alert-border)' : 'var(--ks3-option-border)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.laps >= 1, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const lapDone = s.laps >= 1 && s.stop === 0;
+    const st = STOPS[s.stop];
+    const opts = (s.stop + s.laps) % 2 ? [st.opts[1], st.opts[0]] : st.opts.slice();
+    const prev = s.stop > 0 ? STOPS[s.stop - 1] : null;
+    const bankSrc = [
+      { q: 'How do plants contribute to the water cycle?', opts: [['Through transpiration \u2014 water absorbed from soil is released as water vapour through leaf stomata, returning water to the atmosphere', true], ['By storing water permanently in their cells \u2014 removing it from the cycle', false], ['By producing water as a by-product of photosynthesis', false], ['By preventing precipitation by blocking clouds with their canopy', false]],
+        wrong_explanations: { 1: 'Plants don\u2019t store water permanently \u2014 they continuously take it in and release it. Transpiration is the return pathway to the atmosphere.', 2: 'Photosynthesis USES water as a reactant \u2014 it does not produce water as a by-product. Oxygen is the gas product of photosynthesis.', 3: 'Forests influence local weather patterns but do not prevent precipitation \u2014 they actually INCREASE local rainfall by contributing to atmospheric water vapour.' } },
+      { q: 'Why does deforestation in tropical areas often lead to reduced local rainfall?', opts: [['Trees release large amounts of water vapour through transpiration \u2014 removing them reduces the water returning to the atmosphere, lowering precipitation', true], ['Trees attract rain clouds \u2014 without trees, clouds move away from the area', false], ['Tree roots release chemicals that trigger condensation in the atmosphere above', false], ['Deforestation increases runoff \u2014 water leaves the area before it can evaporate', false]],
+        wrong_explanations: { 1: 'Clouds are not \u2018attracted\u2019 to trees \u2014 the mechanism is through transpiration contributing to atmospheric moisture content.', 2: 'Roots do not release chemicals that trigger condensation \u2014 their role in the water cycle is absorbing water from soil, which then passes up to leaves and out through transpiration.', 3: 'Increased runoff does remove water quickly \u2014 but the PRIMARY reason for reduced local rainfall after deforestation is the loss of transpiration returning water to the atmosphere.' } },
+      { q: 'Sea water is salty, but rain that falls on land is fresh water. Why?', opts: [['When sea water evaporates, the dissolved salts are left behind in the sea', true], ['Salt is removed from the rain as it falls through the air', false], ['Plants on land absorb the salt from the rain', false], ['The salt condenses separately and stays in the clouds', false]],
+        wrong_explanations: { 1: 'The salt never leaves the sea in the first place. Only water evaporates.', 2: 'Rain is already fresh when it lands. The salt was left behind at evaporation.', 3: 'Only water turns to vapour, so there is no salt in the cloud.' } },
+      { q: 'Which process forms clouds?', opts: [['Condensation: water vapour cools and turns into tiny liquid droplets', true], ['Evaporation: water droplets turn into water vapour high in the air', false], ['Precipitation: water collects in the sky', false], ['Transpiration: plants release droplets that float upwards', false]],
+        wrong_explanations: { 1: 'Evaporation makes vapour, which is invisible. Clouds are droplets made by condensation.', 2: 'Precipitation is water falling as rain, snow, sleet or hail.', 3: 'Plants lose water vapour, not droplets. The vapour must cool and condense to form a cloud.' } },
+      { q: 'Which list contains only types of precipitation?', opts: [['Rain, snow, sleet and hail', true], ['Rain, mist and clouds', false], ['Rain, dew and runoff', false], ['Rain only', false]],
+        wrong_explanations: { 1: 'Mist and clouds are droplets in the air. Precipitation is water that falls.', 2: 'Dew forms by condensation on the ground; runoff is water flowing over the land.', 3: 'Precipitation also includes snow, sleet and hail.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('water-cycle') : null,
+      hookOptions: [
+        { text: 'Down into the ground', correct: false, reply: 'Some soaks in, but the ground under the puddle ends up dry. On a warm day most of the water leaves upwards.' },
+        { text: 'Up into the air', correct: true, reply: 'The Sun\u2019s energy turned the liquid water into water vapour, an invisible gas.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      cycleFig: ready ? K.fig(this.cycle(lapDone ? { x: 90, y: 345 } : st), '') : null,
+      dropProgress: lapDone ? 'Back in the sea' : 'Step ' + (s.stop + 1) + ' of ' + STOPS.length,
+      dropHere: lapDone ? 'Back in the sea, ready to go round again. The water was never used up.' : st.at,
+      dropAsking: !lapDone,
+      dropOptions: opts.map((t) => ({ text: t, style: this.opt(s.wrong === t),
+        onClick: () => { if (t === st.opts[0]) { const nx = (s.stop + 1) % STOPS.length; this.setState({ stop: nx, wrong: null, laps: nx === 0 ? s.laps + 1 : s.laps }); } else this.setState({ wrong: t }); } })),
+      dropHasNote: (!!s.wrong && !lapDone) || (!s.wrong && s.stop === 1),
+      dropNote: s.wrong ? st.no : STOPS[0].yes,
+      dropNoteStyle: 'margin:0;padding:12px 14px;border-radius:14px;font-size:17px;line-height:1.55;border:2px solid ' + (s.wrong ? 'var(--ks3-alert-border);background:var(--ks3-alert-tint);' : 'var(--ks3-accent);background:var(--ks3-accent-tint);'),
+      dropDone: lapDone, onDropReset: () => this.setState({ stop: 0, laps: 0, wrong: null }),
+      thinkOptions: [
+        { text: 'Tiny droplets of liquid water', correct: true, reply: 'Vapour has cooled and condensed.' },
+        { text: 'Water vapour', correct: false, reply: 'Water vapour is an invisible gas. If clouds were vapour, you couldn\u2019t see them.' },
+        { text: 'Smoke and dust', correct: false, reply: 'Dust can help droplets form, but a cloud is mostly liquid water droplets.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'up', label: 'Puts vapour into the air' }, { id: 'cl', label: 'Turns vapour into droplets' }, { id: 'dn', label: 'Brings water down or back to the sea' }],
+      sortItems: [
+        { text: 'Evaporation from the sea', bin: 'up', why: 'Liquid water becomes vapour.' },
+        { text: 'Transpiration from leaves', bin: 'up', why: 'Leaves lose water vapour through stomata.' },
+        { text: 'An animal breathing out', bin: 'up', why: 'Breathed-out air carries water vapour.' },
+        { text: 'Condensation', bin: 'cl', why: 'Cooling vapour turns into droplets.' },
+        { text: 'A cloud forming', bin: 'cl', why: 'Clouds are droplets formed by condensation.' },
+        { text: 'Precipitation', bin: 'dn', why: 'Rain, snow, sleet or hail falls to the ground.' },
+        { text: 'Runoff into a river', bin: 'dn', why: 'Water flows over the land back to the sea.' },
+        { text: 'Groundwater draining', bin: 'dn', why: 'Water soaks through the ground back to the sea.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name the process by which plants lose water vapour from their leaves.', why: 'Transpiration: water vapour leaves through the stomata.', options: [
+            { text: 'Evaporation from the soil', correct: false, reply: 'That is water leaving the soil surface, not the leaves.' },
+            { text: 'Transpiration', correct: true },
+            { text: 'Precipitation', correct: false, reply: 'Precipitation is water falling from clouds.' },
+            { text: 'Respiration', correct: false, reply: 'Respiration releases energy from glucose. Water vapour leaving leaves is transpiration.' }] },
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Give the form of the water in a cloud.', why: 'Clouds are tiny droplets of liquid water.', options: [
+            { text: 'Water vapour', correct: false, reply: 'Vapour is invisible. Clouds form when it condenses.' },
+            { text: 'Tiny liquid water droplets', correct: true },
+            { text: 'Steam', correct: false, reply: 'Steam is water vapour; a cloud is droplets.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Identify', marks: 1, prompt: 'On a water cycle diagram, an arrow goes from the leaves of a tree up into the air. Which process does the arrow show?', why: 'Water vapour leaving leaves is transpiration.', options: [
+            { text: 'Evaporation from the sea', correct: false, reply: 'The arrow starts at the leaves, not the sea.' },
+            { text: 'Transpiration', correct: true },
+            { text: 'Condensation', correct: false, reply: 'Condensation happens as vapour cools, high up, forming clouds.' },
+            { text: 'Runoff', correct: false, reply: 'Runoff flows over the ground, not up into the air.' }] },
+          { kind: 'mcq', command: 'Suggest', marks: 1, prompt: 'A town replaces a forest with roads and buildings. Rain can no longer soak into the ground. Suggest which part of the water cycle increases.', why: 'Water that can\u2019t soak in flows over the surface: more runoff.', options: [
+            { text: 'Transpiration', correct: false, reply: 'Fewer trees means less transpiration, not more.' },
+            { text: 'Groundwater', correct: false, reply: 'Less water soaks in, so less groundwater.' },
+            { text: 'Runoff', correct: true },
+            { text: 'Condensation', correct: false, reply: 'The surface change affects water on the ground, not in clouds.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why the water cycle is important to plants and animals that live on land. Put the links in order.',
+            links: ['Water evaporates from the sea, leaving the dissolved salts behind.', 'The vapour condenses into clouds and falls on land as precipitation, which is fresh water.', 'Land plants and animals use this fresh water before it drains back into the sea.'],
+            herrings: [{ text: 'Rain is salty sea water, and plants filter out the salt.', why: 'The salt is left in the sea at evaporation, so rain is already fresh.' }, { text: 'Living things use water up, so the cycle makes new water.', why: 'Water is not used up or made; it is recycled.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how water from the sea forms a cloud. Put the links in order.',
+            links: ['Energy from the Sun makes water evaporate from the sea.', 'The water vapour rises and cools.', 'It condenses into tiny liquid droplets, which form a cloud.'],
+            herrings: [{ text: 'The vapour heats up as it rises and turns into droplets.', why: 'Rising vapour cools; cooling causes condensation.' }, { text: 'The cloud is the water vapour itself.', why: 'Vapour is invisible. The cloud is the droplets.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 4, prompt: 'Describe how water from the sea can end up in a river on land.',
+            levels: [
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Processes named in a correct order, from the sea to the river, with what happens at each.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'One or two correct processes, or the right processes in a muddled order.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Water evaporates from the sea, using energy from the Sun.', 'The water vapour rises, cools and condenses into droplets, forming clouds.', 'Precipitation falls on land as rain, snow, sleet or hail.', 'The water flows over the land as runoff, or through the ground as groundwater, into the river.'],
+            reject: ['\u201cThe clouds are made of water vapour.\u201d', '\u201cSalt water falls as rain.\u201d'] }
+        ]
+      },
+      keyLines: ['Water is continuously evaporated and precipitated: it is recycled, not used up.', 'Evaporation: liquid water from seas, lakes and soil becomes water vapour, using energy from the Sun.', 'Transpiration: plants lose water vapour from their leaves through stomata.', 'Condensation: rising vapour cools into tiny droplets, forming clouds. Precipitation: rain, snow, sleet or hail.', 'Runoff and groundwater carry water back to the sea.', 'Salts stay behind when sea water evaporates, so precipitation is fresh water for plants and animals on land.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: null, endNext: { href: 'ks4-biology-4.7.3.1-biodiversity.dc.html', label: 'Biodiversity' },
+      endConnects: [{ href: 'ks4-biology-4.7.3.1-biodiversity.dc.html', label: 'Biodiversity' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -33,6 +33,7 @@ import time
 import brand
 import ks4_lessons
 from ks4_lessons import blocks as ks4_blocks
+import ks4_batch_rulings
 import ks4_rulings
 import ks4_science_rulings
 from theme_head import THEME_HEAD, theme_script
@@ -1429,11 +1430,16 @@ _BLOCK_R2 = {
     "Ks4Choice": ks4_rulings.apply_r2_choice,
     "Ks4Write": ks4_rulings.apply_r2_write,
     "Ks4Ladder": ks4_rulings.apply_r2_ladder,
+    # batch 4: Ks4Guess's figure line is byte-identical to Ks4Choice's.
+    "Ks4Guess": ks4_rulings.apply_r2_choice,
 }
 
 
-def compile_block(page, name):
-    path = os.path.join(DESIGN_DIR, name + ".dc.html")
+def compile_block(page, name, design_dir=None):
+    # `design_dir` is None for the pilot and batches 2/3 (the pilot's own
+    # DESIGN_DIR, unchanged). A batch that brings its own shared blocks
+    # (batch 4+: ks4_lessons.batch_blocks) passes its own directory.
+    path = os.path.join(design_dir or DESIGN_DIR, name + ".dc.html")
     tpl, logic = template_and_logic(path)
     if name == "Ks4Chrome":
         # ⊕ R-TOPBAR (Stage B, phone run 28 Sep 2026) — FIRST, and it
@@ -1463,6 +1469,9 @@ def compile_block(page, name):
     if name == "Ks4Ladder":
         # ⊕ R16 (ks4_rulings.py) — the Apply rung reads "63 000"/"63,000".
         logic = ks4_rulings.apply_r16_ladder_parse(logic)
+    if name == "Ks4Practice":
+        # ⊕ B-PRACTICE-PARSE (ks4_batch_rulings.py) — R16 for the new block.
+        logic = ks4_batch_rulings.apply_practice_parse(logic)
     if name == "Ks4Sort":
         # ⊕ R17 (ks4_rulings.py) — report completion so the rail stop ticks.
         logic = ks4_rulings.apply_r17_sort_report(logic)
@@ -1698,8 +1707,17 @@ def apply_route_layers(template):
 # future batch CAN carry a ruling without this function changing.
 # ═══════════════════════════════════════════════════════════════════════
 def compile_batch_lesson(page, batch_name, lesson, report):
-    path = os.path.join(ks4_lessons.authored_dir(batch_name), lesson["slug"] + ".dc.html")
+    path = os.path.join(ks4_lessons.authored_dir(batch_name),
+                        lesson.get("source_file", lesson["slug"] + ".dc.html"))
     tpl, logic = template_and_logic(path)
+    port_report = {}
+    if lesson.get("port_rulings"):
+        # Design's own delivery (batch 4): named port rulings, see
+        # ks4_batch_rulings.py. Batches 2/3 never carry the flag.
+        slug_by_file = {L["source_file"]: L["slug"]
+                        for L in ks4_lessons.batch_modules()[batch_name].LESSONS}
+        tpl, logic, port_report = ks4_batch_rulings.port_lesson(
+            lesson, tpl, logic, slug_by_file)
 
     tpl = ks4_science_rulings.apply("template", lesson["slug"], tpl)
     ks4_science_rulings.expect_present("template", lesson["slug"], tpl)
@@ -1713,7 +1731,7 @@ def compile_batch_lesson(page, batch_name, lesson, report):
     classified = classify_lesson_sections(template, lesson["slug"], block_map,
                                            unwrap_route_if=True)
 
-    report.append(dict(slug=lesson["slug"], sections=classified))
+    report.append(dict(slug=lesson["slug"], sections=classified, **port_report))
     return {"template": template, "logic": logic}
 
 
@@ -1809,9 +1827,9 @@ def check_rung1_fallback(data, lesson, needles):
 # ═══════════════════════════════════════════════════════════════════════
 # STEP I — page assembly
 # ═══════════════════════════════════════════════════════════════════════
-def block_registration_scripts(compiled_blocks):
+def block_registration_scripts(compiled_blocks, names=None):
     out = []
-    for name in BLOCK_NAMES:
+    for name in (names or BLOCK_NAMES):
         b = compiled_blocks[name]
         out.append(
             "<script>\nwindow.KS4_BLOCKS = window.KS4_BLOCKS || {};\n"
@@ -2351,8 +2369,15 @@ def build_batch(name, freeze=False):
     print("  ✓ shared/%s written (%d lesson(s))" % (source_name, len(lessons)))
 
     authored_dir = ks4_lessons.authored_dir(name)
-    lesson_files = [lesson["slug"] + ".dc.html" for lesson in lessons]
+    lesson_files = [lesson.get("source_file", lesson["slug"] + ".dc.html") for lesson in lessons]
     css_name = "ks4-lesson-%s.css" % name
+    # A batch that brings its own shared blocks (batch 4+) adds the <style>
+    # of the blocks whose styling is new, after the lessons' own.
+    own_blocks = ks4_lessons.batch_blocks(name)
+    block_names, block_dir = BLOCK_NAMES, None
+    if own_blocks:
+        block_names, block_dir, own_css_blocks = own_blocks
+        lesson_files = lesson_files + [b + ".dc.html" for b in own_css_blocks]
     lesson_css = collect_batch_lesson_css(authored_dir, lesson_files, css_name)
     with open(_shared(css_name), "w", encoding="utf-8") as fh:
         fh.write(lesson_css)
@@ -2411,8 +2436,8 @@ def build_batch(name, freeze=False):
         with cdp.Browser() as b:
             page = b.attach()
             page.goto("http://127.0.0.1:%d/stub.html" % stub_port)
-            for block_name in BLOCK_NAMES:
-                compiled_blocks[block_name] = compile_block(page, block_name)
+            for block_name in block_names:
+                compiled_blocks[block_name] = compile_block(page, block_name, block_dir)
             for lesson in lessons:
                 compiled_lessons[lesson["slug"]] = compile_batch_lesson(
                     page, name, lesson, lesson_report)
@@ -2434,7 +2459,7 @@ def build_batch(name, freeze=False):
     batch_ext_tag = ('<script src="/shared/%s"></script>\n' % ext_name) if has_ext else ""
     batch_nav_tag = '<script src="/shared/%s"></script>\n' % nav_name
 
-    block_scripts = block_registration_scripts(compiled_blocks)
+    block_scripts = block_registration_scripts(compiled_blocks, block_names)
     written_pages = []
     for lesson in lessons:
         compiled_lesson = compiled_lessons[lesson["slug"]]

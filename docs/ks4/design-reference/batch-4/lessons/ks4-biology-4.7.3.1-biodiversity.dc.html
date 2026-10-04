@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biodiversity · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Ecology" title="Biodiversity" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.7.3.1</p>
+        <h1>Biodiversity</h1>
+        <p class="ks3-bigq">Why a community with many different species holds together when one is lost, and why our own future depends on it.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A lawn and a meadow." scene="One field is a lawn of a single kind of grass. The field next to it is a wild meadow with dozens of different plants. A pest arrives that attacks only that one kind of grass." question="which field is more likely to be wiped out?" options="{{ hookOptions }}" bridge="A place with many different species doesn't depend on any one of them. Next: what biodiversity means, and why it makes an ecosystem stable." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-what" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">What biodiversity means</p>
+        <h2 style="margin: 6px 0 0;">The variety of all the different species.</h2>
+        <div style="margin-top: 14px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35;">Biodiversity is the variety of all the different species of organisms on Earth, or within an ecosystem.</p>
+        </div>
+        <p style="margin: 14px 0 0; max-width: 62ch;">Every kind of organism counts: plants, animals, fungi and microorganisms. A field with a thousand rabbits and nothing else has very low biodiversity. A hedgerow with hundreds of different species has high biodiversity.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Stability</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">A great biodiversity ensures the stability of ecosystems by reducing the dependence of one species on another for food, shelter and the maintenance of the physical environment.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">People depend on it</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">The future of the human species on Earth relies on us maintaining a good level of biodiversity.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-webs" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Remove one species · watch the knock-on</p>
+        <h2 style="margin: 6px 0 0;">Which community holds together?</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">If one species is removed, it can affect the whole community. Remove a species from each food web. A consumer is lost if every one of its foods is gone.</p>
+        <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <sc-for list="{{ webs }}" as="w" hint-placeholder-count="2">
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">{{ w.title }}</p>
+              <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ w.fig }}</div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <sc-for list="{{ w.buttons }}" as="b" hint-placeholder-count="4"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for>
+              </div>
+              <p aria-live="polite" style="{{ w.noteStyle }}">{{ w.note }}</p>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ bothDone }}"><p data-arrive="1" style="margin: 16px 0 0; padding: 14px 16px; border-radius: 14px; border: 2px solid var(--ks3-accent); background: var(--ks3-accent-tint); font-size: 18px; line-height: 1.55;">In the species-rich web, most consumers have more than one food, so they depend less on any one species. Losing one species does less damage: the community is more stable.</p></sc-if>
+      </section>
+
+      <section id="s-people" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Human activity</p>
+        <h2 style="margin: 6px 0 0;">Many human activities are reducing biodiversity.</h2>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Waste</p><p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Pollution of land, water and air kills plants and animals.</p></div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Deforestation</p><p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Clearing forest destroys the habitats of the many species that live there.</p></div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Global warming</p><p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Changing climate changes habitats faster than some species can cope with.</p></div>
+        </div>
+        <p style="margin: 14px 0 0; max-width: 62ch; font-size: 17px; line-height: 1.55;">Only recently have measures been taken to try to stop this reduction. Each of these, and the measures, has its own lesson.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · what counts</p></div>
+        <p class="ks3-mis-quote">&ldquo;Biodiversity is how many animals live somewhere.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Which has the higher biodiversity?" options="{{ thinkOptions }}" reveal="Biodiversity is the variety of different species, not the number of individuals. Plants, fungi and microorganisms count as well as animals. Ten thousand sheep of one species is far less biodiverse than a pond with forty different species in it." right-word="Yes." wrong-word="Not this one." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Reduces biodiversity, or helps maintain it?" prompt="Place each human activity." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Pollution, habitat destruction and climate change reduce biodiversity; protecting and recreating habitats helps maintain it." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Define</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The variety of all the different species of organisms on Earth, or within an ecosystem.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Name the dependence: food, shelter, or the physical environment.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Use a food web to predict the knock-on of losing one species.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Biodiversity is the variety of all the different species in an ecosystem. High biodiversity makes an ecosystem stable, because species depend less on any one other species for food, shelter and the physical environment.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="biodiversity" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Biodiversity" spec="AQA 4.7.3.1" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure how to explain stability?" legal="The food webs are simplified models: real consumers eat more foods, and real communities change in more ways than species being lost." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Lawn and meadow', short: 'HOOK' },
+  { id: 's-webs', label: 'Remove a species', short: 'WEBS' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Human activity', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const WEBS = [
+  { title: 'Species-poor', nodes: [
+    { id: 'grass', label: 'Grass', x: 200, y: 250, eats: [] },
+    { id: 'rabbit', label: 'Rabbit', x: 110, y: 150, eats: ['grass'] },
+    { id: 'slug', label: 'Slug', x: 290, y: 150, eats: ['grass'] },
+    { id: 'fox', label: 'Fox', x: 110, y: 50, eats: ['rabbit'] },
+    { id: 'thrush', label: 'Thrush', x: 290, y: 50, eats: ['slug'] }] },
+  { title: 'Species-rich', nodes: [
+    { id: 'grass', label: 'Grass', x: 70, y: 250, eats: [] },
+    { id: 'clover', label: 'Clover', x: 200, y: 250, eats: [] },
+    { id: 'oak', label: 'Oak', x: 330, y: 250, eats: [] },
+    { id: 'rabbit', label: 'Rabbit', x: 46, y: 150, eats: ['grass', 'clover'] },
+    { id: 'vole', label: 'Vole', x: 144, y: 150, eats: ['grass', 'oak'] },
+    { id: 'slug', label: 'Slug', x: 244, y: 150, eats: ['clover', 'grass'] },
+    { id: 'cat', label: 'Caterpillar', x: 350, y: 150, eats: ['oak'] },
+    { id: 'fox', label: 'Fox', x: 80, y: 50, eats: ['rabbit', 'vole'] },
+    { id: 'owl', label: 'Owl', x: 200, y: 50, eats: ['vole', 'rabbit'] },
+    { id: 'thrush', label: 'Thrush', x: 320, y: 50, eats: ['slug', 'cat'] }] }
+];
+function cascade(web, removed) {
+  const lost = {}; if (!removed) return lost; lost[removed] = 'removed';
+  let changed = true;
+  while (changed) { changed = false; web.nodes.forEach((n) => { if (!lost[n.id] && n.eats.length && n.eats.every((e) => lost[e])) { lost[n.id] = 'lost'; changed = true; } }); }
+  return lost;
+}
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, rm: [null, null], think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  webSvg(web, lost) {
+    const D = window.KS4D, C = D.C;
+    const pos = {}; web.nodes.forEach((n) => { pos[n.id] = n; });
+    let b = '';
+    web.nodes.forEach((n) => n.eats.forEach((e) => {
+      const a = pos[e], gone = lost[e] || lost[n.id];
+      b += D.arrow(a.x, a.y - 18, n.x, n.y + 22, gone ? '#C9C2B4' : C.arrow, gone ? 2 : 3);
+    }));
+    web.nodes.forEach((n) => {
+      const st = lost[n.id];
+      b += '<rect x="' + (n.x - 43) + '" y="' + (n.y - 17) + '" width="86" height="34" rx="17" fill="' + (st ? '#E8E3D8' : '#fff') + '" stroke="' + (st ? '#A69F92' : C.stroke) + '" stroke-width="2"' + (st === 'lost' ? ' stroke-dasharray="5 4"' : '') + '/>';
+      b += D.T(n.x, n.y + 5, n.label, 14, { fill: st ? '#8C857A' : C.stroke, style: st ? 'italic' : '' });
+      if (st) b += D.line(n.x - 40, n.y, n.x + 40, n.y, 2, '#8C857A');
+    });
+    const nLost = Object.keys(lost).filter((k) => lost[k] === 'lost').length;
+    return D.svg(400, 280, b, web.title + ' food web. Arrows show the direction of energy transfer, from food to consumer.' + (nLost ? ' ' + nLost + ' further species lost after the removal.' : ''));
+  }
+  chip(on) {
+    return 'font:inherit;font-size:15px;font-weight:700;padding:8px 12px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' + (on ? 'var(--ks3-ink)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-band)' : 'var(--ks3-card)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const bothDone = s.rm[0] !== null && s.rm[1] !== null;
+    const done = [s.hook !== null, bothDone, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const bankSrc = [
+      { q: 'What is biodiversity?', opts: [['The variety of all the different species of organisms on Earth, or within an ecosystem', true], ['The number of animals living in an area', false], ['The total mass of living things in an ecosystem', false], ['The number of individuals of one species in a habitat', false]],
+        wrong_explanations: { 1: 'Biodiversity counts different species, and plants and microorganisms count too.', 2: 'That is biomass, not biodiversity.', 3: 'That is a population. Biodiversity is about how many different species there are.' } },
+      { q: 'Why does high biodiversity make an ecosystem more stable?', opts: [['It reduces the dependence of one species on another for food, shelter and the maintenance of the physical environment', true], ['It means there are more animals to eat the plants', false], ['It stops any species from ever dying out', false], ['It makes every species reproduce faster', false]],
+        wrong_explanations: { 1: 'More individuals is not the point. Variety of species reduces dependence on any one.', 2: 'Species can still be lost; the community copes better when they are.', 3: 'Biodiversity doesn\u2019t change reproduction rates.' } },
+      { q: 'In a food web, owls eat both voles and rabbits. A disease kills all the rabbits. What is most likely to happen to the owls?', opts: [['They survive by eating more voles', true], ['They all die, because they have lost a food source', false], ['They start eating grass', false], ['Nothing changes in the food web', false]],
+        wrong_explanations: { 1: 'They still have another food, voles, so they are less affected.', 2: 'Owls are not herbivores.', 3: 'Removing one species affects others: the voles are now eaten more.' } },
+      { q: 'Which of these human activities reduces biodiversity?', opts: [['Clearing a forest to make farmland', true], ['Planting a hedgerow around a field', false], ['Leaving the edges of a field to grow wild', false], ['Running a breeding programme for an endangered species', false]],
+        wrong_explanations: { 1: 'Hedgerows provide habitats and help maintain biodiversity.', 2: 'Wild field margins provide habitats for many species.', 3: 'Breeding programmes help protect endangered species.' } },
+      { q: 'Why does the future of humans depend on biodiversity?', opts: [['Humans rely on many other species, so we depend on maintaining a good level of biodiversity', true], ['Humans only need the crops they grow, so biodiversity does not affect us', false], ['Biodiversity only matters to wildlife', false], ['Humans can replace any species that is lost', false]],
+        wrong_explanations: { 1: 'Crops themselves depend on other species, and so do we.', 2: 'The future of the human species relies on maintaining a good level of biodiversity, not just the future of wildlife.', 3: 'A species that becomes extinct cannot be brought back.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('biodiversity') : null,
+      hookOptions: [
+        { text: 'The lawn', correct: true, reply: 'Every plant in it is the one kind the pest attacks.' },
+        { text: 'The meadow', correct: false, reply: 'The pest attacks only one kind of grass. In the meadow, the other plants survive; the lawn has nothing else.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      webs: WEBS.map((w, wi) => {
+        const lost = cascade(w, s.rm[wi]);
+        const nLost = Object.keys(lost).filter((k) => lost[k] === 'lost');
+        const label = (id) => w.nodes.filter((n) => n.id === id)[0].label.toLowerCase();
+        return {
+          title: w.title + ' \u00b7 ' + w.nodes.length + ' species',
+          fig: ready ? K.fig(this.webSvg(w, lost), '') : null,
+          buttons: w.nodes.map((n) => ({ label: n.label, pressed: s.rm[wi] === n.id, style: this.chip(s.rm[wi] === n.id), onClick: () => { const r = s.rm.slice(); r[wi] = r[wi] === n.id ? null : n.id; this.setState({ rm: r }); } })),
+          note: s.rm[wi] === null ? 'Tap a species to remove it.' : 'Removed the ' + label(s.rm[wi]) + '. ' + (nLost.length ? nLost.length + ' more lost: ' + nLost.map(label).join(', ') + '.' : 'No other species lost.'),
+          noteStyle: 'margin:0;padding:10px 12px;border-radius:12px;font-size:17px;line-height:1.5;border:2px solid ' + (nLost.length ? 'var(--ks3-alert-border);background:var(--ks3-alert-tint);' : 'var(--ks3-option-border);background:var(--ks3-card);')
+        };
+      }),
+      bothDone,
+      thinkOptions: [
+        { text: 'A pond with 40 different species', correct: true, reply: 'More different species: higher biodiversity.' },
+        { text: 'A field with 10 000 sheep', correct: false, reply: 'Lots of animals, but only one species (plus the grass). Low biodiversity.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'r', label: 'Reduces biodiversity' }, { id: 'm', label: 'Helps maintain it' }],
+      sortItems: [
+        { text: 'Dumping waste into a river', bin: 'r', why: 'Pollution kills organisms.' },
+        { text: 'Clearing rainforest for farmland', bin: 'r', why: 'Habitats are destroyed.' },
+        { text: 'Global warming shifting habitats', bin: 'r', why: 'Some species can\u2019t adapt or move fast enough.' },
+        { text: 'Replanting hedgerows around fields', bin: 'm', why: 'Hedgerows are habitats for many species.' },
+        { text: 'Breeding programmes for endangered species', bin: 'm', why: 'They protect species at risk.' },
+        { text: 'Leaving field margins to grow wild', bin: 'm', why: 'More plants support more insects and birds.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Define', marks: 1, prompt: 'Which is the definition of biodiversity?', why: 'The variety of all the different species of organisms on Earth, or within an ecosystem.', options: [
+            { text: 'The number of animals in an ecosystem', correct: false, reply: 'Biodiversity counts different species, plants and microorganisms included.' },
+            { text: 'The variety of all the different species of organisms on Earth, or within an ecosystem', correct: true },
+            { text: 'The number of individuals in a population', correct: false, reply: 'That is the size of a population.' }] },
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Give one human activity that reduces biodiversity.', why: 'For example deforestation, pollution from waste, or global warming.', options: [
+            { text: 'Deforestation', correct: true },
+            { text: 'Planting hedgerows', correct: false, reply: 'Hedgerows help maintain biodiversity.' },
+            { text: 'Setting up nature reserves', correct: false, reply: 'Reserves protect habitats.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Predict', marks: 1, prompt: 'Pond A has 3 species. Pond B has 25 species. A disease kills one species in each pond. Predict which community is more stable.', why: 'Pond B: its species depend less on any one other species.', options: [
+            { text: 'Pond A', correct: false, reply: 'Fewer species means each depends more on the others.' },
+            { text: 'Pond B', correct: true },
+            { text: 'Both equally', correct: false, reply: 'Higher biodiversity gives greater stability.' }] },
+          { kind: 'mcq', command: 'Suggest', marks: 2, prompt: 'In a food web, foxes eat only rabbits. A disease kills most of the rabbits. Suggest what happens to the fox population, and why.', why: 'It falls: the foxes depend on one food species.', options: [
+            { text: 'It falls, because the foxes depend on a single food species', correct: true },
+            { text: 'It rises, because there is less competition', correct: false, reply: 'The foxes have lost their only food.' },
+            { text: 'It stays the same, because foxes are predators', correct: false, reply: 'Predators depend on their prey.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why an ecosystem with high biodiversity is more stable. Put the links in order.',
+            links: ['There are many different species in the ecosystem.', 'Each species depends less on any one other species for food, shelter and the maintenance of its physical environment.', 'So if one species is lost, the others can still meet their needs, and the community holds together.'],
+            herrings: [{ text: 'There are more individual animals to share the food.', why: 'Biodiversity is about different species, not numbers of individuals.' }, { text: 'No species can ever die out when biodiversity is high.', why: 'Species can still be lost; the community copes better.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how deforestation reduces biodiversity. Put the links in order.',
+            links: ['Cutting down the trees destroys habitats.', 'Species that depend on the trees for food and shelter lose them.', 'Those species die out or leave the area, so there are fewer different species.'],
+            herrings: [{ text: 'Deforestation increases biodiversity by making space for farm animals.', why: 'Farmland usually has far fewer species than forest.' }, { text: 'Only the trees are affected.', why: 'If one species is removed it can affect the whole community.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Explain', marks: 4, prompt: 'Explain what biodiversity is and why it is important to maintain it.',
+            levels: [
+              { label: 'Level 2 \u00b7 3\u20134', text: 'A correct definition, the stability idea explained through reduced dependence, and the importance for humans.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'A definition or one reason, with little explanation.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Biodiversity is the variety of all the different species of organisms on Earth or within an ecosystem.', 'High biodiversity reduces the dependence of one species on another for food, shelter and the physical environment.', 'So the ecosystem is more stable: losing one species affects the community less.', 'The future of the human species relies on maintaining a good level of biodiversity.'],
+            reject: ['\u201cBiodiversity is the number of animals.\u201d', '\u201cHigh biodiversity means no species can die out.\u201d'] }
+        ]
+      },
+      keyLines: ['Biodiversity: the variety of all the different species of organisms on Earth, or within an ecosystem.', 'Plants, fungi and microorganisms count, not just animals.', 'High biodiversity makes an ecosystem stable by reducing the dependence of one species on another.', 'The dependences: food, shelter and the maintenance of the physical environment.', 'If one species is removed it can affect the whole community.', 'The future of humans relies on biodiversity. Many human activities reduce it; measures to stop this are recent.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.7.2.2-water-cycle.dc.html', label: 'The water cycle' }, endNext: null,
+      endConnects: [{ href: 'ks4-biology-4.7.2.2-water-cycle.dc.html', label: 'The water cycle' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

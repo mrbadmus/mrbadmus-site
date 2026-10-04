@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<title>Practice shape · KS4 shared blocks</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js"></script>
+<script src="ks4-lib.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text, #A93411); }
+  a:hover { color: var(--ks3-accent-hover, #7F2408); }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<sc-if value="{{ isFrame }}" hint-placeholder-val="{{ false }}">
+  <div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; -webkit-font-smoothing: antialiased; text-wrap: pretty; padding-bottom: 8px;">
+    <main class="ks3-main">
+      <div class="ks3-lesson">
+        <section style="margin-top: 28px;">
+          <dc-import name="Ks4Practice" slug="demo-shc" rungs="{{ rungs }}" hint-size="100%,2400px"></dc-import>
+        </section>
+      </div>
+    </main>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isCanvas }}" hint-placeholder-val="{{ true }}">
+  <div style="padding: 48px 56px 80px; background: #EFE6D6; min-height: 100vh; font-family: var(--st-ui, 'Instrument Sans', sans-serif); color: #1A1714;">
+    <header style="max-width: 1180px;">
+      <p style="margin: 0; font-family: 'DM Mono', monospace; font-size: 14px; letter-spacing: .1em; text-transform: uppercase; color: #A93411;">KS4 shared blocks · 4 of 4 · rule 4</p>
+      <h1 style="margin: 8px 0 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 600; font-size: 56px; line-height: 1.02; letter-spacing: -.035em;">The practice shape: 2 · 2 · 2 · 1</h1>
+      <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(4, minmax(0, 200px)); gap: 12px;">
+        <sc-for list="{{ shape }}" as="r" hint-placeholder-count="4">
+          <div style="padding: 14px 16px; border-radius: 14px; background: #FFFDF8; border: 2px solid #1A1714;">
+            <p style="margin: 0; font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #5C534A;">{{ r.rung }}</p>
+            <p style="margin: 4px 0 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 600; font-size: 44px; line-height: 1; letter-spacing: -.03em;">{{ r.n }}</p>
+            <p style="margin: 6px 0 0; font-size: 15px; line-height: 1.4;">{{ r.what }}</p>
+          </div>
+        </sc-for>
+      </div>
+      <ul style="margin: 22px 0 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 8px; font-size: 19px; line-height: 1.5; max-width: 70ch;">
+        <li><strong>Seven questions in every lesson, on every route.</strong> Above the floor of five, and the same seven-question shape on all 13 pages of a batch.</li>
+        <li><strong>Two on each of rungs 1–3.</strong> One right answer can be a lucky guess; two shows the pupil can do it. A rung scores when both its questions do, so the score stays out of 4.</li>
+        <li><strong>One on rung 4.</strong> A 6-mark answer takes 8–10 minutes to write and mark. Two would push the lesson past 45 minutes.</li>
+        <li><strong>The practice set after the ladder is fixed too:</strong> five verbatim quiz questions per route, no “show more”.</li>
+      </ul>
+      <nav style="margin-top: 22px; display: flex; gap: 8px 18px; flex-wrap: wrap; font-family: 'DM Mono', monospace; font-size: 15px;">
+        <sc-for list="{{ nav }}" as="n" hint-placeholder-count="4"><a href="{{ n.href }}" style="{{ n.style }}">{{ n.label }}</a></sc-for>
+      </nav>
+    </header>
+    <div style="margin-top: 40px; display: flex; gap: 40px; align-items: flex-start;">
+      <sc-for list="{{ wide }}" as="f" hint-placeholder-count="2">
+        <figure style="margin: 0; flex: 0 0 auto;">
+          <figcaption style="margin: 0 0 10px; font-family: 'DM Mono', monospace; font-size: 15px; letter-spacing: .08em; text-transform: uppercase;">{{ f.label }}</figcaption>
+          <iframe data-demo="1" src="{{ f.src }}" title="{{ f.label }}" style="display: block; width: 1280px; height: 3200px; border: 2px solid #1A1714; border-radius: 6px; background: #FBF3E6;"></iframe>
+        </figure>
+      </sc-for>
+    </div>
+    <div style="margin-top: 48px; display: flex; gap: 40px; align-items: flex-start;">
+      <sc-for list="{{ narrow }}" as="f" hint-placeholder-count="2">
+        <figure style="margin: 0; flex: 0 0 auto;">
+          <figcaption style="margin: 0 0 10px; font-family: 'DM Mono', monospace; font-size: 15px; letter-spacing: .08em; text-transform: uppercase;">{{ f.label }}</figcaption>
+          <iframe data-demo="1" src="{{ f.src }}" title="{{ f.label }}" style="display: block; width: 390px; height: 5200px; border: 2px solid #1A1714; border-radius: 6px; background: #FBF3E6;"></iframe>
+        </figure>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const PAGES = [['Demo 1 - Formula triangle.dc.html', '1 · Formula triangle'], ['Demo 2 - Start here guess.dc.html', '2 · Start here'], ['Demo 3 - Chained worked example.dc.html', '3 · Step 1 … Step 2'], ['Demo 4 - Practice shape.dc.html', '4 · Practice shape']];
+const ME = 3;
+const RUNGS = {
+  r1: [
+    { kind: 'mcq', command: 'Give', marks: 1, prompt: 'What is the unit of specific heat capacity?', why: 'c is the energy needed to raise 1 kg by 1 \u00b0C, so its unit is J/kg \u00b0C.', options: [
+      { text: 'J/kg', correct: false, reply: 'That leaves out the temperature: c is per degree as well as per kilogram.' },
+      { text: 'J/kg \u00b0C', correct: true },
+      { text: 'W', correct: false, reply: 'The watt is the unit of power: energy transferred per second.' },
+      { text: 'J/\u00b0C', correct: false, reply: 'That leaves out the mass: c is per kilogram as well as per degree.' }] },
+    { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Which equation links power, energy transferred and time?', why: 'Power is the energy transferred each second.', options: [
+      { text: 'P = E \u00d7 t', correct: false, reply: 'Power is energy per second, so you divide by the time.' },
+      { text: 'P = t \u00f7 E', correct: false, reply: 'Upside down. More energy in the same time means more power, so E goes on top.' },
+      { text: 'P = E \u00f7 t', correct: true }] }
+  ],
+  r2: [
+    { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'A 2.0 kg aluminium block is heated and its temperature rises by 15 \u00b0C. The specific heat capacity of aluminium is 900 J/kg \u00b0C. Calculate the energy transferred to the block.',
+      convOptions: ['Nothing to convert', 'Convert kg to g: multiply by 1000', 'Convert \u00b0C to kelvin: add 273'], convAnswer: 0, answer: 27000, unit: 'J', units: ['J', 'W', 'kg', '\u00b0C'],
+      right: '2.0 \u00d7 900 \u00d7 15 = 27 000 J.', wrong: 'Nothing to convert here. E = m c \u0394\u03b8 = 2.0 \u00d7 900 \u00d7 15 = 27 000 J.',
+      model: ['C \u00b7 Nothing to convert', 'F \u00b7 E = m c \u0394\u03b8', 'I \u00b7 E = 2.0 \u00d7 900 \u00d7 15', 'F \u00b7 E = 27 000', 'A \u00b7 E = 27 000 J'] },
+    { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'A 1.2 kW heater is switched on for 2 minutes. Calculate the energy it transfers.',
+      convOptions: ['Nothing to convert', 'Convert kW to W and minutes to seconds', 'Convert kW to W only'], convAnswer: 1, answer: 144000, unit: 'J', units: ['J', 'W', 's', 'kW'],
+      right: '1200 \u00d7 120 = 144 000 J.', wrong: 'Convert both: 1.2 kW = 1200 W and 2 minutes = 120 s. Then E = P \u00d7 t.',
+      model: ['C \u00b7 1.2 kW = 1200 W; 2 min = 120 s', 'F \u00b7 P = E \u00f7 t, so E = P \u00d7 t', 'I \u00b7 E = 1200 \u00d7 120', 'F \u00b7 E = 144 000', 'A \u00b7 E = 144 000 J'] }
+  ],
+  r3: [
+    { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why a 3.0 kW kettle boils the same water faster than a 2.0 kW kettle. Put the links in order.',
+      links: ['Both kettles must transfer the same energy to the water: same mass, same temperature rise.', 'The 3.0 kW kettle transfers more energy each second.', 'So it transfers that energy in less time.'],
+      herrings: [{ text: 'The 3.0 kW kettle needs less energy to boil the water.', why: 'The energy depends on the water (E = m c \u0394\u03b8), not on the kettle.' }, { text: 'The water in the 3.0 kW kettle has a lower specific heat capacity.', why: 'It is the same water, so c is the same.' }] },
+    { kind: 'chain', command: 'Explain', marks: 3, prompt: 'One heater warms 1 kg of water, then 1 kg of aluminium. Explain why the water\u2019s temperature rises more slowly. Put the links in order.',
+      links: ['Water has a higher specific heat capacity than aluminium: 4200 against 900 J/kg \u00b0C.', 'So each kilogram of water needs more energy to warm by 1 \u00b0C.', 'The heater transfers energy at the same rate, so the water takes longer to warm by the same amount.'],
+      herrings: [{ text: 'The water has more mass than the aluminium.', why: 'Both are 1 kg.' }, { text: 'Aluminium has the higher specific heat capacity, so it heats faster.', why: 'The other way round: a high specific heat capacity means slow heating.' }] }
+  ],
+  r4: [
+    { kind: 'write', command: 'Describe', marks: 6, prompt: 'Describe a method to find the specific heat capacity of a metal block. Include the measurements you would take and how you would use them.',
+      levels: [
+        { label: 'Level 3 \u00b7 5\u20136', text: 'A coherent method that would work: mass, energy and temperature change all measured, the block insulated, and c calculated correctly.', max: 6 },
+        { label: 'Level 2 \u00b7 3\u20134', text: 'The main measurements, but a step missing, such as how the energy is found or how c is calculated.', max: 4 },
+        { label: 'Level 1 \u00b7 1\u20132', text: 'Some relevant equipment or steps, but it would not give a value for c.', max: 2 },
+        { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+      points: ['Measure the mass of the block on a balance.', 'Put an electric heater and a thermometer in the holes in the block; wrap the block in insulation.', 'Record the starting temperature.', 'Switch on for a set time, e.g. 10 minutes; read the energy from a joulemeter, or record the p.d., current and time.', 'Record the final temperature and work out the temperature change.', 'Calculate c = E \u00f7 (m \u0394\u03b8), with E = V I t if there is no joulemeter.'],
+      reject: ['\u201cMeasure the temperature of the heater.\u201d', '\u201cc = E \u00d7 m \u00d7 \u0394\u03b8.\u201d'] }
+  ]
+};
+class Component extends DCLogic {
+  componentDidMount() {
+    this.t = setInterval(() => {
+      document.querySelectorAll('iframe[data-demo]').forEach((f) => {
+        try { const d = f.contentDocument; if (!d || !d.body) return; const h = Math.max(d.body.scrollHeight, d.documentElement.scrollHeight); if (h > 200 && Math.abs(f.offsetHeight - h - 4) > 6) f.style.height = (h + 4) + 'px'; } catch (e) {}
+      });
+    }, 600);
+  }
+  componentWillUnmount() { clearInterval(this.t); }
+  renderVals() {
+    const q = new URLSearchParams(window.location.search);
+    const frame = q.get('frame');
+    const self = encodeURIComponent(PAGES[ME][0]);
+    const fr = (theme, w) => ({ label: (theme === 'dark' ? 'Dark' : 'Light') + ' \u00b7 ' + w, src: self + '?frame=' + theme });
+    return {
+      isFrame: !!frame, isCanvas: !frame, theme: frame === 'dark' ? 'dark' : 'light',
+      rungs: RUNGS,
+      shape: [
+        { rung: 'Rung 1 \u00b7 Recall', n: '2', what: 'state, name, give \u00b7 1 mark each' },
+        { rung: 'Rung 2 \u00b7 Apply', n: '2', what: 'calculate or use data \u00b7 2\u20133 marks, CFIFA' },
+        { rung: 'Rung 3 \u00b7 Explain', n: '2', what: 'build the linked chain \u00b7 3 marks' },
+        { rung: 'Rung 4 \u00b7 Produce', n: '1', what: '4- or 6-mark answer, self-marked' }
+      ],
+      wide: [fr('light', 1280), fr('dark', 1280)], narrow: [fr('light', 390), fr('dark', 390)],
+      nav: PAGES.map((pg, i) => ({ href: encodeURIComponent(pg[0]), label: pg[1], style: 'text-decoration:' + (i === ME ? 'none' : 'underline') + ';color:' + (i === ME ? '#1A1714' : '#A93411') + ';font-weight:' + (i === ME ? '500' : '400') + ';' }))
+    };
+  }
+}
+</script>
+</body>
+</html>

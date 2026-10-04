@@ -1,0 +1,51 @@
+# Design's delivery, unmodified. Source: Design's Output/Batch 4/lessons and Design's Output/Shared blocks - part 1/lessons (4 Oct 2026)
+# Verify: cd docs/ks4/design-reference/batch-4 && md5sum -c MD5SUMS   (macOS: md5 -r <file>)
+
+7944057425a50d5fd9c99f8b44cf0675  lessons/Ks4Cfifa.dc.html
+96891e81a2bb42139d7afa149821958c  lessons/Ks4Chain.dc.html
+029dd4506e0b9550aa660ba99987a3c8  lessons/Ks4Choice.dc.html
+a67112065727183112bc7914021a6072  lessons/Ks4Chrome.dc.html
+78f325cf60ac6a159e56821c9c3acc1e  lessons/Ks4End.dc.html
+a5473bce6894d173ad6734d69e068ffa  lessons/Ks4Guess.dc.html
+fb55a861975b0c66bcda7fe5dd1eacdb  lessons/Ks4KeyNote.dc.html
+d5257905b41d13b49d2b082c3523702f  lessons/Ks4Practice.dc.html
+40cc9550bdc8852a75b24ce932c26032  lessons/Ks4QuizBank.dc.html
+3caab7c8e6fe7124559c737569d2b24c  lessons/Ks4Sort.dc.html
+24305c8d1955fcf4ed5102e2c9aa5a3f  lessons/Ks4Steps.dc.html
+aa3ab9b1c61faccef0f062ecea69febf  lessons/Ks4Triangle.dc.html
+640b6cc3754e7107255bcef26097100f  lessons/Ks4Video.dc.html
+5bd355235328e528e645760625b3730f  lessons/Ks4Write.dc.html
+09b099b6b2b79e4c621ac6790c98d566  lessons/NOTES-KS4-batch-4.md
+ce82d7eb45ee2abac0c7b084d9603204  lessons/README.txt
+ace1c1b0f11fd2569937ee62c6ee4e7e  lessons/ks4-biology-4.1.3-transport-in-cells.dc.html
+09ed28f5b3f6e72d6e5d9697c8d9c5c3  lessons/ks4-biology-4.2.2.2-heart-blood-vessels.dc.html
+8f2968fab17f317c41ad98a1fecad77d  lessons/ks4-biology-4.2.2.3-blood.dc.html
+f26894c0f0b51d82ba3fccf142b89e74  lessons/ks4-biology-4.2.2.4-coronary-heart-disease.dc.html
+e856fc8888577a9d00e832372728568d  lessons/ks4-biology-4.7.2.2-water-cycle.dc.html
+5c4ae32937dd29f2ff6f31436af12e84  lessons/ks4-biology-4.7.3.1-biodiversity.dc.html
+915161d861b8d5a1944d369d228410e6  lessons/ks4-chemistry-5.1.2.1-periodic-table.dc.html
+e47d78d77a2597369c67d5697203f6b5  lessons/ks4-chemistry-5.1.2.2-development-periodic-table.dc.html
+9b6a75953eca9775a735c4cf7489bc81  lessons/ks4-chemistry-5.9.3.1-atmospheric-pollutants.dc.html
+7959be1777b0f0c3e329027ff9f47216  lessons/ks4-diagrams.js
+b765d8241fd115918bccb977388d6bd4  lessons/ks4-lib.js
+33c7cf619ae7ddbd0e2f94dee3ee1662  lessons/ks4-physics-4.6.3-infrared-black-bodies.dc.html
+0d8d2cd323be0823fe0d70dca4dd3161  lessons/ks4-physics-6.1.2.1-thermal-conductivity.dc.html
+fb9a2e9a4623e0890c5f545a64df4e2d  lessons/ks4-physics-6.1.2.2-efficiency.dc.html
+e89ac0dde8cbdd3ee1418b6069be2625  lessons/ks4-physics-6.6.2.4-uses-em-waves.dc.html
+69e1b11a2d63c89e584f80ab402132ca  lessons/ks4-theme.css
+951ae391b8ae72ef12e671c2fad23353  lessons/support.js
+81db27b28093eaf64dabec0d217af0a8  shared-blocks-part-1/Demo 1 - Formula triangle.dc.html
+2dc939825af93ed44184bcf008a0d0e0  shared-blocks-part-1/Demo 2 - Start here guess.dc.html
+8486c4a633cfb26fabb55bef36a4f6ce  shared-blocks-part-1/Demo 3 - Chained worked example.dc.html
+bdecc3d4d5fbc7c4ba127df0fd73a280  shared-blocks-part-1/Demo 4 - Practice shape.dc.html
+96891e81a2bb42139d7afa149821958c  shared-blocks-part-1/Ks4Chain.dc.html
+a5473bce6894d173ad6734d69e068ffa  shared-blocks-part-1/Ks4Guess.dc.html
+d5257905b41d13b49d2b082c3523702f  shared-blocks-part-1/Ks4Practice.dc.html
+24305c8d1955fcf4ed5102e2c9aa5a3f  shared-blocks-part-1/Ks4Steps.dc.html
+aa3ab9b1c61faccef0f062ecea69febf  shared-blocks-part-1/Ks4Triangle.dc.html
+5bd355235328e528e645760625b3730f  shared-blocks-part-1/Ks4Write.dc.html
+b778c42d0ea934c5086047b80d498503  shared-blocks-part-1/NOTES-KS4-shared-blocks.md
+811b921e5d9a14c62403f5216102c81c  shared-blocks-part-1/README.txt
+b765d8241fd115918bccb977388d6bd4  shared-blocks-part-1/ks4-lib.js
+69e1b11a2d63c89e584f80ab402132ca  shared-blocks-part-1/ks4-theme.css
+951ae391b8ae72ef12e671c2fad23353  shared-blocks-part-1/support.js

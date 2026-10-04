@@ -1,0 +1,30 @@
+{
+ "assets": {
+  "shared/brand/brand.css": "618a3484b2728873ae8a6a15f3e767a30a01789bcdabddeaece132386dfc8b8c",
+  "shared/brand/mrbadmus-favicon.svg": "97f132fc3de6b5dfef982cb5cf7f881c503a9ca5e87a3dfcf7c4eeedd520e10a",
+  "shared/brand/mrbadmus-icon-light-512.png": "bf546ea4464497d8ea1917958c4108ce4cb2a18bf18b4f244983310bc203f9cd",
+  "shared/class-entry.js": "807e91af734b549571b18f212c66d13a66b3bb3dc4ecde6fde5fc88258e92279",
+  "shared/config.js": "fe4915f9b54c3c49a8cbb6eed0b270b22dc0840d8101150f759e81d52e1e8440",
+  "shared/ks4-diagrams.js": "a4b7a9aaf5a863a4d3cb88a159561bce81c675fe25fe2c275b178db79c8aef84",
+  "shared/ks4-ds.css": "c32903169d07f7241f2ad4bc34f4c118c386eea23c473fa42368083d7f7ee74e",
+  "shared/ks4-lesson-batch-4.css": "ab2e146ad0a97dcdbee21f91a557f4cf1295401add287d376c10a235dc5cb1e3",
+  "shared/ks4-lesson.css": "87a02813588595dfaec29cfd3a29d8f54a92edd974f7c0758bbdfd3bb88938a6",
+  "shared/ks4-lib.js": "b9f9239df8a776dd67bd81dc64d84e32fbd6f1bb48180ee639b70c894144c62e",
+  "shared/ks4-nav.js": "0e43331db45f87a7caa480b2a2f73beb4fd713cd73703f00b59078f2eda5ff5d",
+  "shared/ks4-runtime.js": "bd08095d6e4717fe10578db4db90bcee21d05bddfccc9853bbaffb31db285285",
+  "shared/ks4-source-batch-4.js": "9f2d6b6eac7903bb52f6424efbeb50ba521c8d5fd0f85b544d99a1210f4f9b49",
+  "shared/ks4-source.js": "28b778fe65750dfb38bda00a56162fa11ecf0cc39a06127eb1d9989949c7a61c",
+  "shared/ks4-theme.css": "931957c2a106c48a2779ad46d9ef6c5fb11ebbf2548d607ff9bb07580ec28065",
+  "shared/mrbadmus.v2.js": "0e15e97c2011a2488b0a7d9f1d496e9e4c6630f2e8dc50530c8f1625a7e020a1",
+  "shared/student-bell.js": "551fab54254e25ffdfb29c053b178e657ac330c1579e52af5c453bc825e3dc86",
+  "shared/theme.js": "6ee0cd4e634749a6d16a490d60f8a57e40371d5e5c78cfaafcdbcc72e8c3f7c2",
+  "shared/topbar.css": "4302b6fdb1c4da0e92ce204115e76d85684306507de03c3dbb70e722820ec19e",
+  "shared/topbar.js": "b882f4fb75341dbe41f179d4cd0da933ff4f3ecc6290bc97e7484374f8c408eb"
+ },
+ "pages": {
+  "mrbadmus_site/combined/foundation/physics/energy/efficiency.html": "41be0ff7a1a7ef12c13bdd596718f20c0414fef32da25f2f9061f6128e21055b",
+  "mrbadmus_site/combined/higher/physics/energy/efficiency.html": "3287e00b69e640382ea7093696a7a93063dfeaa08178374cb7fdd6717064ae8f",
+  "mrbadmus_site/triple/foundation/physics/energy/efficiency.html": "784b1a89adcc396058d02f12501485f9c919fd12d6cff160f05491a5ab9f2b30",
+  "mrbadmus_site/triple/higher/physics/energy/efficiency.html": "a926a62d7d8add7319ef0b6a4eb220f5af11b5ab839d299e7abc29b22ac81263"
+ }
+}

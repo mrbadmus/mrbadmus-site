@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Efficiency · MrBadmusAI GCSE Physics</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+  input[type="range"] { accent-color: #A93411; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Physics" unit="Energy" title="Efficiency" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Physics 6.1.2.2</p>
+        <h1>Efficiency</h1>
+        <p class="ks3-bigq">Every device wastes some of the energy you put in. Efficiency is the share that ends up useful. Draw it, calculate it, and work out the waste.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <div style="margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;">
+          <a href="{{ eqSheetHref }}" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 16px; border-radius: var(--ks3-r-control); border: 2px solid var(--ks3-ink); background: var(--ks3-card); color: var(--ks3-ink); font-size: 16px; font-weight: 700; text-decoration: none;" style-hover="background: var(--ks3-accent-tint); border-color: var(--ks3-accent);">View the full equation sheet<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3H3v10h10v-3"></path><path d="M9 3h4v4"></path><path d="M13 3L7 9"></path></svg></a>
+          <span style="font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">AQA · {{ eqSheetLabel }} · PDF</span>
+        </div>
+        <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 14px;">
+          <dc-import name="Ks4Triangle" eq="{{ eqEnergy }}" variant="compact" hint-size="320px,260px"></dc-import>
+          <dc-import name="Ks4Triangle" eq="{{ eqPower }}" variant="compact" hint-size="320px,260px"></dc-import>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Two bulbs, the same brightness." scene="An old filament bulb and an LED bulb light a room equally well. After an hour, the filament bulb is too hot to touch. The LED bulb is only warm." question="which bulb wastes more of the energy it is supplied with?" options="{{ hookOptions }}" bridge="Energy that heats the bulb and the room is wasted, because the job was light. Next: measure how much of the input is useful." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-sankey" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Sankey diagram · drawn to scale</p>
+        <h2 style="margin: 6px 0 0;">Split the input into useful and wasted.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The width of each arrow is proportional to the energy it carries. What goes in comes out: useful output plus wasted output equals the total input.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ presets }}" as="p" hint-placeholder-count="3"><button type="button" onClick="{{ p.onClick }}" aria-pressed="{{ p.pressed }}" style="{{ p.style }}">{{ p.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ sankeyFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <label for="useful" style="font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Useful output from 100 J</label>
+            <input id="useful" type="range" min="0" max="100" step="5" value="{{ useful }}" onInput="{{ onUseful }}" onChange="{{ onUseful }}" aria-valuetext="{{ usefulText }}" style="width: 100%; min-height: 44px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; color: var(--ks3-ink-muted);">USEFUL</p><p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 22px;">{{ usefulText }}</p></div>
+              <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; color: var(--ks3-ink-muted);">WASTED</p><p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 22px;">{{ wastedText }}</p></div>
+            </div>
+            <p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 19px; line-height: 1.5;">{{ effLine }}</p>
+            <p style="margin: 0; font-size: 17px; line-height: 1.55;">Efficiency has no unit. As a decimal it is between 0 and 1. Multiply by 100 for a percentage.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-waste" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Where the waste goes</p>
+        <h2 style="margin: 6px 0 0;">Wasted energy is not destroyed.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Wasted energy is dissipated: it spreads out into the surroundings and is stored in less useful ways, mostly as a slight warming of the surroundings.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Lubrication</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Oil between moving parts reduces friction, so less energy is transferred to the thermal store of the parts and dissipated.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Thermal insulation</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Insulating a hot device or a building reduces the energy transferred to the surroundings.</p>
+          </div>
+        </div>
+        <sc-if value="{{ isHigher }}">
+          <div data-arrive="1" style="margin-top: 16px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-accent);">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Higher · ways to increase efficiency</p>
+              <span style="font-family: var(--ks3-font-mono); font-size: 12px; padding: 2px 9px; border-radius: 99px; border: 2px solid var(--ks3-ink);">{{ route }}</span>
+            </div>
+            <ul style="margin: 10px 0 0; padding-left: 1.1em; font-size: 17px; line-height: 1.55; display: flex; flex-direction: column; gap: 6px;">
+              <li><strong>Lubricate</strong> moving parts: less friction, less energy wasted as thermal energy.</li>
+              <li><strong>Streamline</strong> vehicles: less air resistance, so less energy is transferred to the air.</li>
+              <li><strong>Insulate</strong> hot objects: less energy is transferred to the surroundings.</li>
+              <li><strong>Swap the component</strong>: an LED transfers a bigger share of its input to light than a filament lamp.</li>
+              <li><strong>Regenerative braking</strong>: a hybrid or electric car stores some of its kinetic energy in the battery instead of wasting it as thermal energy in the brakes.</li>
+            </ul>
+            <p style="margin: 10px 0 0; font-size: 17px; line-height: 1.55;">For each way, say what is reduced and where that energy would have gone.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · which number goes underneath</p></div>
+        <p class="ks3-mis-quote">&ldquo;Efficiency is the useful energy divided by the wasted energy.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Calculate" prompt="A motor is supplied with 200 J. It transfers 150 J usefully and wastes 50 J. What is its efficiency?" options="{{ thinkOptions }}" reveal="Efficiency = useful output ÷ total input = 150 ÷ 200 = 0.75. Divide by the total input, never the waste. Efficiency can never be more than 1: if you get 3 or 1.33, the division is the wrong way round or by the wrong number." right-word="Yes." wrong-word="Not this one." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equations · efficiency</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Same triangle for energies or powers. Tap the quantity you want to find. A percentage is not a triangle: it is a conversion line, × 100 to give one, ÷ 100 before you use one.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 16px;">
+          <dc-import name="Ks4Triangle" eq="{{ eqEnergy }}" variant="full" hint-size="100%,420px"></dc-import>
+          <dc-import name="Ks4Triangle" eq="{{ eqPower }}" variant="full" hint-size="100%,420px"></dc-import>
+        </div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-steps" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Steps" mode="worked" id="eff-w" head="A motor has an efficiency of 0.80. It is supplied with 2000 J. Calculate the energy it wastes." lead="Two steps: the useful energy first, then the waste." steps="{{ wSteps }}" next="Now the same two steps yourself." hint-size="100%,900px"></dc-import>
+          <div style="margin-top: 22px;">
+            <dc-import name="Ks4Steps" mode="attempt" id="eff-a" head="An engine is 35% efficient. It is supplied with 60 kJ. Calculate the energy it wastes, in joules." lead="Write each line, then check your working." steps="{{ aSteps }}" close="Stopping after Step 1 gives the useful energy, 21 000 J: the question asks for the waste." on-done="{{ onSteps }}" hint-size="100%,900px"></dc-import>
+          </div>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Same units top and bottom. Decimal first, then × 100 if a percentage is asked for.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Work out the value for both, then say which is higher and by how much.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Say what is reduced, where the energy would have gone, and the effect on efficiency.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Efficiency = useful output ÷ total input. It has no unit and is never more than 1. Wasted energy = total input − useful output.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="efficiency" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Efficiency" spec="AQA 6.1.2.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Physics" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which number goes on the bottom?" legal="The Sankey diagram is drawn to scale for an input of 100 J. Device values are typical round figures for teaching, not measurements." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Two bulbs', short: 'HOOK' },
+  { id: 's-sankey', label: 'Sankey diagram', short: 'SANKEY' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-calc', label: 'Calculate efficiency', short: 'CFIFA' },
+  { id: 's-steps', label: 'Step 1, Step 2', short: 'STEPS' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const EQ_E = { name: 'Efficiency from energies', written: 'efficiency = useful output energy transfer \u00f7 total input energy transfer', source: 'sheet',
+  top: { s: 'useful', name: 'useful output energy transfer', unit: 'J' },
+  bottom: [{ s: 'eff', name: 'efficiency', unit: 'no unit' }, { s: 'total', name: 'total input energy transfer', unit: 'J' }] };
+const EQ_P = { name: 'Efficiency from powers', written: 'efficiency = useful power output \u00f7 total power input', source: 'sheet',
+  top: { s: 'useful', name: 'useful power output', unit: 'W' },
+  bottom: [{ s: 'eff', name: 'efficiency', unit: 'no unit' }, { s: 'total', name: 'total power input', unit: 'W' }] };
+const PRESETS = [{ label: 'Filament lamp', useful: 10, out: 'light' }, { label: 'LED lamp', useful: 40, out: 'light' }, { label: 'Electric motor', useful: 75, out: 'kinetic' }];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, useful: 10, preset: 0, moved: false, think: null, calc: 0, steps: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  sankey(u, outWord) {
+    const D = window.KS4D, C = D.C;
+    const H = 180, y0 = 60, a = y0 + H * u / 100, b = y0 + H, w = b - a, r = 16;
+    let p = '';
+    p += '<path d="M40 ' + y0 + ' L260 ' + y0 + ' L260 ' + b + ' L40 ' + b + ' L62 ' + ((y0 + b) / 2) + ' Z" fill="#E8C9A0" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    if (u > 0) {
+      const tip = Math.max(10, (a - y0) / 2);
+      p += '<path d="M258 ' + y0 + ' L540 ' + y0 + ' L540 ' + (y0 - 6) + ' L' + (540 + tip + 14) + ' ' + ((y0 + a) / 2) + ' L540 ' + (a + 6) + ' L540 ' + a + ' L258 ' + a + ' Z" fill="#9CC79A" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    }
+    if (w > 0.5) {
+      const xo = 270 + r + w, xi = 270 + r, yb = b + r + 40;
+      p += '<path d="M258 ' + a + ' L270 ' + a + ' A ' + (r + w) + ' ' + (r + w) + ' 0 0 1 ' + xo + ' ' + (b + r) + ' L' + xo + ' ' + yb + ' L' + (xo + 6) + ' ' + yb + ' L' + ((xo + xi) / 2) + ' ' + (yb + Math.max(10, w / 2) + 10) + ' L' + (xi - 6) + ' ' + yb + ' L' + xi + ' ' + yb + ' L' + xi + ' ' + (b + r) + ' A ' + r + ' ' + r + ' 0 0 0 270 ' + b + ' L258 ' + b + ' Z" fill="#D9D3C4" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    }
+    p += D.T(150, 44, '100 J in', 18, { fill: C.stroke });
+    if (u > 0) p += D.T(560, y0 - 14, u + ' J ' + outWord, 18, { anchor: 'end', fill: C.stroke });
+    if (w > 0.5) p += D.T(270 + r + w + 16, b + r + 30, (100 - u) + ' J wasted', 18, { anchor: 'start', fill: C.stroke }) + D.T(270 + r + w + 16, b + r + 52, 'to the surroundings', 14, { anchor: 'start', weight: 'normal', fill: C.stroke });
+    return D.svg(620, 380, p, 'Sankey diagram to scale: 100 J in; ' + u + ' J useful ' + outWord + ' arrow to the right; ' + (100 - u) + ' J wasted arrow bending downwards.');
+  }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {}, isHigher: true, eqSheetHref: '#', eqSheetLabel: '' };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.moved, s.think !== null, s.calc >= 2, s.steps, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const pr = s.preset !== null ? PRESETS[s.preset] : null;
+    const outWord = pr ? pr.out : 'useful';
+    const dec = s.useful / 100;
+    const ph = { C: 'anything to convert?' };
+    const bankSrc = [
+      { q: 'A device has efficiency 0.6 and is supplied with 500 J. How much energy is wasted?', opts: [['200 J \u2014 useful = 0.6 \u00d7 500 = 300 J; wasted = 500 \u2212 300 = 200 J', true], ['300 J \u2014 this is the useful output, not the wasted amount', false], ['500 J \u2014 all energy is wasted at efficiency 0.6', false], ['833 J \u2014 dividing 500 \u00f7 0.6', false]],
+        wrong_explanations: { 1: '300 J is the USEFUL output (60% of 500). WASTED = total \u2212 useful = 500 \u2212 300 = 200 J.', 2: 'At efficiency 0.6, only 40% (200 J) is wasted \u2014 not all 500 J.', 3: '500 \u00f7 0.6 = 833 J: this would be the input needed to get 500 J useful output, not the wasted energy.' } },
+      { q: 'An LED uses 11 J/s total and produces 10 J/s of light. A filament bulb produces the same 10 J/s of light but uses 100 J/s. How much more energy per second does the bulb waste?', opts: [['89 J/s \u2014 LED wastes 1 J/s, bulb wastes 90 J/s; difference = 89 J/s', true], ['0 J/s \u2014 both produce the same useful light so waste must be equal', false], ['10 J/s \u2014 the useful output is 10 J/s so waste is also 10 J/s', false], ['100 J/s \u2014 the bulb uses 100 J/s so wastes all of it', false]],
+        wrong_explanations: { 1: 'Same USEFUL output does NOT mean same waste. LED: wastes 11 \u2212 10 = 1 J/s. Bulb: wastes 100 \u2212 10 = 90 J/s. Difference = 89 J/s.', 2: 'Wasted = total \u2212 useful. The TOTAL inputs are very different (11 vs 100 J/s).', 3: 'Bulb uses 100 J/s but 10 J/s is useful light \u2014 it wastes 90 J/s, not 100 J/s.' } },
+      { q: 'Which equation gives the efficiency of a device?', opts: [['efficiency = useful output energy transfer \u00f7 total input energy transfer', true], ['efficiency = useful output energy transfer \u00f7 wasted energy', false], ['efficiency = total input energy transfer \u00f7 useful output energy transfer', false], ['efficiency = total input energy transfer \u2212 useful output energy transfer', false]],
+        wrong_explanations: { 1: 'Divide by the total input, not the waste. Dividing by the waste can give answers above 1.', 2: 'Upside down: this always gives a number above 1.', 3: 'That subtraction gives the wasted energy, not the efficiency.' } },
+      { q: 'A heater is 85% efficient. Its total power input is 2000 W. What is its useful power output?', opts: [['1700 W', true], ['170 000 W', false], ['2353 W', false], ['300 W', false]],
+        wrong_explanations: { 1: 'That uses 85 instead of 0.85. Divide the percentage by 100 first.', 2: 'That is 2000 \u00f7 0.85, which would be the input needed for 2000 W of useful output.', 3: 'That is the wasted power: 2000 \u2212 1700.' } },
+      { q: 'On a Sankey diagram the input arrow is 20 squares wide and the useful arrow is 5 squares wide. What is the efficiency?', opts: [['0.25', true], ['4', false], ['0.33', false], ['15', false]],
+        wrong_explanations: { 1: 'That is 20 \u00f7 5: the division is upside down. Efficiency can never be more than 1.', 2: 'That is useful \u00f7 wasted (5 \u00f7 15). Divide by the total input, 20.', 3: 'That is the width of the wasted arrow, not an efficiency.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('efficiency') : null,
+      eqEnergy: EQ_E, eqPower: EQ_P,
+      hookOptions: [
+        { text: 'The filament bulb', correct: true, reply: 'It gives the same light but heats up far more, so far more of its input is wasted.' },
+        { text: 'The LED bulb', correct: false, reply: 'Same light from both, but the filament bulb gets far hotter. That heat is energy that didn\u2019t become light.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      presets: PRESETS.map((p, i) => ({ label: p.label, pressed: s.preset === i, style: this.seg(s.preset === i), onClick: () => this.setState({ preset: i, useful: p.useful, moved: true }) })),
+      sankeyFig: ready ? K.fig(this.sankey(s.useful, outWord), '') : null,
+      useful: s.useful, usefulText: s.useful + ' J', wastedText: (100 - s.useful) + ' J',
+      onUseful: (e) => this.setState({ useful: +e.target.value, preset: null, moved: true }),
+      effLine: 'efficiency = ' + s.useful + ' \u00f7 100 = ' + dec.toFixed(2) + ' = ' + s.useful + '%',
+      thinkOptions: [
+        { text: '0.75', correct: true, reply: '150 \u00f7 200.' },
+        { text: '3', correct: false, reply: 'That is 150 \u00f7 50, useful over wasted. Efficiency can\u2019t be more than 1.' },
+        { text: '1.33', correct: false, reply: 'That is 200 \u00f7 150: upside down.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      cfExamples: [
+        { tab: 'Nothing to convert', eq: EQ_E, find: 'eff', head: 'A car engine uses 20,000 J of chemical energy and produces 7,000 J of useful kinetic energy. Calculate its efficiency.', steps: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert \u2014 both quantities already in SI units: joules (J).' },
+          { letter: 'F', label: 'Formula', line: 'efficiency = useful output energy \u00f7 total input energy' },
+          { letter: 'I', label: 'Insert', line: 'efficiency = 7000 \u00f7 20,000' },
+          { letter: 'F', label: 'Fine-tune', line: 'efficiency = 0.35' },
+          { letter: 'A', label: 'Answer', line: 'efficiency = 0.35 (35%)', note: 'No unit. \u00d7 100 gives the percentage.' }] },
+        { tab: 'Convert first', eq: EQ_E, find: 'eff', head: 'A motor is supplied with 2.5 kJ of energy and transfers 1800 J usefully. Calculate its efficiency as a percentage.', steps: [
+          { letter: 'C', label: 'Convert', line: '2.5 kJ \u00d7 1000 = 2500 J', note: 'Top and bottom must be in the same unit.' },
+          { letter: 'F', label: 'Formula', line: 'efficiency = useful output energy \u00f7 total input energy' },
+          { letter: 'I', label: 'Insert', line: 'efficiency = 1800 \u00f7 2500' },
+          { letter: 'F', label: 'Fine-tune', line: 'efficiency = 0.72; 0.72 \u00d7 100 = 72', note: 'The \u00d7 100 is a conversion, not part of the equation.' },
+          { letter: 'A', label: 'Answer', line: 'efficiency = 72%', note: 'Unconverted, 1800 \u00f7 2.5 = 720: impossible, since efficiency is never above 1.' }] },
+        { tab: 'A percentage given', eq: EQ_P, find: 'useful', next: 'Now yours, below.', head: 'A lamp is 40% efficient. Its total power input is 60 W. Calculate its useful power output.', steps: [
+          { letter: 'C', label: 'Convert', line: '40% \u00f7 100 = 0.40', note: 'A percentage goes into the equation as a decimal.' },
+          { letter: 'F', label: 'Formula', line: 'efficiency = useful power output \u00f7 total power input' },
+          { letter: 'I', label: 'Insert', line: '0.40 = useful \u00f7 60' },
+          { letter: 'F', label: 'Fine-tune', line: 'useful = 0.40 \u00d7 60 = 24', note: 'Cover "useful" on the triangle: efficiency \u00d7 total.' },
+          { letter: 'A', label: 'Answer', line: 'useful power output = 24 W' }] }
+      ],
+      cfQuestions: [
+        { tab: 'Question 1', id: 'eff-q1', head: 'A motor has a total power input of 1.2 kW and a useful power output of 900 W. Calculate its efficiency.', close: '900 \u00f7 1.2 = 750 is impossible: convert kW to W first.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: ph.C, line: '1.2 kW \u00d7 1000 = 1200 W' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'efficiency = useful power output \u00f7 total power input' }, { letter: 'I', label: 'Insert', placeholder: 'efficiency = \u2026 \u00f7 \u2026', line: 'efficiency = 900 \u00f7 1200' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'efficiency = 0.75' }, { letter: 'A', label: 'Answer', placeholder: 'decimal (and %)', line: 'efficiency = 0.75 (75%)' }] },
+        { tab: 'Question 2', id: 'eff-q2', head: 'A heater is 90% efficient. Its total input energy transfer is 5000 J. Calculate its useful output energy transfer.', close: 'Using 90 instead of 0.90 gives 450 000 J: more out than in.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: ph.C, line: '90% \u00f7 100 = 0.90' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'efficiency = useful output energy \u00f7 total input energy' }, { letter: 'I', label: 'Insert', placeholder: '\u2026 = useful \u00f7 \u2026', line: '0.90 = useful \u00f7 5000' }, { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange: useful = \u2026', line: 'useful = 0.90 \u00d7 5000 = 4500' }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: 'useful output energy = 4500 J' }] }
+      ],
+      onCalc: (n) => this.setState({ calc: n }),
+      wSteps: [
+        { title: 'Find the useful energy', eq: EQ_E, find: 'useful', carry: 'useful = 1600 J', lines: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert: a decimal efficiency and joules.' },
+          { letter: 'F', label: 'Formula', line: 'efficiency = useful output energy \u00f7 total input energy' },
+          { letter: 'I', label: 'Insert', line: '0.80 = useful \u00f7 2000' },
+          { letter: 'F', label: 'Fine-tune', line: 'useful = 0.80 \u00d7 2000 = 1600' },
+          { letter: 'A', label: 'Answer', line: 'useful output energy = 1600 J' }] },
+        { title: 'Subtract to find the waste', lines: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert: both in joules.' },
+          { letter: 'F', label: 'Formula', line: 'wasted energy = total input \u2212 useful output' },
+          { letter: 'I', label: 'Insert', line: 'wasted = 2000 \u2212 1600', note: '1600 J is Step 1\u2019s answer.' },
+          { letter: 'F', label: 'Fine-tune', line: 'wasted = 400' },
+          { letter: 'A', label: 'Answer', line: 'wasted energy = 400 J' }] }
+      ],
+      aSteps: [
+        { title: 'Find the useful energy', carry: 'useful = 21 000 J', lines: [
+          { letter: 'C', label: 'Convert', placeholder: ph.C, line: '35% \u00f7 100 = 0.35; 60 kJ \u00d7 1000 = 60 000 J' },
+          { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'efficiency = useful output energy \u00f7 total input energy' },
+          { letter: 'I', label: 'Insert', placeholder: '\u2026 = useful \u00f7 \u2026', line: '0.35 = useful \u00f7 60 000' },
+          { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange and work out', line: 'useful = 0.35 \u00d7 60 000 = 21 000' },
+          { letter: 'A', label: 'Answer', placeholder: 'useful = \u2026 with unit', line: 'useful output energy = 21 000 J' }] },
+        { title: 'Subtract to find the waste', lines: [
+          { letter: 'C', label: 'Convert', placeholder: ph.C, line: 'Nothing to convert.' },
+          { letter: 'F', label: 'Formula', placeholder: 'wasted = \u2026', line: 'wasted energy = total input \u2212 useful output' },
+          { letter: 'I', label: 'Insert', placeholder: 'wasted = \u2026 \u2212 \u2026', line: 'wasted = 60 000 \u2212 21 000' },
+          { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'wasted = 39 000' },
+          { letter: 'A', label: 'Answer', placeholder: 'with unit', line: 'wasted energy = 39 000 J' }] }
+      ],
+      onSteps: () => this.setState({ steps: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Give the unit of efficiency.', why: 'Efficiency is a ratio of two energies (or two powers), so it has no unit.', options: [
+            { text: 'Joules (J)', correct: false, reply: 'Joules measure energy. Efficiency is energy divided by energy.' },
+            { text: 'Watts (W)', correct: false, reply: 'Watts measure power. Efficiency is a ratio.' },
+            { text: 'It has no unit', correct: true },
+            { text: 'Joules per second (J/s)', correct: false, reply: 'That is a power. Efficiency has no unit.' }] },
+          { kind: 'mcq', command: 'State', marks: 1, prompt: 'State what happens to the energy a device wastes.', why: 'It is dissipated to the surroundings, stored in less useful ways.', options: [
+            { text: 'It is destroyed', correct: false, reply: 'Energy cannot be destroyed.' },
+            { text: 'It is dissipated to the surroundings and stored in less useful ways', correct: true },
+            { text: 'It is stored in the device until it is used', correct: false, reply: 'Wasted energy spreads out into the surroundings.' }] }
+        ],
+        r2: [
+          { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'A lamp is supplied with 60 J of energy and gives out 3 J of light. Calculate its efficiency as a decimal.',
+            convOptions: ['Nothing to convert', 'Convert J to kJ: divide by 1000', 'Convert to a percentage first: multiply by 100'], convAnswer: 0, answer: 0.05, tol: 0.001, unit: 'no unit', units: ['no unit', 'J', 'W', '%'],
+            right: '3 \u00f7 60 = 0.05, no unit.', wrong: 'Nothing to convert. Efficiency = useful \u00f7 total = 3 \u00f7 60 = 0.05.',
+            model: ['C \u00b7 Nothing to convert', 'F \u00b7 efficiency = useful output energy \u00f7 total input energy', 'I \u00b7 efficiency = 3 \u00f7 60', 'F \u00b7 efficiency = 0.05', 'A \u00b7 0.05 (no unit)'] },
+          { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'A motor has an efficiency of 0.65. It is supplied with 4.0 kJ of energy. Calculate the useful energy it transfers, in joules.',
+            convOptions: ['Nothing to convert', 'Convert kJ to J: multiply by 1000', 'Convert kJ to J: divide by 1000'], convAnswer: 1, answer: 2600, tol: 1, unit: 'J', units: ['J', 'kJ', 'W', 'no unit'],
+            right: '0.65 \u00d7 4000 = 2600 J.', wrong: '4.0 kJ \u00d7 1000 = 4000 J, then useful = efficiency \u00d7 total = 0.65 \u00d7 4000.',
+            model: ['C \u00b7 4.0 kJ \u00d7 1000 = 4000 J', 'F \u00b7 efficiency = useful output energy \u00f7 total input energy', 'I \u00b7 0.65 = useful \u00f7 4000', 'F \u00b7 useful = 0.65 \u00d7 4000 = 2600', 'A \u00b7 2600 J'] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'A student calculates the efficiency of a kettle as 1.25. Explain why the answer must be wrong. Put the links in order.',
+            links: ['Efficiency = useful output energy \u00f7 total input energy.', 'The useful output can never be more than the total input.', 'So efficiency can never be more than 1: the student has divided the wrong way round.'],
+            herrings: [{ text: 'Efficiency is measured in joules, so 1.25 J is too small.', why: 'Efficiency has no unit.' }, { text: 'Kettles always have an efficiency of exactly 1.', why: 'No device is perfectly efficient: some energy is always dissipated.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why oiling a bicycle chain increases the efficiency of the bicycle. Put the links in order.',
+            links: ['Friction between the moving parts transfers energy to their thermal store.', 'This energy is dissipated to the surroundings and wasted.', 'Oil reduces the friction, so less energy is wasted and a bigger share of the input is useful.'],
+            herrings: [{ text: 'Oil adds energy to the chain.', why: 'Oil doesn\u2019t supply energy; it reduces friction.' }, { text: 'Oil destroys the wasted energy.', why: 'Energy is never destroyed. Less is wasted in the first place.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Compare', marks: 4, prompt: 'Lamp A has a power input of 40 W and gives 6 W of light. Lamp B has a power input of 8 W and gives 3 W of light. Compare the two lamps. Use calculations in your answer.',
+            levels: [
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Both efficiencies calculated correctly, the wasted power compared, and a clear conclusion.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'One efficiency or one wasted power calculated, or a conclusion with little support.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Lamp A: efficiency = 6 \u00f7 40 = 0.15 (15%).', 'Lamp B: efficiency = 3 \u00f7 8 = 0.375 (37.5%).', 'Lamp A wastes 40 \u2212 6 = 34 W; lamp B wastes 8 \u2212 3 = 5 W.', 'Lamp B is more efficient and wastes less energy each second (though lamp A gives more light).'],
+            reject: ['\u201cLamp A is more efficient because it gives more light.\u201d', '\u201cEfficiency of A = 40 \u00f7 6 = 6.7.\u201d'] }
+        ]
+      },
+      keyLines: ['Efficiency = useful output energy transfer \u00f7 total input energy transfer.', 'Efficiency = useful power output \u00f7 total power input. Both are on the equation sheet.', 'No unit; between 0 and 1. \u00d7 100 for a percentage; \u00f7 100 before using a percentage.', 'Wasted energy = total input \u2212 useful output. It is dissipated, stored in less useful ways.', 'Sankey diagram: arrow width is proportional to energy; input = useful + wasted.', 'Lubrication and thermal insulation reduce unwanted energy transfers.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: null, endNext: { href: 'ks4-physics-6.1.2.1-thermal-conductivity.dc.html', label: 'Thermal conductivity' },
+      endConnects: [{ href: 'ks4-physics-6.1.2.1-thermal-conductivity.dc.html', label: 'Thermal conductivity and reducing unwanted energy transfers' }]
+    });
+  }
+}
+</script>
+</body>
+</html>
