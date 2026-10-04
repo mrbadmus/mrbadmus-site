@@ -177,6 +177,7 @@
     // row is labelled either way — the glyph is company for the word, never a
     // substitute for it.
     { ico: '🔬', label: '3D Studio', href: '/3d/' },
+    { ico: '🧪', label: 'Simulations', href: '/simulations/' },
     { ico: '📄', label: 'Past Papers', href: '/past-papers.html' },
     { ico: '📚', label: 'Revision', href: '/revision.html' },
     { ico: '📊', label: 'My Challenges', href: '/my-challenges.html' },

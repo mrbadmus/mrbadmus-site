@@ -1,0 +1,19 @@
+/* Dark values for the lab's --st-* tokens, so it follows the site's Light /
+   Dark / System control. Light is Design's file, untouched. Values mirror the
+   site's dark palette (shared/ks3-theme.css). */
+html[data-theme="dark"] {
+  --st-ground: #16120E; --st-paper: #1F1A15; --st-paper-grid: #2A231C;
+  --st-ink: #F3ECE0; --st-body: #E3D9CA; --st-muted: #C2B6A6; --st-caption: #B0A493;
+  --st-faint: #B0A493; --st-ghost: #A39786;
+  --st-rule: #3E352C; --st-rule-soft: #332B23; --st-rule-fact: #332B23; --st-rule-strong: #5E5246;
+  --st-edge: #4F443A; --st-btn-border: #5E5246; --st-seg-bg: #2A231C; --st-note-bg: #2A231C;
+  --st-note-border: #5E5246; --st-num-well: #2A231C; --st-crumb-bg: #231D17;
+  --st-accent: #F07A4E; --st-accent-text: #FF9E78; --st-accent-hover: #FFC2A8;
+  --st-shadow-frame: 0 26px 64px -32px rgba(0, 0, 0, 0.8);
+  --physics: #8FB7FF;
+  --wml-ok: #3CC477; --wml-ok-text: #86E6AC; --wml-ok-bg: #15301F;
+  --wml-bad: #FF8A7A; --wml-bad-bg: #3A1D18;
+}
+html[data-theme="dark"] body { background: #16120E; }
+html[data-theme="dark"] a { color: #FF9E78; }
+html[data-theme="dark"] a:hover { color: #FFC2A8; }
