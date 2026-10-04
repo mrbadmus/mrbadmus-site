@@ -655,3 +655,15 @@ html[data-theme="dark"] .rd :is(.c-ink, .ex-dark, .td-dark-card, .uc-rules, .gl-
       on dark's brighter green, 3.3:1 on light's). The fills keep their
       brightness in both themes, so the text on them is a dark ink in both. */
 .rd { --c-on-fill: #16120E; }   /* 5.1:1 on the light accent, 5.5:1 on the light ok fill */
+/* 3. TEXT ON THE --ks3-accent-text FILL. ⊕ B2C polish 3 (4 Oct 2026).
+      That fill is the TEXT orange, which flips: deep (#A93411) in light,
+      pale peach (#FF9E78) in dark. So the ink on it must flip the other
+      way — white in light (6.6:1), dark in dark (9.3:1). White in both was
+      the child's unread-messages badge on Today in dark: 2.02:1 at 12px.
+      The page-local --dk-on-accent (overview) and --su-on-accent
+      (public.css) are this same pair; this is the one every other consumer
+      page (Today, unit check, org) takes. */
+.rd { --c-on-accent-text: #FFFFFF; }
+@media screen {
+  html[data-theme="dark"] .rd { --c-on-accent-text: #16120E; }
+}

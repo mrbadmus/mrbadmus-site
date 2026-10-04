@@ -314,7 +314,7 @@
       var done = i < idx, on = i === idx;
       var back = done && railTarget(i);
       var numBg = done ? 'var(--ks3-ok)' : (on ? 'var(--ks3-ink)' : 'var(--ks3-card)');
-      var numFg = done ? '#fff' : (on ? 'var(--ks3-on-dark)' : 'var(--ks3-ink-muted)');
+      var numFg = done ? 'var(--c-on-fill)' : (on ? 'var(--ks3-on-dark)' : 'var(--ks3-ink-muted)');
       var box = 'display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;' +
         'background:' + (on ? 'var(--ks3-band)' : 'transparent') + ';border:2px solid ' +
         (on ? 'var(--ks3-ink)' : 'transparent');
@@ -1272,15 +1272,22 @@
       window.MrBadmusTopicPicker.mount(host, {
         index: curriculum, units: S.unitUnits, child: S.unitChild, state: S.tp,
         listLabel: 'Topics for ' + (S.unitChildName || 'your child'),
+        /* ⊕ B2C polish 3: `sel` is null when nothing chosen is on screen
+           any more (a search hid it, or a greyed row was pressed) — the
+           button goes back to asking, so it never saves a pick the parent
+           can no longer see. */
         onChange: function (sel) {
           S.unitPicked = sel;
           S.unitNote = '';
           var save = $('u-save');
           if (save) {
-            save.textContent = 'Start ' + (S.unitChildName || 'your child') + ' from ' + sel.name;
-            save.removeAttribute('aria-disabled');
+            save.textContent = sel
+              ? ('Start ' + (S.unitChildName || 'your child') + ' from ' + sel.name)
+              : 'Pick a topic to continue';
+            if (sel) { save.removeAttribute('aria-disabled'); }
+            else { save.setAttribute('aria-disabled', 'true'); }
           }
-          var note = $('u-need'); if (note) { note.remove(); }
+          var note = $('u-need'); if (note && sel) { note.remove(); }
         }
       });
     }

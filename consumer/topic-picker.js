@@ -35,6 +35,9 @@
        subject: the scheme's own subject name (the key its cursors use),
        name, unitName, unitCode (KS3 only), slug (lessons only),
        week (lessons only — the scheme's teaching-order week) }
+   or null, whenever nothing chosen is on screen any more (a search or a
+   browse hid it, or a greyed row was pressed). A host enables its action
+   from this alone.
 
    ACCESSIBILITY
    ─────────────
@@ -237,6 +240,10 @@
         if (i.level === 'lesson') { i.pick = i.parent; }
       });
     }
+    function choosable(t) {
+      if (t.ok) { return true; }
+      return lessons && t.kids.some(function (k) { return k.ok; });
+    }
 
     var subjOpts = '<option value="">All subjects</option>' + SUBJECTS.map(function (s) {
       return '<option value="' + s + '"' + (st.subject === s ? ' selected' : '') + '>' + cap(s) + '</option>';
@@ -271,7 +278,13 @@
       var groups = { ks3: [], ks4: [] };
       model.topics.forEach(function (t) {
         if (st.subject && t.subject !== st.subject) { return; }
-        groups[t.ks].push('<option value="' + esc(t.id) + '"' + (st.topic === t.id ? ' selected' : '') + '>' +
+        /* ⊕ B2C polish 3 (defect 2). A topic with nothing in it this child
+           may have is disabled here exactly as its row is greyed in the
+           list, with the same words. A topic the scheme holds only some
+           lessons of stays open: those lessons are choosable. */
+        var open = choosable(t);
+        groups[t.ks].push('<option value="' + esc(t.id) + '"' +
+          (st.topic === t.id && open ? ' selected' : '') + (open ? '' : ' disabled') + '>' +
           esc(t.name + (t.ok ? '' : ' (' + t.why + ')')) + '</option>');
       });
       var order = model.childKs === 'ks4' ? ['ks4', 'ks3'] : ['ks3', 'ks4'];
@@ -307,19 +320,44 @@
       } else {
         qEl.removeAttribute('aria-activedescendant');
       }
+      report();
+    }
+
+    /* ⊕ B2C polish 3 (defect 1). What the host acts on is the selection the
+       parent can SEE: the chosen row, present in the list on screen. A
+       search that hides it, a browse to another topic, or a press on a
+       greyed row all leave nothing chosen, and the host is told (null) —
+       before this, the hidden earlier pick stayed live and "Set for Thu"
+       set it a second time. `st.shown` survives a re-mount, so a host that
+       redraws is told only about real changes. */
+    function shown() {
+      if (!st.selected) { return null; }
+      for (var i = 0; i < rows.length; i++) { if (rows[i].id === st.selected) { return rows[i]; } }
+      return null;
+    }
+    function report() {
+      var it = shown();
+      var id = it ? it.id : '';
+      if (id === (st.shown || '')) { return; }
+      st.shown = id;
+      if (typeof opts.onChange === 'function') { opts.onChange(it ? selectionOf(it) : null); }
     }
 
     function choose(n) {
       var it = rows[n];
-      if (!it || !it.ok) { return; }
-      var target = it.pick || it;
-      if (!target.ok) { return; }
+      var target = it && it.ok ? (it.pick || it) : null;
+      if (!it) { return; }
+      if (!target || !target.ok) {
+        // A greyed row is never chosen, and never leaves an older pick live.
+        st.selected = null;
+        draw();
+        return;
+      }
       st.selected = target.id;
       st.q = '';
       qEl.value = target.name;
       active = -1;
       draw();
-      if (typeof opts.onChange === 'function') { opts.onChange(selectionOf(target)); }
     }
 
     subjEl.addEventListener('change', function () {
@@ -368,7 +406,7 @@
 
     return {
       selection: function () {
-        var it = st.selected && model.items.filter(function (i) { return i.id === st.selected; })[0];
+        var it = shown();
         return it ? selectionOf(it) : null;
       },
       focus: function () { qEl.focus(); }

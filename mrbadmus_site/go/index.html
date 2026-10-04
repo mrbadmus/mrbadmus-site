@@ -288,9 +288,33 @@
       if (p && p.then) { p.then(after, after); } else { after(); }
     });
 
+    /* ⊕ B2C polish 3 (defect 4). A child whose family account is being
+       closed was offered "Carry on" here — into a Today that then refused
+       them. The backend is asked first (requireChild is the same rule the
+       login applies); on 403 account_closing the card says the login's own
+       sentence and offers only sign-out. Any other answer, including no
+       answer, keeps the card exactly as it was: this stays an enhancement. */
+    function closingCard(err) {
+      document.querySelector('.gl-already-eyebrow').hidden = true;
+      document.getElementById('gl-already-go').hidden = true;
+      document.getElementById('gl-already-out').textContent = 'Sign out';
+      whoEl.textContent = C.plainMessage(err,
+        'This account is being closed, so it can’t be signed in to. Ask the grown-up who set it up.');
+      already.hidden = false;
+    }
+
     ctx.sb.auth.getSession().then(function (r) {
       var session = r && r.data && r.data.session;
       if (!session || !C.isChildSession(session)) { return; }
+      return C.api('/api/consumer/child/session', { token: session.access_token, timeout: 10000 })
+        .then(function () { return false; }, function (err) {
+          if (C.isClosing(err)) { closingCard(err); return true; }
+          return false;
+        })
+        .then(function (closing) { if (!closing) { return offerCarryOn(session); } });
+    }).catch(function (e) { console.error('[go/session]', e); });
+
+    function offerCarryOn(session) {
       already.hidden = false;
 
       /* The name makes the question answerable — "Not you?" is a question a
@@ -310,7 +334,7 @@
             whoEl.textContent = 'You’re signed in as ' + name + '.';
           }
         });
-    }).catch(function (e) { console.error('[go/session]', e); });
+    }
 
     var form  = document.getElementById('gl-form');
     var uEl   = document.getElementById('gl-user');

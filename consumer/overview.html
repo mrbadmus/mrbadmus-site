@@ -141,6 +141,12 @@
     font-weight: 500;
     font-size: 13px;
   }
+  .dk-btn-ink[disabled] {
+    cursor: default;
+    border-color: var(--ks3-rule-strong);
+    background: var(--ks3-card);
+    color: var(--ks3-ink-muted);
+  }
   .dk-btn-ink {
     min-height: 54px;
     width: 100%;
@@ -606,7 +612,15 @@
     if (S.view !== 'overview') { extra.view = S.view; }
     return C.href('/consumer/overview.html', extra);
   }
+  /* ⊕ B2C polish 3 (defect 1). Every opening of Set work starts clean: no
+     earlier topic, search, kind, due day or note carried over. A sheet that
+     reopened holding the last pick, behind a fresh search, set that pick a
+     second time. */
+  function resetSetWork() {
+    S.workKind = 'practice'; S.topic = null; S.tp = {}; S.due = 'Sat'; S.note = '';
+  }
   function go(view, extra) {
+    if (view === 'setwork' && S.view !== 'setwork') { resetSetWork(); }
     S.view = view;
     S.answerId = null;
     if (extra) { Object.keys(extra).forEach(function (k) { S[k] = extra[k]; }); }
@@ -618,7 +632,9 @@
   window.addEventListener('popstate', function () {
     var q2 = new URLSearchParams(window.location.search);
     var v = q2.get('view') || 'overview';
-    S.view = VIEWS.indexOf(v) === -1 ? 'overview' : v;
+    v = VIEWS.indexOf(v) === -1 ? 'overview' : v;
+    if (v === 'setwork' && S.view !== 'setwork') { resetSetWork(); }
+    S.view = v;
     S.childId = q2.get('child') || S.childId;
     S.answerId = null;
     render();
@@ -1241,7 +1257,7 @@
       return '<div style="flex:1;text-align:center">' +
         '<div style="height:36px;border-radius:10px;border:2px solid var(--ks3-ink);background:' +
           (done ? 'var(--ks3-ok)' : (i < todayIdx ? 'var(--ks3-band)' : 'var(--ks3-card)')) +
-          ';display:grid;place-items:center;color:#fff">' +
+          ';display:grid;place-items:center;color:var(--c-on-fill)">' +
           (done ? svg(MARK.tick) : '') + '</div>' +
         '<div style="margin-top:4px;font-family:var(--ks3-font-mono);font-size:11px;' +
           'color:var(--ks3-ink-muted)">' + DAY_LABELS[i] + '</div></div>';
@@ -1502,8 +1518,23 @@
         '<input id="dk-note" value="' + esc(S.note) + '" maxlength="200" ' +
           'placeholder="e.g. Before Friday’s test" class="dk-field" style="min-height:50px;' +
           'padding:12px 14px" data-write></label>' +
-      '<button data-act="submit-work" data-write class="dk-btn-ink" style="margin-top:24px">Set for ' +
-        esc(civilLabel(dueDate(S.due)) || S.due) + '</button></div>';
+      '<button data-act="submit-work" data-write class="dk-btn-ink" id="dk-set" style="margin-top:24px"' +
+        (setReady() ? '' : ' disabled') + '>' + esc(setLabel()) + '</button></div>';
+  }
+
+  /* ⊕ B2C polish 3 (defect 1). The Set button is live only when what it
+     would set is on screen: an exam question (the server picks it), or a
+     topic the picker is showing as chosen. Its label says which. */
+  function setReady() { return S.workKind === 'exam' || !!S.topic; }
+  function setLabel() {
+    return setReady() ? ('Set for ' + (civilLabel(dueDate(S.due)) || S.due)) : 'Choose a topic first';
+  }
+  function syncSetButton() {
+    var b = document.getElementById('dk-set');
+    if (!b) { return; }
+    delete b.dataset.label;   // setBusy's memory of the old label, which this replaces
+    b.disabled = !setReady();
+    b.textContent = setLabel();
   }
 
   function viewChat() {
@@ -1873,7 +1904,7 @@
       index: curriculum, units: S.picker, state: S.tp,
       child: { year: k.year_group, pathway: k.pathway, tier: k.tier },
       listLabel: 'Topics for ' + k.first_name,
-      onChange: function (sel) { S.topic = sel; }
+      onChange: function (sel) { S.topic = sel; syncSetButton(); }
     });
   }
 

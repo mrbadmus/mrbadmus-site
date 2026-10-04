@@ -83,7 +83,7 @@
     display: grid; place-items: center; min-width: 24px; height: 24px;
     padding: 0 6px; border-radius: 99px;
     border: 2px solid var(--ks3-ground); background: var(--ks3-accent-text);
-    color: #fff; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500;
+    color: var(--c-on-accent-text); font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500;
   }
 
   /* ── today screen ── */
@@ -184,7 +184,7 @@
     border-radius: 13px; border: 2px solid var(--ks3-ink);
     background: var(--ks3-band); color: var(--ks3-ink);
   }
-  .td-item.is-done .td-item-icon { background: var(--ks3-ok); color: #fff; }
+  .td-item.is-done .td-item-icon { background: var(--ks3-ok); color: var(--c-on-fill); }
   .td-item-icon .ks3-mark { width: 22px; height: 22px; }
   .td-item-mins { font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; }
   .td-item-body { flex: 1; min-width: 0; }
@@ -247,7 +247,7 @@
   .td-later-done[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
   .td-later-tick {
     flex: 0 0 44px; width: 44px; height: 44px; display: grid; place-items: center;
-    border: 2px solid var(--ks3-ink); border-radius: 12px; background: var(--ks3-ok); color: #fff;
+    border: 2px solid var(--ks3-ink); border-radius: 12px; background: var(--ks3-ok); color: var(--c-on-fill);
   }
   .td-later-tick .ks3-mark { width: 20px; height: 20px; }
   .td-later li.is-done .td-later-title { color: var(--ks3-ink-muted); }
