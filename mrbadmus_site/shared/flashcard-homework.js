@@ -1288,9 +1288,73 @@
     }
   };
 
+  // ⊕ Prompt Y (4 Oct 2026) — TWO TABS ON ONE HOMEWORK. The server keeps one
+  // open sitting per pupil per homework, so two tabs write into the SAME
+  // sitting, and within a sitting the latest rating of a card is the one
+  // that counts (the ‹ Back rule). A tab left open on card 1 while the pupil
+  // secured it in another tab would offer card 1 again, and a Not yet typed
+  // there un-secured it on the server while this tab's own screen still
+  // counted it. The stale tab is the fault, so it is never allowed to take
+  // an answer: another tab's progress on this homework (see
+  // `progressElsewhere`) marks it stale, and the moment
+  // this tab is in front again — visible and focused — it is rebuilt from
+  // the server through the same reopen path a second device uses
+  // (`Api.open`: this tab's own unsent events first, then the pass the
+  // server holds), and redrawn.
+  var stale = {};
+  // Only PROGRESS elsewhere counts: an answer, a rating, or a sitting's end
+  // queued or delivered (the queue going from holding them to empty is the
+  // other tab's send landing — the moment the server has them). An "I don't
+  // know" is itself an answer in that queue. Drafts, visibility pings and the
+  // "I don't know" record move nothing on the server, and every rebuild
+  // rewrites them, so counting them made two tabs that both thought they
+  // were in front rebuild each other for ever, dropping taps on the way.
+  function hasWork(v) {
+    try {
+      return (JSON.parse(v || "[]") || []).some(function (x) {
+        return !!x && (x.type === "rated" || x.type === "answer_submitted" || x.type === "session_finish");
+      });
+    } catch (e) { return false; }
+  }
+  function progressElsewhere(ev, id) {
+    return ev.key === STORE + id && (hasWork(ev.newValue) || hasWork(ev.oldValue));
+  }
+  function inFront() {
+    var d = root.document;
+    return !!d && d.visibilityState !== "hidden" && (typeof d.hasFocus !== "function" || d.hasFocus());
+  }
+  // One rebuild at a time. The other tab's last rating can still be in
+  // flight when this one comes forward, so the first rebuild may read the
+  // server a moment too early; that tab's send then lands, writes storage,
+  // and asks again. Two `Api.open`s racing would let the EARLIER read finish
+  // last and win, so a request that arrives mid-rebuild waits for it and
+  // runs once after.
+  var resyncing = false, resyncAgain = false;
+  function resync() {
+    var e = Api.active;
+    if (!e || !stale[e.id] || !inFront()) { return; }
+    if (resyncing) { resyncAgain = true; return; }
+    var id = e.id;
+    stale[id] = false;
+    resyncing = true;
+    Api.open(id).then(function (k) { if (k) { k.changed(); } }, function () { e.changed(); })
+      .then(function () {
+        resyncing = false;
+        if (resyncAgain) { resyncAgain = false; stale[id] = true; resync(); }
+      });
+  }
+  Api._resync = resync;   // tests
+
   if (root.document && root.addEventListener) {
     root.document.addEventListener("visibilitychange", function () {
       if (Api.active) { Api.active.visibility(); }
+      resync();
+    });
+    root.addEventListener("focus", resync);
+    root.addEventListener("storage", function (ev) {
+      if (!ev || !ev.key || ev.key.indexOf(STORE) !== 0) { return; }
+      Object.keys(engines).forEach(function (id) { if (progressElsewhere(ev, id)) { stale[id] = true; } });
+      resync();
     });
     root.addEventListener("pagehide", function () { Api.beaconAll(); });
   }
