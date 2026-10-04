@@ -1,5 +1,25 @@
 # Apply sheet — 20261004120000_x_pupil_class_board_and_practice.sql
 
+> ## ⛔ HOLD — DO NOT APPLY UNTIL MIDE RULES (commander, 4 Oct 2026)
+>
+> `class_stars_board_for_member` returns **every active pupil's weekly score
+> percentage to every member of the class** — the whole roster, struggling
+> pupils included. The function it sits beside, `class_stars_leaderboard_for_member`,
+> only ever named pupils who cleared the bar (every set on time AND ≥ 75 %).
+> Showing each child's homework score to their classmates is a safeguarding /
+> product decision, not an engineering one. Design's board draws the whole
+> class ranked, which is what this implements, but Mide has not ruled on it.
+>
+> Options for Mide: (1) apply as is — whole class, real percentages;
+> (2) whole class, but a pupil sees only their OWN figure and classmates'
+> names/ranks without percentages; (3) only pupils who cleared the bar that
+> week are listed (the old rule, per week). The frontend that is live on main
+> works with (1) as written; (2)/(3) are a change to this function only.
+>
+> The practice_rounds half of this migration (table + RLS) has no such
+> question and could be split out and applied on its own if wanted.
+
+
 Branch: `feat/x-mig-pupil-class` (site repo). PARKED — not merged to main.
 Do not apply to production until the frontend branch (`feat/x-pupil-class`)
 and backend branch (`feat/x-pupil-class`, backend repo) have both merged.
