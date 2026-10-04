@@ -277,6 +277,11 @@
   .ex-point-text { color: var(--ks3-ink-muted); }
   .ex-point.is-hit .ex-point-text { color: var(--ks3-ink); }
   .ex-note { margin-top: 18px; }
+  /* ⊕ B2C polish: the one line a practice (stub) mark carries. */
+  .ex-practice {
+    margin: 12px 0 0; padding: 8px 12px; border-radius: 10px;
+    background: var(--ks3-band); font-size: 15px; font-weight: 600; color: var(--ks3-ink);
+  }
   .ex-note-label {
     margin: 0; font-family: var(--ks3-font-mono); font-size: 12px;
     letter-spacing: .12em; text-transform: uppercase; color: var(--ks3-ink-muted);
@@ -373,7 +378,6 @@
 <style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
 </head>
 <body>
-<div class="mrb-theme-float"><span class="mrb-theme-slot" data-mrb-theme></span></div>
 
 
 <div class="rd ex-root" data-mode="ks3" id="c-main">
@@ -387,6 +391,11 @@
     <span class="ex-title">Exam questions</span>
     <span class="ex-quota-chip" id="ex-quota-chip"></span>
     <!-- Night 4, MRB-317 ruling 3. See today.html. -->
+    <!-- ⊕ B2C polish: the theme control lives IN the header here. As a fixed
+         float it sat over Messages and Sign out on a phone, and a tap
+         meant for them landed on the theme. "compact" is one 32px button
+         below 600px (shared/theme.js). -->
+    <span class="mrb-theme-slot c-head-theme" data-mrb-theme="compact"></span>
     <span id="ex-signout"></span>
   </header>
 
@@ -408,15 +417,14 @@
    answer. The tick-by-tick panel is the FEEDBACK, and it exists only after
    `POST /mark` has replied.
 
-   ── THE STUB IS NOT ANNOUNCED TO A CHILD ───────────────────────────────
-   ⚠️ Deliberate, and it reverses the Night 2 scaffold. `provider: 'stub'`
-   means this environment has no Anthropic key and the marker fell back to
-   keyword overlap. That is a fact about a deployment. A child reading
-   "(marked by the practice marker, not the real one)" learns only that
-   something they cannot see is broken, and it is meta-text about the
-   platform on a nine-year-old's screen — forbidden on these surfaces. The
-   provider is still on the response for anyone reading the network tab;
-   it is simply not rendered.
+   ── A STUB MARK SAYS SO, IN ONE LINE ───────────────────────────────────
+   ⊕ B2C polish (4 Oct 2026) — this REVERSES Night 3's "the stub is not
+   announced". `provider: 'stub'` means no AI marker answered and the mark
+   came from keyword overlap. Shown without a word, that number passes
+   itself off as a real mark, which is worse than one plain line. So a stub
+   result carries "Practice mark — the AI marker didn't check this one."
+   under the score, and its note is labelled "Note", not "Examiner's note".
+   The marking itself is unchanged.
 
    ── TWO MARKERS, AND THEY MUST NEVER BE CONFUSED FOR EACH OTHER ────────
    The instant mark is provisional. Mr Badmus marks in person, in his own
@@ -881,7 +889,8 @@
       }).then(function (d) {
         d = d || {};
         result = { score: d.score, max: d.max, hits: d.hits || [],
-                   feedback: d.feedback, answer: text, answer_id: d.answer_id };
+                   feedback: d.feedback, answer: text, answer_id: d.answer_id,
+                   practice: d.provider === 'stub' };
         if (d.quotaLeft != null) { quota.left = d.quotaLeft; }
         if (d.quotaTotal != null) { quota.total = d.quotaTotal; }
         if (d.resetDate) { quota.reset = d.resetDate; }
@@ -966,10 +975,13 @@
             '</div>' +
             '<p class="ex-verdict">' + esc(verdictFor(r.score, max)) + '</p>' +
           '</div>' +
+          (r.practice
+            ? '<p class="ex-practice">Practice mark — the AI marker didn’t check this one.</p>'
+            : '') +
           (points ? ('<ul class="ks3-ticks">' + points + '</ul>') : '') +
           (r.feedback
             ? ('<div class="ks3-feedback ex-note">' +
-               '<p class="ex-note-label">Examiner’s note</p>' +
+               '<p class="ex-note-label">' + (r.practice ? 'Note' : 'Examiner’s note') + '</p>' +
                '<p>' + esc(r.feedback) + '</p></div>')
             : '') +
         '</div>' +
@@ -1114,9 +1126,10 @@
         paintPick();
       });
     }).catch(function (e) {
-      main.innerHTML = '<div class="ex-oops"><p>' + esc(e.message) + '</p>' +
-        '<p style="margin-top:6px">Try again in a moment, or ask your grown-up ' +
-        'to check the account.</p></div>';
+      main.innerHTML = '<div class="ex-oops"><p>' + esc(C.plainMessage(e)) + '</p>' +
+        (C.isClosing(e) ? '' :
+          '<p style="margin-top:6px">Try again in a moment, or ask your grown-up ' +
+          'to check the account.</p>') + '</div>';
     });
   }});
 })();

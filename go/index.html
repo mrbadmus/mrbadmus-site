@@ -393,8 +393,18 @@
           return setError(err.message ||
             'Too many tries. Wait fifteen minutes and try again.');
         }
-        if (/couldn’t reach MrBadmus/i.test(err.message || '')) {
+        if (err.code === 'network' || err.code === 'timeout') {
           return setError(err.message);
+        }
+        /* ⊕ B2C polish. Three more answers that are not about the password,
+           so the backend's own sentence is shown: the account is being
+           deleted (account_closing), or the server could not check
+           (login_unavailable / account_check_failed). "Doesn't match" there
+           sends a child to re-type a password that was right. */
+        if (err.code === 'account_closing' || err.code === 'login_unavailable' ||
+            err.code === 'account_check_failed') {
+          return setError(C.plainMessage(err,
+            'We couldn’t check that right now. Please try again in a minute.'));
         }
         setError(GENERIC);
       });

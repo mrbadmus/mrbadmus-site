@@ -250,6 +250,8 @@
   /* ── small helpers ──────────────────────────────────────────────────── */
   function $(id) { return document.getElementById(id); }
   function nameOr() { return (S.form.name || '').trim() || 'your child'; }
+  // At the start of a sentence: "Your child signs in…", never "your child…".
+  function NameOr() { var n = nameOr(); return n.charAt(0).toUpperCase() + n.slice(1); }
   function isGcse() { return S.form.year === 10 || S.form.year === 11; }
   function seatCount() { return Math.max(1, S.children.length + S.pending.length); }
 
@@ -389,21 +391,30 @@
          reading the terms cannot cost a parent the email and password they
          have already typed. Nothing on this step is stored until Continue,
          so a navigation away IS the form lost. */
-      '<label id="terms-row" style="margin-top:22px;display:flex;gap:12px;align-items:flex-start;' +
-        'padding:14px 16px;border:2px solid ' +
+      /* ⊕ B2C polish. The whole row is the tick: its words are plain text,
+         so a tap anywhere on it ticks the box. The two links sit on their
+         own line underneath, each a full-size tap target, so reading the
+         terms and agreeing to them can never be the same tap. */
+      '<label id="terms-row" style="margin-top:22px;display:flex;gap:12px;align-items:center;' +
+        'min-height:56px;box-sizing:border-box;padding:12px 16px;border:2px solid ' +
         (S.terms ? 'var(--ks3-ink)' : 'var(--ks3-option-border)') +
         ';border-radius:var(--ks3-r-control);background:' +
         (S.terms ? 'var(--ks3-band)' : 'var(--ks3-card)') + ';cursor:pointer">' +
         '<input type="checkbox" id="terms"' + (S.terms ? ' checked' : '') +
-          ' style="flex:0 0 auto;width:22px;height:22px;margin:1px 0 0;accent-color:var(--ks3-ink);cursor:pointer"/>' +
+          ' style="flex:0 0 auto;width:24px;height:24px;margin:0;accent-color:var(--ks3-ink);cursor:pointer"/>' +
         '<span style="flex:1;min-width:0;font-size:16px;line-height:1.4;color:var(--ks3-ink)">' +
-          'I agree to the <a href="/parents/terms.html" target="_blank" rel="noopener" ' +
-            'style="font-weight:700">terms</a> and <a href="/parents/privacy.html" ' +
-            'target="_blank" rel="noopener" style="font-weight:700">privacy policy</a>.' +
+          'I agree to the terms and privacy policy' +
         '</span>' +
       '</label>' +
-      '<p id="terms-note" style="margin:8px 0 0;font-size:14px;color:var(--ks3-ink-muted)"' +
-        (S.terms ? ' hidden' : '') + '>Tick the box to create your account.</p>' +
+      '<p style="margin:4px 0 0;display:flex;flex-wrap:wrap;gap:4px 20px;font-size:15px">' +
+        '<a href="/parents/terms.html" target="_blank" rel="noopener" style="display:inline-flex;' +
+          'align-items:center;min-height:44px;font-weight:700">Read the terms</a>' +
+        '<a href="/parents/privacy.html" target="_blank" rel="noopener" style="display:inline-flex;' +
+          'align-items:center;min-height:44px;font-weight:700">Read the privacy policy</a>' +
+      '</p>' +
+      '<p id="terms-note" role="alert" style="margin:4px 0 0;font-size:15px;font-weight:700;' +
+        'color:var(--ks3-accent-text)"' + (S.termsTried && !S.terms ? '' : ' hidden') +
+        '>Tick the box to create your account.</p>' +
       primaryBtn('continue', 'Continue') +
       '<p style="margin:26px 0 0;font-size:16px;text-align:center">Already have an account? <a href="' +
       P.url('signIn') + '" style="font-weight:700">Sign in</a></p>';
@@ -427,8 +438,23 @@
     if (/invalid/i.test(m) && /email/i.test(m)) {
       return 'We can\u2019t send email to that address. Check it for a typo \u2014 the part after the @ especially.';
     }
-    return m || 'We couldn\u2019t create your account just now. Please try again in a moment.';
+    return C.plainSentence(m) ? m
+      : 'We couldn\u2019t create your account just now. Please try again in a moment.';
   }
+
+  /* ⊕ B2C polish. render() rebuilds the account form and the password box
+     with it (its value is deliberately never kept in S or the draft). After a
+     failure that is NOT about the password — the mail rate limit, the
+     network — the parent is told nothing is lost, so the password they typed
+     is put back. A refusal that IS about the password clears it. */
+  function renderKeepingPassword(keep) {
+    var box = $('password');
+    var typed = keep && box ? box.value : '';
+    render();
+    var again = $('password');
+    if (typed && again) { again.value = typed; }
+  }
+  function aboutPassword(text) { return /password/i.test(String(text || '')); }
 
   function bindAccount() {
     $('pname').addEventListener('input', function () { S.name = this.value.trim(); });
@@ -455,23 +481,24 @@
         S.error = '';
         var err = $('acct-err'); if (err) { err.remove(); }
       }
-      $('terms-note').hidden = on;
+      // The hint is for a parent who pressed Continue without the tick —
+      // never a nag before they have tried.
+      $('terms-note').hidden = on || !S.termsTried;
       $('terms-row').style.borderColor = on ? 'var(--ks3-ink)' : 'var(--ks3-option-border)';
       $('terms-row').style.background = on ? 'var(--ks3-band)' : 'var(--ks3-card)';
       saveDraft();
     }
     termsBox.addEventListener('change', syncTerms);
     /* In place, never render(): a render would empty the password box. */
+    /* ⊕ B2C polish: ONE line, under the tick it is about (the hint), rather
+       than a second copy of it up by the password box. */
     function termsRefused() {
-      S.error = TERMS_REQUIRED;
-      var err = $('acct-err');
-      if (!err) {
-        $('password').parentNode.insertAdjacentHTML('afterend',
-          '<p id="acct-err" role="alert" style="margin:10px 0 0;font-size:15px;font-weight:700;' +
-          'color:var(--ks3-accent-text)"></p>');
-        err = $('acct-err');
-      }
-      err.textContent = TERMS_REQUIRED;
+      S.termsTried = true;
+      var note = $('terms-note');
+      note.hidden = false;
+      // Re-announce on a second press: role=alert speaks on a text change.
+      note.textContent = '';
+      note.textContent = 'Tick the box to create your account.';
       termsBox.focus();
     }
     syncTerms();
@@ -503,7 +530,7 @@
       if (!S.terms) { return termsRefused(); }
       // Design's validation, and her two strings.
       if (email.indexOf('@') === -1) {
-        S.error = 'Enter the email you want us to write to.'; return render();
+        S.error = 'Enter the email you want us to write to.'; return renderKeepingPassword(true);
       }
       if (password.length < 10) {
         S.error = 'Password needs at least 10 characters.'; return render();
@@ -531,7 +558,11 @@
           emailRedirectTo: window.location.origin + C.href('/consumer/verify.html')
         }
       }).then(function (r) {
-        if (r.error) { C.setBusy(btn, false); S.error = signupError(r.error); return render(); }
+        if (r.error) {
+          C.setBusy(btn, false);
+          S.error = signupError(r.error);
+          return renderKeepingPassword(!aboutPassword(r.error.message));
+        }
 
         /* Supabase obfuscates "this address already has an account": no
            error, a user, and an EMPTY identities array.
@@ -546,6 +577,10 @@
             C.setBusy(btn, false);
             if (res.ok) { return; }
             if (res.unverified) { saveDraft(); return go('verify'); }
+            if (res.error === 'network') {
+              S.error = 'We couldn’t reach MrBadmus. Check your connection and try again.';
+              return renderKeepingPassword(true);
+            }
             S.error = 'There’s already an account for ' + email +
               ', and that isn’t its password. Sign in instead, or reset the password there.';
             render();
@@ -564,7 +599,7 @@
         C.setBusy(btn, false);
         console.error('[signup]', e);
         S.error = 'We couldn’t create your account just now. Please try again in a moment.';
-        render();
+        renderKeepingPassword(true);
       });
     });
   }
@@ -611,6 +646,7 @@
       '<a href="#" id="change-email">Wrong address? Change it</a></div>';
   }
 
+  var VERIFY_CHECK_MS = 20000;
   var NOT_YET = 'That email isn’t verified yet. Open the link in it, then press the button again.';
 
   /* Is there a verified session for this browser now? Same-browser
@@ -652,7 +688,30 @@
       var btn = this;
       S.error = '';
       C.setBusy(btn, true, 'Checking…');
-      checkVerified(true).then(function (ok) { if (!ok && document.body.contains(btn)) { C.setBusy(btn, false); } });
+      /* ⊕ B2C polish. This used to wait for ever: a sign-in that worked
+         followed by a family set-up that failed (the backend down) rejected
+         inside checkVerified, nothing caught it, and the button sat on
+         "Checking…". Now every outcome lands — a refusal, a failure, or no
+         answer at all within VERIFY_CHECK_MS — and the button comes back
+         with a plain line under it. */
+      var done = false;
+      function giveUp(why) {
+        if (done) { return; }
+        done = true;
+        console.error('[signup] verify check', why);
+        if (S.step !== 'verify') { return; }
+        S.error = why === 'timeout'
+          ? 'That took too long. Check your connection and press the button again.'
+          : C.plainMessage(why, 'We couldn’t reach MrBadmus. Check your connection and press the button again.');
+        render();
+      }
+      var timer = setTimeout(function () { giveUp('timeout'); }, VERIFY_CHECK_MS);
+      checkVerified(true).then(function (ok) {
+        clearTimeout(timer);
+        if (done) { return; }
+        done = true;
+        if (!ok && document.body.contains(btn)) { C.setBusy(btn, false); }
+      }, function (e) { clearTimeout(timer); giveUp(e); });
     });
     $('resend').addEventListener('click', function (e) {
       e.preventDefault();
@@ -729,7 +788,7 @@
 
       '<div style="margin-top:28px;padding-top:22px;border-top:2px solid var(--ks3-rule)">' +
       '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">Their login</p>' +
-      '<p style="margin:6px 0 0;font-size:16px;color:var(--ks3-ink-body)">' + esc(nameOr()) +
+      '<p style="margin:6px 0 0;font-size:16px;color:var(--ks3-ink-body)">' + esc(NameOr()) +
       ' signs in with a username, not an email. You choose both.</p>' +
       '<label style="display:block;margin-top:16px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Username' +
       '<div style="position:relative;margin-top:6px">' +

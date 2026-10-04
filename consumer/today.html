@@ -308,7 +308,6 @@
 <style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
 </head>
 <body>
-<div class="mrb-theme-float"><span class="mrb-theme-slot" data-mrb-theme></span></div>
 
 
 <div class="rd td-root" data-mode="ks3" id="c-main">
@@ -330,6 +329,11 @@
     <!-- Night 4, MRB-317 ruling 3: shared family device, so a child can end
          their own session. Mounted by signOutControl(); styled in
          consumer.css so all three child surfaces get one identical control. -->
+    <!-- ⊕ B2C polish: the theme control lives IN the header here. As a fixed
+         float it sat over Messages and Sign out on a phone, and a tap
+         meant for them landed on the theme. "compact" is one 32px button
+         below 600px (shared/theme.js). -->
+    <span class="mrb-theme-slot c-head-theme" data-mrb-theme="compact"></span>
     <span id="td-signout"></span>
   </header>
 
@@ -509,7 +513,8 @@
       });
 
       var hour = new Date().getHours();
-      var partOfDay = hour < 12 ? 'Morning' : (hour < 18 ? 'Afternoon' : 'Evening');
+      // ⊕ B2C polish: the small hours get "Hello", not "Morning".
+      var partOfDay = hour < 5 ? 'Hello' : (hour < 12 ? 'Morning' : (hour < 18 ? 'Afternoon' : 'Evening'));
       el('td-greet').textContent = kid.name
         ? (partOfDay + ', ' + kid.name + '.')
         : (partOfDay + '.');
@@ -690,7 +695,7 @@
           .then(function () { return load(); })
           .catch(function (err) {
             C.setBusy(btn, false);
-            oops(err.message, 'Try again in a moment.');
+            oops(C.plainMessage(err), C.isClosing(err) ? '' : 'Try again in a moment.');
           });
       };
     }
@@ -794,7 +799,7 @@
         draftEl.value = '';
         return load();
       }).catch(function (e) {
-        oops(e.message, 'Try again in a moment.');
+        oops(C.plainMessage(e), C.isClosing(e) ? '' : 'Try again in a moment.');
       }).then(function () {
         draftEl.disabled = !writable; sendEl.disabled = !writable;
         if (writable) { draftEl.focus(); }
@@ -829,8 +834,10 @@
     show('today');
     return load().catch(function (e) {
       el('td-items').innerHTML =
-        '<div class="td-oops"><p>' + C.escapeHtml(e.message) + '</p>' +
-        '<p>Try again in a moment, or ask your grown-up to check the account.</p></div>';
+        '<div class="td-oops"><p>' + C.escapeHtml(C.plainMessage(e)) + '</p>' +
+        /* An account being closed is not a blip: no retry advice. */
+        (C.isClosing(e) ? '' :
+          '<p>Try again in a moment, or ask your grown-up to check the account.</p>') + '</div>';
     });
   }});
 })();

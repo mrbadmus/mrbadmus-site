@@ -93,6 +93,11 @@
 
   var POLL_MS = 2000;
   var GIVE_UP_MS = 90000;
+  /* ⊕ B2C polish. A backend that cannot be reached at all is a different
+     answer from Stripe being slow, and it should not take ninety seconds of
+     spinner to say so. After this long with no answer from MrBadmus the page
+     says it plainly and offers Try again. */
+  var UNREACHABLE_MS = 15000;
   // The two states that mean "Stripe told us, and we wrote it down".
   var SETTLED = { trialing: true, active: true };
 
@@ -162,9 +167,31 @@
     waiting();
 
     var started = Date.now();
+    var reachedOnce = false;
+
+    function retry() {
+      waiting();
+      started = Date.now();
+      poll();
+    }
+
+    /* Our side could not be reached. Stripe's redirect to `state=success`
+       means the card step finished, so the parent is told not to pay again. */
+    function unreachable(why) {
+      $('su-main').innerHTML =
+        '<h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:36px;' +
+        'line-height:1;letter-spacing:-.035em">We can’t reach MrBadmus right now</h1>' +
+        '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">' +
+        esc(why || 'Check your connection.') + ' Your card details are safe with Stripe, so don’t pay again.</p>' +
+        '<p style="margin:24px 0 0"><button type="button" id="cr-retry" style="width:100%;min-height:54px;' +
+        'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);' +
+        'color:var(--ks3-on-dark);font-weight:700;font-size:18px;cursor:pointer">Try again</button></p>';
+      $('cr-retry').addEventListener('click', retry);
+    }
 
     function poll() {
       C.api('/api/consumer/family', { token: ctx.token }).then(function (d) {
+        reachedOnce = true;
         var billing = (d && d.billing) || {};
         if (SETTLED[String(billing.state || '').toLowerCase()]) { return arrived(d); }
         if (Date.now() - started >= GIVE_UP_MS) { return stillWaiting(); }
@@ -174,6 +201,10 @@
            this must not be reported as a payment problem. Keep polling until
            the deadline. */
         console.error('[checkout-return]', e);
+        var noAnswer = e && (e.code === 'network' || e.code === 'timeout');
+        if (noAnswer && !reachedOnce && Date.now() - started >= UNREACHABLE_MS) {
+          return unreachable(e.message);
+        }
         if (Date.now() - started >= GIVE_UP_MS) { return stillWaiting(e.message); }
         setTimeout(poll, POLL_MS);
       });
@@ -186,7 +217,11 @@
         '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">Our side is still catching up with Stripe, which occasionally takes a minute. Nothing is wrong and you do not need to pay again.</p>' +
         (why ? '<p style="margin:10px 0 0;font-size:15px;color:var(--ks3-ink-muted)">' + esc(why) + '</p>' : '') +
         '<p style="margin:10px 0 0;font-size:15px;color:var(--ks3-ink-muted)">Open your family page in a moment and it will be there. If it still isn’t after ten minutes, email support@mrbadmus.com and we’ll sort it out.</p>' +
-        dashboardBtn();
+        dashboardBtn() +
+        '<p style="margin:12px 0 0"><button type="button" id="cr-retry" style="width:100%;min-height:50px;' +
+        'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);' +
+        'color:var(--ks3-ink);font-weight:700;font-size:17px;cursor:pointer">Check again</button></p>';
+      $('cr-retry').addEventListener('click', retry);
     }
 
     function dashboardBtn() {

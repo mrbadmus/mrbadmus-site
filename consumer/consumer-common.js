@@ -134,9 +134,16 @@
          `landmark-one-main` + `region` fired on every consumer and public
          surface with the flag off. .c-notice styles the class, and <main>
          and <div> are both block with no UA margin, so nothing moves. */
+      /* ⊕ B2C polish: the one mark and a way out. The lockup comes from
+         brand.js (already on every consumer page, same origin — no request
+         the off page did not already make), never a copy of the SVG. */
+      '<header class="c-notice-head">' + brandLockup('/') + '</header>' +
       '<main class="c-notice"><h1>Not found</h1>' +
-      '<p>This page isn’t available.</p></main>';
+      '<p>This page isn’t available.</p>' +
+      '<p><a class="c-notice-home" href="' + escapeHtml(href('/')) + '">Go to the MrBadmus home page</a></p></main>';
     document.body.style.display = 'block';
+    // Each page pads its own body for its own header; this page has one header.
+    document.body.style.padding = '0';
   }
 
   /* Every failure a human can read. Never a status code, never a stack,
@@ -188,6 +195,29 @@
      handful of routes that do real work before answering (AI marking, a
      week being generated, a bulk import) get two minutes. `opts.timeout`
      overrides both; 0 means "no limit" and nothing in the estate uses it. */
+  /* Is this text a sentence a person wrote, or a machine's word? A code
+     (`anon_key_not_configured`), a Postgres/PostgREST error, a stack frame or
+     JSON is not, and is never put in front of a parent or a child. */
+  var MACHINE_TEXT = /\bPGRST\d|\b[0-9A-Z]{5}\b.*:|violates|constraint|relation "|column "|null value|syntax error|JWT|jwt|TypeError|ReferenceError|undefined|\bat [A-Za-z_.]+ \(|^\s*[{\[<]/;
+  function plainSentence(text) {
+    var t = String(text || '').trim();
+    if (!t || t.indexOf(' ') === -1) { return false; }
+    // "org_access_state read failed" is a log line; "kind is lesson, practice
+    // or exam." is a sentence that happens to start with a field name.
+    if (!/^[A-Z“"‘']/.test(t) && !/[.!?]$/.test(t)) { return false; }
+    return !MACHINE_TEXT.test(t);
+  }
+  function plainMessage(e, fallback) {
+    var m = e && e.message;
+    if (plainSentence(m)) { return m; }
+    if (m) { console.error('[consumer]', m); }
+    return fallback || 'Something went wrong. Please try again in a moment.';
+  }
+
+  /* The child's account is being deleted (403 account_closing). Nothing the
+     child can do fixes it, so no screen pairs it with "try again". */
+  function isClosing(e) { return !!e && e.code === 'account_closing'; }
+
   var DEFAULT_TIMEOUT_MS = 30000;
   var LONG_TIMEOUT_MS = 120000;
   var LONG_CALL = /\/(mark|generate|mb-mark)$|\/unit-check\/submit$|\/pupils\/bulk$/;
@@ -239,7 +269,18 @@
         if (!msg && (res.status === 401 || res.status === 403)) {
           msg = 'You’re not signed in, or your session has expired.';
         }
-        var err = new Error(msg || code ||
+        /* ⊕ B2C polish (4 Oct 2026). A backend `message` is not always a
+           sentence: some routes forward a database or config error verbatim
+           ("anon_key_not_configured" reached a child's chat). Only a
+           sentence a person wrote reaches the screen; anything else — and a
+           bare code — becomes the plain line, and the raw text stays in the
+           console for whoever is debugging. */
+        if (msg && !plainSentence(msg)) {
+          console.error('[consumer/api]', path, res.status, code, msg);
+          msg = '';
+        }
+        if (!msg && code) { console.error('[consumer/api]', path, res.status, code); }
+        var err = new Error(msg ||
           'Something went wrong. Please try again in a moment.');
         err.status = res.status;
         err.code = code;
@@ -1016,6 +1057,9 @@
     href: href,
     go: go,
     escapeHtml: escapeHtml,
+    plainSentence: plainSentence,
+    plainMessage: plainMessage,
+    isClosing: isClosing,
     fail: fail,
     setMsg: setMsg,
     setBusy: setBusy,

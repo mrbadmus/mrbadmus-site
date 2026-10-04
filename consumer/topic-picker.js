@@ -25,7 +25,7 @@
    greyed and not selectable, with the year it is taught in:
      · a KS3 unit (and its lessons): the unit's typical year;
      · a GCSE topic or subtopic: the year the child's (pathway, tier) block
-       puts it in — every block when the child is not at GCSE yet.
+       puts it in — "taught at GCSE" when the child is not at GCSE yet.
    When that year cannot be worked out, or it IS the child's own year (the
    plan simply does not hold it), the label says "not in Year N's plan".
    No year is ever hard-coded here.
@@ -100,6 +100,17 @@
     return 'taught in Years ' + years.slice(0, -1).join(', ') + ' and ' + years[years.length - 1];
   }
 
+  /* ⊕ B2C polish (4 Oct 2026). A GCSE item shown to a Years 7–9 child used
+     to union every pathway/tier block's year — "taught in Years 10 and 11"
+     for Homeostasis, while a Year 10 child on one block read "taught in
+     Year 11" for the same topic. Both were true of something, and together
+     they read as a contradiction. A child below GCSE has no block yet, so
+     the only true thing to say is the stage; a GCSE child keeps the year
+     their own block teaches it in. */
+  function ks4Why(years, childYear, childKs) {
+    return childKs === 'ks3' ? 'taught at GCSE' : whyText(years, childYear);
+  }
+
   /* ── the flat list, built once per (index, child) ──────────────────── */
   function build(index, child, units) {
     var year = Number(child.year) || 0;
@@ -155,7 +166,7 @@
         id: 'ks4-' + t.s + '-' + t.id, level: 'unit', ks: 'ks4', subject: t.s, name: t.n,
         unitName: su ? su.name : t.n, unitCode: null, ok: !!su,
         schemeSubject: su ? su.subject : null,
-        why: su ? '' : whyText(tYears, year), hay: norm(t.n), kids: []
+        why: su ? '' : ks4Why(tYears, year, childKs), hay: norm(t.n), kids: []
       });
       topics.push(topic);
       (t.l || []).forEach(function (l) {
@@ -165,7 +176,7 @@
           id: 'ks4-' + t.s + '-' + t.id + '-' + l[0], level: 'lesson', ks: 'ks4', subject: t.s,
           name: l[1], unitName: topic.unitName, unitCode: null, slug: l[0],
           week: ok ? sl.week : null, ok: ok, schemeSubject: ok ? sl.unit.subject : null,
-          why: ok ? '' : whyText(yearsOfSub(l[2], keys), year), parent: topic,
+          why: ok ? '' : ks4Why(yearsOfSub(l[2], keys), year, childKs), parent: topic,
           hay: norm(l[1] + ' ' + t.n)
         }));
       });

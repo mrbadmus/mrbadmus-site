@@ -275,6 +275,17 @@ body {
   margin-bottom: 10px;
 }
 .c-notice p { color: var(--muted); font-size: 1rem; line-height: var(--lh-body); }
+/* ⊕ B2C polish: the off page's header band carries the one lockup, and the
+   page offers a way home (consumer-common.js notFound()). */
+.c-notice-head {
+  /* Literal values: on an off page none of the --sp/--card tokens resolve. */
+  display: flex; align-items: center; min-height: 60px;
+  padding: 12px 20px; border-bottom: 2px solid currentColor;
+}
+.c-notice-home {
+  display: inline-flex; align-items: center; min-height: 44px; margin-top: 8px;
+  font-weight: 700; color: var(--text); text-decoration: underline;
+}
 
 /* ── username availability (add-child) ───────────────────────────────── */
 .c-uname-state { margin-top: 7px; font-size: 0.86rem; min-height: 20px; }
@@ -592,3 +603,28 @@ body {
   cursor: pointer;
 }
 .c-linkbtn:hover { text-decoration-thickness: 2px; }
+
+/* ⊕ B2C polish: a theme slot sitting in a child page's header row. */
+.c-head-theme { display: inline-flex; align-items: center; flex: 0 0 auto; }
+
+/* ⊕ B2C polish (4 Oct 2026). The page-level theme control (the fixed
+   `.mrb-theme-float` stamped into these hand-written pages) sat on top of
+   each page's own header controls on a phone — a child's Sign out, the
+   dashboard's child switcher, the terms page's "Start free" — so a tap meant
+   for them changed the theme instead. On narrow screens it now takes its own
+   row above the header instead of floating over it. Page-local: this file is
+   loaded only by the consumer/parents/org/go pages; shared/theme.js is
+   untouched. `body >` outranks the float's own <style>, which comes later. */
+@media (max-width: 900px) {
+  body > .mrb-theme-float {
+    position: static;
+    display: flex; justify-content: flex-end;
+    padding: 6px 12px 0;
+    background: transparent; box-shadow: none; border-radius: 0;
+    color: inherit;
+  }
+  body > .mrb-theme-float .mrb-theme {
+    background: #FFFCF5; color: #221E1B; border-radius: 999px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.18);
+  }
+}
