@@ -112,5 +112,7 @@ compile time, each failing loud if its target text moves. "Pack" = `docs/ks4/pac
 - Rule 4: ladder 2·2·2·1 in all six; five quiz questions on every route; no "Shape:" alert after pressing every enabled control.
 
 ### Open items
-- None that need a science decision. Two kept-as-the-pack-ruled points remain visible to Mide: the CH TH ionosphere / UV-sterilisation quiz items (uses-em-waves) and the predictor's "CO and soot together" simplification (atmospheric-pollutants). `review_state` stays `draft` for all 13 until Mide signs off the log.
-- Cosmetic, Design's layout: in Ks4Steps' attempt cards at 390 px wide the input placeholders are clipped ("anything to co…"); the satellite and cycle figures have labels that cross arrows.
+- None. Two points that were flagged are **lane-ruled: they stand as the pack ruled**: the CH TH ionosphere and UV-sterilisation quiz items (uses-em-waves; pack UEM-F3/F4 allow them on CH TH) and the predictor's "CO and soot together" simplification (atmospheric-pollutants; Design NOTES 3.2, pack F5 "CO and/or C").
+- `review_state` is `examiner-reviewed` on all 13 lessons, so no page shows the "Draft" banner. (Not yet frozen by this log; the freeze file is stamped separately.)
+- Fixed after review: Ks4Steps / Ks4Cfifa line inputs clipped their placeholders at phone width ("anything to co…"). The batch-4 stylesheet only (`EXTRA_CSS` in `ks4_lessons/batch_4.py`, appended to `shared/ks4-lesson-batch-4.css`) now tightens the line card and badge at 520px and below and sets the hint to 11px (10px at 380px and below). Measured on all 50 pages at 360 and 390: no placeholder is wider than its input. No shared asset changed.
+- Cosmetic, Design's layout, left: the satellite and cycle figures have labels that cross arrows; at 500 °C the infrared peak is off the axis.

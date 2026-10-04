@@ -23,6 +23,23 @@ BLOCKS_DIR = _REF         # and so do the shared blocks Design shipped with them
 
 # Block set a batch-4 page registers. The pilot's Ks4Ladder is replaced by
 # Ks4Practice; Ks4Triangle / Ks4Guess / Ks4Steps are the Part 1 blocks.
+# Appended to shared/ks4-lesson-batch-4.css (batch-4 pages only; no shared asset changes).
+# Ks4Steps / Ks4Cfifa line inputs clip their placeholders ("anything to co") on a phone,
+# because the inline style fixes 18px mono inside two nested cards. A placeholder cannot
+# wrap, so it is set smaller on narrow screens.
+EXTRA_CSS = """
+/* batch-4: the line inputs' placeholders must fit at phone width. The line cards nest
+   inside two padded cards, leaving ~120-150px for the input; tighten the card and badge
+   (attribute selectors, because the sizes are inline styles) and set the hint smaller. */
+@media (max-width: 520px) {
+  #ks4-mount div[data-arrive][style*="align-items: flex-start; padding: 14px 16px"] { gap: 8px !important; padding: 12px 10px !important; }
+  #ks4-mount div[data-arrive][style*="align-items: flex-start; padding: 14px 16px"] > span[aria-hidden="true"] { flex-basis: 28px !important; width: 28px !important; height: 28px !important; font-size: 16px !important; }
+  #ks4-mount input[type="text"]::placeholder { font-size: 11px; letter-spacing: -.03em; }
+}
+@media (max-width: 380px) {
+  #ks4-mount input[type="text"]::placeholder { font-size: 10px; }
+}
+"""
 EXT_SRC = os.path.join("ks4_lessons", "batch4_ext.js")  # display-time subscripts (MRB-302)
 BLOCK_NAMES = ["Ks4Chrome", "Ks4Choice", "Ks4Sort", "Ks4Chain", "Ks4Write",
                "Ks4Cfifa", "Ks4Triangle", "Ks4Guess", "Ks4Steps", "Ks4Practice",
@@ -35,7 +52,7 @@ OWN_CSS_BLOCKS = ["Ks4Triangle", "Ks4Guess", "Ks4Steps", "Ks4Practice"]
 def L(slug, f, subject, topic, title, spec, family, routes=ALL, staged=True, **kw):
     d = dict(slug=slug, source_file="ks4-%s-%s.dc.html" % (subject, f),
              subject=subject, topic_id=topic, title=title, spec=spec,
-             family=family, routes=routes, review_state="draft", batch=B,
+             family=family, routes=routes, review_state="examiner-reviewed", batch=B,
              port_rulings=True, staged=staged)
     d.update(kw)
     return d

@@ -2379,6 +2379,7 @@ def build_batch(name, freeze=False):
         block_names, block_dir, own_css_blocks = own_blocks
         lesson_files = lesson_files + [b + ".dc.html" for b in own_css_blocks]
     lesson_css = collect_batch_lesson_css(authored_dir, lesson_files, css_name)
+    lesson_css += getattr(ks4_lessons.batch_modules()[name], "EXTRA_CSS", "")
     with open(_shared(css_name), "w", encoding="utf-8") as fh:
         fh.write(lesson_css)
     print("  ✓ shared/%s written (%d bytes)" % (css_name, len(lesson_css)))

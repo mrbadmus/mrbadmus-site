@@ -30,3 +30,15 @@ html, body { margin: 0; padding: 0; background: #FBF3E6; }
 @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
   [data-arrive] { animation: ks4-arrive .34s ease-out both; }
   @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+
+/* batch-4: the line inputs' placeholders must fit at phone width. The line cards nest
+   inside two padded cards, leaving ~120-150px for the input; tighten the card and badge
+   (attribute selectors, because the sizes are inline styles) and set the hint smaller. */
+@media (max-width: 520px) {
+  #ks4-mount div[data-arrive][style*="align-items: flex-start; padding: 14px 16px"] { gap: 8px !important; padding: 12px 10px !important; }
+  #ks4-mount div[data-arrive][style*="align-items: flex-start; padding: 14px 16px"] > span[aria-hidden="true"] { flex-basis: 28px !important; width: 28px !important; height: 28px !important; font-size: 16px !important; }
+  #ks4-mount input[type="text"]::placeholder { font-size: 11px; letter-spacing: -.03em; }
+}
+@media (max-width: 380px) {
+  #ks4-mount input[type="text"]::placeholder { font-size: 10px; }
+}
