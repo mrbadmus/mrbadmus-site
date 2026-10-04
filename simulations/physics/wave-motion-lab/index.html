@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
@@ -16,13 +16,12 @@
 <header class="sim-bar">
   <!--mrb:brand--><a class="mrb-brand" href="/index.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
   <a class="sim-back" href="/simulations/physics/"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>Physics</a>
-  <span class="mrb-theme-slot" data-mrb-theme></span>
+  <span class="mrb-theme-slot" data-mrb-theme="compact"></span>
 </header>
 <x-dc>
 <helmet>
   <title>Wave Motion Lab</title>
   <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
-  <script src="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js"></script>
   <style>
     body{margin:0;background:#FBF3E6}
     [hidden]{display:none !important}
@@ -61,17 +60,17 @@
                 <option value="1">1 ×</option>
               </select>
             </label>
-            <label for="freq" style="display:flex;align-items:center;gap:8px;font-size:15px;color:var(--st-muted)">Frequency <input id="freq" type="range" min="0.3" max="0.8" step="0.05" value="0.5" style="width:130px;accent-color:#A93411"><span id="freq-v" style="font:500 14px/1 var(--st-mono);color:var(--st-ink);min-width:5.2em">0.50 Hz</span></label>
-            <label for="amp" style="display:flex;align-items:center;gap:8px;font-size:15px;color:var(--st-muted)">Amplitude <input id="amp" type="range" min="0.35" max="1" step="0.05" value="0.8" style="width:120px;accent-color:#A93411"></label>
+            <label for="freq" style="display:flex;align-items:center;gap:8px;font-size:15px;color:var(--st-muted)">Frequency <input id="freq" type="range" min="0.3" max="0.8" step="0.05" value="0.5" style="width:130px;accent-color:var(--wml-accent,#A93411)"><span id="freq-v" style="font:500 14px/1 var(--st-mono);color:var(--st-ink);min-width:5.2em">0.50 Hz</span></label>
+            <label for="amp" style="display:flex;align-items:center;gap:8px;font-size:15px;color:var(--st-muted)">Amplitude <input id="amp" type="range" min="0.35" max="1" step="0.05" value="0.8" style="width:120px;accent-color:var(--wml-accent,#A93411)"></label>
           </div>
           <div style="display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 16px">
-            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-rest" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Rest positions</span></label>
-            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-track" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Follow one particle</span></label>
-            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-fade" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Fade the others</span></label>
-            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-energy" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Show the energy</span></label>
-            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-dirs" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Direction arrows</span></label>
-            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-cr" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Label C and R</span></label>
-            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-graph" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Time graph (f and T)</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-rest" style="width:17px;height:17px;margin:0;accent-color:var(--wml-accent,#A93411)"><span>Rest positions</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-track" style="width:17px;height:17px;margin:0;accent-color:var(--wml-accent,#A93411)"><span>Follow one particle</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-fade" style="width:17px;height:17px;margin:0;accent-color:var(--wml-accent,#A93411)"><span>Fade the others</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-energy" style="width:17px;height:17px;margin:0;accent-color:var(--wml-accent,#A93411)"><span>Show the energy</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-dirs" style="width:17px;height:17px;margin:0;accent-color:var(--wml-accent,#A93411)"><span>Direction arrows</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-cr" style="width:17px;height:17px;margin:0;accent-color:var(--wml-accent,#A93411)"><span>Label C and R</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-graph" style="width:17px;height:17px;margin:0;accent-color:var(--wml-accent,#A93411)"><span>Time graph (f and T)</span></label>
           </div>
         </div>
 
@@ -327,8 +326,8 @@ function startLab(props) {
         g.addColorStop(0, "rgba(255,197,61,0)"); g.addColorStop(0.5, C["energy-soft"]); g.addColorStop(1, "rgba(255,197,61,0)");
         cx.fillStyle = g; cx.fillRect(gxp - gw, top + 30, gw * 2, h - 44);
         const fs = small ? 12 : 14, txt = (type === "T" ? "energy (crest)" : "energy (compression)") + "      ";
-        const m = label(txt, gxp, top + 42, C.ink, fs, "center", 700, C.energy);
-        arrow(gxp + m / 2 - 22, top + 42, gxp + m / 2 - 2, top + 42, C.ink, 2, 6);
+        const m = label(txt, gxp, top + 42, "#1A1714", fs, "center", 700, C.energy);
+        arrow(gxp + m / 2 - 22, top + 42, gxp + m / 2 - 2, top + 42, "#1A1714", 2, 6);
       }
     }
 
@@ -659,7 +658,7 @@ function startLab(props) {
   const ST = {
     look: "margin:0;background:var(--st-note-bg);border:1px dashed var(--st-note-border);border-radius:var(--st-r-card);padding:12px 14px;font-weight:600;color:var(--st-ink)",
     t: "background:var(--st-accent-text);color:var(--st-paper);padding:1px 7px;border-radius:5px;font-weight:600;white-space:nowrap",
-    e: "background:#FFC53D;color:var(--st-ink);padding:1px 7px;border-radius:5px;font-weight:600;white-space:nowrap",
+    e: "background:#FFC53D;color:#1A1714;padding:1px 7px;border-radius:5px;font-weight:600;white-space:nowrap",
     eq: "margin:0;font:600 34px/1.1 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink);background:var(--st-num-well);border-radius:var(--st-r-card);padding:12px 16px",
   };
   let step = 0;

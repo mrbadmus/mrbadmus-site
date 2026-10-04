@@ -10,10 +10,14 @@ html[data-theme="dark"] {
   --st-note-border: #5E5246; --st-num-well: #2A231C; --st-crumb-bg: #231D17;
   --st-accent: #F07A4E; --st-accent-text: #FF9E78; --st-accent-hover: #FFC2A8;
   --st-shadow-frame: 0 26px 64px -32px rgba(0, 0, 0, 0.8);
-  --physics: #8FB7FF;
+  --physics: #8FB7FF; --wml-accent: #FF9E78;
   --wml-ok: #3CC477; --wml-ok-text: #86E6AC; --wml-ok-bg: #15301F;
   --wml-bad: #FF8A7A; --wml-bad-bg: #3A1D18;
 }
 html[data-theme="dark"] body { background: #16120E; }
 html[data-theme="dark"] a { color: #FF9E78; }
 html[data-theme="dark"] a:hover { color: #FFC2A8; }
+
+/* 320px phones: let Design's wave-type tabs wrap inside the page instead of pushing it wider. */
+#tabs { max-width: 100%; box-sizing: border-box; }
+div:has(> #stage) { grid-template-columns: minmax(0, 1fr); }

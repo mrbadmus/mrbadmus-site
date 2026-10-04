@@ -46,3 +46,4 @@ body {
 .sim-card:hover, .sim-item:hover { border-color: var(--sim-ink); }
 .sim-item svg { color: var(--sim-accent-text); flex: none; }
 .sim-retry a { color: var(--sim-accent-text); }
+@media (max-width: 400px) { .sim-bar { gap: 8px; } }
