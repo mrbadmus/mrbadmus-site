@@ -64,7 +64,7 @@ JOURNEY = [
     ("science-chemistry", "/combined/foundation/chemistry/index.html"),
     ("science-biology", "/combined/foundation/biology/index.html"),
     ("topic-energy",   "/combined/foundation/physics/energy.html"),
-    ("lesson",         "/combined/foundation/physics/energy/efficiency.html"),
+    ("lesson",         "/combined/foundation/physics/energy/energy-resources.html"),
 ]
 
 # A phrase on one of these pages would be a progress claim with no data
