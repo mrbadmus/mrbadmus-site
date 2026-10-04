@@ -1107,7 +1107,23 @@
      2-second slack is load-bearing — an answer in flight when Complete lands
      rescores a moment later, and without the slack that pupil would read
      "revised" having revised nothing. A row without `updated_at` (an older
-     read) is simply not revised. */
+     read) is simply not revised.
+
+     ⊕ SPEC-E / "Prompt X" (4 Oct 2026) — this stays the HEURISTIC on
+     purpose, not the truthful "changed after the reveal" check
+     `shared/breakdown.js`'s `isRevised()` now does. The two facts are
+     numerically identical for every row that is not a timestamp-backdated
+     TEST fixture: `answers_revealed_at` is stamped at the SAME instant as
+     `completed_at` (the migration's `mrb_submission_before_write` trigger),
+     so comparing against one or the other changes nothing real here. What
+     breakdown.js has that this roster-wide matrix does not is the per-pupil
+     `assignment_question_attempts` rows already loaded for ONE pupil at a
+     time — a truthful check needs `answered_at` per attempt, and loading
+     every attempt for every cell of a whole class grid (this function, and
+     every screen `buildMatrix` feeds: class-detail, digest, insights, the
+     rollups) is a materially bigger read this ticket does not make. This
+     dot is a prompt to open the breakdown panel for the truthful detail,
+     not the source of truth itself — unchanged by this ticket. */
   var REVISED_SLACK_MS = 2000;
   function isRevisedSub(sub) {
     if (!sub || sub.status !== "complete" || !sub.updated_at) { return false; }

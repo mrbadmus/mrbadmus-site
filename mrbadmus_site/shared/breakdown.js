@@ -301,15 +301,54 @@
     });
   }
 
+  /* ⊕ SPEC-E / "Prompt X" (4 Oct 2026) — the reveal-columns capability
+     probes. `answers_revealed_at`/`latest_score` (submissions) and
+     `first_option_letter`/`answered_at` (attempts) ship in a migration that
+     may sit PARKED for days before it reaches this project (supabase/
+     migrations/20261004010000_x_reopen_fair_scoring.sql). PostgREST 400s a
+     WHOLE select if any named column is missing, so this panel — a staff
+     screen 135+ pupils' marks flow through — must never name them unprobed.
+     Cached only on a definite "column does not exist", same shape as every
+     other capability probe in this estate; a transient failure re-probes
+     next open() rather than latching a false "unsupported" for the rest of
+     the staff member's session. */
+  var _submissionRevealCols = null, _attemptRevealCols = null;
+  async function submissionRevealColsSupported(sb) {
+    if (_submissionRevealCols !== null) { return _submissionRevealCols; }
+    try {
+      var r = await sb.from("assignment_submissions")
+        .select("answers_revealed_at, latest_score").limit(0);
+      if (!r.error) { _submissionRevealCols = true; return true; }
+      if (r.error.code === "42703" || r.error.code === "PGRST204") {
+        _submissionRevealCols = false; return false;
+      }
+      return false;
+    } catch (e) { return false; }
+  }
+  async function attemptRevealColsSupported(sb) {
+    if (_attemptRevealCols !== null) { return _attemptRevealCols; }
+    try {
+      var r = await sb.from("assignment_question_attempts")
+        .select("first_option_letter, answered_at").limit(0);
+      if (!r.error) { _attemptRevealCols = true; return true; }
+      if (r.error.code === "42703" || r.error.code === "PGRST204") {
+        _attemptRevealCols = false; return false;
+      }
+      return false;
+    } catch (e) { return false; }
+  }
+
   /* EVERY pupil's submission ROW for this assignment — before dedup, so a
      retaking pupil can appear twice here. `keepFirstAttempt` below reduces
      it to one per student_id, the same rule the rest of the estate uses. */
   async function loadSubmissions(sb, assignmentId) {
+    var extra = (await submissionRevealColsSupported(sb))
+      ? ", answers_revealed_at, latest_score" : "";
     return fetchPaged("submissions", function (from, to) {
       return sb.from("assignment_submissions")
-        /* ⊕ Sharpen C5 — `updated_at`, for "revised after marking". */
+        /* ⊕ Sharpen C5 — `updated_at`, for "changed after answers shown". */
         .select("id, student_id, score, max_score, status, completed_at, " +
-                "submitted_at, updated_at, is_late, total_time_seconds, attempts, attempt_no")
+                "submitted_at, updated_at, is_late, total_time_seconds, attempts, attempt_no" + extra)
         .eq("assignment_id", assignmentId)
         .is("deleted_at", null)
         .order("id", { ascending: true })
@@ -345,12 +384,14 @@
      second) attempt cannot double-count in the class-wide flag. */
   async function loadAllAttempts(sb, submissionIds) {
     if (!submissionIds.length) { return []; }
+    var extra = (await attemptRevealColsSupported(sb))
+      ? ", first_option_letter, answered_at" : "";
     return fetchPaged("attempts", function (from, to) {
       return sb.from("assignment_question_attempts")
         .select("id, submission_id, question_index, question_text, selected_answer, " +
                 "correct_answer, is_correct, time_spent_seconds, attempt_number, " +
                 "created_at, question_ref, selected_option_letter, " +
-                "correct_option_letter, rung, criteria_met, criteria_total")
+                "correct_option_letter, rung, criteria_met, criteria_total" + extra)
         .in("submission_id", submissionIds)
         .order("id", { ascending: true })
         .range(from, to);
@@ -422,18 +463,41 @@
   function paperClosed(assignment) {
     return !!(assignment.due_at && Date.parse(assignment.due_at) <= Date.now());
   }
-  /* ⊕ Sharpen C5 (29 Sep 2026) — the backend's `isRevised()`, the same
-     predicate teacher-live.js uses: complete, and `updated_at` more than
-     2 s after the completion stamp (an answer in flight when Complete
-     landed rescores a moment later; the slack keeps that out). */
+  /* ⊕ Sharpen C5 (29 Sep 2026), made truthful by SPEC-E (4 Oct 2026).
+     HEURISTIC — the pre-migration fallback, byte for byte what this always
+     was: complete, and `updated_at` more than 2 s after the completion
+     stamp (an answer in flight when Complete landed rescores a moment
+     later; the slack keeps that out). Still what server.js's `isRevised()`
+     and teacher-live.js's `isRevisedSub()` fall back to when the reveal
+     columns are absent. */
   var REVISED_SLACK_MS = 2000;
-  function isRevised(sub) {
+  function isRevisedHeuristic(sub) {
     if (!sub || sub.status !== "complete" || !sub.updated_at) { return false; }
     var done = sub.completed_at || sub.submitted_at;
     if (!done) { return false; }
     var u = Date.parse(sub.updated_at), d = Date.parse(done);
     if (isNaN(u) || isNaN(d)) { return false; }
     return u > d + REVISED_SLACK_MS;
+  }
+  /* TRUTHFUL — an attempt whose CURRENTLY STORED answer was given or
+     changed after `answers_revealed_at` (the server's reveal stamp, never
+     a client value): EXISTS a row in `myAttempts` with `answered_at` past
+     the reveal (plus the same 2-second slack, for the same MRB-292
+     in-flight-answer race the heuristic above guards against). Covers both
+     ways a set is "changed after the reveal" — an answer that was edited,
+     and a question left blank at hand-in and answered afterwards — because
+     both advance that row's `answered_at` and nothing else does (a plain
+     re-save of the SAME letter leaves it where it was — see
+     `mrb_attempt_track_first_answer` in the migration). Falls back to the
+     heuristic when the reveal columns or `myAttempts` are not available. */
+  function isRevised(sub, myAttempts) {
+    if (!sub || sub.status !== "complete") { return false; }
+    if (!sub.answers_revealed_at || !myAttempts) { return isRevisedHeuristic(sub); }
+    var cutoff = Date.parse(sub.answers_revealed_at) + REVISED_SLACK_MS;
+    return myAttempts.some(function (a) {
+      var t = Date.parse(a.answered_at || "");
+      return !isNaN(t) && t > cutoff;
+    });
   }
   function completedIso(sub) {
     return (sub && (sub.completed_at || sub.submitted_at)) || null;
@@ -721,17 +785,28 @@
       handedTile = statTile("HANDED IN", value, fmtShort(completedIso(sub)));
       if (late === true) { handedTile.valueNode.classList.add("is-late"); }
       if (late === false) { handedTile.valueNode.classList.add("is-good"); }
-      /* ⊕ Sharpen C5 — the pupil changed it after it was marked; the SCORE
-         tile is already the latest. When, under when it was handed in. */
-      if (isRevised(sub)) {
-        /* ⊕ re-audit — revised the same day it was handed in: the time
-           alone ("Revised 22:31"); another day: "Revised 29 Sep, 21:10". */
+      /* ⊕ Sharpen C5, corrected by SPEC-E (4 Oct 2026) — the pupil changed
+         something after being shown the correct answers. ⚠️ THE SCORE TILE
+         IS NO LONGER "ALREADY THE LATEST" — under Mide's option A, `sub.score`
+         is the COUNTED figure (answers given before the reveal only) and is
+         DELIBERATELY unmoved by a post-reveal change; `sub.latest_score` is
+         "if I marked it today". When they differ, say so once, here, rather
+         than leaving the SCORE tile looking wrong next to this note. */
+      if (isRevised(sub, myAttempts)) {
+        /* ⊕ re-audit — changed the same day it was handed in: the time
+           alone ("Changed after answers shown · 22:31"); another day:
+           "Changed after answers shown · 29 Sep, 21:10". */
         var handedS = fmtShort(completedIso(sub)), revS = fmtShort(sub.updated_at);
         var sameDay = handedS.split(",")[0] === revS.split(",")[0];
-        var rv = el("div", "bd-stat-sub", "Revised " +
+        var rv = el("div", "bd-stat-sub", "Changed after answers shown · " +
                     (sameDay ? (revS.split(", ")[1] || revS) : revS));
         rv.setAttribute("data-bd-revised", "1");
         handedTile.node.appendChild(rv);
+        if (sub.latest_score != null && sub.score != null && sub.latest_score !== sub.score) {
+          var nowRv = el("div", "bd-stat-sub", "Now " + sub.latest_score + " / " + (totalQ || sub.max_score));
+          nowRv.setAttribute("data-bd-latest-score", "1");
+          scoreTile.node.appendChild(nowRv);
+        }
       }
     } else {
       var st = statusWord(sub, S.assignment);
@@ -821,10 +896,15 @@
   }
 
   /* Every question, in position order, joined to this pupil's attempt (if
-     any) and the class-wide flag computed once in open(). */
-  function buildRows(myAttempts) {
+     any) and the class-wide flag computed once in open(). `sub` is this
+     pupil's submission row — SPEC-E needs it here (not just in
+     `buildSummary`) for the per-question "changed after answers shown ·
+     was B" mark, which depends on the SAME reveal stamp. */
+  function buildRows(myAttempts, sub) {
     var myByQ = {};
     myAttempts.forEach(function (a) { myByQ[a.question_index] = a; });
+    var revealCutoff = (sub && sub.answers_revealed_at)
+      ? Date.parse(sub.answers_revealed_at) + REVISED_SLACK_MS : null;
     return S.questions.map(function (q) {
       var qi = q.position - 1;
       var mine = myByQ[qi] || null;
@@ -832,6 +912,22 @@
       var classAttempt = S.repByQ[qi] || null;
       var rep = mine || classAttempt;
       var bank = (rep && rep.question_ref) ? S.bankById[rep.question_ref] : null;
+      /* ⊕ SPEC-E — this ONE question was changed (or first answered) after
+         the reveal: `answered_at` past the cutoff AND the letter now stored
+         differs from the FIRST one ever given (so a re-save of the same
+         answer, or a question answered only once, never says "was X" about
+         itself). `first_option_letter` is immutable once set — see the
+         migration — so this can never show a letter the pupil didn't
+         actually give first. */
+      var changedAfterReveal = false, wasLetter = null;
+      if (mine && revealCutoff != null && mine.first_option_letter) {
+        var answeredAt = Date.parse(mine.answered_at || "");
+        if (!isNaN(answeredAt) && answeredAt > revealCutoff &&
+            mine.first_option_letter !== mine.selected_option_letter) {
+          changedAfterReveal = true;
+          wasLetter = mine.first_option_letter;
+        }
+      }
       return {
         position: q.position,
         sourceRef: q.source_ref,
@@ -844,6 +940,8 @@
           ? answerDisplay(mine.correct_answer, mine.correct_option_letter, bank)
           : (rep ? answerDisplay(rep.correct_answer, rep.correct_option_letter, bank) : null),
         isCorrect: mine ? mine.is_correct : null,
+        changedAfterReveal: changedAfterReveal,
+        wasLetter: wasLetter,
         attemptNumber: mine ? mine.attempt_number : null,
         timeSpent: mine ? mine.time_spent_seconds : null,
         criteriaMet: mine ? mine.criteria_met : null,
@@ -913,6 +1011,15 @@
     }
     var dur = fmtDuration(row.timeSpent);
     if (dur) { metaBits.push(dur); }
+    /* ⊕ SPEC-E (4 Oct 2026) — this ONE row was changed (or first answered)
+       after the pupil was shown the correct answers; the mark that counts
+       for the teacher is whatever this question was BEFORE that moment
+       (`isCorrect` above already reflects it, via `sub.score`'s formula —
+       no change needed here), so saying which letter it used to be is the
+       one genuinely new fact this row can tell a teacher. */
+    if (row.changedAfterReveal) {
+      metaBits.push("Changed after answers shown" + (row.wasLetter ? " · was " + row.wasLetter : ""));
+    }
     if (metaBits.length) { mainCol.appendChild(el("div", "bd-q-meta", metaBits.join(" · "))); }
 
     var answers = el("dl", "bd-q-answers");
@@ -1072,7 +1179,7 @@
     var student = S.roster[S.idx];
     var sub = S.submissionsByStudent[student.id] || null;
     var myAttempts = sub ? (S.attemptsBySub[sub.id] || []) : [];
-    var rows = buildRows(myAttempts);
+    var rows = buildRows(myAttempts, sub);
 
     els.body.textContent = "";
     els.body.appendChild(buildSummary(sub, myAttempts));
