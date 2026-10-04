@@ -279,6 +279,17 @@ GRANT EXECUTE ON FUNCTION public.class_stars_leaderboard_for_member(uuid) TO aut
 -- whether or not they would pass #1's own "eligible" gate. 0 where
 -- nothing is graded yet that week. This is a reuse of #1's own number,
 -- not a new unit.
+-- ⚠️ CTEs, NEVER `CREATE TEMP TABLE` — found by the TEST rehearsal, not
+-- guessed. A first draft of this function built the roster and the per-week
+-- points into three `CREATE TEMP TABLE ... AS` statements, exactly as a
+-- script scaffolding this would. Postgres refuses: "CREATE TABLE AS is not
+-- allowed in a non-volatile function" — any DDL is inherently volatile, and
+-- this function is (correctly) `STABLE`, the same volatility its sibling
+-- function above needs for the planner to treat two calls within one
+-- statement as the same answer. Rewritten as three CTEs inside a single
+-- read-only `WITH … SELECT`, which is what the sibling function already does
+-- successfully. Proven on TEST (qeppkiswvclkkwbxmlok) against a throwaway
+-- 17-pupil class shaped like production's 10h/Ph1 before this landed here.
 CREATE OR REPLACE FUNCTION public.class_stars_board_for_member(p_class_id uuid)
 RETURNS jsonb
 LANGUAGE plpgsql
@@ -290,6 +301,7 @@ DECLARE
   v_year_start   date;
   v_current_week int;
   v_viewer       uuid := auth.uid();
+  v_roster_count int;
   v_result       jsonb;
 BEGIN
   IF NOT auth_user_is_member_of_class(p_class_id) THEN
@@ -312,78 +324,83 @@ BEGIN
     );
   END IF;
 
-  v_current_week := public._mrb_week_number(v_year_start, now());
+  SELECT COUNT(*) INTO v_roster_count
+  FROM class_members cm
+  JOIN profiles p ON p.id = cm.student_id
+  WHERE cm.class_id = p_class_id
+    AND cm.left_at IS NULL AND cm.deleted_at IS NULL AND p.deleted_at IS NULL;
 
-  -- The roster, ordered once, deterministically — every per-week points
-  -- array below is built in this SAME order so index i always names the
-  -- same pupil across every week and in the JS client's `roster[i]`.
-  CREATE TEMP TABLE _mrb_roster ON COMMIT DROP AS
-    SELECT cm.student_id, p.first_name, p.last_name, p.avatar_url,
-           row_number() OVER (ORDER BY p.first_name, p.last_name, cm.student_id) - 1 AS idx
-    FROM class_members cm
-    JOIN profiles p ON p.id = cm.student_id
-    WHERE cm.class_id = p_class_id
-      AND cm.left_at IS NULL
-      AND cm.deleted_at IS NULL
-      AND p.deleted_at IS NULL;
-
-  IF (SELECT COUNT(*) FROM _mrb_roster) = 0 THEN
+  IF v_roster_count = 0 THEN
     RETURN jsonb_build_object(
       'is_empty', true, 'empty_reason', 'no_members',
       'roster', '[]'::jsonb, 'points', '{}'::jsonb
     );
   END IF;
 
-  -- Four positions, oldest (1) to newest/current (4). A position whose
-  -- real week number would fall before week 1 (the year has not had
-  -- that many teaching weeks yet) is marked NULL and every pupil scores
+  v_current_week := public._mrb_week_number(v_year_start, now());
+
+  -- `roster` is ordered once, deterministically — the per-week points CTE
+  -- below is built in this SAME order so index `idx` always names the same
+  -- pupil across every position and in the JS client's `roster[i]`.
+  -- `positions` is the four board chips, oldest (1) to newest/current (4);
+  -- a position whose real week would fall before week 1 (the year has not
+  -- had that many teaching weeks yet) is marked NULL and every pupil scores
   -- 0 for it — see the header note.
-  CREATE TEMP TABLE _mrb_positions ON COMMIT DROP AS
-    SELECT pos, (v_current_week - (4 - pos)) AS real_week
-    FROM generate_series(1, 4) AS pos;
-
-  CREATE TEMP TABLE _mrb_points ON COMMIT DROP AS
-    SELECT
-      pos.pos,
-      r.idx,
-      COALESCE(
-        (
-          SELECT ROUND((SUM(
-                   CASE WHEN fa.submitted_at IS NOT NULL
-                         AND fa.submitted_at <= a.due_at
-                         AND fa.score IS NOT NULL AND fa.max_score IS NOT NULL
-                         AND fa.max_score > 0
-                        THEN fa.score ELSE 0 END
-                 )::numeric
-                 / NULLIF(SUM(
-                   CASE WHEN fa.submitted_at IS NOT NULL
-                         AND fa.submitted_at <= a.due_at
-                         AND fa.score IS NOT NULL AND fa.max_score IS NOT NULL
-                         AND fa.max_score > 0
-                        THEN fa.max_score ELSE 0 END
-                 ), 0)) * 100)::int
-          FROM assignments a
-          LEFT JOIN LATERAL (
-            SELECT sub.score, sub.max_score, sub.submitted_at
-            FROM assignment_submissions sub
-            WHERE sub.assignment_id = a.id
-              AND sub.student_id = r.student_id
-              AND sub.deleted_at IS NULL
-            ORDER BY COALESCE(sub.attempts, 2147483647) ASC,
-                     COALESCE(sub.submitted_at, 'infinity'::timestamptz) ASC
-            LIMIT 1
-          ) fa ON true
-          WHERE a.class_id = p_class_id
-            AND a.deleted_at IS NULL
-            AND a.due_at IS NOT NULL
-            AND pos.real_week IS NOT NULL
-            AND COALESCE(a.academic_week,
-                  public._mrb_week_number(v_year_start,
-                    COALESCE(a.release_at, a.created_at))) = pos.real_week
-        ), 0) AS pts
-    FROM _mrb_positions pos
-    CROSS JOIN _mrb_roster r;
-
+  WITH
+    roster AS (
+      SELECT cm.student_id, p.first_name, p.last_name,
+             row_number() OVER (ORDER BY p.first_name, p.last_name, cm.student_id) - 1 AS idx
+      FROM class_members cm
+      JOIN profiles p ON p.id = cm.student_id
+      WHERE cm.class_id = p_class_id
+        AND cm.left_at IS NULL AND cm.deleted_at IS NULL AND p.deleted_at IS NULL
+    ),
+    positions AS (
+      SELECT pos, (v_current_week - (4 - pos)) AS real_week
+      FROM generate_series(1, 4) AS pos
+    ),
+    pts AS (
+      SELECT
+        pos.pos,
+        r.idx,
+        COALESCE(
+          (
+            SELECT ROUND((SUM(
+                     CASE WHEN fa.submitted_at IS NOT NULL
+                           AND fa.submitted_at <= a.due_at
+                           AND fa.score IS NOT NULL AND fa.max_score IS NOT NULL
+                           AND fa.max_score > 0
+                          THEN fa.score ELSE 0 END
+                   )::numeric
+                   / NULLIF(SUM(
+                     CASE WHEN fa.submitted_at IS NOT NULL
+                           AND fa.submitted_at <= a.due_at
+                           AND fa.score IS NOT NULL AND fa.max_score IS NOT NULL
+                           AND fa.max_score > 0
+                          THEN fa.max_score ELSE 0 END
+                   ), 0)) * 100)::int
+            FROM assignments a
+            LEFT JOIN LATERAL (
+              SELECT sub.score, sub.max_score, sub.submitted_at
+              FROM assignment_submissions sub
+              WHERE sub.assignment_id = a.id
+                AND sub.student_id = r.student_id
+                AND sub.deleted_at IS NULL
+              ORDER BY COALESCE(sub.attempts, 2147483647) ASC,
+                       COALESCE(sub.submitted_at, 'infinity'::timestamptz) ASC
+              LIMIT 1
+            ) fa ON true
+            WHERE a.class_id = p_class_id
+              AND a.deleted_at IS NULL
+              AND a.due_at IS NOT NULL
+              AND pos.real_week IS NOT NULL
+              AND COALESCE(a.academic_week,
+                    public._mrb_week_number(v_year_start,
+                      COALESCE(a.release_at, a.created_at))) = pos.real_week
+          ), 0) AS pts
+      FROM positions pos
+      CROSS JOIN roster r
+    )
   SELECT jsonb_build_object(
     'is_empty', false,
     'empty_reason', NULL,
@@ -399,13 +416,13 @@ BEGIN
           'me', r.student_id = v_viewer
         ) ORDER BY r.idx
       ), '[]'::jsonb)
-      FROM _mrb_roster r
+      FROM roster r
     ),
     'points', (
       SELECT COALESCE(jsonb_object_agg(pos::text, week_points), '{}'::jsonb)
       FROM (
         SELECT pos, jsonb_agg(pts ORDER BY idx) AS week_points
-        FROM _mrb_points
+        FROM pts
         GROUP BY pos
       ) w
     )
