@@ -34,19 +34,14 @@
 --      before this migration.
 --
 -- 2. `class_stars_board_for_member(p_class_id uuid)` is a NEW function,
---    same membership gate, same SECURITY DEFINER / search_path posture,
---    same visible fields (no new personal data beyond what #1 already
---    exposes to classmates: first_name, last_name, avatar_url). It
---    answers the question #1 cannot: a PER-WEEK POINTS SERIES for the
---    whole active roster (not gated to only the "eligible" top-N), for
---    the last up to four teaching weeks ending at the class's current
---    week, keyed 1..4 (oldest..newest) to match the page's own four
---    W01-W04 chips — see docs/mrb-x/pupil-class-board.md (committed
---    alongside the frontend branch) for why points are chosen as
---    `score_pct` (0-100, same formula #1 already uses for its own
---    `score_pct`) rather than inventing a new unit, and why a week that
---    has not happened yet is given points of 0 for every pupil rather
---    than restructuring the page's fixed four-chip template.
+--    same SECURITY DEFINER / search_path posture. It answers what #1
+--    cannot: a PER-WEEK RANKING for the class's board (the page's four
+--    W01-W04 chips, oldest..newest with 4 = now, plus TERM). Mide's
+--    ruling of 4 Oct 2026: a pupil sees only the TOP FIVE of the class,
+--    with their scores, and nothing about anyone else, enforced here. A
+--    teacher of the class gets the full ranking. Points are the week's
+--    percentage (the number #1 calls score_pct). See section 2 below for
+--    the exact rules, including how ties are broken.
 --
 -- 3. `practice_rounds` is a NEW table. One row per completed practice
 --    round (never a half-finished one — the backend route this feeds
@@ -264,32 +259,35 @@ $$;
 
 GRANT EXECUTE ON FUNCTION public.class_stars_leaderboard_for_member(uuid) TO authenticated;
 
--- ── 2. class_stars_board_for_member — NEW ──────────────────────────────
--- A per-week POINTS SERIES for the whole active roster (not gated to
--- "eligible"), for up to the last four teaching weeks ending at the
--- class's current week. Keyed 1..4 (oldest..newest) to match the page's
--- fixed W01-W04 chips. A week before the academic year opened (fewer
--- than four teaching weeks have elapsed) is given 0 for every pupil —
--- the honest reading, chosen over restructuring the page's fixed
--- four-chip template; see the migration header.
+-- ── 2. class_stars_board_for_member — NEW (Mide's ruling, 4 Oct 2026) ──
+-- "Leaderboard should only show top 5 in the class, that way only the best
+-- of the best are being shown."
 --
--- Points = score_pct: the SAME formula #1 already defines (marks scored
--- over marks possible, on graded ON-TIME submissions, rounded to a
--- whole percent) — computed for every active member of that week,
--- whether or not they would pass #1's own "eligible" gate. 0 where
--- nothing is graded yet that week. This is a reuse of #1's own number,
--- not a new unit.
--- ⚠️ CTEs, NEVER `CREATE TEMP TABLE` — found by the TEST rehearsal, not
--- guessed. A first draft of this function built the roster and the per-week
--- points into three `CREATE TEMP TABLE ... AS` statements, exactly as a
--- script scaffolding this would. Postgres refuses: "CREATE TABLE AS is not
--- allowed in a non-volatile function" — any DDL is inherently volatile, and
--- this function is (correctly) `STABLE`, the same volatility its sibling
--- function above needs for the planner to treat two calls within one
--- statement as the same answer. Rewritten as three CTEs inside a single
--- read-only `WITH … SELECT`, which is what the sibling function already does
--- successfully. Proven on TEST (qeppkiswvclkkwbxmlok) against a throwaway
--- 17-pupil class shaped like production's 10h/Ph1 before this landed here.
+-- ENFORCED HERE, NOT IN THE PAGE. For a PUPIL caller the function returns,
+-- per tab (the four week chips "1".."4", oldest..newest with 4 = now, and
+-- "term"), AT MOST FIVE entries {id, name, mono, points, me} — and nothing
+-- about anyone else. A pupil outside the five gets the five and no row,
+-- rank or score of their own; `me` is true only on a row that is theirs.
+-- A pupil with nothing handed in on time that week is never listed (points
+-- must be above 0), so a quiet week returns fewer than five, or none.
+-- A TEACHER of the class (class_teachers, active) gets every pupil, ranked.
+-- Anyone else (not a member, not a teacher) gets not_member and nothing.
+--
+-- points = the week's percentage: marks over marks possible across the
+-- week's sets, first attempts, graded, handed in on time (the number the
+-- sibling function calls score_pct). TERM = the four weeks added, as the
+-- page's template always added its four chips.
+--
+-- TIES: points high to low; then whoever FINISHED FIRST, defined as the
+-- earlier "latest counted hand-in" — for a week tab, the latest
+-- COALESCE(completed_at, submitted_at) among the pupil's counted hand-ins in
+-- that week's sets; for TERM, the latest among their counted hand-ins in
+-- all four weeks (the moment they finished the scope's work); then the
+-- pupil id, so the order is the same on every call. Exactly five are
+-- returned however many tie at fifth.
+--
+-- ⚠️ CTEs, never CREATE TEMP TABLE (a STABLE function cannot run DDL; the
+-- first draft's temp tables were refused on the first TEST call).
 CREATE OR REPLACE FUNCTION public.class_stars_board_for_member(p_class_id uuid)
 RETURNS jsonb
 LANGUAGE plpgsql
@@ -301,14 +299,27 @@ DECLARE
   v_year_start   date;
   v_current_week int;
   v_viewer       uuid := auth.uid();
+  v_is_member    boolean;
+  v_is_teacher   boolean := false;
   v_roster_count int;
   v_result       jsonb;
 BEGIN
-  IF NOT auth_user_is_member_of_class(p_class_id) THEN
-    RETURN jsonb_build_object(
-      'is_empty', true, 'empty_reason', 'not_member',
-      'roster', '[]'::jsonb, 'points', '{}'::jsonb
-    );
+  -- Membership gate, unchanged for a pupil. A teacher of the class is the
+  -- one other caller let through (full ranking); anyone else gets nothing.
+  v_is_member := auth_user_is_member_of_class(p_class_id);
+  IF NOT v_is_member THEN
+    SELECT EXISTS (
+      SELECT 1 FROM class_teachers ct
+      WHERE ct.class_id = p_class_id
+        AND ct.teacher_id = v_viewer
+        AND ct.ended_at IS NULL AND ct.deleted_at IS NULL
+    ) INTO v_is_teacher;
+    IF NOT v_is_teacher THEN
+      RETURN jsonb_build_object(
+        'is_empty', true, 'empty_reason', 'not_member',
+        'mode', 'none', 'tabs', '{}'::jsonb
+      );
+    END IF;
   END IF;
 
   SELECT ay.start_date
@@ -320,7 +331,7 @@ BEGIN
   IF v_year_start IS NULL THEN
     RETURN jsonb_build_object(
       'is_empty', true, 'empty_reason', 'class_not_found',
-      'roster', '[]'::jsonb, 'points', '{}'::jsonb
+      'mode', 'none', 'tabs', '{}'::jsonb
     );
   END IF;
 
@@ -333,23 +344,15 @@ BEGIN
   IF v_roster_count = 0 THEN
     RETURN jsonb_build_object(
       'is_empty', true, 'empty_reason', 'no_members',
-      'roster', '[]'::jsonb, 'points', '{}'::jsonb
+      'mode', 'none', 'tabs', '{}'::jsonb
     );
   END IF;
 
   v_current_week := public._mrb_week_number(v_year_start, now());
 
-  -- `roster` is ordered once, deterministically — the per-week points CTE
-  -- below is built in this SAME order so index `idx` always names the same
-  -- pupil across every position and in the JS client's `roster[i]`.
-  -- `positions` is the four board chips, oldest (1) to newest/current (4);
-  -- a position whose real week would fall before week 1 (the year has not
-  -- had that many teaching weeks yet) is marked NULL and every pupil scores
-  -- 0 for it — see the header note.
   WITH
     roster AS (
-      SELECT cm.student_id, p.first_name, p.last_name,
-             row_number() OVER (ORDER BY p.first_name, p.last_name, cm.student_id) - 1 AS idx
+      SELECT cm.student_id, p.first_name, p.last_name
       FROM class_members cm
       JOIN profiles p ON p.id = cm.student_id
       WHERE cm.class_id = p_class_id
@@ -359,72 +362,96 @@ BEGIN
       SELECT pos, (v_current_week - (4 - pos)) AS real_week
       FROM generate_series(1, 4) AS pos
     ),
-    pts AS (
-      SELECT
-        pos.pos,
-        r.idx,
-        COALESCE(
-          (
-            SELECT ROUND((SUM(
-                     CASE WHEN fa.submitted_at IS NOT NULL
-                           AND fa.submitted_at <= a.due_at
-                           AND fa.score IS NOT NULL AND fa.max_score IS NOT NULL
-                           AND fa.max_score > 0
-                          THEN fa.score ELSE 0 END
-                   )::numeric
-                   / NULLIF(SUM(
-                     CASE WHEN fa.submitted_at IS NOT NULL
-                           AND fa.submitted_at <= a.due_at
-                           AND fa.score IS NOT NULL AND fa.max_score IS NOT NULL
-                           AND fa.max_score > 0
-                          THEN fa.max_score ELSE 0 END
-                   ), 0)) * 100)::int
-            FROM assignments a
-            LEFT JOIN LATERAL (
-              SELECT sub.score, sub.max_score, sub.submitted_at
-              FROM assignment_submissions sub
-              WHERE sub.assignment_id = a.id
-                AND sub.student_id = r.student_id
-                AND sub.deleted_at IS NULL
-              ORDER BY COALESCE(sub.attempts, 2147483647) ASC,
-                       COALESCE(sub.submitted_at, 'infinity'::timestamptz) ASC
-              LIMIT 1
-            ) fa ON true
-            WHERE a.class_id = p_class_id
-              AND a.deleted_at IS NULL
-              AND a.due_at IS NOT NULL
-              AND pos.real_week IS NOT NULL
-              AND COALESCE(a.academic_week,
-                    public._mrb_week_number(v_year_start,
-                      COALESCE(a.release_at, a.created_at))) = pos.real_week
-          ), 0) AS pts
+    -- Every COUNTED hand-in: first attempt, graded, in on time. One row per
+    -- (position, pupil, set). `done_at` is when the pupil finished it.
+    counted AS (
+      SELECT pos.pos, r.student_id, fa.score, fa.max_score,
+             COALESCE(fa.completed_at, fa.submitted_at) AS done_at
       FROM positions pos
       CROSS JOIN roster r
+      JOIN assignments a
+        ON a.class_id = p_class_id
+       AND a.deleted_at IS NULL
+       AND a.due_at IS NOT NULL
+       AND COALESCE(a.academic_week,
+             public._mrb_week_number(v_year_start,
+               COALESCE(a.release_at, a.created_at))) = pos.real_week
+      JOIN LATERAL (
+        SELECT sub.score, sub.max_score, sub.submitted_at, sub.completed_at
+        FROM assignment_submissions sub
+        WHERE sub.assignment_id = a.id
+          AND sub.student_id = r.student_id
+          AND sub.deleted_at IS NULL
+        ORDER BY COALESCE(sub.attempts, 2147483647) ASC,
+                 COALESCE(sub.submitted_at, 'infinity'::timestamptz) ASC
+        LIMIT 1
+      ) fa ON true
+      WHERE fa.submitted_at IS NOT NULL
+        AND fa.submitted_at <= a.due_at
+        AND fa.score IS NOT NULL AND fa.max_score IS NOT NULL
+        AND fa.max_score > 0
+    ),
+    -- One row per (position, pupil): the week's percentage (the same number
+    -- the sibling function calls score_pct) and when the pupil's LATEST
+    -- counted hand-in that week was finished.
+    per_week AS (
+      SELECT r.student_id, pos.pos,
+             COALESCE(ROUND(SUM(c.score)::numeric / NULLIF(SUM(c.max_score), 0) * 100)::int, 0) AS pts,
+             MAX(c.done_at) AS tie_at
+      FROM roster r
+      CROSS JOIN positions pos
+      LEFT JOIN counted c ON c.student_id = r.student_id AND c.pos = pos.pos
+      GROUP BY r.student_id, pos.pos
+    ),
+    -- TERM = the four weeks added, exactly as the page's template adds its
+    -- four chips; its tie-break is the LATEST hand-in anywhere in the four.
+    term AS (
+      SELECT student_id, SUM(pts)::int AS pts, MAX(tie_at) AS tie_at
+      FROM per_week GROUP BY student_id
+    ),
+    tabbed AS (
+      SELECT pos::text AS tab, student_id, pts, tie_at FROM per_week
+      UNION ALL
+      SELECT 'term', student_id, pts, tie_at FROM term
+    ),
+    -- Rank inside each tab: points high to low, then whoever finished
+    -- first, then the pupil id so the order can never wobble.
+    ranked AS (
+      SELECT t.tab, t.student_id, t.pts,
+             row_number() OVER (
+               PARTITION BY t.tab
+               ORDER BY t.pts DESC, t.tie_at ASC NULLS LAST, t.student_id
+             ) AS rn
+      FROM tabbed t
+    ),
+    -- The ONLY place the five-row rule lives. A pupil gets rows 1..5 with
+    -- marks on the board; a teacher gets everyone.
+    visible AS (
+      SELECT rk.tab, rk.rn, rk.pts, r.student_id, r.first_name, r.last_name
+      FROM ranked rk
+      JOIN roster r ON r.student_id = rk.student_id
+      WHERE v_is_teacher OR (rk.rn <= 5 AND rk.pts > 0)
     )
   SELECT jsonb_build_object(
     'is_empty', false,
     'empty_reason', NULL,
-    'roster', (
-      SELECT COALESCE(jsonb_agg(
-        jsonb_build_object(
-          'id', r.student_id,
-          'name', trim(both ' ' from
-                    coalesce(r.first_name, '') || ' ' || coalesce(r.last_name, '')),
-          'mono', upper(
-                    coalesce(substring(r.first_name from 1 for 1), '') ||
-                    coalesce(substring(r.last_name  from 1 for 1), '')),
-          'me', r.student_id = v_viewer
-        ) ORDER BY r.idx
-      ), '[]'::jsonb)
-      FROM roster r
-    ),
-    'points', (
-      SELECT COALESCE(jsonb_object_agg(pos::text, week_points), '{}'::jsonb)
-      FROM (
-        SELECT pos, jsonb_agg(pts ORDER BY idx) AS week_points
-        FROM pts
-        GROUP BY pos
-      ) w
+    'mode', CASE WHEN v_is_teacher THEN 'teacher' ELSE 'pupil' END,
+    'tabs', (
+      SELECT jsonb_object_agg(k.tab, COALESCE((
+        SELECT jsonb_agg(
+          jsonb_build_object(
+            'id', v.student_id,
+            'name', trim(both ' ' from
+                      coalesce(v.first_name, '') || ' ' || coalesce(v.last_name, '')),
+            'mono', upper(
+                      coalesce(substring(v.first_name from 1 for 1), '') ||
+                      coalesce(substring(v.last_name  from 1 for 1), '')),
+            'points', v.pts,
+            'me', v.student_id = v_viewer
+          ) ORDER BY v.rn)
+        FROM visible v WHERE v.tab = k.tab
+      ), '[]'::jsonb))
+      FROM (VALUES ('1'), ('2'), ('3'), ('4'), ('term')) AS k(tab)
     )
   ) INTO v_result;
 

@@ -23,6 +23,9 @@ BEGIN;
 DROP POLICY IF EXISTS practice_rounds_select ON public.practice_rounds;
 DROP TABLE IF EXISTS public.practice_rounds;
 
+-- The top-five board (Mide, 4 Oct 2026). Same signature before and after the
+-- rework, so one DROP undoes either version; nothing else depends on it.
+-- The page soft-fails to its empty board the moment the function is gone.
 DROP FUNCTION IF EXISTS public.class_stars_board_for_member(uuid);
 
 -- class_stars_leaderboard_for_member is NOT dropped here — re-apply
