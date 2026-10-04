@@ -516,12 +516,30 @@ LOGIC = {
         # becomes optimistic the day something is. It is Design's copy and
         # replacing it is Design's call. An empty frame was false in a way that
         # could not wait for that call; this is not.
+        #
+        # ⊕ RESOLVED (Prompt X / SPEC-C; Mide's ruling of 4 Oct 2026: the
+        # board is the class's TOP FIVE). `class_stars_board_for_member` (new
+        # RPC, parked migration on feat/x-mig-pupil-class) returns, per tab,
+        # at most five pupils with their scores, and shared/student-live.js
+        # hands them to the board as `weekPts.tabs`. The board has no leader
+        # ONLY when the RPC says there is nothing to show (not_member /
+        # class_not_found / no_members / nobody has handed in on time) or the
+        # call failed —
+        # the condition this ruling tests (`!fresh && !!top`) is unchanged
+        # and still correct; it is the DATA behind `top` that moved. The
+        # embedded comment two lines below is corrected for the same
+        # reason — kept rather than deleted, as this file's own preface
+        # explains, because deleting it would make the next reader
+        # re-derive why `hasBoard` is gated on `top` rather than on
+        # `fresh` alone.
         (
             "      hasBoard: !fresh, noBoard: fresh,",
             "      /* ⊕ RULED 23 Aug 2026 — a board with no leader is not a\n"
-            "         board. `top` is `table[0]`, and `table` maps `roster`,\n"
-            "         which student-live.js keeps empty on purpose rather than\n"
-            "         fabricate a points series. Design drew both branches;\n"
+            "         board. `top` is `table[0]`, and `table` maps `roster`.\n"
+            "         ⊕ Prompt X / SPEC-C — on the live page `table` is the\n"
+            "         class's top five from `class_stars_board_for_member`; this guard\n"
+            "         still gates on whether there IS a leader, not on whether\n"
+            "         the class has any work at all. Design drew both branches;\n"
             "         this picks the one that is true. See student_rulings.py. */\n"
             "      hasBoard: !fresh && !!top, noBoard: fresh || !top,",
         ),
@@ -7288,3 +7306,53 @@ PORT_CSS += """
 /* ⊕ Sharpen C6 (P22) — results cards keep their own height. */
 [data-mrb-results-grid] { align-items: start; }
 """
+
+
+# ⊕ Prompt X / SPEC-C — the practice round's completion now writes
+# somewhere. `recallAdvance` is otherwise byte-identical to Phase 3's own
+# text above; see the inline comments in `new` for why `last`/
+# `rightFinal` are read OUTSIDE the `setState` updater rather than from
+# its own `s`. Appended as a SEPARATE tuple, applied after Phase 3's own
+# replacement (which defines `recallAdvance` in the first place) rather
+# than edited into that ruling's text, which stays exactly what
+# 895f34766 wrote.
+LOGIC["class view"].append((
+    '  recallAdvance = (scored) => {\n    const size = this.recallSize();\n    this.setState((s) => {\n      const last = s.rqi >= size - 1;\n      const streak = scored ? s.rstreak + 1 : 0;\n      return {\n        rstreak: streak,\n        /* ⊕ P2, CARRIED. A streak BREAKS only when there was one:\n           getting the first question of a round wrong zeroes a\n           streak that was already zero, and nothing was broken. */\n        rbroke: s.rbroke || (!scored && s.rstreak > 0),\n        rbest: Math.max(s.rbest, streak),\n        rright: s.rright + (scored ? 1 : 0),\n        rpick: null, rchecked: false,\n        rqi: last ? s.rqi : s.rqi + 1,\n        rdone: last,\n        rrounds: last ? s.rrounds + 1 : s.rrounds\n      };\n    });\n  };\n',
+    '  recallAdvance = (scored) => {\n    const size = this.recallSize();\n    /* ⊕ Prompt X / SPEC-C — `last` AND THE FINAL `rright` ARE READ\n       HERE, BEFORE `setState`, NOT FROM THE UPDATER\'S OWN `s`. A\n       `setState` updater can run more than once for one call (this\n       runtime\'s own contract, inherited from React), and a network write\n       belongs in neither a render path nor anything that might repeat.\n       `this.state.rqi`/`this.state.rright` are exactly what the updater\n       below would read as `s.rqi`/`s.rright` — nothing else touches\n       state between this line and the `setState` call three lines down. */\n    const last = this.state.rqi >= size - 1;\n    const rightFinal = this.state.rright + (scored ? 1 : 0);\n    this.setState((s) => {\n      const streak = scored ? s.rstreak + 1 : 0;\n      return {\n        rstreak: streak,\n        /* ⊕ P2, CARRIED. A streak BREAKS only when there was one:\n           getting the first question of a round wrong zeroes a\n           streak that was already zero, and nothing was broken. */\n        rbroke: s.rbroke || (!scored && s.rstreak > 0),\n        rbest: Math.max(s.rbest, streak),\n        rright: s.rright + (scored ? 1 : 0),\n        rpick: null, rchecked: false,\n        rqi: last ? s.rqi : s.rqi + 1,\n        rdone: last,\n        rrounds: last ? s.rrounds + 1 : s.rrounds\n      };\n    });\n    /* ⊕ Prompt X / SPEC-C — Mide\'s ask: "Save a count of practice\n       rounds and show it." ONE write, on the round\'s OWN last question\n       — `last` is true only there, so an abandoned half-round (closing\n       the overlay early, navigating away) never reaches this line. The\n       sink (shared/student-live.js) posts to the backend and updates the\n       readings tile\'s ROUNDS value immediately; see `practiceRoundDone`\n       there for what happens on a refusal (nothing visible — the tile\n       keeps its last known value, the same soft-fail every write on this\n       page already uses). */\n    if (last) {\n      _sinkCall(\'practiceRoundDone\', { total: size, correct: rightFinal });\n    }\n  };\n',
+))
+
+
+# ⊕ Prompt X / SPEC-C — MIDE'S RULING OF 4 OCT 2026: THE BOARD IS THE CLASS'S
+# TOP FIVE, AND NOTHING ELSE REACHES A PUPIL.
+#
+#   "Leaderboard should only show top 5 in the class, that way only the best
+#    of the best are being shown."
+#
+# The five-row rule is enforced by `class_stars_board_for_member` (parked
+# migration, feat/x-mig-pupil-class); the page draws what it is given. On the
+# live page `weekPts.tabs` is `{"1".."4", "term": [{id, name, mono, points,
+# me} …]}`, at most five a tab. Four changes to Design's board maths, all
+# behind `liveBoard` so Design's fixture (which has no `tabs`) takes its
+# original branch byte for byte:
+#   A  the table is the server's rows in the server's order (the server broke
+#      ties by who handed in first; re-sorting by name here would undo it),
+#      "last week" is last week's five, and "N WEEKS AT THE TOP" walks the
+#      weekly leaders the server named;
+#   B  a pupil who was not in last week's five reads as moved up;
+#   C  a chip with nobody on it is not drawn;
+#   D  no pinned own-rank row (it is how a pupil outside the five would be
+#      told their rank) and no "Show top 10" (there is no tenth).
+# A pupil outside the five therefore sees the five and no sign of their own
+# place: `meRow` is only ever found when the server listed them.
+LOGIC["class view"].extend([
+    ("    const wk = st.boardWeek;\n    const table = this.roster.map((s, i) => {\n      const pts = wk === 'term' ? [1, 2, 3, 4].reduce((a, w) => a + this.weekPts[w][i], 0) : this.weekPts[wk][i];\n      const capOn = wk === 'term' ? 160 : 40, capRe = wk === 'term' ? 80 : 20;\n      const onT = Math.min(capOn, Math.round(pts * 0.4));\n      const rec = Math.min(capRe, Math.round(pts * 0.19));\n      const sc = Math.max(0, pts - onT - rec);\n      return { id: s.id, name: s.name, mono: s.mono, me: !!s.me, pts: pts, onT: onT, sc: sc, rec: rec };\n    }).sort((a, b) => b.pts - a.pts || a.name.localeCompare(b.name));\n\n    let prev = null;\n    if (wk !== 'term' && wk > 1) {\n      prev = this.roster.map((s, i) => ({ id: s.id, pts: this.weekPts[wk - 1][i] })).sort((a, b) => b.pts - a.pts).map((x) => x.id);\n    }\n    const top = table[0];\n    const maxPts = top ? top.pts : 1;\n    let streak = 0;\n    if (wk !== 'term' && top) {\n      for (let w = wk; w >= 1; w--) {\n        const lead = this.roster.map((s, i) => ({ id: s.id, pts: this.weekPts[w][i] })).sort((a, b) => b.pts - a.pts)[0];\n        if (lead.id === top.id) streak++; else break;\n      }\n    }\n",
+     '    const wk = st.boardWeek;\n    /* ⊕ Prompt X / SPEC-C, Mide\'s ruling of 4 Oct 2026 — "Leaderboard\n       should only show top 5 in the class, that way only the best of the best\n       are being shown." On the live page the SERVER hands over, per tab, at\n       most five rows (`weekPts.tabs`) and nothing about anyone else, so this\n       draws exactly those rows in the order it was given and never computes a\n       rank, a gap or a score for a pupil who is not in them. Design\'s\n       fixture carries no `tabs`, so it takes the original branch unchanged. */\n    const liveBoard = !!(this.weekPts && this.weekPts.tabs);\n    let table, prev = null, streak = 0;\n    if (liveBoard) {\n      const tabs = this.weekPts.tabs;\n      table = (tabs[wk] || []).map((s) => ({ id: s.id, name: s.name, mono: s.mono, me: !!s.me, pts: s.points, onT: 0, sc: 0, rec: 0 }));\n      /* Last week\'s five, only to say who moved up or down. A pupil who was\n         not among them reads as having moved UP (they are in the five now). */\n      if (wk !== \'term\' && wk > 1 && (tabs[wk - 1] || []).length) {\n        prev = tabs[wk - 1].map((x) => x.id);\n      }\n    } else {\n      table = this.roster.map((s, i) => {\n        const pts = wk === \'term\' ? [1, 2, 3, 4].reduce((a, w) => a + this.weekPts[w][i], 0) : this.weekPts[wk][i];\n        const capOn = wk === \'term\' ? 160 : 40, capRe = wk === \'term\' ? 80 : 20;\n        const onT = Math.min(capOn, Math.round(pts * 0.4));\n        const rec = Math.min(capRe, Math.round(pts * 0.19));\n        const sc = Math.max(0, pts - onT - rec);\n        return { id: s.id, name: s.name, mono: s.mono, me: !!s.me, pts: pts, onT: onT, sc: sc, rec: rec };\n      }).sort((a, b) => b.pts - a.pts || a.name.localeCompare(b.name));\n      if (wk !== \'term\' && wk > 1) {\n        prev = this.roster.map((s, i) => ({ id: s.id, pts: this.weekPts[wk - 1][i] })).sort((a, b) => b.pts - a.pts).map((x) => x.id);\n      }\n    }\n    const top = table[0];\n    const maxPts = top ? top.pts : 1;\n    if (wk !== \'term\' && top) {\n      for (let w = wk; w >= 1; w--) {\n        const lead = liveBoard\n          ? (this.weekPts.tabs[w] || [])[0]\n          : this.roster.map((s, i) => ({ id: s.id, pts: this.weekPts[w][i] })).sort((a, b) => b.pts - a.pts)[0];\n        if (lead && lead.id === top.id) streak++; else break;\n      }\n    }\n'),
+    ('    const mkDelta = (id) => {\n      if (!prev) return { up: false, down: false, flat: true };\n      const was = prev.indexOf(id) + 1, now = rankOf(id);\n      return { up: now < was, down: now > was, flat: now === was };\n    };\n',
+     '    const mkDelta = (id) => {\n      if (!prev) return { up: false, down: false, flat: true };\n      const was = prev.indexOf(id) + 1, now = rankOf(id);\n      if (liveBoard && was === 0) return { up: true, down: false, flat: false };\n      return { up: now < was, down: now > was, flat: now === was };\n    };\n'),
+    ("    const boardWeeks = [1, 2, 3, 4, 'term'].map((w) => ({\n",
+     "    /* ⊕ Prompt X / SPEC-C — a chip with nobody on it is not drawn on the\n       live board (the server lists only pupils who handed in on time). */\n    const boardWeeks = [1, 2, 3, 4, 'term'].filter((w) => !liveBoard || ((this.weekPts.tabs[w] || []).length > 0)).map((w) => ({\n"),
+    ('      showPinned: !fresh && meRank > Math.max(1, size - 1), pinned: pinned\n',
+     '      /* ⊕ Prompt X / SPEC-C — no pinned own-rank row and no "Show top 10"\n         on the live board: it is the class\'s top five and nothing else. */\n      showPinned: !fresh && !liveBoard && meRank > Math.max(1, size - 1), pinned: pinned,\n      showSizeToggle: !liveBoard\n'),
+])
+# 257 = the "Show top 10 / Show top 5" button inside the chips row (253).
+WRAP["class view"][257] = "showSizeToggle"

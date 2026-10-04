@@ -1938,6 +1938,37 @@
       });
   }
 
+  /* ⊕ Prompt X / SPEC-C — `api()`'s POST sibling. The class page writes
+     nothing to the backend today except through `makeSink`'s own `post()`
+     (buildAssignment only, with `keepalive` for an in-progress answer that
+     must outlive a navigation). A completed practice round is not that
+     shape — it is sent once, after the round is already over, never mid-
+     interaction — so this is the plainer of the two: same deadline and
+     error-status behaviour as `api()` above, a JSON body, no `keepalive`.
+     Returns `{ ok, status, body }` rather than throwing on a non-2xx,
+     because a sink caller (`practiceRoundDone` below) treats every
+     refusal the same way — leave the tile as it was — and does not need
+     to tell them apart by catching different error shapes. */
+  async function apiPost(path, token, body) {
+    var cfg = window.MrBadmusConfig || {};
+    var base = cfg.BACKEND_URL || "https://mrbadmus-backend.onrender.com";
+    return withDeadline(backendWoken ? WARM_MS : COLD_MS, path,
+      async function (signal) {
+        var res = await fetch(base + path, {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(body),
+          signal: signal
+        });
+        var json = null;
+        try { json = await res.json(); } catch (e) { /* no body, or not JSON */ }
+        return { ok: res.ok, status: res.status, body: json };
+      });
+  }
+
   /* ── the four options of one question ──────────────────────────────────
      Both endpoints return `[{letter, text, correct, why}]` — the ladder rows
      carry the letter themselves, the bank rows have it added by the route.
@@ -2761,6 +2792,40 @@
                            + "the lessons behind this class's work", e);
               return { ok: false, e: e };
             });
+
+    /* ⊕ Prompt X / SPEC-C — the pupil's OWN completed practice rounds, for
+       the ROUNDS tile. Started here, beside `practiceP`, for the same
+       reason: a read nothing else depends on should not sit behind
+       anything that is actually on the critical path. Every row this
+       class has ever recorded for this pupil — not pre-filtered to this
+       week — because `weekNo` (the number a row is filtered against) is
+       not known until `practiceP` itself resolves a few lines down, and a
+       year's worth of rounds for one pupil in one class is a handful of
+       small rows, not a read worth sequencing behind another one.
+       Soft-failed into the exact shape `mySubsPromise`'s sibling reads
+       already use: `{ data: null, error }` on a real refusal, so the tile
+       can tell "nothing recorded" (an empty array) from "could not ask"
+       (`error` set) and show 0 or a dash accordingly — never guess. A
+       database without the table yet (the migration is parked) answers
+       the same way a revoked grant would: an error, not a crash. */
+    var practiceRoundsP = sb
+      .from("practice_rounds")
+      .select("teaching_week, questions, correct")
+      .eq("pupil_id", user.id)
+      .eq("class_id", klass.id)
+      .then(function (r) { return r; },
+            function (e) { return { data: null, error: e }; });
+
+    /* ⊕ Prompt X / SPEC-C — the ROUNDS tile's running totals FOR THIS WEEK,
+       the one piece of state two otherwise-unrelated closures both need:
+       the fold-in below (which fills them from `practiceRoundsP`) and
+       `practiceRoundDone` on the sink (which adds to them the moment a
+       round completes, so the tile moves immediately rather than waiting
+       for a reload). `known` is false until the read has actually
+       resolved — `practiceRoundDone` must not silently invent a "1" out
+       of an unread "0" if a student somehow finishes a round before the
+       read lands. */
+    var practiceWeekTotals = { rounds: 0, q: 0, c: 0, known: false };
 
     /* ⊕ MRB-348 ROUND THREE — A NON-CRITICAL DB ARM FAILS TO THE SHAPE ITS
        OWN CONSUMER ALREADY HANDLES, AND TO NO OTHER SHAPE.
@@ -3698,33 +3763,50 @@
     var benchTopic = benchWork ? benchWork.title : "";
 
     /* ── the leaderboard: roster[] and weekPts{} ──────────────────────────
-       ⛔ BOTH ARE EMPTY, AND THAT IS THE HONEST ANSWER TODAY.
+       ⊕ Prompt X / SPEC-C — FILLED, from `class_stars_board_for_member`,
+       AND LIMITED TO THE CLASS'S TOP FIVE (Mide, 4 Oct 2026: "Leaderboard
+       should only show top 5 in the class, that way only the best of the
+       best are being shown.").
 
-       The page's board is a FOUR-WEEK history: `boardWeeks` offers W01–W04
-       and TERM, the leader's "N WEEKS AT THE TOP" walks `weekPts[w]` down
-       from the selected week to week 1, and the up/down arrows compare
-       against the previous week. Filling any of that needs a points series
-       per student per week.
+       The five-row rule is the SERVER's. For a pupil the function returns,
+       per tab, at most five `{id, name, mono, points, me}` and nothing about
+       anyone else; this file does not choose, rank, trim or add to them, and
+       nothing below can work out a pupil's own place when they are not in the
+       list. The tabs are the page's four chips (keys "1".."4", oldest to
+       newest, 4 = the class's CURRENT teaching week — never the real
+       week-of-year number; see the `boardWeek` note below) and "term".
 
-       What exists is `class_stars_leaderboard_for_member`, and it answers a
-       different question: THIS week only, ELIGIBLE students only (every piece
-       in on time, 75%+), as a percentage rather than points. There is no
-       per-week history anywhere — a student cannot read another student's
-       submissions (`submissions_self_all`), so the client cannot compute one
-       either, and no table stores one.
+       They travel to Design's board code as `weekPts.tabs`. `roster` stays
+       `[]` and `weekPts` keeps no per-week arrays: student_rulings.py's
+       `liveBoard` branch reads `tabs` when it is there, and Design's fixture
+       (which has none) keeps the original maths untouched.
 
-       Repeating this week's numbers under W01–W03, or zeroing them, would put
-       a fabricated result next to a real child's name on a leaderboard their
-       class can see. That is the same fault the 21 Aug ruling removed from
-       the ON TIME / SCORE / RECALL split bar, and it is not reintroduced here.
-
-       Empty is also SAFE: every read of `weekPts` on the page is inside a map
-       over `roster`, so an empty roster never indexes a missing week. The
-       board renders with no leader and no chasers until there is a real
-       series to show. See the handover — this needs Mide's ruling, not a
-       workaround in this file. */
+       Soft-failed exactly like every sibling read: a database without the
+       function yet, an error, or `is_empty` (not_member / class_not_found /
+       no_members) leaves `boardTabs` null, the board falls back to Design's
+       own "nothing to show here yet" box (`hasBoard: !fresh && !!top`), and
+       nothing else on the page notices. */
+    var board = detail.board;
     var roster = [];
     var weekPts = {};
+    var boardTabs = null;
+    if (board && !board.is_empty && board.tabs && typeof board.tabs === "object") {
+      boardTabs = {};
+      ["1", "2", "3", "4", "term"].forEach(function (k) {
+        boardTabs[k] = Array.isArray(board.tabs[k]) ? board.tabs[k] : [];
+      });
+      weekPts.tabs = boardTabs;
+    }
+    /* Open on the latest chip that has anyone on it: this week once someone
+       has handed in, last week's board until then (the note under it says
+       FINAL). Null when no chip has anybody — no board, no selected chip. */
+    var boardWeekDefault = null;
+    if (boardTabs) {
+      [4, 3, 2, 1].some(function (w) {
+        if (boardTabs[String(w)].length) { boardWeekDefault = w; return true; }
+        return false;
+      });
+    }
 
     /* ── lessonDefs[] ────────────────────────────────────────────────────
        This week's lessons, in the order the assignment draws on them. The
@@ -4484,6 +4566,65 @@
          nothing in, and this is the only thing it records anywhere. */
       questionSeen: function (questionRef) {
         return practiceSeen.bump(questionRef);
+      },
+      /* ⊕ Prompt X / SPEC-C — a practice ROUND was completed (never a
+         half-finished one; see `recallAdvance`'s own ruling in
+         student_rulings.py, which is the only caller). Unlike the two
+         sinks above, this ONE reaches the network: Mide's ask was "save a
+         count of practice rounds and show it", and a per-device localStorage
+         counter cannot be seen by a teacher or survive a new phone, so this
+         is the pattern `saveBenchTheme` uses, not the pattern `cardSeen`/
+         `questionSeen` do.
+         Soft-fails to NO VISIBLE CHANGE on any refusal (a 503 while the
+         migration is parked, a dropped connection, a 409 if the academic
+         year has ended) — the tile simply keeps showing what it already
+         knew, exactly as every other soft-failed read/write on this page
+         does. On success, updates the tile IMMEDIATELY rather than waiting
+         for a reload: `practiceWeekTotals` is the same running total the
+         initial fold-in fills, so the tile's new value is the real
+         cumulative count, not a bare "1". */
+      /* ⚠️ ONE ARGUMENT, A PLAIN OBJECT — `_sinkCall(name, arg)` forwards
+         exactly one, the same constraint `cardSeen`/`questionSeen` live
+         under with a bare id; this method takes `{ total, correct }`
+         rather than two positional numbers for that reason. */
+      practiceRoundDone: function (round) {
+        var total = round && round.total;
+        var correct = round && round.correct;
+        return apiPost("/api/class/practice/round", token,
+          { class_id: klass.id, questions: total, correct: correct })
+          .then(function (res) {
+            if (!res || !res.ok) { return false; }
+            if (practiceWeekTotals.known) {
+              practiceWeekTotals.rounds += 1;
+              practiceWeekTotals.q += total;
+              practiceWeekTotals.c += correct;
+            } else {
+              // The initial read has not resolved yet (a very fast finish,
+              // or a slow network) — seed from this one round rather than
+              // claim a count we have not actually confirmed is complete.
+              practiceWeekTotals.rounds = 1;
+              practiceWeekTotals.q = total;
+              practiceWeekTotals.c = correct;
+              practiceWeekTotals.known = true;
+            }
+            var d = window.__MRB_DATA__;
+            if (d) {
+              d.practiceAnswered = String(practiceWeekTotals.rounds);
+              d.practicePct = practiceWeekTotals.q > 0
+                ? Math.round((practiceWeekTotals.c / practiceWeekTotals.q) * 100) + "%"
+                : "0%";
+            }
+            if (mountedApp && mountedApp.logic && mountedApp.logic.forceUpdate) {
+              mountedApp.logic.forceUpdate();
+            }
+            return true;
+          })
+          .catch(function (e) {
+            console.error("[student-live] the practice round could not be "
+                          + "saved; the ROUNDS tile keeps its last known "
+                          + "value", e);
+            return false;
+          });
       }
     };
 
@@ -4663,9 +4804,54 @@
         var w = weekFrom(practice);
         if (w !== weekNo) {
           weekNo = w;
-          next.boardWeek = w == null ? null : w;
+          /* ⊕ Prompt X / SPEC-C — `boardWeek` is NOT set here any more.
+             It used to read `w == null ? null : w` — the same raw-week-
+             number-into-a-position bug the initial payload carried (see
+             that assignment's own comment); fixed there, it would have
+             been immediately reintroduced here the first time a class
+             with no current assignment at mount time later learned its
+             week from `practice`. `roster`/`board` arrive from a wholly
+             separate read that this fold-in has no effect on, so the
+             initial payload's `boardWeek` (4 when there is a board to
+             show, null when there is not) is already final and nothing
+             here can make it more correct. */
           next.currentWeek = w == null ? null : w;
           next.weekNumber = w == null ? "—" : pad2(w);
+          moved = true;
+        }
+
+        /* ⊕ Prompt X / SPEC-C — the ROUNDS tile, from `practiceRoundsP`
+           (started beside `practiceP`, above) now that `weekNo` is final.
+           Unconditional (not nested in the `w !== weekNo` branch above):
+           the tile starts every load at `""` (the pre-existing COULD-NOT-
+           SOURCE empty) and this is the ONLY place that ever fills it, so
+           it has to run whether or not the week itself moved. */
+        var prBox = await practiceRoundsP;
+        if (prBox.error) {
+          // Soft-fail to the tile's existing empty state (a dash), never
+          // a crash and never a guessed number. A database without the
+          // table yet (the migration is parked) lands here.
+          console.error("[student-live] the pupil's practice rounds could "
+                        + "not be read; the ROUNDS tile stays unknown "
+                        + "rather than guessing", prBox.error);
+        } else {
+          var prRows = (prBox.data || []).filter(function (r) {
+            return weekNo != null && r.teaching_week === weekNo;
+          });
+          practiceWeekTotals.rounds = prRows.length;
+          practiceWeekTotals.q = 0;
+          practiceWeekTotals.c = 0;
+          prRows.forEach(function (r) {
+            practiceWeekTotals.q += (r.questions || 0);
+            practiceWeekTotals.c += (r.correct || 0);
+          });
+          practiceWeekTotals.known = true;
+          // A read that SUCCEEDED and found nothing is "0 rounds", not
+          // "unknown" — the dash is reserved for a read that failed.
+          next.practiceAnswered = String(practiceWeekTotals.rounds);
+          next.practicePct = practiceWeekTotals.q > 0
+            ? Math.round((practiceWeekTotals.c / practiceWeekTotals.q) * 100) + "%"
+            : "0%";
           moved = true;
         }
 
@@ -4742,22 +4928,30 @@
          a number that would be made up. */
       streak: 0,
 
-      /* The leaderboard opens on THIS week, not on the week Design drew.
-         A number, matching the `wk === MRB_DATA('currentWeek')` comparison the
-         scope note makes with `===`.
+      /* ⊕ Prompt X / SPEC-C — `boardWeek` IS A POSITION, NOT A WEEK
+         NUMBER, AND THAT WAS ALREADY TRUE OF DESIGN'S OWN FIXTURE.
 
-         ⊕ MRB-336, 8 Sep 2026 — NULL IS CARRIED, NOT COERCED TO ONE. This
-         read `weekNo == null ? 1 : weekNo`, and one was not a fallback, it was
-         a fabrication: with no teaching week the board headed itself
-         `WEEK 01 \u00B7 FINAL` (the template's `boardScopeNote` reaches that
-         branch whenever `wk !== currentWeek`, and `currentWeek` was coerced to
-         a DIFFERENT number, nought) over rows from a completely different
-         week, and lit the `W01` tab as though the student had chosen it.
-         Null keeps the two in step: `wk === currentWeek` is then true, the
-         note says CURRENT WEEK, and no tab claims to be selected. Every other
-         consumer is a `<=` or `===` against a week number, and null fails both
-         exactly as nought did. */
-      boardWeek: weekNo == null ? null : weekNo,
+         This used to read `weekNo == null ? null : weekNo` — the REAL
+         academic week number (1..39). That was never right: `boardWeeks`
+         (the chip row, drawn from the literal array `[1, 2, 3, 4, 'term']`)
+         and `weekPts[wk][i]` both live in a fixed four-slot domain, and
+         Design's own fixture defaults `boardWeek` to the literal `4` — the
+         same domain `class_stars_board_for_member`'s `points` object is now
+         keyed in (oldest=1 .. current=4). The mismatch was invisible only
+         because `roster` was always empty, so the board never reached the
+         branch that would index `weekPts[weekNo]` with a number like 5 or
+         12 and find nothing there.
+
+         Position 4 is ALWAYS "now": the RPC defines it that way, so there is
+         nothing to compute from the calendar. The default is the latest chip
+         that has anyone on it (`boardWeekDefault`, above) — 4 once someone
+         has handed in this week, an earlier chip until then — and null when
+         no chip has anybody (no board, or the RPC unavailable), so a bare
+         board selects no tab rather than a tab with nothing behind it. See
+         the `roster`/`weekPts` comment above and `boardScopeNote`'s seam in
+         build_student_port.py, which compared a position against a
+         week-of-year number for the same reason and is fixed there. */
+      boardWeek: boardWeekDefault,
 
       shoutouts: shoutouts,
 
@@ -4838,6 +5032,12 @@
       practiceTitle: "Practice",
       practiceTileLabel: "Practice",
       practiceCrumb: "Practice",
+      /* ⊕ Prompt X / SPEC-C — the readings tile's caption word. Design
+         drew (and the fixture keeps) "ANSWERED", which was never true of
+         this tile even before today: it showed a count of QUESTIONS
+         answered, and now shows a count of ROUNDS completed — "ANSWERED"
+         would be true of neither the old number nor the new one. */
+      practiceCaptionWord: "ROUNDS",
 
       /* Design typed `FLASHCARDS \u00a0·\u00a0 8r/Sc1` into the overlay's
          header as ONE text node with NON-BREAKING spaces, which is why it
@@ -5261,12 +5461,16 @@
       docketElapsed: current && current.progress
         ? current.progress.percent + "%" : "",
 
-      /* COULD NOT SOURCE — the practice round writes nowhere. `/api/class/practice`
-         only reads, and no table carries a class, a teaching week and a rung
-         together, so how many a student has answered this week and what
-         fraction they got right are both genuinely unrecorded. Design's '46'
-         and '77%' were a drawing. Empty until the round has somewhere to
-         write; see the handover. */
+      /* ⊕ Prompt X / SPEC-C — "Mide's ask: save a count of practice rounds
+         and show it." `POST /api/class/practice/round` is the write this
+         comment used to say did not exist, on a new `practice_rounds`
+         table (parked migration, branch feat/x-mig-pupil-class). Both
+         start at the pre-existing COULD-NOT-SOURCE empty — a dash on the
+         value, an unfilled bar — because the read (`practiceRoundsP`,
+         started beside `practiceP` above) has not resolved yet at this
+         point in the function; `foldInPractice` fills them with the real
+         count and percentage once it has, exactly as it already fills
+         `weekNumber`/`currentWeek` from the same late-arriving data. */
       practiceAnswered: "",
       practicePct: "",
       recallRounds: "",

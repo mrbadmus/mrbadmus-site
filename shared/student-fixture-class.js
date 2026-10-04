@@ -151,6 +151,7 @@ window.__MRB_DATA__ = {
       { topic: 'GAS EXCHANGE', q: 'Where in the lungs does gas exchange happen?', options: ['The trachea', 'The bronchi', 'The alveoli', 'The diaphragm'], answer: 2, note: 'Millions of tiny air sacs, each with a thin wall.' },
       { topic: 'CHEMICAL REACTIONS', q: 'What is always conserved in a chemical reaction?', options: ['Mass', 'Colour', 'Volume', 'Temperature'], answer: 0, note: 'No atoms are made or lost, only rearranged.' },
     ],
+  "practiceCaptionWord": "ANSWERED",
   "practiceCrumb": "Recall",
   "practicePct": "77%",
   "practiceRoundCrumb": "SIX A ROUND",
