@@ -1720,6 +1720,15 @@
       var fri = new Date(mon);
       fri.setDate(mon.getDate() + 4);
       var meta = numberOf[ymd(mon)] || { term: seasonFor(ymd(mon), year), n: 1, week: 1 };
+      /* ⊕ x-week-truth, 4 Oct 2026 — WHEN THIS WEEK BEGINS AND ENDS, so
+         `weekScope` (below) can tell a week that has not started yet from
+         one that has, and can cut "the last set that closed" off at the
+         right instant instead of running every search to the open end of
+         time. `nextMon` is the FOLLOWING Monday 00:00, by calendar date
+         rather than +7×86400000ms, for the same clock-change reason
+         `weeksBetween`'s own comment gives. */
+      var nextMon = new Date(mon);
+      nextMon.setDate(mon.getDate() + 7);
       out.push({
         idx: i,
         weekOfYear: meta.week,
@@ -1734,10 +1743,124 @@
         range: weekCommencingLabel(mon),
         now: ymd(mon) === thisMonYmd,
         monYmd: ymd(mon),
-        friYmd: ymd(fri)
+        friYmd: ymd(fri),
+        // ⊕ x-week-truth — false only on a Sunday, when MRB-330 rolls the
+        // chip the bar opens on forward to the week that starts tomorrow:
+        // `mon` is then still ahead of `now`. Every other day of the week
+        // this is true by construction, because `mon` is this week's own
+        // Monday and `now` is somewhere inside that week already.
+        started: now >= mon.getTime(),
+        endMs: nextMon.getTime()
       });
     }
     return out;
+  }
+
+  /* ═════════════════════════════════════════════════════════════════════
+     THE SELECTED WEEK'S FACTS — ONE FUNCTION, EVERY CONSUMER
+     ═════════════════════════════════════════════════════════════════════
+
+     ⊕ x-week-truth (MRB-353 redone), 4 Oct 2026. Ruled by Mide: every card,
+     the students table and the breakdown link follow the SELECTED week, and
+     chip 0 ("this week") gets no special case of its own — its answer falls
+     out of the same arithmetic as every other chip.
+
+     ⛔ WHAT WENT WRONG THE FIRST TIME (MRB-353, 1 Oct 2026). `lastMarked`
+     picked the selected week's OWN papers for a past week and ran an
+     UNSCOPED "newest released-and-submitted paper, anywhere in the class"
+     search for chip 0 — two different questions, answered by two different
+     pieces of code, and they disagreed the moment the current week's own
+     set was still open while an older one had already closed: 10h/Ph1,
+     seen live on Sun 4 Oct 2026 — week 4 (Changes of State) closed with 8
+     of 17 in, week 5 (Temperature) was still open at 3 of 17, and picking
+     week 5 on the bar read "Nothing to reteach yet" over a class that had
+     plainly just finished a topic. Scoping the SEARCH to the selected
+     week's own papers was wrong on its own terms, independent of chip 0:
+     "the last set that closed" is a question about the CLASS's history up
+     to a point in time, not about one week's own assignment.
+
+     ⚠️ THE FIX IS ONE CUTOFF, NOT TWO BRANCHES. `lastClosed` scans every
+     paper the class has (`papers`, due_at DESC — the order `buildPapers`
+     already sorts them in), not merely the selected week's own, for the
+     newest one that is released, genuinely CLOSED (`p.closed` — its
+     deadline has passed; not merely `when === 'marked'`, which now means
+     "visible" rather than "due"), due at or before the END of the selected
+     week, and not a flashcard set (a deck has no per-question grid to
+     reteach from). The end of the week is capped at NOW, so a current or
+     future week's cutoff is simply "now" — the exact unscoped search chip 0
+     used to run by hand, arrived at here with no special case at all. A
+     PAST week's cutoff is its own Monday-after, so asking about week 4 can
+     no longer surface week 5's still-open set.
+
+     ⚠️ EVEN IF NOBODY SAT IT — Mide's rule is literal. `lastClosed` does not
+     filter on submissions; a caller that wants "closed AND somebody sat it"
+     (the reteach card's own bars) tests `colSub` itself off `lastClosed.idx`,
+     same as it always did.
+
+     ⚠️ FIXTURES WITHOUT `started`/`endMs` BEHAVE AS TODAY. A week object
+     that predates this ruling carries neither key; `started` then reads as
+     `true` and `weekEndMs` as `null` ("unbounded" — the cutoff is simply
+     `now`), which is the OLD, chip-0-shaped answer. Existing fixtures that
+     never exercised the new rule keep their old green behaviour rather than
+     silently gaining a cutoff nobody wrote them against.
+
+     ⚠️ THE CUTOFF IS LITERAL — "the following Monday 00:00", no grace. A
+     set due Monday morning (Changes of State, 09:00 BST; Temperature,
+     18:00 BST — every real due time in the estate is a Monday) has NOT
+     closed by the end of the week that set it: that week's own Monday-
+     after is the instant it rolls into the next week, and the paper is
+     still hours from its deadline at that instant. On 10h/Ph1 this is the
+     whole point of Mide's complaint: week 4's own chip (21 Sep) must read
+     "Nothing to reteach yet", not Changes of State — "week 4 reteach
+     showed week 4's own set" is item 1 of the bug report, not a fact to
+     preserve. Week 5's chip (28 Sep) is the first to see it, because
+     Changes of State's due instant (28 Sep) falls ON week 5's own Monday,
+     at or before week 5's cutoff (the Monday after, 5 Oct 00:00) — plenty
+     of room, no grace needed. A version of this comment argued for a
+     one-day grace from exactly the opposite reading of that bug-report
+     line; it was wrong, and is recorded as a deviation in RESULT-A.md
+     rather than silently deleted. */
+  function weekScope(papers, weeks, wi, now) {
+    papers = papers || [];
+    weeks = weeks || [];
+    var week = weeks[wi] || null;
+    var oldest = wi >= weeks.length - 1;
+    // The exact bucket rule `wPapers` has used since the week bar landed
+    // (1 Sep 2026, WEEK_BAR_RESTORED): chip 0 takes everything at or ahead
+    // of this week, the oldest chip takes everything at or behind it, and
+    // every chip in between takes its own `weekIdx` exactly.
+    var bucket = papers.filter(function (p) {
+      if (wi === 0) { return p.weekIdx == null || p.weekIdx <= 0; }
+      return oldest ? p.weekIdx >= wi : p.weekIdx === wi;
+    });
+    var started = (week && week.started != null) ? week.started : true;
+    var weekEndMs = (week && week.endMs != null) ? week.endMs : null;
+    var cutoff = weekEndMs == null ? now : Math.min(weekEndMs, now);
+    var released = bucket.filter(function (p) { return p.state !== "scheduled"; });
+    var live = bucket.filter(function (p) { return p.state === "open"; });
+    var closed = bucket.filter(function (p) { return p.closed; });
+    var scheduled = bucket.filter(function (p) { return p.state === "scheduled"; });
+    var lastClosed = null;
+    for (var i = 0; i < papers.length; i += 1) {
+      var p = papers[i];
+      if (p.state === "scheduled" || !p.closed || p.kind === "flashcards") { continue; }
+      var due = asDate(p.due_at);
+      if (!due || due.getTime() > cutoff) { continue; }
+      lastClosed = p;
+      break;      // `papers` is due_at DESC, so the first hit is the newest.
+    }
+    return {
+      week: week,
+      started: started,
+      startsOn: week ? week.monYmd : null,
+      weekEndMs: weekEndMs,
+      papers: bucket,
+      released: released,
+      live: live,
+      closed: closed,
+      scheduled: scheduled,
+      lastClosed: lastClosed
+    };
   }
 
   /* Which teaching week each assignment belongs to, written onto the paper as
@@ -3791,14 +3914,20 @@
     if (screen === "class" && classId) {
       var cMx = c.MATRIX[classId];
       var cPapers = c.PAPERS[classId] || [];
-      var cSat = (cMx && cMx.markedIdx ? cMx.markedIdx : []).filter(
-        function (i) {
-          // ⊕ MRB-351 — the same filter `lastP` applies in the ruling.
-          return (cMx.colSub[i] || 0) > 0 &&
-                 !(cPapers[i] && cPapers[i].kind === "flashcards");
-        });
-      if (cSat.length && cPapers[cSat[0]]) {
-        await grid(classId, cSat[0]);
+      /* ⊕ x-week-truth, 4 Oct 2026 — THE SAME `weekScope`, FOR CHIP 0.
+         This used to be its own copy of "the newest released paper
+         somebody sat" (`cMx.markedIdx` narrowed by `colSub[i] > 0`) —
+         unscoped, exactly the shape `renderVals`'s own `lastP` used to take
+         for chip 0 before this ruling, and the two have now moved together
+         onto `weekScope`'s `lastClosed`. The page always OPENS on chip 0
+         (`weekIdxFor`'s own default), so that is the one grid worth
+         prefetching here; stepping to another week calls `MRB_ENSURE_GRID`
+         from inside `renderVals` itself (see the `lastP`/`g1` ruling) rather
+         than reloading the page. */
+      var cScope = weekScope(cPapers, c.WEEKS[classId] || [], 0, now);
+      var cLast = cScope.lastClosed;      // already excludes flashcards
+      if (cLast && (cMx.colSub[cLast.idx] || 0) > 0) {
+        await grid(classId, cLast.idx);
       }
     }
     if (screen === "marking" && classId) {
@@ -4483,6 +4612,20 @@
     relativeTime: relativeTime,
     weekRangeLabel: weekRangeLabel,
     newestMarkedIdx: newestMarkedIdx,
+    // ⊕ x-week-truth — the one implementation of "what is true of the
+    // selected week", and the two London-calendar date formatters the
+    // not-started-week homework card needs (`MRB_OPENS_LABEL`,
+    // build_teacher_port.py) rather than a second date-math copy there.
+    // `buildWeeks`/`assignPaperWeeks` are exposed alongside it so
+    // `week_scope_check.py` can drive the real pipeline — raw assignment
+    // timestamps in, `weekScope`'s answer out — under Node, rather than
+    // hand-building already-bucketed fixtures that could not catch a
+    // mismatch between the two functions.
+    weekScope: weekScope,
+    buildWeeks: buildWeeks,
+    assignPaperWeeks: assignPaperWeeks,
+    dowDayMonthLdn: dowDayMonthLdn,
+    asDate: asDate,
     /* ⊕ MRB-351 — the two derivations every mean on every screen comes
        from, so `flashcard_progress_drive.py` can prove a flashcard set is
        never graded by running the real code rather than a copy of it. */

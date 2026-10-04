@@ -4718,6 +4718,44 @@ function MRB_WEEK_SCORE(row, idxs, papers){
     if(!lines.length){lines=['\u2014'];}}
   return lines.join('\\n');}
 
+/* ⊕ x-week-truth, 4 Oct 2026 — THE SELECTED WEEK'S FACTS, FROM ONE PLACE.
+   `teacher-live.js`'s `weekScope(papers, weeks, wi, now)` is the only
+   implementation — see its own comment for the MRB-353 defect this
+   replaces (two different "which paper is the last marked one" questions,
+   one per chip-0-or-not branch, that could and did disagree). This is the
+   thin page-scope call every `renderVals` consumer goes through instead,
+   exactly as `MRB_WEEK_SCORE` and `MRB_NEWEST_MARKED` already do below; the
+   fallback is reached only if `teacher-live.js` is somehow not on the page
+   (no fixture omits it today) and returns an inert, empty scope rather than
+   guessing at one. */
+function MRB_WEEK_SCOPE(papers, weeks, wi){
+  var L=window.MrBadmusTeacherLive;
+  if(L&&L.weekScope){return L.weekScope(papers||[], weeks||[], wi||0, Date.now());}
+  return {week:(weeks||[])[wi||0]||null, started:true, startsOn:null,
+    weekEndMs:null, papers:papers||[], released:[], live:[], closed:[],
+    scheduled:[], lastClosed:null};}
+
+/* "Opens Mon 5 Oct" / "starts Mon 5 Oct" — a not-started week's homework
+   card, off a scheduled paper's own `release_at` where there is one and the
+   selected week's own Monday otherwise (`monYmd`, from `MRB_WEEK_SCOPE`'s
+   `startsOn` / the week object `weekIdxFor` resolves). `teacher-live.js`
+   keeps the one London-calendar formatter every due-date column on this
+   page already draws from (`dowDayMonthLdn`); the fallback below is
+   UTC-ish rather than London-exact and is reached only when that file is
+   missing, the same shape as `MRB_WEEK_SCORE`'s own fallback. */
+function MRB_OPENS_LABEL(releaseIso, monYmd){
+  var iso=releaseIso||(monYmd?(monYmd+'T00:00:00'):null);
+  if(!iso){return '';}
+  var L=window.MrBadmusTeacherLive;
+  if(L&&L.dowDayMonthLdn&&L.asDate){
+    var d=L.asDate(iso);
+    return d?L.dowDayMonthLdn(d):'';}
+  var d2=new Date(iso);
+  if(isNaN(d2.getTime())){return '';}
+  var DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return DOW[d2.getDay()]+' '+d2.getDate()+' '+MON[d2.getMonth()];}
+
 function MRB_DELTA_REASON(d){
   var n = Math.round(Math.abs(d));
   if(d > 0){return 'Up ' + n + ' points on the last set';}

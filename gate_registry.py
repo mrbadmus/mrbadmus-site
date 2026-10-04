@@ -395,6 +395,27 @@ GATES = [
 
     # ── ⊕ MRB-287 · the teacher dashboard port ─────────────────────────
 
+    dict(name="week_scope_check",
+         cmd=["python3", "week_scope_check.py"],
+         speed="fast",
+         watches=["week_scope_check.py", "week_scope_check.js",
+                  "shared/teacher-live.js"],
+         why="⊕ x-week-truth (MRB-353 redone), 4 Oct 2026 — `weekScope`, "
+             "under Node, against data shaped like the two real classes the "
+             "defect was found on: 10h/Ph1 (the live bug, seen Sun 4 Oct "
+             "01:04 — picking week 5's own chip before Temperature closed "
+             "must still surface Changes of State; chip 0 gets no special "
+             "case, so 'started' is false only on the Sunday MRB-330 rolls "
+             "the bar forward on) and 8r/Sc1 (a flashcard set must never "
+             "shadow an MCQ due the same day; the pre-term-start set lands "
+             "in the oldest chip's bucket, not nowhere). Fixed clocks "
+             "throughout, TZ pinned to Europe/London so the assertions do "
+             "not depend on the machine running them. MRB-353's first "
+             "attempt (1 Oct 2026) shipped with every other teacher gate "
+             "green and was still wrong on exactly this data — see "
+             "`weekScope`'s own comment for why — because nothing had ever "
+             "walked every week of a real class against it."),
+
     dict(name="teacher_tells",
          cmd=["python3", "teacher_tells.py"],
          speed="fast",
@@ -2880,6 +2901,21 @@ EXCLUDED = {
         "not here.",
 
     # ── generators · they WRITE the site, by design ─────────────────────
+    "week_truth_drive.py":
+        "Prompt X's hand-run walk of the teacher class page: it drives every "
+        "week chip of the classes `week_truth_fixture.py` seeds on TEST, at "
+        "frozen clocks, and PRINTS what each card shows for a person to read "
+        "against the rule. It needs a seeded TEST world and a chosen password, "
+        "so it cannot run unattended on a push; the rule itself is gated by "
+        "`week_scope_check` (fast, every push).",
+
+    "week_truth_fixture.py":
+        "the throwaway TEST world Prompt X's every-week walk of the teacher "
+        "class page runs in (10h/Ph1, 8r/Sc1 and a one-set class, pinned to "
+        "literal 2026-27 dates, every id prefixed f3530000-). It seeds and "
+        "tears down by a snapshotted id manifest and asserts NOTHING; "
+        "`week_scope_check` is the gate for the rule itself.",
+
     "mrb331_fixture.py":
         "the throwaway world MRB-331's drive runs in — it seeds and it tears "
         "down and it asserts NOTHING, which is why it is here and not in "

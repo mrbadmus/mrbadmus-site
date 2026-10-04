@@ -1523,20 +1523,20 @@ NAV = {
         nodes=(253,),
         anchor=dict(key="openMarking"),
         to="      openMarking: () => MRB_GO('marking', { 'class': k && k.id, "
-           "paper: MRB_NEWEST_MARKED(MRB_PICK('PAPERS', k && k.id), "
-           "MRB_PICK('MATRIX', k && k.id)) }),",
+           "paper: lastP ? lastP.idx : -1 }),",
         why="\"Open the full breakdown\" under the class glance's two "
             "weakest questions. Design's own destination is the marking "
             "screen for `lastP`, the last MARKED paper — but by `paperId`, a "
-            "made-up string the seam cannot read. `MRB_NEWEST_MARKED` is the "
-            "port's existing answer to \"which paper is the newest marked "
-            "one\", taken from `teacher-live.js` rather than reimplemented, "
-            "and it is the same function every other marking link already "
-            "uses. Design's `if (lastP)` guard is not needed: the whole "
-            "glance block is inside `<if klass.hasWork>`. ⊕ Mide's 23 Sep "
-            "2026 ruling — the matrix is passed now too, so this prefers a "
-            "released paper that actually has a cell over a just-released "
-            "empty one, same as every other `MRB_NEWEST_MARKED` call."),
+            "made-up string the seam cannot read. ⊕ x-week-truth, 4 Oct "
+            "2026 — Design's own `lastP` IS what this opens, so the handler "
+            "reads the very local `renderVals` has just resolved (the "
+            "week-scoped `weekScope().lastClosed`) rather than re-deriving "
+            "a second, unscoped \"which paper\" through `MRB_NEWEST_MARKED` "
+            "— exactly the two-languages defect MRB-353 left in place for "
+            "this one link, see the `lastP` ruling's own block comment. "
+            "Node 253 is hidden by `WRAP` (`glance.hasBreakdown`) whenever "
+            "`lastP` is null or nobody sat it, so the `paper: -1` fallback "
+            "here is reached by nothing a teacher can press."),
 
     "w.open (keep an eye on)": dict(
         nodes=(259,),
@@ -2522,7 +2522,9 @@ REPEAT = {
             # error here.
             keys=("g.eyebrow", "g.title", "g.count", "g.pct", "g.hasBar",
                   "g.hasChase", "g.chase", "g.remindLabel", "g.remind",
-                  "g.hasMore", "g.moreLabel", "g.more"),
+                  "g.hasMore", "g.moreLabel", "g.more",
+                  # ⊕ x-week-truth — node 231's per-card heading.
+                  "g.chaseHead"),
             rebind={
                 "glance.openTitle": "g.title",
                 "glance.openIn": "g.count",
@@ -5612,6 +5614,17 @@ WRAP = {
         # anybody about.
         236: "glance.remindLabel",
 
+        # ⊕ x-week-truth, 4 Oct 2026 — "OPEN THE FULL BREAKDOWN" (node 253)
+        # IS HIDDEN WHEN THERE IS NOTHING BEHIND IT. Mide's rule is literal:
+        # the reteach card still NAMES the most recent closed set even when
+        # nobody sat it ("0/17 submitted", no bars) — but a link into the
+        # marking screen for a paper with no grid and no submissions opens
+        # on an empty page, which is worse than no link. `glance.hasBreakdown`
+        # is true only when `lastP` exists AND at least one pupil has a cell
+        # on it (`kMx.colSub[lastP.idx] > 0`), the same test the card's own
+        # bars already require.
+        253: "glance.hasBreakdown",
+
         # ⊕ MRB-336 — A WRAP ON NODE 235 WAS WRITTEN HERE AND WITHDRAWN
         # BEFORE IT SHIPPED, and it is recorded because the reasoning was
         # wrong in a way worth naming. It read: "Remind all 0" is a dead
@@ -7416,10 +7429,19 @@ LOGIC = (
     const kWeeks = this.weeks();
     const wi = this.weekIdxFor(k);
     const wWeek = kWeeks[wi] || null;
-    const wOldest = wi >= kWeeks.length - 1;
-    const wPapers = kPapers.filter(p => wi === 0
-      ? (p.weekIdx == null || p.weekIdx <= 0)
-      : (wOldest ? p.weekIdx >= wi : p.weekIdx === wi));
+    /* ⊕ x-week-truth, 4 Oct 2026 — THE ONE FUNCTION EVERY CONSUMER ON THIS
+       SCREEN NOW READS. `MRB_WEEK_SCOPE` (build_teacher_port.py, delegating
+       to `shared/teacher-live.js`'s `weekScope`) replaces the bucket filter
+       Design's own `wPapers` used to compute by hand here — same bucket
+       rule, same result — and ALSO answers "has this week started" and
+       "what is the last set that closed by this week", which the homework
+       cards, the reteach card, the breakdown link and the watch/praise
+       cards below all read off it rather than re-deriving their own
+       answer. See `MRB_WEEK_SCOPE`'s own comment for the MRB-353 defect
+       this closes: two different implementations of "which set", one per
+       chip-0-or-not branch, that disagreed with each other. */
+    const wScope = MRB_WEEK_SCOPE(kPapers, kWeeks, wi);
+    const wPapers = wScope.papers;
     /* ⊕ 1 Oct 2026 (sweep fix B1, corrected) — THE FIRST FIX FILTERED
        `wPapers` ITSELF, AND `wPapers` IS NOT ONLY THE "N OF M IN"
        DENOMINATOR. It is also the source for the Assignments table
@@ -7437,8 +7459,11 @@ LOGIC = (
        `wSub`/`wAsk`/`wMean` and the week-scored chase all read `wIdxs`,
        so excluding scheduled papers from IT (rather than from `wPapers`)
        reaches every "N of M in" / chase / weekScore input without
-       touching anything that must still show a scheduled paper exists. */
-    const wReleased = wPapers.filter(p => p.state !== 'scheduled');
+       touching anything that must still show a scheduled paper exists.
+       ⊕ x-week-truth — sourced off `wScope.released` rather than filtering
+       `wPapers` a second time: one bucket, one release filter, read by
+       every consumer. */
+    const wReleased = wScope.released;
     const wIdxs = wReleased.map(p => p.idx);
 
     /* Per child, for the SELECTED week: how many of that week's papers they
@@ -11066,9 +11091,14 @@ componentDidUpdate() {
     # the table is ordered by an accusation the data does not support.
     (dict(method="renderVals", key="const rosterWeight"),
      """    const rosterWeight = (r) => ((wTally[r.id] && wTally[r.id].asked
-      && wTally[r.id].in < wTally[r.id].asked) ? 2 : 0) + (r.flag ? 1 : 0);""",
+      && wTally[r.id].in < wTally[r.id].asked) ? 2 : 0) + (flagged.indexOf(r) >= 0 ? 1 : 0);""",
      "the roster sort, on the SELECTED week rather than on `r.inWeek`. Part "
-     "of #6 and #13."),
+     "of #6 and #13. ⊕ x-week-truth, 4 Oct 2026 — the second term "
+     "reads membership of `flagged`, the week-scoped \"Keep an eye on\" "
+     "list declared further down this same method (see the `const flagged` "
+     "ruling), rather than the class-wide `r.flag` Design wrote. `r.flag` "
+     "is unchanged in `shared/teacher-live.js` — other screens still "
+     "read it — this is the one reader that stops."),
 
     # ── "the last marked set" stops meaning "the second paper" ──────────
     #
@@ -11108,36 +11138,35 @@ componentDidUpdate() {
     # and the no-roster fixture has no papers. Neither could express "closed,
     # and empty".
     ("    const lastP = kPapers[1] || null;",
-     "    /* ⊕ MRB-353, 1 Oct 2026 — AND IT IS THE SELECTED WEEK'S LAST\n"
-     "       MARKED SET, NOT THE CLASS'S. Unscoped, `lastP` picked the\n"
-     "       newest released-and-submitted paper across the whole class, so\n"
-     "       picking week 4 on 10h/Ph1 still showed week 5's own card —\n"
-     "       the same card week 5 shows, because nothing here ever read\n"
-     "       `wi` or `wPapers`. `wi === 0` (the current week, the bar's own\n"
-     "       chip 0) keeps the exact old, unscoped computation — this fix's\n"
-     "       own bar is byte-for-byte on the current week. Every other week\n"
-     "       reads `wPapers` instead of `kPapers`,\n"
-     "       and additionally requires `p.closed` rather than merely\n"
-     "       released — `markedIdx` stopped meaning \"deadline passed\" on\n"
-     "       24 Sep (stream A) without this read noticing, so on an open\n"
-     "       week it was resolving a set nobody had finished sitting yet\n"
-     "       (10h/Ph1 week 5, 2 of 17 in) as something to reteach FROM. */\n"
-     "    const lastMarked = (wi === 0)\n"
-     "      ? kMx.markedIdx.filter(i => (kMx.colSub[i] || 0) > 0\n"
-     "        && !(kPapers[i] && kPapers[i].kind === 'flashcards'))\n"
-     "      : wPapers.filter(p => p.closed && (kMx.colSub[p.idx] || 0) > 0\n"
-     "        && p.kind !== 'flashcards').map(p => p.idx);\n"
-     "    const lastP = lastMarked.length "
-     "? (kPapers[lastMarked[0]] || null) : null;",
+     "    /* ⊕ x-week-truth (MRB-353 redone), 4 Oct 2026 — ONE CUTOFF, NO\n"
+     "       SPECIAL CASE FOR CHIP 0. MRB-353 (1 Oct 2026) scoped `lastP`'s\n"
+     "       search to the SELECTED week's own papers for every chip but the\n"
+     "       current one, which kept chip 0's old unscoped search byte for\n"
+     "       byte — two implementations of \"which set\", one per branch, and\n"
+     "       they disagreed the moment the current week's own set was still\n"
+     "       open while an older one had already closed: 10h/Ph1, seen live\n"
+     "       Sun 4 Oct 2026 — week 4 (Changes of State) closed at 8 of 17,\n"
+     "       week 5 (Temperature) was still open at 3 of 17, and picking\n"
+     "       week 5 on the bar read \"Nothing to reteach yet\" over a class\n"
+     "       that had plainly just finished a topic, because week 5's OWN\n"
+     "       papers held nothing closed to find. `weekScope`'s `lastClosed`\n"
+     "       (shared/teacher-live.js) answers the question Mide actually\n"
+     "       asked — \"the most recent set that had CLOSED BY the selected\n"
+     "       week\" — by scanning every paper the class has ever had, cut\n"
+     "       off at the end of the selected week (capped at now), which\n"
+     "       gives chip 0 and every other chip the identical formula: chip\n"
+     "       0's week-end is always ahead of now, so its cutoff is simply\n"
+     "       now — the exact unscoped search this replaces, arrived at with\n"
+     "       no `wi === 0` branch anywhere in sight. */\n"
+     "    const lastP = wScope.lastClosed;",
      "the class screen's \"last marked set\". Part of #13: `kPapers[1]` is "
      "the index-0 assumption, and `markedIdx` is the seam's own answer to "
      "the same question — narrowed to the closed papers somebody actually "
      "sat, because `markedIdx` is a deadline test and not a submission "
-     "one. ⊕ MRB-353, 1 Oct 2026 — and narrowed again to the SELECTED "
-     "week on every week but the current one, with the same reasoning "
-     "re-applied against `p.closed` directly rather than through "
-     "`markedIdx`, whose own meaning moved later (stream A, 24 Sep) out "
-     "from under this read."),
+     "one. ⊕ x-week-truth, 4 Oct 2026 (MRB-353 redone) — replaced again, "
+     "this time with `weekScope`'s own `lastClosed`: one cutoff formula for "
+     "every chip, see the block comment above for the defect MRB-353's own "
+     "`wi === 0` branch left behind."),
 
     # ⚠️ AND THE CARD NEEDS WORDS FOR THAT STATE. `lastTitle` fell back to a
     # bare em-dash, which under the heading "Reteach from the last set" reads
@@ -11199,11 +11228,21 @@ componentDidUpdate() {
      "about THIS paper, and nothing else on the screen says it."),
 
     ("    const g1 = lastP ? this.gridFor(k, 1) : null;",
-     "    const g1 = lastP ? this.gridFor(k, lastP.idx) : null;",
+     "    const g1 = lastP ? this.gridFor(k, lastP.idx) : null;\n"
+     "    /* ⊕ x-week-truth, 4 Oct 2026 — THE SAME LAZY FETCH THE ASSIGNMENTS\n"
+     "       TABLE ALREADY USES (see `MRB_ENSURE_GRID` beside `const wkG`\n"
+     "       below). `load()`'s own prefetch only ever asks for CHIP 0's\n"
+     "       `lastClosed` grid; stepping the bar to a different week resolves\n"
+     "       a different `lastP` that may have no cached grid at all, and\n"
+     "       without this the reteach card's two bars stayed empty forever\n"
+     "       on every week but the one the page opened on. */\n"
+     "    if (lastP && !g1) { MRB_ENSURE_GRID(k.id, lastP.idx); }",
      "the grid behind \"Worth a reteach\". Design asks for the grid of paper "
      "1 rather than the grid of the paper it has just resolved, so on a "
      "class whose newest marked set is anywhere else it reteaches the wrong "
-     "assignment. Part of #13."),
+     "assignment. Part of #13. ⊕ x-week-truth — and the grid is fetched on "
+     "demand when stepping the week bar resolves a `lastP` nothing has "
+     "cached yet, the same pattern the Assignments table's own cells use."),
 
     ("    const worstTwo = g1 ? this.STEMS.map((q, qi) => ({ id: q.id, "
      "text: q.text, pct: g1.qpct[qi] })).sort((a, b) => a.pct - b.pct)"
@@ -12581,7 +12620,7 @@ componentDidUpdate() {
         title: p.title,
         count: cAsk ? cSub + ' of ' + cAsk + ' in' : '\u2014',
         pct: cAsk ? Math.round((cSub / cAsk) * 100) : 0,
-        hasChase: cMiss.length > 0,
+        hasChase: cMiss.length > 0, chaseHead: 'Not in yet',
         chase: cMiss.map(r => ({
           name: this.shortName(r.name),
           open: (e) => { e.stopPropagation(); MRB_GO('student', { student: r.id, 'class': k && k.id }); }
@@ -12656,7 +12695,7 @@ componentDidUpdate() {
         hasBar: true,
         /* the names stay — who never handed it in is the glance — and
            the empty label takes the Remind button off (WRAP 236). */
-        hasChase: cOut.length > 0,
+        hasChase: cOut.length > 0, chaseHead: 'Missed it',
         chase: cOut.map(r => ({
           name: this.shortName(r.name),
           open: (e) => { e.stopPropagation(); MRB_GO('student', { student: r.id, 'class': k && k.id }); }
@@ -12665,11 +12704,53 @@ componentDidUpdate() {
         hasMore: false, moreLabel: '', more: () => {}
       };
     };
-    const wDone = (wi === 0) ? [] : wPapers.filter(p => p.state !== 'scheduled')
-      .slice().sort((a, b) => a.idx - b.idx);
+    /* ⊕ x-week-truth, 4 Oct 2026 — `wDone` NO LONGER EXCLUDES THE CURRENT
+       WEEK. Sourced off `wScope.closed` (this week's own CLOSED papers,
+       computed once) rather than re-filtering `wPapers` by hand; the old
+       `(wi === 0) ? [] : …` guard made the CURRENT week's own closed set
+       invisible to this card the moment its deadline passed — a teacher on
+       10h/Ph1 whose week-4 set had just closed saw "Nothing open this
+       week" instead of the closed card, the exact uniform-treatment defect
+       Mide's rule names. A started week's closed sets show their card on
+       chip 0 exactly as they already did on every other chip. */
+    const wDone = wScope.closed.slice().sort((a, b) => a.idx - b.idx);
     const wPool = wOrder.length ? wOrder : wDone;
-    const wCards = wOrder.length ? wOrder.slice(0, 2).map(cardOf)
+    let wCards = wOrder.length ? wOrder.slice(0, 2).map(cardOf)
       : wDone.slice(0, 1).map(closedCardOf);
+    /* ⊕ x-week-truth — A WEEK THAT HAS NOT STARTED YET IS HONEST ABOUT IT.
+       `wLive` and `wDone` are both necessarily empty here (nothing can be
+       open or closed before its own Monday), so `wCards` is still `[]` at
+       this point on every not-started week — this branch is what fills it,
+       from `wScope.scheduled` (work genuinely SET for the week, whatever
+       its release instant) rather than falling through to the generic
+       "No work set in this week" wording below, which would be read on a
+       week that has not even begun as though it never would be. The
+       generic empty-card fallback immediately below is UNCHANGED and still
+       answers for a STARTED week with genuinely nothing in it. */
+    if (!wScope.started && !wCards.length) {
+      const wSched = wScope.scheduled.slice().sort((a, b) =>
+        (a.release_at || '') < (b.release_at || '') ? -1 : 1);
+      wCards = wSched.length ? wSched.slice(0, 1).map(p => ({
+        eyebrow: 'Opens ' + MRB_OPENS_LABEL(p.release_at, wWeek && wWeek.monYmd),
+        title: p.title,
+        count: '', pct: 0, hasBar: false,
+        hasChase: false, chaseHead: '', chase: [], remindLabel: '', remind: () => {},
+        hasMore: false, moreLabel: '', more: () => {}
+      })) : [{
+        eyebrow: "This week's homework",
+        title: 'Nothing set yet · starts ' + MRB_OPENS_LABEL(null, wWeek && wWeek.monYmd),
+        count: '', pct: 0, hasBar: false,
+        hasChase: false, chaseHead: '', chase: [], remindLabel: '', remind: () => {},
+        hasMore: false, moreLabel: '', more: () => {}
+      }];
+      const wSchedRest = Math.max(0, wSched.length - wCards.length);
+      if (wSchedRest) {
+        const wLastCard = wCards[wCards.length - 1];
+        wLastCard.hasMore = true;
+        wLastCard.moreLabel = '+' + wSchedRest + ' more';
+        wLastCard.more = () => MRB_TO_ASSIGNMENTS();
+      }
+    }
     /* Nothing live and nothing closed is a state and it keeps Design's card
        rather than emptying the column. `hasChase` is false, so the WRAP
        takes the footer with it and there is no button offering to remind
@@ -12692,7 +12773,7 @@ componentDidUpdate() {
           ? 'Nothing open this week \u2014 see Assignments below'
           : 'No work set in this week',
         count: '\u2014', pct: 0,
-        hasChase: false, chase: [], remindLabel: '', remind: () => {},
+        hasChase: false, chaseHead: '', chase: [], remindLabel: '', remind: () => {},
         hasMore: false, moreLabel: '', more: () => {} });
     }
     const wRest = Math.max(0, wPool.length - wCards.length);
@@ -12707,7 +12788,11 @@ componentDidUpdate() {
      "its own chase chips, and a reminder naming ITS assignment id. Replaces "
      "`kChase` and `kRemind`, which computed the same two things across the "
      "whole selected week and are read by nothing once the aggregate card is "
-     "gone."),
+     "gone. \u2295 x-week-truth, 4 Oct 2026 \u2014 `wDone` is no longer "
+     "`wi === 0`-gated (a started week's own closed set now shows on chip 0 "
+     "exactly as on every other chip) and a week that has not started builds "
+     "its card from `wScope.scheduled` instead of falling into the generic "
+     "empty wording, both per Mide's rule."),
 
     # ══ ⊕ MRB-336 §4.1 · THE AGGREGATE CARD IS REPLACED BY THE CARDS ══
     #
@@ -13574,11 +13659,11 @@ componentDidUpdate() {
      "        count: '', pct: 0, hasBar: false,",
      'Sharpen C6 T13 — the empty homework card says it once, in its title.'),
     ('    const rosterSorted = kRoster.slice().sort((a, b) => rosterWeight(b) - rosterWeight(a));',
-     '    const rosterSorted = kRoster.slice().sort((a, b) => rosterWeight(b) - rosterWeight(a));\n    /* ⊕ Sharpen C6 (T15) — a flag true of the whole roster flags nobody. */\n    const allFlagged = kRoster.length > 1 && kRoster.every(r => r.flag);',
-     'Sharpen C6 T15 — the NEEDS A LOOK chip is suppressed when it would be on every row.'),
+     '    const rosterSorted = kRoster.slice().sort((a, b) => rosterWeight(b) - rosterWeight(a));\n    /* ⊕ Sharpen C6 (T15) — a flag true of the whole roster flags nobody. */\n    const allFlagged = kRoster.length > 1 && flagged.length === kRoster.length;',
+     'Sharpen C6 T15 — the NEEDS A LOOK chip is suppressed when it would be on every row. ⊕ x-week-truth, 4 Oct 2026 — reads `flagged` (the week-scoped watch list), not the class-wide `r.flag`, for the same reason `rosterWeight` does.'),
     ("      flag: r.flag,\n      open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })\n    }));",
-     "      flag: r.flag && !allFlagged,\n      open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })\n    }));",
-     'Sharpen C6 T15.'),
+     "      flag: flagged.indexOf(r) >= 0 && !allFlagged,\n      open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })\n    }));",
+     'Sharpen C6 T15. ⊕ x-week-truth, 4 Oct 2026 — the table\'s NEEDS A LOOK flag reads membership of the week-scoped `flagged` list rather than the class-wide `r.flag`, so the chip and the table can no longer disagree about who this week\'s "Keep an eye on" card names.'),
     ("      week: !kPapers.length ? '—'\n        : (!wTally[r.id].asked ? 'Nothing set'",
      "      week: !kPapers.length ? ''\n        : (!wTally[r.id].asked ? ''",
      'Sharpen C6 T13 — THIS WEEK is blank (no dot, no words) when no work is in the week; the homework card says so once.'),
@@ -14160,68 +14245,190 @@ INSERT_AT[(365, None)] = (
 
 # ⊕ MRB-353, 1 Oct 2026 (Mide) — "KEEP AN EYE ON" AND "WORTH A SHOUTOUT"
 # FOLLOW THE PICKED WEEK. "Those cards should be specific for the week's
-# assignment." On any week but the current one, both people cards read THAT
-# week's own sets — the same `wIdxs`/`wTally` the Students table's week
-# column is built from, so the cards and the table cannot disagree. Keep an
-# eye on: not everything in for that week, or under 50% on it. Worth a
-# shoutout: the top score on that week's work, and the biggest rise from
-# the pupil's previous set. ⚠️ This SUPERSEDES, for past weeks only, the
-# 25 Sep note above that `flagged`/`watch` are never week-scoped; the
-# current week (`wi === 0`) keeps `r.flag` and the term averages exactly.
+# assignment."
+#
+# ⊕ SUPERSEDED, x-week-truth, 4 Oct 2026. MRB-353's own fix kept Design's
+# class-wide `flagged`/`reasonFor`/"Top average" for the CURRENT week and
+# wrote a second, week-scoped computation (`if (wi !== 0) { … }`, below,
+# now withdrawn) for every other chip — two languages on one card. Picking
+# a past week on 10h/Ph1 read "Missed it" / "N% on it"; stepping back to
+# the current week read "1 missed this term" about the exact same pupils,
+# because `wi === 0` took the OLD branch. Mide's rule: one language, every
+# STARTED week, chip 0 included, no special case. The entry below is now
+# withdrawn with nothing replacing it IN PLACE — the single replacement is
+# the new `const flagged` ruling that follows, which runs for every week.
+#
+# ⚠️ ALSO WRONG ON ITS OWN TERMS, independent of the chip-0 split: `wkOut`'s
+# reason read `t.closed` — a field `wTally` never carried (only `in`,
+# `asked`, `late`) — so a pupil out on the week's work always read "Not in
+# yet" regardless of whether the set they were missing was still open or
+# had long since closed, and a pupil out on an OPEN set was flagged at all,
+# duplicating the homework card's own chase chips (the standing "no
+# redundant text" rule). The replacement tests `wScope.closed` — the
+# week's own CLOSED released papers — and only those count against anyone.
+
+# ⊕ x-week-truth (MRB-353 redone), 4 Oct 2026 — ONE LANGUAGE, EVERY STARTED
+# WEEK, NO SPECIAL CASE FOR CHIP 0.
+#
+# This replaces Design's own `const flagged = kRoster.filter(r => r.flag)`
+# through her two `praise.push(…)` calls — class-wide, term-averaged, and
+# the source of "Averaging 41%" / "1 missed this term" / "Top average" —
+# with the single week-scoped computation the withdrawn entry above used to
+# apply to every chip but the current one. It now applies to every STARTED
+# week, chip 0 included, and the names stay (`flagged`, `watch`, `best`,
+# `imp`, `praise`) so the `const glance = { … }` object literal two lines
+# below needs no change at all — it already reads these.
+#
+# ⚠️ POSITION MATTERS. This runs where Design's own declaration sits —
+# BEFORE `rosterWeight`/`allFlagged`/the roster's own `flag:` cell, all
+# three of which this run also repoints at `flagged` (see their own
+# entries, anchored on `const rosterWeight` and Sharpen C6 T15) — so
+# `flagged` is a real, already-computed array by the time any of them reads
+# it. Checked against the live build: `const flagged` lands well before
+# `const rosterWeight` in the emitted function, same order Design wrote it
+# in.
+#
+# ⚠️ "OUT" IS A CLOSED SET, NEVER AN OPEN ONE. A pupil merely not in yet on
+# work that is still running is already named by the homework card's own
+# chase chips (MRB-336 §4.1's `cardOf`) — flagging them here too would be
+# the exact redundant text the standing rule forbids. Only `wScope.closed`
+# counts against anyone, which is also why "Missed N of M" divides by
+# `wClosedIdxs.length` and not `wIdxs.length` (every released paper, open
+# or closed).
+#
+# ⚠️ A WEEK THAT HAS NOT STARTED FLAGS NOBODY (`!wScope.started` — true
+# only on a Sunday, before MRB-330 rolls the bar onto the week that begins
+# tomorrow). There is no activity yet for anyone to be behind on.
 LOGIC = LOGIC + ((
-    "    /* Not-submitted first (flagged among them highest), then everyone in. */",
-    "    if (wi !== 0) {\n"
-    "      const wkLast = wIdxs.length ? Math.max.apply(null, wIdxs) : -1;\n"
-    "      const wkPct = (r) => {\n"
-    "        const row = kMx.byId[r.id];\n"
-    "        const got = wIdxs.filter(i => row && row.submitted[i] && row.pct[i] != null)\n"
-    "          .map(i => row.pct[i]);\n"
-    "        return got.length ? Math.round(got.reduce((a, b) => a + b, 0) / got.length) : null;\n"
+    "    const flagged = kRoster.filter(r => r.flag);\n"
+    "    const watch = flagged.slice(0, 4).map(r => ({\n"
+    "      name: r.name, initials: this.initials(r.name), hue: this.hueFor(r.name),\n"
+    "      reason: this.reasonFor(r, kMx.byId[r.id], kMx.closedIdx),\n"
+    "      open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })\n"
+    "    }));\n"
+    "    let best = null;\n"
+    "    kRoster.forEach(r => { if (r.avg != null && (!best || r.avg > best.avg)) best = r; });\n"
+    "    let imp = null;\n"
+    "    kRoster.forEach(r => {\n"
+    "      const row = kMx.byId[r.id];\n"
+    "      if (!row) return;\n"
+    "      const done = [];\n"
+    "      for (let i = 0; i < row.pct.length && done.length < 2; i++) {\n"
+    "        if (row.pct[i] != null) done.push(row.pct[i]);\n"
+    "      }\n"
+    "      if (done.length < 2) return;\n"
+    "      const d = done[0] - done[1];\n"
+    "      if (!imp || d > imp.d) imp = { r, d };\n"
+    "    });\n"
+    "    const praise = [];\n"
+    "    if (best) praise.push({ name: best.name, initials: this.initials(best.name), hue: this.hueFor(best.name), reason: 'Top average · ' + best.avg + '%', open: () => MRB_GO('student', { student: best.id, 'class': k && k.id }) });\n"
+    "    if (imp && imp.d > 0 && (!best || imp.r.id !== best.id)) praise.push({ name: imp.r.name, initials: this.initials(imp.r.name), hue: this.hueFor(imp.r.name), reason: MRB_DELTA_REASON(imp.d), open: () => MRB_GO('student', { student: imp.r.id, 'class': k && k.id }) });",
+    "    const wClosedIdxs = wScope.closed.map(p => p.idx);\n"
+    "    const wWatchPct = (r) => {\n"
+    "      const row = kMx.byId[r.id];\n"
+    "      const got = wIdxs.filter(i => row && row.submitted[i] && row.pct[i] != null)\n"
+    "        .map(i => row.pct[i]);\n"
+    "      return got.length ? Math.round(got.reduce((a, b) => a + b, 0) / got.length) : null;\n"
+    "    };\n"
+    "    const wWatchMissed = (r) => {\n"
+    "      const row = kMx.byId[r.id];\n"
+    "      return wClosedIdxs.filter(i => !(row && row.submitted[i])).length;\n"
+    "    };\n"
+    "    const flagged = !wScope.started ? [] : kRoster.filter(r => {\n"
+    "      if (wClosedIdxs.length && wWatchMissed(r) > 0) return true;\n"
+    "      const v = wWatchPct(r);\n"
+    "      return v != null && v < 50;\n"
+    "    });\n"
+    "    const watch = flagged.slice(0, 4).map(r => {\n"
+    "      const missed = wWatchMissed(r);\n"
+    "      const out = wClosedIdxs.length > 0 && missed > 0;\n"
+    "      return {\n"
+    "        name: r.name, initials: this.initials(r.name), hue: this.hueFor(r.name),\n"
+    "        reason: out\n"
+    "          ? (missed === wClosedIdxs.length ? 'Missed it' : 'Missed ' + missed + ' of ' + wClosedIdxs.length)\n"
+    "          : wWatchPct(r) + '% on it',\n"
+    "        open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })\n"
     "      };\n"
-    "      const wkOut = (r) => !!(wTally[r.id] && wTally[r.id].asked\n"
-    "        && wTally[r.id].in < wTally[r.id].asked);\n"
-    "      const wkWatch = kRoster.filter(r => {\n"
-    "        if (wkOut(r)) return true;\n"
-    "        const v = wkPct(r);\n"
-    "        return v != null && v < 50;\n"
-    "      });\n"
-    "      glance.watch = wkWatch.slice(0, 4).map(r => {\n"
-    "        const t = wTally[r.id];\n"
-    "        return {\n"
-    "          name: r.name, initials: this.initials(r.name), hue: this.hueFor(r.name),\n"
-    "          reason: wkOut(r)\n"
-    "            ? (t.in ? t.in + ' of ' + t.asked + ' in' : (t.closed ? 'Missed it' : 'Not in yet'))\n"
-    "            : wkPct(r) + '% on it',\n"
-    "          open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })\n"
-    "        };\n"
-    "      });\n"
-    "      glance.hasWatch = glance.watch.length > 0;\n"
-    "      glance.noWatch = !glance.hasWatch;\n"
-    "      glance.watchMore = wkWatch.length > 4 ? '+' + (wkWatch.length - 4) + ' more in the list below' : '';\n"
-    "      let wkBest = null, wkImp = null;\n"
+    "    });\n"
+    "    let best = null, imp = null;\n"
+    "    if (wScope.started) {\n"
+    "      const wWatchLast = wIdxs.length ? Math.max.apply(null, wIdxs) : -1;\n"
     "      kRoster.forEach(r => {\n"
-    "        const v = wkPct(r);\n"
+    "        const v = wWatchPct(r);\n"
     "        if (v == null) return;\n"
-    "        if (!wkBest || v > wkBest.v) wkBest = { r, v };\n"
+    "        if (!best || v > best.v) best = { r, v };\n"
     "        const row = kMx.byId[r.id];\n"
     "        let prev = null;\n"
-    "        for (let i = wkLast + 1; row && i < row.pct.length; i++) {\n"
+    "        for (let i = wWatchLast + 1; row && i < row.pct.length; i++) {\n"
     "          if (row.submitted[i] && row.pct[i] != null) { prev = row.pct[i]; break; }\n"
     "        }\n"
     "        if (prev == null) return;\n"
-    "        if (!wkImp || v - prev > wkImp.d) wkImp = { r, d: v - prev };\n"
+    "        if (!imp || v - prev > imp.d) imp = { r, d: v - prev };\n"
     "      });\n"
-    "      glance.praise = [];\n"
-    "      if (wkBest) glance.praise.push({ name: wkBest.r.name, initials: this.initials(wkBest.r.name),\n"
-    "        hue: this.hueFor(wkBest.r.name), reason: 'Top score · ' + wkBest.v + '%',\n"
-    "        open: () => MRB_GO('student', { student: wkBest.r.id, 'class': k && k.id }) });\n"
-    "      if (wkImp && wkImp.d > 0 && (!wkBest || wkImp.r.id !== wkBest.r.id)) glance.praise.push({\n"
-    "        name: wkImp.r.name, initials: this.initials(wkImp.r.name), hue: this.hueFor(wkImp.r.name),\n"
-    "        reason: MRB_DELTA_REASON(wkImp.d),\n"
-    "        open: () => MRB_GO('student', { student: wkImp.r.id, 'class': k && k.id }) });\n"
     "    }\n"
-    "    /* Not-submitted first (flagged among them highest), then everyone in. */",
-    "MRB-353 — on a past week, the class glance's \"Keep an eye on\" and "
-    "\"Worth a shoutout\" cards read that week's own sets (`wIdxs`, `wTally` "
-    "— the Students table's week column), not the class's current flag and "
-    "term averages. The current week is unchanged."),)
+    "    const praise = [];\n"
+    "    if (best) praise.push({ name: best.r.name, initials: this.initials(best.r.name),\n"
+    "      hue: this.hueFor(best.r.name), reason: 'Top score · ' + best.v + '%',\n"
+    "      open: () => MRB_GO('student', { student: best.r.id, 'class': k && k.id }) });\n"
+    "    if (imp && imp.d > 0 && (!best || imp.r.id !== best.r.id)) praise.push({\n"
+    "      name: imp.r.name, initials: this.initials(imp.r.name), hue: this.hueFor(imp.r.name),\n"
+    "      reason: MRB_DELTA_REASON(imp.d),\n"
+    "      open: () => MRB_GO('student', { student: imp.r.id, 'class': k && k.id }) });\n"
+    "    const noWatchLine = !wScope.started ? 'Nothing to flag yet.'\n"
+    "      : (wScope.live.length ? 'Nothing to flag yet.'\n"
+    "        : (wClosedIdxs.length ? 'No one flagged — the class is keeping up.'\n"
+    "          : 'Nothing to flag.'));",
+    "the class glance's \"Keep an eye on\" and \"Worth a shoutout\" cards, on "
+    "EVERY started week including the current one — Design's own class-wide "
+    "`flagged`/`reasonFor`/\"Top average\" and MRB-353's week-scoped-but-"
+    "`wi !== 0`-only block are both replaced by this one computation. "
+    "`noWatchLine` is `glance`'s new bound empty-state line; see "
+    "`RETEXT_AT[266]`."),
+)
+
+# ⊕ x-week-truth, 4 Oct 2026 — `glance` GAINS `noWatchLine` AND
+# `hasBreakdown`. Both are read straight off locals this same method has
+# just computed (`noWatchLine` above; `hasBreakdown` off `lastP` and the
+# matrix) rather than anything new being derived — `watch`/`praise`/
+# `watchMore` three lines above are UNCHANGED, because the ruling above
+# keeps their names.
+LOGIC = LOGIC + ((
+    "      watchMore: flagged.length > 4 ? '+' + (flagged.length - 4) + ' more in the list below' : '',\n"
+    "      praise\n"
+    "    };",
+    "      watchMore: flagged.length > 4 ? '+' + (flagged.length - 4) + ' more in the list below' : '',\n"
+    "      noWatchLine,\n"
+    "      hasBreakdown: !!(lastP && (kMx.colSub[lastP.idx] || 0) > 0),\n"
+    "      praise\n"
+    "    };",
+    "`glance.noWatchLine` (node 266, bound by `RETEXT_AT`) and "
+    "`glance.hasBreakdown` (node 253, gated by `WRAP`) — see both entries "
+    "for why each exists."),
+)
+
+# ⊕ x-week-truth, 4 Oct 2026 — node 266's empty-state line was Design's own
+# literal ("No one flagged — the class is keeping up."), true only when the
+# class genuinely had nobody to flag. A week that has not started, or one
+# whose only released set is still open, or one with no released set at
+# all are each a DIFFERENT honest sentence — see `noWatchLine`'s own
+# derivation two rulings above — so the node is rebound to it exactly as
+# node 289 (the roster's week-column heading) was rebound to
+# `rosterWeekCol` by the same mechanism.
+# ⊕ x-week-truth, 4 Oct 2026 (commander) — THE CHASE HEADING SPEAKS THE
+# SAME LANGUAGE AS "KEEP AN EYE ON". Node 231 is Design's literal "Not in
+# yet", drawn over the chase chips of EVERY homework card. On a CLOSED card
+# (`closedCardOf`, a past week's set whose deadline has gone) that is false —
+# nobody is still "yet" to hand in work that has closed — and it sat beside
+# "Keep an eye on" calling the SAME pupils "Missed it". Each card shape now
+# carries its own `chaseHead`: 'Not in yet' on a live card, 'Missed it' on a
+# closed one, '' on the cards that draw no chips at all.
+RETEXT_AT[231] = ("Not in yet",
+    {"parts": [{"e": "g.chaseHead"}]},
+    "the homework card's chase-chip heading — \"Not in yet\" while the set "
+    "is open, \"Missed it\" once it has closed, matching the words \"Keep an "
+    "eye on\" uses for the same pupils.")
+RETEXT_AT[266] = ("No one flagged — the class is keeping up.",
+    {"parts": [{"e": "glance.noWatchLine"}]},
+    "the \"Keep an eye on\" card's empty-state line — not started, an open "
+    "released set, closed sets only, or no released set at all each read "
+    "their own sentence instead of one literal true only in the last case.")

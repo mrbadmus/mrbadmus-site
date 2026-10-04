@@ -98,3 +98,4 @@ ks3/__fixture__/
 # a drive writes its artefacts to a scratch dir OUTSIDE the repo by default.
 student/_verify_*.html
 shared/_verify_mrb352_data.js
+.week_truth_fixture_ids.json

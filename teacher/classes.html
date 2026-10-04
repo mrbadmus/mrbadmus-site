@@ -655,6 +655,44 @@ function MRB_WEEK_SCORE(row, idxs, papers){
     if(!lines.length){lines=['—'];}}
   return lines.join('\n');}
 
+/* ⊕ x-week-truth, 4 Oct 2026 — THE SELECTED WEEK'S FACTS, FROM ONE PLACE.
+   `teacher-live.js`'s `weekScope(papers, weeks, wi, now)` is the only
+   implementation — see its own comment for the MRB-353 defect this
+   replaces (two different "which paper is the last marked one" questions,
+   one per chip-0-or-not branch, that could and did disagree). This is the
+   thin page-scope call every `renderVals` consumer goes through instead,
+   exactly as `MRB_WEEK_SCORE` and `MRB_NEWEST_MARKED` already do below; the
+   fallback is reached only if `teacher-live.js` is somehow not on the page
+   (no fixture omits it today) and returns an inert, empty scope rather than
+   guessing at one. */
+function MRB_WEEK_SCOPE(papers, weeks, wi){
+  var L=window.MrBadmusTeacherLive;
+  if(L&&L.weekScope){return L.weekScope(papers||[], weeks||[], wi||0, Date.now());}
+  return {week:(weeks||[])[wi||0]||null, started:true, startsOn:null,
+    weekEndMs:null, papers:papers||[], released:[], live:[], closed:[],
+    scheduled:[], lastClosed:null};}
+
+/* "Opens Mon 5 Oct" / "starts Mon 5 Oct" — a not-started week's homework
+   card, off a scheduled paper's own `release_at` where there is one and the
+   selected week's own Monday otherwise (`monYmd`, from `MRB_WEEK_SCOPE`'s
+   `startsOn` / the week object `weekIdxFor` resolves). `teacher-live.js`
+   keeps the one London-calendar formatter every due-date column on this
+   page already draws from (`dowDayMonthLdn`); the fallback below is
+   UTC-ish rather than London-exact and is reached only when that file is
+   missing, the same shape as `MRB_WEEK_SCORE`'s own fallback. */
+function MRB_OPENS_LABEL(releaseIso, monYmd){
+  var iso=releaseIso||(monYmd?(monYmd+'T00:00:00'):null);
+  if(!iso){return '';}
+  var L=window.MrBadmusTeacherLive;
+  if(L&&L.dowDayMonthLdn&&L.asDate){
+    var d=L.asDate(iso);
+    return d?L.dowDayMonthLdn(d):'';}
+  var d2=new Date(iso);
+  if(isNaN(d2.getTime())){return '';}
+  var DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return DOW[d2.getDay()]+' '+d2.getDate()+' '+MON[d2.getMonth()];}
+
 function MRB_DELTA_REASON(d){
   var n = Math.round(Math.abs(d));
   if(d > 0){return 'Up ' + n + ' points on the last set';}
@@ -1964,10 +2002,19 @@ class Component extends DCLogic {
     const kWeeks = this.weeks();
     const wi = this.weekIdxFor(k);
     const wWeek = kWeeks[wi] || null;
-    const wOldest = wi >= kWeeks.length - 1;
-    const wPapers = kPapers.filter(p => wi === 0
-      ? (p.weekIdx == null || p.weekIdx <= 0)
-      : (wOldest ? p.weekIdx >= wi : p.weekIdx === wi));
+    /* ⊕ x-week-truth, 4 Oct 2026 — THE ONE FUNCTION EVERY CONSUMER ON THIS
+       SCREEN NOW READS. `MRB_WEEK_SCOPE` (build_teacher_port.py, delegating
+       to `shared/teacher-live.js`'s `weekScope`) replaces the bucket filter
+       Design's own `wPapers` used to compute by hand here — same bucket
+       rule, same result — and ALSO answers "has this week started" and
+       "what is the last set that closed by this week", which the homework
+       cards, the reteach card, the breakdown link and the watch/praise
+       cards below all read off it rather than re-deriving their own
+       answer. See `MRB_WEEK_SCOPE`'s own comment for the MRB-353 defect
+       this closes: two different implementations of "which set", one per
+       chip-0-or-not branch, that disagreed with each other. */
+    const wScope = MRB_WEEK_SCOPE(kPapers, kWeeks, wi);
+    const wPapers = wScope.papers;
     /* ⊕ 1 Oct 2026 (sweep fix B1, corrected) — THE FIRST FIX FILTERED
        `wPapers` ITSELF, AND `wPapers` IS NOT ONLY THE "N OF M IN"
        DENOMINATOR. It is also the source for the Assignments table
@@ -1985,8 +2032,11 @@ class Component extends DCLogic {
        `wSub`/`wAsk`/`wMean` and the week-scored chase all read `wIdxs`,
        so excluding scheduled papers from IT (rather than from `wPapers`)
        reaches every "N of M in" / chase / weekScore input without
-       touching anything that must still show a scheduled paper exists. */
-    const wReleased = wPapers.filter(p => p.state !== 'scheduled');
+       touching anything that must still show a scheduled paper exists.
+       ⊕ x-week-truth — sourced off `wScope.released` rather than filtering
+       `wPapers` a second time: one bucket, one release filter, read by
+       every consumer. */
+    const wReleased = wScope.released;
     const wIdxs = wReleased.map(p => p.idx);
 
     /* Per child, for the SELECTED week: how many of that week's papers they
@@ -2016,26 +2066,27 @@ class Component extends DCLogic {
     const wMean = wMeans.length
       ? Math.round(wMeans.reduce((a, v) => a + v, 0) / wMeans.length) : null;
     const openP = wPapers[0] || null;
-    /* ⊕ MRB-353, 1 Oct 2026 — AND IT IS THE SELECTED WEEK'S LAST
-       MARKED SET, NOT THE CLASS'S. Unscoped, `lastP` picked the
-       newest released-and-submitted paper across the whole class, so
-       picking week 4 on 10h/Ph1 still showed week 5's own card —
-       the same card week 5 shows, because nothing here ever read
-       `wi` or `wPapers`. `wi === 0` (the current week, the bar's own
-       chip 0) keeps the exact old, unscoped computation — this fix's
-       own bar is byte-for-byte on the current week. Every other week
-       reads `wPapers` instead of `kPapers`,
-       and additionally requires `p.closed` rather than merely
-       released — `markedIdx` stopped meaning "deadline passed" on
-       24 Sep (stream A) without this read noticing, so on an open
-       week it was resolving a set nobody had finished sitting yet
-       (10h/Ph1 week 5, 2 of 17 in) as something to reteach FROM. */
-    const lastMarked = (wi === 0)
-      ? kMx.markedIdx.filter(i => (kMx.colSub[i] || 0) > 0
-        && !(kPapers[i] && kPapers[i].kind === 'flashcards'))
-      : wPapers.filter(p => p.closed && (kMx.colSub[p.idx] || 0) > 0
-        && p.kind !== 'flashcards').map(p => p.idx);
-    const lastP = lastMarked.length ? (kPapers[lastMarked[0]] || null) : null;
+    /* ⊕ x-week-truth (MRB-353 redone), 4 Oct 2026 — ONE CUTOFF, NO
+       SPECIAL CASE FOR CHIP 0. MRB-353 (1 Oct 2026) scoped `lastP`'s
+       search to the SELECTED week's own papers for every chip but the
+       current one, which kept chip 0's old unscoped search byte for
+       byte — two implementations of "which set", one per branch, and
+       they disagreed the moment the current week's own set was still
+       open while an older one had already closed: 10h/Ph1, seen live
+       Sun 4 Oct 2026 — week 4 (Changes of State) closed at 8 of 17,
+       week 5 (Temperature) was still open at 3 of 17, and picking
+       week 5 on the bar read "Nothing to reteach yet" over a class
+       that had plainly just finished a topic, because week 5's OWN
+       papers held nothing closed to find. `weekScope`'s `lastClosed`
+       (shared/teacher-live.js) answers the question Mide actually
+       asked — "the most recent set that had CLOSED BY the selected
+       week" — by scanning every paper the class has ever had, cut
+       off at the end of the selected week (capped at now), which
+       gives chip 0 and every other chip the identical formula: chip
+       0's week-end is always ahead of now, so its cutoff is simply
+       now — the exact unscoped search this replaces, arrived at with
+       no `wi === 0` branch anywhere in sight. */
+    const lastP = wScope.lastClosed;
     /* ── ⊕ MRB-336 §4.1 · A CARD IS ONE LIVE ASSIGNMENT ─────────────────
 
        Mide, 8 Sep 2026: "live assignments should take over the reteach from
@@ -2112,7 +2163,7 @@ class Component extends DCLogic {
         count: cAsk ? cSub + ' of ' + cAsk + ' in' : '—',
         hasBar: true,
         pct: cAsk ? Math.round((cSub / cAsk) * 100) : 0,
-        hasChase: cMiss.length > 0,
+        hasChase: cMiss.length > 0, chaseHead: 'Not in yet',
         chase: cMiss.map(r => ({
           name: this.shortName(r.name),
           open: (e) => { e.stopPropagation(); MRB_GO('student', { student: r.id, 'class': k && k.id }); }
@@ -2187,7 +2238,7 @@ class Component extends DCLogic {
         hasBar: true,
         /* the names stay — who never handed it in is the glance — and
            the empty label takes the Remind button off (WRAP 236). */
-        hasChase: cOut.length > 0,
+        hasChase: cOut.length > 0, chaseHead: 'Missed it',
         chase: cOut.map(r => ({
           name: this.shortName(r.name),
           open: (e) => { e.stopPropagation(); MRB_GO('student', { student: r.id, 'class': k && k.id }); }
@@ -2196,11 +2247,53 @@ class Component extends DCLogic {
         hasMore: false, moreLabel: '', more: () => {}
       };
     };
-    const wDone = (wi === 0) ? [] : wPapers.filter(p => p.state !== 'scheduled')
-      .slice().sort((a, b) => a.idx - b.idx);
+    /* ⊕ x-week-truth, 4 Oct 2026 — `wDone` NO LONGER EXCLUDES THE CURRENT
+       WEEK. Sourced off `wScope.closed` (this week's own CLOSED papers,
+       computed once) rather than re-filtering `wPapers` by hand; the old
+       `(wi === 0) ? [] : …` guard made the CURRENT week's own closed set
+       invisible to this card the moment its deadline passed — a teacher on
+       10h/Ph1 whose week-4 set had just closed saw "Nothing open this
+       week" instead of the closed card, the exact uniform-treatment defect
+       Mide's rule names. A started week's closed sets show their card on
+       chip 0 exactly as they already did on every other chip. */
+    const wDone = wScope.closed.slice().sort((a, b) => a.idx - b.idx);
     const wPool = wOrder.length ? wOrder : wDone;
-    const wCards = wOrder.length ? wOrder.slice(0, 2).map(cardOf)
+    let wCards = wOrder.length ? wOrder.slice(0, 2).map(cardOf)
       : wDone.slice(0, 1).map(closedCardOf);
+    /* ⊕ x-week-truth — A WEEK THAT HAS NOT STARTED YET IS HONEST ABOUT IT.
+       `wLive` and `wDone` are both necessarily empty here (nothing can be
+       open or closed before its own Monday), so `wCards` is still `[]` at
+       this point on every not-started week — this branch is what fills it,
+       from `wScope.scheduled` (work genuinely SET for the week, whatever
+       its release instant) rather than falling through to the generic
+       "No work set in this week" wording below, which would be read on a
+       week that has not even begun as though it never would be. The
+       generic empty-card fallback immediately below is UNCHANGED and still
+       answers for a STARTED week with genuinely nothing in it. */
+    if (!wScope.started && !wCards.length) {
+      const wSched = wScope.scheduled.slice().sort((a, b) =>
+        (a.release_at || '') < (b.release_at || '') ? -1 : 1);
+      wCards = wSched.length ? wSched.slice(0, 1).map(p => ({
+        eyebrow: 'Opens ' + MRB_OPENS_LABEL(p.release_at, wWeek && wWeek.monYmd),
+        title: p.title,
+        count: '', pct: 0, hasBar: false,
+        hasChase: false, chaseHead: '', chase: [], remindLabel: '', remind: () => {},
+        hasMore: false, moreLabel: '', more: () => {}
+      })) : [{
+        eyebrow: "This week's homework",
+        title: 'Nothing set yet · starts ' + MRB_OPENS_LABEL(null, wWeek && wWeek.monYmd),
+        count: '', pct: 0, hasBar: false,
+        hasChase: false, chaseHead: '', chase: [], remindLabel: '', remind: () => {},
+        hasMore: false, moreLabel: '', more: () => {}
+      }];
+      const wSchedRest = Math.max(0, wSched.length - wCards.length);
+      if (wSchedRest) {
+        const wLastCard = wCards[wCards.length - 1];
+        wLastCard.hasMore = true;
+        wLastCard.moreLabel = '+' + wSchedRest + ' more';
+        wLastCard.more = () => MRB_TO_ASSIGNMENTS();
+      }
+    }
     /* Nothing live and nothing closed is a state and it keeps Design's card
        rather than emptying the column. `hasChase` is false, so the WRAP
        takes the footer with it and there is no button offering to remind
@@ -2223,7 +2316,7 @@ class Component extends DCLogic {
           ? 'Nothing open this week — see Assignments below'
           : 'No work set in this week',
         count: '', pct: 0, hasBar: false,
-        hasChase: false, chase: [], remindLabel: '', remind: () => {},
+        hasChase: false, chaseHead: '', chase: [], remindLabel: '', remind: () => {},
         hasMore: false, moreLabel: '', more: () => {} });
     }
     const wRest = Math.max(0, wPool.length - wCards.length);
@@ -2236,35 +2329,75 @@ class Component extends DCLogic {
     /* ⊕ MRB-306: no timetable data exists; see DROP_FIELDS. */
     const lessonToday = null;
     const g1 = lastP ? this.gridFor(k, lastP.idx) : null;
+    /* ⊕ x-week-truth, 4 Oct 2026 — THE SAME LAZY FETCH THE ASSIGNMENTS
+       TABLE ALREADY USES (see `MRB_ENSURE_GRID` beside `const wkG`
+       below). `load()`'s own prefetch only ever asks for CHIP 0's
+       `lastClosed` grid; stepping the bar to a different week resolves
+       a different `lastP` that may have no cached grid at all, and
+       without this the reteach card's two bars stayed empty forever
+       on every week but the one the page opened on. */
+    if (lastP && !g1) { MRB_ENSURE_GRID(k.id, lastP.idx); }
     const worstTwo = g1 ? g1.stems.map((q, qi) => ({ id: q.id, text: q.text, pct: g1.qpct[qi] })).filter(q => q.pct != null).sort((a, b) => a.pct - b.pct).slice(0, 2) : [];
     const kAsked = (i) => kMx.colSub[i] + '/' + (kMx.colAsked[i] || 0);
     const kOnTimePct = (i) => {
       const known = kMx.colOnTime[i] + kMx.colLate[i];
       return known ? Math.round((kMx.colOnTime[i] / known) * 100) + '%' : '—';
     };
-    const flagged = kRoster.filter(r => r.flag);
-    const watch = flagged.slice(0, 4).map(r => ({
-      name: r.name, initials: this.initials(r.name), hue: this.hueFor(r.name),
-      reason: this.reasonFor(r, kMx.byId[r.id], kMx.closedIdx),
-      open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })
-    }));
-    let best = null;
-    kRoster.forEach(r => { if (r.avg != null && (!best || r.avg > best.avg)) best = r; });
-    let imp = null;
-    kRoster.forEach(r => {
+    const wClosedIdxs = wScope.closed.map(p => p.idx);
+    const wWatchPct = (r) => {
       const row = kMx.byId[r.id];
-      if (!row) return;
-      const done = [];
-      for (let i = 0; i < row.pct.length && done.length < 2; i++) {
-        if (row.pct[i] != null) done.push(row.pct[i]);
-      }
-      if (done.length < 2) return;
-      const d = done[0] - done[1];
-      if (!imp || d > imp.d) imp = { r, d };
+      const got = wIdxs.filter(i => row && row.submitted[i] && row.pct[i] != null)
+        .map(i => row.pct[i]);
+      return got.length ? Math.round(got.reduce((a, b) => a + b, 0) / got.length) : null;
+    };
+    const wWatchMissed = (r) => {
+      const row = kMx.byId[r.id];
+      return wClosedIdxs.filter(i => !(row && row.submitted[i])).length;
+    };
+    const flagged = !wScope.started ? [] : kRoster.filter(r => {
+      if (wClosedIdxs.length && wWatchMissed(r) > 0) return true;
+      const v = wWatchPct(r);
+      return v != null && v < 50;
     });
+    const watch = flagged.slice(0, 4).map(r => {
+      const missed = wWatchMissed(r);
+      const out = wClosedIdxs.length > 0 && missed > 0;
+      return {
+        name: r.name, initials: this.initials(r.name), hue: this.hueFor(r.name),
+        reason: out
+          ? (missed === wClosedIdxs.length ? 'Missed it' : 'Missed ' + missed + ' of ' + wClosedIdxs.length)
+          : wWatchPct(r) + '% on it',
+        open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })
+      };
+    });
+    let best = null, imp = null;
+    if (wScope.started) {
+      const wWatchLast = wIdxs.length ? Math.max.apply(null, wIdxs) : -1;
+      kRoster.forEach(r => {
+        const v = wWatchPct(r);
+        if (v == null) return;
+        if (!best || v > best.v) best = { r, v };
+        const row = kMx.byId[r.id];
+        let prev = null;
+        for (let i = wWatchLast + 1; row && i < row.pct.length; i++) {
+          if (row.submitted[i] && row.pct[i] != null) { prev = row.pct[i]; break; }
+        }
+        if (prev == null) return;
+        if (!imp || v - prev > imp.d) imp = { r, d: v - prev };
+      });
+    }
     const praise = [];
-    if (best) praise.push({ name: best.name, initials: this.initials(best.name), hue: this.hueFor(best.name), reason: 'Top average · ' + best.avg + '%', open: () => MRB_GO('student', { student: best.id, 'class': k && k.id }) });
-    if (imp && imp.d > 0 && (!best || imp.r.id !== best.id)) praise.push({ name: imp.r.name, initials: this.initials(imp.r.name), hue: this.hueFor(imp.r.name), reason: MRB_DELTA_REASON(imp.d), open: () => MRB_GO('student', { student: imp.r.id, 'class': k && k.id }) });
+    if (best) praise.push({ name: best.r.name, initials: this.initials(best.r.name),
+      hue: this.hueFor(best.r.name), reason: 'Top score · ' + best.v + '%',
+      open: () => MRB_GO('student', { student: best.r.id, 'class': k && k.id }) });
+    if (imp && imp.d > 0 && (!best || imp.r.id !== best.r.id)) praise.push({
+      name: imp.r.name, initials: this.initials(imp.r.name), hue: this.hueFor(imp.r.name),
+      reason: MRB_DELTA_REASON(imp.d),
+      open: () => MRB_GO('student', { student: imp.r.id, 'class': k && k.id }) });
+    const noWatchLine = !wScope.started ? 'Nothing to flag yet.'
+      : (wScope.live.length ? 'Nothing to flag yet.'
+        : (wClosedIdxs.length ? 'No one flagged — the class is keeping up.'
+          : 'Nothing to flag.'));
 
     const glance = {
       cards: wCards,
@@ -2275,70 +2408,22 @@ class Component extends DCLogic {
         : 'margin-top:10px;font:400 15.5px/1.4 var(--st-ui);color:var(--st-muted)',
       lastLine: lastP ? lastP.sub + ' submitted' : '',
       worstTwo: worstTwo.map(q => ({ id: q.id, text: q.text, pct: q.pct + '%', bar: q.pct, fill: q.pct < 50 ? 'var(--st-accent)' : 'var(--st-hatch-b)' })),
-      openMarking: () => MRB_GO('marking', { 'class': k && k.id, paper: MRB_NEWEST_MARKED(MRB_PICK('PAPERS', k && k.id), MRB_PICK('MATRIX', k && k.id)) }),
+      openMarking: () => MRB_GO('marking', { 'class': k && k.id, paper: lastP ? lastP.idx : -1 }),
       hasWatch: watch.length > 0,
       noWatch: watch.length === 0,
       watch,
       watchMore: flagged.length > 4 ? '+' + (flagged.length - 4) + ' more in the list below' : '',
+      noWatchLine,
+      hasBreakdown: !!(lastP && (kMx.colSub[lastP.idx] || 0) > 0),
       praise
     };
 
-    if (wi !== 0) {
-      const wkLast = wIdxs.length ? Math.max.apply(null, wIdxs) : -1;
-      const wkPct = (r) => {
-        const row = kMx.byId[r.id];
-        const got = wIdxs.filter(i => row && row.submitted[i] && row.pct[i] != null)
-          .map(i => row.pct[i]);
-        return got.length ? Math.round(got.reduce((a, b) => a + b, 0) / got.length) : null;
-      };
-      const wkOut = (r) => !!(wTally[r.id] && wTally[r.id].asked
-        && wTally[r.id].in < wTally[r.id].asked);
-      const wkWatch = kRoster.filter(r => {
-        if (wkOut(r)) return true;
-        const v = wkPct(r);
-        return v != null && v < 50;
-      });
-      glance.watch = wkWatch.slice(0, 4).map(r => {
-        const t = wTally[r.id];
-        return {
-          name: r.name, initials: this.initials(r.name), hue: this.hueFor(r.name),
-          reason: wkOut(r)
-            ? (t.in ? t.in + ' of ' + t.asked + ' in' : (t.closed ? 'Missed it' : 'Not in yet'))
-            : wkPct(r) + '% on it',
-          open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })
-        };
-      });
-      glance.hasWatch = glance.watch.length > 0;
-      glance.noWatch = !glance.hasWatch;
-      glance.watchMore = wkWatch.length > 4 ? '+' + (wkWatch.length - 4) + ' more in the list below' : '';
-      let wkBest = null, wkImp = null;
-      kRoster.forEach(r => {
-        const v = wkPct(r);
-        if (v == null) return;
-        if (!wkBest || v > wkBest.v) wkBest = { r, v };
-        const row = kMx.byId[r.id];
-        let prev = null;
-        for (let i = wkLast + 1; row && i < row.pct.length; i++) {
-          if (row.submitted[i] && row.pct[i] != null) { prev = row.pct[i]; break; }
-        }
-        if (prev == null) return;
-        if (!wkImp || v - prev > wkImp.d) wkImp = { r, d: v - prev };
-      });
-      glance.praise = [];
-      if (wkBest) glance.praise.push({ name: wkBest.r.name, initials: this.initials(wkBest.r.name),
-        hue: this.hueFor(wkBest.r.name), reason: 'Top score · ' + wkBest.v + '%',
-        open: () => MRB_GO('student', { student: wkBest.r.id, 'class': k && k.id }) });
-      if (wkImp && wkImp.d > 0 && (!wkBest || wkImp.r.id !== wkBest.r.id)) glance.praise.push({
-        name: wkImp.r.name, initials: this.initials(wkImp.r.name), hue: this.hueFor(wkImp.r.name),
-        reason: MRB_DELTA_REASON(wkImp.d),
-        open: () => MRB_GO('student', { student: wkImp.r.id, 'class': k && k.id }) });
-    }
     /* Not-submitted first (flagged among them highest), then everyone in. */
     const rosterWeight = (r) => ((wTally[r.id] && wTally[r.id].asked
-      && wTally[r.id].in < wTally[r.id].asked) ? 2 : 0) + (r.flag ? 1 : 0);
+      && wTally[r.id].in < wTally[r.id].asked) ? 2 : 0) + (flagged.indexOf(r) >= 0 ? 1 : 0);
     const rosterSorted = kRoster.slice().sort((a, b) => rosterWeight(b) - rosterWeight(a));
     /* ⊕ Sharpen C6 (T15) — a flag true of the whole roster flags nobody. */
-    const allFlagged = kRoster.length > 1 && kRoster.every(r => r.flag);
+    const allFlagged = kRoster.length > 1 && flagged.length === kRoster.length;
     const roster = rosterSorted.map(r => ({
       id: r.id,
       name: r.name,
@@ -2363,7 +2448,7 @@ class Component extends DCLogic {
       weekScore: wIdxs.length ? MRB_WEEK_SCORE(kMx.byId[r.id], wIdxs, kPapers) : '',
       avg: r.avg == null ? '—' : r.avg + '%',
       last: r.last,
-      flag: r.flag && !allFlagged,
+      flag: flagged.indexOf(r) >= 0 && !allFlagged,
       open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })
     }));
 
@@ -3410,11 +3495,11 @@ window.__MRB_MOUNT__ = function () {
   }));
 };
 </script>
-<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","breakdown.css":"87c6fa1b","breakdown.js":"be884b0b","class-csv-upload.js":"513ee889","class-entry.js":"1028dbfb","config.js":"40813eb2","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-breakdown.js":"baf47828","flashcard-decks.css":"3da3c46d","flashcard-decks.js":"2610cf68","formulae.js":"e4bfb091","rum.js":"66210c21","set-work.css":"1f99af80","set-work.js":"6737fc8c","shoutouts.js":"23393220","teacher-admin-nav.js":"d48cc15e","teacher-data.js":"f7ff2dda","teacher-guard.js":"f7fbad7c","teacher-live.js":"bd4198c3","teacher-picker.js":"8f2365b7","teacher-topbar.css":"e4a3d0a7","teacher-topbar.js":"466ea5b0","theme.js":"6fd6f722"};</script>
+<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","breakdown.css":"87c6fa1b","breakdown.js":"be884b0b","class-csv-upload.js":"513ee889","class-entry.js":"1028dbfb","config.js":"40813eb2","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-breakdown.js":"baf47828","flashcard-decks.css":"3da3c46d","flashcard-decks.js":"2610cf68","formulae.js":"e4bfb091","rum.js":"66210c21","set-work.css":"1f99af80","set-work.js":"6737fc8c","shoutouts.js":"23393220","teacher-admin-nav.js":"d48cc15e","teacher-data.js":"f7ff2dda","teacher-guard.js":"f7fbad7c","teacher-live.js":"13164b79","teacher-picker.js":"8f2365b7","teacher-topbar.css":"e4a3d0a7","teacher-topbar.js":"466ea5b0","theme.js":"6fd6f722"};</script>
 <script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>
 <link rel="stylesheet" href="/shared/teacher-topbar.css?v=e4a3d0a7">
 <script src="/shared/teacher-topbar.js?v=466ea5b0"></script>
 <script src="/shared/set-work.js?v=6737fc8c"></script>
-<script src="/shared/teacher-live.js?v=bd4198c3"></script>
+<script src="/shared/teacher-live.js?v=13164b79"></script>
 </body>
 </html>
