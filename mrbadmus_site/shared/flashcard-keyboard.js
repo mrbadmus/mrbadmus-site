@@ -87,6 +87,16 @@
     D + '[data-hw-fit] [data-card-fit][data-hw-overflow="1"]::after{content:"";' +
       'position:absolute;left:0;right:0;bottom:0;height:28px;border-radius:0 0 22px 22px;' +
       'pointer-events:none;background:linear-gradient(to bottom,transparent,var(--hw-fade))}' +
+    // ⊕ Y Unit 1 — the SAME cue, top edge, for the learn step's "the
+    // question is still there, scroll up for it" case: once the card is
+    // scrolled down to show the model answer, content is hidden ABOVE the
+    // fold too, not only below. `markOverflow()` now checks both edges of
+    // whatever scroll position the card is actually at (it used to assume
+    // the card always starts at scrollTop 0, so "hidden above" never
+    // applied before this).
+    D + '[data-hw-fit] [data-card-fit][data-hw-overflow-top="1"]::before{content:"";' +
+      'position:absolute;left:0;right:0;top:0;height:22px;border-radius:22px 22px 0 0;' +
+      'pointer-events:none;background:linear-gradient(to top,transparent,var(--hw-fade-top))}' +
     // ── the answer box gets the room back (decision 3) ──
     D + '[data-hw-fit] [data-hw="answer"]{min-height:64px;height:64px}' +
     D + '[data-hw-fit][data-hw-tall="1"] [data-hw="answer"]{height:auto;min-height:96px}' +
@@ -101,7 +111,41 @@
     // one attribute more specific than the rule above
     // (`[data-hw-fit][data-hw-typing="1"]` vs `[data-hw-fit]`) so it wins
     // regardless of source order.
-    D + '[data-hw-fit][data-hw-typing="1"] [data-hw="answer"]{height:var(--hw-box-h,96px);min-height:96px}' +
+    //
+    // ⊕ Y Unit 1 — no `min-height` here any more (it used to pin 96px,
+    // which would have overridden a deliberately smaller `--hw-box-h` the
+    // moment `fitCard()` shrinks the box's floor to 72px to keep a long
+    // model answer fully visible — see fitCard()'s comment). The real
+    // floor is enforced in JS (`Math.max(boxFloor, …)` in `fitBox()`); this
+    // CSS fallback (96px) only ever paints before the first `apply()` call.
+    D + '[data-hw-fit][data-hw-typing="1"] [data-hw="answer"]{height:var(--hw-box-h,96px);min-height:0}' +
+    // ⊕ Y Unit 1 (Mide, phone report, 4 Oct 2026) — "it isn't obvious where
+    // to type" + "unmistakably an input in both themes": the box's REST
+    // border moved to `--pg-muted` at the markup (student_rulings.py,
+    // measured 6.99:1 light / 6.28:1 dark against the box's own
+    // `--pg-card` fill — the old `--pg-rule-strong` was 2.05/1.7:1, faint
+    // cream on cream). This adds the part an inline style cannot: a
+    // FOCUSED treatment, the same in every state (normal card or the
+    // learn step reuse one box) and both themes — the border flips to the
+    // accent, a soft accent-tinted ring appears outside it, and the caret
+    // itself is drawn in the accent. `!important` is required: an inline
+    // `style="border:…"` attribute outranks any selector here on
+    // specificity alone, `:focus` or not.
+    D + ' [data-hw="answer"]:focus{outline:none!important;' +
+      'border-color:var(--pg-accent-text)!important;' +
+      'box-shadow:0 0 0 3px var(--pg-tint)!important;' +
+      'caret-color:var(--pg-accent-text)!important}' +
+    // ⊕ Y Unit 1 — under a real keyboard, in the learn step, the ANSWER is
+    // primary: the question steps down (smaller, the card's muted ink) so the room it
+    // gives up can go to the model answer. Scoped to typing+learn only —
+    // the question's normal size (its own `shrinkToFit()` loop, elsewhere)
+    // is untouched at rest, on desktop, and for the plain write step.
+    // ⊕ Y review — the CARD's muted ink (`--b-muted`, the "ANSWER"
+    // label's own colour), never the page's: `--pg-muted` is a colour for
+    // the cream page and read 1.8:1 on the dark card.
+    D + '[data-hw-typing="1"][data-hw-learn="1"] [data-dc-tpl="10340"]{' +
+      'font-size:15px!important;line-height:1.3!important;' +
+      'font-weight:400!important;color:var(--b-muted)!important}' +
     // ⊕ Stage D review — on a tall DESKTOP dialog the box takes the room the
     // card gave back (up to 200px). `data-hw-tall` never changes on focus
     // there (no keyboard), so neither does the box. Mouse-and-keyboard only:
@@ -172,6 +216,8 @@
   }
 
   var lastCard = null;
+  // ⊕ Y review — the learn step's card scroll (see fitCard()).
+  var learnKey = null, learnScroll = 0;
   var wasTyping = false;
   var lastH = 0;
 
@@ -235,12 +281,24 @@
   // actually laid out — no guessed line-height, no arithmetic, so no
   // rounding can reopen the sliver it exists to close. Given a candidate
   // cut `h` (px, from the face's own content top), find the one line (at
-  // most one can straddle a single cut) whose box straddles it, and floor
-  // the cut to THAT line's own top — hide the whole half-shown line rather
-  // than show any fraction of it. If no line straddles `h` (the cut
-  // already falls on a line boundary, or beyond all content), `h` is
-  // returned unchanged.
-  function snapToLineBoundary(face, h) {
+  // most one can straddle a single cut) whose box straddles it. Two
+  // directions (⊕ Y Unit 1 added `dir`; the original caller — a card's
+  // BOTTOM edge, always measured from scrollTop 0 — is `dir="floor"` and is
+  // unchanged by the default):
+  //   "floor" (default) — snap DOWN to that line's own top: hide the whole
+  //     half-shown line rather than show any fraction of it. Right for a
+  //     BOTTOM edge, where shrinking the visible window is the safe
+  //     direction.
+  //   "ceil"  — snap FORWARD to that line's own BOTTOM: hide the line
+  //     entirely by scrolling PAST it rather than reveal it whole. Right for
+  //     a scrolled window's TOP edge (fitCard()'s learn-under-keyboard case):
+  //     moving scrollTop forward by a few px never reduces how much of the
+  //     model answer stays visible, where floor's direction (moving it back)
+  //     would widen the window and could push the answer's own bottom below
+  //     the fold.
+  // If no line straddles `h` (the cut already falls on a line boundary, or
+  // beyond all content), `h` is returned unchanged either way.
+  function snapToLineBoundary(face, h, dir) {
     if (!face) { return h; }
     var b = face.style.bottom, fh = face.style.height;
     face.style.bottom = "auto";
@@ -260,7 +318,11 @@
           var rects = rg.getClientRects();
           for (var k = 0; k < rects.length; k++) {
             var top = rects[k].top - top0, bottom = rects[k].bottom - top0;
-            if (top < out - 0.5 && bottom > out + 0.5) { out = Math.floor(top); }
+            // ⊕ Y review — any line that STARTS above the cut straddles it,
+            // however little (a 0.4px overlap used to slip through ±0.5).
+            if (top < out && bottom > out + 0.5) {
+              out = dir === "ceil" ? Math.ceil(bottom) : Math.floor(top);
+            }
           }
         }
         return;
@@ -269,21 +331,69 @@
     })(face);
     face.style.bottom = b;
     face.style.height = fh;
-    return Math.max(40, out);
+    return Math.max(dir === "ceil" ? 0 : 40, out);
+  }
+
+  // The full-content metrics of the learn block ([data-hw="learn"], the
+  // rule + "ANSWER" label + model-answer text that now lives INSIDE the
+  // front face — student_rulings.py's INSERT_AT(10334,10340)): its own
+  // height, and its top/bottom offset from the FACE's own content top (not
+  // the viewport — `front` is `position:absolute;inset:0`, so `bottom`/
+  // `height` are let go to `auto` for one synchronous read, same trick
+  // `contentHeight()` and `snapToLineBoundary()` above already use).
+  function learnMetrics(front, learnEl) {
+    if (!front || !learnEl) { return null; }
+    var b = front.style.bottom, fh = front.style.height;
+    front.style.bottom = "auto";
+    front.style.height = "auto";
+    var top0 = front.getBoundingClientRect().top;
+    var lr = learnEl.getBoundingClientRect();
+    // The model answer's own text (the block's last child; the rule and the
+    // "ANSWER" label sit above it).
+    var tx = learnEl.lastElementChild ? learnEl.lastElementChild.getBoundingClientRect() : lr;
+    var content = front.offsetHeight;
+    front.style.bottom = b;
+    front.style.height = fh;
+    return { top: lr.top - top0, bottom: lr.bottom - top0, height: lr.height, content: content,
+             textTop: tx.top - top0 };
   }
 
   // The scroll cue (CSS, above): a fade in the VISIBLE face's own current
   // paint colour, shown only while that face genuinely has more below the
   // fold. `cardFit` (the stage) carries the attribute and the colour, not
   // the face itself — see the CSS comment for why.
+  // ⊕ Y Unit 1 — now checks BOTH edges against the face's REAL scrollTop,
+  // not just "is there more below" from an assumed scrollTop 0. The learn
+  // step under a keyboard can legitimately start scrolled down (showing
+  // the model answer, hiding the question above it — see fitCard()), and
+  // that needs its OWN cue at the top, in the same live paint colour.
   function markOverflow(cardFit, face) {
     if (!cardFit) { return; }
     if (face && face.scrollHeight > face.clientHeight + 1) {
-      cardFit.setAttribute("data-hw-overflow", "1");
-      cardFit.style.setProperty("--hw-fade", root.getComputedStyle(face).backgroundColor);
+      var cs = root.getComputedStyle(face), bg = cs.backgroundColor;
+      // ⊕ Y review — only TEXT counts as "more": a scroll that hides
+      // nothing but the face's own padding draws no fade (it used to dim
+      // the model answer's last line at 360px with nothing under it).
+      var padB = parseFloat(cs.paddingBottom) || 0, padT = parseFloat(cs.paddingTop) || 0;
+      if (face.scrollTop + face.clientHeight < face.scrollHeight - padB - 1) {
+        cardFit.setAttribute("data-hw-overflow", "1");
+        cardFit.style.setProperty("--hw-fade", bg);
+      } else {
+        cardFit.removeAttribute("data-hw-overflow");
+        cardFit.style.removeProperty("--hw-fade");
+      }
+      if (face.scrollTop > padT + 1) {
+        cardFit.setAttribute("data-hw-overflow-top", "1");
+        cardFit.style.setProperty("--hw-fade-top", bg);
+      } else {
+        cardFit.removeAttribute("data-hw-overflow-top");
+        cardFit.style.removeProperty("--hw-fade-top");
+      }
     } else {
       cardFit.removeAttribute("data-hw-overflow");
       cardFit.style.removeProperty("--hw-fade");
+      cardFit.removeAttribute("data-hw-overflow-top");
+      cardFit.style.removeProperty("--hw-fade-top");
     }
   }
 
@@ -303,16 +413,143 @@
     // exactly the room that went to waste as the dead gap this unit's
     // first pass fixed on the BOX side; this is the CARD side of the same
     // mistake.
-    if (typing && p.write && p.act && p.body) {
+    var learnEl = front ? front.querySelector('[data-hw="learn"]') : null;
+    var boxFloor = 96;
+    // ⊕ Y2 (Mide, 4 Oct 2026) — the learn step is answer-first AT REST too:
+    // "I don't know" no longer opens the keyboard, so this is the screen
+    // the pupil reads the answer on before tapping the box. At rest the box
+    // keeps its own size (64px, or 96 on a tall desktop dialog) and never
+    // shrinks; under a keyboard it is 96, giving way to 72 for the answer.
+    var tallRest = !typing && dh >= 700;
+    var floorFull = typing ? 96 : (tallRest ? 96 : 64);
+    var floorMin = typing ? 72 : floorFull;
+    if (learnEl && p.write && p.act && p.body) {
+      // ⊕ Y Unit 1 (Mide, phone report, 4 Oct 2026: "with the keyboard up
+      // the pupil must be able to SEE THE ANSWER … it's meant to show they
+      // are actually revising"). THE ANSWER IS PRIMARY under a keyboard, in
+      // the learn step specifically: it outranks the box's 96px floor,
+      // which outranks the question staying on screen at all.
+      //
+      //   1. can the WHOLE learn block (rule + "ANSWER" + the model answer
+      //      text) be shown with the box still ≥96px? Size the card to
+      //      exactly that need (never more — any slack goes to the box).
+      //   2. if not, can it be shown by letting the box shrink to a ~2-line
+      //      floor (72px)? Same again at that smaller floor.
+      //   3. if even that isn't enough, the card takes everything up to the
+      //      72px-floor cap, the box is pinned at 72px, and the answer's
+      //      OWN FIRST LINE sits at the card's visible top — never a half
+      //      line (see the ceil-snap below) — with the rest reachable by
+      //      scrolling the card.
+      //
+      // In every case the question is what gives way (scrolled off, in
+      // whole lines), never the answer and never the box below its floor.
       var cardFit = p.dialog.querySelector('[data-card-fit]');
       var cardTop = cardFit ? cardFit.getBoundingClientRect().top : 0;
       var bodyBottom = p.body.getBoundingClientRect().bottom;
       var bodyGap = parseFloat(root.getComputedStyle(p.body).rowGap) || 10;
       var writeGap = parseFloat(root.getComputedStyle(p.write).rowGap) || 10;
       var actH = p.act.getBoundingClientRect().height;
-      var minBox = 96; // ~3 lines at 17px/1.4
       var avail = bodyBottom - cardTop - bodyGap - writeGap - actH - 6;
-      var maxCardH = Math.max(60, avail - minBox);
+      var lm = learnMetrics(front, learnEl);
+      var learnH = lm ? lm.height : 0;
+      var maxCardFullBox = Math.max(60, avail - floorFull);
+      // The answer's own text plus the face's bottom padding.
+      var textH = lm ? lm.bottom - lm.textTop + (parseFloat(root.getComputedStyle(front).paddingBottom) || 0) : 0;
+      if (learnH <= maxCardFullBox) {
+        h = Math.round(Math.min(content, maxCardFullBox));
+      } else if (textH <= maxCardFullBox) {
+        // ⊕ Y review — the rule and "ANSWER" label give way before the
+        // box drops below 96: the answer text alone fits beside a full box.
+        h = Math.round(textH);
+      } else {
+        boxFloor = floorMin;
+        var maxCardShrunkBox = Math.max(60, avail - floorMin);
+        // Sized to the answer TEXT (it is what starts at the top here), so
+        // the card can always scroll far enough to hide the label above it.
+        h = Math.round(Math.min(textH, maxCardShrunkBox));
+      }
+      p.dialog.style.setProperty("--hw-card-h", h + "px");
+      p.dialog.setAttribute("data-hw-fit", "1");
+      if (tallRest) { p.dialog.setAttribute("data-hw-tall", "1"); }
+      else { p.dialog.removeAttribute("data-hw-tall"); }
+      // The scroll position itself: biased to show the WHOLE learn block
+      // when `h` is tall enough for it (anchored to its bottom — any extra
+      // room above shows as much of the question's tail as fits), or to its
+      // own top otherwise (so the answer's first line is what's visible,
+      // never its middle).
+      if (lm) {
+        var fits = h >= Math.round(learnH) - 0.5;
+        // ⊕ Y review — when the whole block does not fit, it is the answer
+        // TEXT that starts at the card's top, not the rule and "ANSWER"
+        // label above it (at 360px those two lines were what pushed the
+        // answer's last line under the fold).
+        var desired = fits ? Math.max(0, lm.bottom - h) : lm.textTop;
+        var maxScroll = Math.max(0, lm.content - h);
+        desired = Math.min(desired, maxScroll);
+        // TOP edge: never a half-shown line at the fold — push forward past
+        // one if the candidate straddles it (never backward: that would
+        // widen the window and could cut the answer's own bottom instead).
+        // Whole pixels: scrollTop is (a 154.5 became 155 and shifted every
+        // line half a pixel past the bottom snap below).
+        var snappedTop = Math.ceil(snapToLineBoundary(front, desired, "ceil"));
+        // ⊕ Y2 — skipping a half-cut line at the top can ask to scroll past
+        // the end of the content (the card cannot scroll that far, so the
+        // cut line would come back); the card gets that much shorter
+        // instead, which keeps every line it shows whole.
+        if (snappedTop > maxScroll) {
+          h = Math.max(40, Math.round(lm.content - snappedTop));
+          p.dialog.style.setProperty("--hw-card-h", h + "px");
+          maxScroll = snappedTop;
+        }
+        // BOTTOM edge: same existing rule — shrink `h` if it still cuts a
+        // line (safe: `fits` already guarantees enough room when true, so
+        // this only ever bites in the "doesn't fit" branch).
+        var bottomY = snappedTop + h;
+        var snappedBottom = snapToLineBoundary(front, bottomY, "floor");
+        if (snappedBottom < bottomY) {
+          h = Math.max(40, Math.round(snappedBottom - snappedTop));
+          p.dialog.style.setProperty("--hw-card-h", h + "px");
+        }
+        // ⊕ Y Unit 1 debugging note, kept because the trap is easy to
+        // reintroduce: `scrollTop` is set LAST, after every
+        // `snapToLineBoundary()`/`learnMetrics()` call above. Each of those
+        // temporarily sets `front.style.height = "auto"` to measure natural
+        // content size (the same trick `contentHeight()` uses) — which
+        // REMOVES the clipping that makes `front` scrollable at all for
+        // that instant, and a browser clamps `scrollTop` to 0 the moment an
+        // element stops overflowing. Restoring `style.height` afterward
+        // does not restore the scrollTop that got clamped away under it.
+        // Setting it here, once, after all such measuring is done, is what
+        // makes the assignment stick.
+        // ⊕ Y review — set the answer-first position only when the layout
+        // is NEW (another card, entering the learn step, or the card's
+        // height changing as the keyboard settles). Every other apply() —
+        // and iOS fires visualViewport scroll events all the time while the
+        // pupil types — puts back wherever the pupil last scrolled the card
+        // themselves (`learnScroll`, kept by the scroll listener below), so
+        // scrolling up to re-read the question is never snapped away. The
+        // measuring above zeroes scrollTop and a redraw rebuilds the face,
+        // so the remembered NUMBER is the source, never the element.
+        var key = (p.box ? p.box.getAttribute("data-hw-card") || "" : "") + "|" + h;
+        if (key !== learnKey) {
+          learnKey = key;
+          learnScroll = snappedTop;
+        }
+        front.scrollTop = Math.min(learnScroll, maxScroll);
+      }
+      markOverflow(cardFit, front);
+      return { h: h, boxFloor: boxFloor };
+    }
+    if (typing && p.write && p.act && p.body) {
+      var cardFit2 = p.dialog.querySelector('[data-card-fit]');
+      var cardTop2 = cardFit2 ? cardFit2.getBoundingClientRect().top : 0;
+      var bodyBottom2 = p.body.getBoundingClientRect().bottom;
+      var bodyGap2 = parseFloat(root.getComputedStyle(p.body).rowGap) || 10;
+      var writeGap2 = parseFloat(root.getComputedStyle(p.write).rowGap) || 10;
+      var actH2 = p.act.getBoundingClientRect().height;
+      var minBox = 96; // ~3 lines at 17px/1.4
+      var avail2 = bodyBottom2 - cardTop2 - bodyGap2 - writeGap2 - actH2 - 6;
+      var maxCardH = Math.max(60, avail2 - minBox);
       h = Math.round(Math.min(content, maxCardH));
     } else {
       var cap = typing ? Math.max(120, 0.34 * m.height) : Math.min(420, 0.46 * dh);
@@ -335,14 +572,14 @@
     var flipped = !!(flipEl && flipEl.getAttribute("data-flip") === "1");
     var visFace = flipped ? back : front;
     if (visFace && visFace.scrollHeight > visFace.clientHeight + 1) {
-      var snapped = snapToLineBoundary(visFace, visFace.clientHeight);
+      var snapped = snapToLineBoundary(visFace, visFace.clientHeight, "floor");
       if (snapped < h) {
         h = Math.max(40, snapped);
         p.dialog.style.setProperty("--hw-card-h", h + "px");
       }
     }
     markOverflow(p.dialog.querySelector('[data-card-fit]'), visFace);
-    return h;
+    return { h: h, boxFloor: boxFloor };
   }
 
   // ⊕ MRB-354 unit B — the box's height under a real keyboard, measured
@@ -361,7 +598,7 @@
   // iPhone always matches whether or not its keyboard is up, because the
   // LAYOUT viewport never shrinks on iOS). This reads real, already-laid-out
   // pixels instead, so it cannot make that mistake.
-  function fitBox(p, typing) {
+  function fitBox(p, typing, boxFloor) {
     if (!typing || !p.box || !p.write || !p.act || !p.body) {
       if (p.dialog) { p.dialog.style.removeProperty("--hw-box-h"); }
       return;
@@ -372,11 +609,14 @@
     var gap = parseFloat(root.getComputedStyle(p.write).rowGap) || 10;
     // 6px of slack so the box's bottom border never sits flush against
     // Check's own, which would read as touching rather than spaced. The
-    // floor is 96 (not 64) because `fitCard()` now only ever leaves the
-    // card up to `avail − 96`, so a long card's leftover is exactly this
-    // floor and a short card's is whatever `fitCard()` didn't need.
+    // floor is `boxFloor` (96 normally; `fitCard()` passes 72 — ⊕ Y Unit 1
+    // — on the learn step's own "answer can't fully fit even at 96"
+    // escape hatch, never otherwise) because `fitCard()` now only ever
+    // leaves the card up to `avail − boxFloor`, so a long card's leftover
+    // is exactly that floor and a short card's is whatever `fitCard()`
+    // didn't need.
     var avail = bodyBottom - writeTop - actH - gap - 6;
-    var h = Math.max(96, Math.min(500, Math.round(avail)));
+    var h = Math.max(boxFloor || 96, Math.min(500, Math.round(avail)));
     p.dialog.style.setProperty("--hw-box-h", h + "px");
   }
 
@@ -415,8 +655,8 @@
     var typing = !!(p.box && doc.activeElement === p.box) && keyboardUp();
     if (typing) { p.dialog.setAttribute("data-hw-typing", "1"); }
     else { p.dialog.removeAttribute("data-hw-typing"); }
-    fitCard(p, m, typing);
-    fitBox(p, typing);
+    var fit = fitCard(p, m, typing);
+    fitBox(p, typing, fit && fit.boxFloor);
     // ⊕ Sharpen §13.4 — also when the keyboard changes height while the
     // pupil is typing (iOS animates it in; the learn state is taller).
     if (typing && (!wasTyping || m.height !== lastH)) { reveal(); }
@@ -439,7 +679,7 @@
 
   function restore() {
     // The overlay closing takes its element with it; nothing is left to undo.
-    lastCard = null; wasTyping = false; lastH = 0;
+    lastCard = null; wasTyping = false; lastH = 0; learnKey = null; learnScroll = 0;
   }
 
   root.__MRB_AFTER_DRAW__ = root.__MRB_AFTER_DRAW__ || [];
@@ -451,6 +691,21 @@
     root.visualViewport.addEventListener("scroll", onViewport);
   }
   root.addEventListener("resize", onViewport);
+  // ⊕ Y review — remember where the pupil scrolls the learn step's card
+  // (capture phase: scroll does not bubble). The face is rebuilt on every
+  // redraw, so the position lives here, not on the element.
+  doc.addEventListener("scroll", function (ev) {
+    var t = ev.target;
+    if (t && t.getAttribute && t.getAttribute("data-dc-tpl") === "10334" &&
+        t.closest && t.closest(D + '[data-hw-learn="1"]')) {
+      learnScroll = t.scrollTop;
+    }
+    // The fades follow whatever the pupil scrolls to, on any homework card.
+    if (t && t.getAttribute && (t.getAttribute("data-dc-tpl") === "10334" || t.getAttribute("data-dc-tpl") === "10351") &&
+        t.closest && t.closest(D + "[data-hw-fit]")) {
+      markOverflow(t.closest("[data-card-fit]"), t);
+    }
+  }, true);
   doc.addEventListener("focusin", function (ev) {
     if (ev.target && ev.target.getAttribute && ev.target.getAttribute("data-hw") === "answer") { apply(); }
   });

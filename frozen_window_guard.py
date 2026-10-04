@@ -41,6 +41,11 @@ exceptions changed nothing but the fields the ruling permits.
      sets in `frozen_window_allowlist.py`; its `id`, `band`, `tier`,
      `triple_only` and `bank_position` must be unchanged, and a violation
      names the field;
+     ⊕ The route-flag ruling (Mide, 2 Oct 2026) is the one exception the
+     other way round: the frozen rows of eight named subtopics may differ
+     in `tier`/`triple_only` ONLY, from exactly the before flags to exactly
+     the after flags in `frozen_window_allowlist.ROUTE_FLAGS`, and in
+     nothing else;
   3. the allowlist is exactly 28 ids and every one of them actually exists,
      inside the frozen window, in the authored corpus today;
   4. positions 0–11 hold the same SET OF IDS in the same ORDER per leaf as
@@ -212,12 +217,20 @@ def _which_fields_differ(hash_fn, columns, id_field, a, b):
     return diffs
 
 
+def _flags(row):
+    return (row.get("tier"), bool(row.get("triple_only")))
+
+
 def compare_pool(pool_label, id_field, leaf_fields, columns, hash_fn,
-                  authored_rows, reference_rows, allowed_diff_fields):
+                  authored_rows, reference_rows, allowed_diff_fields,
+                  route_flags=None):
     """The four-part proof, for one pool. `reference_rows` must already be
     restricted to the frozen window (bank_position < 12) — both the
-    production fetch and the baseline writer below do that filtering."""
+    production fetch and the baseline writer below do that filtering.
+    `route_flags` is `frozen_window_allowlist.ROUTE_FLAGS`, passed for KS4
+    only."""
     problems = []
+    route_flagged = 0
     frozen = [r for r in authored_rows if r["bank_position"] < 12]
     by_id_a = {r[id_field]: r for r in frozen}
     by_id_b = {r[id_field]: r for r in reference_rows}
@@ -243,6 +256,25 @@ def compare_pool(pool_label, id_field, leaf_fields, columns, hash_fn,
         if hash_fn(a) == hash_fn(b):
             continue
         diffs = _which_fields_differ(hash_fn, columns, id_field, a, b)
+        # ⊕ Route flags (Mide, 2 Oct 2026): a row of one of the eight moved
+        # subtopics may differ in tier/triple_only ONLY, and only from the
+        # exact BEFORE flags (reference) to the exact AFTER flags (authored).
+        leaf = a.get("subtopic_slug")
+        if route_flags and leaf in route_flags:
+            before, after = route_flags[leaf]
+            bad = [f for f in diffs
+                   if f not in fwa.ROUTE_FLAGS_PERMITTED_FIELDS]
+            if bad or _flags(a) != after or _flags(b) != before:
+                unexpected.append(rid)
+                problems.append(
+                    "%s %s: in a route-flag subtopic (%s), but the change is "
+                    "not the ruled one — differs in %s; authored flags %s "
+                    "(ruled %s), reference flags %s (ruled before: %s)"
+                    % (pool_label, rid, leaf, ", ".join(diffs),
+                       _flags(a), after, _flags(b), before))
+            else:
+                route_flagged += 1
+            continue
         # ⊕ D3 (Mide, 26 Sep 2026): c1-01-s04 may differ in `text` ONLY —
         # narrower than the 28, so it takes its own field set, not theirs.
         if rid in fwa.D3_TEXT_ONLY:
@@ -302,6 +334,13 @@ def compare_pool(pool_label, id_field, leaf_fields, columns, hash_fn,
           "%d unexpected diff(s), %d leaf order mismatch(es)"
           % ("✅" if ok else "❌", pool_label, len(frozen), len(reference_rows),
              len(only_a), len(only_b), len(unexpected), order_mismatches))
+    if route_flags:
+        print("  ⊕ %s  %d frozen row(s) differ only by the ruled route flags "
+              "(Mide, 2 Oct 2026)%s"
+              % (pool_label, route_flagged,
+                 " — docs/ks4/route-audit/BANK-FLAGS.sql not yet applied to "
+                 "the reference" if route_flagged else
+                 " — the reference already carries the new flags"))
     return problems
 
 
@@ -485,6 +524,38 @@ def main():
           % (len(fwa.ALLOWLIST), len(fwa.CONFIRMED), len(fwa.BORDERLINE),
              len(stale), len(moved)))
 
+    # ── the route-flag ruling: exactly 8 real leaves, 96 frozen rows, every
+    #    one already carrying the AFTER flags in the Python, and none of
+    #    them also on a content allowlist ─────────────────────────────────
+    rf_rows = [r for r in authored_ks4 if r["bank_position"] < 12
+               and r["subtopic_slug"] in fwa.ROUTE_FLAGS]
+    rf_leaves = {r["subtopic_slug"] for r in rf_rows}
+    if rf_leaves != set(fwa.ROUTE_FLAGS):
+        problems.append(
+            "route-flag subtopic(s) with no frozen rows in the authored "
+            "corpus (stale): %s"
+            % ", ".join(sorted(set(fwa.ROUTE_FLAGS) - rf_leaves)))
+    if len(rf_rows) != fwa.ROUTE_FLAGS_FROZEN_ROWS:
+        problems.append(
+            "the route-flag ruling covers %d frozen rows; the authored "
+            "corpus has %d in those subtopics"
+            % (fwa.ROUTE_FLAGS_FROZEN_ROWS, len(rf_rows)))
+    rf_wrong = [r["id"] for r in rf_rows
+                if _flags(r) != fwa.ROUTE_FLAGS[r["subtopic_slug"]][1]]
+    if rf_wrong:
+        problems.append(
+            "%d frozen row(s) in route-flag subtopics do not carry the ruled "
+            "AFTER flags: %s" % (len(rf_wrong), ", ".join(rf_wrong[:8])))
+    rf_overlap = {r["id"] for r in rf_rows} & \
+        (fwa.ALLOWLIST | set(fwa.D3_TEXT_ONLY))
+    if rf_overlap:
+        problems.append(
+            "route-flag rows are also on a content allowlist: %s"
+            % ", ".join(sorted(rf_overlap)))
+    print("  route flags %d subtopic(s), %d frozen row(s), %d not carrying "
+          "the ruled flags"
+          % (len(fwa.ROUTE_FLAGS), len(rf_rows), len(rf_wrong)))
+
     # ── source the reference: production, or a --baseline file ──────────
     if args.baseline:
         if os.path.exists(args.baseline):
@@ -544,7 +615,8 @@ def main():
     problems += compare_pool("KS4", KS4_ID_FIELD, KS4_LEAF_FIELDS,
                               ks4_columns, ks4_hash_with(ks4_columns),
                               authored_ks4, ks4_ref,
-                              ks4_allowed_diff(ks4_has_figure))
+                              ks4_allowed_diff(ks4_has_figure),
+                              route_flags=fwa.ROUTE_FLAGS)
 
     print()
     if problems:
@@ -556,7 +628,9 @@ def main():
 
     print("✅ every frozen row not on the allowlist is byte-identical to "
           "%s; all 28 allowlisted rows changed only fields the ruling "
-          "permits, and the D3 row (c1-01-s04) only its text; positions 0-11 hold the same ids in the same order, "
+          "permits, and the D3 row (c1-01-s04) only its text; the 8 "
+          "route-flag subtopics differ at most by their ruled flags; "
+          "positions 0-11 hold the same ids in the same order, "
           "per leaf.\n"
           % ("the baseline" if args.baseline else "production"))
     return 0

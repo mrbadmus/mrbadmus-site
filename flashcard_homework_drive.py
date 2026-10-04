@@ -55,6 +55,9 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import ks3_browser as cdp  # noqa: E402
 
+# ⊕ Prompt Y — card 3 typed in full (a lone word of it now goes to the answer check).
+WEIGHT_RIGHT = "the force acting on an object due to gravity"
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 AID = "aaaaaaaa-0000-4000-8000-000000000351"
 
@@ -502,10 +505,12 @@ def run(width, height, kb, shots):
 
             # card 3, then ‹ Back to card 2 from state C
             P.keyboard(True)
-            P.type("gravity")
+            # ⊕ Prompt Y — the whole answer: a single word of a longer model
+            # answer ("gravity") is no longer Right on the spot.
+            P.type(WEIGHT_RIGHT)
             P.click('[data-hw="check"]')
             P.keyboard(False)
-            check(P.st()["chip"] == "Right", "card 3: 'gravity' is Right")
+            check(P.st()["chip"] == "Right", "card 3: the whole answer is Right")
             P.click('[data-hw="back"]')
             s = P.st()
             check(s["front"] == "What is the formula of water?" and s["writing"] and s["draft"] == "made of hydrogen and oxygen",
@@ -515,7 +520,7 @@ def run(width, height, kb, shots):
                   "⊕ MRB-354 — Forward › sits beside ‹ Back once a step back has been taken")
             P.click('[data-hw="forward"]')
             s = P.st()
-            check(s["front"] == "What is weight?" and s["writing"] and s["draft"] == "gravity",
+            check(s["front"] == "What is weight?" and s["writing"] and s["draft"] == WEIGHT_RIGHT,
                   "Forward ›: back up to card 3, state A, its earlier answer intact, no rating changed (got %r)"
                   % s["draft"])
             check(not P.q("!!document.querySelector('[data-hw=\"forward\"]')"),
@@ -525,7 +530,7 @@ def run(width, height, kb, shots):
             check(s["front"] == "What is the formula of water?" and s["draft"] == "made of hydrogen and oxygen",
                   "‹ Back again: card 2, in state A, with its own earlier answer (got %r)" % s["draft"])
             P.shot("Back-card-2")
-            P.type("water")
+            P.type("the")                  # a lone function word: Wrong on the spot
             P.click('[data-hw="check"]')
             s = P.st()
             check(s["chip"] == "Wrong" and s["pressed"] == ["not_yet"] and s["enabled"] == ["not_yet"],
@@ -534,8 +539,8 @@ def run(width, height, kb, shots):
             P.shot("C-wrong-capped")
             P.click('[data-hw="not_yet"]')
             s = P.st()
-            check(s["front"] == "What is weight?" and s["draft"] == "gravity",
-                  "card 3 again, 'gravity' still in its box (got %r)" % s["draft"])
+            check(s["front"] == "What is weight?" and s["draft"] == WEIGHT_RIGHT,
+                  "card 3 again, its answer still in its box (got %r)" % s["draft"])
             P.keyboard(True)
             P.boxes("state A after ‹ Back")
             P.keyboard(False)
@@ -588,17 +593,19 @@ def run(width, height, kb, shots):
             P.type("F = ke")
             P.click('[data-hw="check"]')
             s = P.st()
-            check(s["chip"] is None and s["pressed"] == [] and len(s["enabled"]) == 3,
-                  "no verdict (no model check): no chip, nothing filled, all three enabled (A3)")
-            P.click('[data-hw="got_it"]')
+            # ⊕ Mide, 4 Oct 2026 (option B) — nothing could check it, so it
+            # may be Nearly or Not yet, never Secured; Nearly brings it back.
+            check(s["chip"] is None and s["pressed"] == [] and sorted(s["enabled"]) == ["nearly", "not_yet"],
+                  "no verdict (no model check): no chip, nothing filled, Nearly or Not yet only (got %r)" % s["enabled"])
+            P.click('[data-hw="nearly"]')
             settle(0.8)
             s = P.st()
             # ⊕ MRB-354 — c1 (water) was corrected to Wrong/Not yet via ‹ Back
             # earlier and never got_it since: it is the one card NOT secured.
             # The writing pass follows the SAME rule as review now: not all
             # secured → ONE button, Try again (no forced review pass).
-            check(s["end1"] == "4 of 5 secured" and s["end2"] is None,
-                  "writing pass end screen: '4 of 5 secured' (got %r / %r)" % (s["end1"], s["end2"]))
+            check(s["end1"] == "3 of 5 secured" and s["end2"] is None,
+                  "writing pass end screen: '3 of 5 secured' — c1 and the unchecked c4 are left (got %r / %r)" % (s["end1"], s["end2"]))
             check(s["retryPass"] == "Try again" and s["done"] is None and s["again"] is None
                   and s["endHint"] is None,
                   "writing pass, not all secured: ONE button Try again, no forced review pass (MRB-354)")
@@ -639,6 +646,17 @@ def run(width, height, kb, shots):
             # unambiguous (`[data-hw="rate"] button[aria-pressed]`).
             s = P.st()
             check(s["pressed"] == ["got_it"], "retyped correctly this time: Right, Secured filled (got %r)" % s["pressed"])
+            P.click('[data-hw="got_it"]')
+            settle(0.8)
+            # the unchecked c4 comes back too, and this time it is checked:
+            # typed in full, it is Right on the spot.
+            s = P.st()
+            check(s["writing"] and s["front"] == "Write the equation for the force on a spring.",
+                  "Try again also brings back the card nothing could check (got %r)" % s["front"])
+            P.type("Force = spring constant × extension (F = ke)")
+            P.click('[data-hw="check"]')
+            s = P.st()
+            check(s["pressed"] == ["got_it"], "checked this time: Right, Secured filled (got %r)" % s["pressed"])
             P.click('[data-hw="got_it"]')
             settle(0.8)
             s = P.st()
@@ -696,7 +714,7 @@ def run(width, height, kb, shots):
             P.shot("Review-keyboard-up")
             P.keyboard(False)
             answers = {"What is the formula of water?": "h2o", "What is the unit of force?": "newton",
-                       "What is weight?": "gravity", "Write the equation for the force on a spring.": "ke",
+                       "What is weight?": WEIGHT_RIGHT, "Write the equation for the force on a spring.": "Force = spring constant × extension (F = ke)",
                        "Is velocity a scalar or a vector?": "vector"}
             for _ in range(5):
                 f = P.st()["front"]
@@ -735,7 +753,7 @@ def run(width, height, kb, shots):
             P.keyboard(True)
             P.boxes("review mode, state A")
             P.keyboard(False)
-            wrong = {"What is the formula of water?": "water", "Write the equation for the force on a spring.": "stretch"}
+            wrong = {"What is the formula of water?": "the", "Write the equation for the force on a spring.": "a"}
             order = []
             for _ in range(5):
                 f = P.st()["front"]
@@ -791,7 +809,7 @@ def run(width, height, kb, shots):
                   "tap a green chip: that card in state A with its earlier answer, ‹ Back offered (got %r %r)"
                   % (s["front"], s["draft"]))
             P.shot("Redo")
-            P.type("water" if order[first_green] == "What is the formula of water?" else "zzz")
+            P.type("the")
             P.click('[data-hw="check"]')
             P.click('[data-hw="not_yet"]')
             s = P.st()
@@ -806,24 +824,16 @@ def run(width, height, kb, shots):
                 P.click('[data-hw="got_it"]')
             settle(0.6)
             s = P.st()
-            # ⊕ MRB-354 — the redo downgraded this card to not_yet in the SAME
-            # still-open sitting, so it is genuinely not secured right now.
-            check(s["end1"] == "4 of 5 secured" and s["retryPass"] == "Try again", "the redone card is left: Try again (got %r)" % s["end1"])
-            P.click('[data-hw="retry-pass"]')
-            s = P.st()
-            check(s["front"] == order[first_green] and s["greens"] == 4, "a second Try again: only the still-grey card")
-            P.type(answers[order[first_green]])
-            P.click('[data-hw="check"]')
-            P.click('[data-hw="got_it"]')
-            settle(0.8)
-            s = P.st()
+            # ⊕ Mide, 4 Oct 2026 — "once secured, stays secured": the redo's
+            # Not yet is recorded, but the card it was given to stays secured,
+            # so securing the queue's two cards finishes the deck.
             check(s["end1"] == "5 of 5 secured" and s["done"] == "Done" and s["end2"] is None
                   and s["retryPass"] is None and s["again"] == "Revise flashcards one more time",
-                  "all secured: Done, plus the quieter Revise secondary, computed by the device (got %r %r %r)"
+                  "the redone card stays secured: Done, plus the quieter Revise secondary (got %r %r %r)"
                   % (s["end1"], s["done"], s["again"]))
             ev = P.q("window.__FC_FAKE__.events")
             check(sum(1 for e in ev if e["type"] == "session_finish") == 1,
-                  "ONE session_finish across the pass and both Try agains")
+                  "ONE session_finish across the pass and the Try again")
             P.no_retired("all-right screen")
             P.shot("End-all-right-done")
             P.click('[data-hw="done"]')

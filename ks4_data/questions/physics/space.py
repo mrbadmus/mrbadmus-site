@@ -1074,7 +1074,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e01",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "State the approximate proportion of the universe made up of "
                 "ordinary matter.",
@@ -1093,7 +1093,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e02",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "State why dark matter cannot be seen with any telescope.",
         "options": [
@@ -1111,7 +1111,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e03",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "State the effect that dark energy has on the expansion of "
                 "the universe.",
@@ -1129,7 +1129,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e04",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "State what is meant by gravitational lensing.",
         "options": [
@@ -1150,7 +1150,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s01",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Explain why the amount of gravitational lensing seen around "
                 "a galaxy cluster is evidence for dark matter.",
@@ -1173,7 +1173,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s02",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Describe the difference between dark matter and dark energy.",
         "options": [
@@ -1195,7 +1195,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s03",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Explain why astronomers had expected the expansion of the "
                 "universe to be slowing down.",
@@ -1218,7 +1218,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s04",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Explain why type Ia supernovae are useful for measuring "
                 "distances across the universe.",
@@ -1240,7 +1240,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h01",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Evaluate this claim: 'Dark matter has now been detected "
                 "directly in laboratory experiments.'",
@@ -1263,7 +1263,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h02",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Predict what would happen to the universe if dark energy "
                 "were to weaken until gravity dominated.",
@@ -1286,7 +1286,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h03",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Suggest why the discovery of dark matter and dark energy has "
                 "not led astronomers to abandon the Big Bang model.",
@@ -1309,7 +1309,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h04",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "A student argues that because 95% of the universe is "
                 "unexplained, scientists must have got physics completely "

@@ -470,7 +470,10 @@
   ];
   var CHAT_STARTERS = ['How did today go?', 'Proud of you for keeping the streak.',
                        'Anything you want help with?'];
-  var DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  /* ⊕ B2C week repair: the strip is the RULED week in the order it happens —
+     the Sunday that opens it (MRB-330), then Monday to Saturday. `k.days`
+     comes from the backend in the same order. */
+  var DAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   var DUE_DAYS = ['Thu', 'Fri', 'Sat', 'Sun'];
   var DUE_DOW  = { Thu: 4, Fri: 5, Sat: 6, Sun: 0 };
 
@@ -1178,7 +1181,8 @@
     if (!k) { return noChild(); }
     var sc = scoresOf(k);
     var w = workOf(k);
-    var todayIdx = (new Date().getDay() + 6) % 7;   // Monday = 0
+    var upcoming = Array.isArray(k.upcoming) ? k.upcoming : [];
+    var todayIdx = new Date().getDay();   // Sunday = 0, the day the week opens
 
     var days = (Array.isArray(k.days) ? k.days : []).map(function (v, i) {
       /* Design's bg rule was index-based on her mock ("i < 4"), which on a
@@ -1267,8 +1271,7 @@
           'color:var(--ks3-on-dark);font-weight:700;font-size:16px;cursor:pointer">Set work</button>' +
       '</div></section>';
 
-    var workList = w.length
-      ? w.map(function (it) {
+    function workRow(it) {
           return '<li style="display:flex;align-items:center;gap:12px;padding:14px 16px;' +
             'border-bottom:1px solid var(--ks3-rule)">' +
             '<span style="display:grid;place-items:center;width:28px;height:28px;border-radius:9px;' +
@@ -1276,7 +1279,7 @@
               (it.done ? 'var(--ks3-ok)' : 'var(--ks3-band)') + ';color:#fff;flex:0 0 auto">' +
               (it.done ? svg(MARK.tick)
                        : ('<span style="font-family:var(--ks3-font-mono);font-size:11px;' +
-                          'color:var(--ks3-ink-muted)">' + esc(it.day || '') + '</span>')) +
+                          'color:var(--ks3-ink-muted)">' + esc(String(it.day || '').slice(0, 3)) + '</span>')) +
             '</span>' +
             '<span style="flex:1;min-width:0">' +
               '<span style="display:block;font-size:16px;font-weight:600">' +
@@ -1296,7 +1299,9 @@
                  'cursor:pointer">' + svg(MARK.cross) + '</button>')
               : '') +
           '</li>';
-        }).join('')
+    }
+    var workList = w.length
+      ? w.map(workRow).join('')
       : '<li style="padding:16px;font-size:15px;color:var(--ks3-ink-muted)">' +
         (S.writable ? 'Nothing set for this week yet. Work is set on Sunday evening.' : 'Nothing set yet.') +
         '</li>';
@@ -1310,6 +1315,18 @@
           esc(intensityLabel(k)) + '</button></div>' +
       '<ul style="margin:12px 0 0;padding:0;list-style:none;border:2px solid var(--ks3-ink);' +
         'border-radius:var(--ks3-r-card);background:var(--ks3-card);overflow:hidden">' + workList + '</ul>' +
+      /* ⊕ B2C week repair (defect 1): work set for a later week — "due
+         Monday", said on a Saturday — is listed with its date the moment it
+         is set. It used to be stored and never shown. The heading says
+         which week; the badge says the day (the backend's "Mon 12 Oct" is
+         cut to "Mon" there, as it is for this week's rows). */
+      (upcoming.length
+        ? ('<h3 class="dk-upcoming-h" style="margin:18px 0 0;font-family:var(--ks3-font-display);' +
+           'font-weight:800;font-size:18px;letter-spacing:-.02em">Next week</h3>' +
+           '<ul class="dk-upcoming" style="margin:10px 0 0;padding:0;list-style:none;' +
+           'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);' +
+           'overflow:hidden">' + upcoming.map(workRow).join('') + '</ul>')
+        : '') +
       (k.paused ? '' :
         '<button data-act="pause" style="margin-top:12px;min-height:44px;padding:0 4px;' +
         'border:0;background:none;font-weight:700;font-size:15px;color:var(--ks3-accent-text);' +

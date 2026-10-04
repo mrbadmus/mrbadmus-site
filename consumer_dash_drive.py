@@ -217,6 +217,32 @@ def trialing(d):
     d.shot("trialing-chat-390.png")
 
 
+def week_repair(d):
+    """B2C week repair (4 Oct 2026). Work set for a later week is listed, the
+    strip is the ruled Sunday-first week, the browser keeps no week helper, and a carried link keeps ONE '?'."""
+    print("\n── the ruled week ──")
+    d.open("consumer/overview.html?child=kid-ada&view=child&env=test", state="trialing", kids=2)
+    check("Next week" in d.text(".dk-work") and "Photosynthesis: lesson 3" in d.text(".dk-upcoming"),
+          "work set for next week is listed under its own heading")
+    check("Mon" in d.text(".dk-upcoming") and "12 Oct" not in d.text(".dk-upcoming"),
+          "…its day in the badge, the heading naming the week (no repeated date)",
+          d.text(".dk-upcoming"))
+    check("Photosynthesis: lesson 3" not in d.text(".dk-work ul:not(.dk-upcoming)"),
+          "…and it is not counted as this week's work")
+    strip = d.js("(function(){var s=document.querySelector('.dk-card [style*=\"display:flex;gap:6px\"]');"
+                 "if(!s)return null;return Array.prototype.map.call(s.children,function(c){"
+                 "return c.lastElementChild?c.lastElementChild.textContent:'';}).join('');})()")
+    check(strip == "SMTWTFS", "the day strip opens on Sunday (the ruled week)", strip)
+    h = d.js("window.MrBadmusConsumer.href('/student/assignment.html?id=abc')")
+    check(h and h.count("?") == 1 and "id=abc" in h and "env=test" in h,
+          "a carried link with its own query keeps ONE '?' (id=abc&env=test)", h)
+    check(d.js("typeof window.MrBadmusConsumer.weekStart") == "undefined",
+          "the browser computes no week of its own (the backend's ruled week is the only one)")
+    h2 = d.js("window.MrBadmusConsumer.href('/consumer/report.html', {child: 'kid-ada'})")
+    check(h2 == "/consumer/report.html?env=test&child=kid-ada", "a plain path still carries env + extra", h2)
+    d.shot("week-repair-child-390.png")
+
+
 def checkout_cases(d, skip_timeout):
     print("\n── checkout: one path, never a dead control ──")
     if not skip_timeout:
@@ -658,6 +684,7 @@ def main():
             pre_trial(d)
             no_children(d)
             trialing(d)
+            week_repair(d)
             checkout_cases(d, args.skip_timeout)
             stale_message(d)
             refresh_b7(d)

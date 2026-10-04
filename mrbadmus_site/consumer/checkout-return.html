@@ -202,7 +202,11 @@
     function arrived(fam) {
       var children = (fam && fam.children) || [];
       var billing = (fam && fam.billing) || {};
-      var week = C.weekStart();
+      /* ⊕ B2C week repair (4 Oct 2026): no week is computed here. Both
+         routes default to THIS week as the backend rules it (Sunday 00:00
+         UK roll). This page used to send the browser's own Monday-first
+         week, which on a Sunday was the week just finished — so a family
+         that paid on a Sunday got its first week dated in the past. */
 
       waiting();
 
@@ -210,14 +214,14 @@
       var chain = children.reduce(function (p, c) {
         return p.then(function () {
           return C.api('/api/consumer/children/' + c.id + '/generate', {
-            method: 'POST', token: ctx.token, body: { week_start: week }
+            method: 'POST', token: ctx.token, body: {}
           }).catch(function (e) {
             // A child whose week could not be generated still gets a card,
             // with nothing in it and a sentence saying so. Losing the whole
             // screen over one of them would be worse.
             console.error('[checkout-return] generate', c.id, e);
           }).then(function () {
-            return C.api('/api/consumer/children/' + c.id + '/work?week=' + encodeURIComponent(week),
+            return C.api('/api/consumer/children/' + c.id + '/work',
                          { token: ctx.token });
           }).then(function (w) {
             work[c.id] = (w && w.items) || [];

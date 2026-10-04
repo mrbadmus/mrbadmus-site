@@ -5410,7 +5410,26 @@ LOGIC["class view"].extend([
         "                      hwGone: !!err && err.message === 'not_your_homework' }));\n"
         "  };\n"
         "  hwRetry = () => { if (this.state.hw) { this.openHomework(this.state.hw); } };\n"
-        "  hwRetryPass = () => { const e = this.hwEngine(); if (e) { e.retry(); } };\n"
+        "  /* ⊕ Prompt Y — ONE ACTION PER DRAWN SCREEN. The runtime redraws a\n"
+        "     frame later, so until then the button just pressed is still live:\n"
+        "     a bounced or doubled tap fired its handler twice (‹ Back went two\n"
+        "     cards, Forward two). Held until the redraw, so two REAL taps still\n"
+        "     count twice. An\n"
+        "     instance field, not state: holding must not itself redraw. */\n"
+        "  hwOnce = (fn) => {\n"
+        "    if (this.hwHeld) { return; }\n"
+        "    this.hwHeld = true;\n"
+        "    /* Freed by the redraw itself (the runtime's after-draw hooks run\n"
+        "       the moment the new screen is in), so the first tap on the NEW\n"
+        "       buttons always counts; 300 ms frees it when nothing redraws. */\n"
+        "    if (!this.hwHoldHook && typeof window !== 'undefined') {\n"
+        "      this.hwHoldHook = true;\n"
+        "      (window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || []).push(() => { this.hwHeld = false; });\n"
+        "    }\n"
+        "    setTimeout(() => { this.hwHeld = false; }, 300);\n"
+        "    fn();\n"
+        "  };\n"
+        "  hwRetryPass = () => this.hwOnce(() => { const e = this.hwEngine(); if (e) { e.retry(); } });\n"
         "  hwGoHome = () => { location.replace(location.pathname + location.search); };\n"
         "  /* ⊕ PUPIL FLOW (docs/mrb351/PUPIL-FLOW.md §11, A13) — × ends the\n"
         "     sitting whenever the pupil did anything in it: a Check, an\n"
@@ -5429,18 +5448,35 @@ LOGIC["class view"].extend([
         "    e.setDraft(ev && ev.target ? ev.target.value : '');\n"
         "    if (was !== e.canCheck()) { this.hwTick(); }\n"
         "  };\n"
-        "  hwCheck = () => { const e = this.hwEngine(); if (e) { e.check(); } };\n"
-        "  hwIdk = () => { const e = this.hwEngine(); if (e) { e.idk(); } };\n"
-        "  hwBack = () => { const e = this.hwEngine(); if (e) { e.back(); } };\n"
+        "  hwCheck = () => this.hwOnce(() => { const e = this.hwEngine(); if (e) { e.check(); } });\n"
+        "  /* ⊕ Mide, 4 Oct 2026 (iPhone test) — \"Students should be able to\n"
+        "     see and digest the answer first, and then type.\" So after\n"
+        "     'I don't know' NOTHING is focused: the keyboard stays down, the\n"
+        "     model answer has the screen, and the box sits under it, plainly a\n"
+        "     box; the pupil taps it when ready. Focus is let go here, inside\n"
+        "     the tap, so the redraw's path-based refocus (student-runtime.js\n"
+        "     focusPath/refocus) has nothing to put back — left alone it would\n"
+        "     restore whatever the tap left focused (the box itself, if the\n"
+        "     pupil had already tapped into it, which would keep the keyboard\n"
+        "     up over the answer). (Prompt Y unit 1 had focused the box here.) */\n"
+        "  hwIdk = () => this.hwOnce(() => {\n"
+        "    const e = this.hwEngine();\n"
+        "    if (!e) { return; }\n"
+        "    if (typeof document !== 'undefined' && document.activeElement && document.activeElement.blur) {\n"
+        "      document.activeElement.blur();\n"
+        "    }\n"
+        "    e.idk();\n"
+        "  });\n"
+        "  hwBack = () => this.hwOnce(() => { const e = this.hwEngine(); if (e) { e.back(); } });\n"
         "  /* ⊕ MRB-354 — Forward ›: beside ‹ Back, same style; moves one card\n"
         "     toward the card the pupil was on, changing no rating. */\n"
-        "  hwForward = () => { const e = this.hwEngine(); if (e) { e.forward(); } };\n"
-        "  hwRate = (r) => { const e = this.hwEngine(); if (e) { e.rate(r); } };\n"
+        "  hwForward = () => this.hwOnce(() => { const e = this.hwEngine(); if (e) { e.forward(); } });\n"
+        "  hwRate = (r) => this.hwOnce(() => { const e = this.hwEngine(); if (e) { e.rate(r); } });\n"
         "  hwGot = () => this.hwRate('got_it');\n"
         "  hwNearly = () => this.hwRate('nearly');\n"
         "  hwNotYet = () => this.hwRate('not_yet');\n"
-        "  hwAgain = () => { const e = this.hwEngine(); if (e) { e.again(); } };\n"
-        "  hwDoneTap = () => this.closeAll();\n"
+        "  hwAgain = () => this.hwOnce(() => { const e = this.hwEngine(); if (e) { e.again(); } });\n"
+        "  hwDoneTap = () => this.hwOnce(() => this.closeAll());\n"
         "  hwNoop = () => {};\n"
         "  /* A rating button: FILLED when it is the one chosen for the pupil\n"
         "     (A1 — tapping it is the tap that advances), outlined otherwise,\n"
@@ -5515,7 +5551,13 @@ LOGIC["class view"].extend([
         "      /* ⊕ Sharpen §13.1.4 — \"I don't know\": the model answer under\n"
         "         the card, the box asks for it in the pupil's own words. The\n"
         "         card key changes so the box opens empty. */\n"
-        "      hwLearn: !!c && v.learn, hwLearnAnswer: v.learnAnswer || '',\n"
+        "      hwLearn: !!c && v.learn,\n"
+        # ⊕ Y review — `{text, plain}`, not a bare string: the runtime's `fx`
+        # node turns subscripts off only through a sibling `.plain` of a
+        # DOTTED key, so a bare `hwLearnAnswer` subscripted N2 on a physics
+        # deck in the one place the pupil copies from, while the card's own
+        # faces (card.front / card.back) correctly did not.
+        "      hwLearnFx: { text: v.learnAnswer || '', plain: !this.hwChem() },\n"
         "      hwPlaceholder: v.learn ? 'Now write it in your own words' : 'Your answer',\n"
         "      hwIdkOn: !v.learn,\n"
         "      hwCardKey: c ? c.id + (v.learn ? ':learn' : '') : '',\n"
@@ -5543,7 +5585,7 @@ LOGIC["class view"].extend([
         "      hwNearlyOn: v.suggest === 'nearly' ? 'true' : 'false',\n"
         "      hwGotOn: v.suggest === 'got_it' ? 'true' : 'false',\n"
         "      hwMineOn: !!c && v.revealed && !!v.mine,\n"
-        "      hwMine: v.mine || '',\n"
+        "      hwMineFx: { text: v.mine || '', plain: !this.hwChem() },\n"
         "      hwPanel: !!end,\n"
         "      /* ⊕ MRB-354 — ONE line, 'N of M secured'; no line 2, no helper\n"
         "         text (the quieter secondary button below says the one thing\n"
@@ -5852,8 +5894,22 @@ INSERT_AT["class view"].update({
                        # floor (64px, 96px on a tall dialog) is
                        # shared/flashcard-keyboard.js's, beside the card's.
                        "maxlength": "500", "rows": "3", "autocomplete": "off",
+                       # ⊕ Y Unit 1 (Mide, phone report) — `--pg-rule-strong`
+                       # (a hairline token) measured 2.05:1 light / 1.7:1 dark
+                       # against this box's own `--pg-card` fill: faint cream
+                       # on cream, "not obviously a box to type into." Swapped
+                       # for `--pg-muted` (6.99:1 / 6.28:1) at 2px, well past
+                       # the 3:1 non-text floor in both themes, same token the
+                       # rest of this file already uses for secondary text.
+                       # The focus treatment (border flips to the accent, a
+                       # tinted ring, an accent caret) lives in the injected
+                       # CSS below (shared/flashcard-keyboard.js) — an inline
+                       # style has no `:focus`. `min-height:0` here (not 96)
+                       # so the keyboard-up height floor in that same CSS can
+                       # legitimately go as low as 72px without this fighting
+                       # it.
                        "style": "font:inherit;font-size:17px;line-height:1.4;padding:10px 14px;"
-                                "border-radius:14px;border:1.5px solid var(--pg-rule-strong);"
+                                "border-radius:14px;border:2px solid var(--pg-muted);min-height:0;"
                                 "background:var(--pg-card);color:var(--pg-ink);resize:none;"
                                 "width:100%;box-sizing:border-box;"},
                  "c": []},
@@ -6000,7 +6056,7 @@ INSERT_AT["class view"].update({
             {"t": "span", "a": {"style": _HW_MONO + "color:var(--b-muted);"}, "c": [{"t": "#", "v": "YOUR ANSWER"}]},
             {"t": "span", "a": {"style": "display:block;font-size:17px;line-height:1.45;color:var(--b-ink);"
                                          "white-space:pre-wrap;overflow-wrap:anywhere;"},
-             "c": [{"t": "fx", "e": "hwMine"}]},
+             "c": [{"t": "fx", "e": "hwMineFx.text"}]},
         ]}]},
         "MRB-351: the pupil's written answer under the model answer on the "
         "card's back — make phase, and in review for cards they wrote."),
@@ -6028,7 +6084,7 @@ INSERT_AT["class view"].update({
             {"t": "span", "a": {"style": _HW_MONO + "color:var(--b-muted);"}, "c": [{"t": "#", "v": "ANSWER"}]},
             {"t": "span", "a": {"style": "display:block;font-size:18px;font-weight:600;line-height:1.45;"
                                          "color:var(--b-ink);white-space:pre-wrap;overflow-wrap:anywhere;"},
-             "c": [{"t": "fx", "e": "hwLearnAnswer"}]},
+             "c": [{"t": "fx", "e": "hwLearnFx.text"}]},
         ]}]},
         "MRB-351 Design port (05) — 'I don't know': the model answer, under "
         "a rule inside the same bench card as the question, instead of a "

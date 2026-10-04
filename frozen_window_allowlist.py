@@ -177,3 +177,62 @@ assert len(BORDERLINE) == 14, "the ruling covers 14 borderline rows"
 assert len(ALLOWLIST) == 28, "the ruling covers exactly 28 ids, with no duplicates"
 assert len(D3_TEXT_ONLY) == 1, "the D3 ruling covers exactly one id"
 assert not (set(D3_TEXT_ONLY) & ALLOWLIST), "D3 is separate from the 28"
+
+
+# ── ⊕ ROUTE FLAGS — 8 subtopics, tier/triple_only ONLY (Mide, 2 Oct 2026) ─
+# A third one-time exception, of a different KIND from the two above: those
+# let named rows' CONTENT change and never their flags; this lets named
+# leaves' FLAGS change and never their content. It gets its own list, its own
+# field set, and its own check in the guard, and `ALLOWLIST` stays exactly
+# the 28.
+#
+# Mide ruled on 2 Oct 2026 that every KS4 subtopic the site flagged
+# Triple-only which AQA Combined (8464) teaches has its route corrected, and
+# the reverse for base content the spec marks HT or separate-science only
+# (`docs/ks4/route-audit/`, merged to main as 4d4864f3d on 4 Oct). Eight
+# subtopics moved. `ks4_data.classify()` re-derives `tier`/`triple_only` from
+# the route files, and `load_pool()` refuses any bank row whose flags
+# disagree, so all 468 of their bank rows — 96 of them inside the frozen
+# window — carry the new flags in the Python. Production keeps the old flags
+# until `docs/ks4/route-audit/BANK-FLAGS.sql` is applied.
+#
+# Conditions, every one checked by `frozen_window_guard.py`:
+#
+#   * only rows of these eight leaves, and only `tier` and `triple_only`;
+#   * the authored row carries exactly the AFTER flags below;
+#   * the reference row carries exactly the BEFORE flags (production before
+#     BANK-FLAGS.sql) — or matches outright (after it), and then no exception
+#     is used at all;
+#   * id, band, bank_position, text, options, correct answer, why and figure
+#     are byte-for-byte unchanged, and every leaf's 0–11 order is unchanged.
+#
+# The flags decide which classes a row may be served to; nothing a pupil
+# reads in the row changes.
+#
+#   slug: ((tier, triple_only) BEFORE, (tier, triple_only) AFTER)
+ROUTE_FLAGS = {
+    "meiosis":                         (("foundation", True),  ("foundation", False)),
+    "classification-living-organisms": (("foundation", True),  ("foundation", False)),
+    "thermal-conductivity":            (("foundation", True),  ("foundation", False)),
+    "resolving-forces":                (("higher", True),      ("higher", False)),
+    "free-body-diagrams":              (("higher", True),      ("higher", False)),
+    "motion-in-a-circle":              (("higher", True),      ("higher", False)),
+    "wave-front-refraction":           (("higher", True),      ("higher", False)),
+    "dark-matter-dark-energy":         (("higher", True),      ("foundation", True)),
+}
+
+RULING_ROUTE_FLAGS = (
+    "Mide, 2 Oct 2026 (KS4 route audit, merged 4 Oct as 4d4864f3d) — eight "
+    "subtopics move onto the routes AQA teaches them on. Their frozen rows "
+    "may differ from the reference in tier and triple_only only, from "
+    "exactly the before flags to exactly the after flags; nothing else."
+)
+
+ROUTE_FLAGS_PERMITTED_FIELDS = frozenset({"tier", "triple_only"})
+
+# 12 frozen positions per leaf, so the ruling covers exactly 96 frozen rows.
+ROUTE_FLAGS_FROZEN_ROWS = 96
+
+assert len(ROUTE_FLAGS) == 8, "the route ruling covers exactly 8 subtopics"
+assert all(b != a for b, a in ROUTE_FLAGS.values()), \
+    "every listed subtopic's flags actually change"

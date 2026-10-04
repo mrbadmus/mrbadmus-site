@@ -29,7 +29,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Describe what happens to the chromosomes just before meiosis begins.",
         "options": [
             "They are copied, so that each one becomes a pair of identical strands joined together",
@@ -45,7 +45,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Name the two gametes produced by a flowering plant.",
         "options": [
             "Sperm cells and egg cells, made in the testes and the ovaries of the plant",
@@ -61,7 +61,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Name the part of a flowering plant in which the male gametes are produced.",
         "options": [
             "The root tip, where the cells of the plant are dividing most rapidly of all",
@@ -77,7 +77,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State how the four cells made by meiosis compare with each other.",
         "options": [
             "They are all identical copies of one another and of the cell they were made from",
@@ -93,7 +93,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Name the type of cell division that the zygote uses as the embryo grows.",
         "options": [
             "Meiosis",
@@ -109,7 +109,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what happens to the chromosome number when two gametes fuse.",
         "options": [
             "It is restored to the full number",
@@ -125,7 +125,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what happens to the cells of an early embryo as it develops.",
         "options": [
             "They stop dividing as soon as the embryo has reached a hundred cells in total",
@@ -141,7 +141,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State how many cells meiosis starts with.",
         "options": [
             "Two cells, which fuse together before the first of the two divisions takes place",
@@ -157,7 +157,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why gametes must contain half the normal number of chromosomes.",
         "options": [
             "Because a gamete is much smaller than a body cell",
@@ -173,7 +173,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A fruit fly has 8 chromosomes in each of its body cells. Determine the number in one of its gametes.",
         "options": [
             "16 chromosomes, because the number is doubled when a gamete is formed in the fly",
@@ -189,7 +189,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Compare the number of daughter cells produced by mitosis with the number produced by meiosis.",
         "options": [
             "Mitosis gives two cells and meiosis gives four",
@@ -205,7 +205,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State the purpose of meiosis in an organism.",
         "options": [
             "To repair tissue that has been damaged, by replacing the cells that have been lost from it",
@@ -221,7 +221,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why a cell produced by meiosis cannot simply divide again by meiosis.",
         "options": [
             "Because meiosis can be carried out once only in the whole lifetime of an organism",
@@ -237,7 +237,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Describe what happens immediately after the first division of meiosis is complete.",
         "options": [
             "The two cells fuse back together again, so that the full chromosome number is restored at once",
@@ -253,7 +253,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A dog has 78 chromosomes in each body cell. Determine the number in a fertilised dog egg cell.",
         "options": [
             "39, since each of the two gametes that fused carried a half set of the chromosomes",
@@ -269,7 +269,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State where meiosis takes place in a flowering plant.",
         "options": [
             "In the anthers and the ovaries",
@@ -285,7 +285,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why the cells produced by mitosis are identical but those produced by meiosis are not.",
         "options": [
             "Mitosis copies the chromosomes and shares one full copy to each cell, while meiosis shares out a mixture of the pairs",
@@ -301,7 +301,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Describe what a fertilised egg cell does before any of its cells begin to specialise.",
         "options": [
             "It divides by meiosis several times over, halving the chromosome number each time",
@@ -317,7 +317,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why a man produces hundreds of millions of sperm but a woman releases one egg each month.",
         "options": [
             "Because sperm cells are made by mitosis and egg cells are made by meiosis instead of it",
@@ -333,7 +333,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Name the process in which a sperm cell and an egg cell join together.",
         "options": [
             "Differentiation, in which a cell changes so that it can carry out a particular job",
@@ -349,7 +349,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why meiosis is described as a reduction division.",
         "options": [
             "Because the cells get smaller",
@@ -365,7 +365,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Compare the cells that mitosis produces with the cell they came from.",
         "options": [
             "They are genetically identical to it",
@@ -381,7 +381,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A maize plant has 20 chromosomes in each body cell. Determine the number in one of its pollen grains.",
         "options": [
             "20 chromosomes, because pollen grains are ordinary body cells of the plant that makes them",
@@ -397,7 +397,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what would happen over the generations if gametes were made by mitosis instead.",
         "options": [
             "The chromosome number would double in each generation, because two full sets would combine each time",
@@ -413,7 +413,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why meiosis takes place only in the reproductive organs.",
         "options": [
             "Because other organs are too small",
@@ -429,7 +429,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why two sperm cells from one man are not genetically identical.",
         "options": [
             "Because one of them was produced by mitosis while the other one of them was produced by meiosis",
@@ -445,7 +445,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Describe the state of the genetic material at the very start of meiosis.",
         "options": [
             "Every chromosome has been copied, so the cell holds twice the usual amount of DNA",
@@ -461,7 +461,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State which cells in the human body are haploid.",
         "options": [
             "The red blood cells, which have lost their nucleus so that they can carry more oxygen around",
@@ -477,7 +477,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why an embryo can grow into a whole organism from a single fertilised egg cell.",
         "options": [
             "Because the egg cell is already the same size",
@@ -493,7 +493,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Compare the genetic material in a zygote with the genetic material in each of its two parents.",
         "options": [
             "It is identical to that of the mother, because the egg cell is so much larger than a sperm cell",
@@ -509,7 +509,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A cell containing 46 chromosomes completes only the first division of meiosis and then stops. Determine the number of chromosomes in each of the two cells formed.",
         "options": [
             "46 in each, because the first division of meiosis shares out complete pairs into both of the new cells",
@@ -525,7 +525,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why a species that had lost the ability to carry out meiosis could still survive for many generations.",
         "options": [
             "It could reproduce asexually by mitosis",
@@ -541,7 +541,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Compare meiosis and mitosis in terms of chromosome number, number of cells and how alike those cells are.",
         "options": [
             "Meiosis halves the number and gives four different cells; mitosis keeps the number and gives two identical cells",
@@ -557,7 +557,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A plant breeder counts 14 chromosomes in a cell taken from a seedling's root. Deduce the number of chromosomes in the plant's pollen.",
         "options": [
             "14, because pollen grains are made in the anthers by ordinary cell division and are never halved",
@@ -573,7 +573,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why meiosis followed by fertilisation produces far more variation than mitosis ever could.",
         "options": [
             "Because mitosis produces more daughter cells in total than meiosis does",
@@ -589,7 +589,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A cell divides by meiosis and produces four gametes. Deduce how many of them could be genetically identical to one another.",
         "options": [
             "All four of them are identical, because they were produced from a single parent cell by copying it",
@@ -605,7 +605,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A horse has 64 chromosomes and a donkey has 62. Suggest why a mule, produced from a horse and a donkey, is sterile.",
         "options": [
             "Because a mule has no reproductive organs",
@@ -621,7 +621,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why a doctor examines chromosome numbers when investigating repeated miscarriage.",
         "options": [
             "A fault in meiosis can give an embryo the wrong number",
@@ -637,7 +637,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why the second division of meiosis does not change the number of chromosome types in each cell.",
         "options": [
             "Because the second division of meiosis separates whole pairs of chromosomes in just the same way as the first one",
@@ -653,7 +653,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A student says meiosis happens in every cell of the body throughout life. Evaluate this statement.",
         "options": [
             "It is correct, because every cell in the body has to produce gametes at some stage in its life",
@@ -669,7 +669,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why an organism with only two pairs of chromosomes produces less variation in its gametes than one with twenty pairs.",
         "options": [
             "Because two pairs is too few",
@@ -685,7 +685,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why a cell must copy its chromosomes before meiosis even though the number will then be halved.",
         "options": [
             "Because copying the chromosomes is what makes the cell grow large enough to be able to divide at all",
@@ -701,7 +701,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Compare what happens to a pair of chromosomes in mitosis with what happens to it in the first division of meiosis.",
         "options": [
             "In mitosis both members of the pair end up in each new cell; in meiosis they are separated into different cells",
@@ -717,7 +717,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A cell with 12 chromosomes divides by meiosis. Calculate the total number of chromosomes in all the cells produced.",
         "options": [
             "48 chromosomes, because each of the four cells produced carries all twelve chromosomes",
@@ -733,7 +733,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why a gardener growing plants from seed gets variation but one growing them from cuttings does not.",
         "options": [
             "Because seeds are larger",
@@ -749,7 +749,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why the chromosome number of a species stays the same century after century.",
         "options": [
             "Because chromosomes cannot be gained or lost by any organism under any circumstances whatsoever",
@@ -765,7 +765,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A researcher finds a human cell with 23 chromosomes and no pairs. Deduce what kind of cell it is.",
         "options": [
             "A skin cell taken from the surface of the body, where cells divide and are replaced very often",
@@ -781,7 +781,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why the cells of an embryo are described as unspecialised at first.",
         "options": [
             "They have not yet differentiated",
@@ -797,7 +797,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why the order in which the two divisions of meiosis happen cannot be reversed.",
         "options": [
             "The pairs have to be separated before the copies of each chromosome can be pulled apart from one another",
@@ -813,7 +813,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A chimpanzee has 48 chromosomes and a human has 46. Suggest what this shows about the two species.",
         "options": [
             "That a chimpanzee is more complex than a human, since it carries two extra chromosomes in every cell",
@@ -829,7 +829,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why a farmer wanting a uniform crop avoids growing it from seed collected on the farm.",
         "options": [
             "Because seed collected on a farm cannot germinate unless it has first been stored over the whole winter",
@@ -845,7 +845,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why a cell in the ovary of a woman carries 46 chromosomes but the egg it produces carries 23.",
         "options": [
             "Because the egg cell has lost half of its chromosomes through damage while it was being stored",

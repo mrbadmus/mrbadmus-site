@@ -875,6 +875,33 @@
     });
   }
 
+  /* ⊕ Prompt Y — stamp the pupil's own finished submission as revised (see
+     `H.transport`). Never earlier than 3 s after its completion, so a phone
+     whose clock runs slow still reads as revised; RLS lets a pupil update
+     only their own row (the same write `writeFinishedSubmission` makes). A
+     failure is retried on the next rating. */
+  function touchRevised(sb, assignmentId, flags) {
+    sb.auth.getSession().then(function (res) {
+      var uid = res && res.data && res.data.session && res.data.session.user && res.data.session.user.id;
+      if (!uid) { throw new Error("no_session"); }
+      return sb.from("assignment_submissions").select("id, submitted_at, completed_at")
+        .eq("assignment_id", assignmentId).eq("student_id", uid).eq("attempt_no", 1)
+        .is("deleted_at", null).maybeSingle()
+        .then(function (q) {
+          if (q.error) { throw q.error; }
+          var row = q.data;
+          if (!row || !row.submitted_at) { return null; }
+          var done = Date.parse(row.completed_at || row.submitted_at) || 0;
+          var at = new Date(Math.max(Date.now(), done + 3000)).toISOString();
+          return sb.from("assignment_submissions").update({ updated_at: at }).eq("id", row.id)
+            .then(function (u) { if (u.error) { throw u.error; } return true; });
+        });
+    }).catch(function (err) {
+      flags[assignmentId] = false;
+      console.info("[student-live] flashcard revised stamp deferred", err && (err.code || err.message));
+    });
+  }
+
   /* So a finished deck moves out of To do THE SAME VISIT, with no reload:
      the mounted page's own `work` row, patched in place (Design's template
      reads `w.status`/`w.detail`/`w.fc` off `this.state.work` to choose the
@@ -1001,9 +1028,26 @@
     var H = window.MRBHomework;
     if (hwWired || !H) { return; }
     hwWired = true;
+    /* ⊕ Prompt Y (4 Oct 2026) — "REVISED AFTER MARKING" FOR A DECK. The
+       teacher's pupil screen says it when the submission's `updated_at` is
+       more than 2 s after its completion (`isRevisedSub`, teacher-live.js),
+       the way a reopened MCQ's backend `revise:true` stamps it. A deck's
+       submission is written once, at Done, and neither this page nor
+       `flashcard_record` touched it again — so a pupil could revise a
+       finished deck every night and the teacher never saw a sign of it.
+       A rating sent for a deck this visit already knows is complete is a
+       revision: the row is stamped, once per deck per visit. */
+    var fcDone = {}, fcRevised = {};
     H.transport = function (id, events) {
+      var rated = (events || []).some(function (ev) { return ev && ev.type === "rated"; });
+      var wasDone = !!fcDone[id];
       return sb.rpc("flashcard_record", { p_assignment: id, p_events: events || [] })
-        .then(function (r) { if (r.error) { throw r.error; } return r.data; });
+        .then(function (r) {
+          if (r.error) { throw r.error; }
+          if (r.data && r.data.complete) { fcDone[id] = true; }
+          if (rated && wasDone && !fcRevised[id]) { fcRevised[id] = true; touchRevised(sb, id, fcRevised); }
+          return r.data;
+        });
     };
     /* A sitting has ended: have what the pupil WROTE checked against the
        model answer, in the background. Fire and forget — the flag is the

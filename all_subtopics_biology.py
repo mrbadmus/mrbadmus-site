@@ -5590,6 +5590,107 @@ BIOLOGY_SUBTOPICS_ALL = {
   'title': 'Sexual and Asexual Reproduction',
   'triple_only': None,
   'variables': []},
+ {'common_mistake': 'Meiosis produces FOUR cells, not two. Mitosis produces two. Meiosis produces genetically '
+                    'DIFFERENT cells — not identical. The daughter cells are HAPLOID (half chromosome number). '
+                    'Students often confuse meiosis with mitosis — remember: Meiosis = gametes, Mix up alleles, 4 '
+                    'cells.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'meiosis',
+  'key_note': 'Meiosis: produces 4 haploid gametes (23 chromosomes in humans). Two divisions. Crossing over creates '
+              'new allele combinations → genetic variation. Meiosis I: separates homologous pairs. Meiosis II: '
+              'separates chromatids. Variation = essential for evolution.',
+  'matching': {'instruction': 'Match each feature to meiosis, mitosis, or both.',
+               'pairs': [('Meiosis only', 'Produces 4 daughter cells — all genetically different'),
+                         ('Mitosis only', 'Produces 2 daughter cells — genetically identical to parent'),
+                         ('Meiosis only', 'Daughter cells are haploid — half the chromosome number'),
+                         ('Both', 'DNA replication occurs before division begins'),
+                         ('Meiosis only',
+                          'Crossing over between homologous chromosomes creates new allele combinations')],
+               'title': 'Meiosis vs Mitosis'},
+  'quiz': [{'opts': [('23 — meiosis halves the chromosome number so that fertilisation restores the full 46', True),
+                     ('46 — gametes have the same chromosome number as body cells', False),
+                     ('92 — gametes have double the chromosome number ready for fertilisation', False),
+                     ('23 pairs — gametes have paired chromosomes just like body cells', False)],
+            'q': 'How many chromosomes does a human gamete contain, and why?',
+            'wrong_explanations': {1: 'If gametes had 46 chromosomes, fertilisation would produce 92 — doubling every '
+                                      'generation. Meiosis halves the number to 23 so fertilisation gives 46.',
+                                   2: 'Gametes have 23 SINGLE chromosomes — not 23 pairs. The pairs are only restored '
+                                      'after fertilisation.',
+                                   3: 'Gametes have unpaired chromosomes — 23 singles. Paired chromosomes (46 total) '
+                                      'are in body cells, not gametes.'}},
+           {'opts': [('Crossing over exchanges DNA between homologous chromosomes, and random separation of pairs '
+                      'creates new allele combinations',
+                      True),
+                     ('Meiosis makes errors in DNA replication — these errors cause the variation', False),
+                     ('Gametes are made in different organs — different environments cause different genes', False),
+                     ('Each gamete gets a random selection of completely new genes, not inherited ones', False)],
+            'q': 'Why does meiosis produce genetically varied gametes rather than identical ones?',
+            'wrong_explanations': {1: 'Crossing over is a precise process, not an error — it deliberately exchanges '
+                                      'segments between chromosomes.',
+                                   2: 'Gametes are made in the same organ (gonads) — the variation comes from the '
+                                      'process of meiosis, not the environment.',
+                                   3: "Gametes inherit combinations of the parent's existing alleles — no new genes "
+                                      'are created. New COMBINATIONS are produced.'}}],
+  'rp': None,
+  'spec': '4.6.1.2',
+  'summary': 'Describe meiosis, explain how it produces genetically varied gametes and why variation is important.',
+  'theory': [{'content': 'MEIOSIS is a type of cell division that produces GAMETES (sex cells — sperm and eggs in '
+                         'animals; pollen and ovules in plants).\n'
+                         '\n'
+                         'Key features of meiosis:\n'
+                         'Produces FOUR daughter cells (not two like mitosis).\n'
+                         'Each daughter cell has HALF the chromosome number of the parent cell.\n'
+                         'In humans: body cells have 46 chromosomes (23 pairs); gametes have 23 chromosomes (one from '
+                         'each pair).\n'
+                         'This is called the HAPLOID number (23) vs DIPLOID number (46).\n'
+                         '\n'
+                         'When two gametes fuse at fertilisation:\n'
+                         'Sperm (23) + Egg (23) = Zygote (46) — full diploid number restored.\n'
+                         'This ensures the chromosome number stays constant from generation to generation.',
+              'heading': 'What Is Meiosis?'},
+             {'content': 'MEIOSIS involves two divisions:\n'
+                         '\n'
+                         'FIRST DIVISION (Meiosis I):\n'
+                         'Chromosomes replicate (as in mitosis).\n'
+                         'Homologous pairs line up together.\n'
+                         'Pairs are SEPARATED — one chromosome from each pair goes to each new cell.\n'
+                         'Produces 2 cells, each with 23 chromosomes (but each is a double-stranded copy).\n'
+                         '\n'
+                         'SECOND DIVISION (Meiosis II):\n'
+                         'The two cells divide again.\n'
+                         'The double-stranded chromosomes split — one strand to each cell.\n'
+                         'Produces 4 haploid cells, each with 23 single chromosomes.\n'
+                         '\n'
+                         'GENETIC VARIATION:\n'
+                         'During Meiosis I, CROSSING OVER occurs — chromosomes exchange sections of DNA.\n'
+                         'This creates new combinations of alleles — novel genetic variation.\n'
+                         'Random SHUFFLING of which chromosome from each pair goes to each cell also creates '
+                         'variation.\n'
+                         'This is why siblings (same parents) are not genetically identical.',
+              'heading': 'How Meiosis Works'},
+             {'content': 'MEIOSIS vs MITOSIS — key differences:\n'
+                         '\n'
+                         'MITOSIS:\n'
+                         'Produces 2 genetically IDENTICAL daughter cells.\n'
+                         'Daughter cells are DIPLOID (same chromosome number as parent).\n'
+                         'Used for growth, repair, asexual reproduction.\n'
+                         '\n'
+                         'MEIOSIS:\n'
+                         'Produces 4 genetically DIFFERENT daughter cells.\n'
+                         'Daughter cells are HAPLOID (half the chromosome number).\n'
+                         'Used only for gamete production (in gonads — testes and ovaries in humans).\n'
+                         '\n'
+                         'IMPORTANCE OF MEIOSIS:\n'
+                         'Ensures gametes have half the chromosome number — so fertilisation restores the full '
+                         'number.\n'
+                         'Creates genetic variation among offspring — important for evolution and adaptation.\n'
+                         'Variation means populations can respond to changing environments.',
+              'heading': 'Meiosis vs Mitosis'}],
+  'title': 'Meiosis',
+  'triple_only': None,
+  'variables': []},
  {'common_mistake': 'A GENE is not the same as a CHROMOSOME. A chromosome contains THOUSANDS of genes. The GENOME is '
                     'the COMPLETE set of ALL genetic information — all genes on all chromosomes. Base pairing: A pairs '
                     'with T only. C pairs with G only. Never A-G or C-T.',
@@ -6872,6 +6973,133 @@ BIOLOGY_SUBTOPICS_ALL = {
                          'Better hygiene to prevent spread of resistant bacteria.',
               'heading': 'Why Antibiotic Resistance is a Global Crisis'}],
   'title': 'Resistant Bacteria',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'A species is defined by the ability to interbreed and produce FERTILE offspring — not just by '
+                    'looking similar. Horses and donkeys can breed but produce sterile mules → they are different '
+                    'species. The three-domain system has Archaea as a SEPARATE domain from Bacteria — they are not '
+                    'the same despite both being prokaryotes.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'classification-living-organisms',
+  'key_note': 'Linnaeus: binomial naming (Genus species), Kingdom→Phylum→Class→Order→Family→Genus→Species. '
+              'Three-domain system (Woese): Archaea, Bacteria, Eukarya — based on rRNA. Archaea more related to '
+              'Eukaryotes than Bacteria. Evolutionary trees: nodes = common ancestors; molecular evidence now used '
+              'alongside morphology.',
+  'matching': {'instruction': 'Match each term to its correct description.',
+               'pairs': [('Binomial name', 'Two-part Latin name: Genus species — e.g. Homo sapiens'),
+                         ('Species', 'Organisms that can interbreed and produce fertile offspring'),
+                         ('Three-domain system', 'Archaea, Bacteria, Eukarya — based on rRNA sequences (Woese, 1977)'),
+                         ('Node on evolutionary tree',
+                          'Represents a common ancestor from which two lineages diverged')],
+               'title': 'Classification Concepts'},
+  'quiz': [{'opts': [('rRNA sequence analysis showed Archaea are more closely related to Eukaryotes than to Bacteria — '
+                      'despite appearing similar to bacteria under a microscope',
+                      True),
+                     ('The five-kingdom system had too many organisms — three domains is simpler to use', False),
+                     ('Woese discovered a new type of organism that did not fit into any of the five kingdoms', False),
+                     ('DNA evidence showed all five kingdoms were actually the same evolutionary group', False)],
+            'q': "Why did Carl Woese's three-domain system replace the five-kingdom classification?",
+            'wrong_explanations': {1: 'Simplicity was not the reason — the three-domain system is based on MOLECULAR '
+                                      'EVIDENCE showing fundamental differences in RNA sequences between Archaea and '
+                                      'Bacteria.',
+                                   2: 'Archaea were already known — but rRNA sequencing revealed they were '
+                                      'fundamentally different from bacteria at the molecular level despite looking '
+                                      'similar.',
+                                   3: 'DNA evidence shows the five kingdoms are related but distinct — the change was '
+                                      'specifically about separating Archaea from Bacteria based on molecular '
+                                      'differences.'}},
+           {'opts': [('The first two species are more closely related — they diverged from a common ancestor more '
+                      'recently',
+                      True),
+                     ('The first two species are less related — a recent ancestor means they have had less time to '
+                      'evolve together',
+                      False),
+                     ('Both pairs are equally related — all organisms share a common ancestor eventually', False),
+                     ('The species with the older common ancestor is more evolved — older means more advanced', False)],
+            'q': 'Two species share a more recent common ancestor on an evolutionary tree than two other species. What '
+                 'does this indicate?',
+            'wrong_explanations': {1: 'More RECENT common ancestor = LESS evolutionary time since divergence = MORE '
+                                      'closely related. More ancient ancestor = longer time apart = more distantly '
+                                      'related.',
+                                   2: 'All organisms do share ancient common ancestors, but sharing a MORE RECENT one '
+                                      'indicates a CLOSER relationship — fewer differences have accumulated since '
+                                      'divergence.',
+                                   3: 'More evolved does not mean more advanced — evolution has no direction or goal. '
+                                      'Having an older common ancestor simply means the lineages have been separate '
+                                      'longer.'}}],
+  'rp': None,
+  'spec': '4.6.5',
+  'summary': 'Describe the Linnaean classification system and the three-domain system, and explain how evolutionary '
+             'trees show relationships.',
+  'theory': [{'content': 'CLASSIFICATION is the organisation of living things into groups based on their similarities '
+                         'and differences.\n'
+                         '\n'
+                         'CARLUS LINNAEUS (18th century) developed the binomial system of naming organisms:\n'
+                         'Every organism has a two-part Latin name:\n'
+                         '1. GENUS (capitalised) — a group of closely related species\n'
+                         '2. SPECIES (lowercase) — organisms of the same species can interbreed to produce fertile '
+                         'offspring\n'
+                         '\n'
+                         'EXAMPLES:\n'
+                         'Homo sapiens — genus Homo, species sapiens (modern humans)\n'
+                         'Felis catus — domestic cat\n'
+                         'Panthera leo — lion\n'
+                         '\n'
+                         'HIERARCHY OF GROUPS (largest to smallest):\n'
+                         'Kingdom → Phylum → Class → Order → Family → Genus → Species\n'
+                         "Memory: 'King Philip Came Over For Good Soup'\n"
+                         '\n'
+                         'TRADITIONAL KINGDOMS:\n'
+                         'Animalia, Plantae, Fungi, Protista, Prokaryota (bacteria)',
+              'heading': 'The Linnaean Classification System'},
+             {'content': 'CARL WOESE proposed the THREE-DOMAIN SYSTEM in 1977 based on analysis of ribosomal RNA '
+                         '(rRNA).\n'
+                         '\n'
+                         'This replaced the five-kingdom system with three domains:\n'
+                         '\n'
+                         '1. ARCHAEA — primitive prokaryotes, often found in extreme environments (hot springs, salt '
+                         'lakes).\n'
+                         'DNA differs significantly from bacteria despite looking similar under a microscope.\n'
+                         '\n'
+                         '2. BACTERIA — true bacteria, the most numerous organisms on Earth.\n'
+                         'Cells without membrane-bound nuclei; different cell wall chemistry from Archaea.\n'
+                         '\n'
+                         '3. EUKARYA — all organisms with membrane-bound nuclei.\n'
+                         'Includes all animals, plants, fungi, and protists.\n'
+                         '\n'
+                         'WHY THREE DOMAINS?\n'
+                         'RNA sequencing showed Archaea are more closely related to Eukaryotes than to Bacteria — '
+                         'despite looking like bacteria under the microscope.\n'
+                         'This illustrates that observable characteristics can be misleading — molecular evidence is '
+                         'more reliable.',
+              'heading': 'The Three-Domain System'},
+             {'content': 'EVOLUTIONARY TREES (phylogenetic trees) show the evolutionary relationships between '
+                         'organisms.\n'
+                         '\n'
+                         'How to read an evolutionary tree:\n'
+                         'Branching points (NODES) = common ancestors.\n'
+                         'The LENGTH of branches may represent evolutionary time.\n'
+                         'Organisms that share a more RECENT common ancestor are more closely related.\n'
+                         '\n'
+                         'EVIDENCE used to build evolutionary trees:\n'
+                         'Anatomical similarities — homologous structures.\n'
+                         'Fossil record — order of appearance of species.\n'
+                         'DNA and RNA sequences — the more similar the sequences, the more closely related.\n'
+                         'Protein similarities — amino acid sequences in key proteins (e.g. cytochrome c).\n'
+                         '\n'
+                         'IMPORTANCE:\n'
+                         'Evolutionary trees help us understand how species are related.\n'
+                         'Can identify the most likely common ancestor of a group.\n'
+                         'Help in medicine — understanding which organisms are closely related to pathogens.\n'
+                         '\n'
+                         'LINNAEAN vs EVOLUTIONARY:\n'
+                         'Linnaeus classified by appearance/structure (morphology).\n'
+                         'Modern classification uses both morphology AND molecular evidence (DNA, RNA).\n'
+                         'Molecular evidence has revised some traditional classifications.',
+              'heading': 'Evolutionary Trees'}],
+  'title': 'Classification of Living Organisms',
   'triple_only': None,
   'variables': []}],
 
