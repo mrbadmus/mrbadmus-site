@@ -174,7 +174,9 @@
   }
 
   // ── the no-model answer check: an EXACT port of SQL flashcard_quick_check
-  // (supabase/migrations/20260924180100_mrb351_flashcards_functions.sql).
+  // (supabase/migrations/20260924180100_mrb351_flashcards_functions.sql; the
+  // one-word rule below is Prompt Y's, 20261004120000_y_quick_check_key_word
+  // .sql, parked on feat/y-migrations until it is applied to production).
   // A12: SQL and JS must agree case for case, or the teacher sees `pending`
   // for an answer the pupil was told was Right. Both lists are copied
   // verbatim; `quickcheck_test` compares this against the database.
@@ -195,8 +197,15 @@
     if (pa === ma) { return "match"; }
     if (IDK.indexOf(pa) >= 0) { return "blank"; }
     if (pa.indexOf(" ") < 0 && FUNCTION_WORDS.indexOf(pa) >= 0) { return "no"; }
+    // ⊕ Prompt Y (4 Oct 2026) — ONE WORD is Right here only when it IS the
+    // model answer's one key word (function words and one- or two-character
+    // symbols like "J", "N", "kg" aside): "joules" for "Joules (J)". It used
+    // to be Right when it was ANY word of the model answer, so "energy"
+    // secured "The minimum amount of energy needed for particles to react".
+    // Every other one-word answer goes to the answer check, which judges it.
     if (pa.indexOf(" ") < 0) {
-      return (" " + ma + " ").indexOf(" " + pa + " ") >= 0 ? "match" : "no";
+      var key = ma.split(" ").filter(function (w) { return w.length > 2 && FUNCTION_WORDS.indexOf(w) < 0; });
+      return key.length && key.join(" ") === pa ? "match" : null;
     }
     return null;
   }

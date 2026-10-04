@@ -5430,7 +5430,34 @@ LOGIC["class view"].extend([
         "    if (was !== e.canCheck()) { this.hwTick(); }\n"
         "  };\n"
         "  hwCheck = () => { const e = this.hwEngine(); if (e) { e.check(); } };\n"
-        "  hwIdk = () => { const e = this.hwEngine(); if (e) { e.idk(); } };\n"
+        "  /* ⊕ Y Unit 1 (Mide, phone report, 4 Oct 2026) — focus the box\n"
+        "     SYNCHRONOUSLY, inside this tap, before the engine's state\n"
+        "     change. Two reasons, both load-bearing: (1) iOS Safari only\n"
+        "     raises the keyboard for a focus() made inside the user's own\n"
+        "     gesture — calling it after the redraw (a requestAnimationFrame\n"
+        "     away) is too late; (2) it is what the NEXT redraw's path-based\n"
+        "     refocus (student-runtime.js's focusPath/refocus) captures —\n"
+        "     left alone it captures whatever this tap leaves focused (this\n"
+        "     button), and after the redraw that same child-index PATH\n"
+        "     resolves to Check instead, because 'I don't know' itself drops\n"
+        "     out of the row (hwIdkOn turns false). Focusing the box first\n"
+        "     makes the box what gets captured and restored. The flag is a\n"
+        "     one-shot backstop for flashcard-keyboard.js's after-draw hook,\n"
+        "     for the rare redraw where the path restore lands elsewhere —\n"
+        "     see its own comment for why a RESUMED learn step (no gesture)\n"
+        "     must never set it. */\n"
+        "  hwIdk = () => {\n"
+        "    const e = this.hwEngine();\n"
+        "    if (!e) { return; }\n"
+        "    if (typeof document !== 'undefined') {\n"
+        "      const box = document.querySelector('[data-hw=\"answer\"]');\n"
+        "      if (box && box.focus) {\n"
+        "        if (typeof window !== 'undefined') { window.__MRB_FC_LEARN_FOCUS__ = true; }\n"
+        "        box.focus({ preventScroll: true });\n"
+        "      }\n"
+        "    }\n"
+        "    e.idk();\n"
+        "  };\n"
         "  hwBack = () => { const e = this.hwEngine(); if (e) { e.back(); } };\n"
         "  /* ⊕ MRB-354 — Forward ›: beside ‹ Back, same style; moves one card\n"
         "     toward the card the pupil was on, changing no rating. */\n"
@@ -5515,7 +5542,13 @@ LOGIC["class view"].extend([
         "      /* ⊕ Sharpen §13.1.4 — \"I don't know\": the model answer under\n"
         "         the card, the box asks for it in the pupil's own words. The\n"
         "         card key changes so the box opens empty. */\n"
-        "      hwLearn: !!c && v.learn, hwLearnAnswer: v.learnAnswer || '',\n"
+        "      hwLearn: !!c && v.learn,\n"
+        # ⊕ Y review — `{text, plain}`, not a bare string: the runtime's `fx`
+        # node turns subscripts off only through a sibling `.plain` of a
+        # DOTTED key, so a bare `hwLearnAnswer` subscripted N2 on a physics
+        # deck in the one place the pupil copies from, while the card's own
+        # faces (card.front / card.back) correctly did not.
+        "      hwLearnFx: { text: v.learnAnswer || '', plain: !this.hwChem() },\n"
         "      hwPlaceholder: v.learn ? 'Now write it in your own words' : 'Your answer',\n"
         "      hwIdkOn: !v.learn,\n"
         "      hwCardKey: c ? c.id + (v.learn ? ':learn' : '') : '',\n"
@@ -5543,7 +5576,7 @@ LOGIC["class view"].extend([
         "      hwNearlyOn: v.suggest === 'nearly' ? 'true' : 'false',\n"
         "      hwGotOn: v.suggest === 'got_it' ? 'true' : 'false',\n"
         "      hwMineOn: !!c && v.revealed && !!v.mine,\n"
-        "      hwMine: v.mine || '',\n"
+        "      hwMineFx: { text: v.mine || '', plain: !this.hwChem() },\n"
         "      hwPanel: !!end,\n"
         "      /* ⊕ MRB-354 — ONE line, 'N of M secured'; no line 2, no helper\n"
         "         text (the quieter secondary button below says the one thing\n"
@@ -5852,8 +5885,22 @@ INSERT_AT["class view"].update({
                        # floor (64px, 96px on a tall dialog) is
                        # shared/flashcard-keyboard.js's, beside the card's.
                        "maxlength": "500", "rows": "3", "autocomplete": "off",
+                       # ⊕ Y Unit 1 (Mide, phone report) — `--pg-rule-strong`
+                       # (a hairline token) measured 2.05:1 light / 1.7:1 dark
+                       # against this box's own `--pg-card` fill: faint cream
+                       # on cream, "not obviously a box to type into." Swapped
+                       # for `--pg-muted` (6.99:1 / 6.28:1) at 2px, well past
+                       # the 3:1 non-text floor in both themes, same token the
+                       # rest of this file already uses for secondary text.
+                       # The focus treatment (border flips to the accent, a
+                       # tinted ring, an accent caret) lives in the injected
+                       # CSS below (shared/flashcard-keyboard.js) — an inline
+                       # style has no `:focus`. `min-height:0` here (not 96)
+                       # so the keyboard-up height floor in that same CSS can
+                       # legitimately go as low as 72px without this fighting
+                       # it.
                        "style": "font:inherit;font-size:17px;line-height:1.4;padding:10px 14px;"
-                                "border-radius:14px;border:1.5px solid var(--pg-rule-strong);"
+                                "border-radius:14px;border:2px solid var(--pg-muted);min-height:0;"
                                 "background:var(--pg-card);color:var(--pg-ink);resize:none;"
                                 "width:100%;box-sizing:border-box;"},
                  "c": []},
@@ -6000,7 +6047,7 @@ INSERT_AT["class view"].update({
             {"t": "span", "a": {"style": _HW_MONO + "color:var(--b-muted);"}, "c": [{"t": "#", "v": "YOUR ANSWER"}]},
             {"t": "span", "a": {"style": "display:block;font-size:17px;line-height:1.45;color:var(--b-ink);"
                                          "white-space:pre-wrap;overflow-wrap:anywhere;"},
-             "c": [{"t": "fx", "e": "hwMine"}]},
+             "c": [{"t": "fx", "e": "hwMineFx.text"}]},
         ]}]},
         "MRB-351: the pupil's written answer under the model answer on the "
         "card's back — make phase, and in review for cards they wrote."),
@@ -6028,7 +6075,7 @@ INSERT_AT["class view"].update({
             {"t": "span", "a": {"style": _HW_MONO + "color:var(--b-muted);"}, "c": [{"t": "#", "v": "ANSWER"}]},
             {"t": "span", "a": {"style": "display:block;font-size:18px;font-weight:600;line-height:1.45;"
                                          "color:var(--b-ink);white-space:pre-wrap;overflow-wrap:anywhere;"},
-             "c": [{"t": "fx", "e": "hwLearnAnswer"}]},
+             "c": [{"t": "fx", "e": "hwLearnFx.text"}]},
         ]}]},
         "MRB-351 Design port (05) — 'I don't know': the model answer, under "
         "a rule inside the same bench card as the question, instead of a "

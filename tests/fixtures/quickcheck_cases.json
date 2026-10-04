@@ -1,5 +1,5 @@
 {
- "_source": "public.flashcard_quick_check on TEST (qeppkiswvclkkwbxmlok), 28 Sep 2026, body md5 4f1522f9b11d9652199acb3913b968b4 = production's. Regenerate the sql column with flashcard_engine_test.js --sql and run it on TEST.",
+ "_source": "public.flashcard_quick_check — Prompt Y body (prosrc md5 ab1d58c567c4ad5d6b7674154011fe20, parked migration 20261004120000_y_quick_check_key_word.sql), evaluated inline on TEST (qeppkiswvclkkwbxmlok) 4 Oct 2026. Production before it: e7115d4ab2090efa95187e6dd6abc3d3. Regenerate the sql column with flashcard_engine_test.js --sql and run it on a database carrying the new body.",
  "cases": [
   {
    "pupil": "",
@@ -34,12 +34,12 @@
   {
    "pupil": "N",
    "model": "The newton (N)",
-   "sql": "match"
+   "sql": null
   },
   {
    "pupil": "newtons",
    "model": "The newton (N)",
-   "sql": "no"
+   "sql": null
   },
   {
    "pupil": "the",
@@ -74,7 +74,7 @@
   {
    "pupil": "scalar",
    "model": "A vector",
-   "sql": "no"
+   "sql": null
   },
   {
    "pupil": "idk",
@@ -174,12 +174,12 @@
   {
    "pupil": "water",
    "model": "H2O",
-   "sql": "no"
+   "sql": null
   },
   {
    "pupil": "gravity",
    "model": "The force acting on an object due to gravity",
-   "sql": "match"
+   "sql": null
   },
   {
    "pupil": "force due to gravity",
@@ -199,7 +199,7 @@
   {
    "pupil": "ke",
    "model": "Force = spring constant × extension (F = ke)",
-   "sql": "match"
+   "sql": null
   },
   {
    "pupil": "×",
@@ -209,7 +209,7 @@
   {
    "pupil": "café",
    "model": "cafe",
-   "sql": "no"
+   "sql": null
   },
   {
    "pupil": "café",
@@ -254,12 +254,12 @@
   {
    "pupil": "mitochondria",
    "model": "Mitochondria are where respiration happens",
-   "sql": "match"
+   "sql": null
   },
   {
    "pupil": "mitochondrion",
    "model": "Mitochondria",
-   "sql": "no"
+   "sql": null
   },
   {
    "pupil": "it",
@@ -329,27 +329,27 @@
   {
    "pupil": "photosynthesis",
    "model": "photo-synthesis",
-   "sql": "no"
+   "sql": null
   },
   {
    "pupil": "CO2",
    "model": "carbon dioxide CO2",
-   "sql": "match"
+   "sql": null
   },
   {
    "pupil": "co2",
    "model": "Carbon dioxide (CO₂)",
-   "sql": "no"
+   "sql": null
   },
   {
    "pupil": "O2",
    "model": "O₂",
-   "sql": "no"
+   "sql": null
   },
   {
    "pupil": "electron",
    "model": "",
-   "sql": "no"
+   "sql": null
   },
   {
    "pupil": "",
@@ -369,6 +369,76 @@
   {
    "pupil": "electron😀",
    "model": "electron",
+   "sql": "match"
+  },
+  {
+   "pupil": "energy",
+   "model": "The minimum amount of energy needed for particles to react",
+   "sql": null
+  },
+  {
+   "pupil": "reaction",
+   "model": "A substance that increases the rate of a reaction but is not used up during the reaction.",
+   "sql": null
+  },
+  {
+   "pupil": "joules",
+   "model": "Joules (J)",
+   "sql": "match"
+  },
+  {
+   "pupil": "J",
+   "model": "Joules (J)",
+   "sql": null
+  },
+  {
+   "pupil": "Watts",
+   "model": "Watts (W)",
+   "sql": "match"
+  },
+  {
+   "pupil": "oxygen",
+   "model": "Lack of oxygen",
+   "sql": null
+  },
+  {
+   "pupil": "gradient",
+   "model": "Calculate the gradient (change in y/change in x)",
+   "sql": null
+  },
+  {
+   "pupil": "methane",
+   "model": "Methane, ethane, propane, butane",
+   "sql": null
+  },
+  {
+   "pupil": "9.8",
+   "model": "9.8 N/kg",
+   "sql": null
+  },
+  {
+   "pupil": "endothermic",
+   "model": "Position of equilibrium will shift in the endothermic direction",
+   "sql": null
+  },
+  {
+   "pupil": "Lack of oxygen",
+   "model": "Lack of oxygen",
+   "sql": "match"
+  },
+  {
+   "pupil": "catalyst",
+   "model": "Catalyst",
+   "sql": "match"
+  },
+  {
+   "pupil": "ion",
+   "model": "An ion",
+   "sql": "match"
+  },
+  {
+   "pupil": "kg",
+   "model": "kg",
    "sql": "match"
   }
  ]

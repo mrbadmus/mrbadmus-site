@@ -184,9 +184,9 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     e.rate("got_it");
     v = e.view();
     check(v.headline === "1 of 5 right" && v.segments[0].state === "right" && v.segments[1].current, "Got it → '1 of 5 right', segment 1 green, segment 2 current");
-    answer(e, "water");                   // no → Wrong, Not yet filled
+    answer(e, "the");                     // a lone function word → Wrong, Not yet filled
     v = e.view();
-    check(v.chip === "Wrong" && v.suggest === "not_yet", "a wrong one-word answer: chip Wrong, Not yet filled");
+    check(v.chip === "Wrong" && v.suggest === "not_yet", "a lone function word: chip Wrong, Not yet filled");
     e.rate("not_yet");
     check(e.view().segments[1].state === "answered", "Not yet → segment grey (answered, not right)");
     answer(e, "force of gravity on it");  // multi-word, no model → no chip, nothing filled
@@ -393,7 +393,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(e.view().card.id === was && e.view().revealed, "rate('got_it') above the cap is a no-op: the card is unchanged");
     e.rate("nearly");
     H.modelCheck = null;
-    answer(e, "water");
+    answer(e, "the");                     // a lone function word → Wrong
     v = e.view();
     check(!v.allowed.got_it && !v.allowed.nearly && v.allowed.not_yet && v.chip === "Wrong", "no: only Not yet");
     e.rate("nearly");

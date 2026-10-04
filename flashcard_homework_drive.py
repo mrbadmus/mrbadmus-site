@@ -55,6 +55,9 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import ks3_browser as cdp  # noqa: E402
 
+# ⊕ Prompt Y — card 3 typed in full (a lone word of it now goes to the answer check).
+WEIGHT_RIGHT = "the force acting on an object due to gravity"
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 AID = "aaaaaaaa-0000-4000-8000-000000000351"
 
@@ -502,10 +505,12 @@ def run(width, height, kb, shots):
 
             # card 3, then ‹ Back to card 2 from state C
             P.keyboard(True)
-            P.type("gravity")
+            # ⊕ Prompt Y — the whole answer: a single word of a longer model
+            # answer ("gravity") is no longer Right on the spot.
+            P.type(WEIGHT_RIGHT)
             P.click('[data-hw="check"]')
             P.keyboard(False)
-            check(P.st()["chip"] == "Right", "card 3: 'gravity' is Right")
+            check(P.st()["chip"] == "Right", "card 3: the whole answer is Right")
             P.click('[data-hw="back"]')
             s = P.st()
             check(s["front"] == "What is the formula of water?" and s["writing"] and s["draft"] == "made of hydrogen and oxygen",
@@ -515,7 +520,7 @@ def run(width, height, kb, shots):
                   "⊕ MRB-354 — Forward › sits beside ‹ Back once a step back has been taken")
             P.click('[data-hw="forward"]')
             s = P.st()
-            check(s["front"] == "What is weight?" and s["writing"] and s["draft"] == "gravity",
+            check(s["front"] == "What is weight?" and s["writing"] and s["draft"] == WEIGHT_RIGHT,
                   "Forward ›: back up to card 3, state A, its earlier answer intact, no rating changed (got %r)"
                   % s["draft"])
             check(not P.q("!!document.querySelector('[data-hw=\"forward\"]')"),
@@ -525,7 +530,7 @@ def run(width, height, kb, shots):
             check(s["front"] == "What is the formula of water?" and s["draft"] == "made of hydrogen and oxygen",
                   "‹ Back again: card 2, in state A, with its own earlier answer (got %r)" % s["draft"])
             P.shot("Back-card-2")
-            P.type("water")
+            P.type("the")                  # a lone function word: Wrong on the spot
             P.click('[data-hw="check"]')
             s = P.st()
             check(s["chip"] == "Wrong" and s["pressed"] == ["not_yet"] and s["enabled"] == ["not_yet"],
@@ -534,8 +539,8 @@ def run(width, height, kb, shots):
             P.shot("C-wrong-capped")
             P.click('[data-hw="not_yet"]')
             s = P.st()
-            check(s["front"] == "What is weight?" and s["draft"] == "gravity",
-                  "card 3 again, 'gravity' still in its box (got %r)" % s["draft"])
+            check(s["front"] == "What is weight?" and s["draft"] == WEIGHT_RIGHT,
+                  "card 3 again, its answer still in its box (got %r)" % s["draft"])
             P.keyboard(True)
             P.boxes("state A after ‹ Back")
             P.keyboard(False)
@@ -696,7 +701,7 @@ def run(width, height, kb, shots):
             P.shot("Review-keyboard-up")
             P.keyboard(False)
             answers = {"What is the formula of water?": "h2o", "What is the unit of force?": "newton",
-                       "What is weight?": "gravity", "Write the equation for the force on a spring.": "ke",
+                       "What is weight?": WEIGHT_RIGHT, "Write the equation for the force on a spring.": "Force = spring constant × extension (F = ke)",
                        "Is velocity a scalar or a vector?": "vector"}
             for _ in range(5):
                 f = P.st()["front"]
@@ -735,7 +740,7 @@ def run(width, height, kb, shots):
             P.keyboard(True)
             P.boxes("review mode, state A")
             P.keyboard(False)
-            wrong = {"What is the formula of water?": "water", "Write the equation for the force on a spring.": "stretch"}
+            wrong = {"What is the formula of water?": "the", "Write the equation for the force on a spring.": "a"}
             order = []
             for _ in range(5):
                 f = P.st()["front"]
@@ -791,7 +796,7 @@ def run(width, height, kb, shots):
                   "tap a green chip: that card in state A with its earlier answer, ‹ Back offered (got %r %r)"
                   % (s["front"], s["draft"]))
             P.shot("Redo")
-            P.type("water" if order[first_green] == "What is the formula of water?" else "zzz")
+            P.type("the")
             P.click('[data-hw="check"]')
             P.click('[data-hw="not_yet"]')
             s = P.st()
