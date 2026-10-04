@@ -1530,7 +1530,7 @@ NAV = {
             "made-up string the seam cannot read. ⊕ x-week-truth, 4 Oct "
             "2026 — Design's own `lastP` IS what this opens, so the handler "
             "reads the very local `renderVals` has just resolved (the "
-            "week-scoped `weekScope().lastClosed`) rather than re-deriving "
+            "selected week's own `weekScope().reteach`) rather than re-deriving "
             "a second, unscoped \"which paper\" through `MRB_NEWEST_MARKED` "
             "— exactly the two-languages defect MRB-353 left in place for "
             "this one link, see the `lastP` ruling's own block comment. "
@@ -5615,15 +5615,19 @@ WRAP = {
         236: "glance.remindLabel",
 
         # ⊕ x-week-truth, 4 Oct 2026 — "OPEN THE FULL BREAKDOWN" (node 253)
-        # IS HIDDEN WHEN THERE IS NOTHING BEHIND IT. Mide's rule is literal:
-        # the reteach card still NAMES the most recent closed set even when
-        # nobody sat it ("0/17 submitted", no bars) — but a link into the
-        # marking screen for a paper with no grid and no submissions opens
-        # on an empty page, which is worse than no link. `glance.hasBreakdown`
-        # is true only when `lastP` exists AND at least one pupil has a cell
-        # on it (`kMx.colSub[lastP.idx] > 0`), the same test the card's own
-        # bars already require.
+        # IS HIDDEN WHEN THERE IS NOTHING BEHIND IT: no set this week, or
+        # nobody in on it yet (⊕ Mide, 4 Oct 2026 21:56 — the card shows only
+        # the selected week's OWN set). `glance.hasBreakdown` is true only
+        # when `lastP` exists AND at least one pupil has a cell on it
+        # (`kMx.colSub[lastP.idx] > 0`), the same test the card's bars need.
         253: "glance.hasBreakdown",
+
+        # ⊕ Mide, 4 Oct 2026 (21:56) — "WORTH A SHOUTOUT" (node 267) WITH
+        # NOTHING UNDER IT IS REDUNDANT TEXT. A week with no scores (not
+        # started, nothing set, nobody in) has no shoutout to suggest; the
+        # heading goes with the empty list. "Send a shoutout" stays — it is
+        # an action, not a heading.
+        267: "glance.hasPraise",
 
         # ⊕ MRB-336 — A WRAP ON NODE 235 WAS WRITTEN HERE AND WITHDRAWN
         # BEFORE IT SHIPPED, and it is recorded because the reasoning was
@@ -7440,7 +7444,7 @@ LOGIC = (
        answer. See `MRB_WEEK_SCOPE`'s own comment for the MRB-353 defect
        this closes: two different implementations of "which set", one per
        chip-0-or-not branch, that disagreed with each other. */
-    const wScope = MRB_WEEK_SCOPE(kPapers, kWeeks, wi);
+    const wScope = MRB_WEEK_SCOPE(kPapers, kWeeks, wi, kMx);
     const wPapers = wScope.papers;
     /* ⊕ 1 Oct 2026 (sweep fix B1, corrected) — THE FIRST FIX FILTERED
        `wPapers` ITSELF, AND `wPapers` IS NOT ONLY THE "N OF M IN"
@@ -11138,35 +11142,21 @@ componentDidUpdate() {
     # and the no-roster fixture has no papers. Neither could express "closed,
     # and empty".
     ("    const lastP = kPapers[1] || null;",
-     "    /* ⊕ x-week-truth (MRB-353 redone), 4 Oct 2026 — ONE CUTOFF, NO\n"
-     "       SPECIAL CASE FOR CHIP 0. MRB-353 (1 Oct 2026) scoped `lastP`'s\n"
-     "       search to the SELECTED week's own papers for every chip but the\n"
-     "       current one, which kept chip 0's old unscoped search byte for\n"
-     "       byte — two implementations of \"which set\", one per branch, and\n"
-     "       they disagreed the moment the current week's own set was still\n"
-     "       open while an older one had already closed: 10h/Ph1, seen live\n"
-     "       Sun 4 Oct 2026 — week 4 (Changes of State) closed at 8 of 17,\n"
-     "       week 5 (Temperature) was still open at 3 of 17, and picking\n"
-     "       week 5 on the bar read \"Nothing to reteach yet\" over a class\n"
-     "       that had plainly just finished a topic, because week 5's OWN\n"
-     "       papers held nothing closed to find. `weekScope`'s `lastClosed`\n"
-     "       (shared/teacher-live.js) answers the question Mide actually\n"
-     "       asked — \"the most recent set that had CLOSED BY the selected\n"
-     "       week\" — by scanning every paper the class has ever had, cut\n"
-     "       off at the end of the selected week (capped at now), which\n"
-     "       gives chip 0 and every other chip the identical formula: chip\n"
-     "       0's week-end is always ahead of now, so its cutoff is simply\n"
-     "       now — the exact unscoped search this replaces, arrived at with\n"
-     "       no `wi === 0` branch anywhere in sight. */\n"
-     "    const lastP = wScope.lastClosed;",
+     "    /* ⊕ Mide, 4 Oct 2026 (21:56) — EVERY WEEK SHOWS ONLY ITS OWN\n"
+     "       HOMEWORK. `lastP` is the selected week's OWN reteach set\n"
+     "       (`weekScope().reteach`: this week's first released, non-\n"
+     "       flashcard set with at least one hand-in) — never another\n"
+     "       week's. The \"most recent closed set\" search that put week\n"
+     "       4's Changes of State on weeks 5 and 6 is deleted. */\n"
+     "    const lastP = wScope.reteach;",
      "the class screen's \"last marked set\". Part of #13: `kPapers[1]` is "
      "the index-0 assumption, and `markedIdx` is the seam's own answer to "
      "the same question — narrowed to the closed papers somebody actually "
      "sat, because `markedIdx` is a deadline test and not a submission "
      "one. ⊕ x-week-truth, 4 Oct 2026 (MRB-353 redone) — replaced again, "
-     "this time with `weekScope`'s own `lastClosed`: one cutoff formula for "
-     "every chip, see the block comment above for the defect MRB-353's own "
-     "`wi === 0` branch left behind."),
+     "this time with `weekScope`'s own `lastClosed`; and ⊕ Mide, 4 Oct 2026 "
+     "(21:56), finally, with the selected week's OWN set (`weekScope().reteach`) "
+     "— nothing from any other week, ever."),
 
     # ⚠️ AND THE CARD NEEDS WORDS FOR THAT STATE. `lastTitle` fell back to a
     # bare em-dash, which under the heading "Reteach from the last set" reads
@@ -11232,7 +11222,7 @@ componentDidUpdate() {
      "    /* ⊕ x-week-truth, 4 Oct 2026 — THE SAME LAZY FETCH THE ASSIGNMENTS\n"
      "       TABLE ALREADY USES (see `MRB_ENSURE_GRID` beside `const wkG`\n"
      "       below). `load()`'s own prefetch only ever asks for CHIP 0's\n"
-     "       `lastClosed` grid; stepping the bar to a different week resolves\n"
+     "       own reteach grid; stepping the bar to a different week resolves\n"
      "       a different `lastP` that may have no cached grid at all, and\n"
      "       without this the reteach card's two bars stayed empty forever\n"
      "       on every week but the one the page opened on. */\n"
@@ -14399,11 +14389,13 @@ LOGIC = LOGIC + ((
     "      watchMore: flagged.length > 4 ? '+' + (flagged.length - 4) + ' more in the list below' : '',\n"
     "      noWatchLine,\n"
     "      hasBreakdown: !!(lastP && (kMx.colSub[lastP.idx] || 0) > 0),\n"
+    "      hasPraise: praise.length > 0,\n"
     "      praise\n"
     "    };",
     "`glance.noWatchLine` (node 266, bound by `RETEXT_AT`) and "
     "`glance.hasBreakdown` (node 253, gated by `WRAP`) — see both entries "
-    "for why each exists."),
+    "for why each exists. ⊕ Mide, 4 Oct 2026 — and `glance.hasPraise` "
+    "(node 267, gated by `WRAP`): a heading with nothing under it goes."),
 )
 
 # ⊕ x-week-truth, 4 Oct 2026 — node 266's empty-state line was Design's own
@@ -14427,6 +14419,13 @@ RETEXT_AT[231] = ("Not in yet",
     "the homework card's chase-chip heading — \"Not in yet\" while the set "
     "is open, \"Missed it\" once it has closed, matching the words \"Keep an "
     "eye on\" uses for the same pupils.")
+# ⊕ Mide, 4 Oct 2026 (21:56) — THE CARD IS "RETEACH", NOT "RETEACH FROM THE
+# LAST SET". Every card on the class screen is about the selected week's own
+# homework only; the reteach card shows THIS week's set's weakest questions,
+# so "from the last set" would name something it no longer does.
+RETEXT_AT[240] = ("Reteach from the last set", "Reteach",
+    "the reteach card's heading — it shows the selected week's OWN set, "
+    "never \"the last set\" from another week.")
 RETEXT_AT[266] = ("No one flagged — the class is keeping up.",
     {"parts": [{"e": "glance.noWatchLine"}]},
     "the \"Keep an eye on\" card's empty-state line — not started, an open "

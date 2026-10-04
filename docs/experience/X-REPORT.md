@@ -39,6 +39,17 @@ actually load (`?v=e9fbb89e`) matches.
 
   Nothing breaks.
 
+## ⛔ Superseded the same evening — the reteach rule
+
+The "last set that closed by the end of the week" rule in the next three
+sections was the lane's, and it was wrong: it carried week 4's Changes of
+State onto weeks 5 and 6 and left week 4 saying "Nothing to reteach yet".
+Mide's rule (4 Oct, 21:56) replaced it on main: **every week shows only its own
+homework.** `weekScope()` now returns only the selected week's own sets and
+`reteach` — the first of them with a hand-in — and the "most recent closed
+set" search is deleted. See the box at the top of `X-WALK.md` for the
+expectations that now hold. The sections below are kept as the record.
+
 ## The class page: what was wrong, in three sentences
 
 The reteach card never asked "which set had closed by this week?". On a past week

@@ -636,7 +636,7 @@ function MRB_WEEK_SCORE(row, idxs, papers){
   return lines.join('\n');}
 
 /* ⊕ x-week-truth, 4 Oct 2026 — THE SELECTED WEEK'S FACTS, FROM ONE PLACE.
-   `teacher-live.js`'s `weekScope(papers, weeks, wi, now)` is the only
+   `teacher-live.js`'s `weekScope(papers, weeks, wi, now, mx)` is the only
    implementation — see its own comment for the MRB-353 defect this
    replaces (two different "which paper is the last marked one" questions,
    one per chip-0-or-not branch, that could and did disagree). This is the
@@ -645,12 +645,12 @@ function MRB_WEEK_SCORE(row, idxs, papers){
    fallback is reached only if `teacher-live.js` is somehow not on the page
    (no fixture omits it today) and returns an inert, empty scope rather than
    guessing at one. */
-function MRB_WEEK_SCOPE(papers, weeks, wi){
+function MRB_WEEK_SCOPE(papers, weeks, wi, mx){
   var L=window.MrBadmusTeacherLive;
-  if(L&&L.weekScope){return L.weekScope(papers||[], weeks||[], wi||0, Date.now());}
+  if(L&&L.weekScope){return L.weekScope(papers||[], weeks||[], wi||0, Date.now(), mx);}
   return {week:(weeks||[])[wi||0]||null, started:true, startsOn:null,
-    weekEndMs:null, papers:papers||[], released:[], live:[], closed:[],
-    scheduled:[], lastClosed:null};}
+    papers:papers||[], released:[], live:[], closed:[],
+    scheduled:[], reteach:null};}
 
 /* "Opens Mon 5 Oct" / "starts Mon 5 Oct" — a not-started week's homework
    card, off a scheduled paper's own `release_at` where there is one and the
@@ -1993,7 +1993,7 @@ class Component extends DCLogic {
        answer. See `MRB_WEEK_SCOPE`'s own comment for the MRB-353 defect
        this closes: two different implementations of "which set", one per
        chip-0-or-not branch, that disagreed with each other. */
-    const wScope = MRB_WEEK_SCOPE(kPapers, kWeeks, wi);
+    const wScope = MRB_WEEK_SCOPE(kPapers, kWeeks, wi, kMx);
     const wPapers = wScope.papers;
     /* ⊕ 1 Oct 2026 (sweep fix B1, corrected) — THE FIRST FIX FILTERED
        `wPapers` ITSELF, AND `wPapers` IS NOT ONLY THE "N OF M IN"
@@ -2046,27 +2046,13 @@ class Component extends DCLogic {
     const wMean = wMeans.length
       ? Math.round(wMeans.reduce((a, v) => a + v, 0) / wMeans.length) : null;
     const openP = wPapers[0] || null;
-    /* ⊕ x-week-truth (MRB-353 redone), 4 Oct 2026 — ONE CUTOFF, NO
-       SPECIAL CASE FOR CHIP 0. MRB-353 (1 Oct 2026) scoped `lastP`'s
-       search to the SELECTED week's own papers for every chip but the
-       current one, which kept chip 0's old unscoped search byte for
-       byte — two implementations of "which set", one per branch, and
-       they disagreed the moment the current week's own set was still
-       open while an older one had already closed: 10h/Ph1, seen live
-       Sun 4 Oct 2026 — week 4 (Changes of State) closed at 8 of 17,
-       week 5 (Temperature) was still open at 3 of 17, and picking
-       week 5 on the bar read "Nothing to reteach yet" over a class
-       that had plainly just finished a topic, because week 5's OWN
-       papers held nothing closed to find. `weekScope`'s `lastClosed`
-       (shared/teacher-live.js) answers the question Mide actually
-       asked — "the most recent set that had CLOSED BY the selected
-       week" — by scanning every paper the class has ever had, cut
-       off at the end of the selected week (capped at now), which
-       gives chip 0 and every other chip the identical formula: chip
-       0's week-end is always ahead of now, so its cutoff is simply
-       now — the exact unscoped search this replaces, arrived at with
-       no `wi === 0` branch anywhere in sight. */
-    const lastP = wScope.lastClosed;
+    /* ⊕ Mide, 4 Oct 2026 (21:56) — EVERY WEEK SHOWS ONLY ITS OWN
+       HOMEWORK. `lastP` is the selected week's OWN reteach set
+       (`weekScope().reteach`: this week's first released, non-
+       flashcard set with at least one hand-in) — never another
+       week's. The "most recent closed set" search that put week
+       4's Changes of State on weeks 5 and 6 is deleted. */
+    const lastP = wScope.reteach;
     /* ── ⊕ MRB-336 §4.1 · A CARD IS ONE LIVE ASSIGNMENT ─────────────────
 
        Mide, 8 Sep 2026: "live assignments should take over the reteach from
@@ -2312,7 +2298,7 @@ class Component extends DCLogic {
     /* ⊕ x-week-truth, 4 Oct 2026 — THE SAME LAZY FETCH THE ASSIGNMENTS
        TABLE ALREADY USES (see `MRB_ENSURE_GRID` beside `const wkG`
        below). `load()`'s own prefetch only ever asks for CHIP 0's
-       `lastClosed` grid; stepping the bar to a different week resolves
+       own reteach grid; stepping the bar to a different week resolves
        a different `lastP` that may have no cached grid at all, and
        without this the reteach card's two bars stayed empty forever
        on every week but the one the page opened on. */
@@ -2395,6 +2381,7 @@ class Component extends DCLogic {
       watchMore: flagged.length > 4 ? '+' + (flagged.length - 4) + ' more in the list below' : '',
       noWatchLine,
       hasBreakdown: !!(lastP && (kMx.colSub[lastP.idx] || 0) > 0),
+      hasPraise: praise.length > 0,
       praise
     };
 
@@ -3475,7 +3462,7 @@ window.__MRB_MOUNT__ = function () {
   }));
 };
 </script>
-<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","breakdown.css":"87c6fa1b","breakdown.js":"be884b0b","class-csv-upload.js":"513ee889","class-entry.js":"1028dbfb","config.js":"40813eb2","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-breakdown.js":"baf47828","flashcard-decks.css":"3da3c46d","flashcard-decks.js":"2610cf68","formulae.js":"e4bfb091","rum.js":"66210c21","set-work.css":"1f99af80","set-work.js":"6737fc8c","shoutouts.js":"23393220","teacher-admin-nav.js":"d48cc15e","teacher-data.js":"f7ff2dda","teacher-guard.js":"f7fbad7c","teacher-live.js":"13164b79","teacher-picker.js":"8f2365b7","teacher-topbar.css":"e4a3d0a7","teacher-topbar.js":"466ea5b0","theme.js":"6fd6f722"};</script>
+<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","breakdown.css":"87c6fa1b","breakdown.js":"be884b0b","class-csv-upload.js":"513ee889","class-entry.js":"1028dbfb","config.js":"40813eb2","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-breakdown.js":"baf47828","flashcard-decks.css":"3da3c46d","flashcard-decks.js":"2610cf68","formulae.js":"e4bfb091","rum.js":"66210c21","set-work.css":"1f99af80","set-work.js":"6737fc8c","shoutouts.js":"23393220","teacher-admin-nav.js":"d48cc15e","teacher-data.js":"f7ff2dda","teacher-guard.js":"f7fbad7c","teacher-live.js":"9108ab80","teacher-picker.js":"8f2365b7","teacher-topbar.css":"e4a3d0a7","teacher-topbar.js":"466ea5b0","theme.js":"6fd6f722"};</script>
 <script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>
 <link rel="stylesheet" href="/shared/teacher-topbar.css?v=e4a3d0a7">
 <script src="/shared/teacher-topbar.js?v=466ea5b0"></script>

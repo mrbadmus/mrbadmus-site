@@ -1,3 +1,26 @@
+# ⛔ SUPERSEDED 4 Oct 2026, 21:56 — READ THIS FIRST
+
+Everything below this box describes the **"last closed set" reteach rule**,
+which the lane gave and which was wrong. Mide's rule replaces it completely:
+**every week shows only its own homework — nothing from any other week, ever,
+on any card.** The reteach card ("Reteach") shows the weakest questions of the
+selected week's OWN set as soon as one pupil has handed in; a week with
+nothing set, or nobody in yet, shows one line and borrows nothing.
+
+The expectations that now hold (checked against production, read-only):
+
+| 10h/Ph1 week | homework card | Reteach | Open the full breakdown |
+|---|---|---|---|
+| 4 (21/09) | Changes of State, closed, 8 of 17 | Changes of State's two weakest (production: Q4, Q7, Q8, Q9 all 50% — the card shows Q4 and Q7) | opens Changes of State |
+| 5 (28/09) | Temperature Changes and SHC, 9 of 17 in | its own 5 questions: Q5 67%, Q2 78% | opens Temperature |
+| 6 (05/10) | "Nothing set yet · starts Mon 5 Oct" | "Nothing to reteach yet" | not shown |
+
+`week_scope_check` now asserts the rule on every chip of every class at every
+clock (155 checks); the previous version of `weekScope` fails 88 of them.
+The tables below are kept as the record of what the superseded rule did.
+
+---
+
 # RESULT-A — the teacher class page tells the truth about every week
 
 Branch `feat/x-week-truth` (not pushed). Final version, rewritten from the
