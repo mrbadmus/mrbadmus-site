@@ -83,3 +83,21 @@ carries the corrected, CTE-only body.
   (see `shared/student-data.js`'s comment at the old call site), so the only
   consumer affected is `shared/teacher-data.js`, which benefits from the
   same week-rule fix.
+
+## Fingerprints (added by the commander, 4 Oct 2026)
+
+| file | md5 (file bytes) |
+|---|---|
+| `supabase/migrations/20261004120000_x_pupil_class_board_and_practice.sql` | `d3b3d72ad3c7bb17435dbb4eb3774978` |
+| `supabase/rollbacks/x_pupil_class_board_and_practice_rollback.sql` | `263dc663425683ec7c8e6e7044a814cf` |
+
+Production pre-check (read-only, 4 Oct 2026): `class_stars_leaderboard_for_member`
+is still at md5(prosrc) `9271514c8cf9296e308a4dd5e8169bf5`, the body this
+migration was built from; `class_stars_board_for_member`, `_mrb_week_number` and
+`practice_rounds` do not exist yet. No Render restart is needed after applying:
+`POST /api/class/practice/round` tries the insert on every call and simply stops
+answering 503 once the table exists.
+
+Independent of `X-REOPEN` — either may be applied first. Once both are on,
+the leaderboard's points read `assignment_submissions.score`, which `X-REOPEN`
+makes the pre-reveal counted score; that is the intended figure.
