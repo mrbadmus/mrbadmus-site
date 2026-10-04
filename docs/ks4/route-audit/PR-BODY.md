@@ -239,6 +239,78 @@ Until that follow-up runs, the new Combined pages are live, but Set work and the
 
 ### Merge
 
-Merged to `main` with `--no-ff` and pushed as a fast-forward of `main`. The merge commit is recorded in the next section. The remote `fix/ks4-route-flags` still points at the pre-rebase `31fb3e786`. It was not force-pushed, because a force-push is a stop item.
+Merged to `main` with `--no-ff` and pushed as a fast-forward of `main`. The remote `fix/ks4-route-flags` still points at the pre-rebase `31fb3e786`. It was not force-pushed, because a force-push is a stop item.
+
+**Merge commit: `4d4864f3d`** (`e417fb16b..4d4864f3d`, pushed 4 Oct 2026). Its tree is identical to the verified branch tip `153c34942`. The pre-push guard ran on it: every fast gate passed except the two overrides above.
+
+**Live** (Cloudflare, checked after the deploy, and checked against the committed files rather than by status code):
+- `combined/foundation/biology/inheritance/meiosis`, `combined/higher/physics/forces/free-body-diagrams` and `triple/foundation/physics/space/dark-matter-dark-energy` all return 200, and each is **byte-identical** to its committed `mrbadmus_site/` file.
+- Neighbour `combined/higher/physics/forces/resultant-forces`: Next → `resolving-forces`, as committed.
+- The stamped `shared/ks4-nav.js` the pages reference is byte-identical to the committed file. So is each of `shared/ks4-source-batch-{2,3}.js`, so PR #24's corrected banks are still the ones being served.
+
+## Gate repair: the two checks the merge left red (4 Oct 2026)
+
+After the merge, `frozen_window_guard` and `curriculum_tree_mirror` failed on every push. The flashcard session (Prompt Y, commits `678aa5bfd`, `b2e8e5b8e`, `84a0a4820`) pushed past them with `GATE-OVERRIDE` lines that called them "inherited". This section covers what was wrong with each check and what was done about it.
+
+### `frozen_window_guard`: PASS
+
+**Why it failed.** The guard compares every frozen bank row (`bank_position` 0–11) in the Python with what production serves. The route move re-derived `tier`/`triple_only` for all 468 bank rows of the eight moved subtopics, and 96 of those rows are frozen. Production still has the old flags because `BANK-FLAGS.sql` has not been applied, so the guard reported 96 rows as "differs in triple_only" (84) or "in tier" (12, dark matter). The guard was right that the rows differ. Its allow-list just had no record that Mide approved this change. The 28-id allow-list could not hold it, because that list forbids flag changes.
+
+**What changed** (check configuration only: `frozen_window_allowlist.py` and `frozen_window_guard.py`):
+- `ROUTE_FLAGS` is a new list, kept apart from the 28. It names the eight subtopics with their exact before and after `(tier, triple_only)`, taken from the route table above.
+- A frozen row in one of those eight subtopics may differ from the reference only in `tier`/`triple_only`. The authored row must carry exactly the after flags, and the reference exactly the before flags. Once `BANK-FLAGS.sql` is applied the rows match outright and the exception is not used. The guard prints which state it found.
+- The guard also checks that the ruling covers exactly 96 frozen rows, that all 96 carry the ruled flags, and that none of them is also on the 28-id or D3 list.
+- Nothing is loosened. `ALLOWLIST` is still exactly the 28. Every other frozen row must still match byte for byte, and every leaf's 0–11 order is still checked.
+
+**PR #24 needs no entry.** The 19 frozen quiz corrections and atom economy changed nothing under `ks4_data/` or `ks3_data/`. They live in `all_subtopics_*.py`, which this guard does not read, so it never flagged them.
+
+**Proof:**
+- Against production: `✅ KS4 3168 frozen authored … 0 unexpected diff(s), 0 leaf order mismatch(es)` and `⊕ KS4 96 frozen row(s) differ only by the ruled route flags … BANK-FLAGS.sql not yet applied`. Exit 0.
+- Against a snapshot of production with the new flags written in (production as it will be after `BANK-FLAGS.sql`): 0 problems.
+- Tampered copies, each **caught**: a reworded stem (`ks4-meiosis-e01`), a re-keyed answer (`ks4-meiosis-s02`), a changed band (`ks4-resolving-forces-h02`), a wrong after-flag (`ks4-dark-matter-dark-energy-h01` set non-triple), and a flag change outside the eight (`ks4-eukaryotes-prokaryotes-e01`).
+- `prepush_gate.py --check` on the commit: 32 fast gates pass, `frozen_window_guard` among them. The only red is `curriculum_tree_mirror` (next section).
+
+### `curriculum_tree_mirror`: still red, held for Mide
+
+**Why it fails.** The exporter turns the Python curriculum into two files: the backend's `curriculum-tree.json` (the Set work tree) and `consumer/curriculum-index.json` (the B2C topic picker). Neither was regenerated after the route move. The check reads the B2C index first and stops there.
+
+**What regenerating would change**, measured without writing anything:
+- **Backend `curriculum-tree.json`:** exactly the 8 flags in the route table, and nothing else. This is not a B2C file.
+- **`consumer/curriculum-index.json`:** 15 subtopics' year maps.
+  - **8 route additions,** which follow directly from the ruling, e.g. meiosis `{tf:11, th:11}` → `{cf:11, ch:11, tf:11, th:11}`.
+  - **7 Combined Higher physics year moves, which nobody ruled on:** structure-of-atom, mass-number-isotopes, development-atomic-model, radioactive-decay, nuclear-equations, half-lives and radioactive-contamination all go from `ch: 11` to `ch: 10`. The cause is mechanical: `ks4_seed_sow.split_index` cuts each block at the topic boundary nearest halfway. Combined Higher physics grew from 53 to 58 subtopics, so the cut moved to the other side of Atomic Structure.
+
+**Why it is held (the stop rule for B2C).** Parents see these years. `consumer/topic-picker.js` (signup "Where is X up to?" and the dashboard's Set work) greys out anything outside the child's own plan and labels it "taught in Year N" from this file. The child's own plan comes from the database (`scheme_of_work_entries`, via `/api/consumer/children/:id/picker`), and nothing has re-seeded it. After regenerating:
+- A **Year 10 Combined Higher** child's parent would see the whole Atomic Structure topic and its 7 subtopics change from "taught in Year 11" to "not in Year 10's plan". Their real plan still teaches Atomic Structure in Year 11, so the new label is less accurate than the current one.
+- For the 8 route additions, some greyed labels change too. Example: resolving-forces for a Year 10 Combined Higher child goes from "not in Year 10's plan" to "taught in Year 11". That matches the ruling, but no child's database plan holds these subtopics yet.
+
+The file was not regenerated or hand-edited, and nothing on the B2C side was touched.
+
+**What Mide needs to decide.** Three options:
+1. **Regenerate as it is.** The 8 route additions are accepted. The 7 Atomic Structure subtopics read as Year 10 for Combined Higher in the B2C picker, which disagrees with the plan the database holds.
+2. **Keep Atomic Structure in Year 11 for Combined Higher.** The year-split rule in `ks4_seed_sow` would need to change (or the split pinned), which is scheme-of-work logic rather than a generated file. It is a separate unit, and it also decides where school schemes cut when they are next re-seeded.
+3. **Regenerate and re-seed the consumer plans together,** so the labels and the plan agree.
+
+Whichever option is chosen, the check goes green when `python3 tools/export_curriculum_tree.py` is run and both files are committed: the B2C index here, and the backend tree in `mrbadmus---backend`, followed by a Render deploy. The same follow-up should include **`BANK-FLAGS.sql`** on TEST and then on production. Without it, Set work's tree would offer the eight subtopics to Combined classes while the bank rows still say triple, so those nodes would show 0 questions. All three are live changes, and none of them was made in this run.
+
+### The exemptions
+
+- **`frozen_window_guard`: none needed.** This commit carries no override for it, and later pushes will not need one.
+- **`curriculum_tree_mirror`: one override remains,** in this commit only, naming Mide's pending B2C decision. It disappears once the follow-up above lands.
+- The override lines already on main (`4d4864f3d`, `678aa5bfd`, `b2e8e5b8e`, `84a0a4820`) applied only to their own pushes, because the guard reads the message of the commit being pushed. Deleting them from the messages would mean rewriting pushed history with a force-push, so they stay as history.
+
+### The frozen corrections and the route moves survive
+
+- This change is two check files. Every lesson, route and bank file is byte-identical to `origin/main`.
+- The seven route files the move did not touch still match `FROZEN-CORRECTIONS.md`'s after-md5s, one hit each. Both chemistry triple files are among them, so atom economy AE-1…AE-6 are intact.
+- Live, the served `shared/ks4-source-batch-3.js?v=0e06813e` is byte-identical to the committed corrected file ("sum of Mr of ALL reactants").
+- `ks4_data.classify()` gives the ruled flags: meiosis, classification-living-organisms and thermal-conductivity are foundation/base; resolving-forces, free-body-diagrams, motion-in-a-circle and wave-front-refraction are higher/not-triple; dark-matter-dark-energy is foundation/triple.
+- Live, `combined/foundation/biology/inheritance/meiosis`, `combined/higher/physics/forces/resolving-forces` and `triple/foundation/physics/space/dark-matter-dark-energy` all return 200 with their own titles.
+
+### Deviations
+
+- No model called "Sonnet 5.5" exists. The fix was two small, tightly linked files, so this session did it directly instead of handing it to a subagent.
+- The shared backend checkout was 42 commits behind and had an uncommitted edit. The gates ran against a detached backend worktree at backend `origin/main` (`128c2e9`).
+- The landing's last docs commit (`ff906bf3f`, the merge commit and live check above) was on no branch and had never been pushed. It is carried in this commit.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
