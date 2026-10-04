@@ -1469,6 +1469,9 @@ def compile_block(page, name, design_dir=None):
     if name == "Ks4Ladder":
         # ⊕ R16 (ks4_rulings.py) — the Apply rung reads "63 000"/"63,000".
         logic = ks4_rulings.apply_r16_ladder_parse(logic)
+    if name == "Ks4Triangle":
+        # ⊕ B4-TRI-TOP (ks4_batch_rulings.py) — batch 4's own block; the pilot has none.
+        logic = ks4_batch_rulings.apply_triangle_top_label(logic)
     if name == "Ks4Practice":
         # ⊕ B-PRACTICE-PARSE (ks4_batch_rulings.py) — R16 for the new block.
         logic = ks4_batch_rulings.apply_practice_parse(logic)

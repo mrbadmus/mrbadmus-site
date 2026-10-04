@@ -388,7 +388,7 @@ window.KS4_BLOCKS = window.KS4_BLOCKS || {};
 const P = (x, y) => [(x + 4) / 308 * 100, (y + 6) / 270 * 100];
 const ROW = 202;
 const G = {
-  top: { points: '150,0 225,130 75,130', at: P(150, 90) },
+  top: { points: '150,0 225,130 75,130', at: P(150, 94) },
   2: { div: [150], cells: [['75,130 150,130 150,260 0,260', P(92, ROW)], ['150,130 225,130 300,260 150,260', P(208, ROW)]] },
   3: { div: [112.5, 187.5], cells: [['75,130 112.5,130 112.5,260 0,260', P(74, ROW)], ['112.5,130 187.5,130 187.5,260 112.5,260', P(150, ROW)], ['187.5,130 225,130 300,260 187.5,260', P(226, ROW)]] }
 };
@@ -435,7 +435,7 @@ class Component extends DCLogic {
       return {
         label, pressed: on, disabled: fixed,
         aria: fixed ? 'One half, a fixed number' : 'Find ' + (item ? (item.root || item.s) : eq.top.s) + ', ' + (item ? item.name : eq.top.name),
-        style: 'position:absolute;left:' + at[0] + '%;top:' + at[1] + '%;transform:translate(-50%,-50%);font:inherit;font-family:var(--ks3-font-display);font-weight:800;font-size:' + fs + 'px;line-height:1;letter-spacing:-.01em;' +
+        style: 'position:absolute;left:' + at[0] + '%;top:' + at[1] + '%;transform:translate(-50%,-50%);font:inherit;font-family:var(--ks3-font-display);font-weight:800;font-size:' + ((key === 'top' && String(label).length >= 5) ? Math.round(fs * 0.7) : (key === 'top' && String(label).length === 4) ? Math.round(fs * 0.85) : fs) + 'px;line-height:1;letter-spacing:-.01em;' +
           'display:grid;place-items:center;min-width:44px;min-height:44px;padding:0 2px;border:0;border-radius:10px;background:transparent;white-space:nowrap;text-align:center;' +
           (fixed ? 'color:var(--ks3-ink-muted);cursor:default;'
             : on ? 'color:var(--ks3-ground);cursor:pointer;text-decoration:none;'

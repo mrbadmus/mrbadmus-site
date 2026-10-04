@@ -136,6 +136,24 @@ SCIENCE = [
         { text: 'A climate that changes faster than species can cope', bin: 'g', why: 'Habitats change faster than some species can cope with.' }
       ],"""),
 
+
+    # ── Stage 2b review fixes (display only; no words or numbers change) ────
+    # efficiency: at the default 10% preset the wasted-energy arrowhead ends at
+    # y = 387 in a 380-high drawing, so it overshoots the box (0% reaches 396).
+    dict(id="B4-EFF-SANKEY", slug="efficiency", layer="logic",
+         old="return D.svg(620, 380, p, 'Sankey diagram to scale",
+         new="return D.svg(620, 410, p, 'Sankey diagram to scale"),
+    # transport: the three one-line captions under the membrane panels are each
+    # wider than their panel, so they overlap and clip at phone width. Each is
+    # split at its own middle dot onto two lines (Design's words, unchanged).
+    dict(id="B4-TIC-CAPTIONS-1", slug="transport-in-cells", layer="logic",
+         old="D.T(ox + 106, 284, sub, 13, { weight: 'normal', fill: C.stroke })",
+         new=("sub.split(' ' + String.fromCharCode(183) + ' ').map((ln, k) => D.T(ox + 106, 280 + k * 17, ln, 13, "
+              "{ weight: 'normal', fill: C.stroke })).join('')")),
+    dict(id="B4-TIC-CAPTIONS-2", slug="transport-in-cells", layer="logic",
+         old="return D.svg(644, 300, b, 'Three panels across a membrane.",
+         new="return D.svg(644, 308, b, 'Three panels across a membrane."),
+
     # thermal-conductivity: the "about the same" verdict described the changes
     # the wrong way round (a third as thick would raise the rate ninefold).
     dict(id="B4-TC-VERDICT", slug="thermal-conductivity", layer="logic",
@@ -189,3 +207,21 @@ def port_lesson(lesson, tpl, logic, slug_by_file):
         raise RulingError("ks4_batch_rulings B-R12: %s's renderVals neither spreads the route helper nor "
                           "passes routeWords; the route chip would render empty." % lesson["slug"])
     return tpl, logic, dict(has_prev=bool(n_prev), has_next=bool(n_next), connects=connects)
+
+
+# ── block rulings (applied to a batch's OWN copy of a shared block, in compile_block) ──
+TRI_CELL_FROM = "style: 'position:absolute;left:' + at[0] + '%;top:' + at[1] + '%;transform:translate(-50%,-50%);font:inherit;font-family:var(--ks3-font-display);font-weight:800;font-size:' + fs + 'px;"
+TRI_CELL_TO = ("style: 'position:absolute;left:' + at[0] + '%;top:' + at[1] + '%;transform:translate(-50%,-50%);font:inherit;font-family:var(--ks3-font-display);font-weight:800;font-size:' + "
+               "((key === 'top' && String(label).length >= 5) ? Math.round(fs * 0.7) : (key === 'top' && String(label).length === 4) ? Math.round(fs * 0.85) : fs) + 'px;")
+TRI_AT_FROM = "top: { points: '150,0 225,130 75,130', at: P(150, 90) },"
+TRI_AT_TO = "top: { points: '150,0 225,130 75,130', at: P(150, 94) },"
+
+
+def apply_triangle_top_label(logic):
+    """B4-TRI-TOP: the top label (useful, \u0394m, V, N, SA) is set in the same size as the
+    bottom ones, so a long one ('useful') is wider than the apex it sits in and the triangle's
+    sides cross its letters, with its underline hard against the divider. Long labels are set
+    smaller and the whole label sits slightly lower; cells, hit areas and words are unchanged."""
+    _require(logic, TRI_CELL_FROM, "Ks4Triangle.dc.html", "B4-TRI-TOP")
+    _require(logic, TRI_AT_FROM, "Ks4Triangle.dc.html", "B4-TRI-TOP")
+    return logic.replace(TRI_CELL_FROM, TRI_CELL_TO, 1).replace(TRI_AT_FROM, TRI_AT_TO, 1)
