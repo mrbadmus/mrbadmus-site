@@ -228,3 +228,30 @@ select count(*) from assignment_submissions s
                 where aq.assignment_id = s.assignment_id and aq.band is not null);
 -- expect 0
 ```
+
+## 9. Fingerprints and the step after applying (added by the commander, 4 Oct 2026)
+
+| file | md5 (file bytes) |
+|---|---|
+| `supabase/migrations/20261004010000_x_reopen_fair_scoring.sql` | `a2f85b26a5ed478112f4d13de2a214c2` |
+| `supabase/rollbacks/20261004010000_x_reopen_fair_scoring_rollback.sql` | `ea08fe5cfced11b274890ef71b358b4d` |
+
+Production pre-check (read-only, 4 Oct 2026): neither `assignment_submissions`
+nor `assignment_question_attempts` carries ANY non-internal trigger, and none of
+`mrb_attempt_resolve_correctness` / `mrb_attempt_track_first_answer` /
+`mrb_submission_before_write` exists — this migration creates, it does not
+replace, so there is no production body to rebuild from.
+
+Production replay (read-only, 4 Oct 2026): the correctness trigger's rule was
+run as a SELECT over every one of production's 168 answered
+`assignment_question_attempts` rows — 168/168 agree with the stored
+`is_correct`, 0 unresolved. Applying this changes no existing mark.
+
+**After applying: restart the Render service** (Manual Deploy → "Restart" or
+redeploy the same commit). `server.js`'s `revealColumnsSupported()` caches a
+definite "columns absent" for the life of the process, so until a restart the
+backend keeps the old "revised" heuristic and does not return `latest_score`.
+The TEACHER's score is fair the moment the SQL lands regardless — the trigger
+computes it — the restart only switches on the truthful "Changed after answers
+shown" label and the "Now X / Y" line. `shared/breakdown.js` probes per page
+load and needs nothing.
