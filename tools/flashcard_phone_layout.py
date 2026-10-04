@@ -250,6 +250,33 @@ LOAD = r"""
 })()
 """
 
+# ⊕ Y2 (Mide, 4 Oct 2026) — the learn step BEFORE the pupil taps the box:
+# no keyboard, nothing focused, the answer readable, the box plainly there.
+REST_JS = r"""
+(function () {
+  var d = document.querySelector('[data-mrb-dialog="flashcards"]');
+  var front = d && d.querySelector('[data-dc-tpl="10334"]');
+  var learn = d && d.querySelector('[data-hw="learn"]');
+  var ans = learn && learn.lastElementChild;
+  var box = d && d.querySelector('[data-hw="answer"]');
+  var chk = d && d.querySelector('[data-hw="check"]');
+  if (!front || !ans || !box || !chk) { return null; }
+  var fr = front.getBoundingClientRect(), ar = ans.getBoundingClientRect();
+  var br = box.getBoundingClientRect(), cr = chk.getBoundingClientRect();
+  var vh = window.innerHeight;
+  return {
+    focused: document.activeElement === box,
+    ansFull: ar.top >= fr.top - 0.5 && ar.bottom <= fr.bottom + 0.5,
+    ansTopGap: ar.top - fr.top,
+    ansFont: parseFloat(getComputedStyle(ans).fontSize),
+    boxShown: br.top >= 0 && br.bottom <= vh + 0.5 && br.height >= 60,
+    boxH: br.height,
+    checkShown: cr.bottom <= vh + 0.5 && cr.height > 0,
+    clipped: window.__MRB_ANY_CLIPPED__ ? window.__MRB_ANY_CLIPPED__(front) : null
+  };
+})()
+"""
+
 # Reads the box's rest-state (unfocused) border + its own fill, before the
 # case's own flow ever focuses it.
 UNFOCUSED_BOX_JS = r"""
@@ -436,21 +463,27 @@ def run_case(port, device, content_key, step, offset_top, theme, shots_dir, labe
         # border-color and box-shadow once a real focus lands).
         unfocused = page.eval(UNFOCUSED_BOX_JS)
 
-        idk_sync = idk_after = None
+        idk_sync = idk_after = rest = None
         if step == "learn":
-            # ⊕ Y review — read focus INSIDE the same call as the tap (what
-            # iOS needs to raise the keyboard) and again after the redraw,
-            # BEFORE this tool focuses anything itself.
+            # ⊕ Y2 (Mide, 4 Oct 2026) — "I don't know" must NOT open the
+            # keyboard. The worst case first: the pupil had already tapped
+            # into the box. Focus is read INSIDE the tap's own call and again
+            # after the redraw; neither may be the box.
+            page.eval("(function(){var t=document.querySelector('[data-hw=\"answer\"]'); if(t) t.focus({preventScroll:true});})()")
+            settle(0.2)
             idk_sync = page.eval("(function(){var b=document.querySelector('[data-hw=\"idk\"]'); if(b) b.click();"
                                  "var a=document.activeElement;return a&&a.getAttribute?a.getAttribute('data-hw'):null;})()")
-            settle(0.3)
+            settle(0.4)
             idk_after = page.eval("(function(){var a=document.activeElement;return a&&a.getAttribute?a.getAttribute('data-hw'):null;})()")
+            rest = page.eval(REST_JS)
+            if shots_dir:
+                os.makedirs(shots_dir, exist_ok=True)
+                res0 = page.send("Page.captureScreenshot", {"format": "png", "fromSurface": True,
+                    "clip": {"x": 0, "y": 0, "width": width, "height": height, "scale": 1}})
+                with open(os.path.join(shots_dir, "%s-rest.png" % label), "wb") as fh:
+                    fh.write(base64.b64decode(res0["data"]))
 
-        # ⊕ Y Unit 1 — the box is focused INSIDE the same tap as "I don't
-        # know" in the real component (student_rulings.py's hwIdk) — this
-        # second focus() call is a no-op there (already the activeElement)
-        # and is what gives the box a real focus at all on the "card" step,
-        # which never taps anything.
+        # The pupil taps the box: it takes focus, and the keyboard comes up.
         page.eval("(function(){var t=document.querySelector('[data-hw=\"answer\"]'); if(t) t.focus({preventScroll:true});})()")
         settle(0.2)
 
@@ -519,8 +552,20 @@ def run_case(port, device, content_key, step, offset_top, theme, shots_dir, labe
     front = m["front"]
 
     if step == "learn":
-        check(idk_sync == "answer", "%s: the cursor is in the box INSIDE the 'I don't know' tap (activeElement=%r)" % (label, idk_sync))
-        check(idk_after == "answer", "%s: the cursor is still in the box after the redraw (activeElement=%r)" % (label, idk_after))
+        check(idk_sync != "answer", "%s: 'I don't know' does not put the cursor in the box, even if it was there (activeElement=%r)" % (label, idk_sync))
+        check(idk_after != "answer", "%s: nor does the redraw: the keyboard stays down (activeElement=%r)" % (label, idk_after))
+        ok_r = bool(rest)
+        check(ok_r, "%s: the learn step at rest measured" % label)
+        if rest:
+            check(not rest["focused"], "%s: at rest, nothing is focused in the box" % label)
+            if content_key == "long":
+                check(rest["ansFull"] or -0.5 <= rest["ansTopGap"] < 6,
+                      "%s: at rest the long answer starts at the card's top (gap=%.1f)" % (label, rest["ansTopGap"]))
+            else:
+                check(rest["ansFull"], "%s: at rest the whole answer is on the card (top gap %.1f)" % (label, rest["ansTopGap"]))
+            check(rest["ansFont"] >= 17, "%s: at rest the answer is big (%.0fpx)" % (label, rest["ansFont"]))
+            check(rest["boxShown"] and rest["checkShown"], "%s: at rest the box (%.0fpx) and Check are on screen" % (label, rest["boxH"]))
+            check(not rest["clipped"], "%s: at rest no line is cut at the card's edge" % label)
     ok0 = bool(m["boxFocused"])
     check(ok0, "%s: the box is document.activeElement with the keyboard up" % label)
 

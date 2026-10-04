@@ -77,18 +77,17 @@
  *   secured(card) = exists a rating of it, latest per (card, session, phase)
  *   — the SAME grouping ‹ Back already used within one sitting — that is
  *   got_it. Make phase or review phase, any sitting, no pairing, no hour
- *   gap, completion_rule ignored. A rating overwritten via ‹ Back (or a
- *   retry's redo) in the SAME sitting does not count; a later rating in a
- *   DIFFERENT sitting or phase can never un-secure a card once secured.
+ *   gap, completion_rule ignored. ⊕ Mide, 4 Oct 2026: once secured, stays
+ *   secured — no later rating (‹ Back, a redo, a Revise pass, another tab)
+ *   ever un-secures a card; it is kept as history ("Later tries").
  *   done = the deck has ≥1 card and every card is secured. finish = for
  *   each card, the earliest counting got_it row; the deck's finish is the
  *   MAX of those (the moment the LAST card secured) — `finishedAt()` below.
  *
  *   `securedMap()`/`securedCount()`/`allSecured()` compute this from TWO
  *   layers: `historicalSecured` (this pupil's own `flashcard_reviews`, read
- *   once per resume/reopen — see `resumeFor()`) plus `liveLatest` (what
- *   THIS open sitting has rated since, keyed by card+phase+the sitting's own
- *   generation number, bumped on every `sessionFinish()`). A deck already
+ *   once per resume/reopen — see `resumeFor()`) plus `liveSecured` (cards
+ *   rated got_it since then). A deck already
  *   fully secured when opened goes straight to the Done screen — see the
  *   short-circuit at the top of `start()` — never a fresh pass. A pass that
  *   is not all secured ends on Try again, replaying the cards still not
@@ -371,49 +370,32 @@
     };
   }
 
-  // ── SECURED (⊕ MRB-354, 2 Oct 2026) — one rating, any sitting, any phase ──
+  // ── SECURED — once secured, stays secured (Mide, 4 Oct 2026) ──────────
   //
-  // secured(card) = exists a row for that card, latest per (card, session_id,
-  // phase) — the SAME grouping ‹ Back already uses within one sitting —
-  // whose rating is got_it. A rating overwritten via ‹ Back (or a retry's
-  // redo) in the SAME group does not count: the group's LATEST row wins. A
-  // later rating in a DIFFERENT session or phase can never un-secure a card
-  // once some group's latest was got_it — secured is a plain OR over every
-  // group a card has ever had.
+  // "Once secured, stays secured. It also helps with students not losing
+  // motivation." secured(card) = the card has EVER been rated got_it, in any
+  // sitting, any phase. A later lower rating — ‹ Back onto a secured card, a
+  // Revise pass after Done, another tab — is kept as history ("Later tries")
+  // and never takes the card back. (MRB-354, 2 Oct, had let the latest rating
+  // in the SAME sitting win, so ‹ Back and a wrong answer un-secured it.)
+  // The same rule as `flashcard_card_state`'s `known`
+  // (supabase/migrations/20261004180000_y2_secured_stays_secured.sql).
   //
-  // `rows`: the pupil's own flashcard_reviews, OLDEST FIRST (so the last
-  // write to a group's slot in `groups` below is that group's latest row) —
-  // {card_id, rating, phase, session_id, rated_at, event_id|id}. Rows with
-  // no `session_id` (an older read, or a test fixture) are all treated as
-  // one group per (card, phase) — the safe, conservative reading when the
-  // grouping key is missing, not a crash.
-  //
-  // Returns {secured: {card_id: true}, finishAt: {card_id: {at, event_id}}}
-  // — `finishAt[card]` is that card's EARLIEST counting got_it row (the
-  // earliest group whose latest was got_it), which is what `finishedAt()`
-  // below needs: the deck's finish is the MAX of these, the moment the
-  // LAST card secured, not the most recent time any card was re-confirmed.
+  // `rows`: the pupil's own flashcard_reviews, any order —
+  // {card_id, rating, rated_at, event_id|id}. Returns
+  // {secured: {card_id: true}, finishAt: {card_id: {at, event_id}}} —
+  // `finishAt[card]` is that card's EARLIEST got_it, which is what
+  // `finishedAt()` below needs: the deck's finish is the MAX of these, the
+  // moment the LAST card secured.
   function securedInfo(rows, cards) {
     var inDeck = {};
     (cards || []).forEach(function (c) { inDeck[c.id] = true; });
-    var groups = {};
-    (rows || []).forEach(function (r) {
-      if (!r || !inDeck[r.card_id] || !(r.rating in RANK)) { return; }
-      var phase = r.phase === "make" ? "make" : "review";
-      var key = (r.session_id == null ? "" : r.session_id) + "|" + phase;
-      var g = groups[r.card_id] || (groups[r.card_id] = {});
-      g[key] = r;   // oldest-first input: the LAST write to a key is its latest row
-    });
     var secured = {}, finishAt = {};
-    Object.keys(groups).forEach(function (cardId) {
-      var best = null;
-      Object.keys(groups[cardId]).forEach(function (key) {
-        var r = groups[cardId][key];
-        if (r.rating !== "got_it") { return; }
-        var at = ms(r.rated_at);
-        if (!best || at < best.at) { best = { at: at, event_id: r.event_id || r.id || null }; }
-      });
-      if (best) { secured[cardId] = true; finishAt[cardId] = best; }
+    (rows || []).forEach(function (r) {
+      if (!r || !inDeck[r.card_id] || r.rating !== "got_it") { return; }
+      var at = ms(r.rated_at), best = finishAt[r.card_id];
+      secured[r.card_id] = true;
+      if (!best || at < best.at) { finishAt[r.card_id] = { at: at, event_id: r.event_id || r.id || null }; }
     });
     return { secured: secured, finishAt: finishAt };
   }
@@ -453,13 +435,10 @@
     this.acted = 0;           // answers + ratings, this visit (A13)
     this.sittingOpen = false; // events sent since the last session_finish
     this.tok = 0;             // bumps whenever the card in front changes
-    // ⊕ MRB-354 — SECURED, built once from the pupil's own rows at the last
-    // resume/reopen (`historicalSecured`, frozen — see `resumeFor()`), plus
-    // whatever THIS open sitting has rated since (`liveLatest`: cardId →
-    // "phase:sessionGeneration" → rating, so a ‹ Back / redo correction in
-    // the SAME still-open sitting overwrites its own slot, while a NEW
-    // sitting — after `sessionFinish()` bumps `liveSessionN` — gets a slot
-    // of its own and can only ADD to what is secured, never remove).
+    // SECURED, built once from the pupil's own rows at the last resume /
+    // reopen (`historicalSecured`, frozen — see `resumeFor()`), plus every
+    // card rated got_it since (`liveSecured`). Both only ever grow: once
+    // secured, stays secured (Mide, 4 Oct 2026).
     this.historicalSecured = {};
     if (this.opts.secured) {
       var self0 = this;
@@ -467,7 +446,7 @@
         if (self0.opts.secured[id]) { self0.historicalSecured[id] = true; }
       });
     }
-    this.liveLatest = {};
+    this.liveSecured = {};    // cards rated got_it since the last read — once secured, stays
     this.liveSessionN = 0;
     this.apply(state);
     this.start(this.opts.resume || null);
@@ -497,19 +476,14 @@
     return this.cards.filter(function (c) { return !c.made; });
   };
 
-  // ⊕ MRB-354 — THE DISPLAY TRUTH FOR SECURED. Never reads the server's own
-  // `state.secured`/`state.known` (the OLD two-sitting rule, until the
-  // parked SQL lands): a card is secured if the last server read already
-  // showed it secured (`historicalSecured`), OR if this open sitting has
-  // rated it got_it in some phase/session-generation that has not since
-  // been corrected (`liveLatest`).
+  // THE DISPLAY TRUTH FOR SECURED: secured at the last read of the pupil's
+  // own rows (`historicalSecured`), or rated got_it since (`liveSecured`).
+  // Never lowered.
   Engine.prototype.securedMap = function () {
     var self = this;
     var out = {};
     this.cards.forEach(function (c) {
-      if (self.historicalSecured[c.id]) { out[c.id] = true; return; }
-      var live = self.liveLatest[c.id];
-      out[c.id] = !!(live && Object.keys(live).some(function (k) { return live[k] === "got_it"; }));
+      out[c.id] = !!(self.historicalSecured[c.id] || self.liveSecured[c.id]);
     });
     return out;
   };
@@ -798,15 +772,38 @@
       self.verdict = VERDICTS.indexOf(v) >= 0 ? v : null;
       self.changed();
     }
-    setTimeout(function () { land(null); }, Api.modelWaitMs || MODEL_WAIT_MS);
-    Promise.resolve().then(function () { return Api.modelCheck(self.id, c.id, answer, self); })
-      .then(function (v) { land(typeof v === "string" ? v : null); }, function () { land(null); });
+    // ⊕ Mide, 4 Oct 2026 (option B) — ONE quiet retry before giving up, so a
+    // single slow or failed reply doesn't cost the pupil: a second attempt,
+    // the pupil still seeing "Checking…". A late reply to EITHER attempt
+    // still lands (the edge function answers a repeat of the same text from
+    // the verdict it stored for the first, without asking the model again).
+    // Only when both come back empty does the card go unchecked (`cap()`).
+    var tries = 0;
+    function attempt() {
+      tries += 1;
+      var mine = tries, done = false;
+      function fail() {
+        if (done || settled) { return; }
+        done = true;
+        if (mine < 2) { attempt(); } else { land(null); }
+      }
+      setTimeout(fail, Api.modelWaitMs || MODEL_WAIT_MS);
+      Promise.resolve().then(function () { return Api.modelCheck(self.id, c.id, answer, self); })
+        .then(function (v) {
+          if (VERDICTS.indexOf(v) >= 0) { done = true; land(v); } else { fail(); }
+        }, fail);
+    }
+    attempt();
   };
 
   // §13.1.1–3 — the highest rating this answer may have.
-  //   null    no cap (no verdict: a timeout, no key, an old function)
   //   "none"  nothing may be rated yet (the check is still out)
   //   else    the highest allowed rating; after "I don't know", Nearly.
+  // ⊕ Mide, 4 Oct 2026 (option B) — NO VERDICT CAPS AT NEARLY. An answer
+  // nothing could check (slow, failed, no AI) may be Nearly or Not yet,
+  // never Secured: "Secured has to mean secured". Nearly brings the card
+  // back later in the deck, where it gets a real check. (It used to mean no
+  // cap at all, so a pupil could secure an answer nobody had checked.)
   Engine.prototype.cap = function () {
     if (!this.revealed) { return null; }
     if (this.verdict === "pending") { return "none"; }
@@ -814,12 +811,12 @@
       var s = SUGGEST[this.verdict];
       return this.idkNow && RANK[s] > RANK.nearly ? "nearly" : s;
     }
-    return this.idkNow ? "nearly" : null;
+    return "nearly";
   };
   Engine.prototype.allowed = function (rating) {
     if (!this.revealed || RATINGS.indexOf(rating) < 0) { return false; }
     var cap = this.cap();
-    return cap === null || (cap !== "none" && RANK[rating] <= RANK[cap]);
+    return cap !== "none" && cap !== null && RANK[rating] <= RANK[cap];
   };
 
   // The filled rating: the cap, and only when there is a verdict (after
@@ -841,11 +838,9 @@
     c.last = rating; c.lastLocal = rating;
     if (rating === "got_it") { c.known = true; }
     this.pass[id] = { rating: rating, mine: this.mine, verdict: this.verdict === "pending" ? null : this.verdict, cap: cap };
-    // ⊕ MRB-354 — this sitting's own secured truth: a ‹ Back / redo
-    // correction overwrites its OWN slot (same card + phase + still-open
-    // sitting generation); a rating made after a `sessionFinish()` lands in
-    // a fresh slot and can only ADD to what is secured.
-    (this.liveLatest[id] || (this.liveLatest[id] = {}))[this.stage + ":" + this.liveSessionN] = rating;
+    // Once secured, stays secured (Mide, 4 Oct 2026): a got_it here secures
+    // the card for good; a later lower rating is history, never a downgrade.
+    if (rating === "got_it") { this.liveSecured[id] = true; }
     delete this.saved[id];
     this.keepDrafts(true);
     if (!this.detour && this.idx >= this.baseLen && this.idkSeen[id]) {

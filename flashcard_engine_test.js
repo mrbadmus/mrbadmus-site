@@ -191,8 +191,9 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(e.view().segments[1].state === "answered", "Not yet → segment grey (answered, not right)");
     answer(e, "force of gravity on it");  // multi-word, no model → no chip, nothing filled
     v = e.view();
-    check(v.revealed && v.chip === "" && v.suggest === null && v.cap === null, "undecided and no model check: no chip, no rating filled, no cap (A3)");
-    check(v.allowed.got_it && v.allowed.nearly && v.allowed.not_yet, "no verdict → all three ratings allowed");
+    // ⊕ Mide, 4 Oct 2026 (option B): nothing could check it, so never Secured.
+    check(v.revealed && v.chip === "" && v.suggest === null && v.cap === "nearly", "undecided and no model check: no chip, nothing filled, capped at Nearly");
+    check(!v.allowed.got_it && v.allowed.nearly && v.allowed.not_yet, "no verdict → Nearly or Not yet, never Secured");
     e.rate("nearly");
     answer(e, "f = ke"); e.rate("not_yet");
     answer(e, "vector"); e.rate("got_it");
@@ -243,18 +244,29 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(e.view().chip === "Nearly" && e.view().suggest === "nearly", "the model's 'partial' → chip Nearly, Nearly filled");
     e.rate("nearly");
     H.modelWaitMs = 60;
-    H.modelCheck = () => new Promise((r) => setTimeout(() => r("match"), 150));
+    H.modelCheck = () => new Promise((r) => setTimeout(() => r("match"), 100));
     answer(e, "made of hydrogen and oxygen");
-    await tick(100);
-    check(e.view().chip === "" && e.view().suggest === null, "no verdict inside the wait → no chip at all (A3)");
-    await tick(100);
-    check(e.view().chip === "", "a verdict landing after the wait is ignored");
-    e.rate("not_yet");
+    await tick(80);
+    // ⊕ option B: the first wait ran out at 60 ms, so a quiet retry is out —
+    // still "Checking…" — and the first reply, landing at 100 ms (inside the
+    // retry's own wait, which ends at 120), is used.
+    check(e.view().chip === "Checking…" && e.view().cap === "none", "first wait over: a quiet retry, still 'Checking…'");
+    await tick(60);
+    check(e.view().chip === "Right" && e.view().suggest === "got_it", "a slow first reply landing during the retry still counts");
+    e.rate("got_it");
+    H.modelCheck = () => new Promise((r) => setTimeout(() => r("match"), 400));
+    answer(e, "made of hydrogen and oxygen");
+    await tick(160);
+    check(e.view().chip === "" && e.view().cap === "nearly", "both waits over: no chip, capped at Nearly");
+    check(!e.view().allowed.got_it && e.view().allowed.nearly, "an unchecked answer can be Nearly, never Secured");
+    await tick(300);
+    check(e.view().chip === "", "a verdict landing after both waits is ignored");
+    e.rate("nearly");
     H.modelWaitMs = 4000;
     H.modelCheck = () => Promise.resolve({ weird: true });
     answer(e, "mass times gravity strength");
     await tick(5);
-    check(e.view().chip === "" && e.view().cap === null, "a reply without a verdict string → no chip, no cap");
+    check(e.view().chip === "" && e.view().cap === "nearly", "a reply without a verdict string (twice) → no chip, capped at Nearly");
   }
 
   // ── 5. a failed resume read starts a fresh pass (§2.7) ───────────────
@@ -285,7 +297,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(v.phase === "make" && v.headline === "0 of 3 right", "make mode opens on the writing pass");
     answer(e, "newton"); e.rate("got_it");                 // c0 secures in the writing pass
     answer(e, "water"); e.rate("not_yet");                 // c1 (model "H2O") is wrong
-    answer(e, "gravity"); e.rate("got_it");                // c2 secures too ("gravity" is a word of its model answer)
+    answer(e, "the force acting on an object due to gravity"); e.rate("got_it");   // c2 secures too
     v = e.view();
     check(v.phase === "end" && v.end.line1 === "2 of 3 secured", "writing pass end screen: '2 of 3 secured' (2 cards got it)");
     check(v.end.button === "retry" && !v.end.secondary,
@@ -415,10 +427,10 @@ function answer(e, text) { e.setDraft(text); e.check(); }
           "Checking…: all three ratings refused");
     e.rate("not_yet");
     check(e.view().card.id === "c0" && e.view().revealed, "a tap while checking does nothing");
-    await tick(100);
+    await tick(150);   // the first wait AND the quiet retry's
     v = e.view();
-    check(!v.checking && v.allowed.got_it && v.allowed.nearly && v.allowed.not_yet && v.suggest === null,
-          "the wait expires with no verdict: all three allowed, none filled");
+    check(!v.checking && !v.allowed.got_it && v.allowed.nearly && v.allowed.not_yet && v.suggest === null,
+          "both waits expire with no verdict: Nearly or Not yet, never Secured, none filled (option B)");
     H.modelWaitMs = 4000;
   }
 
@@ -442,7 +454,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     e.rate("nearly");
     check(e.passIds.length === 6 && e.view().segments.length === 5 && e.view().chips.length === 5,
           "the card is appended once: 6 showings, still 5 segments");
-    answer(e, "gravity"); e.rate("got_it");
+    answer(e, "the force acting on an object due to gravity"); e.rate("got_it");
     answer(e, "f = ke"); e.rate("got_it");
     answer(e, "vector"); e.rate("got_it");
     v = e.view();
@@ -477,7 +489,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(v.suggest === "nearly" && !v.allowed.got_it, "…and its own words are still capped at Nearly");
     e.rate("nearly");
     check(e.passIds.length === 6 && e.passIds[5] === "c1", "…and it is still replayed at the end of the pass");
-    answer(e, "gravity"); e.rate("got_it");
+    answer(e, "the force acting on an object due to gravity"); e.rate("got_it");
     answer(e, "f = ke"); e.rate("got_it");
     answer(e, "vector"); e.rate("got_it");
     v = e.view();
@@ -526,7 +538,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     const evs = () => S.events.concat(e.pending);
     answer(e, "newton"); e.rate("got_it");            // c0 green
     answer(e, "water"); e.rate("not_yet");            // c1 grey
-    answer(e, "gravity"); e.rate("got_it");           // c2 green
+    answer(e, "the force acting on an object due to gravity"); e.rate("got_it");           // c2 green
     answer(e, "stretch"); e.rate("not_yet");          // c3 grey
     answer(e, "vector"); e.rate("got_it");            // c4 green
     let v = e.view();
@@ -545,7 +557,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     e.setDraft("half");
     e.redo("c2");
     v = e.view();
-    check(v.detour && v.card.id === "c2" && !v.revealed && v.draft === "gravity" && v.chips[2].current,
+    check(v.detour && v.card.id === "c2" && !v.revealed && v.draft === "the force acting on an object due to gravity" && v.chips[2].current,
           "redo: the green card in state A with its earlier answer");
     check(v.canBack && v.chips.every((g) => !g.redo), "‹ Back offered; no chip is a redo during a redo");
     e.back();
@@ -561,20 +573,15 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     answer(e, "h2o"); e.rate("got_it");
     answer(e, "f = ke"); e.rate("got_it");
     v = e.view();
-    // ⊕ MRB-354 — c2 was downgraded to not_yet via the redo, in the SAME
-    // still-open sitting: it is genuinely not secured right now (only
-    // c0/c1/c3/c4 are), not merely "not Got it in this pass".
-    check(v.end.line1 === "4 of 5 secured" && v.end.button === "retry", "c2 is left: Try again again");
-    e.retry();
-    check(e.passIds.join() === "c2" && e.view().headline === "4 of 5 right", "a second retry replays only the still-grey card");
-    answer(e, "gravity"); e.rate("got_it");
+    // ⊕ Mide, 4 Oct 2026 — "once secured, stays secured": c2 was Secured,
+    // then re-rated Not yet through a redo. The rating is kept (history),
+    // but c2 stays secured, so securing c1 and c3 finishes the deck.
     await e.flush(); await tick(5); await e.flush(); await tick(5);
-    v = e.view();
     check(v.end.line1 === "5 of 5 secured" && v.end.button === "done" && v.end.secondary,
-          "finishing all secured: Done + the Revise secondary, computed by the device, not the server");
-    check(S.events.filter((x) => x.type === "session_finish").length === 1, "exactly ONE session_finish across the pass and both retries");
+          "c2 stays secured after the redo's Not yet: 5 of 5 secured, Done + the Revise secondary");
+    check(S.events.filter((x) => x.type === "session_finish").length === 1, "exactly ONE session_finish across the pass and the retry");
     const c2 = S.events.filter((x) => x.type === "rated" && x.card === "c2").map((x) => x.rating);
-    check(c2.join() === "got_it,not_yet,got_it", "every rating of the redone card is an event (" + c2 + ")");
+    check(c2.join() === "got_it,not_yet", "the later Not yet is still recorded as an event (" + c2 + ")");
     check(S.sittings === 1, "one server sitting for the whole thing");
     e.retry();
     check(e.view().phase === "end", "no Try again after an all-right pass");
@@ -705,7 +712,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
 
     // ── 20. offline, then a reload on the same device ──────────────────
     S.fail = true;
-    answer(e2, "gravity"); e2.rate("got_it");
+    answer(e2, "the force acting on an object due to gravity"); e2.rate("got_it");
     await tick(5);
     check(e2.pending.length > 0 && S.rows.length === 2, "20: offline — the rating waits on the device");
     S.fail = false;
@@ -719,7 +726,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
   // ── 21. the Try again screen survives a reopen, for an hour ─────────
   {
     const { S, e } = await fresh();
-    const script = { c0: ["newton", "got_it"], c1: ["water", "not_yet"], c2: ["gravity", "got_it"],
+    const script = { c0: ["newton", "got_it"], c1: ["water", "not_yet"], c2: ["the force acting on an object due to gravity", "got_it"],
                      c3: ["stretch", "not_yet"], c4: ["vector", "got_it"] };
     for (let k = 0; k < 5; k++) { const id = e.view().card.id; answer(e, script[id][0]); e.rate(script[id][1]); }
     await tick(5); await e.flush(); await tick(5);
@@ -746,7 +753,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
   // ── 22. reopened mid-retry: the chips view, on what is left ─────────
   {
     const { S, e } = await fresh();
-    const script = { c0: ["newton", "got_it"], c1: ["water", "not_yet"], c2: ["gravity", "got_it"],
+    const script = { c0: ["newton", "got_it"], c1: ["water", "not_yet"], c2: ["the force acting on an object due to gravity", "got_it"],
                      c3: ["stretch", "not_yet"], c4: ["vector", "got_it"] };
     for (let k = 0; k < 5; k++) { const id = e.view().card.id; answer(e, script[id][0]); e.rate(script[id][1]); }
     e.retry();
@@ -770,7 +777,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
   //        more time" is the only way into one, voluntarily. ────────────
   {
     const { S, e } = await fresh();
-    const good = { c0: "newton", c1: "h2o", c2: "gravity", c3: "f = ke", c4: "vector" };
+    const good = { c0: "newton", c1: "h2o", c2: "the force acting on an object due to gravity", c3: "f = ke", c4: "vector" };
     for (let k = 0; k < 5; k++) { const id = e.view().card.id; answer(e, good[id]); e.rate("got_it"); }
     await tick(5); await e.flush(); await tick(5);
     check(e.view().end.button === "done" && e.view().end.secondary, "23: all secured → Done + the Revise secondary");
@@ -790,13 +797,13 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     const { S, e } = await fresh({ mode: "make" });
     answer(e, "newton"); e.rate("got_it");
     answer(e, "h2o"); e.rate("got_it");
-    answer(e, "gravity");                         // made (answer_submitted), not rated
+    answer(e, "the force acting on an object due to gravity");   // made (answer_submitted), not rated
     await tick(5); await e.flush(); await tick(5);
-    check(S.cards[2].made && S.cards[2].mine === "gravity", "24: the server has card 3's answer");
+    check(S.cards[2].made && S.cards[2].mine === "the force acting on an object due to gravity", "24: the server has card 3's answer");
     H._reset(); localStorage.clear();              // the phone died; another device
     const a = await H.open("A");
     let v = a.view();
-    check(v.phase === "make" && v.card.id === "c2" && !v.revealed && v.draft === "gravity" && v.pos === 3 && v.headline === "2 of 5 right",
+    check(v.phase === "make" && v.card.id === "c2" && !v.revealed && v.draft === "the force acting on an object due to gravity" && v.pos === 3 && v.headline === "2 of 5 right",
           "24: card 3 reopens in state A with its stored answer in the box (" + v.draft + ", pos " + v.pos + ")");
     a.check(); a.rate("got_it");
     check(a.view().card.id === "c3", "24: Check → rate → card 4");
@@ -886,7 +893,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     answer(e, "water"); e.rate("not_yet");
     check(H.finishedAt(S.reviews(), S.cards) === null,
           "28: finishedAt null before every card is secured (1 of 5)");
-    answer(e, "gravity"); e.rate("got_it");
+    answer(e, "the force acting on an object due to gravity"); e.rate("got_it");
     answer(e, "f = ke"); e.rate("got_it");
     answer(e, "vector"); e.rate("got_it");
     let v = e.view();
@@ -940,21 +947,39 @@ function answer(e, text) { e.setDraft(text); e.check(); }
           "30: finishedAt is unchanged — a new sitting's rating forms its OWN group and cannot remove an earlier one");
   }
 
-  // ── 31. ⊕ MRB-354 — a ‹ Back correction in the SAME sitting excludes the
-  //        overwritten got_it row (the group's LATEST row wins); a got_it
-  //        in a DIFFERENT, later sitting secures the card at ITS OWN time,
-  //        never retroactively from the corrected sitting. ───────────────
+  // ── 31. ⊕ Mide, 4 Oct 2026 — once secured, stays secured: a ‹ Back to a
+  //        secured card and a lower rating in the SAME sitting never takes
+  //        it back; the deck's finish is the moment the LAST card was first
+  //        secured. ─────────────────────────────────────────────────────
   {
     const now = Date.now();
     const sameSitting = ["c0", "c1", "c2", "c3"].map((c, i) => row(c, "got_it", now - (10 - i) * MIN, "review", "s1"))
       .concat([row("c4", "got_it", now - 5 * MIN, "review", "s1"),
-               row("c4", "not_yet", now - 4 * MIN, "review", "s1")]);   // ‹ Back: corrected in the SAME sitting
-    check(H.finishedAt(sameSitting, deck5()) === null,
-          "31: the ‹ Back correction wins — c4's s1 group is not_yet, so c4 is not secured");
-    check(!H.securedInfo(sameSitting, deck5()).secured.c4, "31: securedInfo agrees — c4 is not in the secured set");
-    const nextSitting = sameSitting.concat([row("c4", "got_it", now, "review", "s2")]);   // a NEW sitting
-    const hit = H.finishedAt(nextSitting, deck5());
-    check(!!hit && hit.at === now, "31: a got_it in a new sitting secures c4, at its own time — not the corrected sitting's");
+               row("c4", "not_yet", now - 4 * MIN, "review", "s1")]);   // ‹ Back, answered wrong
+    const hit = H.finishedAt(sameSitting, deck5());
+    check(!!hit && hit.at === now - 5 * MIN, "31: c4 stays secured — finished when c4 was first secured");
+    check(!!H.securedInfo(sameSitting, deck5()).secured.c4, "31: securedInfo agrees — c4 is in the secured set");
+    const later = sameSitting.concat([row("c4", "got_it", now, "review", "s2")]);
+    check(H.finishedAt(later, deck5()).at === now - 5 * MIN, "31: a later got_it does not move the finish");
+  }
+
+  // ── 31b. ⊕ Mide, 4 Oct 2026 — revising after Done and getting a card
+  //        wrong never un-secures it; the wrong answer is still recorded. ─
+  {
+    const { S, e } = await fresh();
+    const good = { c0: "newton", c1: "h2o", c2: "the force acting on an object due to gravity", c3: "f = ke", c4: "vector" };
+    for (let k = 0; k < 5; k++) { const id = e.view().card.id; answer(e, good[id]); e.rate("got_it"); }
+    await tick(5); await e.flush(); await tick(5);
+    check(e.view().end.line1 === "5 of 5 secured", "31b: all secured");
+    e.again();
+    const first = e.view().card.id;
+    answer(e, "the"); e.rate("not_yet");          // wrong this time
+    check(e.securedCount() === 5 && e.securedMap()[first], "31b: a wrong answer in a Revise pass leaves the card secured");
+    for (let k = 0; k < 4; k++) { const id = e.view().card.id; answer(e, good[id]); e.rate("got_it"); }
+    await tick(5); await e.flush(); await tick(5);
+    check(e.view().end.line1 === "5 of 5 secured" && e.view().end.button === "done", "31b: the Revise pass still ends 5 of 5 secured, Done");
+    const rs = S.events.filter((x) => x.type === "rated" && x.card === first).map((x) => x.rating);
+    check(rs.join() === "got_it,not_yet", "31b: the later Not yet is recorded (" + rs + ")");
   }
 
   // ── 32. Api.onFinish fires once the Done screen settles, and only then ─
@@ -962,7 +987,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     const { e } = await fresh();
     let fired = [];
     H.onFinish = (id) => { fired.push(id); };
-    const good = { c0: "newton", c1: "h2o", c2: "gravity", c3: "f = ke", c4: "vector" };
+    const good = { c0: "newton", c1: "h2o", c2: "the force acting on an object due to gravity", c3: "f = ke", c4: "vector" };
     for (let k = 0; k < 5; k++) { const id = e.view().card.id; answer(e, good[id]); e.rate("got_it"); }
     await e.flush(); await tick(5); await e.flush(); await tick(5);
     check(e.view().end.button === "done", "32: all right → Done");

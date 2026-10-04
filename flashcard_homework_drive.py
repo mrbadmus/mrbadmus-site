@@ -593,17 +593,19 @@ def run(width, height, kb, shots):
             P.type("F = ke")
             P.click('[data-hw="check"]')
             s = P.st()
-            check(s["chip"] is None and s["pressed"] == [] and len(s["enabled"]) == 3,
-                  "no verdict (no model check): no chip, nothing filled, all three enabled (A3)")
-            P.click('[data-hw="got_it"]')
+            # ⊕ Mide, 4 Oct 2026 (option B) — nothing could check it, so it
+            # may be Nearly or Not yet, never Secured; Nearly brings it back.
+            check(s["chip"] is None and s["pressed"] == [] and sorted(s["enabled"]) == ["nearly", "not_yet"],
+                  "no verdict (no model check): no chip, nothing filled, Nearly or Not yet only (got %r)" % s["enabled"])
+            P.click('[data-hw="nearly"]')
             settle(0.8)
             s = P.st()
             # ⊕ MRB-354 — c1 (water) was corrected to Wrong/Not yet via ‹ Back
             # earlier and never got_it since: it is the one card NOT secured.
             # The writing pass follows the SAME rule as review now: not all
             # secured → ONE button, Try again (no forced review pass).
-            check(s["end1"] == "4 of 5 secured" and s["end2"] is None,
-                  "writing pass end screen: '4 of 5 secured' (got %r / %r)" % (s["end1"], s["end2"]))
+            check(s["end1"] == "3 of 5 secured" and s["end2"] is None,
+                  "writing pass end screen: '3 of 5 secured' — c1 and the unchecked c4 are left (got %r / %r)" % (s["end1"], s["end2"]))
             check(s["retryPass"] == "Try again" and s["done"] is None and s["again"] is None
                   and s["endHint"] is None,
                   "writing pass, not all secured: ONE button Try again, no forced review pass (MRB-354)")
@@ -644,6 +646,17 @@ def run(width, height, kb, shots):
             # unambiguous (`[data-hw="rate"] button[aria-pressed]`).
             s = P.st()
             check(s["pressed"] == ["got_it"], "retyped correctly this time: Right, Secured filled (got %r)" % s["pressed"])
+            P.click('[data-hw="got_it"]')
+            settle(0.8)
+            # the unchecked c4 comes back too, and this time it is checked:
+            # typed in full, it is Right on the spot.
+            s = P.st()
+            check(s["writing"] and s["front"] == "Write the equation for the force on a spring.",
+                  "Try again also brings back the card nothing could check (got %r)" % s["front"])
+            P.type("Force = spring constant × extension (F = ke)")
+            P.click('[data-hw="check"]')
+            s = P.st()
+            check(s["pressed"] == ["got_it"], "checked this time: Right, Secured filled (got %r)" % s["pressed"])
             P.click('[data-hw="got_it"]')
             settle(0.8)
             s = P.st()
@@ -811,24 +824,16 @@ def run(width, height, kb, shots):
                 P.click('[data-hw="got_it"]')
             settle(0.6)
             s = P.st()
-            # ⊕ MRB-354 — the redo downgraded this card to not_yet in the SAME
-            # still-open sitting, so it is genuinely not secured right now.
-            check(s["end1"] == "4 of 5 secured" and s["retryPass"] == "Try again", "the redone card is left: Try again (got %r)" % s["end1"])
-            P.click('[data-hw="retry-pass"]')
-            s = P.st()
-            check(s["front"] == order[first_green] and s["greens"] == 4, "a second Try again: only the still-grey card")
-            P.type(answers[order[first_green]])
-            P.click('[data-hw="check"]')
-            P.click('[data-hw="got_it"]')
-            settle(0.8)
-            s = P.st()
+            # ⊕ Mide, 4 Oct 2026 — "once secured, stays secured": the redo's
+            # Not yet is recorded, but the card it was given to stays secured,
+            # so securing the queue's two cards finishes the deck.
             check(s["end1"] == "5 of 5 secured" and s["done"] == "Done" and s["end2"] is None
                   and s["retryPass"] is None and s["again"] == "Revise flashcards one more time",
-                  "all secured: Done, plus the quieter Revise secondary, computed by the device (got %r %r %r)"
+                  "the redone card stays secured: Done, plus the quieter Revise secondary (got %r %r %r)"
                   % (s["end1"], s["done"], s["again"]))
             ev = P.q("window.__FC_FAKE__.events")
             check(sum(1 for e in ev if e["type"] == "session_finish") == 1,
-                  "ONE session_finish across the pass and both Try agains")
+                  "ONE session_finish across the pass and the Try again")
             P.no_retired("all-right screen")
             P.shot("End-all-right-done")
             P.click('[data-hw="done"]')

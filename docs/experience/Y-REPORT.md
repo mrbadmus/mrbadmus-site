@@ -162,7 +162,7 @@ untouched by this run): `flashcard_card_state` `eb50f6a2…`,
 
 ## 4. Things I wasn't sure about — for Mide to see before he finds them
 
-1. **A slow or failed AI check lets the pupil rate themselves.** If the
+1. *(Decided by Mide, 4 Oct — option B, see §6.2.)* **A slow or failed AI check lets the pupil rate themselves.** If the
    check takes more than 4 seconds or fails, the pupil sees the answer and
    picks Not yet / Nearly / Secured themselves, with nothing filled in.
    Production's own numbers: 2 of the last 73 checks (~3%) were slower than
@@ -175,7 +175,7 @@ untouched by this run): `flashcard_card_state` `eb50f6a2…`,
    the AI, which should say Right — but I could not run the real AI here (no
    key on this machine); the run used the stand-in. Worth one look on your
    phone with a one-word answer.
-3. **Going ‹ Back to a secured card and answering it wrong un-secures it.**
+3. *(Decided by Mide, 4 Oct — once secured, stays secured, see §6.3.)* **Going ‹ Back to a secured card and answering it wrong un-secures it.**
    That is the rule MRB-354 built ("Back in the same sitting can still change
    a rating"), and the pupil and the teacher agree on it — but your 2 Oct
    rule doesn't say, and a pupil could hit it by checking themselves.
@@ -225,3 +225,142 @@ Chemistry Quiz row says **"revised after marking"**.
 
 If step 1 or 2 doesn't happen, that is exactly what I could not test
 without a real iPhone — please send me a screenshot.
+
+---
+
+## 6. Mide's 4 Oct decisions
+
+Mide tried the phone screen on his iPhone and made three decisions. The lane
+had already applied the one-word SQL to production (`flashcard_quick_check`
+`ab1d58c5…`, spot-checked live). Everything below is built on production's
+current bodies, read again on 4 Oct before any work.
+
+### 6.1 Don't open the keyboard straight away
+
+> "Students should be able to see and digest the answer first, and then type
+> the answer in the answer box."
+
+**What changed.** "I don't know" no longer puts the cursor in the box; it
+lets go of focus instead, so even a pupil who had already tapped into the
+box gets the keyboard put away. The model answer has the screen, big
+(18px+), with the box plainly under it (the same 2px border) and Check in
+view. No new words. When the pupil taps the box, the keyboard comes up and
+the layout is exactly what Mide tested: the answer above the box, the orange
+border, the question small and scrollable, Check above the keyboard. Before
+the tap the card is answer-first too: if the question and the whole answer
+don't fit, the card starts at the answer, and no line is ever cut at its
+edge. After a Nearly / Wrong there is no box at all (the answer shows on the
+back of the card with the ratings), so there is no keyboard there either.
+
+**Proof.** `tools/flashcard_phone_layout.py` now checks, on the four phones in
+light and dark: the cursor is not in the box during the "I don't know" tap or
+after the redraw (it starts with the box focused, the worst case); at rest
+the whole answer is on the card (a very long one starts at the card's top),
+the answer is at least 17px, the box (≥60px) and Check are on screen, no line
+is cut; then, after the tap, every keyboard check from before. **506 checks,
+0 fail.** On yesterday's page the same tool fails: "'I don't know' does not
+put the cursor in the box (activeElement='answer')", "nor does the redraw",
+"at rest, nothing is focused".
+
+| phone | 1. after "I don't know" — no keyboard | 2. after tapping the box |
+|---|---|---|
+| iPhone 390×844 | ![](y2-shots/ios-390-1-answer-first.png) | ![](y2-shots/ios-390-2-after-tapping-box.png) |
+| iPhone 390×844, dark | ![](y2-shots/ios-390-dark-1-answer-first.png) | ![](y2-shots/ios-390-dark-2-after-tapping-box.png) |
+| small iPhone 360×740 | ![](y2-shots/ios-360-1-answer-first.png) | ![](y2-shots/ios-360-2-after-tapping-box.png) |
+| Android 412×915 | ![](y2-shots/android-412-1-answer-first.png) | ![](y2-shots/android-412-2-after-tapping-box.png) |
+| Android 360×800 | ![](y2-shots/android-360-1-answer-first.png) | ![](y2-shots/android-360-2-after-tapping-box.png) |
+
+(The "after tapping" pictures are cropped to what is above the keyboard; the
+keyboard is simulated, as in section 1.)
+
+### 6.2 Slow or failed AI check → never Secured (option B)
+
+> "Secured has to mean secured."
+
+**What changed.** The check now makes one quiet retry: if no verdict comes
+within 4 seconds, it asks again (the pupil just keeps seeing "Checking…"),
+for up to 4 more. The retry usually gets the verdict the first, slow call has
+just stored on the server, or a fresh one. Only if the retry also comes back
+empty is the answer unchecked, and then the pupil may choose **Nearly or Not
+yet, never Secured**. Nearly brings the card back at Try again, where it is
+checked properly. Nothing is filled in for them and no words are added.
+
+**Proof.** Engine tests: a slow first reply still "Checking…" during the
+retry; both waits over → capped at Nearly; a malformed reply twice → capped.
+On TEST with the real answer-check function (`--phases slowfail`): one slow
+reply (6 s) → "Checking…" at 4.6 s, then **"Right" at 7.7 s**; a failing check
+(500 twice) → no chip, **only Nearly / Not yet**; the deck ends "2 of 3
+secured", Try again brings that card back, it is **really checked** and
+secured → "3 of 3 secured", Done.
+
+No SQL, no edge-function change: the server already records whatever rating
+the pupil gives, and the cap lives on the page with every other verdict cap.
+
+### 6.3 Once secured, stays secured
+
+> "Once secured, stays secured. It also helps with students not losing
+> motivation."
+
+**What changed — every place that could lower a secured card was checked:**
+
+| place | before | now |
+|---|---|---|
+| the pupil's page (`securedInfo`, the live tally) | the latest rating per card per sitting counted | any Secured ever counts; a later lower rating is kept as history |
+| `flashcard_card_state` (the teacher's Secured, every teacher page) | same "latest" rule | any Secured ever — **parked SQL below** |
+| `flashcard_record` (when the homework counts as finished) | finish walk over the latest ratings | every Secured rating — **parked SQL below** |
+| `flashcard_pupil_detail` | reads `flashcard_card_state`; lists every rating | no change needed; the later attempt shows in "Later tries" |
+| `flashcard_progress` | reads `flashcard_card_state` | no change needed |
+| `flashcard_store_verdict` | writes verdicts, never ratings | no change needed |
+| the two-tab catch-up | rebuilds from the pupil's rows with the page's rule | follows the page's new rule; cannot lower a card |
+
+**Proof.** Engine tests: a redo answered wrong leaves the card secured and the
+deck goes to Done (the Not yet is still an event); ‹ Back + wrong in the same
+sitting keeps the finish time; a wrong answer in a Revise pass after Done
+leaves all five secured. On TEST (`--phases backwalk`, the new SQL in place):
+‹ Back to a secured card, answered wrong → only Not yet offered; the pupil
+still ends "10 of 10 secured", Done; the teacher's pupil detail shows the card
+**Secured, history `got_it, not_yet`**. With production's current SQL put back
+on TEST, the same run shows the teacher "not secured" — which is what
+production will show for such a card until the migration below is applied.
+
+### Parked SQL — `feat/y2-migrations` (NOT applied to production)
+
+| | md5 |
+|---|---|
+| migration `supabase/migrations/20261004180000_y2_secured_stays_secured.sql` | `151e29b5c38522226a2252e1cededdff` |
+| rollback `supabase/rollbacks/20261004180000_y2_secured_stays_secured_rollback.sql` | `b18864861c7cf69f920509843d2da85e` |
+| `flashcard_card_state` BEFORE (production) → AFTER | `eb50f6a2648e23a26af93ab3691ddc65` → `ec4834b787ec5c7e4b3408c9876457bb` |
+| `flashcard_record` BEFORE (production) → AFTER | `9f9106282729fcd97c8975983a880cb0` → `118ade9a51a976365626b3aa67e91e56` |
+
+Built from production's own bytes (the committed migration files whose bodies
+md5-match production), one filter changed in each. Rehearsed on TEST: apply →
+rollback (production's exact md5s) → apply; grants unchanged throughout; TEST
+left applied. Apply sheet: `supabase/Y2-APPLY.md` on that branch. **Apply it
+with, or soon after, the site push** — until then a card secured and then
+answered wrong reads Secured to the pupil and not secured to the teacher.
+
+### Also re-run on the final code
+
+Every run-through phase on TEST, one at a time: the core paths (48 checks),
+two tabs (14), double taps (18), kill-tab (12), the teacher views at three
+sizes (65), review mode (22), formulae (23), edge decks (22), slow/fail,
+Back/Forward on every card — all pass, 0 rows left behind. Engine tests 191/0;
+the homework drive green.
+
+### On your iPhone — what you should see now
+
+Same steps: your pupil test account → **8r/Sc1** → **"Organic Chemistry
+Quiz" (due Fri 9 Oct)** → **Revise flashcards one more time** → on the first
+card, without typing, tap **"I don't know"**.
+
+1. **No keyboard.** The model answer is on the card, big and white, under the
+   question (or at the top of the card, if there isn't room for both). The
+   box sits below it with its grey border, no cursor in it, and Check is in
+   view. Nothing tells you what to do; you read the answer.
+2. **Tap the box.** The keyboard comes up, and the screen becomes the one you
+   tested and liked: the answer above the box, the box's border turns
+   orange with the cursor in it, the question small and grey-blue (scroll
+   the card down to see it if it has gone), and Check just above the
+   keyboard.
+3. Type it and tap Check: Nearly is filled in and Secured isn't offered — the
+   card comes back later in the pass.

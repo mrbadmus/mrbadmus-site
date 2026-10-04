@@ -434,31 +434,21 @@ class Component extends DCLogic {
     if (was !== e.canCheck()) { this.hwTick(); }
   };
   hwCheck = () => this.hwOnce(() => { const e = this.hwEngine(); if (e) { e.check(); } });
-  /* ⊕ Y Unit 1 (Mide, phone report, 4 Oct 2026) — focus the box
-     SYNCHRONOUSLY, inside this tap, before the engine's state
-     change. Two reasons, both load-bearing: (1) iOS Safari only
-     raises the keyboard for a focus() made inside the user's own
-     gesture — calling it after the redraw (a requestAnimationFrame
-     away) is too late; (2) it is what the NEXT redraw's path-based
-     refocus (student-runtime.js's focusPath/refocus) captures —
-     left alone it captures whatever this tap leaves focused (this
-     button), and after the redraw that same child-index PATH
-     resolves to Check instead, because 'I don't know' itself drops
-     out of the row (hwIdkOn turns false). Focusing the box first
-     makes the box what gets captured and restored. The flag is a
-     one-shot backstop for flashcard-keyboard.js's after-draw hook,
-     for the rare redraw where the path restore lands elsewhere —
-     see its own comment for why a RESUMED learn step (no gesture)
-     must never set it. */
+  /* ⊕ Mide, 4 Oct 2026 (iPhone test) — "Students should be able to
+     see and digest the answer first, and then type." So after
+     'I don't know' NOTHING is focused: the keyboard stays down, the
+     model answer has the screen, and the box sits under it, plainly a
+     box; the pupil taps it when ready. Focus is let go here, inside
+     the tap, so the redraw's path-based refocus (student-runtime.js
+     focusPath/refocus) has nothing to put back — left alone it would
+     restore whatever the tap left focused (the box itself, if the
+     pupil had already tapped into it, which would keep the keyboard
+     up over the answer). (Prompt Y unit 1 had focused the box here.) */
   hwIdk = () => this.hwOnce(() => {
     const e = this.hwEngine();
     if (!e) { return; }
-    if (typeof document !== 'undefined') {
-      const box = document.querySelector('[data-hw="answer"]');
-      if (box && box.focus) {
-        if (typeof window !== 'undefined') { window.__MRB_FC_LEARN_FOCUS__ = true; }
-        box.focus({ preventScroll: true });
-      }
+    if (typeof document !== 'undefined' && document.activeElement && document.activeElement.blur) {
+      document.activeElement.blur();
     }
     e.idk();
   });
@@ -1683,7 +1673,7 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","class-entry.js":"1028dbfb","config.js":"40813eb2","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-homework.js":"d85ae07e","flashcard-keyboard.js":"070c175c","flashcard-library.css":"7c4a483f","flashcard-library.js":"08bd8d3f","formulae.js":"e4bfb091","ks3-lesson-urls.js":"98cd0930","ks4-lesson-urls.js":"07963eee","rum.js":"66210c21","shoutouts.js":"23393220","student-bell.js":"f46f4d9b","student-data.js":"de3b006f","student-guard.js":"1da3dc79","theme.js":"6fd6f722","topbar.css":"3f7041f1","topbar.js":"b3379add"};</script>
+<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","class-entry.js":"1028dbfb","config.js":"40813eb2","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-homework.js":"b3f6cade","flashcard-keyboard.js":"4a245645","flashcard-library.css":"7c4a483f","flashcard-library.js":"08bd8d3f","formulae.js":"e4bfb091","ks3-lesson-urls.js":"98cd0930","ks4-lesson-urls.js":"07963eee","rum.js":"66210c21","shoutouts.js":"23393220","student-bell.js":"f46f4d9b","student-data.js":"de3b006f","student-guard.js":"1da3dc79","theme.js":"6fd6f722","topbar.css":"3f7041f1","topbar.js":"b3379add"};</script>
 <script src="/shared/student-live.js?v=1d948028"></script>
 <script src="/shared/topbar.js?v=b3379add" defer></script>
 </body>

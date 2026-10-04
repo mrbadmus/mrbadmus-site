@@ -62,6 +62,11 @@ DEFAULT_SHOTS = os.path.expanduser(os.environ.get("MRB_SHOTS", "~/tmp/y-shots/un
 
 MARK_SLOW = "ZZZSLOW6ZZZ"
 MARK_FAIL = "ZZZFAIL500ZZZ"
+# ⊕ Y2 — ONE slow reply: the first request carrying it takes 6 s (the page
+# gives up on it at 4 s; the server still finishes and stores the verdict),
+# any repeat is answered at normal speed — a single slow reply, not an outage.
+MARK_SLOW_ONCE = "ZZZSLOWONCEZZZ"
+_SLOW_ONCE_SEEN = set()
 
 REPORT = []  # list of dicts: {path, action, result, verdict, evidence}
 
@@ -169,6 +174,9 @@ def forward_marked(method, path, headers, body):
     if MARK_FAIL in ans:
         return 500, {"Content-Type": "application/json"}, b'{"error":"synthetic_failure"}'
     if MARK_SLOW in ans:
+        time.sleep(6.0)
+    if MARK_SLOW_ONCE in ans and ans not in _SLOW_ONCE_SEEN:
+        _SLOW_ONCE_SEEN.add(ans)
         time.sleep(6.0)
     return _forward_real(method, path, headers, body)
 
@@ -1195,53 +1203,70 @@ def main():
             path = "slow (6s) / failed (500) model check"
             check(s["strip"] and s["writing"], "slowfail deck opens")
 
-            # card 1 — SLOW: client's own timeout is 4s; our stand-in replies
-            # at 6s. Record the chip/enabled state right after the 4s window.
+            # ⊕ Mide, 4 Oct 2026 (option B) — one quiet retry, then never
+            # Secured on an answer nothing checked.
+            # card 1 — SLOW: the stand-in replies at 6 s; the page's first wait
+            # ends at 4 s and a quiet retry starts, so the 6 s reply lands
+            # inside the retry's wait and the answer IS checked.
             t0 = time.time()
-            P7.type(f"it bleaches damp litmus paper white {MARK_SLOW}")
-            P7.click('[data-hw="check"]')
-            time.sleep(4.6)
-            s_after_timeout = P7.st()
-            s_final = wait_chip(P7, page7, seen7, timeout=4.0)
-            elapsed = time.time() - t0
-            can_secure_unchecked = "got_it" in (s_after_timeout.get("enabled") or [])
-            record(path, "card1: SLOW model reply (6s, vs the client's 4s timeout)",
-                   f"at t={time.time()-t0-4.6:.1f}s-ish(~4.6s): chip={s_after_timeout['chip']!r} "
-                   f"enabled={s_after_timeout['enabled']!r}; by t={elapsed:.1f}s: chip={s_final['chip']!r} "
-                   f"enabled={s_final['enabled']!r}; pupil CAN reach Secured on an unchecked answer: "
-                   f"{can_secure_unchecked}",
-                   "FINDING")
-            if "got_it" in (s_final.get("enabled") or []):
-                P7.click('[data-hw="got_it"]')
-            else:
-                P7.click('[data-hw="not_yet"]')
-            rows = fetch_reviews(c, aid7, pupils["pH"]["id"])
-            card1_id = by_q7[D7_CARDS[0]["question"]]
-            card1_rating = [r["rating"] for r in rows if r["card_id"] == card1_id]
-            record(path, "card1 stored rating after the slow-check window", f"flashcard_reviews rating(s)={card1_rating!r}", "FINDING")
+            P7.type(f"it bleaches damp litmus paper white {MARK_SLOW_ONCE}")
+            # The page notes its own chip 4.6 s after Check (the rig is busy
+            # serving the slow reply then, so it cannot look itself).
+            P7.q("(function(){setTimeout(function(){var c=document.querySelector('[data-hw=\"rate\"]') ? null : 1;"
+                 "var el=document.querySelector('[data-mrb-dialog=\"flashcards\"] [data-hw=\"chip\"]');"
+                 "window.__CHIP46__=el?el.textContent.trim():null;},4600);return 1;})()")
+            ready_click(P7, '[data-hw="check"]')
+            s_final = wait_chip(P7, page7, seen7, timeout=12.0)
+            chip46 = P7.q("window.__CHIP46__ || null")
+            record(path, "card1: ONE slow reply (6 s; the page waits 4 s, then retries once, quietly)",
+                   f"at 4.6 s chip={chip46!r}; by {time.time()-t0:.1f}s chip={s_final['chip']!r} "
+                   f"enabled={s_final['enabled']!r}",
+                   "PASS" if chip46 == "Checking…" and s_final["chip"] == "Right" else "FAULT")
+            ready_click(P7, '[data-hw="got_it"]' if "got_it" in (s_final.get("enabled") or []) else '[data-hw="not_yet"]')
 
-            # card 2 — FAIL: synthetic 500, never reaches Deno.
+            # card 2 — FAIL: a 500 on both attempts. Never Secured; Nearly.
             s = P7.st()
             check(s["front"] == D7_CARDS[1]["question"], "card2 up")
             t0 = time.time()
             P7.type(f"a glowing splint relights {MARK_FAIL}")
-            P7.click('[data-hw="check"]')
-            s2 = wait_chip(P7, page7, seen7, timeout=6.0)
-            record(path, "card2: FAILED model reply (synthetic 500)",
-                   f"by t={time.time()-t0:.1f}s: chip={s2['chip']!r} enabled={s2['enabled']!r}", "FINDING")
-            if "got_it" in (s2.get("enabled") or []):
-                P7.click('[data-hw="got_it"]')
-            else:
-                P7.click('[data-hw="not_yet"]')
+            ready_click(P7, '[data-hw="check"]')
+            s2 = wait_chip(P7, page7, seen7, timeout=12.0)
+            ok2 = s2["chip"] is None and sorted(s2.get("enabled") or []) == ["nearly", "not_yet"]
+            record(path, "card2: a FAILED check (500 on the attempt and the retry)",
+                   f"by {time.time()-t0:.1f}s chip={s2['chip']!r} enabled={s2['enabled']!r}",
+                   "PASS" if ok2 else "FAULT (an unchecked answer can be Secured)")
+            ready_click(P7, '[data-hw="nearly"]')
 
-            # card 3 — normal, to let the sitting/submission write.
+            # card 3 — normal.
             s = P7.st()
             check(s["front"] == D7_CARDS[2]["question"], "card3 up")
             P7.type(D7_CARDS[2]["answer"])
-            P7.click('[data-hw="check"]')
+            ready_click(P7, '[data-hw="check"]')
             s = wait_chip(P7, page7, seen7)
-            P7.click('[data-hw="got_it"]' if s["pressed"] == ["got_it"] else '[data-hw="not_yet"]')
+            ready_click(P7, '[data-hw="got_it"]' if s["pressed"] == ["got_it"] else '[data-hw="not_yet"]')
             settle(1.0)
+            s = P7.st()
+            ok3 = s.get("retryPass") == "Try again" and (s.get("end1") or "").startswith("2 of 3")
+            record(path, "end of the pass: the unchecked card is left", f"end1={s.get('end1')!r} retry={s.get('retryPass')!r}",
+                   "PASS" if ok3 else "FAULT")
+            # Try again: card 2 comes back and gets a REAL check this time.
+            ready_click(P7, '[data-hw="retry-pass"]')
+            s = P7.st()
+            back2 = s["front"] == D7_CARDS[1]["question"]
+            P7.type("a glowing splint relights")
+            ready_click(P7, '[data-hw="check"]')
+            s = wait_chip(P7, page7, seen7)
+            # (during Try again the strip's numbered chips share the verdict
+            # chip's hook, so read the filled-in rating, not `chip`)
+            ok4 = back2 and s.get("pressed") == ["got_it"] and "got_it" in (s.get("enabled") or [])
+            record(path, "card2 comes back and is really checked this time",
+                   f"front was card2: {back2}; filled={s.get('pressed')!r} enabled={s['enabled']!r}",
+                   "PASS" if ok4 else "FAULT")
+            ready_click(P7, '[data-hw="got_it"]')
+            settle(1.0)
+            s = P7.st()
+            record(path, "then the deck finishes", f"end1={s.get('end1')!r} done={s.get('done')!r}",
+                   "PASS" if s.get("end1") == "3 of 3 secured" and s.get("done") == "Done" else "FAULT")
             P7.shot("slowfail-end")
             br7.close()
             print("session 5 (slow/fail) done")
@@ -1582,14 +1607,26 @@ def main():
                 PW.click('[data-hw="not_yet"]')
                 settle(0.6)
                 s = PW.st()
+                # finish the deck: card 10, typed right.
+                ans10 = next(cc["answer"] for cc in D1_CARDS if cc["question"] == order[9])
+                if s["front"] == order[9]:
+                    PW.type(ans10)
+                    ready_click(PW, '[data-hw="check"]')
+                    wait_chip(PW, pageW, set())
+                    ready_click(PW, '[data-hw="got_it"]')
+                    settle(1.0)
+                s = PW.st()
                 stD, det = c.rpc(tok_t, "flashcard_pupil_detail", {"p_assignment": aid1, "p_pupil": pupils["pB"]["id"]})
                 cards = (det or {}).get("cards", []) if isinstance(det, dict) else []
                 c9id = by_q1[order[8]]
                 c9 = next((x for x in cards if x.get("card_id") == c9id or x.get("id") == c9id), None)
-                record(path, "‹ Back to a SECURED card, answered wrong this time",
-                       f"ratings offered={enabled}; pupil strip now {s['progress']!r} on {s['front']!r}; "
-                       f"server card9 secured={c9.get('secured') if c9 else None}",
-                       "INFO")
+                hist = [r.get("rating") for r in (c9 or {}).get("ratings", [])]
+                ok = (enabled == ["not_yet"] and s.get("end1") == "10 of 10 secured" and s.get("done") == "Done"
+                      and bool(c9) and bool(c9.get("secured")) and hist == ["got_it", "not_yet"])
+                record(path, "‹ Back to a SECURED card, answered wrong (Mide 4 Oct: once secured, stays secured)",
+                       f"ratings offered={enabled}; pupil end={s.get('end1')!r} {s.get('done')!r}; "
+                       f"teacher card9 secured={c9.get('secured') if c9 else None}, history={hist}",
+                       "PASS" if ok else "FAULT")
                 PW.shot("backwalk-rerated")
             finally:
                 brW.close()

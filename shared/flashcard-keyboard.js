@@ -415,7 +415,15 @@
     // mistake.
     var learnEl = front ? front.querySelector('[data-hw="learn"]') : null;
     var boxFloor = 96;
-    if (typing && learnEl && p.write && p.act && p.body) {
+    // ⊕ Y2 (Mide, 4 Oct 2026) — the learn step is answer-first AT REST too:
+    // "I don't know" no longer opens the keyboard, so this is the screen
+    // the pupil reads the answer on before tapping the box. At rest the box
+    // keeps its own size (64px, or 96 on a tall desktop dialog) and never
+    // shrinks; under a keyboard it is 96, giving way to 72 for the answer.
+    var tallRest = !typing && dh >= 700;
+    var floorFull = typing ? 96 : (tallRest ? 96 : 64);
+    var floorMin = typing ? 72 : floorFull;
+    if (learnEl && p.write && p.act && p.body) {
       // ⊕ Y Unit 1 (Mide, phone report, 4 Oct 2026: "with the keyboard up
       // the pupil must be able to SEE THE ANSWER … it's meant to show they
       // are actually revising"). THE ANSWER IS PRIMARY under a keyboard, in
@@ -444,7 +452,7 @@
       var avail = bodyBottom - cardTop - bodyGap - writeGap - actH - 6;
       var lm = learnMetrics(front, learnEl);
       var learnH = lm ? lm.height : 0;
-      var maxCardFullBox = Math.max(60, avail - 96);
+      var maxCardFullBox = Math.max(60, avail - floorFull);
       // The answer's own text plus the face's bottom padding.
       var textH = lm ? lm.bottom - lm.textTop + (parseFloat(root.getComputedStyle(front).paddingBottom) || 0) : 0;
       if (learnH <= maxCardFullBox) {
@@ -454,15 +462,16 @@
         // box drops below 96: the answer text alone fits beside a full box.
         h = Math.round(textH);
       } else {
-        boxFloor = 72;
-        var maxCardShrunkBox = Math.max(60, avail - 72);
+        boxFloor = floorMin;
+        var maxCardShrunkBox = Math.max(60, avail - floorMin);
         // Sized to the answer TEXT (it is what starts at the top here), so
         // the card can always scroll far enough to hide the label above it.
         h = Math.round(Math.min(textH, maxCardShrunkBox));
       }
       p.dialog.style.setProperty("--hw-card-h", h + "px");
       p.dialog.setAttribute("data-hw-fit", "1");
-      p.dialog.removeAttribute("data-hw-tall");
+      if (tallRest) { p.dialog.setAttribute("data-hw-tall", "1"); }
+      else { p.dialog.removeAttribute("data-hw-tall"); }
       // The scroll position itself: biased to show the WHOLE learn block
       // when `h` is tall enough for it (anchored to its bottom — any extra
       // room above shows as much of the question's tail as fits), or to its
@@ -482,7 +491,16 @@
         // widen the window and could cut the answer's own bottom instead).
         // Whole pixels: scrollTop is (a 154.5 became 155 and shifted every
         // line half a pixel past the bottom snap below).
-        var snappedTop = Math.ceil(Math.min(snapToLineBoundary(front, desired, "ceil"), maxScroll));
+        var snappedTop = Math.ceil(snapToLineBoundary(front, desired, "ceil"));
+        // ⊕ Y2 — skipping a half-cut line at the top can ask to scroll past
+        // the end of the content (the card cannot scroll that far, so the
+        // cut line would come back); the card gets that much shorter
+        // instead, which keeps every line it shows whole.
+        if (snappedTop > maxScroll) {
+          h = Math.max(40, Math.round(lm.content - snappedTop));
+          p.dialog.style.setProperty("--hw-card-h", h + "px");
+          maxScroll = snappedTop;
+        }
         // BOTTOM edge: same existing rule — shrink `h` if it still cuts a
         // line (safe: `fits` already guarantees enough room when true, so
         // this only ever bites in the "doesn't fit" branch).
@@ -634,22 +652,6 @@
     if (p.dialog.querySelector('[data-hw="learn"]')) { p.dialog.setAttribute("data-hw-learn", "1"); }
     else { p.dialog.removeAttribute("data-hw-learn"); }
 
-    // ⊕ Y Unit 1 — the one-shot backstop for the "I don't know" tap
-    // (student_rulings.py's hwIdk, which focuses the box itself and sets
-    // this flag before the engine's state change). The component's own
-    // path-based refocus (student-runtime.js) should already land back on
-    // the box — this only fires if something else left it elsewhere.
-    // Consumed exactly once per tap, regardless, so it can never fire on a
-    // RESUMED learn step (a reload, or ‹ Back then Forward again, both of
-    // which show `[data-hw="learn"]` with no gesture and never set the
-    // flag) — that must not steal focus, per the brief.
-    if (root.__MRB_FC_LEARN_FOCUS__) {
-      root.__MRB_FC_LEARN_FOCUS__ = false;
-      if (p.box && doc.activeElement !== p.box && p.box.focus) {
-        try { p.box.focus({ preventScroll: true }); } catch (e) { /* old engines */ }
-      }
-    }
-
     var typing = !!(p.box && doc.activeElement === p.box) && keyboardUp();
     if (typing) { p.dialog.setAttribute("data-hw-typing", "1"); }
     else { p.dialog.removeAttribute("data-hw-typing"); }
@@ -695,7 +697,7 @@
   doc.addEventListener("scroll", function (ev) {
     var t = ev.target;
     if (t && t.getAttribute && t.getAttribute("data-dc-tpl") === "10334" &&
-        t.closest && t.closest(D + '[data-hw-learn="1"][data-hw-typing="1"]')) {
+        t.closest && t.closest(D + '[data-hw-learn="1"]')) {
       learnScroll = t.scrollTop;
     }
     // The fades follow whatever the pupil scrolls to, on any homework card.
