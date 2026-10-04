@@ -262,7 +262,7 @@ input::placeholder, textarea::placeholder { color: var(--ks3-ink-muted); }
 .og-nav button > span:first-child { flex: 1; }
 .og-nav-badge {
   display: grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px;
-  border-radius: 99px; background: var(--ks3-accent-text); color: #fff;
+  border-radius: 99px; background: var(--ks3-accent-text); color: var(--c-on-accent-text);
   font-family: var(--ks3-font-mono); font-size: 11px;
 }
 .og-seats { margin-top: auto; font-size: 14px; color: var(--ks3-ink-muted); padding: 0 4px; }
@@ -620,7 +620,7 @@ input::placeholder, textarea::placeholder { color: var(--ks3-ink-muted); }
 }
 .og-thread-unread {
   display: grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px;
-  border-radius: 99px; background: var(--ks3-accent-text); color: #fff;
+  border-radius: 99px; background: var(--ks3-accent-text); color: var(--c-on-accent-text);
   font-family: var(--ks3-font-mono); font-size: 11px;
 }
 .og-thread-pane {

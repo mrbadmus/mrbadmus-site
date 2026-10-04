@@ -132,7 +132,12 @@
     unit: 'Step 2 of 4', children: 'Step 3 of 4', plan: 'Step 4 of 4'
   };
   var COPY = {
-    unitIntroSchool: 'Pick the unit school is on right now. Mr Badmus sets the first week to match, not Year 7 week 1.',
+    /* ⊕ B2C polish 2: the child's OWN year. This read "not Year 7 week 1"
+       for every child, so a Year 9 parent was told about Year 7. */
+    unitIntroSchool: function (year) {
+      return 'Pick the unit school is on right now. Mr Badmus sets the first week to match' +
+        (year ? ', not Year ' + year + ' week 1.' : '.');
+    },
     unitIntroHome: 'Pick the unit to start from. Everything before it is treated as covered, and the scheme of work runs from here.'
   };
 
@@ -309,7 +314,7 @@
       var done = i < idx, on = i === idx;
       var back = done && railTarget(i);
       var numBg = done ? 'var(--ks3-ok)' : (on ? 'var(--ks3-ink)' : 'var(--ks3-card)');
-      var numFg = done ? '#fff' : (on ? 'var(--ks3-on-dark)' : 'var(--ks3-ink-muted)');
+      var numFg = done ? 'var(--c-on-fill)' : (on ? 'var(--ks3-on-dark)' : 'var(--ks3-ink-muted)');
       var box = 'display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;' +
         'background:' + (on ? 'var(--ks3-band)' : 'transparent') + ';border:2px solid ' +
         (on ? 'var(--ks3-ink)' : 'transparent');
@@ -417,7 +422,7 @@
         '>Tick the box to create your account.</p>' +
       primaryBtn('continue', 'Continue') +
       '<p style="margin:26px 0 0;font-size:16px;text-align:center">Already have an account? <a href="' +
-      P.url('signIn') + '" style="font-weight:700">Sign in</a></p>';
+      P.attr('signIn') + '" style="font-weight:700">Sign in</a></p>';
   }
 
   /* ⚠️ GoTrue's own strings reach the parent otherwise, and two of them do it
@@ -1227,7 +1232,7 @@
       '<h1 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:38px;line-height:1.02;letter-spacing:-.035em">Where is ' +
       esc(name) + ' up to?</h1>' +
       '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">' +
-      esc(S.unitChildMode === 'home_education' ? COPY.unitIntroHome : COPY.unitIntroSchool) + '</p>';
+      esc(S.unitChildMode === 'home_education' ? COPY.unitIntroHome : COPY.unitIntroSchool(S.unitChildYear)) + '</p>';
 
     var skip = '<button type="button" id="u-skip" style="margin-top:10px;width:100%;min-height:48px;border:0;' +
       'background:none;font-weight:700;font-size:16px;color:var(--ks3-accent-text);cursor:pointer">' +
@@ -1267,15 +1272,22 @@
       window.MrBadmusTopicPicker.mount(host, {
         index: curriculum, units: S.unitUnits, child: S.unitChild, state: S.tp,
         listLabel: 'Topics for ' + (S.unitChildName || 'your child'),
+        /* ⊕ B2C polish 3: `sel` is null when nothing chosen is on screen
+           any more (a search hid it, or a greyed row was pressed) — the
+           button goes back to asking, so it never saves a pick the parent
+           can no longer see. */
         onChange: function (sel) {
           S.unitPicked = sel;
           S.unitNote = '';
           var save = $('u-save');
           if (save) {
-            save.textContent = 'Start ' + (S.unitChildName || 'your child') + ' from ' + sel.name;
-            save.removeAttribute('aria-disabled');
+            save.textContent = sel
+              ? ('Start ' + (S.unitChildName || 'your child') + ' from ' + sel.name)
+              : 'Pick a topic to continue';
+            if (sel) { save.removeAttribute('aria-disabled'); }
+            else { save.setAttribute('aria-disabled', 'true'); }
           }
-          var note = $('u-need'); if (note) { note.remove(); }
+          var note = $('u-need'); if (note && sel) { note.remove(); }
         }
       });
     }

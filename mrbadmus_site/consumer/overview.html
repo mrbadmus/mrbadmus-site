@@ -141,6 +141,12 @@
     font-weight: 500;
     font-size: 13px;
   }
+  .dk-btn-ink[disabled] {
+    cursor: default;
+    border-color: var(--ks3-rule-strong);
+    background: var(--ks3-card);
+    color: var(--ks3-ink-muted);
+  }
   .dk-btn-ink {
     min-height: 54px;
     width: 100%;
@@ -554,6 +560,21 @@
     return d.getDate() + ' ' + MONTHS_SHORT[d.getMonth()];
   }
 
+  /* ⊕ B2C polish 2. "Thu 8 Oct" from a CIVIL date (YYYY-MM-DD) — read in
+     UTC so the day never slides on a device west of London. A bare "Thu"
+     on a Sunday is ambiguous between this week and next; the date is not. */
+  var WEEKDAY_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  function civilParts(ymd) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(ymd || ''));
+    if (!m) { return null; }
+    var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+    return { day: WEEKDAY_SHORT[d.getUTCDay()], date: d.getUTCDate() + ' ' + MONTHS_SHORT[d.getUTCMonth()] };
+  }
+  function civilLabel(ymd) {
+    var p = civilParts(ymd);
+    return p ? (p.day + ' ' + p.date) : '';
+  }
+
   /* ── state ──────────────────────────────────────────────────────────── */
   var qs = new URLSearchParams(window.location.search);
   var S = {
@@ -591,7 +612,15 @@
     if (S.view !== 'overview') { extra.view = S.view; }
     return C.href('/consumer/overview.html', extra);
   }
+  /* ⊕ B2C polish 3 (defect 1). Every opening of Set work starts clean: no
+     earlier topic, search, kind, due day or note carried over. A sheet that
+     reopened holding the last pick, behind a fresh search, set that pick a
+     second time. */
+  function resetSetWork() {
+    S.workKind = 'practice'; S.topic = null; S.tp = {}; S.due = 'Sat'; S.note = '';
+  }
   function go(view, extra) {
+    if (view === 'setwork' && S.view !== 'setwork') { resetSetWork(); }
     S.view = view;
     S.answerId = null;
     if (extra) { Object.keys(extra).forEach(function (k) { S[k] = extra[k]; }); }
@@ -603,7 +632,9 @@
   window.addEventListener('popstate', function () {
     var q2 = new URLSearchParams(window.location.search);
     var v = q2.get('view') || 'overview';
-    S.view = VIEWS.indexOf(v) === -1 ? 'overview' : v;
+    v = VIEWS.indexOf(v) === -1 ? 'overview' : v;
+    if (v === 'setwork' && S.view !== 'setwork') { resetSetWork(); }
+    S.view = v;
     S.childId = q2.get('child') || S.childId;
     S.answerId = null;
     render();
@@ -746,6 +777,8 @@
 
   function cardHeadline(k) {
     var w = workOf(k), done = doneOf(k), n = w.length;
+    /* ⊕ B2C polish 2: an empty week used to read "0 of 0 done. Next: —." */
+    if (!n) { return 'Nothing set for this week.'; }
     if (k.status === 'quiet') {
       var left = n - done;
       /* Design wrote "Two sessions due by Sunday"; the number is real here. */
@@ -1000,16 +1033,33 @@
           '</button>';
         }).join('') +
         '</div>' +
+        /* ⊕ B2C polish 2: no "Add a child" on an account that is closing —
+           the child could not sign in, and would be deleted with the rest. */
+        (S.deletion ? '' :
         '<a href="' + addChild + '" style="margin-top:8px;display:flex;align-items:center;gap:10px;' +
           'min-height:44px;padding:0 12px;border:2px dashed var(--ks3-rule-strong);border-radius:14px;' +
           'font-weight:700;font-size:14px;color:var(--ks3-accent-text)">' + svg(MARK.plus, 16) +
-          'Add a child</a>';
+          'Add a child</a>');
     }
 
     var sideNote = '';
     var bst = String(S.billing.state || '').toLowerCase();
     /* Not repeated beside a gate line: one screen, one sentence. */
     if (!S.writable) { bst = ''; }
+    /* ⊕ B2C polish 2: at ≥960 the banner is hidden and THIS is the status
+       line, so a pending deletion outranks billing here too — the same facts
+       the phone banner and the account page give. It used to read
+       "Cancelled. Works until 11 October. Resume" while the children were
+       already shut out. */
+    if (S.deletion) {
+      var delOn = dayMonth(S.deletion.execute_after);
+      bst = '';
+      sideNote = '<div style="padding:12px 14px;border:2px solid var(--ks3-alert-border);border-radius:14px;' +
+        'background:var(--ks3-alert-tint);font-size:14px;color:var(--ks3-alert-text)">' +
+        '<strong>Account closing.</strong> Your children can’t sign in.' +
+        (delOn ? (' Everything is deleted on ' + esc(delOn) + '.') : '') +
+        '<br><a href="' + account + '" style="font-weight:700">Undo</a></div>';
+    }
     if (bst === 'trialing') {
       sideNote = '<div style="padding:12px 14px;border:2px solid var(--ks3-ink);border-radius:14px;' +
         'background:var(--ks3-band);font-size:14px"><strong>Free week:</strong> ' +
@@ -1105,11 +1155,11 @@
       html += '<div class="dk-dashed" style="margin-top:24px">' +
         '<p style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:24px;' +
           'letter-spacing:-.02em">No children yet</p>' +
-        (S.writable
+        (S.writable && !S.deletion
           ? '<p style="margin:8px 0 0;font-size:16px;color:var(--ks3-ink-body)">Add a child and their ' +
-            'first week’s work is set tonight.</p>'
+            'first week’s work is set straight away.</p>'
           : '') +
-        '<a class="dk-cta" href="' + esc(addChildHref()) + '">Add a child</a>' +
+        (S.deletion ? '' : '<a class="dk-cta" href="' + esc(addChildHref()) + '">Add a child</a>') +
         '</div>';
       return html;
     }
@@ -1128,11 +1178,14 @@
             'border-radius:var(--ks3-r-panel);background:var(--ks3-inset);font-size:15px;' +
             'color:var(--ks3-ink-body)"><strong style="color:var(--ks3-ink)">Hasn’t logged in yet.</strong> ' +
             'Username <span style="font-family:var(--ks3-font-mono)">' + esc(k.username || '—') +
-            '</span> at mrbadmus.com/go.' + (S.writable ? ' First week’s work is waiting.' : '') + '</div>';
+            '</span> at mrbadmus.com/go.' +
+            /* ⊕ B2C polish 2: only when there IS work. A child added after
+               checkout used to get this line over an empty week. */
+            (S.writable && !S.deletion && workOf(k).length ? ' First week’s work is waiting.' : '') + '</div>';
         } else {
           body = '<div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">' +
             '<div class="dk-mini"><div class="dk-mini-l">This week</div>' +
-              '<div class="dk-mini-n">' + esc(doneOf(k) + '/' + workOf(k).length) + '</div>' +
+              '<div class="dk-mini-n">' + esc(workOf(k).length ? (doneOf(k) + '/' + workOf(k).length) : '–') + '</div>' +
               '<div class="dk-mini-s">sessions</div></div>' +
             '<div class="dk-mini"><div class="dk-mini-l">Last check</div>' +
               '<div class="dk-mini-n">' + esc(last) + '</div>' +
@@ -1176,12 +1229,13 @@
       '<a class="dk-tile" href="' + esc(C.href('/consumer/report.html', { child: firstKid.id })) + '">' +
         '<span style="font-weight:700">Termly report</span>' +
         '<span class="dk-tile-sub">Prints cleanly</span></a>' +
+      (S.deletion ? '' :
       '<a href="' + esc(addChildHref()) + '" style="display:flex;flex-direction:column;' +
         'gap:4px;padding:16px;border:2px dashed var(--ks3-rule-strong);border-radius:var(--ks3-r-card);' +
         'background:none;color:var(--ks3-accent-text);text-decoration:none">' +
         '<span style="font-weight:700">Add a child</span>' +
         '<span class="dk-tile-sub">' + (t ? (esc(money(t.rest)) + ' a month extra') : 'One price per child') +
-        '</span></a>' +
+        '</span></a>') +
     '</div>';
     return html;
   }
@@ -1203,7 +1257,7 @@
       return '<div style="flex:1;text-align:center">' +
         '<div style="height:36px;border-radius:10px;border:2px solid var(--ks3-ink);background:' +
           (done ? 'var(--ks3-ok)' : (i < todayIdx ? 'var(--ks3-band)' : 'var(--ks3-card)')) +
-          ';display:grid;place-items:center;color:#fff">' +
+          ';display:grid;place-items:center;color:var(--c-on-fill)">' +
           (done ? svg(MARK.tick) : '') + '</div>' +
         '<div style="margin-top:4px;font-family:var(--ks3-font-mono);font-size:11px;' +
           'color:var(--ks3-ink-muted)">' + DAY_LABELS[i] + '</div></div>';
@@ -1213,7 +1267,7 @@
     if (k.status === 'never') {
       doing += '<p style="margin:10px 0 0;font-size:17px;color:var(--ks3-ink-body)">Not yet. ' +
         esc(k.first_name) + ' hasn’t logged in.' +
-        (S.writable ? ' The first week is set and waiting.' : '') + '</p>' +
+        (S.writable && !S.deletion && w.length ? ' The first week is set and waiting.' : '') + '</p>' +
         '<div class="dk-row-band" style="margin-top:12px"><span>Username</span>' +
         '<span class="dk-mono">' + esc(k.username || '—') + '</span></div>';
     } else if (k.status === 'quiet') {
@@ -1284,13 +1338,27 @@
     function workRow(it) {
           return '<li style="display:flex;align-items:center;gap:12px;padding:14px 16px;' +
             'border-bottom:1px solid var(--ks3-rule)">' +
-            '<span style="display:grid;place-items:center;width:28px;height:28px;border-radius:9px;' +
-              'border:2px solid var(--ks3-ink);background:' +
-              (it.done ? 'var(--ks3-ok)' : 'var(--ks3-band)') + ';color:#fff;flex:0 0 auto">' +
-              (it.done ? svg(MARK.tick)
-                       : ('<span style="font-family:var(--ks3-font-mono);font-size:11px;' +
-                          'color:var(--ks3-ink-muted)">' + esc(String(it.day || '').slice(0, 3)) + '</span>')) +
-            '</span>' +
+            /* ⊕ B2C polish 2: the day AND its date ("Thu" over "8 Oct"). A
+               bare "Thu", read on a Sunday, could be this week or next.
+               A DONE item keeps its own day slot (defect 9: work done early
+               is done, and still belongs to the day it was planned for) —
+               the tick is added, the day is not taken away. */
+            (function () {
+              var cp = civilParts(it.scheduled_for);
+              var day = esc(cp ? cp.day : String(it.day || '').slice(0, 3));
+              return '<span' + (it.done ? ' aria-label="Done"' : '') +
+                ' style="display:flex;flex-direction:column;align-items:center;justify-content:center;' +
+                'min-width:46px;padding:3px 4px;border-radius:9px;border:2px solid ' +
+                (it.done ? 'var(--ks3-ok)' : 'var(--ks3-ink)') + ';background:' +
+                (it.done ? 'var(--ks3-ok-tint)' : 'var(--ks3-band)') + ';flex:0 0 auto;' +
+                'font-family:var(--ks3-font-mono);line-height:1.15;color:' +
+                (it.done ? 'var(--ks3-ok-text)' : 'var(--ks3-ink-muted)') + '">' +
+                '<span style="display:flex;align-items:center;gap:2px;font-size:11px;font-weight:700;color:' +
+                  (it.done ? 'var(--ks3-ok-text)' : 'var(--ks3-ink)') + '">' +
+                  (it.done ? svg(MARK.tick, 11) : '') + day + '</span>' +
+                (cp ? '<span style="font-size:10px">' + esc(cp.date) + '</span>' : '') +
+                '</span>';
+            })() +
             '<span style="flex:1;min-width:0">' +
               '<span style="display:block;font-size:16px;font-weight:600">' +
                 esc(it.title || 'Work') + '</span>' +
@@ -1313,7 +1381,10 @@
     var workList = w.length
       ? w.map(workRow).join('')
       : '<li style="padding:16px;font-size:15px;color:var(--ks3-ink-muted)">' +
-        (S.writable ? 'Nothing set for this week yet. Work is set on Sunday evening.' : 'Nothing set yet.') +
+        /* ⊕ B2C polish 2: "Work is set on Sunday evening" was read on a
+           Sunday evening, over a week that had already been set without
+           this child. Just the fact. */
+        'Nothing set for this week.' +
         '</li>';
 
     var work = '<section class="dk-work" style="margin-top:24px">' +
@@ -1432,17 +1503,38 @@
       '<p style="margin:22px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Due</p>' +
       '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">' +
         DUE_DAYS.map(function (d) {
+          /* ⊕ B2C polish 2: each chip names its date. "Sun" on a Sunday is
+             today; on a Monday it is next week's first day. */
+          var cp = civilParts(dueDate(d));
           return '<button class="ks3-option" aria-pressed="' + (S.due === d ? 'true' : 'false') +
             '" data-act="pick-due" data-id="' + d + '" ' +
-            'style="justify-content:center;padding:12px 6px;font-size:15px">' + d + '</button>';
+            'style="flex-direction:column;justify-content:center;gap:0;padding:8px 4px;font-size:15px;' +
+            'line-height:1.2">' + '<span style="font-weight:700">' + d + '</span>' +
+            (cp ? '<span style="font-size:13px;font-weight:400;color:var(--ks3-ink-body)">' +
+              esc(cp.date) + '</span>' : '') + '</button>';
         }).join('') + '</div>' +
       '<label style="display:block;margin-top:22px;font-weight:700;font-size:15px;' +
         'color:var(--ks3-ink-muted)">A note for ' + esc(k.first_name) + ' (optional)' +
         '<input id="dk-note" value="' + esc(S.note) + '" maxlength="200" ' +
           'placeholder="e.g. Before Friday’s test" class="dk-field" style="min-height:50px;' +
           'padding:12px 14px" data-write></label>' +
-      '<button data-act="submit-work" data-write class="dk-btn-ink" style="margin-top:24px">Set for ' +
-        esc(S.due) + '</button></div>';
+      '<button data-act="submit-work" data-write class="dk-btn-ink" id="dk-set" style="margin-top:24px"' +
+        (setReady() ? '' : ' disabled') + '>' + esc(setLabel()) + '</button></div>';
+  }
+
+  /* ⊕ B2C polish 3 (defect 1). The Set button is live only when what it
+     would set is on screen: an exam question (the server picks it), or a
+     topic the picker is showing as chosen. Its label says which. */
+  function setReady() { return S.workKind === 'exam' || !!S.topic; }
+  function setLabel() {
+    return setReady() ? ('Set for ' + (civilLabel(dueDate(S.due)) || S.due)) : 'Choose a topic first';
+  }
+  function syncSetButton() {
+    var b = document.getElementById('dk-set');
+    if (!b) { return; }
+    delete b.dataset.label;   // setBusy's memory of the old label, which this replaces
+    b.disabled = !setReady();
+    b.textContent = setLabel();
   }
 
   function viewChat() {
@@ -1812,7 +1904,7 @@
       index: curriculum, units: S.picker, state: S.tp,
       child: { year: k.year_group, pathway: k.pathway, tier: k.tier },
       listLabel: 'Topics for ' + k.first_name,
-      onChange: function (sel) { S.topic = sel; }
+      onChange: function (sel) { S.topic = sel; syncSetButton(); }
     });
   }
 
@@ -1833,8 +1925,22 @@
     if (nm) { nm.addEventListener('input', function () { S.edit.first_name = nm.value; }); }
   }
 
-  function msg(text, kind) {
+  /* ⊕ B2C polish 2: `near` — the control that was pressed. A message about
+     a press is drawn right after that control, where the person is looking,
+     not in #dk-msg at the top of a long form: at 390px a refusal there was
+     a screen-and-a-half above the "Set for Thu" button, and the press
+     looked like it had done nothing. */
+  function msg(text, kind, near) {
+    var old = document.getElementById('dk-msg-near');
+    if (old) { old.parentNode.removeChild(old); }
     var el = document.getElementById('dk-msg');
+    if (near && text && near.parentNode) {
+      if (el) { el.innerHTML = ''; }
+      el = document.createElement('div');
+      el.id = 'dk-msg-near';
+      el.setAttribute('role', kind === 'error' ? 'alert' : 'status');
+      near.parentNode.insertBefore(el, near.nextSibling);
+    }
     if (!el) { return; }
     if (!text) { el.innerHTML = ''; return; }
     var alert = kind === 'error';
@@ -1947,7 +2053,7 @@
     'submit-work': function (el) {
       var k = child();
       var t = S.topic;
-      if (S.workKind !== 'exam' && !t) { return msg('Choose a topic first.', 'error'); }
+      if (S.workKind !== 'exam' && !t) { return msg('Choose a topic first.', 'error', el); }
       var body = { kind: S.workKind, scheduled_for: dueDate(S.due) };
       if (S.workKind !== 'exam') {
         if (t.level === 'lesson' && t.slug) { body.lesson_slug = t.slug; }
@@ -1961,7 +2067,7 @@
           go('child');
           msg('Set. ' + k.first_name + ' will see it with your name on it.', 'ok');
         })
-        .catch(function (e) { C.setBusy(el, false); msg(e.message, 'error'); });
+        .catch(function (e) { C.setBusy(el, false); msg(setWorkRefusal(e), 'error', el); });
     },
 
     'reset-pass': function (el) {
@@ -1973,9 +2079,9 @@
           if (d && d.password) { S.newPass = d.password; render(); return; }
           C.setBusy(el, false);
           msg('The new password wasn’t returned, so there is nothing to show you. ' +
-              'Please try again.', 'error');
+              'Please try again.', 'error', el);
         })
-        .catch(function (e) { C.setBusy(el, false); msg(e.message, 'error'); });
+        .catch(function (e) { C.setBusy(el, false); msg(e.message, 'error', el); });
     },
 
     'save-manage': function (el) {
@@ -2011,7 +2117,7 @@
       }).then(function () {
         go('child');
         msg('Saved.', 'ok');
-      }).catch(function (err) { C.setBusy(el, false); msg(err.message, 'error'); });
+      }).catch(function (err) { C.setBusy(el, false); msg(err.message, 'error', el); });
     },
 
     'do-remove': function (el) {
@@ -2035,6 +2141,22 @@
      one names. On a Wednesday "Thu" is tomorrow; on a Friday it is next
      Thursday. Never a date in the past — work set for yesterday is work
      nobody will see. */
+  /* ⊕ B2C polish 2. The one-practice-a-week refusal, made true to what this
+     screen offers. The backend says the fact and the date the NEXT teaching
+     week opens (`next_week_from`); a due chip on or after it is a real way
+     to set these for next week, and is named. With none (on a Sunday every
+     chip is this week) the only true advice is a different kind of work. */
+  function setWorkRefusal(e) {
+    var d = e && e.data;
+    if (!e || e.code !== 'week_already_has_practice' || !d || !d.next_week_from) {
+      return (e && e.message) || 'We couldn’t set that just now.';
+    }
+    var later = DUE_DAYS.filter(function (x) { return dueDate(x) >= d.next_week_from; });
+    return e.message + ' ' + (later.length
+      ? ('Pick ' + civilLabel(dueDate(later[0])) + ' to set these for next week, or choose a lesson or an exam question.')
+      : 'Choose a lesson or an exam question instead.');
+  }
+
   function dueDate(label) {
     var want = DUE_DOW[label];
     var d = new Date();

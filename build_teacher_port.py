@@ -4719,7 +4719,7 @@ function MRB_WEEK_SCORE(row, idxs, papers){
   return lines.join('\\n');}
 
 /* ⊕ x-week-truth, 4 Oct 2026 — THE SELECTED WEEK'S FACTS, FROM ONE PLACE.
-   `teacher-live.js`'s `weekScope(papers, weeks, wi, now)` is the only
+   `teacher-live.js`'s `weekScope(papers, weeks, wi, now, mx)` is the only
    implementation — see its own comment for the MRB-353 defect this
    replaces (two different "which paper is the last marked one" questions,
    one per chip-0-or-not branch, that could and did disagree). This is the
@@ -4728,12 +4728,12 @@ function MRB_WEEK_SCORE(row, idxs, papers){
    fallback is reached only if `teacher-live.js` is somehow not on the page
    (no fixture omits it today) and returns an inert, empty scope rather than
    guessing at one. */
-function MRB_WEEK_SCOPE(papers, weeks, wi){
+function MRB_WEEK_SCOPE(papers, weeks, wi, mx){
   var L=window.MrBadmusTeacherLive;
-  if(L&&L.weekScope){return L.weekScope(papers||[], weeks||[], wi||0, Date.now());}
+  if(L&&L.weekScope){return L.weekScope(papers||[], weeks||[], wi||0, Date.now(), mx);}
   return {week:(weeks||[])[wi||0]||null, started:true, startsOn:null,
-    weekEndMs:null, papers:papers||[], released:[], live:[], closed:[],
-    scheduled:[], lastClosed:null};}
+    papers:papers||[], released:[], live:[], closed:[],
+    scheduled:[], reteach:null};}
 
 /* "Opens Mon 5 Oct" / "starts Mon 5 Oct" — a not-started week's homework
    card, off a scheduled paper's own `release_at` where there is one and the

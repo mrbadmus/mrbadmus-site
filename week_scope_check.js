@@ -1,50 +1,34 @@
 #!/usr/bin/env node
-/* week_scope_check.js — x-week-truth (MRB-353 redone), 4 Oct 2026.
+/* week_scope_check.js — the class screen's week rule, checked in Node.
  *
  *   node week_scope_check.js
  *
- * Drives `shared/teacher-live.js`'s `weekScope` (and the pipeline that
- * feeds it — `buildPapers`, `assignPaperWeeks`, `buildWeeks`) directly in
- * Node, no browser and no network, against data shaped like the two real
- * classes the bug was found on: 10h/Ph1 (the live defect, seen Sun 4 Oct
- * 2026 01:04) and 8r/Sc1 (the estate's other real assignment history,
- * MRB-335's own fixture shape). Fixed clocks throughout — see CLOCKS below
- * — because the whole point of this gate is that "today" must never be an
- * input a reader can silently vary.
+ * ⊕ Mide, 4 Oct 2026 (21:56): EVERY WEEK SHOWS ONLY ITS OWN HOMEWORK.
+ * Nothing from any other week, ever, on any card. This drives
+ * `shared/teacher-live.js`'s `weekScope` (and the pipeline that feeds it —
+ * `buildPapers`, `assignPaperWeeks`, `buildWeeks`) directly, no browser and
+ * no network, at fixed clocks, against data shaped like 10h/Ph1 and 8r/Sc1.
  *
  * WHAT IT PROVES
- *   · `started` is false ONLY on a Sunday before the week it names begins
- *     (MRB-330's roll-forward), true every other day — the fact the whole
- *     "week that has not started" branch of the rule depends on.
- *   · `lastClosed` is the most recent CLOSED, RELEASED, non-flashcard paper
- *     due at or before the end of the SELECTED week (capped at now) —
- *     scanning every paper the class has, not merely the selected week's
- *     own — which is the exact defect MRB-353's first attempt left in:
- *     asking about 10h/Ph1's week 5 (Temperature, still open) must still
- *     surface week 4's Changes of State, at every clock before Temperature
- *     itself closes, and must surface Temperature itself the moment it
- *     does (chip 0, no special case).
- *   · a flashcard set is never `lastClosed`, even when it is the newest
- *     closed thing in the class (8r/Sc1's Oct-5 flashcard set must not
- *     shadow the Oct-5 MCQ).
- *   · the week bucket rule (`papers` on the returned scope) is unchanged
- *     from `wPapers`'s own — chip 0 takes weekIdx <= 0 or null, the oldest
- *     chip takes weekIdx >= its own index, every other chip takes its own
- *     weekIdx exactly — proved by checking 8r/Sc1's pre-term-start set
- *     lands in the oldest chip's bucket.
- *   · a week object without `started`/`endMs` (an older fixture) behaves
- *     exactly as before this ruling: `started` reads true and the cutoff
- *     is simply `now`.
- *
- * WHAT IT DOES NOT PROVE: the renderVals wiring (teacher_behaviour.py's
- * fixtures below do that), or that TEST's real rows shape the same way
- * (the TEST walk in RESULT-A.md does that).
+ *   · THE INVARIANT: on every chip, at every clock, `reteach` is either null
+ *     or one of THAT chip's own sets (`scope.papers`). It is checked for
+ *     every chip of every class at every clock, so a version that reaches
+ *     into another week — the "most recent closed set" rule live on the
+ *     evening of 4 Oct, which put week 4's Changes of State on weeks 5 and
+ *     6 — fails here.
+ *   · 10h/Ph1 at the moment Mide looked (Sun 4 Oct 21:56): week 4 →
+ *     Changes of State, week 5 → Temperature (still open, 9 in — reteach
+ *     does not wait for the deadline), week 6 → nothing.
+ *   · a week whose own set has no hand-ins yet has NO reteach — it does not
+ *     borrow another week's.
+ *   · a flashcard deck is never the reteach set.
+ *   · `started` is false only on a Sunday before the week it names begins.
+ *   · the bucket rule is the homework card's own (the pre-term set lands in
+ *     the oldest chip).
  */
 "use strict";
 
-process.env.TZ = "Europe/London";   // a UK teacher's device clock — see
-                                     // teacher-live.js's own "LONDON, FOR
-                                     // THE COLUMNS THAT NAME AN INSTANT".
+process.env.TZ = "Europe/London";
 
 const path = require("path");
 
@@ -61,125 +45,112 @@ function check(ok, what) {
   if (ok) { passes += 1; } else { fails += 1; console.log("  FAIL " + what); }
 }
 
-/* Local wall-clock constructor — London time, DST-aware via process.env.TZ
-   above, so "4 Oct 2026 01:04" below means exactly what a teacher's phone
-   would have said at that moment. */
 function ldn(y, mo, d, h, mi) { return new Date(y, mo - 1, d, h || 0, mi || 0, 0); }
 
 const YEAR = { start_date: "2026-09-01", end_date: "2027-08-31" };
 
-/* A minimal `pack` — `buildPapers` reads `members.length` only for the
-   roster count it stamps on each paper (irrelevant to `weekScope`, which
-   never reads submissions) and `assignments` for the rows themselves. */
-function scopeOf(assignments, wi, now) {
+/* `subs` maps an assignment id to how many pupils have handed it in — the
+   `colSub` column `weekScope` reads off the class matrix. */
+function world(assignments, subs, now) {
   const pack = { members: [], assignments: assignments };
   const papers = TL.buildPapers(pack, now);
   const weeks = TL.buildWeeks(YEAR, now);
   TL.assignPaperWeeks(papers, weeks, YEAR, now);
-  return { scope: TL.weekScope(papers, weeks, wi, now), papers: papers, weeks: weeks };
+  const colSub = [];
+  papers.forEach(function (p) { colSub[p.idx] = (subs && subs[p.id]) || 0; });
+  return { papers: papers, weeks: weeks, mx: { colSub: colSub } };
+}
+function scopeAt(w, wi, now) { return TL.weekScope(w.papers, w.weeks, wi, now, w.mx); }
+function chipOfMonday(w, ymd) {
+  for (let i = 0; i < w.weeks.length; i += 1) { if (w.weeks[i].monYmd === ymd) { return i; } }
+  return -1;
+}
+function idOf(p) { return p ? p.id : (p === undefined ? "MISSING" : null); }
+
+/* THE INVARIANT, for every chip of a world at a clock. */
+function everyChipOwnOnly(label, w, now) {
+  for (let wi = 0; wi < w.weeks.length; wi += 1) {
+    const s = scopeAt(w, wi, now);
+    if (s.reteach === undefined) {
+      check(false, label + " chip " + wi + ": weekScope gives no `reteach` — this is the " +
+        "deleted \"most recent closed set\" version");
+      continue;
+    }
+    const own = s.papers.map(function (p) { return p.id; });
+    check(s.reteach === null || own.indexOf(s.reteach.id) > -1,
+      label + " chip " + wi + " (" + w.weeks[wi].monYmd + "): reteach '" +
+      idOf(s.reteach) + "' is not one of this week's own sets [" + own.join(", ") + "]");
+    check(s.reteach === null || s.reteach.kind !== "flashcards",
+      label + " chip " + wi + ": a flashcard deck is never the reteach set");
+  }
 }
 
-// ─── 10h/Ph1 — the live defect, byte for byte ──────────────────────────
-//
-// "Particle Model of Matter · Changes of State" — teacher, academic_week 4,
-// released Sun 20 Sep, due Mon 28 Sep 08:00Z (09:00 BST), 8 of 17 done.
-// "… Temperature Changes and Specific Heat Capacity" — teacher, week 5,
-// released Mon 28 Sep 14:45Z, due Mon 5 Oct 17:00Z (18:00 BST), 3 of 17.
-// The two deleted "Energy" rows are not modelled: a soft-deleted
-// assignment never reaches `pack.assignments` in the first place — that is
-// the data layer's own job, upstream of everything `weekScope` touches —
-// so "stays invisible" is proved by their simple absence here, not by a
-// third input this function would have to filter.
+// ─── 10h/Ph1 — production's two live sets ──────────────────────────────
 const COS = {
   id: "cos", title: "Particle Model of Matter · Changes of State",
   source: "teacher", academic_week: 4,
-  release_at: ldn(2026, 9, 20, 9, 0).toISOString(),
+  release_at: "2026-09-20T11:39:49.602Z",
   due_at: "2026-09-28T08:00:00.000Z", kind: "mcq_set"
 };
 const TEMP = {
   id: "temp", title: "Particle Model of Matter · Temperature Changes and Specific Heat Capacity",
   source: "teacher", academic_week: 5,
-  release_at: "2026-09-28T14:45:00.000Z",
+  release_at: "2026-09-28T14:45:17.074Z",
   due_at: "2026-10-05T17:00:00.000Z", kind: "mcq_set"
 };
 const TENH = [COS, TEMP];
+const TENH_SUBS = { cos: 8, temp: 9 };
 
 const CLOCKS = {
-  sun: ldn(2026, 10, 4, 1, 4),    // Sun 4 Oct 2026 01:04 BST — the live defect
-  wed: ldn(2026, 9, 30, 12, 0),   // Wed 30 Sep 2026 12:00 BST
-  mon: ldn(2026, 10, 5, 12, 0),   // Mon 5 Oct 2026 12:00 BST — Temperature still open
-  tue: ldn(2026, 10, 6, 12, 0)    // Tue 6 Oct 2026 12:00 BST — Temperature now closed
+  sun0104: ldn(2026, 10, 4, 1, 4),
+  sun2156: ldn(2026, 10, 4, 21, 56),   // the moment Mide reported the defect
+  wed: ldn(2026, 9, 30, 12, 0),
+  mon: ldn(2026, 10, 5, 12, 0),
+  tue: ldn(2026, 10, 6, 12, 0)
 };
 
-console.log("10h/Ph1 — chip 0 (\"this week\"), four clocks:");
+console.log("10h/Ph1 — every chip shows only its own week:");
 Object.keys(CLOCKS).forEach(function (key) {
   const now = CLOCKS[key].getTime();
-  const r = scopeOf(TENH, 0, now);
-  const wantStarted = key !== "sun";
-  check(r.scope.started === wantStarted,
-    key + ": started === " + wantStarted + " (got " + r.scope.started + ")");
-  const wantLast = (key === "tue") ? "temp" : "cos";
-  const got = r.scope.lastClosed ? r.scope.lastClosed.id : null;
-  check(got === wantLast,
-    key + ": lastClosed === '" + wantLast + "' (got " + got + ") — " +
-    (key === "tue"
-      ? "Temperature has now closed and is the newer of the two"
-      : "Changes of State is the newest CLOSED set" +
-        (key === "mon" ? " (Temperature is due 18:00 BST, still 6h off)" : "")));
+  const w = world(TENH, TENH_SUBS, now);
+  everyChipOwnOnly("10h/Ph1 @" + key, w, now);
+  const c4 = chipOfMonday(w, "2026-09-21"), c5 = chipOfMonday(w, "2026-09-28");
+  check(idOf(scopeAt(w, c4, now).reteach) === "cos",
+    key + ": week 4 reteach is its own Changes of State (got " + idOf(scopeAt(w, c4, now).reteach) + ")");
+  check(idOf(scopeAt(w, c5, now).reteach) === "temp",
+    key + ": week 5 reteach is its own Temperature set, open or not (got " +
+    idOf(scopeAt(w, c5, now).reteach) + ")");
+  const c6 = chipOfMonday(w, "2026-10-05");
+  if (c6 > -1) {
+    const s6 = scopeAt(w, c6, now);
+    check(s6.papers.length === 0 && s6.reteach === null,
+      key + ": week 6 has nothing set and no reteach (got " + idOf(s6.reteach) +
+      ", " + s6.papers.length + " set(s))");
+  }
 });
 
-// The exact regression: picking WEEK 5's OWN chip (Temperature's week)
-// before Temperature has closed must still surface Changes of State — the
-// defect MRB-353's first attempt left in, because it searched only the
-// selected week's own papers and week 5's own paper had nothing closed in
-// it yet.
+(function () {
+  const now = CLOCKS.sun2156.getTime();
+  const w = world(TENH, TENH_SUBS, now);
+  const s0 = scopeAt(w, 0, now);
+  check(s0.started === false, "Sun 21:56: week 6 has not started (got " + s0.started + ")");
+  const mon = CLOCKS.mon.getTime();
+  check(scopeAt(world(TENH, TENH_SUBS, mon), 0, mon).started === true,
+    "Mon 5 Oct 12:00: week 6 has started");
+})();
+
+// A week whose own set has nobody in yet does NOT borrow another week's.
 (function () {
   const now = CLOCKS.wed.getTime();
-  const r = scopeOf(TENH, 0, now);
-  const topWeek = r.weeks[0].weekOfYear;
-  const wiOfWeek5 = topWeek - 5;   // the chip showing TEMP's own week
-  const wiOfWeek4 = topWeek - 4;   // the chip showing COS's own week
-  check(wiOfWeek5 >= 0 && wiOfWeek5 < r.weeks.length,
-    "week 5's own chip (wi=" + wiOfWeek5 + ") exists on the bar at the Wed clock");
-  if (wiOfWeek5 >= 0 && wiOfWeek5 < r.weeks.length) {
-    const r5 = TL.weekScope(r.papers, r.weeks, wiOfWeek5, now);
-    check(r5.lastClosed && r5.lastClosed.id === "cos",
-      "picking week 5's own chip (Temperature, still open) surfaces " +
-      "Changes of State as the last CLOSED set — got " +
-      (r5.lastClosed ? r5.lastClosed.id : null) +
-      " (this is the live defect: it used to read 'Nothing to reteach yet')");
-  }
-  check(wiOfWeek4 >= 0 && wiOfWeek4 < r.weeks.length,
-    "week 4's own chip (wi=" + wiOfWeek4 + ") exists on the bar at the Wed clock");
-  if (wiOfWeek4 >= 0 && wiOfWeek4 < r.weeks.length) {
-    // ⊕ Corrected per Mide's own ruling (commander relay, 4 Oct 2026) — the
-    // cutoff is LITERAL, no grace day. Changes of State is due 28 Sep
-    // 09:00 BST, which is AFTER week 4's own end (the following Monday,
-    // 28 Sep 00:00 BST): it has not closed BY week 4, so week 4's own chip
-    // reads "Nothing to reteach yet". This is item 1 of the bug report —
-    // "week 4 reteach showed week 4's own set" — and this IS the defect,
-    // not a fact to preserve. An earlier version of this check asserted
-    // the opposite from a misreading of that exact line.
-    const r4 = TL.weekScope(r.papers, r.weeks, wiOfWeek4, now);
-    check(r4.lastClosed === null,
-      "picking week 4's own chip (Changes of State due 09:00 BST THE " +
-      "MORNING AFTER week 4 ends) resolves to null — \"Nothing to " +
-      "reteach yet\", not its own set — got " +
-      (r4.lastClosed ? r4.lastClosed.id : null));
-  }
+  const w = world(TENH, { cos: 8, temp: 0 }, now);
+  const c5 = chipOfMonday(w, "2026-09-28");
+  const s5 = scopeAt(w, c5, now);
+  check(s5.papers.length === 1 && s5.reteach === null,
+    "week 5 with Temperature set but nobody in: reteach is null, never Changes of State (got " +
+    idOf(s5.reteach) + ")");
 })();
 
-// A clock before either set exists at all: nothing to reteach.
-(function () {
-  const now = ldn(2026, 9, 1, 9, 0).getTime();
-  const r = scopeOf(TENH, 0, now);
-  check(r.scope.lastClosed === null,
-    "before either set has even been released, lastClosed is null " +
-    "(\"Nothing to reteach yet\") — got " +
-    (r.scope.lastClosed ? r.scope.lastClosed.id : null));
-})();
-
-// ─── 8r/Sc1 — flashcards never shadow an MCQ, and the oldest bucket ────
+// ─── 8r/Sc1 — several sets in a week, flashcards, the oldest bucket ────
 const SC1 = [
   { id: "auto1", title: "Week 1 auto set", source: "auto", academic_week: 1,
     release_at: null, due_at: "2026-09-03T17:00:00.000Z", kind: "mcq_set" },
@@ -198,90 +169,49 @@ const SC1 = [
   { id: "fc2", title: "Flashcards — due Fri 9 Oct", source: "teacher",
     release_at: "2026-09-28T00:00:00.000Z", due_at: "2026-10-09T17:00:00.000Z",
     kind: "flashcards" },
-  { id: "fc3", title: "Flashcards — due Sat 10 Oct", source: "teacher",
-    release_at: "2026-09-28T00:00:00.000Z", due_at: "2026-10-10T17:00:00.000Z",
-    kind: "flashcards" },
   { id: "old", title: "Old set, before term start", source: "teacher",
     release_at: "2026-08-18T09:00:00.000Z", due_at: "2026-08-25T17:00:00.000Z",
     kind: "mcq_set" }
 ];
+const SC1_SUBS = { auto1: 2, t1: 1, t2: 1, t3: 1, fc1: 2, mcq1: 2, fc2: 1, old: 0 };
 
+console.log("8r/Sc1 — several sets a week, flashcards, the oldest chip:");
+Object.keys(CLOCKS).forEach(function (key) {
+  const now = CLOCKS[key].getTime();
+  const w = world(SC1, SC1_SUBS, now);
+  everyChipOwnOnly("8r/Sc1 @" + key, w, now);
+});
 (function () {
-  // Tue 6 Oct 2026 12:00 BST — the Sep sets and the Oct-5 MCQ have all
-  // closed (18:00 BST Monday is behind us); the Oct-5 flashcard set closed
-  // at the SAME due instant but must not be picked; the Oct 9/10 flashcard
-  // sets and the old August set have not and never will outrank it.
-  const now = ldn(2026, 10, 6, 12, 0).getTime();
-  const r = scopeOf(SC1, 0, now);
-  check(r.scope.lastClosed && r.scope.lastClosed.id === "mcq1",
-    "8r/Sc1 at Tue 6 Oct: lastClosed is the MCQ due Mon 5 Oct, not the " +
-    "flashcard set that closed at the same instant — got " +
-    (r.scope.lastClosed ? r.scope.lastClosed.id : null));
+  const now = CLOCKS.sun2156.getTime();
+  const w = world(SC1, SC1_SUBS, now);
+  const c5 = chipOfMonday(w, "2026-09-28");
+  check(idOf(scopeAt(w, c5, now).reteach) === "mcq1",
+    "8r/Sc1 week 5: the MCQ, never a flashcard deck (got " + idOf(scopeAt(w, c5, now).reteach) + ")");
+  const c2 = chipOfMonday(w, "2026-09-07");
+  const r2 = idOf(scopeAt(w, c2, now).reteach);
+  check(["t1", "t2", "t3"].indexOf(r2) > -1,
+    "8r/Sc1 week 2: one of week 2's own three sets (got " + r2 + ")");
+  const oldest = w.weeks.length - 1;
+  const so = scopeAt(w, oldest, now);
+  check(so.papers.some(function (p) { return p.id === "old"; }),
+    "8r/Sc1: the pre-term set lands in the oldest chip's bucket");
+  check(idOf(so.reteach) === "auto1",
+    "8r/Sc1 oldest chip: the auto set (the pre-term set has nobody in) (got " + idOf(so.reteach) + ")");
 })();
 
+// ─── a class with exactly one set, nobody in ───────────────────────────
 (function () {
-  // A clock between the Sep-15/16 sets closing and the Oct work existing
-  // at all: the week-1 auto set is still the newest closed thing, every
-  // Sep teacher set outranks it by due date, so this also proves ordering
-  // across THREE same-day-released papers with two different due dates.
-  const now = ldn(2026, 9, 20, 12, 0).getTime();
-  const r = scopeOf(SC1, 0, now);
-  check(r.scope.lastClosed && r.scope.lastClosed.id === "t3",
-    "8r/Sc1 at 20 Sep: lastClosed is 'Teacher set C' (due 16 Sep, the " +
-    "latest of the three Sep releases) — got " +
-    (r.scope.lastClosed ? r.scope.lastClosed.id : null));
+  const ONE = [{ id: "one", title: "The only set", source: "teacher", academic_week: 3,
+    release_at: "2026-09-14T07:00:00.000Z", due_at: "2026-09-22T17:00:00.000Z", kind: "mcq_set" }];
+  const now = CLOCKS.sun2156.getTime();
+  const w = world(ONE, { one: 0 }, now);
+  everyChipOwnOnly("one-set class", w, now);
+  for (let wi = 0; wi < w.weeks.length; wi += 1) {
+    check(scopeAt(w, wi, now).reteach === null,
+      "one-set class chip " + wi + ": nobody in, so no reteach anywhere");
+  }
 })();
 
-(function () {
-  // The pre-term-start set must land in the OLDEST chip's bucket, not
-  // vanish and not duplicate into a chip of its own — the same "two end
-  // chips are buckets" rule `wPapers` has always applied.
-  const now = ldn(2026, 10, 6, 12, 0).getTime();
-  const r = scopeOf(SC1, 0, now);
-  const oldestWi = r.weeks.length - 1;
-  const oldest = TL.weekScope(r.papers, r.weeks, oldestWi, now);
-  const ids = oldest.papers.map(function (p) { return p.id; });
-  check(ids.indexOf("old") >= 0,
-    "the pre-term-start set lands in the oldest chip's bucket (wi=" +
-    oldestWi + ") — bucket holds [" + ids.join(", ") + "]");
-})();
-
-(function () {
-  // Flashcards still bucket normally (`closed`/`live`/`scheduled` are not
-  // kind-filtered) even though they can never be `lastClosed`. `fc1` has no
-  // `academic_week`, so (like `mcq1`, due the same day) it buckets by its
-  // own due_at-7 derivation rather than into chip 0 — found its own weekIdx
-  // first, same as a real caller would via `wPapers`.
-  const now = ldn(2026, 10, 6, 12, 0).getTime();
-  const r = scopeOf(SC1, 0, now);
-  const fc1 = r.papers.filter(function (p) { return p.id === "fc1"; })[0];
-  const topWeek = r.weeks[0].weekOfYear;
-  const wiOfFc1 = topWeek - fc1.weekOfYear;
-  const there = TL.weekScope(r.papers, r.weeks, wiOfFc1, now);
-  const closedIds = there.closed.map(function (p) { return p.id; });
-  check(closedIds.indexOf("fc1") >= 0,
-    "a closed flashcard set still appears in its own week's `closed` " +
-    "(wi=" + wiOfFc1 + ") — it is only `lastClosed` that excludes it " +
-    "— got [" + closedIds.join(", ") + "]");
-})();
-
-// ─── a fixture-shaped week object, lacking `started`/`endMs` ───────────
-(function () {
-  const now = CLOCKS.sun.getTime();
-  const bareWeeks = [{ idx: 0, weekOfYear: 1, term: "Autumn", label: "This week",
-    range: "04/10/26", now: true, monYmd: "2026-10-05", friYmd: "2026-10-09" }];
-  const papers = TL.buildPapers({ members: [], assignments: TENH }, now);
-  papers.forEach(function (p) { p.weekIdx = 0; });   // force both into chip 0
-  const r = TL.weekScope(papers, bareWeeks, 0, now);
-  check(r.started === true,
-    "a week object with no `started` key reads as started=true (old " +
-    "fixtures keep their green behaviour) — got " + r.started);
-  check(r.weekEndMs === null,
-    "a week object with no `endMs` key reads as unbounded — got " + r.weekEndMs);
-  check(r.lastClosed && r.lastClosed.id === "cos",
-    "and the cutoff is simply `now`, same as before this ruling — got " +
-    (r.lastClosed ? r.lastClosed.id : null));
-})();
-
-console.log("\n" + passes + " passed, " + fails + " failed");
+console.log((fails ? "FAIL" : "PASS") + " — " + passes + " passed, " + fails + " failed");
+console.log(passes + " passed, " + fails + " failed");
 process.exit(fails ? 1 : 0);

@@ -411,7 +411,11 @@ def delete_flow(d):
     d.click("[data-act=undo-delete]")
     # ⊕ B2C polish (4 Oct 2026): the undo line now says what is TRUE after an
     # undo — the account stays and the children's logins work again.
-    d.wait("document.body.innerText.indexOf('your children can sign in again')>=0")
+    # ⊕ B2C polish 2 (defect 8): it is now its own block — "Your account is
+    # staying" / "Your children can sign in again." — and, when billing is set
+    # to end, says so beside Resume (driven against TEST in the unit report).
+    d.wait("document.body.innerText.indexOf('Your account is staying')>=0&&"
+           "document.body.innerText.indexOf('Your children can sign in again')>=0")
     check(d.js("!!document.querySelector('[data-act=ask-delete]')"), "Undo puts it back")
 
 

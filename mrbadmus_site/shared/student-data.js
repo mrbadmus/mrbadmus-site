@@ -35,12 +35,20 @@
  * RLS notes (Phase 3A recon):
  *   - assignment_submissions.submissions_self_all restricts students
  *     to their own submissions — so viewer stats are computable
- *     client-side from raw rows, but the LEADERBOARD is NOT.
- *   - The leaderboard is loaded via the SECURITY DEFINER RPC
- *     class_stars_leaderboard_for_member(p_class_id) added in
- *     20260524225500_class_stars_leaderboard_for_member.sql.
- *   - The function membership-gates internally — non-members get
- *     { eligible: [], is_empty: true, empty_reason: 'not_member' }.
+ *     client-side from raw rows, but a CLASSMATE's standing is NOT (a
+ *     student cannot read another student's submission rows directly).
+ *   - ⊕ Prompt X / SPEC-C — the page's Stars board is loaded via the
+ *     SECURITY DEFINER RPC class_stars_board_for_member(p_class_id)
+ *     (parked migration, branch feat/x-mig-pupil-class). It membership-
+ *     gates internally, same posture as the sibling function below:
+ *     non-members get { is_empty: true, empty_reason: 'not_member',
+ *     tabs: {} }.
+ *   - class_stars_leaderboard_for_member(p_class_id) (added in
+ *     20260524225500_class_stars_leaderboard_for_member.sql) answers a
+ *     DIFFERENT question — this week only, "eligible" students only, as a
+ *     percentage — and is no longer called from this page (nothing here
+ *     read its answer; see the comment at the RPC call site in the
+ *     function body). shared/teacher-data.js still calls it.
  *
  * Subject pill rule — ⊕ MRB-265 (Mide, 19 Aug 2026). READ FROM
  * `class_teachers.subject_id`, exactly as the teacher view reads it:
@@ -302,8 +310,16 @@ window.MrBadmusStudentData = (function () {
    *     ],
    *     assignmentsComingUp: [],   // set, not yet due; undated last
    *     assignmentsDone: [],       // submitted; newest first
-   *     leaderboard: { eligible, is_empty, empty_reason },
-   *     viewerOnPodium: boolean,   // viewer in leaderboard.eligible
+   *     // ⊕ Prompt X / SPEC-C — `class_stars_leaderboard_for_member`'s own
+   *     // round trip (and the `leaderboard`/`viewerOnPodium` fields it fed)
+   *     // left this return shape: nothing on the page ever read them. The
+   *     // Stars board reads `board` instead — a per-week points series for
+   *     // the whole roster, from the new `class_stars_board_for_member` RPC.
+   *     board: { is_empty, empty_reason, mode: 'pupil'|'teacher'|'none',
+   *              tabs: { "1".."4", "term": [{id, name, mono, points, me}] } },
+   *       // the class's TOP FIVE per tab (Mide, 4 Oct 2026), enforced by the
+   *       // RPC; a pupil gets at most five rows a tab and no row of their own
+   *       // unless they are in them
    *     week: { start_at, end_at, anchor_day, anchor_source },
    *   }
    */
@@ -460,8 +476,20 @@ window.MrBadmusStudentData = (function () {
       .eq('student_id', viewingStudentId)
       .is('deleted_at', null));
 
-    const leaderboardPromise = settle(
-      sb.rpc('class_stars_leaderboard_for_member', { p_class_id: classId }));
+    /* ⊕ Prompt X / SPEC-C — `class_stars_leaderboard_for_member`'s own
+       round trip LEAVES this function. It answered a question nothing on
+       this page ever read: `leaderboardRes`/`leaderboard`/`viewerOnPodium`
+       were computed below and returned, and shared/student-live.js never
+       consumed any of the three — confirmed by grep before removing them,
+       not assumed. The function itself is NOT retired (it still answers a
+       different, real question — THIS week only, "eligible" students
+       only, as a percentage — and shared/teacher-data.js calls it too);
+       only ITS CALL FROM THIS PAGE goes, because nothing here was reading
+       the answer. What the page's board actually needs is a per-week
+       points series for the WHOLE roster, which is what
+       `class_stars_board_for_member` (below) answers instead. */
+    const boardPromise = settle(
+      sb.rpc('class_stars_board_for_member', { p_class_id: classId }));
 
     // `[classId]`, not `[klass.id]`: they are the same uuid — the class row is
     // fetched BY that id — and using the parameter is what lets this leave
@@ -576,10 +604,10 @@ window.MrBadmusStudentData = (function () {
        function alongside the gate; this is only where their answers are
        collected. `Promise.all` over four already-in-flight promises resolves
        as soon as the slowest of them does, and none of them started here. */
-    const [assignmentsRes, mySubsRes, leaderboardRes, teacherLinks] = await Promise.all([
+    const [assignmentsRes, mySubsRes, boardRes, teacherLinks] = await Promise.all([
       assignmentsPromise,
       mySubsPromise,
-      leaderboardPromise,
+      boardPromise,
       teacherLinksPromise,
     ]);
 
@@ -591,11 +619,10 @@ window.MrBadmusStudentData = (function () {
       console.error('[student-data] own-submissions fetch failed', mySubsRes.error);
       throw mySubsRes.error;
     }
-    if (leaderboardRes.error) {
-      // Soft-fail the leaderboard — render Stars unavailable rather than
-      // breaking the whole page. The function is robust internally, so a
-      // failure here typically means the RPC itself errored.
-      console.error('[student-data] leaderboard RPC failed', leaderboardRes.error);
+    if (boardRes.error) {
+      // Soft-fail exactly like the leaderboard above — the board renders
+      // its own empty state rather than breaking the page.
+      console.error('[student-data] board RPC failed', boardRes.error);
     }
 
     // 5. Compute viewer stats.
@@ -755,15 +782,8 @@ window.MrBadmusStudentData = (function () {
     // the window itself.
     const prevWeekStart = new Date(new Date(week.start_at).getTime() - 7 * 86400000).toISOString();
 
-    // 7. Leaderboard + viewer-on-podium derivation.
-    const leaderboard = leaderboardRes && leaderboardRes.data
-      ? leaderboardRes.data
-      : null;
-    const viewerOnPodium = !!(
-      leaderboard &&
-      Array.isArray(leaderboard.eligible) &&
-      leaderboard.eligible.some(function (e) { return e.student_id === viewingStudentId; })
-    );
+    // 7. The Stars board's per-week points series.
+    const board = boardRes && boardRes.data ? boardRes.data : null;
 
     /* ⊕ MRB-265 — the subject comes from the link table now, not the name.
        ⊕ MRB-328 J4(b) — and it arrives on the `Promise.all` above rather than
@@ -790,8 +810,7 @@ window.MrBadmusStudentData = (function () {
       assignmentsDueNow: dueNow,
       assignmentsComingUp: comingUp,
       assignmentsDone: done,
-      leaderboard: leaderboard,
-      viewerOnPodium: viewerOnPodium,
+      board: board,
       week: week,
       prevWeekStart: prevWeekStart,  // for "Past assignments" last-week-only default filter
     };

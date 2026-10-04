@@ -174,7 +174,7 @@ RENDER_JS = """
   var cid = '%s';
   var weeks = MRB_PICK('WEEKS', cid) || [];
   var papers = MRB_PICK('PAPERS', cid) || [];
-  var wscope = MRB_WEEK_SCOPE(papers, weeks, %d);
+  var wscope = MRB_WEEK_SCOPE(papers, weeks, %d, MRB_PICK('MATRIX', cid));
   var wk = weeks[%d] || null;
   // Trim to what this walk records — the rest (handlers, unrelated screens'
   // props) is noise JSON.stringify would otherwise choke the terminal with.
@@ -182,10 +182,9 @@ RENDER_JS = """
     klass: v.klass,
     week: wk && {label: wk.label, range: wk.range, now: wk.now,
                  started: wk.started, monYmd: wk.monYmd, endMs: wk.endMs},
-    scope: {started: wscope.started, weekEndMs: wscope.weekEndMs,
-            lastClosed: wscope.lastClosed && {title: wscope.lastClosed.title,
-                                               due_at: wscope.lastClosed.due_at,
-                                               colSub: null},
+    scope: {started: wscope.started,
+            reteach: wscope.reteach && {title: wscope.reteach.title,
+                                        due_at: wscope.reteach.due_at},
             liveN: wscope.live.length, closedN: wscope.closed.length,
             scheduledN: wscope.scheduled.length},
     glance: v.glance && {
@@ -244,9 +243,9 @@ def walk(page, base, class_id, label, clock_label):
         sc = v.get("scope") or {}
         print("\n  -- chip %d%s --" % (wi, (" (%s, %s)" % (wk["label"], wk["range"])) if wk else ""))
         print("     week.started=%s week.monYmd=%s | scope.started=%s "
-              "lastClosed=%s live=%d closed=%d scheduled=%d"
+              "reteach=%s live=%d closed=%d scheduled=%d"
               % (wk and wk.get("started"), wk and wk.get("monYmd"), sc.get("started"),
-                 (sc.get("lastClosed") or {}).get("title"), sc.get("liveN"),
+                 (sc.get("reteach") or {}).get("title"), sc.get("liveN"),
                  sc.get("closedN"), sc.get("scheduledN")))
         g = v.get("glance") or {}
         for c in g.get("cards", []):

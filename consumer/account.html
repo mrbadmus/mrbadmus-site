@@ -598,6 +598,15 @@
   function deleteCard() {
     var head = '<section class="ak-delete" id="ak-delete">';
 
+    /* ⊕ B2C polish 2 (4 Oct 2026). Undo keeps the ACCOUNT; it does not
+       touch billing — asking for deletion set the subscription to end, and
+       undoing the deletion leaves it set to end (Mide's call whether that
+       should change; the words are made true, the behaviour is not moved).
+       So both sides of Undo say so, with the date, and the Resume control
+       sits right here rather than only in the plan card at the top. */
+    var subEnd = String(S.billing.state || '').toLowerCase() === 'cancelled'
+      ? dayMonth(S.billing.access_end) : null;
+
     if (S.deletion) {
       var when = dayMonth(S.deletion.execute_after);
       return head + '<div style="padding:18px;border:2px solid var(--ks3-ink);' +
@@ -607,12 +616,31 @@
            child login and child request while this row stands. */
         '<p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-body)">Your children can’t sign in now. ' +
           'Everything is deleted on <strong style="color:var(--ks3-ink)">' + esc(when || 'the scheduled date') +
-          '</strong>. Undo before then to keep it all.</p>' +
+          '</strong>. Undo before then to keep your children’s work and logins.' +
+          (subEnd ? (' Undo doesn’t restart billing: the subscription still ends on ' + esc(subEnd) + '.') : '') +
+          '</p>' +
         '<button data-act="undo-delete" style="margin-top:14px;min-height:46px;padding:0 18px;' +
           'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);' +
           'font-weight:700;font-size:15px;color:var(--ks3-ink);cursor:pointer">Undo — keep my ' +
           'account</button>' +
         '<div id="ak-del-msg"></div></div></section>';
+    }
+
+    if (S.undone) {
+      return head + '<div role="status" style="padding:18px;border:2px solid var(--ks3-ok);' +
+        'border-radius:var(--ks3-r-panel);background:var(--ks3-ok-tint);color:var(--ks3-ok-text)">' +
+        '<p style="margin:0;font-weight:700;font-size:18px">Your account is staying</p>' +
+        '<p style="margin:8px 0 0;font-size:15px">Your children can sign in again.' +
+          (subEnd ? (' The subscription is still set to end on <strong>' + esc(subEnd) + '</strong>.') : '') +
+        '</p>' +
+        (subEnd
+          ? ('<button type="button" data-act="portal" style="margin-top:14px;min-height:46px;padding:0 18px;' +
+             'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);' +
+             'font-weight:700;font-size:15px;color:var(--ks3-on-dark);cursor:pointer">Resume subscription</button>')
+          : '') +
+        '<div id="ak-del-msg"></div></div>' +
+        '<button type="button" class="ak-textlink" data-act="ask-delete" style="margin-top:14px">' +
+        'Delete this account</button></section>';
     }
 
     if (!S.deleting) {
@@ -842,7 +870,7 @@
     },
 
     'ask-delete': function () {
-      S.deleting = true; S.delTicked = false; render();
+      S.deleting = true; S.delTicked = false; S.undone = false; render();
       // The safe answer takes focus.
       var keep = document.getElementById('ak-keep');
       if (keep) { keep.focus(); }
@@ -878,7 +906,12 @@
       C.setBusy(el, true, 'Undoing…');
       C.api('/api/consumer/family/delete-request', { method: 'DELETE', token: ctx.token })
         .then(function () { return loadFamily(); })
-        .then(function () { render(); msg('Your account is staying, and your children can sign in again.', 'ok', 'ak-del-msg'); })
+        .then(function () {
+          S.undone = true;
+          render();
+          var sec = document.getElementById('ak-delete');
+          if (sec) { sec.scrollIntoView({ block: 'center' }); }
+        })
         .catch(function (e) { C.setBusy(el, false); msg(e.message, 'error', 'ak-del-msg'); });
     }
   };
@@ -893,7 +926,12 @@
   });
 
   /* Where a plan-card failure goes: directly under the button pressed. */
-  function planMsgHost() { return document.getElementById('ak-plan-msg') ? 'ak-plan-msg' : 'ak-msg'; }
+  function planMsgHost(el) {
+    /* ⊕ B2C polish 2: the Resume beside "Your account is staying" reports
+       under itself, not in the plan card at the top of the page. */
+    if (el && el.closest && el.closest('#ak-delete') && document.getElementById('ak-del-msg')) { return 'ak-del-msg'; }
+    return document.getElementById('ak-plan-msg') ? 'ak-plan-msg' : 'ak-msg';
+  }
 
   C.boot({ requireSession: true, run: function (context) {
     ctx = context;

@@ -1757,109 +1757,74 @@
   }
 
   /* ═════════════════════════════════════════════════════════════════════
-     THE SELECTED WEEK'S FACTS — ONE FUNCTION, EVERY CONSUMER
+     THE SELECTED WEEK'S OWN SETS — ONE FUNCTION, EVERY CONSUMER
      ═════════════════════════════════════════════════════════════════════
 
-     ⊕ x-week-truth (MRB-353 redone), 4 Oct 2026. Ruled by Mide: every card,
-     the students table and the breakdown link follow the SELECTED week, and
-     chip 0 ("this week") gets no special case of its own — its answer falls
-     out of the same arithmetic as every other chip.
+     ⊕ Ruled by Mide, 4 Oct 2026 (21:56), REPLACING the "last closed set"
+     rule shipped earlier that evening: EVERY WEEK SHOWS ONLY ITS OWN
+     HOMEWORK. Nothing from any other week, ever, on any card. The week tabs
+     change which week is shown; no card may reach into another week.
 
-     ⛔ WHAT WENT WRONG THE FIRST TIME (MRB-353, 1 Oct 2026). `lastMarked`
-     picked the selected week's OWN papers for a past week and ran an
-     UNSCOPED "newest released-and-submitted paper, anywhere in the class"
-     search for chip 0 — two different questions, answered by two different
-     pieces of code, and they disagreed the moment the current week's own
-     set was still open while an older one had already closed: 10h/Ph1,
-     seen live on Sun 4 Oct 2026 — week 4 (Changes of State) closed with 8
-     of 17 in, week 5 (Temperature) was still open at 3 of 17, and picking
-     week 5 on the bar read "Nothing to reteach yet" over a class that had
-     plainly just finished a topic. Scoping the SEARCH to the selected
-     week's own papers was wrong on its own terms, independent of chip 0:
-     "the last set that closed" is a question about the CLASS's history up
-     to a point in time, not about one week's own assignment.
+     ⛔ WHAT THE PREVIOUS VERSION DID, AND WHY IT IS GONE. It searched the
+     WHOLE class for "the most recent set that had closed by the end of the
+     selected week". On 10h/Ph1 that put week 4's Changes of State on weeks
+     5 and 6 ("those are details from the previous week literally showing on
+     this current week!!!") and left week 4 itself saying "Nothing to
+     reteach yet" over its own results. That search is deleted, not patched.
 
-     ⚠️ THE FIX IS ONE CUTOFF, NOT TWO BRANCHES. `lastClosed` scans every
-     paper the class has (`papers`, due_at DESC — the order `buildPapers`
-     already sorts them in), not merely the selected week's own, for the
-     newest one that is released, genuinely CLOSED (`p.closed` — its
-     deadline has passed; not merely `when === 'marked'`, which now means
-     "visible" rather than "due"), due at or before the END of the selected
-     week, and not a flashcard set (a deck has no per-question grid to
-     reteach from). The end of the week is capped at NOW, so a current or
-     future week's cutoff is simply "now" — the exact unscoped search chip 0
-     used to run by hand, arrived at here with no special case at all. A
-     PAST week's cutoff is its own Monday-after, so asking about week 4 can
-     no longer surface week 5's still-open set.
+     The selected week's sets are EXACTLY the ones its homework card shows —
+     the bucket rule `wPapers` has used since the week bar landed (chip 0
+     takes everything at or ahead of this week, the oldest chip everything at
+     or behind it, every chip between its own `weekIdx`). Every card reads
+     that one list.
 
-     ⚠️ EVEN IF NOBODY SAT IT — Mide's rule is literal. `lastClosed` does not
-     filter on submissions; a caller that wants "closed AND somebody sat it"
-     (the reteach card's own bars) tests `colSub` itself off `lastClosed.idx`,
-     same as it always did.
+     `reteach` is the set whose weakest questions the Reteach card shows: the
+     first of THIS week's own released, non-flashcard sets (newest release
+     first, the homework card's own order) with at least one hand-in in
+     `mx.colSub`. It does not wait for the deadline. No set this week, or
+     nobody in yet → null, and the card says so in one line. A flashcard
+     deck has no per-question grid, so it is never the reteach set.
 
-     ⚠️ FIXTURES WITHOUT `started`/`endMs` BEHAVE AS TODAY. A week object
-     that predates this ruling carries neither key; `started` then reads as
-     `true` and `weekEndMs` as `null` ("unbounded" — the cutoff is simply
-     `now`), which is the OLD, chip-0-shaped answer. Existing fixtures that
-     never exercised the new rule keep their old green behaviour rather than
-     silently gaining a cutoff nobody wrote them against.
-
-     ⚠️ THE CUTOFF IS LITERAL — "the following Monday 00:00", no grace. A
-     set due Monday morning (Changes of State, 09:00 BST; Temperature,
-     18:00 BST — every real due time in the estate is a Monday) has NOT
-     closed by the end of the week that set it: that week's own Monday-
-     after is the instant it rolls into the next week, and the paper is
-     still hours from its deadline at that instant. On 10h/Ph1 this is the
-     whole point of Mide's complaint: week 4's own chip (21 Sep) must read
-     "Nothing to reteach yet", not Changes of State — "week 4 reteach
-     showed week 4's own set" is item 1 of the bug report, not a fact to
-     preserve. Week 5's chip (28 Sep) is the first to see it, because
-     Changes of State's due instant (28 Sep) falls ON week 5's own Monday,
-     at or before week 5's cutoff (the Monday after, 5 Oct 00:00) — plenty
-     of room, no grace needed. A version of this comment argued for a
-     one-day grace from exactly the opposite reading of that bug-report
-     line; it was wrong, and is recorded as a deviation in RESULT-A.md
-     rather than silently deleted. */
-  function weekScope(papers, weeks, wi, now) {
+     `started`/`startsOn` still tell a not-yet-begun week apart, so it judges
+     nobody. A fixture week without `started` reads as started. */
+  function weekScope(papers, weeks, wi, now, mx) {
     papers = papers || [];
     weeks = weeks || [];
     var week = weeks[wi] || null;
     var oldest = wi >= weeks.length - 1;
-    // The exact bucket rule `wPapers` has used since the week bar landed
-    // (1 Sep 2026, WEEK_BAR_RESTORED): chip 0 takes everything at or ahead
-    // of this week, the oldest chip takes everything at or behind it, and
-    // every chip in between takes its own `weekIdx` exactly.
     var bucket = papers.filter(function (p) {
       if (wi === 0) { return p.weekIdx == null || p.weekIdx <= 0; }
       return oldest ? p.weekIdx >= wi : p.weekIdx === wi;
     });
     var started = (week && week.started != null) ? week.started : true;
-    var weekEndMs = (week && week.endMs != null) ? week.endMs : null;
-    var cutoff = weekEndMs == null ? now : Math.min(weekEndMs, now);
     var released = bucket.filter(function (p) { return p.state !== "scheduled"; });
     var live = bucket.filter(function (p) { return p.state === "open"; });
     var closed = bucket.filter(function (p) { return p.closed; });
     var scheduled = bucket.filter(function (p) { return p.state === "scheduled"; });
-    var lastClosed = null;
-    for (var i = 0; i < papers.length; i += 1) {
-      var p = papers[i];
-      if (p.state === "scheduled" || !p.closed || p.kind === "flashcards") { continue; }
-      var due = asDate(p.due_at);
-      if (!due || due.getTime() > cutoff) { continue; }
-      lastClosed = p;
-      break;      // `papers` is due_at DESC, so the first hit is the newest.
+    var colSub = (mx && mx.colSub) ? mx.colSub : [];
+    var candidates = released.filter(function (p) { return p.kind !== "flashcards"; })
+      .sort(function (a, b) {
+        if (a.release_at && b.release_at && a.release_at !== b.release_at) {
+          return a.release_at < b.release_at ? 1 : -1;
+        }
+        if (a.release_at && !b.release_at) { return -1; }
+        if (b.release_at && !a.release_at) { return 1; }
+        return a.idx - b.idx;
+      });
+    var reteach = null;
+    for (var i = 0; i < candidates.length; i += 1) {
+      if ((colSub[candidates[i].idx] || 0) > 0) { reteach = candidates[i]; break; }
     }
     return {
       week: week,
       started: started,
       startsOn: week ? week.monYmd : null,
-      weekEndMs: weekEndMs,
       papers: bucket,
       released: released,
       live: live,
       closed: closed,
       scheduled: scheduled,
-      lastClosed: lastClosed
+      reteach: reteach
     };
   }
 
@@ -3914,21 +3879,12 @@
     if (screen === "class" && classId) {
       var cMx = c.MATRIX[classId];
       var cPapers = c.PAPERS[classId] || [];
-      /* ⊕ x-week-truth, 4 Oct 2026 — THE SAME `weekScope`, FOR CHIP 0.
-         This used to be its own copy of "the newest released paper
-         somebody sat" (`cMx.markedIdx` narrowed by `colSub[i] > 0`) —
-         unscoped, exactly the shape `renderVals`'s own `lastP` used to take
-         for chip 0 before this ruling, and the two have now moved together
-         onto `weekScope`'s `lastClosed`. The page always OPENS on chip 0
-         (`weekIdxFor`'s own default), so that is the one grid worth
-         prefetching here; stepping to another week calls `MRB_ENSURE_GRID`
-         from inside `renderVals` itself (see the `lastP`/`g1` ruling) rather
-         than reloading the page. */
-      var cScope = weekScope(cPapers, c.WEEKS[classId] || [], 0, now);
-      var cLast = cScope.lastClosed;      // already excludes flashcards
-      if (cLast && (cMx.colSub[cLast.idx] || 0) > 0) {
-        await grid(classId, cLast.idx);
-      }
+      /* ⊕ 4 Oct 2026 (Mide's own-week rule) — the page OPENS on chip 0, so
+         prefetch the grid of chip 0's OWN reteach set (`weekScope`'s
+         `reteach`, never another week's). Other chips fetch theirs through
+         `MRB_ENSURE_GRID` from inside `renderVals`. */
+      var cScope = weekScope(cPapers, c.WEEKS[classId] || [], 0, now, cMx);
+      if (cScope.reteach) { await grid(classId, cScope.reteach.idx); }
     }
     if (screen === "marking" && classId) {
       var papers = c.PAPERS[classId] || [];

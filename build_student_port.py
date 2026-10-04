@@ -1146,18 +1146,36 @@ REWRITES = {
              keys=dict(weekNumber="str", weekTotal="str",
                        practiceRoundCrumb="str")),
         # The leaderboard's scope note. `'WHOLE AUTUMN TERM'` embeds the term
-        # name; `wk === 4` embeds which week is the current one — a NUMBER,
-        # compared with `===`, so it is carried as a number and not as the
-        # padded string. `'WEEK ' + pad(wk)` is computed from the week the
-        # student picked and stays as Design wrote it.
+        # name, seamed as everywhere else. `wk === 4` is DELIBERATELY LEFT A
+        # LITERAL, not seamed to a key — ⊕ Prompt X / SPEC-C, and the fix for
+        # a real bug this line used to carry.
+        #
+        # `wk` here is `st.boardWeek`: the SELECTED chip on the four-week
+        # board, domain {1, 2, 3, 4, 'term'} — a POSITION, never a real
+        # calendar week. It used to be seamed to `MRB_DATA('currentWeek')`,
+        # the SAME key the 39-week spine above uses for the REAL week-of-year
+        # number (1..39). Those are different units sharing one name by
+        # accident: Design's own fixture sets both to the literal `4`, which
+        # made `wk === currentWeek` true in exactly the one case nobody could
+        # tell the mismatch apart. Filled with real board data (the leaderboard
+        # used to ship permanently empty — see shared/student-data.js), any
+        # real class beyond its fourth teaching week would have `currentWeek`
+        # = some number nowhere near 4, `wk === currentWeek` would never be
+        # true, and the board's OWN current-week chip would read
+        # "WEEK 04 · FINAL" forever instead of "CURRENT WEEK".
+        #
+        # `class_stars_board_for_member` (the new RPC) defines position 4 as
+        # ALWAYS "now" — that is what the function computes, not a fact that
+        # varies per class or per load — so there is nothing to carry from
+        # data here at all; the literal is the honest, permanent answer.
         dict(name="boardScopeNote",
              pat=r"boardScopeNote: wk === 'term' \? "
                  r"'WHOLE (?P<termLabel>[A-Z][A-Z ]*)' : "
-                 r"wk === (?P<currentWeek>\d+) \?",
+                 r"wk === 4 \?",
              new="boardScopeNote: wk === 'term' ? "
                  "'WHOLE ' + MRB_DATA('termLabel') : "
-                 "wk === MRB_DATA('currentWeek') ?",
-             keys=dict(currentWeek="num")),
+                 "wk === 4 ?",
+             keys={}),
         # ⊕ 22 Aug 2026 — the shout-out BADGE, which the array beside it
         # outgrew. `shoutouts` has been data since the first method-body seam,
         # so a class with three shout-outs rendered three cards under a badge
@@ -1226,10 +1244,20 @@ REWRITES = {
                  "        nowDot: n === MRB_DATA('currentWeek') ? "
                  "'var(--st-accent)' : 'transparent'",
              keys=dict(currentWeek="num")),
+        # ⊕ Prompt X / SPEC-C — the WORD is seamed too, not only the week
+        # number. Mide's ask ("save a count of practice rounds and show
+        # it") changes what this tile counts — rounds completed, not
+        # questions answered — so "ANSWERED" stops being true of it. The
+        # fixture keeps Design's own word (captured, not retyped), exactly
+        # as `practiceTileLabel` two seams up keeps Design's own "Recall"
+        # while the live source supplies "Practice"; the live source here
+        # supplies "ROUNDS" (student-live.js).
         dict(name="readings — ANSWERED · WK nn",
-             pat=r"caption: 'ANSWERED \\u00B7 WK (?P<weekNumber>\d+)'",
-             new="caption: 'ANSWERED \\u00B7 WK ' + MRB_DATA('weekNumber')",
-             keys=dict(weekNumber="str")),
+             pat=r"caption: '(?P<practiceCaptionWord>ANSWERED) \\u00B7 WK "
+                 r"(?P<weekNumber>\d+)'",
+             new="caption: MRB_DATA('practiceCaptionWord') + ' \\u00B7 WK ' "
+                 "+ MRB_DATA('weekNumber')",
+             keys=dict(practiceCaptionWord="str", weekNumber="str")),
         dict(name="work row — COUNTS TOWARDS WEEK nn",
              pat=r"'COUNTS TOWARDS WEEK (?P<weekNumber>\d+)'",
              new="'COUNTS TOWARDS WEEK ' + MRB_DATA('weekNumber')",
