@@ -756,6 +756,123 @@ PHYSICS_SUBTOPICS_ALL = {
               'heading': 'Environmental Impact of Energy Resources'}],
   'title': 'Energy Resources',
   'triple_only': None,
+  'variables': []},
+ {'common_mistake': "INSULATORS do not stop heat transfer — they slow it down. A perfect insulator doesn't exist. "
+                    'Trapped air is one of the best insulators because air is a poor conductor and convection is '
+                    'reduced when it is trapped in small spaces.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'thermal-conductivity',
+  'key_note': 'Thermal conductivity: rate of energy transfer by conduction. Metals = good conductors (free electrons). '
+              'Air/fibreglass = good insulators. Reducing losses: insulation, lubrication, streamlining. Thicker '
+              'insulation = less energy lost. RP2: compare materials by rate of cooling.',
+  'matching': {'instruction': 'Match each material to its thermal conductivity property.',
+               'pairs': [('Copper', 'Very high thermal conductivity — free electrons transfer energy rapidly'),
+                         ('Air (trapped)', 'Very low thermal conductivity — excellent insulator when trapped'),
+                         ('Cavity wall insulation', 'Fibreglass with trapped air — reduces energy loss through walls'),
+                         ('Lubrication', 'Reduces friction between surfaces — less energy wasted as heat')],
+               'title': 'Thermal Conductivity'},
+  'quiz': [{'opts': [('Air has much lower thermal conductivity than glass — it transfers energy by conduction very '
+                      'slowly',
+                      True),
+                     ('Air is lighter than glass — lower density means less thermal energy stored', False),
+                     ('Glass transmits light which carries thermal energy — air does not', False),
+                     ('Air molecules move randomly, transferring energy away from hot objects faster', False)],
+            'q': 'Why is trapped air a better insulator than glass?',
+            'wrong_explanations': {1: "Density affects heat capacity but not thermal conductivity directly — air's "
+                                      'insulating property comes from its very low thermal conductivity.',
+                                   2: 'Light transmission (transparency) is unrelated to thermal conductivity.',
+                                   3: 'Moving air molecules would increase CONVECTION — trapped air cannot convect, so '
+                                      'only slow conduction occurs.'}},
+           {'opts': [('Rate of temperature decrease — steeper temperature-time graph = less effective insulator', True),
+                     ('Final temperature after 10 minutes — higher temperature = better conductor', False),
+                     ('Mass of insulating material used — more mass = more insulation', False),
+                     ('Colour of the insulating material — darker colours absorb more radiation', False)],
+            'q': 'A student investigates thermal insulators by wrapping identical beakers in different materials. '
+                 'Which measurement gives the best comparison?',
+            'wrong_explanations': {1: "Final temperature alone doesn't account for starting conditions or time — rate "
+                                      'of cooling (gradient) is a fairer comparison.',
+                                   2: 'Mass is not controlled in this way — thickness and type of material matter, not '
+                                      'total mass.',
+                                   3: 'Colour affects radiation absorption — relevant for infrared studies but not '
+                                      'primary factor in conduction-based insulation tests.'}}],
+  'rp': None,
+  'spec': '6.1.2.1',
+  'summary': 'Explain thermal conductivity and describe how insulation reduces unwanted energy transfers.',
+  'theory': [{'content': 'THERMAL CONDUCTIVITY measures how well a material transfers thermal energy by conduction.\n'
+                         '\n'
+                         'Good THERMAL CONDUCTORS: metals (copper, aluminium, iron). Transfer energy quickly. Free '
+                         'electrons carry thermal energy through the material.\n'
+                         '\n'
+                         'Good THERMAL INSULATORS: air, wood, fibreglass, polystyrene, wool. Transfer energy slowly. '
+                         'No free electrons; energy transferred only by vibration between tightly packed or sparse '
+                         'particles.\n'
+                         '\n'
+                         'Unit of thermal conductivity: W/m·K (watts per metre per kelvin).\n'
+                         '\n'
+                         'Higher thermal conductivity → energy transferred faster for the same temperature difference '
+                         'and thickness.\n'
+                         '\n'
+                         'Examples:\n'
+                         'Copper: ~400 W/m·K — excellent conductor.\n'
+                         'Glass: ~1 W/m·K — poor conductor.\n'
+                         'Air: ~0.025 W/m·K — excellent insulator.',
+              'heading': 'Thermal Conductivity'},
+             {'content': 'All energy transfers involve some unwanted dissipation — energy transferred to the thermal '
+                         'store of the surroundings.\n'
+                         '\n'
+                         'METHODS TO REDUCE THERMAL ENERGY LOSS:\n'
+                         '\n'
+                         '1. INSULATION:\n'
+                         'Surround objects with poor conductors.\n'
+                         'Cavity wall insulation (fibreglass or foam) — reduces conduction through walls.\n'
+                         'Loft insulation — reduces conduction through roof.\n'
+                         'Double-glazing — air gap between panes of glass reduces conduction.\n'
+                         'Foam lagging on hot water pipes — reduces heat loss to surroundings.\n'
+                         '\n'
+                         '2. LUBRICATION:\n'
+                         'Reduces friction between moving surfaces.\n'
+                         'Less friction → less thermal energy dissipated.\n'
+                         'Machine oil, grease used in engines, bearings, chains.\n'
+                         '\n'
+                         '3. STREAMLINING:\n'
+                         'Reduces air resistance on moving vehicles.\n'
+                         'Less drag → less energy wasted overcoming resistance.\n'
+                         '\n'
+                         '4. ELECTROMAGNETIC SHIELDING:\n'
+                         'Reduces energy loss from electrical components.\n'
+                         '\n'
+                         'THICKNESS AND THERMAL CONDUCTIVITY:\n'
+                         'Thicker insulation → less energy transferred per second (for same temperature difference).\n'
+                         'More insulating material (lower conductivity) → less energy transferred.\n'
+                         'Energy lost per second ∝ thermal conductivity × area × (temperature difference) ÷ thickness.',
+              'heading': 'Reducing Unwanted Energy Transfers'},
+             {'content': 'REQUIRED PRACTICAL (RP2 — physics only):\n'
+                         'Investigate the effectiveness of different materials as thermal insulators.\n'
+                         '\n'
+                         'METHOD:\n'
+                         'Wrap beakers of hot water in different materials (wool, bubble wrap, newspaper, foil).\n'
+                         'Measure temperature of water at regular time intervals.\n'
+                         'Plot temperature-time graphs for each material.\n'
+                         'Compare rate of cooling — steeper gradient = less effective insulator.\n'
+                         '\n'
+                         'VARIABLES:\n'
+                         'Independent: type of insulating material.\n'
+                         'Dependent: rate of cooling (temperature change per unit time).\n'
+                         'Controlled: initial temperature, volume of water, thickness of insulation, surface area.\n'
+                         '\n'
+                         'CONCLUSION:\n'
+                         'Material with lowest thermal conductivity → slowest cooling → best insulator.\n'
+                         'Air is often the best insulator — sealed air pockets in fibreglass work well.\n'
+                         '\n'
+                         'APPLICATIONS:\n'
+                         'Building insulation — reduces heating bills and carbon footprint.\n'
+                         'Refrigeration — insulated walls slow thermal energy entering the cold space.\n'
+                         'Cryogenics — extreme insulation to maintain very low temperatures.',
+              'heading': 'Required Practical — Thermal Insulation'}],
+  'title': 'Thermal Conductivity and Reducing Unwanted Energy Transfers',
+  'triple_only': None,
   'variables': []}],
 
 "electricity": [{'common_mistake': 'Ammeters are connected IN SERIES — they must be in the same loop as the component. Voltmeters are '

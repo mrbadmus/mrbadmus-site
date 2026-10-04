@@ -282,7 +282,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what is meant by a haploid cell.",
         "options": [
             "A cell containing two of each type of chromosome",
@@ -299,7 +299,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Name the organs in which meiosis takes place in humans.",
         "options": [
             "The liver and the kidneys",
@@ -316,7 +316,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State how many divisions take place during meiosis, and how "
                 "many cells result.",
         "options": [
@@ -334,7 +334,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "easier",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what happens to the homologous pairs during the first "
                 "division of meiosis.",
         "options": [
@@ -353,7 +353,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "An organism has 12 chromosomes in each of its body cells. "
                 "Determine the number of chromosomes in each cell produced "
                 "when one of these cells divides by meiosis.",
@@ -372,7 +372,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Describe what happens during the second division of "
                 "meiosis.",
         "options": [
@@ -395,7 +395,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Describe what physically happens to chromosomes during "
                 "crossing over.",
         "options": [
@@ -416,7 +416,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "standard",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A plant species has 20 chromosomes in each body cell. "
                 "Determine the number of chromosomes in a cell of an embryo "
                 "formed after fertilisation.",
@@ -435,7 +435,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A cell containing four pairs of chromosomes divides by "
                 "meiosis. Explain why the gametes produced are unlikely to "
                 "be identical, even if no crossing over occurs.",
@@ -459,7 +459,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A fault in meiosis produces a human gamete containing 24 "
                 "chromosomes instead of 23. Predict the number of "
                 "chromosomes in a zygote formed from this gamete and a "
@@ -479,7 +479,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain why a species reproducing by mitosis alone would be "
                 "expected to evolve more slowly than one using meiosis and "
                 "fertilisation.",
@@ -503,7 +503,7 @@ QUESTIONS = [
         "subtopic_slug": "meiosis",
         "band": "harder",
         "tier": "foundation",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Suggest why the cells produced by meiosis in a testis "
                 "cannot be used to repair damaged muscle tissue.",
         "options": [

@@ -997,7 +997,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A single force is replaced by two perpendicular components. "
                 "State how the size of each component compares with the size "
                 "of the original force.",
@@ -1016,7 +1016,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A force of 20 N acts at 60° to the horizontal. Calculate "
                 "its horizontal component. (cos 60° = 0.500)",
         "options": [
@@ -1033,7 +1033,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A single force has been resolved into a horizontal "
                 "component of 12.0 N and a vertical component of 5.0 N. "
                 "Calculate the magnitude of the original force.",
@@ -1052,7 +1052,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what is meant by resolving a force.",
         "options": [
             "Adding two forces together to find a single resultant",
@@ -1070,7 +1070,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A sledge is pulled by a rope held at 30° to the horizontal "
                 "with a force of 60 N. Calculate the horizontal component of "
                 "the pull. (sin 30° = 0.500, cos 30° = 0.866)",
@@ -1089,7 +1089,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A force of 45 N acts at 45° to the horizontal. Compare its "
                 "horizontal and vertical components. "
                 "(sin 45° = cos 45° = 0.707)",
@@ -1108,7 +1108,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A force acting at 30° to the horizontal has a vertical "
                 "component of 12 N. Determine the magnitude of the force. "
                 "(sin 30° = 0.500, cos 30° = 0.866)",
@@ -1126,7 +1126,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Two forces act at the same point on a bolt: 8.0 N due east "
                 "and 15.0 N due north. Determine the magnitude of the "
                 "resultant force.",
@@ -1145,7 +1145,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A crate is pushed along a floor by a force of 200 N "
                 "directed at 25° below the horizontal. Determine the "
                 "component of that push acting vertically downwards. "
@@ -1165,7 +1165,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A student resolves a 26 N force and states that its "
                 "components are 24 N horizontally and 12 N vertically. "
                 "Explain why these values must be wrong.",
@@ -1189,7 +1189,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A lamp of weight 40 N hangs at rest from two wires fixed to "
                 "the ceiling, each wire making an angle of 60° to the "
                 "vertical. Determine the tension in each wire. "
@@ -1210,7 +1210,7 @@ QUESTIONS = [
         "subtopic_slug": "resolving-forces",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A box of weight 150 N rests on a slope inclined at 20° to "
                 "the horizontal. Determine the component of the box's weight "
                 "acting down the slope. (sin 20° = 0.342, cos 20° = 0.940)",
@@ -1232,7 +1232,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State which forces should be drawn on the free body diagram "
                 "of an object.",
         "options": [
@@ -1250,7 +1250,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State the direction in which the weight arrow is always "
                 "drawn on a free body diagram.",
         "options": [
@@ -1269,7 +1269,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what the length of each arrow on a free body diagram "
                 "represents.",
         "options": [
@@ -1287,7 +1287,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A ladder leans against a smooth vertical wall. State the "
                 "direction of the force the wall exerts on the ladder.",
         "options": [
@@ -1305,7 +1305,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A crate is dragged at a constant velocity across a rough "
                 "horizontal floor by a horizontal rope. Which statement "
                 "about its free body diagram is correct?",
@@ -1328,7 +1328,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A helium balloon rises at a steady speed through still air. "
                 "Determine which set of forces should appear on its free "
                 "body diagram.",
@@ -1352,7 +1352,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A car of weight 12 000 N travels along a level road. Its "
                 "engine provides a forward force of 3000 N and the total "
                 "resistive force is 3000 N. Determine the resultant vertical "
@@ -1373,7 +1373,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A box of mass 5.0 kg hangs at rest from a single vertical "
                 "rope. Determine the tension in the rope. (g = 9.8 N/kg)",
         "options": [
@@ -1391,7 +1391,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A student draws a free body diagram of a car and includes "
                 "an arrow labelled 'the force of the car on the road'. "
                 "Explain what is wrong with this.",
@@ -1415,7 +1415,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A ball is thrown vertically upwards and is momentarily at "
                 "rest at the top of its flight. Air resistance is "
                 "negligible. Determine which forces should appear on its "
@@ -1436,7 +1436,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A sledge of mass 25 kg is pulled along level ground at a "
                 "constant velocity by a rope held at 40° to the horizontal "
                 "with a tension of 90 N. Determine the normal contact force "
@@ -1457,7 +1457,7 @@ QUESTIONS = [
         "subtopic_slug": "free-body-diagrams",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A crate on a horizontal floor is in equilibrium under three "
                 "horizontal forces: 30 N due east, 40 N due north and one "
                 "unknown force. Determine the unknown force.",

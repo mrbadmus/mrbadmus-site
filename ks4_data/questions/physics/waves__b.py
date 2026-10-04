@@ -557,7 +557,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "State what is meant by a wave front.",
         "options": [
             "A line drawn parallel to the direction in which the energy "
@@ -578,7 +578,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A wave meets a boundary at an angle and crosses into a "
                 "material in which it travels faster. State how its direction "
                 "changes.",
@@ -598,7 +598,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Wave fronts and rays are both used to represent a wave. "
                 "State what a ray represents.",
         "options": [
@@ -617,7 +617,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "easier",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "The wave fronts of a wave are further apart in material B "
                 "than they are in material A. State which material the wave "
                 "travels faster in.",
@@ -641,7 +641,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A water wave in a ripple tank travels from deep water into "
                 "shallow water, where it moves more slowly, meeting the "
                 "boundary at an angle. Describe the change in its direction.",
@@ -660,7 +660,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "Explain, in terms of wave fronts, why a wave changes "
                 "direction when it crosses a boundary at an angle.",
         "options": [
@@ -683,7 +683,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A student says that light bends when it enters glass, and "
                 "that this bending is what makes it slow down. Explain the "
                 "error in their reasoning.",
@@ -707,7 +707,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "standard",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A sound wave of frequency 300 Hz travels through air at "
                 "340 m/s and then passes into water, where its speed is "
                 "1500 m/s. Calculate its wavelength in the water.",
@@ -726,7 +726,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A radio wave of frequency 6.0 × 10⁶ Hz travels through air "
                 "at 3.0 × 10⁸ m/s. It then enters a slab of material in which "
                 "its speed falls to 2.4 × 10⁸ m/s. Calculate the change in "
@@ -746,7 +746,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "A narrow beam of light passes from air into a rectangular "
                 "glass block and out again into air through the opposite, "
                 "parallel face. Predict the direction of the emerging beam "
@@ -772,7 +772,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "P-waves travel faster in denser rock. As a P-wave travels "
                 "downwards into the Earth, the rock beneath it becomes "
                 "steadily denser. Explain why the wave follows a curved path "
@@ -801,7 +801,7 @@ QUESTIONS = [
         "subtopic_slug": "wave-front-refraction",
         "band": "harder",
         "tier": "higher",
-        "triple_only": True,
+        "triple_only": False,
         "text": "As a wave crosses a boundary, its wave fronts become closer "
                 "together in the second medium. A student concludes that the "
                 "frequency of the wave has increased. Evaluate this "

@@ -755,6 +755,126 @@ PHYSICS_SUBTOPICS_ALL = {
               'heading': 'Environmental Impact of Energy Resources'}],
   'title': 'Energy Resources',
   'triple_only': None,
+  'variables': []},
+ {'common_mistake': "INSULATORS do not stop heat transfer — they slow it down. A perfect insulator doesn't exist. "
+                    'Trapped air is one of the best insulators because air is a poor conductor and convection is '
+                    'reduced when it is trapped in small spaces.',
+  'equations': [],
+  'fifas': [],
+  'higher': 'Describe the factors affecting the rate of thermal conduction: thermal conductivity, thickness and '
+            'temperature difference. Calculate rate of energy transfer through a material. Evaluate different '
+            'insulation methods quantitatively using U-values or thermal conductivity data. Explain why double-glazing '
+            'is more effective with wider gaps.',
+  'id': 'thermal-conductivity',
+  'key_note': 'Thermal conductivity: rate of energy transfer by conduction. Metals = good conductors (free electrons). '
+              'Air/fibreglass = good insulators. Reducing losses: insulation, lubrication, streamlining. Thicker '
+              'insulation = less energy lost. RP2: compare materials by rate of cooling.',
+  'matching': {'instruction': 'Match each material to its thermal conductivity property.',
+               'pairs': [('Copper', 'Very high thermal conductivity — free electrons transfer energy rapidly'),
+                         ('Air (trapped)', 'Very low thermal conductivity — excellent insulator when trapped'),
+                         ('Cavity wall insulation', 'Fibreglass with trapped air — reduces energy loss through walls'),
+                         ('Lubrication', 'Reduces friction between surfaces — less energy wasted as heat')],
+               'title': 'Thermal Conductivity'},
+  'quiz': [{'opts': [('Air has much lower thermal conductivity than glass — it transfers energy by conduction very '
+                      'slowly',
+                      True),
+                     ('Air is lighter than glass — lower density means less thermal energy stored', False),
+                     ('Glass transmits light which carries thermal energy — air does not', False),
+                     ('Air molecules move randomly, transferring energy away from hot objects faster', False)],
+            'q': 'Why is trapped air a better insulator than glass?',
+            'wrong_explanations': {1: "Density affects heat capacity but not thermal conductivity directly — air's "
+                                      'insulating property comes from its very low thermal conductivity.',
+                                   2: 'Light transmission (transparency) is unrelated to thermal conductivity.',
+                                   3: 'Moving air molecules would increase CONVECTION — trapped air cannot convect, so '
+                                      'only slow conduction occurs.'}},
+           {'opts': [('Rate of temperature decrease — steeper temperature-time graph = less effective insulator', True),
+                     ('Final temperature after 10 minutes — higher temperature = better conductor', False),
+                     ('Mass of insulating material used — more mass = more insulation', False),
+                     ('Colour of the insulating material — darker colours absorb more radiation', False)],
+            'q': 'A student investigates thermal insulators by wrapping identical beakers in different materials. '
+                 'Which measurement gives the best comparison?',
+            'wrong_explanations': {1: "Final temperature alone doesn't account for starting conditions or time — rate "
+                                      'of cooling (gradient) is a fairer comparison.',
+                                   2: 'Mass is not controlled in this way — thickness and type of material matter, not '
+                                      'total mass.',
+                                   3: 'Colour affects radiation absorption — relevant for infrared studies but not '
+                                      'primary factor in conduction-based insulation tests.'}}],
+  'rp': None,
+  'spec': '6.1.2.1',
+  'summary': 'Explain thermal conductivity and describe how insulation reduces unwanted energy transfers.',
+  'theory': [{'content': 'THERMAL CONDUCTIVITY measures how well a material transfers thermal energy by conduction.\n'
+                         '\n'
+                         'Good THERMAL CONDUCTORS: metals (copper, aluminium, iron). Transfer energy quickly. Free '
+                         'electrons carry thermal energy through the material.\n'
+                         '\n'
+                         'Good THERMAL INSULATORS: air, wood, fibreglass, polystyrene, wool. Transfer energy slowly. '
+                         'No free electrons; energy transferred only by vibration between tightly packed or sparse '
+                         'particles.\n'
+                         '\n'
+                         'Unit of thermal conductivity: W/m·K (watts per metre per kelvin).\n'
+                         '\n'
+                         'Higher thermal conductivity → energy transferred faster for the same temperature difference '
+                         'and thickness.\n'
+                         '\n'
+                         'Examples:\n'
+                         'Copper: ~400 W/m·K — excellent conductor.\n'
+                         'Glass: ~1 W/m·K — poor conductor.\n'
+                         'Air: ~0.025 W/m·K — excellent insulator.',
+              'heading': 'Thermal Conductivity'},
+             {'content': 'All energy transfers involve some unwanted dissipation — energy transferred to the thermal '
+                         'store of the surroundings.\n'
+                         '\n'
+                         'METHODS TO REDUCE THERMAL ENERGY LOSS:\n'
+                         '\n'
+                         '1. INSULATION:\n'
+                         'Surround objects with poor conductors.\n'
+                         'Cavity wall insulation (fibreglass or foam) — reduces conduction through walls.\n'
+                         'Loft insulation — reduces conduction through roof.\n'
+                         'Double-glazing — air gap between panes of glass reduces conduction.\n'
+                         'Foam lagging on hot water pipes — reduces heat loss to surroundings.\n'
+                         '\n'
+                         '2. LUBRICATION:\n'
+                         'Reduces friction between moving surfaces.\n'
+                         'Less friction → less thermal energy dissipated.\n'
+                         'Machine oil, grease used in engines, bearings, chains.\n'
+                         '\n'
+                         '3. STREAMLINING:\n'
+                         'Reduces air resistance on moving vehicles.\n'
+                         'Less drag → less energy wasted overcoming resistance.\n'
+                         '\n'
+                         '4. ELECTROMAGNETIC SHIELDING:\n'
+                         'Reduces energy loss from electrical components.\n'
+                         '\n'
+                         'THICKNESS AND THERMAL CONDUCTIVITY:\n'
+                         'Thicker insulation → less energy transferred per second (for same temperature difference).\n'
+                         'More insulating material (lower conductivity) → less energy transferred.\n'
+                         'Energy lost per second ∝ thermal conductivity × area × (temperature difference) ÷ thickness.',
+              'heading': 'Reducing Unwanted Energy Transfers'},
+             {'content': 'REQUIRED PRACTICAL (RP2 — physics only):\n'
+                         'Investigate the effectiveness of different materials as thermal insulators.\n'
+                         '\n'
+                         'METHOD:\n'
+                         'Wrap beakers of hot water in different materials (wool, bubble wrap, newspaper, foil).\n'
+                         'Measure temperature of water at regular time intervals.\n'
+                         'Plot temperature-time graphs for each material.\n'
+                         'Compare rate of cooling — steeper gradient = less effective insulator.\n'
+                         '\n'
+                         'VARIABLES:\n'
+                         'Independent: type of insulating material.\n'
+                         'Dependent: rate of cooling (temperature change per unit time).\n'
+                         'Controlled: initial temperature, volume of water, thickness of insulation, surface area.\n'
+                         '\n'
+                         'CONCLUSION:\n'
+                         'Material with lowest thermal conductivity → slowest cooling → best insulator.\n'
+                         'Air is often the best insulator — sealed air pockets in fibreglass work well.\n'
+                         '\n'
+                         'APPLICATIONS:\n'
+                         'Building insulation — reduces heating bills and carbon footprint.\n'
+                         'Refrigeration — insulated walls slow thermal energy entering the cold space.\n'
+                         'Cryogenics — extreme insulation to maintain very low temperatures.',
+              'heading': 'Required Practical — Thermal Insulation'}],
+  'title': 'Thermal Conductivity and Reducing Unwanted Energy Transfers',
+  'triple_only': None,
   'variables': []}],
 
 "electricity": [{'common_mistake': 'Ammeters are connected IN SERIES — they must be in the same loop as the component. Voltmeters are '
@@ -3609,6 +3729,223 @@ PHYSICS_SUBTOPICS_ALL = {
   'title': 'Resultant Forces',
   'triple_only': None,
   'variables': []},
+ {'common_mistake': 'When resolving a force, horizontal component uses COS and vertical uses SIN (for angle measured '
+                    'from horizontal). If angle is measured from the VERTICAL, swap sin and cos. Always check with '
+                    'Pythagoras: Fx² + Fy² should equal F².',
+  'equations': ['Fx = F cos θ', 'Fy = F sin θ', 'R = √(Fx² + Fy²)'],
+  'fifas': [{'label': 'Resultant of Two Forces',
+             'question': 'Forces of 3 N east and 4 N north act on an object. Find the resultant.',
+             'steps': [('F', 'R = √(Fx² + Fy²); θ = arctan(Fy/Fx)'),
+                       ('I', 'Fx = 3 N (east), Fy = 4 N (north)'),
+                       ('F', 'R = √(3² + 4²) = √(9+16) = √25 = 5 N; θ = arctan(4/3) = 53° north of east'),
+                       ('A', 'Resultant = 5 N at 53° north of east')]}],
+  'higher': 'HT only — resolve forces into components using trigonometry. Use vector diagrams (scale drawing, '
+            'tip-to-tail, parallelogram) to determine resultants and solve equilibrium problems.',
+  'id': 'resolving-forces',
+  'key_note': 'Resolve F at angle θ: Fx = F cosθ, Fy = F sinθ. Find resultant: component method R = √(Fx²+Fy²), or '
+              'scale drawing tip-to-tail. Equilibrium: three forces form closed triangle. Parallelogram of forces: '
+              'diagonal = resultant.',
+  'matching': {'instruction': 'Match each vector quantity to the correct component formula.',
+               'pairs': [('Horizontal component', 'Fx = F cos θ  (θ measured from horizontal)'),
+                         ('Vertical component', 'Fy = F sin θ  (θ measured from horizontal)'),
+                         ('Resultant magnitude', 'R = √(Fx² + Fy²)  — Pythagoras from components'),
+                         ('Three forces in equilibrium', 'Form a closed triangle when drawn tip-to-tail')],
+               'title': 'Vector Components'},
+  'quiz': [{'opts': [('Horizontal = 5 N, vertical = 12 N — Fx = 13×0.385 = 5 N; Fy = 13×0.923 = 12 N', True),
+                     ('Horizontal = 12 N, vertical = 5 N — Fx = 13×0.923; Fy = 13×0.385', False),
+                     ('Both = 9.2 N — equal components at 67.4°', False),
+                     ('Horizontal = 13 N, vertical = 0 — horizontal force has no vertical component', False)],
+            'q': 'A 13 N force acts at 67.4° to the horizontal. What are the horizontal and vertical components? '
+                 '(sin67.4° = 0.923, cos67.4° = 0.385)',
+            'wrong_explanations': {1: 'Horizontal uses COS (angle from horizontal), vertical uses SIN — they are '
+                                      'swapped in this option.',
+                                   2: 'Components are only equal when θ = 45° — at 67.4° the components are unequal.',
+                                   3: 'A force at an angle to the horizontal ALWAYS has both horizontal and vertical '
+                                      "components unless it's purely horizontal."}},
+           {'opts': [('The object is in equilibrium — the resultant of the three forces is zero', True),
+                     ('The three forces are all equal in magnitude — equilateral triangle', False),
+                     ('The object is accelerating — closed triangles indicate net force', False),
+                     ('The forces all act in the same direction — parallel vectors form triangles', False)],
+            'q': 'Three forces acting on an object form a closed triangle when drawn tip-to-tail. What does this tell '
+                 'us?',
+            'wrong_explanations': {1: "A closed triangle means the forces cancel — but they don't have to be equal. A "
+                                      'closed triangle can be scalene (all different sides).',
+                                   2: 'A closed triangle means ZERO resultant, which means equilibrium — zero '
+                                      'resultant = zero acceleration.',
+                                   3: 'Parallel forces cannot form a triangle — vectors must point in different '
+                                      'directions.'}}],
+  'rp': None,
+  'spec': '6.5.1 (HT only)',
+  'summary': 'Resolve forces into components and use vector diagrams to find resultants.',
+  'theory': [{'content': 'A single force can be RESOLVED into two PERPENDICULAR COMPONENTS.\n'
+                         'This is the reverse of finding a resultant — splitting one force into two.\n'
+                         '\n'
+                         'FOR FORCE F AT ANGLE θ TO HORIZONTAL:\n'
+                         'Horizontal component: Fx = F cos θ\n'
+                         'Vertical component: Fy = F sin θ\n'
+                         '\n'
+                         'WHY RESOLVE FORCES?\n'
+                         'Makes calculations simpler — can treat horizontal and vertical motion separately.\n'
+                         'Essential for inclined plane problems, projectile problems, force equilibrium.\n'
+                         '\n'
+                         'EXAMPLE:\n'
+                         'A 50 N force at 37° to the horizontal:\n'
+                         'Fx = 50 cos 37° = 50 × 0.799 = 40 N (horizontal)\n'
+                         'Fy = 50 sin 37° = 50 × 0.602 = 30 N (vertical)\n'
+                         'Note: 40² + 30² = 1600 + 900 = 2500 = 50² ✓ (Pythagoras check)',
+              'heading': 'Resolving Forces into Components'},
+             {'content': 'To find the RESULTANT of two forces not along the same line:\n'
+                         '\n'
+                         'METHOD 1 — SCALE DRAWING (tip-to-tail):\n'
+                         '1. Choose a scale (e.g. 1 cm = 10 N).\n'
+                         '2. Draw the first force vector to scale.\n'
+                         '3. From the tip of the first vector, draw the second force vector to scale.\n'
+                         '4. Draw the resultant from the start of the first to the tip of the second.\n'
+                         '5. Measure the resultant length → convert to force. Measure the angle.\n'
+                         '\n'
+                         'METHOD 2 — PARALLELOGRAM OF FORCES:\n'
+                         '1. Draw both forces from the same point to scale.\n'
+                         '2. Complete the parallelogram.\n'
+                         '3. The diagonal = resultant.\n'
+                         '\n'
+                         'METHOD 3 — COMPONENT METHOD:\n'
+                         '1. Resolve all forces into x and y components.\n'
+                         '2. Sum all x-components: ΣFx.\n'
+                         '3. Sum all y-components: ΣFy.\n'
+                         '4. Resultant magnitude: R = √(ΣFx² + ΣFy²).\n'
+                         '5. Angle: θ = arctan(ΣFy / ΣFx).',
+              'heading': 'Vector Diagrams — Finding Resultants'},
+             {'content': 'EQUILIBRIUM: an object is in equilibrium when the resultant of all forces is zero.\n'
+                         '\n'
+                         'For THREE FORCES in equilibrium:\n'
+                         'When drawn tip-to-tail, they form a CLOSED TRIANGLE (the triangle of forces).\n'
+                         'If the triangle closes, the object is in equilibrium.\n'
+                         '\n'
+                         'PRACTICAL APPLICATIONS:\n'
+                         'Finding the tension in two strings supporting a weight.\n'
+                         'Analysing forces on a stationary object on a slope.\n'
+                         'Determining the direction of motion when two forces act.\n'
+                         '\n'
+                         'SCALE DRAWING TECHNIQUE:\n'
+                         'Accuracy matters — use a ruler and protractor.\n'
+                         'Always state the scale used.\n'
+                         'Convert measurements back to actual forces using the scale.\n'
+                         '\n'
+                         'LIMITATIONS:\n'
+                         'Scale drawings introduce measurement errors — component method is more precise.\n'
+                         'For GCSE, scale drawings are acceptable for force problems.',
+              'heading': 'Equilibrium and Scale Drawings'}],
+  'title': 'Resolving Forces and Vector Diagrams',
+  'triple_only': None,
+  'variables': [('Fx', 'Horizontal component', 'newtons', 'N'),
+                ('Fy', 'Vertical component', 'newtons', 'N'),
+                ('F', 'Resultant force', 'newtons', 'N'),
+                ('θ', 'Angle to horizontal', 'degrees', '°')]},
+ {'common_mistake': 'All forces in a free body diagram act ON the object — not forces the object exerts on others. '
+                    'Weight always acts downward from the centre of mass. Normal contact force is PERPENDICULAR to the '
+                    'surface — not vertical (unless surface is horizontal).',
+  'equations': ['Horizontal component: Fx = F cos θ', 'Vertical component: Fy = F sin θ'],
+  'fifas': [],
+  'higher': 'HT only — draw and interpret free body diagrams. Resolve forces into perpendicular components. Determine '
+            'resultant force from FBD using scale drawing or components. Identify whether an object is in equilibrium '
+            'from a FBD.',
+  'id': 'free-body-diagrams',
+  'key_note': 'FBD: all forces on one object as arrows (length = magnitude). Balanced: resultant = 0, object '
+              'stationary or constant velocity. Unbalanced: net force → acceleration. Resolve angled forces: Fx = F '
+              'cosθ, Fy = F sinθ. Equilibrium: sum horizontal = 0 AND sum vertical = 0.',
+  'matching': {'instruction': 'Match each situation to the correct FBD description.',
+               'pairs': [('Book at rest on table', 'Weight down = normal contact up — balanced forces, resultant = 0'),
+                         ('Skydiver at terminal velocity', 'Weight down = drag up — balanced, constant velocity'),
+                         ('Car accelerating', 'Thrust > drag — net forward force, accelerates in direction of motion'),
+                         ('Object on slope at rest',
+                          'Normal force perpendicular to slope = W cosθ; friction along slope = W sinθ')],
+               'title': 'Free Body Diagrams'},
+  'quiz': [{'opts': [('5 N — Fy = F sinθ = 10 × sin30° = 10 × 0.5 = 5 N', True),
+                     ('8.66 N — Fy = F cosθ = 10 × cos30° = 10 × 0.866', False),
+                     ('10 N — vertical component equals the full force at 30°', False),
+                     ('3.33 N — Fy = F ÷ θ = 10 ÷ 30 = 0.33 N', False)],
+            'q': 'A 10 N force acts at 30° to the horizontal. What is the vertical component?',
+            'wrong_explanations': {1: '8.66 N is the HORIZONTAL component (F cosθ) — the vertical component uses sinθ: '
+                                      '10 × sin30° = 5 N.',
+                                   2: 'The vertical component is only equal to the full force when θ = 90° — at 30°, '
+                                      'Fy = F sinθ = 5 N.',
+                                   3: 'Dividing by the angle has no physical meaning — components are found using sin '
+                                      'and cos.'}},
+           {'opts': [('Weight = drag force — the forces are balanced, resultant = 0, velocity is constant', True),
+                     ('Weight > drag — the skydiver is still accelerating at terminal velocity', False),
+                     ('Drag > weight — the upward force exceeds weight, so the skydiver slows down rapidly', False),
+                     ('No forces act — terminal velocity means free fall with no air resistance', False)],
+            'q': 'In a free body diagram of a skydiver falling at terminal velocity, what must be true?',
+            'wrong_explanations': {1: 'At terminal velocity, acceleration = 0 which means forces are BALANCED — but '
+                                      "this means the skydiver continues at the same speed, not that they've stopped.",
+                                   2: "If drag > weight, the skydiver would decelerate — they'd slow below terminal "
+                                      'velocity until drag equals weight again.',
+                                   3: 'Terminal velocity specifically occurs because air resistance (drag) equals '
+                                      'weight — forces do act.'}}],
+  'rp': None,
+  'spec': '6.5.1 (HT only)',
+  'summary': 'Draw and interpret free body diagrams to represent the forces acting on an object.',
+  'theory': [{'content': 'A FREE BODY DIAGRAM (FBD) shows all the forces acting ON a single object, drawn as arrows '
+                         'from (or through) the object.\n'
+                         '\n'
+                         'RULES:\n'
+                         'Arrow length ∝ force magnitude.\n'
+                         'Arrow direction = direction of force.\n'
+                         'Label each force with its type AND magnitude (if known).\n'
+                         'Draw forces from the centre of mass or contact point.\n'
+                         'Include ALL forces — weight, normal contact, friction, tension, drag, upthrust, applied '
+                         'forces.\n'
+                         '\n'
+                         'COMMON FORCES TO SHOW:\n'
+                         'WEIGHT (W): always downward, from centre of mass.\n'
+                         'NORMAL CONTACT FORCE (N): perpendicular to the surface, away from surface.\n'
+                         'FRICTION: along the surface, opposing motion (or tendency to move).\n'
+                         'DRAG / AIR RESISTANCE: opposing motion, in fluid.\n'
+                         'TENSION: along string/rope/rod, towards the attachment point.\n'
+                         'UPTHRUST: upward, in a fluid.\n'
+                         'THRUST/ENGINE FORCE: direction of motion.',
+              'heading': 'What Is a Free Body Diagram?'},
+             {'content': 'BALANCED FORCES (resultant = 0):\n'
+                         'If all force arrows cancel out → object in EQUILIBRIUM.\n'
+                         "Object either stationary OR moving at constant velocity (Newton's 1st Law).\n"
+                         '\n'
+                         'UNBALANCED FORCES (resultant ≠ 0):\n'
+                         "Net force in one direction → object ACCELERATES in that direction (Newton's 2nd Law).\n"
+                         '\n'
+                         'EXAMPLES:\n'
+                         'Book on a table: weight down = normal contact force up → balanced → stationary.\n'
+                         'Car accelerating: thrust > drag → net forward force → accelerates.\n'
+                         'Sky diver in free fall: weight down, drag up. Initially weight > drag → accelerates down. At '
+                         'terminal velocity: weight = drag → balanced → constant velocity.\n'
+                         'Box pushed on rough surface: applied force forward, friction backward → if equal → constant '
+                         'velocity.\n'
+                         '\n'
+                         'FINDING RESULTANT FROM FBD:\n'
+                         'Add all force vectors (tip-to-tail or by resolving into components).\n'
+                         'If forces are not at right angles, use scale drawing or trigonometry.',
+              'heading': 'Interpreting Free Body Diagrams'},
+             {'content': 'When forces act at angles, resolve them into HORIZONTAL and VERTICAL COMPONENTS.\n'
+                         '\n'
+                         'FOR A FORCE F AT ANGLE θ TO HORIZONTAL:\n'
+                         'Horizontal component: Fx = F cos θ\n'
+                         'Vertical component: Fy = F sin θ\n'
+                         '\n'
+                         'This allows calculation of resultant in each direction separately.\n'
+                         '\n'
+                         'EQUILIBRIUM using components:\n'
+                         'Sum of horizontal forces = 0\n'
+                         'Sum of vertical forces = 0\n'
+                         '\n'
+                         'EXAMPLE — inclined plane:\n'
+                         'Object on slope at angle θ:\n'
+                         'Component of weight along slope: W sin θ (down the slope)\n'
+                         'Component of weight perpendicular to slope: W cos θ (into slope)\n'
+                         'Normal contact force = W cos θ\n'
+                         'Friction force (if stationary) = W sin θ',
+              'heading': 'Resolving Forces from Free Body Diagrams'}],
+  'title': 'Free Body Diagrams',
+  'triple_only': None,
+  'variables': []},
  {'common_mistake': 'Work is only done when the object moves IN THE DIRECTION of the force. Holding a heavy weight '
                     'stationary does NO work (no displacement) — even though it feels tiring. Also: W in this equation '
                     'is work done (joules), NOT weight.',
@@ -4397,6 +4734,121 @@ PHYSICS_SUBTOPICS_ALL = {
   'title': 'Stopping Distance and Braking',
   'triple_only': None,
   'variables': []},
+ {'common_mistake': 'An object in circular motion at constant SPEED is NOT in equilibrium — it IS accelerating '
+                    '(velocity changes direction). The centripetal force is NOT a separate force — it is the net '
+                    'resultant of existing forces (gravity, tension, friction etc.) directed towards the centre. If '
+                    'the centripetal force is removed, the object moves in a STRAIGHT LINE tangentially — not outward.',
+  'equations': [],
+  'fifas': [],
+  'higher': 'HT only — explain why changing direction means acceleration even at constant speed. Identify what '
+            'provides centripetal force in different situations. Explain orbital stability in terms of speed and '
+            'radius relationship.',
+  'id': 'motion-in-a-circle',
+  'key_note': 'Circular motion: constant speed, changing velocity (direction changes) → acceleration towards centre. '
+              'Centripetal force = net inward force (gravity/tension/friction provides it). Remove centripetal force → '
+              'straight-line tangential motion. Faster orbit at same radius = spiral outward; stable faster orbit '
+              'needs smaller radius.',
+  'matching': {'instruction': 'Match each situation to what provides the centripetal force.',
+               'pairs': [('Planet orbiting the Sun', 'Gravitational attraction of the Sun towards the centre'),
+                         ('Car going around a roundabout', 'Friction between tyres and road surface, directed inward'),
+                         ('Ball on a string in horizontal circle',
+                          'Tension in the string, directed towards the centre'),
+                         ('Satellite in orbit',
+                          'Gravity pulling satellite towards Earth — no engine needed for stable orbit')],
+               'title': 'Circular Motion'},
+  'quiz': [{'opts': [('Yes — its direction continuously changes, so velocity changes, meaning it accelerates towards '
+                      "Earth's centre",
+                      True),
+                     ('No — constant speed means no acceleration by definition', False),
+                     ('Yes — it accelerates away from Earth to maintain altitude', False),
+                     ("No — acceleration requires a change in speed, which doesn't occur", False)],
+            'q': 'A satellite orbits Earth at constant speed. Is it accelerating? Explain.',
+            'wrong_explanations': {1: 'Constant SPEED ≠ constant VELOCITY. Acceleration is rate of change of VELOCITY '
+                                      '(a vector) — changing direction changes velocity even at constant speed.',
+                                   2: 'The satellite accelerates TOWARDS Earth, not away from it — gravity provides '
+                                      'the centripetal (inward) force.',
+                                   3: 'Acceleration requires change in VELOCITY — this includes change in direction, '
+                                      'not just change in speed.'}},
+           {'opts': [('The orbital radius must decrease — a smaller orbit requires less centripetal force at higher '
+                      'speed',
+                      True),
+                     ('The orbital radius must increase — faster satellites need larger orbits', False),
+                     ("Nothing changes — orbital stability doesn't depend on speed", False),
+                     ('The satellite must fire engines continuously to maintain the orbit', False)],
+            'q': "A satellite's orbital speed is increased. What must happen for it to remain in a stable orbit?",
+            'wrong_explanations': {1: 'Higher orbital radius at higher speed would mean the gravitational force is '
+                                      'insufficient — lower orbits (smaller radius) are needed for faster speeds.',
+                                   2: 'Orbital stability absolutely depends on the balance between gravitational force '
+                                      'and required centripetal force for the given speed.',
+                                   3: 'Stable circular orbits are maintained by gravity alone — no engines needed for '
+                                      'a circular orbit.'}}],
+  'rp': None,
+  'spec': '6.5.6 (HT only)',
+  'summary': 'Explain why circular motion involves constant speed but changing velocity, and identify the centripetal '
+             'force.',
+  'theory': [{'content': 'An object moving in a circle at CONSTANT SPEED is still ACCELERATING.\n'
+                         '\n'
+                         'WHY?\n'
+                         'VELOCITY is a vector — it has both magnitude (speed) and direction.\n'
+                         'In circular motion, the DIRECTION continuously changes even if speed stays constant.\n'
+                         'Changing direction → changing velocity → ACCELERATION.\n'
+                         '\n'
+                         "This seems counterintuitive — 'constant speed = no acceleration' is a common error.\n"
+                         'For circular motion: speed is constant, but velocity is NOT constant.\n'
+                         '\n'
+                         'CENTRIPETAL ACCELERATION:\n'
+                         'The acceleration is always directed towards the CENTRE of the circle.\n'
+                         'Centre-seeking = centripetal.\n'
+                         '\n'
+                         'At any point on the circle:\n'
+                         'Velocity is TANGENTIAL — at 90° to the radius.\n'
+                         'Acceleration (and net force) points towards the CENTRE.',
+              'heading': 'Speed vs Velocity in Circular Motion'},
+             {'content': 'Because the object accelerates towards the centre, there must be a NET FORCE towards the '
+                         'centre.\n'
+                         'This is the CENTRIPETAL FORCE.\n'
+                         '\n'
+                         'Important: centripetal force is NOT a new type of force — it is the NET INWARD FORCE '
+                         'produced by existing forces.\n'
+                         '\n'
+                         'EXAMPLES of what provides centripetal force:\n'
+                         'Planet orbiting Sun: GRAVITY pulls planet towards Sun.\n'
+                         'Car on a roundabout: FRICTION between tyres and road.\n'
+                         'Ball on a string: TENSION in the string.\n'
+                         'Electron orbiting nucleus: ELECTROSTATIC ATTRACTION.\n'
+                         'Roller coaster loop at top: NORMAL CONTACT FORCE + GRAVITY.\n'
+                         '\n'
+                         'F_centripetal = mv²/r (not required at GCSE but useful context).\n'
+                         '\n'
+                         'WHAT HAPPENS IF THE CENTRIPETAL FORCE IS REMOVED:\n'
+                         'Ball on string: string cuts → ball flies off tangentially (not outward — tangentially).\n'
+                         "This is Newton's 1st Law: without force, object continues in straight line.",
+              'heading': 'Centripetal Force'},
+             {'content': 'For an ORBIT at constant speed:\n'
+                         'Gravitational force provides centripetal force.\n'
+                         'The orbit is stable when gravitational pull exactly provides the centripetal force needed.\n'
+                         '\n'
+                         'If SPEED INCREASES (at same orbit radius):\n'
+                         'Centripetal force needed = mv²/r → increases.\n'
+                         'Gravity unchanged → less than centripetal force needed → object spirals outward.\n'
+                         '\n'
+                         'For a STABLE ORBIT at greater speed:\n'
+                         'Radius must DECREASE — smaller orbit compensates for higher speed.\n'
+                         '\n'
+                         'For a STABLE ORBIT at slower speed:\n'
+                         'Radius must INCREASE — larger orbit.\n'
+                         '\n'
+                         'This explains why satellites in lower orbits move FASTER than those in higher orbits.\n'
+                         '\n'
+                         'GEOSTATIONARY SATELLITES:\n'
+                         "Specific radius where orbital speed matches Earth's rotation period.\n"
+                         'Radius: ~36,000 km.\n'
+                         'Faster satellite: needs smaller radius to remain stable.\n'
+                         'Slower satellite: needs larger radius.',
+              'heading': 'Orbits and Circular Motion'}],
+  'title': 'Motion in a Circle',
+  'triple_only': None,
+  'variables': []},
  {'common_mistake': 'Momentum is a VECTOR — direction matters. When objects move in opposite directions, one momentum '
                     'is negative. In conservation problems: always define a positive direction first, then assign '
                     'signs accordingly. Total momentum is ZERO before an explosion (object at rest), so the two parts '
@@ -5137,6 +5589,120 @@ PHYSICS_SUBTOPICS_ALL = {
                          'Hazard must be managed — ionising types minimised.',
               'heading': 'Uses of X-rays and Gamma Rays'}],
   'title': 'Uses and Applications of Electromagnetic Waves',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'During refraction, FREQUENCY stays constant — only SPEED and WAVELENGTH change. v = fλ, so if v '
+                    'decreases and f is constant, λ must decrease proportionally. Wave fronts are perpendicular to the '
+                    'direction of travel — closer wave fronts = shorter wavelength, not higher frequency.',
+  'equations': ['v = f × λ  (speed = frequency × wavelength — frequency unchanged in refraction)'],
+  'fifas': [],
+  'higher': 'HT only — draw and interpret wave front diagrams to explain refraction. Explain refraction in terms of '
+            'change of speed at a boundary. Describe how radio waves are produced by oscillating electrical circuits '
+            'and how they induce alternating currents when absorbed.',
+  'id': 'wave-front-refraction',
+  'key_note': 'Wave fronts ⊥ direction of travel. Refraction: wave crosses boundary → speed changes → wave fronts '
+              'pivot → direction changes. Frequency constant, speed and wavelength change. Into slower medium: bends '
+              'towards normal, wavelength decreases. Radio waves: produced by oscillating current; absorbed → induces '
+              'AC at same frequency.',
+  'matching': {'instruction': 'Match each statement to the correct refraction or wave front concept.',
+               'pairs': [('Wave slows at boundary',
+                          'Wave fronts bunch together — wavelength decreases, wave bends towards normal'),
+                         ('Frequency during refraction', 'Unchanged — only speed and wavelength change'),
+                         ('Wave front orientation', 'Always perpendicular to the direction of wave travel'),
+                         ('Radio wave reception',
+                          'Oscillating radio wave induces AC at same frequency in the receiving aerial')],
+               'title': 'Wave Fronts and Refraction'},
+  'quiz': [{'opts': [('Wavelength decreases, frequency stays the same — v = fλ, so if v decreases and f is constant, λ '
+                      'must decrease',
+                      True),
+                     ('Frequency increases, wavelength stays the same — more wave fronts arrive per second in denser '
+                      'material',
+                      False),
+                     ('Both wavelength and frequency decrease — the wave loses energy entering the denser medium',
+                      False),
+                     ('Both remain the same — refraction only changes direction, not wave properties', False)],
+            'q': 'A light wave enters glass from air and slows down. What happens to its wavelength and frequency?',
+            'wrong_explanations': {1: 'The number of wave fronts arriving per second at the boundary equals the number '
+                                      'leaving — frequency is set by the source and cannot change.',
+                                   2: 'The wave does lose some energy (absorbed) but the frequency of transmitted wave '
+                                      'remains unchanged.',
+                                   3: 'Direction changes AND wavelength changes during refraction — only frequency is '
+                                      'preserved.'}},
+           {'opts': [('By oscillating electrical currents in an aerial (antenna) — the frequency of oscillation equals '
+                      'the frequency of the radio wave emitted',
+                      True),
+                     ('By heating a metal aerial — hot metal emits radio waves as thermal radiation', False),
+                     ('By nuclear decay of radioactive materials — gamma rays are converted to radio waves', False),
+                     ('By spinning magnets in generators — rotating magnetic fields directly produce radio waves',
+                      False)],
+            'q': 'How are radio waves produced for transmission?',
+            'wrong_explanations': {1: 'Hot metals emit infrared and visible light — not radio waves. Radio waves '
+                                      'require oscillating ELECTRICAL currents.',
+                                   2: 'Nuclear decay produces gamma, alpha and beta radiation — not radio waves.',
+                                   3: 'Spinning magnets produce alternating electrical currents — those currents in an '
+                                      "aerial produce radio waves, but the magnet alone doesn't."}}],
+  'rp': None,
+  'spec': '6.6.2 (HT only)',
+  'summary': 'Use wave front diagrams to explain refraction and describe radio wave behaviour.',
+  'theory': [{'content': 'A WAVE FRONT is an imaginary line connecting all points of a wave that are at the same phase '
+                         '(e.g. all the crests).\n'
+                         '\n'
+                         'Wave fronts are PERPENDICULAR to the direction of wave travel.\n'
+                         '\n'
+                         'For PLANE WAVES (parallel wave fronts):\n'
+                         'All points move in the same direction.\n'
+                         'Shown as parallel lines with arrows indicating direction of travel.\n'
+                         '\n'
+                         'For CIRCULAR WAVES (from a point source):\n'
+                         'Wave fronts are concentric circles spreading outward.\n'
+                         'Frequency and wavelength shown by spacing between lines.\n'
+                         '\n'
+                         'CLOSER WAVE FRONTS: shorter wavelength or wave fronts bunching up as wave slows.\n'
+                         'FURTHER APART: longer wavelength or wave fronts spreading as wave speeds up.\n'
+                         '\n'
+                         'REFRACTION using wave fronts:\n'
+                         'When a wave crosses into a new medium, speed changes.\n'
+                         'Part of the wave front enters the new medium first → that part slows (or speeds up) first.\n'
+                         'The wave front pivots → wave changes direction.',
+              'heading': 'Wave Front Diagrams'},
+             {'content': 'WHY REFRACTION OCCURS:\n'
+                         'At a boundary, the wave speed changes.\n'
+                         'If wave slows: wave fronts bunch together (shorter wavelength), wave turns towards the '
+                         'normal.\n'
+                         'If wave speeds up: wave fronts spread apart (longer wavelength), wave turns away from the '
+                         'normal.\n'
+                         '\n'
+                         "FREQUENCY DOESN'T CHANGE during refraction — only speed and wavelength change.\n"
+                         'v = fλ → if v decreases and f stays constant → λ decreases.\n'
+                         '\n'
+                         'EXAMPLE — Light entering glass:\n'
+                         'Light travels slower in glass than air.\n'
+                         'Wave front entering glass slows down → bends towards the normal.\n'
+                         'Wavelength shortens inside glass.\n'
+                         'Frequency unchanged — the eye perceives the same colour.\n'
+                         '\n'
+                         'SEISMIC WAVE REFRACTION:\n'
+                         'P-waves travel faster in denser rock.\n'
+                         'As P-waves descend through Earth, density increases → speed increases → waves curve upward.\n'
+                         'This is why P-waves travel in curved paths through the Earth.',
+              'heading': 'Explaining Refraction with Wave Fronts'},
+             {'content': 'RADIO WAVES can be PRODUCED by oscillations in electrical circuits.\n'
+                         'An oscillating current in an aerial (antenna) produces oscillating electromagnetic field → '
+                         'radio wave emitted.\n'
+                         'Frequency of radio wave = frequency of electrical oscillation.\n'
+                         '\n'
+                         'RADIO WAVE ABSORPTION AND CURRENT INDUCTION:\n'
+                         'When a radio wave is ABSORBED by a conductor (receiving aerial):\n'
+                         'The oscillating electromagnetic field drives electrons in the conductor.\n'
+                         'An ALTERNATING CURRENT (AC) is induced with the SAME FREQUENCY as the radio wave.\n'
+                         'This is the basis of all radio and wireless communication receivers.\n'
+                         '\n'
+                         'REFRACTION OF RADIO WAVES:\n'
+                         'Radio waves refract in the ionosphere (upper atmosphere).\n'
+                         "This allows long-distance communication — waves bent back to Earth's surface.\n"
+                         'Different frequencies refract differently — some pass through, some are reflected.',
+              'heading': 'Radio Waves and Electrical Circuits'}],
+  'title': 'Wave Front Diagrams and Refraction',
   'triple_only': None,
   'variables': []}],
 

@@ -37,7 +37,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e05",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "State roughly how much of the universe is dark matter.",
         "options": [
@@ -54,7 +54,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e06",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "State which of ordinary matter, dark matter and dark energy "
                 "makes up the largest share of the universe.",
@@ -72,7 +72,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e07",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "State what observations of galaxy rotation show about the "
                 "orbital speeds of the stars at the outer edge of a galaxy.",
@@ -91,7 +91,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e08",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "State what dark matter has in common with ordinary matter.",
         "options": [
@@ -109,7 +109,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e09",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Name one type of particle that has been suggested as a "
                 "possible candidate for dark matter.",
@@ -128,7 +128,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e10",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "State whether dark energy has been detected directly, or "
                 "only through its effect on the universe.",
@@ -146,7 +146,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e11",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "State roughly what share of a galaxy's matter cannot be "
                 "seen.",
@@ -164,7 +164,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e12",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Name the possible end for the universe in which dark energy "
                 "grows strong enough to tear every structure apart.",
@@ -183,7 +183,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e13",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "State what dark energy is thought by some scientists to be a "
                 "property of.",
@@ -202,7 +202,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e14",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Give the approximate percentage of the universe that is "
                 "dark energy.",
@@ -220,7 +220,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e15",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "State what the accelerating expansion of the universe means "
                 "for the distance between two distant galaxies.",
@@ -239,7 +239,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e16",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "State what is currently known about the substance that dark "
                 "matter is made of.",
@@ -258,7 +258,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e17",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "State how astronomers detect the presence of dark matter.",
         "options": [
@@ -275,7 +275,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-e18",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "easier",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "State what the universe will go on doing if dark energy "
                 "stays at its present strength.",
@@ -296,7 +296,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s05",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Explain why the orbital speeds of the stars at the edge of a "
                 "galaxy are treated as evidence for dark matter.",
@@ -319,7 +319,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s06",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Explain why dark matter cannot simply be clouds of cold gas "
                 "and dust that have gone unnoticed.",
@@ -342,7 +342,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s07",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Describe what observations of distant type Ia supernovae in "
                 "1998 showed, and what astronomers concluded from them.",
@@ -365,7 +365,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s08",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "A galaxy is measured to hold 2.7 × 10¹¹ solar masses of dark "
                 "matter and 5.0 × 10¹⁰ solar masses of ordinary matter. "
@@ -385,7 +385,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s09",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Explain why astronomers think dark matter is spread through "
                 "a galaxy rather than gathered at its centre.",
@@ -408,7 +408,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s10",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Explain why the speeds of the galaxies within a cluster "
                 "suggest that the cluster holds more mass than can be seen.",
@@ -430,7 +430,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s11",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Explain why dark energy is described as an energy rather "
                 "than as a form of matter.",
@@ -452,7 +452,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s12",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Explain why identifying dark matter would matter to physics "
                 "beyond astronomy.",
@@ -475,7 +475,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s13",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Explain why the accelerating expansion of the universe could "
                 "not have been discovered by studying nearby galaxies only.",
@@ -498,7 +498,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s14",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Explain why dark matter is not thought to be made up of "
                 "large numbers of black holes.",
@@ -521,7 +521,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s15",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Explain why the ultimate fate of the universe depends on "
                 "dark energy.",
@@ -544,7 +544,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s16",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Explain why a telescope that detects radio waves and "
                 "infrared as well as visible light still cannot see dark "
@@ -568,7 +568,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s17",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "A galaxy holds 4.0 × 10¹⁰ solar masses of visible matter, "
                 "and the orbits of its stars show a total mass of 2.8 × 10¹¹ "
@@ -587,7 +587,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-s18",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "standard",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Suggest why astronomers did not simply conclude that the "
                 "measurements of galaxy rotation were mistaken.",
@@ -611,7 +611,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h05",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Predict what would happen to a spiral galaxy if all of its "
                 "dark matter were suddenly removed.",
@@ -634,7 +634,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h06",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Deduce what astronomers would conclude about a galaxy whose "
                 "outer stars orbit exactly as fast as its visible mass "
@@ -658,7 +658,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h07",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Explain how measuring the brightness of a type Ia supernova "
                 "in a very distant galaxy tells astronomers both how far away "
@@ -682,7 +682,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h08",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Gravitational lensing shows a galaxy cluster to have a total "
                 "mass of 5.0 × 10¹⁴ solar masses, while its visible matter "
@@ -702,7 +702,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h09",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Suggest why identifying dark matter has proved so difficult, "
                 "despite decades of experiments.",
@@ -725,7 +725,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h10",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Explain how astronomers can claim to have evidence for "
                 "something that no instrument has ever detected directly.",
@@ -748,7 +748,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h11",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Dark matter does not interact with light. Deduce how the "
                 "cosmic microwave background can still be used to work out "
@@ -772,7 +772,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h12",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Suggest why the 1998 finding that the expansion of the "
                 "universe is speeding up was checked by a second, independent "
@@ -795,7 +795,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h13",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Explain why dark energy's effect on the expansion has become "
                 "more important as the universe has aged.",
@@ -818,7 +818,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h14",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Two galaxies are the same size and hold the same amount of "
                 "visible matter, but the outer stars of galaxy X orbit twice "
@@ -843,7 +843,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h15",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "A few scientists suggest that gravity behaves differently on "
                 "the scale of a galaxy, which would remove the need for dark "
@@ -868,7 +868,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h16",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Evaluate this statement: 'Dark energy is simply the leftover "
                 "push from the Big Bang.'",
@@ -891,7 +891,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h17",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "A cluster's mass can be found from how fast its galaxies "
                 "move and from the lensing it produces. Suggest why getting "
@@ -916,7 +916,7 @@ QUESTIONS = [
         "id": "ks4-dark-matter-dark-energy-h18",
         "subtopic_slug": "dark-matter-dark-energy",
         "band": "harder",
-        "tier": "higher",
+        "tier": "foundation",
         "triple_only": True,
         "text": "Predict what would be seen in the spectrum of a distant "
                 "quasar whose light passes through a large concentration of "
