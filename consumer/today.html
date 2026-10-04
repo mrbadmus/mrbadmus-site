@@ -699,15 +699,25 @@
       var later = data.later || [];
       var host = el('td-later-block');
       if (!later.length) { host.innerHTML = ''; return; }
-      host.innerHTML =
-        '<h2 class="td-h2-later">Later this week</h2>' +
-        '<ul class="td-later">' + later.map(function (l) {
+      /* ⊕ B2C week repair (defect 1): `later` also carries work set for a
+         later week (`next_week`, its day with a date). It gets its own
+         heading rather than sitting under "Later this week". */
+      function list(rows) {
+        return '<ul class="td-later">' + rows.map(function (l) {
           return '<li>' +
-            '<span class="td-later-day">' + C.escapeHtml(l.day || '') + '</span>' +
+            '<span class="td-later-day">' + C.escapeHtml(String(l.day || '').slice(0, 3)) + '</span>' +
             '<span class="td-later-title">' + C.escapeHtml(l.title || 'Work') + '</span>' +
             '<span class="td-later-tag">' + C.escapeHtml(l.tag || '') + '</span>' +
           '</li>';
         }).join('') + '</ul>';
+      }
+      /* The heading names the week, so the day column keeps its three
+         letters ("Mon 12 Oct" from the backend is cut to "Mon"). */
+      var thisWeek = later.filter(function (l) { return !l.next_week; });
+      var nextWeek = later.filter(function (l) { return l.next_week; });
+      host.innerHTML =
+        (thisWeek.length ? ('<h2 class="td-h2-later">Later this week</h2>' + list(thisWeek)) : '') +
+        (nextWeek.length ? ('<h2 class="td-h2-later">Next week</h2>' + list(nextWeek)) : '');
     }
 
     /* Design's two quick-action cards. The unit-check one carries the

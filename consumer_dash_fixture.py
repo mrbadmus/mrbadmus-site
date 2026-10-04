@@ -42,6 +42,12 @@ KIDS = [
             {"id": "w3", "title": "Diffusion", "done": False, "day": "Fri", "mins": 20,
              "source": "You", "byParent": True},
         ],
+        # B2C week repair (4 Oct 2026): work set for a LATER week — the backend
+        # sends it as `upcoming`, its day carrying the date.
+        "upcoming": [
+            {"id": "w4", "title": "Photosynthesis: lesson 3", "done": False, "day": "Mon 12 Oct",
+             "mins": 20, "source": "Set by You", "byParent": True, "week_start": "2026-10-12"},
+        ],
         "scores": [{"pct": 58, "label": "Cells"}, {"pct": 71, "label": "Particles"}],
         "weak": "Calculating magnification",
         "position": {"cursors": {}},

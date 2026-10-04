@@ -91,15 +91,28 @@
     if (here.get('api')) { out.set('api', here.get('api')); }
     return out;
   }
+  /* ⊕ B2C week repair (defect 5). `path` may already carry a query — the
+     backend hands the child `/student/assignment.html?id=…` — and this used
+     to append a SECOND '?', so the page read `id` as "…?env=test" and the
+     practice link opened nothing. The path's own query and hash are kept,
+     then env/api and `extra` are merged in: one '?', '&' between. */
   function href(path, extra) {
-    var q = carryQuery();
+    var p = String(path == null ? '' : path);
+    var hash = '';
+    var h = p.indexOf('#');
+    if (h >= 0) { hash = p.slice(h); p = p.slice(0, h); }
+    var own = '';
+    var i = p.indexOf('?');
+    if (i >= 0) { own = p.slice(i + 1); p = p.slice(0, i); }
+    var q = new URLSearchParams(own);
+    carryQuery().forEach(function (v, k) { if (!q.has(k)) { q.set(k, v); } });
     if (extra) {
       Object.keys(extra).forEach(function (k) {
         if (extra[k] != null && extra[k] !== '') { q.set(k, extra[k]); }
       });
     }
     var s = q.toString();
-    return path + (s ? ('?' + s) : '');
+    return p + (s ? ('?' + s) : '') + hash;
   }
   function go(path, extra) { window.location.href = href(path, extra); }
 
@@ -746,27 +759,14 @@
     }
   }
 
-  /* The Monday of the week a date falls in, as YYYY-MM-DD. Every work read
-     is keyed on it, and a week that starts on Sunday in one place and Monday
-     in another is a week of work that vanishes. Local time, deliberately:
-     the parent and the child are in the same house and the same timezone,
-     and a UTC Monday is Sunday evening to half of them. */
-  function weekStart(d) {
-    var x = d ? new Date(d) : new Date();
-    if (isNaN(x.getTime())) { x = new Date(); }
-    x.setHours(12, 0, 0, 0);                 // midday: immune to DST shifts
-    var dow = x.getDay();                    // 0 Sun … 6 Sat
-    x.setDate(x.getDate() - ((dow + 6) % 7));
-    return x.getFullYear() + '-' +
-           ('0' + (x.getMonth() + 1)).slice(-2) + '-' +
-           ('0' + x.getDate()).slice(-2);
-  }
-  function shiftWeek(iso, weeks) {
-    var d = new Date(iso + 'T12:00:00');
-    if (isNaN(d.getTime())) { return weekStart(); }
-    d.setDate(d.getDate() + (weeks * 7));
-    return weekStart(d);
-  }
+  /* ⊕ B2C week repair (4 Oct 2026). There is NO week helper here any more,
+     on purpose. This file used to carry `weekStart()` — an ISO Monday-first
+     week in the DEVICE's timezone — while the estate's ruled week (MRB-330)
+     rolls at SUNDAY 00:00 UK. On a Sunday it named the week that had just
+     finished, so a family signing up on a Sunday was given a first week
+     dated in the past. The backend owns the week (consumer/week.js, which
+     takes the rule from assignment-compose.js): a page that needs "this
+     week" asks a route that defaults to it, and reads `week_start` back. */
 
   /* ══ NIGHT 3 — PRICING, FROM THE BACKEND AND NOWHERE ELSE (MRB-317) ═══
      Every price a parent reads — the public pricing calculator, the two
@@ -1034,8 +1034,6 @@
     applyWritable: applyWritable,
     section: section,
     subscribeMessages: subscribeMessages,
-    weekStart: weekStart,
-    shiftWeek: shiftWeek,
 
     // Night 3 (MRB-317) — see the pricing note above.
     pricing: pricing,

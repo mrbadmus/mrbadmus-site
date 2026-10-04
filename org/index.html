@@ -171,7 +171,11 @@
     return ((S.data && S.data.groups) || []).filter(function (g) { return g.id === id; })[0] || null;
   }
 
-  /* The week strip. The API sends `days: [1,0,1,0,0,0,0]` Monday-first and
+  /* ⊕ B2C week repair: `days` is now the RULED week in the order it happens —
+     the Sunday that opens it (MRB-330), then Monday to Saturday — so "today"
+     is getDay() itself (Sunday = 0). It used to be Monday-first and end on
+     the FOLLOWING Sunday, a day that belongs to next week.
+     The week strip. The API sends `days: [1,0,1,0,0,0,0]` and
      says nothing about which of them have happened yet; Design's drawing
      distinguishes three states, and the third one — a day still in the
      future — is knowable here and nowhere else. So a day that is done is
@@ -179,7 +183,7 @@
      arrived is NONE. Without the last of those every pupil looks like they
      have missed Friday, on a Tuesday. */
   function dayColours(days) {
-    var today = (new Date().getDay() + 6) % 7;   // Mon = 0
+    var today = new Date().getDay();             // Sun = 0, the day the week opens
     return (days || [0, 0, 0, 0, 0, 0, 0]).map(function (d, i) {
       if (d) { return OK; }
       return i <= today ? BAND : NONE;
