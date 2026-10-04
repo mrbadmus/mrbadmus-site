@@ -23,6 +23,7 @@ BLOCKS_DIR = _REF         # and so do the shared blocks Design shipped with them
 
 # Block set a batch-4 page registers. The pilot's Ks4Ladder is replaced by
 # Ks4Practice; Ks4Triangle / Ks4Guess / Ks4Steps are the Part 1 blocks.
+EXT_SRC = os.path.join("ks4_lessons", "batch4_ext.js")  # display-time subscripts (MRB-302)
 BLOCK_NAMES = ["Ks4Chrome", "Ks4Choice", "Ks4Sort", "Ks4Chain", "Ks4Write",
                "Ks4Cfifa", "Ks4Triangle", "Ks4Guess", "Ks4Steps", "Ks4Practice",
                "Ks4KeyNote", "Ks4QuizBank", "Ks4End", "Ks4Video"]
@@ -44,9 +45,9 @@ LESSONS = [
     L("efficiency", "6.1.2.2-efficiency", "physics", "energy", "Efficiency", "6.1.2.2",
       "Quantitative", staged=False, block_map={"s-waste": "explainer"}),
     L("heart-blood-vessels", "4.2.2.2-heart-blood-vessels", "biology", "organisation",
-      "The heart and blood vessels", "4.2.2.2", "Model"),
+      "The heart and blood vessels", "4.2.2.2", "Model", staged=False, block_map={'s-heart': 'explainer', 's-vessels': 'explainer', 's-lungs': 'explainer'}),
     L("water-cycle", "4.7.2.2-water-cycle", "biology", "ecology", "The water cycle",
-      "4.7.2.2", "Process"),
+      "4.7.2.2", "Process", staged=False, block_map={'s-cycle': 'explainer', 's-fresh': 'explainer'}),
     L("atmospheric-pollutants", "5.9.3.1-atmospheric-pollutants", "chemistry", "atmosphere",
       "Atmospheric pollutants from fuels", "5.9.3.1", "Model", staged=False,
       block_map={'s-predict': 'explainer', 's-effects': 'explainer'}),
@@ -54,8 +55,8 @@ LESSONS = [
       "Infrared, black bodies", "4.6.3", "Model", routes=TRIPLE, staged=False,
       block_map={'s-curve': 'explainer', 's-black': 'explainer', 's-balance': 'explainer'}),
     L("transport-in-cells", "4.1.3-transport-in-cells", "biology", "cell-biology",
-      "Diffusion, osmosis and active transport", "4.1.3", "Classify"),
-    L("blood", "4.2.2.3-blood", "biology", "organisation", "Blood", "4.2.2.3", "Classify"),
+      "Diffusion, osmosis and active transport", "4.1.3", "Classify", staged=False, block_map={'s-three': 'explainer', 's-osmosis': 'explainer', 's-exchange': 'explainer', 's-rp': 'required-practical'}),
+    L("blood", "4.2.2.3-blood", "biology", "organisation", "Blood", "4.2.2.3", "Classify", staged=False, block_map={'s-smear': 'explainer', 's-parts': 'explainer'}),
     L("periodic-table", "5.1.2.1-periodic-table", "chemistry", "atomic-structure",
       "The periodic table", "5.1.2.1", "Classify", staged=False,
       block_map={'s-build': 'explainer', 's-trends': 'explainer'}),
@@ -63,9 +64,9 @@ LESSONS = [
       "Thermal conductivity and reducing unwanted energy transfers", "6.1.2.1", "Model", staged=False,
       block_map={'s-conduct': 'explainer', 's-wall': 'explainer', 's-reduce': 'explainer', 's-rp': 'required-practical'}),
     L("coronary-heart-disease", "4.2.2.4-coronary-heart-disease", "biology", "organisation",
-      "Coronary heart disease", "4.2.2.4", "Process"),
+      "Coronary heart disease", "4.2.2.4", "Process", staged=False, block_map={'s-narrow': 'explainer', 's-treat': 'explainer', 's-patients': 'explainer'}),
     L("biodiversity", "4.7.3.1-biodiversity", "biology", "ecology", "Biodiversity",
-      "4.7.3.1", "Classify"),
+      "4.7.3.1", "Classify", staged=False, block_map={'s-what': 'explainer', 's-webs': 'explainer', 's-people': 'explainer'}),
     L("development-periodic-table", "5.1.2.2-development-periodic-table", "chemistry",
       "atomic-structure", "Development of the periodic table", "5.1.2.2", "Process", staged=False,
       block_map={'s-moves': 'explainer', 's-story': 'explainer', 's-isotopes': 'explainer'}),

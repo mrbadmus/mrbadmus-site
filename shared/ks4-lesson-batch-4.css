@@ -12,7 +12,7 @@ html, body { margin: 0; padding: 0; background: #FBF3E6; }
   button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
   input[type="range"] { accent-color: #A93411; }
 
-/* from ks4-chemistry-5.9.3.1-atmospheric-pollutants.dc.html */
+/* from ks4-biology-4.2.2.2-heart-blood-vessels.dc.html */
 html, body { margin: 0; padding: 0; background: #FBF3E6; }
   a { color: var(--ks3-accent-text); }
   a:hover { color: var(--ks3-accent-hover); }

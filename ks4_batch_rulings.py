@@ -103,6 +103,39 @@ SCIENCE = [
     dict(id="B4-IRB-CHIP", slug="infrared-black-bodies", layer="logic",
          old="route, onRoute: R.onRoute, isHigher,",
          new="route, onRoute: R.onRoute, isHigher, routeWords: R.routeWords, routeSwitchOptions: R.routeSwitchOptions,"),
+
+    # ── Stage 2b ────────────────────────────────────────────────────────
+    # biodiversity 11.2 (Mide): the sort covers the three threats only;
+    # hedgerows, breeding programmes and field margins belong to
+    # maintaining-biodiversity. One bin would be a degenerate sort, so the
+    # bins become the three threats and the cards are examples of each, worded
+    # from Design's own "Human activity" section.
+    dict(id="B4-BIO-SORT-1", slug="biodiversity", layer="template",
+         old=('title="Reduces biodiversity, or helps maintain it?" prompt="Place each human activity." '),
+         new=('title="Which threat is it?" prompt="Place each example with the human activity behind it." ')),
+    dict(id="B4-BIO-SORT-2", slug="biodiversity", layer="template",
+         old=('done-note="Pollution, habitat destruction and climate change reduce biodiversity; protecting and recreating habitats helps maintain it."'),
+         new=('done-note="Waste pollutes, deforestation destroys habitats and global warming changes them: each reduces biodiversity."')),
+    dict(id="B4-BIO-SORT-3", slug="biodiversity", layer="logic",
+         old=r"""      sortBins: [{ id: 'r', label: 'Reduces biodiversity' }, { id: 'm', label: 'Helps maintain it' }],
+      sortItems: [
+        { text: 'Dumping waste into a river', bin: 'r', why: 'Pollution kills organisms.' },
+        { text: 'Clearing rainforest for farmland', bin: 'r', why: 'Habitats are destroyed.' },
+        { text: 'Global warming shifting habitats', bin: 'r', why: 'Some species can\u2019t adapt or move fast enough.' },
+        { text: 'Replanting hedgerows around fields', bin: 'm', why: 'Hedgerows are habitats for many species.' },
+        { text: 'Breeding programmes for endangered species', bin: 'm', why: 'They protect species at risk.' },
+        { text: 'Leaving field margins to grow wild', bin: 'm', why: 'More plants support more insects and birds.' }
+      ],""",
+         new=r"""      sortBins: [{ id: 'w', label: 'Waste' }, { id: 'd', label: 'Deforestation' }, { id: 'g', label: 'Global warming' }],
+      sortItems: [
+        { text: 'Dumping waste into a river', bin: 'w', why: 'Pollution kills organisms.' },
+        { text: 'Pollution of the air', bin: 'w', why: 'Pollution of land, water and air kills plants and animals.' },
+        { text: 'Clearing rainforest for farmland', bin: 'd', why: 'Habitats are destroyed.' },
+        { text: 'Cutting down the trees many species live in', bin: 'd', why: 'The species lose their habitat.' },
+        { text: 'Global warming shifting habitats', bin: 'g', why: 'Some species can\u2019t adapt or move fast enough.' },
+        { text: 'A climate that changes faster than species can cope', bin: 'g', why: 'Habitats change faster than some species can cope with.' }
+      ],"""),
+
     # thermal-conductivity: the "about the same" verdict described the changes
     # the wrong way round (a third as thick would raise the rate ninefold).
     dict(id="B4-TC-VERDICT", slug="thermal-conductivity", layer="logic",

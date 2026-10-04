@@ -2384,7 +2384,10 @@ def build_batch(name, freeze=False):
     print("  ✓ shared/%s written (%d bytes)" % (css_name, len(lesson_css)))
 
     ext_name = "ks4-ext-%s.js" % name
-    ext_src_path = os.path.join(authored_dir, "_ext.js")
+    # a batch may name its own ext source (batch 4 keeps Design's folder
+    # byte-identical, so its ext asset lives in ks4_lessons/).
+    ext_src_path = getattr(ks4_lessons.batch_modules()[name], "EXT_SRC",
+                           os.path.join(authored_dir, "_ext.js"))
     has_ext = os.path.exists(ext_src_path)
     if has_ext:
         ext_text = open(ext_src_path, encoding="utf-8").read()

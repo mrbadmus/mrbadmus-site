@@ -71,3 +71,46 @@ compile time, each failing loud if its target text moves. "Pack" = `docs/ks4/pac
 ### Not changed, decided
 - review_state stays `draft` for every lesson until Mide says.
 - `ks4_science_rulings` (the pilot's 101-row table) is not used for batch 4; its `--batch` check reports 0 rows by design.
+
+
+## Stage 2b — heart-blood-vessels, water-cycle, transport-in-cells, blood, coronary-heart-disease, biodiversity
+
+### Mide's rulings
+
+| Ruling | Decision | What changed |
+|---|---|---|
+| G1 biology equations | Applied as drawn: `source: 'none'`. Rendered check on all 24 pages: no "On the sheet" chip, "Written out" appears (heart 2, transport 3). | none |
+| G2 subscripts | Display-time conversion in a batch-4-only asset, `shared/ks4-ext-batch-4.js` (source `ks4_lessons/batch4_ext.js`, named by `EXT_SRC` in `batch_4.py`). It turns a run of U+2080..2089 into `<sub>2</sub>` in the live DOM and keeps the runtime's own text node as the first fragment, so in-place patching still works. Proved on blood: a wrong answer to "Which substance does plasma NOT transport?" shows CO<sub>2</sub>, no raw subscript left, and it survives "Retry my misses". Authored text and the shared runtime are untouched. | new asset only |
+| G2 Δ and → | Left as the pilot leaves them (system fallback font). Δ appears in transport's `% change` triangle, → in transport and heart text. Not clean to subset without touching shared fonts. | none |
+| 2.2 snow runoff | Fine, kept (water cycle, step 7). | none |
+| 11.2 biodiversity sort | **B4-BIO-SORT-1..3.** The three hedgerow / breeding-programme / field-margin cards are gone. One bin would be a degenerate sort, so the bins are now the three threats (Waste, Deforestation, Global warming) and the six cards are examples of each, worded from Design's own "Human activity" section. Title, prompt and done-note re-cut to match. The quiz and rung 1 still name hedgerows, breeding programmes and field margins as wrong options for "which reduces biodiversity" (correct, and consistent with the sibling lesson); left. | `biodiversity` |
+
+### Numbered flags
+
+**1 Heart and blood vessels (HBV-F1..F11)** — all verified as drawn, no change. Pacemakers (natural and artificial) base on all routes (F2, F4); lungs taught and practised (F3); valves unnamed and at the exits of the ventricles (F7, F8); pressure falls arteries > capillaries > veins (F1); q4 re-authored with the pack's own wx (F5); q3 kept (F10); badge 4.2.2.2 (F11). Cardiac "never tires" not used (F9).
+- Numbers recomputed, all correct: 6.0 ÷ 1.5 = 4.0 dm³/min; 21 beats ÷ 0.25 min = 84 bpm (21 ÷ 15 = 1.4 is the flagged wrong way); 1500 cm³ = 1.5 dm³, 1.5 ÷ 0.30 = 5.0 dm³/min; 36 ÷ 0.5 = 72 (36 ÷ 30 = 1.2); 2400 cm³ = 2.4 dm³, 2.4 ÷ 4.0 = 0.60 dm³/min (600 cm³/min in the wrong unit); ladder 18 ÷ 0.25 = 72; 900 cm³ = 0.90 dm³, 0.90 ÷ 0.20 = 4.5 dm³/min.
+
+**2 Water cycle (WATER-CYCLE-F1..F5)** — all verified, no change. 4.7.2.2 (F1); fresh water taught as its own section and in practice (F2); "most reactions in cells take place in solution" not claimed as "the solvent for all" (F3); roots sentence dropped (F4); transpiration, groundwater and "salt stays here" are in the figure and the walk-through (F5). Cloud = droplets, not vapour (correct). No numbers.
+
+**6 Transport in cells (TRANSPORT-IN-CELLS-F1..F10)** — all verified, no change. Urea diffusion ends at the blood plasma (F1); no Higher layer, % change, isotonic reading and SA:V on every route (F2); route-aware label "Required practical 3" on TF TH, "2" on CF CH, in the chip, the RP heading and the key note (F3); q3 re-authored on "less energy" (F4); energy "from respiration", no carrier proteins (F5); crossing at 0 % read as "same concentration as the cell contents", never "water potential" (F6); SA:V three-step worked then attempt before the ladder (F7); gills and leaves (F8); rate of water uptake (F9); "partially permeable" used in the text (F10). The verbatim quiz items still say "ATP" and "selectively permeable", which F10 allows.
+- Numbers recomputed, all correct: (3.4 − 4.0) ÷ 4.0 × 100 = −15 %; 2800 mg = 2.80 g, 0.30 ÷ 2.50 × 100 = +12 %; 0.60 g ÷ 120 min = 0.005 g/min; (2.8 − 3.2) ÷ 3.2 × 100 = −12.5 %; 0.90 g ÷ 90 min = 0.01 g/min (0.6 g/h if left in hours); ladder (2.3 − 2.0) ÷ 2.0 × 100 = +15 %; SA:V 1 cm 6 : 1, 2 cm 24 ÷ 8 = 3 : 1, 3 cm 54 ÷ 27 = 2 : 1, 4 cm 96 ÷ 64 = 1.5 : 1. The graph's points (0.2, +10) and (0.4, −2) cross zero at about 0.37 mol/dm³, as labelled.
+
+**7 Blood (BLD-F1..F7)** — all verified. Three white-cell functions including antitoxins (F1); recognition from a drawn smear (F2); biconcave line re-cut to "large surface area for oxygen" (F3); no spleen, fibrin or memory cells in the teaching (F4, F6); badge 4.2.2.3 (F7). q1 kept with its original wx3 (F5 says usable).
+- Accepted as the pack ruled: the verbatim platelet item's key says "trigger fibrin mesh formation" (F6 says fibrin is context only). The keyed idea is "blood clotting", so any pupil who knows only that is right.
+- The one `₂` (plasma-carbon dioxide explanation, which also says "bicarbonate", F6 context) is shown as CO<sub>2</sub> by the ext asset.
+
+**10 Coronary heart disease (CHD-F1..F8)** — all verified, no change. All base on all four routes (F1); faulty valves (F2), artificial hearts and heart-and-lungs transplant (F3), bypass left out (F4); "risk rises with age because fatty material has longer to build up" (F5); menopause line dropped (F6); three-patient choice and a 6-mark Evaluate item (F7); badge 4.2.2.4 (F8). No numbers.
+
+**11 Biodiversity (BIODIVERSITY-F1..F9)** — all verified. Spec definition only, with plants and microorganisms counting (F1, F2, F3); q2 (Svalbard) and the genetic-diversity question not used (F4, F6); no Higher layer (F5); stability taught as the spec's three dependencies (F7); pollinator figure not used (F8); threats kept to a short overview with a pointer to the sibling lessons (F9).
+- Food-web models re-derived: Species-poor (5): removing rabbit loses the fox; removing grass loses all four consumers. Species-rich (10): removing grass loses nothing; removing oak loses only the caterpillar. Titles "5 species" and "10 species" match.
+- The route chip is correct on all four routes (biodiversity builds its own return object but spreads the route helper).
+
+### Rules 1–4, stage 2b
+- Rule 1: every hook has two options and a "If you had to guess, …?" line.
+- Rule 2: biology equations (heart rate, rate of blood flow, % change in mass, rate of water uptake, SA:V) carry no chip and read "Written out".
+- Rule 3: SA:V is a worked Steps (2 cm cube) then an attempt Steps (3 cm cube) before the ladder. Heart rate / blood flow are two-step CFIFA, not chains.
+- Rule 4: ladder 2·2·2·1 in all six; five quiz questions on every route; no "Shape:" alert after pressing every enabled control.
+
+### Open items
+- None that need a science decision. Two kept-as-the-pack-ruled points remain visible to Mide: the CH TH ionosphere / UV-sterilisation quiz items (uses-em-waves) and the predictor's "CO and soot together" simplification (atmospheric-pollutants). `review_state` stays `draft` for all 13 until Mide signs off the log.
+- Cosmetic, Design's layout: in Ks4Steps' attempt cards at 390 px wide the input placeholders are clipped ("anything to co…"); the satellite and cycle figures have labels that cross arrows.
