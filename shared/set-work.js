@@ -473,6 +473,16 @@
     paperBoth: "Both",
     notSet: "Not set yet",
     setThisWeek: "Set this week",
+    /* ⊕ x-setwork (Prompt X) — the automatic weekly producer's own tag. A
+       topic an auto set covers was never "set" by anyone the teacher can
+       picture setting it, so it gets its own wording rather than borrowing
+       `weeksAgo`'s "a person did this N weeks ago" voice. `Wk N` is the
+       academic week the row was composed for (`assignments.academic_week`),
+       the same number the week bar and the digest already use — never a
+       week-count derived from the date. No week number: still auto, just say
+       so plainly. */
+    setAutomatically: "Set automatically",
+    setAutomaticallyWeek: function (n) { return "Set automatically · Wk " + n; },
     swap: "Swap",
     now: "Now",
     later: "Later",
@@ -1530,11 +1540,19 @@
 
   /* Design's own vocabulary over a real date. The question a teacher asks
      second is "have I already given them this?", so it is a fact about THIS
-     class rather than about the topic. */
-  function lastSetTag(iso) {
+     class rather than about the topic.
+
+     ⊕ x-setwork (Prompt X) — `source`/`week` are ADDITIVE, both optional. An
+     older server sends `last_set_at` alone, `source` and `week` come back
+     `undefined`, `source === "auto"` is false, and this renders EXACTLY as it
+     did before this ticket — a deploy in either order is safe. */
+  function lastSetTag(iso, source, week) {
     if (!iso) { return SAY.notSet; }
     var t = Date.parse(iso);
     if (isNaN(t)) { return SAY.notSet; }
+    if (source === "auto") {
+      return (typeof week === "number" && week > 0) ? SAY.setAutomaticallyWeek(week) : SAY.setAutomatically;
+    }
     var days = Math.floor((Date.now() - t) / DAY_MS);
     if (days < 7) { return SAY.setThisWeek; }
     return SAY.weeksAgo(Math.floor(days / 7));
@@ -1562,7 +1580,7 @@
 
       var main = el("span", "sw-row-main");
       var name = el("span", "sw-row-name", String(topic.name || ""));
-      var tag = el("span", "sw-row-tag", lastSetTag(topic.last_set_at));
+      var tag = el("span", "sw-row-tag", lastSetTag(topic.last_set_at, topic.last_set_source, topic.last_set_week));
       main.appendChild(name); main.appendChild(tag);
 
       var count = el("span", "sw-count", "0");

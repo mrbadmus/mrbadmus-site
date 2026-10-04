@@ -1348,6 +1348,40 @@ def check_auto_unchanged(t_teacher, t_pupil, scopes):
         return
     record(True, "an automatic assignment composed", "%d question(s)" % len(before))
 
+    # ⊕ x-setwork (Prompt X) — C13 extension: "Set automatically · Wk N".
+    # Checked HERE, at the earliest point an automatic row exists for this
+    # class and before anything below sets TEACHER work on the same topic —
+    # the only moment nothing else in this run could legitimately have
+    # overridden it. Resolves the ids the producer just served back to their
+    # UNIT CODE (the same string `/scope`'s tree uses as a topic id) through
+    # the authored bank, the same way `check_auto_unchanged`'s own ceiling
+    # check below does.
+    import ks3_data.question_bank as qb_lastset
+    unit_of_id = {}
+    for entry in qb_lastset.load_bank():
+        for q in entry["questions"]:
+            unit_of_id[q["id"]] = entry["unit"]
+    auto_units = sorted({unit_of_id[i] for i in before if i in unit_of_id})
+    st_scope, auto_scope = scope_of(t_teacher, FX.C_KS3_A)
+    auto_tagged = [t for t in (auto_scope or {}).get("tree") or []
+                   if t["id"] in auto_units and t.get("last_set_source") == "auto"]
+    record(bool(auto_units) and bool(auto_tagged),
+           "last_set_tag (C13 extension) — a topic the automatic producer "
+           "just composed (%s) is tagged last_set_source 'auto'"
+           % ",".join(auto_units),
+           "auto units %s, tagged %s" % (auto_units,
+               [(t["id"], t.get("last_set_at"), t.get("last_set_week"))
+                for t in auto_tagged]) if auto_tagged else
+           "auto units %s, none carried last_set_source 'auto' (tree: %s)"
+           % (auto_units, [(t["id"], t.get("last_set_source"))
+                            for t in (auto_scope or {}).get("tree") or []
+                            if t["id"] in auto_units]))
+    if auto_tagged:
+        record(isinstance(auto_tagged[0].get("last_set_week"), int)
+               and auto_tagged[0]["last_set_week"] > 0,
+               "…and it carries a real academic_week number, not null",
+               "last_set_week %r" % auto_tagged[0].get("last_set_week"))
+
     st, prev = preview(t_teacher, FX.C_KS3_A, "hard", "topic", "B1", 6)
     ids = [q["id"] for q in (prev.get("picked") or [])]
     post_set(t_teacher, class_ids=[FX.C_KS3_A], tier="hard", scope_ref="B1",
@@ -1616,6 +1650,11 @@ FAFF_ARIA = {"Release date", "Release time", "Due date", "Due time"}
 # stops sweeping.
 FAFF_PATTERNS = [
     re.compile(r"^Set \d+ weeks? ago$"),
+    # ⊕ x-setwork (Prompt X) — `SAY.setAutomaticallyWeek(n)`, the automatic
+    # producer's own "last set" tag (C13 extension). `SAY.setAutomatically`
+    # (no week) needs no pattern here — it is a literal string, already
+    # covered by "every string in SAY is in one of the two sets".
+    re.compile(r"^Set automatically · Wk \d+$"),
     re.compile(r"^\d+ students?$"),
     re.compile(r"^\d+\.$"),                      # the question number, "1."
     re.compile(r"^.{1,80} · .+$"),               # the toast: title · class(es)
