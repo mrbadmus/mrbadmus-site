@@ -191,4 +191,54 @@ The commit carries `GATE-OVERRIDE` lines for `frozen_window_guard` and `curricul
 - Chemistry-only HT content in `higher` fields served on CH: concentration-of-solutions, using-moles-calculations, cracking-alkenes.
 - No page exists for 8462 4.3.5 (gas volumes, TH).
 
+## Landing: rebase onto main after the frozen corrections (4 Oct 2026)
+
+### The rebase
+
+`fix/ks4-route-flags` was cut from `1ac969940`. By 4 Oct, `origin/main` had moved 29 commits to `e417fb16b` (Merge PR #24, `feat/ks4-frozen-corrections`). It was rebased onto `e417fb16b`. The pre-rebase tip `31fb3e786` is kept as the tag `pre-rebase-ks4-routes`.
+
+- **Text conflicts: 2 files**, `ks4_batch-2_manifest.json` and `ks4_batch-3_manifest.json`. Both are build output (page and asset sha256s). Both branches rewrote them for different reasons: the corrections changed `ks4-source-batch-{2,3}.js`, and this branch changed `ks4-nav.js`.
+- **How they were resolved:** not by hand. Both were reset to main's copy, then `python3 build_all.py` (exit 0, all 8 generators) rewrote them. The result has the same keys as main's manifests. The only values that differ are `shared/ks4-nav.js`'s hash and the batch pages that carry its cache-bust stamp, which is this branch's change and nothing else.
+- **Everything else merged as text**, including the five `all_subtopics_*.py` files both branches edit. After the build, **no other file changed**: every auto-merged page and script was already byte-identical to fresh build output.
+
+### The frozen corrections survive
+
+Checked against the data, not the text. Each route file was parsed as data, and every value was given an address (topic → subtopic id → field → index). An inserted subtopic cannot shift another value's address that way.
+
+- **The seven route files this branch does not touch match `FROZEN-CORRECTIONS.md`'s after-md5s exactly:** `biology_triple_foundation`, `biology_triple_higher`, all four chemistry files, and `physics_triple_higher`. Both chemistry triple files are among them, so **atom economy's text (AE-1…AE-6, TF and TH) is byte-for-byte as corrected.**
+- **The five it does touch** (`biology`, `biology_higher`, `physics`, `physics_higher`, `physics_triple_foundation`): the changed values between `1ac969940` and `origin/main` come to exactly **163**, matching the report. **All 163 are present at their own address with the corrected text** (64 of them are in these five files). **No pre-correction text came back:** no "before" string occurs more often in any file than it does on main.
+- **Outside the eight moved subtopics, every value in all twelve files equals `origin/main`.** None of the 16 corrected subtopics is one of the eight moved ones, so no dict copied for a new route can carry old text.
+- **The eight moved subtopics' 1,150 values are identical to the reviewed branch** (`pre-rebase-ks4-routes`). `ks4_data/`, the audit docs and `BATCH-PLAN.md` are unchanged by the rebase.
+- `shared/ks4-source-batch-{2,3}.js` and `ks4_lessons/` are identical to main, so the served banks and the removed `withhold` entries are as PR #24 left them.
+
+### Pages, arrows, nav, classify()
+
+- **11 new pages** exist in both trees, are byte-identical between them, and did not exist on main.
+- **Previous/Next on every KS4 subtopic page:** 876 pages on all four routes. Old-design pages use `nav-arrow` anchors; batch lessons use `mrbPrevNext`. Within each topic, the chain follows the route file's order exactly. No first or last page's outer arrow changed, and no arrow is a dead link. **Arrows changed on exactly 14 existing pages**, the neighbours listed above.
+- **Pages whose content changed:** exactly the 21 listed above (7 topic indexes + 14 neighbours). Every other changed page differs from main only in the `ks4-nav.js?v=` stamp.
+- **`shared/ks4-nav.js`:** `FULL_NAV` was parsed on both sides. **8 values change, the `routes` of the eight slugs**, as in the route table. The `mrbadmus_site/` copy is identical.
+- **`ks4_data.classify()`** runs its CF⊆CH⊆TH and CF⊆TF⊆TH assertion inside the call, and it passes. Flags: meiosis, classification and thermal-conductivity are foundation/base. Resolving-forces, free-body-diagrams, motion-in-a-circle and wave-front-refraction are higher/not-triple. Dark-matter is foundation/triple. Decomposition and gravity-stable-orbits are unchanged.
+
+### Gates on the rebased tree
+
+Run with `MRB_BACKEND`/`MRB_BACKEND_DIR` pointed at a backend worktree at backend `main` (`4bdc783`). The shared backend checkout has someone's uncommitted edit, so it was not used.
+
+- `prepush_gate.py --record-all`: **`verify_ks3` ✅, `ks4_chrome_drive` ✅** (the two affected slow gates). Every other slow gate was skipped by rule, or for a missing credential as before.
+- `prepush_gate.py --check`: **every fast gate ✅**, including `ks4_pilot_check`, `ks4_batch_check`, `ks4_pool_check`, `pool_ownership`, `set_work_scope_check`, `figures_mirror` and `ks4_science_rulings_check`. **Two are red, both expected, both overridden in the merge commit:**
+  - `frozen_window_guard`: the 96 frozen rows' flags, as above, until `BANK-FLAGS.sql` is applied.
+  - `curriculum_tree_mirror`: now red for **two** files. One is the backend's `curriculum-tree.json`, as before. **New since this branch was cut:** `consumer/curriculum-index.json`, the B2C topic picker's index, added on main by `cf693ee76`. The same exporter writes it.
+
+### ⚠️ New for the follow-up: `consumer/curriculum-index.json`
+
+`python3 tools/export_curriculum_tree.py` (the backend follow-up above) **also rewrites `consumer/curriculum-index.json`**. It was not regenerated in this landing because it is B2C data, and B2C is outside this unit. Regenerating it changes 15 subtopics' year maps:
+
+- **The 8 moved subtopics gain their new route keys**, e.g. meiosis `{tf:11, th:11}` → `{cf:11, ch:11, tf:11, th:11}`.
+- **7 Combined Higher physics subtopics move from Year 11 to Year 10:** structure-of-atom, mass-number-isotopes, development-atomic-model, radioactive-decay, nuclear-equations, half-lives and radioactive-contamination. This is mechanical. `ks4_seed_sow.split_index` cuts each block at the topic boundary nearest halfway. CH physics grew from 53 to 58 subtopics, so the cut now falls after Atomic Structure instead of before it. **For Mide:** the B2C picker would then show Atomic Structure as Year 10 for a Combined Higher child. The seeded scheme-of-work rows in the database are not regenerated by any of this, so schools' automatic weekly sets are unaffected.
+
+Until that follow-up runs, the new Combined pages are live, but Set work and the B2C picker do not yet offer the eight subtopics on their new routes. Nothing breaks.
+
+### Merge
+
+Merged to `main` with `--no-ff` and pushed as a fast-forward of `main`. The merge commit is recorded in the next section. The remote `fix/ks4-route-flags` still points at the pre-rebase `31fb3e786`. It was not force-pushed, because a force-push is a stop item.
+
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
