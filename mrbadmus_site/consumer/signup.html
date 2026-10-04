@@ -132,7 +132,12 @@
     unit: 'Step 2 of 4', children: 'Step 3 of 4', plan: 'Step 4 of 4'
   };
   var COPY = {
-    unitIntroSchool: 'Pick the unit school is on right now. Mr Badmus sets the first week to match, not Year 7 week 1.',
+    /* ⊕ B2C polish 2: the child's OWN year. This read "not Year 7 week 1"
+       for every child, so a Year 9 parent was told about Year 7. */
+    unitIntroSchool: function (year) {
+      return 'Pick the unit school is on right now. Mr Badmus sets the first week to match' +
+        (year ? ', not Year ' + year + ' week 1.' : '.');
+    },
     unitIntroHome: 'Pick the unit to start from. Everything before it is treated as covered, and the scheme of work runs from here.'
   };
 
@@ -417,7 +422,7 @@
         '>Tick the box to create your account.</p>' +
       primaryBtn('continue', 'Continue') +
       '<p style="margin:26px 0 0;font-size:16px;text-align:center">Already have an account? <a href="' +
-      P.url('signIn') + '" style="font-weight:700">Sign in</a></p>';
+      P.attr('signIn') + '" style="font-weight:700">Sign in</a></p>';
   }
 
   /* ⚠️ GoTrue's own strings reach the parent otherwise, and two of them do it
@@ -1227,7 +1232,7 @@
       '<h1 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:38px;line-height:1.02;letter-spacing:-.035em">Where is ' +
       esc(name) + ' up to?</h1>' +
       '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">' +
-      esc(S.unitChildMode === 'home_education' ? COPY.unitIntroHome : COPY.unitIntroSchool) + '</p>';
+      esc(S.unitChildMode === 'home_education' ? COPY.unitIntroHome : COPY.unitIntroSchool(S.unitChildYear)) + '</p>';
 
     var skip = '<button type="button" id="u-skip" style="margin-top:10px;width:100%;min-height:48px;border:0;' +
       'background:none;font-weight:700;font-size:16px;color:var(--ks3-accent-text);cursor:pointer">' +

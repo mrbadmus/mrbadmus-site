@@ -60,7 +60,15 @@
     privacy: { href: '/parents/privacy.html',        label: 'Privacy' }
   };
 
-  function url(key) { return esc(C.href(PAGES[key].href)); }
+  /* ⊕ B2C polish 2 (4 Oct 2026). `url()` is the RAW href — it is what a
+     page assigns to `el.href`, and a DOM property takes a URL, not HTML.
+     It used to return `esc(...)`, so every `el.href = P.url(...)` carried a
+     literal `&amp;` into the address bar and lost every query parameter
+     after the first (a blind drive saw `signup.html?env=test&amp;api=…`).
+     `attr()` is the escaped form, for the two places that concatenate an
+     href into an HTML string. */
+  function url(key) { return C.href(PAGES[key].href); }
+  function attr(key) { return esc(url(key)); }
 
   /* The company behind the product, written once.
 
@@ -83,7 +91,7 @@
   function nav(current) {
     function link(key) {
       var on = current === key;
-      return '<a href="' + url(key) + '" style="color:var(--ks3-ink)' +
+      return '<a href="' + attr(key) + '" style="color:var(--ks3-ink)' +
         (on ? ';border-bottom:2px solid var(--ks3-accent)' : '') + '">' +
         esc(PAGES[key].label) + '</a>';
     }
@@ -101,8 +109,8 @@
         link('how') + link('homeEd') + link('pricing') + link('orgs') +
       '</nav>' +
       '<span style="flex:1"></span>' +
-      '<a href="' + url('signIn') + '" style="font-weight:700;font-size:16px;color:var(--ks3-ink)">Sign in</a>' +
-      '<a href="' + url('signUp') + '" style="display:flex;align-items:center;min-height:44px;' +
+      '<a href="' + attr('signIn') + '" style="font-weight:700;font-size:16px;color:var(--ks3-ink)">Sign in</a>' +
+      '<a href="' + attr('signUp') + '" style="display:flex;align-items:center;min-height:44px;' +
       'padding:0 18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);' +
       'background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:16px">Start free</a>' +
       /* Theme run (26 Sep 2026): the shared Light/Dark/System control, at
@@ -116,7 +124,7 @@
   /* ── footer ─────────────────────────────────────────────────────────── */
   function footer() {
     function link(key) {
-      return '<a href="' + url(key) + '">' + esc(PAGES[key].label) + '</a>';
+      return '<a href="' + attr(key) + '">' + esc(PAGES[key].label) + '</a>';
     }
     return '<footer style="border-top:2px solid var(--ks3-ink);background:var(--ks3-card)">' +
       '<div class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:28px 20px;' +
@@ -259,6 +267,7 @@
     SUBJECT_DOT: SUBJECT_DOT,
     lockup: lockup,
     url: url,
+    attr: attr,
     nav: nav,
     footer: footer,
     chrome: chrome,

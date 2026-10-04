@@ -223,15 +223,39 @@
     background: var(--ks3-card); overflow: hidden;
   }
   .td-later li {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 16px; border-bottom: 1px solid var(--ks3-rule); font-size: 16px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 10px 0 0; border-bottom: 1px solid var(--ks3-rule); font-size: 16px;
   }
   .td-later li:last-child { border-bottom: 0; }
+  /* ⊕ B2C polish 2, defect 9 (Mide's ruling): a later row OPENS the work.
+     The whole row is the link (a real <a>, focusable, never under 48px),
+     and "Mark as done" is a 44px control beside it — doing it early counts. */
+  .td-later-link {
+    flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px;
+    min-height: 52px; padding: 10px 6px 10px 16px; color: var(--ks3-ink); text-decoration: none;
+  }
+  .td-later-link:hover { text-decoration: none; color: var(--ks3-ink); }
+  .td-later-link:focus-visible { outline: 3px solid var(--ks3-accent); outline-offset: -3px; border-radius: 10px; }
+  .td-later-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .td-later-go { flex: 0 0 auto; width: 18px; height: 18px; color: var(--ks3-ink-muted); }
+  .td-later-done {
+    flex: 0 0 44px; width: 44px; height: 44px; display: grid; place-items: center;
+    border: 2px solid var(--ks3-ink); border-radius: 12px; background: var(--ks3-band);
+    color: var(--ks3-ink); cursor: pointer; padding: 0;
+  }
+  .td-later-done .ks3-mark { width: 20px; height: 20px; }
+  .td-later-done[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
+  .td-later-tick {
+    flex: 0 0 44px; width: 44px; height: 44px; display: grid; place-items: center;
+    border: 2px solid var(--ks3-ink); border-radius: 12px; background: var(--ks3-ok); color: #fff;
+  }
+  .td-later-tick .ks3-mark { width: 20px; height: 20px; }
+  .td-later li.is-done .td-later-title { color: var(--ks3-ink-muted); }
   .td-later-day {
     flex: 0 0 40px; font-family: var(--ks3-font-mono); font-size: 13px;
     letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);
   }
-  .td-later-title { flex: 1; }
+  .td-later-title { font-weight: 600; }
   .td-later-tag { font-size: 13px; color: var(--ks3-ink-muted); }
 
   .td-quick { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -241,6 +265,10 @@
     background: var(--ks3-card); color: var(--ks3-ink); text-decoration: none;
   }
   .td-quick a:hover { text-decoration: none; color: var(--ks3-ink); }
+  /* ⊕ B2C polish 2: a card with nothing to open is not a link — an <a>
+     with no href. Drawn flat (dashed, no pointer) so it does not invite a
+     tap that leads nowhere. */
+  .td-quick a:not([href]) { border-style: dashed; border-color: var(--ks3-rule-strong); background: none; cursor: default; }
   .td-quick strong { font-weight: 700; font-size: 17px; }
   .td-quick span { font-size: 14px; color: var(--ks3-ink-muted); }
 
@@ -372,7 +400,7 @@
       <a id="td-quick-exam" href="/consumer/exam.html">
         <strong>Exam questions</strong><span>Write one, get it marked</span>
       </a>
-      <a id="td-quick-check" href="/consumer/unit-check.html">
+      <a id="td-quick-check">
         <strong>Unit check</strong><span id="td-check-note">None due</span>
       </a>
     </div>
@@ -671,7 +699,9 @@
           '<p>Your finished work and marked answers are still here. ' +
           'Exam questions are open below.</p></div>';
       } else if (!items.length) {
-        var nextDay = later.length ? (DAY_FULL[later[0].day] || later[0].day) : null;
+        /* ⊕ defect 9: a later row done early is not "next up". */
+        var open = later.filter(function (l) { return !l.done; });
+        var nextDay = open.length ? (DAY_FULL[open[0].day] || open[0].day) : null;
         nothing.innerHTML =
           '<div class="td-nothing"><h3>Nothing set for today</h3><p>' +
           (nextDay
@@ -685,19 +715,22 @@
       host.innerHTML = items.map(itemHtml).join('');
       C.applyWritable(host, writable);
 
-      host.onclick = function (e) {
-        var btn = e.target.closest ? e.target.closest('button[data-done]') : null;
-        if (!btn) { return; }
-        var id = btn.getAttribute('data-done');
-        C.setBusy(btn, true, 'Saving…');
-        C.api('/api/consumer/child/work/' + encodeURIComponent(id) + '/done',
-              { method: 'POST', token: ctx.token })
-          .then(function () { return load(); })
-          .catch(function (err) {
-            C.setBusy(btn, false);
-            oops(C.plainMessage(err), C.isClosing(err) ? '' : 'Try again in a moment.');
-          });
-      };
+      host.onclick = doneClick;
+    }
+
+    /* One "Mark as done" for today's cards and the later rows alike. */
+    function doneClick(e) {
+      var btn = e.target.closest ? e.target.closest('button[data-done]') : null;
+      if (!btn) { return; }
+      var id = btn.getAttribute('data-done');
+      C.setBusy(btn, true, btn.classList.contains('td-later-done') ? '…' : 'Saving…');
+      C.api('/api/consumer/child/work/' + encodeURIComponent(id) + '/done',
+            { method: 'POST', token: ctx.token })
+        .then(function () { return load(); })
+        .catch(function (err) {
+          C.setBusy(btn, false);
+          oops(C.plainMessage(err), C.isClosing(err) ? '' : 'Try again in a moment.');
+        });
     }
 
     function renderLater() {
@@ -707,13 +740,29 @@
       /* ⊕ B2C week repair (defect 1): `later` also carries work set for a
          later week (`next_week`, its day with a date). It gets its own
          heading rather than sitting under "Later this week". */
+      /* ⊕ B2C polish 2, defect 9 (Mide's ruling, 4 Oct 2026): every row
+         opens the work, on any day, and can be marked done early — the
+         scheduled day is the parent's plan, not a lock. A row with no href
+         (none today; kept honest) is not a link. A done row keeps its own
+         day slot and shows the tick. */
+      var TICK = '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
+      var GO = '<svg class="ks3-mark td-later-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
       function list(rows) {
         return '<ul class="td-later">' + rows.map(function (l) {
-          return '<li>' +
+          var inner =
             '<span class="td-later-day">' + C.escapeHtml(String(l.day || '').slice(0, 3)) + '</span>' +
-            '<span class="td-later-title">' + C.escapeHtml(l.title || 'Work') + '</span>' +
-            '<span class="td-later-tag">' + C.escapeHtml(l.tag || '') + '</span>' +
-          '</li>';
+            '<span class="td-later-text">' +
+              '<span class="td-later-title">' + C.escapeHtml(l.title || 'Work') + '</span>' +
+              '<span class="td-later-tag">' + C.escapeHtml(l.tag || '') + '</span>' +
+            '</span>';
+          var row = l.href
+            ? '<a class="td-later-link" href="' + C.escapeHtml(C.href(l.href)) + '">' + inner + GO + '</a>'
+            : '<div class="td-later-link">' + inner + '</div>';
+          var end = l.done
+            ? '<span class="td-later-tick" role="img" aria-label="Done">' + TICK + '</span>'
+            : ('<button class="td-later-done" type="button" data-write data-done="' + C.escapeHtml(l.id) + '" ' +
+               'aria-label="Mark ' + C.escapeHtml(l.title || 'this') + ' as done">' + TICK + '</button>');
+          return '<li' + (l.done ? ' class="is-done"' : '') + '>' + row + end + '</li>';
         }).join('') + '</ul>';
       }
       /* The heading names the week, so the day column keeps its three
@@ -723,6 +772,8 @@
       host.innerHTML =
         (thisWeek.length ? ('<h2 class="td-h2-later">Later this week</h2>' + list(thisWeek)) : '') +
         (nextWeek.length ? ('<h2 class="td-h2-later">Next week</h2>' + list(nextWeek)) : '');
+      C.applyWritable(host, writable);
+      host.onclick = doneClick;
     }
 
     /* Design's two quick-action cards. The unit-check one carries the
@@ -730,11 +781,16 @@
        Friday", so it is the unit NAME and the DAY, out of the week's own
        unit-check item.
 
-       ⚠️ `later[]` carries no `kind` and no `href` (API-CONTRACT §6), only
-       a title, so a unit check later in the week is recognised by its
-       generated title prefix. `items[]` does carry `kind`, and is tried
-       first. When neither has one, her "None due" stands and the card
-       still opens the picker-less page, which says which unit it needs. */
+       `items[]` is tried first. ⊕ B2C polish 2: `later[]` now carries
+       `kind` and `href` too (defect 9), so a check later in the week is
+       found by kind (the old title-prefix test stays as a fallback for an
+       older backend) and opens early, as every later row does. When neither
+       has one, her "None due" stands.
+
+       ⊕ B2C polish 2 (4 Oct 2026): a card with no unit check to open is NOT
+       a link. It used to open unit-check.html with no unit, which answers
+       "Which unit? Open it from your Today page" — said to a child who had
+       just opened it from their Today page. */
     function renderQuick() {
       el('td-quick-exam').href = C.href('/consumer/exam.html');
 
@@ -752,14 +808,18 @@
       if (!href) {
         for (var j = 0; j < later.length; j++) {
           var t = String(later[j].title || '');
-          if (t.indexOf('Unit check:') === 0) {
+          if (later[j].kind === 'unit_check' || t.indexOf('Unit check:') === 0) {
             note = stripPrefix(t) + ' · ' + (DAY_FULL[later[j].day] || later[j].day);
+            /* ⊕ defect 9: a later check opens too (Mide's ruling). */
+            href = later[j].done ? null : (later[j].href || null);
             break;
           }
         }
       }
 
-      el('td-quick-check').href = href ? C.href(href) : C.href('/consumer/unit-check.html');
+      var card = el('td-quick-check');
+      if (href) { card.href = C.href(href); card.removeAttribute('aria-disabled'); }
+      else { card.removeAttribute('href'); card.setAttribute('aria-disabled', 'true'); }
       el('td-check-note').textContent = note || 'None due';
     }
 
