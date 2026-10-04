@@ -136,13 +136,16 @@
       'box-shadow:0 0 0 3px var(--pg-tint)!important;' +
       'caret-color:var(--pg-accent-text)!important}' +
     // ⊕ Y Unit 1 — under a real keyboard, in the learn step, the ANSWER is
-    // primary: the question steps down (smaller, muted) so the room it
+    // primary: the question steps down (smaller, the card's muted ink) so the room it
     // gives up can go to the model answer. Scoped to typing+learn only —
     // the question's normal size (its own `shrinkToFit()` loop, elsewhere)
     // is untouched at rest, on desktop, and for the plain write step.
+    // ⊕ Y review — the CARD's muted ink (`--b-muted`, the "ANSWER"
+    // label's own colour), never the page's: `--pg-muted` is a colour for
+    // the cream page and read 1.8:1 on the dark card.
     D + '[data-hw-typing="1"][data-hw-learn="1"] [data-dc-tpl="10340"]{' +
       'font-size:15px!important;line-height:1.3!important;' +
-      'font-weight:400!important;color:var(--pg-muted)!important}' +
+      'font-weight:400!important;color:var(--b-muted)!important}' +
     // ⊕ Stage D review — on a tall DESKTOP dialog the box takes the room the
     // card gave back (up to 200px). `data-hw-tall` never changes on focus
     // there (no keyboard), so neither does the box. Mouse-and-keyboard only:

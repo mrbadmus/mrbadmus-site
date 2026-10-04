@@ -284,6 +284,10 @@ MEASURE_JS = r"""
   var cueCs = cardFit ? getComputedStyle(cardFit, '::after') : null;
   var cueTopCs = cardFit ? getComputedStyle(cardFit, '::before') : null;
   var sub = learnEl ? learnEl.querySelector('sub') : null;
+  // ⊕ Y review — the question's own ink against the card it sits on.
+  var qEl = front ? front.querySelector('[data-dc-tpl="10340"]') : null;
+  var qInk = qEl ? getComputedStyle(qEl).color : null;
+  var qOn = front ? getComputedStyle(front).backgroundColor : null;
   return {
     vvTop: vv.offsetTop, vvHeight: vv.height, vvBottom: vv.offsetTop + vv.height,
     innerHeight: window.innerHeight,
@@ -317,6 +321,7 @@ MEASURE_JS = r"""
       ? (ansRect.top >= frontRect.top - 0.5 && ansRect.bottom <= frontRect.bottom + 0.5)
       : null,
     learnTopGap: (ansRect && frontRect) ? (ansRect.top - frontRect.top) : null,
+    qInk: qInk, qOn: qOn,
     subText: sub ? sub.textContent : null,
     learnText: learnEl ? learnEl.textContent : null
   };
@@ -615,6 +620,11 @@ def run_case(port, device, content_key, step, offset_top, theme, shots_dir, labe
             ok7 = gap is not None and -0.5 <= gap < 6
             check(ok7, "%s: the very long answer's first line is at the card's visible top (learnTopGap=%.1f)"
                   % (label, gap if gap is not None else -999))
+        # ⊕ Y review — the question stays readable on the learn step: it
+        # was drawn in the PAGE's muted ink on the dark card (1.8:1).
+        if m.get("qInk") and m.get("qOn"):
+            qcr = contrast_ratio(_parse_rgb(m["qInk"]), _parse_rgb(m["qOn"]))
+            check(qcr >= 4.5, "%s: the question reads on its card (%.2f:1, theme=%s)" % (label, qcr, theme))
         if content_key == "chem":
             ok8 = bool(m["subText"]) and m["subText"] == "2"
             check(ok8, "%s: CO2 renders with a real <sub>2</sub> (subText=%r)" % (label, m["subText"]))
