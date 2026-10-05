@@ -219,7 +219,7 @@ def trialing(d):
 
 def week_repair(d):
     """B2C week repair (4 Oct 2026). Work set for a later week is listed, the
-    strip is the ruled Sunday-first week, the browser keeps no week helper, and a carried link keeps ONE '?'."""
+    strip is Monday-first (unit 7, ruling 3), the browser keeps no week helper, and a carried link keeps ONE '?'."""
     print("\n── the ruled week ──")
     d.open("consumer/overview.html?child=kid-ada&view=child&env=test", state="trialing", kids=2)
     check("Next week" in d.text(".dk-work") and "Photosynthesis: lesson 3" in d.text(".dk-upcoming"),
@@ -232,7 +232,11 @@ def week_repair(d):
     strip = d.js("(function(){var s=document.querySelector('.dk-card [style*=\"display:flex;gap:6px\"]');"
                  "if(!s)return null;return Array.prototype.map.call(s.children,function(c){"
                  "return c.lastElementChild?c.lastElementChild.textContent:'';}).join('');})()")
-    check(strip == "SMTWTFS", "the day strip opens on Sunday (the ruled week)", strip)
+    # ⊕ B2C unit 7 (Mide's ruling 3, 5 Oct 2026): the parent strip starts on
+    # MONDAY again — the calendar week, read from `week_strip`. This asserted
+    # Sunday-first under the week repair's earlier reading; the ruling
+    # reversed it, so the exact order is still pinned, the other way round.
+    check(strip == "MTWTFSS", "the day strip opens on Monday (ruling 3)", strip)
     h = d.js("window.MrBadmusConsumer.href('/student/assignment.html?id=abc')")
     check(h and h.count("?") == 1 and "id=abc" in h and "env=test" in h,
           "a carried link with its own query keeps ONE '?' (id=abc&env=test)", h)
