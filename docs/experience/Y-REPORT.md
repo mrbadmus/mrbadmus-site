@@ -106,7 +106,7 @@ rows it made (0 left behind, every run).
 | path / edge | what I did | what happened | result |
 |---|---|---|---|
 | Typed right first time | typed the model answer, Check | "Right", Secured filled | pass |
-| "I don't know" → learn → Nearly → comes back → right → Secured | I don't know; typed the shown answer; Check | answer shown under the question; capped at Nearly (Secured not offered); card came back before the pass ended; typed right → Secured | pass |
+| "I don't know" → learn → Nearly → comes back → right → Secured | I don't know; typed the shown answer; Check | answer shown under the question; capped at Nearly (Secured not offered — superseded by §7); card came back before the pass ended; typed right → Secured | pass |
 | Nearly → sees answer → comes back → right | typed a half answer | "Nearly"; only Nearly / Not yet offered; model answer shown; came back; right → Secured | pass |
 | Wrong / blank → Not yet only | typed "something wrong…", then "idk" | "Wrong" / "No answer"; only Not yet offered | pass |
 | Done = every card secured; end screen | finished with leftovers, then without | "7 of 10 secured" + Try again only (replays only the leftovers); then "10 of 10 secured" + Done + "Revise flashcards one more time" | pass |
@@ -216,7 +216,7 @@ know"**. What you should see, with no further taps:
    smaller phone it may have scrolled up out of view (swipe the card down to
    see it, and it stays where you put it).
 3. **Check is just above the keyboard**, not under it.
-4. Type the answer and tap Check: Nearly is filled in and Secured isn't
+4. (Superseded by §7: all three ratings are offered.) Type the answer and tap Check: Nearly is filled in and Secured isn't
    offered. Tap Nearly; that card comes back later in the pass.
 
 Then, as the teacher of 8r/Sc1, open that pupil's page (8r/Sc1 → the
@@ -286,7 +286,7 @@ yet, never Secured**. Nearly brings the card back at Try again, where it is
 checked properly. Nothing is filled in for them and no words are added.
 
 **Proof.** Engine tests: a slow first reply still "Checking…" during the
-retry; both waits over → capped at Nearly; a malformed reply twice → capped.
+retry; both waits over → capped at Nearly; a malformed reply twice → capped (all of 6.2 superseded by §7).
 On TEST with the real answer-check function (`--phases slowfail`): one slow
 reply (6 s) → "Checking…" at 4.6 s, then **"Right" at 7.7 s**; a failing check
 (500 twice) → no chip, **only Nearly / Not yet**; the deck ends "2 of 3
@@ -362,7 +362,7 @@ card, without typing, tap **"I don't know"**.
    orange with the cursor in it, the question small and grey-blue (scroll
    the card down to see it if it has gone), and Check just above the
    keyboard.
-3. Type it and tap Check: Nearly is filled in and Secured isn't offered — the
+3. (Superseded by §7: Secured is offered.) Type it and tap Check: Nearly is filled in and Secured isn't offered — the
    card comes back later in the pass.
 
 ---
