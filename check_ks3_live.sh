@@ -120,8 +120,12 @@ echo "checked $N authored lesson(s); skipped $SKIP still-placeholder slot(s)"
 # wake and the KS3 lessons do not need the backend to render — the chat panel
 # does. Reporting it as a warning keeps the signal without making a sleeping
 # free-tier dyno able to fail a KS3 deploy check.
+# The production backend, read out of shared/config.js's PROD block — the
+# one file that writes it down (B2C unit 6, test isolation).
+PROD_BACKEND=$(sed -n "/const PROD = {/,/};/s/.*BACKEND_URL: *'\([^']*\)'.*/\1/p" \
+               "$(dirname "$0")/shared/config.js")
 hcode=$(curl -sL -o /dev/null -w '%{http_code}' --max-time 45 \
-        "https://mrbadmus-backend.onrender.com/api/health" 2>/dev/null)
+        "${PROD_BACKEND}/api/health" 2>/dev/null)
 if [ "$hcode" = "200" ]; then
   echo "backend /api/health: 200 ✅ (the chat panel has something to talk to)"
 else

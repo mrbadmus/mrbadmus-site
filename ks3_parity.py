@@ -714,7 +714,11 @@ C1_TEST = "chemistry/particles-and-their-behaviour/testing-the-model.html"
 # Its console failure is demoted out of the pass/fail set; see
 # `drain_console`. Named once so the smoke gate and this one filter the
 # same string, and so changing the backend is one edit, not a hunt.
-BACKEND_HOST = "mrbadmus-backend.onrender.com"
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config_env  # noqa: E402 — shared/config.js's worlds
+# The production backend's host, read out of shared/config.js (B2C unit 6).
+BACKEND_HOST = config_env.PROD_BACKEND_HOST
 
 C1_MODEL = "chemistry/particles-and-their-behaviour/particle-model.html"
 C1_STATE = "chemistry/particles-and-their-behaviour/changes-of-state.html"
@@ -17923,7 +17927,7 @@ def run_browser_layers(ks3_root, browser_mod):
         ⊕ MRB-267, 19 Aug 2026 — THE BACKEND KEEP-ALIVE IS DEMOTED, and it is
         reported rather than dropped.
 
-        `shared/mrbadmus.v2.js` pings `mrbadmus-backend.onrender.com/api/health`
+        `shared/mrbadmus.v2.js` pings the production backend's `/api/health`
         two seconds after every page load, purely to keep Render warm. It is
         `.catch()`-ed in JS, but the browser still logs the failure, so this
         gate's verdict depended on two things that have nothing to do with the

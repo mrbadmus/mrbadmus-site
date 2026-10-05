@@ -90,6 +90,7 @@ import sys
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, REPO)
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
 
 OUT_DIR = os.path.join("build", "ks4-questions")
 
@@ -609,7 +610,7 @@ def load(rows, subject, project):
          "use the SQL files instead", not as a failure to retry.
 
       3. THE URL MUST BE PRODUCTION BY REF. It must contain
-         urklkrwevjtlfbwnipjn or this refuses. So a prod.env accidentally
+         the production ref (config_env.PROD_REF) or this refuses. So a prod.env accidentally
          pointing at TEST cannot quietly write test rows while reporting a
          production load — the two failure directions are both closed.
 
@@ -638,7 +639,7 @@ def load(rows, subject, project):
             return 3
         # Guard 2 — the key, from one path, never this repo.
         env = os.path.expanduser("~/.mrbadmus/prod.env")
-        expect_ref = "urklkrwevjtlfbwnipjn"
+        expect_ref = config_env.PROD_REF
         label = "PRODUCTION"
     else:
         env = "/Users/midebadmus/Documents/GitHub/mrbadmus---backend/.env"
@@ -840,7 +841,7 @@ def verify(rows, subject, partial, project):
                     service_key = line.split("=", 1)[1].strip()
         except OSError:
             service_key = None
-        if service_key and _jwt_ref(service_key) != "urklkrwevjtlfbwnipjn":
+        if service_key and _jwt_ref(service_key) != config_env.PROD_REF:
             return cannot_see(
                 "the key in %s is not the production project's." % env,
                 "Refusing rather than comparing against whatever it does "
@@ -877,7 +878,7 @@ def verify(rows, subject, partial, project):
     # `--project prod` is the production gate.
     PROJECTS = {
         "test": "qeppkiswvclkkwbxmlok",
-        "prod": "urklkrwevjtlfbwnipjn",
+        "prod": config_env.PROD_REF,
     }
     # ⚠️ Passed in, NOT read off a module-level `args`. It was written
     # that way and `args` is local to main(), so every --verify run

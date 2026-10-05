@@ -8,6 +8,7 @@
                                 signed-out there and will redirect)
      signed in    → the bell (pupils only), then the avatar and its menu:
                     My class · Settings · Sign out
+                    (a family child: Today · Settings · Sign out)
 
    Load AFTER config.js, class-entry.js, student-bell.js and theme.js. All
    four are optional in the sense that a missing one degrades to less, never
@@ -56,6 +57,12 @@
   }
 
   function bar(slot) { return slot.closest('[data-mrb-topbar]'); }
+
+  /* A pupil's entry points into /student/; a family child's points at their
+     Today page and says so with `pupil` (class-entry.js, B2C unit 6). */
+  function isPupil(entry) {
+    return !!entry && (entry.pupil === true || entry.href.indexOf('/student/') === 0);
+  }
 
   function ask() {
     if (answer) { return Promise.resolve(answer); }
@@ -123,7 +130,7 @@
       go.href = carry(entry.href);
       menu.appendChild(go);
     }
-    var pupil = entry && entry.href.indexOf('/student/') === 0;
+    var pupil = isPupil(entry);
     if (pupil && !here('/student/settings.html')) {
       var st = el('a', '', 'Settings');
       st.href = carry('/student/settings.html');
@@ -171,7 +178,7 @@
       slot.appendChild(s);
       return;
     }
-    var pupil = a.entry && a.entry.href.indexOf('/student/') === 0;
+    var pupil = isPupil(a.entry);
     if (mode === 'all' && pupil && window.MrBadmusBell) {
       var tone = (b && b.getAttribute('data-mrb-bell-tone')) || 'chrome';
       if (!slot.__mrbBell) {

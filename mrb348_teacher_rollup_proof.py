@@ -77,7 +77,9 @@ REPO = os.path.dirname(os.path.abspath(__file__))
 os.chdir(REPO)
 
 TEST_REF = "qeppkiswvclkkwbxmlok"
-PROD_REF = "urklkrwevjtlfbwnipjn"
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
+PROD_REF = config_env.PROD_REF
 URL = "https://%s.supabase.co" % TEST_REF
 CTX = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
 BACKEND_ENV = os.environ.get(

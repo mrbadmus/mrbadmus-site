@@ -124,6 +124,7 @@ import urllib.request
 REPO = os.path.dirname(os.path.abspath(__file__))
 os.chdir(REPO)
 sys.path.insert(0, REPO)
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
 
 SUBJECTS = ("biology", "chemistry", "physics")
 KS4_TIERS = ("foundation", "higher")
@@ -275,7 +276,7 @@ def load_db():
     import re as _re
     _m = _re.search(r"https://([a-z0-9]+)\.supabase\.co", url)
     _ref = _m.group(1) if _m else "?"
-    _name = {"urklkrwevjtlfbwnipjn": "the PRODUCTION database",
+    _name = {config_env.PROD_REF: "the PRODUCTION database",
              "qeppkiswvclkkwbxmlok": "the TEST database"}.get(
                  _ref, "the database at %s" % _ref)
     return ks4, ks3, _name

@@ -34,6 +34,7 @@
 import argparse, json, os, re, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import ks3_browser as cdp
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
 
 TEACHER = "11111111-1111-1111-1111-111111111111"
 YEAR    = "22222222-2222-2222-2222-222222222222"
@@ -154,7 +155,7 @@ TABLES = {
 STUB_JS = r"""
 (function () {
   /* ⊕ Stream L, 25 Sep 2026 (experience run, item 1) — teacher-live.js's
-     "wake the backend" ping (`fetch('…onrender.com/api/health')`, fired
+     "wake the backend" ping (a fetch of the production /api/health, fired
      unconditionally at module load, before any guard) is fire-and-forget
      in production and immaterial to anything this drive measures. In this
      sandbox it has no route to the real internet, and Chrome reports that
@@ -164,7 +165,7 @@ STUB_JS = r"""
      reach Render. Every other fetch is untouched. */
   var realFetch = window.fetch;
   window.fetch = function (url) {
-    if (typeof url === 'string' && url.indexOf('onrender.com/api/health') !== -1) {
+    if (typeof url === 'string' && url.indexOf('__MRB_PROD_HEALTH__') !== -1) {
       return Promise.resolve(new Response('{}', {status: 200}));
     }
     return realFetch.apply(window, arguments);
@@ -235,6 +236,8 @@ STUB_JS = r"""
   });
 })();
 """
+# The production health URL, read out of shared/config.js (B2C unit 6).
+STUB_JS = STUB_JS.replace("__MRB_PROD_HEALTH__", config_env.PROD_BACKEND_HOST + "/api/health")
 FREEZE = r'''
 /* Freeze the clock. `schoolWeekday()` formats a real Date in Europe/London,
    so the only honest way to drive a Saturday is to make it BE Saturday. */

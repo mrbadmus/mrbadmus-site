@@ -188,7 +188,7 @@
   </main>
 </div>
 
-<script src="/shared/config.js?v=646ce4e2"></script>
+<script src="/shared/config.js?v=ab7a89ac"></script>
 <script src="/consumer/consumer-common.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
@@ -242,9 +242,8 @@
 (function () {
   var C = window.MrBadmusConsumer;
 
-  /* THE one sentence. See the header — this is a ruling, not a shortcut. */
-  var GENERIC = 'That username and password don’t match. ' +
-                'Check with whoever set up your account.';
+  /* THE one sentence (see the header — a ruling, not a shortcut) now lives
+     beside the one sign-in, consumer-common.js `childSignIn`. */
 
   C.boot({ anonymous: true, run: function (ctx) {
     document.getElementById('gl-brand').innerHTML = C.brandLockup('/go/index.html');
@@ -381,56 +380,20 @@
       setError('');
       C.setBusy(btn, true, 'Signing in…');
 
-      C.api('/api/consumer/child/login', {
-        method: 'POST',
-        body: { username: username, password: password }
-      }).then(function (d) {
-        var at = d && (d.access_token || (d.session && d.session.access_token));
-        var rt = d && (d.refresh_token || (d.session && d.session.refresh_token));
-        if (!at || !rt) {
-          /* A 200 with no tokens in it. Not the child's fault and not a
-             wrong password, so it does not get GENERIC — that would send
-             them off to re-type a correct password forever. */
-          C.setBusy(btn, false);
-          return setError('Something went wrong signing you in. Try again in a moment.');
-        }
-        return ctx.sb.auth.setSession({ access_token: at, refresh_token: rt })
-          .then(function (r) {
-            if (r.error) {
-              C.setBusy(btn, false);
-              return setError('Something went wrong signing you in. Try again in a moment.');
-            }
-            /* C.go rather than a literal, so ?env= and ?api= come with them
-               — a child who signed in against the test backend must not
-               arrive on a page talking to production, which would reject the
-               session they just got and read as "your password is wrong". */
-            C.go('/consumer/today.html');
-          });
-      }).catch(function (err) {
+      /* ⊕ B2C unit 6 — the sign-in itself is consumer-common.js
+         `childSignIn`, shared with auth.html so the two can never disagree
+         about what is asked or what a refusal says. Its rejection carries the
+         sentence to show (rate limit, dead connection, closing account,
+         "couldn't check", or the one generic line). */
+      C.childSignIn(ctx.sb, username, password).then(function () {
+        /* C.go rather than a literal, so ?env= and ?api= come with them
+           — a child who signed in against the test backend must not
+           arrive on a page talking to production, which would reject the
+           session they just got and read as "your password is wrong". */
+        C.go('/consumer/today.html');
+      }, function (err) {
         C.setBusy(btn, false);
-
-        /* Rate limit and dead connection are the two failures that are not
-           about the credentials. Everything else — wrong password, unknown
-           username, removed child, a parent trying to come in this way —
-           is one sentence. */
-        if (err.code === 'rate_limited' || err.status === 429) {
-          return setError(err.message ||
-            'Too many tries. Wait fifteen minutes and try again.');
-        }
-        if (err.code === 'network' || err.code === 'timeout') {
-          return setError(err.message);
-        }
-        /* ⊕ B2C polish. Three more answers that are not about the password,
-           so the backend's own sentence is shown: the account is being
-           deleted (account_closing), or the server could not check
-           (login_unavailable / account_check_failed). "Doesn't match" there
-           sends a child to re-type a password that was right. */
-        if (err.code === 'account_closing' || err.code === 'login_unavailable' ||
-            err.code === 'account_check_failed') {
-          return setError(C.plainMessage(err,
-            'We couldn’t check that right now. Please try again in a minute.'));
-        }
-        setError(GENERIC);
+        setError(err.message);
       });
     });
   }});

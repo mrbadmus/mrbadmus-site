@@ -1667,7 +1667,7 @@ scoreText: w.fc ? '' : (w.rawMax != null ? (w.rawScore + ' / ' + w.rawMax) : (w.
          the class has any work at all. Design drew both branches;
          this picks the one that is true. See student_rulings.py. */
       hasBoard: !fresh && !!top, noBoard: fresh || !top,
-      boardScopeNote: wk === 'term' ? 'WHOLE ' + MRB_DATA('termLabel') : wk === 4 ? 'CURRENT WEEK' : 'WEEK ' + pad(wk) + ' \u00B7 FINAL',
+      boardScopeNote: wk === 'term' ? 'WHOLE ' + MRB_DATA('termLabel') : wk === 4 ? 'CURRENT WEEK' : wk == null ? '' : 'WEEK ' + pad(wk) + ' \u00B7 FINAL',
       boardWeeks: boardWeeks, toggleSize: this.toggleSize,
       sizeLabel: size === 5 ? 'SHOW TOP 10' : 'SHOW TOP 5',
       leaderEyebrow: wk === 'term' ? 'Top of the term' : 'Top of week ' + pad(wk),
@@ -1697,9 +1697,9 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","class-entry.js":"61bfe161","config.js":"646ce4e2","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-homework.js":"b3f6cade","flashcard-keyboard.js":"4a245645","flashcard-library.css":"7c4a483f","flashcard-library.js":"08bd8d3f","formulae.js":"e4bfb091","ks3-lesson-urls.js":"98cd0930","ks4-lesson-urls.js":"07963eee","rum.js":"66210c21","shoutouts.js":"23393220","student-bell.js":"c9eba610","student-data.js":"f3b50e8e","student-guard.js":"1da3dc79","theme.js":"6fd6f722","topbar.css":"3f7041f1","topbar.js":"33aba0d2"};</script>
+<script>window.__MRB_ASSET_V__={"brand/brand.css":"9c818614","brand/brand.js":"a8b2a506","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","class-entry.js":"f09195e5","config.js":"ab7a89ac","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-homework.js":"b3f6cade","flashcard-keyboard.js":"4a245645","flashcard-library.css":"7c4a483f","flashcard-library.js":"08bd8d3f","formulae.js":"e4bfb091","ks3-lesson-urls.js":"98cd0930","ks4-lesson-urls.js":"07963eee","rum.js":"66210c21","shoutouts.js":"23393220","student-bell.js":"c9eba610","student-data.js":"f3b50e8e","student-guard.js":"ac421b35","theme.js":"6fd6f722","topbar.css":"3f7041f1","topbar.js":"e58da2fd"};</script>
 <script src="/shared/student-fixture-class.js?v=c8e02b23"></script>
 <script>window.__MRB_MOUNT__();</script>
-<script src="/shared/topbar.js?v=33aba0d2" defer></script>
+<script src="/shared/topbar.js?v=e58da2fd" defer></script>
 </body>
 </html>

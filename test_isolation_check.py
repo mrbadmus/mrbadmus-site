@@ -42,6 +42,19 @@ no call) when it is absent.
    are offline harness pages): they are held to rule 1 only, and with no
    config every reader on them now fails closed.
 
+3. SCRIPTS (⊕ B2C unit 6, Mide's ruling of 5 Oct 2026). Every TRACKED gate,
+   drive, tool and build script — `*.py`, `*.js`, `*.mjs`, `*.cjs`, `*.sh`
+   outside `docs/`, `mrbadmus_site/` and the shipped source trees rule 1
+   already covers — is held to the same names rule. Four student drives
+   hard-coded the production project and two the production backend, so a
+   "test" run of them signed in to the live site. A script that needs either
+   world reads it from shared/config.js through `config_env.py`, which spells
+   neither. Two narrow exemptions, both stated:
+     · a COMMENT line (`#`, `//`, `*`, `/*`) cannot call anything;
+     · `SCRIPT_ALLOW` below — each entry a file and the reason it must name
+       production by design. Keep it short: an entry is a script that can
+       reach the live site.
+
 Exit 0 = clean. Exit 1 = a finding, each printed with file and line.
 """
 import base64
@@ -102,6 +115,72 @@ def jwt_ref(payload_b64):
         return None
 
 
+def line_hits(line):
+    hits = []
+    if PROD_REF in line:
+        hits.append("the production Supabase ref")
+    for m in HOST_RE.finditer(line):
+        hits.append("the backend host %s" % m.group(0))
+    for m in JWT_RE.finditer(line):
+        if jwt_ref(m.group(1)) == PROD_REF:
+            hits.append("a JWT for the production project (anon key)")
+    return hits
+
+
+# ── rule 3: scripts ──────────────────────────────────────────────────────
+SCRIPT_EXT = {".py", ".js", ".mjs", ".cjs", ".sh"}
+SCRIPT_SKIP_TOP = {"docs", "mrbadmus_site", "node_modules"} | set(SOURCE_DIRS)
+
+# A script that must name production BY DESIGN, and why. Narrow on purpose.
+SCRIPT_ALLOW = {
+    "test_isolation_check.py":
+        "this gate: its own prose names the platform it detects (the "
+        "constants above are split so the code itself is not a hit).",
+}
+
+COMMENT_RE = re.compile(r"^\s*(#|//|\*|/\*|<!--)")
+
+
+def tracked_scripts():
+    try:
+        import subprocess
+        out = subprocess.run(["git", "ls-files", "-z"], cwd=ROOT, capture_output=True,
+                             timeout=60, check=True).stdout.decode("utf-8", "replace")
+        paths = [p for p in out.split("\0") if p]
+    except Exception:
+        paths = []
+        for dp, dns, fns in os.walk(ROOT):
+            dns[:] = [d for d in dns if d not in ("node_modules", ".git")]
+            for fn in fns:
+                paths.append(rel(os.path.join(dp, fn)))
+    for r in sorted(paths):
+        if os.path.splitext(r)[1].lower() not in SCRIPT_EXT:
+            continue
+        top = r.split("/", 1)[0] if "/" in r else ""
+        if top in SCRIPT_SKIP_TOP or "/node_modules/" in r:
+            continue
+        yield r
+
+
+def check_scripts(findings):
+    n = 0
+    for r in tracked_scripts():
+        if r in SCRIPT_ALLOW:
+            continue
+        p = os.path.join(ROOT, r)
+        try:
+            text = open(p, encoding="utf-8", errors="replace").read()
+        except OSError:
+            continue
+        n += 1
+        for i, line in enumerate(text.split("\n"), 1):
+            if COMMENT_RE.match(line):
+                continue
+            for h in line_hits(line):
+                findings.append("%s:%d names %s" % (r, i, h))
+    return n
+
+
 def check_names(findings):
     n = 0
     for p in shipped_files():
@@ -114,15 +193,7 @@ def check_names(findings):
         except OSError:
             continue
         for i, line in enumerate(text.split("\n"), 1):
-            hits = []
-            if PROD_REF in line:
-                hits.append("the production Supabase ref")
-            for m in HOST_RE.finditer(line):
-                hits.append("the backend host %s" % m.group(0))
-            for m in JWT_RE.finditer(line):
-                if jwt_ref(m.group(1)) == PROD_REF:
-                    hits.append("a JWT for the production project (anon key)")
-            for h in hits:
+            for h in line_hits(line):
                 findings.append("%s:%d names %s" % (r, i, h))
     return n
 
@@ -250,6 +321,7 @@ def main():
         print("test_isolation_check: no mrbadmus_site/ — run python3 build_all.py")
         return 1
     n = check_names(findings)
+    sc = check_scripts(findings)
     k = check_order(findings)
     check_self_loading(findings)
     if findings:
@@ -257,10 +329,12 @@ def main():
         for f in findings:
             print("  " + f)
         print("\nOnly shared/config.js may name production. Read window.MrBadmusConfig "
-              "and fail closed without it; load config.js before every consumer.")
+              "and fail closed without it; load config.js before every consumer. "
+              "A script reads either world through config_env.py.")
         return 1
-    print("test_isolation_check: OK — %d shipped files name no production host or "
-          "project; %d pages load config.js before every consumer" % (n, k))
+    print("test_isolation_check: OK — %d shipped files and %d scripts name no "
+          "production host or project; %d pages load config.js before every "
+          "consumer" % (n, sc, k))
     return 0
 
 

@@ -127,7 +127,7 @@
   <!-- SIGN IN FORM -->
   <div id="form-signin">
     <div class="form-group">
-      <label>Email address</label>
+      <label for="signin-email">Email or username</label>
       <input type="email" id="signin-email" placeholder="you@school.com" autocomplete="email"/>
     </div>
     <div class="form-group">
@@ -208,7 +208,9 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="/shared/config.js?v=646ce4e2"></script>
+<script src="/shared/config.js?v=ab7a89ac"></script>
+<!-- B2C unit 6: the one username sign-in (childSignIn), shared with /go. -->
+<script src="/consumer/consumer-common.js"></script>
 <script src="/shared/username-generator.js?v=6502aa56"></script>
 <script>
   // ── Config sourced from /shared/config.js (prod by default,
@@ -300,6 +302,8 @@
     if (forgotCoolingDown) return;
     const email = document.getElementById('signin-email').value.trim();
     if (!email) return showMsg('Enter your email address above first, then tap “Forgot password?” again.');
+    // A username has no inbox: the grown-up who made the account resets it.
+    if (isUsername(email)) return showMsg('Ask the grown-up who set up your account to reset your password.');
 
     const env = new URLSearchParams(window.location.search).get('env');
     const { error } = await sb.auth.resetPasswordForEmail(email, {
@@ -317,10 +321,42 @@
     }, 60000);
   }
 
+  /* ⊕ B2C unit 6 (5 Oct 2026) — a family child signs in with a USERNAME.
+     Anything without an "@" is one, and goes through the SAME sign-in /go
+     uses (consumer-common.js `childSignIn`), then to the child's Today page.
+     Anything with an "@" takes the email path below, unchanged. */
+  const C = window.MrBadmusConsumer;
+  function isUsername(v) { return !!v && v.indexOf('@') < 0 && !!(C && C.ENABLED); }
+  function carryEnv(path) {
+    const here = new URLSearchParams(window.location.search);
+    const keep = new URLSearchParams();
+    ['env', 'api'].forEach(function (k) { if (here.get(k)) keep.set(k, here.get(k)); });
+    const q = keep.toString();
+    return path + (q ? (path.indexOf('?') < 0 ? '?' : '&') + q : '');
+  }
+  function childHome() {
+    return carryEnv((window.MrBadmusConfig && window.MrBadmusConfig.CHILD_HOME) || '/consumer/today.html');
+  }
+
   async function signIn() {
     const email    = document.getElementById('signin-email').value.trim();
     const password = document.getElementById('signin-password').value;
     if (!email || !password) return showMsg('Please enter your email and password.');
+
+    if (isUsername(email)) {
+      // A page holding a stale consumer-common.js (pre-unit 6) has no
+      // childSignIn: /go is the same sign-in, so send the child there.
+      if (typeof C.childSignIn !== 'function') { window.location.href = carryEnv(C.childLoginUrl || '/go/'); return; }
+      setLoading('btn-signin', true);
+      try {
+        await C.childSignIn(sb, email, password);
+      } catch (e) {
+        setLoading('btn-signin', false);
+        return showMsg(e.message);
+      }
+      window.location.href = childHome();
+      return;
+    }
 
     setLoading('btn-signin', true);
     const { error } = await sb.auth.signInWithPassword({ email, password });
@@ -448,6 +484,11 @@
     const returnUrl = new URLSearchParams(window.location.search).get('return') || '/index.html';
     sb.auth.getSession().then(({ data: { session } }) => {
       if (!session) return;
+      // B2C unit 6 — a family child's home is their Today page.
+      if (window.MrBadmusConfig.isChildSession && window.MrBadmusConfig.isChildSession(session)) {
+        window.location.href = childHome();
+        return;
+      }
       sb.from('profiles').select('first_name, science_pathway, tier, role, key_stage').eq('id', session.user.id).single()
         .then(({ data: p, error }) => {
           // A real query failure (network blip, RLS error) is NOT the same as
@@ -496,7 +537,17 @@
     const card = document.getElementById('already-signed-in');
     const emailEl = document.getElementById('already-email');
     if (!card || !emailEl) { redirectAfterAuth(); return; }
-    emailEl.textContent = (session.user && session.user.email) || '';
+    const cfg = window.MrBadmusConfig;
+    if (cfg.isChildSession && cfg.isChildSession(session)) {
+      // A child's address is internal and never shown (API-CONTRACT): the
+      // child's own username instead, read under their own session.
+      emailEl.textContent = '';
+      sb.from('profiles').select('username').eq('id', session.user.id).maybeSingle()
+        .then(function (r) { if (r && r.data && r.data.username) emailEl.textContent = r.data.username; },
+              function () {});
+    } else {
+      emailEl.textContent = (session.user && session.user.email) || '';
+    }
     // Hide the sign-in/up UI while the interstitial is showing.
     document.querySelector('.tabs').style.display = 'none';
     document.getElementById('form-signin').style.display = 'none';

@@ -30,7 +30,7 @@ proved empirically before writing this script (ERR_CONNECTION_REFUSED,
 Exits 1 on any FAIL. TEST ONLY — the service key's own `ref` claim (read out
 of its JWT payload, never a label beside it) is checked before any write,
 and refused if it is not qeppkiswvclkkwbxmlok. Production
-(urklkrwevjtlfbwnipjn) is never touched, and no SQL DDL is ever run here —
+(production) is never touched, and no SQL DDL is ever run here —
 the MRB-353 migration is already applied on TEST by a separate, already-run
 apply (supabase/MRB353-APPLY.md on the feat/mrb353-migrations worktree).
 """

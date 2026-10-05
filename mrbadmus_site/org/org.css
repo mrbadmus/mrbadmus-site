@@ -416,7 +416,10 @@ input::placeholder, textarea::placeholder { color: var(--ks3-ink-muted); }
   border-radius: 10px; border: 2px solid var(--ks3-ink);
   background: var(--ks3-accent);
   font-family: var(--ks3-font-display); font-weight: 800; font-size: 14px;
-  color: var(--ks3-ink);
+  /* ⊕ B2C unit 6 — the fill's own ink (consumer.css --c-on-fill), not
+     --ks3-ink: cream in dark measured 2.35:1 on the orange, and the light
+     ink 4.49:1 (contrast_audit, flag on, 5 Oct 2026). */
+  color: var(--c-on-fill);
 }
 .og-row-n { display: block; font-weight: 700; font-size: 15px; }
 .og-row-u {
@@ -446,7 +449,7 @@ input::placeholder, textarea::placeholder { color: var(--ks3-ink-muted); }
   display: grid; place-items: center; width: 52px; height: 52px;
   border-radius: 16px; background: var(--ks3-accent); border: 2px solid var(--ks3-ink);
   font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px;
-  color: var(--ks3-ink);
+  color: var(--c-on-fill);   /* ⊕ B2C unit 6 — as .og-initial: 2.35:1 in dark */
 }
 .og-pd-name {
   margin: 0; font-family: var(--ks3-font-display); font-weight: 800;

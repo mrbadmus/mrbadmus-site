@@ -115,7 +115,10 @@ ROUTE_FLAGS = {  # route code -> (isHigher, isTriple)
     "CF": (False, False), "CH": (True, False),
     "TF": (False, True), "TH": (True, True),
 }
-BACKEND_HOST = "mrbadmus-backend.onrender.com"
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config_env  # noqa: E402 — shared/config.js's worlds
+# The production backend's host, read out of shared/config.js (B2C unit 6).
+BACKEND_HOST = config_env.PROD_BACKEND_HOST
 
 # ═══════════════════════════════════════════════════════════════════════
 # the whitelist — every substitution/removal a known ruling licenses

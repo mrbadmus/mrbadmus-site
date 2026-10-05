@@ -172,7 +172,7 @@ GATES = [
     dict(name="ks3_smoke_static",
          cmd=["python3", "ks3_smoke.py", "--static"],
          speed="fast",
-         watches=["ks3_smoke.py", "ks3_browser.py", "build_ks3.py",
+         watches=["config_env.py", "ks3_smoke.py", "ks3_browser.py", "build_ks3.py",
                   "ks3_art/**", "ks3_data/**", "!ks3_data/**/questions_*.py",
                   "shared/ks3.js", "shared/ks3.css", "mrbadmus_site/ks3/**"],
          # ⊕ MRB-346 follow-up, 15 Sep 2026. This gate scans BUILT pages for
@@ -187,7 +187,7 @@ GATES = [
     dict(name="brand_one_mark",
          cmd=["python3", "brand_one_mark.py"],
          speed="fast",
-         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "brand_one_mark.py", "brand.py", "shared/brand/**",
+         watches=["config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "brand_one_mark.py", "brand.py", "shared/brand/**",
                   "generate_site_v5.py", "build_ks3.py", "build_ks4.py",
                   "ks4_rulings.py", "build_student_port.py", "build_teacher_port.py",
                   "brand_port.py", "student_rulings.py", "teacher_rulings.py",
@@ -205,7 +205,9 @@ GATES = [
     dict(name="test_isolation",
          cmd=["python3", "test_isolation_check.py"],
          speed="fast",
-         watches=["test_isolation_check.py", "shared/**", "*.html",
+         watches=["config_env.py", "test_isolation_check.py", "shared/**", "*.html",
+                  # ⊕ B2C unit 6 — rule 3 scans every tracked script too.
+                  "*.py", "*.sh", "*.js", "*.mjs", "*.cjs", "tools/**",
                   "teacher/**", "student/**", "consumer/**", "parents/**",
                   "go/**", "org/**", "teacher_fixtures/**", "mrbadmus_site/**",
                   "generate_site_v5.py", "build_ks3.py", "build_ks4.py",
@@ -216,14 +218,18 @@ GATES = [
              "/api/health and /api/chat to the LIVE backend because "
              "mrbadmus.v2.js named it outright. Fails if any shipped page or "
              "script other than shared/config.js names the production backend "
-             "host, any onrender.com host, the production Supabase ref or a "
+             "host, any host on its platform, the production Supabase ref or a "
              "JWT for it; and if any published page reads MrBadmusConfig "
-             "before config.js has run (consumers now fail closed)."),
+             "before config.js has run (consumers now fail closed). ⊕ B2C "
+             "unit 6: and if any tracked gate, drive, tool or build script "
+             "does (comment lines and an explicit SCRIPT_ALLOW aside) — a "
+             "script reads either world through config_env.py, which parses "
+             "config.js."),
 
     dict(name="test_isolation_drive",
          cmd=["python3", "test_isolation_drive.py"],
          speed="slow",
-         watches=["test_isolation_drive.py", "ks3_browser.py", "shared/**",
+         watches=["config_env.py", "test_isolation_drive.py", "ks3_browser.py", "shared/**",
                   "*.html", "student/**", "consumer/**", "parents/**",
                   "mrbadmus_site/**", "generate_site_v5.py", "build_ks3.py",
                   "build_ks4.py", "build_student_port.py", "student_rulings.py"],
@@ -232,7 +238,7 @@ GATES = [
              "page on ?env=test with a fake session planted under the TEST and "
              "the production storage keys, and records every request from CDP "
              "Network events WITHOUT blocking anything: any request or "
-             "connection hint to onrender.com or the production Supabase host "
+             "connection hint to the production backend's platform or the production Supabase host "
              "fails. Then asks the tutor about photosynthesis against a stub "
              "that errors, refuses on a limit, and is down: the honest line, "
              "the backend's sentence, the honest line — never a fact card. "
@@ -356,7 +362,7 @@ GATES = [
          # ks3/**` (the only tree it opens), and generate_site_v5.py, which it
          # executes. Those are also precisely the changes the drift check
          # exists to detect collateral damage FROM.
-         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "verify_ks3.py", "ks3_parity.py", "ks3_canvas.py",
+         watches=["config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "verify_ks3.py", "ks3_parity.py", "ks3_canvas.py",
                   "ks3_figure_sweep.py", "ks3_overflow.py", "ks3_browser.py",
                   "build_ks3.py", "ks3_art/**", "ks3_data/**",
                   "!ks3_data/**/questions_*.py",
@@ -380,7 +386,7 @@ GATES = [
     dict(name="student_parity",
          cmd=["python3", "student_parity.py"],
          speed="slow",
-         watches=["student_parity.py", "ks3_parity.py", "ks3_browser.py",
+         watches=["config_env.py", "student_parity.py", "ks3_parity.py", "ks3_browser.py",
                   "build_student.py", "student_switches.json", "ks3_data/**",
                   "!ks3_data/**/questions_*.py",
                   "shared/student-breakpoints.js", "shared/student-ds.css",
@@ -589,7 +595,7 @@ GATES = [
     dict(name="flashcard_decks_drive",
          cmd=["python3", "flashcard_decks_drive.py"],
          speed="slow",
-         watches=["flashcard_decks_drive.py", "ks3_browser.py",
+         watches=["config_env.py", "flashcard_decks_drive.py", "ks3_browser.py",
                   "shared/set-work.js", "shared/set-work.css",
                   "shared/flashcard-decks.js", "shared/flashcard-decks.css",
                   "shared/formulae.js", "shared/teacher-admin-nav.js", "shared/teacher-topbar.js",
@@ -665,7 +671,7 @@ GATES = [
     dict(name="today_drive",
          cmd=["python3", "today_drive.py"],
          speed="slow",
-         watches=["today_drive.py", "ks3_browser.py", "teacher/today.html",
+         watches=["config_env.py", "today_drive.py", "ks3_browser.py", "teacher/today.html",
                   "teacher/timetable.html",
                   "mrbadmus_site/teacher/today.html",
                   "mrbadmus_site/teacher/timetable.html",
@@ -1104,7 +1110,7 @@ GATES = [
     dict(name="frozen_window_guard",
          cmd=["python3", "frozen_window_guard.py"],
          speed="fast",
-         watches=["frozen_window_guard.py", "frozen_window_allowlist.py",
+         watches=["config_env.py", "frozen_window_guard.py", "frozen_window_allowlist.py",
                   "ks3_data/**", "ks4_data/**",
                   "export_ks3_questions.py", "export_ks4_questions.py"],
          needs="/Users/midebadmus/.mrbadmus/prod.env",
@@ -1151,7 +1157,7 @@ GATES = [
     dict(name="set_work_scope_check",
          cmd=["python3", "set_work_scope_check.py"],
          speed="fast",
-         watches=["set_work_scope_check.py",
+         watches=["config_env.py", "set_work_scope_check.py",
                   "tools/export_curriculum_tree.py", "ks4_data/**",
                   "ks3_data/**", "ks4_seed_sow.py", "generate_site_v5.py",
                   "all_subtopics_*.py"],
@@ -1255,7 +1261,7 @@ GATES = [
     dict(name="ks4_export_prod_figure_guard",
          cmd=["python3", "export_ks4_questions.py", "--self-test"],
          speed="fast",
-         watches=["export_ks4_questions.py"],
+         watches=["config_env.py", "export_ks4_questions.py"],
          why="MRB-352 run 2 — A PRODUCTION LOAD NEVER STRIPS A FIGURE. The "
              "authored KS4 stems now say 'the diagram shows…'. "
              "`export_ks4_questions.py --load prod` in column-absent mode "
@@ -1531,7 +1537,7 @@ GATES = [
     dict(name="ks3_key_audit",
          cmd=["python3", "ks3_key_audit.py"],
          speed="fast",
-         watches=["ks3_key_audit.py", "ks3_data/**",
+         watches=["config_env.py", "ks3_key_audit.py", "ks3_data/**",
                   "!ks3_data/**/questions_*.py", "ks3_art/**",
                   "build_ks3.py", "shared/ks3.js", "shared/ks3.css",
                   "ks3_parity.py", "verify_ks3.py", "ks3_statutory.py"],
@@ -1603,7 +1609,7 @@ GATES = [
     dict(name="student_controls_drive",
          cmd=["python3", "student_controls_drive.py"],
          speed="slow",
-         watches=["student_controls_drive.py", "ks3_browser.py",
+         watches=["config_env.py", "student_controls_drive.py", "ks3_browser.py",
                   "build_student_port.py", "student_rulings.py",
                   "shared/student-live.js", "shared/student-runtime.js",
                   "shared/student-data.js", "shared/student-guard.js",
@@ -1612,8 +1618,9 @@ GATES = [
          needs_env=("MRB_DRIVE_PASSWORD", "MRB_TEST_STUDENT_PASSWORD"),
          why="presses every control on the student pages and fails on one "
              "that does nothing. The student-side twin of "
-             "ks3_instrument_liveness. Signs in to production, so it is "
-             "SKIPPED BY NAME without a credential. ⚠️ Its --fixture mode "
+             "ks3_instrument_liveness. Signs in to the TEST project (B2C "
+             "unit 6: never production), so it is SKIPPED BY NAME without a "
+             "credential. ⚠️ Its --fixture mode "
              "needs none and is NOT what this row runs: the file's own header "
              "says the whole EXPECT table is invalid under it, and "
              "registering the weaker sweep as though it were the real one is "
@@ -1625,7 +1632,7 @@ GATES = [
          # shared/config.js is a real input, not scenery: --verify resolves the
          # anon key for the named project OUT of it and refuses to run when it
          # carries none.
-         watches=["export_ks3_questions.py", "ks3_data/**",
+         watches=["config_env.py", "export_ks3_questions.py", "ks3_data/**",
                   "shared/config.js"],
          needs_env="MRB_TEST_STUDENT_PASSWORD",
          why="the KS3 question mirror in Postgres against these files. The "
@@ -1643,7 +1650,7 @@ GATES = [
          # second root of layer A's old-value sweep, spelled by extension for
          # the same reason: the sweep does read that folder's two .md files,
          # and those two are the named gap rather than a pattern to widen.
-         watches=["3d_parity.py", "ks3_browser.py", "ks3_parity.py",
+         watches=["config_env.py", "3d_parity.py", "ks3_browser.py", "ks3_parity.py",
                   "3d-studio/dist/**", "3d-studio/src/**",
                   "3d-studio/reference/*.html", "3d-studio/content/**",
                   ".design-sync/**/*.tsx", ".design-sync/**/*.css",
@@ -1863,7 +1870,7 @@ GATES = [
     dict(name="teacher_admin_foreign_class",
          cmd=["python3", "teacher_admin_foreign_class_drive.py"],
          speed="slow",
-         watches=["teacher_admin_foreign_class_drive.py",
+         watches=["config_env.py", "teacher_admin_foreign_class_drive.py",
                   "admin_view_drive.py", "ks3_browser.py",
                   "build_teacher_port.py", "teacher_rulings.py",
                   "mrbadmus_site/teacher/**", "teacher/admin.html",
@@ -1945,7 +1952,7 @@ GATES = [
     dict(name="set_work",
          cmd=["python3", "set_work_drive.py"],
          speed="slow",
-         watches=["set_work_drive.py", "mrb331_fixture.py", "ks3_browser.py",
+         watches=["config_env.py", "set_work_drive.py", "mrb331_fixture.py", "ks3_browser.py",
                   "ks3_data/**", "ks4_data/**", "build_teacher_port.py",
                   "teacher_rulings.py", "build_student_port.py",
                   "student_rulings.py", "shared/set-work.js",
@@ -1990,7 +1997,7 @@ GATES = [
          # credentialed, row-WRITING drive for every unrelated migration in
          # the estate. The one named is the one this gate's before/after
          # assertions are written against.
-         watches=["teacher_admin_real_drive.py", "ks3_browser.py",
+         watches=["config_env.py", "teacher_admin_real_drive.py", "ks3_browser.py",
                   "build_teacher_port.py", "teacher_rulings.py",
                   "mrbadmus_site/teacher/**", "shared/teacher-live.js",
                   "shared/teacher-data.js", "shared/teacher-guard.js",
@@ -2276,7 +2283,7 @@ GATES = [
     dict(name="teacher_rollup_equal",
          cmd=["python3", "mrb348_teacher_rollup_proof.py"],
          speed="slow",
-         watches=["mrb348_teacher_rollup_proof.py",
+         watches=["config_env.py", "mrb348_teacher_rollup_proof.py",
                   "supabase/migrations/"
                   "20260922231500_mrb348_teacher_class_rollup.sql",
                   # ⊕ Mide's 23 Sep 2026 ruling — the proof now also calls
@@ -2329,7 +2336,7 @@ GATES = [
     dict(name="theme_wiring_check",
          cmd=["python3", "theme_wiring_check.py"],
          speed="fast",
-         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "theme_wiring_check.py", "theme_head.py", "shared/theme.js",
+         watches=["config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "theme_wiring_check.py", "theme_head.py", "shared/theme.js",
                   "generate_site_v5.py", "build_ks3.py", "build_ks4.py",
                   "build_student_port.py", "build_teacher_port.py",
                   "build_leaderboard_port.py", "student_rulings.py",
@@ -2345,7 +2352,10 @@ GATES = [
     dict(name="contrast_audit",
          cmd=["python3", "contrast_audit.py", "--quick", "--gate"],
          speed="fast",
-         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "contrast_audit.py", "ks3_browser.py",
+         watches=[
+                  # ⊕ B2C unit 6 — every consumer, parents, org and go page is measured flag on.
+                  "consumer/**", "parents/**", "org/**", "go/**", 
+                  "config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "contrast_audit.py", "ks3_browser.py",
                   # ⊕ theme run, 27 Sep 2026 — the audit now measures every
                   # page in light AND dark through the real stored choice.
                   "shared/theme.js", "theme_head.py", "shared/ks3-theme.css",
@@ -2466,7 +2476,10 @@ GATES = [
     dict(name="contrast_audit_interactions",
          cmd=["python3", "contrast_audit.py", "--interactions", "--quick", "--gate"],
          speed="slow",
-         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "contrast_audit.py", "ks3_browser.py",
+         watches=[
+                  # ⊕ B2C unit 6 — every consumer, parents, org and go page is measured flag on.
+                  "config_env.py", "consumer_dash_fixture.py", "shared/config.js", "consumer/**", "parents/**", "org/**", "go/**", 
+                  "topbar.py", "shared/topbar.css", "shared/topbar.js", "contrast_audit.py", "ks3_browser.py",
                   "shared/ks3.js", "shared/ks3.css", "shared/ks3-theme.css",
                   "shared/mrbadmus.v2.js", "shared/styles.css",
                   "shared/tokens.css", "shared/theme.js",
@@ -2603,7 +2616,7 @@ GATES = [
     dict(name="ks4_pilot_check",
          cmd=["python3", "ks4_pilot_check.py"],
          speed="fast",
-         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "ks4_pilot_check.py", "build_ks4.py", "ks4_lessons/**",
+         watches=["config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "ks4_pilot_check.py", "build_ks4.py", "ks4_lessons/**",
                   "ks4_rulings.py", "shared/ks4-ds.css", "shared/ks4-theme.css",
                   "shared/ks4-lesson.css", "shared/ks4-source.js",
                   "shared/ks4-lib.js", "shared/ks4-diagrams.js",
@@ -2646,7 +2659,7 @@ GATES = [
     dict(name="ks4_batch_check",
          cmd=["python3", "ks4_batch_check.py"],
          speed="fast",
-         watches=["ks4_batch_check.py", "build_ks4.py", "ks4_lessons/**",
+         watches=["config_env.py", "ks4_batch_check.py", "build_ks4.py", "ks4_lessons/**",
                   "ks4_science_rulings.py",
                   "shared/ks4-ds.css", "shared/ks4-theme.css",
                   "shared/ks4-lesson.css", "shared/ks4-lib.js",
@@ -2691,7 +2704,7 @@ GATES = [
     dict(name="ks4_parity",
          cmd=["python3", "ks4_parity.py"],
          speed="slow",
-         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "ks4_parity.py", "ks3_browser.py", "build_ks4.py",
+         watches=["config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "ks4_parity.py", "ks3_browser.py", "build_ks4.py",
                   "ks4_lessons/**", "ks4_rulings.py", "ks4_science_rulings.py",
                   "shared/ks4-ds.css", "shared/ks4-theme.css",
                   "shared/ks4-lesson.css", "shared/ks4-source.js",
@@ -2737,7 +2750,7 @@ GATES = [
     dict(name="ks4_science_rulings_check",
          cmd=["python3", "ks4_science_rulings.py", "--check"],
          speed="fast",
-         watches=["ks4_science_rulings.py", "build_ks4.py",
+         watches=["config_env.py", "ks4_science_rulings.py", "build_ks4.py",
                   "all_subtopics_chemistry*.py", "all_subtopics_physics*.py",
                   "ks4_lessons/**"],
          why="ks4_science_rulings.py's OWN `--check` self-audit — a real "
@@ -2772,6 +2785,12 @@ GATES = [
 # repo root, so a new script cannot be quietly neither.
 
 EXCLUDED = {
+    "config_env.py":
+        "Import-only library (B2C unit 6, 5 Oct 2026): shared/config.js's two "
+        "worlds for Python scripts, parsed out of config.js so that no script "
+        "spells either one. Asserts nothing; `test_isolation` is the gate that "
+        "proves no script names production, and every gate whose script "
+        "imports this watches it.",
     "consumer_dash_fixture.py":
         "Import-only fixture (B2C repair, 3 Oct 2026): the offline signed-in "
         "parent that contrast_audit.py and consumer_dash_drive.py load "
@@ -3110,14 +3129,16 @@ EXCLUDED = {
     "bonding_redesign.py":
         "a one-off KS4 theory-block decomposition (MRB-113 Phase B).",
 
-    # ── they drive PRODUCTION, with real credentials ────────────────────
+    # ── they drive the TEST project, with real credentials ──────────────
+    # ⊕ B2C unit 6 (5 Oct 2026): these used to drive PRODUCTION. A TEST run
+    # must never be able to call production, so they now take every endpoint
+    # from shared/config.js's TEST block (config_env.py) and MRB_API.
     "student_api_drive.py":
-        "drives the weekly assignment producer against PRODUCTION as a real "
-        "student. Needs credentials and the network; a push must not depend "
-        "on Render being awake.",
+        "drives the weekly assignment producer against the TEST project as a "
+        "real student. Needs credentials, a TEST class and a running backend; "
+        "a push must not depend on any of them.",
     "student_page_drive.py":
-        "drives the wired student pages against production data. Same "
-        "reason.",
+        "drives the wired student pages against TEST data. Same reason.",
     "admin_view_drive.py":
         "drives MRB-303 J2's read-only school view (teacher/admin.html). Two "
         "halves, and BOTH are unsuitable for a push gate. The negative half "
@@ -3135,7 +3156,7 @@ EXCLUDED = {
         "network, real sign-ins and a browser; a push must not depend on "
         "any of the three.",
     "student_submit_drive.py":
-        "drives POST /api/assignment-submit against production. Same "
+        "drives POST /api/assignment-submit against the TEST project. Same "
         "reason, and it WRITES rows.",
     "check_ks3_live.sh":
         "verifies mrbadmus.com AFTER a push, including the cache-bust "

@@ -17,7 +17,7 @@ project's storage key and the production one, so any code still reading the
 production slot would believe it was signed in and act on it.
 
 Every request the page makes is recorded from CDP `Network.requestWillBeSent`
-— NOTHING IS BLOCKED. A request to any `onrender.com` host or to the
+— NOTHING IS BLOCKED. A request to any host on the production backend's platform or to the
 production Supabase host is a failure, as is a preconnect/dns-prefetch hint
 for either. Blocking those hosts would hide exactly the defect this gate
 exists to catch; it must observe that nothing even tries.
@@ -49,6 +49,7 @@ import uuid
 from urllib.parse import urlparse
 
 import ks3_browser as kb
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SITE = os.path.join(ROOT, "mrbadmus_site")
@@ -192,7 +193,7 @@ class Recorder:
 
 def is_prod(url, prod):
     h = (urlparse(url).hostname or "").lower()
-    return h.endswith("onrender.com") or h == urlparse(prod["SUPABASE_URL"]).hostname
+    return config_env.is_prod_url(url) or h == urlparse(prod["SUPABASE_URL"]).hostname
 
 
 def hints(page):

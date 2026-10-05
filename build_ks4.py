@@ -1980,7 +1980,10 @@ def render_page(lesson, route, compiled_lesson, block_scripts, prev_next, versio
 # failure to the console regardless — from a 127.0.0.1 test origin it always
 # fails CORS, so this is a property of testing from localhost, not a defect
 # in the page. Demoted here exactly as it is in the two gates above.
-BACKEND_HOST = "mrbadmus-backend.onrender.com"
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config_env  # noqa: E402 — shared/config.js's worlds
+# The production backend's host, read out of shared/config.js (B2C unit 6).
+BACKEND_HOST = config_env.PROD_BACKEND_HOST
 
 
 def _real_errors(errs):

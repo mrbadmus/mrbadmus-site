@@ -81,6 +81,7 @@ sys.path.insert(0, REPO)
 
 import mrb331_fixture as FX          # noqa: E402  (after chdir, deliberately)
 import ks3_browser as cdp            # noqa: E402
+import config_env                    # noqa: E402  shared/config.js's worlds (B2C unit 6)
 import ks4_data                      # noqa: E402
 
 # ⚠️ THE CHECKOUT THIS DRIVE LAUNCHES `node server.js` FROM (⊕ MRB-331,
@@ -1714,7 +1715,7 @@ READ_CHROME_JS = r"""
 # owns those files, and is not MRB-335's to make.
 CONSOLE_NOISE = (
     "favicon",
-    "mrbadmus-backend.onrender.com/api/health",
+    config_env.PROD_BACKEND_HOST + "/api/health",
     "/fonts/instrument-sans-var",
 )
 

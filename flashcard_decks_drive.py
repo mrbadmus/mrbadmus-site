@@ -51,6 +51,7 @@ import sys
 import time
 
 import ks3_browser as cdp
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
 
 T = "11111111-1111-4111-8111-111111111111"          # the teacher
 COL = "22222222-2222-4222-8222-222222222222"        # a colleague
@@ -450,10 +451,10 @@ def main():
                 and "config: TEST" not in e
                 # ⊕ MRB-351 landing — the container this runs in cannot reach
                 # the real Render backend, so the ported pages' own /api/health
-                # probe (mrbadmus-backend.onrender.com) is CORS-blocked here
+                # probe (the production backend) is CORS-blocked here
                 # regardless of any flashcard schema — the same class of noise
                 # the exclusions above already carve out for the CDN.
-                and "mrbadmus-backend.onrender.com" not in e]
+                and config_env.PROD_BACKEND_HOST not in e]
 
     def sentences(p, where):
         texts = p.eval(TEXTS_JS) or []

@@ -6,6 +6,11 @@ say what each one did.
     python3 student_controls_drive.py --theme chalk
     python3 student_controls_drive.py --fixture          # no credentials
 
+⊕ B2C unit 6 (Mide's ruling, 5 Oct 2026): TEST ONLY. A TEST run must never be
+able to call production, so the live pages open on `?env=test&api=<MRB_API>`
+and the project, anon key and storage key come from shared/config.js's TEST
+block via config_env.py. Point MRB_DRIVE_EMAIL at a TEST student.
+
 `--theme <name>` sets `data-bench-theme` on the document root of EVERY mount
 (and `--theme harbour` REMOVES the attribute, which is what harbour is — see
 `student_themes.py`). A control can be dead in one theme and alive in another:
@@ -92,15 +97,17 @@ sys.path.insert(0, REPO)
 os.chdir(REPO)
 
 import ks3_browser as cdp
+import config_env
 
 PORT = 5500
-SUPABASE_URL = "https://urklkrwevjtlfbwnipjn.supabase.co"
-PROJECT_REF = "urklkrwevjtlfbwnipjn"
+SUPABASE_URL = config_env.TEST["SUPABASE_URL"]
+PROJECT_REF = config_env.TEST_REF
 EMAIL = os.environ.get("MRB_DRIVE_EMAIL", "midebolabadmus@gmail.com")
 CTX = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
 
-CLASS = "/student/class.html?env=prod"
-ASSIGN = "/student/assignment.html?env=prod"
+_ENV_Q = "?env=test&api=" + config_env.backend()
+CLASS = "/student/class.html" + _ENV_Q
+ASSIGN = "/student/assignment.html" + _ENV_Q
 CLASS_FIXTURE = "/student/class-fixture.html"
 ASSIGN_FIXTURE = "/student/assignment-fixture.html"
 

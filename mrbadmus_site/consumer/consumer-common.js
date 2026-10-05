@@ -912,12 +912,62 @@
      child's own session carries their own address, and testing its suffix is
      how this file tells a child session from a parent's with no network call
      and nothing rendered. */
-  var CHILD_EMAIL_SUFFIX = '@children.mrbadmus.internal';
-
+  /* ⊕ B2C unit 6 (5 Oct 2026) — the suffix and the test now live in
+     shared/config.js (`MrBadmusConfig.isChildSession`): the lesson pages'
+     top bar, the student guard and auth.html ask the same question and none
+     of them loads this file. One definition; this delegates. No config →
+     not a child (fail closed: the parent path is the default). */
   function isChildSession(session) {
-    var email = session && session.user && session.user.email;
-    return !!email &&
-      String(email).toLowerCase().slice(-CHILD_EMAIL_SUFFIX.length) === CHILD_EMAIL_SUFFIX;
+    var c = window.MrBadmusConfig;
+    return !!(c && typeof c.isChildSession === 'function' && c.isChildSession(session));
+  }
+
+  /* ── childSignIn — THE one username sign-in (B2C unit 6) ───────────────
+     /go and auth.html both sign a child in with a username. One path, so
+     the two can never disagree about what the backend is asked or what a
+     refusal says. Resolves once `sb` holds the child's session; rejects with
+     an Error whose `message` is the sentence to show the child. */
+  var CHILD_LOGIN_GENERIC = 'That username and password don’t match. ' +
+                            'Check with whoever set up your account.';
+  var CHILD_LOGIN_FAILED = 'Something went wrong signing you in. Try again in a moment.';
+
+  function childLoginError(err) {
+    var out;
+    if (err && (err.code === 'rate_limited' || err.status === 429)) {
+      out = err.message || 'Too many tries. Wait fifteen minutes and try again.';
+    } else if (err && (err.code === 'network' || err.code === 'timeout')) {
+      out = err.message;
+    } else if (err && (err.code === 'account_closing' || err.code === 'login_unavailable' ||
+               err.code === 'account_check_failed')) {
+      /* Not about the password: the account is being deleted, or the server
+         could not check. "Doesn't match" there sends a child to re-type a
+         password that was right. */
+      out = plainMessage(err, 'We couldn’t check that right now. Please try again in a minute.');
+    } else {
+      // Wrong password, unknown username, removed child, a parent trying to
+      // come in this way — one sentence.
+      out = CHILD_LOGIN_GENERIC;
+    }
+    var e = new Error(out);
+    e.code = (err && err.code) || '';
+    return e;
+  }
+
+  function childSignIn(sb, username, password) {
+    return api('/api/consumer/child/login', {
+      method: 'POST',
+      body: { username: String(username || '').toLowerCase().trim(), password: password }
+    }).then(function (d) {
+      var at = d && (d.access_token || (d.session && d.session.access_token));
+      var rt = d && (d.refresh_token || (d.session && d.session.refresh_token));
+      /* A 200 with no tokens in it. Not the child's fault and not a wrong
+         password, so not the generic line — that would send them off to
+         re-type a correct password forever. */
+      if (!at || !rt) { throw new Error(CHILD_LOGIN_FAILED); }
+      return sb.auth.setSession({ access_token: at, refresh_token: rt }).then(function (r) {
+        if (r && r.error) { throw new Error(CHILD_LOGIN_FAILED); }
+      }, function () { throw new Error(CHILD_LOGIN_FAILED); });
+    }, function (err) { throw childLoginError(err); });
   }
 
   function projectRef() {
@@ -1090,6 +1140,9 @@
     signOut: signOut,
     signOutControl: signOutControl,
     isChildSession: isChildSession,
-    clearLocalState: clearLocalState
+    clearLocalState: clearLocalState,
+
+    // B2C unit 6 — the one username sign-in, shared by /go and auth.html.
+    childSignIn: childSignIn
   };
 })();

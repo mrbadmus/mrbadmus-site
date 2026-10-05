@@ -25,6 +25,7 @@ import urllib.request
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, REPO)
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
 os.chdir(REPO)
 
 CHUNK = 250
@@ -32,7 +33,7 @@ TABLE = "ks3_assignment_bank"
 CTX = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
 PROJECTS = {
     "test": ("/Users/midebadmus/Documents/GitHub/mrbadmus---backend/.env", "qeppkiswvclkkwbxmlok"),
-    "prod": (os.path.expanduser("~/.mrbadmus/prod.env"), "urklkrwevjtlfbwnipjn"),
+    "prod": (os.path.expanduser("~/.mrbadmus/prod.env"), config_env.PROD_REF),
 }
 
 

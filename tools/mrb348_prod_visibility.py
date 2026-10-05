@@ -77,7 +77,9 @@ import json
 import sys
 from datetime import datetime, timezone
 
-PROD_REF = "urklkrwevjtlfbwnipjn"
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
+PROD_REF = config_env.PROD_REF
 
 # Pinned so both phases filter at the same instant. Set once, never edited
 # between a before and its after.

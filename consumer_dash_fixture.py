@@ -125,6 +125,123 @@ def family(state="trialing", kids=2, deletion=None):
     }
 
 
+# ⊕ B2C unit 6 (5 Oct 2026) — THE CHILD AND THE ORGANISATION, OFFLINE.
+# contrast_audit.py measured consumer/today.html and org/index.html with the
+# consumer flag OFF ("Not found") and with nobody signed in, so the child's
+# whole product and the organisation dashboard had never been measured. These
+# payloads are the SHAPES the TEST backend answered on 5 Oct 2026 for a real
+# throwaway family (GET /api/consumer/child/today, /child/exam-questions,
+# /children/:id/report), with the fixture's own names, and the org dashboard
+# assembled from KIDS the way GET /api/consumer/org assembles its pupils.
+CHILD_TODAY = {
+    "ok": True,
+    "child": {"name": "Ada", "streak": 3, "best": "8/10", "bestUnit": "Cells"},
+    "parent": {"id": "parent-1", "name": "Sam", "initial": "S"},
+    "access": "full",
+    "items": [
+        {"id": "i1", "title": "Reproduction: lesson 1", "sub": "Human reproductive systems",
+         "mins": "20", "done": True, "by": "mb", "byName": None,
+         "href": "/ks3/biology/reproduction/human-reproductive-systems.html", "kind": "lesson",
+         "scheduled_for": "2026-10-05", "day": "Mon", "tag": "Mr Badmus", "next_week": False},
+        {"id": "i2", "title": "Practice: Reproduction", "sub": "10 questions", "mins": "10",
+         "done": False, "by": "mb", "byName": None, "href": "/student/assignment.html?id=a1",
+         "kind": "practice", "scheduled_for": "2026-10-05", "day": "Mon", "tag": "Mr Badmus",
+         "next_week": False},
+        {"id": "i3", "title": "Diffusion", "sub": "Lesson", "mins": "20", "done": False,
+         "by": "parent", "byName": "Sam", "href": "/ks3/biology/cells/diffusion.html",
+         "kind": "lesson", "scheduled_for": "2026-10-05", "day": "Mon", "tag": "Sam",
+         "next_week": False},
+    ],
+    "later": [
+        {"id": "l1", "title": "Unit check: Reproduction", "sub": "10 questions", "mins": "15",
+         "done": False, "by": "mb", "byName": None, "href": "/consumer/unit-check.html?unit=B5",
+         "kind": "unit_check", "scheduled_for": "2026-10-08", "day": "Thu", "tag": "Mr Badmus",
+         "next_week": False},
+    ],
+    "messages": [
+        {"who": "them", "text": "Well done on the cells check!", "created_at": "2026-10-04T17:10:00Z"},
+        {"who": "you", "text": "Thanks! Diffusion next.", "created_at": "2026-10-04T17:12:00Z"},
+    ],
+    "unread": 1,
+    "flashcards": [],
+    "notifications": [
+        {"title": "Marked", "body": "Your answer on cells came back: 3 out of 4.",
+         "ref": {"href": "/consumer/exam.html"}},
+    ],
+}
+
+CHILD_EXAM = {
+    "ok": True, "access": "full", "quotaLeft": 1, "quotaTotal": 2, "resetDate": "1 November",
+    "provider": "stub",
+    "questions": [
+        {"id": "q-cells-explain", "topic": "Cells and organisation", "subject": "Biology",
+         "marks": 4, "command": "Explain",
+         "text": "Down a school microscope you can see a leaf cell’s wall and nucleus but "
+                 "not its mitochondria. Explain why not.",
+         "stem": None, "scheme": ["Says they are still there.", "Says they are too small to resolve."],
+         "done": True, "answer": "They are too small for the microscope to show.",
+         "aiScore": 3, "feedback": "Good — now say what limits the microscope.",
+         "practice": None, "human": None, "waiting": False, "answer_id": "ans-1"},
+        {"id": "q-particles-describe", "topic": "Particles", "subject": "Chemistry",
+         "marks": 3, "command": "Describe",
+         "text": "Describe how the particles in a solid are arranged.",
+         "stem": None, "scheme": ["Close together.", "Regular pattern.", "Vibrate in place."],
+         "done": False},
+    ],
+}
+
+PARENT_REPORT = {
+    "ok": True,
+    "report": {
+        "child": {"name": "Ada", "surname": "", "year": 8, "ks": 3, "mode": "school",
+                  "dates": "1 September – 19 December 2026"},
+        "term": "Autumn 2026", "term_key": "autumn-2026", "produced": "5 October 2026",
+        "ref": "A-Y8-AUT26", "sessions": {"done": 5, "set": 8}, "minutes": 35,
+        "streakBest": 4, "checksAvg": 72, "checksCount": 1,
+        "units": [{"code": "B5", "name": "Reproduction", "subject": "Biology", "lessons": "3/8",
+                   "check": "72%", "status": "In progress",
+                   "nc": "National curriculum: Reproduction (KS3.B.REP.01, KS3.B.REP.02)"}],
+        "summary": "Ada completed 5 of the 8 sessions set this term.",
+        "progressNote": "One unit check so far, at 72%.",
+        "strengths": ["Cell structure"], "nextSteps": ["Calculating magnification"],
+        "answers": [{"q": "Explain why mitochondria do not show.", "mark": "3/4", "date": "4 Oct"}],
+        "teacherNote": "",
+    },
+}
+
+
+def org_payload():
+    """GET /api/consumer/org's shape, pupils built from KIDS."""
+    pupils = []
+    for i, k in enumerate(KIDS):
+        pupils.append({
+            "id": k["id"], "name": k["first_name"], "initial": k["first_name"][0],
+            "username": k["username"], "year": k["year_group"],
+            "group": "Tuesday group" if i == 0 else None, "group_id": "g1" if i == 0 else None,
+            "mode": k["mode"], "intensity": k["intensity"], "paused": False,
+            "days": k["days"], "last": None, "streak": k["streak"],
+            "lastActive": k["lastActive"], "active": i == 0, "flag": None,
+            "scores": k["scores"], "weak": k.get("weak"), "humanUsed": 0,
+            "humanLeft": k["humanLeft"], "unread": k["unread"], "work": k["work"],
+            "position": k["position"], "status": k["status"],
+        })
+    return {
+        "ok": True,
+        "org": {"id": "org-1", "name": "Northside Learning Centre", "kind": "organisation",
+                "seat_cap": 20, "seats_used": len(pupils), "period_end": "2027-07-31T00:00:00Z",
+                "contact_name": "Pat Lee", "contact_email": "pat@example.test",
+                "access": "full", "state": "active"},
+        "staff": {"id": "staff-1", "name": "Pat Lee"},
+        "staff_list": [{"id": "staff-1", "name": "Pat Lee", "role": "Admin",
+                        "groups": "All groups", "pending": False},
+                       {"id": "pend-1", "name": "Jo Ray", "role": "Caseworker", "groups": "",
+                        "pending": True}],
+        "groups": [{"id": "g1", "name": "Tuesday group", "year": 8, "unit": "Cells",
+                    "intensity": "steady", "count": 1, "done": "1/3"}],
+        "pupils": pupils,
+    }
+
+
 _JS = r"""
 (function () {
   var F = __FIXTURE__;
@@ -162,6 +279,19 @@ _JS = r"""
                   expires_at: Math.floor(Date.now() / 1000) + 3600,
                   user: { id: 'parent-1', email: F.family.parent.email,
                           email_confirmed_at: F.unconfirmed ? null : '2026-09-01T00:00:00Z' } };
+  /* ⊕ B2C unit 6 — `who`: a CHILD's session carries the internal address
+     the backend mints (its suffix is read from config.js when the page asks,
+     so this file never spells it); org STAFF are an organisation's teacher. */
+  if (F.who === 'child') {
+    session.user.id = 'kid-ada';
+    Object.defineProperty(session.user, 'email', { enumerable: true, get: function () {
+      var c = window.MrBadmusConfig || {};
+      return 'kid-ada' + (c.CHILD_EMAIL_SUFFIX || '@child.invalid');
+    } });
+  } else if (F.who === 'org') {
+    session.user.id = 'staff-1';
+    session.user.email = 'pat@example.test';
+  }
   var ch = { on: function () { return ch; }, subscribe: function () { return ch; } };
   var ok = function (v) { return Promise.resolve(v); };
   window.supabase = { createClient: function () { return {
@@ -185,7 +315,15 @@ _JS = r"""
     },
     channel: function () { return ch; },
     removeChannel: function () {},
-    rpc: function () { return ok({ data: false }); }
+    rpc: function (name) { return ok({ data: F.who === 'operator' && name === 'auth_user_is_platform_operator' }); },
+    /* A profile read under the session (auth.html's interstitial, /go's
+       "signed in as"), answered from the fixture. */
+    from: function () {
+      var q = { select: function () { return q; }, eq: function () { return q; },
+                single: function () { return ok({ data: { first_name: 'Ada', username: 'ada.comet', role: 'student' } }); },
+                maybeSingle: function () { return ok({ data: { first_name: 'Ada', username: 'ada.comet' } }); } };
+      return q;
+    }
   }; } };
 
   /* 3. fetch, for /api/consumer/* only. */
@@ -221,6 +359,31 @@ _JS = r"""
     }
 
     if (path === '/api/consumer/family' && method === 'GET') { return reply(200, F.family); }
+    // ⊕ B2C unit 6 — the child's pages, the parent's report, the org dashboard.
+    if (path === '/api/consumer/child/today') { return reply(200, F.childToday); }
+    if (path === '/api/consumer/child/session') { return reply(200, { ok: true, first_name: 'Ada' }); }
+    if (path === '/api/consumer/child/unit-checks') { return reply(200, { ok: true, attempts: [] }); }
+    if (path === '/api/consumer/child/unit-check') {
+      return reply(200, { ok: true, unit: { code: 'B5', name: 'Reproduction', subject: 'Biology', year: 8,
+        count: 10, minutes: 15, lessons: 8 }, previous: null, access: 'full', org_id: 'fam-1' });
+    }
+    if (path === '/api/consumer/child/exam-questions') { return reply(200, F.childExam); }
+    if (/\/children\/[^/]+\/report$/.test(path)) { return reply(200, F.report); }
+    if (path === '/api/consumer/org' && method === 'GET') { return reply(200, F.org); }
+    if (path === '/api/consumer/admin/accounts') {
+      return reply(200, { ok: true,
+        stats: { families: 3, in_trial: 1, children: 4, organisations: 1, pupils: 2,
+                 family_mrr_pence: 1198, past_due: 1 },
+        accounts: [
+          { id: 'fam-1', name: 'The Fixture family', email: 'sam@example.test', kids_label: '2 children',
+            billing: 'trialing', mrr_label: '—', since: '2 Oct', last_active: 'Today' },
+          { id: 'fam-2', name: 'The Okafor family', email: 'ifeoma@example.test', kids_label: '1 child',
+            billing: 'past_due', mrr_label: '£9.99', since: '14 Sep', last_active: '3 days ago' }] });
+    }
+    if (path === '/api/consumer/admin/health') {
+      return reply(200, { ok: true, checked_at: '2026-10-05T08:00:00Z', figures: [] });
+    }
+    if (path === '/api/consumer/admin/mb-queue') { return reply(200, { ok: true, pending: [] }); }
     if (path === '/api/consumer/pricing') { return reply(200, F.pricing); }
     if (path === '/api/consumer/chat/threads') { return reply(200, { threads: [] }); }
     if (path === '/api/consumer/chat/messages') { return reply(200, { messages: F.messages || [] }); }
@@ -291,7 +454,7 @@ _JS = r"""
 
 def prescript(state="trialing", kids=2, checkout="ok", deletion=None, messages=None,
               fail=None, signed_in=True, draft=None, taken=None, existing=False,
-              password_ok=False, unconfirmed=False):
+              password_ok=False, unconfirmed=False, who="parent"):
     """`fail`: regexes over the request path that answer 500 — for proving a
     page's failure line, not for anything a gate measures.
 
@@ -302,10 +465,17 @@ def prescript(state="trialing", kids=2, checkout="ok", deletion=None, messages=N
     signUp answer as Supabase does for an address that already has an
     account (empty identities); `password_ok` makes signInWithPassword sign
     the parent in (otherwise it answers "Email not confirmed"); `unconfirmed`
-    signs in a parent whose email is not verified yet."""
+    signs in a parent whose email is not verified yet.
+
+    ⊕ B2C unit 6: `who` is "parent" (default), "child" (a family child's
+    session — the child pages and Today), "org" (organisation staff) or
+    "operator" (the platform operator's admin pages). `signed_in=False`
+    with any `who` is a visitor on a public page, flag on."""
     fx = {"family": family(state, kids, deletion), "pricing": PRICING,
           "checkout": checkout, "messages": messages or [], "fail": fail or [],
           "pickers": json.loads(json.dumps(PICKERS)), "signedIn": signed_in,
           "draft": draft, "taken": taken or [], "existing": existing,
-          "passwordOk": password_ok, "unconfirmed": unconfirmed}
+          "passwordOk": password_ok, "unconfirmed": unconfirmed, "who": who,
+          "childToday": CHILD_TODAY, "childExam": CHILD_EXAM, "report": PARENT_REPORT,
+          "org": org_payload()}
     return _JS.replace("__FIXTURE__", json.dumps(fx))

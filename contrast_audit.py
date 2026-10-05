@@ -466,11 +466,10 @@ _page("my-challenges.html", "my-challenges.html")
 _page("past-papers.html", "past-papers.html")
 _page("404.html", "404.html")
 _page("teacher/seating.html", "teacher/seating.html")
-_page("consumer/signup.html", "consumer/signup.html")
-_page("consumer/today.html", "consumer/today.html")
-_page("org", "org/index.html")
-_page("parents/index.html", "parents/index.html")
-_page("go/index.html", "go/index.html")
+# ⊕ B2C unit 6 — the five consumer entries that stood here measured "Not
+# found": on 127.0.0.1 config.js's TEST block has the consumer flag OFF.
+# They are measured FLAG ON now, with a session where the page needs one —
+# see the "B2C unit 6" section below.
 
 # ── CORE lane (theme run, 26 Sep 2026) — the rest of the CORE family:
 #    root hand-written pages the sweep above didn't already list, plus a
@@ -749,6 +748,60 @@ for _lbl, _path, _kw, _setup in (
           wait=0.4, widths=[1280, 390])
 
 
+# ── B2C unit 6 (5 Oct 2026) — EVERY consumer, parents, org and go page,
+# FLAG ON. Mide: "34 dark-mode failures shipped unseen" because the entries
+# above rendered "Not found". The flag is forced on by the same harness-level
+# init script the drives use (consumer_dash_fixture's MrBadmusConfig trap) —
+# never by changing the shipped flag — and the backend is answered offline,
+# so no request leaves the machine. Public pages are measured signed out;
+# the child's pages with a child session; the report with a parent's; the
+# organisation dashboard with org staff; the admin tools as the operator.
+def _ready(sel, timeout=8000):
+    return ("(async function(){" + _POLL_JS +
+            "await __poll(function(){return document.body.style.display==='block'&&"
+            "!!document.querySelector(" + json.dumps(sel) + ");}," + str(timeout) + ");"
+            "return true;})()")
+
+
+_PUBLIC = dict(signed_in=False, state="none", kids=0)
+for _lbl, _path, _sel in (
+    ("parents/index [flag on]", "parents/index.html", "main h1, h1"),
+    ("parents/home-education [flag on]", "parents/home-education.html", "h1"),
+    ("parents/how-it-works [flag on]", "parents/how-it-works.html", "h1"),
+    ("parents/organisations [flag on]", "parents/organisations.html", "h1"),
+    ("parents/pricing [flag on]", "parents/pricing.html", "h1"),
+    ("parents/privacy [flag on]", "parents/privacy.html", "h1"),
+    ("parents/terms [flag on]", "parents/terms.html", "h1"),
+    ("parents/reset-password [flag on]", "parents/reset-password.html", "h1"),
+    ("parents/sign-in [flag on]", "parents/sign-in.html", "h1"),
+    ("org/sign-in [flag on]", "org/sign-in.html", "h1"),
+):
+    # Default widths: 1280 under the gate's --quick (each was measured at 390
+    # too when this landed, 0 failures), both in a full run. The fast gate
+    # has to stay fast enough to run on every push.
+    _page(_lbl, _path, prescript=_cdf.prescript(**_PUBLIC), setup=_ready(_sel), wait=0.4)
+
+for _lbl, _path, _who, _sel, _then in (
+    ("consumer/today [child]", "consumer/today.html", "child", "#td-items *", ""),
+    ("consumer/today [child, chat]", "consumer/today.html", "child", "#td-items *",
+     "document.getElementById('td-msg-btn').click();"),
+    ("consumer/exam [child]", "consumer/exam.html", "child", "main h1, h1", ""),
+    ("consumer/unit-check [child]", "consumer/unit-check.html", "child", "main h1, h1", ""),
+    ("consumer/unit-check [child, unit intro]", "consumer/unit-check.html?unit=B5", "child", "main h1, h1", ""),
+    ("consumer/exam [child, a marked question open]", "consumer/exam.html", "child", "button[data-open]",
+     "document.querySelector('button[data-open]').click();"),
+    ("consumer/exam [child, a new question open]", "consumer/exam.html", "child", "button[data-open]",
+     "var bs=document.querySelectorAll('button[data-open]');bs[bs.length-1].click();"),
+    ("consumer/report [parent]", "consumer/report.html?child=kid-ada", "parent", "h1", ""),
+    ("org/index [org staff]", "org/index.html", "org", "h1", ""),
+    ("consumer/admin-accounts [operator]", "consumer/admin-accounts.html", "operator", "h1", ""),
+    ("consumer/admin-queue [operator]", "consumer/admin-queue.html", "operator", "h1", ""),
+):
+    _page(_lbl, _path, prescript=_cdf.prescript(state="trialing", kids=2, who=_who),
+          setup=_ready(_sel)[:-len("return true;})()")] + _then + "return true;})()",
+          wait=0.5, widths=[1280, 390])
+
+
 # ══════════════════════════════════════════════════════════════════════════
 # INTERACTION STATES (theme-run audit, 27 Sep 2026) — "the contrast gate
 # missed all of these because it measures pages at rest." Every page above
@@ -768,8 +821,9 @@ for _lbl, _path, _kw, _setup in (
 INTERACTION_PAGES = []
 
 
-def _ipage(label, path, setup, wait=0.6):
-    INTERACTION_PAGES.append({"label": label, "path": path, "setup": setup, "wait": wait})
+def _ipage(label, path, setup, wait=0.6, prescript=None, widths=None):
+    INTERACTION_PAGES.append({"label": label, "path": path, "setup": setup, "wait": wait,
+                              "prescript": prescript, "widths": widths})
 
 
 # ── D1: the KS3 tutor chat, opened, with a sent exchange on screen ──
@@ -956,7 +1010,42 @@ _ipage("D9 ks4 lesson [Test Yourself result]",
        wait=0.4)
 
 
-def run_interactions(widths=None, shots=True, themes=None):
+# ── B2C unit 6 (5 Oct 2026) — the consumer pages AFTER an interaction, flag
+# ON (consumer_dash_fixture), each a state a child, a parent or org staff
+# reaches by pressing something. None of them was measured before: the
+# at-rest sweep showed "Not found" and this list held no consumer page.
+def _c_after(sel, act, wait_for="true"):
+    return ("(async function(){" + _POLL_JS +
+            "await __poll(function(){return document.body.style.display==='block'&&"
+            "!!document.querySelector(" + json.dumps(sel) + ");},8000);" + act +
+            "await __poll(function(){return " + wait_for + ";},4000);return true;})()")
+
+
+_ipage("C1 consumer/today [child, an item ticked done]", "consumer/today.html",
+       _c_after(".td-done-btn:not([disabled])",
+                "document.querySelector('.td-done-btn:not([disabled])').click();"),
+       prescript=_cdf.prescript(state="trialing", kids=2, who="child"), widths=[1280, 390])
+_ipage("C2 consumer/exam [child, answer written]", "consumer/exam.html",
+       _c_after("button[data-open]",
+                "var bs=document.querySelectorAll('button[data-open]');bs[bs.length-1].click();"
+                "await __poll(function(){return !!document.getElementById('ex-answer');});"
+                "var t=document.getElementById('ex-answer');t.value='They are close together in a "
+                "regular pattern and vibrate.';t.dispatchEvent(new Event('input',{bubbles:true}));",
+                "!document.getElementById('ex-mark').disabled"),
+       prescript=_cdf.prescript(state="trialing", kids=2, who="child"), widths=[1280, 390])
+_ipage("C3 org/index [org staff, a pupil open]", "org/index.html",
+       _c_after("button[data-pupil]", "document.querySelector('button[data-pupil]').click();"),
+       prescript=_cdf.prescript(state="trialing", kids=2, who="org"), widths=[1280, 390])
+_ipage("C4 go/index [a sign-in that could not finish]", "go/index.html",
+       _c_after("#gl-user",
+                "document.getElementById('gl-user').value='ada.comet';"
+                "document.getElementById('gl-pass').value='wrong-pass';"
+                "document.getElementById('gl-form').dispatchEvent(new Event('submit',{cancelable:true}));",
+                "!document.getElementById('gl-error').hidden"),
+       prescript=_cdf.prescript(signed_in=False, state="none", kids=0), widths=[1280, 390])
+
+
+def run_interactions(widths=None, shots=True, themes=None, only=None):
     """The `--interactions` sweep: `sweep()`, pointed at `INTERACTION_PAGES`
     instead of `PAGES`, so the fast/default run's page count and timing are
     completely unaffected. Registered as its own SLOW gate — see
@@ -964,7 +1053,7 @@ def run_interactions(widths=None, shots=True, themes=None):
     D9's click-every-option-then-check) are real page interactions, not
     just a bigger page list."""
     return sweep(widths=widths or WIDTHS, shots=shots, themes=themes,
-                 page_list=INTERACTION_PAGES)
+                 page_list=INTERACTION_PAGES, only=only)
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -1144,7 +1233,8 @@ def main():
     widths = [1280] if args.quick else WIDTHS
     themes = [t for t in args.themes.split(",") if t]
     if args.interactions:
-        findings = run_interactions(widths=widths, shots=not args.quick, themes=themes)
+        findings = run_interactions(widths=widths, shots=not args.quick, themes=themes,
+                                    only=args.only)
         page_count = len(INTERACTION_PAGES)
     else:
         findings = sweep(widths=widths, shots=not args.quick, only=args.only, themes=themes)

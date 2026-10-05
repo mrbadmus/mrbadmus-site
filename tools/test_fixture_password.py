@@ -26,7 +26,9 @@ import sys
 import urllib.request
 
 TEST_REF = "qeppkiswvclkkwbxmlok"
-PROD_REF = "urklkrwevjtlfbwnipjn"
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
+PROD_REF = config_env.PROD_REF
 
 # The repo's own scripts pin this CA file; the framework Python's default trust
 # store does not resolve Supabase's issuer on this machine.

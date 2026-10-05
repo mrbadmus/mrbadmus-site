@@ -420,6 +420,20 @@ RULED_BRAND = {
 # only in that each is applied to the result of the last.
 LOGIC = {
     'class view': [
+        # ── ⊕ B2C unit 6, 5 Oct 2026 — "WEEK 0null · FINAL" ─────────────────
+        #
+        # `wk` is `st.boardWeek`, which student-live.js seeds as NULL when no
+        # chip on the board has anybody on it (`boardWeekDefault`). The scope
+        # note sits OUTSIDE `hasBoard`, so it is drawn even then, and Design's
+        # `'WEEK ' + pad(wk)` turned null into "WEEK 0null · FINAL" (pad(null)
+        # is '0' + null). Seen on a family child's class page; true of ANY
+        # class whose board is empty, so this is a correction for everyone.
+        # No selected week → no scope note. A real week renders exactly as
+        # before, and Design's fixture (wk = 4) is untouched.
+        (
+            "wk === 4 ? 'CURRENT WEEK' : 'WEEK ' + pad(wk) + ' \\u00B7 FINAL',",
+            "wk === 4 ? 'CURRENT WEEK' : wk == null ? '' : 'WEEK ' + pad(wk) + ' \\u00B7 FINAL',",
+        ),
         # ── ⊕ RULED 22 Aug 2026 — THE LESSON CARDS SCROLLED ───────────────
         #
         # Found by `student_controls_drive.py` on its first run, on the first

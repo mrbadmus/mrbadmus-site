@@ -103,6 +103,7 @@ sys.path.insert(0, REPO)
 os.chdir(REPO)
 
 import ks3_browser as cdp
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
 
 REF = "qeppkiswvclkkwbxmlok"                  # TEST. Never production.
 URL = "https://%s.supabase.co" % REF
@@ -275,7 +276,7 @@ def sign_in(email, password, key):
 
 
 def real_errors(errs):
-    noise = ("favicon", "mrbadmus-backend.onrender.com")
+    noise = ("favicon", config_env.PROD_BACKEND_HOST)
     return [e for e in errs if not any(n in e for n in noise)]
 
 

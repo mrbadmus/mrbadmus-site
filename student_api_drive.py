@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Drive the weekly assignment producer against PRODUCTION, as a real student.
+"""Drive the weekly assignment producer against TEST, as a real student.
+
+⊕ B2C unit 6 (Mide's ruling, 5 Oct 2026): this drive runs against the TEST
+project ONLY. A TEST run must never be able to call production, so the
+endpoints come from shared/config.js's TEST block via config_env.py, and the
+backend is MRB_API (else the TEST block's own). Set MRB_DRIVE_EMAIL /
+MRB_DRIVE_CLASS to a TEST student and one of their classes.
 
     MRB_TEST_STUDENT_PASSWORD=... python3 drive_producer.py
 
@@ -36,23 +42,23 @@ def _ssl_context():
 
 CTX = _ssl_context()
 
-SUPABASE_URL = "https://urklkrwevjtlfbwnipjn.supabase.co"
-API = "https://mrbadmus-backend.onrender.com"
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config_env  # noqa: E402
+
+SUPABASE_URL = config_env.TEST["SUPABASE_URL"]
+API = config_env.backend()
 # ⊕ 22 Aug 2026 — the drive account is a PARAMETER, not a constant, so a run
 # that must not touch Mide's own account can point it at a throwaway.
 # The default is unchanged.
 EMAIL = os.environ.get("MRB_DRIVE_EMAIL", "midebolabadmus@gmail.com")
-CLASS_8R_SC1 = "d9740ab8-c4e3-4c22-bce9-629b650782c5"
+CLASS_8R_SC1 = os.environ.get("MRB_DRIVE_CLASS", "d9740ab8-c4e3-4c22-bce9-629b650782c5")
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 
 
 def anon_key():
-    src = open(os.path.join(REPO, "leaderboard.html"), encoding="utf-8").read()
-    m = re.search(r"eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}", src)
-    if not m:
-        raise SystemExit("anon key not found in leaderboard.html")
-    return m.group(0)
+    # The TEST project's anon key, out of shared/config.js (config_env).
+    return config_env.TEST["SUPABASE_ANON_KEY"]
 
 
 def post(url, body, headers):

@@ -33,7 +33,7 @@ database. Nothing about the write path is stubbed: the engine's own
       python3 tools/flashcards_complete_live.py
 
 TEST ONLY: the service key's own `ref` claim is checked before any write,
-against qeppkiswvclkkwbxmlok. Production (urklkrwevjtlfbwnipjn) is never
+against qeppkiswvclkkwbxmlok. Production is never
 touched. Throwaway rows are torn down by a SNAPSHOTTED ID LIST, never a
 predicate (memory "Throwaway teardown").
 """

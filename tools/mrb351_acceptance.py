@@ -58,7 +58,8 @@ os.chdir(REPO)
 sys.path.insert(0, REPO)
 
 TEST_REF = "qeppkiswvclkkwbxmlok"
-PROD_REF = "urklkrwevjtlfbwnipjn"
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
+PROD_REF = config_env.PROD_REF
 CTX = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
 BACKEND_ENV_DEFAULT = "/Users/midebadmus/Documents/GitHub/mrbadmus---backend/.env"
 THROWAWAY_PASSWORD = os.environ.get("MRB_THROWAWAY_PASSWORD", "mrb326-throwaway")

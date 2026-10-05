@@ -417,6 +417,26 @@
       var session = readSession(ref);
       if (!session) return Promise.resolve(null);   // signed out → nothing
 
+      /* ⊕ B2C unit 6 (5 Oct 2026) — A FAMILY CHILD'S WAY HOME IS TODAY.
+         A family (or organisation) child is enrolled in a class too — the
+         one their weekly work hangs off, named after the parent — so the
+         membership read below found it and every lesson page offered "My
+         class": the SCHOOL class page, which shows them a parent-named class,
+         a due date Today contradicts and a school leaderboard. Their home is
+         /consumer/today.html. Decided from the session's own address
+         (MrBadmusConfig.isChildSession — the one test, shared with the
+         consumer pages), before any read and before the cache: no network,
+         and nothing cached under the old answer can outlive this. A school
+         pupil's address never carries the suffix, so their entry is exactly
+         what it was. `pupil` keeps the bar's pupil affordances (bell,
+         Settings) that the /student/ href used to imply. */
+      var c0 = window.MrBadmusConfig;
+      if (c0 && typeof c0.isChildSession === 'function' && c0.isChildSession(session)) {
+        return Promise.resolve({ href: c0.CHILD_HOME || '/consumer/today.html',
+                                 label: 'Today', title: 'Your Today page',
+                                 pupil: true });
+      }
+
       var cacheKey = CACHE_PREFIX + conf.env + ':' + session.user.id;
       var cached = cacheGet(cacheKey);
       if (cached !== null) return Promise.resolve(cached);

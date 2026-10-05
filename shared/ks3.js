@@ -447,7 +447,6 @@
     var noteEl = ladder.querySelector("[data-score-note]");
     var rungs = [];                                  // scorable rungs, page order
     var work = readStore(WORK_PREFIX + slug) || {};
-    var WHO = "";
     var submitted = false;
     var armTimer = null;
 
@@ -537,9 +536,17 @@
     // "You marked rungs 3 and 4 yourself." — built from the rung numbers
     // actually present, so it stays true if a lesson ever puts the
     // self-marked rungs somewhere else.
+    // ⊕ B2C unit 6 (5 Oct 2026) — and only the rungs the student HAS marked.
+    // It was built once, at load, from every self-marked rung on the page,
+    // so answering rung 1 alone read "You got 1 of 4. You marked rungs 3 and
+    // 4 yourself." about two rungs nobody had touched. A self-marked rung
+    // counts here once its criteria are open (`resolved`), which is the
+    // moment the student starts marking it.
     function whoMarked() {
       var nums = [];
-      rungs.forEach(function (r, i) { if (r.mode === "self") { nums.push(i + 1); } });
+      rungs.forEach(function (r, i) {
+        if (r.mode === "self" && r.resolved) { nums.push(i + 1); }
+      });
       if (!nums.length) { return ""; }
       var list = nums.length === 1
         ? String(nums[0])
@@ -574,10 +581,14 @@
             lead = "Your best so far is " + bestAtLoad + " of " + total + ". ";
           }
         }
+        /* ⊕ B2C unit 6 — out of the rungs ANSWERED until all four are:
+           "You got 1 of 4." after one rung read as three wrong. */
         if (scoreEl) {
-          scoreEl.textContent = "You got " + got + " of " + total + ".";
+          scoreEl.textContent = resolved < total
+            ? "You got " + got + " of " + resolved + " so far."
+            : "You got " + got + " of " + total + ".";
         }
-        if (noteEl) { noteEl.textContent = lead + WHO; }
+        if (noteEl) { noteEl.textContent = lead + whoMarked(); }
       } else if (touched) {
         if (scoreEl) { scoreEl.textContent = restScore; }
         if (noteEl) { noteEl.textContent = restNote; }
@@ -1042,7 +1053,6 @@
       }
     });
 
-    WHO = whoMarked();
     refresh();
   }
 

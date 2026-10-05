@@ -85,6 +85,7 @@ import sys
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, REPO)
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
 
 OUT_DIR = os.path.join("build", "ks3-questions")
 
@@ -734,7 +735,7 @@ def load_rows(project, pools, bank, ladder, cards):
                   "an abbreviation. Refusing.")
             return 3
         env = os.path.expanduser("~/.mrbadmus/prod.env")
-        expect_ref = "urklkrwevjtlfbwnipjn"
+        expect_ref = config_env.PROD_REF
         label = "PRODUCTION"
     else:
         env = "/Users/midebadmus/Documents/GitHub/mrbadmus---backend/.env"
@@ -969,8 +970,8 @@ def main():
 # key for whichever is chosen is still resolved out of shared/config.js by
 # matching the key's own `ref` claim — see below.
 PROJECTS = {
-    "prod": "https://urklkrwevjtlfbwnipjn.supabase.co",
-    "test": "https://qeppkiswvclkkwbxmlok.supabase.co",
+    "prod": config_env.PROD["SUPABASE_URL"],
+    "test": config_env.TEST["SUPABASE_URL"],
 }
 
 

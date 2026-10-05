@@ -69,7 +69,7 @@ never a second one.
 
 ── HOW IT READS PRODUCTION ───────────────────────────────────────────────
 
-Production ref `urklkrwevjtlfbwnipjn`. READ-ONLY — every request below is an
+The production ref (config_env.PROD_REF). READ-ONLY — every request below is an
 HTTP GET against PostgREST; nothing here can write or DDL. The credential is
 the service-role key from `~/.mrbadmus/prod.env` and nowhere else — the same
 file `export_ks3_questions.py --load prod` and `export_ks4_questions.py
@@ -128,7 +128,8 @@ import export_ks3_questions as ks3x
 import export_ks4_questions as ks4x
 import frozen_window_allowlist as fwa
 
-PROD_REF = "urklkrwevjtlfbwnipjn"
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
+PROD_REF = config_env.PROD_REF
 PROD_ENV = os.path.expanduser("~/.mrbadmus/prod.env")
 
 KS3_TABLE = "ks3_assignment_bank"

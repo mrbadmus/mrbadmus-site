@@ -82,7 +82,9 @@ body { margin: 0; background: var(--st-room); }
 a { color: var(--st-ember); text-decoration: none; }
 a:hover { color: #F6EEDF; }
 input, button, select, textarea { font: inherit; }
-input::placeholder, textarea::placeholder { color: #8A7F72; }
+/* ⊕ B2C unit 6 — the room's readable text token, not a hand value: #8A7F72
+   measured 2.99:1 on the search box's dark panel (contrast_audit, flag on). */
+input::placeholder, textarea::placeholder { color: var(--st-room-text); }
 
 .ac-room {
   min-height: 100vh;
@@ -367,7 +369,7 @@ input::placeholder, textarea::placeholder { color: #8A7F72; }
   </form>
 </div>
 
-<script src="/shared/config.js?v=646ce4e2"></script>
+<script src="/shared/config.js?v=ab7a89ac"></script>
 <script src="/consumer/consumer-common.js"></script>
 <script>
 (function () {

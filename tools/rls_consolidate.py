@@ -109,7 +109,9 @@ from collections import defaultdict
 # Project identity. Proven, never labelled.
 # ---------------------------------------------------------------------------
 
-PROD_REF = "urklkrwevjtlfbwnipjn"
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
+PROD_REF = config_env.PROD_REF
 TEST_REF = "qeppkiswvclkkwbxmlok"
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

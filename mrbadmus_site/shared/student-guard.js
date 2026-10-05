@@ -169,10 +169,52 @@ window.MrBadmusStudentGuard = (function () {
     } catch (e) {}
   }
 
+  /* ⊕ B2C unit 6 (5 Oct 2026) — A FAMILY CHILD NEVER LANDS ON THE SCHOOL
+     CLASS PAGE. A family (or organisation) child is a member of a class —
+     the one their weekly work hangs off, named after the parent — so
+     student/class.html drew it for them: a parent-named class, a due date
+     their Today page contradicts, a school leaderboard. Their home is Today.
+     The top bar already sends them there (class-entry.js); this covers the
+     URL opened directly, a bookmark, or the class page's own links.
+     Decided from the stored session's own address (MrBadmusConfig.
+     isChildSession, the one test), synchronously, before anything is read
+     or drawn. A school pupil's address never matches, so for them this is a
+     no-op. Assignment pages are NOT on the list: a family child practises
+     there. */
+  /* Compared without `.html`: Cloudflare Pages serves /student/class.html
+     at /student/class too. */
+  const SCHOOL_ONLY = ['/student/class', '/student/classes'];
+
+  function childAwayFromSchoolPage(session) {
+    const c = window.MrBadmusConfig;
+    if (!c || typeof c.isChildSession !== 'function') { return false; }
+    if (SCHOOL_ONLY.indexOf(window.location.pathname.replace(/\.html$/, '')) < 0) { return false; }
+    if (!c.isChildSession(session)) { return false; }
+    const here = new URLSearchParams(window.location.search);
+    const keep = new URLSearchParams();
+    ['env', 'api'].forEach(function (k) { if (here.get(k)) { keep.set(k, here.get(k)); } });
+    const q = keep.toString();
+    window.location.replace((c.CHILD_HOME || '/consumer/today.html') + (q ? '?' + q : ''));
+    return true;
+  }
+
+  function storedSessionSync() {
+    try {
+      const c = window.MrBadmusConfig;
+      const raw = c && c.AUTH_STORAGE_KEY ? localStorage.getItem(c.AUTH_STORAGE_KEY) : null;
+      if (!raw) { return null; }
+      const txt = raw.indexOf('base64-') === 0
+        ? decodeURIComponent(escape(atob(raw.slice(7)))) : raw;
+      return JSON.parse(txt);
+    } catch (e) { return null; }
+  }
+
   async function requireStudentRole(opts) {
     opts = opts || {};
     const onAllowed = opts.onAllowed || function () {};
     const onDenied = opts.onDenied || null;
+
+    if (childAwayFromSchoolPage(storedSessionSync())) { return; }
 
     const sb = getClient();
     if (!sb) {
@@ -248,6 +290,8 @@ window.MrBadmusStudentGuard = (function () {
       if (onDenied) return onDenied({ reason: 'no_session', error: userError });
       return bounceToLogin();
     }
+    // The validated user, in case the stored copy was unreadable above.
+    if (childAwayFromSchoolPage({ user: user })) { return; }
 
     // 2. Role check — the row already in flight, but only if it was asked for
     // about this same person.

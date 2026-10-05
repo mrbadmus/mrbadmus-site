@@ -138,6 +138,7 @@ sys.path.insert(0, REPO)
 os.chdir(REPO)
 
 import ks3_browser as cdp
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
 # The stub mechanism, and the fixture SHAPES, from the file that established
 # both. Imported rather than re-typed: a second copy of a PostgREST-shaped
 # builder is a second thing to keep true.
@@ -438,7 +439,7 @@ SAY_NO_CLASSES = "You are not teaching any classes this year."
 # offline by design — so the browser logs a CORS failure that says nothing
 # about this page. Filtered by name, never by widening the check.
 def real_errors(errs):
-    noise = ("favicon", "mrbadmus-backend.onrender.com")
+    noise = ("favicon", config_env.PROD_BACKEND_HOST)
     return [e for e in errs if not any(n in e for n in noise)]
 
 

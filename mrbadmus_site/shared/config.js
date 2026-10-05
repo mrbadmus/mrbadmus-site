@@ -146,6 +146,25 @@
   const apiOverride = new URLSearchParams(window.location.search).get('api');
   if (apiOverride && isLocalHost) config.BACKEND_URL = apiOverride;
 
+  /* ── Is this session a consumer child's? (B2C unit 6, 5 Oct 2026) ──────
+   * A family or organisation child signs in with a username; the backend
+   * mints their GoTrue address as `<uuid>@children.mrbadmus.internal`
+   * (server.js `internalEmail`, consumer/org.js bulk pupils) and no other
+   * account ever carries that suffix. So a session's own email answers
+   * "is this a consumer child?" with no network call. It lives here, the one
+   * file every page loads first, so the consumer pages, the lesson pages'
+   * top bar, the student guard and auth.html all ask the SAME question —
+   * consumer-common.js `isChildSession` delegates to it. The address is
+   * never displayed (API-CONTRACT). A child's home is CHILD_HOME, never the
+   * school class page. */
+  config.CHILD_EMAIL_SUFFIX = '@children.mrbadmus.internal';
+  config.CHILD_HOME = '/consumer/today.html';
+  config.isChildSession = function (session) {
+    var email = session && session.user && session.user.email;
+    return !!email && String(email).toLowerCase()
+      .slice(-config.CHILD_EMAIL_SUFFIX.length) === config.CHILD_EMAIL_SUFFIX;
+  };
+
   window.MrBadmusConfig = config;
 
   /* ⊕ Test isolation (5 Oct 2026) — the early-connection hints, moved here.

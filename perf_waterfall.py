@@ -71,7 +71,8 @@ os.chdir(REPO)
 import ks3_browser as cdp  # noqa: E402
 
 TEST_REF = "qeppkiswvclkkwbxmlok"
-PROD_REF = "urklkrwevjtlfbwnipjn"
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
+PROD_REF = config_env.PROD_REF
 URL = "https://%s.supabase.co" % TEST_REF
 CTX = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
 PORT = int(os.environ.get("MRB348_PORT") or 5531)

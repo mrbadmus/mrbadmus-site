@@ -173,7 +173,11 @@
     border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
     background: var(--ks3-card); box-shadow: var(--ks3-shadow-block);
   }
-  .td-item.is-done { background: var(--ks3-row-dim); box-shadow: none; opacity: .75; }
+  /* ⊕ B2C unit 6 — no `opacity` on a done item. At .75 it faded the whole
+     card, so its muted caption and "From Mr Badmus" tag measured 3.5:1 in
+     light (contrast_audit, flag on, 5 Oct 2026). The dim ground and the
+     ticked icon already say "done"; the words stay readable. */
+  .td-item.is-done { background: var(--ks3-row-dim); box-shadow: none; }
   .td-item-top {
     display: flex; align-items: center; gap: 14px;
     padding: 18px; color: var(--ks3-ink); text-decoration: none;
@@ -426,7 +430,7 @@
 
 </div>
 
-<script src="/shared/config.js?v=646ce4e2"></script>
+<script src="/shared/config.js?v=ab7a89ac"></script>
 <script src="/consumer/consumer-common.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════

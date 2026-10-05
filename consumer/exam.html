@@ -228,7 +228,10 @@
     background: var(--ks3-ink); color: var(--ks3-on-dark);
     font: inherit; font-weight: 700; font-size: 19px; cursor: pointer;
   }
-  .ex-primary[disabled] { opacity: .45; cursor: default; }
+  /* ⊕ B2C unit 6 — the estate's spent-control token, as its siblings on this
+     page already use: at .45 "Mark my answer" measured 1.65:1 (light) and
+     1.96:1 (dark) before an answer is written (contrast_audit, flag on). */
+  .ex-primary[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
 
   /* ── marking ── */
   .ex-marking { margin-top: 60px; text-align: center; }
@@ -402,7 +405,7 @@
   <main class="ex-main" id="ex-main"></main>
 </div>
 
-<script src="/shared/config.js?v=646ce4e2"></script>
+<script src="/shared/config.js?v=ab7a89ac"></script>
 <script src="/consumer/consumer-common.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════

@@ -67,6 +67,7 @@ from datetime import datetime, timedelta, timezone
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(REPO)
 sys.path.insert(0, REPO)
+import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
 
 import mrb331_fixture as FX          # noqa: E402
 import ks3_browser as cdp            # noqa: E402
@@ -970,7 +971,7 @@ def main():
     #     the comment names this exact moment ("production... the migration
     #     [not] applied") as expected, not a defect this proof should catch.
     KNOWN_BENIGN = (
-        "mrbadmus-backend.onrender.com/api/health",
+        config_env.PROD_BACKEND_HOST + "/api/health",
         # ⚠️ MUST MATCH THE REAL REQUEST SHAPE, EXACTLY, OR THIS EXCUSE NEVER
         # FIRES AND EVERY PAGE'S PROBE 404 SHOWS UP AS AN UNEXPLAINED "EXTRA"
         # CONSOLE ERROR. teacher-admin-nav.js's probe reads

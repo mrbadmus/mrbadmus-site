@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Drive the WIRED student pages in headless Chrome, against production data.
+"""Drive the WIRED student pages in headless Chrome, against TEST data.
+
+⊕ B2C unit 6 (Mide's ruling, 5 Oct 2026): TEST ONLY. A TEST run must never
+be able to call production, so the pages open on `?env=test&api=<MRB_API>`
+and the project, anon key and storage key come from shared/config.js's TEST
+block via config_env.py. Point MRB_DRIVE_EMAIL at a TEST student.
 
     python3 drive_pages.py [--keep]
 
@@ -23,6 +28,7 @@ import os
 import re
 import ssl
 import sys
+import urllib.parse
 import urllib.request
 
 REPO = os.path.dirname(os.path.abspath(__file__))
@@ -30,6 +36,7 @@ sys.path.insert(0, REPO)
 os.chdir(REPO)
 
 import ks3_browser as cdp
+import config_env
 
 # ⚠️ SERVED ON localhost:5500 ON PURPOSE, AND THE PORT IS NOT ARBITRARY.
 # The backend's CORS allowlist is ['https://mrbadmus.com', 'https://www.
@@ -40,11 +47,13 @@ import ks3_browser as cdp
 # origin the live allowlist already contains rather than widening it. Nothing on
 # production changes to make this test possible.
 PORT = 5500
-CLASS_URL = "http://localhost:%d/student/class.html?env=prod"
-ASSIGN_URL = "http://localhost:%d/student/assignment.html?env=prod"
+# safe=":/" keeps "%" out of a string that is later %-formatted with the port.
+_ENV_Q = "?env=test&api=" + urllib.parse.quote(config_env.backend(), safe=":/").replace("%", "%%")
+CLASS_URL = "http://localhost:%d/student/class.html" + _ENV_Q
+ASSIGN_URL = "http://localhost:%d/student/assignment.html" + _ENV_Q
 
-SUPABASE_URL = "https://urklkrwevjtlfbwnipjn.supabase.co"
-PROJECT_REF = "urklkrwevjtlfbwnipjn"
+SUPABASE_URL = config_env.TEST["SUPABASE_URL"]
+PROJECT_REF = config_env.TEST_REF
 # ⊕ 22 Aug 2026 — the drive account is now a PARAMETER, not a constant.
 # A run that must not touch Mide's own account (an overnight run with no
 # credential supplied) drives a throwaway student instead, and a gate that
@@ -304,9 +313,8 @@ def wait_for_mount(page, seconds=75.0):
 
 
 def anon_key():
-    src = open("leaderboard.html", encoding="utf-8").read()
-    return re.search(r"eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}",
-                     src).group(0)
+    # The TEST project's anon key, out of shared/config.js (config_env).
+    return config_env.TEST["SUPABASE_ANON_KEY"]
 
 
 def sign_in(key):
@@ -339,11 +347,9 @@ def main():
     anon = key
 
     # ⚠️ `shared/config.js` selects the TEST Supabase project on localhost and
-    # 127.0.0.1 — deliberately, so local dev cannot touch real students. It has
-    # an escape hatch built for exactly this case: `?env=prod`. Without it the
-    # guard's client looks for a session under the TEST project's storage key,
-    # finds none, and bounces to /auth.html — which is what the first three runs
-    # of this drive measured, and what briefly looked like a broken page.
+    # 127.0.0.1 — deliberately, so local dev cannot touch real students. This
+    # drive used to open `?env=prod` to reach production data; since B2C unit
+    # 6 it says `?env=test` explicitly and never leaves the TEST project.
     def sign_the_browser_in(b, port):
         """Let the SDK write its own session, rather than guessing its format.
 
@@ -359,7 +365,7 @@ def main():
         client, and call `setSession`. The SDK persists it in whatever shape
         that version uses, and every later page on the origin picks it up.
         """
-        p = b.page("http://localhost:%d/leaderboard.html?env=prod" % port, settle=2.0)
+        p = b.page(("http://localhost:%d/leaderboard.html" + _ENV_Q) % port, settle=2.0)
         ok = p.eval("""
           (async function () {
             if (!window.supabase) return 'no sdk';

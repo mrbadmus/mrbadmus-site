@@ -54,7 +54,10 @@ import ks3_browser as cdp
 # ⊕ MRB-267 — the host `shared/mrbadmus.v2.js` pings to keep Render warm.
 # Its console failure is demoted out of this gate's pass/fail set; the
 # same string is filtered in ks3_parity.py, which carries the reasoning.
-BACKEND_HOST = "mrbadmus-backend.onrender.com"
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config_env  # noqa: E402 — shared/config.js's worlds
+# The production backend's host, read out of shared/config.js (B2C unit 6).
+BACKEND_HOST = config_env.PROD_BACKEND_HOST
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 BUILT = os.path.join(REPO, "mrbadmus_site", "ks3")
