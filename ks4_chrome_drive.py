@@ -41,6 +41,7 @@ Run:  python3 ks4_chrome_drive.py [--shots DIR]
 import argparse
 import json
 import os
+import re
 import sys
 
 import ks3_browser as cdp
@@ -76,7 +77,21 @@ PROGRESS_CLAIMS = [
     "You are here", "Carry on",
 ]
 
-SESSION_KEY = "sb-urklkrwevjtlfbwnipjn-auth-token"
+# ⊕ Test isolation (5 Oct 2026) — the key of the world the page RESOLVES.
+# This used to be the production project's slot: the KS4 pages loaded no
+# config.js, so nav.js fell back to production and read that slot even on
+# 127.0.0.1. KS4 pages now load config.js, which resolves TEST on a local
+# origin, and nav.js reads TEST's slot — so the seed goes there. Read from
+# config.js's TEST block rather than retyped.
+def _test_session_key():
+    src = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            "shared", "config.js"), encoding="utf-8").read()
+    block = src[src.index("const TEST = {"):]
+    ref = re.search(r"SUPABASE_URL:\s*'https://([a-z0-9]+)\.supabase\.co'", block).group(1)
+    return "sb-%s-auth-token" % ref
+
+
+SESSION_KEY = _test_session_key()
 
 # ⚠️ THE ACCESS TOKEN HAS TO BE A REAL-SHAPED JWT, and finding that out cost a
 # round of 88 identical failures.
