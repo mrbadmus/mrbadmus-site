@@ -34,13 +34,19 @@ KIDS = [
         "streak": 4, "unread": 1, "humanLeft": 2, "paused": False,
         "lastActive": "2026-10-02T18:40:00Z",
         "days": [1, 0, 1, 0, 0, 0, 0],
+        # B2C unit 7 (ruling 3): the Monday-first strip the pages now read.
+        "week_strip": {"from": "2026-09-28", "today": 2,
+                       "dates": ["2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01",
+                                 "2026-10-02", "2026-10-03", "2026-10-04"],
+                       "done": [1, 0, 1, 0, 0, 0, 0]},
         "work": [
             {"id": "w1", "title": "Cells and organisation", "done": True, "day": "Mon",
              "mins": 20, "source": "Mr Badmus"},
             {"id": "w2", "title": "Quick questions: cells", "done": False, "day": "Wed",
              "mins": 10, "source": "Mr Badmus"},
+            # B2C unit 7 (ruling 1): a row still to open reads "Opens Fri".
             {"id": "w3", "title": "Diffusion", "done": False, "day": "Fri", "mins": 20,
-             "source": "You", "byParent": True},
+             "source": "You", "byParent": True, "scheduled_for": "2030-10-11"},
         ],
         # B2C week repair (4 Oct 2026): work set for a LATER week — the backend
         # sends it as `upcoming`, its day carrying the date.

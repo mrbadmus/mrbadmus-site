@@ -512,3 +512,68 @@ try {
     });
   });
 } catch (e) {}
+
+/* ── B2C unit 7 (Mide's ruling 5, 5 Oct 2026): a family child's KS4 lesson
+   is DONE when they finish its questions ──────────────────────────────────
+   A lesson a parent (or Mr Badmus) set used to be finished only by tapping
+   "Mark as done" on the child's Today screen; answering every question on
+   the lesson page changed nothing. Completion now comes from ACTIVITY.
+
+   On a KS3 page that activity is the ladder's own `/api/quiz-score` post,
+   which every pupil's page already makes; the backend matches it to the
+   child's work, and nothing on the page changed. A KS4 page posts no score
+   anywhere (docs/ks4/pilot-port-report.md §8 item 11 — its slugs collide
+   with KS3's), so this is its signal, and ONLY for a family child: the
+   session must be a child session (MrBadmusConfig.isChildSession). A school
+   pupil's KS4 page installs nothing and sends nothing — it behaves exactly
+   as before.
+
+   "Finished" is what each KS4 page already shows when the questions are all
+   answered, read rather than re-implemented:
+     · a classic page's quiz — `#quizEndMsg` is shown (both of its quiz
+       scripts show it only once every card is answered or checked);
+     · a rebuilt (pilot) page's ladder — its score line reads "Score N of 4",
+       which Design's Ks4Ladder writes only when all four rungs are resolved.
+   One post per page load; the backend ticks the child's open lesson item
+   whose page this is, and answers 200 with `done: 0` when there is none. */
+try {
+  (function () {
+    var path = window.location.pathname || '';
+    if (!/^\/(combined|triple)\//.test(path)) { return; }
+    function start() {
+      var c = window.MrBadmusConfig;
+      if (!c || !c.BACKEND_URL || !c.AUTH_STORAGE_KEY || typeof c.isChildSession !== 'function') { return; }
+      var session = null;
+      try { session = JSON.parse(window.localStorage.getItem(c.AUTH_STORAGE_KEY) || 'null'); } catch (e) { return; }
+      if (!session || !session.access_token || !c.isChildSession(session)) { return; }
+      var sent = false;
+      var obs = null;
+      function finished() {
+        var end = document.getElementById('quizEndMsg');
+        if (end && end.style.display !== 'none' && (end.textContent || '').trim()) { return true; }
+        var score = document.querySelector('.ks3-ladder-score .ks3-score');
+        return !!(score && /^Score \d+ of \d+$/.test((score.textContent || '').trim()));
+      }
+      function check() {
+        if (sent || !finished()) { return; }
+        sent = true;
+        if (obs) { obs.disconnect(); }
+        try {
+          var s2 = JSON.parse(window.localStorage.getItem(c.AUTH_STORAGE_KEY) || 'null') || session;
+          fetch(c.BACKEND_URL + '/api/consumer/child/lesson-done', {
+            method: 'POST',
+            keepalive: true,
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + s2.access_token },
+            body: JSON.stringify({ path: path, key_stage: 'KS4' })
+          }).catch(function () { /* best effort — the lesson never waits on this */ });
+        } catch (e) { /* fetch unavailable — degrade silently */ }
+      }
+      obs = new MutationObserver(check);
+      obs.observe(document.body, { subtree: true, childList: true, attributes: true,
+                                   attributeFilter: ['style'], characterData: true });
+      check();
+    }
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', start); }
+    else { start(); }
+  })();
+} catch (e) {}

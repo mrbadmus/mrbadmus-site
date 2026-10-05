@@ -171,22 +171,25 @@
     return ((S.data && S.data.groups) || []).filter(function (g) { return g.id === id; })[0] || null;
   }
 
-  /* ⊕ B2C week repair: `days` is now the RULED week in the order it happens —
-     the Sunday that opens it (MRB-330), then Monday to Saturday — so "today"
-     is getDay() itself (Sunday = 0). It used to be Monday-first and end on
-     the FOLLOWING Sunday, a day that belongs to next week.
-     The week strip. The API sends `days: [1,0,1,0,0,0,0]` and
-     says nothing about which of them have happened yet; Design's drawing
-     distinguishes three states, and the third one — a day still in the
-     future — is knowable here and nowhere else. So a day that is done is
-     OK, a day that has passed without work is BAND, and a day that has not
-     arrived is NONE. Without the last of those every pupil looks like they
-     have missed Friday, on a Tuesday. */
-  function dayColours(days) {
-    var today = new Date().getDay();             // Sun = 0, the day the week opens
-    return (days || [0, 0, 0, 0, 0, 0, 0]).map(function (d, i) {
+  /* ⊕ B2C unit 7 (Mide's ruling 3, 5 Oct 2026): the week strip starts on
+     MONDAY — the calendar week, Monday to Sunday, sent as `week_strip`
+     (`done` flags, `today` = which cell is today, Monday = 0). The Sunday
+     that opens a teaching week is the last cell of the strip that ends on
+     it, so on that Sunday it is today's square and every day sits in
+     exactly one strip on its own date. (`days`, Sunday-first, stays in the
+     payload for pages built before this one and is not read here.)
+     Design's three states: a day that is done is OK, a day that has passed
+     without work is BAND, and a day that has not arrived is NONE — without
+     the last, every pupil looks like they have missed Friday, on a Tuesday. */
+  function stripOf(p) {
+    return (p && p.week_strip) ||
+      { done: [0, 0, 0, 0, 0, 0, 0], today: (new Date().getDay() + 6) % 7 };
+  }
+  function dayColours(p) {
+    var st = stripOf(p);
+    return (st.done || [0, 0, 0, 0, 0, 0, 0]).map(function (d, i) {
       if (d) { return OK; }
-      return i <= today ? BAND : NONE;
+      return i <= st.today ? BAND : NONE;
     });
   }
 
@@ -333,7 +336,7 @@
     var rows = filteredPupils();
 
     // Her four stats, from real fields.
-    var active = pupils.filter(function (p) { return (p.days || []).some(function (x) { return !!x; }); }).length;
+    var active = pupils.filter(function (p) { return (stripOf(p).done || []).some(function (x) { return !!x; }); }).length;
     var flagged = pupils.filter(function (p) { return !!p.flag; }).length;
     var lastScores = pupils.map(function (p) {
       var s = (p.scores || []);
@@ -392,7 +395,7 @@
   }
 
   function pupilRow(p) {
-    var days = dayColours(p.days);
+    var days = dayColours(p);
     return '<button type="button" class="og-row' + (p.flag ? ' is-flagged' : '') + '" data-pupil="' + esc(p.id) + '">' +
       '<span class="og-row-name">' +
         '<span class="og-initial">' + esc(p.initial || (p.name || '?').charAt(0)) + '</span>' +
@@ -419,7 +422,7 @@
     if (!p) { return '<p class="og-empty">That pupil isn’t on this organisation any more.</p>'; }
     var groups = (S.data && S.data.groups) || [];
     var staff = (S.data && S.data.staff) || {};
-    var days = dayColours(p.days);
+    var days = dayColours(p);
 
     var moveOpts = ['<option value="">No group</option>'].concat(groups.map(function (g) {
       return '<option value="' + esc(g.id) + '"' + (g.id === p.group_id ? ' selected' : '') + '>' +
@@ -558,7 +561,8 @@
     var work = p.work || [];
     el('pd-work').innerHTML = work.length
       ? ('<ul class="og-list">' + work.map(function (it) {
-          var state = (it.done ? 'Done ' : 'Due ') + (it.day || '');
+          /* ⊕ B2C unit 7 (ruling 1): a day is when work OPENS, never "due". */
+          var state = (it.done ? 'Done ' : 'Opens ') + (it.day || '');
           var fg = it.done ? 'var(--ks3-ok-text)' : 'var(--ks3-ink-muted)';
           return '<li><span>' + esc(it.title || '') + '</span>' +
             '<span style="font-family:var(--ks3-font-mono);font-size:13px;color:' + fg + ';">' +
@@ -763,28 +767,30 @@
         }).join('') + '</div>' +
 
         '<p class="og-legend">Topic</p>' +
-        (S.kind === 'exam'
-          /* An exam question is chosen by the server from where the pupil
-             actually is. Offering a topic chip here would be a control that
-             changes nothing — see `setWorkFor`: the exam branch reads
-             `question_id` or picks one, and ignores `unit_code` entirely. */
-          ? '<p class="og-note" style="margin-top:0;">Mr Badmus picks the question from where each pupil is up to.</p>'
-          : (units.length
-              ? '<div class="og-chips">' + units.map(function (u) {
-                  return '<button type="button" class="ks3-option og-chip" data-unit="' + esc(u.unit_code) + '" ' +
-                    'aria-pressed="' + (S.unit === u.unit_code ? 'true' : 'false') + '">' +
-                    esc(u.name) + '</button>';
-                }).join('') + '</div>' +
-                (pickerFor ? '<p class="og-note">Units for ' + esc(pickerFor) + '’s year.</p>' : '')
-              : '<p class="og-note" style="margin-top:0;" id="topic-note">Loading topics…</p>')) +
+        /* ⊕ B2C unit 7 (Mide's ruling 7, 5 Oct 2026): an exam question KEEPS
+           the chosen topic — the chips stay for every kind and the server
+           takes the question from that unit. With no unit chosen, Mr Badmus
+           picks from each pupil's own year (the note says so). A KS4 unit
+           has no code, so its NAME is the handle (findUnit takes either). */
+        (units.length
+          ? '<div class="og-chips">' + units.map(function (u) {
+              var id = u.unit_code || u.name;
+              return '<button type="button" class="ks3-option og-chip" data-unit="' + esc(id) + '" ' +
+                'aria-pressed="' + (S.unit === id ? 'true' : 'false') + '">' +
+                esc(u.name) + '</button>';
+            }).join('') + '</div>' +
+            (pickerFor ? '<p class="og-note">Units for ' + esc(pickerFor) + '’s year.</p>' : '')
+          : '<p class="og-note" style="margin-top:0;" id="topic-note">Loading topics…</p>') +
+        (S.kind === 'exam' && !S.unit
+          ? '<p class="og-note">No unit: Mr Badmus picks from where each pupil is up to.</p>' : '') +
 
-        '<p class="og-legend">Due</p>' +
+        '<p class="og-legend">Opens</p>' +
         '<div class="og-days-grid">' + DUES.map(function (d) {
           return '<button type="button" class="ks3-option" data-due="' + esc(d) + '" ' +
             'aria-pressed="' + (S.due === d ? 'true' : 'false') + '">' + esc(d) + '</button>';
         }).join('') + '</div>' +
 
-        '<button type="button" class="og-wide" id="work-go">Set for ' + esc(S.due) + '</button>' +
+        '<button type="button" class="og-wide" id="work-go">Set to open ' + esc(S.due) + '</button>' +
         (S.workErr ? '<p class="og-err" style="margin-top:12px;">' + esc(S.workErr) + '</p>' : '') +
         (S.workMsg ? '<p class="og-done">' + esc(S.workMsg) + '</p>' : '') +
       '</div>';
@@ -794,7 +800,6 @@
      exist" is a function of a pupil's year and subject plan and there is no
      org-wide answer to it. Which pupil is named on screen. */
   function ensurePicker() {
-    if (S.kind === 'exam') { return; }
     var pool = (S.data && S.data.pupils) || [];
     var want;
     var p = pupilById(S.target);
@@ -1416,13 +1421,12 @@
     var btn = el('work-go');
     S.workErr = ''; S.workMsg = '';
     var body = { kind: S.kind, scheduled_for: nextWeekday(S.due) };
-    if (S.kind !== 'exam') {
-      if (!S.unit) {
-        S.workErr = 'Pick a topic first.';
-        return render();
-      }
-      body.unit_code = S.unit;
+    if (S.kind !== 'exam' && !S.unit) {
+      S.workErr = 'Pick a topic first.';
+      return render();
     }
+    /* ⊕ B2C unit 7 (ruling 7): an exam question carries the unit too. */
+    if (S.unit) { body.unit_code = S.unit; }
     body.target = (S.target === 'All') ? 'all'
                 : (groupById(S.target) ? { group_id: S.target } : { child_id: S.target });
 

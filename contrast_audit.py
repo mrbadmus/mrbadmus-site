@@ -1021,10 +1021,10 @@ def _c_after(sel, act, wait_for="true"):
             "await __poll(function(){return " + wait_for + ";},4000);return true;})()")
 
 
-_ipage("C1 consumer/today [child, an item ticked done]", "consumer/today.html",
-       _c_after(".td-done-btn:not([disabled])",
-                "document.querySelector('.td-done-btn:not([disabled])').click();"),
-       prescript=_cdf.prescript(state="trialing", kids=2, who="child"), widths=[1280, 390])
+# ⊕ B2C unit 7 (Mide's ruling 5, 5 Oct 2026): C1 measured Today after
+# "Mark as done" was pressed. That control is gone — done comes from the work
+# itself — and a done item is now a state the page is GIVEN, which the at-rest
+# sweep measures (the fixture's child Today carries one: i1).
 _ipage("C2 consumer/exam [child, answer written]", "consumer/exam.html",
        _c_after("button[data-open]",
                 "var bs=document.querySelectorAll('button[data-open]');bs[bs.length-1].click();"

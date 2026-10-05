@@ -165,9 +165,8 @@
   .td-nothing p { margin: 6px 0 0; font-size: 17px; color: var(--ks3-ink-body); }
 
   .td-items { margin-top: 12px; display: flex; flex-direction: column; gap: 12px; }
-  /* Her row, with one addition: the done control sits on a second line
-     inside the same card rather than competing with the tag chip for width
-     at 390px. Everything on the FIRST line is hers, unchanged. */
+  /* Her row, exactly. ⊕ B2C unit 7 (ruling 5): the "Mark as done" line that
+     used to sit under it is gone — completion comes from the work itself. */
   .td-item {
     display: flex; flex-direction: column;
     border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
@@ -208,14 +207,6 @@
     border-color: var(--ks3-accent); background: var(--ks3-accent-tint);
     color: var(--ks3-accent-text);
   }
-  .td-done-btn {
-    margin: 0 18px 18px; min-height: var(--ks3-tap);
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-control);
-    background: var(--ks3-band); color: var(--ks3-ink);
-    font: inherit; font-weight: 700; font-size: 16px; cursor: pointer;
-  }
-  .td-done-btn[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
 
   .td-h2-later {
     margin: 30px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
@@ -232,8 +223,8 @@
   }
   .td-later li:last-child { border-bottom: 0; }
   /* ⊕ B2C polish 2, defect 9 (Mide's ruling): a later row OPENS the work.
-     The whole row is the link (a real <a>, focusable, never under 48px),
-     and "Mark as done" is a 44px control beside it — doing it early counts. */
+     The whole row is the link (a real <a>, focusable, never under 48px).
+     Doing it early counts — and, since unit 7, doing it is what counts. */
   .td-later-link {
     flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px;
     min-height: 52px; padding: 10px 6px 10px 16px; color: var(--ks3-ink); text-decoration: none;
@@ -242,13 +233,6 @@
   .td-later-link:focus-visible { outline: 3px solid var(--ks3-accent); outline-offset: -3px; border-radius: 10px; }
   .td-later-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
   .td-later-go { flex: 0 0 auto; width: 18px; height: 18px; color: var(--ks3-ink-muted); }
-  .td-later-done {
-    flex: 0 0 44px; width: 44px; height: 44px; display: grid; place-items: center;
-    border: 2px solid var(--ks3-ink); border-radius: 12px; background: var(--ks3-band);
-    color: var(--ks3-ink); cursor: pointer; padding: 0;
-  }
-  .td-later-done .ks3-mark { width: 20px; height: 20px; }
-  .td-later-done[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
   .td-later-tick {
     flex: 0 0 44px; width: 44px; height: 44px; display: grid; place-items: center;
     border: 2px solid var(--ks3-ink); border-radius: 12px; background: var(--ks3-ok); color: var(--c-on-fill);
@@ -456,13 +440,17 @@
    an email: those are the two strings a child should not be reading back to
    themselves, and one of them is their parent's login.
 
-   ── DESIGN DID NOT DRAW A DONE CONTROL, AND THE PRODUCT NEEDS ONE ──────
-   Her item is a single `<a>` covering the whole row, and the tick in the
-   left icon is a STATE, not a button. Ticking is how a streak happens, so
-   a control was added — on a second line inside her card rather than
-   squeezed between the tag chip and the edge, because at 390px the chip
-   ("Set by Funmi") and a button cannot both sit on that line without the
-   title collapsing to five words a line. Her first line is unchanged.
+   ── DONE COMES FROM THE WORK, NOT FROM A BUTTON ────────────────────────
+   ⊕ B2C unit 7 (Mide's ruling 5, 5 Oct 2026): the "Mark as done" control
+   this page added under her card (and beside every later row) is REMOVED.
+   Her item is a single `<a>` and the tick in its icon is a STATE, which is
+   what she drew: a lesson ticks when its questions are answered on the
+   lesson page, practice when the round is handed in, an exam question when
+   it is marked, a unit check when it is finished — all decided by the
+   backend, which this page only reads. A piece of work done early comes
+   back in today's list, ticked (the backend moves it), so a finished item
+   is never also listed as still to come. The page re-reads when the child
+   comes back to it, because coming back from the work is when it changed.
 
    ── WHAT IS LOCKED IS LOCKED, AND IT IS SAID IN HER WORDS ──────────────
    `access !== 'full'` disables every `[data-write]` control and shows her
@@ -676,13 +664,8 @@
         ? '<a class="td-item-top" href="' + C.escapeHtml(C.href(it.href)) + '">' + body + '</a>'
         : '<div class="td-item-top">' + body + '</div>';
 
-      var done = it.done ? '' :
-        '<button class="td-done-btn" type="button" data-write data-done="' +
-        C.escapeHtml(it.id) + '">' +
-        '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true">' +
-        '<path d="M5 12.5l4.5 4.5L19 7"/></svg>Mark as done</button>';
-
-      return '<div class="td-item' + (it.done ? ' is-done' : '') + '">' + top + done + '</div>';
+      return '<div class="td-item' + (it.done ? ' is-done' : '') + '"' +
+        (it.done ? '' : ' data-open="' + C.escapeHtml(it.id) + '"') + '>' + top + '</div>';
     }
 
     function renderItems() {
@@ -718,23 +701,6 @@
 
       host.innerHTML = items.map(itemHtml).join('');
       C.applyWritable(host, writable);
-
-      host.onclick = doneClick;
-    }
-
-    /* One "Mark as done" for today's cards and the later rows alike. */
-    function doneClick(e) {
-      var btn = e.target.closest ? e.target.closest('button[data-done]') : null;
-      if (!btn) { return; }
-      var id = btn.getAttribute('data-done');
-      C.setBusy(btn, true, btn.classList.contains('td-later-done') ? '…' : 'Saving…');
-      C.api('/api/consumer/child/work/' + encodeURIComponent(id) + '/done',
-            { method: 'POST', token: ctx.token })
-        .then(function () { return load(); })
-        .catch(function (err) {
-          C.setBusy(btn, false);
-          oops(C.plainMessage(err), C.isClosing(err) ? '' : 'Try again in a moment.');
-        });
     }
 
     function renderLater() {
@@ -763,10 +729,9 @@
             ? '<a class="td-later-link" href="' + C.escapeHtml(C.href(l.href)) + '">' + inner + GO + '</a>'
             : '<div class="td-later-link">' + inner + '</div>';
           var end = l.done
-            ? '<span class="td-later-tick" role="img" aria-label="Done">' + TICK + '</span>'
-            : ('<button class="td-later-done" type="button" data-write data-done="' + C.escapeHtml(l.id) + '" ' +
-               'aria-label="Mark ' + C.escapeHtml(l.title || 'this') + ' as done">' + TICK + '</button>');
-          return '<li' + (l.done ? ' class="is-done"' : '') + '>' + row + end + '</li>';
+            ? '<span class="td-later-tick" role="img" aria-label="Done">' + TICK + '</span>' : '';
+          return '<li' + (l.done ? ' class="is-done"' : ' data-open="' + C.escapeHtml(l.id) + '"') + '>' +
+            row + end + '</li>';
         }).join('') + '</ul>';
       }
       /* The heading names the week, so the day column keeps its three
@@ -777,7 +742,6 @@
         (thisWeek.length ? ('<h2 class="td-h2-later">Later this week</h2>' + list(thisWeek)) : '') +
         (nextWeek.length ? ('<h2 class="td-h2-later">Next week</h2>' + list(nextWeek)) : '');
       C.applyWritable(host, writable);
-      host.onclick = doneClick;
     }
 
     /* Design's two quick-action cards. The unit-check one carries the
@@ -904,8 +868,38 @@
     }
 
     function load() {
-      return C.api('/api/consumer/child/today', { token: ctx.token }).then(render);
+      return C.api('/api/consumer/child/today', { token: ctx.token }).then(render).then(recheck);
     }
+
+    /* ⊕ B2C unit 7 (ruling 5). Done is decided by the work, so this page
+       has to look again when the child comes back from it: on a return
+       from the back/forward cache (the old page, shown as it was), and when
+       the tab becomes visible again. A lesson page reports its finish as the
+       child leaves it, so the first read on the way back can beat that
+       report by a moment: the item the child opened is remembered, and if
+       it is still open on return the page looks once more, shortly after. */
+    var OPENED = 'mrb-today-opened';
+    document.addEventListener('click', function (e) {
+      var row = e.target.closest ? e.target.closest('[data-open]') : null;
+      if (!row || !(e.target.closest && e.target.closest('a'))) { return; }
+      try { window.sessionStorage.setItem(OPENED, row.getAttribute('data-open')); } catch (err) { /* private mode */ }
+    });
+    function recheck() {
+      var id = null;
+      try { id = window.sessionStorage.getItem(OPENED); window.sessionStorage.removeItem(OPENED); } catch (err) { return; }
+      if (!id || !document.querySelector('[data-open="' + id.replace(/"/g, '') + '"]')) { return; }
+      window.setTimeout(function () { load().catch(function () {}); }, 3000);
+    }
+    var lastLoad = Date.now();
+    function again() {
+      if (Date.now() - lastLoad < 1500) { return; }
+      lastLoad = Date.now();
+      load().catch(function () {});
+    }
+    window.addEventListener('pageshow', function (ev) { if (ev.persisted) { again(); } });
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible') { again(); }
+    });
 
     show('today');
     return load().catch(function (e) {

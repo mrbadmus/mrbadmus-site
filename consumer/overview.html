@@ -476,10 +476,16 @@
   ];
   var CHAT_STARTERS = ['How did today go?', 'Proud of you for keeping the streak.',
                        'Anything you want help with?'];
-  /* ⊕ B2C week repair: the strip is the RULED week in the order it happens —
-     the Sunday that opens it (MRB-330), then Monday to Saturday. `k.days`
-     comes from the backend in the same order. */
-  var DAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  /* ⊕ B2C unit 7 (Mide's ruling 3, 5 Oct 2026): the strip starts on
+     MONDAY. It is the calendar week a parent reads, Monday to Sunday, and it
+     comes from the backend as `k.week_strip` (dates, done flags and which
+     cell is today). The Sunday that opens a teaching week is the LAST cell
+     of the strip that ends on it, with its own date — so on that Sunday it
+     is today's cell, and from Monday it has moved off with the week before.
+     Every day is in exactly one strip; nothing is dated anywhere but its
+     own day. (The Sunday-first `k.days` stays in the payload for pages
+     built before this one, and is not read here.) */
+  var DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
   var DUE_DAYS = ['Thu', 'Fri', 'Sat', 'Sun'];
   var DUE_DOW  = { Thu: 4, Fri: 5, Sat: 6, Sun: 0 };
 
@@ -781,9 +787,10 @@
     if (!n) { return 'Nothing set for this week.'; }
     if (k.status === 'quiet') {
       var left = n - done;
-      /* Design wrote "Two sessions due by Sunday"; the number is real here. */
+      /* Design wrote "Two sessions due by Sunday"; the number is real here.
+         ⊕ B2C unit 7 (ruling 1): work OPENS on a day — nothing is "due". */
       return 'Nothing done yet this week. ' + left +
-             (left === 1 ? ' session' : ' sessions') + ' due by Sunday.';
+             (left === 1 ? ' session' : ' sessions') + ' still to do.';
     }
     if (n && done >= n) {
       /* Her sentence ended "Unit check next Friday." Next week's plan is not
@@ -1246,9 +1253,10 @@
     var sc = scoresOf(k);
     var w = workOf(k);
     var upcoming = Array.isArray(k.upcoming) ? k.upcoming : [];
-    var todayIdx = new Date().getDay();   // Sunday = 0, the day the week opens
+    var strip = k.week_strip || { done: [0, 0, 0, 0, 0, 0, 0], dates: [], today: (new Date().getDay() + 6) % 7 };
+    var todayIdx = strip.today;   // Monday = 0 … Sunday = 6
 
-    var days = (Array.isArray(k.days) ? k.days : []).map(function (v, i) {
+    var days = (Array.isArray(strip.done) ? strip.done : []).map(function (v, i) {
       /* Design's bg rule was index-based on her mock ("i < 4"), which on a
          real Monday would shade Tuesday–Thursday as though they had gone.
          The intent — past days are banded, days still to come are not — is
@@ -1260,7 +1268,8 @@
           ';display:grid;place-items:center;color:var(--c-on-fill)">' +
           (done ? svg(MARK.tick) : '') + '</div>' +
         '<div style="margin-top:4px;font-family:var(--ks3-font-mono);font-size:11px;' +
-          'color:var(--ks3-ink-muted)">' + DAY_LABELS[i] + '</div></div>';
+          'color:var(--ks3-ink-muted)"' + (strip.dates && strip.dates[i]
+            ? (' title="' + esc(civilLabel(strip.dates[i])) + '"') : '') + '>' + DAY_LABELS[i] + '</div></div>';
     }).join('');
 
     var doing = '<section class="dk-card"><p class="dk-kicker">Are they doing the work?</p>';
@@ -1346,9 +1355,12 @@
             (function () {
               var cp = civilParts(it.scheduled_for);
               var day = esc(cp ? cp.day : String(it.day || '').slice(0, 3));
+              /* ⊕ B2C unit 7 (ruling 1): the day is when the work OPENS, not
+                 a deadline — said on every row still to open. */
+              if (!it.done && cp && String(it.scheduled_for).slice(0, 10) > todayYmd()) { day = 'Opens ' + day; }
               return '<span' + (it.done ? ' aria-label="Done"' : '') +
                 ' style="display:flex;flex-direction:column;align-items:center;justify-content:center;' +
-                'min-width:46px;padding:3px 4px;border-radius:9px;border:2px solid ' +
+                'min-width:66px;padding:3px 4px;border-radius:9px;border:2px solid ' +
                 (it.done ? 'var(--ks3-ok)' : 'var(--ks3-ink)') + ';background:' +
                 (it.done ? 'var(--ks3-ok-tint)' : 'var(--ks3-band)') + ';flex:0 0 auto;' +
                 'font-family:var(--ks3-font-mono);line-height:1.15;color:' +
@@ -1470,12 +1482,14 @@
     if (!k) { return noChild(); }
     var pickerErr = S.picker && S.picker.error ? S.picker.error : null;
 
-    /* An exam question is picked by the server from where the child is up
-       to (`setWorkFor` ignores a topic for it), so no topic is asked. */
-    var topics = S.workKind === 'exam'
-      ? '<p style="margin:0;font-size:15px;color:var(--ks3-ink-muted)">Mr Badmus picks the question from where ' +
-          esc(k.first_name) + ' is up to.</p>'
-      : pickerErr
+    /* ⊕ B2C unit 7 (Mide's ruling 7, 5 Oct 2026): an exam question KEEPS
+       the parent's topic. The picker stays on screen for every kind, and a
+       topic chosen before switching to "An exam question" is still chosen —
+       the question then comes from that topic. With no topic, Mr Badmus
+       picks one from the child's own year (said under the picker). */
+    var examNote = '<p id="dk-exam-note" style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-muted)"' +
+      (S.workKind === 'exam' && !S.topic ? '' : ' hidden') + '>' + esc(examNoteText(k)) + '</p>';
+    var topics = pickerErr
         ? '<p style="font-size:15px;color:var(--ks3-ink-muted)">' + esc(pickerErr) + '</p>'
         : (Array.isArray(S.picker) && curriculum
             ? '<div id="dk-topic"></div>'
@@ -1499,8 +1513,9 @@
               esc(kind.desc) + '</span></button>';
         }).join('') + '</div>' +
       '<p style="margin:22px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Topic</p>' +
-      topics +
-      '<p style="margin:22px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Due</p>' +
+      topics + examNote +
+      /* ⊕ B2C unit 7 (ruling 1): the day the work OPENS — never a deadline. */
+      '<p style="margin:22px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Opens</p>' +
       '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">' +
         DUE_DAYS.map(function (d) {
           /* ⊕ B2C polish 2: each chip names its date. "Sun" on a Sunday is
@@ -1527,7 +1542,7 @@
      topic the picker is showing as chosen. Its label says which. */
   function setReady() { return S.workKind === 'exam' || !!S.topic; }
   function setLabel() {
-    return setReady() ? ('Set for ' + (civilLabel(dueDate(S.due)) || S.due)) : 'Choose a topic first';
+    return setReady() ? ('Set to open ' + (civilLabel(dueDate(S.due)) || S.due)) : 'Choose a topic first';
   }
   function syncSetButton() {
     var b = document.getElementById('dk-set');
@@ -1535,6 +1550,18 @@
     delete b.dataset.label;   // setBusy's memory of the old label, which this replaces
     b.disabled = !setReady();
     b.textContent = setLabel();
+    /* The exam note says what happens with NO topic, so it follows the pick. */
+    var note = document.getElementById('dk-exam-note');
+    if (note) { note.hidden = !(S.workKind === 'exam' && !S.topic); }
+  }
+  function examNoteText(k) {
+    return 'No topic: Mr Badmus picks from where ' + ((k && k.first_name) || 'they') + ' is up to.';
+  }
+  /* Today as a civil date on this device — only to say whether a row has
+     opened yet. The week itself always comes from the backend. */
+  function todayYmd() {
+    var d = new Date();
+    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
   }
 
   function viewChat() {
@@ -2055,7 +2082,8 @@
       var t = S.topic;
       if (S.workKind !== 'exam' && !t) { return msg('Choose a topic first.', 'error', el); }
       var body = { kind: S.workKind, scheduled_for: dueDate(S.due) };
-      if (S.workKind !== 'exam') {
+      /* ⊕ B2C unit 7 (ruling 7): an exam question carries the topic too. */
+      if (t) {
         if (t.level === 'lesson' && t.slug) { body.lesson_slug = t.slug; }
         else { body.unit_code = t.unitCode || t.unitName; }
       }
