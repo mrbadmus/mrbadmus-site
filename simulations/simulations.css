@@ -1,0 +1,49 @@
+/* simulations/simulations.css — the Simulations hub and subject pages.
+   Light by default; dark keys on html[data-theme="dark"] like every page. */
+:root {
+  --sim-ground: #FBF3E6; --sim-card: #FFFCF5; --sim-rule: #E0D2B9;
+  --sim-ink: #221E1B; --sim-muted: #5F564F; --sim-accent-text: #A93411;
+  --sim-biology: #12A150; --sim-chemistry: #E4572E; --sim-physics: #2F5CE0;
+}
+html[data-theme="dark"] {
+  --sim-ground: #16120E; --sim-card: #1F1A15; --sim-rule: #3E352C;
+  --sim-ink: #F3ECE0; --sim-muted: #C2B6A6; --sim-accent-text: #FF9E78;
+  --sim-biology: #3CC477; --sim-chemistry: #F07A4E; --sim-physics: #8FB7FF;
+}
+[hidden] { display: none !important; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--sim-ground); color: var(--sim-ink);
+  font: 400 17px/1.5 'Instrument Sans', system-ui, sans-serif;
+}
+:focus-visible { outline: 2px solid var(--sim-accent-text); outline-offset: 2px; }
+.sim-bar {
+  height: 64px; padding: 0 clamp(16px, 2.4vw, 36px); display: flex; align-items: center;
+  gap: 16px; border-bottom: 1px solid var(--sim-rule);
+}
+.sim-bar .mrb-theme-slot { margin-left: auto; }
+.sim-back {
+  display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 6px;
+  color: var(--sim-accent-text); font-weight: 600; text-decoration: none;
+}
+.sim-back:hover { text-decoration: underline; }
+.sim-main { max-width: 760px; margin: 0 auto; padding: 40px clamp(16px, 2.4vw, 36px) 64px; }
+.sim-main h1 {
+  margin: 0 0 24px; font: 600 clamp(34px, 5vw, 48px)/1.05 'Bricolage Grotesque', sans-serif;
+  letter-spacing: -0.03em;
+}
+.sim-cards, .sim-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.sim-card, .sim-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 76px;
+  padding: 18px 22px; background: var(--sim-card); color: var(--sim-ink);
+  border: 1px solid var(--sim-rule); border-radius: 14px; text-decoration: none;
+  font: 600 24px/1.2 'Bricolage Grotesque', sans-serif; letter-spacing: -0.02em;
+}
+.sim-card { border-left: 8px solid var(--sim-rule); }
+.sim-card--biology { border-left-color: var(--sim-biology); }
+.sim-card--chemistry { border-left-color: var(--sim-chemistry); }
+.sim-card--physics { border-left-color: var(--sim-physics); }
+.sim-card:hover, .sim-item:hover { border-color: var(--sim-ink); }
+.sim-item svg { color: var(--sim-accent-text); flex: none; }
+.sim-retry a { color: var(--sim-accent-text); }
+@media (max-width: 400px) { .sim-bar { gap: 8px; } }

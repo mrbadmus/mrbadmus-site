@@ -6136,7 +6136,11 @@ def build_site(output_dir="mrbadmus_site"):
     # Every page in all three is behind CONSUMER_SIGNUP_ENABLED exactly as
     # consumer/ is, and every one joins the safety-net list below for the
     # same reason consumer/ did.
-    for _tree in ("parents", "go", "org"):
+    # ⊕ Simulations — public, hand-written; the hub, three subject pages, the
+    # data file (simulations/simulations.json) and each lab's own files. Same
+    # rule as the three trees here: copied to the deploy tree, and named in the
+    # safety-net list below.
+    for _tree in ("parents", "go", "org", "simulations"):
         _t_src = _tree
         _t_dst = f"{output_dir}/{_tree}"
         if _os.path.isdir(_t_src):
@@ -6419,7 +6423,7 @@ def build_site(output_dir="mrbadmus_site"):
     # the root is a tree that can be DELETED from source by the round-trip,
     # and this net is the only thing that catches a file the generator has
     # not been told about.
-    for _dir in ["shared", "teacher", "student", "consumer", "parents", "go", "org"]:
+    for _dir in ["shared", "teacher", "student", "consumer", "parents", "go", "org", "simulations"]:
         if not os.path.isdir(_dir):
             continue
         _source_files = set(os.listdir(_dir))
