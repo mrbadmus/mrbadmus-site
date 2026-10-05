@@ -2655,7 +2655,7 @@ GATES = [
          cmd=["python3", "ks4_parity.py"],
          speed="slow",
          watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "ks4_parity.py", "ks3_browser.py", "build_ks4.py",
-                  "ks4_lessons/**", "ks4_rulings.py", "ks4_science_rulings.py",
+                  "ks4_lessons/**", "ks4_rulings.py", "ks4_batch_rulings.py", "ks4_science_rulings.py",
                   "shared/ks4-ds.css", "shared/ks4-theme.css",
                   "shared/ks4-lesson.css", "shared/ks4-source.js",
                   "shared/ks4-lib.js", "shared/ks4-diagrams.js",
@@ -2933,6 +2933,12 @@ EXCLUDED = {
         "the KS4 pilot generator (docs/ks4/pilot-build-contract.md). Its "
         "output is what ks4_parity, ks4_pilot_check and contrast_audit's "
         "'ks4 pilot/*' pages measure. Writing is the job.",
+    "ks4_batch_rulings.py":
+        "batch 4's named rulings on Design's lessons (B-R*, B-PRACTICE-PARSE, "
+        "science and display rulings, MRB Prompt AA). A library: no `main`, "
+        "asserts nothing on its own; it is applied by build_ks4.py on every "
+        "build and fails the build if a ruling's target text moves. "
+        "ks4_batch_check and ks4_parity --batch prove its output.",
     "ks4_rulings.py":
         "the KS4 pilot's R1/R2/.../R9/R-SLUG/R-PREVNEXT/R-CONNECTS register "
         "— structural/engineering corrections to Design's template and "
