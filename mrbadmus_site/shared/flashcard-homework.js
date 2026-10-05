@@ -37,8 +37,8 @@
  *     A  question + answer box                 (revealed = false)
  *     B  checking: model answer showing, the three ratings showing,
  *        none filled, chip "Checking…"         (verdict = "pending")
- *     C  verdict: chip Right / Nearly / Wrong / No answer, the suggested
- *        rating filled; no verdict → no chip, nothing filled
+ *     C  verdict: chip Right / Nearly / Wrong / No answer as a hint only;
+ *        all three ratings stay open, nothing filled (5 Oct)
  *     D  rated: the next card in state A, or the end screen
  *
  *   The headline counts THIS PASS: "2 of 10 right" — a card is right when its
