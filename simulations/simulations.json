@@ -3,5 +3,10 @@
     "subject": "physics",
     "name": "Wave Motion Lab",
     "path": "/simulations/physics/wave-motion-lab/"
+  },
+  {
+    "subject": "physics",
+    "name": "Seismic Wave Lab",
+    "path": "/simulations/physics/seismic-wave-lab/"
   }
 ]

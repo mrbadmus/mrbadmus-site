@@ -296,6 +296,15 @@ def no_fav(errs):
     return [e for e in errs if "favicon.ico" not in e]
 
 
+def hint(s):
+    """⊕ 5 Oct 2026 — THE PUPIL DECIDES. Nothing is pre-filled any more and all
+    three ratings are always enabled; the verdict chip is only a hint. This is
+    the rating a pupil who simply follows that hint would tap (None = no chip).
+    It reads the verdict chip proper, never the strip's numbered chips."""
+    return {"Right": "got_it", "Nearly": "nearly", "Wrong": "not_yet", "No answer": "not_yet"}.get(
+        s.get("verdictChip") or s.get("chip"))
+
+
 def ready_click(P, sel, wait=5.0):
     """Click `sel` once it is drawn and enabled — the way a pupil's tap always
     lands after the redraw that offers it, never inside the same frame."""
@@ -755,14 +764,14 @@ def main():
             P1.type(D1_CARDS[0]["answer"])
             P1.click('[data-hw="check"]')
             s = wait_chip(P1, page1, seen1)
-            ok1 = s["chip"] == "Right" and s["pressed"] == ["got_it"]
+            ok1 = s["chip"] == "Right" and not s["pressed"] and "got_it" in s["enabled"]
             record(path, "card1: typed the exact model answer", f"chip={s['chip']!r} pressed={s['pressed']!r}",
                    "PASS" if ok1 else "FAULT")
             P1.shot("c1-right")
             P1.click('[data-hw="got_it"]')
             settle(0.5)
 
-            # card 2 — I don't know -> learn -> Nearly cap -> replay -> right -> Secured (P2)
+            # card 2 — I don't know -> learn -> Nearly hint (no cap) -> replay -> right -> Secured (P2)
             s = P1.st()
             check(s["front"] == Q[1] and s["idk"], "card 2 up, idk offered")
             P1.click('[data-hw="idk"]')
@@ -772,10 +781,10 @@ def main():
             P1.type("draw a tangent to about half the curve roughly and find its gradient")
             P1.click('[data-hw="check"]')
             s = wait_chip(P1, page1, seen1)
-            nearly_ok = s["chip"] == "Nearly" and "got_it" not in s["enabled"]
+            nearly_ok = s["chip"] == "Nearly" and sorted(s["enabled"]) == ["got_it", "nearly", "not_yet"]
             record(path, "card2 learn-step answer (contains 'half')",
                    f"chip={s['chip']!r} enabled={s['enabled']!r}", "PASS" if nearly_ok else "FAULT")
-            P1.shot("c2-nearly-capped")
+            P1.shot("c2-nearly-hint")
             P1.click('[data-hw="nearly"]')
 
             # card 3 — the ONE-WORD finding (coordinator's note): "energy"
@@ -788,10 +797,7 @@ def main():
             record("FINDING: one-word answer 'energy'", "typed the single word 'energy' for "
                    "'Define activation energy.' (multi-word model answer)",
                    f"chip={s['chip']!r} pressed={s['pressed']!r} enabled={s['enabled']!r}", "FINDING")
-            if s["pressed"]:
-                P1.click('[data-hw="%s"]' % s["pressed"][0])
-            else:
-                P1.click('[data-hw="not_yet"]')
+            P1.click('[data-hw="%s"]' % (hint(s) or "not_yet"))
             settle(1.0)
             card3_id = by_q1[D1_CARDS[2]["question"]]
             st_pc, pc_rows = c.select(None, "flashcard_pupil_cards",
@@ -835,7 +841,7 @@ def main():
             P1.type("something wrong I don't really know sorry")
             P1.click('[data-hw="check"]')
             s = wait_chip(P1, page1, seen1)
-            wrong_ok = s["chip"] == "Wrong" and s["enabled"] == ["not_yet"]
+            wrong_ok = s["chip"] == "Wrong" and sorted(s["enabled"]) == ["got_it", "nearly", "not_yet"]
             record(path, "card5: typed answer containing 'wrong'", f"chip={s['chip']!r} enabled={s['enabled']!r}",
                    "PASS" if wrong_ok else "FAULT")
             P1.click('[data-hw="not_yet"]')
@@ -846,7 +852,7 @@ def main():
             P1.type("idk")
             P1.click('[data-hw="check"]')
             s = P1.st()
-            blank_ok = s["chip"] == "No answer" and s["enabled"] == ["not_yet"]
+            blank_ok = s["chip"] == "No answer" and sorted(s["enabled"]) == ["got_it", "nearly", "not_yet"]
             record(path, "card6: typed literal 'idk' (blank)", f"chip={s['chip']!r} enabled={s['enabled']!r}",
                    "PASS" if blank_ok else "FAULT")
             P1.click('[data-hw="not_yet"]')
@@ -858,7 +864,7 @@ def main():
                 P1.type(D1_CARDS[i]["answer"])
                 P1.click('[data-hw="check"]')
                 s = wait_chip(P1, page1, seen1)
-                check(s["pressed"] == ["got_it"], f"card {i+1} right first time")
+                check(hint(s) == "got_it" and not s["pressed"] and "got_it" in s["enabled"], f"card {i+1} right first time")
                 P1.click('[data-hw="got_it"]')
 
             # §13.1.4 replay of the idk card (card 2), once more, plain
@@ -874,7 +880,7 @@ def main():
                 P1.type(D1_CARDS[1]["answer"])
                 P1.click('[data-hw="check"]')
                 s = wait_chip(P1, page1, seen1)
-                check(s["pressed"] == ["got_it"], "replay answered right -> Secured (P2 end)")
+                check(hint(s) == "got_it" and not s["pressed"] and "got_it" in s["enabled"], "replay answered right -> Secured (P2 end)")
                 P1.click('[data-hw="got_it"]')
             s = wait_end(P1)
 
@@ -895,7 +901,7 @@ def main():
                 P1.type(ans)
                 P1.click('[data-hw="check"]')
                 s = wait_chip(P1, page1, seen1)
-                check(s["pressed"] == ["got_it"], "retyped correctly -> Secured suggested")
+                check(hint(s) == "got_it" and not s["pressed"] and "got_it" in s["enabled"], "retyped correctly -> Secured suggested")
                 P1.click('[data-hw="got_it"]')
             settle(0.6)
             s = wait_end(P1)
@@ -1063,16 +1069,11 @@ def main():
                 if i == 0:
                     record(path, "card1: typed the exact model answer via the 'I don't know' learn step",
                            f"chip={s['chip']!r} pressed={s['pressed']!r} enabled={s['enabled']!r}",
-                           "PASS (capped at Nearly even though verbatim-right, per the idk rule)"
-                           if "got_it" not in (s.get("enabled") or []) else
-                           "FAULT (idk path did not cap — got_it was enabled on a verbatim-right answer)")
+                           "PASS (no cap after I don't know: Secured is enabled — the pupil decides, 5 Oct)"
+                           if "got_it" in (s.get("enabled") or []) else
+                           "FAULT (Secured was refused after I don't know)")
                 P3.shot(f"formula-card{i+1}-dark")
-                if s.get("pressed"):
-                    P3.click('[data-hw="%s"]' % s["pressed"][0])
-                elif "got_it" in (s.get("enabled") or []):
-                    P3.click('[data-hw="got_it"]')
-                else:
-                    P3.click('[data-hw="not_yet"]')
+                P3.click('[data-hw="%s"]' % (hint(s) or "got_it"))
             settle(0.6)
             s = P3.st()
             t0 = time.time()
@@ -1085,7 +1086,7 @@ def main():
                 P3.type(D6_CARDS[0]["answer"])
                 P3.click('[data-hw="check"]')
                 s = wait_chip(P3, page3, seen3)
-                P3.click('[data-hw="got_it"]' if s["pressed"] == ["got_it"] else '[data-hw="not_yet"]')
+                P3.click('[data-hw="got_it"]' if hint(s) == "got_it" else '[data-hw="not_yet"]')
             settle(0.6)
             s = wait_end(P3)
             if s.get("retryPass"):
@@ -1096,7 +1097,7 @@ def main():
                     P3.type(D6_CARDS[0]["answer"])
                     P3.click('[data-hw="check"]')
                     s = wait_chip(P3, page3, seen3)
-                    P3.click('[data-hw="got_it"]' if s["pressed"] == ["got_it"] else '[data-hw="not_yet"]')
+                    P3.click('[data-hw="got_it"]' if hint(s) == "got_it" else '[data-hw="not_yet"]')
                 settle(0.8)
                 s = wait_end(P3, timeout=10)
             check(s["done"] == "Done", f"formulae deck finishes (end1={s.get('end1')!r})")
@@ -1121,7 +1122,7 @@ def main():
             P4.type(D3_CARDS[0]["answer"])
             P4.click('[data-hw="check"]')
             s = wait_chip(P4, page4, set())
-            check(s["pressed"] == ["got_it"], "one-card: typed right -> Secured suggested")
+            check(hint(s) == "got_it" and not s["pressed"] and "got_it" in s["enabled"], "one-card: typed right -> Secured suggested")
             P4.click('[data-hw="got_it"]')
             settle(0.6)
             s = wait_end(P4)
@@ -1149,7 +1150,7 @@ def main():
                 P5.type(ans)
                 P5.click('[data-hw="check"]')
                 st_ = P5.st()
-                P5.click('[data-hw="got_it"]' if st_["pressed"] == ["got_it"] else '[data-hw="not_yet"]')
+                P5.click('[data-hw="got_it"]' if hint(st_) == "got_it" else '[data-hw="not_yet"]')
                 per_card.append(time.time() - tc0)
             settle(0.8)
             s = wait_end(P5, timeout=10)
@@ -1183,7 +1184,7 @@ def main():
                 P6.type(cd["answer"])
                 P6.click('[data-hw="check"]')
                 s = wait_chip(P6, page6, set())
-                P6.click('[data-hw="got_it"]' if s["pressed"] == ["got_it"] else '[data-hw="not_yet"]')
+                P6.click('[data-hw="got_it"]' if hint(s) == "got_it" else '[data-hw="not_yet"]')
             settle(0.6)
             s = wait_end(P6, timeout=10)
             check(bool(s.get("done")) or bool(s.get("retryPass")), "long-answer deck reaches an end screen")
@@ -1224,17 +1225,17 @@ def main():
                    "PASS" if chip46 == "Checking…" and s_final["chip"] == "Right" else "FAULT")
             ready_click(P7, '[data-hw="got_it"]' if "got_it" in (s_final.get("enabled") or []) else '[data-hw="not_yet"]')
 
-            # card 2 — FAIL: a 500 on both attempts. Never Secured; Nearly.
+            # card 2 — FAIL: a 500 on both attempts. No chip; all three ratings still allowed.
             s = P7.st()
             check(s["front"] == D7_CARDS[1]["question"], "card2 up")
             t0 = time.time()
             P7.type(f"a glowing splint relights {MARK_FAIL}")
             ready_click(P7, '[data-hw="check"]')
             s2 = wait_chip(P7, page7, seen7, timeout=12.0)
-            ok2 = s2["chip"] is None and sorted(s2.get("enabled") or []) == ["nearly", "not_yet"]
+            ok2 = s2["chip"] is None and sorted(s2.get("enabled") or []) == ["got_it", "nearly", "not_yet"]
             record(path, "card2: a FAILED check (500 on the attempt and the retry)",
                    f"by {time.time()-t0:.1f}s chip={s2['chip']!r} enabled={s2['enabled']!r}",
-                   "PASS" if ok2 else "FAULT (an unchecked answer can be Secured)")
+                   "PASS" if ok2 else "FAULT (a failed check must not stop any rating)")
             ready_click(P7, '[data-hw="nearly"]')
 
             # card 3 — normal.
@@ -1243,7 +1244,7 @@ def main():
             P7.type(D7_CARDS[2]["answer"])
             ready_click(P7, '[data-hw="check"]')
             s = wait_chip(P7, page7, seen7)
-            ready_click(P7, '[data-hw="got_it"]' if s["pressed"] == ["got_it"] else '[data-hw="not_yet"]')
+            ready_click(P7, '[data-hw="got_it"]' if hint(s) == "got_it" else '[data-hw="not_yet"]')
             settle(1.0)
             s = P7.st()
             ok3 = s.get("retryPass") == "Try again" and (s.get("end1") or "").startswith("2 of 3")
@@ -1258,7 +1259,7 @@ def main():
             s = wait_chip(P7, page7, seen7)
             # (during Try again the strip's numbered chips share the verdict
             # chip's hook, so read the filled-in rating, not `chip`)
-            ok4 = back2 and s.get("pressed") == ["got_it"] and "got_it" in (s.get("enabled") or [])
+            ok4 = back2 and hint(s) == "got_it" and not s.get("pressed") and "got_it" in (s.get("enabled") or [])
             record(path, "card2 comes back and is really checked this time",
                    f"front was card2: {back2}; filled={s.get('pressed')!r} enabled={s['enabled']!r}",
                    "PASS" if ok4 else "FAULT")
@@ -1286,7 +1287,7 @@ def main():
                 P8.type(ans)
                 P8.click('[data-hw="check"]')
                 s = wait_chip(P8, page8, set())
-                P8.click('[data-hw="got_it"]' if s["pressed"] == ["got_it"] else '[data-hw="not_yet"]')
+                P8.click('[data-hw="got_it"]' if hint(s) == "got_it" else '[data-hw="not_yet"]')
             s = P8.st()
             fifth_q = s["front"]
             br8.kill()  # hard kill: no pagehide, no beforeunload
@@ -1415,8 +1416,8 @@ def main():
                 P12.type(ans_i)
                 P12.click('[data-hw="check"]')
                 s = wait_chip(P12, page12, seen12)
-                P12.click('[data-hw="got_it"]' if s["pressed"] == ["got_it"] else
-                         ('[data-hw="nearly"]' if "nearly" in s["pressed"] else '[data-hw="not_yet"]'))
+                P12.click('[data-hw="got_it"]' if hint(s) == "got_it" else
+                         ('[data-hw="nearly"]' if hint(s) == "nearly" else '[data-hw="not_yet"]'))
                 settle(0.4)
             s = wait_end(P12)
             check(bool(s.get("retryPass")), "doubletap deck: leftovers end screen reached")
@@ -1437,8 +1438,8 @@ def main():
                 P12.type(ans)
                 P12.click('[data-hw="check"]')
                 s = wait_chip(P12, page12, seen12)
-                P12.click('[data-hw="got_it"]' if s["pressed"] == ["got_it"] else
-                         ('[data-hw="nearly"]' if "nearly" in s["pressed"] else '[data-hw="not_yet"]'))
+                P12.click('[data-hw="got_it"]' if hint(s) == "got_it" else
+                         ('[data-hw="nearly"]' if hint(s) == "nearly" else '[data-hw="not_yet"]'))
             settle(0.8)
             s = wait_end(P12)
             if s.get("done"):
@@ -1621,7 +1622,7 @@ def main():
                 c9id = by_q1[order[8]]
                 c9 = next((x for x in cards if x.get("card_id") == c9id or x.get("id") == c9id), None)
                 hist = [r.get("rating") for r in (c9 or {}).get("ratings", [])]
-                ok = (enabled == ["not_yet"] and s.get("end1") == "10 of 10 secured" and s.get("done") == "Done"
+                ok = (sorted(enabled or []) == ["got_it", "nearly", "not_yet"] and s.get("end1") == "10 of 10 secured" and s.get("done") == "Done"
                       and bool(c9) and bool(c9.get("secured")) and hist == ["got_it", "not_yet"])
                 record(path, "‹ Back to a SECURED card, answered wrong (Mide 4 Oct: once secured, stays secured)",
                        f"ratings offered={enabled}; pupil end={s.get('end1')!r} {s.get('done')!r}; "

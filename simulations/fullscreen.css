@@ -1,0 +1,38 @@
+/* simulations/fullscreen.css — Full screen: just the simulation, its controls
+   and its key tickboxes. Each lab names what it keeps below. */
+.sim-fs {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px;
+  margin-left: auto; background: var(--sim-card, var(--card, #FFFCF5)); color: var(--sim-ink, var(--ink, #221E1B));
+  border: 1.5px solid var(--sim-rule, var(--rule, #E0D2B9)); border-radius: 10px; cursor: pointer;
+  font: 600 15px/1 'Instrument Sans', system-ui, sans-serif;
+}
+.sim-fs:hover { border-color: var(--sim-ink, var(--ink, #221E1B)); }
+.sim-fs svg { flex: none; }
+.sim-fs + .mrb-theme-slot { margin-left: 0 !important; }
+@media (max-width: 520px) { .sim-fs__text { display: none !important; } .sim-fs { padding: 0 12px; } }
+
+/* The bar shrinks to the one button; everything else in it goes. */
+html.sim-full .sim-bar { position: fixed; top: 8px; right: 8px; left: auto; z-index: 50; height: auto; padding: 0; border: 0; background: transparent; }
+html.sim-full .sim-bar > :not(.sim-fs) { display: none !important; }
+html.sim-full .sim-fs { margin: 0; box-shadow: 0 2px 10px rgba(0, 0, 0, .18); }
+@media (max-width: 520px) { html.sim-full .sim-fs__text { display: inline; } }
+
+/* ── Wave Motion Lab: keeps the wave-type tabs, the stage, the play and
+   frequency / amplitude controls and the tickboxes. ── */
+html[data-sim="wave"].sim-full div:has(> header) { max-width: none; padding-top: 56px; padding-bottom: 16px; gap: 12px; }
+html[data-sim="wave"].sim-full div:has(> header) > header > :first-child { display: none !important; }
+html[data-sim="wave"].sim-full div:has(> header) > :nth-child(n+3) { display: none !important; }
+html[data-sim="wave"].sim-full div:has(> header) > :nth-child(2) > :nth-child(n+2) { display: none !important; }
+html[data-sim="wave"].sim-full div:has(> header) > :nth-child(2) > :first-child > :nth-child(n+2) { display: none !important; }
+html[data-sim="wave"].sim-full #stage { height: calc(100dvh - 330px) !important; min-height: 220px; }
+
+/* ── Seismic Wave Lab: keeps the Earth, the clock, play / restart / speed,
+   the legend and the two toggle rows (inside the Earth; what to show). ── */
+html[data-sim="seismic"].sim-full main { max-width: none; padding-top: 56px; padding-bottom: 16px; gap: 12px; }
+html[data-sim="seismic"].sim-full main > header,
+html[data-sim="seismic"].sim-full main > :nth-child(n+3) { display: none !important; }
+html[data-sim="seismic"].sim-full .lab .note,
+html[data-sim="seismic"].sim-full .lab .live,
+html[data-sim="seismic"].sim-full section.guide,
+html[data-sim="seismic"].sim-full .ctl:has(.tally) { display: none !important; }
+html[data-sim="seismic"].sim-full .plate { width: min(100%, calc(100dvh - 330px)); min-width: 260px; margin-inline: auto; }

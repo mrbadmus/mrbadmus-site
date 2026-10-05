@@ -613,8 +613,8 @@ def main():
         P1.type(A1)
         P1.click('[data-hw="check"]')
         s = wait_chip(P1, page1, seen1)
-        check(s["chip"] == "Right" and s["pressed"] == ["got_it"],
-              "card 1: exact model answer -> chip Right, the got_it button suggested (got %r %r)"
+        check(s["chip"] == "Right" and s["pressed"] == [] and "got_it" in s["enabled"],
+              "card 1: exact model answer -> chip Right as a hint, nothing filled, Secured enabled (got %r %r)"
               % (s["chip"], s["pressed"]))
         btn_word = P1.q('document.querySelector(\'[data-hw="got_it"]\').textContent.trim()')
         check(btn_word == "Secured", "the top rating button reads 'Secured', never 'Got it' (got %r)" % btn_word)
@@ -665,11 +665,11 @@ def main():
         P1.type(A2_NEARLY)
         P1.click('[data-hw="check"]')
         s = wait_chip(P1, page1, seen1)
-        check(s["chip"] == "Nearly" and s["pressed"] == ["nearly"],
-              "card 2 learn-step answer -> chip Nearly, nearly suggested (got %r %r)" % (s["chip"], s["pressed"]))
-        check("got_it" not in s["enabled"],
-              "the Secured (got_it) button is DISABLED — the verdict caps the rating (enabled=%r)" % s["enabled"])
-        P1.shot("card2-nearly-capped")
+        check(s["chip"] == "Nearly" and s["pressed"] == [],
+              "card 2 learn-step answer -> chip Nearly as a hint, nothing filled (got %r %r)" % (s["chip"], s["pressed"]))
+        check(sorted(s["enabled"]) == ["got_it", "nearly", "not_yet"],
+              "all three ratings enabled — the verdict never caps the rating, even after I don't know (enabled=%r)" % s["enabled"])
+        P1.shot("card2-nearly-hint")
         P1.click('[data-hw="nearly"]')
         settle(0.6)
 
@@ -717,10 +717,10 @@ def main():
         P1.type(A3_NEARLY)
         P1.click('[data-hw="check"]')
         s = wait_chip(P1, page1, seen1)
-        check(s["chip"] == "Nearly" and s["pressed"] == ["nearly"],
-              "card 3 partial answer -> chip Nearly (got %r %r)" % (s["chip"], s["pressed"]))
+        check(s["chip"] == "Nearly" and s["pressed"] == [],
+              "card 3 partial answer -> chip Nearly, nothing filled (got %r %r)" % (s["chip"], s["pressed"]))
         check(s["flipped"] == "1" and s["back_"] == A3, "the model answer is shown under the verdict (got %r)" % s["back_"])
-        check("got_it" not in s["enabled"], "Secured disabled on card 3 too (enabled=%r)" % s["enabled"])
+        check("got_it" in s["enabled"], "Secured enabled on card 3 too (enabled=%r)" % s["enabled"])
         P1.click('[data-hw="nearly"]')
 
         # ⊕ PUPIL-FLOW §13.1.4 — a card met with "I don't know" (card 2)
@@ -772,8 +772,8 @@ def main():
         P1.type(A2)
         P1.click('[data-hw="check"]')
         s = wait_chip(P1, page1, seen1)
-        check(s["pressed"] == ["got_it"],
-              "retyped card 2 exactly right -> Secured suggested (got %r)" % s["pressed"])
+        check(s["pressed"] == [] and "got_it" in s["enabled"],
+              "retyped card 2 exactly right -> nothing filled, Secured enabled (got %r %r)" % (s["pressed"], s["enabled"]))
         P1.click('[data-hw="got_it"]')
         s = wait_front(P1, Q3)
 
@@ -782,8 +782,8 @@ def main():
         P1.type(A3)
         P1.click('[data-hw="check"]')
         s = wait_chip(P1, page1, seen1)
-        check(s["pressed"] == ["got_it"],
-              "retyped card 3 exactly right -> Secured suggested (got %r)" % s["pressed"])
+        check(s["pressed"] == [] and "got_it" in s["enabled"],
+              "retyped card 3 exactly right -> nothing filled, Secured enabled (got %r %r)" % (s["pressed"], s["enabled"]))
         P1.click('[data-hw="got_it"]')
         s = wait_end(P1)
 
