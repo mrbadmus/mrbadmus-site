@@ -16,7 +16,14 @@
 
 Seismic physics, read as an examiner: S-waves transverse so stopped by the liquid outer core (evidence the core is liquid), P-waves longitudinal so pass through and refract at the mantle–core boundary, P-wave and S-wave shadow zones, P arrives before S, quiz answers all correct. Not checked: the exact angles and travel times in her ray data. Note: AQA 4.6.1.5 is Physics-only, so Combined pupils are not examined on it, and the page does not say so.
 
-## Full screen (both labs)
+## Third lab: Circuit Lab
+`/simulations/physics/circuit-lab/`, from `Circuit Lab.dc.html` (Design's circuit builder: drag parts onto paper, KS3/KS4 switch, 12 challenges, inspector with live readings). Served static like the Wave Motion Lab. Changes: her "MrBadmusAI" wordmark and divider removed, the site bar (one mark, "Physics" back link, Full screen, theme) added above it, her unused design bundle not published, `sim-theme.css` for the rest.
+- **Dark mode:** the top bar, parts palette and inspector go dark; the workbench "paper" stays light (wires and parts are drawn for a light ground), same as the seismic plates. Her colours are written straight into the markup, so the dark rules match them by value.
+- **Phone layout (new, hers had none):** below 860px the three panes stack: workbench on top, the parts in a strip you scroll sideways, the inspector beneath, and the page scrolls. The workbench keeps `touch-action:none`, so dragging a part never scrolls the page. Tested as layout and with a synthetic drag; **not tested with a real finger on a phone**.
+- **Full screen:** the app is already a full-window page, so full screen just drops the site bar.
+- **Physics, read as an examiner:** series and parallel behaviour, ammeter in series / voltmeter in parallel, I = V ÷ R, series resistances add, potential divider ratio, LDR and thermistor falling resistance with light and temperature, fuse blowing above its rating are all correct. For Mide: it defaults to *electron* flow with a "conventional" toggle; AQA teaches conventional current, so the default may confuse. "Double the EMF, double the current — much brighter" is right for current, and brightness (power) goes up fourfold. The AC supply runs at 0.25–2 Hz so it can be seen, not at 50 Hz mains.
+
+## Full screen (Wave Motion Lab and Seismic Wave Lab)
 A "Full screen" button in each lab's top bar (`simulations/fullscreen.js` + `fullscreen.css`, shared). It uses the browser's Fullscreen API; iPhone Safari has none, so there the page just fills the screen with the same layout. Esc or the button leaves it. Full screen keeps only the simulation, its controls and its tickboxes: Wave Motion Lab keeps the wave-type tabs, stage, play / speed / frequency / amplitude and the seven tickboxes; Seismic Wave Lab keeps the Earth, clock, play / restart / speed, legend and the two toggle rows. Everything else (titles, step guide, readouts, definitions, tally, seismogram, key words, quiz) is hidden, not removed. To give a new lab full screen: add the button markup, `data-sim="<name>"` on `<html>` and its keep-list in `fullscreen.css`.
 
 ## Where the data file is

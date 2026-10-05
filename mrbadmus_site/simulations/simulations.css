@@ -19,7 +19,7 @@ body {
 :focus-visible { outline: 2px solid var(--sim-accent-text); outline-offset: 2px; }
 .sim-bar {
   height: 64px; padding: 0 clamp(16px, 2.4vw, 36px); display: flex; align-items: center;
-  gap: 16px; border-bottom: 1px solid var(--sim-rule);
+  gap: 16px; border-bottom: 1px solid var(--sim-rule); color: var(--sim-ink);
 }
 .sim-bar .mrb-theme-slot { margin-left: auto; }
 .sim-back {
