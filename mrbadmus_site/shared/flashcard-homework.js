@@ -1,5 +1,26 @@
 /* ⊕ MRB-351 — THE FLASHCARD HOMEWORK ENGINE.
  *
+ * ⊕ THE PUPIL DECIDES (Mide, 5 Oct 2026) — THE RULE THAT STANDS NOW. This is
+ * revision: the pupil is the judge, not the machine (the Anki / Brainscape /
+ * Quizlet model). Top-set Year 11s typed right answers worded differently,
+ * the check said "Nearly", and would not let them pick Secured.
+ *
+ *   · The pupil may still type an answer and the answer check still runs,
+ *     but its verdict is only a HINT: the chip beside their answer (Right /
+ *     Nearly / Wrong / No answer / Checking…). It never gates anything.
+ *   · After every reveal Secured, Nearly and Not yet are ALL available —
+ *     whatever the verdict, while it is still "Checking…", when the check is
+ *     slow, failed or down, and after "I don't know". The pupil never waits
+ *     for the check. Nothing is pre-filled.
+ *   · The teacher still sees the truth: the typed answer, the verdict and the
+ *     pupil's rating are all recorded exactly as before, side by side.
+ *   · The revealed answer is always the deck's model answer; what the pupil
+ *     typed only ever appears as "your answer" beside it.
+ *   SUPERSEDES: the 29 Sep "THE VERDICT CAPS THE RATING" bullet below, the
+ *   2 Oct line that a card nothing could check "may never be Secured", the
+ *   4 Oct "Secured means checked" (option B) rule, and the cap at Nearly
+ *   after "I don't know". They are kept below as history, not as behaviour.
+ *
  * The state machine behind a teacher-set deck in the class page's flashcard
  * overlay. It owns NO markup: the overlay is Design's one flashcard component
  * (student_rulings.py, "PHASE 2 — THE FLASHCARDS"), and in homework mode its
@@ -30,13 +51,13 @@
  *
  * ⊕ SHARPEN (29 Sep 2026 — PUPIL-FLOW.md §13 wins over everything above).
  *
- *   · THE VERDICT CAPS THE RATING. Right → up to Got it, Nearly → up to
+ *   · [SUPERSEDED 5 Oct 2026 — the pupil decides] THE VERDICT CAPS THE RATING. Right → up to Got it, Nearly → up to
  *     Nearly, Wrong / No answer → Not yet only. Enforced here, in `rate()`,
  *     so the buttons, keys 1·2·3 and the swipe all obey it. While the check
  *     is out ("Checking…") nothing can be rated; no verdict → no cap.
  *   · "I DON'T KNOW" IS A LEARNING STEP. The card stays on its question,
  *     the model answer shows under it, and the pupil writes it in their own
- *     words; that answer is checked, capped at Nearly. The card comes round
+ *     words; that answer is checked (hint only, no cap since 5 Oct). The card comes round
  *     once more at the end of the pass as a plain card.
  *   · A PASS THAT IS NOT ALL RIGHT ENDS ON "Try again", which replays only
  *     the cards that are not Got it, in the pass's own order, in the SAME
@@ -141,7 +162,7 @@
   }
   // ⊕ Sharpen review (Fable, S-c) — which cards met "I don't know" in this
   // pass, and which have had their replay: kept on the device, so a reload
-  // keeps the Nearly cap and the replay. ⊕ Stage D: honoured beside any
+  // keeps the replay. ⊕ Stage D: honoured beside any
   // reconstructed pass (decision 8), for the round it was written in (`n`)
   // and not from before the pass began (`at` vs the pass's first rating).
   function loadIdk(key) {
@@ -679,7 +700,7 @@
     this.draft = c ? (this.drafts[c.id] || "") : "";
     // ⊕ Sharpen review (Fable, M-1) — a card met with "I don't know" and not
     // yet rated in this pass (‹ Back then forward again, or a reload) opens
-    // in the learn state again: the cap and the replay still apply.
+    // in the learn state again: the replay still applies.
     if (c && !this.detour && this.idkSeen[c.id] && !this.pass[c.id]) {
       this.learn = true;
       this.idkNow = true;
@@ -777,7 +798,8 @@
     // the pupil still seeing "Checking…". A late reply to EITHER attempt
     // still lands (the edge function answers a repeat of the same text from
     // the verdict it stored for the first, without asking the model again).
-    // Only when both come back empty does the card go unchecked (`cap()`).
+    // Only when both come back empty does the card go unchecked (no chip).
+    // ⊕ 5 Oct 2026: the pupil never waits for any of this to rate.
     var tries = 0;
     function attempt() {
       tries += 1;
@@ -796,48 +818,34 @@
     attempt();
   };
 
-  // §13.1.1–3 — the highest rating this answer may have.
-  //   "none"  nothing may be rated yet (the check is still out)
-  //   else    the highest allowed rating; after "I don't know", Nearly.
-  // ⊕ Mide, 4 Oct 2026 (option B) — NO VERDICT CAPS AT NEARLY. An answer
-  // nothing could check (slow, failed, no AI) may be Nearly or Not yet,
-  // never Secured: "Secured has to mean secured". Nearly brings the card
-  // back later in the deck, where it gets a real check. (It used to mean no
-  // cap at all, so a pupil could secure an answer nobody had checked.)
+  // ⊕ Mide, 5 Oct 2026 — THE PUPIL DECIDES. Once the answer is showing, ALL
+  // THREE ratings are allowed, always: whatever the verdict, while it is
+  // still "Checking…", when the check was slow, failed or is down, and after
+  // "I don't know". The verdict is a HINT (the chip), never a gate. Nothing
+  // is pre-filled either: a filled button would be a verdict-shaped nudge,
+  // and the least surprising screen is three equal buttons the pupil picks
+  // from. (`cap()` is kept as the one place that says so; it is no longer a
+  // ceiling. It replaces the 29 Sep verdict cap and the 4 Oct "no verdict
+  // caps at Nearly" rule, and the old after-"I don't know" cap at Nearly.)
   Engine.prototype.cap = function () {
-    if (!this.revealed) { return null; }
-    if (this.verdict === "pending") { return "none"; }
-    if (VERDICTS.indexOf(this.verdict) >= 0) {
-      var s = SUGGEST[this.verdict];
-      return this.idkNow && RANK[s] > RANK.nearly ? "nearly" : s;
-    }
-    return "nearly";
+    return this.revealed ? "got_it" : null;
   };
   Engine.prototype.allowed = function (rating) {
-    if (!this.revealed || RATINGS.indexOf(rating) < 0) { return false; }
-    var cap = this.cap();
-    return cap !== "none" && cap !== null && RANK[rating] <= RANK[cap];
+    return !!this.revealed && RATINGS.indexOf(rating) >= 0;
   };
 
-  // The filled rating: the cap, and only when there is a verdict (after
-  // "I don't know" with no verdict, Got it is greyed and nothing is filled).
-  Engine.prototype.suggestion = function () {
-    if (!this.revealed || VERDICTS.indexOf(this.verdict) < 0) { return null; }
-    return this.cap();
-  };
+  // Nothing is filled for the pupil (see above).
+  Engine.prototype.suggestion = function () { return null; };
 
   Engine.prototype.rate = function (rating) {
     var c = this.current();
     if (!c || !this.allowed(rating)) { return; }
     var id = c.id;
-    var suggested = this.suggestion();
-    var cap = this.cap();
     this.acted += 1;
-    this.event({ type: "rated", card: id, phase: this.stage, rating: rating,
-                 via: suggested === rating ? "auto" : "tap" });
+    this.event({ type: "rated", card: id, phase: this.stage, rating: rating, via: "tap" });
     c.last = rating; c.lastLocal = rating;
     if (rating === "got_it") { c.known = true; }
-    this.pass[id] = { rating: rating, mine: this.mine, verdict: this.verdict === "pending" ? null : this.verdict, cap: cap };
+    this.pass[id] = { rating: rating, mine: this.mine, verdict: this.verdict === "pending" ? null : this.verdict, cap: null };
     // Once secured, stays secured (Mide, 4 Oct 2026): a got_it here secures
     // the card for good; a later lower rating is history, never a downgrade.
     if (rating === "got_it") { this.liveSecured[id] = true; }
