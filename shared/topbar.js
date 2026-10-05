@@ -80,7 +80,7 @@
     try { if (window.MRBClassEntry) { window.MRBClassEntry.dropCaches(); } } catch (e) {}
     try {
       var c = window.MrBadmusConfig || {};
-      var m = /^https?:\/\/([^.]+)\./.exec(c.SUPABASE_URL || 'https://urklkrwevjtlfbwnipjn.supabase.co');
+      var m = /^https?:\/\/([^.]+)\./.exec(c.SUPABASE_URL || '');
       if (m) { localStorage.removeItem('sb-' + m[1] + '-auth-token'); }
     } catch (e) {}
     window.location.replace(carry('/auth.html'));

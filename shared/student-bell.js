@@ -109,18 +109,23 @@
     return n;
   }
 
+  /* ⊕ Test isolation (5 Oct 2026) — config.js or nothing. These fell back
+     to the production backend and project, so a test page without config
+     read the live bell. Without config `backendBase()` throws (its callers
+     are promise chains, so that is a refused request) and `projectRef()` is
+     '' — no stored session is found and the bell stays empty. */
   function backendBase() {
-    var cfg = window.MrBadmusConfig || {};
-    return cfg.BACKEND_URL || "https://mrbadmus-backend.onrender.com";
+    var cfg = window.MrBadmusConfig;
+    if (!cfg || !cfg.BACKEND_URL) { throw new Error("config.js is not on this page: no backend"); }
+    return cfg.BACKEND_URL;
   }
 
   /* The Supabase project ref, so the stored-session key is right in BOTH
      universes. `sb-<ref>-auth-token` is the key CLAUDE.md names. */
   function projectRef() {
     var cfg = window.MrBadmusConfig || {};
-    var url = cfg.SUPABASE_URL || "https://urklkrwevjtlfbwnipjn.supabase.co";
-    var m = /^https?:\/\/([^.]+)\./.exec(url);
-    return m ? m[1] : "urklkrwevjtlfbwnipjn";
+    var m = /^https?:\/\/([^.]+)\./.exec(cfg.SUPABASE_URL || "");
+    return m ? m[1] : "";
   }
 
   /* ⚠️ THE FALLBACK READS THE STORED SESSION AND NEVER CREATES A CLIENT.

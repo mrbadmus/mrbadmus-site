@@ -49,21 +49,16 @@
    which it is present and then removed.
 
    ── Environment ─────────────────────────────────────────────────────────
-   Uses window.MrBadmusConfig when the page loads shared/config.js (the
-   dashboards do, and they honour ?env=test), and falls back to the production
-   constants when it does not (KS3 and the public pages load neither the SDK
-   nor config.js — this module must not require them). Same PostgREST-over-
-   fetch approach shared/nav.js already uses, for the same reason: no build
-   step, no SDK on most of the site.
+   Uses window.MrBadmusConfig, which every page that loads this module now
+   loads ahead of it. ⊕ Test isolation (5 Oct 2026): it used to fall back to
+   the production constants when config.js was absent, which is how a page
+   opened on ?env=test could read the live project. Without config it now
+   finds no session and draws nothing — the signed-out answer. Same
+   PostgREST-over-fetch approach shared/nav.js already uses, for the same
+   reason: no build step, no SDK on most of the site.
    ─────────────────────────────────────────────────────────────────────── */
 (function () {
   'use strict';
-
-  // Production, matching shared/config.js's PROD block. Anon keys are designed
-  // to be public; RLS is the actual gate and every query below is scoped to
-  // the viewer's own rows anyway.
-  var PROD_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
-  var PROD_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
 
   var CACHE_PREFIX = 'mrb-class-entry:v2:';   // v2: year-scoped (MRB-261)
   /* 30 min. It was 10, and the entry it caches answers ONE question — which
@@ -165,7 +160,9 @@
       return { url: c.SUPABASE_URL, key: c.SUPABASE_ANON_KEY,
                env: c.environment || 'prod' };
     }
-    return { url: PROD_URL, key: PROD_KEY, env: 'prod' };
+    // No config → no project: projectRef('') is '' and every caller below
+    // treats that as signed out, so nothing is read and nothing is sent.
+    return { url: '', key: '', env: 'none' };
   }
 
   // Project ref out of the URL — the localStorage session key is

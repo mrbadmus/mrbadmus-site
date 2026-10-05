@@ -18,12 +18,12 @@
        is what this page already hardcodes). The bell attaches itself to
        .nav-cluster and does nothing at all without a signed-in session, so a
        logged-out visitor to this public page sees no change. -->
-  <script src="/shared/config.js?v=40813eb2"></script>
+  <script src="/shared/config.js?v=646ce4e2"></script>
   <script src="/shared/search-index.js?v=c016cb14" defer></script>
   <script src="/shared/search.js?v=d011978d" defer></script>
-  <script src="/shared/nav.js?v=731ac0e4" defer></script>
-  <script src="/shared/class-entry.js?v=1028dbfb" defer></script>
-  <script src="/shared/student-bell.js?v=f46f4d9b" defer></script>
+  <script src="/shared/nav.js?v=df2a2edb" defer></script>
+  <script src="/shared/class-entry.js?v=61bfe161" defer></script>
+  <script src="/shared/student-bell.js?v=c9eba610" defer></script>
   <style>
     /* ═══ revision.html — consumes tokens only, no palette literals. Matches
        the redesigned generator pages (light editorial). ═══ */
@@ -246,16 +246,23 @@
      backend by any means — which is why no local verification of it had ever
      been possible, and why a signed-in pupil in a test world was shown the
      signed-out gate. config.js is loaded above, undeferred, so it has already
-     run. The fallback keeps a page that loses it working exactly as before,
-     and on mrbadmus.com config.js resolves to these same three values. */
+     run. ⊕ Test isolation (5 Oct 2026): there is no production fallback any
+     more — a page without config makes no call at all, rather than reading
+     the live site from a test world. On mrbadmus.com config.js resolves to
+     the same production values as before. */
   var MRBCFG = window.MrBadmusConfig || {};
-  var SUPA_URL = MRBCFG.SUPABASE_URL || 'https://urklkrwevjtlfbwnipjn.supabase.co';
-  var SUPA_KEY = MRBCFG.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  var SUPA_URL = MRBCFG.SUPABASE_URL || '';
+  var SUPA_KEY = MRBCFG.SUPABASE_ANON_KEY || '';
   /* The session lives under the PROJECT REF, so the key has to follow
      the project the page is actually talking to. Hard-coded, a pupil
      signed into the test project read production's slot, found nothing,
      and was shown the signed-out page. */
-  var SUPA_REF = (SUPA_URL.match(/\/\/([^.]+)\./) || [])[1] || 'urklkrwevjtlfbwnipjn';
+  var SUPA_REF = MRBCFG.SUPABASE_REF || '';
+  // No config → no request: every read below goes through this one door.
+  function supa(path, opts) {
+    if (!SUPA_URL || !SUPA_KEY) return Promise.reject(new Error('config.js is not on this page'));
+    return fetch(SUPA_URL + path, opts);
+  }
   var BUCKET = 'revision-materials';
 
   /* ── Canonical AQA taxonomy — mirrors SITE_DATA in generate_site_v5.py and
@@ -575,7 +582,7 @@
   // forDownload appends &download so the browser saves rather than previews.
   function signUrl(filePath, forDownload, name) {
     var token = session ? session.access_token : SUPA_KEY;
-    return fetch(SUPA_URL + '/storage/v1/object/sign/' + BUCKET + '/' + filePath, {
+    return supa('/storage/v1/object/sign/' + BUCKET + '/' + filePath, {
       method: 'POST',
       headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify({ expiresIn: 60 })
@@ -637,7 +644,7 @@
 
   // Fetch material metadata. Public SELECT (anon key). If the table isn't live
   // yet the fetch fails cleanly and every topic shows "Coming soon".
-  fetch(SUPA_URL + '/rest/v1/revision_materials?deleted_at=is.null&select=id,title,description,subject,pathway,tier,paper,topic,material_type,file_path,file_size_bytes&order=created_at.desc', {
+  supa('/rest/v1/revision_materials?deleted_at=is.null&select=id,title,description,subject,pathway,tier,paper,topic,material_type,file_path,file_size_bytes&order=created_at.desc', {
     headers: { 'apikey': SUPA_KEY }
   }).then(function(r){ return r.ok ? r.json() : []; }).then(function(rows){
     materials = Array.isArray(rows) ? rows : [];

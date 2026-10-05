@@ -667,10 +667,19 @@ HEAD_ASSETS = """<link rel="preload" href="/shared/fonts/fraunces-var-latin.woff
   <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
   <link rel="stylesheet" href="/shared/nav.css"/>
+  <script src="/shared/config.js"></script>
   <script src="/shared/search-index.js" defer></script>
   <script src="/shared/search.js" defer></script>
   <script src="/shared/nav.js" defer></script>
   <script src="/shared/class-entry.js" defer></script>""" % KS4_FAVICON_LINK
+# ⊕ Test isolation (Mide's ruling, 5 Oct 2026) — `config.js` FIRST, and NOT
+# deferred. It is the only file that names the backend and the Supabase
+# project; nav.js, class-entry.js and the tutor engine all read it, and every
+# one of them now makes NO call without it rather than falling back to
+# production. Undeferred because the tutor (`mrbadmus.v2.js`) is a plain
+# script at the foot of the body whose `MrBadmus.init(...)` runs at once and
+# reads the session key from config — a deferred config would run after it.
+# The same two lines go into the two hand-rolled heads below.
 
 THEME_COLOR = "#F7F1E5"  # pre-paint browser chrome tint — matches --bg (light default)
 
@@ -4277,6 +4286,7 @@ html {{ background: #0F0F1A; }}
   {brand.BRAND_HEAD}
   <link rel="stylesheet" href="/shared/styles.css"/>
   <link rel="stylesheet" href="/shared/nav.css"/>
+  <script src="/shared/config.js"></script>
   <script src="/shared/nav.js" defer></script>
   <script src="/shared/class-entry.js" defer></script>
   {extra_css}
@@ -4389,6 +4399,7 @@ html {{ background: #0F0F1A; }}
   {brand.BRAND_HEAD}
   <link rel="stylesheet" href="/shared/styles.css"/>
   <link rel="stylesheet" href="/shared/nav.css"/>
+  <script src="/shared/config.js"></script>
   <script src="/shared/nav.js" defer></script>
   <script src="/shared/class-entry.js" defer></script>
   {extra_css}

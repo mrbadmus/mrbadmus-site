@@ -683,8 +683,8 @@ def shell(title, body, nav=(None, None), discipline=None, description="",
     <p class="ks3-footer-title">MrBadmus · Key Stage 3 Science</p>%(links)s
   </div>
 </footer>
-%(tail)s%(themescript)s%(scripts)s<script src="/shared/config.js" defer></script>
-<script src="/shared/class-entry.js" defer></script>
+<script src="/shared/config.js" defer></script>
+%(tail)s%(themescript)s%(scripts)s<script src="/shared/class-entry.js" defer></script>
 <script src="/shared/student-bell.js" defer></script>
 <script src="/shared/topbar.js" defer></script>
 </body>

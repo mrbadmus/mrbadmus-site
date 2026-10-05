@@ -37,10 +37,16 @@
      resolves to these same two values. `shared/student-bell.js` derives its
      ref from the configured URL the same way; this is the same derivation, not
      a second rule. */
+  /* ⊕ Test isolation (5 Oct 2026) — and NO production fallback. The
+     paragraph above kept "the production literals as the fallback, so a page
+     that somehow loses config.js behaves exactly as it does today". On a test
+     page that is the failure: it reads the live project. Without config this
+     nav now stays signed-out and makes no call; on mrbadmus.com config.js is
+     on every page that loads this file, ahead of it. */
   var NAVCFG = window.MrBadmusConfig || {};
-  var SUPA_URL = NAVCFG.SUPABASE_URL || 'https://urklkrwevjtlfbwnipjn.supabase.co';
-  var SUPA_KEY = NAVCFG.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
-  var SUPA_REF = (SUPA_URL.match(/\/\/([^.]+)\./) || [])[1] || 'urklkrwevjtlfbwnipjn';
+  var SUPA_URL = NAVCFG.SUPABASE_URL || '';
+  var SUPA_KEY = NAVCFG.SUPABASE_ANON_KEY || '';
+  var SESSION_KEY = NAVCFG.AUTH_STORAGE_KEY || '';
 
   function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
 
@@ -65,9 +71,10 @@
     // Default (signed-out) drawer state; upgraded below if a live session exists.
     renderDrawerAuthSignedOut(drawerAuthSlot);
     if (!area) return;
+    if (!SUPA_URL || !SUPA_KEY || !SESSION_KEY) return;
 
     try {
-      var raw = localStorage.getItem('sb-' + SUPA_REF + '-auth-token');
+      var raw = localStorage.getItem(SESSION_KEY);
       if (!raw) return;
       var session = JSON.parse(raw);
       var user = session && session.user;
@@ -158,8 +165,7 @@
          world it is a cross-origin call to a backend that has never heard of
          the origin: a red CORS line on every page that carries this nav, for a
          request whose answer is a best-effort avatar. */
-      fetch((NAVCFG.BACKEND_URL || 'https://mrbadmus-backend.onrender.com')
-            + '/api/profile', {
+      if (NAVCFG.BACKEND_URL) fetch(NAVCFG.BACKEND_URL + '/api/profile', {
         headers: { 'Authorization': 'Bearer ' + session.access_token }
       }).then(function (r) { return r.ok ? r.json() : null; }).then(function (profile) {
         if (profile && profile.avatar_url) paintChip(profile.avatar_url);

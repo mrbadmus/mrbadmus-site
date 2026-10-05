@@ -64,9 +64,14 @@
      source_ref uses, because both need a lesson address that survives a
      content regeneration untouched by any database id. */
   function submitLadderScore(slug, got, total, rungs) {
+    /* ⊕ Test isolation (5 Oct 2026) — the backend and the session key come
+       from shared/config.js. This used to post to the PRODUCTION backend
+       from a page opened on ?env=test. No config on the page, no post. */
+    var cfg = window.MrBadmusConfig;
+    if (!cfg || !cfg.BACKEND_URL || !cfg.AUTH_STORAGE_KEY) { return; }
     var token = null;
     try {
-      var raw = window.localStorage.getItem("sb-urklkrwevjtlfbwnipjn-auth-token");
+      var raw = window.localStorage.getItem(cfg.AUTH_STORAGE_KEY);
       token = raw && JSON.parse(raw).access_token;
     } catch (e) { /* private mode, or no session — degrade silently */ }
     if (!token) { return; }
@@ -170,7 +175,7 @@
     });
 
     try {
-      fetch("https://mrbadmus-backend.onrender.com/api/quiz-score", {
+      fetch(cfg.BACKEND_URL + "/api/quiz-score", {
         method: "POST",
         // ⊕ MRB-239 — `keepalive` is what lets this survive the unload that
         // triggered it. Without it the pagehide send is a request the

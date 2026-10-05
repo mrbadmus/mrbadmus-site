@@ -12,10 +12,13 @@
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/nav.css?v=7415488f"/>
+  <!-- ⊕ Test isolation (5 Oct 2026): config.js first and undeferred — the
+       one place the backend and the Supabase project are named. -->
+  <script src="/shared/config.js?v=646ce4e2"></script>
   <script src="/shared/search-index.js?v=c016cb14" defer></script>
   <script src="/shared/search.js?v=d011978d" defer></script>
-  <script src="/shared/nav.js?v=731ac0e4" defer></script>
-  <script src="/shared/class-entry.js?v=1028dbfb" defer></script>
+  <script src="/shared/nav.js?v=df2a2edb" defer></script>
+  <script src="/shared/class-entry.js?v=61bfe161" defer></script>
   <style>
     html { background: var(--bg); }
     :root {
@@ -548,8 +551,11 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/shared/username-generator.js?v=6502aa56"></script>
 <script>
-  var SUPABASE_URL      = 'https://urklkrwevjtlfbwnipjn.supabase.co';
-  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // ⊕ Test isolation (5 Oct 2026) — from shared/config.js, loaded undeferred
+  // in the head. No config, no client: createClient throws and nothing is sent.
+  var MRBCFG            = window.MrBadmusConfig || {};
+  var SUPABASE_URL      = MRBCFG.SUPABASE_URL;
+  var SUPABASE_ANON_KEY = MRBCFG.SUPABASE_ANON_KEY;
 
   var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -1073,7 +1079,8 @@
       // Try Render backend first
       var saved = false;
       try {
-        var res = await fetch('https://mrbadmus-backend.onrender.com/api/profile', {
+        if (!MRBCFG.BACKEND_URL) throw new Error('config.js is not on this page: no backend');
+        var res = await fetch(MRBCFG.BACKEND_URL + '/api/profile', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
           body: JSON.stringify(payload),

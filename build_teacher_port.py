@@ -5084,8 +5084,9 @@ function MRB_TOKEN(){
     if(!t){throw new Error('teacher page: not signed in');}
     return t;});}
 
-function MRB_API(){var c=window.MrBadmusConfig||{};
-  return c.BACKEND_URL||'https://mrbadmus-backend.onrender.com';}
+function MRB_API(){var c=window.MrBadmusConfig;
+  if(!c||!c.BACKEND_URL){throw new Error('teacher page: config.js is not on this page, no backend');}
+  return c.BACKEND_URL;}
 
 /* One GET, authorised, JSON in and JSON out. Separate from the POST below
    because a read that fails is a sheet with nothing in it and a write that
@@ -5532,13 +5533,17 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         # The runtime reaches the Supabase project, the jsDelivr CDN
         # (the Supabase SDK) and the Render backend only after its own
         # JS has parsed, so on school wifi the DNS + TLS handshake for
-        # each one lands serially inside the pre-paint path. These three
-        # tags start the handshakes while the HTML is still parsing.
-        # They are hints, not fetches: a browser that ignores them, or a
-        # page that never reaches an origin, pays nothing.
-        "<link rel=\"preconnect\" href=\"https://urklkrwevjtlfbwnipjn.supabase.co\" crossorigin>\n"
+        # each one lands serially inside the pre-paint path. These
+        # hints start the handshakes early.
+        # ⊕ Test isolation (Mide's ruling, 5 Oct 2026) — the Supabase and
+        # backend hints used to be written here as production literals, so
+        # every test page opened a connection to the live project. The
+        # page now asks for them with `mrb-preconnect` and shared/config.js
+        # adds the SAME two hints for whichever world it resolved to
+        # (production on mrbadmus.com). Only the CDN, which is the same in
+        # every world, stays literal.
+        "<meta name=\"mrb-preconnect\" content=\"1\">\n"
         "<link rel=\"preconnect\" href=\"https://cdn.jsdelivr.net\" crossorigin>\n"
-        "<link rel=\"dns-prefetch\" href=\"https://mrbadmus-backend.onrender.com\">\n"
         "<title>%s</title>\n"
         # ⊕ One mark (Mide, 13 Sep 2026) — was Stream J's inline data: copy of
         # KS3's retired upward-chevron favicon. Now brand.py's own head tags

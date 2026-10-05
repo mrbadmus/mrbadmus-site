@@ -73,7 +73,13 @@ function boot(opts) {
   const calls = [];
   let fail = opts.failFirstBoard || 0;
 
-  global.window = {};
+  /* ⊕ Test isolation (5 Oct 2026) — the page always has config.js, and the
+     seam now FAILS CLOSED without it (it used to fall back to production,
+     which is what this harness was silently exercising). Give it the config
+     a TEST page has, pointed at an address the stubbed fetch answers. */
+  global.window = {MrBadmusConfig: {environment: 'test',
+    BACKEND_URL: 'http://127.0.0.1:9',
+    SUPABASE_URL: 'https://seam.invalid', SUPABASE_ANON_KEY: 'seam-anon'}};
   global.document = {readyState: 'complete', addEventListener: function () {}};
   global.fetch = function (url, init) {
     calls.push({url: String(url), init: init || {}});

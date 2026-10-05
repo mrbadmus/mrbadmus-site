@@ -30,9 +30,25 @@
  *     const { SUPABASE_URL, SUPABASE_ANON_KEY, BACKEND_URL } = window.MrBadmusConfig;
  *   </script>
  *
- * Existing pages keep their inline-hardcoded constants for now — only the
- * NEW /teacher/* pages added in Stage 2A use this config. Migrating existing
- * pages is out of scope for MRB-19.
+ * ⊕ TEST ISOLATION (Mide's ruling, 5 Oct 2026) — THIS FILE IS THE ONLY
+ * PLACE THE PRODUCTION BACKEND HOST AND THE PRODUCTION SUPABASE PROJECT ARE
+ * WRITTEN DOWN. Every other shipped page and script reads them from
+ * window.MrBadmusConfig, and the fast gate `test_isolation_check` fails the
+ * push if any of them spells either one out. It used to say "existing pages
+ * keep their inline-hardcoded constants for now", and they did: the lesson
+ * tutor (mrbadmus.v2.js), the KS3 quiz-score post and a dozen `|| 'https://…
+ * onrender.com'` fallbacks went to PRODUCTION from a page opened on
+ * ?env=test, so a test run could write into the live site.
+ *
+ * A consumer that finds no config FAILS CLOSED — it makes no backend or
+ * Supabase call at all — rather than falling back to production. On the live
+ * site config.js is always on the page first (the gate checks the load order
+ * of every shipped page), so production still resolves to exactly the two
+ * PROD values below.
+ *
+ * Derived here, so that no consumer ever has to spell a project ref:
+ *   SUPABASE_REF      — the ref out of SUPABASE_URL
+ *   AUTH_STORAGE_KEY  — `sb-<ref>-auth-token`, the supabase-js session key
  */
 
 (function () {
@@ -99,6 +115,8 @@
 
   const config = useTest ? TEST : PROD;
   config.environment = useTest ? 'test' : 'prod';
+  config.SUPABASE_REF = (/^https:\/\/([a-z0-9]+)\.supabase\.co/i.exec(config.SUPABASE_URL) || [])[1] || '';
+  config.AUTH_STORAGE_KEY = 'sb-' + config.SUPABASE_REF + '-auth-token';
 
   /* ── ?api= — a LOCALHOST-ONLY backend override (MRB-308) ───────────────
    *
@@ -129,6 +147,31 @@
   if (apiOverride && isLocalHost) config.BACKEND_URL = apiOverride;
 
   window.MrBadmusConfig = config;
+
+  /* ⊕ Test isolation (5 Oct 2026) — the early-connection hints, moved here.
+     The generated student and teacher pages used to carry
+       <link rel="preconnect"   href="https://<prod project>.supabase.co">
+       <link rel="dns-prefetch" href="https://<prod backend>">
+     in their <head> (Perf, 21 Sep 2026). Those named production on every
+     page, so a page opened on ?env=test opened a connection to the live
+     project. A page that wants the hints now says so with
+     <meta name="mrb-preconnect" content="1">, and this file adds the SAME two
+     hints for whichever world it resolved to — production on the live site,
+     exactly as before. */
+  try {
+    if (document.querySelector('meta[name="mrb-preconnect"]')) {
+      var hint = function (rel, url, cors) {
+        var origin = new URL(url).origin;
+        if (document.querySelector('link[rel="' + rel + '"][href="' + origin + '"]')) return;
+        var l = document.createElement('link');
+        l.rel = rel; l.href = origin;
+        if (cors) l.crossOrigin = '';
+        document.head.appendChild(l);
+      };
+      hint('preconnect', config.SUPABASE_URL, true);
+      hint('dns-prefetch', config.BACKEND_URL, false);
+    }
+  } catch (e) { /* a hint is never worth an error */ }
 
   // Loud signal in DevTools so it's obvious which environment is active.
   if (useTest) {

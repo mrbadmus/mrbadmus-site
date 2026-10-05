@@ -59,6 +59,18 @@
      `workingAcademicYear()` to `class-entry.js` and throws a named error if it
      is not already on the page (CLAUDE.md, MRB-267), and `student-guard.js`
      owns the Supabase client that `student-data.js` asks for. */
+  /* ⊕ Test isolation (Mide's ruling, 5 Oct 2026) — the backend address,
+     from shared/config.js and from nowhere else. Every caller used to read
+     `cfg.BACKEND_URL || "<the production backend>"`, so a page whose config
+     had not loaded — or a test page that lost it — talked to the live site.
+     Without config this THROWS, and every caller is async, so the throw is
+     the same rejection a refused request already is: nothing is sent. */
+  function backendUrl() {
+    var c = window.MrBadmusConfig;
+    if (!c || !c.BACKEND_URL) { throw new Error("config.js is not on this page: no backend"); }
+    return c.BACKEND_URL;
+  }
+
   var DEPS = [
     "/shared/config.js",
     "/shared/class-entry.js",
@@ -537,9 +549,7 @@
        and not there. Fire and forget: nothing waits on it and nothing reads
        its answer. */
     try {
-      var beHealth = (window.MrBadmusConfig && window.MrBadmusConfig.BACKEND_URL)
-                  || "https://mrbadmus-backend.onrender.com";
-      fetch(beHealth + "/api/health").catch(function () {});
+      fetch(backendUrl() + "/api/health").catch(function () {});
     } catch (e) {}
 
     await Promise.all(DEPS.slice(1).map(function (src) {
@@ -1903,8 +1913,7 @@
   var DB_MS = 30000;
 
   async function api(path, token) {
-    var cfg = window.MrBadmusConfig || {};
-    var base = cfg.BACKEND_URL || "https://mrbadmus-backend.onrender.com";
+    var base = backendUrl();
     return withDeadline(backendWoken ? WARM_MS : COLD_MS, path,
       async function (signal) {
         var res = await fetch(base + path, {
@@ -1950,8 +1959,7 @@
      refusal the same way — leave the tile as it was — and does not need
      to tell them apart by catching different error shapes. */
   async function apiPost(path, token, body) {
-    var cfg = window.MrBadmusConfig || {};
-    var base = cfg.BACKEND_URL || "https://mrbadmus-backend.onrender.com";
+    var base = backendUrl();
     return withDeadline(backendWoken ? WARM_MS : COLD_MS, path,
       async function (signal) {
         var res = await fetch(base + path, {
@@ -2384,8 +2392,7 @@
        timers never run, so the request that `keepalive` exists to let outlive
        the page is exactly the one this can never abort. */
     async function post(path, body) {
-      var cfg = window.MrBadmusConfig || {};
-      var base = cfg.BACKEND_URL || "https://mrbadmus-backend.onrender.com";
+      var base = backendUrl();
       return withDeadline(COLD_MS, path, async function (signal) {
         var res = await fetch(base + path, {
           signal: signal,

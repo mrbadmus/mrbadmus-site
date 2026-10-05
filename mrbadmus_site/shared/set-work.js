@@ -337,12 +337,17 @@
      the whole config to the TEST project plus `http://localhost:3000` on
      `?env=test` or on localhost. Keeping it means a drive that already runs
      against a local backend keeps running against one, and production stays
-     `https://mrbadmus-backend.onrender.com` with no branch here.
+     the production backend with no branch here.
+
+     ⊕ Test isolation (5 Oct 2026) — no production fallback. Without config
+     this throws; every caller is inside a promise chain, so that is a
+     refused request and nothing is sent.
      ═════════════════════════════════════════════════════════════════════ */
 
   function apiBase() {
-    var c = window.MrBadmusConfig || {};
-    return c.BACKEND_URL || "https://mrbadmus-backend.onrender.com";
+    var c = window.MrBadmusConfig;
+    if (!c || !c.BACKEND_URL) { throw new Error("config.js is not on this page: no backend"); }
+    return c.BACKEND_URL;
   }
 
   function token() {

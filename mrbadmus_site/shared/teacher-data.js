@@ -1286,8 +1286,10 @@ window.MrBadmusTeacherData = (function () {
       const token = data && data.session && data.session.access_token;
       if (!token) throw new Error('no access token on the current session');
 
-      const cfg = window.MrBadmusConfig || {};
-      const base = cfg.BACKEND_URL || 'https://mrbadmus-backend.onrender.com';
+      // ⊕ Test isolation (5 Oct 2026) — config.js or nothing; never production by default.
+      const cfg = window.MrBadmusConfig;
+      if (!cfg || !cfg.BACKEND_URL) throw new Error('config.js is not on this page: no backend');
+      const base = cfg.BACKEND_URL;
       const res = await fetch(
         base + '/api/class/progress?class_id=' + encodeURIComponent(classId),
         { headers: { Authorization: 'Bearer ' + token } }

@@ -13,10 +13,25 @@ window.MrBadmus = (function() {
   // that reads it is a branch KS4 never takes.
   let currentKeyStage = '';
 
+  /* ⊕ TEST ISOLATION (Mide's ruling, 5 Oct 2026) — every address this engine
+     talks to comes from shared/config.js, read at the moment it is needed.
+     This file used to name the production backend and the production
+     Supabase project outright, so a lesson page opened on ?env=test sent its
+     health pings and its pupils' questions to the LIVE tutor. With no config
+     on the page, `cfg()` is null and the engine makes no call at all — it
+     never falls back to production. On mrbadmus.com config.js is always
+     loaded and resolves to the same production values as before. */
+  function cfg() {
+    const c = window.MrBadmusConfig;
+    return (c && c.BACKEND_URL && c.SUPABASE_URL && c.SUPABASE_ANON_KEY && c.AUTH_STORAGE_KEY) ? c : null;
+  }
+
   // Load student name + profile from Supabase session (if logged in)
   async function loadStudentSession() {
     try {
-      const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+      const c = cfg();
+      if (!c) return;
+      const raw = localStorage.getItem(c.AUTH_STORAGE_KEY);
       if (!raw) return;
       const session = JSON.parse(raw);
       const user = session?.user;
@@ -34,10 +49,7 @@ window.MrBadmus = (function() {
          above comes from localStorage and still works. */
       if (currentKeyStage === 'ks3') return;
       try {
-        const sb = supabase.createClient(
-          'https://urklkrwevjtlfbwnipjn.supabase.co',
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg'
-        );
+        const sb = supabase.createClient(c.SUPABASE_URL, c.SUPABASE_ANON_KEY);
         const profileRes = await sb.from('profiles')
           .select('science_pathway, tier')
           .eq('id', user.id)
@@ -161,30 +173,28 @@ FULL BIOLOGY SPECIFICATION TOPICS:
 4.7 Ecology: populations/communities/ecosystems, abiotic/biotic factors, interdependence, food webs, competition, adaptations, quadrats/transects, water/carbon/nitrogen cycles, biodiversity, deforestation, climate change, conservation, mark-recapture formula. Higher: biodiversity index, predator-prey. RP8 habitat sampling.`
   };
 
-  const FALLBACKS = {
-    physics: [
-      { k: ['potential difference','pd','voltage'], r: '<strong>Potential Difference (p.d.)</strong><br><br>P.d. is the energy transferred per unit charge. It\'s the "push" that drives current around the circuit.<br><br><strong>FIFA Example</strong> (find p.d. across 4Ω with 3A):<br>F — V = I × R<br>I — V = 3 × 4<br>F — No conversion needed<br>A — V = <strong>12 V</strong><br><br>Measured with a voltmeter connected <strong>in parallel</strong>.' },
-      { k: ['ohm','v=ir','resistance','calculate'], r: '<strong>Ohm\'s Law — V = IR</strong><br><br>FIFA Example (find current, V=12V, R=4Ω):<br>F — I = V ÷ R<br>I — I = 12 ÷ 4<br>F — No conversion<br>A — I = <strong>3 A</strong>' },
-      { k: ['series'], r: '<strong>Series Circuit</strong><br>• Current: same everywhere<br>• P.D.: splits between components<br>• Resistance: R_total = R₁ + R₂ + ...' },
-      { k: ['parallel'], r: '<strong>Parallel Circuit</strong><br>• P.D.: same across every branch<br>• Current: splits — I = I₁ + I₂<br>• Resistance: less than smallest branch' },
-    ],
-    chemistry: [
-      { k: ['mole','mol','mr','mass'], r: '<strong>Moles</strong><br>mol = mass ÷ Mr<br><br>FIFA (2 mol CO₂, Mr=44):<br>F — mass = mol × Mr<br>I — mass = 2 × 44<br>F — None<br>A — mass = <strong>88 g</strong>' },
-      { k: ['atom','proton','electron','neutron'], r: '<strong>Atomic Structure</strong><br>• Protons: +1, in nucleus<br>• Neutrons: 0, in nucleus<br>• Electrons: −1, in shells<br>Atomic number = protons. Mass number = protons + neutrons.' },
-    ],
-    biology: [
-      { k: ['cell','nucleus','mitochondria'], r: '<strong>Cell Types</strong><br>Animal: nucleus, cytoplasm, membrane, mitochondria, ribosomes<br>Plant: all above + cell wall, chloroplasts, vacuole<br>Bacterial: cell wall, membrane, cytoplasm, ribosomes, plasmid, DNA loop (no nucleus)' },
-      { k: ['photosynthesis'], r: '<strong>Photosynthesis</strong><br>6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂<br>Limiting factors: light intensity, CO₂, temperature' },
-    ]
-  };
+  /* ⊕ HONEST WHEN IT CANNOT ANSWER (Mide's ruling, 5 Oct 2026). When the
+     tutor could not answer — backend unreachable, an error, no model key —
+     this file used to answer anyway: a canned "fact card" picked by keyword
+     from the question ("Photosynthesis 6CO₂ + 6H₂O → …"), or "Hmm, I'm having
+     trouble thinking right now…". Neither was the tutor, and the fact card
+     looked like it was. Those cards are gone. A pupil gets one true line, or
+     — when the backend refused on a limit and said why in words a pupil can
+     read — that sentence instead. */
+  const UNAVAILABLE = "The tutor's unavailable right now. Try again in a few minutes.";
 
-  function getFallback(q, subject) {
-    const lq = q.toLowerCase();
-    const items = FALLBACKS[subject] || FALLBACKS.physics;
-    for (const item of items) {
-      if (item.k.some(k => lq.includes(k))) return item.r;
-    }
-    return `Hmm, I\'m having trouble thinking right now — give me a minute and try again! 😊`;
+  function esc(t) {
+    return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // The refusal's own sentence, only for a limit (429) the backend explained.
+  async function limitMessage(res) {
+    if (res.status !== 429) return null;
+    try {
+      const body = await res.json();
+      const m = body && body.message;
+      return (typeof m === 'string' && m.trim()) ? m.trim() : null;
+    } catch (e) { return null; }
   }
 
   function addMsg(role, html) {
@@ -298,15 +308,19 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
     document.querySelectorAll('[data-open-chat]').forEach(el => el.addEventListener('click', open));
   }
 
-  // Keep-alive ping every 10 minutes — prevents Render cold starts
-  setInterval(function() {
-    fetch('https://mrbadmus-backend.onrender.com/api/health').catch(function(){});
-  }, 10 * 60 * 1000);
+  // Keep-alive ping every 10 minutes — prevents Render cold starts.
+  // ⊕ Test isolation — production only. It exists to keep Render warm; a
+  // TEST backend runs on the developer's own machine and has no cold start,
+  // and with no config there is nothing to ping.
+  function warm() {
+    const c = cfg();
+    if (!c || c.environment !== 'prod') return;
+    fetch(c.BACKEND_URL + '/api/health').catch(function(){});
+  }
+  setInterval(warm, 10 * 60 * 1000);
 
   // Also ping immediately on page load to warm up Render
-  setTimeout(function() {
-    fetch('https://mrbadmus-backend.onrender.com/api/health').catch(function(){});
-  }, 2000);
+  setTimeout(warm, 2000);
 
   function open() {
     loadStudentSession();
@@ -417,33 +431,41 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
     let userContent = hasImg ? [{ type:'image', source:{ type:'base64', media_type:imgData.split(';')[0].split(':')[1], data:imgData.split(',')[1] }}, { type:'text', text:q||'Answer this GCSE Science question fully using FIFA for any calculations.' }] : q;
     chatHistory.push({ role:'user', content:userContent });
     try {
+      const c = cfg();
+      if (!c) throw new Error('config.js is not on this page: no tutor backend');
       // Wake up Render if needed (it spins down after inactivity)
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 55000); // 55s timeout
       let authHeaders = { 'Content-Type': 'application/json' };
       try {
-        const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+        const raw = localStorage.getItem(c.AUTH_STORAGE_KEY);
         const tok = raw && JSON.parse(raw)?.access_token;
         if (tok) authHeaders['Authorization'] = 'Bearer ' + tok;
       } catch (e) {}
-      const res = await fetch('https://mrbadmus-backend.onrender.com/api/chat', {
+      const res = await fetch(c.BACKEND_URL + '/api/chat', {
         method:'POST',
         headers: authHeaders,
         body:JSON.stringify({ system:systemPrompt, messages:chatHistory }),
         signal: controller.signal
       });
       clearTimeout(timeout);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) {
+        const said = await limitMessage(res);
+        const e = new Error(`HTTP ${res.status}`);
+        e.pupilMessage = said;
+        throw e;
+      }
       const data = await res.json();
       if (data.error) throw new Error(data.error.message);
-      const reply = data.content?.map(c=>c.text||'').filter(Boolean).join('') || 'Sorry, no response.';
+      const reply = data.content?.map(c=>c.text||'').filter(Boolean).join('');
+      if (!reply) throw new Error('empty reply');
       if (t) t.querySelector('.chat-msg__bubble').innerHTML = formatReply(reply);
       chatHistory.push({ role:'assistant', content:reply });
       if (chatHistory.length > 20) chatHistory.splice(0,2);
     } catch(err) {
       console.error('MrBadmus chat request failed:', (err && err.message) ? err.message : err);
       chatHistory.pop();
-      if (t) t.querySelector('.chat-msg__bubble').innerHTML = hasImg ? '⚠️ Sorry, couldn\'t process that image. Please try again or type your question.' : getFallback(q, currentSubject);
+      if (t) t.querySelector('.chat-msg__bubble').innerHTML = esc((err && err.pupilMessage) || UNAVAILABLE);
     }
     document.getElementById('chatMsgs').scrollTop = 99999;
   }

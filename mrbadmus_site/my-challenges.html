@@ -18,12 +18,12 @@
        is what this page already hardcodes). The bell attaches itself to
        .nav-cluster and does nothing at all without a signed-in session, so a
        logged-out visitor to this public page sees no change. -->
-  <script src="/shared/config.js?v=40813eb2"></script>
+  <script src="/shared/config.js?v=646ce4e2"></script>
   <script src="/shared/search-index.js?v=c016cb14" defer></script>
   <script src="/shared/search.js?v=d011978d" defer></script>
-  <script src="/shared/nav.js?v=731ac0e4" defer></script>
-  <script src="/shared/class-entry.js?v=1028dbfb" defer></script>
-  <script src="/shared/student-bell.js?v=f46f4d9b" defer></script>
+  <script src="/shared/nav.js?v=df2a2edb" defer></script>
+  <script src="/shared/class-entry.js?v=61bfe161" defer></script>
+  <script src="/shared/student-bell.js?v=c9eba610" defer></script>
   <style>
     html { background: var(--bg); }
     :root {
@@ -178,12 +178,14 @@
      backend by any means — which is why no local verification of it had ever
      been possible, and why a signed-in pupil in a test world was shown the
      signed-out gate. config.js is loaded above, undeferred, so it has already
-     run. The fallback keeps a page that loses it working exactly as before,
-     and on mrbadmus.com config.js resolves to these same three values. */
+     run. ⊕ Test isolation (5 Oct 2026): there is no production fallback any
+     more — a page without config makes no call at all, rather than reading
+     the live site from a test world. On mrbadmus.com config.js resolves to
+     the same production values as before. */
   var MRBCFG = window.MrBadmusConfig || {};
-  var SUPABASE_URL = MRBCFG.SUPABASE_URL || 'https://urklkrwevjtlfbwnipjn.supabase.co';
-  var SUPABASE_ANON_KEY = MRBCFG.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
-  var RENDER_URL = MRBCFG.BACKEND_URL || 'https://mrbadmus-backend.onrender.com';
+  var SUPABASE_URL = MRBCFG.SUPABASE_URL;
+  var SUPABASE_ANON_KEY = MRBCFG.SUPABASE_ANON_KEY;
+  var RENDER_URL = MRBCFG.BACKEND_URL;
   var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   var subjectEmojis = { biology: '🌿', chemistry: '🧪', physics: '⚡' };

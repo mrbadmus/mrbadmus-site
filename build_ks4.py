@@ -1953,8 +1953,8 @@ def render_page(lesson, route, compiled_lesson, block_scripts, prev_next, versio
 %(batch_ext_js)s<script src="/shared/ks4-runtime.js"></script>
 %(block_scripts)s
 %(mount_script)s
-%(tutor)s
 <script src="/shared/config.js" defer></script>
+%(tutor)s
 <script src="/shared/class-entry.js" defer></script>
 <script src="/shared/student-bell.js" defer></script>
 <script src="/shared/topbar.js" defer></script>

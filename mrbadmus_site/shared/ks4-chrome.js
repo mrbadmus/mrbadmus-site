@@ -41,8 +41,15 @@
 (function () {
   'use strict';
 
-  var BACKEND = (window.MrBadmusConfig && window.MrBadmusConfig.BACKEND_URL) ||
-                'https://mrbadmus-backend.onrender.com';
+  /* ⊕ Test isolation (5 Oct 2026) — from shared/config.js, read when the
+     fetch is made, never a production literal. No config, no fetch: the
+     strip and the stars render as the absence they already render on a
+     failed fetch. */
+  function backend() {
+    var c = window.MrBadmusConfig;
+    if (!c || !c.BACKEND_URL) { throw new Error('config.js is not on this page: no backend'); }
+    return c.BACKEND_URL;
+  }
 
   function esc(s) {
     var d = document.createElement('div');
@@ -189,7 +196,7 @@
 
   function boot() {
     if (!document.getElementById('k4-challenge') && !document.getElementById('k4-stars')) return;
-    fetch(BACKEND + '/api/weekly-leaderboard/landing')
+    Promise.resolve().then(function () { return fetch(backend() + '/api/weekly-leaderboard/landing'); })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
         if (!data) throw new Error('no data');

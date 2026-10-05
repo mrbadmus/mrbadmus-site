@@ -493,7 +493,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="/shared/config.js?v=40813eb2"></script>
+<script src="/shared/config.js?v=646ce4e2"></script>
 <!-- ⚠️ NOT `defer`, AND IT MUST COME BEFORE `teacher-data.js`. CLAUDE.md's
      MRB-267 note says this in words — "load order is now load-bearing:
      class-entry.js must come before student-data.js / teacher-data.js on any
@@ -507,9 +507,9 @@
      `teacher-profile.html` and `import.html` can defer it because neither
      calls into `teacher-data.js`; this page does, on its very first read.
      Caught by admin_view_drive.py, which is the reason the drive exists. -->
-<script src="/shared/class-entry.js?v=1028dbfb"></script>
+<script src="/shared/class-entry.js?v=61bfe161"></script>
 <script src="/shared/teacher-guard.js?v=f7fbad7c"></script>
-<script src="/shared/teacher-data.js?v=f7ff2dda"></script>
+<script src="/shared/teacher-data.js?v=0773ab62"></script>
 <script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>
 <!-- ⊕ MRB-330 — the six locked shoutout template keys resolve to a
      sentence in exactly ONE place, and this is it. A template-only
@@ -705,8 +705,9 @@ async function setClassTier(row, touched) {
     var sess = await sb.auth.getSession();
     var token = sess.data && sess.data.session && sess.data.session.access_token;
     if (!token) { throw new Error('no access token on the current session'); }
-    var cfg = window.MrBadmusConfig || {};
-    var base = cfg.BACKEND_URL || 'https://mrbadmus-backend.onrender.com';
+    var cfg = window.MrBadmusConfig;
+    if (!cfg || !cfg.BACKEND_URL) { throw new Error('config.js is not on this page: no backend'); }
+    var base = cfg.BACKEND_URL;
     var res = await fetch(base + '/api/admin/class-tier', {
       method: 'POST',
       headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
@@ -946,8 +947,9 @@ async function saveHold(value) {
     var token = s.data && s.data.session && s.data.session.access_token;
     if (!token) { throw new Error('no access token on the current session'); }
 
-    var cfg = window.MrBadmusConfig || {};
-    var base = cfg.BACKEND_URL || 'https://mrbadmus-backend.onrender.com';
+    var cfg = window.MrBadmusConfig;
+    if (!cfg || !cfg.BACKEND_URL) { throw new Error('config.js is not on this page: no backend'); }
+    var base = cfg.BACKEND_URL;
     var res = await fetch(base + '/api/admin/school/assignments-open-from', {
       method: 'POST',
       headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },

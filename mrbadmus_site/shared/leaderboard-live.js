@@ -64,25 +64,21 @@
      exactly like a fix. They are functions for that reason, called from the
      three places that need a URL, all of which run after the page is up.
 
-     The production literals stay as the fallback: on mrbadmus.com
-     config.js resolves to these same values, so nothing about the live
-     page changes. */
-  function backendUrl() {
-    return (window.MrBadmusConfig && window.MrBadmusConfig.BACKEND_URL)
-        || "https://mrbadmus-backend.onrender.com";
+     ⊕ Test isolation (5 Oct 2026) — there is NO production fallback any
+     more. These used to fall back to the production literals, so a page
+     that lost config.js — or a test page that had not loaded it yet — read
+     the live board. Each now THROWS without config, and every caller turns
+     that into the page's own error state: no request is made at all. On
+     mrbadmus.com config.js is on the page and resolves to the same values
+     as before. */
+  function conf(k) {
+    var c = window.MrBadmusConfig;
+    if (!c || !c[k]) { throw new Error("config.js is not on this page: no " + k); }
+    return c[k];
   }
-  function supabaseUrl() {
-    return (window.MrBadmusConfig && window.MrBadmusConfig.SUPABASE_URL)
-        || "https://urklkrwevjtlfbwnipjn.supabase.co";
-  }
-  function anonKey() {
-    return (window.MrBadmusConfig && window.MrBadmusConfig.SUPABASE_ANON_KEY)
-        || SUPABASE_ANON_KEY;
-  }
-  /* Anon keys are designed to be public; this is the same key every other
-     page on the site carries inline. See CLAUDE.md. */
-  var SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg";
+  function backendUrl() { return conf("BACKEND_URL"); }
+  function supabaseUrl() { return conf("SUPABASE_URL"); }
+  function anonKey() { return conf("SUPABASE_ANON_KEY"); }
 
   /* Design's subject words ↔ the endpoint's. Design types 'Overall',
      'Biology', 'Chemistry', 'Physics' and keys its `PAPERS` table on 'B',
@@ -215,7 +211,7 @@
     }
     store.cache[k] = {status: "loading", payload: null};
     var opts = token ? {headers: {Authorization: "Bearer " + token}} : {};
-    fetch(urlFor(sel), opts).then(function (r) {
+    Promise.resolve().then(function () { return fetch(urlFor(sel), opts); }).then(function (r) {
       if (!r.ok) { throw new Error("HTTP " + r.status); }
       return r.json();
     }).then(function (d) {
@@ -364,7 +360,7 @@
        retired page had it: nothing on this page depends on the result, and
        an unhandled rejection would be console noise the behaviour gate would
        correctly report. */
-    fetch(backendUrl() + "/api/health").catch(function () {});
+    try { fetch(backendUrl() + "/api/health").catch(function () {}); } catch (e) {}
 
     var mounted = null;
     store.redraw = function () {

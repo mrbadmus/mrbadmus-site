@@ -202,6 +202,43 @@ GATES = [
              "title/og/brand link, a stale brand.js, a kit file that differs "
              "from Design's original, or a source spelling out the chevron."),
 
+    dict(name="test_isolation",
+         cmd=["python3", "test_isolation_check.py"],
+         speed="fast",
+         watches=["test_isolation_check.py", "shared/**", "*.html",
+                  "teacher/**", "student/**", "consumer/**", "parents/**",
+                  "go/**", "org/**", "teacher_fixtures/**", "mrbadmus_site/**",
+                  "generate_site_v5.py", "build_ks3.py", "build_ks4.py",
+                  "build_student_port.py", "build_teacher_port.py",
+                  "build_leaderboard_port.py", "build_student.py"],
+         why="Mide's ruling, 5 Oct 2026: a TEST run must never be able to call "
+             "production. A lesson page on ?env=test sent the tutor's "
+             "/api/health and /api/chat to the LIVE backend because "
+             "mrbadmus.v2.js named it outright. Fails if any shipped page or "
+             "script other than shared/config.js names the production backend "
+             "host, any onrender.com host, the production Supabase ref or a "
+             "JWT for it; and if any published page reads MrBadmusConfig "
+             "before config.js has run (consumers now fail closed)."),
+
+    dict(name="test_isolation_drive",
+         cmd=["python3", "test_isolation_drive.py"],
+         speed="slow",
+         watches=["test_isolation_drive.py", "ks3_browser.py", "shared/**",
+                  "*.html", "student/**", "consumer/**", "parents/**",
+                  "mrbadmus_site/**", "generate_site_v5.py", "build_ks3.py",
+                  "build_ks4.py", "build_student_port.py", "student_rulings.py"],
+         why="Mide's ruling, 5 Oct 2026, the browser half of `test_isolation`. "
+             "Opens a KS3 lesson, a KS4 page, student/class.html and a consumer "
+             "page on ?env=test with a fake session planted under the TEST and "
+             "the production storage keys, and records every request from CDP "
+             "Network events WITHOUT blocking anything: any request or "
+             "connection hint to onrender.com or the production Supabase host "
+             "fails. Then asks the tutor about photosynthesis against a stub "
+             "that errors, refuses on a limit, and is down: the honest line, "
+             "the backend's sentence, the honest line — never a fact card. "
+             "Last, ?env=prod in an empty document resolves production "
+             "unchanged (no pupil traffic)."),
+
     dict(name="consumer_launch_state",
          cmd=["python3", "verify_consumer_launch.py"],
          speed="fast",
