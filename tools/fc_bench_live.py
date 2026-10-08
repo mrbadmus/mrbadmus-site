@@ -70,7 +70,7 @@ CONFIGS = [  # (tag, width, height, mobile, theme)
     ("desk-dark", 1280, 800, False, "dark"),
     ("tab-light", 820, 1100, False, "light"),
 ]
-CASES = ["live-finish", "both", "hw-only", "fc-only", "neither", "started", "s-done", "button", "heal-live", "heal-empty"]
+CASES = ["live-finish", "m-split", "m-nodeck", "m-open", "revise", "both", "hw-only", "fc-only", "neither", "started", "s-done", "button", "heal-live", "heal-empty"]
 
 # (case, config) -> evidence name
 EVIDENCE = {
@@ -78,11 +78,14 @@ EVIDENCE = {
     ("fc-only", "phone-dark"): "fc-only-phone-dark", ("fc-only", "desk-light"): "fc-only-desk-light",
     ("started", "desk-light"): "started-desk-light", ("neither", "phone-light"): "neither-phone-light",
     ("hw-only", "desk-light"): "hw-only-desk-light", ("s-done", "phone-dark"): "s-done-phone-dark", ("both", "tab-light"): "both-tablet-light",
+    ("m-split", "phone-light"): "missed-deck-phone-light", ("m-split", "desk-dark"): "missed-deck-desk-dark",
 }
 
 DECK = [("Card %d question" % (i + 1), "Card %d answer" % (i + 1)) for i in range(10)]
 TITLE_S, TITLE_L = "Forces recap", "Cells recap"
 HW_TITLE = "Energy stores"
+OD_TITLE = "Overdue set"
+OD = None                  # the overdue set's assignment id (released, due in the past)
 
 
 def jget(url, token, method="GET", body=None, timeout=60):
@@ -149,7 +152,7 @@ def build_world(c, manifest):
     return {"school": school, "class": klass, "teacher": tid, "tok_t": tok_t, "aids": aids, "ts": ts}
 
 
-def set_homework(w, api, manifest):
+def set_homework(w, api, manifest, c=None, title=HW_TITLE, past=False):
     """One real teacher-set question homework through the local backend's set-work route."""
     tok = w["tok_t"]
     st, sc = jget(f"{api}/api/teacher/set-work/scope?class_id={w['class']}", tok)
@@ -184,27 +187,40 @@ def set_homework(w, api, manifest):
     ids = [x["id"] for x in (pv.get("picked") or [])][:6]
     now = datetime.now(timezone.utc)
     st, out = jget(f"{api}/api/teacher/set-work", tok, "POST", {
-        "class_ids": [w["class"]], "tier": tier, "title": HW_TITLE, "release_at": None,
+        "class_ids": [w["class"]], "tier": tier, "title": title, "release_at": None,
         "due_at": (now + timedelta(days=4)).isoformat(), "client_ref": str(uuid.uuid4()),
         "scopes": [{"scope_kind": "subtopic", "scope_ref": lesson, "subject": subject, "question_ids": ids}]})
     if st != 200:
         acc.die(f"set-work {st} {out}")
     aid = (out.get("assignment_ids") or [None])[0] or (out.get("assignments") or [{}])[0].get("id")
     manifest["assignments"].append(aid)
+    if past:
+        # a real released set whose deadline has gone: due_at moved back by id (the route will not take a past date)
+        st, body = c.write("assignments", "PATCH", {"__match__": f"id=eq.{aid}",
+                                                     "due_at": (now - timedelta(days=2)).isoformat()})
+        check(st in (200, 204), f"the overdue set is due two days ago ({st})")
     return aid
 
 
-def add_pupil(c, manifest, w, tag):
+def add_pupil(c, manifest, w, tag, missed=False):
     email = f"fcb-p-{tag}-{w['ts']}@throwaway.test"
     uid = c.admin_create_user(email, acc.THROWAWAY_PASSWORD)
     manifest["users"].append(uid)
-    acc._ok("p", *c.write("profiles", "PATCH", {"__match__": f"id=eq.{uid}", "role": "student", "school_id": w["school"],
-                                                 "first_name": "Pfc", "last_name": tag.title(), "display_name": f"Pfc {tag}",
-                                                 "username": f"fcbp{abs(hash(tag)) % 10000}{w['ts']:x}",
-                                                 "science_pathway": "combined", "tier": "higher"}))
+    for attempt in range(8):          # the profanity filter is a lottery on random names: retry
+        body = {"__match__": f"id=eq.{uid}", "role": "student", "school_id": w["school"],
+                "first_name": "Pfc", "last_name": tag.title(), "display_name": f"Pfc {tag}",
+                "username": "fcbp" + "".join(__import__("random").choice("aeioubdklmnrst") for _ in range(8)),
+                "science_pathway": "combined", "tier": "higher"}
+        st, res = c.write("profiles", "PATCH", body)
+        if st in (200, 204):
+            break
+    acc._ok("p", st, res)
     acc._ok("class_members", *c.write("class_members", "POST", {"class_id": w["class"], "student_id": uid,
                                                                  "joined_via": "admin_added"}))
-    return {"email": email, "id": uid}
+    pupil = {"email": email, "id": uid}
+    if OD and not missed:           # the overdue set is isolated: only the missed cases see it unfinished
+        submit_homework(c, pupil, OD)
+    return pupil
 
 
 def rate(c, pupil, aid, deck_cards, n):
@@ -273,6 +289,13 @@ ROW_TEXT_JS = r"""
   return out;
 })(%s)
 """
+
+TODO_JS = r"""(function(){var out=null;document.querySelectorAll('button,a,[role=tab],span,div').forEach(function(e){
+  if(e.children.length>1){return;} var t=(e.innerText||'').replace(/\s+/g,' ').trim(); var m=/^to do (\d+)$/i.exec(t);
+  if(m&&out===null){out=+m[1];}});return out;})()"""
+DETAIL_JS = r"""(function(){var out=[];var b=document.querySelector('[data-port-region="bench"]');
+  document.querySelectorAll('main *').forEach(function(e){ if(b&&b.contains(e)){return;} if(e.children.length===0){
+  var t=(e.textContent||'').trim(); if(/^COMPLETED\b/i.test(t)){out.push(t);}}});return out;})()"""
 
 BENCH_JS = r"""
 (function () {
@@ -353,7 +376,7 @@ def verify(case, tag, width, P, s, expect):
     if s is None:
         return
     check(s["half"] is expect["half"], f"{name}: deck half {'present' if expect['half'] else 'absent'} (got {s['half']})")
-    hwv = P.q(HW_VISIBLE_JS % json.dumps(HW_TITLE))
+    hwv = P.q(HW_VISIBLE_JS % json.dumps(expect.get("hwtitle", HW_TITLE)))
     check(bool(hwv and hwv["hw"]) is expect["hw"], f"{name}: homework {'shown' if expect['hw'] else 'not shown'} on the bench")
     if expect["next"] is not None:
         check(s["next"] is expect["next"], f"{name}: Mixed-practice / next box {'present' if expect['next'] else 'absent'} (got {s['next']})")
@@ -438,6 +461,7 @@ def live_finish(c, url, manifest, mpath, w, hw, c_s, c_l, origin, api, page, P, 
         s = goto_ready(P, page, origin, api, sess)
         set_theme(P, theme)
         P.q("window.__lf_marker = 1")
+        todo0 = P.q(TODO_JS)
         s = P.q(BENCH_JS)
         check(bool(s and s["half"]) and TITLE_S in " ".join(s["halfLines"] or []), f"{name}: the bench starts on deck S")
         P.q("document.querySelector('[data-mrb-bench-fc-go]').click()")
@@ -460,6 +484,19 @@ def live_finish(c, url, manifest, mpath, w, hw, c_s, c_l, origin, api, page, P, 
                 break
             time.sleep(0.5)
         check(P.q("window.__lf_marker") == 1, f"{name}: same visit, the page was not reloaded")
+        todo1 = None
+        for _ in range(10):
+            todo1 = P.q(TODO_JS)
+            if todo0 is not None and todo1 == todo0 - 1:
+                break
+            time.sleep(0.5)
+        check(todo0 is not None and todo1 == todo0 - 1,
+              f"{name}: the finished deck's work row left To do, no reload (To do {todo0} -> {todo1})")
+        P.q(ROW_LABEL_JS % json.dumps(TITLE_S))
+        settle(0.6)
+        det = P.q(DETAIL_JS)
+        check(len(det) >= 1, f"{name}: the finished deck's row shows COMPLETED as the work list does for a done deck ({det})")
+        P.q(ROW_LABEL_JS % json.dumps(TITLE_S))
         if variant == "A":
             check(res is not None, f"{name}: deck S left the bench and deck L took its place")
             check(res is not None and not any(TITLE_S in x for x in (res["halfLines"] or [])), f"{name}: deck S is no longer shown")
@@ -508,7 +545,9 @@ def main():
         site_server, _ = cdp.serve(REPO, sport)
         if "live-finish" in cases:
             deno_proc = m.start_deno(url, service, SCRATCH, os.path.join(SCRATCH, "stub.log"))
+        global OD
         hw = set_homework(w, api, manifest)
+        OD = set_homework(w, api, manifest, c, OD_TITLE, True)
         json.dump(manifest, open(mpath, "w"), indent=1)
         print(f"backend {api}, site {origin}; homework {hw}, decks {w['aids']}")
 
@@ -521,9 +560,24 @@ def main():
         # ── the pupils: one fresh pupil per case, states made through real paths ──
         pupils = {}
         for case in [x for x in cases if x != "live-finish"]:
-            p = add_pupil(c, manifest, w, case.replace("-", ""))
+            p = add_pupil(c, manifest, w, case.replace("-", ""), missed=case.startswith("m-"))
             pupils[case] = p
             json.dump(manifest, open(mpath, "w"), indent=1)
+            if case == "m-split":
+                submit_homework(c, p, hw)
+            elif case == "m-nodeck":
+                submit_homework(c, p, hw)
+                rate(c, p, w["aids"]["S"], c_s, 10)
+                rate(c, p, w["aids"]["L"], c_l, 10)
+            elif case == "revise":
+                rate(c, p, w["aids"]["S"], c_s, 10)
+                st, rows = c.select(None, "assignment_submissions", {
+                    "assignment_id": f"eq.{w['aids']['S']}", "student_id": f"eq.{p['id']}", "select": "id"}, as_service=True)
+                check(bool(rows), "revise: deck S was finished before this visit (the RPC wrote the submission)")
+                old = (datetime.now(timezone.utc) - timedelta(days=3)).isoformat()
+                for r in rows or []:
+                    c.write("assignment_submissions", "PATCH", {"__match__": f"id=eq.{r['id']}", "submitted_at": old,
+                                                                 "completed_at": old})
             if case == "hw-only":
                 rate(c, p, w["aids"]["S"], c_s, 10)
                 rate(c, p, w["aids"]["L"], c_l, 10)
@@ -537,7 +591,7 @@ def main():
                 rate(c, p, w["aids"]["S"], c_s, 4)
             elif case == "s-done":
                 rate(c, p, w["aids"]["S"], c_s, 10)
-            if case in ("hw-only", "neither", "s-done"):
+            if case in ("hw-only", "neither", "s-done", "m-nodeck"):
                 for key in ("S", "L"):
                     done = ensure_submission(c, p, w["aids"][key])
                     print(f"  [{case}] deck {key} submission written by the RPC: {done}")
@@ -623,6 +677,30 @@ def main():
                                                             progress="4 of 10 secured"))
                     elif case == "s-done":
                         verify(case, tag, width, P, s, dict(base, title=TITLE_L, half=True, hw=True, next=False))
+                    elif case == "m-split":
+                        verify(case, tag, width, P, s, dict(base, half=True, hw=True, next=True, hwtitle=OD_TITLE))
+                        check("Finish it" in s["ctas"], f"{case}/{tag}: the overdue half has the filled 'Finish it' button ({s['ctas']})")
+                        check("Mixed practice" not in s["text"] and "Open the assignment" not in s["text"],
+                              f"{case}/{tag}: no Mixed practice and no done bench alongside")
+                        check(P.q("!!document.querySelector('[data-mrb-bench-next] h2')"), f"{case}/{tag}: the missed box is the full presentation (heading)")
+                        check("Was due" in s["text"], f"{case}/{tag}: the 'Was due' line is there")
+                    elif case == "m-nodeck":
+                        verify(case, tag, width, P, s, dict(base, half=False, hw=True, next=True, hwtitle=OD_TITLE))
+                        check("Finish it" in s["ctas"] and P.q("!!document.querySelector('[data-mrb-bench-next] h2')"),
+                              f"{case}/{tag}: the full-size 'Finish it' box fills the card, as before")
+                    elif case == "m-open":
+                        verify(case, tag, width, P, s, dict(base, half=True, hw=True, next=False))
+                        check(OD_TITLE not in s["text"] and "Finish it" not in s["ctas"],
+                              f"{case}/{tag}: open homework | deck; the overdue nudge is not on the bench")
+                    elif case == "revise":
+                        P.q(ROW_LABEL_JS % json.dumps(TITLE_S))
+                        settle(0.6)
+                        d0 = P.q(DETAIL_JS)
+                        check(len(d0) >= 1, f"revise/{tag}: deck S's row shows when it was completed ({d0})")
+                        P.q("window.MRBHomework.onFinish(%s)" % json.dumps(w["aids"]["S"]))
+                        settle(3.0)
+                        d1 = P.q(DETAIL_JS)
+                        check(d1 == d0, f"revise/{tag}: a revision pass does not re-date the finished row ({d0} -> {d1})")
                     elif case == "button":
                         verify(case, tag, width, P, s, dict(base, half=True, hw=True, next=False))
                         P.q("document.querySelector('[data-mrb-bench-fc-go]').click()")

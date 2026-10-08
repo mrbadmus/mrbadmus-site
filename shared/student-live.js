@@ -917,11 +917,21 @@
     /* ⊕ 8 Oct 2026 — the bench drops this deck FIRST (data only), so the one
        redraw the row patch below causes also redraws the bench. */
     benchFcFinished(id);
+    /* The page reads its rows from `this.work = MRB_DATA("work")`, the SAME
+       array as `window.__MRB_DATA__.work`; there is no `state.work`, so the
+       setState below alone moved nothing. The row is patched where it lives —
+       never one already done (a revision pass must not re-date it). */
+    ((window.__MRB_DATA__ && window.__MRB_DATA__.work) || []).forEach(function (w) {
+      if (w && w.id === id && w.status !== "marked" && w.status !== "pending") {
+        w.status = "marked"; w.detail = "COMPLETED " + fmtDay(new Date().toISOString());
+      }
+    });
     var lg = mountedApp && mountedApp.logic;
     if (!lg || typeof lg.setState !== "function") { return; }
     lg.setState(function (p) {
       var work = (p.work || []).map(function (w) {
-        if (!w || w.id !== id) { return w; }
+        /* never a row already done: a revision pass must not re-date it */
+        if (!w || w.id !== id || w.status === "marked" || w.status === "pending") { return w; }
         return Object.assign({}, w, { status: "marked", detail: "COMPLETED " + fmtDay(new Date().toISOString()) });
       });
       return { work: work };
@@ -1093,8 +1103,9 @@
             });
         });
       }).then(function (wrote) {
-        if (wrote === true) { fcPatchWorkRow(id); }
-        else if (wrote === "already") { benchFcDrop(id); }   // bench only: the work list is not this change's
+        /* "already": the server wrote the submission itself when the last card
+           secured. The row still has to leave "To do" this visit (ruled 8 Oct). */
+        if (wrote === true || wrote === "already") { fcPatchWorkRow(id); }
       }).catch(function (err) {
         /* Offline / RLS: nothing visible breaks. The heal (wireLibrary, on
            the next class-page load) retries from the pupil's own rows. */
@@ -6171,7 +6182,12 @@
        this never double-draws the box. Still skipped while homework is
        genuinely OPEN (`benchWork` true, neither flag set) — that bench
        slot is doing its one job already. */
-    if (!d || (!d.benchEmpty && !d.benchDone)) { return; }
+    /* ⊕ 8 Oct 2026 — OVERDUE HOMEWORK IS UNFINISHED HOMEWORK (ruled): with a
+       deck to do, no open homework and a missed set, this box is the homework
+       half of the split (`drawBenchFc` calls in here). A pupil with no deck
+       never takes this path — `benchFc` is null — so their bench is as it was. */
+    var withDeck = !!(d && d.benchFc && !d.benchOpen && d.benchNextMissed);
+    if (!d || (!d.benchEmpty && !d.benchDone && !withDeck)) { return; }
     var frame = document.querySelector('[data-port-region="bench"]');
     if (!frame || frame.querySelector("[data-mrb-bench-next]")) { return; }
     var pick = null;
@@ -6309,13 +6325,6 @@
     if (d.benchFc) { setTimeout(benchFcRefresh, 0); }   // a started promoted deck shows its count
   }
 
-  /* The deck finished but its work row is not ours to patch: drop it from the
-     bench and redraw just the bench. */
-  function benchFcDrop(id) {
-    benchFcFinished(id);
-    benchFcRedraw();
-  }
-
   function benchFcRedraw() {
     var lg = mountedApp && mountedApp.logic;
     if (!lg) { return; }
@@ -6370,6 +6379,8 @@
       "[data-mrb-bench-split]>[data-mrb-bench-hw]{grid-template-columns:minmax(0,1fr)!important}" +
       "[data-mrb-bench-split]>[data-mrb-bench-hw] [data-bench-docket]{order:1!important}" +
       "[data-mrb-bench-split]>[data-mrb-bench-fc]{border-top:0;border-left:1px solid var(--st-room-border)}" +
+      "[data-mrb-bench-split]>[data-mrb-bench-next]{display:flex;flex-direction:column;align-items:flex-start}" +
+      "[data-mrb-bench-split]>[data-mrb-bench-next]>[data-mrb-bench-next-go]{margin-top:auto!important}" +
       "}";
     document.head.appendChild(st);
   }
@@ -6385,13 +6396,14 @@
     if (!fc || !frame || frame.querySelector("[data-mrb-bench-fc]")) { return; }
     benchFcStyle();
 
-    /* Is homework's open grid on the card? It is the child holding the docket. */
+    /* Is homework on the card? Open homework's grid (the child holding the
+       docket), or — with none open — the overdue set's "Finish it" box. */
     var hw = null;
-    if (d.benchOpen) {
-      Array.prototype.forEach.call(frame.children, function (el) {
-        if (!hw && el.querySelector && el.querySelector("[data-bench-docket]")) { hw = el; }
-      });
-    }
+    if (!d.benchOpen && d.benchNextMissed) { drawBenchNext(d); }
+    Array.prototype.forEach.call(frame.children, function (el) {
+      if (hw || !el.querySelector) { return; }
+      if (d.benchOpen ? el.querySelector("[data-bench-docket]") : el.hasAttribute("data-mrb-bench-next")) { hw = el; }
+    });
     if (hw) {
       hw.setAttribute("data-mrb-bench-hw", "1");
       frame.setAttribute("data-mrb-bench-split", "1");

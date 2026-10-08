@@ -13,6 +13,14 @@ homework.
 | yes | no  | homework, whole card — unchanged |
 | no  | yes | the deck, whole card |
 | no  | no  | exactly as before (done bench / Mixed practice / "Finish it" / held line) |
+| overdue (missed) | yes | two halves — the overdue set's "Finish it" box on the homework side, the deck on the other |
+| overdue (missed) | no  | the full-size "Finish it" box fills the card — unchanged |
+| open + overdue | yes | open homework \| deck; the overdue nudge is not on the bench (as today) |
+
+Overdue unfinished homework counts as unfinished homework (Mide's lane ruling,
+8 Oct). `benchNextMissed` (a past-due unfinished question set with an address)
+is still the one source of truth for it. Practice, the next lesson and the done
+bench are not homework, so a deck with only those fills the card.
 
 - **Unfinished deck** = a flashcard assignment the pupil can see (released),
   not past its due date, whose submission is not yet written — the work
@@ -49,7 +57,7 @@ Cases: both, homework only, flashcards only, neither, started (4 of 10),
 soonest deck done → the later deck shown, the button opens the deck, heal on
 load, and **live finish** (play a whole deck through the real overlay from the
 bench button; the bench updates with no reload). Phone 390 and desktop 1280,
-light and dark, plus tablet 820. **690 checks, 0 failed**; teardown by
+light and dark, plus tablet 820. **984 checks, 0 failed**; teardown by
 snapshotted id list left nothing behind. The live-finish case was confirmed to
 fail with the fix removed. Evidence: `docs/experience/bench-shots/`.
 
@@ -58,15 +66,23 @@ server writes the submission itself when the last card secures, so the page's
 "just finished" hook never fired and the deck stayed on the bench until a
 reload) is fixed and covered by the live-finish case.
 
-## Open for Mide
+## The two rulings (8 Oct) and what was done
 
-1. **The work list lags behind on a live finish (pre-existing, not changed).**
-   When a pupil finishes a deck in the overlay, the bench now updates at once,
-   but the deck's work row stays in "To do" until the page is reloaded — the
-   same "already written by the server" gap. It predates this change; the work
-   list was out of scope, so it is left as it was. A one-line follow-up.
-2. **Missed work vs a deck.** On an otherwise empty bench, a past-due unfinished
-   question set used to get a "Finish it" nudge there. An open deck now takes
-   the whole card instead (rule: only one thing to do → it fills the card), so
-   that nudge is not on the bench while a deck is open. The missed set is still
-   in the work list.
+1. **The work list lagged on a live finish — fixed.** The page's row patch
+   wrote to a `state.work` that does not exist (the list reads
+   `this.work = MRB_DATA("work")`), so it had never moved a row. It now patches
+   the row in place in `window.__MRB_DATA__.work`, and the "already submitted
+   by the server" branch of `recordFinish` goes through `fcPatchWorkRow` like
+   the other path, so the row leaves To do, the bench drops the deck and the
+   page redraws once. The patch never touches a row already done (`marked` or
+   `pending`), so a revision pass on a deck finished in an earlier visit does
+   not re-date it to "COMPLETED today".
+2. **Overdue homework keeps its place.** With a deck to do, no open homework and
+   a missed set, `drawBenchFc` has `drawBenchNext` draw its normal full
+   "Finish it" box (heading, "Was due …", filled button) and treats that box as
+   the homework half of the split. A pupil with no deck never takes that path,
+   so their bench is as it was. The done bench is never drawn beside the deck.
+
+Both rulings are proved in `tools/fc_bench_live.py` (new cases m-split,
+m-nodeck, m-open, revise, and the work-row assertions inside live-finish). Each
+was confirmed to fail with its fix removed.
