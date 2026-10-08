@@ -18,6 +18,7 @@
 // an exact verdict for an exact typed answer:
 //   contains "half"   -> "partial"
 //   contains "wrong"  -> "no"
+//   contains "asdf"   -> "no"   (keyboard mash, fc_round3_pupil_live.py)
 //   otherwise         -> "match"
 //
 // Every call is appended to MRB353_STUB_LOG (one JSON line per item, i.e.
@@ -47,6 +48,7 @@ function verdictFor(answer: string): "match" | "partial" | "no" {
   const a = (answer ?? "").toLowerCase();
   if (a.includes("half")) return "partial";
   if (a.includes("wrong")) return "no";
+  if (a.includes("asdf")) return "no";
   return "match";
 }
 
