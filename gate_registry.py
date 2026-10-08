@@ -511,12 +511,28 @@ GATES = [
              "from the open sitting; make mode's two passes; every end-screen "
              "case A8 names; × after one Check ends the sitting (A13); retired "
              "strings gone."),
+    dict(name="flashcard_truth_test",
+         cmd=["python3", "flashcard_truth_test.py"],
+         speed="fast",
+         watches=["flashcard_truth_test.py", "flashcard_truth_test.js",
+                  "shared/flashcard-truth.js"],
+         why="Flashcards round 3 (teacher): effort is not understanding. The "
+             "pure fold in shared/flashcard-truth.js, in Node — idk (the exact "
+             "IDK text, once per pupil per card however often pressed), weak "
+             "(a TYPED answer the check called Nearly/Wrong, never the IDK "
+             "text, blank or pending), unsure = either, secured-anyway; the "
+             "reteach sort (unsure, then idk, then position); the pupil line "
+             "('N of M unsure' / 'all confident' only when Done and the read "
+             "worked / nothing for Not started); and a read that returned "
+             "nothing for a class that has done work is FAILED, never 'all "
+             "confident'."),
     dict(name="flashcard_progress_drive",
          cmd=["python3", "flashcard_progress_drive.py"],
          speed="slow",
          watches=["flashcard_progress_drive.py", "ks3_browser.py",
                   "teacher/flashcards.html",
                   "shared/flashcard-progress.js", "shared/flashcard-progress.css",
+                  "shared/flashcard-truth.js",
                   "shared/flashcard-breakdown.js", "shared/breakdown.css",
                   "shared/formulae.js", "shared/set-work.js", "shared/set-work.css",
                   "shared/teacher-live.js", "shared/teacher-data.js",
@@ -2333,7 +2349,7 @@ GATES = [
                   # sweep's own stub imports/loads to reach them.
                   "teacher/decks.html", "teacher/flashcards.html",
                   "shared/flashcard-decks.js", "shared/flashcard-decks.css",
-                  "shared/flashcard-progress.js",
+                  "shared/flashcard-progress.js", "shared/flashcard-truth.js",
                   "shared/flashcard-progress.css",
                   "shared/flashcard-homework.js", "shared/formulae.js",
                   "shared/set-work.js", "shared/set-work.css",
