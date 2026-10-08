@@ -44,5 +44,5 @@ None of the 15 slugs is a frozen-correction slug (`docs/ks4/FROZEN-CORRECTIONS.m
 
 | id | lesson | change | why |
 |---|---|---|---|
-| ext SVG subscripts | plant-tissues, land-use | `ks4-ext-batch-5.js` now writes an SVG `<tspan baseline-shift="sub">` inside figure labels instead of an HTML `<sub>`, which SVG does not draw. Batch 4's ext is unchanged (none of its figure labels carries a subscript). | The leaf figure read "CO in" (carbon monoxide) instead of "CO₂ in"; land-use's "CO₂ released" had the same fault. |
+| ext SVG subscripts | plant-tissues, land-use | `ks4-ext-batch-5.js` now scans figures redrawn after a tap and writes an SVG `<tspan baseline-shift="sub">` inside figure labels instead of an HTML `<sub>`, which SVG does not draw. Batch 4's ext is unchanged (none of its figure labels carries a subscript). | The leaf figure read "CO in" (carbon monoxide) instead of "CO₂ in"; land-use's "CO₂ released" had the same fault. |
 | B5-RS-CAP-1/2 | reactivity-series | Displacement feedback capitalises the metal's name at the start of its sentence. Words unchanged. | "Not this time. copper is less reactive…" |

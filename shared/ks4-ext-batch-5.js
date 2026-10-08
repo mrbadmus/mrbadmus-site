@@ -57,7 +57,8 @@
   }
   function scan(root) {
     if (root.nodeType === 3) { split(root); return; }
-    if (root.nodeType !== 1 || SKIP[root.nodeName]) return;
+    // an added <svg> (a figure redrawn after a tap) is scanned too: its labels get SVG tspans
+    if (root.nodeType !== 1 || (SKIP[root.nodeName] && root.nodeName !== 'svg' && root.nodeName !== 'SVG')) return;
     var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false), list = [], x;
     while ((x = w.nextNode())) if (RE.test(x.nodeValue)) list.push(x);
     list.forEach(split);
