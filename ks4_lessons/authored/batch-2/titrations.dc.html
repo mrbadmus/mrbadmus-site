@@ -49,12 +49,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">One drop turns the whole flask.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">A conical flask holds 25.00 cm³ of sodium hydroxide solution and a few drops of phenolphthalein, so it is pink. Acid runs in from a burette. Near the end, each splash makes a colourless patch that vanishes when the flask is swirled. Then, after one more drop, the pink is gone for good.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="The flask has just turned colourless for good. What has happened?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="One drop turns the whole flask." scene="A conical flask holds 25.00 cm³ of sodium hydroxide solution and a few drops of phenolphthalein, so it is pink. Acid runs in from a burette. Near the end, each splash makes a colourless patch that vanishes when the flask is swirled. Then, after one more drop, the pink is gone for good." question="has the indicator been used up, or has the alkali been neutralised?" options="{{ hookOptions }}" bridge="The volume of acid needed to reach the end point is the titre. Next: the AQA method, step by step." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -400,12 +395,9 @@ class Component extends DCLogic {
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: ready ? [{ href: K.hrefFor('concentration-of-solutions', R), label: 'Concentration of solutions' }, { href: K.hrefFor('salts-neutralisation', R), label: 'Salts and neutralisation' }].filter((c) => c.href) : [],
       hookOptions: [
-        { text: 'The indicator has all been used up by the acid', reply: 'The indicator is not used up. It changes colour because the solution is no longer alkaline.' },
-        { text: 'The acid has exactly neutralised the alkali: the end point', reply: 'Find that volume yourself on the burette below.' },
-        { text: 'The flask is now strongly acidic', reply: 'The colour changes at the end point itself. Only more acid after it would make the flask more acidic, with no further colour change.' },
-        { text: 'Some of the alkali has evaporated from the flask', reply: 'Nothing has boiled off. The change comes from the acid that was added.' }
+        { text: 'The indicator has been used up', correct: false, reply: 'The indicator is still there. It changes colour because the solution is no longer alkaline.' },
+        { text: 'The alkali has been neutralised', correct: true, reply: 'The acid has exactly neutralised the alkali. This is the end point.' }
       ],
-      hookReveal: 'At the end point the acid has exactly neutralised the alkali, and one drop changes the colour for good. The volume of acid added to get there is the titre. One splash too many and the titre is too large.',
       onHook: (i) => this.setState({ hook: i }),
       rigFig: ready ? K.fig(this.rig(0, 'pink'), '') : null,
       rinseOptions: [

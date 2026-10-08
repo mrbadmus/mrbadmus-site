@@ -51,12 +51,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">A compost heap steams on a frosty morning.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">The air is below 0 °C, but a thermometer pushed into the middle of the heap of garden waste reads over 50 °C. Nothing is on fire, and there is no heater.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Where does the heat come from?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="A compost heap steams on a frosty morning." scene="The air is below 0 °C, but a thermometer pushed into the middle of the heap of garden waste reads over 50 °C. Nothing is on fire, and there is no heater." question="is the heat coming from sunshine soaked up in the day, or from living things inside the heap?" options="{{ hookOptions }}" bridge="Some of the energy they release warms the heap. Next: what happens to a fallen leaf as it decays." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -568,12 +563,9 @@ class Component extends DCLogic {
       endNext: (this.props.mrbPrevNext || {}).next || null,
       endConnects: ready && K.hrefFor ? [{ href: K.hrefFor('carbon-cycle', R), label: 'The carbon cycle' }].filter((c) => c.href) : [],
       hookOptions: [
-        { text: 'Sunlight absorbed by the heap during the day', reply: 'Winter sun is weak, and the heap is hottest in the middle, where no light reaches.' },
-        { text: 'Living things in the heap, releasing energy as they feed', reply: '' },
-        { text: 'The waste slowly burning without any flames', reply: 'Burning makes ash and smoke; the heap makes neither.' },
-        { text: 'Warmth rising from the ground under the heap', reply: 'The ground under the heap is colder than its middle, so heat flows out of the heap, not in.' }
+        { text: 'Sunshine soaked up in the day', correct: false, reply: 'Winter sun is weak, and the heap is hottest in the middle, where no light reaches. The warmth comes from living things inside it.' },
+        { text: 'Living things inside the heap', correct: true, reply: 'Bacteria and fungi are feeding on the waste. As they feed, they respire, and respiration releases energy.' }
       ],
-      hookReveal: 'Bacteria and fungi in the heap are breaking the waste down. As they feed, they respire, and respiration releases energy: some of it warms the heap.',
       onHook: (i) => this.setState({ hook: i }),
       // leaf cycle
       cycTitle: cycDone ? 'One leaf, start to finish.' : cq.title,

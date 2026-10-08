@@ -48,12 +48,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Five salts. Five tubes. Every one said chloride.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">A student tested five different white salts for halide ions. She acidified each solution with dilute hydrochloric acid, then added silver nitrate solution. Every tube gave a white precipitate, so she wrote "chloride" five times.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What went wrong?" figure-svg="{{ hookFig }}" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,520px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="Five salts. Five tubes. Every one said chloride." scene="A student tested five different white salts for halide ions. She acidified each solution with dilute hydrochloric acid, then added silver nitrate solution. Every tube gave a white precipitate, so she wrote “chloride” five times." question="did the chloride in every tube come from the salts, or from something she added?" figure-svg="{{ hookFig }}" options="{{ hookOptions }}" bridge="The halide test is acidified with dilute nitric acid, which adds no halide ions. Next: the three tests, and the acid that goes with each." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -463,12 +458,9 @@ class Component extends DCLogic {
         { href: K.hrefFor ? K.hrefFor('flame-tests', R) : null, label: 'Flame tests' }].filter((c) => c.href) : [],
       hookFig: ready ? this.hookFig() : '',
       hookOptions: [
-        { text: 'The hydrochloric acid added chloride ions to every tube', reply: 'Hold that thought. The sort further down tests it.' },
-        { text: 'Silver nitrate makes a white precipitate with any salt', reply: 'Bromide gives cream and iodide gives yellow, so the reagent can tell halides apart.' },
-        { text: 'All five salts really were chlorides after all', reply: 'Five different salts gave one identical result: suspect the test, not the salts.' },
-        { text: 'The solutions needed warming before the silver nitrate', reply: 'The halide test works cold. Temperature is not the problem.' }
+        { text: 'From the salts', correct: false, reply: 'Five different salts giving one identical result is the clue. The hydrochloric acid she added brought chloride ions of its own.' },
+        { text: 'From something she added', correct: true, reply: 'Hydrochloric acid contains chloride ions, so every tube made white silver chloride, whatever the salt was.' }
       ],
-      hookReveal: 'Hydrochloric acid is a solution of hydrogen chloride: it contains chloride ions. Add it, and white silver chloride forms whatever the sample was. The halide test is acidified with dilute nitric acid instead, which adds no halide ions. Each test has its own acid, and choosing it is part of the method.',
       onHook: (i) => this.setState({ hook: i }),
       rigFig: ready ? K.fig(this.rigSvg(), 'Apparatus for the carbonate test') : null,
       fizzFig: ready ? this.fizzFig() : '',
