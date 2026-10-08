@@ -149,7 +149,7 @@
      owning a column — see both functions' own comments. */
   var COLUMNS = [
     { key: "pupil",    label: "Pupil",       w: null },
-    { key: "status",   label: "Status",      w: 150 },
+    { key: "status",   label: "Status",      w: 290 },
     { key: "made",     label: "Made",        w: 90, make: true },
     { key: "secured",  label: "Secured",     w: 200 },
     { key: "sittings", label: "Sittings",    w: 120 },
@@ -226,10 +226,11 @@
      ⊕ MRB-354 §6 — the "Known once" column is GONE (completion_rule no
      longer means anything to secured/done, so the distinction it existed to
      show is gone too); the Secured column itself is `p.known`. */
-  function buildCsv(data, rows) {
+  function buildCsv(data, rows, truth) {
     var a = data.assignment || {}, n = data.n || 0;
     var cols = columnsFor(a.mode);
-    var head = cols.map(function (c) { return c.label; });
+    var head = [];
+    cols.forEach(function (c) { head.push(c.label); if (c.key === "secured") { head.push("Unsure"); } });
     var lines = [head.map(csvEscape).join(",")];
     rows.forEach(function (p) {
       var out = [];
@@ -239,6 +240,12 @@
            the Time cell's own CSV text, as it does on screen. */
         else if (c.key === "time") { out.push((p.active_ms ? clock(p.active_ms) : "") + (p.rushed ? " (rushed)" : "")); }
         else { out.push(cellText(p, c.key, n, a.mode, a.rule)); }
+        /* ⊕ round 3 — Unsure sits right after Secured; blank when there is no
+           understanding data (never 0 for "unknown"). */
+        if (c.key === "secured") {
+          var T = window.MRBFlashcardTruth;
+          out.push(truth && !truth.failed && T ? String(T.unsure(truth, p.pupil_id)) : "");
+        }
       });
       lines.push(out.map(csvEscape).join(","));
     });
@@ -273,7 +280,12 @@
   /* ── state ────────────────────────────────────────────────────────────── */
   var S = {
     id: null, sb: null, data: null, sortKey: null, sortDir: "asc",
-    timer: null, inflight: false, lastFocus: null, chem: false
+    timer: null, inflight: false, lastFocus: null, chem: false,
+    /* ⊕ Flashcards round 3 (teacher) — the TRUTH read; see refreshTruth().
+       truth: null = not settled yet, {failed:true} = the read did not work,
+       else shared/flashcard-truth.js's build() result. truthRows: the raw
+       class-wide rows (null = not read, false = the read failed). */
+    truth: null, truthRows: null, truthBusy: false, truthSig: null, truthFailAt: 0
   };
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -337,7 +349,7 @@
         /* Redraw now so this one row fills in without waiting for the
            rest of the queue — never re-triggers ensureDetail (that only
            runs from a fresh `flashcard_progress` read, in render()). */
-        if (S.data) { renderTable(S.data); }
+        if (S.data && !recomputeTruth()) { renderTable(S.data); }
         pumpDetailQueue();
       });
   }
@@ -388,6 +400,137 @@
     var secured = Math.max(0, Math.min(p.known || 0, n));
     var unseen = Math.max(0, n - secured);
     return { secured: secured, nearly: 0, not_yet: 0, unseen: unseen };
+  }
+
+
+  /* ═════════════════════════════════════════════════════════════════════
+     ⊕ Flashcards round 3 (teacher), Oct 2026 — EFFORT is not UNDERSTANDING.
+
+     The status chip says what a pupil DID; a pupil who presses "I don't
+     know" on every card still reaches Done. So each refresh also reads, class
+     wide and through the teacher's own client (RLS already lets a class
+     teacher / school admin / SLT select all three):
+       · flashcard_events  — answer_submitted rows whose answer is the IDK text
+       · flashcard_reviews — rating + typed answer + the check's verdict
+       · flashcard_pupil_cards — the make-pass answer + verdict
+     and shared/flashcard-truth.js (pure, node-tested) folds them into "which
+     cards is each pupil unsure of" and one class-wide reteach list.
+
+     THE DECK comes from `flashcard_pupil_detail` (already fetched for the
+     strip), never from `assignment_flashcards`: pool_ownership forbids any
+     question/answer read of that table outside the library.
+
+     A read that errors, or that returns nothing for a class that has done
+     work, settles `S.truth = {failed:true}`: the page then says NOTHING about
+     understanding and keeps the RPC's own reteach list. Never "all confident"
+     without data. */
+  var PAGE = 1000;
+  var IDK_FILTER = "I don't know";
+
+  async function readAll(make) {
+    var out = [];
+    for (var from = 0, guard = 0; guard < 200; guard++, from += PAGE) {
+      var r = await make().range(from, from + PAGE - 1);
+      if (!r || r.error) { throw (r && r.error) || new Error("read_failed"); }
+      var rows = r.data || [];
+      out = out.concat(rows);
+      if (rows.length < PAGE) { return out; }
+    }
+    throw new Error("too_many_rows");
+  }
+
+  async function refreshTruth() {
+    if (S.truthBusy || !S.data || !S.sb) { return; }
+    var pupils = S.data.pupils || [];
+    /* Re-read only when the class's ACTIVITY changed (each pupil's status,
+       last_active, known, sittings and verdict split); an unchanged poll
+       reuses S.truth. A failed read retries on a changed signature or after
+       ~60 s, never every poll. */
+    var sig = pupils.map(function (p) {
+      return [p.pupil_id, p.status, p.last_active, p.known, p.sittings, JSON.stringify(p.answers || {})].join("|");
+    }).join(";");
+    if (S.truthSig === sig) {
+      if (S.truthRows !== false) { return; }
+      if (Date.now() - S.truthFailAt < 60000) { return; }
+    }
+    S.truthSig = sig;
+    if (!pupils.some(function (p) { return p.sittings; })) {
+      /* Nobody has done anything: nothing to read, and every line is blank. */
+      S.truthRows = { idk: [], reviews: [], pupilCards: [], idle: true };
+      recomputeTruth();
+      return;
+    }
+    S.truthBusy = true;
+    var id = S.id;
+    try {
+      var got = await Promise.all([
+        readAll(function () {
+          return S.sb.from("flashcard_events").select("pupil_id, card_id, type, answer")
+            .eq("assignment_id", id).eq("type", "answer_submitted").eq("answer", IDK_FILTER).order("id");
+        }),
+        readAll(function () {
+          return S.sb.from("flashcard_reviews").select("pupil_id, card_id, rating, answer, answer_check")
+            .eq("assignment_id", id).order("id");
+        }),
+        readAll(function () {
+          return S.sb.from("flashcard_pupil_cards").select("pupil_id, card_id, pupil_answer, answer_check")
+            .eq("assignment_id", id).order("pupil_id").order("card_id");
+        })
+      ]);
+      S.truthRows = { idk: got[0], reviews: got[1], pupilCards: got[2] };
+    } catch (e) {
+      console.warn("[flashcards] understanding read failed", e);
+      S.truthRows = false;
+      S.truthFailAt = Date.now();
+    } finally {
+      S.truthBusy = false;
+    }
+    recomputeTruth();
+  }
+
+  function deckFromDetails() {
+    for (var pid in DETAIL_CACHE) {
+      if (!Object.prototype.hasOwnProperty.call(DETAIL_CACHE, pid)) { continue; }
+      var cards = DETAIL_CACHE[pid];
+      if (cards && cards.length) {
+        return cards.map(function (c) { return { id: c.id, position: c.position, question: c.question }; });
+      }
+    }
+    return null;
+  }
+
+  /* Folds the rows into S.truth and repaints the two places it shows.
+     Returns true when it repainted (so a caller need not paint again). */
+  function recomputeTruth() {
+    var T = window.MRBFlashcardTruth;
+    if (!S.data) { return false; }
+    var next;
+    if (!T || S.truthRows === false) { next = { failed: true }; }
+    else if (S.truthRows == null) { return false; }
+    else if (S.truthRows.idle) { next = { byPupil: {}, reteach: [], n: 0 }; }
+    else {
+      var deck = deckFromDetails();
+      if (!deck) {
+        if (DETAIL_ACTIVE || DETAIL_QUEUE.length) { return false; }
+        next = { failed: true };
+      } else {
+        next = T.build({ pupils: S.data.pupils || [], cards: deck, expectActivity: true,
+                         idk: S.truthRows.idk, reviews: S.truthRows.reviews,
+                         pupilCards: S.truthRows.pupilCards });
+      }
+    }
+    S.truth = next;
+    var body = $("fp-body");
+    if (body) { body.setAttribute("data-truth", next.failed ? "failed" : "ok"); }
+    renderStrip(S.data);
+    renderTable(S.data);
+    return true;
+  }
+
+  /* The understanding text beside a status chip ("" when there is none). */
+  function understanding(p, n) {
+    var T = window.MRBFlashcardTruth;
+    return (T && S.truth) ? T.pupilLine(S.truth, p, n) : "";
   }
 
   function nowIso() { return new Date().toISOString(); }
@@ -469,6 +612,43 @@
                            c.avg_sittings == null ? "—" : String(c.avg_sittings), null, "fp-avg"));
     host.appendChild(tiles);
 
+    host.classList.toggle("fp-strip-solo", false);
+    /* ONE reteach list. With the understanding read settled it is the
+       per-card one (unsure pupils, hardest first); until then nothing; if the
+       read failed, the RPC's own "Most often Not yet" so the teacher is not
+       left blind. */
+    if (S.truth && !S.truth.failed) {
+      if (!S.truth.reteach.length) { host.classList.add("fp-strip-solo"); return; }
+      var tc = h("div", "fp-reteach");
+      tc.id = "fp-reteach";
+      tc.appendChild(h("div", "fp-tile-label", "Reteach"));
+      var tl = h("ol", "fp-rt-list fp-rt-scroll");
+      S.truth.reteach.forEach(function (r) {
+        var li = h("li", "fp-rt-row fp-rt-card");
+        li.setAttribute("data-card", r.id);
+        var top = h("div", "fp-rt-top");
+        top.appendChild(h("span", "fp-rt-no", String((r.position || 0) + 1)));
+        var q = sci("span", "fp-rt-q", r.question);
+        q.setAttribute("data-fp-data", "question");
+        top.appendChild(q);
+        li.appendChild(top);
+        var meta = h("div", "fp-rt-meta");
+        var bits = [["don't know", r.idk, "fp-rt-i"],
+                    ["Nearly/Wrong", r.weak, "fp-rt-w"], ["secured anyway", r.securedAnyway, "fp-rt-s"]];
+        bits.forEach(function (b) {
+          if (!b[1]) { return; }
+          var sp = h("span", "fp-rt-bit " + b[2], b[1] + " " + b[0]);
+          sp.setAttribute("data-bit", b[2]);
+          meta.appendChild(sp);
+        });
+        li.appendChild(meta);
+        tl.appendChild(li);
+      });
+      tc.appendChild(tl);
+      host.appendChild(tc);
+      return;
+    }
+    if (!S.truth) { host.classList.add("fp-strip-solo"); return; }
     var rt = (c.reteach || []).slice(0, 5);
     var card = h("div", "fp-reteach");
     card.id = "fp-reteach";
@@ -577,6 +757,9 @@
       var row = h("tr", "fp-row");
       row.setAttribute("data-pupil", p.pupil_id);
       row.setAttribute("data-status", p.status || "");
+      if (S.truth && !S.truth.failed && window.MRBFlashcardTruth) {
+        row.setAttribute("data-unsure", String(window.MRBFlashcardTruth.unsure(S.truth, p.pupil_id)));
+      }
       cols.forEach(function (c) {
         var td = h(c.key === "pupil" ? "th" : "td", "fp-td fp-col-" + c.key);
         if (c.key === "pupil") {
@@ -593,8 +776,20 @@
           var phChip = statusChip(p.status);
           phChip.classList.add("ph-only");
           td.appendChild(phChip);
+          var phU = understanding(p, n);
+          if (phU) {
+            var phUe = h("span", "fp-und ph-only", phU);
+            phUe.setAttribute("data-fp-und", "1");
+            td.appendChild(phUe);
+          }
         } else if (c.key === "status") {
           td.appendChild(statusChip(p.status));
+          var u = understanding(p, n);
+          if (u) {
+            var ue = h("span", "fp-und", u);
+            ue.setAttribute("data-fp-und", "1");
+            td.appendChild(ue);
+          }
         } else if (c.key === "secured") {
           td.appendChild(securedCell(p, n));
         } else if (c.key === "time") {
@@ -625,6 +820,7 @@
        same S.data. See ensureDetail's own comment for the 0-RPCs-when-
        nothing-changed guarantee this placement is what delivers. */
     ensureDetail(d.pupils || []);
+    refreshTruth();
   }
 
   /* ── live: every 10 s while visible ───────────────────────────────────── */
@@ -678,7 +874,7 @@
   function exportCsv() {
     if (!S.data) { return; }
     var rows = sortRows(S.data.pupils || [], S.sortKey, S.sortDir);
-    var text = buildCsv(S.data, rows);
+    var text = buildCsv(S.data, rows, S.truth);
     var name = csvFilename(S.data.assignment || {});
     window.__MRB_FP_LAST_CSV__ = { name: name, text: text };
     try {

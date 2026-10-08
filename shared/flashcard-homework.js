@@ -8,10 +8,26 @@
  *   · The pupil may still type an answer and the answer check still runs,
  *     but its verdict is only a HINT: the chip beside their answer (Right /
  *     Nearly / Wrong / No answer / Checking…). It never gates anything.
- *   · After every reveal Secured, Nearly and Not yet are ALL available —
+ *   · After every reveal Nearly and Not yet are ALWAYS available —
  *     whatever the verdict, while it is still "Checking…", when the check is
  *     slow, failed or down, and after "I don't know". The pupil never waits
  *     for the check. Nothing is pre-filled.
+ *   · ⊕ 8 Oct 2026 (Flashcards, round 3) — SECURED HAS A FLOOR: it opens only
+ *     for a REAL ATTEMPT, `realAttempt(pupil, model)` below. That is an
+ *     effort test, never a correctness test (a right answer in the pupil's
+ *     own words always opens it); mashing keys, "x", "idk" or a blank do not.
+ *     The verdict chip is still only a hint. The box is gone once the answer
+ *     shows, so the floor is judged on the answer the pupil SUBMITTED
+ *     (`this.mine`; after "I don't know" that is their own-words text). A
+ *     pupil who mashed rates Nearly / Not yet and the card comes back on Try
+ *     again with an empty box, where a real word opens Secured. There is no
+ *     re-type step.
+ *   · ⊕ 8 Oct 2026 — THE MR BADMUS NUDGE: on the Done screen, when every card
+ *     is secured but three or more are SHAKY (secured in this run after "I
+ *     don't know", or with an answer the check called Nearly / Wrong), the
+ *     end view carries `nudge`. It never blocks Done and never changes the
+ *     score. A RUN lasts from the first open until "Revise flashcards one
+ *     more time" (`again()`), and is kept on the device.
  *   · The teacher still sees the truth: the typed answer, the verdict and the
  *     pupil's rating are all recorded exactly as before, side by side.
  *   · The revealed answer is always the deck's model answer; what the pupil
@@ -38,7 +54,8 @@
  *     B  checking: model answer showing, the three ratings showing,
  *        none filled, chip "Checking…"         (verdict = "pending")
  *     C  verdict: chip Right / Nearly / Wrong / No answer as a hint only;
- *        all three ratings stay open, nothing filled (5 Oct)
+ *        Nearly and Not yet stay open, Secured opens for a real attempt
+ *        (8 Oct), nothing filled
  *     D  rated: the next card in state A, or the end screen
  *
  *   The headline counts THIS PASS: "2 of 10 right" — a card is right when its
@@ -228,6 +245,84 @@
       return key.length && key.join(" ") === pa ? "match" : null;
     }
     return null;
+  }
+
+  // ── ⊕ 8 Oct 2026 — the Secured floor: a REAL ATTEMPT ────────────────
+  // Lenient on purpose: we judge EFFORT, never correctness. A right answer in
+  // the pupil's own words must always open Secured; keyboard mash, a blank,
+  // "idk", a lone "x" or only filler words must not.
+  var STOPWORDS = ("a an the and or but nor of to in on at by for with from into onto as is are was were " +
+    "be been being am it its this that these those there their they them then than so if when what which " +
+    "who whom whose how why where do does did done doing has have had having can could will would shall " +
+    "should may might must not no yes i me my you your we our us he she his her him just also very really " +
+    "get gets got getting go goes went going thing things stuff some any all each about x").split(" ");
+  var NUMWORDS = { zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8,
+    nine: 9, ten: 10, eleven: 11, twelve: 12, twice: 2, double: 2, doubles: 2, doubled: 2,
+    triple: 3, triples: 3, tripled: 3, thrice: 3, quadruple: 4, quadruples: 4, quadrupled: 4 };
+  var FORMULAE = { o2: "oxygen", co2: "dioxide", h2: "hydrogen", h2o: "water", cl2: "chlorine" };
+  var GROUPS = {};
+  [["DOWN", "decrease decreases decreased decreasing down lower lowers lowered less fewer fall falls fell drop drops dropped reduce reduces reduced smaller shrink shrinks"],
+   ["UP", "increase increases increased increasing up higher raise raises rise rises rose more greater bigger larger grow grows"],
+   ["SAME", "same equal equals constant unchanged identical"],
+   ["CLOUDY", "cloudy milky murky"],
+   // Real deck cards: "so it doesnt get hot" (…heating up), "dead sea
+   // creatures squashed" (…died… compressed… pressure).
+   ["HEAT", "heat heats heated heating hot hotter warm warmer warms"],
+   ["DIE", "die dies died dying dead death"],
+   ["PRESS", "press pressed pressure compress compressed compression squash squashed squeeze squeezed crush crushed"],
+   ["J", "j joule joules"], ["W", "w watt watts"], ["N", "n newton newtons"], ["V", "v volt volts"],
+   ["KG", "kg kilogram kilograms"], ["HZ", "hz hertz"], ["OHM", "ohm ohms"]
+  ].forEach(function (g) { g[1].split(" ").forEach(function (w) { GROUPS[w] = g[0]; }); });
+  function joinThousands(t) { return t.replace(/(\d)[, ](?=\d{3}\b)/g, "$1"); }
+  function withoutFormulae(t) {
+    return t.replace(/[a-z0-9]+/g, function (w) { return FORMULAE[w] ? " " : w; });
+  }
+  function numbersOf(text) {
+    var t = withoutFormulae(joinThousands(String(text == null ? "" : text).toLowerCase())), out = [], m;
+    var re = /\d+(?:\.\d+)?/g;
+    while ((m = re.exec(t))) { out.push(parseFloat(m[0])); }
+    (t.match(/[a-z]+/g) || []).forEach(function (w) {
+      if (Object.prototype.hasOwnProperty.call(NUMWORDS, w)) { out.push(NUMWORDS[w]); }
+    });
+    return out;
+  }
+  function wordsOf(text) {
+    var t = String(text == null ? "" : text).toLowerCase()
+      .replace(/[a-z0-9]+/g, function (w) { return FORMULAE[w] || w; })
+      .replace(/([a-z])(\d)/g, "$1 $2").replace(/(\d)([a-z])/g, "$1 $2")
+      .replace(/[^a-z0-9]+/g, " ");
+    return t.split(" ").filter(function (w) {
+      return w && !/^\d+$/.test(w) && STOPWORDS.indexOf(w) < 0;
+    });
+  }
+  function realAttempt(pupil, model) {
+    var pa = norm(pupil);
+    if (pa === "" || IDK.indexOf(pa) >= 0) { return false; }
+    var pn = numbersOf(pupil), mn = numbersOf(model);
+    for (var i = 0; i < pn.length; i++) { if (mn.indexOf(pn[i]) >= 0) { return true; } }
+    var pw = wordsOf(pupil), mw = wordsOf(model);
+    for (var a = 0; a < pw.length; a++) {
+      for (var b = 0; b < mw.length; b++) {
+        var p = pw[a], m = mw[b];
+        if (p === m || (GROUPS[p] && GROUPS[p] === GROUPS[m])) { return true; }
+        if (p.length >= 4 && m.length >= 4 &&
+            (p.indexOf(m) >= 0 || m.indexOf(p) >= 0 || p.slice(0, 4) === m.slice(0, 4))) { return true; }
+      }
+    }
+    return false;
+  }
+
+  // ⊕ 8 Oct 2026 — the RUN record behind the Mr Badmus nudge: per card, "I
+  // don't know" pressed, and the answer + verdict it was last secured with.
+  // On the device per assignment; in memory only if storage throws.
+  function loadRun(key) {
+    try {
+      var v = JSON.parse(root.localStorage.getItem(STORE + "run." + key) || "null");
+      return v && typeof v === "object" ? { idk: v.idk || {}, sec: v.sec || {} } : null;
+    } catch (e) { return null; }
+  }
+  function saveRun(key, run) {
+    try { root.localStorage.setItem(STORE + "run." + key, JSON.stringify(run)); } catch (e) { /* private mode */ }
   }
 
   var VERDICTS = ["match", "partial", "no", "blank"];
@@ -468,6 +563,7 @@
       });
     }
     this.liveSecured = {};    // cards rated got_it since the last read — once secured, stays
+    this.run = loadRun(assignmentId) || { idk: {}, sec: {} };   // ⊕ 8 Oct: the nudge's record
     this.liveSessionN = 0;
     this.apply(state);
     this.start(this.opts.resume || null);
@@ -770,6 +866,7 @@
     this.idkNow = true;
     this.idkSeen[c.id] = true;
     this.keepIdk();
+    this.run.idk[c.id] = true; saveRun(this.id, this.run);
     this.mine = IDK_TEXT;
     this.draft = "";
     this.drafts[c.id] = "";
@@ -787,6 +884,14 @@
     function land(v) {
       if (settled) { return; }
       settled = true;
+      // ⊕ 8 Oct: a verdict that lands AFTER the pupil rated still counts for
+      // the nudge, when it is for the very answer the card was secured with.
+      var rec = self.run.sec[c.id];
+      if (rec && rec.ans === answer && VERDICTS.indexOf(v) >= 0) {
+        rec.verdict = v;
+        saveRun(self.id, self.run);
+        if (self.end) { self.changed(); }
+      }
       var now = self.current();
       // (compared by id: a server reply rebuilds the card objects)
       if (self.tok !== tok || !now || now.id !== c.id || !self.revealed || self.verdict !== "pending") { return; }
@@ -830,8 +935,13 @@
   Engine.prototype.cap = function () {
     return this.revealed ? "got_it" : null;
   };
+  // ⊕ 8 Oct 2026: Nearly and Not yet are always open after the reveal;
+  // Secured needs a real attempt in the answer that was submitted.
   Engine.prototype.allowed = function (rating) {
-    return !!this.revealed && RATINGS.indexOf(rating) >= 0;
+    if (!this.revealed || RATINGS.indexOf(rating) < 0) { return false; }
+    if (rating !== "got_it") { return true; }
+    var c = this.current();
+    return !!c && realAttempt(this.mine, c.answer);
   };
 
   // Nothing is filled for the pupil (see above).
@@ -848,7 +958,11 @@
     this.pass[id] = { rating: rating, mine: this.mine, verdict: this.verdict === "pending" ? null : this.verdict, cap: null };
     // Once secured, stays secured (Mide, 4 Oct 2026): a got_it here secures
     // the card for good; a later lower rating is history, never a downgrade.
-    if (rating === "got_it") { this.liveSecured[id] = true; }
+    if (rating === "got_it") {
+      this.liveSecured[id] = true;
+      this.run.sec[id] = { ans: this.mine, verdict: this.verdict === "pending" ? null : (this.verdict || null) };
+      saveRun(this.id, this.run);
+    }
     delete this.saved[id];
     this.keepDrafts(true);
     if (!this.detour && this.idx >= this.baseLen && this.idkSeen[id]) {
@@ -1012,9 +1126,23 @@
   // own all-secured shortcut, which would otherwise re-show the same Done
   // screen the pupil just asked to get past.
   Engine.prototype.again = function () {
+    this.run = { idk: {}, sec: {} };    // ⊕ 8 Oct: a new run begins
+    saveRun(this.id, this.run);
     this.forceRevise = true;
     this.start(null);
     this.forceRevise = false;
+  };
+
+  // ⊕ 8 Oct 2026 — a card is SHAKY when it is secured in this run and "I
+  // don't know" was pressed on it in this run, or the answer it was last
+  // secured with was judged Nearly or Wrong.
+  Engine.prototype.shakyCount = function () {
+    var self = this, n = 0;
+    this.cards.forEach(function (c) {
+      var r = self.run.sec[c.id];
+      if (r && (self.run.idk[c.id] || r.verdict === "partial" || r.verdict === "no")) { n += 1; }
+    });
+    return n;
   };
 
   Engine.prototype.visibility = function () {
@@ -1071,6 +1199,7 @@
         line1: E.securedCount + " of " + E.total + " secured",
         offline: this.error === "offline",
         secondary: E.all,
+        nudge: E.all && this.shakyCount() >= 3,
         button: button,
         buttonLabel: { done: "Done", retry: "Try again" }[button]
       };
@@ -1223,6 +1352,7 @@
     modelWaitMs: MODEL_WAIT_MS,
     active: null,
     quickCheck: quickCheck,
+    realAttempt: realAttempt,   // ⊕ 8 Oct — exposed for tests
     reconstruct: reconstruct,
     finishedAt: finishedAt,
     securedInfo: securedInfo,   // ⊕ MRB-354 — exposed for tests/drives

@@ -268,7 +268,7 @@ def main():
                 P.shot("s1-C-verdict")
                 P.click('[data-hw="got_it"]')
                 P.keyboard(True)
-                P.type("hydrogen and oxygen")
+                P.type("made of water")
                 P.click('[data-hw="check"]')
                 P.keyboard(False)
                 s = P.st()
@@ -282,7 +282,7 @@ def main():
                 # ‹ Back twice, then I don't know REPLACES card 1's Got it
                 P.click('[data-hw="back"]')
                 s = P.st()
-                check(s["front"] == "What is the formula of water?" and s["draft"] == "hydrogen and oxygen",
+                check(s["front"] == "What is the formula of water?" and s["draft"] == "made of water",
                       "live: ‹ Back → card 2 with its answer in the box")
                 P.shot("s1-Back")
                 P.click('[data-hw="back"]')

@@ -85,6 +85,22 @@
   flex: none; font: 500 15px/1.2 var(--st-mono); font-variant-numeric: tabular-nums;
   color: var(--st-accent-text);
 }
+.fp-strip.fp-strip-solo { grid-template-columns: minmax(0, 1fr); }
+/* ⊕ Flashcards round 3 (teacher) — the per-card reteach list: a card number
+   and its question, then the counts as small quiet bits. Scrolls in its own
+   box so ten cards never push the pupil table off a phone. */
+.fp-rt-scroll { max-height: 300px; overflow-y: auto; overscroll-behavior: contain; }
+.fp-rt-row.fp-rt-card { display: block; }
+.fp-rt-top { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.fp-rt-no {
+  flex: none; min-width: 1.6em; font: 500 14px/1.2 var(--st-mono);
+  font-variant-numeric: tabular-nums; color: var(--st-caption);
+}
+.fp-rt-meta { display: flex; flex-wrap: wrap; gap: 2px 14px; margin: 4px 0 0 calc(1.6em + 10px);
+  font: 500 14px/1.3 var(--st-ui); color: var(--st-muted); }
+.fp-rt-u { color: var(--st-accent-text); font-weight: 600; }
+/* The understanding text beside a status chip. */
+.fp-und { margin-left: 8px; font: 500 14px/1.2 var(--st-ui); color: var(--st-muted); white-space: nowrap; }
 .fp-empty { color: var(--st-muted); font: 400 15.5px/1.5 var(--st-ui); padding: 8px 0; }
 
 /* ⊕ Design port A, 30 Sep 2026 — ONE legend above the table (ruled), for
@@ -112,9 +128,9 @@
    COLUMNS[].w) decides every width, so no row's content can move a column.
    ⊕ Design port A — narrower now that Per card/Rushed are cut (7 columns
    in make mode, 6 in review, was 9/8). */
-.fp-table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 980px;
+.fp-table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1120px;
             table-layout: fixed; }
-.fp-table.fp-review { min-width: 880px; }
+.fp-table.fp-review { min-width: 1020px; }
 .fp-th {
   position: sticky; top: 0; background: var(--st-paper); text-align: left;
   border-bottom: 1px solid var(--st-rule); padding: 0; white-space: nowrap;
@@ -156,6 +172,7 @@ tbody .fp-row:first-child .fp-td { border-top: none; }
    `.fp-status{display:inline-flex}` on the SAME element regardless of
    which rule happens to sit later in this file. */
 .fp-col-pupil .ph-only { display: none; }
+.fp-col-pupil .fp-und.ph-only { display: none; }
 
 .fp-status {
   display: inline-flex; align-items: center; gap: 7px; padding: 5px 10px;
@@ -268,5 +285,6 @@ tbody .fp-row:first-child .fp-td { border-top: none; }
      the phone-only chip sits on the line under it. */
   .fp-name { max-width: none; white-space: normal; display: block; }
   .fp-col-pupil .ph-only { display: inline-flex; margin-top: 6px; }
+  .fp-col-pupil .fp-und.ph-only { display: inline; margin-left: 6px; white-space: normal; }
   .fp-sec { flex-wrap: wrap; }
 }

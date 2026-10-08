@@ -528,8 +528,10 @@ def rate_shown(P):
     # ⊕ 5 Oct 2026 — the pupil decides: nothing is pre-filled and all three
     # ratings are always enabled. This pupil simply follows the hint chip.
     s = P.st()
-    check(sorted(s["enabled"]) == ["got_it", "nearly", "not_yet"] and not s["pressed"],
-          "the verdict is only a hint: all three ratings enabled, none filled (got %r %r)" % (s["enabled"], s["pressed"]))
+    # ⊕ 8 Oct 2026 — Nearly and Not yet are always open; Secured needs a real
+    # attempt (a guess that shares no word with the model answer greys it).
+    check({"nearly", "not_yet"} <= set(s["enabled"]) and not s["pressed"],
+          "the verdict is only a hint: Nearly and Not yet enabled, none filled (got %r %r)" % (s["enabled"], s["pressed"]))
     rating = {"Right": "got_it", "Nearly": "nearly"}.get(s["chip"], "not_yet")
     P.click('[data-hw="%s"]' % rating)
     time.sleep(0.3)

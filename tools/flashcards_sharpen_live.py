@@ -245,8 +245,8 @@ def main():
                 P.type("oxygen")
                 P.click('[data-hw="check"]')
                 s = P.st()
-                check(s["chip"] == "Wrong" and enabled_is(s, ["not_yet", "nearly", "got_it"]) and s["pressed"] == [],
-                      "live: Wrong is only a hint → all three enabled, none filled (got %r %r)" % (s["chip"], s["enabled"]))
+                check(s["chip"] == "Wrong" and enabled_is(s, ["not_yet", "nearly"]) and s["pressed"] == [],
+                      "live: Wrong is only a hint → Nearly / Not yet enabled, Secured greyed (8 Oct floor: 'oxygen' shares no word with 'H2O'), none filled (got %r %r)" % (s["chip"], s["enabled"]))
                 P.shot("01-wrong-hint")
                 P.click('[data-hw="not_yet"]')
 
@@ -293,7 +293,7 @@ def main():
                 P.type("dunno")
                 P.click('[data-hw="check"]')
                 s = P.st()
-                check(s["chip"] == "No answer" and enabled_is(s, ["not_yet", "nearly", "got_it"]), "live: 'dunno' → No answer as a hint, all three enabled")
+                check(s["chip"] == "No answer" and enabled_is(s, ["not_yet", "nearly"]), "live: 'dunno' → No answer as a hint, Secured greyed (8 Oct floor)")
                 P.click('[data-hw="not_yet"]')
 
                 s = P.st()
