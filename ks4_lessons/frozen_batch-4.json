@@ -1,6 +1,6 @@
 {
  "atmospheric-pollutants": {
-  "hash": "c6d2af43a99101257735fa83a80ea8e27a45cca58e396f3e2d0b546b715e96ec",
+  "hash": "cfa4573d2ff75a03db9c0e9634f2422cb87a8ebc0eeab8ed961a270fad56c9c1",
   "review_state": "examiner-reviewed"
  },
  "biodiversity": {
@@ -44,7 +44,7 @@
   "review_state": "examiner-reviewed"
  },
  "uses-em-waves": {
-  "hash": "8c6e17e6a2df15720286978525369cb5cdea408eaceca6ae50fbf8f788505343",
+  "hash": "3115e7d0286ddd2bb6bf5e746354474224d8dc64aaf7653d7d301fd0a71a3f13",
   "review_state": "examiner-reviewed"
  },
  "water-cycle": {

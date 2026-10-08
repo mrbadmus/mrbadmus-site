@@ -90,10 +90,10 @@ Gates: `ks4_pilot_check` clean (54 pages, 17 assets); `ks4_batch_check` clean fo
 
 ## 9. Not sure: for Mide
 
-1. **EM-waves CH TH quiz keeps the ionosphere item and the UV-sterilisation item.** Both are pack-sanctioned (UEM-F3, F4) and lane-ruled as standing. UV sterilising is not on the AQA spec and conflicts with the lesson's own gamma line ("gamma rays ... sterilise medical equipment"); "radio waves reflect off the ionosphere" is true only of long, medium and short-wave radio, not FM or TV. The lesson's own explanation says "pass through the atmosphere", which is safer.
-2. **Thermal conductivity RP2 "Physics only" labelling** follows pack TC-F1 (page on all four routes, RP2 as a TF TH layer). The auditor could not verify the AQA numbering independently; the pack is the only source.
-3. **Pollutant predictor "CO and soot".** It treats carbon monoxide and soot as arriving together under limited oxygen; the pack says "CO and/or C". A pupil who ticks only CO sees "Here is the full set", not a wrong-idea message.
-4. **The 700 C slider stop was added** (infrared) so "dull red" has a stop; Design had six stops and none at which it was true. Planck curves and peaks are untouched.
+1. ⊕ RESOLVED 8 Oct (B4-UEM-HQ): both items replaced by microwave-cooking and UV-lamp items. Was: **EM-waves CH TH quiz keeps the ionosphere item and the UV-sterilisation item.** Both are pack-sanctioned (UEM-F3, F4) and lane-ruled as standing. UV sterilising is not on the AQA spec and conflicts with the lesson's own gamma line ("gamma rays ... sterilise medical equipment"); "radio waves reflect off the ionosphere" is true only of long, medium and short-wave radio, not FM or TV. The lesson's own explanation says "pass through the atmosphere", which is safer.
+2. ⊕ RULED CORRECT 8 Oct. **Thermal conductivity RP2 "Physics only" labelling** follows pack TC-F1 (page on all four routes, RP2 as a TF TH layer). The auditor could not verify the AQA numbering independently; the pack is the only source.
+3. ⊕ RESOLVED 8 Oct (B4-AP-ANDOR): the line now says "carbon monoxide and/or carbon (soot)". Was: **Pollutant predictor "CO and soot".** It treats carbon monoxide and soot as arriving together under limited oxygen; the pack says "CO and/or C". A pupil who ticks only CO sees "Here is the full set", not a wrong-idea message.
+4. ⊕ KEPT 8 Oct. **The 700 C slider stop was added** (infrared) so "dull red" has a stop; Design had six stops and none at which it was true. Planck curves and peaks are untouched.
 5. **Newlands is named in text only** (no octaves table), per ruling 12.3.
 6. **Quiz options carry per-option working text** (a reply under every option). It is Design's and the pack's text and was not compared with the wording of earlier batches.
 7. **Long header on physics pages.** The header (chip, equation-sheet link, two compact triangles) pushes "Start here" about 1,400 px down on a phone.

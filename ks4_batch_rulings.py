@@ -176,6 +176,33 @@ SCIENCE = [
          new="Oxides of nitrogen are linked to the high temperatures in engines. Here the danger is the oxygen running out."),
     dict(id="B4-AP-F2", slug="atmospheric-pollutants", layer="logic",
          old="['The catalytic converter', false]", new="['The engine oil', false]"),
+
+    # ── Lane rulings (Prompt AB, 8 Oct 2026) ─────────────────────────────
+    # uses-em-waves CH TH: the ionosphere item ("radio waves reflect off it" is
+    # true only of long/medium/short-wave radio) and the UV-sterilisation item
+    # (off-spec, and the lesson itself says gamma sterilises equipment) go.
+    # Each is replaced by a "why it suits the job" item on the SAME wave, from
+    # the lesson's own Higher list of uses; the Higher bank stays five.
+    dict(id="B4-UEM-HQ", slug="uses-em-waves", layer="logic",
+         old=r'''    const hq = [
+      { q: 'Why are microwaves used for satellite communications rather than radio waves?', opts: [['Microwaves pass through the ionosphere \u2014 radio waves reflect off it, preventing them from reaching satellites in orbit', true], ['Microwaves are more powerful \u2014 they reach greater distances than radio waves', false], ['Radio waves are dangerous at high altitude \u2014 microwaves are safer for satellite use', false], ['Satellites can only detect microwaves \u2014 their receivers are not compatible with radio waves', false]],
+        wrong_explanations: { 1: 'Power determines signal strength at a given distance \u2014 but all EM waves travel at the same speed. The key distinction is IONOSPHERE INTERACTION.', 2: 'Safety is not the relevant factor \u2014 the ionosphere physically reflects (most) radio waves back to Earth.', 3: 'This is backwards \u2014 it\u2019s the PHYSICS of ionosphere reflection, not receiver incompatibility, that determines which EM type is used.' } },
+      { q: 'UV light is used to sterilise medical equipment. Why is UV effective for this?', opts: [['UV has enough energy to damage DNA in microorganisms \u2014 killing or inactivating bacteria and viruses', true], ['UV heats the equipment to high temperatures, killing microorganisms by heat', false], ['UV is absorbed by metal \u2014 heating the equipment surface to kill bacteria', false], ['UV converts oxygen to ozone, which then kills bacteria chemically', false]],
+        wrong_explanations: { 1: 'UV can cause some warming but it\u2019s not the primary mechanism \u2014 UV sterilisation works through DNA damage (photochemical action), not significant heating.', 2: 'UV sterilisation is used for transparent surfaces, water, and air \u2014 metal surfaces are typically sterilised by heat or chemicals.', 3: 'UV can produce some ozone, but the primary sterilisation mechanism is direct DNA damage from UV photons \u2014 not ozone.' } }
+    ];
+''',
+         new=r'''    const hq = [
+      { q: 'Why are microwaves used to cook food?', opts: [['They are absorbed by water molecules in the food, transferring energy to its thermal store', true], ['They pass straight through the food without being absorbed', false], ['They are ionising, so they break up the molecules in the food', false], ['They are reflected by the food, which heats its surface', false]],
+        wrong_explanations: { 1: 'If they passed straight through, no energy would be transferred to the food. Water molecules in the food absorb them.', 2: 'Microwaves are not ionising. They heat food because water molecules in it absorb them.', 3: 'The food absorbs microwaves, mostly in its outer layers; the inside heats by conduction.' } },
+      { q: 'Why is ultraviolet used in energy efficient lamps?', opts: [['A coating inside the lamp absorbs the ultraviolet and gives out visible light', true], ['Ultraviolet is visible, so the lamp shines it straight out', false], ['Ultraviolet heats the glass until it glows', false], ['Ultraviolet passes through the coating and lights the room directly', false]],
+        wrong_explanations: { 1: 'Ultraviolet is not visible. The coating inside the lamp absorbs it and gives out visible light.', 2: 'The lamp does not glow because it is hot. The coating absorbs the ultraviolet and gives out visible light.', 3: 'The coating absorbs the ultraviolet. The light you see is the visible light the coating gives out.' } }
+    ];
+'''),
+    # atmospheric-pollutants: the predictor's limited-oxygen line follows the
+    # spec, "carbon monoxide and/or carbon (soot)", not "CO and soot together".
+    dict(id="B4-AP-ANDOR", slug="atmospheric-pollutants", layer="logic",
+         old="'Too little oxygen: carbon monoxide and particulates as well as carbon dioxide.'",
+         new="'Too little oxygen: carbon monoxide and/or carbon (soot), as well as carbon dioxide.'"),
 ]
 APPLIED = []
 

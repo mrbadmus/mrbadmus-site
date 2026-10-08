@@ -116,3 +116,12 @@ compile time, each failing loud if its target text moves. "Pack" = `docs/ks4/pac
 - `review_state` is `examiner-reviewed` on all 13 lessons, so no page shows the "Draft" banner. (Not yet frozen by this log; the freeze file is stamped separately.)
 - Fixed after review: Ks4Steps / Ks4Cfifa line inputs clipped their placeholders at phone width ("anything to co…"). The batch-4 stylesheet only (`EXTRA_CSS` in `ks4_lessons/batch_4.py`, appended to `shared/ks4-lesson-batch-4.css`) now tightens the line card and badge at 520px and below and sets the hint to 11px (10px at 380px and below). Measured on all 50 pages at 360 and 390: no placeholder is wider than its input. No shared asset changed.
 - Cosmetic, Design's layout, left: the satellite and cycle figures have labels that cross arrows; at 500 °C the infrared peak is off the axis.
+
+## Lane rulings applied at landing (Prompt AB, 8 Oct 2026)
+
+| id | lesson | ruling and change | source |
+|---|---|---|---|
+| B4-UEM-HQ | uses-em-waves (CH TH) | The ionosphere item and the UV-sterilisation item are removed. Each is replaced by a "why it suits the job" item on the same wave, taken from the lesson's own Higher list: microwaves cook food because water molecules in the food absorb them; ultraviolet is used in efficient lamps because a coating inside absorbs it and gives out visible light. Higher bank stays five (these two + three base items). | Lane ruling, 8 Oct; AQA 6.6.2.4 |
+| B4-AP-ANDOR | atmospheric-pollutants | The predictor's limited-oxygen line now reads "carbon monoxide and/or carbon (soot), as well as carbon dioxide" (was "carbon monoxide and particulates"). Scoring unchanged. | Lane ruling, 8 Oct; AQA 5.9.3.1 / pack F5 |
+| (kept) | thermal-conductivity | "Required practical 2, Physics only" confirmed correct. | Lane ruling, 8 Oct |
+| (kept) | infrared-black-bodies | 700 °C stop kept. | Lane ruling, 8 Oct |

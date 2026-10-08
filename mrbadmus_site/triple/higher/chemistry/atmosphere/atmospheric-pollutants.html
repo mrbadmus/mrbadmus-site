@@ -863,7 +863,7 @@ class Component extends DCLogic {
     const c = CASES[s.ci]; const exp = expect(c);
     const picked = PRODUCTS.filter((p) => s.picks[p.id]).map((p) => p.id);
     const exact = s.checked && picked.length === exp.length && exp.every((e) => s.picks[e]);
-    const why = [c.low ? 'Too little oxygen: carbon monoxide and particulates as well as carbon dioxide.' : 'Plenty of oxygen: carbon dioxide and water, no carbon monoxide or soot.', c.s ? 'Sulfur in the fuel: sulfur dioxide.' : 'No sulfur, so no sulfur dioxide.', c.hot ? 'Hot engine: oxides of nitrogen from the air.' : 'Not hot enough for nitrogen and oxygen from the air to react.'].join(' ');
+    const why = [c.low ? 'Too little oxygen: carbon monoxide and/or carbon (soot), as well as carbon dioxide.' : 'Plenty of oxygen: carbon dioxide and water, no carbon monoxide or soot.', c.s ? 'Sulfur in the fuel: sulfur dioxide.' : 'No sulfur, so no sulfur dioxide.', c.hot ? 'Hot engine: oxides of nitrogen from the air.' : 'Not hot enough for nitrogen and oxygen from the air to react.'].join(' ');
     const bankSrc = [
       { q: 'Why is carbon monoxide from a faulty heater so dangerous?', opts: [['It is toxic, and it is colourless and odourless, so it is not easily detected', true], ['It causes acid rain inside the house', false], ['It is the same gas as carbon dioxide, but hotter', false], ['It forms solid particles that block the airways', false]],
         wrong_explanations: { 1: 'Acid rain comes from sulfur dioxide and oxides of nitrogen. Carbon monoxide is dangerous because it is toxic and can\u2019t be seen or smelled.', 2: 'Carbon monoxide and carbon dioxide are different substances. Carbon monoxide forms in too little oxygen.', 3: 'That describes particulates. Carbon monoxide is a gas.' } },
