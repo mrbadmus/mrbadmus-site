@@ -13,6 +13,7 @@
   var RE = /[₀-₉]+/;
   var RE_G = /[₀-₉]+/g;
   var made = new WeakMap();
+  var SVGNS = 'http://www.w3.org/2000/svg';
   var SKIP = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, INPUT: 1, SVG: 1, svg: 1 };
 
   function clear(n) {
@@ -44,7 +45,10 @@
     var ref = n, added = [];
     for (var i = 1; i < parts.length; i++) {
       var p = parts[i], node;
-      if (p.sub !== undefined) { node = document.createElement('sub'); node.textContent = p.sub; }
+      if (p.sub !== undefined && parent.namespaceURI === SVGNS) {
+        // inside a figure label an HTML <sub> is not drawn ("CO2 in" showed as "CO in"): use an SVG tspan
+        node = document.createElementNS(SVGNS, 'tspan'); node.setAttribute('baseline-shift', 'sub'); node.setAttribute('font-size', '75%'); node.textContent = p.sub;
+      } else if (p.sub !== undefined) { node = document.createElement('sub'); node.textContent = p.sub; }
       else { if (!p.t) continue; node = document.createTextNode(p.t); }
       parent.insertBefore(node, ref.nextSibling);
       ref = node; added.push(node);

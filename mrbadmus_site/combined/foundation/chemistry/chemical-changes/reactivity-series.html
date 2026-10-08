@@ -22,7 +22,7 @@
 <script src="/shared/ks4-lib.js?v=27e05594"></script>
 <script src="/shared/ks4-nav.js?v=a938aae0"></script>
 <script src="/shared/ks4-diagrams.js?v=70966f04"></script>
-<script src="/shared/ks4-ext-batch-5.js?v=7aeceefd"></script>
+<script src="/shared/ks4-ext-batch-5.js?v=3208f6f2"></script>
 <script src="/shared/ks4-runtime.js?v=fc64b89b"></script>
 <script>
 window.KS4_BLOCKS = window.KS4_BLOCKS || {};
@@ -876,8 +876,8 @@ class Component extends DCLogic {
     const strip = STRIPS[s.strip], sol = SOLS[s.sol], reacts = rank(strip) < rank(sol[0]);
     const predOk = s.pred !== null && s.pred === reacts;
     const swapNote = s.pred === null ? '' : (predOk ? 'Right. ' : 'Not this time. ') + (reacts
-      ? NAME[strip] + ' is more reactive than ' + NAME[sol[0]] + ', so it displaces it. ' + NAME[strip] + ' + ' + sol[1] + ' gives ' + NAME[strip] + ' sulfate + ' + NAME[sol[0]] + '.' + (sol[0] === 'Cu' ? ' The blue colour fades as copper coats the strip.' : sol[0] === 'Fe' ? ' The pale green colour fades.' : '')
-      : NAME[strip] + ' is less reactive than ' + NAME[sol[0]] + ', so no reaction.');
+      ? NAME[strip].charAt(0).toUpperCase() + NAME[strip].slice(1) + ' is more reactive than ' + NAME[sol[0]] + ', so it displaces it. ' + NAME[strip] + ' + ' + sol[1] + ' gives ' + NAME[strip] + ' sulfate + ' + NAME[sol[0]] + '.' + (sol[0] === 'Cu' ? ' The blue colour fades as copper coats the strip.' : sol[0] === 'Fe' ? ' The pale green colour fades.' : '')
+      : NAME[strip].charAt(0).toUpperCase() + NAME[strip].slice(1) + ' is less reactive than ' + NAME[sol[0]] + ', so no reaction.');
     const base = [
       { q: 'A strip of zinc is placed in copper sulfate solution. What is observed?', opts: [['The blue solution fades and copper metal deposits on the zinc \u2014 zinc displaces copper', true], ['No change \u2014 zinc and copper have similar reactivity', false], ['The zinc dissolves and the solution turns orange', false], ['Zinc sulfate crystals form in the blue solution', false]],
         wrong_explanations: { 1: 'Zinc IS more reactive than copper \u2014 a reaction occurs. The solution changes from blue (Cu\u00b2\u207a) to colourless/pale (Zn\u00b2\u207a).', 2: 'The solution turns pale/colourless as Cu\u00b2\u207a ions are replaced by Zn\u00b2\u207a \u2014 orange is not the colour of any of these solutions.', 3: 'Zinc sulfate is formed in solution (dissolved) \u2014 it doesn\u2019t crystallise out immediately under these conditions.' } },

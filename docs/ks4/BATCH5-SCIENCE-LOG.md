@@ -39,3 +39,10 @@ MNM-B, MNM-H in the rendered DOM at 390 px; ENR-F6 and PT-F6 in the rendered rep
 None of the 15 slugs is a frozen-correction slug (`docs/ks4/FROZEN-CORRECTIONS.md`); this branch touches no
 `all_subtopics_*.py`. The batch is frozen after build (`ks4_lessons/frozen_batch-5.json`), `review_state`
 `examiner-reviewed`, draft banner off, as batch 4.
+
+## Fixes from the independent pupil walk (lead, 8 Oct 2026)
+
+| id | lesson | change | why |
+|---|---|---|---|
+| ext SVG subscripts | plant-tissues, land-use | `ks4-ext-batch-5.js` now writes an SVG `<tspan baseline-shift="sub">` inside figure labels instead of an HTML `<sub>`, which SVG does not draw. Batch 4's ext is unchanged (none of its figure labels carries a subscript). | The leaf figure read "CO in" (carbon monoxide) instead of "CO₂ in"; land-use's "CO₂ released" had the same fault. |
+| B5-RS-CAP-1/2 | reactivity-series | Displacement feedback capitalises the metal's name at the start of its sentence. Words unchanged. | "Not this time. copper is less reactive…" |

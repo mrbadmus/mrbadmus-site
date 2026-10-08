@@ -270,6 +270,14 @@ SCIENCE = [
     dict(id="B5-MNM-H", slug="metals-non-metals", layer="logic",
          old="const grp = pl.g === 8 ? 'Group 0' : 'Group ' + pl.g;",
          new="const grp = e[0] === 'H' ? 'not in a group' : pl.g === 8 ? 'Group 0' : 'Group ' + pl.g;"),
+    # reactivity-series: the displacement feedback starts a sentence with the metal's name, which
+    # NAME stores in lower case ("Not this time. copper is less reactive…"). Capitalise it; words unchanged.
+    dict(id="B5-RS-CAP-1", slug="reactivity-series", layer="logic",
+         old="      ? NAME[strip] + ' is more reactive than '",
+         new="      ? NAME[strip].charAt(0).toUpperCase() + NAME[strip].slice(1) + ' is more reactive than '"),
+    dict(id="B5-RS-CAP-2", slug="reactivity-series", layer="logic",
+         old="      : NAME[strip] + ' is less reactive than '",
+         new="      : NAME[strip].charAt(0).toUpperCase() + NAME[strip].slice(1) + ' is less reactive than '"),
     # ── Batch 5 port mechanic (not a science ruling) ───────────────────────
     # red-shift-big-bang: its renderVals returns a fresh object rather than spreading the
     # route helper (as batch 4's infrared did), so the one route chip (B-R12) got no words
