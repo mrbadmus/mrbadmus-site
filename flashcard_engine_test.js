@@ -254,14 +254,14 @@ function answer(e, text) { e.setDraft(text); e.check(); }
   {
     const { e } = await fresh();
     H.modelCheck = () => Promise.resolve("partial");
-    answer(e, "force of gravity");
+    answer(e, "force in newtons");
     check(e.view().chip === "Checking…" && e.view().suggest === null, "state B: 'Checking…', none filled");
     await tick(5);
     check(e.view().chip === "Nearly" && e.view().suggest === null && e.view().allowed.got_it, "the model's 'partial' → chip Nearly, nothing filled, Secured allowed");
     e.rate("nearly");
     H.modelWaitMs = 60;
     H.modelCheck = () => new Promise((r) => setTimeout(() => r("match"), 100));
-    answer(e, "made of hydrogen and oxygen");
+    answer(e, "made of water");
     await tick(80);
     // ⊕ option B: the first wait ran out at 60 ms, so a quiet retry is out —
     // still "Checking…" — and the first reply, landing at 100 ms (inside the
@@ -271,7 +271,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(e.view().chip === "Right" && e.view().suggest === null, "a slow first reply landing during the retry still counts as the hint");
     e.rate("got_it");
     H.modelCheck = () => new Promise((r) => setTimeout(() => r("match"), 400));
-    answer(e, "made of hydrogen and oxygen");
+    answer(e, "a force");
     await tick(160);
     check(e.view().chip === "" && e.view().allowed.got_it, "both waits over: no chip, Secured still allowed");
     check(e.view().allowed.nearly && e.view().allowed.not_yet, "an unchecked answer can be rated anything");
@@ -280,7 +280,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     e.rate("nearly");
     H.modelWaitMs = 4000;
     H.modelCheck = () => Promise.resolve({ weird: true });
-    answer(e, "mass times gravity strength");
+    answer(e, "ke");
     await tick(5);
     check(e.view().chip === "" && e.view().allowed.got_it, "a reply without a verdict string (twice) → no chip, Secured allowed");
   }
@@ -413,7 +413,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     e.rate("got_it");
     // (a) a right-but-different answer, verdict partial: Secured is allowed and secures the card
     H.modelCheck = () => Promise.resolve("partial");
-    answer(e, "hydrogen and oxygen");
+    answer(e, "water");
     await tick(5);
     v = e.view();
     check(v.chip === "Nearly" && ALL3(v) && v.suggest === null, "(a) partial: chip Nearly, all three allowed, nothing filled");
@@ -423,14 +423,19 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     H.modelCheck = null;
     answer(e, "the");                     // a lone function word → Wrong
     v = e.view();
-    check(v.chip === "Wrong" && ALL3(v), "wrong verdict: chip Wrong, all three allowed");
+    // ⊕ 8 Oct 2026 — the floor: Nearly and Not yet stay open, Secured does not.
+    check(v.chip === "Wrong" && v.allowed.nearly && v.allowed.not_yet && !v.allowed.got_it,
+          "wrong verdict on a non-attempt: chip Wrong, Nearly / Not yet open, Secured greyed");
+    e.rate("got_it");
+    check(e.view().card.id === v.card.id && e.view().revealed, "Secured is refused on a lone function word");
     e.rate("nearly");
     check(e.view().card.id !== v.card.id, "Nearly is taken on a Wrong verdict");
     answer(e, "dunno");
     v = e.view();
-    check(v.chip === "No answer" && ALL3(v), "(b) typed blank-ish: chip No answer, all three allowed");
-    e.rate("got_it");
-    check(e.view().card.id !== v.card.id, "(b) Secured is taken after a No answer verdict");
+    check(v.chip === "No answer" && v.allowed.nearly && v.allowed.not_yet && !v.allowed.got_it,
+          "(b) typed blank-ish: chip No answer, Secured greyed");
+    e.rate("not_yet");
+    check(e.view().card.id !== v.card.id, "(b) Not yet is taken after a No answer verdict");
   }
 
   // ── 10b. THE REVEALED ANSWER IS ALWAYS THE DECK'S MODEL ANSWER ────────
@@ -461,8 +466,8 @@ function answer(e, text) { e.setDraft(text); e.check(); }
       e.idk();
       proves(e, null, mode + " I don't know (before typing)");
       check(e.view().mine === null && !e.view().revealed, mode + " I don't know: nothing the pupil typed is on the card");
-      e.setDraft("my version"); e.check();
-      proves(e, "my version", mode + " I don't know (own words typed)");
+      e.setDraft("made of hydrogen and carbon"); e.check();
+      proves(e, "made of hydrogen and carbon", mode + " I don't know (own words typed)");
       e.rate("got_it");
       // finish the pass: c2.. wrong and Not yet, except the replay of c1
       for (let i = 2; i < 10; i++) { e.setDraft(WRONG + " " + i); e.check(); proves(e, WRONG + " " + i, mode + " card " + i); e.rate("not_yet"); }
@@ -483,7 +488,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     // path 4 — "Revise flashcards one more time", after every card is secured
     {
       const { e } = await fresh({ cards: TEN });
-      for (let i = 0; i < 10; i++) { e.setDraft("worded my own way " + i); e.check(); e.rate("got_it"); }
+      for (let i = 0; i < 10; i++) { e.setDraft(TEN[i].answer.slice(0, 12) + " my way"); e.check(); e.rate("got_it"); }
       check(e.view().end.button === "done" && e.view().end.secondary, "revise: ten secured, Done and the quiet secondary");
       e.again();
       proves(e, null, "Revise one more time (before typing)");
@@ -502,7 +507,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     const { e } = await fresh();
     H.modelWaitMs = 60;
     H.modelCheck = () => new Promise(() => {});      // never answers
-    answer(e, "some force thing");
+    answer(e, "some newton thing");
     let v = e.view();
     check(v.checking && ALL3(v), "(c) Checking…: all three ratings allowed at once");
     await tick(150);   // the first wait AND the quiet retry's
@@ -511,7 +516,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     H.modelWaitMs = 4000;
     // a check that fails outright
     H.modelCheck = () => Promise.reject(new Error("down"));
-    answer(e, "another force thing");
+    answer(e, "another newton thing");
     check(ALL3(e.view()), "(c) a failing check: all three allowed straight away");
     await tick(5);
     check(!e.view().checking && ALL3(e.view()) && e.view().chip === "", "(c) a failing check: no chip, all three still allowed");
@@ -524,7 +529,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     const e2 = e2o.e;
     H.modelWaitMs = 4000;
     H.modelCheck = () => new Promise((r) => setTimeout(() => r("no"), 30));
-    answer(e2, "a long worded answer here");
+    answer(e2, "a long newton answer here");
     e2.rate("got_it");
     await tick(60);
     check(e2.securedMap().c0 === true, "(c) rated Secured during Checking…; the late 'Wrong' changes nothing");
@@ -538,7 +543,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     const { S, e } = await fresh({ cards: TEN });
     H.modelCheck = () => Promise.resolve("partial");
     for (let i = 0; i < 10; i++) {
-      answer(e, "my own wording " + i);       // not the model answer: verdict comes back partial
+      answer(e, TEN[i].answer.slice(0, 12) + " my wording " + i);       // not the model answer: verdict comes back partial
       await tick(5);
       e.rate("got_it");
     }
@@ -550,7 +555,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     const verdicts = evs.filter((x) => x.type === "answer_submitted");
     const rated = evs.filter((x) => x.type === "rated");
     check(rated.length === 10 && rated.every((x) => x.rating === "got_it"), "(e) ten rated events, all got_it");
-    check(verdicts.length === 10 && verdicts.every((x, i) => x.answer === "my own wording " + i),
+    check(verdicts.length === 10 && verdicts.every((x, i) => x.answer === TEN[i].answer.slice(0, 12) + " my wording " + i),
           "(e) the typed answers are recorded exactly (answer_submitted)");
     check(evs.some((x) => x.type === "session_finish"), "(d) an all-secured pass ends the sitting");
     H.modelCheck = null;
@@ -1163,6 +1168,90 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(rc && rc.stage === "review" && Object.keys(rc.pass).length === 1 && rc.ended === null,
           "33: reconstruct still sees its own fresh pass, 1 of 5 rated so far, not ended — the two never need to agree "
           + "on ROUNDS for finishedAt to agree with them on DONE");
+  }
+
+  // ── 34. ⊕ 8 Oct 2026 (round 3) — SECURED HAS A FLOOR: realAttempt ────
+  //        Real production-deck model answers; every "opens" row is a
+  //        correct-or-honest attempt in the pupil's own words, every
+  //        "greyed" row is keyboard mash, a blank, "idk" or filler.
+  {
+    const RA = H.realAttempt;
+    check(typeof RA === "function", "34: realAttempt is exposed on the module's test surface");
+    const OPEN = [
+      ["Plankton died, were buried under sediment and compressed via heat and pressure over millions of years",
+        ["plants died, got buried, heat and pressure"]],
+      ["Joules (J)", ["J", "j", "joules", "joule"]],
+      ["One", ["1", "one"]],
+      ["Its resistance decreases.", ["it goes down", "decreases", "gets lower"]],
+      ["Use limewater, it turns cloudy", ["milky", "goes cloudy"]],
+      ["Lack of oxygen", ["not enough O2", "oxygen"]],
+      ["It increases by a factor of 4", ["quadruples", "x4", "4 times bigger"]],
+      ["F GPE = mgh\nI 14700 = m x 9.8 x 25\nF 14700/(9.8 x 25) = m\nA m = 60 kg", ["60kg", "60 kg", "60"]],
+      ["F P = E/t\nI 2000 = E/5\nF 2000 x (5 x 60) = E\nA E = 600000 J", ["600,000", "600 000 J", "600000"]],
+      ["58 500 J", ["58500", "J", "joules"]],
+      ["Melt or boil it, the substance will melt or boil at a specific temperature", ["boiling point"]],
+      ["A shared pair of electrons", ["electrons are shared"]],
+      ["Contains at least one carbon-carbon double bond (C=C)", ["C=C", "double bond"]],
+      ["Calculate the gradient (change in y/change in x)", ["gradient", "work out the slope change in y"]],
+    ];
+    let opened = 0, total = 0;
+    OPEN.forEach(([model, pupils]) => pupils.forEach((p) => {
+      total++;
+      if (RA(p, model)) { opened++; } else { check(false, `34: ${JSON.stringify(p)} must OPEN against ${JSON.stringify(model.slice(0, 40))}`); }
+    }));
+    check(opened === total, `34: all ${total} real attempts open Secured (${opened})`);
+    const MASH = ["xxgpdt", "asdf", "hjkl qwerty", "idk", "I don't know", "dunno", "x", "the", "a of the", "?", "...",
+                  "kkkkkk", "", "   ", "no idea", "zzz", "fgfgfg hhh", "qwertyuiop", "it is a thing", "yes", "lol"];
+    const MODELS = OPEN.map((o) => o[0]);
+    let greyed = 0, gtotal = 0;
+    MASH.forEach((p) => MODELS.forEach((m) => {
+      gtotal++;
+      if (!RA(p, m)) { greyed++; } else { check(false, `34: ${JSON.stringify(p)} must stay GREYED against ${JSON.stringify(m.slice(0, 40))}`); }
+    }));
+    check(greyed === gtotal, `34: all ${gtotal} mash/blank/filler pairs stay greyed (${greyed})`);
+    check(!RA(null, "Joules (J)") && !RA(undefined, "x"), "34: null / undefined pupil text never opens it");
+    check(RA("a joule", "Joules (J)") && RA("Newtons", "The newton (N)"), "34: unit words match across singular / plural");
+    console.log(`  realAttempt: ${total} real attempts open, ${gtotal} mash pairs stay greyed`);
+  }
+
+  // ── 35. the floor in the engine: mash, a real word, "I don't know" ──
+  {
+    const { e } = await fresh({ cards: TEN });
+    answer(e, "asdf kkkk");                       // mash
+    let v = e.view();
+    check(v.revealed && !v.allowed.got_it && v.allowed.nearly && v.allowed.not_yet,
+          "35: after a mash Check Secured is greyed, Nearly / Not yet are open");
+    const id0 = v.card.id;
+    e.rate("got_it");
+    check(e.view().card.id === id0 && e.view().revealed && !e.securedMap()[id0],
+          "35: rate('got_it') (the 3 key, the swipe) does nothing while floored");
+    e.rate("not_yet");                            // the mash goes Not yet
+    answer(e, "hydrocarbon");                     // card 2 (a hydrocarbon): one real word
+    check(e.view().allowed.got_it, "35: one real word from the model answer opens Secured");
+    e.rate("got_it");
+    check(e.securedMap().c1 === true, "35: and it secures the card");
+    // "I don't know" → model answer → own words: the same floor, on the own-words text
+    e.idk();
+    check(!e.view().revealed && !e.view().allowed.got_it, "35: nothing to rate before the own-words Check");
+    e.setDraft("zzzz qqqq"); e.check();
+    check(e.view().revealed && !e.view().allowed.got_it && e.view().allowed.nearly,
+          "35: after idk, mashed own words keep Secured greyed");
+    e.rate("nearly");
+    e.idk();
+    e.setDraft("CnH2n"); e.check();
+    check(e.view().allowed.got_it, "35: after idk, own words from the model answer open Secured");
+    // the crude-oil card in the pupil's own words (Mide's test)
+    const { e: e2 } = await fresh({ cards: TEN });
+    e2.idk();
+    e2.setDraft("plants died, got buried, heat and pressure"); e2.check();
+    check(e2.view().allowed.got_it, "35: crude oil, own words after 'I don't know' → Secured opens");
+    // the verdict chip is untouched: Wrong verdict + a real attempt still opens it
+    const { e: e3 } = await fresh({ cards: TEN });
+    H.modelCheck = () => Promise.resolve("no");
+    answer(e3, "plankton, I think");
+    await tick(5);
+    check(e3.view().chip === "Wrong" && e3.view().allowed.got_it, "35: the chip is still only a hint — Wrong chip, real attempt, Secured open");
+    H.modelCheck = null;
   }
 
   console.log(`\n  ${passes} passed, ${fails} failed`);

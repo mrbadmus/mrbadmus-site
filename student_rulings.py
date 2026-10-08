@@ -5593,10 +5593,12 @@ LOGIC["class view"].extend([
         "      hwNotYetStyle: this.hwRateStyle('var(--pg-accent-text)', v.suggest === 'not_yet', !v.allowed.not_yet),\n"
         "      hwNearlyStyle: this.hwRateStyle('var(--pg-ink)', v.suggest === 'nearly', !v.allowed.nearly),\n"
         "      hwGotStyle: this.hwRateStyle('var(--pg-ok-text)', v.suggest === 'got_it', !v.allowed.got_it),\n"
-        "      /* ⊕ 5 Oct 2026 — THE PUPIL DECIDES: the engine allows all three\n"
-        "         ratings after every reveal, so none of these is ever disabled\n"
-        "         for a verdict (the chip is a hint). They stay bound to\n"
-        "         `allowed` only so the engine remains the one authority. */\n"
+        "      /* ⊕ 5 Oct 2026 — THE PUPIL DECIDES: the verdict chip is only a\n"
+        "         hint and never disables a rating. ⊕ 8 Oct 2026 — Nearly and Not\n"
+        "         yet are never disabled; Secured is disabled (greyed, opacity\n"
+        "         .4) until the submitted answer is a real attempt\n"
+        "         (`realAttempt` in shared/flashcard-homework.js). All three stay\n"
+        "         bound to `allowed` so the engine remains the one authority. */\n"
         "      hwNotYetOff: !v.allowed.not_yet, hwNearlyOff: !v.allowed.nearly, hwGotOff: !v.allowed.got_it,\n"
         "      hwNotYetDis: v.allowed.not_yet ? 'false' : 'true',\n"
         "      hwNearlyDis: v.allowed.nearly ? 'false' : 'true',\n"
@@ -5711,8 +5713,8 @@ def _hw_link(on, label, hw):
 # ⊕ PUPIL FLOW — a rating button whose look says whether it is the one
 # chosen for the pupil (filled) or not (outlined). `aria-pressed` says it too.
 # ⊕ Sharpen §13.1 — `disabled` followed the verdict's cap. SUPERSEDED 5 Oct
-# 2026 (the pupil decides): the engine now allows every rating after a reveal,
-# so this binding is never true for a verdict; it still follows `allowed`.
+# 2026 (the pupil decides): never true for a verdict. 8 Oct 2026: Secured is
+# greyed until a real attempt; it follows `allowed`.
 def _hw_rate(on, label, style_expr, pressed_expr, hw, off_expr, dis_expr):
     return {"t": "button", "on": on,
             "a": {"type": "button", "data-hw": hw,

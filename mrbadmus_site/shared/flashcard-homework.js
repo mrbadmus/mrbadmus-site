@@ -8,14 +8,20 @@
  *   · The pupil may still type an answer and the answer check still runs,
  *     but its verdict is only a HINT: the chip beside their answer (Right /
  *     Nearly / Wrong / No answer / Checking…). It never gates anything.
- *   · After every reveal Secured, Nearly and Not yet are ALL available —
+ *   · After every reveal Nearly and Not yet are ALWAYS available —
  *     whatever the verdict, while it is still "Checking…", when the check is
  *     slow, failed or down, and after "I don't know". The pupil never waits
  *     for the check. Nothing is pre-filled.
- *   · The teacher still sees the truth: the typed answer, the verdict and the
- *     pupil's rating are all recorded exactly as before, side by side.
- *   · The revealed answer is always the deck's model answer; what the pupil
- *     typed only ever appears as "your answer" beside it.
+ *   · ⊕ 8 Oct 2026 (Flashcards, round 3) — SECURED HAS A FLOOR: it opens only
+ *     for a REAL ATTEMPT, `realAttempt(pupil, model)` below. That is an
+ *     effort test, never a correctness test (a right answer in the pupil's
+ *     own words always opens it); mashing keys, "x", "idk" or a blank do not.
+ *     The verdict chip is still only a hint. The box is gone once the answer
+ *     shows, so the floor is judged on the answer the pupil SUBMITTED
+ *     (`this.mine`; after "I don't know" that is their own-words text). A
+ *     pupil who mashed rates Nearly / Not yet and the card comes back on Try
+ *     again with an empty box, where a real word opens Secured. There is no
+ *     re-type step.
  *   SUPERSEDES: the 29 Sep "THE VERDICT CAPS THE RATING" bullet below, the
  *   2 Oct line that a card nothing could check "may never be Secured", the
  *   4 Oct "Secured means checked" (option B) rule, and the cap at Nearly
@@ -38,7 +44,8 @@
  *     B  checking: model answer showing, the three ratings showing,
  *        none filled, chip "Checking…"         (verdict = "pending")
  *     C  verdict: chip Right / Nearly / Wrong / No answer as a hint only;
- *        all three ratings stay open, nothing filled (5 Oct)
+ *        Nearly and Not yet stay open, Secured opens for a real attempt
+ *        (8 Oct), nothing filled
  *     D  rated: the next card in state A, or the end screen
  *
  *   The headline counts THIS PASS: "2 of 10 right" — a card is right when its
@@ -228,6 +235,66 @@
       return key.length && key.join(" ") === pa ? "match" : null;
     }
     return null;
+  }
+
+  // ── ⊕ 8 Oct 2026 — the Secured floor: a REAL ATTEMPT ────────────────
+  // Lenient on purpose: we judge EFFORT, never correctness. A right answer in
+  // the pupil's own words must always open Secured; keyboard mash, a blank,
+  // "idk", a lone "x" or only filler words must not.
+  var STOPWORDS = ("a an the and or but nor of to in on at by for with from into onto as is are was were " +
+    "be been being am it its this that these those there their they them then than so if when what which " +
+    "who whom whose how why where do does did done doing has have had having can could will would shall " +
+    "should may might must not no yes i me my you your we our us he she his her him just also very really " +
+    "get gets got getting go goes went going thing things stuff some any all each about x").split(" ");
+  var NUMWORDS = { zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8,
+    nine: 9, ten: 10, eleven: 11, twelve: 12, twice: 2, double: 2, doubles: 2, doubled: 2,
+    triple: 3, triples: 3, tripled: 3, thrice: 3, quadruple: 4, quadruples: 4, quadrupled: 4 };
+  var FORMULAE = { o2: "oxygen", co2: "dioxide", h2: "hydrogen", h2o: "water", cl2: "chlorine" };
+  var GROUPS = {};
+  [["DOWN", "decrease decreases decreased decreasing down lower lowers lowered less fewer fall falls fell drop drops dropped reduce reduces reduced smaller shrink shrinks"],
+   ["UP", "increase increases increased increasing up higher raise raises rise rises rose more greater bigger larger grow grows"],
+   ["SAME", "same equal equals constant unchanged identical"],
+   ["CLOUDY", "cloudy milky murky"],
+   ["J", "j joule joules"], ["W", "w watt watts"], ["N", "n newton newtons"], ["V", "v volt volts"],
+   ["KG", "kg kilogram kilograms"], ["HZ", "hz hertz"], ["OHM", "ohm ohms"]
+  ].forEach(function (g) { g[1].split(" ").forEach(function (w) { GROUPS[w] = g[0]; }); });
+  function joinThousands(t) { return t.replace(/(\d)[, ](?=\d{3}\b)/g, "$1"); }
+  function withoutFormulae(t) {
+    return t.replace(/[a-z0-9]+/g, function (w) { return FORMULAE[w] ? " " : w; });
+  }
+  function numbersOf(text) {
+    var t = withoutFormulae(joinThousands(String(text == null ? "" : text).toLowerCase())), out = [], m;
+    var re = /\d+(?:\.\d+)?/g;
+    while ((m = re.exec(t))) { out.push(parseFloat(m[0])); }
+    (t.match(/[a-z]+/g) || []).forEach(function (w) {
+      if (Object.prototype.hasOwnProperty.call(NUMWORDS, w)) { out.push(NUMWORDS[w]); }
+    });
+    return out;
+  }
+  function wordsOf(text) {
+    var t = String(text == null ? "" : text).toLowerCase()
+      .replace(/[a-z0-9]+/g, function (w) { return FORMULAE[w] || w; })
+      .replace(/([a-z])(\d)/g, "$1 $2").replace(/(\d)([a-z])/g, "$1 $2")
+      .replace(/[^a-z0-9]+/g, " ");
+    return t.split(" ").filter(function (w) {
+      return w && !/^\d+$/.test(w) && STOPWORDS.indexOf(w) < 0;
+    });
+  }
+  function realAttempt(pupil, model) {
+    var pa = norm(pupil);
+    if (pa === "" || IDK.indexOf(pa) >= 0) { return false; }
+    var pn = numbersOf(pupil), mn = numbersOf(model);
+    for (var i = 0; i < pn.length; i++) { if (mn.indexOf(pn[i]) >= 0) { return true; } }
+    var pw = wordsOf(pupil), mw = wordsOf(model);
+    for (var a = 0; a < pw.length; a++) {
+      for (var b = 0; b < mw.length; b++) {
+        var p = pw[a], m = mw[b];
+        if (p === m || (GROUPS[p] && GROUPS[p] === GROUPS[m])) { return true; }
+        if (p.length >= 4 && m.length >= 4 &&
+            (p.indexOf(m) >= 0 || m.indexOf(p) >= 0 || p.slice(0, 4) === m.slice(0, 4))) { return true; }
+      }
+    }
+    return false;
   }
 
   var VERDICTS = ["match", "partial", "no", "blank"];
@@ -830,8 +897,13 @@
   Engine.prototype.cap = function () {
     return this.revealed ? "got_it" : null;
   };
+  // ⊕ 8 Oct 2026: Nearly and Not yet are always open after the reveal;
+  // Secured needs a real attempt in the answer that was submitted.
   Engine.prototype.allowed = function (rating) {
-    return !!this.revealed && RATINGS.indexOf(rating) >= 0;
+    if (!this.revealed || RATINGS.indexOf(rating) < 0) { return false; }
+    if (rating !== "got_it") { return true; }
+    var c = this.current();
+    return !!c && realAttempt(this.mine, c.answer);
   };
 
   // Nothing is filled for the pupil (see above).
@@ -1223,6 +1295,7 @@
     modelWaitMs: MODEL_WAIT_MS,
     active: null,
     quickCheck: quickCheck,
+    realAttempt: realAttempt,   // ⊕ 8 Oct — exposed for tests
     reconstruct: reconstruct,
     finishedAt: finishedAt,
     securedInfo: securedInfo,   // ⊕ MRB-354 — exposed for tests/drives
