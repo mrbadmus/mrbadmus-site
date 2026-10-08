@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Red-shift and the Big Bang · MrBadmusAI GCSE Physics</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Physics" unit="Space" title="Red-shift and the Big Bang" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Physics 4.8.2</p>
+        <h1>Red-shift and the Big Bang</h1>
+        <p class="ks3-bigq">Light from distant galaxies arrives stretched. Line up their spectra, find the pattern, and follow how scientists got from that observation to a theory of how the universe began.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Triple only</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ tripleOptions }}" as="o" hint-placeholder-count="2"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A siren going past." scene="An ambulance races towards you with its siren on, passes, and drives away. As it moves away, the siren sounds lower in pitch: the sound waves reaching you are stretched out." question="would light from something moving away from you change too?" options="{{ hookOptions }}" bridge="Light from a source moving away arrives with longer wavelengths. Next: what galaxies’ light shows." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-spectra" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Observation · line up the spectra</p>
+        <h2 style="margin: 6px 0 0;">The further the galaxy, the bigger the shift.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The dark lines in a galaxy’s spectrum sit at known wavelengths when measured in a lab. Compare each galaxy’s lines with the lab’s. Predict the furthest galaxy before you look.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ gals }}" as="g" hint-placeholder-count="3"><button type="button" onClick="{{ g.onClick }}" aria-pressed="{{ g.pressed }}" style="{{ g.style }}">{{ g.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ specFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <sc-if value="{{ asking }}">
+              <p class="ks3-commit" style="margin: 0; color: var(--ks3-ink);">The furthest galaxy’s lines will be shifted</p>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"><sc-for list="{{ preds }}" as="p" hint-placeholder-count="2"><button type="button" onClick="{{ p.onClick }}" style="{{ p.style }}">{{ p.label }}</button></sc-for></div>
+            </sc-if>
+            <p aria-live="polite" style="{{ specNoteStyle }}">{{ specNote }}</p>
+          </div>
+        </div>
+        <p style="margin: 14px 0 0; max-width: 62ch; font-size: 17px; line-height: 1.55;">There is an observed increase in the wavelength of light from most distant galaxies. Every wavelength shifts towards the red end of the spectrum: red-shift. The further away the galaxies, the faster they are moving and the bigger the observed increase in wavelength.</p>
+      </section>
+
+      <section id="s-chain" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Observation, pattern, theory</p>
+        <h2 style="margin: 6px 0 0;">From stretched light to the Big Bang.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Tap the four links in order.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 10px;">
+          <sc-for list="{{ links }}" as="l" hint-placeholder-count="4"><button type="button" onClick="{{ l.onClick }}" style="{{ l.style }}"><span style="display: block; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; color: var(--ks3-ink-muted);">{{ l.tag }}</span><span style="display: block; margin-top: 4px; font-size: 17px; line-height: 1.45;">{{ l.text }}</span></button></sc-for>
+        </div>
+        <sc-if value="{{ hasChainNote }}"><p data-arrive="1" role="status" style="{{ chainNoteStyle }}">{{ chainNote }}</p></sc-if>
+        <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ apartFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">No centre · pick where you stand</p>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ homes }}" as="h" hint-placeholder-count="3"><button type="button" onClick="{{ h.onClick }}" aria-pressed="{{ h.pressed }}" style="{{ h.style }}">{{ h.label }}</button></sc-for></div>
+            <p style="margin: 0; font-size: 17px; line-height: 1.55;">From any galaxy, every other galaxy is moving away, and the further ones faster. Galaxies are moving away because space itself is expanding, and we are not at the centre. The Big Bang was not an explosion into empty space.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-1998" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Since 1998</p>
+        <h2 style="margin: 6px 0 0;">Receding ever faster, and not yet understood.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Since 1998, observations of supernovae suggest that distant galaxies are receding ever faster. There is still much about the universe that is not understood, for example dark mass and dark energy. These have their own lesson.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · what “red” means here</p></div>
+        <p class="ks3-mis-quote">&ldquo;Red-shifted galaxies look red because they are very hot.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="What does it mean when a galaxy’s light is red-shifted?" options="{{ thinkOptions }}" reveal="Every wavelength in its light has increased, shifting the whole spectrum towards the red end. It tells you the galaxy is moving away, not what colour or temperature it is." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Observation, theory, or not true?" prompt="Place each statement." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Observations first, then the theory that explains them. New observations, like the 1998 supernovae, can change what we think." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Say what is observed: wavelength increased, more for further galaxies.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Observation, then what it shows, then the theory it supports.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Interpret</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Compare the line positions in two spectra.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Red-shift is evidence that space itself is expanding, and supports the Big Bang theory: the universe began from a very small region that was extremely hot and dense.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="red-shift-big-bang" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Red-shift and the Big Bang" spec="AQA 4.8.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Physics" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure what red-shift tells us?" legal="Spectra and the galaxies figure are schematic: line positions and distances are not to scale." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A siren going past', short: 'HOOK' },
+  { id: 's-spectra', label: 'Line up the spectra', short: 'SPECTRA' },
+  { id: 's-chain', label: 'Observation to theory', short: 'CHAIN' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Observation or theory', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const GALS = [{ label: 'Near galaxy', shift: 14 }, { label: 'Further galaxy', shift: 40 }, { label: 'Furthest galaxy', shift: 78 }];
+const LINKS = [
+  { tag: 'Observation', text: 'Light from distant galaxies has increased wavelengths: it is red-shifted.' },
+  { tag: 'Pattern', text: 'The further away the galaxy, the bigger the shift, so the faster it is moving away.' },
+  { tag: 'Conclusion', text: 'Space itself, the universe, is expanding.' },
+  { tag: 'Theory', text: 'Going back in time, the universe began from a very small region that was extremely hot and dense: the Big Bang.' }
+];
+const SHOW = [2, 0, 3, 1];
+const GXY = [[120, 90], [300, 70], [470, 120], [200, 230], [390, 250], [540, 260]];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, gal: 0, seen: [0], pred: null, order: [], wrongTap: null, home: 0, think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  spectra(gal, showFar) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const LINES = [110, 180, 300, 360];
+    const band = (y, shift, label) => {
+      let o = '<defs><linearGradient id="sp' + y + '" x1="0" x2="1"><stop offset="0" stop-color="#7B5BD6"/><stop offset=".25" stop-color="#3B82F6"/><stop offset=".45" stop-color="#3FB27F"/><stop offset=".62" stop-color="#F2D24B"/><stop offset=".8" stop-color="#F28C38"/><stop offset="1" stop-color="#D9452B"/></linearGradient></defs>';
+      o += '<rect x="60" y="' + y + '" width="500" height="44" fill="url(#sp' + y + ')" stroke="' + C.stroke + '" stroke-width="2"/>';
+      LINES.forEach((x) => { o += '<rect x="' + (x + shift).toFixed(1) + '" y="' + y + '" width="5" height="44" fill="#1A1714"/>'; });
+      o += D.T(52, y + 28, label, 13, { anchor: 'end', fill: C.stroke });
+      return o;
+    };
+    b += band(40, 0, 'lab');
+    const g = GALS[gal];
+    if (gal < 2 || showFar) b += band(120, g.shift, g.label.split(' ')[0].toLowerCase());
+    else b += '<rect x="60" y="120" width="500" height="44" fill="#E6E2D8" stroke="' + C.stroke + '" stroke-width="2" stroke-dasharray="6 5"/>' + D.T(310, 148, 'predict first', 14, { fill: C.muted });
+    b += D.T(60, 200, 'shorter wavelength (blue)', 12, { anchor: 'start', weight: 'normal', fill: C.muted }) + D.T(560, 200, 'longer wavelength (red)', 12, { anchor: 'end', weight: 'normal', fill: C.muted });
+    b += D.arrow(240, 222, 380, 222, C.red, 3) + D.T(310, 246, 'shift towards red', 13, { fill: C.red });
+    return D.svg(600, 262, b, 'Lab spectrum with four dark lines, and the ' + g.label.toLowerCase() + '\u2019s spectrum with the same lines shifted towards the red end' + (gal < 2 || showFar ? '' : ' (hidden until you predict)') + '.');
+  }
+  apart(home) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const h = GXY[home];
+    GXY.forEach((p, i) => {
+      if (i !== home) { const dx = p[0] - h[0], dy = p[1] - h[1], k = 0.28; b += D.arrow(p[0], p[1], p[0] + dx * k, p[1] + dy * k, C.arrow, 3); }
+    });
+    GXY.forEach((p, i) => { b += '<ellipse cx="' + p[0] + '" cy="' + p[1] + '" rx="16" ry="9" fill="' + (i === home ? C.gold : '#C9CCD1') + '" stroke="' + C.stroke + '" stroke-width="2"/>'; });
+    b += D.T(h[0], h[1] - 18, 'you', 13, { fill: C.stroke });
+    return D.svg(640, 330, b, 'Six galaxies. Seen from the chosen galaxy, every other galaxy moves away, with longer arrows for further galaxies.');
+  }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', onRoute: () => {} };
+    const route = R.route.indexOf('Triple') === 0 ? R.route : 'Triple Higher';
+    const ready = !!(s.libReady && K && window.KS4D);
+    const chainDone = s.order.length === 4;
+    const done = [s.hook !== null, s.pred !== null && s.seen.length === 3, chainDone, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const far = s.gal === 2, asking = far && s.pred === null;
+    const specNote = asking ? 'Near: a small shift. Further: a bigger one. Make your prediction.' : s.gal === 0 ? 'A small shift: every line has moved a little towards the red.' : s.gal === 1 ? 'Further away, a bigger shift: this galaxy is moving away faster.' : (s.pred === 'more' ? 'Yes: ' : 'Not this time: ') + 'the furthest galaxy shows the biggest shift. It is moving away fastest.';
+    const bankSrc = [
+      { q: 'What does the red-shift of distant galaxies tell us about the universe?', opts: [['The universe is expanding \u2014 all distant galaxies are moving away, with more distant galaxies receding faster (Hubble\u2019s Law)', true], ['Distant galaxies are very hot \u2014 the red colour indicates high temperature', false], ['The universe is rotating \u2014 galaxies on the far side are moving away as it spins', false], ['Distant galaxies are all moving towards a common point \u2014 the universe is contracting', false]],
+        wrong_explanations: { 1: 'Red-shift is not about colour of the galaxy \u2014 it\u2019s a Doppler shift in ALL wavelengths of light from the galaxy, indicating recession velocity.', 2: 'If the universe were rotating, we\u2019d expect some galaxies to show red-shift and others blue-shift depending on direction. Nearly ALL show red-shift.', 3: 'Red-shift means AWAY from us \u2014 if galaxies were all moving toward a common point, we\u2019d see blue-shift from most directions.' } },
+      { q: 'Galaxy X is much further away than galaxy Y. How does the red-shift of X compare with that of Y?', opts: [['X shows a bigger red-shift, because it is moving away faster', true], ['X shows a smaller red-shift, because it is further away', false], ['They show the same red-shift', false], ['X shows a blue-shift', false]],
+        wrong_explanations: { 1: 'The further away the galaxy, the faster it moves and the bigger the shift.', 2: 'Distance does not cancel the shift: further galaxies show more.', 3: 'Galaxies moving away show red-shift, not blue-shift.' } },
+      { q: 'What does the Big Bang theory suggest about how the universe began?', opts: [['From a very small region that was extremely hot and dense', true], ['From an explosion of stars into empty space', false], ['From a cold, empty space that slowly filled with galaxies', false], ['It has always been the same size', false]],
+        wrong_explanations: { 1: 'It was not an explosion into existing space; space itself has expanded.', 2: 'The theory says it began extremely hot and dense, not cold and empty.', 3: 'Red-shift shows the universe is expanding, so it was smaller in the past.' } },
+      { q: 'What have observations of supernovae since 1998 suggested?', opts: [['Distant galaxies are receding ever faster', true], ['Distant galaxies are slowing down', false], ['The universe has stopped expanding', false], ['Galaxies are moving towards us', false]],
+        wrong_explanations: { 1: 'The supernova observations suggest the opposite: they are receding faster and faster.', 2: 'The galaxies are still moving apart, ever faster.', 3: 'Most galaxies are red-shifted, so moving away.' } },
+      { q: 'Every galaxy we observe is moving away from us. Does this mean we are at the centre of the universe?', opts: [['No: space is expanding, so an observer in any galaxy would see the same', true], ['Yes: everything is moving away from the Earth', false], ['Yes: the Big Bang happened where the Milky Way is now', false], ['No: the Earth is moving faster than other galaxies', false]],
+        wrong_explanations: { 1: 'From any galaxy, all the others are moving away. There is no centre.', 2: 'The Big Bang was not an explosion at one point in space.', 3: 'It is the expansion of space, not our own speed, that makes galaxies recede.' } }
+    ];
+    return {
+      route, onRoute: R.onRoute,
+      tripleOptions: [{ value: 'Triple Foundation', label: 'Triple Foundation' }, { value: 'Triple Higher', label: 'Triple Higher' }],
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('red-shift-big-bang') : null,
+      hookOptions: [
+        { text: 'Yes, it would change', correct: true, reply: 'Light waves from a source moving away are stretched too: their wavelength increases.' },
+        { text: 'No, light stays the same', correct: false, reply: 'Light is a wave too. From a source moving away, its wavelength is stretched, just as the siren\u2019s was.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      gals: GALS.map((g, i) => ({ label: g.label, pressed: s.gal === i, style: this.seg(s.gal === i), onClick: () => this.setState({ gal: i, seen: s.seen.indexOf(i) >= 0 ? s.seen : s.seen.concat([i]) }) })),
+      specFig: ready ? K.fig(this.spectra(s.gal, s.pred !== null), '') : null,
+      asking, preds: [['less', 'Less than the further galaxy'], ['more', 'More than the further galaxy']].map((p) => ({ label: p[1], style: this.seg(s.pred === p[0]) + 'text-align:left;', onClick: () => this.setState({ pred: p[0] }) })),
+      specNote, specNoteStyle: 'margin:0;padding:12px 14px;border-radius:14px;font-size:17px;line-height:1.55;border:2px solid ' + (far && s.pred && s.pred !== 'more' ? 'var(--ks3-alert-border);background:var(--ks3-alert-tint);' : 'var(--ks3-ink);background:var(--ks3-card);'),
+      links: SHOW.map((k) => { const pos = s.order.indexOf(k), placed = pos >= 0; return { tag: placed ? (pos + 1) + ' \u00b7 ' + LINKS[k].tag : 'Tap to place', text: LINKS[k].text,
+        style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:12px 14px;min-height:88px;border-radius:14px;cursor:pointer;background:' + (placed ? 'var(--ks3-accent-tint)' : s.wrongTap === k ? 'var(--ks3-alert-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (placed ? 'var(--ks3-accent)' : s.wrongTap === k ? 'var(--ks3-alert-border)' : 'var(--ks3-option-border)') + ';',
+        onClick: () => { if (placed) return; if (k === s.order.length) this.setState({ order: s.order.concat([k]), wrongTap: null }); else this.setState({ wrongTap: k }); } }; }),
+      hasChainNote: s.wrongTap !== null || chainDone,
+      chainNote: chainDone ? 'Observation, pattern, conclusion, theory: that is how scientists used observations to arrive at the Big Bang theory.' : 'Not next. Start from what is observed, then the pattern in it.',
+      chainNoteStyle: 'margin:12px 0 0;padding:12px 14px;border-radius:14px;font-size:17px;line-height:1.55;border:2px solid ' + (chainDone ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      apartFig: ready ? K.fig(this.apart(s.home), '') : null,
+      homes: ['Galaxy A', 'Galaxy B', 'Galaxy C'].map((l, i) => { const idx = [0, 2, 4][i]; return { label: l, pressed: s.home === idx, style: this.seg(s.home === idx), onClick: () => this.setState({ home: idx }) }; }),
+      thinkOptions: [
+        { text: 'Its light has increased wavelengths, because it is moving away', correct: true, reply: 'The whole spectrum shifts.' },
+        { text: 'It is very hot, so it glows red', correct: false, reply: 'Red-shift is about wavelengths increasing, not the galaxy\u2019s temperature or colour.' },
+        { text: 'It is moving towards us', correct: false, reply: 'A source moving towards you would show a shift the other way, towards blue.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'o', label: 'Observation' }, { id: 't', label: 'Conclusion or theory' }, { id: 'x', label: 'Not true' }],
+      sortItems: [
+        { text: 'Light from distant galaxies has increased wavelengths', bin: 'o', why: 'Measured in their spectra.' },
+        { text: 'Further galaxies show a bigger red-shift', bin: 'o', why: 'The pattern in the data.' },
+        { text: 'Since 1998, supernovae suggest distant galaxies are receding ever faster', bin: 'o', why: 'New observations.' },
+        { text: 'Space itself is expanding', bin: 't', why: 'What the red-shift shows.' },
+        { text: 'The universe began from a very small, extremely hot, dense region', bin: 't', why: 'The Big Bang theory.' },
+        { text: 'We are at the centre of the universe', bin: 'x', why: 'Every observer sees the same.' },
+        { text: 'Red-shifted galaxies are red-hot', bin: 'x', why: 'Red-shift is about wavelength, not temperature.' },
+        { text: 'The Big Bang was an explosion into empty space', bin: 'x', why: 'Space itself expanded.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'State', marks: 1, prompt: 'State what is meant by red-shift.', why: 'An observed increase in the wavelength of light from galaxies moving away.', options: [
+            { text: 'Galaxies turning red as they cool', correct: false, reply: 'Red-shift is about wavelength, not colour change.' },
+            { text: 'An observed increase in the wavelength of light from distant galaxies', correct: true },
+            { text: 'A decrease in the wavelength of light from distant galaxies', correct: false, reply: 'The wavelength increases.' }] },
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Give how a galaxy\u2019s speed away from us depends on its distance.', why: 'The further away, the faster it is moving.', options: [
+            { text: 'The further away, the faster', correct: true },
+            { text: 'The further away, the slower', correct: false, reply: 'Further galaxies show bigger shifts: they move faster.' },
+            { text: 'Speed does not depend on distance', correct: false, reply: 'There is a clear pattern: further, faster.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Interpret', marks: 1, prompt: 'The dark lines in galaxy P\u2019s spectrum are shifted further towards red than those in galaxy Q\u2019s. Which galaxy is further away?', why: 'Bigger shift, further away.', options: [
+            { text: 'Galaxy P', correct: true },
+            { text: 'Galaxy Q', correct: false, reply: 'Q shows the smaller shift, so it is nearer.' },
+            { text: 'They are the same distance', correct: false, reply: 'Different shifts mean different distances.' },
+            { text: 'You cannot tell from red-shift', correct: false, reply: 'The size of the shift shows which is further.' }] },
+          { kind: 'mcq', command: 'Identify', marks: 1, prompt: 'Identify the observation that suggests distant galaxies are receding ever faster.', why: 'Observations of supernovae since 1998.', options: [
+            { text: 'Observations of supernovae since 1998', correct: true },
+            { text: 'The colour of nearby stars', correct: false, reply: 'Star colour isn\u2019t the evidence here.' },
+            { text: 'The siren of an ambulance', correct: false, reply: 'That is an everyday example of a wave stretching, not evidence about galaxies.' },
+            { text: 'The Moon moving away from the Earth', correct: false, reply: 'That is unrelated to galaxies receding.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how red-shift supports the Big Bang theory. Put the links in order.',
+            links: ['Light from distant galaxies is red-shifted, and more so for further galaxies.', 'So galaxies are moving apart: space itself is expanding.', 'So in the past the universe was smaller, starting from a very small, extremely hot, dense region.'],
+            herrings: [{ text: 'Red-shift shows that galaxies are hot.', why: 'It shows they are moving away.' }, { text: 'Red-shift shows that the Earth is at the centre.', why: 'Every observer would see the same.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why seeing every galaxy move away from us does not mean we are at the centre of the universe. Put the links in order.',
+            links: ['Space itself is expanding everywhere.', 'So every galaxy is moving away from every other galaxy.', 'An observer in any galaxy would see the same, so there is no centre.'],
+            herrings: [{ text: 'The Milky Way is moving fastest.', why: 'The recession comes from expanding space, not our speed.' }, { text: 'The Big Bang happened at the Earth.', why: 'It was not an explosion at one point in space.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 6, prompt: 'Describe how scientists used observations of galaxies to arrive at the Big Bang theory, and what is still not understood.',
+            levels: [
+              { label: 'Level 3 \u00b7 5\u20136', text: 'Observation, pattern and theory in a logical order, with the 1998 observations and what is not understood.', max: 6 },
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Observation and theory linked, with some gaps.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'Simple statements about red-shift or the Big Bang.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Light from distant galaxies shows an increase in wavelength: red-shift.', 'Further galaxies show a bigger red-shift, so they are moving away faster.', 'This is evidence that space itself is expanding.', 'So the universe began from a very small region that was extremely hot and dense: the Big Bang theory.', 'Since 1998, supernova observations suggest distant galaxies are receding ever faster.', 'Much is still not understood, for example dark mass and dark energy.'],
+            reject: ['\u201cRed-shifted galaxies are very hot.\u201d', '\u201cThe Big Bang was an explosion in space.\u201d'] }
+        ]
+      },
+      keyLines: ['There is an observed increase in the wavelength of light from most distant galaxies: red-shift.', 'The further away the galaxies, the faster they are moving and the bigger the observed increase in wavelength.', 'Red-shift is evidence that space itself (the universe) is expanding, and supports the Big Bang theory.', 'The Big Bang theory: the universe began from a very small region that was extremely hot and dense.', 'Since 1998, observations of supernovae suggest that distant galaxies are receding ever faster.', 'Much is still not understood, for example dark mass and dark energy.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: null, endNext: null,
+      endConnects: [{ href: '../KS4 Batch 4/ks4-physics-6.6.2.4-uses-em-waves.dc.html', label: 'Uses of EM waves' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

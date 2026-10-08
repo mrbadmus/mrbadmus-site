@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waste management and pollution · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Ecology" title="Waste management and pollution" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.7.3.2</p>
+        <h1>Waste management and pollution</h1>
+        <p class="ks3-bigq">More people, each using more, means more waste. Badly handled, it pollutes water, air and land, and every one of the three kills living things.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Two stretches of one river." scene="Upstream, a river runs past fields and woods. Further down, a pipe from a town empties untreated sewage into it. Scientists count the different kinds of animals in each stretch." question="which stretch has more kinds of living things?" options="{{ hookOptions }}" bridge="Sewage is water pollution, and pollution kills living things. Next: why there is more waste than ever." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-why" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Two drivers</p>
+        <h2 style="margin: 6px 0 0;">More people, and more per person.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The human population is growing rapidly, and the standard of living is rising. Both mean more resources are used and more waste is produced. Unless waste and chemical materials are properly handled, more pollution will be caused. Change each driver and watch the waste.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <sc-for list="{{ drivers }}" as="d" hint-placeholder-count="2">
+              <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ d.label }}</p>
+                <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ d.opts }}" as="o" hint-placeholder-count="2"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" style="{{ o.style }}">{{ o.label }}</button></sc-for></div>
+              </div>
+            </sc-for>
+            <p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ wasteNote }}</p>
+          </div>
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ wasteFig }}</div>
+        </div>
+      </section>
+
+      <section id="s-town" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">One town · three places</p>
+        <h2 style="margin: 6px 0 0;">Pollution in water, in air, on land.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Tap each place to see its sources and what they do to living things.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ places }}" as="p" hint-placeholder-count="3"><button type="button" onClick="{{ p.onClick }}" aria-pressed="{{ p.pressed }}" style="{{ p.style }}">{{ p.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ townFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Sources</p><p style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">{{ placeSrc }}</p></div>
+            <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-accent-tint); border: 2px solid var(--ks3-accent);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-accent-text);">Effect on living things</p><p style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">{{ placeEff }}</p></div>
+          </div>
+        </div>
+        <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Biodiversity</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">The variety of all the different species of organisms in an ecosystem. Pollution kills plants and animals, which can reduce biodiversity: it falls when species are lost from the area.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Handled properly</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Treating sewage, filtering gases from chimneys and recycling all cut pollution. How sewage is treated is in <a href="ks4-chemistry-5.10.1.2-potable-water.dc.html">Potable water</a>.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · good for crops</p></div>
+        <p class="ks3-mis-quote">&ldquo;Fertiliser helps plants grow, so it can’t be a pollutant.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Rain washes fertiliser off a field into a river. What happens?" options="{{ thinkOptions }}" reveal="On the field, fertiliser helps crops. In the river, it is water pollution: it kills organisms living there, and if species are lost, biodiversity falls. Where a substance ends up decides whether it pollutes." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Water, air or land?" prompt="Place each source by where it pollutes." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Three places, one effect: organisms are killed, and biodiversity can fall." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Name the place and the source: water, from sewage.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Pollutant, then organisms killed, then species lost, so biodiversity falls.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Apply the idea to a new place or a new pollutant.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Pollution can occur in water, in air and on land. Pollution kills plants and animals, which can reduce biodiversity.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="waste-management" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Waste management and pollution" spec="AQA 4.7.3.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which place a pollutant belongs to?" legal="The waste bars are relative amounts, not data. The town diagram is schematic." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Two stretches of river', short: 'HOOK' },
+  { id: 's-why', label: 'Two drivers', short: 'WHY' },
+  { id: 's-town', label: 'Three places', short: 'TOWN' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Water, air or land', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const PLACES = [
+  { label: 'Water', src: 'Sewage; fertiliser washed off fields; toxic chemicals.', eff: 'Kills organisms living in rivers, lakes and seas.' },
+  { label: 'Air', src: 'Smoke; acidic gases such as sulfur dioxide, which cause acid rain.', eff: 'Kills plants and animals; acid rain falling on land and into lakes is one way.' },
+  { label: 'Land', src: 'Landfill (buried rubbish); toxic chemicals such as pesticides and herbicides.', eff: 'Kills organisms in the soil, and the chemicals can wash into water.' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, pop: 1, sol: 1, changed: [false, false], place: 0, seenP: [0], think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  waste(pop, sol) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const tot = pop * sol;
+    for (let i = 0; i < pop * 4; i++) { const x = 40 + (i % 8) * 34, y = 40 + Math.floor(i / 8) * 46; b += D.circ(x, y, 8, '#E8C9A0', C.stroke, 1.5) + '<path d="M' + (x - 9) + ' ' + (y + 26) + ' q9 -18 18 0" fill="#E8C9A0" stroke="' + C.stroke + '" stroke-width="1.5"/>'; }
+    b += D.T(170, 150, 'people', 14, { weight: 'normal', fill: C.stroke });
+    const h = 40 * tot;
+    b += '<rect x="340" y="' + (200 - h) + '" width="80" height="' + h + '" rx="6" fill="#B8B2A6" stroke="' + C.stroke + '" stroke-width="2"/>';
+    b += D.T(380, 222, 'waste', 14, { fill: C.stroke }) + D.T(380, 192 - h, '\u00d7 ' + tot, 18);
+    return D.svg(460, 240, b, pop * 4 + ' people, each producing ' + (sol === 1 ? 'the starting amount of' : 'twice as much') + ' waste: total waste \u00d7 ' + tot + '.');
+  }
+  town(sel) {
+    const D = window.KS4D, C = D.C; let b = '';
+    b += '<rect x="0" y="0" width="640" height="200" fill="#E6EEF2"/>';
+    b += '<rect x="0" y="200" width="640" height="160" fill="#C9D9A6"/>';
+    b += '<path d="M0 290 C 160 270, 300 320, 640 300 L640 340 C 320 350, 160 300, 0 330 Z" fill="#7FA7BE"/>';
+    b += '<rect x="80" y="140" width="70" height="60" fill="#D9D3C4" stroke="' + C.stroke + '" stroke-width="2"/><rect x="120" y="80" width="18" height="60" fill="#A89A82" stroke="' + C.stroke + '" stroke-width="2"/>';
+    b += '<path d="M129 76 q-10 -20 6 -32 q18 -12 10 -30" fill="none" stroke="#5B5550" stroke-width="10" stroke-linecap="round" opacity=".7"/>';
+    b += '<rect x="200" y="160" width="40" height="40" fill="#D9D3C4" stroke="' + C.stroke + '" stroke-width="2"/><rect x="246" y="150" width="40" height="50" fill="#D9D3C4" stroke="' + C.stroke + '" stroke-width="2"/>';
+    b += '<path d="M260 200 L260 270 L300 286" fill="none" stroke="#5B5550" stroke-width="6"/>';
+    b += '<path d="M440 200 q60 -40 140 0 z" fill="#B8B2A6" stroke="' + C.stroke + '" stroke-width="2"/>';
+    b += '<path d="M330 214 l120 0 l0 40 l-120 0 z" fill="#E8D9A0" stroke="' + C.stroke + '" stroke-width="2"/>';
+    const hi = [[60, 20, 140, 180], [190, 220, 440, 130], [420, 150, 210, 120]];
+    const lab = [['smoke, acidic gases', 140, 40], ['sewage, fertiliser, toxic chemicals', 330, 352], ['landfill, pesticides', 510, 140]];
+    const order = [1, 0, 2];
+    const k = order[sel];
+    const box = hi[k];
+    b += '<rect x="' + box[0] + '" y="' + box[1] + '" width="' + box[2] + '" height="' + box[3] + '" fill="none" stroke="' + C.red + '" stroke-width="4" rx="10" stroke-dasharray="10 6"/>';
+    lab.forEach((l, i) => { b += D.T(l[1], l[2], l[0], 14, { fill: i === k ? C.red : C.stroke, weight: i === k ? 'bold' : 'normal' }); });
+    b += D.T(390, 240, 'field', 13, { weight: 'normal', fill: C.stroke });
+    return D.svg(640, 364, b, 'A town: a factory chimney giving off smoke (air), a sewage pipe and a fertilised field draining into a river (water), and a landfill site (land). ' + PLACES[sel].label + ' highlighted.');
+  }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.changed[0] && s.changed[1], s.seenP.length === 3, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const P = PLACES[s.place];
+    const bankSrc = [
+      { q: 'Why does a rising human standard of living increase pollution, even where population is stable?', opts: [['People use more resources and produce more waste per person', true], ['People automatically have more children', false], ['A higher standard of living has no effect on pollution', false], ['People move to the countryside where there is less waste', false]],
+        wrong_explanations: { 1: 'Standard of living is about resource use per person, not birth rate \u2014 both population size AND resource use per person raise pollution.', 2: 'It is the extra resource use and waste per person that increases pollution, not the standard of living itself being harmless.', 3: 'Where people go does not remove the waste \u2014 a higher standard of living means each person consumes and discards more.' } },
+      { q: 'Fertiliser washing into a river reduces biodiversity. Which environment is being polluted?', opts: [['Water', true], ['Air', false], ['Land only', false], ['None \u2014 fertiliser is not a pollutant', false]],
+        wrong_explanations: { 1: 'The fertiliser is in the river, so this is water pollution: it kills organisms living there.', 2: 'The fertiliser has washed into the river, so the water is polluted, not just the land.', 3: 'Fertiliser is a pollutant when it reaches water \u2014 it damages the ecosystem even though it helps crops grow on land.' } },
+      { q: 'What is biodiversity?', opts: [['The variety of all the different species of organisms in an ecosystem', true], ['The number of animals living in an area', false], ['The amount of food available in a habitat', false], ['How many plants of one species grow in a field', false]],
+        wrong_explanations: { 1: 'A large number of animals could all be one species. Biodiversity is about the variety of species.', 2: 'Food supply affects organisms, but biodiversity is the variety of species.', 3: 'That is the size of one population, not the variety of species.' } },
+      { q: 'Which is a source of air pollution?', opts: [['Sulfur dioxide from burning fuels', true], ['Fertiliser washed into a river', false], ['Rubbish buried in landfill', false], ['Untreated sewage in the sea', false]],
+        wrong_explanations: { 1: 'That pollutes water.', 2: 'Landfill pollutes land.', 3: 'Sewage pollutes water.' } },
+      { q: 'More waste is produced each year. When does this waste cause more pollution?', opts: [['When waste and chemical materials are not properly handled', true], ['Always, however it is handled', false], ['Only when the waste is litter you can see', false], ['Never, because waste breaks down', false]],
+        wrong_explanations: { 1: 'Treating sewage, filtering gases and recycling all reduce the pollution caused.', 2: 'Invisible pollutants, such as sewage, fertiliser and acidic gases, do a lot of damage.', 3: 'Badly handled waste pollutes water, air and land, and kills organisms.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('waste-management') : null,
+      hookOptions: [
+        { text: 'Upstream of the pipe', correct: true, reply: 'The sewage pollutes the water below the pipe, and fewer kinds of animal survive there.' },
+        { text: 'Below the pipe', correct: false, reply: 'A few kinds can cope, but sewage pollutes the water and kills many organisms. Upstream has more kinds.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      drivers: [
+        { label: 'Population', key: 'pop', names: ['Now', 'Doubled'] },
+        { label: 'Waste per person (standard of living)', key: 'sol', names: ['Now', 'Doubled'] }
+      ].map((d, k) => ({ label: d.label, opts: d.names.map((n, i) => ({ label: n, pressed: s[d.key] === i + 1, style: this.seg(s[d.key] === i + 1),
+        onClick: () => { const c = s.changed.slice(); if (i === 1) c[k] = true; const o = { changed: c }; o[d.key] = i + 1; this.setState(o); } })) })),
+      wasteFig: ready ? K.fig(this.waste(s.pop, s.sol), '') : null,
+      wasteNote: s.pop === 2 && s.sol === 2 ? 'Both doubled: four times the waste. Even with a stable population, a higher standard of living alone raises waste.' : s.sol === 2 ? 'Same number of people, each using more: waste doubles.' : s.pop === 2 ? 'Twice the people, same waste each: waste doubles.' : 'Double one driver, then the other.',
+      places: PLACES.map((p, i) => ({ label: p.label, pressed: s.place === i, style: this.seg(s.place === i), onClick: () => this.setState({ place: i, seenP: s.seenP.indexOf(i) >= 0 ? s.seenP : s.seenP.concat([i]) }) })),
+      townFig: ready ? K.fig(this.town(s.place), '') : null,
+      placeSrc: P.src, placeEff: P.eff,
+      thinkOptions: [
+        { text: 'It pollutes the water and kills organisms living there', correct: true, reply: 'In the river it is a pollutant.' },
+        { text: 'Nothing harmful: it just helps water plants grow', correct: false, reply: 'In water, fertiliser is a pollutant that kills organisms.' },
+        { text: 'It pollutes the air above the river', correct: false, reply: 'The fertiliser is in the water, so it is water pollution.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'w', label: 'Water' }, { id: 'a', label: 'Air' }, { id: 'l', label: 'Land' }],
+      sortItems: [
+        { text: 'Untreated sewage from a pipe', bin: 'w', why: 'Released into rivers and seas.' },
+        { text: 'Fertiliser washed off a field into a stream', bin: 'w', why: 'It ends up in the water.' },
+        { text: 'Toxic chemicals leaking into a lake', bin: 'w', why: 'Water pollution.' },
+        { text: 'Smoke from a factory chimney', bin: 'a', why: 'Air pollution.' },
+        { text: 'Sulfur dioxide from burning fuels', bin: 'a', why: 'An acidic gas that causes acid rain.' },
+        { text: 'Rubbish buried in landfill', bin: 'l', why: 'Land pollution.' },
+        { text: 'Pesticides sprayed on soil', bin: 'l', why: 'Toxic chemicals on land.' },
+        { text: 'Herbicide soaking into a field', bin: 'l', why: 'Toxic chemicals on land.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name one source of water pollution.', why: 'Sewage, fertiliser or toxic chemicals.', options: [
+            { text: 'Sewage', correct: true },
+            { text: 'Smoke', correct: false, reply: 'Smoke pollutes the air.' },
+            { text: 'Landfill', correct: false, reply: 'Landfill pollutes land.' }] },
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Give one reason why humans produce more waste than in the past.', why: 'A growing population and a rising standard of living.', options: [
+            { text: 'Waste breaks down more slowly now', correct: false, reply: 'The reason is more people, each using more resources.' },
+            { text: 'The standard of living is rising, so each person uses more', correct: true },
+            { text: 'There is more land for landfill', correct: false, reply: 'Land for landfill is a result, not a reason.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Identify', marks: 1, prompt: 'A farmer sprays pesticide that soaks into the soil of a field. Identify the type of pollution.', why: 'Toxic chemicals in soil: land pollution.', options: [
+            { text: 'Air', correct: false, reply: 'The pesticide has soaked into the soil.' },
+            { text: 'Land', correct: true },
+            { text: 'Water', correct: false, reply: 'It would become water pollution only if it washed into a river or lake.' },
+            { text: 'None', correct: false, reply: 'Pesticides are toxic chemicals: a pollutant.' }] },
+          { kind: 'mcq', command: 'Suggest', marks: 1, prompt: 'Toxic chemicals leak from a factory into a stream. Suggest the effect on biodiversity in the stream.', why: 'Organisms are killed; if species are lost, biodiversity falls.', options: [
+            { text: 'It falls, because organisms are killed and species may be lost', correct: true },
+            { text: 'It rises, because new species move in', correct: false, reply: 'Pollution kills organisms; it does not attract new species.' },
+            { text: 'No change, because the chemicals are in the water, not on land', correct: false, reply: 'Water pollution kills organisms living in the water.' },
+            { text: 'It falls, because fewer people visit the stream', correct: false, reply: 'Biodiversity is the variety of species, not visitors.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why pollution is increasing. Put the links in order.',
+            links: ['The human population is growing and the standard of living is rising.', 'So more resources are used and more waste is produced.', 'Unless the waste and chemicals are properly handled, more pollution is caused.'],
+            herrings: [{ text: 'Waste is more toxic than it used to be.', why: 'The reason is more waste, from more people each using more.' }, { text: 'Pollution increases only because there are more people.', why: 'A higher standard of living also means more waste per person.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how untreated sewage released into a river can reduce biodiversity. Put the links in order.',
+            links: ['The sewage pollutes the water.', 'Plants and animals living in the river are killed.', 'If species are lost from the river, its biodiversity falls.'],
+            herrings: [{ text: 'The sewage pollutes the air above the river.', why: 'Sewage in a river is water pollution.' }, { text: 'Biodiversity falls because the fish get smaller.', why: 'Biodiversity is the variety of species.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 4, prompt: 'Describe how human activities pollute water, air and land, and the effect on living things.',
+            levels: [
+              { label: 'Level 2 \u00b7 3\u20134', text: 'A source for each of the three places, with the effect on organisms or biodiversity.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'Sources for one or two places, with little about the effect.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Water: sewage, fertiliser or toxic chemicals.', 'Air: smoke and acidic gases such as sulfur dioxide (acid rain).', 'Land: landfill and toxic chemicals such as pesticides and herbicides.', 'Pollution kills plants and animals, which can reduce biodiversity.'],
+            reject: ['\u201cPollution is litter.\u201d', '\u201cFertiliser is not a pollutant because it helps plants.\u201d'] }
+        ]
+      },
+      keyLines: ['The human population is growing rapidly and the standard of living is rising.', 'So more resources are used and more waste is produced.', 'Unless waste and chemical materials are properly handled, more pollution is caused.', 'Water: sewage, fertiliser, toxic chemicals. Air: smoke, acidic gases. Land: landfill, toxic chemicals.', 'Pollution kills plants and animals, which can reduce biodiversity.', 'Biodiversity is the variety of all the different species of organisms in an ecosystem.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.7.3.3-land-use.dc.html', label: 'Land use and peat bogs' }, endNext: { href: 'ks4-biology-4.7.3.5-global-warming.dc.html', label: 'Global warming' },
+      endConnects: [{ href: '../KS4 Batch 4/ks4-biology-4.7.3.1-biodiversity.dc.html', label: 'Biodiversity' }, { href: '../KS4 Batch 4/ks4-chemistry-5.9.3.1-atmospheric-pollutants.dc.html', label: 'Atmospheric pollutants from fuels' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

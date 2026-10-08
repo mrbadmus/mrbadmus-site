@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Land use and peat bogs · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Ecology" title="Land use and peat bogs" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.7.3.3</p>
+        <h1>Land use and peat bogs</h1>
+        <p class="ks3-bigq">Every field we build on is land that wild species lose. Find the four ways humans use up land, then weigh up one bog with two futures.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A field at the edge of town." scene="The field has long grass, hedges and a pond. A builder turns it into a housing estate: houses, roads, driveways and small gardens." question="would more or fewer kinds of wild plants and animals live there afterwards?" options="{{ hookOptions }}" bridge="Building takes away land that other species need. Next: the four ways humans do it." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-uses" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Four land uses · one area</p>
+        <h2 style="margin: 6px 0 0;">Humans reduce the land left for other species.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Building, quarrying, farming and dumping waste all take land. Each time, a habitat is destroyed and wild species have less space. Tap each use to give it a quarter of the land.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ uses }}" as="u" hint-placeholder-count="4"><button type="button" onClick="{{ u.onClick }}" aria-pressed="{{ u.pressed }}" style="{{ u.style }}">{{ u.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ landFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; color: var(--ks3-ink-muted);">HABITAT LEFT FOR WILD SPECIES</p><p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 22px;">{{ habitatText }}</p></div>
+            <p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ useNote }}</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-bog" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">One peat bog · two futures</p>
+        <h2 style="margin: 6px 0 0;">Peat is stored carbon and a habitat.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">A peat bog is waterlogged, so there is not enough oxygen for decomposers. Dead plants only partly decay, and over thousands of years they build up as peat. Peat stores a large amount of carbon, and the bog is home to specialised plants, animals and microorganisms.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ futures }}" as="f" hint-placeholder-count="2"><button type="button" onClick="{{ f.onClick }}" aria-pressed="{{ f.pressed }}" style="{{ f.style }}">{{ f.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ bogFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <sc-for list="{{ bogLines }}" as="b" hint-placeholder-count="3">
+              <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ b.k }}</p><p style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">{{ b.v }}</p></div>
+            </sc-for>
+          </div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Peat is dug up mainly to sell as compost, for gardens and for commercial food production. It can also be burned as a fuel. Why extra carbon dioxide matters is in <a href="ks4-biology-4.7.3.5-global-warming.dc.html">Global warming</a>.</p>
+      </section>
+
+      <section id="s-conflict" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The conflict</p>
+        <h2 style="margin: 6px 0 0;">Cheap compost, or a bog kept wet?</h2>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">For digging peat</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Peat compost is cheap and available. It helps farmers and growers increase food production.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">For conserving the bog</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">The bog stays a habitat, so its biodiversity is kept. The carbon stays locked in the peat, so less carbon dioxide is released.</p>
+          </div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Peat-free compost helps protect peat bogs: less demand for peat means fewer bogs are dug.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · how many harms</p></div>
+        <p class="ks3-mis-quote">&ldquo;Destroying a peat bog just kills the plants growing on it.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="A peat bog is drained and dug for compost. Which answer gives the harms in full?" options="{{ thinkOptions }}" reveal="Two harms, every time. The habitat is lost, so fewer plant, animal and microorganism species live there: biodiversity falls. And the peat decays or is burned, releasing its stored carbon as carbon dioxide." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Use, harm or reason?" prompt="Place each statement." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Four uses take land; destroying a bog has two harms; cheap compost for food is the reason people still dig it. That is the conflict." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Name the land uses, or say what happens to the bog.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Link each step: habitat lost, so biodiversity falls; peat decays, so carbon dioxide is released.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Evaluate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give points on both sides, then a judgement with a reason.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Destroying peat bogs reduces a habitat, so biodiversity falls, and the decay or burning of the peat releases carbon dioxide.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="land-use" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Land use and peat bogs" spec="AQA 4.7.3.3" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure how a bog gives off carbon dioxide?" legal="Land and bog diagrams are schematic and not to scale." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A field becomes an estate', short: 'HOOK' },
+  { id: 's-uses', label: 'Four land uses', short: 'USES' },
+  { id: 's-bog', label: 'Two futures', short: 'BOG' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Use, harm or reason', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const USES = [
+  { id: 'b', label: 'Building', fill: '#D9D3C4', word: 'houses, factories, roads', note: 'Building: houses, factories and roads cover the ground.' },
+  { id: 'q', label: 'Quarrying', fill: '#C9B79A', word: 'rock and minerals dug out', note: 'Quarrying: rock and minerals are dug out, leaving a pit.' },
+  { id: 'f', label: 'Farming', fill: '#E8D9A0', word: 'crops and animals', note: 'Farming: crops and farm animals replace wild plants.' },
+  { id: 'w', label: 'Dumping waste', fill: '#B8B2A6', word: 'landfill site', note: 'Dumping waste: a landfill site buries the habitat.' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, used: [], fut: null, seen: [false, false], think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  land(used) {
+    const D = window.KS4D, C = D.C;
+    let b = '';
+    const cells = [[30, 30], [330, 30], [30, 170], [330, 170]];
+    USES.forEach((u, i) => {
+      const c = cells[i], on = used.indexOf(u.id) >= 0;
+      b += '<rect x="' + c[0] + '" y="' + c[1] + '" width="280" height="124" rx="10" fill="' + (on ? u.fill : '#B9D8A8') + '" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+      if (on) b += D.T(c[0] + 140, c[1] + 58, u.label, 19, { fill: C.stroke }) + D.T(c[0] + 140, c[1] + 84, u.word, 14, { weight: 'normal', fill: C.stroke });
+      else {
+        [[50, 40], [120, 70], [200, 44], [240, 90], [80, 98]].forEach((p) => { b += '<path d="M' + (c[0] + p[0]) + ' ' + (c[1] + p[1]) + ' l6 -16 l6 16" fill="none" stroke="#4E7A3E" stroke-width="2.5"/>'; });
+        b += D.T(c[0] + 140, c[1] + 70, 'habitat', 17, { fill: C.label });
+      }
+    });
+    return D.svg(640, 324, b, 'One area of land in four parts. ' + used.length + ' of 4 parts taken for human use; ' + (4 - used.length) + ' left as habitat.');
+  }
+  bog(mode) {
+    const D = window.KS4D, C = D.C;
+    let b = '';
+    const dug = mode === 1;
+    b += '<rect x="0" y="250" width="640" height="104" fill="#A89A82"/>' + D.T(560, 320, 'rock', 14, { weight: 'normal', fill: C.stroke });
+    if (!dug) {
+      b += '<rect x="0" y="120" width="640" height="130" fill="#5A4030"/>';
+      b += '<rect x="0" y="120" width="640" height="16" fill="#7FA7BE" opacity=".8"/>';
+      b += D.T(320, 196, 'peat: partly-decayed plants, carbon stored', 17, { fill: '#FFFDF8' });
+      b += D.T(320, 222, 'waterlogged, little oxygen', 14, { weight: 'normal', fill: '#FFFDF8' });
+      for (let x = 30; x < 640; x += 46) b += '<path d="M' + x + ' 120 q4 -28 10 -34 M' + (x + 8) + ' 120 q2 -22 -6 -30 M' + (x + 14) + ' 120 q6 -20 12 -24" fill="none" stroke="#4E7A3E" stroke-width="3"/>';
+      b += D.circ(180, 70, 8, '#C8102E', C.stroke, 2) + D.circ(460, 64, 7, '#FBBF24', C.stroke, 2);
+      b += D.T(320, 40, 'habitat kept: plants, animals, microorganisms', 16);
+    } else {
+      b += '<path d="M0 150 L250 150 L250 250 L400 250 L400 150 L640 150 L640 250 L0 250 Z" fill="#6B4E3A"/>';
+      b += '<rect x="0" y="232" width="640" height="18" fill="#7FA7BE" opacity=".8"/>';
+      b += D.T(120, 200, 'drained peat', 16, { fill: '#FFFDF8' }) + D.T(520, 200, 'drained peat', 16, { fill: '#FFFDF8' });
+      b += D.T(325, 214, 'dug out', 15, { fill: C.stroke });
+      [[90, 140], [170, 140], [480, 140], [560, 140]].forEach((p) => { b += D.arrow(p[0], p[1], p[0], p[1] - 62, C.arrow, 5); });
+      b += D.T(130, 60, 'CO\u2082 released', 17) + D.T(520, 60, 'CO\u2082 released', 17);
+      b += D.T(325, 112, 'habitat lost', 17, { fill: C.red });
+    }
+    return D.svg(640, 354, b, dug ? 'Drained and dug peat bog: water level low, peat cut out, carbon dioxide rising from the drained peat, habitat lost.' : 'Intact peat bog: waterlogged peat of partly-decayed plants storing carbon, plants and animals living on the surface.');
+  }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.used.length === 4, s.seen[0] && s.seen[1], s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const last = s.used.length ? USES.find((u) => u.id === s.used[s.used.length - 1]) : null;
+    const fut = s.fut === null ? 0 : s.fut;
+    const bankSrc = [
+      { q: 'Why does draining and extracting peat release carbon dioxide?', opts: [['Peat stores carbon from partly-decayed plants; decay or burning releases it as CO\u2082', true], ['Peat is made of pure carbon dioxide gas', false], ['Machines used to dig peat run on petrol', false], ['Peat reflects sunlight, warming the air', false]],
+        wrong_explanations: { 1: 'Peat is solid plant material, not CO\u2082 gas \u2014 the CO\u2082 is released only when the stored carbon reacts with oxygen.', 2: 'The machinery is a minor factor; the main release is the carbon stored in the peat itself escaping as CO\u2082.', 3: 'Peat is dark and is not a reflector. The CO\u2082 comes from the carbon stored in the peat, released when it decays or is burned.' } },
+      { q: 'Which single change would best protect peat bog biodiversity?', opts: [['Buying peat-free compost for gardens', true], ['Extracting peat faster so it is used up sooner', false], ['Burning peat instead of using it as compost', false], ['Draining more bogs to create farmland', false]],
+        wrong_explanations: { 1: 'Extracting peat faster destroys the habitat sooner \u2014 the opposite of protecting it.', 2: 'Burning peat still destroys the bog and releases CO\u2082.', 3: 'Draining dries the peat so it decays, releasing CO\u2082, and it removes the habitat.' } },
+      { q: 'Which list gives only ways that humans reduce the land available for other animals and plants?', opts: [['Building, quarrying, farming and dumping waste', true], ['Building, planting hedgerows and farming', false], ['Quarrying, using peat-free compost and dumping waste', false], ['Farming only', false]],
+        wrong_explanations: { 1: 'Planting hedgerows gives wild species more habitat, not less.', 2: 'Peat-free compost protects peat bogs; it does not take land.', 3: 'Farming is one of four: building, quarrying and dumping waste take land too.' } },
+      { q: 'Destroying a peat bog harms the environment in two ways. Which two?', opts: [['A habitat is lost, so biodiversity falls, and carbon dioxide is released', true], ['A habitat is lost, and the air loses its oxygen', false], ['Carbon dioxide is released, and the land floods', false], ['The plants on the bog die, and nothing else changes', false]],
+        wrong_explanations: { 1: 'The second harm is carbon dioxide: the peat\u2019s stored carbon is released as it decays or burns.', 2: 'Draining makes the land drier, not wetter. The two harms are habitat loss and carbon dioxide released.', 3: 'Animals and microorganisms lose their habitat too, and the peat releases carbon dioxide.' } },
+      { q: 'Why do some growers still want to use peat compost?', opts: [['It is cheap and available, and helps increase food production', true], ['It protects peat bogs as habitats', false], ['It stops carbon dioxide being released', false], ['Plants cannot grow in any other compost', false]],
+        wrong_explanations: { 1: 'Digging peat destroys the bog habitat; it does not protect it.', 2: 'Digging and using peat lets its stored carbon be released as carbon dioxide.', 3: 'Peat-free compost exists. Peat is chosen because it is cheap and available.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('land-use') : null,
+      hookOptions: [
+        { text: 'More kinds', correct: false, reply: 'Gardens suit a few species, but the long grass, hedges and pond are gone under houses and roads. Fewer kinds can live there.' },
+        { text: 'Fewer kinds', correct: true, reply: 'The habitat has been built on, so there is less space for wild species.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      uses: USES.map((u) => { const on = s.used.indexOf(u.id) >= 0; return { label: u.label, pressed: on, style: this.seg(on),
+        onClick: () => this.setState({ used: on ? s.used.filter((x) => x !== u.id) : s.used.concat([u.id]) }) }; }),
+      landFig: ready ? K.fig(this.land(s.used), '') : null,
+      habitatText: (4 - s.used.length) + ' of 4 parts',
+      useNote: s.used.length === 4 ? 'All four uses together leave no habitat in this area. Fewer species can live here, so biodiversity falls.' : last ? last.note + ' Less space for wild species.' : 'Tap a land use.',
+      futures: ['Kept wet and intact', 'Drained and dug for compost'].map((l, i) => ({ label: l, pressed: s.fut === i, style: this.seg(s.fut === i),
+        onClick: () => { const seen = s.seen.slice(); seen[i] = true; this.setState({ fut: i, seen }); } })),
+      bogFig: ready ? K.fig(this.bog(fut), '') : null,
+      bogLines: fut === 0 ? [
+        { k: 'Carbon', v: 'Stays locked in the peat.' },
+        { k: 'Habitat', v: 'Kept for its specialised plants, animals and microorganisms.' },
+        { k: 'Biodiversity', v: 'The variety of species living there is kept.' }
+      ] : [
+        { k: 'Carbon', v: 'Drained peat decays, and burned peat burns: the stored carbon is released as carbon dioxide.' },
+        { k: 'Habitat', v: 'The area of this habitat is reduced.' },
+        { k: 'Biodiversity', v: 'Fewer different plant, animal and microorganism species live there.' }
+      ],
+      thinkOptions: [
+        { text: 'Habitat lost, so biodiversity falls; and carbon dioxide is released', correct: true, reply: 'Both harms.' },
+        { text: 'The plants on the bog die', correct: false, reply: 'True, but animals and microorganisms lose their habitat too, and the peat releases carbon dioxide.' },
+        { text: 'Carbon dioxide is released', correct: false, reply: 'That is one harm. The habitat is lost as well, so biodiversity falls.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'use', label: 'Takes land from other species' }, { id: 'harm', label: 'Harm of destroying a peat bog' }, { id: 'why', label: 'Reason peat is still dug' }],
+      sortItems: [
+        { text: 'Building a new road', bin: 'use', why: 'Building covers habitat.' },
+        { text: 'A quarry for limestone', bin: 'use', why: 'Quarrying digs out rock.' },
+        { text: 'A landfill site', bin: 'use', why: 'Dumping waste takes land.' },
+        { text: 'Fields of wheat', bin: 'use', why: 'Farming replaces wild habitat.' },
+        { text: 'Carbon dioxide released as peat decays', bin: 'harm', why: 'The stored carbon escapes.' },
+        { text: 'Fewer species living on the bog', bin: 'harm', why: 'Habitat lost, so biodiversity falls.' },
+        { text: 'Peat compost is cheap and available', bin: 'why', why: 'Cost is one side of the conflict.' },
+        { text: 'Compost helps increase food production', bin: 'why', why: 'Food production is the other part of that side.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name one way humans reduce the land available for other animals and plants.', why: 'Building, quarrying, farming and dumping waste all take land.', options: [
+            { text: 'Quarrying', correct: true },
+            { text: 'Planting hedgerows', correct: false, reply: 'Hedgerows give wild species more habitat.' },
+            { text: 'Recycling', correct: false, reply: 'Recycling does not take land; dumping waste does.' }] },
+          { kind: 'mcq', command: 'State', marks: 1, prompt: 'State what peat is mainly dug up to make.', why: 'Peat is mainly dug up to sell as compost.', options: [
+            { text: 'Building stone', correct: false, reply: 'Peat is partly-decayed plant matter, not stone.' },
+            { text: 'Compost', correct: true },
+            { text: 'Paper', correct: false, reply: 'Paper is made from wood. Peat is dug mainly for compost.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Suggest', marks: 1, prompt: 'A peat bog is drained. Suggest why the peat starts to release carbon dioxide.', why: 'Drained, the peat is no longer waterlogged, so the partly-decayed plants decay and their stored carbon is released.', options: [
+            { text: 'The peat is no longer waterlogged, so it decays and its stored carbon is released', correct: true },
+            { text: 'The water was made of carbon dioxide', correct: false, reply: 'The carbon is stored in the peat, not the water.' },
+            { text: 'The plants on the bog breathe out more', correct: false, reply: 'The carbon dioxide comes from the peat itself decaying.' },
+            { text: 'Drained peat turns into a gas', correct: false, reply: 'Peat is solid. Its carbon is released as carbon dioxide when it decays.' }] },
+          { kind: 'mcq', command: 'Suggest', marks: 1, prompt: 'A garden centre stops selling peat compost and sells only peat-free compost. Suggest the effect on peat bogs.', why: 'Less demand for peat means fewer bogs are dug, so more habitat is kept.', options: [
+            { text: 'Fewer bogs are dug, so more habitat is kept', correct: true },
+            { text: 'Bogs release more carbon dioxide', correct: false, reply: 'Bogs that are not dug keep their carbon stored.' },
+            { text: 'No effect, because peat is only dug for fuel', correct: false, reply: 'Peat is mainly dug for compost.' },
+            { text: 'Bogs grow faster', correct: false, reply: 'The bog is not dug, so it is kept, but it does not grow faster.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why digging peat for compost reduces biodiversity. Put the links in order.',
+            links: ['A peat bog is a habitat for specialised plants, animals and microorganisms.', 'Digging the peat destroys the bog, so the area of this habitat is reduced.', 'Fewer different species can live there, so biodiversity falls.'],
+            herrings: [{ text: 'Digging adds oxygen, which kills animals.', why: 'Animals need oxygen. The harm is the habitat being destroyed.' }, { text: 'Biodiversity falls because there are fewer individual plants.', why: 'Biodiversity is the variety of species, and it falls when species are lost.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how burning peat adds carbon dioxide to the atmosphere. Put the links in order.',
+            links: ['Peat is made of partly-decayed plants.', 'It stores a large amount of carbon.', 'Burning releases the stored carbon as carbon dioxide.'],
+            herrings: [{ text: 'Peat is made of carbon dioxide gas.', why: 'Peat is solid plant material that stores carbon.' }, { text: 'Burning peat traps more carbon in the bog.', why: 'Burning releases the carbon; it does not store more.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Evaluate', marks: 6, prompt: 'A company wants to drain a peat bog and dig it to sell cheap compost to farms. Evaluate the plan.',
+            levels: [
+              { label: 'Level 3 \u00b7 5\u20136', text: 'Points on both sides, each linked to its effect, and a judgement with a reason.', max: 6 },
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Points on both sides, or one side well explained, with little judgement.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'One or two simple points.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['For: peat compost is cheap and available.', 'For: it helps increase food production.', 'Against: the bog habitat is destroyed, so fewer plant, animal and microorganism species live there (biodiversity falls).', 'Against: drained peat decays, releasing its stored carbon as carbon dioxide, adding to global warming.', 'Peat-free compost would avoid both harms.', 'A judgement, e.g. the harms outweigh the cheaper compost because peat-free compost exists.'],
+            reject: ['\u201cIt is bad because it kills the plants.\u201d (one harm, not explained)', '\u201cPeat is only burned for fuel.\u201d'] }
+        ]
+      },
+      keyLines: ['Humans reduce the land available for other animals and plants by building, quarrying, farming and dumping waste.', 'Peat bogs are waterlogged: dead plants only partly decay and build up as peat, which stores carbon.', 'Peat is dug mainly for compost, and can be burned as a fuel.', 'Destroying peat bogs reduces the area of this habitat, so biodiversity falls.', 'The decay or burning of peat releases carbon dioxide into the atmosphere.', 'The conflict: cheap compost for food production against conserving bogs for biodiversity and to cut carbon dioxide. Peat-free compost helps.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: null, endNext: { href: 'ks4-biology-4.7.3.2-waste-management.dc.html', label: 'Waste management and pollution' },
+      endConnects: [{ href: 'ks4-biology-4.7.3.5-global-warming.dc.html', label: 'Global warming and its effects on ecosystems' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

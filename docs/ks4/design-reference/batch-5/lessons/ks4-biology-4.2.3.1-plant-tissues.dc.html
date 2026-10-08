@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plant tissues and organs · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Organisation" title="Plant tissues and organs" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.2.3.1</p>
+        <h1>Plant tissues and organs</h1>
+        <p class="ks3-bigq">A leaf is an organ: layers of tissue, each built for one job. Travel through it layer by layer, then find where a plant makes its new cells.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Turn a leaf over." scene="Pick a leaf from a tree or a hedge and look at it in daylight: first the side that faced the sky, then the side that faced the ground." question="which side is darker green?" options="{{ hookOptions }}" bridge="The colour comes from chloroplasts, and they are packed into one layer near the top. Next: travel through the leaf." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-leaf" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The leaf · one organ, many tissues</p>
+        <h2 style="margin: 6px 0 0;">Each layer is built for its job.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Leaves, stems and roots are plant organs. A leaf is made of several tissues working together. Step through them from top to bottom.</p>
+        <div style="margin-top: 14px; display: flex; gap: 6px; flex-wrap: wrap;">
+          <sc-for list="{{ layers }}" as="l" hint-placeholder-count="8"><button type="button" onClick="{{ l.onClick }}" aria-pressed="{{ l.pressed }}" style="{{ l.style }}">{{ l.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ leafFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ layerCount }}</p>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 24px; line-height: 1.25;">{{ layerName }}</p>
+            <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Structure</p><p style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">{{ layerStruct }}</p></div>
+            <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-accent-tint); border: 2px solid var(--ks3-accent);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-accent-text);">So it can</p><p style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">{{ layerJob }}</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-tubes" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">In the vein · xylem and phloem</p>
+        <h2 style="margin: 6px 0 0;">Water comes in. Sugar goes out.</h2>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Xylem</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Carries water and dissolved mineral ions up from the roots to the leaves. Hollow tubes of dead cells, with walls strengthened by lignin.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Phloem</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Carries dissolved sugars from the leaves to the rest of the plant. Tubes of living, elongated cells; cell sap moves from one cell to the next through pores in the end walls.</p>
+          </div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">How water is pulled up the xylem, and how fast, is the transpiration lesson.</p>
+      </section>
+
+      <section id="s-meristem" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The fifth tissue · meristem</p>
+        <h2 style="margin: 6px 0 0;">New cells, at the growing tips.</h2>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ plantFig }}</div>
+          <div>
+            <p style="margin: 0; max-width: 58ch;">Meristem tissue is found at the growing tips of shoots and roots. It makes new cells, and these can differentiate into any type of plant cell, throughout the life of the plant.</p>
+            <p style="margin: 12px 0 0; max-width: 58ch;">So a plant keeps growing longer shoots and roots for as long as it lives.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · which tube</p></div>
+        <p class="ks3-mis-quote">&ldquo;Xylem carries the food and phloem carries the water.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Sugar made in a leaf is carried down to the roots. Which tissue carries it?" options="{{ thinkOptions }}" reveal="Phloem carries dissolved sugars. Xylem carries water and mineral ions up from the roots. Phloem is the living tissue; xylem is hollow tubes of dead cells." right-word="Yes." wrong-word="Not this one." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Which tissue does the job?" prompt="Place each job with its tissue type." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Epidermis protects and controls the pores; mesophyll photosynthesises; xylem and phloem transport; meristem makes new cells." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Name</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The tissue, spelled right: palisade mesophyll, not just “palisade cells”.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Structure, then function: “many chloroplasts, so more light absorbed for photosynthesis.”</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Apply what a tissue does to a new situation.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">The leaf is a plant organ. Its tissues are the epidermis, palisade mesophyll, spongy mesophyll, xylem and phloem, with guard cells around the stomata. Meristem at shoot and root tips makes new cells.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="plant-tissues" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Plant tissues and organs" spec="AQA 4.2.3.1" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Mixing up xylem and phloem?" legal="The leaf section and plant outline are schematic drawings, not to scale." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Turn a leaf over', short: 'HOOK' },
+  { id: 's-leaf', label: 'Through the leaf', short: 'LEAF' },
+  { id: 's-meristem', label: 'Meristem', short: 'TIPS' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Which tissue', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const LAYERS = [
+  { label: 'Waxy cuticle', box: [20, 34, 600, 10], s: 'A thin waxy, waterproof layer made by the epidermis.', j: 'Reduce water loss from the leaf.' },
+  { label: 'Upper epidermis', box: [20, 44, 600, 26], s: 'A single layer of thin, transparent cells.', j: 'Cover the leaf while letting light through to the cells below.' },
+  { label: 'Palisade mesophyll', box: [20, 70, 600, 92], s: 'Tall, column-shaped cells near the upper surface, packed with chloroplasts.', j: 'Absorb as much light as possible: most photosynthesis happens here.' },
+  { label: 'Spongy mesophyll', box: [20, 162, 600, 126], s: 'Loosely packed cells with large air spaces between them.', j: 'Let carbon dioxide diffuse to the photosynthesising cells, and oxygen diffuse out.' },
+  { label: 'Xylem', box: [290, 190, 60, 34], s: 'Hollow tubes in the vein, with walls strengthened by lignin.', j: 'Bring water and mineral ions into the leaf.' },
+  { label: 'Phloem', box: [290, 226, 60, 30], s: 'Living, elongated cells in the vein, with pores in their end walls.', j: 'Carry dissolved sugars made in the leaf to the rest of the plant.' },
+  { label: 'Lower epidermis', box: [20, 288, 600, 26], s: 'A layer of cells containing most of the leaf\u2019s stomata.', j: 'Cover the underside, with pores for gas exchange.' },
+  { label: 'Guard cells and stoma', box: [440, 280, 80, 52], s: 'A pair of guard cells around a pore, the stoma. Stomata are mostly on the lower surface.', j: 'Open and close the stoma, controlling gas exchange and water loss.' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, layer: 0, seen: [0], think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  leaf(sel) {
+    const D = window.KS4D, C = D.C; let b = '';
+    b += '<rect x="20" y="34" width="600" height="10" fill="#F2E7B8" stroke="' + C.stroke + '" stroke-width="1.2"/>';
+    for (let x = 20; x < 620; x += 30) b += '<rect x="' + x + '" y="44" width="30" height="26" fill="#F4F6EE" stroke="' + C.stroke + '" stroke-width="1.2"/>';
+    for (let x = 22; x < 616; x += 24) { b += '<rect x="' + x + '" y="72" width="20" height="88" rx="8" fill="#B9DBA4" stroke="' + C.stroke + '" stroke-width="1.2"/>'; for (let k = 0; k < 5; k++) b += D.circ(x + 6 + (k % 2) * 8, 84 + k * 16, 3.2, '#3E8A3A'); }
+    const sp = [[50, 190], [110, 214], [170, 186], [230, 236], [80, 262], [150, 258], [410, 196], [470, 240], [530, 200], [580, 258], [210, 272], [380, 266], [560, 176], [500, 270]];
+    sp.forEach((p, i) => { b += '<ellipse cx="' + p[0] + '" cy="' + p[1] + '" rx="' + (22 + (i % 3) * 4) + '" ry="16" fill="#CFE6BE" stroke="' + C.stroke + '" stroke-width="1.2"/>' + D.circ(p[0] - 6, p[1] - 2, 3, '#3E8A3A') + D.circ(p[0] + 7, p[1] + 3, 3, '#3E8A3A'); });
+    b += '<rect x="290" y="186" width="60" height="74" rx="20" fill="#EEE2C6" stroke="' + C.stroke + '" stroke-width="1.5"/>';
+    [[304, 202], [320, 200], [336, 204]].forEach((p) => { b += D.circ(p[0], p[1], 7, '#FFFDF8', C.stroke, 2.2); });
+    [[306, 240], [320, 244], [334, 240]].forEach((p) => { b += D.circ(p[0], p[1], 6, '#E8C9A0', C.stroke, 1.2); });
+    for (let x = 20; x < 620; x += 30) if (x < 450 || x > 510) b += '<rect x="' + x + '" y="288" width="30" height="26" fill="#F4F6EE" stroke="' + C.stroke + '" stroke-width="1.2"/>';
+    b += '<rect x="20" y="314" width="600" height="6" fill="#F2E7B8" stroke="' + C.stroke + '" stroke-width="1"/>';
+    b += '<path d="M450 290 q14 -4 24 20 q-10 14 -24 8 z" fill="#B9DBA4" stroke="' + C.stroke + '" stroke-width="1.5"/><path d="M510 290 q-14 -4 -24 20 q10 14 24 8 z" fill="#B9DBA4" stroke="' + C.stroke + '" stroke-width="1.5"/>';
+    b += D.T(480, 350, 'stoma', 13, { weight: 'normal', fill: C.stroke });
+    b += D.arrow(480, 372, 480, 326, C.arrow, 3) + D.T(520, 372, 'CO\u2082 in', 12, { anchor: 'start', fill: C.label });
+    const L = LAYERS[sel], bx = L.box;
+    b += '<rect x="' + (bx[0] - 3) + '" y="' + (bx[1] - 3) + '" width="' + (bx[2] + 6) + '" height="' + (bx[3] + 6) + '" fill="none" stroke="' + C.red + '" stroke-width="4" rx="6"/>';
+    b += D.T(320, 24, L.label, 16, { fill: C.red });
+    return D.svg(640, 384, b, 'Leaf cross-section: waxy cuticle, upper epidermis, palisade mesophyll packed with chloroplasts, spongy mesophyll with air spaces, a vein with xylem above phloem, lower epidermis with guard cells around a stoma. ' + L.label + ' highlighted.');
+  }
+  plant() {
+    const D = window.KS4D, C = D.C; let b = '';
+    b += '<rect x="0" y="200" width="420" height="160" fill="#D9CBAA"/>';
+    b += '<path d="M210 200 L210 60" stroke="#4E7A3E" stroke-width="7" fill="none"/>';
+    b += '<path d="M210 140 q-50 -10 -70 -40 q40 0 70 30 z M210 110 q50 -10 70 -40 q-40 0 -70 30 z" fill="#9CC79A" stroke="' + C.stroke + '" stroke-width="2"/>';
+    b += '<path d="M210 200 L210 320 M210 240 L160 300 M210 250 L262 310" stroke="#8A6A45" stroke-width="5" fill="none"/>';
+    [[210, 56], [210, 324], [158, 304], [264, 314]].forEach((p) => { b += D.circ(p[0], p[1], 10, '#FBBF24', C.stroke, 2.5); });
+    b += D.T(232, 52, 'meristem at the shoot tip', 15, { anchor: 'start' });
+    b += D.T(280, 340, 'meristem at root tips', 15, { anchor: 'start' });
+    return D.svg(420, 360, b, 'Plant outline with meristem tissue marked at the shoot tip and at the root tips.');
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.seen.length === LAYERS.length, s.seen.length === LAYERS.length, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const L = LAYERS[s.layer];
+    const bankSrc = [
+      { q: 'What is transported in xylem?', opts: [['Water and dissolved mineral ions \u2014 upwards from roots to leaves', true], ['Dissolved sugars from leaves to other parts of the plant', false], ['Oxygen produced by photosynthesis', false], ['Carbon dioxide for use in photosynthesis', false]],
+        wrong_explanations: { 1: 'Dissolved sugars = PHLOEM (translocation). Xylem carries water and minerals only.', 2: 'Oxygen diffuses through air spaces in the spongy mesophyll and out through stomata \u2014 it doesn\u2019t travel in xylem.', 3: 'CO\u2082 diffuses through stomata into air spaces \u2014 it doesn\u2019t travel in xylem.' } },
+      { q: 'Why are xylem cells dead?', opts: [['Dead cells have no contents \u2014 forming a completely hollow tube for water to flow through without obstruction', true], ['Xylem cells die because the lignin in their walls is toxic', false], ['Dead cells are lighter, helping water move upwards against gravity', false], ['Xylem cells die when the plant is no longer growing', false]],
+        wrong_explanations: { 1: 'Lignin is not toxic \u2014 it strengthens the walls. The cells die as part of their normal development, leaving behind a hollow lignified tube.', 2: 'Dead cell content doesn\u2019t significantly change the weight of xylem \u2014 water moves upward due to the transpiration pull, not because of weight.', 3: 'Xylem cells die as they mature during normal development, regardless of whether the plant is actively growing \u2014 this is a programmed developmental process.' } },
+      { q: 'What is the role of stomata in leaves?', opts: [['Allow CO\u2082 in for photosynthesis and O\u2082 out \u2014 also allow water vapour to escape during transpiration', true], ['Absorb water directly from the air into the leaf', false], ['Produce the waxy cuticle to reduce water loss', false], ['Store glucose produced by photosynthesis', false]],
+        wrong_explanations: { 1: 'Stomata can absorb some water vapour in humid conditions, but their primary function is gas EXCHANGE, not water absorption.', 2: 'The waxy cuticle is produced by the EPIDERMIS cells \u2014 it is a secreted layer, not produced by stomata.', 3: 'Glucose storage as starch happens in chloroplasts and other cells \u2014 stomata are pores for gas exchange.' } },
+      { q: 'Where is meristem tissue found in a plant?', opts: [['At the growing tips of shoots and roots', true], ['In the palisade mesophyll of the leaf', false], ['Only in the seeds', false], ['In the lower epidermis, around the stomata', false]],
+        wrong_explanations: { 1: 'The palisade mesophyll photosynthesises; meristem is at the shoot and root tips.', 2: 'Meristem keeps making new cells throughout the plant\u2019s life, at the shoot and root tips.', 3: 'Guard cells surround the stomata. Meristem is at the growing tips.' } },
+      { q: 'Why are palisade mesophyll cells found near the upper surface of the leaf?', opts: [['They receive the most light there, for photosynthesis', true], ['They need to be close to the stomata', false], ['They make the waxy cuticle', false], ['They carry water to the top of the leaf', false]],
+        wrong_explanations: { 1: 'Stomata are mostly on the lower surface; the palisade layer is near the top for light.', 2: 'The epidermis makes the cuticle.', 3: 'Xylem carries water.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('plant-tissues') : null,
+      hookOptions: [
+        { text: 'The top', correct: true, reply: 'The upper side is darker: most chloroplasts are in the layer just under the top surface.' },
+        { text: 'The underside', correct: false, reply: 'Have another look: the top is usually the darker side. The chloroplast-packed layer sits just under the upper surface.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      layers: LAYERS.map((l, i) => ({ label: l.label, pressed: s.layer === i,
+        style: 'font:inherit;font-size:15px;font-weight:700;padding:9px 12px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' + (s.layer === i ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (s.layer === i ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';',
+        onClick: () => this.setState({ layer: i, seen: s.seen.indexOf(i) >= 0 ? s.seen : s.seen.concat([i]) }) })),
+      leafFig: ready ? K.fig(this.leaf(s.layer), '') : null,
+      layerCount: s.seen.length + ' of ' + LAYERS.length + ' tissues visited',
+      layerName: L.label, layerStruct: L.s, layerJob: L.j,
+      plantFig: ready ? K.fig(this.plant(), '') : null,
+      thinkOptions: [
+        { text: 'Phloem', correct: true, reply: 'Phloem carries dissolved sugars.' },
+        { text: 'Xylem', correct: false, reply: 'Xylem carries water and mineral ions up from the roots, not sugar down.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'ep', label: 'Epidermal tissue' }, { id: 'me', label: 'Mesophyll' }, { id: 'xp', label: 'Xylem or phloem' }, { id: 'mr', label: 'Meristem' }],
+      sortItems: [
+        { text: 'Makes a waxy cuticle that reduces water loss', bin: 'ep', why: 'The epidermis makes the cuticle.' },
+        { text: 'Guard cells open and close the stomata', bin: 'ep', why: 'Guard cells are in the epidermis.' },
+        { text: 'Packed with chloroplasts near the top', bin: 'me', why: 'Palisade mesophyll.' },
+        { text: 'Air spaces let gases diffuse', bin: 'me', why: 'Spongy mesophyll.' },
+        { text: 'Carries water and mineral ions up', bin: 'xp', why: 'Xylem.' },
+        { text: 'Carries dissolved sugars', bin: 'xp', why: 'Phloem.' },
+        { text: 'Makes new cells at the root tips', bin: 'mr', why: 'Meristem is at the growing tips.' },
+        { text: 'Cells can become any type of plant cell', bin: 'mr', why: 'Meristem cells differentiate.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name the tissue that carries water from the roots to the leaves.', why: 'Xylem carries water and mineral ions.', options: [
+            { text: 'Phloem', correct: false, reply: 'Phloem carries dissolved sugars.' },
+            { text: 'Xylem', correct: true },
+            { text: 'Spongy mesophyll', correct: false, reply: 'The spongy mesophyll is for gas exchange inside the leaf.' }] },
+          { kind: 'mcq', command: 'State', marks: 1, prompt: 'State where meristem tissue is found.', why: 'At the growing tips of shoots and roots.', options: [
+            { text: 'In the leaf veins', correct: false, reply: 'Veins hold xylem and phloem.' },
+            { text: 'At the growing tips of shoots and roots', correct: true },
+            { text: 'In the upper epidermis', correct: false, reply: 'The epidermis covers the leaf.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Suggest', marks: 1, prompt: 'Suggest why the upper epidermis is transparent.', why: 'Light can pass through to the palisade mesophyll for photosynthesis.', options: [
+            { text: 'So light can reach the palisade cells below', correct: true },
+            { text: 'So water can escape', correct: false, reply: 'The waxy cuticle reduces water loss; transparency is about light.' },
+            { text: 'So carbon dioxide can enter', correct: false, reply: 'Carbon dioxide enters through the stomata.' },
+            { text: 'So the leaf looks green', correct: false, reply: 'The green comes from chloroplasts in the mesophyll.' }] },
+          { kind: 'mcq', command: 'Suggest', marks: 1, prompt: 'The underside of a leaf is covered in petroleum jelly. Suggest the effect on photosynthesis.', why: 'The jelly blocks the stomata, so less carbon dioxide enters and photosynthesis slows.', options: [
+            { text: 'It slows, because the stomata are blocked and less carbon dioxide enters', correct: true },
+            { text: 'It speeds up, because less water is lost', correct: false, reply: 'Less water is lost, but carbon dioxide can\u2019t get in either.' },
+            { text: 'No effect, because stomata are on the top', correct: false, reply: 'Stomata are mostly on the lower surface.' },
+            { text: 'It slows, because light can\u2019t reach the leaf', correct: false, reply: 'Light reaches the upper surface. The stomata underneath are blocked.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how the spongy mesophyll is adapted for gas exchange. Put the links in order.',
+            links: ['Spongy mesophyll cells are loosely packed, with large air spaces.', 'Carbon dioxide that enters through the stomata diffuses through the air spaces.', 'It reaches the photosynthesising cells, and oxygen diffuses out the same way.'],
+            herrings: [{ text: 'The air spaces store water for photosynthesis.', why: 'Water arrives in the xylem; the spaces are for gases.' }, { text: 'Spongy cells are packed tightly so gases can\u2019t escape.', why: 'They are loosely packed so gases can move.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how xylem is adapted to carry water. Put the links in order.',
+            links: ['Xylem cells are dead, with no contents.', 'They form hollow tubes, so water flows through without obstruction.', 'Lignin strengthens the walls, so the tubes don\u2019t collapse.'],
+            herrings: [{ text: 'Xylem cells are living, so they can pump water.', why: 'Xylem is dead; phloem is the living tissue.' }, { text: 'Pores in the end walls let sugar through.', why: 'That describes phloem.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 6, prompt: 'Describe how the tissues in a leaf are adapted for photosynthesis.',
+            levels: [
+              { label: 'Level 3 \u00b7 5\u20136', text: 'Several tissues, each with its structure linked clearly to how it helps photosynthesis.', max: 6 },
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Some tissues with structure or function, not always linked.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'One or two tissues named, with little detail.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Upper epidermis is thin and transparent, so light reaches the cells below; its waxy cuticle reduces water loss.', 'Palisade mesophyll is near the top, packed with chloroplasts, to absorb most light.', 'Spongy mesophyll has air spaces, so carbon dioxide diffuses to the cells.', 'Stomata, opened and closed by guard cells, let carbon dioxide in and oxygen out.', 'Xylem brings water; phloem carries the sugars made away.'],
+            reject: ['\u201cStomata take in water.\u201d', '\u201cXylem carries sugar to the leaf.\u201d'] }
+        ]
+      },
+      keyLines: ['The leaf is a plant organ, made of several tissues.', 'Epidermis: covers the leaf; makes a waxy cuticle that reduces water loss. Guard cells around the stomata control gas exchange and water loss.', 'Palisade mesophyll: near the upper surface, packed with chloroplasts; most photosynthesis.', 'Spongy mesophyll: air spaces for gases to diffuse.', 'Xylem: water and mineral ions, hollow dead tubes, lignin. Phloem: dissolved sugars, living cells with pores in the end walls.', 'Meristem, at the growing tips of shoots and roots, makes new cells that can become any type of plant cell.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: null, endNext: null,
+      endConnects: [{ href: '../KS4 Batch 4/ks4-biology-4.1.3-transport-in-cells.dc.html', label: 'Diffusion, osmosis and active transport' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

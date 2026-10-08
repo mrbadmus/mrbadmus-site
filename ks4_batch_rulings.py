@@ -44,21 +44,60 @@ def _chip(slug, tpl):
     return tpl.replace(pathway, ks4_rulings.R12_CHIP_BLOCK, 1)
 
 
-_HREF_RE = re.compile(r"href: '([\w.\-]+)\.dc\.html'")
+# ⊕ Batch 5 (Prompt AB): a connects link may also name a lesson of ANOTHER batch,
+# written by Design as `../KS4 Batch 4/<file>.dc.html`. The prefix is optional so every
+# batch-4 href matches and resolves exactly as before. A file in neither this batch nor
+# any other registered batch is a loud failure, never a left-over `.dc.html`.
+_HREF_RE = re.compile(r"href: '(?:\.\./KS4 Batch \d+/)?([\w.\-]+)\.dc\.html'")
 
 
-def apply_connects(source_file, logic, slug_by_file):
+def apply_connects(source_file, logic, slug_by_file, other_slug_by_file=None):
     replaced = []
+    other = other_slug_by_file or {}
 
     def sub(m):
         f = m.group(1) + ".dc.html"
-        if f not in slug_by_file:
+        slug = slug_by_file.get(f) or other.get(f)
+        if not slug:
             raise RulingError(
                 "ks4_batch_rulings B-CONNECTS: %s links to %r, which is not "
-                "one of this batch's lessons." % (source_file, f))
-        replaced.append(slug_by_file[f])
-        return "href: KS4.hrefFor('%s', R)" % slug_by_file[f]
+                "one of this batch's lessons nor any registered lesson." % (source_file, f))
+        replaced.append(slug)
+        return "href: KS4.hrefFor('%s', R)" % slug
     return _HREF_RE.sub(sub, logic), replaced
+
+
+# ⊕ B-INLINE-LINKS (batch 5): an in-text `<a href="ks4-….dc.html">` in a template. A static
+# attribute cannot carry a per-route URL, so each becomes a bound value, filled by renderVals
+# from KS4.hrefFor (the same resolver the connects use). Fail-loud on every unmatched file and
+# on a renderVals that does not return through the route helper.
+_TPL_HREF_RE = re.compile(r'href="([\w.\-]+)\.dc\.html"')
+_RV_ANCHOR = "return Object.assign({}, R, {"
+
+
+def apply_inline_links(source_file, tpl, logic, slug_by_file, other_slug_by_file=None):
+    found = []
+    other = other_slug_by_file or {}
+
+    def sub(m):
+        f = m.group(1) + ".dc.html"
+        slug = slug_by_file.get(f) or other.get(f)
+        if not slug:
+            raise RulingError(
+                "ks4_batch_rulings B-INLINE-LINKS: %s links to %r, which is not "
+                "one of this batch's lessons nor any registered lesson." % (source_file, f))
+        if slug not in found:
+            found.append(slug)
+        return 'href="{{ mrbLink_%s }}"' % slug.replace("-", "_")
+    tpl = _TPL_HREF_RE.sub(sub, tpl)
+    if found:
+        if logic.count(_RV_ANCHOR) != 1:
+            raise RulingError(
+                "ks4_batch_rulings B-INLINE-LINKS: %s needs %r exactly once in renderVals (found %d)."
+                % (source_file, _RV_ANCHOR, logic.count(_RV_ANCHOR)))
+        vals = " ".join("mrbLink_%s: (KS4.hrefFor('%s', R) || '#')," % (sl.replace("-", "_"), sl) for sl in found)
+        logic = logic.replace(_RV_ANCHOR, _RV_ANCHOR + " " + vals, 1)
+    return tpl, logic, found
 
 
 PRACTICE_PARSE_FROM = "const v = parseFloat(String(st.num).replace(/[\\s,]/g, ''));"
@@ -203,6 +242,41 @@ SCIENCE = [
     dict(id="B4-AP-ANDOR", slug="atmospheric-pollutants", layer="logic",
          old="'Too little oxygen: carbon monoxide and particulates as well as carbon dioxide.'",
          new="'Too little oxygen: carbon monoxide and/or carbon (soot), as well as carbon dioxide.'"),
+    # ═══ Batch 5 science rulings (Prompt AB, 8 Oct 2026; audit by the lead) ═══
+    # earths-resources 8.3 (lane): the spec sentence, 8464 5.10.1.1 / 8462 4.10.1.1,
+    # verbatim (pack examination/earths-resources.md:15). Template, "Sustainable development" card.
+    dict(id="B5-ER-SPEC", slug="earths-resources", layer="template",
+         old="Development that meets the needs of current generations without compromising the ability of future generations to meet their own needs. Chemistry plays an important role, improving agricultural and industrial processes to provide new products.",
+         new="Chemistry plays an important role in improving agricultural and industrial processes to provide new products and in sustainable development, which is development that meets the needs of current generations without compromising the ability of future generations to meet their own needs."),
+    # energy-resources ENERGY-RESOURCES-F6: q2 wx2 is shown; intermittent = variable, weather-dependent (wx1's words).
+    dict(id="B5-ENR-F6", slug="energy-resources", layer="logic",
+         old="specifically means UNPREDICTABLE output dependent on weather, not overproduction.",
+         new="means VARIABLE, WEATHER-DEPENDENT output, not overproduction."),
+    # energy-resources 4.2 (lane: keep the made-up country, labelled as not real data): label it
+    # where the pupil reads the chart, not only in the end note.
+    dict(id="B5-ENR-LABEL", slug="energy-resources", layer="template",
+         old="Exams give you a chart like this one and ask you to describe the trend, then explain it.",
+         new="This country is made up and its figures are not real data. Exams give you a chart like this one and ask you to describe the trend, then explain it."),
+    # plant-tissues PLANT-TISSUES-F6: drop the doubtful concession; it contradicts rung 4's reject "Stomata take in water."
+    dict(id="B5-PT-F6", slug="plant-tissues", layer="logic",
+         old="Stomata can absorb some water vapour in humid conditions, but their primary function is gas EXCHANGE, not water absorption.",
+         new="Stomata are pores for gas EXCHANGE, not water absorption: water enters the plant through the roots."),
+    # metals-non-metals 2.2: boron (3 outer electrons) is shown as a non-metal straight after
+    # "metals have 1, 2 or 3"; name it as the exception, as hydrogen's line already does.
+    dict(id="B5-MNM-B", slug="metals-non-metals", layer="logic",
+         old="else if (pl.g === 4 || pl.g === 3) line = out + ' outer electrons. It shares electrons in covalent bonds and does not form positive ions.';",
+         new="else if (pl.g === 4 || pl.g === 3) line = out + ' outer electrons' + (pl.g === 3 ? ', but boron is a non-metal' : '') + '. It shares electrons in covalent bonds and does not form positive ions.';"),
+    # metals-non-metals 2.2: hydrogen's info head read "Group 1"; the page says it "sits on its own at the top".
+    dict(id="B5-MNM-H", slug="metals-non-metals", layer="logic",
+         old="const grp = pl.g === 8 ? 'Group 0' : 'Group ' + pl.g;",
+         new="const grp = e[0] === 'H' ? 'not in a group' : pl.g === 8 ? 'Group 0' : 'Group ' + pl.g;"),
+    # ── Batch 5 port mechanic (not a science ruling) ───────────────────────
+    # red-shift-big-bang: its renderVals returns a fresh object rather than spreading the
+    # route helper (as batch 4's infrared did), so the one route chip (B-R12) got no words
+    # and no menu. Same repair as B4-IRB-CHIP.
+    dict(id="B5-RSBB-CHIP", slug="red-shift-big-bang", layer="logic",
+         old="      route, onRoute: R.onRoute,\n      tripleOptions:",
+         new="      route, onRoute: R.onRoute, routeWords: R.routeWords, routeSwitchOptions: R.routeSwitchOptions,\n      tripleOptions:"),
 ]
 APPLIED = []
 
@@ -220,20 +294,21 @@ def apply_science(slug, layer, text):
     return text
 
 
-def port_lesson(lesson, tpl, logic, slug_by_file):
+def port_lesson(lesson, tpl, logic, slug_by_file, other_slug_by_file=None):
     """-> (tpl, logic, report-dict)."""
     src = lesson["source_file"]
     tpl = ks4_rulings.apply_r1_route_selector(src, tpl)
     tpl = _chip(lesson["slug"], tpl)
     logic, n_prev, n_next = ks4_rulings.apply_r_prevnext(src, logic)
-    logic, connects = apply_connects(src, logic, slug_by_file)
+    logic, connects = apply_connects(src, logic, slug_by_file, other_slug_by_file)
+    tpl, logic, inline = apply_inline_links(src, tpl, logic, slug_by_file, other_slug_by_file)
     tpl = apply_science(lesson["slug"], "template", tpl)
     logic = apply_science(lesson["slug"], "logic", logic)
     # B-R12's chip reads routeWords / routeSwitchOptions off the render values.
     if "Object.assign({}, R," not in logic and "routeWords" not in logic:
         raise RulingError("ks4_batch_rulings B-R12: %s's renderVals neither spreads the route helper nor "
                           "passes routeWords; the route chip would render empty." % lesson["slug"])
-    return tpl, logic, dict(has_prev=bool(n_prev), has_next=bool(n_next), connects=connects)
+    return tpl, logic, dict(has_prev=bool(n_prev), has_next=bool(n_next), connects=connects, inline_links=inline)
 
 
 # ── block rulings (applied to a batch's OWN copy of a shared block, in compile_block) ──

@@ -1,0 +1,62 @@
+{
+ "development-atomic-model": {
+  "hash": "5e3b2a24846ae7bfc936f46ddd49b941c154e4de1522f7eebacb11cd3875b34f",
+  "review_state": "examiner-reviewed"
+ },
+ "earths-resources": {
+  "hash": "37a950923f4acbd0fcfa9be45f421e5ed4106a5a00328020c45477b71317a854",
+  "review_state": "examiner-reviewed"
+ },
+ "energy-resources": {
+  "hash": "e7cddbaad22268db4697d0de762fcaabadcd3482b68c25ddb6e1bc2bd89b53e7",
+  "review_state": "examiner-reviewed"
+ },
+ "extraction-of-metals": {
+  "hash": "acf61d90af00e7e2311ad1e35b59408e8ffb33f77c993862ba2bc24677c52949",
+  "review_state": "examiner-reviewed"
+ },
+ "global-warming": {
+  "hash": "8d056589bfbd95abdb39a94911decdcdb4b8f53a877f46965d28021a122a238b",
+  "review_state": "examiner-reviewed"
+ },
+ "group-0": {
+  "hash": "efda4165b9fe22985614fce962c83dfed1f8b03018e4ed6ed2fd81b781dbad77",
+  "review_state": "examiner-reviewed"
+ },
+ "land-use": {
+  "hash": "47ed2dcdb53b956d6c2e7e239980044e254a0ed7aab2b8ae0347c8365eaa621d",
+  "review_state": "examiner-reviewed"
+ },
+ "metals-non-metals": {
+  "hash": "7ddd681b0cf4479d8689bcbb26d88781f28302944de55883bc6f832898c69b1c",
+  "review_state": "examiner-reviewed"
+ },
+ "plant-tissues": {
+  "hash": "bff871fbfcbefa8c6242eba1faf22206aaadac6edbf8f89176c1b362e41b059b",
+  "review_state": "examiner-reviewed"
+ },
+ "potable-water": {
+  "hash": "d08cb7487d5c11edc044c346b90581427c3d960d7e9c5a413de84710cdebeff7",
+  "review_state": "examiner-reviewed"
+ },
+ "radioactive-decay": {
+  "hash": "948d99105a985b9a03f05d973b18af8d39bdf6e8624a710428598a137b70d88c",
+  "review_state": "examiner-reviewed"
+ },
+ "reactivity-series": {
+  "hash": "c3e91af24ff548bf2c152633cb190a3f7e586d5f4675ef82cf44132642fd791e",
+  "review_state": "examiner-reviewed"
+ },
+ "red-shift-big-bang": {
+  "hash": "339ebcc26bdc5d52836ac59ac7e7625408ad6eac3f74cb5d2a275412a6bd241f",
+  "review_state": "examiner-reviewed"
+ },
+ "structure-of-atom": {
+  "hash": "d5192f9b45bf2254fa2daae3258dcef14e4a2abdf2b88ac631adaae6a13a29f1",
+  "review_state": "examiner-reviewed"
+ },
+ "waste-management": {
+  "hash": "d757ae6de873ef1407ce7838d870d14457e0c59314f3a28e8ec2a6014b6fcffe",
+  "review_state": "examiner-reviewed"
+ }
+}

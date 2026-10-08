@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The structure of an atom · MrBadmusAI GCSE Physics</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Physics" unit="Atomic structure" title="The structure of an atom" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Physics 6.4.1.1</p>
+        <h1>The structure of an atom</h1>
+        <p class="ks3-bigq">A tiny, dense, positive nucleus with electrons around it. Zoom in to scale, build an atom, then move an electron between energy levels.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A hand on a desk." scene="Press your hand flat on a desk. It stops at the surface and won’t go any further. Your hand and the desk are both made of atoms." question="is an atom mostly solid stuff, or mostly empty space?" options="{{ hookOptions }}" bridge="Almost all of an atom is empty space around a tiny centre. Next: zoom in, to scale." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-zoom" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Zoom · to scale</p>
+        <h2 style="margin: 6px 0 0;">The nucleus is tiny. The rest is empty space.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">An atom has a radius of about 1 × 10<sup>−10</sup> m. The radius of its nucleus is less than 1/10 000 of that, around 1 × 10<sup>−14</sup> m. Zoom in until you can see it.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ zooms }}" as="z" hint-placeholder-count="3"><button type="button" onClick="{{ z.onClick }}" aria-pressed="{{ z.pressed }}" style="{{ z.style }}">{{ z.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ zoomFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ zoomNote }}</p>
+            <div style="padding: 14px 16px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Picture it</p>
+              <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">If the nucleus were a football 30 cm across, the atom would be at least 3 km across.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-build" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Build an atom · not to scale</p>
+        <h2 style="margin: 6px 0 0;">Protons and neutrons in the nucleus; electrons around it.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Almost all of the mass is in the nucleus. An atom has the same number of electrons as protons, so it has no overall charge. Task: make a neutral atom with 6 protons.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ buildFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <sc-for list="{{ counters }}" as="c" hint-placeholder-count="3">
+              <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+                <span style="flex: 1 1 auto; font-weight: 700;">{{ c.label }}</span>
+                <button type="button" onClick="{{ c.dec }}" aria-label="{{ c.decLabel }}" style="font: inherit; font-size: 22px; font-weight: 700; width: 44px; height: 44px; border-radius: 10px; border: 2px solid var(--ks3-option-border); background: var(--ks3-card); color: var(--ks3-ink); cursor: pointer; display: grid; place-items: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16"><path d="M2 8h12" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path></svg></button>
+                <span style="min-width: 32px; text-align: center; font-family: var(--ks3-font-mono); font-size: 22px;">{{ c.n }}</span>
+                <button type="button" onClick="{{ c.inc }}" aria-label="{{ c.incLabel }}" style="font: inherit; font-size: 22px; font-weight: 700; width: 44px; height: 44px; border-radius: 10px; border: 2px solid var(--ks3-option-border); background: var(--ks3-card); color: var(--ks3-ink); cursor: pointer; display: grid; place-items: center;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16"><path d="M2 8h12M8 2v12" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path></svg></button>
+              </div>
+            </sc-for>
+            <p aria-live="polite" style="{{ chargeStyle }}">{{ chargeLine }}</p>
+          </div>
+        </div>
+        <div style="margin-top: 16px; overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 17px; min-width: 420px;">
+            <thead><tr style="text-align: left; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);"><th style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink);">Particle</th><th style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink);">Relative mass</th><th style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink);">Relative charge</th><th style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink);">Where</th></tr></thead>
+            <tbody>
+              <tr><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule); font-weight: 700;">Proton</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">1</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">+1</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">nucleus</td></tr>
+              <tr><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule); font-weight: 700;">Neutron</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">1</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">0</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">nucleus</td></tr>
+              <tr><td style="padding: 8px 10px; font-weight: 700;">Electron</td><td style="padding: 8px 10px;">very small</td><td style="padding: 8px 10px;">−1</td><td style="padding: 8px 10px;">energy levels around the nucleus</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="s-levels" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Energy levels</p>
+        <h2 style="margin: 6px 0 0;">Absorb radiation, move up. Emit radiation, move down.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Electrons are arranged at different distances from the nucleus: different energy levels. An electron moves further from the nucleus (to a higher energy level) only when it absorbs electromagnetic radiation, and moves closer (to a lower level) by emitting it.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ levelFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <sc-for list="{{ levelBtns }}" as="b" hint-placeholder-count="2"><button type="button" onClick="{{ b.onClick }}" disabled="{{ b.disabled }}" style="{{ b.style }}">{{ b.label }}</button></sc-for>
+            </div>
+            <p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ levelNote }}</p>
+          </div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">How many electrons each level holds is chemistry, in <a href="ks4-chemistry-5.1.2.3-metals-non-metals.dc.html">Metals and non-metals</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · what is in the nucleus</p></div>
+        <p class="ks3-mis-quote">&ldquo;The nucleus is where the electrons are.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Which particles are in the nucleus of an atom?" options="{{ thinkOptions }}" reveal="Protons and neutrons, only. The electrons are at energy levels around the nucleus, and the space between is empty." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Proton, neutron or electron?" prompt="Place each statement." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Protons and neutrons give the nucleus its mass; electrons give the charge that balances the protons." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Say what is where: nucleus, particles, energy levels, sizes.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Link cause and effect: equal numbers, so no overall charge.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Sizes in standard form: 10<sup>−10</sup> m against 10<sup>−14</sup> m.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">An atom has a positively charged nucleus of protons and neutrons, with electrons around it. The nucleus has less than 1/10 000 of the atom’s radius but almost all of its mass.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="structure-of-atom" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="The structure of an atom" spec="AQA 6.4.1.1" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Physics" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure where the mass of an atom is?" legal="The zoom figure keeps the nucleus-to-atom scale; the particles themselves, and the build and energy-level figures, are not to scale." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A hand on a desk', short: 'HOOK' },
+  { id: 's-zoom', label: 'Zoom to scale', short: 'ZOOM' },
+  { id: 's-build', label: 'Build an atom', short: 'BUILD' },
+  { id: 's-levels', label: 'Energy levels', short: 'LEVELS' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Which particle', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const ZOOMS = [
+  { label: 'Whole atom', f: 1, note: 'The whole atom, radius about 1 \u00d7 10\u207b\u00b9\u2070 m. At this scale the nucleus is far too small to draw: the cross marks where it is.' },
+  { label: 'Zoom \u00d7 100', f: 100, note: 'One hundred times closer. The edge of the atom is now far off the page, and the nucleus is still too small to see.' },
+  { label: 'Zoom \u00d7 10 000', f: 10000, note: 'Ten thousand times closer. Now the nucleus is visible: a few protons and neutrons, packed tightly. Everything between it and the electrons is empty space.' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, zoom: 0, zoomed: false, p: 3, n: 4, e: 2, built: false, level: 1, absorbed: false, emitted: false, last: null, think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  nucleus(cx, cy, p, n, r) {
+    const D = window.KS4D, C = D.C, tot = p + n; let b = '';
+    for (let i = 0; i < tot; i++) {
+      const a = i * 2.4, rr = r * 0.9 * Math.sqrt(i / Math.max(tot, 1));
+      const x = cx + rr * Math.cos(a), y = cy + rr * Math.sin(a), isP = i % 2 === 0 ? i / 2 < p : (i - 1) / 2 >= n;
+      const prot = (i < 2 * Math.min(p, n)) ? i % 2 === 0 : p > n;
+      b += D.circ(x, y, r * 0.42, prot ? '#E8857A' : '#C9CCD1', C.stroke, 1.5) + (prot ? D.T(x, y + r * 0.16, '+', r * 0.5, { fill: C.stroke }) : '');
+    }
+    return b;
+  }
+  zoomFig(z) {
+    const D = window.KS4D, C = D.C, cx = 300, cy = 190;
+    let b = '';
+    if (z === 0) {
+      b += D.circ(cx, cy, 160, 'none', C.muted, 2, ' stroke-dasharray="6 6"') + D.T(cx, cy - 170, 'atom, radius about 1 \u00d7 10\u207b\u00b9\u2070 m', 14);
+      b += D.line(cx - 6, cy - 6, cx + 6, cy + 6, 2) + D.line(cx - 6, cy + 6, cx + 6, cy - 6, 2) + D.T(cx + 14, cy + 26, 'nucleus: too small to draw', 13, { anchor: 'start', weight: 'normal', fill: C.stroke });
+      [[cx + 160, cy], [cx - 113, cy - 113], [cx - 40, cy + 155]].forEach((p) => { b += D.circ(p[0], p[1], 6, C.e); });
+    } else if (z === 1) {
+      b += D.line(cx - 6, cy - 6, cx + 6, cy + 6, 2) + D.line(cx - 6, cy + 6, cx + 6, cy - 6, 2) + D.T(cx, cy + 40, 'nucleus: still too small to see', 14, { weight: 'normal', fill: C.stroke });
+      b += D.T(cx, 40, 'the atom\u2019s edge is far beyond the page', 14, { weight: 'normal', fill: C.muted });
+    } else {
+      b += this.nucleus(cx, cy, 3, 4, 22) + D.T(cx, cy + 90, 'nucleus, radius less than 1/10 000 of the atom\u2019s', 14);
+      b += D.T(cx, 40, 'electrons: far beyond the page edge', 14, { weight: 'normal', fill: C.muted });
+    }
+    return D.svg(600, 380, b, ZOOMS[z].note);
+  }
+  buildFig(p, n, e) {
+    const D = window.KS4D, C = D.C, cx = 190, cy = 180; let b = '';
+    const caps = [2, 8, 8]; let left = e; const radii = [70, 110, 150];
+    caps.forEach((cap, k) => { const k2 = Math.min(cap, left); left -= k2; b += D.circ(cx, cy, radii[k], 'none', C.stroke, 1.5, ' stroke-dasharray="4 5"');
+      for (let i = 0; i < k2; i++) { const a = -Math.PI / 2 + i * 2 * Math.PI / cap; b += D.circ(cx + radii[k] * Math.cos(a), cy + radii[k] * Math.sin(a), 8, C.e) + D.T(cx + radii[k] * Math.cos(a), cy + radii[k] * Math.sin(a) + 4, '\u2212', 12, { fill: '#fff' }); } });
+    b += this.nucleus(cx, cy, p, n, 13);
+    b += '<circle cx="420" cy="80" r="9" fill="#E8857A" stroke="' + C.stroke + '"/>' + D.T(436, 85, 'proton', 14, { anchor: 'start', weight: 'normal', fill: C.stroke });
+    b += '<circle cx="420" cy="110" r="9" fill="#C9CCD1" stroke="' + C.stroke + '"/>' + D.T(436, 115, 'neutron', 14, { anchor: 'start', weight: 'normal', fill: C.stroke });
+    b += D.circ(420, 140, 8, C.e) + D.T(436, 145, 'electron', 14, { anchor: 'start', weight: 'normal', fill: C.stroke });
+    return D.svg(520, 360, b, 'Atom, not to scale: nucleus of ' + p + ' protons and ' + n + ' neutrons, with ' + e + ' electrons at energy levels around it.');
+  }
+  levelFig(level, last) {
+    const D = window.KS4D, C = D.C, cx = 170, cy = 170; let b = '';
+    b += D.circ(cx, cy, 14, '#E8857A', C.stroke, 2) + D.T(cx, cy + 5, '+', 16, { fill: C.stroke });
+    [70, 130].forEach((r, i) => { b += D.circ(cx, cy, r, 'none', C.stroke, 2) + D.T(cx + r + 6, cy - 6, i ? 'higher level' : 'lower level', 13, { anchor: 'start', weight: 'normal', fill: C.stroke }); });
+    const r = level === 1 ? 70 : 130, ex = cx - r * Math.cos(0.6), ey = cy - r * Math.sin(0.6);
+    b += D.circ(ex, ey, 10, C.e);
+    const wave = (x1, y1, dir) => { let d = 'M' + x1 + ' ' + y1; for (let i = 1; i <= 8; i++) d += ' L' + (x1 + dir * i * 12) + ' ' + (y1 + (i % 2 ? -8 : 8)); return '<path d="' + d + '" fill="none" stroke="' + C.red + '" stroke-width="3"/>'; };
+    if (last === 'abs') b += wave(ex - 110, ey - 20, 1) + D.T(ex - 70, ey - 40, 'EM radiation absorbed', 13, { fill: C.red });
+    if (last === 'emit') b += wave(ex - 12, ey - 10, -1) + D.T(ex - 70, ey - 30, 'EM radiation emitted', 13, { fill: C.red });
+    return D.svg(420, 340, b, 'Electron at the ' + (level === 1 ? 'lower' : 'higher') + ' energy level.' + (last === 'abs' ? ' It has absorbed electromagnetic radiation.' : last === 'emit' ? ' It has emitted electromagnetic radiation.' : ''));
+  }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.zoom === 2, s.built, s.absorbed && s.emitted, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const q = s.p - s.e;
+    const set = (k, v) => { const o = {}; o[k] = Math.max(0, Math.min(k === 'e' ? 18 : 10, v)); const nx = Object.assign({}, s, o); o.built = s.built || (nx.p === 6 && nx.e === 6); this.setState(o); };
+    const bankSrc = [
+      { q: 'Where is most of the mass of an atom concentrated?', opts: [['In the nucleus \u2014 protons and neutrons make up almost all the atomic mass; electrons are negligible', true], ['In the electron shells \u2014 electrons are the most numerous particles', false], ['Evenly spread throughout the atom \u2014 mass is uniformly distributed', false], ['On the outer electron shell \u2014 outermost electrons carry most of the mass', false]],
+        wrong_explanations: { 1: 'There are often as many electrons as protons, but each electron weighs ~1/1836 of a proton \u2014 their combined mass is negligible.', 2: 'Mass is concentrated in the tiny nucleus \u2014 the rest of the atom is mostly empty space.', 3: 'All electrons have the same tiny mass, wherever they are \u2014 together they make up almost none of the atom\u2019s mass.' } },
+      { q: 'A neutral atom has 8 protons. How many electrons does it have?', opts: [['8 \u2014 neutral atoms always have equal numbers of protons and electrons', true], ['16 \u2014 electrons come in pairs so there are twice as many', false], ['4 \u2014 only half the protons are balanced by electrons', false], ['0 \u2014 electrons are not part of the neutral atom', false]],
+        wrong_explanations: { 1: 'Electrons don\u2019t automatically pair \u2014 the number equals the number of protons for charge balance.', 2: 'Only half the protons balanced would give the atom a net positive charge \u2014 neutral means equal numbers.', 3: 'Electrons are an essential part of every atom \u2014 removing them creates a positive ion, not a neutral atom.' } },
+      { q: 'How does the radius of a nucleus compare with the radius of its atom?', opts: [['It is less than 1/10 000 of the atom\u2019s radius', true], ['It is about half the atom\u2019s radius', false], ['It is about 1/10 of the atom\u2019s radius', false], ['It is the same as the atom\u2019s radius', false]],
+        wrong_explanations: { 1: 'The nucleus is far smaller than that: less than 1/10 000 of the radius.', 2: 'Still far too big. Most of the atom is empty space around a tiny nucleus.', 3: 'Electrons are at energy levels well outside the nucleus.' } },
+      { q: 'What happens when an electron absorbs electromagnetic radiation?', opts: [['It moves to a higher energy level, further from the nucleus', true], ['It moves into the nucleus', false], ['It moves to a lower energy level', false], ['It turns into a proton', false]],
+        wrong_explanations: { 1: 'Electrons stay outside the nucleus, at energy levels.', 2: 'Moving down to a lower level happens when an electron emits radiation.', 3: 'Absorbing radiation changes the electron\u2019s energy level, not what it is.' } },
+      { q: 'What is the relative charge of a neutron?', opts: [['0', true], ['+1', false], ['\u22121', false], ['+2', false]],
+        wrong_explanations: { 1: '+1 is the relative charge of a proton.', 2: '\u22121 is the relative charge of an electron.', 3: 'No single particle in the atom has +2. A neutron has no charge.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('structure-of-atom') : null,
+      hookOptions: [
+        { text: 'Mostly solid stuff', correct: false, reply: 'It feels solid, but almost all of each atom is empty space around a tiny nucleus.' },
+        { text: 'Mostly empty space', correct: true, reply: 'Nearly all of the mass is packed into a tiny centre; the rest is empty.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      zooms: ZOOMS.map((z, i) => ({ label: z.label, pressed: s.zoom === i, style: this.seg(s.zoom === i), onClick: () => this.setState({ zoom: i }) })),
+      zoomFig: ready ? K.fig(this.zoomFig(s.zoom), '') : null,
+      zoomNote: ZOOMS[s.zoom].note,
+      buildFig: ready ? K.fig(this.buildFig(s.p, s.n, s.e), '') : null,
+      counters: [['p', 'Protons'], ['n', 'Neutrons'], ['e', 'Electrons']].map((c) => ({ label: c[1], n: s[c[0]], decLabel: 'One fewer ' + c[1].toLowerCase(), incLabel: 'One more ' + c[1].toLowerCase(),
+        dec: () => set(c[0], s[c[0]] - 1), inc: () => set(c[0], s[c[0]] + 1) })),
+      chargeLine: (q === 0 ? 'No overall charge: ' + s.p + ' protons, ' + s.e + ' electrons.' : 'Overall charge ' + (q > 0 ? '+' : '\u2212') + Math.abs(q) + ': protons and electrons don\u2019t balance, so this is an ion, not a neutral atom.') + ' Relative mass about ' + (s.p + s.n) + '.' + (s.built ? ' Task done: 6 protons, 6 electrons.' : ''),
+      chargeStyle: 'margin:0;padding:12px 14px;border-radius:14px;font-size:17px;line-height:1.55;border:2px solid ' + (q === 0 ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-option-border);background:var(--ks3-card);'),
+      levelFig: ready ? K.fig(this.levelFig(s.level, s.last), '') : null,
+      levelBtns: [
+        { label: 'Absorb EM radiation', disabled: s.level === 2, style: this.seg(false) + (s.level === 2 ? 'opacity:.45;cursor:default;' : ''), onClick: () => { if (s.level === 1) this.setState({ level: 2, absorbed: true, last: 'abs' }); } },
+        { label: 'Emit EM radiation', disabled: s.level === 1, style: this.seg(false) + (s.level === 1 ? 'opacity:.45;cursor:default;' : ''), onClick: () => { if (s.level === 2) this.setState({ level: 1, emitted: true, last: 'emit' }); } }
+      ],
+      levelNote: s.last === 'abs' ? 'The electron absorbed electromagnetic radiation and moved to a higher energy level, further from the nucleus.' : s.last === 'emit' ? 'The electron emitted electromagnetic radiation and moved back to the lower energy level, closer to the nucleus.' : 'The electron is at the lower energy level. It cannot move up on its own.',
+      thinkOptions: [
+        { text: 'Protons and neutrons', correct: true, reply: 'Electrons are outside the nucleus.' },
+        { text: 'Protons, neutrons and electrons', correct: false, reply: 'Electrons are not in the nucleus. They are at energy levels around it.' },
+        { text: 'Protons and electrons', correct: false, reply: 'The nucleus holds protons and neutrons; electrons are around it.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'p', label: 'Proton' }, { id: 'n', label: 'Neutron' }, { id: 'e', label: 'Electron' }],
+      sortItems: [
+        { text: 'Relative charge +1', bin: 'p', why: 'Protons are positive.' },
+        { text: 'In a neutral atom, same number as electrons', bin: 'p', why: 'Equal numbers balance the charge.' },
+        { text: 'Relative charge 0', bin: 'n', why: 'Neutrons have no charge.' },
+        { text: 'In the nucleus, with no charge', bin: 'n', why: 'Relative mass 1, charge 0.' },
+        { text: 'Relative charge \u22121', bin: 'e', why: 'Electrons are negative.' },
+        { text: 'Relative mass very small', bin: 'e', why: 'Almost none of the atom\u2019s mass.' },
+        { text: 'Found at energy levels around the nucleus', bin: 'e', why: 'Different distances from the nucleus.' },
+        { text: 'Moves up a level when it absorbs EM radiation', bin: 'e', why: 'And down when it emits it.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Give the approximate radius of an atom.', why: 'About 1 \u00d7 10\u207b\u00b9\u2070 m.', options: [
+            { text: '1 \u00d7 10\u207b\u00b9\u2070 m', correct: true },
+            { text: '1 \u00d7 10\u207b\u00b9\u2074 m', correct: false, reply: 'That is around the size of a nucleus.' },
+            { text: '1 \u00d7 10\u207b\u2076 m', correct: false, reply: 'That is the size of a bacterium, far bigger than an atom.' }] },
+          { kind: 'mcq', command: 'State', marks: 1, prompt: 'State the relative charge of an electron.', why: 'Electrons have a relative charge of \u22121.', options: [
+            { text: '+1', correct: false, reply: 'That is the proton.' },
+            { text: '0', correct: false, reply: 'That is the neutron.' },
+            { text: '\u22121', correct: true }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Calculate', marks: 1, prompt: 'A neutral atom has 11 protons and 12 neutrons. How many electrons does it have?', why: 'Electrons equal protons in a neutral atom: 11.', options: [
+            { text: '11', correct: true },
+            { text: '12', correct: false, reply: 'That is the number of neutrons. Electrons match protons.' },
+            { text: '23', correct: false, reply: 'That is protons plus neutrons, the relative mass.' },
+            { text: '1', correct: false, reply: 'That is 12 \u2212 11. Electrons equal protons.' }] },
+          { kind: 'mcq', command: 'Identify', marks: 1, prompt: 'An atom has a radius of 1 \u00d7 10\u207b\u00b9\u2070 m. Its nucleus has a radius less than 1/10 000 of this. Identify a possible radius for the nucleus.', why: '1/10 000 of 1 \u00d7 10\u207b\u00b9\u2070 m is 1 \u00d7 10\u207b\u00b9\u2074 m; less than that fits 1 \u00d7 10\u207b\u00b9\u2075 m.', options: [
+            { text: '1 \u00d7 10\u207b\u00b9\u2075 m', correct: true },
+            { text: '1 \u00d7 10\u207b\u2076 m', correct: false, reply: 'That is far bigger than the whole atom.' },
+            { text: '1 \u00d7 10\u207b\u00b9\u2070 m', correct: false, reply: 'That is the radius of the whole atom.' },
+            { text: '1 \u00d7 10\u207b\u2078 m', correct: false, reply: 'That is bigger than the atom.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why an atom has no overall charge. Put the links in order.',
+            links: ['Protons have a relative charge of +1 and electrons \u22121; neutrons have no charge.', 'In an atom, the number of electrons equals the number of protons.', 'So the positive and negative charges cancel.'],
+            herrings: [{ text: 'Neutrons cancel the charge of the protons.', why: 'Neutrons have no charge.' }, { text: 'The nucleus has no charge.', why: 'The nucleus is positive, because of its protons.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how an electron in an atom can give out light. Put the links in order.',
+            links: ['The electron absorbs electromagnetic radiation.', 'It moves to a higher energy level, further from the nucleus.', 'When it moves back to a lower energy level, it emits electromagnetic radiation, such as light.'],
+            herrings: [{ text: 'The electron moves into the nucleus and gives out light.', why: 'Electrons stay at energy levels outside the nucleus.' }, { text: 'The electron moves up a level by itself.', why: 'It moves up only when it absorbs radiation.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 4, prompt: 'Describe the structure of an atom.',
+            levels: [
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Nucleus and its particles, electrons and their positions, and the relative size of the nucleus, with mass or charge.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'Some correct parts named, with little about where they are or sizes.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['A positively charged nucleus of protons and neutrons at the centre.', 'Electrons at different distances from the nucleus (energy levels).', 'The radius of the nucleus is less than 1/10 000 of the atom\u2019s; the atom\u2019s radius is about 1 \u00d7 10\u207b\u00b9\u2070 m.', 'Almost all of the mass is in the nucleus; electrons equal protons, so there is no overall charge.'],
+            reject: ['\u201cThe nucleus contains protons, neutrons and electrons.\u201d', '\u201cElectrons make up most of the mass.\u201d'] }
+        ]
+      },
+      keyLines: ['Atoms are very small, with a radius of about 1 \u00d7 10\u207b\u00b9\u2070 m.', 'A positively charged nucleus of protons and neutrons, with electrons around it.', 'The radius of the nucleus is less than 1/10 000 of the radius of the atom. Most of the mass is in the nucleus.', 'Relative mass: proton 1, neutron 1, electron very small. Relative charge: +1, 0, \u22121.', 'Electrons equal protons, so an atom has no overall charge.', 'Electrons are at energy levels. Absorbing EM radiation moves one up; emitting moves it down.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: null, endNext: { href: 'ks4-physics-6.4.1.3-development-atomic-model.dc.html', label: 'Development of the model of the atom' },
+      endConnects: [{ href: 'ks4-physics-6.4.2.1-radioactive-decay.dc.html', label: 'Radioactive decay and nuclear radiation' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -1719,8 +1719,16 @@ def compile_batch_lesson(page, batch_name, lesson, report):
         # ks4_batch_rulings.py. Batches 2/3 never carry the flag.
         slug_by_file = {L["source_file"]: L["slug"]
                         for L in ks4_lessons.batch_modules()[batch_name].LESSONS}
+        # every other registered lesson, by Design's file name, so a connects link
+        # may cross batches (batch 5 -> batch 4) or reach the pilot.
+        other_slug_by_file = {}
+        for mod in ks4_lessons.batch_modules().values():
+            for L in mod.LESSONS:
+                other_slug_by_file.setdefault(L["source_file"], L["slug"])
+        for L in ks4_lessons.LESSONS:
+            other_slug_by_file.setdefault(L.get("design_file", ""), L["slug"])
         tpl, logic, port_report = ks4_batch_rulings.port_lesson(
-            lesson, tpl, logic, slug_by_file)
+            lesson, tpl, logic, slug_by_file, other_slug_by_file)
 
     tpl = ks4_science_rulings.apply("template", lesson["slug"], tpl)
     ks4_science_rulings.expect_present("template", lesson["slug"], tpl)

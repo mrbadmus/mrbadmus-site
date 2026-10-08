@@ -274,3 +274,12 @@ generator — never re-freeze `ks4_pilot_manifest.json` to make it pass.
   swaps the two chips for the route chip, rewires prev/next and connects, and applies the named
   SCIENCE rulings (each exactly-one-occurrence, logged in `docs/ks4/BATCH4-SCIENCE-LOG.md`).
 - `staged=True` registers a record without building it; `lessons_for_batch()` hides it.
+- ⊕ Batch 5 (Prompt AB, 8 Oct 2026) extended two rulings GENERICALLY, fail-loud, and changed no batch-4 byte
+  (proved by `git diff --name-only origin/main`): **B-CONNECTS** now also reads
+  `href: '../KS4 Batch N/<file>.dc.html'` and resolves the file through EVERY registered batch's
+  `source_file` (and the pilot's `design_file`), so a connects link may cross batches; an unknown file is a
+  `RulingError`. **B-INLINE-LINKS** turns an in-text `<a href="<file>.dc.html">` in a template into a bound
+  `{{ mrbLink_<slug> }}`, filled by `renderVals` from `KS4.hrefFor(slug, R)` (the same resolver the connects
+  use), so the link is per-route and live; it fails loud on an unknown file or a `renderVals` without
+  `return Object.assign({}, R, {`. Both resolve by slug through `KS4.hrefFor` / `shared/ks4-nav.js`
+  `FULL_NAV` (all_subtopics), which covers every KS4 subtopic.
