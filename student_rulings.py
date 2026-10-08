@@ -5622,6 +5622,8 @@ LOGIC["class view"].extend([
         "      /* ⊕ MRB-354 — all secured: Done (primary) plus a quieter\n"
         "         'Revise flashcards one more time' secondary, always together. */\n"
         "      hwEndSecondaryOn: !!end && !!end.secondary,\n"
+        "      /* ⊕ 8 Oct 2026 — the Mr Badmus nudge (engine: end.nudge). */\n"
+        "      hwNudgeOn: !!end && !!end.nudge,\n"
         "      hwEndRetry: !!end && end.button === 'retry',\n"
         "      /* ⊕ Design port (screen 06) — Done: the strip names the set\n"
         "         instead of repeating the headline the bench panel already\n"
@@ -6012,6 +6014,22 @@ INSERT_AT["class view"].update({
                         "style": "font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;"
                                  "font-size:40px;line-height:1.05;letter-spacing:-.03em;"},
                   "c": [_hw_text("hwEnd1")]},
+                 # ⊕ 8 Oct 2026 — THE MR BADMUS NUDGE: every card secured, but
+                 # three or more were shaky. A note, never a block: Done stays
+                 # primary and the existing secondary is the button.
+                 {"t": "if", "e": "hwNudgeOn", "c": [{
+                     "t": "div",
+                     "a": {"data-hw": "nudge", "aria-live": "polite",
+                           "style": "display:flex;flex-direction:column;gap:6px;margin-top:6px;"},
+                     "c": [
+                         {"t": "span", "a": {"data-hw": "nudge-label",
+                                             "style": _HW_MONO + "color:var(--b-muted);text-transform:uppercase;"},
+                          "c": [{"t": "#", "v": "A note from Mr Badmus"}]},
+                         {"t": "span", "a": {"data-hw": "nudge-text",
+                                             "style": "font-family:'Instrument Sans',system-ui,sans-serif;"
+                                                      "font-size:17px;line-height:1.4;color:var(--b-ink);"},
+                          "c": [{"t": "#", "v": "Nice one for finishing. A few of these weren't quite there yet, "
+                                                "so one more run before class would lock them in."}]}]}]},
                  {"t": "if", "e": "hwEnd2On", "c": [{
                      "t": "span", "a": {"data-hw": "end2", "style": "font-size:19px;line-height:1.4;color:var(--b-ink);"},
                      "c": [_hw_text("hwEnd2")]}]},

@@ -22,6 +22,16 @@
  *     pupil who mashed rates Nearly / Not yet and the card comes back on Try
  *     again with an empty box, where a real word opens Secured. There is no
  *     re-type step.
+ *   · ⊕ 8 Oct 2026 — THE MR BADMUS NUDGE: on the Done screen, when every card
+ *     is secured but three or more are SHAKY (secured in this run after "I
+ *     don't know", or with an answer the check called Nearly / Wrong), the
+ *     end view carries `nudge`. It never blocks Done and never changes the
+ *     score. A RUN lasts from the first open until "Revise flashcards one
+ *     more time" (`again()`), and is kept on the device.
+ *   · The teacher still sees the truth: the typed answer, the verdict and the
+ *     pupil's rating are all recorded exactly as before, side by side.
+ *   · The revealed answer is always the deck's model answer; what the pupil
+ *     typed only ever appears as "your answer" beside it.
  *   SUPERSEDES: the 29 Sep "THE VERDICT CAPS THE RATING" bullet below, the
  *   2 Oct line that a card nothing could check "may never be Secured", the
  *   4 Oct "Secured means checked" (option B) rule, and the cap at Nearly
@@ -297,6 +307,19 @@
     return false;
   }
 
+  // ⊕ 8 Oct 2026 — the RUN record behind the Mr Badmus nudge: per card, "I
+  // don't know" pressed, and the answer + verdict it was last secured with.
+  // On the device per assignment; in memory only if storage throws.
+  function loadRun(key) {
+    try {
+      var v = JSON.parse(root.localStorage.getItem(STORE + "run." + key) || "null");
+      return v && typeof v === "object" ? { idk: v.idk || {}, sec: v.sec || {} } : null;
+    } catch (e) { return null; }
+  }
+  function saveRun(key, run) {
+    try { root.localStorage.setItem(STORE + "run." + key, JSON.stringify(run)); } catch (e) { /* private mode */ }
+  }
+
   var VERDICTS = ["match", "partial", "no", "blank"];
   var CHIP = { pending: "Checking…", match: "Right", partial: "Nearly", no: "Wrong", blank: "No answer" };
   var SUGGEST = { match: "got_it", partial: "nearly", no: "not_yet", blank: "not_yet" };
@@ -535,6 +558,7 @@
       });
     }
     this.liveSecured = {};    // cards rated got_it since the last read — once secured, stays
+    this.run = loadRun(assignmentId) || { idk: {}, sec: {} };   // ⊕ 8 Oct: the nudge's record
     this.liveSessionN = 0;
     this.apply(state);
     this.start(this.opts.resume || null);
@@ -837,6 +861,7 @@
     this.idkNow = true;
     this.idkSeen[c.id] = true;
     this.keepIdk();
+    this.run.idk[c.id] = true; saveRun(this.id, this.run);
     this.mine = IDK_TEXT;
     this.draft = "";
     this.drafts[c.id] = "";
@@ -854,6 +879,14 @@
     function land(v) {
       if (settled) { return; }
       settled = true;
+      // ⊕ 8 Oct: a verdict that lands AFTER the pupil rated still counts for
+      // the nudge, when it is for the very answer the card was secured with.
+      var rec = self.run.sec[c.id];
+      if (rec && rec.ans === answer && VERDICTS.indexOf(v) >= 0) {
+        rec.verdict = v;
+        saveRun(self.id, self.run);
+        if (self.end) { self.changed(); }
+      }
       var now = self.current();
       // (compared by id: a server reply rebuilds the card objects)
       if (self.tok !== tok || !now || now.id !== c.id || !self.revealed || self.verdict !== "pending") { return; }
@@ -920,7 +953,11 @@
     this.pass[id] = { rating: rating, mine: this.mine, verdict: this.verdict === "pending" ? null : this.verdict, cap: null };
     // Once secured, stays secured (Mide, 4 Oct 2026): a got_it here secures
     // the card for good; a later lower rating is history, never a downgrade.
-    if (rating === "got_it") { this.liveSecured[id] = true; }
+    if (rating === "got_it") {
+      this.liveSecured[id] = true;
+      this.run.sec[id] = { ans: this.mine, verdict: this.verdict === "pending" ? null : (this.verdict || null) };
+      saveRun(this.id, this.run);
+    }
     delete this.saved[id];
     this.keepDrafts(true);
     if (!this.detour && this.idx >= this.baseLen && this.idkSeen[id]) {
@@ -1084,9 +1121,23 @@
   // own all-secured shortcut, which would otherwise re-show the same Done
   // screen the pupil just asked to get past.
   Engine.prototype.again = function () {
+    this.run = { idk: {}, sec: {} };    // ⊕ 8 Oct: a new run begins
+    saveRun(this.id, this.run);
     this.forceRevise = true;
     this.start(null);
     this.forceRevise = false;
+  };
+
+  // ⊕ 8 Oct 2026 — a card is SHAKY when it is secured in this run and "I
+  // don't know" was pressed on it in this run, or the answer it was last
+  // secured with was judged Nearly or Wrong.
+  Engine.prototype.shakyCount = function () {
+    var self = this, n = 0;
+    this.cards.forEach(function (c) {
+      var r = self.run.sec[c.id];
+      if (r && (self.run.idk[c.id] || r.verdict === "partial" || r.verdict === "no")) { n += 1; }
+    });
+    return n;
   };
 
   Engine.prototype.visibility = function () {
@@ -1143,6 +1194,7 @@
         line1: E.securedCount + " of " + E.total + " secured",
         offline: this.error === "offline",
         secondary: E.all,
+        nudge: E.all && this.shakyCount() >= 3,
         button: button,
         buttonLabel: { done: "Done", retry: "Try again" }[button]
       };

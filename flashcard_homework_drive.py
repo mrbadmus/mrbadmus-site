@@ -1493,6 +1493,7 @@ def run_library(width, height, mobile, shots):
 
 # ══ ⊕ 8 Oct 2026 — FLASHCARDS, ROUND 3 ═════════════════════════════════════
 # Unit 1: Secured is greyed until the SUBMITTED answer is a real attempt.
+# Unit 2: the Mr Badmus nudge on Done when 3+ cards were shaky.
 R3_SHOTS = os.path.join(ROOT, "docs", "experience", "y-shots")
 CRUDE_Q = "Describe how crude oil is formed."
 CRUDE_A = "Plankton died, were buried under sediment and compressed via heat and pressure over millions of years"
@@ -1617,6 +1618,74 @@ def run_round3(width, height, mobile, theme, shots):
             P.click('[data-hw="check"]')
             check(P.st()["enabled"] == ["not_yet", "nearly", "got_it"],
                   "r3 %s: crude oil in the pupil's own words after I don't know opens Secured" % tag)
+
+            # ── unit 2: the nudge ────────────────────────────────────────────
+            def play(idk_fronts):
+                fresh_deck()
+                seen = set()
+                for _ in range(20):
+                    st = P.st()
+                    if st["end1"]:
+                        break
+                    f = st["front"]
+                    if f in idk_fronts and f not in seen:
+                        seen.add(f)
+                        P.click('[data-hw="idk"]')
+                    P.type(R3_REAL[f])
+                    P.click('[data-hw="check"]')
+                    P.click('[data-hw="got_it"]')
+                settle(0.8)
+                return P.st()
+
+            s = play({"What is the unit of force?", "What is the formula of water?", "What is weight?"})
+            check(s["end1"] == "5 of 5 secured" and s["done"] == "Done" and s["again"] == "Revise flashcards one more time",
+                  "r3 %s: 3 idk-then-secured: Done screen, Done primary, Revise secondary (got %r %r)" % (tag, s["end1"], s["done"]))
+            nudge = P.q("!!document.querySelector('[data-hw=\"nudge\"]')")
+            label = P.q("(document.querySelector('[data-hw=\"nudge-label\"]')||{}).textContent")
+            body = P.q("(document.querySelector('[data-hw=\"nudge-text\"]')||{}).textContent")
+            check(nudge and (label or "").strip().lower() == "a note from mr badmus"
+                  and body == "Nice one for finishing. A few of these weren't quite there yet, so one more run before class would lock them in.",
+                  "r3 %s: the nudge shows with 3 shaky cards, with the agreed wording (got %r / %r)" % (tag, label, body))
+            check(P.q("document.querySelector('[data-hw=\"nudge\"]').getAttribute('aria-live')") == "polite",
+                  "r3 %s: the nudge is an aria-live polite region" % tag)
+            f = P.q(FIT_JS)
+            inside = lambda r: r is not None and r["top"] >= -0.5 and r["bottom"] <= f["vh"] + 0.5 and r["left"] >= -0.5 and r["right"] <= f["vw"] + 0.5
+            check(inside(f["nudge"]) and inside(f["done"]) and inside(f["again"]) and inside(f["end1"]),
+                  "r3 %s: nudge, N of M, Done and Revise all inside the viewport, none clipped (nudge=%s done=%s again=%s)"
+                  % (tag, f["nudge"], f["done"], f["again"]))
+            # (the class page behind the overlay scrolls on its own; what matters is the dialog)
+            check((f["dlgScroll"] or 0) <= 1 and f["dlg"]["top"] >= -0.5 and f["dlg"]["bottom"] <= f["vh"] + 0.5,
+                  "r3 %s: the dialog neither scrolls nor overflows the screen with the nudge showing (dialog scroll %s, %s)"
+                  % (tag, f["dlgScroll"], f["dlg"]))
+            check(f["nudge"]["top"] >= f["end1"]["bottom"] - 0.5 and f["nudge"]["bottom"] <= f["done"]["top"] + 0.5,
+                  "r3 %s: the note sits under 'N of M secured' and above Done" % tag)
+            c_text = P.q("(%s)('[data-hw=\"nudge-text\"]')" % CONTRAST_JS)
+            c_label = P.q("(%s)('[data-hw=\"nudge-label\"]')" % CONTRAST_JS)
+            check(c_text is not None and c_text >= 4.5 and c_label is not None and c_label >= 4.5,
+                  "r3 %s: nudge text contrast %.2f and label contrast %.2f, both >= 4.5" % (tag, c_text or 0, c_label or 0))
+            check(not P.st()["overflowX"], "r3 %s: no sideways scroll" % tag)
+            snap(page, "nudge")
+            ev = P.q("window.__FC_FAKE__.events")
+            check(sum(1 for e in ev if e["type"] == "session_finish") == 1, "r3 %s: the nudge changed nothing about finishing" % tag)
+            P.click('[data-hw="done"]')
+            check(not P.st()["open"], "r3 %s: Done still closes the overlay" % tag)
+
+            s = play({"What is the unit of force?", "What is the formula of water?"})
+            check(s["end1"] == "5 of 5 secured" and not P.q("!!document.querySelector('[data-hw=\"nudge\"]')"),
+                  "r3 %s: only 2 idk-then-secured: no nudge" % tag)
+            snap(page, "no-nudge")
+            # Revise one more time starts a new run: 0 shaky afterwards, no nudge on the next Done
+            P.click('[data-hw="again"]')
+            for _ in range(20):
+                st = P.st()
+                if st["end1"]:
+                    break
+                P.type(R3_REAL[st["front"]])
+                P.click('[data-hw="check"]')
+                P.click('[data-hw="got_it"]')
+            settle(0.6)
+            check(P.st()["end1"] == "5 of 5 secured" and not P.q("!!document.querySelector('[data-hw=\"nudge\"]')"),
+                  "r3 %s: a fresh run after Revise with no shaky cards shows no nudge" % tag)
     finally:
         server.shutdown()
 

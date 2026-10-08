@@ -1254,6 +1254,81 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     H.modelCheck = null;
   }
 
+  // ── 36. ⊕ the Mr Badmus nudge ───────────────────────────────────────
+  {
+    // run a 10-card deck to Done. `shaky[i]` → "idk" | "partial" | "late-partial" | undefined.
+    async function runDeck(shaky) {
+      const o = await fresh({ cards: TEN });
+      const e = o.e;
+      H.modelWaitMs = 4000;
+      const kinds = {};
+      H.modelCheck = (aid, cid, ans) => new Promise((r) => {
+        const kind = kinds[ans] || "match";
+        setTimeout(() => r(kind === "match" ? "match" : "partial"), kind === "late-partial" ? 40 : 1);
+      });
+      let guard = 0;
+      const seen = {};
+      while (e.view().card && guard++ < 60) {
+        const i = Number(e.view().card.id.slice(1));
+        const kind = shaky[i];
+        const word = TEN[i].answer.slice(0, 12) + " ok";
+        if (kind === "idk" && !seen[i]) { seen[i] = true; e.idk(); }
+        const typed = kind === "partial" || kind === "late-partial" ? word + " partly" : word;
+        if (kind === "partial" || kind === "late-partial") { kinds[typed] = kind; }
+        e.setDraft(typed); e.check();
+        if (kind === "partial") { await tick(10); }
+        e.rate("got_it");
+      }
+      return o;
+    }
+    let o = await runDeck({ 0: "idk", 3: "idk", 6: "idk" });
+    check(o.e.view().end && o.e.view().end.button === "done" && o.e.view().end.nudge === true,
+          "36: 10 cards, 3 'idk then secured' → end.nudge true");
+    check(o.e.view().end.line1 === "10 of 10 secured", "36: the nudge never changes the score or blocks Done");
+    o = await runDeck({ 0: "idk", 3: "idk" });
+    check(o.e.view().end.line1 === "10 of 10 secured" && o.e.view().end.nudge === false, "36: only 2 idk-secured → no nudge");
+    o = await runDeck({ 0: "idk", 3: "idk", 5: "partial" });
+    check(o.e.view().end.nudge === true, "36: 2 idk + 1 secured with a Nearly verdict → nudge");
+    o = await runDeck({});
+    check(o.e.view().end.nudge === false, "36: a clean run → no nudge");
+    // a late verdict landing AFTER the card was rated still counts, and redraws the end screen
+    o = await runDeck({ 0: "idk", 3: "idk", 9: "late-partial" });
+    check(o.e.view().end && o.e.view().end.nudge === false, "36: the verdict has not landed yet → not counted yet");
+    let ticks = 0; o.e.onChange = () => { ticks++; };
+    await tick(80);
+    check(o.e.view().end.nudge === true && ticks > 0, "36: a late verdict landing after rating counts, and redraws the end screen");
+    // persistence: a reopen of the finished deck keeps the run
+    await o.e.flush(); await tick(5); await o.e.flush();
+    H._reset();
+    H.transport = o.S.transport; H.resumeRead = () => Promise.resolve(o.S.reviews()); H.modelCheck = null;
+    const e2 = await H.open("A");
+    const v2 = e2.view();
+    check(v2.end && v2.end.button === "done" && v2.end.nudge === true,
+          "36: reopening the finished deck (all secured, stored shaky run) shows the nudge");
+    // again() starts a new run and clears the record
+    e2.again();
+    check(e2.shakyCount() === 0 && !/"c0":true/.test(localStorage.getItem("mrbadmusai.fchw.v1.run.A") || ""),
+          "36: again() clears the run record (in memory and on the device)");
+    // a fresh run after again() with 0 shaky shows none
+    let g = 0;
+    while (e2.view().card && g++ < 40) {
+      const i = Number(e2.view().card.id.slice(1));
+      e2.setDraft(TEN[i].answer.slice(0, 12) + " ok"); e2.check(); e2.rate("got_it");
+    }
+    check(e2.view().end && e2.view().end.button === "done" && e2.view().end.nudge === false,
+          "36: a fresh run after again() with 0 shaky shows no nudge");
+    // storage that throws: the run lives in memory only and nothing breaks
+    const realLS = globalThis.localStorage;
+    const { e: e5 } = await fresh({ cards: TEN });
+    Object.defineProperty(globalThis, "localStorage", { configurable: true, value: {
+      getItem: () => { throw new Error("blocked"); }, setItem: () => { throw new Error("blocked"); },
+      removeItem: () => { throw new Error("blocked"); }, clear: () => {} } });
+    e5.idk(); e5.setDraft("plankton ok"); e5.check(); e5.rate("got_it");
+    check(e5.shakyCount() === 1, "36: with storage blocked the run record still works in memory");
+    Object.defineProperty(globalThis, "localStorage", { configurable: true, value: realLS });
+    H.modelCheck = null;
+  }
+
   console.log(`\n  ${passes} passed, ${fails} failed`);
   if (fails) { console.log("  FAIL — flashcard engine"); process.exit(1); }
   console.log("  PASS — flashcard engine (pupil flow)");
