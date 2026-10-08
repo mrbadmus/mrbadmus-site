@@ -470,3 +470,165 @@ tappable straight away**, with none of them filled in. Tap **Secured**. Try
 the same on another card with a deliberately wrong answer: the chip says
 **Wrong** and Secured is still tappable. Finally tap **I don't know** on a
 card, type the answer from the screen, and check Secured is tappable there too.
+
+## 8. Round 3 (8 Oct): a real-attempt floor, a Mr Badmus nudge, and a teacher view that shows the truth
+
+**Why (Mide, 6 Oct):** "Student decides" (§7) works: completion went up, even
+in 11H5. But a pupil could type "xxxx", press Secured, and the teacher could
+not tell effort from understanding. So there are three layers on top of §7. §7
+itself stays: the pupil still decides, the check's verdict is still only a
+hint, nothing is pre-filled, and "Nearly, nearly" has not come back.
+
+**SQL: none needed.** Layers 1 and 2 run on the pupil's page. Layer 3 reads
+`flashcard_events`, `flashcard_reviews` and `flashcard_pupil_cards` directly.
+Production's row-level security already lets a class's teachers, school
+admins and SLT read those three tables. That was checked on production
+(read-only) on 8 Oct, and proved on TEST with a real teacher's sign-in.
+Nothing to apply. For the record, production's flashcard function
+fingerprints were: `flashcard_pupil_detail` ad73dae2…, `flashcard_progress`
+6569eb5d…, `flashcard_record` 118ade9a…, `flashcard_card_state` ec4834b7….
+
+### Layer 1: a real attempt opens Secured
+
+- **Not yet and Nearly** are always there, as before.
+- **Secured opens only if the pupil's answer shares at least one real word
+  with the card's answer.** Case and punctuation don't matter. Little words
+  (the, a, of, is, and…) don't count. Numbers do count, so "58500", "J" and
+  "joules" all work. "Real word" is lenient on purpose, because we judge
+  effort, not correctness:
+  - word stems match: "boiling" opens "boil", "buried" opens "buried";
+  - number words match: "1" opens "One", "quadruples" opens "factor of 4";
+  - thousands separators are ignored: "600,000" opens "600000";
+  - formulae match: "O2" opens "oxygen";
+  - a short list of everyday synonyms match: "goes down" opens "decreases",
+    "milky" opens "cloudy", "hot" opens "heating", "dead" opens "died",
+    "squashed" opens "compressed / pressure".
+- **Keyboard mash keeps Secured greyed:** "xxgpdt", "asdf kkkk", "idk",
+  "the", "?". The button is greyed and nothing else is said.
+- **After "I don't know"** the answer still shows first. The pupil types it,
+  or part of it, from the screen, and the same floor applies.
+
+**One reading I had to choose.** On the live page the typing box disappears
+the moment the answer shows. So the floor is judged on the answer the pupil
+**sent**. A pupil who mashed sees Secured greyed and taps Not yet or Nearly.
+The card then comes back on Try again with an empty box, and one real word
+opens Secured. Done still needs every card secured, so a pupil cannot finish
+on mash. I did not add a second typing box after the reveal.
+
+**Tested on every card in the 7 live decks (75 cards).** Your crude-oil
+example, "plants died, got buried, heat and pressure", opens it. 34 own-words
+answers open and about 300 mash, blank and filler answers stay greyed, in
+`flashcard_engine_test.js`.
+
+⚠️ **Known limit, your call.** A correct answer that shares no word with the
+card's answer and uses a synonym not on the list stays greyed. The one real
+case I found: **"rheostat"** for "A variable resistor". The pupil then sees
+the deck's answer and gets it on Try again. To widen the list, tell me the
+words.
+
+⚠️ **One live deck looks swapped (content).** In **"Week 1 quiz- Cell
+biology"**, most cards hold the question in the *answer* field and the
+answer in the *question* field. For example, the card shows "Ignore them"
+and the "answer" is "What do you do with anomalous results when calculating
+a mean?". The floor still works on it, but the cards read backwards. I have
+not touched it.
+
+![Secured greyed after a mash, phone](y-shots/r3-greyed-secured-390x844-light.png)
+![The same on TEST's real database: the check says Wrong, Secured greyed](y-shots/r3-live-greyed-secured-phone-light.png)
+
+### Layer 2: the Mr Badmus nudge
+
+- When a pupil finishes with every card secured, the page counts the cards
+  in this run that they secured after "I don't know", or after the check
+  said Nearly or Wrong.
+- **3 or more:** the Done screen shows *"A note from Mr Badmus: Nice one for
+  finishing. A few of these weren't quite there yet, so one more run before
+  class would lock them in."* Your wording, unchanged; it fits at 360×640.
+  The button is the existing "Revise flashcards one more time". Done stays
+  the main button. The note never blocks anything and never changes the
+  score.
+- **Fewer than 3:** no note.
+- **What counts as one run:** from the first open until the pupil taps
+  "Revise flashcards one more time". So the note comes back if they reopen
+  the finished deck without doing another run. Once they do another run, only
+  that run counts. It is remembered on the pupil's device.
+- **A slow answer check still counts.** If a pupil taps Secured before the
+  check replies and it later says Nearly or Wrong, the note still appears.
+
+![The nudge, phone](y-shots/r3-nudge-390x844-light.png)
+![The nudge, desktop dark](y-shots/r3-nudge-1280x800-dark.png)
+
+### Layer 3: the teacher sees the truth (`teacher/flashcards.html`)
+
+- **Per pupil, effort and understanding sit side by side.** The status chip
+  is unchanged and still shows effort: Done, In progress, Not started… Beside
+  it:
+  - **"· 6 of 10 unsure"**: the cards where the pupil pressed "I don't know",
+    or typed an answer the check called Nearly or Wrong.
+  - **"· all confident"**: only for a finished pupil with none of those.
+  - **Nothing**: for Not started, or while the data is loading or can't be
+    read. The page never claims "all confident" without the data.
+
+  The CSV export gains an **Unsure** column.
+- **Per card, across the class:** the old "Most often Not yet" box is now
+  **Reteach**, hardest card first. Each row shows how many pupils pressed
+  "I don't know", how many typed answers the check called Nearly or Wrong,
+  and how many **secured it anyway**. Cards nobody struggled with are
+  left out. There is still only one reteach list on the page.
+- **Clicking a pupil** shows each card's typed answer, the check's verdict
+  and their rating, as before.
+- **"Unsure" is history.** A card a pupil once answered Wrong stays counted,
+  even if they later got it right. That's the truth the teacher asked for.
+- **Cheap to run:** the page re-reads the three tables only when a pupil's
+  progress actually changes, not every 10 seconds.
+
+![Teacher page, phone](y-shots/r3-teacher-light-390.png)
+![Teacher page, desktop dark](y-shots/r3-teacher-dark-1280.png)
+
+### Tests
+
+| what | result |
+|---|---|
+| `flashcard_engine_test.js` (floor table, floor wiring, nudge 3 vs 2, late verdict, run reset, reopen) | 323 passed. **Fails against today's live engine before this change** (no floor, no nudge) |
+| `flashcard_homework_drive.py` (real compiled page: mash greyed, real word opens, crude oil opens, nudge with 3 and none with 2, 360/390/1280, light and dark, contrast) | green |
+| `tools/fc_round3_pupil_live.py` on TEST (two 10-card production-shaped decks, phone and desktop, light and dark) | 81 checks passed |
+| `flashcard_truth_test.js` (the teacher counts) | passed |
+| `flashcard_progress_drive.py` (three pupil lines, per-card counts and order, CSV, read failure shows nothing, no re-read on an unchanged poll, 360/390 no page scroll) | green. **About 19 failures against today's live page** |
+| `tools/fc_round3_teacher_live.py` on TEST (real `flashcard_record` writes for three pupils: Ada IDK + Nearly/Wrong then secured, Ben all Right, Cal nothing) | all passed. Ada "Done · 6 of 10 unsure", Ben "Done · all confident", Cal "Not started"; Reteach cards 1–6 in order |
+| Old drives that typed throwaway words and then pressed Secured (`y_runthrough_live`, `mrb353_verdicts_live`, `mrb351_pupil_flow_live`, `flashcards_sharpen_live`, the homework drive) | changed to type a real word from the card. The four TEST-database ones were edited but not re-run (they need the Deno answer-check set-up) |
+
+The TEST answer-check stand-in used to call every answer "Right". It now
+calls keyboard mash "Wrong", so no screenshot shows "Right" next to "asdf".
+
+Deviation: the pupil side shipped as three commits in one push (floor, nudge,
+three more synonym groups found while reviewing) → pushed together after one
+full gate round → the extra words came from reviewing real deck answers
+after the two units were committed; neither unit was pushed apart.
+
+### On your phone (nothing to apply first)
+
+Sign in as your pupil test account → **8r/Sc1** → **"Organic Chemistry
+Quiz"** → tap **Revise flashcards one more time**.
+
+1. **The floor.** On **"Describe how crude oil is formed."**, type
+   **xxgpdt** and tap Check. Not yet and Nearly are tappable; **Secured is
+   greyed** and does nothing. Tap **Not yet**. When the card comes back on
+   Try again, type **plants died, got buried, heat and pressure** → Check →
+   **Secured opens**.
+2. **The nudge.** On three other cards tap **I don't know**, type a few words
+   from the answer on screen, Check, and tap **Secured**. Secure the rest
+   however you like. When everything is secured, the Done screen shows **"A
+   note from Mr Badmus…"** above Done and "Revise flashcards one more time".
+   Tap Revise and finish again with no "I don't know": no note.
+
+**Then, as the teacher:** open that set's flashcard progress page.
+- Your test pupil's row reads **Done · N of 10 unsure** next to the green
+  Done chip.
+- The **Reteach** box lists the cards you pressed "I don't know" on, with
+  "1 don't know · 1 secured anyway".
+- The crude-oil card is there too, as "1 Nearly/Wrong · 1 secured anyway":
+  the check calls "xxgpdt" Wrong.
+- Your test pupil's earlier tries on this set count too, so N can be higher
+  than this run alone.
+- Tap the pupil to see each card's typed answer, the check's verdict and the
+  rating, as before.
