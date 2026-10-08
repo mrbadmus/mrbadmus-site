@@ -161,6 +161,14 @@ LOAD = r"""
 })()
 """
 
+MODEL_ANSWERS = {
+    "What is the unit of force?": "The newton (N)",
+    "What is the formula of water?": "H2O",
+    "What is weight?": "The force acting on an object due to gravity",
+    "Write the equation for the force on a spring.": "Force = spring constant × extension (F = ke)",
+    "Is velocity a scalar or a vector?": "A vector",
+}
+
 RETIRED = ("FOR NOW", "Go again", "Made ", "later on", "Finish for now", "Compare it yourself",
            "Not quite", "Keep revising", "YOUR DECK IS READY", "DECK SECURED", "right this time",
            "Got it", "secured so far")   # ⊕ MRB-354 (2 Oct 2026)
@@ -225,6 +233,8 @@ STATE_JS = r"""
     goneBtn: txt('[data-hw="gone"]'),
     retryPass: txt('[data-hw="retry-pass"]'),
     chip: txt('[data-hw="chip"]'),
+    // ⊕ 5 Oct 2026 — the verdict chip proper, never one of the strip's numbered chips
+    verdictChip: (function () { var els = document.querySelectorAll('[data-hw="chip"]'); for (var i = 0; i < els.length; i++) { if (!els[i].closest('[data-hw="chips"]')) { return els[i].innerText.trim(); } } return null; })(),
     pressed: pressed,
     panel: txt('[data-hw="panel"]'),
     end1: txt('[data-hw="end1"]'),
@@ -454,8 +464,9 @@ def run(width, height, kb, shots):
             s = P.st()
             check(s["flipped"] == "1" and s["rating"] and not s["writing"],
                   "Check turns the card to the model answer and shows the three ratings")
-            check(s["chip"] == "Right" and s["pressed"] == ["got_it"],
-                  "state C: chip 'Right', the got_it button filled (got %r %r)" % (s["chip"], s["pressed"]))
+            check(s["chip"] == "Right" and s["pressed"] == [] and s["enabled"] == ["not_yet", "nearly", "got_it"],
+                  "state C: chip 'Right' as a hint, nothing filled, all three ratings enabled (got %r %r %r)"
+                  % (s["chip"], s["pressed"], s["enabled"]))
             check(P.q("document.querySelector('[data-hw=\"got_it\"]').textContent.trim()") == "Secured",
                   "⊕ MRB-354 — the rating button reads 'Secured', never 'Got it'")
             check("newton" in (s["mine"] or "") and s["back_"] == "The newton (N)", "the pupil's answer under the model answer")
@@ -484,24 +495,23 @@ def run(width, height, kb, shots):
             P.click('[data-hw="check"]')
             P.keyboard(False)
             s = P.st()
-            check(s["chip"] == "Checking…" and s["rating"] and s["pressed"] == [] and s["enabled"] == [],
-                  "state B: 'Checking…', ratings showing, none filled, all three disabled (§13.1.2) (got %r %r %r)"
+            check(s["chip"] == "Checking…" and s["rating"] and s["pressed"] == [] and s["enabled"] == ["not_yet", "nearly", "got_it"],
+                  "state B: 'Checking…', ratings showing, none filled, all three ENABLED — the pupil never waits (5 Oct) (got %r %r %r)"
                   % (s["chip"], s["pressed"], s["enabled"]))
             check(s["backSubs"] == 1 and s["back_"] == "H2O", "H2O renders with a real <sub> (text unchanged)")
             P.shot("B-checking")
             P.q("window.__MODEL__('partial')")
             settle()
             s = P.st()
-            check(s["chip"] == "Nearly" and s["pressed"] == ["nearly"] and s["enabled"] == ["not_yet", "nearly"],
-                  "partial: chip 'Nearly', Nearly filled, Got it disabled (got %r %r %r)"
+            check(s["chip"] == "Nearly" and s["pressed"] == [] and s["enabled"] == ["not_yet", "nearly", "got_it"],
+                  "partial: chip 'Nearly' is only a hint — nothing filled, Secured still enabled (got %r %r %r)"
                   % (s["chip"], s["pressed"], s["enabled"]))
-            P.shot("C-nearly-capped")
+            P.shot("C-nearly-hint")
+            # (a) a right-but-differently-worded answer the check called Nearly:
+            # the pupil taps Secured and it is taken (key 3 does the same).
             P.click('[data-hw="got_it"]')
-            check(P.st()["chip"] == "Nearly", "tapping the disabled Got it does nothing")
-            P.q("document.dispatchEvent(new KeyboardEvent('keydown', {key: '3', bubbles: true}))")
-            settle()
-            check(P.st()["chip"] == "Nearly", "key 3 (Got it) is refused above the cap too")
-            P.click('[data-hw="nearly"]')
+            check(P.st()["front"] == "What is weight?" and P.st()["progress"] == "2 of 5 right",
+                  "(a) Secured on a 'Nearly' verdict is taken: card 2 is secured, on to card 3 (got %r)" % P.st()["front"])
 
             # card 3, then ‹ Back to card 2 from state C
             P.keyboard(True)
@@ -515,7 +525,7 @@ def run(width, height, kb, shots):
             s = P.st()
             check(s["front"] == "What is the formula of water?" and s["writing"] and s["draft"] == "made of hydrogen and oxygen",
                   "‹ Back: card 2 in state A with the earlier answer in the box (got %r)" % s["draft"])
-            check(s["progress"] == "1 of 5 right", "the count holds until the card is re-rated")
+            check(s["progress"] == "2 of 5 right", "the count holds until the card is re-rated")
             check(P.q("!!document.querySelector('[data-hw=\"forward\"]')"),
                   "⊕ MRB-354 — Forward › sits beside ‹ Back once a step back has been taken")
             P.click('[data-hw="forward"]')
@@ -533,10 +543,10 @@ def run(width, height, kb, shots):
             P.type("the")                  # a lone function word: Wrong on the spot
             P.click('[data-hw="check"]')
             s = P.st()
-            check(s["chip"] == "Wrong" and s["pressed"] == ["not_yet"] and s["enabled"] == ["not_yet"],
-                  "Wrong: only Not yet enabled (got %r %r)" % (s["chip"], s["enabled"]))
-            P.no_retired("wrong capped")
-            P.shot("C-wrong-capped")
+            check(s["chip"] == "Wrong" and s["pressed"] == [] and s["enabled"] == ["not_yet", "nearly", "got_it"],
+                  "Wrong: chip 'Wrong' as a hint, all three ratings still enabled (got %r %r)" % (s["chip"], s["enabled"]))
+            P.no_retired("wrong hint")
+            P.shot("C-wrong-hint")
             P.click('[data-hw="not_yet"]')
             s = P.st()
             check(s["front"] == "What is weight?" and s["draft"] == WEIGHT_RIGHT,
@@ -547,7 +557,7 @@ def run(width, height, kb, shots):
             P.click('[data-hw="check"]')
             P.click('[data-hw="got_it"]')
 
-            # card 4: I don't know → the learn state → own words, capped at Nearly
+            # card 4: I don't know → the learn state → own words (no cap)
             P.click('[data-hw="idk"]')
             s = P.st()
             check(s["front"] == "Write the equation for the force on a spring." and s["flipped"] != "1"
@@ -573,10 +583,10 @@ def run(width, height, kb, shots):
             P.q("window.__MODEL__('match')")
             settle()
             s = P.st()
-            check(s["chip"] == "Right" and s["pressed"] == ["nearly"] and s["enabled"] == ["not_yet", "nearly"],
-                  "own words Right after I don't know: chip Right, Nearly filled, Got it disabled (got %r %r %r)"
+            check(s["chip"] == "Right" and s["pressed"] == [] and s["enabled"] == ["not_yet", "nearly", "got_it"],
+                  "own words Right after I don't know: chip Right, nothing filled, all three enabled — no cap after I don't know (got %r %r %r)"
                   % (s["chip"], s["pressed"], s["enabled"]))
-            P.shot("C-idk-capped")
+            P.shot("C-idk-hint")
             P.click('[data-hw="nearly"]')
             P.keyboard(True)
             P.type("vector")
@@ -595,8 +605,8 @@ def run(width, height, kb, shots):
             s = P.st()
             # ⊕ Mide, 4 Oct 2026 (option B) — nothing could check it, so it
             # may be Nearly or Not yet, never Secured; Nearly brings it back.
-            check(s["chip"] is None and s["pressed"] == [] and sorted(s["enabled"]) == ["nearly", "not_yet"],
-                  "no verdict (no model check): no chip, nothing filled, Nearly or Not yet only (got %r)" % s["enabled"])
+            check(s["chip"] is None and s["pressed"] == [] and sorted(s["enabled"]) == ["got_it", "nearly", "not_yet"],
+                  "(c) no verdict (no model check): no chip, nothing filled, all three enabled (got %r)" % s["enabled"])
             P.click('[data-hw="nearly"]')
             settle(0.8)
             s = P.st()
@@ -604,8 +614,11 @@ def run(width, height, kb, shots):
             # earlier and never got_it since: it is the one card NOT secured.
             # The writing pass follows the SAME rule as review now: not all
             # secured → ONE button, Try again (no forced review pass).
-            check(s["end1"] == "3 of 5 secured" and s["end2"] is None,
-                  "writing pass end screen: '3 of 5 secured' — c1 and the unchecked c4 are left (got %r / %r)" % (s["end1"], s["end2"]))
+            # ⊕ 5 Oct 2026 — card 2 was Secured (on a 'Nearly' hint) and later
+            # re-answered Not yet via ‹ Back: once secured, stays secured. Only
+            # the spring card (rated Nearly twice) is left.
+            check(s["end1"] == "4 of 5 secured" and s["end2"] is None,
+                  "writing pass end screen: '4 of 5 secured' — the spring card is left; card 2 stays secured (got %r / %r)" % (s["end1"], s["end2"]))
             check(s["retryPass"] == "Try again" and s["done"] is None and s["again"] is None
                   and s["endHint"] is None,
                   "writing pass, not all secured: ONE button Try again, no forced review pass (MRB-354)")
@@ -630,33 +643,14 @@ def run(width, height, kb, shots):
             # stage, never a review of it.
             P.click('[data-hw="retry-pass"]')
             s = P.st()
-            check(s["writing"] and s["front"] == "What is the formula of water?",
-                  "Try again on a writing pass retypes c1, in state A (got %r)" % s["front"])
-            P.keyboard(True)
-            P.type("h2o")
-            P.click('[data-hw="check"]')
-            P.keyboard(False)
-            # ⊕ MRB-354 — `[data-hw="chip"]` is ambiguous during an ACTIVE
-            # retry pass: the numbered to-come chips in the strip (§13.1.10)
-            # use the SAME `data-hw="chip"` as the verdict chip on a revealed
-            # card, and `document.querySelector` returns the strip's (DOM
-            # order). This scenario (retyping during a retry) never existed
-            # before MRB-354 — the writing pass never retried — so it never
-            # surfaced; read the suggested rating instead, which is
-            # unambiguous (`[data-hw="rate"] button[aria-pressed]`).
-            s = P.st()
-            check(s["pressed"] == ["got_it"], "retyped correctly this time: Right, Secured filled (got %r)" % s["pressed"])
-            P.click('[data-hw="got_it"]')
-            settle(0.8)
-            # the unchecked c4 comes back too, and this time it is checked:
-            # typed in full, it is Right on the spot.
-            s = P.st()
             check(s["writing"] and s["front"] == "Write the equation for the force on a spring.",
-                  "Try again also brings back the card nothing could check (got %r)" % s["front"])
+                  "Try again on a writing pass retypes only the leftover (the spring card), in state A (got %r)" % s["front"])
+            P.keyboard(True)
             P.type("Force = spring constant × extension (F = ke)")
             P.click('[data-hw="check"]')
             s = P.st()
-            check(s["pressed"] == ["got_it"], "checked this time: Right, Secured filled (got %r)" % s["pressed"])
+            check(s["pressed"] == [] and s["enabled"] == ["not_yet", "nearly", "got_it"],
+                  "checked this time: nothing filled, all three enabled (got %r %r)" % (s["pressed"], s["enabled"]))
             P.click('[data-hw="got_it"]')
             settle(0.8)
             s = P.st()
@@ -684,7 +678,7 @@ def run(width, height, kb, shots):
             ev = P.q("window.__FC_FAKE__.events")
             check(sum(1 for e in ev if e["type"] == "session_finish") == 1,
                   "securing the last card (via a retry) ends the sitting, once — no review pass was ever needed")
-            check(all(e.get("via") in ("auto", "tap") for e in ev if e["type"] == "rated"), "every rating says auto/tap")
+            check(all(e.get("via") == "tap" for e in ev if e["type"] == "rated"), "nothing is pre-filled, so every rating is a tap")
             check(not any("think_ms" in e or "active_ms" in e for e in ev), "no event carries a duration")
             ids = [e["id"] for e in ev]
             check(len(ids) == len(set(ids)), "every event has its own id (idempotent resend)")
@@ -731,7 +725,7 @@ def run(width, height, kb, shots):
             ev = P.q("window.__FC_FAKE__.events")
             check(sum(1 for e in ev if e["type"] == "session_finish") == 2,
                   "two all-secured endings across this phone's visit so far (writing-retry, then this revise)")
-            check(all(e.get("via") in ("auto", "tap") for e in ev if e["type"] == "rated"), "every rating says auto/tap")
+            check(all(e.get("via") == "tap" for e in ev if e["type"] == "rated"), "nothing is pre-filled, so every rating is a tap")
             check(not any("think_ms" in e or "active_ms" in e for e in ev), "no event carries a duration")
             ids = [e["id"] for e in ev]
             check(len(ids) == len(set(ids)), "every event has its own id (idempotent resend)")
@@ -758,8 +752,14 @@ def run(width, height, kb, shots):
             for _ in range(5):
                 f = P.st()["front"]
                 order.append(f)
-                P.type(wrong.get(f) or answers.get(f, "x"))
+                typed = wrong.get(f) or answers.get(f, "x")
+                P.type(typed)
                 P.click('[data-hw="check"]')
+                # ⊕ 5 Oct 2026 — the revealed answer is ALWAYS the deck's model
+                # answer; what was typed is only ever "your answer" beside it.
+                st = P.st()
+                check(st["back_"] == MODEL_ANSWERS[f] and (st["mine"] or "").endswith(typed) and st["back_"] != typed,
+                      "model answer shown for %r, the typed %r only as 'your answer' (got %r / %r)" % (f, typed, st["back_"], st["mine"]))
                 P.click('[data-hw="not_yet"]' if f in wrong else '[data-hw="got_it"]')
             settle(0.8)
             s = P.st()

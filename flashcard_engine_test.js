@@ -17,9 +17,7 @@
  *     {card: rating}; make mode's two passes; the end screen's words and
  *     button in every case A8 names; × after one Check ends the sitting
  *     (A13); none of the retired strings survive.
- *   · ⊕ Sharpen (§13.7): the verdict caps the rating; nothing rates while
- *     checking; "I don't know" → own words, capped at Nearly, replayed
- *     once; the leftovers screen (Try again, no session_finish); Try again
+ *   · ⊕ Sharpen (§13.7): "I don't know" → own words, replayed once; the leftovers screen (Try again, no session_finish); Try again
  *     replays only the leftovers with a redo of a green card; ONE
  *     session_finish across a pass and its retries; a deleted set → gone.
  *   · ⊕ Stage D (STAGE-D-PLAN.md §2.9, cases 17–27): `reconstruct` builds the
@@ -144,6 +142,23 @@ const FIVE = [
   { question: "Velocity: scalar or vector?", answer: "A vector" },
 ];
 
+// A real-shaped 10-card deck (the "Organic Chemistry Quiz" shape: AQA organic
+// wording, one long sentence-style model answer per card). The crude-oil card
+// is word for word the one in docs/experience/Y-REPORT.md; the rest are
+// written in the same register.
+const TEN = [
+  { question: "Describe how crude oil is formed.", answer: "Plankton died, were buried under sediment and compressed via heat and pressure over millions of years" },
+  { question: "What is a hydrocarbon?", answer: "A compound made of hydrogen and carbon atoms only" },
+  { question: "What is the general formula of the alkanes?", answer: "CnH2n+2" },
+  { question: "What is the general formula of the alkenes?", answer: "CnH2n" },
+  { question: "How does fractional distillation separate crude oil?", answer: "It separates the hydrocarbons by boiling point as vapour rises up the fractionating column" },
+  { question: "What happens to viscosity as chain length increases?", answer: "Viscosity increases as the chains get longer" },
+  { question: "What is cracking?", answer: "Breaking down long chain hydrocarbons into shorter, more useful molecules" },
+  { question: "What is the test for an alkene?", answer: "Bromine water turns from orange to colourless" },
+  { question: "What is formed when an alkane burns completely?", answer: "Carbon dioxide and water" },
+  { question: "What is a functional group?", answer: "The atom or group of atoms that gives a compound its characteristic reactions" },
+];
+
 async function fresh(opts) {
   // ⊕ MRB-354 test-harness hardening — a straggling microtask/short-timer
   // chain from the PREVIOUS test's flush() can still be in flight (it
@@ -179,27 +194,28 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(!e.canCheck(), "Check disabled for spaces only");
     answer(e, "newton");                  // match → Right, Got it filled
     v = e.view();
-    check(v.revealed && v.chip === "Right" && v.suggest === "got_it", "a matching answer: chip Right, Got it filled");
+    check(v.revealed && v.chip === "Right" && v.suggest === null && v.allowed.got_it, "a matching answer: chip Right, nothing filled, Secured allowed");
     check(v.mine === "newton", "the pupil's answer is kept for the back of the card");
     e.rate("got_it");
     v = e.view();
     check(v.headline === "1 of 5 right" && v.segments[0].state === "right" && v.segments[1].current, "Got it → '1 of 5 right', segment 1 green, segment 2 current");
     answer(e, "the");                     // a lone function word → Wrong, Not yet filled
     v = e.view();
-    check(v.chip === "Wrong" && v.suggest === "not_yet", "a lone function word: chip Wrong, Not yet filled");
+    check(v.chip === "Wrong" && v.suggest === null, "a lone function word: chip Wrong, nothing filled");
     e.rate("not_yet");
     check(e.view().segments[1].state === "answered", "Not yet → segment grey (answered, not right)");
     answer(e, "force of gravity on it");  // multi-word, no model → no chip, nothing filled
     v = e.view();
-    // ⊕ Mide, 4 Oct 2026 (option B): nothing could check it, so never Secured.
-    check(v.revealed && v.chip === "" && v.suggest === null && v.cap === "nearly", "undecided and no model check: no chip, nothing filled, capped at Nearly");
-    check(!v.allowed.got_it && v.allowed.nearly && v.allowed.not_yet, "no verdict → Nearly or Not yet, never Secured");
-    e.rate("nearly");
+    // ⊕ Mide, 5 Oct 2026 (the pupil decides): no verdict at all, and every
+    // rating is still open — Secured included.
+    check(v.revealed && v.chip === "" && v.suggest === null, "undecided and no model check: no chip, nothing filled");
+    check(v.allowed.got_it && v.allowed.nearly && v.allowed.not_yet, "no verdict → all three ratings allowed");
+    e.rate("got_it");
     answer(e, "f = ke"); e.rate("not_yet");
-    answer(e, "vector"); e.rate("got_it");
+    answer(e, "vector"); e.rate("not_yet");
     v = e.view();
     // ⊕ MRB-354 — the end screen is "N of M secured" (not "right"): c0 and
-    // c4 are got_it, nothing was ever secured before this pass, so 2 of 5.
+    // c2 are got_it, nothing was ever secured before this pass, so 2 of 5.
     check(v.phase === "end" && v.end && v.end.line1 === "2 of 5 secured", "end screen line 1 '2 of 5 secured' (" + (v.end && v.end.line1) + ")");
     check(v.end.button === "retry" && v.end.buttonLabel === "Try again" && !v.end.secondary,
           "not all secured: ONE button 'Try again', no secondary, nothing waits on the server");
@@ -209,7 +225,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(!S.events.some((x) => x.type === "session_finish"), "a pass that is not all right does NOT end the sitting");
     const rated = S.events.filter((x) => x.type === "rated");
     check(rated.length === 5 && rated.every((x) => x.via === "auto" || x.via === "tap"), "every rating says how it was chosen (via)");
-    check(rated[0].via === "auto" && rated[2].via === "tap", "the filled rating tapped = auto; no suggestion = tap");
+    check(rated.every((x) => x.via === "tap"), "nothing is pre-filled, so every rating is a tap");
     check(!S.events.some((x) => "think_ms" in x || "active_ms" in x), "no event carries a duration");
   }
 
@@ -241,7 +257,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     answer(e, "force of gravity");
     check(e.view().chip === "Checking…" && e.view().suggest === null, "state B: 'Checking…', none filled");
     await tick(5);
-    check(e.view().chip === "Nearly" && e.view().suggest === "nearly", "the model's 'partial' → chip Nearly, Nearly filled");
+    check(e.view().chip === "Nearly" && e.view().suggest === null && e.view().allowed.got_it, "the model's 'partial' → chip Nearly, nothing filled, Secured allowed");
     e.rate("nearly");
     H.modelWaitMs = 60;
     H.modelCheck = () => new Promise((r) => setTimeout(() => r("match"), 100));
@@ -250,15 +266,15 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     // ⊕ option B: the first wait ran out at 60 ms, so a quiet retry is out —
     // still "Checking…" — and the first reply, landing at 100 ms (inside the
     // retry's own wait, which ends at 120), is used.
-    check(e.view().chip === "Checking…" && e.view().cap === "none", "first wait over: a quiet retry, still 'Checking…'");
+    check(e.view().chip === "Checking…" && e.view().allowed.got_it, "first wait over: a quiet retry, still 'Checking…', Secured allowed");
     await tick(60);
-    check(e.view().chip === "Right" && e.view().suggest === "got_it", "a slow first reply landing during the retry still counts");
+    check(e.view().chip === "Right" && e.view().suggest === null, "a slow first reply landing during the retry still counts as the hint");
     e.rate("got_it");
     H.modelCheck = () => new Promise((r) => setTimeout(() => r("match"), 400));
     answer(e, "made of hydrogen and oxygen");
     await tick(160);
-    check(e.view().chip === "" && e.view().cap === "nearly", "both waits over: no chip, capped at Nearly");
-    check(!e.view().allowed.got_it && e.view().allowed.nearly, "an unchecked answer can be Nearly, never Secured");
+    check(e.view().chip === "" && e.view().allowed.got_it, "both waits over: no chip, Secured still allowed");
+    check(e.view().allowed.nearly && e.view().allowed.not_yet, "an unchecked answer can be rated anything");
     await tick(300);
     check(e.view().chip === "", "a verdict landing after both waits is ignored");
     e.rate("nearly");
@@ -266,7 +282,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     H.modelCheck = () => Promise.resolve({ weird: true });
     answer(e, "mass times gravity strength");
     await tick(5);
-    check(e.view().chip === "" && e.view().cap === "nearly", "a reply without a verdict string (twice) → no chip, capped at Nearly");
+    check(e.view().chip === "" && e.view().allowed.got_it, "a reply without a verdict string (twice) → no chip, Secured allowed");
   }
 
   // ── 5. a failed resume read starts a fresh pass (§2.7) ───────────────
@@ -387,51 +403,157 @@ function answer(e, text) { e.setDraft(text); e.check(); }
       .forEach((w) => check(src.indexOf(w) < 0, "retired string absent from the engine: " + JSON.stringify(w)));
   }
 
-  // ── 10. the verdict caps the rating (§13.1.1) ────────────────────────
+  // ── 10. the verdict is a hint, never a gate (Mide, 5 Oct 2026) ───────
+  const ALL3 = (v) => v.allowed.got_it && v.allowed.nearly && v.allowed.not_yet;
   {
     const { e } = await fresh();
     answer(e, "newton");
     let v = e.view();
-    check(v.allowed.not_yet && v.allowed.nearly && v.allowed.got_it && v.suggest === "got_it", "match: all three allowed, Got it filled");
+    check(ALL3(v) && v.suggest === null, "match: all three allowed, nothing filled");
     e.rate("got_it");
+    // (a) a right-but-different answer, verdict partial: Secured is allowed and secures the card
     H.modelCheck = () => Promise.resolve("partial");
     answer(e, "hydrogen and oxygen");
     await tick(5);
     v = e.view();
-    check(!v.allowed.got_it && v.allowed.nearly && v.allowed.not_yet && v.suggest === "nearly" && v.cap === "nearly",
-          "partial: Got it refused, Nearly filled");
+    check(v.chip === "Nearly" && ALL3(v) && v.suggest === null, "(a) partial: chip Nearly, all three allowed, nothing filled");
     const was = v.card.id;
     e.rate("got_it");
-    check(e.view().card.id === was && e.view().revealed, "rate('got_it') above the cap is a no-op: the card is unchanged");
-    e.rate("nearly");
+    check(e.view().card.id !== was && e.securedMap()[was] === true, "(a) Secured on a 'Nearly' verdict is taken and secures the card");
     H.modelCheck = null;
     answer(e, "the");                     // a lone function word → Wrong
     v = e.view();
-    check(!v.allowed.got_it && !v.allowed.nearly && v.allowed.not_yet && v.chip === "Wrong", "no: only Not yet");
+    check(v.chip === "Wrong" && ALL3(v), "wrong verdict: chip Wrong, all three allowed");
     e.rate("nearly");
-    check(e.view().card.id === v.card.id, "Nearly refused on a Wrong answer");
-    e.rate("not_yet");
+    check(e.view().card.id !== v.card.id, "Nearly is taken on a Wrong verdict");
     answer(e, "dunno");
     v = e.view();
-    check(v.chip === "No answer" && !v.allowed.got_it && !v.allowed.nearly && v.allowed.not_yet, "blank: only Not yet");
+    check(v.chip === "No answer" && ALL3(v), "(b) typed blank-ish: chip No answer, all three allowed");
+    e.rate("got_it");
+    check(e.view().card.id !== v.card.id, "(b) Secured is taken after a No answer verdict");
   }
 
-  // ── 11. nothing rates while the check is out ───────────────────────
+  // ── 10b. THE REVEALED ANSWER IS ALWAYS THE DECK'S MODEL ANSWER ────────
+  // (Mide, 5 Oct 2026.) What the overlay draws on the back of a card is
+  // `card.answer` (and `learnAnswer` in the learn step) — both read straight
+  // from the deck. What the pupil typed only ever reaches the screen as
+  // `view().mine`, "your answer" beside it. Proved on the 10-card deck, on
+  // every path, in review mode and in make mode.
+  {
+    const MODEL = (id) => TEN[Number(id.slice(1))].answer;
+    const WRONG = "it is the stuff that comes out of the ground";
+    let shown = 0;
+    function proves(e, typed, what) {
+      const v = e.view();
+      const back = v.learn ? v.learnAnswer : v.card.answer;
+      check(back === MODEL(v.card.id), what + ": the answer shown is the deck's model answer");
+      check(typed === null || back !== typed, what + ": it is not what the pupil typed");
+      if (v.revealed && typed !== null) { check(v.mine === typed, what + ": the typed text appears only as 'your answer'"); }
+      shown++;
+    }
+    for (const mode of ["review", "make"]) {
+      const { e } = await fresh({ mode, cards: TEN });
+      // path 1 — first go: type a wrong answer, Not yet
+      e.setDraft(WRONG); e.check();
+      proves(e, WRONG, mode + " first go (typed wrong)");
+      e.rate("not_yet");
+      // path 2 — "I don't know": the model answer shows first, then own words
+      e.idk();
+      proves(e, null, mode + " I don't know (before typing)");
+      check(e.view().mine === null && !e.view().revealed, mode + " I don't know: nothing the pupil typed is on the card");
+      e.setDraft("my version"); e.check();
+      proves(e, "my version", mode + " I don't know (own words typed)");
+      e.rate("got_it");
+      // finish the pass: c2.. wrong and Not yet, except the replay of c1
+      for (let i = 2; i < 10; i++) { e.setDraft(WRONG + " " + i); e.check(); proves(e, WRONG + " " + i, mode + " card " + i); e.rate("not_yet"); }
+      // the replay of the I-don't-know card comes round last
+      check(e.view().card && e.view().card.id === "c1", mode + ": the I-don't-know card comes round again");
+      e.setDraft(WRONG + " again"); e.check();
+      proves(e, WRONG + " again", mode + " replay");
+      e.rate("not_yet");
+      // path 3 — Try again: the wrong answer is not carried in, and the model answer is still the deck's
+      check(e.view().phase === "end" && e.view().end.button === "retry", mode + ": the pass ends on Try again");
+      e.retry();
+      proves(e, null, mode + " Try again (before typing)");
+      check(e.view().draft === "" && e.view().mine === null, mode + " Try again: the earlier wrong answer is not put back");
+      e.setDraft("second wrong try"); e.check();
+      proves(e, "second wrong try", mode + " Try again (typed)");
+      e.rate("not_yet");
+    }
+    // path 4 — "Revise flashcards one more time", after every card is secured
+    {
+      const { e } = await fresh({ cards: TEN });
+      for (let i = 0; i < 10; i++) { e.setDraft("worded my own way " + i); e.check(); e.rate("got_it"); }
+      check(e.view().end.button === "done" && e.view().end.secondary, "revise: ten secured, Done and the quiet secondary");
+      e.again();
+      proves(e, null, "Revise one more time (before typing)");
+      e.setDraft("a wrong revise answer"); e.check();
+      proves(e, "a wrong revise answer", "Revise one more time (typed wrong)");
+      e.rate("not_yet");
+      check(e.securedCount() === 10, "Revise: a wrong answer rated Not yet leaves the card secured");
+      e.idk();
+      proves(e, null, "Revise one more time (I don't know)");
+    }
+    console.log(`  model answer: ${shown} on-screen checks over review + make, first go / I don't know / Try again / Revise`);
+  }
+
+  // ── 11. nothing waits on the check (c) ──────────────────────────────
   {
     const { e } = await fresh();
     H.modelWaitMs = 60;
     H.modelCheck = () => new Promise(() => {});      // never answers
     answer(e, "some force thing");
     let v = e.view();
-    check(v.checking && v.cap === "none" && !v.allowed.got_it && !v.allowed.nearly && !v.allowed.not_yet,
-          "Checking…: all three ratings refused");
-    e.rate("not_yet");
-    check(e.view().card.id === "c0" && e.view().revealed, "a tap while checking does nothing");
+    check(v.checking && ALL3(v), "(c) Checking…: all three ratings allowed at once");
     await tick(150);   // the first wait AND the quiet retry's
     v = e.view();
-    check(!v.checking && !v.allowed.got_it && v.allowed.nearly && v.allowed.not_yet && v.suggest === null,
-          "both waits expire with no verdict: Nearly or Not yet, never Secured, none filled (option B)");
+    check(!v.checking && ALL3(v) && v.suggest === null, "(c) both waits expire with no verdict: all three still allowed");
     H.modelWaitMs = 4000;
+    // a check that fails outright
+    H.modelCheck = () => Promise.reject(new Error("down"));
+    answer(e, "another force thing");
+    check(ALL3(e.view()), "(c) a failing check: all three allowed straight away");
+    await tick(5);
+    check(!e.view().checking && ALL3(e.view()) && e.view().chip === "", "(c) a failing check: no chip, all three still allowed");
+    e.rate("got_it");
+    check(e.view().card.id !== "c0" || e.view().pos > 1, "(c) a tap while 'Checking…' is taken and moves on");
+    await tick(5);
+    H.modelCheck = null;
+    // rate during Checking…, the verdict lands late: the rating stands
+    const e2o = await fresh();
+    const e2 = e2o.e;
+    H.modelWaitMs = 4000;
+    H.modelCheck = () => new Promise((r) => setTimeout(() => r("no"), 30));
+    answer(e2, "a long worded answer here");
+    e2.rate("got_it");
+    await tick(60);
+    check(e2.securedMap().c0 === true, "(c) rated Secured during Checking…; the late 'Wrong' changes nothing");
+    const ev2 = e2o.S.events.concat(e2.pending).filter((x) => x.card === "c0" && x.type === "rated");
+    check(ev2.length === 1 && ev2[0].rating === "got_it", "(c) exactly one rating event, got_it");
+    H.modelCheck = null;
+  }
+
+  // (d) ten cards, all Secured in ONE pass → Done, with ratings and verdicts side by side (e)
+  {
+    const { S, e } = await fresh({ cards: TEN });
+    H.modelCheck = () => Promise.resolve("partial");
+    for (let i = 0; i < 10; i++) {
+      answer(e, "my own wording " + i);       // not the model answer: verdict comes back partial
+      await tick(5);
+      e.rate("got_it");
+    }
+    const v = e.view();
+    check(v.phase === "end" && v.end.line1 === "10 of 10 secured" && v.end.button === "done" && v.end.secondary === true,
+          "(d) ten cards secured in one pass, every verdict 'Nearly': 10 of 10 secured, Done");
+    await e.flush(); await tick(5); await e.flush();
+    const evs = S.events;
+    const verdicts = evs.filter((x) => x.type === "answer_submitted");
+    const rated = evs.filter((x) => x.type === "rated");
+    check(rated.length === 10 && rated.every((x) => x.rating === "got_it"), "(e) ten rated events, all got_it");
+    check(verdicts.length === 10 && verdicts.every((x, i) => x.answer === "my own wording " + i),
+          "(e) the typed answers are recorded exactly (answer_submitted)");
+    check(evs.some((x) => x.type === "session_finish"), "(d) an all-secured pass ends the sitting");
+    H.modelCheck = null;
   }
 
   // ── 12. "I don't know" is a learning step (§13.1.4) ──────────────────
@@ -449,8 +571,8 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(!e.canCheck(), "the own-words box starts empty");
     e.setDraft("h2o"); e.check();
     v = e.view();
-    check(v.revealed && !v.learn && v.chip === "Right" && !v.allowed.got_it && v.suggest === "nearly",
-          "own words Right: chip Right, but capped at Nearly (Nearly filled, Got it off)");
+    check(v.revealed && !v.learn && v.chip === "Right" && ALL3(v) && v.suggest === null,
+          "own words Right: chip Right, all three allowed, nothing filled (no cap after 'I don't know')");
     e.rate("nearly");
     check(e.passIds.length === 6 && e.view().segments.length === 5 && e.view().chips.length === 5,
           "the card is appended once: 6 showings, still 5 segments");
@@ -462,7 +584,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(v.draft === "", "…with an empty box: answered from memory, not from the own-words step");
     answer(e, "h2o");
     v = e.view();
-    check(v.allowed.got_it && v.suggest === "got_it", "on the replay a Right answer may be Got it");
+    check(ALL3(v) && v.suggest === null, "on the replay all three are allowed");
     e.rate("got_it");
     v = e.view();
     check(v.phase === "end" && v.end.line1 === "5 of 5 secured" && v.headline === "5 of 5 right",
@@ -483,10 +605,10 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     answer(e, "newton"); e.rate("got_it");
     let v = e.view();
     check(v.card.id === "c1" && v.learn && v.learnAnswer === "H2O" && !e.canCheck(),
-          "forward again: the I-don't-know card reopens in the learn state, not uncapped");
+          "forward again: the I-don't-know card reopens in the learn state");
     e.setDraft("h2o"); e.check();
     v = e.view();
-    check(v.suggest === "nearly" && !v.allowed.got_it, "…and its own words are still capped at Nearly");
+    check(v.suggest === null && ALL3(v), "…and its own words may be rated anything");
     e.rate("nearly");
     check(e.passIds.length === 6 && e.passIds[5] === "c1", "…and it is still replayed at the end of the pass");
     answer(e, "the force acting on an object due to gravity"); e.rate("got_it");
@@ -507,7 +629,7 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     let v = e2.view();
     check(v.card.id === "c1" && v.learn, "reload mid-learn: the card reopens in the learn state");
     e2.setDraft("h2o"); e2.check();
-    check(!e2.view().allowed.got_it, "reload mid-learn: still capped at Nearly");
+    check(ALL3(e2.view()), "reload mid-learn: all three allowed");
     e2.rate("nearly");
     check(e2.passIds[e2.passIds.length - 1] === "c1", "reload mid-learn: still replayed");
     await e2.flush(); await tick(5);

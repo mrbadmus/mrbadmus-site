@@ -8,13 +8,13 @@ localhost:3000 pointed at TEST) against the REAL TEST database. Nothing is
 stubbed but ONE model verdict: TEST has no ANTHROPIC_API_KEY, so its
 `flashcard-answer-check` gives no verdict for a multi-word answer; for one card
 `window.MRBHomework.modelCheck` is replaced in the page to answer "partial",
-so the Nearly cap can be seen on the real page against the real database.
+so a Nearly hint (which no longer caps anything — 5 Oct) can be seen on the real page against the real database.
 
 On a 390x844 phone (`mobile: true`, a fake `visualViewport` of height 508 for
 the keyboard, exactly as flashcard_homework_drive.py does):
 
   the first pass — Right (newton), Wrong (one wrong word), Nearly (stubbed),
-                   Right (joule), I don't know → own words (capped at Nearly),
+                   Right (joule), I don't know → own words (no cap),
                    No answer (dunno), then the I-don't-know card again;
   its end        — "3 of 6 right", Try again, no session_finish;
   Try again      — only the leftovers, the green chips; a green chip redone
@@ -245,11 +245,9 @@ def main():
                 P.type("oxygen")
                 P.click('[data-hw="check"]')
                 s = P.st()
-                check(s["chip"] == "Wrong" and s["enabled"] == ["not_yet"] and s["pressed"] == ["not_yet"],
-                      "live: Wrong → only Not yet enabled (got %r %r)" % (s["chip"], s["enabled"]))
-                P.shot("01-wrong-capped")
-                P.click('[data-hw="got_it"]')
-                check(P.st()["chip"] == "Wrong", "live: the disabled Got it does nothing")
+                check(s["chip"] == "Wrong" and enabled_is(s, ["not_yet", "nearly", "got_it"]) and s["pressed"] == [],
+                      "live: Wrong is only a hint → all three enabled, none filled (got %r %r)" % (s["chip"], s["enabled"]))
+                P.shot("01-wrong-hint")
                 P.click('[data-hw="not_yet"]')
 
                 check(front() == Q[2], "card 3")
@@ -258,9 +256,9 @@ def main():
                 P.type("the pull of gravity on it")
                 P.click('[data-hw="check"]')
                 s = pf.wait_for(P, lambda x: x["chip"] == "Nearly", "stubbed verdict", timeout=6)
-                check(s["chip"] == "Nearly" and s["pressed"] == ["nearly"] and enabled_is(s, ["not_yet", "nearly"]),
-                      "live (ONE verdict stubbed in-page): Nearly → Got it disabled (got %r %r)" % (s["chip"], s["enabled"]))
-                P.shot("02-nearly-stubbed-capped")
+                check(s["chip"] == "Nearly" and s["pressed"] == [] and enabled_is(s, ["not_yet", "nearly", "got_it"]),
+                      "live (ONE verdict stubbed in-page): Nearly → still all three enabled (got %r %r)" % (s["chip"], s["enabled"]))
+                P.shot("02-nearly-stubbed-hint")
                 P.q("window.MRBHomework.modelCheck = window.__MC0;")
                 P.click('[data-hw="nearly"]')
 
@@ -268,8 +266,8 @@ def main():
                 P.type("joule")
                 P.click('[data-hw="check"]')
                 s = P.st()
-                check(s["chip"] == "Right" and s["pressed"] == ["got_it"] and enabled_is(s, ["not_yet", "nearly", "got_it"]),
-                      "live: Right → Got it filled, nothing capped")
+                check(s["chip"] == "Right" and s["pressed"] == [] and enabled_is(s, ["not_yet", "nearly", "got_it"]),
+                      "live: Right → nothing filled, all three enabled")
                 P.shot("03-right-open")
                 P.click('[data-hw="got_it"]')
 
@@ -286,16 +284,16 @@ def main():
                 P.click('[data-hw="check"]')
                 P.keyboard(False)
                 s = P.st()
-                check(s["chip"] == "Right" and s["pressed"] == ["nearly"] and enabled_is(s, ["not_yet", "nearly"]),
-                      "live: own words Right → capped at Nearly (got %r %r %r)" % (s["chip"], s["pressed"], s["enabled"]))
-                P.shot("05-idk-checked-capped")
+                check(s["chip"] == "Right" and s["pressed"] == [] and enabled_is(s, ["not_yet", "nearly", "got_it"]),
+                      "live: own words Right → no cap after I don't know, all three enabled (got %r %r %r)" % (s["chip"], s["pressed"], s["enabled"]))
+                P.shot("05-idk-checked-hint")
                 P.click('[data-hw="nearly"]')
 
                 check(front() == Q[5], "card 6")
                 P.type("dunno")
                 P.click('[data-hw="check"]')
                 s = P.st()
-                check(s["chip"] == "No answer" and s["enabled"] == ["not_yet"], "live: 'dunno' → No answer, only Not yet")
+                check(s["chip"] == "No answer" and enabled_is(s, ["not_yet", "nearly", "got_it"]), "live: 'dunno' → No answer as a hint, all three enabled")
                 P.click('[data-hw="not_yet"]')
 
                 s = P.st()

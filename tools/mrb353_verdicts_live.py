@@ -525,9 +525,12 @@ def answer_card(P, page, seen, answer, timeout=6.0):
 
 
 def rate_shown(P):
+    # ⊕ 5 Oct 2026 — the pupil decides: nothing is pre-filled and all three
+    # ratings are always enabled. This pupil simply follows the hint chip.
     s = P.st()
-    pressed = s["pressed"]
-    rating = pressed[0] if pressed else "not_yet"
+    check(sorted(s["enabled"]) == ["got_it", "nearly", "not_yet"] and not s["pressed"],
+          "the verdict is only a hint: all three ratings enabled, none filled (got %r %r)" % (s["enabled"], s["pressed"]))
+    rating = {"Right": "got_it", "Nearly": "nearly"}.get(s["chip"], "not_yet")
     P.click('[data-hw="%s"]' % rating)
     time.sleep(0.3)
 
@@ -670,10 +673,11 @@ def main():
         while time.time() - t0 < 10 and P1.st()["done"] is None:
             time.sleep(0.3)
         s = P1.st()
-        # A Wrong / Nearly verdict caps the rating below Got it, so this pass
-        # cannot end on the Done screen — the rating cap still holds.
-        check(s["done"] != "Done", "make deck: with Wrong/Nearly verdicts the pass does NOT end on Done "
-              "(rating cap kept; got %r)" % s["done"])
+        # This pupil follows the hint, so Wrong/Nearly cards are rated below
+        # Secured and the pass does not end on Done — by the pupil's choice,
+        # not because anything stopped them (the buttons were all enabled).
+        check(s["done"] != "Done", "make deck: a pupil who rates Wrong/Nearly cards lower does NOT end on Done "
+              "(got %r)" % s["done"])
 
         all_console_errors += no_fav(page1.console_errors())
         br1.close()
@@ -690,8 +694,8 @@ def main():
         while time.time() - t0 < 10 and P2.st()["done"] is None:
             time.sleep(0.3)
         s = P2.st()
-        check(s["done"] != "Done", "ready-made deck: with Wrong/Nearly verdicts the pass does NOT end on Done "
-              "(rating cap kept; got %r)" % s["done"])
+        check(s["done"] != "Done", "ready-made deck: a pupil who rates Wrong/Nearly cards lower does NOT end on Done "
+              "(got %r)" % s["done"])
         shot(page2, shots, "pupil-ready-made-done")
         all_console_errors += no_fav(page2.console_errors())
         br2.close()
