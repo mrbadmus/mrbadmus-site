@@ -1179,7 +1179,8 @@ function answer(e, text) { e.setDraft(text); e.check(); }
     check(typeof RA === "function", "34: realAttempt is exposed on the module's test surface");
     const OPEN = [
       ["Plankton died, were buried under sediment and compressed via heat and pressure over millions of years",
-        ["plants died, got buried, heat and pressure"]],
+        ["plants died, got buried, heat and pressure", "dead sea creatures squashed"]],
+      ["To prevent the wire heating up", ["so it doesnt get hot"]],
       ["Joules (J)", ["J", "j", "joules", "joule"]],
       ["One", ["1", "one"]],
       ["Its resistance decreases.", ["it goes down", "decreases", "gets lower"]],

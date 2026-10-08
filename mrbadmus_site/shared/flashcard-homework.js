@@ -265,6 +265,11 @@
    ["UP", "increase increases increased increasing up higher raise raises rise rises rose more greater bigger larger grow grows"],
    ["SAME", "same equal equals constant unchanged identical"],
    ["CLOUDY", "cloudy milky murky"],
+   // Real deck cards: "so it doesnt get hot" (…heating up), "dead sea
+   // creatures squashed" (…died… compressed… pressure).
+   ["HEAT", "heat heats heated heating hot hotter warm warmer warms"],
+   ["DIE", "die dies died dying dead death"],
+   ["PRESS", "press pressed pressure compress compressed compression squash squashed squeeze squeezed crush crushed"],
    ["J", "j joule joules"], ["W", "w watt watts"], ["N", "n newton newtons"], ["V", "v volt volts"],
    ["KG", "kg kilogram kilograms"], ["HZ", "hz hertz"], ["OHM", "ohm ohms"]
   ].forEach(function (g) { g[1].split(" ").forEach(function (w) { GROUPS[w] = g[0]; }); });
