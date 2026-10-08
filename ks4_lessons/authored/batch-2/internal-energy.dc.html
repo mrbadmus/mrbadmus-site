@@ -52,12 +52,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Turn the gas up under boiling water.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">A pan of water is boiling on a hob. A thermometer in the water reads 100 °C. You turn the flame up to full and keep it there.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What does the thermometer do while the water keeps boiling?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="Turn the gas up under boiling water." scene="A pan of water is boiling on a hob. A thermometer in the water reads 100 °C. You turn the flame up to full and keep it there." question="while the water keeps boiling, does the thermometer reading go up, or stay at 100 °C?" options="{{ hookOptions }}" bridge="The extra energy is still going into the water, but it changes the water’s state instead of its temperature. Next: the two ways particles store energy." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -300,12 +295,9 @@ class Component extends DCLogic {
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: [{ href: href('states-of-matter'), label: 'States of matter' }, { href: href('changes-in-energy'), label: 'Changes in energy' }, { href: href('changes-of-state'), label: 'Changes of state' }, { href: href('temperature-changes-shc'), label: 'Specific heat capacity' }, { href: href('specific-latent-heat'), label: 'Specific latent heat' }].filter((c) => c.href),
       hookOptions: [
-        { text: 'It climbs above 100 °C, because more energy is going in', reply: '' },
-        { text: 'It stays at 100 °C, and the water boils away faster', reply: '' },
-        { text: 'It falls, because boiling takes energy out of the water', reply: '' },
-        { text: 'It creeps up slowly, then settles at a new higher value', reply: '' }
+        { text: 'It goes up', correct: false, reply: 'More energy is going in, so a rise makes sense. But while the water boils, it stays at 100 °C and boils away faster.' },
+        { text: 'It stays at 100 °C', correct: true, reply: 'The water just boils away faster.' }
       ],
-      hookReveal: 'It stays at 100 °C, and the water boils away faster. The bench below shows where the extra energy goes.',
       onHook: (i) => this.setState({ hook: i }),
       stageNum: String(k + 1), stageTitle: st.title,
       partFig: ready ? K.fig(this.partsSvg(k, shownP, s.t, s.running), '') : null,

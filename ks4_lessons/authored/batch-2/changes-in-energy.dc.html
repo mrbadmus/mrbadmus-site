@@ -52,12 +52,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Twice as fast. How much harder to stop?</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">To stop a car, its brakes must transfer away all of its kinetic energy, and the brakes get hot. Now the same car is driven at twice the speed.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="How much energy do the brakes now have to transfer?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="Twice as fast. How much harder to stop?" scene="To stop a car, its brakes must transfer away all of its kinetic energy, and the brakes get hot. Now the same car is driven at twice the speed." question="do the brakes now have to transfer twice as much energy, or more than twice as much?" options="{{ hookOptions }}" bridge="Kinetic energy depends on the speed squared: Ek = ½ m v². Next: kinetic energy and two other energy stores." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -310,12 +305,9 @@ class Component extends DCLogic {
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: [{ href: href('internal-energy'), label: 'Internal energy' }, { href: href('forces-elasticity'), label: 'Forces and elasticity' }, { href: href('work-done-energy-transfer'), label: 'Work done and energy transfer' }].filter((c) => c.href),
       hookOptions: [
-        { text: 'The same amount', reply: '' },
-        { text: 'Twice as much', reply: '' },
-        { text: 'Four times as much', reply: '' },
-        { text: 'Eight times as much', reply: '' }
+        { text: 'Twice as much', correct: false, reply: 'Twice the speed, twice the energy sounds right, and most people say it. In fact it is four times as much.' },
+        { text: 'More than twice as much', correct: true, reply: 'It is four times as much.' }
       ],
-      hookReveal: 'Four times. Kinetic energy depends on the speed squared: Ek = ½ m v². A 1000 kg car at 10 m/s has 50 000 J in its kinetic store. At 20 m/s it has 200 000 J, so the brakes must transfer four times as much energy.',
       onHook: (i) => this.setState({ hook: i }),
       roundNum: String(r + 1), roundTitle: rd.title, roundAsk: rd.ask,
       benchFig: ready ? K.fig(this.benchSvg(rd, revealed ? s.anim : 0, revealed), '') : null,
