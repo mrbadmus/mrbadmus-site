@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#FBF3E6">
+<title>Wave Motion Lab | MrBadmus</title>
+<!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614"><!--/mrb:brand-head-->
+<link rel="stylesheet" href="/simulations/simulations.css">
+<link rel="stylesheet" href="sim-theme.css">
+<script src="/shared/theme.js?v=6fd6f722" defer></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<header class="sim-bar">
+  <!--mrb:brand--><a class="mrb-brand" href="/index.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
+  <a class="sim-back" href="/simulations/physics/"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>Physics</a>
+  <span class="mrb-theme-slot" data-mrb-theme="compact"></span>
+</header>
+<x-dc>
+<helmet>
+  <title>Wave Motion Lab</title>
+  <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+  <style>
+    body{margin:0;background:#FBF3E6}
+    [hidden]{display:none !important}
+    :focus-visible{outline:2px solid #E4572E;outline-offset:2px}
+    a{color:#A93411}a:hover{color:#7F2408}
+  </style>
+</helmet>
+<div style="background:var(--st-ground);color:var(--st-ink);font-family:var(--st-ui);font-size:17px;line-height:1.5;min-height:100vh">
+
+  <div style="max-width:1500px;margin:0 auto;padding:28px clamp(16px,2.4vw,36px) 48px;display:grid;gap:22px">
+    <header style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 24px">
+      <div style="min-width:0">
+        <div style="font:500 12px/1.3 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;color:var(--st-caption)">AQA Physics 4.6.1.1–4.6.1.2 · Transverse and longitudinal waves · Frequency and period</div>
+        <h1 style="margin:12px 0 0;font:600 clamp(34px,4vw,56px)/1 var(--st-display);letter-spacing:-0.035em;text-wrap:balance">Wave Motion Lab</h1>
+        <p style="margin:12px 0 0;color:var(--st-muted);font-size:18px;max-width:62ch;text-wrap:pretty">Does a wave move the particles, or something else? Watch one particle and the energy, then decide.</p>
+      </div>
+      <div id="tabs" role="tablist" aria-label="Wave type" style="display:flex;flex-wrap:wrap;gap:3px;padding:3px;background:var(--st-seg-bg);border-radius:9px">
+        <button role="tab" aria-selected="true" data-mode="T" style="font:500 15px/1 var(--st-ui);padding:11px 18px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer">Transverse</button>
+        <button role="tab" aria-selected="false" data-mode="L" style="font:500 15px/1 var(--st-ui);padding:11px 18px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer">Longitudinal</button>
+        <button role="tab" aria-selected="false" data-mode="B" style="font:500 15px/1 var(--st-ui);padding:11px 18px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer">Side by side</button>
+      </div>
+    </header>
+
+    <div style="display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start">
+      <div style="flex:2.1 1 620px;min-width:0;display:grid;gap:16px">
+        <div style="background:var(--st-paper);border:1px solid var(--st-edge);border-radius:var(--st-r-stage);overflow:hidden;display:grid;box-shadow:var(--st-shadow-frame)">
+          <canvas id="stage" aria-label="Animated wave of particles" style="display:block;width:100%;height:clamp(300px,52vh,560px)"></canvas>
+          <canvas id="graph" hidden aria-label="Displacement against time for the orange particle" style="display:block;width:100%;height:200px;border-top:1px solid var(--st-rule-soft)"></canvas>
+          <div style="display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;padding:14px 16px;border-top:1px solid var(--st-rule-soft)">
+            <button id="play" style="display:inline-flex;align-items:center;justify-content:center;gap:9px;min-width:7.5em;font:600 16px/1 var(--st-ui);padding:13px 18px;border:0;border-radius:var(--st-r-btn);background:var(--st-accent-text);color:var(--st-paper);cursor:pointer" style-hover="background:var(--st-accent-hover)"></button>
+            <button id="reset" style="display:inline-flex;align-items:center;gap:8px;font:600 16px/1 var(--st-ui);padding:12px 16px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"></path><path d="M2.5 2v3.5H6"></path></svg>Restart wave</button>
+            <label for="speed" style="display:flex;align-items:center;gap:8px;font-size:15px;color:var(--st-muted)">Speed
+              <select id="speed" style="font:500 15px var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-control);padding:8px 10px;cursor:pointer">
+                <option value="0.25">¼ × slow-mo</option>
+                <option value="0.5" selected>½ ×</option>
+                <option value="1">1 ×</option>
+              </select>
+            </label>
+            <label for="freq" style="display:flex;align-items:center;gap:8px;font-size:15px;color:var(--st-muted)">Frequency <input id="freq" type="range" min="0.3" max="0.8" step="0.05" value="0.5" style="width:130px;accent-color:var(--wml-accent,#A93411)"><span id="freq-v" style="font:500 14px/1 var(--st-mono);color:var(--st-ink);min-width:5.2em">0.50 Hz</span></label>
+            <label for="amp" style="display:flex;align-items:center;gap:8px;font-size:15px;color:var(--st-muted)">Amplitude <input id="amp" type="range" min="0.35" max="1" step="0.05" value="0.8" style="width:120px;accent-color:var(--wml-accent,#A93411)"></label>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 16px">
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-rest" style="width:17px;height:17px;margin:0;accent-color:var(--wml-accent,#A93411)"><span>Rest positions</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-track" style="width:17px;height:17px;margin:0;accent-color:var(--wml-accent,#A93411)"><span>Follow one particle</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-fade" style="width:17px;height:17px;margin:0;accent-color:var(--wml-accent,#A93411)"><span>Fade the others</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-energy" style="width:17px;height:17px;margin:0;accent-color:var(--wml-accent,#A93411)"><span>Show the energy</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-dirs" style="width:17px;height:17px;margin:0;accent-color:var(--wml-accent,#A93411)"><span>Direction arrows</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-cr" style="width:17px;height:17px;margin:0;accent-color:var(--wml-accent,#A93411)"><span>Label C and R</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-graph" style="width:17px;height:17px;margin:0;accent-color:var(--wml-accent,#A93411)"><span>Time graph (f and T)</span></label>
+          </div>
+        </div>
+
+        <div style="display:grid;gap:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <span style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;color:var(--st-caption)">Live readouts</span>
+            <button id="ro-toggle" data-sec="ro" style="display:inline-flex;align-items:center;gap:7px;font:500 14px/1 var(--st-ui);padding:8px 12px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"></button>
+          </div>
+          <div id="ro-body" aria-live="off" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px">
+            <div style="background:var(--st-paper);border:1.5px solid #FFC53D;border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+              <div style="display:flex;align-items:center;gap:7px;font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)"><i style="width:10px;height:10px;background:#FFC53D;border-radius:2px;flex:none"></i>Energy has travelled</div>
+              <div id="r-energy" style="margin-top:6px;font:500 clamp(22px,2vw,28px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">0.0 m</div>
+              <div id="r-energy-s" style="font-size:14px;color:var(--st-muted)">from the source</div>
+            </div>
+            <div style="background:var(--st-paper);border:1.5px solid var(--st-accent);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+              <div style="display:flex;align-items:center;gap:7px;font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)"><i style="width:10px;height:10px;background:var(--st-accent);border-radius:50%;flex:none"></i>Orange particle, distance moved along the wave</div>
+              <div id="r-net" style="margin-top:6px;font:500 clamp(22px,2vw,28px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">0.0 m</div>
+              <div id="r-net-s" style="font-size:14px;color:var(--st-muted)">it never travels with the wave</div>
+            </div>
+            <div style="background:var(--st-paper);border:1.5px solid var(--st-accent);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+              <div style="display:flex;align-items:center;gap:7px;font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)"><i style="width:10px;height:10px;background:var(--st-accent);border-radius:50%;flex:none"></i>Orange particle, full vibrations</div>
+              <div id="r-cyc" style="margin-top:6px;font:500 clamp(22px,2vw,28px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">0</div>
+              <div id="r-cyc-s" style="font-size:14px;color:var(--st-muted)">back at its rest position after each one</div>
+            </div>
+            <div style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+              <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Frequency, f</div>
+              <div id="r-f" style="margin-top:6px;font:500 clamp(22px,2vw,28px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">0.50 Hz</div>
+              <div id="r-f-s" style="font-size:14px;color:var(--st-muted)">waves passing a point each second</div>
+            </div>
+            <div style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+              <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Period, T</div>
+              <div id="r-T" style="margin-top:6px;font:500 clamp(22px,2vw,28px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">2.00 s</div>
+              <div id="r-T-s" style="font-size:14px;color:var(--st-muted)">T = 1 ÷ f</div>
+            </div>
+            <div style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+              <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Wave speed</div>
+              <div id="r-v" style="margin-top:6px;font:500 clamp(22px,2vw,28px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">1.5 m/s</div>
+              <div id="r-v-s" style="font-size:14px;color:var(--st-muted)">v = f × λ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside aria-live="polite" style="flex:1 1 320px;min-width:0;position:sticky;top:16px;background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:22px 22px 20px;display:grid;gap:14px;align-content:start">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <span id="g-count" style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;color:var(--st-caption)">Step 1 of 13</span>
+          <div id="g-dots" style="display:flex;gap:4px;flex-wrap:wrap"></div>
+        </div>
+        <div id="g-part" style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.12em;text-transform:uppercase;color:var(--st-accent-text)">Transverse waves</div>
+        <h2 id="g-title" style="margin:0;font:600 clamp(24px,2.1vw,32px)/1.15 var(--st-display);letter-spacing:-0.025em;text-wrap:balance">Meet the particles</h2>
+        <div id="g-text" style="font-size:clamp(17px,1.35vw,20px);line-height:1.5;color:var(--st-body);display:grid;gap:10px;text-wrap:pretty"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;padding-top:4px">
+          <button id="g-back" style="display:inline-flex;align-items:center;gap:8px;font:600 16px/1 var(--st-ui);padding:13px 16px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"><svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6H2M6.5 1.5 2 6l4.5 4.5"></path></svg>Back</button>
+          <button id="g-next" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;font:600 16px/1 var(--st-ui);padding:14px 18px;border:0;border-radius:var(--st-r-btn);background:var(--st-accent-text);color:var(--st-paper);cursor:pointer" style-hover="background:var(--st-accent-hover)"></button>
+        </div>
+        <div id="g-keys" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14px;color:var(--st-muted)"></div>
+      </aside>
+    </div>
+
+    <section aria-label="Definitions" style="display:grid;gap:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:10px;border-top:1px solid var(--st-rule)">
+        <h2 style="margin:0;font:600 28px/1.1 var(--st-display);letter-spacing:-0.03em">Definitions</h2>
+        <button id="defs-toggle" data-sec="defs" style="display:inline-flex;align-items:center;gap:7px;font:500 14px/1 var(--st-ui);padding:8px 12px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"></button>
+      </div>
+      <div id="defs-body" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">
+        <article style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:20px 22px;display:grid;gap:12px;align-content:start">
+          <h3 style="margin:0;font:600 24px/1.15 var(--st-display);letter-spacing:-0.025em">Transverse wave</h3>
+          <div id="hide-T" style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--st-note-bg);border:1px dashed var(--st-note-border);border-radius:var(--st-r-card);padding:12px 14px;color:var(--st-muted);font-size:16px">Work it out from the simulation first. <button data-reveal="T" style="font:600 14px/1 var(--st-ui);padding:9px 13px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer">Reveal</button></div>
+          <div id="copy-T" hidden style="display:grid;gap:6px"><span style="font:500 11px/1 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;color:var(--st-accent-text)">Copy this down</span><p style="margin:0;color:var(--st-accent-text);font-size:clamp(19px,1.6vw,22px);font-weight:600;line-height:1.35">The oscillations (vibrations) are perpendicular, at 90°, to the direction of energy transfer.</p></div>
+          <ul style="margin:0;padding-left:1.2em;color:var(--st-body)">
+            <li>Examples: ripples on water, all electromagnetic waves (including light), S-waves in an earthquake.</li>
+            <li>Has peaks (crests) and troughs.</li>
+          </ul>
+        </article>
+        <article style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:20px 22px;display:grid;gap:12px;align-content:start">
+          <h3 style="margin:0;font:600 24px/1.15 var(--st-display);letter-spacing:-0.025em">Longitudinal wave</h3>
+          <div id="hide-L" style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--st-note-bg);border:1px dashed var(--st-note-border);border-radius:var(--st-r-card);padding:12px 14px;color:var(--st-muted);font-size:16px">Work it out from the simulation first. <button data-reveal="L" style="font:600 14px/1 var(--st-ui);padding:9px 13px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer">Reveal</button></div>
+          <div id="copy-L" hidden style="display:grid;gap:6px"><span style="font:500 11px/1 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;color:var(--st-accent-text)">Copy this down</span><p style="margin:0;color:var(--st-accent-text);font-size:clamp(19px,1.6vw,22px);font-weight:600;line-height:1.35">The oscillations (vibrations) are parallel to the direction of energy transfer. It has compressions and rarefactions.</p></div>
+          <ul style="margin:0;padding-left:1.2em;color:var(--st-body)">
+            <li>Examples: sound waves in air, P-waves in an earthquake, a slinky pushed and pulled.</li>
+            <li>Compression: particles squashed close together. Rarefaction: particles spread out.</li>
+          </ul>
+        </article>
+        <article style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:20px 22px;display:grid;gap:12px;align-content:start">
+          <h3 style="margin:0;font:600 24px/1.15 var(--st-display);letter-spacing:-0.025em">Frequency and period</h3>
+          <div id="hide-F" style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--st-note-bg);border:1px dashed var(--st-note-border);border-radius:var(--st-r-card);padding:12px 14px;color:var(--st-muted);font-size:16px">Work it out from the time graph first. <button data-reveal="F" style="font:600 14px/1 var(--st-ui);padding:9px 13px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer">Reveal</button></div>
+          <div id="copy-F" hidden style="display:grid;gap:6px"><span style="font:500 11px/1 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;color:var(--st-accent-text)">Copy this down</span><p style="margin:0;color:var(--st-accent-text);font-size:clamp(19px,1.6vw,22px);font-weight:600;line-height:1.35">Frequency (f) is the number of waves passing a point each second, in hertz (Hz). The period (T) is the time for one complete wave to pass, in seconds (s).</p></div>
+          <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 18px;background:var(--st-num-well);border-radius:var(--st-r-card);padding:12px 16px">
+            <span style="font:600 32px/1 var(--st-display);letter-spacing:-0.02em">T = 1 / f</span>
+            <span style="font:500 13px/1.3 var(--st-mono);color:var(--st-caption)">T in s · f in Hz</span>
+          </div>
+          <ul style="margin:0;padding-left:1.2em;color:var(--st-body)">
+            <li>Higher frequency: more waves each second, so each one takes less time.</li>
+            <li>Example: f = 4 Hz, so T = 1 ÷ 4 = 0.25 s.</li>
+          </ul>
+        </article>
+        <article style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:20px 22px;display:grid;gap:12px;align-content:start">
+          <h3 style="margin:0;font:600 24px/1.15 var(--st-display);letter-spacing:-0.025em">In both waves</h3>
+          <div style="display:grid;gap:6px"><span style="font:500 11px/1 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;color:var(--st-accent-text)">Copy this down</span><p style="margin:0;color:var(--st-accent-text);font-size:clamp(19px,1.6vw,22px);font-weight:600;line-height:1.35">A wave transfers energy from one place to another. The particles of the material are NOT transferred. They only vibrate about a fixed rest position.</p></div>
+          <p style="margin:0;font-size:15px;color:var(--st-muted)">Evidence: a duck on a pond bobs up and down as ripples pass, but stays where it is. When a speaker plays, the air in front of it is not blown across the room.</p>
+        </article>
+      </div>
+    </section>
+
+    <section aria-label="Check your understanding" style="display:grid;gap:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:10px;border-top:1px solid var(--st-rule)">
+        <h2 style="margin:0;font:600 28px/1.1 var(--st-display);letter-spacing:-0.03em">Check your understanding</h2>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span id="score" style="font:500 15px/1 var(--st-mono);letter-spacing:0.04em;color:var(--st-ink)">Score: 0 / 9</span>
+          <button id="quiz-toggle" data-sec="quiz" style="display:inline-flex;align-items:center;gap:7px;font:500 14px/1 var(--st-ui);padding:8px 12px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"></button>
+        </div>
+      </div>
+      <div id="quiz-body" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px"></div>
+    </section>
+
+    <footer style="color:var(--st-muted);font-size:14px;max-width:90ch">Each dot is a particle of the material. Distances are shown in metres on a 10 m strip. Times are in simulation seconds. The wave speed is set by the material, so changing the frequency changes the wavelength.</footer>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showDefinitions&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections on load&quot;},&quot;showQuiz&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections on load&quot;},&quot;showReadouts&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections on load&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() { this._lab = startLab(this.props); }
+  componentDidUpdate(prev) {
+    if (!this._lab) return;
+    for (const [p, sec] of [["showDefinitions", "defs"], ["showQuiz", "quiz"], ["showReadouts", "ro"]])
+      if (prev[p] !== this.props[p] && this.props[p] !== undefined) this._lab.setSection(sec, !!this.props[p]);
+  }
+  componentWillUnmount() { this._lab && this._lab.stop(); }
+  renderVals() { return {}; }
+}
+
+const I = {
+  play: '<svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9.5-5.5z" fill="currentColor"/></svg>',
+  pause: '<svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><rect x="2.5" y="1.5" width="3.4" height="11" rx="1" fill="currentColor"/><rect x="8.1" y="1.5" width="3.4" height="11" rx="1" fill="currentColor"/></svg>',
+  right: '<svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-1px"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg>',
+  left: '<svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-1px"><path d="M14.5 6H2M6.5 1.5 2 6l4.5 4.5"/></svg>',
+  ud: '<svg width="12" height="16" viewBox="0 0 12 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px"><path d="M6 1.5v13M1.5 5.5 6 1.5l4.5 4M1.5 10.5 6 14.5l4.5-4"/></svg>',
+  lr: '<svg width="18" height="12" viewBox="0 0 18 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-1px"><path d="M1.5 6h15M5.5 1.5 1.5 6l4 4.5M12.5 1.5l4 4.5-4 4.5"/></svg>',
+  tick: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none"><path d="M3 8.5 6.5 12 13 4.5"/></svg>',
+  cross: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex:none"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+  eye: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></svg>',
+  eyeOff: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/><path d="M2.5 2.5l11 11"/></svg>',
+};
+const KBD = (t) => `<span style="font:500 11px/1 var(--st-mono);letter-spacing:0.04em;color:var(--st-caption);border:1px solid var(--st-rule-strong);border-radius:4px;padding:4px 6px;display:inline-flex;align-items:center">${t}</span>`;
+
+function startLab(props) {
+  // ---------- state ----------
+  const S = {
+    mode: "T", playing: false, t: 0, speed: 0.5,
+    f: 0.5, amp: 0.8, v: 1.5, L: 10,
+    rest: true, track: true, fade: false, energy: true, dirs: true, cr: true, graph: false,
+    focusSource: false,
+  };
+  const $ = (id) => document.getElementById(id);
+  const cv = $("stage"), cx = cv.getContext("2d");
+  const gcv = $("graph"), gx = gcv.getContext("2d");
+  let C = {};
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement);
+    const v = (n, d) => cs.getPropertyValue(n).trim() || d;
+    C = {
+      stage: v("--st-paper", "#FFFDF8"), ink: v("--st-ink", "#1A1714"), muted: v("--st-muted", "#6E655D"),
+      caption: v("--st-caption", "#7A6E5F"), line: v("--st-rule-strong", "#D6C6A8"), grid: v("--st-paper-grid", "#F2E8D6"),
+      particle: v("--physics", "#1D6FB8"), track: v("--st-accent", "#E4572E"), trackText: v("--st-accent-text", "#A93411"),
+      energy: "#FFC53D", "energy-soft": "rgba(255,197,61,.42)", rule: v("--st-rule", "#E0D2B9"),
+    };
+  }
+  readColors();
+  setTimeout(readColors, 400);
+  new MutationObserver(readColors).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+  // ---------- physics ----------
+  // Source at x = 0 vibrates as A sin(wt). Particle at x copies it after the wave arrives:
+  // u(x,t) = A sin(w t - k x) for x <= v t, otherwise 0 (still at rest).
+  const lam = () => S.v / S.f, k = () => 2 * Math.PI / lam(), w = () => 2 * Math.PI * S.f;
+  const AT = () => 0.95 * S.amp;
+  const AL = () => S.amp * 0.72 / k();
+  function u(x, A) { return x > S.v * S.t ? 0 : A * Math.sin(w() * S.t - k() * x); }
+  function uAt(x, A, tau) { return x > S.v * tau ? 0 : A * Math.sin(w() * tau - k() * x); }
+
+  const NT = 31, NL = 45, ROWS = 7;
+  const xsT = Array.from({ length: NT }, (_, i) => (i + 0.5) * S.L / NT);
+  const xsL = Array.from({ length: NL }, (_, i) => (i + 0.5) * S.L / NL);
+  const iT = 11, iL = 16;
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const jit = Array.from({ length: NL * ROWS }, () => ({ x: (rnd() - 0.5) * 0.06, y: (rnd() - 0.5) * 0.55 }));
+
+  // ---------- drawing helpers ----------
+  let W = 0, H = 0, dpr = 1, GW = 0, GH = 0;
+  function resize() {
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    const r = cv.getBoundingClientRect();
+    W = r.width; H = r.height;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const g = gcv.getBoundingClientRect();
+    GW = g.width; GH = g.height;
+    gcv.width = Math.round(GW * dpr); gcv.height = Math.round(GH * dpr);
+    gx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  const ro = new ResizeObserver(resize); ro.observe(cv); ro.observe(gcv); resize();
+
+  const UI = '"Instrument Sans", system-ui, sans-serif', MONO = '"DM Mono", ui-monospace, monospace';
+  function arrow(x1, y1, x2, y2, col, lw, head = 12, both = false, c = cx) {
+    c.strokeStyle = col; c.fillStyle = col; c.lineWidth = lw; c.lineCap = "round";
+    c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
+    const tip = (ax, ay, bx, by) => {
+      const a = Math.atan2(by - ay, bx - ax);
+      c.beginPath(); c.moveTo(bx, by);
+      c.lineTo(bx - head * Math.cos(a - 0.45), by - head * Math.sin(a - 0.45));
+      c.lineTo(bx - head * Math.cos(a + 0.45), by - head * Math.sin(a + 0.45));
+      c.closePath(); c.fill();
+    };
+    tip(x1, y1, x2, y2); if (both) tip(x2, y2, x1, y1);
+  }
+  function label(t, x, y, col, size = 15, align = "left", weight = 600, bg = null, fam = UI, c = cx) {
+    c.font = `${weight} ${size}px ${fam}`;
+    if ("letterSpacing" in c) c.letterSpacing = fam === MONO ? "1.5px" : "0px";
+    c.textAlign = align; c.textBaseline = "middle";
+    if (bg) {
+      const m = c.measureText(t).width, pad = 6;
+      const bx = align === "center" ? x - m / 2 : align === "right" ? x - m : x;
+      c.fillStyle = bg; rr(c, bx - pad, y - size * 0.75, m + pad * 2, size * 1.5, 6); c.fill();
+    }
+    c.fillStyle = col; c.fillText(t, x, y);
+    return c.measureText(t).width;
+  }
+  function rr(c, x, y, w_, h, r) { c.beginPath(); c.roundRect ? c.roundRect(x, y, w_, h, r) : c.rect(x, y, w_, h); }
+  function roundRect(x, y, w_, h, r) { rr(cx, x, y, w_, h, r); }
+
+  // ---------- one band (transverse or longitudinal) ----------
+  function drawBand(type, top, h) {
+    const small = W < 600;
+    const keyCol = S.dirs && S.mode === "B" && !small ? 250 : 0;
+    const left = Math.max(70, W * 0.085), right = W - Math.max(18, W * 0.02) - keyCol;
+    const s = (right - left) / S.L;
+    const sv = Math.min(Math.max(s, h * 0.18), h * 0.3 / 0.95);
+    const X = (m) => left + m * s;
+    const mid = top + h * 0.56;
+    const pr = small ? 5 : (type === "T" ? 9 : 5.2);
+
+    label(type === "T" ? "TRANSVERSE" : "LONGITUDINAL", 16, top + 20, C.caption, small ? 11 : 12.5, "left", 500, null, MONO);
+
+    const front = S.v * S.t;
+    if (S.energy && S.t > 0) {
+      const phase0 = type === "T" ? Math.PI / 2 : 0;
+      let n = Math.floor((w() * S.t - phase0) / (2 * Math.PI));
+      let xc = (w() * S.t - phase0 - 2 * Math.PI * n) / k();
+      while (xc + lam() <= Math.min(front, S.L)) xc += lam();
+      if (xc >= 0 && xc <= Math.min(front, S.L)) {
+        const gxp = X(xc), gw = Math.max(26, 0.32 * lam() * s);
+        const g = cx.createLinearGradient(gxp - gw, 0, gxp + gw, 0);
+        g.addColorStop(0, "rgba(255,197,61,0)"); g.addColorStop(0.5, C["energy-soft"]); g.addColorStop(1, "rgba(255,197,61,0)");
+        cx.fillStyle = g; cx.fillRect(gxp - gw, top + 30, gw * 2, h - 44);
+        const fs = small ? 12 : 14, txt = (type === "T" ? "energy (crest)" : "energy (compression)") + "      ";
+        const m = label(txt, gxp, top + 42, "#1A1714", fs, "center", 700, C.energy);
+        arrow(gxp + m / 2 - 22, top + 42, gxp + m / 2 - 2, top + 42, "#1A1714", 2, 6);
+      }
+    }
+
+    if (front < S.L && S.t > 0) {
+      cx.setLineDash([4, 6]); cx.strokeStyle = C.line; cx.lineWidth = 2;
+      cx.beginPath(); cx.moveTo(X(front), top + 56); cx.lineTo(X(front), top + h - 10); cx.stroke(); cx.setLineDash([]);
+      if (!small) label("wave has not reached here yet", X(front) + 8, top + h - 18, C.muted, 13, "left", 500);
+    }
+
+    const A = type === "T" ? AT() : AL();
+    const us = S.t > 0 ? A * Math.sin(w() * S.t) : 0;
+    const srcCol = S.focusSource ? C.track : C.muted, srcTxt = S.focusSource ? C.trackText : C.muted;
+    cx.globalAlpha = 1;
+    if (type === "T") {
+      const sy = mid - us * sv, bw = 18, bh = 46;
+      cx.fillStyle = C.ink; roundRect(X(0) - bw - 14, sy - bh / 2, bw, bh, 6); cx.fill();
+      cx.strokeStyle = C.ink; cx.lineWidth = 3; cx.beginPath(); cx.moveTo(X(0) - 14, sy); cx.lineTo(X(xsT[0]), mid - u(xsT[0], A) * sv); cx.stroke();
+      if (!small) arrow(X(0) - 23, mid - 0.95 * sv - 10, X(0) - 23, mid + 0.95 * sv + 10, srcCol, 2, 9, true);
+      label("source", X(0) - 23, top + h - 16, srcTxt, 13, "center", 700);
+    } else {
+      const px = X(0) - 16 + us * s, ph = (ROWS) * (h * 0.07) + 18;
+      cx.fillStyle = C.ink; roundRect(px - 12, mid - ph / 2, 12, ph, 4); cx.fill();
+      cx.fillRect(px - 44, mid - 4, 34, 8);
+      if (!small) arrow(px - 40, mid - ph / 2 - 12, px + 4, mid - ph / 2 - 12, srcCol, 2, 8, true);
+      label("source", X(0) - 30, top + h - 16, srcTxt, 13, "center", 700);
+    }
+
+    if (type === "T") {
+      cx.strokeStyle = C.line; cx.lineWidth = 3; cx.beginPath();
+      xsT.forEach((x, i) => { const y = mid - u(x, A) * sv; i ? cx.lineTo(X(x), y) : cx.moveTo(X(x), y); });
+      cx.stroke();
+      if (S.rest) {
+        cx.setLineDash([3, 6]); cx.strokeStyle = C.muted; cx.lineWidth = 1;
+        cx.beginPath(); cx.moveTo(X(0), mid); cx.lineTo(X(S.L), mid); cx.stroke(); cx.setLineDash([]);
+        xsT.forEach((x, i) => {
+          if (S.fade && S.track && i !== iT) return;
+          cx.strokeStyle = C.muted; cx.lineWidth = 1.5; cx.setLineDash([2, 3]);
+          cx.beginPath(); cx.arc(X(x), mid, pr + 4, 0, Math.PI * 2); cx.stroke(); cx.setLineDash([]);
+        });
+      }
+      xsT.forEach((x, i) => {
+        const isT = S.track && i === iT;
+        cx.globalAlpha = S.fade && S.track && !isT ? 0.18 : 1;
+        cx.fillStyle = isT ? C.track : C.particle;
+        cx.beginPath(); cx.arc(X(x), mid - u(x, A) * sv, isT ? pr + 3 : pr, 0, Math.PI * 2); cx.fill();
+      });
+      cx.globalAlpha = 1;
+      if (S.track) {
+        const x = X(xsT[iT]), y = mid - u(xsT[iT], A) * sv;
+        cx.strokeStyle = C.track; cx.lineWidth = 3; cx.beginPath(); cx.arc(x, y, pr + 8, 0, Math.PI * 2); cx.stroke();
+        arrow(x + pr + 22, mid - A * sv, x + pr + 22, mid + A * sv, C.track, 3, 11, true);
+        label("moves up and down only", x + pr + 34, mid - A * sv + 6, C.trackText, small ? 12 : 15, "left", 700, C.stage);
+      }
+    } else {
+      const rowGap = h * 0.07;
+      for (let r = 0; r < ROWS; r++) {
+        const yRow = mid + (r - (ROWS - 1) / 2) * rowGap;
+        xsL.forEach((x, i) => {
+          const j = jit[r * NL + i];
+          const isT = S.track && i === iL && r === (ROWS - 1) / 2;
+          if (S.rest && isT) {
+            cx.strokeStyle = C.muted; cx.lineWidth = 1.5; cx.setLineDash([2, 3]);
+            cx.beginPath(); cx.arc(X(x + j.x), yRow + j.y * rowGap, pr + 3, 0, Math.PI * 2); cx.stroke(); cx.setLineDash([]);
+          }
+          cx.globalAlpha = S.fade && S.track && !isT ? 0.16 : 1;
+          cx.fillStyle = isT ? C.track : C.particle;
+          cx.beginPath(); cx.arc(X(x + j.x + u(x, A)), yRow + j.y * rowGap, isT ? pr + 3 : pr, 0, Math.PI * 2); cx.fill();
+        });
+      }
+      cx.globalAlpha = 1;
+      if (S.rest) {
+        const yTop = mid - (ROWS / 2 + 0.3) * rowGap;
+        cx.strokeStyle = C.muted; cx.lineWidth = 1;
+        xsL.forEach((x) => { cx.beginPath(); cx.moveTo(X(x), yTop - 4); cx.lineTo(X(x), yTop + 4); cx.stroke(); });
+      }
+      if (S.track) {
+        const r = (ROWS - 1) / 2, j = jit[r * NL + iL];
+        const yRow = mid + j.y * rowGap, xr = xsL[iL] + j.x;
+        const x = X(xr + u(xsL[iL], A));
+        cx.strokeStyle = C.track; cx.lineWidth = 3; cx.beginPath(); cx.arc(x, yRow, pr + 8, 0, Math.PI * 2); cx.stroke();
+        const yb = mid + (ROWS / 2 + 0.2) * rowGap + 12;
+        arrow(X(xr - A), yb, X(xr + A), yb, C.track, 3, 10, true);
+        label("moves back and forth only", X(xr + A) + 10, yb, C.trackText, small ? 12 : 15, "left", 700, C.stage);
+      }
+      if (S.cr && S.t > 0) {
+        const yb = mid - (ROWS / 2 + 0.2) * rowGap - 18;
+        for (let n = -3; n < 12; n++) {
+          for (const [ph, txt] of [[0, "C"], [Math.PI, "R"]]) {
+            const xc = (w() * S.t - ph - 2 * Math.PI * n) / k();
+            if (xc > 0.15 && xc < Math.min(front, S.L) - 0.1) label(txt, X(xc), yb, txt === "C" ? C.ink : C.muted, small ? 13 : 16, "center", 700);
+          }
+        }
+        if (!small) label("C = compression   R = rarefaction", right, top + 20, C.muted, 13, "right", 500);
+      }
+    }
+
+    if (S.dirs) {
+      const bw = small ? 190 : 236, bh = small ? 104 : 116, len = small ? 60 : 84;
+      const bx = keyCol ? W - bw - 12 : W - bw - 14;
+      const by = keyCol ? top + h / 2 - bh / 2 : top + (small ? 40 : 48);
+      cx.fillStyle = C.stage; cx.globalAlpha = 0.95; roundRect(bx, by, bw, bh, 11); cx.fill(); cx.globalAlpha = 1;
+      cx.strokeStyle = C.rule; cx.lineWidth = 1.5; roundRect(bx, by, bw, bh, 11); cx.stroke();
+      const ax = bx + 18, fs = small ? 12 : 15, oy = by + (small ? 62 : 70);
+      if (type === "T") {
+        arrow(ax, oy, ax + len, oy, C.ink, 4, 12);
+        arrow(ax, oy - (small ? 44 : 52), ax, oy, C.track, 4, 11, true);
+        cx.strokeStyle = C.ink; cx.lineWidth = 2; cx.strokeRect(ax, oy - 13, 13, 13);
+        label("vibration", ax + 14, oy - (small ? 34 : 40), C.trackText, fs, "left", 700);
+        label("energy", ax + len + 8, oy, C.ink, fs, "left", 700);
+        label("at 90° = perpendicular", bx + 14, by + bh - 16, C.ink, fs, "left", 700);
+      } else {
+        const vy = by + 24;
+        arrow(ax, vy, ax + len * 0.75, vy, C.track, 4, 11, true);
+        label("vibration", ax + len * 0.75 + 8, vy, C.trackText, fs, "left", 700);
+        arrow(ax, oy - 18, ax + len, oy - 18, C.ink, 4, 12);
+        label("energy", ax + len + 8, oy - 18, C.ink, fs, "left", 700);
+        label("same line = parallel", bx + 14, by + bh - 16, C.ink, fs, "left", 700);
+      }
+    }
+  }
+
+  function draw() {
+    cx.clearRect(0, 0, W, H);
+    cx.fillStyle = C.stage; cx.fillRect(0, 0, W, H);
+    cx.strokeStyle = C.grid; cx.lineWidth = 1; cx.beginPath();
+    for (let x = 36; x < W; x += 36) { cx.moveTo(x + 0.5, 0); cx.lineTo(x + 0.5, H); }
+    for (let y = 36; y < H; y += 36) { cx.moveTo(0, y + 0.5); cx.lineTo(W, y + 0.5); }
+    cx.stroke();
+    if (S.mode === "B") {
+      drawBand("T", 0, H / 2);
+      cx.strokeStyle = C.rule; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(0, H / 2); cx.lineTo(W, H / 2); cx.stroke();
+      drawBand("L", H / 2, H / 2);
+    } else drawBand(S.mode, 0, H);
+  }
+
+  // ---------- displacement–time graph of the orange particle (frequency and period) ----------
+  function drawGraph() {
+    if (!S.graph || !GW) return;
+    const c = gx, small = GW < 600;
+    c.clearRect(0, 0, GW, GH); c.fillStyle = C.stage; c.fillRect(0, 0, GW, GH);
+    const type = S.mode === "L" ? "L" : "T";
+    const x = type === "T" ? xsT[iT] : xsL[iL];
+    const A = type === "T" ? AT() : AL();
+    const Amax = type === "T" ? 0.95 : 0.72 / k();
+    const L0 = small ? 44 : 64, R0 = 20, top = 58, bot = GH - 46;
+    const pw = GW - L0 - R0, ph = bot - top, mid = (top + bot) / 2, ys = (ph / 2 - 4) / Amax;
+    const span = small ? 6 : 10, t1 = Math.max(span, S.t), t0 = t1 - span;
+    const TX = (tau) => L0 + (tau - t0) / span * pw;
+    const T = 1 / S.f, ta = x / S.v;
+
+    label("ORANGE PARTICLE · DISPLACEMENT AGAINST TIME", 16, 18, C.caption, small ? 10 : 11.5, "left", 500, null, MONO, c);
+    if (!small) label(`f = ${S.f.toFixed(2)} Hz   ·   T = 1 ÷ f = ${T.toFixed(2)} s`, GW - R0, 18, C.ink, 13, "right", 500, null, MONO, c);
+
+    // seconds grid
+    c.lineWidth = 1;
+    for (let sec = Math.ceil(t0); sec <= t1 + 1e-6; sec++) {
+      const px = TX(sec);
+      c.strokeStyle = C.grid; c.beginPath(); c.moveTo(px + 0.5, top - 6); c.lineTo(px + 0.5, bot + 4); c.stroke();
+      label(sec + " s", px, GH - 12, C.muted, 12, "center", 500, null, MONO, c);
+    }
+    // rest line
+    c.setLineDash([3, 5]); c.strokeStyle = C.muted; c.beginPath(); c.moveTo(L0, mid); c.lineTo(L0 + pw, mid); c.stroke(); c.setLineDash([]);
+    label("rest", L0 - 8, mid, C.muted, 12, "right", 500, null, UI, c);
+    label(type === "T" ? "up" : "right", L0 - 8, top + 4, C.muted, 12, "right", 500, null, UI, c);
+    label(type === "T" ? "down" : "left", L0 - 8, bot - 4, C.muted, 12, "right", 500, null, UI, c);
+
+    // completed vibrations: dashed markers, numbered, and the latest period bracketed
+    const done = S.t > ta ? Math.floor((S.t - ta) * S.f + 1e-9) : 0;
+    for (let n = 0; n <= done; n++) {
+      const tn = ta + n * T; if (tn < t0 - 1e-6 || tn > t1) continue;
+      const px = TX(tn);
+      c.setLineDash([2, 4]); c.strokeStyle = C.line; c.lineWidth = 1.5;
+      c.beginPath(); c.moveTo(px, 34); c.lineTo(px, bot); c.stroke(); c.setLineDash([]);
+      if (n > 0) label(String(n), px, bot + 14, C.trackText, 12, "center", 500, C.stage, MONO, c);
+    }
+    if (done >= 1) {
+      const a = TX(ta + (done - 1) * T), b = TX(ta + done * T), yb = 40;
+      if (a >= L0 - 1) {
+        c.strokeStyle = C.ink; c.lineWidth = 2;
+        c.beginPath(); c.moveTo(a, yb - 6); c.lineTo(a, yb + 6); c.moveTo(b, yb - 6); c.lineTo(b, yb + 6); c.stroke();
+        arrow(a + 2, yb, b - 2, yb, C.ink, 2, 7, true, c);
+        label(`T = ${T.toFixed(2)} s`, (a + b) / 2, yb, C.ink, 13, "center", 700, C.stage, UI, c);
+      }
+    }
+
+    // trace
+    if (S.t > 0) {
+      c.strokeStyle = C.track; c.lineWidth = 3; c.lineJoin = "round"; c.beginPath();
+      const end = Math.min(S.t, t1); let first = true;
+      for (let px = TX(Math.max(0, t0)); px <= TX(end) + 0.5; px += 1.5) {
+        const tau = Math.min(end, t0 + (px - L0) / pw * span);
+        const y = mid - uAt(x, A, tau) * ys;
+        first ? c.moveTo(px, y) : c.lineTo(px, y); first = false;
+      }
+      c.stroke();
+      const py = mid - uAt(x, A, S.t) * ys;
+      c.fillStyle = C.track; c.beginPath(); c.arc(TX(S.t), py, 6, 0, Math.PI * 2); c.fill();
+    }
+    if (S.t < ta) label("the wave has not reached the orange particle yet", L0 + pw / 2, mid - 16, C.muted, 13, "center", 500, C.stage, UI, c);
+  }
+
+  // ---------- readouts ----------
+  let lastRO = 0;
+  function readouts() {
+    const front = S.v * S.t;
+    $("r-energy").textContent = front.toFixed(1) + " m";
+    $("r-energy-s").textContent = front > S.L ? "past the end of the strip, and still going" : "from the source";
+    const type = S.mode === "L" ? "L" : "T";
+    const x = type === "T" ? xsT[iT] : xsL[iL];
+    const A = type === "T" ? AT() : AL();
+    const disp = u(x, A);
+    const arrived = front >= x;
+    const cycles = arrived ? Math.floor(S.f * (S.t - x / S.v)) : 0;
+    if (type === "T") {
+      $("r-net").textContent = "0.0 m";
+      $("r-net-s").textContent = !arrived ? "still at rest. The wave has not reached it" : `right now it is ${Math.abs(disp).toFixed(2)} m ${disp >= 0 ? "above" : "below"} its rest position`;
+    } else {
+      $("r-net").textContent = (disp >= 0 ? "+" : "−") + Math.abs(disp).toFixed(2) + " m";
+      $("r-net-s").textContent = !arrived ? "still at rest. The wave has not reached it" : "back and forth about its rest position, never more than " + A.toFixed(2) + " m";
+    }
+    $("r-cyc").textContent = cycles;
+    $("r-cyc-s").textContent = arrived ? `in ${(S.t - x / S.v).toFixed(1)} s since the wave reached it. Back at rest after each one` : "back at its rest position after each one";
+    $("r-f").textContent = S.f.toFixed(2) + " Hz";
+    $("r-f-s").textContent = `${S.f.toFixed(2)} waves pass a point each second`;
+    $("r-T").textContent = (1 / S.f).toFixed(2) + " s";
+    $("r-T-s").textContent = `T = 1 ÷ f = 1 ÷ ${S.f.toFixed(2)} Hz`;
+    $("r-v").textContent = S.v.toFixed(1) + " m/s";
+    $("r-v-s").textContent = `v = f × λ = ${S.f.toFixed(2)} Hz × ${lam().toFixed(1)} m`;
+  }
+
+  // ---------- loop ----------
+  let prev = performance.now(), raf = 0, alive = true;
+  function frame(now) {
+    if (!alive) return;
+    const dt = Math.min(0.05, (now - prev) / 1000); prev = now;
+    if (S.playing) S.t += dt * S.speed;
+    draw(); drawGraph();
+    if (now - lastRO > 120) { readouts(); lastRO = now; }
+    raf = requestAnimationFrame(frame);
+  }
+  raf = requestAnimationFrame(frame);
+
+  // ---------- controls ----------
+  function setPlaying(p) { S.playing = p; $("play").innerHTML = p ? I.pause + "Pause" : I.play + "Play"; }
+  function setFreq(f) { S.f = f; $("freq").value = f; $("freq-v").textContent = f.toFixed(2) + " Hz"; }
+  $("play").onclick = () => setPlaying(!S.playing);
+  $("reset").onclick = () => { S.t = 0; setPlaying(true); };
+  $("speed").onchange = (e) => S.speed = +e.target.value;
+  $("freq").oninput = (e) => { setFreq(+e.target.value); S.t = 0; };
+  $("amp").oninput = (e) => S.amp = +e.target.value;
+  const toggles = { rest: "o-rest", track: "o-track", fade: "o-fade", energy: "o-energy", dirs: "o-dirs", cr: "o-cr", graph: "o-graph" };
+  function applyGraph() { gcv.hidden = !S.graph; if (S.graph) resize(); }
+  for (const [key, id] of Object.entries(toggles)) $(id).onchange = (e) => { S[key] = e.target.checked; if (key === "graph") applyGraph(); };
+  function syncToggles() { for (const [key, id] of Object.entries(toggles)) $(id).checked = S[key]; applyGraph(); }
+  const tabs = [...document.querySelectorAll("#tabs button")];
+  function setMode(m) {
+    S.mode = m;
+    tabs.forEach(b => {
+      const on = b.dataset.mode === m;
+      b.setAttribute("aria-selected", on);
+      Object.assign(b.style, on
+        ? { background: "var(--st-paper)", color: "var(--st-ink)", fontWeight: "600", boxShadow: "0 1px 2px rgba(60,40,10,0.16)" }
+        : { background: "transparent", color: "var(--st-caption)", fontWeight: "500", boxShadow: "none" });
+    });
+    $("o-cr").parentElement.hidden = m === "T";
+  }
+  tabs.forEach(b => b.onclick = () => setMode(b.dataset.mode));
+  function reveal(which, on = true) { $("hide-" + which).hidden = on; $("copy-" + which).hidden = !on; }
+  document.querySelectorAll("[data-reveal]").forEach(b => b.onclick = () => reveal(b.dataset.reveal));
+
+  // ---------- show / hide sections ----------
+  const secProp = { defs: "showDefinitions", quiz: "showQuiz", ro: "showReadouts" };
+  function setSection(sec, show, save = true) {
+    $(sec + "-body").hidden = !show;
+    const b = $(sec + "-toggle");
+    b.innerHTML = (show ? I.eyeOff + "Hide" : I.eye + "Show");
+    b.setAttribute("aria-expanded", show);
+    if (save) try { localStorage.setItem("wml-sec-" + sec, show ? "1" : "0"); } catch (e) {}
+  }
+  for (const sec of Object.keys(secProp)) {
+    let saved = null; try { saved = localStorage.getItem("wml-sec-" + sec); } catch (e) {}
+    setSection(sec, saved !== null ? saved === "1" : props[secProp[sec]] !== false, false);
+    $(sec + "-toggle").onclick = () => setSection(sec, $(sec + "-body").hidden);
+  }
+
+  // ---------- guided lesson ----------
+  const steps = [
+    { part: "Transverse waves", mode: "T", play: false, t: 0, o: { rest: true, track: false, fade: false, energy: false, dirs: false, graph: false },
+      title: "Meet the particles",
+      text: `<p>Each blue dot is a particle in a rope.</p><p>The dashed circles show each particle's <b>rest position</b>: where it sits when there is no wave.</p><p class="look">Prediction: when a wave goes along the rope, will the particles travel along with it?</p>` },
+    { part: "Transverse waves", mode: "T", play: true, t: 0, src: true, o: { rest: true, track: false, fade: false, energy: false, dirs: false, graph: false },
+      title: "Switch on the source",
+      text: `<p>The <b>source</b> on the left vibrates up and down.</p><p>It pulls the first particle, which pulls the next, and so on. The wave spreads along the rope.</p><p class="look">Notice the dashed line: particles to the right of it have not been reached yet.</p>` },
+    { part: "Transverse waves", mode: "T", play: true, o: { rest: true, track: true, fade: true, energy: false, dirs: false, graph: false },
+      title: "Follow ONE particle",
+      text: `<p>Watch only the <span class="key t">orange particle</span>.</p><p>It moves <b>up and down</b> and comes back to its rest position every time. It never moves along the rope.</p><p class="look">Check the readout: distance moved along the wave stays at 0.0 m.</p>` },
+    { part: "Transverse waves", mode: "T", play: true, o: { rest: true, track: true, fade: false, energy: true, dirs: false, graph: false },
+      title: "Now follow the energy",
+      text: `<p>Watch the <span class="key e">yellow highlight</span>. It rides on one crest and moves to the right.</p><p>So something <b>does</b> travel along the rope. It is the <b>energy</b>, not the particles.</p><p class="look">The energy keeps going. The orange particle stays put.</p>` },
+    { part: "Transverse waves", mode: "T", play: true, o: { rest: true, track: true, fade: false, energy: true, dirs: true, graph: false }, reveal: "T",
+      title: "Compare the two directions",
+      text: `<p>Particles vibrate <b>up and down ${I.ud}</b>.</p><p>Energy travels <b>left to right ${I.right}</b>.</p><p>These two directions are at <b>90°</b>. We say they are <b>perpendicular</b>.</p><p class="look">This is a <b>transverse</b> wave. Copy the orange definition below.</p>` },
+    { part: "Frequency and period", mode: "T", play: true, t: 0, f: 0.5, o: { rest: true, track: true, fade: true, energy: false, dirs: false, graph: true },
+      title: "How often? Frequency",
+      text: `<p>Count the <span class="key t">orange particle</span>'s complete vibrations: up, down, and back to rest is <b>one</b>.</p><p>Each vibration is one wave passing the particle. The <b>frequency, f</b>, is the number of waves passing a point <b>each second</b>.</p><p>It is measured in <b>hertz (Hz)</b>. 1 Hz = one wave per second.</p><p class="look">On the time graph, each numbered mark is one complete wave. Compare the marks with the seconds.</p>` },
+    { part: "Frequency and period", mode: "T", play: true, f: 0.5, o: { rest: true, track: true, fade: true, energy: false, dirs: false, graph: true },
+      title: "How long? Period",
+      text: `<p>The <b>period, T</b>, is the time for <b>one complete wave</b> to pass a point.</p><p>It is measured in <b>seconds (s)</b>.</p><p>On the time graph, the period is the gap between two numbered marks.</p><p class="look">At 0.5 Hz, half a wave passes each second. So one whole wave takes 2 seconds: T = 2 s.</p>` },
+    { part: "Frequency and period", mode: "T", play: true, o: { rest: true, track: true, fade: false, energy: false, dirs: false, graph: true }, reveal: "F",
+      title: "Change the frequency",
+      text: `<p>Drag the <b>Frequency</b> slider. Watch the period readout and the time graph.</p><p>Higher frequency: more waves each second, so each wave takes <b>less time</b>. Lower frequency: each wave takes <b>longer</b>.</p><p class="eq">T = 1 / f</p><p class="look">Try 0.8 Hz: T = 1 ÷ 0.8 = 1.25 s. Copy the definition below.</p>` },
+    { part: "Longitudinal waves", mode: "L", play: true, t: 0, src: true, o: { rest: true, track: false, fade: false, energy: false, dirs: false, cr: false, graph: false },
+      title: "A different kind of wave",
+      text: `<p>Now the source pushes and pulls <b>back and forth</b>, like a speaker cone or a slinky.</p><p>Each dot is a particle, for example a particle of air.</p><p class="look">Watch the bunches of particles move to the right.</p>` },
+    { part: "Longitudinal waves", mode: "L", play: true, o: { rest: true, track: true, fade: true, energy: false, dirs: false, cr: false, graph: false },
+      title: "Follow ONE particle again",
+      text: `<p>Watch only the <span class="key t">orange particle</span>.</p><p>It moves <b>back and forth</b>, left and right, about its rest position (the dashed circle).</p><p class="look">It never escapes. It is never more than a short distance from its rest position.</p>` },
+    { part: "Longitudinal waves", mode: "L", play: true, o: { rest: false, track: true, fade: false, energy: true, dirs: false, cr: true, graph: false },
+      title: "Compressions and rarefactions",
+      text: `<p><b>C = compression</b>: particles squashed close together.</p><p><b>R = rarefaction</b>: particles spread out.</p><p>The <span class="key e">yellow highlight</span> rides on a compression. It carries the energy to the right.</p><p class="look">The compressions move along. The particles do not.</p>` },
+    { part: "Longitudinal waves", mode: "L", play: true, o: { rest: true, track: true, fade: false, energy: true, dirs: true, cr: true, graph: false }, reveal: "L",
+      title: "Compare the two directions",
+      text: `<p>Particles vibrate <b>back and forth ${I.lr}</b>.</p><p>Energy travels <b>left to right ${I.right}</b>.</p><p>Both are along the same line. We say they are <b>parallel</b>.</p><p class="look">This is a <b>longitudinal</b> wave. Frequency and period work the same way here: switch on the time graph to see.</p>` },
+    { part: "Summary", mode: "B", play: true, o: { rest: true, track: true, fade: false, energy: true, dirs: true, cr: true, graph: false }, reveal: "all",
+      title: "Side by side",
+      text: `<p><b>Same:</b> both transfer energy. In both, the particles only vibrate about a rest position. Both have a frequency and a period, with T = 1 / f.</p><p><b>Different:</b> the direction of vibration.</p><p>Transverse: vibration <b>perpendicular</b> to energy transfer.<br>Longitudinal: vibration <b>parallel</b> to energy transfer.</p><p class="look">Now try the questions at the bottom.</p>` },
+  ];
+  const ST = {
+    look: "margin:0;background:var(--st-note-bg);border:1px dashed var(--st-note-border);border-radius:var(--st-r-card);padding:12px 14px;font-weight:600;color:var(--st-ink)",
+    t: "background:var(--st-accent-text);color:var(--st-paper);padding:1px 7px;border-radius:5px;font-weight:600;white-space:nowrap",
+    e: "background:#FFC53D;color:#1A1714;padding:1px 7px;border-radius:5px;font-weight:600;white-space:nowrap",
+    eq: "margin:0;font:600 34px/1.1 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink);background:var(--st-num-well);border-radius:var(--st-r-card);padding:12px 16px",
+  };
+  let step = 0;
+  const dots = $("g-dots");
+  steps.forEach(() => { const d = document.createElement("i"); d.style.cssText = "width:10px;height:10px;border-radius:3px;display:block;background:var(--st-rule-strong)"; dots.appendChild(d); });
+  $("g-keys").innerHTML = `Keys: ${KBD("Space")} play or pause · ${KBD(I.right)} next · ${KBD(I.left)} back`;
+  function goStep(i) {
+    step = Math.max(0, Math.min(steps.length - 1, i));
+    const st = steps[step];
+    setMode(st.mode);
+    Object.assign(S, st.o); syncToggles();
+    if (st.f !== undefined && st.f !== S.f) { setFreq(st.f); S.t = 0; }
+    if (st.t !== undefined) S.t = st.t;
+    S.focusSource = !!st.src;
+    setPlaying(st.play);
+    if (st.reveal === "all") { reveal("T"); reveal("L"); reveal("F"); } else if (st.reveal) reveal(st.reveal);
+    $("g-count").textContent = `Step ${step + 1} of ${steps.length}`;
+    $("g-part").textContent = st.part;
+    $("g-title").textContent = st.title;
+    const gt = $("g-text"); gt.innerHTML = st.text;
+    gt.querySelectorAll("p").forEach(p => p.style.margin = "0");
+    gt.querySelectorAll(".look").forEach(el => el.style.cssText = ST.look);
+    gt.querySelectorAll(".eq").forEach(el => el.style.cssText = ST.eq);
+    gt.querySelectorAll(".key.t").forEach(el => el.style.cssText = ST.t);
+    gt.querySelectorAll(".key.e").forEach(el => el.style.cssText = ST.e);
+    [...dots.children].forEach((d, j) => d.style.background = j === step ? "var(--st-accent)" : j < step ? "var(--st-ink)" : "var(--st-rule-strong)");
+    $("g-back").disabled = step === 0;
+    $("g-back").style.opacity = step === 0 ? "0.45" : "1";
+    $("g-next").innerHTML = step === steps.length - 1 ? "Start again" : "Next" + I.right;
+  }
+  $("g-next").onclick = () => goStep(step === steps.length - 1 ? 0 : step + 1);
+  $("g-back").onclick = () => goStep(step - 1);
+  const onKey = (e) => {
+    if (e.target.closest("input,select,textarea")) return;
+    if (e.key === " ") { e.preventDefault(); setPlaying(!S.playing); }
+    else if (e.key === "ArrowRight") goStep(step + 1);
+    else if (e.key === "ArrowLeft") goStep(step - 1);
+  };
+  document.addEventListener("keydown", onKey);
+  goStep(0);
+
+  // ---------- quiz ----------
+  const Q = [
+    { s: "In a transverse wave, the particles…", o: ["vibrate at 90° to the direction of energy transfer", "travel along with the wave", "vibrate parallel to the direction of energy transfer"], a: 0,
+      why: "Transverse: oscillations are perpendicular (90°) to the direction of energy transfer." },
+    { s: "A duck floats on a pond as ripples pass it. What does the duck do?", o: ["It is carried along with the ripples", "It bobs up and down and stays in the same place", "It moves towards the source of the ripples"], a: 1,
+      why: "The wave carries energy, not the water. The duck, like the water, just moves up and down." },
+    { s: "Sound travels through air. What do the air particles do?", o: ["Travel from the speaker to your ear", "Vibrate up and down, at 90° to the energy", "Vibrate back and forth, parallel to the direction of energy transfer"], a: 2,
+      why: "Sound is longitudinal. Air particles vibrate back and forth along the direction the energy travels." },
+    { s: "In a longitudinal wave, a region where the particles are squashed close together is called a…", o: ["rarefaction", "compression", "crest"], a: 1,
+      why: "Compression = particles close together. Rarefaction = particles spread apart." },
+    { s: "What does every wave transfer from one place to another?", o: ["Energy", "Particles", "The material itself"], a: 0,
+      why: "Waves transfer energy. The particles only vibrate about their rest positions." },
+    { s: "S-waves are transverse. P-waves are longitudinal. In a P-wave, rock particles vibrate…", o: ["perpendicular to the direction the wave travels", "parallel to the direction the wave travels", "not at all"], a: 1,
+      why: "P-waves are longitudinal, so the rock vibrates back and forth along the direction of energy transfer." },
+    { s: "A wave has a frequency of 4 Hz. What is its period?", o: ["0.25 s", "4 s", "0.4 s"], a: 0,
+      why: "T = 1 ÷ f = 1 ÷ 4 = 0.25 s. Four waves pass each second, so each takes a quarter of a second." },
+    { s: "One complete wave takes 0.5 s to pass a point. What is the frequency?", o: ["0.5 Hz", "2 Hz", "5 Hz"], a: 1,
+      why: "f = 1 ÷ T = 1 ÷ 0.5 = 2 Hz. Two waves pass the point each second." },
+    { s: "The frequency of a wave is doubled. What happens to its period?", o: ["It doubles", "It halves", "It stays the same"], a: 1,
+      why: "T = 1 ÷ f. Twice as many waves each second means each one takes half the time." },
+  ];
+  let score = 0;
+  const qs = $("quiz-body");
+  $("score").textContent = `Score: 0 / ${Q.length}`;
+  const OPT = "display:flex;align-items:center;gap:10px;width:100%;font:500 16px/1.35 var(--st-ui);text-align:left;border:1.5px solid var(--st-btn-border);background:var(--st-paper);color:var(--st-ink);border-radius:var(--st-r-control);padding:11px 14px;cursor:pointer";
+  Q.forEach((q, qi) => {
+    const box = document.createElement("div");
+    box.style.cssText = "background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:18px;display:grid;gap:8px;align-content:start;min-width:0";
+    box.innerHTML = `<div style="display:flex;gap:10px;align-items:flex-start"><span style="flex:none;width:24px;height:24px;border-radius:5px;background:var(--st-num-well);display:flex;align-items:center;justify-content:center;font:500 12px/1 var(--st-mono);color:var(--st-caption);margin-top:1px">${String(qi + 1).padStart(2, "0")}</span><div style="font-weight:600;font-size:17px;line-height:1.4">${q.s}</div></div>`;
+    const fb = document.createElement("div"); fb.style.cssText = "font-size:15px;line-height:1.45";
+    let done = false;
+    const btns = q.o.map((t, oi) => {
+      const b = document.createElement("button"); b.id = `q${qi}o${oi}`; b.style.cssText = OPT;
+      b.innerHTML = `<span>${t}</span>`;
+      b.onmouseenter = () => { if (!done) b.style.background = "var(--st-note-bg)"; };
+      b.onmouseleave = () => { if (!done) b.style.background = "var(--st-paper)"; };
+      b.onclick = () => {
+        if (done) return; done = true;
+        const right = oi === q.a;
+        btns.forEach((x, xi) => { x.style.cursor = "default"; x.style.background = "var(--st-paper)"; if (xi !== oi && xi !== q.a) x.style.opacity = "0.55"; });
+        const mark = (el, ok) => {
+          el.style.borderColor = ok ? "var(--wml-ok,#12A150)" : "var(--wml-bad,#B3261E)";
+          el.style.background = ok ? "var(--wml-ok-bg,#E4F7EB)" : "var(--wml-bad-bg,#FBE4DE)";
+          el.insertAdjacentHTML("afterbegin", `<span style="display:flex;color:${ok ? "var(--wml-ok-text,#0A6B36)" : "var(--wml-bad,#B3261E)"}">${ok ? I.tick : I.cross}</span>`);
+        };
+        mark(b, right); if (!right) mark(btns[q.a], true);
+        fb.style.color = right ? "var(--wml-ok-text,#0A6B36)" : "var(--wml-bad,#B3261E)";
+        fb.innerHTML = `<b>${right ? "Correct." : "Not quite."}</b> <span style="color:var(--st-body)">${q.why}</span>`;
+        if (right) score++;
+        $("score").textContent = `Score: ${score} / ${Q.length}`;
+      };
+      box.appendChild(b);
+      return b;
+    });
+    box.appendChild(fb); qs.appendChild(box);
+  });
+
+  return {
+    setSection,
+    stop() { alive = false; cancelAnimationFrame(raf); ro.disconnect(); document.removeEventListener("keydown", onKey); },
+  };
+}
+</script>
+</body>
+</html>
