@@ -18,9 +18,9 @@
 <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
 <link rel="stylesheet" href="/shared/ks3.css?v=2f931f9a"/>
 <link rel="stylesheet" href="/shared/ks3-theme.css?v=6e4b9223"/>
-<link rel="stylesheet" href="/consumer/consumer.css"/>
-<link rel="stylesheet" href="/parents/public.css"/>
-<link rel="stylesheet" href="/consumer/topic-picker.css"/>
+<link rel="stylesheet" href="/consumer/consumer.css?v=b02d0232"/>
+<link rel="stylesheet" href="/parents/public.css?v=27b5e5fd"/>
+<link rel="stylesheet" href="/consumer/topic-picker.css?v=e3aa94e9"/>
 <!-- ⊕ B2C polish (9 Oct 2026): public.css's `.pb-body button{font:inherit}`
      outranks consumer.css's `.c-signout-btn` / `.c-signout-acts button` and
      resets their weight and size; these put the child surfaces' values back
@@ -58,9 +58,9 @@
 </div>
 
 <script src="/shared/config.js?v=ab7a89ac"></script>
-<script src="/consumer/consumer-common.js"></script>
-<script src="/parents/public.js"></script>
-<script src="/consumer/topic-picker.js"></script>
+<script src="/consumer/consumer-common.js?v=8ead95e6"></script>
+<script src="/parents/public.js?v=90cc237a"></script>
+<script src="/consumer/topic-picker.js?v=9bcb2548"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/signup.html — parent signup, end to end. MRB-317 Night 3.
@@ -1561,11 +1561,11 @@
   function pendingMeta(c) {
     // ⊕ B2C polish (9 Oct 2026) — board and route only for Years 10–11, as
     // loadFamily's `meta`: a form switched from Y10 back to Y8 keeps its board.
-    var ks4 = Number(c.year) >= 10;
-    return 'Year ' + c.year + (ks4 && c.board ? ' · ' + c.board : '') +
-      (ks4 && c.route ? ' · ' + c.route : '') +
-      ' · ' + (c.mode === 'home' ? 'Home education' : 'Alongside school') +
-      ' · @' + c.user;
+    // ⊕ Round 3: the same childLine() as the saved children, so a child reads
+    // the same before and after their login is made.
+    return C.childLine({ year: c.year, exam_board: c.board, pathway: c.route,
+                         tier: tierValue(c.tier), mode: c.mode, username: c.user },
+                       { username: true });
   }
 
   function bindChildren() {
@@ -1831,7 +1831,6 @@
       var bst = d && d.billing && d.billing.state;
       S.subscribed = !!(bst && bst !== 'none');
       S.children = ((d && d.children) || []).map(function (c) {
-        var mode = c.mode === 'home_education' ? 'Home education' : 'Alongside school';
         var board = c.exam_board || null;
         var route = c.pathway ? (c.pathway.charAt(0).toUpperCase() + c.pathway.slice(1)) : null;
         var tierLabel = c.tier === 'foundation' ? 'Foundation'
@@ -1853,8 +1852,8 @@
           board: isKs4 ? board : null,
           routeLabel: route,
           tierLabel: tierLabel,
-          meta: 'Year ' + c.year_group + (isKs4 && board ? ' · ' + board : '') +
-                (isKs4 && route ? ' · ' + route : '') + ' · ' + mode + ' · @' + c.username
+          // ⊕ Round 3: the one child line (consumer-common.js), with tier.
+          meta: C.childLine(c, { username: true })
         };
       });
     }, function (e) {

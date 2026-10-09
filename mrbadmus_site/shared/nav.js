@@ -69,40 +69,75 @@
   })();
 
   function carry(href) {
-    if (!CARRY.length || typeof href !== 'string') { return href; }
-    if (href.charAt(0) !== '/' || href.charAt(1) === '/') { return href; }   // same-origin paths only
+    if (!CARRY.length || typeof href !== 'string' || href === '') { return href; }
+    if (href.charAt(0) === '#') { return href; }                            // same page
+    var asWritten = href;
+    if (href.charAt(0) !== '/' || href.charAt(1) === '/') {
+      /* ⊕ Round 3 — a page-relative ("ks4.html", "?tab=x") or same-origin
+         absolute link is the same journey: resolve it, and carry it as the
+         root-relative path it names. Another origin, mailto:, javascript:,
+         blob: and the like are left exactly as written. */
+      var u;
+      try { u = new URL(href, window.location.href); } catch (e) { return href; }
+      if (u.origin !== window.location.origin || !/^https?:$/.test(u.protocol)) { return href; }
+      href = u.pathname + u.search + u.hash;
+    }
     var hash = '', h = href.indexOf('#');
     if (h >= 0) { hash = href.slice(h); href = href.slice(0, h); }
     var own = '', i = href.indexOf('?');
     if (i >= 0) { own = href.slice(i + 1); href = href.slice(0, i); }
     var q = new URLSearchParams(own);
-    CARRY.forEach(function (kv) { if (!q.has(kv[0])) { q.set(kv[0], kv[1]); } });
+    var missing = CARRY.filter(function (kv) { return !q.has(kv[0]); });
+    if (!missing.length) { return asWritten; }                            // already carried
+    missing.forEach(function (kv) { q.set(kv[0], kv[1]); });
     var str = q.toString();
     return href + (str ? '?' + str : '') + hash;
   }
 
-  var CARRY_SCOPE = 'nav.nav a[href^="/"], #nav-drawer a[href^="/"], a[href^="/auth.html"]';
+  /* ⊕ Round 3 (9 Oct 2026) — EVERY LINK ON THE PAGE, not only the nav's.
+     A blind run on / with ?env=test&api=… found the KS3 and GCSE cards,
+     "Take the challenge", the footer, and the "Today" entry class-entry.js
+     draws into the bar and the drawer all pointing at bare paths: the
+     next page resolved config.js to PRODUCTION. So: one pass over every
+     <a href> at boot, a MutationObserver that carries any link drawn or
+     re-pointed later (the class entry, the chip, a page's own script), and
+     the click-time rewrite as the last word. On the live site CARRY is
+     empty, none of this runs, and every href is exactly as written. */
+  function carryOne(a) {
+    var h = a.getAttribute('href');
+    if (h == null) { return; }
+    var n = carry(h);
+    if (n !== h) { a.setAttribute('href', n); }
+  }
 
-  function carryLinks() {
+  function carryLinks(root) {
     if (!CARRY.length) { return; }
     try {
-      document.querySelectorAll(CARRY_SCOPE).forEach(function (a) {
-        var h = a.getAttribute('href'), n = carry(h);
-        if (n !== h) { a.setAttribute('href', n); }
-      });
+      root = root || document;
+      if (root.nodeType === 1 && root.matches('a[href]')) { carryOne(root); }
+      if (root.querySelectorAll) { root.querySelectorAll('a[href]').forEach(carryOne); }
     } catch (e) {}
   }
 
-  /* Anything drawn after boot (the chip, a re-rendered drawer row) is
-     caught at the moment it is followed. */
   if (CARRY.length) {
-    document.addEventListener('click', function (e) {
-      var a = e.target && e.target.closest ? e.target.closest('a[href^="/"]') : null;
-      if (!a || !a.matches(CARRY_SCOPE)) { return; }
-      var h = a.getAttribute('href'), n = carry(h);
-      if (n !== h) { a.setAttribute('href', n); }
-    }, true);
+    var onFollow = function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (a) { carryOne(a); }
+    };
+    document.addEventListener('click', onFollow, true);
+    document.addEventListener('auxclick', onFollow, true);       // middle-click: a new tab
+    document.addEventListener('contextmenu', onFollow, true);    // "Open in new tab" / "Copy link"
+    try {
+      new MutationObserver(function (records) {
+        records.forEach(function (r) {
+          if (r.type === 'attributes') { if (r.target.nodeType === 1 && r.target.matches('a[href]')) { carryOne(r.target); } return; }
+          r.addedNodes.forEach(function (n) { if (n.nodeType === 1) { carryLinks(n); } });
+        });
+      }).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['href'] });
+    } catch (e) {}
   }
+
+  if (window.MRB_NAV_TEST_HOOK) { window.MRB_NAV_TEST_HOOK.carry = carry; }
 
   // ── Drawer auth row — mirrors the signed-in / signed-out state ──────────
   function renderDrawerAuthSignedOut(slot) {

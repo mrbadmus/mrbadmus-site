@@ -18,8 +18,8 @@
 <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
 <link rel="stylesheet" href="/shared/ks3.css?v=2f931f9a"/>
 <link rel="stylesheet" href="/shared/ks3-theme.css?v=6e4b9223"/>
-<link rel="stylesheet" href="/consumer/consumer.css"/>
-<link rel="stylesheet" href="/parents/public.css"/>
+<link rel="stylesheet" href="/consumer/consumer.css?v=b02d0232"/>
+<link rel="stylesheet" href="/parents/public.css?v=27b5e5fd"/>
 <style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
 </head>
 <body class="pb-body">
@@ -45,8 +45,8 @@
 </div>
 
 <script src="/shared/config.js?v=ab7a89ac"></script>
-<script src="/consumer/consumer-common.js"></script>
-<script src="/parents/public.js"></script>
+<script src="/consumer/consumer-common.js?v=8ead95e6"></script>
+<script src="/parents/public.js?v=90cc237a"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/checkout-return.html — where Stripe sends the parent back.
@@ -288,7 +288,6 @@
       h += '<div style="margin-top:26px;display:flex;flex-direction:column;gap:18px">' +
         children.map(function (c) {
           var items = work[c.id];
-          var mode = c.mode === 'home_education' ? 'Home education' : 'Alongside school';
           var body;
           if (items === null) {
             body = '<p style="margin:16px 0 0;font-size:15px;color:var(--ks3-ink-muted)">' +
@@ -320,7 +319,7 @@
             '<span style="display:block;font-family:var(--ks3-font-display);font-weight:800;font-size:22px;' +
             'letter-spacing:-.02em">' + esc(c.first_name) + '’s first week</span>' +
             '<span style="display:block;font-size:14px;color:var(--ks3-ink-muted)">' +
-            esc('Year ' + c.year_group + ' · ' + mode) + '</span></span></div>' +
+            esc(C.childLine(c)) + '</span></span></div>' +
             body + '</div>';
         }).join('') + '</div>';
 

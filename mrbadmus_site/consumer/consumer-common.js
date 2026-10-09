@@ -1422,6 +1422,37 @@
     });
   }
 
+  /* ⊕ B2C polish round 3 (9 Oct 2026) — THE ONE CHILD SUMMARY LINE.
+     The parent saw Maya three ways: her own view read "Year 10 · AQA ·
+     Combined · Alongside school", the home card "Year 10 · Alongside
+     school", and none of them said Higher or Foundation. Every parent-facing
+     line about a child now comes from here — signup's family list and
+     pending children, the dashboard's home card and child view, and the
+     checkout-return card — so they cannot disagree again.
+       · Years 10–11: board, then route and tier as one phrase ("Combined
+         Higher"), then mode. A tier not decided is left out, not spelled.
+       · Years 7–9: never a board, route or tier. Signup stores 'AQA' on
+         every KS3 child because the column needs a value; nobody chose it.
+     Takes the API's own shape (year_group, exam_board, pathway, tier,
+     mode, username); `opts.username` adds "@name" at the end. */
+  function childLine(k, opts) {
+    k = k || {};
+    var year = k.year_group != null ? k.year_group : k.year;
+    var bits = ['Year ' + year];
+    if (Number(year) >= 10) {
+      if (k.exam_board) { bits.push(k.exam_board); }
+      var p = k.pathway ? String(k.pathway).toLowerCase() : '';
+      var t = k.tier ? String(k.tier).toLowerCase() : '';
+      var course = [p === 'combined' ? 'Combined' : (p === 'triple' ? 'Triple' : ''),
+                    t === 'foundation' ? 'Foundation' : (t === 'higher' ? 'Higher' : '')]
+        .filter(Boolean).join(' ');
+      if (course) { bits.push(course); }
+    }
+    bits.push(k.mode === 'home_education' || k.mode === 'home' ? 'Home education' : 'Alongside school');
+    if (opts && opts.username && k.username) { bits.push('@' + k.username); }
+    return bits.join(' · ');
+  }
+
   window.MrBadmusConsumer = {
     ENABLED: ENABLED,
     BRANDMARK: BRANDMARK,
@@ -1432,6 +1463,7 @@
     href: href,
     go: go,
     escapeHtml: escapeHtml,
+    childLine: childLine,
     plainSentence: plainSentence,
     plainMessage: plainMessage,
     isClosing: isClosing,
