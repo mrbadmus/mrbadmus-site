@@ -10,7 +10,7 @@ import os, shutil, json, glob, sys, re, base64
 # Theme run (26 Sep 2026) — the ONE pre-paint snippet and control slot,
 # imported so every generator emits byte-identical bytes. See
 # THEME-CONTRACT.md and theme_head.py. Never retype THEME_HEAD by hand.
-from theme_head import THEME_HEAD, THEME_SLOT
+from theme_head import THEME_HEAD, THEME_SLOT, stamp_theme_head
 import brand  # the ONE brand mark (one-mark ruling, 13 Sep 2026)
 import topbar  # the ONE pupil top bar (Stage B, phone run 28 Sep 2026)
 import launch_config  # the consumer launch decision — committed config, 1 Oct 2026
@@ -6376,7 +6376,7 @@ def build_site(output_dir="mrbadmus_site"):
     # ships. A page with no markers is returned unchanged by stamp_brand().
     # The foreign trees (ks3/, 3d/) are skipped for the usual reason: one
     # tree, one writer.
-    _brand_stamped = _brand_pages = 0
+    _brand_stamped = _brand_pages = _theme_stamped = 0
     for _root, _subdirs, _files in os.walk(output_dir):
         if os.path.abspath(_root) == os.path.abspath(output_dir):
             for _d in FOREIGN_OUTPUT_DIRS:
@@ -6388,6 +6388,17 @@ def build_site(output_dir="mrbadmus_site"):
             _fp = os.path.join(_root, _fn)
             with open(_fp, "r", encoding="utf-8") as _fh:
                 _content = _fh.read()
+            # ⊕ B2C polish (9 Oct 2026) — the theme pre-paint snippet, in the
+            # same pass. Hand-written pages carry theme_head.THEME_HEAD
+            # literally; any earlier form of it (theme_head.LEGACY_THEME_HEADS
+            # — the Light-by-default one) is rewritten to the current System-
+            # by-default one, on every hand-written page, markers or not.
+            _themed = stamp_theme_head(_content)
+            if _themed != _content:
+                with open(_fp, "w", encoding="utf-8") as _fh:
+                    _fh.write(_themed)
+                _theme_stamped += 1
+                _content = _themed
             if (brand.BRAND_START[:-3] not in _content and brand.HEAD_START not in _content
                     and topbar.TOPBAR_END not in _content):
                 continue
@@ -6406,6 +6417,7 @@ def build_site(output_dir="mrbadmus_site"):
                     _brand_stamped += 1
     print(f"  ✅ one mark: {_brand_pages} hand-written page(s) carry the brand markers; "
           f"{_brand_stamped} changed by this build")
+    print(f"  ✅ theme: {_theme_stamped} hand-written page(s) moved to the current pre-paint snippet")
 
     # ── Safety net — fail loudly if the round-trip would delete source files ──
     # The "Copy to repo root" round-trip below does shutil.rmtree(./<dir>) for
