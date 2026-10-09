@@ -3029,6 +3029,274 @@ START_HERE = {
         bridge="That leftover upward push has a name: upthrust. Next: five "
                "one-litre blocks in a tank, and what decides which float.",
     ),
+
+    # atmospheric-pressure — ANGLE CHANGED. "Pulled in from inside or pushed in
+    # from outside?" is answered by the H1 "Atmospheric pressure" right above the
+    # hook. The guess is now the old reveal's core claim: the outside air was
+    # pressing that hard all along, and only the inside changed. Title and big
+    # question rewritten: "Nothing touched the can" / "nothing goes anywhere near
+    # it" are false (the air outside does the crushing) and the reply would
+    # contradict them.
+    "atmospheric-pressure": dict(
+        title="A can folds in on itself.",
+        question="If you had to guess, was the air outside pressing that hard "
+                 "on the can all along, or only once it cooled?",
+        options=[
+            ("All along",
+             "The air outside never changed. What changed was inside: the "
+             "steam had been pushing back just as hard, until it cooled to a "
+             "few drops of water."),
+            ("Only once it cooled",
+             "It does look as if something new happened outside. But nothing "
+             "changed out there: the steam inside had been pushing back, and "
+             "when it cooled and stopped, the outside push won."),
+        ],
+        answer=0,
+        bridge="Air has weight, and it presses on everything, all the time. "
+               "Next: take a sealed bag, a pan of water and a barometer up a "
+               "mountain.",
+        big_question="A little water is boiled in an empty can, which is then "
+                     "sealed and cooled. The can is crushed flat. What crushes"
+                     " it?",
+    ),
+
+
+    # ── Year 8 · P6 Waves and sound ─────────────────────────────────────────────
+
+    # waves-on-water — the old hook's own question (what travelled across?) cut
+    # to two options. Title, scene and big question KEPT: the rail label "The
+    # gull that stays put" shows on load, so a guess about where the gull ends up
+    # would be given away; this one is not.
+    "waves-on-water": dict(
+        question="If you had to guess, what crossed the pond: the water "
+                 "itself, or only its up-and-down movement?",
+        options=[
+            ("The water itself",
+             "It is easy to picture the water flowing across. But a cork or a "
+             "heavy log would stay put just like the gull: the water only "
+             "lifts and drops on the spot."),
+            ("Only its movement",
+             "Each patch of water lifts and drops on the spot and hands the "
+             "movement on to the next. That is how the wave crosses while the "
+             "gull stays put."),
+        ],
+        answer=1,
+        bridge="That travelling disturbance is what a wave is, and it carries "
+               "energy with it. Next: the parts of a wave, then a ripple tank "
+               "to change them.",
+    ),
+
+    # transverse-waves-and-superposition — the old hook's own question cut to its
+    # correct option ("the displacements add") and its most tempting wrong one
+    # ("bounce off"). Not "carry on through": the bench gate's answer is "both
+    # waves carry on out the far side". Scene and big question rewritten: "heave
+    # twice as far", "rings pour through them" and "the surface obeys both at
+    # once" gave the answer away. Title kept.
+    "transverse-waves-and-superposition": dict(
+        scene="Drop two stones into still water at the same moment, a metre "
+              "apart. Two sets of rings spread out and run into each other.",
+        question="If you had to guess, where two ripples meet, do they add "
+                 "together, or bounce off each other?",
+        options=[
+            ("Add together",
+             "Where they overlap, the water rises by what one ripple asks for "
+             "plus what the other asks for. Two lifts make a bigger lift."),
+            ("Bounce off each other",
+             "Balls bounce. But ripples are not objects: where they meet, the "
+             "water adds up what each one is asking for."),
+        ],
+        answer=0,
+        bridge="That adding has a name: superposition. Next: two wave trains "
+               "in one channel, where you set the height of each.",
+        big_question="Two waves arrive at the same patch of water at the same "
+                     "moment. What does the surface do?",
+    ),
+
+    # how-sound-is-made — old hook: what must happen for there to be a sound. Cut
+    # to "air rushing past, or something shaking". Scene and big question
+    # rewritten: "something under the skin is buzzing", "air moving is not
+    # enough" and "moving to and fro" all hand over the answer.
+    "how-sound-is-made": dict(
+        scene="Two fingers on the front of your throat, and hum. Now stop "
+              "humming and breathe out through an open mouth, so air still "
+              "pours past the same place.",
+        question="If you had to guess, what makes the humming sound: air "
+                 "rushing past, or something shaking?",
+        options=[
+            ("Air rushing past",
+             "Your breath does keep the hum going. But breathing out with no "
+             "hum moves even more air and makes no note: air rushing past is "
+             "not enough on its own."),
+            ("Something shaking",
+             "You can feel it under your fingers. Two folds in your throat "
+             "shake, and that is what makes the note."),
+        ],
+        answer=1,
+        bridge="Every sound starts with something vibrating, which means "
+               "shaking quickly to and fro. Next: the four stages from source "
+               "to listener, and a bench where you change what is vibrating.",
+        big_question="A guitar string, a loudspeaker cone and two folds of "
+                     "tissue in your throat all make sound. What do the three "
+                     "have in common?",
+    ),
+
+    # sound-is-longitudinal — old hook's question (what does each coil do in the
+    # squashed-up wave?) cut to its correct option and its most tempting wrong
+    # one ("the coils do not move, only the patch travels"). "Sideways" was not
+    # tempting: the scene says there is no hump. Big question unchanged: it does
+    # not decide between moving and staying still.
+    "sound-is-longitudinal": dict(
+        question="If you had to guess, as the squashed-up patch passes, does "
+                 "each coil shuffle along and back, or stay where it is?",
+        options=[
+            ("Shuffle along and back",
+             "Each coil shuffles a little way along the slinky and back, then "
+             "ends up where it began. Only the squashed patch travels to the "
+             "far end."),
+            ("Stay where it is",
+             "Only the squashed patch reaches the far end, so it is easy to "
+             "think the coils stay put. But a coil has to move to get "
+             "squashed: it shuffles a little way along and back."),
+        ],
+        answer=0,
+        bridge="Sound works like this second wave, not like the wavy line it "
+               "is drawn as. Next: drive the slinky both ways and mark one "
+               "coil.",
+    ),
+
+    # frequency-pitch-and-loudness — ANGLE CHANGED. Old hook was a loudspeaker
+    # question with four technical options; cut to the everyday version: does
+    # plucking harder change the pitch? Title, scene and big question rewritten:
+    # the scene and big question stated which change does what.
+    "frequency-pitch-and-loudness": dict(
+        title="Pluck a guitar string.",
+        scene="Pluck a guitar string gently and listen. Then pluck the same "
+              "string much harder.",
+        question="If you had to guess, does plucking harder make the note "
+                 "higher as well as louder?",
+        options=[
+            ("No, only louder",
+             "The note stays where it was. A harder pluck makes the string "
+             "swing further, and that makes it louder."),
+            ("Yes, higher too",
+             "When people shout, their voices often go higher too. But on a "
+             "string, how high the note is does not change with how hard you "
+             "pluck."),
+        ],
+        answer=0,
+        bridge="How far a string swings and how often it swings are two "
+               "separate things. Next: two dials on a signal generator, one "
+               "for each.",
+        big_question="Two things can change about a note: how high it is and "
+                     "how loud it is. What sets each one?",
+    ),
+
+    # sound-needs-a-medium — ANGLE CHANGED. "Can you still hear it once the air
+    # is out?" is answered by the H1 "Sound needs a medium" right above the hook.
+    # The guess is now the old hook's other tempting wrong option: does the
+    # buzzer itself stop without air? Title, scene and big question rewritten:
+    # "The sound is not", "you can still see the hammer beating" and "goes quiet
+    # while you watch it still ringing" give that away.
+    "sound-needs-a-medium": dict(
+        title="A buzzer in a jar.",
+        scene="A small buzzer hangs on a thread inside a thick glass jar, "
+              "ringing away. A pump starts pulling the air out of the jar.",
+        question="If you had to guess, once the air is out, does the little "
+                 "hammer keep beating against the bell?",
+        options=[
+            ("Yes, it keeps beating",
+             "The buzzer needs no air to work: through the glass you can see "
+             "the hammer beating as fast as ever. What changes is what you "
+             "hear."),
+            ("No, it stops beating",
+             "Plenty of things do need air, like a candle flame. But the "
+             "buzzer runs on electricity, and its hammer keeps beating just as"
+             " fast with the air gone."),
+        ],
+        answer=0,
+        bridge="The buzzer never stops, yet its sound fades to nothing: there "
+               "is no air left to carry it. Next: a hammer and a microphone, "
+               "with different materials in the gap.",
+        big_question="A buzzer rings inside a thick glass jar while a pump "
+                     "takes the air out. What happens to the sound, and why?",
+    ),
+
+    # echoes-reflection-and-absorption — ANGLE CHANGED. The old hook was an echo
+    # calculation, and the draft's "made by the cliff, or your own shout?" is
+    # answered by the H1 ("...reflection..."). The guess is now the lesson's
+    # second condition: a hard wall a few steps away gives no separate echo.
+    # Title and scene KEPT (neither decides that). Big question rewritten:
+    # "...and how far away it is" hands over the answer.
+    "echoes-reflection-and-absorption": dict(
+        question="If you had to guess, would a hard brick wall a few steps in "
+                 "front of you give a clear echo?",
+        options=[
+            ("Yes, a clear echo",
+             "A hard wall does send most of the sound back, so that makes "
+             "sense. But from a few steps away it returns too quickly to hear "
+             "on its own: it blends with your shout."),
+            ("No, not a separate one",
+             "The wall sends plenty of sound back, but it returns so fast that"
+             " your ear runs it together with your shout. You hear one sound, "
+             "a bit fuller."),
+        ],
+        answer=1,
+        bridge="So an echo needs a surface that sends sound back, and enough "
+               "distance for it to arrive late. Next: move the wall, change "
+               "what it is made of, and time the echo.",
+        big_question="The same shout comes straight back at you off a cliff "
+                     "and vanishes without trace in a bedroom. What decides "
+                     "which happens?",
+    ),
+
+    # hearing-and-auditory-range — the old hook's own question cut to its correct
+    # option and its most tempting wrong one: too quiet for us, or too high? (The
+    # draft's "no sound at all" was weak, since the dog reacts, and its options
+    # broke the length rule.) big_question rewritten: "two statements about the
+    # ears of one particular animal, and that animal is us" points at the answer.
+    "hearing-and-auditory-range": dict(
+        question="If you had to guess, is the whistle too quiet for people to "
+                 "hear, or too high?",
+        options=[
+            ("Too quiet",
+             "That makes sense, since the dog hears it and we do not. But a "
+             "microphone shows the note is loud, not faint: it is too high for"
+             " human ears."),
+            ("Too high",
+             "A microphone picks up a strong, steady note, far higher than any"
+             " note you can hear. Turning it up would not help."),
+        ],
+        answer=1,
+        bridge="Every ear has a top and a bottom to what it can hear. Next: "
+               "sound one tone and try it on different listeners, from a bat "
+               "to an elephant.",
+        big_question="The words infrasound and ultrasound sound like names for"
+                     " two kinds of sound. What do they really mean?",
+    ),
+
+    # ultrasound-at-work — ANGLE CHANGED. Old hook asked how to find a hidden
+    # crack (a list of four methods); cut to the one fact it turns on: does a
+    # crack send sound back? Title and scene kept. big_question rewritten:
+    # "...bring back information" points at the echo.
+    "ultrasound-at-work": dict(
+        question="If you had to guess, would a short pulse of sound sent into "
+                 "the steel bounce back off a hidden crack?",
+        options=[
+            ("Yes, some of it would",
+             "Sound is reflected wherever it meets a different material, and a"
+             " crack is steel meeting air. Some of the pulse comes back."),
+            ("No, it would all pass through",
+             "A crack is tiny and holds nothing but air, so it is easy to "
+             "think sound would cross it. But wherever steel meets air, much "
+             "of the sound bounces back."),
+        ],
+        answer=0,
+        bridge="Time that echo and you can work out how deep the crack is. "
+               "Next: a probe on a block, and the time a pulse takes to come "
+               "back.",
+        big_question="How can you find a crack hidden inside solid steel "
+                     "without cutting it open?",
+    ),
 }
 
 
