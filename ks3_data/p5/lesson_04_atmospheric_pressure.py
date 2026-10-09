@@ -122,8 +122,8 @@ LESSON = {
     # added; an instruction was turned back into a description, in the
     # lesson's own words. **The note itself is still Mide's to rule on.**
     "meta_description": "A little water is boiled in a can, the can is "
-                        "sealed and cooled, and it crushes itself flat with "
-                        "nothing near it. Take three things up a mountain "
+                        "sealed and cooled, and in about a second it is "
+                        "crushed flat. Take three things up a mountain "
                         "and find out what was pressing all along.",
 
     "big_question": "A little water is boiled in an empty can, which is then "

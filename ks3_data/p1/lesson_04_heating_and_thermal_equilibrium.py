@@ -110,8 +110,7 @@ LESSON = {
         "prompt": "A sparkler throws out sparks at around 1500 °C — hot "
                   "enough to melt iron. They land on your hand and you feel "
                   "a pinprick. Meanwhile a bath at 40 °C, barely more than "
-                  "body temperature, will make you flinch and can genuinely "
-                  "injure a small child.",
+                  "body temperature, will make you flinch.",
         "commit": "Commit. Which holds more energy, and why does the cooler "
                   "one do more damage?",
         # ⊕ MRB-297, 31 Aug 2026 — THE DISTRACTORS WERE LENGTHENED. The

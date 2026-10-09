@@ -86,7 +86,7 @@ LESSON = {
 
     "rail": [
         {"anchor": "s-hook",   "short": "HOOK",
-         "label": "Next door and two rows down", "done_when": "committed"},
+         "label": "Next door and one row down", "done_when": "committed"},
         {"anchor": "s-table",  "short": "TABLE",
          "label": "The first twenty",      "done_when": "committed"},
         {"anchor": "s-read",   "short": "READ",
@@ -171,7 +171,7 @@ LESSON = {
              " One is a metal soft enough to cut and violent in water; the"
              " other is a choking green gas. They are so unalike that they"
              " react together — and what they make is table salt.",
-             "Now compare sodium with potassium, two rows down the same"
+             "Now compare sodium with potassium, one row down the same"
              " column. Same appearance, same reaction with water only faster,"
              " same formula for every compound. <strong>Similarity runs down"
              " the columns, not along the rows.</strong> A period is a"

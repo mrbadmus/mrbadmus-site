@@ -413,7 +413,7 @@ LESSON = {
               "targets": "CHRG-01",
               "body": [
                   "Nothing is made. Every electron that ends up on the "
-                  "duster was on the rod a moment earlier, and the two "
+                  "rod was on the duster a moment earlier, and the two "
                   "objects together carry exactly the charge they carried "
                   "before you touched them: none. The rubbing supplies "
                   "contact, not charge. It matters because it presses the "

@@ -571,7 +571,7 @@ LESSON = {
         "prompt": "Unwind the DNA from a single one of your cells and lay it "
                   "end to end and it measures about two metres. The nucleus "
                   "holding it is around six thousandths of a millimetre "
-                  "across. Every cell in your body is doing this, right now.",
+                  "across. Almost every cell in your body is doing this, right now.",
         "commit": "How does two metres of anything fit into that?",
         "options": [
             "It is cut into pieces and stored in different cells",

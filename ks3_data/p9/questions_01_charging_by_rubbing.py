@@ -1756,7 +1756,7 @@ QUESTIONS = [
                 "with?",
         "options": [
             {"text": "Both of them positive", "correct": False,
-             "why": "Cotton is above acetate but below PVC, so the two rods "
+             "why": "Cotton is below acetate but above PVC, so the two rods "
                     "cannot come out the same way."},
             {"text": "The PVC positive and the acetate "
                      "negative", "correct": False,

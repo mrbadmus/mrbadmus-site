@@ -152,7 +152,7 @@ LESSON = {
     "ks4_links":   [],
 
     # ---- the teaching payload ------------------------------------------
-    "big_question": "Two single cells, one much smaller. One is a whole animal. "
+    "big_question": "Two single cells, one much smaller. One is a whole organism. "
                     "One is a piece of you. What tells them apart?",
 
     # §3.2 — the hook is ink-dark and its commitment stays inside the block:
