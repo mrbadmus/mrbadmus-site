@@ -448,11 +448,11 @@ input::placeholder, textarea::placeholder { color: var(--st-room-text); }
         '</div>';
     }).join('');
     host.hidden = false;
-    var t = h.checked_at ? new Date(h.checked_at) : null;
+    /* ⊕ B2C fix run (9 Oct 2026): London, in the one consumer time format
+       ("11.19pm") — it was the device clock's "23:19". */
+    var checked = C.fmtTime(h.checked_at, '');
     when.textContent = 'Platform health' +
-      (t && !isNaN(t.getTime())
-        ? ' · checked ' + t.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
-        : '') +
+      (checked ? ' · checked ' + checked : '') +
       ' · last ' + (h.window_hours || 24) + ' hours';
     when.hidden = false;
   }

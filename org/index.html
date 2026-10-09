@@ -183,7 +183,7 @@
      the last, every pupil looks like they have missed Friday, on a Tuesday. */
   function stripOf(p) {
     return (p && p.week_strip) ||
-      { done: [0, 0, 0, 0, 0, 0, 0], today: (new Date().getDay() + 6) % 7 };
+      { done: [0, 0, 0, 0, 0, 0, 0], today: (C.ymdWeekday(C.londonYMD()) + 6) % 7 };   // London
   }
   function dayColours(p) {
     var st = stripOf(p);
@@ -358,7 +358,7 @@
       return { id: g.id, label: g.name };
     }));
 
-    var week = 'Week of ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+    var week = 'Week of ' + C.dayMonth(new Date());   // the London date (9 Oct 2026)
 
     return '' +
       '<div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px;">' +
@@ -611,7 +611,7 @@
       (messages.length
         ? '<div class="og-chat" id="chat-log">' + messages.map(function (m) {
             return '<div class="og-bubble' + (m.mine ? ' mine' : '') + '">' +
-              esc(m.text || '') + '<time>' + esc(m.time || '') + '</time></div>';
+              esc(m.text || '') + '<time>' + esc(C.msgWhen(m.created_at) || m.time || '') + '</time></div>';
           }).join('') + '</div>'
         : '<p class="og-note" id="chat-log">Nothing yet. Say hello — ' + esc((p.name || 'they')) +
           ' sees it on their Today screen.</p>') +
@@ -824,16 +824,16 @@
 
   /* Design's due chips are weekday NAMES. A name is not a date, and the API
      wants one — so "Fri" means the next Friday that has not happened yet,
-     today included. Anything else would silently set work in the past. */
+     today included. Anything else would silently set work in the past.
+     ⊕ B2C fix run (9 Oct 2026): "today" is the LONDON date — the one the
+     backend files work under — not the device's. */
   function nextWeekday(label) {
     var want = DUES.indexOf(label);            // 0 = Mon
     if (want < 0) { want = 4; }
-    var d = new Date();
-    d.setHours(12, 0, 0, 0);
-    var today = (d.getDay() + 6) % 7;
+    var todayYmd = C.londonYMD();
+    var today = (C.ymdWeekday(todayYmd) + 6) % 7;
     var delta = (want - today + 7) % 7;
-    d.setDate(d.getDate() + delta);
-    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+    return C.ymdPlusDays(todayYmd, delta);
   }
 
   /* ── ACCOUNT ───────────────────────────────────────────────────────── */
@@ -1014,7 +1014,7 @@
         name: who.name || p.name || 'Pupil',
         group: p.group || '',
         last: (t.last && t.last.text) || '',
-        time: (t.last && t.last.time) || '',
+        time: (t.last && (C.msgWhen(t.last.created_at) || t.last.time)) || '',
         unread: t.unread || 0
       };
     });
@@ -1079,7 +1079,7 @@
       (messages.length
         ? '<div class="og-chat" id="th-log">' + messages.map(function (m) {
             return '<div class="og-bubble' + (m.mine ? ' mine' : '') + '">' +
-              esc(m.text || '') + '<time>' + esc(m.time || '') + '</time></div>';
+              esc(m.text || '') + '<time>' + esc(C.msgWhen(m.created_at) || m.time || '') + '</time></div>';
           }).join('') + '</div>'
         : '<p class="og-note" id="th-log">Nothing yet. Say hello — ' + esc(who.name) +
           ' sees it on their Today screen.</p>') +

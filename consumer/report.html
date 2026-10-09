@@ -280,8 +280,10 @@
      Night 1 scaffold linked with, and old links exist. Both are read. */
   var childId = q.get('child') || q.get('id');
 
+  /* ⊕ B2C fix run (9 Oct 2026): the term of today's LONDON date. */
   function defaultTerm(d) {
-    var m = d.getMonth(), day = d.getDate(), y = d.getFullYear();
+    var lp = C.londonParts(d);
+    var m = lp.m - 1, day = lp.d, y = lp.y;
     if (m >= 8 && (m < 11 || day <= 19)) { return 'autumn-' + y; }   // 1 Sep – 19 Dec
     if (m === 11) { return 'autumn-' + y; }                          // 20–31 Dec → autumn
     if (m <= 2) { return 'spring-' + y; }                            // 1 Jan – 31 Mar
