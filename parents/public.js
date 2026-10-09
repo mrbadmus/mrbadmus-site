@@ -153,8 +153,9 @@
       '</header>';
   }
 
-  /* The menu's behaviour: open/close on the button, Escape closes and puts
-     focus back on the button, a tap outside the header closes, and widening
+  /* The menu's behaviour: open/close on the button, Escape (from anywhere)
+     closes and puts focus back on the button when it was in the menu, focus
+     leaving the menu closes, a tap outside the header closes, and widening
      past the breakpoint closes (the button is gone there, so an open panel
      could not otherwise be shut). */
   function wireMenu(head) {
@@ -175,12 +176,33 @@
         if (first) { first.focus(); }
       }
     });
-    head.addEventListener('keydown', function (e) {
+    /* ⊕ B2C polish (9 Oct 2026) — Escape closes the open menu FROM
+       ANYWHERE. It was heard only on the header, so once Tab had carried
+       focus past the last menu item into the page, Escape reached nothing
+       and the panel stayed open over the content. Focus goes back to the
+       button only when it was inside the menu (or on the button): pulling
+       it up from wherever the reader had got to would lose their place. */
+    function inMenu(el) {
+      return !!el && el.nodeType === 1 && (el === btn || panel.contains(el));
+    }
+    document.addEventListener('keydown', function (e) {
       if ((e.key === 'Escape' || e.key === 'Esc') && btn.getAttribute('aria-expanded') === 'true') {
         e.preventDefault();
-        setOpen(false, true);
+        setOpen(false, inMenu(document.activeElement));
       }
     });
+    /* ⊕ — and focus leaving the menu and its button closes it, so Tab past
+       the last item does not leave an open panel behind. Only when focus
+       lands on a real element outside: `relatedTarget` is null for a click
+       on the panel's own padding or the window losing focus, and an outside
+       click already has the document click handler below. */
+    function onFocusOut(e) {
+      var to = e.relatedTarget;
+      if (btn.getAttribute('aria-expanded') !== 'true' || !to || inMenu(to)) { return; }
+      setOpen(false);
+    }
+    btn.addEventListener('focusout', onFocusOut);
+    panel.addEventListener('focusout', onFocusOut);
     document.addEventListener('click', function (e) {
       if (btn.getAttribute('aria-expanded') === 'true' && !head.contains(e.target)) { setOpen(false); }
     });
