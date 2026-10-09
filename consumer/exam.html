@@ -855,7 +855,9 @@
         '<textarea class="ks3-answer" id="ex-answer" rows="7" data-write ' +
           'placeholder="Start writing. Aim for one point per mark."></textarea>' +
         '<div class="ex-meta-row"><span id="ex-words">' + words + ' words</span>' +
-          '<span>' + (q.marks ? (q.marks + ' marks · about ' + q.marks + ' points') : '') +
+          /* the scheme's own point count, never the marks again (9 Oct 2026) */
+          '<span>' + (q.marks ? (q.marks + ' marks' + ((q.scheme || []).length
+            ? (' · ' + q.scheme.length + ' points') : '')) : '') +
         '</span></div>' +
         (writable ? '' :
           '<div class="ex-oops"><p>Handing work in is off just now. You can still ' +
