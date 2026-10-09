@@ -437,19 +437,44 @@ def real_click(p, selector):
     # and silently did nothing. Splitting them across two `eval()` calls
     # (each a real CDP round-trip) reliably lets the scroll actually land
     # before the position is measured.
-    scrolled = p.eval(
-        "(function(){var el=document.querySelector(%s); if(!el) return false;"
-        "el.scrollIntoView({block:'center', behavior:'instant'}); return true;})()"
-        % sel_json)
-    if not scrolled:
-        return False
-    time.sleep(0.08)
-    rect = p.eval(
-        "(function(){var el=document.querySelector(%s); if(!el) return null;"
-        "var r=el.getBoundingClientRect(); return [r.x+r.width/2, r.y+r.height/2];})()"
-        % sel_json)
+    #
+    # ⊕ 10 Oct 2026 — AND THE SCROLL CAN LOSE A RACE IT CANNOT SEE. After the
+    # Tab sweep, the browser's own smooth focus-scroll to the last focused
+    # control can still be running when this asks for an instant one, and it
+    # wins: measured on the KS3 lesson page, the launcher stayed at y=485 in a
+    # 469px viewport, so the click landed on nothing and the chat "did not
+    # open". Whether it wins depends only on how far the last scroll had to
+    # travel, so a page a few hundred pixels shorter flipped this gate red with
+    # the chat panel working. So: re-scroll until the target is on screen and
+    # has stopped moving, and click only then. A target that never settles on
+    # screen is clicked where it last measured, exactly as before, so a
+    # launcher that is really broken still fails the same way it always did.
+    rect = None
+    b = None
+    for _ in range(8):
+        scrolled = p.eval(
+            "(function(){var el=document.querySelector(%s); if(!el) return false;"
+            "el.scrollIntoView({block:'center', behavior:'instant'}); return true;})()"
+            % sel_json)
+        if not scrolled:
+            return False
+        time.sleep(0.08)
+        a = p.eval(
+            "(function(){var el=document.querySelector(%s); if(!el) return null;"
+            "var r=el.getBoundingClientRect(); return [r.x+r.width/2, r.y+r.height/2,"
+            " r.top >= 0 && r.bottom <= innerHeight];})()" % sel_json)
+        time.sleep(0.12)
+        b = p.eval(
+            "(function(){var el=document.querySelector(%s); if(!el) return null;"
+            "var r=el.getBoundingClientRect(); return [r.x+r.width/2, r.y+r.height/2,"
+            " r.top >= 0 && r.bottom <= innerHeight];})()" % sel_json)
+        if not a or not b:
+            return False
+        if a == b and b[2]:
+            rect = b[:2]
+            break
     if not rect:
-        return False
+        rect = b[:2]
     x, y = rect
     p.send("Input.dispatchMouseEvent", {"type": "mouseMoved", "x": x, "y": y})
     p.send("Input.dispatchMouseEvent",
