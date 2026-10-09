@@ -513,6 +513,11 @@ def apply_text_whitelist(slug, route, index, sec, ref_text_norm):
         t = t.replace(R12_OLD_PATHWAY_CHIP.get(slug, "Combined · Triple"), "")
         t = t.replace(R12_OLD_TIER_CHIP, "")
         t = _WS_RE.sub(" ", t).strip()
+        # ⊕ R19 — the ruled big question (Mide, 9 Oct 2026). Design's text
+        # becomes the ruled text; the port must then carry it byte-exact.
+        r19 = ks4_rulings.R19_BIGQ.get(slug)
+        if r19:
+            t = t.replace(normalize_ws(r19[0]), normalize_ws(r19[1]))
     # ⊕ R14 — a Triple route's spec number is the separate science's own,
     # not Combined's. Applied on WHATEVER section carries it (the header's
     # eyebrow is always index 0; the KeyNote child component's `spec` prop
@@ -885,6 +890,15 @@ def check_layout(R, slug, route, width, ref_widths_entry, port_widths_entry, hav
                                 != squash(normalize_ws(psec.get("text", ""))))
                 if i == 0:
                     h_tol = 180
+                    # ⊕ R19 (Mide, 9 Oct 2026) — the ruled big question is a
+                    # different length from Design's, so the header rewraps by
+                    # its own amount ON TOP of the removals above: measured
+                    # 197px on states-of-matter TH at 360 (180 + one line
+                    # fewer of display type). Only these three lessons, and
+                    # B-text has already proved the header text is the ruled
+                    # text byte-exact, so a collapse would still fail here.
+                    if slug in ks4_rulings.R19_BIGQ:
+                        h_tol = 260
                 elif text_differs:
                     # The RAW text (before any whitelist substitution) is
                     # not identical — for ANY reason, whether B-text's

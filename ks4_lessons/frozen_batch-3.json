@@ -4,7 +4,7 @@
   "review_state": "examiner-reviewed"
  },
  "conservation-of-mass": {
-  "hash": "51a663a1a28388f8787fe9f912708615a304cdc062ac5059e2bf15afc59a8404",
+  "hash": "9e0aad9cd6c851bb897dd843ab0f7153e3f59c7dcff6b2bed63f6e210659c0e7",
   "review_state": "examiner-reviewed"
  },
  "early-atmosphere": {
@@ -20,11 +20,11 @@
   "review_state": "examiner-reviewed"
  },
  "mixtures": {
-  "hash": "c4dee1d9c4cf0a6d581dd3bf76b0ee733009d2ea391a52ba8564a3a4345c9e36",
+  "hash": "cad999c0b0f5b1d570fc9160c415ef2435806afdb7025d054cd2d60fc8f006ab",
   "review_state": "examiner-reviewed"
  },
  "particle-motion-pressure": {
-  "hash": "be6009c4b453df2562ed920e541c9726b5ab6faba705092aede15eca20f4939f",
+  "hash": "ffd0a76ae32f745c1c2ae8d196b6cd0809557d0378285554fe52afbc7e4d4b21",
   "review_state": "examiner-reviewed"
  },
  "power": {
@@ -36,7 +36,7 @@
   "review_state": "examiner-reviewed"
  },
  "specific-latent-heat": {
-  "hash": "d727ef6a955d8610bb4f540b02d35ef299e00d0a44bc1eb052cb394531866a25",
+  "hash": "f21fc22e93eee5ce8d20836783ff6bad86433fa7195446bf7a05705014f18c4e",
   "review_state": "examiner-reviewed"
  },
  "temperature-changes-shc": {
@@ -48,7 +48,7 @@
   "review_state": "examiner-reviewed"
  },
  "waves-detection-exploration": {
-  "hash": "886e03aec7727e49c41addf99e3f547ae1a23581a781d6db7bcbaacbd6ed3d82",
+  "hash": "d9a6eaae2e782abca6b37ef5bcd579510bff04f4d17799e943b3dbd90daabfe9",
   "review_state": "examiner-reviewed"
  }
 }

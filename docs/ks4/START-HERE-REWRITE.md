@@ -191,3 +191,46 @@ batch 2 part 1 (8 lessons + engine), batch 2 part 2 (8), batch 3 (13), pilot (14
 - This machine hit random headless-Chrome timeouts on the night (several
   sessions running Chrome gates at once). Every one was a CDP navigation
   timeout at a different point; every re-run passed.
+
+## Rulings applied, 9 Oct
+
+Mide ruled on every item in "For Mide" above. Applied exactly as ruled; nothing
+else in any lesson changed, batches 4–6 and the opener blocks are untouched.
+
+**The 11 big questions — the suggested wording, word for word.** Batch 2–3 lessons
+are edited in their authored sources (`ks4_lessons/authored/batch-N/*.dc.html`);
+the three pilot lessons are Design's files, so they take the new ruling **R19**
+(`ks4_rulings.R19_BIGQ`, applied after R18), and `ks4_parity` proves each pilot
+header carries the ruled text, from the same table.
+
+| Lesson | Big question now |
+|---|---|
+| enzymes | Chew a cracker long enough and it turns sweet. Heat it, or change the pH, and that slows or stops. What is doing it, and how do you measure it the way AQA expects? |
+| internal-energy | Heat boiling water harder. Where does the extra energy go, and why is energy not the same thing as temperature? |
+| states-of-matter (pilot, R19) | You keep heating a solid until it melts. Where does the energy go, and how do you find a melting point from messy readings? |
+| lenses | The same lens can show a page one way and a window another. What decides which image you get, and can you call it before the rays are drawn? |
+| mixtures | Stir sugar into water and it seems to vanish. How do you get each substance back out of a mixture, and how do you choose the right method? |
+| conservation-of-mass | Bonds break, new substances form, a flame flashes inside a sealed flask. What happens to the mass, and how does a balanced equation prove it? |
+| specific-latent-heat | Steam and boiling water are both at 100 °C, yet steam does far more damage. What makes the difference, and how do you put a number on it? |
+| particle-motion-pressure | An aerosol can is thin metal holding a gas. How does a gas push on the walls of its container, and what changes when you heat it? |
+| waves-detection-exploration | Doctors watch a baby before it is born, and geologists map a core that no one will ever reach. How can anyone see a structure that is hidden from view? |
+| nanoparticles (pilot, R19) | "Same atoms." dropped: …it turns red and becomes a catalyst. What changed, and can you calculate it? |
+| covalent-bonding (pilot, R19) | What holds two non-metal atoms together, and how many bonds does each one form? |
+
+**using-moles-calculations** — the ladder's rung-1 reply now reads "At the start of
+the lesson, magnesium had the smaller mass and was left over."
+
+**Left as they are, as ruled:** the milder leans (power, greenhouse-gases,
+eukaryotes-prokaryotes, ionic-compounds, changes-in-energy); carbon-cycle,
+carbonates-halides-sulfates, chemical-bonds, series-parallel-circuits and
+microscopy; the pilot's number-heavy scenes.
+
+**Noticed, not changed (not in the ruling):** *power*'s legal footnote also says
+"In the hook, each kettle is treated as transferring all of its energy to the
+water" — the same word "hook" pupils never see.
+
+**Re-freeze.** The twelve changed lessons were examiner-frozen, so their freeze
+hashes were re-recorded (`build_ks4.py --freeze`, `--batch batch-2 --freeze`,
+`--batch batch-3 --freeze`) after the change was read against each lesson; the
+wording itself is Mide's ruling. `ks4_science_rulings_check` and
+`frozen_window_guard` stay green.

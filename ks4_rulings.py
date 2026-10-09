@@ -1006,3 +1006,46 @@ def apply_r18_start_here(site_slug, design_file, template_text, logic_text):
         _require(logic_text, old, design_file, "R18")
         logic_text = logic_text.replace(old, new, 1)
     return template_text, logic_text, True
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# R19 — the big question above "Start here" must not give the answer away
+# (Mide's ruling, 9 Oct 2026, on docs/ks4/START-HERE-REWRITE.md "For Mide"
+# §1). Each pilot lesson's header question (`ks3-bigq`) is swapped for the
+# wording the report suggested, word for word. Batch 2–3 lessons carry the
+# same ruling as direct edits to their authored sources; the pilot is
+# Design's files, so it is a ruling. Applied AFTER R18. ks4_parity proves
+# the new text with R19_BIGQ, the same table.
+# ═══════════════════════════════════════════════════════════════════════
+R19_BIGQ = {
+    "states-of-matter": (
+        "You keep heating a solid, but the thermometer stops rising. Where is "
+        "the energy going, and how do you find a melting point from messy "
+        "readings?",
+        "You keep heating a solid until it melts. Where does the energy go, "
+        "and how do you find a melting point from messy readings?"),
+    "nanoparticles": (
+        "Gold is yellow and unreactive. Grind it into particles a few "
+        "nanometres across and it turns red and becomes a catalyst. Same "
+        "atoms. What changed, and can you calculate it?",
+        "Gold is yellow and unreactive. Grind it into particles a few "
+        "nanometres across and it turns red and becomes a catalyst. What "
+        "changed, and can you calculate it?"),
+    "covalent-bonding": (
+        "When two atoms both want electrons, neither will give any away. How "
+        "do they still end up with full shells?",
+        "What holds two non-metal atoms together, and how many bonds does "
+        "each one form?"),
+}
+
+
+def apply_r19_big_question(site_slug, design_file, template_text):
+    pair = R19_BIGQ.get(site_slug)
+    if pair is None:
+        return template_text
+    old, new = pair
+    needle = '<p class="ks3-bigq">%s</p>' % old
+    _require(template_text, needle, design_file, "R19")
+    return template_text.replace(
+        needle, '<p class="ks3-bigq">%s</p> <!-- ⊕ R19 -->' % new)
+
