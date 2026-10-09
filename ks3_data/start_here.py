@@ -170,7 +170,7 @@ START_HERE = {
             ("It does every job itself",
              "A Paramecium has nobody to feed it or clean up after it. It has "
              "to feed, grow, move and reproduce all on its own."),
-            ("It can swim about",
+            ("It can swim about freely",
              "Swimming is the eye-catching part. But what makes it a whole "
              "living thing is that it does every job of staying alive by "
              "itself."),
@@ -576,7 +576,7 @@ START_HERE = {
             ("No, there is gas inside",
              "The can is full of gas. There is no such thing as a sealed can "
              "with nothing in it, even when it has stopped spraying."),
-            ("Yes, it is empty",
+            ("Yes, it is really empty",
              "Nothing sprays out, so it certainly seems empty. But the space "
              "inside is full of gas that has simply stopped pushing its way "
              "out."),
@@ -716,7 +716,7 @@ START_HERE = {
         question="If you had to guess, has the iron burnt away, or joined up "
                  "with the sulfur?",
         options=[
-            ("It burnt away",
+            ("It burnt away to nothing",
              "Heating can make things glow and seem to vanish. But the iron "
              "has not left the dish. It has joined the sulfur to make a new "
              "substance."),
@@ -967,7 +967,7 @@ START_HERE = {
         question="If you had to guess, as the water creeps up, will the black "
                  "dot stay black, or split into other colours?",
         options=[
-            ("It stays black",
+            ("It stays plain black",
              "Black does look like a single colour. But this ink is a mix of "
              "dyes, and as the water climbs they come apart into separate "
              "coloured spots."),
@@ -1757,7 +1757,7 @@ START_HERE = {
              "The two blood supplies are brought very close together, and "
              "oxygen moves from where there is more of it to where there is "
              "less. Nothing has to push it."),
-            ("It is pumped across",
+            ("Something pumps it across",
              "A heart is the obvious pump. But a heart only moves blood "
              "around. Oxygen crosses the thin gap by itself, from where there "
              "is more of it to less."),
@@ -2543,7 +2543,7 @@ START_HERE = {
         question="If you had to guess, does the powder make the bottle give "
                  "off more oxygen in total, or the same amount, only sooner?",
         options=[
-            ("More in total",
+            ("More oxygen in total",
              "More froth in less time can look like more gas. But the bottle "
              "holds a fixed amount of hydrogen peroxide, so it gives the same "
              "oxygen in the end, powder or not."),
@@ -3832,6 +3832,289 @@ START_HERE = {
                "species out of it.",
         big_question="What happens to the rest of a food web when one species "
                      "is taken out of it?",
+    ),
+
+    # pollinators-and-food-security: the poster's own claim as the guess (would
+    # we starve?), so the wrong option is ECO-07, which the lesson records as
+    # elicited by the hook. big_question changed: the old one ("you would not
+    # starve ... never eat an apple") states the answer. Title and scene kept.
+    "pollinators-and-food-security": dict(
+        question="If you had to guess, with no bees or other pollinating "
+                 "insects, would people starve?",
+        options=[
+            ("Yes, most crops would fail",
+             "That is what the poster says, and it sounds right. But wheat, "
+             "rice and maize are pollinated by the wind, so most of the "
+             "world's calories would carry on."),
+            ("No, but most fruit would go",
+             "Wheat, rice and maize are pollinated by the wind, and they give "
+             "most of the world's calories. What would go is most of the "
+             "fruit, nuts and vegetables."),
+        ],
+        answer=1,
+        bridge="Enough to eat is not the same as a healthy diet. Next: twelve "
+               "foods on a supermarket shelf, and what happens to each with no"
+               " pollinators.",
+        big_question="Bees and other insects carry pollen from flower to "
+                     "flower. If they all vanished, what would the world "
+                     "actually lose?",
+    ),
+
+    # toxic-build-up-in-a-food-chain: what makes the pesticide pile up (very
+    # poisonous vs never breaking down), the lesson's own persistence-not-
+    # toxicity point. Angle changed from the draft (fish vs water): the H1 "Toxic
+    # build-up in a food chain" points straight at the food. Title and scene
+    # kept. big_question changed: "Nothing is added along the way. The arithmetic
+    # does it." gives the answer away.
+    "toxic-build-up-in-a-food-chain": dict(
+        question="If you had to guess, what lets the pesticide pile up in the "
+                 "birds: being very poisonous, or never breaking down?",
+        options=[
+            ("Being very poisonous",
+             "Being poisonous decides how much harm it does once it arrives. "
+             "Whether it piles up depends on whether bodies can break it down "
+             "or get rid of it."),
+            ("Never breaking down",
+             "A chemical that never breaks down stays in every animal that "
+             "takes it in, so each predator collects the doses from all the "
+             "prey it eats."),
+        ],
+        answer=1,
+        bridge="Nothing more was sprayed along the way: the food chain did the"
+               " collecting. Next: follow the pesticide up a lake food chain, "
+               "level by level.",
+        big_question="A pesticide at a level far too low to harm anything in "
+                     "the water can still kill the bird at the top of the food"
+                     " chain. How can that happen?",
+    ),
+
+    # sampling-an-ecosystem: old hook cut to the key choice, squares picked by
+    # chance vs squares that look typical. Question now says what the squares are
+    # for; wrong reply no longer claims bias always favours the flowery patches
+    # (the lesson says bias has no favourite direction). Title, scene and big
+    # question kept: none says which way of choosing is better.
+    "sampling-an-ecosystem": dict(
+        question="If you had to guess, to estimate from a few small squares, "
+                 "which should you count: squares picked by chance, or squares"
+                 " that look typical?",
+        options=[
+            ("Squares picked by chance",
+             "Picking by chance means you cannot favour flowery or bare "
+             "patches, even by accident, so the squares stand for the whole "
+             "field."),
+            ("Squares that look typical",
+             "That sounds sensible, but the choice is yours, and your own "
+             "preferences creep in. Every square can then be off in the same "
+             "direction."),
+        ],
+        answer=0,
+        bridge="Choosing fairly is half the job, and how many squares you take"
+               " is the other half. Next: survey a field where you can check "
+               "your estimate against the real total.",
+    ),
+
+
+    # ── Year 9 · B10 Inheritance and dna ─────────────────────────────────────────
+
+    # variation-continuous-and-discontinuous: is a counted characteristic (number
+    # of pets) like height or like blood group? The wrong option is GENE-02's "it
+    # is a number, so it is continuous", which the lesson records as elicited by
+    # the hook. Title and scene changed: the old ones stated the in-between test
+    # outright. The new scene keeps blood group's four piles, because the hook's
+    # rail label is "Four piles". big_question changed: "The difference is not
+    # what you measured with" points at the answer.
+    "variation-continuous-and-discontinuous": dict(
+        title="One class, lined up two ways.",
+        scene="Line your class up by height and the line runs smoothly from "
+              "shortest to tallest. Sort the same class by blood group and you"
+              " get four separate piles: A, B, AB and O.",
+        question="If you had to guess, is the number of pets each pupil has "
+                 "more like height, or more like blood group?",
+        options=[
+            ("More like height",
+             "It is a number. But nobody has two and a half pets: the counts "
+             "jump from two to three, so they fall into separate piles."),
+            ("More like blood group",
+             "Pets are counted, and nobody has two and a half of them. Nothing"
+             " sits between two and three, so the counts fall into separate "
+             "piles."),
+        ],
+        answer=1,
+        bridge="Being a number is not the test. What matters is whether any "
+               "value can sit in between. Next: predict the graph for six "
+               "characteristics, then plot the data.",
+        big_question="Some differences between people run along a smooth scale"
+                     " and others fall into separate groups. What decides "
+                     "which kind a characteristic is?",
+    ),
+
+    # chromosomes-genes-and-dna: old hook cut to coiled and packed vs most of it
+    # kept elsewhere. (The old "cut into pieces" option stays dropped: the 46
+    # chromosomes are separate pieces, so it was arguable.) big_question changed:
+    # the old one says the four words are "nested inside each other", which
+    # previews the packing answer. Title and scene kept.
+    "chromosomes-genes-and-dna": dict(
+        question="If you had to guess, how does two metres of DNA fit inside "
+                 "one tiny nucleus?",
+        options=[
+            ("Most of it is kept elsewhere",
+             "It is a very small space. But the whole two metres is inside the"
+             " nucleus. It fits because it is very thin and coiled up tightly."),
+            ("It is coiled up tightly",
+             "DNA is incredibly thin, and it is wound round proteins, then "
+             "coiled again and again. All two metres really are inside the "
+             "nucleus."),
+        ],
+        answer=1,
+        bridge="The coiled packages are called chromosomes, and the pieces "
+               "inside them have names too. Next: zoom in from a whole person "
+               "down to the letters that spell out an instruction.",
+        big_question="Nucleus, chromosome, gene, DNA: people often use these "
+                     "four words as if they meant the same thing. How do they "
+                     "actually fit together?",
+    ),
+
+    # how-we-worked-out-dna: one brilliant person vs several teams' work put
+    # together (NOS-03, the flash-of-insight story the lesson confronts). Angle
+    # changed from the draft (microscope vs X-rays): the hook's rail label "Too
+    # small to see" and the H1 "How we worked out DNA's structure" both point
+    # away from a microscope. Title and scene kept (the scene's microscope line
+    # no longer bears on the guess). big_question changed: the old one lists the
+    # X-ray photo, the ratios and the models, which gives the answer.
+    "how-we-worked-out-dna": dict(
+        question="If you had to guess, was the shape of DNA worked out by one "
+                 "brilliant person, or by several teams?",
+        options=[
+            ("One brilliant person",
+             "That is how the story is often told. But it took X-ray pictures "
+             "from one lab, chemical measurements from another and model "
+             "building in a third."),
+            ("Several teams together",
+             "X-ray pictures taken in London, chemical measurements made in "
+             "New York and models built in Cambridge all had to fit together."),
+        ],
+        answer=1,
+        bridge="Nobody ever saw the molecule: each piece of evidence ruled "
+               "some shapes out. Next: use the evidence of 1952 to build a "
+               "model of DNA, one decision at a time.",
+        big_question="Nobody has ever seen a DNA molecule directly. So how did"
+                     " anyone work out its shape?",
+    ),
+
+    # passing-it-on-heredity: old hook cut to hidden-but-still-there vs mixed in
+    # and watered down (GENE-07, blending, which the lesson records as elicited
+    # by the hook). Scene changed: "Not medium plants. Tall ones, every time"
+    # rules blending out, and "carrying something that had not shown itself"
+    # gives the answer. New scene keeps "come back" for the rail label "It came
+    # back". big_question changed: "cannot be a fluid that mixes" states the
+    # result.
+    "passing-it-on-heredity": dict(
+        scene="Then breed those tall plants together, and short plants come "
+              "back in about a quarter of the offspring.",
+        question="If you had to guess, what happened to the shortness while "
+                 "every plant grew tall?",
+        options=[
+            ("Hidden, but still there",
+             "The instruction for short was carried, complete and unchanged, "
+             "by plants that looked tall. Nothing was lost along the way."),
+            ("Mixed in and watered down",
+             "Mixing paint works like that. But the shortness came back at "
+             "full strength, so it was never watered down."),
+        ],
+        answer=0,
+        bridge="Inherited information comes in separate units that keep their "
+               "identity from one generation to the next. Next: grow pea seeds"
+               " from two parent plants and count the flower colours.",
+        big_question="A characteristic can vanish for a whole generation and "
+                     "then come back. What does that tell us about how it is "
+                     "passed on?",
+    ),
+
+    # what-makes-a-species: old hook cut to the two tests (can have a baby vs
+    # babies can have babies); the wrong option is GENE-10. Scene changed: it
+    # said mules almost never have offspring and that the mule is why horses and
+    # donkeys are two species, which hands over the fertile test. big_question
+    # changed: it says "neither is being able to breed", which gives the answer
+    # away.
+    "what-makes-a-species": dict(
+        scene="Mules are strong, healthy and long-lived, and they have been "
+              "bred deliberately for four thousand years.",
+        question="If you had to guess, are a horse and a donkey the same "
+                 "species?",
+        options=[
+            ("Yes, the same species",
+             "They can have a foal together, so it is easy to think so. But a "
+             "mule almost never has young of its own, and that makes a horse "
+             "and a donkey two species."),
+            ("No, two different species",
+             "Their mule is healthy, but it almost never has young of its own."
+             " To be one species, the offspring must be able to have young "
+             "too."),
+        ],
+        answer=1,
+        bridge="Even this test will not settle every pair. Next: seven tricky "
+               "cases to judge, and the last few are ones that biologists "
+               "still argue about.",
+        big_question="A great dane and a chihuahua look nothing alike, but "
+                     "they are one species. What is the test for being the "
+                     "same species?",
+    ),
+
+
+    # ── Year 9 · B11 Evolution extinction and biodiversity ───────────────────────
+
+    # variation-and-competitive-success: in a drought, the big strong mouse or
+    # the small quick one? The bench's own reversal; the wrong option is EVOL-01
+    # (strongest survive), which the lesson records as elicited by the hook.
+    # Angle changed from the draft and title/scene restored: the hook's rail
+    # label is "Until it is not", which only lands if the title keeps "A thick
+    # coat is an advantage. Until it is not." That title gives away the draft's
+    # coat question, so the guess moved to size in a drought.
+    "variation-and-competitive-success": dict(
+        question="If you had to guess, in a long drought, which mouse is more "
+                 "likely to survive: a big, strong one, or a small, quick one?",
+        options=[
+            ("The big, strong one",
+             "Strength sounds as if it should win, and in a fight it might. "
+             "But a big body needs more water and more food, and in a drought "
+             "there is neither."),
+            ("The small, quick one",
+             "A small body needs little water and cools easily, so it copes "
+             "best when the water runs out. Size has become a cost, not an "
+             "asset."),
+        ],
+        answer=1,
+        bridge="No difference is best everywhere; it depends on the "
+               "conditions. Next: put the same five mice through five "
+               "different conditions.",
+    ),
+
+    # natural-selection: old hook cut to stretching-and-passing-it-on (EVOL-03)
+    # vs long-necked giraffes having more babies. Scene changed: it calls the
+    # stretching story "wrong". New scene sets up the puzzle neutrally.
+    # big_question changed: "Not one animal in the population changes..." states
+    # the mechanism; the draft's replacement repeated the scene.
+    "natural-selection": dict(
+        scene="A giraffe's neck is about two metres long, which lets it reach "
+              "leaves that most other animals cannot. Its ancestors had much "
+              "shorter necks.",
+        question="If you had to guess, how did giraffes end up with such long "
+                 "necks?",
+        options=[
+            ("Stretching, then passing it on",
+             "That was once a leading scientific idea, and it sounds sensible."
+             " But stretching changes only that one giraffe's body, and its "
+             "babies are not born with the extra length."),
+            ("Long-necked giraffes had more babies",
+             "Some giraffes were born with longer necks than others. In hard "
+             "times they reached more food, so more of them survived to have "
+             "babies with long necks too."),
+        ],
+        answer=1,
+        bridge="It is the group that changes, one generation at a time. Next: "
+               "watch it happen with pale and dark moths on a tree trunk.",
+        big_question="Over many generations, a whole species can change its "
+                     "shape. What actually makes that happen?",
     ),
 }
 
