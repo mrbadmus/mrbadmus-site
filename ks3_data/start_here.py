@@ -1407,6 +1407,312 @@ START_HERE = {
         big_question="Some things feel heavy for their size and others feel "
                      "light. What is the real difference between them?",
     ),
+
+    # brownian-motion — the rail label "Specks that will not settle" is fixed
+    # lesson text and answers the draft's "will they settle?" guess on load.
+    # Angle changed back to the old hook's question cut to two: draughts
+    # (PART-19, elicited_by s-hook) or unseen bits of air hitting them. Old title
+    # and scene kept (they state only that the specks never settle). Old big
+    # question ("nothing touching them", "atoms") pointed at the answer, so it is
+    # replaced.
+    "brownian-motion": dict(
+        question="If you had to guess, what is moving the specks about?",
+        options=[
+            ("Unseen bits of air hitting them",
+             "The air is made of particles far too small to see, and billions "
+             "of them strike each speck every second. The strikes almost "
+             "cancel, and the small leftover shoves the speck about."),
+            ("Draughts of air blowing them",
+             "Moving air does push smoke about. But the air in a sealed cell "
+             "is still, and a draught would carry every speck the same way. "
+             "Each one jerks off on its own."),
+        ],
+        answer=0,
+        bridge="This jiggling is called Brownian motion. Next: choose what is "
+               "under the microscope and how warm it is.",
+        big_question="Smoke specks in still air jiggle for hours and never "
+                     "settle. What does that tell us about the air?",
+    ),
+
+    # temperature-and-internal-energy — title kept (rail label "A spark and a
+    # bath"). Old scene ("a faint tick", "properly hot") and big question
+    # ("neither is about temperature alone") pointed at the bath; scene now gives
+    # only the two temperatures and the big question is neutral. Guess is the old
+    # hook's question. Correct reply now uses the lesson's own figure ("something
+    # like a hundred million times", not "millions") and reads as a sentence
+    # after "Good guess.".
+    "temperature-and-internal-energy": dict(
+        scene="A grinding wheel throws white-hot sparks at about 1000 °C. A "
+              "full bath of water is at 40 °C.",
+        question="If you had to guess, which one holds more energy?",
+        options=[
+            ("The spark",
+             "The spark is far hotter. But it is a tiny speck, and a bath is a"
+             " huge amount of water. How much there is counts too."),
+            ("The bath",
+             "The bath holds something like a hundred million times more. The "
+             "spark is far hotter, but there is almost nothing of it."),
+        ],
+        answer=1,
+        bridge="Temperature says how much energy one particle has on average. "
+               "How much energy an object holds depends on every particle in "
+               "it. Next: four amounts of water, all on one thermometer.",
+        big_question="How are the temperature of something and the energy it "
+                     "holds related?",
+    ),
+
+    # why-ice-floats — title and scene kept (they state only that ice floats;
+    # rail label "Ice cubes on top"). Old big question ("Solids sink in their own
+    # melt... Iron does") gave away both the hook and the bench gate (molten
+    # iron), so it is replaced. Guess: freezing makes it take more room (correct)
+    # against "weigh less" (PART-20). Bridge no longer says other substances
+    # shrink when they freeze, which pre-answered the bench gate (solid iron in
+    # molten iron).
+    "why-ice-floats": dict(
+        question="If you had to guess, why does ice float on the water it came"
+                 " from?",
+        options=[
+            ("Freezing makes it take more room",
+             "Water gets about 9% bigger when it freezes, but it weighs the "
+             "same. The same mass in more room makes ice less dense than "
+             "water, so it floats."),
+            ("Freezing makes it weigh less",
+             "Ice does feel light, so that is easy to believe. But freezing "
+             "does not change how much water there is. What changes is the "
+             "room it takes up."),
+        ],
+        answer=0,
+        bridge="Density decides what floats, and freezing changes it. Next: "
+               "four substances, each weighed as a solid and as its own "
+               "liquid.",
+        big_question="A pond freezes from the top down, and fish live on "
+                     "underneath. What makes that possible?",
+    ),
+
+
+    # ── Year 8 · B4 Breathing and gas exchange ──────────────────────────────────
+
+    # the-gas-exchange-system — the rail label is "Mouth-to-mouth", so the hook
+    # keeps mouth-to-mouth (the draft's bag broke it). Old title ("…works") and
+    # scene ("it keeps them alive", "re-oxygenated") gave the answer and the big
+    # question stated it outright; all three rewritten. Guess is the old hook's
+    # question cut to two: most of the oxygen comes back out, against BREATH-01
+    # ("breathe out carbon dioxide").
+    "the-gas-exchange-system": dict(
+        title="Mouth-to-mouth.",
+        scene="Someone has stopped breathing. A first-aider gives "
+              "mouth-to-mouth: they breathe their own breath out into the "
+              "other person's lungs.",
+        question="If you had to guess, how much of the oxygen in a breath is "
+                 "still there when you breathe it out?",
+        options=[
+            ("Most of it",
+             "You keep only about a quarter of the oxygen in each breath and "
+             "pass the rest straight back out. That is why a first-aider's "
+             "breath can help someone else."),
+            ("Hardly any of it",
+             "We are often told we breathe in oxygen and breathe out carbon "
+             "dioxide. But most of the oxygen comes straight back out, which "
+             "is why mouth-to-mouth works."),
+        ],
+        answer=0,
+        bridge="Air in and air out are more alike than most people expect. "
+               "Next: predict how each of four gases changes between a breath "
+               "in and a breath out.",
+        big_question="Every breath goes in and comes back out. What actually "
+                     "changes in the air while it is inside you?",
+    ),
+
+    # how-breathing-works — injury hook kept as Design wrote it (no first-aid
+    # wording). The draft's options ("air escaped from it / got in around it")
+    # were not cleanly separable: the collapsed lung DOES empty through its
+    # airway, so "air escaped from it" is arguably true. Angle changed to the
+    # lesson's core idea (BREATH-04): does a lung stretch itself open, or does
+    # the chest stretch it open? Scene keeps the word "collapsed" so "the
+    # collapsed lung in the hook" (s-think) and rung 3 "Explain the collapsed
+    # lung" still land; rail label "Collapsed lung" fits. Old big question ("no
+    # muscle at all") gave the answer; replaced.
+    "how-breathing-works": dict(
+        title="A small wound between two ribs.",
+        scene="A narrow wound goes through the chest wall between two ribs. "
+              "The lung itself is not touched, and its airway is clear. Within"
+              " seconds the lung on that side has collapsed, and it will not "
+              "fill again.",
+        question="If you had to guess, how does a healthy lung normally fill "
+                 "with air?",
+        options=[
+            ("The chest stretches it open",
+             "A lung has no muscle and cannot open itself. As the chest gets "
+             "bigger, the lung is stretched open with it. Once air gets in "
+             "around the lung, that stops working."),
+            ("It stretches itself open",
+             "It feels as if your lungs do the breathing. But a lung has no "
+             "muscle at all. It fills only when the chest gets bigger and "
+             "stretches it open."),
+        ],
+        answer=0,
+        bridge="Making the chest bigger lowers the pressure inside it, and air"
+               " flows in from outside. Next: work a model diaphragm and watch"
+               " the order in which things change.",
+        big_question="Air flows into your lungs with every breath. What makes "
+                     "it go in?",
+    ),
+
+    # alveoli-built-for-exchange — big question kept (it describes the bench, not
+    # the hook). Old title and scene used "alveoli" and "cavity"; reworded in
+    # plain words, alveoli named in the bridge. The scene keeps "one smooth bag":
+    # the rail label is "One smooth bag" and exercise-asthma-and-smoking rung 4
+    # says the emphysema patient "has moved partway towards the smooth bag" from
+    # this hook. Question reworded ("live on the bag" read oddly).
+    "alveoli-built-for-exchange": dict(
+        title="A sponge swapped for a bag.",
+        scene="Your lungs are full of tiny air sacs, like a sponge. Imagine "
+              "swapping the sponge for one smooth bag that holds exactly the "
+              "same amount of air.",
+        question="If you had to guess, could you stay alive with the bag "
+                 "instead?",
+        options=[
+            ("Yes, just as well",
+             "The air is all still there, so it seems fine. But oxygen can "
+             "only cross into the blood through the surface, and a bag has far"
+             " too little of it."),
+            ("No, not for long",
+             "A smooth bag has hardly any surface for oxygen to pass through, "
+             "so you would last only minutes. What matters is surface, not the"
+             " amount of air."),
+        ],
+        answer=1,
+        bridge="Those tiny air sacs are called alveoli, and there are about "
+               "500 million of them. Next: switch breathing and blood flow on "
+               "and off, and count oxygen crossing the wall.",
+    ),
+
+    # exercise-asthma-and-smoking — tone-gated lesson: factual, no advice, no
+    # dose, no warning added. Old title and scene said the air is fine and the
+    # inhaler has no oxygen, which is the answer; rewritten. Title now names the
+    # inhaler (rail label "The inhaler"). Bridge no longer restates the big
+    # question (redundant). The reply naming the airways matches the bench's
+    # asthma answer, as the old hook's own question did.
+    "exercise-asthma-and-smoking": dict(
+        title="The blue inhaler.",
+        scene="Someone is having an asthma attack. They are struggling to get "
+              "enough air, and a puff from a blue inhaler helps within "
+              "minutes.",
+        question="If you had to guess, does the puff from the inhaler contain "
+                 "extra oxygen?",
+        options=[
+            ("Yes, extra oxygen",
+             "Oxygen sounds like what is missing. But the air around them "
+             "already has plenty. The puff relaxes muscle in the walls of the "
+             "air tubes, so they widen."),
+            ("No oxygen at all",
+             "There is no oxygen in it. The air around them already has "
+             "plenty; the medicine relaxes muscle in the walls of the air "
+             "tubes, so they widen and air gets through."),
+        ],
+        answer=1,
+        bridge="The air was never the problem: something stopped it reaching "
+               "the lungs. Next: three cases, and which part of the breathing "
+               "system each one hits.",
+    ),
+
+    # stomata-and-gas-exchange-in-plants — the bench's balanced verdict says
+    # "This is the dawn reading from the hook", the rail label is "Flat line at
+    # dawn" and the tutor card asks about "the flat line at dawn", so the hook
+    # must stay the sealed jar at dawn (the draft's sunny windowsill broke all
+    # three). Old title and scene kept: they describe the readings and do not say
+    # what causes the flat line. Old big question ("the two run at once") gave
+    # the answer; replaced. Guess: during the flat minutes, is the plant making
+    # or using carbon dioxide? Tempting wrong option: a flat line means it is
+    # doing neither.
+    "stomata-and-gas-exchange-in-plants": dict(
+        question="If you had to guess, during those steady minutes, is the "
+                 "plant making or using any carbon dioxide at all?",
+        options=[
+            ("No, it is doing neither",
+             "A flat line does look as if nothing is happening. But the plant "
+             "is making carbon dioxide and using it up at exactly the same "
+             "rate."),
+            ("Yes, it is doing both",
+             "It is respiring, which makes carbon dioxide, and "
+             "photosynthesising, which uses it up. At that light level the two"
+             " run at the same rate, so the reading stays flat."),
+        ],
+        answer=1,
+        bridge="A sensor outside the plant only ever shows the difference "
+               "between the two. Next: turn the light up and watch both "
+               "processes.",
+        big_question="A plant in a sealed jar changes the air around it, and "
+                     "light changes how. What is going on inside the leaf?",
+    ),
+
+
+    # ── Year 8 · B5 Reproduction ────────────────────────────────────────────────
+
+    # human-reproductive-systems — tone: clinical, third person, about organs.
+    # Old title and scene gave both facts (all eggs present at birth; sperm made
+    # continuously). Guess: are egg cells made all the time too? Tempting wrong
+    # option is yes (REPRO-02). Figures checked against the lesson: "around a
+    # million" immature egg cells at birth (hook, confrontation, job row 1),
+    # "roughly four hundred" mature and released (job row 1, confrontation),
+    # "fifteen hundred per second" (hook, job row 1). Rail label "A million eggs"
+    # does not decide the guess. Wrong reply reworded ("cells that start a baby"
+    # became "sex cells"). FLAG: Design's own NOTES flag 1 says sources give 1 to
+    # 2 million at birth; "about a million" is kept because it is the lesson's
+    # figure everywhere.
+    "human-reproductive-systems": dict(
+        title="Sperm cells every second.",
+        scene="Sperm cells are made non-stop from puberty onwards, at "
+              "something like fifteen hundred every second.",
+        question="If you had to guess, are egg cells made all the time too?",
+        options=[
+            ("Yes, all the time",
+             "Both are sex cells, so it is natural to expect them to match. "
+             "But the immature egg cells are all in the ovaries at birth, and "
+             "no new ones are made."),
+            ("No, only before birth",
+             "The ovaries of a newborn already hold every immature egg cell "
+             "there will ever be, about a million, and no new ones are made. "
+             "Only about four hundred are ever released."),
+        ],
+        answer=1,
+        bridge="That is the first sign that the two systems are not mirror "
+               "images. Next: match nine structures to the job each one does.",
+        big_question="Two organ systems share one purpose. Learning the names "
+                     "is the easy part; the useful question is what each "
+                     "structure is for.",
+    ),
+
+    # gametes-and-fertilisation — old scene said both cells carry exactly 23
+    # chromosomes, which ruled out the tempting option (REPRO-18, elicited_by
+    # hook), and the big question said each brought half the instructions. The
+    # draft's new scene ended "Each carries instructions for building a new
+    # person", which is wrong (each carries half) and hinted at the answer;
+    # dropped, and "genetic instructions" moved into the options. Rail label
+    # "Unequal sizes" fits.
+    "gametes-and-fertilisation": dict(
+        title="A big cell and a tiny one.",
+        scene="An egg cell is about 0.1 mm across, big enough to just see "
+              "without a microscope. A sperm cell's head is about a twentieth "
+              "as wide.",
+        question="If you had to guess, is most of the egg's extra size more "
+                 "genetic instructions, or food and supplies?",
+        options=[
+            ("Food and supplies",
+             "The egg is packed with food and the machinery to build a body, "
+             "which the new cell needs for its first days. Both cells bring "
+             "the same instructions: 23 chromosomes each."),
+            ("More genetic instructions",
+             "A bigger cell might well carry more instructions. But both cells"
+             " bring exactly 23 chromosomes, half a set each, so the extra "
+             "size is something else: supplies."),
+        ],
+        answer=0,
+        bridge="Each cell is built for its own job. Next: open six features of"
+               " the two cells and find the reason behind each one.",
+        big_question="A sperm cell and an egg cell fuse to make one new cell. "
+                     "What does each one bring?",
+    ),
 }
 
 
