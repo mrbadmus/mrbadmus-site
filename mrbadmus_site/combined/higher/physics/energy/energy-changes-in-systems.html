@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <script>(function(){var p='system';try{p=localStorage.getItem('mrb-theme')||'system'}catch(e){}if(p!=='dark'&&p!=='light')p='system';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+  <script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <meta name="theme-color" content="#F7F1E5"/>
   <title>Energy Changes in Systems | Physics | MrBadmus</title>
@@ -10,12 +10,12 @@
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614">
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
-  <link rel="stylesheet" href="/shared/styles.css?v=ba27bd67"/>
-  <link rel="stylesheet" href="/shared/nav.css?v=7415488f"/>
+  <link rel="stylesheet" href="/shared/styles.css?v=71b6cfe3"/>
+  <link rel="stylesheet" href="/shared/nav.css?v=af731eb1"/>
   <script src="/shared/config.js?v=ab7a89ac"></script>
   <script src="/shared/search-index.js?v=c016cb14" defer></script>
   <script src="/shared/search.js?v=d011978d" defer></script>
-  <script src="/shared/nav.js?v=72d4a842" defer></script>
+  <script src="/shared/nav.js?v=f0bd261c" defer></script>
   <script src="/shared/class-entry.js?v=f09195e5" defer></script>
   
 <style>
@@ -23,7 +23,7 @@ html { background: var(--bg); }
 :root { --subject: var(--physics); }
 </style>
   
-  <script src="/shared/theme.js?v=83dd2451" defer></script>
+  <script src="/shared/theme.js?v=f04be205" defer></script>
 </head>
 <body class="">
   <nav class="nav">
@@ -197,11 +197,11 @@ html { background: var(--bg); }
   </div>
 </div>
   <div class="section">
-  <div class="section-title">🤖 Ask Mr Badmus AI</div>
+  <div class="section-title">🤖 Ask MrBadmus</div>
   <div class="card ask-card">
     <p class="ask-lede">Stuck? Just ask! 💬</p>
     <p class="ask-sub">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat class="btn-primary">💬 Ask MrBadmus</button>
   </div>
 </div>
   <div class="subtopic-nav">
@@ -211,13 +211,13 @@ html { background: var(--bg); }
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5h16v10H9.5L5 19.5v-4H4z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5h16v10H9.5L5 19.5v-4H4z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></span><span class="fab-text">Ask MrBadmus</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
       <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
+        <h3>Ask MrBadmus</h3>
         <p id="chat-head-subtitle">GCSE Science Tutor</p>
       </div>
       <button class="close-btn" onclick="MrBadmus.close()">✕</button>
@@ -230,13 +230,13 @@ html { background: var(--bg); }
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)" tabindex="0" role="button" aria-label="Attach a photo">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask Mr Badmus anything... (paste screenshots with Ctrl+V)"/>
+      <input type="text" id="ci" placeholder="Ask MrBadmus anything... (paste screenshots with Ctrl+V)"/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="/shared/mrbadmus.v2.js?v=b0047776"></script>
+  <script src="/shared/mrbadmus.v2.js?v=e818b0d0"></script>
   <script>MrBadmus.init({subject:'physics',topic:'Energy Changes in Systems (6.1.1.3)'});</script>
   <script>
 const SCORE_MESSAGES = [
@@ -371,7 +371,7 @@ document.querySelectorAll('.match-drop').forEach(drop => {
 });
 </script>
   <script>
-const STAR_MESSAGES_energy_changes_in_systems = ["No worries \u2014 that's what Mr Badmus AI is here for! Hit the chat button below and ask me to explain it from scratch. \ud83d\udcac", "Good start! Read through the theory again, then try the quiz once more. You'll get there! \ud83d\udcd6", "Solid \u2014 you're getting there! Try explaining it out loud to yourself. If you can say it, you know it. \ud83d\udde3\ufe0f", "Great work! Just review the parts you found tricky and you'll be flying. \ud83d\ude80", "PERFECT! You've nailed this topic. Move on \u2014 you're ready! \ud83c\udfc6"];
+const STAR_MESSAGES_energy_changes_in_systems = ["No worries \u2014 that's what Ask MrBadmus is here for! Hit the chat button below and ask me to explain it from scratch. \ud83d\udcac", "Good start! Read through the theory again, then try the quiz once more. You'll get there! \ud83d\udcd6", "Solid \u2014 you're getting there! Try explaining it out loud to yourself. If you can say it, you know it. \ud83d\udde3\ufe0f", "Great work! Just review the parts you found tricky and you'll be flying. \ud83d\ude80", "PERFECT! You've nailed this topic. Move on \u2014 you're ready! \ud83c\udfc6"];
 function rateTopic(stId, rating) {
   document.querySelectorAll('#stars-' + stId + ' .star-btn').forEach((s, i) => s.classList.toggle('star-active', i < rating));
   const fb = document.getElementById('starfb-' + stId);

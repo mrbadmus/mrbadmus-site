@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-<script>(function(){var p='system';try{p=localStorage.getItem('mrb-theme')||'system'}catch(e){}if(p!=='dark'&&p!=='light')p='system';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>Unit check — MrBadmus</title>
@@ -304,6 +304,12 @@
 <style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
 </head>
 <body>
+<!-- ⊕ B2C polish (9 Oct 2026): the phone row for the theme control. The
+     header slot below is theme.js's one-icon compact menu, and at 360-390
+     the full Light/Dark/System group does not fit beside the header's own
+     buttons; so below 601px the header slot hides and this row shows the
+     full group, in flow, above the header (consumer.css). -->
+<div class="mrb-theme-float c-theme-phone"><span class="mrb-theme-slot" data-mrb-theme></span></div>
 
 
 <div class="rd uc-root" data-mode="ks3" id="c-main">
@@ -1041,6 +1047,6 @@
   }});
 })();
 </script>
-<script src="/shared/theme.js?v=83dd2451" defer></script>
+<script src="/shared/theme.js?v=f04be205" defer></script>
 </body>
 </html>

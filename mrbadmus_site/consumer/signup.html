@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<script>(function(){var p='system';try{p=localStorage.getItem('mrb-theme')||'system'}catch(e){}if(p!=='dark'&&p!=='light')p='system';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta name="theme-color" content="#FBF3E6"/>
 <meta name="robots" content="noindex"/>
@@ -201,6 +201,102 @@
      step that has already been paid for. */
   function clearDraft() {
     try { localStorage.removeItem(DRAFT_KEY); } catch (e) { /* private window */ }
+  }
+
+  /* ── ⊕ B2C polish (9 Oct 2026): RESUMING A SIGNUP ─────────────────────
+     A blind run signed in again mid-signup, landed on the dashboard ("No
+     children yet"), and the child's "Where is … up to?" answer was never
+     asked for again — their first week started from a topic nobody chose.
+     The dashboard now sends an unfinished signup back here (overview.html),
+     and settle() puts the parent on the step they left with everything
+     kept. What each piece of that comes from:
+
+       SERVER (any device, survives sign-out):
+         · the children that exist, with their year, route, tier, mode
+           (GET /family);
+         · whether each child's topic question has been answered —
+           `position.chosen` on GET /family, when the backend sends it
+           (false = still at the term week the plan was seeded on);
+         · whether the family has been through Stripe (`billing.state`).
+       THIS DEVICE ONLY (the draft; a sign-out clears every `mrb.` key):
+         · children typed in before the email was verified (`pending`);
+         · the topic questions still to ask, in order (`ask`), and a pick
+           made but not yet saved (`tp`);
+         · the questions the parent chose to skip (`skipped`);
+         · Monthly or Annual (`plan`) and the step they were on (`step`).
+     So on a fresh device the parent gets back their children and every
+     unanswered topic question (from the server), and Monthly is preselected
+     on the plan step until they choose — the choice is always on screen. */
+  function descOf(c) {
+    return { child_id: c.id, name: c.name, year: c.year, mode: c.mode,
+             pathway: c.pathway || null, tier: c.tier || null };
+  }
+  function rememberAsks(list) {
+    var d = readDraft();
+    var seen = {};
+    var out = [];
+    list.concat(d.ask || []).forEach(function (a) {
+      if (!a || !a.child_id || seen[a.child_id]) { return; }
+      seen[a.child_id] = 1;
+      out.push({ child_id: a.child_id, name: a.name, year: a.year, mode: a.mode,
+                 pathway: a.pathway || null, tier: a.tier || null });
+    });
+    if (out.length) { d.ask = out; } else { delete d.ask; }
+    writeDraft(d);
+  }
+  function answeredAsk(childId, skipped) {
+    if (!childId) { return; }
+    var d = readDraft();
+    d.ask = (d.ask || []).filter(function (a) { return a.child_id !== childId; });
+    if (!d.ask.length) { delete d.ask; }
+    if (d.tp && d.tp.child === childId) { delete d.tp; }
+    if (skipped) {
+      d.skipped = (d.skipped || []).filter(function (id) { return id !== childId; }).concat([childId]);
+    }
+    writeDraft(d);
+  }
+  /* The topic picker's own state, for the child being asked. Only what
+     names the pick (subject, topic, selection) — never the search text, so
+     a restored pick is on screen and the button reads "Start … from …". */
+  function keepTp(childId, st) {
+    var d = readDraft();
+    if (st && st.selected) {
+      d.tp = { child: childId, st: { subject: st.subject || '', topic: st.topic || '', selected: st.selected } };
+    } else if (d.tp && d.tp.child === childId) {
+      delete d.tp;
+    }
+    writeDraft(d);
+  }
+  function restoreTp(childId) {
+    var d = readDraft();
+    if (!d.tp || d.tp.child !== childId || !d.tp.st) { return {}; }
+    return { subject: d.tp.st.subject || '', topic: d.tp.st.topic || '', selected: d.tp.st.selected || null, q: '' };
+  }
+  /* Who still has to be asked "Where is … up to?", in order: the ones this
+     device was in the middle of asking, then (before checkout) any child the
+     server says is still at the seeded term week and the parent has not
+     skipped on this device. A child the server says has an answer is never
+     asked again, whatever the draft says. */
+  function topicAsks() {
+    var d = readDraft();
+    var skipped = d.skipped || [];
+    var byId = {};
+    S.children.forEach(function (c) { byId[c.id] = c; });
+    var out = [], seen = {};
+    (d.ask || []).forEach(function (a) {
+      var c = a && byId[a.child_id];
+      if (!c || seen[c.id] || c.topicChosen === true) { return; }
+      seen[c.id] = 1;
+      out.push(descOf(c));
+    });
+    if (!S.subscribed) {
+      S.children.forEach(function (c) {
+        if (seen[c.id] || c.topicChosen !== false || skipped.indexOf(c.id) !== -1) { return; }
+        seen[c.id] = 1;
+        out.push(descOf(c));
+      });
+    }
+    return out;
   }
 
   /* ── state ──────────────────────────────────────────────────────────── */
@@ -1209,7 +1305,11 @@
     S.unitPicked = null;
     S.unitError = '';
     S.unitNote = res.pickerNote || '';
-    S.tp = {};
+    /* ⊕ B2C polish (9 Oct 2026): the question still to be asked, and a
+       pick already made but not yet saved, survive a reload, a sign-in in
+       another tab and a trip to the dashboard (see the RESUMING note). */
+    S.tp = restoreTp(res.child_id);
+    rememberAsks([res].concat(S.unitQueue || []));
     go('unit', opts);
     Promise.all([
       C.api('/api/consumer/children/' + res.child_id + '/picker', { token: S.token }),
@@ -1261,7 +1361,8 @@
 
   /* After the topic question: the next child created from the draft, if
      there is one, else the list. */
-  function afterUnit() {
+  function afterUnit(skipped) {
+    answeredAsk(S.unitChildId, !!skipped);
     var next = S.unitQueue.shift();
     return loadFamily().then(function () {
       if (next) { return startUnitStep(next); }
@@ -1282,6 +1383,7 @@
         onChange: function (sel) {
           S.unitPicked = sel;
           S.unitNote = '';
+          keepTp(S.unitChildId, sel ? S.tp : null);
           var save = $('u-save');
           if (save) {
             save.textContent = sel
@@ -1335,8 +1437,9 @@
     if (skip) {
       skip.addEventListener('click', function () {
         // Nothing to write: `seedPlan` already placed the child at the term
-        // week when they were created.
-        afterUnit();
+        // week when they were created. Remembered on this device, so a
+        // resume does not ask again a question the parent chose to skip.
+        afterUnit(true);
       });
     }
   }
@@ -1678,6 +1781,12 @@
           year: Number(c.year_group),
           username: c.username,
           mode: c.mode,
+          pathway: c.pathway || null,
+          tier: c.tier || null,
+          /* true / false when the backend says whether the "where are they
+             up to?" answer has been given; null when it does not say (see
+             RESUMING A SIGNUP). */
+          topicChosen: (c.position && typeof c.position.chosen === 'boolean') ? c.position.chosen : null,
           board: isKs4 ? board : null,
           routeLabel: route,
           tierLabel: tierLabel,
@@ -1873,11 +1982,21 @@
       return;
     }
 
+    /* Children just created from the draft are asked "where are they up
+       to?" first; then (⊕ B2C polish, 9 Oct 2026) every child whose answer
+       is still owed — see topicAsks(). "Add a child" from the dashboard
+       names the child step and goes straight there instead. */
     var made = S.flushed || [];
     S.flushed = [];
-    if (made.length) {
-      S.unitQueue = made.slice(1);
-      return startUnitStep(made[0], { replace: true });
+    var queue = made.slice();
+    if (fromUrl !== 'child') {
+      topicAsks().forEach(function (a) {
+        if (!queue.some(function (m) { return m.child_id === a.child_id; })) { queue.push(a); }
+      });
+    }
+    if (queue.length) {
+      S.unitQueue = queue.slice(1);
+      return startUnitStep(queue[0], { replace: true });
     }
 
     if (w === 'plan' && S.children.length && !S.subscribed) { return go('plan', { replace: true }); }
@@ -1953,6 +2072,6 @@
   }});
 })();
 </script>
-<script src="/shared/theme.js?v=83dd2451" defer></script>
+<script src="/shared/theme.js?v=f04be205" defer></script>
 </body>
 </html>

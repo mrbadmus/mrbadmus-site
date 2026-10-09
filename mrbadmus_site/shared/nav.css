@@ -355,6 +355,11 @@
    student_bell_drive's width ladder: with a signed-in chip and the bell up,
    the bar's own copy cost 7-42px of sideways scroll at 360-430. */
 @media (max-width: 960px) { .nav-cluster > .mrb-theme-slot { display: none; } }
+/* ⊕ B2C polish (9 Oct 2026) — the bar's signed-out Sign In (drawn by
+   shared/nav.js) is a desktop affordance. At 900px and below it stands down
+   and the drawer's Sign In is the way in, exactly as it was before it
+   returned, so the phone bar's measured ladder below is untouched. */
+@media (max-width: 900px) { #nav-auth-area .nav-bar-signin { display: none; } }
 .nav-drawer-theme {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   margin-top: 10px; padding: 10px 12px; border-top: 1px solid var(--border);

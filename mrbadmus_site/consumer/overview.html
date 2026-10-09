@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-<script>(function(){var p='system';try{p=localStorage.getItem('mrb-theme')||'system'}catch(e){}if(p!=='dark'&&p!=='light')p='system';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>Your family — MrBadmus</title>
@@ -264,6 +264,12 @@
     font-size: 16px;
     cursor: pointer;
     white-space: nowrap;
+  }
+  /* "Start your free week" is a link to the signup plan step (B2C polish,
+     9 Oct 2026); it keeps the button's look and never takes link colours. */
+  a.dk-gate-btn, a.dk-gate-btn:hover {
+    display: inline-flex; align-items: center;
+    color: var(--dk-on-accent); text-decoration: none;
   }
   .dk-gate-link { font-weight: 700; white-space: nowrap; }
   .dk-gate .c-checkout-msg { max-width: 560px; }
@@ -824,6 +830,35 @@
     return line;
   }
 
+  /* ⊕ B2C polish (9 Oct 2026). "Last active" is the newest thing the child
+     did that this page can see — never older than something shown beside it.
+     `k.lastActive` (the backend's: the visit stamp, written at most every
+     five minutes, or the newest finished item) does not count a message:
+     chat runs on its own middleware, which stamps nothing. So a card read
+     "Last active today, 10.02pm" over "last replied today, 11.19pm". The
+     newest of: that stamp, the thread's last message when it is the
+     child's, the child's messages and answers when they are loaded. */
+  function lastActiveOf(k) {
+    var best = null, bestT = -Infinity;
+    function take(iso) {
+      if (!iso) { return; }
+      var t = new Date(iso).getTime();
+      if (!isNaN(t) && t > bestT) { bestT = t; best = iso; }
+    }
+    take(k.lastActive);
+    var t = threadFor(k.id);
+    if (t && t.last && t.last.mine === false) { take(t.last.created_at); }
+    if (String(S.msgsFor) === String(k.id) && Array.isArray(S.msgs)) {
+      S.msgs.forEach(function (m) {
+        if (m && String(m.sender_id) === String(k.id)) { take(m.created_at); }
+      });
+    }
+    if (String(S.answersFor) === String(k.id) && Array.isArray(S.answers)) {
+      S.answers.forEach(function (a) { if (a) { take(a.created_at); } });
+    }
+    return best;
+  }
+
   function doingSummary(k) {
     var w = workOf(k), done = doneOf(k);
     var mins = w.reduce(function (t, it) {
@@ -833,7 +868,7 @@
        nothing records. The slot keeps a fact we do hold. */
     var line = done + ' of ' + w.length + ' sessions done so far this week, ' +
                mins + ' minutes on task.';
-    var last = whenLabel(k.lastActive);
+    var last = whenLabel(lastActiveOf(k));
     if (last) { line += ' Last active ' + last + '.'; }
     return line;
   }
@@ -902,7 +937,9 @@
       if (!S.kids.length) { return ''; }
       return gateRow('Your family hasn’t started yet.',
         b.can_checkout === false ? '' :
-        '<button type="button" class="dk-gate-btn" data-act="checkout">Start your free week</button>');
+        /* ⊕ B2C polish (9 Oct 2026): the plan step, where Monthly and
+           Annual are both on screen — never straight to Stripe. */
+        '<a class="dk-gate-btn" href="' + esc(C.planStepHref()) + '">Start your free week</a>');
     }
     if (access === 'locked' || st === 'locked') {
       return gateRow('Your subscription has ended. New work and messages are off.',
@@ -1299,7 +1336,7 @@
         '<div class="dk-row-band" style="margin-top:12px"><span>Username</span>' +
         '<span class="dk-mono">' + esc(k.username || '—') + '</span></div>';
     } else if (k.status === 'quiet') {
-      var la = whenLabel(k.lastActive);
+      var la = whenLabel(lastActiveOf(k));
       doing += '<p style="margin:10px 0 0;font-size:17px;color:var(--ks3-ink-body)">' +
         '<strong style="color:var(--ks3-ink)">Nothing done this week yet.</strong> ' +
         esc(String(w.length)) + ' sessions are set.' +
@@ -2025,6 +2062,9 @@
   function checkout(el) {
     return C.startCheckout(el, {
       token: ctx.token,
+      /* Restart only (a locked family): the plan they already chose. The
+         first start goes through the signup plan step instead — see
+         gateHtml() and C.startCheckout. */
       interval: S.billing.interval === 'year' ? 'year' : 'month',
       addChildHref: addChildHref(),
       msgHost: document.getElementById('dk-gate-msg') || undefined,
@@ -2269,20 +2309,61 @@
       if (document.visibilityState === 'visible') { refresh(); }
     });
 
+    /* ⊕ B2C polish (9 Oct 2026). A parent who is MIDWAY through signup
+       belongs in signup, at the step they left — not here. A blind run
+       signed in again mid-signup, landed on "No children yet / Add a
+       child", and the child's "Where is … up to?" answer was never asked
+       for again. Any door that ends here (parents sign-in, verify.html's
+       fallbacks, a bookmark, a fresh device) now goes on to signup.html with
+       no step named, and signup works the step out (signup.html, RESUMING A
+       SIGNUP). `replace`, so Back cannot bounce between the two.
+       Midway = never through Stripe (`state: 'none'`, which the backend
+       answers only after asking Stripe itself), allowed to check out, not
+       an organisation, no deletion pending — AND one of: no child yet; a
+       child whose topic answer the server says is still owed (and was not
+       skipped on this device); or this device's signup draft holding a
+       child, a question or a step. A family whose children are all set up
+       stays here pre-trial (MRB-309: a parent who has not checked out still
+       reaches their dashboard); its "Start your free week" goes to the plan
+       step, where Monthly and Annual are both shown (gateHtml). */
+    function signupDraft() {
+      try { return JSON.parse(localStorage.getItem('mrb.consumer.signup') || 'null') || {}; }
+      catch (e) { return {}; }
+    }
+    function signupMidway() {
+      var st = String(S.billing.state || '').toLowerCase();
+      if (st !== 'none' || S.billing.can_checkout === false) { return false; }
+      if ((S.fam && S.fam.kind === 'organisation') || S.deletion) { return false; }
+      if (!S.kids.length) { return true; }
+      var d = signupDraft();
+      var skipped = d.skipped || [];
+      var ids = S.kids.map(function (k) { return String(k.id); });
+      var owed = S.kids.some(function (k) {
+        return k.position && k.position.chosen === false && skipped.indexOf(k.id) === -1;
+      });
+      var asked = (d.ask || []).some(function (a) { return a && ids.indexOf(String(a.child_id)) !== -1; });
+      return owed || asked || !!(d.pending && d.pending.length) || !!d.step;
+    }
+    function toSignup() { window.location.replace(C.href('/consumer/signup.html')); }
+
     return Promise.all([loadFamily(), loadPrices()])
       .then(function () {
+        if (signupMidway()) { return toSignup(); }
         lastLoad = Date.now();
         render();
         afterNav();
         return loadThreads().then(function () { if (S.view === 'child') { render(); } });
       })
       .catch(function (e) {
+        // Signed in with no family yet (signup stopped before
+        // /family/ensure): signup makes it and carries on.
+        if (e && e.code === 'no_family') { return toSignup(); }
         C.fail(document.getElementById('c-main'), e.message,
                'Refresh in a moment. If it keeps happening, email support@mrbadmus.com.');
       });
   } });
 })();
 </script>
-<script src="/shared/theme.js?v=83dd2451" defer></script>
+<script src="/shared/theme.js?v=f04be205" defer></script>
 </body>
 </html>

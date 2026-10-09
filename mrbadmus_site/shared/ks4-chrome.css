@@ -1032,6 +1032,14 @@ body[data-chrome="ks4"] #nav-auth-area > a {
   white-space: nowrap;
 }
 body[data-chrome="ks4"] #nav-auth-area > a:hover { border-color: var(--k4-ink) !important; }
+/* ⊕ B2C polish (9 Oct 2026) — the signed-out Sign In shared/nav.js now draws
+   into the bar wears the neutral pill above on a desktop and stands down at
+   900px and below (the drawer carries it there), matching nav.css. It needs
+   !important and the extra class: the `> a` rule above sets display with
+   !important. */
+@media (max-width: 900px) {
+  body[data-chrome="ks4"] #nav-auth-area > a.nav-bar-signin { display: none !important; }
+}
 body[data-chrome="ks4"] #nav-auth-area > a span {
   color: var(--k4-ink-2) !important;
   font-weight: 600 !important;

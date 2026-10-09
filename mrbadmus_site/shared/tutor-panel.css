@@ -1,0 +1,101 @@
+/* shared/tutor-panel.css — the tutor chat panel (#chatOverlay) for pages that
+   do NOT load shared/styles.css. Hand-written; linked by build_ks4.py on every
+   rebuilt KS4 lesson page (pilot and batches).
+
+   ⊕ B2C polish (9 Oct 2026). Why this exists: build_ks4.tutor_block() mounts
+   build_ks3.KS3_CHAT_OVERLAY on every KS4 lesson page, but every rule that
+   draws that overlay lives in shared/styles.css, which those pages never
+   load (ks4-lesson.css's KS4-DARK-4 note names the gap). So on all 308 pages
+   the overlay was plain static HTML: "Mr. Badmus AI / GCSE Science Tutor",
+   a broken "preview" image and a bare text box under the footer, and
+   "Ask about this lesson" opened the conversation down there, 15,000px below
+   the button. This file is styles.css's CHAT OVERLAY block, scoped to
+   #chatOverlay, with the tokens it reads defined ON #chatOverlay (so nothing
+   here can reach the lesson around it), at the values a KS3 lesson page
+   resolves them to — the same panel, light and dark.
+
+   ⚠️ A SECOND COPY of styles.css's chat rules. Change one, change the other:
+   `node tools/tutor_format_test.js` fails if a chat selector styles.css
+   draws is missing here. */
+
+#chatOverlay {
+  --bg: #E7E1D4; --card: #FFFDF8; --border: #E4DCCB; --border-strong: #D8CFBD;
+  --text: #1A1714; --muted: #6B635A; --sunken: #F7F2E8;
+  --accent: #E4572E; --accent-hover: #A93411; --accent-soft: #FBEEE9; --accent-border: #F0BBA9;
+  --on-accent: #FFFFFF; --on-accent-soft: #FBF5F3;
+  --tp-display: "Bricolage Grotesque", "Space Grotesk", system-ui, sans-serif;
+  color: var(--text);
+  color-scheme: light;
+}
+@media screen {
+  html[data-theme="dark"] #chatOverlay {
+    --bg: #16120E; --card: #1F1A15; --border: #3E352C; --border-strong: #4F443A;
+    --text: #F3ECE0; --muted: #C2B6A6; --sunken: #231D17;
+    --accent-soft: #3A2218; --accent-border: #6B3A28;
+    color-scheme: dark;
+  }
+}
+
+/* ── CHAT OVERLAY (from shared/styles.css) ── */
+#chatOverlay.chat-overlay {
+  position: fixed; inset: 0; background: var(--bg); z-index: 200;
+  display: flex; flex-direction: column;
+  pointer-events: none; opacity: 0; transition: opacity 0.2s;
+}
+#chatOverlay.chat-overlay.open { pointer-events: all; opacity: 1; }
+#chatOverlay.chat-overlay.open .chat-modal { transform: none; }
+#chatOverlay .chat-modal { width: 100%; height: 100%; background: var(--bg); display: flex; flex-direction: column; overflow: hidden; }
+#chatOverlay .chat-head { padding: 16px 18px; background: var(--accent-hover); display: flex; align-items: center; justify-content: space-between; }
+#chatOverlay .chat-head-info h3 { margin: 0; font-family: var(--tp-display); font-weight: 700; font-size: 1.1rem; color: var(--on-accent); }
+#chatOverlay .chat-head-info p { margin: 0; font-size: 0.9375rem; color: var(--on-accent-soft); }
+#chatOverlay .close-btn { background: none; border: none; cursor: pointer; font-size: 1.4rem; color: var(--on-accent); line-height: 1; padding: 4px; }
+#chatOverlay .chat-msgs { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+#chatOverlay .chat-msg { display: flex; gap: 10px; align-items: flex-start; }
+#chatOverlay .chat-msg--user { flex-direction: row-reverse; }
+#chatOverlay .chat-msg__avatar {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--sunken);
+  display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
+}
+#chatOverlay .chat-msg__bubble {
+  background: var(--card); border: 1px solid var(--border); padding: 12px 16px; border-radius: 14px;
+  font-size: 1.09375rem; line-height: 1.6; max-width: 80%; color: var(--text);
+}
+#chatOverlay .chat-msg--user .chat-msg__bubble { background: var(--accent-soft); border-color: var(--accent-border); border-bottom-right-radius: 4px; }
+#chatOverlay .chat-msg--bot .chat-msg__bubble { border-bottom-left-radius: 4px; }
+#chatOverlay .chat-msg__bubble .chat-rule { border: 0; border-top: 1px solid var(--border); height: 0; margin: 10px 0; }
+#chatOverlay .chat-msg__bubble .chat-quote { margin: 6px 0; padding: 2px 0 2px 12px; border-left: 3px solid var(--border); }
+#chatOverlay .chat-msg__bubble ul, #chatOverlay .chat-msg__bubble ol { margin: 6px 0; padding-left: 1.4em; }
+#chatOverlay .chat-msg__bubble ul { list-style: disc; }
+#chatOverlay .chat-msg__bubble ol { list-style: decimal; }
+#chatOverlay .chat-msg__bubble li { margin: 2px 0; }
+#chatOverlay .chat-msg__bubble li > ul, #chatOverlay .chat-msg__bubble li > ol { margin: 2px 0; }
+#chatOverlay .chat-msg__bubble p { margin: 0 0 6px; }
+#chatOverlay .chat-msg__bubble p:last-child { margin-bottom: 0; }
+#chatOverlay .chat-msg__bubble sub, #chatOverlay .chat-msg__bubble sup { font-size: .75em; line-height: 0; }
+#chatOverlay .typing span {
+  display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--muted);
+  margin: 0 2px; animation: tp-bounce 1.2s infinite;
+}
+#chatOverlay .typing span:nth-child(2) { animation-delay: 0.2s; }
+#chatOverlay .typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes tp-bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-8px)} }
+
+#chatOverlay .img-preview-row { display: none; align-items: center; gap: 8px; padding: 8px 16px; background: var(--card); border-top: 1px solid var(--border); }
+#chatOverlay .img-preview-row img { height: 60px; border-radius: 14px; }
+#chatOverlay .img-preview-row button { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.1rem; }
+
+#chatOverlay .chat-input-row { padding: 12px 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: center; box-sizing: border-box; }
+#chatOverlay .chat-input-row input {
+  flex: 1; min-width: 0; background: var(--card); border: 1px solid var(--border-strong); border-radius: 10px;
+  padding: 10px 14px; color: var(--text); font-family: inherit; font-size: 0.9rem; outline: none; transition: border-color 0.2s;
+}
+#chatOverlay .chat-input-row input::placeholder { color: var(--muted); opacity: 1; }
+#chatOverlay .chat-input-row input:focus { border-color: var(--accent); }
+#chatOverlay .chat-input-row .img-btn, #chatOverlay .chat-send-btn {
+  background: none; border: none; cursor: pointer; font-size: 1.4rem; padding: 6px; border-radius: 14px; transition: background 0.2s;
+}
+#chatOverlay .chat-input-row .img-btn:focus-visible, #chatOverlay .chat-send-btn:focus-visible, #chatOverlay .close-btn:focus-visible {
+  outline: 3px solid var(--accent); outline-offset: 2px;
+}
+#chatOverlay .chat-send-btn { background: var(--accent); color: var(--on-accent); border-radius: 10px; font-size: 1.1rem; padding: 8px 14px; }
+#chatOverlay .chat-send-btn:hover { background: var(--accent-hover); }

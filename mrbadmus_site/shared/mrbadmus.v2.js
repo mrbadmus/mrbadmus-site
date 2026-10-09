@@ -212,25 +212,124 @@ FULL BIOLOGY SPECIFICATION TOPICS:
      Real answers carried literal "---" lines and a leading "> " (Markdown the
      model writes) because only bold, italics and code were understood. Now:
        · ESCAPED FIRST, then formatted. This used to put the model's text into
-         innerHTML raw, so any "<" in a reply was markup; every tag below is
-         one this function writes, never one the reply supplied.
+         innerHTML raw, so any "<" in a reply was markup;
        · a "---" / "***" / "___" line is a thin rule (<hr class="chat-rule">);
        · consecutive "> " lines are one quote (<blockquote class="chat-quote">);
        · a "# Heading" line is a bold line (the same defect: raw "##" marks);
-       · everything else exactly as before — **bold**, *italics*, `code`, and
-         every newline a <br> (so a blank line is still <br><br>). Lists stay
-         as the model's own "- " / "1." lines, as they always have.
-     Blank lines touching a rule or a quote are dropped: the block already
-     separates, and keeping them would stack a gap on top of its margin. */
+       · **bold**, *italics*, `code` as before, and every other newline a
+         <br> (so a blank line between paragraphs is still <br><br>).
+     Blank lines touching a rule, a quote or a list are dropped: the block
+     already separates, and keeping them would stack a gap on its margin.
+
+     ⊕ Round 2 (Mide, 9 Oct 2026) — "show that chemical formulae (<sub>),
+     bold, lists and line breaks still render, not as raw tags. If they
+     don't, render a safe allow-list and escape everything else." Driven
+     against the real model: it writes CO₂ in Unicode and bold as **…**, so
+     no raw tag showed — but lists came out as "- " / "1." text lines, and a
+     reply that DID carry <sub> (a pupil asks for HTML, or pastes some) would
+     have shown the tags as text. So:
+       · ALLOW-LIST. Exactly sub, sup, b, strong, em, i, br, p, ul, ol, li
+         survive as real elements, and only in their bare form (`<sub>`,
+         `</sub>`, `<br/>`). A tag with ANY attribute (`<sub onclick=…>`,
+         `<b style=…>`) is not on the list and is escaped like every other
+         "<". Allowed tags are lifted out as placeholders BEFORE the escape
+         and re-emitted by restoreTags() in canonical form and balanced (a
+         stray close is dropped, an unclosed open is closed at the end), so
+         no byte the reply supplied is ever itself parsed as markup.
+       · LISTS. Runs of "- " / "* " / "• " lines are a <ul>, runs of "1. " /
+         "1) " lines an <ol>, numbered from the reply's own first number. A
+         blank line between two items of one list does not end it; an
+         indented line under an item continues that item; an indented item
+         is one nested list. */
+  const ALLOWED_TAG = /<(\/?)(sub|sup|strong|em|br|ul|ol|li|b|i|p)\s*\/?>/gi;
+  const PH = /(\d+)/g;
+
   function inlineReply(line) {
     return line.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/`(.*?)`/g,'<code>$1</code>');
   }
 
+  // Re-emit the reply's own allowed tags, balanced. tags[n] = {close, name};
+  // its placeholder is  n  (neither character survives in the
+  // reply itself: both are stripped before lifting).
+  function restoreTags(html, tags) {
+    const stack = [];
+    const out = html.replace(PH, (m, n) => {
+      const t = tags[+n];
+      if (t.name === 'br') return t.close ? '' : '<br>';
+      if (!t.close) { stack.push(t.name); return '<' + t.name + '>'; }
+      const at = stack.lastIndexOf(t.name);
+      if (at === -1) return '';                        // a close with no open
+      let closes = '';
+      while (stack.length > at) closes += '</' + stack.pop() + '>';
+      return closes;
+    });
+    let tail = '';
+    while (stack.length) tail += '</' + stack.pop() + '>';
+    // A line break touching a block tag is spacing the block already gives.
+    return (out + tail)
+      .replace(/(?:<br>)+(?=<\/?(?:ul|ol|li|p)>)/g, '')
+      .replace(/(<\/?(?:ul|ol|li|p)>)(?:<br>)+/g, '$1');
+  }
+
+  const RULE = /^\s*([-*_])(?:\s*\1){2,}\s*$/;
+  function listItem(raw) {
+    if (RULE.test(raw)) return null;                   // a rule, not a list
+    let m = /^(\s*)(\d{1,3})[.)]\s+(.*)$/.exec(raw);
+    if (m) return { kind: 'ol', indent: m[1].length, start: +m[2], body: m[3] };
+    m = /^(\s*)[-*•]\s+(.*)$/.exec(raw);
+    if (m) return { kind: 'ul', indent: m[1].length, start: 1, body: m[2] };
+    return null;
+  }
+  function newList(li) {
+    return { kind: li.kind, indent: li.indent, start: li.start, items: [{ lines: [li.body], sub: null }] };
+  }
+  function renderList(list) {
+    const open = (list.kind === 'ol' && list.start !== 1) ? '<ol start="' + list.start + '">' : '<' + list.kind + '>';
+    return open + list.items.map(it =>
+      '<li>' + it.lines.map(inlineReply).join('<br>') + (it.sub ? renderList(it.sub) : '') + '</li>'
+    ).join('') + '</' + list.kind + '>';
+  }
+
   function formatReply(text) {
-    const lines = esc(text).replace(/\r\n?/g, '\n').split('\n');
-    const items = [];                       // {block:bool, html}
-    let quote = null;
-    for (const raw of lines) {
+    const tags = [];
+    const lifted = String(text).replace(/[]/g, '').replace(ALLOWED_TAG, (m, close, name) => {
+      tags.push({ close: !!close, name: name.toLowerCase() });
+      return '' + (tags.length - 1) + '';
+    });
+    const lines = esc(lifted).replace(/\r\n?/g, '\n').split('\n');
+    const items = [];                       // {block:bool, html | quote | list}
+    let quote = null, list = null;
+    for (let i = 0; i < lines.length; i++) {
+      const raw = lines[i];
+      const li = listItem(raw);
+      if (list) {
+        const last = list.items[list.items.length - 1];
+        if (li && li.indent >= list.indent + 2) {                  // nested
+          if (!last.sub) last.sub = newList(li);
+          else if (last.sub.kind === li.kind) last.sub.items.push({ lines: [li.body], sub: null });
+          else last.lines.push(li.body);
+          continue;
+        }
+        if (li && li.kind === list.kind) { list.items.push({ lines: [li.body], sub: null }); continue; }
+        if (!li && /^\s{2,}\S/.test(raw)) {                        // continuation
+          const tgt = last.sub ? last.sub.items[last.sub.items.length - 1] : last;
+          tgt.lines.push(raw.trim());
+          continue;
+        }
+        if (raw.trim() === '') {                                   // a gap inside one list?
+          let j = i + 1;
+          while (j < lines.length && lines[j].trim() === '') j++;
+          const next = j < lines.length ? listItem(lines[j]) : null;
+          if (next && (next.kind === list.kind || next.indent >= list.indent + 2)) { i = j - 1; continue; }
+        }
+        list = null;
+      }
+      if (li) {
+        quote = null;
+        list = newList(li);
+        items.push({ block: true, list });
+        continue;
+      }
       const q = /^\s*&gt;\s?(.*)$/.exec(raw);
       if (q) {
         if (!quote) { quote = []; items.push({ block: true, quote }); }
@@ -238,7 +337,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
         continue;
       }
       quote = null;
-      if (/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(raw)) {
+      if (RULE.test(raw)) {
         items.push({ block: true, html: '<hr class="chat-rule">' });
         continue;
       }
@@ -254,11 +353,12 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     let out = '';
     kept.forEach((it, i) => {
       if (it.quote) it.html = '<blockquote class="chat-quote">' + it.quote.join('<br>') + '</blockquote>';
+      if (it.list) it.html = renderList(it.list);
       const prev = kept[i - 1];
       if (prev && !prev.block && !it.block) out += '<br>';
       out += it.html;
     });
-    return out;
+    return restoreTags(out, tags);
   }
   if (window.MRB_TUTOR_TEST_HOOK) window.MRB_TUTOR_TEST_HOOK.formatReply = formatReply;
 
@@ -391,7 +491,7 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
     if (ov) {
       ov.setAttribute('role', 'dialog');
       ov.setAttribute('aria-modal', 'true');
-      ov.setAttribute('aria-label', 'Ask Mr Badmus');
+      ov.setAttribute('aria-label', 'Ask MrBadmus');
     }
     // Stream G follow-up — capture whichever control was focused (a mouse
     // click on a button focuses it natively) BEFORE this panel steals focus,
@@ -475,7 +575,8 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
     const hasImg = !!pendingImg;
     if (!q && !hasImg) return;
     if (input) input.value = '';
-    addMsg('user', (q||'Please answer this question:') + (hasImg ? `<br><img src="${pendingImg}" style="max-width:150px;border-radius:6px;margin-top:6px;display:block;" alt="question"/>` : ''));
+    // The pupil's own words are text too (they were innerHTML until 9 Oct 2026).
+    addMsg('user', esc(q||'Please answer this question:') + (hasImg ? `<br><img src="${pendingImg}" style="max-width:150px;border-radius:6px;margin-top:6px;display:block;" alt="question"/>` : ''));
     const imgData = pendingImg; clearImg();
     const t = addMsg('bot', '<div class="typing"><span></span><span></span><span></span></div>');
     let userContent = hasImg ? [{ type:'image', source:{ type:'base64', media_type:imgData.split(';')[0].split(':')[1], data:imgData.split(',')[1] }}, { type:'text', text:q||'Answer this GCSE Science question fully using FIFA for any calculations.' }] : q;

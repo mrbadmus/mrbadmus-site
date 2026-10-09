@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-<script>(function(){var p='system';try{p=localStorage.getItem('mrb-theme')||'system'}catch(e){}if(p!=='dark'&&p!=='light')p='system';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>Account — MrBadmus</title>
@@ -242,7 +242,9 @@
     none: {
       label: 'Not started', badge: 'band',
       line: 'Nothing has been charged.',
-      cta: { label: 'Start your free week', kind: 'accent', act: 'checkout', note: '' }
+      /* ⊕ B2C polish (9 Oct 2026): to the signup plan step, where Monthly
+         and Annual are both shown — it went straight to Stripe, monthly. */
+      cta: { label: 'Start your free week', kind: 'accent', act: 'start-plan', note: '' }
     },
     /* ⊕ B2C fix run (9 Oct 2026). A seventh she did not draw: Stripe holds
        the subscription and our side has not caught up yet. No CTA at all —
@@ -673,9 +675,15 @@
         '<button type="button" data-act="cancel-delete" id="ak-keep" style="min-height:48px;' +
           'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);' +
           'font-weight:700;font-size:15px;color:var(--ks3-on-dark);cursor:pointer">Keep my account</button>' +
-        '<button type="button" data-act="do-delete" style="min-height:48px;' +
+        /* ⊕ B2C polish (9 Oct 2026). Disabled until "I understand" is
+           ticked — it used to look and press exactly like a live button and
+           only refused after the tap. `disabled` + aria-disabled take
+           consumer.css's one disabled look; ticking enables it in place
+           (bindInputs), unticking disables it again. */
+        '<button type="button" data-act="do-delete" id="ak-do-delete" style="min-height:48px;' +
           'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);' +
-          'color:var(--ks3-ink);font-weight:700;font-size:15px;cursor:pointer">Delete my account</button>' +
+          'color:var(--ks3-ink);font-weight:700;font-size:15px;cursor:pointer"' +
+          (S.delTicked ? '' : ' disabled aria-disabled="true"') + '>Delete my account</button>' +
       '</div></div></section>';
   }
 
@@ -697,6 +705,12 @@
       t.addEventListener('change', function () {
         S.delTicked = t.checked;
         if (t.checked) { msg('', null, 'ak-del-msg'); }
+        var del = document.getElementById('ak-do-delete');
+        if (del) {
+          del.disabled = !t.checked;
+          if (t.checked) { del.removeAttribute('aria-disabled'); }
+          else { del.setAttribute('aria-disabled', 'true'); }
+        }
       });
     }
   }
@@ -840,8 +854,11 @@
       });
     },
 
+    'start-plan': function () { window.location.href = C.planStepHref(); },
+
     /* The one checkout path (consumer-common.js, ruling 1): spinner on the
-       button, a 25-second limit, and a plain line under it on any failure. */
+       button, a 25-second limit, and a plain line under it on any failure.
+       Restart only now: it repeats the plan the family already had. */
     'checkout': function (el) {
       C.startCheckout(el, {
         token: ctx.token, interval: interval(),
@@ -992,6 +1009,6 @@
   } });
 })();
 </script>
-<script src="/shared/theme.js?v=83dd2451" defer></script>
+<script src="/shared/theme.js?v=f04be205" defer></script>
 </body>
 </html>

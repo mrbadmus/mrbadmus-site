@@ -119,12 +119,29 @@
     slot.innerHTML = '<a href="' + href + '" class="nav-drawer-chip" style="background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-border);">' + inner + '</a>';
   }
 
+  /* ⊕ B2C polish (9 Oct 2026) — SIGN IN IS IN THE BAR ON A DESKTOP.
+     65b8cbf3a (MRB-109 follow-up, July) emptied #nav-auth-area for a
+     signed-out visitor and left Sign In only inside the hamburger drawer, so
+     at 1280px a visitor looking for it had to open a menu to find it. The
+     bar's own copy is back, Sign In only (Sign Up stays in the drawer), and
+     it is drawn here rather than in each page's HTML so every page that
+     loads this file gets it from one place. At 900px and below nav.css and
+     ks4-chrome.css hide it, so the phone bar is exactly what it was and the
+     drawer is still the way in there. It is painted in the same task as the
+     session check below, so a signed-in pupil never sees it flash. */
+  function renderBarSignedOut(area) {
+    if (!area) return;
+    area.innerHTML = '<a href="' + carry('/auth.html?tab=signin') + '" class="btn-signin nav-bar-signin">Sign In</a>';
+  }
+
   // ── Auth control (nav cluster + drawer) ─────────────────────────────────
   function initAuth(drawerAuthSlot) {
     var area = document.getElementById('nav-auth-area');
     // Default (signed-out) drawer state; upgraded below if a live session exists.
     renderDrawerAuthSignedOut(drawerAuthSlot);
     if (!area) return;
+    // Default (signed-out) bar state; paintChip() replaces it when signed in.
+    renderBarSignedOut(area);
     if (!SUPA_URL || !SUPA_KEY || !SESSION_KEY) return;
 
     try {

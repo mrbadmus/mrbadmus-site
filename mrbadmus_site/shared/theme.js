@@ -7,12 +7,9 @@
    1. The inline pre-paint snippet in <head> (THEME_HEAD in theme_head.py — the
       same bytes on every page) reads localStorage 'mrb-theme' and writes
       <html data-theme="light|dark" data-theme-pref="light|dark|system"> before
-      first paint. System is the default and the fallback for anything
-      unreadable: a fresh device follows its own prefers-color-scheme, and a
-      stored explicit Light or Dark always wins.
-      ⊕ B2C polish (9 Oct 2026). The default used to be Light, so a fresh
-      phone in dark mode opened every page in Light with Light selected
-      (blind journey run). This file and THEME_HEAD must agree; both changed.
+      first paint. Light is the default and the fallback for anything unreadable.
+      ⊕ 9 Oct 2026: 48f2dd4d0 made System the default for a fresh device; Mide
+      ruled that a mistake and restored Light. System still works when chosen.
    2. Every family's stylesheet keys its dark tokens on html[data-theme="dark"].
       Because data-theme is ALWAYS written, the older prefers-color-scheme blocks
       (which stand down under data-theme="light") never fire on their own.
@@ -23,8 +20,8 @@
    Storage: localStorage only. profiles has no suitable column on production;
    the migration that adds one (profiles.colour_scheme) is parked — see
    docs/theme/REPORT.md. Every storage access is wrapped: a private window or
-   blocked storage leaves the page on System (the device's own scheme) and the
-   control still works for the life of the page. */
+   blocked storage leaves the page in light and the control still works for the
+   life of the page. */
 (function () {
   'use strict';
   if (window.MRBTheme) return;
@@ -36,12 +33,11 @@
   var memory = null;           // the choice when storage is unavailable
   var listeners = [];
 
-  var DEFAULT = 'system';
-  function clean(p) { return PREFS.indexOf(p) >= 0 ? p : DEFAULT; }
+  function clean(p) { return PREFS.indexOf(p) >= 0 ? p : 'light'; }
 
   function read() {
     try { var v = window.localStorage.getItem(KEY); if (v) return clean(v); } catch (e) {}
-    return memory ? memory : DEFAULT;
+    return memory ? memory : 'light';
   }
 
   function write(p) {

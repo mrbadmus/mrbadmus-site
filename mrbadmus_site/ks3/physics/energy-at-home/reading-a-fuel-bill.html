@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<script>(function(){var p='system';try{p=localStorage.getItem('mrb-theme')||'system'}catch(e){}if(p!=='dark'&&p!=='light')p='system';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Reading a fuel bill | KS3 | MrBadmus</title>
 <meta name="description" content="A real bill says “units used: 412” and charges 27p each, and never once says what a unit is. Build the bill row by row — and meet the one calculation in KS3 that needs two different diagrams."/>
@@ -17,8 +17,8 @@
 <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
 <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
 <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
-<link rel="stylesheet" href="/shared/styles.css?v=ba27bd67"/>
-<link rel="stylesheet" href="/shared/nav.css?v=7415488f"/>
+<link rel="stylesheet" href="/shared/styles.css?v=71b6cfe3"/>
+<link rel="stylesheet" href="/shared/nav.css?v=af731eb1"/>
 <link rel="stylesheet" href="/shared/ks3.css?v=2f931f9a"/>
 <link rel="stylesheet" href="/shared/ks3-theme.css?v=6e4b9223"/>
 <link rel="stylesheet" href="/shared/topbar.css?v=3f7041f1"/>
@@ -44,7 +44,7 @@
 <section class="ks3-block ks3-dark ks3-keynote"><h2>Key note</h2><p>A unit is a kilowatt-hour, which is energy, not power. Cost = units × price. A bill is a sum of products — triangle for a row, balance for the total. And a standing charge is owed whether you use anything or not.</p></section>
 <section class="ks3-layer ks3-stretch"><div class="ks3-layer-head"><p class="ks3-eyebrow">Going further</p><span class="ks3-layer-rule" aria-hidden="true"></span></div><div class="ks3-layer-body"><section class="ks3-block ks3-explainer"><p>The standing charge is the line people argue about, and it is worth understanding why it exists rather than just resenting it. The cables, substations, meters and the crew who come out when a line goes down all cost the same whether your house draws 400 units a month or none — so that cost is billed per day rather than per unit. It has a consequence that catches people out: <strong>a household that cuts its usage in half does not halve its bill, because a fixed portion never moves.</strong> If you ever want to work out what a genuine saving would be worth, the standing charge has to come out of the calculation first, and it is the one row on the bill that no change in behaviour will touch.</p></section>
 <section class="ks3-block ks3-explainer"><p>Gas is the other half of most fuel bills, and its meter counts volume, not energy: the number in the little window is cubic metres of gas that have gone past, and that is not the number you are billed for. The bill converts it with a formula printed on every UK gas bill — kWh = m³ × 1.02264 × 39.5 ÷ 3.6. The 1.02264 is a volume correction factor, fixed by the regulator, bringing the measured volume to a standard temperature and pressure. The 39.5 is the calorific value in megajoules per cubic metre — how much energy that gas carries. The network measures it and prints it on the bill, and it does vary, roughly 37.5 to 43.0, with where the gas came from. Dividing by 3.6 turns megajoules into kilowatt-hours, because one kilowatt-hour is 3.6 MJ. So 100 m³ gives 100 × 1.02264 = 102.264, then × 39.5 = 4039.4 MJ, then ÷ 3.6 = 1122 kWh. Domestic energy is charged VAT at 5 per cent, not the standard 20. <strong>The unit at the end is the same kilowatt-hour the electricity side is billed in</strong> — which is what lets you compare the two halves of a bill.</p></section></div></section>
-<div class="ks3-endmatter"><section><h2>Before this lesson</h2><ul><li><a href="/ks3/physics/energy-at-home/calculating-energy-transferred.html">Calculating energy transferred <svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a></li></ul></section><section><h2>At GCSE this becomes</h2><ul><li><span class="ks3-endmatter-prose">Domestic energy costs, and the National Grid&#x27;s role in matching supply to demand.</span></li></ul></section><section><h2>Where to next</h2><ul><li><a href="/ks3/physics/energy-at-home/fuels-and-energy-resources.html">Next: Fuels and energy resources <svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a></li><li><a href="/ks3/physics/energy-at-home/calculating-energy-transferred.html">Previous: Calculating energy transferred <svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a></li></ul></section><section class="ks3-tutor"><h2>Ask Mr Badmus AI</h2><p>Still unsure whether kWh is power or energy?</p><button type="button" class="ks3-tutor-cta" data-open-chat>Ask about this lesson <svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button></section></div>
+<div class="ks3-endmatter"><section><h2>Before this lesson</h2><ul><li><a href="/ks3/physics/energy-at-home/calculating-energy-transferred.html">Calculating energy transferred <svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a></li></ul></section><section><h2>At GCSE this becomes</h2><ul><li><span class="ks3-endmatter-prose">Domestic energy costs, and the National Grid&#x27;s role in matching supply to demand.</span></li></ul></section><section><h2>Where to next</h2><ul><li><a href="/ks3/physics/energy-at-home/fuels-and-energy-resources.html">Next: Fuels and energy resources <svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a></li><li><a href="/ks3/physics/energy-at-home/calculating-energy-transferred.html">Previous: Calculating energy transferred <svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a></li></ul></section><section class="ks3-tutor"><h2>Ask MrBadmus</h2><p>Still unsure whether kWh is power or energy?</p><button type="button" class="ks3-tutor-cta" data-open-chat>Ask about this lesson <svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button></section></div>
 <p class="ks3-legal">Lesson content © MrBadmus.</p>
 </div>
 </main>
@@ -58,7 +58,7 @@
   <div class="chat-modal">
     <div class="chat-head">
       <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
+        <h3>Ask MrBadmus</h3>
         <p id="chat-head-subtitle">KS3 Science Tutor</p>
       </div>
       <button class="close-btn" type="button" aria-label="Close the tutor"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
@@ -71,14 +71,14 @@
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Add a photo of your work" tabindex="0" role="button" aria-label="Attach a photo">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask Mr Badmus anything about this lesson"/>
+      <input type="text" id="ci" placeholder="Ask MrBadmus anything about this lesson"/>
       <button class="chat-send-btn" type="button" aria-label="Send"><svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
     </div>
   </div>
 </div>
-<script src="/shared/mrbadmus.v2.js?v=b0047776" defer fetchpriority="low"></script>
+<script src="/shared/mrbadmus.v2.js?v=e818b0d0" defer fetchpriority="low"></script>
 <script>document.addEventListener("DOMContentLoaded",function(){if(window.MrBadmus){MrBadmus.init({"keyStage": "ks3", "subject": "physics", "topic": "Energy at home \u2014 Reading a fuel bill"});}});</script>
-<script src="/shared/theme.js?v=83dd2451" defer></script><script src="/shared/ks3.js?v=60112024" defer fetchpriority="low"></script>
+<script src="/shared/theme.js?v=f04be205" defer></script><script src="/shared/ks3.js?v=60112024" defer fetchpriority="low"></script>
 <script src="/shared/class-entry.js?v=f09195e5" defer></script>
 <script src="/shared/student-bell.js?v=c9eba610" defer></script>
 <script src="/shared/topbar.js?v=06473e4b" defer></script>
