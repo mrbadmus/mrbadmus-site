@@ -503,11 +503,42 @@
 
     C.signOutControl(document.getElementById('ex-signout'), { sb: ctx.sb });
 
-    backLink.href = C.href('/consumer/today.html');
-    backBtn.addEventListener('click', function () {
+    /* ⊕ B2C polish (9 Oct 2026). Back goes where the child came from, in
+       one step. A question opened from Today's link (?q= on arrival) came
+       from Today, so the header arrow on it goes to Today — it used to drop
+       the child on the question list, with the old ?q= still in the
+       address bar, and Today was a second press away. A question opened
+       from the list here goes back to the list. Leaving for the list (the
+       arrow, or "Another question") ends the Today link's claim. */
+    var fromToday = !!openId;
+
+    function toPick() {
+      fromToday = false;
       screen = 'pick'; result = null; justSent = false; draft = '';
       paint();
+    }
+
+    backLink.href = C.href('/consumer/today.html');
+    backBtn.addEventListener('click', function () {
+      if (fromToday) { window.location.href = backLink.href; return; }
+      toPick();
     });
+
+    /* The address bar names the question on screen, and nothing on the
+       list: `q` is replaced (never pushed) on every screen change, so a
+       reload reopens what the child is looking at and the browser's Back
+       still goes straight to where they came from. */
+    function syncUrl() {
+      var want = screen === 'pick' ? null : (openId || null);
+      try {
+        var qs = new URLSearchParams(window.location.search);
+        if ((qs.get('q') || null) === (want == null ? null : String(want))) { return; }
+        if (want == null) { qs.delete('q'); } else { qs.set('q', want); }
+        var s = qs.toString();
+        window.history.replaceState(window.history.state, '',
+          window.location.pathname + (s ? '?' + s : '') + window.location.hash);
+      } catch (e) { /* a sandboxed frame: the address bar simply stays */ }
+    }
 
     function esc(s) { return C.escapeHtml(s); }
     function find(id) {
@@ -539,6 +570,8 @@
     function paint() {
       backLink.hidden = screen !== 'pick';
       backBtn.hidden  = screen === 'pick';
+      backBtn.setAttribute('aria-label', fromToday ? 'Back to today' : 'Back to the questions');
+      syncUrl();
       if (screen === 'pick')    { return paintPick(); }
       if (screen === 'write')   { return paintWrite(); }
       if (screen === 'marking') { return paintMarking(); }
@@ -1055,9 +1088,7 @@
       document.getElementById('ex-again').addEventListener('click', function () {
         draft = ''; result = null; screen = 'write'; paint();
       });
-      document.getElementById('ex-another').addEventListener('click', function () {
-        screen = 'pick'; result = null; justSent = false; draft = ''; paint();
-      });
+      document.getElementById('ex-another').addEventListener('click', toPick);
       window.scrollTo(0, 0);
     }
 
@@ -1122,6 +1153,7 @@
          on the question is the point of that link. */
       if (openId && find(openId)) { return openQuestion(openId); }
       openId = null;
+      fromToday = false;           // a stale or unknown ?q= lands on the list
       paint();
 
       /* THEN the current unit, and a repaint if it changes the answer. The
