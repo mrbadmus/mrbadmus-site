@@ -110,6 +110,12 @@
     '.mrb-theme-pop .mrb-theme label{width:auto;height:36px;justify-content:flex-start;gap:10px;padding:0 14px 0 10px;border-radius:10px}',
     '.mrb-theme-pop .mrb-theme .mrb-theme-sr{position:static;width:auto;height:auto;margin:0;overflow:visible;clip:auto;white-space:nowrap;font-size:.9rem;font-weight:600}',
     '@media (max-width:600px){.mrb-theme-c>.mrb-theme{display:none}.mrb-theme-menu{display:inline-block}}',
+    /* ⊕ B2C polish (9 Oct 2026) — a 44×44 tap target per option on a phone
+       or any touch screen (WCAG 2.5.5; measured 30×28 on /parents/ at 390).
+       The desktop mouse keeps the compact 30×28 row it was drawn at. Every
+       slot gets it — inline group, the compact button, the popover rows —
+       so the control is the same size wherever it sits. */
+    '@media (max-width:600px),(pointer:coarse){.mrb-theme label{width:44px;height:44px}.mrb-theme-menu>summary{width:44px;height:44px}.mrb-theme-pop .mrb-theme label{width:auto;min-width:44px;height:44px}}',
     '@media print{.mrb-theme{display:none!important}}'
   ].join('');
 
