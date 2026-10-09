@@ -812,6 +812,304 @@ START_HERE = {
         big_question="A candle burns down to nothing. A nail rusts and gets "
                      "heavier. What is happening to the mass in each?",
     ),
+
+
+    # ── Year 7 · C3 Mixtures and separation ─────────────────────────────────────
+
+    # pure-or-mixture — keeps the old hook (juice vs distilled water) as a two-
+    # way guess; the carton label is the tempting wrong option (MIX-01 is
+    # elicited by the hook). Title, scene and big question changed: "means
+    # nothing to a chemist" and "Only one of them is" say which label is empty.
+    # The "Pure juice" think block asks the same question again, as it did after
+    # the old hook. Wrong reply reworded: "so that is a fair guess" doubled the
+    # page's own "Fair guess."
+    "pure-or-mixture": dict(
+        title="Two honest labels.",
+        scene="A carton says <strong>100% pure orange juice</strong>. A bottle"
+              " in the lab says <strong>distilled water</strong>. Both labels "
+              "are honest.",
+        question="If you had to guess, which of these would a chemist call "
+                 "pure?",
+        options=[
+            ("The orange juice",
+             "The carton does say 100% pure. But to a chemist, pure means one "
+             "substance, and juice is water, sugars, acids and pulp together. "
+             "The distilled water is the pure one."),
+            ("The distilled water",
+             "Distilled water is one substance and nothing else. Juice is "
+             "water, sugars, acids, pulp and more all together."),
+        ],
+        answer=1,
+        bridge="Chemists count substances, not labels. Next: eight samples on "
+               "the bench, and a decision on each.",
+        big_question="A carton of juice, a gold ring and a bottle of lab water"
+                     " all claim to be pure. What is the chemist actually "
+                     "asking?",
+    ),
+
+    # dissolving-and-solutions — keeps the old balance commit as a two-way guess
+    # (still 110 g vs less); "more than 110 g" is dropped. Title kept. Big
+    # question changed: "vanishes without a trace. Where has it gone" presupposes
+    # it has gone somewhere. Bridge changed: the draft's "Next" skipped the two
+    # vocabulary explainers that come straight after the hook.
+    "dissolving-and-solutions": dict(
+        question="If you had to guess, will the balance still read 110 g now, "
+                 "or less?",
+        options=[
+            ("Still 110 g",
+             "The sugar has not gone. It has broken up into particles too "
+             "small to see and spread through the water, and the balance "
+             "counts every gram."),
+            ("Less than 110 g",
+             "You cannot see any sugar. But nothing has left the beaker. The "
+             "sugar is still there, in pieces far too small to see."),
+        ],
+        answer=0,
+        bridge="A substance that dissolves is hidden, not removed. Next: the "
+               "names for each part of a solution, then what decides how much "
+               "can dissolve.",
+        big_question="Sugar stirred into water seems to vanish. What has "
+                     "really happened to it, and what decides how much can go "
+                     "in?",
+    ),
+
+    # filtration — keeps the old sand/salt papers commit as a two-way guess (just
+    # the sand vs sand and salt). The steps block asks a close cousin ("where
+    # does the salt end up?") before the pour, exactly as it did after the old
+    # hook, whose reveal answered it outright. Big question changed: "cannot be
+    # done with any paper at all" states the result.
+    "filtration": dict(
+        question="If you had to guess, will the filter papers catch sand and "
+                 "salt, or just the sand?",
+        options=[
+            ("Just the sand",
+             "The sand grains are far too big to fit through the paper. The "
+             "dissolved salt goes straight through with the water."),
+            ("Sand and salt",
+             "Salt is a solid, so you might expect the paper to catch it. But "
+             "it has dissolved into the water, and its particles are far too "
+             "small to be caught."),
+        ],
+        answer=0,
+        bridge="Filtering only catches a solid that has not dissolved. Next: "
+               "watch it done step by step, then put the steps in order "
+               "yourself.",
+        big_question="Filter paper can take sand out of water. What about "
+                     "salt, and why?",
+    ),
+
+    # evaporation-and-crystallisation — keeps the old boiled dish vs windowsill
+    # dish commit as a two-way guess; fast-is-better is the tempting wrong idea.
+    # Title and scene kept. Big question changed: "a question of how much of a
+    # hurry you are in" gives the answer away. Bridge changed: the draft repeated
+    # the scene's "same mass of salt"; it now answers the old hook's "why would
+    # anyone care?" from the old reveal.
+    "evaporation-and-crystallisation": dict(
+        question="If you had to guess, which dish has the bigger crystals in "
+                 "it?",
+        options=[
+            ("The boiled dish",
+             "Heat speeds everything up. But a fast boil starts thousands of "
+             "tiny crystals at once, and none of them gets big."),
+            ("The windowsill dish",
+             "Slow evaporation lets the salt particles join up in an orderly "
+             "way. A few crystals start, and they grow big."),
+        ],
+        answer=1,
+        bridge="A big, clean crystal is also good evidence that you have one "
+               "substance, not a dried-out puddle of everything. Next: three "
+               "ways of removing the water to try for yourself.",
+        big_question="The salt is dissolved and invisible. How do you get it "
+                     "back, and does the way you do it matter?",
+    ),
+
+    # distillation — keeps the old life-raft commit as a two-way guess (boil and
+    # catch the steam vs wait for the salt to sink). The still's sea-water gate
+    # asks a close cousin, as it did after the old hook, whose reveal answered it
+    # outright. Title and scene kept. Big question changed: "Evaporation throws
+    # the water away" points at catching it, and the draft replacement restated
+    # the hook question; the new one covers the whole lesson (salt water and
+    # ethanol).
+    "distillation": dict(
+        question="If you had to guess, how do you get fresh water out of the "
+                 "sea water?",
+        options=[
+            ("Boil it, catch the steam",
+             "Only the water boils off. The salt stays behind, and the steam "
+             "turns back into fresh water when it meets a cold surface."),
+            ("Wait for the salt to sink",
+             "Salt does sink if you tip in more than will dissolve. But salt "
+             "that has dissolved stays spread through the water, however long "
+             "you wait."),
+        ],
+        answer=0,
+        bridge="That is distillation: boil to separate, cool to collect. Next:"
+               " run a still yourself and see what comes out.",
+        big_question="Sea water is almost all water, and you still cannot "
+                     "drink it. How do you get a pure liquid back out of a "
+                     "mixture?",
+    ),
+
+    # chromatography — old hook already asked "what happens to a dot of ink?";
+    # two-way version is stays black vs splits into colours. Reviewer narrowed it
+    # to the NOTE's ink: the lesson's Pen D gives a single blue spot, so "a black
+    # dot splits into colours" is not true of every pen on this page, while the
+    # note's ink splits into three. Title, scene and big question changed: "Black
+    # ink is not black. It is three or four colours pretending" gives the answer
+    # away. "Four black pens" kept for the rail stop.
+    "chromatography": dict(
+        title="Four black pens, one note.",
+        scene="A note has been written in black ink, and four black pens have "
+              "been collected. All four look identical on paper, and staring "
+              "at them will not tell you which pen wrote the note. You put a "
+              "dot of the note's ink near the bottom of a strip of paper and "
+              "let water creep up through it.",
+        question="If you had to guess, as the water creeps up, will the black "
+                 "dot stay black, or split into other colours?",
+        options=[
+            ("It stays black",
+             "Black does look like a single colour. But this ink is a mix of "
+             "dyes, and as the water climbs they come apart into separate "
+             "coloured spots."),
+            ("It splits into colours",
+             "The black is really a mix of dyes. The water carries each dye up"
+             " the paper a different distance, so they separate."),
+        ],
+        answer=1,
+        bridge="Pens mix their black from different sets of dyes, so the "
+               "patterns can tell them apart. Next: set the paper up and run "
+               "it.",
+        big_question="Four black inks look identical on paper. How could you "
+                     "tell which pen wrote the note?",
+    ),
+
+    # proving-something-is-pure — angle changed by the writer and KEPT: a two-way
+    # "weigh it or measure when it melts?" would answer the plan-critique block
+    # that comes straight after (it rules on weighing, looking, dissolving), so
+    # the guess is the melting behaviour itself: does the impure powder start
+    # melting lower or higher? Lower is the lesson's own key fact; salt on an icy
+    # road is the lesson's own stretch example. Title and scene changed: the old
+    # title says one bag is impure. The bench still has to find WHICH batch, from
+    # ranges and repeats.
+    "proving-something-is-pure": dict(
+        title="Three bags of white powder.",
+        scene="A supplier has sent three bags of the same white powder, all "
+              "labelled pure. One of them has something else mixed in. All "
+              "three look identical, and the label is not evidence. You heat a"
+              " little of each until it melts.",
+        question="If you had to guess, will the powder with something mixed in"
+                 " start melting at a lower temperature, or a higher one?",
+        options=[
+            ("A lower temperature",
+             "Something mixed in breaks up the neat pattern of the particles, "
+             "so it starts to give way sooner. Salt on an icy road works in "
+             "the same way."),
+            ("A higher temperature",
+             "More stuff might seem to need more heat. But the extra stuff "
+             "gets in the way of the neat pattern, so the powder starts "
+             "melting at a lower temperature."),
+        ],
+        answer=0,
+        bridge="That gives you something a thermometer can measure, whatever "
+               "the label says. Next: judge a student's plan, then measure the"
+               " melting points.",
+    ),
+
+
+    # ── Year 7 · P3 Describing motion ───────────────────────────────────────────
+
+    # speed — old hook asked what you need to know to compare the fly and plane;
+    # two-way version asks which is really faster (FORCE-02, elicited by the
+    # hook). Fly and plane kept: compare-pairs Pair 2 is labelled "the one from
+    # the top of the page", and the old title and scene already stated the plane
+    # was faster. Title, scene and big question changed: the old title and scene
+    # state the answer; the old big question repeated the guess.
+    "speed": dict(
+        title="A fly and a plane.",
+        scene="A fly is 30 cm from your eye and crosses your view in half a "
+              "second. A plane is 10 km up and takes a full minute to cross "
+              "the same patch of sky.",
+        question="If you had to guess, which one is really going faster?",
+        options=[
+            ("The fly",
+             "It does look quicker, and eyes are easy to fool. The fly is "
+             "close, so it seems to rush across. The plane is far away, so it "
+             "seems to crawl, but it is far faster."),
+            ("The plane",
+             "Because it is so far away, it looks slow. It really covers about"
+             " 250 metres every second."),
+        ],
+        answer=1,
+        bridge="To compare them fairly you need two measurements, not one "
+               "look. Next: a trolley, two light gates and a timer.",
+        big_question="A fly crosses your view in half a second. A plane takes "
+                     "a full minute to cross the same patch of sky. What do "
+                     "you need to know to compare how fast they are really "
+                     "going?",
+    ),
+
+    # distance-time-graphs — REWRITTEN by the reviewer. The lesson's H1
+    # "Distance–time graphs" sits on screen above the hook and tells the pupil
+    # what the height is, so the draft's "distance from the start or speed?" was
+    # given away. New guess: while the walker waits at the door, does the line go
+    # flat or drop to the bottom? Dropping to zero is the tempting speed-reading
+    # of the line; the answer needs the pupil to work out what the height means,
+    # which the bridge then names (rail "What the height means"). Scene changed
+    # so it no longer says the line goes flat; title kept. Big question changed:
+    # the old one repeats "rises, goes flat".
+    "distance-time-graphs": dict(
+        scene="Someone walks 6 m down a level corridor, waits at a door, then "
+              "runs the last 12 m. A motion sensor at the start draws a graph "
+              "of the journey, and as they walk the line climbs. The floor "
+              "never changed height.",
+        question="If you had to guess, while the walker waits at the door, "
+                 "does the line go flat, or drop to the bottom?",
+        options=[
+            ("It goes flat",
+             "The walker stays 6 m from the start the whole time they wait, so"
+             " the line stays at that height."),
+            ("It drops to the bottom",
+             "Stopping can feel like dropping to nothing. But the walker is "
+             "still 6 m from the start, and that is what the line shows."),
+        ],
+        answer=0,
+        bridge="The height of the line is the distance from the start, so it "
+               "only comes down if the walker comes back. Next: plot seven "
+               "readings from a motion sensor and read the whole journey.",
+        big_question="What can you read from a graph of a journey?",
+    ),
+
+    # relative-motion — REWRITTEN by the reviewer. The first rail stop "Relative
+    # to what" and the H1 "Relative motion" sit on screen above the hook, so the
+    # draft's "one real speed, or depends who is looking?" was given away. New
+    # guess, from the lesson's own stretch ("no experiment done inside a smoothly
+    # moving room can tell you how fast the room is going"): with the blinds down
+    # on a smooth, silent train, could you tell you were moving? The rail now
+    # lands in the bridge. Scene adds "steady" and "perfectly smooth, silent" so
+    # the answer is unarguable (bumps and wheel noise are taken away). Title and
+    # big question kept.
+    "relative-motion": dict(
+        scene="Your train is doing a steady 100 km/h on a perfectly smooth, "
+              "silent track. A second train pulls alongside, also doing 100 "
+              "km/h. Through the window it hangs there, motionless, close "
+              "enough to read a book over someone's shoulder.",
+        question="If you had to guess, with the blinds pulled down, could you "
+                 "tell that your own train was moving at all?",
+        options=[
+            ("Yes, you would feel it",
+             "On a real train you feel bumps and hear the wheels. But take "
+             "those away and a steady 100 km/h feels exactly like standing "
+             "still."),
+            ("No, you could not tell",
+             "At a steady speed on a smooth track, everything inside the train"
+             " behaves just as it would standing still. Only looking out tells"
+             " you."),
+        ],
+        answer=1,
+        bridge="So whether something is moving, and how fast, depends on what "
+               "you measure it against. Next: two cars on a road, three "
+               "different observers, and a different number for each.",
+    ),
 }
 
 
