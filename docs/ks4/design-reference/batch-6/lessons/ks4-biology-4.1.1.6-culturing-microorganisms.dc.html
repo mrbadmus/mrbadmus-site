@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Culturing microorganisms · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Cell biology" title="Culturing microorganisms" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.1.1.6</p>
+        <h1>Culturing microorganisms</h1>
+        <p class="ks3-bigq">Bacteria double, again and again. Set up a plate safely, measure the clear zones around antibiotic discs, then work out how many bacteria there will be.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Triple only</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Biology required practical 2</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ tripleOptions }}" as="o" hint-placeholder-count="2"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Two slices of bread." scene="Two slices from the same loaf. One goes in a bag on the kitchen worktop, the other in a bag in the fridge. A week later, you check them." question="would mould and bacteria grow faster somewhere warm, or somewhere cold?" options="{{ hookOptions }}" bridge="Warmth speeds growth, which is why school cultures are kept no warmer than 25 °C. Next: how fast bacteria multiply." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-grow" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Binary fission</p>
+        <h2 style="margin: 6px 0 0;">One becomes two, every division.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Bacteria multiply by simple cell division, called binary fission, as often as once every 20 minutes if they have enough nutrients and a suitable temperature. They can be grown in a nutrient broth solution or as colonies on an agar gel plate. Each division doubles the number. Press Divide and watch the count.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ growFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button type="button" onClick="{{ onDivide }}" disabled="{{ divDone }}" style="{{ divStyle }}">Divide</button>
+              <button type="button" onClick="{{ onReset }}" style="font: inherit; font-size: 16px; font-weight: 700; padding: 10px 16px; min-height: 44px; border-radius: var(--ks3-r-control); cursor: pointer; color: var(--ks3-ink); border: 2px solid var(--ks3-option-border); background: var(--ks3-card);">Start again</button>
+            </div>
+            <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border); font-family: var(--ks3-font-mono); font-size: 17px; line-height: 1.7;">
+              <sc-for list="{{ growLines }}" as="g" hint-placeholder-count="2"><p style="margin: 0;">{{ g }}</p></sc-for>
+            </div>
+            <p aria-live="polite" style="margin: 0; font-size: 17px; line-height: 1.55;">{{ growNote }}</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-aseptic" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Aseptic technique</p>
+        <h2 style="margin: 6px 0 0;">Keep the culture pure, and keep yourself safe.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Uncontaminated cultures are needed to investigate disinfectants and antibiotics. Tap each step for the reason.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <sc-for list="{{ asepCards }}" as="f" hint-placeholder-count="6">
+            <button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}">
+              <span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span>
+              <sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if>
+            </button>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-rp" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Biology required practical 2</p>
+        <h2 style="margin: 6px 0 0;">Which antibiotic works best?</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Investigate the effect of antiseptics or antibiotics on bacterial growth using agar plates and measuring zones of inhibition. Spread bacteria evenly over the agar. Add paper discs soaked in each antibiotic, and a control disc soaked in sterile water. Use the same disc size, concentration and incubation time for a fair test. Incubate at 25 °C. Tap a disc to measure its clear zone.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ plateFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ discBtns }}" as="b" hint-placeholder-count="4"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+            <p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ discNote }}</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equation · area of a clear zone</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">You measure the diameter, but the equation needs the radius. Halve it first, as its own line:</p>
+        <p style="margin: 10px 0 0; display: inline-block; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 20px;">r = diameter ÷ 2</p>
+        <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Keep every length in mm, so the area comes out in mm<sup>2</sup>: cm × 10 gives mm. π is a fixed number, about 3.14. Tap the quantity you want to find.</p>
+        <div style="margin-top: 14px; max-width: 520px;">
+          <dc-import name="Ks4Triangle" eq="{{ eqArea }}" variant="full" hint-size="100%,420px"></dc-import>
+        </div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-count" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Two steps · how many bacteria after a time?</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Step 1 finds how many times the bacteria divide, using the triangle below. Time and mean division time must be in the same unit: hours × 60 gives minutes. Step 2 doubles the starting number once for each division, one line per division, just as you did with the Divide button.</p>
+        <div style="margin-top: 14px; max-width: 520px;">
+          <dc-import name="Ks4Triangle" eq="{{ eqDiv }}" variant="full" hint-size="100%,420px"></dc-import>
+        </div>
+        <p style="margin: 14px 0 0; display: inline-block; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 19px;">bacteria = starting number × 2 for each division</p>
+      </section>
+
+      <section id="s-steps" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Steps" mode="worked" id="cm-w" head="A single bacterium divides once every 20 minutes. How many bacteria will there be after 3 hours?" lead="Two steps: the number of divisions first, then the doubling." steps="{{ wSteps }}" next="Now the same two steps yourself." hint-size="100%,900px"></dc-import>
+          <sc-if value="{{ isHigher }}" hint-placeholder-val="{{ true }}">
+            <div style="margin-top: 16px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+              <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Higher</span>
+                <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Give the answer in standard form</p>
+              </div>
+              <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55;">Move the decimal point until one digit is in front of it, and count the places moved: 512 = 5.12 × 10<sup>2</sup>. Bigger populations: 3 200 000 = 3.2 × 10<sup>6</sup>.</p>
+            </div>
+          </sc-if>
+          <div style="margin-top: 22px;">
+            <dc-import name="Ks4Steps" mode="attempt" id="cm-a" head="A culture starts with 50 bacteria. The mean division time is 30 minutes. How many bacteria will there be after 2 hours?" lead="Write each line, then check your working." steps="{{ aSteps }}" close="Using 2 as the time gives 2 ÷ 30 divisions: convert hours to minutes first." on-done="{{ onSteps }}" hint-size="100%,900px"></dc-import>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · body temperature?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Incubate at 37 °C: that’s body temperature, so they’ll grow best.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Why are school cultures incubated at no more than 25 °C?" options="{{ thinkOptions }}" reveal="To reduce the chance of growing pathogens that could harm humans. Bacteria that grow best at 37 °C, body temperature, are more likely to be harmful to us." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Do it, or don’t?" prompt="Place each action." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Flame the loop, autoclave the rest, tape the lid with a few strips, store it upside down, and keep it at 25 °C." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain why</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Each step, then what it prevents.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Halve, then πr². Or divide, then double.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Zone sizes, in a fair test, against the control.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Bacteria multiply by binary fission, as often as every 20 minutes. The bigger the clear zone around a disc, the more effective the antibiotic or antiseptic.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="culturing-microorganisms" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Culturing microorganisms" spec="AQA 4.1.1.6" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure when to halve the diameter?" legal="Zone sizes on the plate are round figures for practice. The plate and bacteria drawings are schematic." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Two slices of bread', short: 'HOOK' },
+  { id: 's-grow', label: 'Binary fission', short: 'DOUBLE' },
+  { id: 's-aseptic', label: 'Aseptic technique', short: 'ASEPTIC' },
+  { id: 's-rp', label: 'Required practical 2', short: 'RP2' },
+  { id: 's-calc', label: 'Area of a zone', short: 'CFIFA' },
+  { id: 's-steps', label: 'Step 1, Step 2', short: 'STEPS' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Do it or don\u2019t', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const EQ_A = { name: 'Area of a circle', written: 'A = \u03c0 r\u00b2', source: 'none',
+  top: { s: 'A', name: 'area', unit: 'mm\u00b2' },
+  bottom: [{ s: '\u03c0', name: 'pi, about 3.14', unit: '', fixed: true }, { s: 'r\u00b2', root: 'r', name: 'radius', unit: 'mm' }] };
+const EQ_N = { name: 'Number of divisions', written: 'number of divisions = time \u00f7 mean division time', source: 'none',
+  top: { s: 't', name: 'time', unit: 'min' },
+  bottom: [{ s: 'n', name: 'number of divisions', unit: 'no unit' }, { s: 'd', name: 'mean division time', unit: 'min' }] };
+const ASEP = [
+  { name: 'Autoclave Petri dishes and culture media', why: 'Sterilises them: kills all microorganisms first. Or use dishes bought pre-sterilised.' },
+  { name: 'Pass the loop through a flame until red hot', why: 'Kills microorganisms on the wire loop. Let it cool before touching the bacteria.' },
+  { name: 'Lift the lid only slightly', why: 'Stops microorganisms from the air getting in.' },
+  { name: 'Tape the lid with a few strips', why: 'Two to four strips, not all the way round: the lid can’t come off, but oxygen still gets in, so harmful anaerobic bacteria don’t grow.' },
+  { name: 'Store the dish upside down', why: 'Drops of condensation fall onto the lid, not onto the agar, so they don’t spread the colonies.' },
+  { name: 'Incubate at 25 °C', why: 'In school, no warmer: this reduces the chance of growing pathogens that could harm humans.' }
+];
+const DISCS = [
+  { k: 'A', label: 'Antibiotic A', d: 18, x: 140, y: 120 },
+  { k: 'B', label: 'Antibiotic B', d: 28, x: 290, y: 120 },
+  { k: 'C', label: 'Antibiotic C', d: 0, x: 140, y: 260 },
+  { k: 'W', label: 'Control (water)', d: 0, x: 290, y: 260 }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, n: 0, asep: [], disc: null, discs: [], calc: 0, steps: false, think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  growFig(n) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const count = Math.pow(2, n);
+    for (let i = 0; i < count; i++) {
+      const cols = n < 3 ? count : 8, c = i % cols, r = Math.floor(i / cols);
+      const x = 40 + c * (n < 3 ? 110 : 44) + (n < 3 ? 40 : 0), y = 60 + r * (n < 3 ? 0 : 28) + (n < 3 ? 40 : 0);
+      b += '<rect x="' + x + '" y="' + y + '" width="' + (n < 3 ? 60 : 30) + '" height="' + (n < 3 ? 26 : 14) + '" rx="' + (n < 3 ? 13 : 7) + '" fill="#B8D99A" stroke="' + C.stroke + '" stroke-width="2"/>';
+    }
+    b += D.T(200, 330, count + (count === 1 ? ' bacterium' : ' bacteria') + ' after ' + (n * 20) + ' minutes', 16, { fill: C.stroke });
+    return D.svg(400, 350, b, count + ' bacteria after ' + n + ' divisions, ' + (n * 20) + ' minutes.');
+  }
+  plateFig(sel) {
+    const D = window.KS4D, C = D.C; let b = '';
+    b += D.circ(215, 190, 175, '#E9E2CF', C.stroke, 3) + D.circ(215, 190, 162, '#E8D58A', C.stroke, 1.5);
+    for (let i = 0; i < 260; i++) { const a = i * 2.39996, r = 158 * Math.sqrt((i + 0.5) / 260); const x = 215 + r * Math.cos(a), y = 190 + r * Math.sin(a);
+      if (DISCS.some((d) => d.d && Math.hypot(x - d.x, y - d.y) < d.d * 2)) continue; b += D.circ(x, y, 3, '#C9B25A', 'none', 0); }
+    DISCS.forEach((d) => {
+      if (d.d) b += D.circ(d.x, d.y, d.d * 2, '#F3EBD2', sel === d.k ? C.red : '#B8A65A', sel === d.k ? 3 : 1.5, ' stroke-dasharray="4 4"');
+      b += D.circ(d.x, d.y, 12, '#FFFDF8', C.stroke, 2) + D.T(d.x, d.y + 5, d.k, 13, { fill: C.stroke });
+      if (sel === d.k && d.d) b += D.line(d.x - d.d * 2, d.y, d.x + d.d * 2, d.y, 2.5, C.red) + D.T(d.x, d.y - d.d * 2 - 8, d.d + ' mm', 14, { fill: C.red });
+    });
+    b += D.T(215, 392, 'lawn of bacteria on agar, after incubation', 13, { weight: 'normal', fill: C.stroke });
+    return D.svg(430, 405, b, 'Agar plate with a lawn of bacteria and four paper discs. Clear zones: A, 18 mm across; B, 28 mm across; C, no clear zone; control disc of water, no clear zone.');
+  }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', onRoute: () => {}, isHigher: true };
+    const route = R.route.indexOf('Triple') === 0 ? R.route : 'Triple Higher';
+    const H = route === 'Triple Higher';
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.n >= 3, s.asep.length === ASEP.length, s.discs.length === 4, s.calc >= 2, s.steps, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const lines = []; for (let i = 0; i <= s.n; i++) lines.push((i * 20) + ' min: ' + Math.pow(2, i) + (i ? '  (' + Math.pow(2, i - 1) + ' \u00d7 2)' : ''));
+    const D0 = s.disc === null ? null : DISCS.filter((d) => d.k === s.disc)[0];
+    const discNote = !D0 ? 'Tap a disc.' : D0.k === 'W' ? 'Control: no clear zone. The disc itself doesn\u2019t stop growth, so any clear zone elsewhere is caused by the antibiotic.' : D0.d ? D0.label + ': clear zone ' + D0.d + ' mm across.' + (D0.k === 'B' ? ' The biggest zone, so B is the most effective against these bacteria.' : ' Smaller than B, so less effective.') : D0.label + ': no clear zone. These bacteria are resistant to C. (For an antiseptic, no zone means it doesn\u2019t kill these bacteria at that concentration.)';
+    const base = [
+      { q: 'Why are school bacterial cultures incubated at 25\u00b0C rather than 37\u00b0C?', opts: [['Safety \u2014 bacteria that grow optimally at 37\u00b0C are more likely to be harmful human pathogens', true], ['Bacteria grow faster at 25\u00b0C', false], ['37\u00b0C would melt the agar', false], ['Antibiotics only work at 25\u00b0C', false]],
+        wrong_explanations: { 1: 'Bacteria generally grow FASTER at higher temperatures \u2014 37\u00b0C would give quicker results, but the safety risk outweighs this.', 2: 'Agar melts at much higher temperatures (around 85\u00b0C) \u2014 37\u00b0C would not melt it.', 3: 'Antibiotic effectiveness is not temperature-dependent in this way \u2014 the safety concern is the primary reason.' } },
+      { q: 'What does a large inhibition zone around an antibiotic disc indicate?', opts: [['The antibiotic is highly effective against that bacterium \u2014 it diffuses outward and kills bacteria in a wide area', true], ['The bacteria are resistant \u2014 they moved away from the antibiotic', false], ['The disc absorbed the bacteria, leaving a clear area', false], ['The agar failed to set properly in that area', false]],
+        wrong_explanations: { 1: 'Resistant bacteria show NO inhibition zone \u2014 they grow right up to the disc.', 2: 'Discs absorb the antibiotic solution \u2014 they don\u2019t absorb bacteria.', 3: 'Properly prepared agar sets evenly \u2014 uneven setting would affect all areas, not just around specific discs.' } },
+      { q: 'Why is an inoculating loop flamed before and after transferring bacteria?', opts: [['To sterilise it \u2014 killing all microorganisms before use (preventing contamination) and after use (preventing spread)', true], ['To warm the loop so bacteria transfer more easily', false], ['To melt the agar so bacteria can be mixed in', false], ['To activate the bacteria before plating', false]],
+        wrong_explanations: { 1: 'Warming would not sterilise \u2014 only red-hot temperatures kill all microorganisms.', 2: 'The loop does not touch agar during streaking in a way that needs melting \u2014 it is used at room temperature to spread bacteria on the surface.', 3: 'Bacteria don\u2019t need \u2018activation\u2019 \u2014 flaming is purely for sterilisation.' } },
+      { q: 'One bacterium divides every 20 minutes. How many bacteria are there after 1 hour?', opts: [['8', true], ['3', false], ['6', false], ['60', false]],
+        wrong_explanations: { 1: '3 is the number of divisions (60 \u00f7 20). Now double three times: 1 \u2192 2 \u2192 4 \u2192 8.', 2: 'That adds 2 each time. Bacteria double each division.', 3: '60 is the time in minutes, not the number of bacteria.' } }
+    ];
+    const fifth = H
+      ? { q: 'A culture reaches 2 560 000 bacteria. What is this in standard form?', opts: [['2.56 \u00d7 10\u2076', true], ['2.56 \u00d7 10\u2075', false], ['256 \u00d7 10\u2074', false], ['2.56 \u00d7 10\u2077', false]],
+          wrong_explanations: { 1: 'Count the places the decimal point moves: six, not five.', 2: 'In standard form the first number must be between 1 and 10.', 3: 'That is ten times too big: the point moves six places.' } }
+      : { q: 'Why is the lid of a Petri dish taped with only a few strips, not all the way round?', opts: [['So oxygen can get in and harmful anaerobic bacteria don\u2019t grow', true], ['So the lid can be lifted off easily', false], ['So the agar can dry out', false], ['So more bacteria can get in from the air', false]],
+          wrong_explanations: { 1: 'The tape is there to stop the lid coming off.', 2: 'Drying out isn\u2019t the aim.', 3: 'Keeping microbes out is the point of taping the lid at all.' } };
+    const bankSrc = base.concat([fifth]);
+    return {
+      route, onRoute: R.onRoute, isHigher: H,
+      tripleOptions: [{ value: 'Triple Foundation', label: 'Triple Foundation' }, { value: 'Triple Higher', label: 'Triple Higher' }],
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('culturing-microorganisms') : null,
+      eqArea: EQ_A, eqDiv: EQ_N,
+      hookOptions: [
+        { text: 'Somewhere warm', correct: true, reply: 'The slice on the worktop goes mouldy first. Warmth speeds up growth.' },
+        { text: 'Somewhere cold', correct: false, reply: 'Cold slows growth down: that is why food keeps longer in the fridge.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      growFig: ready ? K.fig(this.growFig(s.n), '') : null,
+      onDivide: () => this.setState({ n: Math.min(5, s.n + 1) }), onReset: () => this.setState({ n: 0 }), divDone: s.n >= 5,
+      divStyle: this.seg(true) + (s.n >= 5 ? 'opacity:.5;cursor:default;' : ''),
+      growLines: lines,
+      growNote: s.n >= 5 ? 'Five divisions: 1 \u00d7 2 \u00d7 2 \u00d7 2 \u00d7 2 \u00d7 2 = 32. Doubling, not adding.' : s.n >= 1 ? 'Each line is the one before, \u00d7 2.' : 'One bacterium at the start.',
+      asepCards: ASEP.map((f, i) => { const o = s.asep.indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+        style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+        onClick: () => this.setState({ asep: o ? s.asep : s.asep.concat([i]) }) }; }),
+      plateFig: ready ? K.fig(this.plateFig(s.disc), '') : null,
+      discBtns: DISCS.map((d) => ({ label: d.label, pressed: s.disc === d.k, style: this.seg(s.disc === d.k), onClick: () => this.setState({ disc: d.k, discs: s.discs.indexOf(d.k) >= 0 ? s.discs : s.discs.concat([d.k]) }) })),
+      discNote,
+      cfExamples: [
+        { tab: 'Nothing to convert', eq: EQ_A, find: 'A', head: 'An antibiotic disc produces a clear zone with a diameter of 18 mm. Calculate the area of the inhibition zone.', steps: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert \u2014 the diameter is given in millimetres (mm) and the radius and area are calculated in millimetres throughout, so no unit conversion is needed.', note: 'Halve the diameter to get the radius: r = 18 \u00f7 2 = 9 mm.' },
+          { letter: 'F', label: 'Formula', line: 'Area = \u03c0 \u00d7 r\u00b2' },
+          { letter: 'I', label: 'Insert', line: 'Diameter = 18 mm \u2192 radius = 9 mm. Area = \u03c0 \u00d7 9\u00b2' },
+          { letter: 'F', label: 'Fine-tune', line: 'Area = \u03c0 \u00d7 81 = 254.47...' },
+          { letter: 'A', label: 'Answer', line: 'Area \u2248 254 mm\u00b2' }] },
+        { tab: 'Convert first', eq: EQ_A, find: 'A', next: 'Now yours, below.', head: 'A clear zone is 2.4 cm across. Calculate its area in mm\u00b2.', steps: [
+          { letter: 'C', label: 'Convert', line: '2.4 cm \u00d7 10 = 24 mm', note: 'Then halve: r = 24 \u00f7 2 = 12 mm.' },
+          { letter: 'F', label: 'Formula', line: 'A = \u03c0 r\u00b2' },
+          { letter: 'I', label: 'Insert', line: 'A = \u03c0 \u00d7 12\u00b2' },
+          { letter: 'F', label: 'Fine-tune', line: 'A = \u03c0 \u00d7 144 = 452.39...' },
+          { letter: 'A', label: 'Answer', line: 'A \u2248 452 mm\u00b2' }] }
+      ],
+      cfQuestions: [
+        { tab: 'Question 1', id: 'cm-q1', head: 'A clear zone is 14 mm across. Calculate its area in mm\u00b2.', close: '\u03c0 \u00d7 14\u00b2 = 616 is what you get if you forget to halve the diameter.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'convert? then halve', line: 'Nothing to convert: mm. r = 14 \u00f7 2 = 7 mm' }, { letter: 'F', label: 'Formula', placeholder: 'written out', line: 'A = \u03c0 r\u00b2' }, { letter: 'I', label: 'Insert', placeholder: 'A = \u03c0 \u00d7 \u2026\u00b2', line: 'A = \u03c0 \u00d7 7\u00b2' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'A = \u03c0 \u00d7 49 = 153.94...' }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: 'A \u2248 154 mm\u00b2' }] },
+        { tab: 'Question 2', id: 'cm-q2', head: 'A clear zone is 1.6 cm across. Calculate its area in mm\u00b2.', close: 'Leaving it in cm gives about 2 cm\u00b2: convert to mm before you halve.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'cm to mm? then halve', line: '1.6 cm \u00d7 10 = 16 mm; r = 16 \u00f7 2 = 8 mm' }, { letter: 'F', label: 'Formula', placeholder: 'written out', line: 'A = \u03c0 r\u00b2' }, { letter: 'I', label: 'Insert', placeholder: 'A = \u03c0 \u00d7 \u2026\u00b2', line: 'A = \u03c0 \u00d7 8\u00b2' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'A = \u03c0 \u00d7 64 = 201.06...' }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: 'A \u2248 201 mm\u00b2' }] }
+      ],
+      onCalc: (n) => this.setState({ calc: n }),
+      wSteps: [
+        { title: 'Find the number of divisions', eq: EQ_N, find: 'n', carry: '9 divisions', lines: [
+          { letter: 'C', label: 'Convert', line: '3 hours \u00d7 60 = 180 minutes', note: 'Time and division time must both be in minutes.' },
+          { letter: 'F', label: 'Formula', line: 'number of divisions = time \u00f7 mean division time' },
+          { letter: 'I', label: 'Insert', line: 'number of divisions = 180 \u00f7 20' },
+          { letter: 'F', label: 'Fine-tune', line: 'number of divisions = 9' },
+          { letter: 'A', label: 'Answer', line: '9 divisions' }] },
+        { title: 'Double once for each division', lines: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert: a number of bacteria.' },
+          { letter: 'F', label: 'Formula', line: 'bacteria = starting number \u00d7 2 for each division' },
+          { letter: 'I', label: 'Insert', line: 'start with 1; double 9 times', note: '9 divisions is Step 1\u2019s answer.' },
+          { letter: 'F', label: 'Fine-tune', line: '1 \u2192 2 \u2192 4 \u2192 8 \u2192 16 \u2192 32 \u2192 64 \u2192 128 \u2192 256 \u2192 512', note: 'One doubling per division: count nine arrows.' },
+          { letter: 'A', label: 'Answer', line: '512 bacteria' }] }
+      ],
+      aSteps: [
+        { title: 'Find the number of divisions', carry: '4 divisions', lines: [
+          { letter: 'C', label: 'Convert', placeholder: 'hours to minutes?', line: '2 hours \u00d7 60 = 120 minutes' },
+          { letter: 'F', label: 'Formula', placeholder: 'written out', line: 'number of divisions = time \u00f7 mean division time' },
+          { letter: 'I', label: 'Insert', placeholder: '\u2026 \u00f7 \u2026', line: 'number of divisions = 120 \u00f7 30' },
+          { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'number of divisions = 4' },
+          { letter: 'A', label: 'Answer', placeholder: 'how many divisions', line: '4 divisions' }] },
+        { title: 'Double once for each division', lines: [
+          { letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert.' },
+          { letter: 'F', label: 'Formula', placeholder: 'bacteria = \u2026', line: 'bacteria = starting number \u00d7 2 for each division' },
+          { letter: 'I', label: 'Insert', placeholder: 'start with \u2026; double \u2026 times', line: 'start with 50; double 4 times' },
+          { letter: 'F', label: 'Fine-tune', placeholder: 'one line per doubling', line: '50 \u2192 100 \u2192 200 \u2192 400 \u2192 800' },
+          { letter: 'A', label: 'Answer', placeholder: 'with unit', line: '800 bacteria' + (H ? ' = 8 \u00d7 10\u00b2' : '') }] }
+      ],
+      onSteps: () => this.setState({ steps: true }),
+      thinkOptions: [
+        { text: 'To reduce the chance of growing human pathogens', correct: true, reply: 'Safety comes first in school.' },
+        { text: 'Bacteria grow faster at 25 \u00b0C', correct: false, reply: 'They generally grow faster when warmer. The lower temperature is for safety.' },
+        { text: 'Agar melts at 37 \u00b0C', correct: false, reply: 'Agar stays solid well above 37 \u00b0C.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'y', label: 'Do it' }, { id: 'n', label: 'Don\u2019t' }],
+      sortItems: [
+        { text: 'Flame the loop until red hot', bin: 'y', why: 'Kills microbes on the wire.' },
+        { text: 'Autoclave the agar and dishes', bin: 'y', why: 'Sterilises them before use.' },
+        { text: 'Store the dish upside down', bin: 'y', why: 'Condensation drips onto the lid, not the agar.' },
+        { text: 'Tape the lid all the way round', bin: 'n', why: 'A few strips only, so oxygen gets in.' },
+        { text: 'Incubate at 37 \u00b0C in school', bin: 'n', why: '25 \u00b0C at most, for safety.' },
+        { text: 'Flame the beakers', bin: 'n', why: 'Glassware is autoclaved; only the loop is flamed.' },
+        { text: 'Open the lid fully to add discs', bin: 'n', why: 'Lift it only slightly.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name the type of cell division bacteria use to multiply.', why: 'Binary fission.', options: [
+            { text: 'Binary fission', correct: true }, { text: 'Fertilisation', correct: false, reply: 'Fertilisation joins two sex cells.' }, { text: 'Photosynthesis', correct: false, reply: 'That isn\u2019t cell division.' }] },
+          { kind: 'mcq', command: 'State', marks: 1, prompt: 'State the maximum temperature for incubating cultures in a school laboratory.', why: '25 \u00b0C.', options: [
+            { text: '37 \u00b0C', correct: false, reply: 'Body temperature: too risky in school.' }, { text: '25 \u00b0C', correct: true }, { text: '100 \u00b0C', correct: false, reply: 'That would kill the bacteria.' }] }
+        ],
+        r2: [
+          { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'A clear zone around a disc is 2.0 cm across. Calculate its area in mm\u00b2. Give your answer to the nearest whole number.',
+            convOptions: ['Nothing to convert', 'Convert cm to mm: multiply by 10', 'Convert cm to mm: divide by 10'], convAnswer: 1, answer: 314, tol: 1, unit: 'mm\u00b2', units: ['mm\u00b2', 'mm', 'cm\u00b2'],
+            right: '20 mm, so r = 10 mm; A = \u03c0 \u00d7 10\u00b2 \u2248 314 mm\u00b2.', wrong: '2.0 cm = 20 mm; halve to get r = 10 mm; A = \u03c0 \u00d7 100.',
+            model: ['C \u00b7 2.0 cm \u00d7 10 = 20 mm; r = 20 \u00f7 2 = 10 mm', 'F \u00b7 A = \u03c0 r\u00b2', 'I \u00b7 A = \u03c0 \u00d7 10\u00b2', 'F \u00b7 A = \u03c0 \u00d7 100 = 314.16...', 'A \u00b7 314 mm\u00b2'] },
+          { kind: 'calc', command: 'Calculate', marks: 3, prompt: 'A culture starts with 10 bacteria. The mean division time is 20 minutes. Calculate the number of bacteria after 2 hours.',
+            convOptions: ['Nothing to convert', 'Convert hours to minutes: multiply by 60', 'Convert minutes to hours: multiply by 60'], convAnswer: 1, answer: 640, tol: 0.5, unit: 'bacteria', units: ['bacteria', 'divisions', 'minutes'],
+            right: 'Step 1: 120 \u00f7 20 = 6 divisions. Step 2: 10 doubled 6 times = 640 bacteria.', wrong: '2 hours = 120 minutes, so 120 \u00f7 20 = 6 divisions; then 10 \u2192 20 \u2192 40 \u2192 80 \u2192 160 \u2192 320 \u2192 640.',
+            model: ['Step 1 \u00b7 C \u00b7 2 h \u00d7 60 = 120 min', 'F \u00b7 number of divisions = time \u00f7 mean division time', 'I \u00b7 120 \u00f7 20 = 6 divisions', 'Step 2 \u00b7 10 \u2192 20 \u2192 40 \u2192 80 \u2192 160 \u2192 320 \u2192 640', 'A \u00b7 640 bacteria' + (H ? ' = 6.4 \u00d7 10\u00b2' : '')] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why the lid of a Petri dish is taped and the dish stored upside down. Put the links in order.',
+            links: ['A few strips of tape stop the lid coming off, so microorganisms from the air can\u2019t get in.', 'Not taping all the way round lets oxygen in, so harmful anaerobic bacteria don\u2019t grow.', 'Storing it upside down stops condensation dripping onto the agar and spreading the colonies.'],
+            herrings: [{ text: 'The tape keeps oxygen out so the bacteria grow faster.', why: 'Oxygen should get in.' }, { text: 'Upside down lets the agar drain.', why: 'The agar is a solid gel; the reason is condensation.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why a control disc soaked in sterile water is used. Put the links in order.',
+            links: ['The control disc has no antibiotic on it.', 'If there is no clear zone around it, the paper disc itself doesn\u2019t stop growth.', 'So any clear zone around the other discs is caused by the antibiotic.'],
+            herrings: [{ text: 'The water kills the bacteria near the disc.', why: 'Sterile water doesn\u2019t kill bacteria.' }, { text: 'The control makes the bacteria grow faster.', why: 'It is there for comparison.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 6, prompt: 'Describe how a student could investigate which of three antibiotics is most effective against a type of bacteria.',
+            levels: [
+              { label: 'Level 3 \u00b7 5\u20136', text: 'A clear, safe, logical method with aseptic steps, a control, controlled variables and how to compare results.', max: 6 },
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Most of a method, with some aseptic steps or how results are compared.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'Simple statements about discs or plates.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Use sterile agar plates; spread the bacteria evenly with aseptic technique (flamed loop, lid lifted slightly).', 'Place paper discs soaked in each antibiotic, and a control disc soaked in sterile water.', 'Keep disc size, concentration and incubation time the same.', 'Tape the lid with a few strips and store upside down; incubate at 25 \u00b0C.', 'Measure the diameter of each clear zone; halve it and use \u03c0r\u00b2 to find the area.', 'The biggest clear zone shows the most effective antibiotic.'],
+            reject: ['\u201cIncubate at 37 \u00b0C so they grow faster.\u201d', '\u201cThe smallest clear zone is the strongest antibiotic.\u201d'] }
+        ]
+      },
+      keyLines: ['Bacteria multiply by binary fission, as often as once every 20 minutes with enough nutrients and a suitable temperature.', 'Grow them in nutrient broth or as colonies on an agar gel plate.', 'Aseptic technique: autoclave dishes and media; flame the loop; lift the lid slightly; tape the lid with a few strips; store upside down; incubate at 25 \u00b0C in school.', 'Required practical 2: the bigger the clear zone, the more effective the antibiotic or antiseptic. Use a control disc.', 'Area of a clear zone: halve the diameter, then A = \u03c0r\u00b2.', 'Bacteria after a time: number of divisions = time \u00f7 mean division time, then double once for each division.'].concat(H ? ['Higher: give large numbers of bacteria in standard form, e.g. 512 = 5.12 \u00d7 10\u00b2.'] : []),
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.1.1.3-cell-specialisation.dc.html', label: 'Cell specialisation' }, endNext: { href: 'ks4-biology-4.1.2.3-stem-cells.dc.html', label: 'Stem cells' },
+      endConnects: []
+    };
+  }
+}
+</script>
+</body>
+</html>

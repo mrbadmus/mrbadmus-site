@@ -283,3 +283,15 @@ generator — never re-freeze `ks4_pilot_manifest.json` to make it pass.
   use), so the link is per-route and live; it fails loud on an unknown file or a `renderVals` without
   `return Object.assign({}, R, {`. Both resolve by slug through `KS4.hrefFor` / `shared/ks4-nav.js`
   `FULL_NAV` (all_subtopics), which covers every KS4 subtopic.
+- ⊕ Batch 6 (Prompt AB, 9 Oct 2026) widened both again, still generic and fail-loud, and changed no batch-4 or
+  batch-5 byte (proved by `git diff --name-only origin/main`): the cross-batch prefix is now any run of `../`, an
+  optional `KS4 `, `Batch N/` and an optional `lessons/` (Design wrote `../../Batch 5/lessons/<file>.dc.html` in
+  batch 6, `../KS4 Batch 4/<file>` in batch 5), shared by **B-CONNECTS** (`href: '…'` in logic) and
+  **B-INLINE-LINKS** (`href="…"` in a template). A new guard at the end of `port_lesson` raises if any
+  `<file>.dc.html` or `Batch N/lessons/` text survives in either layer, so a link pattern the module misses cannot
+  ship. A lesson whose `renderVals` returns a fresh object instead of spreading the route helper (batch 6:
+  culturing-microorganisms, factors-affecting-food-security, stellar-evolution) needs a named one-line ruling that
+  passes `routeWords` / `routeSwitchOptions` through (B6-CM-CHIP, B6-FS-CHIP, B6-SE-CHIP), exactly as B4-IRB-CHIP
+  and B5-RSBB-CHIP did; B-R12 keeps failing loud without it. A batch whose shared block differs from the previous
+  batch's (batch 6: Ks4Triangle's `fixed: true` cell) registers its OWN block set from its own copy, which is why
+  batches 4 and 5 stay byte-identical.

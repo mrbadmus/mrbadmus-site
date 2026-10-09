@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transpiration · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Organisation" title="Transpiration" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.2.3.2</p>
+        <h1>Transpiration</h1>
+        <p class="ks3-bigq">Water evaporates from leaves and more is drawn up from the roots. Open and close a stoma, then change the weather around a potometer and watch the bubble.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Washing on the line." scene="Wet washing hung out on a line dries in an hour one day, and is still damp by evening on another." question="will a plant lose water faster on a hot, windy day, or a cool, still one?" options="{{ hookOptions }}" bridge="Leaves lose water by evaporation, like washing. Next: where the water leaves, and what controls it." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-stoma" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Stomata and guard cells</p>
+        <h2 style="margin: 6px 0 0;">Water leaves through the stomata.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Water evaporates from the leaves and leaves as water vapour, mostly through the stomata. More water is drawn up the xylem from the roots to replace it: this is the transpiration stream. Each stoma is a pore between two guard cells, which control gas exchange and water loss. Open and close it.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ stomaBtns }}" as="b" hint-placeholder-count="2"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ stomaFig }}</div>
+          <p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ stomaNote }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Most stomata are on the lower surface of the leaf: in <a href="../../Batch 5/lessons/ks4-biology-4.2.3.1-plant-tissues.dc.html">Plant tissues</a>. Water enters root hair cells by osmosis: in <a href="ks4-biology-4.1.1.3-cell-specialisation.dc.html">Cell specialisation</a>.</p>
+      </section>
+
+      <section id="s-pot" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Four factors · the potometer</p>
+        <h2 style="margin: 6px 0 0;">Change the conditions, watch the bubble.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">A potometer measures how fast a leafy shoot takes up water. As the shoot takes water in, an air bubble moves along the capillary tube. The further it moves in one minute, the faster the water uptake. Change one condition at a time.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 10px;">
+          <sc-for list="{{ factors }}" as="f" hint-placeholder-count="4">
+            <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border); display: flex; flex-direction: column; gap: 8px;">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 18px;">{{ f.name }}</p>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;"><sc-for list="{{ f.opts }}" as="o" hint-placeholder-count="2"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" style="{{ o.style }}">{{ o.label }}</button></sc-for></div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ potFig }}</div>
+        <p aria-live="polite" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ potNote }}</p>
+        <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">A potometer measures water uptake. That is close to, but not exactly, the water lost: a little is used by the plant.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · humid air</p></div>
+        <p class="ks3-mis-quote">&ldquo;Humid air makes plants lose more water.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="The air around a plant becomes very humid. What happens to the rate of transpiration?" options="{{ thinkOptions }}" reveal="It decreases. Humid air already holds a lot of water vapour, so the difference between inside the leaf and outside is smaller, and water vapour diffuses out more slowly." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Faster or slower?" prompt="Place each change." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Fastest when it is warm, bright, dry and windy." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The factor, then why water vapour leaves faster or slower.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How to use a potometer, one factor at a time.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Predict</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">What the bubble will do when a condition changes.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Transpiration is the loss of water vapour from the leaves, mostly through the stomata. It is faster when it is warmer, brighter, drier and windier.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="transpiration" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Transpiration" spec="AQA 4.2.3.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure why humid air slows transpiration?" legal="Bubble distances are made-up round figures that show the direction of each effect." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Washing on the line', short: 'HOOK' },
+  { id: 's-stoma', label: 'Stomata', short: 'STOMATA' },
+  { id: 's-pot', label: 'Four factors', short: 'FACTORS' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Faster or slower', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const FAC = [
+  { k: 't', name: 'Temperature', o: ['Cool', 'Warm'], why: ['Cooler: water evaporates more slowly.', 'Warmer: water evaporates and diffuses out faster.'] },
+  { k: 'l', name: 'Light', o: ['Dim', 'Bright'], why: ['Dim light: guard cells close the stomata more, so less water vapour escapes.', 'Bright light: guard cells open the stomata wider, so more water vapour escapes.'] },
+  { k: 'h', name: 'Humidity', o: ['Dry air', 'Humid air'], why: ['Dry air: a big difference in water vapour between leaf and air, so it diffuses out fast.', 'Humid air: a smaller difference, so water vapour diffuses out more slowly.'] },
+  { k: 'w', name: 'Air movement', o: ['Still', 'Windy'], why: ['Still air: water vapour builds up around the leaf, so the difference is smaller.', 'Wind blows water vapour away from the leaf, keeping the difference big.'] }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, open: true, toggled: [true], f: { t: 0, l: 1, h: 0, w: 0 }, last: null, tried: [], think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  dist(f) { return Math.max(4, 12 + (f.t ? 8 : 0) + (f.l ? 6 : -8) + (f.h ? -8 : 0) + (f.w ? 10 : 0)); }
+  stomaFig(open) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const gap = open ? 22 : 3;
+    b += '<rect x="20" y="20" width="400" height="240" rx="10" fill="#E3F0D6"/>';
+    for (let i = 0; i < 6; i++) b += '<path d="M' + (20 + i * 70) + ' 20 Q' + (55 + i * 70) + ' 140 ' + (20 + i * 70) + ' 260" fill="none" stroke="#B9CFA4" stroke-width="2"/>';
+    b += '<path d="M220 50 Q' + (220 - gap - 60) + ' 140 220 230 Q' + (220 - gap - 10) + ' 140 220 50 Z" fill="#7FC07A" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    b += '<path d="M220 50 Q' + (220 + gap + 60) + ' 140 220 230 Q' + (220 + gap + 10) + ' 140 220 50 Z" fill="#7FC07A" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    if (open) { b += '<ellipse cx="220" cy="140" rx="' + (gap * 0.7) + '" ry="70" fill="#2B3A2E"/>'; for (let i = 0; i < 3; i++) b += D.arrow(220, 120 + i * 20, 330, 90 + i * 30, '#3B82F6', 3); b += D.T(340, 70, 'water vapour out', 13, { anchor: 'start', fill: '#3B82F6' }); }
+    b += D.T(120, 140, 'guard cell', 13, { fill: C.stroke }) + D.T(320, 220, 'guard cell', 13, { fill: C.stroke });
+    b += D.T(220, 285, open ? 'stoma open' : 'stoma closed', 15, { fill: C.stroke });
+    return D.svg(440, 300, b, open ? 'A stoma open between two guard cells; water vapour diffuses out.' : 'A stoma closed: the two guard cells meet, so little water vapour escapes.');
+  }
+  potFig(d) {
+    const D = window.KS4D, C = D.C; let b = '';
+    b += D.line(110, 230, 110, 70, 5, '#4F9A4A');
+    [[110, 90, -1], [110, 120, 1], [110, 150, -1]].forEach((p) => { b += '<path d="M' + p[0] + ' ' + p[1] + ' Q' + (p[0] + p[2] * 60) + ' ' + (p[1] - 30) + ' ' + (p[0] + p[2] * 80) + ' ' + (p[1] + 10) + ' Q' + (p[0] + p[2] * 40) + ' ' + (p[1] + 15) + ' ' + p[0] + ' ' + p[1] + ' Z" fill="#7FC07A" stroke="' + C.stroke + '" stroke-width="1.5"/>'; });
+    b += '<rect x="96" y="230" width="28" height="40" fill="#DDEEF6" stroke="' + C.stroke + '" stroke-width="2"/>';
+    b += '<path d="M124 260 L600 260" stroke="' + C.stroke + '" stroke-width="12" stroke-linecap="round"/><path d="M124 260 L600 260" stroke="#DDEEF6" stroke-width="7" stroke-linecap="round"/>';
+    for (let i = 0; i <= 40; i++) { const x = 160 + i * 10; b += D.line(x, 248, x, i % 5 ? 252 : 244, 1.5); if (i % 10 === 0) b += D.T(x, 238, String(i) + ' mm', 11, { weight: 'normal', fill: C.stroke }); }
+    const x0 = 560, x1 = Math.max(170, 560 - d * 10);
+    b += '<ellipse cx="' + x0 + '" cy="260" rx="8" ry="3" fill="none" stroke="' + C.muted + '" stroke-width="1.5" stroke-dasharray="2 2"/>';
+    b += '<ellipse cx="' + x1 + '" cy="260" rx="9" ry="3.5" fill="#FFFFFF" stroke="' + C.stroke + '" stroke-width="1.5"/>';
+    b += D.arrow(x0 - 12, 290, x1 + 12, 290, C.red, 3) + D.T((x0 + x1) / 2, 314, d + ' mm in 1 minute', 15, { fill: C.red });
+    b += '<rect x="580" y="120" width="60" height="140" rx="6" fill="#DDEEF6" stroke="' + C.stroke + '" stroke-width="2"/>' + D.T(610, 110, 'reservoir', 12, { weight: 'normal', fill: C.stroke });
+    b += D.T(110, 58, 'leafy shoot', 13, { fill: C.stroke }) + D.T(360, 210, 'capillary tube with scale', 13, { weight: 'normal', fill: C.stroke });
+    return D.svg(660, 330, b, 'Potometer: leafy shoot in a sealed tube; the air bubble in the capillary tube moved ' + d + ' mm towards the shoot in 1 minute.');
+  }
+  seg(on) {
+    return 'font:inherit;font-size:15px;font-weight:700;padding:8px 12px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.toggled.length === 2, s.tried.length === 4, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const d = this.dist(s.f);
+    const L = s.last ? FAC.filter((x) => x.k === s.last)[0] : null;
+    const bankSrc = [
+      { q: 'What is transpiration?', opts: [['The evaporation of water from the leaves of a plant through the stomata', true], ['The transport of dissolved sugars from leaves to the rest of the plant', false], ['The absorption of water by root hair cells from the soil', false], ['The process of photosynthesis producing water as a product', false]],
+        wrong_explanations: { 1: 'Transport of dissolved sugars = TRANSLOCATION (in phloem). Transpiration is specifically water evaporation from leaves.', 2: 'Water absorption by roots = OSMOSIS through root hair cells. Transpiration is what happens at the LEAVES end.', 3: 'Photosynthesis produces OXYGEN, not water \u2014 water is a REACTANT of photosynthesis (6CO\u2082 + 6H\u2082O \u2192 C\u2086H\u2081\u2082O\u2086 + 6O\u2082).' } },
+      { q: 'A plant is moved from a humid greenhouse to a dry, windy environment. What happens to its transpiration rate?', opts: [['Transpiration increases significantly \u2014 lower humidity and wind both increase the rate', true], ['Transpiration decreases \u2014 the plant closes its stomata to conserve water', false], ['Transpiration stays the same \u2014 the two factors cancel each other out', false], ['Transpiration increases due to humidity but decreases due to wind \u2014 net effect is zero', false]],
+        wrong_explanations: { 1: 'The plant may eventually close stomata if it loses too much water \u2014 but the immediate effect of moving to dry, windy conditions is faster transpiration. Stomata closing is a response to stress, not an immediate automatic reaction.', 2: 'The two factors don\u2019t cancel out \u2014 both low humidity AND wind INCREASE transpiration rate. They act in the same direction.', 3: 'Both low humidity and wind INCREASE transpiration \u2014 humidity and wind both affect the concentration gradient for water vapour in the same way (they both maintain a steep gradient).' } },
+      { q: 'Why do plants transpire faster in brighter light?', opts: [['Brighter light causes stomata to open wider \u2014 allowing more water vapour to escape', true], ['Brighter light increases the temperature of the leaf, causing faster evaporation', false], ['Brighter light increases the rate of photosynthesis, which produces more water', false], ['Brighter light makes chlorophyll absorb water directly from the air', false]],
+        wrong_explanations: { 1: 'Brighter light does warm leaves slightly \u2014 but the PRIMARY mechanism is guard cells responding to light by opening stomata wider.', 2: 'Photosynthesis uses water as a REACTANT \u2014 it consumes water, not produces it. Oxygen is the gas product.', 3: 'Chlorophyll absorbs LIGHT energy \u2014 it does not absorb water from the air.' } },
+      { q: 'What do guard cells do?', opts: [['Open and close the stomata to control gas exchange and water loss', true], ['Carry water up the stem', false], ['Make sugars for the plant', false], ['Absorb water from the soil', false]],
+        wrong_explanations: { 1: 'Xylem carries water up the stem.', 2: 'Sugars are made by photosynthesis, mainly in the palisade cells.', 3: 'Root hair cells absorb water.' } },
+      { q: 'In a potometer, the bubble moves further in one minute after a fan is switched on. What does this show?', opts: [['Wind increases the rate of water uptake', true], ['Wind decreases the rate of water uptake', false], ['The fan has dried out the potometer', false], ['Wind closes the stomata', false]],
+        wrong_explanations: { 1: 'Further in the same time means faster uptake, not slower.', 2: 'The potometer is sealed; the plant is taking in more water.', 3: 'Wind removes water vapour from around the leaf; it doesn\u2019t close the stomata.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('transpiration') : null,
+      hookOptions: [
+        { text: 'A hot, windy day', correct: true, reply: 'Like the washing, leaves lose water fastest when it is warm and windy.' },
+        { text: 'A cool, still day', correct: false, reply: 'On a cool, still day water evaporates slowly, so the plant loses less. Warm, windy days speed it up.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      stomaBtns: [true, false].map((o) => ({ label: o ? 'Open (light)' : 'Closed (dark)', pressed: s.open === o, style: this.seg(s.open === o), onClick: () => this.setState({ open: o, toggled: s.toggled.indexOf(o) >= 0 ? s.toggled : s.toggled.concat([o]) }) })),
+      stomaFig: ready ? K.fig(this.stomaFig(s.open), '') : null,
+      stomaNote: s.open ? 'In light, the guard cells open the stoma. Carbon dioxide gets in for photosynthesis, and water vapour gets out.' : 'In the dark, or when the plant is short of water, the guard cells close the stoma. Transpiration almost stops.',
+      factors: FAC.map((x) => ({ name: x.name, opts: x.o.map((lab, v) => ({ label: lab, pressed: s.f[x.k] === v, style: this.seg(s.f[x.k] === v),
+        onClick: () => { const f = Object.assign({}, s.f); f[x.k] = v; this.setState({ f, last: x.k, tried: s.tried.indexOf(x.k) >= 0 ? s.tried : s.tried.concat([x.k]) }); } })) })),
+      potFig: ready ? K.fig(this.potFig(d), '') : null,
+      potNote: (L ? L.why[s.f[L.k]] + ' ' : 'Change one condition. ') + 'The bubble moved ' + d + ' mm in 1 minute.',
+      thinkOptions: [
+        { text: 'It decreases', correct: true, reply: 'A smaller difference in water vapour, so slower diffusion.' },
+        { text: 'It increases', correct: false, reply: 'Humid air already holds water vapour, so less diffuses out of the leaf.' },
+        { text: 'It stays the same', correct: false, reply: 'Humidity changes the difference between inside and outside the leaf, so the rate changes.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'f', label: 'Faster' }, { id: 's', label: 'Slower' }],
+      sortItems: [
+        { text: 'The temperature rises', bin: 'f', why: 'Faster evaporation.' },
+        { text: 'A lamp is moved closer', bin: 'f', why: 'Stomata open wider.' },
+        { text: 'A fan is switched on', bin: 'f', why: 'Water vapour is blown away.' },
+        { text: 'The air becomes drier', bin: 'f', why: 'Bigger difference in water vapour.' },
+        { text: 'A plastic bag traps humid air around the shoot', bin: 's', why: 'Smaller difference.' },
+        { text: 'The lights are switched off', bin: 's', why: 'Stomata close.' },
+        { text: 'The air becomes still', bin: 's', why: 'Water vapour builds up near the leaf.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name the tissue that carries water up from the roots in the transpiration stream.', why: 'Xylem.', options: [
+            { text: 'Phloem', correct: false, reply: 'Phloem carries dissolved sugars.' }, { text: 'Xylem', correct: true }, { text: 'Epidermis', correct: false, reply: 'The epidermis covers the leaf.' }] },
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Give the name of the apparatus used to measure the rate of water uptake by a shoot.', why: 'A potometer.', options: [
+            { text: 'A potometer', correct: true }, { text: 'A thermometer', correct: false, reply: 'That measures temperature.' }, { text: 'A gas syringe', correct: false, reply: 'That collects gas.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Predict', marks: 1, prompt: 'A potometer is moved from a dim room into bright light. Predict what happens to the bubble.', why: 'It moves faster: stomata open wider, so more water is taken up.', options: [
+            { text: 'It moves faster', correct: true }, { text: 'It moves slower', correct: false, reply: 'Brighter light opens the stomata wider.' },
+            { text: 'It stops', correct: false, reply: 'Light speeds transpiration up.' }, { text: 'It moves backwards', correct: false, reply: 'The shoot keeps taking water in.' }] },
+          { kind: 'mcq', command: 'Identify', marks: 1, prompt: 'A student tests the effect of wind using a fan at different distances. Identify a variable that must be kept the same.', why: 'For example temperature, light or humidity (or the same shoot).', options: [
+            { text: 'The temperature', correct: true }, { text: 'The distance of the fan', correct: false, reply: 'That is the variable being changed.' },
+            { text: 'The distance the bubble moves', correct: false, reply: 'That is what is measured.' }, { text: 'The time of day it is written up', correct: false, reply: 'That doesn\u2019t affect the plant.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why transpiration is faster on a windy day. Put the links in order.',
+            links: ['Wind blows water vapour away from around the leaf.', 'So the difference in water vapour between inside and outside the leaf stays large.', 'So water vapour diffuses out of the stomata faster.'],
+            herrings: [{ text: 'Wind cools the leaf, so it loses less water.', why: 'Wind speeds transpiration up.' }, { text: 'Wind pushes water into the stomata.', why: 'Water vapour moves out.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how water moves from the roots to the air around a leaf. Put the links in order.',
+            links: ['Water evaporates from the leaf and diffuses out through the stomata as water vapour.', 'More water is drawn up the xylem to replace it.', 'Water enters the roots from the soil, keeping the transpiration stream going.'],
+            herrings: [{ text: 'Phloem pumps water up to the leaves.', why: 'Water moves in the xylem; nothing pumps it.' }, { text: 'The roots push all the water up by active transport.', why: 'Water is drawn up as it evaporates from the leaves.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 6, prompt: 'Describe how a student could use a potometer to investigate the effect of light intensity on the rate of water uptake by a leafy shoot.',
+            levels: [
+              { label: 'Level 3 \u00b7 5\u20136', text: 'A clear, logical method: set-up, varying light, controls, measuring and comparing.', max: 6 },
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Most of a method, with some control or measurement detail.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'Simple statements about the potometer or light.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Set up the potometer with a leafy shoot, sealed, with an air bubble in the capillary tube.', 'Place a lamp at a set distance from the shoot.', 'Measure how far the bubble moves in a set time, e.g. 1 minute.', 'Repeat with the lamp at different distances.', 'Keep temperature, humidity and air movement the same.', 'Further in the same time means faster water uptake; repeat each reading.'],
+            reject: ['\u201cThe potometer measures the water lost from the leaves directly.\u201d', '\u201cChange the temperature and the light together.\u201d'] }
+        ]
+      },
+      keyLines: ['Transpiration is the loss of water vapour from the leaves, mostly through the stomata. The transpiration stream carries water up the xylem from the roots.', 'Each stoma is a pore between two guard cells, which control gas exchange and water loss: open in light, closed in the dark.', 'Faster when warmer, brighter, drier (low humidity) and windier.', 'A potometer measures water uptake by how far an air bubble moves in a set time. Change one factor; keep the others the same.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.2.2.7-cancer.dc.html', label: 'Cancer' }, endNext: { href: 'ks4-biology-4.2.3.2-translocation.dc.html', label: 'Translocation' },
+      endConnects: [{ href: '../../Batch 5/lessons/ks4-biology-4.2.3.1-plant-tissues.dc.html', label: 'Plant tissues and organs' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

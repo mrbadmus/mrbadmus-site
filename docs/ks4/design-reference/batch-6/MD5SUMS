@@ -1,0 +1,37 @@
+# Design's delivery, unmodified. Source: Design's Output/Batch 6/lessons (9 Oct 2026)
+# Verify: cd docs/ks4/design-reference/batch-6 && md5sum -c MD5SUMS   (macOS: md5 -r <file>)
+
+7944057425a50d5fd9c99f8b44cf0675  lessons/Ks4Cfifa.dc.html
+96891e81a2bb42139d7afa149821958c  lessons/Ks4Chain.dc.html
+029dd4506e0b9550aa660ba99987a3c8  lessons/Ks4Choice.dc.html
+a67112065727183112bc7914021a6072  lessons/Ks4Chrome.dc.html
+78f325cf60ac6a159e56821c9c3acc1e  lessons/Ks4End.dc.html
+a5473bce6894d173ad6734d69e068ffa  lessons/Ks4Guess.dc.html
+fb55a861975b0c66bcda7fe5dd1eacdb  lessons/Ks4KeyNote.dc.html
+d5257905b41d13b49d2b082c3523702f  lessons/Ks4Practice.dc.html
+40cc9550bdc8852a75b24ce932c26032  lessons/Ks4QuizBank.dc.html
+3caab7c8e6fe7124559c737569d2b24c  lessons/Ks4Sort.dc.html
+24305c8d1955fcf4ed5102e2c9aa5a3f  lessons/Ks4Steps.dc.html
+362c3323f373956e1c5b1e8fade089fb  lessons/Ks4Triangle.dc.html
+640b6cc3754e7107255bcef26097100f  lessons/Ks4Video.dc.html
+5bd355235328e528e645760625b3730f  lessons/Ks4Write.dc.html
+ebd1e646047e154dc4bc201e2dbb8c16  lessons/NOTES-KS4-batch-6.md
+6f1027f1c8c2f98a012ed3ec0806fec7  lessons/README.txt
+5cad0201f79d03b1d5111ecf3a8a9e24  lessons/ks4-biology-4.1.1.2-animal-plant-cells.dc.html
+08da9f65c79e836a4f6b80f43a46b911  lessons/ks4-biology-4.1.1.3-cell-specialisation.dc.html
+cb544ea213a66c2bbfea4ed738b2b760  lessons/ks4-biology-4.1.1.6-culturing-microorganisms.dc.html
+db83af1d602b440d046b2528b50af087  lessons/ks4-biology-4.1.2.3-stem-cells.dc.html
+ce2da79c7909ec5c2e3aa6b09f3ca3f4  lessons/ks4-biology-4.2.1-principles-of-organisation.dc.html
+3ba07d167829cef60682863cb60b4ac5  lessons/ks4-biology-4.2.2.1-digestive-system.dc.html
+596fc20b7e55076ab395e7a44d1de90e  lessons/ks4-biology-4.2.2.5-health-disease.dc.html
+e120019f08d2c8bc77358352ad86b1a7  lessons/ks4-biology-4.2.2.7-cancer.dc.html
+24e341af8d366950a4584eb15fd14f4a  lessons/ks4-biology-4.2.3.2-translocation.dc.html
+6e51c8c142c985540e83ca5fca2b55e1  lessons/ks4-biology-4.2.3.2-transpiration.dc.html
+8e57b26adf9addfbf584b5afeacbcb7e  lessons/ks4-biology-4.7.5.1-factors-affecting-food-security.dc.html
+b4f6330ba6a6c76a065846ca2c8f52d5  lessons/ks4-chemistry-5.1.2.5-group-1.dc.html
+e80ac55979333e3c4c03fb9d8796330d  lessons/ks4-chemistry-5.4.2.1-reactions-of-acids.dc.html
+7959be1777b0f0c3e329027ff9f47216  lessons/ks4-diagrams.js
+b765d8241fd115918bccb977388d6bd4  lessons/ks4-lib.js
+ca1b77a215f80ecf97c5579f585f813d  lessons/ks4-physics-4.8.1.2-stellar-evolution.dc.html
+69e1b11a2d63c89e584f80ab402132ca  lessons/ks4-theme.css
+951ae391b8ae72ef12e671c2fad23353  lessons/support.js

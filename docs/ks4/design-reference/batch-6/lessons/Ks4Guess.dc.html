@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js"></script>
+<style>
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="font-family: var(--ks3-font-body); color: var(--ks3-ink); text-wrap: pretty;">
+  <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Start here</p>
+  <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; max-width: 26ch;">{{ title }}</h2>
+  <sc-if value="{{ hasScene }}"><p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6; max-width: 58ch;">{{ scene }}</p></sc-if>
+  <sc-if value="{{ hasFigure }}"><div style="margin: 16px 0 0;">{{ figure }}</div></sc-if>
+  <p class="ks3-commit" style="color: var(--ks3-ink); margin: 18px 0 0; max-width: 40ch;">If you had to guess, {{ question }}</p>
+
+  <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 12px; align-items: stretch;">
+    <sc-for list="{{ options }}" as="o" hint-placeholder-count="2">
+      <button type="button" onClick="{{ o.onClick }}" disabled="{{ o.disabled }}" aria-pressed="{{ o.pressed }}" style="{{ o.style }}">
+        <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 26px;">
+          <span style="white-space: nowrap; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ o.tag }}</span>
+          <sc-if value="{{ o.isAnswer }}">
+            <span style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; flex: 0 0 auto; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 9px 3px 6px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);"><svg viewBox="0 0 24 24" aria-hidden="true" style="width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg>The answer</span>
+          </sc-if>
+        </span>
+        <span style="display: block; margin-top: 10px; font-family: var(--ks3-font-display); font-weight: 700; font-size: 23px; line-height: 1.25; letter-spacing: -.015em;">{{ o.text }}</span>
+      </button>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ picked }}">
+    <div data-arrive="1" role="status" style="margin-top: 16px; padding: 20px 22px; border-radius: 18px; background: var(--ks3-accent-tint); border: 2px solid var(--ks3-accent);">
+      <p style="margin: 0; font-size: 19px; line-height: 1.6;"><strong>{{ word }}</strong> {{ reply }}</p>
+      <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6;">{{ bridge }}</p>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:760},&quot;title&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;scene&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;question&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;which do you think?&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;options&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;[{text:string,correct:boolean,reply:string},{text:string,correct:boolean,reply:string}]&quot;},&quot;bridge&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;rightWord&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Good guess.&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;wrongWord&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Fair guess.&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;figureSvg&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;onCommit&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(i:number,correct:boolean)=&gt;void&quot;}}">
+class Component extends DCLogic {
+  state = { pick: null };
+  renderVals() {
+    const p = this.props;
+    const opts = (p.options || []).slice(0, 2);
+    const pick = this.state.pick;
+    const done = pick !== null;
+    const right = done && opts[pick] && opts[pick].correct;
+    const cards = [];
+    opts.forEach((o, i) => {
+      const on = pick === i;
+      cards.push({
+        tag: on ? 'Your guess' : (i === 0 ? 'This' : 'Or this'), text: o.text, pressed: on, disabled: done,
+        isAnswer: done && !!o.correct,
+        style: 'display:block;width:100%;text-align:left;font:inherit;color:var(--ks3-ink);padding:16px 18px 20px;border-radius:18px;min-height:120px;cursor:' + (done ? 'default' : 'pointer') + ';' +
+          'background:' + (on ? 'var(--ks3-card)' : 'var(--ks3-ground)') + ';border:' + (on ? '3px solid var(--ks3-ink)' : '2px solid var(--ks3-option-border)') + ';' +
+          (on ? 'box-shadow:5px 5px 0 var(--ks3-accent);' : '') + (done && !on && !o.correct ? 'opacity:.7;' : ''),
+        onClick: () => { if (done) return; this.setState({ pick: i }); if (typeof p.onCommit === 'function') p.onCommit(i, !!o.correct); }
+      });
+      if (i === 0) cards.push({ divider: true });
+    });
+    return {
+      title: p.title || '', scene: p.scene || '', hasScene: !!p.scene,
+      question: p.question || 'which do you think?',
+      hasFigure: !!p.figureSvg,
+      figure: p.figureSvg ? React.createElement('div', { role: 'img', 'aria-label': p.figureAlt || '', style: { maxWidth: p.figureMax || '640px' }, dangerouslySetInnerHTML: { __html: p.figureSvg } }) : null,
+      options: cards.filter((c) => !c.divider),
+      picked: done,
+      word: done ? (right ? (p.rightWord || 'Good guess.') : (p.wrongWord || 'Fair guess.')) : '',
+      reply: done ? (opts[pick].reply || '') : '',
+      bridge: p.bridge || ''
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js"></script>
+<style>
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .3s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="font-family: var(--ks3-font-body); color: var(--ks3-ink); text-wrap: pretty;">
+  <sc-if value="{{ isFull }}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; align-items: center; gap: 8px 10px; flex-wrap: wrap;">
+      <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">{{ eyebrow }}</p>
+      <sc-for list="{{ chips }}" as="ch" hint-placeholder-count="0">
+        <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink); color: var(--ks3-ink);">{{ ch }}</span>
+      </sc-for>
+    </div>
+    <h3 style="margin: 8px 0 0; font-size: 24px; line-height: 1.2; letter-spacing: -.02em;">{{ name }}</h3>
+  </sc-if>
+  <sc-if value="{{ isCompact }}">
+    <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ name }}</p>
+  </sc-if>
+
+  <div style="{{ bodyStyle }}">
+    <div style="flex: 0 1 auto; display: flex; flex-direction: column; gap: 10px; min-width: 0;">
+      <div style="{{ triStyle }}">
+        <svg viewBox="-4 -6 308 270" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible;">
+          <sc-for list="{{ regions }}" as="r" hint-placeholder-count="3"><polygon points="{{ r.points }}" style="{{ r.style }}"></polygon></sc-for>
+          <polygon points="150,0 300,260 0,260" style="fill: none; stroke: var(--ks3-ink); stroke-width: 3.5; stroke-linejoin: round;"></polygon>
+          <line x1="75" y1="130" x2="225" y2="130" style="stroke: var(--ks3-ink); stroke-width: 3;"></line>
+          <sc-for list="{{ dividers }}" as="d" hint-placeholder-count="1"><line x1="{{ d.x }}" y1="130" x2="{{ d.x }}" y2="260" style="stroke: var(--ks3-ink); stroke-width: 3;"></line></sc-for>
+        </svg>
+        <sc-for list="{{ cells }}" as="c" hint-placeholder-count="3">
+          <button type="button" onClick="{{ c.onClick }}" disabled="{{ c.disabled }}" aria-pressed="{{ c.pressed }}" aria-label="{{ c.aria }}" style="{{ c.style }}">{{ c.label }}</button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ isFull }}" hint-placeholder-val="{{ true }}">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; line-height: 1.45; color: var(--ks3-ink-muted); max-width: 300px;">Side by side: multiply.<br>One over the other: divide.</p>
+      </sc-if>
+    </div>
+
+    <div style="flex: 1 1 15rem; min-width: 0; display: flex; flex-direction: column; gap: 10px;">
+      <p style="margin: 0; font-size: 17px; font-weight: 600; color: var(--ks3-ink-body);">{{ ask }}</p>
+      <sc-for list="{{ lines }}" as="ln" hint-placeholder-count="1">
+        <div data-arrive="1" style="{{ ln.box }}">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ ln.label }}</p>
+          <p style="{{ ln.lineStyle }}">
+            <span style="white-space: pre-wrap;">{{ ln.pre }}</span>
+            <sc-if value="{{ ln.root }}">
+              <span style="display: inline-flex; align-items: stretch;">
+                <svg viewBox="0 0 16 30" preserveAspectRatio="none" aria-hidden="true" style="width: .6em; height: auto; align-self: stretch; overflow: visible;"><path d="M1 18 L5 16 L9 28 L15 1" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"></path></svg>
+                <span style="border-top: 2.5px solid currentColor; padding: 3px 4px 0 3px;">{{ ln.radicand }}</span>
+              </span>
+              <span style="position: absolute; left: -9999px;">{{ ln.spoken }}</span>
+            </sc-if>
+          </p>
+        </div>
+      </sc-for>
+      <sc-if value="{{ isFull }}" hint-placeholder-val="{{ true }}">
+        <dl style="margin: 4px 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 6px 14px; align-items: baseline; padding-top: 12px; border-top: 2px solid var(--ks3-rule);">
+          <sc-for list="{{ legend }}" as="q" hint-placeholder-count="3">
+            <dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">{{ q.s }}</dt>
+            <dd style="margin: 0; font-size: 16px; line-height: 1.4; color: var(--ks3-ink-body);">{{ q.name }}</dd>
+            <dd style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted); text-align: right;">{{ q.unit }}</dd>
+          </sc-for>
+        </dl>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:760},&quot;eq&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;{name:string,written:string,source?:'sheet'|'none',route?:string,top:{s,name,unit},bottom:Array&lt;{s:string,name?:string,unit?:string,half?:boolean,root?:string}&gt;}&quot;},&quot;variant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;full&quot;,&quot;compact&quot;],&quot;default&quot;:&quot;full&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;pick&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;onPick&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(symbol:string)=&gt;void&quot;}}">
+const P = (x, y) => [(x + 4) / 308 * 100, (y + 6) / 270 * 100];
+const ROW = 202;
+const G = {
+  top: { points: '150,0 225,130 75,130', at: P(150, 90) },
+  2: { div: [150], cells: [['75,130 150,130 150,260 0,260', P(92, ROW)], ['150,130 225,130 300,260 150,260', P(208, ROW)]] },
+  3: { div: [112.5, 187.5], cells: [['75,130 112.5,130 112.5,260 0,260', P(74, ROW)], ['112.5,130 187.5,130 187.5,260 112.5,260', P(150, ROW)], ['187.5,130 225,130 300,260 187.5,260', P(226, ROW)]] }
+};
+const X = ' \u00d7 ', D = ' \u00f7 ';
+class Component extends DCLogic {
+  state = { pick: null };
+  current() {
+    if (this.state.pick !== null) return this.state.pick;
+    const p = this.props, eq = p.eq || {};
+    if (!p.pick) return null;
+    if (eq.top && (eq.top.s === p.pick)) return 'top';
+    const i = (eq.bottom || []).findIndex((b) => b.s === p.pick || b.root === p.pick);
+    return i >= 0 ? 'b' + i : null;
+  }
+  lines(eq, pick) {
+    const top = eq.top, bot = eq.bottom || [];
+    const group = (arr) => arr.length > 1 ? '(' + arr.map((b) => b.s).join(X) + ')' : arr[0].s;
+    if (pick === null) return [{ label: eq.source === 'none' ? 'Written out' : 'As on the equation sheet', pre: eq.written || (top.s + ' = ' + bot.map((b) => b.s).join(' ')) }];
+    if (pick === 'top') return [{ label: 'Side by side \u00b7 multiply', pre: top.s + ' = ' + bot.map((b) => b.s).join(X) }];
+    const i = +pick.slice(1), want = bot[i];
+    const others = bot.filter((b, j) => j !== i);
+    let rhs = top.s + D + group(others);
+    const out = [{ label: 'One over the other \u00b7 divide', pre: want.s + ' = ' + rhs }];
+    if (others.some((b) => b.half)) {
+      const rest = others.filter((b) => !b.half);
+      rhs = '2' + X + top.s + (rest.length ? D + group(rest) : '');
+      out.push({ label: 'Extra step \u00b7 \u00f7 \u00bd is the same as \u00d7 2', pre: want.s + ' = ' + rhs, extra: true });
+    }
+    if (want.root) out.push({ label: 'Extra step \u00b7 square-root both sides', pre: want.root + ' = ', root: true, radicand: rhs, spoken: 'the square root of ' + rhs, extra: true });
+    return out;
+  }
+  renderVals() {
+    const p = this.props;
+    const eq = p.eq || { top: { s: '' }, bottom: [] };
+    const bot = eq.bottom || [];
+    const full = (p.variant || 'full') !== 'compact';
+    const pick = this.current();
+    const g = G[bot.length === 3 ? 3 : 2];
+    const fs = full ? (bot.length === 3 ? 28 : 32) : (bot.length === 3 ? 19 : 22);
+    const cell = (label, at, key, item) => {
+      const fixed = !!(item && (item.half || item.fixed));
+      const on = pick === key;
+      const rest = pick !== null && !on;
+      return {
+        label, pressed: on, disabled: fixed,
+        aria: fixed ? (item.fixed ? (item.name || item.s) + ', a fixed number' : 'One half, a fixed number') : 'Find ' + (item ? (item.root || item.s) : eq.top.s) + ', ' + (item ? item.name : eq.top.name),
+        style: 'position:absolute;left:' + at[0] + '%;top:' + at[1] + '%;transform:translate(-50%,-50%);font:inherit;font-family:var(--ks3-font-display);font-weight:800;font-size:' + fs + 'px;line-height:1;letter-spacing:-.01em;' +
+          'display:grid;place-items:center;min-width:44px;min-height:44px;padding:0 2px;border:0;border-radius:10px;background:transparent;white-space:nowrap;text-align:center;' +
+          (fixed ? 'color:var(--ks3-ink-muted);cursor:default;'
+            : on ? 'color:var(--ks3-ground);cursor:pointer;text-decoration:none;'
+            : rest ? 'color:var(--ks3-ink);cursor:pointer;'
+            : 'color:var(--ks3-ink);cursor:pointer;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px;text-decoration-color:var(--ks3-rule-strong);'),
+        onClick: () => { if (fixed) return; this.setState({ pick: key }); if (typeof p.onPick === 'function') p.onPick(item ? (item.root || item.s) : eq.top.s); }
+      };
+    };
+    const regionStyle = (key) => 'stroke:none;fill:' + (pick === null ? 'transparent' : pick === key ? 'var(--ks3-ink)' : 'var(--ks3-accent-tint)') + ';transition:fill .2s;';
+    const regions = [{ points: G.top.points, style: regionStyle('top') }].concat(g.cells.map((c, i) => ({ points: c[0], style: regionStyle('b' + i) })));
+    const cells = [cell(eq.top.s, G.top.at, 'top', null)].concat(bot.map((b, i) => cell(b.s, g.cells[i][1], 'b' + i, b)));
+    const lines = this.lines(eq, pick).map((l, k) => Object.assign({ root: false, radicand: '', spoken: '' }, l, {
+      box: 'padding:' + (full ? '12px 16px' : '10px 14px') + ';border-radius:14px;background:' + (l.extra ? 'var(--ks3-inset)' : 'var(--ks3-card)') + ';border:2px ' + (l.extra ? 'dashed var(--ks3-rule-strong)' : 'solid ' + (pick === null ? 'var(--ks3-option-border)' : 'var(--ks3-ink)')) + ';',
+      lineStyle: 'margin:4px 0 0;display:flex;flex-wrap:wrap;align-items:stretch;font-family:var(--ks3-font-mono);font-weight:500;font-size:' + (full ? (k ? 21 : 24) : 19) + 'px;line-height:1.35;color:var(--ks3-ink);'
+    }));
+    const chips = [];
+    if (eq.source !== 'none') chips.push('On the sheet');
+    if (eq.route) chips.push(eq.route);
+    return {
+      isFull: full, isCompact: !full,
+      eyebrow: 'Equation', chips, name: eq.name || '',
+      bodyStyle: 'margin-top:' + (full ? 16 : 8) + 'px;display:flex;flex-wrap:wrap;gap:' + (full ? '18px 28px' : '12px 18px') + ';align-items:flex-start;',
+      triStyle: 'position:relative;width:' + (full ? 'min(340px, 100%)' : '224px') + ';aspect-ratio:308/270;',
+      regions, dividers: g.div.map((x) => ({ x })), cells, lines,
+      ask: pick === null ? 'Tap the quantity you want to find.' : (pick === 'top' ? 'Finding ' + eq.top.s + '.' : 'Finding ' + (bot[+pick.slice(1)].root || bot[+pick.slice(1)].s) + '. Tap another to switch.'),
+      legend: [eq.top].concat(bot.filter((b) => !b.half)).map((q) => ({ s: q.root ? q.root : q.s, name: q.name || '', unit: q.unit || '' }))
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The digestive system · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Organisation" title="The digestive system" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.2.2.1</p>
+        <h1>The digestive system</h1>
+        <p class="ks3-bigq">Big molecules in, small soluble ones absorbed. Follow a meal through the gut, see which enzyme acts where, then test foods for what they contain.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">{{ rpBadge }}</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Toast at breakfast." scene="You eat two slices of toast at eight o’clock. By lunchtime you are hungry again, and the toast has gone." question="does your body use the bread as it is, or break it down into smaller bits first?" options="{{ hookOptions }}" bridge="Starch in bread is too big to get into your blood. It is broken down into sugars first. Next: where that happens." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-tract" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Follow the meal</p>
+        <h2 style="margin: 6px 0 0;">Each organ has a job.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The digestive system is an organ system: organs work together to digest and absorb food. Enzymes break large, insoluble molecules into small, soluble ones that can be absorbed into the bloodstream. Tap each organ, in order.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ organBtns }}" as="b" hint-placeholder-count="6"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ gutFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px;">{{ organName }}</p>
+            <p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ organNote }}</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-enz" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Three enzymes, three products</p>
+        <h2 style="margin: 6px 0 0;">Where each enzyme is made, and what it makes.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Carbohydrases break carbohydrates down to simple sugars. Amylase is a carbohydrase. The products of digestion are used to build new carbohydrates, lipids and proteins; some glucose is used in respiration.</p>
+        <div style="margin-top: 14px; overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 17px; min-width: 520px;">
+            <thead><tr style="text-align: left; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);"><th style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink);">Enzyme</th><th style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink);">Made in</th><th style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink);">Word equation</th></tr></thead>
+            <tbody>
+              <tr><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule); font-weight: 700;">Amylase</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">salivary glands, pancreas, small intestine</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">starch <svg aria-hidden="true" width="22" height="12" viewBox="0 0 22 12" style="vertical-align: middle;"><path d="M2 6h16M13 2l5 4-5 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg> sugars</td></tr>
+              <tr><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule); font-weight: 700;">Protease</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">stomach, pancreas, small intestine</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">protein <svg aria-hidden="true" width="22" height="12" viewBox="0 0 22 12" style="vertical-align: middle;"><path d="M2 6h16M13 2l5 4-5 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg> amino acids</td></tr>
+              <tr><td style="padding: 8px 10px; font-weight: 700;">Lipase</td><td style="padding: 8px 10px;">pancreas, small intestine</td><td style="padding: 8px 10px;">lipid <svg aria-hidden="true" width="22" height="12" viewBox="0 0 22 12" style="vertical-align: middle;"><path d="M2 6h16M13 2l5 4-5 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg> glycerol + fatty acids</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">How enzymes work, and how pH and temperature affect them, is in the Enzymes lesson.</p>
+      </section>
+
+      <section id="s-rp" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">{{ rpEyebrow }}</p>
+        <h2 style="margin: 6px 0 0;">What is in this food?</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Use qualitative reagents to test for a range of carbohydrates, lipids and proteins. Make a food solution, then test it. Wear eye protection. Benedict’s needs a hot water bath; ethanol is flammable, so keep it away from any flame. Pick a food and run each test.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ foodBtns }}" as="b" hint-placeholder-count="4"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ testFig }}</div>
+        <div style="margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 10px;">
+          <sc-for list="{{ testCards }}" as="t" hint-placeholder-count="4">
+            <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border); display: flex; flex-direction: column; gap: 6px;">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 18px;">{{ t.name }}</p>
+              <p style="margin: 0; font-size: 16px; line-height: 1.5; color: var(--ks3-ink-body);">{{ t.how }}</p>
+              <sc-if value="{{ t.run }}"><p data-arrive="1" style="margin: 0; font-size: 16px; line-height: 1.5; font-weight: 700;">{{ t.result }}</p></sc-if>
+              <sc-if value="{{ t.notRun }}"><button type="button" class="ks3-reveal-btn" onClick="{{ t.onClick }}" style="align-self: flex-start;">Run it</button></sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · what bile does</p></div>
+        <p class="ks3-mis-quote">&ldquo;Bile digests fat.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Bile is released into the small intestine. What does it do to fat?" options="{{ thinkOptions }}" reveal="It emulsifies fat into small droplets, which gives a larger surface area for lipase to act on, so fat is digested faster. Bile isn’t an enzyme. It is also alkaline, so it neutralises the acid from the stomach." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Amylase, protease or lipase?" prompt="Place each statement with its enzyme." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="The small intestine and pancreas make all three. Only amylase is made in the mouth; only protease in the stomach." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">A food test: reagent, method, colour before and after.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How bile speeds up fat digestion.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Name</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Enzyme, where it’s made, what it makes.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Enzymes break large, insoluble molecules into small, soluble ones: starch to sugars, protein to amino acids, lipid to glycerol and fatty acids. They are absorbed in the small intestine.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="digestive-system" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="The digestive system" spec="AQA 4.2.2.1" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which enzyme is made where?" legal="The gut figure is schematic and not to scale. Food-test results are typical, for practice." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Toast at breakfast', short: 'HOOK' },
+  { id: 's-tract', label: 'Follow the meal', short: 'GUT' },
+  { id: 's-enz', label: 'Three enzymes', short: 'ENZYMES' },
+  { id: 's-rp', label: 'Food tests', short: 'RP' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Which enzyme', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const ORG = [
+  { k: 'mouth', n: 'Mouth and salivary glands', t: 'Teeth break food into smaller pieces. Salivary glands make amylase, which starts breaking starch down into sugars.' },
+  { k: 'stomach', n: 'Stomach', t: 'Muscle churns the food. Glands make protease, which breaks protein into amino acids, and hydrochloric acid, which gives the acid conditions the stomach protease works best in.' },
+  { k: 'pancreas', n: 'Pancreas', t: 'Makes amylase, protease and lipase, and releases them into the small intestine.' },
+  { k: 'liver', n: 'Liver and gall bladder', t: 'Bile is made in the liver and stored in the gall bladder. It is alkaline, to neutralise stomach acid, and emulsifies fat into small droplets. Bile isn\u2019t an enzyme.' },
+  { k: 'small', n: 'Small intestine', t: 'Makes all three enzymes too, and finishes digestion. Villi give a large surface area, with thin walls and a good blood supply, so the small, soluble molecules are absorbed into the blood.' },
+  { k: 'large', n: 'Large intestine', t: 'Most food has already been absorbed. Water is absorbed here from what is left.' }
+];
+const FOODS = [
+  { label: 'Bread', r: [true, false, false, false] },
+  { label: 'Glucose drink', r: [false, true, false, false] },
+  { label: 'Egg white', r: [false, false, true, false] },
+  { label: 'Olive oil', r: [false, false, false, true] }
+];
+const TESTS = [
+  { name: 'Iodine: starch', how: 'Add iodine solution to the food.', pos: 'Orange-brown \u2192 blue-black: starch present.', neg: 'Stays orange-brown: no starch.', from: '#D9822B', to: '#1F2A44' },
+  { name: 'Benedict\u2019s: sugars', how: 'Add Benedict\u2019s solution; heat in a hot water bath.', pos: 'Blue \u2192 brick-red: sugar present. (Green, yellow or orange means less sugar.)', neg: 'Stays blue: no sugar.', from: '#3E7CC9', to: '#B23A1E' },
+  { name: 'Biuret: protein', how: 'Add Biuret reagent.', pos: 'Blue \u2192 purple: protein present.', neg: 'Stays blue: no protein.', from: '#3E7CC9', to: '#7B3FA8' },
+  { name: 'Ethanol: lipid', how: 'Shake the food with ethanol, then pour into water.', pos: 'A cloudy white emulsion forms: lipid present.', neg: 'Stays clear: no lipid.', from: '#E9EEF2', to: '#F4F1E8' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, org: 0, seen: [0], food: 0, runs: [[false, false, false, false], [false, false, false, false], [false, false, false, false], [false, false, false, false]], think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  gutFig(k) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const st = (key, fill) => 'fill="' + (k === key ? '#F7B9A6' : fill) + '" stroke="' + (k === key ? C.red : C.stroke) + '" stroke-width="' + (k === key ? 4 : 2.5) + '"';
+    b += '<ellipse cx="200" cy="50" rx="46" ry="26" ' + st('mouth', '#F6E7D3') + '/>' + D.T(200, 56, 'mouth', 14, { fill: C.stroke });
+    b += D.line(200, 76, 200, 130, 10, '#E8C9B0') + D.line(200, 76, 200, 130, 2, C.stroke);
+    b += '<path d="M200 130 Q270 120 280 170 Q285 220 230 225 Q200 225 205 195" ' + st('stomach', '#F2D3C4') + '/>' + D.T(255, 180, 'stomach', 14, { fill: C.stroke });
+    b += '<path d="M90 120 Q150 110 190 140 Q170 175 110 170 Q80 150 90 120 Z" ' + st('liver', '#C98A6A') + '/>' + D.T(130, 150, 'liver', 13, { fill: C.stroke });
+    b += '<ellipse cx="160" cy="185" rx="14" ry="10" ' + st('liver', '#7FC07A') + '/>';
+    b += '<path d="M230 235 Q290 240 300 250 Q260 260 230 250 Z" ' + st('pancreas', '#F2C27A') + '/>' + D.T(320, 252, 'pancreas', 13, { anchor: 'start', fill: C.stroke });
+    b += '<path d="M205 225 Q140 240 150 270 Q260 280 250 300 Q140 310 150 330 Q260 340 250 360 Q170 370 200 380" fill="none" stroke="' + (k === 'small' ? C.red : C.stroke) + '" stroke-width="' + (k === 'small' ? 16 : 12) + '" stroke-linecap="round" opacity=".8"/>' + D.T(330, 300, 'small intestine (coiled)', 13, { anchor: 'start', fill: C.stroke });
+    b += '<path d="M200 390 L90 390 L90 230 L310 230 L310 390 L250 390" fill="none" stroke="' + (k === 'large' ? C.red : '#B08A6A') + '" stroke-width="' + (k === 'large' ? 22 : 18) + '" stroke-linejoin="round" opacity=".55"/>' + D.T(330, 372, 'large intestine', 13, { anchor: 'start', fill: C.stroke });
+    const O = ORG.filter((o) => o.k === k)[0];
+    return D.svg(460, 420, b, 'Digestive system, schematic. Highlighted: ' + O.n + '.');
+  }
+  testFig(f, runs) {
+    const D = window.KS4D, C = D.C; let b = '';
+    TESTS.forEach((t, i) => {
+      const x = 50 + i * 160, done = runs[i], pos = FOODS[f].r[i];
+      const col = done ? (pos ? t.to : t.from) : t.from;
+      b += '<path d="M' + x + ' 40 L' + x + ' 170 Q' + x + ' 200 ' + (x + 25) + ' 200 Q' + (x + 50) + ' 200 ' + (x + 50) + ' 170 L' + (x + 50) + ' 40" fill="none" stroke="' + C.stroke + '" stroke-width="3"/>';
+      b += '<path d="M' + (x + 3) + ' 100 L' + (x + 3) + ' 170 Q' + (x + 3) + ' 197 ' + (x + 25) + ' 197 Q' + (x + 47) + ' 197 ' + (x + 47) + ' 170 L' + (x + 47) + ' 100 Z" fill="' + col + '"/>';
+      if (done && pos && i === 3) for (let j = 0; j < 10; j++) b += D.circ(x + 10 + (j * 13) % 32, 110 + (j * 29) % 80, 3, '#FFFFFF', '#C9C2B2', 1);
+      b += D.T(x + 25, 228, t.name.split(':')[0], 14, { fill: C.stroke }) + D.T(x + 25, 248, done ? (pos ? 'positive' : 'negative') : 'not run', 13, { weight: 'normal', fill: done && pos ? C.red : C.muted });
+    });
+    return D.svg(660, 265, b, FOODS[f].label + ' food tests: ' + TESTS.map((t, i) => t.name + ' ' + (runs[i] ? (FOODS[f].r[i] ? 'positive' : 'negative') : 'not run')).join('; ') + '.');
+  }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {}, isTriple: true };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const runsDone = s.runs.every((r) => r.every(Boolean));
+    const done = [s.hook !== null, s.seen.length === ORG.length, s.seen.length === ORG.length, runsDone, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const rpN = R.isTriple ? 'Biology required practical 4' : 'Required practical 3';
+    const O = ORG[s.org];
+    const run = (i) => { const r = s.runs.map((x) => x.slice()); r[s.food][i] = true; this.setState({ runs: r }); };
+    const bankSrc = [
+      { q: 'What is the role of bile in digestion?', opts: [['Emulsifies fats \u2014 breaks large droplets into smaller ones to increase surface area for lipase', true], ['Chemically digests fats into fatty acids and glycerol', false], ['Kills bacteria in the small intestine using its acidity', false], ['Digests proteins into amino acids in the small intestine', false]],
+        wrong_explanations: { 1: 'Chemical digestion of fats = LIPASE. Bile only emulsifies \u2014 a physical process.', 2: 'Bile is ALKALINE, not acidic. HCl in the stomach kills bacteria. Bile actually neutralises the stomach acid.', 3: 'Protein digestion = PROTEASES (pepsin in the stomach, pancreatic proteases in the small intestine). Bile is not a protease.' } },
+      { q: 'Why does the small intestine have villi?', opts: [['To provide a large surface area for absorbing digested nutrients into the blood', true], ['To produce digestive enzymes for breaking down food', false], ['To neutralise the acid from the stomach', false], ['To store bile before it is released onto food', false]],
+        wrong_explanations: { 1: 'Villi are there to give a big surface area for absorbing digested food; the enzymes come from the pancreas and the small intestine wall.', 2: 'Bile neutralises stomach acid \u2014 villi are surface-area adaptations for absorption.', 3: 'Bile is stored in the GALL BLADDER, not in villi.' } },
+      { q: 'Where are proteins first chemically digested?', opts: [['The stomach \u2014 by the enzyme pepsin in the presence of HCl', true], ['The mouth \u2014 by salivary amylase', false], ['The large intestine \u2014 by bacteria', false], ['The liver \u2014 by bile salts', false]],
+        wrong_explanations: { 1: 'Salivary amylase in the mouth digests STARCH, not proteins. Amylase has no effect on protein.', 2: 'Bacteria in the large intestine help break down some fibre but are not the main site of protein digestion.', 3: 'The liver produces bile which emulsifies FATS \u2014 bile has no protein-digesting function.' } },
+      { q: 'What does the large intestine absorb?', opts: [['Water \u2014 from the remaining undigested material', true], ['Glucose \u2014 the final stage of carbohydrate absorption', false], ['Amino acids \u2014 the final stage of protein absorption', false], ['Fatty acids \u2014 the final stage of fat absorption', false]],
+        wrong_explanations: { 1: 'Glucose is absorbed in the SMALL INTESTINE \u2014 by the time food reaches the large intestine, glucose has already been absorbed.', 2: 'Amino acids are absorbed in the SMALL INTESTINE \u2014 through the villi walls into the blood.', 3: 'Fatty acids and glycerol are absorbed in the SMALL INTESTINE into the lacteals (lymph vessels in villi).' } },
+      { q: 'Which enzyme is produced by the salivary glands?', opts: [['Amylase \u2014 breaks down starch into maltose', true], ['Pepsin \u2014 breaks down proteins', false], ['Lipase \u2014 breaks down fats', false], ['Bile \u2014 emulsifies fats', false]],
+        wrong_explanations: { 1: 'Pepsin is produced by glandular tissue in the STOMACH WALL \u2014 not the salivary glands.', 2: 'Lipase is produced by the PANCREAS \u2014 not the salivary glands.', 3: 'Bile is not an enzyme \u2014 it is produced by the LIVER and stored in the gall bladder.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      rpBadge: rpN, rpEyebrow: rpN + ' \u00b7 food tests',
+      video: K && s.hook !== null ? K.video('digestive-system') : null,
+      hookOptions: [
+        { text: 'Used as it is', correct: false, reply: 'The starch in bread is too big to pass into your blood. It is broken down first.' },
+        { text: 'Broken down into smaller bits first', correct: true, reply: 'Enzymes break the starch into sugars small enough to be absorbed.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      organBtns: ORG.map((o, i) => ({ label: (i + 1) + '. ' + o.n, pressed: s.org === i, style: this.seg(s.org === i), onClick: () => this.setState({ org: i, seen: s.seen.indexOf(i) >= 0 ? s.seen : s.seen.concat([i]) }) })),
+      gutFig: ready ? K.fig(this.gutFig(O.k), '') : null,
+      organName: O.n, organNote: O.t,
+      foodBtns: FOODS.map((f, i) => ({ label: f.label, pressed: s.food === i, style: this.seg(s.food === i), onClick: () => this.setState({ food: i }) })),
+      testFig: ready ? K.fig(this.testFig(s.food, s.runs[s.food]), '') : null,
+      testCards: TESTS.map((t, i) => ({ name: t.name, how: t.how, run: s.runs[s.food][i], notRun: !s.runs[s.food][i], result: FOODS[s.food].r[i] ? t.pos : t.neg, onClick: () => run(i) })),
+      thinkOptions: [
+        { text: 'Emulsifies it into small droplets', correct: true, reply: 'Bigger surface area for lipase.' },
+        { text: 'Breaks it into glycerol and fatty acids', correct: false, reply: 'That is lipase. Bile only breaks the fat into smaller droplets.' },
+        { text: 'Turns it into sugar', correct: false, reply: 'Fat is digested to glycerol and fatty acids, by lipase.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'a', label: 'Amylase' }, { id: 'p', label: 'Protease' }, { id: 'l', label: 'Lipase' }],
+      sortItems: [
+        { text: 'Starch \u2192 sugars', bin: 'a', why: 'Amylase is a carbohydrase.' },
+        { text: 'Made in the salivary glands', bin: 'a', why: 'Digestion of starch starts in the mouth.' },
+        { text: 'Protein \u2192 amino acids', bin: 'p', why: 'Proteases.' },
+        { text: 'Made in the stomach', bin: 'p', why: 'The stomach makes protease.' },
+        { text: 'Lipid \u2192 glycerol + fatty acids', bin: 'l', why: 'Lipase.' },
+        { text: 'Works faster after bile emulsifies fat', bin: 'l', why: 'Bigger surface area.' },
+        { text: 'Made only in the pancreas and small intestine', bin: 'l', why: 'No lipase from the mouth or stomach.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name the products of lipid digestion.', why: 'Glycerol and fatty acids.', options: [
+            { text: 'Amino acids', correct: false, reply: 'From protein.' }, { text: 'Glycerol and fatty acids', correct: true }, { text: 'Sugars', correct: false, reply: 'From starch.' }] },
+          { kind: 'mcq', command: 'State', marks: 1, prompt: 'State where bile is made.', why: 'In the liver (stored in the gall bladder).', options: [
+            { text: 'The gall bladder', correct: false, reply: 'It is stored there, but made in the liver.' }, { text: 'The liver', correct: true }, { text: 'The pancreas', correct: false, reply: 'The pancreas makes enzymes.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Describe', marks: 1, prompt: 'Describe a positive result for the Biuret test.', why: 'Blue to purple: protein present.', options: [
+            { text: 'Blue to purple', correct: true }, { text: 'Orange-brown to blue-black', correct: false, reply: 'That is iodine, for starch.' },
+            { text: 'Blue to brick-red', correct: false, reply: 'That is Benedict\u2019s, for sugars.' }, { text: 'A cloudy white emulsion', correct: false, reply: 'That is the ethanol test, for lipids.' }] },
+          { kind: 'mcq', command: 'Identify', marks: 1, prompt: 'A food stays blue with Benedict\u2019s after heating, turns blue-black with iodine, and stays blue with Biuret. Identify what it contains.', why: 'Starch only.', options: [
+            { text: 'Starch', correct: true }, { text: 'Sugar', correct: false, reply: 'Benedict\u2019s stayed blue: no sugar.' },
+            { text: 'Protein', correct: false, reply: 'Biuret stayed blue: no protein.' }, { text: 'Starch and protein', correct: false, reply: 'Biuret stayed blue: no protein.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how bile helps the digestion of fat. Put the links in order.',
+            links: ['Bile emulsifies fat into small droplets.', 'This gives a larger surface area for lipase to act on.', 'So the lipase breaks the fat into glycerol and fatty acids faster.'],
+            herrings: [{ text: 'Bile is an enzyme that digests fat.', why: 'Bile isn\u2019t an enzyme.' }, { text: 'Bile makes the small intestine acidic.', why: 'Bile is alkaline: it neutralises the acid.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why starch must be digested before it can be used by the body. Put the links in order.',
+            links: ['Starch molecules are large and insoluble.', 'Amylase breaks starch into sugars, which are small and soluble.', 'The sugars are absorbed into the blood in the small intestine.'],
+            herrings: [{ text: 'Starch is absorbed in the large intestine.', why: 'The large intestine absorbs water.' }, { text: 'Protease breaks starch into amino acids.', why: 'Amylase digests starch; proteases digest protein.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 6, prompt: 'Describe how a student could test a food sample for starch, sugar and protein. Give the result for each if the substance is present.',
+            levels: [
+              { label: 'Level 3 \u00b7 5\u20136', text: 'All three tests with reagents, method (including heating for Benedict\u2019s), safety and positive results.', max: 6 },
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Two tests described fully, or three with gaps.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'Reagents named, little method.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Crush the food with water to make a solution; wear eye protection.', 'Starch: add iodine solution; orange-brown to blue-black.', 'Sugar: add Benedict\u2019s solution and heat in a hot water bath.', 'Blue to green, yellow, orange or brick-red, depending on how much sugar.', 'Protein: add Biuret reagent; blue to purple.', 'Use a fresh sample for each test.'],
+            reject: ['\u201cBenedict\u2019s turns red straight away, without heating.\u201d', '\u201cIodine turns purple with protein.\u201d'] }
+        ]
+      },
+      keyLines: ['The digestive system is an organ system: organs work together to digest and absorb food.', 'Amylase (salivary glands, pancreas, small intestine): starch \u2192 sugars. Amylase is a carbohydrase.', 'Protease (stomach, pancreas, small intestine): protein \u2192 amino acids. Lipase (pancreas, small intestine): lipid \u2192 glycerol + fatty acids.', 'Bile: made in the liver, stored in the gall bladder. Alkaline, to neutralise stomach acid; emulsifies fat, giving lipase a larger surface area.', 'Products are absorbed in the small intestine (villi) and used to build new carbohydrates, lipids and proteins; some glucose is used in respiration.', 'Food tests: iodine (blue-black), Benedict\u2019s, heated (brick-red), Biuret (purple), ethanol (cloudy white emulsion).'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.2.1-principles-of-organisation.dc.html', label: 'Principles of organisation' }, endNext: { href: 'ks4-biology-4.2.2.5-health-disease.dc.html', label: 'Health, disease and risk factors' },
+      endConnects: [{ href: '../../Batch 4/lessons/ks4-biology-4.1.3-transport-in-cells.dc.html', label: 'Transport in cells' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

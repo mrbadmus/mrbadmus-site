@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Translocation · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Organisation" title="Translocation" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.2.3.2</p>
+        <h1>Translocation</h1>
+        <p class="ks3-bigq">Sugars made in the leaves travel to every part that needs them. Send sugar to a root, a fruit and a growing tip, then compare phloem with xylem.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A sack of potatoes." scene="Potatoes and carrots are stores of food, and they grow underground. The leaves of the same plants are up in the light." question="is the food made in the leaves, or in the roots?" options="{{ hookOptions }}" bridge="Sugars are made in the leaves, then carried to where they are used or stored. Next: the route they take." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-flow" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Where the sugar goes</p>
+        <h2 style="margin: 6px 0 0;">Leaves to the rest of the plant, up or down.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Phloem tissue transports dissolved sugars from the leaves to the rest of the plant, for immediate use or storage. The movement of food molecules through phloem is called translocation. The leaves are the source; anywhere the sugar is used or stored is a sink. Send the sugar somewhere.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ sinkBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ plantFig }}</div>
+          <p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ sinkNote }}</p>
+        </div>
+      </section>
+
+      <section id="s-contrast" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Phloem and xylem</p>
+        <h2 style="margin: 6px 0 0;">Two tubes, built for two jobs.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Cut open a stem and the two tissues sit side by side. Their structure fits what they carry.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ tubeFig }}</div>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 17px; min-width: 340px;">
+              <thead><tr style="text-align: left; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);"><th style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink);"></th><th style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink);">Phloem</th><th style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink);">Xylem</th></tr></thead>
+              <tbody>
+                <tr><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule); font-weight: 700;">Carries</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">dissolved sugars</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">water and mineral ions</td></tr>
+                <tr><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule); font-weight: 700;">Direction</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">from the leaves, up or down</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">up, from the roots to the stems and leaves</td></tr>
+                <tr><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule); font-weight: 700;">Cells</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">tubes of elongated living cells</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">hollow tubes of dead cells</td></tr>
+                <tr><td style="padding: 8px 10px; font-weight: 700;">Adapted by</td><td style="padding: 8px 10px;">pores in the end walls let cell sap move from cell to cell</td><td style="padding: 8px 10px;">walls strengthened by lignin</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Water rising in the xylem is the transpiration stream: in <a href="ks4-biology-4.2.3.2-transpiration.dc.html">Transpiration</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · only down to the roots?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Sugar only travels down, to the roots.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="A shoot tip above the leaves is growing fast. How does it get sugar?" options="{{ thinkOptions }}" reveal="Through the phloem, moving up from the leaves. Sugar goes wherever it is used or stored, up to growing tips and fruits as well as down to roots." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Phloem or xylem?" prompt="Place each statement." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Phloem: sugars, living cells, both ways. Xylem: water, dead hollow tubes, upwards." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Phloem and xylem: what, which way, what cells.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain how</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">A structure fits its job: “so that…”.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Where sugar goes after it is made.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Translocation is the movement of dissolved sugars through the phloem, from the leaves to the rest of the plant for immediate use or storage.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="translocation" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Translocation" spec="AQA 4.2.3.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which tube carries what?" legal="Plant and tissue drawings are schematic and not to scale." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A sack of potatoes', short: 'HOOK' },
+  { id: 's-flow', label: 'Where the sugar goes', short: 'FLOW' },
+  { id: 's-contrast', label: 'Phloem and xylem', short: 'CONTRAST' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Phloem or xylem', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const SINKS = [
+  { k: 'root', label: 'A storage root', note: 'Down the phloem to the root, where the sugar is stored, for example as starch in a carrot or potato.' },
+  { k: 'fruit', label: 'A fruit', note: 'Along the phloem to the fruit, where the sugar is used and stored as the fruit and seeds develop.' },
+  { k: 'tip', label: 'A growing shoot tip', note: 'Up the phloem to the growing tip, where the sugar is used immediately for growth. Phloem can carry sugar upwards too.' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, sink: null, seen: [], think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  plantFig(k) {
+    const D = window.KS4D, C = D.C; let b = '';
+    b += '<rect x="20" y="300" width="420" height="80" fill="#D9C3A0"/>' + D.T(400, 370, 'soil', 12, { weight: 'normal', fill: C.stroke });
+    b += D.line(220, 360, 220, 40, 10, '#6FAE5E');
+    b += '<path d="M220 140 Q300 100 340 130 Q300 160 220 140 Z" fill="#7FC07A" stroke="' + C.stroke + '" stroke-width="2"/><path d="M220 180 Q140 140 100 170 Q140 200 220 180 Z" fill="#7FC07A" stroke="' + C.stroke + '" stroke-width="2"/>';
+    b += D.T(330, 160, 'leaf: source', 13, { anchor: 'start', fill: C.label });
+    b += '<path d="M220 340 Q250 380 230 400 Q200 400 210 340 Z" fill="#E8913A" stroke="' + C.stroke + '" stroke-width="2"/>' + D.T(250, 395, 'storage root', 12, { anchor: 'start', fill: C.stroke });
+    b += D.line(220, 230, 290, 240, 3, '#6FAE5E') + D.circ(300, 245, 14, '#C8102E', C.stroke, 2) + D.T(320, 250, 'fruit', 12, { anchor: 'start', fill: C.stroke });
+    b += '<path d="M212 44 L220 24 L228 44 Z" fill="#B8D99A" stroke="' + C.stroke + '" stroke-width="2"/>' + D.T(236, 36, 'growing tip', 12, { anchor: 'start', fill: C.stroke });
+    b += D.arrow(205, 330, 205, 200, '#3B82F6', 4) + D.T(196, 260, 'xylem: water', 12, { anchor: 'end', fill: '#3B82F6' });
+    if (k === 'root') b += D.arrow(236, 170, 236, 330, '#D97706', 5);
+    if (k === 'fruit') b += D.arrow(236, 165, 284, 236, '#D97706', 5);
+    if (k === 'tip') b += D.arrow(236, 140, 236, 50, '#D97706', 5);
+    if (k) b += D.T(250, 290, 'phloem: sugar', 12, { anchor: 'start', fill: '#D97706' });
+    return D.svg(460, 410, b, 'Plant with xylem carrying water up from the roots' + (k ? ' and phloem carrying sugar from the leaf to the ' + SINKS.filter((x) => x.k === k)[0].label.toLowerCase() + '.' : '.'));
+  }
+  tubeFig() {
+    const D = window.KS4D, C = D.C; let b = '';
+    [[60, 20], [60, 130], [60, 240]].forEach((p) => { b += '<rect x="' + p[0] + '" y="' + p[1] + '" width="90" height="106" rx="6" fill="#E3F0D6" stroke="' + C.stroke + '" stroke-width="2.5"/>'; });
+    [126, 236].forEach((y) => { b += '<rect x="64" y="' + (y - 2) + '" width="82" height="8" fill="#FFFDF8" stroke="' + C.stroke + '" stroke-width="1.5"/>'; for (let x = 72; x < 146; x += 12) b += D.circ(x, y + 2, 2.5, C.stroke); });
+    b += D.arrow(105, 70, 105, 300, '#D97706', 4) + D.arrow(125, 300, 125, 70, '#D97706', 4);
+    b += D.T(105, 370, 'phloem', 15, { fill: C.stroke }) + D.T(105, 390, 'living cells, end-wall pores', 12, { weight: 'normal', fill: C.stroke });
+    b += '<rect x="260" y="20" width="90" height="326" fill="#FFFDF8" stroke="' + C.stroke + '" stroke-width="3"/>';
+    for (let y = 30; y < 340; y += 26) b += D.line(260, y, 274, y + 10, 4, '#8A6A2E') + D.line(350, y, 336, y + 10, 4, '#8A6A2E');
+    b += D.arrow(305, 300, 305, 60, '#3B82F6', 5);
+    b += D.T(305, 370, 'xylem', 15, { fill: C.stroke }) + D.T(305, 390, 'dead, hollow, lignin', 12, { weight: 'normal', fill: C.stroke });
+    return D.svg(420, 405, b, 'Phloem: tubes of elongated living cells with pores in the end walls; sugar moves up and down. Xylem: hollow tubes of dead cells strengthened by lignin; water moves up.');
+  }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.seen.length === 3, s.seen.length === 3, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const S = s.sink === null ? null : SINKS.filter((x) => x.k === s.sink)[0];
+    const bankSrc = [
+      { q: 'What is the main substance transported in phloem?', opts: [['Sucrose (dissolved sugar) \u2014 from leaves to other parts of the plant', true], ['Water and dissolved mineral ions \u2014 from roots to leaves', false], ['Oxygen produced by photosynthesis', false], ['Carbon dioxide for use in photosynthesis', false]],
+        wrong_explanations: { 1: 'Water and minerals = XYLEM transport (transpiration stream). Phloem carries sugars.', 2: 'Oxygen diffuses through air spaces and out through stomata \u2014 it is not transported in phloem.', 3: 'CO\u2082 diffuses through stomata into the leaf \u2014 it is not transported in phloem.' } },
+      { q: 'In which direction does translocation move?', opts: [['Both upwards and downwards \u2014 from source (leaves) to any sink where sugar is needed', true], ['Upwards only \u2014 like the transpiration stream in xylem', false], ['Downwards only \u2014 gravity pulls the sugar solution down to the roots', false], ['Outwards only \u2014 from the centre of the stem to the leaf surfaces', false]],
+        wrong_explanations: { 1: 'Upwards only = TRANSPIRATION in XYLEM. Translocation in phloem moves in both directions depending on where the sink is.', 2: 'If translocation were downwards only, growing shoot tips at the top of the plant could never receive sugars \u2014 but they clearly do.', 3: 'Translocation moves along the length of the plant (up and down), not outwards from centre to leaf surface.' } },
+      { q: 'What is a \u2018sink\u2019 in the context of translocation?', opts: [['Any part of the plant where sugars are used or stored \u2014 e.g. roots, fruits, growing tips', true], ['The leaves \u2014 where sugars are produced by photosynthesis', false], ['The phloem vessels that transport sugars through the plant', false], ['The stomata \u2014 where water and gases are exchanged', false]],
+        wrong_explanations: { 1: 'The leaves are the SOURCE \u2014 where sugars are MADE. A sink is the DESTINATION where sugars are used or stored.', 2: 'The phloem is the VESSEL \u2014 not the destination. Sinks are the organs that USE or STORE the sugars.', 3: 'Stomata are gas exchange pores \u2014 they have no role in the source-sink relationship of translocation.' } },
+      { q: 'How can cell sap move from one phloem cell to the next?', opts: [['Through pores in the end walls', true], ['Through the lignin in the walls', false], ['Through the stomata', false], ['It can\u2019t: each phloem cell is sealed', false]],
+        wrong_explanations: { 1: 'Lignin strengthens xylem walls.', 2: 'Stomata are pores in the leaf surface.', 3: 'The pores in the end walls connect the cells.' } },
+      { q: 'Which is a difference between xylem and phloem?', opts: [['Xylem is hollow tubes of dead cells; phloem is elongated living cells', true], ['Xylem carries sugar; phloem carries water', false], ['Xylem moves both ways; phloem only upwards', false], ['Only phloem is found in the stem', false]],
+        wrong_explanations: { 1: 'It is the other way round: xylem carries water, phloem carries sugar.', 2: 'Phloem moves both ways; xylem carries water upwards.', 3: 'Both are found in the stem, side by side.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('translocation') : null,
+      hookOptions: [
+        { text: 'In the leaves', correct: true, reply: 'Made in the leaves, then carried down to be stored in the potato or carrot.' },
+        { text: 'In the roots', correct: false, reply: 'It is stored there, but made in the leaves, up in the light, then carried down.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      sinkBtns: SINKS.map((x) => ({ label: x.label, pressed: s.sink === x.k, style: this.seg(s.sink === x.k), onClick: () => this.setState({ sink: x.k, seen: s.seen.indexOf(x.k) >= 0 ? s.seen : s.seen.concat([x.k]) }) })),
+      plantFig: ready ? K.fig(this.plantFig(s.sink), '') : null,
+      sinkNote: S ? S.note : 'Pick where the sugar should go. Xylem, in blue, carries water up from the roots.',
+      tubeFig: ready ? K.fig(this.tubeFig(), '') : null,
+      thinkOptions: [
+        { text: 'Up the phloem from the leaves', correct: true, reply: 'Phloem carries sugar both ways.' },
+        { text: 'Up the xylem from the roots', correct: false, reply: 'Xylem carries water and mineral ions, not sugar.' },
+        { text: 'It makes no sugar and gets none', correct: false, reply: 'A growing tip needs sugar; it comes from the leaves through the phloem.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'p', label: 'Phloem' }, { id: 'x', label: 'Xylem' }],
+      sortItems: [
+        { text: 'Carries dissolved sugars', bin: 'p', why: 'Translocation.' },
+        { text: 'Moves substances up and down', bin: 'p', why: 'From the leaves to wherever they\u2019re needed.' },
+        { text: 'Elongated living cells', bin: 'p', why: 'Joined end to end.' },
+        { text: 'Pores in the end walls', bin: 'p', why: 'Cell sap moves cell to cell.' },
+        { text: 'Carries water and mineral ions', bin: 'x', why: 'The transpiration stream.' },
+        { text: 'Hollow tubes of dead cells', bin: 'x', why: 'Nothing in the way.' },
+        { text: 'Strengthened by lignin', bin: 'x', why: 'The tubes don\u2019t collapse.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name the tissue that carries dissolved sugars around a plant.', why: 'Phloem.', options: [
+            { text: 'Phloem', correct: true }, { text: 'Xylem', correct: false, reply: 'Xylem carries water.' }, { text: 'Epidermis', correct: false, reply: 'The epidermis covers the leaf.' }] },
+          { kind: 'mcq', command: 'State', marks: 1, prompt: 'State what translocation is.', why: 'The movement of food molecules (dissolved sugars) through phloem.', options: [
+            { text: 'Loss of water from the leaves', correct: false, reply: 'That is transpiration.' }, { text: 'Movement of dissolved sugars through phloem', correct: true }, { text: 'Movement of water up the xylem', correct: false, reply: 'That is the transpiration stream.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Give one adaptation of xylem for carrying water.', why: 'Hollow tubes of dead cells (no end walls), or walls strengthened by lignin.', options: [
+            { text: 'Walls strengthened by lignin', correct: true }, { text: 'Pores in the end walls', correct: false, reply: 'That is phloem.' },
+            { text: 'Many chloroplasts', correct: false, reply: 'Xylem cells are dead.' }, { text: 'Elongated living cells', correct: false, reply: 'That is phloem.' }] },
+          { kind: 'mcq', command: 'Suggest', marks: 1, prompt: 'A ring of bark, including the phloem, is removed from round a tree trunk. Suggest why the roots below eventually die.', why: 'Sugars from the leaves can no longer reach the roots.', options: [
+            { text: 'Sugars from the leaves can no longer reach the roots', correct: true }, { text: 'Water can no longer reach the roots', correct: false, reply: 'Water travels up in the xylem, from the roots.' },
+            { text: 'The roots can no longer photosynthesise', correct: false, reply: 'Roots don\u2019t photosynthesise; they rely on sugar from the leaves.' }, { text: 'The leaves can no longer make sugar', correct: false, reply: 'The leaves still make it, but it can\u2019t get past the ring.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how sugar made in a leaf reaches a growing fruit. Put the links in order.',
+            links: ['Sugar is made in the leaf by photosynthesis.', 'It dissolves and moves into the phloem.', 'It is translocated through the phloem to the fruit, where it is used or stored.'],
+            herrings: [{ text: 'It travels up the xylem.', why: 'Xylem carries water.' }, { text: 'The fruit absorbs sugar from the soil.', why: 'Sugar is made in the leaves.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how the structure of phloem is adapted to its function. Put the links in order.',
+            links: ['Phloem is made of tubes of elongated cells, joined end to end.', 'There are pores in the end walls between the cells.', 'So cell sap carrying dissolved sugars can move from one cell to the next.'],
+            herrings: [{ text: 'Phloem cells are dead and hollow.', why: 'That is xylem.' }, { text: 'Lignin lets sugar through the walls.', why: 'Lignin strengthens xylem.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Compare', marks: 4, prompt: 'Compare xylem and phloem.',
+            levels: [
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Contents, direction and structure compared, point by point.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'One or two differences, or features listed without comparing.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Xylem carries water and mineral ions; phloem carries dissolved sugars.', 'Xylem carries them up from the roots; phloem from the leaves, up or down.', 'Xylem is hollow tubes of dead cells strengthened by lignin; phloem is elongated living cells.', 'Phloem cells have pores in their end walls so cell sap can move between them.'],
+            reject: ['\u201cPhloem carries water.\u201d', '\u201cBoth only carry substances upwards.\u201d'] }
+        ]
+      },
+      keyLines: ['Translocation is the movement of dissolved sugars through phloem, from the leaves to the rest of the plant for immediate use or storage.', 'Phloem can move sugars up or down: to growing tips, fruits and roots.', 'Phloem is tubes of elongated living cells; cell sap moves between them through pores in the end walls.', 'Xylem is hollow tubes of dead cells strengthened by lignin, carrying water and mineral ions up from the roots.', 'Source: where sugars are made (leaves). Sink: where they are used or stored.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.2.3.2-transpiration.dc.html', label: 'Transpiration' }, endNext: { href: 'ks4-biology-4.7.5.1-factors-affecting-food-security.dc.html', label: 'Factors affecting food security' },
+      endConnects: [{ href: '../../Batch 5/lessons/ks4-biology-4.2.3.1-plant-tissues.dc.html', label: 'Plant tissues and organs' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

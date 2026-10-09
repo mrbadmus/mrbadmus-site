@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Principles of organisation · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Organisation" title="Principles of organisation" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.2.1</p>
+        <h1>Principles of organisation</h1>
+        <p class="ks3-bigq">Cells make tissues, tissues make organs, organs make systems. Place real examples on the ladder, then compare how big each level is.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Bricks and rooms." scene="A house is made of bricks. Bricks make walls, walls make rooms, and rooms together make the house. Your body is built up in levels too." question="is your stomach one single part, or many different parts working together?" options="{{ hookOptions }}" bridge="The stomach is several tissues working together, so it is an organ. Next: all five levels." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-levels" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Five levels</p>
+        <h2 style="margin: 6px 0 0;">Cell, tissue, organ, organ system, organism.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Cells are the basic building blocks of all living organisms. A tissue is a group of cells with a similar structure and function. Organs are groups of tissues performing a specific function. Organs are organised into organ systems, which work together to form organisms. Place each example on its level.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ ladderFig }}</div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-card); background: var(--ks3-inset); border: 2px solid var(--ks3-ink); display: flex; flex-direction: column; gap: 10px;">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ exCount }}</p>
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px;">{{ exName }}</p>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ levelBtns }}" as="b" hint-placeholder-count="5"><button type="button" onClick="{{ b.onClick }}" disabled="{{ b.disabled }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+            <sc-if value="{{ exDone }}"><div data-arrive="1" style="display: flex; flex-direction: column; gap: 10px;">
+              <p aria-live="polite" style="margin: 0; padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ exReply }}</p>
+              <sc-if value="{{ hasNextEx }}"><button type="button" class="ks3-reveal-btn" onClick="{{ nextEx }}" style="align-self: flex-start;">Next example</button></sc-if>
+            </div></sc-if>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-scale" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Size and scale</p>
+        <h2 style="margin: 6px 0 0;">Each level is many times bigger.</h2>
+        <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">To compare two sizes, divide the bigger by the smaller. They must be in the same unit first. Typical sizes: a cell about 50 µm; a layer of tissue about 1 mm; an organ a few cm; a human about 1.5 m.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); gap: 10px;">
+          <sc-for list="{{ convRows }}" as="c" hint-placeholder-count="3"><p style="margin: 0; padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border); font-family: var(--ks3-font-mono); font-size: 18px; text-align: center;">{{ c }}</p></sc-for>
+        </div>
+        <p style="margin: 12px 0 0; display: inline-block; padding: 10px 16px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 19px;">times bigger = bigger size ÷ smaller size</p>
+        <p style="margin: 10px 0 0; font-size: 16px; line-height: 1.5; color: var(--ks3-ink-body); max-width: 62ch;">This is a comparison by division, not an AQA equation, so it has no triangle.</p>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · is muscle an organ?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Muscle is an organ.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Muscle is a group of muscle cells that contract together. What level is it?" options="{{ thinkOptions }}" reveal="A tissue: a group of cells with a similar structure and function. An organ, like the stomach, is made of several different tissues working together." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Three tissues, one organ" prompt="The stomach is an organ. Place each job with the tissue that does it." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Three different tissues, one function: that is what makes the stomach an organ. It is one organ in the digestive system." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Define</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Each level in the spec’s words.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Identify</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Which level an example is, and why.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Same unit, then bigger ÷ smaller.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Cells form tissues, tissues form organs, organs form organ systems, and organ systems work together to form an organism.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="principles-of-organisation" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Principles of organisation" spec="AQA 4.2.1" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure whether something is a tissue or an organ?" legal="Sizes are typical round figures. The ladder figure is not to scale; the size strip shows the order of each level." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Bricks and rooms', short: 'HOOK' },
+  { id: 's-levels', label: 'Five levels', short: 'LEVELS' },
+  { id: 's-scale', label: 'Size and scale', short: 'SCALE' },
+  { id: 's-calc', label: 'Comparing sizes', short: 'CFIFA' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Stomach tissues', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const LV = [
+  { k: 0, n: 'Cell', size: 'about 50 \u00b5m' },
+  { k: 1, n: 'Tissue', size: 'about 1 mm' },
+  { k: 2, n: 'Organ', size: 'a few cm' },
+  { k: 3, n: 'Organ system', size: 'tens of cm' },
+  { k: 4, n: 'Organism', size: 'about 1.5 m' }
+];
+const EX = [
+  { t: 'A palisade cell', a: 0, why: 'One cell, specialised for photosynthesis.' },
+  { t: 'Muscle', a: 1, why: 'A group of muscle cells with a similar structure and function: a tissue.' },
+  { t: 'The stomach', a: 2, why: 'Muscle, glandular and epithelial tissue working together: an organ.' },
+  { t: 'The digestive system', a: 3, why: 'Several organs working together: an organ system.' },
+  { t: 'A human', a: 4, why: 'Organ systems working together form the organism.' },
+  { t: 'A leaf', a: 2, why: 'Several plant tissues working together: a plant organ.' },
+  { t: 'Xylem', a: 1, why: 'A plant tissue that carries water.' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, ei: 0, picks: [], calc: 0, think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  ladderFig(placed, hl) {
+    const D = window.KS4D, C = D.C; let b = '';
+    LV.forEach((l, i) => {
+      const y = 330 - i * 72, on = hl === i;
+      b += '<rect x="30" y="' + y + '" width="210" height="56" rx="12" fill="' + (on ? '#F7D9C9' : '#FFFDF8') + '" stroke="' + C.stroke + '" stroke-width="' + (on ? 3 : 2) + '"/>' + D.T(135, y + 34, l.n, 17, { fill: C.stroke });
+      if (i < 4) b += D.arrow(135, y - 2, 135, y - 14, C.arrow, 3);
+      b += D.T(256, y + 34, l.size, 14, { anchor: 'start', weight: 'normal', fill: C.label });
+      const ex = EX.filter((e, j) => placed[j] !== undefined && e.a === i).map((e) => e.t);
+      if (ex.length) b += D.T(350, y + 34, ex.join(' \u00b7 '), 13, { anchor: 'start', weight: 'normal', fill: C.stroke });
+    });
+    b += D.line(330, 40, 330, 386, 2, C.muted, ' stroke-dasharray="4 4"') + D.T(256, 30, 'typical size', 12, { anchor: 'start', weight: 'normal', fill: C.muted });
+    return D.svg(560, 400, b, 'Ladder of organisation: cell (about 50 \u00b5m), tissue (about 1 mm), organ (a few cm), organ system (tens of cm), organism (about 1.5 m).');
+  }
+  seg(on, st) {
+    const bc = st === 'right' ? 'var(--ks3-accent)' : on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)';
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' + bc + ';background:' + (on || st === 'right' ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' + (st === 'dim' ? 'opacity:.55;cursor:default;' : '');
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.picks.length === EX.length && s.picks.every((x) => x !== undefined), s.calc >= 1, s.calc >= 2, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const E = EX[s.ei], pick = s.picks[s.ei], exDone = pick !== undefined;
+    const ph = { C: 'same unit?' };
+    const bankSrc = [
+      { q: 'What is the correct order of organisation from simplest to most complex?', opts: [['Cell \u2192 Tissue \u2192 Organ \u2192 Organ system \u2192 Organism', true], ['Tissue \u2192 Cell \u2192 Organ \u2192 Organ system \u2192 Organism', false], ['Cell \u2192 Organ \u2192 Tissue \u2192 Organism \u2192 Organ system', false], ['Organism \u2192 Organ system \u2192 Organ \u2192 Tissue \u2192 Cell', false]],
+        wrong_explanations: { 1: 'Tissues are made of cells \u2014 cells always come before tissues in the hierarchy.', 2: 'Organs contain tissues, not the other way round \u2014 tissue must come before organ.', 3: 'This is the correct order in reverse \u2014 from most complex down to simplest.' } },
+      { q: 'What is a tissue?', opts: [['A group of similar cells working together to perform a specific function', true], ['A group of different organs working together', false], ['A single highly specialised cell', false], ['Another name for an organ', false]],
+        wrong_explanations: { 1: 'A group of different organs = an ORGAN SYSTEM. Tissues are made of similar cells, not organs.', 2: 'A single specialised cell is just a cell \u2014 not a tissue. A tissue is a GROUP of cells.', 3: 'Tissues and organs are different levels. An organ is made of SEVERAL tissue types.' } },
+      { q: 'The stomach contains muscle tissue, glandular tissue and epithelial tissue. What level of organisation is the stomach?', opts: [['Organ', true], ['Tissue', false], ['Organ system', false], ['Organism', false]],
+        wrong_explanations: { 1: 'A tissue is one group of similar cells \u2014 the stomach has multiple tissue types, so it is an organ.', 2: 'An organ system is a GROUP of organs \u2014 the stomach is just one organ within the digestive system.', 3: 'An organism is the complete living thing \u2014 a human, plant or bacterium.' } },
+      { q: 'Which of these is an example of an organ system?', opts: [['The digestive system \u2014 stomach, intestines, liver and pancreas working together', true], ['Muscle tissue \u2014 cells that contract to produce movement', false], ['The heart \u2014 contains cardiac muscle and valves', false], ['A liver cell \u2014 specialised to carry out chemical reactions', false]],
+        wrong_explanations: { 1: 'Muscle tissue = a TISSUE (one cell type). Organ systems are made of multiple organs.', 2: 'The heart = an ORGAN (contains multiple tissue types). An organ system requires multiple organs.', 3: 'A liver cell = a CELL \u2014 the simplest level of organisation.' } },
+      { q: 'A cell is 20 \u00b5m wide. A tissue layer is 2 mm thick. How many times thicker is the tissue layer?', opts: [['100 times', true], ['10 times', false], ['0.1 times', false], ['1000 times', false]],
+        wrong_explanations: { 1: 'Convert first: 2 mm = 2000 \u00b5m. Then 2000 \u00f7 20.', 2: 'That is the smaller divided by the bigger. Divide the bigger by the smaller.', 3: '2 mm is 2000 \u00b5m, not 20 000 \u00b5m.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('principles-of-organisation') : null,
+      hookOptions: [
+        { text: 'One single part', correct: false, reply: 'It looks like one bag, but it is built from several different tissues, each with its own job.' },
+        { text: 'Many parts working together', correct: true, reply: 'Muscle, glandular and epithelial tissue, working together.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      ladderFig: ready ? K.fig(this.ladderFig(s.picks, exDone ? E.a : null), '') : null,
+      exCount: 'Example ' + (s.ei + 1) + ' of ' + EX.length, exName: E.t,
+      levelBtns: LV.map((l) => ({ label: l.n, disabled: exDone, style: this.seg(false, exDone ? (l.k === E.a ? 'right' : l.k === pick ? '' : 'dim') : ''),
+        onClick: () => { if (exDone) return; const p = s.picks.slice(); p[s.ei] = l.k; this.setState({ picks: p }); } })),
+      exDone, exReply: exDone ? (pick === E.a ? 'Yes. ' : 'It is ' + LV[E.a].n.toLowerCase() + '. ') + E.why : '',
+      hasNextEx: exDone && s.ei < EX.length - 1, nextEx: () => this.setState({ ei: s.ei + 1 }),
+      convRows: ['1 mm = 1000 \u00b5m', '1 cm = 10 mm', '1 m = 100 cm'],
+      cfExamples: [
+        { tab: 'Organ and cell', head: 'An organ is 5 cm long. One of its cells is 50 \u00b5m long. How many times longer is the organ?', steps: [
+          { letter: 'C', label: 'Convert', line: '5 cm = 50 mm = 50 \u00d7 1000 = 50 000 \u00b5m', note: 'Both sizes in \u00b5m. cm \u2192 mm (\u00d7 10), then mm \u2192 \u00b5m (\u00d7 1000).' },
+          { letter: 'F', label: 'Formula', line: 'times bigger = bigger size \u00f7 smaller size' },
+          { letter: 'I', label: 'Insert', line: 'times bigger = 50 000 \u00f7 50' },
+          { letter: 'F', label: 'Fine-tune', line: 'times bigger = 1000' },
+          { letter: 'A', label: 'Answer', line: 'The organ is 1000 times longer.' }] },
+        { tab: 'Organism and organ', next: 'Now yours, below.', head: 'A person is 1.5 m tall. Their heart is 12 cm long. How many times longer is the person?', steps: [
+          { letter: 'C', label: 'Convert', line: '1.5 m \u00d7 100 = 150 cm' },
+          { letter: 'F', label: 'Formula', line: 'times bigger = bigger size \u00f7 smaller size' },
+          { letter: 'I', label: 'Insert', line: 'times bigger = 150 \u00f7 12' },
+          { letter: 'F', label: 'Fine-tune', line: 'times bigger = 12.5' },
+          { letter: 'A', label: 'Answer', line: 'About 12.5 times longer.' }] }
+      ],
+      cfQuestions: [
+        { tab: 'Question 1', id: 'po-q1', head: 'A muscle cell is 40 \u00b5m wide. A piece of muscle tissue is 4 mm wide. How many times wider is the tissue?', close: '4 \u00f7 40 = 0.1 means you skipped the conversion and divided the wrong way round.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: ph.C, line: '4 mm \u00d7 1000 = 4000 \u00b5m' }, { letter: 'F', label: 'Formula', placeholder: 'times bigger = \u2026', line: 'times bigger = bigger size \u00f7 smaller size' }, { letter: 'I', label: 'Insert', placeholder: '\u2026 \u00f7 \u2026', line: 'times bigger = 4000 \u00f7 40' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'times bigger = 100' }, { letter: 'A', label: 'Answer', placeholder: 'in words', line: '100 times wider' }] },
+        { tab: 'Question 2', id: 'po-q2', head: 'A person is 2 m tall. Their stomach is 25 cm long. How many times longer is the person?', close: '2 \u00f7 25 = 0.08: convert metres to cm first.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: ph.C, line: '2 m \u00d7 100 = 200 cm' }, { letter: 'F', label: 'Formula', placeholder: 'times bigger = \u2026', line: 'times bigger = bigger size \u00f7 smaller size' }, { letter: 'I', label: 'Insert', placeholder: '\u2026 \u00f7 \u2026', line: 'times bigger = 200 \u00f7 25' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'times bigger = 8' }, { letter: 'A', label: 'Answer', placeholder: 'in words', line: '8 times longer' }] }
+      ],
+      onCalc: (n) => this.setState({ calc: n }),
+      thinkOptions: [
+        { text: 'A tissue', correct: true, reply: 'Similar cells, one function.' },
+        { text: 'An organ', correct: false, reply: 'An organ has several different tissues. Muscle is one tissue.' },
+        { text: 'An organ system', correct: false, reply: 'An organ system is several organs working together.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'm', label: 'Muscle tissue' }, { id: 'g', label: 'Glandular tissue' }, { id: 'e', label: 'Epithelial tissue' }],
+      sortItems: [
+        { text: 'Churns the food', bin: 'm', why: 'Muscle contracts.' },
+        { text: 'Contracts and relaxes', bin: 'm', why: 'That is what muscle cells do.' },
+        { text: 'Produces digestive juices', bin: 'g', why: 'Glands release substances.' },
+        { text: 'Releases enzymes and acid', bin: 'g', why: 'Glandular tissue.' },
+        { text: 'Covers the inside of the stomach', bin: 'e', why: 'Epithelial tissue lines surfaces.' },
+        { text: 'Covers the outside of the stomach', bin: 'e', why: 'A covering layer.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Define', marks: 1, prompt: 'Define an organ.', why: 'A group of tissues performing a specific function.', options: [
+            { text: 'A group of tissues performing a specific function', correct: true }, { text: 'A group of similar cells', correct: false, reply: 'That is a tissue.' }, { text: 'A group of organ systems', correct: false, reply: 'Organ systems together make an organism.' }] },
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name the level of organisation made of several organs working together.', why: 'An organ system.', options: [
+            { text: 'Tissue', correct: false, reply: 'A tissue is a group of cells.' }, { text: 'Organ system', correct: true }, { text: 'Cell', correct: false, reply: 'A cell is the smallest level.' }] }
+        ],
+        r2: [
+          { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'A cell is 25 \u00b5m wide. A layer of tissue is 5 mm thick. Calculate how many times thicker the tissue layer is than the cell.',
+            convOptions: ['Nothing to convert', 'Convert mm to \u00b5m: multiply by 1000', 'Convert mm to \u00b5m: divide by 1000'], convAnswer: 1, answer: 200, tol: 0.5, unit: 'times', units: ['times', '\u00b5m', 'mm'],
+            right: '5000 \u00f7 25 = 200 times.', wrong: '5 mm = 5000 \u00b5m; then 5000 \u00f7 25.',
+            model: ['C \u00b7 5 mm \u00d7 1000 = 5000 \u00b5m', 'F \u00b7 times bigger = bigger size \u00f7 smaller size', 'I \u00b7 5000 \u00f7 25', 'F \u00b7 = 200', 'A \u00b7 200 times'] },
+          { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'An organ is 10 cm long. A tissue in it is 2 mm thick. Calculate how many times bigger the organ is.',
+            convOptions: ['Nothing to convert', 'Convert cm to mm: multiply by 10', 'Convert cm to mm: divide by 10'], convAnswer: 1, answer: 50, tol: 0.5, unit: 'times', units: ['times', 'mm', 'cm'],
+            right: '100 \u00f7 2 = 50 times.', wrong: '10 cm = 100 mm; then 100 \u00f7 2.',
+            model: ['C \u00b7 10 cm \u00d7 10 = 100 mm', 'F \u00b7 times bigger = bigger size \u00f7 smaller size', 'I \u00b7 100 \u00f7 2', 'F \u00b7 = 50', 'A \u00b7 50 times'] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why the stomach is an organ, not a tissue. Put the links in order.',
+            links: ['A tissue is a group of cells with a similar structure and function.', 'The stomach contains muscle, glandular and epithelial tissue.', 'Several tissues working together to do one job make an organ.'],
+            herrings: [{ text: 'The stomach is made of one type of cell.', why: 'It has several tissues.' }, { text: 'The stomach is an organ system on its own.', why: 'It is one organ in the digestive system.' }] },
+          { kind: 'chain', command: 'Describe', marks: 3, prompt: 'Describe how the digestive system is organised, from cells upwards. Put the links in order.',
+            links: ['Similar cells group together to form tissues, such as muscle tissue.', 'Different tissues work together to form organs, such as the stomach.', 'Several organs work together to form the digestive system, an organ system.'],
+            herrings: [{ text: 'Organs join together to make tissues.', why: 'Tissues make organs, not the reverse.' }, { text: 'One cell makes the whole stomach.', why: 'The stomach has millions of cells in several tissues.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 4, prompt: 'Describe the levels of organisation in a human, using examples, and how their sizes compare.',
+            levels: [
+              { label: 'Level 2 \u00b7 3\u20134', text: 'All five levels in order, with examples and a size comparison.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'Some levels named, little order or examples.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Cells, e.g. a muscle cell, about 50 \u00b5m.', 'Tissues: groups of similar cells, e.g. muscle tissue.', 'Organs: groups of tissues, e.g. the stomach; organ systems: groups of organs, e.g. the digestive system.', 'Organ systems form the organism; each level is many times bigger than the one below.'],
+            reject: ['\u201cMuscle is an organ.\u201d', '\u201cThe heart is an organ system.\u201d'] }
+        ]
+      },
+      keyLines: ['Cells are the basic building blocks of all living organisms.', 'A tissue is a group of cells with a similar structure and function.', 'Organs are groups of tissues performing a specific function, e.g. the stomach: muscle, glandular and epithelial tissue.', 'Organs are organised into organ systems, which work together to form organisms.', 'Each level is many times bigger: convert to one unit, then bigger \u00f7 smaller.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.1.2.3-stem-cells.dc.html', label: 'Stem cells' }, endNext: { href: 'ks4-biology-4.2.2.1-digestive-system.dc.html', label: 'The digestive system' },
+      endConnects: [{ href: 'ks4-biology-4.1.1.3-cell-specialisation.dc.html', label: 'Cell specialisation' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

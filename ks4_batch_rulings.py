@@ -48,7 +48,10 @@ def _chip(slug, tpl):
 # written by Design as `../KS4 Batch 4/<file>.dc.html`. The prefix is optional so every
 # batch-4 href matches and resolves exactly as before. A file in neither this batch nor
 # any other registered batch is a loud failure, never a left-over `.dc.html`.
-_HREF_RE = re.compile(r"href: '(?:\.\./KS4 Batch \d+/)?([\w.\-]+)\.dc\.html'")
+# ⊕ Batch 6: Design's cross-batch prefix is `../../Batch 5/lessons/` (batch 5 wrote `../KS4 Batch 4/`), so the
+# prefix is any run of `../`, an optional `KS4 `, `Batch N/` and an optional `lessons/`. A superset of batch 5's.
+_XB = r"(?:(?:\.\./)+(?:KS4 )?Batch \d+/(?:lessons/)?)?"
+_HREF_RE = re.compile(r"href: '" + _XB + r"([\w.\-]+)\.dc\.html'")
 
 
 def apply_connects(source_file, logic, slug_by_file, other_slug_by_file=None):
@@ -71,7 +74,7 @@ def apply_connects(source_file, logic, slug_by_file, other_slug_by_file=None):
 # attribute cannot carry a per-route URL, so each becomes a bound value, filled by renderVals
 # from KS4.hrefFor (the same resolver the connects use). Fail-loud on every unmatched file and
 # on a renderVals that does not return through the route helper.
-_TPL_HREF_RE = re.compile(r'href="([\w.\-]+)\.dc\.html"')
+_TPL_HREF_RE = re.compile(r'href="' + _XB + r'([\w.\-]+)\.dc\.html"')
 _RV_ANCHOR = "return Object.assign({}, R, {"
 
 
@@ -285,6 +288,75 @@ SCIENCE = [
     dict(id="B5-RSBB-CHIP", slug="red-shift-big-bang", layer="logic",
          old="      route, onRoute: R.onRoute,\n      tripleOptions:",
          new="      route, onRoute: R.onRoute, routeWords: R.routeWords, routeSwitchOptions: R.routeSwitchOptions,\n      tripleOptions:"),
+    # ═══ Batch 6 science rulings (Prompt AB, 8 Oct 2026; audit by the lead) ═══
+    # animal-plant-cells 5.3: the estimation task keys "about three quarters", but the vacuole is
+    # drawn at 92x58 in a 118x78 cell (58%, reads as about half). Redraw so the figure matches the
+    # taught answer. FINAL GEOMETRY (builder): vacuole 95x70 at (x+17, y+4) = 6650 = 72.3% of the 118x78
+    # cell (9204) and 75.4% of its inside once the 2-wide wall is taken off (116x76 = 8816); nucleus r6
+    # at (x+8, y+39) spans x+2..x+14, against the wall and 3 clear of the vacuole's left edge (x+17).
+    dict(id="B6-APC-VACUOLE-1", slug="animal-plant-cells", layer="logic",
+         old="""b += '<rect x="' + (x + 14) + '" y="' + (y + 10) + '" width="92" height="58" rx="8" fill="#FBF3DD" stroke="#C9A75A" stroke-width="1"/>';""",
+         new="""b += '<rect x="' + (x + 17) + '" y="' + (y + 4) + '" width="95" height="70" rx="8" fill="#FBF3DD" stroke="#C9A75A" stroke-width="1"/>';"""),
+    dict(id="B6-APC-VACUOLE-2", slug="animal-plant-cells", layer="logic",
+         old="b += D.circ(x + 20, y + 20, 7, '#A97B2E', 'none', 0);",
+         new="b += D.circ(x + 8, y + 39, 6, '#A97B2E', 'none', 0);"),
+    # culturing-microorganisms: school cultures are kept at or below 25 C for SAFETY (the page's own
+    # Think again), not because warmth speeds growth.
+    dict(id="B6-CM-HOOK", slug="culturing-microorganisms", layer="template",
+         old="Warmth speeds growth, which is why school cultures are kept no warmer than 25",
+         new="Warmth speeds growth. For safety, school cultures are kept no warmer than 25"),
+    # digestive-system: bread contains protein (about 8-10%) and turns Biuret purple; the simulator's
+    # starch-only food becomes cornflour. BUILDER: check no other string on the page still says bread
+    # for this sample.
+    dict(id="B6-DS-FOOD", slug="digestive-system", layer="logic",
+         old="{ label: 'Bread', r: [true, false, false, false] }",
+         new="{ label: 'Cornflour', r: [true, false, false, false] }"),
+    # transpiration 13.4: dist() clamped at 4 mm, so in two toggle cases a change the note calls
+    # faster left the bubble still. Every toggle now moves it; range 4-36 mm on the 0-40 mm scale.
+    dict(id="B6-TR-DIST", slug="transpiration", layer="logic",
+         old="dist(f) { return Math.max(4, 12 + (f.t ? 8 : 0) + (f.l ? 6 : -8) + (f.h ? -8 : 0) + (f.w ? 10 : 0)); }",
+         new="dist(f) { return 16 + (f.t ? 6 : 0) + (f.l ? 6 : -6) + (f.h ? -6 : 0) + (f.w ? 8 : 0); }"),
+    # translocation: a potato is a stem tuber, not a root, and a carrot stores mainly sugar.
+    dict(id="B6-TL-SINK", slug="translocation", layer="logic",
+         old="note: 'Down the phloem to the root, where the sugar is stored, for example as starch in a carrot or potato.'",
+         new="note: 'Down the phloem to the root, where the sugar is stored, for example in a carrot.'"),
+    # group-1 2.2: lilac is potassium's flame colour, not hydrogen's (pack examination/group-1.md §5).
+    dict(id="B6-G1-LILAC-1", slug="group-1", layer="logic",
+         old="note: 'Potassium reacts very vigorously. The hydrogen ignites at once with a lilac flame.'",
+         new="note: 'Potassium reacts very vigorously. The hydrogen ignites at once, and potassium colours the flame lilac.'"),
+    dict(id="B6-G1-LILAC-2", slug="group-1", layer="logic",
+         old="potassium reacts very vigorously and the hydrogen ignites with a lilac flame.",
+         new="potassium reacts very vigorously; the hydrogen ignites, and potassium colours the flame lilac."),
+
+    # ── Batch 6 port mechanics (not science rulings) ───────────────────────
+    # culturing-microorganisms, factors-affecting-food-security, stellar-evolution: each renderVals
+    # returns a fresh object rather than spreading the route helper (as batch 4's infrared and batch 5's
+    # red-shift did), so the one route chip (B-R12) got no words and no menu. Same repair as B4-IRB-CHIP.
+    dict(id="B6-CM-CHIP", slug="culturing-microorganisms", layer="logic",
+         old="      route, onRoute: R.onRoute, isHigher: H,\n      tripleOptions:",
+         new="      route, onRoute: R.onRoute, isHigher: H, routeWords: R.routeWords, routeSwitchOptions: R.routeSwitchOptions,\n      tripleOptions:"),
+    dict(id="B6-FS-CHIP", slug="factors-affecting-food-security", layer="logic",
+         old="      route, onRoute: R.onRoute,\n      tripleOptions:",
+         new="      route, onRoute: R.onRoute, routeWords: R.routeWords, routeSwitchOptions: R.routeSwitchOptions,\n      tripleOptions:"),
+    dict(id="B6-SE-CHIP", slug="stellar-evolution", layer="logic",
+         old="      route, onRoute: R.onRoute,\n      tripleOptions:",
+         new="      route, onRoute: R.onRoute, routeWords: R.routeWords, routeSwitchOptions: R.routeSwitchOptions,\n      tripleOptions:"),
+
+    # ── Batch 6 pointers Design left as plain text ("Code to wire", NOTES 5.1 and 10.4) ──
+    # Her words are unchanged; only the lesson's name becomes a link to the live page for the pupil's
+    # route (KS4.hrefFor, the same resolver every connects link uses). Both targets exist on all four routes.
+    dict(id="B6-PTR-MICRO-1", slug="animal-plant-cells", layer="template",
+         old="are in the Microscopy lesson.",
+         new='are in the <a href="{{ mrbLink_microscopy }}">Microscopy lesson</a>.'),
+    dict(id="B6-PTR-MICRO-2", slug="animal-plant-cells", layer="logic",
+         old="    return Object.assign({}, R, {",
+         new="    return Object.assign({}, R, { mrbLink_microscopy: ((window.KS4 && window.KS4.hrefFor('microscopy', R)) || '#'),"),
+    dict(id="B6-PTR-ENZ-1", slug="digestive-system", layer="template",
+         old="is in the Enzymes lesson.",
+         new='is in the <a href="{{ mrbLink_enzymes }}">Enzymes lesson</a>.'),
+    dict(id="B6-PTR-ENZ-2", slug="digestive-system", layer="logic",
+         old="    return Object.assign({}, R, {",
+         new="    return Object.assign({}, R, { mrbLink_enzymes: ((window.KS4 && window.KS4.hrefFor('enzymes', R)) || '#'),"),
 ]
 APPLIED = []
 
@@ -312,6 +384,13 @@ def port_lesson(lesson, tpl, logic, slug_by_file, other_slug_by_file=None):
     tpl, logic, inline = apply_inline_links(src, tpl, logic, slug_by_file, other_slug_by_file)
     tpl = apply_science(lesson["slug"], "template", tpl)
     logic = apply_science(lesson["slug"], "logic", logic)
+    # ⊕ G3 (batch 6): no Design file name may survive on a built page. Every `.dc.html` link was
+    # either a connects href or an in-text link above, so a leftover is a pattern this module missed.
+    for layer, text in (("template", tpl), ("logic", logic)):
+        m = re.search(r"[\w.\-]+\.dc\.html|Batch \d+/lessons/", text)
+        if m:
+            raise RulingError("ks4_batch_rulings G3: %s still carries %r in its %s after the link rulings."
+                              % (src, m.group(0), layer))
     # B-R12's chip reads routeWords / routeSwitchOptions off the render values.
     if "Object.assign({}, R," not in logic and "routeWords" not in logic:
         raise RulingError("ks4_batch_rulings B-R12: %s's renderVals neither spreads the route helper nor "
