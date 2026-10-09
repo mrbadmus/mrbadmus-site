@@ -1410,8 +1410,11 @@
   }
 
   function pendingMeta(c) {
-    return 'Year ' + c.year + (c.board ? ' · ' + c.board : '') +
-      (c.route ? ' · ' + c.route : '') +
+    // ⊕ B2C polish (9 Oct 2026) — board and route only for Years 10–11, as
+    // loadFamily's `meta`: a form switched from Y10 back to Y8 keeps its board.
+    var ks4 = Number(c.year) >= 10;
+    return 'Year ' + c.year + (ks4 && c.board ? ' · ' + c.board : '') +
+      (ks4 && c.route ? ' · ' + c.route : '') +
       ' · ' + (c.mode === 'home' ? 'Home education' : 'Alongside school') +
       ' · @' + c.user;
   }

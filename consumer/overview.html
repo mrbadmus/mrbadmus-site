@@ -864,8 +864,13 @@
 
   function metaLine(k) {
     var bits = ['Year ' + k.year_group];
-    if (k.exam_board) { bits.push(k.exam_board); }
-    if (k.pathway) { bits.push(k.pathway.charAt(0).toUpperCase() + k.pathway.slice(1)); }
+    /* ⊕ B2C polish (9 Oct 2026) — board and route are GCSE facts, asked only
+       for Years 10–11. Signup stores 'AQA' on every KS3 child (the column
+       needs a value), so a Year 8 read "Year 8 · AQA · Alongside school"
+       about a board nobody chose. Same gate as signup's own family list. */
+    var ks4 = Number(k.year_group) >= 10;
+    if (ks4 && k.exam_board) { bits.push(k.exam_board); }
+    if (ks4 && k.pathway) { bits.push(k.pathway.charAt(0).toUpperCase() + k.pathway.slice(1)); }
     bits.push(modeLabel(k.mode));
     if (k.username) { bits.push('@' + k.username); }
     return bits.join(' · ');
