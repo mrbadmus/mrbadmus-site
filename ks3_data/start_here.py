@@ -4618,6 +4618,270 @@ START_HERE = {
         answer=1,
         bridge="Next: see four different ways of using exactly one unit.",
     ),
+
+    # fuels-and-energy-resources — the old angle (what does "renewable" tell you)
+    # is not a fair everyday guess, so ask the fact behind it: which gives off
+    # more CO2 while generating (the lesson's own axis, so life-cycle arguments
+    # do not reach it). CHANGED title and scene (the old title "Renewable and
+    # dirty. Non-renewable and clean." and the scene stated the result) and
+    # big_question (it stated both CO2 facts). Rail stop "Wood and uranium" still
+    # lands.
+    "fuels-and-energy-resources": dict(
+        title="Wood on a fire, uranium in a power station.",
+        scene="Wood can grow back. Uranium, the fuel in a nuclear power "
+              "station, cannot.",
+        question="If you had to guess, which gives off more carbon dioxide "
+                 "while making electricity, burning wood or a nuclear power "
+                 "station?",
+        options=[
+            ("Burning wood",
+             "Burning wood releases carbon dioxide, and soot too, every time. "
+             "A nuclear station releases no carbon dioxide while it generates."),
+            ("Nuclear power",
+             "Nuclear sounds like the bigger worry, and it has other costs. "
+             "But while generating it releases no carbon dioxide, and burning "
+             "wood does."),
+        ],
+        answer=0,
+        bridge="So the fuel that grows back is the one giving off carbon "
+               "dioxide. Renewable only tells you whether a fuel can be "
+               "replaced. Next: sort eight energy resources on that one "
+               "question.",
+        big_question="What does it actually mean to call an energy resource "
+                     "renewable?",
+    ),
+
+
+    # ── Year 9 · P9 Static electricity ──────────────────────────────────────────
+
+    # charging-by-rubbing — old hook (what is the duster now) cut to positive vs
+    # "still neutral", which is the misconception the register says this hook
+    # elicits (CHRG-03, only one object ends up charged). CHANGED big_question:
+    # the old one said electrons move and the charges are equal and opposite,
+    # which is the answer.
+    "charging-by-rubbing": dict(
+        question="If you had to guess, what charge does the duster have now?",
+        options=[
+            ("Still neutral",
+             "It was the rod that changed, so that makes sense. But the rod's "
+             "extra electrons came off the duster, which leaves the duster "
+             "short of electrons, so it is positive."),
+            ("Positive",
+             "Every electron the rod gained came off the duster. That leaves "
+             "the duster short of electrons, so it is positive, by exactly as "
+             "much as the rod is negative."),
+        ],
+        answer=1,
+        bridge="Nothing was made: charge was only moved from one to the other."
+               " Next: pick different materials and see which way the "
+               "electrons go.",
+        big_question="Where does the charge come from when you rub two things "
+                     "together?",
+    ),
+
+    # forces-between-charges — old hook (push one thing, pull another) narrowed
+    # to the wall: does it have its own charge. CHANGED big_question: it listed
+    # all three outcomes including attraction to an uncharged object.
+    "forces-between-charges": dict(
+        question="If you had to guess, does the wall have a charge of its own?",
+        options=[
+            ("Yes, it has a charge",
+             "A charged wall would explain it, since opposite charges attract."
+             " But the wall started with no charge and still has none overall;"
+             " the balloon just shifts the wall's own electrons."),
+            ("No, it has none",
+             "The wall has no charge overall. The balloon shifts the wall's "
+             "own electrons, so the surface nearest it becomes slightly "
+             "opposite and pulls the balloon in."),
+        ],
+        answer=1,
+        bridge="That shifting is called induction. Next: charge two spheres "
+               "and move them to see exactly what they do.",
+        big_question="What does a charged object do to the things near it?",
+    ),
+
+    # electric-fields — old hook (what is in the gap) as: does it need the air
+    # (CHRG-10, the belief this hook elicits). Replies avoid claiming the water
+    # trick itself works in a vacuum (the water would boil); they speak of
+    # charged objects in general, as the lesson does. CHANGED big_question:
+    # "Nothing crosses the gap... changes the space around it" is the answer.
+    "electric-fields": dict(
+        question="If you had to guess, does the comb need the air between it "
+                 "and the water to bend the stream?",
+        options=[
+            ("Yes, it needs air",
+             "Air is the only thing in the gap. But charged objects push and "
+             "pull just the same with all the air pumped out."),
+            ("No, it does not",
+             "The air plays no part. Charged objects push and pull just as "
+             "strongly with all the air pumped out, because the comb changes "
+             "the space itself."),
+        ],
+        answer=1,
+        bridge="That changed space around a charged object is called an "
+               "electric field. Next: map one and move a test point around "
+               "inside it.",
+        big_question="How can one thing push or pull on another across a gap "
+                     "when nothing touches?",
+    ),
+
+
+    # ── Year 9 · P10 Magnetism and electromagnetism ──────────────────────────────
+
+    # magnets-and-poles — old hook (what changed when one magnet was turned) as
+    # strength vs which end faces (MAG-03, the belief this hook elicits). CHANGED
+    # big_question: it said every magnet has two ends that behave oppositely.
+    "magnets-and-poles": dict(
+        question="If you had to guess, what changed when one magnet was turned"
+                 " round?",
+        options=[
+            ("How strong it is",
+             "Pushing back feels like extra strength, but the magnet has not "
+             "changed. What changed is which of its two ends faced the other "
+             "magnet."),
+            ("Which end faces the other",
+             "Each magnet has two different ends, called poles. Turning one "
+             "round swapped which end faced the other, and unlike poles pull "
+             "while like poles push."),
+        ],
+        answer=1,
+        bridge="Next: what each end is called, and which test really proves "
+               "that something is a magnet.",
+        big_question="What can a magnet tell you about whatever you hold it "
+                     "near?",
+    ),
+
+    # magnetic-fields — old hook (where did the lines come from) as: was the pull
+    # there before the filings (MAG-06, the belief this hook elicits). CHANGED
+    # big_question: it said the space around a magnet is not empty and a compass
+    # finds a direction at every point.
+    "magnetic-fields": dict(
+        question="If you had to guess, is the magnet's pull there before the "
+                 "filings arrive, or do the filings make it?",
+        options=[
+            ("It is already there",
+             "The pull is in the space around the magnet whether or not "
+             "anything is there. Each iron filing becomes a tiny magnet and "
+             "lines up with it."),
+            ("The filings make it",
+             "The filings are all you can see, so it looks that way. But sweep"
+             " them off and the pull is exactly as before; they only show it "
+             "up."),
+        ],
+        answer=0,
+        bridge="That pull in the space around a magnet is its magnetic field. "
+               "Next: find its direction at any point with a compass.",
+        big_question="What is in the space around a magnet, and how can we see"
+                     " it?",
+    ),
+
+    # the-earth-is-a-magnet — the draft's "in the Earth or in the sky" is given
+    # away by the H1 "The Earth is a magnet". The North Pole / magnetic south
+    # pole angles belong to the later think (MAG-09, MAG-10), so the guess asks
+    # WHERE the field is made, which the old reveal answers ("made in the Earth's
+    # core, thousands of kilometres down") and which neither the H1 nor the big
+    # question says. The tempting wrong answer is the old hook's "iron ore at the
+    # North Pole" idea. Big question kept: it does not give the depth away.
+    "the-earth-is-a-magnet": dict(
+        question="If you had to guess, is whatever turns the needle near the "
+                 "surface, or deep inside the Earth?",
+        options=[
+            ("Near the surface",
+             "With no magnet close by, it could be something underfoot. But "
+             "the Earth's magnetic field is made thousands of kilometres down,"
+             " in its core, and it reaches the whole surface."),
+            ("Deep inside the Earth",
+             "The Earth's magnetic field is made thousands of kilometres down,"
+             " by moving liquid iron in its core. It reaches the whole "
+             "surface, and the needle is a small magnet lining up with it."),
+        ],
+        answer=1,
+        bridge="Next: what that giant magnet is like, and how a compass "
+               "behaves in different places on it.",
+    ),
+
+    # electromagnets — the draft's "switched off or turned over" (and any
+    # "switched off or shaken loose") is given away by the H1 "Electromagnets",
+    # which tells a Year 9 the disc can be switched. The guess asks instead
+    # whether it needs electricity the whole time or only a burst, the belief
+    # that a magnetised core stays a magnet (MAG-16). This is the old hook's own
+    # answer ("only magnetic while a current runs"), so the bench gate is no more
+    # pre-answered than it was. CHANGED big_question: "a magnet with a switch" is
+    # the answer.
+    "electromagnets": dict(
+        question="If you had to guess, does the disc need electricity the "
+                 "whole time it holds the car, or just a burst at the start?",
+        options=[
+            ("The whole time",
+             "The disc is an electromagnet: a coil of wire with iron inside. "
+             "It is only a magnet while electricity flows, so to drop the car "
+             "the operator simply switches it off."),
+            ("Just a burst at the start",
+             "A fridge magnet needs no power at all. But this disc is only a "
+             "magnet while electricity flows, which is exactly how the "
+             "operator makes it let go."),
+        ],
+        answer=0,
+        bridge="Next: build an electromagnet yourself and find out what makes "
+               "it stronger.",
+        big_question="How could you build a magnet, and how would you make it "
+                     "stronger?",
+    ),
+
+    # how-a-motor-works — old hook (why does swapping the wires reverse it) as
+    # electricity vs magnets. CHANGED scene: dropped "Nothing inside it has been
+    # touched", which makes the answer obvious. CHANGED big_question: it said a
+    # current in a field is pushed.
+    "how-a-motor-works": dict(
+        scene="A small electric motor is connected to a battery and its shaft "
+              "spins clockwise. Take both wires off, put them back the other "
+              "way round, and it spins anticlockwise at the same speed.",
+        question="If you had to guess, what is reversed inside to make it spin"
+                 " the other way?",
+        options=[
+            ("The electricity",
+             "Swapping the wires sends the electricity round the coil the "
+             "other way, so the push on each side of the coil reverses too."),
+            ("The magnets",
+             "Turning the magnets round would reverse it too. But swapping the"
+             " wires does not touch them: they stay fixed in place."),
+        ],
+        answer=0,
+        bridge="Next: how a push on a wire in a magnetic field turns into a "
+               "spin, and what keeps it spinning.",
+        big_question="How does electricity make something spin, and what "
+                     "controls which way it spins?",
+    ),
+
+
+    # ── Year 9 · P12 Space ───────────────────────────────────────────────────────
+
+    # gravity-and-weight — old hook (what changes on Everest) as a plain "does
+    # the scale read less". Robust: "a little less" is right whether or not the
+    # climber also loses some body mass on the climb. CHANGED title: "What has
+    # changed about you?" told the pupil something had changed, which gives away
+    # "a little less". CHANGED big_question: "scales are marked in kilograms and
+    # measure newtons" gives away the mass/weight point.
+    "gravity-and-weight": dict(
+        title="Bathroom scales on the summit of Everest.",
+        question="If you had to guess, does the scale read a little less on "
+                 "the summit, or exactly the same?",
+        options=[
+            ("A little less",
+             "It does read a little less, because gravity is slightly weaker "
+             "that far from the Earth's centre, about 0.3% weaker. You have "
+             "not lost any matter; the pull on it has dropped."),
+            ("Exactly the same",
+             "Everest is tiny next to the size of the Earth. But the pull of "
+             "gravity does weaken a little, about 0.3%, and a sensitive scale "
+             "would notice."),
+        ],
+        answer=0,
+        bridge="Next: the two ideas behind this, mass and weight, then a bench"
+               " to stand the same person on five different worlds.",
+        big_question="What do we mean by mass and by weight, and are they the "
+                     "same thing?",
+    ),
 }
 
 
