@@ -3297,6 +3297,281 @@ START_HERE = {
         big_question="How can you find a crack hidden inside solid steel "
                      "without cutting it open?",
     ),
+
+
+    # ── Year 8 · P7 Light ───────────────────────────────────────────────────────
+
+    # light-travels — old hook (which arrives first) is too obvious, so the guess
+    # asks whether the flash takes any time at all (LIGHT-01, elicited by the
+    # hook in the register). Scene rewritten: it said "the flash is instant",
+    # which gave the answer. Review: bridge rewritten (it was ungrammatical and
+    # its "Next" skipped the explainers that come first).
+    "light-travels": dict(
+        scene="Lightning hits a hillside two kilometres away. You see the "
+              "flash, then count about six seconds before the thunder arrives."
+              " The flash and the bang left the hillside at the same moment.",
+        question="If you had to guess, how long does the flash take to reach "
+                 "you?",
+        options=[
+            ("No time at all",
+             "It looks instant, and across a room it is far too quick to "
+             "notice. But light does take time: sunlight takes over eight "
+             "minutes to reach us."),
+            ("A tiny amount of time",
+             "Light is not instant, but it is so fast that two kilometres "
+             "takes it only about seven millionths of a second."),
+        ],
+        answer=1,
+        bridge="Sound in air needs about six seconds for the same trip, which "
+               "is why the bang arrives so late. Next: what light shares with "
+               "sound, and the two ways it is different.",
+    ),
+
+    # reflection-mirrors-and-scattering — guess is "does the mirror send back
+    # much more light than paper?" (LIGHT-07, elicited by the hook). Scene and
+    # big_question changed because both stated that the two send back about the
+    # same amount. Review: bridge "Next" now names the explainer that really
+    # comes next.
+    "reflection-mirrors-and-scattering": dict(
+        scene="Hold a mirror up to a window and the room brightens. Hold up a "
+              "sheet of white paper and the room brightens too. Only the "
+              "mirror shows you your own face.",
+        question="If you had to guess, does the mirror send back much more "
+                 "light than the paper?",
+        options=[
+            ("No, about the same",
+             "Paper sends back nearly as much light as a mirror, which is why "
+             "a white page looks so bright."),
+            ("Yes, much more",
+             "A mirror does look more dazzling, so it is easy to think so. But"
+             " white paper sends back most of the light that lands on it, "
+             "nearly as much as the mirror."),
+        ],
+        answer=0,
+        bridge="So the amount of light is not what lets a mirror show your "
+               "face. Something about the surface does. Next: the one rule "
+               "every surface obeys.",
+        big_question="A mirror and a sheet of paper obey exactly the same rule"
+                     " when light lands on them. Only one of them shows you "
+                     "your face, and the reason is the surface rather than the"
+                     " rule.",
+    ),
+
+    # refraction — guess is what really bends, the straw or the light from it
+    # (LIGHT-09; this is the old hook's own question). Review: the draft's "does
+    # the straw really bend?" is trivially "no" for a strong Year 9, so it asks
+    # the old hook's either/or instead. Title, scene and big_question changed:
+    # "not broken", "perfectly straight" and "straight and looks broken" all gave
+    # it away, and the draft's big_question ("between the straw and your eye")
+    # pointed at the light.
+    "refraction": dict(
+        title="A straw in a glass of water.",
+        scene="You stand a straw in a glass of water and look at it from the "
+              "side. At the surface it seems to snap, and the part under the "
+              "water looks shorter and shifted sideways.",
+        question="If you had to guess, what really bends: the straw, or the "
+                 "light coming from it?",
+        options=[
+            ("The straw itself",
+             "It really does look bent, so that is easy to believe. But lift "
+             "the straw out and it is perfectly straight. What bends is the "
+             "light travelling from the straw to your eye."),
+            ("The light from it",
+             "The straw stays perfectly straight. The light from the part "
+             "under the water changes direction as it leaves the water, and "
+             "your eye is fooled."),
+        ],
+        answer=1,
+        bridge="Light changes direction like that because its speed changes "
+               "between water and air. Next: why light slows down in water and"
+               " glass.",
+        big_question="A straw stood in a glass of water looks snapped at the "
+                     "surface. What is really going on?",
+    ),
+
+    # lenses-and-images — guess is which way up the pinhole picture lands
+    # (LIGHT-13, elicited by the hook). Title and scene changed: both said
+    # "upside down". Review: bridge rewritten (it had no content and its "Next"
+    # skipped the explainers); it now keeps the old commit's point that nothing
+    # in the box flips the light.
+    "lenses-and-images": dict(
+        title="A shoebox with a pin-prick in it.",
+        scene="Take a shoebox, make one clean pin-prick in one end and stretch"
+              " greaseproof paper across the other. Point the pin-prick at a "
+              "bright window. A picture of the window appears on the paper, in"
+              " colour.",
+        question="If you had to guess, is the picture on the paper the right "
+                 "way up or upside down?",
+        options=[
+            ("Right way up",
+             "The window is the right way up. But light goes in straight lines"
+             " and the rays cross at the hole, so the picture lands upside "
+             "down."),
+            ("Upside down",
+             "Upside down, and swapped left to right too. Light travels in "
+             "straight lines, so the rays cross at the hole."),
+        ],
+        answer=1,
+        bridge="Nothing in the box turns the light over: there is no lens, no "
+               "glass and no mirror. Next: how straight lines alone make the "
+               "picture.",
+    ),
+
+    # the-eye-and-the-camera — old hook cut to the two options that matter:
+    # pupils alone, or the eye itself becoming more sensitive (LIGHT-18, elicited
+    # by the hook). Review: "after a minute" dropped (the retina's gain takes
+    # several minutes, so the comparison at one minute is arguable); options
+    # given parallel "Your …" wording; bridge given content and a true "Next".
+    "the-eye-and-the-camera": dict(
+        question="If you had to guess, what does more to help you see as you "
+                 "wait?",
+        options=[
+            ("Your pupils open wider",
+             "Pupils do open, and that helps a little. But the bigger change "
+             "takes minutes, at the back of the eye, which becomes thousands "
+             "of times more sensitive."),
+            ("Your eyes get more sensitive",
+             "The pupil opens in about a second and lets in perhaps ten times "
+             "more light. The big change takes minutes: the back of the eye "
+             "becomes thousands of times more sensitive."),
+        ],
+        answer=1,
+        bridge="A camera can copy the first trick, but it has nothing to match"
+               " the second. Next: the job an eye and a camera share.",
+    ),
+
+    # colour-and-the-spectrum — guess is where the colours came from (LIGHT-21,
+    # elicited by the hook; the bench gate repeats the old hook's question, which
+    # is allowed). Title and big_question changed: "all of them at once" and "It
+    # is not making any of them" gave it away. Review: wrong reply no longer
+    # doubles "Fair guess … fair thought"; bridge "Next" now names the explainers
+    # that come next.
+    "colour-and-the-spectrum": dict(
+        title="Sunlight through a block of glass.",
+        question="If you had to guess, were the colours already in the "
+                 "sunlight, or did the glass add them?",
+        options=[
+            ("Already in the sunlight",
+             "The colours were there all along. The glass just spreads them "
+             "out so you can see each one."),
+            ("Added by the glass",
+             "They only appear after the glass, so it is easy to think so. But"
+             " clear glass has no colour to add. It spreads out what was "
+             "already in the sunlight."),
+        ],
+        answer=0,
+        bridge="White light is a mixture, and the glass sorts it. Next: what "
+               "white light is made of, and why glass bends some colours more "
+               "than others.",
+        big_question="A plain, colourless block of glass turns a beam of "
+                     "sunlight into a band of colours. What is the glass "
+                     "really doing to the light?",
+    ),
+
+    # why-things-look-coloured — guess is what colour the red jumper looks under
+    # the green lamp (LIGHT-27/28; the bench gate asks the same, but the old
+    # scene already stated "almost black", so nothing new is pre-answered). Scene
+    # and big_question changed: both said it looks almost black. Review: bridge
+    # given content and a true "Next" (the explainers come before the bench).
+    "why-things-look-coloured": dict(
+        scene="A disco lamp fitted with a deep green filter is the only light "
+              "in the room. A white shirt looks green and a green bag looks "
+              "green. Then someone walks in wearing a bright red jumper.",
+        question="If you had to guess, what colour does the red jumper look "
+                 "now?",
+        options=[
+            ("Almost black",
+             "A red jumper can only send back red light, and a green lamp has "
+             "none to send. So almost nothing reaches your eyes."),
+            ("Still red",
+             "That is how it looks in daylight. But the green lamp gives no "
+             "red light for the jumper to send back, so it looks nearly black."),
+        ],
+        answer=0,
+        bridge="So the colour you see depends on the light as well as on the "
+               "jumper. Next: what a surface does with the light that lands on"
+               " it.",
+        big_question="A red jumper, a white shirt and a green bag look "
+                     "different in a room lit by one coloured lamp. What "
+                     "decides the colour you see?",
+    ),
+
+
+    # ── Year 8 · P8 Electric circuits ───────────────────────────────────────────
+
+    # current-and-circuits — guess is whether cutting the wire AFTER the bulb
+    # also puts it out (CIRC-03, elicited by the hook). Title and scene changed:
+    # both said the bulb goes out wherever you cut. The torch stays, so ladder
+    # rung 3 and the "gap behind the bulb" explainer still land. Review: bridge
+    # given content and a true "Next".
+    "current-and-circuits": dict(
+        title="A torch with a cut wire.",
+        scene="A torch has a cell, a bulb and two strips of metal joining them"
+              " into a ring. Cut the ring on the way to the bulb and the bulb "
+              "goes dark.",
+        question="If you had to guess, what happens if you cut it on the way "
+                 "back from the bulb instead?",
+        options=[
+            ("The bulb still lights",
+             "It is easy to think so, since the electricity has already been "
+             "through the bulb. But the flow is a ring, so a gap on either "
+             "side stops it everywhere."),
+            ("The bulb goes dark",
+             "Electricity flows all the way round a ring, so a break anywhere "
+             "stops the whole flow at once."),
+        ],
+        answer=1,
+        bridge="So a circuit is not a one-way delivery to the bulb. Next: what"
+               " is actually moving in the wire, and why it needs the whole "
+               "ring.",
+    ),
+
+    # series-and-parallel — old hook's correct answer (each light has its own
+    # path) against its fuse-box distractor (CIRC-08, which the register says the
+    # hook elicits AND confronts). Review: the draft's "one long chain" was not
+    # tempting once the scene says the house stays lit, and it dropped CIRC-08.
+    # Title and scene kept (they set up the contrast without saying which wiring
+    # is which).
+    "series-and-parallel": dict(
+        question="If you had to guess, why does the rest of the house stay "
+                 "lit?",
+        options=[
+            ("Each light has its own path",
+             "Every light has its own branch off the supply, so a broken bulb "
+             "breaks only its own branch and the rest carry on."),
+            ("The fuse box keeps them on",
+             "A fuse box is there to cut the power when something goes wrong, "
+             "not to keep lights on. The rest stay lit because each light has "
+             "its own path to the supply."),
+        ],
+        answer=0,
+        bridge="A cheap string of decorations has only one path, which is why "
+               "one dead bulb darkens the lot. Next: the two ways to join a "
+               "second bulb to a battery.",
+    ),
+
+    # current-at-a-junction — old hook (water below vs above the island) cut to
+    # the right answer and its "left behind" distractor (CIRC-12, elicited and
+    # confronted by the hook). Title and scene kept; big_question does not
+    # mention the river. Review: question reworded to ask about the flow; bridge
+    # "Next" now names the junction explainer that comes next.
+    "current-at-a-junction": dict(
+        question="If you had to guess, how much water flows below the island, "
+                 "compared with above it?",
+        options=[
+            ("The same amount",
+             "The island neither soaks up water nor makes any, so the two "
+             "channels together carry exactly what arrived."),
+            ("Less than above",
+             "It can feel as if some water is lost down the narrow channel. "
+             "But that water is still flowing, and the channels rejoin "
+             "carrying the full amount."),
+        ],
+        answer=0,
+        bridge="A wire that splits in two behaves the same way, and for the "
+               "same reason. Next: what a junction is, and what can and cannot"
+               " happen there.",
+    ),
 }
 
 
