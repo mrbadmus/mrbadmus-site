@@ -2274,13 +2274,13 @@ COMPONENTS = [
     # in the panel's own treatment. That is the defect B1 shipped with the zoom
     # instrument and B2 was bitten by again, and it is invisible to reading.
     dict(name="verdict panel is a dark panel on a muted rule", on=C1_TEST,
-         drive="keyed-committed", sel=".ks3-keyed-reveal",
+         drive="keyed-committed", sel="#s-verdict .ks3-keyed-reveal",
          props={"background-color": "#3E3730", "border-top-color": "#C6B9A7",
                 "border-top-width": "2px",
                 "border-top-left-radius": "20px"}),
     dict(name="the chosen reply is on-dark body copy, not muted", on=C1_TEST,
          drive="keyed-committed",
-         sel='.ks3-keyed-reply:not([hidden])',
+         sel='#s-verdict .ks3-keyed-reply:not([hidden])',
          props={"color": "#E7DECE", "font-size": "19px"}),
     # The reply and the static paragraphs must resolve IDENTICALLY. The panel's
     # argument is that the student's answer and the historical record are the
@@ -2288,13 +2288,13 @@ COMPONENTS = [
     # under it would read as a verdict on the choice, which is exactly what R3
     # forbids here.
     dict(name="the static close matches the reply exactly", on=C1_TEST,
-         drive="keyed-committed", sel=".ks3-keyed-static",
+         drive="keyed-committed", sel="#s-verdict .ks3-keyed-static",
          props={"color": "#E7DECE", "font-size": "19px",
                 "margin-top": "14px"}),
     # 36rem, Design's own measure on both pages. Full-width answer buttons on a
     # 60rem column are a target the eye has to travel.
     dict(name="commit options keep Design's 36rem measure", on=C1_TEST,
-         sel=".ks3-keyed-options", props={"max-width": "576px"}),
+         sel="#s-verdict .ks3-keyed-options", props={"max-width": "576px"}),
 # ── PAGE CONSTANT ────────────────────────────────────────────────────────
 # Shares C1_TEST with the other two c1-06 instruments:
 #
@@ -8807,6 +8807,10 @@ DRIVES = {
 """,
 # ── DRIVES entry ─────────────────────────────────────────────────────────
 
+    # ⊕ 9 Oct 2026 — scoped to `#s-verdict`, the instance these rows say they
+    # measure. Since the KS3 "Start here" guess (ks3_data/start_here.py) the
+    # hook is a keyed-commit too and sits ABOVE the verdict, so a bare
+    # `[data-keyed]` would silently start measuring the hook instead.
     # The panel does not exist in the document's layout until an option is
     # pressed, so every panel measurement needs this first. Which option is
     # deliberately unspecified: under R3 all four render identically and open
@@ -8814,8 +8818,8 @@ DRIVES = {
     # trusting it.
     "keyed-committed": r"""
 (function () {
-  var wrap = document.querySelector('[data-keyed]');
-  if (!wrap) { return "no keyed-commit on the page"; }
+  var wrap = document.querySelector('#s-verdict [data-keyed]');
+  if (!wrap) { return "no keyed-commit in #s-verdict"; }
   var opt = wrap.querySelector('.ks3-option');
   if (!opt) { return "keyed-commit offers no options"; }
   opt.click();

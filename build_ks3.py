@@ -764,7 +764,9 @@ def r_hook(lesson, block=None):
     # question and no student could ever answer it. `#s-hook` is the first stop
     # on all six rails and could therefore never tick.
     commit = ""
-    if p.get("commit") or p.get("options") or p.get("reveal"):
+    if p.get("guess"):
+        commit = _hook_guess(p)
+    elif p.get("commit") or p.get("options") or p.get("reveal"):
         bits = []
         if p.get("commit"):
             bits.append('<p class="ks3-commit">%s</p>' % sci(p["commit"]))
@@ -775,8 +777,37 @@ def r_hook(lesson, block=None):
                         '</div>' % rich(p["reveal"]))
         commit = '<div class="ks3-hook-commit">%s</div>' % "".join(bits)
 
-    return ('<section class="ks3-block ks3-dark ks3-hook"%s data-activity="hook">'
-            '%s%s</section>' % (_id_attr(block or {}), body, commit))
+    # `data-keyedblock` hands the guess to `wireKeyedCommit`, which shows the
+    # reply for the option pressed. Only a guess carries it, so every other
+    # hook's bytes are exactly what they were.
+    return ('<section class="ks3-block ks3-dark ks3-hook"%s data-activity="hook"%s>'
+            '%s%s</section>' % (_id_attr(block or {}),
+                                " data-keyedblock" if p.get("guess") else "",
+                                body, commit))
+
+
+def _hook_guess(p):
+    """The "Start here" guess (ks3_data/start_here.py): two options, a reply
+    to each, then the bridge everyone reads.
+
+    It is KS3's own `keyed-commit` markup (ks3_art/c1.py `r_keyed_commit`),
+    so `shared/ks3.js` and `shared/ks3.css` already drive and paint it. Under
+    R3 the options are never marked and stay re-choosable; the reply's first
+    words are the only response to which one was picked, as in KS4's
+    `Ks4Guess`."""
+    buttons = "".join(_option_li(i, o, ' aria-pressed="false"')
+                      for i, o in enumerate(p["options"]))
+    replies = "".join(
+        '<p class="ks3-keyed-reply" data-reply="%d" hidden><strong>%s</strong>'
+        ' %s</p>' % (i, "Good guess." if i == p["answer"] else "Fair guess.",
+                     rich(r))
+        for i, r in enumerate(p["replies"]))
+    return ('<div class="ks3-hook-commit"><p class="ks3-commit">%s</p>'
+            '<div class="ks3-keyed" data-keyed>'
+            '<ul class="ks3-options ks3-keyed-options" role="list">%s</ul>'
+            '<div class="ks3-keyed-reveal" hidden data-reveal>%s'
+            '<p class="ks3-keyed-static">%s</p></div></div></div>'
+            % (sci(p["commit"]), buttons, replies, rich(p["reveal"])))
 
 
 # ── the hook's media column ──────────────────────────────────────────────
