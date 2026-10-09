@@ -824,6 +824,35 @@
     return line;
   }
 
+  /* ⊕ B2C polish (9 Oct 2026). "Last active" is the newest thing the child
+     did that this page can see — never older than something shown beside it.
+     `k.lastActive` (the backend's: the visit stamp, written at most every
+     five minutes, or the newest finished item) does not count a message:
+     chat runs on its own middleware, which stamps nothing. So a card read
+     "Last active today, 10.02pm" over "last replied today, 11.19pm". The
+     newest of: that stamp, the thread's last message when it is the
+     child's, the child's messages and answers when they are loaded. */
+  function lastActiveOf(k) {
+    var best = null, bestT = -Infinity;
+    function take(iso) {
+      if (!iso) { return; }
+      var t = new Date(iso).getTime();
+      if (!isNaN(t) && t > bestT) { bestT = t; best = iso; }
+    }
+    take(k.lastActive);
+    var t = threadFor(k.id);
+    if (t && t.last && t.last.mine === false) { take(t.last.created_at); }
+    if (String(S.msgsFor) === String(k.id) && Array.isArray(S.msgs)) {
+      S.msgs.forEach(function (m) {
+        if (m && String(m.sender_id) === String(k.id)) { take(m.created_at); }
+      });
+    }
+    if (String(S.answersFor) === String(k.id) && Array.isArray(S.answers)) {
+      S.answers.forEach(function (a) { if (a) { take(a.created_at); } });
+    }
+    return best;
+  }
+
   function doingSummary(k) {
     var w = workOf(k), done = doneOf(k);
     var mins = w.reduce(function (t, it) {
@@ -833,7 +862,7 @@
        nothing records. The slot keeps a fact we do hold. */
     var line = done + ' of ' + w.length + ' sessions done so far this week, ' +
                mins + ' minutes on task.';
-    var last = whenLabel(k.lastActive);
+    var last = whenLabel(lastActiveOf(k));
     if (last) { line += ' Last active ' + last + '.'; }
     return line;
   }
@@ -1299,7 +1328,7 @@
         '<div class="dk-row-band" style="margin-top:12px"><span>Username</span>' +
         '<span class="dk-mono">' + esc(k.username || '—') + '</span></div>';
     } else if (k.status === 'quiet') {
-      var la = whenLabel(k.lastActive);
+      var la = whenLabel(lastActiveOf(k));
       doing += '<p style="margin:10px 0 0;font-size:17px;color:var(--ks3-ink-body)">' +
         '<strong style="color:var(--ks3-ink)">Nothing done this week yet.</strong> ' +
         esc(String(w.length)) + ' sessions are set.' +
