@@ -1110,6 +1110,303 @@ START_HERE = {
                "you measure it against. Next: two cars on a road, three "
                "different observers, and a different number for each.",
     ),
+
+
+    # ── Year 7 · P4 Forces ──────────────────────────────────────────────────────
+
+    # what-a-force-is — the rail label "The wall pushed you" is fixed lesson text
+    # and answers "what pushed you?", so the draft's guess was given away on
+    # load. Angle changed to the hook's own misconception (FORCE-12, elicited_by
+    # s-hook): do you carry the wall's push with you as you roll? Old title,
+    # scene and big question kept, so the rail label still names the hook.
+    "what-a-force-is": dict(
+        question="If you had to guess, as you roll away, are you still "
+                 "carrying the wall's push with you?",
+        options=[
+            ("Yes, until it runs out",
+             "That is one of the oldest ideas about forces, and almost "
+             "everyone starts with it. But a push is not stuff you can carry. "
+             "It stops the moment your hands leave the wall."),
+            ("No, it has already stopped",
+             "The wall's push lasts only while your hands are on it. You keep "
+             "rolling because you are already moving, not because you are "
+             "carrying a push."),
+        ],
+        answer=1,
+        bridge="A force is a push or a pull between two objects, and it only "
+               "lasts while they act on each other. Next: five forces, and the"
+               " object on the other end of each.",
+    ),
+
+    # drawing-and-adding-forces — the rail label is "Tug of war", so the hook
+    # keeps the tug of war (the draft had dropped it). Old title ("the winner is
+    # a subtraction") and scene gave the answer away; both rewritten. Guess is
+    # the old 40 N / 25 N question cut to the correct 15 N against the hook's own
+    # misconception, "the bigger pull wins" at 40 N (FORCE-16). Big question
+    # kept: it states no result.
+    "drawing-and-adding-forces": dict(
+        title="A tug of war on ice.",
+        scene="Two friends play tug of war with a sledge on ice, one rope "
+              "each. One pulls it to the right with 40 N. The other pulls it "
+              "to the left with 25 N.",
+        question="If you had to guess, how hard is the sledge pulled overall?",
+        options=[
+            ("15 N to the right",
+             "The 25 N pull cancels 25 N of the 40 N pull. The 15 N left over "
+             "is the only pull the sledge responds to."),
+            ("40 N to the right",
+             "The 40 N side does win, so the sledge goes right. But the other "
+             "rope is still pulling back, and it cancels 25 N of the 40 N. "
+             "That leaves 15 N."),
+        ],
+        answer=0,
+        bridge="That one leftover force has a name: the resultant force. Next:"
+               " set two pulls on a sledge yourself and read the single arrow "
+               "that replaces them.",
+    ),
+
+    # balanced-and-unbalanced — old title ("The table is holding up 8 N") gave
+    # away the upward push. Guess: is anything pushing up on a resting book?
+    # Tempting wrong option is "nothing" (FORCE-20, the hook's misconception).
+    # Title and scene rewritten around two identical books so the rail label "Two
+    # identical books" still names the hook; the old big question repeated the
+    # new scene, so it is replaced with one that does not.
+    "balanced-and-unbalanced": dict(
+        title="Two identical books.",
+        scene="Two identical books. One rests on a table and stays exactly "
+              "where it is. The other is held out in mid-air and let go, and "
+              "it falls.",
+        question="If you had to guess, is anything pushing up on the book that"
+                 " rests on the table?",
+        options=[
+            ("Yes, something is",
+             "The table is squashed a tiny bit, too little to see, and it "
+             "pushes up on the book. It pushes exactly as hard as gravity "
+             "pulls the book down."),
+            ("No, nothing is",
+             "The table looks as if it is doing nothing, so that is easy to "
+             "think. But gravity is still pulling the book down, and something"
+             " must push up to stop it falling. The table does."),
+        ],
+        answer=0,
+        bridge="Forces that cancel like this are called balanced, and nothing "
+               "about the motion changes. Next: swap the table for other "
+               "supports and see when they give way.",
+        big_question="Both books are pulled down just as hard. So what decides"
+                     " whether something stays put or starts to move?",
+    ),
+
+    # what-forces-do-to-motion — old title, scene ("at a steady speed", "nothing
+    # pushing it") and big question all gave the answer. Guess: does a sliding
+    # stone need something pushing it to keep going? Tempting wrong option is yes
+    # (FORCE-24). Rail label "Curling stone" still fits. Reply keeps the lesson's
+    # hedge that a little friction remains.
+    "what-forces-do-to-motion": dict(
+        title="A stone on smooth ice.",
+        scene="A curling stone is let go and slides down twenty metres of "
+              "smooth ice.",
+        question="If you had to guess, does the stone need something pushing "
+                 "it forwards to keep going?",
+        options=[
+            ("No, it keeps going alone",
+             "Moving does not need a push. Smooth ice holds the stone back so "
+             "little that it carries on at nearly the same speed."),
+            ("Yes, something must push it",
+             "Most things we slide do stop, which makes it look that way. What"
+             " stops them is something rubbing against them, not a missing "
+             "push. On smooth ice there is hardly any."),
+        ],
+        answer=0,
+        bridge="A force is only needed to change what something is doing: "
+               "speed it up, slow it down or turn it. Next: a trolley that is "
+               "already moving, and four different forces to try on it.",
+        big_question="Forces and motion seem to go together. So what does a "
+                     "force actually do to something that is moving?",
+    ),
+
+    # friction — title kept (rail label "The stuck crate"). Old scene said the
+    # crate takes "a much gentler push" once moving and the big question named
+    # the first centimetre as hardest; both changed (scene trimmed, big question
+    # neutral). Angle changed from the draft's "where is the grip strongest" to
+    # the hook's own misconception FORCE-28 (starting and keeping it sliding need
+    # the same push), which is more everyday for Year 7.
+    "friction": dict(
+        scene="You lean on a full crate and push harder and harder. Nothing. "
+              "Then it gives, and the crate starts to slide.",
+        question="If you had to guess, once the crate is sliding, is keeping "
+                 "it going easier than starting it, or just as hard?",
+        options=[
+            ("A little easier",
+             "The floor grips the crate hardest just before it moves. Once it "
+             "is sliding, the two surfaces never get the chance to settle into"
+             " each other, so the grip drops."),
+            ("Just as hard",
+             "Nothing about the crate has changed. But the grip is at its "
+             "biggest just before the crate moves, and it drops a little once "
+             "it is sliding."),
+        ],
+        answer=0,
+        bridge="That grip is called friction, and it always acts against the "
+               "sliding. Next: drag a block across four surfaces and take two "
+               "readings every time.",
+        big_question="Push a heavy crate across a floor and something resists "
+                     "you. What is it, and what decides how big it is?",
+    ),
+
+    # air-and-water-resistance — old title, scene and big question all said the
+    # speed stops rising. Guess is the old hook's question cut to two: does the
+    # skydiver keep getting faster, or stop? Tempting wrong option is "keeps
+    # getting faster" (gravity never stops pulling). Rail label "The skydiver"
+    # still fits. Correct reply reworded so the bridge no longer repeats it.
+    "air-and-water-resistance": dict(
+        title="Jumping out of an aircraft.",
+        scene="A skydiver steps out of an aircraft high up and falls for a "
+              "full minute with the parachute still shut.",
+        question="If you had to guess, what happens to the skydiver's speed "
+                 "over the minute?",
+        options=[
+            ("Stops getting faster",
+             "After about ten seconds the speed levels off at around 55 metres"
+             " per second, even with nothing underneath them. The air pushes "
+             "back harder the faster they fall."),
+            ("Keeps getting faster",
+             "Gravity does keep pulling the whole way down, so it seems the "
+             "speed should keep climbing. But the air pushes back harder the "
+             "faster you go, and the speed levels off."),
+        ],
+        answer=0,
+        bridge="Once the air's push has grown to match the weight, nothing is "
+               "left over and the speed stops changing. Next: watch the two "
+               "arrows close the gap.",
+        big_question="Gravity pulls a skydiver down the whole way. So what "
+                     "decides how fast they fall?",
+    ),
+
+    # moments — the rail label is "The door and the hinge" and ladder rung 2
+    # feedback says "that is the door-hinge test at the top of this lesson", so
+    # the hook must stay the door (the draft's plank broke both). Old title kept.
+    # Old scene ("it opens easily") and big question gave the result, so the
+    # scene now only sets up the test and the big question is neutral. Guess is
+    # qualitative (does it open just as easily?), and no reply or bridge says how
+    # the turning effect scales with distance, so the spanner gate (0.10 m to
+    # 0.20 m: doubles?) is not pre-answered.
+    "moments": dict(
+        scene="Try it on the next door you go through. Push at the handle with"
+              " one finger, and the door swings open. Then shut it and push "
+              "just as hard with the same finger, a hand's width from the "
+              "hinge.",
+        question="If you had to guess, does the door swing open just as easily"
+                 " this time?",
+        options=[
+            ("Yes, just as easily",
+             "It is the same finger and the same push. But this close to the "
+             "hinge the door hardly moves. Where you push matters, not just "
+             "how hard."),
+            ("No, it hardly moves",
+             "The push is just as hard, but this close to the hinge it barely "
+             "turns the door. Where you push matters as well as how hard."),
+        ],
+        answer=1,
+        bridge="The hinge is the pivot, the point the door turns about. The "
+               "turning effect of a push is called its moment. Next: a spanner"
+               " and a tight nut.",
+        big_question="A push can turn things as well as move them. What "
+                     "decides how much turning a push gives?",
+    ),
+
+    # springs-and-hookes-law — old title/scene ("the pattern looks obvious") and
+    # big question ("right up until it does not") hinted the answer. Guess keeps
+    # the old 10 N prediction (rail label "Predict 10 N") as yes/no on whether
+    # the pattern holds. Bridge no longer says "only more readings can show where
+    # it stops", which pre-answered the bench gate (which readings to take).
+    # FLAG: "No" is right for THIS spring (the lesson's model: limit of
+    # proportionality at 6 N, bench runs to 10 N) and for a small lab spring
+    # stretched to 200 mm, but a very stiff spring could survive 10 N; the scene
+    # names a small school-lab spring and the reply ties the claim to it.
+    "springs-and-hookes-law": dict(
+        title="A spring and a ruler.",
+        scene="A small spring from a school lab hangs beside a ruler. Hang 1 N"
+              " on it and it stretches 20 mm. Hang 2 N and it stretches 40 mm.",
+        question="If you had to guess, will this spring keep adding 20 mm for "
+                 "every extra newton, all the way to 10 N?",
+        options=[
+            ("Yes, all the way",
+             "The first two readings do make it look that way. But a small "
+             "spring cannot keep it up for ever: somewhere before 10 N, each "
+             "newton starts adding more than the last."),
+            ("No, the pattern stops",
+             "For the first few newtons the pattern holds exactly. But every "
+             "spring has a load where it stops, and a small lab spring reaches"
+             " it before 10 N."),
+        ],
+        answer=1,
+        bridge="The load where the pattern stops is called the limit of "
+               "proportionality. Next: load the spring yourself and find where"
+               " it is.",
+        big_question="A spring turns a force into a length you can read with a"
+                     " ruler. How does the stretch depend on the load?",
+    ),
+
+    # non-contact-forces — the rail label is "Balloon and hair" and the sorter
+    # has a balloon-and-hair case, so the hook keeps the balloon (the draft's
+    # magnet in a jar broke the rail). Old title and scene ("a clear centimetre
+    # of air in between") and the big question ("Three of them do not") gave the
+    # answer; all rewritten. Guess: does the balloon have to touch the hair?
+    # Tempting wrong option is yes (FORCE-44).
+    "non-contact-forces": dict(
+        title="A balloon and someone's hair.",
+        scene="Rub a balloon on a jumper, then bring it slowly up to someone's"
+              " head. Their hair stands up towards the balloon.",
+        question="If you had to guess, does the balloon have to touch the hair"
+                 " to make it move?",
+        options=[
+            ("Yes, it has to touch",
+             "Most pushes and pulls you know come from touching. But the hair "
+             "lifts while there is still a clear centimetre of air between "
+             "them."),
+            ("No, it works across a gap",
+             "The hair lifts while there is still a clear centimetre of air in"
+             " between. The balloon pulls on it across the gap, with nothing "
+             "touching."),
+        ],
+        answer=1,
+        bridge="Rubbing moved electric charge on to the balloon, and charge "
+               "can pull across a gap. Next: eight situations to sort by "
+               "whether the two things need to touch.",
+        big_question="Think of the pushes and pulls you have met so far. What "
+                     "does it take for one object to act on another?",
+    ),
+
+
+    # ── Year 7 · P11 Matter and the particle model ───────────────────────────────
+
+    # density — the rail label is "Which is heavier", so the guess stays on the
+    # old hook's question rather than the draft's "which takes up more space".
+    # Old scene ("The beam is dead level") gave the answer, so the scene now
+    # stops before the beam is let go. Tempting wrong option is the iron
+    # (PART-14). The old big question (lead and feathers weigh the same) pointed
+    # straight at the answer, so it is replaced.
+    "density": dict(
+        title="A lump of iron and a block of oak.",
+        scene="On a pan balance: a small lump of iron on the left, and on the "
+              "right a block of oak about twelve times its size. You let go of"
+              " the beam.",
+        question="If you had to guess, which is heavier?",
+        options=[
+            ("The lump of iron",
+             "Iron does feel heavy. But the beam stays level: about twelve "
+             "times as much oak has the same mass as the lump of iron."),
+            ("Neither: they balance",
+             "The beam stays level, so they weigh the same. It takes about "
+             "twelve times as much oak to match one lump of iron."),
+        ],
+        answer=1,
+        bridge="Heavy is about a particular object. How much mass is packed "
+               "into each bit of a material is its density. Next: six "
+               "materials on one balance.",
+        big_question="Some things feel heavy for their size and others feel "
+                     "light. What is the real difference between them?",
+    ),
 }
 
 
