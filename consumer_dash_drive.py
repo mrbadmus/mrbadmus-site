@@ -28,6 +28,27 @@ before verifying is asked about, never a blank Child 2), V4 (two tabs; own
 usernames skipped; taken explains and suggests), V5 (rail buttons, Back),
 V6 (the picker in signup and in Set work), and the removed trial copy.
 
+⊕ B2C polish (9 Oct 2026) — Mide's rulings after the blind journey runs
+REVERSE four things this drive used to assert, and it now asserts the new
+behaviour exactly (commits ec659574d and 1523719f3):
+
+  * "Start your free week" (dashboard and account page) is no longer a
+    checkout — it is a link to the signup PLAN step, where Monthly and
+    Annual are both on screen. It used to go straight to Stripe, monthly.
+    So pre-trial asserts the link and that NO checkout control is offered.
+  * A family with no children and no billing yet is midway through signup,
+    and the dashboard sends it on to signup.html (no step named) — the old
+    "No children yet / Add a child" screen WAS the defect.
+  * The one checkout path (ruling 1) is now reached from the dashboard and
+    the account page only by a LOCKED family's Restart, which keeps
+    data-act=checkout and repeats the family's own interval. Every failure
+    case drives the same C.startCheckout path it always did, from that
+    button; the signup plan step's case is unchanged.
+  * "Delete my account" is disabled + aria-disabled until "I understand" is
+    ticked (and again when unticked) — it used to press like a live button
+    and only refuse after the tap. Ruling 2's "no [disabled]" still holds
+    for the family dashboard.
+
     python3 consumer_dash_drive.py [--shots DIR] [--skip-timeout]
 
 `--skip-timeout` skips the one 26-second wait (the hanging checkout).
@@ -72,7 +93,10 @@ class Drive:
         self.p = browser.attach()
         self.pre = None
 
-    def open(self, path, width=390, theme="light", **fixture):
+    def open(self, path, width=390, theme="light", ready=None, **fixture):
+        """`ready`: the condition that says the page has settled, when it is
+        not the default (a page drawn into #c-main) — e.g. a page that
+        forwards itself elsewhere, whose own #c-main may draw first."""
         p = self.p
         if self.pre is not None:
             p.send("Page.removeScriptToEvaluateOnNewDocument", {"identifier": self.pre})
@@ -83,9 +107,9 @@ class Drive:
         p.goto(url)
         p.eval("try{localStorage.setItem('mrb-theme',%s)}catch(e){}" % json.dumps(theme))
         p.goto(url)
-        self.wait("document.body.style.display==='block'&&"
-                  "document.getElementById('c-main')&&"
-                  "document.getElementById('c-main').children.length>0")
+        self.wait(ready or ("document.body.style.display==='block'&&"
+                            "document.getElementById('c-main')&&"
+                            "document.getElementById('c-main').children.length>0"))
         time.sleep(0.2)
 
     def js(self, expr):
@@ -129,8 +153,18 @@ def pre_trial(d):
         body = d.text()
         check("Your family hasn’t started yet." in body,
               "@%d the one line says the family hasn't started" % width)
-        check(d.js("document.querySelectorAll('.dk-gate [data-act=checkout]').length") == 1,
-              "@%d the line's one action is a checkout control" % width)
+        # ⊕ B2C polish (9 Oct 2026, Mide's ruling): the action is a LINK to
+        # the signup plan step (Monthly and Annual both shown), never a
+        # checkout — it went straight to Stripe, monthly.
+        check(d.js("document.querySelectorAll('.dk-gate a.dk-gate-btn[href*=\"step=plan\"]').length") == 1 and
+              d.js("document.querySelectorAll('.dk-gate a, .dk-gate button').length") == 1 and
+              (d.js("document.querySelector('.dk-gate a.dk-gate-btn').getAttribute('href')") or "")
+              .startswith("/consumer/signup.html?"),
+              "@%d the line's one action is a link to the signup plan step" % width,
+              d.js("(document.querySelector('.dk-gate a.dk-gate-btn')||{}).href"))
+        check(d.js("document.querySelectorAll('[data-act=checkout]').length") == 0,
+              "@%d …and no checkout control is offered anywhere" % width,
+              d.js("document.querySelectorAll('[data-act=checkout]').length"))
         check("Start your free week" in d.text(".dk-gate"),
               "@%d …labelled Start your free week" % width)
         check(d.js("getComputedStyle(document.querySelector('.dk-gate')).display") != "none",
@@ -139,6 +173,13 @@ def pre_trial(d):
         check(d.disabled_count() == 0, "@%d no [disabled] on the overview" % width,
               d.disabled_count())
         d.shot("pretrial-overview-%d.png" % width, width)
+
+    # The account page's "Start your free week" follows the same ruling.
+    d.open("consumer/account.html", state="none", kids=2)
+    check(d.js("document.querySelectorAll('[data-act=start-plan]').length") == 1 and
+          "Start your free week" in d.text("[data-act=start-plan]") and
+          d.js("document.querySelectorAll('[data-act=checkout]').length") == 0,
+          "account pre-trial: Start your free week goes to the plan step; no checkout control")
 
     d.open("consumer/overview.html?child=kid-ada&view=child", state="none", kids=2)
     check(d.js("document.querySelectorAll('[data-write]').length") == 0,
@@ -191,19 +232,29 @@ def pre_trial(d):
 
 
 def no_children(d):
-    print("\n── pre-trial, no children ──")
+    """⊕ B2C polish (9 Oct 2026, Mide's ruling). A family with no child and
+    no billing yet is midway through signup: the dashboard forwards it to
+    signup.html with no step named, and signup opens the child form. This
+    used to assert the dashboard's own "No children yet / Add a child"
+    screen — which was the defect (a parent who signed in again mid-signup
+    landed there and the child's topic question was never asked)."""
+    print("\n── pre-trial, no children: on to signup ──")
     for width in (390, 1280):
-        d.open("consumer/overview.html", width=width, state="none", kids=0)
-        body = d.text()
-        check("can sign in" not in body, "@%d never claims children can sign in" % width)
-        href = d.js("(function(){var a=document.querySelector('.dk-dashed a');"
-                    "return a?a.getAttribute('href'):'';})()") or ""
-        check("signup.html" in href and "step=child" in href and
-              d.text(".dk-dashed a") == "Add a child",
-              "@%d the screen offers Add a child (→ %s)" % (width, href))
-        check(not d.js("!!document.querySelector('.dk-gate')"),
-              "@%d no checkout line with nothing to check out" % width)
-        d.shot("nokids-overview-%d.png" % width, width)
+        d.open("consumer/overview.html", width=width, state="none", kids=0,
+               ready="location.pathname==='/consumer/signup.html'&&"
+                     "!!document.getElementById('c-name')")
+        check(d.js("location.pathname") == "/consumer/signup.html" and
+              "step=" not in (d.js("location.search") or ""),
+              "@%d the dashboard forwards to signup.html, no step named" % width,
+              d.js("location.pathname+location.search"))
+        check(d.js("!!document.getElementById('c-name')") and
+              not d.js("!!document.querySelector('.dk-dashed, .dk-gate')"),
+              "@%d …which opens the child form, not the 'No children yet' screen" % width,
+              d.text("#su-main h1"))
+        check("can sign in" not in d.text(), "@%d never claims children can sign in" % width)
+        check(not d.js("!!document.querySelector('[data-act=checkout], #to-stripe')"),
+              "@%d no checkout control with nothing to check out" % width)
+        d.shot("nokids-signup-%d.png" % width, width)
 
 
 def trialing(d):
@@ -248,9 +299,16 @@ def week_repair(d):
 
 
 def checkout_cases(d, skip_timeout):
+    """⊕ B2C polish (9 Oct 2026, Mide's ruling): "Start your free week" is a
+    link to the plan step now, so the one checkout control left on the
+    dashboard and the account page is a LOCKED family's Restart
+    (data-act=checkout, the family's own interval). Every case below drives
+    that button through the same C.startCheckout path, failure for failure,
+    that it drove from the pre-trial button before; the signup plan step's
+    case is unchanged."""
     print("\n── checkout: one path, never a dead control ──")
     if not skip_timeout:
-        d.open("consumer/overview.html", state="none", kids=2, checkout="hang")
+        d.open("consumer/overview.html", state="locked", kids=2, checkout="hang")
         d.click(".dk-gate [data-act=checkout]")
         time.sleep(0.3)
         btn = "document.querySelector('.dk-gate [data-act=checkout]')"
@@ -270,27 +328,33 @@ def checkout_cases(d, skip_timeout):
         check("took too long" in msgt and "Try again" in msgt,
               "a hanging checkout gives up (%.0fs) and says so with Try again" % (took + 0.3), msgt)
         check(d.js(btn + ".getAttribute('aria-busy')") is None and
-              d.js(btn + ".innerText.trim()") == "Start your free week",
+              d.js(btn + ".innerText.trim()") == "Restart",
               "the control is restored")
         d.shot("checkout-timeout-390.png")
 
-    d.open("consumer/overview.html", state="none", kids=2, checkout="500")
+    d.open("consumer/overview.html", state="locked", kids=2, checkout="500")
+    check(d.text(".dk-gate [data-act=checkout]").strip() == "Restart",
+          "locked: the gate's checkout control is Restart", d.text(".dk-gate"))
     d.click(".dk-gate [data-act=checkout]")
     d.wait("document.getElementById('dk-gate-msg').innerText.length>0")
     msgt = d.text("#dk-gate-msg")
     check("didn’t open" in msgt and "Try again" in msgt, "a 500 shows a plain line + Try again", msgt)
+    sent = d.calls("/api/consumer/checkout")
+    check(len(sent) == 1 and (sent[0].get("body") or {}).get("interval") == "month",
+          "Restart repeats the family's own interval (month), named explicitly",
+          sent and sent[0].get("body"))
     d.shot("checkout-500-390.png")
     d.shot("checkout-500-1280.png", 1280)
     d.click("#dk-gate-msg [data-c-retry]")
     d.wait("document.getElementById('dk-gate-msg').innerText.length>0")
     check(len(d.calls("/api/consumer/checkout")) == 2, "Try again tries again")
 
-    d.open("consumer/overview.html", state="none", kids=2, checkout="no_url")
+    d.open("consumer/overview.html", state="locked", kids=2, checkout="no_url")
     d.click(".dk-gate [data-act=checkout]")
     d.wait("document.getElementById('dk-gate-msg').innerText.length>0")
     check("didn’t open" in d.text("#dk-gate-msg"), "a 200 with no url is a failure too")
 
-    d.open("consumer/overview.html", state="none", kids=2, checkout="no_children")
+    d.open("consumer/overview.html", state="locked", kids=2, checkout="no_children")
     d.click(".dk-gate [data-act=checkout]")
     d.wait("document.getElementById('dk-gate-msg').innerText.length>0")
     href = d.js("(function(){var a=document.querySelector('#dk-gate-msg a');"
@@ -299,14 +363,14 @@ def checkout_cases(d, skip_timeout):
           "no_children offers Add a child", d.text("#dk-gate-msg"))
     d.shot("checkout-nochildren-390.png")
 
-    d.open("consumer/overview.html", state="none", kids=2, checkout="ok")
+    d.open("consumer/overview.html", state="locked", kids=2, checkout="ok")
     d.click(".dk-gate [data-act=checkout]")
     time.sleep(1.2)
     check(d.js("location.pathname+location.hash") == "/404.html#stripe-checkout",
           "a good answer goes to Stripe", d.js("location.href"))
 
     print("\n── checkout from the account page ──")
-    d.open("consumer/account.html", state="none", kids=2, checkout="500")
+    d.open("consumer/account.html", state="locked", kids=2, checkout="500")
     d.click("[data-act=checkout]")
     d.wait("document.getElementById('ak-plan-msg').innerText.length>0")
     check("didn’t open" in d.text("#ak-plan-msg") and
@@ -396,14 +460,30 @@ def delete_flow(d):
     check("Delete my account" in body and "Keep my account" in body and "I understand" in body
           and "Type DELETE" not in body and not d.js("!!document.querySelector('#ak-delete input[type=text], #ak-confirm')"),
           "consequences + tick box + the two buttons, no typing")
-    check(d.js("document.querySelectorAll('#ak-delete [disabled]').length") == 0,
-          "no [disabled] in the confirm")
+    # ⊕ B2C polish (9 Oct 2026, Mide's ruling; 1523719f3). "Delete my
+    # account" is disabled + aria-disabled until "I understand" is ticked,
+    # enabled in place by the tick, disabled again by an untick. It used to
+    # be live at rest and refuse only after the tap; this asserted that
+    # ("no [disabled] in the confirm", "…says why" on an unticked press).
+    dstate = ("(function(){var b=document.querySelector('#ak-delete [data-act=do-delete]');"
+              "return b?[b.disabled,b.getAttribute('aria-disabled')]:null;})()")
+    tick = "(function(){document.getElementById('ak-del-tick').click();})()"
+    check(d.js(dstate) == [True, "true"],
+          "before the tick: Delete my account is disabled and aria-disabled=true", d.js(dstate))
+    check(d.js("[].map.call(document.querySelectorAll('#ak-delete [disabled]'),"
+               "function(e){return e.getAttribute('data-act')})") == ["do-delete"],
+          "…and it is the only disabled control in the confirm")
     d.shot("account-delete-confirm-390.png")
     d.click("[data-act=do-delete]")
-    check("Tick" in d.text("#ak-del-msg") and
-          len([c for c in d.js("window.__CF__.calls") if c["path"].endswith("delete-request")]) == 0,
-          "Delete without the tick sends nothing and says why")
-    d.js("(function(){var t=document.getElementById('ak-del-tick');t.click();})()")
+    check(len([c for c in d.js("window.__CF__.calls") if c["path"].endswith("delete-request")]) == 0,
+          "a press while unticked sends nothing")
+    d.js(tick)
+    check(d.js(dstate) == [False, None],
+          "ticking I understand enables it in place (no disabled, no aria-disabled)", d.js(dstate))
+    d.js(tick)
+    check(d.js(dstate) == [True, "true"],
+          "unticking disables it again (disabled and aria-disabled=true)", d.js(dstate))
+    d.js(tick)
     d.click("[data-act=do-delete]")
     d.wait("document.body.innerText.indexOf('Account scheduled for deletion')>=0")
     posts = [c for c in d.js("window.__CF__.calls")
