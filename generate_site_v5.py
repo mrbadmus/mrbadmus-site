@@ -726,7 +726,7 @@ def nav_html(active_subject="", pathway="", tier="", chrome=False):
     {brand.brand_lockup("/")}
     <div class="nav-cluster">
       <a href="/3d/" class="nav-text-link">3D Studio</a>
-      <a href="/weekly-challenge.html" class="challenge-chip"><svg viewBox="0 0 12 16" width="12" height="15" fill="currentColor" aria-hidden="true"><path d="M7.4 0L1 9.2h3.6L3.4 16 11 6.1H6.6L7.4 0z"/></svg> <span class="nav-chip-label">Challenge</span></a>
+      <a href="/weekly-challenge.html" class="challenge-chip" aria-label="Weekly challenge"><svg viewBox="0 0 12 16" width="12" height="15" fill="currentColor" aria-hidden="true"><path d="M7.4 0L1 9.2h3.6L3.4 16 11 6.1H6.6L7.4 0z"/></svg> <span class="nav-chip-label">Challenge</span></a>
       <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard"><svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 3h7v4.5a3.5 3.5 0 01-7 0V3zM6.5 4.2H4v1.3a2.4 2.4 0 002.4 2.4M13.5 4.2H16v1.3a2.4 2.4 0 01-2.4 2.4M10 11v3M7 17h6l-.7-2.4h-4.6L7 17z"/></svg></a>
       <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){{MRBSearch.open();}}return false;"><svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="5.6"/><path d="M13.2 13.2L17 17"/></svg></a>
       {THEME_SLOT}
@@ -778,7 +778,7 @@ def nav_html(active_subject="", pathway="", tier="", chrome=False):
   {crumbs_block}
   <div class="nav-cluster">
     <a href="/3d/" class="nav-text-link">3D Studio</a>
-    <a href="/weekly-challenge.html" class="challenge-chip">⚡ <span class="nav-chip-label">Challenge</span></a>
+    <a href="/weekly-challenge.html" class="challenge-chip" aria-label="Weekly challenge">⚡ <span class="nav-chip-label">Challenge</span></a>
     <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard">🏆</a>
     <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){{MRBSearch.open();}}return false;">🔍</a>
     {THEME_SLOT}

@@ -389,7 +389,16 @@
   .nav { padding: 0 var(--sp-3); gap: var(--sp-2); }
   .nav-cluster { gap: 3px; }
   .challenge-chip .nav-chip-label { display: none; }   /* ⚡ only on small screens */
-  .challenge-chip { padding: 7px 9px; }
+  /* ⊕ B2C polish (9 Oct 2026) — a 44×44 tap target once it is a lone ⚡
+     (it measured about 34×30). Its name comes from aria-label="Weekly
+     challenge" on the link, since the hidden word above is not read out.
+     The extra width cannot push the bar past the viewport: the signed-in
+     display name is the one item that gives (MRB-337/N5, above), and the
+     signed-out bar at this width is brand, this chip and the menu only. */
+  .challenge-chip {
+    display: inline-flex; align-items: center; justify-content: center;
+    box-sizing: border-box; min-width: 44px; min-height: 44px; padding: 0 9px;
+  }
   .nav-icon-link { padding: 6px 7px; }
   /* Sign Up collapses into the drawer on phones so the persistent cluster
      (Challenge, Leaderboard, Search, Sign In, menu) fits without overflow.
