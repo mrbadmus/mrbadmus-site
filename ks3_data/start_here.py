@@ -535,6 +535,283 @@ START_HERE = {
         big_question="Ice, water and steam are the same substance. So what "
                      "exactly is different about them?",
     ),
+
+    # changes-of-state — keeps the old sealed-bag commit as a two-way guess (less
+    # vs exactly 50 g). Title and scene changed: "Seal it in the bag first" and
+    # "nothing can get in or out of" both announce the answer; "sealed" stays so
+    # the answer is unarguable and the "Sealed bag" rail stop still lands.
+    "changes-of-state": dict(
+        title="An ice cube in a bag.",
+        scene="An ice cube, 50 g, sealed inside a bag. Weigh it. Leave it on "
+              "the bench until it is a puddle of water, then weigh the bag "
+              "again.",
+        question="If you had to guess, once the ice has melted, will the "
+                 "balance read less than 50 g, or exactly 50 g?",
+        options=[
+            ("A bit less",
+             "It can feel as if some of the ice has gone, because a solid has "
+             "turned into a puddle. But the bag is sealed, so nothing has left"
+             " it. Every particle is still inside."),
+            ("Exactly 50 g",
+             "Melting moves the particles around but never removes any, and "
+             "nothing can leave a sealed bag. The balance has nothing to "
+             "report."),
+        ],
+        answer=1,
+        bridge="The same is true of boiling, freezing and condensing: the mass"
+               " never changes. Next: heat 50 g of ice steadily and watch the "
+               "temperature.",
+    ),
+
+    # gas-pressure — old hook asked what bursts the can; two-way version asks
+    # whether the "empty" can is really empty. Title and big question changed:
+    # "Nothing in it" and "It is empty. What is there to explode?" both push the
+    # pupil to the answer. The new big question keeps the warning, because rung
+    # 2's feedback says "it is why the warning is on the can". Bridge stops short
+    # of the wall-hits mechanism, which the bench gate asks next.
+    "gas-pressure": dict(
+        title="The can that sounds empty.",
+        question="If you had to guess, is that can really empty inside?",
+        options=[
+            ("No, there is gas inside",
+             "The can is full of gas. There is no such thing as a sealed can "
+             "with nothing in it, even when it has stopped spraying."),
+            ("Yes, it is empty",
+             "Nothing sprays out, so it certainly seems empty. But the space "
+             "inside is full of gas that has simply stopped pushing its way "
+             "out."),
+        ],
+        answer=0,
+        bridge="Heat that gas and within a minute the steel gives way. Next: "
+               "what a gas is actually doing inside a sealed container.",
+        big_question="A used-up aerosol can carries a warning: do not put it "
+                     "on a fire, it may explode. What would make it burst?",
+    ),
+
+    # diffusion — old hook asked what moved the perfume; two-way version asks
+    # whether it arrives with no draught at all (PART-10 is elicited by the
+    # hook). Title, scene and big question changed: "No draught..." and "The
+    # perfume still reaches you" give the result away, and "what covers the last
+    # stretch" presupposes a mechanism. "Still room" kept for the rail stop.
+    # Replies avoid saying the particles never stop (the bench gate asks that).
+    "diffusion": dict(
+        title="A bottle of perfume in a still room.",
+        scene="A bottle of perfume is opened at the far end of a room. The "
+              "windows are shut, the air is dead still, and a candle flame at "
+              "the centre of the room stands perfectly upright, so there is no"
+              " draught at all.",
+        question="If you had to guess, with no draught to carry it, will the "
+                 "smell of the perfume ever reach you?",
+        options=[
+            ("Yes, in the end",
+             "The perfume particles spread out by themselves, bouncing off the"
+             " air particles on the way. It is slow, but no draught is needed."),
+            ("No, it needs a draught",
+             "In a real room draughts do carry a smell most of the way. But "
+             "even with the air perfectly still, the perfume gets there on its"
+             " own."),
+        ],
+        answer=0,
+        bridge="Spreading out with nothing pushing has a name: diffusion. "
+               "Next: a drop of dye in still water, followed one particle at a"
+               " time.",
+        big_question="Someone opens a bottle of perfume at the far end of a "
+                     "room. Before long you can smell it. How does it get to "
+                     "you?",
+    ),
+
+    # testing-the-model — FLAG (science, believed right): relies on solid
+    # paraffin wax sinking in its own melt (solid ~0.90 g/cm3, liquid ~0.78;
+    # candle wax shrinks as it sets), consistent with the lesson's "Almost every
+    # other solid sinks in its own liquid". The old hook ("what does a wrong
+    # prediction mean?") is the later #s-verdict commit, so it cannot be reused.
+    # Reviewer tried an ice-expansion guess instead, but the first rail stop "Ice
+    # floats" sits on screen above the hook and gives that one away; the wax
+    # guess survives it, and "Ice floats" actively tempts the wrong answer. Title
+    # and scene changed: the old ones state that the model fails; the new title
+    # puts ice back in the hook so the rail stop still lands. Old big question
+    # kept: it gives nothing away about wax. Bridge leaves the model's verdict on
+    # ice to the evidence bench.
+    "testing-the-model": dict(
+        title="Ice floats. What about wax?",
+        scene="Ice floats on water. Now some candle wax is melted in a pan, "
+              "and a lump of solid wax is dropped into it.",
+        question="If you had to guess, will the lump float on the melted wax, "
+                 "or sink in it?",
+        options=[
+            ("It floats",
+             "That is what ice does on water. But ice is the odd one out. For "
+             "almost everything else, wax included, the solid sinks."),
+            ("It sinks",
+             "Almost every solid sinks in its own liquid. Its particles are "
+             "packed more tightly, so a lump of it is heavier than the same "
+             "amount of liquid."),
+        ],
+        answer=1,
+        bridge="So why does ice float? Next: seven observations, ice among "
+               "them, and whether the particle model can explain each one.",
+    ),
+
+
+    # ── Year 7 · C2 Atoms elements and compounds ────────────────────────────────
+
+    # the-atom-daltons-model — old hook asked what explains fifteen centuries of
+    # failure; two-way version asks whether modern kit could finally do it
+    # (restricted to furnaces, acids and mixing, so nuclear transmutation is not
+    # arguable; the stretch draws the same chemistry-only boundary). Title
+    # changed: "Fifteen centuries of failure is a result" tells the pupil the
+    # failure was inevitable. Big question changed: "what would have to be true
+    # for that to be impossible" presupposes impossibility.
+    "the-atom-daltons-model": dict(
+        title="Fifteen centuries of trying.",
+        question="If you had to guess, could modern furnaces, acids and mixing"
+                 " finally turn lead into gold?",
+        options=[
+            ("Yes, with modern kit",
+             "Modern kit is far better than a medieval furnace. But heating "
+             "and mixing only rearrange atoms. They never change one kind of "
+             "atom into another."),
+            ("No, however good the kit",
+             "Lead atoms and gold atoms are different kinds. Heating, burning "
+             "and mixing only rearrange atoms, and no reaction changes one "
+             "kind into the other."),
+        ],
+        answer=1,
+        bridge="John Dalton wrote this idea down in 1803, and modern chemistry"
+               " starts there. Next: his three claims, and what happens when "
+               "you switch one off.",
+        big_question="People tried to turn lead into gold for fifteen hundred "
+                     "years and never once managed it. Why not?",
+    ),
+
+    # elements — old hook asked how to test for an element; two-way version is
+    # look at it vs try to break it down, worded as the bench's own test labels.
+    # The bench asks for a verdict on each sample, not for the best test, and no
+    # sample (brass) is named here, so the think block is not pre-answered.
+    "elements": dict(
+        question="If you had to guess, how would you tell whether a sample is "
+                 "on that list: try to break it down, or look at it closely?",
+        options=[
+            ("Try to break it down",
+             "If anything simpler comes out, it was never on the list. An "
+             "element is made of one kind of atom, so there is nothing simpler"
+             " inside it."),
+            ("Look at it closely",
+             "Looking is where everyone starts. But different substances can "
+             "look alike, so looks cannot settle it. Breaking it down can."),
+        ],
+        answer=0,
+        bridge="Next: six unlabelled samples and only eight tests to share "
+               "between them.",
+    ),
+
+    # compounds — old hook asked where the iron went; two-way version is burnt
+    # away vs joined the sulfur. The tempting "still there, just coated" option
+    # is left out because the think block asks it later. Replies stop short of
+    # saying why the magnet ignores it. Big question changed: "Same two elements
+    # before and after heating" tells the pupil the iron did not burn away.
+    # Bridge changed: the explainer straight after the hook defines a compound,
+    # so the draft bridge repeated it.
+    "compounds": dict(
+        question="If you had to guess, has the iron burnt away, or joined up "
+                 "with the sulfur?",
+        options=[
+            ("It burnt away",
+             "Heating can make things glow and seem to vanish. But the iron "
+             "has not left the dish. It has joined the sulfur to make a new "
+             "substance."),
+            ("It joined the sulfur",
+             "Every bit of the iron is still in the dish, now joined to the "
+             "sulfur in a new substance."),
+        ],
+        answer=1,
+        bridge="Stirring two elements together and heating them together are "
+               "very different things. Next: test the mixture, heat it, and "
+               "test it again.",
+        big_question="Iron and sulfur in a dish. Heat them, and afterwards the"
+                     " magnet is useless. What changed?",
+    ),
+
+    # chemical-symbols — REWRITTEN by the reviewer. The old commit ("why
+    # symbols?") has "to save time" as an arguable part-truth, and the old scene
+    # shows the formulae working. The writer's "could you recognise anything?"
+    # was trivially yes (numbers, pictures) and its big question ("Osaka ...
+    # write the same thing for salt") gave the answer away. New guess: will the
+    # formula for water in a Japanese textbook be H2O or written in Japanese.
+    # Everyday, tempting, and it leads straight to the rail stop "Why symbols".
+    # Big question changed so it no longer says the chemists all write the same
+    # thing.
+    "chemical-symbols": dict(
+        title="A chemistry book in Japanese.",
+        scene="You cannot read a word of Japanese. Someone hands you their "
+              "chemistry textbook, open at a page about water.",
+        question="If you had to guess, when the book gives the formula for "
+                 "water, will it be H2O, or written in Japanese?",
+        options=[
+            ("H2O, as here",
+             "The words around it are all Japanese, but the formula is H2O, "
+             "exactly as you would write it."),
+            ("Written in Japanese",
+             "Everything else on the page is in Japanese. But chemical symbols"
+             " are shared by every country, so water is H2O there too."),
+        ],
+        answer=0,
+        bridge="That is what symbols are for: each one means exactly one "
+               "element, in every country, with nothing to translate. Next: "
+               "where nine symbols come from.",
+        big_question="Chemists in Lagos, Osaka and São Paulo all need to write"
+                     " down salt. What do they write, and why?",
+    ),
+
+    # formulae — REWRITTEN by the reviewer. The first rail stop "One atom apart"
+    # sits on screen above the hook, so the draft's "different substance or
+    # stronger water?" was given away. Old title and scene kept (they now set up
+    # the one-extra-atom fact the rail names). New guess: would bubbling oxygen
+    # through water make the dangerous liquid? The rail tempts "yes"; the answer
+    # (no: mixing is not joining an atom into each particle) is this lesson's
+    # idea that a formula counts the atoms joined in one particle. Old big
+    # question kept: it gives nothing away about this guess.
+    "formulae": dict(
+        question="If you had to guess, would bubbling oxygen gas through water"
+                 " turn it into the dangerous liquid?",
+        options=[
+            ("Yes, it would",
+             "The extra atom is oxygen. But bubbling only mixes the gas into "
+             "the water. Nothing joins an oxygen atom into each water "
+             "particle."),
+            ("No, it would not",
+             "The oxygen just mixes in with the water. To make the other "
+             "liquid, an extra oxygen atom has to be joined into every single "
+             "particle."),
+        ],
+        answer=1,
+        bridge="A substance is decided by the atoms joined together in each "
+               "particle, not by what is floating around them. Next: build "
+               "formulae and find out which ones are real substances.",
+    ),
+
+    # conservation-of-mass — old hook asked where the wax went; two-way version
+    # is heat and light vs gas in the air (heat and light is the real
+    # misconception, ATOM-11). The old hook already answered the think block, so
+    # this does not newly pre-answer it. Big question changed: "Neither is"
+    # states the result.
+    "conservation-of-mass": dict(
+        question="If you had to guess, where did the wax go?",
+        options=[
+            ("Into gas in the air",
+             "The wax joined with oxygen from the air and drifted off as "
+             "invisible gases. It is still somewhere in the room."),
+            ("Into heat and light",
+             "A candle does give off heat and light. But heat and light are "
+             "not made of anything you can weigh. The wax itself leaves as "
+             "gas."),
+        ],
+        answer=0,
+        bridge="Those gases have mass, but in an open room nobody weighs them."
+               " Next: a balance, with the flask open and then sealed.",
+        big_question="A candle burns down to nothing. A nail rusts and gets "
+                     "heavier. What is happening to the mass in each?",
+    ),
 }
 
 
