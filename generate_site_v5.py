@@ -5485,7 +5485,7 @@ _PUBLIC_META = [
         "path": "/parents/index.html",
         "title": "A science teacher who sets the work and marks it — MrBadmus",
         "desc": ("Two short science sessions a week for your child, matched to what "
-                 "school is covering. Every answer marked against the real mark "
+                 "school is covering. Every answer marked against an exam-style mark "
                  "scheme. One email to you on Sunday."),
         "sitemap": True, "strip_noindex": True,
     },
@@ -5516,9 +5516,8 @@ _PUBLIC_META = [
     {
         "path": "/parents/organisations.html",
         "title": "For organisations — MrBadmus",
-        "desc": ("Councils, alternative provision and tutoring centres use MrBadmus to "
-                 "set, mark and evidence science for the pupils they are responsible "
-                 "for. One caseworker sees every pupil."),
+        "desc": ("Science for the pupils who aren't in a science classroom. One "
+                 "caseworker sees every pupil."),
         "sitemap": True, "strip_noindex": True,
     },
     {
