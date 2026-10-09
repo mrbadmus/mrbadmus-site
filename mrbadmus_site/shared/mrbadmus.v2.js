@@ -208,9 +208,59 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     return d;
   }
 
-  function formatReply(text) {
-    return text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/`(.*?)`/g,'<code>$1</code>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+  /* ⊕ B2C polish (9 Oct 2026) — the tutor's reply, as the bubble draws it.
+     Real answers carried literal "---" lines and a leading "> " (Markdown the
+     model writes) because only bold, italics and code were understood. Now:
+       · ESCAPED FIRST, then formatted. This used to put the model's text into
+         innerHTML raw, so any "<" in a reply was markup; every tag below is
+         one this function writes, never one the reply supplied.
+       · a "---" / "***" / "___" line is a thin rule (<hr class="chat-rule">);
+       · consecutive "> " lines are one quote (<blockquote class="chat-quote">);
+       · a "# Heading" line is a bold line (the same defect: raw "##" marks);
+       · everything else exactly as before — **bold**, *italics*, `code`, and
+         every newline a <br> (so a blank line is still <br><br>). Lists stay
+         as the model's own "- " / "1." lines, as they always have.
+     Blank lines touching a rule or a quote are dropped: the block already
+     separates, and keeping them would stack a gap on top of its margin. */
+  function inlineReply(line) {
+    return line.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/`(.*?)`/g,'<code>$1</code>');
   }
+
+  function formatReply(text) {
+    const lines = esc(text).replace(/\r\n?/g, '\n').split('\n');
+    const items = [];                       // {block:bool, html}
+    let quote = null;
+    for (const raw of lines) {
+      const q = /^\s*&gt;\s?(.*)$/.exec(raw);
+      if (q) {
+        if (!quote) { quote = []; items.push({ block: true, quote }); }
+        quote.push(inlineReply(q[1]));
+        continue;
+      }
+      quote = null;
+      if (/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(raw)) {
+        items.push({ block: true, html: '<hr class="chat-rule">' });
+        continue;
+      }
+      const h = /^\s*#{1,6}\s+(.*?)\s*#*\s*$/.exec(raw);
+      items.push({ block: false, html: h ? '<strong>' + inlineReply(h[1]) + '</strong>' : inlineReply(raw) });
+    }
+    // A blank line next to a block is spacing the block already gives.
+    const kept = items.filter((it, i) => {
+      if (it.block || it.html !== '') return true;
+      const prev = items[i - 1], next = items[i + 1];
+      return !((prev && prev.block) || (next && next.block));
+    });
+    let out = '';
+    kept.forEach((it, i) => {
+      if (it.quote) it.html = '<blockquote class="chat-quote">' + it.quote.join('<br>') + '</blockquote>';
+      const prev = kept[i - 1];
+      if (prev && !prev.block && !it.block) out += '<br>';
+      out += it.html;
+    });
+    return out;
+  }
+  if (window.MRB_TUTOR_TEST_HOOK) window.MRB_TUTOR_TEST_HOOK.formatReply = formatReply;
 
   /* MRB-257 — KS3 framing, appended after the subject prompt.
      Additive by construction: it is only ever reached when a page passes
