@@ -1284,7 +1284,10 @@
         '<div class="c-signout-card" role="dialog" aria-modal="true" ' +
         'aria-labelledby="c-signout-h">' +
           '<h2 id="c-signout-h">Sign out?</h2>' +
-          '<p>You’ll need your username and password to get back in.</p>' +
+          /* ⊕ B2C polish (9 Oct 2026): `opts.note` — a parent (signup.html)
+             signs in with an email or Google, not a username. The child
+             surfaces pass nothing and keep this sentence. */
+          '<p>' + escapeHtml(opts.note || 'You’ll need your username and password to get back in.') + '</p>' +
           '<div class="c-signout-acts">' +
             '<button type="button" class="c-signout-stay">Stay signed in</button>' +
             '<button type="button" class="c-signout-go">Sign out</button>' +

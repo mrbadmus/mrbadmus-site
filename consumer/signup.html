@@ -21,6 +21,11 @@
 <link rel="stylesheet" href="/consumer/consumer.css"/>
 <link rel="stylesheet" href="/parents/public.css"/>
 <link rel="stylesheet" href="/consumer/topic-picker.css"/>
+<!-- ⊕ B2C polish (9 Oct 2026): public.css's `.pb-body button{font:inherit}`
+     outranks consumer.css's `.c-signout-btn` / `.c-signout-acts button` and
+     resets their weight and size; these put the child surfaces' values back
+     on this page. -->
+<style>.pb-body .c-signout-btn{font-weight:700;font-size:15px}.pb-body .c-signout-acts button{font-weight:700;font-size:16px}</style>
 <style>.su-rail-btn{background:none}.su-rail-btn:hover{border-color:var(--ks3-rule-strong)!important}.su-rail-btn:focus-visible{outline:3px solid var(--ks3-accent);outline-offset:2px}</style>
 <style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
 </head>
@@ -33,11 +38,20 @@
 <aside class="su-rail" style="padding:28px 28px 32px">
   <div id="rail-brand" style="display:flex;align-items:center;gap:10px"></div>
   <ol id="rail-steps" style="margin:48px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px"></ol>
+  <!-- ⊕ B2C polish (9 Oct 2026): Sign out, for a signed-in parent — see
+       renderSignout(). At the foot of the desktop rail (the rail is a
+       100vh flex column), clear of the fixed theme pill at top right. -->
+  <div id="rail-signout" hidden style="margin-top:auto;padding-top:24px"></div>
 </aside>
 
 <header class="su-head" style="display:flex;align-items:center;gap:10px;padding:16px 20px 14px;border-bottom:2px solid var(--ks3-ink)">
   <span id="head-brand" style="display:flex;align-items:center;gap:10px"></span>
   <span id="step-label" style="margin-left:auto;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ks3-ink-muted)"></span>
+  <!-- ⊕ B2C polish (9 Oct 2026): Sign out on a phone/tablet — see
+       renderSignout(). Below 960px the theme pill is its own row ABOVE this
+       header (consumer.css, 86dd8b39e), so nothing sits on it; below 400px
+       the button is the 44px icon square (consumer.css .c-signout-btn). -->
+  <span id="head-signout" hidden style="flex:0 0 auto"></span>
 </header>
 
 <main class="su-main" id="su-main" style="max-width:520px;margin:0 auto;padding:28px 20px 80px"></main>
@@ -394,6 +408,7 @@
     $('rail-brand').innerHTML = mark;
     $('head-brand').innerHTML = mark;
     $('step-label').textContent = STEP_LABELS[S.step] || '';
+    renderSignout();
 
     var idx = { account: 0, verify: 0, child: 1, unit: 1, children: 2, plan: 3 }[S.step];
     var labels = ['Your account', 'Your child', 'Anyone else?', 'Plan and card'];
@@ -432,6 +447,31 @@
           ';width:100%;font:inherit;color:inherit;cursor:pointer">' + inner + '</button>'
         : '<div style="' + box + '">' + inner + '</div>') + '</li>';
     }).join('');
+  }
+
+  /* ⊕ B2C polish (9 Oct 2026). SIGN OUT, FOR A SIGNED-IN PARENT.
+     Since 55d07c0df a family that has never subscribed is always resumed
+     into this page from the dashboard, and this page had no Sign out: on a
+     shared family device the only way out was closing the browser. So the
+     header (phone) and the rail (desktop) carry the same control the child
+     surfaces use, C.signOutControl — it asks first, then C.signOut revokes
+     the session and clears this device's local state (the signup draft
+     included) whatever the network does, and lands on /parents/ with
+     ?env= and ?api= carried (C.go). Shown only once there is a session:
+     before the account exists there is nothing to sign out of. Mounted
+     once per host; render() only shows or hides it. */
+  var SIGNOUT_NOTE = 'What you’ve set up so far is saved. Sign in again to carry on.';
+  function renderSignout() {
+    var on = !!S.session;
+    ['head-signout', 'rail-signout'].forEach(function (id) {
+      var host = $(id);
+      if (!host) { return; }
+      host.hidden = !on;
+      if (on && !host.getAttribute('data-mounted')) {
+        C.signOutControl(host, { sb: sb, redirectTo: '/parents/', note: SIGNOUT_NOTE });
+        host.setAttribute('data-mounted', '1');
+      }
+    });
   }
 
   /* Where a finished rail step goes back to, or null when there is nowhere. */
