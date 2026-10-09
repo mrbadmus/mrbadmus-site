@@ -578,6 +578,10 @@
         // and not every criterion ticked.
         if (r.resolved && !r.met) { misses += 1; }
         r.el.setAttribute("data-rung-met", r.met ? "1" : "0");
+        // ⊕ B2C polish (9 Oct 2026) — and whether it is RESOLVED, so the side
+        // rail's ladder stop (doneByDom) reads the ladder's own state rather
+        // than whether a criteria list happens to be unfolded right now.
+        r.el.setAttribute("data-rung-resolved", r.resolved ? "1" : "0");
       });
       /* ⊕ B2C polish (9 Oct 2026) — the ladder PUBLISHES its rung count, so
          the sticky progress bar can show it while the ladder is the section
@@ -590,12 +594,36 @@
       ladder.setAttribute("data-rungs-total", String(total));
       announceProgress(ladder);
 
-      // MRB-257 (C3) — either a claim about THIS sitting, or the authored
-      // resting strings left exactly as the build wrote them. Untouched, the
-      // ladder says nothing at all; and "Retry my misses" can empty it
-      // again, at which point it is genuinely not started.
-      var claiming = touched && resolved > 0;
-      if (claiming) {
+      /* ⊕ B2C polish (9 Oct 2026) — THE SCORE LINE COUNTS WHAT THE BAR
+         COUNTS. Same `got` as `data-rungs-met` above: a page-marked rung
+         answered correctly this visit, or a self-marked rung with every
+         criterion ticked, restored or not. It used to be written only once
+         the student had acted on THIS visit (MRB-257 C3), so a returning
+         child whose rungs 3 and 4 came back "rung met" from their saved work
+         read "Not started yet." under a bar showing "2 / 4". Now:
+           · nothing resolved and nothing met — the authored resting string
+             ("Not started yet.");
+           · some but not all rungs resolved — "2 of 4 rungs met so far."
+             (out of ALL the rungs, as the bar is; "met so far" is what keeps
+             B2C unit 6's point — one rung answered never reads as three
+             wrong);
+           · every rung resolved — the finished line, "You got 3 of 4.".
+         MCQ answers are still NOT restored (MRB-291): this only changes what
+         the line says about state the page already holds. */
+      if (scoreEl) {
+        if (!resolved && !got) {
+          scoreEl.textContent = restScore;
+        } else if (resolved < total) {
+          scoreEl.textContent = got + " of " + total + " rungs met so far.";
+        } else {
+          scoreEl.textContent = "You got " + got + " of " + total + ".";
+        }
+      }
+      // MRB-257 (C3) — the NOTE stays a claim about THIS sitting: the "best"
+      // comparison and "You marked rungs …" are written only once the student
+      // has acted here, and the authored resting note stands until then (and
+      // again when "Retry my misses" empties the ladder).
+      if (touched && resolved > 0) {
         var lead = "";
         if (bestAtLoad !== null) {
           if (got > bestAtLoad) {
@@ -604,16 +632,8 @@
             lead = "Your best so far is " + bestAtLoad + " of " + total + ". ";
           }
         }
-        /* ⊕ B2C unit 6 — out of the rungs ANSWERED until all four are:
-           "You got 1 of 4." after one rung read as three wrong. */
-        if (scoreEl) {
-          scoreEl.textContent = resolved < total
-            ? "You got " + got + " of " + resolved + " so far."
-            : "You got " + got + " of " + total + ".";
-        }
         if (noteEl) { noteEl.textContent = lead + whoMarked(); }
       } else if (touched) {
-        if (scoreEl) { scoreEl.textContent = restScore; }
         if (noteEl) { noteEl.textContent = restNote; }
       }
       if (resolved && (bestSaved === null || got > bestSaved)) {
@@ -37446,6 +37466,13 @@
     var rungs = sec.querySelectorAll(".ks3-rung");
     if (rungs.length) {
       for (var r = 0; r < rungs.length; r++) {
+        // ⊕ B2C polish — the ladder's own word wins when it has given one
+        // (wireLadder writes it on every scorable rung). Without it, a
+        // self-marked rung whose list was folded away with "Hide the list"
+        // read as unanswered and un-ticked the stop under a full bar.
+        var said = rungs[r].getAttribute("data-rung-resolved");
+        if (said === "1") { continue; }
+        if (said === "0") { return false; }
         var marked = rungs[r].querySelector('.ks3-option[aria-pressed="true"], .ks3-option.is-correct, .ks3-option.is-wrong');
         var checked = rungs[r].querySelector("[data-ticks]:not([hidden])");
         if (!marked && !checked) { return false; }
@@ -37484,6 +37511,10 @@
   }
   if (typeof window !== "undefined" && window.MRB_KS3_TEST_HOOK) {
     window.MRB_KS3_TEST_HOOK.railTally = railTally;
+    // The ladder and the rail stop it ticks, so the test can drive the real
+    // engine over a built lesson's ladder (restore, answer, tick, fold).
+    window.MRB_KS3_TEST_HOOK.wireLadder = wireLadder;
+    window.MRB_KS3_TEST_HOOK.doneByDom = doneByDom;
   }
 
   function wireRail(wrap) {

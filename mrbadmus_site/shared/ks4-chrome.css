@@ -1116,7 +1116,12 @@ body[data-chrome="ks4"] .nav-drawer-close { color: var(--k4-ink); }
   body[data-chrome="ks4"] .nav-icon-link,
   body[data-chrome="ks4"] .nav-text-link { display: none; }
   body[data-chrome="ks4"] .k4-navbar { padding: 8px 14px; gap: 8px; min-height: 58px; }
-  body[data-chrome="ks4"] .challenge-chip { height: 40px; padding: 0 14px; font-size: 15px; }
+  /* ⊕ B2C polish (9 Oct 2026) — 44×44, not 40×40: with its word hidden it
+     is a lone bolt, so this IS its tap target. The 4px it gains is banked
+     back from the cluster's own gap (10 → 8 between its items), so the bar
+     is no wider at 360 than it was. */
+  body[data-chrome="ks4"] .challenge-chip { height: 44px; min-width: 44px; padding: 0 14px; font-size: 15px; justify-content: center; }
+  body[data-chrome="ks4"] .nav-cluster { gap: 8px; }
   body[data-chrome="ks4"] .nav-icon-link,
   body[data-chrome="ks4"] .nav-burger { width: 40px; height: 40px; }
   body[data-chrome="ks4"] #nav-auth-area a,
