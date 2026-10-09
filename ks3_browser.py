@@ -151,6 +151,54 @@ def gate_tmp() -> str:
     return GATE_TMP
 
 
+# ⊕ 9 Oct 2026 (B2C polish) — THE GATE BROWSER'S DEVICE IS LIGHT, NOT THIS MAC'S.
+#
+# Commit 48f2dd4d0 ruled that a fresh browser with no stored theme follows
+# `prefers-color-scheme` ("System") instead of always painting Light. The
+# site is right. But this harness never pinned the emulated colour scheme, so
+# from that commit on every gate silently inherited the OS appearance of
+# whatever machine ran it — and Mide's Mac is DARK. `student_themes` went red
+# reading dark page tokens (`:root --pg-ok` '#3FC97A', not '#12A150') on a
+# page it had never asked to be dark. The gates were written for a light
+# default and are not wrong; their environment moved under them. A gate whose
+# verdict depends on the laptop's System Settings is not a gate.
+#
+# So every Page is pinned ONCE, when it is created, to a light device. Rules:
+#
+#   · Once, at creation — NEVER in `goto()`/`_enable_domains()`. Those run on
+#     the first navigation, which is AFTER a caller may already have sent its
+#     own dark emulation; pinning there would silently overwrite the caller.
+#   · A caller's own `Emulation.setEmulatedMedia` that names
+#     `prefers-color-scheme` always wins (contrast_audit, ks4_parity's
+#     THEME-b/THEME-c, measure_design.set_media all do this on purpose).
+#   · ⚠️ `setEmulatedMedia` REPLACES the whole feature list. A caller that
+#     sends only `prefers-reduced-motion` (teacher_picker_drive does) would
+#     otherwise wipe the pin mid-run and drop back to the OS appearance —
+#     the same defect, arriving later. `Page.send` therefore adds the pinned
+#     scheme to any `setEmulatedMedia` that does not name a colour scheme.
+#   · `MRB_GATE_COLOR_SCHEME=light|dark|none` overrides the default; `none`
+#     restores the old follow-the-OS behaviour (no pin, no merge).
+#
+# This also makes the BUILDS that use this harness (build_student.py's
+# snapshot, build_ks4.py's prerender, 3d-studio's thumbnail) independent of
+# the OS appearance — the same page bakes the same bytes on any machine.
+
+_COLOR_SCHEMES = ("light", "dark", "none")
+
+
+def gate_color_scheme() -> str | None:
+    """The colour scheme every new Page is pinned to, or None for no pin.
+
+    `$MRB_GATE_COLOR_SCHEME` — `light` (default), `dark`, or `none`.
+    """
+    v = (os.environ.get("MRB_GATE_COLOR_SCHEME") or "light").strip().lower()
+    if v not in _COLOR_SCHEMES:
+        raise ValueError(
+            "MRB_GATE_COLOR_SCHEME=%r — expected one of %s"
+            % (v, "|".join(_COLOR_SCHEMES)))
+    return None if v == "none" else v
+
+
 def _pid_alive(pid: int) -> bool:
     try:
         os.kill(pid, 0)
@@ -389,6 +437,16 @@ class Page:
         self._errors: list[tuple[str, str]] = []
         self.settle = settle
         self._domains_enabled = False
+        # ⊕ 9 Oct 2026 — pin the device colour scheme once, at creation, before
+        # the caller can send anything (see `gate_color_scheme()` for why). It
+        # lives here rather than in `Browser.attach()` so that a Page built
+        # directly on another tab's socket (tools/y_runthrough_live.py opens a
+        # second tab that way) is pinned too: emulation is per target.
+        self.color_scheme = gate_color_scheme()
+        if self.color_scheme is not None:
+            self.send("Emulation.setEmulatedMedia",
+                      {"features": [{"name": "prefers-color-scheme",
+                                     "value": self.color_scheme}]})
 
     # -- protocol ----------------------------------------------------------------------
 
@@ -397,7 +455,20 @@ class Page:
 
         Any event messages that arrive before the reply are buffered (and error-bearing
         ones harvested) rather than dropped.
+
+        ⊕ 9 Oct 2026 — an `Emulation.setEmulatedMedia` that does not name
+        `prefers-color-scheme` keeps this Page's pinned scheme (CDP replaces
+        the whole feature list, so without this a reduced-motion-only call
+        would quietly hand the page back to the OS appearance). One that does
+        name it wins outright.
         """
+        if method == "Emulation.setEmulatedMedia" and getattr(self, "color_scheme", None):
+            params = dict(params or {})
+            features = list(params.get("features") or [])
+            if not any((f or {}).get("name") == "prefers-color-scheme" for f in features):
+                features.append({"name": "prefers-color-scheme",
+                                 "value": self.color_scheme})
+            params["features"] = features
         self._id += 1
         want = self._id
         self._ws.send_text(json.dumps({"id": want, "method": method, "params": params or {}}))
@@ -1025,6 +1096,24 @@ def _self_test() -> int:
                 failures.append("console_errors() has no BOOM; got %r" % (errs,))
             if not any("KABOOM" in e for e in errs):
                 failures.append("console_errors() has no thrown error; got %r" % (errs,))
+
+            # 5. ⊕ 9 Oct 2026 — the device colour scheme is the pinned one,
+            #    whatever this machine's OS appearance is, and a media call
+            #    that names only reduced-motion does not drop the pin.
+            want = gate_color_scheme()
+            if want is not None:
+                mq = "matchMedia('(prefers-color-scheme: %s)').matches" % want
+                if p.eval(mq) is not True:
+                    failures.append("colour scheme not pinned to %s" % want)
+                p.send("Emulation.setEmulatedMedia",
+                       {"features": [{"name": "prefers-reduced-motion", "value": "reduce"}]})
+                if p.eval(mq) is not True:
+                    failures.append("a reduced-motion-only media call dropped the %s pin" % want)
+                other = "dark" if want == "light" else "light"
+                p.send("Emulation.setEmulatedMedia",
+                       {"features": [{"name": "prefers-color-scheme", "value": other}]})
+                if p.eval("matchMedia('(prefers-color-scheme: %s)').matches" % other) is not True:
+                    failures.append("a caller's explicit %s emulation did not win" % other)
     except Exception as e:  # noqa: BLE001 - the self-test reports, it does not propagate
         import traceback
         failures.append("harness raised %s: %s" % (type(e).__name__, e))
