@@ -1548,6 +1548,9 @@ def compile_lesson(page, lesson, report):
     # rulings: several of them correct old-opener text, and must still fire.
     tpl, logic, r18_fired = ks4_rulings.apply_r18_start_here(
         lesson["slug"], lesson["design_file"], tpl, logic)
+    # ⊕ R19 — the big question above "Start here" (Mide, 9 Oct 2026).
+    tpl = ks4_rulings.apply_r19_big_question(
+        lesson["slug"], lesson["design_file"], tpl)
 
     template = compile_template_text(page, tpl)
 

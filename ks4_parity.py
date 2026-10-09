@@ -513,6 +513,11 @@ def apply_text_whitelist(slug, route, index, sec, ref_text_norm):
         t = t.replace(R12_OLD_PATHWAY_CHIP.get(slug, "Combined · Triple"), "")
         t = t.replace(R12_OLD_TIER_CHIP, "")
         t = _WS_RE.sub(" ", t).strip()
+        # ⊕ R19 — the ruled big question (Mide, 9 Oct 2026). Design's text
+        # becomes the ruled text; the port must then carry it byte-exact.
+        r19 = ks4_rulings.R19_BIGQ.get(slug)
+        if r19:
+            t = t.replace(normalize_ws(r19[0]), normalize_ws(r19[1]))
     # ⊕ R14 — a Triple route's spec number is the separate science's own,
     # not Combined's. Applied on WHATEVER section carries it (the header's
     # eyebrow is always index 0; the KeyNote child component's `spec` prop
