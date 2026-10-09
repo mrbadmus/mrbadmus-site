@@ -3572,6 +3572,267 @@ START_HERE = {
                "same reason. Next: what a junction is, and what can and cannot"
                " happen there.",
     ),
+
+    # potential-difference — the old hook's own question, what the number on a
+    # bulb means, cut to the right answer and CIRC-16 (which the register says
+    # the hook elicits AND confronts). Review: the draft changed the angle to
+    # "what happens on 12 V", which dropped CIRC-16 when the old question
+    # converts fine. Scene changed: it said the 2.5 V bulb "flares once and dies"
+    # on 12 V, which pointed at the answer. Title kept; it matches the rail label
+    # "The number on a bulb".
+    "potential-difference": dict(
+        scene="A torch bulb says 2.5 V. A car headlamp says 12 V. A mains lamp"
+              " in your house says 230 V.",
+        question="If you had to guess, what is that number telling you?",
+        options=[
+            ("How much electricity it uses",
+             "Lots of people read it that way. But it is not an amount being "
+             "used up: it is the voltage the bulb is designed to run on."),
+            ("The voltage it is built for",
+             "It is the voltage the maker designed it for. Much less and it "
+             "glows dimly; much more and the thin wire inside burns out."),
+        ],
+        answer=1,
+        bridge="Volts measure a push, not an amount of electricity. Next: what"
+               " that push actually is, and how you measure it.",
+    ),
+
+    # resistance — the old hook's own question in everyday words: is the flow
+    # smaller only at the bulb, or all the way round? (the "used up on the way"
+    # belief against one smaller current). Review: the draft asked "does the bulb
+    # dim?", which the H1 "Resistance" next to a thin wire strongly implies, and
+    # which a Year 9 finds obvious. Old title and scene restored (they say the
+    # bulb dims, which no longer gives anything away).
+    "resistance": dict(
+        question="If you had to guess, is less electricity flowing only "
+                 "through the bulb, or all the way round?",
+        options=[
+            ("Only through the bulb",
+             "It is easy to picture the wire using some up before it reaches "
+             "the bulb. But in one loop the flow is the same everywhere, so it"
+             " has fallen all the way round."),
+            ("All the way round",
+             "In one loop the flow is the same at every point. The thin wire "
+             "makes the whole loop harder to get through, so less flows "
+             "everywhere."),
+        ],
+        answer=1,
+        bridge="How hard something makes it for charge to get through has a "
+               "name: resistance. Next: what resistance is, and why measuring "
+               "it takes two meters.",
+    ),
+
+    # conductors-and-insulators — old hook cut to the tempting near-miss (a
+    # million, true of tap water) against the real figure. big_question changed:
+    # it stated "more than a million million". Review: bridge "Next" now names
+    # the explainer that comes next (the test gap comes after three explainers).
+    "conductors-and-insulators": dict(
+        question="If you had to guess, how much harder is it to push "
+                 "electricity through the plastic than through the copper?",
+        options=[
+            ("About a million times",
+             "That is about right for tap water. Plastic is far beyond it: "
+             "over a million million times harder to get through than copper."),
+            ("Over a million million times",
+             "Copper lets charge through easily and plastic hardly lets any "
+             "through at all. That huge gap is what makes a cable work."),
+        ],
+        answer=1,
+        bridge="A gap that size needs a reason. Next: what copper has inside "
+               "it that plastic does not.",
+        big_question="Conductor and insulator are not two kinds of thing. They"
+                     " are the two ends of one scale of resistance. How far "
+                     "apart are they?",
+    ),
+
+    # building-and-measuring-a-circuit — old hook cut to a loose connection
+    # against the "faulty meter" belief (CIRC-25, elicited by the hook). Title,
+    # scene and big_question kept. Review: the draft's "Their ammeter reads
+    # wrongly" was arguable (an ammeter with a blown internal fuse does break the
+    # loop and darken the lamp), so it is now the old option's "reading low",
+    # which cannot explain a dark lamp; bridge "Next" fixed.
+    "building-and-measuring-a-circuit": dict(
+        question="If you had to guess, what is most likely wrong with the pair"
+                 " whose lamp stays dark?",
+        options=[
+            ("A loose connection",
+             "A loop only works if every joint in it grips, and a crocodile "
+             "clip biting the plastic coating instead of the metal can look "
+             "perfectly fine."),
+            ("The ammeter reads too low",
+             "A meter reading low would give an odd number, but it could not "
+             "make the lamp go dark. A dark lamp means the loop is broken, "
+             "most often at a clip that is not gripping."),
+        ],
+        answer=0,
+        bridge="Where each meter goes matters just as much as a tight clip. "
+               "Next: why an ammeter and a voltmeter go in different places.",
+    ),
+
+
+    # ── Year 9 · B6 Health and drugs ────────────────────────────────────────────
+
+    # what-drugs-do-to-the-body — is the caffeine in coffee a drug? (DRUG-01,
+    # "drugs are illegal", elicited by the hook). Review: the draft asked "what
+    # makes a substance a drug?", and the H1 "What drugs do to the body" points
+    # straight at "changing how your body works"; the draft's big_question also
+    # listed caffeine among drugs. Title and scene changed: they said coffee
+    # contains a drug. big_question now neutral.
+    "what-drugs-do-to-the-body": dict(
+        title="A mug of coffee.",
+        scene="A mug of coffee has around 90 milligrams of caffeine in it. A "
+              "café sells it to anyone, at any age, with no prescription.",
+        question="If you had to guess, is the caffeine in coffee a drug?",
+        options=[
+            ("Yes, it is a drug",
+             "A drug is any substance that changes the way the body works. "
+             "Caffeine changes how your nerve cells behave, which is why "
+             "people drink it."),
+            ("No, it is just a drink",
+             "It is legal and sold in cafés, so it is easy to think not. But a"
+             " drug is any substance that changes how the body works, and "
+             "caffeine does: it keeps your nerve cells firing so you feel "
+             "alert."),
+        ],
+        answer=0,
+        bridge="Legal or not, prescribed or not, addictive or not: those are "
+               "separate questions. Next: follow one dose of a drug round the "
+               "body, stage by stage.",
+        big_question="What makes a substance a drug, and what does a drug "
+                     "actually do once it is in your blood?",
+    ),
+
+    # alcohol-and-smoking — guess is whether the famous sobering-up methods work
+    # (DRUG-03). Scene changed: it said all three do nothing and that only one
+    # organ can remove alcohol. Review: scene kept closer to Design's clinical
+    # wording ("far too much to drink" dropped); question no longer calls them
+    # "tricks"; bridge says "for someone else", as the bench does, and names the
+    # bench, which really is next.
+    "alcohol-and-smoking": dict(
+        scene="Three things people are certain will sober someone up. Friends "
+              "try all three on someone who has been drinking.",
+        question="If you had to guess, do any of the three get the alcohol out"
+                 " of the blood faster?",
+        options=[
+            ("No, none of them do",
+             "The alcohol is in the blood, and only the liver can clear it, at"
+             " a steady rate of roughly one unit an hour."),
+            ("Yes, they speed it up",
+             "People swear by them, and coffee does make a drunk person feel "
+             "more awake. But nothing speeds up the liver, so the alcohol "
+             "clears just as slowly."),
+        ],
+        answer=0,
+        bridge="Next: build an evening's drinks for someone else, try each way"
+               " of sobering up, and run the clock.",
+    ),
+
+    # substance-misuse-and-decisions — does coming from a plant make a substance
+    # safer? (DRUG-05, the page's own title claim). Review: the draft's "natural
+    # or legal" against "what it does to the body" is near-circular and obvious
+    # to a Year 9; this keeps the title's claim as the guess. Scene changed: the
+    # old one argued the answer (nightshade, foxglove, "the ground has no
+    # opinion"). Old hook's answer is the same point, so claim c1 at the bench is
+    # no more pre-answered than before.
+    "substance-misuse-and-decisions": dict(
+        scene="An advert says a herbal sleep remedy is gentle and safe because"
+              " it is made from plants, not chemicals.",
+        question="If you had to guess, does coming from a plant make a "
+                 "substance safer?",
+        options=[
+            ("Yes, it is usually safer",
+             "Lots of people believe it, so it is easy to think so. But deadly"
+             " nightshade and foxglove are both plants and both are poisonous,"
+             " while a factory-made medicine comes at a known dose."),
+            ("No, it tells you nothing",
+             "Deadly nightshade and foxglove are both plants, and both are "
+             "poisonous. Where a substance comes from says nothing about what "
+             "it does to a body."),
+        ],
+        answer=1,
+        bridge="What a substance does, and in what amount, is a question only "
+               "evidence can answer. Next: five claims about drugs, each with "
+               "its evidence, and a fault to find in each.",
+    ),
+
+
+    # ── Year 9 · B9 Ecosystems and interdependence ──────────────────────────────
+
+    # food-chains-and-food-webs — old hook cut to energy running out against the
+    # tempting "too big to hunt". Title and big_question kept. Review: scene
+    # changed, because its last clause ("whether the organisms are enormous or
+    # microscopic") ruled out the size option and so gave the answer; options
+    # made parallel; wrong reply no longer says energy "runs out" (the page
+    # confronts energy being "lost").
+    "food-chains-and-food-webs": dict(
+        scene="Chains stop. Grass, rabbit, fox, and then nothing. Four or five"
+              " links is about the limit anywhere in the world, on land or at "
+              "sea.",
+        question="If you had to guess, what stops a food chain getting any "
+                 "longer?",
+        options=[
+            ("There is not enough energy left",
+             "Only about a tenth of the energy passes up each step, so very "
+             "little is left after four steps. There is not enough to feed "
+             "another level."),
+            ("Top animals are too big to hunt",
+             "Some top animals are big, but plenty of chains end with small "
+             "ones, like a sparrowhawk. What stops the chain is that too "
+             "little energy reaches the top."),
+        ],
+        answer=0,
+        bridge="Next: climb a food chain level by level and watch how much "
+               "energy arrives at each one.",
+    ),
+
+    # predator-and-prey — old hook cut to "only the weak" against "fewer rabbits,
+    # hungrier foxes". Title, scene and big_question kept. Review: OK as drafted.
+    "predator-and-prey": dict(
+        question="If you had to guess, why do foxes not eat all the rabbits?",
+        options=[
+            ("Foxes only catch weak rabbits",
+             "Foxes do catch weak rabbits, but they take healthy ones too. "
+             "What really protects the rabbits is that foxes need them: when "
+             "rabbits get scarce, foxes go hungry."),
+            ("With fewer rabbits, foxes go hungry",
+             "As rabbits get scarce, foxes go hungry and fewer cubs survive. "
+             "Then the fox numbers fall and the rabbits recover."),
+        ],
+        answer=1,
+        bridge="Next: run the years on a field of rabbits and foxes, and watch"
+               " what happens to the two numbers.",
+    ),
+
+    # disturbing-a-food-web — does the oak end up better or worse off without
+    # ladybirds? (the old hook's "the oak does better, with one fewer insect"
+    # option against its answer). Review: the draft asked "does it change
+    # anything for the oak?", and the H1 "Disturbing a food web" (plus the
+    # title's "What happens to the oak tree?") strongly implies yes. big_question
+    # changed: "pull one thread and the whole thing moves" gave it away. Scene's
+    # last sentence ("whether an effect can travel that far") dropped for the
+    # same reason.
+    "disturbing-a-food-web": dict(
+        scene="A ladybird has never touched an oak leaf, and an oak tree has "
+              "no opinion about ladybirds. In between them sit three other "
+              "kinds of organism.",
+        question="If you had to guess, does the oak end up better off or worse"
+                 " off?",
+        options=[
+            ("Better off",
+             "One fewer insect sounds good for a tree. But ladybirds eat "
+             "aphids, so without them aphids multiply and drain sap from the "
+             "oak's young shoots."),
+            ("Worse off",
+             "Without ladybirds, aphids multiply and drain sap from the oak's "
+             "young shoots, so the tree grows less."),
+        ],
+        answer=1,
+        bridge="That is only one route to the oak, and there is a second. "
+               "Next: the whole oak wood, and what happens when you take one "
+               "species out of it.",
+        big_question="What happens to the rest of a food web when one species "
+                     "is taken out of it?",
+    ),
 }
 
 
