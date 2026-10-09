@@ -4882,6 +4882,129 @@ START_HERE = {
         big_question="What do we mean by mass and by weight, and are they the "
                      "same thing?",
     ),
+
+    # mass-vs-weight — old hook's own question cut to "easier to swing" vs "just
+    # as hard". Options equal length. Title and scene kept as authored (they do
+    # not give it away, and the railbar names the hammer on the Moon).
+    "mass-vs-weight": dict(
+        question="If you had to guess, is a hammer easier to swing on the "
+                 "Moon, or just as hard?",
+        options=[
+            ("Easier to swing",
+             "Everything feels lighter to lift on the Moon. But swinging is "
+             "about getting the hammer moving and stopping it again, and that "
+             "has not changed."),
+            ("Just as hard",
+             "Lifting gets easier, but swinging does not. Getting a hammer "
+             "moving sideways depends on how much stuff is in it, and that is "
+             "the same on the Moon."),
+        ],
+        answer=1,
+        bridge="Two different ideas hide inside the word “heavy”: the amount "
+               "of stuff, called <em>mass</em>, and the pull of gravity on it,"
+               " called <em>weight</em>. Next: one object, moved to four "
+               "places.",
+    ),
+
+    # gravity-earth-moon-and-sun — old hook's "why has it not arrived?" cut to
+    # sideways motion vs the outward-push misconception (SPACE-08). Title said
+    # "falling" and is replaced; new scene keeps the Moon situation the railbar
+    # ("Why the Moon does not fall") names, and says "not come any closer" rather
+    # than "stayed at that distance" (the Moon has drifted outwards).
+    "gravity-earth-moon-and-sun": dict(
+        title="The Moon hangs in the sky.",
+        scene="The Earth’s gravity pulls on the Moon hard, all the time. Yet "
+              "the Moon is about 384 400 km away and has not come any closer "
+              "in four billion years.",
+        question="If you had to guess, what stops the Moon crashing into the "
+                 "Earth?",
+        options=[
+            ("It is moving sideways fast",
+             "Without that sideways movement the Moon would drop straight in. "
+             "Moving sideways at about 1 km/s, it keeps falling towards us and"
+             " keeps missing, and that is an orbit."),
+            ("Something pushes it away",
+             "A balancing push is a natural idea, but there is no outward push"
+             " at all. The pull is never cancelled, and that is what bends the"
+             " Moon’s path round the Earth."),
+        ],
+        answer=0,
+        bridge="The pull itself is real and enormous, and it never lets go. "
+               "Next: what sets how strong it is, and what happens to it as "
+               "two bodies move apart.",
+    ),
+
+    # the-sun-stars-and-galaxies — the railbar reads "A star you can see in
+    # daylight", so any "is the Sun a star?" guess is given away above the hook.
+    # Angle moved to the old reveal's own point: the Sun looks different only
+    # because it is closer. Title and scene kept as authored.
+    "the-sun-stars-and-galaxies": dict(
+        question="If you had to guess, why does the Sun look so much bigger "
+                 "and brighter than the stars at night?",
+        options=[
+            ("It is much closer to us",
+             "The Sun is an ordinary star. The next nearest star is about 270 "
+             "000 times further away, so it shrinks to a faint dot."),
+            ("It is a much bigger star",
+             "The Sun is big, but plenty of the stars you see at night are "
+             "bigger still. What makes the difference is distance: the next "
+             "nearest star is about 270 000 times further away."),
+        ],
+        answer=0,
+        bridge="The Sun is one of hundreds of billions of stars in our galaxy "
+               "alone. Next: what a star actually is, and how stars, solar "
+               "systems and galaxies fit inside each other.",
+    ),
+
+    # seasons-and-the-tilt — back to the old hook's own question (what causes
+    # summer), which is what SPACE-15 is elicited by. The railbar reads "Closer
+    # in January", so a "nearer in July or January?" guess would be answered
+    # above the hook. Old title/scene stated the January fact; new ones keep
+    # July, January and the oval orbit without it. Big question replaced (old one
+    # said "it is not how far away we are").
+    "seasons-and-the-tilt": dict(
+        title="Warm July, cold January.",
+        scene="That is how the year goes in Britain. The Earth’s path round "
+              "the Sun is slightly oval, so at some times of year it is nearer"
+              " the Sun than at others.",
+        question="If you had to guess, what makes it summer in Britain?",
+        options=[
+            ("The Earth being nearer the Sun",
+             "Closer to a fire means warmer. But the Earth is actually nearest"
+             " the Sun in early January, in the middle of the British winter."),
+            ("Our half leaning towards the Sun",
+             "In June our half of the Earth leans towards the Sun, and in "
+             "December it leans away. The Earth is in fact nearest the Sun in "
+             "early January, when Britain is cold."),
+        ],
+        answer=1,
+        bridge="Leaning towards the Sun changes two things: how long the Sun "
+               "is up, and how high it climbs. Next: the Earth’s daily spin, "
+               "and then the lean itself.",
+        big_question="What causes the seasons?",
+    ),
+
+    # how-far-is-a-light-year — the page H1 ("How far is a light year?") and the
+    # railbar ("A year that is a distance") both answer "distance or time?" above
+    # the hook, so the angle moves to how big the distance is. Title, scene and
+    # big question kept as authored.
+    "how-far-is-a-light-year": dict(
+        question="If you had to guess, is one light year further than the "
+                 "distance from the Sun to Neptune, the furthest planet?",
+        options=[
+            ("Yes, much further",
+             "Light gets from the Sun to Neptune in about four hours. A light "
+             "year is a whole year of that travel: about 9.5 million million "
+             "kilometres."),
+            ("No, not as far",
+             "The solar system is enormous, so that is understandable. But "
+             "light crosses from the Sun to Neptune in about four hours, and a"
+             " light year is a whole year of travelling."),
+        ],
+        answer=0,
+        bridge="The name sounds like a time, but it measures a distance. Next:"
+               " just how fast light travels.",
+    ),
 }
 
 
