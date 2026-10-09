@@ -894,7 +894,7 @@ class Component extends DCLogic {
         { label: 'More vigorously', style: this.seg(false), onClick: () => show('more') },
         { label: 'More gently', style: this.seg(false), onClick: () => show('less') }],
       shown,
-      waterNote: (predText ? predText + (pred === 'more' ? 'yes. ' : 'it is the other way. ') : '') + M[at].note + (at === 2 ? ' Rubidium, next down, would be more vigorous still.' : ''),
+      waterNote: (predText ? predText + (pred === 'more' ? 'yes. ' : 'It is the other way. ') : '') + M[at].note + (at === 2 ? ' Rubidium, next down, would be more vigorous still.' : ''),
       waterEq: M[at].eq,
       airCards: AIR.map((f, i) => { const o = s.air.indexOf(i) >= 0; return { name: f.name, what: f.what, eqs: f.eqs, open: o,
         style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',

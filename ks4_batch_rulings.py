@@ -327,6 +327,10 @@ SCIENCE = [
     dict(id="B6-G1-LILAC-2", slug="group-1", layer="logic",
          old="potassium reacts very vigorously and the hydrogen ignites with a lilac flame.",
          new="potassium reacts very vigorously; the hydrogen ignites, and potassium colours the flame lilac."),
+    # group-1: the prediction feedback starts a sentence in lower case ("You predicted gentler. it is
+    # the other way."). Capitalise it; words unchanged. (From the batch-6 pupil walk.)
+    dict(id="B6-G1-CAP", slug="group-1", layer="logic",
+         old="'it is the other way. '", new="'It is the other way. '"),
 
     # ── Batch 6 port mechanics (not science rulings) ───────────────────────
     # culturing-microorganisms, factors-affecting-food-security, stellar-evolution: each renderVals

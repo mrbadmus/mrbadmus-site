@@ -81,3 +81,9 @@ reply, and `FOODS[0].label`. The first three are the toast hook; only the last i
 None of the 14 slugs is a frozen-correction slug (`docs/ks4/FROZEN-CORRECTIONS.md`); this branch touches no
 `all_subtopics_*.py`. The batch is frozen after build (`ks4_lessons/frozen_batch-6.json`), `review_state`
 `examiner-reviewed`, draft banner off, as batches 4 and 5.
+
+## Fix from the independent pupil walk (lead, 9 Oct 2026)
+
+| id | lesson | change | why |
+|---|---|---|---|
+| B6-G1-CAP | group-1 | Prediction feedback capitalises the start of its second sentence. Words unchanged. | "You predicted gentler. it is the other way." |
