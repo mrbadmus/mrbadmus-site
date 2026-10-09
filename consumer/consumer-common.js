@@ -336,7 +336,10 @@
 
      opts: { token, interval: 'month'|'year', addChildHref, beforeRedirect,
              msgHost — where the failure line goes when "directly after the
-             button" would land inside a flex row (the dashboard banner) } */
+             button" would land inside a flex row (the dashboard banner),
+             onAlready — called when Stripe turned out to hold the
+             subscription already; without it the page goes to
+             checkout-return.html?state=success } */
   var CHECKOUT_TIMEOUT_MS = 25000;
   var busyCheckouts = [];
 
@@ -391,9 +394,21 @@
     btn.setAttribute('aria-disabled', 'true');
     busyCheckouts.push(btn);
 
+    /* ⊕ B2C fix run (9 Oct 2026). Where Stripe sends the parent back to:
+       THIS origin, with this page's ?env=/?api= carried by href(). Without
+       it the backend could only use FRONTEND_ORIGIN, so a TEST checkout came
+       back with no env/api and the return page polled the default TEST
+       backend (localhost:3000). The backend keeps only an origin of ours and
+       env + a localhost api (consumer/billing-guard.js); on production this
+       is exactly the URL it used to build itself. */
+    var here = window.location.origin;
     return api('/api/consumer/checkout', {
       method: 'POST', token: opts.token, timeout: CHECKOUT_TIMEOUT_MS,
-      body: { interval: opts.interval === 'year' ? 'year' : 'month' }
+      body: {
+        interval: opts.interval === 'year' ? 'year' : 'month',
+        success_url: here + href('/consumer/checkout-return.html', { state: 'success' }),
+        cancel_url: here + href('/consumer/checkout-return.html', { state: 'cancel' })
+      }
     }).then(function (d) {
       if (!d || !d.url) {
         var none = new Error('');
@@ -409,6 +424,22 @@
       console.error('[consumer/checkout]', e);
       restoreCheckout(btn);
       var code = (e && e.code) || '';
+      /* ⊕ B2C fix run (9 Oct 2026). Stripe already holds this family's
+         subscription — our side had not caught up (the webhook was behind)
+         and the backend has now caught it up rather than open a SECOND
+         Checkout. Nothing to retry: the page moves on to the real state.
+         A page that can redraw itself says how (`onAlready`); anywhere else
+         goes where a finished checkout goes. */
+      if (code === 'already_subscribed' && e.data && (e.data.synced || e.data.state)) {
+        host.innerHTML = '<p>' + escapeHtml('Your free week is already set up.') + '</p>';
+        if (typeof opts.onAlready === 'function') {
+          Promise.resolve().then(function () { return opts.onAlready(e.data); })
+            .catch(function (err) { console.error('[consumer/checkout] onAlready', err); });
+        } else {
+          go('/consumer/checkout-return.html', { state: 'success' });
+        }
+        return false;
+      }
       if (code === 'no_children') {
         var add = opts.addChildHref || href('/consumer/signup.html', { step: 'child' });
         host.innerHTML = '<p>No children on the account yet. <a class="c-linkbtn" href="' + escapeHtml(add) +
@@ -558,15 +589,62 @@
 
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                     'August', 'September', 'October', 'November', 'December'];
+
+  /* ── London time — every date a page SHOWS (Mide's ruling, 9 Oct 2026) ──
+     These used to read the DEVICE's clock (`getDate()`, `toLocaleDateString`
+     with no zone), so the same instant was a different date for a parent in
+     Spain from a parent in Leeds, and a different date in a UTC browser from
+     a UK one. The blind runs caught it on the trial end: Stripe's
+     trial_end 2026-10-15T23:19:00Z is 00:19 on Friday 16 October in London
+     (BST = UTC+1), and 15 October in UTC. Every date is now the LONDON
+     date, computed here, once. A browser without Intl time-zone support
+     (none that we serve) falls back to the device's clock rather than to
+     nothing. */
+  var LONDON = 'Europe/London';
+  var londonFmt = null;
+  function londonParts(v) {
+    if (v == null || v === '') { return null; }
+    var d = v instanceof Date ? v : new Date(v);
+    if (isNaN(d.getTime())) { return null; }
+    try {
+      londonFmt = londonFmt || new Intl.DateTimeFormat('en-GB', {
+        timeZone: LONDON, year: 'numeric', month: 'numeric', day: 'numeric',
+        hour: 'numeric', minute: 'numeric', hourCycle: 'h23'
+      });
+      var o = {};
+      londonFmt.formatToParts(d).forEach(function (p) { o[p.type] = p.value; });
+      return { y: Number(o.year), m: Number(o.month), d: Number(o.day),
+               h: Number(o.hour) % 24, min: Number(o.minute) };
+    } catch (e) {
+      return { y: d.getFullYear(), m: d.getMonth() + 1, d: d.getDate(),
+               h: d.getHours(), min: d.getMinutes() };
+    }
+  }
+  /* Design's "16 October" — the London date. Unparseable in, null out. */
+  function dayMonth(iso) {
+    var p = londonParts(iso);
+    return p ? (p.d + ' ' + MONTHS_LONG[p.m - 1]) : null;
+  }
+  /* `n` whole days after an instant, as an instant. Exact milliseconds, the
+     same arithmetic as the backend's grace end (period end + 7 × 24h), so
+     the date shown is the date org_access_state() acts on. */
+  function plusDaysISO(iso, n) {
+    if (!iso) { return null; }
+    var t = new Date(iso).getTime();
+    if (isNaN(t)) { return null; }
+    return new Date(t + n * 864e5).toISOString();
+  }
 
   /* Both of these refuse to invent. An unparseable date is not "today" and
      is not the epoch — it is the fallback word, visibly. overview.html's
-     `dash()` policy, applied to time. */
+     `dash()` policy, applied to time. London, like every date above. */
   function fmtDate(iso, fallback) {
     if (iso == null || iso === '') { return fallback == null ? 'Not set' : fallback; }
-    var d = new Date(iso);
-    if (isNaN(d.getTime())) { return fallback == null ? 'Not set' : fallback; }
-    return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+    var p = londonParts(iso);
+    if (!p) { return fallback == null ? 'Not set' : fallback; }
+    return p.d + ' ' + MONTHS[p.m - 1] + ' ' + p.y;
   }
 
   /* 12-hour with a lowercase suffix, because the chat panel it was written
@@ -574,9 +652,9 @@
      time somebody said something. */
   function fmtTime(iso, fallback) {
     if (iso == null || iso === '') { return fallback == null ? '' : fallback; }
-    var d = new Date(iso);
-    if (isNaN(d.getTime())) { return fallback == null ? '' : fallback; }
-    var h = d.getHours(), m = d.getMinutes();
+    var p = londonParts(iso);
+    if (!p) { return fallback == null ? '' : fallback; }
+    var h = p.h, m = p.min;
     var suffix = h < 12 ? 'am' : 'pm';
     h = h % 12; if (h === 0) { h = 12; }
     return h + ':' + (m < 10 ? '0' : '') + m + suffix;
@@ -1124,6 +1202,10 @@
     schemePoint: schemePoint,
     fmtDate: fmtDate,
     fmtTime: fmtTime,
+    // ⊕ B2C fix run (9 Oct 2026): London dates, one place.
+    londonParts: londonParts,
+    dayMonth: dayMonth,
+    plusDaysISO: plusDaysISO,
     money: money,
     guard: guard,
     lockedBanner: lockedBanner,

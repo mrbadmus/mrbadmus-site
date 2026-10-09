@@ -261,10 +261,13 @@
   function seatCount() { return Math.max(1, S.children.length + S.pending.length); }
 
   /* Design's trial-end format: "9 September". Seven days from now, which is
-     what `trial_period_days: 7` on the Checkout session will actually do. */
+     what `trial_period_days: 7` on the Checkout session will actually do.
+     ⊕ B2C fix run (9 Oct 2026): the LONDON date (C.dayMonth), the same
+     formatter the return page and the dashboard use for Stripe's real
+     trial_end — so the date agreed to here is the date shown afterwards,
+     whatever the device's clock zone. */
   function trialEndLabel() {
-    return new Date(Date.now() + 7 * 864e5)
-      .toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+    return C.dayMonth(new Date(Date.now() + 7 * 864e5)) || '';
   }
 
   function optionBtn(attrs, on, style, inner) {

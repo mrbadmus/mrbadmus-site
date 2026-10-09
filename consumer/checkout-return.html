@@ -137,13 +137,10 @@
   }
 
   /* Design's "9 September". Same formatter the plan step used, so the date
-     the parent agreed to and the date they are shown are the same string. */
-  function trialEndLabel(iso) {
-    if (!iso) { return null; }
-    var d = new Date(iso);
-    if (isNaN(d.getTime())) { return null; }
-    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
-  }
+     the parent agreed to and the date they are shown are the same string.
+     ⊕ B2C fix run (9 Oct 2026): the LONDON date (C.dayMonth), not the
+     device's. trial_end 2026-10-15T23:19Z is "16 October" — 00:19 BST. */
+  function trialEndLabel(iso) { return C.dayMonth(iso); }
 
   C.boot({ requireSession: true, run: function (ctx) {
     chrome();

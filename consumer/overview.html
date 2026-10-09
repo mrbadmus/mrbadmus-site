@@ -508,26 +508,17 @@
   }
 
   /* ── formatting ─────────────────────────────────────────────────────── */
-  var MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
-                     'August', 'September', 'October', 'November', 'December'];
-  /* Design's dates are en-GB "4 September". `toLocaleDateString` would give
-     that too, but only on a machine whose locale agrees — and this is the
-     date a parent reads as "when am I charged". Spelled out here so it is
-     the same everywhere. Unparseable in, null out: a caller decides what an
-     absent date is allowed to say, and nothing here guesses. */
-  function dayMonth(iso) {
-    if (!iso) { return null; }
-    var d = new Date(iso);
-    if (isNaN(d.getTime())) { return null; }
-    return d.getDate() + ' ' + MONTHS_LONG[d.getMonth()];
-  }
-  function plusDaysISO(iso, n) {
-    if (!iso) { return null; }
-    var d = new Date(iso);
-    if (isNaN(d.getTime())) { return null; }
-    d.setDate(d.getDate() + n);
-    return d.toISOString();
-  }
+  /* Design's dates are en-GB "4 September", spelled out rather than left to
+     the machine's locale — this is the date a parent reads as "when am I
+     charged". Unparseable in, null out: a caller decides what an absent
+     date is allowed to say, and nothing here guesses.
+     ⊕ B2C fix run (9 Oct 2026): both now come from consumer-common.js, so
+     every date on the page is the LONDON date (Mide's ruling) — not the
+     device's. The trial ending 23:19 UTC on 15 October is 00:19 on the
+     16th in London, and a parent abroad was being shown a different date
+     from a parent at home. */
+  function dayMonth(iso) { return C.dayMonth(iso); }
+  function plusDaysISO(iso, n) { return C.plusDaysISO(iso, n); }
   /* "yesterday, 7.40pm" — Design's shape for `lastActive`. */
   function whenLabel(iso) {
     if (!iso) { return null; }
@@ -561,9 +552,9 @@
     if (v == null || v === '') { return ''; }
     var s = String(v);
     if (!/^\d{4}-\d{2}-\d{2}/.test(s)) { return s; }
-    var d = new Date(s);
-    if (isNaN(d.getTime())) { return s; }
-    return d.getDate() + ' ' + MONTHS_SHORT[d.getMonth()];
+    var p = C.londonParts(s);   // ⊕ London, as every date (9 Oct 2026)
+    if (!p) { return s; }
+    return p.d + ' ' + MONTHS_SHORT[p.m - 1];
   }
 
   /* ⊕ B2C polish 2. "Thu 8 Oct" from a CIVIL date (YYYY-MM-DD) — read in
@@ -671,8 +662,32 @@
       var g = C.guard(S.billing.access != null ? S.billing.access : S.billing, 'parent');
       S.writable = g.writable;
       if (!S.childId && S.kids.length) { S.childId = S.kids[0].id; }
+      watchPending();
       return d;
     });
+  }
+
+  /* ⊕ B2C fix run (9 Oct 2026). `pending`: Stripe holds the subscription
+     but it is not ours yet (its first payment is still being confirmed, or
+     the backend could not mirror it). The gate says so in one line with NO
+     button — a second "Start your free week" here is how a family got two
+     Checkouts — and the family is re-read every few seconds until the state
+     is a real one, then the page simply redraws in it. Bounded: after five
+     minutes it stops asking and the next visit asks again. */
+  var PENDING_POLL_MS = 4000, PENDING_MAX_TRIES = 75;
+  var pendingTimer = null, pendingTries = 0;
+  function watchPending() {
+    if (String(S.billing.state || '').toLowerCase() !== 'pending') { pendingTries = 0; return; }
+    if (pendingTimer || pendingTries >= PENDING_MAX_TRIES) { return; }
+    pendingTimer = setTimeout(function () {
+      pendingTimer = null;
+      pendingTries++;
+      loadFamily().then(function () {
+        var a = document.activeElement;
+        if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) { renderShell(); }
+        else { render(); afterNav(); }
+      }).catch(function (e) { console.error('[dash/pending]', e); watchPending(); });
+    }, PENDING_POLL_MS);
   }
 
   /* Prices: the shared helper when the public lane's addition has landed,
@@ -878,6 +893,7 @@
     var access = String(b.access || '').toLowerCase();
     var st = String(b.state || '').toLowerCase();
     if (S.writable) { return ''; }
+    if (st === 'pending') { return gateRow('Setting up your free week…', ''); }
     if (access === 'none' || (!access && st === 'none')) {
       if (!S.kids.length) { return ''; }
       return gateRow('Your family hasn’t started yet.',
@@ -2009,7 +2025,10 @@
       token: ctx.token,
       interval: S.billing.interval === 'year' ? 'year' : 'month',
       addChildHref: addChildHref(),
-      msgHost: document.getElementById('dk-gate-msg') || undefined
+      msgHost: document.getElementById('dk-gate-msg') || undefined,
+      /* Stripe already had the subscription (our side was behind): the
+         backend has caught up, so redraw in the real state. */
+      onAlready: function () { return reloadFamily(); }
     });
   }
 
