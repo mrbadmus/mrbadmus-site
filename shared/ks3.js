@@ -37465,6 +37465,27 @@
     return !!sec.querySelector('.ks3-option[aria-pressed="true"]');
   }
 
+  /* ⊕ B2C polish (9 Oct 2026, R14) — what the top bar counts. Pure, so
+     tools/ks3_rail_tally_test.js can drive it. `ladders` is one
+     `{met, total}` per `.ks3-ladder` (attribute strings or numbers). Rungs
+     whenever the page has any; the lesson's stages only when it has none. */
+  function railTally(ladders, stagesDone, stagesTotal) {
+    var met = 0, total = 0;
+    for (var i = 0; i < (ladders || []).length; i++) {
+      var t = parseInt(ladders[i].total, 10) || 0;
+      if (t <= 0) { continue; }
+      var m = parseInt(ladders[i].met, 10) || 0;
+      if (m < 0) { m = 0; }
+      total += t;
+      met += m > t ? t : m;
+    }
+    if (total > 0) { return { shown: met, of: total, unit: "rungs" }; }
+    return { shown: stagesDone, of: stagesTotal, unit: "stages" };
+  }
+  if (typeof window !== "undefined" && window.MRB_KS3_TEST_HOOK) {
+    window.MRB_KS3_TEST_HOOK.railTally = railTally;
+  }
+
   function wireRail(wrap) {
     var stages;
     try { stages = JSON.parse(wrap.getAttribute("data-rail-stages") || "[]"); }
@@ -37524,30 +37545,31 @@
           }
         }
       }
-      /* ⊕ B2C polish (9 Oct 2026) — WHILE THE MASTERY LADDER IS THE
-         CURRENT SECTION, THE TOP BAR COUNTS ITS RUNGS. The bar reads
-         "<count> <label>", and with the label "Mastery ladder" a pupil reads
-         the count as rungs: the blind journey run saw "1 / 4 Mastery ladder"
-         stay put after rung 2 was correct and rung 3 was "rung met", and move
-         only after rung 4 — because it was counting lesson STAGES, and the
-         ladder stage ticks only when every rung is done. So on the ladder the
-         count and the fill are the ladder's own: rungs MET (correct, or every
-         criterion ticked) out of rungs on the page, as `wireLadder` publishes
-         them. Everywhere else the bar is the lesson's stages, as before, and
-         the side rail (≥1340px) is untouched. */
-      var shown = done, of = stages.length;
-      var cur = sectionFor(active);
-      var lad = cur && (cur.hasAttribute("data-rungs-total") ? cur
-        : cur.querySelector("[data-rungs-total]"));
-      if (lad) {
-        var lt = parseInt(lad.getAttribute("data-rungs-total"), 10) || 0;
-        if (lt > 0) {
-          shown = parseInt(lad.getAttribute("data-rungs-met"), 10) || 0;
-          of = lt;
-        }
-      }
-      if (count) { count.textContent = shown + " / " + of; }
-      if (fill) { fill.style.width = (shown / of * 100) + "%"; }
+      /* ⊕ B2C polish (9 Oct 2026, R14) — THE TOP BAR IS THE MASTERY LADDER.
+         Mide's rule: the sticky progress bar matches the ladder's rungs.
+         Its COUNT and FILL are rungs MET (a correct answer, or every
+         criterion ticked — "rung met") out of the rungs on the page, as
+         `wireLadder` publishes them, WHEREVER the reader is scrolled. Only
+         the LABEL follows the section on screen.
+
+         The first fix (1c99cf213) did this only while the ladder was the
+         current section and counted lesson STAGES everywhere else, so the
+         blind run saw "1 / 4" after answering START HERE alone (a stage,
+         not a rung) while the ladder said "Not started yet", and "2 / 4"
+         back at the top after the ladder said "You got 4 of 4". START HERE,
+         every activity and every other question move the side rail's own
+         stop (that is what a stop records, MRB-208) and never this count.
+         `railTally` falls back to stages only on a page with no scorable
+         rung at all, which no KS3 lesson is
+         (tools/ks3_rail_tally_test.js walks all 185). */
+      var ladders = [];
+      each(document.querySelectorAll(".ks3-ladder[data-rungs-total]"), function (l) {
+        ladders.push({ met: l.getAttribute("data-rungs-met"),
+                       total: l.getAttribute("data-rungs-total") });
+      });
+      var tally = railTally(ladders, done, stages.length);
+      if (count) { count.textContent = tally.shown + " / " + tally.of; }
+      if (fill) { fill.style.width = (tally.of ? tally.shown / tally.of * 100 : 0) + "%"; }
       if (label) { label.textContent = stages[active].label || ""; }
     }
 
