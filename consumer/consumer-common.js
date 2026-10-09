@@ -379,9 +379,23 @@
     return el;
   }
 
+  /* ⊕ B2C polish (9 Oct 2026). The interval is the parent's CHOICE, so it
+     is never defaulted here. A blind run pressed the dashboard's "Start your
+     free week", which sent `interval: 'month'` because the family had no
+     interval yet — straight to Stripe, monthly, with the Monthly/Annual
+     choice never shown. A caller must now name 'month' or 'year' itself (the
+     signup plan step, which shows both; or a Restart, which repeats the
+     plan the family already had); anything else goes to the plan step,
+     where the choice is on screen, and no checkout is opened. */
+  function planStepHref() { return href('/consumer/signup.html', { step: 'plan' }); }
+
   function startCheckout(btn, opts) {
     opts = opts || {};
     if (!btn || btn.getAttribute('aria-busy') === 'true') { return Promise.resolve(false); }
+    if (opts.interval !== 'month' && opts.interval !== 'year') {
+      window.location.href = planStepHref();
+      return Promise.resolve(false);
+    }
     var host = opts.msgHost || checkoutMsgHost(btn);
     host.innerHTML = '';
 
@@ -407,7 +421,7 @@
     return api('/api/consumer/checkout', {
       method: 'POST', token: opts.token, timeout: CHECKOUT_TIMEOUT_MS,
       body: {
-        interval: opts.interval === 'year' ? 'year' : 'month',
+        interval: opts.interval,
         success_url: here + href('/consumer/checkout-return.html', { state: 'success' }),
         cancel_url: here + href('/consumer/checkout-return.html', { state: 'cancel' })
       }
@@ -1281,6 +1295,7 @@
     setMsg: setMsg,
     setBusy: setBusy,
     startCheckout: startCheckout,
+    planStepHref: planStepHref,
     getClient: getClient,
     notFound: notFound,
     isOperator: isOperator,

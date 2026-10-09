@@ -242,7 +242,9 @@
     none: {
       label: 'Not started', badge: 'band',
       line: 'Nothing has been charged.',
-      cta: { label: 'Start your free week', kind: 'accent', act: 'checkout', note: '' }
+      /* ⊕ B2C polish (9 Oct 2026): to the signup plan step, where Monthly
+         and Annual are both shown — it went straight to Stripe, monthly. */
+      cta: { label: 'Start your free week', kind: 'accent', act: 'start-plan', note: '' }
     },
     /* ⊕ B2C fix run (9 Oct 2026). A seventh she did not draw: Stripe holds
        the subscription and our side has not caught up yet. No CTA at all —
@@ -852,8 +854,11 @@
       });
     },
 
+    'start-plan': function () { window.location.href = C.planStepHref(); },
+
     /* The one checkout path (consumer-common.js, ruling 1): spinner on the
-       button, a 25-second limit, and a plain line under it on any failure. */
+       button, a 25-second limit, and a plain line under it on any failure.
+       Restart only now: it repeats the plan the family already had. */
     'checkout': function (el) {
       C.startCheckout(el, {
         token: ctx.token, interval: interval(),
