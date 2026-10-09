@@ -2796,6 +2796,239 @@ START_HERE = {
                      "drawer: all of them hold energy. Where can energy be, "
                      "and how does it move from one place to another?",
     ),
+
+    # energy-transfers-before-and-after — old hook was "what left the battery?";
+    # cut to "is energy a kind of stuff, like water in a bottle?" (the lesson's
+    # own ENER-11 picture). Avoids mass-energy (E=mc2) by never asking whether
+    # the bank weighs less. Title, scene and big question unchanged.
+    "energy-transfers-before-and-after": dict(
+        question="If you had to guess, is the energy in a power bank a kind of"
+                 " stuff, like water in a bottle?",
+        options=[
+            ("Yes, it is stuff",
+             "A full bank and a flat one do feel like a full bottle and an "
+             "empty one. But the balance says nothing was poured out: energy "
+             "is not a substance at all."),
+            ("No, it is not stuff",
+             "Nothing was poured out of the bank, which is why the balance has"
+             " nothing to report. Energy is a number you work out, not a "
+             "substance."),
+        ],
+        answer=1,
+        bridge="So \"where did it go?\" needs a better method than looking for "
+               "something that left. Next: two columns, before and after, with"
+               " the same total in each.",
+    ),
+
+    # conservation-of-energy — the old hook's answer (the energy is now a tiny
+    # temperature rise in the air and pivot), asked as "is anything warmer?". Not
+    # "gone or still somewhere": the H1 "Conservation of energy" sits right above
+    # the hook and answers that. big_question rewritten: "Energy is supposed to
+    # be conserved" hands over the answer.
+    "conservation-of-energy": dict(
+        question="If you had to guess, once the pendulum has stopped, is "
+                 "anything in the room even a tiny bit warmer?",
+        options=[
+            ("Yes, a tiny bit warmer",
+             "The air and the pivot have warmed by far too little to feel. "
+             "That is where every joule of the swinging went."),
+            ("No, nothing has changed",
+             "It looks as if nothing has changed, because the warming is far "
+             "too small to feel. But the air and the pivot are a tiny bit "
+             "warmer, and that is where the swing's energy went."),
+        ],
+        answer=0,
+        bridge="The pendulum stopped; the energy did not. Next: a running "
+               "total that keeps score of every store while it swings.",
+        big_question="A pendulum comes back almost as high, but only almost, "
+                     "and after a few hundred swings it hangs straight down. "
+                     "What happened to its energy?",
+    ),
+
+    # heating-and-thermal-equilibrium — old hook's question (which holds more
+    # energy), reworded to "one spark or a whole bath". big_question rewritten:
+    # "why does the cooler one do more damage" tells the pupil the bath wins; the
+    # new one also avoids restating the injury claim.
+    "heating-and-thermal-equilibrium": dict(
+        question="If you had to guess, which holds more energy: the one spark,"
+                 " or the whole bath?",
+        options=[
+            ("The whole bath",
+             "There is so much water in a bath that, even at a gentler "
+             "temperature, it holds far more energy than a tiny spark."),
+            ("The one spark",
+             "The spark is far hotter, so that makes sense. But hotter is not "
+             "the same as more energy: a spark is a tiny speck, and a bath is "
+             "a huge amount of water."),
+        ],
+        answer=0,
+        bridge="Temperature and energy are two different things. Next: a bench"
+               " where you set how much there is and how fast its particles "
+               "move, separately.",
+        big_question="A sparkler throws sparks at 1500 °C and they barely "
+                     "sting. A bath at 40 °C makes you flinch. How can that "
+                     "be?",
+    ),
+
+    # conduction — old hook's own question ("which is colder?") cut to two
+    # options, with "Neither" as the answer. Big question KEPT: the touch test
+    # closes on 'why the question "which is colder?" had no answer', which quotes
+    # it. It misleads rather than gives away.
+    "conduction": dict(
+        question="If you had to guess, which spoon is actually colder?",
+        options=[
+            ("The metal spoon",
+             "It certainly feels that way, and everyone agrees. But after a "
+             "night in the same drawer both are at room temperature, and a "
+             "thermometer would read the same for both."),
+            ("Neither of them",
+             "After a whole night in the same drawer, both are at room "
+             "temperature. The metal only feels colder."),
+        ],
+        answer=1,
+        bridge="So what is your hand actually feeling? It is how fast energy "
+               "leaves your fingers, and metal takes it much faster than wood.",
+    ),
+
+    # radiation — ANGLE CHANGED (twice). Any "does it need something to carry
+    # it?" guess is given away by the rail label "Across empty space", which
+    # shows above the H1 on load, and by the old scene ("space is empty"). So the
+    # guess is the old reveal's OTHER claim: the warmth is the same family of
+    # thing as visible light. Old title, scene and big question are therefore
+    # KEPT (none decides that), and the 150 million km / eight minutes rewrite is
+    # dropped.
+    "radiation": dict(
+        question="If you had to guess, is the warmth you feel the same kind of"
+                 " thing as the light you see?",
+        options=[
+            ("Yes, the same kind",
+             "Both are waves of the same family. The warmth is infrared, which"
+             " is like light at a wavelength your eyes cannot see."),
+            ("No, something different",
+             "Light and warmth do seem like two separate things, one for your "
+             "eyes and one for your skin. But the warmth is the same kind of "
+             "wave as light, just one your eyes cannot see."),
+        ],
+        answer=0,
+        bridge="That wave is radiation, and it needs no material at all, which"
+               " is how it crosses empty space. Next: take the other two "
+               "routes away one at a time and see what is left.",
+    ),
+
+    # insulation — old hook (which melts first) reworded as "does the blanket
+    # make the ice melt faster or slower". Title, scene and big question
+    # unchanged (none gives the answer).
+    "insulation": dict(
+        question="If you had to guess, does the blanket make the ice melt "
+                 "faster or slower?",
+        options=[
+            ("Slower",
+             "The blanket slows the energy coming in from the room, so the "
+             "wrapped ice lasts much longer."),
+            ("Faster",
+             "A blanket does feel warm when you are under it. But that warmth "
+             "is your own body: the blanket only slows energy getting out, or "
+             "in."),
+        ],
+        answer=0,
+        bridge="A blanket does not make warmth. It slows a flow, whichever way"
+               " the energy is going. Next: plan a fair trial before any "
+               "readings exist.",
+    ),
+
+    # simple-machines — ANGLE CHANGED. The old question "where did the extra 500
+    # N come from?" is arguable (the fulcrum really does push up with 700 N), so
+    # it is cut to the observable trade underneath it: how far your hand moves
+    # compared with the slab. Old title, scene and big question kept; the bridge
+    # picks up the 500 N.
+    "simple-machines": dict(
+        question="If you had to guess, does your hand move further than the "
+                 "slab rises, or less far?",
+        options=[
+            ("Much further",
+             "Your end of the bar moves about six times as far as the slab "
+             "rises. That is the price of pushing six times less hard."),
+            ("Not as far",
+             "The slab is the heavy end, so it is easy to think it moves the "
+             "most. But your end of the bar travels about six times as far as "
+             "the slab rises."),
+        ],
+        answer=0,
+        bridge="So the bar trades force for distance. Next: a lever bench "
+               "where you measure both ends and multiply.",
+    ),
+
+
+    # ── Year 8 · P5 Pressure ────────────────────────────────────────────────────
+
+    # pressure-force-over-area — old hook asked why only one end goes in; cut to
+    # "does the point push harder than your thumb does?" (PRESS-01). Scene and
+    # big question rewritten: "under the same squeeze" and "the two forces are
+    # equal" hand over the answer. Title kept: the safety note ("press the pin
+    # against your fingertip") refers to its activity.
+    "pressure-force-over-area": dict(
+        scene="Rest the point of a drawing pin on a piece of wood and press "
+              "gently on the flat head with your thumb. The head does nothing "
+              "to your thumb. The point goes straight into the wood.",
+        question="If you had to guess, does the point push on the wood harder "
+                 "than your thumb pushes on the head?",
+        options=[
+            ("Yes, much harder",
+             "Sharp things do seem to push harder. But a force meter would "
+             "read the same at both ends: the point just squeezes that push "
+             "onto a tiny spot."),
+            ("No, just as hard",
+             "The push is the same at both ends. At the point it is squeezed "
+             "onto a tiny spot, so it digs in."),
+        ],
+        answer=1,
+        bridge="That focusing has a name: pressure. Next: a block on sand, "
+               "where you can change the push and the area separately.",
+        big_question="A drawing pin is pressed into wood with a thumb. One end"
+                     " goes into the wood and the other does not go into the "
+                     "thumb. Why?",
+    ),
+
+    # pressure-in-liquids — old hook asked why the bottom jet is fastest; cut to
+    # its two most tempting answers, "more water above" and "heavier water down
+    # there" (PRESS-06). Title, scene and big question unchanged (none gives the
+    # answer).
+    "pressure-in-liquids": dict(
+        question="If you had to guess, what makes the bottom jet fastest: more"
+                 " water above it, or heavier water down there?",
+        options=[
+            ("More water above it",
+             "The bottom hole has the most water stacked above it, pressing "
+             "down, so the water is pushed out hardest there."),
+            ("Heavier water down there",
+             "Deep water does seem heavier. But a litre weighs the same "
+             "anywhere in the can: what differs is how much water is stacked "
+             "above each hole."),
+        ],
+        answer=0,
+        bridge="So the jet depends on how deep the hole is. Next: lower a "
+               "pressure probe through a tank and watch the reading.",
+    ),
+
+    # upthrust-floating-and-sinking — old hook asked where the upward shove comes
+    # from; cut to the one fact it turns on (is the push the same all round?).
+    # Title, scene, big question unchanged.
+    "upthrust-floating-and-sinking": dict(
+        question="If you had to guess, does the water push harder on the "
+                 "bottom of the ball than on the top?",
+        options=[
+            ("No, the same all round",
+             "Same water, so equal all round sounds sensible. But the bottom "
+             "is deeper than the top, and water pushes harder the deeper it "
+             "is."),
+            ("Yes, harder underneath",
+             "The bottom of the ball is deeper than the top, and water pushes "
+             "harder the deeper it is. The difference is the shove you feel."),
+        ],
+        answer=1,
+        bridge="That leftover upward push has a name: upthrust. Next: five "
+               "one-litre blocks in a tank, and what decides which float.",
+    ),
 }
 
 
