@@ -2231,6 +2231,283 @@ START_HERE = {
         big_question="Written straight out, the equation for making water "
                      "seems to destroy an oxygen atom. How do you fix it?",
     ),
+
+
+    # ── Year 8 · C5 Types of reaction ───────────────────────────────────────────
+
+    # combustion — guess is the old hook question (gas or air) in plain words;
+    # the scene said "Same gas, same tap", which rules out gas, so that sentence
+    # is replaced. Reviewer: wrong reply no longer opens "Fair," after the page's
+    # own "Fair guess."
+    "combustion": dict(
+        scene="Same burner, same room. The only thing that changed was a metal"
+              " collar at the bottom of the burner. Hold a beaker over the "
+              "yellow flame and it comes away black; hold it over the blue one"
+              " and it stays clean.",
+        question="If you had to guess, what does the hole in the collar let "
+                 "into the burner: more gas, or more air?",
+        options=[
+            ("More gas",
+             "Gas is what burns, so that makes sense. But the gas comes in at "
+             "the bottom through the tap, and that stayed the same. The collar"
+             " opens a hole for air."),
+            ("More air",
+             "The hole lets air into the burner. Air carries the oxygen the "
+             "gas needs to burn properly, and with the hole shut there is too "
+             "little of it."),
+        ],
+        answer=1,
+        bridge="Burning needs oxygen, and how much arrives changes what the "
+               "flame makes. Next: what combustion is, then a burner where you"
+               " open and shut the hole yourself.",
+    ),
+
+    # thermal-decomposition — reviewer changed the angle to mass (heavier or
+    # lighter after heating). The draft's "air joined in, or the heat alone broke
+    # it up?" was given away by the H1 "Thermal decomposition" (heat + breaking
+    # up) and the hook's rail label "One in, two out". Title, scene and big
+    # question rewritten so none says "one in, two out", "nothing added" or
+    # "lighter".
+    "thermal-decomposition": dict(
+        title="A green powder in a hot tube.",
+        scene="A green powder is heated in a test tube. It turns black, and a "
+              "gas comes off that turns limewater cloudy.",
+        question="If you had to guess, once the heating is over, does what is "
+                 "left in the tube weigh more than before, or less?",
+        options=[
+            ("More than before",
+             "When a metal burns it does get heavier, because oxygen from the "
+             "air joins it. Here nothing joins in: part of the powder leaves "
+             "as a gas, so the tube gets lighter."),
+            ("Less than before",
+             "Part of the powder left the tube as that gas. The black solid "
+             "that stays behind weighs less than the green powder did."),
+        ],
+        answer=1,
+        bridge="The green powder has split into two new substances, and one of"
+               " them escaped. Next: what this kind of reaction is called, "
+               "then three powders to heat.",
+        big_question="A green powder is heated and turns black. What kind of "
+                     "reaction is this, and how is it different from burning?",
+    ),
+
+    # oxidation — everyday weighing guess (heavier or lighter after burning); the
+    # old scene said "both end up heavier", so it is rewritten.
+    "oxidation": dict(
+        title="Magnesium burns in two seconds. A gate rusts over twenty years.",
+        scene="One is a flash of white light and a puff of white powder. The "
+              "other is so slow that nobody has ever watched it happen. Both "
+              "start as shiny metal and end as a crumbly powder or crust.",
+        question="If you had to guess, would all the powder left from burning "
+                 "magnesium weigh more than the metal did, or less?",
+        options=[
+            ("More",
+             "The magnesium joins with oxygen from the air, so the powder is "
+             "the metal plus the oxygen it picked up."),
+            ("Less",
+             "Burning wood does leave less, because gases escape. But "
+             "magnesium takes oxygen in and keeps it, so the powder weighs "
+             "more than the metal did."),
+        ],
+        answer=0,
+        bridge="Rusting does the same thing slowly. Next: what oxidation is, "
+               "then four tubes that show what rusting needs.",
+    ),
+
+    # displacement — reviewer changed the angle to the colour of the liquid
+    # (stays blue, or fades). The draft reused the old hook's "where did the
+    # copper come from?", which is word for word the later THINK (rail: "Where
+    # the copper came from") and is hinted by the H1 "Displacement". Title and
+    # scene rewritten to show only the start and the nail's coat; the old big
+    # question ("swapped places") is replaced.
+    "displacement": dict(
+        title="A grey nail goes into a blue liquid.",
+        scene="An iron nail is left in a beaker of blue copper sulfate "
+              "solution. Nothing is heated and nothing is added. After a while"
+              " the nail is covered in a furry orange-brown layer.",
+        question="If you had to guess, what happens to the blue colour of the "
+                 "liquid: does it stay just as blue, or fade?",
+        options=[
+            ("It stays blue",
+             "It is the nail you can see changing, so that makes sense. But "
+             "the liquid changes too: the blue fades, and a pale green takes "
+             "its place."),
+            ("It fades",
+             "The blue fades, and a pale green takes its place. So the liquid "
+             "has changed, not just the nail."),
+        ],
+        answer=1,
+        bridge="Something has left the blue liquid, and something new has gone"
+               " into it. Next: what this kind of swap is called, and the rule"
+               " for which metal wins.",
+        big_question="An iron nail left in a blue solution comes out coated in"
+                     " copper. What has happened, and would it work the other "
+                     "way round?",
+    ),
+
+    # which-reaction-is-this — old question (which clue sorts reactions fastest)
+    # cut to looks versus what went in. Old title and scene hinted at appearance,
+    # so both are simplified. Reviewer: replies no longer use "rust and a flame
+    # are the same kind of reaction", which pre-answered the THINK (can
+    # combustion also be oxidation?); "Next:" now names the four questions that
+    # actually come next.
+    "which-reaction-is-this": dict(
+        title="Four kinds of reaction, and no labels.",
+        scene="You have met four kinds of reaction. In an exam nobody tells "
+              "you which one you are looking at.",
+        question="If you had to guess, what is the better clue to the kind of "
+                 "reaction: what you can see happening, or what went in?",
+        options=[
+            ("What went in",
+             "Looks can fool you: two powders can both turn black when heated "
+             "and still be different kinds of reaction. The substances that go"
+             " in give it away."),
+            ("What you can see",
+             "What you see is where everyone starts, but it can mislead. Two "
+             "powders can both turn black when heated and still be different "
+             "kinds of reaction. What went in tells you more."),
+        ],
+        answer=0,
+        bridge="So count what went in first and name the reaction second. "
+               "Next: four questions to ask, then eight reactions to name.",
+    ),
+
+
+    # ── Year 8 · C6 Acids and alkalis ───────────────────────────────────────────
+
+    # acids-and-alkalis — old hook question cut to scales versus a dye (smell is
+    # already ruled out by the scene). Title and scene kept. Reviewer: question
+    # now asks "which would show you which is the acid", because "tell them
+    # apart" let a sharp pupil argue that two solutions of different density can
+    # be told apart on a balance. FLAG: the big question says one liquid is "safe
+    # to drink", but the scene says both are dangerous (sodium hydroxide is not
+    # safe to drink). Left unchanged because it does not give the answer away;
+    # listed for Mide as a lesson-text issue.
+    "acids-and-alkalis": dict(
+        question="If you had to guess, which would show you which one is the "
+                 "acid: weighing each, or adding a few drops of a dye?",
+        options=[
+            ("Weigh each one",
+             "Weighing is how we tell many things apart. But nothing says an "
+             "acid must be heavier than an alkali. What shows the difference "
+             "is what each does to something."),
+            ("Add a dye",
+             "Acid and alkali are not things you can see or weigh. A dye "
+             "changes colour differently in each, so it shows the difference "
+             "in a second."),
+        ],
+        answer=1,
+        bridge="A dye that does this is called an indicator. Next: what acid "
+               "and alkali mean, then eight everyday bottles to sort.",
+    ),
+
+    # the-ph-scale-and-indicators — reviewer changed the angle to "does
+    # blackberry juice do this too?" (the lesson's stretch: red cabbage, beetroot
+    # and blackberries all hold the same kind of dye). The draft's "warmth, or
+    # acid or alkali?" was given away by the H1 "The pH scale and indicators",
+    # read straight after the acids-and-alkalis lesson. Scene keeps the writer's
+    # fix (the six beakers hold different liquids).
+    "the-ph-scale-and-indicators": dict(
+        scene="A few drops of that purple liquid go into six beakers of "
+              "different clear liquids. It comes out red in one, pink in "
+              "another, purple in the third, then blue, then green, then "
+              "yellow. The cabbage water was the same in every beaker.",
+        question="If you had to guess, would juice squeezed from blackberries "
+                 "change colour like this too, or only the cabbage water?",
+        options=[
+            ("Blackberry juice would too",
+             "The colour in blackberries, beetroot and red cabbage is the same"
+             " kind of dye. It changes shape in acids and alkalis, and each "
+             "shape shows a different colour."),
+            ("Only the cabbage water",
+             "It does feel as if red cabbage must be special. But blackberries"
+             " and beetroot hold the same kind of dye, and it changes colour "
+             "in acids and alkalis in the same way."),
+        ],
+        answer=0,
+        bridge="So the colour is a reading of how acidic or alkaline each "
+               "liquid is, and a dye that gives one is called an indicator. "
+               "Next: the two main indicators, and a number scale built from "
+               "their colours.",
+    ),
+
+    # neutralisation — new angle: what is left in the dish after the water boils
+    # off (the old title gave away "salty water" and the old scene the crystals).
+    # Title and scene rewritten so they stop before the answer. Reviewer: wrong
+    # reply no longer opens "That is a fair thought" after the page's "Fair
+    # guess."
+    "neutralisation": dict(
+        title="Hydrochloric acid in one beaker. Sodium hydroxide in the other."
+              " Both would burn you.",
+        scene="The two are mixed carefully, in just the right amounts. The "
+              "mixture warms up, and universal indicator comes out green: pH "
+              "7, the same as pure water. Then all the water is boiled off in "
+              "a dish.",
+        question="If you had to guess, what is left in the dish: nothing at "
+                 "all, or something solid?",
+        options=[
+            ("Nothing at all",
+             "The liquid did test like pure water, so that makes sense. But "
+             "the acid and alkali did not vanish. They made water and a salt, "
+             "which stays behind as white crystals."),
+            ("Something solid",
+             "It is a salt, made from the acid and the alkali. It was "
+             "dissolved in the water, so it only shows once the water has "
+             "boiled away."),
+        ],
+        answer=1,
+        bridge="A reaction between an acid and an alkali is called "
+               "neutralisation. Next: the rule for what it always makes, then "
+               "add the alkali drop by drop.",
+    ),
+
+    # acid-plus-metal — old hook question (where did the gas come from), cut to
+    # metal versus acid. Title and scene kept. The later THINK ("What the bubbles
+    # are") asks the same thing; the old hook already did, which the brief
+    # allows.
+    "acid-plus-metal": dict(
+        question="If you had to guess, did the gas come from the metal, or "
+                 "from the acid?",
+        options=[
+            ("From the metal",
+             "It does look that way, because the metal vanishes as the bubbles"
+             " appear. But the metal has dissolved into the liquid. The gas "
+             "came out of the acid."),
+            ("From the acid",
+             "Every acid has hydrogen in it. The metal pushes the hydrogen out"
+             " as a gas and takes its place in the liquid."),
+        ],
+        answer=1,
+        bridge="The metal and the hydrogen swap places. Next: the rule for "
+               "what always forms, then eight tubes to try with different "
+               "metals and acids.",
+    ),
+
+    # acids-and-carbonates — new angle: rock or acid as the source of the gas
+    # (the old scene's limewater result names the gas). Reviewer: the scene keeps
+    # the old splint sentence, because the later THINK opens "The splint did go
+    # out." and must still land; a splint going out does not name the gas (that
+    # is the THINK's own point). Wrong reply no longer opens "Fair,".
+    "acids-and-carbonates": dict(
+        scene="The chip shrinks and streams bubbles from every surface. The "
+              "gas is not hydrogen: a lit splint held to it goes out instead "
+              "of squeaking.",
+        question="If you had to guess, does the gas come out of the rock, or "
+                 "out of the acid?",
+        options=[
+            ("Out of the rock",
+             "The gas is carbon dioxide, and its carbon and oxygen were locked"
+             " inside the rock. The acid sets them free."),
+            ("Out of the acid",
+             "With a metal the gas does come from the acid, so that makes "
+             "sense. This time it comes from the rock, which has carbon and "
+             "oxygen locked inside it."),
+        ],
+        answer=0,
+        bridge="Marble, chalk and limestone are all carbonates, and all fizz "
+               "in acid. Next: the rule for what an acid and a carbonate "
+               "always make, and the test for the gas.",
+    ),
 }
 
 
