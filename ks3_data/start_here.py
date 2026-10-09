@@ -4395,6 +4395,229 @@ START_HERE = {
                      "beaker bounces. So which of the two is the stronger "
                      "material?",
     ),
+
+
+    # ── Year 9 · C10 The earth and its atmosphere ────────────────────────────────
+
+    # inside-the-earth — old hook question cut to two options: earthquake waves
+    # vs volcano lava (the old hook's own tempting option, and the "mantle is
+    # molten" family of beliefs). The camera option was ruled out by the scene
+    # itself. Title, scene and big question do not give it away.
+    "inside-the-earth": dict(
+        question="If you had to guess, how do scientists know what is deep "
+                 "inside the Earth, right down to the centre?",
+        options=[
+            ("Listening to earthquakes",
+             "Earthquake waves go right through the planet, and the way they "
+             "speed up, bend or stop shows what they have passed through."),
+            ("Studying volcano lava",
+             "Lava does come up from below. But it starts nowhere near the "
+             "centre. Earthquake waves are what travel right through the "
+             "planet."),
+        ],
+        answer=0,
+        bridge="Hundreds of instruments around the world record those waves, "
+               "and each layer leaves its mark on them. Next: the four layers "
+               "they reveal.",
+    ),
+
+    # three-ways-to-make-a-rock — old question (what does the fizz tell you)
+    # reframed as "what did the marble start life as?" (the lesson's own phrase);
+    # tempting wrong answer is lava because of the crystals. No
+    # title/scene/big_question change.
+    "three-ways-to-make-a-rock": dict(
+        question="If you had to guess, what did the marble start life as?",
+        options=[
+            ("Cooled lava",
+             "The crystals do look like lava rock, and the granite did start "
+             "as melted rock. But marble fizzes in acid because it is a "
+             "carbonate: it began as limestone made of sea shells."),
+            ("Sea shells",
+             "The fizz shows marble is a carbonate, like the shells in "
+             "limestone. It began as limestone on a sea floor, then was baked "
+             "and squeezed deep underground."),
+        ],
+        answer=1,
+        bridge="Granite and marble look alike but have completely different "
+               "life stories. Next: the three ways to make a rock, and the "
+               "clues each one leaves.",
+    ),
+
+    # the-rock-cycle — old hook question made everyday (how did shells get up
+    # Everest). CHANGED scene: the old one said the sea floor itself was lifted,
+    # which is the answer. CHANGED big_question: "once sand on a beach, before
+    # that a mountain" gives away that rock moves and changes. Title kept, so the
+    # rail stop "Fossils on Everest" still lands.
+    "the-rock-cycle": dict(
+        scene="The rock at the top of the highest mountain on Earth is "
+              "limestone, full of the shells of sea creatures. Limestone forms"
+              " on a warm shallow sea floor.",
+        question="If you had to guess, how did sea shells get to the top of "
+                 "Everest?",
+        options=[
+            ("The sea was once that high",
+             "The sea has never been that high; there is not enough water on "
+             "Earth. It was the sea floor that moved, pushed up when two "
+             "continents collided."),
+            ("The ground was pushed up",
+             "Two continents collided and shoved an old sea floor up into a "
+             "mountain. It is still rising a little today."),
+        ],
+        answer=1,
+        bridge="Rock moves, and over long times it changes. Next: follow a "
+               "single grain on its journey through different kinds of rock.",
+        big_question="Rock seems permanent. Where has a rock been, and where "
+                     "will it go next?",
+    ),
+
+    # a-planet-with-limits — old hook cut to "is new aluminium ore still dug up
+    # every year?". CHANGED big_question: the old one said the crust is not
+    # topped up and recycling returns only some, which hints the answer.
+    "a-planet-with-limits": dict(
+        question="If you had to guess, is new aluminium ore still dug up every"
+                 " year?",
+        options=[
+            ("Yes, every year",
+             "We use more aluminium every year, so the amount in use keeps "
+             "growing, and recycled metal alone cannot cover that."),
+            ("No, not any more",
+             "Recycling aluminium works very well. But demand keeps growing, "
+             "so new ore is still dug up every year."),
+        ],
+        answer=0,
+        bridge="Next: run a recycling loop and see how far a kilogram goes "
+               "round for different materials.",
+        big_question="Everything we make came out of the ground. How much of "
+                     "it can go round again?",
+    ),
+
+    # whats-in-the-air — the old hook's own question (what fraction is oxygen)
+    # cut to its two strongest options. CHANGED title and scene: "most of what
+    # went in did nothing" and "great majority came back unchanged" gave away
+    # that oxygen is the minority. Rail stop "One breath" still lands.
+    "whats-in-the-air": dict(
+        title="Take a deep breath.",
+        scene="Your lungs just took in about half a litre of air, and your "
+              "body used some of it.",
+        question="If you had to guess, how much of the air is oxygen?",
+        options=[
+            ("Most of it",
+             "You need oxygen to stay alive. But it is only about a fifth of "
+             "the air; nearly four fifths is nitrogen."),
+            ("About a fifth",
+             "Only about a fifth of the air is oxygen. Nearly four fifths is "
+             "nitrogen, which your body breathes straight back out unused."),
+        ],
+        answer=1,
+        bridge="Next: open up each gas in the mix and see what your lungs do "
+               "with it.",
+    ),
+
+    # carbon-dioxide-humans-and-climate — the old hook question (where do the
+    # extra 33 degrees come from) cannot be asked fairly: the H1 "Carbon dioxide,
+    # humans and climate" names a gas in the air, which gives "the air" away. So
+    # the angle moves one step on, to the mechanism's classic wrong picture
+    # (gases trap the sunlight coming in), which the H1 does not answer. Big
+    # question kept as Design's verbatim: it no longer gives the answer away.
+    "carbon-dioxide-humans-and-climate": dict(
+        question="If you had to guess, how do gases in the air keep the Earth "
+                 "those 33 degrees warmer?",
+        options=[
+            ("Trapping sunlight on the way in",
+             "That is the picture most people have. But sunlight passes "
+             "straight through these gases. What they slow down is the heat "
+             "the warmed ground gives off on its way back out."),
+            ("Slowing heat on the way out",
+             "Sunlight passes straight through these gases and warms the "
+             "ground. The ground gives off heat as infrared, and the gases "
+             "absorb it, so energy leaves more slowly than it arrives."),
+        ],
+        answer=1,
+        bridge="That is the greenhouse effect, and it is natural: without it "
+               "the planet would be frozen. Next: how it works, one step at a "
+               "time.",
+    ),
+
+
+    # ── Year 9 · P2 Energy at home ──────────────────────────────────────────────
+
+    # energy-in-food — old hook (why two numbers) as same-thing vs different-
+    # things. CHANGED scene: dropped "neither is a mistake and neither is a
+    # rounding of the other", which tilts the guess.
+    "energy-in-food": dict(
+        scene="Every food label in the country carries both. A 50 g bag of "
+              "crisps: 229 kcal, 958 kJ.",
+        question="If you had to guess, do those two numbers measure the same "
+                 "thing, or two different things?",
+        options=[
+            ("The same thing",
+             "Both are the same energy, written in two different units, like 6"
+             " feet and 1.83 metres. One kcal is a bit over 4 kJ."),
+            ("Two different things",
+             "They look too different to match. But both measure the energy in"
+             " the crisps; one is in kcal and the other in kJ."),
+        ],
+        answer=0,
+        bridge="Next: burn food and measure its energy yourself with a "
+               "calorimeter.",
+    ),
+
+    # power-ratings-in-watts — the old hook question, two of its four options. No
+    # title/scene/big_question change.
+    "power-ratings-in-watts": dict(
+        question="If you had to guess, which uses more energy in a day, the "
+                 "kettle or the router?",
+        options=[
+            ("The kettle",
+             "The kettle is far more powerful. But it is on for about three "
+             "minutes and the router for eight hours, so the router uses more."),
+            ("The router",
+             "The router's power is tiny, but it runs for eight hours against "
+             "the kettle's three minutes, and that adds up to a little more "
+             "energy."),
+        ],
+        answer=1,
+        bridge="That is the difference between power and energy. Next: race "
+               "the kettle against the router on a bench.",
+    ),
+
+    # calculating-energy-transferred — old hook with "about the same"
+    # (surprising) vs "the shower, far more" (tempting). No
+    # title/scene/big_question change.
+    "calculating-energy-transferred": dict(
+        question="If you had to guess, how does the shower's energy compare "
+                 "with the lamp's?",
+        options=[
+            ("The shower uses far more",
+             "A shower is far more powerful. But the lamp runs for 144 times "
+             "as long, and that almost exactly makes up for it."),
+            ("They are about the same",
+             "They come out almost exactly the same. The shower uses energy "
+             "about 140 times faster, but the lamp is on 144 times longer, so "
+             "it evens out."),
+        ],
+        answer=1,
+        bridge="Energy comes from power multiplied by time. Next: how to work "
+               "it out, and the unit slip that makes answers sixty times "
+               "wrong.",
+    ),
+
+    # reading-a-fuel-bill — old hook (kilowatt vs kilowatt-hour) put in everyday
+    # words: how fast vs how much. No title/scene/big_question change.
+    "reading-a-fuel-bill": dict(
+        question="If you had to guess, does one unit on a bill measure how "
+                 "fast you use electricity, or how much you use?",
+        options=[
+            ("How fast you use it",
+             "A unit is a kilowatt-hour. Kilowatts do measure how fast, but "
+             "the hour on the end turns it into a total amount."),
+            ("How much you use",
+             "A unit is a kilowatt-hour: a 1 kW appliance running for an hour."
+             " The hour tells you it counts an amount."),
+        ],
+        answer=1,
+        bridge="Next: see four different ways of using exactly one unit.",
+    ),
 }
 
 
