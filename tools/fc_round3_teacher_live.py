@@ -21,11 +21,13 @@ a teacher's own client really can SELECT the three tables (the RLS the page
 depends on).
 
     MRB_THROWAWAY_PASSWORD=mrb326-throwaway \\
-      python3 tools/fc_round3_teacher_live.py [--env-file PATH-TO-TEST-.env]
+      python3 tools/fc_round3_teacher_live.py [--env-file PATH-TO-TEST-.env] [--shots DIR]
 
 TEST ONLY: the service key's own `ref` claim is checked before any write.
 Everything minted is torn down by a SNAPSHOTTED ID LIST, never a predicate.
-Screenshots: docs/experience/y-shots/r3-teacher-<theme>-<width>.png
+Screenshots: r3-teacher-<theme>-<width>.png under gate_tmp()/fc-round3-teacher-live
+(outside the repo, MRB-346 rule 5); --shots docs/experience/y-shots refreshes the
+committed set on purpose.
 """
 from __future__ import annotations
 
@@ -47,7 +49,10 @@ import ks3_browser as cdp  # noqa: E402
 
 FAILS = []
 IDK = "I don't know"
-SHOTS = os.path.join(REPO, "docs", "experience", "y-shots")
+# ⊕ 9 Oct 2026 — this defaulted to docs/experience/y-shots, so every run
+# overwrote committed reference images. MRB-346 rule 5: never into the repo by
+# default. main() sets it from --shots, else gate_tmp()/fc-round3-teacher-live.
+SHOTS = None
 
 
 def check(ok, what, detail=""):
@@ -136,7 +141,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--env-file", default="/Users/midebadmus/Documents/GitHub/mrbadmus---backend/.env")
     ap.add_argument("--keep", action="store_true")
+    ap.add_argument("--shots", default=None,
+                    help="screenshot dir (default: gate_tmp()/fc-round3-teacher-live, outside "
+                         "the repo; pass docs/experience/y-shots to refresh the committed set)")
     a = ap.parse_args()
+    global SHOTS
+    SHOTS = os.path.abspath(a.shots) if a.shots else os.path.join(cdp.gate_tmp(), "fc-round3-teacher-live")
+    print(f"screenshots -> {SHOTS}")
     env = acc.read_env(a.env_file)
     url, service = env["SUPABASE_URL"], env["SUPABASE_SERVICE_ROLE_KEY"]
     ref = acc.jwt_ref(service)

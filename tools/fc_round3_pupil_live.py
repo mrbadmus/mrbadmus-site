@@ -12,7 +12,9 @@ the real database.
            on Done; the same deck finished with 2 shows nothing.
 
 On a phone (390x844) and a desktop (1280x800), light and dark. Screenshots:
-docs/experience/y-shots/r3-live-*.png.
+r3-live-*.png under gate_tmp()/fc-round3-pupil-live (outside the repo, MRB-346
+rule 5); pass --shots docs/experience/y-shots to refresh the committed set on
+purpose.
 
 HOW IT IS BUILT — the same way as tools/mrb354_secured_live.py (whose Deno
 answer-check stand-in, backend starter, fetch pump and teardown it reuses):
@@ -26,13 +28,14 @@ TEARDOWN deletes ONLY the ids this run created (the manifest is a snapshotted
 id list — never a predicate), then proves nothing is left behind.
 
     MRB_BACKEND_DIR=<a checkout of the backend at origin/main> \
-        python3 tools/fc_round3_pupil_live.py
+        python3 tools/fc_round3_pupil_live.py [--shots DIR]
 
 TEST ONLY — the service key's own `ref` claim is checked before any write and
 refused if it is not qeppkiswvclkkwbxmlok. No SQL is needed or applied.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import subprocess
@@ -55,7 +58,10 @@ check = drv.check
 FAILS = drv.FAILS
 settle = drv.settle
 
-SHOTS_DIR = os.path.join(REPO, "docs", "experience", "y-shots")
+# ⊕ 9 Oct 2026 — this defaulted to docs/experience/y-shots, so every run
+# overwrote committed reference images. MRB-346 rule 5: never into the repo by
+# default. main() sets it from --shots, else gate_tmp()/fc-round3-pupil-live.
+SHOTS_DIR = None
 BACKEND_DIR = os.environ.get("MRB_BACKEND_DIR",
                              "/Users/midebadmus/Documents/GitHub/mrbadmus-backend-worktrees/fc-round3")
 m.BACKEND_DIR = BACKEND_DIR
@@ -233,6 +239,14 @@ def play(P, page, seen, tag, label, idk_fronts, own_words, first_pass_mash, want
 
 
 def main():
+    global SHOTS_DIR
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--shots", default=None,
+                    help="screenshot dir (default: gate_tmp()/fc-round3-pupil-live, outside "
+                         "the repo; pass docs/experience/y-shots to refresh the committed set)")
+    a = ap.parse_args()
+    SHOTS_DIR = os.path.abspath(a.shots) if a.shots else os.path.join(cdp.gate_tmp(), "fc-round3-pupil-live")
+    print(f"screenshots -> {SHOTS_DIR}")
     env = acc.read_env(acc.BACKEND_ENV_DEFAULT)
     url, service = env["SUPABASE_URL"], env["SUPABASE_SERVICE_ROLE_KEY"]
     ref = acc.jwt_ref(service)
