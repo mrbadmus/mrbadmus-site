@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blood · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Organisation" title="Blood" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.2.2.3</p>
+        <h1>Blood</h1>
+        <p class="ks3-bigq">Blood is a tissue: a liquid with cells and cell fragments floating in it. Learn to tell them apart on sight, and what each one does.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A graze on your knee." scene="You graze your knee. It bleeds for a minute, then the bleeding stops, and by the next day there is a scab." question="is the bleeding stopped by whole cells, or by tiny bits of cells?" options="{{ hookOptions }}" bridge="Platelets are fragments of cells that help the blood to clot. Next: platelets and the other parts of blood, side by side." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-smear" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">A blood smear · name what you see</p>
+        <h2 style="margin: 6px 0 0;">Pick a labelled cell. Name it, then give its job.</h2>
+        <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ smearFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <sc-for list="{{ targets }}" as="t" hint-placeholder-count="4"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+            </div>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ smearProgress }}</p>
+            <sc-if value="{{ asking }}" hint-placeholder-val="{{ true }}">
+              <p class="ks3-commit" style="margin: 0; color: var(--ks3-ink);">{{ askText }}</p>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <sc-for list="{{ choices }}" as="c" hint-placeholder-count="4"><button type="button" onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.text }}</button></sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ hasNote }}"><p data-arrive="1" role="status" style="{{ noteStyle }}">{{ note }}</p></sc-if>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-parts" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Four components · structure and job</p>
+        <h2 style="margin: 6px 0 0;">Plasma carries; the cells do the rest.</h2>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ rbcFig }}</div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Red blood cells</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Carry oxygen from the lungs to the tissues. Haemoglobin binds oxygen in the lungs and releases it in the tissues.</p>
+            <ul style="margin: 8px 0 0; padding-left: 1.1em; font-size: 17px; line-height: 1.5; display: flex; flex-direction: column; gap: 4px;">
+              <li>Biconcave shape: a large surface area for oxygen to diffuse in and out.</li>
+              <li>No nucleus: more room for haemoglobin.</li>
+              <li>Packed with haemoglobin.</li>
+            </ul>
+          </div>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">White blood cells</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Larger than red cells, and each has a nucleus. They defend against pathogens in three ways:</p>
+            <ul style="margin: 8px 0 0; padding-left: 1.1em; font-size: 17px; line-height: 1.5; display: flex; flex-direction: column; gap: 4px;">
+              <li><strong>Phagocytosis</strong>: phagocytes engulf pathogens and digest them.</li>
+              <li><strong>Antibody production</strong>: lymphocytes make antibodies that target a particular pathogen.</li>
+              <li><strong>Antitoxin production</strong>: antitoxins neutralise the toxins released by bacteria.</li>
+            </ul>
+          </div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Platelets</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Small fragments of cells, with no nucleus. They help the blood to clot at a wound, which stops bleeding and keeps pathogens out.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Plasma</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">The pale yellow liquid the cells are carried in. It transports dissolved glucose and amino acids, carbon dioxide, urea, hormones and antibodies.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · white blood cells</p></div>
+        <p class="ks3-mis-quote">&ldquo;All white blood cells fight germs by eating them.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Some bacteria release toxins that make you ill. What do some white blood cells make to deal with the toxins?" options="{{ thinkOptions }}" reveal="White blood cells defend in three ways. Phagocytes engulf and digest pathogens. Lymphocytes make antibodies. And some white blood cells make antitoxins, which neutralise the toxins that bacteria release." right-word="Yes." wrong-word="Not this one." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Which component?" prompt="Place each description with the part of the blood it describes." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Red cells carry oxygen; white cells defend; platelets clot; plasma carries everything else, dissolved." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Identify</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Name the cell from what you can see: size, shape, nucleus or not.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Say what each component does.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Feature, then what it does for the job: no nucleus, so more room for haemoglobin.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Blood is a tissue of plasma, with red blood cells, white blood cells and platelets suspended in it. Red cells carry oxygen, white cells defend against pathogens, platelets help clotting, and plasma transports dissolved substances.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="blood" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Blood" spec="AQA 4.2.2.3" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Mixing up phagocytes and lymphocytes?" legal="The smear is a drawing in the style of a stained micrograph, not a photograph. Cells are not to scale with each other." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A graze', short: 'HOOK' },
+  { id: 's-smear', label: 'Name the cells', short: 'SMEAR' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Sort the parts', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const NAMES = ['Red blood cell', 'Phagocyte (white blood cell)', 'Lymphocyte (white blood cell)', 'Platelet'];
+const JOBS = ['Carries oxygen', 'Engulfs and digests pathogens', 'Makes antibodies', 'Helps the blood to clot'];
+const TGT = [
+  { letter: 'A', x: 120, y: 120, name: 0, look: 'Small, disc-shaped, pale centre, no nucleus: and the most numerous.' },
+  { letter: 'B', x: 330, y: 160, name: 1, look: 'Larger than the red cells, with a nucleus in several lobes.' },
+  { letter: 'C', x: 470, y: 90, name: 2, look: 'A white cell almost filled by one large, round nucleus.' },
+  { letter: 'D', x: 250, y: 250, name: 3, look: 'Tiny fragments with no nucleus.' }
+];
+const NO_NAME = ['That one has no nucleus and a pale centre: a red blood cell.', 'Big, with a lobed nucleus: a phagocyte.', 'One large round nucleus: a lymphocyte.', 'Too small and no nucleus: a platelet, a fragment of a cell.'];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, sel: 0, stage: 'name', wrong: null, solved: {}, think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  smear(sel) {
+    const D = window.KS4D, C = D.C;
+    let b = '<rect x="0" y="0" width="600" height="320" rx="18" fill="#F5E9DF"/>';
+    const rbc = (x, y) => D.circ(x, y, 22, '#E8A3A3', '#B8686B', 2) + D.circ(x, y, 9, '#F2C4C2');
+    [[60, 60], [120, 120], [70, 200], [170, 60], [200, 160], [140, 270], [60, 290], [420, 220], [520, 200], [560, 280], [430, 290], [540, 50], [390, 30], [300, 60], [250, 30], [480, 150], [330, 280], [570, 130]].forEach((p) => { b += rbc(p[0], p[1]); });
+    b += D.circ(330, 160, 40, '#EADFF0', '#8E6FA8', 2.5) + '<path d="M310 150 q10 -16 22 -4 q12 -14 22 2 q6 16 -8 20 q-10 14 -22 4 q-18 2 -14 -22 z" fill="#7A4E9A"/>';
+    b += D.circ(470, 90, 30, '#EADFF0', '#8E6FA8', 2.5) + D.circ(470, 90, 24, '#5E3A82');
+    [[250, 250], [262, 242], [242, 262], [258, 266]].forEach((p) => { b += D.circ(p[0], p[1], 4.5, '#B28BC4', '#6D4A88', 1); });
+    TGT.forEach((t, i) => {
+      const on = sel === i;
+      b += D.circ(t.x + 34, t.y - 34, 14, on ? C.stroke : '#fff', C.stroke, 2.5) + D.T(t.x + 34, t.y - 29, t.letter, 15, { fill: on ? '#fff' : C.stroke });
+      b += D.line(t.x + 24, t.y - 24, t.x + 12, t.y - 12, 2);
+    });
+    b += D.T(560, 312, 'plasma', 14, { anchor: 'end', fill: C.stroke, weight: 'normal' });
+    return D.svg(600, 320, b, 'Drawing of a stained blood smear: many red blood cells (A), discs with pale centres and no nucleus; a large phagocyte (B) with a lobed nucleus; a lymphocyte (C) with one large round nucleus; a cluster of tiny platelets (D); plasma around them.');
+  }
+  rbc() {
+    const D = window.KS4D, C = D.C;
+    let b = D.circ(110, 120, 70, '#E8A3A3', '#B8686B', 3) + D.circ(110, 120, 28, '#F2C4C2');
+    b += D.T(110, 222, 'from above', 15);
+    b += '<path d="M240 90 C 270 70, 300 98, 330 98 C 360 98, 390 70, 420 90 C 440 104, 440 136, 420 150 C 390 170, 360 142, 330 142 C 300 142, 270 170, 240 150 C 220 136, 220 104, 240 90 Z" fill="#E8A3A3" stroke="#B8686B" stroke-width="3"/>';
+    b += D.T(330, 222, 'from the side: biconcave', 15);
+    b += D.T(330, 60, 'thin centre, no nucleus', 13, { weight: 'normal', fill: C.stroke });
+    return D.svg(460, 240, b, 'A red blood cell from above, a disc with a pale centre, and from the side, a biconcave shape that is thinner in the middle; it has no nucleus.');
+  }
+  btn(state) {
+    return 'text-align:left;font:inherit;font-size:17px;font-weight:700;padding:11px 14px;min-height:46px;border-radius:12px;cursor:pointer;color:var(--ks3-ink);background:var(--ks3-card);border:2px solid ' + (state === 'no' ? 'var(--ks3-alert-border)' : 'var(--ks3-option-border)') + ';';
+  }
+  seg(on, done) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-ink)' : done ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (done ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const nSolved = Object.keys(s.solved).length;
+    const done = [s.hook !== null, nSolved >= 4, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const t = TGT[s.sel];
+    const isSolved = !!s.solved[s.sel];
+    const list = s.stage === 'name' ? NAMES : JOBS;
+    const order = [0, 1, 2, 3].map((k) => (k + s.sel) % 4);
+    const bankSrc = [
+      { q: 'Why do red blood cells have no nucleus?', opts: [['To create more space for haemoglobin \u2014 allowing the cell to carry more oxygen', true], ['So they can divide and replace themselves when worn out', false], ['To reduce their weight so they flow faster through blood vessels', false], ['So they can squeeze through capillaries more easily', false]],
+        wrong_explanations: { 1: 'Cells without a nucleus CANNOT divide \u2014 red blood cells are produced in bone marrow and cannot reproduce themselves.', 2: 'Weight difference between a nucleus and haemoglobin molecules is negligible \u2014 the primary reason is space for haemoglobin.', 3: 'Flexibility helps red blood cells squeeze through capillaries \u2014 but this is a result of their biconcave shape and flexibility, not the absence of a nucleus.' } },
+      { q: 'A patient has very few lymphocytes. What is the most likely consequence?', opts: [['Unable to produce specific antibodies \u2014 prolonged or repeated infections that are hard to clear', true], ['Unable to carry oxygen \u2014 severe anaemia', false], ['Blood will not clot properly \u2014 excessive bleeding from wounds', false], ['Unable to digest food properly \u2014 nutrients not absorbed', false]],
+        wrong_explanations: { 1: 'Oxygen carrying = RED BLOOD CELLS using haemoglobin. Lymphocytes are white blood cells.', 2: 'Blood clotting = PLATELETS forming a fibrin mesh. Lymphocytes produce antibodies, not clotting factors.', 3: 'Food digestion = digestive enzymes in the gut. Lymphocytes are part of the immune system.' } },
+      { q: 'What is the role of platelets in the body?', opts: [['Blood clotting \u2014 they clump at wound sites and trigger fibrin mesh formation to seal the damage', true], ['Carrying oxygen from the lungs to body tissues', false], ['Producing antibodies to fight specific pathogens', false], ['Engulfing and digesting bacteria by phagocytosis', false]],
+        wrong_explanations: { 1: 'Oxygen transport = RED BLOOD CELLS using haemoglobin.', 2: 'Producing antibodies = LYMPHOCYTES (a type of white blood cell).', 3: 'Engulfing bacteria = PHAGOCYTES (a type of white blood cell).' } },
+      { q: 'Which substance does plasma NOT transport?', opts: [['Oxygen \u2014 this is carried by haemoglobin inside red blood cells', true], ['Glucose from the small intestine to body cells', false], ['Urea from the liver to the kidneys', false], ['Carbon dioxide from respiring cells to the lungs', false]],
+        wrong_explanations: { 1: 'Glucose IS carried in plasma \u2014 after absorption from the small intestine.', 2: 'Urea IS carried in plasma \u2014 from the liver to the kidneys for excretion.', 3: 'Carbon dioxide IS dissolved in plasma \u2014 most CO\u2082 travels as bicarbonate ions dissolved in plasma.' } },
+      { q: 'What do antitoxins do?', opts: [['Neutralise the toxins released by bacteria', true], ['Engulf and digest bacteria', false], ['Carry oxygen to infected tissue', false], ['Form a clot to keep bacteria out', false]],
+        wrong_explanations: { 1: 'That is phagocytosis, by phagocytes.', 2: 'Oxygen is carried by red blood cells.', 3: 'Clotting is the job of platelets.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('blood') : null,
+      hookOptions: [
+        { text: 'Whole cells', correct: false, reply: 'Red cells do get trapped in a clot, but they don\u2019t start it. The clotting is triggered by platelets, which are only fragments of cells.' },
+        { text: 'Tiny bits of cells', correct: true, reply: 'Platelets are fragments of cells, and they help the blood to clot.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      smearFig: ready ? K.fig(this.smear(s.sel), '') : null,
+      targets: TGT.map((x, i) => ({ label: 'Cell ' + x.letter + (s.solved[i] ? ' \u00b7 done' : ''), pressed: s.sel === i, style: this.seg(s.sel === i, !!s.solved[i]), onClick: () => this.setState({ sel: i, stage: s.solved[i] ? 'done' : 'name', wrong: null }) })),
+      smearProgress: nSolved + ' of 4 named and matched',
+      asking: !isSolved && s.stage !== 'done',
+      askText: s.stage === 'name' ? 'What is cell ' + t.letter + '?' : 'What does it do?',
+      choices: order.map((k) => ({ text: list[k], style: this.btn(s.wrong === k ? 'no' : ''),
+        onClick: () => {
+          if (k !== t.name) { this.setState({ wrong: k }); return; }
+          if (s.stage === 'name') this.setState({ stage: 'job', wrong: null });
+          else this.setState({ stage: 'done', wrong: null, solved: Object.assign({}, s.solved, { [s.sel]: true }) });
+        } })),
+      hasNote: !!(s.wrong !== null || isSolved || s.stage === 'job'),
+      note: s.wrong !== null ? (s.stage === 'name' ? NO_NAME[t.name] : 'Not that one. A ' + NAMES[t.name].toLowerCase() + ': ' + JOBS[t.name].toLowerCase() + '.') : isSolved || s.stage === 'done' ? NAMES[t.name] + ': ' + JOBS[t.name].toLowerCase() + '. ' + t.look : 'Yes: ' + NAMES[t.name].toLowerCase() + '. ' + t.look,
+      noteStyle: 'margin:0;padding:12px 14px;border-radius:14px;font-size:17px;line-height:1.55;border:2px solid ' + (s.wrong !== null ? 'var(--ks3-alert-border);background:var(--ks3-alert-tint);' : 'var(--ks3-accent);background:var(--ks3-accent-tint);'),
+      rbcFig: ready ? K.fig(this.rbc(), '') : null,
+      thinkOptions: [
+        { text: 'Antitoxins', correct: true, reply: 'They neutralise the toxins.' },
+        { text: 'Haemoglobin', correct: false, reply: 'Haemoglobin is in red blood cells and carries oxygen.' },
+        { text: 'Platelets', correct: false, reply: 'Platelets are fragments of cells that help clotting; white cells don\u2019t make them.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'r', label: 'Red blood cells' }, { id: 'w', label: 'White blood cells' }, { id: 'p', label: 'Platelets' }, { id: 'l', label: 'Plasma' }],
+      sortItems: [
+        { text: 'Contain haemoglobin', bin: 'r', why: 'Haemoglobin carries oxygen in red cells.' },
+        { text: 'Biconcave, no nucleus', bin: 'r', why: 'Red cell adaptations.' },
+        { text: 'Make antibodies and antitoxins', bin: 'w', why: 'Lymphocytes make antibodies; some white cells make antitoxins.' },
+        { text: 'Engulf pathogens', bin: 'w', why: 'Phagocytes engulf and digest pathogens.' },
+        { text: 'Fragments of cells that help clotting', bin: 'p', why: 'Platelets.' },
+        { text: 'Liquid that carries dissolved glucose, urea and hormones', bin: 'l', why: 'Plasma transports dissolved substances.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name the component of blood that carries oxygen.', why: 'Red blood cells, using haemoglobin.', options: [
+            { text: 'Plasma', correct: false, reply: 'Plasma carries dissolved substances, but oxygen is carried by red blood cells.' },
+            { text: 'Red blood cells', correct: true },
+            { text: 'White blood cells', correct: false, reply: 'White cells defend against pathogens.' },
+            { text: 'Platelets', correct: false, reply: 'Platelets help clotting.' }] },
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Give the function of platelets.', why: 'They help the blood to clot.', options: [
+            { text: 'They help the blood to clot', correct: true },
+            { text: 'They make antibodies', correct: false, reply: 'Lymphocytes make antibodies.' },
+            { text: 'They carry carbon dioxide', correct: false, reply: 'Plasma carries carbon dioxide.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Identify', marks: 1, prompt: 'In a photograph of blood, one cell is much larger than the rest and has a nucleus with several lobes. Identify the cell.', why: 'Large, with a lobed nucleus: a phagocyte, a type of white blood cell.', options: [
+            { text: 'Red blood cell', correct: false, reply: 'Red cells have no nucleus.' },
+            { text: 'Platelet', correct: false, reply: 'Platelets are tiny fragments with no nucleus.' },
+            { text: 'Phagocyte (white blood cell)', correct: true },
+            { text: 'Plasma', correct: false, reply: 'Plasma is the liquid, not a cell.' }] },
+          { kind: 'mcq', command: 'Identify', marks: 1, prompt: 'In the same photograph, most of the cells are small discs with a pale centre and no nucleus. Identify them.', why: 'Red blood cells: biconcave, no nucleus, the most numerous.', options: [
+            { text: 'Red blood cells', correct: true },
+            { text: 'Lymphocytes', correct: false, reply: 'Lymphocytes have a large nucleus.' },
+            { text: 'Platelets', correct: false, reply: 'Platelets are much smaller fragments.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how red blood cells are adapted to carry oxygen. Put the links in order.',
+            links: ['They contain haemoglobin, which binds oxygen in the lungs and releases it in the tissues.', 'They have no nucleus, so there is more room for haemoglobin.', 'Their biconcave shape gives a large surface area for oxygen to diffuse in and out.'],
+            herrings: [{ text: 'They have no nucleus so they can squeeze through capillaries.', why: 'The examined reason is more room for haemoglobin.' }, { text: 'They engulf oxygen molecules.', why: 'Oxygen diffuses in and binds to haemoglobin.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how white blood cells defend the body against pathogens. Put the links in order.',
+            links: ['Phagocytes engulf pathogens and digest them.', 'Lymphocytes produce antibodies that target a particular pathogen.', 'Some white blood cells produce antitoxins, which neutralise toxins released by bacteria.'],
+            herrings: [{ text: 'White blood cells carry oxygen to fight the pathogens.', why: 'Red blood cells carry oxygen.' }, { text: 'White blood cells form a clot around the pathogen.', why: 'Clotting is done with platelets.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 4, prompt: 'Blood is made of four components. Describe the function of each one.',
+            levels: [
+              { label: 'Level 2 \u00b7 3\u20134', text: 'All four components with a correct function each.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'One or two components with correct functions.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Red blood cells carry oxygen (bound to haemoglobin).', 'White blood cells defend against pathogens: phagocytosis, antibodies, antitoxins.', 'Platelets help the blood to clot.', 'Plasma transports dissolved substances, e.g. glucose, carbon dioxide, urea, hormones.'],
+            reject: ['\u201cWhite blood cells carry oxygen.\u201d', '\u201cPlatelets are a type of white blood cell.\u201d'] }
+        ]
+      },
+      keyLines: ['Blood is a tissue: plasma, with red blood cells, white blood cells and platelets suspended in it.', 'Red blood cells carry oxygen: haemoglobin, no nucleus (more room for haemoglobin), biconcave (large surface area).', 'White blood cells have a nucleus: phagocytosis, antibody production, antitoxin production.', 'Platelets: small fragments of cells, no nucleus; help the blood to clot.', 'Plasma: transports dissolved glucose, amino acids, carbon dioxide, urea, hormones and antibodies.', 'Recognise them: red = small pale-centred discs; white = larger with a nucleus; platelets = tiny fragments.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.2.2.2-heart-blood-vessels.dc.html', label: 'The heart and blood vessels' }, endNext: { href: 'ks4-biology-4.2.2.4-coronary-heart-disease.dc.html', label: 'Coronary heart disease' },
+      endConnects: [{ href: 'ks4-biology-4.2.2.2-heart-blood-vessels.dc.html', label: 'The heart and blood vessels' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

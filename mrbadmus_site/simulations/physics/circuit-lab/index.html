@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en" data-sim="circuit">
+<head>
+<meta charset="utf-8">
+<script>(function(){var p='system';try{p=localStorage.getItem('mrb-theme')||'system'}catch(e){}if(p!=='dark'&&p!=='light')p='system';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#FBF3E6">
+<title>Circuit Lab | MrBadmus</title>
+<!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614"><!--/mrb:brand-head-->
+<link rel="stylesheet" href="/simulations/simulations.css">
+<link rel="stylesheet" href="/simulations/fullscreen.css">
+<link rel="stylesheet" href="sim-theme.css">
+<script src="/shared/theme.js?v=83dd2451" defer></script>
+<script src="/simulations/fullscreen.js" defer></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<header class="sim-bar">
+  <!--mrb:brand--><a class="mrb-brand" href="/" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
+  <a class="sim-back" href="/simulations/physics/"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>Physics</a>
+  <button class="sim-fs" type="button" aria-label="Full screen" aria-pressed="false"><svg class="sim-fs__in" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7V2h5M16 7V2h-5M2 11v5h5M16 11v5h-5"/></svg><svg class="sim-fs__out" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M7 2v5H2M11 2v5h5M7 16v-5H2M11 16v-5h5"/></svg><span class="sim-fs__text">Full screen</span></button><span class="mrb-theme-slot" data-mrb-theme="compact"></span>
+</header>
+<x-dc>
+<helmet>
+  <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FBF3E6"></rect><path d="M30 50 H40 M60 50 H70" stroke="#B87333" stroke-width="5" stroke-linecap="round"></path><circle cx="50" cy="46" r="11" fill="#FFF6D6" stroke="#1A1714" stroke-width="2.5"></circle><rect x="44" y="56" width="12" height="7" fill="#C4BFB6" stroke="#1A1714" stroke-width="2"></rect></svg></template>
+  <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+  <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+  <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+  <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+  <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+  <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+  <style>
+    html,body{margin:0;height:100%;overflow:hidden;background:#FBF3E6}
+    *{box-sizing:border-box}
+    a{color:#A93411}a:hover{color:#7F2408}
+    input[type=range]{accent-color:#A93411;width:100%;margin:6px 0 0}
+    ::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:#E0D2B9;border-radius:5px}::-webkit-scrollbar-track{background:transparent}
+  </style>
+</helmet>
+<div data-screen-label="Circuit Lab" style="height:100vh;display:flex;flex-direction:column;font-family:'Instrument Sans',sans-serif;color:#1A1714;background:#FBF3E6;user-select:none;">
+
+  <div style="height:62px;flex:none;display:flex;align-items:center;gap:14px;padding:0 18px;background:#FFFDF8;border-bottom:1.5px solid #E0D2B9;">
+    <div style="display:flex;flex-direction:column;gap:1px;">
+      <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1.8px;color:#A93411;">CIRCUIT LAB</span>
+      <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.4px;color:#7A6E5F;">PHYSICS · ELECTRIC CIRCUITS</span>
+    </div>
+    <div style="flex:1;"></div>
+    <div style="display:flex;align-items:center;border:1.5px solid #E0D2B9;border-radius:999px;padding:2px;background:#FBF3E6;">
+      <button onClick="{{ setKs3 }}" style="{{ segKs3Style }}">KS3</button>
+      <button onClick="{{ setKs4 }}" style="{{ segKs4Style }}">KS4</button>
+    </div>
+    <button onClick="{{ toggleTeacher }}" style="{{ teacherStyle }}">TEACHER</button>
+    <button onClick="{{ clearAll }}" style="padding:8px 16px;border-radius:999px;border:1.5px solid #E0D2B9;background:transparent;color:#6E655D;font-family:'Instrument Sans',sans-serif;font-size:14px;cursor:pointer;" style-hover="border-color:#A93411;color:#A93411;">Clear</button>
+    <button onClick="{{ openCh }}" style="padding:9px 18px;border-radius:999px;border:0;background:#A93411;color:#FFFDF8;font-family:'DM Mono',monospace;font-size:12.5px;letter-spacing:1.2px;cursor:pointer;" style-hover="background:#7F2408;">CHALLENGES · {{ doneCount }}/12</button>
+  </div>
+
+  <div style="flex:1;display:flex;min-height:0;">
+
+    <div style="width:236px;flex:none;background:#FFFDF8;border-right:1.5px solid #E0D2B9;overflow-y:auto;padding:12px 10px 22px;">
+      <div style="display:flex;border:1.5px solid #E0D2B9;border-radius:999px;padding:2px;background:#FBF3E6;margin:2px 2px 6px;">
+        <button onClick="{{ setPict }}" style="{{ segPictStyle }}">PICTURES</button>
+        <button onClick="{{ setSym }}" style="{{ segSymStyle }}">SYMBOLS</button>
+      </div>
+      <sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
+        <div style="margin-top:13px;">
+          <div style="font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:1.8px;color:#7A6E5F;padding:0 8px 5px;">{{ g.label }}</div>
+          <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+            <button onPointerDown="{{ it.down }}" title="Drag onto the paper" style="display:flex;align-items:center;gap:9px;width:100%;padding:6px 8px;border:0;background:transparent;border-radius:9px;cursor:grab;text-align:left;font-family:'Instrument Sans',sans-serif;touch-action:none;" style-hover="background:#F5EAD6;">
+              <span style="{{ it.dimStyle }}">{{ it.icon }}</span>
+              <span style="{{ it.nameStyle }}">{{ it.name }}</span>
+              <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;color:#7A6E5F;">{{ it.tag }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="flex:1;position:relative;min-width:0;background:#FFFDF8;overflow:hidden;">
+      {{ canvas }}
+
+      <sc-if value="{{ inspClosed }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleInsp }}" aria-label="Open inspector panel" style="position:absolute;bottom:16px;right:12px;display:flex;align-items:center;gap:7px;padding:9px 13px;border-radius:9px;border:1.5px solid #E0D2B9;background:#FFFDF8;color:#A93411;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.4px;cursor:pointer;box-shadow:0 3px 10px rgba(26,23,20,.08);" style-hover="border-color:#A93411;">INSPECTOR<svg width="10" height="10" viewBox="0 0 10 10"><path d="M7 1 L3 5 L7 9" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+      </sc-if>
+
+      <div style="position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;">
+        <button onClick="{{ toggleCur }}" style="{{ curChipStyle }}">{{ curLabel }}</button>
+        <sc-if value="{{ showCur }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;gap:0;border:1.5px solid #E0D2B9;border-radius:8px;background:#FFFDF8;padding:2px;">
+            <button onClick="{{ setFlowE }}" style="{{ flowEStyle }}">ELECTRONS</button>
+            <button onClick="{{ setFlowC }}" style="{{ flowCStyle }}">CONVENTIONAL</button>
+          </div>
+        </sc-if>
+        <button onClick="{{ toggleVals }}" style="{{ valChipStyle }}">{{ valLabel }}</button>
+      </div>
+
+      <sc-if value="{{ short }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);background:#B3261E;color:#FFFDF8;border-radius:10px;padding:10px 18px;text-align:center;box-shadow:0 8px 22px rgba(26,23,20,.18);">
+          <div style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1.6px;">SHORT CIRCUIT · VERY LARGE CURRENT</div>
+          <div style="font-size:13px;opacity:.92;margin-top:2px;">Add a bulb or resistor so the current has something to push through.</div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ hasActiveCh }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;top:12px;right:12px;width:288px;background:#FFFDF8;border:1.5px solid #A93411;border-radius:14px;padding:15px 17px;box-shadow:0 10px 26px rgba(26,23,20,.12);">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.8px;color:#A93411;">CHALLENGE {{ activeNum }}</span>
+            <span style="flex:1;"></span>
+            <button onClick="{{ quitCh }}" aria-label="Quit challenge" style="border:0;background:transparent;cursor:pointer;padding:2px;color:#7A6E5F;" style-hover="color:#A93411;"><svg width="13" height="13" viewBox="0 0 12 12"><path d="M2 2 L10 10 M10 2 L2 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>
+          </div>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:19px;margin-top:4px;">{{ activeTitle }}</div>
+          <div style="font-size:14px;line-height:1.5;color:#6E655D;margin-top:4px;">{{ activeBlurb }}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.6px;line-height:1.6;color:#7A6E5F;margin-top:9px;border-top:1px solid #E0D2B9;padding-top:9px;">HINT · {{ activeHint }}</div>
+          <button onClick="{{ checkNow }}" style="width:100%;margin-top:11px;padding:10px 0;border-radius:9px;border:0;background:#A93411;color:#FFFDF8;font-size:15px;font-family:'Instrument Sans',sans-serif;font-weight:600;cursor:pointer;" style-hover="background:#7F2408;">Check my circuit</button>
+          <sc-if value="{{ chMsgOk }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:8px;align-items:flex-start;margin-top:10px;color:#A93411;">
+              <svg width="16" height="16" viewBox="0 0 16 16" style="flex:none;margin-top:2px;"><circle cx="8" cy="8" r="7.2" fill="#A93411"></circle><path d="M4.6 8.4 L7 10.8 L11.4 5.6" stroke="#FFFDF8" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              <span style="font-size:13.5px;line-height:1.45;font-weight:600;">{{ chMsgText }}</span>
+            </div>
+          </sc-if>
+          <sc-if value="{{ chMsgFail }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:13.5px;line-height:1.45;color:#B3261E;margin-top:10px;">{{ chMsgText }}</div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <div style="position:absolute;bottom:12px;left:12px;display:flex;flex-direction:column;gap:6px;">
+        <button onClick="{{ zoomIn }}" aria-label="Zoom in" style="width:36px;height:36px;border-radius:9px;border:1.5px solid #E0D2B9;background:#FFFDF8;cursor:pointer;color:#1A1714;display:flex;align-items:center;justify-content:center;" style-hover="border-color:#A93411;color:#A93411;"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>
+        <button onClick="{{ zoomOut }}" aria-label="Zoom out" style="width:36px;height:36px;border-radius:9px;border:1.5px solid #E0D2B9;background:#FFFDF8;cursor:pointer;color:#1A1714;display:flex;align-items:center;justify-content:center;" style-hover="border-color:#A93411;color:#A93411;"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>
+        <button onClick="{{ fit }}" aria-label="Fit circuit in view" style="width:36px;height:36px;border-radius:9px;border:1.5px solid #E0D2B9;background:#FFFDF8;cursor:pointer;color:#1A1714;display:flex;align-items:center;justify-content:center;" style-hover="border-color:#A93411;color:#A93411;"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 5V2h3M9 2h3v3M12 9v3H9M5 12H2V9" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+      </div>
+
+      <div style="position:absolute;bottom:16px;left:70px;right:70px;text-align:center;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'DM Mono',monospace;font-size:11.5px;letter-spacing:1.3px;color:#7A6E5F;">DRAG A PART ONTO THE PAPER · ENDS SNAP TOGETHER · DRAG ACROSS PARTS TO SELECT MANY · SHIFT-DRAG TO PAN</div>
+    </div>
+
+    <sc-if value="{{ inspOpen }}" hint-placeholder-val="{{ true }}">
+    <div style="width:312px;flex:none;background:#FFFDF8;border-left:1.5px solid #E0D2B9;overflow-y:auto;padding:17px 17px 28px;">
+
+      <div style="display:flex;align-items:center;">
+        <div style="font-family:'DM Mono',monospace;font-size:11.5px;letter-spacing:1.8px;color:#7A6E5F;">INSPECTOR</div>
+        <span style="flex:1;"></span>
+        <button onClick="{{ toggleInsp }}" aria-label="Hide inspector panel" style="border:0;background:transparent;cursor:pointer;padding:2px 4px;color:#7A6E5F;" style-hover="color:#A93411;"><svg width="13" height="13" viewBox="0 0 12 12"><path d="M4 2 L9 6 L4 10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+      </div>
+      <sc-if value="{{ selIsMulti }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:8px;">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:22px;">{{ selCount }} parts selected</div>
+          <div style="font-size:14px;color:#6E655D;margin-top:5px;line-height:1.5;">Delete them together, or click a single part to edit it.</div>
+          <button onClick="{{ delMulti }}" style="margin-top:12px;padding:9px 16px;border-radius:9px;border:1.5px solid #B3261E;background:transparent;color:#B3261E;font-size:14px;font-weight:600;font-family:'Instrument Sans',sans-serif;cursor:pointer;" style-hover="background:#B3261E;color:#FFFDF8;">Delete selected</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ selIsPart }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:8px;">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:22px;">{{ selTitle }}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.2px;color:#7A6E5F;margin-top:3px;">{{ selSub }}</div>
+          <sc-for list="{{ sliders }}" as="s" hint-placeholder-count="1">
+            <div style="margin-top:13px;">
+              <div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:11.5px;letter-spacing:1.2px;color:#7A6E5F;"><span>{{ s.label }}</span><span style="color:#A93411;">{{ s.disp }}</span></div>
+              <input type="range" min="{{ s.min }}" max="{{ s.max }}" step="{{ s.step }}" value="{{ s.val }}" onChange="{{ s.set }}" />
+            </div>
+          </sc-for>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:15px;text-align:center;">
+            <div style="background:#FBF3E6;border-radius:9px;padding:9px 4px;"><div style="font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:1.2px;color:#7A6E5F;">I</div><div style="font-family:'DM Mono',monospace;font-size:14px;color:#1A1714;margin-top:3px;">{{ selI }}</div></div>
+            <div style="background:#FBF3E6;border-radius:9px;padding:9px 4px;"><div style="font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:1.2px;color:#7A6E5F;">V</div><div style="font-family:'DM Mono',monospace;font-size:14px;color:#1A1714;margin-top:3px;">{{ selV2 }}</div></div>
+            <div style="background:#FBF3E6;border-radius:9px;padding:9px 4px;"><div style="font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:1.2px;color:#7A6E5F;">R</div><div style="font-family:'DM Mono',monospace;font-size:14px;color:#1A1714;margin-top:3px;">{{ selR }}</div></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:13px;flex-wrap:wrap;">
+            <sc-if value="{{ selIsSwitch }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ toggleSwitchSel }}" style="padding:8px 15px;border-radius:9px;border:1.5px solid #A93411;background:transparent;color:#A93411;font-size:14px;font-weight:600;font-family:'Instrument Sans',sans-serif;cursor:pointer;" style-hover="background:#A93411;color:#FFFDF8;">{{ switchLabel }}</button>
+            </sc-if>
+            <sc-if value="{{ selBlown }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ replaceSel }}" style="padding:8px 15px;border-radius:9px;border:1.5px solid #A93411;background:transparent;color:#A93411;font-size:14px;font-weight:600;font-family:'Instrument Sans',sans-serif;cursor:pointer;" style-hover="background:#A93411;color:#FFFDF8;">Replace</button>
+            </sc-if>
+            <button onClick="{{ deleteSel }}" style="padding:8px 15px;border-radius:9px;border:1.5px solid #E0D2B9;background:transparent;color:#6E655D;font-size:14px;font-family:'Instrument Sans',sans-serif;cursor:pointer;" style-hover="border-color:#B3261E;color:#B3261E;">Delete</button>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ selIsVert }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:8px;">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:22px;">Joint</div>
+          <div style="font-size:14px;color:#6E655D;margin-top:5px;line-height:1.5;">{{ vertCount }} ends joined here.</div>
+          <button onClick="{{ splitSel }}" style="margin-top:11px;padding:8px 15px;border-radius:9px;border:1.5px solid #A93411;background:transparent;color:#A93411;font-size:14px;font-weight:600;font-family:'Instrument Sans',sans-serif;cursor:pointer;" style-hover="background:#A93411;color:#FFFDF8;">Split apart</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ noSel }}" hint-placeholder-val="{{ true }}">
+        <div style="font-size:14px;color:#6E655D;margin-top:8px;line-height:1.55;">Tap any part to change its value or delete it. Drag across the paper to select many at once. Ctrl+Z undoes.</div>
+      </sc-if>
+
+      <div style="border-top:1.5px solid #E0D2B9;margin-top:19px;padding-top:15px;">
+        <div style="font-family:'DM Mono',monospace;font-size:11.5px;letter-spacing:1.8px;color:#7A6E5F;">CIRCUIT READINGS</div>
+        <div style="display:flex;justify-content:space-between;margin-top:9px;font-size:14.5px;"><span style="color:#6E655D;">Supply current</span><span style="font-family:'DM Mono',monospace;font-size:14px;">{{ srcIDisp }}</span></div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:14.5px;"><span style="color:#6E655D;">Power delivered</span><span style="font-family:'DM Mono',monospace;font-size:14px;">{{ powDisp }}</span></div>
+      </div>
+
+      <div style="border-top:1.5px solid #E0D2B9;margin-top:17px;padding-top:15px;">
+        <div style="font-family:'DM Mono',monospace;font-size:11.5px;letter-spacing:1.8px;color:#7A6E5F;">OHM'S LAW · V = I × R</div>
+        <sc-if value="{{ ohmHas }}" hint-placeholder-val="{{ false }}">
+          <div style="font-family:'DM Mono',monospace;font-size:16.5px;margin-top:10px;color:#1A1714;">{{ ohmLine }}</div>
+          <div style="font-size:13px;color:#7A6E5F;margin-top:5px;">volts = amps × ohms, for the selected part</div>
+        </sc-if>
+        <sc-if value="{{ ohmNone }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size:14px;color:#6E655D;margin-top:9px;">Select a resistor or bulb to see the law with live numbers.</div>
+        </sc-if>
+      </div>
+
+      <sc-if value="{{ isKs4 }}" hint-placeholder-val="{{ false }}">
+        <div style="border-top:1.5px solid #E0D2B9;margin-top:17px;padding-top:15px;">
+          <div style="font-family:'DM Mono',monospace;font-size:11.5px;letter-spacing:1.8px;color:#7A6E5F;">I–V GRAPH</div>
+          <div style="margin-top:9px;">{{ graph }}</div>
+          <div style="display:flex;gap:8px;margin-top:9px;">
+            <button onClick="{{ plotPoint }}" style="flex:1;padding:8px 0;border-radius:9px;border:1.5px solid #A93411;background:transparent;color:#A93411;font-size:13.5px;font-weight:600;font-family:'Instrument Sans',sans-serif;cursor:pointer;" style-hover="background:#A93411;color:#FFFDF8;">Plot point</button>
+            <button onClick="{{ clearIV }}" style="padding:8px 15px;border-radius:9px;border:1.5px solid #E0D2B9;background:transparent;color:#6E655D;font-size:13.5px;font-family:'Instrument Sans',sans-serif;cursor:pointer;" style-hover="border-color:#A93411;color:#A93411;">Clear</button>
+          </div>
+          <div style="font-size:12.5px;color:#7A6E5F;margin-top:7px;line-height:1.5;">Select a part, change the supply, plot points — the shape is the part's character.</div>
+        </div>
+      </sc-if>
+
+      <div style="border-top:1.5px solid #E0D2B9;margin-top:17px;padding-top:15px;">
+        <div style="font-family:'DM Mono',monospace;font-size:11.5px;letter-spacing:1.8px;color:#7A6E5F;">SAVED CIRCUITS</div>
+        <div style="display:flex;gap:6px;margin-top:9px;">
+          <input type="text" value="{{ saveName }}" onChange="{{ onSaveName }}" placeholder="Name this circuit" style="flex:1;min-width:0;padding:8px 11px;border:1.5px solid #E0D2B9;border-radius:9px;background:#FBF3E6;font-family:'Instrument Sans',sans-serif;font-size:14px;color:#1A1714;outline-color:#A93411;" />
+          <button onClick="{{ saveNow }}" style="padding:8px 15px;border-radius:9px;border:1.5px solid #A93411;background:transparent;color:#A93411;font-size:14px;font-weight:600;font-family:'Instrument Sans',sans-serif;cursor:pointer;" style-hover="background:#A93411;color:#FFFDF8;">Save</button>
+        </div>
+        <sc-for list="{{ saved }}" as="sv" hint-placeholder-count="0">
+          <div style="display:flex;align-items:center;gap:8px;margin-top:7px;">
+            <button onClick="{{ sv.load }}" style="flex:1;text-align:left;padding:8px 11px;border-radius:9px;border:1.5px solid #E0D2B9;background:transparent;font-size:14px;color:#1A1714;font-family:'Instrument Sans',sans-serif;cursor:pointer;" style-hover="border-color:#A93411;color:#A93411;">{{ sv.name }}</button>
+            <button onClick="{{ sv.del }}" aria-label="Delete saved circuit" style="border:0;background:transparent;cursor:pointer;color:#7A6E5F;padding:4px;" style-hover="color:#B3261E;"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2 L10 10 M10 2 L2 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ showCh }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(26,23,20,.5);z-index:60;display:flex;align-items:center;justify-content:center;padding:28px;">
+      <div style="width:min(980px,94vw);max-height:86vh;overflow-y:auto;background:#FFFDF8;border-radius:18px;padding:28px 30px 32px;box-shadow:0 24px 60px rgba(26,23,20,.3);">
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+          <div>
+            <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.8px;color:#A93411;">PRACTICE CIRCUITS</div>
+            <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:30px;letter-spacing:-0.02em;margin-top:4px;">Choose a circuit to build</div>
+            <div style="font-size:14.5px;color:#6E655D;margin-top:5px;">Twelve builds, easy to hard. Build it on the paper, then press Check.</div>
+          </div>
+          <div style="flex:1;"></div>
+          <button onClick="{{ closeCh }}" aria-label="Close" style="border:1.5px solid #E0D2B9;background:transparent;border-radius:9px;width:34px;height:34px;cursor:pointer;color:#6E655D;display:flex;align-items:center;justify-content:center;" style-hover="border-color:#A93411;color:#A93411;"><svg width="13" height="13" viewBox="0 0 12 12"><path d="M2 2 L10 10 M10 2 L2 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(276px,1fr));gap:13px;margin-top:22px;">
+          <sc-for list="{{ chCards }}" as="c" hint-placeholder-count="6">
+            <div style="{{ c.cardStyle }}">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-family:'DM Mono',monospace;font-size:12px;color:#A93411;">{{ c.num }}</span>
+                <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#7A6E5F;border:1px solid #E0D2B9;border-radius:999px;padding:2px 9px;">{{ c.lvl }}</span>
+                <span style="flex:1;"></span>
+                <sc-if value="{{ c.done }}" hint-placeholder-val="{{ false }}">
+                  <svg width="17" height="17" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7.2" fill="#A93411"></circle><path d="M4.6 8.4 L7 10.8 L11.4 5.6" stroke="#FFFDF8" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </sc-if>
+              </div>
+              <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:18px;margin-top:6px;">{{ c.title }}</div>
+              <div style="font-size:13.5px;color:#6E655D;line-height:1.5;margin-top:4px;min-height:42px;">{{ c.blurb }}</div>
+              <div style="display:flex;gap:8px;margin-top:11px;">
+                <button onClick="{{ c.build }}" style="flex:1;padding:8px 0;border-radius:9px;border:1.5px solid #A93411;background:transparent;color:#A93411;font-size:13.5px;font-weight:600;font-family:'Instrument Sans',sans-serif;cursor:pointer;" style-hover="background:#A93411;color:#FFFDF8;">Build this</button>
+                <sc-if value="{{ teacher }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ c.loadSol }}" style="padding:8px 12px;border-radius:9px;border:1.5px solid #E0D2B9;background:transparent;color:#6E655D;font-size:13.5px;font-family:'Instrument Sans',sans-serif;cursor:pointer;" style-hover="border-color:#A93411;color:#A93411;">Show built</button>
+                </sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startLevel&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;ks3&quot;,&quot;options&quot;:[&quot;ks3&quot;,&quot;ks4&quot;],&quot;tsType&quot;:&quot;'ks3' | 'ks4'&quot;,&quot;section&quot;:&quot;Behaviour&quot;},&quot;burnout&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;},&quot;buzzerSound&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;}}">
+class Component extends DCLogic {
+  state = {
+    parts: {}, verts: {}, nextId: 1,
+    sel: null, selV: null, selSet: {}, marq: null,
+    view: 'pict', level: 'ks3',
+    teacher: false, showCur: true, flow: 'e', showVals: true, showInsp: true,
+    zoom: 1, panX: 40, panY: 20,
+    showCh: false, activeCh: null, chMsg: null, done: {},
+    saved: [], saveName: '',
+    iv: {}, short: false, snapT: null, tick: 0
+  };
+  _flowRefs = {}; _flowGeo = {}; _motRefs = {}; _buzRefs = {}; _off = {}; _ang = {};
+  _hist = [];
+
+  CAT = {
+    wire:      { n: 'Wire', bh: 0,  L: 100 },
+    cell:      { n: 'Cell', bh: 18, L: 110, src: 1, props: { v: 1.5 }, slid: [['v','EMF','V',0.5,3,0.1]] },
+    battery:   { n: 'Battery', bh: 30, L: 130, src: 1, props: { v: 9 }, slid: [['v','EMF','V',1,24,0.5]] },
+    ac:        { n: 'AC supply', bh: 16, L: 110, src: 1, ks4: 1, props: { v: 2, f: 1 }, slid: [['v','PEAK EMF','V',0.5,6,0.5],['f','FREQUENCY','Hz',0.25,2,0.25]] },
+    switch:    { n: 'Switch', bh: 24, L: 110, props: { closed: false } },
+    bulb:      { n: 'Bulb', bh: 18, L: 110, props: { r: 10 }, slid: [['r','RESISTANCE','Ω',2,50,1]] },
+    led:       { n: 'LED', bh: 14, L: 100, ks4: 1, props: {} },
+    motor:     { n: 'Motor', bh: 17, L: 110, props: {} },
+    buzzer:    { n: 'Buzzer', bh: 15, L: 110, props: {} },
+    resistor:  { n: 'Resistor', bh: 23, L: 110, props: { r: 10 }, slid: [['r','RESISTANCE','Ω',1,250,1]] },
+    rheostat:  { n: 'Variable resistor', bh: 23, L: 120, props: { r: 50 }, slid: [['r','RESISTANCE','Ω',1,100,1]] },
+    fuse:      { n: 'Fuse', bh: 21, L: 110, ks4: 1, props: { rating: 1 }, slid: [['rating','RATING','A',0.5,13,0.5]] },
+    ldr:       { n: 'LDR', bh: 15, L: 110, ks4: 1, props: { light: 70 }, slid: [['light','LIGHT LEVEL','%',0,100,1]] },
+    thermistor:{ n: 'Thermistor', bh: 15, L: 110, ks4: 1, props: { temp: 50 }, slid: [['temp','TEMPERATURE','°C',0,100,1]] },
+    ammeter:   { n: 'Ammeter', bh: 18, L: 110, props: {} },
+    voltmeter: { n: 'Voltmeter', bh: 18, L: 110, props: {} }
+  };
+
+  SOLS = (() => {
+    const top = [['wire',240,160,450,160],['cell',450,160,560,160],['wire',560,160,760,160]];
+    const top2 = [['wire',240,160,390,160],['cell',390,160,500,160],['cell',500,160,610,160],['wire',610,160,760,160]];
+    const topB = v => [['wire',240,160,450,160],['battery',450,160,570,160,{v}],['wire',570,160,760,160]];
+    const right = [['wire',760,160,760,440]];
+    const rightSw = [['wire',760,160,760,250],['switch',760,250,760,360,{closed:true}],['wire',760,360,760,440]];
+    const rightAm = [['wire',760,160,760,240],['ammeter',760,240,760,350],['wire',760,350,760,440]];
+    const rightRh = [['wire',760,160,760,240],['rheostat',760,240,760,350],['wire',760,350,760,440]];
+    const left = [['wire',240,440,240,160]];
+    const botBulb = [['wire',760,440,560,440],['bulb',560,440,450,440],['wire',450,440,240,440]];
+    const bot2s = [['wire',760,440,620,440],['bulb',620,440,510,440],['wire',510,440,450,440],['bulb',450,440,340,440],['wire',340,440,240,440]];
+    const branch = [['wire',760,440,760,540],['wire',760,540,620,540],['bulb',620,540,510,540],['wire',510,540,240,540],['wire',240,540,240,440]];
+    const branchSw = [['wire',760,440,760,540],['switch',760,540,650,540,{closed:true}],['bulb',650,540,540,540],['wire',540,540,240,540],['wire',240,540,240,440]];
+    const vm = (x1,x2) => [['wire',x1,440,x1,530],['voltmeter',x1,530,x2,530],['wire',x2,530,x2,440]];
+    const botRR = (r1,r2) => [['wire',760,440,620,440],['resistor',620,440,510,440,{r:r1}],['resistor',510,440,400,440,{r:r2}],['wire',400,440,240,440]];
+    return [
+      [...top, ...right, ...botBulb, ...left],
+      [...top, ...rightSw, ...botBulb, ...left],
+      [...top2, ...right, ...botBulb, ...left],
+      [...top, ...right, ...bot2s, ...left],
+      [...top, ...right, ...botBulb, ...left, ...branch],
+      [...top, ...rightAm, ...botBulb, ...left],
+      [...top, ...right, ...botBulb, ...left, ...vm(560,450)],
+      [...top, ...rightRh, ...botBulb, ...left],
+      [...top, ...right, ...botBulb, ...left, ...branchSw],
+      [...topB(6), ...rightAm, ...botRR(10,20), ...left],
+      [...topB(6), ...right, ['wire',760,440,620,440],['resistor',620,440,510,440,{r:220}],['led',510,440,400,440],['wire',400,440,240,440], ...left],
+      [...topB(6), ...right, ...botRR(10,20), ...left, ...vm(510,400)]
+    ];
+  })();
+
+  CH = [
+    { lvl:'KS3', title:'First light', blurb:'Make one bulb glow using a cell and wires.', hint:'A circuit only works as one complete loop — no gaps.', win:'The loop is complete and charge is flowing.' },
+    { lvl:'KS3', title:'Add a switch', blurb:'Control your bulb with a switch.', hint:'The switch must sit in the same loop as the bulb.', win:'Open the switch and the whole loop stops.' },
+    { lvl:'KS3', title:'Twice the push', blurb:'Use two cells in series to make one bulb brighter.', hint:'Cells in series add their push (EMF).', win:'Double the EMF, double the current — much brighter.' },
+    { lvl:'KS3', title:'Two bulbs in series', blurb:'Wire two bulbs into one single loop.', hint:'Series means one loop: the same current passes through both.', win:'Same current everywhere — and each bulb is dimmer.' },
+    { lvl:'KS3', title:'Two bulbs in parallel', blurb:'Give each bulb its own branch.', hint:'Current splits at a junction and rejoins after.', win:'Full brightness on both — the current split at the junction.' },
+    { lvl:'KS3', title:'Measure the current', blurb:'Build a working bulb loop, then add an ammeter in series.', hint:'Ammeters go IN the loop, in series.', win:'That reading is the current through the whole loop.' },
+    { lvl:'KS3', title:'Measure the push', blurb:'Read the potential difference across a glowing bulb.', hint:'Voltmeters connect across a component, in parallel.', win:'That is the p.d. across the bulb.' },
+    { lvl:'KS3', title:'Dimmer switch', blurb:'Use a variable resistor to dim a bulb.', hint:'More resistance means less current — drag the slider.', win:'More resistance, less current, dimmer bulb.' },
+    { lvl:'KS4', title:'Independent control', blurb:'Two parallel bulbs, with a switch that turns off only one.', hint:'Put the switch inside one branch, not in the main loop.', win:'One branch switched, the other unaffected.' },
+    { lvl:'KS4', title:'Predict, then check', blurb:'A 6 V battery with 10 Ω and 20 Ω in series. Prove I = 0.2 A.', hint:'I = V ÷ R. Resistances in series add.', win:'I = 6 ÷ 30 = 0.2 A — the meter agrees with the maths.' },
+    { lvl:'KS4', title:'Protect the LED', blurb:'Light an LED safely with a series resistor.', hint:'An LED conducts one way only, and needs a resistor to limit current.', win:'Right direction, safe current.' },
+    { lvl:'KS4', title:'Potential divider', blurb:'Split a battery p.d. between two resistors and measure one share.', hint:'The bigger resistance takes the bigger share of the p.d.', win:'The p.d. divides in the ratio of the resistances.' }
+  ];
+
+  componentDidMount() {
+    let saved = [];
+    try { saved = JSON.parse(localStorage.getItem('mrb-circuitlab-saves') || '[]'); } catch (e) {}
+    const lvl = this.props.startLevel === 'ks4' ? 'ks4' : 'ks3';
+    const o = this.buildFrom([...this.SOLS[0], ['switch',430,560,540,560]]);
+    this.setState({ saved, level: lvl, parts: o.parts, verts: o.verts, nextId: o.n });
+    this._mv = e => this.onMove(e); this._up = e => this.onUp(e); this._kd = e => this.onKey(e);
+    window.addEventListener('pointermove', this._mv);
+    window.addEventListener('pointerup', this._up);
+    window.addEventListener('keydown', this._kd);
+    this._last = 0; this._lastAC = 0; this._lastBurn = 0;
+    this._raf = requestAnimationFrame(t => this.tickFrame(t));
+    let tries = 0;
+    const tryFit = () => {
+      if (this._svg && this._svg.clientWidth > 0 && this._svg.clientHeight > 0) this.fit();
+      else if (++tries < 40) setTimeout(tryFit, 100);
+    };
+    setTimeout(tryFit, 80);
+  }
+  componentWillUnmount() {
+    cancelAnimationFrame(this._raf);
+    window.removeEventListener('pointermove', this._mv);
+    window.removeEventListener('pointerup', this._up);
+    window.removeEventListener('keydown', this._kd);
+    if (this._snd) { try { this._osc.stop(); this._acx.close(); } catch (e) {} }
+  }
+
+  pushHist() {
+    this._hist.push({ p: this.state.parts, v: this.state.verts, n: this.state.nextId });
+    if (this._hist.length > 60) this._hist.shift();
+  }
+  undo() {
+    const hh = this._hist.pop(); if (!hh) return;
+    this.setState({ parts: hh.p, verts: hh.v, nextId: hh.n, sel: null, selV: null, selSet: {}, snapT: null, marq: null });
+  }
+
+  buildFrom(list) {
+    const vmap = {}; const o = { parts: {}, verts: {}, n: this.state.nextId || 1 };
+    for (const it of list) {
+      const [t, ax, ay, bx, by, props] = it;
+      const gv = (x, y) => { const k = x + ',' + y; if (!vmap[k]) { const vid = 'v' + (o.n++); vmap[k] = vid; o.verts[vid] = { x, y }; } return vmap[k]; };
+      const id = 'p' + (o.n++);
+      o.parts[id] = { id, t, va: gv(ax, ay), vb: gv(bx, by), p: Object.assign({}, this.CAT[t].props || {}, props || {}), blown: false };
+    }
+    return o;
+  }
+  loadNet(list) {
+    this.pushHist();
+    const o = this.buildFrom(list);
+    this.setState({ parts: o.parts, verts: o.verts, nextId: o.n, sel: null, selV: null, selSet: {}, chMsg: null, short: false });
+  }
+
+  isSrc(t) { return t === 'cell' || t === 'battery' || t === 'ac'; }
+  srcE(pt, t) { if (pt.t === 'ac') return pt.p.v * Math.sin(2 * Math.PI * pt.p.f * t); return pt.p.v; }
+  partR(pt) {
+    const p = pt.p;
+    switch (pt.t) {
+      case 'wire': return 0.01;
+      case 'switch': return p.closed ? 0.01 : 1e9;
+      case 'bulb': return pt.blown ? 1e9 : Math.max(0.5, p.r);
+      case 'resistor': case 'rheostat': return Math.max(0.5, p.r);
+      case 'fuse': return pt.blown ? 1e9 : 0.01;
+      case 'ammeter': return 0.001;
+      case 'voltmeter': return 1e7;
+      case 'motor': return 5;
+      case 'buzzer': return 8;
+      case 'ldr': return 200 + (100 - p.light) * 98;
+      case 'thermistor': return 100 + (100 - p.temp) * 49;
+      default: return 1e9;
+    }
+  }
+  gauss(G, B, n) {
+    for (let c = 0; c < n; c++) {
+      let p = c;
+      for (let r = c + 1; r < n; r++) if (Math.abs(G[r][c]) > Math.abs(G[p][c])) p = r;
+      if (p !== c) { const t = G[p]; G[p] = G[c]; G[c] = t; const tb = B[p]; B[p] = B[c]; B[c] = tb; }
+      const d = G[c][c] || 1e-12;
+      for (let r = c + 1; r < n; r++) {
+        const f = G[r][c] / d; if (!f) continue;
+        for (let k = c; k < n; k++) G[r][k] -= f * G[c][k];
+        B[r] -= f * B[c];
+      }
+    }
+    const x = new Float64Array(n);
+    for (let r = n - 1; r >= 0; r--) {
+      let s = B[r];
+      for (let k = r + 1; k < n; k++) s -= G[r][k] * x[k];
+      x[r] = s / (G[r][r] || 1e-12);
+    }
+    return x;
+  }
+  solve(tNow) {
+    const { parts } = this.state; const ids = Object.keys(parts);
+    const nix = {}; let n = 0;
+    for (const id of ids) { const pt = parts[id]; for (const v of [pt.va, pt.vb]) if (!(v in nix)) nix[v] = n++; }
+    if (n === 0) return { v: {}, i: {}, srcI: 0, srcV: 0, short: false, hasAC: false, on: {} };
+    const prev = this._ledOn || {};
+    const on = {};
+    for (const id of ids) if (parts[id].t === 'led') on[id] = parts[id].blown ? false : (prev[id] !== false);
+    let vres = null; const cur = {};
+    for (let iter = 0; iter < 8; iter++) {
+      const G = Array.from({ length: n }, () => new Float64Array(n)); let B = new Float64Array(n);
+      const stamp = (a, b, g) => { G[a][a] += g; G[b][b] += g; G[a][b] -= g; G[b][a] -= g; };
+      for (const id of ids) {
+        const pt = parts[id]; const a = nix[pt.va], b = nix[pt.vb];
+        if (this.isSrc(pt.t)) { const r = pt.t === 'cell' ? 0.08 : 0.15; const g = 1 / r; const E = this.srcE(pt, tNow); stamp(a, b, g); B[a] -= g * E; B[b] += g * E; }
+        else if (pt.t === 'led') { if (on[id]) { const g = 1 / 15; stamp(a, b, g); B[a] += g * 2; B[b] -= g * 2; } else stamp(a, b, 1e-9); }
+        else stamp(a, b, 1 / this.partR(pt));
+      }
+      for (let i = 0; i < n; i++) G[i][i] += 1e-9;
+      vres = this.gauss(G, B, n);
+      let changed = false;
+      for (const id of ids) {
+        const pt = parts[id]; const va = vres[nix[pt.va]], vb = vres[nix[pt.vb]];
+        let I;
+        if (this.isSrc(pt.t)) { const r = pt.t === 'cell' ? 0.08 : 0.15; I = (va - vb + this.srcE(pt, tNow)) / r; }
+        else if (pt.t === 'led') {
+          I = on[id] ? (va - vb - 2) / 15 : (va - vb) * 1e-9;
+          if (!pt.blown) {
+            if (on[id] && I < -1e-9) { on[id] = false; changed = true; }
+            else if (!on[id] && (va - vb) > 2.02) { on[id] = true; changed = true; }
+          }
+        }
+        else I = (va - vb) / this.partR(pt);
+        cur[id] = I;
+      }
+      if (!changed) break;
+    }
+    this._ledOn = on;
+    const vmap = {}; for (const v in nix) vmap[v] = vres[nix[v]];
+    let srcI = 0, srcV = 0, hasAC = false;
+    for (const id of ids) {
+      const pt = parts[id];
+      if (this.isSrc(pt.t)) {
+        srcI = Math.max(srcI, Math.abs(cur[id]));
+        srcV = Math.max(srcV, Math.abs(vmap[pt.va] - vmap[pt.vb]));
+        if (pt.t === 'ac') hasAC = true;
+      }
+    }
+    return { v: vmap, i: cur, srcI, srcV, short: srcI > 8, hasAC, on };
+  }
+  brightness(pt, I) { if (pt.blown) return 0; const P = I * I * this.partR(pt); return Math.min(1, Math.pow(P / 2.4, 0.55)); }
+
+  tickFrame(ts) {
+    this._raf = requestAnimationFrame(t => this.tickFrame(t));
+    const dt = Math.min(60, ts - (this._last || ts)); this._last = ts;
+    const res = this._res; if (!res) return;
+    const dir = this.state.flow === 'e' ? -1 : 1;
+    for (const id in this._flowRefs) {
+      const el = this._flowRefs[id], g = this._flowGeo[id]; if (!el || !g) continue;
+      const I = res.i[id] || 0;
+      const sp = Math.max(-260, Math.min(260, I * 300));
+      this._off[id] = (this._off[id] || 0) + dir * sp * dt / 1000;
+      const gap = g.L / g.n, kids = el.children;
+      for (let k = 0; k < kids.length; k++) {
+        const t = (((this._off[id] + k * gap) % g.L) + g.L) % g.L;
+        kids[k].setAttribute('transform', 'translate(' + (g.ax + g.ux * t).toFixed(1) + ',' + (g.ay + g.uy * t).toFixed(1) + ')');
+      }
+    }
+    for (const id in this._motRefs) {
+      const el = this._motRefs[id]; if (!el) continue;
+      const I = res.i[id] || 0; if (!I) continue;
+      this._ang[id] = ((this._ang[id] || 0) + I * dt * 0.6) % 360;
+      el.setAttribute('transform', 'rotate(' + this._ang[id].toFixed(1) + ')');
+    }
+    for (const id in this._buzRefs) {
+      const el = this._buzRefs[id]; if (!el) continue;
+      const I = Math.abs(res.i[id] || 0);
+      el.setAttribute('opacity', I > 0.02 ? (0.5 + 0.45 * Math.sin(ts / 55)).toFixed(2) : '0');
+    }
+    if (res.hasAC && ts - this._lastAC > 45) { this._lastAC = ts; this.setState(s => ({ tick: s.tick + 1 })); }
+    if (ts - this._lastBurn > 250) { this._lastBurn = ts; this.burnCheck(res); }
+    this.soundCheck(res);
+  }
+  burnCheck(res) {
+    if (this.props.burnout !== false) {
+      const parts = this.state.parts; let upd = null;
+      for (const id in parts) {
+        const pt = parts[id]; if (pt.blown) continue;
+        const I = Math.abs(res.i[id] || 0);
+        if ((pt.t === 'bulb' && I > 1.5) || (pt.t === 'fuse' && I > pt.p.rating) || (pt.t === 'led' && I > 0.08)) {
+          upd = upd || {}; upd[id] = Object.assign({}, pt, { blown: true });
+        }
+      }
+      if (upd) this.setState(s => ({ parts: Object.assign({}, s.parts, upd) }));
+    }
+    if (res.short !== this.state.short) this.setState({ short: res.short });
+  }
+  soundCheck(res) {
+    if (!this.props.buzzerSound) return;
+    const buzzing = Object.keys(this.state.parts).some(id => this.state.parts[id].t === 'buzzer' && Math.abs(res.i[id] || 0) > 0.02);
+    if (buzzing && !this._snd) {
+      try {
+        this._acx = new (window.AudioContext || window.webkitAudioContext)();
+        this._osc = this._acx.createOscillator(); this._osc.frequency.value = 740;
+        const g = this._acx.createGain(); g.gain.value = 0.035;
+        this._osc.connect(g); g.connect(this._acx.destination); this._osc.start(); this._snd = true;
+      } catch (e) {}
+    }
+    if (!buzzing && this._snd) { try { this._osc.stop(); this._acx.close(); } catch (e) {} this._snd = false; }
+  }
+
+  world(e) { const r = this._svg.getBoundingClientRect(); const s = this.state; return { x: (e.clientX - r.left - s.panX) / s.zoom, y: (e.clientY - r.top - s.panY) / s.zoom }; }
+  attached(vid) { const out = []; const parts = this.state.parts; for (const id in parts) { if (parts[id].va === vid) out.push([id, 'a']); if (parts[id].vb === vid) out.push([id, 'b']); } return out; }
+  snapshot() { return { p: this.state.parts, v: this.state.verts, n: this.state.nextId }; }
+  downPal(e, t) {
+    e.preventDefault();
+    this._palDrag = { t };
+  }
+  downPart(e, id) {
+    e.stopPropagation();
+    const w = this.world(e); const pt = this.state.parts[id];
+    const A = this.state.verts[pt.va], Bv = this.state.verts[pt.vb];
+    this._drag = { m: 'part', id, sx: w.x, sy: w.y, ax: A.x, ay: A.y, bx: Bv.x, by: Bv.y, moved: false, pre: this.snapshot() };
+  }
+  downVert(e, vid) { e.stopPropagation(); const w = this.world(e); this._drag = { m: 'vert', id: vid, sx: w.x, sy: w.y, moved: false, pre: this.snapshot() }; }
+  downBg(e) {
+    if (e.shiftKey || e.button === 1) {
+      this._drag = { m: 'pan', cx: e.clientX, cy: e.clientY, px: this.state.panX, py: this.state.panY, moved: false };
+    } else {
+      const w = this.world(e);
+      this._drag = { m: 'marq', sx: w.x, sy: w.y, moved: false };
+    }
+  }
+  snapNear(vid, pos, parts, verts, rad) {
+    const myParts = [];
+    for (const id in parts) { if (parts[id].va === vid || parts[id].vb === vid) myParts.push(id); }
+    let best = null, bd = rad / this.state.zoom;
+    for (const id in verts) {
+      if (id === vid) continue;
+      let shares = false;
+      for (const pid of myParts) { const pp = parts[pid]; if (pp.va === id || pp.vb === id) { shares = true; break; } }
+      if (shares) continue;
+      const v = verts[id]; const dd = Math.hypot(v.x - pos.x, v.y - pos.y);
+      if (dd < bd) { bd = dd; best = id; }
+    }
+    return best;
+  }
+  mergeInto(parts, verts, from, to) {
+    for (const id in parts) {
+      const pt = parts[id];
+      if (pt.va === from || pt.vb === from) {
+        parts[id] = Object.assign({}, pt, { va: pt.va === from ? to : pt.va, vb: pt.vb === from ? to : pt.vb });
+      }
+    }
+    delete verts[from];
+  }
+  onMove(e) {
+    if (this._palDrag && !this._drag && this._svg) {
+      const r = this._svg.getBoundingClientRect();
+      if (e.clientX > r.left && e.clientX < r.right && e.clientY > r.top && e.clientY < r.bottom) {
+        const t = this._palDrag.t; this._palDrag = null;
+        const cat = this.CAT[t];
+        const w = this.world(e);
+        this.pushHist();
+        const parts = Object.assign({}, this.state.parts); const verts = Object.assign({}, this.state.verts);
+        let n = this.state.nextId;
+        const id = 'p' + (n++), va = 'v' + (n++), vb = 'v' + (n++);
+        verts[va] = { x: w.x - cat.L / 2, y: w.y }; verts[vb] = { x: w.x + cat.L / 2, y: w.y };
+        parts[id] = { id, t, va, vb, p: Object.assign({}, cat.props || {}), blown: false };
+        this.setState({ parts, verts, nextId: n, sel: id, selV: null, selSet: {} });
+        this._drag = { m: 'part', id, sx: w.x, sy: w.y, ax: w.x - cat.L / 2, ay: w.y, bx: w.x + cat.L / 2, by: w.y, moved: true, pre: null };
+      }
+      return;
+    }
+    const d = this._drag; if (!d) return;
+    if (d.m === 'pan') {
+      const dx = e.clientX - d.cx, dy = e.clientY - d.cy;
+      if (Math.abs(dx) + Math.abs(dy) > 3) d.moved = true;
+      this.setState({ panX: d.px + dx, panY: d.py + dy });
+      return;
+    }
+    const w = this.world(e); const dx = w.x - d.sx, dy = w.y - d.sy;
+    if (Math.abs(dx) + Math.abs(dy) > 3) d.moved = true;
+    if (d.m === 'marq') {
+      this.setState({ marq: { x1: Math.min(d.sx, w.x), y1: Math.min(d.sy, w.y), x2: Math.max(d.sx, w.x), y2: Math.max(d.sy, w.y) } });
+    } else if (d.m === 'part') {
+      const pt = this.state.parts[d.id];
+      const verts = Object.assign({}, this.state.verts);
+      verts[pt.va] = { x: d.ax + dx, y: d.ay + dy };
+      verts[pt.vb] = { x: d.bx + dx, y: d.by + dy };
+      const sa = this.snapNear(pt.va, verts[pt.va], this.state.parts, verts, 26);
+      const sb = this.snapNear(pt.vb, verts[pt.vb], this.state.parts, verts, 26);
+      this.setState({ verts, snapT: sa || sb || null });
+    } else if (d.m === 'vert') {
+      const verts = Object.assign({}, this.state.verts);
+      const t = this.snapNear(d.id, w, this.state.parts, verts, 30);
+      verts[d.id] = t ? { x: verts[t].x, y: verts[t].y } : { x: w.x, y: w.y };
+      this.setState({ verts, snapT: t });
+    }
+  }
+  onUp(e) {
+    if (this._palDrag) {
+      const t = this._palDrag.t; this._palDrag = null;
+      if (!this._drag) this.addPart(t);
+    }
+    const d = this._drag; if (!d) return; this._drag = null;
+    if (d.m === 'marq') {
+      const m = this.state.marq;
+      if (!d.moved || !m) { this.setState({ sel: null, selV: null, selSet: {}, marq: null }); return; }
+      const hit = {};
+      for (const id in this.state.parts) {
+        const pt = this.state.parts[id];
+        const A = this.state.verts[pt.va], B = this.state.verts[pt.vb];
+        const inR = p => p && p.x >= m.x1 && p.x <= m.x2 && p.y >= m.y1 && p.y <= m.y2;
+        if (inR(A) || inR(B)) hit[id] = 1;
+      }
+      const ids = Object.keys(hit);
+      this.setState({ marq: null, selV: null, selSet: ids.length > 1 ? hit : {}, sel: ids.length === 1 ? ids[0] : null });
+      return;
+    }
+    if (d.m === 'vert') {
+      const t = this.state.snapT;
+      if (t) {
+        if (d.pre) { this._hist.push(d.pre); if (this._hist.length > 60) this._hist.shift(); }
+        const parts = Object.assign({}, this.state.parts); const verts = Object.assign({}, this.state.verts);
+        this.mergeInto(parts, verts, d.id, t);
+        this.setState({ parts, verts, selV: t, sel: null, selSet: {}, snapT: null });
+      } else {
+        if (d.moved && d.pre) { this._hist.push(d.pre); if (this._hist.length > 60) this._hist.shift(); }
+        if (!d.moved) this.setState({ sel: null, selV: d.id, selSet: {}, snapT: null });
+        else this.setState({ snapT: null });
+      }
+      return;
+    }
+    if (d.m === 'part') {
+      if (!d.moved) {
+        const pt = this.state.parts[d.id];
+        if (pt.t === 'switch') {
+          this.pushHist();
+          const parts = Object.assign({}, this.state.parts);
+          parts[d.id] = Object.assign({}, pt, { p: Object.assign({}, pt.p, { closed: !pt.p.closed }) });
+          this.setState({ parts, sel: d.id, selV: null, selSet: {} });
+        } else this.setState({ sel: d.id, selV: null, selSet: {} });
+        return;
+      }
+      if (d.pre) { this._hist.push(d.pre); if (this._hist.length > 60) this._hist.shift(); }
+      const parts = Object.assign({}, this.state.parts); const verts = Object.assign({}, this.state.verts);
+      let changed = false;
+      for (const side of ['va', 'vb']) {
+        const pt = parts[d.id]; if (!pt) break;
+        const vid = pt[side]; const pos = verts[vid]; if (!pos) continue;
+        const t = this.snapNear(vid, pos, parts, verts, 26);
+        if (t) { this.mergeInto(parts, verts, vid, t); changed = true; }
+      }
+      this.setState(changed ? { parts, verts, snapT: null } : { snapT: null });
+      return;
+    }
+    if (d.m === 'pan' && !d.moved) this.setState({ sel: null, selV: null, selSet: {} });
+  }
+  onKey(e) {
+    if (/INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { this.undo(); e.preventDefault(); return; }
+    if (e.key === 'Escape') { this.setState({ sel: null, selV: null, selSet: {}, marq: null }); return; }
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      if (Object.keys(this.state.selSet).length) { this.delMulti(); e.preventDefault(); }
+      else if (this.state.sel) { this.delPart(this.state.sel); e.preventDefault(); }
+      else if (this.state.selV) { this.split(this.state.selV); e.preventDefault(); }
+    }
+  }
+  split(vid) {
+    const atts = this.attached(vid); if (atts.length < 2) return;
+    this.pushHist();
+    const verts = Object.assign({}, this.state.verts);
+    const parts = Object.assign({}, this.state.parts);
+    let n = this.state.nextId; const base = verts[vid];
+    for (let i = 1; i < atts.length; i++) {
+      const [pid, side] = atts[i]; const pt = parts[pid];
+      const other = verts[side === 'a' ? pt.vb : pt.va];
+      const dx = other.x - base.x, dy = other.y - base.y; const L = Math.hypot(dx, dy) || 1;
+      const nv = 'v' + (n++);
+      verts[nv] = { x: base.x + dx / L * 24, y: base.y + dy / L * 24 };
+      parts[pid] = Object.assign({}, pt, side === 'a' ? { va: nv } : { vb: nv });
+    }
+    this.setState({ verts, parts, nextId: n, selV: null });
+  }
+  delPart(id) {
+    const parts = Object.assign({}, this.state.parts); const pt = parts[id]; if (!pt) return;
+    this.pushHist();
+    delete parts[id];
+    const verts = Object.assign({}, this.state.verts);
+    for (const v of [pt.va, pt.vb]) {
+      const used = Object.keys(parts).some(k => parts[k].va === v || parts[k].vb === v);
+      if (!used) delete verts[v];
+    }
+    this.setState({ parts, verts, sel: null, selSet: {} });
+  }
+  delMulti() {
+    const ids = Object.keys(this.state.selSet); if (!ids.length) return;
+    this.pushHist();
+    const parts = Object.assign({}, this.state.parts); const verts = Object.assign({}, this.state.verts);
+    const drop = [];
+    for (const id of ids) { const pt = parts[id]; if (!pt) continue; drop.push(pt.va, pt.vb); delete parts[id]; }
+    for (const v of drop) {
+      const used = Object.keys(parts).some(k => parts[k].va === v || parts[k].vb === v);
+      if (!used) delete verts[v];
+    }
+    this.setState({ parts, verts, sel: null, selV: null, selSet: {} });
+  }
+  addPart(t) {
+    const cat = this.CAT[t];
+    const cw = this._svg ? this._svg.clientWidth : 900, chh = this._svg ? this._svg.clientHeight : 560;
+    const s = this.state;
+    const cx = (cw / 2 - s.panX) / s.zoom, cy = (chh / 2 - s.panY) / s.zoom;
+    this._stag = ((this._stag || 0) + 1) % 5;
+    const oy = (this._stag - 2) * 44, ox = ((this._stag * 53) % 90) - 45;
+    this.pushHist();
+    const parts = Object.assign({}, s.parts); const verts = Object.assign({}, s.verts);
+    let n = s.nextId;
+    const id = 'p' + (n++), va = 'v' + (n++), vb = 'v' + (n++);
+    verts[va] = { x: cx - cat.L / 2 + ox, y: cy + oy };
+    verts[vb] = { x: cx + cat.L / 2 + ox, y: cy + oy };
+    parts[id] = { id, t, va, vb, p: Object.assign({}, cat.props || {}), blown: false };
+    this.setState({ parts, verts, nextId: n, sel: id, selV: null, selSet: {} });
+  }
+  setProp(id, k, v) {
+    const kk = id + '|' + k; const now = Date.now();
+    if (this._phk !== kk || now - (this._pht || 0) > 900) this.pushHist();
+    this._phk = kk; this._pht = now;
+    const parts = Object.assign({}, this.state.parts); const pt = parts[id];
+    parts[id] = Object.assign({}, pt, { p: Object.assign({}, pt.p, { [k]: v }) });
+    this.setState({ parts });
+  }
+  zoomBy(f) {
+    const s = this.state; const z = Math.max(0.4, Math.min(2, s.zoom * f));
+    const cw = this._svg.clientWidth / 2, ch = this._svg.clientHeight / 2;
+    this.setState({ zoom: z, panX: cw - (cw - s.panX) * z / s.zoom, panY: ch - (ch - s.panY) * z / s.zoom });
+  }
+  fit() {
+    const vs = Object.values(this.state.verts); if (!vs.length) return;
+    const xs = vs.map(v => v.x), ys = vs.map(v => v.y);
+    const minx = Math.min(...xs) - 90, maxx = Math.max(...xs) + 90, miny = Math.min(...ys) - 90, maxy = Math.max(...ys) + 90;
+    const cw = this._svg ? this._svg.clientWidth : 0, ch = this._svg ? this._svg.clientHeight : 0;
+    if (!cw || !ch) return;
+    const z = Math.min(1.6, Math.max(0.35, Math.min(cw / (maxx - minx), ch / (maxy - miny))));
+    this.setState({ zoom: z, panX: (cw - (minx + maxx) * z) / 2, panY: (ch - (miny + maxy) * z) / 2 });
+  }
+  saveNow() {
+    const name = (this.state.saveName || '').trim() || ('Circuit ' + (this.state.saved.length + 1));
+    const data = { p: this.state.parts, v: this.state.verts, n: this.state.nextId };
+    const saved = this.state.saved.filter(s => s.name !== name).concat([{ name, data }]).slice(-12);
+    try { localStorage.setItem('mrb-circuitlab-saves', JSON.stringify(saved)); } catch (e) {}
+    this.setState({ saved, saveName: '' });
+  }
+  loadSave(sv) { this.pushHist(); this.setState({ parts: sv.data.p, verts: sv.data.v, nextId: sv.data.n, sel: null, selV: null, selSet: {}, chMsg: null }); }
+  delSave(name) {
+    const saved = this.state.saved.filter(s => s.name !== name);
+    try { localStorage.setItem('mrb-circuitlab-saves', JSON.stringify(saved)); } catch (e) {}
+    this.setState({ saved });
+  }
+
+  checkNow() {
+    const res = this._res || this.solve(0);
+    const parts = this.state.parts;
+    const list = Object.keys(parts).map(id => {
+      const pt = parts[id]; const Iraw = res.i[id] || 0;
+      const dV = Math.abs((res.v[pt.va] || 0) - (res.v[pt.vb] || 0));
+      const lit = pt.t === 'bulb' ? this.brightness(pt, Iraw) > 0.04 : (pt.t === 'led' ? (res.on[id] && Math.abs(Iraw) > 0.002) : false);
+      return { id, t: pt.t, pt, I: Math.abs(Iraw), dV, lit };
+    });
+    const byT = t => list.filter(x => x.t === t);
+    const srcs = list.filter(x => this.isSrc(x.t));
+    const srcI = res.srcI, srcV = res.srcV;
+    const near = (a, b, f) => Math.abs(a - b) <= Math.max(f * Math.abs(b), 2e-3);
+    const bulbs = byT('bulb'), lit = bulbs.filter(b => b.lit);
+    const i = this.state.activeCh; if (i == null) return;
+    let msg = null;
+    const needSrc = () => srcs.length ? null : 'Add a cell or battery first.';
+    const needLit = () => lit.length ? null : 'No bulb is glowing — check every copper end is joined into one complete loop.';
+    switch (i) {
+      case 0: msg = needSrc() || (bulbs.length ? null : 'Add a bulb.') || needLit(); break;
+      case 1: {
+        const sw = byT('switch');
+        msg = needSrc() || (bulbs.length ? null : 'Add a bulb.') || (sw.length ? null : 'Add a switch.') || needLit()
+          || (sw.some(s => s.I > 1e-3) ? null : 'The switch is not in the working loop — it must carry the same current as the bulb.');
+        break;
+      }
+      case 2: {
+        const cells = byT('cell');
+        msg = needSrc() || (cells.length >= 2 ? null : 'Use at least two cells.') || needLit()
+          || (lit.some(b => b.dV > 2.2) ? null : 'Brighter needs more push — put the two cells in series so their EMFs add.');
+        break;
+      }
+      case 3:
+        msg = needSrc() || (bulbs.length >= 2 ? null : 'Use two bulbs.')
+          || (lit.length >= 2 ? null : 'Both bulbs must glow.')
+          || (lit.slice(0, 2).every(b => near(b.I, srcI, 0.06)) ? null : 'In series the SAME current flows through everything — one loop, no branches.');
+        break;
+      case 4: {
+        msg = needSrc() || (bulbs.length >= 2 ? null : 'Use two bulbs.') || (lit.length >= 2 ? null : 'Both bulbs must glow.');
+        if (!msg) {
+          const a = lit[0], b = lit[1];
+          msg = (near(a.I + b.I, srcI, 0.08) && a.I < srcI * 0.94 && b.I < srcI * 0.94) ? null
+            : 'In parallel each bulb has its own branch — the current should split at a junction and rejoin after.';
+        }
+        break;
+      }
+      case 5: {
+        const am = byT('ammeter');
+        msg = needSrc() || needLit() || (am.length ? null : 'Add an ammeter.')
+          || (am.some(m => m.I > 1e-3 && near(m.I, srcI, 0.06)) ? null : 'The ammeter must sit IN the loop (in series), carrying the full current.');
+        break;
+      }
+      case 6: {
+        const vmm = byT('voltmeter');
+        msg = needSrc() || needLit() || (vmm.length ? null : 'Add a voltmeter.')
+          || (vmm.some(m => m.dV > 0.2 && lit.some(b => near(m.dV, b.dV, 0.06))) ? null : 'Connect the voltmeter side by side (in parallel) across the bulb.');
+        break;
+      }
+      case 7: {
+        const rh = byT('rheostat');
+        msg = needSrc() || needLit() || (rh.length ? null : 'Add a variable resistor.')
+          || (rh.some(r => lit.some(b => near(r.I, b.I, 0.06)) && r.I > 1e-3) ? null : 'Put the variable resistor in the same loop as the bulb.');
+        break;
+      }
+      case 8: {
+        const sw = byT('switch').filter(s => s.I > 1e-3);
+        msg = needSrc() || (bulbs.length >= 2 ? null : 'Use two bulbs.') || (lit.length >= 2 ? null : 'Close the switch — both bulbs should be on right now.');
+        if (!msg) {
+          const a = lit[0], b = lit[1];
+          const branchOk = near(a.I + b.I, srcI, 0.08);
+          const swOk = sw.some(s => (near(s.I, a.I, 0.06) !== near(s.I, b.I, 0.06)) && !near(s.I, srcI, 0.06));
+          msg = (branchOk && swOk) ? null : 'The switch must sit inside ONE branch only — not in the main loop.';
+        }
+        break;
+      }
+      case 9: {
+        const am = byT('ammeter');
+        msg = (srcs.length ? null : 'Add the 6 V battery.') || (am.length ? null : 'Add an ammeter in series.')
+          || (am.some(m => Math.abs(m.I - 0.2) < 0.015) ? null : 'The reading should be 0.20 A — check you have 6 V and exactly 30 Ω in series (10 + 20).');
+        break;
+      }
+      case 10: {
+        const led = byT('led'); const litLed = led.filter(l => l.lit);
+        const rs = byT('resistor');
+        msg = needSrc() || (led.length ? null : 'Add an LED.') || (rs.length ? null : 'Add a series resistor to limit the current.')
+          || (litLed.length ? null : 'No light — an LED only conducts one way. Try dragging its ends to turn it around, and check the supply is above 2 V.')
+          || (litLed.some(l => l.I < 0.06 && rs.some(r => near(r.I, l.I, 0.06))) ? null : 'Too much current, or the resistor is not in series with the LED.');
+        break;
+      }
+      case 11: {
+        const rs = byT('resistor').filter(r => near(r.I, srcI, 0.06) && r.I > 1e-4);
+        const vmm = byT('voltmeter');
+        msg = needSrc() || (rs.length >= 2 ? null : 'Put two resistors in series across the battery.')
+          || (vmm.length ? null : 'Add a voltmeter across ONE of the resistors.')
+          || (vmm.some(m => m.dV > 0.12 * srcV && m.dV < 0.88 * srcV) ? null : 'The voltmeter should read one SHARE of the supply p.d. — connect it across just one resistor.');
+        break;
+      }
+    }
+    const done = Object.assign({}, this.state.done);
+    if (!msg) done[i] = 1;
+    this.setState({ chMsg: { ok: !msg, text: msg || this.CH[i].win }, done });
+  }
+
+  fmtA(I) { const a = Math.abs(I); if (a < 1e-4) return '0 A'; if (a < 0.1) return (a * 1000).toFixed(a < 0.01 ? 1 : 0) + ' mA'; return a.toFixed(2) + ' A'; }
+  fmtV(v) { const a = Math.abs(v); if (a < 0.005) return '0 V'; return a.toFixed(a < 1 ? 2 : 1) + ' V'; }
+  fmtR(r) { return r >= 1000 ? (r / 1000).toFixed(1) + ' kΩ' : (r < 10 ? r.toFixed(1) : Math.round(r)) + ' Ω'; }
+
+  body(pt, view, info) {
+    const h = React.createElement;
+    const INK = '#1A1714', PAPER = '#FFFDF8', ACC = '#E4572E', ACCT = '#A93411', COP = '#A9683E', AMB = '#F2A93B', GRY = '#8A8074';
+    const S = { stroke: INK, strokeWidth: 2.2, fill: 'none', strokeLinecap: 'round', strokeLinejoin: 'round' };
+    const p = view === 'pict';
+    const t = pt.t, on = info.on, b = info.b || 0, blown = pt.blown;
+    const cr = 'rotate(' + (-info.ang) + ')';
+    const txt = (x, y, str, size, fill) => h('text', { x, y, fontFamily: "'DM Mono',monospace", fontSize: size, fill, textAnchor: 'middle', fontWeight: 500 }, str);
+    const arrowHead = (x, y, a) => h('path', { d: 'M ' + (x - 7) + ' ' + (y + 1) + ' L ' + x + ' ' + y + ' L ' + (x - 2) + ' ' + (y + 7), transform: 'rotate(' + a + ' ' + x + ' ' + y + ')', ...S, strokeWidth: 1.8 });
+    const meter = (letter, val, full) => {
+      const frac = Math.min(1, Math.abs(val || 0) / full);
+      const ang = -52 + 104 * frac;
+      const els = [h('circle', { r: 17, fill: PAPER, stroke: INK, strokeWidth: 2.2 })];
+      if (p) {
+        for (const a of [-52, 0, 52]) els.push(h('line', { x1: 0, y1: -16, x2: 0, y2: -12.5, transform: 'rotate(' + a + ')', stroke: '#C9BBA4', strokeWidth: 1.6, strokeLinecap: 'round' }));
+        els.push(h('line', { x1: 0, y1: 2, x2: 0, y2: -12, transform: 'rotate(' + ang + ')', stroke: ACCT, strokeWidth: 2.2, strokeLinecap: 'round' }));
+        els.push(h('circle', { r: 2.4, fill: INK }));
+        els.push(h('g', { transform: 'translate(0,10)' }, h('g', { transform: cr }, txt(0, 3, letter, 9.5, ACCT))));
+      } else {
+        els.push(h('g', { transform: cr }, txt(0, 5, letter, 14.5, ACCT)));
+      }
+      return els;
+    };
+    switch (t) {
+      case 'wire': return [];
+      case 'cell':
+        if (p) return [
+          h('rect', { x: -18, y: -10, width: 36, height: 20, rx: 3, fill: PAPER, stroke: INK, strokeWidth: 1.8 }),
+          h('rect', { x: -18, y: -10, width: 7, height: 20, rx: 3, fill: GRY }),
+          h('rect', { x: 9, y: -10, width: 9, height: 20, fill: ACC }),
+          h('rect', { x: 18, y: -4.5, width: 4, height: 9, fill: INK }),
+          h('g', { transform: 'translate(13.5,0)' }, h('g', { transform: cr }, txt(0, 4, '+', 12, PAPER)))
+        ];
+        return [
+          h('line', { x1: -5, y1: -9, x2: -5, y2: 9, ...S, strokeWidth: 4.5 }),
+          h('line', { x1: 5, y1: -17, x2: 5, y2: 17, ...S }),
+          h('g', { transform: 'translate(14,-21)' }, h('g', { transform: cr }, txt(0, 3, '+', 13, ACCT)))
+        ];
+      case 'battery':
+        if (p) return [
+          h('rect', { x: -30, y: -13, width: 60, height: 26, rx: 4, fill: INK }),
+          h('line', { x1: -26, y1: -8.5, x2: 12, y2: -8.5, stroke: 'rgba(255,253,248,.22)', strokeWidth: 1.5, strokeLinecap: 'round' }),
+          h('rect', { x: 15, y: -13, width: 15, height: 26, rx: 4, fill: ACC }),
+          h('rect', { x: 30, y: -6, width: 4.5, height: 12, fill: INK }),
+          h('g', { transform: 'translate(22.5,0)' }, h('g', { transform: cr }, txt(0, 4.5, '+', 13, PAPER))),
+          h('g', { transform: 'translate(-23,0)' }, h('g', { transform: cr }, txt(0, 4.5, '-', 13, PAPER)))
+        ];
+        return [
+          h('line', { x1: -17, y1: -8, x2: -17, y2: 8, ...S, strokeWidth: 4.5 }),
+          h('line', { x1: -8, y1: -16, x2: -8, y2: 16, ...S }),
+          h('line', { x1: 8, y1: -8, x2: 8, y2: 8, ...S, strokeWidth: 4.5 }),
+          h('line', { x1: 17, y1: -16, x2: 17, y2: 16, ...S }),
+          h('g', { transform: 'translate(25,-20)' }, h('g', { transform: cr }, txt(0, 3, '+', 13, ACCT)))
+        ];
+      case 'bulb': {
+        const els = [];
+        if (b > 0.02 && !p) els.push(h('circle', { r: 32, fill: AMB, opacity: (b * 0.75).toFixed(2), filter: 'url(#mrbsoft)' }));
+        if (p) {
+          const lit = b > 0.02 && !blown;
+          const g = [];
+          if (lit) {
+            const rays = [];
+            for (let k = 0; k < 12; k++) {
+              const a = k * 30 * Math.PI / 180, r1 = 19 + b * 3, r2 = 26 + b * 22;
+              rays.push(h('line', { key: k, x1: Math.cos(a) * r1, y1: Math.sin(a) * r1, x2: Math.cos(a) * r2, y2: Math.sin(a) * r2, stroke: '#F2C230', strokeWidth: 2.4, strokeLinecap: 'round', opacity: Math.min(1, b + 0.15) }));
+            }
+            g.push(h('g', { transform: 'translate(0,-5)' }, ...rays));
+            g.push(h('circle', { cy: -5, r: 17, fill: AMB, opacity: (b * 0.65).toFixed(2), filter: 'url(#mrbsoft)' }));
+          }
+          g.push(h('path', {
+            d: 'M -6.8 9 C -8.5 6.5 -10 5.2 -11.5 2.6 C -14.2 -2 -13.6 -8.6 -9.8 -12.6 C -7.3 -15.3 -3.8 -16.8 0 -16.8 C 3.8 -16.8 7.3 -15.3 9.8 -12.6 C 13.6 -8.6 14.2 -2 11.5 2.6 C 10 5.2 8.5 6.5 6.8 9 Z',
+            fill: lit ? 'rgba(255,246,214,.94)' : 'url(#mrbglass)', stroke: INK, strokeWidth: 1.6, strokeLinejoin: 'round'
+          }));
+          g.push(h('path', { d: 'M -4.5 9 L -4.5 -3.5 M 4.5 9 L 4.5 -3.5', stroke: GRY, strokeWidth: 1.3, fill: 'none' }));
+          g.push(blown
+            ? h('path', { d: 'M -4.5 -3.5 L -1.8 -8.5 M 4.5 -3.5 L 2.2 -7', stroke: '#8A8074', strokeWidth: 1.8, fill: 'none', strokeLinecap: 'round' })
+            : h('path', { d: 'M -4.5 -3.5 L -2.3 -8.5 L 0 -3.5 L 2.3 -8.5 L 4.5 -3.5', stroke: lit ? '#E08A1E' : '#A9683E', strokeWidth: 1.8, fill: 'none', strokeLinecap: 'round', strokeLinejoin: 'round' }));
+          if (blown) g.push(h('ellipse', { cy: -8, rx: 6, ry: 4.5, fill: 'rgba(26,23,20,.28)' }));
+          g.push(h('rect', { x: -7, y: 9, width: 14, height: 7.5, rx: 1.5, fill: 'url(#mrbmetal)', stroke: INK, strokeWidth: 1.2 }));
+          g.push(h('line', { x1: -7, y1: 11.6, x2: 7, y2: 11.6, stroke: 'rgba(26,23,20,.4)', strokeWidth: 1 }));
+          g.push(h('line', { x1: -7, y1: 14.2, x2: 7, y2: 14.2, stroke: 'rgba(26,23,20,.4)', strokeWidth: 1 }));
+          g.push(h('path', { d: 'M -7 16.5 L -4 20.5 L 4 20.5 L 7 16.5 Z', fill: INK }));
+          g.push(h('ellipse', { cx: 0, cy: 21, rx: 3.4, ry: 1.9, fill: GRY, stroke: INK, strokeWidth: 1 }));
+          els.push(h('line', { x1: -18, y1: 0, x2: 18, y2: 0, stroke: COP, strokeWidth: 5, strokeLinecap: 'round' }));
+          els.push(h('g', { transform: cr }, ...g));
+        } else {
+          els.push(h('circle', { r: 15, ...S, fill: PAPER }));
+          if (blown) els.push(h('path', { d: 'M -10.6 -10.6 L -2 -2 M 10.6 10.6 L 2 2 M 10.6 -10.6 L -10.6 10.6', ...S, strokeWidth: 2 }));
+          else els.push(h('path', { d: 'M -10.6 -10.6 L 10.6 10.6 M 10.6 -10.6 L -10.6 10.6', ...S, strokeWidth: 2 }));
+        }
+        return els;
+      }
+      case 'switch': {
+        const closed = pt.p.closed;
+        if (p) return [
+          h('rect', { x: -26, y: -3, width: 52, height: 11, rx: 4, fill: '#F0E4CC', stroke: '#D9C9AC', strokeWidth: 1.2 }),
+          h('circle', { cx: -18, cy: 0, r: 5, fill: COP, stroke: INK, strokeWidth: 1.3 }),
+          h('circle', { cx: 18, cy: 0, r: 5, fill: COP, stroke: INK, strokeWidth: 1.3 }),
+          h('line', { x1: -18, y1: 0, x2: closed ? 16 : 12, y2: closed ? 0 : -18, stroke: COP, strokeWidth: 5, strokeLinecap: 'round' }),
+          h('circle', { cx: closed ? 16 : 12, cy: closed ? 0 : -18, r: 3.6, fill: INK })
+        ];
+        return [
+          h('circle', { cx: -18, cy: 0, r: 3, fill: INK }),
+          h('circle', { cx: 18, cy: 0, r: 3, fill: INK }),
+          h('line', { x1: -18, y1: 0, x2: closed ? 18 : 13, y2: closed ? 0 : -17, stroke: INK, strokeWidth: 2.4, strokeLinecap: 'round' })
+        ];
+      }
+      case 'resistor':
+        if (p) return [
+          h('rect', { x: -23, y: -7.5, width: 6, height: 15, rx: 2, fill: '#D8C29A', stroke: INK, strokeWidth: 1.2 }),
+          h('rect', { x: 17, y: -7.5, width: 6, height: 15, rx: 2, fill: '#D8C29A', stroke: INK, strokeWidth: 1.2 }),
+          h('rect', { x: -19, y: -9.5, width: 38, height: 19, rx: 8, fill: '#EAD9B8', stroke: INK, strokeWidth: 1.7 }),
+          h('rect', { x: -12, y: -9.5, width: 4.5, height: 19, fill: ACCT }),
+          h('rect', { x: -4, y: -9.5, width: 4.5, height: 19, fill: INK }),
+          h('rect', { x: 4, y: -9.5, width: 4.5, height: 19, fill: '#7A6E5F' }),
+          h('rect', { x: 12, y: -9.5, width: 4, height: 19, fill: '#C89B3C' })
+        ];
+        return [h('rect', { x: -22, y: -8, width: 44, height: 16, ...S })];
+      case 'rheostat': {
+        const base = this.body({ ...pt, t: 'resistor' }, view, info);
+        base.push(h('line', { x1: -28, y1: 16, x2: 24, y2: -16, stroke: p ? ACCT : INK, strokeWidth: 2.2, strokeLinecap: 'round' }));
+        base.push(h('path', { d: 'M 16 -15 L 24 -16 L 21 -8', stroke: p ? ACCT : INK, strokeWidth: 2.2, fill: 'none', strokeLinecap: 'round', strokeLinejoin: 'round' }));
+        return base;
+      }
+      case 'fuse': {
+        const els = [];
+        if (p) {
+          els.push(h('rect', { x: -23, y: -8.5, width: 8, height: 17, rx: 2, fill: GRY, stroke: INK, strokeWidth: 1 }), h('rect', { x: 15, y: -8.5, width: 8, height: 17, rx: 2, fill: GRY, stroke: INK, strokeWidth: 1 }));
+          els.push(h('rect', { x: -15, y: -7, width: 30, height: 14, fill: 'rgba(255,255,255,.65)', stroke: INK, strokeWidth: 1.4 }));
+          els.push(blown
+            ? h('path', { d: 'M -15 0 L -6 0 M 6 0 L 15 0', stroke: GRY, strokeWidth: 2, strokeLinecap: 'round' })
+            : h('line', { x1: -15, y1: 0, x2: 15, y2: 0, stroke: INK, strokeWidth: 2 }));
+          if (blown) els.push(h('circle', { r: 5, fill: 'rgba(26,23,20,.4)' }));
+        } else {
+          els.push(h('rect', { x: -20, y: -6.5, width: 40, height: 13, ...S }));
+          els.push(blown
+            ? h('path', { d: 'M -20 0 L -7 0 M 7 0 L 20 0', ...S, strokeWidth: 2 })
+            : h('line', { x1: -20, y1: 0, x2: 20, y2: 0, ...S, strokeWidth: 2 }));
+        }
+        return els;
+      }
+      case 'ammeter': return meter('A', info.val, 2);
+      case 'voltmeter': return meter('V', info.val, 12);
+      case 'led': {
+        const els = [];
+        if (on && !blown) els.push(h('circle', { r: 24, fill: AMB, opacity: 0.55, filter: 'url(#mrbsoft)' }));
+        if (p) {
+          els.push(h('rect', { x: -10, y: 8, width: 20, height: 3.5, rx: 1.5, fill: INK }));
+          els.push(h('path', { d: 'M -8 8 A 10 10 0 1 1 8 8 Z', fill: blown ? '#C9BBA4' : (on ? AMB : '#D9C9AC'), stroke: INK, strokeWidth: 1.7 }));
+        } else {
+          els.push(h('path', { d: 'M -9 -10 L -9 10 L 9 0 Z', fill: on && !blown ? AMB : 'none', ...S }));
+          els.push(h('line', { x1: 9, y1: -10, x2: 9, y2: 10, ...S }));
+        }
+        els.push(h('line', { x1: 7, y1: -12, x2: 13, y2: -18, ...S, strokeWidth: 1.7 }), arrowHead(13, -18, -45));
+        els.push(h('line', { x1: 12, y1: -8, x2: 18, y2: -14, ...S, strokeWidth: 1.7 }), arrowHead(18, -14, -45));
+        return els;
+      }
+      case 'motor':
+        if (p) return [
+          h('circle', { r: 17, fill: PAPER, stroke: INK, strokeWidth: 2.2 }),
+          h('circle', { r: 11.5, fill: 'none', stroke: '#D9C9AC', strokeWidth: 1.2 }),
+          h('g', { ref: el => { this._motRefs[pt.id] = el; } },
+            h('line', { x1: 0, y1: 0, x2: 0, y2: -10, stroke: ACCT, strokeWidth: 2.6, strokeLinecap: 'round' }),
+            h('line', { x1: 0, y1: 0, x2: 8.7, y2: 5, stroke: ACCT, strokeWidth: 2.6, strokeLinecap: 'round' }),
+            h('line', { x1: 0, y1: 0, x2: -8.7, y2: 5, stroke: ACCT, strokeWidth: 2.6, strokeLinecap: 'round' })),
+          h('circle', { r: 3, fill: INK })
+        ];
+        return [
+          h('circle', { r: 17, ...S }),
+          h('g', { transform: cr }, txt(0, 5, 'M', 14.5, ACCT))
+        ];
+      case 'buzzer':
+        return [
+          h('path', { d: 'M -14 6 A 14 14 0 0 1 14 6 Z', fill: p ? INK : 'none', stroke: INK, strokeWidth: 2.2, strokeLinejoin: 'round' }),
+          p ? h('line', { x1: -6, y1: -2, x2: 6, y2: -2, stroke: PAPER, strokeWidth: 1.6, strokeLinecap: 'round' }) : null,
+          h('g', { ref: el => { this._buzRefs[pt.id] = el; }, opacity: 0 },
+            h('path', { d: 'M 17 -11 A 12 12 0 0 1 21 0', stroke: ACC, strokeWidth: 2, fill: 'none', strokeLinecap: 'round' }),
+            h('path', { d: 'M 21 -16 A 18 18 0 0 1 27 0', stroke: ACC, strokeWidth: 2, fill: 'none', strokeLinecap: 'round' }))
+        ];
+      case 'ldr':
+        return [
+          p ? h('circle', { r: 14, fill: PAPER, stroke: INK, strokeWidth: 2 }) : h('rect', { x: -18, y: -7.5, width: 36, height: 15, ...S }),
+          p ? h('path', { d: 'M -8 -6 H 8 V -2 H -8 V 2 H 8 V 6 H -8', stroke: ACCT, strokeWidth: 1.8, fill: 'none', strokeLinejoin: 'round' }) : null,
+          h('line', { x1: -25, y1: -21, x2: -16, y2: -12, ...S, strokeWidth: 1.7 }), arrowHead(-16, -12, 135),
+          h('line', { x1: -17, y1: -25, x2: -8, y2: -16, ...S, strokeWidth: 1.7 }), arrowHead(-8, -16, 135)
+        ];
+      case 'thermistor':
+        return [
+          p ? h('circle', { r: 14, fill: PAPER, stroke: INK, strokeWidth: 2 }) : h('rect', { x: -18, y: -7.5, width: 36, height: 15, ...S }),
+          p ? h('path', { d: 'M -6 5 L -2 -5 L 2 5 L 6 -5', stroke: ACCT, strokeWidth: 1.8, fill: 'none', strokeLinecap: 'round', strokeLinejoin: 'round' }) : null,
+          h('path', { d: 'M -27 17 L -18 17 L 13 -15', ...S, strokeWidth: 2 })
+        ];
+      case 'ac':
+        return [
+          h('circle', { r: 15, fill: p ? PAPER : 'none', stroke: INK, strokeWidth: 2.2 }),
+          h('path', { d: 'M -8.5 0 Q -4 -11 0 0 Q 4 11 8.5 0', stroke: p ? ACCT : INK, strokeWidth: 2.2, fill: 'none', strokeLinecap: 'round' })
+        ];
+    }
+    return [];
+  }
+
+  renderCanvas(res) {
+    const h = React.createElement;
+    const s = this.state;
+    const INK = '#1A1714', PAPER = '#FFFDF8', ACCT = '#A93411', COP = '#A9683E', BLUE = '#1D6FB8', ACC = '#E4572E';
+    const pict = s.view === 'pict';
+    const partEls = [], flowEls = [], labelEls = [], jEls = [];
+    const flowIds = {};
+    for (const id in s.parts) {
+      const pt = s.parts[id];
+      const A = s.verts[pt.va], B = s.verts[pt.vb];
+      if (!A || !B) continue;
+      const dx = B.x - A.x, dy = B.y - A.y;
+      const L = Math.hypot(dx, dy) || 1;
+      const ang = Math.atan2(dy, dx) * 180 / Math.PI;
+      const I = res.i[id] || 0;
+      const dV = (res.v[pt.va] || 0) - (res.v[pt.vb] || 0);
+      const cat = this.CAT[pt.t];
+      const bh = Math.min(cat.bh, L / 2 - 4);
+      const info = { ang, on: !!(res.on && res.on[id]), b: pt.t === 'bulb' ? this.brightness(pt, I) : 0, val: pt.t === 'voltmeter' ? dV : I };
+      const leadStroke = pict ? COP : INK;
+      const leadW = pict ? 9 : 2.2;
+      const kids = [];
+      if (s.sel === id || s.selSet[id]) kids.push(h('line', { x1: 0, y1: 0, x2: L, y2: 0, stroke: 'rgba(228,87,46,.28)', strokeWidth: 18, strokeLinecap: 'round' }));
+      const segs = bh > 0 ? [[0, L / 2 - bh], [L / 2 + bh, L]] : [[0, L]];
+      for (const seg of segs) {
+        kids.push(h('line', { x1: seg[0], y1: 0, x2: seg[1], y2: 0, stroke: leadStroke, strokeWidth: leadW, strokeLinecap: 'round' }));
+        if (pict) {
+          kids.push(h('line', { x1: seg[0], y1: -2, x2: seg[1], y2: -2, stroke: 'rgba(255,255,255,.45)', strokeWidth: 2.2, strokeLinecap: 'round', pointerEvents: 'none' }));
+          kids.push(h('line', { x1: seg[0], y1: 3, x2: seg[1], y2: 3, stroke: 'rgba(26,23,20,.18)', strokeWidth: 1.6, strokeLinecap: 'round', pointerEvents: 'none' }));
+        }
+      }
+      kids.push(h('g', { transform: 'translate(' + (L / 2) + ',0)' }, ...this.body(pt, s.view, info).filter(Boolean)));
+      kids.push(h('line', { x1: 0, y1: 0, x2: L, y2: 0, stroke: 'rgba(0,0,0,0)', strokeWidth: 22, style: { cursor: 'grab' }, onPointerDown: e => this.downPart(e, id) }));
+      partEls.push(h('g', { key: id, transform: 'translate(' + A.x + ',' + A.y + ') rotate(' + ang + ')' }, ...kids));
+      if (s.showCur && Math.abs(I) >= 5e-4 && pt.t !== 'voltmeter') {
+        flowIds[id] = 1;
+        const n = Math.max(1, Math.round(L / 26));
+        const isE = s.flow === 'e';
+        const dots = [];
+        for (let k = 0; k < n; k++) dots.push(h('g', { key: k, transform: 'translate(' + A.x + ',' + A.y + ')' },
+          h('circle', { r: 7.5, fill: isE ? 'url(#mrbel)' : 'url(#mrbelp)', stroke: '#FFFDF8', strokeWidth: 1.4 }),
+          isE ? h('line', { x1: -3.8, y1: 0, x2: 3.8, y2: 0, stroke: '#FFFDF8', strokeWidth: 2.4, strokeLinecap: 'round' })
+              : h('path', { d: 'M -3.8 0 L 3.8 0 M 0 -3.8 L 0 3.8', stroke: '#FFFDF8', strokeWidth: 2.4, fill: 'none', strokeLinecap: 'round' })));
+        flowEls.push(h('g', {
+          key: 'f' + id, pointerEvents: 'none', opacity: 0.95,
+          ref: el => { this._flowRefs[id] = el; if (el) this._flowGeo[id] = { ax: A.x, ay: A.y, ux: dx / L, uy: dy / L, L, n }; }
+        }, ...dots));
+      }
+      let nx = -dy / L, ny = dx / L;
+      if (ny > 0) { nx = -nx; ny = -ny; }
+      const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
+      const lbl = { fontFamily: "'DM Mono',monospace", fontSize: 13, fill: '#7A6E5F', textAnchor: 'middle', stroke: PAPER, strokeWidth: 4.5, paintOrder: 'stroke', pointerEvents: 'none' };
+      const put = (text, off, fill, size) => labelEls.push(h('text', { key: 'l' + id + off, x: mx + nx * off, y: my + ny * off + 4, ...lbl, fill: fill || lbl.fill, fontSize: size || 13 }, text));
+      if (pt.t === 'ammeter') put(this.fmtA(I), -34, ACCT, 14);
+      else if (pt.t === 'voltmeter') put(this.fmtV(dV), -34, ACCT, 14);
+      else if (pt.blown) put('BLOWN', 32, '#B3261E');
+      else if (s.showVals) {
+        if (this.isSrc(pt.t)) put(pt.p.v + (pt.t === 'ac' ? ' V ~' : ' V'), pt.t === 'battery' ? 34 : 32);
+        else if (pt.t === 'bulb' || pt.t === 'resistor' || pt.t === 'rheostat') put(this.fmtR(pt.p.r), 32);
+        else if (pt.t === 'fuse') put(pt.p.rating + ' A FUSE', 32);
+        else if (pt.t === 'ldr' || pt.t === 'thermistor') put(this.fmtR(this.partR(pt)), 34);
+        else if (pt.t === 'switch' && !pt.p.closed) put('OPEN', 32);
+      }
+    }
+    for (const id in this._flowRefs) if (!flowIds[id]) { delete this._flowRefs[id]; delete this._flowGeo[id]; }
+    for (const vid in s.verts) {
+      const v = s.verts[vid];
+      const atts = this.attached(vid);
+      const joined = atts.length > 1;
+      if (s.snapT === vid) jEls.push(h('circle', { key: 'sn' + vid, cx: v.x, cy: v.y, r: 16, fill: 'rgba(228,87,46,.15)', stroke: ACC, strokeWidth: 3 }));
+      if (s.selV === vid) jEls.push(h('circle', { key: 'sv' + vid, cx: v.x, cy: v.y, r: 12, fill: 'rgba(228,87,46,.22)' }));
+      jEls.push(h('circle', {
+        key: vid, cx: v.x, cy: v.y, r: joined ? 7 : 6,
+        fill: joined ? INK : PAPER, stroke: joined ? PAPER : ACCT, strokeWidth: 2,
+        style: { cursor: 'crosshair' },
+        onPointerDown: e => this.downVert(e, vid),
+        onDoubleClick: () => this.split(vid)
+      }));
+      jEls.push(h('circle', { key: 'h' + vid, cx: v.x, cy: v.y, r: 14, fill: 'rgba(0,0,0,0)', style: { cursor: 'crosshair' }, onPointerDown: e => this.downVert(e, vid), onDoubleClick: () => this.split(vid) }));
+    }
+    const marqEl = s.marq ? h('rect', {
+      x: s.marq.x1, y: s.marq.y1, width: s.marq.x2 - s.marq.x1, height: s.marq.y2 - s.marq.y1,
+      fill: 'rgba(228,87,46,.07)', stroke: ACC, strokeWidth: 1.5 / s.zoom, strokeDasharray: (5 / s.zoom) + ' ' + (4 / s.zoom), pointerEvents: 'none'
+    }) : null;
+    return h('svg', {
+      ref: el => { this._svg = el; },
+      width: '100%', height: '100%',
+      style: { position: 'absolute', inset: 0, display: 'block', touchAction: 'none', cursor: 'default' },
+      onPointerDown: e => this.downBg(e),
+      onWheel: e => this.zoomBy(e.deltaY < 0 ? 1.1 : 0.9)
+    },
+      h('defs', null,
+        h('pattern', { id: 'mrbgrid', width: 36, height: 36, patternUnits: 'userSpaceOnUse' },
+          h('path', { d: 'M 36 0 L 0 0 0 36', fill: 'none', stroke: '#F2E8D6', strokeWidth: 1 })),
+        h('filter', { id: 'mrbsoft', x: '-80%', y: '-80%', width: '260%', height: '260%' },
+          h('feGaussianBlur', { stdDeviation: 7 })),
+        h('radialGradient', { id: 'mrbel', cx: '35%', cy: '30%', r: '75%' },
+          h('stop', { offset: '0%', stopColor: '#C9E9F8' }),
+          h('stop', { offset: '55%', stopColor: '#57A8D8' }),
+          h('stop', { offset: '100%', stopColor: '#2C6E9E' })),
+        h('radialGradient', { id: 'mrbelp', cx: '35%', cy: '30%', r: '75%' },
+          h('stop', { offset: '0%', stopColor: '#F8D3B8' }),
+          h('stop', { offset: '55%', stopColor: '#E4572E' }),
+          h('stop', { offset: '100%', stopColor: '#A93411' })),
+        h('radialGradient', { id: 'mrbglass', cx: '38%', cy: '32%', r: '80%' },
+          h('stop', { offset: '0%', stopColor: '#FFFFFF', stopOpacity: 0.95 }),
+          h('stop', { offset: '100%', stopColor: '#C9DCEA', stopOpacity: 0.55 })),
+        h('linearGradient', { id: 'mrbmetal', x1: '0', y1: '0', x2: '1', y2: '0' },
+          h('stop', { offset: '0%', stopColor: '#8F8A82' }),
+          h('stop', { offset: '25%', stopColor: '#F0EEE9' }),
+          h('stop', { offset: '55%', stopColor: '#C4BFB6' }),
+          h('stop', { offset: '100%', stopColor: '#7E7970' }))),
+      h('g', { transform: 'translate(' + s.panX + ',' + s.panY + ') scale(' + s.zoom + ')' },
+        h('rect', { x: -4000, y: -4000, width: 9000, height: 9000, fill: 'url(#mrbgrid)' }),
+        ...partEls, ...flowEls, ...jEls, ...labelEls, marqEl));
+  }
+
+  renderGraph() {
+    const h = React.createElement;
+    const pts = (this.state.sel && this.state.iv[this.state.sel]) || [];
+    const w = 260, ht = 156;
+    const vm = Math.max(0.5, ...pts.map(p => Math.abs(p.v))) * 1.15;
+    const im = Math.max(0.05, ...pts.map(p => Math.abs(p.i))) * 1.15;
+    const X = v => w / 2 + v / vm * (w / 2 - 16);
+    const Y = i => ht / 2 - i / im * (ht / 2 - 14);
+    return h('svg', { width: '100%', viewBox: '0 0 ' + w + ' ' + ht, style: { background: '#FBF3E6', borderRadius: 9, display: 'block' } },
+      h('line', { x1: 8, y1: ht / 2, x2: w - 8, y2: ht / 2, stroke: '#D9C9AC', strokeWidth: 1.2 }),
+      h('line', { x1: w / 2, y1: 8, x2: w / 2, y2: ht - 8, stroke: '#D9C9AC', strokeWidth: 1.2 }),
+      h('text', { x: w - 12, y: ht / 2 - 7, fontFamily: "'DM Mono',monospace", fontSize: 11, fill: '#7A6E5F', textAnchor: 'end' }, 'V'),
+      h('text', { x: w / 2 + 9, y: 18, fontFamily: "'DM Mono',monospace", fontSize: 11, fill: '#7A6E5F' }, 'I'),
+      ...pts.map((p, ix) => h('circle', { key: ix, cx: X(p.v), cy: Y(p.i), r: ix === pts.length - 1 ? 4.5 : 3.5, fill: ix === pts.length - 1 ? '#E4572E' : '#A93411' })),
+      pts.length === 0 ? h('text', { x: w / 2, y: ht / 2 + 28, fontFamily: "'DM Mono',monospace", fontSize: 10.5, fill: '#7A6E5F', textAnchor: 'middle', letterSpacing: 1 }, 'NO POINTS YET') : null
+    );
+  }
+
+  renderVals() {
+    const s = this.state;
+    const tNow = performance.now() / 1000;
+    const res = this.solve(tNow);
+    this._res = res;
+    const seg = on => ({ flex: '1 1 0', textAlign: 'center', padding: '5px 13px', borderRadius: 999, border: 0, background: on ? '#A93411' : 'transparent', color: on ? '#FFFDF8' : '#6E655D', fontFamily: "'DM Mono',monospace", fontSize: 12, letterSpacing: 1, cursor: 'pointer', whiteSpace: 'nowrap' });
+    const chip = on => ({ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 11px', borderRadius: 8, border: '1.5px solid ' + (on ? '#A93411' : '#E0D2B9'), background: '#FFFDF8', color: on ? '#A93411' : '#7A6E5F', fontFamily: "'DM Mono',monospace", fontSize: 12, letterSpacing: 1, cursor: 'pointer' });
+    const h = React.createElement;
+    const icon = t => {
+      const cat = this.CAT[t];
+      const stroke = s.view === 'pict' ? '#A9683E' : '#1A1714';
+      const kids = t === 'wire'
+        ? [h('line', { x1: -26, y1: 0, x2: 26, y2: 0, stroke, strokeWidth: s.view === 'pict' ? 4 : 2.4, strokeLinecap: 'round' })]
+        : [
+          h('line', { x1: -32, y1: 0, x2: -cat.bh, y2: 0, stroke, strokeWidth: s.view === 'pict' ? 3.5 : 2, strokeLinecap: 'round' }),
+          h('line', { x1: cat.bh, y1: 0, x2: 32, y2: 0, stroke, strokeWidth: s.view === 'pict' ? 3.5 : 2, strokeLinecap: 'round' }),
+          ...this.body({ id: 'ic' + t, t, p: Object.assign({ closed: true }, cat.props || {}), blown: false }, s.view, { ang: 0, on: false, b: 0, val: 0 }).filter(Boolean)
+        ];
+      return h('svg', { width: 50, height: 30, viewBox: '-36 -28 72 56', style: { display: 'block', flex: 'none' } }, ...kids);
+    };
+    const mkItem = key => {
+      const cat = this.CAT[key];
+      const gated = cat.ks4 && s.level === 'ks3';
+      return {
+        key, name: cat.n, icon: icon(key), tag: gated ? '· KS4' : '',
+        dimStyle: { opacity: gated ? 0.4 : 1, display: 'block' },
+        nameStyle: { flex: 1, fontSize: '14.5px', color: '#1A1714', opacity: gated ? 0.52 : 1 },
+        down: gated ? undefined : e => this.downPal(e, key)
+      };
+    };
+    const groups = [
+      { label: 'SUPPLY', items: ['cell', 'battery', 'ac'].map(mkItem) },
+      { label: 'BUILD', items: ['wire', 'switch'].map(mkItem) },
+      { label: 'OUTPUTS', items: ['bulb', 'led', 'motor', 'buzzer'].map(mkItem) },
+      { label: 'RESISTANCE', items: ['resistor', 'rheostat', 'fuse'].map(mkItem) },
+      { label: 'SENSORS', items: ['ldr', 'thermistor'].map(mkItem) },
+      { label: 'MEASURE', items: ['ammeter', 'voltmeter'].map(mkItem) }
+    ];
+    const selPt = s.sel ? s.parts[s.sel] : null;
+    let sliders = [], selTitle = '', selSub = '', selI = '—', selV2 = '—', selR = '—';
+    let selIsSwitch = false, selBlown = false;
+    if (selPt) {
+      const cat = this.CAT[selPt.t];
+      selTitle = cat.n;
+      selSub = selPt.blown ? 'BLOWN — REPLACE IT' : (selPt.t === 'switch' ? (selPt.p.closed ? 'CLOSED' : 'OPEN') : 'IN THE CIRCUIT');
+      selIsSwitch = selPt.t === 'switch';
+      selBlown = !!selPt.blown;
+      const I = res.i[s.sel] || 0;
+      const dV = (res.v[selPt.va] || 0) - (res.v[selPt.vb] || 0);
+      selI = this.fmtA(I); selV2 = this.fmtV(dV);
+      selR = this.isSrc(selPt.t) ? '—' : this.fmtR(this.partR(selPt));
+      sliders = (cat.slid || []).map(sl => {
+        const [k, label, unit, min, max, step] = sl;
+        return { label, disp: selPt.p[k] + ' ' + unit, min, max, step, val: selPt.p[k], set: e => this.setProp(s.sel, k, parseFloat(e.target.value)) };
+      });
+    }
+    const selVert = s.selV && s.verts[s.selV] ? s.selV : null;
+    const selCount = Object.keys(s.selSet).length;
+    const multi = selCount > 1;
+    let ohmHas = false, ohmLine = '';
+    if (selPt && !this.isSrc(selPt.t) && selPt.t !== 'switch' && selPt.t !== 'wire') {
+      const I = Math.abs(res.i[s.sel] || 0);
+      const dV = Math.abs((res.v[selPt.va] || 0) - (res.v[selPt.vb] || 0));
+      const R = this.partR(selPt);
+      if (R < 1e6) { ohmHas = true; ohmLine = dV.toFixed(2) + ' = ' + I.toFixed(2) + ' × ' + (R < 10 ? R.toFixed(1) : Math.round(R)); }
+    }
+    let pow = 0;
+    for (const id in s.parts) { const pt = s.parts[id]; if (this.isSrc(pt.t)) pow += Math.abs(this.srcE(pt, tNow) * (res.i[id] || 0)); }
+    const active = s.activeCh != null;
+    const chCards = this.CH.map((c, ix) => ({
+      num: (ix + 1 < 10 ? '0' : '') + (ix + 1),
+      lvl: c.lvl, title: c.title, blurb: c.blurb,
+      done: !!s.done[ix],
+      build: () => this.setState({ activeCh: ix, showCh: false, chMsg: null }),
+      loadSol: () => { this.loadNet(this.SOLS[ix]); this.setState({ activeCh: ix, showCh: false, chMsg: null }); setTimeout(() => this.fit(), 60); },
+      cardStyle: {
+        border: '1.5px solid ' + (s.done[ix] ? '#A93411' : '#E0D2B9'), borderRadius: 14, padding: '15px 16px',
+        background: '#FFFDF8', opacity: (s.level === 'ks3' && c.lvl === 'KS4') ? 0.65 : 1
+      }
+    }));
+    return {
+      canvas: this.renderCanvas(res),
+      doneCount: Object.keys(s.done).length,
+      segKs3Style: seg(s.level === 'ks3'), segKs4Style: seg(s.level === 'ks4'),
+      setKs3: () => this.setState({ level: 'ks3' }), setKs4: () => this.setState({ level: 'ks4' }),
+      segPictStyle: seg(s.view === 'pict'), segSymStyle: seg(s.view === 'sym'),
+      setPict: () => this.setState({ view: 'pict' }), setSym: () => this.setState({ view: 'sym' }),
+      teacherStyle: {
+        padding: '8px 16px', borderRadius: 999, border: '1.5px solid ' + (s.teacher ? '#1A1714' : '#E0D2B9'),
+        background: s.teacher ? '#1A1714' : 'transparent', color: s.teacher ? '#FFFDF8' : '#6E655D',
+        fontFamily: "'DM Mono',monospace", fontSize: 12, letterSpacing: 1.2, cursor: 'pointer'
+      },
+      toggleTeacher: () => this.setState({ teacher: !s.teacher }),
+      clearAll: () => { if (Object.keys(s.parts).length) this.pushHist(); this.setState({ parts: {}, verts: {}, sel: null, selV: null, selSet: {}, chMsg: null, short: false }); },
+      openCh: () => this.setState({ showCh: true }),
+      closeCh: () => this.setState({ showCh: false }),
+      showCh: s.showCh, chCards, teacher: s.teacher,
+      curChipStyle: chip(s.showCur), curLabel: s.showCur ? 'CURRENT · ON' : 'CURRENT · OFF',
+      toggleCur: () => this.setState({ showCur: !s.showCur }),
+      showCur: s.showCur,
+      inspOpen: s.showInsp, inspClosed: !s.showInsp,
+      toggleInsp: () => this.setState({ showInsp: !this.state.showInsp }),
+      flowEStyle: seg(s.flow === 'e'), flowCStyle: seg(s.flow === 'c'),
+      setFlowE: () => this.setState({ flow: 'e' }), setFlowC: () => this.setState({ flow: 'c' }),
+      valChipStyle: chip(s.showVals), valLabel: s.showVals ? 'VALUES · ON' : 'VALUES · OFF',
+      toggleVals: () => this.setState({ showVals: !s.showVals }),
+      zoomIn: () => this.zoomBy(1.25), zoomOut: () => this.zoomBy(0.8), fit: () => this.fit(),
+      short: s.short,
+      hasActiveCh: active,
+      activeNum: active ? (s.activeCh + 1 < 10 ? '0' : '') + (s.activeCh + 1) : '',
+      activeTitle: active ? this.CH[s.activeCh].title : '',
+      activeBlurb: active ? this.CH[s.activeCh].blurb : '',
+      activeHint: active ? this.CH[s.activeCh].hint : '',
+      quitCh: () => this.setState({ activeCh: null, chMsg: null }),
+      checkNow: () => this.checkNow(),
+      chMsgOk: !!(s.chMsg && s.chMsg.ok), chMsgFail: !!(s.chMsg && !s.chMsg.ok),
+      chMsgText: s.chMsg ? s.chMsg.text : '',
+      groups,
+      selIsMulti: multi, selCount, delMulti: () => this.delMulti(),
+      selIsPart: !!selPt && !multi, selIsVert: !selPt && !multi && !!selVert, noSel: !selPt && !selVert && !multi,
+      selTitle, selSub, sliders, selI, selV2, selR,
+      selIsSwitch, switchLabel: selPt && selPt.p.closed ? 'Open switch' : 'Close switch',
+      toggleSwitchSel: () => { if (!selPt) return; this.pushHist(); this.setProp(s.sel, 'closed', !selPt.p.closed); },
+      selBlown,
+      replaceSel: () => { this.pushHist(); const parts = Object.assign({}, s.parts); parts[s.sel] = Object.assign({}, parts[s.sel], { blown: false }); this.setState({ parts }); },
+      deleteSel: () => this.delPart(s.sel),
+      vertCount: selVert ? this.attached(selVert).length : 0,
+      splitSel: () => this.split(s.selV),
+      srcIDisp: this.fmtA(res.srcI),
+      powDisp: pow < 0.005 ? '0 W' : (pow < 1 ? pow.toFixed(2) : pow.toFixed(1)) + ' W',
+      ohmHas, ohmNone: !ohmHas, ohmLine,
+      isKs4: s.level === 'ks4',
+      graph: this.renderGraph(),
+      plotPoint: () => {
+        const id = s.sel; if (!id || !s.parts[id]) return;
+        const pt = s.parts[id];
+        const dV = (res.v[pt.va] || 0) - (res.v[pt.vb] || 0);
+        const iv = Object.assign({}, s.iv);
+        iv[id] = (iv[id] || []).concat([{ v: dV, i: res.i[id] || 0 }]).slice(-40);
+        this.setState({ iv });
+      },
+      clearIV: () => { if (!s.sel) return; const iv = Object.assign({}, s.iv); delete iv[s.sel]; this.setState({ iv }); },
+      saved: s.saved.map(sv => ({ name: sv.name, load: () => this.loadSave(sv), del: () => this.delSave(sv.name) })),
+      saveName: s.saveName,
+      onSaveName: e => this.setState({ saveName: e.target.value }),
+      saveNow: () => this.saveNow()
+    };
+  }
+}
+</script>
+</body>
+</html>

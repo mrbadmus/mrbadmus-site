@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Development of the periodic table · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Atomic structure" title="Development of the periodic table" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 5.1.2.2</p>
+        <h1>Development of the periodic table</h1>
+        <p class="ks3-bigq">Before anyone knew about protons, chemists ordered the elements by weight, and it didn't quite work. Make Mendeleev's moves yourself, then see what finally explained them.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A sticker album with one missing." scene="You are filling a sticker album. One sticker in a set hasn't come out yet. You can either leave its space empty, or shuffle the other stickers along to fill the gap." question="does leaving the space make the pattern of the album more believable, or less?" options="{{ hookOptions }}" bridge="Mendeleev left spaces in his table for elements no one had found yet, and predicted what they would be like. Next: the steps from the first tables to today's." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-moves" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Make Mendeleev's moves</p>
+        <h2 style="margin: 6px 0 0;">Order by weight. Hit a clash. Decide.</h2>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ stepTabs }}" as="t" hint-placeholder-count="4"><span style="{{ t.style }}">{{ t.label }}</span></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ moveFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.3;">{{ moveHead }}</p>
+            <p style="margin: 0; font-size: 18px; line-height: 1.55;">{{ moveText }}</p>
+            <sc-if value="{{ moveAsking }}" hint-placeholder-val="{{ true }}">
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <sc-for list="{{ moveOptions }}" as="o" hint-placeholder-count="2"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.text }}</button></sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ moveHasNote }}"><p data-arrive="1" role="status" style="{{ moveNoteStyle }}">{{ moveNote }}</p></sc-if>
+            <sc-if value="{{ moveCanNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onMoveNext }}">{{ moveNextLabel }}</button></sc-if>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-story" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The steps, in order</p>
+        <h2 style="margin: 6px 0 0;">From atomic weights to atomic numbers.</h2>
+        <ol style="margin: 14px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr)); gap: 12px;">
+          <li style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .08em; color: var(--ks3-accent-text);">STEP 1</p><p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Ordered by atomic weight</p><p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Before protons, neutrons and electrons were discovered, early tables put the elements in order of atomic weight. They were incomplete, and some elements were in the wrong groups.</p></li>
+          <li style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .08em; color: var(--ks3-accent-text);">STEP 2</p><p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Newlands' octaves</p><p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Every eighth element seemed similar. But the pattern only worked for the first elements, he forced elements into groups where they didn't fit, and he left no gaps. His idea was rejected.</p></li>
+          <li style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .08em; color: var(--ks3-accent-text);">STEP 3</p><p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Mendeleev's gaps and swaps</p><p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">He also used atomic weight, but changed the order of some pairs, such as tellurium and iodine, to keep similar elements together, and left gaps for elements he thought had not been discovered.</p></li>
+          <li style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .08em; color: var(--ks3-accent-text);">STEP 4</p><p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Predictions tested</p><p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Elements were later discovered to fill the gaps, such as germanium (his eka-silicon), and their properties closely matched his predictions. Passing that test is why his table was accepted.</p></li>
+          <li style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .08em; color: var(--ks3-accent-text);">STEP 5</p><p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Isotopes explain the swaps</p><p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Knowledge of isotopes made it possible to explain why the order based on atomic weights was not always correct. Today's table is in order of atomic number.</p></li>
+        </ol>
+      </section>
+
+      <section id="s-isotopes" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Why weight misleads · isotopes</p>
+        <h2 style="margin: 6px 0 0;">Fewer protons, but heavier on average.</h2>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ pairFig }}</div>
+          <div>
+            <p style="margin: 0; max-width: 58ch;">Atoms of the same element can have different numbers of neutrons: these are isotopes. Relative atomic mass is an average that takes account of how abundant each isotope is.</p>
+            <p style="margin: 12px 0 0; max-width: 58ch;">Tellurium has 52 protons and iodine 53, but much of natural tellurium is made of its heavier isotopes, so its relative atomic mass (127.6) is higher than iodine's (126.9). Ordered by atomic number, tellurium comes first, just where Mendeleev put it. Argon and potassium, found later, show the same thing.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · what Mendeleev used</p></div>
+        <p class="ks3-mis-quote">&ldquo;Mendeleev put the elements in order of atomic number.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="In 1869, what could Mendeleev use to put the elements in order?" options="{{ thinkOptions }}" reveal="Protons had not been discovered, so nobody knew atomic numbers. Mendeleev used atomic weight, and his chemical judgement, which is why he swapped some pairs. The order by atomic number came later and explained his swaps." right-word="Yes." wrong-word="Not this one." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Newlands, Mendeleev or the modern table?" prompt="Place each statement." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Newlands: octaves, no gaps, rejected. Mendeleev: gaps, swaps, tested predictions. Modern: atomic number, explained by isotopes." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The steps in order: weights, gaps and swaps, predictions found, isotopes.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why the table was accepted: predictions made, tested, and found correct.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Use protons and relative atomic mass to explain a pair that looks out of order.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Mendeleev ordered elements by atomic weight but left gaps and swapped some pairs. Elements found later matched his predictions, so his table was accepted. Isotopes explain why atomic-weight order was not always correct.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="development-periodic-table" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Development of the periodic table" spec="AQA 5.1.2.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure how isotopes explain the swaps?" legal="Relative atomic masses are today's values. The table fragments show only the elements needed for each step." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A missing sticker', short: 'HOOK' },
+  { id: 's-moves', label: 'Mendeleev\u2019s moves', short: 'MOVES' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Who did what', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const MOVES = [
+  { tab: 'Swap', head: 'Tellurium and iodine', text: 'By atomic weight, iodine comes before tellurium. That would put iodine in the group with sulfur and selenium, and tellurium with chlorine and bromine. But iodine reacts like chlorine and bromine.',
+    opts: ['Swap them, so each sits with elements it behaves like', 'Keep strict weight order, whatever the properties'], best: 0,
+    yes: 'That is what Mendeleev did: chemical properties first. He couldn\u2019t yet explain why the weights disagreed.', no: 'Then iodine sits in a group it doesn\u2019t behave like. Mendeleev chose to swap the pair.' },
+  { tab: 'Gap', head: 'Below silicon', text: 'The next known element by weight does not behave like silicon at all. It behaves like the elements in the group after.',
+    opts: ['Leave a gap, for an element not yet found', 'Put the element below silicon anyway'], best: 0,
+    yes: 'Mendeleev left a gap, and called the missing element eka-silicon. He predicted its properties.', no: 'That forces an element into a group it doesn\u2019t fit, as Newlands did. Mendeleev left a gap.' },
+  { tab: 'Test', head: 'Germanium, found later', text: 'Years later a new element, germanium, is discovered. It fits the gap below silicon.',
+    opts: ['Its properties closely match Mendeleev\u2019s predictions', 'Its properties are nothing like the predictions'], best: 0,
+    yes: 'Predictions that pass a test are strong evidence. This is why scientists accepted Mendeleev\u2019s table.', no: 'In fact they matched closely, and that was the evidence that convinced other scientists.' },
+  { tab: 'Explain', head: 'Why the swap was right', text: 'Protons, and then isotopes, are discovered. Tellurium has 52 protons, iodine 53.',
+    opts: ['Order by atomic number: tellurium first, as Mendeleev placed it', 'Order by weight: iodine first, so Mendeleev was wrong'], best: 0,
+    yes: 'Tellurium\u2019s heavier isotopes are common, so its relative atomic mass is higher even though it has fewer protons. Atomic number gives the right order.', no: 'Weight was the misleading measure. Tellurium has fewer protons, so it comes first by atomic number.' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, mi: 0, pick: null, cleared: 0, think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  moveSvg(mi, solved) {
+    const D = window.KS4D, C = D.C;
+    const cell = (x, y, sym, sub, st) => '<rect x="' + x + '" y="' + y + '" width="88" height="70" rx="10" fill="' + (st === 'gap' ? 'none' : st === 'hi' ? '#F2DE8A' : '#fff') + '" stroke="' + C.stroke + '" stroke-width="' + (st === 'hi' ? 3 : 2) + '"' + (st === 'gap' ? ' stroke-dasharray="8 6"' : '') + '/>' +
+      D.T(x + 44, y + 36, sym, 22, { fill: C.stroke }) + (sub ? D.T(x + 44, y + 58, sub, 12, { weight: 'normal', fill: C.stroke }) : '');
+    let b = '';
+    if (mi === 0 || mi === 3) {
+      b += D.T(80, 40, 'group with S, Se', 14) + D.T(260, 40, 'group with Cl, Br', 14);
+      const tFirst = mi === 3 || solved;
+      b += cell(36, 60, 'S', '', '') + cell(216, 60, 'Cl', '', '') + cell(36, 140, 'Se', '', '') + cell(216, 140, 'Br', '', '');
+      b += cell(36, 220, tFirst ? 'Te' : 'I', mi === 3 ? (tFirst ? '52 p \u00b7 127.6' : '') : (tFirst ? '127.6' : '126.9'), 'hi') + cell(216, 220, tFirst ? 'I' : 'Te', mi === 3 ? '53 p \u00b7 126.9' : (tFirst ? '126.9' : '127.6'), 'hi');
+      if (!tFirst) b += D.T(170, 320, 'by weight: iodine lands with S and Se', 13, { weight: 'normal', fill: C.stroke });
+      else b += D.T(170, 320, mi === 3 ? 'by atomic number: 52 before 53' : 'swapped: each with elements like it', 13, { weight: 'normal', fill: C.stroke });
+    } else {
+      b += D.T(80, 40, 'carbon group', 14) + D.T(260, 40, 'next group', 14);
+      b += cell(36, 60, 'C', '', '') + cell(216, 60, 'N', '', '') + cell(36, 140, 'Si', '', '') + cell(216, 140, 'P', '', '');
+      const filled = mi === 2 && solved;
+      b += cell(36, 220, mi === 2 ? (filled ? 'Ge' : '?') : (solved ? '?' : '?'), mi === 2 ? (filled ? 'found later' : 'eka-silicon') : 'eka-silicon', mi === 1 && !solved ? 'hi' : filled ? 'hi' : 'gap');
+      b += cell(216, 220, 'As', '', '');
+      b += D.T(170, 320, mi === 1 ? 'a gap below silicon' : filled ? 'germanium fills the gap' : 'the gap waits', 13, { weight: 'normal', fill: C.stroke });
+    }
+    return D.svg(340, 340, b, 'Part of Mendeleev\u2019s table for the ' + MOVES[mi].tab.toLowerCase() + ' step.');
+  }
+  pair() {
+    const D = window.KS4D, C = D.C;
+    let b = '';
+    [['Te', 'tellurium', '52 protons', 'Ar 127.6', 30], ['I', 'iodine', '53 protons', 'Ar 126.9', 230]].forEach((e) => {
+      b += '<rect x="' + e[4] + '" y="30" width="170" height="150" rx="14" fill="#fff" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+      b += D.T(e[4] + 85, 92, e[0], 40, { fill: C.stroke }) + D.T(e[4] + 85, 118, e[1], 14, { weight: 'normal', fill: C.stroke }) + D.T(e[4] + 85, 146, e[2], 15) + D.T(e[4] + 85, 168, e[3], 15, { fill: C.stroke });
+    });
+    b += D.T(215, 214, 'fewer protons, higher average mass:', 14, { weight: 'normal', fill: C.stroke }) + D.T(215, 234, 'more of tellurium\u2019s heavier isotopes', 14, { weight: 'normal', fill: C.stroke });
+    return D.svg(430, 250, b, 'Tellurium: 52 protons, relative atomic mass 127.6. Iodine: 53 protons, relative atomic mass 126.9.');
+  }
+  btn(st) {
+    return 'text-align:left;font:inherit;font-size:17px;font-weight:700;padding:11px 14px;min-height:48px;border-radius:12px;cursor:pointer;color:var(--ks3-ink);background:var(--ks3-card);border:2px solid ' + (st === 'no' ? 'var(--ks3-alert-border)' : st === 'yes' ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.cleared >= 4, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const M = MOVES[s.mi]; const solved = s.pick === M.best;
+    const bankSrc = [
+      { q: 'What was the key reason Mendeleev\u2019s periodic table was eventually accepted by scientists?', opts: [['He predicted properties of undiscovered elements \u2014 and when they were found, the predictions were accurate', true], ['He was the first to arrange elements in order of atomic mass', false], ['He discovered all the noble gases and added them to the table', false], ['His table was the simplest and easiest to remember', false]],
+        wrong_explanations: { 1: 'Newlands had also arranged by atomic mass \u2014 Mendeleev\u2019s key advance was leaving gaps and making testable predictions.', 2: 'Noble gases were discovered by other scientists (Ramsay and others) after Mendeleev\u2019s original table \u2014 they were later added as Group 0.', 3: 'Science accepts models based on EVIDENCE and PREDICTIVE POWER, not simplicity alone.' } },
+      { q: 'Why did Mendeleev leave gaps in his periodic table?', opts: [['For elements he thought had not yet been discovered', true], ['Because he ran out of space', false], ['To separate metals from non-metals', false], ['Because some elements had no atomic weight', false]],
+        wrong_explanations: { 1: 'The gaps were deliberate, not a layout problem.', 2: 'The gaps were for missing elements, not to divide metals from non-metals.', 3: 'Every known element had an atomic weight. The gaps were for unknown elements.' } },
+      { q: 'Why was Newlands\u2019 table rejected?', opts: [['His pattern only worked for the first elements, he forced elements into groups where they did not fit, and he left no gaps', true], ['He ordered the elements by atomic number', false], ['He left too many gaps', false], ['He was the first to use atomic weights', false]],
+        wrong_explanations: { 1: 'Atomic numbers were not known; he used atomic weights.', 2: 'He left no gaps at all; that was part of the problem.', 3: 'Using atomic weights was normal then; the problem was the forced fit.' } },
+      { q: 'Tellurium (52 protons) has a higher relative atomic mass than iodine (53 protons). Why?', opts: [['Natural tellurium contains a high proportion of heavier isotopes, so its average mass is higher', true], ['Tellurium has more protons than iodine', false], ['Iodine atoms have no neutrons', false], ['Relative atomic mass ignores neutrons', false]],
+        wrong_explanations: { 1: 'Tellurium has fewer protons: 52 against 53.', 2: 'Iodine atoms do have neutrons.', 3: 'Relative atomic mass includes the neutrons; it is an average over the isotopes.' } },
+      { q: 'In what order are the elements in the modern periodic table?', opts: [['Atomic number', true], ['Atomic weight', false], ['Date of discovery', false], ['Density', false]],
+        wrong_explanations: { 1: 'Atomic weight was the old order, and it was not always correct.', 2: 'History plays no part in the order.', 3: 'Density varies within groups and plays no part in the order.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('development-periodic-table') : null,
+      hookOptions: [
+        { text: 'More believable', correct: true, reply: 'The space says a sticker belongs there, and when it turns up, it fits.' },
+        { text: 'Less believable', correct: false, reply: 'Shuffling stickers along puts every later one in the wrong place. A space keeps the pattern, and predicts what will fill it.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      stepTabs: MOVES.map((m, i) => ({ label: (i + 1) + ' \u00b7 ' + m.tab, style: 'font-family:var(--ks3-font-mono);font-size:14px;padding:6px 12px;border-radius:99px;border:2px solid ' + (i === s.mi ? 'var(--ks3-ink)' : i < s.cleared ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (i < s.cleared ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' })),
+      moveFig: ready ? K.fig(this.moveSvg(s.mi, solved), '') : null,
+      moveHead: M.head, moveText: M.text,
+      moveAsking: !solved,
+      moveOptions: M.opts.map((t, k) => ({ text: t, style: this.btn(s.pick === k ? (k === M.best ? 'yes' : 'no') : ''), onClick: () => this.setState({ pick: k, cleared: k === M.best ? Math.max(s.cleared, s.mi + 1) : s.cleared }) })),
+      moveHasNote: s.pick !== null,
+      moveNote: s.pick === null ? '' : solved ? M.yes : M.no,
+      moveNoteStyle: 'margin:0;padding:12px 14px;border-radius:14px;font-size:17px;line-height:1.55;border:2px solid ' + (solved ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      moveCanNext: solved,
+      moveNextLabel: s.mi < MOVES.length - 1 ? 'Next step' : 'Start again',
+      onMoveNext: () => this.setState({ mi: (s.mi + 1) % MOVES.length, pick: null }),
+      pairFig: ready ? K.fig(this.pair(), '') : null,
+      thinkOptions: [
+        { text: 'Atomic weight', correct: true, reply: 'Atomic numbers were not yet known.' },
+        { text: 'Atomic number', correct: false, reply: 'Protons hadn\u2019t been discovered, so atomic numbers were unknown in 1869.' },
+        { text: 'Number of outer electrons', correct: false, reply: 'Electrons hadn\u2019t been discovered either.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'n', label: 'Newlands' }, { id: 'm', label: 'Mendeleev' }, { id: 't', label: 'Modern table' }],
+      sortItems: [
+        { text: 'Every eighth element similar', bin: 'n', why: 'Newlands\u2019 octaves.' },
+        { text: 'No gaps, so some elements forced into the wrong groups', bin: 'n', why: 'Why Newlands\u2019 table was rejected.' },
+        { text: 'Left gaps for undiscovered elements', bin: 'm', why: 'Mendeleev\u2019s key move.' },
+        { text: 'Swapped tellurium and iodine', bin: 'm', why: 'Properties before weight order.' },
+        { text: 'Predicted eka-silicon', bin: 'm', why: 'Later found as germanium.' },
+        { text: 'In order of atomic number', bin: 't', why: 'The modern order.' },
+        { text: 'Isotopes explain why weight order failed', bin: 't', why: 'Explained once isotopes were known.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Give the property Mendeleev used to order the elements.', why: 'Atomic weight.', options: [
+            { text: 'Atomic weight', correct: true },
+            { text: 'Atomic number', correct: false, reply: 'Not yet known in 1869.' },
+            { text: 'Melting point', correct: false, reply: 'He ordered by atomic weight and grouped by chemical properties.' }] },
+          { kind: 'mcq', command: 'State', marks: 1, prompt: 'State why Mendeleev left gaps in his table.', why: 'For elements he thought had not yet been discovered.', options: [
+            { text: 'For elements not yet discovered', correct: true },
+            { text: 'To separate the metals', correct: false, reply: 'The gaps were for missing elements.' },
+            { text: 'Because he made mistakes', correct: false, reply: 'The gaps were deliberate.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Suggest', marks: 1, prompt: 'Tellurium has a relative atomic mass of 127.6 and iodine 126.9. Suggest why Mendeleev placed tellurium before iodine.', why: 'To keep each element in a group with elements of similar properties.', options: [
+            { text: 'So each was in a group with elements of similar properties', correct: true },
+            { text: 'Because tellurium is lighter', correct: false, reply: 'Tellurium is heavier: 127.6 against 126.9.' },
+            { text: 'Because he knew their atomic numbers', correct: false, reply: 'Atomic numbers were not yet known.' }] },
+          { kind: 'mcq', command: 'Explain', marks: 2, prompt: 'Argon has 18 protons and a relative atomic mass of 39.9. Potassium has 19 protons and a relative atomic mass of 39.1. Which comes first in the modern periodic table, and why?', why: 'Argon, because the table is in order of atomic number.', options: [
+            { text: 'Argon, because it has the smaller atomic number', correct: true },
+            { text: 'Potassium, because it has the smaller relative atomic mass', correct: false, reply: 'The modern table uses atomic number, not mass.' },
+            { text: 'Argon, because it is a gas', correct: false, reply: 'State plays no part in the order.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why Mendeleev\u2019s periodic table was accepted by other scientists. Put the links in order.',
+            links: ['He left gaps and predicted the properties of elements not yet discovered.', 'Some of these elements, such as germanium, were later discovered.', 'Their properties closely matched his predictions, which was evidence that his table was right.'],
+            herrings: [{ text: 'His table was accepted because it was complete.', why: 'It had gaps; it was accepted because predictions were confirmed.' }, { text: 'He ordered the elements by atomic number.', why: 'He used atomic weight.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how isotopes show that tellurium should come before iodine. Put the links in order.',
+            links: ['Relative atomic mass is an average that takes account of the abundance of each isotope.', 'Much of natural tellurium is made of its heavier isotopes, so its relative atomic mass is higher than iodine\u2019s.', 'Tellurium has fewer protons (52 against 53), so by atomic number it comes first.'],
+            herrings: [{ text: 'Tellurium has more protons than iodine.', why: 'It has fewer: 52 against 53.' }, { text: 'Isotopes have different numbers of protons.', why: 'Isotopes of an element have the same number of protons and different numbers of neutrons.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 6, prompt: 'Describe the steps in the development of the periodic table, from early tables to the modern one.',
+            levels: [
+              { label: 'Level 3 \u00b7 5\u20136', text: 'A clear sequence covering atomic weights, Mendeleev\u2019s gaps and swaps, the confirmed predictions, and isotopes / atomic number.', max: 6 },
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Several correct steps, with some sequence or reasons missing.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'One or two relevant facts with little sequence.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Early tables ordered elements by atomic weight, before subatomic particles were known; they were incomplete and some elements were misplaced.', 'Newlands\u2019 octaves: every eighth element similar, but it failed after the first elements and left no gaps.', 'Mendeleev changed the order of some pairs (e.g. tellurium and iodine) to keep similar elements together.', 'He left gaps for undiscovered elements and predicted their properties.', 'Elements such as germanium were found with matching properties, so the table was accepted.', 'Isotopes explained why atomic-weight order was not always correct; the modern table is in order of atomic number.'],
+            reject: ['\u201cMendeleev ordered by atomic number.\u201d', '\u201cThe gaps were mistakes.\u201d'] }
+        ]
+      },
+      keyLines: ['Before protons were discovered, elements were ordered by atomic weight; early tables were incomplete.', 'Newlands\u2019 octaves: worked only for the first elements, forced fits, no gaps; rejected.', 'Mendeleev: swapped some pairs (tellurium and iodine) to keep similar elements together.', 'He left gaps for undiscovered elements and predicted their properties.', 'Germanium (eka-silicon) was found with matching properties: tested predictions led to acceptance.', 'Isotopes explain why atomic-weight order was not always right. Modern table: order of atomic number.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-chemistry-5.1.2.1-periodic-table.dc.html', label: 'The periodic table' }, endNext: null,
+      endConnects: [{ href: 'ks4-chemistry-5.1.2.1-periodic-table.dc.html', label: 'The periodic table' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+<script>(function(){var p='system';try{p=localStorage.getItem('mrb-theme')||'system'}catch(e){}if(p!=='dark'&&p!=='light')p='system';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>Account — MrBadmus</title>
@@ -11,7 +11,7 @@
        build by brand.stamp_brand), and brand.js hands the shell its lockup.
        Same-origin static files: no API, Supabase or CDN request. -->
   <!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614"><!--/mrb:brand-head-->
-  <script src="/shared/brand/brand.js?v=a8b2a506"></script>
+  <script src="/shared/brand/brand.js?v=a4ee216b"></script>
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
@@ -243,6 +243,14 @@
       label: 'Not started', badge: 'band',
       line: 'Nothing has been charged.',
       cta: { label: 'Start your free week', kind: 'accent', act: 'checkout', note: '' }
+    },
+    /* ⊕ B2C fix run (9 Oct 2026). A seventh she did not draw: Stripe holds
+       the subscription and our side has not caught up yet. No CTA at all —
+       "Start your free week" here is how a family got a second Checkout.
+       The page re-reads until the state is a real one (watchPending). */
+    pending: {
+      label: 'Setting up', badge: 'band',
+      cta: null
     }
   };
   var BADGES = {
@@ -256,21 +264,11 @@
     accent:  { border: 'var(--ks3-accent-text)', bg: 'var(--ks3-accent-text)', fg: 'var(--ak-on-accent)' }
   };
 
-  var MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
-                     'August', 'September', 'October', 'November', 'December'];
-  function dayMonth(iso) {
-    if (!iso) { return null; }
-    var d = new Date(iso);
-    if (isNaN(d.getTime())) { return null; }
-    return d.getDate() + ' ' + MONTHS_LONG[d.getMonth()];
-  }
-  function plusDaysISO(iso, n) {
-    if (!iso) { return null; }
-    var d = new Date(iso);
-    if (isNaN(d.getTime())) { return null; }
-    d.setDate(d.getDate() + n);
-    return d.toISOString();
-  }
+  /* ⊕ B2C fix run (9 Oct 2026): the LONDON date, from consumer-common.js —
+     the same helper the dashboard and the return page use, so the trial end
+     reads the same on all three and on any device. */
+  function dayMonth(iso) { return C.dayMonth(iso); }
+  function plusDaysISO(iso, n) { return C.plusDaysISO(iso, n); }
 
   var MARK_BACK = '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" ' +
     'style="width:22px;height:22px"><path d="M15 5l-7 7 7 7"/></svg>';
@@ -326,7 +324,9 @@
     /* Design's plan title. `cancelled` names the end date; `locked` and
        `none` have no plan to name. */
     var title;
-    if (st === 'locked' || st === 'none') {
+    if (st === 'pending') {
+      title = 'Free week';
+    } else if (st === 'locked' || st === 'none') {
       title = 'No active plan';
     } else if (st === 'cancelled') {
       var end = dayMonth(b.access_end);
@@ -442,6 +442,9 @@
 
     /* The CTA, gated on the two fields that decide it. */
     var cta = '';
+    if (!def.cta) {
+      return planSection(def, badge, title, line, body, '');
+    }
     var wantsPortal = def.cta.act === 'portal';
     var allowed = wantsPortal ? !!b.can_portal : !!b.can_checkout;
     var label = def.cta.label;
@@ -466,7 +469,10 @@
           ? 'There is no billing account to manage yet.'
           : 'This account can’t start a subscription from here. Email support@mrbadmus.com.') + '</p>';
     }
+    return planSection(def, badge, title, line, body, cta);
+  }
 
+  function planSection(def, badge, title, line, body, cta) {
     return '<section class="ak-plan">' +
       '<div style="display:flex;align-items:center;gap:10px">' +
         '<p class="ak-kicker">Your plan</p>' +
@@ -478,7 +484,7 @@
       (line ? ('<p style="margin:8px 0 0;font-size:16px;color:var(--ks3-ink-body)">' + esc(line) +
                '</p>') : '') +
       body +
-      '<div style="margin-top:18px;display:flex;flex-direction:column;gap:8px">' + cta + '</div>' +
+      (cta ? ('<div style="margin-top:18px;display:flex;flex-direction:column;gap:8px">' + cta + '</div>') : '') +
       '</section>';
   }
 
@@ -727,8 +733,27 @@
         S.digest = S.prefs.digest !== false;
         S.marking = S.prefs.marking_email !== false;
       }
+      watchPending();
       return d;
     });
+  }
+
+  /* ⊕ B2C fix run (9 Oct 2026). While billing is `pending` (Stripe has the
+     subscription, our side has not caught up), re-read every few seconds
+     and redraw in the real state when it lands. Five minutes at most. */
+  var PENDING_POLL_MS = 4000, PENDING_MAX_TRIES = 75;
+  var pendingTimer = null, pendingTries = 0;
+  function watchPending() {
+    if (String(S.billing.state || '').toLowerCase() !== 'pending') { pendingTries = 0; return; }
+    if (pendingTimer || pendingTries >= PENDING_MAX_TRIES) { return; }
+    pendingTimer = setTimeout(function () {
+      pendingTimer = null;
+      pendingTries++;
+      loadFamily().then(function () {
+        var a = document.activeElement;
+        if (!(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))) { render(); }
+      }).catch(function (e) { console.error('[account/pending]', e); watchPending(); });
+    }, PENDING_POLL_MS);
   }
   function loadPrices() {
     var p = (C.pricing ? C.pricing() : C.api('/api/consumer/pricing'));
@@ -821,7 +846,9 @@
       C.startCheckout(el, {
         token: ctx.token, interval: interval(),
         addChildHref: C.href('/consumer/signup.html', { step: 'child' }),
-        msgHost: document.getElementById('ak-plan-msg') || undefined
+        msgHost: document.getElementById('ak-plan-msg') || undefined,
+        /* Stripe already had it; the backend has caught up — redraw. */
+        onAlready: function () { return loadFamily().then(render); }
       });
     },
 
@@ -965,6 +992,6 @@
   } });
 })();
 </script>
-<script src="/shared/theme.js?v=6fd6f722" defer></script>
+<script src="/shared/theme.js?v=83dd2451" defer></script>
 </body>
 </html>

@@ -554,12 +554,28 @@ GATES = [
              "from the open sitting; make mode's two passes; every end-screen "
              "case A8 names; × after one Check ends the sitting (A13); retired "
              "strings gone."),
+    dict(name="flashcard_truth_test",
+         cmd=["python3", "flashcard_truth_test.py"],
+         speed="fast",
+         watches=["flashcard_truth_test.py", "flashcard_truth_test.js",
+                  "shared/flashcard-truth.js"],
+         why="Flashcards round 3 (teacher): effort is not understanding. The "
+             "pure fold in shared/flashcard-truth.js, in Node — idk (the exact "
+             "IDK text, once per pupil per card however often pressed), weak "
+             "(a TYPED answer the check called Nearly/Wrong, never the IDK "
+             "text, blank or pending), unsure = either, secured-anyway; the "
+             "reteach sort (unsure, then idk, then position); the pupil line "
+             "('N of M unsure' / 'all confident' only when Done and the read "
+             "worked / nothing for Not started); and a read that returned "
+             "nothing for a class that has done work is FAILED, never 'all "
+             "confident'."),
     dict(name="flashcard_progress_drive",
          cmd=["python3", "flashcard_progress_drive.py"],
          speed="slow",
          watches=["flashcard_progress_drive.py", "ks3_browser.py",
                   "teacher/flashcards.html",
                   "shared/flashcard-progress.js", "shared/flashcard-progress.css",
+                  "shared/flashcard-truth.js",
                   "shared/flashcard-breakdown.js", "shared/breakdown.css",
                   "shared/formulae.js", "shared/set-work.js", "shared/set-work.css",
                   "shared/teacher-live.js", "shared/teacher-data.js",
@@ -2380,7 +2396,7 @@ GATES = [
                   # sweep's own stub imports/loads to reach them.
                   "teacher/decks.html", "teacher/flashcards.html",
                   "shared/flashcard-decks.js", "shared/flashcard-decks.css",
-                  "shared/flashcard-progress.js",
+                  "shared/flashcard-progress.js", "shared/flashcard-truth.js",
                   "shared/flashcard-progress.css",
                   "shared/flashcard-homework.js", "shared/formulae.js",
                   "shared/set-work.js", "shared/set-work.css",
@@ -2705,7 +2721,7 @@ GATES = [
          cmd=["python3", "ks4_parity.py"],
          speed="slow",
          watches=["config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "ks4_parity.py", "ks3_browser.py", "build_ks4.py",
-                  "ks4_lessons/**", "ks4_rulings.py", "ks4_science_rulings.py",
+                  "ks4_lessons/**", "ks4_rulings.py", "ks4_batch_rulings.py", "ks4_science_rulings.py",
                   "shared/ks4-ds.css", "shared/ks4-theme.css",
                   "shared/ks4-lesson.css", "shared/ks4-source.js",
                   "shared/ks4-lib.js", "shared/ks4-diagrams.js",
@@ -2989,6 +3005,12 @@ EXCLUDED = {
         "the KS4 pilot generator (docs/ks4/pilot-build-contract.md). Its "
         "output is what ks4_parity, ks4_pilot_check and contrast_audit's "
         "'ks4 pilot/*' pages measure. Writing is the job.",
+    "ks4_batch_rulings.py":
+        "batch 4's named rulings on Design's lessons (B-R*, B-PRACTICE-PARSE, "
+        "science and display rulings, MRB Prompt AA). A library: no `main`, "
+        "asserts nothing on its own; it is applied by build_ks4.py on every "
+        "build and fails the build if a ruling's target text moves. "
+        "ks4_batch_check and ks4_parity --batch prove its output.",
     "ks4_rulings.py":
         "the KS4 pilot's R1/R2/.../R9/R-SLUG/R-PREVNEXT/R-CONNECTS register "
         "— structural/engineering corrections to Design's template and "

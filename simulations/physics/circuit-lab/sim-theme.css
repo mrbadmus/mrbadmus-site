@@ -1,0 +1,135 @@
+/* Circuit Lab (Design's file, untouched below the site bar).
+   1. sits under the site bar;  2. phone layout;  3. dark panels.
+   The workbench "paper" stays light in dark mode, like the seismic plates:
+   the wires and parts are drawn for a light ground. */
+
+[data-screen-label="Circuit Lab"] { height: calc(100dvh - 64px) !important; }
+
+/* ── 2. Phone: stack the three panes. Workbench on top, parts in a strip you
+   scroll sideways, then the inspector. The page itself scrolls; the workbench
+   keeps touch-action:none so dragging a part never scrolls the page. ── */
+@media (max-width: 860px) {
+  html[data-sim="circuit"], html[data-sim="circuit"] body { height: auto !important; overflow: auto !important; }
+  html[data-sim="circuit"] [data-screen-label="Circuit Lab"] { height: auto !important; min-height: calc(100dvh - 64px); }
+  html[data-sim="circuit"] [data-screen-label] > :first-child { height: auto !important; flex-wrap: wrap; gap: 8px 10px; padding: 8px 12px; }
+  html[data-sim="circuit"] [data-screen-label] > :nth-child(2) { flex-direction: column; min-height: 0; flex: none; }
+  /* workbench */
+  html[data-sim="circuit"] [data-screen-label] > :nth-child(2) > :nth-child(2) { order: 1; flex: none; height: 64dvh; min-height: 380px; }
+  /* the floating option buttons cover less of a small workbench */
+  html[data-sim="circuit"] [data-screen-label] > :nth-child(2) > :nth-child(2) > :nth-child(2) { transform: scale(.8); transform-origin: top left; }
+  /* the app bar is already two rows on a phone; drop its caption line */
+  html[data-sim="circuit"] [data-screen-label] > :first-child > :first-child > :nth-child(2) { display: none; }
+  /* parts strip */
+  html[data-sim="circuit"] [data-screen-label] > :nth-child(2) > :first-child {
+    order: 2; width: 100% !important; flex: none; display: flex; flex-wrap: nowrap; align-items: flex-start; gap: 6px;
+    overflow-x: auto !important; overflow-y: hidden !important; padding: 8px 10px 12px !important;
+    border-right: 0 !important; border-top: 1.5px solid #E0D2B9; -webkit-overflow-scrolling: touch;
+  }
+  html[data-sim="circuit"] [data-screen-label] > :nth-child(2) > :first-child > * { flex: none; margin: 0 !important; width: 190px; }
+  html[data-sim="circuit"] [data-screen-label] > :nth-child(2) > :first-child > :first-child { width: 190px; margin-top: 2px !important; }
+  /* inspector */
+  html[data-sim="circuit"] [data-screen-label] > :nth-child(2) > :last-child { order: 3; width: 100% !important; flex: none; border-left: 0 !important; border-top: 1.5px solid #E0D2B9; max-height: none; }
+}
+
+/* ── 3. Dark: top bar, parts, inspector. Inline colours are matched in both the
+   authored (#hex) and the browser-normalised (rgb()) spelling. ── */
+html[data-theme="dark"], html[data-theme="dark"] body { background: #16120E !important; }
+html[data-theme="dark"] [data-screen-label] { background: #16120E !important; color: #F3ECE0 !important; }
+html[data-theme="dark"] [data-screen-label] > :first-child,
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child,
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child { background: #1F1A15 !important; border-color: #3E352C !important; color: #F3ECE0; }
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="background:#FBF3E6"],
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="background: rgb(251, 243, 230)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="background:#FBF3E6"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="background: rgb(251, 243, 230)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="background:#FBF3E6"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="background: rgb(251, 243, 230)"] { background: #16120E !important; }
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="background:#FFFDF8"],
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="background: rgb(255, 253, 248)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="background:#FFFDF8"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="background: rgb(255, 253, 248)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="background:#FFFDF8"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="background: rgb(255, 253, 248)"] { background: #1F1A15 !important; }
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="background:#E0D2B9"],
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="background: rgb(224, 210, 185)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="background:#E0D2B9"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="background: rgb(224, 210, 185)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="background:#E0D2B9"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="background: rgb(224, 210, 185)"] { background: #3E352C !important; }
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="background:#F5EAD6"],
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="background: rgb(245, 234, 214)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="background:#F5EAD6"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="background: rgb(245, 234, 214)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="background:#F5EAD6"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="background: rgb(245, 234, 214)"] { background: #2A231C !important; }
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="background:#F2E8D6"],
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="background: rgb(242, 232, 214)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="background:#F2E8D6"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="background: rgb(242, 232, 214)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="background:#F2E8D6"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="background: rgb(242, 232, 214)"] { background: #2A231C !important; }
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="background:#F0E4CC"],
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="background: rgb(240, 228, 204)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="background:#F0E4CC"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="background: rgb(240, 228, 204)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="background:#F0E4CC"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="background: rgb(240, 228, 204)"] { background: #2A231C !important; }
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="color:#1A1714"],
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="color: rgb(26, 23, 20)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="color:#1A1714"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="color: rgb(26, 23, 20)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="color:#1A1714"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="color: rgb(26, 23, 20)"] { color: #F3ECE0 !important; }
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="color:#6E655D"],
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="color: rgb(110, 101, 93)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="color:#6E655D"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="color: rgb(110, 101, 93)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="color:#6E655D"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="color: rgb(110, 101, 93)"] { color: #C2B6A6 !important; }
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="color:#7A6E5F"],
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="color: rgb(122, 110, 95)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="color:#7A6E5F"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="color: rgb(122, 110, 95)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="color:#7A6E5F"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="color: rgb(122, 110, 95)"] { color: #C2B6A6 !important; }
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="color:#8A8074"],
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="color: rgb(138, 128, 116)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="color:#8A8074"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="color: rgb(138, 128, 116)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="color:#8A8074"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="color: rgb(138, 128, 116)"] { color: #C2B6A6 !important; }
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="color:#8F8A82"],
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="color: rgb(143, 138, 130)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="color:#8F8A82"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="color: rgb(143, 138, 130)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="color:#8F8A82"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="color: rgb(143, 138, 130)"] { color: #C2B6A6 !important; }
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="color:#A93411"],
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="color: rgb(169, 52, 17)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="color:#A93411"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="color: rgb(169, 52, 17)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="color:#A93411"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="color: rgb(169, 52, 17)"] { color: #FF9E78 !important; }
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="solid #E0D2B9"],
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="solid #D9C9AC"],
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="solid rgb(224, 210, 185)"],
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="solid rgb(217, 201, 172)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="solid #E0D2B9"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="solid #D9C9AC"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="solid rgb(224, 210, 185)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="solid rgb(217, 201, 172)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="solid #E0D2B9"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="solid #D9C9AC"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="solid rgb(224, 210, 185)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="solid rgb(217, 201, 172)"] { border-color: #5E5246 !important; }
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="solid rgb(169, 52, 17)"],
+html[data-theme="dark"] [data-screen-label] > :first-child [style*="solid #A93411"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="solid rgb(169, 52, 17)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child [style*="solid #A93411"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="solid rgb(169, 52, 17)"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :last-child [style*="solid #A93411"] { border-color: #FF9E78 !important; }
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child svg [stroke="#1A1714"],
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child svg [stroke="#6E655D"] { stroke: #F3ECE0; }
+html[data-theme="dark"] [data-screen-label] > :nth-child(2) > :first-child svg [fill="#1A1714"] { fill: #F3ECE0; }
+html[data-theme="dark"] [data-screen-label] input:not([type=range]) { background: #16120E !important; color: #F3ECE0 !important; border-color: #5E5246 !important; }
+html[data-theme="dark"] a { color: #FF9E78; }

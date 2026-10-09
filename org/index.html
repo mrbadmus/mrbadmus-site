@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+<script>(function(){var p='system';try{p=localStorage.getItem('mrb-theme')||'system'}catch(e){}if(p!=='dark'&&p!=='light')p='system';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>Pupils — MrBadmus</title>
@@ -11,7 +11,7 @@
        build by brand.stamp_brand), and brand.js hands the shell its lockup.
        Same-origin static files: no API, Supabase or CDN request. -->
   <!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614"><!--/mrb:brand-head-->
-  <script src="/shared/brand/brand.js?v=a8b2a506"></script>
+  <script src="/shared/brand/brand.js?v=a4ee216b"></script>
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
@@ -1598,6 +1598,6 @@
   });
 })();
 </script>
-<script src="/shared/theme.js?v=6fd6f722" defer></script>
+<script src="/shared/theme.js?v=83dd2451" defer></script>
 </body>
 </html>

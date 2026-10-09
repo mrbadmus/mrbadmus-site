@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reactivity of metals · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Chemical changes" title="Reactivity of metals" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 5.4.1.1–5.4.1.2</p>
+        <h1>Reactivity of metals and metal oxides</h1>
+        <p class="ks3-bigq">Drop metals into water, acid and each other’s solutions. Build the order from what you see, then use one idea to explain it all: how readily a metal forms positive ions.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A gold ring and an old bike." scene="Gold jewellery dug up after hundreds of years still shines. An iron bike left out for one wet winter goes orange-brown with rust." question="which metal reacts more easily?" options="{{ hookOptions }}" bridge="Metals can be put in order of how easily they react. Next: build that order from evidence." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-oxygen" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Metals and oxygen</p>
+        <h2 style="margin: 6px 0 0;">Gaining oxygen is oxidation.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Metals react with oxygen to produce metal oxides. These are oxidation reactions because the metal gains oxygen. The reverse, losing oxygen, is reduction.</p>
+        <div style="margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 18px;">
+          <span>magnesium + oxygen</span><svg aria-label="gives" role="img" width="28" height="14" viewBox="0 0 28 14"><path d="M1 7h23M18 2l6 5-6 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>magnesium oxide</span>
+          <span style="margin-left: auto; font-size: 14px; color: var(--ks3-ink-muted);">magnesium is oxidised</span>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Metal oxides are bases: they neutralise acids.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Bench · water and dilute acid, at room temperature</p>
+        <h2 style="margin: 6px 0 0;">Watch each metal, then rank it.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Same-sized pieces, one liquid at a time. Test all eight metals; each joins the ladder once you have seen it react.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ liquids }}" as="l" hint-placeholder-count="2"><button type="button" onClick="{{ l.onClick }}" aria-pressed="{{ l.pressed }}" style="{{ l.style }}">{{ l.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;">
+          <sc-for list="{{ metals }}" as="m" hint-placeholder-count="8"><button type="button" onClick="{{ m.onClick }}" aria-pressed="{{ m.pressed }}" style="{{ m.style }}">{{ m.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div aria-live="polite" style="padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ obsHead }}</p>
+              <p style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 21px; line-height: 1.3;">{{ obsLine }}</p>
+            </div>
+            <div style="padding: 14px 16px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border); font-family: var(--ks3-font-mono); font-size: 16px; display: flex; flex-direction: column; gap: 8px;">
+              <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">metal + water<svg aria-label="gives" role="img" width="24" height="12" viewBox="0 0 28 14"><path d="M1 7h23M18 2l6 5-6 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>metal hydroxide + hydrogen</span>
+              <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">metal + acid<svg aria-label="gives" role="img" width="24" height="12" viewBox="0 0 28 14"><path d="M1 7h23M18 2l6 5-6 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>salt + hydrogen</span>
+            </div>
+            <p style="margin: 0; font-size: 17px; line-height: 1.55;">When a metal reacts, its atoms form positive ions. The reactivity of a metal is related to its tendency to form positive ions: the more readily it does, the more vigorous the reaction. Compare metals on the same reaction, with same-sized pieces.</p>
+          </div>
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ ladderFig }}</div>
+        </div>
+      </section>
+
+      <section id="s-swap" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Displacement · predict, then look</p>
+        <h2 style="margin: 6px 0 0;">A more reactive metal pushes out a less reactive one.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Put a metal strip in a solution of another metal’s salt. If the strip is more reactive, it displaces the other metal, which coats the strip. Choose a pair and predict.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Metal strip</p>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;"><sc-for list="{{ strips }}" as="m" hint-placeholder-count="4"><button type="button" onClick="{{ m.onClick }}" aria-pressed="{{ m.pressed }}" style="{{ m.style }}">{{ m.label }}</button></sc-for></div>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Solution</p>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;"><sc-for list="{{ sols }}" as="m" hint-placeholder-count="4"><button type="button" onClick="{{ m.onClick }}" aria-pressed="{{ m.pressed }}" disabled="{{ m.disabled }}" style="{{ m.style }}">{{ m.label }}</button></sc-for></div>
+            <p class="ks3-commit" style="margin: 10px 0 0; color: var(--ks3-ink);">Will it react?</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"><sc-for list="{{ predicts }}" as="p" hint-placeholder-count="2"><button type="button" onClick="{{ p.onClick }}" style="{{ p.style }}">{{ p.label }}</button></sc-for></div>
+            <sc-if value="{{ hasSwapNote }}"><p data-arrive="1" role="status" style="{{ swapNoteStyle }}">{{ swapNote }}</p></sc-if>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">{{ swapCount }}</p>
+          </div>
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ beakerFig }}</div>
+        </div>
+        <sc-if value="{{ isHigher }}">
+          <div data-arrive="1" style="margin-top: 16px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-accent);">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Higher · ionic equations and electrons</p>
+              <span style="font-family: var(--ks3-font-mono); font-size: 12px; padding: 2px 9px; border-radius: 99px; border: 2px solid var(--ks3-ink);">{{ route }}</span>
+            </div>
+            <p style="margin: 10px 0 0; font-size: 17px; line-height: 1.55;">Oxidation is the loss of electrons and reduction is the gain of electrons. Write displacement as an ionic equation: the sulfate ions do not change, so they are left out.</p>
+            <div style="margin-top: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); font-family: var(--ks3-font-mono); font-size: 18px;">
+              <span>Fe + Cu<sup>2+</sup></span><svg aria-label="gives" role="img" width="28" height="14" viewBox="0 0 28 14"><path d="M1 7h23M18 2l6 5-6 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>Fe<sup>2+</sup> + Cu</span>
+            </div>
+            <ul style="margin: 10px 0 0; padding-left: 1.1em; font-size: 17px; line-height: 1.55; display: flex; flex-direction: column; gap: 6px;">
+              <li>Each iron atom loses 2 electrons to become Fe<sup>2+</sup>: iron is <strong>oxidised</strong>.</li>
+              <li>Each Cu<sup>2+</sup> ion gains 2 electrons to become a copper atom: Cu<sup>2+</sup> is <strong>reduced</strong>.</li>
+            </ul>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · which way round</p></div>
+        <p class="ks3-mis-quote">&ldquo;Any metal can push another metal out of its solution.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Predict" prompt="A copper strip is put into iron sulfate solution. What happens?" options="{{ thinkOptions }}" reveal="Nothing happens. Copper is less reactive than iron, so it cannot displace iron. Only a more reactive metal displaces a less reactive one: iron in copper sulfate does react." right-word="Yes." wrong-word="Not this one." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Reaction or no reaction?" prompt="Place each mixture, at room temperature." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Use the ladder: a metal displaces anything below it, and only metals above hydrogen give hydrogen with acid." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Deduce</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Put metals in order from the results you are given.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Predict</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Say whether it reacts, using the positions in the series.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Link reactivity to the tendency to form positive ions.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">The reactivity of a metal is related to its tendency to form positive ions. A more reactive metal displaces a less reactive metal from its compounds.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="reactivity-series" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Reactivity of metals" spec="AQA 5.4.1.1–5.4.1.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which metal displaces which?" legal="Observations are typical for small, same-sized pieces at room temperature. Diagrams are schematic." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Gold and iron', short: 'HOOK' },
+  { id: 's-bench', label: 'Water and acid', short: 'BENCH' },
+  { id: 's-swap', label: 'Displacement', short: 'SWAP' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Reaction or not', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const SERIES = [['K', 'potassium'], ['Na', 'sodium'], ['Li', 'lithium'], ['Ca', 'calcium'], ['Mg', 'magnesium'], ['Al', 'aluminium'], ['C', 'carbon'], ['Zn', 'zinc'], ['Fe', 'iron'], ['H', 'hydrogen'], ['Cu', 'copper'], ['Ag', 'silver'], ['Au', 'gold']];
+const BENCH = ['K', 'Na', 'Li', 'Ca', 'Mg', 'Zn', 'Fe', 'Cu'];
+const OBS = {
+  K: ['Very vigorous: floats, fizzes, melts, and the hydrogen ignites with a lilac flame.', 'Not done: far too violent with acid. Its place comes from the water test.'],
+  Na: ['Vigorous: floats, fizzes and melts into a ball that skims around.', 'Not done: far too violent with acid. Its place comes from the water test.'],
+  Li: ['Steady fizzing: floats and slowly gets smaller.', 'Not done: too violent with acid. Its place comes from the water test.'],
+  Ca: ['Steady bubbling; the water turns cloudy.', 'Not done: too violent with acid. Its place comes from the water test.'],
+  Mg: ['Reacts very slowly with cold water: a few bubbles over a long time.', 'Vigorous fizzing: reacts quickly.'],
+  Zn: ['No visible reaction with cold water.', 'Steady bubbling.'],
+  Fe: ['No reaction with water alone.', 'Slow bubbling.'],
+  Cu: ['No reaction.', 'No reaction: copper is below hydrogen.']
+};
+const STRIPS = ['Mg', 'Zn', 'Fe', 'Cu'];
+const SOLS = [['Mg', 'magnesium sulfate', '#EEF2F2'], ['Zn', 'zinc sulfate', '#EEF2F2'], ['Fe', 'iron sulfate', '#CFE3C2'], ['Cu', 'copper sulfate', '#5B9BD5']];
+const NAME = { Mg: 'magnesium', Zn: 'zinc', Fe: 'iron', Cu: 'copper' };
+const DEPOSIT = { Zn: '#9AA0A6', Fe: '#4A4A48', Cu: '#B5653A' };
+function rank(sym) { return SERIES.findIndex((x) => x[0] === sym); }
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, liquid: 0, metal: null, seen: [], strip: 0, sol: 3, pred: null, swaps: 0, think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  ladder(seen, cur) {
+    const D = window.KS4D, C = D.C;
+    let b = D.T(30, 34, 'most reactive', 14, { anchor: 'start', weight: 'normal', fill: C.muted });
+    SERIES.forEach((m, i) => {
+      const y = 48 + i * 32, ref = m[0] === 'C' || m[0] === 'H', on = ref || seen.indexOf(m[0]) >= 0 || BENCH.indexOf(m[0]) < 0;
+      const benchM = BENCH.indexOf(m[0]) >= 0, show = ref || !benchM || seen.indexOf(m[0]) >= 0;
+      b += '<rect x="30" y="' + y + '" width="300" height="26" rx="6" fill="' + (ref ? 'none' : show ? C.metal : '#FFFDF8') + '" stroke="' + C.stroke + '" stroke-width="' + (m[0] === cur ? 4 : 1.6) + '"' + (ref ? ' stroke-dasharray="6 5"' : '') + '/>';
+      b += D.T(46, y + 19, show ? m[0] : '?', 16, { anchor: 'start', fill: C.stroke }) + D.T(90, y + 19, show ? m[1] + (ref ? ' (non-metal, for reference)' : '') : 'test it to place it', 14, { anchor: 'start', weight: 'normal', fill: show ? C.stroke : C.muted });
+    });
+    b += D.T(30, 48 + SERIES.length * 32 + 16, 'least reactive', 14, { anchor: 'start', weight: 'normal', fill: C.muted });
+    return D.svg(360, 48 + SERIES.length * 32 + 34, b, 'Reactivity series, most reactive at the top: potassium, sodium, lithium, calcium, magnesium, aluminium, carbon, zinc, iron, hydrogen, copper, silver, gold. Carbon and hydrogen are non-metals shown for reference.');
+  }
+  beaker(strip, sol, show) {
+    const D = window.KS4D, C = D.C;
+    const s = SOLS[sol], reacts = show && rank(strip) < rank(s[0]);
+    let col = s[2];
+    if (reacts && (s[0] === 'Cu' || s[0] === 'Fe')) col = s[0] === 'Cu' ? '#BFD6EA' : '#E7EFE2';
+    let b = '<path d="M90 70 L90 290 Q90 310 110 310 L250 310 Q270 310 270 290 L270 70" fill="none" stroke="' + C.stroke + '" stroke-width="3"/>';
+    b += '<path d="M92 130 L268 130 L268 290 Q268 308 250 308 L110 308 Q92 308 92 290 Z" fill="' + col + '"/>';
+    b += '<rect x="166" y="40" width="28" height="240" rx="4" fill="#C9CCD1" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    if (reacts) b += '<rect x="163" y="132" width="34" height="150" rx="5" fill="' + DEPOSIT[s[0]] + '" stroke="' + C.stroke + '" stroke-width="2" opacity=".9"/>';
+    b += D.T(180, 30, NAME[strip], 15) + D.T(180, 340, s[1] + ' solution', 15);
+    if (show) b += D.T(410, 170, reacts ? NAME[s[0]] + ' coats' : 'no change', 17, { fill: reacts ? C.label : C.muted }) + (reacts ? D.T(410, 194, 'the strip', 17) : '');
+    return D.svg(520, 360, b, NAME[strip] + ' strip in ' + s[1] + ' solution' + (show ? (reacts ? ': ' + NAME[s[0]] + ' deposits on the strip.' : ': no change.') : '.'));
+  }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {}, isHigher: true };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.seen.length === 8, s.swaps >= 3, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const strip = STRIPS[s.strip], sol = SOLS[s.sol], reacts = rank(strip) < rank(sol[0]);
+    const predOk = s.pred !== null && s.pred === reacts;
+    const swapNote = s.pred === null ? '' : (predOk ? 'Right. ' : 'Not this time. ') + (reacts
+      ? NAME[strip] + ' is more reactive than ' + NAME[sol[0]] + ', so it displaces it. ' + NAME[strip] + ' + ' + sol[1] + ' gives ' + NAME[strip] + ' sulfate + ' + NAME[sol[0]] + '.' + (sol[0] === 'Cu' ? ' The blue colour fades as copper coats the strip.' : sol[0] === 'Fe' ? ' The pale green colour fades.' : '')
+      : NAME[strip] + ' is less reactive than ' + NAME[sol[0]] + ', so no reaction.');
+    const base = [
+      { q: 'A strip of zinc is placed in copper sulfate solution. What is observed?', opts: [['The blue solution fades and copper metal deposits on the zinc \u2014 zinc displaces copper', true], ['No change \u2014 zinc and copper have similar reactivity', false], ['The zinc dissolves and the solution turns orange', false], ['Zinc sulfate crystals form in the blue solution', false]],
+        wrong_explanations: { 1: 'Zinc IS more reactive than copper \u2014 a reaction occurs. The solution changes from blue (Cu\u00b2\u207a) to colourless/pale (Zn\u00b2\u207a).', 2: 'The solution turns pale/colourless as Cu\u00b2\u207a ions are replaced by Zn\u00b2\u207a \u2014 orange is not the colour of any of these solutions.', 3: 'Zinc sulfate is formed in solution (dissolved) \u2014 it doesn\u2019t crystallise out immediately under these conditions.' } },
+      { q: 'Which metal does not react with dilute hydrochloric acid at room temperature?', opts: [['Copper', true], ['Zinc', false], ['Iron', false], ['Magnesium', false]],
+        wrong_explanations: { 1: 'Zinc reacts with steady bubbling. Copper is below hydrogen, so it does not react.', 2: 'Iron reacts slowly, with slow bubbling. Copper does not react at all.', 3: 'Magnesium reacts vigorously. Copper is below hydrogen and does not react.' } },
+      { q: 'Why is the reaction of magnesium with oxygen an oxidation reaction?', opts: [['Magnesium gains oxygen', true], ['Magnesium loses oxygen', false], ['Oxygen gains magnesium', false], ['A gas is produced', false]],
+        wrong_explanations: { 1: 'Losing oxygen is reduction. Magnesium gains oxygen to form magnesium oxide.', 2: 'Oxidation is described from the metal\u2019s side: the metal gains oxygen.', 3: 'Magnesium oxide is a solid; no gas is made. It is oxidation because magnesium gains oxygen.' } }
+    ];
+    const extraBase = [
+      { q: 'Why does potassium react more vigorously with water than lithium does?', opts: [['Potassium has a greater tendency to form its positive ion', true], ['Potassium atoms gain electrons more easily', false], ['Potassium is a liquid at room temperature', false], ['Lithium is below hydrogen in the series', false]],
+        wrong_explanations: { 1: 'Metals lose electrons when they react; they do not gain them.', 2: 'Potassium is a solid. The reason is its greater tendency to form positive ions.', 3: 'Lithium is above hydrogen: it fizzes steadily with water.' } },
+      { q: 'Three metals are added to cold water. X fizzes vigorously, Y fizzes steadily, Z shows no reaction. What is the order of reactivity, most reactive first?', opts: [['X, Y, Z', true], ['Z, Y, X', false], ['Y, X, Z', false], ['X, Z, Y', false]],
+        wrong_explanations: { 1: 'That is least reactive first. The most vigorous reaction comes from the most reactive metal.', 2: 'X reacts more vigorously than Y, so X is more reactive.', 3: 'Z shows no reaction, so it is the least reactive.' } }
+    ];
+    const extraHigher = [
+      { q: 'In the reaction Zn + Cu\u00b2\u207a \u2192 Zn\u00b2\u207a + Cu, which species is oxidised?', opts: [['Zn, because it loses electrons', true], ['Cu\u00b2\u207a, because it gains electrons', false], ['Cu, because it is formed', false], ['Zn\u00b2\u207a, because it gains electrons', false]],
+        wrong_explanations: { 1: 'Gaining electrons is reduction. Cu\u00b2\u207a is reduced.', 2: 'Copper atoms are the product of reduction.', 3: 'Zn\u00b2\u207a is formed when zinc atoms lose electrons.' } },
+      { q: 'In the reaction Mg + Fe\u00b2\u207a \u2192 Mg\u00b2\u207a + Fe, what happens to the Fe\u00b2\u207a ions?', opts: [['They gain electrons and are reduced', true], ['They lose electrons and are oxidised', false], ['They gain oxygen and are oxidised', false], ['They do not change: they are spectator ions', false]],
+        wrong_explanations: { 1: 'Fe\u00b2\u207a ions become iron atoms, so they gain electrons.', 2: 'No oxygen is involved. Reduction here is the gain of electrons.', 3: 'Fe\u00b2\u207a becomes Fe, so it changes. The sulfate ions are the spectators.' } }
+    ];
+    const bankSrc = base.concat(R.isHigher ? extraHigher : extraBase);
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('reactivity-series') : null,
+      hookOptions: [
+        { text: 'Gold', correct: false, reply: 'Gold stays shiny because it hardly reacts at all. The iron is the one reacting, with oxygen and water.' },
+        { text: 'Iron', correct: true, reply: 'Rust forms because iron reacts with oxygen and water. Gold barely reacts.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      liquids: ['Cold water', 'Dilute hydrochloric acid'].map((l, i) => ({ label: l, pressed: s.liquid === i, style: this.seg(s.liquid === i), onClick: () => this.setState({ liquid: i }) })),
+      metals: BENCH.map((m) => ({ label: m, pressed: s.metal === m, style: this.seg(s.metal === m) + 'min-width:52px;',
+        onClick: () => this.setState({ metal: m, seen: s.seen.indexOf(m) >= 0 ? s.seen : s.seen.concat([m]) }) })),
+      obsHead: s.metal ? SERIES[rank(s.metal)][1] + ' in ' + (s.liquid ? 'dilute hydrochloric acid' : 'cold water') : 'Pick a metal',
+      obsLine: s.metal ? OBS[s.metal][s.liquid] : 'Start with potassium in water.',
+      ladderFig: ready ? K.fig(this.ladder(s.seen, s.metal), '') : null,
+      strips: STRIPS.map((m, i) => ({ label: NAME[m], pressed: s.strip === i, style: this.seg(s.strip === i),
+        onClick: () => this.setState({ strip: i, sol: SOLS[s.sol][0] === m ? (i === 3 ? 0 : 3) : s.sol, pred: null }) })),
+      sols: SOLS.map((x, i) => ({ label: x[1], pressed: s.sol === i, disabled: x[0] === strip, style: this.seg(s.sol === i) + (x[0] === strip ? 'opacity:.4;cursor:default;' : ''),
+        onClick: () => { if (x[0] !== strip) this.setState({ sol: i, pred: null }); } })),
+      predicts: [['Reacts', true], ['No reaction', false]].map((p) => ({ label: p[0], style: this.seg(s.pred === p[1]),
+        onClick: () => { if (s.pred === null) this.setState({ pred: p[1], swaps: s.swaps + 1 }); } })),
+      hasSwapNote: s.pred !== null, swapNote,
+      swapNoteStyle: 'margin:0;padding:12px 14px;border-radius:14px;font-size:17px;line-height:1.55;border:2px solid ' + (predOk ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      swapCount: s.swaps >= 3 ? s.swaps + ' predictions made' : s.swaps + ' of 3 predictions',
+      beakerFig: ready ? K.fig(this.beaker(strip, s.sol, s.pred !== null), '') : null,
+      thinkOptions: [
+        { text: 'No reaction', correct: true, reply: 'Copper is below iron.' },
+        { text: 'Iron coats the copper strip', correct: false, reply: 'That needs copper to be more reactive than iron. It is less reactive.' },
+        { text: 'The solution turns blue as copper dissolves', correct: false, reply: 'Copper would only dissolve if it were displacing a less reactive metal. Iron is more reactive.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'y', label: 'Reaction' }, { id: 'n', label: 'No reaction' }],
+      sortItems: [
+        { text: 'Zinc + copper sulfate', bin: 'y', why: 'Zinc is above copper.' },
+        { text: 'Copper + zinc sulfate', bin: 'n', why: 'Copper is below zinc.' },
+        { text: 'Magnesium + iron sulfate', bin: 'y', why: 'Magnesium is above iron.' },
+        { text: 'Iron + magnesium sulfate', bin: 'n', why: 'Iron is below magnesium.' },
+        { text: 'Iron + copper sulfate', bin: 'y', why: 'Iron is above copper.' },
+        { text: 'Copper + dilute hydrochloric acid', bin: 'n', why: 'Copper is below hydrogen.' },
+        { text: 'Zinc + dilute hydrochloric acid', bin: 'y', why: 'Steady bubbling: zinc is above hydrogen.' },
+        { text: 'Iron + cold water', bin: 'n', why: 'Iron does not react with water alone.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name the gas produced when magnesium reacts with dilute hydrochloric acid.', why: 'Metal + acid gives a salt and hydrogen.', options: [
+            { text: 'Oxygen', correct: false, reply: 'Metal + acid gives a salt and hydrogen.' },
+            { text: 'Hydrogen', correct: true },
+            { text: 'Carbon dioxide', correct: false, reply: 'Carbon dioxide comes from carbonates with acid, not metals.' }] },
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Give the reason the reaction of a metal with oxygen is called oxidation.', why: 'The metal gains oxygen.', options: [
+            { text: 'The metal gains oxygen', correct: true },
+            { text: 'The metal loses oxygen', correct: false, reply: 'Losing oxygen is reduction.' },
+            { text: 'Heat is given out', correct: false, reply: 'Oxidation is about gaining oxygen.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Deduce', marks: 1, prompt: 'Pieces of metals P, Q and R of the same size are put into dilute acid. P: slow bubbling. Q: no bubbles. R: vigorous fizzing. Deduce the order of reactivity, most reactive first.', why: 'Most vigorous first: R, then P, then Q.', options: [
+            { text: 'P, Q, R', correct: false, reply: 'R fizzes vigorously, so R is the most reactive.' },
+            { text: 'R, P, Q', correct: true },
+            { text: 'Q, P, R', correct: false, reply: 'That is least reactive first.' },
+            { text: 'R, Q, P', correct: false, reply: 'Q shows no bubbles, so it is the least reactive.' }] },
+          { kind: 'mcq', command: 'Predict', marks: 1, prompt: 'Predict which mixture will react.', why: 'Only a more reactive metal displaces a less reactive one: zinc is above iron.', options: [
+            { text: 'Copper + magnesium sulfate solution', correct: false, reply: 'Copper is below magnesium.' },
+            { text: 'Iron + zinc sulfate solution', correct: false, reply: 'Iron is below zinc.' },
+            { text: 'Zinc + iron sulfate solution', correct: true },
+            { text: 'Copper + iron sulfate solution', correct: false, reply: 'Copper is below iron.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why magnesium displaces copper from copper sulfate solution. Put the links in order.',
+            links: ['Magnesium is more reactive than copper.', 'Magnesium has a greater tendency to form positive ions than copper.', 'So magnesium forms ions in solution and copper is left as the metal, coating the strip.'],
+            herrings: [{ text: 'Copper is more reactive, so it is pushed out.', why: 'The less reactive metal is the one displaced; copper is less reactive.' }, { text: 'Magnesium atoms gain electrons from the copper.', why: 'Magnesium atoms lose electrons to form positive ions.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why sodium reacts more vigorously with water than calcium does. Put the links in order.',
+            links: ['When a metal reacts with water, its atoms form positive ions.', 'Sodium has a greater tendency to form its positive ion than calcium.', 'So sodium reacts faster and more vigorously, giving off hydrogen quickly.'],
+            herrings: [{ text: 'Sodium gains electrons more easily than calcium.', why: 'Metals lose electrons when they react.' }, { text: 'Calcium is below hydrogen, so it hardly reacts.', why: 'Calcium is above hydrogen: it bubbles steadily in water.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 4, prompt: 'A student adds same-sized pieces of zinc, iron and copper to dilute hydrochloric acid. Describe what the student would see, and use the observations to put the three metals in order of reactivity.',
+            levels: [
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Correct observations for all three, and the order deduced from them.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'Some correct observations, or the order with little evidence.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Zinc: steady bubbling (hydrogen).', 'Iron: slow bubbling.', 'Copper: no reaction, because it is below hydrogen.', 'Order, most reactive first: zinc, iron, copper. The faster the bubbling, the more reactive.'],
+            reject: ['\u201cCopper reacts slowly.\u201d', '\u201cIron fizzes vigorously.\u201d'] }
+        ]
+      },
+      keyLines: ['Metals react with oxygen to produce metal oxides: oxidation, because the metal gains oxygen. Reduction is the loss of oxygen.', 'Reactivity series: potassium, sodium, lithium, calcium, magnesium, aluminium, (carbon), zinc, iron, (hydrogen), copper, silver, gold.', 'With water and dilute acid at room temperature, more reactive metals react more vigorously. Copper does not react with dilute acid.', 'When metals react, their atoms form positive ions. Reactivity is related to the tendency to form positive ions.', 'A more reactive metal displaces a less reactive metal from a solution of its salt.', 'Higher: oxidation is loss of electrons, reduction is gain. In Fe + Cu\u00b2\u207a, iron is oxidised and Cu\u00b2\u207a is reduced.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-chemistry-5.1.2.3-metals-non-metals.dc.html', label: 'Metals and non-metals' }, endNext: { href: 'ks4-chemistry-5.4.1.3-extraction-of-metals.dc.html', label: 'Extraction of metals' },
+      endConnects: [{ href: 'ks4-chemistry-5.4.1.3-extraction-of-metals.dc.html', label: 'Extraction of metals and reduction' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

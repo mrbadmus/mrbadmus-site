@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
-  <script src="/shared/theme.js?v=6fd6f722" defer></script>
+  <script>(function(){var p='system';try{p=localStorage.getItem('mrb-theme')||'system'}catch(e){}if(p!=='dark'&&p!=='light')p='system';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+  <script src="/shared/theme.js?v=83dd2451" defer></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#F7F1E5"/>
   <title>Sign In | MrBadmus</title>
@@ -94,7 +94,7 @@
 <body>
 
 <nav class="auth-nav" style="position:fixed;top:0;left:0;right:0;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border-bottom:1px solid var(--border);z-index:10;">
-  <!--mrb:brand--><a class="mrb-brand" href="/index.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
+  <!--mrb:brand--><a class="mrb-brand" href="/" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
   <div class="auth-nav-right" style="display:flex;align-items:center;gap:12px;">
     <span class="mrb-theme-slot" data-mrb-theme="compact"></span>
     <a href="/index.html" class="auth-back-link" style="color:var(--muted);font-size:0.85rem;font-weight:700;text-decoration:none;">← Back to site</a>
@@ -103,7 +103,7 @@
 
 <div class="card" style="margin-top:60px;">
   <div class="logo">
-    <h1><!--mrb:brand--><a class="mrb-brand" href="/index.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand--></h1>
+    <h1><!--mrb:brand--><a class="mrb-brand" href="/" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand--></h1>
     <p>GCSE Science Revision</p>
   </div>
 

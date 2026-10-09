@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+<script>(function(){var p='system';try{p=localStorage.getItem('mrb-theme')||'system'}catch(e){}if(p!=='dark'&&p!=='light')p='system';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>Today — MrBadmus</title>
@@ -11,7 +11,7 @@
        build by brand.stamp_brand), and brand.js hands the shell its lockup.
        Same-origin static files: no API, Supabase or CDN request. -->
   <!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614"><!--/mrb:brand-head-->
-  <script src="/shared/brand/brand.js?v=a8b2a506"></script>
+  <script src="/shared/brand/brand.js?v=a4ee216b"></script>
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
@@ -206,6 +206,17 @@
   .td-tag.is-parent {
     border-color: var(--ks3-accent); background: var(--ks3-accent-tint);
     color: var(--ks3-accent-text);
+  }
+  /* ⊕ B2C fix run (9 Oct 2026). At 390px the tag kept its row beside the
+     title, leaving the title ~140px, and "Practice: Photosynthesis" ran
+     under "From Mr Badmus". On a phone the tag now takes its own line under
+     the title (lined up with it, past the icon), so the title has the whole
+     card. A word longer than the card still breaks rather than overflow. */
+  .td-item-title, .td-item-sub, .td-later-title { overflow-wrap: break-word; }
+  @media (max-width: 560px) {
+    .td-item-top { flex-wrap: wrap; row-gap: 10px; }
+    .td-item-body { flex: 1 1 calc(100% - 58px); }
+    .td-tag { margin-left: 58px; }
   }
 
   .td-h2-later {
@@ -525,14 +536,13 @@
       var g = C.guard(data.access, 'child');
       writable = g.writable;
 
-      /* Design's date label, her format exactly. Local time on purpose —
-         a child in Britain looking at a page that says yesterday because
-         a server is on UTC is a bug they cannot diagnose. */
-      el('td-date').textContent = new Date().toLocaleDateString('en-GB', {
-        weekday: 'long', day: 'numeric', month: 'long'
-      });
+      /* Design's date label, her format exactly ("Friday 9 October").
+         ⊕ B2C fix run (9 Oct 2026): LONDON time, not the device's — the
+         day the server files today's work under, so "today" on this page
+         and "today" on the parent's are the same day on any device. */
+      el('td-date').textContent = C.longDate();
 
-      var hour = new Date().getHours();
+      var hour = C.londonHour();
       // ⊕ B2C polish: the small hours get "Hello", not "Morning".
       var partOfDay = hour < 5 ? 'Hello' : (hour < 12 ? 'Morning' : (hour < 18 ? 'Afternoon' : 'Evening'));
       el('td-greet').textContent = kid.name
@@ -813,7 +823,7 @@
           '<div class="td-bubble">' + C.escapeHtml(m.text || '') + '</div>' +
           '<span class="td-bubble-meta">' +
             C.escapeHtml(mine ? 'You' : parentName) + ' · ' +
-            C.escapeHtml(m.time || C.fmtTime(m.created_at)) +
+            C.escapeHtml(C.msgWhen(m.created_at) || m.time || '') +
           '</span>' +
         '</div>';
       }).join('');
@@ -913,6 +923,6 @@
   }});
 })();
 </script>
-<script src="/shared/theme.js?v=6fd6f722" defer></script>
+<script src="/shared/theme.js?v=83dd2451" defer></script>
 </body>
 </html>

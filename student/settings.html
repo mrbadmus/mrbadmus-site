@@ -10,8 +10,8 @@
        match, so if this ever needs to change, change theme_head.py and
        copy its output here rather than hand-editing this line. Before any
        stylesheet, so <html> carries data-theme before first paint. -->
-  <script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
-  <script src="/shared/theme.js?v=6fd6f722" defer></script>
+  <script>(function(){var p='system';try{p=localStorage.getItem('mrb-theme')||'system'}catch(e){}if(p!=='dark'&&p!=='light')p='system';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+  <script src="/shared/theme.js?v=83dd2451" defer></script>
   <title>Account settings — MrBadmus</title>
   <!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614"><!--/mrb:brand-head-->
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
@@ -322,7 +322,7 @@
 
 <div class="subject-stripe" id="subject-stripe"></div>
 
-<!--mrb:topbar kind=student--><header class="mrb-topbar" data-mrb-topbar="student" data-mrb-bell-tone="chrome"><div class="mrb-topbar__rail"><a class="mrb-brand" href="/index.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><div class="mrb-topbar__end" data-mrb-topbar-end><span class="mrb-topbar__who" data-mrb-topbar-who="all"></span><span class="mrb-theme-slot" data-mrb-theme="compact"></span></div></div></header><!--/mrb:topbar-->
+<!--mrb:topbar kind=student--><header class="mrb-topbar" data-mrb-topbar="student" data-mrb-bell-tone="chrome"><div class="mrb-topbar__rail"><a class="mrb-brand" href="/" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><div class="mrb-topbar__end" data-mrb-topbar-end><span class="mrb-topbar__who" data-mrb-topbar-who="all"></span><span class="mrb-theme-slot" data-mrb-theme="compact"></span></div></div></header><!--/mrb:topbar-->
 
 <main class="container">
   <div id="state-loading" class="state-block state-loading show">
@@ -410,8 +410,8 @@
 <script src="/shared/class-entry.js?v=f09195e5" defer></script>
 <!-- ⊕ Stage B — the one top bar: the bell (pupils only) and the avatar menu. -->
 <script src="/shared/student-bell.js?v=c9eba610" defer></script>
-<script src="/shared/topbar.js?v=e58da2fd" defer></script>
-<script src="/shared/student-guard.js?v=ac421b35"></script>
+<script src="/shared/topbar.js?v=06473e4b" defer></script>
+<script src="/shared/student-guard.js?v=6f2d2480"></script>
 <script>
 (function () {
   const STATES = {

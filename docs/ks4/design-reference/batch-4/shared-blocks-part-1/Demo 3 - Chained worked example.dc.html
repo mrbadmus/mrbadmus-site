@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<title>Chained worked example · KS4 shared blocks</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text, #A93411); }
+  a:hover { color: var(--ks3-accent-hover, #7F2408); }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<sc-if value="{{ isFrame }}" hint-placeholder-val="{{ false }}">
+  <div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; -webkit-font-smoothing: antialiased; text-wrap: pretty; padding-bottom: 8px;">
+    <main class="ks3-main">
+      <div class="ks3-lesson">
+        <section style="margin-top: 28px;">
+          <dc-import name="Ks4Steps" id="kettle-w" mode="worked" head="{{ wHead }}" lead="Two equations, one after the other. Step 1 finds the energy the water needs. That answer goes into Step 2." steps="{{ wSteps }}" next="Now yours, below." hint-size="100%,520px"></dc-import>
+        </section>
+        <section style="margin-top: 22px;">
+          <dc-import name="Ks4Steps" id="kettle-a" mode="attempt" head="{{ aHead }}" steps="{{ aSteps }}" close="168 s is just under 3 minutes. Left the power in kW? 504 000 ÷ 3.0 gives 168 000 s: nearly two days." hint-size="100%,1300px"></dc-import>
+        </section>
+      </div>
+    </main>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isCanvas }}" hint-placeholder-val="{{ true }}">
+  <div style="padding: 48px 56px 80px; background: #EFE6D6; min-height: 100vh; font-family: var(--st-ui, 'Instrument Sans', sans-serif); color: #1A1714;">
+    <header style="max-width: 1100px;">
+      <p style="margin: 0; font-family: 'DM Mono', monospace; font-size: 14px; letter-spacing: .1em; text-transform: uppercase; color: #A93411;">KS4 shared blocks · 3 of 4 · rule 3</p>
+      <h1 style="margin: 8px 0 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 600; font-size: 56px; line-height: 1.02; letter-spacing: -.035em;">Step 1 … Step 2 · the chained worked example</h1>
+      <p style="margin: 14px 0 0; font-size: 21px; line-height: 1.5; max-width: 62ch;">A calculation that chains two equations is worked in full before any pupil tries one: CFIFA on each step, one line at a time, the Formula line on its triangle, and Step 1’s answer carried visibly into Step 2. Then the same shape as a write-it-out attempt.</p>
+      <nav style="margin-top: 18px; display: flex; gap: 8px 18px; flex-wrap: wrap; font-family: 'DM Mono', monospace; font-size: 15px;">
+        <sc-for list="{{ nav }}" as="n" hint-placeholder-count="4"><a href="{{ n.href }}" style="{{ n.style }}">{{ n.label }}</a></sc-for>
+      </nav>
+    </header>
+    <div style="margin-top: 40px; display: flex; gap: 40px; align-items: flex-start;">
+      <sc-for list="{{ wide }}" as="f" hint-placeholder-count="2">
+        <figure style="margin: 0; flex: 0 0 auto;">
+          <figcaption style="margin: 0 0 10px; font-family: 'DM Mono', monospace; font-size: 15px; letter-spacing: .08em; text-transform: uppercase;">{{ f.label }}</figcaption>
+          <iframe data-demo="1" src="{{ f.src }}" title="{{ f.label }}" style="display: block; width: 1280px; height: 2000px; border: 2px solid #1A1714; border-radius: 6px; background: #FBF3E6;"></iframe>
+        </figure>
+      </sc-for>
+    </div>
+    <div style="margin-top: 48px; display: flex; gap: 40px; align-items: flex-start;">
+      <sc-for list="{{ narrow }}" as="f" hint-placeholder-count="2">
+        <figure style="margin: 0; flex: 0 0 auto;">
+          <figcaption style="margin: 0 0 10px; font-family: 'DM Mono', monospace; font-size: 15px; letter-spacing: .08em; text-transform: uppercase;">{{ f.label }}</figcaption>
+          <iframe data-demo="1" src="{{ f.src }}" title="{{ f.label }}" style="display: block; width: 390px; height: 3000px; border: 2px solid #1A1714; border-radius: 6px; background: #FBF3E6;"></iframe>
+        </figure>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const SHC = { name: 'Specific heat capacity', written: 'E = m c \u0394\u03b8', source: 'sheet',
+  top: { s: 'E', name: 'change in thermal energy', unit: 'J' },
+  bottom: [{ s: 'm', name: 'mass', unit: 'kg' }, { s: 'c', name: 'specific heat capacity', unit: 'J/kg \u00b0C' }, { s: '\u0394\u03b8', name: 'temperature change', unit: '\u00b0C' }] };
+const POWER = { name: 'Power', written: 'P = E \u00f7 t', source: 'sheet',
+  top: { s: 'E', name: 'energy transferred', unit: 'J' },
+  bottom: [{ s: 'P', name: 'power', unit: 'W' }, { s: 't', name: 'time', unit: 's' }] };
+const PAGES = [['Demo 1 - Formula triangle.dc.html', '1 · Formula triangle'], ['Demo 2 - Start here guess.dc.html', '2 · Start here'], ['Demo 3 - Chained worked example.dc.html', '3 · Step 1 … Step 2'], ['Demo 4 - Practice shape.dc.html', '4 · Practice shape']];
+const ME = 2;
+const ph = { C: 'anything to convert?', F1: 'as on the equation sheet', F2: 'as you learnt it' };
+class Component extends DCLogic {
+  componentDidMount() {
+    this.t = setInterval(() => {
+      document.querySelectorAll('iframe[data-demo]').forEach((f) => {
+        try { const d = f.contentDocument; if (!d || !d.body) return; const h = Math.max(d.body.scrollHeight, d.documentElement.scrollHeight); if (h > 200 && Math.abs(f.offsetHeight - h - 4) > 6) f.style.height = (h + 4) + 'px'; } catch (e) {}
+      });
+    }, 600);
+  }
+  componentWillUnmount() { clearInterval(this.t); }
+  renderVals() {
+    const q = new URLSearchParams(window.location.search);
+    const frame = q.get('frame');
+    const self = encodeURIComponent(PAGES[ME][0]);
+    const fr = (theme, w) => ({ label: (theme === 'dark' ? 'Dark' : 'Light') + ' \u00b7 ' + w, src: self + '?frame=' + theme });
+    return {
+      isFrame: !!frame, isCanvas: !frame, theme: frame === 'dark' ? 'dark' : 'light',
+      wHead: 'A 2.0 kW kettle heats 0.50 kg of water from 20 \u00b0C to 100 \u00b0C. The specific heat capacity of water is 4200 J/kg \u00b0C. Calculate how long this takes, assuming all the energy heats the water.',
+      wSteps: [
+        { title: 'Find the energy the water needs', eq: SHC, find: 'E', carry: 'E = 168 000 J', lines: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert: kg, J/kg \u00b0C and \u00b0C already.' },
+          { letter: 'F', label: 'Formula', line: 'E = m c \u0394\u03b8' },
+          { letter: 'I', label: 'Insert', line: 'E = 0.50 \u00d7 4200 \u00d7 (100 \u2212 20)' },
+          { letter: 'F', label: 'Fine-tune', line: 'E = 0.50 \u00d7 4200 \u00d7 80 = 168 000', note: '\u0394\u03b8 is the change: 100 \u2212 20 = 80 \u00b0C.' },
+          { letter: 'A', label: 'Answer', line: 'E = 168 000 J' }] },
+        { title: 'Use that energy to find the time', eq: POWER, find: 't', lines: [
+          { letter: 'C', label: 'Convert', line: '2.0 kW \u00d7 1000 = 2000 W', note: 'P = E \u00f7 t needs the power in watts.' },
+          { letter: 'F', label: 'Formula', line: 'P = E \u00f7 t' },
+          { letter: 'I', label: 'Insert', line: '2000 = 168 000 \u00f7 t', note: '168 000 J is Step 1\u2019s answer.' },
+          { letter: 'F', label: 'Fine-tune', line: 't = 168 000 \u00f7 2000 = 84' },
+          { letter: 'A', label: 'Answer', line: 't = 84 s' }] }
+      ],
+      aHead: 'A 3.0 kW kettle heats 1.5 kg of water from 15 \u00b0C to 95 \u00b0C. The specific heat capacity of water is 4200 J/kg \u00b0C. Calculate how long this takes.',
+      aSteps: [
+        { title: 'Find the energy the water needs', carry: 'E = 504 000 J', lines: [
+          { letter: 'C', label: 'Convert', placeholder: ph.C, line: 'Nothing to convert.' },
+          { letter: 'F', label: 'Formula', placeholder: ph.F1, line: 'E = m c \u0394\u03b8' },
+          { letter: 'I', label: 'Insert', placeholder: 'E = \u2026 \u00d7 \u2026 \u00d7 \u2026', line: 'E = 1.5 \u00d7 4200 \u00d7 (95 \u2212 15)' },
+          { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'E = 1.5 \u00d7 4200 \u00d7 80 = 504 000' },
+          { letter: 'A', label: 'Answer', placeholder: 'E = \u2026 with unit', line: 'E = 504 000 J' }] },
+        { title: 'Use that energy to find the time', lines: [
+          { letter: 'C', label: 'Convert', placeholder: ph.C, line: '3.0 kW \u00d7 1000 = 3000 W' },
+          { letter: 'F', label: 'Formula', placeholder: ph.F2, line: 'P = E \u00f7 t' },
+          { letter: 'I', label: 'Insert', placeholder: '\u2026 = \u2026 \u00f7 t', line: '3000 = 504 000 \u00f7 t' },
+          { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange: t = \u2026', line: 't = 504 000 \u00f7 3000 = 168' },
+          { letter: 'A', label: 'Answer', placeholder: 't = \u2026 with unit', line: 't = 168 s' }] }
+      ],
+      wide: [fr('light', 1280), fr('dark', 1280)], narrow: [fr('light', 390), fr('dark', 390)],
+      nav: PAGES.map((pg, i) => ({ href: encodeURIComponent(pg[0]), label: pg[1], style: 'text-decoration:' + (i === ME ? 'none' : 'underline') + ';color:' + (i === ME ? '#1A1714' : '#A93411') + ';font-weight:' + (i === ME ? '500' : '400') + ';' }))
+    };
+  }
+}
+</script>
+</body>
+</html>

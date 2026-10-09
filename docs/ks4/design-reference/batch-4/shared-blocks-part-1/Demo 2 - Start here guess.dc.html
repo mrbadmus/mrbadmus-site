@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<title>Start here guess · KS4 shared blocks</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text, #A93411); }
+  a:hover { color: var(--ks3-accent-hover, #7F2408); }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<sc-if value="{{ isFrame }}" hint-placeholder-val="{{ false }}">
+  <div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; -webkit-font-smoothing: antialiased; text-wrap: pretty; padding-bottom: 8px;">
+    <main class="ks3-main">
+      <div class="ks3-lesson">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Opener written for Combined Foundation</p>
+        <section class="ks3-block ks3-hook" style="margin-top: 12px;">
+          <dc-import name="Ks4Guess" title="Two spoons, one pan of hot soup." scene="A metal spoon and a wooden spoon have stood in the same pan of hot soup for a minute. You touch the top of each handle." question="which handle is hotter?" options="{{ foundation }}" bridge="Metal is a good thermal conductor: energy is transferred through it quickly, from the hot soup up to your hand. Wood is a poor conductor, which is why so many pan handles are made of it. Next: what makes one material conduct better than another." hint-size="100%,420px"></dc-import>
+        </section>
+
+        <p style="margin: 48px 0 0; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Opener written for Triple Higher</p>
+        <section class="ks3-block ks3-hook" style="margin-top: 12px;">
+          <dc-import name="Ks4Guess" title="Same car, same brakes, twice the speed." scene="A car brakes hard on a dry road, once from 30 mph and once from 60 mph. The brakes are pressed just as hard both times." question="once the brakes go on, how far does the car travel from 60 mph, compared with from 30 mph?" options="{{ higher }}" bridge="The brakes have to transfer away all of the car's kinetic energy, and kinetic energy depends on the speed squared: Ek = ½ m v². Double v and Ek goes up four times, so the brakes need about four times the distance. That square is where this lesson starts." hint-size="100%,440px"></dc-import>
+        </section>
+      </div>
+    </main>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isCanvas }}" hint-placeholder-val="{{ true }}">
+  <div style="padding: 48px 56px 80px; background: #EFE6D6; min-height: 100vh; font-family: var(--st-ui, 'Instrument Sans', sans-serif); color: #1A1714;">
+    <header style="max-width: 1100px;">
+      <p style="margin: 0; font-family: 'DM Mono', monospace; font-size: 14px; letter-spacing: .1em; text-transform: uppercase; color: #A93411;">KS4 shared blocks · 2 of 4 · rule 1</p>
+      <h1 style="margin: 8px 0 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 600; font-size: 56px; line-height: 1.02; letter-spacing: -.035em;">“Start here” · a two-option guess</h1>
+      <p style="margin: 14px 0 0; font-size: 21px; line-height: 1.5; max-width: 62ch;">Two options, framed as a guess anyone can make from everyday life. Either pick gets a friendly reply, then the same bridge into the teaching. One opener written for Foundation, one for Triple Higher.</p>
+      <nav style="margin-top: 18px; display: flex; gap: 8px 18px; flex-wrap: wrap; font-family: 'DM Mono', monospace; font-size: 15px;">
+        <sc-for list="{{ nav }}" as="n" hint-placeholder-count="4"><a href="{{ n.href }}" style="{{ n.style }}">{{ n.label }}</a></sc-for>
+      </nav>
+    </header>
+    <div style="margin-top: 40px; display: flex; gap: 40px; align-items: flex-start;">
+      <sc-for list="{{ wide }}" as="f" hint-placeholder-count="2">
+        <figure style="margin: 0; flex: 0 0 auto;">
+          <figcaption style="margin: 0 0 10px; font-family: 'DM Mono', monospace; font-size: 15px; letter-spacing: .08em; text-transform: uppercase;">{{ f.label }}</figcaption>
+          <iframe data-demo="1" src="{{ f.src }}" title="{{ f.label }}" style="display: block; width: 1280px; height: 1300px; border: 2px solid #1A1714; border-radius: 6px; background: #FBF3E6;"></iframe>
+        </figure>
+      </sc-for>
+    </div>
+    <div style="margin-top: 48px; display: flex; gap: 40px; align-items: flex-start;">
+      <sc-for list="{{ narrow }}" as="f" hint-placeholder-count="2">
+        <figure style="margin: 0; flex: 0 0 auto;">
+          <figcaption style="margin: 0 0 10px; font-family: 'DM Mono', monospace; font-size: 15px; letter-spacing: .08em; text-transform: uppercase;">{{ f.label }}</figcaption>
+          <iframe data-demo="1" src="{{ f.src }}" title="{{ f.label }}" style="display: block; width: 390px; height: 2000px; border: 2px solid #1A1714; border-radius: 6px; background: #FBF3E6;"></iframe>
+        </figure>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const PAGES = [['Demo 1 - Formula triangle.dc.html', '1 · Formula triangle'], ['Demo 2 - Start here guess.dc.html', '2 · Start here'], ['Demo 3 - Chained worked example.dc.html', '3 · Step 1 … Step 2'], ['Demo 4 - Practice shape.dc.html', '4 · Practice shape']];
+const ME = 1;
+class Component extends DCLogic {
+  componentDidMount() {
+    this.t = setInterval(() => {
+      document.querySelectorAll('iframe[data-demo]').forEach((f) => {
+        try { const d = f.contentDocument; if (!d || !d.body) return; const h = Math.max(d.body.scrollHeight, d.documentElement.scrollHeight); if (h > 200 && Math.abs(f.offsetHeight - h - 4) > 6) f.style.height = (h + 4) + 'px'; } catch (e) {}
+      });
+    }, 600);
+  }
+  componentWillUnmount() { clearInterval(this.t); }
+  renderVals() {
+    const q = new URLSearchParams(window.location.search);
+    const frame = q.get('frame');
+    const self = encodeURIComponent(PAGES[ME][0]);
+    const fr = (theme, w) => ({ label: (theme === 'dark' ? 'Dark' : 'Light') + ' \u00b7 ' + w, src: self + '?frame=' + theme });
+    return {
+      isFrame: !!frame, isCanvas: !frame, theme: frame === 'dark' ? 'dark' : 'light',
+      foundation: [
+        { text: 'The metal spoon\u2019s handle', correct: true, reply: 'The metal handle gets hot; the wooden one stays cool enough to hold.' },
+        { text: 'The wooden spoon\u2019s handle', correct: false, reply: 'Wood can feel warm, but here the metal handle is the hot one. The wooden handle stays cool enough to hold.' }
+      ],
+      higher: [
+        { text: 'About twice as far', correct: false, reply_: '', reply: 'Twice the speed, twice the distance sounds right, and it is what most people say. In fact it is about four times as far.' },
+        { text: 'More than twice as far', correct: true, reply: 'It is about four times as far.' }
+      ],
+      wide: [fr('light', 1280), fr('dark', 1280)], narrow: [fr('light', 390), fr('dark', 390)],
+      nav: PAGES.map((pg, i) => ({ href: encodeURIComponent(pg[0]), label: pg[1], style: 'text-decoration:' + (i === ME ? 'none' : 'underline') + ';color:' + (i === ME ? '#1A1714' : '#A93411') + ';font-weight:' + (i === ME ? '500' : '400') + ';' }))
+    };
+  }
+}
+</script>
+</body>
+</html>

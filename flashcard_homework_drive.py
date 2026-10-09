@@ -491,7 +491,7 @@ def run(width, height, kb, shots):
 
             # state B: the model is asked, and has not answered yet
             P.keyboard(True)
-            P.type("made of hydrogen and oxygen")
+            P.type("made of water")
             P.click('[data-hw="check"]')
             P.keyboard(False)
             s = P.st()
@@ -523,7 +523,7 @@ def run(width, height, kb, shots):
             check(P.st()["chip"] == "Right", "card 3: the whole answer is Right")
             P.click('[data-hw="back"]')
             s = P.st()
-            check(s["front"] == "What is the formula of water?" and s["writing"] and s["draft"] == "made of hydrogen and oxygen",
+            check(s["front"] == "What is the formula of water?" and s["writing"] and s["draft"] == "made of water",
                   "‹ Back: card 2 in state A with the earlier answer in the box (got %r)" % s["draft"])
             check(s["progress"] == "2 of 5 right", "the count holds until the card is re-rated")
             check(P.q("!!document.querySelector('[data-hw=\"forward\"]')"),
@@ -537,14 +537,15 @@ def run(width, height, kb, shots):
                   "Forward › is hidden again on the newest card (the frontier)")
             P.click('[data-hw="back"]')
             s = P.st()
-            check(s["front"] == "What is the formula of water?" and s["draft"] == "made of hydrogen and oxygen",
+            check(s["front"] == "What is the formula of water?" and s["draft"] == "made of water",
                   "‹ Back again: card 2, in state A, with its own earlier answer (got %r)" % s["draft"])
             P.shot("Back-card-2")
             P.type("the")                  # a lone function word: Wrong on the spot
             P.click('[data-hw="check"]')
             s = P.st()
-            check(s["chip"] == "Wrong" and s["pressed"] == [] and s["enabled"] == ["not_yet", "nearly", "got_it"],
-                  "Wrong: chip 'Wrong' as a hint, all three ratings still enabled (got %r %r)" % (s["chip"], s["enabled"]))
+            check(s["chip"] == "Wrong" and s["pressed"] == [] and s["enabled"] == ["not_yet", "nearly"],
+                  "Wrong on a non-attempt ('the'): chip 'Wrong' as a hint, Nearly / Not yet enabled, Secured greyed "
+                  "(8 Oct floor) (got %r %r)" % (s["chip"], s["enabled"]))
             P.no_retired("wrong hint")
             P.shot("C-wrong-hint")
             P.click('[data-hw="not_yet"]')
@@ -1489,9 +1490,210 @@ def run_library(width, height, mobile, shots):
         server.shutdown()
 
 
+
+# ══ ⊕ 8 Oct 2026 — FLASHCARDS, ROUND 3 ═════════════════════════════════════
+# Unit 1: Secured is greyed until the SUBMITTED answer is a real attempt.
+# Unit 2: the Mr Badmus nudge on Done when 3+ cards were shaky.
+R3_SHOTS = os.path.join(ROOT, "docs", "experience", "y-shots")
+CRUDE_Q = "Describe how crude oil is formed."
+CRUDE_A = "Plankton died, were buried under sediment and compressed via heat and pressure over millions of years"
+# a model-answer word for every card (a real attempt; the floor judges effort)
+R3_REAL = {"What is the unit of force?": "newton", "What is the formula of water?": "water",
+           "What is weight?": "gravity", "Write the equation for the force on a spring.": "F = ke",
+           CRUDE_Q: "plants died, got buried, heat and pressure"}
+
+CONTRAST_JS = r"""
+(function (sel) {
+  var b = document.querySelector(sel); if (!b) return null;
+  function rgb(c) { var m = c.match(/[\d.]+/g) || []; return m.map(Number); }
+  function lum(c) { return c.slice(0, 3).map(function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); })
+    .reduce(function (a, v, i) { return a + v * [0.2126, 0.7152, 0.0722][i]; }, 0); }
+  var fg = rgb(getComputedStyle(b).color), el = b, bg = null;
+  while (el) { var c = rgb(getComputedStyle(el).backgroundColor); if (c.length >= 3 && (c.length < 4 || c[3] > 0.5)) { bg = c; break; } el = el.parentElement; }
+  if (!bg) bg = [255, 255, 255];
+  var a = lum(fg), z = lum(bg); return (Math.max(a, z) + 0.05) / (Math.min(a, z) + 0.05);
+})
+"""
+
+FIT_JS = r"""
+(function () {
+  var dlg = document.querySelector('[data-mrb-dialog="flashcards"]');
+  function r(sel) { var e = document.querySelector(sel); if (!e) return null; var b = e.getBoundingClientRect();
+    return {top: b.top, bottom: b.bottom, left: b.left, right: b.right, h: b.height}; }
+  var d = dlg ? dlg.getBoundingClientRect() : null;
+  var root = document.scrollingElement || document.documentElement;
+  return {vh: window.innerHeight, vw: window.innerWidth,
+          dlg: d ? {top: d.top, bottom: d.bottom} : null,
+          dlgScroll: dlg ? dlg.scrollHeight - dlg.clientHeight : null,
+          pageScroll: root.scrollHeight - window.innerHeight,
+          panel: r('[data-hw="panel"]'), nudge: r('[data-hw="nudge"]'), label: r('[data-hw="nudge-label"]'),
+          text: r('[data-hw="nudge-text"]'), done: r('[data-hw="done"]'), again: r('[data-hw="again"]'),
+          end1: r('[data-hw="end1"]')};
+})()
+"""
+
+
+def run_round3(width, height, mobile, theme, shots):
+    print("\n── round 3: %d×%d %s, %s ──" % (width, height, "phone" if mobile else "desktop", theme))
+    os.makedirs(R3_SHOTS, exist_ok=True)
+    fake = (FAKE.replace('{id: "c0000000-0000-4000-8000-000000000005", position: 4, question: "Is velocity a scalar or a vector?", answer: "A vector"}',
+                         '{id: "c0000000-0000-4000-8000-000000000005", position: 4, question: "%s", answer: "%s"}' % (CRUDE_Q, CRUDE_A)))
+    assert CRUDE_A in fake
+    server, port = cdp.serve(ROOT)
+    tag = "%dx%d-%s" % (width, height, theme)
+
+    def snap(page, name):
+        res = page.send("Page.captureScreenshot", {"format": "png", "fromSurface": True})
+        with open(os.path.join(R3_SHOTS, "r3-%s-%s.png" % (name, tag)), "wb") as fh:
+            fh.write(base64.b64decode(res["data"]))
+
+    try:
+        with cdp.Browser() as br:
+            page = br.attach()
+            page.send("Emulation.setDeviceMetricsOverride",
+                      {"width": width, "height": height, "deviceScaleFactor": 2 if mobile else 1, "mobile": mobile})
+            if mobile:
+                page.send("Emulation.setTouchEmulationEnabled", {"enabled": True, "maxTouchPoints": 5})
+            try:
+                page.send("Emulation.setFocusEmulationEnabled", {"enabled": True})
+            except cdp.CDPError:
+                pass
+            page.send("Page.addScriptToEvaluateOnNewDocument", {"source": fake})
+            page.goto("http://127.0.0.1:%d/student/class-fixture.html" % port)
+            settle(1.0)
+            P = Phone(page, width, height, 0, None)
+            check(P.q(LOAD) is True, "r3 %s: the page mounts" % tag)
+            if theme == "dark":
+                P.q("document.documentElement.setAttribute('data-theme','dark')")
+            P.q("window.__FC_FAKE__.mode = 'review'; window.MRBHomework.modelCheck = null;")
+
+            def fresh_deck():
+                P.q("window.MRBHomework._reset(); localStorage.clear(); window.__FC_FAKE__.events.length = 0; "
+                    "window.__FC_FAKE__.rows.length = 0; window.__FC_FAKE__.seen = {}; window.MRBHomework.modelCheck = null;")
+                P.q("window.__MRB_OPEN_HW__(%s)" % json.dumps(AID))
+                settle(0.6)
+
+            def got():
+                return P.q("""(function(){var b=document.querySelector('[data-hw="got_it"]'); if(!b) return null;
+                  return {disabled: b.disabled, aria: b.getAttribute('aria-disabled'),
+                          opacity: parseFloat(getComputedStyle(b).opacity)};})()""")
+
+            # ── unit 1: mash → Secured greyed; one real word → open; own words after idk → open ──
+            fresh_deck()
+            P.type("asdf kkkk")
+            P.click('[data-hw="check"]')
+            s = P.st()
+            g = got()
+            check(s["rating"] and s["enabled"] == ["not_yet", "nearly"]
+                  and g["disabled"] is True and g["aria"] == "true" and abs(g["opacity"] - 0.4) < 0.02,
+                  "r3 %s: after a mash Check, Secured is greyed (disabled, aria-disabled true, opacity .4); Nearly / Not yet open (got %r %r)"
+                  % (tag, s["enabled"], g))
+            front = s["front"]
+            P.q("window.MRBHomework.active.rate('got_it')")        # what key 3 and swipe-right call
+            settle(0.2)
+            check(P.st()["front"] == front and P.st()["rating"],
+                  "r3 %s: the 3 key / swipe-right (rate('got_it')) do nothing while floored" % tag)
+            snap(page, "greyed-secured")
+            P.click('[data-hw="not_yet"]')
+            # card 2: one real word opens it
+            P.type("water")
+            P.click('[data-hw="check"]')
+            g = got()
+            check(P.st()["enabled"] == ["not_yet", "nearly", "got_it"] and g["disabled"] is False and abs(g["opacity"] - 1) < 0.02,
+                  "r3 %s: one real word ('water' for H2O) opens Secured" % tag)
+            P.click('[data-hw="got_it"]')
+            # card 3: I don't know, mashed own words stay greyed, real own words open
+            P.click('[data-hw="idk"]')
+            P.type("zzzz qqqq")
+            P.click('[data-hw="check"]')
+            check(P.st()["enabled"] == ["not_yet", "nearly"], "r3 %s: I don't know, then mashed own words: Secured stays greyed" % tag)
+            P.click('[data-hw="nearly"]')
+            # card 4 (spring): just rate Nearly; card 5 crude oil own words
+            P.type("zzz")
+            P.click('[data-hw="check"]')
+            P.click('[data-hw="not_yet"]')
+            check(P.st()["front"] == CRUDE_Q, "r3 %s: reached the crude-oil card" % tag)
+            P.click('[data-hw="idk"]')
+            P.type("plants died, got buried, heat and pressure")
+            P.click('[data-hw="check"]')
+            check(P.st()["enabled"] == ["not_yet", "nearly", "got_it"],
+                  "r3 %s: crude oil in the pupil's own words after I don't know opens Secured" % tag)
+
+            # ── unit 2: the nudge ────────────────────────────────────────────
+            def play(idk_fronts):
+                fresh_deck()
+                seen = set()
+                for _ in range(20):
+                    st = P.st()
+                    if st["end1"]:
+                        break
+                    f = st["front"]
+                    if f in idk_fronts and f not in seen:
+                        seen.add(f)
+                        P.click('[data-hw="idk"]')
+                    P.type(R3_REAL[f])
+                    P.click('[data-hw="check"]')
+                    P.click('[data-hw="got_it"]')
+                settle(0.8)
+                return P.st()
+
+            s = play({"What is the unit of force?", "What is the formula of water?", "What is weight?"})
+            check(s["end1"] == "5 of 5 secured" and s["done"] == "Done" and s["again"] == "Revise flashcards one more time",
+                  "r3 %s: 3 idk-then-secured: Done screen, Done primary, Revise secondary (got %r %r)" % (tag, s["end1"], s["done"]))
+            nudge = P.q("!!document.querySelector('[data-hw=\"nudge\"]')")
+            label = P.q("(document.querySelector('[data-hw=\"nudge-label\"]')||{}).textContent")
+            body = P.q("(document.querySelector('[data-hw=\"nudge-text\"]')||{}).textContent")
+            check(nudge and (label or "").strip().lower() == "a note from mr badmus"
+                  and body == "Nice one for finishing. A few of these weren't quite there yet, so one more run before class would lock them in.",
+                  "r3 %s: the nudge shows with 3 shaky cards, with the agreed wording (got %r / %r)" % (tag, label, body))
+            check(P.q("document.querySelector('[data-hw=\"nudge\"]').getAttribute('aria-live')") == "polite",
+                  "r3 %s: the nudge is an aria-live polite region" % tag)
+            f = P.q(FIT_JS)
+            inside = lambda r: r is not None and r["top"] >= -0.5 and r["bottom"] <= f["vh"] + 0.5 and r["left"] >= -0.5 and r["right"] <= f["vw"] + 0.5
+            check(inside(f["nudge"]) and inside(f["done"]) and inside(f["again"]) and inside(f["end1"]),
+                  "r3 %s: nudge, N of M, Done and Revise all inside the viewport, none clipped (nudge=%s done=%s again=%s)"
+                  % (tag, f["nudge"], f["done"], f["again"]))
+            # (the class page behind the overlay scrolls on its own; what matters is the dialog)
+            check((f["dlgScroll"] or 0) <= 1 and f["dlg"]["top"] >= -0.5 and f["dlg"]["bottom"] <= f["vh"] + 0.5,
+                  "r3 %s: the dialog neither scrolls nor overflows the screen with the nudge showing (dialog scroll %s, %s)"
+                  % (tag, f["dlgScroll"], f["dlg"]))
+            check(f["nudge"]["top"] >= f["end1"]["bottom"] - 0.5 and f["nudge"]["bottom"] <= f["done"]["top"] + 0.5,
+                  "r3 %s: the note sits under 'N of M secured' and above Done" % tag)
+            c_text = P.q("(%s)('[data-hw=\"nudge-text\"]')" % CONTRAST_JS)
+            c_label = P.q("(%s)('[data-hw=\"nudge-label\"]')" % CONTRAST_JS)
+            check(c_text is not None and c_text >= 4.5 and c_label is not None and c_label >= 4.5,
+                  "r3 %s: nudge text contrast %.2f and label contrast %.2f, both >= 4.5" % (tag, c_text or 0, c_label or 0))
+            check(not P.st()["overflowX"], "r3 %s: no sideways scroll" % tag)
+            snap(page, "nudge")
+            ev = P.q("window.__FC_FAKE__.events")
+            check(sum(1 for e in ev if e["type"] == "session_finish") == 1, "r3 %s: the nudge changed nothing about finishing" % tag)
+            P.click('[data-hw="done"]')
+            check(not P.st()["open"], "r3 %s: Done still closes the overlay" % tag)
+
+            s = play({"What is the unit of force?", "What is the formula of water?"})
+            check(s["end1"] == "5 of 5 secured" and not P.q("!!document.querySelector('[data-hw=\"nudge\"]')"),
+                  "r3 %s: only 2 idk-then-secured: no nudge" % tag)
+            snap(page, "no-nudge")
+            # Revise one more time starts a new run: 0 shaky afterwards, no nudge on the next Done
+            P.click('[data-hw="again"]')
+            for _ in range(20):
+                st = P.st()
+                if st["end1"]:
+                    break
+                P.type(R3_REAL[st["front"]])
+                P.click('[data-hw="check"]')
+                P.click('[data-hw="got_it"]')
+            settle(0.6)
+            check(P.st()["end1"] == "5 of 5 secured" and not P.q("!!document.querySelector('[data-hw=\"nudge\"]')"),
+                  "r3 %s: a fresh run after Revise with no shaky cards shows no nudge" % tag)
+    finally:
+        server.shutdown()
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--shots", default=None)
+    ap.add_argument("--round3", action="store_true", help="only the round 3 drives (floor + nudge)")
     ap.add_argument("--library", action="store_true",
                     help="only the flashcard library section (MRB-352 Stage D2)")
     a = ap.parse_args()
@@ -1507,17 +1709,28 @@ def main():
           "Stage D item 4: the scroll lock hides the root only (html+body hidden clamped the page to the top)")
     check('.eq("id", wanted).is("deleted_at", null)' in live and '"pageshow"' in live,
           "§13.6: the kind read skips deleted sets; a page back from the bfcache reloads")
-    if not a.library:
+    if a.round3:
+        for w, h, mobile in ((390, 844, True), (360, 640, True), (1280, 800, False)):
+            for theme in ("light", "dark"):
+                run_round3(w, h, mobile, theme, shots)
+    if a.round3:
+        pass
+    elif not a.library:
         for w, h, kb in ((390, 844, 508), (360, 740, 404)):
             run(w, h, kb, shots)
         for w, h, tall in ((1440, 900, True), (1280, 720, True), (1366, 660, False)):
             run_desktop(w, h, shots, tall)
         for w, h, kb in ((360, 740, 404), (390, 844, 336)):
             run_resizes_content(w, h, kb, shots)
+        # ⊕ 8 Oct 2026 — round 3: the Secured floor and the Mr Badmus nudge
+        for w, h, mobile in ((390, 844, True), (360, 640, True), (1280, 800, False)):
+            for theme in ("light", "dark"):
+                run_round3(w, h, mobile, theme, shots)
+
         for w, h, mobile in ((1440, 900, False), (390, 844, True)):
             run_lift(w, h, mobile, shots)
     # ⊕ MRB-352 Stage D2 — the library, phone and desktop
-    for w, h, mobile in ((390, 844, True), (1440, 900, False)):
+    for w, h, mobile in (() if a.round3 else ((390, 844, True), (1440, 900, False))):
         run_library(w, h, mobile, shots)
     print("\n  screenshots: %s" % shots)
     if FAILS:

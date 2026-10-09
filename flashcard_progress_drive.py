@@ -287,11 +287,18 @@ STUB_JS = r"""
     var api = {
       select: function () { return api; }, order: function () { return api; },
       limit: function () { return api; }, eq: function () { return api; },
+      range: function (a, b) { api._range = [a, b]; return api; },
       is: function () { return api; }, in: function () { return api; },
       single: function () { api._one = true; return api; },
       maybeSingle: function () { api._one = true; return api; },
       then: function (res, rej) {
         var rows = (F.tables[table] || []).slice();
+        F.reads = F.reads || [];
+        F.reads.push({table: table, range: api._range || null});
+        if ((F.failTables || []).indexOf(table) >= 0) {
+          return Promise.resolve({data: null, error: {message: 'boom'}, status: 500}).then(res, rej);
+        }
+        if (api._range) { rows = rows.slice(api._range[0], api._range[1] + 1); }
         /* `status` as real supabase-js returns it: the flashcards capability
            probe decides on the status, not on `error` (a HEAD 404 has none). */
         var out = api._one ? {data: rows[0] || null, error: rows.length ? null : {code: 'PGRST116'},
@@ -346,8 +353,8 @@ STUB_JS = r"""
 """
 
 
-def stub(progress1, progress2, detail):
-    fx = {"uid": TEACHER,
+def stub(progress1, progress2, detail, extra_tables=None, fail_tables=None):
+    fx = {"uid": TEACHER, "failTables": fail_tables or [],
           "tables": {"profiles": [{"id": TEACHER, "role": "teacher", "first_name": "Tess",
                                    "last_name": "Teacher", "school_id": "s", "deleted_at": None}],
                      "staff_scopes": [],
@@ -355,6 +362,7 @@ def stub(progress1, progress2, detail):
                      # only on a Chemistry assignment; start() reads it here.
                      "assignments": [{"id": ASSIGN, "subject": {"name": "Chemistry"}}]},
           "progress": progress1, "progress2": progress2, "detail": detail}
+    fx["tables"].update(extra_tables or {})
     return "window.__FP__=%s;\n%s" % (json.dumps(fx), STUB_JS)
 
 
@@ -776,6 +784,246 @@ def static_checks(check):
           "marking screen: a flashcard set redirects to its progress page")
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+# ⊕ Flashcards round 3 (teacher) — EFFORT is not UNDERSTANDING.
+# One consistent deck (t1..t10) read through every pupil's detail, and the
+# three class-wide tables the page reads (flashcard_events / _reviews /
+# _pupil_cards). Ann = Done, 6 of 10 unsure (IDK on t1-t4, Nearly on t5, Wrong
+# on t6, a still-pending answer on t7 that is NOT weak); Ben = Done, all
+# confident; Cat = Not started; Dan = In progress, IDK on t1.
+# THESE MUST FAIL ON origin/main'S PAGE: it renders no data-fp-und, no
+# per-card reteach rows and no Unsure CSV column.
+# ═══════════════════════════════════════════════════════════════════════════
+
+IDK = "I don't know"
+TRUTH_CARDS = [{"id": "t%d" % (i + 1), "position": i, "question": "Card %d question" % (i + 1),
+                "answer": "A%d" % (i + 1), "mine": None, "check": None, "written_ms": None,
+                "secured": False, "known": False, "ratings": []} for i in range(10)]
+DETAIL_TRUTH = {"pupil": {"id": "p-x", "first_name": "X", "last_name": "X", "display_name": "X"},
+                "cards": TRUTH_CARDS, "sessions": []}
+
+
+def progress_truth():
+    ps = [
+        pupil("p-ann", "Ann", "Able", "done", 10, 10, 10, 2, 600000, 3000, False, timedelta(minutes=3),
+              [3, 1, 1, 0, 1], iso(NOW)),
+        pupil("p-ben", "Ben", "Brown", "done", 10, 10, 10, 1, 500000, 3000, False, timedelta(minutes=9),
+              [10, 0, 0, 0, 0], iso(NOW)),
+        pupil("p-cat", "Cat", "Cole", "not_started", 0, 0, 0, 0, 0, None, False, None, [0, 0, 0, 0, 0]),
+        pupil("p-dan", "Dan", "Dale", "in_progress", 3, 1, 1, 1, 90000, 2000, False, timedelta(minutes=30),
+              [0, 0, 0, 0, 0]),
+    ]
+    pr = progress()
+    pr["pupils"] = ps
+    pr["class"] = {"pupils": 4, "done": 2, "completion_pct": 50, "avg_sittings": 1.0,
+                   "reteach": [{"card_id": "t1", "position": 0, "question": "Card 1 question",
+                                "answer": "A1", "not_yet": 1}]}
+    return pr
+
+
+def truth_tables(only_ben=False):
+    ev, rv = [], []
+
+    def idk(pid, cid):
+        ev.append({"pupil_id": pid, "card_id": cid, "type": "answer_submitted", "answer": IDK})
+
+    def rev(pid, cid, rating, answer, check):
+        rv.append({"pupil_id": pid, "card_id": cid, "rating": rating, "answer": answer, "answer_check": check})
+    for c in TRUTH_CARDS:
+        rev("p-ben", c["id"], "got_it", "right words", "match")
+    if only_ben:
+        return {"flashcard_events": ev, "flashcard_reviews": rv, "flashcard_pupil_cards": []}
+    for c in TRUTH_CARDS:
+        rev("p-ann", c["id"], "got_it", "my words", "match")
+    for cid in ("t1", "t2", "t3", "t4"):
+        idk("p-ann", cid)
+        idk("p-ann", cid)            # pressed twice: still ONE pupil
+    rev("p-ann", "t5", "nearly", "sort of", "partial")
+    rev("p-ann", "t6", "not_yet", "no clue", "no")
+    rev("p-ann", "t7", "nearly", "waiting", "pending")
+    idk("p-dan", "t1")
+    # noise the page must ignore: a pupil outside the class, a non-IDK event
+    rev("p-zed", "t2", "got_it", "x", "no")
+    ev.append({"pupil_id": "p-ben", "card_id": "t9", "type": "answer_submitted", "answer": "something"})
+    return {"flashcard_events": ev, "flashcard_reviews": rv, "flashcard_pupil_cards": []}
+
+
+UND_JS = r"""(function(){
+  var out = {};
+  Array.prototype.forEach.call(document.querySelectorAll('#fp-table tbody tr.fp-row'), function(r){
+    var st = r.querySelector('td.fp-col-status');
+    var u = st && st.querySelector('[data-fp-und]');
+    var chip = st && st.querySelector('.fp-status');
+    out[r.getAttribute('data-pupil')] = {chip: chip ? chip.textContent : null, und: u ? u.textContent : null,
+      unsure: r.getAttribute('data-unsure'),
+      phone: (r.querySelector('th.fp-col-pupil [data-fp-und]')||{}).textContent || null};
+  });
+  return out;
+})()"""
+
+RT_JS = r"""(function(){
+  var card = document.getElementById('fp-reteach');
+  if (!card) return null;
+  var r = card.getBoundingClientRect();
+  return {label: card.querySelector('.fp-tile-label').textContent,
+    right: r.right, vw: window.innerWidth,
+    rows: Array.prototype.map.call(card.querySelectorAll('li.fp-rt-card'), function(li){
+      return {id: li.getAttribute('data-card'), no: li.querySelector('.fp-rt-no').textContent,
+              q: li.querySelector('.fp-rt-q').textContent,
+              bits: Array.prototype.map.call(li.querySelectorAll('.fp-rt-bit'), function(b){return b.textContent;})};})};
+})()"""
+
+
+def truth_check(b, base, check, shots):
+    url = base + "/teacher/flashcards.html?assignment=" + ASSIGN
+
+    def open_world(tables, fail=None, w=1280, h=800):
+        p = b.page("about:blank", settle=0.2)
+        pr = progress_truth()
+        p.send("Page.addScriptToEvaluateOnNewDocument",
+               {"source": stub(pr, pr, {"*": DETAIL_TRUTH}, extra_tables=tables, fail_tables=fail)})
+        p.set_viewport(w, h)
+        p.goto(url, settle=0.5)
+        wait_for(p, "document.querySelectorAll('#fp-table tbody tr.fp-row').length===4")
+        return p
+
+    # ── the world with understanding data ─────────────────────────────────
+    p = open_world(truth_tables())
+    ok = wait_for(p, "document.getElementById('fp-body').getAttribute('data-truth')==='ok'")
+    check(ok, "round 3: the understanding read settles OK")
+    reads = p.eval("window.__FP__.reads.map(function(r){return r.table;})")
+    for t in ("flashcard_events", "flashcard_reviews", "flashcard_pupil_cards"):
+        check(t in reads, "round 3: the page reads %s class-wide (paged with .range)" % t)
+    check(not any("assignment_flashcards" == t for t in reads),
+          "round 3: the deck is NOT read from assignment_flashcards (pool_ownership), it comes from the detail")
+    und = p.eval(UND_JS)
+    check(und["p-ann"]["chip"] == "Done" and und["p-ann"]["und"] == "· 6 of 10 unsure",
+          "pupil line: Ann = Done + '· 6 of 10 unsure' (idk x4, Nearly, Wrong; pending is not weak)", str(und["p-ann"]))
+    check(und["p-ben"]["chip"] == "Done" and und["p-ben"]["und"] == "· all confident",
+          "pupil line: Ben = Done + '· all confident'", str(und["p-ben"]))
+    check(und["p-cat"]["chip"] == "Not started" and und["p-cat"]["und"] is None,
+          "pupil line: Cat = Not started and NOTHING extra", str(und["p-cat"]))
+    check(und["p-dan"]["chip"] == "In progress" and und["p-dan"]["und"] == "· 1 of 10 unsure",
+          "pupil line: Dan = In progress + '· 1 of 10 unsure'", str(und["p-dan"]))
+    check(und["p-ann"]["unsure"] == "6" and und["p-ben"]["unsure"] == "0", "rows carry data-unsure", str(und))
+    rt = p.eval(RT_JS)
+    check(bool(rt) and rt["label"] == "Reteach", "reteach: ONE card, labelled Reteach", str(rt and rt["label"]))
+    check(p.eval("document.querySelectorAll('#fp-reteach').length") == 1 and
+          "most often not yet" not in p.eval("document.getElementById('fp-strip').innerText").lower(),
+          "reteach: the old 'Most often Not yet' list is replaced, not doubled")
+    ids = [r["id"] for r in rt["rows"]] if rt else []
+    check(ids == ["t1", "t2", "t3", "t4", "t5", "t6"],
+          "reteach: hardest first (unsure, then don't-know, then position); only cards with an unsure pupil", str(ids))
+    rows = {r["id"]: r for r in rt["rows"]} if rt else {}
+    check(rows.get("t1", {}).get("bits") == ["2 don't know", "1 secured anyway"] and
+          rows["t1"]["no"] == "1" and rows["t1"]["q"] == "Card 1 question",
+          "reteach: t1 = card 1, 2 don't know, 1 secured anyway (Dan never secured it)", str(rows.get("t1")))
+    check(rows.get("t2", {}).get("bits") == ["1 don't know", "1 secured anyway"],
+          "reteach: t2 counted ONCE although Ann pressed IDK twice", str(rows.get("t2")))
+    check(rows.get("t5", {}).get("bits") == ["1 Nearly/Wrong", "1 secured anyway"] and
+          rows.get("t6", {}).get("bits") == ["1 Nearly/Wrong", "1 secured anyway"],
+          "reteach: Nearly/Wrong label, zero buckets left out", str([rows.get("t5"), rows.get("t6")]))
+    check("t7" not in rows, "reteach: a pending answer is not weak")
+    # an UNCHANGED poll makes no new table reads (activity signature unchanged)
+    before = p.eval("window.__FP__.reads.filter(function(r){return /^flashcard_(events|reviews|pupil_cards)$/.test(r.table);}).length")
+    polls0 = len([c for c in p.eval("window.__FP__.calls") if c["name"] == "flashcard_progress"])
+    wait_for(p, "window.__FP__.calls.filter(function(c){return c.name==='flashcard_progress';}).length>=%d" % (polls0 + 1),
+             timeout=13.0, step=0.25)
+    after = p.eval("window.__FP__.reads.filter(function(r){return /^flashcard_(events|reviews|pupil_cards)$/.test(r.table);}).length")
+    polls1 = len([c for c in p.eval("window.__FP__.calls") if c["name"] == "flashcard_progress"])
+    check(polls1 > polls0 and after == before,
+          "round 3: an unchanged poll makes NO new understanding reads", "polls %d->%d reads %d->%d" % (polls0, polls1, before, after))
+    p.screenshot(os.path.join(shots, "r3-truth-desktop.png"), width=1280, height=800, full_page=True)
+
+    # default sort and column sorts still work with the line in place
+    order = p.eval(ORDER)
+    check(order == ["p-cat", "p-dan", "p-ben", "p-ann"] or order == ["p-cat", "p-dan", "p-ann", "p-ben"],
+          "default sort unchanged: Not started, In progress, then Done", str(order))
+    p.eval("document.querySelector('.fp-sort[data-sort=\"status\"]').click(); true")
+    check(p.eval("document.querySelector('.fp-sort[data-sort=\"status\"]').parentElement.getAttribute('aria-sort')") == "ascending",
+          "status column still sorts")
+
+    # CSV mirrors the display
+    p.eval("document.getElementById('fp-csv').click(); true")
+    csv = p.eval("window.__MRB_FP_LAST_CSV__")
+    lines = csv["text"].lstrip("﻿").strip().split("\r\n")
+    hdr = lines[0].split(",")
+    ui = hdr.index("Unsure")
+    byname = {l.split(",")[0]: l.split(",") for l in lines[1:]}
+    check(hdr[ui - 1] == "Secured" and byname["Ann Able"][ui] == "6" and byname["Ben Brown"][ui] == "0"
+          and byname["Dan Dale"][ui] == "1" and byname["Cat Cole"][ui] == "0",
+          "CSV: an Unsure column after Secured that matches the lines shown", str(lines))
+
+    # copy rules + phones
+    copy = p.eval(COPY_JS)
+    bad = sorted(set(t for t in copy if len(t) > 48 or FORBIDDEN.search(t)))
+    check(not bad, "round 3: no explanatory copy on the new text", str(bad))
+    for w in (390, 360):
+        p.set_viewport(w, 844, settle=0.3)
+        m = p.eval("({page: document.documentElement.scrollWidth - document.documentElement.clientWidth,"
+                   "box: (function(){var s=document.getElementById('fp-scroll');return s.scrollWidth - s.clientWidth;})()})")
+        check(m["page"] <= 1 and m["box"] <= 1, "%dpx: no page scroll, table needs none" % w, str(m))
+        rt = p.eval(RT_JS)
+        check(rt and rt["right"] <= rt["vw"] + 1, "%dpx: the reteach card fits the screen" % w, str(rt and (rt["right"], rt["vw"])))
+        ph = p.eval(UND_JS)
+        check(ph["p-ann"]["phone"] == "· 6 of 10 unsure" and ph["p-ben"]["phone"] == "· all confident"
+              and ph["p-cat"]["phone"] is None,
+              "%dpx: the line sits under the name beside the chip" % w, str({k: v["phone"] for k, v in ph.items()}))
+        vis = p.eval("(function(){var e=document.querySelector('tr[data-pupil=\"p-ann\"] th .fp-und');"
+                     "var r=e.getBoundingClientRect();var c=document.querySelector('tr[data-pupil=\"p-ann\"] th').getBoundingClientRect();"
+                     "return {shown:getComputedStyle(e).display!=='none', inside:r.right<=c.right+1};})()")
+        check(vis["shown"] and vis["inside"], "%dpx: the phone line is visible and inside the pupil cell" % w, str(vis))
+        p.screenshot(os.path.join(shots, "r3-truth-%d.png" % w), width=w, height=844, full_page=True)
+
+    # ── the read FAILS (an error) ─────────────────────────────────────────
+    pf = open_world(truth_tables(), fail=["flashcard_reviews"])
+    ok = wait_for(pf, "document.getElementById('fp-body').getAttribute('data-truth')==='failed'")
+    check(ok, "failed read (an error): settles FAILED")
+    check(pf.eval("document.querySelectorAll('[data-fp-und]').length") == 0 and
+          "all confident" not in pf.eval("document.body.innerText"),
+          "failed read: no understanding text at all, never 'all confident'")
+    check("most often not yet" in pf.eval("document.getElementById('fp-strip').innerText").lower(),
+          "failed read: the RPC's reteach list stays (the teacher is not left blind)")
+
+    # ── not loaded YET: hold the reads open ──────────────────────────────
+    pn = b.page("about:blank", settle=0.2)
+    pr = progress_truth()
+    pn.send("Page.addScriptToEvaluateOnNewDocument",
+            {"source": stub(pr, pr, {"*": DETAIL_TRUTH}, extra_tables=truth_tables())
+             .replace("var rows = (F.tables[table] || []).slice();",
+                      "var rows = (F.tables[table] || []).slice(); if (/^flashcard_(events|reviews|pupil_cards)$/.test(table)) { return new Promise(function () {}); }", 1)})
+    pn.set_viewport(1280, 800)
+    pn.goto(url, settle=0.5)
+    wait_for(pn, "document.querySelectorAll('#fp-table tbody tr.fp-row').length===4")
+    time.sleep(0.8)
+    check(pn.eval("document.querySelectorAll('[data-fp-und]').length") == 0 and
+          pn.eval("document.getElementById('fp-body').getAttribute('data-truth')") is None,
+          "not loaded yet: no understanding text, no reteach claim")
+
+    # ── a class where nobody is unsure: no reteach card, nothing invented ──
+    pc = open_world(truth_tables(only_ben=True))
+    wait_for(pc, "document.getElementById('fp-body').getAttribute('data-truth')==='ok'")
+    u2 = pc.eval(UND_JS)
+    check(pc.eval("document.getElementById('fp-reteach')") is None and
+          "most often" not in pc.eval("document.getElementById('fp-strip').innerText").lower(),
+          "no unsure card -> no reteach card at all")
+    check(u2["p-ben"]["und"] == "· all confident",
+          "only Ben's rows: Ben reads all confident", str(u2))
+
+    # ── dark ─────────────────────────────────────────────────────────────
+    pd = b.page("about:blank", settle=0.2)
+    pr = progress_truth()
+    pd.send("Page.addScriptToEvaluateOnNewDocument",
+            {"source": "try{localStorage.setItem('mrb-theme','dark')}catch(e){}"})
+    pd.send("Page.addScriptToEvaluateOnNewDocument",
+            {"source": stub(pr, pr, {"*": DETAIL_TRUTH}, extra_tables=truth_tables())})
+    pd.set_viewport(1280, 800)
+    pd.goto(url, settle=0.5)
+    wait_for(pd, "document.getElementById('fp-body').getAttribute('data-truth')==='ok'")
+    check(pd.eval("document.documentElement.getAttribute('data-theme')") == "dark", "dark theme applied")
+    pd.screenshot(os.path.join(shots, "r3-truth-dark.png"), width=1280, height=800, full_page=True)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--shots", default=os.path.join(cdp.gate_tmp(), "flashcard-progress"))
@@ -833,7 +1081,18 @@ def main():
             check("2/6" in strip and "33%" not in strip and "1.6" in strip,
                   "strip: done (one form, C6 T44) and average sittings",
                   strip.replace("\n", " | "))
-            check("Name the particle with no charge" in strip, "strip: reteach list")
+            # ⊕ round 3 — the understanding read settles AFTER the first paint.
+            # This world's tables are empty although four pupils have sittings:
+            # that is a read that did not work, so the page keeps the RPC's own
+            # list and says nothing about understanding.
+            ok = wait_for(p, "document.getElementById('fp-body').getAttribute('data-truth')==='failed'")
+            check(ok, "round 3: empty reads for a class that has worked settle as FAILED")
+            strip = p.eval("document.getElementById('fp-strip').innerText")
+            check("Name the particle with no charge" in strip and "most often not yet" in strip.lower(),
+                  "strip: reteach list (the RPC's, as the fallback)")
+            check(p.eval("document.querySelectorAll('[data-fp-und]').length") == 0 and
+                  "all confident" not in p.eval("document.getElementById('fp-table').innerText"),
+                  "round 3: failed read -> no understanding text anywhere, never 'all confident'")
             check(p.eval("!!document.querySelector('#fp-reteach sub')"), "strip: formulae render with <sub>")
 
             p.screenshot(os.path.join(args.shots, "fp-desktop.png"), width=1280, height=800, full_page=True)
@@ -1091,14 +1350,14 @@ def main():
             # ⊕ MRB-354 §6 — "Known once" is GONE (completion_rule no
             # longer means anything to secured/done); the Secured column
             # itself is `p.known`.
-            check(lines and lines[0] == "Pupil,Status,Made,Secured,Sittings,Time,Last active",
-                  "CSV: the displayed columns, no 'Known once'", lines and lines[0])
+            check(lines and lines[0] == "Pupil,Status,Made,Secured,Unsure,Sittings,Time,Last active",
+                  "CSV: the displayed columns (+ Unsure, round 3), no 'Known once'", lines and lines[0])
             check(len(lines) == 7, "CSV: one row per pupil")
             disp = p.eval("Array.prototype.map.call(document.querySelectorAll('#fp-table tbody tr.fp-row .fp-name'),"
                           "function(b){return b.textContent;})")
             check([l.split(",")[0] for l in lines[1:]] == disp, "CSV: in the order displayed", str(disp))
             cat = [l for l in lines if l.startswith("Cat Cole")]
-            check(bool(cat) and cat[0].startswith("Cat Cole,In progress,6/10,3/10,1,2:05 (rushed),")
+            check(bool(cat) and cat[0].startswith("Cat Cole,In progress,6/10,3/10,,1,2:05 (rushed),")
                   and "pending" not in cat[0] and re.search(r",20\d\d-(0[1-9]|1[0-2])-\d\d \d\d:\d\d$", cat[0]),
                   "CSV: a row's values (Secured = known = 3), Rushed folded into the Time cell", cat and cat[0])
 
@@ -1243,7 +1502,7 @@ def main():
             p2.eval("document.getElementById('fp-csv').click(); true")
             csv2 = p2.eval("window.__MRB_FP_LAST_CSV__")
             check(csv2["text"].lstrip("﻿").split("\r\n")[0] ==
-                  "Pupil,Status,Secured,Sittings,Time,Last active",
+                  "Pupil,Status,Secured,Unsure,Sittings,Time,Last active",
                   "review CSV: the displayed columns (design port A: no Per card/Rushed)")
             p2.screenshot(os.path.join(args.shots, "fp-review-desktop.png"), width=1280, height=800, full_page=True)
 
@@ -1260,6 +1519,7 @@ def main():
             # ── cellOf ────────────────────────────────────────────────────
             cellof_check(b, base, check)
             sharpen_matrix_check(b, base, check)
+            truth_check(b, base, check, args.shots)
     finally:
         server.shutdown()
 

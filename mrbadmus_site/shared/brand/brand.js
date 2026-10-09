@@ -7,7 +7,7 @@
   var NAME = "MrBadmus";
   function lockup(href, onDark) {
     return '<a class="mrb-brand' + (onDark ? ' mrb-brand--on-dark' : '') + '" href="' +
-      (href || '/index.html') + '" aria-label="' + NAME + ' home">' + MARK +
+      (href || '/') + '" aria-label="' + NAME + ' home">' + MARK +
       '<span class="mrb-brand__word">' + NAME + '</span></a>';
   }
   window.MrBadmusBrand = { NAME: NAME, MARK: MARK, lockup: lockup };

@@ -422,6 +422,18 @@
     });
   }
 
+  /* ⊕ B2C polish (9 Oct 2026) — "something on this page just progressed".
+     The progress rail (wireRail) listens for it on the document. */
+  function announceProgress(el) {
+    var ev;
+    try { ev = new CustomEvent("ks3:progress", { bubbles: true }); }
+    catch (err) {
+      try { ev = document.createEvent("Event"); ev.initEvent("ks3:progress", true, false); }
+      catch (err2) { return; }
+    }
+    try { (el || document).dispatchEvent(ev); } catch (err3) { /* never fatal */ }
+  }
+
   /* ═══════════════════════════════════════════════════════════════
      R8 — the mastery ladder.  MRB-184's ruling of 9 August 2026.
 
@@ -565,7 +577,18 @@
         // A miss: page-marked and answered wrongly, or self-marked, shown,
         // and not every criterion ticked.
         if (r.resolved && !r.met) { misses += 1; }
+        r.el.setAttribute("data-rung-met", r.met ? "1" : "0");
       });
+      /* ⊕ B2C polish (9 Oct 2026) — the ladder PUBLISHES its rung count, so
+         the sticky progress bar can show it while the ladder is the section
+         on screen (wireRail). A rung counts when it is MET: a page-marked
+         rung answered correctly, or a self-marked rung with every criterion
+         ticked ("rung met"). Written on every refresh — load, every answer,
+         every tick, every retry — and announced with `ks3:progress` so the
+         bar repaints at once instead of on the next click or scroll. */
+      ladder.setAttribute("data-rungs-met", String(got));
+      ladder.setAttribute("data-rungs-total", String(total));
+      announceProgress(ladder);
 
       // MRB-257 (C3) — either a claim about THIS sitting, or the authored
       // resting strings left exactly as the build wrote them. Untouched, the
@@ -3610,7 +3633,11 @@
   function markStage(sec, done) {
     if (!sec) { return; }
     if (!done && sec.getAttribute("data-stage-done") === "1") { return; }
+    var was = sec.getAttribute("data-stage-done");
     sec.setAttribute("data-stage-done", done ? "1" : "0");
+    // ⊕ B2C polish — an instrument can finish on a timer (an animation
+    // ending), with no click for the rail to hear; tell it directly.
+    if (was !== sec.getAttribute("data-stage-done")) { announceProgress(sec); }
   }
 
   function wireBoard(sec) {
@@ -37497,34 +37524,80 @@
           }
         }
       }
-      if (count) { count.textContent = done + " / " + stages.length; }
-      if (fill) { fill.style.width = (done / stages.length * 100) + "%"; }
+      /* ⊕ B2C polish (9 Oct 2026) — WHILE THE MASTERY LADDER IS THE
+         CURRENT SECTION, THE TOP BAR COUNTS ITS RUNGS. The bar reads
+         "<count> <label>", and with the label "Mastery ladder" a pupil reads
+         the count as rungs: the blind journey run saw "1 / 4 Mastery ladder"
+         stay put after rung 2 was correct and rung 3 was "rung met", and move
+         only after rung 4 — because it was counting lesson STAGES, and the
+         ladder stage ticks only when every rung is done. So on the ladder the
+         count and the fill are the ladder's own: rungs MET (correct, or every
+         criterion ticked) out of rungs on the page, as `wireLadder` publishes
+         them. Everywhere else the bar is the lesson's stages, as before, and
+         the side rail (≥1340px) is untouched. */
+      var shown = done, of = stages.length;
+      var cur = sectionFor(active);
+      var lad = cur && (cur.hasAttribute("data-rungs-total") ? cur
+        : cur.querySelector("[data-rungs-total]"));
+      if (lad) {
+        var lt = parseInt(lad.getAttribute("data-rungs-total"), 10) || 0;
+        if (lt > 0) {
+          shown = parseInt(lad.getAttribute("data-rungs-met"), 10) || 0;
+          of = lt;
+        }
+      }
+      if (count) { count.textContent = shown + " / " + of; }
+      if (fill) { fill.style.width = (shown / of * 100) + "%"; }
       if (label) { label.textContent = stages[active].label || ""; }
     }
 
-    // Scroll drives CURRENT only. Same rootMargin Design used, so the stage
-    // changes at the same scroll position it does on the approved page.
-    if (window.IntersectionObserver) {
-      var io = new IntersectionObserver(function (entries) {
-        for (var i = 0; i < entries.length; i++) {
-          if (!entries[i].isIntersecting) { continue; }
-          var idx = stages.map(function (s) { return s.anchor; })
-                          .indexOf(entries[i].target.id);
-          if (idx >= 0) { active = idx; }
-        }
-        paint();
-      }, { rootMargin: "-45% 0px -50% 0px" });
-      for (var i = 0; i < stages.length; i++) {
-        var sec = sectionFor(i);
-        if (sec) { io.observe(sec); }
+    /* Scroll drives CURRENT only. The stage changes where Design's
+       IntersectionObserver changed it — when a section's top crosses the
+       line half-way down the viewport (her band was -45%/-50%).
+       ⊕ B2C polish (9 Oct 2026) — but it is now COMPUTED from where the
+       sections are, every time, rather than taken from whichever section
+       last entered the band. The observer only ever moved `active` when a
+       section ENTERED the band, so when the band sat on something that is
+       not a stage (the hero at the top of the page, a gap between stages)
+       nothing entered and the label stayed on the last stage seen: the run
+       saw "Mastery ladder" on the bar while scrolled back to the top. Now:
+       the last stage whose top is above the line, or the first stage when
+       none is (the top of the page). */
+    function currentStage() {
+      var line = (window.innerHeight || document.documentElement.clientHeight || 0) * 0.5;
+      var at = 0;
+      for (var k = 0; k < stages.length; k++) {
+        var sec = sectionFor(k);
+        if (!sec) { continue; }
+        var r = sec.getBoundingClientRect();
+        if (!r.width && !r.height) { continue; }       // not rendered
+        if (r.top <= line) { at = k; }
       }
+      return at;
     }
+    var queued = false;
+    function onScroll() {
+      if (queued) { return; }
+      queued = true;
+      (window.requestAnimationFrame || window.setTimeout)(function () {
+        queued = false;
+        active = currentStage();
+        paint();
+      });
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
 
     // Completion is recomputed after anything the student does. Cheap, and it
     // cannot go stale the way a set of per-component callbacks can.
     each(["click", "change", "input"], function (evt) {
       document.addEventListener(evt, function () { window.setTimeout(paint, 0); }, true);
     });
+    // ⊕ B2C polish — and the moment a component SAYS it progressed (the
+    // ladder on every answer and tick, markStage on every stage change),
+    // with no click needed.
+    document.addEventListener("ks3:progress", function () { paint(); });
+    active = currentStage();
     paint();
   }
 

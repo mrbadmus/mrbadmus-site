@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
-  <script src="/shared/theme.js?v=6fd6f722" defer></script>
+  <script>(function(){var p='system';try{p=localStorage.getItem('mrb-theme')||'system'}catch(e){}if(p!=='dark'&&p!=='light')p='system';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+  <script src="/shared/theme.js?v=83dd2451" defer></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#F7F1E5"/>
   <title>Sign In | MrBadmus</title>
@@ -94,16 +94,16 @@
 <body>
 
 <nav class="auth-nav" style="position:fixed;top:0;left:0;right:0;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border-bottom:1px solid var(--border);z-index:10;">
-  <!--mrb:brand--><a class="mrb-brand" href="/index.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
+  <!--mrb:brand--><a class="mrb-brand" href="/" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
   <div class="auth-nav-right" style="display:flex;align-items:center;gap:12px;">
-    <span class="mrb-theme-slot" data-mrb-theme></span>
+    <span class="mrb-theme-slot" data-mrb-theme="compact"></span>
     <a href="/index.html" class="auth-back-link" style="color:var(--muted);font-size:0.85rem;font-weight:700;text-decoration:none;">← Back to site</a>
   </div>
 </nav>
 
 <div class="card" style="margin-top:60px;">
   <div class="logo">
-    <h1><!--mrb:brand--><a class="mrb-brand" href="/index.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand--></h1>
+    <h1><!--mrb:brand--><a class="mrb-brand" href="/" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand--></h1>
     <p>GCSE Science Revision</p>
   </div>
 
@@ -327,12 +327,25 @@
      Anything with an "@" takes the email path below, unchanged. */
   const C = window.MrBadmusConsumer;
   function isUsername(v) { return !!v && v.indexOf('@') < 0 && !!(C && C.ENABLED); }
+  /* ⊕ B2C polish (9 Oct 2026) — every landing after sign-in carries the
+     test world too (it used to be only the child's), and a key the path
+     already sets is not added a second time: `?return=` often arrives as
+     "/student/class.html?env=test", and the guard pages now send it so.
+     Same-origin paths only. On the live site the URL carries neither key
+     and every path is returned untouched. */
   function carryEnv(path) {
+    path = String(path || '');
+    if (path.charAt(0) !== '/' || path.charAt(1) === '/') return path;
     const here = new URLSearchParams(window.location.search);
-    const keep = new URLSearchParams();
-    ['env', 'api'].forEach(function (k) { if (here.get(k)) keep.set(k, here.get(k)); });
-    const q = keep.toString();
-    return path + (q ? (path.indexOf('?') < 0 ? '?' : '&') + q : '');
+    let hash = '';
+    const h = path.indexOf('#');
+    if (h >= 0) { hash = path.slice(h); path = path.slice(0, h); }
+    const i = path.indexOf('?');
+    const own = new URLSearchParams(i >= 0 ? path.slice(i + 1) : '');
+    if (i >= 0) path = path.slice(0, i);
+    ['env', 'api'].forEach(function (k) { if (here.get(k) && !own.has(k)) own.set(k, here.get(k)); });
+    const q = own.toString();
+    return path + (q ? '?' + q : '') + hash;
   }
   function childHome() {
     return carryEnv((window.MrBadmusConfig && window.MrBadmusConfig.CHILD_HOME) || '/consumer/today.html');
@@ -496,26 +509,26 @@
           // transient error — send them to where they were headed. PGRST116 is
           // Supabase's "no rows" code, which we treat as a genuinely new user.
           if (error && error.code !== 'PGRST116') {
-            window.location.href = returnUrl;
+            window.location.href = carryEnv(returnUrl);
             return;
           }
           const isStaff = p && ['teacher', 'hod', 'admin'].includes(p.role);
           if (isStaff) {
             // Honour ?return= if explicitly set, otherwise default to Today
             // (MRB-325 ruling 1 — Today is the landing surface, not My classes).
-            window.location.href = returnUrl !== '/index.html' ? returnUrl : '/teacher/today.html';
+            window.location.href = carryEnv(returnUrl !== '/index.html' ? returnUrl : '/teacher/today.html');
           } else if (p && p.key_stage === 'KS3') {
             // KS3 students legitimately have no science_pathway/tier (DB
             // constraint blocks them from KS4 fields). Never send them to the
             // GCSE onboarding wizard — that's the MRB-101 sign-in loop.
-            window.location.href = returnUrl;
+            window.location.href = carryEnv(returnUrl);
           } else if (!p || !p.science_pathway || !p.tier) {
             // GCSE student with an incomplete profile (missing pathway OR tier)
             // finishes onboarding first. Checking both fields closes the gap
             // where a tier-less profile slipped through to a backend 400.
-            window.location.href = '/profile-setup.html';
+            window.location.href = carryEnv('/profile-setup.html');
           } else {
-            window.location.href = returnUrl;
+            window.location.href = carryEnv(returnUrl);
           }
         });
     });

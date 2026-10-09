@@ -8,8 +8,8 @@
      so if this ever needs to change, change theme_head.py and copy its
      output here rather than hand-editing this line. Before any stylesheet,
      so <html> carries data-theme before first paint. -->
-<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
-<script src="/shared/theme.js?v=6fd6f722" defer></script>
+<script>(function(){var p='system';try{p=localStorage.getItem('mrb-theme')||'system'}catch(e){}if(p!=='dark'&&p!=='light')p='system';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+<script src="/shared/theme.js?v=83dd2451" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#FBF3E6">
 <title>Seating plans · MrBadmus</title>
@@ -56,7 +56,7 @@
 <body class="sp-body">
 
 <nav class="sp-nav">
-  <!--mrb:brand--><a class="mrb-brand" href="/index.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
+  <!--mrb:brand--><a class="mrb-brand" href="/" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
   <div class="sp-nav__right">
     <a class="sp-nav__link" href="/teacher/classes.html">My classes</a>
     <a class="sp-nav__link" href="/teacher/today.html">Today</a>
@@ -79,7 +79,7 @@
      working-academic-year rule to it and MRB-267 made that load order
      load-bearing across every page that reads a class list. -->
 <script src="/shared/class-entry.js?v=f09195e5"></script>
-<script src="/shared/teacher-guard.js?v=f7fbad7c"></script>
+<script src="/shared/teacher-guard.js?v=15472a6c"></script>
 <script src="/shared/seating-canvas.js?v=0cabca6f"></script>
 <script src="/shared/seating-data.js?v=e03b0cd2"></script>
 <script src="/shared/seating-photo.js?v=de93bec8"></script>

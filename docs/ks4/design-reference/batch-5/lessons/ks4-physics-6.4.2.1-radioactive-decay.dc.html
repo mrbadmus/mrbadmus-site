@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radioactive decay and nuclear radiation · MrBadmusAI GCSE Physics</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Physics" unit="Atomic structure" title="Radioactive decay" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Physics 6.4.2.1</p>
+        <h1>Radioactive decay and nuclear radiation</h1>
+        <p class="ks3-bigq">Unstable nuclei give out radiation at random. Sort alpha, beta and gamma by what they are, how far they go and how strongly they ionise, then pick the right one for a job.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A sheet of paper in the sun." scene="Hold a sheet of paper between your face and the sun, and the sunlight on your face is blocked." question="could one sheet of paper block every kind of radiation?" options="{{ hookOptions }}" bridge="Different radiations get through different amounts of material. Next: what comes out of an unstable nucleus." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-decay" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Unstable nuclei</p>
+        <h2 style="margin: 6px 0 0;">Decay is random.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Some atomic nuclei are unstable. The nucleus gives out radiation as it changes to become more stable. This is radioactive decay, and it is random: you cannot predict when any one nucleus will decay.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Activity</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">The rate at which a source of unstable nuclei decays, measured in becquerel (Bq). 1 Bq is one decay per second.</p>
+          </div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Count-rate</p>
+            <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">The number of decays recorded each second by a detector, such as a Geiger–Müller tube. A detector records only some of the decays, so count-rate is not the activity.</p>
+          </div>
+        </div>
+        <p style="margin: 16px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">What a nucleus can emit</p>
+        <div style="margin-top: 8px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 10px;">
+          <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-weight: 800;">Alpha particle (α)</p><p style="margin: 4px 0 0; font-size: 16px; line-height: 1.5;">Two neutrons and two protons: the same as a helium nucleus.</p></div>
+          <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-weight: 800;">Beta particle (β)</p><p style="margin: 4px 0 0; font-size: 16px; line-height: 1.5;">A high-speed electron ejected from the nucleus as a neutron turns into a proton.</p></div>
+          <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-weight: 800;">Gamma ray (γ)</p><p style="margin: 4px 0 0; font-size: 16px; line-height: 1.5;">Electromagnetic radiation from the nucleus.</p></div>
+          <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-weight: 800;">Neutron (n)</p><p style="margin: 4px 0 0; font-size: 16px; line-height: 1.5;">Some nuclei emit a neutron.</p></div>
+        </div>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Bench · identify three sources</p>
+        <h2 style="margin: 6px 0 0;">Which absorber stops the count?</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Each source sits a few centimetres from a Geiger–Müller tube. The background count, with no source, is about 20 counts per minute. Try absorbers, then name each source.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ sources }}" as="p" hint-placeholder-count="3"><button type="button" onClick="{{ p.onClick }}" aria-pressed="{{ p.pressed }}" style="{{ p.style }}">{{ p.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;">
+          <sc-for list="{{ absorbers }}" as="a" hint-placeholder-count="4"><button type="button" onClick="{{ a.onClick }}" aria-pressed="{{ a.pressed }}" style="{{ a.style }}">{{ a.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ benchFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <p aria-live="polite" style="margin: 0; padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border); font-family: var(--ks3-font-mono); font-size: 18px;">{{ countLine }}</p>
+            <p class="ks3-commit" style="margin: 0; color: var(--ks3-ink);">This source gives out</p>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;"><sc-for list="{{ ids }}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for></div>
+            <sc-if value="{{ hasIdNote }}"><p data-arrive="1" role="status" style="{{ idNoteStyle }}">{{ idNote }}</p></sc-if>
+          </div>
+        </div>
+        <div style="margin-top: 16px; overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 17px; min-width: 520px;">
+            <thead><tr style="text-align: left; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);"><th style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink);"></th><th style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink);">Range in air</th><th style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink);">Stopped by</th><th style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink);">Ionising power</th></tr></thead>
+            <tbody>
+              <tr><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule); font-weight: 700;">Alpha</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">a few cm</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">a sheet of paper, or skin</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">strongest</td></tr>
+              <tr><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule); font-weight: 700;">Beta</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">up to about a metre</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">a few mm of aluminium</td><td style="padding: 8px 10px; border-bottom: 1px solid var(--ks3-rule);">medium</td></tr>
+              <tr><td style="padding: 8px 10px; font-weight: 700;">Gamma</td><td style="padding: 8px 10px;">a very long way</td><td style="padding: 8px 10px;">reduced by thick lead or concrete</td><td style="padding: 8px 10px;">weakest</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="s-uses" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Uses and hazards</p>
+        <h2 style="margin: 6px 0 0;">The properties pick the job.</h2>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">Smoke alarm · alpha</p><p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">Alpha ionises the air in the alarm so a small current flows. Smoke absorbs the alpha, the current drops, and the alarm sounds. Its short range keeps it inside the alarm.</p></div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">Paper thickness · beta</p><p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">Beta partly passes through paper. If the count-rate falls, the paper is getting thicker, and the rollers are adjusted.</p></div>
+          <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">Sterilising · gamma</p><p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5;">Gamma passes through sealed packaging and kills microbes on medical equipment. Irradiating an object does not make it radioactive.</p></div>
+        </div>
+        <p style="margin: 14px 0 0; max-width: 62ch; font-size: 17px; line-height: 1.55;">Ionising radiation damages living cells. Alpha is most dangerous inside the body, where all its ionisation happens in nearby cells; outside, skin stops it. Gamma is the hazard from outside, because it reaches the organs. Keep your distance: alpha and beta only travel a short way in air, and gamma gets weaker further away. Use shielding, and keep exposure time short.</p>
+        <sc-if value="{{ isTriple }}">
+          <div data-arrive="1" style="margin-top: 16px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-accent);">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Triple · uses in medicine</p>
+              <span style="font-family: var(--ks3-font-mono); font-size: 12px; padding: 2px 9px; border-radius: 99px; border: 2px solid var(--ks3-ink);">{{ route }}</span>
+            </div>
+            <p style="margin: 10px 0 0; font-size: 17px; line-height: 1.55;">Nuclear radiations are used in medicine for the exploration of internal organs, and for the control or destruction of unwanted tissue.</p>
+            <ul style="margin: 8px 0 0; padding-left: 1.1em; font-size: 17px; line-height: 1.55; display: flex; flex-direction: column; gap: 6px;">
+              <li><strong>Exploring organs:</strong> a gamma source taken into the body is detected outside it, because gamma passes out through the tissue.</li>
+              <li><strong>Destroying unwanted tissue:</strong> radiation aimed at a tumour kills its cells.</li>
+            </ul>
+            <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55;">More in the uses of nuclear radiation lesson.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · what the counter reads</p></div>
+        <p class="ks3-mis-quote">&ldquo;A Geiger counter reads the activity of a source.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="A Geiger–Müller tube near a source records 60 counts per second. Is the activity of the source 60 Bq?" options="{{ thinkOptions }}" reveal="No. 60 counts per second is the count-rate. Radiation goes out in all directions and the tube records only some of the decays, so the activity, the source’s decays per second, is higher." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Alpha, beta or gamma?" prompt="Place each statement." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="More ionising means less penetrating: alpha one end, gamma the other, beta between." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Identify</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Use which absorber brings the count to background.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Link the choice to range, penetration or ionising power.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give the same property for each radiation.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Radioactive decay is random. Alpha is the most ionising and least penetrating; gamma is the least ionising and most penetrating; beta is between.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="radioactive-decay" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Radioactive decay and nuclear radiation" spec="AQA 6.4.2.1" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Physics" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which absorber stops which radiation?" legal="Bench count-rates are round teaching figures, not measurements. Diagrams are schematic." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Paper in the sun', short: 'HOOK' },
+  { id: 's-decay', label: 'Unstable nuclei', short: 'DECAY' },
+  { id: 's-bench', label: 'Identify the sources', short: 'BENCH' },
+  { id: 's-uses', label: 'Uses and hazards', short: 'USES' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Alpha, beta or gamma', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const ABS = ['No absorber', 'Paper', '3 mm aluminium', '5 cm lead'];
+const SRC = [
+  { label: 'Source A', type: 'a', counts: [400, 20, 20, 20] },
+  { label: 'Source B', type: 'b', counts: [400, 390, 20, 20] },
+  { label: 'Source C', type: 'g', counts: [400, 400, 390, 120] }
+];
+const NAMES = { a: 'Alpha', b: 'Beta', g: 'Gamma' };
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, src: 0, abs: 0, guess: [null, null, null], think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  bench(src, abs) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const S = SRC[src], c = S.counts[abs];
+    b += '<rect x="30" y="140" width="70" height="50" rx="6" fill="#C9CCD1" stroke="' + C.stroke + '" stroke-width="2"/>' + D.T(65, 212, S.label.toLowerCase(), 13, { weight: 'normal', fill: C.stroke });
+    const ax = 250;
+    if (abs === 1) b += '<rect x="' + ax + '" y="100" width="4" height="130" fill="#FFFDF8" stroke="' + C.stroke + '" stroke-width="1.5"/>';
+    if (abs === 2) b += '<rect x="' + ax + '" y="100" width="10" height="130" fill="#D1D5DB" stroke="' + C.stroke + '" stroke-width="2"/>';
+    if (abs === 3) b += '<rect x="' + ax + '" y="100" width="40" height="130" fill="#6B7280" stroke="' + C.stroke + '" stroke-width="2"/>';
+    if (abs) b += D.T(ax + 10, 250, ABS[abs].toLowerCase(), 13, { weight: 'normal', fill: C.stroke });
+    const pass = c > 200 ? 1 : c > 40 ? 0.5 : 0;
+    b += D.line(100, 165, ax - 2, 165, 3, C.red, ' stroke-dasharray="8 6"');
+    if (pass) b += D.line(ax + (abs === 3 ? 42 : 12), 165, 440, 165, 3, C.red, pass < 1 ? ' stroke-dasharray="3 9"' : ' stroke-dasharray="8 6"');
+    b += '<rect x="440" y="145" width="120" height="40" rx="20" fill="#FFFDF8" stroke="' + C.stroke + '" stroke-width="2.5"/>' + D.T(500, 170, 'GM tube', 13, { fill: C.stroke });
+    b += '<rect x="460" y="40" width="100" height="56" rx="8" fill="#1A1714"/>' + D.T(510, 76, String(c), 22, { fill: '#7FE0A8' }) + D.T(510, 112, 'counts per minute', 12, { weight: 'normal', fill: C.stroke });
+    return D.svg(600, 280, b, S.label + ' with ' + ABS[abs].toLowerCase() + ': ' + c + ' counts per minute.');
+  }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {}, isTriple: true };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const allId = s.guess.every((g, i) => g === SRC[i].type);
+    const done = [s.hook !== null, s.hook !== null, allId, allId, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const S = SRC[s.src], g = s.guess[s.src], ok = g === S.type;
+    const idWhy = { a: 'Paper brings the count down to background: alpha.', b: 'Paper barely changes it; 3 mm of aluminium brings it to background: beta.', g: 'It passes paper and aluminium; even 5 cm of lead only reduces it: gamma.' };
+    const bankSrc = [
+      { q: 'Why is alpha radiation the most dangerous type when a source is inside the body?', opts: [['Alpha is highly ionising \u2014 it causes dense ionisation damage to nearby cells and cannot escape the body to be detected', true], ['Alpha has the highest energy of all three types \u2014 more energy means more damage', false], ['Alpha moves fastest \u2014 it collides more often with cells', false], ['Alpha is most penetrating \u2014 it reaches all organs from a single source', false]],
+        wrong_explanations: { 1: 'Energy isn\u2019t the reason \u2014 alpha is the most ionising, so all its damage is packed into a tiny volume of tissue.', 2: 'Alpha is actually the SLOWEST of the three \u2014 and its high mass means it interacts strongly with matter.', 3: 'Alpha is the LEAST penetrating \u2014 stopped by a few cm of air. That\u2019s exactly why it\u2019s so dangerous inside the body \u2014 all ionisation is deposited nearby.' } },
+      { q: 'A radioactive source has an activity of 340 Bq. What does this mean?', opts: [['340 nuclei in the source are decaying every second, each emitting radiation', true], ['The source has 340 radioactive atoms remaining in total', false], ['The source emits 340 joules of energy every second', false], ['The source has been decaying for 340 seconds', false]],
+        wrong_explanations: { 1: 'That would be the number of unstable nuclei left \u2014 activity is the rate of decay, in decays per second.', 2: 'Bq measures rate in decays per second \u2014 not joules. Energy per decay is measured in eV or joules, not Bq.', 3: 'Bq is a rate (per second) \u2014 not a duration.' } },
+      { q: 'Which statement about radioactive decay is true?', opts: [['It is random: you cannot predict when a particular nucleus will decay', true], ['Nuclei decay in order, oldest first', false], ['Heating a source makes its nuclei decay on demand', false], ['Every nucleus decays exactly one second after the last', false]],
+        wrong_explanations: { 1: 'There is no order. Each nucleus decays at a random moment.', 2: 'You cannot make a particular nucleus decay when you choose.', 3: 'Decay is random, not regular.' } },
+      { q: 'Where does a beta particle come from?', opts: [['The nucleus, as a neutron turns into a proton', true], ['The outer electron shell of the atom', false], ['The air around the source', false], ['The Geiger\u2013M\u00fcller tube', false]],
+        wrong_explanations: { 1: 'A beta particle is an electron, but it is ejected from the nucleus, not the shells.', 2: 'The beta particle comes from the unstable nucleus itself.', 3: 'The tube detects radiation; it doesn\u2019t produce it.' } },
+      { q: 'Which list gives only things an unstable nucleus can emit?', opts: [['Alpha particle, beta particle, gamma ray, neutron', true], ['Alpha particle, beta particle, gamma ray, proton shell', false], ['Alpha particle, light bulb, gamma ray', false], ['Only alpha particles', false]],
+        wrong_explanations: { 1: 'There is no such thing as a proton shell. The fourth emission is a neutron.', 2: 'A light bulb is not an emission. The four are alpha, beta, gamma and neutron.', 3: 'Nuclei can also emit beta particles, gamma rays and neutrons.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('radioactive-decay') : null,
+      hookOptions: [
+        { text: 'Yes, all of it', correct: false, reply: 'Paper stops visible light and alpha radiation, but other radiations pass straight through it.' },
+        { text: 'No, some gets through', correct: true, reply: 'Some nuclear radiations go through paper easily, and one needs thick lead to reduce it.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      sources: SRC.map((x, i) => ({ label: x.label + (s.guess[i] === x.type ? ' \u00b7 ' + NAMES[x.type] : ''), pressed: s.src === i, style: this.seg(s.src === i), onClick: () => this.setState({ src: i, abs: 0 }) })),
+      absorbers: ABS.map((a, i) => ({ label: a, pressed: s.abs === i, style: this.seg(s.abs === i), onClick: () => this.setState({ abs: i }) })),
+      benchFig: ready ? K.fig(this.bench(s.src, s.abs), '') : null,
+      countLine: S.label + ' \u00b7 ' + ABS[s.abs].toLowerCase() + ': ' + S.counts[s.abs] + ' counts per minute' + (S.counts[s.abs] <= 20 ? ' (background)' : ''),
+      ids: ['a', 'b', 'g'].map((t) => ({ label: NAMES[t], style: this.seg(g === t), onClick: () => { const gg = s.guess.slice(); gg[s.src] = t; this.setState({ guess: gg }); } })),
+      hasIdNote: g !== null, idNote: ok ? idWhy[S.type] : 'Try each absorber in turn and look for the first one that brings the count down to about 20.',
+      idNoteStyle: 'margin:0;padding:12px 14px;border-radius:14px;font-size:17px;line-height:1.55;border:2px solid ' + (ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      thinkOptions: [
+        { text: 'No: that is the count-rate; the tube records only some decays', correct: true, reply: 'The activity is higher.' },
+        { text: 'Yes: counts per second and becquerels are the same thing', correct: false, reply: 'Activity is the source\u2019s decays per second; count-rate is what one detector records.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'a', label: 'Alpha' }, { id: 'b', label: 'Beta' }, { id: 'g', label: 'Gamma' }],
+      sortItems: [
+        { text: 'Two protons and two neutrons', bin: 'a', why: 'Same as a helium nucleus.' },
+        { text: 'Stopped by a sheet of paper', bin: 'a', why: 'Least penetrating.' },
+        { text: 'Most strongly ionising', bin: 'a', why: 'Dense ionisation over a short path.' },
+        { text: 'Used in smoke alarms', bin: 'a', why: 'Ionises air; short range.' },
+        { text: 'A high-speed electron from the nucleus', bin: 'b', why: 'A neutron turns into a proton.' },
+        { text: 'Stopped by a few mm of aluminium', bin: 'b', why: 'In between.' },
+        { text: 'Electromagnetic radiation', bin: 'g', why: 'Not a particle.' },
+        { text: 'Used to sterilise sealed medical equipment', bin: 'g', why: 'Passes through packaging.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name the radiation that is stopped by a sheet of paper.', why: 'Alpha.', options: [
+            { text: 'Alpha', correct: true },
+            { text: 'Beta', correct: false, reply: 'Beta needs a few mm of aluminium.' },
+            { text: 'Gamma', correct: false, reply: 'Gamma passes through paper easily.' }] },
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Give the unit of activity.', why: 'The becquerel, Bq.', options: [
+            { text: 'Becquerel (Bq)', correct: true },
+            { text: 'Joule (J)', correct: false, reply: 'Joules measure energy.' },
+            { text: 'Counts per minute', correct: false, reply: 'That is a count-rate from a detector.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Identify', marks: 1, prompt: 'A sheet of paper barely changes the count-rate from a source. 3 mm of aluminium brings it down to background. Identify the radiation.', why: 'Passes paper, stopped by aluminium: beta.', options: [
+            { text: 'Alpha', correct: false, reply: 'Alpha would be stopped by the paper.' },
+            { text: 'Beta', correct: true },
+            { text: 'Gamma', correct: false, reply: 'Gamma would pass through 3 mm of aluminium.' },
+            { text: 'Background radiation', correct: false, reply: 'The count drops to background, so the source emits something the aluminium stops.' }] },
+          { kind: 'mcq', command: 'Suggest', marks: 1, prompt: 'A factory checks the thickness of paper as it is made. Suggest the best type of source.', why: 'Beta: partly absorbed by paper, so the count changes with thickness.', options: [
+            { text: 'Alpha, because it is stopped by paper', correct: false, reply: 'If paper stops it completely, the count can\u2019t show small changes in thickness.' },
+            { text: 'Beta, because paper partly absorbs it', correct: true },
+            { text: 'Gamma, because it passes straight through', correct: false, reply: 'Paper barely affects gamma, so the count wouldn\u2019t change.' },
+            { text: 'Any source would work equally well', correct: false, reply: 'Only beta gives a count that changes with paper thickness.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why an alpha source is most dangerous when it is inside the body. Put the links in order.',
+            links: ['Alpha is the most ionising radiation.', 'Inside the body it cannot travel far, so all its ionisation happens in nearby cells.', 'So the cells close to the source are badly damaged.'],
+            herrings: [{ text: 'Alpha has the most energy of the three.', why: 'Energy isn\u2019t the reason; ionising power is.' }, { text: 'Alpha passes through the whole body.', why: 'It is the least penetrating.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why gamma is used to sterilise medical equipment in sealed packs. Put the links in order.',
+            links: ['Gamma is very penetrating, so it passes through the sealed packaging.', 'It kills the microbes on the equipment.', 'The equipment does not become radioactive, so it is safe to use.'],
+            herrings: [{ text: 'Gamma is the most ionising radiation.', why: 'Gamma is the least ionising; it is chosen for penetration.' }, { text: 'Alpha would work better because it is stopped by the packaging.', why: 'Stopped by the packaging, it couldn\u2019t reach the equipment.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Compare', marks: 4, prompt: 'Compare alpha, beta and gamma radiation.',
+            levels: [
+              { label: 'Level 2 \u00b7 3\u20134', text: 'What each is, plus two properties compared across all three.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'Some properties given for one or two radiations.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Alpha: two protons and two neutrons; beta: a high-speed electron from the nucleus; gamma: electromagnetic radiation.', 'Penetration: alpha stopped by paper, beta by a few mm of aluminium, gamma reduced by thick lead.', 'Range in air: alpha a few cm, beta up to about a metre, gamma a very long way.', 'Ionising power: alpha strongest, beta medium, gamma weakest.'],
+            reject: ['\u201cGamma is the most ionising because it goes furthest.\u201d', '\u201cBeta is an electron from the outer shell.\u201d'] }
+        ]
+      },
+      keyLines: ['Some nuclei are unstable and emit radiation as they change to become more stable. Decay is random.', 'Activity: the rate of decay, in becquerel (Bq). Count-rate: decays recorded each second by a detector.', 'Emissions: alpha (2 protons, 2 neutrons), beta (high-speed electron from the nucleus, as a neutron becomes a proton), gamma (EM radiation), neutron.', 'Alpha: a few cm in air, stopped by paper, most ionising. Beta: up to about a metre, stopped by a few mm of aluminium. Gamma: very long range, reduced by thick lead, least ionising.', 'Uses follow the properties: smoke alarms (alpha), paper thickness (beta), sterilising (gamma).', 'Alpha is most dangerous inside the body; gamma from outside. Distance, shielding and short exposure reduce the risk.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-physics-6.4.1.3-development-atomic-model.dc.html', label: 'Development of the model of the atom' }, endNext: null,
+      endConnects: [{ href: 'ks4-physics-6.4.1.1-structure-of-atom.dc.html', label: 'The structure of an atom' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

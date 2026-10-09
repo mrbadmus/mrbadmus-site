@@ -781,7 +781,7 @@ def main():
             P1.type("draw a tangent to about half the curve roughly and find its gradient")
             P1.click('[data-hw="check"]')
             s = wait_chip(P1, page1, seen1)
-            nearly_ok = s["chip"] == "Nearly" and sorted(s["enabled"]) == ["got_it", "nearly", "not_yet"]
+            nearly_ok = s["chip"] == "Nearly" and {"nearly", "not_yet"} <= set(s["enabled"])   # ⊕ 8 Oct: Secured needs a real attempt
             record(path, "card2 learn-step answer (contains 'half')",
                    f"chip={s['chip']!r} enabled={s['enabled']!r}", "PASS" if nearly_ok else "FAULT")
             P1.shot("c2-nearly-hint")
@@ -841,7 +841,7 @@ def main():
             P1.type("something wrong I don't really know sorry")
             P1.click('[data-hw="check"]')
             s = wait_chip(P1, page1, seen1)
-            wrong_ok = s["chip"] == "Wrong" and sorted(s["enabled"]) == ["got_it", "nearly", "not_yet"]
+            wrong_ok = s["chip"] == "Wrong" and {"nearly", "not_yet"} <= set(s["enabled"])   # ⊕ 8 Oct: Secured may be greyed
             record(path, "card5: typed answer containing 'wrong'", f"chip={s['chip']!r} enabled={s['enabled']!r}",
                    "PASS" if wrong_ok else "FAULT")
             P1.click('[data-hw="not_yet"]')
@@ -852,7 +852,7 @@ def main():
             P1.type("idk")
             P1.click('[data-hw="check"]')
             s = P1.st()
-            blank_ok = s["chip"] == "No answer" and sorted(s["enabled"]) == ["got_it", "nearly", "not_yet"]
+            blank_ok = s["chip"] == "No answer" and sorted(s["enabled"]) == ["nearly", "not_yet"]   # ⊕ 8 Oct: "idk" typed is no attempt, Secured greyed
             record(path, "card6: typed literal 'idk' (blank)", f"chip={s['chip']!r} enabled={s['enabled']!r}",
                    "PASS" if blank_ok else "FAULT")
             P1.click('[data-hw="not_yet"]')

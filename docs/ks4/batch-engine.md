@@ -261,3 +261,25 @@ including `ks4-nav.js`, since nothing is left to load it — and a scoped
 is clean again. Run this exact proof again whenever this engine changes;
 if a change ever moves the pilot by one byte, find out why and fix the
 generator — never re-freeze `ks4_pilot_manifest.json` to make it pass.
+
+## 8. Batch 4+: its own shared blocks, Design's files verbatim, `staged` (Prompt AA)
+
+- A batch module may export `BLOCK_NAMES`, `BLOCKS_DIR`, `OWN_CSS_BLOCKS` (`ks4_lessons.batch_blocks()`).
+  Its pages then register THAT block set (batch 4: Ks4Triangle, Ks4Guess, Ks4Steps, Ks4Practice, the
+  five-question Ks4QuizBank, Ks4Cfifa with the triangle) instead of the pilot's, and
+  `ks4-lesson-<batch>.css` also carries the `<style>` of `OWN_CSS_BLOCKS`. The pilot and batches 2/3
+  never call this path, so their bytes cannot move (proved by rebuilding everything and `git diff`).
+- A record with `port_rulings=True` is Design's own delivery, kept byte-identical in
+  `docs/ks4/design-reference/<batch>/` (MD5SUMS). `ks4_batch_rulings.py` removes the Route select,
+  swaps the two chips for the route chip, rewires prev/next and connects, and applies the named
+  SCIENCE rulings (each exactly-one-occurrence, logged in `docs/ks4/BATCH4-SCIENCE-LOG.md`).
+- `staged=True` registers a record without building it; `lessons_for_batch()` hides it.
+- ⊕ Batch 5 (Prompt AB, 8 Oct 2026) extended two rulings GENERICALLY, fail-loud, and changed no batch-4 byte
+  (proved by `git diff --name-only origin/main`): **B-CONNECTS** now also reads
+  `href: '../KS4 Batch N/<file>.dc.html'` and resolves the file through EVERY registered batch's
+  `source_file` (and the pilot's `design_file`), so a connects link may cross batches; an unknown file is a
+  `RulingError`. **B-INLINE-LINKS** turns an in-text `<a href="<file>.dc.html">` in a template into a bound
+  `{{ mrbLink_<slug> }}`, filled by `renderVals` from `KS4.hrefFor(slug, R)` (the same resolver the connects
+  use), so the link is per-route and live; it fails loud on an unknown file or a `renderVals` without
+  `return Object.assign({}, R, {`. Both resolve by slug through `KS4.hrefFor` / `shared/ks4-nav.js`
+  `FULL_NAV` (all_subtopics), which covers every KS4 subtopic.

@@ -7,7 +7,12 @@
    1. The inline pre-paint snippet in <head> (THEME_HEAD in theme_head.py — the
       same bytes on every page) reads localStorage 'mrb-theme' and writes
       <html data-theme="light|dark" data-theme-pref="light|dark|system"> before
-      first paint. Light is the default and the fallback for anything unreadable.
+      first paint. System is the default and the fallback for anything
+      unreadable: a fresh device follows its own prefers-color-scheme, and a
+      stored explicit Light or Dark always wins.
+      ⊕ B2C polish (9 Oct 2026). The default used to be Light, so a fresh
+      phone in dark mode opened every page in Light with Light selected
+      (blind journey run). This file and THEME_HEAD must agree; both changed.
    2. Every family's stylesheet keys its dark tokens on html[data-theme="dark"].
       Because data-theme is ALWAYS written, the older prefers-color-scheme blocks
       (which stand down under data-theme="light") never fire on their own.
@@ -18,8 +23,8 @@
    Storage: localStorage only. profiles has no suitable column on production;
    the migration that adds one (profiles.colour_scheme) is parked — see
    docs/theme/REPORT.md. Every storage access is wrapped: a private window or
-   blocked storage leaves the page in light and the control still works for the
-   life of the page. */
+   blocked storage leaves the page on System (the device's own scheme) and the
+   control still works for the life of the page. */
 (function () {
   'use strict';
   if (window.MRBTheme) return;
@@ -31,11 +36,12 @@
   var memory = null;           // the choice when storage is unavailable
   var listeners = [];
 
-  function clean(p) { return PREFS.indexOf(p) >= 0 ? p : 'light'; }
+  var DEFAULT = 'system';
+  function clean(p) { return PREFS.indexOf(p) >= 0 ? p : DEFAULT; }
 
   function read() {
     try { var v = window.localStorage.getItem(KEY); if (v) return clean(v); } catch (e) {}
-    return memory ? memory : 'light';
+    return memory ? memory : DEFAULT;
   }
 
   function write(p) {
@@ -104,6 +110,19 @@
     '.mrb-theme-pop .mrb-theme label{width:auto;height:36px;justify-content:flex-start;gap:10px;padding:0 14px 0 10px;border-radius:10px}',
     '.mrb-theme-pop .mrb-theme .mrb-theme-sr{position:static;width:auto;height:auto;margin:0;overflow:visible;clip:auto;white-space:nowrap;font-size:.9rem;font-weight:600}',
     '@media (max-width:600px){.mrb-theme-c>.mrb-theme{display:none}.mrb-theme-menu{display:inline-block}}',
+    /* ⊕ B2C polish (9 Oct 2026) — a 44×44 tap target per option on a phone
+       or any touch screen (WCAG 2.5.5; measured 30×28 on /parents/ at 390).
+       The desktop mouse keeps the compact 30×28 row it was drawn at. Every
+       slot gets it — inline group, the compact button, the popover rows —
+       so the control is the same size wherever it sits. */
+    /* The compact button is 44×44 to the finger but keeps its 32px ring and
+       its 32px footprint (a -6px margin): the bars it sits in (the pupil
+       class page, the KS3 lesson bar) were measured to the pixel at 360,
+       and 12 more pixels of row would ellipsise their titles. The 6px it
+       reaches past the ring is the end group's own 6px gap at that width. */
+    '@media (max-width:600px),(pointer:coarse){.mrb-theme label{width:44px;height:44px}.mrb-theme-pop .mrb-theme label{width:auto;min-width:44px;height:44px}' +
+      '.mrb-theme-menu>summary{position:relative;width:44px;height:44px;margin:-6px;border-color:transparent}' +
+      '.mrb-theme-menu>summary::before{content:"";position:absolute;inset:6px;border:1px solid color-mix(in srgb,currentColor 28%,transparent);border-radius:999px;pointer-events:none}}',
     '@media print{.mrb-theme{display:none!important}}'
   ].join('');
 

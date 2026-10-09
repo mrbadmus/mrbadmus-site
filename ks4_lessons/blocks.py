@@ -42,6 +42,9 @@ SECTION_TYPES = frozenset([
 COMPONENTS = frozenset([
     "Ks4Chrome", "Ks4Choice", "Ks4Sort", "Ks4Chain", "Ks4Write", "Ks4Cfifa",
     "Ks4Ladder", "Ks4KeyNote", "Ks4QuizBank", "Ks4End", "Ks4Video",
+    # batch 4+ (Design's Part 1 shared blocks, 2 Oct 2026) — loaded by
+    # batch pages only; Ks4Practice is the 2·2·2·1 ladder (Ks4Ladder's successor).
+    "Ks4Triangle", "Ks4Guess", "Ks4Steps", "Ks4Practice",
 ])
 
 # A section that is essentially a one-component wrapper takes that
@@ -56,6 +59,10 @@ IMPORT_TO_TYPE = {
     "Ks4KeyNote": "summary",
     "Ks4Ladder": "check",
     "Ks4Write": "extended-response",
+    "Ks4Steps": "worked-example",
+    "Ks4Triangle": "equation",
+    "Ks4Practice": "check",
+    "Ks4Guess": "hook",
     # Ks4Choice alone means very little — it is the hook AND the
     # spot-the-flaw AND mid-lesson commit points. Never used as the sole
     # signal; see the id/class rules below, which run first.

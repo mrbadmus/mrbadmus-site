@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js"></script>
+<style>
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="font-family: var(--ks3-font-body); color: var(--ks3-ink); text-wrap: pretty;">
+  <div style="{{ shellStyle }}">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap;">
+      <div style="flex: 1 1 20rem; min-width: 0;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">{{ eyebrow }}</p>
+        <h3 style="margin: 6px 0 0; font-size: 24px; line-height: 1.3; letter-spacing: -.02em; max-width: 46ch;">{{ head }}</h3>
+      </div>
+      <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ progress }}</p>
+    </div>
+    <sc-if value="{{ hasLead }}"><p style="margin: 10px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body); max-width: 60ch;">{{ lead }}</p></sc-if>
+
+    <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 14px;">
+      <sc-for list="{{ steps }}" as="st" hint-placeholder-count="2">
+        <div style="{{ st.cardStyle }}">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <span style="flex: 0 0 auto; white-space: nowrap; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; letter-spacing: -.01em; padding: 4px 12px; border-radius: 10px; background: var(--ks3-ink); color: var(--ks3-ground);">{{ st.num }}</span>
+            <p style="margin: 0; flex: 1 1 14rem; min-width: 0; font-size: 19px; font-weight: 700; line-height: 1.35;">{{ st.title }}</p>
+          </div>
+
+          <sc-if value="{{ st.showLines }}" hint-placeholder-val="{{ true }}">
+            <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{ st.lines }}" as="ln" hint-placeholder-count="2">
+                <div data-arrive="1" style="display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+                  <span aria-hidden="true" style="flex: 0 0 36px; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">{{ ln.letter }}</span>
+                  <div style="flex: 1 1 auto; min-width: 0;">
+                    <label for="{{ ln.id }}" style="display: block; margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ ln.label }}</label>
+                    <sc-if value="{{ ln.isWorked }}" hint-placeholder-val="{{ true }}">
+                      <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; line-height: 1.4; overflow-wrap: anywhere;">{{ ln.line }}</p>
+                      <sc-if value="{{ ln.hasNote }}"><p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55; color: var(--ks3-ink-body);">{{ ln.note }}</p></sc-if>
+                      <sc-if value="{{ ln.hasTriangle }}">
+                        <div style="margin-top: 12px; padding: 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+                          <dc-import name="Ks4Triangle" variant="compact" eq="{{ ln.eq }}" pick="{{ ln.find }}" hint-size="100%,190px"></dc-import>
+                        </div>
+                      </sc-if>
+                    </sc-if>
+                    <sc-if value="{{ ln.isInput }}">
+                      <input type="text" id="{{ ln.id }}" value="{{ ln.value }}" onInput="{{ ln.onChange }}" onChange="{{ ln.onChange }}" disabled="{{ ln.locked }}" placeholder="{{ ln.placeholder }}" style="{{ ln.inputStyle }}">
+                      <sc-if value="{{ ln.checked }}">
+                        <div data-arrive="1" style="margin: 10px 0 0; padding: 10px 12px; border-radius: var(--ks3-r-option); background: var(--ks3-inset); display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                          <p style="margin: 0; flex: 1 1 12rem; min-width: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; overflow-wrap: anywhere;">{{ ln.line }}</p>
+                          <button type="button" onClick="{{ ln.onTick }}" aria-pressed="{{ ln.ticked }}" style="{{ ln.tickStyle }}">{{ ln.tickLabel }}</button>
+                        </div>
+                      </sc-if>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ st.showCarry }}">
+            <div data-arrive="1" style="margin-top: 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 16px; border-radius: 14px; border: 2px dashed var(--ks3-accent); background: var(--ks3-accent-tint);">
+              <svg viewBox="0 0 24 24" aria-hidden="true" style="flex: 0 0 22px; width: 22px; height: 22px; fill: none; stroke: var(--ks3-ink); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M12 4v15"></path><path d="M6 13l6 6 6-6"></path></svg>
+              <p style="margin: 0; font-size: 18px; line-height: 1.45;"><strong>{{ st.carryWord }}</strong> <span style="font-family: var(--ks3-font-mono); font-weight: 500; white-space: nowrap;">{{ st.carry }}</span></p>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="margin-top: 16px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+      <button type="button" class="ks3-reveal-btn" onClick="{{ onButton }}" disabled="{{ btnLocked }}" style="{{ btnStyle }}">{{ btnLabel }}</button>
+      <sc-if value="{{ showAfter }}"><span role="status" style="font-size: 18px; font-weight: 700; color: var(--ks3-ink-body);">{{ after }}</span></sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:900},&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;worked&quot;,&quot;attempt&quot;],&quot;default&quot;:&quot;worked&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;head&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;lead&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;steps&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;{title:string,find?:string,eq?:object,carry?:string,lines:Array&lt;{letter:string,label:string,line:string,note?:string,placeholder?:string}&gt;}&gt;&quot;},&quot;next&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;close&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;id&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;chain&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;onDone&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;()=&gt;void&quot;}}">
+class Component extends DCLogic {
+  state = { shown: 0, vals: {}, ticks: {}, checked: false };
+  renderVals() {
+    const p = this.props, s = this.state;
+    const attempt = p.mode === 'attempt';
+    const steps = p.steps || [];
+    const total = steps.reduce((n, st) => n + (st.lines || []).length, 0) || 1;
+    const id = p.id || 'chain';
+    let before = 0;
+    const filled = Object.keys(s.vals).filter((k) => (s.vals[k] || '').trim()).length;
+    const tickN = Object.keys(s.ticks).filter((k) => s.ticks[k]).length;
+    let curStep = 0, curLine = 0;
+    if (!attempt) { let left = s.shown; steps.forEach((st, i) => { const n = (st.lines || []).length; if (left > 0) { curStep = i; curLine = Math.min(left, n); left -= n; } }); }
+    const out = steps.map((st, i) => {
+      const n = (st.lines || []).length;
+      const visible = attempt ? n : Math.max(0, Math.min(n, s.shown - before));
+      const reached = attempt || visible > 0;
+      const lines = (st.lines || []).slice(0, visible).map((ln, k) => {
+        const key = i + '-' + k;
+        return {
+          id: id + '-s' + i + '-l' + k, letter: ln.letter, label: ln.label, line: ln.line, note: ln.note || '', hasNote: !attempt && !!ln.note,
+          isWorked: !attempt, isInput: attempt,
+          hasTriangle: !attempt && !!(st.eq && ln.label === 'Formula'), eq: st.eq || null, find: st.find || '',
+          value: s.vals[key] || '', placeholder: ln.placeholder || '', locked: s.checked, checked: attempt && s.checked,
+          inputStyle: 'font:inherit;font-family:var(--ks3-font-mono);font-size:18px;font-weight:500;width:100%;box-sizing:border-box;margin-top:6px;padding:11px 13px;min-height:48px;border-radius:var(--ks3-r-option);border:2px solid var(--ks3-option-border);background:var(--ks3-ground);color:var(--ks3-ink);' + (s.checked ? 'opacity:.75;' : ''),
+          onChange: (e) => { const v = e.target.value; this.setState((x) => ({ vals: Object.assign({}, x.vals, { [key]: v }) })); },
+          ticked: !!s.ticks[key], tickLabel: s.ticks[key] ? 'Ticked' : 'I had this',
+          tickStyle: 'cursor:pointer;font:inherit;font-size:15px;font-weight:700;padding:9px 15px;min-height:44px;border-radius:var(--ks3-r-control);color:var(--ks3-ink);border:2px solid ' + (s.ticks[key] ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (s.ticks[key] ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';',
+          onTick: () => this.setState((x) => ({ ticks: Object.assign({}, x.ticks, { [key]: !x.ticks[key] }) }))
+        };
+      });
+      before += n;
+      const complete = attempt ? s.checked : visible >= n;
+      return {
+        num: 'Step ' + (i + 1), title: st.title || '', lines, showLines: lines.length > 0,
+        showCarry: !!st.carry && complete && i < steps.length - 1,
+        carryWord: 'Into Step ' + (i + 2) + ':', carry: st.carry || '',
+        cardStyle: 'padding:18px;border-radius:var(--ks3-r-card);background:var(--ks3-inset);border:2px solid ' + (reached ? 'var(--ks3-ink)' : 'var(--ks3-option-border)') + ';' + (reached ? '' : 'opacity:.6;')
+      };
+    });
+    const allFilled = filled >= total;
+    const workedDone = s.shown >= total;
+    return {
+      eyebrow: attempt ? 'Your turn \u00b7 two steps, CFIFA on each' : 'Worked example \u00b7 two equations \u00b7 one line at a time',
+      head: p.head || '', hasLead: !!(attempt || p.lead), lead: attempt ? 'Write every line yourself. Step 1\u2019s answer is what you put into Step 2. Then check your working and tick the lines you had.' : (p.lead || ''),
+      shellStyle: 'padding:26px 24px;border-radius:var(--ks3-r-card);border:2px solid var(--ks3-ink);background:' + (attempt ? 'var(--ks3-inset)' : 'var(--ks3-card)') + ';',
+      progress: attempt ? (s.checked ? tickN + ' of ' + total + ' lines ticked' : filled + ' of ' + total + ' lines written') : (s.shown === 0 ? steps.length + ' steps \u00b7 ' + total + ' lines' : 'Step ' + (curStep + 1) + ' \u00b7 line ' + curLine + ' of ' + ((steps[curStep] || {}).lines || []).length),
+      steps: out,
+      btnLabel: attempt ? (s.checked ? 'Checked' : 'Check your working') : (s.shown === 0 ? 'Show the first line' : workedDone ? 'Every line shown' : 'Show the next line'),
+      btnLocked: attempt ? (s.checked || !allFilled) : workedDone,
+      btnStyle: (attempt ? (s.checked || !allFilled) : workedDone) ? 'opacity:.45;cursor:default;' : '',
+      onButton: () => {
+        if (attempt) { if (!s.checked && allFilled) { this.setState({ checked: true }); if (typeof p.onDone === 'function') p.onDone(); } return; }
+        if (workedDone) return;
+        const nx = s.shown + 1; this.setState({ shown: nx });
+        if (nx >= total && typeof p.onDone === 'function') p.onDone();
+      },
+      showAfter: attempt ? s.checked : workedDone,
+      after: attempt ? (p.close || '') : (p.next || 'Now yours, below.')
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Development of the model of the atom · MrBadmusAI GCSE Physics</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Physics" unit="Atomic structure" title="Development of the model of the atom" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Physics 6.4.1.3</p>
+        <h1>Development of the model of the atom</h1>
+        <p class="ks3-bigq">One experiment broke a model. Predict what alpha particles should do, see what they did, and follow how each new piece of evidence changed the atom.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Fog, or a hidden wall?" scene="You throw tennis balls, one after another, into a thick bank of fog. Somewhere in the fog there may be a brick wall you can’t see." question="what would send a ball straight back to you?" options="{{ hookOptions }}" bridge="Something small and solid that a ball can hit head-on. Scientists did this with atoms. Next: their experiment." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-before" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Before the experiment</p>
+        <h2 style="margin: 6px 0 0;">From solid spheres to plum pudding.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Before the electron was discovered, atoms were thought to be tiny spheres that could not be divided. The discovery of the electron led to the plum pudding model: the atom is a ball of positive charge with negative electrons embedded in it.</p>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 640px;">{{ modelsFig }}</div>
+      </section>
+
+      <section id="s-fire" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Alpha particle scattering · predict, then compare</p>
+        <h2 style="margin: 6px 0 0;">Fire alpha particles at thin gold foil.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Alpha particles are positively charged. A detector around the foil counts where they go. First predict what the plum pudding model says should happen.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ setupFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <p class="ks3-commit" style="margin: 0; color: var(--ks3-ink);">{{ fireQ }}</p>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <sc-for list="{{ fireOpts }}" as="o" hint-placeholder-count="2"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.text }}</button></sc-for>
+            </div>
+            <sc-if value="{{ hasFireNote }}"><p data-arrive="1" role="status" style="{{ fireNoteStyle }}">{{ fireNote }}</p></sc-if>
+            <sc-if value="{{ canFireNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onFireNext }}">{{ fireNextLabel }}</button></sc-if>
+          </div>
+        </div>
+        <sc-if value="{{ fireDone }}">
+          <div data-arrive="1" style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;">
+            <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Most went straight through</p><p style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">So most of the atom is empty space.</p></div>
+            <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Some deflected through large angles</p><p style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">So the centre of the atom is charged: positive, repelling the alphas.</p></div>
+            <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">A very few bounced back</p><p style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">So the mass is concentrated in a tiny centre: the nucleus.</p></div>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-timeline" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">After the experiment · new evidence, new model</p>
+        <h2 style="margin: 6px 0 0;">The model kept changing.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">New experimental evidence may lead to a scientific model being changed or replaced. Step through what came next.</p>
+        <div style="margin-top: 14px; display: flex; gap: 6px; flex-wrap: wrap;">
+          <sc-for list="{{ steps }}" as="t" hint-placeholder-count="6"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+        </div>
+        <div aria-live="polite" style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Evidence</p><p style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">{{ stepEv }}</p></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-accent-tint); border: 2px solid var(--ks3-accent);"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-accent-text);">Model</p><p style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">{{ stepModel }}</p></div>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · what they bounced off</p></div>
+        <p class="ks3-mis-quote">&ldquo;The few alpha particles that bounced back must have hit electrons.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Why did a very few alpha particles bounce back from the gold foil?" options="{{ thinkOptions }}" reveal="They were repelled by a tiny, positively charged nucleus that holds most of the atom’s mass. Electrons have very little mass and couldn’t turn an alpha particle round." right-word="Yes." wrong-word="Not this one." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Which model?" prompt="Place each statement with its model." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Each model was replaced or changed when new evidence didn’t fit it. That is science working, not failing." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Say what each model looked like, in order.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Observation, then what it shows: most went through, so mostly empty space.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Where the positive charge and mass are in each model.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Alpha scattering showed that the mass of an atom is concentrated at the centre, in a nucleus, and that the nucleus is charged. The nuclear model replaced the plum pudding model.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="development-atomic-model" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Development of the model of the atom" spec="AQA 6.4.1.3" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Physics" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure what each scattering result shows?" legal="Model and scattering diagrams are schematic, not to scale; the paths show the pattern, not real counts." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Fog or a wall', short: 'HOOK' },
+  { id: 's-fire', label: 'Alpha scattering', short: 'FIRE' },
+  { id: 's-timeline', label: 'New evidence', short: 'MODELS' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Which model', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const STEPS = [
+  { label: 'Spheres', ev: 'No evidence of anything inside atoms.', m: 'Atoms are tiny spheres that cannot be divided.' },
+  { label: 'Plum pudding', ev: 'The electron is discovered: atoms contain smaller, negative particles.', m: 'A ball of positive charge with negative electrons embedded in it.' },
+  { label: 'Nuclear model', ev: 'Alpha particle scattering: most pass straight through, some deflect through large angles, a very few bounce back.', m: 'Mass concentrated in a tiny, charged nucleus at the centre; most of the atom is empty space. It replaced the plum pudding model.' },
+  { label: 'Bohr', ev: 'Bohr\u2019s theoretical calculations agreed with experimental observations.', m: 'The nuclear model adapted: electrons orbit the nucleus at specific distances.' },
+  { label: 'Protons', ev: 'Later experiments showed the positive charge of any nucleus could be subdivided into a whole number of smaller particles, each with the same positive charge.', m: 'These particles were named protons.' },
+  { label: 'Neutrons', ev: 'James Chadwick\u2019s experimental work, about 20 years after the nucleus became an accepted idea.', m: 'Neutrons exist within the nucleus, alongside the protons.' }
+];
+const FIRE = [
+  { q: 'Plum pudding: positive charge spread through the whole atom. What should the alpha particles do?', opts: [{ t: 'Pass straight through, or be deflected only slightly', ok: true }, { t: 'Some should bounce straight back', ok: false }],
+    yes: 'Right: spread-out charge can only nudge them a little. That is the prediction.', no: 'Spread-out positive charge is too weak in any one place to turn an alpha particle round. The model predicts only small deflections.' },
+  { q: 'Geiger and Marsden\u2019s results: most straight through, some deflected through large angles, a very few bounced back. Which model fits?', opts: [{ t: 'Plum pudding', ok: false }, { t: 'A tiny, dense, charged centre: the nuclear model', ok: true }],
+    yes: 'Yes. The plum pudding model can\u2019t explain the large deflections or the bounce-backs.', no: 'Plum pudding predicted no large deflections, and some alphas came straight back. The model had to be replaced.' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, stage: 0, pick: null, fired: false, step: 0, seen: [0], think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  models() {
+    const D = window.KS4D, C = D.C; let b = '';
+    b += D.circ(140, 120, 70, '#D9D3C4', C.stroke, 2.5) + D.T(140, 230, 'tiny solid sphere', 15);
+    b += D.circ(460, 120, 80, '#F2C9AE', C.stroke, 2.5) + D.T(460, 126, '+', 30, { fill: C.stroke, weight: 'normal' });
+    [[420, 80], [500, 90], [430, 160], [500, 150], [460, 60], [470, 180]].forEach((p) => { b += D.circ(p[0], p[1], 9, C.e) + D.T(p[0], p[1] + 5, '\u2212', 13, { fill: '#fff' }); });
+    b += D.T(460, 230, 'plum pudding: positive ball, electrons embedded', 15);
+    return D.svg(640, 250, b, 'Two models: a tiny solid sphere; and the plum pudding model, a ball of positive charge with negative electrons embedded in it.');
+  }
+  setup(stage, fired) {
+    const D = window.KS4D, C = D.C; let b = '';
+    b += '<rect x="20" y="150" width="70" height="40" rx="6" fill="#C9CCD1" stroke="' + C.stroke + '" stroke-width="2"/>' + D.T(55, 212, 'alpha source', 13, { weight: 'normal', fill: C.stroke });
+    b += '<rect x="300" y="60" width="10" height="220" fill="#FBBF24" stroke="' + C.stroke + '" stroke-width="2"/>' + D.T(305, 300, 'thin gold foil', 13, { weight: 'normal', fill: C.stroke });
+    b += '<path d="M305 20 A 150 150 0 1 1 304 20" fill="none" stroke="' + C.muted + '" stroke-width="2" stroke-dasharray="6 6" transform="translate(0 0)"/>';
+    b += D.T(520, 40, 'detector all round', 13, { weight: 'normal', fill: C.muted });
+    b += D.line(90, 170, 300, 170, 2.5, C.red);
+    const showReal = stage === 1 || fired;
+    if (!showReal) {
+      [-30, -12, 0, 12, 30].forEach((dy) => { b += D.line(310, 170 + dy, 450, 170 + dy * 1.25, 2.5, C.red); });
+      b += D.T(470, 330, 'plum pudding prediction', 14, { fill: C.stroke });
+    } else {
+      [-24, -8, 8, 24].forEach((dy) => { b += D.line(310, 170 + dy, 455, 170 + dy, 2.5, C.red); });
+      b += D.line(310, 160, 410, 70, 2.5, C.red) + D.line(310, 182, 400, 288, 2.5, C.red);
+      b += '<path d="M300 170 Q 310 172 220 120" fill="none" stroke="' + C.red + '" stroke-width="2.5"/>';
+      b += D.T(470, 330, 'what was measured', 14, { fill: C.stroke });
+    }
+    return D.svg(640, 350, b, showReal ? 'Measured: most alpha particles pass straight through the foil, some are deflected through large angles, a very few bounce back towards the source.' : 'Plum pudding prediction: alpha particles pass straight through or are deflected only slightly.');
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const fireDone = s.stage === 1 && s.pick !== null && FIRE[1].opts[s.pick].ok;
+    const done = [s.hook !== null, fireDone, s.seen.length === STEPS.length, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const F = FIRE[s.stage], ok = s.pick !== null && F.opts[s.pick].ok;
+    const T = STEPS[s.step];
+    const bankSrc = [
+      { q: 'In Rutherford\u2019s alpha scattering experiment, most alpha particles passed straight through the gold foil. What does this tell us?', opts: [['The atom is mostly empty space \u2014 alpha particles encounter nothing to deflect them', true], ['Alpha particles are too fast to be deflected \u2014 their speed carries them through', false], ['Gold atoms have no charge \u2014 nothing to repel the positive alpha particles', false], ['The gold foil was too thin \u2014 a thicker foil would have deflected all particles', false]],
+        wrong_explanations: { 1: 'Speed could be reduced by using slower particles \u2014 the KEY conclusion is about structure, not speed.', 2: 'The FEW particles that DID deflect show gold nuclei ARE positively charged \u2014 most pass through the empty space.', 3: 'Thicker foil would increase the probability of deflection, but the fundamental conclusion \u2014 mostly empty space \u2014 remains.' } },
+      { q: 'Why did the results of alpha scattering disprove the plum pudding model?', opts: [['The plum pudding model predicted only small deflections \u2014 the large deflections and back-scattering showed the positive charge must be concentrated in a tiny nucleus', true], ['The plum pudding model predicted all particles would bounce back \u2014 but most passed through', false], ['The plum pudding model had no electrons \u2014 but the experiment detected electrons', false], ['The plum pudding model was proposed after the scattering experiment', false]],
+        wrong_explanations: { 1: 'The plum pudding model predicted most particles would PASS THROUGH or have SMALL deflections (spread-out positive charge) \u2014 NOT that all would bounce back.', 2: 'The plum pudding model DID include electrons \u2014 Thomson discovered them and built them into the model.', 3: 'Thomson proposed the plum pudding model in 1904 \u2014 BEFORE Rutherford\u2019s 1909 scattering experiment.' } },
+      { q: 'Which order shows how the model of the atom developed?', opts: [['Spheres; plum pudding; nuclear model; Bohr; protons; neutrons', true], ['Plum pudding; spheres; nuclear model; neutrons; Bohr; protons', false], ['Spheres; nuclear model; plum pudding; Bohr; neutrons; protons', false], ['Spheres; plum pudding; neutrons; nuclear model; protons; Bohr', false]],
+        wrong_explanations: { 1: 'The indivisible sphere came first: the plum pudding model followed the discovery of the electron.', 2: 'The nuclear model replaced the plum pudding model, so it came after it.', 3: 'Neutrons were found about 20 years after the nucleus was accepted.' } },
+      { q: 'How did Bohr adapt the nuclear model?', opts: [['He suggested electrons orbit the nucleus at specific distances', true], ['He showed the nucleus contains neutrons', false], ['He suggested the atom is a ball of positive charge', false], ['He discovered the electron', false]],
+        wrong_explanations: { 1: 'Neutrons came from Chadwick\u2019s work, later.', 2: 'That is the plum pudding model, which the nuclear model replaced.', 3: 'The electron was discovered before the plum pudding model.' } },
+      { q: 'What did the alpha scattering results show about the centre of an atom?', opts: [['Its mass is concentrated there, and it is charged', true], ['It contains the electrons', false], ['It is empty', false], ['It has no charge', false]],
+        wrong_explanations: { 1: 'Electrons are around the nucleus, not in it.', 2: 'The atom is mostly empty, but the centre holds most of the mass.', 3: 'Some alphas were deflected through large angles, so the centre is charged.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('development-atomic-model') : null,
+      hookOptions: [
+        { text: 'The fog', correct: false, reply: 'Fog is spread out and thin: balls go straight through it. Only the hidden wall could send one back.' },
+        { text: 'The hidden wall', correct: true, reply: 'Only something solid in the way can turn a ball round.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      modelsFig: ready ? K.fig(this.models(), '') : null,
+      setupFig: ready ? K.fig(this.setup(s.stage, s.fired), '') : null,
+      fireQ: F.q,
+      fireOpts: F.opts.map((o, i) => ({ text: o.t, style: 'text-align:left;font:inherit;font-size:17px;font-weight:700;padding:12px 14px;min-height:48px;border-radius:14px;cursor:pointer;color:var(--ks3-ink);background:' + (s.pick === i ? (o.ok ? 'var(--ks3-accent-tint)' : 'var(--ks3-alert-tint)') : 'var(--ks3-card)') + ';border:2px solid ' + (s.pick === i ? (o.ok ? 'var(--ks3-accent)' : 'var(--ks3-alert-border)') : 'var(--ks3-option-border)') + ';',
+        onClick: () => this.setState({ pick: i }) })),
+      hasFireNote: s.pick !== null, fireNote: s.pick === null ? '' : ok ? F.yes : F.no,
+      fireNoteStyle: 'margin:0;padding:12px 14px;border-radius:14px;font-size:17px;line-height:1.55;border:2px solid ' + (ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      canFireNext: s.stage === 0 && s.pick !== null, fireNextLabel: 'Now see what was measured',
+      onFireNext: () => this.setState({ stage: 1, pick: null, fired: true }),
+      fireDone,
+      steps: STEPS.map((t, i) => ({ label: (i + 1) + ' \u00b7 ' + t.label, pressed: s.step === i,
+        style: 'font:inherit;font-size:15px;font-weight:700;padding:9px 12px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' + (s.step === i ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (s.step === i ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';',
+        onClick: () => this.setState({ step: i, seen: s.seen.indexOf(i) >= 0 ? s.seen : s.seen.concat([i]) }) })),
+      stepEv: T.ev, stepModel: T.m,
+      thinkOptions: [
+        { text: 'They were repelled by a tiny, positive nucleus holding most of the mass', correct: true, reply: 'Small, dense and charged.' },
+        { text: 'They hit electrons', correct: false, reply: 'Electrons have very little mass. They could not turn a fast alpha particle round.' },
+        { text: 'They hit thicker parts of the foil', correct: false, reply: 'The foil was very thin all over. The bounce-backs came from tiny nuclei.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'sp', label: 'Solid spheres' }, { id: 'pp', label: 'Plum pudding' }, { id: 'nu', label: 'Nuclear model' }, { id: 'bo', label: 'Bohr\u2019s change' }],
+      sortItems: [
+        { text: 'Atoms cannot be divided', bin: 'sp', why: 'Before the electron was discovered.' },
+        { text: 'Positive ball with electrons embedded', bin: 'pp', why: 'Thomson\u2019s model.' },
+        { text: 'Followed the discovery of the electron', bin: 'pp', why: 'Electrons had to fit somewhere.' },
+        { text: 'Mass concentrated in a tiny charged centre', bin: 'nu', why: 'From alpha scattering.' },
+        { text: 'Explains alpha particles bouncing back', bin: 'nu', why: 'A small, dense nucleus repels them.' },
+        { text: 'Most of the atom is empty space', bin: 'nu', why: 'Most alphas went straight through.' },
+        { text: 'Electrons orbit at specific distances', bin: 'bo', why: 'Bohr adapted the nuclear model.' },
+        { text: 'Theoretical calculations agreed with experiments', bin: 'bo', why: 'Why Bohr\u2019s idea was accepted.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name the model of the atom that followed the discovery of the electron.', why: 'The plum pudding model.', options: [
+            { text: 'The nuclear model', correct: false, reply: 'That came after alpha scattering.' },
+            { text: 'The plum pudding model', correct: true },
+            { text: 'Bohr\u2019s model', correct: false, reply: 'Bohr adapted the nuclear model, later.' }] },
+          { kind: 'mcq', command: 'State', marks: 1, prompt: 'State what James Chadwick\u2019s experimental work showed.', why: 'Neutrons exist within the nucleus.', options: [
+            { text: 'Atoms contain electrons', correct: false, reply: 'The electron was discovered before the plum pudding model.' },
+            { text: 'Neutrons exist within the nucleus', correct: true },
+            { text: 'Electrons orbit at specific distances', correct: false, reply: 'That was Bohr.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Identify', marks: 1, prompt: 'Identify the scattering observation that shows most of an atom is empty space.', why: 'Most alpha particles passed straight through.', options: [
+            { text: 'Most alpha particles passed straight through', correct: true },
+            { text: 'A very few bounced back', correct: false, reply: 'That shows a tiny, dense centre.' },
+            { text: 'Some were deflected through large angles', correct: false, reply: 'That shows the centre is charged.' },
+            { text: 'The foil was made of gold', correct: false, reply: 'That is the set-up, not an observation.' }] },
+          { kind: 'mcq', command: 'Suggest', marks: 1, prompt: 'Suggest why scientists replaced the plum pudding model rather than keeping both models.', why: 'The plum pudding model could not explain the new evidence; the nuclear model could.', options: [
+            { text: 'The plum pudding model could not explain the scattering results', correct: true },
+            { text: 'The plum pudding model had no electrons', correct: false, reply: 'It did include electrons.' },
+            { text: 'Rutherford did not like the plum pudding model', correct: false, reply: 'Models change because of evidence.' },
+            { text: 'The nuclear model was older', correct: false, reply: 'It came after the plum pudding model.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why the alpha scattering results disproved the plum pudding model. Put the links in order.',
+            links: ['In the plum pudding model the positive charge is spread out, so alpha particles should pass through with only small deflections.', 'Instead, some were deflected through large angles and a very few bounced back.', 'So the mass and positive charge must be concentrated in a tiny nucleus: the nuclear model replaced plum pudding.'],
+            herrings: [{ text: 'The plum pudding model predicted that all alpha particles would bounce back.', why: 'It predicted small deflections at most.' }, { text: 'The alpha particles bounced off electrons.', why: 'Electrons are far too light to turn them round.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how the idea of the proton came about. Put the links in order.',
+            links: ['The nuclear model had a small, positively charged nucleus.', 'Later experiments showed the positive charge could be subdivided into a whole number of smaller particles.', 'Each had the same positive charge, and these particles were named protons.'],
+            herrings: [{ text: 'Protons were found by Chadwick, with neutrons.', why: 'Chadwick showed neutrons exist.' }, { text: 'Protons are the plums in the plum pudding model.', why: 'The plums were electrons.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 6, prompt: 'Describe how the model of the atom changed from the solid sphere to the model with neutrons, and the evidence for each change.',
+            levels: [
+              { label: 'Level 3 \u00b7 5\u20136', text: 'The models in order, each with the evidence that changed it.', max: 6 },
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Most models in order, with some evidence.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'One or two models described, little evidence.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Tiny spheres that could not be divided, until the electron was discovered.', 'Plum pudding: a ball of positive charge with electrons embedded.', 'Alpha scattering: most through, some deflected, a few back, so mass is concentrated in a tiny charged nucleus. Nuclear model replaced plum pudding.', 'Bohr: electrons orbit at specific distances; his calculations agreed with experiments.', 'Positive charge of the nucleus subdivided into protons.', 'Chadwick showed neutrons exist in the nucleus, about 20 years later.'],
+            reject: ['\u201cThe scattering experiment proved the plum pudding model.\u201d', '\u201cThe plum pudding model had no electrons.\u201d'] }
+        ]
+      },
+      keyLines: ['Before the electron was discovered, atoms were thought to be tiny spheres that could not be divided.', 'Plum pudding: a ball of positive charge with negative electrons embedded in it.', 'Alpha scattering: the mass of an atom is concentrated in a charged nucleus. The nuclear model replaced plum pudding.', 'Bohr: electrons orbit the nucleus at specific distances; his calculations agreed with experiments.', 'The nucleus\u2019s positive charge is a whole number of protons. Chadwick showed neutrons exist, about 20 years later.', 'New experimental evidence may lead to a scientific model being changed or replaced.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-physics-6.4.1.1-structure-of-atom.dc.html', label: 'The structure of an atom' }, endNext: { href: 'ks4-physics-6.4.2.1-radioactive-decay.dc.html', label: 'Radioactive decay' },
+      endConnects: [{ href: 'ks4-physics-6.4.1.1-structure-of-atom.dc.html', label: 'The structure of an atom' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

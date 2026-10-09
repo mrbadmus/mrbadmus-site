@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uses and applications of electromagnetic waves · MrBadmusAI GCSE Physics</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Physics" unit="Waves" title="Uses of electromagnetic waves" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Physics 6.6.2.4</p>
+        <h1>Uses and applications of electromagnetic waves</h1>
+        <p class="ks3-bigq">Every part of the electromagnetic spectrum has a job. Match each use to its wave{{ higherTail }}</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A remote and an X-ray." scene="A TV remote sends an invisible signal to the television. In hospital, an X-ray machine takes a picture of a broken bone." question="are the two signals the same kind of wave, or different kinds?" options="{{ hookOptions }}" bridge="Both are electromagnetic waves, from different parts of the same spectrum. Next: the main use of each part." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-spectrum" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The spectrum and its uses</p>
+        <h2 style="margin: 6px 0 0;">One family of waves, many jobs.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">All electromagnetic waves travel at the same speed through a vacuum. They differ in wavelength and frequency, and that is what makes each type suited to different uses.</p>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ spectrumFig }}</div>
+        <dl style="margin: 14px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Radio waves</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Television and radio.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Microwaves</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Satellite communications; cooking food.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Infrared</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Electrical heaters; cooking food; infrared cameras.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Visible light</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Fibre optic communications.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Ultraviolet</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Energy efficient lamps; sun tanning.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">X-rays and gamma rays</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Medical imaging and treatments.</dd></div>
+        </dl>
+        <p style="margin: 14px 0 0; max-width: 62ch; font-size: 17px; line-height: 1.55;">Some uses carry risks. Ultraviolet can make skin age prematurely and increases the risk of skin cancer, so sun tanning has a cost. X-rays and gamma rays are ionising radiation, which can cause the mutation of genes and cancer, so exposure is kept as low as possible.</p>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Drop each use onto its wave." prompt="Place every use on the part of the spectrum it uses." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Radio: TV and radio. Microwaves: satellites, microwave ovens. Infrared: heaters, grills, cameras. Visible: optical fibres. Ultraviolet: energy efficient lamps, tanning. X-rays and gamma: medical imaging and treatment." on-done="{{ onSort }}" hint-size="100%,520px"></dc-import>
+      </section>
+
+      <sc-if value="{{ isHigher }}">
+        <section id="s-why" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-accent);">
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Higher · why this wave?</p>
+            <span style="font-family: var(--ks3-font-mono); font-size: 12px; padding: 2px 9px; border-radius: 99px; border: 2px solid var(--ks3-ink);">{{ route }}</span>
+          </div>
+          <h2 style="margin: 6px 0 0;">Each wave is chosen for how it behaves.</h2>
+          <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 18px; align-items: start;">
+            <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ xrayFig }}</div>
+            <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ satFig }}</div>
+          </div>
+          <ul style="margin: 14px 0 0; padding-left: 1.1em; font-size: 17px; line-height: 1.55; display: flex; flex-direction: column; gap: 6px;">
+            <li><strong>Microwaves for satellites:</strong> they pass through the atmosphere to and from the satellite.</li>
+            <li><strong>Microwaves for cooking:</strong> they are absorbed by water molecules in the food, transferring energy to its thermal store. They are absorbed mostly in the outer layers; the inside heats by conduction.</li>
+            <li><strong>Infrared for heaters and cameras:</strong> it is absorbed by surfaces, transferring energy to their thermal store; warm objects emit it, so a camera can detect them in the dark.</li>
+            <li><strong>Ultraviolet in energy efficient lamps:</strong> a coating inside the lamp absorbs the ultraviolet and gives out visible light.</li>
+            <li><strong>X-rays for imaging:</strong> they pass through soft tissue but are absorbed by bone, so bone shows up on the image.</li>
+            <li><strong>Gamma rays for treatment:</strong> a focused beam carries enough energy to kill cancer cells.</li>
+          </ul>
+        </section>
+      </sc-if>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · imaging and treating</p></div>
+        <p class="ks3-mis-quote">&ldquo;Gamma rays are used to take pictures of broken bones.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="A doctor needs an image of a broken arm. Which wave is used?" options="{{ thinkOptions }}" reveal="X-rays are used to make images of bones. Gamma rays are used to treat cancer, and to sterilise medical equipment. Both are ionising, which is why exposure to either is kept as low as possible." right-word="Yes." wrong-word="Not this one." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Give</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">One use for the wave named. A word or a phrase.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Identify</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Name the wave from the use described.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">{{ explainLine }}</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Radio: TV and radio. Microwaves: satellites, cooking. Infrared: heaters, cooking, cameras. Visible: fibre optics. Ultraviolet: energy efficient lamps, sun tanning. X-rays and gamma rays: medical imaging and treatments.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="uses-em-waves" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Uses of electromagnetic waves" spec="AQA 6.6.2.4" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Physics" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Mixing up which wave does which job?" legal="The spectrum is drawn in order, not to scale: real wavelengths range from kilometres to far smaller than an atom." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A remote and an X-ray', short: 'HOOK' },
+  { id: 's-spectrum', label: 'The spectrum', short: 'SPECTRUM' },
+  { id: 's-sort', label: 'Match the uses', short: 'SORT' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, sort: false, think: null, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  spectrum() {
+    const D = window.KS4D, C = D.C;
+    const bands = [['Radio', 'TV and radio'], ['Microwave', 'satellites, cooking'], ['Infrared', 'heaters, cooking, cameras'], ['Visible', 'fibre optics'], ['Ultraviolet', 'efficient lamps, tanning'], ['X-ray', 'imaging'], ['Gamma', 'treatment']];
+    const fills = ['#E9DCC8', '#E3D3BE', '#E8C6B0', '#F1E5A8', '#D8CDE6', '#CFD8E4', '#C3CEDC'];
+    const w = 120; let b = '';
+    bands.forEach((bd, i) => {
+      const x = 20 + i * w;
+      b += '<rect x="' + x + '" y="40" width="' + w + '" height="60" fill="' + fills[i] + '" stroke="' + C.stroke + '" stroke-width="2"/>';
+      b += D.T(x + w / 2, 76, bd[0], 15, { fill: C.stroke });
+      b += D.T(x + w / 2, 126, bd[1].split(', ')[0], 12, { weight: 'normal', fill: C.stroke });
+      if (bd[1].indexOf(', ') > 0) b += D.T(x + w / 2, 142, bd[1].split(', ').slice(1).join(', '), 12, { weight: 'normal', fill: C.stroke });
+    });
+    let wave = '';
+    for (let x = 20; x <= 860; x += 2) { const f = 0.02 + (x - 20) / 840 * 0.5; const y = 22 - 10 * Math.sin((x - 20) * f); wave += (wave ? 'L' : 'M') + x + ' ' + y.toFixed(1) + ' '; }
+    b += '<path d="' + wave + '" fill="none" stroke="' + C.arrow + '" stroke-width="2"/>';
+    b += D.T(20, 172, 'longer wavelength', 13, { anchor: 'start', fill: C.muted }) + D.T(860, 172, 'shorter wavelength', 13, { anchor: 'end', fill: C.muted });
+    return D.svg(880, 184, b, 'The electromagnetic spectrum from radio waves to gamma rays with a use under each: radio for TV and radio; microwaves for satellites and cooking; infrared for heaters, cooking and cameras; visible light for fibre optics; ultraviolet for energy efficient lamps and tanning; X-rays for imaging; gamma rays for treatment.');
+  }
+  xray() {
+    const D = window.KS4D, C = D.C;
+    let b = '<rect x="150" y="40" width="140" height="180" rx="40" fill="#F2D3C2" stroke="' + C.stroke + '" stroke-width="2"/>';
+    b += '<rect x="205" y="95" width="30" height="70" rx="12" fill="#fff" stroke="' + C.stroke + '" stroke-width="2"/>' + D.T(220, 88, 'bone', 12, { fill: C.stroke });
+    [60, 200].forEach((y) => { b += D.arrow(30, y, 376, y, C.muted, 3); });
+    [110, 150].forEach((y) => { b += D.arrow(30, y, 203, y, C.muted, 3); });
+    b += '<rect x="380" y="40" width="20" height="180" fill="#3A3530"/><rect x="380" y="95" width="20" height="70" fill="#fff" stroke="' + C.stroke + '" stroke-width="1"/>';
+    b += D.T(220, 250, 'soft tissue: X-rays pass through', 13, { weight: 'normal', fill: C.stroke }) + D.T(220, 268, 'bone: X-rays absorbed', 13, { weight: 'normal', fill: C.stroke });
+    b += D.T(60, 30, 'X-rays', 14, { anchor: 'start' }) + D.T(392, 30, 'detector', 13, { fill: C.stroke });
+    return D.svg(440, 280, b, 'X-rays pass through soft tissue to a detector but are absorbed by bone, so the bone shows up on the image.');
+  }
+  sat() {
+    const D = window.KS4D, C = D.C;
+    let b = '<path d="M0 230 Q 220 190 440 230 L440 280 L0 280 Z" fill="#9CC79A" stroke="' + C.stroke + '" stroke-width="2"/>';
+    b += '<path d="M0 130 Q 220 96 440 130" fill="none" stroke="' + C.muted + '" stroke-width="2" stroke-dasharray="8 6"/>' + D.T(430, 120, 'atmosphere', 13, { anchor: 'end', weight: 'normal' });
+    b += '<rect x="200" y="22" width="40" height="22" fill="#fff" stroke="' + C.stroke + '" stroke-width="2"/><rect x="160" y="28" width="36" height="10" fill="#9DB4D0" stroke="' + C.stroke + '" stroke-width="1.5"/><rect x="244" y="28" width="36" height="10" fill="#9DB4D0" stroke="' + C.stroke + '" stroke-width="1.5"/>';
+    b += D.arrow(90, 214, 206, 50, C.arrow, 3) + D.arrow(234, 50, 350, 214, C.arrow, 3);
+    b += D.T(60, 236, 'dish', 13, { fill: C.stroke }) + D.T(380, 236, 'dish', 13, { fill: C.stroke }) + D.T(220, 70, 'satellite', 13, { fill: C.stroke });
+    b += D.T(220, 166, 'microwaves pass through the atmosphere', 13, { weight: 'normal', fill: C.stroke });
+    return D.svg(440, 280, b, 'A microwave signal from a ground dish passes through the atmosphere to a satellite and back down to another dish.');
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {}, isHigher: true };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.hook !== null, s.sort, s.think !== null, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const base = [
+      { q: 'Which type of electromagnetic wave is used for satellite communications?', opts: [['Microwaves', true], ['Gamma rays', false], ['Visible light', false], ['Ultraviolet', false]],
+        wrong_explanations: { 1: 'Gamma rays are used in medical treatment, not communications.', 2: 'Visible light carries data along optical fibres, not to satellites.', 3: 'Ultraviolet is used in energy efficient lamps and sun tanning.' } },
+      { q: 'Which pair matches a wave to one of its uses?', opts: [['Infrared: electrical heaters', true], ['Radio waves: sun tanning', false], ['X-rays: fibre optic communications', false], ['Visible light: cooking food', false]],
+        wrong_explanations: { 1: 'Sun tanning uses ultraviolet. Radio waves are used for television and radio.', 2: 'Fibre optic communications use visible light. X-rays are used for medical imaging.', 3: 'Cooking uses microwaves or infrared.' } },
+      { q: 'What are X-rays and gamma rays both used for?', opts: [['Medical imaging and treatments', true], ['Television and radio', false], ['Energy efficient lamps', false], ['Satellite communications', false]],
+        wrong_explanations: { 1: 'Television and radio use radio waves.', 2: 'Energy efficient lamps use ultraviolet.', 3: 'Satellite communications use microwaves.' } },
+      { q: 'A camera finds people in a dark building by the warmth of their bodies. Which wave does it detect?', opts: [['Infrared', true], ['Ultraviolet', false], ['X-rays', false], ['Radio waves', false]],
+        wrong_explanations: { 1: 'Warm bodies emit infrared, not ultraviolet.', 2: 'X-rays are used for medical imaging.', 3: 'Radio waves are used for television and radio.' } },
+      { q: 'Why is using a sunbed for tanning a health risk?', opts: [['Ultraviolet can make skin age prematurely and increases the risk of skin cancer', true], ['Ultraviolet cooks the skin from the inside', false], ['Sunbeds give out X-rays', false], ['Ultraviolet has no effect on the body', false]],
+        wrong_explanations: { 1: 'The risks are premature ageing and skin cancer.', 2: 'Sunbeds use ultraviolet.', 3: 'Ultraviolet does affect skin: that is how tanning happens, and why it carries risks.' } }
+    ];
+    const hq = [
+      { q: 'Why are microwaves used for satellite communications rather than radio waves?', opts: [['Microwaves pass through the ionosphere \u2014 radio waves reflect off it, preventing them from reaching satellites in orbit', true], ['Microwaves are more powerful \u2014 they reach greater distances than radio waves', false], ['Radio waves are dangerous at high altitude \u2014 microwaves are safer for satellite use', false], ['Satellites can only detect microwaves \u2014 their receivers are not compatible with radio waves', false]],
+        wrong_explanations: { 1: 'Power determines signal strength at a given distance \u2014 but all EM waves travel at the same speed. The key distinction is IONOSPHERE INTERACTION.', 2: 'Safety is not the relevant factor \u2014 the ionosphere physically reflects (most) radio waves back to Earth.', 3: 'This is backwards \u2014 it\u2019s the PHYSICS of ionosphere reflection, not receiver incompatibility, that determines which EM type is used.' } },
+      { q: 'UV light is used to sterilise medical equipment. Why is UV effective for this?', opts: [['UV has enough energy to damage DNA in microorganisms \u2014 killing or inactivating bacteria and viruses', true], ['UV heats the equipment to high temperatures, killing microorganisms by heat', false], ['UV is absorbed by metal \u2014 heating the equipment surface to kill bacteria', false], ['UV converts oxygen to ozone, which then kills bacteria chemically', false]],
+        wrong_explanations: { 1: 'UV can cause some warming but it\u2019s not the primary mechanism \u2014 UV sterilisation works through DNA damage (photochemical action), not significant heating.', 2: 'UV sterilisation is used for transparent surfaces, water, and air \u2014 metal surfaces are typically sterilised by heat or chemicals.', 3: 'UV can produce some ozone, but the primary sterilisation mechanism is direct DNA damage from UV photons \u2014 not ozone.' } }
+    ];
+    const bankSrc = R.isHigher ? hq.concat([base[0], base[2], base[4]]) : base;
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      higherTail: R.isHigher ? ', then explain why it suits the job.' : '.',
+      explainLine: R.isHigher ? 'Higher: say what the wave does (passes through, is absorbed) that makes it suit the job.' : 'Link a use to its risk: ultraviolet, skin damage; X-rays and gamma, ionising.',
+      video: K && s.hook !== null ? K.video('uses-em-waves') : null,
+      hookOptions: [
+        { text: 'The same kind of wave', correct: true, reply: 'Both are electromagnetic waves: infrared from the remote, X-rays in the hospital.' },
+        { text: 'Different kinds of wave', correct: false, reply: 'They are different types, infrared and X-rays, but both belong to the same family: electromagnetic waves.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      spectrumFig: ready ? K.fig(this.spectrum(), '') : null,
+      xrayFig: ready && R.isHigher ? K.fig(this.xray(), '') : null,
+      satFig: ready && R.isHigher ? K.fig(this.sat(), '') : null,
+      sortBins: [{ id: 'r', label: 'Radio waves' }, { id: 'm', label: 'Microwaves' }, { id: 'i', label: 'Infrared' }, { id: 'v', label: 'Visible light' }, { id: 'u', label: 'Ultraviolet' }, { id: 'x', label: 'X-rays and gamma rays' }],
+      sortItems: [
+        { text: 'Television and radio', bin: 'r', why: 'Radio waves.' },
+        { text: 'Satellite communications', bin: 'm', why: 'Microwaves.' },
+        { text: 'A microwave oven', bin: 'm', why: 'Microwaves cook food.' },
+        { text: 'An electric heater', bin: 'i', why: 'Infrared.' },
+        { text: 'A grill cooking food', bin: 'i', why: 'Infrared also cooks food.' },
+        { text: 'A thermal camera', bin: 'i', why: 'Infrared cameras.' },
+        { text: 'Fibre optic broadband', bin: 'v', why: 'Visible light in optical fibres.' },
+        { text: 'An energy efficient lamp', bin: 'u', why: 'Ultraviolet.' },
+        { text: 'A sunbed', bin: 'u', why: 'Ultraviolet for sun tanning.' },
+        { text: 'Imaging a broken bone', bin: 'x', why: 'X-rays: medical imaging.' },
+        { text: 'Treating a tumour', bin: 'x', why: 'Gamma rays: medical treatment.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      thinkOptions: [
+        { text: 'X-rays', correct: true, reply: 'X-rays image bones.' },
+        { text: 'Gamma rays', correct: false, reply: 'Gamma rays treat cancer and sterilise equipment. Images of bones use X-rays.' },
+        { text: 'Ultraviolet', correct: false, reply: 'Ultraviolet doesn\u2019t pass through the body to image bones.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name the type of electromagnetic wave used for satellite communications.', why: 'Microwaves.', options: [
+            { text: 'Radio waves', correct: false, reply: 'Radio waves are used for television and radio broadcasts.' },
+            { text: 'Microwaves', correct: true },
+            { text: 'Infrared', correct: false, reply: 'Infrared is used for heaters, cooking and cameras.' }] },
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Give one use of ultraviolet.', why: 'Energy efficient lamps, or sun tanning.', options: [
+            { text: 'Energy efficient lamps', correct: true },
+            { text: 'Fibre optic communications', correct: false, reply: 'That uses visible light.' },
+            { text: 'Medical imaging', correct: false, reply: 'That uses X-rays and gamma rays.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Identify', marks: 1, prompt: 'A firefighter uses a camera to find a person in a smoke-filled room by the warmth of their body. Identify the wave the camera detects.', why: 'Infrared: infrared cameras detect warm objects.', options: [
+            { text: 'Ultraviolet', correct: false, reply: 'Warm bodies give out infrared.' },
+            { text: 'Infrared', correct: true },
+            { text: 'Microwaves', correct: false, reply: 'Microwaves are used for satellites and cooking.' },
+            { text: 'Visible light', correct: false, reply: 'Smoke blocks visible light; that is the problem.' }] },
+          { kind: 'mcq', command: 'Identify', marks: 2, prompt: 'A hospital needs to (i) make an image of a broken leg and (ii) treat a tumour. Identify the wave usually used for each.', why: 'X-rays for imaging; gamma rays for treatment.', options: [
+            { text: '(i) X-rays (ii) gamma rays', correct: true },
+            { text: '(i) gamma rays (ii) X-rays', correct: false, reply: 'Swapped. X-rays image bones; gamma rays treat tumours.' },
+            { text: '(i) ultraviolet (ii) infrared', correct: false, reply: 'Neither is used for medical imaging or treatment.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why using a sunbed regularly is a risk to health. Put the links in order.',
+            links: ['Sunbeds give out ultraviolet, which is absorbed by the skin.', 'Ultraviolet can make the skin age prematurely.', 'It also increases the risk of skin cancer.'],
+            herrings: [{ text: 'Sunbeds give out X-rays.', why: 'Sunbeds use ultraviolet.' }, { text: 'Ultraviolet passes straight through the skin without being absorbed.', why: 'It is absorbed by the skin; that is how it tans and harms.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why a radiographer stands behind a screen when taking X-rays. Put the links in order.',
+            links: ['X-rays are ionising radiation.', 'Ionising radiation can cause the mutation of genes and cancer.', 'The radiographer takes many X-rays a day, so the screen keeps their exposure low.'],
+            herrings: [{ text: 'X-rays are only dangerous to the patient.', why: 'Anyone exposed is at risk, and the radiographer is exposed many times a day.' }, { text: 'X-rays cook the skin like microwaves.', why: 'The hazard is ionisation: gene mutation and cancer.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 4, prompt: 'Name four different types of electromagnetic wave and describe one use of each.',
+            levels: [
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Four wave types, each with a correct use.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'One or two correct wave\u2013use pairs.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Radio waves: television and radio.', 'Microwaves: satellite communications, or cooking food.', 'Infrared: electrical heaters, cooking food, or infrared cameras.', 'Visible light: fibre optic communications. Ultraviolet: energy efficient lamps or sun tanning. X-rays / gamma rays: medical imaging and treatments.'],
+            reject: ['\u201cGamma rays: imaging broken bones.\u201d', '\u201cX-rays: fibre optic communications.\u201d'] }
+        ]
+      },
+      keyLines: ['Radio waves: television and radio.', 'Microwaves: satellite communications, cooking food.', 'Infrared: electrical heaters, cooking food, infrared cameras.', 'Visible light: fibre optic communications.', 'Ultraviolet: energy efficient lamps, sun tanning (risk: premature skin ageing, skin cancer).', R.isHigher ? 'X-rays and gamma: medical imaging and treatment. Higher: X-rays pass through soft tissue, absorbed by bone; microwaves pass through the atmosphere.' : 'X-rays and gamma rays: medical imaging and treatments. Both ionising: mutation of genes and cancer.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-physics-4.6.3-infrared-black-bodies.dc.html', label: 'Infrared and black bodies (Triple)' }, endNext: null, endConnects: []
+    });
+  }
+}
+</script>
+</body>
+</html>

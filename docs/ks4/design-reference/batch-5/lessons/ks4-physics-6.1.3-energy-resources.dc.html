@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Energy resources · MrBadmusAI GCSE Physics</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Physics" unit="Energy" title="Energy resources" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Physics 6.1.3</p>
+        <h1>Energy resources</h1>
+        <p class="ks3-bigq">Nine resources power transport, electricity and heating. Sort them twice: will they run out, and can you rely on them? Then read how a country’s mix changes.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A phone charging at 2 a.m." scene="It is the middle of the night: dark, and completely still, with no wind at all. A phone plugged into the wall is still charging." question="where is most of that electricity coming from?" options="{{ hookOptions }}" bridge="Some resources can be used whenever we need them; others depend on the weather. Next: sort all nine." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-cards" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Nine resources · two questions</p>
+        <h2 style="margin: 6px 0 0;">Will it run out? Can you rely on it?</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">A renewable resource is one that is being, or can be, replenished as it is used. A non-renewable resource will run out. A reliable resource can be used whenever it is needed, or at times you can predict. Pick a card, then place it.</p>
+        <div style="margin-top: 14px; display: flex; gap: 6px; flex-wrap: wrap;">
+          <sc-for list="{{ cards }}" as="c" hint-placeholder-count="9"><button type="button" onClick="{{ c.onClick }}" aria-pressed="{{ c.pressed }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ gridFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.3;">{{ cardHead }}</p>
+            <sc-if value="{{ asking }}" hint-placeholder-val="{{ true }}">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <sc-for list="{{ zones }}" as="z" hint-placeholder-count="4"><button type="button" onClick="{{ z.onClick }}" style="{{ z.style }}">{{ z.label }}</button></sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ hasCardNote }}"><p data-arrive="1" role="status" style="{{ cardNoteStyle }}">{{ cardNote }}</p></sc-if>
+            <sc-if value="{{ flipped }}">
+              <div data-arrive="1" style="padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Turn it over · environmental impact</p>
+                <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">{{ cardImpact }}</p>
+              </div>
+            </sc-if>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">{{ placedCount }}</p>
+          </div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">We use these resources for transport (mostly oil-based fuels, some bio-fuel and electricity), for generating electricity, and for heating (mostly gas, some electricity, some geothermal and solar).</p>
+      </section>
+
+      <section id="s-trend" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Patterns and trends · reading a chart</p>
+        <h2 style="margin: 6px 0 0;">How one country’s electricity mix changed.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Exams give you a chart like this one and ask you to describe the trend, then explain it. Tap a year to read its bar.</p>
+        <div style="margin-top: 14px; display: flex; gap: 6px; flex-wrap: wrap;">
+          <sc-for list="{{ years }}" as="y" hint-placeholder-count="5"><button type="button" onClick="{{ y.onClick }}" aria-pressed="{{ y.pressed }}" style="{{ y.style }}">{{ y.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ mixFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <p aria-live="polite" style="margin: 0; padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border); font-family: var(--ks3-font-mono); font-size: 16px; line-height: 1.6;">{{ yearLine }}</p>
+            <div style="padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">Describe, then explain</p>
+              <ul style="margin: 8px 0 0; padding-left: 1.1em; font-size: 17px; line-height: 1.55; display: flex; flex-direction: column; gap: 6px;">
+                <li>Coal fell from 35% to 2%: burning coal releases carbon dioxide, and the country chose to cut its emissions.</li>
+                <li>Wind and solar rose from 1% to 30%: they release no carbon dioxide while running.</li>
+                <li>Gas stayed large: it can be used on demand when the wind drops or it is dark.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 16px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">What science can and can’t do</p>
+          <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Science can identify environmental problems, such as the carbon dioxide from burning coal. It does not always have the power to deal with them: whether to close a power station, or build a wind farm, is also decided by political, social, ethical and economic considerations.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · low carbon or renewable</p></div>
+        <p class="ks3-mis-quote">&ldquo;Nuclear power is renewable, because it doesn’t make carbon dioxide.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Is nuclear fuel a renewable resource?" options="{{ thinkOptions }}" reveal="No. Nuclear power releases no carbon dioxide while it runs, but uranium is not replenished as it is used: it will run out. Low-carbon and renewable are different questions." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Every resource has an impact." prompt="Place each impact with the resource it belongs to." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Renewable does not mean no impact: dams flood habitats, turbines can kill birds, fuel crops take farmland." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Say what the chart shows, with numbers from it.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give the reason: renewable or not, reliable or not, and the impact.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Evaluate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Points for and against each resource, then a judgement with a reason.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Fossil fuels and nuclear fuel are non-renewable. Bio-fuel, wind, hydro-electricity, geothermal, the tides, the Sun and water waves are renewable. Every resource has some environmental impact.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="energy-resources" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Energy resources" spec="AQA 6.1.3" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Physics" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure if a resource is reliable?" legal="The electricity-mix chart is for a made-up country, for practice; it is not real data." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A phone at 2 a.m.', short: 'HOOK' },
+  { id: 's-cards', label: 'Nine resources', short: 'CARDS' },
+  { id: 's-trend', label: 'Reading a chart', short: 'TREND' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Every impact', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const ZONES = [{ id: 'RR', label: 'Renewable · reliable' }, { id: 'RW', label: 'Renewable · depends on weather' }, { id: 'NR', label: 'Non-renewable · reliable' }, { id: 'NW', label: 'Non-renewable · depends on weather' }];
+const CARDS = [
+  { label: 'Fossil fuels', z: 'NR', why: 'Coal, oil and gas formed over millions of years and will run out. They can be burned whenever needed.', imp: 'Burning them releases carbon dioxide, which adds to global warming. Coal and oil also release sulfur dioxide, which causes acid rain.' },
+  { label: 'Nuclear fuel', z: 'NR', why: 'Uranium is finite. Nuclear power stations run on demand.', imp: 'No carbon dioxide while running, but the radioactive waste must be stored safely for a very long time, and there is a small risk of a major accident.' },
+  { label: 'Bio-fuel', z: 'RR', why: 'The plants it is made from regrow, so it can be replenished as it is used. It can be burned whenever needed.', imp: 'The growing plants take in carbon dioxide, but growing fuel crops uses land that could grow food.' },
+  { label: 'Wind', z: 'RW', why: 'Wind will not run out, but there is no output when the wind drops.', imp: 'No carbon dioxide while running. Turbines can be noisy, change the look of the landscape and kill birds.' },
+  { label: 'Hydro-electricity', z: 'RR', why: 'Rain keeps refilling the reservoir, and water can be let through the dam whenever it is needed.', imp: 'No carbon dioxide while running, but building the dam floods a valley and destroys habitats.' },
+  { label: 'Geothermal', z: 'RR', why: 'Heat from hot rocks underground will not run out, and it is available all the time.', imp: 'Very little carbon dioxide, but it is only available where hot rocks lie near the surface.' },
+  { label: 'The tides', z: 'RR', why: 'Tides will not run out, and they come in and out at times that can be predicted.', imp: 'No carbon dioxide while running, but a tidal barrage changes the habitat of estuary wildlife.' },
+  { label: 'The Sun', z: 'RW', why: 'Sunlight will not run out, but there is none at night and less on cloudy days.', imp: 'No carbon dioxide while running. Making the panels uses energy and materials.' },
+  { label: 'Water waves', z: 'RW', why: 'Waves will not run out, but their size depends on the weather.', imp: 'No carbon dioxide while running, but wave machines can disturb marine habitats.' }
+];
+const YEARS = [2000, 2005, 2010, 2015, 2020];
+const MIX = [
+  { k: 'Coal', c: '#5B5550', v: [35, 33, 28, 12, 2] },
+  { k: 'Gas', c: '#E8A060', v: [38, 40, 44, 40, 36] },
+  { k: 'Nuclear', c: '#9B8FC6', v: [20, 20, 17, 20, 16] },
+  { k: 'Wind and solar', c: '#7FC0A8', v: [1, 2, 5, 18, 30] },
+  { k: 'Hydro and bio-fuel', c: '#A9CBE3', v: [6, 5, 6, 10, 16] }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, card: 0, placed: {}, tried: null, flip: false, year: 4, yearsSeen: [4], think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  grid(placed) {
+    const D = window.KS4D, C = D.C;
+    let b = D.T(200, 26, 'Reliable', 15) + D.T(470, 26, 'Depends on the weather', 15);
+    b += D.T(30, 140, 'Renewable', 15, { anchor: 'start' }) + D.T(30, 330, 'Non-', 15, { anchor: 'start' }) + D.T(30, 350, 'renewable', 15, { anchor: 'start' });
+    const pos = { RR: [130, 40], RW: [400, 40], NR: [130, 240], NW: [400, 240] };
+    Object.keys(pos).forEach((z) => {
+      const p = pos[z];
+      b += '<rect x="' + p[0] + '" y="' + p[1] + '" width="260" height="190" rx="12" fill="#FFFDF8" stroke="' + C.stroke + '" stroke-width="2"/>';
+      const here = CARDS.filter((c) => placed[c.label] === z);
+      here.forEach((c, i) => {
+        const x = p[0] + 12, y = p[1] + 12 + i * 42;
+        b += '<rect x="' + x + '" y="' + y + '" width="236" height="34" rx="8" fill="' + (z[0] === 'R' ? C.nm : C.metal) + '" stroke="' + C.stroke + '" stroke-width="1.5"/>' + D.T(x + 118, y + 23, c.label, 15, { fill: C.stroke });
+      });
+      if (z === 'NW') b += D.T(p[0] + 130, p[1] + 100, 'none of the nine', 14, { weight: 'normal', fill: C.muted });
+    });
+    return D.svg(680, 450, b, 'Two-by-two grid: renewable or non-renewable, against reliable or weather-dependent. ' + Object.keys(placed).length + ' of 9 cards placed.');
+  }
+  mix(sel) {
+    const D = window.KS4D, C = D.C;
+    let b = '';
+    const x0 = 70, y0 = 30, h = 260, bw = 64, gap = 40;
+    [0, 25, 50, 75, 100].forEach((p) => { const y = y0 + h - h * p / 100; b += D.line(x0 - 6, y, x0 + 5 * (bw + gap), y, 1, '#D9D3C4') + D.T(x0 - 12, y + 5, p + '%', 12, { anchor: 'end', weight: 'normal', fill: C.muted }); });
+    YEARS.forEach((yr, i) => {
+      let acc = 0; const x = x0 + 20 + i * (bw + gap);
+      MIX.forEach((m) => { const v = m.v[i], y = y0 + h - h * (acc + v) / 100; b += '<rect x="' + x + '" y="' + y.toFixed(1) + '" width="' + bw + '" height="' + (h * v / 100).toFixed(1) + '" fill="' + m.c + '" stroke="' + C.stroke + '" stroke-width="1"/>'; acc += v; });
+      if (i === sel) b += '<rect x="' + (x - 5) + '" y="' + (y0 - 5) + '" width="' + (bw + 10) + '" height="' + (h + 10) + '" fill="none" stroke="' + C.stroke + '" stroke-width="3.5" rx="4"/>';
+      b += D.T(x + bw / 2, y0 + h + 22, String(yr), 14, { fill: C.stroke });
+    });
+    MIX.forEach((m, i) => { const x = 40 + (i % 3) * 200, y = y0 + h + 48 + Math.floor(i / 3) * 24; b += '<rect x="' + x + '" y="' + (y - 12) + '" width="16" height="14" fill="' + m.c + '" stroke="' + C.stroke + '"/>' + D.T(x + 22, y, m.k, 13, { anchor: 'start', weight: 'normal', fill: C.stroke }); });
+    return D.svg(620, y0 + h + 100, b, 'Stacked bar chart of a made-up country\u2019s electricity mix, 2000 to 2020: coal falls from 35% to 2%, wind and solar rise from 1% to 30%, gas stays between 36% and 44%.');
+  }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const nPlaced = Object.keys(s.placed).length;
+    const done = [s.hook !== null, nPlaced === 9, s.yearsSeen.length >= 3, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const c = CARDS[s.card], isPlaced = !!s.placed[c.label];
+    const ok = s.tried === c.z;
+    const bankSrc = [
+      { q: 'Which of the following energy resources is renewable?', opts: [['Geothermal \u2014 heat from inside the Earth is continuously produced and will not run out on human timescales', true], ['Nuclear \u2014 uranium can be recycled so supplies will not run out', false], ['Coal \u2014 new coal forms continuously from organic material', false], ['Natural gas \u2014 underground reserves are replenished by geological processes', false]],
+        wrong_explanations: { 1: 'Nuclear fuel is FINITE \u2014 while some can be reprocessed, uranium supplies will eventually run out. It is non-renewable.', 2: 'Coal takes MILLIONS of years to form \u2014 it is not replenished on any human-relevant timescale. Non-renewable.', 3: 'Natural gas reserves are being used far faster than they form \u2014 a finite, non-renewable resource.' } },
+      { q: 'Why are solar and wind described as \u2018intermittent\u2019 energy sources?', opts: [['They only generate electricity when the sun shines or wind blows \u2014 output is variable and cannot be guaranteed on demand', true], ['They are expensive to maintain and break down frequently', false], ['They produce too much electricity at peak times, requiring regular shutdown', false], ['They can only be used in specific countries, not globally', false]],
+        wrong_explanations: { 1: '\u2018Intermittent\u2019 refers specifically to VARIABLE, WEATHER-DEPENDENT output \u2014 not maintenance reliability.', 2: 'Overproduction is a grid-management challenge but \u2018intermittent\u2019 specifically means UNPREDICTABLE output dependent on weather, not overproduction.', 3: 'Wind and solar are used globally \u2014 \u2018intermittent\u2019 describes the time-variability of output, not geographic limitation.' } },
+      { q: 'Why is bio-fuel a renewable resource, even though it is burned?', opts: [['The plants it is made from can be regrown, so it is replenished as it is used', true], ['Burning it releases no carbon dioxide', false], ['It is made from fossil fuels', false], ['It is only used for transport', false]],
+        wrong_explanations: { 1: 'Burning bio-fuel does release carbon dioxide. It is renewable because the plants regrow.', 2: 'Bio-fuel is made from plants grown now, not from fossil fuels.', 3: 'What it is used for does not decide whether it is renewable.' } },
+      { q: 'Which renewable resource is reliable because its output can be predicted?', opts: [['The tides', true], ['Wind', false], ['Water waves', false], ['The Sun', false]],
+        wrong_explanations: { 1: 'Wind speed depends on the weather and can drop to nothing.', 2: 'The size of waves depends on the weather.', 3: 'Cloud cover changes the output, and there is none at night.' } },
+      { q: 'Scientists know that burning coal releases carbon dioxide. Why do some countries still burn coal?', opts: [['Political, social, ethical and economic considerations also decide what is used', true], ['Scientists cannot measure carbon dioxide', false], ['Coal is a renewable resource', false], ['Burning coal does not affect the environment', false]],
+        wrong_explanations: { 1: 'Carbon dioxide emissions can be measured. Science identifies the problem; other factors decide what is done.', 2: 'Coal is non-renewable: it will run out.', 3: 'It releases carbon dioxide and, from some coal, sulfur dioxide.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('energy-resources') : null,
+      hookOptions: [
+        { text: 'Wind turbines and solar panels', correct: false, reply: 'With no wind and no daylight, neither is producing anything. The electricity is coming from resources that can be used whenever they are needed.' },
+        { text: 'Power stations that can run whenever they are needed', correct: true, reply: 'Gas, nuclear and some renewables, such as hydro-electricity, can supply electricity on demand.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      cards: CARDS.map((x, i) => ({ label: x.label, pressed: s.card === i, style: this.seg(s.card === i) + (s.placed[x.label] ? 'opacity:.62;' : ''),
+        onClick: () => this.setState({ card: i, tried: s.placed[x.label] ? x.z : null, flip: !!s.placed[x.label] }) })),
+      gridFig: ready ? K.fig(this.grid(s.placed), '') : null,
+      cardHead: c.label,
+      asking: !isPlaced,
+      zones: ZONES.map((z) => ({ label: z.label, style: this.seg(s.tried === z.id) + 'text-align:left;font-size:15px;',
+        onClick: () => { if (z.id === c.z) { const p = Object.assign({}, s.placed); p[c.label] = z.id; this.setState({ placed: p, tried: z.id, flip: true }); } else this.setState({ tried: z.id, flip: false }); } })),
+      hasCardNote: s.tried !== null,
+      cardNote: ok ? c.why : 'Not there. Ask: is it replenished as it is used? And can it be used whenever needed, or at predictable times?',
+      cardNoteStyle: 'margin:0;padding:12px 14px;border-radius:14px;font-size:17px;line-height:1.55;border:2px solid ' + (ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      flipped: s.flip && ok, cardImpact: c.imp,
+      placedCount: nPlaced + ' of 9 placed',
+      years: YEARS.map((y, i) => ({ label: String(y), pressed: s.year === i, style: this.seg(s.year === i),
+        onClick: () => this.setState({ year: i, yearsSeen: s.yearsSeen.indexOf(i) >= 0 ? s.yearsSeen : s.yearsSeen.concat([i]) }) })),
+      mixFig: ready ? K.fig(this.mix(s.year), '') : null,
+      yearLine: YEARS[s.year] + ': ' + MIX.map((m) => m.k.toLowerCase() + ' ' + m.v[s.year] + '%').join(' · '),
+      thinkOptions: [
+        { text: 'No: uranium will run out', correct: true, reply: 'It is low-carbon, but finite.' },
+        { text: 'Yes: it releases no carbon dioxide', correct: false, reply: 'Renewable is about being replenished, not about carbon dioxide.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'f', label: 'Fossil fuels' }, { id: 'n', label: 'Nuclear' }, { id: 'r', label: 'A renewable' }],
+      sortItems: [
+        { text: 'Carbon dioxide released when burned', bin: 'f', why: 'Adds to global warming.' },
+        { text: 'Sulfur dioxide causes acid rain', bin: 'f', why: 'From coal and oil.' },
+        { text: 'Radioactive waste to store', bin: 'n', why: 'It stays hazardous for a long time.' },
+        { text: 'Small risk of a major accident', bin: 'n', why: 'Rare, but severe.' },
+        { text: 'A dam floods a valley', bin: 'r', why: 'Hydro-electricity destroys habitats.' },
+        { text: 'Turbines can kill birds', bin: 'r', why: 'Wind.' },
+        { text: 'Fuel crops take farmland', bin: 'r', why: 'Bio-fuel.' },
+        { text: 'Only where hot rocks are near the surface', bin: 'r', why: 'Geothermal.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name the non-renewable resource that releases no carbon dioxide while it is generating electricity.', why: 'Nuclear fuel: low-carbon, but finite.', options: [
+            { text: 'Coal', correct: false, reply: 'Burning coal releases carbon dioxide.' },
+            { text: 'Nuclear fuel', correct: true },
+            { text: 'Wind', correct: false, reply: 'Wind is renewable.' },
+            { text: 'Gas', correct: false, reply: 'Burning gas releases carbon dioxide.' }] },
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Give one reason why wind is less reliable than gas for generating electricity.', why: 'Wind depends on the weather; gas can be burned whenever it is needed.', options: [
+            { text: 'Wind will run out', correct: false, reply: 'Wind is renewable. The problem is that it is not always blowing.' },
+            { text: 'Wind turbines only generate when the wind blows', correct: true },
+            { text: 'Wind releases carbon dioxide', correct: false, reply: 'Wind releases no carbon dioxide while running.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Describe', marks: 1, prompt: 'Use the chart in the lesson. Describe the change in coal\u2019s share of electricity from 2010 to 2020.', why: 'It fell from 28% to 2%.', options: [
+            { text: 'It fell from 28% to 2%', correct: true },
+            { text: 'It rose from 2% to 28%', correct: false, reply: 'Read the years left to right: 2010 is 28%, 2020 is 2%.' },
+            { text: 'It stayed the same', correct: false, reply: 'The coal section shrinks sharply after 2010.' },
+            { text: 'It fell from 35% to 28%', correct: false, reply: 'That is 2000 to 2010.' }] },
+          { kind: 'mcq', command: 'Suggest', marks: 1, prompt: 'In the chart, gas still supplies more than a third of electricity in 2020. Suggest why.', why: 'Gas can be used on demand when wind and solar output drops.', options: [
+            { text: 'Gas is renewable', correct: false, reply: 'Gas is a fossil fuel: non-renewable.' },
+            { text: 'Gas can be used on demand when wind and solar output drops', correct: true },
+            { text: 'Gas releases no carbon dioxide', correct: false, reply: 'Burning gas releases carbon dioxide.' },
+            { text: 'Gas power stations need no fuel', correct: false, reply: 'They burn gas, a fuel.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why the tides are a more reliable energy resource than water waves. Put the links in order.',
+            links: ['The tides come in and go out at times that can be predicted.', 'The size of water waves depends on the weather.', 'So tidal output can be planned for, but wave output cannot.'],
+            herrings: [{ text: 'Waves will run out but tides will not.', why: 'Both are renewable.' }, { text: 'Tides release no carbon dioxide but waves do.', why: 'Neither releases carbon dioxide while running; this is about reliability.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why a country might reduce how much electricity it generates from coal. Put the links in order.',
+            links: ['Burning coal releases carbon dioxide.', 'Carbon dioxide adds to global warming.', 'Replacing coal with resources that release less carbon dioxide cuts the country\u2019s emissions.'],
+            herrings: [{ text: 'Coal is weather-dependent, so it is unreliable.', why: 'Coal can be burned on demand.' }, { text: 'Coal releases radioactive waste.', why: 'Radioactive waste comes from nuclear fuel.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Evaluate', marks: 6, prompt: 'A town plans to replace its coal-fired power station with a wind farm. Evaluate the plan.',
+            levels: [
+              { label: 'Level 3 \u00b7 5\u20136', text: 'Advantages and disadvantages of both resources, linked to reliability and environmental impact, with a judgement and reason.', max: 6 },
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Some points for and against, with limited links or no judgement.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'One or two simple points.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Wind is renewable; coal is non-renewable and will run out.', 'Wind releases no carbon dioxide while running; burning coal releases carbon dioxide (global warming) and sulfur dioxide (acid rain).', 'Wind depends on the weather, so another resource is needed when it drops; coal can be used on demand.', 'Turbines can be noisy, change the landscape and kill birds.', 'A judgement, e.g. worth it if backed up by a reliable resource such as hydro-electricity or gas.'],
+            reject: ['\u201cWind farms have no impact on the environment.\u201d', '\u201cCoal is renewable because there is lots of it.\u201d'] }
+        ]
+      },
+      keyLines: ['Main resources: fossil fuels (coal, oil, gas), nuclear fuel, bio-fuel, wind, hydro-electricity, geothermal, the tides, the Sun and water waves.', 'Renewable: being, or can be, replenished as it is used. Fossil fuels and nuclear fuel are non-renewable.', 'Uses: transport, electricity generation and heating.', 'Reliable: fossil fuels, nuclear, bio-fuel, hydro-electricity and geothermal on demand; the tides at predictable times. Wind, the Sun and waves depend on the weather.', 'Every resource has some environmental impact, renewables included.', 'Science can identify environmental issues, but political, social, ethical and economic considerations decide what is done.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: null, endNext: null,
+      endConnects: [{ href: '../KS4 Batch 4/ks4-physics-6.1.2.2-efficiency.dc.html', label: 'Efficiency' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

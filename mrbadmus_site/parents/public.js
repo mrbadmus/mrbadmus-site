@@ -86,15 +86,37 @@
      exactly as her Public Home does.
 
      The four section links live inside `.pb-nav-links`, which public.css
-     hides below 900px. The brand, "Sign in" and "Start free" are outside
-     it and never collapse. */
+     hides below 900px. The brand and "Start free" are outside it and never
+     collapse.
+
+     ⊕ B2C polish (9 Oct 2026) — A MENU BELOW 900px. The blind journey run
+     found that on a phone the four sections were reachable only from the
+     footer. Below 900px the header now carries a menu button (`.pb-menu-btn`,
+     a real <button> with aria-expanded/aria-controls) that opens a panel
+     under the header holding the four sections, "Sign in" when the row has
+     no room for it (below 440px), and the theme control. The theme control
+     moves into the panel below 900px for the same reason the main site's
+     drawer carries it: brand + Sign in + Start free + menu + a 138px control
+     do not fit one row at 390, and the control's options are now 44px tap
+     targets. At 900px and up nothing changes: the links, Sign in, Start
+     free and the theme control sit in the row exactly as before, and the
+     menu button is not rendered. */
   function nav(current) {
     function link(key) {
       var on = current === key;
       return '<a href="' + attr(key) + '" style="color:var(--ks3-ink)' +
-        (on ? ';border-bottom:2px solid var(--ks3-accent)' : '') + '">' +
+        (on ? ';border-bottom:2px solid var(--ks3-accent)' : '') + '"' +
+        (on ? ' aria-current="page"' : '') + '>' +
         esc(PAGES[key].label) + '</a>';
     }
+    function menuLink(key, extra) {
+      var on = current === key;
+      return '<a href="' + attr(key) + '"' + (extra ? ' class="' + extra + '"' : '') +
+        (on ? ' aria-current="page"' : '') + '>' + esc(PAGES[key].label) + '</a>';
+    }
+    var BURGER = '<svg class="pb-menu-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+      '<path class="pb-menu-open" d="M4 7h16M4 12h16M4 17h16"/>' +
+      '<path class="pb-menu-close" d="M6 6l12 12M18 6L6 18"/></svg>';
     /* ⊕ DROP 2 sizing. A fourth section link no longer fits at 900px on
        Design's original numbers, so she tightened them rather than moving
        the breakpoint: header gap 14→12, nav margin-left 24→16, nav gap
@@ -105,20 +127,69 @@
       'padding:18px 20px;border-bottom:2px solid var(--ks3-ink);position:sticky;top:0;' +
       'background:var(--ks3-ground);z-index:5">' +
       lockup('home') +
-      '<nav class="pb-nav-links" style="margin-left:16px;gap:18px;font-weight:600;font-size:15px">' +
+      '<nav class="pb-nav-links" aria-label="Sections" style="margin-left:16px;gap:18px;font-weight:600;font-size:15px">' +
         link('how') + link('homeEd') + link('pricing') + link('orgs') +
       '</nav>' +
       '<span style="flex:1"></span>' +
-      '<a href="' + attr('signIn') + '" style="font-weight:700;font-size:16px;color:var(--ks3-ink)">Sign in</a>' +
+      '<a class="pb-signin" href="' + attr('signIn') + '" style="font-weight:700;font-size:16px;color:var(--ks3-ink)">Sign in</a>' +
       '<a href="' + attr('signUp') + '" style="display:flex;align-items:center;min-height:44px;' +
       'padding:0 18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);' +
       'background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:16px">Start free</a>' +
       /* Theme run (26 Sep 2026): the shared Light/Dark/System control, at
-         the right-hand end next to Sign in / Start free. shared/theme.js
-         mounts into any [data-mrb-theme] slot; this is the one slot every
-         page that calls nav() shares. */
-      '<span class="mrb-theme-slot" data-mrb-theme></span>' +
+         the right-hand end next to Sign in / Start free, from 900px up.
+         shared/theme.js mounts into every [data-mrb-theme] slot and keeps
+         the two (this one and the menu's) in step. */
+      '<span class="pb-head-theme"><span class="mrb-theme-slot" data-mrb-theme></span></span>' +
+      '<button type="button" class="pb-menu-btn" aria-expanded="false" aria-controls="pb-menu">' +
+        BURGER + '<span class="pb-sr">Menu</span></button>' +
+      '<div class="pb-menu" id="pb-menu" hidden>' +
+        '<nav aria-label="Sections">' +
+          menuLink('how') + menuLink('homeEd') + menuLink('pricing') + menuLink('orgs') +
+          menuLink('signIn', 'pb-menu-signin') +
+        '</nav>' +
+        '<div class="pb-menu-theme"><span>Theme</span>' +
+          '<span class="mrb-theme-slot" data-mrb-theme></span></div>' +
+      '</div>' +
       '</header>';
+  }
+
+  /* The menu's behaviour: open/close on the button, Escape closes and puts
+     focus back on the button, a tap outside the header closes, and widening
+     past the breakpoint closes (the button is gone there, so an open panel
+     could not otherwise be shut). */
+  function wireMenu(head) {
+    if (!head) { return; }
+    var btn = head.querySelector('.pb-menu-btn');
+    var panel = head.querySelector('.pb-menu');
+    if (!btn || !panel) { return; }
+    function setOpen(open, refocus) {
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      panel.hidden = !open;
+      if (!open && refocus) { btn.focus(); }
+    }
+    btn.addEventListener('click', function () {
+      var open = btn.getAttribute('aria-expanded') !== 'true';
+      setOpen(open);
+      if (open) {
+        var first = panel.querySelector('a');
+        if (first) { first.focus(); }
+      }
+    });
+    head.addEventListener('keydown', function (e) {
+      if ((e.key === 'Escape' || e.key === 'Esc') && btn.getAttribute('aria-expanded') === 'true') {
+        e.preventDefault();
+        setOpen(false, true);
+      }
+    });
+    document.addEventListener('click', function (e) {
+      if (btn.getAttribute('aria-expanded') === 'true' && !head.contains(e.target)) { setOpen(false); }
+    });
+    if (window.matchMedia) {
+      var wide = window.matchMedia('(min-width: 900px)');
+      var onWide = function () { if (wide.matches) { setOpen(false); } };
+      if (wide.addEventListener) { wide.addEventListener('change', onWide); }
+      else if (wide.addListener) { wide.addListener(onWide); }
+    }
   }
 
   /* ── footer ─────────────────────────────────────────────────────────── */
@@ -256,7 +327,10 @@
   function chrome(current) {
     var n = document.getElementById('pb-nav');
     var f = document.getElementById('pb-footer');
-    if (n) { n.outerHTML = nav(current); }
+    if (n) {
+      n.outerHTML = nav(current);
+      wireMenu(document.querySelector('.pb-head'));
+    }
     if (f) { f.outerHTML = footer(); }
   }
 

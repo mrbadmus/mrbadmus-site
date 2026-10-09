@@ -36,3 +36,8 @@ html[data-sim="seismic"].sim-full .lab .live,
 html[data-sim="seismic"].sim-full section.guide,
 html[data-sim="seismic"].sim-full .ctl:has(.tally) { display: none !important; }
 html[data-sim="seismic"].sim-full .plate { width: min(100%, calc(100dvh - 330px)); min-width: 260px; margin-inline: auto; }
+
+/* ── Circuit Lab: it is already a full-window app, so full screen only drops
+   the site bar and gives the app the whole window. ── */
+html[data-sim="circuit"].sim-full [data-screen-label="Circuit Lab"] { height: 100dvh !important; }
+html[data-sim="circuit"].sim-full .sim-bar { top: auto; bottom: 14px; }

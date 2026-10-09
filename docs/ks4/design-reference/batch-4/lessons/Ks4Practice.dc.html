@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js"></script>
+<script src="ks4-lib.js"></script>
+<style>
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .3s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="font-family: var(--ks3-font-body); color: var(--ks3-ink); text-wrap: pretty;">
+  <section class="ks3-ladder" style="margin: 0;">
+    <div class="ks3-ladder-head">
+      <div>
+        <h2>Exam ladder</h2>
+        <p class="ks3-ladder-sub">Four rungs, seven questions: two each on the first three, one long answer on the last. A rung scores when every question on it does.</p>
+      </div>
+      <div class="ks3-ladder-score" aria-live="polite">
+        <p class="ks3-score">{{ scoreLine }}</p>
+        <p class="ks3-score-note">{{ scoreNote }}</p>
+      </div>
+    </div>
+
+    <div class="ks3-rungs">
+      <sc-for list="{{ rungs }}" as="r" hint-placeholder-count="4">
+        <section class="{{ r.cls }}">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px;">
+            <h3 style="margin: 0; line-height: 1.2;">{{ r.title }}</h3>
+            <span style="font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">{{ r.tally }}</span>
+          </div>
+          <sc-if value="{{ r.broken }}"><p role="alert" style="margin: 10px 0 0; padding: 10px 14px; border-radius: 12px; background: var(--ks3-alert-tint); border: 2px solid var(--ks3-alert-border); font-family: var(--ks3-font-mono); font-size: 15px;">{{ r.brokenText }}</p></sc-if>
+
+          <sc-for list="{{ r.items }}" as="q" hint-placeholder-count="2">
+            <div style="{{ q.wrapStyle }}">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+                <span style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; min-width: 2.2em;">{{ q.num }}</span>
+                <span style="white-space: nowrap; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink); color: var(--ks3-ink);">{{ q.command }}</span>
+                <span style="white-space: nowrap; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; padding: 3px 10px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">{{ q.marks }}</span>
+              </div>
+
+              <sc-if value="{{ q.isMcq }}" hint-placeholder-val="{{ true }}">
+                <p class="ks3-rung-q">{{ q.prompt }}</p>
+                <ul class="ks3-options">
+                  <sc-for list="{{ q.options }}" as="opt" hint-placeholder-count="4">
+                    <li>
+                      <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                        <span class="ks3-opt-mark" aria-hidden="true">
+                          <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                          <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                          <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                        </span>
+                        <span class="ks3-opt-label">{{ opt.text }}</span>
+                      </button>
+                    </li>
+                  </sc-for>
+                </ul>
+              </sc-if>
+
+              <sc-if value="{{ q.isCalc }}">
+                <p class="ks3-rung-q">{{ q.prompt }}</p>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                  <div style="padding: 14px 16px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+                    <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">C · Convert · does anything need converting?</p>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                      <sc-for list="{{ q.conv }}" as="c" hint-placeholder-count="3">
+                        <button type="button" onClick="{{ c.onClick }}" aria-pressed="{{ c.pressed }}" disabled="{{ c.disabled }}" style="{{ c.style }}">{{ c.label }}</button>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <div style="padding: 14px 16px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+                    <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">F I F A · work it on paper, then give the answer and its unit</p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                      <label for="{{ q.numId }}" style="position: absolute; left: -9999px;">Answer as a number</label>
+                      <input type="text" inputMode="decimal" id="{{ q.numId }}" value="{{ q.num0 }}" onInput="{{ q.onNum }}" onChange="{{ q.onNum }}" disabled="{{ q.locked }}" placeholder="number" style="font: inherit; font-family: var(--ks3-font-mono); font-size: 20px; width: 10rem; max-width: 100%; padding: 10px 12px; min-height: 48px; box-sizing: border-box; border-radius: 12px; border: 2px solid var(--ks3-option-border); background: var(--ks3-ground); color: var(--ks3-ink);">
+                      <label for="{{ q.unitId }}" style="position: absolute; left: -9999px;">Unit</label>
+                      <select id="{{ q.unitId }}" class="ks3-sim-units" value="{{ q.unit }}" onChange="{{ q.onUnit }}" disabled="{{ q.locked }}" style="font-size: 18px; min-height: 48px;">
+                        <option value="">unit</option>
+                        <sc-for list="{{ q.units }}" as="u" hint-placeholder-count="4"><option value="{{ u }}">{{ u }}</option></sc-for>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div style="margin-top: 14px;">
+                  <button type="button" class="ks3-check-btn" onClick="{{ q.onCheck }}" disabled="{{ q.checkLocked }}" style="{{ q.checkStyle }}">Check my answer</button>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ q.isChain }}">
+                <sc-if value="{{ q.mounted }}" hint-placeholder-val="{{ true }}">
+                  <div style="margin-top: 10px;">
+                    <dc-import name="Ks4Chain" prompt="{{ q.prompt }}" links="{{ q.links }}" herrings="{{ q.herrings }}" scored="{{ true }}" on-done="{{ q.onChain }}" hint-size="100%,420px"></dc-import>
+                  </div>
+                </sc-if>
+              </sc-if>
+
+              <sc-if value="{{ q.isWrite }}">
+                <sc-if value="{{ q.mounted }}" hint-placeholder-val="{{ true }}">
+                  <div style="margin-top: 10px;">
+                    <dc-import name="Ks4Write" id="{{ q.writeId }}" eyebrow="Extended response" command="{{ q.command }}" marks="{{ q.marksN }}" question="{{ q.prompt }}" points="{{ q.points }}" levels="{{ q.levels }}" reject="{{ q.reject }}" on-mark="{{ q.onWrite }}" hint-size="100%,380px"></dc-import>
+                  </div>
+                </sc-if>
+              </sc-if>
+
+              <sc-if value="{{ q.answered }}">
+                <div data-arrive="1">
+                  <p class="{{ q.fbClass }}" role="status"><span class="ks3-feedback-word">{{ q.word }}</span> {{ q.feedback }}</p>
+                  <sc-if value="{{ q.hasModel }}">
+                    <div style="margin-top: 12px; padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+                      <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">The five lines</p>
+                      <sc-for list="{{ q.model }}" as="m" hint-placeholder-count="5"><p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 17px; line-height: 1.5;">{{ m }}</p></sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </section>
+      </sc-for>
+    </div>
+
+    <div class="ks3-retry-wrap">
+      <button type="button" class="ks3-retry" onClick="{{ onRetry }}" disabled="{{ retryLocked }}" style="{{ retryStyle }}">Retry my misses</button>
+      <p class="ks3-retry-note">Resets only the questions that did not score. What you wrote is kept.</p>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1000},&quot;slug&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;demo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;rungs&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;{r1:[Item,Item],r2:[Item,Item],r3:[Item,Item],r4:[Item]}&quot;},&quot;onDone&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(score:number)=&gt;void&quot;}}">
+const SHAPE = [2, 2, 2, 1];
+const NAMES = ['Recall', 'Apply', 'Explain', 'Produce'];
+const LETTERS = ['A', 'B', 'C', 'D', 'E'];
+class Component extends DCLogic {
+  state = { q: {}, hidden: {}, best: null };
+  componentDidMount() { const K = window.KS4; this.setState({ best: K ? K.load('ks4-best-' + (this.props.slug || 'x'), null) : null }); }
+  get(k) { return this.state.q[k] || { res: null, pick: null, conv: null, num: '', unit: '' }; }
+  put(k, patch) { this.setState((st) => ({ q: Object.assign({}, st.q, { [k]: Object.assign({}, st.q[k] || { res: null, pick: null, conv: null, num: '', unit: '' }, patch) }) })); }
+  list() { const R = this.props.rungs || {}; return [R.r1 || [], R.r2 || [], R.r3 || [], R.r4 || []]; }
+  score() {
+    const L = this.list(); let n = 0, done = true;
+    L.forEach((items, ri) => { const res = items.map((it, i) => this.get(ri + '-' + i).res); if (res.some((v) => v === null) || !items.length) done = false; if (items.length && res.every((v) => v === true)) n++; });
+    return { n, done };
+  }
+  componentDidUpdate() {
+    const sc = this.score();
+    if (sc.done && !this.saved) {
+      this.saved = true; const K = window.KS4, key = 'ks4-best-' + (this.props.slug || 'x');
+      const prev = K ? K.load(key, null) : null;
+      if (K && (prev === null || sc.n > prev)) K.save(key, sc.n);
+      if (typeof this.props.onDone === 'function') this.props.onDone(sc.n);
+    }
+  }
+  renderVals() {
+    const p = this.props, s = this.state, slug = p.slug || 'x';
+    const mk = (n) => n + (n === 1 ? ' mark' : ' marks');
+    const pickStyle = (on, dis) => 'font:inherit;font-family:var(--ks3-font-mono);font-size:16px;text-align:left;max-width:100%;white-space:normal;overflow-wrap:anywhere;padding:10px 14px;min-height:46px;border-radius:12px;cursor:' + (dis ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';' + (dis && !on ? 'opacity:.6;' : '');
+    const L = this.list();
+    const sc = this.score();
+    const tried = L.reduce((n, items, ri) => n + items.filter((it, i) => this.get(ri + '-' + i).res !== null).length, 0);
+    const rungs = L.map((items, ri) => {
+      const scored = items.filter((it, i) => this.get(ri + '-' + i).res === true).length;
+      return {
+        cls: 'ks3-rung' + (ri === 3 ? ' ks3-rung-self' : ''),
+        title: 'Rung ' + (ri + 1) + ' \u00b7 ' + NAMES[ri],
+        tally: ri === 3 ? 'you write it, then you mark it' : scored + ' of ' + items.length + ' scored',
+        broken: items.length !== SHAPE[ri], brokenText: 'Shape: rung ' + (ri + 1) + ' takes ' + SHAPE[ri] + ' question' + (SHAPE[ri] > 1 ? 's' : '') + ', this lesson gives ' + items.length + '.',
+        items: items.map((it, i) => {
+          const k = ri + '-' + i, st = this.get(k), kind = it.kind || 'mcq', locked = st.res !== null;
+          const base = {
+            num: (ri + 1) + (SHAPE[ri] > 1 ? 'ab'[i] || '' : ''), command: it.command || ['State', 'Calculate', 'Explain', 'Describe'][ri], marks: mk(it.marks || [1, 3, 3, 6][ri]),
+            wrapStyle: i ? 'margin-top:22px;padding-top:20px;border-top:2px dashed var(--ks3-rule);' : 'margin-top:14px;',
+            prompt: it.prompt || '', isMcq: kind === 'mcq', isCalc: kind === 'calc', isChain: kind === 'chain', isWrite: kind === 'write',
+            answered: locked && kind !== 'chain', fbClass: 'ks3-feedback ' + (st.res ? 'is-correct' : 'is-wrong'), hasModel: false, model: []
+          };
+          if (kind === 'mcq') {
+            const chosen = st.pick !== null ? (it.options || [])[st.pick] : null;
+            return Object.assign(base, {
+              options: (it.options || []).map((o, j) => {
+                const isPick = st.pick === j;
+                let cls = 'ks3-option'; if (locked && o.correct) cls += ' is-correct'; else if (locked && isPick) cls += ' is-wrong'; else if (locked) cls += ' is-spent';
+                return { letter: LETTERS[j], text: o.text, className: cls, disabled: locked, isCorrect: locked && o.correct, isWrong: locked && isPick && !o.correct, showLetter: !locked || (!o.correct && !isPick),
+                  onClick: () => { if (!locked) this.put(k, { res: !!o.correct, pick: j }); } };
+              }),
+              word: st.res ? 'Correct.' : 'Not this time.', feedback: chosen ? (chosen.correct ? (it.why || '') : chosen.reply || '') : ''
+            });
+          }
+          if (kind === 'calc') {
+            const ready = st.conv !== null && String(st.num).trim() && st.unit;
+            return Object.assign(base, {
+              conv: (it.convOptions || []).map((lab, j) => ({ label: lab, pressed: st.conv === j, disabled: locked, style: pickStyle(st.conv === j, locked), onClick: () => { if (!locked) this.put(k, { conv: j }); } })),
+              numId: slug + '-' + k + '-n', unitId: slug + '-' + k + '-u', num0: st.num, unit: st.unit, units: it.units || [], locked,
+              onNum: (e) => this.put(k, { num: e.target.value }), onUnit: (e) => this.put(k, { unit: e.target.value }),
+              checkLocked: locked || !ready, checkStyle: (locked || !ready) ? 'opacity:.45;cursor:default;' : '',
+              onCheck: () => {
+                if (locked || !ready) return;
+                const v = parseFloat(String(st.num).replace(/[\s,]/g, ''));
+                const tol = it.tol !== undefined ? it.tol : Math.abs(it.answer) * 0.02;
+                this.put(k, { res: st.conv === it.convAnswer && Math.abs(v - it.answer) <= tol && st.unit === it.unit });
+              },
+              word: st.res ? 'Correct.' : 'Not this time.', feedback: st.res ? (it.right || '') : (it.wrong || ''), hasModel: !!(it.model && it.model.length), model: it.model || []
+            });
+          }
+          if (kind === 'chain') {
+            return Object.assign(base, { mounted: !s.hidden[k], links: it.links || [], herrings: it.herrings || [], onChain: (r) => this.put(k, { res: !!(r && r.correct) }) });
+          }
+          const need = Math.ceil((it.marks || 6) / 2);
+          return Object.assign(base, {
+            mounted: !s.hidden[k], writeId: slug + '-' + k, marksN: it.marks || 6, points: it.points || [], levels: it.levels || null, reject: it.reject || [],
+            onWrite: (a) => { if (a && a.set) this.put(k, { res: a.awarded >= need, awarded: a.awarded }); },
+            word: st.res ? 'Rung scored.' : 'Not yet.',
+            feedback: st.res ? 'You gave yourself ' + st.awarded + ' of ' + (it.marks || 6) + '. The rung scores at ' + need + ' or more.' : 'The rung scores at ' + need + ' of ' + (it.marks || 6) + '. Add the missing points to your answer, then change your level.'
+          });
+        })
+      };
+    });
+    const best = s.best;
+    const missed = sc.done && sc.n < 4;
+    return {
+      rungs,
+      scoreLine: sc.done ? 'Score ' + sc.n + ' of 4' : tried + ' of 7 questions tried',
+      scoreNote: best === null ? (sc.done ? 'First go on this lesson.' : 'Scored when all seven are done.') : ('Best before today ' + best + ' of 4' + (sc.done ? (sc.n > best ? ' \u00b7 up ' + (sc.n - best) : sc.n === best ? ' \u00b7 level with it' : ' \u00b7 keep the best') : '')),
+      retryLocked: !missed, retryStyle: missed ? '' : 'opacity:.45;cursor:default;',
+      onRetry: () => {
+        if (!missed) return;
+        this.saved = false;
+        const q = Object.assign({}, s.q), hide = {};
+        L.forEach((items, ri) => items.forEach((it, i) => {
+          const k = ri + '-' + i, st = this.get(k);
+          if (st.res === false) { const kind = it.kind || 'mcq'; q[k] = Object.assign({}, st, { res: null, pick: null, conv: null }); if (kind === 'chain') hide[k] = true; }
+        }));
+        this.setState({ q, hidden: hide }, () => setTimeout(() => this.setState({ hidden: {} }), 30));
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

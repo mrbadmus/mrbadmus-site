@@ -122,9 +122,11 @@
   /* The one lockup — mark + "MrBadmus", as one link — to `path` with the
      environment carried (see `href`). Without brand.js on the page it falls
      back to the wordmark as plain text rather than to nothing: a header that
-     silently loses its brand is the failure nobody sees. */
+     silently loses its brand is the failure nobody sees.
+     ⊕ B2C fix run (9 Oct 2026): with no path it goes to "/", never
+     "/index.html" (Mide's rule: the brand link is the site root). */
   function brandLockup(path, onDark) {
-    var to = escapeHtml(href(path || '/index.html'));
+    var to = escapeHtml(href(path || '/'));
     if (B) { return B.lockup(to, !!onDark); }
     return '<a class="mrb-brand" href="' + to + '">MrBadmus</a>';
   }
@@ -336,7 +338,10 @@
 
      opts: { token, interval: 'month'|'year', addChildHref, beforeRedirect,
              msgHost — where the failure line goes when "directly after the
-             button" would land inside a flex row (the dashboard banner) } */
+             button" would land inside a flex row (the dashboard banner),
+             onAlready — called when Stripe turned out to hold the
+             subscription already; without it the page goes to
+             checkout-return.html?state=success } */
   var CHECKOUT_TIMEOUT_MS = 25000;
   var busyCheckouts = [];
 
@@ -391,9 +396,21 @@
     btn.setAttribute('aria-disabled', 'true');
     busyCheckouts.push(btn);
 
+    /* ⊕ B2C fix run (9 Oct 2026). Where Stripe sends the parent back to:
+       THIS origin, with this page's ?env=/?api= carried by href(). Without
+       it the backend could only use FRONTEND_ORIGIN, so a TEST checkout came
+       back with no env/api and the return page polled the default TEST
+       backend (localhost:3000). The backend keeps only an origin of ours and
+       env + a localhost api (consumer/billing-guard.js); on production this
+       is exactly the URL it used to build itself. */
+    var here = window.location.origin;
     return api('/api/consumer/checkout', {
       method: 'POST', token: opts.token, timeout: CHECKOUT_TIMEOUT_MS,
-      body: { interval: opts.interval === 'year' ? 'year' : 'month' }
+      body: {
+        interval: opts.interval === 'year' ? 'year' : 'month',
+        success_url: here + href('/consumer/checkout-return.html', { state: 'success' }),
+        cancel_url: here + href('/consumer/checkout-return.html', { state: 'cancel' })
+      }
     }).then(function (d) {
       if (!d || !d.url) {
         var none = new Error('');
@@ -409,6 +426,22 @@
       console.error('[consumer/checkout]', e);
       restoreCheckout(btn);
       var code = (e && e.code) || '';
+      /* ⊕ B2C fix run (9 Oct 2026). Stripe already holds this family's
+         subscription — our side had not caught up (the webhook was behind)
+         and the backend has now caught it up rather than open a SECOND
+         Checkout. Nothing to retry: the page moves on to the real state.
+         A page that can redraw itself says how (`onAlready`); anywhere else
+         goes where a finished checkout goes. */
+      if (code === 'already_subscribed' && e.data && (e.data.synced || e.data.state)) {
+        host.innerHTML = '<p>' + escapeHtml('Your free week is already set up.') + '</p>';
+        if (typeof opts.onAlready === 'function') {
+          Promise.resolve().then(function () { return opts.onAlready(e.data); })
+            .catch(function (err) { console.error('[consumer/checkout] onAlready', err); });
+        } else {
+          go('/consumer/checkout-return.html', { state: 'success' });
+        }
+        return false;
+      }
       if (code === 'no_children') {
         var add = opts.addChildHref || href('/consumer/signup.html', { step: 'child' });
         host.innerHTML = '<p>No children on the account yet. <a class="c-linkbtn" href="' + escapeHtml(add) +
@@ -558,28 +591,160 @@
 
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                     'August', 'September', 'October', 'November', 'December'];
+
+  /* ── London time — every date a page SHOWS (Mide's ruling, 9 Oct 2026) ──
+     These used to read the DEVICE's clock (`getDate()`, `toLocaleDateString`
+     with no zone), so the same instant was a different date for a parent in
+     Spain from a parent in Leeds, and a different date in a UTC browser from
+     a UK one. The blind runs caught it on the trial end: Stripe's
+     trial_end 2026-10-15T23:19:00Z is 00:19 on Friday 16 October in London
+     (BST = UTC+1), and 15 October in UTC. Every date is now the LONDON
+     date, computed here, once. A browser without Intl time-zone support
+     (none that we serve) falls back to the device's clock rather than to
+     nothing. */
+  var LONDON = 'Europe/London';
+  var londonFmt = null;
+  function londonParts(v) {
+    if (v == null || v === '') { return null; }
+    var d = v instanceof Date ? v : new Date(v);
+    if (isNaN(d.getTime())) { return null; }
+    try {
+      londonFmt = londonFmt || new Intl.DateTimeFormat('en-GB', {
+        timeZone: LONDON, year: 'numeric', month: 'numeric', day: 'numeric',
+        hour: 'numeric', minute: 'numeric', hourCycle: 'h23'
+      });
+      var o = {};
+      londonFmt.formatToParts(d).forEach(function (p) { o[p.type] = p.value; });
+      return { y: Number(o.year), m: Number(o.month), d: Number(o.day),
+               h: Number(o.hour) % 24, min: Number(o.minute) };
+    } catch (e) {
+      return { y: d.getFullYear(), m: d.getMonth() + 1, d: d.getDate(),
+               h: d.getHours(), min: d.getMinutes() };
+    }
+  }
+  /* Design's "16 October" — the London date. Unparseable in, null out. */
+  function dayMonth(iso) {
+    var p = londonParts(iso);
+    return p ? (p.d + ' ' + MONTHS_LONG[p.m - 1]) : null;
+  }
+  /* `n` whole days after an instant, as an instant. Exact milliseconds, the
+     same arithmetic as the backend's grace end (period end + 7 × 24h), so
+     the date shown is the date org_access_state() acts on. */
+  function plusDaysISO(iso, n) {
+    if (!iso) { return null; }
+    var t = new Date(iso).getTime();
+    if (isNaN(t)) { return null; }
+    return new Date(t + n * 864e5).toISOString();
+  }
+
+  /* ⊕ B2C fix run (9 Oct 2026). CIVIL dates — "YYYY-MM-DD", the shape the
+     API's `scheduled_for` and `week_start` take — in London. `londonYMD()`
+     with no argument is TODAY in London: the date the backend's own
+     londonYMD(new Date()) files work under, on any device in any zone. */
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function londonYMD(v) {
+    var p = londonParts(v == null ? new Date() : v);
+    return p ? (p.y + '-' + pad2(p.m) + '-' + pad2(p.d)) : null;
+  }
+  /* Whole calendar days after a civil date, as a civil date. Done in UTC on
+     the civil date, so a clock change can never make a day 23 or 25 hours. */
+  function civil(ymd) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(ymd || ''));
+    return m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])) : null;
+  }
+  function ymdPlusDays(ymd, n) {
+    var d = civil(ymd);
+    if (!d) { return null; }
+    d.setUTCDate(d.getUTCDate() + (n || 0));
+    return d.getUTCFullYear() + '-' + pad2(d.getUTCMonth() + 1) + '-' + pad2(d.getUTCDate());
+  }
+  /* 0 = Sunday … 6 = Saturday, of a civil date (not of an instant). */
+  function ymdWeekday(ymd) {
+    var d = civil(ymd);
+    return d ? d.getUTCDay() : null;
+  }
+  /* Whole days from civil date `a` to civil date `b` (b - a). */
+  function ymdDiff(a, b) {
+    var x = civil(a), y = civil(b);
+    return (x && y) ? Math.round((y - x) / 864e5) : null;
+  }
+  /* The London hour now (0–23) — for "Morning" / "Evening". */
+  function londonHour(v) {
+    var p = londonParts(v == null ? new Date() : v);
+    return p ? p.h : new Date().getHours();
+  }
+  var WEEKDAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  var WEEKDAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  /* "Friday 9 October" — a London date as the page kickers show it. */
+  function longDate(v) {
+    var p = londonParts(v == null ? new Date() : v);
+    if (!p) { return ''; }
+    return WEEKDAYS_LONG[ymdWeekday(londonYMD(v == null ? new Date() : v))] + ' ' +
+      p.d + ' ' + MONTHS_LONG[p.m - 1];
+  }
+  /* "Fri 9 Oct" from a civil date. */
+  function civilLabel(ymd) {
+    var d = civil(ymd);
+    return d ? (WEEKDAYS_SHORT[d.getUTCDay()] + ' ' + d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()]) : '';
+  }
 
   /* Both of these refuse to invent. An unparseable date is not "today" and
      is not the epoch — it is the fallback word, visibly. overview.html's
-     `dash()` policy, applied to time. */
+     `dash()` policy, applied to time. London, like every date above. */
   function fmtDate(iso, fallback) {
     if (iso == null || iso === '') { return fallback == null ? 'Not set' : fallback; }
-    var d = new Date(iso);
-    if (isNaN(d.getTime())) { return fallback == null ? 'Not set' : fallback; }
-    return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+    var p = londonParts(iso);
+    if (!p) { return fallback == null ? 'Not set' : fallback; }
+    return p.d + ' ' + MONTHS[p.m - 1] + ' ' + p.y;
   }
 
   /* 12-hour with a lowercase suffix, because the chat panel it was written
-     for is read by nine-year-olds. "16:05" is a timetable; "4:05pm" is a
-     time somebody said something. */
+     for is read by nine-year-olds. "16:05" is a timetable; "4.05pm" is a
+     time somebody said something.
+     ⊕ B2C fix run (9 Oct 2026): ONE time format on every consumer screen —
+     "11.19pm", with a dot. It is Design's own shape (her lastActive
+     "yesterday, 7.40pm", her message stamp "Tue 8.15pm" in the emails) and
+     the most used one in the product. A parent's screen used to show
+     "Last active today, 11.19pm" beside "Milo last replied 23:19" and a
+     chat stamp of "23:12" — three clocks for one evening. */
   function fmtTime(iso, fallback) {
     if (iso == null || iso === '') { return fallback == null ? '' : fallback; }
-    var d = new Date(iso);
-    if (isNaN(d.getTime())) { return fallback == null ? '' : fallback; }
-    var h = d.getHours(), m = d.getMinutes();
+    var p = londonParts(iso);
+    if (!p) { return fallback == null ? '' : fallback; }
+    var h = p.h, m = p.min;
     var suffix = h < 12 ? 'am' : 'pm';
     h = h % 12; if (h === 0) { h = 12; }
-    return h + ':' + (m < 10 ? '0' : '') + m + suffix;
+    return h + '.' + (m < 10 ? '0' : '') + m + suffix;
+  }
+  /* "today, 11.19pm" · "yesterday, 7.40pm" · "3 days ago, 7.40pm" ·
+     "16 October, 7.40pm" — Design's shape for when somebody was last
+     about. Days are London days. Unparseable in, null out. */
+  function whenLabel(iso, now) {
+    var t = londonYMD(iso);
+    if (!iso || !t) { return null; }
+    var days = ymdDiff(t, londonYMD(now == null ? new Date() : now));
+    var time = fmtTime(iso);
+    if (days === 0) { return 'today, ' + time; }
+    if (days === 1) { return 'yesterday, ' + time; }
+    if (days > 1 && days < 7) { return days + ' days ago, ' + time; }
+    return dayMonth(iso) + ', ' + time;
+  }
+  /* A message stamp: "11.19pm" today, "Yesterday 8.15pm", "Tue 8.15pm"
+     within the week (Design's email stamp), "3 Sep" before that. The
+     backend's `time` label says the same thing; this exists so a page can
+     show it from `created_at` in the one format whatever the server sent. */
+  function msgWhen(iso, now) {
+    var t = londonYMD(iso);
+    if (!iso || !t) { return ''; }
+    var days = ymdDiff(t, londonYMD(now == null ? new Date() : now));
+    var time = fmtTime(iso);
+    if (days === 0) { return time; }
+    if (days === 1) { return 'Yesterday ' + time; }
+    if (days > 1 && days < 7) { return WEEKDAYS_SHORT[ymdWeekday(t)] + ' ' + time; }
+    var c = civil(t);
+    return c.getUTCDate() + ' ' + MONTHS[c.getUTCMonth()];
   }
 
   /* Pence in, pounds out, always with both decimals. Never `toFixed` on a
@@ -1124,6 +1289,19 @@
     schemePoint: schemePoint,
     fmtDate: fmtDate,
     fmtTime: fmtTime,
+    // ⊕ B2C fix run (9 Oct 2026): London dates, one place.
+    londonParts: londonParts,
+    dayMonth: dayMonth,
+    plusDaysISO: plusDaysISO,
+    londonYMD: londonYMD,
+    ymdPlusDays: ymdPlusDays,
+    ymdWeekday: ymdWeekday,
+    ymdDiff: ymdDiff,
+    londonHour: londonHour,
+    longDate: longDate,
+    civilLabel: civilLabel,
+    whenLabel: whenLabel,
+    msgWhen: msgWhen,
     money: money,
     guard: guard,
     lockedBanner: lockedBanner,
