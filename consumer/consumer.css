@@ -667,3 +667,32 @@ html[data-theme="dark"] .rd :is(.c-ink, .ex-dark, .td-dark-card, .uc-rules, .gl-
 @media screen {
   html[data-theme="dark"] .rd { --c-on-accent-text: #16120E; }
 }
+
+/* ⊕ B2C polish (9 Oct 2026) — ONE DISABLED LOOK FOR EVERY CONSUMER BUTTON.
+   Signup's "Pick a topic to continue" is `aria-disabled` (it stays pressable
+   so it can say what is missing) and its inline style drew it as the solid
+   ink button it becomes once a topic is picked — the blind run read it as
+   ready in both themes. Elsewhere a disabled button was a page-local
+   `opacity` (.45–.65) over the live look, or overview's rule-strong outline
+   at 2.05:1. So here, for `:disabled` AND `[aria-disabled="true"]` alike:
+   no fill, a dashed outline and muted label, not-allowed cursor, no fade.
+   `!important` because the controls carry inline and page-local styles.
+   Measured: --ks3-ink-muted on ground/card/band 6.5 / 7.0 / 6.0:1 light,
+   9.4 / 8.7 / 7.8:1 dark; on an ink panel --ks3-on-dark-muted 8.6:1 light,
+   9.1:1 dark — every outline and label clears 3:1 (and 4.5:1).
+   A BUSY button (`aria-busy`, C.startCheckout's spinner) is left alone: it
+   is working, not unavailable, and must not look dead (800be2e0b). */
+.rd button:is(:disabled, [aria-disabled="true"]):not([aria-busy="true"]) {
+  background: transparent !important;
+  border-color: var(--ks3-ink-muted) !important;
+  border-style: dashed !important;
+  color: var(--ks3-ink-muted) !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+}
+.rd :is(.c-ink, .ex-dark, .td-dark-card, .uc-rules, .gl-already, .su-ink, .dk-dark)
+  button:is(:disabled, [aria-disabled="true"]):not([aria-busy="true"]) {
+  border-color: var(--ks3-on-dark-muted) !important;
+  color: var(--ks3-on-dark-muted) !important;
+}
