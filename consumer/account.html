@@ -673,9 +673,15 @@
         '<button type="button" data-act="cancel-delete" id="ak-keep" style="min-height:48px;' +
           'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);' +
           'font-weight:700;font-size:15px;color:var(--ks3-on-dark);cursor:pointer">Keep my account</button>' +
-        '<button type="button" data-act="do-delete" style="min-height:48px;' +
+        /* ⊕ B2C polish (9 Oct 2026). Disabled until "I understand" is
+           ticked — it used to look and press exactly like a live button and
+           only refused after the tap. `disabled` + aria-disabled take
+           consumer.css's one disabled look; ticking enables it in place
+           (bindInputs), unticking disables it again. */
+        '<button type="button" data-act="do-delete" id="ak-do-delete" style="min-height:48px;' +
           'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);' +
-          'color:var(--ks3-ink);font-weight:700;font-size:15px;cursor:pointer">Delete my account</button>' +
+          'color:var(--ks3-ink);font-weight:700;font-size:15px;cursor:pointer"' +
+          (S.delTicked ? '' : ' disabled aria-disabled="true"') + '>Delete my account</button>' +
       '</div></div></section>';
   }
 
@@ -697,6 +703,12 @@
       t.addEventListener('change', function () {
         S.delTicked = t.checked;
         if (t.checked) { msg('', null, 'ak-del-msg'); }
+        var del = document.getElementById('ak-do-delete');
+        if (del) {
+          del.disabled = !t.checked;
+          if (t.checked) { del.removeAttribute('aria-disabled'); }
+          else { del.setAttribute('aria-disabled', 'true'); }
+        }
       });
     }
   }
