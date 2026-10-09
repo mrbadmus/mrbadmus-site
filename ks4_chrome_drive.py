@@ -234,15 +234,21 @@ def check_no_progress(page, label, signed_in):
                  % (label, "signed-in" if signed_in else "signed-out", claim))
 
 
-def check_auth_chip(page, label, signed_in, has_slot=True):
+# ⊕ B2C polish (9 Oct 2026) — the widest viewport at which the bar's own
+# signed-out Sign In stands down (nav.css / ks4-chrome.css, max-width: 900px).
+BAR_SIGNIN_HIDDEN_MAX = 900
+
+
+def check_auth_chip(page, label, signed_in, has_slot=True, width=None):
     """The auth state, where shared/nav.js actually puts it.
 
-    ⚠️ Signed OUT, `#nav-auth-area` is EMPTY — that is not a bug and it is not
-    new. nav.js renders Sign In / Sign Up into the DRAWER (`#nav-drawer-auth`)
-    and returns early before touching the cluster slot. The first version of
-    this check asserted the buttons were in the cluster and failed 48 times on
-    correct, pre-existing behaviour. Both places are asserted now, each for
-    what it actually holds."""
+    Signed OUT, nav.js renders Sign In / Sign Up into the DRAWER
+    (`#nav-drawer-auth`) at every width. ⊕ B2C polish (9 Oct 2026): it also
+    draws Sign In (only) into `#nav-auth-area`, visible above 900px and hidden
+    at 900px and below, so the phone bar is unchanged. Until then the cluster
+    slot was EMPTY signed out (65b8cbf3a, July), and this check asserted
+    exactly that. `innerText` skips a display:none child, so a phone-width
+    read is still "" and a desktop read is "Sign In"."""
     if not has_slot:
         return
     got = page.eval(
@@ -261,9 +267,11 @@ def check_auth_chip(page, label, signed_in, has_slot=True):
             fail("%s — signed in, but the drawer still offers Sign In (%r)"
                  % (label, drawer))
     else:
-        if got != "":
-            fail("%s — signed out, but the cluster chip is not empty (%r)"
-                 % (label, got))
+        want = ("Sign In" if width is not None and width > BAR_SIGNIN_HIDDEN_MAX
+                else "")
+        if got != want:
+            fail("%s — signed out, the bar's auth slot reads %r, expected %r"
+                 % (label, got, want))
         if drawer is not None and "Sign In" not in drawer:
             fail("%s — signed out, but the drawer does not offer Sign In (%r)"
                  % (label, drawer))
@@ -347,7 +355,8 @@ def main():
                         # slot at all — asserting one would be asserting that
                         # the estate MRB-301 must not touch had been touched.
                         check_auth_chip(page, "%s @%d" % (label, width),
-                                        signed_in, has_slot=(label != "ks3-entry"))
+                                        signed_in, has_slot=(label != "ks3-entry"),
+                                        width=width)
                         if width in (WIDTHS[0], 390):
                             page.screenshot(
                                 os.path.join(args.shots,
