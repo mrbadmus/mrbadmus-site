@@ -31,7 +31,12 @@ import subprocess
 import sys
 import time
 
-BASE = "https://mrbadmus-backend.onrender.com"
+import config_env
+
+# Production's backend, read out of shared/config.js (test_isolation: no
+# script spells production). This gate only ever READS its public
+# /api/health — the live check it reports is the backend's own.
+BASE = config_env.PROD["BACKEND_URL"].rstrip("/")
 
 
 def launched():
