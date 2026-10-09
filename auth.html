@@ -517,6 +517,14 @@
             // Honour ?return= if explicitly set, otherwise default to Today
             // (MRB-325 ruling 1 — Today is the landing surface, not My classes).
             window.location.href = carryEnv(returnUrl !== '/index.html' ? returnUrl : '/teacher/today.html');
+          } else if (p && p.role === 'parent') {
+            // ⊕ B2C polish (9 Oct 2026). A family parent has no
+            // science_pathway either, and fell through to the STUDENT
+            // profile wizard below. Their home is the family dashboard;
+            // overview.html forwards an unfinished signup on to signup.html
+            // at the step it left (ec659574d). A family CHILD never reaches
+            // here — isChildSession above sends them to Today.
+            window.location.href = carryEnv('/consumer/overview.html');
           } else if (p && p.key_stage === 'KS3') {
             // KS3 students legitimately have no science_pathway/tier (DB
             // constraint blocks them from KS4 fields). Never send them to the
