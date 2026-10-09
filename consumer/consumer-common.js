@@ -122,9 +122,11 @@
   /* The one lockup — mark + "MrBadmus", as one link — to `path` with the
      environment carried (see `href`). Without brand.js on the page it falls
      back to the wordmark as plain text rather than to nothing: a header that
-     silently loses its brand is the failure nobody sees. */
+     silently loses its brand is the failure nobody sees.
+     ⊕ B2C fix run (9 Oct 2026): with no path it goes to "/", never
+     "/index.html" (Mide's rule: the brand link is the site root). */
   function brandLockup(path, onDark) {
-    var to = escapeHtml(href(path || '/index.html'));
+    var to = escapeHtml(href(path || '/'));
     if (B) { return B.lockup(to, !!onDark); }
     return '<a class="mrb-brand" href="' + to + '">MrBadmus</a>';
   }
