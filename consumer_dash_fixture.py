@@ -429,7 +429,13 @@ _JS = r"""
     if (path === '/api/consumer/checkout') {
       var mode = F.checkout || 'ok';
       if (mode === 'hang') { return hang(init); }
-      if (mode === '500') { return reply(500, { error: 'stripe_down', message: 'Stripe is unavailable.' }); }
+      // The backend's real failure reply (consumer/stripe.js billingFailure),
+      // byte for byte — the page now shows its sentence (live checkout
+      // incident, 9 Oct 2026), so the stub must not invent one.
+      if (mode === '500') {
+        return reply(503, { error: 'checkout_failed', reason: 'payments_not_configured', step: 'customer_lookup',
+          message: "We couldn't start checkout just now. Nothing has been charged. Please try again in a few minutes." });
+      }
       if (mode === 'no_children') {
         return reply(409, { error: 'no_children', message: 'Add a child before starting a subscription.' });
       }

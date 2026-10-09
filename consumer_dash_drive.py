@@ -407,7 +407,10 @@ def checkout_cases(d, skip_timeout):
     d.click(".dk-gate [data-act=checkout]")
     d.wait("document.getElementById('dk-gate-msg').innerText.length>0")
     msgt = d.text("#dk-gate-msg")
-    check("didn’t open" in msgt and "Try again" in msgt, "a 500 shows a plain line + Try again", msgt)
+    # ⊕ 9 Oct 2026: the backend's own sentence, not "didn't open" — a parent
+    # must be told nothing was charged.
+    check("Nothing has been charged" in msgt and "Try again" in msgt,
+          "a 500 shows the backend's plain sentence + Try again", msgt)
     sent = d.calls("/api/consumer/checkout")
     check(len(sent) == 1 and (sent[0].get("body") or {}).get("interval") == "month",
           "Restart repeats the family's own interval (month), named explicitly",
@@ -442,7 +445,7 @@ def checkout_cases(d, skip_timeout):
     d.open("consumer/account.html", state="locked", kids=2, checkout="500")
     d.click("[data-act=checkout]")
     d.wait("document.getElementById('ak-plan-msg').innerText.length>0")
-    check("didn’t open" in d.text("#ak-plan-msg") and
+    check("Nothing has been charged" in d.text("#ak-plan-msg") and
           d.js("document.getElementById('ak-plan-msg').previousElementSibling"
                ".getAttribute('data-act')") in ("checkout", None),
           "account: the failure sits under the button", d.text("#ak-plan-msg"))
@@ -455,7 +458,7 @@ def checkout_cases(d, skip_timeout):
         d.click("#to-stripe")
         d.wait("(function(){var b=document.getElementById('to-stripe');"
                "var m=b&&b.nextElementSibling;return m&&m.innerText.length>0;})()")
-        check("didn’t open" in d.js("document.getElementById('to-stripe').nextElementSibling.innerText"),
+        check("Nothing has been charged" in d.js("document.getElementById('to-stripe').nextElementSibling.innerText"),
               "signup: the failure sits under the button and the step stays put")
         check(d.js("!!document.getElementById('to-stripe')") and
               d.js("document.getElementById('to-stripe').getAttribute('aria-busy')") is None,

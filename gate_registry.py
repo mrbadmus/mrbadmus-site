@@ -265,6 +265,25 @@ GATES = [
              "the COMMITTED deploy tree disagrees with the COMMITTED "
              "launch.json decision, in either direction."),
 
+    dict(name="stripe_live_checkout",
+         cmd=["python3", "verify_stripe_live.py"],
+         speed="slow",
+         watches=["verify_stripe_live.py", "launch.json", "launch_config.py",
+                  "consumer/**", "parents/**",
+                  "mrbadmus_site/consumer/**", "mrbadmus_site/parents/**"],
+         why="9 Oct 2026, live checkout incident. The first real parent on "
+             "production could not reach Stripe: STRIPE_SECRET_KEY on Render "
+             "was the text of a shell command, every Stripe call answered "
+             "401, and /api/health said Stripe was 'configured' because it "
+             "only checked that the variable was set. Every checkout drive "
+             "in the estate ran on a TEST key, so the live-mode path had "
+             "never run once. The backend now dry-runs checkout's own Stripe "
+             "calls with its real key (no side effects) and reports it on "
+             "/api/health; this gate fails a consumer push unless that dry "
+             "run passed on a LIVE key while launch.json says launched. It "
+             "measures PRODUCTION, not the tree — a red here means a parent "
+             "cannot pay right now, whatever this branch did."),
+
     dict(name="answer_positions",
          cmd=["python3", "verify_answer_positions.py"],
          speed="fast",
