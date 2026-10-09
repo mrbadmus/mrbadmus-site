@@ -1181,10 +1181,103 @@
          password, so not the generic line — that would send them off to
          re-type a correct password forever. */
       if (!at || !rt) { throw new Error(CHILD_LOGIN_FAILED); }
-      return sb.auth.setSession({ access_token: at, refresh_token: rt }).then(function (r) {
-        if (r && r.error) { throw new Error(CHILD_LOGIN_FAILED); }
-      }, function () { throw new Error(CHILD_LOGIN_FAILED); });
+      return confirmChildSession(sb, at, rt);
     }, function (err) { throw childLoginError(err); });
+  }
+
+  /* ── confirmChildSession — hand the tokens to supabase-js, once more on a
+     network fault (B2C polish, 9 Oct 2026).
+
+     The backend has already checked the password and handed back valid
+     tokens by the time we get here. `sb.auth.setSession` then makes the
+     browser's FIRST request to the Supabase host (GET /auth/v1/user), and a
+     blind run caught that request hanging 20 s and failing with a socket
+     error — the child was told "Something went wrong" and the identical
+     retry took 113 ms. So a network-level failure is retried once, after a
+     short pause, with the same tokens; a genuine auth answer (bad or
+     expired token, any 4xx) still fails at once, exactly as before.
+
+     ⚠️ supabase-js runs setSession inside its own per-client lock, so a
+     retry started while the first attempt is still hung QUEUES behind it
+     and only runs once the first settles. The 8 s bound therefore cannot
+     shorten a hung socket; what it guarantees is that the retry is already
+     waiting when the socket finally gives up, and that the first attempt's
+     late answer, success or failure, can never resolve or reject twice.
+     Each attempt has its own bound, so the child is never left on a spinner
+     indefinitely. */
+  var CHILD_SESSION_FIRST_WAIT_MS = 8000;
+  var CHILD_SESSION_RETRY_PAUSE_MS = 800;
+  var CHILD_SESSION_RETRY_WAIT_MS = 20000;
+  /* The same sentence api() gives a dead connection, so the login POST and
+     the session confirmation say one thing about one condition. */
+  var CHILD_LOGIN_NETWORK = 'We couldn’t reach MrBadmus. Check your connection and try again.';
+
+  /* Is this setSession failure the network rather than the token? An auth
+     server ANSWER (any 4xx) is never retried. supabase-js reports a dead
+     connection as AuthRetryableFetchError (status 0, or 502/503/504). */
+  function sessionNetworkFault(e) {
+    if (!e) { return true; }                      // nothing at all came back
+    var s = e.status;
+    if (typeof s === 'number' && s >= 400 && s < 500) { return false; }
+    if (e.name === 'AuthRetryableFetchError' || s === 0) { return true; }
+    if (e.name === 'TypeError') { return true; }  // fetch's "Failed to fetch"
+    return /failed to fetch|network|load failed|socket|timed? ?out/i.test(String(e.message || ''));
+  }
+
+  function confirmChildSession(sb, at, rt) {
+    return new Promise(function (resolve, reject) {
+      var settled = false;
+      var timers = [];
+      function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+      function finish(err) {
+        if (settled) { return; }
+        settled = true;
+        timers.forEach(clearTimeout);
+        if (err) { reject(err); } else { resolve(); }
+      }
+      function networkFailure() {
+        var e = new Error(CHILD_LOGIN_NETWORK);
+        e.code = 'network';
+        return childLoginError(e);
+      }
+
+      /* One attempt. `onFail(isNetwork)` fires at most once per attempt —
+         from its timer or its own answer, whichever comes first. A success
+         wins whenever it arrives, even from an attempt already abandoned. */
+      function attempt(waitMs, onFail) {
+        var spoken = false;
+        function fail(isNetwork) {
+          if (spoken || settled) { return; }
+          spoken = true;
+          onFail(isNetwork);
+        }
+        later(function () { fail(true); }, waitMs);
+        var p;
+        try {
+          p = Promise.resolve(sb.auth.setSession({ access_token: at, refresh_token: rt }));
+        } catch (e) {
+          p = Promise.reject(e);
+        }
+        p.then(function (r) {
+          if (r && r.error) { return fail(sessionNetworkFault(r.error)); }
+          finish(null);
+        }, function (e) {
+          // A throw is retried unless it is an auth server's 4xx answer.
+          var s = e && e.status;
+          fail(!(typeof s === 'number' && s >= 400 && s < 500));
+        });
+      }
+
+      attempt(CHILD_SESSION_FIRST_WAIT_MS, function (isNetwork) {
+        if (!isNetwork) { return finish(new Error(CHILD_LOGIN_FAILED)); }
+        later(function () {
+          if (settled) { return; }
+          attempt(CHILD_SESSION_RETRY_WAIT_MS, function (isNetwork2) {
+            finish(isNetwork2 ? networkFailure() : new Error(CHILD_LOGIN_FAILED));
+          });
+        }, CHILD_SESSION_RETRY_PAUSE_MS);
+      });
+    });
   }
 
   function projectRef() {
