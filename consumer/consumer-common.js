@@ -423,7 +423,10 @@
       window.location.href = d.url;
       return true;
     }).catch(function (e) {
-      console.error('[consumer/checkout]', e);
+      /* ⊕ Live checkout incident (9 Oct 2026): the backend's step and Stripe
+         request id ride on e.data — logged whole, so a failure in a parent's
+         browser can be matched to the server's log line. */
+      console.error('[consumer/checkout]', e, e && e.data);
       restoreCheckout(btn);
       var code = (e && e.code) || '';
       /* ⊕ B2C fix run (9 Oct 2026). Stripe already holds this family's
@@ -448,10 +451,17 @@
           '">Add a child</a></p>';
         return false;
       }
+      /* ⊕ Live checkout incident (9 Oct 2026). Every other failure used to
+         become "The payment page didn't open." — the backend's own sentence
+         ("…Nothing has been charged…") was thrown away, so the one thing a
+         parent most needs to know after a failed card step never reached
+         them. api() has already reduced the backend's message to a plain
+         sentence (or nothing); when there is one, it is what they read. */
+      var said = (e && e.status && e.message && code !== 'no_url') ? String(e.message) : '';
       var line = code === 'timeout' ? 'That took too long.'
                : code === 'network' ? 'We couldn’t reach MrBadmus.'
                : code === 'already_subscribed' ? 'This account already has a subscription.'
-               : 'The payment page didn’t open.';
+               : said || 'The payment page didn’t open.';
       host.innerHTML = '<p>' + escapeHtml(line) +
         (code === 'already_subscribed' ? '' :
           ' <button type="button" class="c-linkbtn" data-c-retry>Try again</button>') + '</p>';
