@@ -62,7 +62,7 @@ headless Chrome (two options, the right reply per pick, the bridge, the rail sto
 ticks, no console errors), every other KS3 page was compared with main byte for
 byte, and the fast gates were run before the commit.
 
-## The openers (10 of 185 lessons)
+## The openers (20 of 185 lessons)
 
 | Year | Lesson | Old opener | New question and two options | Correct option, and why | Pushed / waiting |
 |---|---|---|---|---|---|
@@ -76,5 +76,157 @@ byte, and the fast gates were run before the commit.
 | 7 | joints (B2) | Why is the shoulder the one that gives way?<br>4 options: Shoulder muscles are weaker than elbow muscles / It moves in far more directions, so far more directions can push it out / People use their shoulders more / The bones there are softer | If you had to guess, why does the shoulder come out of place so much more than the elbow?<br>**A:** It moves in more directions<br>**B:** Its muscles are weaker<br>*also changed: title, big question* | **It moves in more directions.** Every direction a joint can move in is a direction it cannot hold against. The shoulder swings almost anywhere, so almost anything can push it out. | batch 1: committed, not pushed |
 | 7 | antagonistic-muscle-pairs (B2) | You push a door open, straightening your arm. What straightens it?<br>4 options: The biceps pushes the forearm out / The biceps gets longer on its own / A different muscle, behind the arm, pulls / Nothing does — the arm falls straight | If you had to guess, when you push a door open, where is the muscle that straightens your arm?<br>**A:** On the front of your upper arm<br>**B:** On the back of your upper arm | **On the back of your upper arm.** A muscle on the back of the upper arm, the triceps, pulls on the bone behind your elbow and swings the forearm straight. | batch 1: committed, not pushed |
 | 7 | biomechanics-forces-in-the-body (B2) | Something about that arrangement is doing the damage. What?<br>4 options: Muscles are simply weak for their size / The two distances from the elbow are very different / The bag is heavier than it looks / The forearm bones get in the way of the pull | If you had to guess, why does your biceps have to pull so much harder than the bag weighs?<br>**A:** Some of its pull is wasted<br>**B:** It is attached near the elbow<br>*also changed: title, scene* | **It is attached near the elbow.** The bag sits far out along your forearm, but the muscle pulls close to the elbow. A pull that close in has to be much bigger to hold the bag up. | batch 1: committed, not pushed |
+| 7 | a-balanced-diet (B3) | One orange. What is it doing?<br>4 options: Supplying energy the rest of the plate is missing / Supplying about 50 mg of one substance the body cannot make / Making the meal easier to digest / Adding water, which the rest of the plate lacks | If you had to guess, what in the orange saves the person on Plate B?<br>**A:** A tiny vital substance<br>**B:** A bit more energy<br>*also changed: scene, big question* | **A tiny vital substance.** Just 50 mg of vitamin C, a tiny fraction of the meal. Without it the body cannot build the protein that holds your body together. | batch 2: committed, not pushed |
+| 7 | food-tests (B3) | What can you conclude from tube 2 on its own?<br>4 options: That milk contains no sugar / That milk contains less sugar than tube 1 suggested / Nothing about the milk at all / That the Benedict’s solution had gone off | If you had to guess, what does tube 2 on its own tell you about the milk?<br>**A:** It has no sugar in it<br>**B:** Nothing either way<br>*also changed: scene* | **Nothing either way.** On its own, a blue tube only says the test did not find sugar this time. That is a fact about the test, not about the milk. | batch 2: committed, not pushed |
+| 7 | energy-in-food-and-what-you-need (B3) | Same food in. Why the different outcome?<br>4 options: The cyclist digests food more efficiently / They transfer very different amounts of energy in a day / The older person’s body stores food instead of using it / 11 000 kJ is the wrong amount for both of them | If you had to guess, what explains the different outcome?<br>**A:** How much energy each body needs<br>**B:** How well each body digests food<br>*also changed: scene, big question* | **How much energy each body needs.** Bodies need very different amounts of energy in a day. The same food is more than enough for one and not enough for the other. | batch 2: committed, not pushed |
+| 7 | when-diet-goes-wrong (B3) | How can both be true at once?<br>4 options: The intake figure must have been measured wrongly / Malnutrition is about balance, not quantity / Their body is failing to digest any of the food / 13 000 kJ is not actually very much | If you had to guess, could this patient be malnourished?<br>**A:** Yes, they could be<br>**B:** No, not on that much<br>*also changed: title, scene, big question* | **Yes, they could be.** Malnourished means badly nourished, not underfed. A big diet can still be missing something the body needs, such as iron or a vitamin. | batch 2: committed, not pushed |
+| 7 | the-digestive-system (B3) | Could that liquid pass straight into your blood?<br>4 options: Yes — it is a liquid with no lumps in it / Yes, but only the parts that dissolved / No — the molecules in it are still far too large / No — it has not been mixed with stomach acid | If you had to guess, could that smooth liquid go straight into your blood?<br>**A:** Yes, it is smooth enough<br>**B:** No, the bits are too big | **No, the bits are too big.** Smooth is not the same as small enough. The starch in the liquid is still in long chains, far too big to cross into your blood. | batch 2: committed, not pushed |
+| 7 | enzymes-in-digestion (B3) | So what is an enzyme doing?<br>4 options: Being broken down along with the starch / Speeding the reaction up without being changed by it / Turning itself into glucose / Supplying the energy the reaction needs | If you had to guess, is the amylase still there once the starch has gone?<br>**A:** Yes, all of it<br>**B:** No, it gets used up<br>*also changed: title, scene, big question* | **Yes, all of it.** All of it is still there. An enzyme is a catalyst: it speeds a reaction up without being used up, so a teaspoon goes a very long way. | batch 2: committed, not pushed |
+| 7 | absorption-and-the-small-intestine (B3) | Same length, same width, sixty times the surface. How?<br>4 options: The intestine is coiled up, which adds surface / Its wall is folded at three different scales / It stretches when food is inside it / Its wall is much thicker than a hose’s | If you had to guess, how does the intestine get sixty times the surface of a hose?<br>**A:** It is coiled up<br>**B:** Its wall is folded<br>*also changed: big question* | **Its wall is folded.** Folded, and then folded again. Folds with bumps on them, and tinier bumps on those, give far more surface than a plain tube of the same size. | batch 2: committed, not pushed |
+| 7 | bacteria-in-the-gut (B3) | Removing every bacterium made the mouse worse. Why?<br>4 options: The sterile food was less nutritious / Its gut bacteria had been doing jobs it cannot do itself / Living in a bubble is stressful / It could not digest anything at all without bacteria | If you had to guess, does a mouse with no bacteria need more food than a normal mouse, or less?<br>**A:** More food<br>**B:** Less food<br>*also changed: scene, big question* | **More food.** About 30% more. Gut bacteria release energy from parts of the food the mouse cannot digest itself, so without them that energy is lost. | batch 2: committed, not pushed |
+| 7 | particle-model (C1) | Three millilitres of liquid are missing. Commit to a reason.<br>4 options: Some of it evaporated while you were pouring / The two liquids reacted and made something smaller / Particles of one liquid settled into gaps between particles of the other / The measuring cylinder is not accurate enough | If you had to guess, where did the missing 3 ml go?<br>**A:** It evaporated away<br>**B:** It squeezed into gaps<br>*also changed: big question* | **It squeezed into gaps.** Nothing is lost. Every drop is still in the cylinder. Liquids are not solid all the way through, so the small bits of one settle into gaps between the big bits of the other. | batch 2: committed, not pushed |
+| 7 | solids-liquids-and-gases (C1) | So what got bigger?<br>4 options: Each iron particle expanded in the heat / The gaps between the particles got bigger / The steel absorbed moisture from the summer air / Extra particles were added by the heat | If you had to guess, when steel expands in the heat, what gets bigger?<br>**A:** Each particle swells up<br>**B:** The gaps between them<br>*also changed: big question* | **The gaps between them.** Heat makes the particles jiggle harder, so each needs more room and the gaps grow. The particles themselves stay exactly the same size. | batch 2: committed, not pushed |
 
+## Arguable calls
 
+The full per-lesson review notes (what each reviewer changed and why) are kept
+with the run's scratch files; these are the calls worth Mide's eye.
+
+**How the rule was applied**
+
+- **"Good guess." / "Fair guess."** open every reply, as in KS4's `Ks4Guess`.
+  KS3's R3 says activities never mark, and the options are never visually
+  marked, but those two words do tell a pupil which option was right. That is
+  what the rule's "friendly reply to each option" asks for, and what KS4 does.
+  If Mide wants KS3 strictly unmarked, the two words are one line in
+  `_hook_guess()` (`build_ks3.py`).
+- **Options stay re-choosable** (R3); `Ks4Guess` locks after one pick. A pupil
+  can press the other option and read its reply too.
+- **The railbar and the H1 count as "above it".** On load, the railbar shows the
+  hook's rail label directly above the H1, and neither may be changed. Where
+  either answered the natural guess, the guess changed angle instead (e.g. *seasons-and-the-tilt*'s label reads "Closer in January";
+  *how-far-is-a-light-year*'s H1 is the question itself; *the-earth-is-a-magnet*,
+  *electromagnets*, *sound-needs-a-medium*, *atmospheric-pressure*,
+  *conservation-of-energy*). Each new angle is still that lesson's own science.
+- **Later text that points back at the hook was kept true.** Where a rail
+  label, ladder feedback or vocabulary note refers to the hook's situation
+  ("the door-hinge test at the top of this lesson", "the bag of sugar at the
+  top of this lesson", "This is the dawn reading from the hook", "This is the
+  hook, with a bigger ball"), the opener kept that situation. *moments*, *the-
+  gas-exchange-system*, *stomata-and-gas-exchange-in-plants*, *non-contact-
+  forces* and *drawing-and-adding-forces* went back to their old scenes for
+  this reason.
+- **A guess may repeat a question the page asks later** only where the old hook
+  already asked it (the brief's allowance): *acid-plus-metal*, *whats-in-the-
+  air*, *filtration*, *distillation*, *hearing-and-auditory-range*,
+  *gestation-placenta-and-birth*, *aerobic-respiration*. Where a draft
+  answered a *different* later prediction, it was changed (*displacement*,
+  *chemical-vs-physical-change*, *word-equations*, *symbol-equations-and-
+  balancing*, *transverse-waves-and-superposition*, *mass-in-a-reaction*).
+- **Some hooks no longer offer the misconception the register says they
+  elicit** (*toxic-build-up* ECO-09, *echoes* WAVE-25/27, *light-year*
+  SPACE-19, *disturbing-a-food-web* ECO-05, *relative-motion* FORCE-09). In
+  each case the H1 or rail label already ruled that belief out, so it could not
+  be drawn out honestly. The register is metadata; no gate reads it beyond the
+  `#s-hook` anchor.
+
+**Science judgement calls (Mide's gate)**
+
+- *testing-the-model*: solid candle wax sinks in its own melt (paraffin about
+  0.90 g/cm³ solid against 0.78 liquid; it is why a candle sinks round the
+  wick). Matches the lesson's "almost every other solid sinks in its own liquid".
+- *springs-and-hookes-law*: "the pattern stops before 10 N" holds for the
+  lesson's model spring (limit 6 N) and a small school-lab spring; a very stiff
+  spring would survive 10 N.
+- *gravity-and-weight*: the scale reads "a little less" on Everest (about 0.3%,
+  the lesson's own figure). True of the reading, though smaller than a bathroom
+  scale's error.
+- *ceramics-polymers-and-composites*: rests on the lesson's claim that a china
+  plate laid flat on a hard floor would hold a person standing on it.
+- *what-drugs-do-to-the-body*: "caffeine is a drug" rests on the lesson's
+  definition, "any substance that changes the way the body works".
+- *chemical-vs-physical-change*: colour change is the wrong option, following
+  the lesson's ruling that colour is a clue and not the test; some KS3 courses
+  call it a "sign of reaction". The reply concedes it is a clue.
+- *human-reproductive-systems*: "about a million" immature eggs at birth is the
+  lesson's figure; sources give 1–2 million.
+- *seasons-and-the-tilt*: the correct reply states the Earth is nearest the Sun
+  in early January.
+- *the-atom-daltons-model*: "furnaces, acids and mixing" deliberately rules out
+  nuclear transmutation.
+
+## Lesson-text issues found, not fixed (outside the opener rule)
+
+The rule forbade touching any other lesson text, so these are reported, not
+changed. The first group are science errors on live pages.
+
+**Science errors**
+
+1. **groups-and-periods** — potassium is *one* period below sodium (periods 3
+   and 4), not two. Still wrong in the hook's rail label "Next door and two rows
+   down" (shown above the H1 on load) and in the think reveal ("two rows down the
+   same column"). The opener no longer says it.
+2. **group-1-the-alkali-metals** — the explainer says every group 1 metal is
+   "light enough to float on water", and the ladder's *produce* success
+   criterion credits "caesium would float". Rubidium (≈1.5 g/cm³) and caesium
+   (≈1.9 g/cm³) sink.
+3. **charging-by-rubbing** — the think block (CHRG-01) says "Every electron
+   that ends up on the duster was on the rod a moment earlier". In this lesson
+   the polythene rod ends up negative, so the electrons went from the duster to
+   the rod: backwards. (The hook's own old reveal had it right.)
+4. **energy-and-changes-of-state** — the think reveal says melting takes
+   "several times more energy than warming the same water by a single degree"
+   (it is about 80 times: 334 kJ/kg against 4.2 kJ/kg per °C), and that ice at
+   the plateau "is absorbing heat faster than at any other point". With a steady
+   flame the *rate* is the same throughout; it is the *total* that is large.
+5. **heating-and-thermal-equilibrium** — the hook scene still says a 40 °C bath
+   "can genuinely injure a small child"; the file's own MRB-297 note says 40 °C
+   is a normal bath (the meta description was corrected, the scene was not).
+6. **unicellular-organisms** — the big question calls a Paramecium "a whole
+   animal"; it is a single-celled protist ("a whole organism").
+7. **chromosomes-genes-and-dna** — the hook scene says "Every cell in your body
+   is doing this" (copying DNA in the nucleus); red blood cells have no nucleus,
+   as the lesson's own bench card says.
+8. **acids-and-alkalis** — the big question says one liquid "is safe to drink";
+   the scene says both are dangerous, and neither is safe.
+9. **atmospheric-pressure** — the old title "Nothing touched the can." and big
+   question "nothing goes anywhere near it" are false (the air presses on it).
+   The opener replaces the title; the meta description still says it.
+10. **the-gas-exchange-system** — "Six parts, and only the last one exchanges
+    anything": the sixth card is the ribs and muscles; the exchanger is the
+    fifth (already flagged in the lesson's docstring).
+11. **refraction** — "slows down when it enters a denser transparent material":
+    a pupil will read "denser" as mass density, and perspex is less dense than
+    water yet slows light more.
+
+**Wording and references**
+
+- *word-equations*: the rail label "Twenty-two words" — the quoted sentence has 25.
+- *gravity-and-weight*: the hook's rail label is "The falling lift", but the hook
+  (old and new) is Everest.
+- *human-reproductive-systems*: the oviduct note says "the structure the reveal
+  warned you about"; no reveal mentions the oviduct.
+- *group-0-and-why-groups-exist*: a vocabulary note shows a raw anchor id to
+  pupils ("that is the whole of #s-uses").
+- *chromatography*: Pen D's lane is a single blue spot, but the scene says all
+  four inks look identical on paper.
+- *which-reaction-is-this* calls acid + carbonate "neutralisation"; the C6
+  carbonates lesson never does.
+- *compounds*: the safety note says hydrogen sulfide is given off; the explainer
+  says every atom "is still in the dish".
+- *P6 misconception ids*: on five P6 pages (how-sound-is-made, transverse-waves,
+  frequency-pitch-and-loudness, sound-needs-a-medium, hearing-and-auditory-range)
+  the "Think again" quotes carry ids one or two off the register's.
+- *energy-stores*, *atmospheric-pressure*, *echoes*: the meta description (search
+  snippet) still states the hook's answer.
+- **Rail labels and H1s that state their lesson's answer before the hook**
+  (handled by moving the guess, listed so Mide can decide whether to change the
+  labels): *formulae* "One atom apart", *relative-motion* "Relative to what",
+  *gestation-placenta-and-birth* "Never mix", *lifestyle-and-the-developing-
+  foetus* "Not a filter", *leaves-built-for-the-job* "Every hole leaks",
+  *seasons-and-the-tilt* "Closer in January", *the-sun-stars-and-galaxies* "A
+  star you can see in daylight", *how-far-is-a-light-year* (H1 and "A year that
+  is a distance"), *antagonistic-muscle-pairs* "Only ever a pull",
+  *biomechanics* "Eight times harder", *thermal-decomposition* "One in, two
+  out", *what-a-force-is* "The wall pushed you", *gravity-earth-moon-and-sun*
+  "Why the Moon does not fall" (the lesson's point is that it *is* falling).

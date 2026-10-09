@@ -280,6 +280,261 @@ START_HERE = {
         bridge="Next: a forearm rig where you change the load and the "
                "distances, then work out the muscle's force yourself.",
     ),
+
+
+    # ── Year 7 · B3 Nutrition and digestion ─────────────────────────────────────
+
+    # a-balanced-diet — old hook question (what is the orange doing?) cut to tiny
+    # vital substance vs energy. Scene trimmed (the "right amounts" sentence
+    # ruled out energy); big_question rewritten (it said tiny amounts are
+    # essential).
+    "a-balanced-diet": dict(
+        scene="Plate A is white rice, chicken, oil, water and salt, every day,"
+              " nothing else. Plate B is the same food plus one orange. The "
+              "person eating Plate A dies. The person eating Plate B is fine.",
+        question="If you had to guess, what in the orange saves the person on "
+                 "Plate B?",
+        options=[
+            ("A tiny vital substance",
+             "Just 50 mg of vitamin C, a tiny fraction of the meal. Without it"
+             " the body cannot build the protein that holds your body "
+             "together."),
+            ("A bit more energy",
+             "The rice and oil on Plate A are already full of energy. What the"
+             " plate lacks is a tiny amount of vitamin C."),
+        ],
+        answer=0,
+        bridge="So balance is not about equal amounts. Next: set seven "
+               "nutrients to the amounts you think a day needs, then see the "
+               "real ones.",
+        big_question="What does “balanced” actually mean for a diet?",
+    ),
+
+    # food-tests — back to the old hook's own question ("tube 2 on its own"): the
+    # writer's "does a blue tube prove no sugar?" is answered by the scene, since
+    # the same milk goes red in tube 1. Scene reworded to drop "Nobody made a
+    # mistake, the difference is", which framed the answer.
+    "food-tests": dict(
+        scene="Same bottle of milk, same Benedict's solution, same water bath."
+              " Tube 1 was heated for five minutes and comes out brick red. "
+              "Tube 2 was heated for thirty seconds and comes out blue.",
+        question="If you had to guess, what does tube 2 on its own tell you "
+                 "about the milk?",
+        options=[
+            ("It has no sugar in it",
+             "Blue does look like a clear no. But the same milk goes brick red"
+             " in tube 1, after a longer heat. A blue tube only says the test "
+             "did not find sugar this time."),
+            ("Nothing either way",
+             "On its own, a blue tube only says the test did not find sugar "
+             "this time. That is a fact about the test, not about the milk."),
+        ],
+        answer=1,
+        bridge="Next: run four tests on five foods, say what you expect each "
+               "time, and see what you may write down.",
+    ),
+
+    # energy-in-food-and-what-you-need — old hook question (why the different
+    # outcome?) cut to energy needed vs digestion. Scene rewritten (reading vs
+    # 120 km cyclist gave it away; first sentence no longer repeats the title);
+    # "need" not "use", since the lesson teaches energy is transferred, not used
+    # up. big_question rewritten ("whose day it is").
+    "energy-in-food-and-what-you-need": dict(
+        scene="A 68-year-old and a 25-year-old eat the same meals, in the same"
+              " portions, at the same times: about 11 000 kJ a day each. After"
+              " a month, one has gained mass and one has lost it.",
+        question="If you had to guess, what explains the different outcome?",
+        options=[
+            ("How much energy each body needs",
+             "Bodies need very different amounts of energy in a day. The same "
+             "food is more than enough for one and not enough for the other."),
+            ("How well each body digests food",
+             "Digestion does vary a little, but not enough to turn the same "
+             "meals into a gain for one and a loss for the other. What differs"
+             " is how much energy each body needs."),
+        ],
+        answer=0,
+        bridge="Next: feed five different people for a day and watch the same "
+               "plate fit one and not another.",
+        big_question="How much food does a body need in a day, and what "
+                     "decides it?",
+    ),
+
+    # when-diet-goes-wrong — ANGLE CHANGED: the writer's "more food or different
+    # food?" was answered by the scene (they already eat more than enough) and
+    # not unarguable (a surplus, or a gut that cannot absorb, is not fixed by
+    # different food). New guess is the old hook's paradox itself: can someone
+    # eating this much be malnourished? Title rewritten (it stated "severely
+    # malnourished"); scene drops the diagnosis sentence. Rail "Full plate" still
+    # lands. big_question rewritten ("on a full plate").
+    "when-diet-goes-wrong": dict(
+        title="A patient on 13 000 kJ a day.",
+        scene="Not going short of food. Not skipping meals. Taking in more "
+              "energy than an adult needs, every day.",
+        question="If you had to guess, could this patient be malnourished?",
+        options=[
+            ("Yes, they could be",
+             "Malnourished means badly nourished, not underfed. A big diet can"
+             " still be missing something the body needs, such as iron or a "
+             "vitamin."),
+            ("No, not on that much",
+             "Most people think malnourished means underfed. But it means "
+             "badly nourished, and a diet can be huge in energy and still be "
+             "missing iron or a vitamin."),
+        ],
+        answer=0,
+        bridge="Malnutrition is not one problem but three separate ones. Next:"
+               " the three side by side, then five clinics to diagnose.",
+        big_question="What can go wrong with a diet, and what does each "
+                     "problem do to the body?",
+    ),
+
+    # the-digestive-system — old hook question kept as yes/no. Replies reworded
+    # so "chains" is tied to starch, not left unexplained. Title, scene and
+    # big_question already fine.
+    "the-digestive-system": dict(
+        question="If you had to guess, could that smooth liquid go straight "
+                 "into your blood?",
+        options=[
+            ("Yes, it is smooth enough",
+             "Smooth does feel finished. But blades only make the pieces "
+             "smaller. The starch inside is still in long chains, far too big "
+             "to cross into your blood."),
+            ("No, the bits are too big",
+             "Smooth is not the same as small enough. The starch in the liquid"
+             " is still in long chains, far too big to cross into your blood."),
+        ],
+        answer=1,
+        bridge="Digestion has to cut the molecules themselves, and enzymes do "
+               "that. Next: follow a sandwich through seven stops of the gut.",
+    ),
+
+    # enzymes-in-digestion — old hook question (what is an enzyme doing?) cut to
+    # still there vs used up. Title rewritten ("a teaspoon digests a kilogram"
+    # leaned on reuse; rail "A teaspoon" still lands); scene rewritten (weighing
+    # before and after showed it unchanged); big_question rewritten ("still be
+    # there at the end").
+    "enzymes-in-digestion": dict(
+        title="A teaspoon of amylase and a kilogram of starch.",
+        scene="Mix a teaspoon of amylase, an enzyme from your spit, with a "
+              "kilogram of starch and wait. By the end, the starch is gone.",
+        question="If you had to guess, is the amylase still there once the "
+                 "starch has gone?",
+        options=[
+            ("Yes, all of it",
+             "All of it is still there. An enzyme is a catalyst: it speeds a "
+             "reaction up without being used up, so a teaspoon goes a very "
+             "long way."),
+            ("No, it gets used up",
+             "The starch certainly is used up. But an enzyme ends each job "
+             "exactly as it started, ready for the next."),
+        ],
+        answer=0,
+        bridge="Next: run the reaction on a bench and watch three counters, "
+               "including one that counts the enzyme.",
+        big_question="What is an enzyme, and what can stop it from working?",
+    ),
+
+    # absorption-and-the-small-intestine — old hook question cut to coiled vs
+    # folded. big_question rewritten (the old one only restated the scene's
+    # numbers).
+    "absorption-and-the-small-intestine": dict(
+        question="If you had to guess, how does the intestine get sixty times "
+                 "the surface of a hose?",
+        options=[
+            ("It is coiled up",
+             "The gut is packed in tight. But coiling a tube does not change "
+             "its inside surface. The wall itself has to be folded."),
+            ("Its wall is folded",
+             "Folded, and then folded again. Folds with bumps on them, and "
+             "tinier bumps on those, give far more surface than a plain tube "
+             "of the same size."),
+        ],
+        answer=1,
+        bridge="Next: switch on each level of folding and watch the absorbing "
+               "surface grow.",
+        big_question="How can a tube the size of a garden hose absorb a whole "
+                     "meal?",
+    ),
+
+    # bacteria-in-the-gut — ANGLE CHANGED from "healthier or sicker?": a germ-
+    # free mouse in a sterile bubble meets no infections, so "sicker" is
+    # arguable. New guess uses the lesson's own headline fact (about 30% more
+    # food), where the tempting wrong answer ("bacteria eat your food, so less")
+    # is a real intuition. Scene rewritten (it listed every bad outcome);
+    # big_question rewritten ("not a failure, it is the arrangement"). Rail
+    # "Germ-free mouse" and the all-off "you have just built the germ-free mouse"
+    # still land.
+    "bacteria-in-the-gut": dict(
+        scene="Sterile food, sterile air, sterile water, no bacteria anywhere "
+              "in or on it, ever. The mouse lives its whole life in a sealed, "
+              "germ-free bubble.",
+        question="If you had to guess, does a mouse with no bacteria need more"
+                 " food than a normal mouse, or less?",
+        options=[
+            ("More food",
+             "About 30% more. Gut bacteria release energy from parts of the "
+             "food the mouse cannot digest itself, so without them that energy"
+             " is lost."),
+            ("Less food",
+             "That makes sense if bacteria just share your food. But this "
+             "mouse needs about 30% more, because gut bacteria release energy "
+             "from fibre it cannot digest itself."),
+        ],
+        answer=0,
+        bridge="Food is only one of the jobs the bacteria were doing. Next: "
+               "switch off their five jobs one at a time and see what breaks.",
+        big_question="Your gut is home to trillions of bacteria. What are they"
+                     " doing there?",
+    ),
+
+
+    # ── Year 7 · C1 Particles and their behaviour ───────────────────────────────
+
+    # particle-model — old hook question (where did the 3 ml go?) cut to
+    # evaporated vs squeezed into gaps. big_question rewritten ("nothing
+    # evaporated" ruled out the wrong option).
+    "particle-model": dict(
+        question="If you had to guess, where did the missing 3 ml go?",
+        options=[
+            ("It evaporated away",
+             "Some alcohol does evaporate, but nowhere near 3 ml, and you get "
+             "97 every time. The liquid is all still there, tucked into gaps."),
+            ("It squeezed into gaps",
+             "Nothing is lost. Every drop is still in the cylinder. Liquids "
+             "are not solid all the way through, so the small bits of one "
+             "settle into gaps between the big bits of the other."),
+        ],
+        answer=1,
+        bridge="That idea, that matter is made of separate particles with "
+               "gaps, is the whole model. Next: try to break it by cutting a "
+               "sugar cube in half, again and again.",
+        big_question="50 ml of water and 50 ml of alcohol make 97 ml, every "
+                     "time. What does that tell us about liquids?",
+    ),
+
+    # solids-liquids-and-gases — old hook question (so what got bigger?) cut to
+    # particles vs gaps. big_question rewritten ("the same particles" leaned on
+    # the particles not changing).
+    "solids-liquids-and-gases": dict(
+        question="If you had to guess, when steel expands in the heat, what "
+                 "gets bigger?",
+        options=[
+            ("Each particle swells up",
+             "Swelling is the natural thing to picture, but the particles stay"
+             " exactly the same size. It is the gaps between them that grow."),
+            ("The gaps between them",
+             "Heat makes the particles jiggle harder, so each needs more room "
+             "and the gaps grow. The particles themselves stay exactly the "
+             "same size."),
+        ],
+        answer=1,
+        bridge="Same particles, different spacing and movement: that is the "
+               "idea behind every state. Next: watch one substance as a solid,"
+               " a liquid and a gas.",
+        big_question="Ice, water and steam are the same substance. So what "
+                     "exactly is different about them?",
+    ),
 }
 
 
