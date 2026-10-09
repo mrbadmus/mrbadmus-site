@@ -886,6 +886,15 @@ def check_layout(R, slug, route, width, ref_widths_entry, port_widths_entry, hav
                                 != squash(normalize_ws(psec.get("text", ""))))
                 if i == 0:
                     h_tol = 180
+                    # ⊕ R19 (Mide, 9 Oct 2026) — the ruled big question is a
+                    # different length from Design's, so the header rewraps by
+                    # its own amount ON TOP of the removals above: measured
+                    # 197px on states-of-matter TH at 360 (180 + one line
+                    # fewer of display type). Only these three lessons, and
+                    # B-text has already proved the header text is the ruled
+                    # text byte-exact, so a collapse would still fail here.
+                    if slug in ks4_rulings.R19_BIGQ:
+                        h_tol = 260
                 elif text_differs:
                     # The RAW text (before any whitelist substitution) is
                     # not identical — for ANY reason, whether B-text's
