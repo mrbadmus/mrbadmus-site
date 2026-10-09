@@ -203,7 +203,10 @@ def pre_trial(d):
         d.wait("!!document.getElementById('to-stripe')")
         check(d.js("document.querySelectorAll('#su-main [data-plan=month]').length") == 1 and
               d.js("document.querySelectorAll('#su-main [data-plan=year]').length") == 1 and
-              "Monthly" in d.text("#su-main") and "Annual" in d.text("#su-main") and
+              # ⊕ 9 Oct 2026: innerText follows CSS text-transform, and the plan
+              # labels are drawn uppercase ("MONTHLY" / "ANNUAL"), so compare
+              # case-insensitively — the same assertion, read the way it renders.
+              "monthly" in d.text("#su-main").lower() and "annual" in d.text("#su-main").lower() and
               d.text("#su-main h1") == "Start your free week",
               "@%d Choose a plan → \"Start your free week\" with Monthly AND Annual on screen" % width,
               d.text("#su-main h1"))
