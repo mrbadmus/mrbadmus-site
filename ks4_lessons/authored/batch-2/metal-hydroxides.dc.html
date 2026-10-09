@@ -48,12 +48,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Blue solution in. Blue solid out.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">Copper(II) sulfate solution is clear and blue. Add a few drops of colourless sodium hydroxide solution and a pale blue solid appears, swirls, and slowly sinks to the bottom of the tube.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What is the blue solid?" figure-svg="{{ hookFig }}" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,520px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="Blue solution in. Blue solid out." scene="Copper(II) sulfate solution is clear and blue. Add a few drops of colourless sodium hydroxide solution and a pale blue solid appears, swirls, and slowly sinks to the bottom of the tube." question="is the blue solid a new substance, or copper sulfate coming back out of the solution?" figure-svg="{{ hookFig }}" options="{{ hookOptions }}" bridge="Copper(II) hydroxide is insoluble, so it comes out as a solid: a precipitate. Next: how sodium hydroxide tests for metal ions." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -499,12 +494,9 @@ class Component extends DCLogic {
         { href: K.hrefFor ? K.hrefFor('flame-tests', R) : null, label: 'Flame tests' }].filter((c) => c.href) : [],
       hookFig: ready ? this.hookFig() : '',
       hookOptions: [
-        { text: 'A new insoluble compound containing the copper', reply: 'Test that idea on the bench below.' },
-        { text: 'Copper sulfate coming back out of the solution', reply: 'Copper sulfate stays dissolved. The solid forms only once hydroxide arrives.' },
-        { text: 'The sodium hydroxide, turned blue by the solution', reply: 'The sodium hydroxide stays dissolved. The solid carries the copper.' },
-        { text: 'Copper metal, pushed out of its compound', reply: 'Copper metal is pinkish-brown, and nothing here could displace it.' }
+        { text: 'A new substance', correct: true, reply: 'It is copper(II) hydroxide: copper ions from one solution met hydroxide ions from the other.' },
+        { text: 'Copper sulfate coming back out', correct: false, reply: 'Copper sulfate dissolves easily, and adding sodium hydroxide does not change that. The copper ions have joined hydroxide ions to make a new compound, copper(II) hydroxide.' }
       ],
-      hookReveal: 'The solid is copper(II) hydroxide, Cu(OH)₂. Copper ions from one solution meet hydroxide ions from the other, and the compound they make is insoluble, so it comes out as a solid. A solid that forms when two solutions mix is a precipitate.',
       onHook: (i) => this.setState({ hook: i }),
       benchTitle: isUnknown ? 'Tube ' + s.cur + (r.idOk ? ' · identified' : ' · run the test, then name the ion') : T.name + ' · call it, then add the sodium hydroxide',
       benchProgress: round1 ? idCount + ' of 4 unknowns identified' : KNOWN.filter((t) => this.knownDone(s.rec[t], t)).length + ' of 6 solutions tested',

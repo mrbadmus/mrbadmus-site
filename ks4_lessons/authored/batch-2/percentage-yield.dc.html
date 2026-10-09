@@ -48,12 +48,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">8.0 g on paper. 6.2 g in the dish.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">A student makes copper sulfate crystals from copper oxide and sulfuric acid. From the balanced equation, the reactants they used can make 8.0 g at most. After filtering, crystallising and drying, the balance reads 6.2 g.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Where did the missing 1.8 g go?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="8.0 g on paper. 6.2 g in the dish." scene="A student makes copper sulfate crystals from copper oxide and sulfuric acid. From the balanced equation, the reactants they used can make 8.0 g at most. After filtering, crystallising and drying, the balance reads 6.2 g." question="was the missing 1.8 g destroyed in the reaction, or left behind along the way?" options="{{ hookOptions }}" bridge="The 8.0 g is the theoretical yield and the 6.2 g is the actual yield. Next: follow the copper sulfate through the practical." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -315,12 +310,9 @@ class Component extends DCLogic {
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: ready ? [{ href: K.hrefFor('using-moles-calculations', R), label: 'Using moles in calculations' }, { href: K.hrefFor('atom-economy', R), label: 'Atom economy' }].filter((c) => c.href) : [],
       hookOptions: [
-        { text: 'It was destroyed when the copper oxide and the acid reacted together', reply: 'Atoms are never created or destroyed in a reaction. The 1.8 g is somewhere, just not in the dish.' },
-        { text: 'It stayed behind in the filter paper, the glassware and the solution', reply: 'Test it on the yield bench below.' },
-        { text: 'It escaped as steam while the solution was being heated', reply: 'Steam is water leaving. The copper sulfate stays behind in the basin.' },
-        { text: 'Nothing is missing: 8.0 g was only an estimate of the mass', reply: 'The 8.0 g is calculated from the balanced equation: the most those reactants can make.' }
+        { text: 'Destroyed in the reaction', correct: false, reply: 'Atoms are never destroyed in a reaction. The 1.8 g is still somewhere, just not in the dish.' },
+        { text: 'Left behind along the way', correct: true, reply: 'Some copper sulfate stayed in the filter paper, on the glassware and in the solution.' }
       ],
-      hookReveal: 'The 8.0 g is the theoretical yield: the maximum mass the balanced equation allows. The 6.2 g is the actual yield. Nothing was destroyed. Some copper sulfate was left behind at each step that separated or moved the product. Percentage yield puts a number on the gap.',
       onHook: (i) => this.setState({ hook: i }),
       benchProgress: (benchDone ? 5 : s.st) + ' of 5 steps run',
       stageFig: ready ? K.fig(this.stageSvg(s.st, shownHere), '') : null,

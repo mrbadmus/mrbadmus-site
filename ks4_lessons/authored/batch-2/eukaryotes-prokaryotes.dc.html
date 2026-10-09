@@ -52,13 +52,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">A liver cell and a bacterium, drawn to the same scale.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">Both are living cells, and both need DNA to make their proteins.</p>
-        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 640px;">{{ hookFig }}</div>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Where is the bacterium's DNA?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="A liver cell and a bacterium, drawn to the same scale." scene="Both are living cells, and both need DNA to make their proteins. The liver cell keeps its DNA inside a nucleus." question="is the bacterium’s DNA inside a nucleus too, or loose in the cell?" figure-svg="{{ hookFig }}" figure-alt="A liver cell and a bacterium drawn to the same scale" options="{{ hookOptions }}" bridge="Cells with a nucleus are eukaryotic; bacteria are prokaryotic. Next: build the two cells and see what else differs." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -359,14 +353,11 @@ class Component extends DCLogic {
         { href: K.hrefFor('microscopy', R), label: 'Microscopy' },
         { href: K.hrefFor('culturing-microorganisms', R), label: 'Culturing microorganisms' }
       ].filter((c) => c.href) : [],
-      hookFig: ready ? K.fig(hookFig(D), 'A liver cell and a bacterium drawn to the same scale') : null,
+      hookFig: ready ? hookFig(D) : '',
       hookOptions: [
-        { text: 'Inside a nucleus, like the liver cell, only smaller', reply: '' },
-        { text: 'Loose in the cytoplasm, as one loop, with no nucleus', reply: '' },
-        { text: 'It has none: a bacterium is too small to need DNA', reply: 'Every living cell needs genetic material to make its proteins.' },
-        { text: 'Only in its plasmids, which act as its nucleus', reply: 'Plasmids are extra small rings of DNA, not a nucleus.' }
+        { text: 'Inside a nucleus too', correct: false, reply: 'Most people expect that, because it is where our cells keep theirs. A bacterium has no nucleus: its DNA is loose in the cytoplasm.' },
+        { text: 'Loose in the cell', correct: true, reply: 'A bacterium has no nucleus. Its DNA is a single loop, loose in the cytoplasm.' }
       ],
-      hookReveal: 'Not in a nucleus: a bacterium has none. Its DNA is loose in the cytoplasm. What else differs, you decide below.',
       onHook: (i) => this.setState({ hook: i }),
       bCount: 'structure ' + (bk + 1) + ' of ' + PARTS.length,
       bTitle: part.name,

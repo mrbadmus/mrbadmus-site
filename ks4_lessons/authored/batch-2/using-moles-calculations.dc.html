@@ -47,12 +47,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">The fizzing stops. Something ran out.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">Magnesium fizzes in hydrochloric acid, giving off hydrogen gas: Mg + 2HCl → MgCl₂ + H₂. A student mixes 2.4 g of magnesium with 3.65 g of hydrogen chloride dissolved in water. After a while the fizzing stops.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Which reactant runs out first?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="The fizzing stops. Something ran out." scene="Magnesium fizzes in hydrochloric acid, giving off hydrogen gas: Mg + 2HCl → MgCl₂ + H₂. A student mixes 2.4 g of magnesium with 3.65 g of hydrogen chloride dissolved in water. After a while the fizzing stops." question="which ran out: the magnesium, or the hydrogen chloride?" options="{{ hookOptions }}" bridge="Next: the limiting reactant, and how to find it from the masses." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -299,12 +294,9 @@ class Component extends DCLogic {
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: ready ? [{ href: K.hrefFor('moles', R), label: 'Moles' }, { href: K.hrefFor('amounts-in-equations', R), label: 'Amounts of substances in equations' }, { href: K.hrefFor('concentration-of-solutions', R), label: 'Concentration of solutions' }, { href: K.hrefFor('titrations', R), label: 'Titrations' }].filter((x) => x.href) : [],
       hookOptions: [
-        { text: 'Magnesium, because there is a smaller mass of it', reply: 'Mass is not what reacts one-for-one. Turn both into moles first.' },
-        { text: 'Hydrogen chloride, because each Mg needs two HCl', reply: 'Hold that reason. The bench below tests it.' },
-        { text: 'Both together, because there are equal moles of each', reply: 'Equal moles, yes: 0.1 mol of each. But the equation does not use them one-to-one.' },
-        { text: 'Neither: the fizzing stops once the gas escapes', reply: 'Gas escaping does not stop a reaction. It stops when a reactant is used up.' }
+        { text: 'The magnesium', correct: false, reply: 'There is less magnesium by mass, but reactions go by numbers of particles, not by mass. Each Mg needs two HCl, so the hydrogen chloride runs out and some magnesium is left over.' },
+        { text: 'The hydrogen chloride', correct: true, reply: 'There is 0.1 mol of each, but each Mg needs two HCl. The hydrogen chloride runs out, and magnesium is left over.' }
       ],
-      hookReveal: 'Each Mg needs two HCl. Turn both masses into moles, then compare them with that 1 : 2 ratio, not with each other.',
       onHook: (i) => this.setState({ hook: i }),
       benchProgress: (s.ran[0] ? 1 : 0) + (s.ran[1] ? 1 : 0) + ' of 2 mixes reacted',
       mixTabs: ['Mix A', 'Mix B', 'Your mix'].map((lab, i) => ({ label: lab + (i < 2 && s.ran[i] ? ' ✓' : ''), pressed: s.mix === i, disabled: busy, style: this.seg(s.mix === i, busy),

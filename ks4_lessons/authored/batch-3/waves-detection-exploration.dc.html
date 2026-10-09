@@ -54,12 +54,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Nobody has ever seen the Earth's core.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">It lies thousands of kilometres beneath your feet, and no drill has come anywhere near it. Yet geologists can tell you how big the core is, and that part of it is liquid.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What evidence could they possibly have?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="Nobody has ever seen the Earth’s core." scene="It lies thousands of kilometres beneath your feet, and no drill has come anywhere near it. Yet geologists can tell you how big the core is, and that part of it is liquid." question="does their evidence come from lava, or from earthquake waves?" options="{{ hookOptions }}" bridge="The way those waves pass through the Earth, or fail to, is the evidence. Next: the two kinds of earthquake wave." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -470,11 +465,9 @@ class Component extends DCLogic {
       railV, theme, ready, draftVisible: this.props.showDraft !== false,
       endPrev: pn.prev || null, endNext: pn.next || null, endConnects: connects,
       hookOptions: [
-        { text: 'Rock samples brought up from the core by drilling', reply: 'No drill reaches anywhere near the core: it is thousands of kilometres down.' },
-        { text: 'Records of earthquake waves from all over the world', reply: '' },
-        { text: 'Lava from volcanoes, which flows up from the core', reply: 'Lava comes from far nearer the surface than the core, so it carries no sample of it.' }
+        { text: 'Lava', correct: false, reply: 'Lava comes from far nearer the surface than the core, so it carries no sample of it. The evidence is earthquake waves.' },
+        { text: 'Earthquake waves', correct: true, reply: 'Earthquakes send waves right through the Earth, and instruments all over the world record them.' }
       ],
-      hookReveal: 'Earthquakes send waves right through the Earth, and seismometers all over the world record which waves arrive, and when. Those records are evidence about a place no one can observe directly.',
       onHook: (i) => this.setState({ hook: i }),
       // seismic bench
       qEyebrow: 'Read the Earth · step ' + qs + ' of 4',

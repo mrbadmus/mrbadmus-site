@@ -63,12 +63,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Stir sugar into hot water. Where does it go?</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">The crystals vanish. The water looks exactly as clear as before, but it now tastes sweet.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What has happened to the sugar?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="A spoonful of sugar in hot water." scene="The crystals vanish. The water looks exactly as clear as before, but it now tastes sweet." question="is it still sugar, or has it turned into something new?" options="{{ hookOptions }}" bridge="Let the water evaporate and the sugar comes back, unchanged. Next: mixtures, and five ways to separate them." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -367,12 +362,9 @@ class Component extends DCLogic {
         { href: K.hrefFor('potable-water', R), label: 'Potable water' }
       ].filter((c) => c.href) : [],
       hookOptions: [
-        { text: 'It has reacted with the water to make a new substance', reply: 'A reaction makes a new substance. This still tastes of sugar.' },
-        { text: 'It is still sugar, spread out through the water', reply: '' },
-        { text: 'It has turned into water, so it cannot come back', reply: 'Sugar and water are made of different atoms: one cannot become the other.' },
-        { text: 'It has been broken down by the heat and is gone', reply: 'Hot water does not destroy sugar: the sweetness is still there.' }
+        { text: 'Still sugar', correct: true, reply: 'It is spread through the water, mixed but not chemically combined.' },
+        { text: 'Something new', correct: false, reply: 'A reaction would make a new substance, but this still tastes of sugar.' }
       ],
-      hookReveal: 'It is still sugar, mixed with the water but not chemically combined with it. Let the water evaporate and the sugar comes back, unchanged. Nothing new was made.',
       onHook: (i) => this.setState({ hook: i }),
       /* the desk */
       dTitle: DR.title,

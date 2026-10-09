@@ -52,12 +52,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Two kettles, one cup of tea.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">A 3000 W kettle and a 1500 W kettle each heat 0.5 kg of water from 20 °C to 100 °C. The 3000 W kettle finishes first.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Which kettle transfers more energy to the water?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="Two kettles, one cup of tea." scene="A 3000 W kettle and a 1500 W kettle each heat 0.5 kg of water from 20 °C to 100 °C. The 3000 W kettle finishes first." question="does the 3000 W kettle transfer more energy to the water, or the same energy, faster?" options="{{ hookOptions }}" bridge="What the 3000 W kettle has more of is power. Next: what a watt means." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -286,12 +281,9 @@ class Component extends DCLogic {
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: [{ href: href('changes-in-energy'), label: 'Changes in energy' }, { href: href('work-done-energy-transfer'), label: 'Work done and energy transfer' }, { href: href('efficiency'), label: 'Efficiency' }, { href: href('power-electricity'), label: 'Power in circuits' }].filter((c) => c.href),
       hookOptions: [
-        { text: 'The 3000 W kettle: a bigger number means more energy', reply: 'More watts means faster, not more.' },
-        { text: 'The 1500 W kettle: it runs for longer, so works harder', reply: 'Running longer at a lower rate ends at the same total energy.' },
-        { text: 'The same: the 3000 W kettle just transfers it faster', reply: '' },
-        { text: 'You cannot tell without knowing how long each one takes', reply: 'The times only say how fast the energy went in, not how much.' }
+        { text: 'More energy', correct: false, reply: 'More watts means faster, not more. Both warm the same water through the same temperature rise, so both transfer the same energy.' },
+        { text: 'The same energy, faster', correct: true, reply: 'The same water through the same temperature rise takes the same energy. The 3000 W kettle transfers it faster.' }
       ],
-      hookReveal: 'Both transfer the same energy: the same water, warmed through the same temperature rise. What the 3000 W kettle has more of is power.',
       onHook: (i) => this.setState({ hook: i }),
       roundNum: String(r + 1), roundTitle: rd.title, roundAsk: rd.ask,
       liftFig: ready ? K.fig(this.liftSvg(rd, shownT, revealed), '') : null,

@@ -52,12 +52,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Same temperature, worse burn.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">A splash of boiling water on your hand hurts. A puff of steam from a kettle spout, at the same 100 °C, can leave a much worse burn.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Why is the steam worse?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="Same temperature, worse burn." scene="A splash of boiling water on your hand hurts. A puff of steam from a kettle spout, at the same 100 °C, can leave a much worse burn." question="is the steam worse because it spreads over more skin, or because it gives the skin more energy?" options="{{ hookOptions }}" bridge="Then that water cools, just as the boiling water does. Next: the energy needed to change state." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -384,12 +379,9 @@ class Component extends DCLogic {
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: [{ href: href('changes-of-state'), label: 'Changes of state' }, { href: href('internal-energy'), label: 'Internal energy' }, { href: href('temperature-changes-shc'), label: 'Temperature changes and specific heat capacity' }].filter((c) => c.href),
       hookOptions: [
-        { text: 'Steam releases extra energy as it condenses on the skin', reply: '' },
-        { text: 'Steam is hotter than boiling water, even at 100 °C', reply: 'Both read 100 °C. The difference is not the temperature.' },
-        { text: 'Steam particles move faster, so they hit the skin harder', reply: 'At the same temperature, the particles have the same average kinetic energy.' },
-        { text: 'Steam is a gas, so it spreads over more of the skin', reply: 'Even the same mass on the same patch of skin burns worse.' }
+        { text: 'It spreads over more skin', correct: false, reply: 'Even the same mass on the same patch of skin burns worse. Steam has to turn back into water first, and that gives out a lot of energy.' },
+        { text: 'It gives the skin more energy', correct: true, reply: 'Steam condenses into water on your skin, and condensing gives out a lot of energy with no change in temperature.' }
       ],
-      hookReveal: 'Before steam can cool on your skin, it has to condense into water, and condensing releases energy with no change in temperature. Then that water cools, just as the boiling water does.',
       onHook: (i) => this.setState({ hook: i }),
       /* ledger */
       ledgerTitle: s.gate === null ? '10 g of boiling water and 10 g of steam each land on skin at 37 °C.' : st.title,

@@ -844,7 +844,11 @@
         .then(function (res) {
           if (res.error) { throw res.error; }
           var row0 = res.data;
-          if (row0 && row0.submitted_at) { return false; }   // already done: never touched
+          /* ⊕ 8 Oct 2026 — "already" is not `false`: `flashcard_record` writes
+             `submitted_at` itself when the last card secures, so this is what
+             the overlay's own Done screen finds. Still never touched; the
+             distinct value lets `recordFinish` hand the BENCH the news. */
+          if (row0 && row0.submitted_at) { return "already"; }
           return fcTimeFromEvent(sb, hit).then(function (serverAt) {
             var isLate = !!(dueAt && Date.parse(serverAt) > Date.parse(dueAt));
             var startedAt = (agg && agg.started != null) ? new Date(agg.started).toISOString() : serverAt;
@@ -910,11 +914,24 @@
      always right on the next load either way; this only saves the pupil a
      refresh. */
   function fcPatchWorkRow(id) {
+    /* ⊕ 8 Oct 2026 — the bench drops this deck FIRST (data only), so the one
+       redraw the row patch below causes also redraws the bench. */
+    benchFcFinished(id);
+    /* The page reads its rows from `this.work = MRB_DATA("work")`, the SAME
+       array as `window.__MRB_DATA__.work`; there is no `state.work`, so the
+       setState below alone moved nothing. The row is patched where it lives —
+       never one already done (a revision pass must not re-date it). */
+    ((window.__MRB_DATA__ && window.__MRB_DATA__.work) || []).forEach(function (w) {
+      if (w && w.id === id && w.status !== "marked" && w.status !== "pending") {
+        w.status = "marked"; w.detail = "COMPLETED " + fmtDay(new Date().toISOString());
+      }
+    });
     var lg = mountedApp && mountedApp.logic;
     if (!lg || typeof lg.setState !== "function") { return; }
     lg.setState(function (p) {
       var work = (p.work || []).map(function (w) {
-        if (!w || w.id !== id) { return w; }
+        /* never a row already done: a revision pass must not re-date it */
+        if (!w || w.id !== id || w.status === "marked" || w.status === "pending") { return w; }
         return Object.assign({}, w, { status: "marked", detail: "COMPLETED " + fmtDay(new Date().toISOString()) });
       });
       return { work: work };
@@ -995,7 +1012,7 @@
           return fcSessionAgg(sb, toFinish.map(function (t) { return t.rid; }), uid).then(function (agg) {
             var writes = toFinish.map(function (t) {
               return writeFinishedSubmission(sb, t.rid, uid, t.cards.length, t.hit, t.dueAt, agg[t.lo])
-                .then(function (wrote) { if (wrote) { fcPatchWorkRow(t.rid); } });
+                .then(function (wrote) { if (wrote === true) { fcPatchWorkRow(t.rid); } });
             });
             return Promise.all(writes).catch(function () {});
           });
@@ -1086,7 +1103,9 @@
             });
         });
       }).then(function (wrote) {
-        if (wrote) { fcPatchWorkRow(id); }
+        /* "already": the server wrote the submission itself when the last card
+           secured. The row still has to leave "To do" this visit (ruled 8 Oct). */
+        if (wrote === true || wrote === "already") { fcPatchWorkRow(id); }
       }).catch(function (err) {
         /* Offline / RLS: nothing visible breaks. The heal (wireLibrary, on
            the next class-page load) retries from the pupil's own rows. */
@@ -1107,6 +1126,20 @@
           body: JSON.stringify({ assignment_id: id })
         }).catch(function () {});
       }).catch(function () {});
+    };
+
+    /* ⊕ 8 Oct 2026 — the bench's "N of M secured" is re-read when a sitting
+       ends. CHAINED, never replaced: the answer-check call above is the
+       existing behaviour. A moment's delay, because the sitting's last events
+       are still on their way to the server when this fires. */
+    var endBase = H.onSessionEnd;
+    H.onSessionEnd = function (id) {
+      try { endBase(id); } finally {
+        var cur = window.__MRB_DATA__;
+        if (cur && cur.benchFc && String(cur.benchFc.id).toLowerCase() === String(id).toLowerCase()) {
+          setTimeout(benchFcRefresh, 1500);
+        }
+      }
     };
 
     /* ⊕ PUPIL FLOW (docs/mrb351/PUPIL-FLOW.md §3.2–3.3) — the model's
@@ -3717,6 +3750,46 @@
     var benchLessons = (currentId && lessonsFor[currentId]) || [];
     var benchLate = !!(benchDone && benchCard.due_at && !benchCard.on_time);
 
+    /* ⊕ 8 Oct 2026 — FLASHCARDS ON THE BENCH (Mide's rule).
+
+       An unfinished flashcard deck is homework too, and the bench is the
+       "do this now" card, so it belongs there. Homework and a deck together
+       split the card (homework left / on top, the deck right / below); either
+       alone fills it; neither leaves the bench exactly as it was.
+
+       "UNFINISHED" IS THE WORK LIST'S OWN TRUTH: a deck in `assignmentCards`
+       (the pupil's own RLS read — an unreleased deck is invisible to them)
+       whose `is_submitted` is false, which is released, and not past due (the
+       same exclusions the homework fallback above applies). A deck turns
+       `is_submitted` through one path — `writeFinishedSubmission` — and that is
+       the very row the work list's "marked" is read from, so the bench cannot
+       disagree with the list. Soonest due first, undated last: the same sort
+       as the homework fallback.
+
+       `benchBase` is what the bench would say WITHOUT a deck, kept so that a
+       deck finishing in this visit (`benchFcFinished`) can hand the card back
+       to exactly the state it had — the done bench, Mixed practice, or the
+       held sentence. */
+    var benchFcList = assignmentCards.filter(function (c) {
+      if (!c || c.kind !== "flashcards" || c.is_submitted) { return false; }
+      if (c.release_at && Date.parse(c.release_at) > serverNow) { return false; }
+      if (c.due_at && Date.parse(c.due_at) < serverNow) { return false; }
+      return true;
+    }).sort(function (a, b) {
+      if (!a.due_at && !b.due_at) { return 0; }
+      if (!a.due_at) { return 1; }
+      if (!b.due_at) { return -1; }
+      return a.due_at < b.due_at ? -1 : (a.due_at > b.due_at ? 1 : 0);
+    }).map(function (c) {
+      return { id: c.id, title: c.title || "", dueAt: c.due_at || null,
+               count: fcCounts[c.id] || 0 };
+    });
+    var benchBase = {
+      done: benchDone,
+      empty: !benchDone && !benchWork,
+      held: (held && !benchWork) ? "This week's work isn't live yet" : ""
+    };
+
     /* ── ⊕ 23 Aug 2026 — PHASE 4. DESIGN'S DONE BENCH, FROM THE REAL ROW ──
        Every value the grafted done bench shows is derived HERE, from
        `benchCard` — this student's own `assignment_submissions` row as the
@@ -5261,7 +5334,7 @@
          never retract work a child can already see. So a held school can hold
          RELEASED teacher-set work, and saying "isn't live yet" over the top of
          it is a false sentence about homework the child is expected to do. */
-      benchHeldLine: (held && !benchWork) ? "This week's work isn't live yet" : "",
+      benchHeldLine: benchFcList.length ? "" : benchBase.held,
       /* ⊕ Stage B (phone run, 28 Sep 2026) — THE BENCH IS NEVER EMPTY.
          With nothing open and nothing finished the bench used to draw its
          dark frame and nothing in it. `drawBenchNext` fills it with ONE thing
@@ -5269,7 +5342,7 @@
          Mide, 22 Sep), practice on the current topic, the next lesson to
          read. Practice is read from `__MRB_DATA__` at draw time, because the
          bank arrives after the paint (foldInPractice). */
-      benchEmpty: !benchDone && !benchWork,
+      benchEmpty: benchBase.empty && !benchFcList.length,
       /* ⊕ Stage B audit — no corner count on the flashcards card: "01 / 81"
          under it already carries the 81 (student_rulings LOGIC). */
       cardCorner: false,
@@ -5296,7 +5369,13 @@
         }
         return null;
       })(),
-      benchDone: benchDone,
+      /* ⊕ 8 Oct 2026 — a deck still to do fills the card in place of the done
+         bench (the deck is the thing left to do); see `benchFcList`. */
+      benchDone: benchDone && !benchFcList.length,
+      /* ⊕ 8 Oct 2026 — read by `drawBenchFc`, never by the template. */
+      benchFc: benchFcList[0] || null,
+      benchFcList: benchFcList,
+      benchBase: benchBase,
       /* ⊕ 23 Aug 2026 — PHASE 4. ONE FACT, ONE NEGATION. Design's amended
          bench is two branches and names them `benchOpen` and `benchDone`;
          `build_student_port.py` wraps the live grid in the first and grafts
@@ -6103,7 +6182,12 @@
        this never double-draws the box. Still skipped while homework is
        genuinely OPEN (`benchWork` true, neither flag set) — that bench
        slot is doing its one job already. */
-    if (!d || (!d.benchEmpty && !d.benchDone)) { return; }
+    /* ⊕ 8 Oct 2026 — OVERDUE HOMEWORK IS UNFINISHED HOMEWORK (ruled): with a
+       deck to do, no open homework and a missed set, this box is the homework
+       half of the split (`drawBenchFc` calls in here). A pupil with no deck
+       never takes this path — `benchFc` is null — so their bench is as it was. */
+    var withDeck = !!(d && d.benchFc && !d.benchOpen && d.benchNextMissed);
+    if (!d || (!d.benchEmpty && !d.benchDone && !withDeck)) { return; }
     var frame = document.querySelector('[data-port-region="bench"]');
     if (!frame || frame.querySelector("[data-mrb-bench-next]")) { return; }
     var pick = null;
@@ -6191,11 +6275,252 @@
     frame.appendChild(box);
   }
 
-  function drawHeld(data) {
+  /* ⊕ 8 Oct 2026 — THE FLASHCARD HALF OF THE BENCH (Mide's rule; the data
+     half is `benchFcList` in buildClass).
+
+     Unfinished homework + an unfinished deck → the card splits, homework on
+     the left (on top, on a phone) and the deck on the right (below). One of
+     them → it fills the card. Neither → the bench as it was.
+
+     DRAWN HERE, AFTER the runtime's own draw, for the same reason
+     `drawBenchNext` is: the runtime empties and rebuilds the mount on every
+     setState, so anything put in from outside has to be put back, idempotently.
+     It mirrors the homework half element for element — the same inline styles
+     as Design's nodes 57–99 (the docket's kicker bar, its DUE row, the title in
+     the display face, the paper button, the mono progress with its bar) — and
+     uses only the bench's own custom properties, so every bench theme and the
+     light/dark switch carry it with no rule of its own. No explanatory text:
+     the title, the count, the due day, how far through (only once started)
+     and ONE button.
+
+     "N of M secured" is `window.MRBHomework.securedInfo` over the pupil's own
+     `flashcard_reviews` — the rule `finishedAt()` uses to decide Done, so the
+     two can never disagree. It is read after the paint and never awaited; a
+     failed read costs the progress line and nothing else. */
+  var benchFcCtx = null;            // { sb, uid }, set where the class page mounts
+  var benchFcProg = {};             // lower-cased deck id -> { started, secured, total }
+  var benchFcWasOpen = false;
+  var benchFcSeq = 0;               // the newest progress read; an older answer is ignored
+
+  function benchFcApply(d) {
+    var list = d.benchFcList || [], base = d.benchBase || {};
+    d.benchFc = list[0] || null;
+    d.benchDone = !!base.done && !d.benchFc;
+    d.benchEmpty = !!base.empty && !d.benchFc;
+    d.benchHeldLine = d.benchFc ? "" : (base.held || "");
+  }
+
+  /* A deck was finished in this visit (the work row is patched by the caller):
+     it leaves the bench's candidates, the next soonest takes its place, and
+     with none left the bench gets back exactly what it had without a deck. The
+     caller's setState is the redraw. */
+  function benchFcFinished(id) {
+    var d = window.__MRB_DATA__;
+    if (!d || !d.benchFcList || !id) { return; }
+    var lo = String(id).toLowerCase();
+    var next = d.benchFcList.filter(function (x) { return String(x.id).toLowerCase() !== lo; });
+    if (next.length === d.benchFcList.length) { return; }
+    d.benchFcList = next;
+    benchFcApply(d);
+    if (d.benchFc) { setTimeout(benchFcRefresh, 0); }   // a started promoted deck shows its count
+  }
+
+  function benchFcRedraw() {
+    var lg = mountedApp && mountedApp.logic;
+    if (!lg) { return; }
+    if (typeof lg.forceUpdate === "function") { lg.forceUpdate(); }
+    else if (typeof lg.setState === "function") { lg.setState({}); }
+  }
+
+  function benchFcRefresh() {
+    var c = benchFcCtx, d = window.__MRB_DATA__, H = window.MRBHomework;
+    if (!c || !c.sb || !c.uid || !d || !d.benchFc || !H || typeof H.securedInfo !== "function") { return; }
+    var id = d.benchFc.id, sb = c.sb, seq = ++benchFcSeq;
+    Promise.all([
+      pagedRows(function () {
+        return sb.from("flashcard_reviews")
+          .select("card_id, rating, rated_at, event_id, id")
+          .eq("assignment_id", id).eq("pupil_id", c.uid)
+          .order("rated_at", { ascending: true }).order("id", { ascending: true });
+      }),
+      pagedRows(function () {
+        return sb.from("assignment_flashcards").select("id")
+          .eq("assignment_id", id).order("id", { ascending: true });
+      })
+    ]).then(function (res) {
+      var rows = res[0] || [], deck = res[1] || [];
+      if (!deck.length) { return; }
+      var n = Object.keys(H.securedInfo(rows, deck).secured).length;
+      var key = String(id).toLowerCase(), was = benchFcProg[key];
+      if (seq !== benchFcSeq) { return; }                    // an older read answering late
+      if (was && was.total === deck.length && was.secured > n) { n = was.secured; }  // never lowers
+      var next = { started: rows.length > 0 || !!(was && was.started), secured: n, total: deck.length };
+      benchFcProg[key] = next;
+      var wasText = was && was.started ? was.secured + "/" + was.total : "";
+      var nextText = next.started ? next.secured + "/" + next.total : "";
+      if (wasText === nextText) { return; }                  // nothing the pupil can see changes
+      var cur = window.__MRB_DATA__;
+      if (cur && cur.benchFc && String(cur.benchFc.id).toLowerCase() === key) { benchFcRedraw(); }
+    }).catch(function (err) {
+      console.info("[student-live] bench deck progress unavailable", err && (err.code || err.message));
+    });
+  }
+
+  function benchFcStyle() {
+    if (document.querySelector('style[data-mrb="bench-fc"]')) { return; }
+    var st = document.createElement("style");
+    st.setAttribute("data-mrb", "bench-fc");
+    st.textContent =
+      "[data-bench-surface][data-mrb-bench-split]{display:grid;grid-template-columns:minmax(0,1fr)}" +
+      "[data-bench-surface][data-mrb-bench-split]>:first-child{grid-column:1/-1}" +
+      "[data-mrb-bench-split]>[data-mrb-bench-fc]{border-top:1px solid var(--st-room-border)}" +
+      "@media (min-width:1024px){" +
+      "[data-bench-surface][data-mrb-bench-split]{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}" +
+      "[data-mrb-bench-split]>[data-mrb-bench-hw]{grid-template-columns:minmax(0,1fr)!important}" +
+      "[data-mrb-bench-split]>[data-mrb-bench-hw] [data-bench-docket]{order:1!important}" +
+      "[data-mrb-bench-split]>[data-mrb-bench-fc]{border-top:0;border-left:1px solid var(--st-room-border)}" +
+      "[data-mrb-bench-split]>[data-mrb-bench-next]{display:flex;flex-direction:column;align-items:flex-start}" +
+      "[data-mrb-bench-split]>[data-mrb-bench-next]>[data-mrb-bench-next-go]{margin-top:auto!important}" +
+      "}";
+    document.head.appendChild(st);
+  }
+
+  function drawBenchFc(data0) {
+    var d = window.__MRB_DATA__ || data0;
+    /* the overlay closed since the last draw → the sitting's rows are in */
+    var open = !!document.querySelector('[data-hw="strip"]');
+    if (benchFcWasOpen && !open) { setTimeout(benchFcRefresh, 600); }
+    benchFcWasOpen = open;
+    var fc = d && d.benchFc;
+    var frame = document.querySelector('[data-port-region="bench"]');
+    if (!fc || !frame || frame.querySelector("[data-mrb-bench-fc]")) { return; }
+    benchFcStyle();
+
+    /* Is homework on the card? Open homework's grid (the child holding the
+       docket), or — with none open — the overdue set's "Finish it" box. */
+    var hw = null;
+    if (!d.benchOpen && d.benchNextMissed) { drawBenchNext(d); }
+    Array.prototype.forEach.call(frame.children, function (el) {
+      if (hw || !el.querySelector) { return; }
+      if (d.benchOpen ? el.querySelector("[data-bench-docket]") : el.hasAttribute("data-mrb-bench-next")) { hw = el; }
+    });
+    if (hw) {
+      hw.setAttribute("data-mrb-bench-hw", "1");
+      frame.setAttribute("data-mrb-bench-split", "1");
+    }
+    var desk = !!(window.matchMedia && window.matchMedia("(min-width:1024px)").matches);
+    var twoCol = desk && !hw;
+    var prog = benchFcProg[String(fc.id).toLowerCase()];
+    var started = !!(prog && prog.started);
+
+    function el(tag, css, text) {
+      var e = document.createElement(tag);
+      if (css) { e.style.cssText = css; }
+      if (text != null) { e.textContent = text; }
+      return e;
+    }
+
+    var root = el("div", "min-width:0;display:grid;grid-template-columns:" +
+      (twoCol ? "minmax(0,1fr) minmax(300px,440px)" : "minmax(0,1fr)") +
+      ";gap:clamp(22px,2.8cqw,40px);padding:clamp(22px,2.4cqw,32px) clamp(18px,2.5cqw,36px) clamp(24px,2.6cqw,36px)");
+    root.setAttribute("data-mrb-bench-fc", "1");
+
+    /* the docket: the same card the homework half draws */
+    var dock = el("div", "order:" + (twoCol ? 3 : 1) + ";min-width:0;display:flex;flex-direction:column;" +
+      "border-radius:var(--st-r-stage);background:var(--st-paper);border:1px solid var(--st-edge);overflow:hidden");
+    dock.setAttribute("data-bench-docket", "1");
+    var kick = el("div", "display:flex;align-items:center;gap:10px;flex-wrap:wrap;" +
+      "padding:clamp(13px,1.3cqw,17px) clamp(14px,1.5cqw,20px);background:var(--st-num-well);" +
+      "border-bottom:1px solid var(--st-edge)");
+    var eyebrow = el("span", "display:block", "Flashcards");
+    eyebrow.className = "eyebrow";
+    kick.appendChild(eyebrow);
+    dock.appendChild(kick);
+    var grid = el("div", "flex:1;display:grid;grid-template-columns:" +
+      (desk ? "minmax(0,1fr)" : "repeat(auto-fit,minmax(148px,1fr))") +
+      ";align-content:space-between;gap:0 clamp(14px,2cqw,26px);padding:clamp(4px,0.5cqw,8px) clamp(14px,1.5cqw,20px)");
+    function fact(label, value) {
+      var row = el("div", "min-width:0;display:flex;flex-direction:" + (desk ? "row" : "column") +
+        ";align-items:" + (desk ? "baseline" : "flex-start") + ";gap:" + (desk ? "14px" : "9px") +
+        ";padding:clamp(11px,1.15cqw,15px) 0;border-bottom:1px solid var(--st-rule-fact)");
+      row.appendChild(el("span", "font:500 12px/1.4 var(--st-mono);letter-spacing:0.07em;" +
+        "color:var(--st-caption);white-space:nowrap", label));
+      var v = el("span", "margin-left:" + (desk ? "auto" : "0") + ";min-width:0;text-align:" +
+        (desk ? "right" : "left") + ";font:500 clamp(15px,1.35cqw,17px)/1.3 var(--st-ui);" +
+        "letter-spacing:-0.02em;color:var(--st-ink);text-wrap:pretty", value);
+      row.appendChild(v);
+      grid.appendChild(row);
+    }
+    if (fc.dueAt) { fact("DUE", fmtDueMixed(fc.dueAt)); }
+    /* no due date → no empty facts area: the docket is just its kicker bar */
+    if (grid.children.length) { dock.appendChild(grid); } else { kick.style.borderBottom = "0"; }
+
+    /* the title and the one button */
+    var left = el("div", "min-width:0;display:flex;flex-direction:column;order:2");
+    var col = el("div", "display:flex;flex-direction:column;height:100%");
+    col.appendChild(el("h2", "margin:clamp(12px,1.2cqw,16px) 0 0;font:600 clamp(27px,3.6cqw,46px)/1 " +
+      "var(--st-display);letter-spacing:-0.04em;color:var(--st-cream);overflow-wrap:anywhere",
+      fc.title || "Your cards"));
+    col.appendChild(el("div", "margin-top:clamp(20px,1.9cqw,26px)"));
+    var act = el("div", "margin-top:auto;padding-top:clamp(22px,2.2cqw,30px);display:flex;" +
+      "align-items:center;gap:clamp(12px,1.6cqw,22px);flex-wrap:wrap");
+    var go = document.createElement("a");
+    go.href = cardsHrefFor(fc.id);
+    go.setAttribute("data-mrb-bench-fc-go", "1");
+    go.style.cssText = "all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;" +
+      "gap:10px;min-height:44px;background:var(--ks3-accent-text);color:var(--st-paper);" +
+      "font:600 15px/1 var(--st-ui);border-radius:var(--st-r-btn);padding:15px 20px";
+    go.appendChild(document.createTextNode("Complete homework"));
+    var svgNS = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("aria-hidden", "true");
+    svg.setAttribute("height", "11"); svg.setAttribute("width", "11");
+    svg.setAttribute("viewBox", "0 0 22 22");
+    var path = document.createElementNS(svgNS, "path");
+    path.setAttribute("d", "M6 3.5 L13.5 11 L6 18.5");
+    path.setAttribute("fill", "none"); path.setAttribute("stroke", "currentColor");
+    path.setAttribute("stroke-linecap", "round"); path.setAttribute("stroke-linejoin", "round");
+    path.setAttribute("stroke-width", "3.4");
+    svg.appendChild(path);
+    go.appendChild(svg);
+    act.appendChild(go);
+    /* The homework half's mono line beside its button ("0 OF 6 ANSWERED" and
+       its bar), as the deck's: "10 CARDS" until the pupil has started, then
+       "4 OF 10 SECURED" with the bar — the count is said once either way. */
+    var said = (started && prog.total) ? (prog.secured + " of " + prog.total + " secured")
+             : (fc.count ? fc.count + " cards" : "");
+    if (said) {
+      var meter = el("span", "display:flex;align-items:center;gap:11px;margin-left:auto");
+      var meta = el("span", "font:600 12px/1 var(--st-mono);letter-spacing:0.08em;color:var(--st-room-muted);" +
+        "text-transform:uppercase", said);
+      meta.setAttribute("data-mrb-bench-fc-meta", "1");
+      meter.appendChild(meta);
+      if (started && prog.total) {
+        var track = el("span", "display:block;width:clamp(64px,7cqw,104px);height:4px;border-radius:2px;" +
+          "background:#241E17;overflow:hidden");
+        track.appendChild(el("span", "display:block;height:4px;border-radius:2px;background:var(--st-accent);width:" +
+          Math.round((prog.secured / prog.total) * 100) + "%"));
+        meter.appendChild(track);
+      }
+      act.appendChild(meter);
+    }
+    col.appendChild(act);
+    left.appendChild(col);
+
+    root.appendChild(dock);
+    root.appendChild(left);
+    frame.appendChild(root);
+  }
+
+  function drawHeld(data0) {
+    /* ⊕ 8 Oct 2026 — read at draw time: a deck finishing in this visit hands
+       the card back (`benchFcFinished`), and the line must follow. */
+    var data = window.__MRB_DATA__ || data0;
     if (!data || !data.benchHeldLine) { return; }
     var frame = document.querySelector('[data-port-region="bench"]');
     if (!frame || frame.querySelector("[data-mrb-held]")
-        || frame.querySelector("[data-mrb-bench-next]")) { return; }
+        || frame.querySelector("[data-mrb-bench-next]")
+        || frame.querySelector("[data-mrb-bench-fc]")) { return; }
 
     var p = document.createElement("p");
     p.setAttribute("data-mrb-held", "1");
@@ -6817,15 +7142,24 @@
           /* ⊕ 1 Oct 2026 (sweep fix A4) — the outer gate moves with the one
              inside `drawBenchNext` (same reasoning there): a done bench
              must reach it too, or the function is never even called. */
-          if (page === "class" && data && (data.benchEmpty || data.benchDone)) {
+          /* ⊕ 8 Oct 2026 — UNCONDITIONAL on the class page. The bench can now
+             change within a visit (a deck finishes and the card is handed
+             back), so a hook registered only when the boot-time data had a
+             done or empty bench would be missing exactly when it is needed.
+             Each draw re-reads `window.__MRB_DATA__` and returns at once when
+             it has nothing to say. Order matters only in that the deck half
+             goes first: the other two stand down while it is there. */
+          if (page === "class" && data) {
             window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
+            benchFcCtx = { sb: sb, uid: ctx.user && ctx.user.id };
+            window.__MRB_AFTER_DRAW__.push(function () { drawBenchFc(data); });
             window.__MRB_AFTER_DRAW__.push(function () { drawBenchNext(data); });
-            drawBenchNext(data);
-          }
-          if (page === "class" && data && data.benchHeldLine) {
-            window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
             window.__MRB_AFTER_DRAW__.push(function () { drawHeld(data); });
-            drawHeld(data);
+            /* each on its own: a throw here must never turn the page into SAY.generic */
+            [drawBenchFc, drawBenchNext, drawHeld].forEach(function (fn) {
+              try { fn(data); } catch (e) { console.info("[student-live] bench draw", e && e.message); }
+            });
+            setTimeout(benchFcRefresh, 0);
           }
         } catch (err) {
           /* ⊕ MRB-336, 8 Sep 2026 — A NORMAL STATE IS NOT AN ERROR.

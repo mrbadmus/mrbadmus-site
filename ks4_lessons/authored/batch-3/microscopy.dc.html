@@ -58,12 +58,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Every cell is full of ribosomes. For nearly 300 years, nobody saw one.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">Robert Hooke looked at cork through a microscope in 1665 and named the tiny boxes he saw <strong>cells</strong>. Better and better light microscopes followed. Ribosomes were there in every cell the whole time, and none of those microscopes ever showed one.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What would it take to see a ribosome?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="Your cells are full of ribosomes. For nearly 300 years, nobody saw one." scene="Robert Hooke looked at cork through a microscope in 1665 and named the tiny boxes he saw cells. Better and better light microscopes followed. Ribosomes were there all along, and none of those microscopes ever showed one." question="to see a ribosome, what would you need most: a microscope that makes things even bigger, or one that shows finer detail?" options="{{ hookOptions }}" bridge="Ribosomes were first seen in the 1950s, with an electron microscope. Next: magnification, resolution, and the two kinds of microscope." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -468,12 +463,9 @@ class Component extends DCLogic {
         { href: K.hrefFor('cell-specialisation', R), label: 'Cell specialisation' }
       ].filter((c) => c.href) : [],
       hookOptions: [
-        { text: 'A lens that magnifies far more, say ×20 000', reply: 'More magnification alone gives a bigger blur, not more detail. Resolve it, below, tests this.' },
-        { text: 'A better stain, so the ribosomes stand out', reply: 'Stain adds colour, not detail. A stained ribosome is still too small to show up as a separate dot.' },
-        { text: 'A microscope that can separate much closer points', reply: '' },
-        { text: 'A living cell, so the ribosomes are moving', reply: 'Movement does not help. Ribosomes are in living and dead cells alike: the problem is their size.' }
+        { text: 'One that makes things even bigger', correct: false, reply: 'You need a big image too, but enlarging a blur only gives a bigger blur. The microscope has to show two very close points as separate.' },
+        { text: 'One that shows finer detail', correct: true, reply: 'Ribosomes are only about 20 nm across. The microscope has to show two points that close together as separate.' }
       ],
-      hookReveal: 'Ribosomes are about 20 nm across. They were first seen in the 1950s, with an electron microscope. Below, find out what the light microscope was missing.',
       onHook: (i) => this.setState({ hook: i }),
       /* Resolve it */
       rName: RR.name, rTitle: RR.title,

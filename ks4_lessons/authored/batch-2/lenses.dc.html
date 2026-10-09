@@ -57,12 +57,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">One magnifying glass, two very different pictures.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">Hold a magnifying glass just above a page and the words look bigger and the right way up. Now hold the same lens at arm's length and look through it at a window across the room.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What do you see through the lens?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="One magnifying glass, a page and a window." scene="Hold a magnifying glass just above a page and the words look bigger and the right way up. Now hold the same lens at arm’s length and look through it at a window across the room." question="do you see the window the right way up, or upside down?" options="{{ hookOptions }}" bridge="Where the object is, compared with the lens’s focal length, decides the image. Next: how a lens bends light, and how to find the image with two rays." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -477,12 +472,9 @@ class Component extends DCLogic {
       railV, theme, ready, draftVisible: this.props.showDraft !== false,
       endPrev: pn.prev || null, endNext: pn.next || null, endConnects: connects,
       hookOptions: [
-        { text: 'The window, upside down and smaller', reply: 'Test that on the bench below, with the object far from the lens.' },
-        { text: 'The window, the right way up and bigger', reply: 'That is what the lens does to a page held close. Far away, it does something else.' },
-        { text: 'The window, the right way up and smaller', reply: 'Smaller, yes. But the lens has also turned it upside down.' },
-        { text: 'Only a blur: a lens works close up', reply: 'A sharp picture appears. A convex lens forms images of distant things too.' }
+        { text: 'The right way up', correct: false, reply: 'That is what the lens does to a page held close. With the window far away, the picture is small and upside down.' },
+        { text: 'Upside down', correct: true, reply: 'And smaller too. The same lens has made a different kind of image.' }
       ],
-      hookReveal: 'The window appears small and upside down. Same lens, two different images: the page sat inside the lens’s focal length, and the window was far beyond it. Where the object is, compared with the focal length, decides the image.',
       onHook: (i) => this.setState({ hook: i }),
       focusFig: ready ? K.fig(this.focusSvg(), '') : null,
       bTitle: (lens === 'cx' ? 'Convex lens' : 'Concave lens') + ', object ' + u + ' cm away',
