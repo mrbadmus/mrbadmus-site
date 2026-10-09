@@ -115,7 +115,14 @@
        The desktop mouse keeps the compact 30×28 row it was drawn at. Every
        slot gets it — inline group, the compact button, the popover rows —
        so the control is the same size wherever it sits. */
-    '@media (max-width:600px),(pointer:coarse){.mrb-theme label{width:44px;height:44px}.mrb-theme-menu>summary{width:44px;height:44px}.mrb-theme-pop .mrb-theme label{width:auto;min-width:44px;height:44px}}',
+    /* The compact button is 44×44 to the finger but keeps its 32px ring and
+       its 32px footprint (a -6px margin): the bars it sits in (the pupil
+       class page, the KS3 lesson bar) were measured to the pixel at 360,
+       and 12 more pixels of row would ellipsise their titles. The 6px it
+       reaches past the ring is the end group's own 6px gap at that width. */
+    '@media (max-width:600px),(pointer:coarse){.mrb-theme label{width:44px;height:44px}.mrb-theme-pop .mrb-theme label{width:auto;min-width:44px;height:44px}' +
+      '.mrb-theme-menu>summary{position:relative;width:44px;height:44px;margin:-6px;border-color:transparent}' +
+      '.mrb-theme-menu>summary::before{content:"";position:absolute;inset:6px;border:1px solid color-mix(in srgb,currentColor 28%,transparent);border-radius:999px;pointer-events:none}}',
     '@media print{.mrb-theme{display:none!important}}'
   ].join('');
 
