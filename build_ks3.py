@@ -777,13 +777,19 @@ def r_hook(lesson, block=None):
                         '</div>' % rich(p["reveal"]))
         commit = '<div class="ks3-hook-commit">%s</div>' % "".join(bits)
 
-    # `data-keyedblock` hands the guess to `wireKeyedCommit`, which shows the
-    # reply for the option pressed. Only a guess carries it, so every other
-    # hook's bytes are exactly what they were.
-    return ('<section class="ks3-block ks3-dark ks3-hook"%s data-activity="hook"%s>'
-            '%s%s</section>' % (_id_attr(block or {}),
-                                " data-keyedblock" if p.get("guess") else "",
-                                body, commit))
+    # A guess is a real keyed-commit instance, so it wears that family's
+    # shell exactly as ks3_art/c1.py writes it (`ks3-keyed-block` +
+    # `data-instrument data-keyedblock data-stage-done="0"`):
+    # `wireKeyedCommit` shows the reply for the option pressed and ticks the
+    # rail stop; `ks3_instrument_liveness` finds the shell and presses it.
+    # Only a guess carries it, so every other hook's bytes are as they were.
+    if p.get("guess"):
+        return ('<section class="ks3-block ks3-dark ks3-hook ks3-keyed-block"%s'
+                ' data-activity="hook" data-instrument data-keyedblock'
+                ' data-stage-done="0">%s%s</section>'
+                % (_id_attr(block or {}), body, commit))
+    return ('<section class="ks3-block ks3-dark ks3-hook"%s data-activity="hook">'
+            '%s%s</section>' % (_id_attr(block or {}), body, commit))
 
 
 def _hook_guess(p):
