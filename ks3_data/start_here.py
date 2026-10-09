@@ -1713,6 +1713,265 @@ START_HERE = {
         big_question="A sperm cell and an egg cell fuse to make one new cell. "
                      "What does each one bring?",
     ),
+
+    # the-menstrual-cycle — guess: in a longer cycle, is the extra time before or
+    # after release (the lesson's fixed fortnight after release). Old title gave
+    # the answer, so title and scene rewritten; the new scene mentions day 14 so
+    # the hook's rail label "Not day 14" still refers to something. Third person
+    # kept.
+    "the-menstrual-cycle": dict(
+        title="Not every cycle is 28 days.",
+        scene="A cycle is counted from the first day of a period. Part-way "
+              "through, an egg is released from an ovary, and the next period "
+              "starts the cycle again. People often say the egg comes out on "
+              "day 14, but ordinary cycles run anywhere from about 21 days to "
+              "about 35.",
+        question="If you had to guess, in a longer cycle, do the extra days "
+                 "come before the egg is released, or after?",
+        options=[
+            ("Before the egg is released",
+             "The time from release to the next period stays close to a "
+             "fortnight in almost everyone. So the extra days come before "
+             "release, while the egg is still maturing."),
+            ("After the egg is released",
+             "It is natural to think the end of the cycle stretches. But the "
+             "fortnight after release stays about the same in almost everyone,"
+             " so the extra days come before it."),
+        ],
+        answer=0,
+        bridge="That is why the release day is not the same number for "
+               "everyone. Next: a dial to walk through cycles of 21, 28 and 35"
+               " days.",
+    ),
+
+    # gestation-placenta-and-birth — guess: does oxygen seep across by itself or
+    # get pumped across (the old hook's own question, cut to two). Rail label
+    # "Never mix" is visible on load, so a "do the bloods mix?" guess would be
+    # given away; the old title, scene and big question are kept and none of them
+    # gives away diffusion.
+    "gestation-placenta-and-birth": dict(
+        question="If you had to guess, does oxygen seep from one blood supply "
+                 "to the other by itself, or is it pumped across?",
+        options=[
+            ("It seeps across by itself",
+             "The two blood supplies are brought very close together, and "
+             "oxygen moves from where there is more of it to where there is "
+             "less. Nothing has to push it."),
+            ("It is pumped across",
+             "A heart is the obvious pump. But a heart only moves blood "
+             "around. Oxygen crosses the thin gap by itself, from where there "
+             "is more of it to less."),
+        ],
+        answer=0,
+        bridge="That is diffusion, the same process as in the lungs and the "
+               "small intestine. Next: six substances, and which way each one "
+               "crosses.",
+    ),
+
+    # lifestyle-and-the-developing-foetus — guess: how soon alcohol reaches the
+    # baby (the lesson's "within minutes"). Rail label "Not a filter" is visible
+    # on load, so a "does it get through?" guess would be given away; the old
+    # title, scene and big question are kept so the label still refers to the
+    # hook.
+    "lifestyle-and-the-developing-foetus": dict(
+        question="If you had to guess, once alcohol is in a mother's blood, "
+                 "how soon does it reach the baby?",
+        options=[
+            ("Within a few minutes",
+             "Alcohol is a small molecule that dissolves in blood, so it "
+             "crosses the placenta as easily as oxygen does. Within minutes "
+             "the baby's blood holds nearly as much as the mother's."),
+            ("After several hours",
+             "Hours sounds right for something to travel from one body to "
+             "another. But the two blood supplies are a fraction of a "
+             "millimetre apart, and within minutes the baby's level is close "
+             "to the mother's."),
+        ],
+        answer=0,
+        bridge="So the real questions are what else gets through, and what it "
+               "does when it arrives. Next: six substances, and whether each "
+               "one reaches the foetus.",
+    ),
+
+    # flowers-and-pollination — guess: which puts more pollen into the air, grass
+    # or a rose (the old hay-fever hook). Title and scene unchanged.
+    "flowers-and-pollination": dict(
+        question="If you had to guess, which puts far more pollen into the "
+                 "air: grass or a rose?",
+        options=[
+            ("Grass",
+             "Grass lets the wind carry its pollen, so it makes huge amounts "
+             "and most of it is wasted. That is why grass pollen is the one "
+             "that gets into noses."),
+            ("A rose",
+             "Roses are the flowers people notice. But a rose hands its pollen"
+             " to a bee, so it makes far less and very little of it is ever "
+             "loose in the air."),
+        ],
+        answer=0,
+        bridge="A plant cannot walk its pollen anywhere, so how it gets moved "
+               "shapes the whole flower. Next: nine parts of a flower and the "
+               "job of each.",
+    ),
+
+    # fertilisation-seeds-and-fruit — guess: does the pollen grow its way down or
+    # get carried down. Old title ("growing a tunnel") gave the answer, so title
+    # and scene rewritten; both replies say "tunnel" so the rail label "A tunnel"
+    # still lands.
+    "fertilisation-seeds-and-fruit": dict(
+        title="Pollen on the sticky tip.",
+        scene="A pollen grain lands on the sticky tip of a stalk in the middle"
+              " of a flower. The part it has to reach is a few centimetres "
+              "below, deep inside the flower. The grain has no legs, wings or "
+              "tail.",
+        question="If you had to guess, does the pollen grow its way down the "
+                 "stalk, or does something carry it down?",
+        options=[
+            ("It grows its way down",
+             "The grain puts out a thin tube that grows down through the stalk"
+             " like a tunnel, and the male nucleus travels along inside it."),
+            ("Something carries it down",
+             "An insect or the wind carried the pollen to the flower. But once"
+             " it lands, the grain does the work itself: it grows a tunnel "
+             "down through the stalk."),
+        ],
+        answer=0,
+        bridge="Landing is not the same as joining. Next: what each part of "
+               "the flower turns into once fertilisation has happened.",
+    ),
+
+    # seed-dispersal — guess: does a seed under its parent do well or badly. Old
+    # scene ("must be costing them something") and big question ("the worst
+    # place...") gave it away, so both rewritten; title kept.
+    "seed-dispersal": dict(
+        scene="A plant that has just spent a season building a fruit then "
+              "spends even more on getting its seeds away.",
+        question="If you had to guess, would a seed that lands right under its"
+                 " parent plant do well, or badly?",
+        options=[
+            ("Do well",
+             "The parent grew well there, so the spot looks like a good one. "
+             "But that is the problem: the big plant has already taken the "
+             "light, water and minerals."),
+            ("Do badly",
+             "Under the parent it has to compete for light, water and minerals"
+             " with a much bigger plant that got there first, and it usually "
+             "loses."),
+        ],
+        answer=1,
+        bridge="That is the problem every dispersal structure is solving. "
+               "Next: eight fruits and seeds to sort by how they travel.",
+        big_question="Plants spend a lot on getting rid of their own seeds. "
+                     "Why does it pay?",
+    ),
+
+
+    # ── Year 8 · B7 Photosynthesis ──────────────────────────────────────────────
+
+    # the-photosynthesis-reaction — guess: did van Helmont's soil end up a lot
+    # lighter or almost the same (PLANT-01). Old title stated the soil loss and
+    # the big question ("a tree is mostly made of air") gave it away, so title,
+    # scene and big question rewritten; the willow stays for the rail label "The
+    # willow".
+    "the-photosynthesis-reaction": dict(
+        title="A willow in a pot for five years.",
+        scene="In the 1640s Jan van Helmont planted a 2.3 kg willow shoot in "
+              "90 kg of dried soil in a pot. He gave it nothing but water for "
+              "five years, and the shoot grew into a small tree. Then he "
+              "weighed the tree and the soil again.",
+        question="If you had to guess, did the soil in the pot end up a lot "
+                 "lighter, or almost the same?",
+        options=[
+            ("A lot lighter",
+             "Plants grow in soil. But the soil lost only about 57 grams while"
+             " the tree gained about 74 kilograms."),
+            ("Almost the same",
+             "The soil lost only about 57 grams, while the willow gained about"
+             " 74 kilograms. The tree is not made of soil."),
+        ],
+        answer=1,
+        bridge="So the new wood came from somewhere else. Next: take away "
+               "light, carbon dioxide, water or chlorophyll, one at a time, "
+               "and see what a leaf makes.",
+        big_question="A tree grows from a small shoot into tonnes of wood. "
+                     "What is it built from, and what does it need to build "
+                     "it?",
+    ),
+
+    # leaves-built-for-the-job — guess: are most of a leaf's holes on top or
+    # underneath. Rail label "Every hole leaks" names the old hook and gives away
+    # any "is a change free?" guess, so the old title, scene and big question are
+    # kept and the angle moved to where the holes sit (the lesson's stomata-on-
+    # the-shaded-underside fact).
+    "leaves-built-for-the-job": dict(
+        question="If you had to guess, are most of a leaf's holes on its top "
+                 "surface, or on its underside?",
+        options=[
+            ("On the top surface",
+             "The top faces the sun and the open air, so it looks like the "
+             "natural place. But a hole there would lose water fastest. Most "
+             "are on the shaded underside."),
+            ("On the underside",
+             "The underside is shaded and cooler, so less water evaporates out"
+             " of each hole. Carbon dioxide still gets in from below."),
+        ],
+        answer=1,
+        bridge="Even where a hole goes is a deal between letting gas in and "
+               "keeping water. Next: build a leaf with four dials and try to "
+               "win on both readouts.",
+    ),
+
+    # testing-a-leaf-for-starch — guess: is the leaf boiled in alcohol to remove
+    # its green or to wash it clean. Old title and scene gave the answer (green
+    # hides the change), so rewritten; the new title keeps "straight onto" for
+    # the rail label "Straight on".
+    "testing-a-leaf-for-starch": dict(
+        title="Not straight onto the leaf.",
+        scene="Iodine solution is used to test a leaf for starch, but it never"
+              " goes straight onto a fresh leaf. Before the iodine goes on, "
+              "the leaf is boiled in ethanol, a kind of alcohol.",
+        question="If you had to guess, is the leaf boiled in alcohol to remove"
+                 " its green, or to wash it clean?",
+        options=[
+            ("To remove its green",
+             "The alcohol dissolves the green chlorophyll out, so the leaf "
+             "goes pale and a colour change can be seen."),
+            ("To wash it clean",
+             "Alcohol does clean things. But nothing in this test depends on "
+             "the leaf being germ-free. The problem is its green colour, which"
+             " hides any change."),
+        ],
+        answer=0,
+        bridge="A pale leaf, then iodine: blue-black means starch. Next: a "
+               "bench where you can leave steps out and see what goes wrong.",
+    ),
+
+    # why-almost-all-life-depends-on-it — guess: does a mushroom live on food a
+    # plant made, or make its own. Old title ("every meal was once a leaf") gave
+    # the rule away, so title and scene rewritten; the new title keeps "every
+    # meal" for the rail label "Every meal". Big question kept.
+    "why-almost-all-life-depends-on-it": dict(
+        title="Every meal you eat started somewhere.",
+        scene="A steak is a cow, and the cow ate grass. Bread is made from "
+              "wheat. A mushroom is harder: it is not green, has no leaves, "
+              "and grows on compost or rotting wood, often where no sunlight "
+              "reaches.",
+        question="If you had to guess, does a mushroom live on food that a "
+                 "plant made, or on food it makes itself?",
+        options=[
+            ("Food a plant made",
+             "A mushroom's threads feed on dead plant material, so its food "
+             "was built by a plant, maybe years ago."),
+            ("Food it makes itself",
+             "It grows without anyone feeding it, so it can look self-made. "
+             "But a mushroom has no chlorophyll and cannot make food from "
+             "light. It digests what a plant built earlier."),
+        ],
+        answer=0,
+        bridge="Follow almost any food back far enough and you reach something"
+               " that makes food from light. Next: pick a food and trace it "
+               "back, step by step.",
+    ),
 }
 
 
