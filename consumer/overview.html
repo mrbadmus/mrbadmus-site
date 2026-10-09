@@ -486,8 +486,14 @@
      own day. (The Sunday-first `k.days` stays in the payload for pages
      built before this one, and is not read here.) */
   var DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-  var DUE_DAYS = ['Thu', 'Fri', 'Sat', 'Sun'];
-  var DUE_DOW  = { Thu: 4, Fri: 5, Sat: 6, Sun: 0 };
+  /* ⊕ B2C fix run (9 Oct 2026). The "Opens" chips are the next SEVEN
+     days, today first, in date order — as a whole-day offset from today's
+     London date. They used to be Design's four weekday NAMES (Thu, Fri,
+     Sat, Sun), each resolved to its next occurrence: on a Friday that read
+     "Thu 15 Oct, Fri 9 Oct, Sat 10 Oct, Sun 11 Oct", out of order, with
+     Saturday chosen and — on any Monday to Wednesday — no way to open work
+     today. Seven days keeps every date the four names could reach. */
+  var DUE_DAYS = [0, 1, 2, 3, 4, 5, 6];
 
   var MODE_TO_API = { school: 'alongside_school', home: 'home_education' };
   var MODE_FROM_API = { alongside_school: 'school', home_education: 'home' };
@@ -519,23 +525,11 @@
      from a parent at home. */
   function dayMonth(iso) { return C.dayMonth(iso); }
   function plusDaysISO(iso, n) { return C.plusDaysISO(iso, n); }
-  /* "yesterday, 7.40pm" — Design's shape for `lastActive`. */
-  function whenLabel(iso) {
-    if (!iso) { return null; }
-    var d = new Date(iso);
-    if (isNaN(d.getTime())) { return null; }
-    var today = new Date(); today.setHours(0, 0, 0, 0);
-    var that = new Date(d); that.setHours(0, 0, 0, 0);
-    var days = Math.round((today - that) / 86400000);
-    var h = d.getHours(), m = d.getMinutes();
-    var suffix = h < 12 ? 'am' : 'pm';
-    h = h % 12; if (h === 0) { h = 12; }
-    var time = h + '.' + (m < 10 ? '0' : '') + m + suffix;
-    if (days === 0) { return 'today, ' + time; }
-    if (days === 1) { return 'yesterday, ' + time; }
-    if (days < 7) { return days + ' days ago, ' + time; }
-    return dayMonth(iso) + ', ' + time;
-  }
+  /* "yesterday, 7.40pm" — Design's shape for `lastActive`.
+     ⊕ B2C fix run (9 Oct 2026): from consumer-common.js, so its days are
+     London days and its time is the one time format every consumer screen
+     uses ("11.19pm") — it used to read the device's clock. */
+  function whenLabel(iso) { return C.whenLabel(iso); }
   function money(pence) { return C.money(pence); }
 
   /* Design's answer dates read "12 Sep". ⊕ FOUND BY DRIVING IT, 2 Sep 2026:
@@ -584,7 +578,7 @@
     picker: null, pickerFor: null,
     msgs: null, msgsFor: null, threads: null,
     readMarkedFor: null,
-    workKind: 'practice', topic: null, tp: {}, due: 'Sat', note: '', draft: '',
+    workKind: 'practice', topic: null, tp: {}, due: 0, note: '', draft: '',
     edit: null, newPass: '', confirmRemove: false,
     prices: null,
     writable: false,
@@ -614,7 +608,7 @@
      reopened holding the last pick, behind a fresh search, set that pick a
      second time. */
   function resetSetWork() {
-    S.workKind = 'practice'; S.topic = null; S.tp = {}; S.due = 'Sat'; S.note = '';
+    S.workKind = 'practice'; S.topic = null; S.tp = {}; S.due = 0; S.note = '';
   }
   function go(view, extra) {
     if (view === 'setwork' && S.view !== 'setwork') { resetSetWork(); }
@@ -856,8 +850,13 @@
     var t = threadFor(k.id);
     /* Her "last replied Tuesday evening" is real when the thread has an
        inbound message; when it does not, the clause is dropped. */
-    if (t && t.last && t.last.mine === false && t.last.time) {
-      return k.first_name + ' last replied ' + t.last.time + '. Messages land on their ' +
+    /* ⊕ B2C fix run (9 Oct 2026): the server's `time` label was "23:19"
+       beside "Last active today, 11.19pm" on the same card. Said from
+       `created_at` in the one format ("today, 11.19pm"). */
+    var replied = t && t.last && t.last.mine === false &&
+      (whenLabel(t.last.created_at) || t.last.time);
+    if (replied) {
+      return k.first_name + ' last replied ' + replied + '. Messages land on their ' +
              'Today screen.';
     }
     return 'Messages land on ' + k.first_name + '’s Today screen.';
@@ -1162,12 +1161,11 @@
      action. */
 
   function viewOverview() {
-    var hour = new Date().getHours();
+    var hour = C.londonHour();   // ⊕ London, not the device (9 Oct 2026)
     // ⊕ B2C polish: "Morning" at 01:50 is wrong; the small hours get "Hello".
     var greeting = (hour < 5 ? 'Hello' : hour < 12 ? 'Morning' : hour < 18 ? 'Afternoon' : 'Evening') +
       ', ' + parentName();
-    var todayLabel = new Date().toLocaleDateString('en-GB',
-      { weekday: 'long', day: 'numeric', month: 'long' });
+    var todayLabel = C.longDate();   // "Friday 9 October", the London date
 
     /* #dk-msg here too: "X has been removed" lands on this screen, and
        without a host it was written nowhere (found by the B2C repair drive). */
@@ -1269,7 +1267,7 @@
     var sc = scoresOf(k);
     var w = workOf(k);
     var upcoming = Array.isArray(k.upcoming) ? k.upcoming : [];
-    var strip = k.week_strip || { done: [0, 0, 0, 0, 0, 0, 0], dates: [], today: (new Date().getDay() + 6) % 7 };
+    var strip = k.week_strip || { done: [0, 0, 0, 0, 0, 0, 0], dates: [], today: (C.ymdWeekday(C.londonYMD()) + 6) % 7 };
     var todayIdx = strip.today;   // Monday = 0 … Sunday = 6
 
     var days = (Array.isArray(strip.done) ? strip.done : []).map(function (v, i) {
@@ -1534,13 +1532,14 @@
       '<p style="margin:22px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Opens</p>' +
       '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">' +
         DUE_DAYS.map(function (d) {
-          /* ⊕ B2C polish 2: each chip names its date. "Sun" on a Sunday is
-             today; on a Monday it is next week's first day. */
+          /* ⊕ B2C polish 2: each chip names its date. ⊕ Fix run: the first
+             is "Today", the rest their weekday, in date order. */
           var cp = civilParts(dueDate(d));
           return '<button class="ks3-option" aria-pressed="' + (S.due === d ? 'true' : 'false') +
             '" data-act="pick-due" data-id="' + d + '" ' +
             'style="flex-direction:column;justify-content:center;gap:0;padding:8px 4px;font-size:15px;' +
-            'line-height:1.2">' + '<span style="font-weight:700">' + d + '</span>' +
+            'line-height:1.2">' + '<span style="font-weight:700">' +
+              (d === 0 ? 'Today' : (cp ? cp.day : '')) + '</span>' +
             (cp ? '<span style="font-size:13px;font-weight:400;color:var(--ks3-ink-body)">' +
               esc(cp.date) + '</span>' : '') + '</button>';
         }).join('') + '</div>' +
@@ -1558,7 +1557,8 @@
      topic the picker is showing as chosen. Its label says which. */
   function setReady() { return S.workKind === 'exam' || !!S.topic; }
   function setLabel() {
-    return setReady() ? ('Set to open ' + (civilLabel(dueDate(S.due)) || S.due)) : 'Choose a topic first';
+    if (!setReady()) { return 'Choose a topic first'; }
+    return S.due === 0 ? 'Set to open today' : ('Set to open ' + civilLabel(dueDate(S.due)));
   }
   function syncSetButton() {
     var b = document.getElementById('dk-set');
@@ -1573,12 +1573,9 @@
   function examNoteText(k) {
     return 'No topic: Mr Badmus picks from where ' + ((k && k.first_name) || 'they') + ' is up to.';
   }
-  /* Today as a civil date on this device — only to say whether a row has
-     opened yet. The week itself always comes from the backend. */
-  function todayYmd() {
-    var d = new Date();
-    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
-  }
+  /* Today as a London civil date — only to say whether a row has opened
+     yet. The week itself always comes from the backend. */
+  function todayYmd() { return C.londonYMD(); }
 
   function viewChat() {
     var k = child();
@@ -1654,7 +1651,7 @@
           esc(m.text || '') + '</div>' +
         '<span style="margin-top:4px;font-family:var(--ks3-font-mono);font-size:11px;' +
           'color:var(--ks3-ink-muted)">' + esc(mine ? 'You' : k.first_name) + ' · ' +
-          esc(m.time || C.fmtTime(m.created_at)) + '</span></div>';
+          esc(C.msgWhen(m.created_at) || m.time || '') + '</span></div>';
     }).join('');
     var wrap = document.getElementById('c-main');
     if (wrap) { window.scrollTo(0, document.body.scrollHeight); }
@@ -2055,7 +2052,7 @@
     'checkout': function (el) { checkout(el); },
 
     'pick-kind': function (el) { S.workKind = el.getAttribute('data-id'); render(); },
-    'pick-due':  function (el) { S.due = el.getAttribute('data-id'); render(); },
+    'pick-due':  function (el) { S.due = Number(el.getAttribute('data-id')) || 0; render(); },
 
     'pick-intensity': function (el) { S.edit.intensity = el.getAttribute('data-id'); render(); },
     'pick-year':  function (el) { S.edit.year_group = Number(el.getAttribute('data-id')); render(); },
@@ -2184,14 +2181,14 @@
     }
   };
 
-  /* The four due-day labels Design drew, resolved to the next real date each
-     one names. On a Wednesday "Thu" is tomorrow; on a Friday it is next
-     Thursday. Never a date in the past — work set for yesterday is work
-     nobody will see. */
+  /* A chip's offset, resolved to the civil date it names: today's LONDON
+     date plus that many days — the date the backend files the work under.
+     Never a date in the past — work set for yesterday is work nobody will
+     see. */
   /* ⊕ B2C polish 2. The one-practice-a-week refusal, made true to what this
      screen offers. The backend says the fact and the date the NEXT teaching
      week opens (`next_week_from`); a due chip on or after it is a real way
-     to set these for next week, and is named. With none (on a Sunday every
+     to set these for next week, and is named. With none (on a Monday every
      chip is this week) the only true advice is a different kind of work. */
   function setWorkRefusal(e) {
     var d = e && e.data;
@@ -2204,13 +2201,8 @@
       : 'Choose a lesson or an exam question instead.');
   }
 
-  function dueDate(label) {
-    var want = DUE_DOW[label];
-    var d = new Date();
-    d.setHours(12, 0, 0, 0);
-    var add = (want - d.getDay() + 7) % 7;
-    d.setDate(d.getDate() + add);
-    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+  function dueDate(offset) {
+    return C.ymdPlusDays(C.londonYMD(), Number(offset) || 0);
   }
 
   document.getElementById('dk-root').addEventListener('click', function (ev) {

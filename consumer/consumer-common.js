@@ -639,6 +639,57 @@
     return new Date(t + n * 864e5).toISOString();
   }
 
+  /* ⊕ B2C fix run (9 Oct 2026). CIVIL dates — "YYYY-MM-DD", the shape the
+     API's `scheduled_for` and `week_start` take — in London. `londonYMD()`
+     with no argument is TODAY in London: the date the backend's own
+     londonYMD(new Date()) files work under, on any device in any zone. */
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function londonYMD(v) {
+    var p = londonParts(v == null ? new Date() : v);
+    return p ? (p.y + '-' + pad2(p.m) + '-' + pad2(p.d)) : null;
+  }
+  /* Whole calendar days after a civil date, as a civil date. Done in UTC on
+     the civil date, so a clock change can never make a day 23 or 25 hours. */
+  function civil(ymd) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(ymd || ''));
+    return m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])) : null;
+  }
+  function ymdPlusDays(ymd, n) {
+    var d = civil(ymd);
+    if (!d) { return null; }
+    d.setUTCDate(d.getUTCDate() + (n || 0));
+    return d.getUTCFullYear() + '-' + pad2(d.getUTCMonth() + 1) + '-' + pad2(d.getUTCDate());
+  }
+  /* 0 = Sunday … 6 = Saturday, of a civil date (not of an instant). */
+  function ymdWeekday(ymd) {
+    var d = civil(ymd);
+    return d ? d.getUTCDay() : null;
+  }
+  /* Whole days from civil date `a` to civil date `b` (b - a). */
+  function ymdDiff(a, b) {
+    var x = civil(a), y = civil(b);
+    return (x && y) ? Math.round((y - x) / 864e5) : null;
+  }
+  /* The London hour now (0–23) — for "Morning" / "Evening". */
+  function londonHour(v) {
+    var p = londonParts(v == null ? new Date() : v);
+    return p ? p.h : new Date().getHours();
+  }
+  var WEEKDAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  var WEEKDAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  /* "Friday 9 October" — a London date as the page kickers show it. */
+  function longDate(v) {
+    var p = londonParts(v == null ? new Date() : v);
+    if (!p) { return ''; }
+    return WEEKDAYS_LONG[ymdWeekday(londonYMD(v == null ? new Date() : v))] + ' ' +
+      p.d + ' ' + MONTHS_LONG[p.m - 1];
+  }
+  /* "Fri 9 Oct" from a civil date. */
+  function civilLabel(ymd) {
+    var d = civil(ymd);
+    return d ? (WEEKDAYS_SHORT[d.getUTCDay()] + ' ' + d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()]) : '';
+  }
+
   /* Both of these refuse to invent. An unparseable date is not "today" and
      is not the epoch — it is the fallback word, visibly. overview.html's
      `dash()` policy, applied to time. London, like every date above. */
@@ -650,8 +701,14 @@
   }
 
   /* 12-hour with a lowercase suffix, because the chat panel it was written
-     for is read by nine-year-olds. "16:05" is a timetable; "4:05pm" is a
-     time somebody said something. */
+     for is read by nine-year-olds. "16:05" is a timetable; "4.05pm" is a
+     time somebody said something.
+     ⊕ B2C fix run (9 Oct 2026): ONE time format on every consumer screen —
+     "11.19pm", with a dot. It is Design's own shape (her lastActive
+     "yesterday, 7.40pm", her message stamp "Tue 8.15pm" in the emails) and
+     the most used one in the product. A parent's screen used to show
+     "Last active today, 11.19pm" beside "Milo last replied 23:19" and a
+     chat stamp of "23:12" — three clocks for one evening. */
   function fmtTime(iso, fallback) {
     if (iso == null || iso === '') { return fallback == null ? '' : fallback; }
     var p = londonParts(iso);
@@ -659,7 +716,35 @@
     var h = p.h, m = p.min;
     var suffix = h < 12 ? 'am' : 'pm';
     h = h % 12; if (h === 0) { h = 12; }
-    return h + ':' + (m < 10 ? '0' : '') + m + suffix;
+    return h + '.' + (m < 10 ? '0' : '') + m + suffix;
+  }
+  /* "today, 11.19pm" · "yesterday, 7.40pm" · "3 days ago, 7.40pm" ·
+     "16 October, 7.40pm" — Design's shape for when somebody was last
+     about. Days are London days. Unparseable in, null out. */
+  function whenLabel(iso, now) {
+    var t = londonYMD(iso);
+    if (!iso || !t) { return null; }
+    var days = ymdDiff(t, londonYMD(now == null ? new Date() : now));
+    var time = fmtTime(iso);
+    if (days === 0) { return 'today, ' + time; }
+    if (days === 1) { return 'yesterday, ' + time; }
+    if (days > 1 && days < 7) { return days + ' days ago, ' + time; }
+    return dayMonth(iso) + ', ' + time;
+  }
+  /* A message stamp: "11.19pm" today, "Yesterday 8.15pm", "Tue 8.15pm"
+     within the week (Design's email stamp), "3 Sep" before that. The
+     backend's `time` label says the same thing; this exists so a page can
+     show it from `created_at` in the one format whatever the server sent. */
+  function msgWhen(iso, now) {
+    var t = londonYMD(iso);
+    if (!iso || !t) { return ''; }
+    var days = ymdDiff(t, londonYMD(now == null ? new Date() : now));
+    var time = fmtTime(iso);
+    if (days === 0) { return time; }
+    if (days === 1) { return 'Yesterday ' + time; }
+    if (days > 1 && days < 7) { return WEEKDAYS_SHORT[ymdWeekday(t)] + ' ' + time; }
+    var c = civil(t);
+    return c.getUTCDate() + ' ' + MONTHS[c.getUTCMonth()];
   }
 
   /* Pence in, pounds out, always with both decimals. Never `toFixed` on a
@@ -1208,6 +1293,15 @@
     londonParts: londonParts,
     dayMonth: dayMonth,
     plusDaysISO: plusDaysISO,
+    londonYMD: londonYMD,
+    ymdPlusDays: ymdPlusDays,
+    ymdWeekday: ymdWeekday,
+    ymdDiff: ymdDiff,
+    londonHour: londonHour,
+    longDate: longDate,
+    civilLabel: civilLabel,
+    whenLabel: whenLabel,
+    msgWhen: msgWhen,
     money: money,
     guard: guard,
     lockedBanner: lockedBanner,
