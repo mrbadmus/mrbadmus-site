@@ -1469,6 +1469,8 @@ def compile_block(page, name, design_dir=None):
     if name == "Ks4End":
         # ⊕ R-BRAND — the footer's sign-off says "MrBadmus".
         tpl = ks4_rulings.apply_r_brand_footer(tpl)
+        # ⊕ R-TUTOR-NAME — the tutor card says "Ask MrBadmus".
+        tpl = ks4_rulings.apply_r_tutor_name(tpl)
         # ⊕ R10 (ks4_rulings.py) — D1 fix: the "Ask about this lesson" CTA
         # becomes a real button carrying the hook mrbadmus.v2.js binds.
         tpl = ks4_rulings.apply_r10_tutor_cta(tpl)

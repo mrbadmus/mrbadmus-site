@@ -407,11 +407,22 @@ def canon(path):
 # order of every lesson page, invisible. `data-inert-when-closed` is what tells
 # the engine to put it back on close; KS4 does not carry the attribute and is
 # therefore untouched by the same code.
+# ⊕ B2C polish (9 Oct 2026) — Mide's 13 Sep 2026 brand rule: the tutor is
+# "Ask MrBadmus" everywhere a user sees it — never "MrBadmusAI", "Mr. Badmus
+# AI", "Mr Badmus AI" or "MrBadmus AI". Applied to authored copy that names it.
+_OLD_TUTOR_NAME = re.compile(r"Mr\.? ?Badmus ?AI\b")
+
+
+def tutor_name(text):
+    """Authored copy naming the tutor, with the retired name forms made "MrBadmus"."""
+    return _OLD_TUTOR_NAME.sub("MrBadmus", text)
+
+
 KS3_CHAT_OVERLAY = """<div class="chat-overlay" id="chatOverlay" inert data-inert-when-closed>
   <div class="chat-modal">
     <div class="chat-head">
       <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
+        <h3>Ask MrBadmus</h3>
         <p id="chat-head-subtitle">KS3 Science Tutor</p>
       </div>
       <button class="close-btn" type="button" aria-label="Close the tutor">%(cross)s</button>
@@ -424,7 +435,7 @@ KS3_CHAT_OVERLAY = """<div class="chat-overlay" id="chatOverlay" inert data-iner
     <div class="chat-input-row" style="max-width:860px;width:100%%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Add a photo of your work" tabindex="0" role="button" aria-label="Attach a photo">\U0001F4F7</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask Mr Badmus anything about this lesson"/>
+      <input type="text" id="ci" placeholder="Ask MrBadmus anything about this lesson"/>
       <button class="chat-send-btn" type="button" aria-label="Send">%(arrow)s</button>
     </div>
   </div>
@@ -4099,8 +4110,8 @@ def r_layer(lesson, blocks, cls, eyebrow):
 # removes it everywhere.
 # ⊕ B2C polish (9 Oct 2026) — "MrBadmusAI" → "MrBadmus" here, per the one-mark
 # ruling ("AI" is dropped from the name; legal text and the company name are
-# separate). Only this footer line: the tutor-feature labels ("Ask Mr Badmus
-# AI", the chat header) are an open decision for Mide and are left alone.
+# separate). ⊕ Later the same day Mide ruled the tutor-feature labels too:
+# "Ask MrBadmus" everywhere (tutor_name() and KS3_CHAT_OVERLAY above).
 LEGAL_LINE = '<p class="ks3-legal">Lesson content © MrBadmus.</p>'
 
 
@@ -4157,7 +4168,12 @@ def r_endmatter(cards, tutor=None):
     # without this slot the B2 question is simply lost. The generic body still
     # fills in when a lesson names neither.
     tutor = tutor or {}
-    heading = t(tutor.get("prompt") or "Stuck? Ask Mr Badmus AI")
+    # ⊕ B2C polish (9 Oct 2026, Mide's 13 Sep brand rule) — the tutor is
+    # "Ask MrBadmus" wherever a pupil sees it. 179 authored lessons carry
+    # Design's "Ask Mr Badmus AI" as their prompt; the name is normalised
+    # here, once, rather than in every lesson file (and a future lesson that
+    # copies the old wording is caught by the same line).
+    heading = t(tutor_name(tutor.get("prompt") or "Stuck? Ask MrBadmus"))
     if tutor.get("body"):
         body = "<p>%s</p>" % t(tutor["body"])
     else:

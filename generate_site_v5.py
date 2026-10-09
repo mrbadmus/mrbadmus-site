@@ -959,13 +959,13 @@ def k4_page(title, body, description="", subject="physics", pathway="", tier="",
 
 
 def chat_html():
-    return """<button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5h16v10H9.5L5 19.5v-4H4z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
+    return """<button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5h16v10H9.5L5 19.5v-4H4z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></span><span class="fab-text">Ask MrBadmus</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
       <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
+        <h3>Ask MrBadmus</h3>
         <p id="chat-head-subtitle">GCSE Science Tutor</p>
       </div>
       <button class="close-btn" onclick="MrBadmus.close()">✕</button>
@@ -978,7 +978,7 @@ def chat_html():
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)" tabindex="0" role="button" aria-label="Attach a photo">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask Mr Badmus anything... (paste screenshots with Ctrl+V)"/>
+      <input type="text" id="ci" placeholder="Ask MrBadmus anything... (paste screenshots with Ctrl+V)"/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>
@@ -1720,11 +1720,11 @@ def make_pathway_topic_page(pathway, tier, subject, topic):
   </div>
 
   <div class="section">
-    <div class="section-title">🤖 Ask Mr Badmus AI</div>
+    <div class="section-title">🤖 Ask MrBadmus</div>
     <div class="card ask-card">
       <p class="ask-lede">Stuck on {topic['title']}? Ask me anything!</p>
       <p class="ask-sub">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-      <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
+      <button data-open-chat class="btn-primary">💬 Ask MrBadmus</button>
     </div>
   </div>
 
@@ -1968,7 +1968,7 @@ def make_fifa_example(subject, topic):
     key = (subject, topic["id"])
     ex = examples.get(key)
     if not ex:
-        return f'<div class="card"><p style="color:var(--muted);">Ask Mr Badmus AI below for a worked FIFA example on {topic["title"]}!</p></div>'
+        return f'<div class="card"><p style="color:var(--muted);">Ask MrBadmus below for a worked FIFA example on {topic["title"]}!</p></div>'
 
     steps_html = ""
     for letter, text in ex["steps"]:
@@ -3920,7 +3920,7 @@ def make_star_rating(st_id):
 
 
 STAR_MESSAGES = [
-    "No worries — that's what Mr Badmus AI is here for! Hit the chat button below and ask me to explain it from scratch. 💬",
+    "No worries — that's what Ask MrBadmus is here for! Hit the chat button below and ask me to explain it from scratch. 💬",
     "Good start! Read through the theory again, then try the quiz once more. You'll get there! 📖",
     "Solid — you're getting there! Try explaining it out loud to yourself. If you can say it, you know it. 🗣️",
     "Great work! Just review the parts you found tricky and you'll be flying. 🚀",
@@ -4032,11 +4032,11 @@ def make_new_subtopic_page(st, color):
 
     # AI chat section
     chat_section = f"""<div class="section">
-  <div class="section-title">🤖 Ask Mr Badmus AI</div>
+  <div class="section-title">🤖 Ask MrBadmus</div>
   <div class="card" style="text-align:center;padding:32px;">
     <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
     <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for all calculations and flag Higher Tier and Triple content clearly.</p>
-    <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask MrBadmus</button>
   </div>
 </div>"""
 
@@ -4379,10 +4379,10 @@ html {{ background: #0F0F1A; }}
     </div>
   </div>
   <div class="section">
-    <div class="section-title">🤖 Ask Mr Badmus AI</div>
+    <div class="section-title">🤖 Ask MrBadmus</div>
     <div class="card" style="text-align:center;padding:32px;">
       <p style="font-size:1.1rem;margin-bottom:16px;font-weight:700;">Got a question about Electricity? 💬</p>
-      <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
+      <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask MrBadmus</button>
     </div>
   </div>
 </div>"""
@@ -4578,11 +4578,11 @@ def make_pathway_subtopic_page(st, color, subject, pathway, tier, all_subtopics_
     star_html = make_star_rating(st_id)
 
     chat_section = f"""<div class="section">
-  <div class="section-title">🤖 Ask Mr Badmus AI</div>
+  <div class="section-title">🤖 Ask MrBadmus</div>
   <div class="card ask-card">
     <p class="ask-lede">Stuck? Just ask! 💬</p>
     <p class="ask-sub">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat class="btn-primary">💬 Ask MrBadmus</button>
   </div>
 </div>"""
 
@@ -5060,11 +5060,11 @@ try {{
 }} catch(e) {{}}
 """
         chat_section = f"""<div class="section">
-  <div class="rd-sec-kicker">Stuck · ask Mr Badmus AI</div>
+  <div class="rd-sec-kicker">Stuck · Ask MrBadmus</div>
   <div class="card ask-card">
     <p class="ask-lede">Ask about anything on this page.</p>
     <p class="ask-sub">FIFA for calculations; Higher (⭐) and Triple (🔬) content flagged clearly.</p>
-    <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat class="btn-primary">💬 Ask MrBadmus</button>
   </div>
 </div>"""
 
@@ -5328,7 +5328,7 @@ def make_pathway_topic_page_with_subtopics(pathway, tier, subject, topic, subtop
         <div class="k4-kicker k4-kicker-ondark">Stuck on something</div>
         <p class="k4-dark-title">Ask about {topic['title']}</p>
         <p>Calculations get worked through with FIFA, and anything Higher or Triple is flagged before you learn it by mistake.</p>
-        <button type="button" data-open-chat class="k4-cta">Ask MrBadmusAI {K4_ARROW}</button>
+        <button type="button" data-open-chat class="k4-cta">Ask MrBadmus {K4_ARROW}</button>
       </div>
 {rp_panel}
     </aside>

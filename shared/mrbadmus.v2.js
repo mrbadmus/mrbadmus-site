@@ -491,7 +491,7 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
     if (ov) {
       ov.setAttribute('role', 'dialog');
       ov.setAttribute('aria-modal', 'true');
-      ov.setAttribute('aria-label', 'Ask Mr Badmus');
+      ov.setAttribute('aria-label', 'Ask MrBadmus');
     }
     // Stream G follow-up — capture whichever control was focused (a mouse
     // click on a button focuses it natively) BEFORE this panel steals focus,

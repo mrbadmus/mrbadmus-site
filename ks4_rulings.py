@@ -530,6 +530,22 @@ def apply_r_tutor_label(text):
 
 
 # ═══════════════════════════════════════════════════════════════════════
+# R-TUTOR-NAME — B2C polish (9 Oct 2026), Mide's 13 Sep 2026 brand rule:
+# the tutor is "Ask MrBadmus" everywhere a user sees it. Ks4End's tutor card
+# (every pilot and batch delivery, byte-identical) heads it "Ask Mr Badmus
+# AI". The panel it opens (build_ks3.KS3_CHAT_OVERLAY) already says
+# "Ask MrBadmus"; this makes the card that opens it say the same.
+# ═══════════════════════════════════════════════════════════════════════
+R_TUTOR_NAME_FROM = "<h2>Ask Mr Badmus AI</h2>"
+R_TUTOR_NAME_TO = "<h2>Ask MrBadmus</h2>"
+
+
+def apply_r_tutor_name(text):
+    _require(text, R_TUTOR_NAME_FROM, "Ks4End.dc.html", "R-TUTOR-NAME")
+    return text.replace(R_TUTOR_NAME_FROM, R_TUTOR_NAME_TO, 1)
+
+
+# ═══════════════════════════════════════════════════════════════════════
 # R-TOPBAR — Stage B of the phone run (28 Sep 2026). Ks4Chrome's whole
 # header — `<nav class="ks3-nav" …>` holding Design's retired mark, a
 # divider and a four-rung breadcrumb that wraps — is replaced by the ONE

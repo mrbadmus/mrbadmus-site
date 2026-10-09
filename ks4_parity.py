@@ -563,6 +563,10 @@ def apply_text_whitelist(slug, route, index, sec, ref_text_norm):
         t = t.replace(R8_FROM_TEXT, R8_TO_TEXT)
     for old, new in science_rulings_for(slug):
         t = t.replace(normalize_ws(old), normalize_ws(new))
+    # ⊕ R-TUTOR-NAME (ks4_rulings.py, 9 Oct 2026) — Ks4End's tutor card is
+    # headed "Ask MrBadmus", not Design's "Ask Mr Badmus AI". A no-op on any
+    # section that does not carry the card.
+    t = t.replace("Ask Mr Badmus AI", "Ask MrBadmus")
     return t
 
 
