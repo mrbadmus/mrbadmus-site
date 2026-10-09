@@ -5892,6 +5892,85 @@ def publish_consumer_launch(output_dir, asset_ver):
 
 
 
+# ── Cache-bust for the hand-written trees' own assets (B2C polish, 9 Oct 2026)
+#
+# The /shared/ stamp pass in build_site() is keyed on /shared/, so a script or
+# stylesheet living INSIDE a hand-written tree shipped bare. The expensive one
+# was /consumer/consumer-common.js — the parent and child app's whole runtime,
+# on 24 consumer/parents/go/org pages plus auth.html — served with Cloudflare
+# Pages' default `max-age=14400, must-revalidate`. Not the year-long pin an
+# unstamped /shared/ file would risk, but four hours in which a returning
+# parent runs TODAY's HTML against YESTERDAY's consumer-common.js: the first
+# call to a helper the old copy lacks (childLine, positionPlaces,
+# planStepHref…) is a TypeError and a dead dashboard. Nobody decided this.
+# Each tree was added to the copy block (MRB-308, MRB-317/318, simulations)
+# and the stamp pass was never extended to follow it.
+#
+# Same scheme as /shared/: md5[:8] of the PUBLISHED copy, stamped onto every
+# quote-terminated reference, the list read from disk rather than typed
+# (MRB-290's reason), and verified in build_site() exactly like /shared/.
+#
+# ⚠️ _headers is deliberately NOT changed for these paths. They keep the
+# four-hour must-revalidate default, which the stamp alone makes safe (a new
+# stamp is a new cache key). `immutable` would additionally require every
+# URL to these trees built at RUNTIME to be stamped too, and that has not
+# been audited — e.g. /consumer/curriculum-index.json and /parents/legal/*.md
+# are fetched by script and carry no stamp.
+STAMPED_TREES = ("consumer", "parents", "go", "org", "simulations")
+
+# A root-relative reference to a top-level .css/.js in one of the trees,
+# quote-terminated like the /shared/ pattern so prose in comments cannot match,
+# and not preceded by a host or path character so `https://x/consumer/a.js"`
+# and `/foo/consumer/a.js"` are left alone.
+_TREE_REF = re.compile(
+    r'(?<![A-Za-z0-9._/-])/((?:' + '|'.join(STAMPED_TREES) + r')/'
+    r'[A-Za-z0-9._-]+\.(?:css|js))(\?v=[0-9a-f]+)?"')
+
+
+def tree_asset_versions(output_dir):
+    """{"consumer/consumer-common.js": md5[:8], …} for every top-level .css
+    and .js in each STAMPED_TREES directory of the PUBLISHED tree."""
+    import hashlib
+    ver = {}
+    for tree in STAMPED_TREES:
+        td = os.path.join(output_dir, tree)
+        if not os.path.isdir(td):
+            continue
+        for fn in sorted(os.listdir(td)):
+            p = os.path.join(td, fn)
+            if fn.endswith((".css", ".js")) and os.path.isfile(p):
+                with open(p, "rb") as fh:
+                    ver[tree + "/" + fn] = hashlib.md5(fh.read()).hexdigest()[:8]
+    return ver
+
+
+def stamp_tree_refs(html, tree_ver):
+    """Re-stamp every reference to a known tree asset with its current hash.
+    Idempotent; a stale ?v= is replaced, an unknown name is left alone (and
+    tree_ref_faults reports it)."""
+    def sub(m):
+        name = m.group(1)
+        if name not in tree_ver:
+            return m.group(0)
+        return '/%s?v=%s"' % (name, tree_ver[name])
+    return _TREE_REF.sub(sub, html)
+
+
+def tree_ref_faults(html, tree_ver):
+    """Every tree-asset reference in `html` that is bare, names a file the
+    build did not publish, or carries a stamp that is not the file's hash."""
+    faults = []
+    for m in _TREE_REF.finditer(html):
+        name, stamp = m.group(1), m.group(2)
+        if name not in tree_ver:
+            faults.append("%s (no such file published)" % m.group(0))
+        elif not stamp:
+            faults.append("%s (no cache-bust stamp)" % m.group(0))
+        elif stamp != "?v=" + tree_ver[name]:
+            faults.append("%s (stamp is not md5[:8] %s)" % (m.group(0), tree_ver[name]))
+    return faults
+
+
 def build_site(output_dir="mrbadmus_site"):
     import sys, os, shutil
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -6550,14 +6629,19 @@ def build_site(output_dir="mrbadmus_site"):
         if os.path.exists(_p):
             with open(_p, "rb") as _fh:
                 _asset_ver[_name] = _hashlib.md5(_fh.read()).hexdigest()[:8]
+    # ⊕ B2C polish (9 Oct 2026) — the hand-written trees' own assets
+    # (/consumer/consumer-common.js and friends) are stamped by this same
+    # pass and verified below. See STAMPED_TREES for why.
+    _tree_ver = tree_asset_versions(output_dir)
     if _asset_ver:
         _ver_pat = _re.compile(
             r'/shared/(' + '|'.join(_re.escape(n) for n in _asset_ver) + r')(?:\?v=[a-f0-9]+)?"'
         )
         def _stamp_versions(_html):
-            return _ver_pat.sub(
+            _html = _ver_pat.sub(
                 lambda m: f'/shared/{m.group(1)}?v={_asset_ver[m.group(1)]}"', _html
             )
+            return stamp_tree_refs(_html, _tree_ver)
         _stamped = 0
         for _root, _subdirs, _files in os.walk(output_dir):
             # Skip the foreign trees, for the same reason they are not wiped.
@@ -6587,6 +6671,7 @@ def build_site(output_dir="mrbadmus_site"):
                         _fh.write(_new)
                     _stamped += 1
         print(f"  ✅ cache-bust: stamped {_stamped} pages — {_asset_ver}")
+        print(f"  ✅ cache-bust: hand-written trees' own assets — {_tree_ver}")
 
         # ⊕ MRB-290 (25 Aug 2026) — the stamps are VERIFIED, not trusted.
         # Ported from build_student_port._verify_stamps, which explains why
@@ -6646,12 +6731,28 @@ def build_site(output_dir="mrbadmus_site"):
                         continue
                     _bad_stamps.append(
                         "%s links %s with no cache-bust stamp" % (_fp, _m.group(0)))
+                # The hand-written trees' own assets, by the same rule:
+                # nothing a browser fetches from them may be linked bare.
+                for _fault in tree_ref_faults(_content, _tree_ver):
+                    _bad_stamps.append("%s links %s" % (_fp, _fault))
+        # ...and every one of their stamps re-hashed from disk, in the
+        # published tree AND the repo-root source the round-trip writes to.
+        for _name, _want in sorted(_tree_ver.items()):
+            for _p in (os.path.join(output_dir, _name), _name):
+                if not os.path.exists(_p):
+                    continue
+                with open(_p, "rb") as _fh:
+                    _got = _hashlib.md5(_fh.read()).hexdigest()[:8]
+                if _got != _want:
+                    _bad_stamps.append(
+                        "%s hashes %s but pages shipped ?v=%s" % (_p, _got, _want))
         if _bad_stamps:
             raise SystemExit(
                 "generate_site_v5.py: the cache-bust stamps are not honest.\n  "
                 + "\n  ".join(_bad_stamps))
         print(f"  ✅ cache-bust: verified — every stamped asset re-hashed from "
-              f"disk, no bare /shared/ link in {output_dir}")
+              f"disk, no bare /shared/ or /{{{','.join(STAMPED_TREES)}}}/ "
+              f"asset link in {output_dir}")
 
     # ── Copy to repo root ──
     for item in os.listdir(output_dir):
