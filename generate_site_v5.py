@@ -723,7 +723,7 @@ def nav_html(active_subject="", pathway="", tier="", chrome=False):
     if chrome:
         return f"""<nav class="nav">
   <div class="k4-navbar">
-    {brand.brand_lockup("/index.html")}
+    {brand.brand_lockup("/")}
     <div class="nav-cluster">
       <a href="/3d/" class="nav-text-link">3D Studio</a>
       <a href="/weekly-challenge.html" class="challenge-chip"><svg viewBox="0 0 12 16" width="12" height="15" fill="currentColor" aria-hidden="true"><path d="M7.4 0L1 9.2h3.6L3.4 16 11 6.1H6.6L7.4 0z"/></svg> <span class="nav-chip-label">Challenge</span></a>
@@ -774,7 +774,7 @@ def nav_html(active_subject="", pathway="", tier="", chrome=False):
     crumbs_block = f'<div class="nav-crumbs">{crumbs}</div>' if crumbs else ""
 
     return f"""<nav class="nav">
-  {brand.brand_lockup("/index.html")}
+  {brand.brand_lockup("/")}
   {crumbs_block}
   <div class="nav-cluster">
     <a href="/3d/" class="nav-text-link">3D Studio</a>

@@ -45,8 +45,11 @@ MARK_SVG = ('<svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" '
             'aria-hidden="true" focusable="false">' + MARK_PATHS + '</svg>')
 
 
-def brand_lockup(href="/index.html", on_dark=False, extra_class=""):
+def brand_lockup(href="/", on_dark=False, extra_class=""):
     """The header lockup: mark + "MrBadmus", as one link home.
+
+    Home is "/" (⊕ B2C polish, 9 Oct 2026 — it was "/index.html", which put
+    a second spelling of the home page in every lesson header).
 
     on_dark — the header is dark in BOTH themes (e.g. a permanently dark
     bar), so the wordmark is cream whatever the theme. Everywhere else the
@@ -97,12 +100,12 @@ _HEAD_RE = re.compile(re.escape(HEAD_START) + r".*?" + re.escape(HEAD_END), re.S
 def stamp_brand(html):
     """Rewrite every marked brand region in a hand-written page.
 
-    Options: `href=<path>` (default /index.html) and `on_dark`.
+    Options: `href=<path>` (default /) and `on_dark`.
     Returns the page unchanged when it has no markers.
     """
     def _brand(m):
         opts = m.group("opts").split()
-        href = next((o[5:] for o in opts if o.startswith("href=")), "/index.html")
+        href = next((o[5:] for o in opts if o.startswith("href=")), "/")
         on_dark = "on_dark" in opts
         return ("<!--mrb:brand" + m.group("opts") + "-->" +
                 brand_lockup(href, on_dark=on_dark) + BRAND_END)
@@ -133,7 +136,7 @@ def brand_js():
         f"  var NAME = {_json.dumps(BRAND_NAME)};\n"
         "  function lockup(href, onDark) {\n"
         "    return '<a class=\"mrb-brand' + (onDark ? ' mrb-brand--on-dark' : '') + '\" href=\"' +\n"
-        "      (href || '/index.html') + '\" aria-label=\"' + NAME + ' home\">' + MARK +\n"
+        "      (href || '/') + '\" aria-label=\"' + NAME + ' home\">' + MARK +\n"
         "      '<span class=\"mrb-brand__word\">' + NAME + '</span></a>';\n"
         "  }\n"
         "  window.MrBadmusBrand = { NAME: NAME, MARK: MARK, lockup: lockup };\n"

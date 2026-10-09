@@ -219,7 +219,7 @@
       if (node.i !== undefined) { bhost.setAttribute("data-dc-tpl", node.i); }
       var B = window.MrBadmusBrand;
       if (B && typeof B.lockup === "function") {
-        bhost.innerHTML = B.lockup("/index.html", false);
+        bhost.innerHTML = B.lockup("/", false);
         var a = bhost.firstChild;
         if (a && a.nodeType === 1) {
           var sp = document.createElement("span");

@@ -627,7 +627,7 @@ def apply_r_brand_chrome(text):
         raise RulingError(
             "ks4_rulings R-BRAND: Ks4Chrome.dc.html carries %d old brand "
             "anchor(s), expected exactly 1. Design's delivery moved." % len(hits))
-    return _R_BRAND_RE.sub(lambda m: brand.brand_lockup("/index.html"), text, count=1)
+    return _R_BRAND_RE.sub(lambda m: brand.brand_lockup("/"), text, count=1)
 
 
 def apply_r_brand_footer(text):

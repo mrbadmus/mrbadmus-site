@@ -2024,7 +2024,7 @@ def _bake_brand(baked):
     if len(hits) != 1:
         raise SystemExit("build_ks4 R-BRAND: the baked page carries %d brand "
                          "lockup(s), expected exactly 1" % len(hits))
-    return _BAKED_BRAND_RE.sub(lambda m: brand.brand_lockup("/index.html"), baked, count=1)
+    return _BAKED_BRAND_RE.sub(lambda m: brand.brand_lockup("/"), baked, count=1)
 
 
 def prerender_all(cdp, pages):

@@ -52,7 +52,7 @@ def title_html(title=None, href=None):
 
 
 def topbar(title=None, href=None, kind="ks3", host_class="", tone="chrome",
-           who="all", brand_href="/index.html"):
+           who="all", brand_href="/"):
     """The bar's static markup.
 
     kind        ks3 | ks4 | leaderboard | student — picks the token family

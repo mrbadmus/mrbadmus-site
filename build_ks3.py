@@ -461,7 +461,7 @@ def tutor_mount(discipline, topic):
 # is RETIRED with every other mark on the site. KS3 now wears the ONE lockup,
 # drawn by brand.py and styled by shared/brand/brand.css; nothing here draws
 # a chevron any more.
-NAV_BRAND = brand.brand_lockup("/index.html")  # ⊕ Stage B: the bar is topbar.py's now; kept for the gate that names it
+NAV_BRAND = brand.brand_lockup("/")  # ⊕ Stage B: the bar is topbar.py's now; kept for the gate that names it
 
 
 # SPEC.md §2 requires the KS3 fonts preloaded. Two of the five, matching the
