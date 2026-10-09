@@ -1116,26 +1116,22 @@ def check_theme(R, slug, route, url):
                 "window.__mrbThemeAtDCL=document.documentElement.getAttribute('data-theme');"
                 "});")})
 
-            # (b) SYSTEM default, no stored choice, OS dark emulated — no
+            # (b) light default, no stored choice, OS dark emulated — no
             # stored choice is guaranteed here for free: cdp.Browser() gives
             # every check_theme() width iteration a brand-new, empty
             # profile directory (ks3_browser.py), so localStorage has never
             # held 'mrb-theme' at this point.
-            # ⊕ B2C polish (9 Oct 2026) — a fresh device follows the OS. This
-            # asserted Light here (the theme run's default) and now asserts
-            # the replacement contract: pref "system", painted dark because
-            # the emulated OS is dark, already at DOMContentLoaded (no flash).
+            # ⊕ 9 Oct 2026: briefly THEME-b-system-default (48f2dd4d0); restored
+            # to Light on Mide's ruling — an OS-dark fresh device opens Light.
             MD.set_media(page, scheme="dark")
             page.goto(url, settle=0.8)
             MD.wait_mounted(page)
             theme_b = page.eval("document.documentElement.getAttribute('data-theme')")
-            pref_b = page.eval("document.documentElement.getAttribute('data-theme-pref')")
             dcl_theme = page.eval("window.__mrbThemeAtDCL")
-            ok_b = theme_b == "dark" and dcl_theme == "dark" and pref_b == "system"
-            R.record(slug, route, w, "THEME-b-system-default", ok_b,
-                      "data-theme=%r pref=%r at-DOMContentLoaded=%r (expected "
-                      "dark/system, no stored choice, OS dark)"
-                      % (theme_b, pref_b, dcl_theme))
+            ok_b = theme_b == "light" and dcl_theme == "light"
+            R.record(slug, route, w, "THEME-b-light-default", ok_b,
+                      "data-theme=%r at-DOMContentLoaded=%r (expected light, "
+                      "no stored choice, OS dark)" % (theme_b, dcl_theme))
 
             # (a) exactly one control; reachable; arrow keys change it (a
             # REAL keypress, see _cdp_key); a visible focus ring

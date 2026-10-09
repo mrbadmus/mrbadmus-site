@@ -6,13 +6,14 @@ can check for it by equality.
 
 THEME_HEAD   — goes as early in <head> as possible (right after <meta charset>).
                Writes <html data-theme="light|dark" data-theme-pref=...> before
-               first paint, so no page ever flashes the wrong theme. With no
-               stored choice (a fresh device) the preference is SYSTEM, which
-               follows the device's prefers-color-scheme; a stored explicit
-               "light" or "dark" always wins. Anything unreadable is System too.
-               ⊕ B2C polish (9 Oct 2026): this used to default to Light, so a
-               fresh phone in dark mode opened every page in Light with the
-               Light option selected (blind journey run). See LEGACY_THEME_HEADS.
+               first paint, so no page ever flashes the wrong theme. Light is the
+               default and the fallback for anything it cannot read (Mide's
+               ruling, 26 Sep 2026); a stored "dark" or "system" always wins,
+               and System, once chosen, follows prefers-color-scheme.
+               ⊕ Restored 9 Oct 2026. 48f2dd4d0 briefly made System the default
+               for a fresh device; Mide ruled that a mistake in his brief and
+               restored Light. The System-default form is now the legacy entry
+               in LEGACY_THEME_HEADS, so the next build rewrites it everywhere.
 THEME_SCRIPT — the shared control and persistence (shared/theme.js); `v` is the
                cache-bust stamp the caller already computes for shared assets.
 THEME_SLOT   — the header slot the control mounts into.
@@ -21,8 +22,8 @@ THEME_SLOT   — the header slot the control mounts into.
 STORAGE_KEY = "mrb-theme"
 
 THEME_HEAD = (
-    "<script>(function(){var p='system';try{p=localStorage.getItem('mrb-theme')||'system'}catch(e){}"
-    "if(p!=='dark'&&p!=='light')p='system';"
+    "<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}"
+    "if(p!=='dark'&&p!=='system')p='light';"
     "var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),"
     "r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');"
     "r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>"
@@ -34,11 +35,14 @@ THEME_HEAD = (
 # them on the old default. generate_site_v5.py runs stamp_theme_head() over
 # every hand-written page on every build (next to brand.stamp_brand), and the
 # round-trip writes the result back over the source, so the source always
-# holds the current snippet. Append — never edit — when THEME_HEAD changes.
+# holds the current snippet. Append when THEME_HEAD changes; never list the
+# current THEME_HEAD here (stamp_theme_head skips it if someone does).
 LEGACY_THEME_HEADS = (
-    # Theme run, 26 Sep 2026 — Light was the default for a fresh device.
-    "<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}"
-    "if(p!=='dark'&&p!=='system')p='light';"
+    # 48f2dd4d0 (9 Oct 2026) — System was the default for a fresh device.
+    # Reverted the same day on Mide's ruling: Light is the default again (the
+    # 26 Sep theme-run form, which is THEME_HEAD above once more).
+    "<script>(function(){var p='system';try{p=localStorage.getItem('mrb-theme')||'system'}catch(e){}"
+    "if(p!=='dark'&&p!=='light')p='system';"
     "var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),"
     "r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');"
     "r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>",
@@ -51,7 +55,7 @@ def stamp_theme_head(html: str) -> str:
     Returns the page unchanged when it carries no legacy snippet.
     """
     for old in LEGACY_THEME_HEADS:
-        if old in html:
+        if old != THEME_HEAD and old in html:
             html = html.replace(old, THEME_HEAD)
     return html
 

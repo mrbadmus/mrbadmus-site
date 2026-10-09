@@ -6391,8 +6391,9 @@ def build_site(output_dir="mrbadmus_site"):
             # ⊕ B2C polish (9 Oct 2026) — the theme pre-paint snippet, in the
             # same pass. Hand-written pages carry theme_head.THEME_HEAD
             # literally; any earlier form of it (theme_head.LEGACY_THEME_HEADS
-            # — the Light-by-default one) is rewritten to the current System-
-            # by-default one, on every hand-written page, markers or not.
+            # — the 9 Oct System-by-default one) is rewritten to the current
+            # Light-by-default THEME_HEAD, on every hand-written page, markers
+            # or not.
             _themed = stamp_theme_head(_content)
             if _themed != _content:
                 with open(_fp, "w", encoding="utf-8") as _fh:
