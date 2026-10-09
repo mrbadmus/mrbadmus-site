@@ -70,9 +70,24 @@ window.MrBadmusStudentGuard = (function () {
     return _client;
   }
 
+  /* ⊕ B2C polish (9 Oct 2026) — the sign-in page opens in the SAME world.
+     `env`/`api` used to travel only inside `?return=`, so auth.html itself
+     loaded on production config from a TEST page. Carried onto the
+     auth.html URL too; on the live site the URL has neither and this is
+     exactly the old redirect. */
+  function carryEnvQuery() {
+    const here = new URLSearchParams(window.location.search);
+    let out = '';
+    ['env', 'api'].forEach(function (k) {
+      const v = here.get(k);
+      if (v) out += '&' + k + '=' + encodeURIComponent(v);
+    });
+    return out;
+  }
+
   function bounceToLogin() {
     const here = window.location.pathname + window.location.search;
-    window.location.replace('/auth.html?return=' + encodeURIComponent(here));
+    window.location.replace('/auth.html?return=' + encodeURIComponent(here) + carryEnvQuery());
   }
 
   function bounceToHome() {
@@ -361,7 +376,9 @@ window.MrBadmusStudentGuard = (function () {
     // Preserve the test environment across sign-out so a tester doesn't get
     // silently dropped onto the production auth page.
     const isTest = window.MrBadmusConfig && window.MrBadmusConfig.environment === 'test';
-    window.location.replace('/auth.html' + (isTest ? '?env=test' : ''));
+    // ⊕ B2C polish — and `api` with it, when the page has one.
+    const apiQ = new URLSearchParams(window.location.search).get('api');
+    window.location.replace('/auth.html' + (isTest ? '?env=test' + (apiQ ? '&api=' + encodeURIComponent(apiQ) : '') : ''));
   }
 
   return { requireStudentRole, signOut, getClient, ALLOWED_ROLES };

@@ -50,6 +50,60 @@
 
   function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
 
+  /* ⊕ B2C polish (9 Oct 2026) — THE TEST WORLD SURVIVES A NAV CLICK.
+     A page opened on `?env=test&api=…` lost both on "Sign In" (and on every
+     other nav link), so the next page — auth.html, the app — resolved
+     shared/config.js to PRODUCTION. This carries `env` and `api` across
+     every root-relative link in the nav bar and the drawer, and every link
+     into /auth.html anywhere on the page, exactly as consumer-common.js's
+     `href()` does across the consumer links: the link's own query and hash
+     are kept, a key it already sets is not overwritten. On the live site the
+     URL carries neither, CARRY is empty, and every href is left untouched. */
+  var CARRY = (function () {
+    var out = [];
+    try {
+      var here = new URLSearchParams(window.location.search);
+      ['env', 'api'].forEach(function (k) { var v = here.get(k); if (v) { out.push([k, v]); } });
+    } catch (e) {}
+    return out;
+  })();
+
+  function carry(href) {
+    if (!CARRY.length || typeof href !== 'string') { return href; }
+    if (href.charAt(0) !== '/' || href.charAt(1) === '/') { return href; }   // same-origin paths only
+    var hash = '', h = href.indexOf('#');
+    if (h >= 0) { hash = href.slice(h); href = href.slice(0, h); }
+    var own = '', i = href.indexOf('?');
+    if (i >= 0) { own = href.slice(i + 1); href = href.slice(0, i); }
+    var q = new URLSearchParams(own);
+    CARRY.forEach(function (kv) { if (!q.has(kv[0])) { q.set(kv[0], kv[1]); } });
+    var str = q.toString();
+    return href + (str ? '?' + str : '') + hash;
+  }
+
+  var CARRY_SCOPE = 'nav.nav a[href^="/"], #nav-drawer a[href^="/"], a[href^="/auth.html"]';
+
+  function carryLinks() {
+    if (!CARRY.length) { return; }
+    try {
+      document.querySelectorAll(CARRY_SCOPE).forEach(function (a) {
+        var h = a.getAttribute('href'), n = carry(h);
+        if (n !== h) { a.setAttribute('href', n); }
+      });
+    } catch (e) {}
+  }
+
+  /* Anything drawn after boot (the chip, a re-rendered drawer row) is
+     caught at the moment it is followed. */
+  if (CARRY.length) {
+    document.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href^="/"]') : null;
+      if (!a || !a.matches(CARRY_SCOPE)) { return; }
+      var h = a.getAttribute('href'), n = carry(h);
+      if (n !== h) { a.setAttribute('href', n); }
+    }, true);
+  }
+
   // ── Drawer auth row — mirrors the signed-in / signed-out state ──────────
   function renderDrawerAuthSignedOut(slot) {
     if (!slot) return;
@@ -129,6 +183,7 @@
           : 'background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-border);padding:5px 12px;border-radius:999px;font-weight:700;font-size:0.82rem;text-decoration:none;white-space:nowrap;';
         area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="' + style + '">' + inner + '</a>';
         renderDrawerAuthSignedIn(drawerAuthSlot, profileHref, firstName, avatarUrl);
+        carryLinks();
       }
 
       paintChip(null);
@@ -150,9 +205,9 @@
           paintChip(shownAvatar);   // repaints the drawer chip too
         }
         var link = document.getElementById('nav-profile-link');
-        if (link) link.href = profileHref;
+        if (link) link.setAttribute('href', carry(profileHref));
         var dchip = drawerAuthSlot && drawerAuthSlot.querySelector('a');
-        if (dchip) dchip.href = profileHref;
+        if (dchip) dchip.setAttribute('href', carry(profileHref));
       }).catch(function () {});
 
       /* Fetch avatar (best-effort) and upgrade the chip to show it.
@@ -330,6 +385,7 @@
   function boot() {
     var drawerAuthSlot = initDrawer();      // null if no .nav-burger on the page
     initAuth(drawerAuthSlot);
+    carryLinks();
   }
 
   if (document.readyState === 'loading') {

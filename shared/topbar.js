@@ -223,6 +223,21 @@
     closeAll(null);
   });
 
+  /* ⊕ B2C polish (9 Oct 2026) — the brand and the title link carry the
+     test world as well. Sign in, My class and Settings already go through
+     carry(); the static links the build writes into the bar (the lockup,
+     "‹ <unit>") did not, so a tester on ?env=test who went home or up a
+     level arrived on production config. Rewritten at the moment of the
+     click; with no env/api on this page carry() returns the href as is. */
+  document.addEventListener('click', function (ev) {
+    var a = ev.target && ev.target.closest ? ev.target.closest('[data-mrb-topbar] a[href^="/"]') : null;
+    if (!a) { return; }
+    var h = a.getAttribute('href');
+    if (h.charAt(1) === '/') { return; }
+    var n = carry(h);
+    if (n !== h) { a.setAttribute('href', n); }
+  }, true);
+
   window.MRBTopbar = { hydrate: hydrate, signOut: signOut };
 
   if (document.readyState === 'loading') {
