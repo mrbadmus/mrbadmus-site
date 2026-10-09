@@ -1,7 +1,8 @@
 # KS3 "Start here" rewrite — every live lesson onto the two-option guess
 
 **Run:** 9–10 Oct 2026, unattended. Branch `feat/ks3-start-here`, worktree
-`mrbadmus-worktrees/ks3-start-here`, cut from `origin/main` at `b9a9f5488`.
+`mrbadmus-worktrees/ks3-start-here`, cut from `origin/main` at `b9a9f5488` and rebased onto `7347a82a4`
+(after the KS4 openers and the bench work landed) with no conflicts.
 **Rule:** Mide's rule of 2 Oct 2026, written for KS4 and applied here unchanged:
 "Start here" is "If you had to guess, …?" with exactly two options, in simple
 everyday wording any Year 7 pupil can answer, not patronising for a strong Year 9,
@@ -61,6 +62,55 @@ its own "Good guess". Each batch was then built, every changed page was driven i
 headless Chrome (two options, the right reply per pick, the bridge, the rail stop
 ticks, no console errors), every other KS3 page was compared with main byte for
 byte, and the fast gates were run before the commit.
+
+## For Mide in the morning
+
+- **Done: all 185 live KS3 lessons** now open on a two-option "If you had to
+  guess, …?" opener: 53 Year 7, 81 Year 8, 51 Year 9 (by the default sequence's
+  unit year).
+- **Live: 0. Waiting on your Allow: 185**, in 19 batch commits on
+  `feat/ks3-start-here`, rebased onto today's main.
+- **Why they wait:** every push since the route-flag merge has carried a
+  `GATE-OVERRIDE` line for the inherited `curriculum_tree_mirror` red (the B2C
+  index Y11→Y10 question that is still on you). The run's brief said to carry it
+  only if you allowed it in this session, and you were asleep, so nothing was
+  pushed. This branch does not touch that gate's subject: the curriculum export
+  is byte-identical with and without the new openers (checked).
+- **The one line to type** (to a Claude session):
+
+  > Allowed: push feat/ks3-start-here with the curriculum_tree_mirror GATE-OVERRIDE.
+
+- **Three openers to click once live:**
+  - https://mrbadmus.com/ks3/biology/cells-and-organisation/life-processes (Year 7: is a candle flame alive?)
+  - https://mrbadmus.com/ks3/chemistry/the-periodic-table/groups-and-periods (Year 8: magnesium next door, or potassium below?)
+  - https://mrbadmus.com/ks3/physics/space/seasons-and-the-tilt (Year 9: what makes it summer in Britain?)
+- **Science errors elsewhere in the lessons:** eleven, listed at the end of this
+  report. Two need you first: *group-1* says caesium floats, and
+  *charging-by-rubbing* has the electrons going the wrong way.
+
+## Batches
+
+| Batch | Lessons | Commit | Pushed / waiting |
+|---|---|---|---|
+| 1 | the two-option guess, and Year 7 B1–B2 (10 lessons) | `b1537fa4d` | committed, not pushed: waiting on Mide's Allow |
+| 2 | Year 7 B3–C1 (10 lessons) | `8f9e1a6b3` | committed, not pushed: waiting on Mide's Allow |
+| 3 | Year 7 C1–C2 (10 lessons) | `dd1970f50` | committed, not pushed: waiting on Mide's Allow |
+| 4 | Year 7 C3–P3 (10 lessons) | `482ce282f` | committed, not pushed: waiting on Mide's Allow |
+| 5 | Year 7 P4–P11 (10 lessons) | `7c073d0a2` | committed, not pushed: waiting on Mide's Allow |
+| 6 | Year 7 P11–B5 (10 lessons) | `400300b24` | committed, not pushed: waiting on Mide's Allow |
+| 7 | Year 8 B5–B7 (10 lessons) | `5e21f4447` | committed, not pushed: waiting on Mide's Allow |
+| 8 | Year 8 B8–C4 (10 lessons) | `60a2b83a7` | committed, not pushed: waiting on Mide's Allow |
+| 9 | Year 8 C5–C6 (10 lessons) | `749a92b1c` | committed, not pushed: waiting on Mide's Allow |
+| 10 | Year 8 C6–P1 (10 lessons) | `cb9311e46` | committed, not pushed: waiting on Mide's Allow |
+| 11 | Year 8 P1–P5 (10 lessons) | `32c91363b` | committed, not pushed: waiting on Mide's Allow |
+| 12 | Year 8 P5–P6 (10 lessons) | `65782ca8c` | committed, not pushed: waiting on Mide's Allow |
+| 13 | Year 8 P7–P8 (10 lessons) | `fabb1ddea` | committed, not pushed: waiting on Mide's Allow |
+| 14 | Year 8 P8–B9 (10 lessons) | `d5a377a2b` | committed, not pushed: waiting on Mide's Allow |
+| 15 | Year 9 B9–B11 (10 lessons) | `48da51323` | committed, not pushed: waiting on Mide's Allow |
+| 16 | Year 9 B11–C9 (10 lessons) | `77e0982c6` | committed, not pushed: waiting on Mide's Allow |
+| 17 | Year 9 C10–P2 (10 lessons) | `d2ae02bc0` | committed, not pushed: waiting on Mide's Allow |
+| 18 | Year 9 P2–P12 (10 lessons) | `c74affec8` | committed, not pushed: waiting on Mide's Allow |
+| 19 | Year 9 P12 (5 lessons) | `830a34ebb` | committed, not pushed: waiting on Mide's Allow |
 
 ## The openers (185 of 185 lessons)
 
@@ -294,6 +344,26 @@ with the run's scratch files; these are the calls worth Mide's eye.
   each case the H1 or rail label already ruled that belief out, so it could not
   be drawn out honestly. The register is metadata; no gate reads it beyond the
   `#s-hook` anchor.
+
+- **Two Year 8 openers revisit a Year 7 scene**, because both old hooks used
+  it: *heating-and-thermal-equilibrium* (P1) and *temperature-and-internal-
+  energy* (P11) both ask spark against bath; *mass-in-a-reaction* (C4) and
+  *conservation-of-mass* (C2) both ask where candle wax goes. The reviewer kept
+  the C4 one deliberately, because its steel-wool half is the bench's own
+  prediction. If Mide wants them distinct, the Year 8 ones are the ones to move.
+- **Option lengths were balanced on purpose.** `answer_lengths` fails the bio/chem
+  hook corpus when the correct option is visibly (6+ characters) the longer one
+  too often; its baseline assumes four options. Rather than touch the gate,
+  seven wrong options were lengthened to sit within a few characters of the
+  right one ("It burnt away" → "It burnt away to nothing", and so on). The
+  corpus now shows the correct option visibly longer in 3 of 12 sets.
+- **Replies never echo the page's "Fair guess."** Drafts often said "…so that is a
+  fair thought" straight after it; those clauses were cut (Mide's
+  no-redundant-text rule).
+- **Meta descriptions.** On most lessons the search snippet is generated from the
+  big question, so it changed with it. On a few (e.g. *colour-and-the-spectrum*,
+  *energy-stores*) it is a separately written field, which the opener rule leaves
+  alone, and it still states the old hook's answer.
 
 **Science judgement calls (Mide's gate)**
 
