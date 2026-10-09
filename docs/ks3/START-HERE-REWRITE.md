@@ -29,7 +29,10 @@ buttons whose panel shows the reply for the option pressed, then closing paragra
 everyone reads. `shared/ks3.js`'s `wireKeyedCommit` drives it and `shared/ks3.css`
 already paints it for ink-dark blocks. So the guess is the hook with that markup:
 
-- `#s-hook` gains `data-keyedblock`; its commit line is the "If you had to guess,
+- `#s-hook` becomes a real keyed-commit instance, wearing that family's shell
+  exactly as `ks3_art/c1.py` writes it (`ks3-keyed-block` + `data-instrument
+  data-keyedblock data-stage-done="0"`), so `ks3_instrument_liveness` finds and
+  presses every guess, and the rail stop ticks only on a pick; its commit line is the "If you had to guess,
   …?" question; two lettered `.ks3-option` buttons (KS3's house look, not KS4's
   "This / Or this"); one `.ks3-keyed-reply` per option, opening with **Good
   guess.** or **Fair guess.** as `Ks4Guess` does; then the bridge as a
@@ -46,6 +49,7 @@ already paints it for ink-dark blocks. So the guess is the hook with that markup
 | `ks3_data/start_here.py` | **New.** Every opener as data: question, two (option, reply) pairs, the correct index, the bridge, and a new title / scene / big question only where the old one gave the answer away. `validate()` refuses a malformed entry. |
 | `ks3_data/__init__.py` | `build_units()` merges each entry over its lesson's `phenomenon` (and `big_question`), so the generator and every gate see the same opener; refuses an entry for a lesson that is not authored. The lesson modules themselves, Design's transcriptions, are untouched. |
 | `build_ks3.py` | `r_hook()` renders a guess with the keyed-commit markup (`_hook_guess`). A hook with no entry renders exactly as before. |
+| `focus_audit.py` | `real_click` now waits until the chat launcher is on screen and still before clicking (see Deviations). |
 | `ks3_parity.py` | The c1-06 keyed-commit rows and their drive are scoped to `#s-verdict`. With the hook keyed too, a bare `[data-keyed]` would have silently started measuring the hook instead, which sits above it. A tightening, not a weakening. |
 
 ### How each opener was written and checked
@@ -111,6 +115,8 @@ byte, and the fast gates were run before the commit.
 | 17 | Year 9 C10–P2 (10 lessons) | `d2ae02bc0` | committed, not pushed: waiting on Mide's Allow |
 | 18 | Year 9 P2–P12 (10 lessons) | `c74affec8` | committed, not pushed: waiting on Mide's Allow |
 | 19 | Year 9 P12 (5 lessons) | `830a34ebb` | committed, not pushed: waiting on Mide's Allow |
+
+Plus `b13e8eded` focus_audit: click the chat launcher only once it is on screen and still; `178d712d8` KS3 Start here: the guess wears keyed-commit's full shell.
 
 ## The openers (185 of 185 lessons)
 
@@ -465,3 +471,48 @@ changed. The first group are science errors on live pages.
   *biomechanics* "Eight times harder", *thermal-decomposition* "One in, two
   out", *what-a-force-is* "The wall pushed you", *gravity-earth-moon-and-sun*
   "Why the Moon does not fall" (the lesson's point is that it *is* falling).
+
+## Deviations
+
+- **No push.** Deviation: the brief's push step → every batch committed, none
+  pushed → the inherited `curriculum_tree_mirror` red needs the GATE-OVERRIDE
+  line, which the brief allows only with Mide's in-session say-so.
+- **Run in a new worktree, not "this session" on the KS4 branch.** The KS4
+  openers had not pushed when the run began, so per the brief it started in
+  `mrbadmus-worktrees/ks3-start-here` off origin/main. They landed on main during
+  the night; the branch was rebased onto them with no conflicts.
+- **`ks3_instrument_liveness` went red on the first full gate round** → the hook
+  carried only the keyed-commit marker, which the gate rightly calls a family's
+  marker on a page that does not host it → the guess now wears keyed-commit's
+  full shell, and the gate presses all 185 guesses (green).
+- **`focus_audit` went red on the KS3 lesson page** ("clicking the launcher did
+  not open #chatOverlay") → reproduced deterministically, and main's page passed
+  → cause: after the Tab sweep the browser's smooth focus-scroll beat the gate's
+  instant scroll, leaving the launcher below the viewport; the guess made the page
+  ~300 px shorter, which changed the race, not the chat panel (clicked by hand it
+  opens) → `real_click` now re-scrolls until the target is on screen and still;
+  if it never settles it clicks where it last measured, as before, so a broken
+  launcher still fails. ks3_lesson then passed 3 of 3.
+- **`verify_answer_lengths` went red on batch 15** → it scores hooks against a
+  four-option chance rate → seven wrong options were lengthened (see Arguable
+  calls); the gate itself was not touched.
+- **A mid-run `verify_ks3` crashed on a Chrome connection reset** while memory was
+  nearly exhausted by other sessions' Chromes; every check before the crash had
+  passed. The final round's `verify_ks3` is the one that counts (below).
+
+## Gates, on the final tree
+
+- **Every fast gate green except the inherited `curriculum_tree_mirror`**
+  (`frozen_window_guard`, `answer_lengths`, `answer_positions`, `ks3_rail_manifest`,
+  `ks3_key_audit`, `ks3_statutory`, `brand_one_mark`, `contrast_audit` and the rest).
+  The curriculum export is byte-identical with and without the new openers.
+- **Slow gates, receipts recorded (`prepush_gate.py --record-all`):** `verify_ks3`
+  PASS, `student_parity` PASS (one transient retry), `ks4_chrome_drive` PASS,
+  `ks3_instrument_liveness` PASS, `contrast_audit_interactions` PASS,
+  `focus_audit` PASS. Twelve skipped by name for want of credentials this Mac
+  does not hold; twenty ruled unaffected by `watches`.
+- **Run's own checks:** all 185 guesses driven in headless Chrome (two options,
+  the right reply per pick, the bridge, the rail stop ticks, no console errors):
+  185/185. Every KS3 page compared with main: 370 lesson pages differ only in
+  `#s-hook` and the big question; 96 index pages only in big questions; every
+  other page byte-identical.
