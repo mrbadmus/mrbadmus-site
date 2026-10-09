@@ -44,6 +44,12 @@ behaviour exactly (commits ec659574d and 1523719f3):
     data-act=checkout and repeats the family's own interval. Every failure
     case drives the same C.startCheckout path it always did, from that
     button; the signup plan step's case is unchanged.
+  * ⊕ (P5R, same day) A family that has NEVER started a subscription is
+    resumed into signup from every dashboard door, whatever its children —
+    pre_trial asserts the forward, the family list with Ada's chosen
+    starting topic, and Choose a plan → Monthly AND Annual. The not-writable
+    dashboard checks it used to carry run on a locked family instead
+    (not_writable); B7 and copy_gone start from locked for the same reason.
   * "Delete my account" is disabled + aria-disabled until "I understand" is
     ticked (and again when unticked) — it used to press like a live button
     and only refuse after the tap. Ruling 2's "no [disabled]" still holds
@@ -147,32 +153,73 @@ class Drive:
 
 
 def pre_trial(d):
-    print("\n── pre-trial, two children (dashboard) ──")
+    """⊕ B2C polish (9 Oct 2026, Mide's rule: "Signup resumes after a
+    mid-signup sign-in, keeping the child's topic choice, and 'Start your
+    free week' never skips the monthly/annual choice"). A family that has
+    never started a subscription (billing state 'none') no longer has a
+    pre-trial dashboard: every dashboard door forwards it to signup.html (no
+    step named), which lands on the first unanswered step — here, with both
+    children's topic answers given, the family list — showing Ada's chosen
+    starting topic, and "Choose a plan" opens Monthly AND Annual.
+
+    This used to assert the pre-trial DASHBOARD ("Your family hasn't started
+    yet." + a "Start your free week" link to the plan step, both children on
+    the dashboard, no [disabled]). That screen was the blind run's P5R
+    defect: a parent who picked Ada's topic and signed in on a fresh device
+    landed on it, not back in signup, the topic shown nowhere. The
+    not-writable child / set work / chat / settings checks that rode on it
+    are kept, unchanged, on the family state that still draws a
+    not-writable dashboard — locked (not_writable(), below)."""
+    print("\n── never subscribed, two children set up: on to signup ──")
     for width in (390, 1280):
-        d.open("consumer/overview.html", width=width, state="none", kids=2)
-        body = d.text()
-        check("Your family hasn’t started yet." in body,
-              "@%d the one line says the family hasn't started" % width)
-        # ⊕ B2C polish (9 Oct 2026, Mide's ruling): the action is a LINK to
-        # the signup plan step (Monthly and Annual both shown), never a
-        # checkout — it went straight to Stripe, monthly.
-        check(d.js("document.querySelectorAll('.dk-gate a.dk-gate-btn[href*=\"step=plan\"]').length") == 1 and
-              d.js("document.querySelectorAll('.dk-gate a, .dk-gate button').length") == 1 and
-              (d.js("document.querySelector('.dk-gate a.dk-gate-btn').getAttribute('href')") or "")
-              .startswith("/consumer/signup.html?"),
-              "@%d the line's one action is a link to the signup plan step" % width,
-              d.js("(document.querySelector('.dk-gate a.dk-gate-btn')||{}).href"))
-        check(d.js("document.querySelectorAll('[data-act=checkout]').length") == 0,
-              "@%d …and no checkout control is offered anywhere" % width,
-              d.js("document.querySelectorAll('[data-act=checkout]').length"))
-        check("Start your free week" in d.text(".dk-gate"),
-              "@%d …labelled Start your free week" % width)
-        check(d.js("getComputedStyle(document.querySelector('.dk-gate')).display") != "none",
-              "@%d the line is visible at this width" % width)
-        check("Ada" in body and "Ben" in body, "@%d both children are on the dashboard" % width)
-        check(d.disabled_count() == 0, "@%d no [disabled] on the overview" % width,
-              d.disabled_count())
-        d.shot("pretrial-overview-%d.png" % width, width)
+        d.open("consumer/overview.html", width=width, state="none", kids=2,
+               ready="location.pathname==='/consumer/signup.html'&&"
+                     "!!document.getElementById('to-plan')")
+        check(d.js("location.pathname") == "/consumer/signup.html" and
+              "step=" not in (d.js("location.search") or ""),
+              "@%d the dashboard forwards to signup.html, no step named" % width,
+              d.js("location.pathname+location.search"))
+        check(d.text("#su-main h1") == "2 children set up",
+              "@%d …which lands on the family list (\"Anyone else?\"), not a topic question" % width,
+              d.text("#su-main h1"))
+        body = d.text("#su-main")
+        check("Ada" in body and "Ben" in body, "@%d both children are listed" % width)
+        starts = d.js("[].map.call(document.querySelectorAll('#su-main .su-starts'),"
+                      "function(e){return e.innerText})")
+        check(starts == ["Starts from: Biology — Breathing and gas exchange · "
+                         "Chemistry — Chemical reactions, lesson 2 · Physics — Electric circuits"],
+              "@%d Ada's chosen starting topic is shown on her row (unit names; Ben has no plan "
+              "position in the fixture, so no line)" % width, starts)
+        check(not any(ch.isdigit() for ch in "".join(starts or []).replace("lesson 2", "")),
+              "@%d …and no scheme week / cursor number is shown" % width, starts)
+        check(d.js("!!document.getElementById('to-plan')") and
+              "Choose a plan" in d.text("#to-plan") and
+              not d.js("!!document.getElementById('to-dash')"),
+              "@%d the way on is Choose a plan (no 'Back to your dashboard' before Stripe)" % width)
+        check(not d.js("!!document.querySelector('[data-act=checkout], #to-stripe, .dk-gate')"),
+              "@%d no checkout control and no dashboard gate line on this step" % width)
+        d.shot("pretrial-signup-children-%d.png" % width, width)
+        d.click("#to-plan")
+        d.wait("!!document.getElementById('to-stripe')")
+        check(d.js("document.querySelectorAll('#su-main [data-plan=month]').length") == 1 and
+              d.js("document.querySelectorAll('#su-main [data-plan=year]').length") == 1 and
+              "Monthly" in d.text("#su-main") and "Annual" in d.text("#su-main") and
+              d.text("#su-main h1") == "Start your free week",
+              "@%d Choose a plan → \"Start your free week\" with Monthly AND Annual on screen" % width,
+              d.text("#su-main h1"))
+        check(len(d.calls("/api/consumer/checkout")) == 0,
+              "@%d …and no checkout is opened until the card button is pressed" % width)
+        d.shot("pretrial-signup-plan-%d.png" % width, width)
+
+    # Every dashboard door, not just the overview: a deep link forwards too.
+    for view in ("child", "setwork", "chat", "manage"):
+        d.open("consumer/overview.html?child=kid-ada&view=" + view, state="none", kids=2,
+               ready="location.pathname==='/consumer/signup.html'&&"
+                     "!!document.getElementById('to-plan')")
+        check(d.js("location.pathname") == "/consumer/signup.html" and
+              "step=" not in (d.js("location.search") or ""),
+              "?view=%s forwards a never-subscribed family to signup too" % view,
+              d.js("location.pathname+location.search"))
 
     # The account page's "Start your free week" follows the same ruling.
     d.open("consumer/account.html", state="none", kids=2)
@@ -181,54 +228,66 @@ def pre_trial(d):
           d.js("document.querySelectorAll('[data-act=checkout]').length") == 0,
           "account pre-trial: Start your free week goes to the plan step; no checkout control")
 
-    d.open("consumer/overview.html?child=kid-ada&view=child", state="none", kids=2)
+
+def not_writable(d):
+    """Mide's ruling 2 (3 Oct 2026) for a family that cannot write: no
+    write control the backend refuses is drawn (Set work, the message box,
+    Send, conversation starters), nothing is greyed with [disabled], and
+    pause / reset password / edit / remove all still work (none of their
+    routes is gated on writability). ⊕ B2C polish (9 Oct 2026): these ran
+    on a never-subscribed ('none') family's dashboard, which now forwards
+    to signup (pre_trial); the same checks, unchanged, run on the state that
+    still draws a not-writable dashboard — locked. Same guard (S.writable
+    false), same code paths."""
+    print("\n── not writable (locked): what the dashboard still draws ──")
+    d.open("consumer/overview.html?child=kid-ada&view=child", state="locked", kids=2)
     check(d.js("document.querySelectorAll('[data-write]').length") == 0,
           "child view draws no write control the backend refuses (Set work)")
     check(not d.js("!!document.querySelector('[data-act=open-setwork]')"),
-          "no Set work button pre-trial")
+          "no Set work button when not writable")
     check(d.js("!!document.querySelector('[data-act=pause]')"), "Pause is there")
     check(d.disabled_count() == 0, "no [disabled] on the child view", d.disabled_count())
     check("set and waiting" not in d.text() and "waiting" not in d.text(".dk-card") ,
           "no claim the first week is waiting")
-    d.shot("pretrial-child-390.png")
+    d.shot("notwritable-child-390.png")
 
     d.click("[data-act=pause]")
     d.wait("document.body.innerText.indexOf('plan is paused')>=0")
     check(len(d.calls("/api/consumer/children/kid-ada/pause")) == 1,
-          "Pause works pre-trial (one POST, success line)")
+          "Pause works when not writable (one POST, success line)")
 
-    d.open("consumer/overview.html?child=kid-ada&view=setwork", state="none", kids=2)
+    d.open("consumer/overview.html?child=kid-ada&view=setwork", state="locked", kids=2)
     check(d.js("new URLSearchParams(location.search).get('view')") in ("setwork", "child") and
           not d.js("!!document.querySelector('[data-act=submit-work]')"),
-          "?view=setwork pre-trial shows no Set work form")
+          "?view=setwork not writable shows no Set work form")
 
-    d.open("consumer/overview.html?child=kid-ada&view=chat", state="none", kids=2)
+    d.open("consumer/overview.html?child=kid-ada&view=chat", state="locked", kids=2)
     check(not d.js("!!document.getElementById('dk-draft')") and
           not d.js("!!document.querySelector('[data-act=send]')"),
-          "chat pre-trial: no message box and no Send")
+          "chat not writable: no message box and no Send")
     check(d.js("document.querySelectorAll('[data-act=starter]').length") == 0,
-          "chat pre-trial: no conversation starters")
+          "chat not writable: no conversation starters")
     check(d.disabled_count() == 0, "no [disabled] on the chat view")
-    d.shot("pretrial-chat-390.png")
+    d.shot("notwritable-chat-390.png")
 
-    d.open("consumer/overview.html?child=kid-ada&view=manage", state="none", kids=2)
+    d.open("consumer/overview.html?child=kid-ada&view=manage", state="locked", kids=2)
     check(d.disabled_count() == 0, "no [disabled] on the settings view", d.disabled_count())
     d.click("[data-act=reset-pass]")
     d.wait("!!document.getElementById('dk-newpass')")
-    check(d.text("#dk-newpass") == "comet-saturn-42", "Reset password works pre-trial")
+    check(d.text("#dk-newpass") == "comet-saturn-42", "Reset password works when not writable")
     d.click("[data-act=pick-year][data-id='9']")
     d.click("[data-act=save-manage]")
     d.wait("document.body.innerText.indexOf('Saved.')>=0")
     patch = [c for c in d.js("window.__CF__.calls") if c["method"] == "PATCH"]
     check(len(patch) == 1 and patch[0]["body"].get("year_group") == 9,
-          "Edit child (Save changes) works pre-trial", patch)
-    d.open("consumer/overview.html?child=kid-ada&view=manage", state="none", kids=2)
+          "Edit child (Save changes) works when not writable", patch)
+    d.open("consumer/overview.html?child=kid-ada&view=manage", state="locked", kids=2)
     d.click("[data-act=ask-remove]")
     d.click("[data-act=do-remove]")
     d.wait("document.body.innerText.indexOf('has been removed')>=0")
     dels = [c for c in d.js("window.__CF__.calls") if c["method"] == "DELETE"]
     check(len(dels) == 1 and dels[0]["path"].endswith("/kid-ada"),
-          "Remove child works pre-trial", dels)
+          "Remove child works when not writable", dels)
 
 
 def no_children(d):
@@ -262,6 +321,16 @@ def trialing(d):
     d.open("consumer/overview.html?child=kid-ada&view=child", state="trialing", kids=2)
     check(d.js("!!document.querySelector('[data-act=open-setwork]')"), "Set work is there")
     check(not d.js("!!document.querySelector('.dk-gate')"), "no gate line")
+    # ⊕ B2C polish (9 Oct 2026, P5R): the parent's topic choice is on the
+    # child view — each subject's place by unit name, never a week number.
+    check(d.text(".dk-nextup") == "Next up: Biology — Breathing and gas exchange · "
+          "Chemistry — Chemical reactions, lesson 2 · Physics — Electric circuits",
+          "the child view says where Ada's plan stands (her chosen topic first in Biology)",
+          d.text(".dk-nextup"))
+    d.open("consumer/overview.html?child=kid-ben&view=child", state="trialing", kids=2)
+    check(not d.js("!!document.querySelector('.dk-nextup')"),
+          "…and draws no line for a child with no plan position (Ben in the fixture)")
+    d.open("consumer/overview.html?child=kid-ada&view=child", state="trialing", kids=2)
     d.shot("trialing-child-390.png")
     d.open("consumer/overview.html?child=kid-ada&view=chat", state="trialing", kids=2)
     check(d.js("!!document.getElementById('dk-draft')"), "message box is there")
@@ -414,12 +483,18 @@ def stale_message(d):
 
 def refresh_b7(d):
     print("\n── B7: coming back re-reads the family ──")
-    d.open("consumer/overview.html", state="none", kids=2)
+    # ⊕ B2C polish (9 Oct 2026): starts LOCKED (gate line "Your subscription
+    # has ended", Restart). It started 'none', whose dashboard now forwards
+    # to signup (pre_trial) — there is no not-started line left to go. The
+    # property is the same: a gate line drawn from the first read goes when
+    # a restore re-reads a family that is now trialing.
+    d.open("consumer/overview.html", state="locked", kids=2)
+    check(d.js("!!document.querySelector('.dk-gate')"), "dashboard: the locked gate line is drawn first")
     d.js("window.__CF__.family.billing.state='trialing';window.__CF__.family.billing.access='full';"
-         "window.__CF__.family.billing.days_left=6;")
+         "window.__CF__.family.billing.days_left=6;window.__CF__.family.billing.can_checkout=false;")
     d.js("window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}))")
     d.wait("!document.querySelector('.dk-gate')")
-    check(True, "dashboard: a back/forward-cache restore re-reads (the not-started line goes)")
+    check(True, "dashboard: a back/forward-cache restore re-reads (the gate line goes)")
     time.sleep(2.1)
     d.js("window.__CF__.family.children[0].first_name='Adaline'")
     d.js("document.dispatchEvent(new Event('visibilitychange'))")
@@ -512,8 +587,14 @@ def copy_gone(d):
         check(gone not in t, "account: \"%s\" is gone" % gone)
     check("Add or remove children from the dashboard. Changes show on the next bill, pro-rated."
           in t, "account: the seats sentence is kept verbatim")
-    d.open("consumer/overview.html", state="none", kids=2)
-    check("Seven days free" not in d.text(), "dashboard: \"Seven days free…\" is gone")
+    # ⊕ B2C polish (9 Oct 2026): a never-subscribed family's dashboard now
+    # forwards to signup's family list, so the copy is checked on the page
+    # that family actually sees, and on the dashboard a family can still see.
+    d.open("consumer/overview.html", state="none", kids=2,
+           ready="location.pathname==='/consumer/signup.html'&&!!document.getElementById('to-plan')")
+    check("Seven days free" not in d.text(), "never subscribed (signup family list): \"Seven days free…\" is gone")
+    d.open("consumer/overview.html", state="locked", kids=2)
+    check("Seven days free" not in d.text(), "dashboard (locked): \"Seven days free…\" is gone")
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -772,6 +853,7 @@ def main():
         with cdp.Browser() as b:
             d = Drive(b, port, args.shots)
             pre_trial(d)
+            not_writable(d)
             no_children(d)
             trialing(d)
             week_repair(d)

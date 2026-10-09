@@ -56,7 +56,14 @@ KIDS = [
         ],
         "scores": [{"pct": 58, "label": "Cells"}, {"pct": 71, "label": "Particles"}],
         "weak": "Calculating magnification",
-        "position": {"cursors": {}},
+        # ⊕ B2C polish (9 Oct 2026): Ada's topic answer was given ("chosen"),
+        # with GET /family's real `position` shape — the unit names the
+        # pages show (labels), and the scheme weeks they must never show.
+        "position": {"cursors": {"Biology": 12, "Chemistry": 5, "Physics": 5},
+                     "labels": {"Biology": "Breathing and gas exchange: lesson 1",
+                                "Chemistry": "Chemical reactions: lesson 2",
+                                "Physics": "Electric circuits: lesson 1"},
+                     "chosen": True},
     },
     {
         "id": "kid-ben", "first_name": "Ben", "year_group": 10, "mode": "home_education",
