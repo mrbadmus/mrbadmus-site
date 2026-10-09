@@ -672,12 +672,30 @@ _CDF_DELETE_OPEN = (
     "await __poll(function(){return !!document.querySelector('[data-act=do-delete]');});"
     "return true;})()"
 )
+# ⊕ B2C polish (9 Oct 2026, 55d07c0df). A family that has NEVER subscribed
+# (billing state 'none') no longer has a pre-trial dashboard: every dashboard
+# door forwards it to consumer/signup.html, which lands on the first
+# unanswered step. The three entries that measured that dashboard used
+# _CDF_READY, which can fire on overview's own #c-main BEFORE the forward —
+# measuring a page mid-navigation. They now wait for the forward's target
+# and are named for what they measure: the family list (two children, both
+# topic answers given — Ada's chosen, Ben's never owed) and, with no child,
+# the signed-in child form. Thresholds untouched.
+def _cdf_forwarded(target_id):
+    return ("(async function(){" + _POLL_JS +
+            "await __poll(function(){return location.pathname==='/consumer/signup.html'&&"
+            "document.body.style.display==='block'&&!!document.getElementById(" +
+            json.dumps(target_id) + ");},8000);return true;})()")
+
+
 for _lbl, _path, _state, _kids, _setup in (
     ("consumer/overview [trialing]", "consumer/overview.html", "trialing", 2, _CDF_READY),
-    ("consumer/overview [pre-trial, 2 children]", "consumer/overview.html", "none", 2, _CDF_READY),
-    ("consumer/overview [pre-trial, no children]", "consumer/overview.html", "none", 0, _CDF_READY),
-    ("consumer/overview [pre-trial, child view]",
-     "consumer/overview.html?child=kid-ada&view=child", "none", 2, _CDF_READY),
+    ("consumer/overview → signup [never subscribed, 2 children: family list]",
+     "consumer/overview.html", "none", 2, _cdf_forwarded("to-plan")),
+    ("consumer/overview → signup [never subscribed, no children: child form]",
+     "consumer/overview.html", "none", 0, _cdf_forwarded("c-name")),
+    ("consumer/overview?view=child → signup [never subscribed: family list]",
+     "consumer/overview.html?child=kid-ada&view=child", "none", 2, _cdf_forwarded("to-plan")),
     ("consumer/overview [locked]", "consumer/overview.html", "locked", 2, _CDF_READY),
     ("consumer/account [trialing]", "consumer/account.html", "trialing", 2, _CDF_READY),
     ("consumer/account [pre-trial]", "consumer/account.html", "none", 2, _CDF_READY),
@@ -1070,6 +1088,27 @@ THEMES = ["light", "dark"]
 _THEME_CHECK_JS = "document.documentElement.getAttribute('data-theme')"
 
 
+# ⊕ B2C polish (9 Oct 2026). A page that forwards itself (consumer/
+# overview.html → signup.html for a never-subscribed family) can still be on
+# the FIRST document when `setup` is evaluated; the forward then destroys the
+# context the ready check is polling in and Chrome answers the evaluate with
+# an error rather than a result. That is the navigation, not a finding: run
+# the ready check once more, in the document the page landed on. Any other
+# error, or a second failure, is reported as before.
+_NAVIGATED_RE = re.compile(r"context was destroyed|navigated or closed|"
+                           r"Cannot find context|Execution context", re.I)
+
+
+def _eval_setup(p, setup):
+    try:
+        return p.eval(setup)
+    except Exception as e:
+        if not _NAVIGATED_RE.search(str(e)):
+            raise
+        time.sleep(0.5)
+        return p.eval(setup)
+
+
 def _apply_theme(p, theme, url):
     other = "dark" if theme == "light" else "light"
     try:
@@ -1130,7 +1169,7 @@ def sweep(widths=WIDTHS, shots=True, only=None, themes=None, page_list=None):
                         continue
                     if spec["setup"]:
                         try:
-                            p.eval(spec["setup"])
+                            _eval_setup(p, spec["setup"])
                             time.sleep(spec.get("wait", 0.5))
                         except Exception as e:
                             findings.append({
