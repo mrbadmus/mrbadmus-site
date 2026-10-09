@@ -4097,7 +4097,11 @@ def r_layer(lesson, blocks, cls, eyebrow):
 # place the sentence was ever emitted — KS4, the student pages, the teacher
 # pages and the marketing pages never carried it — so removing it here
 # removes it everywhere.
-LEGAL_LINE = '<p class="ks3-legal">Lesson content © MrBadmusAI.</p>'
+# ⊕ B2C polish (9 Oct 2026) — "MrBadmusAI" → "MrBadmus" here, per the one-mark
+# ruling ("AI" is dropped from the name; legal text and the company name are
+# separate). Only this footer line: the tutor-feature labels ("Ask Mr Badmus
+# AI", the chat header) are an open decision for Mide and are left alone.
+LEGAL_LINE = '<p class="ks3-legal">Lesson content © MrBadmus.</p>'
 
 
 def r_endmatter(cards, tutor=None):
