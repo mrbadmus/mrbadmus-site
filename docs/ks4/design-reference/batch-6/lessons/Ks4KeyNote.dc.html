@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+</helmet>
+<div class="rd" data-mode="ks3" style="font-family: var(--ks3-font-body); color: var(--ks3-ink);">
+  <div style="border-radius: 22px; background: var(--ks3-card); border: 3px solid var(--ks3-ink); box-shadow: 8px 8px 0 var(--ks3-accent); padding: 26px 26px 22px;">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding-bottom: 14px; border-bottom: 2px dashed var(--ks3-rule-strong);">
+      <div>
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--ks3-accent-text);">Key note · {{ spec }}</p>
+        <h2 style="margin: 4px 0 0; font-size: 30px; line-height: 1.1; letter-spacing: -.03em;">{{ title }}</h2>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button type="button" onClick="{{ onCover }}" aria-pressed="{{ covered }}" style="{{ coverStyle }}">{{ coverLabel }}</button>
+        <sc-if value="{{ covered }}"><button type="button" onClick="{{ onNext }}" disabled="{{ allShown }}" style="{{ nextStyle }}">Reveal the next line</button></sc-if>
+      </div>
+    </div>
+    <ol style="list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 0;">
+      <sc-for list="{{ lines }}" as="l" hint-placeholder-count="5">
+        <li style="display: flex; gap: 14px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--ks3-rule);">
+          <span aria-hidden="true" style="flex: 0 0 28px; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ l.num }}</span>
+          <sc-if value="{{ l.shown }}" hint-placeholder-val="{{ true }}"><span style="flex: 1 1 auto; min-width: 0; font-size: 20px; line-height: 1.5; font-weight: 500;">{{ l.text }}</span></sc-if>
+          <sc-if value="{{ l.hidden }}"><span style="flex: 1 1 auto; font-size: 17px; line-height: 1.5; color: var(--ks3-ink-muted); padding: 2px 12px; border-radius: 8px; background: var(--ks3-inset); border: 2px dashed var(--ks3-rule-strong);">Say it before you reveal it.</span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+    <p style="margin: 14px 0 0; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">{{ foot }}</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:820},&quot;title&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;spec&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;lines&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string[]&quot;}}">
+class Component extends DCLogic {
+  state = { covered: false, shown: 0 };
+  btn(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-ink)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';';
+  }
+  renderVals() {
+    const p = this.props; const s = this.state;
+    const lines = p.lines || [];
+    const all = s.shown >= lines.length;
+    return {
+      spec: p.spec || '', title: p.title || '',
+      covered: s.covered,
+      coverLabel: s.covered ? 'Uncover all' : 'Cover and recall',
+      coverStyle: this.btn(s.covered),
+      onCover: () => this.setState({ covered: !s.covered, shown: 0 }),
+      onNext: () => this.setState({ shown: Math.min(lines.length, s.shown + 1) }),
+      allShown: all, nextStyle: this.btn(false) + (all ? 'opacity:.45;cursor:default;' : ''),
+      lines: lines.map((t, i) => ({ num: String(i + 1).padStart(2, '0'), text: t, shown: !s.covered || i < s.shown, hidden: s.covered && i >= s.shown })),
+      foot: s.covered ? (all ? 'All ' + lines.length + ' lines back. Cover again tomorrow.' : s.shown + ' of ' + lines.length + ' recalled') : 'Photograph this card. Tomorrow, cover it and say each line first.'
+    };
+  }
+}
+
+</script>
+</body>
+</html>

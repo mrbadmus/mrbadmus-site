@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Group 1 · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Atomic structure" title="Group 1" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 5.1.2.5</p>
+        <h1>Group 1: the alkali metals</h1>
+        <p class="ks3-bigq">One outer electron, a little further out each step down. Step down the group, predict each reaction with water, then predict rubidium.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A jar of oil." scene="In a school prep room, small grey lumps of sodium sit at the bottom of a jar, covered in oil." question="is the oil there to stop the metal reacting with air and water, or to keep it shiny for show?" options="{{ hookOptions }}" bridge="Sodium reacts with both air and water, so it is kept under oil. Next: why the whole group behaves like this." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-water" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Step down the group</p>
+        <h2 style="margin: 6px 0 0;">One outer electron. Each step down, it is further out.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The alkali metals all have one electron in their outer shell. They are soft enough to cut with a knife, have low melting points, and lithium, sodium and potassium all float on water. They react with water to make a metal hydroxide and hydrogen. Before each metal goes in, predict.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ metals }}" as="m" hint-placeholder-count="3"><button type="button" onClick="{{ m.onClick }}" aria-pressed="{{ m.pressed }}" disabled="{{ m.disabled }}" style="{{ m.style }}">{{ m.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ waterFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <sc-if value="{{ asking }}"><div style="display: flex; flex-direction: column; gap: 8px;">
+              <p style="margin: 0; font-weight: 700;">{{ askLine }}</p>
+              <sc-for list="{{ predBtns }}" as="b" hint-placeholder-count="2"><button type="button" onClick="{{ b.onClick }}" style="{{ b.style }}">{{ b.label }}</button></sc-for>
+            </div></sc-if>
+            <sc-if value="{{ shown }}"><div data-arrive="1" style="display: flex; flex-direction: column; gap: 10px;">
+              <p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ waterNote }}</p>
+              <p style="margin: 0; padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border); font-family: var(--ks3-font-mono); font-size: 17px;">{{ waterEq }}</p>
+            </div></sc-if>
+          </div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">The solution left behind is alkaline: universal indicator turns purple. That is where the name comes from.</p>
+      </section>
+
+      <section id="s-air" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Oxygen and chlorine</p>
+        <h2 style="margin: 6px 0 0;">Not only water.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">A freshly cut surface is shiny, then quickly goes dull as an oxide forms. Heated in chlorine, the metals react vigorously to form white solid chlorides. Both reactions get more vigorous down the group. Tap a reaction.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 12px;">
+          <sc-for list="{{ airCards }}" as="f" hint-placeholder-count="2">
+            <button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}">
+              <span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">{{ f.name }}</span>
+              <span style="display: block; margin-top: 4px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.what }}</span>
+              <sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 8px; font-family: var(--ks3-font-mono); font-size: 16px; line-height: 1.6; font-weight: 500;">{{ f.eqs }}</span></sc-if>
+            </button>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-why" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Why reactivity increases</p>
+        <h2 style="margin: 6px 0 0;">Further away, weaker pull, easier to lose.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Going down the group, the atoms have more shells, so the outer electron is further from the nucleus. The attraction between the nucleus and the outer electron is weaker, so the electron is lost more easily, forming a +1 ion. That makes the metal more reactive.</p>
+        <div style="margin-top: 16px; padding: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Predict from a trend</p>
+          <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55;">Melting points: lithium 181 °C, sodium 98 °C, potassium 63 °C. Rubidium is next. Predict its melting point.</p>
+          <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
+            <sc-for list="{{ mpBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" disabled="{{ b.disabled }}" style="{{ b.style }}">{{ b.label }}</button></sc-for>
+          </div>
+          <sc-if value="{{ mpDone }}"><p data-arrive="1" aria-live="polite" style="margin: 12px 0 0; padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ mpReply }}</p></sc-if>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · more protons, stronger pull?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Potassium has more protons, so it holds its outer electron more tightly.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Compared with sodium, how strongly is potassium’s outer electron attracted to the nucleus?" options="{{ thinkOptions }}" reveal="More weakly. Potassium’s outer electron is in a shell further from the nucleus, so it is held less strongly and lost more easily. That is why potassium is more reactive." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Water, oxygen or chlorine?" prompt="Place each product or observation with the reaction it comes from." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Water gives a hydroxide and hydrogen; oxygen gives an oxide; chlorine gives a chloride. All three get more vigorous down the group." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">What you would see: fizzing, moving, melting, flame.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Distance, attraction, how easily the electron is lost.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Predict</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Carry the trend on to rubidium and caesium.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Group 1 metals have one outer electron. Reactivity increases down the group, because the outer electron is further from the nucleus and is lost more easily.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="group-1" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Group 1: the alkali metals" spec="AQA 5.1.2.5" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure why potassium is more reactive than lithium?" legal="Shell diagrams are not to scale. The reaction drawings are schematic." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A jar of oil', short: 'HOOK' },
+  { id: 's-water', label: 'Step down the group', short: 'WATER' },
+  { id: 's-air', label: 'Oxygen and chlorine', short: 'O AND CL' },
+  { id: 's-why', label: 'Why reactivity increases', short: 'WHY' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Which reaction', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const M = [
+  { sym: 'Li', name: 'Lithium', note: 'Lithium fizzes gently and moves around on the surface.', eq: '2Li + 2H\u2082O \u2192 2LiOH + H\u2082', fizz: 1 },
+  { sym: 'Na', name: 'Sodium', note: 'Sodium fizzes vigorously, melts into a ball and moves rapidly. It may catch fire.', eq: '2Na + 2H\u2082O \u2192 2NaOH + H\u2082', fizz: 2 },
+  { sym: 'K', name: 'Potassium', note: 'Potassium reacts very vigorously. The hydrogen ignites at once with a lilac flame.', eq: '2K + 2H\u2082O \u2192 2KOH + H\u2082', fizz: 3 }
+];
+const AIR = [
+  { name: 'With oxygen', what: 'The metals tarnish in air as an oxide forms; they burn when heated.', eqs: '4Li + O\u2082 \u2192 2Li\u2082O \u00b7 4Na + O\u2082 \u2192 2Na\u2082O \u00b7 4K + O\u2082 \u2192 2K\u2082O' },
+  { name: 'With chlorine', what: 'Heated in chlorine, they react vigorously to form white solid chlorides.', eqs: '2Li + Cl\u2082 \u2192 2LiCl \u00b7 2Na + Cl\u2082 \u2192 2NaCl \u00b7 2K + Cl\u2082 \u2192 2KCl' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, at: 0, shown: [false, false, false], preds: [null, null, null], air: [], mp: null, think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  waterFig(at, shown) {
+    const D = window.KS4D, C = D.C, m = M[at], sh = D.CONFIG[m.sym]; let b = '';
+    const cx = 150, cy = 170;
+    b += D.atom(cx, cy, m.sym, sh, { fill: C.metal, r0: 34, step: 22 });
+    const rOut = 34 + (sh.length - 1) * 22;
+    b += D.T(cx, 30, m.name + ' ' + sh.join('.'), 16, { fill: C.stroke });
+    b += D.line(cx, cy, cx + rOut, cy, 2, C.red, ' stroke-dasharray="5 5"') + D.T(cx + rOut / 2, cy - 8, 'distance', 12, { fill: C.red, weight: 'normal' });
+    b += D.T(cx, 330, 'outer electron ' + ['close in', 'further out', 'furthest out'][at], 14, { weight: 'normal', fill: C.stroke });
+    b += '<rect x="320" y="200" width="250" height="110" rx="6" fill="#DDEEF6" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    b += D.T(445, 330, 'trough of water', 13, { weight: 'normal', fill: C.stroke });
+    if (shown) {
+      const x = 430 + at * 10;
+      b += '<ellipse cx="' + x + '" cy="200" rx="' + (16 - at * 2) + '" ry="7" fill="#C9CCD1" stroke="' + C.stroke + '" stroke-width="2"/>';
+      for (let i = 0; i < 4 + m.fizz * 4; i++) { const a = i * 2.3, r = 18 + (i % 4) * 7; b += D.circ(x + r * Math.cos(a), 192 - Math.abs(r * Math.sin(a)) * 0.5, 2.5 + (i % 2), '#FFFDF8', C.stroke, 1.2); }
+      if (m.fizz === 3) b += '<path d="M' + (x - 14) + ' 190 Q' + (x - 6) + ' 140 ' + x + ' 120 Q' + (x + 8) + ' 145 ' + (x + 14) + ' 190 Z" fill="#C8A2E8" stroke="#7A4FB0" stroke-width="2"/>' + D.T(x + 30, 140, 'lilac flame', 13, { anchor: 'start', fill: '#7A4FB0' });
+      b += D.T(445, 90, ['fizzes gently', 'fizzes vigorously, melts into a ball', 'very vigorous: hydrogen ignites'][at], 14, { fill: C.stroke });
+    } else {
+      b += D.T(445, 160, 'predict first', 14, { weight: 'normal', fill: C.muted });
+    }
+    return D.svg(600, 350, b, m.name + ' atom, ' + sh.join('.') + ', one outer electron ' + ['close to', 'further from', 'furthest from'][at] + ' the nucleus.' + (shown ? ' In water: ' + m.note : ''));
+  }
+  seg(on, st) {
+    const bc = st === 'right' ? 'var(--ks3-accent)' : on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)';
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' + bc + ';background:' + (on || st === 'right' ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' + (st === 'dim' ? 'opacity:.55;cursor:default;' : '');
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.shown.every(Boolean), s.air.length === 2, s.mp !== null, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const at = s.at, shown = s.shown[at], pred = s.preds[at];
+    const show = (p) => { const sh = s.shown.slice(), pr = s.preds.slice(); sh[at] = true; pr[at] = p; this.setState({ shown: sh, preds: pr }); };
+    const predText = at === 0 ? null : (pred === 'more' ? 'You predicted more vigorous: ' : 'You predicted gentler. ');
+    const MP = [{ label: 'Lower than 63 °C', c: true }, { label: 'About the same as potassium', c: false }, { label: 'Higher than 98 °C', c: false }];
+    const bankSrc = [
+      { q: 'What are the products when sodium reacts with water?', opts: [['Sodium hydroxide (NaOH) and hydrogen gas (H\u2082)', true], ['Sodium oxide (Na\u2082O) and water', false], ['Sodium chloride (NaCl) and hydrogen', false], ['Sodium hydroxide and oxygen gas', false]],
+        wrong_explanations: { 1: 'Sodium reacts with oxygen to form sodium OXIDE \u2014 but when it reacts with water specifically, the products are hydroxide and hydrogen.', 2: 'NaCl is the product of sodium reacting with CHLORINE or hydrochloric acid \u2014 not water.', 3: 'Oxygen is not released when metals react with water. The equation is: 2Na + 2H\u2082O \u2192 2NaOH + H\u2082.' } },
+      { q: 'Why is potassium more reactive than lithium?', opts: [['Potassium has more electron shells \u2014 its outer electron is further from the nucleus and more easily lost', true], ['Potassium has more protons \u2014 so it has a stronger positive charge making it more reactive', false], ['Potassium is a larger atom so it reacts with a larger surface area', false], ['Potassium\u2019s outer electron has a higher charge than lithium\u2019s outer electron', false]],
+        wrong_explanations: { 1: 'More protons means stronger nuclear charge \u2014 this would actually make it HARDER to lose the electron, not easier. But the extra shells and increased distance outweigh the effect of more protons.', 2: 'Surface area affects reaction rate but not inherent reactivity \u2014 the question is about why K is more reactive than Li in terms of properties.', 3: 'All electrons have the same charge (\u22121 each) \u2014 the \u2018ease of losing\u2019 them depends on how strongly they are attracted to the nucleus.' } },
+      { q: 'Sodium is heated in chlorine gas. What forms?', opts: [['A white solid, sodium chloride', true], ['A colourless gas, hydrogen', false], ['Sodium hydroxide solution', false], ['Sodium oxide', false]],
+        wrong_explanations: { 1: 'Hydrogen forms when the metal reacts with water.', 2: 'The hydroxide forms with water, not chlorine.', 3: 'The oxide forms with oxygen.' } },
+      { q: 'Why does freshly cut lithium quickly go dull?', opts: [['It reacts with oxygen in the air to form an oxide', true], ['It dries out', false], ['It reacts with nitrogen to form a hydroxide', false], ['The oil on it evaporates', false]],
+        wrong_explanations: { 1: 'Metals don\u2019t dry out; the surface is reacting.', 2: 'A hydroxide forms with water. The dull layer is an oxide.', 3: 'The dulling is a reaction with oxygen.' } },
+      { q: 'Caesium is below rubidium in Group 1. Predict how caesium reacts with water compared with potassium.', opts: [['More vigorously', true], ['Less vigorously', false], ['In the same way', false], ['It doesn\u2019t react', false]],
+        wrong_explanations: { 1: 'Reactivity increases down Group 1, not decreases.', 2: 'Each step down the group, the reaction gets more vigorous.', 3: 'All Group 1 metals react with water, more vigorously further down.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('group-1') : null,
+      hookOptions: [
+        { text: 'To stop it reacting with air and water', correct: true, reply: 'Exposed to air, its surface reacts within seconds. Under oil, nothing reaches it.' },
+        { text: 'To keep it shiny for show', correct: false, reply: 'Good thought: it does stay shiny under oil. But that is because the oil stops it reacting with air and water.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      metals: M.map((m, i) => ({ label: m.name, pressed: at === i, disabled: i > 0 && !s.shown[i - 1], style: this.seg(at === i) + (i > 0 && !s.shown[i - 1] ? 'opacity:.5;cursor:default;' : ''), onClick: () => this.setState({ at: i }) })),
+      waterFig: ready ? K.fig(this.waterFig(at, shown), '') : null,
+      asking: !shown,
+      askLine: at === 0 ? 'Lithium first. Ready?' : 'Predict: compared with ' + M[at - 1].name.toLowerCase() + ', will ' + M[at].name.toLowerCase() + ' react…',
+      predBtns: at === 0 ? [{ label: 'Drop it in', style: this.seg(false), onClick: () => show('more') }] : [
+        { label: 'More vigorously', style: this.seg(false), onClick: () => show('more') },
+        { label: 'More gently', style: this.seg(false), onClick: () => show('less') }],
+      shown,
+      waterNote: (predText ? predText + (pred === 'more' ? 'yes. ' : 'it is the other way. ') : '') + M[at].note + (at === 2 ? ' Rubidium, next down, would be more vigorous still.' : ''),
+      waterEq: M[at].eq,
+      airCards: AIR.map((f, i) => { const o = s.air.indexOf(i) >= 0; return { name: f.name, what: f.what, eqs: f.eqs, open: o,
+        style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+        onClick: () => this.setState({ air: o ? s.air : s.air.concat([i]) }) }; }),
+      mpBtns: MP.map((x, i) => ({ label: x.label, disabled: s.mp !== null, style: this.seg(false, s.mp === null ? '' : x.c ? 'right' : s.mp === i ? '' : 'dim'), onClick: () => { if (s.mp === null) this.setState({ mp: i }); } })),
+      mpDone: s.mp !== null,
+      mpReply: s.mp === null ? '' : (MP[s.mp].c ? 'Yes. ' : 'Not this one. ') + 'Melting point falls down the group, so rubidium’s is lower than potassium’s. Its real melting point is 39 °C.',
+      thinkOptions: [
+        { text: 'More weakly', correct: true, reply: 'Further away, so weaker attraction.' },
+        { text: 'More strongly', correct: false, reply: 'It has more protons, but its outer electron is much further away, so it is held less strongly.' },
+        { text: 'Exactly the same', correct: false, reply: 'The outer electron is in a higher shell, further from the nucleus, so the attraction is weaker.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'w', label: 'Water' }, { id: 'o', label: 'Oxygen' }, { id: 'c', label: 'Chlorine' }],
+      sortItems: [
+        { text: 'Metal hydroxide', bin: 'w', why: 'Plus hydrogen.' },
+        { text: 'Hydrogen gas', bin: 'w', why: 'The fizzing.' },
+        { text: 'Alkaline solution left behind', bin: 'w', why: 'The hydroxide dissolves.' },
+        { text: 'Shiny surface goes dull', bin: 'o', why: 'An oxide forms.' },
+        { text: '4Na + O\u2082 \u2192 2Na\u2082O', bin: 'o', why: 'Sodium oxide.' },
+        { text: 'White solid forms', bin: 'c', why: 'A metal chloride.' },
+        { text: '2K + Cl\u2082 \u2192 2KCl', bin: 'c', why: 'Potassium chloride.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'State', marks: 1, prompt: 'State how many electrons a Group 1 atom has in its outer shell.', why: 'One.', options: [
+            { text: '1', correct: true }, { text: '2', correct: false, reply: 'Two is Group 2.' }, { text: '7', correct: false, reply: 'Seven is Group 7.' }] },
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name the gas given off when potassium reacts with water.', why: 'Hydrogen.', options: [
+            { text: 'Oxygen', correct: false, reply: 'No oxygen is given off. The gas is hydrogen.' }, { text: 'Hydrogen', correct: true }, { text: 'Carbon dioxide', correct: false, reply: 'There is no carbon in the reactants.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Describe', marks: 1, prompt: 'Describe what you would see when sodium is added to water.', why: 'Fizzes vigorously, melts into a ball, moves rapidly on the surface.', options: [
+            { text: 'Fizzes, melts into a ball and moves rapidly on the surface', correct: true },
+            { text: 'Sinks and fizzes slowly at the bottom', correct: false, reply: 'Sodium floats: it has a low density.' },
+            { text: 'Burns with a lilac flame straight away', correct: false, reply: 'The lilac flame is potassium.' },
+            { text: 'No reaction', correct: false, reply: 'All Group 1 metals react with water.' }] },
+          { kind: 'mcq', command: 'Predict', marks: 1, prompt: 'Boiling points: lithium 1342 \u00b0C, sodium 883 \u00b0C, potassium 759 \u00b0C. Predict the boiling point of rubidium.', why: 'The trend falls down the group, so lower than 759 \u00b0C (it is 688 \u00b0C).', options: [
+            { text: 'About 690 \u00b0C', correct: true },
+            { text: 'About 900 \u00b0C', correct: false, reply: 'The trend falls down the group.' },
+            { text: 'About 1400 \u00b0C', correct: false, reply: 'That is higher than lithium; the trend goes down.' },
+            { text: 'About 760 \u00b0C', correct: false, reply: 'That is potassium\u2019s. The next one down is lower.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why potassium is more reactive than sodium. Put the links in order.',
+            links: ['A potassium atom has more shells, so its outer electron is further from the nucleus.', 'So the attraction between the nucleus and the outer electron is weaker.', 'So potassium loses its outer electron more easily, and is more reactive.'],
+            herrings: [{ text: 'Potassium has more protons, so it pulls its electron harder.', why: 'Distance outweighs the extra protons.' }, { text: 'Potassium has two outer electrons.', why: 'Every Group 1 atom has one.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why Group 1 metals are called alkali metals. Put the links in order.',
+            links: ['The metal reacts with water.', 'It forms a metal hydroxide and hydrogen.', 'The hydroxide dissolves to make an alkaline solution.'],
+            herrings: [{ text: 'The metal forms an oxide that is acidic.', why: 'The solution is alkaline.' }, { text: 'The hydrogen makes the water alkaline.', why: 'It is the hydroxide that is alkaline.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 4, prompt: 'Describe the reactions of lithium, sodium and potassium with water, and how they change down the group.',
+            levels: [
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Products named, observations for each metal, and the trend stated.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'Some products or observations, with little on the trend.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Each forms a metal hydroxide and hydrogen.', 'Lithium fizzes gently and moves on the surface.', 'Sodium fizzes vigorously and melts into a ball; potassium reacts very vigorously and the hydrogen ignites with a lilac flame.', 'The reaction gets more vigorous down the group.'],
+            reject: ['\u201cThey make a metal oxide and water.\u201d', '\u201cThe gas given off is oxygen.\u201d'] }
+        ]
+      },
+      keyLines: ['Group 1, the alkali metals, have one electron in their outer shell and form +1 ions.', 'Soft, low density and low melting points. Li, Na and K float on water.', 'With water: metal hydroxide + hydrogen; the solution is alkaline.', 'With oxygen: a metal oxide (tarnishes). With chlorine: a white solid metal chloride.', 'Reactivity increases down the group: the outer electron is further from the nucleus, less strongly attracted, and more easily lost.', 'Use trends to predict rubidium and caesium.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: null, endNext: { href: 'ks4-chemistry-5.4.2.1-reactions-of-acids.dc.html', label: 'Reactions of acids' },
+      endConnects: [{ href: '../../Batch 5/lessons/ks4-chemistry-5.1.2.4-group-0.dc.html', label: 'Group 0' }, { href: '../../Batch 5/lessons/ks4-chemistry-5.1.2.3-metals-non-metals.dc.html', label: 'Metals and non-metals' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animal and plant cells · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Cell biology" title="Animal and plant cells" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.1.1.2</p>
+        <h1>Animal and plant cells</h1>
+        <p class="ks3-bigq">Five parts in every animal cell; plant cells add up to three more. Place each part, then work out how big a cell really is from a drawing.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Required practical 1</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Lettuce and carrots." scene="Leave lettuce out without water and it goes limp. A fresh raw carrot snaps cleanly in two. Your own skin does neither." question="do plant cells have something stiff around them that ours don’t?" options="{{ hookOptions }}" bridge="Plant cells have a cellulose cell wall outside the membrane. Next: every part, and which cells have it." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-cells" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Side by side</p>
+        <h2 style="margin: 6px 0 0;">Same five parts, plus three in plant cells.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Tap each part to find it in the cells and see what it does. Notice which cell has it.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ partBtns }}" as="b" hint-placeholder-count="8"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ cellFig }}</div>
+        <p aria-live="polite" style="margin: 14px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ partNote }}</p>
+      </section>
+
+      <section id="s-scope" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Required practical 1 · observe and label</p>
+        <h2 style="margin: 6px 0 0;">What you see down a light microscope.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">With a light microscope you can see the nucleus, cytoplasm, cell membrane, cell wall, vacuole and chloroplasts. Ribosomes are too small to see. Iodine solution stains onion cells: the nucleus shows yellow-brown. Methylene blue stains cheek cells: the nucleus shows blue. The full method, focusing and drawing rules are in the Microscopy lesson.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ viewFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <p style="margin: 0; font-weight: 700;">Estimate: about how much of this plant cell does the vacuole fill?</p>
+            <sc-for list="{{ estBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" disabled="{{ b.disabled }}" style="{{ b.style }}">{{ b.label }}</button></sc-for>
+            <sc-if value="{{ estDone }}"><p data-arrive="1" aria-live="polite" style="margin: 0; padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ estReply }}</p></sc-if>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equation · magnification</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Convert first: both sizes must be in the same unit. 1 mm = 1000 µm, so mm × 1000 gives µm, and µm ÷ 1000 gives mm. Magnification has no unit: write it as ×400, for example. Tap the quantity you want to find.</p>
+        <div style="margin-top: 14px; max-width: 520px;">
+          <dc-import name="Ks4Triangle" eq="{{ eqMag }}" variant="full" hint-size="100%,420px"></dc-import>
+        </div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · are all plant cells green?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Every plant cell has chloroplasts.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="A student looks at a cell from a plant’s root. Which part will not be there?" options="{{ thinkOptions }}" reveal="Chloroplasts. Plant cells often have chloroplasts, but root cells get no light and have none. They still have a wall, a membrane, a vacuole and mitochondria." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Both, or plant cells only?" prompt="Place each part." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Every animal part is in plant cells too. Plant cells add a cellulose wall, a permanent vacuole and, often, chloroplasts." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Name</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The part, using its proper name.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">What both have, then what only plant cells have.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Convert to one unit, then image ÷ real.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Animal cells have a nucleus, cytoplasm, cell membrane, mitochondria and ribosomes. Plant cells have these too, plus a cellulose cell wall, a permanent vacuole and often chloroplasts.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="animal-plant-cells" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Animal and plant cells" spec="AQA 4.1.1.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure when to convert mm to µm?" legal="Cell drawings are schematic and not to scale." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Lettuce and carrots', short: 'HOOK' },
+  { id: 's-cells', label: 'Side by side', short: 'CELLS' },
+  { id: 's-scope', label: 'Observe and label', short: 'RP1' },
+  { id: 's-calc', label: 'Magnification', short: 'CFIFA' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Both or plant', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const EQ_M = { name: 'Magnification', written: 'magnification = size of image \u00f7 size of real object', source: 'none',
+  top: { s: 'I', name: 'size of image', unit: '\u00b5m' },
+  bottom: [{ s: 'M', name: 'magnification', unit: 'no unit' }, { s: 'A', name: 'size of real object', unit: '\u00b5m' }] };
+const PARTS = [
+  { k: 'nuc', n: 'Nucleus', both: true, f: 'Contains genetic material, which controls the activities of the cell.' },
+  { k: 'cyt', n: 'Cytoplasm', both: true, f: 'A gel where most chemical reactions happen, controlled by enzymes.' },
+  { k: 'mem', n: 'Cell membrane', both: true, f: 'Controls the movement of substances into and out of the cell.' },
+  { k: 'mit', n: 'Mitochondria', both: true, f: 'Where aerobic respiration takes place, releasing energy. Plant cells have them too.' },
+  { k: 'rib', n: 'Ribosomes', both: true, f: 'Where protein synthesis happens. The nucleus holds the instructions; ribosomes make the protein.' },
+  { k: 'wal', n: 'Cell wall', both: false, f: 'Made of cellulose. Strengthens the cell. It is outside the membrane: plant cells have both.' },
+  { k: 'chl', n: 'Chloroplasts', both: false, f: 'Absorb light for photosynthesis. Plant cells often have them, but not all: root cells have none.' },
+  { k: 'vac', n: 'Permanent vacuole', both: false, f: 'Filled with cell sap. It keeps the cell firm, which is why lettuce goes limp without water.' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, part: 0, seen: [0], est: null, calc: 0, think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  cellFig(k) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const hi = (key, s) => k === key ? s.replace('stroke-width="2"', 'stroke-width="4"').replace(/stroke="[^"]+"/, 'stroke="' + C.red + '"') : s;
+    b += D.T(200, 34, 'Animal cell', 18, { fill: C.stroke }) + D.T(620, 34, 'Plant cell', 18, { fill: C.stroke });
+    b += hi('mem', '<path d="M90 120 Q110 60 200 70 Q300 60 320 140 Q340 250 260 300 Q170 330 110 280 Q60 230 90 120 Z" fill="#F6E7D3" stroke="' + C.stroke + '" stroke-width="2"/>');
+    if (k === 'cyt') b += '<path d="M90 120 Q110 60 200 70 Q300 60 320 140 Q340 250 260 300 Q170 330 110 280 Q60 230 90 120 Z" fill="' + C.red + '" fill-opacity=".14"/>';
+    b += hi('nuc', '<circle cx="190" cy="180" r="38" fill="#C9B6E4" stroke="' + C.stroke + '" stroke-width="2"/>');
+    [[270, 130], [130, 250], [260, 250]].forEach((p) => { b += hi('mit', '<ellipse cx="' + p[0] + '" cy="' + p[1] + '" rx="20" ry="10" fill="#F2A33A" stroke="' + C.stroke + '" stroke-width="2"/>'); });
+    [[140, 140], [150, 160], [240, 200], [250, 215], [200, 270], [215, 280], [120, 200], [280, 180]].forEach((p) => { b += k === 'rib' ? D.circ(p[0], p[1], 5, C.red) : D.circ(p[0], p[1], 3, C.stroke); });
+    b += hi('wal', '<rect x="470" y="60" width="300" height="250" rx="6" fill="#CFE6B8" stroke="' + C.stroke + '" stroke-width="2"/>');
+    b += hi('mem', '<rect x="480" y="70" width="280" height="230" rx="4" fill="#F6E7D3" stroke="' + C.stroke + '" stroke-width="2"/>');
+    if (k === 'cyt') b += '<rect x="480" y="70" width="280" height="230" rx="4" fill="' + C.red + '" fill-opacity=".14"/>';
+    b += hi('vac', '<rect x="560" y="100" width="170" height="170" rx="30" fill="#DDEEF6" stroke="' + C.stroke + '" stroke-width="2"/>');
+    b += hi('nuc', '<circle cx="515" cy="120" r="24" fill="#C9B6E4" stroke="' + C.stroke + '" stroke-width="2"/>');
+    [[505, 200], [510, 260], [600, 85], [700, 85], [745, 180]].forEach((p, i) => { b += hi('chl', '<ellipse cx="' + p[0] + '" cy="' + p[1] + '" rx="' + (i > 2 ? 12 : 16) + '" ry="' + (i > 2 ? 9 : 9) + '" fill="#4F9A4A" stroke="' + C.stroke + '" stroke-width="2"/>'); });
+    b += hi('mit', '<ellipse cx="535" cy="290" rx="14" ry="6" fill="#F2A33A" stroke="' + C.stroke + '" stroke-width="2"/>');
+    [[500, 170], [545, 175], [690, 290], [740, 270]].forEach((p) => { b += k === 'rib' ? D.circ(p[0], p[1], 5, C.red) : D.circ(p[0], p[1], 3, C.stroke); });
+    const P = PARTS.filter((p) => p.k === k)[0];
+    b += D.T(420, 345, P.n + (P.both ? ': in both cells' : ': plant cells only'), 18, { fill: C.red });
+    return D.svg(840, 365, b, 'Animal cell and plant cell side by side, not to scale. Highlighted: ' + P.n + (P.both ? ', found in both.' : ', found in plant cells only.'));
+  }
+  viewFig() {
+    const D = window.KS4D, C = D.C; let b = '';
+    b += D.circ(200, 170, 150, '#FFF8E8', C.stroke, 3);
+    b += '<clipPath id="vf"><circle cx="200" cy="170" r="148"/></clipPath><g clip-path="url(#vf)">';
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 3; c++) {
+      const x = 40 + c * 120 + (r % 2) * 30, y = 30 + r * 80;
+      b += '<rect x="' + x + '" y="' + y + '" width="118" height="78" fill="#F4E3B8" stroke="#8A6A2E" stroke-width="2"/>';
+      b += '<rect x="' + (x + 14) + '" y="' + (y + 10) + '" width="92" height="58" rx="8" fill="#FBF3DD" stroke="#C9A75A" stroke-width="1"/>';
+      b += D.circ(x + 20, y + 20, 7, '#A97B2E', 'none', 0);
+    }
+    b += '</g>';
+    b += D.T(200, 340, 'onion cells stained with iodine: nucleus yellow-brown', 14, { weight: 'normal', fill: C.stroke });
+    return D.svg(400, 355, b, 'Light-microscope view of onion epidermis cells stained with iodine: brick-shaped cells with walls, a large vacuole filling most of each cell, and a small yellow-brown nucleus at the edge.');
+  }
+  seg(on, st) {
+    const bc = st === 'right' ? 'var(--ks3-accent)' : on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)';
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' + bc + ';background:' + (on || st === 'right' ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' + (st === 'dim' ? 'opacity:.55;cursor:default;' : '');
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.seen.length === PARTS.length, s.est !== null, s.calc >= 2, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const P = PARTS[s.part];
+    const EST = [{ l: 'About a quarter', c: false }, { l: 'About half', c: false }, { l: 'Most of it, about three quarters', c: true }];
+    const ph = { C: 'same units?' };
+    const bankSrc = [
+      { q: 'Which organelle is responsible for protein synthesis?', opts: [['Ribosomes', true], ['Mitochondria', false], ['Nucleus', false], ['Chloroplasts', false]],
+        wrong_explanations: { 1: 'Mitochondria are the site of aerobic RESPIRATION \u2014 they release energy from glucose, they don\u2019t make proteins.', 2: 'The nucleus contains the DNA instructions for making proteins, but the actual assembly of amino acids into proteins happens at RIBOSOMES.', 3: 'Chloroplasts carry out PHOTOSYNTHESIS \u2014 capturing light energy to make glucose. Not involved in protein synthesis.' } },
+      { q: 'A student looks at a plant cell from a root. They expect to see chloroplasts but find none. Why?', opts: [['Root cells are underground \u2014 no light reaches them, so chloroplasts are not present', true], ['Root cells are too small to contain chloroplasts', false], ['Root cells are prokaryotic and cannot have chloroplasts', false], ['Chloroplasts are only present in animal cells', false]],
+        wrong_explanations: { 1: 'Root cells are eukaryotic plant cells \u2014 size is not the reason. Palisade cells are similar in size and have many chloroplasts.', 2: 'ALL plant cells are eukaryotic. Root cells are plant cells \u2014 they are eukaryotic. Only bacteria (and other prokaryotes) lack membrane-bound organelles.', 3: 'Chloroplasts are found in PLANT cells \u2014 not animal cells. Animal cells never have chloroplasts.' } },
+      { q: 'What is the function of the permanent vacuole in a plant cell?', opts: [['Filled with cell sap \u2014 contributes to turgor pressure, keeping the cell firm', true], ['Stores chlorophyll for photosynthesis', false], ['Acts as the site of aerobic respiration', false], ['Controls what enters and leaves the cell', false]],
+        wrong_explanations: { 1: 'Chlorophyll is stored in CHLOROPLASTS \u2014 not the vacuole. The vacuole contains cell sap (sugars and salts).', 2: 'Aerobic respiration occurs in MITOCHONDRIA. The vacuole is a storage compartment.', 3: 'Controlling what enters and leaves = the CELL MEMBRANE. The vacuole is a storage structure filled with cell sap.' } },
+      { q: 'Which of the following is present in both animal and plant cells?', opts: [['Mitochondria', true], ['Cell wall', false], ['Chloroplasts', false], ['Permanent vacuole', false]],
+        wrong_explanations: { 1: 'Cell walls are only found in plant cells (and bacteria, fungi) \u2014 NOT in animal cells.', 2: 'Chloroplasts are found only in plant cells that are exposed to light. Animal cells never have chloroplasts.', 3: 'The permanent vacuole is a plant cell feature \u2014 animal cells do not have a large permanent vacuole (though they may have small temporary vacuoles).' } },
+      { q: 'Why do very active muscle cells contain many more mitochondria than skin cells?', opts: [['Muscle cells need much more ATP energy for contraction \u2014 more mitochondria produce more ATP', true], ['Muscle cells are larger, so they need more organelles to fill the space', false], ['Mitochondria help muscle cells to absorb oxygen from the blood', false], ['Skin cells don\u2019t respire \u2014 they don\u2019t need mitochondria at all', false]],
+        wrong_explanations: { 1: 'Cell size doesn\u2019t directly dictate organelle number \u2014 it is energy demand that determines mitochondria count.', 2: 'Oxygen is absorbed by diffusion through the cell membrane \u2014 mitochondria USE oxygen in respiration, they don\u2019t absorb it.', 3: 'All living cells respire all the time \u2014 skin cells do have mitochondria. Active cells simply have FAR MORE.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('animal-plant-cells') : null,
+      eqMag: EQ_M,
+      hookOptions: [
+        { text: 'Yes, something stiff', correct: true, reply: 'A cell wall made of cellulose, outside the cell membrane.' },
+        { text: 'No, they’re the same as ours', correct: false, reply: 'Close: they share all our cell parts. But they also have a stiff cellulose wall, which ours don’t.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      partBtns: PARTS.map((p, i) => ({ label: p.n, pressed: s.part === i, style: this.seg(s.part === i), onClick: () => this.setState({ part: i, seen: s.seen.indexOf(i) >= 0 ? s.seen : s.seen.concat([i]) }) })),
+      cellFig: ready ? K.fig(this.cellFig(P.k), '') : null,
+      partNote: P.n + (P.both ? ' (both cells): ' : ' (plant cells only): ') + P.f,
+      viewFig: ready ? K.fig(this.viewFig(), '') : null,
+      estBtns: EST.map((e, i) => ({ label: e.l, disabled: s.est !== null, style: this.seg(false, s.est === null ? '' : e.c ? 'right' : s.est === i ? '' : 'dim'), onClick: () => { if (s.est === null) this.setState({ est: i }); } })),
+      estDone: s.est !== null, estReply: s.est === null ? '' : (EST[s.est].c ? 'Yes. ' : 'Look again. ') + 'In these cells the vacuole fills most of the space, pushing the cytoplasm and nucleus to the edge. An estimate is enough when you only need to compare sizes.',
+      cfExamples: [
+        { tab: 'Find the magnification', eq: EQ_M, find: 'M', head: 'A drawing of a cheek cell is 20 mm across. The real cell is 50 \u00b5m across. Calculate the magnification.', steps: [
+          { letter: 'C', label: 'Convert', line: '20 mm \u00d7 1000 = 20 000 \u00b5m', note: 'Both sizes must be in the same unit. Here, both in \u00b5m.' },
+          { letter: 'F', label: 'Formula', line: 'magnification = size of image \u00f7 size of real object' },
+          { letter: 'I', label: 'Insert', line: 'magnification = 20 000 \u00f7 50' },
+          { letter: 'F', label: 'Fine-tune', line: 'magnification = 400' },
+          { letter: 'A', label: 'Answer', line: 'magnification = \u00d7400 (no unit)' }] },
+        { tab: 'Find the real size', eq: EQ_M, find: 'A', next: 'Now yours, below.', head: 'In a \u00d7100 drawing, an onion cell is 15 mm long. Calculate its real length in \u00b5m.', steps: [
+          { letter: 'C', label: 'Convert', line: '15 mm \u00d7 1000 = 15 000 \u00b5m', note: 'The answer is wanted in \u00b5m, so convert the image size first.' },
+          { letter: 'F', label: 'Formula', line: 'magnification = size of image \u00f7 size of real object' },
+          { letter: 'I', label: 'Insert', line: '100 = 15 000 \u00f7 real size' },
+          { letter: 'F', label: 'Fine-tune', line: 'real size = 15 000 \u00f7 100 = 150', note: 'Cover \u201creal size\u201d on the triangle: image \u00f7 magnification.' },
+          { letter: 'A', label: 'Answer', line: 'real size = 150 \u00b5m' }] }
+      ],
+      cfQuestions: [
+        { tab: 'Question 1', id: 'apc-q1', head: 'A drawing of a plant cell is 30 mm long. The real cell is 60 \u00b5m long. Calculate the magnification.', close: '30 \u00f7 60 = 0.5 is what you get without converting: always put both sizes in the same unit.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: ph.C, line: '30 mm \u00d7 1000 = 30 000 \u00b5m' }, { letter: 'F', label: 'Formula', placeholder: 'written out', line: 'magnification = size of image \u00f7 size of real object' }, { letter: 'I', label: 'Insert', placeholder: 'magnification = \u2026 \u00f7 \u2026', line: 'magnification = 30 000 \u00f7 60' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'magnification = 500' }, { letter: 'A', label: 'Answer', placeholder: 'no unit', line: '\u00d7500' }] },
+        { tab: 'Question 2', id: 'apc-q2', head: 'In a \u00d7400 drawing, a nucleus is 4 mm across. Calculate its real width in \u00b5m.', close: 'Real size = image \u00f7 magnification: 4000 \u00f7 400, not 400 \u00f7 4000.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: ph.C, line: '4 mm \u00d7 1000 = 4000 \u00b5m' }, { letter: 'F', label: 'Formula', placeholder: 'written out', line: 'magnification = size of image \u00f7 size of real object' }, { letter: 'I', label: 'Insert', placeholder: '\u2026 = \u2026 \u00f7 real size', line: '400 = 4000 \u00f7 real size' }, { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange', line: 'real size = 4000 \u00f7 400 = 10' }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: '10 \u00b5m' }] }
+      ],
+      onCalc: (n) => this.setState({ calc: n }),
+      thinkOptions: [
+        { text: 'Chloroplasts', correct: true, reply: 'No light reaches the root.' },
+        { text: 'Cell wall', correct: false, reply: 'Every plant cell has a cellulose wall, including root cells.' },
+        { text: 'Mitochondria', correct: false, reply: 'Root cells respire, so they have mitochondria.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'b', label: 'Both animal and plant' }, { id: 'p', label: 'Plant cells only' }],
+      sortItems: PARTS.map((p) => ({ text: p.n, bin: p.both ? 'b' : 'p', why: p.f.split('.')[0] + '.' })),
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'Name', marks: 1, prompt: 'Name the part of a cell where aerobic respiration takes place.', why: 'Mitochondria.', options: [
+            { text: 'Ribosome', correct: false, reply: 'Ribosomes make proteins.' }, { text: 'Mitochondria', correct: true }, { text: 'Nucleus', correct: false, reply: 'The nucleus contains the genetic material.' }] },
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Give the substance a plant cell wall is made of.', why: 'Cellulose.', options: [
+            { text: 'Cellulose', correct: true }, { text: 'Chlorophyll', correct: false, reply: 'Chlorophyll is in chloroplasts.' }, { text: 'Cell sap', correct: false, reply: 'Cell sap fills the vacuole.' }] }
+        ],
+        r2: [
+          { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'A drawing of a red blood cell is 16 mm across. The real cell is 8 \u00b5m across. Calculate the magnification.',
+            convOptions: ['Nothing to convert', 'Convert mm to \u00b5m: multiply by 1000', 'Convert mm to \u00b5m: divide by 1000'], convAnswer: 1, answer: 2000, tol: 1, unit: 'no unit', units: ['no unit', 'mm', '\u00b5m'],
+            right: '16 000 \u00f7 8 = \u00d72000.', wrong: '16 mm = 16 000 \u00b5m; magnification = 16 000 \u00f7 8.',
+            model: ['C \u00b7 16 mm \u00d7 1000 = 16 000 \u00b5m', 'F \u00b7 magnification = size of image \u00f7 size of real object', 'I \u00b7 magnification = 16 000 \u00f7 8', 'F \u00b7 magnification = 2000', 'A \u00b7 \u00d72000'] },
+          { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'In a \u00d7250 drawing, a cell is 10 mm long. Calculate the real length of the cell in \u00b5m.',
+            convOptions: ['Nothing to convert', 'Convert mm to \u00b5m: multiply by 1000', 'Convert mm to \u00b5m: divide by 1000'], convAnswer: 1, answer: 40, tol: 0.5, unit: '\u00b5m', units: ['\u00b5m', 'mm', 'no unit'],
+            right: '10 000 \u00f7 250 = 40 \u00b5m.', wrong: '10 mm = 10 000 \u00b5m; real size = image \u00f7 magnification = 10 000 \u00f7 250.',
+            model: ['C \u00b7 10 mm \u00d7 1000 = 10 000 \u00b5m', 'F \u00b7 magnification = size of image \u00f7 size of real object', 'I \u00b7 250 = 10 000 \u00f7 real size', 'F \u00b7 real size = 10 000 \u00f7 250 = 40', 'A \u00b7 40 \u00b5m'] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why a plant cell does not burst when it takes in water. Put the links in order.',
+            links: ['Water enters the permanent vacuole, which swells.', 'It pushes the cytoplasm and membrane against the cell wall.', 'The cellulose wall is strong, so the cell becomes firm instead of bursting.'],
+            herrings: [{ text: 'The membrane is stronger than the wall.', why: 'It is the cellulose wall that strengthens the cell.' }, { text: 'Chloroplasts absorb the extra water.', why: 'Chloroplasts are for photosynthesis.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why muscle cells have many mitochondria. Put the links in order.',
+            links: ['Muscle cells contract, which needs a lot of energy.', 'Aerobic respiration takes place in mitochondria, releasing energy.', 'More mitochondria release more energy for contraction.'],
+            herrings: [{ text: 'Mitochondria make proteins for the muscle.', why: 'Ribosomes make proteins.' }, { text: 'Mitochondria absorb oxygen from the blood.', why: 'Oxygen diffuses in; mitochondria use it.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Compare', marks: 4, prompt: 'Compare the structure of a cheek cell with a palisade cell from a leaf.',
+            levels: [
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Shared parts and the plant extras, each linked to the right cell, with at least one function.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'Some parts listed, with little comparison.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Both have a nucleus, cytoplasm, cell membrane, mitochondria and ribosomes.', 'Only the palisade cell has a cellulose cell wall, which strengthens it.', 'Only the palisade cell has a permanent vacuole of cell sap.', 'Only the palisade cell has chloroplasts, which absorb light for photosynthesis.'],
+            reject: ['\u201cPlant cells have a cell wall instead of a membrane.\u201d', '\u201cAnimal cells don\u2019t have mitochondria.\u201d'] }
+        ]
+      },
+      keyLines: ['Animal cells: nucleus, cytoplasm, cell membrane, mitochondria, ribosomes.', 'Plant cells: all of those, plus a cellulose cell wall, a permanent vacuole of cell sap and, often, chloroplasts.', 'Nucleus: genetic material. Membrane: controls what goes in and out. Mitochondria: aerobic respiration. Ribosomes: protein synthesis.', 'Iodine on onion cells: nucleus yellow-brown. Methylene blue on cheek cells: nucleus blue.', 'Magnification = size of image \u00f7 size of real object. Convert to the same unit first: 1 mm = 1000 \u00b5m.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: null, endNext: { href: 'ks4-biology-4.1.1.3-cell-specialisation.dc.html', label: 'Cell specialisation' },
+      endConnects: [{ href: '../../Batch 5/lessons/ks4-biology-4.2.3.1-plant-tissues.dc.html', label: 'Plant tissues and organs' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

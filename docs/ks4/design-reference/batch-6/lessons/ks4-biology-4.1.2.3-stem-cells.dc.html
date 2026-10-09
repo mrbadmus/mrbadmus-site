@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stem cells · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Cell biology" title="Stem cells" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.1.2.3</p>
+        <h1>Stem cells</h1>
+        <p class="ks3-bigq">Three sources, one difference that matters: how many kinds of cell each can become. Compare them, then weigh up using them.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A cutting on the windowsill." scene="A short piece snipped from a houseplant is stood in a glass of water. A few weeks later it has roots, and soon it is a whole new plant." question="could a piece of your arm grow into a whole new you?" options="{{ hookOptions }}" bridge="Plants keep cells that can become any kind of plant cell. Most of ours have lost that. Next: the cells that haven’t." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-compare" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">What can it become?</p>
+        <h2 style="margin: 6px 0 0;">Three kinds of stem cell.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">A stem cell is an undifferentiated cell. It can divide to make many more cells of the same type, and other kinds of cell can arise from it by differentiation. Pick a source and see which cells it can become.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ srcBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ srcFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Can become</p>
+              <p aria-live="polite" style="margin: 4px 0 0; font-size: 17px; line-height: 1.55;">{{ srcRange }}</p>
+            </div>
+            <div style="padding: 14px 16px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Used for</p>
+              <p style="margin: 4px 0 0; font-size: 17px; line-height: 1.55;">{{ srcUse }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-clone" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Therapeutic cloning</p>
+        <h2 style="margin: 6px 0 0;">An embryo with the patient’s own genes.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">In therapeutic cloning, an embryo is produced with the same genes as the patient. Stem cells from the embryo are not rejected by the patient’s body, so they may be used for medical treatment. Treatment with stem cells may be able to help conditions such as diabetes and paralysis. Tap each side.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+          <sc-for list="{{ weighCards }}" as="f" hint-placeholder-count="3">
+            <button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}">
+              <span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">{{ f.name }}</span>
+              <sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if>
+            </button>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · a copy of the patient?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Therapeutic cloning makes a baby copy of the patient.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="What is therapeutic cloning used to produce?" options="{{ thinkOptions }}" reveal="An embryo whose stem cells have the patient’s genes, so they are not rejected. The stem cells are used to make the cells the patient needs; no baby is produced." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Embryonic, bone marrow or meristem?" prompt="Place each statement." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="The range of cells each can become is what decides what it can be used for." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Where the stem cells come from, and what they can become.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Embryonic against adult: the range of cells.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Evaluate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Benefits, practical risks and objections, then a judgement.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Embryonic stem cells can become most types of human cell. Adult bone marrow stem cells form a limited range, including blood cells. Meristem cells can become any type of plant cell, throughout the plant’s life.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="stem-cells" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Stem cells" spec="AQA 4.1.2.3" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure how embryonic and adult stem cells differ?" legal="Figures are schematic. The cell types shown are examples, not a complete list." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A cutting', short: 'HOOK' },
+  { id: 's-compare', label: 'What can it become', short: 'COMPARE' },
+  { id: 's-clone', label: 'Therapeutic cloning', short: 'CLONING' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Which source', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const SRC = [
+  { k: 'emb', label: 'Embryonic', range: 'Most types of human cell. They come from an early embryo, about 5 days old.', use: 'May be able to help conditions such as diabetes and paralysis, by making the cells that are missing or damaged.', lit: ['nerve', 'muscle', 'blood', 'skin', 'insulin'] },
+  { k: 'adu', label: 'Adult bone marrow', range: 'A limited range of cell types, including blood cells.', use: 'A bone marrow transplant can replace a patient\u2019s blood-forming cells, for example in leukaemia.', lit: ['blood'] },
+  { k: 'mer', label: 'Plant meristem', range: 'Any type of plant cell, at any time in the plant\u2019s life. Meristems are at the tips of roots and shoots.', use: 'Cloning plants quickly and cheaply: rare species, to protect them from extinction, and crop plants with special features such as disease resistance, in large numbers.', lit: ['root', 'leaf', 'xylem', 'flower'] }
+];
+const TYPES = [['nerve', 'Nerve'], ['muscle', 'Muscle'], ['blood', 'Blood cells'], ['skin', 'Skin'], ['insulin', 'Insulin-making'], ['root', 'Root'], ['leaf', 'Leaf'], ['xylem', 'Xylem'], ['flower', 'Flower']];
+const WEIGH = [
+  { name: 'Benefit', why: 'Cells made this way have the patient\u2019s genes, so they are not rejected. They may help conditions such as diabetes and paralysis.' },
+  { name: 'Practical risk', why: 'Using stem cells has potential risks, such as transfer of viral infection.' },
+  { name: 'Objections', why: 'Some people have ethical or religious objections, because an embryo is used and destroyed.' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, src: 0, seen: [0], weigh: [], think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  srcFig(S) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const plant = S.k === 'mer';
+    b += D.circ(80, 90, 36, '#FFFDF8', C.stroke, 3) + D.T(80, 96, 'stem', 15, { fill: C.stroke }) + D.T(80, 146, S.label.toLowerCase(), 13, { weight: 'normal', fill: C.stroke });
+    TYPES.forEach((t, i) => {
+      const isPlant = i >= 5, x = 190 + (i % 3) * 110, y = isPlant ? 220 + Math.floor((i - 5) / 3) * 60 : 30 + Math.floor(i / 3) * 60;
+      const on = S.lit.indexOf(t[0]) >= 0;
+      b += '<rect x="' + x + '" y="' + y + '" width="100" height="44" rx="10" fill="' + (on ? '#F7D9C9' : '#EAE6DA') + '" stroke="' + (on ? C.stroke : '#B8B2A6') + '" stroke-width="' + (on ? 2.5 : 1.5) + '"/>' + D.T(x + 50, y + 27, t[1], 13, { fill: on ? C.stroke : C.muted, weight: on ? 'bold' : 'normal' });
+      if (on) b += D.line(118, 90, x, y + 22, 1.5, C.arrow);
+    });
+    b += D.T(340, 18, 'human cells', 12, { weight: 'normal', fill: C.muted }) + D.T(340, 210, 'plant cells', 12, { weight: 'normal', fill: C.muted });
+    if (plant) {
+      b += D.line(80, 330, 80, 200, 4, '#4F9A4A') + '<path d="M80 250 Q50 230 40 250 Q60 262 80 250 Z" fill="#7FC07A" stroke="' + C.stroke + '" stroke-width="1.5"/>';
+      b += D.line(80, 330, 60, 370, 2.5, '#8A6A2E') + D.line(80, 330, 100, 372, 2.5, '#8A6A2E');
+      b += D.circ(80, 198, 6, C.red) + D.circ(60, 370, 5, C.red) + D.circ(100, 372, 5, C.red) + D.T(96, 202, 'meristem', 12, { anchor: 'start', fill: C.red });
+    }
+    return D.svg(530, 390, b, S.label + ' stem cells can become: ' + TYPES.filter((t) => S.lit.indexOf(t[0]) >= 0).map((t) => t[1]).join(', ') + (plant ? '. Meristems at the root and shoot tips.' : '.'));
+  }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const ready = !!(s.libReady && K && window.KS4D);
+    const done = [s.hook !== null, s.seen.length === 3, s.weigh.length === 3, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const S = SRC[s.src];
+    const bankSrc = [
+      { q: 'How are stem cells used to treat leukaemia?', opts: [['A bone marrow transplant: cancerous blood cells destroyed, then donor stem cells replace them and produce healthy blood cells', true], ['Embryonic stem cells are injected into the blood to replace cancer cells', false], ['Stem cells are used to make antibodies that kill cancer cells directly', false], ['Stem cells repair the damaged DNA in leukaemia cells, reversing the cancer', false]],
+        wrong_explanations: { 1: 'Embryonic stem cells are not used for leukaemia treatment \u2014 adult bone marrow stem cells are used. They are donated or sometimes the patient\u2019s own (after treatment).', 2: 'Antibodies that target cancer cells are a different therapy (monoclonal antibodies) \u2014 not how stem cells work in leukaemia treatment.', 3: 'Stem cells don\u2019t repair cancer cell DNA \u2014 the cancer cells are destroyed by chemotherapy/radiotherapy first, then NEW healthy cells are produced from transplanted stem cells.' } },
+      { q: 'Why are embryonic stem cells ethically controversial?', opts: [['Obtaining them requires destroying an embryo \u2014 which some consider to be destroying a potential human life', true], ['They cause cancer in patients who receive them', false], ['They are ineffective at treating disease', false], ['They are too expensive to collect and store', false]],
+        wrong_explanations: { 1: 'Cancer risk is a technical concern \u2014 the main ETHICAL controversy is about the moral status of the embryo that is destroyed.', 2: 'Embryonic stem cells could treat many conditions because they can become most cell types \u2014 the objection is ethical, not about whether they work.', 3: 'Cost and practicality are challenges \u2014 but the defining controversy is ethical: is it acceptable to destroy a potential human life for medical research?' } },
+      { q: 'Which stem cells can become any type of plant cell throughout the plant\u2019s life?', opts: [['Meristem cells', true], ['Embryonic stem cells', false], ['Bone marrow stem cells', false], ['Xylem cells', false]],
+        wrong_explanations: { 1: 'Embryonic stem cells come from human embryos and make human cells.', 2: 'Bone marrow stem cells form a limited range of human cells, including blood cells.', 3: 'Xylem cells are specialised and dead; they can\u2019t become other cells.' } },
+      { q: 'In therapeutic cloning, why are the stem cells not rejected by the patient?', opts: [['The embryo has the same genes as the patient', true], ['The stem cells come from bone marrow', false], ['The patient is given a new immune system', false], ['The stem cells have no genes', false]],
+        wrong_explanations: { 1: 'In therapeutic cloning the stem cells come from an embryo.', 2: 'Nothing is done to the patient\u2019s immune system: the cells match the patient.', 3: 'Every stem cell has genes; here they are the patient\u2019s.' } },
+      { q: 'Which is a practical risk of using stem cells in medicine?', opts: [['Transfer of viral infection', true], ['The patient grows a new organ', false], ['The cells turn into plant cells', false], ['The cells can\u2019t divide', false]],
+        wrong_explanations: { 1: 'Stem cells repair or replace cells; they don\u2019t grow whole organs.', 2: 'Human stem cells make human cells.', 3: 'Stem cells can divide to make more cells.' } }
+    ];
+    return Object.assign({}, R, {
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video('stem-cells') : null,
+      hookOptions: [
+        { text: 'Yes', correct: false, reply: 'A plant can, but we can\u2019t. Most of our cells have already specialised and can\u2019t become other kinds.' },
+        { text: 'No', correct: true, reply: 'Our cells mostly specialise early. Only stem cells keep the ability to become other cells.' }
+      ],
+      onHook: (i) => this.setState({ hook: i }),
+      srcBtns: SRC.map((x, i) => ({ label: x.label, pressed: s.src === i, style: this.seg(s.src === i), onClick: () => this.setState({ src: i, seen: s.seen.indexOf(i) >= 0 ? s.seen : s.seen.concat([i]) }) })),
+      srcFig: ready ? K.fig(this.srcFig(S), '') : null,
+      srcRange: S.range, srcUse: S.use,
+      weighCards: WEIGH.map((f, i) => { const o = s.weigh.indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+        style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+        onClick: () => this.setState({ weigh: o ? s.weigh : s.weigh.concat([i]) }) }; }),
+      thinkOptions: [
+        { text: 'An embryo whose stem cells match the patient', correct: true, reply: 'The match is what stops rejection.' },
+        { text: 'A baby identical to the patient', correct: false, reply: 'No baby is made. Only stem cells from the early embryo are used.' },
+        { text: 'A new organ for the patient', correct: false, reply: 'Stem cells make specific types of cell, not whole organs.' }
+      ],
+      onThink: (i) => this.setState({ think: i }),
+      sortBins: [{ id: 'e', label: 'Embryonic' }, { id: 'a', label: 'Adult bone marrow' }, { id: 'm', label: 'Meristem' }],
+      sortItems: [
+        { text: 'Can become most types of human cell', bin: 'e', why: 'The widest range in humans.' },
+        { text: 'Taken from an early embryo', bin: 'e', why: 'About 5 days old.' },
+        { text: 'Raises ethical objections: an embryo is destroyed', bin: 'e', why: 'Some people object for this reason.' },
+        { text: 'Forms a limited range, including blood cells', bin: 'a', why: 'Bone marrow stem cells.' },
+        { text: 'Used in a transplant for leukaemia', bin: 'a', why: 'Replaces the blood-forming cells.' },
+        { text: 'At the tips of roots and shoots', bin: 'm', why: 'Plant meristems.' },
+        { text: 'Used to clone rare plants', bin: 'm', why: 'Quickly and cheaply.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: {
+        r1: [
+          { kind: 'mcq', command: 'State', marks: 1, prompt: 'State what is meant by a stem cell.', why: 'An undifferentiated cell that can divide to make more cells, and can differentiate into other types.', options: [
+            { text: 'An undifferentiated cell', correct: true }, { text: 'A fully specialised cell', correct: false, reply: 'Stem cells have not yet specialised.' }, { text: 'A cell with no nucleus', correct: false, reply: 'Stem cells have a nucleus.' }] },
+          { kind: 'mcq', command: 'Give', marks: 1, prompt: 'Give where meristem tissue is found in a plant.', why: 'At the tips of roots and shoots.', options: [
+            { text: 'In the leaves only', correct: false, reply: 'Meristems are at the growing tips.' }, { text: 'At the tips of roots and shoots', correct: true }, { text: 'In the xylem', correct: false, reply: 'Xylem carries water.' }] }
+        ],
+        r2: [
+          { kind: 'mcq', command: 'Compare', marks: 1, prompt: 'Compare the range of cells formed by embryonic and adult bone marrow stem cells.', why: 'Embryonic: most types of human cell. Bone marrow: a limited range, including blood cells.', options: [
+            { text: 'Embryonic form most types; bone marrow a limited range', correct: true }, { text: 'Both form exactly the same range', correct: false, reply: 'Embryonic stem cells form many more types.' },
+            { text: 'Bone marrow forms more types than embryonic', correct: false, reply: 'It is the other way round.' }, { text: 'Embryonic form only blood cells', correct: false, reply: 'Bone marrow forms blood cells; embryonic form most types.' }] },
+          { kind: 'mcq', command: 'Suggest', marks: 1, prompt: 'A rare orchid is close to extinction. Suggest how meristems could help.', why: 'Clone many identical plants quickly and cheaply from meristem tissue.', options: [
+            { text: 'Clone many identical plants from meristem tissue', correct: true }, { text: 'Inject embryonic stem cells into it', correct: false, reply: 'Human embryonic stem cells make human cells.' },
+            { text: 'Give it a bone marrow transplant', correct: false, reply: 'Plants have no bone marrow.' }, { text: 'Remove its meristems', correct: false, reply: 'The meristems are the useful part.' }] }
+        ],
+        r3: [
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why stem cells from therapeutic cloning are not rejected. Put the links in order.',
+            links: ['An embryo is produced with the same genes as the patient.', 'Stem cells from the embryo also have the patient\u2019s genes.', 'So the patient\u2019s body recognises them as its own and does not reject them.'],
+            herrings: [{ text: 'The stem cells come from a donor\u2019s bone marrow.', why: 'Donor cells could be rejected; these are from a cloned embryo.' }, { text: 'Stem cells have no genes.', why: 'They have the patient\u2019s genes.' }] },
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why meristems are used to produce large numbers of a crop plant. Put the links in order.',
+            links: ['Meristem cells can become any type of plant cell.', 'So a small piece of meristem tissue can grow into a whole new plant.', 'The new plants are identical, so a crop with a useful feature can be made quickly and cheaply in large numbers.'],
+            herrings: [{ text: 'Meristem cells can only make root cells.', why: 'They can become any type of plant cell.' }, { text: 'Each new plant is different from the parent.', why: 'They are clones: identical.' }] }
+        ],
+        r4: [
+          { kind: 'write', command: 'Evaluate', marks: 6, prompt: 'Evaluate the use of embryonic stem cells from therapeutic cloning to treat a patient with paralysis.',
+            levels: [
+              { label: 'Level 3 \u00b7 5\u20136', text: 'Benefits, risks and objections all explained, weighed, with a justified conclusion.', max: 6 },
+              { label: 'Level 2 \u00b7 3\u20134', text: 'Benefits and drawbacks explained, with some weighing.', max: 4 },
+              { label: 'Level 1 \u00b7 1\u20132', text: 'Simple points for or against.', max: 2 },
+              { label: 'No relevant content \u00b7 0', text: '', max: 0 }],
+            points: ['Embryonic stem cells can become most types of human cell, including nerve cells.', 'They may help conditions such as paralysis.', 'Therapeutic cloning gives an embryo with the patient\u2019s genes, so the cells are not rejected.', 'There are risks, such as transfer of viral infection.', 'Some people have ethical or religious objections, because an embryo is destroyed.', 'A judgement that weighs the benefit to the patient against the risks and objections.'],
+            reject: ['\u201cStem cells grow a whole new spinal cord.\u201d', '\u201cThe only problem is cost.\u201d'] }
+        ]
+      },
+      keyLines: ['A stem cell is an undifferentiated cell that can divide to make more cells, and can differentiate into other types of cell.', 'Embryonic stem cells can become most types of human cell. They may help conditions such as diabetes and paralysis.', 'Adult bone marrow stem cells form a limited range of cells, including blood cells.', 'Therapeutic cloning: an embryo with the patient\u2019s genes, so its stem cells are not rejected.', 'Risks include transfer of viral infection; some people have ethical or religious objections.', 'Meristems, at root and shoot tips, can become any plant cell throughout the plant\u2019s life: used to clone rare species and crops.'],
+      bank: ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.1.1.6-culturing-microorganisms.dc.html', label: 'Culturing microorganisms' }, endNext: { href: 'ks4-biology-4.2.1-principles-of-organisation.dc.html', label: 'Principles of organisation' },
+      endConnects: [{ href: 'ks4-biology-4.1.1.3-cell-specialisation.dc.html', label: 'Cell specialisation' }]
+    });
+  }
+}
+</script>
+</body>
+</html>
