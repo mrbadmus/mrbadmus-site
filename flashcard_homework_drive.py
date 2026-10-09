@@ -5,6 +5,8 @@ mode), on a PHONE, with the keyboard up.
 
     python3 flashcard_homework_drive.py            # everything, both phones
     python3 flashcard_homework_drive.py --shots D  # screenshots into D
+                                                   # (default: $MRB_SHOTS/flashcard-homework,
+                                                   #  outside the repo — MRB-346 rule 5)
 
 ⚑ WHAT THIS PROVES, AND WHAT IT DOES NOT.
 
@@ -1494,7 +1496,13 @@ def run_library(width, height, mobile, shots):
 # ══ ⊕ 8 Oct 2026 — FLASHCARDS, ROUND 3 ═════════════════════════════════════
 # Unit 1: Secured is greyed until the SUBMITTED answer is a real attempt.
 # Unit 2: the Mr Badmus nudge on Done when 3+ cards were shaky.
-R3_SHOTS = os.path.join(ROOT, "docs", "experience", "y-shots")
+# ⊕ 9 Oct 2026 — round 3 used to write its screenshots straight into
+# `docs/experience/y-shots/` on EVERY run (a module constant that ignored
+# `--shots`), so a gate run overwrote committed reference images and dirtied
+# the tree it was attesting. MRB-346 rule 5: a drive never writes into the
+# repo by default. Round 3 now writes where every other section of this drive
+# does — `--shots`, else `gate_tmp()/flashcard-homework`. To refresh the
+# committed set on purpose: `--round3 --shots docs/experience/y-shots`.
 CRUDE_Q = "Describe how crude oil is formed."
 CRUDE_A = "Plankton died, were buried under sediment and compressed via heat and pressure over millions of years"
 # a model-answer word for every card (a real attempt; the floor judges effort)
@@ -1535,7 +1543,8 @@ FIT_JS = r"""
 
 def run_round3(width, height, mobile, theme, shots):
     print("\n── round 3: %d×%d %s, %s ──" % (width, height, "phone" if mobile else "desktop", theme))
-    os.makedirs(R3_SHOTS, exist_ok=True)
+    if shots:
+        os.makedirs(shots, exist_ok=True)
     fake = (FAKE.replace('{id: "c0000000-0000-4000-8000-000000000005", position: 4, question: "Is velocity a scalar or a vector?", answer: "A vector"}',
                          '{id: "c0000000-0000-4000-8000-000000000005", position: 4, question: "%s", answer: "%s"}' % (CRUDE_Q, CRUDE_A)))
     assert CRUDE_A in fake
@@ -1543,8 +1552,10 @@ def run_round3(width, height, mobile, theme, shots):
     tag = "%dx%d-%s" % (width, height, theme)
 
     def snap(page, name):
+        if not shots:
+            return
         res = page.send("Page.captureScreenshot", {"format": "png", "fromSurface": True})
-        with open(os.path.join(R3_SHOTS, "r3-%s-%s.png" % (name, tag)), "wb") as fh:
+        with open(os.path.join(shots, "r3-%s-%s.png" % (name, tag)), "wb") as fh:
             fh.write(base64.b64decode(res["data"]))
 
     try:
