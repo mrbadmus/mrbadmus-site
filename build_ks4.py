@@ -242,7 +242,10 @@ KS4_VERSIONED = ("ks4-ds.css", "ks4-theme.css", "ks4-lesson.css",
                   # what its right-hand group needs (config.js for ?env=test,
                   # class-entry.js for who is looking, the bell).
                   "topbar.css", "topbar.js", "config.js", "class-entry.js",
-                  "student-bell.js")
+                  "student-bell.js",
+                  # ⊕ B2C polish (9 Oct 2026) — the tutor panel's own rules;
+                  # they lived only in styles.css, which these pages never load.
+                  "tutor-panel.css")
 
 # The subset of KS4_VERSIONED this script itself WRITES (excludes
 # mrbadmus.v2.js, which it only reads — that one is generate_site_v5.py's,
@@ -1996,6 +1999,7 @@ def render_page(lesson, route, compiled_lesson, block_scripts, prev_next, versio
 <link rel="stylesheet" href="/shared/ks4-theme.css">
 <link rel="stylesheet" href="/shared/ks4-lesson.css">
 %(batch_css)s<link rel="stylesheet" href="/shared/topbar.css">
+<link rel="stylesheet" href="/shared/tutor-panel.css">
 <style>html,body{margin:0;padding:0;background:#FBF3E6}@media screen{html[data-theme="dark"] body,html[data-theme="dark"]{background:#16120E}}</style>
 </head>
 <body>
