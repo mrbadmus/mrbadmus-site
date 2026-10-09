@@ -290,13 +290,89 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     ).join('') + '</' + list.kind + '>';
   }
 
+  /* ⊕ B2C polish round 3 (9 Oct 2026) — Markdown TABLES. A real reply drew
+     "| Substance | Formula |\n|---|---|\n| Carbon dioxide | CO₂ |" as raw
+     pipes, and once the model collapsed the whole table onto ONE line. The
+     allow-list has no table elements (Mide's ruling), so a table becomes
+     allowed markup instead:
+       · the |---|---| separator row is dropped (alignment colons allowed);
+       · the header row is ONE bold line, its cells joined by " — " (kept:
+         a header like "Metal | Reaction with water" is information the
+         rows alone do not carry);
+       · each body row is a <ul> item, its cells joined by " — ", with
+         **bold**, <sub> etc. inside a cell rendered as everywhere else.
+     A table is only ever a row line FOLLOWED BY a separator line with the
+     same number of cells, so a lone "|" in prose stays text. A one-line
+     table is split back into lines first (expandTables) and then drawn by
+     the same code. "\|" inside a cell is a literal pipe. */
+  const SEP_CELL = /^\s*:?-+:?\s*$/;
+  const SEP_RUN = /\|\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)+\|/;
+  function splitCells(s) {
+    // Split on unescaped pipes ("\|" is a literal pipe inside a cell).
+    return s.replace(/\\\|/g, '').split('|').map(c => c.replace(//g, '|').trim());
+  }
+  function rowCells(line) {
+    let s = line.trim();
+    if (s.indexOf('|') === -1) return null;
+    if (s.charAt(0) === '|') s = s.slice(1);
+    if (s.charAt(s.length - 1) === '|' && s.charAt(s.length - 2) !== '\\') s = s.slice(0, -1);
+    return splitCells(s);
+  }
+  function sepCount(line) {
+    if (line.indexOf('|') === -1 || line.indexOf('-') === -1) return 0;
+    const cells = rowCells(line);
+    return cells && cells.length >= 2 && cells.every(c => SEP_CELL.test(c)) ? cells.length : 0;
+  }
+  // One line holding a whole table ("| A | B | |---|---| | c | d | | e | f |")
+  // becomes the lines a normal table is written on. Anything before the
+  // header or after the last row stays as its own line of prose.
+  function expandTables(lines) {
+    const out = [];
+    for (const line of lines) {
+      const m = SEP_RUN.exec(line);
+      const before = m ? line.slice(0, m.index) : '';
+      const after = m ? line.slice(m.index + m[0].length) : '';
+      if (!m || (before.trim() === '' && after.trim() === '')) { out.push(line); continue; }
+      const n = splitCells(m[0].slice(1, -1)).length;
+      const pre = splitCells(before);
+      if (pre.length && pre[pre.length - 1] === '') pre.pop();
+      let lead = '', head = null;
+      if (pre.join('') !== '') {
+        if (pre.length < n) { out.push(line); continue; }        // no header: leave it
+        head = pre.slice(pre.length - n);
+        lead = pre.slice(0, pre.length - n).join('|').trim();
+      }
+      const toks = splitCells(after);
+      const trailer = toks.pop();
+      const rows = [];
+      let row = null;
+      for (const t of toks) {
+        if (!row) { if (t === '') continue; row = []; }          // the "| |" between rows
+        row.push(t);
+        if (row.length === n) { rows.push(row); row = null; }
+      }
+      let tail = trailer;
+      if (row) { if (trailer !== '') { row.push(trailer); tail = ''; } rows.push(row); }
+      const draw = cells => '| ' + cells.map(c => c.replace(/\|/g, '\\|')).join(' | ') + ' |';
+      if (lead) out.push(lead);
+      if (head) out.push(draw(head));
+      out.push('|' + Array(n).fill('---').join('|') + '|');
+      rows.forEach(r => out.push(draw(r)));
+      if (tail !== '') out.push(tail);
+    }
+    return out;
+  }
+  function renderCells(cells) {
+    return cells.filter(c => c !== '').map(inlineReply).join(' — ');
+  }
+
   function formatReply(text) {
     const tags = [];
     const lifted = String(text).replace(/[]/g, '').replace(ALLOWED_TAG, (m, close, name) => {
       tags.push({ close: !!close, name: name.toLowerCase() });
       return '' + (tags.length - 1) + '';
     });
-    const lines = esc(lifted).replace(/\r\n?/g, '\n').split('\n');
+    const lines = expandTables(esc(lifted).replace(/\uE002/g, '').replace(/\r\n?/g, '\n').split('\n'));
     const items = [];                       // {block:bool, html | quote | list}
     let quote = null, list = null;
     for (let i = 0; i < lines.length; i++) {
@@ -323,6 +399,23 @@ FULL BIOLOGY SPECIFICATION TOPICS:
           if (next && (next.kind === list.kind || next.indent >= list.indent + 2)) { i = j - 1; continue; }
         }
         list = null;
+      }
+      const head = li ? null : rowCells(raw);
+      const n = head && i + 1 < lines.length ? sepCount(lines[i + 1]) : 0;
+      if (n && n === head.length && !sepCount(raw)) {             // a table
+        quote = null;
+        let j = i + 2;
+        const rows = [];
+        for (; j < lines.length && lines[j].trim() !== '' && lines[j].indexOf('|') !== -1; j++) {
+          if (sepCount(lines[j])) continue;
+          const r = renderCells(rowCells(lines[j]));
+          if (r) rows.push('<li>' + r + '</li>');
+        }
+        const h = renderCells(head);
+        if (h) items.push({ block: false, html: '<strong>' + h + '</strong>' });
+        if (rows.length) items.push({ block: true, html: '<ul>' + rows.join('') + '</ul>' });
+        i = j - 1;
+        continue;
       }
       if (li) {
         quote = null;

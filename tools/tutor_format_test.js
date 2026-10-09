@@ -135,12 +135,45 @@ check("real reply: formulae + bullets",
       f('Hey! Great question to start with 🙌\n\n**Carbon dioxide:** CO₂\n\n**Sulfuric acid:** H₂SO₄\n\n---\n\n**Quick breakdown:**\n\n- CO₂ → 1 carbon + 2 oxygen atoms\n- H₂SO₄ → 2 hydrogen + 1 sulfur + 4 oxygen atoms\n\nWant me to walk you through it? 🔥'),
       'Hey! Great question to start with 🙌<br><br><strong>Carbon dioxide:</strong> CO₂<br><br><strong>Sulfuric acid:</strong> H₂SO₄<hr class="chat-rule"><strong>Quick breakdown:</strong><ul><li>CO₂ → 1 carbon + 2 oxygen atoms</li><li>H₂SO₄ → 2 hydrogen + 1 sulfur + 4 oxygen atoms</li></ul>Want me to walk you through it? 🔥');
 
+// ── Round 3 (9 Oct 2026): Markdown tables, drawn with allowed tags only ──
+// No table elements on the allow-list: the separator row goes, the header is
+// one bold line, each body row is a list item with its cells joined by " — ".
+const TBL = "<strong>Substance — Formula</strong><ul><li>Carbon dioxide — CO₂</li><li>Sulfuric acid — H₂SO₄</li></ul>";
+check("real reply: a Markdown table",
+      f("| Substance | Formula |\n|---|---|\n| Carbon dioxide | CO₂ |\n| Sulfuric acid | H₂SO₄ |"), TBL);
+check("real reply: **bold** inside a cell",
+      f("| Substance | Formula |\n|---|---|\n| Carbon dioxide | **CO₂** |\n| Sulfuric acid | H₂SO₄ |"),
+      "<strong>Substance — Formula</strong><ul><li>Carbon dioxide — <strong>CO₂</strong></li><li>Sulfuric acid — H₂SO₄</li></ul>");
+check("real reply: the whole table collapsed onto one line",
+      f("| Substance | Formula | |-----------|---------| | Carbon dioxide | CO₂ | | Sulfuric acid | H₂SO₄ |"), TBL);
+check("no outer pipes, alignment colons, three columns, prose round it",
+      f("Here:\n\nSubstance | Formula | State\n:---|:---:|---:\nWater | H₂O | liquid\n\nDone"),
+      "Here:<br><br><strong>Substance — Formula — State</strong><ul><li>Water — H₂O — liquid</li></ul>Done");
+check("one-line table with prose before and after, <sub> in a cell",
+      f("Here you go: | Substance | Formula | |---|---| | Carbon dioxide | CO<sub>2</sub> | | Water | H₂O | Hope that helps!"),
+      "Here you go:<br><strong>Substance — Formula</strong><ul><li>Carbon dioxide — CO<sub>2</sub></li><li>Water — H₂O</li></ul>Hope that helps!");
+check("header on its own line, separator and rows collapsed",
+      f("| Substance | Formula |\n|---|---| | Carbon dioxide | CO₂ | | Sulfuric acid | H₂SO₄ |"), TBL);
+check("a table ends at a line with no pipe", f("| a | b |\n|---|---|\n| c | d |\nAfter"),
+      "<strong>a — b</strong><ul><li>c — d</li></ul>After");
+check("an escaped pipe is a literal pipe in a cell", f("| a \\| b | c |\n|---|---|\n| x | y |"),
+      "<strong>a | b — c</strong><ul><li>x — y</li></ul>");
+check("an empty cell is skipped, not a dangling dash", f("| Ion | Charge |\n|---|---|\n| Na | +1 |\n| Cl |  |"),
+      "<strong>Ion — Charge</strong><ul><li>Na — +1</li><li>Cl</li></ul>");
+check("a lone | in prose is not a table", f("Use |x| for size, and a | b here"), "Use |x| for size, and a | b here");
+check("pipe lines with no separator are not a table", f("a | b\nc | d"), "a | b<br>c | d");
+check("a separator with a different column count is not a table", f("| a | b | c |\n|---|---|\n| x | y |"),
+      "| a | b | c |<br>|---|---|<br>| x | y |");
+check("a --- rule is still a rule, not a separator", f("a | b\n---\nc"), 'a | b<hr class="chat-rule">c');
+check("script and attributes in a cell are text", f("| Metal | Note |\n|---|---|\n| <script>x</script> | <b onclick=1>y</b> |"),
+      "<strong>Metal — Note</strong><ul><li>&lt;script&gt;x&lt;/script&gt; — &lt;b onclick=1&gt;y</li></ul>");
+
 // No reply, however hostile, may produce an attribute or a tag outside the list
 // other than the ones formatReply writes itself.
 const OWN = /^<(\/?(sub|sup|b|strong|em|i|br|p|ul|ol|li|code|blockquote)|hr class="chat-rule"|blockquote class="chat-quote"|ol start="\d+")>$/;
 const hostile = ["<script>", "<img src=x onerror=1>", "<svg/onload=1>", "<sub onclick=1>", "<b style=x>",
   "<a href=javascript:1>", "<<b>script>", "<p\tonclick=1>", "<li/onclick=1>", "<ol start=1>", "<iframe srcdoc=x>",
-  "</textarea><script>", "<!--", "<![CDATA[", "<math><mi>", "\"><script>", "`<b>`", "<br onmouseover=1>"];
+  "</textarea><script>", "<!--", "| <b> | x |\n|---|---|", "|---|---| | <i onclick=1> |", "<![CDATA[", "<math><mi>", "\"><script>", "`<b>`", "<br onmouseover=1>"];
 let fuzzBad = 0;
 for (let n = 0; n < 2000; n++) {
   let s = "";
