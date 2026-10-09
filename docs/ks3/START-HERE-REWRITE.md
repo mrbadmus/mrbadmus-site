@@ -17,7 +17,7 @@ a friendly reply to each option that leads into the teaching.
 | How it renders | `r_hook()` in `build_ks3.py` (the `"hook"` block renderer): `#s-hook`, ink-dark, `data-activity="hook"`. Options come from `r_activity_options()` (`ks3_art/kit.py`) as lettered `.ks3-option` buttons, and one shared `.ks3-reveal` opens on any pick (`wirePredictions` in `shared/ks3.js`). No unit module overrides the hook. |
 | Which build | `build_ks3.py` (step 2 of `build_all.py`), mirrored to `ks3/` and `mrbadmus_site/ks3/`. |
 | Which gates watch it | `verify_ks3` (a hook exists, `#s-hook` resolves, the rail), `ks3_parity` (style rows on the hook, and the c1-06 keyed-commit rows), `answer_lengths` (hook options when an `answer` index exists), `ks3_rail_manifest`. |
-| Frozen content? | **No.** `frozen_window_guard` reads only the KS4 question bank's frozen window; no KS3 opener text is frozen. It stayed green. |
+| Frozen content? | **No.** `frozen_window_guard` reads the KS4 and KS3 question banks' frozen windows (positions 0–11); no opener text is in either. It stayed green. *(Corrected 9 Oct: this line first said it read only KS4.)* |
 | Lessons | **185** live (authored) KS3 lessons: 184 opened on four options, 1 (`life-processes`) on three. **None** had a two-option guess, so none was left alone. |
 
 ### The route taken
@@ -516,3 +516,69 @@ changed. The first group are science errors on live pages.
   185/185. Every KS3 page compared with main: 370 lesson pages differ only in
   `#s-hook` and the big question; 96 index pages only in big questions; every
   other page byte-identical.
+
+## Science fixes, 9 Oct
+
+Mide lifted the opener-only rule for the science errors this report listed.
+Each fix changes the least text that makes it right, in the lesson's voice.
+An Opus reviewer checked every change against the KS3 programme of study and
+the AQA content each lesson leads into; its three corrections are applied
+(marked ✎).
+
+| Lesson | What it said | What it says now | Why |
+|---|---|---|---|
+| group-1-the-alkali-metals (explainer) | They are all soft, all light enough to float on water, and all far too reactive… | They are all soft, the top three are light enough to float on water, and all are far too reactive… | Lithium (0.53), sodium (0.97) and potassium (0.86 g/cm³) float; rubidium (≈1.5) and caesium (≈1.9) sink. |
+| group-1-the-alkali-metals (ladder, produce success criterion) | Says it would float, because all the group 1 metals do. | Says it would sink, not float: unlike lithium, sodium and potassium, caesium is denser than water. | Caesium sinks. (Reviewer noted no density *trend* leads there; kept as a stated fact, since that is the fact Mide asked to be taught.) |
+| groups-and-periods (rail label, shown above the H1) | Next door and two rows down | Next door and one row down | Sodium is period 3, potassium period 4: directly below. |
+| groups-and-periods (think reveal) | …compare sodium with potassium, two rows down the same column | …compare sodium with potassium, one row down the same column | As above. |
+| charging-by-rubbing (think block) | Every electron that ends up on the duster was on the rod a moment earlier | Every electron that ends up on the rod was on the duster a moment earlier | This lesson's polythene rod ends up negative: electrons go from the woollen duster to the rod (as its own hook reveal says). |
+| energy-and-changes-of-state (think, correct option) | Wrong — it is absorbing more energy than at any other point, and using it to separate particles | Wrong — it is still absorbing energy, just as fast as before, and using it to separate particles | A steady flame delivers energy at a steady rate; the plateau is a large *total*, not a faster rate. |
+| energy-and-changes-of-state (think reveal) | It is absorbing heat faster than at any other point… takes several times more energy than warming the same water by a single degree… the most energy-hungry part of the whole run. | It is absorbing heat just as fast as at any other point… takes about eighty times more energy… the most energy-hungry part of the run so far. ✎ | 334 kJ/kg ÷ 4.2 kJ/kg °C ≈ 80. Boiling (≈7× melting) is hungrier still, as the lesson's own curve says. |
+| heating-and-thermal-equilibrium (hook scene) | …a bath at 40 °C… will make you flinch and can genuinely injure a small child. | …a bath at 40 °C… will make you flinch. | 40 °C is a normal bath; the lesson's own MRB-297 note says scalding needs ≈50 °C+. |
+| unicellular-organisms (big question) | One is a whole animal. | One is a whole organism. | A Paramecium is a single-celled protist. |
+| chromosomes-genes-and-dna (hook scene) | Every cell in your body is doing this, right now. | Almost every cell in your body is doing this, right now. | Red blood cells have no nucleus (the lesson's own bench card says so). |
+| acids-and-alkalis (big question) | One will strip the skin off your hand and the other is safe to drink | One is an acid and the other an alkali, and both can burn your skin | Hydrochloric acid and sodium hydroxide are both dangerous; the scene says so. |
+| atmospheric-pressure (search snippet) | …and it crushes itself flat with nothing near it. | …and in about a second it is crushed flat. ✎ | The outside air crushes it. (The page's own title and big question saying the same were already replaced by the opener.) |
+| the-gas-exchange-system (rule panel) | Six parts, and only the last one exchanges anything. | Six parts, and only one of them exchanges anything. | The sixth card is the ribs and muscles; the exchanger, the alveoli, is fifth. |
+
+**Quiz items fixed** (question bank, served from the database; loaded row by row, TEST
+first, then production):
+
+| Item | What it said | What it says now | Why |
+|---|---|---|---|
+| c8-04-h10 (group 1, position 73) | Predictions about caesium: that it will float, or react more violently. Keyed answer: "Floating, because every member already does it". | Predictions: that it will make an alkaline solution, or react more violently. Keyed: "The alkaline solution, because every member makes one". | Caesium does not float; making an alkaline solution is genuinely shared by every member, so the item's point survives. |
+| c8-04-s06 (group 1, position 16), a "why" | Density does rise down the group, and lithium, sodium and potassium all float. ✎ | Potassium is less dense than sodium, so there is no steady density trend to extend. | Na 0.97 > K 0.86: no steady trend. |
+| p9-01-s29 (charging by rubbing, position 75), a "why" | Cotton is above acetate but below PVC… | Cotton is below acetate but above PVC… | The lesson's list: hair, glass, acetate, wool, cotton, polythene, PVC. |
+
+**Left, and why**
+
+- **c7-01-e02** (energy-and-changes-of-state quiz, a "why"): "it is taking in more than at
+  any other point in the run" — the same rate error. It sits in the frozen window
+  (bank position 0–11), so `frozen_window_guard` refused it. Left as the brief says;
+  suggested: "It can, and it is taking in heat just as fast as before. That energy is
+  melting the ice."
+- **refraction**: "slows down when it enters a denser transparent material" — arguable,
+  not wrong: the vocabulary defines optical density.
+- **p9-02-s26** (forces between charges quiz): touching one of two repelling spheres
+  earths it *while the other is near*, so it is left oppositely charged (induction), not
+  neutral; the keyed answer (they attract) is right but its "why" says it "loses its
+  charge". Arguable at KS3; suggested why: "…it is earthed while the other charge is
+  still near, so it is left with the opposite charge."
+- **c8-04-s06** distractor "It sinks in water, because the group 1 metals get denser
+  going down": rubidium does sink, for a different reason; the option is wrong by its
+  reasoning, and its "why" now says so.
+- **c8-04-h32**: "A member of the group failing to float" is offered as if every member
+  floats; its "why" still holds.
+- **b10 questions (Dolly the sheep item)**: "Every body cell has the same 46 chromosomes":
+  sheep have 54, and red blood cells have none. A related error outside this brief.
+- Text the opener already replaces on the page and pupils never see (it returns only if
+  an opener entry is removed): groups-and-periods big question and old title ("two
+  rows"); heating-and-thermal-equilibrium big question and old commit ("can injure a
+  small child… why does the cooler one do more damage?"); atmospheric-pressure big
+  question and old title ("nothing goes anywhere near it", "Nothing touched the can").
+
+**Repeat sweeps** (alkali-metal density; electron or proton direction in static): every
+KS3 lesson, art module and question bank was searched. Beyond the rows above, no other
+claim that all group 1 metals float, and no other backwards electron direction, was
+found (P4's balloon-and-jumper and every P9 rung and item were read and are right).
+

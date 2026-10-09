@@ -527,7 +527,7 @@ LESSON = {
          "options": [
              "Right — 0 °C is the most energy ice can hold, so it stops "
              "taking any in",
-             "Wrong — it is absorbing more energy than at any other point, "
+             "Wrong — it is still absorbing energy, just as fast as before, "
              "and using it to separate particles",
              "Right, because 0 °C is as cold as water can get, so the reading "
              "cannot move further",
@@ -535,11 +535,11 @@ LESSON = {
              "beaker",
          ],
          "reveal": [
-             "It is absorbing heat faster than at any other point in the "
-             "experiment. Melting a beaker of ice takes several times more "
+             "It is absorbing heat just as fast as at any other point in the "
+             "experiment. Melting a beaker of ice takes about eighty times more "
              "energy than warming the same water by a single degree — the "
              "flat step is not a pause, it is the most energy-hungry part of "
-             "the whole run.",
+             "the run so far.",
              "The confusion comes from treating the thermometer as an energy "
              "meter. It is not. <strong>" + TEMPERATURE_SENTENCE + " During "
              "melting, that average is not rising — the particles are being "

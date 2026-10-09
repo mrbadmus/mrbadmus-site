@@ -208,9 +208,9 @@ LESSON = {
 
         {"type": "explainer",
          "text": "Group 1 is the first column: lithium, sodium, potassium and "
-                 "three more below them. They are all soft, all light enough "
-                 "to float on water, and all far too reactive to exist as the "
-                 "metal anywhere in nature."},
+                 "three more below them. They are all soft, the top three are "
+                 "light enough to float on water, and all are far too reactive "
+                 "to exist as the metal anywhere in nature."},
         {"type": "explainer",
          "text": "They are called the <strong>alkali metals</strong> because "
                  "of what they leave behind. Drop one into water and it makes "
@@ -419,7 +419,8 @@ LESSON = {
             "field_label": "Your answer",
             "placeholder": "I would expect caesium to…",
             "success": [
-                "Says it would float, because all the group 1 metals do.",
+                "Says it would sink, not float: unlike lithium, sodium and "
+                "potassium, caesium is denser than water.",
                 "Says the reaction would be more violent than potassium's.",
                 "Says the hydrogen would ignite, or the reaction would be "
                 "explosive.",

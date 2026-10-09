@@ -465,9 +465,9 @@ QUESTIONS = [
                      "denser going down and rubidium is heavy enough to go "
                      "under",
              "correct": False,
-             "why": "Density does rise down the group, and lithium, sodium "
-                    "and potassium all float. Reactivity is the trend this "
-                    "lesson establishes"},
+             "why": "Potassium is less dense than sodium, so there is no "
+                    "steady density trend to extend. Reactivity is the trend "
+                    "this lesson establishes"},
             {"text": "It reacts less violently with water than potassium does, "
                      "being lower down",
              "correct": False,
@@ -1758,11 +1758,12 @@ QUESTIONS = [
     {
         "id": "c8-04-h10",
         "band": "harder",
-        "text": "Two predictions are made about caesium: that it will float "
-                "on water, and that its reaction will be more violent than "
-                "potassium's. Which of the two is the safer prediction?",
+        "text": "Two predictions are made about caesium: that it will make "
+                "an alkaline solution, and that its reaction will be more "
+                "violent than potassium's. Which of the two is the safer "
+                "prediction?",
         "options": [
-            {"text": "Floating, because every member already does it",
+            {"text": "The alkaline solution, because every member makes one",
              "correct": True},
             {"text": "The violence, because a trend is always stronger "
                      "evidence than a shared property",

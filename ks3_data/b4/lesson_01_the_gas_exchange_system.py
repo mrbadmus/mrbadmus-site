@@ -475,7 +475,7 @@ LESSON = {
         # border — Design's markup (page lines 172–189) minus the number chips.
         {"type": "rule", "anchor": "s-parts",
          "eyebrow": "The route in",
-         "statement": "Six parts, and only the last one exchanges anything.",
+         "statement": "Six parts, and only one of them exchanges anything.",
          "cards": ROUTE_CARDS},
 
         # Design nests this inside `#s-parts`; `r_rule` has no nested slot, so

@@ -207,8 +207,8 @@ LESSON = {
     "ks4_links":   [],
 
     # ── framing ─────────────────────────────────────────────────────────────
-    "big_question": "Two clear, colourless liquids. One will strip the skin "
-                    "off your hand and the other is safe to drink — and "
+    "big_question": "Two clear, colourless liquids. One is an acid and the "
+                    "other an alkali, and both can burn your skin — and "
                     "nothing you can see tells you which is which.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
