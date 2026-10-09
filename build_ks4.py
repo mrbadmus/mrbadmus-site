@@ -1544,13 +1544,18 @@ def compile_lesson(page, lesson, report):
     logic = ks4_science_rulings.apply("logic", lesson["slug"], logic)
     ks4_science_rulings.expect_present("logic", lesson["slug"], logic)
 
+    # ⊕ R18 (rule 1) — the two-option "Start here" guess. AFTER the science
+    # rulings: several of them correct old-opener text, and must still fire.
+    tpl, logic, r18_fired = ks4_rulings.apply_r18_start_here(
+        lesson["slug"], lesson["design_file"], tpl, logic)
+
     template = compile_template_text(page, tpl)
 
     block_map = lesson.get("block_map", {})
     classified = classify_lesson_sections(template, lesson["slug"], block_map)
 
     report.append(dict(slug=lesson["slug"], slug_renamed=slug_renamed,
-                        r9_fired=r9_fired,
+                        r9_fired=r9_fired, r18_fired=r18_fired,
                         has_prev=bool(n_prev), has_next=bool(n_next),
                         connects=connects_targets, draft_tip=draft_tip,
                         sections=classified))
@@ -2226,6 +2231,8 @@ def build_pilot(freeze=False):
             print("     R-SLUG fired: %s" % row["slug"])
         if row["r9_fired"]:
             print("     R9 fired: %s" % row["slug"])
+        if row.get("r18_fired"):
+            print("     R18 fired: %s" % row["slug"])
 
     # ── rung-1 fallback check (examiner finding) ───────────────────────
     fallback_warnings = 0
