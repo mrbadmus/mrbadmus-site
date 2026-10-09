@@ -654,6 +654,11 @@
     function currentUnitFrom(today, names) {
       var pool = (today && today.items || []).concat(today && today.later || []);
       for (var i = 0; i < pool.length; i++) {
+        /* ⊕ B2C fix run (9 Oct 2026): a lesson's title is now its own name
+           ("Diffusion"), so the unit rides beside it as `unit`. Asked first;
+           the title halves stay for a backend that does not send it. */
+        var u = String(pool[i].unit || '').toLowerCase();
+        if (u && names[u]) { return names[u]; }
         var t = String(pool[i].title || '');
         var at = t.indexOf(':');
         if (at < 0) { continue; }
