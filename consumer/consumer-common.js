@@ -772,6 +772,44 @@
     return sign + '£' + Math.floor(n / 100) + '.' + (n % 100 < 10 ? '0' : '') + (n % 100);
   }
 
+  /* ⊕ B2C polish (9 Oct 2026, Mide: "signup resumes … keeping the child's
+     topic choice"). Where a child's plan stands, in words a parent reads,
+     from GET /family's `children[].position`:
+       labels  { "Biology": "Photosynthesis: lesson 1", … } — the lesson each
+               subject's cursor is on, i.e. the next one to be set (before
+               any week is set, the starting point the parent chose);
+       cursors { "Biology": 12, … } — scheme weeks. NEVER shown. Used only
+               to tell a real label from labelsFor()'s "Finished the year"
+               fallback for a child with no plan at all (no cursors → every
+               subject would read "Finished the year");
+       lead    the subject a parent's "where are they up to?" answer moved,
+               when the backend sends it (optional — without it every
+               subject is listed and the parent's topic is among them).
+     Returns [{ subject, place, lead, finished }] with the lead first and
+     the rest in the backend's order (the scheme's subject order).
+     "Photosynthesis: lesson 1" reads "Photosynthesis"; a later lesson keeps
+     its number ("Cells, lesson 3"). */
+  function positionPlaces(pos) {
+    var labels = (pos && pos.labels) || {};
+    var cursors = (pos && pos.cursors) || {};
+    var subs = Object.keys(labels).filter(function (s) {
+      return typeof labels[s] === 'string' && labels[s] && cursors[s] != null;
+    });
+    var lead = (pos && typeof pos.lead === 'string' && subs.indexOf(pos.lead) !== -1) ? pos.lead : null;
+    if (lead) { subs = [lead].concat(subs.filter(function (s) { return s !== lead; })); }
+    return subs.map(function (s) {
+      var label = labels[s];
+      var m = /^(.*): lesson (\d+)$/.exec(label);
+      var finished = label === 'Finished the year';
+      return {
+        subject: s,
+        place: finished ? 'finished the year' : (m ? (m[2] === '1' ? m[1] : m[1] + ', lesson ' + m[2]) : label),
+        lead: s === lead,
+        finished: finished
+      };
+    });
+  }
+
   /* A mark-scheme point, whatever shape it arrived in.
 
      ⊕ FOUND BY DRIVING IT, 2 Sep 2026. The contract says `scheme: [strings]`,
@@ -1318,6 +1356,7 @@
     whenLabel: whenLabel,
     msgWhen: msgWhen,
     money: money,
+    positionPlaces: positionPlaces,
     guard: guard,
     lockedBanner: lockedBanner,
     applyWritable: applyWritable,

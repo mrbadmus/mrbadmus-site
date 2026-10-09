@@ -1448,7 +1448,7 @@
   function viewChildren() {
     var rows = S.children.map(function (c, i) {
       return { initial: (c.name || '?').charAt(0).toUpperCase(), name: c.name,
-               meta: c.meta, idx: i, pending: false };
+               meta: c.meta, starts: c.startsFrom || '', idx: i, pending: false };
     }).concat(S.pending.map(function (c, i) {
       return { initial: (c.name || '?').charAt(0).toUpperCase(), name: c.name,
                meta: pendingMeta(c), idx: i, pending: true };
@@ -1483,7 +1483,13 @@
           '<span style="flex:1;min-width:0">' +
           '<span style="display:block;font-family:var(--ks3-font-display);font-weight:800;font-size:20px;' +
           'letter-spacing:-.02em">' + esc(r.name) + '</span>' +
-          '<span style="display:block;font-size:14px;color:var(--ks3-ink-muted)">' + esc(r.meta) + '</span></span>' +
+          '<span style="display:block;font-size:14px;color:var(--ks3-ink-muted)">' + esc(r.meta) + '</span>' +
+          /* ⊕ B2C polish (9 Oct 2026, Mide's rule): the topic the parent
+             chose, from the SERVER (GET /family `position`), so it is here
+             on a fresh device too — see startsFrom(). */
+          (r.starts ? '<span class="su-starts" style="display:block;margin-top:2px;font-size:14px;' +
+            'font-weight:600;color:var(--ks3-ink-body);overflow-wrap:anywhere">' + esc(r.starts) + '</span>' : '') +
+          '</span>' +
           /* Signed in, and a held child is still here: it could not be
              created as typed (its username was taken in the meantime). */
           (r.pending ? (S.verified
@@ -1753,6 +1759,22 @@
     render();
   });
 
+  /* ⊕ B2C polish (9 Oct 2026, Mide: "signup resumes after a mid-signup
+     sign-in, keeping the child's topic choice"). A blind run picked "Start
+     Ada from Photosynthesis", closed the browser, signed in on a fresh
+     device, and the topic was shown nowhere. The family list now says where
+     each child starts, from GET /family's `position` (C.positionPlaces —
+     unit names only, never cursors): "Starts from Photosynthesis" when the
+     backend names the subject the answer moved (`position.lead`), else
+     every subject's starting point, the chosen topic among them. A subject
+     that has finished its year is left out — it starts nowhere. */
+  function startsFrom(pos) {
+    var places = C.positionPlaces(pos).filter(function (p) { return !p.finished; });
+    if (!places.length) { return ''; }
+    if (places[0].lead) { return 'Starts from ' + places[0].place; }
+    return 'Starts from: ' + places.map(function (p) { return p.subject + ' — ' + p.place; }).join(' · ');
+  }
+
   /* Everything but `pending` — see addPending(). */
   function saveDraft() {
     var d = readDraft();
@@ -1787,6 +1809,7 @@
              up to?" answer has been given; null when it does not say (see
              RESUMING A SIGNUP). */
           topicChosen: (c.position && typeof c.position.chosen === 'boolean') ? c.position.chosen : null,
+          startsFrom: startsFrom(c.position),
           board: isKs4 ? board : null,
           routeLabel: route,
           tierLabel: tierLabel,

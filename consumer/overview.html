@@ -1507,7 +1507,12 @@
           '<h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:32px;' +
             'line-height:1;letter-spacing:-.035em">' + esc(k.first_name) + '</h1>' +
           '<p style="margin:4px 0 0;font-size:14px;color:var(--ks3-ink-muted)">' +
-            esc(metaLine(k)) + '</p></div>' +
+            esc(metaLine(k)) + '</p>' +
+          /* ⊕ B2C polish (9 Oct 2026, Mide: the child's topic choice is
+             kept). Where the plan stands — see nextUpLine(). */
+          (nextUpLine(k) ? '<p class="dk-nextup" style="margin:4px 0 0;font-size:14px;font-weight:600;' +
+            'color:var(--ks3-ink-body);overflow-wrap:anywhere">' + esc(nextUpLine(k)) + '</p>' : '') +
+          '</div>' +
         '<button data-act="open-manage" style="min-height:40px;padding:0 12px;' +
           'border:2px solid var(--ks3-rule-strong);border-radius:10px;background:var(--ks3-band);' +
           'font-weight:700;font-size:14px;color:var(--ks3-ink);cursor:pointer">Edit</button></div>' +
@@ -1515,6 +1520,22 @@
       '<div id="dk-msg"></div>' +
       '<div class="dk-cols" style="margin-top:22px"><div>' + doing + better + nudge + '</div>' +
       '<div>' + work + links + '</div></div>';
+  }
+
+  /* ⊕ B2C polish (9 Oct 2026, Mide: "signup resumes …, keeping the
+     child's topic choice"). A blind run chose "Start Ada from
+     Photosynthesis" and the choice was shown nowhere on the dashboard. This
+     is the one line that says where each subject's plan stands: the lesson
+     each subject is on — the next to be set, which before any week is set
+     is the starting point the parent chose. From GET /family `position`
+     via C.positionPlaces (unit names, never cursors); the subject the
+     parent's answer moved comes first when the backend names it. */
+  function nextUpLine(k) {
+    var places = C.positionPlaces(k && k.position);
+    if (!places.length) { return ''; }
+    return 'Next up: ' + places.map(function (p) {
+      return p.subject + ' — ' + p.place;
+    }).join(' · ');
   }
 
   function intensityLabel(k) {
@@ -2310,39 +2331,41 @@
     });
 
     /* ⊕ B2C polish (9 Oct 2026). A parent who is MIDWAY through signup
-       belongs in signup, at the step they left — not here. A blind run
-       signed in again mid-signup, landed on "No children yet / Add a
-       child", and the child's "Where is … up to?" answer was never asked
-       for again. Any door that ends here (parents sign-in, verify.html's
-       fallbacks, a bookmark, a fresh device) now goes on to signup.html with
-       no step named, and signup works the step out (signup.html, RESUMING A
-       SIGNUP). `replace`, so Back cannot bounce between the two.
-       Midway = never through Stripe (`state: 'none'`, which the backend
-       answers only after asking Stripe itself), allowed to check out, not
-       an organisation, no deletion pending — AND one of: no child yet; a
-       child whose topic answer the server says is still owed (and was not
-       skipped on this device); or this device's signup draft holding a
-       child, a question or a step. A family whose children are all set up
-       stays here pre-trial (MRB-309: a parent who has not checked out still
-       reaches their dashboard); its "Start your free week" goes to the plan
-       step, where Monthly and Annual are both shown (gateHtml). */
-    function signupDraft() {
-      try { return JSON.parse(localStorage.getItem('mrb.consumer.signup') || 'null') || {}; }
-      catch (e) { return {}; }
-    }
+       belongs in signup, at the step they left — not here. Any door that
+       ends here (parents sign-in, auth.html, verify.html's fallbacks, a
+       bookmark, a fresh device) goes on to signup.html with no step named,
+       and signup works the step out from the SERVER (signup.html, RESUMING
+       A SIGNUP): a topic answer still owed → "Where is … up to?"; otherwise
+       the family list ("Ada is set up", each child's starting topic,
+       "Choose a plan") → the plan step with Monthly and Annual.
+       `replace`, so Back cannot bounce between the two.
+
+       ⊕ Mide's rule, 9 Oct 2026: "Signup resumes after a mid-signup
+       sign-in, keeping the child's topic choice." Midway is now EVERY family
+       that has never started a subscription. It used to be only a family
+       with no child, an owed topic answer or a signup draft on this device,
+       and a family whose children were all set up stayed here pre-trial
+       (citing MRB-309, "an unpaid parent still reaches their dashboard").
+       A blind run picked "Start Ada from Photosynthesis", closed the
+       browser before the plan step, signed in on a fresh device and landed
+       here on "Your family hasn't started yet" — not back in signup, the
+       topic shown nowhere. The rule supersedes MRB-309 for this landing.
+
+       Never started = `state: 'none'` (the backend answers it only after
+       asking Stripe itself) and allowed to check out, with no trace of a
+       past subscription — `trial_end` and `canceled_at` are mirrored from
+       Stripe and only a subscription ever wrote them, so an ex-subscriber
+       whose Stripe status maps to 'none' is not sent through signup again.
+       Not an organisation (sales-led, never self-serve) and no deletion
+       pending (that family's dashboard carries the Undo). Locked and
+       cancelled families are ex-subscribers and stay here (Restart). */
     function signupMidway() {
-      var st = String(S.billing.state || '').toLowerCase();
-      if (st !== 'none' || S.billing.can_checkout === false) { return false; }
+      var b = S.billing || {};
+      var st = String(b.state || '').toLowerCase();
+      if (st !== 'none' || b.can_checkout === false) { return false; }
+      if (b.trial_end || b.canceled_at) { return false; }
       if ((S.fam && S.fam.kind === 'organisation') || S.deletion) { return false; }
-      if (!S.kids.length) { return true; }
-      var d = signupDraft();
-      var skipped = d.skipped || [];
-      var ids = S.kids.map(function (k) { return String(k.id); });
-      var owed = S.kids.some(function (k) {
-        return k.position && k.position.chosen === false && skipped.indexOf(k.id) === -1;
-      });
-      var asked = (d.ask || []).some(function (a) { return a && ids.indexOf(String(a.child_id)) !== -1; });
-      return owed || asked || !!(d.pending && d.pending.length) || !!d.step;
+      return true;
     }
     function toSignup() { window.location.replace(C.href('/consumer/signup.html')); }
 
