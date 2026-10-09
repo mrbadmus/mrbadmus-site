@@ -4116,6 +4116,285 @@ START_HERE = {
         big_question="Over many generations, a whole species can change its "
                      "shape. What actually makes that happen?",
     ),
+
+    # when-the-environment-changes-extinction: old hook cut to two everyday
+    # survival traits (big and strong vs breeding fast and eating anything).
+    # Bridge now ties back to the dormice in the scene instead of repeating the
+    # wrong reply. Title, scene and big question kept.
+    "when-the-environment-changes-extinction": dict(
+        question="If you had to guess, what helps an animal most when its home"
+                 " changes?",
+        options=[
+            ("Breeding fast, eating anything",
+             "A fast breeder gets many chances to produce young that suit the "
+             "new home, and an unfussy eater can use whatever food is left."),
+            ("Being big, strong and fierce",
+             "Big and strong helps in a fight, but a change to the home is not"
+             " a fight. Slow breeders with fussy diets can run out of options."),
+        ],
+        answer=0,
+        bridge="A dormouse has one small litter a year and eats only a few "
+               "foods, which is why it did not come back. Next: try four "
+               "species against five kinds of change.",
+    ),
+
+    # biodiversity-and-gene-banks: why can one disease wipe out a field of
+    # clones? Each clone is weak (the property-of-the-plant error the lesson
+    # names) vs they all share one weak spot. Angle changed from the draft's
+    # yes/no, which the new scene ("a huge field of identical plants") made
+    # obvious to a Year 9. Scene changed: it already said the Gros Michel was
+    # wiped out and the same fungus is moving through the Cavendish; that history
+    # now sits in the bridge. Title and big question kept.
+    "biodiversity-and-gene-banks": dict(
+        scene="A clone is an exact genetic copy. Cavendish bananas are grown "
+              "from cuttings, never from seed, so a plantation is a huge field"
+              " of identical plants.",
+        question="If you had to guess, why could one disease wipe out a whole "
+                 "field of these bananas?",
+        options=[
+            ("Each clone is a weak plant",
+             "A Cavendish plant is as healthy as any other banana. The danger "
+             "is that every plant is the same, so whatever kills one can kill "
+             "them all."),
+            ("They all share one weak spot",
+             "Every plant is the same plant, so whatever can kill one can kill"
+             " all of them. There is no different plant left that happens to "
+             "resist."),
+        ],
+        answer=1,
+        bridge="The Gros Michel, the banana before the Cavendish, was lost "
+               "this way, and a fungus is now attacking the Cavendish. Next: "
+               "plant four fields, from identical to mixed, and release a "
+               "blight.",
+    ),
+
+
+    # ── Year 9 · C7 Energy changes in reactions ─────────────────────────────────
+
+    # energy-and-changes-of-state: which takes more heat, melting the ice or
+    # warming the melted water by ten degrees? Melting (about 334 kJ against
+    # about 42 kJ per kg), so the answer is safe. It does not open a new later
+    # prediction: the scene already says energy goes in at the same rate, and the
+    # old reveal already said melting takes "a great deal" of energy. Bridge
+    # changed: "Next: step through a heating curve" was not what comes next (two
+    # explainer paragraphs come first), and "-20 °C" used a hyphen. Title, scene
+    # and big question kept: none says where the energy goes.
+    "energy-and-changes-of-state": dict(
+        question="If you had to guess, which takes more heat: melting a lump "
+                 "of ice, or then warming the melted water by ten degrees?",
+        options=[
+            ("Warming the water",
+             "Warming feels like where the heat goes, because that is what the"
+             " thermometer shows. But melting takes far more, and the "
+             "thermometer does not show it."),
+            ("Melting the ice",
+             "Melting takes far more heat. The flame has to pull the ice's "
+             "particles out of their fixed places, and that eats up the energy"
+             " while the temperature sits still."),
+        ],
+        answer=1,
+        bridge="So the four still minutes are not a pause: the energy is going"
+               " somewhere a thermometer cannot see. Every change of state "
+               "works this way, in one direction or the other.",
+    ),
+
+    # exothermic-reactions: old hook cut to "your body heat vs the pouch itself";
+    # the pouch reaching 50 °C, hotter than a body, is the reasoning the reply
+    # uses. Scene changed: "nothing added from outside" rules out the pocket
+    # answer. Title kept ("in a pocket, on a cold day" is the tempting clue).
+    # big_question changed: the old one points at the answer and pre-answers the
+    # later spark prediction. The draft's replacement called the hand warmer a
+    # chemical change, which the lesson's own bench says it is not. Bridge:
+    # dropped "Next: run five beakers" because two explainer paragraphs come
+    # first.
+    "exothermic-reactions": dict(
+        scene="No battery, no flame, nothing plugged in. The pouch was at the "
+              "same temperature as the room a moment before. It stays hot for "
+              "about an hour, then goes cold, and it can be reset by boiling "
+              "it.",
+        question="If you had to guess, does the warmth come from your body "
+                 "heat in the pocket, or from inside the pouch?",
+        options=[
+            ("Your body heat",
+             "A pocket is warm. But the pouch started at room temperature, "
+             "cooler than you, and it still got hotter than your body."),
+            ("Inside the pouch",
+             "The pouch heats itself. Snapping the disc starts a change "
+             "inside, and energy that was stored in the chemicals comes out as"
+             " heat."),
+        ],
+        answer=1,
+        bridge="A change that gives energy out to its surroundings like this "
+               "is called <strong>exothermic</strong>.",
+        big_question="Some changes make their surroundings hot, from a "
+                     "campfire to a hand warmer. Where does that heat come "
+                     "from?",
+    ),
+
+    # endothermic-reactions: old hook cut to "did the heat that left the water
+    # vanish, or did the chemicals take it in?" Deliberately NOT "does the
+    # reaction make cold?", because that is the later predict (think-commit-
+    # cold). Bridge: dropped "Next: sort eight changes" because two explainer
+    # paragraphs come first. Title, scene and big question kept.
+    "endothermic-reactions": dict(
+        question="If you had to guess, what happened to the heat that left the"
+                 " water?",
+        options=[
+            ("It simply disappeared for good",
+             "It looks that way, since the thermometer only reads what is left"
+             " in the water. But energy is never destroyed, only moved."),
+            ("The chemicals took it in",
+             "The reaction needed energy to go ahead, and it took it from the "
+             "water, the beaker and the air. They lost energy, so they got "
+             "colder."),
+        ],
+        answer=1,
+        bridge="A change that takes energy in from its surroundings like this "
+               "is called <strong>endothermic</strong>: last lesson run in "
+               "reverse.",
+    ),
+
+    # measuring-a-temperature-change: old hook cut to unreliable thermometers vs
+    # heat escaping. Wrong reply now answers the option it follows. Bridge:
+    # dropped "Next:" because two explainer paragraphs come first. Title, scene
+    # and big question kept: the scene rules out different chemicals and made-up
+    # numbers but does not say where the difference comes from.
+    "measuring-a-temperature-change": dict(
+        question="If you had to guess, what mainly caused the different "
+                 "answers?",
+        options=[
+            ("Heat escaping to the room",
+             "A beaker is always leaking heat to the bench and the air, so the"
+             " later and slower the reading, the more has already escaped."),
+            ("The thermometers being unreliable",
+             "Thermometers can be a little off, but not by five degrees. What "
+             "really differed was how long each beaker was losing heat before "
+             "it was read."),
+        ],
+        answer=0,
+        bridge="So the skill is in the set-up as well as in the reading.",
+    ),
+
+
+    # ── Year 9 · C9 Metals and materials ────────────────────────────────────────
+
+    # the-reactivity-series: old hook cut to "size of the piece vs kind of metal"
+    # (the scene shows a pea of potassium and a lump of calcium, so size is a
+    # fair tempting answer). Deliberately NOT "does a metal that ignores water
+    # also ignore acid?", which is the later predict (think-commit-water). Title,
+    # scene and big question kept.
+    "the-reactivity-series": dict(
+        question="If you had to guess, what decides whether a metal fizzes in "
+                 "cold water?",
+        options=[
+            ("The kind of metal",
+             "Each metal has its own reactivity, just as each has its own "
+             "melting point. A pea of potassium fizzes, but a whole bar of "
+             "copper would not."),
+            ("The size of the piece",
+             "A bigger piece can fizz harder, which is why size feels "
+             "important. But a huge lump of copper still does nothing, and a "
+             "tiny pea of potassium does."),
+        ],
+        answer=0,
+        bridge="Test metals against the same liquids and they line up in one "
+               "order. Next: that order, and a bench of twelve test tubes to "
+               "check it.",
+    ),
+
+    # predicting-displacement: old hook cut to "out of the liquid vs from inside
+    # the iron". Title, scene and big_question changed: they named copper
+    # sulfate, said the blue faded and said the nail came out coated in copper,
+    # so the liquid was given away as the source. New title keeps the coated nail
+    # for the rail label. Bridge rewritten: the draft's bridge repeated the
+    # second explainer, and the first explainer opens "That is a displacement
+    # reaction", so the bridge has to end on the event itself.
+    "predicting-displacement": dict(
+        title="An iron nail in a blue liquid, left for ten minutes.",
+        scene="The nail comes out coated in a soft, pink-brown metal. Nobody "
+              "painted it, and nobody added any metal to it.",
+        question="If you had to guess, where did the pink-brown coating come "
+                 "from?",
+        options=[
+            ("From inside the iron",
+             "The nail does change colour. But iron has no copper in it, and "
+             "one metal never turns into another. The coating came out of the "
+             "liquid."),
+            ("Out of the blue liquid",
+             "The blue liquid is copper sulfate, which has copper in it. The "
+             "coating is that copper, come out of the liquid onto the nail."),
+        ],
+        answer=1,
+        bridge="The iron took the copper's place in the liquid, which is why "
+               "the blue colour faded as the coating grew.",
+        big_question="A nail comes out of a blue liquid wearing a coat of "
+                     "metal that nobody added. Where did it come from, and "
+                     "could you have said so in advance?",
+    ),
+
+    # getting-metals-out-of-rocks: old hook ("why can the copper not simply be
+    # melted out?") cut to "mixed in like raisins, or joined into the stone".
+    # Scene changed: "no amount of melting the stone will pour any out" gives the
+    # result away; the bridge now brings it back after the guess. big_question
+    # changed: it repeats the same melting clause (and the draft's replacement
+    # repeated the scene). Bridge: the draft's "Next" repeated the second
+    # explainer.
+    "getting-metals-out-of-rocks": dict(
+        scene="The stone is malachite. Roughly half of it, by mass, is copper."
+              " But it does not look like copper, bend like copper or conduct "
+              "electricity like copper.",
+        question="If you had to guess, is the copper mixed into the stone like"
+                 " raisins in a cake, or joined into it?",
+        options=[
+            ("Mixed in like raisins",
+             "If bits of copper metal were mixed in, they would still look and"
+             " behave like copper. This copper has joined with other elements,"
+             " so it no longer looks like a metal."),
+            ("Joined into the stone",
+             "The copper is chemically joined to other elements, in this stone"
+             " to oxygen and carbon. That is why it has lost its copper look."),
+        ],
+        answer=1,
+        bridge="That is why no amount of melting will pour the copper out: "
+               "melting cannot pull joined elements apart. Getting it free "
+               "takes a chemical reaction.",
+        big_question="Most metals come out of the ground in rocks that look "
+                     "nothing like metal. How do you get the metal out?",
+    ),
+
+    # ceramics-polymers-and-composites: old hook ("which is the stronger
+    # material?") cut to which would hold your weight (plate vs beaker), because
+    # everyday "stronger" could be argued either way. Scene changed: "you could
+    # stand on the plate and it would hold you" gives the answer away.
+    # big_question kept as the draft's trimmed version of the lesson's own
+    # question. Question reworded: the draft's "if you stood on it flat on the
+    # floor" read as if you were flat on the floor. FLAG: the lesson asserts a
+    # china plate would hold a person standing on it. That needs the plate fully
+    # supported on a hard, flat floor; a plate on a raised foot ring may crack.
+    # Mide's science call.
+    "ceramics-polymers-and-composites": dict(
+        scene="The plate breaks into eleven pieces. The beaker bounces twice "
+              "and rolls under a chair.",
+        question="If you had to guess, with each one laid on the floor, which "
+                 "would hold your weight if you stood on it?",
+        options=[
+            ("The china plate",
+             "The plate takes far more force before it fails, which makes it "
+             "the stronger material. It is just that when it does fail, it "
+             "fails all at once."),
+            ("The plastic beaker",
+             "The beaker survived the fall, so it seems the stronger one. But "
+             "surviving a knock is toughness: under a steady weight the beaker"
+             " gives way long before the plate does."),
+        ],
+        answer=0,
+        bridge="Strong and tough are different properties, so \"which is "
+               "better\" depends on the job. Next: three families of material, "
+               "and four jobs to match them to.",
+        big_question="A china plate shatters on a tiled floor and a plastic "
+                     "beaker bounces. So which of the two is the stronger "
+                     "material?",
+    ),
 }
 
 
