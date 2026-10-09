@@ -1972,6 +1972,265 @@ START_HERE = {
                " that makes food from light. Next: pick a food and trace it "
                "back, step by step.",
     ),
+
+
+    # ── Year 8 · B8 Respiration ─────────────────────────────────────────────────
+
+    # aerobic-respiration — guess: does most lost fat leave through the lungs or
+    # in sweat and urine (the old hook, cut to two; rung 2 asks the same, which
+    # the old hook already did). Title kept for the rail label "Ten kilograms".
+    # Big question ("leaves through your mouth") gave it away, so replaced; scene
+    # shortened.
+    "aerobic-respiration": dict(
+        scene="Ten kilograms of fat leave a person's body over a year. Almost "
+              "nobody, including most adults, can say how.",
+        question="If you had to guess, does most of that fat leave through the"
+                 " lungs, or in sweat and urine?",
+        options=[
+            ("Out through the lungs",
+             "The carbon in fat joins with oxygen and leaves as carbon dioxide"
+             " in your breath. Most of the fat you lose is breathed out."),
+            ("In sweat and urine",
+             "Those are the exits people usually think of, and some water does"
+             " leave that way. But most of the fat's mass is carbon, and that "
+             "leaves as a gas from the lungs."),
+        ],
+        answer=0,
+        bridge="Nothing vanishes: the atoms in the fat end up somewhere else. "
+               "Next: weigh everything that goes in and everything that comes "
+               "out.",
+        big_question="The reaction that keeps you alive runs in nearly every "
+                     "cell, all the time, at body temperature and without a "
+                     "flame. What goes in, and what comes out?",
+    ),
+
+    # why-every-cell-respires — guess: does the body keep a big spare supply of
+    # oxygen, or hardly any (the old hook's "no store" answer). Title, scene and
+    # big question unchanged.
+    "why-every-cell-respires": dict(
+        question="If you had to guess, does the body keep a big spare supply "
+                 "of oxygen, or hardly any?",
+        options=[
+            ("A big spare supply",
+             "Lungs full of air do feel like a store. But the body only holds "
+             "a few minutes' worth of oxygen, and every cell is using it all "
+             "the time."),
+            ("Hardly any",
+             "There is no oxygen tank in the body, only what the blood is "
+             "carrying right now. Fat is a fuel store that lasts weeks, but "
+             "oxygen has no store at all."),
+        ],
+        answer=1,
+        bridge="Every cell in your body is using oxygen to release energy, "
+               "every second. Next: five cells, and what each one spends its "
+               "energy on.",
+    ),
+
+    # anaerobic-respiration-in-humans — guess: during a sprint do the muscles
+    # stop using oxygen, or keep using it too (RESP-06, which the register says
+    # the hook elicits). Angle changed because the H1 "Anaerobic respiration in
+    # humans" gives away any "without oxygen" answer. Title, scene and big
+    # question unchanged.
+    "anaerobic-respiration-in-humans": dict(
+        question="If you had to guess, during the sprint, do the muscles stop "
+                 "using oxygen, or keep using it too?",
+        options=[
+            ("They stop using oxygen",
+             "Switching over is how it is often described. But nothing "
+             "switches: the muscles use all the oxygen that arrives, and break"
+             " down extra glucose without oxygen to cover the shortfall."),
+            ("They keep using it too",
+             "Respiration with oxygen carries on as fast as the supply allows."
+             " The shortfall is covered by breaking glucose down without "
+             "oxygen, which is quick but leaves lactic acid behind."),
+        ],
+        answer=1,
+        bridge="So the muscles are running two kinds of respiration at once. "
+               "Next: run, stop, and watch what your breathing does.",
+    ),
+
+    # fermentation — guess: did the holes come from the yeast cells swelling, or
+    # from a gas the yeast gave off (old options A and B). Old scene said each
+    # hole is "a pocket of gas", so scene rewritten; title kept for the rail
+    # label "The holes".
+    "fermentation": dict(
+        scene="Bread dough is flour, water and a little yeast. It goes into "
+              "the oven as a flat lump and comes out twice the size, full of "
+              "holes. Nothing was pumped into it.",
+        question="If you had to guess, what made the holes: the yeast cells "
+                 "swelling up, or a gas the yeast gave off?",
+        options=[
+            ("The yeast cells swelling up",
+             "Yeast does grow in dough. But each cell is far too small to see."
+             " The holes are bubbles of carbon dioxide that the yeast gives "
+             "off."),
+            ("A gas the yeast gave off",
+             "Yeast is a living fungus. Short of oxygen in the dough, it "
+             "respires and gives off carbon dioxide, which blows bubbles all "
+             "through the dough."),
+        ],
+        answer=1,
+        bridge="Bread is risen by a waste gas. Next: a vessel with four dials,"
+               " to see what yeast and yoghurt bacteria make under different "
+               "conditions.",
+    ),
+
+    # aerobic-vs-anaerobic — guess: which route gets energy to a cell faster,
+    # with oxygen or without. Old title kept (it says one route gets twenty times
+    # more but not which), so the rail label "Twenty times" still refers to it;
+    # scene rewritten to name the two routes; big question said which is more and
+    # which is faster, so replaced.
+    "aerobic-vs-anaerobic": dict(
+        scene="Cells have two ways to get energy out of glucose, a sugar: one "
+              "uses oxygen and one does not. Every organism in this unit, from"
+              " a sprinter to a yeast cell, keeps both available.",
+        question="If you had to guess, which route gets energy to a cell "
+                 "faster: the one using oxygen, or the one without?",
+        options=[
+            ("The one using oxygen",
+             "It is the better deal, so it feels as if it should win on speed "
+             "too. But it has to wait for oxygen to be delivered, so it is the"
+             " slower route."),
+            ("The one without oxygen",
+             "With fewer steps and no oxygen to wait for, energy comes "
+             "quicker. The price is much less energy from each glucose."),
+        ],
+        answer=1,
+        bridge="So the two routes win different races. Next: five situations, "
+               "and which route is running in each.",
+        big_question="Two ways to get energy out of the same sugar molecule, "
+                     "and almost everything alive uses both. Which one is "
+                     "running, and when?",
+    ),
+
+
+    # ── Year 8 · C4 Chemical reactions ──────────────────────────────────────────
+
+    # chemical-vs-physical-change — guess: what makes frying an egg a chemical
+    # change, the colour change or something new being made. The draft's "can it
+    # be undone?" foil pre-answered the later "Undo it" commit (s-think), so the
+    # foil is now colour. Old scene said "you no longer have egg white", so scene
+    # rewritten; title kept for the rail label "Chocolate and egg".
+    "chemical-vs-physical-change": dict(
+        scene="Both changes were caused by heat. Melting chocolate is a "
+              "physical change. Frying an egg is a chemical change.",
+        question="If you had to guess, what makes frying an egg a chemical "
+                 "change: the change of colour, or that something new is made?",
+        options=[
+            ("The change of colour",
+             "A colour change is often a clue. But food colouring stirred into"
+             " water changes colour and makes nothing new. What decides it is "
+             "that the egg is now a different substance."),
+            ("Something new is made",
+             "A chemical change makes at least one new substance. The fried "
+             "egg is firm and white where the raw egg white was runny and "
+             "clear."),
+        ],
+        answer=1,
+        bridge="So the test is what you end up with, not how it looks along "
+               "the way. Next: three pairs of changes that look alike.",
+    ),
+
+    # reactions-rearrange-atoms — guess: would hydrogen and oxygen mixed in one
+    # balloon turn into water on their own (the lesson's own stretch: the joins
+    # must be broken first). Angle changed because the H1 "Reactions rearrange
+    # atoms" gives away "where did the water come from?". Title, scene and big
+    # question unchanged.
+    "reactions-rearrange-atoms": dict(
+        question="If you had to guess, would the two gases, mixed in one "
+                 "balloon and left alone, turn into water on their own?",
+        options=[
+            ("Yes, on their own",
+             "Mixing sounds like enough for a reaction. But the atoms in each "
+             "gas are joined in pairs, and those joins must be broken first. "
+             "Without a flame or spark, the mixture just sits there."),
+            ("No, they need starting",
+             "A mix of hydrogen and oxygen can sit in a balloon for a very "
+             "long time. A flame or spark is needed to break the first joins "
+             "between its atoms."),
+        ],
+        answer=1,
+        bridge="Once started, the atoms that were in the balloons join up in a"
+               " new way, as water. Next: take three reactions apart and count"
+               " the atoms.",
+    ),
+
+    # word-equations — guess: what a chemist needs added, how long it burned or
+    # what the powder is (old options C and B; the temperature foil was dropped
+    # because "heat is only a condition" pre-answers the builder's Heat
+    # distractor). Old title gave the answer, so rewritten; the quoted sentence
+    # is kept so the rail label "Twenty-two words" still points at it. Big
+    # question gave the point away, so replaced.
+    "word-equations": dict(
+        title="Magnesium in a flame.",
+        scene="“I held the magnesium ribbon in the flame with tongs and it "
+              "burned with a really bright white light and left a white powder"
+              " behind.” Every word is true.",
+        question="If you had to guess, what would tell a chemist which "
+                 "reaction happened: how long it burned, or what the powder "
+                 "is?",
+        options=[
+            ("How long it burned",
+             "Timings matter in lots of experiments. But how long it burned "
+             "says nothing about what reacted. A chemist needs the name of the"
+             " powder, and what the magnesium joined with."),
+            ("What the powder is",
+             "The powder is a new substance, magnesium oxide, made when the "
+             "magnesium joins with oxygen from the air. The sentence never "
+             "names either one."),
+        ],
+        answer=1,
+        bridge="A word equation names every reactant and every product in one "
+               "line. Next: build three of them from what happened.",
+        big_question="How do chemists write down a reaction so that nothing "
+                     "important is left out?",
+    ),
+
+    # mass-in-a-reaction — guess: is a candle's wax destroyed or does it float
+    # off as gases (the candle half of the old hook). Title, scene and big
+    # question kept; the bridge leaves the steel wool open rather than handing
+    # over the balance-bench rule.
+    "mass-in-a-reaction": dict(
+        question="If you had to guess, is most of a burning candle's wax "
+                 "destroyed in the flame, or does it float off as gases?",
+        options=[
+            ("Destroyed in the flame",
+             "A candle really does seem to vanish. But atoms are never "
+             "destroyed: the wax joins with oxygen and becomes invisible gases"
+             " that float away."),
+            ("Floats off as gases",
+             "The wax joins with oxygen and becomes carbon dioxide and water "
+             "vapour, which drift away into the air. Nothing is lost."),
+        ],
+        answer=1,
+        bridge="So why does the steel wool get heavier instead? Next: two "
+               "reactions on a balance, each in an open flask and a sealed "
+               "one.",
+    ),
+
+    # symbol-equations-and-balancing — guess: fix it by changing H2O itself or by
+    # changing how many react (the old hook, cut to two). Title and scene
+    # unchanged (scene keeps its <sub> markup). Big question ("the one number you
+    # are allowed to change") replaced. Replies avoid naming hydrogen peroxide
+    # and the 2:1:2 answer so the forbidden-move bench and the first balancing
+    # tab keep their own reveals.
+    "symbol-equations-and-balancing": dict(
+        question="If you had to guess, how do you fix it: change H2O itself, "
+                 "or change how many of each particle react?",
+        options=[
+            ("Change H2O itself",
+             "Adding an oxygen to H2O does make the counts match. But then the"
+             " substance is no longer water, and this reaction makes water."),
+            ("Change how many react",
+             "You change how many particles take part, using numbers in front."
+             " The formula stays as it is, so water stays water."),
+        ],
+        answer=1,
+        bridge="Next: balance four equations yourself, changing only the "
+               "numbers in front, and watch the counters.",
+        big_question="Written straight out, the equation for making water "
+                     "seems to destroy an oxygen atom. How do you fix it?",
+    ),
 }
 
 
