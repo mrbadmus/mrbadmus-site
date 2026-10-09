@@ -696,3 +696,26 @@ html[data-theme="dark"] .rd :is(.c-ink, .ex-dark, .td-dark-card, .uc-rules, .gl-
   border-color: var(--ks3-on-dark-muted) !important;
   color: var(--ks3-on-dark-muted) !important;
 }
+
+/* ⊕ B2C polish (9 Oct 2026) — A PLACEHOLDER LOOKS LIKE A PLACEHOLDER.
+   Signup's fields sit inside 700-weight labels and `.pb-body input` sets
+   `font: inherit`, so "What should we call you?", "you@example.com" and
+   "At least 10 characters" were drawn bold — and in dark, in a light muted
+   ink beside a light typed value, they read as answers already given.
+   Every consumer placeholder is now normal weight in the muted ink token,
+   at full opacity (Firefox's default 0.54 would drop it under AA).
+   Measured (WCAG treats placeholder as text, so 4.5:1 is the bar):
+   --ks3-ink-muted #5F564F on card #FFFCF5 6.99:1, on ground 6.51:1 (light);
+   #C2B6A6 on card #1F1A15 8.66:1, on ground 9.35:1 (dark). Typed values keep
+   their weight and full ink (16.1:1 light, 14.7:1 dark), so the two differ
+   in weight AND colour in both themes. The operator rooms (.ad-room,
+   .ac-room) keep their own staff-palette colour; they only get the weight. */
+.rd input::placeholder,
+.rd textarea::placeholder {
+  font-weight: 400;
+  opacity: 1;
+}
+.rd:not(.ad-room, .ac-room) input::placeholder,
+.rd:not(.ad-room, .ac-room) textarea::placeholder {
+  color: var(--ks3-ink-muted);
+}
