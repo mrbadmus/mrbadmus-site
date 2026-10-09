@@ -2508,6 +2508,294 @@ START_HERE = {
                "in acid. Next: the rule for what an acid and a carbonate "
                "always make, and the test for the gas.",
     ),
+
+    # making-a-pure-dry-salt — old hook question (how much oxide to add) in plain
+    # words. Title, scene and big question kept. Reviewer: bridge no longer
+    # repeats the reply's "filter it off".
+    "making-a-pure-dry-salt": dict(
+        question="If you had to guess, how much black powder should you add to"
+                 " the acid: only just enough, or slightly too much?",
+        options=[
+            ("Only just enough",
+             "Just enough sounds neat, but you cannot see when the acid has "
+             "run out. Extra powder is easy to filter off later, and leftover "
+             "acid is not."),
+            ("Slightly too much",
+             "Extra powder does not dissolve, so it sinks and you can filter "
+             "it off. That way you know every drop of acid has been used up."),
+        ],
+        answer=1,
+        bridge="After that come more decisions, all about getting clean "
+               "crystals out of a blue liquid. Next: how salts get their "
+               "names, then the six steps in order.",
+    ),
+
+    # catalysts — new angle: total oxygen (more, or the same but sooner). The old
+    # scene said the powder "is not a reactant or product" and was weighed
+    # afterwards, which pre-empted the later THINK ("used up or blocked?"), so
+    # the scene is shortened. Title and big question kept. Reviewer: bridge no
+    # longer says "without being used up" (the THINK's answer); it only names the
+    # catalyst.
+    "catalysts": dict(
+        scene="Tip in a spatula of black powder and the same bottle froths "
+              "over in seconds, giving off enough oxygen to relight a glowing "
+              "splint.",
+        question="If you had to guess, does the powder make the bottle give "
+                 "off more oxygen in total, or the same amount, only sooner?",
+        options=[
+            ("More in total",
+             "More froth in less time can look like more gas. But the bottle "
+             "holds a fixed amount of hydrogen peroxide, so it gives the same "
+             "oxygen in the end, powder or not."),
+            ("The same, only sooner",
+             "The bottle holds only so much hydrogen peroxide, so it can only "
+             "ever make so much oxygen. The powder just gets it done much "
+             "sooner."),
+        ],
+        answer=1,
+        bridge="A powder that changes how fast a reaction goes like this is "
+               "called a catalyst. Next: what a catalyst can and cannot do, "
+               "then five flasks to test.",
+    ),
+
+
+    # ── Year 8 · C8 The periodic table ──────────────────────────────────────────
+
+    # metals-and-non-metals — old hook question (which test separates them) as a
+    # hammer guess. Title and scene kept; the later "does it conduct" THINK is
+    # not touched. Reviewer: wrong reply no longer says "that is a fair thought"
+    # after the page's "Fair guess."; bridge says non-metal SOLIDS shatter (many
+    # non-metals are gases).
+    "metals-and-non-metals": dict(
+        question="If you had to guess, which one flattens when you hit it with"
+                 " a hammer: the lead, or the graphite?",
+        options=[
+            ("The lead",
+             "Lead is a metal, and metals change shape without breaking. The "
+             "graphite shatters into black dust."),
+            ("The graphite",
+             "Graphite does feel soft, since it marks paper. But it is brittle"
+             " and shatters into black dust, while the lead, a metal, "
+             "flattens."),
+        ],
+        answer=0,
+        bridge="Metals bend and non-metal solids shatter, but that is only one"
+               " of several properties. Next: the full lists side by side, and"
+               " six samples to sort.",
+    ),
+
+    # mendeleev — old hook question (leave a gap, or keep every square filled).
+    # Reviewer: scene restores the rows-and-columns step (without it "does not
+    # fit" has nothing to fit), options made parallel, replies no longer say the
+    # gap "turned a problem into a prediction" (the answer to the later "Three
+    # decisions" card d1), and the writer's replacement big question
+    # ("predictions about elements nobody had ever seen") still pointed at empty
+    # squares, so it is replaced with a neutral one.
+    "mendeleev": dict(
+        scene="Lay the cards in a line and the pattern shows up: a soft "
+              "reactive metal, then several ordinary metals, then a violent "
+              "gas, and then a soft reactive metal again. Cut the line into "
+              "rows so the repeats fall into columns. In a few places, the "
+              "next card does not fit the column it lands in.",
+        question="If you had to guess, when the next card did not fit, did "
+                 "Mendeleev leave a square empty, or keep every square filled?",
+        options=[
+            ("Left a square empty",
+             "He left it empty, sure that an element belonging there had "
+             "simply not been found yet."),
+            ("Kept every square filled",
+             "Moving cards along to avoid a hole looks tidy, but it puts "
+             "elements in the wrong families. Mendeleev left the square empty "
+             "instead."),
+        ],
+        answer=0,
+        bridge="He even wrote down what each missing element would be like. "
+               "Next: how he built the table, then a gap for you to fill.",
+        big_question="Mendeleev sorted sixty-three elements into a table that "
+                     "chemists still use. What did he do that nobody before "
+                     "him had done?",
+    ),
+
+    # groups-and-periods — old hook question (row or column) turned into a
+    # concrete guess about sodium. Title, scene and big question replaced: all
+    # three said potassium is "two rows" from sodium, which is wrong (it is the
+    # next row down). Reviewer: the scene now says potassium is "further down,
+    # below sodium" rather than "right below it", so the opener stays true
+    # without contradicting the THINK reveal's "two rows down" (a lesson-text
+    # error listed for Mide); title and scene use the lesson's own group 1
+    # description ("melts into a ball and whizzes") instead of "explodes".
+    "groups-and-periods": dict(
+        title="Drop sodium in water and it fizzes wildly.",
+        scene="In the periodic table, magnesium is the square right next to "
+              "sodium. Potassium is further down, below sodium.",
+        question="If you had to guess, which behaves more like sodium in "
+                 "water: magnesium, next to it, or potassium, below it?",
+        options=[
+            ("Magnesium, next to it",
+             "Next door sounds like it should be alike, but magnesium barely "
+             "fizzes in water. The element below sodium is the one that "
+             "behaves like it."),
+            ("Potassium, below it",
+             "Potassium does the same as sodium, only more fiercely. Elements "
+             "in the same column behave alike, like members of a family."),
+        ],
+        answer=1,
+        bridge="So a column is a family, and a row is something different. "
+               "Next: the names for each, and the first twenty elements to "
+               "explore.",
+        big_question="Which tells you more about an element: the row it sits "
+                     "in, or the column?",
+    ),
+
+    # group-1-the-alkali-metals — reviewer changed the two options to "would it
+    # still go dull in a jar with no air?" The draft's "air, or the metal cooling
+    # down?" had a weak distractor (nothing in the scene suggests cooling), so a
+    # strong Year 9 would get it for free; "shiny things just dull with time" is
+    # the real intuition. Title drops the oil (a clue); old scene "nothing
+    # touched it" and big question "what is attacking it" replaced.
+    "group-1-the-alkali-metals": dict(
+        title="Cut a lump of sodium and the new surface is a mirror, for about"
+              " four seconds.",
+        scene="Then the shine fades to a dull grey while you watch, in an "
+              "ordinary room.",
+        question="If you had to guess, would the cut sodium still go dull in a"
+                 " sealed jar with no air in it?",
+        options=[
+            ("Yes, it would still go dull",
+             "Lots of shiny things do dull with age, so that makes sense. But "
+             "here the air is doing it: sodium reacts with it, and with no air"
+             " it stays shiny."),
+            ("No, it would stay shiny",
+             "With no air there is nothing for it to react with. Sodium is so "
+             "reactive that ordinary air dulls it within seconds."),
+        ],
+        answer=1,
+        bridge="That is why sodium is kept under oil, and the rest of its "
+               "group is the same. Next: what the group has in common, then "
+               "three of them dropped into water.",
+        big_question="Sodium loses its shine within seconds of being cut. What"
+                     " is going on, and what does it tell you about the whole "
+                     "group?",
+    ),
+
+    # group-7-the-halogens — new angle: will three very different-looking
+    # elements make the same kind of substance with a metal? The old scene and
+    # big question said "same group" and "same kind of family", which gives the
+    # answer, so the scene names them without the group. Reviewer: title keeps
+    # "Three sealed tubes" so the hook's rail label still lands; the question
+    # asks about the KIND of substance made, not "the same way" (they react with
+    # very different vigour, which the lesson teaches, so "the same way" was
+    # arguable); the wrong reply no longer claims colour comes from melting
+    # points.
+    "group-7-the-halogens": dict(
+        title="Three sealed tubes: a green gas, a red-brown liquid and a "
+              "grey-black solid.",
+        scene="Chlorine is a pale green gas, bromine a red-brown liquid and "
+              "iodine a grey-black solid. Warm the iodine gently and it turns "
+              "straight into a violet vapour. Now each one is put with the "
+              "same metal.",
+        question="If you had to guess, will the three make the same kind of "
+                 "substance with the metal, or three quite different kinds?",
+        options=[
+            ("The same kind",
+             "All three are in group 7, the halogens, and each one joins with "
+             "a metal to make the same kind of salt: a chloride, a bromide or "
+             "an iodide."),
+            ("Three different kinds",
+             "They do look very different. But each one joins with a metal to "
+             "make the same kind of salt, because all three are in the same "
+             "group."),
+        ],
+        answer=0,
+        bridge="That sameness is what makes them a family. Next: the four you "
+               "need to know, and how they change going down.",
+        big_question="Group 1 got fiercer the further down you went. Do the "
+                     "elements in group 7 follow the same pattern?",
+    ),
+
+    # group-0-and-why-groups-exist — old hook question (how do you miss an
+    # element this common), cut to unreactive versus too rare. Title, scene and
+    # big question kept; none of them gives the answer. Reviewer: correct reply
+    # no longer says "with nothing to react with" (argon has plenty to react
+    # with; it just does not).
+    "group-0-and-why-groups-exist": dict(
+        question="If you had to guess, why was argon missed: because it reacts"
+                 " with nothing, or because there is too little of it?",
+        options=[
+            ("It reacts with nothing",
+             "Chemists of the time found elements through their compounds, and"
+             " argon makes none. Because it reacts with nothing, it left no "
+             "trace."),
+            ("There is too little",
+             "One per cent is plenty: it is far more than the carbon dioxide "
+             "they did find. The real problem was that argon reacts with "
+             "nothing, so it left no trace."),
+        ],
+        answer=0,
+        bridge="Argon belongs to a whole group of gases that react with almost"
+               " nothing. Next: why, and what outer electrons have to do with "
+               "it.",
+    ),
+
+    # metal-and-non-metal-oxides — new angle: which burnt product gives the acid.
+    # The old scene gave the purple/red result and the big question gave the
+    # rule, so both are rewritten. Title kept. Reviewer: scene no longer says
+    # both products are "left behind" (burnt sulfur gives a gas).
+    "metal-and-non-metal-oxides": dict(
+        scene="Both catch and burn. What each one makes is collected and put "
+              "into its own beaker of water. Then universal indicator goes in.",
+        question="If you had to guess, which gives an acid in water: the burnt"
+                 " magnesium, or the burnt sulfur?",
+        options=[
+            ("The burnt magnesium",
+             "Magnesium is a metal, and its product makes the water alkaline "
+             "instead. It is the burnt sulfur that makes an acid."),
+            ("The burnt sulfur",
+             "Sulfur burns to a gas that dissolves in water and makes an acid."
+             " The burnt magnesium makes the water alkaline instead."),
+        ],
+        answer=1,
+        bridge="It is the side of the periodic table the element comes from "
+               "that decides which way the water goes. Next: oxides in "
+               "general, and two beakers to test six of them.",
+        big_question="Burn a metal and burn a non-metal, then drop each "
+                     "product into water. What decides which way the pH goes?",
+    ),
+
+
+    # ── Year 8 · P1 Energy transfers ────────────────────────────────────────────
+
+    # energy-stores — old hook question (used up, or moved somewhere) in plain
+    # words. The title ("The energy does not"), scene ("nothing took it away")
+    # and big question ("nothing is ever gone") all gave the answer, so all three
+    # are rewritten; the ball and carpet stay because the store audit says "This
+    # is the hook, with a bigger ball". Reviewer: the writer's big question
+    # repeated the guess word for word, so it is replaced with the lesson's whole
+    # question (stores and how energy moves).
+    "energy-stores": dict(
+        title="A ball rolling across a carpet.",
+        scene="A ball rolls across a carpet, slows, and stops. While it rolled"
+              " it had energy of movement. Now it is still.",
+        question="If you had to guess, what happened to the ball's energy: is "
+                 "it used up, or did it go somewhere else?",
+        options=[
+            ("It is used up",
+             "It does look used up, as if the roll just ran out. But energy "
+             "never disappears. It went into a tiny rise in the warmth of the "
+             "ball and the carpet, too small to feel."),
+            ("It went somewhere else",
+             "Energy is never used up, only moved. Here it went into a tiny "
+             "rise in the temperature of the ball and the carpet, too small to"
+             " feel."),
+        ],
+        answer=1,
+        bridge="Energy sits in different places, called stores, and moves "
+               "between them. Next: the list of stores, and a ledger to fill "
+               "in.",
+        big_question="A moving ball, a stretched catapult, a battery in a "
+                     "drawer: all of them hold energy. Where can energy be, "
+                     "and how does it move from one place to another?",
+    ),
 }
 
 
