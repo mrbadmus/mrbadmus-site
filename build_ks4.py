@@ -59,6 +59,16 @@ BLOCK_NAMES = ["Ks4Chrome", "Ks4Choice", "Ks4Sort", "Ks4Chain", "Ks4Write",
                "Ks4Cfifa", "Ks4Ladder", "Ks4KeyNote", "Ks4QuizBank", "Ks4End",
                "Ks4Video"]
 
+# ⊕ Mide's rule 1 (2 Oct 2026, docs/ks4/START-HERE-REWRITE.md) — every KS4
+# lesson opens on Design's two-option `Ks4Guess`. Batch 4 carries it in its own
+# block set; the pilot and batches 2-3 do not, so it is compiled from batch 4's
+# lessons dir and registered on a page ONLY when that lesson's template uses it
+# (a lesson that does not is byte-identical to before). It is deliberately NOT
+# in BLOCK_NAMES, and its (already-shipped) <style> is not added to any CSS.
+GUESS_BLOCK_DIR = os.path.join(REPO_ROOT, "docs", "ks4", "design-reference",
+                               "batch-4", "lessons")
+GUESS_IMPORT = 'name="Ks4Guess"'
+
 ROUTE_CODES = ["CF", "CH", "TF", "TH"]
 ROUTE_LABEL = ks4_lessons.ROUTE_LABELS
 ROUTE_URL = ks4_lessons.ROUTE_URL
@@ -1534,17 +1544,23 @@ def compile_lesson(page, lesson, report):
     logic = ks4_science_rulings.apply("logic", lesson["slug"], logic)
     ks4_science_rulings.expect_present("logic", lesson["slug"], logic)
 
+    # ⊕ R18 (rule 1) — the two-option "Start here" guess. AFTER the science
+    # rulings: several of them correct old-opener text, and must still fire.
+    tpl, logic, r18_fired = ks4_rulings.apply_r18_start_here(
+        lesson["slug"], lesson["design_file"], tpl, logic)
+
     template = compile_template_text(page, tpl)
 
     block_map = lesson.get("block_map", {})
     classified = classify_lesson_sections(template, lesson["slug"], block_map)
 
     report.append(dict(slug=lesson["slug"], slug_renamed=slug_renamed,
-                        r9_fired=r9_fired,
+                        r9_fired=r9_fired, r18_fired=r18_fired,
                         has_prev=bool(n_prev), has_next=bool(n_next),
                         connects=connects_targets, draft_tip=draft_tip,
                         sections=classified))
-    return {"template": template, "logic": logic, "draft_tip": draft_tip}
+    return {"template": template, "logic": logic, "draft_tip": draft_tip,
+            "uses_guess": GUESS_IMPORT in tpl}
 
 
 def classify_lesson_sections(template, slug, block_map, unwrap_route_if=False):
@@ -1743,7 +1759,7 @@ def compile_batch_lesson(page, batch_name, lesson, report):
                                            unwrap_route_if=True)
 
     report.append(dict(slug=lesson["slug"], sections=classified, **port_report))
-    return {"template": template, "logic": logic}
+    return {"template": template, "logic": logic, "uses_guess": GUESS_IMPORT in tpl}
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -1838,6 +1854,14 @@ def check_rung1_fallback(data, lesson, needles):
 # ═══════════════════════════════════════════════════════════════════════
 # STEP I — page assembly
 # ═══════════════════════════════════════════════════════════════════════
+def guess_registration_script(compiled_blocks, compiled_lesson):
+    """"" unless this lesson mounts Ks4Guess; then its registration script,
+    appended after the shared block set (see GUESS_BLOCK_DIR)."""
+    if not compiled_lesson.get("uses_guess"):
+        return ""
+    return "\n" + block_registration_scripts(compiled_blocks, ["Ks4Guess"])
+
+
 def block_registration_scripts(compiled_blocks, names=None):
     out = []
     for name in (names or BLOCK_NAMES):
@@ -2190,6 +2214,7 @@ def build_pilot(freeze=False):
             page.goto("http://127.0.0.1:%d/stub.html" % stub_port)
             for name in BLOCK_NAMES:
                 compiled_blocks[name] = compile_block(page, name)
+            compiled_blocks["Ks4Guess"] = compile_block(page, "Ks4Guess", GUESS_BLOCK_DIR)
             print("  ✓ %d shared blocks compiled" % len(compiled_blocks))
 
             for lesson in ks4_lessons.LESSONS:
@@ -2209,6 +2234,8 @@ def build_pilot(freeze=False):
             print("     R-SLUG fired: %s" % row["slug"])
         if row["r9_fired"]:
             print("     R9 fired: %s" % row["slug"])
+        if row.get("r18_fired"):
+            print("     R18 fired: %s" % row["slug"])
 
     # ── rung-1 fallback check (examiner finding) ───────────────────────
     fallback_warnings = 0
@@ -2252,7 +2279,9 @@ def build_pilot(freeze=False):
         compiled_lesson = compiled_lessons[lesson["slug"]]
         for route in lesson["routes"]:
             prev_next = compute_prev_next(data, lesson, route)
-            html = render_page(lesson, route, compiled_lesson, block_scripts,
+            html = render_page(lesson, route, compiled_lesson,
+                                block_scripts + guess_registration_script(
+                                    compiled_blocks, compiled_lesson),
                                 prev_next, versions)
             url = ks4_lessons.site_url(lesson["slug"], route)
             out_path = os.path.join(OUT_ROOT, url.lstrip("/"))
@@ -2456,6 +2485,9 @@ def build_batch(name, freeze=False):
             page.goto("http://127.0.0.1:%d/stub.html" % stub_port)
             for block_name in block_names:
                 compiled_blocks[block_name] = compile_block(page, block_name, block_dir)
+            if not own_blocks:
+                # rule 1: Ks4Guess for batches 2/3 (registered per page, below)
+                compiled_blocks["Ks4Guess"] = compile_block(page, "Ks4Guess", GUESS_BLOCK_DIR)
             for lesson in lessons:
                 compiled_lessons[lesson["slug"]] = compile_batch_lesson(
                     page, name, lesson, lesson_report)
@@ -2483,7 +2515,9 @@ def build_batch(name, freeze=False):
         compiled_lesson = compiled_lessons[lesson["slug"]]
         for route in lesson["routes"]:
             prev_next = compute_prev_next(data, lesson, route)
-            html = render_page(lesson, route, compiled_lesson, block_scripts,
+            html = render_page(lesson, route, compiled_lesson,
+                                block_scripts + ("" if own_blocks else guess_registration_script(
+                                    compiled_blocks, compiled_lesson)),
                                 prev_next, versions,
                                 batch_css=batch_css_link,
                                 batch_source_js=batch_source_tag,

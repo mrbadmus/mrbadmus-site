@@ -583,7 +583,38 @@ def _approved_tip_text(slug):
     return ""
 
 
+# ⊕ R18 (Mide's rule 1, 2 Oct 2026; ks4_rulings.apply_r18_start_here) — every
+# pilot lesson's `#s-hook` is Design's two-option Ks4Guess carrying its record
+# in ks4_lessons/start_here.py, no longer Design's pilot Ks4Choice hook. Like
+# R13, the replacement is PROVED (every rendered piece present, in order, and
+# the old hook gone), not merely excused.
+R18_SLUGS = ks4_rulings.r18_slugs()
+
+
+def _r18_expected(slug):
+    from ks4_lessons import start_here
+    r = start_here.START_HERE[slug]
+    return ["Start here", r["title"], r["scene"],
+            "If you had to guess, " + r["question"],
+            r["options"][0]["text"], r["options"][1]["text"]]
+
+
+def _r18_check(slug, port_text_norm):
+    port_sq = squash(normalize_ws(port_text_norm))
+    pos = 0
+    for frag in _r18_expected(slug):
+        i = port_sq.find(squash(normalize_ws(frag)), pos)
+        if i < 0:
+            return "R18 opener: %r missing or out of order" % frag[:80]
+        pos = i + 1
+    if "Commit first" in port_text_norm:
+        return "R18 opener: Design's Ks4Choice hook is still present"
+    return None
+
+
 def compare_section_text(slug, route, index, sec, ref_text_norm, port_text_norm):
+    if slug in R18_SLUGS and sec.get("id") == "s-hook":
+        return _r18_check(slug, port_text_norm)
     # ⊕ R13 — proves the approved exam tip is present BYTE-EXACT, rather
     # than merely excusing a known difference from Design's (unapproved,
     # different-wording) draft. Both physics lessons' tip section carries
@@ -1261,6 +1292,13 @@ def check_styles(R, slug, page, ref_entry):
             ref_cs = ref_styles.get(comp)
             if ref_cs is None:
                 continue
+            if comp == "check_button" and slug in R18_SLUGS:
+                # ⊕ R18 — `sel` is a bare "button": on Design's page the first
+                # button was her hook's Ks4Choice option. R18 replaced that hook
+                # with Ks4Guess's cards (Design's own batch-4 styling), so measure
+                # the same element kind Design's reference did: the first
+                # Ks4Choice option button, which every pilot lesson still has.
+                sel = "button.ks3-option"
             port_cs = MD.cs(page, sel)
             if port_cs is None:
                 fails.append("%s: port element missing (%s)" % (comp, sel))

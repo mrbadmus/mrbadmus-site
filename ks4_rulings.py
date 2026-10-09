@@ -936,3 +936,57 @@ R17_SORT_REPORT_TO = (
 def apply_r17_sort_report(text):
     _require(text, R17_SORT_REPORT_FROM, "Ks4Sort.dc.html", "R17")
     return text.replace(R17_SORT_REPORT_FROM, R17_SORT_REPORT_TO, 1)
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# R18 — "Start here" is a two-option guess (Mide's rule 1, 2 Oct 2026,
+# docs/ks4/architecture.md; docs/ks4/START-HERE-REWRITE.md). Design's pilot
+# opens on a 4-option `Ks4Choice` test. This swaps the whole `#s-hook`
+# section for Design's `Ks4Guess` (batch-4 copy, build_ks4.GUESS_BLOCK_DIR)
+# carrying the lesson's record in ks4_lessons/start_here.py, and replaces
+# the `hookOptions`…`hookReveal` span of the logic with the two options
+# (the reveal paragraph has no place in Ks4Guess: each option's reply and
+# the shared bridge do its job). Runs AFTER ks4_science_rulings, so every
+# science row that corrected an old opener has already fired and passed its
+# expect_present check; the new text carries those corrections itself.
+# Nothing outside the opener changes.
+# ═══════════════════════════════════════════════════════════════════════
+_R18_SECTION_RE = re.compile(r'<section id="s-hook".*?</section>', re.S)
+R18_LOGIC_START = "hookOptions: ["
+R18_LOGIC_END = "onHook: (i) => this.setState({ hook: i }),"
+
+
+def r18_slugs():
+    from ks4_lessons import start_here
+    return {s for s, r in start_here.START_HERE.items() if r["batch"] == "pilot"}
+
+
+def apply_r18_start_here(site_slug, design_file, template_text, logic_text):
+    """(template, logic, fired). A pilot lesson with no record is untouched."""
+    from ks4_lessons import start_here
+    rec = start_here.START_HERE.get(site_slug)
+    if rec is None or rec["batch"] != "pilot":
+        return template_text, logic_text, False
+    hits = _R18_SECTION_RE.findall(template_text)
+    if len(hits) != 1 or 'name="Ks4Choice"' not in hits[0]:
+        raise RulingError(
+            "ks4_rulings R18: %s should carry exactly one #s-hook section "
+            "mounting Ks4Choice; found %d section(s). Design's delivery moved."
+            % (design_file, len(hits)))
+    template_text = _R18_SECTION_RE.sub(
+        lambda m: start_here.render_section(site_slug), template_text, count=1)
+
+    _require(logic_text, R18_LOGIC_START, design_file, "R18")
+    _require(logic_text, R18_LOGIC_END, design_file, "R18")
+    a = logic_text.index(R18_LOGIC_START)
+    b = logic_text.index(R18_LOGIC_END)
+    if not (a < b and "hookReveal:" in logic_text[a:b]):
+        raise RulingError(
+            "ks4_rulings R18: %s's hookOptions…onHook span does not hold "
+            "hookReveal — Design's delivery moved." % design_file)
+    logic_text = (logic_text[:a] + start_here.render_options_js(site_slug)
+                  + logic_text[b:])
+    for old, new in rec["logic_swaps"]:
+        _require(logic_text, old, design_file, "R18")
+        logic_text = logic_text.replace(old, new, 1)
+    return template_text, logic_text, True

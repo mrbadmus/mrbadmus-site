@@ -50,12 +50,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Chew a plain cracker for a minute. It starts to taste sweet.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">A cracker is mostly starch, and starch does not taste sweet. Keep a piece in your mouth without swallowing, and after a minute or so it tastes sugary. Nothing was added except saliva.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Where has the sugar come from?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="Chew a plain cracker for a minute. It starts to taste sweet." scene="A cracker is mostly starch, and starch does not taste sweet. Keep a piece in your mouth without swallowing, and after a minute or so it tastes sugary." question="is the sugar made by the chewing, or by something in your saliva?" options="{{ hookOptions }}" bridge="Without an enzyme, that reaction would be far too slow to notice at body temperature. Next: what enzymes are, and why each one works on only one kind of substance." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -638,12 +633,9 @@ class Component extends DCLogic {
       endNext: (this.props.mrbPrevNext || {}).next || null,
       endConnects: ready && K.hrefFor ? [{ href: K.hrefFor('digestive-system', R), label: 'The digestive system' }].filter((c) => c.href) : [],
       hookOptions: [
-        { text: 'Something in saliva breaks the starch down into sugar', reply: '' },
-        { text: 'The starch dissolves in saliva and becomes sugar', reply: 'Dissolving does not turn one substance into another: dissolved salt is still salt.' },
-        { text: 'Chewing releases sugar hidden inside the cracker', reply: 'Chewing makes smaller pieces, but the pieces are still starch.' },
-        { text: 'Warmth in the mouth cooks the starch into sugar', reply: 'Body temperature is far too cool to cook anything. Something is speeding the reaction up.' }
+        { text: 'By the chewing', correct: false, reply: 'Chewing breaks the cracker into smaller pieces, but the pieces are still starch. Something in saliva is turning the starch into sugar.' },
+        { text: 'By something in your saliva', correct: true, reply: 'Saliva contains amylase, an enzyme that breaks starch down into sugars.' }
       ],
-      hookReveal: 'Saliva contains amylase, an enzyme. Amylase breaks starch down into sugars. Without it, that reaction would be far too slow to notice at body temperature.',
       onHook: (i) => this.setState({ hook: i }),
       // lock and key
       fitTitle: ['Which molecule is the key?', 'Now heat the enzyme.', 'Now cool it down again.', 'Heated, then cooled.'][s.fitStage],

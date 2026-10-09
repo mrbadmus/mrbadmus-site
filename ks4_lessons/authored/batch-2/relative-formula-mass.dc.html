@@ -66,12 +66,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Three atoms against two.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">A water molecule, H₂O, has three atoms. An oxygen molecule, O₂, has two. Atoms of different elements have different masses: on the periodic table, hydrogen is 1 and oxygen is 16.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Which molecule has the greater mass?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="Three atoms against two." scene="A water molecule, H₂O, has three atoms. An oxygen molecule, O₂, has two. Atoms of different elements have different masses: on the periodic table, hydrogen is 1 and oxygen is 16." question="which molecule has the greater mass: the water, or the oxygen?" options="{{ hookOptions }}" bridge="Adding up the masses of the atoms in a formula gives its relative formula mass. Next: how to count the atoms in any formula." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -424,12 +419,9 @@ class Component extends DCLogic {
         { href: K.hrefFor('using-moles-calculations', R), label: 'Using moles in calculations' }
       ].filter((c) => c.href) : [],
       hookOptions: [
-        { text: 'The water molecule, because it has more atoms', reply: 'More atoms does not mean more mass: two of the three are hydrogen, the lightest atom.' },
-        { text: 'They are the same, because both contain oxygen', reply: 'Water has one oxygen atom; O₂ has two.' },
-        { text: 'The oxygen molecule, even though it has fewer atoms', reply: 'Check it with the unpacker below.' },
-        { text: 'You cannot compare molecules of two different substances', reply: 'You can: add up the masses of the atoms in each.' }
+        { text: 'The water', correct: false, reply: 'More atoms does not always mean more mass: two of water’s three atoms are hydrogen, the lightest of all. H₂O is 1 + 1 + 16 = 18; O₂ is 16 + 16 = 32.' },
+        { text: 'The oxygen', correct: true, reply: 'Add up the masses: H₂O is 1 + 1 + 16 = 18, and O₂ is 16 + 16 = 32.' }
       ],
-      hookReveal: 'Add the relative atomic masses. H₂O: 1 + 1 + 16 = 18. O₂: 16 + 16 = 32. The oxygen molecule has nearly twice the mass, with fewer atoms.',
       onHook: (i) => this.setState({ hook: i }),
       upProgress: Object.keys(s.up).length + ' of ' + FORMS.length + ' unpacked',
       upFig: uFig ? K.fig(uFig.svg, uFig.alt) : null,

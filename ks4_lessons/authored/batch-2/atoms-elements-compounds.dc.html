@@ -60,12 +60,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">A metal that burns, a gas that poisons, a crystal you eat.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">Sodium is a soft metal that reacts violently with water. Chlorine is a toxic yellow-green gas. When the two react, the product is sodium chloride: table salt, safe to sprinkle on food.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Why is salt safe to eat when sodium and chlorine are not?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="A metal that burns, a gas that poisons, a crystal you eat." scene="Sodium is a soft metal that reacts violently with water. Chlorine is a toxic yellow-green gas. Bring the two together and you get sodium chloride: table salt, safe to sprinkle on food." question="are the sodium and chlorine in salt just mixed together, or joined up into something new?" options="{{ hookOptions }}" bridge="A substance made of two or more elements chemically combined is a compound. Next: atoms, elements, compounds and mixtures." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -409,12 +404,9 @@ class Component extends DCLogic {
         { href: K.hrefFor('chemical-bonds', R), label: 'Chemical bonds' }
       ].filter((c) => c.href) : [],
       hookOptions: [
-        { text: 'Salt holds only a tiny amount of sodium and chlorine, too little to harm you.', reply: 'Over half the mass of salt is chlorine. Dilution is not the reason.' },
-        { text: 'The sodium and chlorine are still there, but water in the salt keeps them apart.', reply: 'Dry salt contains no water, and its sodium and chlorine are not apart at all.' },
-        { text: 'The elements have chemically combined into a new substance with new properties.', reply: 'Test that idea on the particle boxes below.' },
-        { text: 'Cooking and processing remove the dangerous parts of each element.', reply: 'Nothing is removed. All the sodium and chlorine are still in the salt.' }
+        { text: 'Just mixed together', correct: false, reply: 'If they were only mixed, each would still behave as it did before, and salt would fizz in water. They have joined up into a new substance.' },
+        { text: 'Joined up into something new', correct: true, reply: 'They have chemically combined, and the new substance has properties of its own.' }
       ],
-      hookReveal: 'Sodium chloride is a compound: sodium and chlorine chemically combined in fixed proportions. A compound is a new substance, so its properties are different from those of its elements. Getting sodium or chlorine back out would take another chemical reaction, not a sieve or a magnet.',
       onHook: (i) => this.setState({ hook: i }),
       zoomProgress: zCalled + ' of ' + ROUNDS.length + ' called',
       zoomFig: fig ? K.fig(fig.svg, fig.alt) : null,

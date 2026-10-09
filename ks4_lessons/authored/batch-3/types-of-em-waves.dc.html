@@ -53,12 +53,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Your phone is sending a wave to the nearest mast right now. You cannot see it.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">The phone signal, the warmth you feel from a fire, the light from this screen, the ultraviolet that tans skin and the X-rays that photograph a broken bone are one family of waves: electromagnetic waves. Your eyes respond to just one group of them.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="How much of the whole electromagnetic spectrum can your eyes detect?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="Your phone is sending a wave to the nearest mast right now." scene="The phone signal, the warmth you feel from a fire, the light from this screen, the ultraviolet that tans skin and the X-rays that photograph a broken bone are one family of waves: electromagnetic waves." question="can your eyes detect most of that family, or only a small part of it?" options="{{ hookOptions }}" bridge="Visible light is one group of seven. The other six are just as real: an aerial, a camera sensor or your skin can detect them. Next: what all seven have in common." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -415,12 +410,9 @@ class Component extends DCLogic {
       keySpec: R.isTriple ? 'AQA 4.6.2.1 (8463)' : 'AQA 6.6.2.1 (8464)',
       endPrev: pn.prev || null, endNext: pn.next || null, endConnects: connects,
       hookOptions: [
-        { text: 'A narrow band in the middle of it', correct: true, reply: '' },
-        { text: 'Most of it: the other groups are rare and weak', correct: false, reply: 'They are all around you: phone signals, radio, and the Sun’s infrared and ultraviolet. Your eyes just do not respond to them.' },
-        { text: 'All of it: the others are not really light', correct: false, reply: 'Radio waves, X-rays and the rest are electromagnetic waves, exactly as light is. They are not sound, and not a different kind of wave.' },
-        { text: 'Exactly half: the other half is invisible', correct: false, reply: 'Far less than half. Visible light is one narrow group out of seven.' }
+        { text: 'Most of it', correct: false, reply: 'The rest are all around you: phone signals, radio, and the Sun’s infrared and ultraviolet. Your eyes just do not respond to them.' },
+        { text: 'Only a small part', correct: true, reply: 'Your eyes only respond to visible light, from red to violet.' }
       ],
-      hookReveal: 'Red to violet, and nothing either side. Our eyes only detect visible light, so they detect a limited range of electromagnetic waves. The rest are just as real: an aerial, a camera sensor or your skin can detect them.',
       onHook: (i) => this.setState({ hook: i }),
       benchStage: p1 ? 'part 2 of 2' : 'part 1 of 2',
       benchTitle: p1 ? 'Same family, different waves' : 'Build the spectrum',

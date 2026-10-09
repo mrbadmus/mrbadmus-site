@@ -48,12 +48,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">A fallen leaf rots away. Its carbon does not.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">A leaf that drops in autumn has mostly vanished a year later. Yet the amount of carbon on Earth never changes: carbon atoms are not made or destroyed, only moved.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="So where did the leaf's carbon go?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="A fallen leaf rots away. Its carbon does not." scene="A leaf that drops in autumn has mostly vanished a year later. Yet the amount of carbon on Earth never changes: carbon atoms are not made or destroyed, only moved." question="did most of the leaf’s carbon go up into the air, or down into the soil?" options="{{ hookOptions }}" bridge="From the air, a plant can take that carbon in again. Next: follow one carbon atom round the cycle." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -390,12 +385,9 @@ class Component extends DCLogic {
       specNote: 'AQA 4.7.2.2 (' + (R.isTriple ? '8461' : '8464') + ')',
       endPrev: pn.prev || null, endNext: pn.next || null, endConnects: connects,
       hookOptions: [
-        { text: 'Microorganisms respired it out as carbon dioxide', reply: 'Follow an atom through that step, and the rest of the cycle, below.' },
-        { text: 'It soaked into the soil and stays there for ever', reply: 'Some lingers in the soil for a while, but decomposers keep feeding on it.' },
-        { text: 'Rotting destroyed the carbon atoms completely', reply: 'Rotting breaks molecules apart. The atoms survive, every one.' },
-        { text: 'It turned into coal within a few months', reply: 'Coal takes millions of years, and only forms when decay is stopped.' }
+        { text: 'Up into the air', correct: true, reply: 'Bacteria and fungi in the soil feed on the leaf and respire, releasing its carbon as carbon dioxide.' },
+        { text: 'Down into the soil', correct: false, reply: 'Some stays in the soil for a while, but bacteria and fungi keep feeding on it. As they respire, they release most of it into the air as carbon dioxide.' }
       ],
-      hookReveal: 'Bacteria and fungi in the soil feed on the leaf and respire. Respiration releases the leaf’s carbon into the air as carbon dioxide, where a plant can take it in again. The same carbon atoms go round and round.',
       onHook: (i) => this.setState({ hook: i }),
       tTrip: st.trip === 1 ? 'journey 1' : 'journey 2',
       tHead: st.head, tText: st.text, tPrompt: st.prompt,

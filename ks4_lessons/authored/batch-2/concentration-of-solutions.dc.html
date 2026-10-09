@@ -47,12 +47,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">60 g of sugar in every litre.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">A sports drink label reads: carbohydrate 60 g/dm³. That number is a concentration: the mass of sugar dissolved in each dm³ of drink. One dm³ is one litre, or 1000 cm³. You pour yourself a 250 cm³ glass.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="How much sugar is in your glass?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="60 g of sugar in every litre." scene="A sports drink label reads: carbohydrate 60 g/dm³. That number is a concentration: the mass of sugar dissolved in each dm³ of drink. One dm³ is one litre, or 1000 cm³. You pour yourself a 250 cm³ glass." question="is there about 15 g of sugar in your glass, or about 240 g?" options="{{ hookOptions }}" bridge="Mass, volume and concentration are linked by one equation. Next: how to calculate a concentration." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -318,12 +313,9 @@ class Component extends DCLogic {
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: ready ? [{ href: K.hrefFor('using-moles-calculations', R), label: 'Using moles: calculations and limiting reactants' }, { href: K.hrefFor('titrations', R), label: 'Titrations' }].filter((c) => c.href) : [],
       hookOptions: [
-        { text: '15 g', reply: 'Your glass holds 250 cm³, a quarter of a dm³, so it holds a quarter of 60 g.' },
-        { text: '60 g', reply: '60 g is the sugar in a whole dm³. Your glass holds less than that.' },
-        { text: '240 g', reply: 'That is 60 × 4. A glass smaller than a litre must hold less than 60 g.' },
-        { text: '15 000 g', reply: 'That is 60 × 250, treating cm³ as if they were dm³: 15 kg of sugar in one glass.' }
+        { text: 'About 15 g', correct: true, reply: '250 cm³ is a quarter of a litre, so the glass holds a quarter of 60 g.' },
+        { text: 'About 240 g', correct: false, reply: 'That is 60 × 4. A glass smaller than a litre must hold less than 60 g: a quarter of it, 15 g.' }
       ],
-      hookReveal: '250 cm³ ÷ 1000 = 0.25 dm³. Mass = 60 g/dm³ × 0.25 dm³ = 15 g.',
       onHook: (i) => this.setState({ hook: i }),
       benchProgress: Math.min(NEED, s.made.length) + ' of ' + NEED + ' solutions made',
       benchFig: ready ? K.fig(this.benchSvg(m, V, s.pick === null ? 0 : s.prog), '') : null,

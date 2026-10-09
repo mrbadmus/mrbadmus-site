@@ -47,12 +47,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Two factories. One product.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">Both factories make ethanol, C₂H₅OH. Factory A ferments sugar: C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂. Factory B adds steam to ethene: C₂H₄ + H₂O → C₂H₅OH. Both run perfectly: every molecule of starting material reacts.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Which factory turns the bigger share of its starting materials’ mass into ethanol?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="Two factories. One product." scene="Both factories make ethanol, C₂H₅OH. Factory A ferments sugar: C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂. Factory B adds steam to ethene: C₂H₄ + H₂O → C₂H₅OH. Both run perfectly: every molecule of starting material reacts." question="which factory turns the bigger share of its starting materials’ mass into ethanol: A or B?" options="{{ hookOptions }}" bridge="Factory A does not want its carbon dioxide, so not all of its starting mass becomes useful product. Next: put a number on the share that does." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -349,12 +344,9 @@ class Component extends DCLogic {
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: ready ? [{ href: K.hrefFor('relative-formula-mass', R), label: 'Relative formula mass' }, { href: K.hrefFor('conservation-of-mass', R), label: 'Conservation of mass' }, { href: K.hrefFor('percentage-yield', R), label: 'Percentage yield' }, { href: K.hrefFor('addition-polymerisation', R), label: 'Addition polymerisation' }].filter((x) => x.href) : [],
       hookOptions: [
-        { text: 'Factory A, because each sugar molecule makes two ethanol molecules', correct: false, reply: 'Two ethanol molecules, yes, but two carbon dioxide molecules leave with them.' },
-        { text: 'Factory B, because ethanol is the only substance it makes', correct: true, reply: '' },
-        { text: 'Neither: every molecule reacts in both, so both use all of it', correct: false, reply: 'Every molecule reacting describes the yield. Factory A still sends part of the mass out as carbon dioxide.' },
-        { text: 'Factory A, because sugar is a renewable raw material', correct: false, reply: 'True, and it matters when a route is chosen. It does not change how much of the mass ends up as ethanol.' }
+        { text: 'Factory A', correct: false, reply: 'Each sugar molecule does make two ethanol molecules, but two carbon dioxide molecules leave with them, carrying off almost half the mass.' },
+        { text: 'Factory B', correct: true, reply: 'Ethanol is the only product, so every atom of the ethene and steam ends up in it.' }
       ],
-      hookReveal: 'In Factory B every atom of the ethene and steam ends up in ethanol. In Factory A, the carbon dioxide carries off almost half of the sugar’s mass.',
       onHook: (i) => this.setState({ hook: i }),
       stripTabs: RX.map((r, i) => ({ label: r.tab + (ran[i] ? ' ✓' : ''), pressed: s.tab === i, disabled: busy, style: this.seg(s.tab === i, busy),
         onClick: () => { if (this.state.running < 0) this.setState({ tab: i }); } })),
