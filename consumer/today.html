@@ -207,6 +207,17 @@
     border-color: var(--ks3-accent); background: var(--ks3-accent-tint);
     color: var(--ks3-accent-text);
   }
+  /* ⊕ B2C fix run (9 Oct 2026). At 390px the tag kept its row beside the
+     title, leaving the title ~140px, and "Practice: Photosynthesis" ran
+     under "From Mr Badmus". On a phone the tag now takes its own line under
+     the title (lined up with it, past the icon), so the title has the whole
+     card. A word longer than the card still breaks rather than overflow. */
+  .td-item-title, .td-item-sub, .td-later-title { overflow-wrap: break-word; }
+  @media (max-width: 560px) {
+    .td-item-top { flex-wrap: wrap; row-gap: 10px; }
+    .td-item-body { flex: 1 1 calc(100% - 58px); }
+    .td-tag { margin-left: 58px; }
+  }
 
   .td-h2-later {
     margin: 30px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
@@ -525,14 +536,13 @@
       var g = C.guard(data.access, 'child');
       writable = g.writable;
 
-      /* Design's date label, her format exactly. Local time on purpose —
-         a child in Britain looking at a page that says yesterday because
-         a server is on UTC is a bug they cannot diagnose. */
-      el('td-date').textContent = new Date().toLocaleDateString('en-GB', {
-        weekday: 'long', day: 'numeric', month: 'long'
-      });
+      /* Design's date label, her format exactly ("Friday 9 October").
+         ⊕ B2C fix run (9 Oct 2026): LONDON time, not the device's — the
+         day the server files today's work under, so "today" on this page
+         and "today" on the parent's are the same day on any device. */
+      el('td-date').textContent = C.longDate();
 
-      var hour = new Date().getHours();
+      var hour = C.londonHour();
       // ⊕ B2C polish: the small hours get "Hello", not "Morning".
       var partOfDay = hour < 5 ? 'Hello' : (hour < 12 ? 'Morning' : (hour < 18 ? 'Afternoon' : 'Evening'));
       el('td-greet').textContent = kid.name
@@ -813,7 +823,7 @@
           '<div class="td-bubble">' + C.escapeHtml(m.text || '') + '</div>' +
           '<span class="td-bubble-meta">' +
             C.escapeHtml(mine ? 'You' : parentName) + ' · ' +
-            C.escapeHtml(m.time || C.fmtTime(m.created_at)) +
+            C.escapeHtml(C.msgWhen(m.created_at) || m.time || '') +
           '</span>' +
         '</div>';
       }).join('');
