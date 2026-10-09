@@ -1561,11 +1561,11 @@
   function pendingMeta(c) {
     // ⊕ B2C polish (9 Oct 2026) — board and route only for Years 10–11, as
     // loadFamily's `meta`: a form switched from Y10 back to Y8 keeps its board.
-    var ks4 = Number(c.year) >= 10;
-    return 'Year ' + c.year + (ks4 && c.board ? ' · ' + c.board : '') +
-      (ks4 && c.route ? ' · ' + c.route : '') +
-      ' · ' + (c.mode === 'home' ? 'Home education' : 'Alongside school') +
-      ' · @' + c.user;
+    // ⊕ Round 3: the same childLine() as the saved children, so a child reads
+    // the same before and after their login is made.
+    return C.childLine({ year: c.year, exam_board: c.board, pathway: c.route,
+                         tier: tierValue(c.tier), mode: c.mode, username: c.user },
+                       { username: true });
   }
 
   function bindChildren() {
@@ -1831,7 +1831,6 @@
       var bst = d && d.billing && d.billing.state;
       S.subscribed = !!(bst && bst !== 'none');
       S.children = ((d && d.children) || []).map(function (c) {
-        var mode = c.mode === 'home_education' ? 'Home education' : 'Alongside school';
         var board = c.exam_board || null;
         var route = c.pathway ? (c.pathway.charAt(0).toUpperCase() + c.pathway.slice(1)) : null;
         var tierLabel = c.tier === 'foundation' ? 'Foundation'
@@ -1853,8 +1852,8 @@
           board: isKs4 ? board : null,
           routeLabel: route,
           tierLabel: tierLabel,
-          meta: 'Year ' + c.year_group + (isKs4 && board ? ' · ' + board : '') +
-                (isKs4 && route ? ' · ' + route : '') + ' · ' + mode + ' · @' + c.username
+          // ⊕ Round 3: the one child line (consumer-common.js), with tier.
+          meta: C.childLine(c, { username: true })
         };
       });
     }, function (e) {

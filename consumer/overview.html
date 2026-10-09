@@ -790,9 +790,6 @@
   }
 
   /* ═══ derived values — Design's `renderVals`, over real fields ════════ */
-  function modeLabel(m) {
-    return m === 'home_education' || m === 'home' ? 'Home education' : 'Alongside school';
-  }
   function workOf(k) { return Array.isArray(k.work) ? k.work : []; }
   function doneOf(k) { return workOf(k).filter(function (w) { return w.done; }).length; }
 
@@ -897,18 +894,12 @@
     return 'Messages land on ' + k.first_name + '’s Today screen.';
   }
 
+  /* ⊕ B2C polish (9 Oct 2026) — board and route are GCSE facts, asked only
+     for Years 10–11 (signup stores 'AQA' on every KS3 child). ⊕ Round 3: the
+     line itself is consumer-common.js childLine(), shared with the home card,
+     signup and checkout-return, and it carries the tier ("Combined Higher"). */
   function metaLine(k) {
-    var bits = ['Year ' + k.year_group];
-    /* ⊕ B2C polish (9 Oct 2026) — board and route are GCSE facts, asked only
-       for Years 10–11. Signup stores 'AQA' on every KS3 child (the column
-       needs a value), so a Year 8 read "Year 8 · AQA · Alongside school"
-       about a board nobody chose. Same gate as signup's own family list. */
-    var ks4 = Number(k.year_group) >= 10;
-    if (ks4 && k.exam_board) { bits.push(k.exam_board); }
-    if (ks4 && k.pathway) { bits.push(k.pathway.charAt(0).toUpperCase() + k.pathway.slice(1)); }
-    bits.push(modeLabel(k.mode));
-    if (k.username) { bits.push('@' + k.username); }
-    return bits.join(' · ');
+    return C.childLine(k, { username: true });
   }
 
   /* ═══ shell: sidebar, header, banners, tab bar ════════════════════════ */
@@ -1277,8 +1268,8 @@
             '<span style="flex:1;min-width:0">' +
               '<span style="display:block;font-family:var(--ks3-font-display);font-weight:800;' +
                 'font-size:22px;letter-spacing:-.02em">' + esc(k.first_name) + '</span>' +
-              '<span style="display:block;font-size:14px;color:var(--ks3-ink-muted)">Year ' +
-                esc(String(k.year_group)) + ' · ' + esc(modeLabel(k.mode)) + '</span></span>' +
+              '<span style="display:block;font-size:14px;color:var(--ks3-ink-muted)">' +
+                esc(C.childLine(k)) + '</span></span>' +
             (k.unread ? ('<span class="dk-pill">' + esc(String(k.unread)) + '</span>') : '') +
             (k.status === 'paused' ? '<span style="padding:5px 10px;border-radius:99px;' +
               'border:2px solid var(--ks3-rule-strong);background:var(--ks3-band);font-size:13px;' +

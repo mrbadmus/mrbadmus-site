@@ -288,7 +288,6 @@
       h += '<div style="margin-top:26px;display:flex;flex-direction:column;gap:18px">' +
         children.map(function (c) {
           var items = work[c.id];
-          var mode = c.mode === 'home_education' ? 'Home education' : 'Alongside school';
           var body;
           if (items === null) {
             body = '<p style="margin:16px 0 0;font-size:15px;color:var(--ks3-ink-muted)">' +
@@ -320,7 +319,7 @@
             '<span style="display:block;font-family:var(--ks3-font-display);font-weight:800;font-size:22px;' +
             'letter-spacing:-.02em">' + esc(c.first_name) + '’s first week</span>' +
             '<span style="display:block;font-size:14px;color:var(--ks3-ink-muted)">' +
-            esc('Year ' + c.year_group + ' · ' + mode) + '</span></span></div>' +
+            esc(C.childLine(c)) + '</span></span></div>' +
             body + '</div>';
         }).join('') + '</div>';
 
