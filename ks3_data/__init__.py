@@ -24,10 +24,12 @@ import pkgutil
 
 from . import structure
 from .default_sequence import DEFAULT_SEQUENCE_V1
+from . import start_here
 
 # Modules in this package that are NOT unit modules.
 _NON_UNIT_MODULES = {"structure", "default_sequence", "half_terms",
-                     "school_schemes", "substatements", "quantities"}
+                     "school_schemes", "substatements", "quantities",
+                     "start_here"}
 
 
 def _authored_modules():
@@ -54,6 +56,7 @@ def build_units():
     """
     skeleton = structure.unit_index()
     authored = _authored_modules()
+    start_here.validate()
     units = []
 
     for code, sk in skeleton.items():
@@ -78,7 +81,8 @@ def build_units():
 
             lesson = auth_lessons.get(slot["slug"])
             if lesson is not None:
-                lesson = dict(lesson)
+                # The "Start here" guess, where one is written (start_here.py).
+                lesson = start_here.apply(dict(lesson))
                 lesson["authored"] = True
                 # Slot title/family are the skeleton's record; an authored
                 # lesson may legitimately refine the title but never the slug.
@@ -129,6 +133,12 @@ def build_units():
             "authored_count":  sum(1 for l in lessons if l["authored"]),
         })
 
+    # A guess written for a slug no authored lesson has would never render.
+    stray = set(start_here.START_HERE) - {
+        l["slug"] for u in units for l in u["lessons"] if l["authored"]}
+    if stray:
+        raise ValueError("start_here.py names lesson(s) that are not authored: "
+                         "%s." % sorted(stray))
     return units
 
 
