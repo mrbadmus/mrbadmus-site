@@ -52,12 +52,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">A whistle that only the dog can hear.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">A trainer blows a dog whistle. Across the park, the dog's head snaps round. The trainer, with the whistle at her lips, hears nothing at all.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Why does the trainer hear nothing?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="A whistle that only the dog can hear." scene="A trainer blows a dog whistle. Across the park, the dog’s head snaps round. The trainer, with the whistle at her lips, hears nothing at all." question="does she hear nothing because the whistle is too quiet, or because its note is too high?" options="{{ hookOptions }}" bridge="A human ear only hears sounds within a certain range of frequencies. Next: what a sound wave is, and how your ear turns it into something you hear." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -364,12 +359,9 @@ class Component extends DCLogic {
       railV, theme, ready, draftVisible: this.props.showDraft !== false,
       endPrev: pn.prev || null, endNext: pn.next || null, endConnects: connects,
       hookOptions: [
-        { text: 'It is too quiet to hear from so close by', reply: 'Loudness is not the problem: the dog hears it from right across the park.' },
-        { text: 'Its pitch is too high for a human ear', reply: '' },
-        { text: 'Its sound cannot travel through the air to her', reply: 'It crosses the whole park to reach the dog, so it travels through air perfectly well.' },
-        { text: 'It is not a sound wave, so ears cannot detect it', reply: 'It is a sound wave: compressions and rarefactions in the air, like any other sound.' }
+        { text: 'It is too quiet', correct: false, reply: 'She has it right at her lips, where it is loudest, and still hears nothing. Its note is too high for a human ear.' },
+        { text: 'Its note is too high', correct: true, reply: 'Its frequency is too high for a human ear, but not for a dog’s.' }
       ],
-      hookReveal: 'The whistle’s frequency is too high for a human ear. The sound reaches the trainer’s ear just as it reaches the dog’s, but a human ear only turns sounds in a certain range of frequencies into something you hear.',
       onHook: (i) => this.setState({ hook: i }),
       // flagship
       pEyebrow: 'From air to ear · step ' + st + ' of 4',

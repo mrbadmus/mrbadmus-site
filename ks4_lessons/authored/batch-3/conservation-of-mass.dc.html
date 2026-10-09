@@ -47,12 +47,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">A spark in a sealed flask.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">A thick glass flask holds methane and oxygen. The stopper is clamped shut, and the flask sits on a balance reading 312.48 g. A spark sets the methane burning. A flash, and then droplets of water run down the inside of the glass.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What does the balance read once the flask has cooled?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="A spark in a sealed flask." scene="A thick glass flask holds methane and oxygen. The stopper is clamped shut, and the flask sits on a balance reading 312.48 g. A spark sets the methane burning. A flash, and then droplets of water run down the inside of the glass." question="once the flask has cooled, does the balance read less than 312.48 g, or exactly the same?" options="{{ hookOptions }}" bridge="A flash, new substances, and still the same reading. Next: the law behind it." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -361,12 +356,9 @@ class Component extends DCLogic {
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: ready ? [{ href: K.hrefFor('atoms-elements-compounds', R), label: 'Atoms, elements and compounds' }, { href: K.hrefFor('relative-formula-mass', R), label: 'Relative formula mass' }, { href: K.hrefFor('mass-changes-reactions', R), label: 'Mass changes when a gas is involved' }, { href: K.hrefFor('amounts-in-equations', R), label: 'Amounts of substances in equations' }].filter((x) => x.href) : [],
       hookOptions: [
-        { text: 'More than 312.48 g, because new substances have been made', correct: false, reply: 'New substances, yes, but built from the same atoms. Nothing was added to the flask.' },
-        { text: 'Less than 312.48 g, because some mass burned away as energy', correct: false, reply: 'Energy leaves as heat, but energy is not a substance. No atoms left the sealed flask.' },
-        { text: 'Exactly 312.48 g, because nothing entered or left the flask', correct: true, reply: '' },
-        { text: 'Less than 312.48 g, because the methane and oxygen were used up', correct: false, reply: 'Used up as reactants, but every one of their atoms is now in the carbon dioxide and water.' }
+        { text: 'Less than 312.48 g', correct: false, reply: 'The methane and oxygen were used up, but every one of their atoms is still in the flask, now in carbon dioxide and water.' },
+        { text: 'Exactly 312.48 g', correct: true, reply: 'Nothing entered or left the sealed flask, so the mass stays the same.' }
       ],
-      hookReveal: 'The reading does not change. The flask below shows where every atom went.',
       onHook: (i) => this.setState({ hook: i }),
       flaskTabs: RX.map((r, i) => ({ label: r.tab + (flaskRan[i] ? ' ✓' : ''), pressed: s.tab === i, disabled: busy, style: this.seg(s.tab === i, busy),
         onClick: () => { if (this.state.running < 0) this.setState({ tab: i }); } })),

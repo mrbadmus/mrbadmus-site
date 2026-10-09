@@ -52,12 +52,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">&ldquo;Do not burn, even after use.&rdquo;</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">Every aerosol can carries that warning. An &ldquo;empty&rdquo; can is not empty: once the spray runs out, it is still sealed and still full of gas.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Why must an empty aerosol can never go on a fire?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="“Do not burn, even after use.”" scene="Every aerosol can carries that warning. An “empty” can is not empty: once the spray runs out, it is still sealed and still full of gas." question="when the can heats up on a fire, does it burst because the leftover gas catches fire inside it, or because the hot gas pushes harder on the walls?" options="{{ hookOptions }}" bridge="What the gas particles do to push harder is yours to work out on the bench. Next: what that push is." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -540,12 +535,9 @@ class Component extends DCLogic {
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: [{ href: href('internal-energy'), label: 'Internal energy' }, { href: href('temperature-changes-shc'), label: 'Specific heat capacity' }, { href: href('pressure-in-a-fluid'), label: 'Pressure in a fluid' }, { href: href('work-done-energy-transfer'), label: 'Work done and energy transfer' }].filter((c) => c.href),
       hookOptions: [
-        { text: 'Heating makes the gas particles swell until they split the can open', reply: 'Molecules do not change size when they are heated.' },
-        { text: 'Heating makes the gas inside push harder on the walls, until the can bursts', reply: '' },
-        { text: 'The leftover gas catches fire inside the can and burns through it', reply: 'Even a can holding only air would burst. The danger is the push of the hot gas.' },
-        { text: 'Heating softens the metal, so the normal push of the gas splits it', reply: 'The metal is not what changes most: the gas pushing on it is.' }
+        { text: 'The gas catches fire inside', correct: false, reply: 'Even a can holding only air, which cannot burn, would burst. As the gas heats up, it pushes harder and harder on the walls.' },
+        { text: 'The hot gas pushes harder', correct: true, reply: 'The can is sealed, so the hot gas cannot escape, and its push on the walls keeps growing until the metal splits.' }
       ],
-      hookReveal: 'The can is sealed, so the gas cannot escape as it heats, and its push on the walls keeps growing until the metal splits. The bench shows what the molecules do differently to push harder.',
       onHook: (i) => this.setState({ hook: i }),
 
       bNum: String(k + 1), bTitle: st.title,

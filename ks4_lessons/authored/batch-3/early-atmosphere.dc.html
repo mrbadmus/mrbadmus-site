@@ -48,12 +48,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Venus and Mars may still have the kind of air Earth started with.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">Scientists think Earth's air, about 4 billion years ago, was mainly carbon dioxide, like theirs. Compare it with Earth's air today.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" figure-svg="{{ hookFig }}" prompt="So where is most of Earth's carbon now?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,520px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="Venus and Mars may still have the kind of air Earth started with." scene="Scientists think Earth’s air, about 4 billion years ago, was mainly carbon dioxide, like theirs. Compare it with Earth’s air today." question="is most of the carbon from all that carbon dioxide now locked underground, or inside living things?" figure-svg="{{ hookFig }}" options="{{ hookOptions }}" bridge="Getting it there took about 4 billion years. Next: run the clock on how Earth’s air changed." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -433,12 +428,9 @@ class Component extends DCLogic {
       endConnects: ready ? [{ href: K.hrefFor('composition-of-atmosphere', R), label: 'The composition of the atmosphere' }, { href: K.hrefFor('greenhouse-gases', R), label: 'Greenhouse gases and climate change' }, { href: K.hrefFor('crude-oil-hydrocarbons', R), label: 'Crude oil and hydrocarbons' }, { href: K.hrefFor('photosynthesis', R), label: 'Photosynthesis' }].filter((x) => x.href) : [],
       hookFig: ready ? this.hookSvg() : '',
       hookOptions: [
-        { text: 'Locked in rocks and fossil fuels underground', correct: true, reply: '' },
-        { text: 'Turned into the oxygen that we breathe today', correct: false, reply: 'Carbon atoms cannot turn into oxygen atoms. The oxygen came from somewhere else.' },
-        { text: 'Inside the plants and animals alive today', correct: false, reply: 'Living things hold some of it, but only a small share. Far more is underground.' },
-        { text: 'Still in the air, just spread more thinly', correct: false, reply: 'The share really did fall: from most of the air to about 0.04%.' }
+        { text: 'Locked underground', correct: true, reply: 'Most of it is in sedimentary rocks such as limestone, and in fossil fuels.' },
+        { text: 'Inside living things', correct: false, reply: 'Living things hold some of it, but only a small share. Far more is locked underground, in rocks such as limestone and in fossil fuels.' }
       ],
-      hookReveal: 'Most of it is underground: in sedimentary rocks such as limestone, and in fossil fuels. Getting it there took about 4 billion years.',
       onHook: (i) => this.setState({ hook: i }),
       // clock
       cWhen: st.when, cHead: st.head, cText: st.text, cPrompt: st.prompt,

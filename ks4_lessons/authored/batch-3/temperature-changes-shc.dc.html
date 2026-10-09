@@ -53,12 +53,7 @@
       </header>
 
       <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
-        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
-        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Scorching sand, cool sea.</h2>
-        <p style="margin: 14px 0 0; max-width: 58ch;">On a sunny afternoon, dry sand on a beach gets too hot to walk on, while the sea next to it hardly warms up. Both have had the same sunshine all day.</p>
-        <div style="margin-top: 18px;">
-          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Give 1 kg of dry sand and 1 kg of seawater exactly the same energy. Which warms up more?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
-        </div>
+        <dc-import name="Ks4Guess" title="Sand and sea, same sunshine." scene="On a sunny afternoon at the beach, the dry sand and the sea next to it get the same sunshine all day." question="if 1 kg of dry sand and 1 kg of seawater get exactly the same energy, which warms up more?" options="{{ hookOptions }}" bridge="That is why dry sand can get too hot to walk on while the sea stays cool. Next: the three things that decide a temperature rise." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
       </section>
 
       <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
@@ -443,12 +438,9 @@ class Component extends DCLogic {
       endPrev: pn.prev || null, endNext: pn.next || null,
       endConnects: [{ href: href('internal-energy'), label: 'Internal energy' }, { href: href('specific-latent-heat'), label: 'Changes of state and specific latent heat' }, { href: href('energy-changes-in-systems'), label: 'Energy changes in systems' }].filter((c) => c.href),
       hookOptions: [
-        { text: 'The sand: it needs less energy for each degree it warms', reply: '' },
-        { text: 'The seawater: liquids always warm up faster than solids', reply: 'Being a liquid is not what decides it. Water needs more energy per degree than sand.' },
-        { text: 'Neither: the same energy gives the same temperature rise', reply: 'Same energy, different materials: the material changes the rise too.' },
-        { text: 'The sand: it is darker, so more of the energy reaches it', reply: 'Both get exactly the same energy here, so colour plays no part.' }
+        { text: 'The sand', correct: true, reply: 'Dry sand needs only about a fifth of the energy per degree that water does.' },
+        { text: 'The seawater', correct: false, reply: 'Water needs far more energy for each degree than sand does, so the same energy warms it much less.' }
       ],
-      hookReveal: 'The sand. Warming 1 kg of water by 1 °C takes 4200 J; dry sand needs only about a fifth of that. The energy each kilogram needs per degree is a property of the material, its specific heat capacity. Water’s is unusually high, which is one reason coastal places have milder temperatures than places inland.',
       onHook: (i) => this.setState({ hook: i }),
       /* ranking */
       raceFig: ready ? K.fig(this.raceSvg(s.raceDone ? 1 : s.raceP, s.raceDone), '') : null,
