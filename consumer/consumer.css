@@ -719,3 +719,36 @@ html[data-theme="dark"] .rd :is(.c-ink, .ex-dark, .td-dark-card, .uc-rules, .gl-
 .rd:not(.ad-room, .ac-room) textarea::placeholder {
   color: var(--ks3-ink-muted);
 }
+
+/* ⊕ B2C polish (9 Oct 2026) — THE THEME CONTROL ON A PHONE IS IN FLOW.
+   Each page's own head style makes `.mrb-theme-float` a fixed pill at
+   top:10px right:10px. On a phone or a tablet that pill sat ON the page's
+   header: over signup's "Step 2 of 4", over the dashboard's Account button,
+   and the blind run saw it partly cut off at the top of signup's child
+   step. Below 960px (where the dashboard's mobile header with its top-right
+   Account button runs) it now takes its own row, in flow, top right, above
+   the header, with the 16px gutter — it covers nothing, cannot be clipped,
+   and keeps all three options at 44x44 (theme.js's touch rule).
+   `html body >` outranks the page's own `.mrb-theme-float` rule whatever
+   the load order. Pages whose control lives in the HEADER (Today, exam,
+   unit check, org sign-in) show theme.js's one-icon compact menu there;
+   below 601px the full group does not fit beside their header buttons, so
+   the header slot hides and a `.c-theme-phone` row (the same pill, in the
+   same place as every other consumer page) shows instead. */
+html body > .mrb-theme-float.c-theme-phone { display: none; }
+@media screen and (max-width: 959px) {
+  html body > .mrb-theme-float {
+    position: relative;
+    top: auto;
+    right: auto;
+    z-index: auto;
+    display: block;
+    width: max-content;
+    max-width: calc(100% - 32px);
+    margin: 8px 16px 0 auto;
+  }
+}
+@media screen and (max-width: 600px) {
+  html body > .mrb-theme-float.c-theme-phone { display: block; }
+  html body .c-head-theme { display: none; }
+}

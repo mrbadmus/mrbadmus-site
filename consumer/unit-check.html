@@ -304,6 +304,12 @@
 <style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
 </head>
 <body>
+<!-- ⊕ B2C polish (9 Oct 2026): the phone row for the theme control. The
+     header slot below is theme.js's one-icon compact menu, and at 360-390
+     the full Light/Dark/System group does not fit beside the header's own
+     buttons; so below 601px the header slot hides and this row shows the
+     full group, in flow, above the header (consumer.css). -->
+<div class="mrb-theme-float c-theme-phone"><span class="mrb-theme-slot" data-mrb-theme></span></div>
 
 
 <div class="rd uc-root" data-mode="ks3" id="c-main">
