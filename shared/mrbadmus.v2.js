@@ -896,22 +896,50 @@ try {
       return v.length > n ? v.slice(0, n) : v;
     }
 
-    // THE page clock (round 3): seconds since the previous ANSWER of any kind
-    // on this page — every answerable thing the sender captures stamps here,
-    // KS3's ladder included (its own detail time is overridden), so no two
-    // clocks can disagree — and, for the first answer, since the page
-    // started loading.
+    /* THE page clock (round 4). An answer's time starts at the LATEST of:
+         · the previous recorded answer on this page,
+         · page load (navigation start), and
+         · the most recent interaction (pointerdown / keydown / drop) whose
+           target is OUTSIDE this answer's own block —
+       so time spent on another block, recorded or not, is never swallowed.
+       A small ring of recent interactions is kept for that. When one action
+       yields several answers (a matching Check, a sort Check) the elapsed
+       time is split equally across them in whole seconds that sum to it.
+       Capped at 30 minutes. */
     var lastAt = Date.now();
     try {
       if (window.performance && typeof window.performance.now === 'function') {
         lastAt = Date.now() - window.performance.now();
       }
     } catch (e) { /* keep install time */ }
-    function since() {
+    var ring = [];                              // newest last: { t, el }
+    ['pointerdown', 'keydown', 'drop'].forEach(function (type) {
+      document.addEventListener(type, function (e) {
+        ring.push({ t: Date.now(), el: e.target });
+        if (ring.length > 40) { ring.shift(); }
+      }, true);
+    });
+    function startFor(block) {
+      var start = lastAt;
+      if (block && block.contains) {
+        for (var i = ring.length - 1; i >= 0; i -= 1) {
+          var r = ring[i];
+          if (r.t <= start) { break; }
+          if (!(r.el && r.el.nodeType && block.contains(r.el))) { start = r.t; break; }
+        }
+      }
+      return start;
+    }
+    // Whole seconds for `n` answers given at once from `block`, summing to
+    // the elapsed time.
+    function spans(block, n) {
       var now = Date.now();
-      var secs = Math.round((now - lastAt) / 1000);
+      var total = Math.round((now - startFor(block)) / 1000);
+      total = total < 0 ? 0 : (total > CAP_S ? CAP_S : total);
       lastAt = now;
-      return secs < 0 ? 0 : (secs > CAP_S ? CAP_S : secs);
+      var out = [], each = Math.floor(total / n), rest = total - each * n;
+      for (var k = 0; k < n; k += 1) { out.push(each + (k < rest ? 1 : 0)); }
+      return out;
     }
 
     /* ── The outbox (parent truth follow-up, 11 Oct 2026) ──────────────
@@ -1010,7 +1038,7 @@ try {
       return v || null;
     }
     function post(d) {
-      var t = since();
+      var t = typeof d.__t === 'number' ? d.__t : spans(d.__block || null, 1)[0];
       var mk = (typeof d.marks === 'number' && isFinite(d.marks)) ? Math.round(d.marks) : null;
       if (mk !== null && (mk < 1 || mk > 20)) { mk = null; }
       var ms = (mk !== null && typeof d.marks_scored === 'number' && isFinite(d.marks_scored))
@@ -1039,6 +1067,10 @@ try {
         // Round 3: the child checked their own work against a worked answer
         // or a reveal and nothing judged it. Stored UNMARKED — never correct.
         self_checked: d.self_checked === true,
+        // Round 4: what the page showed after the commit (a "Think again"
+        // reveal), kept out of correct_answer. Optional; the server may
+        // ignore it.
+        explanation: d.explanation == null ? null : clip(d.explanation, 5000),
         time_spent_seconds: t
       };
       boxKeep(body);                           // written ahead: queued until the server has it
@@ -1053,13 +1085,24 @@ try {
       });
     }
 
+    // Several answers from ONE action in `block`: the elapsed time is split.
+    function postAll(list, block) {
+      if (!list.length) { return; }
+      var ts = spans(block || null, list.length);
+      list.forEach(function (d, k) { d.__t = ts[k]; post(d); });
+    }
+
     // Anything an earlier page could not deliver, now — after the page has
     // settled, so it never competes with the lesson loading.
     setTimeout(flush, 2000);
 
     /* ── KS3: the ladder's own announcements ── */
     document.addEventListener('mrb:answer', function (e) {
-      if (e && e.detail) { post(e.detail); }
+      if (!e || !e.detail) { return; }
+      var d = e.detail;
+      d.time_spent_seconds = null;                 // the page clock decides
+      try { d.__block = document.querySelector('.ks3-rung[data-rung="' + d.rung + '"]'); } catch (err) { d.__block = null; }
+      post(d);
     });
 
     function txt(el) { return el ? (el.textContent || '').replace(/\s+/g, ' ').trim() : ''; }
@@ -1117,11 +1160,184 @@ try {
         }
         return null;
       };
+      /* ── Round 4: QUESTION-SHAPED instruments (activity_ids.md, appendix B) ──
+         Two generic adapters, keyed on markup the instruments already share,
+         never on one kind's internals. Only the kinds classified
+         question-shaped are listed; an exploration's picks are not answers.
+
+         Adapter A — commit options. A button carrying `data-<p>-opt|pick|
+         gopt|verdict|judge` (or `.ks3-option`) inside such a block is a
+         committed choice. Its question UNIT is the nearest ancestor carrying
+         `data-<p>-card|item|side|row|case|cell|q|sample|scenario|panel|seg|
+         test`, else the button's own `data-<p>-of`, else the `<unit>:` prefix
+         of its value, else the whole block. n = the unit's order among the
+         block's units (authored order). The FIRST commit per unit is sent.
+         Right/wrong comes from the markup where the markup carries it —
+         `data-correct` on the option, `data-<p>-want-<unit>` on the block,
+         `data-<p>-is` in the unit, `data-answer` on the unit's row, or the
+         is-correct / is-right / is-wrong class the page puts on the option —
+         else the answer is sent self_checked with what the page revealed in
+         `explanation`.
+
+         Adapter B5C — the `wireB5Commit` family: pick a part, choose its
+         job, press Check. Right/wrong from the reveal's `data-answer`. */
+      var KIND_A = {"ks3-cellbench-block":1,"ks3-removal-block":1,"ks3-sc-block":1,"ks3-meters-block":1,"ks3-clinic-block":1,"ks3-bottle-block":1,"ks3-grain-block":1,"ks3-gapfill-block":1,"ks3-rgrid-block":1,"ks3-dcomp-block":1,"ks3-rword-block":1,"ks3-iboard-block":1,"ks3-fault-block":1,"ks3-board":1,"ks3-cpair-block":1,"ks3-pdeck-block":1,"ks3-psort-block":1,"ks3-tbench-block":1,"ks3-ml-block":1,"ks3-fb-block":1,"ks3-esort-block":1,"ks3-seq-block":1,"ks3-rockb-block":1,"ks3-prop-block":1,"ks3-ctube-block":1,"ks3-touch-block":1,"ks3-pcards-block":1,"ks3-ruse-block":1,"ks3-tsort-block":1,"ks3-pass-block":1,"ks3-spath-block":1,"ks3-plan-block":1,"ks3-sort":1,"ks3-switch-block":1,"ks3-mb-block":1,"ks3-solid-block":1,"ks3-chain-block":1,"ks3-arr-block":1,"ks3-eqr-block":1,"ks3-rplan-block":1,"ks3-raudit-block":1,"ks3-mchoice-block":1,"ks3-cev-block":1,"ks3-hgrid-block":1,"ks3-rstop-block":1,"ks3-gplot-block":1,"ks3-spair-block":1,"ks3-rtotal-block":1,"ks3-wsort-block":1,"ks3-eyecam-block":1,"ks3-cplot-block":1,"ks3-chpair-block":1,"ks3-vchain-block":1,"ks3-sab-block":1,"ks3-cl-block":1,"ks3-vp-block":1,"ks3-tb-block":1,"ks3-rd-block":1,"ks3-ajudge-block":1,"ks3-namer-block":1,"ks3-dish-block":1,"ks3-claim-block":1,"ks3-euse-block":1,"ks3-critique-block":1,"ks3-edep-block":1,"ks3-fcard-block":1,"ks3-tuber-block":1,"ks3-mplace-block":1,"ks3-hrig-block":1};
+      var KIND_B5C = {"ks3-xpanel-block":1,"ks3-fjobs-block":1,"ks3-dsort-block":1,"ks3-xbench-block":1,"ks3-jmatch-block":1};
+      var OPT_RE = /^data-([a-z0-9]+)-(opt|pick|gopt|verdict|judge)$/;
+      var UNIT_RE = /^data-[a-z0-9]+-(card|item|side|row|case|cell|q|sample|scenario|panel|seg|test)$/;
+      var SHOWN_RE = /-(reveal|answer|note|why|verdict|right|wrong|sums)$/;
+      var kindOf = function (sec, map) {
+        var cl = sec.classList || [];
+        for (var i = 0; i < cl.length; i += 1) { if (map[cl[i]]) { return cl[i]; } }
+        return null;
+      };
+      var optAttr = function (btn) {
+        var a = btn.attributes || [];
+        for (var i = 0; i < a.length; i += 1) {
+          var m = OPT_RE.exec(a[i].name);
+          if (m) { return { prefix: m[1], value: a[i].value || '' }; }
+        }
+        return null;
+      };
+      var isOption = function (btn) {
+        return !!(optAttr(btn) || (btn.classList && btn.classList.contains('ks3-option')));
+      };
+      var unitOf = function (btn, sec) {
+        for (var el = btn.parentNode; el && el !== sec; el = el.parentNode) {
+          var a = el.attributes || [];
+          for (var i = 0; i < a.length; i += 1) {
+            if (UNIT_RE.test(a[i].name)) { return { el: el, key: a[i].name + '=' + a[i].value }; }
+          }
+        }
+        var oa = optAttr(btn);
+        if (oa) {
+          var of = btn.getAttribute('data-' + oa.prefix + '-of');
+          if (of) { return { el: null, key: 'of=' + of }; }
+          if (oa.value.indexOf(':') > 0) { return { el: null, key: 'v=' + oa.value.split(':')[0] }; }
+        }
+        return { el: sec, key: 'block' };
+      };
+      var unitNo = function (sec, key) {
+        var seen = [], bs = sec.querySelectorAll('button');
+        for (var i = 0; i < bs.length; i += 1) {
+          if (!isOption(bs[i])) { continue; }
+          var k = unitOf(bs[i], sec).key;
+          if (seen.indexOf(k) < 0) { seen.push(k); }
+        }
+        var ix = seen.indexOf(key);
+        return ix < 0 ? 1 : ix + 1;
+      };
+      var visibleText = function (root, test) {
+        var out = [], els = root.querySelectorAll('*');
+        for (var i = 0; i < els.length; i += 1) {
+          var el = els[i];
+          if (el.closest('button') || el.closest('[hidden]') || el.tagName === 'TEMPLATE' || el.closest('template')) { continue; }
+          if (test(el)) { var t = txt(el); if (t && out.indexOf(t) < 0) { out.push(t); } }
+        }
+        return out.join(' ');
+      };
+      var sentUnits = {};
+      var answerA = function (btn, sec, slug) {
+        var u = unitOf(btn, sec);
+        var act = sec.getAttribute('data-activity') || 'block';
+        var id = slug + '#' + act + '-' + unitNo(sec, u.key);
+        if (sentUnits[id]) { return; }
+        sentUnits[id] = 1;
+        // A unit named only by an attribute (`data-<p>-of`, `<unit>:value`)
+        // has no element of its own: its scope is the box holding its picks.
+        var scope = u.el || (btn.parentElement && btn.parentElement.parentElement) || sec;
+        if (!sec.contains(scope)) { scope = sec; }
+        var prompt = scope !== sec
+          ? visibleText(scope, function (el) {
+              return /^(P|H2|H3|H4|LI)$/.test(el.tagName) && !el.hasAttribute('data-count') &&
+                     !SHOWN_RE.test(Object.keys(el.dataset || {}).join('-'));
+            })
+          : promptOf(sec);
+        var oa = optAttr(btn), v = oa ? oa.value : (btn.getAttribute('data-i') || '');
+        var uk = v.indexOf(':') > 0 ? v.split(':')[0] : '', vv = v.indexOf(':') > 0 ? v.split(':').slice(1).join(':') : v;
+        var opts = Array.prototype.filter.call(scope.querySelectorAll('button'), isOption);
+        var valueOf = function (b) { var o = optAttr(b); var x = o ? o.value : (b.getAttribute('data-i') || ''); return x.indexOf(':') > 0 ? x.split(':').slice(1).join(':') : x; };
+        var byValue = function (want) { for (var i = 0; i < opts.length; i += 1) { if (valueOf(opts[i]) === want) { return opts[i]; } } return null; };
+        var good = null, verdict = null, hasDC = false;
+        for (var j = 0; j < opts.length; j += 1) { if (opts[j].hasAttribute('data-correct')) { hasDC = true; } }
+        if (hasDC) {
+          for (var i = 0; i < opts.length; i += 1) { var dc = opts[i].getAttribute('data-correct'); if (dc && dc !== '0' && dc !== 'false') { good = opts[i]; } }
+          if (good) { verdict = good === btn; }
+        }
+        if (verdict === null && oa && uk) {
+          var w = sec.querySelector('[data-' + oa.prefix + '-want-' + uk + ']');
+          if (w) { good = byValue(w.getAttribute('data-' + oa.prefix + '-want-' + uk)); verdict = w.getAttribute('data-' + oa.prefix + '-want-' + uk) === vv; }
+        }
+        if (verdict === null && oa) {
+          var is = scope.querySelector('[data-' + oa.prefix + '-is]');
+          if (is) { good = byValue(is.getAttribute('data-' + oa.prefix + '-is')); verdict = is.getAttribute('data-' + oa.prefix + '-is') === vv; }
+        }
+        if (verdict === null) {
+          var row = btn.closest('[data-answer]');
+          if (row && sec.contains(row) && row !== btn) { good = byValue(row.getAttribute('data-answer')); verdict = row.getAttribute('data-answer') === vv; }
+        }
+        later(function () {
+          if (verdict === null && btn.classList) {
+            if (btn.classList.contains('is-correct') || btn.classList.contains('is-right')) { verdict = true; good = btn; }
+            else if (btn.classList.contains('is-wrong')) {
+              verdict = false;
+              for (var i = 0; i < opts.length; i += 1) { if (opts[i].classList.contains('is-correct') || opts[i].classList.contains('is-right')) { good = opts[i]; } }
+            }
+          }
+          var d = { __block: scope, key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null,
+                    kind: 'choice', question_text: prompt, answer: optLabel(btn),
+                    correct_answer: good ? optLabel(good) : null,
+                    is_correct: verdict,
+                    explanation: visibleText(scope, function (el) {
+                      var a = el.attributes || [];
+                      for (var i = 0; i < a.length; i += 1) { if (/^data-/.test(a[i].name) && SHOWN_RE.test(a[i].name)) { return true; } }
+                      return false;
+                    }) || null };
+          if (verdict === null) { d.self_checked = true; }
+          post(d);
+        });
+      };
+      var answerB5C = function (chk, sec, slug) {
+        var w = chk.closest('[data-b5c]');
+        if (!w) { return; }
+        var item = w.getAttribute('data-item') || '';
+        var act = sec.getAttribute('data-activity') || 'block';
+        var tabs = w.querySelectorAll('[data-b5c-pick]'), n = 1;
+        for (var i = 0; i < tabs.length; i += 1) { if (tabs[i].getAttribute('data-b5c-pick') === item) { n = i + 1; } }
+        var id = slug + '#' + act + '-' + n;
+        if (sentUnits[id]) { return; }
+        var pick = w.querySelector('.ks3-b5c-opt[data-owner="' + item + '"][aria-pressed="true"]');
+        if (!pick) { return; }
+        sentUnits[id] = 1;
+        var rev = w.querySelector('[data-b5c-reveal="' + item + '"]');
+        var right = rev ? rev.getAttribute('data-answer') : null;
+        var good = right ? w.querySelector('.ks3-b5c-opt[data-owner="' + item + '"][data-opt="' + right + '"]') : null;
+        var name = w.querySelector('.ks3-b5c-item[data-for="' + item + '"] .ks3-b5c-name');
+        post({ __block: w, key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice',
+               question_text: (txt(name) ? txt(name) + ' — ' : '') + txt(w.querySelector('.ks3-b5c-ask')),
+               answer: optLabel(pick), correct_answer: good ? optLabel(good) : null,
+               is_correct: right == null ? null : pick.getAttribute('data-opt') === right,
+               self_checked: right == null });
+      };
       document.addEventListener('click', function (e) {
         try {
           var t = e.target;
           if (!t || !t.closest) { return; }
           var slug = ks3Slug();
+          // Round 4: question-shaped instruments (adapters A and B5C above).
+          var bsec = t.closest('[data-instrument]');
+          if (bsec && !bsec.hasAttribute('data-keyedblock')) {
+            if (kindOf(bsec, KIND_B5C)) {
+              var b5 = t.closest('[data-b5c-check]');
+              if (b5 && !b5.disabled) { answerB5C(b5, bsec, slug); }
+              return;
+            }
+            if (kindOf(bsec, KIND_A)) {
+              var ob = t.closest('button');
+              if (ob && !ob.disabled && isOption(ob) && !ob.closest('.ks3-ladder')) { answerA(ob, bsec, slug); }
+              return;
+            }
+          }
           var opt = t.closest('.ks3-option');
           if (opt && !opt.disabled && !opt.closest('.ks3-ladder')) {
             var sec = opt.closest('[data-activity]');
@@ -1139,12 +1355,12 @@ try {
                   if (word.indexOf('Good guess') === 0) { good = opts[i]; }
                   if (opts[i] === opt) { mine = word; }
                 }
-                post({ key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#start', rung: null,
+                post({ __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#start', rung: null,
                        kind: 'choice', question_text: promptOf(sec), answer: optLabel(opt),
                        correct_answer: good ? optLabel(good) : null,
                        is_correct: mine == null || good == null ? null : mine.indexOf('Good guess') === 0 });
               } else {
-                post({ key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act, rung: null,
+                post({ __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act, rung: null,
                        kind: 'choice', question_text: promptOf(sec), answer: optLabel(opt),
                        correct_answer: null, is_correct: null, self_checked: true });
               }
@@ -1152,9 +1368,12 @@ try {
             }
             if (!sec.hasAttribute('data-instrument') && sec.querySelector('[data-reveal]')) {
               once.add(sec);
-              post({ key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act, rung: null,
+              // No option is authored as right (ks3_data `kind: predict` has
+              // `options` and `reveal`, never an answer key), so
+              // correct_answer stays null and the reveal goes in `explanation`.
+              post({ __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act, rung: null,
                      kind: 'choice', question_text: promptOf(sec), answer: optLabel(opt),
-                     correct_answer: txt(sec.querySelector('[data-reveal]')) || null,
+                     correct_answer: null, explanation: txt(sec.querySelector('[data-reveal]')) || null,
                      is_correct: null, self_checked: true });
             }
             return;
@@ -1185,7 +1404,7 @@ try {
               model.push((lab ? lab + ': ' : '') + txt(rows[k]));
             }
             var n = parseInt(q.getAttribute(pre + '-q'), 10);
-            post({ key_stage: 'KS3', lesson_slug: ks3Slug(),
+            post({ __block: q, key_stage: 'KS3', lesson_slug: ks3Slug(),
                    question_id: ks3Slug() + '#' + (csec.getAttribute('data-activity') || 'your-turn') + '-' + ((isNaN(n) ? 0 : n) + 1),
                    rung: null, kind: 'written', question_text: txt(q.querySelector('[' + pre + '-head]')),
                    answer: mine.join('\n'), correct_answer: model.join('\n'),
@@ -1216,7 +1435,7 @@ try {
           var picked = parseInt(btn.getAttribute('data-oi'), 10);
           var q = card.querySelector('.q-text');
           post({
-            key_stage: 'KS4', lesson_slug: pathSlug, question_id: null, rung: null,
+            __block: card, key_stage: 'KS4', lesson_slug: pathSlug, question_id: null, rung: null,
             kind: 'choice',
             question_text: q ? q.textContent : '',
             answer: (btn.textContent || '').trim(),
@@ -1234,7 +1453,7 @@ try {
         var st = (m && m[1]) || pathSlug;
         var scope = chk.closest('.section') || document;
         later(function () {
-          var drops = scope.querySelectorAll('.match-drop');
+          var drops = scope.querySelectorAll('.match-drop'), batch = [];
           for (var i = 0; i < drops.length; i += 1) {
             var placed = drops[i].querySelector('.match-def');
             if (!placed) { continue; }
@@ -1245,7 +1464,7 @@ try {
             matchSent[id] = slot;
             var g = placed.getAttribute('data-group');
             var home = scope.querySelector('.match-drop[data-accepts-group="' + g + '"]');
-            post({
+            batch.push({
               key_stage: 'KS4', lesson_slug: pathSlug, question_id: id, rung: null, kind: 'choice',
               question_text: txt(placed),
               answer: txt(drops[i].parentNode && drops[i].parentNode.querySelector('.match-term')),
@@ -1253,6 +1472,7 @@ try {
               is_correct: drops[i].classList.contains('match-correct')
             });
           }
+          postAll(batch, scope === document ? null : scope);   // one Check, the time split across its cards
         });
       } catch (err) { /* capture never breaks the quiz */ }
     }, true);
@@ -1345,8 +1565,9 @@ try {
       return m ? ':' + m[1].charAt(0) + m[2].charAt(0) : '';
     })();
     function pilotId(slug, id) { return 'ks4:' + slug + routeSeg + '#' + id; }
+    var curBlock = null;                       // the instance the tap is handling
     function base(id, rung) {
-      return { key_stage: 'KS4', lesson_slug: pathSlug, question_id: pilotId(pathSlug, id),
+      return { __block: curBlock, key_stage: 'KS4', lesson_slug: pathSlug, question_id: pilotId(pathSlug, id),
                rung: rung || null, criteria: null, marks: null, correct_answer: null, is_correct: null };
     }
 
@@ -1368,13 +1589,14 @@ try {
         d.kind = 'choice'; d.question_text = p.prompt || '';
         d.answer = optText(o);
         if (graded) { d.correct_answer = optText(rightOpt(opts)); d.is_correct = !!o.correct; }
-        else { d.correct_answer = p.reveal || null; d.self_checked = true; }
+        else { d.explanation = p.reveal || null; d.self_checked = true; }
         post(d);
       },
       Ks4Sort: function (api, s, prev) {
         if (!rootLevel(api) || prev.checked || !s.checked) { return; }
         var p = api.logic.props || {}, k = nth(api), bins = p.bins || [];
         var binLabel = function (id) { for (var j = 0; j < bins.length; j += 1) { if (bins[j].id === id) { return bins[j].label; } } return null; };
+        var batch = [];
         (p.items || []).forEach(function (it, i) {
           var at = (s.placed || {})[i];
           if (at === undefined) { return; }
@@ -1383,8 +1605,9 @@ try {
           d.question_text = (p.prompt || p.title || 'Sort') + ' — ' + (it.text || '');
           d.answer = binLabel(at); d.correct_answer = binLabel(it.bin);
           d.is_correct = at === it.bin;
-          post(d);
+          batch.push(d);
         });
+        postAll(batch, api.host);                // one Check, the time split across its cards
       },
       Ks4QuizBank: function (api, s, prev) {
         if (!rootLevel(api)) { return; }
@@ -1578,7 +1801,9 @@ try {
       var s = api.logic.state || {};
       var prev = prevOf.get(api) || EMPTY;
       prevOf.set(api, snap(s));
+      curBlock = api.host || null;
       try { h(api, s, prev); } catch (e) { /* capture never breaks a lesson */ }
+      curBlock = null;
     };
   })();
 } catch (e) {}
