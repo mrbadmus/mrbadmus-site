@@ -22,7 +22,13 @@ const ROUTE_LABEL = { cf: "Combined Foundation", ch: "Combined Higher",
                       tf: "Triple Foundation", th: "Triple Higher" };
 
 const input = JSON.parse(fs.readFileSync(0, "utf8"));
-const libs = ["shared/ks4-source.js", "shared/ks4-lib.js", "shared/ks4-diagrams.js"]
+// Every ks4-source*.js the pages load: the pilot's, then one per batch
+// (each batch page loads ks4-source.js AND its own ks4-source-batch-N.js,
+// all writing into window.KS4SRC).
+const srcFiles = fs.readdirSync(path.join(input.repo, "shared"))
+  .filter((f) => /^ks4-source(-batch-[a-z0-9-]+)?\.js$/.test(f)).sort()
+  .map((f) => "shared/" + f);
+const libs = srcFiles.concat(["shared/ks4-lib.js", "shared/ks4-diagrams.js"])
   .map((p) => fs.readFileSync(path.join(input.repo, p), "utf8"));
 
 function noop() {}

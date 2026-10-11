@@ -2819,8 +2819,12 @@ GATES = [
                   # round 2: the rebuilt KS4 lessons' ids are read by running
                   # each lesson's logic per route, after the build's rulings
                   "build_ks4.py", "ks4_rulings.py", "ks4_science_rulings.py",
-                  "ks4_batch_rulings.py", "shared/ks4-source.js",
-                  "shared/ks4-lib.js", "shared/ks4-diagrams.js"],
+                  "ks4_batch_rulings.py", "shared/ks4-source*.js",
+                  "shared/ks4-lib.js", "shared/ks4-diagrams.js",
+                  # round 3: KS3 instrument units and every answer key are
+                  # read off the BUILT KS3 pages, by the tap's own rules
+                  "tools/kp_ks3_units.py", "ks3/**", "build_ks3.py",
+                  "ks3_art/**", "shared/mrbadmus.v2.js"],
          # ⚠️ Named gap (MRB-346 rule 1): the 14 pilot lessons' ladder rungs
          # are read from Design's `.dc.html` under docs/ks4/design-reference/,
          # which no `watches` may name. The rung IDS (`ks4:<slug>#r1..r4`) come
@@ -2836,7 +2840,10 @@ GATES = [
              "id a lesson page sends: KS3 Start here, predictions, keyed "
              "commits and 'your turn'; KS4 classic matching; and every "
              "rebuilt-lesson block per route, `ks4:<slug>:<route>#…`, read by "
-             "running each lesson's logic in Node) and "
+             "running each lesson's logic in Node; round 3, the KS3 "
+             "question-shaped instruments) and that every ANSWER KEY — the "
+             "one right option's text as the page renders it — still equals "
+             "what the sources say and is one of the rendered options; and "
              "fails if one is neither tagged nor listed untagged, if a tag "
              "dangles or crosses scopes, or if `ks4_quiz_id` stops producing "
              "the contract's test vector — the backend derives the same id "

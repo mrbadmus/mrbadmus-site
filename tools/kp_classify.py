@@ -66,6 +66,9 @@ import urllib.error
 import urllib.request
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TOOLS = os.path.dirname(os.path.abspath(__file__))
+if TOOLS not in sys.path:
+    sys.path.insert(0, TOOLS)
 if REPO not in sys.path:
     sys.path.insert(0, REPO)
 
@@ -424,7 +427,7 @@ DB_SOURCE = {"ks3_bank": "ks3_bank", "ks3_ladder": "ks3_ladder", "ks4_bank": "ks
              "ks4_quiz": "ks4_lesson", "ks4_rung": "ks4_lesson", "exam": "exam",
              "ks3_start": "ks3_lesson", "ks3_predict": "ks3_lesson", "ks3_keyed": "ks3_lesson",
              "ks3_yourturn": "ks3_lesson", "ks3_lesson": "ks3_lesson", "ks4_match": "ks4_lesson",
-             "ks4_quizbank": "ks4_lesson"}
+             "ks4_quizbank": "ks4_lesson", "ks3_instrument": "ks3_lesson"}
 for _k in ("start", "choice", "sort", "cfifa", "steps", "ladder", "practice", "chain", "write"):
     DB_SOURCE["ks4_pilot_" + _k] = "ks4_lesson"
 
@@ -636,8 +639,10 @@ def ks4_quizbank_extra():
     here."""
     known = {q for e in ks4_subtopics().values() for q in e["quiz"]}
     out = {}
-    path = os.path.join(REPO, "shared", "ks4-source.js")
-    for line in open(path, encoding="utf-8"):
+    lines = []
+    for f in sorted(glob.glob(os.path.join(REPO, "shared", "ks4-source*.js"))):
+        lines.extend(open(f, encoding="utf-8").read().splitlines())
+    for line in lines:
         m = re.match(r'^window\.KS4SRC\["([a-z0-9-]+)"\]\s*=\s*(\{.*\});\s*$', line)
         if not m:
             continue
@@ -652,6 +657,142 @@ def ks4_quizbank_extra():
                 out.setdefault(slug, []).append((qid, "ks4_quizbank", plain(q["q"]),
                                                  plain(right[0]) if right else ""))
     return out
+
+
+def round3_inventory():
+    """{('KS3', slug): [(qid, 'ks3_instrument', stem, answer)]}: the KS3
+    question-shaped instruments' units, `<slug>#<activity>-<n>`, read from the
+    built page by the same rules as the answer tap (tools/kp_ks3_units.py)."""
+    import ks3_data
+    import kp_ks3_units as U
+    out = {}
+    for slug in ks3_data.lesson_registry():
+        items = []
+        for u in U.units(slug):
+            key = ks3_unit_key(slug, u)[0]
+            items.append((u["id"], "ks3_instrument",
+                          clip(u["prompt"], 400) + " Options: " + " / ".join(u["options"][:12]),
+                          key or ""))
+        if items:
+            out[("KS3", slug)] = items
+    return out
+
+
+_KS3_LESSONS = {}
+
+
+def ks3_unit_key(slug, u):
+    """(key, how) for one instrument unit: the markup's own key where the
+    page carries one, else the authored data's (kp_ks3_units.authored_key)."""
+    import kp_ks3_units as U
+    if u.get("key"):
+        return u["key"], "markup " + (u.get("key_from") or "")
+    if not _KS3_LESSONS:
+        import ks3_data
+        _KS3_LESSONS.update(ks3_data.lesson_registry())
+    return U.authored_key(_KS3_LESSONS[slug], u)
+
+
+def answer_keys():
+    """{question_id: (key text | None, [rendered option texts], why)} for every
+    lesson-page question with options. key = the ONE right option's text as
+    the page renders (and sends) it; None where there is no single right
+    option. `why` names where the key came from, or why there is none."""
+    import ks3_data
+    import kp_ks3_units as U
+    out = {}
+    reg = ks3_data.lesson_registry()
+    for slug, L in reg.items():
+        pk = U.page_choice_keys(slug)
+        for qid, v in pk.items():
+            tail = qid.split("#", 1)[1]
+            if tail in ("recall", "apply"):
+                out[qid] = (v["key"], v["options"], "page data-correct")
+            elif tail == "start":
+                out[qid] = (v["key"], v["options"], "page 'Good guess' reply")
+            else:
+                a = None
+                for x in L.get("activities") or []:
+                    if x.get("id") == tail:
+                        a = x
+                ai = a.get("answer_index") if a else None
+                k = v["by_i"].get(str(ai)) if isinstance(ai, int) else None
+                out[qid] = (k, v["options"], "authored answer_index" if k else "no answer_index")
+        for u in U.units(slug):
+            k, how = ks3_unit_key(slug, u)
+            out[u["id"]] = (k, u["options"], how)
+        for a in L.get("activities") or []:
+            if a.get("kind") in ("predict", "model-limit") and a.get("options"):
+                qid = "%s#%s" % (slug, a["id"])
+                if qid not in out:
+                    out[qid] = (None, [plain(o if isinstance(o, str) else o.get("text")) for o in a["options"]],
+                                "a prediction: no option is authored as right")
+    # KS4 rebuilt lessons, per route
+    for slug, routes in ks4_pilot_eval().items():
+        for r, blocks in routes.items():
+            b = "ks4:%s:%s#" % (slug, r)
+            for it in blocks:
+                nm, n, p = it["name"], it["n"], it.get("props") or {}
+
+                def one(opts, qid, why):
+                    opts = [o for o in opts or [] if isinstance(o, dict)]
+                    texts = [str(o.get("text")).strip() for o in opts if o.get("text") is not None]
+                    good = [str(o.get("text")).strip() for o in opts if o.get("correct")]
+                    out[qid] = (good[0] if len(good) == 1 else None, texts,
+                                why if len(good) == 1 else "no single option marked correct")
+                if nm == "Ks4Guess":
+                    one(p.get("options"), b + "start", "authored correct option")
+                elif nm == "Ks4Choice":
+                    one(p.get("options"), b + "choice-%d" % n, "authored correct option")
+                elif nm == "Ks4Sort":
+                    bins = [(x.get("id"), str(x.get("label")).strip()) for x in p.get("bins") or []]
+                    lab = dict(bins)
+                    for i, x in enumerate(p.get("items") or [], 1):
+                        k = lab.get(x.get("bin"))
+                        out[b + "sort-%d-%d" % (n, i)] = (k, [l for _i, l in bins],
+                                                          "authored bin" if k else "bin not found")
+                elif nm == "Ks4Ladder":
+                    r1 = (p.get("rungs") or {}).get("r1")
+                    if isinstance(r1, dict) and r1.get("options"):
+                        one(r1["options"], b + "r1", "authored correct option")
+                elif nm == "Ks4Practice":
+                    for rk, v in (p.get("rungs") or {}).items():
+                        for i, x in enumerate(v if isinstance(v, list) else [v], 1):
+                            if isinstance(x, dict) and (x.get("kind") or "mcq") == "mcq" and x.get("options"):
+                                one(x["options"], b + "%s-%d" % (rk, i), "authored correct option")
+    # KS4 classic: matching cards (the group term the card belongs under) and
+    # quiz cards (the correct option), as generate_site_v5 renders them
+    for sid, e in ks4_subtopics().items():
+        m = e["record"].get("matching") or {}
+        pairs = m.get("svg_pairs") or m.get("pairs") or []
+        terms = [plain(pr[0]) for pr in pairs]
+        for n, pr in enumerate(pairs, 1):
+            out["ks4c:%s:match-%d" % (sid, n)] = (plain(pr[0]), sorted(set(terms)), "authored pair group")
+        for f_q in _all_quiz_records(sid):
+            qid = ks4_quiz_id(sid, "1. " + plain(f_q["q"]))
+            opts = [plain(o) for o, _ok in f_q.get("opts") or []]
+            good = [plain(o) for o, ok in f_q.get("opts") or [] if ok]
+            if qid not in out:
+                out[qid] = (good[0] if len(good) == 1 else None, opts, "authored correct option")
+    # a practice-set stem a science ruling rewrote (only in ks4-source.js)
+    for slug, items in ks4_quizbank_extra().items():
+        for qid, _src, _stem, ans in items:
+            out.setdefault(qid, (ans or None, [ans] if ans else [], "ks4-source.js correct option"))
+    return out
+
+
+_QUIZ_RECORDS = {}
+
+
+def _all_quiz_records(sid):
+    if not _QUIZ_RECORDS:
+        for f in sorted(glob.glob(os.path.join(REPO, "all_subtopics_*.py"))):
+            mod = importlib.import_module(os.path.basename(f)[:-3])
+            d = [v for k, v in vars(mod).items() if k.endswith("_SUBTOPICS_ALL")][0]
+            for _t, lst in d.items():
+                for st in lst:
+                    _QUIZ_RECORDS.setdefault(st["id"], []).extend(st.get("quiz") or [])
+    return _QUIZ_RECORDS.get(sid, [])
 
 
 def extras_inventory():
@@ -1163,7 +1304,9 @@ def validate_extras(obj, npts, nent):
         except (TypeError, ValueError):
             raise ValueError("assign key %r is not an item number" % k)
         if not 1 <= i <= nent:
-            raise ValueError("item %d does not exist (1-%d)" % (i, nent))
+            # a trailing number past the last item (the model counting on)
+            # assigns nothing real; every real item is still checked below
+            continue
         if isinstance(v, int) and 1 <= v <= npts:
             got[i] = v
         elif isinstance(v, str) and v in labels:
@@ -1186,10 +1329,15 @@ def extras_hash(points, items):
                                      ensure_ascii=False).encode("utf-8")).hexdigest()[:16]
 
 
-def classify_extras(key, title, points, items, cache):
+def extras_cache_path(cache, key, rnd):
+    pre = "x__" if rnd == "round-2" else "x%s__" % rnd.split("-")[1]
+    return os.path.join(cache, "%s%s__%s.json" % (pre, key[0].lower(), key[1]))
+
+
+def classify_extras(key, title, points, items, cache, rnd="round-2"):
     ks, ref = key
     entries = extra_entries(items)
-    path = os.path.join(cache, "x__%s__%s.json" % (ks.lower(), ref))
+    path = extras_cache_path(cache, key, rnd)
     h = extras_hash(points, items)
     if os.path.exists(path):
         c = json.load(open(path, encoding="utf-8"))
@@ -1222,7 +1370,7 @@ def classify_extras(key, title, points, items, cache):
     return c
 
 
-def merge_extras(data, extras, results, untagged):
+def merge_extras(data, extras, results, untagged, rnd="round-2"):
     """Fold round-2 results into the assembled scopes: new points appended
     after the existing ones (never renumbering them), every id tagged."""
     for key, items in sorted(extras.items()):
@@ -1232,14 +1380,14 @@ def merge_extras(data, extras, results, untagged):
         if e is None or not c or c.get("failed"):
             for qid, src, _s, _a in items:
                 untagged["questions"][qid] = {"source": DB_SOURCE[src], "scope_ref": ref,
-                                              "reason": "round-2 classification failed" if e else "scope untagged"}
+                                              "reason": "%s classification failed" % rnd if e else "scope untagged"}
             continue
         prefix = ks.lower()
         new_ids = {}
         for nid, label in c.get("new_points") or []:
             n = len(e["points"]) + 1
             pid = "%s.%s.%d" % (prefix, ref, n)
-            e["points"].append({"id": pid, "label": label, "added": "round-2"})
+            e["points"].append({"id": pid, "label": label, "added": rnd})
             new_ids[nid] = pid
         for qid, v in c["assign"].items():
             e["questions"][qid] = new_ids[v] if isinstance(v, str) else "%s.%s.%d" % (prefix, ref, v)
@@ -1386,36 +1534,50 @@ def main():
     ks3, ks4, untagged = assemble(inv, results, exam_results)
 
     # pass 3 — round-2 ids (Start here, predictions, your-turn, matching,
-    # every rebuilt-lesson block per route) onto the existing points
-    extras = extras_inventory()
+    # every rebuilt-lesson block per route) onto the existing points; then
+    # round 3 — the KS3 question-shaped instruments — onto the points as
+    # round 2 left them. Each round has its own cache, so a later round never
+    # disturbs an earlier one's placements or numbering.
     data = {"KS3": ks3, "KS4": ks4}
-    xres = {}
-    xtodo = []
-    for key in sorted(extras):
-        e = data[key[0]].get(key[1])
-        if e is None:
-            continue
-        if a.assemble_only or (named and key[1] not in named):
-            path = os.path.join(a.cache, "x__%s__%s.json" % (key[0].lower(), key[1]))
-            if os.path.exists(path):
-                c = json.load(open(path, encoding="utf-8"))
-                if c.get("hash") == extras_hash(e["points"], extras[key]):
-                    xres[key] = c
-            continue
-        xtodo.append(key)
-    print("kp: round 2 — %d scope(s) to place new ids in (cached ones cost nothing)" % len(xtodo))
+    for rnd, extras in (("round-2", extras_inventory()), ("round-3", round3_inventory())):
+        xres = {}
+        xtodo = []
+        for key in sorted(extras):
+            e = data[key[0]].get(key[1])
+            if e is None:
+                continue
+            if a.assemble_only or (named and key[1] not in named):
+                path = extras_cache_path(a.cache, key, rnd)
+                if os.path.exists(path):
+                    c = json.load(open(path, encoding="utf-8"))
+                    if c.get("hash") == extras_hash(e["points"], extras[key]):
+                        xres[key] = c
+                continue
+            xtodo.append(key)
+        print("kp: %s — %d scope(s) to place new ids in (cached ones cost nothing)" % (rnd, len(xtodo)))
 
-    def run_x(key):
-        e = data[key[0]][key[1]]
-        pts = [p for p in e["points"]]
-        return key, classify_extras(key, e["title"], pts, extras[key], a.cache)
+        def run_x(key, rnd=rnd, extras=extras):
+            e = data[key[0]][key[1]]
+            pts = [p for p in e["points"]]
+            return key, classify_extras(key, e["title"], pts, extras[key], a.cache, rnd)
 
-    with cf.ThreadPoolExecutor(max_workers=a.workers) as ex:
-        for key, c in ex.map(run_x, xtodo):
-            xres[key] = c
-            if c.get("failed"):
-                print("  round 2 FAILED: %s %s" % key, flush=True)
-    merge_extras(data, extras, xres, untagged)
+        with cf.ThreadPoolExecutor(max_workers=a.workers) as ex:
+            for key, c in ex.map(run_x, xtodo):
+                xres[key] = c
+                if c.get("failed"):
+                    print("  %s FAILED: %s %s" % ((rnd,) + key), flush=True)
+        merge_extras(data, extras, xres, untagged, rnd)
+
+    # answer keys: the right option's text, exactly as the page renders it,
+    # for every lesson-page question that has exactly one
+    keys = answer_keys()
+    for ks in ("KS3", "KS4"):
+        for e in data[ks].values():
+            k = {q: keys[q][0] for q in e["questions"] if q in keys and keys[q][0] is not None}
+            if k:
+                e["keys"] = dict(sorted(k.items()))
+            else:
+                e.pop("keys", None)
     untagged["questions"] = dict(sorted(untagged["questions"].items()))
     os.makedirs(KP_DIR, exist_ok=True)
     write_json(os.path.join(KP_DIR, "ks3.json"), ks3)

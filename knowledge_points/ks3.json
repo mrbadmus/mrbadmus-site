@@ -1,6 +1,11 @@
 {
  "a-balanced-diet": {
   "key_stage": "KS3",
+  "keys": {
+   "a-balanced-diet#apply": "Iron — a mineral, needed in milligrams",
+   "a-balanced-diet#recall": "Carbohydrate, lipid and protein",
+   "a-balanced-diet#start": "A tiny vital substance"
+  },
   "points": [
    {
     "id": "ks3.a-balanced-diet.1",
@@ -136,6 +141,11 @@
  },
  "a-planet-with-limits": {
   "key_stage": "KS3",
+  "keys": {
+   "a-planet-with-limits#apply": "Almost all of the collected aluminium comes back usable, while almost none of the packet does",
+   "a-planet-with-limits#recall": "It formed over millions of years and is not being replaced as fast as we extract it",
+   "a-planet-with-limits#start": "Yes, every year"
+  },
   "points": [
    {
     "id": "ks3.a-planet-with-limits.1",
@@ -276,6 +286,11 @@
  },
  "absorption-and-the-small-intestine": {
   "key_stage": "KS3",
+  "keys": {
+   "absorption-and-the-small-intestine#apply": "It stops within minutes, because the concentration difference disappears",
+   "absorption-and-the-small-intestine#recall": "surface area",
+   "absorption-and-the-small-intestine#start": "Its wall is folded"
+  },
   "points": [
    {
     "id": "ks3.absorption-and-the-small-intestine.1",
@@ -407,6 +422,14 @@
  },
  "acid-plus-metal": {
   "key_stage": "KS3",
+  "keys": {
+   "acid-plus-metal#apply": "Copper is below hydrogen in the reactivity series, so it cannot displace it from the acid",
+   "acid-plus-metal#recall": "Zinc sulfate and hydrogen",
+   "acid-plus-metal#start": "From the acid",
+   "acid-plus-metal#test-three-1": "Yes",
+   "acid-plus-metal#test-three-2": "No",
+   "acid-plus-metal#test-three-3": "No"
+  },
   "points": [
    {
     "id": "ks3.acid-plus-metal.1",
@@ -439,6 +462,11 @@
    {
     "id": "ks3.acid-plus-metal.8",
     "label": "The total hydrogen made depends on whichever reactant runs out first"
+   },
+   {
+    "added": "round-3",
+    "id": "ks3.acid-plus-metal.9",
+    "label": "Collect gas before testing; test only when fizzing has stopped and the tube is full"
    }
   ],
   "questions": {
@@ -447,6 +475,9 @@
    "acid-plus-metal#produce": "ks3.acid-plus-metal.7",
    "acid-plus-metal#recall": "ks3.acid-plus-metal.1",
    "acid-plus-metal#start": "ks3.acid-plus-metal.2",
+   "acid-plus-metal#test-three-1": "ks3.acid-plus-metal.5",
+   "acid-plus-metal#test-three-2": "ks3.acid-plus-metal.9",
+   "acid-plus-metal#test-three-3": "ks3.acid-plus-metal.9",
    "acid-plus-metal#think-commit-fizz": "ks3.acid-plus-metal.2",
    "c6-04-e01": "ks3.acid-plus-metal.1",
    "c6-04-e02": "ks3.acid-plus-metal.2",
@@ -553,6 +584,22 @@
  },
  "acids-and-alkalis": {
   "key_stage": "KS3",
+  "keys": {
+   "acids-and-alkalis#apply": "Being an acid says which side of 7 it sits on, not how strongly it acts",
+   "acids-and-alkalis#bench-eight-1": "Acid",
+   "acids-and-alkalis#bench-eight-2": "Alkali",
+   "acids-and-alkalis#bench-eight-3": "Neutral",
+   "acids-and-alkalis#bench-eight-4": "Acid",
+   "acids-and-alkalis#bench-eight-5": "Alkali",
+   "acids-and-alkalis#bench-eight-6": "Acid",
+   "acids-and-alkalis#bench-eight-7": "Neutral",
+   "acids-and-alkalis#bench-eight-8": "Alkali",
+   "acids-and-alkalis#hazard-three-1": "Yes",
+   "acids-and-alkalis#hazard-three-2": "Yes",
+   "acids-and-alkalis#hazard-three-3": "Yes",
+   "acids-and-alkalis#recall": "A base that dissolves in water, with a pH above 7",
+   "acids-and-alkalis#start": "Add a dye"
+  },
   "points": [
    {
     "id": "ks3.acids-and-alkalis.1",
@@ -581,11 +628,27 @@
    {
     "id": "ks3.acids-and-alkalis.7",
     "label": "Safe laboratory and first-aid procedures when handling acids and alkalis"
+   },
+   {
+    "added": "round-3",
+    "id": "ks3.acids-and-alkalis.8",
+    "label": "Stomach acid is stronger (lower pH) than weak acids like vinegar"
    }
   ],
   "questions": {
    "acids-and-alkalis#apply": "ks3.acids-and-alkalis.2",
+   "acids-and-alkalis#bench-eight-1": "ks3.acids-and-alkalis.6",
+   "acids-and-alkalis#bench-eight-2": "ks3.acids-and-alkalis.6",
+   "acids-and-alkalis#bench-eight-3": "ks3.acids-and-alkalis.6",
+   "acids-and-alkalis#bench-eight-4": "ks3.acids-and-alkalis.6",
+   "acids-and-alkalis#bench-eight-5": "ks3.acids-and-alkalis.6",
+   "acids-and-alkalis#bench-eight-6": "ks3.acids-and-alkalis.6",
+   "acids-and-alkalis#bench-eight-7": "ks3.acids-and-alkalis.6",
+   "acids-and-alkalis#bench-eight-8": "ks3.acids-and-alkalis.6",
    "acids-and-alkalis#explain": "ks3.acids-and-alkalis.3",
+   "acids-and-alkalis#hazard-three-1": "ks3.acids-and-alkalis.5",
+   "acids-and-alkalis#hazard-three-2": "ks3.acids-and-alkalis.2",
+   "acids-and-alkalis#hazard-three-3": "ks3.acids-and-alkalis.8",
    "acids-and-alkalis#produce": "ks3.acids-and-alkalis.4",
    "acids-and-alkalis#recall": "ks3.acids-and-alkalis.4",
    "acids-and-alkalis#start": "ks3.acids-and-alkalis.3",
@@ -695,6 +758,18 @@
  },
  "acids-and-carbonates": {
   "key_stage": "KS3",
+  "keys": {
+   "acids-and-carbonates#apply": "The gas is not carbon dioxide",
+   "acids-and-carbonates#bench-four-solids-1": "It will fizz",
+   "acids-and-carbonates#bench-four-solids-2": "It will fizz",
+   "acids-and-carbonates#bench-four-solids-3": "No reaction",
+   "acids-and-carbonates#bench-four-solids-4": "It will fizz",
+   "acids-and-carbonates#recall": "salt + water + carbon dioxide",
+   "acids-and-carbonates#start": "Out of the rock",
+   "acids-and-carbonates#uses-three-1": "Rain reacts with the carbonate in limestone",
+   "acids-and-carbonates#uses-three-2": "The two solids cannot react until they dissolve",
+   "acids-and-carbonates#uses-three-3": "Add acid and watch for fizzing"
+  },
   "points": [
    {
     "id": "ks3.acids-and-carbonates.1",
@@ -728,15 +803,27 @@
     "added": "round-2",
     "id": "ks3.acids-and-carbonates.8",
     "label": "Carbon dioxide comes from the carbonate, not the acid"
+   },
+   {
+    "added": "round-3",
+    "id": "ks3.acids-and-carbonates.9",
+    "label": "Solids cannot react with each other until they are dissolved in water."
    }
   ],
   "questions": {
    "acids-and-carbonates#apply": "ks3.acids-and-carbonates.2",
+   "acids-and-carbonates#bench-four-solids-1": "ks3.acids-and-carbonates.1",
+   "acids-and-carbonates#bench-four-solids-2": "ks3.acids-and-carbonates.1",
+   "acids-and-carbonates#bench-four-solids-3": "ks3.acids-and-carbonates.1",
+   "acids-and-carbonates#bench-four-solids-4": "ks3.acids-and-carbonates.1",
    "acids-and-carbonates#explain": "ks3.acids-and-carbonates.1",
    "acids-and-carbonates#produce": "ks3.acids-and-carbonates.2",
    "acids-and-carbonates#recall": "ks3.acids-and-carbonates.1",
    "acids-and-carbonates#start": "ks3.acids-and-carbonates.8",
    "acids-and-carbonates#think-commit-splint": "ks3.acids-and-carbonates.6",
+   "acids-and-carbonates#uses-three-1": "ks3.acids-and-carbonates.7",
+   "acids-and-carbonates#uses-three-2": "ks3.acids-and-carbonates.9",
+   "acids-and-carbonates#uses-three-3": "ks3.acids-and-carbonates.1",
    "c6-05-e01": "ks3.acids-and-carbonates.1",
    "c6-05-e02": "ks3.acids-and-carbonates.2",
    "c6-05-e03": "ks3.acids-and-carbonates.4",
@@ -842,6 +929,11 @@
  },
  "aerobic-respiration": {
   "key_stage": "KS3",
+  "keys": {
+   "aerobic-respiration#apply": "Breathed out as carbon dioxide, with the rest leaving as water",
+   "aerobic-respiration#recall": "glucose + oxygen gives carbon dioxide + water",
+   "aerobic-respiration#start": "Out through the lungs"
+  },
   "points": [
    {
     "id": "ks3.aerobic-respiration.1",
@@ -878,6 +970,7 @@
    "aerobic-respiration#produce": "ks3.aerobic-respiration.2",
    "aerobic-respiration#recall": "ks3.aerobic-respiration.1",
    "aerobic-respiration#start": "ks3.aerobic-respiration.7",
+   "aerobic-respiration#the-books-balance-1": "ks3.aerobic-respiration.4",
    "b8-01-e01": "ks3.aerobic-respiration.2",
    "b8-01-e02": "ks3.aerobic-respiration.1",
    "b8-01-e03": "ks3.aerobic-respiration.3",
@@ -983,6 +1076,11 @@
  },
  "aerobic-vs-anaerobic": {
   "key_stage": "KS3",
+  "keys": {
+   "aerobic-vs-anaerobic#apply": "Aerobic gets more energy from each glucose; anaerobic supplies energy at a faster rate",
+   "aerobic-vs-anaerobic#recall": "The glucose is only partly broken down, so a product is left that still holds energy",
+   "aerobic-vs-anaerobic#start": "The one without oxygen"
+  },
   "points": [
    {
     "id": "ks3.aerobic-vs-anaerobic.1",
@@ -1023,6 +1121,7 @@
    "aerobic-vs-anaerobic#produce": "ks3.aerobic-vs-anaerobic.7",
    "aerobic-vs-anaerobic#recall": "ks3.aerobic-vs-anaerobic.2",
    "aerobic-vs-anaerobic#start": "ks3.aerobic-vs-anaerobic.4",
+   "aerobic-vs-anaerobic#which-route-is-running-1": "ks3.aerobic-vs-anaerobic.6",
    "b8-05-e01": "ks3.aerobic-vs-anaerobic.8",
    "b8-05-e02": "ks3.aerobic-vs-anaerobic.1",
    "b8-05-e03": "ks3.aerobic-vs-anaerobic.6",
@@ -1126,6 +1225,11 @@
  },
  "air-and-water-resistance": {
   "key_stage": "KS3",
+  "keys": {
+   "air-and-water-resistance#apply": "The lead ball, because at any speed the resistance on the two is about the same, and it is a much smaller share of the lead ball’s weight.",
+   "air-and-water-resistance#recall": "1 N, upwards.",
+   "air-and-water-resistance#start": "Stops getting faster"
+  },
   "points": [
    {
     "id": "ks3.air-and-water-resistance.1",
@@ -1261,6 +1365,11 @@
  },
  "alcohol-and-smoking": {
   "key_stage": "KS3",
+  "keys": {
+   "alcohol-and-smoking#apply": "They feel more awake, and are exactly as impaired as before",
+   "alcohol-and-smoking#recall": "About six in the morning",
+   "alcohol-and-smoking#start": "No, none of them do"
+  },
   "points": [
    {
     "id": "ks3.alcohol-and-smoking.1",
@@ -1398,6 +1507,11 @@
  },
  "alveoli-built-for-exchange": {
   "key_stage": "KS3",
+  "keys": {
+   "alveoli-built-for-exchange#apply": "The alveolar and blood concentrations have become nearly equal, so crossings each way balance",
+   "alveoli-built-for-exchange#recall": "To give a far greater surface area for diffusion",
+   "alveoli-built-for-exchange#start": "No, not for long"
+  },
   "points": [
    {
     "id": "ks3.alveoli-built-for-exchange.1",
@@ -1533,6 +1647,11 @@
  },
  "anaerobic-respiration-in-humans": {
   "key_stage": "KS3",
+  "keys": {
+   "anaerobic-respiration-in-humans#apply": "You are taking in the oxygen you could not get during the sprint, to deal with the lactic acid — the oxygen debt",
+   "anaerobic-respiration-in-humans#recall": "glucose gives lactic acid",
+   "anaerobic-respiration-in-humans#start": "They keep using it too"
+  },
   "points": [
    {
     "id": "ks3.anaerobic-respiration-in-humans.1",
@@ -1679,6 +1798,11 @@
  },
  "animal-and-plant-cells": {
   "key_stage": "KS3",
+  "keys": {
+   "animal-and-plant-cells#apply": "Chloroplasts are only built where light reaches, so a plant cell without them is still a plant cell",
+   "animal-and-plant-cells#recall": "A cheek cell",
+   "animal-and-plant-cells#start": "No, not one"
+  },
   "points": [
    {
     "id": "ks3.animal-and-plant-cells.1",
@@ -1714,6 +1838,7 @@
    "animal-and-plant-cells#explain": "ks3.animal-and-plant-cells.7",
    "animal-and-plant-cells#produce": "ks3.animal-and-plant-cells.4",
    "animal-and-plant-cells#recall": "ks3.animal-and-plant-cells.1",
+   "animal-and-plant-cells#seven-parts-two-cells-1": "ks3.animal-and-plant-cells.1",
    "animal-and-plant-cells#start": "ks3.animal-and-plant-cells.1",
    "b1-03-e01": "ks3.animal-and-plant-cells.2",
    "b1-03-e02": "ks3.animal-and-plant-cells.1",
@@ -1820,6 +1945,11 @@
  },
  "antagonistic-muscle-pairs": {
   "key_stage": "KS3",
+  "keys": {
+   "antagonistic-muscle-pairs#apply": "The elbow stiffens and becomes hard to move in either direction",
+   "antagonistic-muscle-pairs#recall": "Quadriceps and hamstrings",
+   "antagonistic-muscle-pairs#start": "On the back of your upper arm"
+  },
   "points": [
    {
     "id": "ks3.antagonistic-muscle-pairs.1",
@@ -1966,6 +2096,11 @@
  },
  "atmospheric-pressure": {
   "key_stage": "KS3",
+  "keys": {
+   "atmospheric-pressure#apply": "The air sealed inside is still at sea-level pressure while the cabin air is lower, so the inside push wins until the foil stretches.",
+   "atmospheric-pressure#recall": "150 000 N — 100 000 N on each of the 1.5 m²",
+   "atmospheric-pressure#start": "All along"
+  },
   "points": [
    {
     "id": "ks3.atmospheric-pressure.1",
@@ -2107,6 +2242,11 @@
  },
  "bacteria-in-the-gut": {
   "key_stage": "KS3",
+  "keys": {
+   "bacteria-in-the-gut#apply": "The antibiotic cleared the competing species, leaving space and food for C. difficile",
+   "bacteria-in-the-gut#recall": "Break down cellulose and make vitamin K",
+   "bacteria-in-the-gut#start": "More food"
+  },
   "points": [
    {
     "id": "ks3.bacteria-in-the-gut.1",
@@ -2246,6 +2386,11 @@
  },
  "balanced-and-unbalanced": {
   "key_stage": "KS3",
+  "keys": {
+   "balanced-and-unbalanced#apply": "They are balanced, because its motion is not changing.",
+   "balanced-and-unbalanced#recall": "40 N upwards",
+   "balanced-and-unbalanced#start": "Yes, something is"
+  },
   "points": [
    {
     "id": "ks3.balanced-and-unbalanced.1",
@@ -2286,6 +2431,7 @@
    "balanced-and-unbalanced#explain": "ks3.balanced-and-unbalanced.7",
    "balanced-and-unbalanced#produce": "ks3.balanced-and-unbalanced.3",
    "balanced-and-unbalanced#recall": "ks3.balanced-and-unbalanced.3",
+   "balanced-and-unbalanced#rig-1": "ks3.balanced-and-unbalanced.7",
    "balanced-and-unbalanced#start": "ks3.balanced-and-unbalanced.8",
    "balanced-and-unbalanced#your-turn-support-1": "ks3.balanced-and-unbalanced.3",
    "balanced-and-unbalanced#your-turn-support-2": "ks3.balanced-and-unbalanced.3",
@@ -2388,6 +2534,11 @@
  },
  "biodiversity-and-gene-banks": {
   "key_stage": "KS3",
+  "keys": {
+   "biodiversity-and-gene-banks#apply": "The seed can be regrown, but the ecosystem it depended on — pollinators, soil fungi, seed dispersers — is not in the bank",
+   "biodiversity-and-gene-banks#recall": "A thousand potato plants, all clones of one variety",
+   "biodiversity-and-gene-banks#start": "They all share one weak spot"
+  },
   "points": [
    {
     "id": "ks3.biodiversity-and-gene-banks.1",
@@ -2527,6 +2678,12 @@
  },
  "biomechanics-forces-in-the-body": {
   "key_stage": "KS3",
+  "keys": {
+   "biomechanics-forces-in-the-body#apply": "It attaches very close to the joint, so it has a much smaller distance to work with",
+   "biomechanics-forces-in-the-body#recall": "180 N",
+   "biomechanics-forces-in-the-body#start": "It is attached near the elbow",
+   "biomechanics-forces-in-the-body#three-meters-1": "Leg press, then hand grip, then biceps"
+  },
   "points": [
    {
     "id": "ks3.biomechanics-forces-in-the-body.1",
@@ -2669,6 +2826,7 @@
    "biomechanics-forces-in-the-body#recall": "ks3.biomechanics-forces-in-the-body.3",
    "biomechanics-forces-in-the-body#start": "ks3.biomechanics-forces-in-the-body.2",
    "biomechanics-forces-in-the-body#think-commit-lever": "ks3.biomechanics-forces-in-the-body.9",
+   "biomechanics-forces-in-the-body#three-meters-1": "ks3.biomechanics-forces-in-the-body.8",
    "ks3-b2-biomechanics-forces-in-the-body-explain": "ks3.biomechanics-forces-in-the-body.2",
    "ks3-b2-biomechanics-forces-in-the-body-produce": "ks3.biomechanics-forces-in-the-body.5"
   },
@@ -2678,6 +2836,11 @@
  },
  "brownian-motion": {
   "key_stage": "KS3",
+  "keys": {
+   "brownian-motion#apply": "A molecule is thousands of times too small to see in any light microscope. The speck is big enough to see and small enough to be shifted by unbalanced molecular strikes.",
+   "brownian-motion#recall": "The pushes come from air molecules, which are far smaller and far more numerous than the smoke specks and cannot be seen at all.",
+   "brownian-motion#start": "Unseen bits of air hitting them"
+  },
   "points": [
    {
     "id": "ks3.brownian-motion.1",
@@ -2817,6 +2980,11 @@
  },
  "building-and-measuring-a-circuit": {
   "key_stage": "KS3",
+  "keys": {
+   "building-and-measuring-a-circuit#apply": "The reading is correct and the circuit is not. The voltmeter’s huge resistance is now the only thing in the loop that matters, so it takes almost all the p.d. and almost no current flows.",
+   "building-and-measuring-a-circuit#recall": "Wired the voltmeter into the loop instead of across the lamp",
+   "building-and-measuring-a-circuit#start": "A loose connection"
+  },
   "points": [
    {
     "id": "ks3.building-and-measuring-a-circuit.1",
@@ -2853,6 +3021,7 @@
    "building-and-measuring-a-circuit#produce": "ks3.building-and-measuring-a-circuit.4",
    "building-and-measuring-a-circuit#recall": "ks3.building-and-measuring-a-circuit.3",
    "building-and-measuring-a-circuit#start": "ks3.building-and-measuring-a-circuit.7",
+   "building-and-measuring-a-circuit#wire-1": "ks3.building-and-measuring-a-circuit.1",
    "ks3-p8-building-and-measuring-a-circuit-explain": "ks3.building-and-measuring-a-circuit.3",
    "ks3-p8-building-and-measuring-a-circuit-produce": "ks3.building-and-measuring-a-circuit.4",
    "p8-07-e01": "ks3.building-and-measuring-a-circuit.1",
@@ -2952,6 +3121,11 @@
  },
  "calculating-energy-transferred": {
   "key_stage": "KS3",
+  "keys": {
+   "calculating-energy-transferred#apply": "The time must be in seconds, not minutes",
+   "calculating-energy-transferred#recall": "108 000 J",
+   "calculating-energy-transferred#start": "They are about the same"
+  },
   "points": [
    {
     "id": "ks3.calculating-energy-transferred.1",
@@ -3088,6 +3262,11 @@
  },
  "carbon-dioxide-humans-and-climate": {
   "key_stage": "KS3",
+  "keys": {
+   "carbon-dioxide-humans-and-climate#apply": "No — without it the Earth would average about −18 °C. The problem is strengthening it",
+   "carbon-dioxide-humans-and-climate#recall": "Gases let sunlight in and absorb the infrared radiated back out by the warmed surface",
+   "carbon-dioxide-humans-and-climate#start": "Slowing heat on the way out"
+  },
   "points": [
    {
     "id": "ks3.carbon-dioxide-humans-and-climate.1",
@@ -3214,6 +3393,10 @@
    "c10-06-s29": "ks3.carbon-dioxide-humans-and-climate.4",
    "c10-06-s30": "ks3.carbon-dioxide-humans-and-climate.8",
    "carbon-dioxide-humans-and-climate#apply": "ks3.carbon-dioxide-humans-and-climate.2",
+   "carbon-dioxide-humans-and-climate#evidence-set-1": "ks3.carbon-dioxide-humans-and-climate.3",
+   "carbon-dioxide-humans-and-climate#evidence-set-2": "ks3.carbon-dioxide-humans-and-climate.3",
+   "carbon-dioxide-humans-and-climate#evidence-set-3": "ks3.carbon-dioxide-humans-and-climate.4",
+   "carbon-dioxide-humans-and-climate#evidence-set-4": "ks3.carbon-dioxide-humans-and-climate.1",
    "carbon-dioxide-humans-and-climate#explain": "ks3.carbon-dioxide-humans-and-climate.1",
    "carbon-dioxide-humans-and-climate#produce": "ks3.carbon-dioxide-humans-and-climate.3",
    "carbon-dioxide-humans-and-climate#recall": "ks3.carbon-dioxide-humans-and-climate.1",
@@ -3228,6 +3411,14 @@
  },
  "catalysts": {
   "key_stage": "KS3",
+  "keys": {
+   "catalysts#apply": "They are the same — the catalyst changed the speed, not the amount",
+   "catalysts#recall": "Speeds up a reaction without being used up",
+   "catalysts#start": "The same, only sooner",
+   "catalysts#uses-three-1": "Only a tiny amount is needed and it is not used up",
+   "catalysts#uses-three-2": "The temperature saving",
+   "catalysts#uses-three-3": "No — a catalyst only speeds up a reaction that can already happen"
+  },
   "points": [
    {
     "id": "ks3.catalysts.1",
@@ -3260,6 +3451,11 @@
    {
     "id": "ks3.catalysts.8",
     "label": "Calculate or compare rates and amounts from experimental data on catalysts"
+   },
+   {
+    "added": "round-3",
+    "id": "ks3.catalysts.9",
+    "label": "A catalyst lowers the energy needed to run a reaction, saving cost and resources"
    }
   ],
   "questions": {
@@ -3365,6 +3561,9 @@
    "catalysts#recall": "ks3.catalysts.1",
    "catalysts#start": "ks3.catalysts.3",
    "catalysts#think-commit-consumed": "ks3.catalysts.2",
+   "catalysts#uses-three-1": "ks3.catalysts.1",
+   "catalysts#uses-three-2": "ks3.catalysts.9",
+   "catalysts#uses-three-3": "ks3.catalysts.4",
    "ks3-c6-catalysts-explain": "ks3.catalysts.1",
    "ks3-c6-catalysts-produce": "ks3.catalysts.6"
   },
@@ -3374,6 +3573,11 @@
  },
  "ceramics-polymers-and-composites": {
   "key_stage": "KS3",
+  "keys": {
+   "ceramics-polymers-and-composites#apply": "The tile is stronger but brittle; the sheet is weaker but tough",
+   "ceramics-polymers-and-composites#recall": "Reinforced concrete",
+   "ceramics-polymers-and-composites#start": "The china plate"
+  },
   "points": [
    {
     "id": "ks3.ceramics-polymers-and-composites.1",
@@ -3510,6 +3714,12 @@
  },
  "changes-of-state": {
   "key_stage": "KS3",
+  "keys": {
+   "changes-of-state#apply": "Breaking the particles free from their fixed positions",
+   "changes-of-state#recall": "Condensing",
+   "changes-of-state#start": "Exactly 50 g",
+   "changes-of-state#the-bubble": "Water that has turned into a gas"
+  },
   "points": [
    {
     "id": "ks3.changes-of-state.1",
@@ -3656,6 +3866,11 @@
  },
  "charging-by-rubbing": {
   "key_stage": "KS3",
+  "keys": {
+   "charging-by-rubbing#apply": "No charge was created. Electrons moved from the jumper to the balloon, so the jumper is now positive by exactly as much as the balloon is negative.",
+   "charging-by-rubbing#recall": "The glass loses electrons and becomes positive; the wool gains them and becomes negative.",
+   "charging-by-rubbing#start": "Positive"
+  },
   "points": [
    {
     "id": "ks3.charging-by-rubbing.1",
@@ -3791,6 +4006,11 @@
  },
  "chemical-symbols": {
   "key_stage": "KS3",
+  "keys": {
+   "chemical-symbols#apply": "Cobalt — one element, and a metal",
+   "chemical-symbols#recall": "Two",
+   "chemical-symbols#start": "H2O, as here"
+  },
   "points": [
    {
     "id": "ks3.chemical-symbols.1",
@@ -3923,6 +4143,17 @@
  },
  "chemical-vs-physical-change": {
   "key_stage": "KS3",
+  "keys": {
+   "chemical-vs-physical-change#apply": "Salt: physical. Marble: chemical.",
+   "chemical-vs-physical-change#pairs-three-1": "Physical",
+   "chemical-vs-physical-change#pairs-three-2": "Chemical",
+   "chemical-vs-physical-change#pairs-three-3": "Physical",
+   "chemical-vs-physical-change#pairs-three-4": "Chemical",
+   "chemical-vs-physical-change#pairs-three-5": "Physical",
+   "chemical-vs-physical-change#pairs-three-6": "Chemical",
+   "chemical-vs-physical-change#recall": "At least one new substance has been made",
+   "chemical-vs-physical-change#start": "Something new is made"
+  },
   "points": [
    {
     "id": "ks3.chemical-vs-physical-change.1",
@@ -4051,7 +4282,14 @@
    "c4-01-s31": "ks3.chemical-vs-physical-change.2",
    "c4-01-s32": "ks3.chemical-vs-physical-change.2",
    "chemical-vs-physical-change#apply": "ks3.chemical-vs-physical-change.6",
+   "chemical-vs-physical-change#chain-wax-1": "ks3.chemical-vs-physical-change.1",
    "chemical-vs-physical-change#explain": "ks3.chemical-vs-physical-change.2",
+   "chemical-vs-physical-change#pairs-three-1": "ks3.chemical-vs-physical-change.1",
+   "chemical-vs-physical-change#pairs-three-2": "ks3.chemical-vs-physical-change.4",
+   "chemical-vs-physical-change#pairs-three-3": "ks3.chemical-vs-physical-change.6",
+   "chemical-vs-physical-change#pairs-three-4": "ks3.chemical-vs-physical-change.4",
+   "chemical-vs-physical-change#pairs-three-5": "ks3.chemical-vs-physical-change.1",
+   "chemical-vs-physical-change#pairs-three-6": "ks3.chemical-vs-physical-change.4",
    "chemical-vs-physical-change#produce": "ks3.chemical-vs-physical-change.2",
    "chemical-vs-physical-change#recall": "ks3.chemical-vs-physical-change.1",
    "chemical-vs-physical-change#start": "ks3.chemical-vs-physical-change.1",
@@ -4065,6 +4303,11 @@
  },
  "chromatography": {
   "key_stage": "KS3",
+  "keys": {
+   "chromatography#apply": "Pen ink is itself a mixture of dyes and would separate and smear across the paper",
+   "chromatography#recall": "Substances dissolved in the same solvent",
+   "chromatography#start": "It splits into colours"
+  },
   "points": [
    {
     "id": "ks3.chromatography.1",
@@ -4207,6 +4450,11 @@
  },
  "chromosomes-genes-and-dna": {
   "key_stage": "KS3",
+  "keys": {
+   "chromosomes-genes-and-dna#apply": "Yes — every cell with a nucleus has the complete set, but only some genes are switched on in each cell",
+   "chromosomes-genes-and-dna#recall": "Nucleus, chromosome, gene, base",
+   "chromosomes-genes-and-dna#start": "It is coiled up tightly"
+  },
   "points": [
    {
     "id": "ks3.chromosomes-genes-and-dna.1",
@@ -4346,6 +4594,11 @@
  },
  "colour-and-the-spectrum": {
   "key_stage": "KS3",
+  "keys": {
+   "colour-and-the-spectrum#apply": "A second prism the other way up in the fanned beam recombines the colours into white, which shows they were in the white light all along.",
+   "colour-and-the-spectrum#recall": "Red, because it has the lowest frequency of the visible colours and is refracted the least.",
+   "colour-and-the-spectrum#start": "Already in the sunlight"
+  },
   "points": [
    {
     "id": "ks3.colour-and-the-spectrum.1",
@@ -4481,6 +4734,14 @@
  },
  "combustion": {
   "key_stage": "KS3",
+  "keys": {
+   "combustion#apply": "Not enough air is getting in, so combustion is incomplete",
+   "combustion#recall": "Carbon dioxide and water",
+   "combustion#start": "More air",
+   "combustion#three-fuels-1": "Carbon dioxide + water",
+   "combustion#three-fuels-2": "Carbon dioxide only",
+   "combustion#three-fuels-3": "Water only"
+  },
   "points": [
    {
     "id": "ks3.combustion.1",
@@ -4612,6 +4873,9 @@
    "combustion#recall": "ks3.combustion.2",
    "combustion#start": "ks3.combustion.6",
    "combustion#think-commit-yellow": "ks3.combustion.5",
+   "combustion#three-fuels-1": "ks3.combustion.2",
+   "combustion#three-fuels-2": "ks3.combustion.8",
+   "combustion#three-fuels-3": "ks3.combustion.8",
    "ks3-c5-combustion-explain": "ks3.combustion.4",
    "ks3-c5-combustion-produce": "ks3.combustion.7"
   },
@@ -4621,6 +4885,11 @@
  },
  "compounds": {
   "key_stage": "KS3",
+  "keys": {
+   "compounds#apply": "Iron sulfide, with 4 g of sulfur left over unreacted",
+   "compounds#recall": "Two or more elements chemically joined together",
+   "compounds#start": "It joined the sulfur"
+  },
   "points": [
    {
     "id": "ks3.compounds.1",
@@ -4742,6 +5011,7 @@
    "c2-03-s32": "ks3.compounds.1",
    "compounds#apply": "ks3.compounds.2",
    "compounds#explain": "ks3.compounds.4",
+   "compounds#iron-and-sulfur-1": "ks3.compounds.2",
    "compounds#produce": "ks3.compounds.3",
    "compounds#recall": "ks3.compounds.2",
    "compounds#start": "ks3.compounds.3",
@@ -4755,6 +5025,15 @@
  },
  "conduction": {
   "key_stage": "KS3",
+  "keys": {
+   "conduction#apply": "Neither — they are at the same temperature",
+   "conduction#recall": "Energy, passed from particle to particle",
+   "conduction#start": "Neither of them",
+   "conduction#touch-test-1": "Feels cold",
+   "conduction#touch-test-2": "Feels neutral",
+   "conduction#touch-test-3": "Feels cold",
+   "conduction#touch-test-4": "Feels neutral"
+  },
   "points": [
    {
     "id": "ks3.conduction.1",
@@ -4791,6 +5070,10 @@
    "conduction#produce": "ks3.conduction.5",
    "conduction#recall": "ks3.conduction.2",
    "conduction#start": "ks3.conduction.5",
+   "conduction#touch-test-1": "ks3.conduction.5",
+   "conduction#touch-test-2": "ks3.conduction.5",
+   "conduction#touch-test-3": "ks3.conduction.5",
+   "conduction#touch-test-4": "ks3.conduction.5",
    "ks3-p1-conduction-explain": "ks3.conduction.4",
    "ks3-p1-conduction-produce": "ks3.conduction.5",
    "p1-05-e01": "ks3.conduction.3",
@@ -4890,6 +5173,11 @@
  },
  "conductors-and-insulators": {
   "key_stage": "KS3",
+  "keys": {
+   "conductors-and-insulators#apply": "The resistance is enormous but finite — around 2 TΩ for that ruler, which passes a current of a few millionths of a millionth of an amp, far below what the meter can show.",
+   "conductors-and-insulators#recall": "40 Ω — a conductor",
+   "conductors-and-insulators#start": "Over a million million times"
+  },
   "points": [
    {
     "id": "ks3.conductors-and-insulators.1",
@@ -5031,6 +5319,11 @@
  },
  "conservation-of-energy": {
   "key_stage": "KS3",
+  "keys": {
+   "conservation-of-energy#apply": "It is exactly the same — it is just all in the thermal store now",
+   "conservation-of-energy#recall": "transferred between stores",
+   "conservation-of-energy#start": "Yes, a tiny bit warmer"
+  },
   "points": [
    {
     "id": "ks3.conservation-of-energy.1",
@@ -5066,6 +5359,7 @@
    "conservation-of-energy#explain": "ks3.conservation-of-energy.2",
    "conservation-of-energy#produce": "ks3.conservation-of-energy.7",
    "conservation-of-energy#recall": "ks3.conservation-of-energy.1",
+   "conservation-of-energy#running-total-1": "ks3.conservation-of-energy.4",
    "conservation-of-energy#start": "ks3.conservation-of-energy.2",
    "ks3-p1-conservation-of-energy-explain": "ks3.conservation-of-energy.2",
    "ks3-p1-conservation-of-energy-produce": "ks3.conservation-of-energy.7",
@@ -5166,6 +5460,11 @@
  },
  "conservation-of-mass": {
   "key_stage": "KS3",
+  "keys": {
+   "conservation-of-mass#apply": "Oxygen from the air has joined the iron, and it has mass",
+   "conservation-of-mass#recall": "50 g",
+   "conservation-of-mass#start": "Into gas in the air"
+  },
   "points": [
    {
     "id": "ks3.conservation-of-mass.1",
@@ -5302,6 +5601,11 @@
  },
  "current-and-circuits": {
   "key_stage": "KS3",
+  "keys": {
+   "current-and-circuits#apply": "The wire is already full of free electrons, so closing the switch pushes on all of them at once and the far end starts moving almost immediately.",
+   "current-and-circuits#recall": "0.24 A — the current is the same everywhere in a single loop",
+   "current-and-circuits#start": "The bulb goes dark"
+  },
   "points": [
    {
     "id": "ks3.current-and-circuits.1",
@@ -5437,6 +5741,11 @@
  },
  "current-at-a-junction": {
   "key_stage": "KS3",
+  "keys": {
+   "current-at-a-junction#apply": "It still draws 0.30 A. Its branch has the same battery across it as before, and the main wire now carries 0.30 A instead of 0.60 A.",
+   "current-at-a-junction#recall": "0.15 A",
+   "current-at-a-junction#start": "The same amount"
+  },
   "points": [
    {
     "id": "ks3.current-at-a-junction.1",
@@ -5579,6 +5888,11 @@
  },
  "density": {
   "key_stage": "KS3",
+  "keys": {
+   "density#apply": "The gold is far denser. Heavier says how much there is; denser says how much mass sits in each cubic centimetre, and only the second is a property of the material.",
+   "density#recall": "3.0 g/cm³",
+   "density#start": "Neither: they balance"
+  },
   "points": [
    {
     "id": "ks3.density.1",
@@ -5721,6 +6035,11 @@
  },
  "diffusion": {
   "key_stage": "KS3",
+  "keys": {
+   "diffusion#apply": "They are still moving randomly, with equal numbers crossing each way",
+   "diffusion#recall": "More crowded to where they are less crowded",
+   "diffusion#start": "Yes, in the end"
+  },
   "points": [
    {
     "id": "ks3.diffusion.1",
@@ -5867,6 +6186,14 @@
  },
  "displacement": {
   "key_stage": "KS3",
+  "keys": {
+   "displacement#apply": "Copper is less reactive than zinc, so it cannot displace it",
+   "displacement#recall": "A more reactive metal takes the place of a less reactive metal in its compound",
+   "displacement#start": "It fades",
+   "displacement#uses-three-1": "No",
+   "displacement#uses-three-2": "No",
+   "displacement#uses-three-3": "Yes"
+  },
   "points": [
    {
     "id": "ks3.displacement.1",
@@ -5994,10 +6321,14 @@
    "c5-04-s30": "ks3.displacement.8",
    "displacement#apply": "ks3.displacement.1",
    "displacement#explain": "ks3.displacement.5",
+   "displacement#grid-sixteen-1": "ks3.displacement.4",
    "displacement#produce": "ks3.displacement.8",
    "displacement#recall": "ks3.displacement.1",
    "displacement#start": "ks3.displacement.2",
    "displacement#think-commit-nail": "ks3.displacement.1",
+   "displacement#uses-three-1": "ks3.displacement.2",
+   "displacement#uses-three-2": "ks3.displacement.6",
+   "displacement#uses-three-3": "ks3.displacement.8",
    "ks3-c5-displacement-explain": "ks3.displacement.5",
    "ks3-c5-displacement-produce": "ks3.displacement.8"
   },
@@ -6007,6 +6338,11 @@
  },
  "dissolving-and-solutions": {
   "key_stage": "KS3",
+  "keys": {
+   "dissolving-and-solutions#apply": "Nothing more dissolves — stirring changes the speed, not the limit",
+   "dissolving-and-solutions#recall": "The water",
+   "dissolving-and-solutions#start": "Still 110 g"
+  },
   "points": [
    {
     "id": "ks3.dissolving-and-solutions.1",
@@ -6150,6 +6486,12 @@
  },
  "distance-time-graphs": {
   "key_stage": "KS3",
+  "keys": {
+   "distance-time-graphs#apply": "A is travelling faster than B",
+   "distance-time-graphs#graph-plot-1": "Standing still",
+   "distance-time-graphs#recall": "The object was stopped",
+   "distance-time-graphs#start": "It goes flat"
+  },
   "points": [
    {
     "id": "ks3.distance-time-graphs.1",
@@ -6183,6 +6525,7 @@
   "questions": {
    "distance-time-graphs#apply": "ks3.distance-time-graphs.3",
    "distance-time-graphs#explain": "ks3.distance-time-graphs.3",
+   "distance-time-graphs#graph-plot-1": "ks3.distance-time-graphs.2",
    "distance-time-graphs#produce": "ks3.distance-time-graphs.4",
    "distance-time-graphs#recall": "ks3.distance-time-graphs.2",
    "distance-time-graphs#start": "ks3.distance-time-graphs.2",
@@ -6285,6 +6628,11 @@
  },
  "distillation": {
   "key_stage": "KS3",
+  "keys": {
+   "distillation#apply": "They boiled it too hard, so droplets of salt water were thrown over into the condenser",
+   "distillation#recall": "Pure water is collected; the salt stays in the flask",
+   "distillation#start": "Boil it, catch the steam"
+  },
   "points": [
    {
     "id": "ks3.distillation.1",
@@ -6427,6 +6775,11 @@
  },
  "disturbing-a-food-web": {
   "key_stage": "KS3",
+  "keys": {
+   "disturbing-a-food-web#apply": "The bees, because more mice eat more wildflower seeds and the flowers thin out",
+   "disturbing-a-food-web#recall": "Aphid numbers rise, because their main predator has gone",
+   "disturbing-a-food-web#start": "Worse off"
+  },
   "points": [
    {
     "id": "ks3.disturbing-a-food-web.1",
@@ -6566,6 +6919,11 @@
  },
  "drawing-and-adding-forces": {
   "key_stage": "KS3",
+  "keys": {
+   "drawing-and-adding-forces#apply": "The two forces are equal in size, so the resultant force is 0 N.",
+   "drawing-and-adding-forces#recall": "56 N forwards",
+   "drawing-and-adding-forces#start": "15 N to the right"
+  },
   "points": [
    {
     "id": "ks3.drawing-and-adding-forces.1",
@@ -6703,6 +7061,11 @@
  },
  "echoes-reflection-and-absorption": {
   "key_stage": "KS3",
+  "keys": {
+   "echoes-reflection-and-absorption#apply": "The soft surfaces absorb most of the sound instead of reflecting it, and the room is also too small for a reflection to arrive late enough to be heard separately.",
+   "echoes-reflection-and-absorption#recall": "About 510 m — 340 m/s for 3.0 s is the there-and-back path, so halve it",
+   "echoes-reflection-and-absorption#start": "No, not a separate one"
+  },
   "points": [
    {
     "id": "ks3.echoes-reflection-and-absorption.1",
@@ -6840,6 +7203,11 @@
  },
  "electric-fields": {
   "key_stage": "KS3",
+  "keys": {
+   "electric-fields#apply": "It is zero there. The two charges push a positive test charge in exactly opposite directions with equal strength, so the pushes cancel.",
+   "electric-fields#recall": "The object is positively charged, and a negative charge would be pulled inwards, against the field.",
+   "electric-fields#start": "No, it does not"
+  },
   "points": [
    {
     "id": "ks3.electric-fields.1",
@@ -6987,6 +7355,11 @@
  },
  "electromagnets": {
   "key_stage": "KS3",
+  "keys": {
+   "electromagnets#apply": "The clips fall, because the field goes when the current does",
+   "electromagnets#recall": "Swapping the soft iron core for a plastic one of the same size",
+   "electromagnets#start": "The whole time"
+  },
   "points": [
    {
     "id": "ks3.electromagnets.1",
@@ -7126,6 +7499,11 @@
  },
  "elements": {
   "key_stage": "KS3",
+  "keys": {
+   "elements#apply": "Electricity passed through it produces two new substances",
+   "elements#recall": "It is made of only one kind of atom",
+   "elements#start": "Try to break it down"
+  },
   "points": [
    {
     "id": "ks3.elements.1",
@@ -7268,6 +7646,22 @@
  },
  "endothermic-reactions": {
   "key_stage": "KS3",
+  "keys": {
+   "endothermic-reactions#apply": "It is exothermic — the same energy comes back out",
+   "endothermic-reactions#recall": "It falls, because energy is taken in by the reaction",
+   "endothermic-reactions#sort-eight-1": "Exothermic",
+   "endothermic-reactions#sort-eight-2": "Endothermic",
+   "endothermic-reactions#sort-eight-3": "Exothermic",
+   "endothermic-reactions#sort-eight-4": "Endothermic",
+   "endothermic-reactions#sort-eight-5": "Exothermic",
+   "endothermic-reactions#sort-eight-6": "Endothermic",
+   "endothermic-reactions#sort-eight-7": "Exothermic",
+   "endothermic-reactions#sort-eight-8": "Endothermic",
+   "endothermic-reactions#start": "The chemicals took it in",
+   "endothermic-reactions#uses-cold-1": "The dissolving cannot be reversed inside the bag",
+   "endothermic-reactions#uses-cold-2": "No — it takes energy in rather than giving it out",
+   "endothermic-reactions#uses-cold-3": "They are wrong — the energy is stored in the products"
+  },
   "points": [
    {
     "id": "ks3.endothermic-reactions.1",
@@ -7296,6 +7690,11 @@
    {
     "id": "ks3.endothermic-reactions.7",
     "label": "Melting is endothermic and freezing is exothermic; physical changes can be endothermic"
+   },
+   {
+    "added": "round-3",
+    "id": "ks3.endothermic-reactions.8",
+    "label": "Respiration is exothermic, releasing energy from glucose in every living cell"
    }
   ],
   "questions": {
@@ -7393,8 +7792,19 @@
    "endothermic-reactions#explain": "ks3.endothermic-reactions.4",
    "endothermic-reactions#produce": "ks3.endothermic-reactions.3",
    "endothermic-reactions#recall": "ks3.endothermic-reactions.1",
+   "endothermic-reactions#sort-eight-1": "ks3.endothermic-reactions.2",
+   "endothermic-reactions#sort-eight-2": "ks3.endothermic-reactions.3",
+   "endothermic-reactions#sort-eight-3": "ks3.endothermic-reactions.2",
+   "endothermic-reactions#sort-eight-4": "ks3.endothermic-reactions.5",
+   "endothermic-reactions#sort-eight-5": "ks3.endothermic-reactions.8",
+   "endothermic-reactions#sort-eight-6": "ks3.endothermic-reactions.7",
+   "endothermic-reactions#sort-eight-7": "ks3.endothermic-reactions.7",
+   "endothermic-reactions#sort-eight-8": "ks3.endothermic-reactions.6",
    "endothermic-reactions#start": "ks3.endothermic-reactions.1",
    "endothermic-reactions#think-commit-cold": "ks3.endothermic-reactions.1",
+   "endothermic-reactions#uses-cold-1": "ks3.endothermic-reactions.3",
+   "endothermic-reactions#uses-cold-2": "ks3.endothermic-reactions.1",
+   "endothermic-reactions#uses-cold-3": "ks3.endothermic-reactions.4",
    "ks3-c7-endothermic-reactions-explain": "ks3.endothermic-reactions.4",
    "ks3-c7-endothermic-reactions-produce": "ks3.endothermic-reactions.3"
   },
@@ -7404,6 +7814,14 @@
  },
  "energy-and-changes-of-state": {
   "key_stage": "KS3",
+  "keys": {
+   "energy-and-changes-of-state#apply": "It is being used to separate the particles as the ice melts",
+   "energy-and-changes-of-state#recall": "Condensing",
+   "energy-and-changes-of-state#start": "Melting the ice",
+   "energy-and-changes-of-state#uses-outside-1": "Evaporating sweat takes energy from your skin",
+   "energy-and-changes-of-state#uses-outside-2": "The steam",
+   "energy-and-changes-of-state#uses-outside-3": "Yes"
+  },
   "points": [
    {
     "id": "ks3.energy-and-changes-of-state.1",
@@ -7436,6 +7854,11 @@
    {
     "id": "ks3.energy-and-changes-of-state.8",
     "label": "Particles in solids vibrate in fixed positions, held by forces of attraction between them"
+   },
+   {
+    "added": "round-3",
+    "id": "ks3.energy-and-changes-of-state.9",
+    "label": "Condensing steam releases extra energy into skin beyond what hot water at the same temperature carries"
    }
   ],
   "questions": {
@@ -7535,6 +7958,9 @@
    "energy-and-changes-of-state#recall": "ks3.energy-and-changes-of-state.1",
    "energy-and-changes-of-state#start": "ks3.energy-and-changes-of-state.3",
    "energy-and-changes-of-state#think-commit-plateau": "ks3.energy-and-changes-of-state.2",
+   "energy-and-changes-of-state#uses-outside-1": "ks3.energy-and-changes-of-state.1",
+   "energy-and-changes-of-state#uses-outside-2": "ks3.energy-and-changes-of-state.9",
+   "energy-and-changes-of-state#uses-outside-3": "ks3.energy-and-changes-of-state.1",
    "ks3-c7-energy-and-changes-of-state-explain": "ks3.energy-and-changes-of-state.2",
    "ks3-c7-energy-and-changes-of-state-produce": "ks3.energy-and-changes-of-state.3"
   },
@@ -7544,6 +7970,11 @@
  },
  "energy-in-food": {
   "key_stage": "KS3",
+  "keys": {
+   "energy-in-food#apply": "They are the same energy in different units — 1 kcal is about 4.18 kJ",
+   "energy-in-food#recall": "510 kJ",
+   "energy-in-food#start": "The same thing"
+  },
   "points": [
    {
     "id": "ks3.energy-in-food.1",
@@ -7683,6 +8114,11 @@
  },
  "energy-in-food-and-what-you-need": {
   "key_stage": "KS3",
+  "keys": {
+   "energy-in-food-and-what-you-need#apply": "About 18%, because their requirement is much lower",
+   "energy-in-food-and-what-you-need#recall": "7670 kJ — about 1800 kJ short of the requirement",
+   "energy-in-food-and-what-you-need#start": "How much energy each body needs"
+  },
   "points": [
    {
     "id": "ks3.energy-in-food-and-what-you-need.1",
@@ -7814,6 +8250,17 @@
  },
  "energy-stores": {
   "key_stage": "KS3",
+  "keys": {
+   "energy-stores#apply": "Gravitational store empties, kinetic fills, then thermal fills as the brakes warm",
+   "energy-stores#recall": "Elastic",
+   "energy-stores#start": "It went somewhere else",
+   "energy-stores#store-pathway-sort-1": "A store",
+   "energy-stores#store-pathway-sort-2": "A pathway",
+   "energy-stores#store-pathway-sort-3": "A store",
+   "energy-stores#store-pathway-sort-4": "A pathway",
+   "energy-stores#store-pathway-sort-5": "A store",
+   "energy-stores#store-pathway-sort-6": "A pathway"
+  },
   "points": [
    {
     "id": "ks3.energy-stores.1",
@@ -7846,6 +8293,12 @@
    "energy-stores#produce": "ks3.energy-stores.3",
    "energy-stores#recall": "ks3.energy-stores.2",
    "energy-stores#start": "ks3.energy-stores.4",
+   "energy-stores#store-pathway-sort-1": "ks3.energy-stores.2",
+   "energy-stores#store-pathway-sort-2": "ks3.energy-stores.3",
+   "energy-stores#store-pathway-sort-3": "ks3.energy-stores.2",
+   "energy-stores#store-pathway-sort-4": "ks3.energy-stores.3",
+   "energy-stores#store-pathway-sort-5": "ks3.energy-stores.2",
+   "energy-stores#store-pathway-sort-6": "ks3.energy-stores.3",
    "ks3-p1-energy-stores-explain": "ks3.energy-stores.5",
    "ks3-p1-energy-stores-produce": "ks3.energy-stores.3",
    "p1-01-e01": "ks3.energy-stores.1",
@@ -7945,6 +8398,15 @@
  },
  "energy-transfers-before-and-after": {
   "key_stage": "KS3",
+  "keys": {
+   "energy-transfers-before-and-after#apply": "It fills a thermal store in the bulb and the room",
+   "energy-transfers-before-and-after#recall": "The two totals are equal",
+   "energy-transfers-before-and-after#start": "No, it is not stuff",
+   "energy-transfers-before-and-after#waste-sort-1": "Wasted",
+   "energy-transfers-before-and-after#waste-sort-2": "The point",
+   "energy-transfers-before-and-after#waste-sort-3": "Wasted",
+   "energy-transfers-before-and-after#waste-sort-4": "The point"
+  },
   "points": [
    {
     "id": "ks3.energy-transfers-before-and-after.1",
@@ -7986,6 +8448,10 @@
    "energy-transfers-before-and-after#produce": "ks3.energy-transfers-before-and-after.6",
    "energy-transfers-before-and-after#recall": "ks3.energy-transfers-before-and-after.1",
    "energy-transfers-before-and-after#start": "ks3.energy-transfers-before-and-after.8",
+   "energy-transfers-before-and-after#waste-sort-1": "ks3.energy-transfers-before-and-after.6",
+   "energy-transfers-before-and-after#waste-sort-2": "ks3.energy-transfers-before-and-after.6",
+   "energy-transfers-before-and-after#waste-sort-3": "ks3.energy-transfers-before-and-after.6",
+   "energy-transfers-before-and-after#waste-sort-4": "ks3.energy-transfers-before-and-after.6",
    "ks3-p1-energy-transfers-before-and-after-explain": "ks3.energy-transfers-before-and-after.1",
    "ks3-p1-energy-transfers-before-and-after-produce": "ks3.energy-transfers-before-and-after.6",
    "p1-02-e01": "ks3.energy-transfers-before-and-after.2",
@@ -8085,6 +8551,11 @@
  },
  "enzymes-in-digestion": {
   "key_stage": "KS3",
+  "keys": {
+   "enzymes-in-digestion#apply": "Its shape was permanently destroyed by the heat, so it no longer fits starch",
+   "enzymes-in-digestion#recall": "All of it — an enzyme is not used up by the reaction it catalyses",
+   "enzymes-in-digestion#start": "Yes, all of it"
+  },
   "points": [
    {
     "id": "ks3.enzymes-in-digestion.1",
@@ -8220,6 +8691,11 @@
  },
  "evaporation-and-crystallisation": {
   "key_stage": "KS3",
+  "keys": {
+   "evaporation-and-crystallisation#apply": "The same mass of solid, but hers is a crust of tiny crystals and his is a few large ones",
+   "evaporation-and-crystallisation#recall": "The salt is left; the water evaporated into the air",
+   "evaporation-and-crystallisation#start": "The windowsill dish"
+  },
   "points": [
    {
     "id": "ks3.evaporation-and-crystallisation.1",
@@ -8252,6 +8728,11 @@
    {
     "id": "ks3.evaporation-and-crystallisation.8",
     "label": "Calculate mass, concentration, or percentage from evaporation data"
+   },
+   {
+    "added": "round-3",
+    "id": "ks3.evaporation-and-crystallisation.9",
+    "label": "Evaporation can recover the solvent as useful vapour, not just the solute."
    }
   ],
   "questions": {
@@ -8357,6 +8838,9 @@
    "evaporation-and-crystallisation#recall": "ks3.evaporation-and-crystallisation.1",
    "evaporation-and-crystallisation#start": "ks3.evaporation-and-crystallisation.3",
    "evaporation-and-crystallisation#think-commit-water": "ks3.evaporation-and-crystallisation.2",
+   "evaporation-and-crystallisation#three-jobs-1": "ks3.evaporation-and-crystallisation.3",
+   "evaporation-and-crystallisation#three-jobs-2": "ks3.evaporation-and-crystallisation.3",
+   "evaporation-and-crystallisation#three-jobs-3": "ks3.evaporation-and-crystallisation.9",
    "ks3-c3-evaporation-and-crystallisation-explain": "ks3.evaporation-and-crystallisation.3",
    "ks3-c3-evaporation-and-crystallisation-produce": "ks3.evaporation-and-crystallisation.1"
   },
@@ -8366,6 +8850,11 @@
  },
  "exercise-asthma-and-smoking": {
   "key_stage": "KS3",
+  "keys": {
+   "exercise-asthma-and-smoking#apply": "Destroyed alveolar walls",
+   "exercise-asthma-and-smoking#recall": "Rising carbon dioxide in the blood",
+   "exercise-asthma-and-smoking#start": "No oxygen at all"
+  },
   "points": [
    {
     "id": "ks3.exercise-asthma-and-smoking.1",
@@ -8399,6 +8888,11 @@
     "added": "round-2",
     "id": "ks3.exercise-asthma-and-smoking.8",
     "label": "A reliever inhaler contains no oxygen; it is a muscle-relaxing drug."
+   },
+   {
+    "added": "round-3",
+    "id": "ks3.exercise-asthma-and-smoking.9",
+    "label": "Different respiratory diseases affect different parts: muscles, airways, alveoli or blood."
    }
   ],
   "questions": {
@@ -8500,6 +8994,7 @@
    "b4-04-s32": "ks3.exercise-asthma-and-smoking.4",
    "exercise-asthma-and-smoking#apply": "ks3.exercise-asthma-and-smoking.5",
    "exercise-asthma-and-smoking#explain": "ks3.exercise-asthma-and-smoking.6",
+   "exercise-asthma-and-smoking#locate-the-fault-1": "ks3.exercise-asthma-and-smoking.9",
    "exercise-asthma-and-smoking#produce": "ks3.exercise-asthma-and-smoking.5",
    "exercise-asthma-and-smoking#recall": "ks3.exercise-asthma-and-smoking.1",
    "exercise-asthma-and-smoking#start": "ks3.exercise-asthma-and-smoking.8",
@@ -8512,6 +9007,14 @@
  },
  "exothermic-reactions": {
   "key_stage": "KS3",
+  "keys": {
+   "exothermic-reactions#apply": "No — far more energy comes out than the spark put in",
+   "exothermic-reactions#recall": "It rises, because energy is transferred out of the reaction",
+   "exothermic-reactions#start": "Inside the pouch",
+   "exothermic-reactions#uses-exo-1": "The iron rusting",
+   "exothermic-reactions#uses-exo-2": "Because energy given out can be used to do something",
+   "exothermic-reactions#uses-exo-3": "No — the energy was already stored in the chemicals"
+  },
   "points": [
    {
     "id": "ks3.exothermic-reactions.1",
@@ -8639,6 +9142,9 @@
    "exothermic-reactions#recall": "ks3.exothermic-reactions.1",
    "exothermic-reactions#start": "ks3.exothermic-reactions.1",
    "exothermic-reactions#think-commit-spark": "ks3.exothermic-reactions.3",
+   "exothermic-reactions#uses-exo-1": "ks3.exothermic-reactions.6",
+   "exothermic-reactions#uses-exo-2": "ks3.exothermic-reactions.1",
+   "exothermic-reactions#uses-exo-3": "ks3.exothermic-reactions.2",
    "ks3-c7-exothermic-reactions-explain": "ks3.exothermic-reactions.5",
    "ks3-c7-exothermic-reactions-produce": "ks3.exothermic-reactions.7"
   },
@@ -8648,6 +9154,11 @@
  },
  "fermentation": {
   "key_stage": "KS3",
+  "keys": {
+   "fermentation#apply": "It evaporates in the oven — ethanol boils well below the temperature of baking",
+   "fermentation#recall": "Ethanol and carbon dioxide",
+   "fermentation#start": "A gas the yeast gave off"
+  },
   "points": [
    {
     "id": "ks3.fermentation.1",
@@ -8790,6 +9301,11 @@
  },
  "fertilisation-seeds-and-fruit": {
   "key_stage": "KS3",
+  "keys": {
+   "fertilisation-seeds-and-fruit#apply": "A tomato",
+   "fertilisation-seeds-and-fruit#recall": "A pollen nucleus fusing with an ovule nucleus inside the ovary",
+   "fertilisation-seeds-and-fruit#start": "It grows its way down"
+  },
   "points": [
    {
     "id": "ks3.fertilisation-seeds-and-fruit.1",
@@ -8925,6 +9441,11 @@
  },
  "filtration": {
   "key_stage": "KS3",
+  "keys": {
+   "filtration#apply": "No paper will do it — the dissolved salt particles are smaller than any gap in any paper",
+   "filtration#recall": "The sand is the residue, the water is the filtrate",
+   "filtration#start": "Just the sand"
+  },
   "points": [
    {
     "id": "ks3.filtration.1",
@@ -9054,6 +9575,7 @@
    "c3-03-s32": "ks3.filtration.1",
    "filtration#apply": "ks3.filtration.4",
    "filtration#explain": "ks3.filtration.4",
+   "filtration#filter-steps-1": "ks3.filtration.4",
    "filtration#produce": "ks3.filtration.5",
    "filtration#recall": "ks3.filtration.3",
    "filtration#start": "ks3.filtration.1",
@@ -9067,6 +9589,20 @@
  },
  "flowers-and-pollination": {
   "key_stage": "KS3",
+  "keys": {
+   "flowers-and-pollination#apply": "It is wind-pollinated — it has nothing to attract with because it attracts nothing",
+   "flowers-and-pollination#nine-parts-1": "Makes pollen grains, each carrying a male gamete nucleus.",
+   "flowers-and-pollination#nine-parts-2": "Holds the anther up and out, where pollen can be taken away.",
+   "flowers-and-pollination#nine-parts-3": "A sticky or feathery surface that catches pollen grains.",
+   "flowers-and-pollination#nine-parts-4": "A stalk that raises the catching surface and gives the pollen tube its route down.",
+   "flowers-and-pollination#nine-parts-5": "Contains the ovules, and becomes the fruit after fertilisation.",
+   "flowers-and-pollination#nine-parts-6": "Contains a female gamete nucleus, and becomes the seed after fertilisation.",
+   "flowers-and-pollination#nine-parts-7": "Attracts insects by colour and scent, and gives them a platform to land on.",
+   "flowers-and-pollination#nine-parts-8": "Encloses and protects the whole flower while it is still a bud.",
+   "flowers-and-pollination#nine-parts-9": "Produces a sugary liquid that pays the visiting insect for its trouble.",
+   "flowers-and-pollination#recall": "The transfer of pollen from an anther to a stigma",
+   "flowers-and-pollination#start": "Grass"
+  },
   "points": [
    {
     "id": "ks3.flowers-and-pollination.1",
@@ -9190,6 +9726,15 @@
    "b5-06-s30": "ks3.flowers-and-pollination.7",
    "flowers-and-pollination#apply": "ks3.flowers-and-pollination.5",
    "flowers-and-pollination#explain": "ks3.flowers-and-pollination.2",
+   "flowers-and-pollination#nine-parts-1": "ks3.flowers-and-pollination.1",
+   "flowers-and-pollination#nine-parts-2": "ks3.flowers-and-pollination.1",
+   "flowers-and-pollination#nine-parts-3": "ks3.flowers-and-pollination.2",
+   "flowers-and-pollination#nine-parts-4": "ks3.flowers-and-pollination.2",
+   "flowers-and-pollination#nine-parts-5": "ks3.flowers-and-pollination.2",
+   "flowers-and-pollination#nine-parts-6": "ks3.flowers-and-pollination.6",
+   "flowers-and-pollination#nine-parts-7": "ks3.flowers-and-pollination.4",
+   "flowers-and-pollination#nine-parts-8": "ks3.flowers-and-pollination.7",
+   "flowers-and-pollination#nine-parts-9": "ks3.flowers-and-pollination.4",
    "flowers-and-pollination#produce": "ks3.flowers-and-pollination.7",
    "flowers-and-pollination#recall": "ks3.flowers-and-pollination.3",
    "flowers-and-pollination#start": "ks3.flowers-and-pollination.5",
@@ -9202,6 +9747,11 @@
  },
  "food-chains-and-food-webs": {
   "key_stage": "KS3",
+  "keys": {
+   "food-chains-and-food-webs#apply": "Most was released by respiration and warmed the surroundings; the rest went to decomposers in droppings and dead material",
+   "food-chains-and-food-webs#recall": "Lettuce to slug to hedgehog — the arrows follow the energy",
+   "food-chains-and-food-webs#start": "There is not enough energy left"
+  },
   "points": [
    {
     "id": "ks3.food-chains-and-food-webs.1",
@@ -9325,6 +9875,7 @@
    "b9-01-s30": "ks3.food-chains-and-food-webs.3",
    "food-chains-and-food-webs#apply": "ks3.food-chains-and-food-webs.3",
    "food-chains-and-food-webs#explain": "ks3.food-chains-and-food-webs.4",
+   "food-chains-and-food-webs#follow-the-energy-up-1": "ks3.food-chains-and-food-webs.1",
    "food-chains-and-food-webs#produce": "ks3.food-chains-and-food-webs.4",
    "food-chains-and-food-webs#recall": "ks3.food-chains-and-food-webs.2",
    "food-chains-and-food-webs#start": "ks3.food-chains-and-food-webs.4",
@@ -9337,6 +9888,11 @@
  },
  "food-tests": {
   "key_stage": "KS3",
+  "keys": {
+   "food-tests#apply": "Saliva broke the starch down into sugar",
+   "food-tests#recall": "The cream contains lipid",
+   "food-tests#start": "Nothing either way"
+  },
   "points": [
    {
     "id": "ks3.food-tests.1",
@@ -9463,6 +10019,7 @@
    "food-tests#produce": "ks3.food-tests.3",
    "food-tests#recall": "ks3.food-tests.2",
    "food-tests#start": "ks3.food-tests.4",
+   "food-tests#twenty-combinations-1": "ks3.food-tests.1",
    "ks3-b3-food-tests-explain": "ks3.food-tests.5",
    "ks3-b3-food-tests-produce": "ks3.food-tests.3"
   },
@@ -9472,6 +10029,11 @@
  },
  "forces-between-charges": {
   "key_stage": "KS3",
+  "keys": {
+   "forces-between-charges#apply": "It falls to about a quarter of what it was",
+   "forces-between-charges#recall": "Nothing certain — it could be positively charged, or it could be neutral",
+   "forces-between-charges#start": "No, it has none"
+  },
   "points": [
    {
     "id": "ks3.forces-between-charges.1",
@@ -9503,6 +10065,7 @@
    "forces-between-charges#explain": "ks3.forces-between-charges.4",
    "forces-between-charges#produce": "ks3.forces-between-charges.5",
    "forces-between-charges#recall": "ks3.forces-between-charges.5",
+   "forces-between-charges#spheres-1": "ks3.forces-between-charges.4",
    "forces-between-charges#start": "ks3.forces-between-charges.6",
    "ks3-p9-forces-between-charges-explain": "ks3.forces-between-charges.4",
    "ks3-p9-forces-between-charges-produce": "ks3.forces-between-charges.5",
@@ -9603,6 +10166,11 @@
  },
  "formulae": {
   "key_stage": "KS3",
+  "keys": {
+   "formulae#apply": "2CO2 is two particles of carbon dioxide; C2O4 would be a single particle with twice as much in it",
+   "formulae#recall": "Seven",
+   "formulae#start": "No, it would not"
+  },
   "points": [
    {
     "id": "ks3.formulae.1",
@@ -9730,6 +10298,7 @@
    "c2-05-s29": "ks3.formulae.3",
    "c2-05-s30": "ks3.formulae.6",
    "formulae#apply": "ks3.formulae.3",
+   "formulae#build-a-formula-1": "ks3.formulae.4",
    "formulae#explain": "ks3.formulae.4",
    "formulae#produce": "ks3.formulae.7",
    "formulae#recall": "ks3.formulae.2",
@@ -9745,6 +10314,11 @@
  },
  "frequency-pitch-and-loudness": {
   "key_stage": "KS3",
+  "keys": {
+   "frequency-pitch-and-loudness#apply": "Both notes travel at about 340 m/s in the same air, so they arrive together — which is why the band sounds like a band and not a mess.",
+   "frequency-pitch-and-loudness#recall": "1024 vibrations",
+   "frequency-pitch-and-loudness#start": "No, only louder"
+  },
   "points": [
    {
     "id": "ks3.frequency-pitch-and-loudness.1",
@@ -9882,6 +10456,11 @@
  },
  "friction": {
   "key_stage": "KS3",
+  "keys": {
+   "friction#apply": "Friction acts up the slope, matching the pull down the slope, so the resultant is 0 N.",
+   "friction#recall": "40 N, backwards along the snow.",
+   "friction#start": "A little easier"
+  },
   "points": [
    {
     "id": "ks3.friction.1",
@@ -10017,6 +10596,11 @@
  },
  "fuels-and-energy-resources": {
   "key_stage": "KS3",
+  "keys": {
+   "fuels-and-energy-resources#apply": "Nuclear",
+   "fuels-and-energy-resources#recall": "The store refills on a human timescale, so it will not run out",
+   "fuels-and-energy-resources#start": "Burning wood"
+  },
   "points": [
    {
     "id": "ks3.fuels-and-energy-resources.1",
@@ -10152,6 +10736,11 @@
  },
  "gametes-and-fertilisation": {
   "key_stage": "KS3",
+  "keys": {
+   "gametes-and-fertilisation#apply": "Cytoplasm, mitochondria and a food store for the first few days of dividing",
+   "gametes-and-fertilisation#recall": "The nucleus of a sperm fusing with the nucleus of an egg",
+   "gametes-and-fertilisation#start": "Food and supplies"
+  },
   "points": [
    {
     "id": "ks3.gametes-and-fertilisation.1",
@@ -10287,6 +10876,11 @@
  },
  "gas-pressure": {
   "key_stage": "KS3",
+  "keys": {
+   "gas-pressure#apply": "The size of the particles",
+   "gas-pressure#recall": "Particles colliding with the walls",
+   "gas-pressure#start": "No, there is gas inside"
+  },
   "points": [
    {
     "id": "ks3.gas-pressure.1",
@@ -10434,6 +11028,17 @@
  },
  "gestation-placenta-and-birth": {
   "key_stage": "KS3",
+  "keys": {
+   "gestation-placenta-and-birth#apply": "The cord carries the foetus’s own blood out to the placenta and back",
+   "gestation-placenta-and-birth#recall": "There is more oxygen in her blood than in the foetal blood, so it diffuses across",
+   "gestation-placenta-and-birth#start": "It seeps across by itself",
+   "gestation-placenta-and-birth#which-way-does-it-cross-1": "Mother’s blood foetus",
+   "gestation-placenta-and-birth#which-way-does-it-cross-2": "Mother’s blood foetus",
+   "gestation-placenta-and-birth#which-way-does-it-cross-3": "Foetus mother’s blood",
+   "gestation-placenta-and-birth#which-way-does-it-cross-4": "Foetus mother’s blood",
+   "gestation-placenta-and-birth#which-way-does-it-cross-5": "Mother’s blood foetus",
+   "gestation-placenta-and-birth#which-way-does-it-cross-6": "Mother’s blood foetus"
+  },
   "points": [
    {
     "id": "ks3.gestation-placenta-and-birth.1",
@@ -10462,6 +11067,11 @@
    {
     "id": "ks3.gestation-placenta-and-birth.7",
     "label": "The foetus does not breathe or eat; everything it needs arrives dissolved in blood"
+   },
+   {
+    "added": "round-3",
+    "id": "ks3.gestation-placenta-and-birth.8",
+    "label": "Antibodies, nicotine, alcohol and many drugs also cross the placenta from mother to foetus."
    }
   ],
   "questions": {
@@ -10560,6 +11170,12 @@
    "gestation-placenta-and-birth#produce": "ks3.gestation-placenta-and-birth.2",
    "gestation-placenta-and-birth#recall": "ks3.gestation-placenta-and-birth.3",
    "gestation-placenta-and-birth#start": "ks3.gestation-placenta-and-birth.3",
+   "gestation-placenta-and-birth#which-way-does-it-cross-1": "ks3.gestation-placenta-and-birth.4",
+   "gestation-placenta-and-birth#which-way-does-it-cross-2": "ks3.gestation-placenta-and-birth.4",
+   "gestation-placenta-and-birth#which-way-does-it-cross-3": "ks3.gestation-placenta-and-birth.4",
+   "gestation-placenta-and-birth#which-way-does-it-cross-4": "ks3.gestation-placenta-and-birth.4",
+   "gestation-placenta-and-birth#which-way-does-it-cross-5": "ks3.gestation-placenta-and-birth.8",
+   "gestation-placenta-and-birth#which-way-does-it-cross-6": "ks3.gestation-placenta-and-birth.8",
    "ks3-b5-gestation-placenta-and-birth-explain": "ks3.gestation-placenta-and-birth.2",
    "ks3-b5-gestation-placenta-and-birth-produce": "ks3.gestation-placenta-and-birth.2"
   },
@@ -10569,6 +11185,11 @@
  },
  "getting-metals-out-of-rocks": {
   "key_stage": "KS3",
+  "keys": {
+   "getting-metals-out-of-rocks#apply": "Aluminium is above carbon in the series, so it could not be freed with carbon and no cheap way to use electricity existed yet",
+   "getting-metals-out-of-rocks#recall": "Zinc",
+   "getting-metals-out-of-rocks#start": "Joined into the stone"
+  },
   "points": [
    {
     "id": "ks3.getting-metals-out-of-rocks.1",
@@ -10710,6 +11331,11 @@
  },
  "gravity-and-weight": {
   "key_stage": "KS3",
+  "keys": {
+   "gravity-and-weight#apply": "Their mass is unchanged and gravity is still pulling on them — they are falling around the Earth together with the station, which is why nothing presses on the floor.",
+   "gravity-and-weight#recall": "240 N",
+   "gravity-and-weight#start": "A little less"
+  },
   "points": [
    {
     "id": "ks3.gravity-and-weight.1",
@@ -10847,6 +11473,11 @@
  },
  "gravity-earth-moon-and-sun": {
   "key_stage": "KS3",
+  "keys": {
+   "gravity-earth-moon-and-sun#apply": "With the same 3.5 × 10^22 N, in the opposite direction. Gravitational pulls always come in equal pairs, however different the two masses are.",
+   "gravity-earth-moon-and-sun#recall": "It has fallen to a ninth of what it was.",
+   "gravity-earth-moon-and-sun#start": "It is moving sideways fast"
+  },
   "points": [
    {
     "id": "ks3.gravity-earth-moon-and-sun.1",
@@ -10982,6 +11613,17 @@
  },
  "group-0-and-why-groups-exist": {
   "key_stage": "KS3",
+  "keys": {
+   "group-0-and-why-groups-exist#apply": "How many electrons are in the outer shell",
+   "group-0-and-why-groups-exist#file-four-1": "A violent reaction",
+   "group-0-and-why-groups-exist#file-four-2": "Essentially nothing",
+   "group-0-and-why-groups-exist#file-four-3": "Nothing",
+   "group-0-and-why-groups-exist#file-four-4": "An oxide; the solution is alkaline",
+   "group-0-and-why-groups-exist#recall": "Their outer shell of electrons is already full",
+   "group-0-and-why-groups-exist#start": "It reacts with nothing",
+   "group-0-and-why-groups-exist#uses-three-2": "Argon stops the filament burning away",
+   "group-0-and-why-groups-exist#uses-three-3": "No — the atoms are excited by electricity and give out light"
+  },
   "points": [
    {
     "id": "ks3.group-0-and-why-groups-exist.1",
@@ -11010,6 +11652,11 @@
    {
     "id": "ks3.group-0-and-why-groups-exist.7",
     "label": "Argon was missed for so long because it forms no compounds and left no trace in chemical analysis"
+   },
+   {
+    "added": "round-3",
+    "id": "ks3.group-0-and-why-groups-exist.8",
+    "label": "Metal oxides dissolve to give alkaline solutions; non-metal oxides give acidic solutions"
    }
   ],
   "questions": {
@@ -11109,10 +11756,17 @@
    "c8-06-s32": "ks3.group-0-and-why-groups-exist.1",
    "group-0-and-why-groups-exist#apply": "ks3.group-0-and-why-groups-exist.5",
    "group-0-and-why-groups-exist#explain": "ks3.group-0-and-why-groups-exist.5",
+   "group-0-and-why-groups-exist#file-four-1": "ks3.group-0-and-why-groups-exist.5",
+   "group-0-and-why-groups-exist#file-four-2": "ks3.group-0-and-why-groups-exist.1",
+   "group-0-and-why-groups-exist#file-four-3": "ks3.group-0-and-why-groups-exist.5",
+   "group-0-and-why-groups-exist#file-four-4": "ks3.group-0-and-why-groups-exist.8",
    "group-0-and-why-groups-exist#produce": "ks3.group-0-and-why-groups-exist.5",
    "group-0-and-why-groups-exist#recall": "ks3.group-0-and-why-groups-exist.1",
    "group-0-and-why-groups-exist#start": "ks3.group-0-and-why-groups-exist.7",
    "group-0-and-why-groups-exist#think-commit-gas": "ks3.group-0-and-why-groups-exist.4",
+   "group-0-and-why-groups-exist#uses-three-1": "ks3.group-0-and-why-groups-exist.3",
+   "group-0-and-why-groups-exist#uses-three-2": "ks3.group-0-and-why-groups-exist.3",
+   "group-0-and-why-groups-exist#uses-three-3": "ks3.group-0-and-why-groups-exist.6",
    "ks3-c8-group-0-and-why-groups-exist-explain": "ks3.group-0-and-why-groups-exist.5",
    "ks3-c8-group-0-and-why-groups-exist-produce": "ks3.group-0-and-why-groups-exist.5"
   },
@@ -11122,6 +11776,14 @@
  },
  "group-1-the-alkali-metals": {
   "key_stage": "KS3",
+  "keys": {
+   "group-1-the-alkali-metals#apply": "Reactivity increases going down, because the outer electron is further out and easier to lose",
+   "group-1-the-alkali-metals#predict-rubidium-1": "Softer",
+   "group-1-the-alkali-metals#predict-rubidium-2": "More violently than potassium",
+   "group-1-the-alkali-metals#predict-rubidium-3": "Turn it purple",
+   "group-1-the-alkali-metals#recall": "A metal hydroxide and hydrogen",
+   "group-1-the-alkali-metals#start": "No, it would stay shiny"
+  },
   "points": [
    {
     "id": "ks3.group-1-the-alkali-metals.1",
@@ -11251,6 +11913,9 @@
    "c8-04-s32": "ks3.group-1-the-alkali-metals.1",
    "group-1-the-alkali-metals#apply": "ks3.group-1-the-alkali-metals.2",
    "group-1-the-alkali-metals#explain": "ks3.group-1-the-alkali-metals.3",
+   "group-1-the-alkali-metals#predict-rubidium-1": "ks3.group-1-the-alkali-metals.6",
+   "group-1-the-alkali-metals#predict-rubidium-2": "ks3.group-1-the-alkali-metals.6",
+   "group-1-the-alkali-metals#predict-rubidium-3": "ks3.group-1-the-alkali-metals.1",
    "group-1-the-alkali-metals#produce": "ks3.group-1-the-alkali-metals.6",
    "group-1-the-alkali-metals#recall": "ks3.group-1-the-alkali-metals.1",
    "group-1-the-alkali-metals#start": "ks3.group-1-the-alkali-metals.4",
@@ -11264,6 +11929,11 @@
  },
  "group-7-the-halogens": {
   "key_stage": "KS3",
+  "keys": {
+   "group-7-the-halogens#apply": "Bromine is below chlorine, so it is less reactive and cannot displace it",
+   "group-7-the-halogens#recall": "It decreases — fluorine at the top is the most reactive",
+   "group-7-the-halogens#start": "The same kind"
+  },
   "points": [
    {
     "id": "ks3.group-7-the-halogens.1",
@@ -11392,6 +12062,7 @@
    "c8-05-s31": "ks3.group-7-the-halogens.1",
    "group-7-the-halogens#apply": "ks3.group-7-the-halogens.3",
    "group-7-the-halogens#explain": "ks3.group-7-the-halogens.3",
+   "group-7-the-halogens#grid-nine-1": "ks3.group-7-the-halogens.6",
    "group-7-the-halogens#produce": "ks3.group-7-the-halogens.7",
    "group-7-the-halogens#recall": "ks3.group-7-the-halogens.2",
    "group-7-the-halogens#start": "ks3.group-7-the-halogens.5",
@@ -11405,6 +12076,15 @@
  },
  "groups-and-periods": {
   "key_stage": "KS3",
+  "keys": {
+   "groups-and-periods#apply": "Very little — a period runs from metals to non-metals, so neighbours differ hugely",
+   "groups-and-periods#read-four-1": "Magnesium",
+   "groups-and-periods#read-four-2": "The same reaction",
+   "groups-and-periods#read-four-3": "Chlorine and fluorine",
+   "groups-and-periods#read-four-4": "CO2",
+   "groups-and-periods#recall": "A vertical column of elements that behave in similar ways",
+   "groups-and-periods#start": "Potassium, below it"
+  },
   "points": [
    {
     "id": "ks3.groups-and-periods.1",
@@ -11535,6 +12215,10 @@
    "groups-and-periods#apply": "ks3.groups-and-periods.2",
    "groups-and-periods#explain": "ks3.groups-and-periods.1",
    "groups-and-periods#produce": "ks3.groups-and-periods.1",
+   "groups-and-periods#read-four-1": "ks3.groups-and-periods.1",
+   "groups-and-periods#read-four-2": "ks3.groups-and-periods.1",
+   "groups-and-periods#read-four-3": "ks3.groups-and-periods.1",
+   "groups-and-periods#read-four-4": "ks3.groups-and-periods.5",
    "groups-and-periods#recall": "ks3.groups-and-periods.1",
    "groups-and-periods#start": "ks3.groups-and-periods.1",
    "groups-and-periods#think-commit-neighbours": "ks3.groups-and-periods.2",
@@ -11547,6 +12231,11 @@
  },
  "hearing-and-auditory-range": {
   "key_stage": "KS3",
+  "keys": {
+   "hearing-and-auditory-range#apply": "The whistle is producing a loud tone at about 30 000 Hz, and human ears cannot respond to a vibration that fast — a microphone in the same room records it easily.",
+   "hearing-and-auditory-range#recall": "The dog only — 30 000 Hz is above the top of the human range and above the top of the elephant’s.",
+   "hearing-and-auditory-range#start": "Too high"
+  },
   "points": [
    {
     "id": "ks3.hearing-and-auditory-range.1",
@@ -11686,6 +12375,11 @@
  },
  "heating-and-thermal-equilibrium": {
   "key_stage": "KS3",
+  "keys": {
+   "heating-and-thermal-equilibrium#apply": "The average particle speed is the same; the pool has far more energy",
+   "heating-and-thermal-equilibrium#recall": "hotter to colder",
+   "heating-and-thermal-equilibrium#start": "The whole bath"
+  },
   "points": [
    {
     "id": "ks3.heating-and-thermal-equilibrium.1",
@@ -11821,6 +12515,11 @@
  },
  "how-a-motor-works": {
   "key_stage": "KS3",
+  "keys": {
+   "how-a-motor-works#apply": "The coil turns about half a turn and then stops",
+   "how-a-motor-works#recall": "It runs anticlockwise, at the same speed",
+   "how-a-motor-works#start": "The electricity"
+  },
   "points": [
    {
     "id": "ks3.how-a-motor-works.1",
@@ -11960,6 +12659,11 @@
  },
  "how-breathing-works": {
   "key_stage": "KS3",
+  "keys": {
+   "how-breathing-works#apply": "The volume increases and the pressure inside falls; the balloon does not inflate",
+   "how-breathing-works#recall": "Muscles contract  chest volume increases  pressure falls  air moves in",
+   "how-breathing-works#start": "The chest stretches it open"
+  },
   "points": [
    {
     "id": "ks3.how-breathing-works.1",
@@ -12101,6 +12805,11 @@
  },
  "how-far-is-a-light-year": {
   "key_stage": "KS3",
+  "keys": {
+   "how-far-is-a-light-year#apply": "A light year is a distance, not a time. The sentence says the craft can travel four light years, without saying how long it would take — which at current speeds is about 70 000 years.",
+   "how-far-is-a-light-year#recall": "1.5 × 10^11 m",
+   "how-far-is-a-light-year#start": "Yes, much further"
+  },
   "points": [
    {
     "id": "ks3.how-far-is-a-light-year.1",
@@ -12238,6 +12947,11 @@
  },
  "how-sound-is-made": {
   "key_stage": "KS3",
+  "keys": {
+   "how-sound-is-made#apply": "A loudspeaker turns an electrical signal into a vibrating cone, and a microphone lets a vibrating diaphragm make an electrical signal — the same chain, run in opposite directions.",
+   "how-sound-is-made#recall": "The grip stops the glass vibrating, and with nothing vibrating there is nothing left to disturb the air.",
+   "how-sound-is-made#start": "Something shaking"
+  },
   "points": [
    {
     "id": "ks3.how-sound-is-made.1",
@@ -12270,6 +12984,7 @@
   ],
   "questions": {
    "how-sound-is-made#apply": "ks3.how-sound-is-made.5",
+   "how-sound-is-made#chain-1": "ks3.how-sound-is-made.3",
    "how-sound-is-made#explain": "ks3.how-sound-is-made.2",
    "how-sound-is-made#produce": "ks3.how-sound-is-made.5",
    "how-sound-is-made#recall": "ks3.how-sound-is-made.3",
@@ -12373,6 +13088,11 @@
  },
  "how-we-worked-out-dna": {
   "key_stage": "KS3",
+  "keys": {
+   "how-we-worked-out-dna#apply": "They worked out its structure, by building models that fitted other people’s measurements",
+   "how-we-worked-out-dna#recall": "That A pairs with T and C pairs with G",
+   "how-we-worked-out-dna#start": "Several teams together"
+  },
   "points": [
    {
     "id": "ks3.how-we-worked-out-dna.1",
@@ -12512,6 +13232,20 @@
  },
  "human-reproductive-systems": {
   "key_stage": "KS3",
+  "keys": {
+   "human-reproductive-systems#apply": "All the immature egg cells are already present at birth",
+   "human-reproductive-systems#match-the-job-1": "Makes sperm cells",
+   "human-reproductive-systems#match-the-job-2": "Carries gametes from where they are made",
+   "human-reproductive-systems#match-the-job-3": "Adds fluid that gametes can swim in",
+   "human-reproductive-systems#match-the-job-4": "Transfers gametes into the other system",
+   "human-reproductive-systems#match-the-job-5": "Contains and releases egg cells",
+   "human-reproductive-systems#match-the-job-6": "The place where sperm and egg meet",
+   "human-reproductive-systems#match-the-job-7": "Holds and supplies a developing embryo",
+   "human-reproductive-systems#match-the-job-8": "Closes the lower end of the uterus and opens for birth",
+   "human-reproductive-systems#match-the-job-9": "Receives gametes and leads towards the egg",
+   "human-reproductive-systems#recall": "In the oviduct",
+   "human-reproductive-systems#start": "No, only before birth"
+  },
   "points": [
    {
     "id": "ks3.human-reproductive-systems.1",
@@ -12635,6 +13369,15 @@
    "b5-01-s30": "ks3.human-reproductive-systems.5",
    "human-reproductive-systems#apply": "ks3.human-reproductive-systems.3",
    "human-reproductive-systems#explain": "ks3.human-reproductive-systems.5",
+   "human-reproductive-systems#match-the-job-1": "ks3.human-reproductive-systems.1",
+   "human-reproductive-systems#match-the-job-2": "ks3.human-reproductive-systems.1",
+   "human-reproductive-systems#match-the-job-3": "ks3.human-reproductive-systems.1",
+   "human-reproductive-systems#match-the-job-4": "ks3.human-reproductive-systems.1",
+   "human-reproductive-systems#match-the-job-5": "ks3.human-reproductive-systems.2",
+   "human-reproductive-systems#match-the-job-6": "ks3.human-reproductive-systems.2",
+   "human-reproductive-systems#match-the-job-7": "ks3.human-reproductive-systems.2",
+   "human-reproductive-systems#match-the-job-8": "ks3.human-reproductive-systems.2",
+   "human-reproductive-systems#match-the-job-9": "ks3.human-reproductive-systems.2",
    "human-reproductive-systems#produce": "ks3.human-reproductive-systems.1",
    "human-reproductive-systems#recall": "ks3.human-reproductive-systems.7",
    "human-reproductive-systems#start": "ks3.human-reproductive-systems.3",
@@ -12647,6 +13390,11 @@
  },
  "inside-the-earth": {
   "key_stage": "KS3",
+  "keys": {
+   "inside-the-earth#apply": "The pressure at the centre is so great that the iron cannot melt",
+   "inside-the-earth#recall": "Crust, mantle, outer core, inner core",
+   "inside-the-earth#start": "Listening to earthquakes"
+  },
   "points": [
    {
     "id": "ks3.inside-the-earth.1",
@@ -12773,6 +13521,9 @@
    "c10-01-s29": "ks3.inside-the-earth.5",
    "c10-01-s30": "ks3.inside-the-earth.4",
    "inside-the-earth#apply": "ks3.inside-the-earth.3",
+   "inside-the-earth#evidence-set-1": "ks3.inside-the-earth.4",
+   "inside-the-earth#evidence-set-2": "ks3.inside-the-earth.6",
+   "inside-the-earth#evidence-set-3": "ks3.inside-the-earth.7",
    "inside-the-earth#explain": "ks3.inside-the-earth.4",
    "inside-the-earth#produce": "ks3.inside-the-earth.7",
    "inside-the-earth#recall": "ks3.inside-the-earth.1",
@@ -12787,6 +13538,16 @@
  },
  "insulation": {
   "key_stage": "KS3",
+  "keys": {
+   "insulation#apply": "The wrapped one melts more slowly",
+   "insulation#plan-the-trial-1": "Change it",
+   "insulation#plan-the-trial-2": "Keep it the same",
+   "insulation#plan-the-trial-3": "Keep it the same",
+   "insulation#plan-the-trial-4": "Keep it the same",
+   "insulation#plan-the-trial-5": "Keep it the same",
+   "insulation#recall": "It traps pockets of air, and air conducts very badly",
+   "insulation#start": "Slower"
+  },
   "points": [
    {
     "id": "ks3.insulation.1",
@@ -12820,6 +13581,11 @@
   "questions": {
    "insulation#apply": "ks3.insulation.5",
    "insulation#explain": "ks3.insulation.7",
+   "insulation#plan-the-trial-1": "ks3.insulation.4",
+   "insulation#plan-the-trial-2": "ks3.insulation.4",
+   "insulation#plan-the-trial-3": "ks3.insulation.4",
+   "insulation#plan-the-trial-4": "ks3.insulation.4",
+   "insulation#plan-the-trial-5": "ks3.insulation.4",
    "insulation#produce": "ks3.insulation.5",
    "insulation#recall": "ks3.insulation.2",
    "insulation#start": "ks3.insulation.5",
@@ -12922,6 +13688,11 @@
  },
  "joints": {
   "key_stage": "KS3",
+  "keys": {
+   "joints#apply": "The shape of the bone ends: a round ball in a socket turns, a groove does not",
+   "joints#recall": "The shoulder",
+   "joints#start": "It moves in more directions"
+  },
   "points": [
    {
     "id": "ks3.joints.1",
@@ -13064,6 +13835,11 @@
  },
  "leaves-built-for-the-job": {
   "key_stage": "KS3",
+  "keys": {
+   "leaves-built-for-the-job#apply": "Chlorophyll reflects green light rather than absorbing it, so green light delivers almost no energy to the plant",
+   "leaves-built-for-the-job#recall": "They hold the chloroplasts, and the light is strongest nearest the upper surface",
+   "leaves-built-for-the-job#start": "On the underside"
+  },
   "points": [
    {
     "id": "ks3.leaves-built-for-the-job.1",
@@ -13203,6 +13979,11 @@
  },
  "lenses-and-images": {
   "key_stage": "KS3",
+  "keys": {
+   "lenses-and-images#apply": "More light gets in and the picture brightens, but each point of the object now lands as a patch instead of a point, so it blurs — and its size does not change.",
+   "lenses-and-images#recall": "80 mm",
+   "lenses-and-images#start": "Upside down"
+  },
   "points": [
    {
     "id": "ks3.lenses-and-images.1",
@@ -13338,6 +14119,11 @@
  },
  "levels-of-organisation": {
   "key_stage": "KS3",
+  "keys": {
+   "levels-of-organisation#apply": "They are not organised into tissues and layers that work on the food together",
+   "levels-of-organisation#recall": "A tissue",
+   "levels-of-organisation#start": "Cells arranged in layers"
+  },
   "points": [
    {
     "id": "ks3.levels-of-organisation.1",
@@ -13362,6 +14148,11 @@
    {
     "id": "ks3.levels-of-organisation.6",
     "label": "Name and place examples of tissues, organs and organ systems in animals and plants."
+   },
+   {
+    "added": "round-3",
+    "id": "ks3.levels-of-organisation.7",
+    "label": "Removing organisation from a level stops the whole level working, even if cells survive."
    }
   ],
   "questions": {
@@ -13467,6 +14258,7 @@
    "levels-of-organisation#explain": "ks3.levels-of-organisation.2",
    "levels-of-organisation#produce": "ks3.levels-of-organisation.2",
    "levels-of-organisation#recall": "ks3.levels-of-organisation.1",
+   "levels-of-organisation#s-break-1": "ks3.levels-of-organisation.7",
    "levels-of-organisation#start": "ks3.levels-of-organisation.5"
   },
   "scope_ref": "levels-of-organisation",
@@ -13475,6 +14267,11 @@
  },
  "life-processes": {
   "key_stage": "KS3",
+  "keys": {
+   "life-processes#apply": "It is not alive — it is not made of cells",
+   "life-processes#recall": "It is made of one or more cells",
+   "life-processes#start": "No, it is not alive"
+  },
   "points": [
    {
     "id": "ks3.life-processes.1",
@@ -13600,8 +14397,10 @@
    "ks3-b1-life-processes-produce": "ks3.life-processes.2",
    "life-processes#apply": "ks3.life-processes.2",
    "life-processes#explain": "ks3.life-processes.3",
+   "life-processes#living-once-never-1": "ks3.life-processes.4",
    "life-processes#produce": "ks3.life-processes.2",
    "life-processes#recall": "ks3.life-processes.2",
+   "life-processes#seven-tests-1": "ks3.life-processes.1",
    "life-processes#start": "ks3.life-processes.3"
   },
   "scope_ref": "life-processes",
@@ -13610,6 +14409,17 @@
  },
  "lifestyle-and-the-developing-foetus": {
   "key_stage": "KS3",
+  "keys": {
+   "lifestyle-and-the-developing-foetus#apply": "Insulin",
+   "lifestyle-and-the-developing-foetus#does-it-cross-1": "Yes — it reaches the foetus",
+   "lifestyle-and-the-developing-foetus#does-it-cross-2": "Yes — it reaches the foetus",
+   "lifestyle-and-the-developing-foetus#does-it-cross-3": "Yes — it reaches the foetus",
+   "lifestyle-and-the-developing-foetus#does-it-cross-4": "Yes — it reaches the foetus",
+   "lifestyle-and-the-developing-foetus#does-it-cross-5": "Yes — it reaches the foetus",
+   "lifestyle-and-the-developing-foetus#does-it-cross-6": "No — it does not cross",
+   "lifestyle-and-the-developing-foetus#recall": "Because it is a small molecule dissolved in blood, so it diffuses across the placenta",
+   "lifestyle-and-the-developing-foetus#start": "Within a few minutes"
+  },
   "points": [
    {
     "id": "ks3.lifestyle-and-the-developing-foetus.1",
@@ -13738,6 +14548,12 @@
    "ks3-b5-lifestyle-and-the-developing-foetus-explain": "ks3.lifestyle-and-the-developing-foetus.3",
    "ks3-b5-lifestyle-and-the-developing-foetus-produce": "ks3.lifestyle-and-the-developing-foetus.7",
    "lifestyle-and-the-developing-foetus#apply": "ks3.lifestyle-and-the-developing-foetus.2",
+   "lifestyle-and-the-developing-foetus#does-it-cross-1": "ks3.lifestyle-and-the-developing-foetus.2",
+   "lifestyle-and-the-developing-foetus#does-it-cross-2": "ks3.lifestyle-and-the-developing-foetus.2",
+   "lifestyle-and-the-developing-foetus#does-it-cross-3": "ks3.lifestyle-and-the-developing-foetus.2",
+   "lifestyle-and-the-developing-foetus#does-it-cross-4": "ks3.lifestyle-and-the-developing-foetus.6",
+   "lifestyle-and-the-developing-foetus#does-it-cross-5": "ks3.lifestyle-and-the-developing-foetus.8",
+   "lifestyle-and-the-developing-foetus#does-it-cross-6": "ks3.lifestyle-and-the-developing-foetus.2",
    "lifestyle-and-the-developing-foetus#explain": "ks3.lifestyle-and-the-developing-foetus.3",
    "lifestyle-and-the-developing-foetus#produce": "ks3.lifestyle-and-the-developing-foetus.7",
    "lifestyle-and-the-developing-foetus#recall": "ks3.lifestyle-and-the-developing-foetus.5",
@@ -13749,6 +14565,11 @@
  },
  "light-travels": {
   "key_stage": "KS3",
+  "keys": {
+   "light-travels#apply": "Light is fastest in a vacuum and slower in air, water or glass — it needs no material, and a material only gets in its way.",
+   "light-travels#recall": "About 1.3 s",
+   "light-travels#start": "A tiny amount of time"
+  },
   "points": [
    {
     "id": "ks3.light-travels.1",
@@ -13886,6 +14707,11 @@
  },
  "magnetic-fields": {
   "key_stage": "KS3",
+  "keys": {
+   "magnetic-fields#apply": "A compass at that point would have to settle in two directions at once",
+   "magnetic-fields#recall": "The field is stronger near the ends than out at the sides",
+   "magnetic-fields#start": "It is already there"
+  },
   "points": [
    {
     "id": "ks3.magnetic-fields.1",
@@ -13925,6 +14751,7 @@
    "ks3-p10-magnetic-fields-produce": "ks3.magnetic-fields.7",
    "magnetic-fields#apply": "ks3.magnetic-fields.4",
    "magnetic-fields#explain": "ks3.magnetic-fields.5",
+   "magnetic-fields#plot-1": "ks3.magnetic-fields.7",
    "magnetic-fields#produce": "ks3.magnetic-fields.7",
    "magnetic-fields#recall": "ks3.magnetic-fields.3",
    "magnetic-fields#start": "ks3.magnetic-fields.1",
@@ -14025,6 +14852,11 @@
  },
  "magnets-and-poles": {
   "key_stage": "KS3",
+  "keys": {
+   "magnets-and-poles#apply": "It grows a great deal — far more than doubling",
+   "magnets-and-poles#recall": "It is a magnetic material, but whether it is a magnet is still open",
+   "magnets-and-poles#start": "Which end faces the other"
+  },
   "points": [
    {
     "id": "ks3.magnets-and-poles.1",
@@ -14160,6 +14992,11 @@
  },
  "making-a-pure-dry-salt": {
   "key_stage": "KS3",
+  "keys": {
+   "making-a-pure-dry-salt#apply": "Because leftover solid can be filtered out, while leftover acid could not be",
+   "making-a-pure-dry-salt#recall": "Magnesium nitrate",
+   "making-a-pure-dry-salt#start": "Slightly too much"
+  },
   "points": [
    {
     "id": "ks3.making-a-pure-dry-salt.1",
@@ -14291,6 +15128,9 @@
    "ks3-c6-making-a-pure-dry-salt-produce": "ks3.making-a-pure-dry-salt.6",
    "making-a-pure-dry-salt#apply": "ks3.making-a-pure-dry-salt.2",
    "making-a-pure-dry-salt#explain": "ks3.making-a-pure-dry-salt.2",
+   "making-a-pure-dry-salt#namer-twelve-1": "ks3.making-a-pure-dry-salt.1",
+   "making-a-pure-dry-salt#namer-twelve-2": "ks3.making-a-pure-dry-salt.1",
+   "making-a-pure-dry-salt#namer-twelve-3": "ks3.making-a-pure-dry-salt.1",
    "making-a-pure-dry-salt#produce": "ks3.making-a-pure-dry-salt.6",
    "making-a-pure-dry-salt#recall": "ks3.making-a-pure-dry-salt.1",
    "making-a-pure-dry-salt#start": "ks3.making-a-pure-dry-salt.2",
@@ -14302,6 +15142,11 @@
  },
  "mass-in-a-reaction": {
   "key_stage": "KS3",
+  "keys": {
+   "mass-in-a-reaction#apply": "1.60 g of oxygen from the air has joined the magnesium",
+   "mass-in-a-reaction#recall": "It stays the same",
+   "mass-in-a-reaction#start": "Floats off as gases"
+  },
   "points": [
    {
     "id": "ks3.mass-in-a-reaction.1",
@@ -14444,6 +15289,11 @@
  },
  "mass-vs-weight": {
   "key_stage": "KS3",
+  "keys": {
+   "mass-vs-weight#apply": "It is easier to lift, because that works against its weight, and just as hard to swing, because that works against its mass.",
+   "mass-vs-weight#recall": "4.5 kg",
+   "mass-vs-weight#start": "Just as hard"
+  },
   "points": [
    {
     "id": "ks3.mass-vs-weight.1",
@@ -14586,6 +15436,11 @@
  },
  "measuring-a-temperature-change": {
   "key_stage": "KS3",
+  "keys": {
+   "measuring-a-temperature-change#apply": "A systematic error — heat loss makes every reading low in the same direction",
+   "measuring-a-temperature-change#recall": "The starting temperature and the highest (or lowest) temperature reached",
+   "measuring-a-temperature-change#start": "Heat escaping to the room"
+  },
   "points": [
    {
     "id": "ks3.measuring-a-temperature-change.1",
@@ -14711,6 +15566,7 @@
    "ks3-c7-measuring-a-temperature-change-produce": "ks3.measuring-a-temperature-change.7",
    "measuring-a-temperature-change#apply": "ks3.measuring-a-temperature-change.5",
    "measuring-a-temperature-change#explain": "ks3.measuring-a-temperature-change.3",
+   "measuring-a-temperature-change#plan-judge-1": "ks3.measuring-a-temperature-change.7",
    "measuring-a-temperature-change#produce": "ks3.measuring-a-temperature-change.7",
    "measuring-a-temperature-change#recall": "ks3.measuring-a-temperature-change.1",
    "measuring-a-temperature-change#start": "ks3.measuring-a-temperature-change.4",
@@ -14722,6 +15578,17 @@
  },
  "mendeleev": {
   "key_stage": "KS3",
+  "keys": {
+   "mendeleev#apply": "Because the gap is a prediction that could later be shown to be wrong",
+   "mendeleev#gap-germanium-1": "About 72",
+   "mendeleev#gap-germanium-2": "About 5.5",
+   "mendeleev#gap-germanium-3": "XO2",
+   "mendeleev#recall": "By atomic mass, starting a new row where the properties repeated",
+   "mendeleev#rules-three-1": "Justified",
+   "mendeleev#rules-three-2": "Justified",
+   "mendeleev#rules-three-3": "Fair",
+   "mendeleev#start": "Left a square empty"
+  },
   "points": [
    {
     "id": "ks3.mendeleev.1",
@@ -14857,8 +15724,14 @@
    "ks3-c8-mendeleev-produce": "ks3.mendeleev.4",
    "mendeleev#apply": "ks3.mendeleev.2",
    "mendeleev#explain": "ks3.mendeleev.2",
+   "mendeleev#gap-germanium-1": "ks3.mendeleev.5",
+   "mendeleev#gap-germanium-2": "ks3.mendeleev.5",
+   "mendeleev#gap-germanium-3": "ks3.mendeleev.5",
    "mendeleev#produce": "ks3.mendeleev.4",
    "mendeleev#recall": "ks3.mendeleev.1",
+   "mendeleev#rules-three-1": "ks3.mendeleev.2",
+   "mendeleev#rules-three-2": "ks3.mendeleev.6",
+   "mendeleev#rules-three-3": "ks3.mendeleev.3",
    "mendeleev#start": "ks3.mendeleev.1",
    "mendeleev#think-commit-tidy": "ks3.mendeleev.3"
   },
@@ -14868,6 +15741,11 @@
  },
  "metal-and-non-metal-oxides": {
   "key_stage": "KS3",
+  "keys": {
+   "metal-and-non-metal-oxides#apply": "Nothing yet — it barely dissolves, so water cannot show it",
+   "metal-and-non-metal-oxides#recall": "Turn it red, because the oxide of a non-metal is acidic",
+   "metal-and-non-metal-oxides#start": "The burnt sulfur"
+  },
   "points": [
    {
     "id": "ks3.metal-and-non-metal-oxides.1",
@@ -15010,6 +15888,17 @@
  },
  "metals-and-non-metals": {
   "key_stage": "KS3",
+  "keys": {
+   "metals-and-non-metals#apply": "Nothing on its own — mercury is a liquid metal and bromine is a liquid non-metal",
+   "metals-and-non-metals#bench-six-1": "Metal",
+   "metals-and-non-metals#bench-six-2": "Non-metal",
+   "metals-and-non-metals#bench-six-3": "Metal",
+   "metals-and-non-metals#bench-six-4": "Non-metal",
+   "metals-and-non-metals#bench-six-5": "Metal",
+   "metals-and-non-metals#bench-six-6": "Non-metal",
+   "metals-and-non-metals#recall": "Shiny, malleable, conducts electricity, high melting point",
+   "metals-and-non-metals#start": "The lead"
+  },
   "points": [
    {
     "id": "ks3.metals-and-non-metals.1",
@@ -15144,6 +16033,12 @@
    "ks3-c8-metals-and-non-metals-explain": "ks3.metals-and-non-metals.3",
    "ks3-c8-metals-and-non-metals-produce": "ks3.metals-and-non-metals.7",
    "metals-and-non-metals#apply": "ks3.metals-and-non-metals.3",
+   "metals-and-non-metals#bench-six-1": "ks3.metals-and-non-metals.1",
+   "metals-and-non-metals#bench-six-2": "ks3.metals-and-non-metals.4",
+   "metals-and-non-metals#bench-six-3": "ks3.metals-and-non-metals.1",
+   "metals-and-non-metals#bench-six-4": "ks3.metals-and-non-metals.2",
+   "metals-and-non-metals#bench-six-5": "ks3.metals-and-non-metals.3",
+   "metals-and-non-metals#bench-six-6": "ks3.metals-and-non-metals.2",
    "metals-and-non-metals#explain": "ks3.metals-and-non-metals.3",
    "metals-and-non-metals#produce": "ks3.metals-and-non-metals.7",
    "metals-and-non-metals#recall": "ks3.metals-and-non-metals.1",
@@ -15156,6 +16051,11 @@
  },
  "moments": {
   "key_stage": "KS3",
+  "keys": {
+   "moments#apply": "The long spanner gives 20 N m against 5 N m — four times the turning effect for the same pull.",
+   "moments#recall": "12 N m",
+   "moments#start": "No, it hardly moves"
+  },
   "points": [
    {
     "id": "ks3.moments.1",
@@ -15298,6 +16198,11 @@
  },
  "natural-selection": {
   "key_stage": "KS3",
+  "keys": {
+   "natural-selection#apply": "Because changes made during an animal’s life do not alter the genetic information it passes on",
+   "natural-selection#recall": "The proportions in the population — more of the moths born were dark, because dark parents survived to breed",
+   "natural-selection#start": "Long-necked giraffes had more babies"
+  },
   "points": [
    {
     "id": "ks3.natural-selection.1",
@@ -15437,6 +16342,15 @@
  },
  "neutralisation": {
   "key_stage": "KS3",
+  "keys": {
+   "neutralisation#apply": "The last of the acid was used up, so the next drop of alkali had nothing to react with",
+   "neutralisation#recall": "salt + water",
+   "neutralisation#start": "Something solid",
+   "neutralisation#uses-four-1": "Lime",
+   "neutralisation#uses-four-2": "A base",
+   "neutralisation#uses-four-3": "It is mildly alkaline and neutralises the acid",
+   "neutralisation#uses-four-4": "Neutralise it with a base, then check the pH"
+  },
   "points": [
    {
     "id": "ks3.neutralisation.1",
@@ -15571,7 +16485,11 @@
    "neutralisation#produce": "ks3.neutralisation.6",
    "neutralisation#recall": "ks3.neutralisation.1",
    "neutralisation#start": "ks3.neutralisation.1",
-   "neutralisation#think-commit-gone": "ks3.neutralisation.1"
+   "neutralisation#think-commit-gone": "ks3.neutralisation.1",
+   "neutralisation#uses-four-1": "ks3.neutralisation.6",
+   "neutralisation#uses-four-2": "ks3.neutralisation.6",
+   "neutralisation#uses-four-3": "ks3.neutralisation.6",
+   "neutralisation#uses-four-4": "ks3.neutralisation.6"
   },
   "scope_ref": "neutralisation",
   "subject": "chemistry",
@@ -15579,6 +16497,11 @@
  },
  "non-contact-forces": {
   "key_stage": "KS3",
+  "keys": {
+   "non-contact-forces#apply": "Gravity is still pulling on them — they and the station are falling around the Earth together, so nothing presses on anything.",
+   "non-contact-forces#recall": "The Earth pulling on a satellite four hundred kilometres above it.",
+   "non-contact-forces#start": "No, it works across a gap"
+  },
   "points": [
    {
     "id": "ks3.non-contact-forces.1",
@@ -15718,6 +16641,20 @@
  },
  "oxidation": {
   "key_stage": "KS3",
+  "keys": {
+   "oxidation#apply": "Only that water alone is not enough — you need the other tubes to conclude anything more",
+   "oxidation#recall": "It gains oxygen",
+   "oxidation#rust-methods-1": "Keeps oxygen and water out",
+   "oxidation#rust-methods-2": "Keeps oxygen and water out",
+   "oxidation#rust-methods-3": "Keeps oxygen and water out",
+   "oxidation#rust-methods-4": "Works some other way",
+   "oxidation#rust-methods-5": "Works some other way",
+   "oxidation#start": "More",
+   "oxidation#tube-predictions-1": "Will rust",
+   "oxidation#tube-predictions-2": "Will not rust",
+   "oxidation#tube-predictions-3": "Will not rust",
+   "oxidation#tube-predictions-4": "Will rust"
+  },
   "points": [
    {
     "id": "ks3.oxidation.1",
@@ -15750,6 +16687,11 @@
    {
     "id": "ks3.oxidation.8",
     "label": "Metal oxides form when metals gain oxygen; rust is hydrated iron oxide"
+   },
+   {
+    "added": "round-3",
+    "id": "ks3.oxidation.9",
+    "label": "Galvanising coats iron in zinc, acting as both a barrier and sacrificial protection."
    }
   ],
   "questions": {
@@ -15849,8 +16791,17 @@
    "oxidation#explain": "ks3.oxidation.6",
    "oxidation#produce": "ks3.oxidation.4",
    "oxidation#recall": "ks3.oxidation.1",
+   "oxidation#rust-methods-1": "ks3.oxidation.5",
+   "oxidation#rust-methods-2": "ks3.oxidation.5",
+   "oxidation#rust-methods-3": "ks3.oxidation.3",
+   "oxidation#rust-methods-4": "ks3.oxidation.4",
+   "oxidation#rust-methods-5": "ks3.oxidation.9",
    "oxidation#start": "ks3.oxidation.1",
-   "oxidation#think-reveal-oxide-layer": "ks3.oxidation.3"
+   "oxidation#think-reveal-oxide-layer": "ks3.oxidation.3",
+   "oxidation#tube-predictions-1": "ks3.oxidation.6",
+   "oxidation#tube-predictions-2": "ks3.oxidation.6",
+   "oxidation#tube-predictions-3": "ks3.oxidation.6",
+   "oxidation#tube-predictions-4": "ks3.oxidation.2"
   },
   "scope_ref": "oxidation",
   "subject": "chemistry",
@@ -15858,6 +16809,11 @@
  },
  "particle-model": {
   "key_stage": "KS3",
+  "keys": {
+   "particle-model#apply": "They can cut it, but what comes out is no longer sugar",
+   "particle-model#recall": "Nothing at all",
+   "particle-model#start": "It squeezed into gaps"
+  },
   "points": [
    {
     "id": "ks3.particle-model.1",
@@ -15998,6 +16954,11 @@
  },
  "passing-it-on-heredity": {
   "key_stage": "KS3",
+  "keys": {
+   "passing-it-on-heredity#apply": "Both parents were carrying the white version without showing it",
+   "passing-it-on-heredity#recall": "23 — one from each pair, so the fertilised egg has 46 again",
+   "passing-it-on-heredity#start": "Hidden, but still there"
+  },
   "points": [
    {
     "id": "ks3.passing-it-on-heredity.1",
@@ -16133,6 +17094,11 @@
  },
  "pollinators-and-food-security": {
   "key_stage": "KS3",
+  "keys": {
+   "pollinators-and-food-security#apply": "Most calories come from wind-pollinated cereals, so the real loss would be vitamins and variety rather than energy",
+   "pollinators-and-food-security#recall": "Wheat",
+   "pollinators-and-food-security#start": "No, but most fruit would go"
+  },
   "points": [
    {
     "id": "ks3.pollinators-and-food-security.1",
@@ -16268,6 +17234,11 @@
  },
  "potential-difference": {
   "key_stage": "KS3",
+  "keys": {
+   "potential-difference#apply": "Both readings are correct. With one component in the loop it takes the whole share, so the p.d. across it equals the p.d. across the battery.",
+   "potential-difference#recall": "1.5 V",
+   "potential-difference#start": "The voltage it is built for"
+  },
   "points": [
    {
     "id": "ks3.potential-difference.1",
@@ -16405,6 +17376,11 @@
  },
  "power-ratings-in-watts": {
   "key_stage": "KS3",
+  "keys": {
+   "power-ratings-in-watts#apply": "The router",
+   "power-ratings-in-watts#recall": "one joule per second",
+   "power-ratings-in-watts#start": "The router"
+  },
   "points": [
    {
     "id": "ks3.power-ratings-in-watts.1",
@@ -16540,6 +17516,11 @@
  },
  "predator-and-prey": {
   "key_stage": "KS3",
+  "keys": {
+   "predator-and-prey#apply": "The predator peak comes shortly after the prey peak",
+   "predator-and-prey#recall": "Fall, because there is not enough prey to support the current number of foxes",
+   "predator-and-prey#start": "With fewer rabbits, foxes go hungry"
+  },
   "points": [
    {
     "id": "ks3.predator-and-prey.1",
@@ -16675,6 +17656,11 @@
  },
  "predicting-displacement": {
   "key_stage": "KS3",
+  "keys": {
+   "predicting-displacement#apply": "Copper is above silver in the series, so copper can take silver's place but silver cannot take copper's",
+   "predicting-displacement#recall": "Zinc added to copper sulfate solution",
+   "predicting-displacement#start": "Out of the blue liquid"
+  },
   "points": [
    {
     "id": "ks3.predicting-displacement.1",
@@ -16799,6 +17785,14 @@
    "ks3-c9-predicting-displacement-explain": "ks3.predicting-displacement.2",
    "ks3-c9-predicting-displacement-produce": "ks3.predicting-displacement.7",
    "predicting-displacement#apply": "ks3.predicting-displacement.1",
+   "predicting-displacement#deck-eight-1": "ks3.predicting-displacement.3",
+   "predicting-displacement#deck-eight-2": "ks3.predicting-displacement.3",
+   "predicting-displacement#deck-eight-3": "ks3.predicting-displacement.3",
+   "predicting-displacement#deck-eight-4": "ks3.predicting-displacement.3",
+   "predicting-displacement#deck-eight-5": "ks3.predicting-displacement.3",
+   "predicting-displacement#deck-eight-6": "ks3.predicting-displacement.3",
+   "predicting-displacement#deck-eight-7": "ks3.predicting-displacement.3",
+   "predicting-displacement#deck-eight-8": "ks3.predicting-displacement.3",
    "predicting-displacement#explain": "ks3.predicting-displacement.2",
    "predicting-displacement#produce": "ks3.predicting-displacement.7",
    "predicting-displacement#recall": "ks3.predicting-displacement.1",
@@ -16811,6 +17805,11 @@
  },
  "pressure-force-over-area": {
   "key_stage": "KS3",
+  "keys": {
+   "pressure-force-over-area#apply": "The heels give 1 000 000 Pa against 20 000 Pa — fifty times the pressure for exactly the same weight.",
+   "pressure-force-over-area#recall": "2000 Pa — 600 N shared over 0.30 m²",
+   "pressure-force-over-area#start": "No, just as hard"
+  },
   "points": [
    {
     "id": "ks3.pressure-force-over-area.1",
@@ -16953,6 +17952,11 @@
  },
  "pressure-in-liquids": {
   "key_stage": "KS3",
+  "keys": {
+   "pressure-in-liquids#apply": "The same in both — the depth is the same, and depth is what decides it.",
+   "pressure-in-liquids#recall": "30 000 Pa — 1500 N shared over 0.05 m²",
+   "pressure-in-liquids#start": "More water above it"
+  },
   "points": [
    {
     "id": "ks3.pressure-in-liquids.1",
@@ -17090,6 +18094,11 @@
  },
  "proving-something-is-pure": {
   "key_stage": "KS3",
+  "keys": {
+   "proving-something-is-pure#apply": "It is pure, but it is not the substance you were expecting",
+   "proving-something-is-pure#recall": "A pure substance melts sharply at one temperature; a mixture melts over a range, starting lower",
+   "proving-something-is-pure#start": "A lower temperature"
+  },
   "points": [
    {
     "id": "ks3.proving-something-is-pure.1",
@@ -17228,6 +18237,10 @@
    "proving-something-is-pure#produce": "ks3.proving-something-is-pure.3",
    "proving-something-is-pure#recall": "ks3.proving-something-is-pure.1",
    "proving-something-is-pure#start": "ks3.proving-something-is-pure.8",
+   "proving-something-is-pure#student-plan-1": "ks3.proving-something-is-pure.3",
+   "proving-something-is-pure#student-plan-2": "ks3.proving-something-is-pure.3",
+   "proving-something-is-pure#student-plan-3": "ks3.proving-something-is-pure.3",
+   "proving-something-is-pure#student-plan-4": "ks3.proving-something-is-pure.3",
    "proving-something-is-pure#think-commit-one-run": "ks3.proving-something-is-pure.4"
   },
   "scope_ref": "proving-something-is-pure",
@@ -17236,6 +18249,19 @@
  },
  "pure-or-mixture": {
   "key_stage": "KS3",
+  "keys": {
+   "pure-or-mixture#apply": "Nitrogen from a gas cylinder",
+   "pure-or-mixture#eight-samples-1": "Pure substance",
+   "pure-or-mixture#eight-samples-2": "Mixture",
+   "pure-or-mixture#eight-samples-3": "Mixture",
+   "pure-or-mixture#eight-samples-4": "Pure substance",
+   "pure-or-mixture#eight-samples-5": "Pure substance",
+   "pure-or-mixture#eight-samples-6": "Mixture",
+   "pure-or-mixture#eight-samples-7": "Mixture",
+   "pure-or-mixture#eight-samples-8": "Mixture",
+   "pure-or-mixture#recall": "It contains only one substance",
+   "pure-or-mixture#start": "The distilled water"
+  },
   "points": [
    {
     "id": "ks3.pure-or-mixture.1",
@@ -17366,6 +18392,14 @@
    "ks3-c3-pure-or-mixture-explain": "ks3.pure-or-mixture.2",
    "ks3-c3-pure-or-mixture-produce": "ks3.pure-or-mixture.4",
    "pure-or-mixture#apply": "ks3.pure-or-mixture.1",
+   "pure-or-mixture#eight-samples-1": "ks3.pure-or-mixture.1",
+   "pure-or-mixture#eight-samples-2": "ks3.pure-or-mixture.4",
+   "pure-or-mixture#eight-samples-3": "ks3.pure-or-mixture.2",
+   "pure-or-mixture#eight-samples-4": "ks3.pure-or-mixture.2",
+   "pure-or-mixture#eight-samples-5": "ks3.pure-or-mixture.1",
+   "pure-or-mixture#eight-samples-6": "ks3.pure-or-mixture.2",
+   "pure-or-mixture#eight-samples-7": "ks3.pure-or-mixture.3",
+   "pure-or-mixture#eight-samples-8": "ks3.pure-or-mixture.2",
    "pure-or-mixture#explain": "ks3.pure-or-mixture.2",
    "pure-or-mixture#produce": "ks3.pure-or-mixture.4",
    "pure-or-mixture#recall": "ks3.pure-or-mixture.1",
@@ -17378,6 +18412,17 @@
  },
  "radiation": {
   "key_stage": "KS3",
+  "keys": {
+   "radiation#apply": "Radiation",
+   "radiation#radiation-word-sort-1": "Harmless",
+   "radiation#radiation-word-sort-2": "Harmless",
+   "radiation#radiation-word-sort-3": "Harmless",
+   "radiation#radiation-word-sort-4": "Risky",
+   "radiation#radiation-word-sort-5": "Risky",
+   "radiation#radiation-word-sort-6": "Risky",
+   "radiation#recall": "Radiation",
+   "radiation#start": "Yes, the same kind"
+  },
   "points": [
    {
     "id": "ks3.radiation.1",
@@ -17508,6 +18553,12 @@
    "radiation#apply": "ks3.radiation.6",
    "radiation#explain": "ks3.radiation.8",
    "radiation#produce": "ks3.radiation.7",
+   "radiation#radiation-word-sort-1": "ks3.radiation.7",
+   "radiation#radiation-word-sort-2": "ks3.radiation.7",
+   "radiation#radiation-word-sort-3": "ks3.radiation.7",
+   "radiation#radiation-word-sort-4": "ks3.radiation.7",
+   "radiation#radiation-word-sort-5": "ks3.radiation.7",
+   "radiation#radiation-word-sort-6": "ks3.radiation.7",
    "radiation#recall": "ks3.radiation.1",
    "radiation#start": "ks3.radiation.1"
   },
@@ -17517,6 +18568,11 @@
  },
  "reactions-rearrange-atoms": {
   "key_stage": "KS3",
+  "keys": {
+   "reactions-rearrange-atoms#apply": "Four — the same four, now in two water particles",
+   "reactions-rearrange-atoms#recall": "The joins between them are broken and new joins are made",
+   "reactions-rearrange-atoms#start": "No, they need starting"
+  },
   "points": [
    {
     "id": "ks3.reactions-rearrange-atoms.1",
@@ -17652,6 +18708,7 @@
    "ks3-c4-reactions-rearrange-atoms-explain": "ks3.reactions-rearrange-atoms.5",
    "ks3-c4-reactions-rearrange-atoms-produce": "ks3.reactions-rearrange-atoms.3",
    "reactions-rearrange-atoms#apply": "ks3.reactions-rearrange-atoms.2",
+   "reactions-rearrange-atoms#atom-rearranger-1": "ks3.reactions-rearrange-atoms.2",
    "reactions-rearrange-atoms#explain": "ks3.reactions-rearrange-atoms.5",
    "reactions-rearrange-atoms#produce": "ks3.reactions-rearrange-atoms.3",
    "reactions-rearrange-atoms#recall": "ks3.reactions-rearrange-atoms.1",
@@ -17664,6 +18721,11 @@
  },
  "reading-a-fuel-bill": {
   "key_stage": "KS3",
+  "keys": {
+   "reading-a-fuel-bill#apply": "About £13.37",
+   "reading-a-fuel-bill#recall": "kilowatt-hour",
+   "reading-a-fuel-bill#start": "How much you use"
+  },
   "points": [
    {
     "id": "ks3.reading-a-fuel-bill.1",
@@ -17799,6 +18861,11 @@
  },
  "reflection-mirrors-and-scattering": {
   "key_stage": "KS3",
+  "keys": {
+   "reflection-mirrors-and-scattering#apply": "Its rough surface gives every facet a different normal, so rays that arrive parallel leave in all directions — each one still obeying the law of reflection.",
+   "reflection-mirrors-and-scattering#recall": "65°",
+   "reflection-mirrors-and-scattering#start": "No, about the same"
+  },
   "points": [
    {
     "id": "ks3.reflection-mirrors-and-scattering.1",
@@ -17935,6 +19002,11 @@
  },
  "refraction": {
   "key_stage": "KS3",
+  "keys": {
+   "refraction#apply": "It slows down inside the glass and carries straight on without bending.",
+   "refraction#recall": "It slows down and bends towards the normal, so the angle inside the glass is less than 40°.",
+   "refraction#start": "The light from it"
+  },
   "points": [
    {
     "id": "ks3.refraction.1",
@@ -18070,6 +19142,15 @@
  },
  "relative-motion": {
   "key_stage": "KS3",
+  "keys": {
+   "relative-motion#apply": "She is doing 30 m/s from the platform and 0 m/s from her seat",
+   "relative-motion#passing-speeds-1": "0 m/s",
+   "relative-motion#passing-speeds-2": "60 m/s",
+   "relative-motion#passing-speeds-3": "5 m/s",
+   "relative-motion#passing-speeds-4": "31.5 m/s",
+   "relative-motion#recall": "8 m/s",
+   "relative-motion#start": "No, you could not tell"
+  },
   "points": [
    {
     "id": "ks3.relative-motion.1",
@@ -18094,6 +19175,11 @@
    {
     "id": "ks3.relative-motion.6",
     "label": "No experiment inside a smoothly moving vehicle can detect its own steady speed"
+   },
+   {
+    "added": "round-3",
+    "id": "ks3.relative-motion.7",
+    "label": "Add your speed to a vehicle's speed to find your speed relative to the ground"
    }
   ],
   "questions": {
@@ -18191,6 +19277,10 @@
    "p3-03-s30": "ks3.relative-motion.4",
    "relative-motion#apply": "ks3.relative-motion.4",
    "relative-motion#explain": "ks3.relative-motion.3",
+   "relative-motion#passing-speeds-1": "ks3.relative-motion.2",
+   "relative-motion#passing-speeds-2": "ks3.relative-motion.3",
+   "relative-motion#passing-speeds-3": "ks3.relative-motion.2",
+   "relative-motion#passing-speeds-4": "ks3.relative-motion.7",
    "relative-motion#produce": "ks3.relative-motion.5",
    "relative-motion#recall": "ks3.relative-motion.2",
    "relative-motion#start": "ks3.relative-motion.6"
@@ -18201,6 +19291,11 @@
  },
  "resistance": {
   "key_stage": "KS3",
+  "keys": {
+   "resistance#apply": "Both are right. The filament is hotter at 10 V, and hot metal resists more — so the lamp genuinely has a different resistance in each state.",
+   "resistance#recall": "5.0 Ω",
+   "resistance#start": "All the way round"
+  },
   "points": [
    {
     "id": "ks3.resistance.1",
@@ -18338,6 +19433,11 @@
  },
  "sampling-an-ecosystem": {
   "key_stage": "KS3",
+  "keys": {
+   "sampling-an-ecosystem#apply": "It is biased, and taking more quadrats would not fix it",
+   "sampling-an-ecosystem#recall": "About 4800",
+   "sampling-an-ecosystem#start": "Squares picked by chance"
+  },
   "points": [
    {
     "id": "ks3.sampling-an-ecosystem.1",
@@ -18473,6 +19573,11 @@
  },
  "seasons-and-the-tilt": {
   "key_stage": "KS3",
+  "keys": {
+   "seasons-and-the-tilt#apply": "The same beam of sunlight is spread over a smaller patch of ground when the Sun is high, so each square metre receives more energy.",
+   "seasons-and-the-tilt#recall": "Because it is winter in the northern hemisphere in January and summer in the southern one at the same time — distance is the same for both, so it cannot be what causes seasons.",
+   "seasons-and-the-tilt#start": "Our half leaning towards the Sun"
+  },
   "points": [
    {
     "id": "ks3.seasons-and-the-tilt.1",
@@ -18608,6 +19713,19 @@
  },
  "seed-dispersal": {
   "key_stage": "KS3",
+  "keys": {
+   "seed-dispersal#apply": "A poppy capsule",
+   "seed-dispersal#recall": "On the outside of an animal, caught in fur or feathers",
+   "seed-dispersal#sort-the-eight-1": "Wind",
+   "seed-dispersal#sort-the-eight-2": "Wind",
+   "seed-dispersal#sort-the-eight-3": "Wind",
+   "seed-dispersal#sort-the-eight-4": "Inside an animal — eaten",
+   "seed-dispersal#sort-the-eight-5": "On an animal — hooked to fur",
+   "seed-dispersal#sort-the-eight-6": "On an animal — hooked to fur",
+   "seed-dispersal#sort-the-eight-7": "Water",
+   "seed-dispersal#sort-the-eight-8": "Flung by the plant itself",
+   "seed-dispersal#start": "Do badly"
+  },
   "points": [
    {
     "id": "ks3.seed-dispersal.1",
@@ -18747,6 +19865,14 @@
    "seed-dispersal#explain": "ks3.seed-dispersal.1",
    "seed-dispersal#produce": "ks3.seed-dispersal.2",
    "seed-dispersal#recall": "ks3.seed-dispersal.6",
+   "seed-dispersal#sort-the-eight-1": "ks3.seed-dispersal.2",
+   "seed-dispersal#sort-the-eight-2": "ks3.seed-dispersal.2",
+   "seed-dispersal#sort-the-eight-3": "ks3.seed-dispersal.2",
+   "seed-dispersal#sort-the-eight-4": "ks3.seed-dispersal.2",
+   "seed-dispersal#sort-the-eight-5": "ks3.seed-dispersal.2",
+   "seed-dispersal#sort-the-eight-6": "ks3.seed-dispersal.2",
+   "seed-dispersal#sort-the-eight-7": "ks3.seed-dispersal.2",
+   "seed-dispersal#sort-the-eight-8": "ks3.seed-dispersal.2",
    "seed-dispersal#start": "ks3.seed-dispersal.1"
   },
   "scope_ref": "seed-dispersal",
@@ -18755,6 +19881,11 @@
  },
  "series-and-parallel": {
   "key_stage": "KS3",
+  "keys": {
+   "series-and-parallel#apply": "A second bulb in series makes it harder for the charge to get round the one loop, so the current everywhere falls — here from 0.30 A to 0.15 A — and both bulbs are dim.",
+   "series-and-parallel#recall": "0.60 A, and the other two stay at full brightness",
+   "series-and-parallel#start": "Each light has its own path"
+  },
   "points": [
    {
     "id": "ks3.series-and-parallel.1",
@@ -18890,6 +20021,11 @@
  },
  "simple-machines": {
   "key_stage": "KS3",
+  "keys": {
+   "simple-machines#apply": "You push it three times as far along the ramp as the platform is high",
+   "simple-machines#recall": "60 J",
+   "simple-machines#start": "Much further"
+  },
   "points": [
    {
     "id": "ks3.simple-machines.1",
@@ -19025,6 +20161,11 @@
  },
  "solids-liquids-and-gases": {
   "key_stage": "KS3",
+  "keys": {
+   "solids-liquids-and-gases#apply": "A liquid’s particles are already touching, so there is no space to squash out",
+   "solids-liquids-and-gases#recall": "Liquid",
+   "solids-liquids-and-gases#start": "The gaps between them"
+  },
   "points": [
    {
     "id": "ks3.solids-liquids-and-gases.1",
@@ -19167,6 +20308,11 @@
  },
  "sound-is-longitudinal": {
   "key_stage": "KS3",
+  "keys": {
+   "sound-is-longitudinal#apply": "The wavy line is a graph of how squeezed the air is against distance, so its ups and downs are amounts, not directions — the air moves along the line of travel.",
+   "sound-is-longitudinal#recall": "The material moves backwards and forwards along the same line the wave is travelling, giving compressions and rarefactions.",
+   "sound-is-longitudinal#start": "Shuffle along and back"
+  },
   "points": [
    {
     "id": "ks3.sound-is-longitudinal.1",
@@ -19306,6 +20452,11 @@
  },
  "sound-needs-a-medium": {
   "key_stage": "KS3",
+  "keys": {
+   "sound-needs-a-medium#apply": "The astronaut sees it and hears nothing at all, because there are no particles between them to pass the disturbance on.",
+   "sound-needs-a-medium#recall": "About 2.0 s",
+   "sound-needs-a-medium#start": "Yes, it keeps beating"
+  },
   "points": [
    {
     "id": "ks3.sound-needs-a-medium.1",
@@ -19439,6 +20590,11 @@
  },
  "specialised-cells": {
   "key_stage": "KS3",
+  "keys": {
+   "specialised-cells#apply": "It started with a nucleus and destroyed it as it matured, which is why it cannot repair itself and lasts about 120 days",
+   "specialised-cells#recall": "Absorbing water and minerals from soil",
+   "specialised-cells#start": "More room inside"
+  },
   "points": [
    {
     "id": "ks3.specialised-cells.1",
@@ -19576,6 +20732,7 @@
    "specialised-cells#explain": "ks3.specialised-cells.4",
    "specialised-cells#produce": "ks3.specialised-cells.7",
    "specialised-cells#recall": "ks3.specialised-cells.4",
+   "specialised-cells#s-break-1": "ks3.specialised-cells.4",
    "specialised-cells#start": "ks3.specialised-cells.2"
   },
   "scope_ref": "specialised-cells",
@@ -19584,6 +20741,14 @@
  },
  "speed": {
   "key_stage": "KS3",
+  "keys": {
+   "speed#apply": "4 m/s",
+   "speed#compare-pairs-1": "Cyclist — 400 m in 32 s",
+   "speed#compare-pairs-2": "Plane — 15 000 m in 60 s, 10 km up",
+   "speed#compare-pairs-3": "A dead heat",
+   "speed#recall": "2.5 m/s",
+   "speed#start": "The plane"
+  },
   "points": [
    {
     "id": "ks3.speed.1",
@@ -19708,6 +20873,9 @@
    "p3-01-s29": "ks3.speed.6",
    "p3-01-s30": "ks3.speed.4",
    "speed#apply": "ks3.speed.3",
+   "speed#compare-pairs-1": "ks3.speed.2",
+   "speed#compare-pairs-2": "ks3.speed.5",
+   "speed#compare-pairs-3": "ks3.speed.4",
    "speed#explain": "ks3.speed.7",
    "speed#produce": "ks3.speed.6",
    "speed#recall": "ks3.speed.6",
@@ -19719,6 +20887,11 @@
  },
  "springs-and-hookes-law": {
   "key_stage": "KS3",
+  "keys": {
+   "springs-and-hookes-law#apply": "It does not go back to its natural length — it stays permanently longer than it started.",
+   "springs-and-hookes-law#recall": "70 mm",
+   "springs-and-hookes-law#start": "No, the pattern stops"
+  },
   "points": [
    {
     "id": "ks3.springs-and-hookes-law.1",
@@ -19860,6 +21033,11 @@
  },
  "stomata-and-gas-exchange-in-plants": {
   "key_stage": "KS3",
+  "keys": {
+   "stomata-and-gas-exchange-in-plants#apply": "Photosynthesis and respiration are happening at equal rates",
+   "stomata-and-gas-exchange-in-plants#recall": "All the time, day and night",
+   "stomata-and-gas-exchange-in-plants#start": "Yes, it is doing both"
+  },
   "points": [
    {
     "id": "ks3.stomata-and-gas-exchange-in-plants.1",
@@ -20003,6 +21181,11 @@
  },
  "substance-misuse-and-decisions": {
   "key_stage": "KS3",
+  "keys": {
+   "substance-misuse-and-decisions#apply": "Because a risk is about rates across many people, and one case cannot contradict a rate",
+   "substance-misuse-and-decisions#recall": "There is no comparison group, and the company chose which reviews appeared",
+   "substance-misuse-and-decisions#start": "No, it tells you nothing"
+  },
   "points": [
    {
     "id": "ks3.substance-misuse-and-decisions.1",
@@ -20140,6 +21323,11 @@
  },
  "symbol-equations-and-balancing": {
   "key_stage": "KS3",
+  "keys": {
+   "symbol-equations-and-balancing#apply": "It balances, but the product is hydrogen peroxide, not water",
+   "symbol-equations-and-balancing#recall": "The big numbers written in front of a formula",
+   "symbol-equations-and-balancing#start": "Change how many react"
+  },
   "points": [
    {
     "id": "ks3.symbol-equations-and-balancing.1",
@@ -20276,6 +21464,11 @@
  },
  "temperature-and-internal-energy": {
   "key_stage": "KS3",
+  "keys": {
+   "temperature-and-internal-energy#apply": "It has almost no mass, so despite the very high temperature its internal energy is tiny — and it cools to skin temperature almost instantly.",
+   "temperature-and-internal-energy#recall": "The particles in both are moving at the same average speed, but the 400 g beaker holds four times the internal energy.",
+   "temperature-and-internal-energy#start": "The bath"
+  },
   "points": [
    {
     "id": "ks3.temperature-and-internal-energy.1",
@@ -20415,6 +21608,11 @@
  },
  "testing-a-leaf-for-starch": {
   "key_stage": "KS3",
+  "keys": {
+   "testing-a-leaf-for-starch#apply": "Almost nothing — without destarching first, there is no way to know when the starch was made",
+   "testing-a-leaf-for-starch#recall": "To remove the chlorophyll so a colour change can be seen",
+   "testing-a-leaf-for-starch#start": "To remove its green"
+  },
   "points": [
    {
     "id": "ks3.testing-a-leaf-for-starch.1",
@@ -20546,6 +21744,7 @@
    "testing-a-leaf-for-starch#explain": "ks3.testing-a-leaf-for-starch.8",
    "testing-a-leaf-for-starch#produce": "ks3.testing-a-leaf-for-starch.6",
    "testing-a-leaf-for-starch#recall": "ks3.testing-a-leaf-for-starch.4",
+   "testing-a-leaf-for-starch#run-it-badly-1": "ks3.testing-a-leaf-for-starch.8",
    "testing-a-leaf-for-starch#start": "ks3.testing-a-leaf-for-starch.4"
   },
   "scope_ref": "testing-a-leaf-for-starch",
@@ -20554,6 +21753,12 @@
  },
  "testing-the-model": {
   "key_stage": "KS3",
+  "keys": {
+   "testing-the-model#apply": "Keep using it where it works, and note the limit",
+   "testing-the-model#recall": "Why ice floats on water",
+   "testing-the-model#start": "It sinks",
+   "testing-the-model#the-verdict": "Keep using it where it works, and record exactly where it fails"
+  },
   "points": [
    {
     "id": "ks3.testing-the-model.1",
@@ -20696,6 +21901,11 @@
  },
  "the-atom-daltons-model": {
   "key_stage": "KS3",
+  "keys": {
+   "the-atom-daltons-model#apply": "It still explains everything it was built to explain, and the parts that are wrong are outside chemistry",
+   "the-atom-daltons-model#recall": "The smallest particle of an element",
+   "the-atom-daltons-model#start": "No, however good the kit"
+  },
   "points": [
    {
     "id": "ks3.the-atom-daltons-model.1",
@@ -20830,6 +22040,7 @@
    "the-atom-daltons-model#produce": "ks3.the-atom-daltons-model.6",
    "the-atom-daltons-model#recall": "ks3.the-atom-daltons-model.2",
    "the-atom-daltons-model#start": "ks3.the-atom-daltons-model.3",
+   "the-atom-daltons-model#switch-a-claim-off-1": "ks3.the-atom-daltons-model.6",
    "the-atom-daltons-model#think-commit-copper": "ks3.the-atom-daltons-model.5"
   },
   "scope_ref": "the-atom-daltons-model",
@@ -20838,6 +22049,11 @@
  },
  "the-digestive-system": {
   "key_stage": "KS3",
+  "keys": {
+   "the-digestive-system#apply": "Bile emulsifies fat into small droplets, giving lipase far more surface to work on",
+   "the-digestive-system#recall": "The small intestine",
+   "the-digestive-system#start": "No, the bits are too big"
+  },
   "points": [
    {
     "id": "ks3.the-digestive-system.1",
@@ -20973,6 +22189,11 @@
  },
  "the-earth-is-a-magnet": {
   "key_stage": "KS3",
+  "keys": {
+   "the-earth-is-a-magnet#apply": "The magnetic pole has moved since the map was printed, so the declination on it is out of date",
+   "the-earth-is-a-magnet#recall": "A magnetic south pole, because unlike poles attract",
+   "the-earth-is-a-magnet#start": "Deep inside the Earth"
+  },
   "points": [
    {
     "id": "ks3.the-earth-is-a-magnet.1",
@@ -21112,6 +22333,11 @@
  },
  "the-eye-and-the-camera": {
   "key_stage": "KS3",
+  "keys": {
+   "the-eye-and-the-camera#apply": "Eyes only receive. Light has to come from a source, reflect off the book and arrive at the eye — which is why a room with no light in it shows nothing at all.",
+   "the-eye-and-the-camera#recall": "The pupil and the aperture — both set how much light is let in.",
+   "the-eye-and-the-camera#start": "Your eyes get more sensitive"
+  },
   "points": [
    {
     "id": "ks3.the-eye-and-the-camera.1",
@@ -21237,6 +22463,7 @@
    "p7-05-s30": "ks3.the-eye-and-the-camera.3",
    "the-eye-and-the-camera#apply": "ks3.the-eye-and-the-camera.4",
    "the-eye-and-the-camera#explain": "ks3.the-eye-and-the-camera.2",
+   "the-eye-and-the-camera#eye-1": "ks3.the-eye-and-the-camera.1",
    "the-eye-and-the-camera#produce": "ks3.the-eye-and-the-camera.5",
    "the-eye-and-the-camera#recall": "ks3.the-eye-and-the-camera.1",
    "the-eye-and-the-camera#start": "ks3.the-eye-and-the-camera.6"
@@ -21247,6 +22474,11 @@
  },
  "the-gas-exchange-system": {
   "key_stage": "KS3",
+  "keys": {
+   "the-gas-exchange-system#apply": "Nitrogen",
+   "the-gas-exchange-system#recall": "Respiration",
+   "the-gas-exchange-system#start": "Most of it"
+  },
   "points": [
    {
     "id": "ks3.the-gas-exchange-system.1",
@@ -21388,6 +22620,11 @@
  },
  "the-menstrual-cycle": {
   "key_stage": "KS3",
+  "keys": {
+   "the-menstrual-cycle#apply": "The lining of the uterus, built up during the previous few weeks",
+   "the-menstrual-cycle#recall": "About day 10 — roughly a fortnight before the next period",
+   "the-menstrual-cycle#start": "Before the egg is released"
+  },
   "points": [
    {
     "id": "ks3.the-menstrual-cycle.1",
@@ -21527,6 +22764,14 @@
  },
  "the-ph-scale-and-indicators": {
   "key_stage": "KS3",
+  "keys": {
+   "the-ph-scale-and-indicators#apply": "Nothing — more dye gives a stronger colour, not a different pH",
+   "the-ph-scale-and-indicators#jobs-three-1": "Litmus",
+   "the-ph-scale-and-indicators#jobs-three-2": "Universal indicator",
+   "the-ph-scale-and-indicators#jobs-three-3": "Neither",
+   "the-ph-scale-and-indicators#recall": "It changes gradually, so it gives a pH number rather than just acid or alkali",
+   "the-ph-scale-and-indicators#start": "Blackberry juice would too"
+  },
   "points": [
    {
     "id": "ks3.the-ph-scale-and-indicators.1",
@@ -21663,6 +22908,9 @@
    "ks3-c6-the-ph-scale-and-indicators-produce": "ks3.the-ph-scale-and-indicators.7",
    "the-ph-scale-and-indicators#apply": "ks3.the-ph-scale-and-indicators.6",
    "the-ph-scale-and-indicators#explain": "ks3.the-ph-scale-and-indicators.7",
+   "the-ph-scale-and-indicators#jobs-three-1": "ks3.the-ph-scale-and-indicators.7",
+   "the-ph-scale-and-indicators#jobs-three-2": "ks3.the-ph-scale-and-indicators.7",
+   "the-ph-scale-and-indicators#jobs-three-3": "ks3.the-ph-scale-and-indicators.7",
    "the-ph-scale-and-indicators#produce": "ks3.the-ph-scale-and-indicators.7",
    "the-ph-scale-and-indicators#recall": "ks3.the-ph-scale-and-indicators.2",
    "the-ph-scale-and-indicators#start": "ks3.the-ph-scale-and-indicators.8",
@@ -21674,6 +22922,11 @@
  },
  "the-photosynthesis-reaction": {
   "key_stage": "KS3",
+  "keys": {
+   "the-photosynthesis-reaction#apply": "Carbon dioxide from the air, built into glucose and then into the plant’s structures",
+   "the-photosynthesis-reaction#recall": "carbon dioxide + water gives glucose + oxygen",
+   "the-photosynthesis-reaction#start": "Almost the same"
+  },
   "points": [
    {
     "id": "ks3.the-photosynthesis-reaction.1",
@@ -21823,6 +23076,11 @@
  },
  "the-reactivity-series": {
   "key_stage": "KS3",
+  "keys": {
+   "the-reactivity-series#apply": "Magnesium, because reactivity is how readily a metal reacts and strength is a separate property",
+   "the-reactivity-series#recall": "Potassium, calcium, magnesium, zinc, iron, copper",
+   "the-reactivity-series#start": "The kind of metal"
+  },
   "points": [
    {
     "id": "ks3.the-reactivity-series.1",
@@ -21951,6 +23209,7 @@
    "ks3-c9-the-reactivity-series-explain": "ks3.the-reactivity-series.3",
    "ks3-c9-the-reactivity-series-produce": "ks3.the-reactivity-series.8",
    "the-reactivity-series#apply": "ks3.the-reactivity-series.5",
+   "the-reactivity-series#bench-twelve-1": "ks3.the-reactivity-series.1",
    "the-reactivity-series#explain": "ks3.the-reactivity-series.3",
    "the-reactivity-series#produce": "ks3.the-reactivity-series.8",
    "the-reactivity-series#recall": "ks3.the-reactivity-series.1",
@@ -21963,6 +23222,11 @@
  },
  "the-rock-cycle": {
   "key_stage": "KS3",
+  "keys": {
+   "the-rock-cycle#apply": "Yes — weathering and erosion can act on any rock at the surface",
+   "the-rock-cycle#recall": "Compaction under the weight of later layers, and cementation by minerals",
+   "the-rock-cycle#start": "The ground was pushed up"
+  },
   "points": [
    {
     "id": "ks3.the-rock-cycle.1",
@@ -22092,6 +23356,7 @@
    "ks3-c10-the-rock-cycle-produce": "ks3.the-rock-cycle.6",
    "the-rock-cycle#apply": "ks3.the-rock-cycle.7",
    "the-rock-cycle#explain": "ks3.the-rock-cycle.3",
+   "the-rock-cycle#grain-order-1": "ks3.the-rock-cycle.7",
    "the-rock-cycle#produce": "ks3.the-rock-cycle.6",
    "the-rock-cycle#recall": "ks3.the-rock-cycle.4",
    "the-rock-cycle#start": "ks3.the-rock-cycle.8",
@@ -22103,6 +23368,11 @@
  },
  "the-sun-stars-and-galaxies": {
   "key_stage": "KS3",
+  "keys": {
+   "the-sun-stars-and-galaxies#apply": "The solar system contains exactly one star, the Sun. Every other star you can see is light years away, far outside it, and belongs to the Milky Way.",
+   "the-sun-stars-and-galaxies#recall": "Star, solar system, galaxy, universe.",
+   "the-sun-stars-and-galaxies#start": "It is much closer to us"
+  },
   "points": [
    {
     "id": "ks3.the-sun-stars-and-galaxies.1",
@@ -22242,6 +23512,16 @@
  },
  "thermal-decomposition": {
   "key_stage": "KS3",
+  "keys": {
+   "thermal-decomposition#apply": "It has fallen, because the carbon dioxide left the tube",
+   "thermal-decomposition#recall": "One compound broken down into two or more substances by heat",
+   "thermal-decomposition#sort-five-1": "Thermal decomposition",
+   "thermal-decomposition#sort-five-2": "Something else",
+   "thermal-decomposition#sort-five-3": "Something else",
+   "thermal-decomposition#sort-five-4": "Thermal decomposition",
+   "thermal-decomposition#sort-five-5": "Something else",
+   "thermal-decomposition#start": "Less than before"
+  },
   "points": [
    {
     "id": "ks3.thermal-decomposition.1",
@@ -22373,8 +23653,14 @@
    "thermal-decomposition#explain": "ks3.thermal-decomposition.2",
    "thermal-decomposition#produce": "ks3.thermal-decomposition.8",
    "thermal-decomposition#recall": "ks3.thermal-decomposition.1",
+   "thermal-decomposition#sort-five-1": "ks3.thermal-decomposition.1",
+   "thermal-decomposition#sort-five-2": "ks3.thermal-decomposition.2",
+   "thermal-decomposition#sort-five-3": "ks3.thermal-decomposition.1",
+   "thermal-decomposition#sort-five-4": "ks3.thermal-decomposition.8",
+   "thermal-decomposition#sort-five-5": "ks3.thermal-decomposition.2",
    "thermal-decomposition#start": "ks3.thermal-decomposition.5",
-   "thermal-decomposition#think-commit-black": "ks3.thermal-decomposition.2"
+   "thermal-decomposition#think-commit-black": "ks3.thermal-decomposition.2",
+   "thermal-decomposition#tube-heat-1": "ks3.thermal-decomposition.4"
   },
   "scope_ref": "thermal-decomposition",
   "subject": "chemistry",
@@ -22382,6 +23668,17 @@
  },
  "three-ways-to-make-a-rock": {
   "key_stage": "KS3",
+  "keys": {
+   "three-ways-to-make-a-rock#apply": "How fast the molten rock cooled — slow cooling grows large crystals",
+   "three-ways-to-make-a-rock#bench-samples-1": "Igneous",
+   "three-ways-to-make-a-rock#bench-samples-2": "Sedimentary",
+   "three-ways-to-make-a-rock#bench-samples-3": "Igneous",
+   "three-ways-to-make-a-rock#bench-samples-4": "Metamorphic",
+   "three-ways-to-make-a-rock#bench-samples-5": "Sedimentary",
+   "three-ways-to-make-a-rock#bench-samples-6": "Metamorphic",
+   "three-ways-to-make-a-rock#recall": "Sedimentary, because remains are buried gently in layers rather than melted or crushed",
+   "three-ways-to-make-a-rock#start": "Sea shells"
+  },
   "points": [
    {
     "id": "ks3.three-ways-to-make-a-rock.1",
@@ -22515,6 +23812,12 @@
    "ks3-c10-three-ways-to-make-a-rock-explain": "ks3.three-ways-to-make-a-rock.7",
    "ks3-c10-three-ways-to-make-a-rock-produce": "ks3.three-ways-to-make-a-rock.6",
    "three-ways-to-make-a-rock#apply": "ks3.three-ways-to-make-a-rock.3",
+   "three-ways-to-make-a-rock#bench-samples-1": "ks3.three-ways-to-make-a-rock.7",
+   "three-ways-to-make-a-rock#bench-samples-2": "ks3.three-ways-to-make-a-rock.7",
+   "three-ways-to-make-a-rock#bench-samples-3": "ks3.three-ways-to-make-a-rock.3",
+   "three-ways-to-make-a-rock#bench-samples-4": "ks3.three-ways-to-make-a-rock.9",
+   "three-ways-to-make-a-rock#bench-samples-5": "ks3.three-ways-to-make-a-rock.4",
+   "three-ways-to-make-a-rock#bench-samples-6": "ks3.three-ways-to-make-a-rock.6",
    "three-ways-to-make-a-rock#explain": "ks3.three-ways-to-make-a-rock.7",
    "three-ways-to-make-a-rock#produce": "ks3.three-ways-to-make-a-rock.6",
    "three-ways-to-make-a-rock#recall": "ks3.three-ways-to-make-a-rock.5",
@@ -22527,6 +23830,11 @@
  },
  "toxic-build-up-in-a-food-chain": {
   "key_stage": "KS3",
+  "keys": {
+   "toxic-build-up-in-a-food-chain#apply": "The perch eats many minnows and keeps the toxin from all of them, while most of the food's mass is respired away",
+   "toxic-build-up-in-a-food-chain#recall": "It cannot be broken down or excreted, so organisms keep it",
+   "toxic-build-up-in-a-food-chain#start": "Never breaking down"
+  },
   "points": [
    {
     "id": "ks3.toxic-build-up-in-a-food-chain.1",
@@ -22666,6 +23974,11 @@
  },
  "transverse-waves-and-superposition": {
   "key_stage": "KS3",
+  "keys": {
+   "transverse-waves-and-superposition#apply": "The surface is flat where they overlap, and both waves carry on past unchanged — the cancelling lasts only while they are on top of each other.",
+   "transverse-waves-and-superposition#recall": "10 mm — add the two, because both waves lift the surface at the same moment",
+   "transverse-waves-and-superposition#start": "Add together"
+  },
   "points": [
    {
     "id": "ks3.transverse-waves-and-superposition.1",
@@ -22803,6 +24116,11 @@
  },
  "ultrasound-at-work": {
   "key_stage": "KS3",
+  "keys": {
+   "ultrasound-at-work#apply": "Ordinary sound travels through solids very well; ultrasound is used because its short wavelength reflects off small features, giving detail a low frequency could not.",
+   "ultrasound-at-work#recall": "About 150 mm",
+   "ultrasound-at-work#start": "Yes, some of it would"
+  },
   "points": [
    {
     "id": "ks3.ultrasound-at-work.1",
@@ -22942,6 +24260,11 @@
  },
  "unicellular-organisms": {
   "key_stage": "KS3",
+  "keys": {
+   "unicellular-organisms#apply": "The bacterium still has its DNA, loose in the cytoplasm; the red blood cell lost its DNA with its nucleus",
+   "unicellular-organisms#recall": "Whether it feeds itself, or is fed",
+   "unicellular-organisms#start": "It does every job itself"
+  },
   "points": [
    {
     "id": "ks3.unicellular-organisms.1",
@@ -23077,6 +24400,11 @@
  },
  "upthrust-floating-and-sinking": {
   "key_stage": "KS3",
+  "keys": {
+   "upthrust-floating-and-sinking#apply": "The hull pushes aside a weight of water equal to the whole ship’s weight; the bolt can only push aside its own small volume, which weighs far less than it does.",
+   "upthrust-floating-and-sinking#recall": "8 N — 45 N in air less 37 N in water",
+   "upthrust-floating-and-sinking#start": "Yes, harder underneath"
+  },
   "points": [
    {
     "id": "ks3.upthrust-floating-and-sinking.1",
@@ -23214,6 +24542,11 @@
  },
  "using-a-microscope": {
   "key_stage": "KS3",
+  "keys": {
+   "using-a-microscope#apply": "×600",
+   "using-a-microscope#recall": "The ×4 — the lowest power",
+   "using-a-microscope#start": "The weakest lens"
+  },
   "points": [
    {
     "id": "ks3.using-a-microscope.1",
@@ -23363,6 +24696,11 @@
  },
  "variation-and-competitive-success": {
   "key_stage": "KS3",
+  "keys": {
+   "variation-and-competitive-success#apply": "Best fitted to the current conditions, and leaving the most surviving offspring",
+   "variation-and-competitive-success#recall": "Whether a variation is an advantage depends on the environment",
+   "variation-and-competitive-success#start": "The small, quick one"
+  },
   "points": [
    {
     "id": "ks3.variation-and-competitive-success.1",
@@ -23498,6 +24836,11 @@
  },
  "variation-continuous-and-discontinuous": {
   "key_stage": "KS3",
+  "keys": {
+   "variation-continuous-and-discontinuous#apply": "Nothing on its own — shape and cause are separate questions",
+   "variation-continuous-and-discontinuous#recall": "Number of brothers and sisters",
+   "variation-continuous-and-discontinuous#start": "More like blood group"
+  },
   "points": [
    {
     "id": "ks3.variation-continuous-and-discontinuous.1",
@@ -23619,6 +24962,7 @@
    "ks3-b10-variation-continuous-and-discontinuous-produce": "ks3.variation-continuous-and-discontinuous.6",
    "variation-continuous-and-discontinuous#apply": "ks3.variation-continuous-and-discontinuous.4",
    "variation-continuous-and-discontinuous#explain": "ks3.variation-continuous-and-discontinuous.4",
+   "variation-continuous-and-discontinuous#predict-the-graph-then-plot-it-1": "ks3.variation-continuous-and-discontinuous.1",
    "variation-continuous-and-discontinuous#produce": "ks3.variation-continuous-and-discontinuous.6",
    "variation-continuous-and-discontinuous#recall": "ks3.variation-continuous-and-discontinuous.2",
    "variation-continuous-and-discontinuous#start": "ks3.variation-continuous-and-discontinuous.2"
@@ -23629,6 +24973,11 @@
  },
  "waves-on-water": {
   "key_stage": "KS3",
+  "keys": {
+   "waves-on-water#apply": "Each patch of water lifted and dropped on the spot and passed the disturbance on, so energy crossed the water and the water did not.",
+   "waves-on-water#recall": "Wavelength 0.60 m, amplitude 0.05 m — crest to crest, and the still level up to the crest",
+   "waves-on-water#start": "Only its movement"
+  },
   "points": [
    {
     "id": "ks3.waves-on-water.1",
@@ -23764,6 +25113,11 @@
  },
  "what-a-force-is": {
   "key_stage": "KS3",
+  "keys": {
+   "what-a-force-is#apply": "A force can act between two objects that are not touching.",
+   "what-a-force-is#recall": "The head pushes the ball, and the ball pushes the head just as hard.",
+   "what-a-force-is#start": "No, it has already stopped"
+  },
   "points": [
    {
     "id": "ks3.what-a-force-is.1",
@@ -23888,6 +25242,11 @@
    "p4-01-s29": "ks3.what-a-force-is.1",
    "p4-01-s30": "ks3.what-a-force-is.7",
    "what-a-force-is#apply": "ks3.what-a-force-is.7",
+   "what-a-force-is#board-1": "ks3.what-a-force-is.3",
+   "what-a-force-is#board-2": "ks3.what-a-force-is.3",
+   "what-a-force-is#board-3": "ks3.what-a-force-is.3",
+   "what-a-force-is#board-4": "ks3.what-a-force-is.3",
+   "what-a-force-is#board-5": "ks3.what-a-force-is.3",
    "what-a-force-is#explain": "ks3.what-a-force-is.3",
    "what-a-force-is#produce": "ks3.what-a-force-is.1",
    "what-a-force-is#recall": "ks3.what-a-force-is.3",
@@ -23899,6 +25258,11 @@
  },
  "what-drugs-do-to-the-body": {
   "key_stage": "KS3",
+  "keys": {
+   "what-drugs-do-to-the-body#apply": "Everywhere the blood goes — it acts on your head because that is where there is something for it to act on",
+   "what-drugs-do-to-the-body#recall": "It changes the way the body works",
+   "what-drugs-do-to-the-body#start": "Yes, it is a drug"
+  },
   "points": [
    {
     "id": "ks3.what-drugs-do-to-the-body.1",
@@ -24041,6 +25405,11 @@
  },
  "what-forces-do-to-motion": {
   "key_stage": "KS3",
+  "keys": {
+   "what-forces-do-to-motion#apply": "Its weight, downwards — unchanged the whole way up and down.",
+   "what-forces-do-to-motion#recall": "There is a resultant force backwards, against the direction of travel.",
+   "what-forces-do-to-motion#start": "No, it keeps going alone"
+  },
   "points": [
    {
     "id": "ks3.what-forces-do-to-motion.1",
@@ -24180,6 +25549,18 @@
  },
  "what-makes-a-species": {
   "key_stage": "KS3",
+  "keys": {
+   "what-makes-a-species#apply": "Because their offspring can themselves have offspring",
+   "what-makes-a-species#recall": "No — the offspring must be fertile for the parents to count as one species",
+   "what-makes-a-species#same-species-or-not-2": "Same species",
+   "what-makes-a-species#same-species-or-not-3": "Different species",
+   "what-makes-a-species#same-species-or-not-4": "Different species",
+   "what-makes-a-species#same-species-or-not-5": "Different species",
+   "what-makes-a-species#same-species-or-not-6": "The test does not settle it",
+   "what-makes-a-species#same-species-or-not-7": "The test does not settle it",
+   "what-makes-a-species#same-species-or-not-8": "The test does not settle it",
+   "what-makes-a-species#start": "No, two different species"
+  },
   "points": [
    {
     "id": "ks3.what-makes-a-species.1",
@@ -24307,6 +25688,14 @@
    "what-makes-a-species#explain": "ks3.what-makes-a-species.6",
    "what-makes-a-species#produce": "ks3.what-makes-a-species.1",
    "what-makes-a-species#recall": "ks3.what-makes-a-species.1",
+   "what-makes-a-species#same-species-or-not-1": "ks3.what-makes-a-species.1",
+   "what-makes-a-species#same-species-or-not-2": "ks3.what-makes-a-species.1",
+   "what-makes-a-species#same-species-or-not-3": "ks3.what-makes-a-species.6",
+   "what-makes-a-species#same-species-or-not-4": "ks3.what-makes-a-species.2",
+   "what-makes-a-species#same-species-or-not-5": "ks3.what-makes-a-species.3",
+   "what-makes-a-species#same-species-or-not-6": "ks3.what-makes-a-species.4",
+   "what-makes-a-species#same-species-or-not-7": "ks3.what-makes-a-species.4",
+   "what-makes-a-species#same-species-or-not-8": "ks3.what-makes-a-species.5",
    "what-makes-a-species#start": "ks3.what-makes-a-species.2"
   },
   "scope_ref": "what-makes-a-species",
@@ -24315,6 +25704,11 @@
  },
  "what-the-skeleton-does": {
   "key_stage": "KS3",
+  "keys": {
+   "what-the-skeleton-does#apply": "Because the chest cannot be made bigger, so air stops entering the lungs",
+   "what-the-skeleton-does#recall": "In the marrow inside the bones",
+   "what-the-skeleton-does#start": "What relies on the bone"
+  },
   "points": [
    {
     "id": "ks3.what-the-skeleton-does.1",
@@ -24457,7 +25851,8 @@
    "what-the-skeleton-does#explain": "ks3.what-the-skeleton-does.1",
    "what-the-skeleton-does#produce": "ks3.what-the-skeleton-does.7",
    "what-the-skeleton-does#recall": "ks3.what-the-skeleton-does.5",
-   "what-the-skeleton-does#start": "ks3.what-the-skeleton-does.8"
+   "what-the-skeleton-does#start": "ks3.what-the-skeleton-does.8",
+   "what-the-skeleton-does#switch-off-chains-1": "ks3.what-the-skeleton-does.3"
   },
   "scope_ref": "what-the-skeleton-does",
   "subject": "biology",
@@ -24465,6 +25860,11 @@
  },
  "whats-in-the-air": {
   "key_stage": "KS3",
+  "keys": {
+   "whats-in-the-air#apply": "It was released by photosynthesising organisms over billions of years",
+   "whats-in-the-air#recall": "About 78% nitrogen, 21% oxygen, 0.9% argon and 0.04% carbon dioxide",
+   "whats-in-the-air#start": "About a fifth"
+  },
   "points": [
    {
     "id": "ks3.whats-in-the-air.1",
@@ -24609,6 +26009,11 @@
  },
  "when-diet-goes-wrong": {
   "key_stage": "KS3",
+  "keys": {
+   "when-diet-goes-wrong#apply": "Iron deficiency does not depend on how much energy a diet supplies",
+   "when-diet-goes-wrong#recall": "A nutrient missing, only",
+   "when-diet-goes-wrong#start": "Yes, they could be"
+  },
   "points": [
    {
     "id": "ks3.when-diet-goes-wrong.1",
@@ -24738,6 +26143,7 @@
    "ks3-b3-when-diet-goes-wrong-produce": "ks3.when-diet-goes-wrong.4",
    "when-diet-goes-wrong#apply": "ks3.when-diet-goes-wrong.5",
    "when-diet-goes-wrong#explain": "ks3.when-diet-goes-wrong.5",
+   "when-diet-goes-wrong#five-clinics-1": "ks3.when-diet-goes-wrong.1",
    "when-diet-goes-wrong#produce": "ks3.when-diet-goes-wrong.4",
    "when-diet-goes-wrong#recall": "ks3.when-diet-goes-wrong.1",
    "when-diet-goes-wrong#start": "ks3.when-diet-goes-wrong.7"
@@ -24748,6 +26154,11 @@
  },
  "when-the-environment-changes-extinction": {
   "key_stage": "KS3",
+  "keys": {
+   "when-the-environment-changes-extinction#apply": "Yes — over 99% of all species that ever lived are extinct, mostly long before humans existed",
+   "when-the-environment-changes-extinction#recall": "It eats only one kind of food and breeds slowly",
+   "when-the-environment-changes-extinction#start": "Breeding fast, eating anything"
+  },
   "points": [
    {
     "id": "ks3.when-the-environment-changes-extinction.1",
@@ -24887,6 +26298,19 @@
  },
  "which-reaction-is-this": {
   "key_stage": "KS3",
+  "keys": {
+   "which-reaction-is-this#apply": "Both — combustion is a kind of oxidation, and combustion is the more specific answer",
+   "which-reaction-is-this#eight-reactions-1": "Combustion",
+   "which-reaction-is-this#eight-reactions-2": "Thermal decomposition",
+   "which-reaction-is-this#eight-reactions-3": "Displacement",
+   "which-reaction-is-this#eight-reactions-4": "Oxidation",
+   "which-reaction-is-this#eight-reactions-5": "Thermal decomposition",
+   "which-reaction-is-this#eight-reactions-6": "Displacement",
+   "which-reaction-is-this#eight-reactions-7": "Oxidation",
+   "which-reaction-is-this#eight-reactions-8": "None of the four",
+   "which-reaction-is-this#recall": "Thermal decomposition",
+   "which-reaction-is-this#start": "What went in"
+  },
   "points": [
    {
     "id": "ks3.which-reaction-is-this.1",
@@ -25019,6 +26443,14 @@
    "ks3-c5-which-reaction-is-this-explain": "ks3.which-reaction-is-this.5",
    "ks3-c5-which-reaction-is-this-produce": "ks3.which-reaction-is-this.8",
    "which-reaction-is-this#apply": "ks3.which-reaction-is-this.6",
+   "which-reaction-is-this#eight-reactions-1": "ks3.which-reaction-is-this.3",
+   "which-reaction-is-this#eight-reactions-2": "ks3.which-reaction-is-this.2",
+   "which-reaction-is-this#eight-reactions-3": "ks3.which-reaction-is-this.4",
+   "which-reaction-is-this#eight-reactions-4": "ks3.which-reaction-is-this.5",
+   "which-reaction-is-this#eight-reactions-5": "ks3.which-reaction-is-this.2",
+   "which-reaction-is-this#eight-reactions-6": "ks3.which-reaction-is-this.4",
+   "which-reaction-is-this#eight-reactions-7": "ks3.which-reaction-is-this.5",
+   "which-reaction-is-this#eight-reactions-8": "ks3.which-reaction-is-this.8",
    "which-reaction-is-this#explain": "ks3.which-reaction-is-this.5",
    "which-reaction-is-this#produce": "ks3.which-reaction-is-this.8",
    "which-reaction-is-this#recall": "ks3.which-reaction-is-this.2",
@@ -25031,6 +26463,11 @@
  },
  "why-almost-all-life-depends-on-it": {
   "key_stage": "KS3",
+  "keys": {
+   "why-almost-all-life-depends-on-it#apply": "Yes — it feeds on dead material that a photosynthetic organism built, so it sits at the end of the same chain",
+   "why-almost-all-life-depends-on-it#recall": "It builds its own organic molecules from simple raw materials, instead of eating something else’s",
+   "why-almost-all-life-depends-on-it#start": "Food a plant made"
+  },
   "points": [
    {
     "id": "ks3.why-almost-all-life-depends-on-it.1",
@@ -25158,7 +26595,8 @@
    "why-almost-all-life-depends-on-it#explain": "ks3.why-almost-all-life-depends-on-it.1",
    "why-almost-all-life-depends-on-it#produce": "ks3.why-almost-all-life-depends-on-it.6",
    "why-almost-all-life-depends-on-it#recall": "ks3.why-almost-all-life-depends-on-it.3",
-   "why-almost-all-life-depends-on-it#start": "ks3.why-almost-all-life-depends-on-it.4"
+   "why-almost-all-life-depends-on-it#start": "ks3.why-almost-all-life-depends-on-it.4",
+   "why-almost-all-life-depends-on-it#trace-a-meal-1": "ks3.why-almost-all-life-depends-on-it.3"
   },
   "scope_ref": "why-almost-all-life-depends-on-it",
   "subject": "biology",
@@ -25166,6 +26604,11 @@
  },
  "why-every-cell-respires": {
   "key_stage": "KS3",
+  "keys": {
+   "why-every-cell-respires#apply": "Respiration continues in every cell, using oxygen and releasing carbon dioxide",
+   "why-every-cell-respires#recall": "Active transport of minerals into a root hair cell",
+   "why-every-cell-respires#start": "Hardly any"
+  },
   "points": [
    {
     "id": "ks3.why-every-cell-respires.1",
@@ -25305,6 +26748,11 @@
  },
  "why-ice-floats": {
   "key_stage": "KS3",
+  "keys": {
+   "why-ice-floats#apply": "Temperature is not what decides floating — density is. Cold liquid water sinks below warmer water, and it is only the change of structure on freezing that makes ice less dense.",
+   "why-ice-floats#recall": "About 8% — the ratio 0.92 to 1.00 means roughly 92% of it sits below the waterline.",
+   "why-ice-floats#start": "Freezing makes it take more room"
+  },
   "points": [
    {
     "id": "ks3.why-ice-floats.1",
@@ -25444,6 +26892,11 @@
  },
  "why-things-look-coloured": {
   "key_stage": "KS3",
+  "keys": {
+   "why-things-look-coloured#apply": "A white surface reflects all frequencies about equally, so it sends back whatever arrives — and only green is arriving.",
+   "why-things-look-coloured#recall": "Almost black, because the only light arriving is red and the book absorbs red.",
+   "why-things-look-coloured#start": "Almost black"
+  },
   "points": [
    {
     "id": "ks3.why-things-look-coloured.1",
@@ -25579,6 +27032,14 @@
  },
  "word-equations": {
   "key_stage": "KS3",
+  "keys": {
+   "word-equations#apply": "Heat is not a substance, so it does not belong in the equation",
+   "word-equations#read-back-1": "Zinc and copper sulfate react to make zinc sulfate and copper",
+   "word-equations#read-back-2": "One substance has broken down into two",
+   "word-equations#read-back-3": "A compound has been made, and the iron is no longer magnetic",
+   "word-equations#recall": "Makes, or turns into",
+   "word-equations#start": "What the powder is"
+  },
   "points": [
    {
     "id": "ks3.word-equations.1",
@@ -25716,6 +27177,9 @@
    "word-equations#apply": "ks3.word-equations.3",
    "word-equations#explain": "ks3.word-equations.1",
    "word-equations#produce": "ks3.word-equations.6",
+   "word-equations#read-back-1": "ks3.word-equations.2",
+   "word-equations#read-back-2": "ks3.word-equations.5",
+   "word-equations#read-back-3": "ks3.word-equations.2",
    "word-equations#recall": "ks3.word-equations.2",
    "word-equations#start": "ks3.word-equations.8",
    "word-equations#think-reveal-direction": "ks3.word-equations.2"

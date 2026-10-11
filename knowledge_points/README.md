@@ -48,9 +48,22 @@ questions: {question_id: point_id}}`.
   lesson's logic for each route in Node (`tools/kp_ks4_eval.js`), because the
   content differs by route on about 128 of the 308 pages. Round 1's
   route-less `ks4:<slug>#rN` ids are retired.
+- **Round 3 (11 Oct 2026):** the KS3 question-shaped instruments,
+  `<slug>#<activity>-<n>` (269 units), read off the BUILT pages by the same
+  rules as the answer tap (`tools/kp_ks3_units.py`), placed onto the points
+  as round 2 left them (own cache; earlier rounds undisturbed).
+- **Answer keys:** each scope's `keys` map gives, for every lesson-page
+  question with exactly ONE right option, that option's text exactly as the
+  page renders and sends it (trimmed only). It comes from the page markup
+  where the page carries it (`data-correct`, `data-<p>-want-…`, `-is`,
+  `data-answer`, the "Good guess" reply), else from the authored data by one
+  named rule per instrument kind (`AUTHORED_RULES`). Predictions, written
+  items, explorations and instruments whose one id covers several questions
+  have no key. `--check` recomputes every key and refuses one that is not a
+  rendered option. Loaded into `question_knowledge_points.answer_key`.
 - Round-2 ids were placed onto the EXISTING points (one model call per
   scope). Where nothing fitted, a new point was appended to the end of that
-  scope, never renumbering the others; those points carry `"added": "round-2"`
+  scope, never renumbering the others; those points carry `"added": "round-2"` (or `"round-3"`)
   in the JSON and are listed by `--coverage`.
 
 ## Editing and re-running

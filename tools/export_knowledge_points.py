@@ -59,7 +59,8 @@ SOURCE_LABEL = {  # the coverage report's rows
     "ks3_bank": "KS3 bank", "ks4_bank": "KS4 bank", "ks3_ladder": "KS3 ladder",
     "exam_ks3": "exam KS3", "exam_ks4": "exam KS4", "ks4_quiz": "KS4 classic quiz",
     "ks3_start": "KS3 start here", "ks3_predict": "KS3 prediction", "ks3_keyed": "KS3 keyed commit",
-    "ks3_yourturn": "KS3 your turn", "ks4_match": "KS4 classic matching",
+    "ks3_yourturn": "KS3 your turn", "ks3_instrument": "KS3 instrument",
+    "ks4_match": "KS4 classic matching",
     "ks4_pilot_start": "KS4 pilot start", "ks4_pilot_choice": "KS4 pilot choice",
     "ks4_pilot_sort": "KS4 pilot sort", "ks4_pilot_cfifa": "KS4 pilot cfifa",
     "ks4_pilot_steps": "KS4 pilot steps", "ks4_pilot_ladder": "KS4 pilot ladder",
@@ -67,7 +68,7 @@ SOURCE_LABEL = {  # the coverage report's rows
     "ks4_pilot_write": "KS4 pilot write", "ks4_quizbank": "KS4 practice set (ruled text)",
 }
 REPORT_ORDER = ["ks3_bank", "ks4_bank", "ks3_ladder", "exam_ks3", "exam_ks4", "ks4_quiz",
-                "ks3_start", "ks3_predict", "ks3_keyed", "ks3_yourturn", "ks4_match",
+                "ks3_start", "ks3_predict", "ks3_keyed", "ks3_yourturn", "ks3_instrument", "ks4_match",
                 "ks4_pilot_start", "ks4_pilot_choice", "ks4_pilot_sort", "ks4_pilot_cfifa",
                 "ks4_pilot_steps", "ks4_pilot_ladder", "ks4_pilot_practice", "ks4_pilot_chain",
                 "ks4_pilot_write", "ks4_quizbank"]
@@ -104,7 +105,11 @@ def expected(inv, extras=None):
                     exp[q[0]] = (q[1], ks, ref)
     for exam_id, _rung, slug in inv["exam_ks3"]:
         exp[exam_id] = ("exam_ks3", "KS3", slug)
-    extras = extras if extras is not None else kpc.extras_inventory()
+    if extras is None:
+        extras = {}
+        for inv_ in (kpc.extras_inventory(), kpc.round3_inventory()):
+            for k_, v_ in inv_.items():
+                extras.setdefault(k_, []).extend(v_)
     for (ks, ref), items in extras.items():
         for q in items:
             exp[q[0]] = (q[1], ks, ref)
@@ -238,6 +243,28 @@ def check(data=None, inv=None, quiet=False):
             if a != b:
                 errs.append("%s is tagged %s but its rung %s is %s" % (exam_id, a, rung_id, b))
 
+    # answer keys: each must be the question's one right option exactly as
+    # the page renders it — recomputed from the sources and compared
+    want_keys = {q: v for q, v in kpc.answer_keys().items() if v[0] is not None}
+    have_keys = {}
+    for name in ("ks3", "ks4"):
+        for key, e in data[name].items():
+            for q, k in (e.get("keys") or {}).items():
+                if q not in (e.get("questions") or {}):
+                    errs.append("%s has an answer key but is not a question of %s" % (q, key))
+                have_keys[q] = k
+    for q, k in have_keys.items():
+        w = want_keys.get(q)
+        if w is None:
+            errs.append("%s: answer key %r, but the sources name no single right option" % (q, k))
+        elif k != w[0]:
+            errs.append("%s: answer key %r, the sources say %r" % (q, k, w[0]))
+        elif k not in w[1]:
+            errs.append("%s: answer key %r is not one of its rendered options" % (q, k))
+    for q in want_keys:
+        if q not in have_keys and q in where:
+            errs.append("%s: has a single right option (%r) but no answer key" % (q, want_keys[q][0]))
+
     pages, pids = page_quiz_ids()
     stray = sorted(pids - set(exp))
     if stray:
@@ -246,9 +273,9 @@ def check(data=None, inv=None, quiet=False):
 
     if not quiet:
         tagged = len(where)
-        print("knowledge_points_check: %d scope(s), %d point(s), %d question(s) tagged, %d untagged; "
-              "%d classic page(s) read, %d card id(s) all known; test vector %s"
-              % (len(data["ks3"]) + len(data["ks4"]), len(kp_scope), tagged, len(unt),
+        print("knowledge_points_check: %d scope(s), %d point(s), %d question(s) tagged, %d untagged, "
+              "%d answer key(s); %d classic page(s) read, %d card id(s) all known; test vector %s"
+              % (len(data["ks3"]) + len(data["ks4"]), len(kp_scope), tagged, len(unt), len(have_keys),
                  pages, len(pids), got))
         for e in errs[:60]:
             print("  ✗ " + e)
@@ -311,14 +338,33 @@ def coverage():
                      % (min(per_scope), statistics.median(per_scope), max(per_scope)))
     fs = data["untagged"]["failed_scopes"]
     lines.append("scopes that failed: %d%s" % (len(fs), (" — " + ", ".join(fs)) if fs else ""))
-    added = [(p["id"], p["label"]) for name in ("ks3", "ks4") for e in data[name].values()
+    added = [(p["id"], p["label"], p["added"]) for name in ("ks3", "ks4") for e in data[name].values()
              for p in e["points"] if p.get("added")]
-    lines.append("points added in round 2 (no existing point fitted): %d" % len(added))
-    for pid, lab in added:
-        lines.append("  + %s  %s  (%d question(s))" % (pid, lab, count_all[pid]))
+    lines.append("points added after round 1 (no existing point fitted): %d (%s)" % (
+        len(added), ", ".join("%s %d" % (r, n) for r, n in sorted(collections.Counter(a[2] for a in added).items()))))
+    for pid, lab, rnd in added:
+        lines.append("  + [%s] %s  %s  (%d question(s))" % (rnd, pid, lab, count_all[pid]))
     reasons = collections.Counter(v["reason"] for v in unt.values())
     if reasons:
         lines.append("untagged reasons: " + "; ".join("%s ×%d" % kv for kv in reasons.most_common()))
+    ak = kpc.answer_keys()
+    kc, nk, why = collections.Counter(), collections.Counter(), collections.Counter()
+    jkeys = {q: k for name in ("ks3", "ks4") for e in data[name].values() for q, k in (e.get("keys") or {}).items()}
+    for q, (k, _o, w) in ak.items():
+        src = report_source(q, exp)
+        if q in jkeys:
+            kc[src] += 1
+        else:
+            nk[src] += 1
+            why["%s: %s" % (SOURCE_LABEL.get(src, src), w)] += 1
+    lines += ["", "answer keys (lesson-page questions with options): %d keyed, %d without a single right option"
+              % (sum(kc.values()), sum(nk.values()))]
+    for src in REPORT_ORDER:
+        if kc[src] or nk[src]:
+            lines.append("  %-30s keyed %5d   no key %4d" % (SOURCE_LABEL[src], kc[src], nk[src]))
+    lines.append("  why no key:")
+    for w, n in why.most_common():
+        lines.append("    %4d  %s" % (n, w))
     pages, pids = page_quiz_ids()
     lines.append("classic quiz cards on the generated pages: %d unique on %d page(s), %d tagged"
                  % (len(pids), pages, sum(1 for q in pids if q in tagged)))
@@ -330,16 +376,24 @@ def coverage():
 
 # ── load (TEST only) ────────────────────────────────────────────────────
 
+DB_SRC = {}
+
+
 def rows_from(data):
+    if not DB_SRC:
+        for (ks, ref), items in kpc.round3_inventory().items():
+            for q in items:
+                DB_SRC[q[0]] = kpc.DB_SOURCE[q[1]]
     kps, qkps = [], []
     for name, ks, kind in (("ks3", "KS3", "lesson"), ("ks4", "KS4", "subtopic")):
         for ref, e in sorted(data[name].items()):
             for i, p in enumerate(e["points"], 1):
                 kps.append({"id": p["id"], "key_stage": ks, "subject": e["subject"],
                             "scope_kind": kind, "scope_ref": ref, "position": i, "label": p["label"]})
+            keys = e.get("keys") or {}
             for qid, kp in sorted(e["questions"].items()):
-                qkps.append({"question_id": qid, "source": kpc.DB_SOURCE[kpc.source_of(qid)],
-                             "knowledge_point_id": kp})
+                qkps.append({"question_id": qid, "source": DB_SRC.get(qid) or kpc.DB_SOURCE[kpc.source_of(qid)],
+                             "knowledge_point_id": kp, "answer_key": keys.get(qid)})
     return kps, qkps
 
 
@@ -380,7 +434,8 @@ def verify(project, data=None):
     data = data or load_data()
     kps, qkps = rows_from(data)
     db_k = fetch_all(base, key, "knowledge_points", "id,key_stage,subject,scope_kind,scope_ref,position,label", "id")
-    db_q = fetch_all(base, key, "question_knowledge_points", "question_id,source,knowledge_point_id", "question_id")
+    db_q = fetch_all(base, key, "question_knowledge_points", "question_id,source,knowledge_point_id,answer_key",
+                     "question_id")
     want_k = {r["id"]: r for r in kps}
     want_q = {r["question_id"]: r for r in qkps}
     have_k = {r["id"]: r for r in db_k}
@@ -388,8 +443,10 @@ def verify(project, data=None):
     bad_k = [i for i in set(want_k) | set(have_k) if want_k.get(i) != have_k.get(i)]
     bad_q = [i for i in set(want_q) | set(have_q) if want_q.get(i) != have_q.get(i)]
     print("verify TEST: knowledge_points %d in TEST / %d in JSON, %d differ; "
-          "question_knowledge_points %d in TEST / %d in JSON, %d differ"
-          % (len(have_k), len(want_k), len(bad_k), len(have_q), len(want_q), len(bad_q)))
+          "question_knowledge_points %d in TEST / %d in JSON, %d differ; answer_key set on %d in TEST / %d in JSON"
+          % (len(have_k), len(want_k), len(bad_k), len(have_q), len(want_q), len(bad_q),
+             sum(1 for r in db_q if r.get("answer_key") is not None),
+             sum(1 for r in qkps if r.get("answer_key") is not None)))
     for i in sorted(bad_k)[:5] + sorted(bad_q)[:5]:
         print("   differs: %s" % i)
     return 0 if not bad_k and not bad_q else 1
