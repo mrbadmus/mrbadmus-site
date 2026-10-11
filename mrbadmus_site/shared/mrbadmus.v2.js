@@ -904,15 +904,94 @@ try {
       return secs < 0 ? 0 : (secs > CAP_S ? CAP_S : secs);
     }
 
-    function post(d) {
-      var tok = null;
+    /* ── The outbox (parent truth follow-up, 11 Oct 2026) ──────────────
+       No child answer is lost to an expired token or a dropped connection.
+       Every answer is WRITTEN AHEAD to localStorage `mrb_answer_outbox_v1`
+       before it is sent, and removed only when the server answers 2xx. So a
+       401 (an expired token — these pages load no SDK to refresh it), a
+       network error, or the tab closing mid-request all leave it queued.
+       The queue is flushed, oldest first, with the CURRENT token: when this
+       sender installs, after every successful live send, and on any consumer
+       page a child opens (consumer/consumer-common.js holds the twin flush,
+       with that page's freshly refreshed token). Each body carries a
+       `client_event_id` and the `answered_at` of the moment of answering,
+       and the server de-duplicates on the id, so a re-send — including one
+       of an answer whose first send did land — is safe. Newest 200 kept;
+       anything older than 7 days is dropped (the server refuses it). Every
+       storage access is wrapped: private mode means "sent live or not at
+       all", never an error. ⚠️ The key, the cap, the age limit and the route
+       are repeated in consumer-common.js — change them together. */
+    var OUTBOX_KEY = 'mrb_answer_outbox_v1', OUTBOX_CAP = 200, OUTBOX_TTL_MS = 7 * 24 * 3600 * 1000;
+    var ANSWER_URL = c.BACKEND_URL + '/api/consumer/child/answer';
+    function boxRead() {
+      try {
+        var v = JSON.parse(window.localStorage.getItem(OUTBOX_KEY) || '[]');
+        return Array.isArray(v) ? v : [];
+      } catch (e) { return []; }
+    }
+    function boxWrite(list) {
+      try {
+        if (!list.length) { window.localStorage.removeItem(OUTBOX_KEY); }
+        else { window.localStorage.setItem(OUTBOX_KEY, JSON.stringify(list.slice(-OUTBOX_CAP))); }
+      } catch (e) { /* private mode, or full — the live send still goes */ }
+    }
+    function boxFresh(b) {
+      var t = b && b.client_event_id && Date.parse(b.answered_at);
+      return !!t && (Date.now() - t) < OUTBOX_TTL_MS;
+    }
+    function boxKeep(body) {
+      var list = boxRead().filter(function (b) { return boxFresh(b) && b.client_event_id !== body.client_event_id; });
+      list.push(body);
+      boxWrite(list);
+    }
+    function boxDrop(id) {
+      boxWrite(boxRead().filter(function (b) { return boxFresh(b) && b.client_event_id !== id; }));
+    }
+    function token() {
       try {
         var s2 = JSON.parse(window.localStorage.getItem(c.AUTH_STORAGE_KEY) || 'null');
-        tok = s2 && s2.access_token;
-      } catch (e) { return; }
+        return (s2 && s2.access_token) || null;
+      } catch (e) { return null; }
+    }
+    // Resolves true only on a 2xx (204 included). `live` sends ride on
+    // keepalive so they survive the page going away; a flush does not, as
+    // keepalive bodies share a small per-page budget.
+    function send(body, tok, live) {
+      try {
+        return fetch(ANSWER_URL, {
+          method: 'POST',
+          keepalive: !!live,
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+          body: JSON.stringify(body)
+        }).then(function (r) { return !!(r && r.ok); }, function () { return false; });
+      } catch (e) { return Promise.resolve(false); }
+    }
+    var flushing = false;
+    function flush() {
+      if (flushing) { return; }
+      var tok = token();
       if (!tok) { return; }
+      var queue = boxRead().filter(boxFresh);
+      boxWrite(queue);                         // the 7-day drop, persisted
+      if (!queue.length) { return; }
+      flushing = true;
+      var i = 0;
+      (function next() {
+        if (i >= queue.length) { flushing = false; return; }
+        var b = queue[i++];
+        send(b, tok, false).then(function (ok) {
+          if (!ok) { flushing = false; return; }   // keep it and the rest; try again later
+          boxDrop(b.client_event_id);
+          next();
+        });
+      })();
+    }
+
+    function post(d) {
       var t = d.time_spent_seconds;
       var body = {
+        client_event_id: uuid(),
+        answered_at: new Date().toISOString(),
         visit_id: visitId,
         key_stage: d.key_stage,
         path: path,
@@ -931,15 +1010,19 @@ try {
         time_spent_seconds: (typeof t === 'number' && isFinite(t))
           ? Math.max(0, Math.min(CAP_S, Math.round(t))) : null
       };
-      try {
-        fetch(c.BACKEND_URL + '/api/consumer/child/answer', {
-          method: 'POST',
-          keepalive: true,
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
-          body: JSON.stringify(body)
-        }).catch(function () { /* best effort — the lesson never waits on this */ });
-      } catch (e) { /* fetch unavailable — degrade silently */ }
+      boxKeep(body);                           // written ahead: queued until the server has it
+      var tok = token();
+      if (!tok) { return; }
+      send(body, tok, true).then(function (ok) {
+        if (!ok) { return; }                   // stays queued
+        boxDrop(body.client_event_id);
+        flush();
+      });
     }
+
+    // Anything an earlier page could not deliver, now — after the page has
+    // settled, so it never competes with the lesson loading.
+    setTimeout(flush, 2000);
 
     /* ── KS3: the ladder's own announcements ── */
     document.addEventListener('mrb:answer', function (e) {
