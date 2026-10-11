@@ -34,7 +34,7 @@ A "Full screen" button in each lab's top bar (`simulations/fullscreen.js` + `ful
 2. Add one entry to `simulations/simulations.json`, then `python3 build_all.py`.
 
 ## Things to know
-- The lab loads React and Babel from unpkg at run time (that is how Design's `.dc.html` family works). A school network that blocks unpkg.com would show a blank lab. Porting it into a vanilla runtime like the KS4 lessons would remove that dependency; not done tonight.
+- ~~The lab loads React and Babel from unpkg at run time.~~ Fixed 11 Oct 2026: every lab now loads `/simulations/dc-runtime.js` and React from `/simulations/vendor/`. See "No CDN" below.
 - Hub files `simulations.css` / `simulations.js` / `.json` are not under `/shared/`, so they carry no cache-bust stamp; they revalidate on each load.
 
 ## Physics for Mide (not changed)
@@ -51,3 +51,32 @@ A "Full screen" button in each lab's top bar (`simulations/fullscreen.js` + `ful
 Dark-mode contrast on the yellow energy labels fixed (fixed dark ink on yellow, both chip and canvas); slider and checkbox accent tokenised for dark; the lab's unused Design bundle and her internal README / manifest files are not published (the bundle carried the retired chevron drawing and `brand_one_mark` would have failed on it); compact theme control in the header so phones never overflow; `lang="en"` on the lab.
 
 Known, not changed: Design's own lab layout is about 16px wider than the screen on a 320px-wide phone (the hub pages fit at 320; the lab fits cleanly at 360 and up).
+
+## 11 Oct 2026 — Waves Practical Lab, Seismic redesign, no CDN
+
+From Design's `Simulations Lab Redesign.zip`. Wave Motion Lab's copy in the zip was NOT a redesign (same lab, minus our header and dark fixes) and was left alone.
+
+- **Waves Practical Lab** — `/simulations/physics/waves-practical-lab/` (AQA 4.6.1.2 required practical: ripple tank and waves on a string). Ported like the Wave Motion Lab; `data-sim="practical"` keep-list in `fullscreen.css`. Layout fixes: the "PATTERN ON THE PAPER" label sits on a backing chip; the rulers label fewer marks when narrow (0, 5, 10 … at 390px); strobe −/+ centred. Science fixes: the string's live wavelength steps counted loops on the whole string, not between markers A and B (dragging B to 0.50 m gave λ = 0.333 m; now 1.000 m), and divided by zero off resonance; the string length shows to 3 d.p. so the working is arithmetically true; "1 loop" not "1 loops".
+- **Seismic Wave Lab** — same URL, now Design's redesign (house lab look, Restart-during-play double-speed bug fixed by her). Checked item by item against the old page: every step, control, seismogram, key word and quiz item is there with identical text and identical ray data. Science fixes (both were in the old page too): the tally counted S-only seismometers (solid-core "what if") as "P-waves only" — there is now an "S-waves only" row shown only when non-zero; Lehmann (1936) showed there *is* an inner core, not that it is solid. The redesign adds Hide/Show for Seismogram, Key words and Quiz, remembered per browser.
+- **No CDN.** `simulations/dc-runtime.js` is Design's `support.js` with React 18.3.1 + ReactDOM served from `simulations/vendor/` (byte-identical to the unpkg files; the SRI hashes are unchanged and still checked) and Babel removed: Babel was only ever fetched for JSX `x-import`s, and no lab has one, so there is nothing to precompile. A future lab that needs one fails loudly ("precompile them") instead of reaching for a CDN. The per-lab `support.js` copies are gone. Adding a lab: `<script src="/simulations/dc-runtime.js"></script>` (root-relative, so the build cache-busts it).
+- **Proof**: headless Chrome at 390 and 1366, light and dark, on all four labs and the physics page: console clean, every request to mrbadmus.com, full screen in and out, every step clicked through; practical lab v = f × λ on both set-ups; Seismic tallies sum to 24 in both models.
+
+### Science for Mide (arguable, not changed)
+Waves Practical Lab:
+1. Shadow magnification is never mentioned: the paper pattern is drawn at the same scale as the water, so measured λ = true λ. Accepted at GCSE (AQA measures on the paper), but an exam question can ask why the measured λ is too large.
+2. "Frozen pattern: strobe frequency = wave frequency" — it also freezes at f/2, f/3…; the strobe reaches 0.5 Hz. Common GCSE wording; stricter is "the highest strobe frequency that freezes it".
+3. The motor runs at 2.99 / 4.85 / 6.71 Hz and the strobe steps in 0.1 Hz, so the pattern never fully stops creeping (one wavelength about every 20 s at best).
+4. "The stopwatch still shows real time" means experiment time (4× slower on screen in slow motion).
+5. The footer's "The motor frequency is not printed anywhere: you have to measure it." comes after the string sentence, where it reads as contradicting "read the frequency off the signal generator". Moving it after the ripple-tank sentence would fix it.
+6. "A" is both an antinode label and marker A in the same step.
+7. Quiz 4 answer 0.225 m/s from 2 s.f. data (0.23 strictly); AQA credits either.
+8. The lab never explains why the string only shows a pattern at certain frequencies.
+9. Ripple steps state a whole number of waves between A and B even if the markers are off the bright lines (the step tells pupils to put them on bright lines).
+
+Seismic Wave Lab:
+1. The P-wave shadow zone in Design's data is 103.5°–131.5°; textbooks say about 105°–140°. No figures are stated on the page.
+2. "every S-wave that reaches the liquid outer core is stopped" — physically S converts to P at the boundary; "stopped" is standard GCSE wording.
+3. Gradual speed change attributed to density changing with depth (AQA-style; really mainly stiffness). Creditworthy.
+4. In the solid-core model S still shows a shadow band (104.5°–125.5°) from refraction at the boundary; pupils may ask.
+5. Travel times run about 10–20% short of real values; no text claims exact values.
+6. AQA 4.6.1.5 is Physics-only; Combined pupils aren't examined on it, and the page does not say so (unchanged from before).
