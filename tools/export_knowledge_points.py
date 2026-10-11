@@ -55,12 +55,22 @@ import kp_classify as kpc  # noqa: E402
 REPO = kpc.REPO
 KP_DIR = kpc.KP_DIR
 
-SOURCE_LABEL = {  # the coverage report's seven rows
+SOURCE_LABEL = {  # the coverage report's rows
     "ks3_bank": "KS3 bank", "ks4_bank": "KS4 bank", "ks3_ladder": "KS3 ladder",
-    "exam_ks3": "exam KS3", "exam_ks4": "exam KS4", "ks4_rung": "KS4 pilot rungs",
-    "ks4_quiz": "KS4 classic quiz",
+    "exam_ks3": "exam KS3", "exam_ks4": "exam KS4", "ks4_quiz": "KS4 classic quiz",
+    "ks3_start": "KS3 start here", "ks3_predict": "KS3 prediction", "ks3_keyed": "KS3 keyed commit",
+    "ks3_yourturn": "KS3 your turn", "ks4_match": "KS4 classic matching",
+    "ks4_pilot_start": "KS4 pilot start", "ks4_pilot_choice": "KS4 pilot choice",
+    "ks4_pilot_sort": "KS4 pilot sort", "ks4_pilot_cfifa": "KS4 pilot cfifa",
+    "ks4_pilot_steps": "KS4 pilot steps", "ks4_pilot_ladder": "KS4 pilot ladder",
+    "ks4_pilot_practice": "KS4 pilot practice", "ks4_pilot_chain": "KS4 pilot chain",
+    "ks4_pilot_write": "KS4 pilot write", "ks4_quizbank": "KS4 practice set (ruled text)",
 }
-REPORT_ORDER = ["ks3_bank", "ks4_bank", "ks3_ladder", "exam_ks3", "exam_ks4", "ks4_rung", "ks4_quiz"]
+REPORT_ORDER = ["ks3_bank", "ks4_bank", "ks3_ladder", "exam_ks3", "exam_ks4", "ks4_quiz",
+                "ks3_start", "ks3_predict", "ks3_keyed", "ks3_yourturn", "ks4_match",
+                "ks4_pilot_start", "ks4_pilot_choice", "ks4_pilot_sort", "ks4_pilot_cfifa",
+                "ks4_pilot_steps", "ks4_pilot_ladder", "ks4_pilot_practice", "ks4_pilot_chain",
+                "ks4_pilot_write", "ks4_quizbank"]
 CS_ID = re.compile(r"^cs-(bio|chem|phys)-[a-z0-9-]+$")
 
 
@@ -72,24 +82,32 @@ def load_data():
     return out
 
 
-def report_source(qid):
+def report_source(qid, exp=None):
+    if exp and qid in exp:
+        return exp[qid][0]
     s = kpc.source_of(qid)
     if s == "exam":
         return "exam_ks3" if qid.startswith("ks3-") else "exam_ks4"
     return s
 
 
-def expected(inv):
+def expected(inv, extras=None):
     """question id → (report source, key stage, scope ref) for every question
     the loaders know about. KS4 exam ids are not knowable offline; they are
-    validated by shape instead (see check())."""
+    validated by shape instead (see check()). Round 1's route-less KS4 ladder
+    ids (`ks4:<slug>#rN`) are retired and expected NOWHERE."""
     exp = {}
     for ks in ("KS3", "KS4"):
         for ref, sc in inv[ks].items():
             for q in sc["questions"]:
-                exp[q[0]] = (q[1], ks, ref)
+                if q[1] != "ks4_rung":
+                    exp[q[0]] = (q[1], ks, ref)
     for exam_id, _rung, slug in inv["exam_ks3"]:
         exp[exam_id] = ("exam_ks3", "KS3", slug)
+    extras = extras if extras is not None else kpc.extras_inventory()
+    for (ks, ref), items in extras.items():
+        for q in items:
+            exp[q[0]] = (q[1], ks, ref)
     return exp
 
 
@@ -187,6 +205,9 @@ def check(data=None, inv=None, quiet=False):
                 elif qid in bv2:
                     if ks != "KS4":
                         errs.append("%s is a KS4 exam row tagged in %s" % (qid, ks))
+                elif kpc.source_of(qid) == "ks4_rung":
+                    errs.append("%s: a retired route-less KS4 ladder id (the page sends "
+                                "ks4:<slug>:<route>#rN now)" % qid)
                 elif not (ks == "KS4" and CS_ID.match(qid)):
                     errs.append("%s: no loader knows this question id" % qid)
             for p in pts:
@@ -290,6 +311,11 @@ def coverage():
                      % (min(per_scope), statistics.median(per_scope), max(per_scope)))
     fs = data["untagged"]["failed_scopes"]
     lines.append("scopes that failed: %d%s" % (len(fs), (" — " + ", ".join(fs)) if fs else ""))
+    added = [(p["id"], p["label"]) for name in ("ks3", "ks4") for e in data[name].values()
+             for p in e["points"] if p.get("added")]
+    lines.append("points added in round 2 (no existing point fitted): %d" % len(added))
+    for pid, lab in added:
+        lines.append("  + %s  %s  (%d question(s))" % (pid, lab, count_all[pid]))
     reasons = collections.Counter(v["reason"] for v in unt.values())
     if reasons:
         lines.append("untagged reasons: " + "; ".join("%s ×%d" % kv for kv in reasons.most_common()))

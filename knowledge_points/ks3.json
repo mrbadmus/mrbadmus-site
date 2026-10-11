@@ -36,6 +36,7 @@
    "a-balanced-diet#explain": "ks3.a-balanced-diet.6",
    "a-balanced-diet#produce": "ks3.a-balanced-diet.6",
    "a-balanced-diet#recall": "ks3.a-balanced-diet.6",
+   "a-balanced-diet#start": "ks3.a-balanced-diet.3",
    "b3-01-e01": "ks3.a-balanced-diet.1",
    "b3-01-e02": "ks3.a-balanced-diet.2",
    "b3-01-e03": "ks3.a-balanced-diet.5",
@@ -174,6 +175,8 @@
    "a-planet-with-limits#explain": "ks3.a-planet-with-limits.2",
    "a-planet-with-limits#produce": "ks3.a-planet-with-limits.8",
    "a-planet-with-limits#recall": "ks3.a-planet-with-limits.1",
+   "a-planet-with-limits#start": "ks3.a-planet-with-limits.1",
+   "a-planet-with-limits#think-commit-recycling": "ks3.a-planet-with-limits.2",
    "c10-04-e01": "ks3.a-planet-with-limits.1",
    "c10-04-e02": "ks3.a-planet-with-limits.1",
    "c10-04-e03": "ks3.a-planet-with-limits.2",
@@ -304,6 +307,7 @@
    "absorption-and-the-small-intestine#explain": "ks3.absorption-and-the-small-intestine.3",
    "absorption-and-the-small-intestine#produce": "ks3.absorption-and-the-small-intestine.6",
    "absorption-and-the-small-intestine#recall": "ks3.absorption-and-the-small-intestine.6",
+   "absorption-and-the-small-intestine#start": "ks3.absorption-and-the-small-intestine.2",
    "b3-07-e01": "ks3.absorption-and-the-small-intestine.1",
    "b3-07-e02": "ks3.absorption-and-the-small-intestine.2",
    "b3-07-e03": "ks3.absorption-and-the-small-intestine.2",
@@ -442,6 +446,8 @@
    "acid-plus-metal#explain": "ks3.acid-plus-metal.1",
    "acid-plus-metal#produce": "ks3.acid-plus-metal.7",
    "acid-plus-metal#recall": "ks3.acid-plus-metal.1",
+   "acid-plus-metal#start": "ks3.acid-plus-metal.2",
+   "acid-plus-metal#think-commit-fizz": "ks3.acid-plus-metal.2",
    "c6-04-e01": "ks3.acid-plus-metal.1",
    "c6-04-e02": "ks3.acid-plus-metal.2",
    "c6-04-e03": "ks3.acid-plus-metal.3",
@@ -582,6 +588,8 @@
    "acids-and-alkalis#explain": "ks3.acids-and-alkalis.3",
    "acids-and-alkalis#produce": "ks3.acids-and-alkalis.4",
    "acids-and-alkalis#recall": "ks3.acids-and-alkalis.4",
+   "acids-and-alkalis#start": "ks3.acids-and-alkalis.3",
+   "acids-and-alkalis#think-commit-danger": "ks3.acids-and-alkalis.2",
    "c6-01-e01": "ks3.acids-and-alkalis.1",
    "c6-01-e02": "ks3.acids-and-alkalis.2",
    "c6-01-e03": "ks3.acids-and-alkalis.3",
@@ -715,6 +723,11 @@
    {
     "id": "ks3.acids-and-carbonates.7",
     "label": "Acid rain dissolves calcium carbonate, wearing away statues and rock over time"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.acids-and-carbonates.8",
+    "label": "Carbon dioxide comes from the carbonate, not the acid"
    }
   ],
   "questions": {
@@ -722,6 +735,8 @@
    "acids-and-carbonates#explain": "ks3.acids-and-carbonates.1",
    "acids-and-carbonates#produce": "ks3.acids-and-carbonates.2",
    "acids-and-carbonates#recall": "ks3.acids-and-carbonates.1",
+   "acids-and-carbonates#start": "ks3.acids-and-carbonates.8",
+   "acids-and-carbonates#think-commit-splint": "ks3.acids-and-carbonates.6",
    "c6-05-e01": "ks3.acids-and-carbonates.1",
    "c6-05-e02": "ks3.acids-and-carbonates.2",
    "c6-05-e03": "ks3.acids-and-carbonates.4",
@@ -862,6 +877,7 @@
    "aerobic-respiration#explain": "ks3.aerobic-respiration.3",
    "aerobic-respiration#produce": "ks3.aerobic-respiration.2",
    "aerobic-respiration#recall": "ks3.aerobic-respiration.1",
+   "aerobic-respiration#start": "ks3.aerobic-respiration.7",
    "b8-01-e01": "ks3.aerobic-respiration.2",
    "b8-01-e02": "ks3.aerobic-respiration.1",
    "b8-01-e03": "ks3.aerobic-respiration.3",
@@ -1006,6 +1022,7 @@
    "aerobic-vs-anaerobic#explain": "ks3.aerobic-vs-anaerobic.4",
    "aerobic-vs-anaerobic#produce": "ks3.aerobic-vs-anaerobic.7",
    "aerobic-vs-anaerobic#recall": "ks3.aerobic-vs-anaerobic.2",
+   "aerobic-vs-anaerobic#start": "ks3.aerobic-vs-anaerobic.4",
    "b8-05-e01": "ks3.aerobic-vs-anaerobic.8",
    "b8-05-e02": "ks3.aerobic-vs-anaerobic.1",
    "b8-05-e03": "ks3.aerobic-vs-anaerobic.6",
@@ -1144,6 +1161,7 @@
    "air-and-water-resistance#explain": "ks3.air-and-water-resistance.4",
    "air-and-water-resistance#produce": "ks3.air-and-water-resistance.7",
    "air-and-water-resistance#recall": "ks3.air-and-water-resistance.3",
+   "air-and-water-resistance#start": "ks3.air-and-water-resistance.3",
    "ks3-p4-air-and-water-resistance-explain": "ks3.air-and-water-resistance.4",
    "ks3-p4-air-and-water-resistance-produce": "ks3.air-and-water-resistance.7",
    "p4-06-e01": "ks3.air-and-water-resistance.1",
@@ -1278,6 +1296,7 @@
    "alcohol-and-smoking#explain": "ks3.alcohol-and-smoking.4",
    "alcohol-and-smoking#produce": "ks3.alcohol-and-smoking.1",
    "alcohol-and-smoking#recall": "ks3.alcohol-and-smoking.2",
+   "alcohol-and-smoking#start": "ks3.alcohol-and-smoking.2",
    "b6-02-e01": "ks3.alcohol-and-smoking.1",
    "b6-02-e02": "ks3.alcohol-and-smoking.2",
    "b6-02-e03": "ks3.alcohol-and-smoking.3",
@@ -1410,6 +1429,7 @@
    "alveoli-built-for-exchange#explain": "ks3.alveoli-built-for-exchange.4",
    "alveoli-built-for-exchange#produce": "ks3.alveoli-built-for-exchange.3",
    "alveoli-built-for-exchange#recall": "ks3.alveoli-built-for-exchange.1",
+   "alveoli-built-for-exchange#start": "ks3.alveoli-built-for-exchange.1",
    "b4-03-e01": "ks3.alveoli-built-for-exchange.1",
    "b4-03-e02": "ks3.alveoli-built-for-exchange.1",
    "b4-03-e03": "ks3.alveoli-built-for-exchange.1",
@@ -1556,6 +1576,7 @@
    "anaerobic-respiration-in-humans#explain": "ks3.anaerobic-respiration-in-humans.3",
    "anaerobic-respiration-in-humans#produce": "ks3.anaerobic-respiration-in-humans.9",
    "anaerobic-respiration-in-humans#recall": "ks3.anaerobic-respiration-in-humans.1",
+   "anaerobic-respiration-in-humans#start": "ks3.anaerobic-respiration-in-humans.4",
    "b8-03-e01": "ks3.anaerobic-respiration-in-humans.2",
    "b8-03-e02": "ks3.anaerobic-respiration-in-humans.3",
    "b8-03-e03": "ks3.anaerobic-respiration-in-humans.5",
@@ -1693,6 +1714,7 @@
    "animal-and-plant-cells#explain": "ks3.animal-and-plant-cells.7",
    "animal-and-plant-cells#produce": "ks3.animal-and-plant-cells.4",
    "animal-and-plant-cells#recall": "ks3.animal-and-plant-cells.1",
+   "animal-and-plant-cells#start": "ks3.animal-and-plant-cells.1",
    "b1-03-e01": "ks3.animal-and-plant-cells.2",
    "b1-03-e02": "ks3.animal-and-plant-cells.1",
    "b1-03-e03": "ks3.animal-and-plant-cells.2",
@@ -1837,6 +1859,8 @@
    "antagonistic-muscle-pairs#explain": "ks3.antagonistic-muscle-pairs.1",
    "antagonistic-muscle-pairs#produce": "ks3.antagonistic-muscle-pairs.6",
    "antagonistic-muscle-pairs#recall": "ks3.antagonistic-muscle-pairs.5",
+   "antagonistic-muscle-pairs#relax-or-stretch": "ks3.antagonistic-muscle-pairs.4",
+   "antagonistic-muscle-pairs#start": "ks3.antagonistic-muscle-pairs.8",
    "b2-03-e01": "ks3.antagonistic-muscle-pairs.1",
    "b2-03-e02": "ks3.antagonistic-muscle-pairs.2",
    "b2-03-e03": "ks3.antagonistic-muscle-pairs.5",
@@ -1981,6 +2005,9 @@
    "atmospheric-pressure#explain": "ks3.atmospheric-pressure.2",
    "atmospheric-pressure#produce": "ks3.atmospheric-pressure.3",
    "atmospheric-pressure#recall": "ks3.atmospheric-pressure.4",
+   "atmospheric-pressure#start": "ks3.atmospheric-pressure.3",
+   "atmospheric-pressure#your-turn-atmos-1": "ks3.atmospheric-pressure.4",
+   "atmospheric-pressure#your-turn-atmos-2": "ks3.atmospheric-pressure.4",
    "ks3-p5-atmospheric-pressure-explain": "ks3.atmospheric-pressure.2",
    "ks3-p5-atmospheric-pressure-produce": "ks3.atmospheric-pressure.3",
    "p5-04-e01": "ks3.atmospheric-pressure.1",
@@ -2209,6 +2236,7 @@
    "bacteria-in-the-gut#explain": "ks3.bacteria-in-the-gut.2",
    "bacteria-in-the-gut#produce": "ks3.bacteria-in-the-gut.2",
    "bacteria-in-the-gut#recall": "ks3.bacteria-in-the-gut.7",
+   "bacteria-in-the-gut#start": "ks3.bacteria-in-the-gut.2",
    "ks3-b3-bacteria-in-the-gut-explain": "ks3.bacteria-in-the-gut.2",
    "ks3-b3-bacteria-in-the-gut-produce": "ks3.bacteria-in-the-gut.2"
   },
@@ -2246,6 +2274,11 @@
    {
     "id": "ks3.balanced-and-unbalanced.7",
     "label": "A spring stretches until its pull equals the weight; the resultant is then 0 N"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.balanced-and-unbalanced.8",
+    "label": "A resting object has an upward force from its support pushing on it."
    }
   ],
   "questions": {
@@ -2253,6 +2286,9 @@
    "balanced-and-unbalanced#explain": "ks3.balanced-and-unbalanced.7",
    "balanced-and-unbalanced#produce": "ks3.balanced-and-unbalanced.3",
    "balanced-and-unbalanced#recall": "ks3.balanced-and-unbalanced.3",
+   "balanced-and-unbalanced#start": "ks3.balanced-and-unbalanced.8",
+   "balanced-and-unbalanced#your-turn-support-1": "ks3.balanced-and-unbalanced.3",
+   "balanced-and-unbalanced#your-turn-support-2": "ks3.balanced-and-unbalanced.3",
    "ks3-p4-balanced-and-unbalanced-explain": "ks3.balanced-and-unbalanced.7",
    "ks3-p4-balanced-and-unbalanced-produce": "ks3.balanced-and-unbalanced.3",
    "p4-03-e01": "ks3.balanced-and-unbalanced.1",
@@ -2481,6 +2517,7 @@
    "biodiversity-and-gene-banks#explain": "ks3.biodiversity-and-gene-banks.2",
    "biodiversity-and-gene-banks#produce": "ks3.biodiversity-and-gene-banks.6",
    "biodiversity-and-gene-banks#recall": "ks3.biodiversity-and-gene-banks.1",
+   "biodiversity-and-gene-banks#start": "ks3.biodiversity-and-gene-banks.3",
    "ks3-b11-biodiversity-and-gene-banks-explain": "ks3.biodiversity-and-gene-banks.2",
    "ks3-b11-biodiversity-and-gene-banks-produce": "ks3.biodiversity-and-gene-banks.6"
   },
@@ -2522,6 +2559,11 @@
    {
     "id": "ks3.biomechanics-forces-in-the-body.8",
     "label": "Larger muscle groups produce greater forces; attachment distance affects force needed"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.biomechanics-forces-in-the-body.9",
+    "label": "Muscles attached close to joints trade force for speed and range of movement."
    }
   ],
   "questions": {
@@ -2625,6 +2667,8 @@
    "biomechanics-forces-in-the-body#explain": "ks3.biomechanics-forces-in-the-body.2",
    "biomechanics-forces-in-the-body#produce": "ks3.biomechanics-forces-in-the-body.5",
    "biomechanics-forces-in-the-body#recall": "ks3.biomechanics-forces-in-the-body.3",
+   "biomechanics-forces-in-the-body#start": "ks3.biomechanics-forces-in-the-body.2",
+   "biomechanics-forces-in-the-body#think-commit-lever": "ks3.biomechanics-forces-in-the-body.9",
    "ks3-b2-biomechanics-forces-in-the-body-explain": "ks3.biomechanics-forces-in-the-body.2",
    "ks3-b2-biomechanics-forces-in-the-body-produce": "ks3.biomechanics-forces-in-the-body.5"
   },
@@ -2673,6 +2717,7 @@
    "brownian-motion#explain": "ks3.brownian-motion.2",
    "brownian-motion#produce": "ks3.brownian-motion.4",
    "brownian-motion#recall": "ks3.brownian-motion.5",
+   "brownian-motion#start": "ks3.brownian-motion.1",
    "ks3-p11-brownian-motion-explain": "ks3.brownian-motion.2",
    "ks3-p11-brownian-motion-produce": "ks3.brownian-motion.4",
    "p11-02-e01": "ks3.brownian-motion.1",
@@ -2807,6 +2852,7 @@
    "building-and-measuring-a-circuit#explain": "ks3.building-and-measuring-a-circuit.3",
    "building-and-measuring-a-circuit#produce": "ks3.building-and-measuring-a-circuit.4",
    "building-and-measuring-a-circuit#recall": "ks3.building-and-measuring-a-circuit.3",
+   "building-and-measuring-a-circuit#start": "ks3.building-and-measuring-a-circuit.7",
    "ks3-p8-building-and-measuring-a-circuit-explain": "ks3.building-and-measuring-a-circuit.3",
    "ks3-p8-building-and-measuring-a-circuit-produce": "ks3.building-and-measuring-a-circuit.4",
    "p8-07-e01": "ks3.building-and-measuring-a-circuit.1",
@@ -2930,6 +2976,11 @@
    {
     "id": "ks3.calculating-energy-transferred.6",
     "label": "Convert between joules, kilojoules, megajoules and kilowatt-hours"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.calculating-energy-transferred.7",
+    "label": "Estimate relative energy use of different appliances before calculating"
    }
   ],
   "questions": {
@@ -2937,6 +2988,7 @@
    "calculating-energy-transferred#explain": "ks3.calculating-energy-transferred.4",
    "calculating-energy-transferred#produce": "ks3.calculating-energy-transferred.3",
    "calculating-energy-transferred#recall": "ks3.calculating-energy-transferred.1",
+   "calculating-energy-transferred#start": "ks3.calculating-energy-transferred.7",
    "ks3-p2-calculating-energy-transferred-explain": "ks3.calculating-energy-transferred.4",
    "ks3-p2-calculating-energy-transferred-produce": "ks3.calculating-energy-transferred.3",
    "p2-03-e01": "ks3.calculating-energy-transferred.1",
@@ -3165,6 +3217,8 @@
    "carbon-dioxide-humans-and-climate#explain": "ks3.carbon-dioxide-humans-and-climate.1",
    "carbon-dioxide-humans-and-climate#produce": "ks3.carbon-dioxide-humans-and-climate.3",
    "carbon-dioxide-humans-and-climate#recall": "ks3.carbon-dioxide-humans-and-climate.1",
+   "carbon-dioxide-humans-and-climate#start": "ks3.carbon-dioxide-humans-and-climate.1",
+   "carbon-dioxide-humans-and-climate#think-commit-ozone": "ks3.carbon-dioxide-humans-and-climate.8",
    "ks3-c10-carbon-dioxide-humans-and-climate-explain": "ks3.carbon-dioxide-humans-and-climate.1",
    "ks3-c10-carbon-dioxide-humans-and-climate-produce": "ks3.carbon-dioxide-humans-and-climate.3"
   },
@@ -3309,6 +3363,8 @@
    "catalysts#explain": "ks3.catalysts.1",
    "catalysts#produce": "ks3.catalysts.6",
    "catalysts#recall": "ks3.catalysts.1",
+   "catalysts#start": "ks3.catalysts.3",
+   "catalysts#think-commit-consumed": "ks3.catalysts.2",
    "ks3-c6-catalysts-explain": "ks3.catalysts.1",
    "ks3-c6-catalysts-produce": "ks3.catalysts.6"
   },
@@ -3443,6 +3499,8 @@
    "ceramics-polymers-and-composites#explain": "ks3.ceramics-polymers-and-composites.6",
    "ceramics-polymers-and-composites#produce": "ks3.ceramics-polymers-and-composites.1",
    "ceramics-polymers-and-composites#recall": "ks3.ceramics-polymers-and-composites.4",
+   "ceramics-polymers-and-composites#start": "ks3.ceramics-polymers-and-composites.1",
+   "ceramics-polymers-and-composites#think-commit-plastic": "ks3.ceramics-polymers-and-composites.3",
    "ks3-c9-ceramics-polymers-and-composites-explain": "ks3.ceramics-polymers-and-composites.6",
    "ks3-c9-ceramics-polymers-and-composites-produce": "ks3.ceramics-polymers-and-composites.1"
   },
@@ -3587,6 +3645,8 @@
    "changes-of-state#explain": "ks3.changes-of-state.3",
    "changes-of-state#produce": "ks3.changes-of-state.6",
    "changes-of-state#recall": "ks3.changes-of-state.1",
+   "changes-of-state#start": "ks3.changes-of-state.2",
+   "changes-of-state#the-bubble": "ks3.changes-of-state.5",
    "ks3-c1-changes-of-state-explain": "ks3.changes-of-state.3",
    "ks3-c1-changes-of-state-produce": "ks3.changes-of-state.6"
   },
@@ -3631,6 +3691,7 @@
    "charging-by-rubbing#explain": "ks3.charging-by-rubbing.1",
    "charging-by-rubbing#produce": "ks3.charging-by-rubbing.4",
    "charging-by-rubbing#recall": "ks3.charging-by-rubbing.5",
+   "charging-by-rubbing#start": "ks3.charging-by-rubbing.2",
    "ks3-p9-charging-by-rubbing-explain": "ks3.charging-by-rubbing.1",
    "ks3-p9-charging-by-rubbing-produce": "ks3.charging-by-rubbing.4",
    "p9-01-e01": "ks3.charging-by-rubbing.1",
@@ -3851,6 +3912,8 @@
    "chemical-symbols#explain": "ks3.chemical-symbols.6",
    "chemical-symbols#produce": "ks3.chemical-symbols.1",
    "chemical-symbols#recall": "ks3.chemical-symbols.4",
+   "chemical-symbols#start": "ks3.chemical-symbols.6",
+   "chemical-symbols#think-commit-co": "ks3.chemical-symbols.2",
    "ks3-c2-chemical-symbols-explain": "ks3.chemical-symbols.6",
    "ks3-c2-chemical-symbols-produce": "ks3.chemical-symbols.1"
   },
@@ -3991,6 +4054,8 @@
    "chemical-vs-physical-change#explain": "ks3.chemical-vs-physical-change.2",
    "chemical-vs-physical-change#produce": "ks3.chemical-vs-physical-change.2",
    "chemical-vs-physical-change#recall": "ks3.chemical-vs-physical-change.1",
+   "chemical-vs-physical-change#start": "ks3.chemical-vs-physical-change.1",
+   "chemical-vs-physical-change#think-commit-reverse": "ks3.chemical-vs-physical-change.3",
    "ks3-c4-chemical-vs-physical-change-explain": "ks3.chemical-vs-physical-change.2",
    "ks3-c4-chemical-vs-physical-change-produce": "ks3.chemical-vs-physical-change.2"
   },
@@ -4131,6 +4196,8 @@
    "chromatography#explain": "ks3.chromatography.2",
    "chromatography#produce": "ks3.chromatography.6",
    "chromatography#recall": "ks3.chromatography.7",
+   "chromatography#start": "ks3.chromatography.1",
+   "chromatography#think-commit-furthest": "ks3.chromatography.3",
    "ks3-c3-chromatography-explain": "ks3.chromatography.2",
    "ks3-c3-chromatography-produce": "ks3.chromatography.6"
   },
@@ -4269,6 +4336,7 @@
    "chromosomes-genes-and-dna#explain": "ks3.chromosomes-genes-and-dna.1",
    "chromosomes-genes-and-dna#produce": "ks3.chromosomes-genes-and-dna.3",
    "chromosomes-genes-and-dna#recall": "ks3.chromosomes-genes-and-dna.7",
+   "chromosomes-genes-and-dna#start": "ks3.chromosomes-genes-and-dna.7",
    "ks3-b10-chromosomes-genes-and-dna-explain": "ks3.chromosomes-genes-and-dna.1",
    "ks3-b10-chromosomes-genes-and-dna-produce": "ks3.chromosomes-genes-and-dna.3"
   },
@@ -4313,6 +4381,7 @@
    "colour-and-the-spectrum#explain": "ks3.colour-and-the-spectrum.3",
    "colour-and-the-spectrum#produce": "ks3.colour-and-the-spectrum.3",
    "colour-and-the-spectrum#recall": "ks3.colour-and-the-spectrum.4",
+   "colour-and-the-spectrum#start": "ks3.colour-and-the-spectrum.6",
    "ks3-p7-colour-and-the-spectrum-explain": "ks3.colour-and-the-spectrum.3",
    "ks3-p7-colour-and-the-spectrum-produce": "ks3.colour-and-the-spectrum.3",
    "p7-06-e01": "ks3.colour-and-the-spectrum.1",
@@ -4541,6 +4610,8 @@
    "combustion#explain": "ks3.combustion.4",
    "combustion#produce": "ks3.combustion.7",
    "combustion#recall": "ks3.combustion.2",
+   "combustion#start": "ks3.combustion.6",
+   "combustion#think-commit-yellow": "ks3.combustion.5",
    "ks3-c5-combustion-explain": "ks3.combustion.4",
    "ks3-c5-combustion-produce": "ks3.combustion.7"
   },
@@ -4673,6 +4744,8 @@
    "compounds#explain": "ks3.compounds.4",
    "compounds#produce": "ks3.compounds.3",
    "compounds#recall": "ks3.compounds.2",
+   "compounds#start": "ks3.compounds.3",
+   "compounds#think-commit-magnet": "ks3.compounds.3",
    "ks3-c2-compounds-explain": "ks3.compounds.4",
    "ks3-c2-compounds-produce": "ks3.compounds.3"
   },
@@ -4717,6 +4790,7 @@
    "conduction#explain": "ks3.conduction.4",
    "conduction#produce": "ks3.conduction.5",
    "conduction#recall": "ks3.conduction.2",
+   "conduction#start": "ks3.conduction.5",
    "ks3-p1-conduction-explain": "ks3.conduction.4",
    "ks3-p1-conduction-produce": "ks3.conduction.5",
    "p1-05-e01": "ks3.conduction.3",
@@ -4855,6 +4929,9 @@
    "conductors-and-insulators#explain": "ks3.conductors-and-insulators.1",
    "conductors-and-insulators#produce": "ks3.conductors-and-insulators.8",
    "conductors-and-insulators#recall": "ks3.conductors-and-insulators.4",
+   "conductors-and-insulators#start": "ks3.conductors-and-insulators.3",
+   "conductors-and-insulators#your-turn-gap-1": "ks3.conductors-and-insulators.4",
+   "conductors-and-insulators#your-turn-gap-2": "ks3.conductors-and-insulators.4",
    "ks3-p8-conductors-and-insulators-explain": "ks3.conductors-and-insulators.1",
    "ks3-p8-conductors-and-insulators-produce": "ks3.conductors-and-insulators.8",
    "p8-06-e01": "ks3.conductors-and-insulators.1",
@@ -4989,6 +5066,7 @@
    "conservation-of-energy#explain": "ks3.conservation-of-energy.2",
    "conservation-of-energy#produce": "ks3.conservation-of-energy.7",
    "conservation-of-energy#recall": "ks3.conservation-of-energy.1",
+   "conservation-of-energy#start": "ks3.conservation-of-energy.2",
    "ks3-p1-conservation-of-energy-explain": "ks3.conservation-of-energy.2",
    "ks3-p1-conservation-of-energy-produce": "ks3.conservation-of-energy.7",
    "p1-03-e01": "ks3.conservation-of-energy.1",
@@ -5213,6 +5291,8 @@
    "conservation-of-mass#explain": "ks3.conservation-of-mass.4",
    "conservation-of-mass#produce": "ks3.conservation-of-mass.5",
    "conservation-of-mass#recall": "ks3.conservation-of-mass.7",
+   "conservation-of-mass#start": "ks3.conservation-of-mass.1",
+   "conservation-of-mass#think-commit-burning": "ks3.conservation-of-mass.6",
    "ks3-c2-conservation-of-mass-explain": "ks3.conservation-of-mass.4",
    "ks3-c2-conservation-of-mass-produce": "ks3.conservation-of-mass.5"
   },
@@ -5257,6 +5337,7 @@
    "current-and-circuits#explain": "ks3.current-and-circuits.4",
    "current-and-circuits#produce": "ks3.current-and-circuits.4",
    "current-and-circuits#recall": "ks3.current-and-circuits.3",
+   "current-and-circuits#start": "ks3.current-and-circuits.4",
    "ks3-p8-current-and-circuits-explain": "ks3.current-and-circuits.4",
    "ks3-p8-current-and-circuits-produce": "ks3.current-and-circuits.4",
    "p8-01-e01": "ks3.current-and-circuits.1",
@@ -5384,6 +5465,11 @@
    {
     "id": "ks3.current-at-a-junction.7",
     "label": "Adding or removing a branch changes the main-wire total but not other branches"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.current-at-a-junction.8",
+    "label": "Flow is conserved at a junction, like water splitting around an island"
    }
   ],
   "questions": {
@@ -5391,6 +5477,9 @@
    "current-at-a-junction#explain": "ks3.current-at-a-junction.4",
    "current-at-a-junction#produce": "ks3.current-at-a-junction.6",
    "current-at-a-junction#recall": "ks3.current-at-a-junction.2",
+   "current-at-a-junction#start": "ks3.current-at-a-junction.8",
+   "current-at-a-junction#your-turn-junction-1": "ks3.current-at-a-junction.2",
+   "current-at-a-junction#your-turn-junction-2": "ks3.current-at-a-junction.5",
    "ks3-p8-current-at-a-junction-explain": "ks3.current-at-a-junction.4",
    "ks3-p8-current-at-a-junction-produce": "ks3.current-at-a-junction.6",
    "p8-03-e01": "ks3.current-at-a-junction.1",
@@ -5518,6 +5607,11 @@
    {
     "id": "ks3.density.7",
     "label": "1.00 g/cm³ equals 1000 kg/m³; convert between the two units"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.density.8",
+    "label": "Same material in equal amounts has equal mass, regardless of shape or appearance"
    }
   ],
   "questions": {
@@ -5525,6 +5619,9 @@
    "density#explain": "ks3.density.6",
    "density#produce": "ks3.density.5",
    "density#recall": "ks3.density.6",
+   "density#start": "ks3.density.8",
+   "density#your-turn-density-1": "ks3.density.2",
+   "density#your-turn-density-2": "ks3.density.3",
    "ks3-p11-density-explain": "ks3.density.6",
    "ks3-p11-density-produce": "ks3.density.5",
    "p11-01-e01": "ks3.density.1",
@@ -5759,6 +5856,8 @@
    "diffusion#explain": "ks3.diffusion.5",
    "diffusion#produce": "ks3.diffusion.6",
    "diffusion#recall": "ks3.diffusion.1",
+   "diffusion#start": "ks3.diffusion.1",
+   "diffusion#think-spread": "ks3.diffusion.2",
    "ks3-c1-diffusion-explain": "ks3.diffusion.5",
    "ks3-c1-diffusion-produce": "ks3.diffusion.6"
   },
@@ -5897,6 +5996,8 @@
    "displacement#explain": "ks3.displacement.5",
    "displacement#produce": "ks3.displacement.8",
    "displacement#recall": "ks3.displacement.1",
+   "displacement#start": "ks3.displacement.2",
+   "displacement#think-commit-nail": "ks3.displacement.1",
    "ks3-c5-displacement-explain": "ks3.displacement.5",
    "ks3-c5-displacement-produce": "ks3.displacement.8"
   },
@@ -6035,8 +6136,11 @@
    "c3-02-s32": "ks3.dissolving-and-solutions.3",
    "dissolving-and-solutions#apply": "ks3.dissolving-and-solutions.3",
    "dissolving-and-solutions#explain": "ks3.dissolving-and-solutions.1",
+   "dissolving-and-solutions#gate-which-dial": "ks3.dissolving-and-solutions.3",
    "dissolving-and-solutions#produce": "ks3.dissolving-and-solutions.5",
    "dissolving-and-solutions#recall": "ks3.dissolving-and-solutions.2",
+   "dissolving-and-solutions#start": "ks3.dissolving-and-solutions.1",
+   "dissolving-and-solutions#think-again-melting": "ks3.dissolving-and-solutions.6",
    "ks3-c3-dissolving-and-solutions-explain": "ks3.dissolving-and-solutions.1",
    "ks3-c3-dissolving-and-solutions-produce": "ks3.dissolving-and-solutions.5"
   },
@@ -6081,6 +6185,7 @@
    "distance-time-graphs#explain": "ks3.distance-time-graphs.3",
    "distance-time-graphs#produce": "ks3.distance-time-graphs.4",
    "distance-time-graphs#recall": "ks3.distance-time-graphs.2",
+   "distance-time-graphs#start": "ks3.distance-time-graphs.2",
    "ks3-p3-distance-time-graphs-explain": "ks3.distance-time-graphs.3",
    "ks3-p3-distance-time-graphs-produce": "ks3.distance-time-graphs.4",
    "p3-02-e01": "ks3.distance-time-graphs.1",
@@ -6311,6 +6416,8 @@
    "distillation#explain": "ks3.distillation.3",
    "distillation#produce": "ks3.distillation.7",
    "distillation#recall": "ks3.distillation.3",
+   "distillation#start": "ks3.distillation.1",
+   "distillation#think-commit-spray": "ks3.distillation.3",
    "ks3-c3-distillation-explain": "ks3.distillation.3",
    "ks3-c3-distillation-produce": "ks3.distillation.7"
   },
@@ -6449,6 +6556,7 @@
    "disturbing-a-food-web#explain": "ks3.disturbing-a-food-web.2",
    "disturbing-a-food-web#produce": "ks3.disturbing-a-food-web.4",
    "disturbing-a-food-web#recall": "ks3.disturbing-a-food-web.2",
+   "disturbing-a-food-web#start": "ks3.disturbing-a-food-web.2",
    "ks3-b9-disturbing-a-food-web-explain": "ks3.disturbing-a-food-web.2",
    "ks3-b9-disturbing-a-food-web-produce": "ks3.disturbing-a-food-web.4"
   },
@@ -6493,6 +6601,9 @@
    "drawing-and-adding-forces#explain": "ks3.drawing-and-adding-forces.4",
    "drawing-and-adding-forces#produce": "ks3.drawing-and-adding-forces.5",
    "drawing-and-adding-forces#recall": "ks3.drawing-and-adding-forces.4",
+   "drawing-and-adding-forces#start": "ks3.drawing-and-adding-forces.4",
+   "drawing-and-adding-forces#your-turn-resultant-1": "ks3.drawing-and-adding-forces.4",
+   "drawing-and-adding-forces#your-turn-resultant-2": "ks3.drawing-and-adding-forces.7",
    "ks3-p4-drawing-and-adding-forces-explain": "ks3.drawing-and-adding-forces.4",
    "ks3-p4-drawing-and-adding-forces-produce": "ks3.drawing-and-adding-forces.5",
    "p4-02-e01": "ks3.drawing-and-adding-forces.1",
@@ -6627,6 +6738,9 @@
    "echoes-reflection-and-absorption#explain": "ks3.echoes-reflection-and-absorption.7",
    "echoes-reflection-and-absorption#produce": "ks3.echoes-reflection-and-absorption.5",
    "echoes-reflection-and-absorption#recall": "ks3.echoes-reflection-and-absorption.5",
+   "echoes-reflection-and-absorption#start": "ks3.echoes-reflection-and-absorption.4",
+   "echoes-reflection-and-absorption#your-turn-echo-1": "ks3.echoes-reflection-and-absorption.5",
+   "echoes-reflection-and-absorption#your-turn-echo-2": "ks3.echoes-reflection-and-absorption.5",
    "ks3-p6-echoes-reflection-and-absorption-explain": "ks3.echoes-reflection-and-absorption.7",
    "ks3-p6-echoes-reflection-and-absorption-produce": "ks3.echoes-reflection-and-absorption.5",
    "p6-07-e01": "ks3.echoes-reflection-and-absorption.1",
@@ -6773,6 +6887,7 @@
    "electric-fields#explain": "ks3.electric-fields.4",
    "electric-fields#produce": "ks3.electric-fields.8",
    "electric-fields#recall": "ks3.electric-fields.2",
+   "electric-fields#start": "ks3.electric-fields.4",
    "ks3-p9-electric-fields-explain": "ks3.electric-fields.4",
    "ks3-p9-electric-fields-produce": "ks3.electric-fields.8",
    "p9-03-e01": "ks3.electric-fields.1",
@@ -6911,6 +7026,7 @@
    "electromagnets#explain": "ks3.electromagnets.8",
    "electromagnets#produce": "ks3.electromagnets.8",
    "electromagnets#recall": "ks3.electromagnets.4",
+   "electromagnets#start": "ks3.electromagnets.5",
    "ks3-p10-electromagnets-explain": "ks3.electromagnets.8",
    "ks3-p10-electromagnets-produce": "ks3.electromagnets.8",
    "p10-04-e01": "ks3.electromagnets.1",
@@ -7141,6 +7257,8 @@
    "elements#explain": "ks3.elements.3",
    "elements#produce": "ks3.elements.1",
    "elements#recall": "ks3.elements.2",
+   "elements#start": "ks3.elements.1",
+   "elements#think-commit-brass": "ks3.elements.3",
    "ks3-c2-elements-explain": "ks3.elements.3",
    "ks3-c2-elements-produce": "ks3.elements.1"
   },
@@ -7275,6 +7393,8 @@
    "endothermic-reactions#explain": "ks3.endothermic-reactions.4",
    "endothermic-reactions#produce": "ks3.endothermic-reactions.3",
    "endothermic-reactions#recall": "ks3.endothermic-reactions.1",
+   "endothermic-reactions#start": "ks3.endothermic-reactions.1",
+   "endothermic-reactions#think-commit-cold": "ks3.endothermic-reactions.1",
    "ks3-c7-endothermic-reactions-explain": "ks3.endothermic-reactions.4",
    "ks3-c7-endothermic-reactions-produce": "ks3.endothermic-reactions.3"
   },
@@ -7413,6 +7533,8 @@
    "energy-and-changes-of-state#explain": "ks3.energy-and-changes-of-state.2",
    "energy-and-changes-of-state#produce": "ks3.energy-and-changes-of-state.3",
    "energy-and-changes-of-state#recall": "ks3.energy-and-changes-of-state.1",
+   "energy-and-changes-of-state#start": "ks3.energy-and-changes-of-state.3",
+   "energy-and-changes-of-state#think-commit-plateau": "ks3.energy-and-changes-of-state.2",
    "ks3-c7-energy-and-changes-of-state-explain": "ks3.energy-and-changes-of-state.2",
    "ks3-c7-energy-and-changes-of-state-produce": "ks3.energy-and-changes-of-state.3"
   },
@@ -7461,6 +7583,7 @@
    "energy-in-food#explain": "ks3.energy-in-food.6",
    "energy-in-food#produce": "ks3.energy-in-food.4",
    "energy-in-food#recall": "ks3.energy-in-food.2",
+   "energy-in-food#start": "ks3.energy-in-food.1",
    "ks3-p2-energy-in-food-explain": "ks3.energy-in-food.6",
    "ks3-p2-energy-in-food-produce": "ks3.energy-in-food.4",
    "p2-01-e01": "ks3.energy-in-food.1",
@@ -7681,6 +7804,7 @@
    "energy-in-food-and-what-you-need#explain": "ks3.energy-in-food-and-what-you-need.1",
    "energy-in-food-and-what-you-need#produce": "ks3.energy-in-food-and-what-you-need.1",
    "energy-in-food-and-what-you-need#recall": "ks3.energy-in-food-and-what-you-need.6",
+   "energy-in-food-and-what-you-need#start": "ks3.energy-in-food-and-what-you-need.1",
    "ks3-b3-energy-in-food-and-what-you-need-explain": "ks3.energy-in-food-and-what-you-need.1",
    "ks3-b3-energy-in-food-and-what-you-need-produce": "ks3.energy-in-food-and-what-you-need.1"
   },
@@ -7721,6 +7845,7 @@
    "energy-stores#explain": "ks3.energy-stores.5",
    "energy-stores#produce": "ks3.energy-stores.3",
    "energy-stores#recall": "ks3.energy-stores.2",
+   "energy-stores#start": "ks3.energy-stores.4",
    "ks3-p1-energy-stores-explain": "ks3.energy-stores.5",
    "ks3-p1-energy-stores-produce": "ks3.energy-stores.3",
    "p1-01-e01": "ks3.energy-stores.1",
@@ -7848,6 +7973,11 @@
    {
     "id": "ks3.energy-transfers-before-and-after.7",
     "label": "Light, sound and electric current are transfer pathways, not stores"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.energy-transfers-before-and-after.8",
+    "label": "Energy is not a substance or material; it describes the ability to cause change."
    }
   ],
   "questions": {
@@ -7855,6 +7985,7 @@
    "energy-transfers-before-and-after#explain": "ks3.energy-transfers-before-and-after.1",
    "energy-transfers-before-and-after#produce": "ks3.energy-transfers-before-and-after.6",
    "energy-transfers-before-and-after#recall": "ks3.energy-transfers-before-and-after.1",
+   "energy-transfers-before-and-after#start": "ks3.energy-transfers-before-and-after.8",
    "ks3-p1-energy-transfers-before-and-after-explain": "ks3.energy-transfers-before-and-after.1",
    "ks3-p1-energy-transfers-before-and-after-produce": "ks3.energy-transfers-before-and-after.6",
    "p1-02-e01": "ks3.energy-transfers-before-and-after.2",
@@ -8079,6 +8210,7 @@
    "enzymes-in-digestion#explain": "ks3.enzymes-in-digestion.6",
    "enzymes-in-digestion#produce": "ks3.enzymes-in-digestion.3",
    "enzymes-in-digestion#recall": "ks3.enzymes-in-digestion.1",
+   "enzymes-in-digestion#start": "ks3.enzymes-in-digestion.1",
    "ks3-b3-enzymes-in-digestion-explain": "ks3.enzymes-in-digestion.6",
    "ks3-b3-enzymes-in-digestion-produce": "ks3.enzymes-in-digestion.3"
   },
@@ -8223,6 +8355,8 @@
    "evaporation-and-crystallisation#explain": "ks3.evaporation-and-crystallisation.3",
    "evaporation-and-crystallisation#produce": "ks3.evaporation-and-crystallisation.1",
    "evaporation-and-crystallisation#recall": "ks3.evaporation-and-crystallisation.1",
+   "evaporation-and-crystallisation#start": "ks3.evaporation-and-crystallisation.3",
+   "evaporation-and-crystallisation#think-commit-water": "ks3.evaporation-and-crystallisation.2",
    "ks3-c3-evaporation-and-crystallisation-explain": "ks3.evaporation-and-crystallisation.3",
    "ks3-c3-evaporation-and-crystallisation-produce": "ks3.evaporation-and-crystallisation.1"
   },
@@ -8260,6 +8394,11 @@
    {
     "id": "ks3.exercise-asthma-and-smoking.7",
     "label": "Smoking's evidence of causation rests on dose-response, reversibility, consistency and mechanism"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.exercise-asthma-and-smoking.8",
+    "label": "A reliever inhaler contains no oxygen; it is a muscle-relaxing drug."
    }
   ],
   "questions": {
@@ -8363,6 +8502,7 @@
    "exercise-asthma-and-smoking#explain": "ks3.exercise-asthma-and-smoking.6",
    "exercise-asthma-and-smoking#produce": "ks3.exercise-asthma-and-smoking.5",
    "exercise-asthma-and-smoking#recall": "ks3.exercise-asthma-and-smoking.1",
+   "exercise-asthma-and-smoking#start": "ks3.exercise-asthma-and-smoking.8",
    "ks3-b4-exercise-asthma-and-smoking-explain": "ks3.exercise-asthma-and-smoking.6",
    "ks3-b4-exercise-asthma-and-smoking-produce": "ks3.exercise-asthma-and-smoking.5"
   },
@@ -8497,6 +8637,8 @@
    "exothermic-reactions#explain": "ks3.exothermic-reactions.5",
    "exothermic-reactions#produce": "ks3.exothermic-reactions.7",
    "exothermic-reactions#recall": "ks3.exothermic-reactions.1",
+   "exothermic-reactions#start": "ks3.exothermic-reactions.1",
+   "exothermic-reactions#think-commit-spark": "ks3.exothermic-reactions.3",
    "ks3-c7-exothermic-reactions-explain": "ks3.exothermic-reactions.5",
    "ks3-c7-exothermic-reactions-produce": "ks3.exothermic-reactions.7"
   },
@@ -8638,6 +8780,7 @@
    "fermentation#explain": "ks3.fermentation.4",
    "fermentation#produce": "ks3.fermentation.6",
    "fermentation#recall": "ks3.fermentation.3",
+   "fermentation#start": "ks3.fermentation.3",
    "ks3-b8-fermentation-explain": "ks3.fermentation.4",
    "ks3-b8-fermentation-produce": "ks3.fermentation.6"
   },
@@ -8772,6 +8915,7 @@
    "fertilisation-seeds-and-fruit#explain": "ks3.fertilisation-seeds-and-fruit.4",
    "fertilisation-seeds-and-fruit#produce": "ks3.fertilisation-seeds-and-fruit.1",
    "fertilisation-seeds-and-fruit#recall": "ks3.fertilisation-seeds-and-fruit.3",
+   "fertilisation-seeds-and-fruit#start": "ks3.fertilisation-seeds-and-fruit.2",
    "ks3-b5-fertilisation-seeds-and-fruit-explain": "ks3.fertilisation-seeds-and-fruit.4",
    "ks3-b5-fertilisation-seeds-and-fruit-produce": "ks3.fertilisation-seeds-and-fruit.1"
   },
@@ -8912,6 +9056,8 @@
    "filtration#explain": "ks3.filtration.4",
    "filtration#produce": "ks3.filtration.5",
    "filtration#recall": "ks3.filtration.3",
+   "filtration#start": "ks3.filtration.1",
+   "filtration#think-commit-pond": "ks3.filtration.5",
    "ks3-c3-filtration-explain": "ks3.filtration.4",
    "ks3-c3-filtration-produce": "ks3.filtration.5"
   },
@@ -9046,6 +9192,7 @@
    "flowers-and-pollination#explain": "ks3.flowers-and-pollination.2",
    "flowers-and-pollination#produce": "ks3.flowers-and-pollination.7",
    "flowers-and-pollination#recall": "ks3.flowers-and-pollination.3",
+   "flowers-and-pollination#start": "ks3.flowers-and-pollination.5",
    "ks3-b5-flowers-and-pollination-explain": "ks3.flowers-and-pollination.2",
    "ks3-b5-flowers-and-pollination-produce": "ks3.flowers-and-pollination.7"
   },
@@ -9180,6 +9327,7 @@
    "food-chains-and-food-webs#explain": "ks3.food-chains-and-food-webs.4",
    "food-chains-and-food-webs#produce": "ks3.food-chains-and-food-webs.4",
    "food-chains-and-food-webs#recall": "ks3.food-chains-and-food-webs.2",
+   "food-chains-and-food-webs#start": "ks3.food-chains-and-food-webs.4",
    "ks3-b9-food-chains-and-food-webs-explain": "ks3.food-chains-and-food-webs.4",
    "ks3-b9-food-chains-and-food-webs-produce": "ks3.food-chains-and-food-webs.4"
   },
@@ -9314,6 +9462,7 @@
    "food-tests#explain": "ks3.food-tests.5",
    "food-tests#produce": "ks3.food-tests.3",
    "food-tests#recall": "ks3.food-tests.2",
+   "food-tests#start": "ks3.food-tests.4",
    "ks3-b3-food-tests-explain": "ks3.food-tests.5",
    "ks3-b3-food-tests-produce": "ks3.food-tests.3"
   },
@@ -9354,6 +9503,7 @@
    "forces-between-charges#explain": "ks3.forces-between-charges.4",
    "forces-between-charges#produce": "ks3.forces-between-charges.5",
    "forces-between-charges#recall": "ks3.forces-between-charges.5",
+   "forces-between-charges#start": "ks3.forces-between-charges.6",
    "ks3-p9-forces-between-charges-explain": "ks3.forces-between-charges.4",
    "ks3-p9-forces-between-charges-produce": "ks3.forces-between-charges.5",
    "p9-02-e01": "ks3.forces-between-charges.1",
@@ -9481,6 +9631,11 @@
    {
     "id": "ks3.formulae.7",
     "label": "For a giant structure, a formula gives the simplest ratio of atoms, not a particle count."
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.formulae.8",
+    "label": "Mixing or dissolving substances does not change what those substances are."
    }
   ],
   "questions": {
@@ -9578,6 +9733,9 @@
    "formulae#explain": "ks3.formulae.4",
    "formulae#produce": "ks3.formulae.7",
    "formulae#recall": "ks3.formulae.2",
+   "formulae#start": "ks3.formulae.8",
+   "formulae#think-commit-big-small": "ks3.formulae.4",
+   "formulae#where-it-runs-out": "ks3.formulae.7",
    "ks3-c2-formulae-explain": "ks3.formulae.4",
    "ks3-c2-formulae-produce": "ks3.formulae.7"
   },
@@ -9622,6 +9780,9 @@
    "frequency-pitch-and-loudness#explain": "ks3.frequency-pitch-and-loudness.4",
    "frequency-pitch-and-loudness#produce": "ks3.frequency-pitch-and-loudness.2",
    "frequency-pitch-and-loudness#recall": "ks3.frequency-pitch-and-loudness.6",
+   "frequency-pitch-and-loudness#start": "ks3.frequency-pitch-and-loudness.4",
+   "frequency-pitch-and-loudness#your-turn-freq-1": "ks3.frequency-pitch-and-loudness.6",
+   "frequency-pitch-and-loudness#your-turn-freq-2": "ks3.frequency-pitch-and-loudness.5",
    "ks3-p6-frequency-pitch-and-loudness-explain": "ks3.frequency-pitch-and-loudness.4",
    "ks3-p6-frequency-pitch-and-loudness-produce": "ks3.frequency-pitch-and-loudness.2",
    "p6-05-e01": "ks3.frequency-pitch-and-loudness.1",
@@ -9756,6 +9917,7 @@
    "friction#explain": "ks3.friction.6",
    "friction#produce": "ks3.friction.6",
    "friction#recall": "ks3.friction.1",
+   "friction#start": "ks3.friction.4",
    "ks3-p4-friction-explain": "ks3.friction.6",
    "ks3-p4-friction-produce": "ks3.friction.6",
    "p4-05-e01": "ks3.friction.1",
@@ -9890,6 +10052,7 @@
    "fuels-and-energy-resources#explain": "ks3.fuels-and-energy-resources.2",
    "fuels-and-energy-resources#produce": "ks3.fuels-and-energy-resources.5",
    "fuels-and-energy-resources#recall": "ks3.fuels-and-energy-resources.1",
+   "fuels-and-energy-resources#start": "ks3.fuels-and-energy-resources.5",
    "ks3-p2-fuels-and-energy-resources-explain": "ks3.fuels-and-energy-resources.2",
    "ks3-p2-fuels-and-energy-resources-produce": "ks3.fuels-and-energy-resources.5",
    "p2-05-e01": "ks3.fuels-and-energy-resources.1",
@@ -10114,6 +10277,7 @@
    "gametes-and-fertilisation#explain": "ks3.gametes-and-fertilisation.3",
    "gametes-and-fertilisation#produce": "ks3.gametes-and-fertilisation.5",
    "gametes-and-fertilisation#recall": "ks3.gametes-and-fertilisation.1",
+   "gametes-and-fertilisation#start": "ks3.gametes-and-fertilisation.4",
    "ks3-b5-gametes-and-fertilisation-explain": "ks3.gametes-and-fertilisation.3",
    "ks3-b5-gametes-and-fertilisation-produce": "ks3.gametes-and-fertilisation.5"
   },
@@ -10151,6 +10315,11 @@
    {
     "id": "ks3.gas-pressure.7",
     "label": "Pressure means how hard a force pushes on each bit of a surface"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.gas-pressure.8",
+    "label": "Air is a gas; sealed containers that look empty still hold gas particles inside"
    }
   ],
   "questions": {
@@ -10254,6 +10423,8 @@
    "gas-pressure#explain": "ks3.gas-pressure.4",
    "gas-pressure#produce": "ks3.gas-pressure.3",
    "gas-pressure#recall": "ks3.gas-pressure.1",
+   "gas-pressure#start": "ks3.gas-pressure.8",
+   "gas-pressure#think-swelling-particles": "ks3.gas-pressure.3",
    "ks3-c1-gas-pressure-explain": "ks3.gas-pressure.4",
    "ks3-c1-gas-pressure-produce": "ks3.gas-pressure.3"
   },
@@ -10388,6 +10559,7 @@
    "gestation-placenta-and-birth#explain": "ks3.gestation-placenta-and-birth.2",
    "gestation-placenta-and-birth#produce": "ks3.gestation-placenta-and-birth.2",
    "gestation-placenta-and-birth#recall": "ks3.gestation-placenta-and-birth.3",
+   "gestation-placenta-and-birth#start": "ks3.gestation-placenta-and-birth.3",
    "ks3-b5-gestation-placenta-and-birth-explain": "ks3.gestation-placenta-and-birth.2",
    "ks3-b5-gestation-placenta-and-birth-produce": "ks3.gestation-placenta-and-birth.2"
   },
@@ -10425,6 +10597,11 @@
    {
     "id": "ks3.getting-metals-out-of-rocks.7",
     "label": "Identify what goes in and comes out when a metal oxide is reduced by carbon in a furnace"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.getting-metals-out-of-rocks.8",
+    "label": "Metal compounds are chemically bonded into ore rock, not simply mixed in"
    }
   ],
   "questions": {
@@ -10522,6 +10699,8 @@
    "getting-metals-out-of-rocks#explain": "ks3.getting-metals-out-of-rocks.3",
    "getting-metals-out-of-rocks#produce": "ks3.getting-metals-out-of-rocks.4",
    "getting-metals-out-of-rocks#recall": "ks3.getting-metals-out-of-rocks.3",
+   "getting-metals-out-of-rocks#start": "ks3.getting-metals-out-of-rocks.8",
+   "getting-metals-out-of-rocks#think-commit-hotter": "ks3.getting-metals-out-of-rocks.3",
    "ks3-c9-getting-metals-out-of-rocks-explain": "ks3.getting-metals-out-of-rocks.3",
    "ks3-c9-getting-metals-out-of-rocks-produce": "ks3.getting-metals-out-of-rocks.4"
   },
@@ -10566,6 +10745,9 @@
    "gravity-and-weight#explain": "ks3.gravity-and-weight.6",
    "gravity-and-weight#produce": "ks3.gravity-and-weight.5",
    "gravity-and-weight#recall": "ks3.gravity-and-weight.4",
+   "gravity-and-weight#start": "ks3.gravity-and-weight.5",
+   "gravity-and-weight#your-turn-weight-1": "ks3.gravity-and-weight.4",
+   "gravity-and-weight#your-turn-weight-2": "ks3.gravity-and-weight.4",
    "ks3-p12-gravity-and-weight-explain": "ks3.gravity-and-weight.6",
    "ks3-p12-gravity-and-weight-produce": "ks3.gravity-and-weight.5",
    "p12-01-e01": "ks3.gravity-and-weight.1",
@@ -10700,6 +10882,7 @@
    "gravity-earth-moon-and-sun#explain": "ks3.gravity-earth-moon-and-sun.5",
    "gravity-earth-moon-and-sun#produce": "ks3.gravity-earth-moon-and-sun.4",
    "gravity-earth-moon-and-sun#recall": "ks3.gravity-earth-moon-and-sun.3",
+   "gravity-earth-moon-and-sun#start": "ks3.gravity-earth-moon-and-sun.5",
    "ks3-p12-gravity-earth-moon-and-sun-explain": "ks3.gravity-earth-moon-and-sun.5",
    "ks3-p12-gravity-earth-moon-and-sun-produce": "ks3.gravity-earth-moon-and-sun.4",
    "p12-03-e01": "ks3.gravity-earth-moon-and-sun.1",
@@ -10928,6 +11111,8 @@
    "group-0-and-why-groups-exist#explain": "ks3.group-0-and-why-groups-exist.5",
    "group-0-and-why-groups-exist#produce": "ks3.group-0-and-why-groups-exist.5",
    "group-0-and-why-groups-exist#recall": "ks3.group-0-and-why-groups-exist.1",
+   "group-0-and-why-groups-exist#start": "ks3.group-0-and-why-groups-exist.7",
+   "group-0-and-why-groups-exist#think-commit-gas": "ks3.group-0-and-why-groups-exist.4",
    "ks3-c8-group-0-and-why-groups-exist-explain": "ks3.group-0-and-why-groups-exist.5",
    "ks3-c8-group-0-and-why-groups-exist-produce": "ks3.group-0-and-why-groups-exist.5"
   },
@@ -11068,6 +11253,8 @@
    "group-1-the-alkali-metals#explain": "ks3.group-1-the-alkali-metals.3",
    "group-1-the-alkali-metals#produce": "ks3.group-1-the-alkali-metals.6",
    "group-1-the-alkali-metals#recall": "ks3.group-1-the-alkali-metals.1",
+   "group-1-the-alkali-metals#start": "ks3.group-1-the-alkali-metals.4",
+   "group-1-the-alkali-metals#think-commit-melt": "ks3.group-1-the-alkali-metals.3",
    "ks3-c8-group-1-the-alkali-metals-explain": "ks3.group-1-the-alkali-metals.3",
    "ks3-c8-group-1-the-alkali-metals-produce": "ks3.group-1-the-alkali-metals.6"
   },
@@ -11207,6 +11394,8 @@
    "group-7-the-halogens#explain": "ks3.group-7-the-halogens.3",
    "group-7-the-halogens#produce": "ks3.group-7-the-halogens.7",
    "group-7-the-halogens#recall": "ks3.group-7-the-halogens.2",
+   "group-7-the-halogens#start": "ks3.group-7-the-halogens.5",
+   "group-7-the-halogens#think-commit-trend": "ks3.group-7-the-halogens.2",
    "ks3-c8-group-7-the-halogens-explain": "ks3.group-7-the-halogens.3",
    "ks3-c8-group-7-the-halogens-produce": "ks3.group-7-the-halogens.7"
   },
@@ -11347,6 +11536,8 @@
    "groups-and-periods#explain": "ks3.groups-and-periods.1",
    "groups-and-periods#produce": "ks3.groups-and-periods.1",
    "groups-and-periods#recall": "ks3.groups-and-periods.1",
+   "groups-and-periods#start": "ks3.groups-and-periods.1",
+   "groups-and-periods#think-commit-neighbours": "ks3.groups-and-periods.2",
    "ks3-c8-groups-and-periods-explain": "ks3.groups-and-periods.1",
    "ks3-c8-groups-and-periods-produce": "ks3.groups-and-periods.1"
   },
@@ -11395,6 +11586,7 @@
    "hearing-and-auditory-range#explain": "ks3.hearing-and-auditory-range.4",
    "hearing-and-auditory-range#produce": "ks3.hearing-and-auditory-range.5",
    "hearing-and-auditory-range#recall": "ks3.hearing-and-auditory-range.4",
+   "hearing-and-auditory-range#start": "ks3.hearing-and-auditory-range.2",
    "ks3-p6-hearing-and-auditory-range-explain": "ks3.hearing-and-auditory-range.4",
    "ks3-p6-hearing-and-auditory-range-produce": "ks3.hearing-and-auditory-range.5",
    "p6-08-e01": "ks3.hearing-and-auditory-range.1",
@@ -11529,6 +11721,7 @@
    "heating-and-thermal-equilibrium#explain": "ks3.heating-and-thermal-equilibrium.2",
    "heating-and-thermal-equilibrium#produce": "ks3.heating-and-thermal-equilibrium.5",
    "heating-and-thermal-equilibrium#recall": "ks3.heating-and-thermal-equilibrium.3",
+   "heating-and-thermal-equilibrium#start": "ks3.heating-and-thermal-equilibrium.2",
    "ks3-p1-heating-and-thermal-equilibrium-explain": "ks3.heating-and-thermal-equilibrium.2",
    "ks3-p1-heating-and-thermal-equilibrium-produce": "ks3.heating-and-thermal-equilibrium.5",
    "p1-04-e01": "ks3.heating-and-thermal-equilibrium.2",
@@ -11667,6 +11860,7 @@
    "how-a-motor-works#explain": "ks3.how-a-motor-works.3",
    "how-a-motor-works#produce": "ks3.how-a-motor-works.6",
    "how-a-motor-works#recall": "ks3.how-a-motor-works.6",
+   "how-a-motor-works#start": "ks3.how-a-motor-works.6",
    "ks3-p10-how-a-motor-works-explain": "ks3.how-a-motor-works.3",
    "ks3-p10-how-a-motor-works-produce": "ks3.how-a-motor-works.6",
    "p10-05-e01": "ks3.how-a-motor-works.1",
@@ -11897,6 +12091,7 @@
    "how-breathing-works#explain": "ks3.how-breathing-works.1",
    "how-breathing-works#produce": "ks3.how-breathing-works.4",
    "how-breathing-works#recall": "ks3.how-breathing-works.1",
+   "how-breathing-works#start": "ks3.how-breathing-works.1",
    "ks3-b4-how-breathing-works-explain": "ks3.how-breathing-works.1",
    "ks3-b4-how-breathing-works-produce": "ks3.how-breathing-works.4"
   },
@@ -11941,6 +12136,9 @@
    "how-far-is-a-light-year#explain": "ks3.how-far-is-a-light-year.7",
    "how-far-is-a-light-year#produce": "ks3.how-far-is-a-light-year.4",
    "how-far-is-a-light-year#recall": "ks3.how-far-is-a-light-year.3",
+   "how-far-is-a-light-year#start": "ks3.how-far-is-a-light-year.1",
+   "how-far-is-a-light-year#your-turn-lightyear-1": "ks3.how-far-is-a-light-year.3",
+   "how-far-is-a-light-year#your-turn-lightyear-2": "ks3.how-far-is-a-light-year.3",
    "ks3-p12-how-far-is-a-light-year-explain": "ks3.how-far-is-a-light-year.7",
    "ks3-p12-how-far-is-a-light-year-produce": "ks3.how-far-is-a-light-year.4",
    "p12-06-e01": "ks3.how-far-is-a-light-year.1",
@@ -12075,6 +12273,7 @@
    "how-sound-is-made#explain": "ks3.how-sound-is-made.2",
    "how-sound-is-made#produce": "ks3.how-sound-is-made.5",
    "how-sound-is-made#recall": "ks3.how-sound-is-made.3",
+   "how-sound-is-made#start": "ks3.how-sound-is-made.1",
    "ks3-p6-how-sound-is-made-explain": "ks3.how-sound-is-made.2",
    "ks3-p6-how-sound-is-made-produce": "ks3.how-sound-is-made.5",
    "p6-03-e01": "ks3.how-sound-is-made.1",
@@ -12303,6 +12502,7 @@
    "how-we-worked-out-dna#explain": "ks3.how-we-worked-out-dna.7",
    "how-we-worked-out-dna#produce": "ks3.how-we-worked-out-dna.7",
    "how-we-worked-out-dna#recall": "ks3.how-we-worked-out-dna.4",
+   "how-we-worked-out-dna#start": "ks3.how-we-worked-out-dna.7",
    "ks3-b10-how-we-worked-out-dna-explain": "ks3.how-we-worked-out-dna.7",
    "ks3-b10-how-we-worked-out-dna-produce": "ks3.how-we-worked-out-dna.7"
   },
@@ -12437,6 +12637,7 @@
    "human-reproductive-systems#explain": "ks3.human-reproductive-systems.5",
    "human-reproductive-systems#produce": "ks3.human-reproductive-systems.1",
    "human-reproductive-systems#recall": "ks3.human-reproductive-systems.7",
+   "human-reproductive-systems#start": "ks3.human-reproductive-systems.3",
    "ks3-b5-human-reproductive-systems-explain": "ks3.human-reproductive-systems.5",
    "ks3-b5-human-reproductive-systems-produce": "ks3.human-reproductive-systems.1"
   },
@@ -12575,6 +12776,8 @@
    "inside-the-earth#explain": "ks3.inside-the-earth.4",
    "inside-the-earth#produce": "ks3.inside-the-earth.7",
    "inside-the-earth#recall": "ks3.inside-the-earth.1",
+   "inside-the-earth#start": "ks3.inside-the-earth.4",
+   "inside-the-earth#think-commit-mantle": "ks3.inside-the-earth.2",
    "ks3-c10-inside-the-earth-explain": "ks3.inside-the-earth.4",
    "ks3-c10-inside-the-earth-produce": "ks3.inside-the-earth.7"
   },
@@ -12619,6 +12822,7 @@
    "insulation#explain": "ks3.insulation.7",
    "insulation#produce": "ks3.insulation.5",
    "insulation#recall": "ks3.insulation.2",
+   "insulation#start": "ks3.insulation.5",
    "ks3-p1-insulation-explain": "ks3.insulation.7",
    "ks3-p1-insulation-produce": "ks3.insulation.5",
    "p1-07-e01": "ks3.insulation.1",
@@ -12849,6 +13053,8 @@
    "joints#explain": "ks3.joints.4",
    "joints#produce": "ks3.joints.5",
    "joints#recall": "ks3.joints.5",
+   "joints#start": "ks3.joints.4",
+   "joints#tendon-or-ligament": "ks3.joints.6",
    "ks3-b2-joints-explain": "ks3.joints.4",
    "ks3-b2-joints-produce": "ks3.joints.5"
   },
@@ -12988,7 +13194,8 @@
    "leaves-built-for-the-job#apply": "ks3.leaves-built-for-the-job.4",
    "leaves-built-for-the-job#explain": "ks3.leaves-built-for-the-job.8",
    "leaves-built-for-the-job#produce": "ks3.leaves-built-for-the-job.7",
-   "leaves-built-for-the-job#recall": "ks3.leaves-built-for-the-job.1"
+   "leaves-built-for-the-job#recall": "ks3.leaves-built-for-the-job.1",
+   "leaves-built-for-the-job#start": "ks3.leaves-built-for-the-job.2"
   },
   "scope_ref": "leaves-built-for-the-job",
   "subject": "biology",
@@ -13033,6 +13240,7 @@
    "lenses-and-images#explain": "ks3.lenses-and-images.1",
    "lenses-and-images#produce": "ks3.lenses-and-images.4",
    "lenses-and-images#recall": "ks3.lenses-and-images.5",
+   "lenses-and-images#start": "ks3.lenses-and-images.1",
    "p7-04-e01": "ks3.lenses-and-images.1",
    "p7-04-e02": "ks3.lenses-and-images.4",
    "p7-04-e03": "ks3.lenses-and-images.2",
@@ -13258,7 +13466,8 @@
    "levels-of-organisation#apply": "ks3.levels-of-organisation.5",
    "levels-of-organisation#explain": "ks3.levels-of-organisation.2",
    "levels-of-organisation#produce": "ks3.levels-of-organisation.2",
-   "levels-of-organisation#recall": "ks3.levels-of-organisation.1"
+   "levels-of-organisation#recall": "ks3.levels-of-organisation.1",
+   "levels-of-organisation#start": "ks3.levels-of-organisation.5"
   },
   "scope_ref": "levels-of-organisation",
   "subject": "biology",
@@ -13392,7 +13601,8 @@
    "life-processes#apply": "ks3.life-processes.2",
    "life-processes#explain": "ks3.life-processes.3",
    "life-processes#produce": "ks3.life-processes.2",
-   "life-processes#recall": "ks3.life-processes.2"
+   "life-processes#recall": "ks3.life-processes.2",
+   "life-processes#start": "ks3.life-processes.3"
   },
   "scope_ref": "life-processes",
   "subject": "biology",
@@ -13530,7 +13740,8 @@
    "lifestyle-and-the-developing-foetus#apply": "ks3.lifestyle-and-the-developing-foetus.2",
    "lifestyle-and-the-developing-foetus#explain": "ks3.lifestyle-and-the-developing-foetus.3",
    "lifestyle-and-the-developing-foetus#produce": "ks3.lifestyle-and-the-developing-foetus.7",
-   "lifestyle-and-the-developing-foetus#recall": "ks3.lifestyle-and-the-developing-foetus.5"
+   "lifestyle-and-the-developing-foetus#recall": "ks3.lifestyle-and-the-developing-foetus.5",
+   "lifestyle-and-the-developing-foetus#start": "ks3.lifestyle-and-the-developing-foetus.2"
   },
   "scope_ref": "lifestyle-and-the-developing-foetus",
   "subject": "biology",
@@ -13575,6 +13786,9 @@
    "light-travels#explain": "ks3.light-travels.7",
    "light-travels#produce": "ks3.light-travels.6",
    "light-travels#recall": "ks3.light-travels.6",
+   "light-travels#start": "ks3.light-travels.5",
+   "light-travels#your-turn-light-1": "ks3.light-travels.6",
+   "light-travels#your-turn-light-2": "ks3.light-travels.6",
    "p7-01-e01": "ks3.light-travels.1",
    "p7-01-e02": "ks3.light-travels.2",
    "p7-01-e03": "ks3.light-travels.3",
@@ -13713,6 +13927,7 @@
    "magnetic-fields#explain": "ks3.magnetic-fields.5",
    "magnetic-fields#produce": "ks3.magnetic-fields.7",
    "magnetic-fields#recall": "ks3.magnetic-fields.3",
+   "magnetic-fields#start": "ks3.magnetic-fields.1",
    "p10-02-e01": "ks3.magnetic-fields.2",
    "p10-02-e02": "ks3.magnetic-fields.2",
    "p10-02-e03": "ks3.magnetic-fields.1",
@@ -13847,6 +14062,7 @@
    "magnets-and-poles#explain": "ks3.magnets-and-poles.6",
    "magnets-and-poles#produce": "ks3.magnets-and-poles.1",
    "magnets-and-poles#recall": "ks3.magnets-and-poles.5",
+   "magnets-and-poles#start": "ks3.magnets-and-poles.3",
    "p10-01-e01": "ks3.magnets-and-poles.1",
    "p10-01-e02": "ks3.magnets-and-poles.2",
    "p10-01-e03": "ks3.magnets-and-poles.3",
@@ -14076,7 +14292,9 @@
    "making-a-pure-dry-salt#apply": "ks3.making-a-pure-dry-salt.2",
    "making-a-pure-dry-salt#explain": "ks3.making-a-pure-dry-salt.2",
    "making-a-pure-dry-salt#produce": "ks3.making-a-pure-dry-salt.6",
-   "making-a-pure-dry-salt#recall": "ks3.making-a-pure-dry-salt.1"
+   "making-a-pure-dry-salt#recall": "ks3.making-a-pure-dry-salt.1",
+   "making-a-pure-dry-salt#start": "ks3.making-a-pure-dry-salt.2",
+   "making-a-pure-dry-salt#think-commit-boil": "ks3.making-a-pure-dry-salt.5"
   },
   "scope_ref": "making-a-pure-dry-salt",
   "subject": "chemistry",
@@ -14216,7 +14434,9 @@
    "mass-in-a-reaction#apply": "ks3.mass-in-a-reaction.6",
    "mass-in-a-reaction#explain": "ks3.mass-in-a-reaction.5",
    "mass-in-a-reaction#produce": "ks3.mass-in-a-reaction.4",
-   "mass-in-a-reaction#recall": "ks3.mass-in-a-reaction.4"
+   "mass-in-a-reaction#recall": "ks3.mass-in-a-reaction.4",
+   "mass-in-a-reaction#start": "ks3.mass-in-a-reaction.3",
+   "mass-in-a-reaction#think-commit-gas": "ks3.mass-in-a-reaction.3"
   },
   "scope_ref": "mass-in-a-reaction",
   "subject": "chemistry",
@@ -14252,6 +14472,11 @@
    {
     "id": "ks3.mass-vs-weight.7",
     "label": "Calculate weight, mass or field strength using W = m × g"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.mass-vs-weight.8",
+    "label": "Mass, not weight, determines how hard an object is to swing or accelerate"
    }
   ],
   "questions": {
@@ -14261,6 +14486,9 @@
    "mass-vs-weight#explain": "ks3.mass-vs-weight.3",
    "mass-vs-weight#produce": "ks3.mass-vs-weight.6",
    "mass-vs-weight#recall": "ks3.mass-vs-weight.7",
+   "mass-vs-weight#start": "ks3.mass-vs-weight.8",
+   "mass-vs-weight#your-turn-mass-1": "ks3.mass-vs-weight.7",
+   "mass-vs-weight#your-turn-mass-2": "ks3.mass-vs-weight.7",
    "p12-02-e01": "ks3.mass-vs-weight.1",
    "p12-02-e02": "ks3.mass-vs-weight.3",
    "p12-02-e03": "ks3.mass-vs-weight.1",
@@ -14484,7 +14712,9 @@
    "measuring-a-temperature-change#apply": "ks3.measuring-a-temperature-change.5",
    "measuring-a-temperature-change#explain": "ks3.measuring-a-temperature-change.3",
    "measuring-a-temperature-change#produce": "ks3.measuring-a-temperature-change.7",
-   "measuring-a-temperature-change#recall": "ks3.measuring-a-temperature-change.1"
+   "measuring-a-temperature-change#recall": "ks3.measuring-a-temperature-change.1",
+   "measuring-a-temperature-change#start": "ks3.measuring-a-temperature-change.4",
+   "measuring-a-temperature-change#think-commit-average": "ks3.measuring-a-temperature-change.6"
   },
   "scope_ref": "measuring-a-temperature-change",
   "subject": "chemistry",
@@ -14628,7 +14858,9 @@
    "mendeleev#apply": "ks3.mendeleev.2",
    "mendeleev#explain": "ks3.mendeleev.2",
    "mendeleev#produce": "ks3.mendeleev.4",
-   "mendeleev#recall": "ks3.mendeleev.1"
+   "mendeleev#recall": "ks3.mendeleev.1",
+   "mendeleev#start": "ks3.mendeleev.1",
+   "mendeleev#think-commit-tidy": "ks3.mendeleev.3"
   },
   "scope_ref": "mendeleev",
   "subject": "chemistry",
@@ -14768,7 +15000,9 @@
    "metal-and-non-metal-oxides#apply": "ks3.metal-and-non-metal-oxides.5",
    "metal-and-non-metal-oxides#explain": "ks3.metal-and-non-metal-oxides.4",
    "metal-and-non-metal-oxides#produce": "ks3.metal-and-non-metal-oxides.2",
-   "metal-and-non-metal-oxides#recall": "ks3.metal-and-non-metal-oxides.2"
+   "metal-and-non-metal-oxides#recall": "ks3.metal-and-non-metal-oxides.2",
+   "metal-and-non-metal-oxides#start": "ks3.metal-and-non-metal-oxides.2",
+   "metal-and-non-metal-oxides#think-commit-basic": "ks3.metal-and-non-metal-oxides.5"
   },
   "scope_ref": "metal-and-non-metal-oxides",
   "subject": "chemistry",
@@ -14912,7 +15146,9 @@
    "metals-and-non-metals#apply": "ks3.metals-and-non-metals.3",
    "metals-and-non-metals#explain": "ks3.metals-and-non-metals.3",
    "metals-and-non-metals#produce": "ks3.metals-and-non-metals.7",
-   "metals-and-non-metals#recall": "ks3.metals-and-non-metals.1"
+   "metals-and-non-metals#recall": "ks3.metals-and-non-metals.1",
+   "metals-and-non-metals#start": "ks3.metals-and-non-metals.5",
+   "metals-and-non-metals#think-commit-conduct": "ks3.metals-and-non-metals.4"
   },
   "scope_ref": "metals-and-non-metals",
   "subject": "chemistry",
@@ -14948,6 +15184,11 @@
    {
     "id": "ks3.moments.7",
     "label": "A longer lever arm means the same force produces a bigger moment, making turning easier"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.moments.8",
+    "label": "Where you push on a door changes how easily it swings open."
    }
   ],
   "questions": {
@@ -14957,6 +15198,9 @@
    "moments#explain": "ks3.moments.7",
    "moments#produce": "ks3.moments.2",
    "moments#recall": "ks3.moments.1",
+   "moments#start": "ks3.moments.8",
+   "moments#your-turn-moment-1": "ks3.moments.2",
+   "moments#your-turn-moment-2": "ks3.moments.2",
    "p4-07-e01": "ks3.moments.3",
    "p4-07-e02": "ks3.moments.1",
    "p4-07-e03": "ks3.moments.4",
@@ -15184,7 +15428,8 @@
    "natural-selection#apply": "ks3.natural-selection.7",
    "natural-selection#explain": "ks3.natural-selection.5",
    "natural-selection#produce": "ks3.natural-selection.5",
-   "natural-selection#recall": "ks3.natural-selection.5"
+   "natural-selection#recall": "ks3.natural-selection.5",
+   "natural-selection#start": "ks3.natural-selection.4"
   },
   "scope_ref": "natural-selection",
   "subject": "biology",
@@ -15324,7 +15569,9 @@
    "neutralisation#apply": "ks3.neutralisation.4",
    "neutralisation#explain": "ks3.neutralisation.1",
    "neutralisation#produce": "ks3.neutralisation.6",
-   "neutralisation#recall": "ks3.neutralisation.1"
+   "neutralisation#recall": "ks3.neutralisation.1",
+   "neutralisation#start": "ks3.neutralisation.1",
+   "neutralisation#think-commit-gone": "ks3.neutralisation.1"
   },
   "scope_ref": "neutralisation",
   "subject": "chemistry",
@@ -15373,6 +15620,7 @@
    "non-contact-forces#explain": "ks3.non-contact-forces.7",
    "non-contact-forces#produce": "ks3.non-contact-forces.1",
    "non-contact-forces#recall": "ks3.non-contact-forces.2",
+   "non-contact-forces#start": "ks3.non-contact-forces.7",
    "p4-09-e01": "ks3.non-contact-forces.1",
    "p4-09-e02": "ks3.non-contact-forces.3",
    "p4-09-e03": "ks3.non-contact-forces.2",
@@ -15600,7 +15848,9 @@
    "oxidation#apply": "ks3.oxidation.6",
    "oxidation#explain": "ks3.oxidation.6",
    "oxidation#produce": "ks3.oxidation.4",
-   "oxidation#recall": "ks3.oxidation.1"
+   "oxidation#recall": "ks3.oxidation.1",
+   "oxidation#start": "ks3.oxidation.1",
+   "oxidation#think-reveal-oxide-layer": "ks3.oxidation.3"
   },
   "scope_ref": "oxidation",
   "subject": "chemistry",
@@ -15738,7 +15988,9 @@
    "particle-model#apply": "ks3.particle-model.7",
    "particle-model#explain": "ks3.particle-model.3",
    "particle-model#produce": "ks3.particle-model.4",
-   "particle-model#recall": "ks3.particle-model.4"
+   "particle-model#recall": "ks3.particle-model.4",
+   "particle-model#start": "ks3.particle-model.3",
+   "particle-model#think-commit-knife": "ks3.particle-model.7"
   },
   "scope_ref": "particle-model",
   "subject": "chemistry",
@@ -15872,7 +16124,8 @@
    "passing-it-on-heredity#apply": "ks3.passing-it-on-heredity.4",
    "passing-it-on-heredity#explain": "ks3.passing-it-on-heredity.4",
    "passing-it-on-heredity#produce": "ks3.passing-it-on-heredity.5",
-   "passing-it-on-heredity#recall": "ks3.passing-it-on-heredity.6"
+   "passing-it-on-heredity#recall": "ks3.passing-it-on-heredity.6",
+   "passing-it-on-heredity#start": "ks3.passing-it-on-heredity.4"
   },
   "scope_ref": "passing-it-on-heredity",
   "subject": "biology",
@@ -16006,7 +16259,8 @@
    "pollinators-and-food-security#apply": "ks3.pollinators-and-food-security.2",
    "pollinators-and-food-security#explain": "ks3.pollinators-and-food-security.2",
    "pollinators-and-food-security#produce": "ks3.pollinators-and-food-security.5",
-   "pollinators-and-food-security#recall": "ks3.pollinators-and-food-security.2"
+   "pollinators-and-food-security#recall": "ks3.pollinators-and-food-security.2",
+   "pollinators-and-food-security#start": "ks3.pollinators-and-food-security.4"
   },
   "scope_ref": "pollinators-and-food-security",
   "subject": "biology",
@@ -16140,7 +16394,10 @@
    "potential-difference#apply": "ks3.potential-difference.3",
    "potential-difference#explain": "ks3.potential-difference.7",
    "potential-difference#produce": "ks3.potential-difference.4",
-   "potential-difference#recall": "ks3.potential-difference.3"
+   "potential-difference#recall": "ks3.potential-difference.3",
+   "potential-difference#start": "ks3.potential-difference.5",
+   "potential-difference#your-turn-pd-1": "ks3.potential-difference.3",
+   "potential-difference#your-turn-pd-2": "ks3.potential-difference.6"
   },
   "scope_ref": "potential-difference",
   "subject": "physics",
@@ -16274,7 +16531,8 @@
    "power-ratings-in-watts#apply": "ks3.power-ratings-in-watts.4",
    "power-ratings-in-watts#explain": "ks3.power-ratings-in-watts.4",
    "power-ratings-in-watts#produce": "ks3.power-ratings-in-watts.6",
-   "power-ratings-in-watts#recall": "ks3.power-ratings-in-watts.2"
+   "power-ratings-in-watts#recall": "ks3.power-ratings-in-watts.2",
+   "power-ratings-in-watts#start": "ks3.power-ratings-in-watts.4"
   },
   "scope_ref": "power-ratings-in-watts",
   "subject": "physics",
@@ -16408,7 +16666,8 @@
    "predator-and-prey#apply": "ks3.predator-and-prey.2",
    "predator-and-prey#explain": "ks3.predator-and-prey.5",
    "predator-and-prey#produce": "ks3.predator-and-prey.4",
-   "predator-and-prey#recall": "ks3.predator-and-prey.3"
+   "predator-and-prey#recall": "ks3.predator-and-prey.3",
+   "predator-and-prey#start": "ks3.predator-and-prey.3"
   },
   "scope_ref": "predator-and-prey",
   "subject": "biology",
@@ -16542,7 +16801,9 @@
    "predicting-displacement#apply": "ks3.predicting-displacement.1",
    "predicting-displacement#explain": "ks3.predicting-displacement.2",
    "predicting-displacement#produce": "ks3.predicting-displacement.7",
-   "predicting-displacement#recall": "ks3.predicting-displacement.1"
+   "predicting-displacement#recall": "ks3.predicting-displacement.1",
+   "predicting-displacement#start": "ks3.predicting-displacement.4",
+   "predicting-displacement#think-commit-time": "ks3.predicting-displacement.2"
   },
   "scope_ref": "predicting-displacement",
   "subject": "chemistry",
@@ -16578,6 +16839,11 @@
    {
     "id": "ks3.pressure-force-over-area.7",
     "label": "Convert between cm², m² and mm² correctly (10 000 cm² = 1 m²)"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.pressure-force-over-area.8",
+    "label": "The force on both ends of a nail or pin is the same size."
    }
   ],
   "questions": {
@@ -16676,7 +16942,10 @@
    "pressure-force-over-area#apply": "ks3.pressure-force-over-area.4",
    "pressure-force-over-area#explain": "ks3.pressure-force-over-area.4",
    "pressure-force-over-area#produce": "ks3.pressure-force-over-area.3",
-   "pressure-force-over-area#recall": "ks3.pressure-force-over-area.3"
+   "pressure-force-over-area#recall": "ks3.pressure-force-over-area.3",
+   "pressure-force-over-area#start": "ks3.pressure-force-over-area.8",
+   "pressure-force-over-area#your-turn-pressure-1": "ks3.pressure-force-over-area.3",
+   "pressure-force-over-area#your-turn-pressure-2": "ks3.pressure-force-over-area.7"
   },
   "scope_ref": "pressure-force-over-area",
   "subject": "physics",
@@ -16810,7 +17079,10 @@
    "pressure-in-liquids#apply": "ks3.pressure-in-liquids.3",
    "pressure-in-liquids#explain": "ks3.pressure-in-liquids.1",
    "pressure-in-liquids#produce": "ks3.pressure-in-liquids.2",
-   "pressure-in-liquids#recall": "ks3.pressure-in-liquids.4"
+   "pressure-in-liquids#recall": "ks3.pressure-in-liquids.4",
+   "pressure-in-liquids#start": "ks3.pressure-in-liquids.1",
+   "pressure-in-liquids#your-turn-depth-1": "ks3.pressure-in-liquids.4",
+   "pressure-in-liquids#your-turn-depth-2": "ks3.pressure-in-liquids.4"
   },
   "scope_ref": "pressure-in-liquids",
   "subject": "physics",
@@ -16954,7 +17226,9 @@
    "proving-something-is-pure#apply": "ks3.proving-something-is-pure.3",
    "proving-something-is-pure#explain": "ks3.proving-something-is-pure.7",
    "proving-something-is-pure#produce": "ks3.proving-something-is-pure.3",
-   "proving-something-is-pure#recall": "ks3.proving-something-is-pure.1"
+   "proving-something-is-pure#recall": "ks3.proving-something-is-pure.1",
+   "proving-something-is-pure#start": "ks3.proving-something-is-pure.8",
+   "proving-something-is-pure#think-commit-one-run": "ks3.proving-something-is-pure.4"
   },
   "scope_ref": "proving-something-is-pure",
   "subject": "chemistry",
@@ -17094,7 +17368,9 @@
    "pure-or-mixture#apply": "ks3.pure-or-mixture.1",
    "pure-or-mixture#explain": "ks3.pure-or-mixture.2",
    "pure-or-mixture#produce": "ks3.pure-or-mixture.4",
-   "pure-or-mixture#recall": "ks3.pure-or-mixture.1"
+   "pure-or-mixture#recall": "ks3.pure-or-mixture.1",
+   "pure-or-mixture#start": "ks3.pure-or-mixture.4",
+   "pure-or-mixture#think-again-juice": "ks3.pure-or-mixture.4"
   },
   "scope_ref": "pure-or-mixture",
   "subject": "chemistry",
@@ -17232,7 +17508,8 @@
    "radiation#apply": "ks3.radiation.6",
    "radiation#explain": "ks3.radiation.8",
    "radiation#produce": "ks3.radiation.7",
-   "radiation#recall": "ks3.radiation.1"
+   "radiation#recall": "ks3.radiation.1",
+   "radiation#start": "ks3.radiation.1"
   },
   "scope_ref": "radiation",
   "subject": "physics",
@@ -17268,6 +17545,11 @@
    {
     "id": "ks3.reactions-rearrange-atoms.7",
     "label": "Count atoms to work out how much product a set of reactants can make"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.reactions-rearrange-atoms.8",
+    "label": "Chemical reactions need energy to start, they do not happen on their own"
    }
   ],
   "questions": {
@@ -17372,7 +17654,9 @@
    "reactions-rearrange-atoms#apply": "ks3.reactions-rearrange-atoms.2",
    "reactions-rearrange-atoms#explain": "ks3.reactions-rearrange-atoms.5",
    "reactions-rearrange-atoms#produce": "ks3.reactions-rearrange-atoms.3",
-   "reactions-rearrange-atoms#recall": "ks3.reactions-rearrange-atoms.1"
+   "reactions-rearrange-atoms#recall": "ks3.reactions-rearrange-atoms.1",
+   "reactions-rearrange-atoms#start": "ks3.reactions-rearrange-atoms.8",
+   "reactions-rearrange-atoms#think-commit-mgo-atom": "ks3.reactions-rearrange-atoms.4"
   },
   "scope_ref": "reactions-rearrange-atoms",
   "subject": "chemistry",
@@ -17506,7 +17790,8 @@
    "reading-a-fuel-bill#apply": "ks3.reading-a-fuel-bill.3",
    "reading-a-fuel-bill#explain": "ks3.reading-a-fuel-bill.5",
    "reading-a-fuel-bill#produce": "ks3.reading-a-fuel-bill.4",
-   "reading-a-fuel-bill#recall": "ks3.reading-a-fuel-bill.1"
+   "reading-a-fuel-bill#recall": "ks3.reading-a-fuel-bill.1",
+   "reading-a-fuel-bill#start": "ks3.reading-a-fuel-bill.1"
   },
   "scope_ref": "reading-a-fuel-bill",
   "subject": "physics",
@@ -17640,7 +17925,9 @@
    "reflection-mirrors-and-scattering#apply": "ks3.reflection-mirrors-and-scattering.4",
    "reflection-mirrors-and-scattering#explain": "ks3.reflection-mirrors-and-scattering.3",
    "reflection-mirrors-and-scattering#produce": "ks3.reflection-mirrors-and-scattering.3",
-   "reflection-mirrors-and-scattering#recall": "ks3.reflection-mirrors-and-scattering.2"
+   "reflection-mirrors-and-scattering#recall": "ks3.reflection-mirrors-and-scattering.2",
+   "reflection-mirrors-and-scattering#start": "ks3.reflection-mirrors-and-scattering.5",
+   "reflection-mirrors-and-scattering#your-turn-reflect-1": "ks3.reflection-mirrors-and-scattering.1"
   },
   "scope_ref": "reflection-mirrors-and-scattering",
   "subject": "physics",
@@ -17774,7 +18061,8 @@
    "refraction#apply": "ks3.refraction.4",
    "refraction#explain": "ks3.refraction.5",
    "refraction#produce": "ks3.refraction.5",
-   "refraction#recall": "ks3.refraction.3"
+   "refraction#recall": "ks3.refraction.3",
+   "refraction#start": "ks3.refraction.5"
   },
   "scope_ref": "refraction",
   "subject": "physics",
@@ -17904,7 +18192,8 @@
    "relative-motion#apply": "ks3.relative-motion.4",
    "relative-motion#explain": "ks3.relative-motion.3",
    "relative-motion#produce": "ks3.relative-motion.5",
-   "relative-motion#recall": "ks3.relative-motion.2"
+   "relative-motion#recall": "ks3.relative-motion.2",
+   "relative-motion#start": "ks3.relative-motion.6"
   },
   "scope_ref": "relative-motion",
   "subject": "physics",
@@ -18038,7 +18327,10 @@
    "resistance#apply": "ks3.resistance.6",
    "resistance#explain": "ks3.resistance.4",
    "resistance#produce": "ks3.resistance.7",
-   "resistance#recall": "ks3.resistance.3"
+   "resistance#recall": "ks3.resistance.3",
+   "resistance#start": "ks3.resistance.1",
+   "resistance#your-turn-resistance-1": "ks3.resistance.3",
+   "resistance#your-turn-resistance-2": "ks3.resistance.3"
   },
   "scope_ref": "resistance",
   "subject": "physics",
@@ -18172,7 +18464,8 @@
    "sampling-an-ecosystem#apply": "ks3.sampling-an-ecosystem.2",
    "sampling-an-ecosystem#explain": "ks3.sampling-an-ecosystem.1",
    "sampling-an-ecosystem#produce": "ks3.sampling-an-ecosystem.7",
-   "sampling-an-ecosystem#recall": "ks3.sampling-an-ecosystem.4"
+   "sampling-an-ecosystem#recall": "ks3.sampling-an-ecosystem.4",
+   "sampling-an-ecosystem#start": "ks3.sampling-an-ecosystem.1"
   },
   "scope_ref": "sampling-an-ecosystem",
   "subject": "biology",
@@ -18306,7 +18599,8 @@
    "seasons-and-the-tilt#apply": "ks3.seasons-and-the-tilt.4",
    "seasons-and-the-tilt#explain": "ks3.seasons-and-the-tilt.3",
    "seasons-and-the-tilt#produce": "ks3.seasons-and-the-tilt.2",
-   "seasons-and-the-tilt#recall": "ks3.seasons-and-the-tilt.1"
+   "seasons-and-the-tilt#recall": "ks3.seasons-and-the-tilt.1",
+   "seasons-and-the-tilt#start": "ks3.seasons-and-the-tilt.1"
   },
   "scope_ref": "seasons-and-the-tilt",
   "subject": "physics",
@@ -18452,7 +18746,8 @@
    "seed-dispersal#apply": "ks3.seed-dispersal.3",
    "seed-dispersal#explain": "ks3.seed-dispersal.1",
    "seed-dispersal#produce": "ks3.seed-dispersal.2",
-   "seed-dispersal#recall": "ks3.seed-dispersal.6"
+   "seed-dispersal#recall": "ks3.seed-dispersal.6",
+   "seed-dispersal#start": "ks3.seed-dispersal.1"
   },
   "scope_ref": "seed-dispersal",
   "subject": "biology",
@@ -18586,7 +18881,8 @@
    "series-and-parallel#apply": "ks3.series-and-parallel.6",
    "series-and-parallel#explain": "ks3.series-and-parallel.6",
    "series-and-parallel#produce": "ks3.series-and-parallel.7",
-   "series-and-parallel#recall": "ks3.series-and-parallel.4"
+   "series-and-parallel#recall": "ks3.series-and-parallel.4",
+   "series-and-parallel#start": "ks3.series-and-parallel.4"
   },
   "scope_ref": "series-and-parallel",
   "subject": "physics",
@@ -18720,7 +19016,8 @@
    "simple-machines#apply": "ks3.simple-machines.7",
    "simple-machines#explain": "ks3.simple-machines.4",
    "simple-machines#produce": "ks3.simple-machines.7",
-   "simple-machines#recall": "ks3.simple-machines.1"
+   "simple-machines#recall": "ks3.simple-machines.1",
+   "simple-machines#start": "ks3.simple-machines.2"
   },
   "scope_ref": "simple-machines",
   "subject": "physics",
@@ -18860,7 +19157,9 @@
    "solids-liquids-and-gases#apply": "ks3.solids-liquids-and-gases.6",
    "solids-liquids-and-gases#explain": "ks3.solids-liquids-and-gases.3",
    "solids-liquids-and-gases#produce": "ks3.solids-liquids-and-gases.4",
-   "solids-liquids-and-gases#recall": "ks3.solids-liquids-and-gases.2"
+   "solids-liquids-and-gases#recall": "ks3.solids-liquids-and-gases.2",
+   "solids-liquids-and-gases#same-particles-reveal": "ks3.solids-liquids-and-gases.7",
+   "solids-liquids-and-gases#start": "ks3.solids-liquids-and-gases.7"
   },
   "scope_ref": "solids-liquids-and-gases",
   "subject": "chemistry",
@@ -18998,7 +19297,8 @@
    "sound-is-longitudinal#apply": "ks3.sound-is-longitudinal.7",
    "sound-is-longitudinal#explain": "ks3.sound-is-longitudinal.2",
    "sound-is-longitudinal#produce": "ks3.sound-is-longitudinal.3",
-   "sound-is-longitudinal#recall": "ks3.sound-is-longitudinal.1"
+   "sound-is-longitudinal#recall": "ks3.sound-is-longitudinal.1",
+   "sound-is-longitudinal#start": "ks3.sound-is-longitudinal.1"
   },
   "scope_ref": "sound-is-longitudinal",
   "subject": "physics",
@@ -19128,7 +19428,10 @@
    "sound-needs-a-medium#apply": "ks3.sound-needs-a-medium.1",
    "sound-needs-a-medium#explain": "ks3.sound-needs-a-medium.6",
    "sound-needs-a-medium#produce": "ks3.sound-needs-a-medium.5",
-   "sound-needs-a-medium#recall": "ks3.sound-needs-a-medium.5"
+   "sound-needs-a-medium#recall": "ks3.sound-needs-a-medium.5",
+   "sound-needs-a-medium#start": "ks3.sound-needs-a-medium.6",
+   "sound-needs-a-medium#your-turn-speed-1": "ks3.sound-needs-a-medium.5",
+   "sound-needs-a-medium#your-turn-speed-2": "ks3.sound-needs-a-medium.5"
   },
   "scope_ref": "sound-needs-a-medium",
   "subject": "physics",
@@ -19272,7 +19575,8 @@
    "specialised-cells#apply": "ks3.specialised-cells.2",
    "specialised-cells#explain": "ks3.specialised-cells.4",
    "specialised-cells#produce": "ks3.specialised-cells.7",
-   "specialised-cells#recall": "ks3.specialised-cells.4"
+   "specialised-cells#recall": "ks3.specialised-cells.4",
+   "specialised-cells#start": "ks3.specialised-cells.2"
   },
   "scope_ref": "specialised-cells",
   "subject": "biology",
@@ -19406,7 +19710,8 @@
    "speed#apply": "ks3.speed.3",
    "speed#explain": "ks3.speed.7",
    "speed#produce": "ks3.speed.6",
-   "speed#recall": "ks3.speed.6"
+   "speed#recall": "ks3.speed.6",
+   "speed#start": "ks3.speed.5"
   },
   "scope_ref": "speed",
   "subject": "physics",
@@ -19544,7 +19849,10 @@
    "springs-and-hookes-law#apply": "ks3.springs-and-hookes-law.5",
    "springs-and-hookes-law#explain": "ks3.springs-and-hookes-law.6",
    "springs-and-hookes-law#produce": "ks3.springs-and-hookes-law.6",
-   "springs-and-hookes-law#recall": "ks3.springs-and-hookes-law.7"
+   "springs-and-hookes-law#recall": "ks3.springs-and-hookes-law.7",
+   "springs-and-hookes-law#start": "ks3.springs-and-hookes-law.4",
+   "springs-and-hookes-law#your-turn-spring-1": "ks3.springs-and-hookes-law.7",
+   "springs-and-hookes-law#your-turn-spring-2": "ks3.springs-and-hookes-law.7"
   },
   "scope_ref": "springs-and-hookes-law",
   "subject": "physics",
@@ -19686,7 +19994,8 @@
    "stomata-and-gas-exchange-in-plants#apply": "ks3.stomata-and-gas-exchange-in-plants.7",
    "stomata-and-gas-exchange-in-plants#explain": "ks3.stomata-and-gas-exchange-in-plants.6",
    "stomata-and-gas-exchange-in-plants#produce": "ks3.stomata-and-gas-exchange-in-plants.5",
-   "stomata-and-gas-exchange-in-plants#recall": "ks3.stomata-and-gas-exchange-in-plants.4"
+   "stomata-and-gas-exchange-in-plants#recall": "ks3.stomata-and-gas-exchange-in-plants.4",
+   "stomata-and-gas-exchange-in-plants#start": "ks3.stomata-and-gas-exchange-in-plants.6"
   },
   "scope_ref": "stomata-and-gas-exchange-in-plants",
   "subject": "biology",
@@ -19822,7 +20131,8 @@
    "substance-misuse-and-decisions#apply": "ks3.substance-misuse-and-decisions.5",
    "substance-misuse-and-decisions#explain": "ks3.substance-misuse-and-decisions.3",
    "substance-misuse-and-decisions#produce": "ks3.substance-misuse-and-decisions.6",
-   "substance-misuse-and-decisions#recall": "ks3.substance-misuse-and-decisions.3"
+   "substance-misuse-and-decisions#recall": "ks3.substance-misuse-and-decisions.3",
+   "substance-misuse-and-decisions#start": "ks3.substance-misuse-and-decisions.2"
   },
   "scope_ref": "substance-misuse-and-decisions",
   "subject": "biology",
@@ -19956,7 +20266,9 @@
    "symbol-equations-and-balancing#apply": "ks3.symbol-equations-and-balancing.2",
    "symbol-equations-and-balancing#explain": "ks3.symbol-equations-and-balancing.3",
    "symbol-equations-and-balancing#produce": "ks3.symbol-equations-and-balancing.1",
-   "symbol-equations-and-balancing#recall": "ks3.symbol-equations-and-balancing.3"
+   "symbol-equations-and-balancing#recall": "ks3.symbol-equations-and-balancing.3",
+   "symbol-equations-and-balancing#start": "ks3.symbol-equations-and-balancing.3",
+   "symbol-equations-and-balancing#think-commit-maths": "ks3.symbol-equations-and-balancing.7"
   },
   "scope_ref": "symbol-equations-and-balancing",
   "subject": "chemistry",
@@ -20094,7 +20406,8 @@
    "temperature-and-internal-energy#apply": "ks3.temperature-and-internal-energy.4",
    "temperature-and-internal-energy#explain": "ks3.temperature-and-internal-energy.4",
    "temperature-and-internal-energy#produce": "ks3.temperature-and-internal-energy.4",
-   "temperature-and-internal-energy#recall": "ks3.temperature-and-internal-energy.4"
+   "temperature-and-internal-energy#recall": "ks3.temperature-and-internal-energy.4",
+   "temperature-and-internal-energy#start": "ks3.temperature-and-internal-energy.4"
   },
   "scope_ref": "temperature-and-internal-energy",
   "subject": "physics",
@@ -20232,7 +20545,8 @@
    "testing-a-leaf-for-starch#apply": "ks3.testing-a-leaf-for-starch.2",
    "testing-a-leaf-for-starch#explain": "ks3.testing-a-leaf-for-starch.8",
    "testing-a-leaf-for-starch#produce": "ks3.testing-a-leaf-for-starch.6",
-   "testing-a-leaf-for-starch#recall": "ks3.testing-a-leaf-for-starch.4"
+   "testing-a-leaf-for-starch#recall": "ks3.testing-a-leaf-for-starch.4",
+   "testing-a-leaf-for-starch#start": "ks3.testing-a-leaf-for-starch.4"
   },
   "scope_ref": "testing-a-leaf-for-starch",
   "subject": "biology",
@@ -20268,6 +20582,11 @@
    {
     "id": "ks3.testing-the-model.7",
     "label": "Evidence, prediction and limit are key terms for judging scientific models"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.testing-the-model.8",
+    "label": "Most solids sink in their own liquid, but water ice floats — wax behaves normally"
    }
   ],
   "questions": {
@@ -20366,7 +20685,10 @@
    "testing-the-model#apply": "ks3.testing-the-model.2",
    "testing-the-model#explain": "ks3.testing-the-model.3",
    "testing-the-model#produce": "ks3.testing-the-model.5",
-   "testing-the-model#recall": "ks3.testing-the-model.3"
+   "testing-the-model#recall": "ks3.testing-the-model.3",
+   "testing-the-model#settled-science": "ks3.testing-the-model.2",
+   "testing-the-model#start": "ks3.testing-the-model.8",
+   "testing-the-model#the-verdict": "ks3.testing-the-model.3"
   },
   "scope_ref": "testing-the-model",
   "subject": "chemistry",
@@ -20506,7 +20828,9 @@
    "the-atom-daltons-model#apply": "ks3.the-atom-daltons-model.6",
    "the-atom-daltons-model#explain": "ks3.the-atom-daltons-model.4",
    "the-atom-daltons-model#produce": "ks3.the-atom-daltons-model.6",
-   "the-atom-daltons-model#recall": "ks3.the-atom-daltons-model.2"
+   "the-atom-daltons-model#recall": "ks3.the-atom-daltons-model.2",
+   "the-atom-daltons-model#start": "ks3.the-atom-daltons-model.3",
+   "the-atom-daltons-model#think-commit-copper": "ks3.the-atom-daltons-model.5"
   },
   "scope_ref": "the-atom-daltons-model",
   "subject": "chemistry",
@@ -20640,7 +20964,8 @@
    "the-digestive-system#apply": "ks3.the-digestive-system.4",
    "the-digestive-system#explain": "ks3.the-digestive-system.3",
    "the-digestive-system#produce": "ks3.the-digestive-system.5",
-   "the-digestive-system#recall": "ks3.the-digestive-system.4"
+   "the-digestive-system#recall": "ks3.the-digestive-system.4",
+   "the-digestive-system#start": "ks3.the-digestive-system.2"
   },
   "scope_ref": "the-digestive-system",
   "subject": "biology",
@@ -20778,7 +21103,8 @@
    "the-earth-is-a-magnet#apply": "ks3.the-earth-is-a-magnet.5",
    "the-earth-is-a-magnet#explain": "ks3.the-earth-is-a-magnet.1",
    "the-earth-is-a-magnet#produce": "ks3.the-earth-is-a-magnet.6",
-   "the-earth-is-a-magnet#recall": "ks3.the-earth-is-a-magnet.3"
+   "the-earth-is-a-magnet#recall": "ks3.the-earth-is-a-magnet.3",
+   "the-earth-is-a-magnet#start": "ks3.the-earth-is-a-magnet.2"
   },
   "scope_ref": "the-earth-is-a-magnet",
   "subject": "physics",
@@ -20912,7 +21238,8 @@
    "the-eye-and-the-camera#apply": "ks3.the-eye-and-the-camera.4",
    "the-eye-and-the-camera#explain": "ks3.the-eye-and-the-camera.2",
    "the-eye-and-the-camera#produce": "ks3.the-eye-and-the-camera.5",
-   "the-eye-and-the-camera#recall": "ks3.the-eye-and-the-camera.1"
+   "the-eye-and-the-camera#recall": "ks3.the-eye-and-the-camera.1",
+   "the-eye-and-the-camera#start": "ks3.the-eye-and-the-camera.6"
   },
   "scope_ref": "the-eye-and-the-camera",
   "subject": "physics",
@@ -21052,7 +21379,8 @@
    "the-gas-exchange-system#apply": "ks3.the-gas-exchange-system.5",
    "the-gas-exchange-system#explain": "ks3.the-gas-exchange-system.5",
    "the-gas-exchange-system#produce": "ks3.the-gas-exchange-system.1",
-   "the-gas-exchange-system#recall": "ks3.the-gas-exchange-system.1"
+   "the-gas-exchange-system#recall": "ks3.the-gas-exchange-system.1",
+   "the-gas-exchange-system#start": "ks3.the-gas-exchange-system.5"
   },
   "scope_ref": "the-gas-exchange-system",
   "subject": "biology",
@@ -21190,7 +21518,8 @@
    "the-menstrual-cycle#apply": "ks3.the-menstrual-cycle.6",
    "the-menstrual-cycle#explain": "ks3.the-menstrual-cycle.2",
    "the-menstrual-cycle#produce": "ks3.the-menstrual-cycle.5",
-   "the-menstrual-cycle#recall": "ks3.the-menstrual-cycle.7"
+   "the-menstrual-cycle#recall": "ks3.the-menstrual-cycle.7",
+   "the-menstrual-cycle#start": "ks3.the-menstrual-cycle.5"
   },
   "scope_ref": "the-menstrual-cycle",
   "subject": "biology",
@@ -21226,6 +21555,11 @@
    {
     "id": "ks3.the-ph-scale-and-indicators.7",
     "label": "Choose the right tool: litmus for acid-or-alkali; universal indicator or meter for a number"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.the-ph-scale-and-indicators.8",
+    "label": "Some plant juices act as natural indicators, changing colour with pH"
    }
   ],
   "questions": {
@@ -21330,7 +21664,9 @@
    "the-ph-scale-and-indicators#apply": "ks3.the-ph-scale-and-indicators.6",
    "the-ph-scale-and-indicators#explain": "ks3.the-ph-scale-and-indicators.7",
    "the-ph-scale-and-indicators#produce": "ks3.the-ph-scale-and-indicators.7",
-   "the-ph-scale-and-indicators#recall": "ks3.the-ph-scale-and-indicators.2"
+   "the-ph-scale-and-indicators#recall": "ks3.the-ph-scale-and-indicators.2",
+   "the-ph-scale-and-indicators#start": "ks3.the-ph-scale-and-indicators.8",
+   "the-ph-scale-and-indicators#think-commit-scale": "ks3.the-ph-scale-and-indicators.3"
   },
   "scope_ref": "the-ph-scale-and-indicators",
   "subject": "chemistry",
@@ -21478,7 +21814,8 @@
    "the-photosynthesis-reaction#apply": "ks3.the-photosynthesis-reaction.5",
    "the-photosynthesis-reaction#explain": "ks3.the-photosynthesis-reaction.1",
    "the-photosynthesis-reaction#produce": "ks3.the-photosynthesis-reaction.3",
-   "the-photosynthesis-reaction#recall": "ks3.the-photosynthesis-reaction.2"
+   "the-photosynthesis-reaction#recall": "ks3.the-photosynthesis-reaction.2",
+   "the-photosynthesis-reaction#start": "ks3.the-photosynthesis-reaction.5"
   },
   "scope_ref": "the-photosynthesis-reaction",
   "subject": "biology",
@@ -21616,7 +21953,9 @@
    "the-reactivity-series#apply": "ks3.the-reactivity-series.5",
    "the-reactivity-series#explain": "ks3.the-reactivity-series.3",
    "the-reactivity-series#produce": "ks3.the-reactivity-series.8",
-   "the-reactivity-series#recall": "ks3.the-reactivity-series.1"
+   "the-reactivity-series#recall": "ks3.the-reactivity-series.1",
+   "the-reactivity-series#start": "ks3.the-reactivity-series.1",
+   "the-reactivity-series#think-commit-water": "ks3.the-reactivity-series.7"
   },
   "scope_ref": "the-reactivity-series",
   "subject": "chemistry",
@@ -21754,7 +22093,9 @@
    "the-rock-cycle#apply": "ks3.the-rock-cycle.7",
    "the-rock-cycle#explain": "ks3.the-rock-cycle.3",
    "the-rock-cycle#produce": "ks3.the-rock-cycle.6",
-   "the-rock-cycle#recall": "ks3.the-rock-cycle.4"
+   "the-rock-cycle#recall": "ks3.the-rock-cycle.4",
+   "the-rock-cycle#start": "ks3.the-rock-cycle.8",
+   "the-rock-cycle#think-commit-direction": "ks3.the-rock-cycle.7"
   },
   "scope_ref": "the-rock-cycle",
   "subject": "chemistry",
@@ -21892,7 +22233,8 @@
    "the-sun-stars-and-galaxies#apply": "ks3.the-sun-stars-and-galaxies.2",
    "the-sun-stars-and-galaxies#explain": "ks3.the-sun-stars-and-galaxies.5",
    "the-sun-stars-and-galaxies#produce": "ks3.the-sun-stars-and-galaxies.5",
-   "the-sun-stars-and-galaxies#recall": "ks3.the-sun-stars-and-galaxies.7"
+   "the-sun-stars-and-galaxies#recall": "ks3.the-sun-stars-and-galaxies.7",
+   "the-sun-stars-and-galaxies#start": "ks3.the-sun-stars-and-galaxies.5"
   },
   "scope_ref": "the-sun-stars-and-galaxies",
   "subject": "physics",
@@ -22030,7 +22372,9 @@
    "thermal-decomposition#apply": "ks3.thermal-decomposition.5",
    "thermal-decomposition#explain": "ks3.thermal-decomposition.2",
    "thermal-decomposition#produce": "ks3.thermal-decomposition.8",
-   "thermal-decomposition#recall": "ks3.thermal-decomposition.1"
+   "thermal-decomposition#recall": "ks3.thermal-decomposition.1",
+   "thermal-decomposition#start": "ks3.thermal-decomposition.5",
+   "thermal-decomposition#think-commit-black": "ks3.thermal-decomposition.2"
   },
   "scope_ref": "thermal-decomposition",
   "subject": "chemistry",
@@ -22070,6 +22414,11 @@
    {
     "id": "ks3.three-ways-to-make-a-rock.8",
     "label": "The same rock can move between groups; knowing the group predicts its behaviour"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.three-ways-to-make-a-rock.9",
+    "label": "Metamorphic rocks can form from any rock type, including sedimentary rocks like limestone"
    }
   ],
   "questions": {
@@ -22168,7 +22517,9 @@
    "three-ways-to-make-a-rock#apply": "ks3.three-ways-to-make-a-rock.3",
    "three-ways-to-make-a-rock#explain": "ks3.three-ways-to-make-a-rock.7",
    "three-ways-to-make-a-rock#produce": "ks3.three-ways-to-make-a-rock.6",
-   "three-ways-to-make-a-rock#recall": "ks3.three-ways-to-make-a-rock.5"
+   "three-ways-to-make-a-rock#recall": "ks3.three-ways-to-make-a-rock.5",
+   "three-ways-to-make-a-rock#start": "ks3.three-ways-to-make-a-rock.9",
+   "three-ways-to-make-a-rock#think-commit-crystals": "ks3.three-ways-to-make-a-rock.3"
   },
   "scope_ref": "three-ways-to-make-a-rock",
   "subject": "chemistry",
@@ -22306,7 +22657,8 @@
    "toxic-build-up-in-a-food-chain#apply": "ks3.toxic-build-up-in-a-food-chain.4",
    "toxic-build-up-in-a-food-chain#explain": "ks3.toxic-build-up-in-a-food-chain.4",
    "toxic-build-up-in-a-food-chain#produce": "ks3.toxic-build-up-in-a-food-chain.5",
-   "toxic-build-up-in-a-food-chain#recall": "ks3.toxic-build-up-in-a-food-chain.2"
+   "toxic-build-up-in-a-food-chain#recall": "ks3.toxic-build-up-in-a-food-chain.2",
+   "toxic-build-up-in-a-food-chain#start": "ks3.toxic-build-up-in-a-food-chain.2"
   },
   "scope_ref": "toxic-build-up-in-a-food-chain",
   "subject": "biology",
@@ -22440,7 +22792,10 @@
    "transverse-waves-and-superposition#apply": "ks3.transverse-waves-and-superposition.4",
    "transverse-waves-and-superposition#explain": "ks3.transverse-waves-and-superposition.1",
    "transverse-waves-and-superposition#produce": "ks3.transverse-waves-and-superposition.1",
-   "transverse-waves-and-superposition#recall": "ks3.transverse-waves-and-superposition.2"
+   "transverse-waves-and-superposition#recall": "ks3.transverse-waves-and-superposition.2",
+   "transverse-waves-and-superposition#start": "ks3.transverse-waves-and-superposition.1",
+   "transverse-waves-and-superposition#your-turn-super-1": "ks3.transverse-waves-and-superposition.2",
+   "transverse-waves-and-superposition#your-turn-super-2": "ks3.transverse-waves-and-superposition.2"
   },
   "scope_ref": "transverse-waves-and-superposition",
   "subject": "physics",
@@ -22578,7 +22933,8 @@
    "ultrasound-at-work#apply": "ks3.ultrasound-at-work.1",
    "ultrasound-at-work#explain": "ks3.ultrasound-at-work.3",
    "ultrasound-at-work#produce": "ks3.ultrasound-at-work.7",
-   "ultrasound-at-work#recall": "ks3.ultrasound-at-work.3"
+   "ultrasound-at-work#recall": "ks3.ultrasound-at-work.3",
+   "ultrasound-at-work#start": "ks3.ultrasound-at-work.2"
   },
   "scope_ref": "ultrasound-at-work",
   "subject": "physics",
@@ -22712,7 +23068,8 @@
    "unicellular-organisms#apply": "ks3.unicellular-organisms.4",
    "unicellular-organisms#explain": "ks3.unicellular-organisms.3",
    "unicellular-organisms#produce": "ks3.unicellular-organisms.1",
-   "unicellular-organisms#recall": "ks3.unicellular-organisms.1"
+   "unicellular-organisms#recall": "ks3.unicellular-organisms.1",
+   "unicellular-organisms#start": "ks3.unicellular-organisms.1"
   },
   "scope_ref": "unicellular-organisms",
   "subject": "biology",
@@ -22846,7 +23203,10 @@
    "upthrust-floating-and-sinking#apply": "ks3.upthrust-floating-and-sinking.7",
    "upthrust-floating-and-sinking#explain": "ks3.upthrust-floating-and-sinking.7",
    "upthrust-floating-and-sinking#produce": "ks3.upthrust-floating-and-sinking.3",
-   "upthrust-floating-and-sinking#recall": "ks3.upthrust-floating-and-sinking.5"
+   "upthrust-floating-and-sinking#recall": "ks3.upthrust-floating-and-sinking.5",
+   "upthrust-floating-and-sinking#start": "ks3.upthrust-floating-and-sinking.4",
+   "upthrust-floating-and-sinking#your-turn-upthrust-1": "ks3.upthrust-floating-and-sinking.3",
+   "upthrust-floating-and-sinking#your-turn-upthrust-2": "ks3.upthrust-floating-and-sinking.5"
   },
   "scope_ref": "upthrust-floating-and-sinking",
   "subject": "physics",
@@ -22994,7 +23354,8 @@
    "using-a-microscope#apply": "ks3.using-a-microscope.3",
    "using-a-microscope#explain": "ks3.using-a-microscope.5",
    "using-a-microscope#produce": "ks3.using-a-microscope.3",
-   "using-a-microscope#recall": "ks3.using-a-microscope.5"
+   "using-a-microscope#recall": "ks3.using-a-microscope.5",
+   "using-a-microscope#start": "ks3.using-a-microscope.5"
   },
   "scope_ref": "using-a-microscope",
   "subject": "biology",
@@ -23128,7 +23489,8 @@
    "variation-and-competitive-success#apply": "ks3.variation-and-competitive-success.4",
    "variation-and-competitive-success#explain": "ks3.variation-and-competitive-success.6",
    "variation-and-competitive-success#produce": "ks3.variation-and-competitive-success.1",
-   "variation-and-competitive-success#recall": "ks3.variation-and-competitive-success.3"
+   "variation-and-competitive-success#recall": "ks3.variation-and-competitive-success.3",
+   "variation-and-competitive-success#start": "ks3.variation-and-competitive-success.3"
   },
   "scope_ref": "variation-and-competitive-success",
   "subject": "biology",
@@ -23258,7 +23620,8 @@
    "variation-continuous-and-discontinuous#apply": "ks3.variation-continuous-and-discontinuous.4",
    "variation-continuous-and-discontinuous#explain": "ks3.variation-continuous-and-discontinuous.4",
    "variation-continuous-and-discontinuous#produce": "ks3.variation-continuous-and-discontinuous.6",
-   "variation-continuous-and-discontinuous#recall": "ks3.variation-continuous-and-discontinuous.2"
+   "variation-continuous-and-discontinuous#recall": "ks3.variation-continuous-and-discontinuous.2",
+   "variation-continuous-and-discontinuous#start": "ks3.variation-continuous-and-discontinuous.2"
   },
   "scope_ref": "variation-continuous-and-discontinuous",
   "subject": "biology",
@@ -23392,7 +23755,8 @@
    "waves-on-water#apply": "ks3.waves-on-water.1",
    "waves-on-water#explain": "ks3.waves-on-water.2",
    "waves-on-water#produce": "ks3.waves-on-water.2",
-   "waves-on-water#recall": "ks3.waves-on-water.5"
+   "waves-on-water#recall": "ks3.waves-on-water.5",
+   "waves-on-water#start": "ks3.waves-on-water.1"
   },
   "scope_ref": "waves-on-water",
   "subject": "physics",
@@ -23526,7 +23890,8 @@
    "what-a-force-is#apply": "ks3.what-a-force-is.7",
    "what-a-force-is#explain": "ks3.what-a-force-is.3",
    "what-a-force-is#produce": "ks3.what-a-force-is.1",
-   "what-a-force-is#recall": "ks3.what-a-force-is.3"
+   "what-a-force-is#recall": "ks3.what-a-force-is.3",
+   "what-a-force-is#start": "ks3.what-a-force-is.4"
   },
   "scope_ref": "what-a-force-is",
   "subject": "physics",
@@ -23667,7 +24032,8 @@
    "what-drugs-do-to-the-body#apply": "ks3.what-drugs-do-to-the-body.3",
    "what-drugs-do-to-the-body#explain": "ks3.what-drugs-do-to-the-body.5",
    "what-drugs-do-to-the-body#produce": "ks3.what-drugs-do-to-the-body.7",
-   "what-drugs-do-to-the-body#recall": "ks3.what-drugs-do-to-the-body.1"
+   "what-drugs-do-to-the-body#recall": "ks3.what-drugs-do-to-the-body.1",
+   "what-drugs-do-to-the-body#start": "ks3.what-drugs-do-to-the-body.1"
   },
   "scope_ref": "what-drugs-do-to-the-body",
   "subject": "biology",
@@ -23805,7 +24171,8 @@
    "what-forces-do-to-motion#apply": "ks3.what-forces-do-to-motion.7",
    "what-forces-do-to-motion#explain": "ks3.what-forces-do-to-motion.1",
    "what-forces-do-to-motion#produce": "ks3.what-forces-do-to-motion.8",
-   "what-forces-do-to-motion#recall": "ks3.what-forces-do-to-motion.3"
+   "what-forces-do-to-motion#recall": "ks3.what-forces-do-to-motion.3",
+   "what-forces-do-to-motion#start": "ks3.what-forces-do-to-motion.7"
   },
   "scope_ref": "what-forces-do-to-motion",
   "subject": "physics",
@@ -23939,7 +24306,8 @@
    "what-makes-a-species#apply": "ks3.what-makes-a-species.3",
    "what-makes-a-species#explain": "ks3.what-makes-a-species.6",
    "what-makes-a-species#produce": "ks3.what-makes-a-species.1",
-   "what-makes-a-species#recall": "ks3.what-makes-a-species.1"
+   "what-makes-a-species#recall": "ks3.what-makes-a-species.1",
+   "what-makes-a-species#start": "ks3.what-makes-a-species.2"
   },
   "scope_ref": "what-makes-a-species",
   "subject": "biology",
@@ -24085,9 +24453,11 @@
    "ks3-b2-what-the-skeleton-does-explain": "ks3.what-the-skeleton-does.1",
    "ks3-b2-what-the-skeleton-does-produce": "ks3.what-the-skeleton-does.7",
    "what-the-skeleton-does#apply": "ks3.what-the-skeleton-does.6",
+   "what-the-skeleton-does#bones-are-dead": "ks3.what-the-skeleton-does.2",
    "what-the-skeleton-does#explain": "ks3.what-the-skeleton-does.1",
    "what-the-skeleton-does#produce": "ks3.what-the-skeleton-does.7",
-   "what-the-skeleton-does#recall": "ks3.what-the-skeleton-does.5"
+   "what-the-skeleton-does#recall": "ks3.what-the-skeleton-does.5",
+   "what-the-skeleton-does#start": "ks3.what-the-skeleton-does.8"
   },
   "scope_ref": "what-the-skeleton-does",
   "subject": "biology",
@@ -24229,7 +24599,9 @@
    "whats-in-the-air#apply": "ks3.whats-in-the-air.5",
    "whats-in-the-air#explain": "ks3.whats-in-the-air.6",
    "whats-in-the-air#produce": "ks3.whats-in-the-air.6",
-   "whats-in-the-air#recall": "ks3.whats-in-the-air.2"
+   "whats-in-the-air#recall": "ks3.whats-in-the-air.2",
+   "whats-in-the-air#start": "ks3.whats-in-the-air.2",
+   "whats-in-the-air#think-commit-oxygen": "ks3.whats-in-the-air.1"
   },
   "scope_ref": "whats-in-the-air",
   "subject": "chemistry",
@@ -24367,7 +24739,8 @@
    "when-diet-goes-wrong#apply": "ks3.when-diet-goes-wrong.5",
    "when-diet-goes-wrong#explain": "ks3.when-diet-goes-wrong.5",
    "when-diet-goes-wrong#produce": "ks3.when-diet-goes-wrong.4",
-   "when-diet-goes-wrong#recall": "ks3.when-diet-goes-wrong.1"
+   "when-diet-goes-wrong#recall": "ks3.when-diet-goes-wrong.1",
+   "when-diet-goes-wrong#start": "ks3.when-diet-goes-wrong.7"
   },
   "scope_ref": "when-diet-goes-wrong",
   "subject": "biology",
@@ -24505,7 +24878,8 @@
    "when-the-environment-changes-extinction#apply": "ks3.when-the-environment-changes-extinction.7",
    "when-the-environment-changes-extinction#explain": "ks3.when-the-environment-changes-extinction.3",
    "when-the-environment-changes-extinction#produce": "ks3.when-the-environment-changes-extinction.5",
-   "when-the-environment-changes-extinction#recall": "ks3.when-the-environment-changes-extinction.2"
+   "when-the-environment-changes-extinction#recall": "ks3.when-the-environment-changes-extinction.2",
+   "when-the-environment-changes-extinction#start": "ks3.when-the-environment-changes-extinction.3"
   },
   "scope_ref": "when-the-environment-changes-extinction",
   "subject": "biology",
@@ -24647,7 +25021,9 @@
    "which-reaction-is-this#apply": "ks3.which-reaction-is-this.6",
    "which-reaction-is-this#explain": "ks3.which-reaction-is-this.5",
    "which-reaction-is-this#produce": "ks3.which-reaction-is-this.8",
-   "which-reaction-is-this#recall": "ks3.which-reaction-is-this.2"
+   "which-reaction-is-this#recall": "ks3.which-reaction-is-this.2",
+   "which-reaction-is-this#start": "ks3.which-reaction-is-this.1",
+   "which-reaction-is-this#think-commit-one-box": "ks3.which-reaction-is-this.6"
   },
   "scope_ref": "which-reaction-is-this",
   "subject": "chemistry",
@@ -24781,7 +25157,8 @@
    "why-almost-all-life-depends-on-it#apply": "ks3.why-almost-all-life-depends-on-it.4",
    "why-almost-all-life-depends-on-it#explain": "ks3.why-almost-all-life-depends-on-it.1",
    "why-almost-all-life-depends-on-it#produce": "ks3.why-almost-all-life-depends-on-it.6",
-   "why-almost-all-life-depends-on-it#recall": "ks3.why-almost-all-life-depends-on-it.3"
+   "why-almost-all-life-depends-on-it#recall": "ks3.why-almost-all-life-depends-on-it.3",
+   "why-almost-all-life-depends-on-it#start": "ks3.why-almost-all-life-depends-on-it.4"
   },
   "scope_ref": "why-almost-all-life-depends-on-it",
   "subject": "biology",
@@ -24919,7 +25296,8 @@
    "why-every-cell-respires#apply": "ks3.why-every-cell-respires.2",
    "why-every-cell-respires#explain": "ks3.why-every-cell-respires.4",
    "why-every-cell-respires#produce": "ks3.why-every-cell-respires.4",
-   "why-every-cell-respires#recall": "ks3.why-every-cell-respires.4"
+   "why-every-cell-respires#recall": "ks3.why-every-cell-respires.4",
+   "why-every-cell-respires#start": "ks3.why-every-cell-respires.7"
   },
   "scope_ref": "why-every-cell-respires",
   "subject": "biology",
@@ -25057,7 +25435,8 @@
    "why-ice-floats#apply": "ks3.why-ice-floats.6",
    "why-ice-floats#explain": "ks3.why-ice-floats.3",
    "why-ice-floats#produce": "ks3.why-ice-floats.4",
-   "why-ice-floats#recall": "ks3.why-ice-floats.8"
+   "why-ice-floats#recall": "ks3.why-ice-floats.8",
+   "why-ice-floats#start": "ks3.why-ice-floats.1"
   },
   "scope_ref": "why-ice-floats",
   "subject": "physics",
@@ -25191,7 +25570,8 @@
    "why-things-look-coloured#apply": "ks3.why-things-look-coloured.5",
    "why-things-look-coloured#explain": "ks3.why-things-look-coloured.1",
    "why-things-look-coloured#produce": "ks3.why-things-look-coloured.2",
-   "why-things-look-coloured#recall": "ks3.why-things-look-coloured.7"
+   "why-things-look-coloured#recall": "ks3.why-things-look-coloured.7",
+   "why-things-look-coloured#start": "ks3.why-things-look-coloured.7"
   },
   "scope_ref": "why-things-look-coloured",
   "subject": "physics",
@@ -25227,6 +25607,11 @@
    {
     "id": "ks3.word-equations.7",
     "label": "Every name in a word equation must be a proper substance name"
+   },
+   {
+    "added": "round-2",
+    "id": "ks3.word-equations.8",
+    "label": "Products identify a reaction; reactants and products matter, not observations like duration."
    }
   ],
   "questions": {
@@ -25331,7 +25716,9 @@
    "word-equations#apply": "ks3.word-equations.3",
    "word-equations#explain": "ks3.word-equations.1",
    "word-equations#produce": "ks3.word-equations.6",
-   "word-equations#recall": "ks3.word-equations.2"
+   "word-equations#recall": "ks3.word-equations.2",
+   "word-equations#start": "ks3.word-equations.8",
+   "word-equations#think-reveal-direction": "ks3.word-equations.2"
   },
   "scope_ref": "word-equations",
   "subject": "chemistry",

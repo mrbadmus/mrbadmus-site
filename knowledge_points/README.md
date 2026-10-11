@@ -38,6 +38,20 @@ questions: {question_id: point_id}}`.
   (`ks4q:<subtopic>:<h>`, `h` = first 10 hex of sha1 of the normalised card
   text — `ks4_quiz_id()` in `tools/kp_classify.py`, the same function as the
   backend's `ks4QuizId`), and exam_questions ids (`bv2-…`, `cs-…`).
+- **Round 2 (11 Oct 2026), every other id a lesson page sends:** KS3
+  `<slug>#start`, predictions and keyed commits `<slug>#<activity id>`, and
+  "your turn" questions `<slug>#<activity id>-<q>`; KS4 classic matching
+  cards `ks4c:<subtopic>:match-<n>` (n = the pair's place in
+  `matching.pairs`, from 1); and every block on a rebuilt KS4 lesson, PER
+  ROUTE, `ks4:<slug>:<cf|ch|tf|th>#start|choice-n|sort-n-i|cfifa-n-q|steps-n|
+  r1..r4|r<r>-<i>|chain-n|write-n`. Those last ids are read by running each
+  lesson's logic for each route in Node (`tools/kp_ks4_eval.js`), because the
+  content differs by route on about 128 of the 308 pages. Round 1's
+  route-less `ks4:<slug>#rN` ids are retired.
+- Round-2 ids were placed onto the EXISTING points (one model call per
+  scope). Where nothing fitted, a new point was appended to the end of that
+  scope, never renumbering the others; those points carry `"added": "round-2"`
+  in the JSON and are listed by `--coverage`.
 
 ## Editing and re-running
 
@@ -48,8 +62,8 @@ questions: {question_id: point_id}}`.
 
       python3 tools/kp_classify.py --cache <cache dir> --scope <slug> --force
 
-  Only that scope is sent to the model; every other scope is rebuilt from the
-  cache unchanged (and the KS4 exam rows are re-placed from cache unless their
+  Only that scope is sent to the model (its round-1 points, then its round-2
+  ids onto them); every other scope is rebuilt from the cache unchanged (and the KS4 exam rows are re-placed from cache unless their
   candidate points changed). ⚠️ A re-drafted scope's points are renumbered
   from 1, so its point ids may now mean something different. Answers already
   recorded in `child_answers` copied the point id at the time, so re-draft a

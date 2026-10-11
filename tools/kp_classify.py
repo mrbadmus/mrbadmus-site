@@ -223,6 +223,104 @@ def ks4_rungs():
     return out
 
 
+# ── KS4 rebuilt lessons, evaluated per route (round 2) ──────────────────
+
+ROUTES = ("cf", "ch", "tf", "th")
+ANSWER_BLOCKS = ("Ks4Guess", "Ks4Choice", "Ks4Sort", "Ks4Cfifa", "Ks4Steps",
+                 "Ks4Ladder", "Ks4Practice", "Ks4Chain", "Ks4Write")
+
+
+def ks4_lesson_sources(L):
+    """(template, logic) of a rebuilt lesson AFTER the build's text rulings —
+    the same calls, in the same order, as build_ks4.compile_lesson /
+    compile_batch_lesson make before the (browser) template compile."""
+    import build_ks4 as B
+    import ks4_lessons as K
+    import ks4_rulings as R
+    import ks4_science_rulings as S
+    if L["batch"] == "pilot":
+        tpl, logic = B.template_and_logic(os.path.join(REPO, B.DESIGN_DIR, L["design_file"]))
+        df, slug = L["design_file"], L["slug"]
+        tpl = R.apply_r1_route_selector(df, tpl)
+        tpl = R.apply_r12_route_chip(slug, tpl)
+        tpl, _ = R.apply_r9_badge_gate(slug, tpl)
+        if slug == "nanoparticles":
+            tpl = R.apply_r5_nanoparticles_spec(tpl)
+        if slug == "series-parallel-circuits":
+            tpl = R.apply_r6_rtotal_chip(tpl)
+        if slug in ("series-parallel-circuits", "resistors"):
+            tpl = R.apply_r13_approved_exam_tip(df, tpl)
+            logic = R.apply_r13_exam_tip_logic(df, logic)
+        if slug == "metals-alloys":
+            logic = R.apply_r8_model_data(logic)
+        logic, tpl, _ = R.apply_r_slug(slug, logic, tpl)
+        logic, _, _ = R.apply_r_prevnext(df, logic)
+        logic, _ = R.apply_r_connects(df, logic)
+        tpl = S.apply("template", slug, tpl)
+        logic = S.apply("logic", slug, logic)
+        tpl, logic, _ = R.apply_r18_start_here(slug, df, tpl, logic)
+        tpl = R.apply_r19_big_question(slug, df, tpl)
+    else:
+        import ks4_batch_rulings as BR
+        tpl, logic = B.template_and_logic(os.path.join(
+            REPO, K.authored_dir(L["batch"]), L.get("source_file", L["slug"] + ".dc.html")))
+        if L.get("port_rulings"):
+            sbf = {x["source_file"]: x["slug"] for x in K.batch_modules()[L["batch"]].LESSONS}
+            other = {}
+            for mod in K.batch_modules().values():
+                for x in mod.LESSONS:
+                    other.setdefault(x["source_file"], x["slug"])
+            for x in K.LESSONS:
+                other.setdefault(x.get("design_file", ""), x["slug"])
+            tpl, logic, _ = BR.port_lesson(L, tpl, logic, sbf, other)
+        tpl = S.apply("template", L["slug"], tpl)
+        logic = S.apply("logic", L["slug"], logic)
+    return tpl, logic
+
+
+_IMPORT = re.compile(r'<dc-import((?:\s+[\w-]+="[^"]*")*)\s*/?>')
+_ATTR = re.compile(r'([\w-]+)="([^"]*)"')
+
+
+def ks4_template_imports(tpl):
+    """Every answer-block <dc-import>, in template source order, with its
+    attributes (HTML-unescaped, unresolved)."""
+    out = []
+    for m in _IMPORT.finditer(tpl):
+        attrs = {k: html.unescape(v) for k, v in _ATTR.findall(m.group(1))}
+        if attrs.get("name") in ANSWER_BLOCKS:
+            name = attrs.pop("name")
+            attrs.pop("hint-size", None)
+            out.append({"name": name, "attrs": {k: v for k, v in attrs.items()
+                                                if not k.startswith("on-")}})
+    return out
+
+
+_EVAL_CACHE = {}
+
+
+def ks4_pilot_eval():
+    """{slug: {route: [{name, n, props}]}} for every rebuilt lesson, by
+    running each lesson's logic per route in Node (tools/kp_ks4_eval.js)."""
+    if _EVAL_CACHE:
+        return _EVAL_CACHE
+    import subprocess
+    import ks4_lessons as K
+    lessons = []
+    for L in K.all_lessons():
+        tpl, logic = ks4_lesson_sources(L)
+        lessons.append({"slug": L["slug"], "logic": logic,
+                        "routes": [r.lower() for r in L["routes"]],
+                        "imports": ks4_template_imports(tpl)})
+    res = subprocess.run(["node", os.path.join(REPO, "tools", "kp_ks4_eval.js")],
+                         input=json.dumps({"repo": REPO, "lessons": lessons}),
+                         capture_output=True, text=True, timeout=600)
+    if res.returncode != 0:
+        raise SystemExit("kp: kp_ks4_eval.js failed: %s" % res.stderr[-2000:])
+    _EVAL_CACHE.update(json.loads(res.stdout))
+    return _EVAL_CACHE
+
+
 # ── the inventory: every question, by scope ─────────────────────────────
 
 def inventory():
@@ -323,22 +421,254 @@ def inventory():
 
 # Source label as the DB stores it (question_knowledge_points.source).
 DB_SOURCE = {"ks3_bank": "ks3_bank", "ks3_ladder": "ks3_ladder", "ks4_bank": "ks4_bank",
-             "ks4_quiz": "ks4_lesson", "ks4_rung": "ks4_lesson", "exam": "exam"}
+             "ks4_quiz": "ks4_lesson", "ks4_rung": "ks4_lesson", "exam": "exam",
+             "ks3_start": "ks3_lesson", "ks3_predict": "ks3_lesson", "ks3_keyed": "ks3_lesson",
+             "ks3_yourturn": "ks3_lesson", "ks3_lesson": "ks3_lesson", "ks4_match": "ks4_lesson",
+             "ks4_quizbank": "ks4_lesson"}
+for _k in ("start", "choice", "sort", "cfifa", "steps", "ladder", "practice", "chain", "write"):
+    DB_SOURCE["ks4_pilot_" + _k] = "ks4_lesson"
+
+KS3_RUNGS_SET = set(RUNGS_KS3)
+_PILOT_ID = re.compile(r"^ks4:[a-z0-9-]+:(cf|ch|tf|th)#([a-z]+)(?:\d*)(?:-\d+)*$")
+_PILOT_KIND = {"start": "start", "choice": "choice", "sort": "sort", "cfifa": "cfifa",
+               "steps": "steps", "chain": "chain", "write": "write"}
 
 
 def source_of(qid):
     """Inventory source of a question id, read off its shape."""
     if qid.startswith("ks4q:"):
         return "ks4_quiz"
+    if qid.startswith("ks4c:"):
+        return "ks4_match"
     if qid.startswith("ks4:"):
-        return "ks4_rung"
+        m = re.match(r"^ks4:[a-z0-9-]+:(?:cf|ch|tf|th)#(.+)$", qid)
+        if not m:
+            return "ks4_rung"          # round 1's route-less ladder id (retired)
+        tail = m.group(1)
+        if re.match(r"^r\d$", tail):
+            return "ks4_pilot_ladder"
+        if re.match(r"^r\d-\d+$", tail):
+            return "ks4_pilot_practice"
+        return "ks4_pilot_" + _PILOT_KIND.get(tail.split("-")[0], "other")
     if qid.startswith("ks4-"):
         return "ks4_bank"
     if qid.startswith(("ks3-", "bv2-", "cs-")):
         return "exam"
     if "#" in qid:
-        return "ks3_ladder"
+        tail = qid.split("#", 1)[1]
+        if tail in KS3_RUNGS_SET:
+            return "ks3_ladder"
+        if tail == "start":
+            return "ks3_start"
+        return "ks3_lesson"           # refined by extras_inventory()
     return "ks3_bank"
+
+
+# ── round 2: the other answerable things on a lesson page ───────────────
+
+def _fill(text, rest):
+    """KS3 'your turn' text carries {placeholders} filled from the bench's
+    resting values; fill them so the item reads as the page first shows it."""
+    if not isinstance(text, str):
+        return ""
+    return re.sub(r"\{(\w+)\}", lambda m: str((rest or {}).get(m.group(1), m.group(0))), text)
+
+
+def _first(v):
+    if isinstance(v, list):
+        v = v[0] if v else ""
+    return plain(v)
+
+
+def _right(options):
+    for o in options or []:
+        if isinstance(o, dict) and o.get("correct"):
+            return plain(o.get("text"))
+    return ""
+
+
+def ks3_extras():
+    """{slug: [(qid, source, stem, answer)]}: Start here, predictions, keyed
+    commits and 'your turn' questions — the KS3 lesson ids the page sends
+    besides the ladder (see the parent-truth inventory, appendix A)."""
+    import ks3_data
+    from ks3_data.start_here import START_HERE
+    reg = ks3_data.lesson_registry()
+    out = {}
+    for slug, L in reg.items():
+        items = []
+        sh = START_HERE.get(slug)
+        if sh:
+            opts = sh.get("options") or []
+            ans = opts[sh["answer"]][0] if isinstance(sh.get("answer"), int) and opts else ""
+            items.append(("%s#start" % slug, "ks3_start", plain(sh.get("question")), plain(ans)))
+        for a in L.get("activities") or []:
+            kind = a.get("kind") or ""
+            aid = a.get("id")
+            if kind in ("predict", "model-limit") and a.get("options"):
+                stem = plain(a.get("prompt")) or " ".join(plain(x) for x in a.get("paragraphs") or [])
+                stem += " Options: " + " / ".join(plain(o if isinstance(o, str) else o.get("text")) for o in a["options"])
+                items.append(("%s#%s" % (slug, aid), "ks3_predict", stem,
+                              clip(_first(a.get("reveal") or a.get("commit")), 400)))
+            elif kind == "keyed-commit":
+                opts = a.get("options") or []
+                ai = a.get("answer_index")
+                ans = opts[ai] if isinstance(ai, int) and ai < len(opts) else ""
+                items.append(("%s#%s" % (slug, aid), "ks3_keyed",
+                              plain(a.get("prompt") or a.get("heading")),
+                              plain(ans if isinstance(ans, str) else (ans or {}).get("text"))))
+            elif re.match(r"^p\d+-attempt$", kind):
+                rest = a.get("rest") or {}
+                for q, qq in enumerate(a.get("questions") or [], 1):
+                    lines = [_fill(st.get("line"), rest) for st in qq.get("steps") or []]
+                    items.append(("%s#%s-%d" % (slug, aid, q), "ks3_yourturn",
+                                  plain(_fill(qq.get("head"), rest)), clip(" | ".join(lines), 500)))
+        out[slug] = items
+    return out
+
+
+def ks4_matching():
+    """{subtopic: [(qid, 'ks4_match', stem, answer)]}: every classic matching
+    card, `ks4c:<subtopic>:match-<n>`, n = the pair's index in
+    `matching.pairs` (or `svg_pairs`) + 1. The pair is (group, card): the
+    pupil drags the card onto its group."""
+    out = {}
+    for sid, e in ks4_subtopics().items():
+        m = e["record"].get("matching") or {}
+        pairs = m.get("svg_pairs") or m.get("pairs") or []
+        items = []
+        for n, pr in enumerate(pairs, 1):
+            group, card = pr[0], pr[1]
+            card_t = "(a circuit symbol for %s)" % plain(group) if m.get("svg_pairs") else plain(card)
+            items.append(("ks4c:%s:match-%d" % (sid, n), "ks4_match",
+                          "Matching (%s): which group does this card belong to? %s"
+                          % (plain(m.get("title")), card_t), plain(group)))
+        out[sid] = items
+    return out
+
+
+def _pilot_rung_text(r):
+    if not isinstance(r, dict):
+        return "", ""
+    stem = plain(r.get("prompt") or r.get("question") or "")
+    if r.get("options"):
+        ans = _right(r["options"])
+    elif r.get("answer") is not None:
+        ans = "%s %s" % (r.get("answer"), r.get("unit") or "")
+    elif r.get("links"):
+        ans = " → ".join(plain(x) for x in r["links"])
+    elif r.get("points"):
+        ans = "; ".join(plain(x) for x in r["points"])
+    elif r.get("parts"):
+        ans = json.dumps(r.get("parts"), ensure_ascii=False)[:300]
+    else:
+        ans = plain(r.get("why") or "")
+    return stem, clip(ans, 400)
+
+
+def ks4_pilot_items():
+    """{slug: [(qid, source, stem, answer)]}: every id a rebuilt KS4 lesson
+    page sends, per route — `ks4:<slug>:<route>#…` (parent-truth inventory,
+    appendix C) — read from each lesson's logic evaluated for that route.
+    Block numbering n is the block's position among imports of the SAME
+    block in the template, every instance counted (worked Steps included)."""
+    ev = ks4_pilot_eval()
+    out = {}
+    for slug, routes in ev.items():
+        if slug.endswith("__error"):
+            raise SystemExit("kp: %s: %s" % (slug, routes))
+        items = []
+        for r, blocks in sorted(routes.items()):
+            b = "ks4:%s:%s#" % (slug, r)
+            for it in blocks:
+                if "error" in it:
+                    raise SystemExit("kp: %s %s: %s" % (slug, r, it["error"]))
+                nm, n, p = it["name"], it["n"], it["props"]
+                if nm == "Ks4Guess":
+                    items.append((b + "start", "ks4_pilot_start", plain(p.get("question")), _right(p.get("options"))))
+                elif nm == "Ks4Choice":
+                    items.append((b + "choice-%d" % n, "ks4_pilot_choice",
+                                  plain(p.get("prompt")) + " Options: " + " / ".join(
+                                      plain(o.get("text")) for o in p.get("options") or [] if isinstance(o, dict)),
+                                  _right(p.get("options")) or clip(_first(p.get("reveal")), 300)))
+                elif nm == "Ks4Sort":
+                    bins = {x.get("id"): plain(x.get("label")) for x in p.get("bins") or []}
+                    for i, x in enumerate(p.get("items") or [], 1):
+                        items.append((b + "sort-%d-%d" % (n, i), "ks4_pilot_sort",
+                                      "Sort (%s): %s" % (plain(p.get("title") or p.get("prompt")), plain(x.get("text"))),
+                                      bins.get(x.get("bin"), plain(x.get("bin")))))
+                elif nm == "Ks4Cfifa":
+                    for q, x in enumerate(p.get("questions") or [], 1):
+                        lines = [plain(st.get("line")) for st in x.get("steps") or []]
+                        items.append((b + "cfifa-%d-%d" % (n, q), "ks4_pilot_cfifa", plain(x.get("head")),
+                                      clip(lines[-1] if lines else "", 300)))
+                elif nm == "Ks4Steps":
+                    carry = [plain(st.get("carry")) for st in p.get("steps") or [] if st.get("carry")]
+                    items.append((b + "steps-%d" % n, "ks4_pilot_steps", plain(p.get("head")),
+                                  clip(carry[-1] if carry else "", 300)))
+                elif nm == "Ks4Chain":
+                    items.append((b + "chain-%d" % n, "ks4_pilot_chain",
+                                  plain(p.get("title")) + " " + plain(p.get("prompt")),
+                                  clip(" → ".join(plain(x) for x in p.get("links") or []), 400)))
+                elif nm == "Ks4Write":
+                    items.append((b + "write-%d" % n, "ks4_pilot_write", plain(p.get("question")),
+                                  clip("; ".join(plain(x) for x in p.get("points") or []), 400)))
+                elif nm == "Ks4Ladder":
+                    for k in sorted(p.get("rungs") or {}):
+                        stem, ans = _pilot_rung_text(p["rungs"][k])
+                        items.append((b + k, "ks4_pilot_ladder", stem, ans))
+                elif nm == "Ks4Practice":
+                    for k in sorted(p.get("rungs") or {}):
+                        v = p["rungs"][k]
+                        for i, x in enumerate(v if isinstance(v, list) else [v], 1):
+                            stem, ans = _pilot_rung_text(x)
+                            items.append((b + "%s-%d" % (k, i), "ks4_pilot_practice", stem, ans))
+        out[slug] = items
+    return out
+
+
+def ks4_quizbank_extra():
+    """{subtopic: [(qid, 'ks4_quizbank', stem, answer)]}: the rebuilt
+    lessons' practice set (Ks4QuizBank) reads the subtopic quiz from the
+    GENERATED shared/ks4-source.js, where a science ruling may have rewritten
+    a stem (e.g. polymers). The page sends that text, unnumbered, and the
+    server hashes it; any id that is not already a classic card id is listed
+    here."""
+    known = {q for e in ks4_subtopics().values() for q in e["quiz"]}
+    out = {}
+    path = os.path.join(REPO, "shared", "ks4-source.js")
+    for line in open(path, encoding="utf-8"):
+        m = re.match(r'^window\.KS4SRC\["([a-z0-9-]+)"\]\s*=\s*(\{.*\});\s*$', line)
+        if not m:
+            continue
+        slug, rec = m.group(1), json.loads(m.group(2))
+        for _route, lst in sorted((rec.get("quiz") or {}).items()):
+            for q in lst:
+                qid = ks4_quiz_id(slug, plain(q["q"]))
+                if qid in known:
+                    continue
+                known.add(qid)
+                right = [o[0] for o in q.get("opts") or [] if o[1]]
+                out.setdefault(slug, []).append((qid, "ks4_quizbank", plain(q["q"]),
+                                                 plain(right[0]) if right else ""))
+    return out
+
+
+def extras_inventory():
+    """{('KS3', slug) | ('KS4', subtopic): [(qid, source, stem, answer)]} —
+    every round-2 id, by the scope whose points it is tagged with."""
+    out = {}
+    for slug, items in ks3_extras().items():
+        if items:
+            out[("KS3", slug)] = items
+    for sid, items in ks4_matching().items():
+        if items:
+            out.setdefault(("KS4", sid), []).extend(items)
+    for slug, items in ks4_pilot_items().items():
+        out.setdefault(("KS4", slug), []).extend(items)
+    for slug, items in ks4_quizbank_extra().items():
+        out.setdefault(("KS4", slug), []).extend(items)
+    return out
 
 
 # ── the model ───────────────────────────────────────────────────────────
@@ -768,6 +1098,154 @@ Reply with JSON only: {"point": <number, or 0 for none>}""" % (plain(row["text"]
     return c
 
 
+# ── pass 3: round-2 ids onto the EXISTING points ────────────────────────
+
+MAX_NEW_POINTS = 3
+
+
+def extra_entries(items):
+    """Group a scope's round-2 items for the prompt: the same block position
+    showing the same text on several routes is ONE entry (one decision), so a
+    route variant with different content gets its own."""
+    groups = {}
+    order = []
+    for qid, src, stem, ans in items:
+        pos = re.sub(r"^(ks4:[a-z0-9-]+):(?:cf|ch|tf|th)#", r"\1#", qid)
+        key = (pos, stem, ans)
+        if key not in groups:
+            groups[key] = []
+            order.append(key)
+        groups[key].append(qid)
+    return [(k[0], k[1], k[2], groups[k]) for k in order]
+
+
+def extras_prompt(ks, title, points, entries, error=None):
+    pl = "\n".join("%d. %s" % (i, p["label"]) for i, p in enumerate(points, 1))
+    el = "\n".join("%d. [%s] %s → %s" % (i, pos.split("#", 1)[-1], clip(stem, 400), clip(ans, 250) or "(no single answer)")
+                    for i, (pos, stem, ans, _ids) in enumerate(entries, 1))
+    p = """You are an experienced UK science teacher and examiner. These are the knowledge points already written for one %s, "%s". A knowledge point is one fact, idea or skill a pupil must know or be able to do; parents read the labels.
+
+EXISTING KNOWLEDGE POINTS
+%s
+
+NEW ITEMS FROM THE LESSON PAGE (number. [activity] question or task → its answer)
+%s
+
+TASK
+Give every item the number of the ONE existing point it mainly tests. Strongly prefer an existing point. Only if an item tests something none of the points covers, invent a new point for it: a plain-English statement of at most 15 words (under 120 characters), using only science in the item itself. At most %d new points; reuse a new point for every item it fits.
+
+Reply with JSON only:
+{"assign": {"1": <existing point number, or "N1" for new point N1>, ..., "%d": ...},
+ "new_points": [{"id": "N1", "label": "..."}]}
+("new_points" may be empty.)""" % ("Key Stage 3 science lesson" if ks == "KS3" else "GCSE (AQA) science subtopic",
+                                    title, pl, el, MAX_NEW_POINTS, len(entries))
+    if error:
+        p += "\n\nYour previous reply was rejected: %s. Reply again, correctly." % error
+    return p
+
+
+def validate_extras(obj, npts, nent):
+    if not isinstance(obj, dict) or not isinstance(obj.get("assign"), dict):
+        raise ValueError("no 'assign' object")
+    newp = obj.get("new_points") or []
+    if not isinstance(newp, list) or len(newp) > MAX_NEW_POINTS:
+        raise ValueError("at most %d new points" % MAX_NEW_POINTS)
+    labels = {}
+    for p in newp:
+        lab = p.get("label") if isinstance(p, dict) else None
+        if not isinstance(lab, str) or not 3 <= len(lab.strip()) <= 120:
+            raise ValueError("new point labels must be under 120 characters and at most 15 words")
+        labels[str(p.get("id"))] = re.sub(r"\s+", " ", lab).strip()
+    got = {}
+    for k, v in obj["assign"].items():
+        try:
+            i = int(k)
+        except (TypeError, ValueError):
+            raise ValueError("assign key %r is not an item number" % k)
+        if not 1 <= i <= nent:
+            raise ValueError("item %d does not exist (1-%d)" % (i, nent))
+        if isinstance(v, int) and 1 <= v <= npts:
+            got[i] = v
+        elif isinstance(v, str) and v in labels:
+            got[i] = v
+        elif isinstance(v, str) and v.isdigit() and 1 <= int(v) <= npts:
+            got[i] = int(v)
+        else:
+            raise ValueError("item %d is given %r: use an existing point 1-%d or a new point id" % (i, v, npts))
+    missing = [i for i in range(1, nent + 1) if i not in got]
+    if missing:
+        raise ValueError("item(s) %s not assigned" % ", ".join(map(str, missing[:30])))
+    used_new = [nid for nid in labels if nid in got.values()]
+    return got, [(nid, labels[nid]) for nid in used_new]
+
+
+def extras_hash(points, items):
+    entries = extra_entries(items)
+    return hashlib.sha256(json.dumps([[p["label"] for p in points],
+                                      [[e[0], e[1], e[2], e[3]] for e in entries]],
+                                     ensure_ascii=False).encode("utf-8")).hexdigest()[:16]
+
+
+def classify_extras(key, title, points, items, cache):
+    ks, ref = key
+    entries = extra_entries(items)
+    path = os.path.join(cache, "x__%s__%s.json" % (ks.lower(), ref))
+    h = extras_hash(points, items)
+    if os.path.exists(path):
+        c = json.load(open(path, encoding="utf-8"))
+        if c.get("hash") == h and not c.get("failed"):
+            return c
+    error, attempts = None, []
+    for attempt in range(3):
+        try:
+            text, usage = call_model(extras_prompt(ks, title, points, entries, error),
+                                     max_tokens=min(8000, 400 + 12 * len(entries)))
+        except RuntimeError as e:
+            attempts.append({"error": str(e)})
+            continue
+        try:
+            got, new = validate_extras(extract_json(text), len(points), len(entries))
+            # stable order for the new points: the order the reply listed them
+            assign = {}
+            for i, (_pos, _stem, _ans, ids) in enumerate(entries, 1):
+                for qid in ids:
+                    assign[qid] = got[i]
+            c = {"hash": h, "key": [ks, ref], "assign": assign, "new_points": new,
+                 "usage": usage, "attempts": attempts, "raw": text[:20000]}
+            json.dump(c, open(path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+            return c
+        except (ValueError, json.JSONDecodeError) as e:
+            error = str(e)
+            attempts.append({"error": error, "raw": text[:4000]})
+    c = {"hash": h, "key": [ks, ref], "failed": True, "attempts": attempts}
+    json.dump(c, open(path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    return c
+
+
+def merge_extras(data, extras, results, untagged):
+    """Fold round-2 results into the assembled scopes: new points appended
+    after the existing ones (never renumbering them), every id tagged."""
+    for key, items in sorted(extras.items()):
+        ks, ref = key
+        e = data[ks].get(ref)
+        c = results.get(key)
+        if e is None or not c or c.get("failed"):
+            for qid, src, _s, _a in items:
+                untagged["questions"][qid] = {"source": DB_SOURCE[src], "scope_ref": ref,
+                                              "reason": "round-2 classification failed" if e else "scope untagged"}
+            continue
+        prefix = ks.lower()
+        new_ids = {}
+        for nid, label in c.get("new_points") or []:
+            n = len(e["points"]) + 1
+            pid = "%s.%s.%d" % (prefix, ref, n)
+            e["points"].append({"id": pid, "label": label, "added": "round-2"})
+            new_ids[nid] = pid
+        for qid, v in c["assign"].items():
+            e["questions"][qid] = new_ids[v] if isinstance(v, str) else "%s.%s.%d" % (prefix, ref, v)
+        e["questions"] = dict(sorted(e["questions"].items()))
+
+
 # ── assembly: cache → knowledge_points/*.json ───────────────────────────
 
 def assemble(inv, results, exam_results):
@@ -811,7 +1289,12 @@ def assemble(inv, results, exam_results):
                                           "reason": c.get("reason") or "untagged"}
     for ks in data:
         for e in data[ks].values():
-            e["questions"] = dict(sorted(e["questions"].items()))
+            # Round 1's route-less ladder ids (`ks4:<slug>#rN`) are retired:
+            # the page now sends `ks4:<slug>:<route>#rN` (round 2). They stay
+            # in the round-1 prompt (so its cache and numbering hold) and are
+            # dropped here.
+            e["questions"] = dict(sorted((q, k) for q, k in e["questions"].items()
+                                         if source_of(q) != "ks4_rung"))
     untagged["questions"] = dict(sorted(untagged["questions"].items()))
     untagged["failed_scopes"].sort()
     return data["KS3"], data["KS4"], untagged
@@ -901,6 +1384,39 @@ def main():
                 for rid, c in ex.map(run_exam, rows):
                     exam_results[rid] = c
     ks3, ks4, untagged = assemble(inv, results, exam_results)
+
+    # pass 3 — round-2 ids (Start here, predictions, your-turn, matching,
+    # every rebuilt-lesson block per route) onto the existing points
+    extras = extras_inventory()
+    data = {"KS3": ks3, "KS4": ks4}
+    xres = {}
+    xtodo = []
+    for key in sorted(extras):
+        e = data[key[0]].get(key[1])
+        if e is None:
+            continue
+        if a.assemble_only or (named and key[1] not in named):
+            path = os.path.join(a.cache, "x__%s__%s.json" % (key[0].lower(), key[1]))
+            if os.path.exists(path):
+                c = json.load(open(path, encoding="utf-8"))
+                if c.get("hash") == extras_hash(e["points"], extras[key]):
+                    xres[key] = c
+            continue
+        xtodo.append(key)
+    print("kp: round 2 — %d scope(s) to place new ids in (cached ones cost nothing)" % len(xtodo))
+
+    def run_x(key):
+        e = data[key[0]][key[1]]
+        pts = [p for p in e["points"]]
+        return key, classify_extras(key, e["title"], pts, extras[key], a.cache)
+
+    with cf.ThreadPoolExecutor(max_workers=a.workers) as ex:
+        for key, c in ex.map(run_x, xtodo):
+            xres[key] = c
+            if c.get("failed"):
+                print("  round 2 FAILED: %s %s" % key, flush=True)
+    merge_extras(data, extras, xres, untagged)
+    untagged["questions"] = dict(sorted(untagged["questions"].items()))
     os.makedirs(KP_DIR, exist_ok=True)
     write_json(os.path.join(KP_DIR, "ks3.json"), ks3)
     write_json(os.path.join(KP_DIR, "ks4.json"), ks4)

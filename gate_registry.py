@@ -2812,9 +2812,15 @@ GATES = [
          cmd=["python3", "tools/export_knowledge_points.py", "--check"],
          speed="fast",
          watches=["tools/export_knowledge_points.py", "tools/kp_classify.py",
+                  "tools/kp_ks4_eval.js",
                   "knowledge_points/*.json", "ks3_data/**", "ks4_data/**",
                   "ks4_lessons/**", "all_subtopics_*.py", "export_ks3_extended.py",
-                  "shared/exam-content/*.js", "combined/**", "triple/**"],
+                  "shared/exam-content/*.js", "combined/**", "triple/**",
+                  # round 2: the rebuilt KS4 lessons' ids are read by running
+                  # each lesson's logic per route, after the build's rulings
+                  "build_ks4.py", "ks4_rulings.py", "ks4_science_rulings.py",
+                  "ks4_batch_rulings.py", "shared/ks4-source.js",
+                  "shared/ks4-lib.js", "shared/ks4-diagrams.js"],
          # ⚠️ Named gap (MRB-346 rule 1): the 14 pilot lessons' ladder rungs
          # are read from Design's `.dc.html` under docs/ks4/design-reference/,
          # which no `watches` may name. The rung IDS (`ks4:<slug>#r1..r4`) come
@@ -2826,7 +2832,11 @@ GATES = [
              "is found through the tag. `knowledge_points/*.json` holds the "
              "machine-drafted points and tags; this gate reads every question "
              "through the loaders (both banks, both ladders, the KS3 exam "
-             "twins, the KS4 classic quiz cards and rebuilt-lesson rungs) and "
+             "twins, the KS4 classic quiz cards, and — round 2 — every other "
+             "id a lesson page sends: KS3 Start here, predictions, keyed "
+             "commits and 'your turn'; KS4 classic matching; and every "
+             "rebuilt-lesson block per route, `ks4:<slug>:<route>#…`, read by "
+             "running each lesson's logic in Node) and "
              "fails if one is neither tagged nor listed untagged, if a tag "
              "dangles or crosses scopes, or if `ks4_quiz_id` stops producing "
              "the contract's test vector — the backend derives the same id "
