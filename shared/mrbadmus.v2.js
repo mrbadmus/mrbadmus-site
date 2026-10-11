@@ -681,15 +681,27 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 55000); // 55s timeout
       let authHeaders = { 'Content-Type': 'application/json' };
+      // ⊕ Parent truth (11 Oct 2026) — set only for a consumer child.
+      let childContext = null;
       try {
         const raw = localStorage.getItem(c.AUTH_STORAGE_KEY);
-        const tok = raw && JSON.parse(raw)?.access_token;
+        const sess = raw && JSON.parse(raw);
+        const tok = sess?.access_token;
         if (tok) authHeaders['Authorization'] = 'Bearer ' + tok;
+        /* A child's question is logged for their parent (question, lesson,
+           time — never the reply), and the server needs to know which lesson
+           it was asked on. A school pupil's body is exactly what it was:
+           `context` is added for a child session and for nobody else. */
+        if (tok && typeof c.isChildSession === 'function' && c.isChildSession(sess)) {
+          childContext = { path: window.location.pathname, title: currentTopic || document.title || '' };
+        }
       } catch (e) {}
       const res = await fetch(c.BACKEND_URL + '/api/chat', {
         method:'POST',
         headers: authHeaders,
-        body:JSON.stringify({ system:systemPrompt, messages:chatHistory }),
+        body:JSON.stringify(childContext
+          ? { system:systemPrompt, messages:chatHistory, context:childContext }
+          : { system:systemPrompt, messages:chatHistory }),
         signal: controller.signal
       });
       clearTimeout(timeout);
@@ -819,5 +831,251 @@ try {
     }
     if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', start); }
     else { start(); }
+  })();
+} catch (e) {}
+
+/* ── Parent truth (11 Oct 2026): a consumer child's lesson answers ─────────
+   Mide's brief: a parent sees exactly what their child did. Every answer a
+   family or organisation child gives on a lesson page is sent, as it is
+   given, to POST /api/consumer/child/answer — the server stores it with its
+   question id, marks a written one, and ties it to the child's work.
+
+   ONLY FOR A CHILD SESSION (MrBadmusConfig.isChildSession — the session's
+   own `@children.mrbadmus.internal` address, no network call). A school
+   pupil's page installs nothing here: no listener, no global, no request,
+   and every other script on the page behaves exactly as before. Rainford
+   uses these files.
+
+   Never in the way: one fire-and-forget `keepalive` post per answer, read
+   from state the page has ALREADY computed, never blocking or altering it;
+   any failure is silent. The page ignores the reply.
+
+   Three page types, one sender:
+     · KS3 lesson — shared/ks3.js dispatches `mrb:answer` on `document` at
+       the exact points it already knows an answer (it only does so when
+       MrBadmusAnswerCapture, set below, exists). Its /api/quiz-score body
+       also carries this load's `visit_id`.
+     · KS4 classic page — one capture-phase click listener on `.quiz-opt`
+       records the FIRST resolution of each card, reading what the card's
+       own inline script is about to mark (data-answer, the option, .q-text).
+       It never stops, prevents or alters the click.
+     · KS4 rebuilt (pilot) page — shared/ks4-runtime.js hands every redrawn
+       instance to MrBadmusKS4Tap (set below); a Ks4Ladder's r1–r4 going from
+       unanswered to answered is the answer. Read-only.
+   ───────────────────────────────────────────────────────────────────────── */
+try {
+  (function () {
+    var c = window.MrBadmusConfig;
+    if (!c || !c.BACKEND_URL || !c.AUTH_STORAGE_KEY || typeof c.isChildSession !== 'function') { return; }
+    var session = null;
+    try { session = JSON.parse(window.localStorage.getItem(c.AUTH_STORAGE_KEY) || 'null'); } catch (e) { return; }
+    if (!session || !session.access_token || !c.isChildSession(session)) { return; }
+
+    var path = window.location.pathname || '';
+    var pathSlug = (path.split('/').pop() || '').replace(/\.html?$/i, '');
+    var CAP_S = 30 * 60;
+
+    function uuid() {
+      try { if (window.crypto && typeof window.crypto.randomUUID === 'function') { return window.crypto.randomUUID(); } } catch (e) {}
+      var b = [];
+      for (var i = 0; i < 16; i += 1) { b.push(Math.floor(Math.random() * 256)); }
+      try { if (window.crypto && window.crypto.getRandomValues) { b = Array.prototype.slice.call(window.crypto.getRandomValues(new Uint8Array(16))); } } catch (e) {}
+      b[6] = (b[6] & 0x0f) | 0x40; b[8] = (b[8] & 0x3f) | 0x80;
+      var h = b.map(function (x) { return (x < 16 ? '0' : '') + x.toString(16); }).join('');
+      return h.slice(0, 8) + '-' + h.slice(8, 12) + '-' + h.slice(12, 16) + '-' + h.slice(16, 20) + '-' + h.slice(20);
+    }
+    var visitId = uuid();
+    window.MrBadmusAnswerCapture = { visitId: visitId };
+
+    function clip(v, n) {
+      if (v == null) { return null; }
+      v = String(v);
+      return v.length > n ? v.slice(0, n) : v;
+    }
+
+    // KS4's clock: seconds since the previous answer on this page, or since
+    // this was installed (the quiz/ladder is already wired by then) for the
+    // first. KS3 brings its own, from the ladder's wiring.
+    var lastAt = Date.now();
+    function since() {
+      var now = Date.now();
+      var secs = Math.round((now - lastAt) / 1000);
+      lastAt = now;
+      return secs < 0 ? 0 : (secs > CAP_S ? CAP_S : secs);
+    }
+
+    function post(d) {
+      var tok = null;
+      try {
+        var s2 = JSON.parse(window.localStorage.getItem(c.AUTH_STORAGE_KEY) || 'null');
+        tok = s2 && s2.access_token;
+      } catch (e) { return; }
+      if (!tok) { return; }
+      var t = d.time_spent_seconds;
+      var body = {
+        visit_id: visitId,
+        key_stage: d.key_stage,
+        path: path,
+        lesson_slug: d.lesson_slug || pathSlug,
+        question_id: d.question_id == null ? null : String(d.question_id),
+        rung: d.rung == null ? null : String(d.rung),
+        kind: d.kind,
+        question_text: clip(d.question_text || '', 2000),
+        answer: clip(d.answer, 5000),
+        correct_answer: clip(d.correct_answer, 5000),
+        is_correct: typeof d.is_correct === 'boolean' ? d.is_correct : null,
+        criteria: Array.isArray(d.criteria)
+          ? d.criteria.slice(0, 12).map(function (x) { return clip(x, 2000); })
+          : null,
+        marks: (typeof d.marks === 'number' && isFinite(d.marks)) ? Math.round(d.marks) : null,
+        time_spent_seconds: (typeof t === 'number' && isFinite(t))
+          ? Math.max(0, Math.min(CAP_S, Math.round(t))) : null
+      };
+      try {
+        fetch(c.BACKEND_URL + '/api/consumer/child/answer', {
+          method: 'POST',
+          keepalive: true,
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+          body: JSON.stringify(body)
+        }).catch(function () { /* best effort — the lesson never waits on this */ });
+      } catch (e) { /* fetch unavailable — degrade silently */ }
+    }
+
+    /* ── KS3: the ladder's own announcements ── */
+    document.addEventListener('mrb:answer', function (e) {
+      if (e && e.detail) { post(e.detail); }
+    });
+
+    if (!/^\/(combined|triple)\//.test(path)) { return; }
+
+    /* ── KS4 classic: the first resolution of each quiz card ── */
+    var settled = typeof WeakSet === 'function' ? new WeakSet() : null;
+    document.addEventListener('click', function (e) {
+      try {
+        var btn = e.target && e.target.closest ? e.target.closest('.quiz-opt') : null;
+        if (!btn || btn.disabled) { return; }
+        var card = btn.closest('.quiz-card');
+        if (!card || !card.hasAttribute('data-answer') || !btn.hasAttribute('data-oi')) { return; }
+        // The card's own script marks it once and ignores every later click
+        // (`card.dataset.answered`), so only the first resolution is sent.
+        if (card.hasAttribute('data-answered') || (settled && settled.has(card))) { return; }
+        if (settled) { settled.add(card); }
+        var opts = card.querySelectorAll('.quiz-opt');
+        var right = parseInt(card.getAttribute('data-answer'), 10);
+        var picked = parseInt(btn.getAttribute('data-oi'), 10);
+        var q = card.querySelector('.q-text');
+        post({
+          key_stage: 'KS4', lesson_slug: pathSlug, question_id: null, rung: null,
+          kind: 'choice',
+          question_text: q ? q.textContent : '',
+          answer: (btn.textContent || '').trim(),
+          correct_answer: opts[right] ? (opts[right].textContent || '').trim() : null,
+          is_correct: picked === right,
+          criteria: null, marks: null,
+          time_spent_seconds: since()
+        });
+      } catch (err) { /* capture never breaks the quiz */ }
+    }, true);
+
+    /* ── KS4 rebuilt (pilot) page: Ks4Ladder's four rungs ── */
+    var RUNGS = ['r1', 'r2', 'r3', 'r4'];
+    var prevOf = typeof WeakMap === 'function' ? new WeakMap() : null;
+    var lastR4Of = typeof WeakMap === 'function' ? new WeakMap() : null;
+    function kid(api, name) {
+      if (!api.host || !api.host.querySelectorAll) { return null; }
+      var nodes = api.host.querySelectorAll('[data-dc-tpl]');
+      for (var i = 0; i < nodes.length; i += 1) {
+        var a = nodes[i].__mrbKs4;
+        if (a && a !== api && a.comp === name) { return a; }
+      }
+      return null;
+    }
+    function rungOut(api, key) {
+      var L = api.logic, s = L.state || {}, p = L.props || {}, R = p.rungs || {};
+      var slug = p.slug || pathSlug;
+      var d = {
+        key_stage: 'KS4', lesson_slug: slug, question_id: 'ks4:' + slug + '#' + key, rung: key,
+        criteria: null, marks: null, correct_answer: null, is_correct: null
+      };
+      if (key === 'r1') {
+        var r1 = R.r1 || {}, o1 = r1.options || [], pick = o1[s.r1Pick] || {}, good = null;
+        for (var i = 0; i < o1.length; i += 1) { if (o1[i] && o1[i].correct) { good = o1[i]; break; } }
+        d.kind = 'choice';
+        d.question_text = r1.prompt || '';
+        d.answer = pick.text == null ? null : pick.text;
+        d.correct_answer = good ? good.text : null;
+        d.is_correct = s.r1 === true;
+      } else if (key === 'r2') {
+        var r2 = R.r2 || {}, kind = r2.kind || 'calc';
+        d.question_text = r2.prompt || '';
+        d.is_correct = s.r2 === true;
+        if (kind === 'data') {
+          var parts = r2.parts || [];
+          d.kind = 'choice';
+          d.answer = parts.map(function (pt, k) {
+            var v = s.r2parts ? s.r2parts[k] : undefined;
+            return (pt.label || '') + ': ' + ((pt.options || [])[v] == null ? '' : pt.options[v]);
+          }).join('\n');
+          d.correct_answer = parts.map(function (pt) {
+            return (pt.label || '') + ': ' + ((pt.options || [])[pt.answer] == null ? String(pt.answer) : pt.options[pt.answer]);
+          }).join('\n');
+        } else if (kind === 'text') {
+          d.kind = 'numeric';                       // a typed answer marked against a key
+          d.answer = s.r2num || '';
+          d.correct_answer = (r2.accept || [])[0] == null ? null : r2.accept[0];
+        } else {
+          var conv = r2.convOptions || [];
+          d.kind = 'numeric';
+          d.answer = (conv[s.r2conv] != null ? conv[s.r2conv] + ' → ' : '') +
+                     String(s.r2num || '').trim() + (s.r2unit ? ' ' + s.r2unit : '');
+          d.correct_answer = (conv[r2.convAnswer] != null ? conv[r2.convAnswer] + ' → ' : '') +
+                     (r2.answer == null ? '' : String(r2.answer)) + (r2.unit ? ' ' + r2.unit : '');
+        }
+      } else if (key === 'r3') {
+        var r3 = R.r3 || {}, links = r3.links || [], herr = r3.herrings || [];
+        var chain = kid(api, 'Ks4Chain');
+        var ids = chain && chain.logic && chain.logic.state ? (chain.logic.state.chain || []) : [];
+        d.kind = 'order';
+        d.question_text = r3.prompt || '';
+        d.answer = ids.map(function (id) {
+          var n = parseInt(String(id).slice(1), 10);
+          if (String(id).charAt(0) === 'L') { return links[n] == null ? '' : links[n]; }
+          return herr[n] && herr[n].text != null ? herr[n].text : '';
+        }).join('\n');
+        d.correct_answer = links.join('\n');
+        d.is_correct = s.r3 === true;
+      } else {
+        var r4 = R.r4 || {};
+        var write = kid(api, 'Ks4Write');
+        var text = write && write.logic && write.logic.state ? String(write.logic.state.text || '').trim() : '';
+        d.kind = 'written';
+        d.question_text = r4.question || '';
+        d.answer = text;
+        d.criteria = (r4.points && r4.points.length)
+          ? r4.points.slice()
+          : (r4.levels || []).map(function (lv) { return (lv.label ? lv.label + ': ' : '') + (lv.text || ''); });
+        d.marks = r4.marks || 4;
+        // The same words sent twice are one answer: after "Retry my misses"
+        // the rung is re-scored on ticks, but only new writing is re-sent.
+        if (lastR4Of.get(api) === text) { return; }
+        lastR4Of.set(api, text);
+      }
+      d.time_spent_seconds = since();
+      post(d);
+    }
+    window.MrBadmusKS4Tap = function (api) {
+      if (!api || api.comp !== 'Ks4Ladder' || !api.logic || !prevOf) { return; }
+      var s = api.logic.state || {};
+      var prev = prevOf.get(api) || { r1: null, r2: null, r3: null, r4: null };
+      var now = {};
+      RUNGS.forEach(function (k) {
+        var v = s[k] === undefined ? null : s[k];
+        now[k] = v;
+        if (prev[k] === null && v !== null) {
+          try { rungOut(api, k); } catch (e) { /* capture never breaks a lesson */ }
+        }
+      });
+      prevOf.set(api, now);
+    };
   })();
 } catch (e) {}

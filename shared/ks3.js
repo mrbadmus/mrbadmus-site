@@ -141,6 +141,13 @@
            reason it is stored at all. */
         question_text: r.question || "",
         rung: r.key,
+        /* ⊕ Parent truth (11 Oct 2026) — the question's STABLE id, for every
+           pupil. `quiz_question_attempts.question_ref` exists on production
+           and has been NULL on every ladder row; `<slug>#<rung>` is the
+           ks3_ladder_questions id format, so the row now names the authored
+           question it answers rather than leaving it to be re-derived from
+           (subtopic, rung). It only fills a column that was empty. */
+        question_ref: slug + "#" + r.key,
         selected_answer: r.selectedText || "",
         correct_answer: r.correctText || "",
         /* ⊕ MRB-270 phase 5 — the letter, beside the text rather than glued
@@ -174,6 +181,19 @@
       };
     });
 
+    var body = {
+      subject: discipline, topic: unit, subtopic: slug,
+      score: got, max_score: total,
+      attempts: attempts
+    };
+    /* ⊕ Parent truth (11 Oct 2026) — a consumer CHILD's post also names this
+       page load's visit, so the server can tie the score to the per-answer
+       rows the same visit sent (/api/consumer/child/answer). The id exists
+       only on a child session (mrbadmus.v2.js sets MrBadmusAnswerCapture for
+       no one else), so a school pupil's body is exactly what it was. */
+    var cap = window.MrBadmusAnswerCapture;
+    if (cap && cap.visitId) { body.visit_id = cap.visitId; }
+
     try {
       fetch(cfg.BACKEND_URL + "/api/quiz-score", {
         method: "POST",
@@ -183,11 +203,7 @@
         // when it is most needed.
         keepalive: true,
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-        body: JSON.stringify({
-          subject: discipline, topic: unit, subtopic: slug,
-          score: got, max_score: total,
-          attempts: attempts
-        })
+        body: JSON.stringify(body)
       }).catch(function () { /* best-effort — the ladder itself never waits on this */ });
     } catch (e) { /* private mode, or fetch unavailable — degrade silently */ }
   }
@@ -489,6 +505,43 @@
       if (secs < 0) { secs = 0; }
       rec.timeSpent = secs > TIME_CAP_S ? TIME_CAP_S : secs;
       lastResolvedAt = now;
+    }
+
+    /* ⊕ Parent truth (11 Oct 2026) — EVERY ANSWER, AS IT IS GIVEN, for a
+       consumer child only. A parent sees what their child actually did, and
+       the one /api/quiz-score row per finished ladder cannot show that: it is
+       sent once, at the end, with only the LAST answer to each rung, and
+       never for a ladder left half-done.
+
+       So each answer is announced the moment this file already knows it — a
+       marked rung's click (including one reopened by "Retry my misses"), and
+       a written rung's "Complete" whenever the writing differs from what was
+       last sent — as a `mrb:answer` event on `document`. mrbadmus.v2.js holds
+       the one listener and the one network call, and installs both only for
+       a child session; it is also what sets `MrBadmusAnswerCapture`. With no
+       capture on the page (every school pupil, every signed-out visitor)
+       this returns before building anything: no event, no object, no change.
+
+       The clock is its own, not stampTime's: stampTime times a rung's FIRST
+       resolution for the quiz-score row (MRB-262) and must stay exactly that.
+       This one is "seconds since the previous answer on this page — or since
+       the ladder was wired, for the first", with the same 30-minute cap. */
+    var lastAnswerAt = Date.now();
+    function answerOut(rec, d) {
+      if (!window.MrBadmusAnswerCapture) { return; }
+      var now = Date.now();
+      var secs = Math.round((now - lastAnswerAt) / 1000);
+      if (secs < 0) { secs = 0; }
+      lastAnswerAt = now;
+      d.key_stage = "KS3";
+      d.lesson_slug = slug;
+      d.question_id = slug + "#" + rec.key;
+      d.rung = rec.key;
+      d.question_text = rec.question || "";
+      d.time_spent_seconds = secs > TIME_CAP_S ? TIME_CAP_S : secs;
+      try {
+        document.dispatchEvent(new CustomEvent("mrb:answer", { detail: d }));
+      } catch (e) { /* an old browser — the lesson never depends on this */ }
     }
     /* MRB-257 (C3) — the score and note lines describe THIS sitting. A
        returning student's self-marked work is restored on load (wireSelf
@@ -806,6 +859,13 @@
               rec.correctLetter = right.letter;
             }
           });
+          if (window.MrBadmusAnswerCapture) {               // ⊕ parent truth
+            answerOut(rec, {
+              kind: "choice", answer: chosen.text,
+              correct_answer: rec.correctText || null, is_correct: correct,
+              criteria: null, marks: null
+            });
+          }
           each(options, function (b) {
             b.disabled = true;
             var mark = b.querySelector(".ks3-opt-mark");
@@ -998,6 +1058,19 @@
             var first = !rec.shown;
             show();
             if (first) { stampTime(rec); }
+            /* ⊕ Parent truth — each "Complete" is a submission of the
+               writing, so a child's answer is sent when it is committed and
+               again when they rewrite it; the same words twice are one
+               answer. The server marks it against the rung's scheme
+               (`marks: null` — it knows them). */
+            var said = answer ? (answer.value || "").trim() : "";
+            if (window.MrBadmusAnswerCapture && said !== rec.lastSaid) {
+              rec.lastSaid = said;
+              answerOut(rec, {
+                kind: "written", answer: said, correct_answer: null,
+                is_correct: null, criteria: criteria.slice(), marks: null
+              });
+            }
           }
           saveWork();
           refresh(true);
@@ -1042,7 +1115,12 @@
         }
         // Already-seen criteria are not a leak; hiding a ticked box would
         // be a lie about the state.
-        if (saved.shown || anyTicked) { show(); } else { collapse(); }
+        if (saved.shown || anyTicked) {
+          show();
+          // ⊕ Parent truth — writing committed on an earlier visit is not a
+          // new answer just because the page was opened again.
+          rec.lastSaid = answer ? (answer.value || "").trim() : "";
+        } else { collapse(); }
       } else {
         collapse();
       }
