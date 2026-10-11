@@ -522,23 +522,17 @@
        capture on the page (every school pupil, every signed-out visitor)
        this returns before building anything: no event, no object, no change.
 
-       The clock is its own, not stampTime's: stampTime times a rung's FIRST
-       resolution for the quiz-score row (MRB-262) and must stay exactly that.
-       This one is "seconds since the previous answer on this page — or since
-       the ladder was wired, for the first", with the same 30-minute cap. */
-    var lastAnswerAt = Date.now();
+       Time is stamped by the sender, on ONE clock for every answer on the
+       page (seconds since the previous answer of any kind, the first since
+       page load), so it is not computed here; stampTime still times a rung's
+       first resolution for the quiz-score row (MRB-262), unchanged. */
     function answerOut(rec, d) {
       if (!window.MrBadmusAnswerCapture) { return; }
-      var now = Date.now();
-      var secs = Math.round((now - lastAnswerAt) / 1000);
-      if (secs < 0) { secs = 0; }
-      lastAnswerAt = now;
       d.key_stage = "KS3";
       d.lesson_slug = slug;
       d.question_id = slug + "#" + rec.key;
       d.rung = rec.key;
       d.question_text = rec.question || "";
-      d.time_spent_seconds = secs > TIME_CAP_S ? TIME_CAP_S : secs;
       try {
         document.dispatchEvent(new CustomEvent("mrb:answer", { detail: d }));
       } catch (e) { /* an old browser — the lesson never depends on this */ }

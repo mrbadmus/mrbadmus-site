@@ -571,11 +571,13 @@
     var api = {
       logic: logic,
       // ⊕ Parent truth — the block's registered name ("Ks4Ladder", …) and
-      // its host, so the read-only tap above can tell a ladder from any
-      // other block and find the ladder's own Ks4Chain / Ks4Write inside it.
-      // `comp` is undefined on the page's root instance.
+      // its host and compiled template, so the read-only tap above can tell
+      // one block from another, find a block's own Ks4Chain / Ks4Write
+      // inside it, and number a lesson's blocks in their AUTHORED order
+      // (template order). `comp` is undefined on the page's root instance.
       comp: compName,
       host: hostDom,
+      template: template,
       misses: [],
       renders: 0,
       schedule: function (cb) {

@@ -850,18 +850,21 @@ try {
    from state the page has ALREADY computed, never blocking or altering it;
    any failure is silent. The page ignores the reply.
 
-   Three page types, one sender:
-     · KS3 lesson — shared/ks3.js dispatches `mrb:answer` on `document` at
-       the exact points it already knows an answer (it only does so when
-       MrBadmusAnswerCapture, set below, exists). Its /api/quiz-score body
-       also carries this load's `visit_id`.
-     · KS4 classic page — one capture-phase click listener on `.quiz-opt`
-       records the FIRST resolution of each card, reading what the card's
-       own inline script is about to mark (data-answer, the option, .q-text).
-       It never stops, prevents or alters the click.
+   Three page types, one sender (round 3: EVERY answerable shared shape —
+   the full list, with ids and sources, is the parent-truth inventory,
+   activity_ids.md):
+     · KS3 lesson — the ladder: shared/ks3.js dispatches `mrb:answer` at the
+       exact points it already knows an answer (only when
+       MrBadmusAnswerCapture, set below, exists), and its /api/quiz-score body
+       carries this load's `visit_id`. Everything else (the "Start here"
+       guess, keyed commits, predictions, "Your turn" calculations): read off
+       the page's own markup by one capture-phase click listener.
+     · KS4 classic page — the quiz cards (first resolution of each) and the
+       matching exercise (each Check), by one capture-phase click listener.
      · KS4 rebuilt (pilot) page — shared/ks4-runtime.js hands every redrawn
-       instance to MrBadmusKS4Tap (set below); a Ks4Ladder's r1–r4 going from
-       unanswered to answered is the answer. Read-only.
+       block instance to MrBadmusKS4Tap (set below); each shared block's
+       state moving from unanswered to answered is the answer. Read-only.
+   No listener ever stops, prevents or alters what the page does.
    ───────────────────────────────────────────────────────────────────────── */
 try {
   (function () {
@@ -893,10 +896,17 @@ try {
       return v.length > n ? v.slice(0, n) : v;
     }
 
-    // KS4's clock: seconds since the previous answer on this page, or since
-    // this was installed (the quiz/ladder is already wired by then) for the
-    // first. KS3 brings its own, from the ladder's wiring.
+    // THE page clock (round 3): seconds since the previous ANSWER of any kind
+    // on this page — every answerable thing the sender captures stamps here,
+    // KS3's ladder included (its own detail time is overridden), so no two
+    // clocks can disagree — and, for the first answer, since the page
+    // started loading.
     var lastAt = Date.now();
+    try {
+      if (window.performance && typeof window.performance.now === 'function') {
+        lastAt = Date.now() - window.performance.now();
+      }
+    } catch (e) { /* keep install time */ }
     function since() {
       var now = Date.now();
       var secs = Math.round((now - lastAt) / 1000);
@@ -967,19 +977,23 @@ try {
       } catch (e) { return Promise.resolve(false); }
     }
     var flushing = false;
+    var inflight = {};                         // client_event_id → a send this page has not heard back from
     function flush() {
       if (flushing) { return; }
       var tok = token();
       if (!tok) { return; }
-      var queue = boxRead().filter(boxFresh);
-      boxWrite(queue);                         // the 7-day drop, persisted
+      var all = boxRead().filter(boxFresh);
+      boxWrite(all);                           // the 7-day drop, persisted
+      var queue = all.filter(function (b) { return !inflight[b.client_event_id]; });
       if (!queue.length) { return; }
       flushing = true;
       var i = 0;
       (function next() {
         if (i >= queue.length) { flushing = false; return; }
         var b = queue[i++];
+        inflight[b.client_event_id] = 1;
         send(b, tok, false).then(function (ok) {
+          delete inflight[b.client_event_id];
           if (!ok) { flushing = false; return; }   // keep it and the rest; try again later
           boxDrop(b.client_event_id);
           next();
@@ -987,8 +1001,20 @@ try {
       })();
     }
 
+    // The server accepts ids matching ^[a-z0-9:#._-]{1,200}$ and marks 1–20
+    // with 0 ≤ marks_scored ≤ marks; anything else is sent as null rather
+    // than refused, so an odd authored id never loses the answer itself.
+    function safeId(v) {
+      if (v == null) { return null; }
+      v = String(v).toLowerCase().replace(/[^a-z0-9:#._-]+/g, '-').slice(0, 200);
+      return v || null;
+    }
     function post(d) {
-      var t = d.time_spent_seconds;
+      var t = since();
+      var mk = (typeof d.marks === 'number' && isFinite(d.marks)) ? Math.round(d.marks) : null;
+      if (mk !== null && (mk < 1 || mk > 20)) { mk = null; }
+      var ms = (mk !== null && typeof d.marks_scored === 'number' && isFinite(d.marks_scored))
+        ? Math.max(0, Math.min(mk, Math.round(d.marks_scored))) : null;
       var body = {
         client_event_id: uuid(),
         answered_at: new Date().toISOString(),
@@ -996,7 +1022,7 @@ try {
         key_stage: d.key_stage,
         path: path,
         lesson_slug: d.lesson_slug || pathSlug,
-        question_id: d.question_id == null ? null : String(d.question_id),
+        question_id: safeId(d.question_id),
         rung: d.rung == null ? null : String(d.rung),
         kind: d.kind,
         question_text: clip(d.question_text || '', 2000),
@@ -1006,14 +1032,21 @@ try {
         criteria: Array.isArray(d.criteria)
           ? d.criteria.slice(0, 12).map(function (x) { return clip(x, 2000); })
           : null,
-        marks: (typeof d.marks === 'number' && isFinite(d.marks)) ? Math.round(d.marks) : null,
-        time_spent_seconds: (typeof t === 'number' && isFinite(t))
-          ? Math.max(0, Math.min(CAP_S, Math.round(t))) : null
+        marks: mk,
+        // Round 3: what the PAGE awarded, where the page awards marks (a KS4
+        // rung's "3 marks", scored whole or not). Null where it awards none.
+        marks_scored: ms,
+        // Round 3: the child checked their own work against a worked answer
+        // or a reveal and nothing judged it. Stored UNMARKED — never correct.
+        self_checked: d.self_checked === true,
+        time_spent_seconds: t
       };
       boxKeep(body);                           // written ahead: queued until the server has it
       var tok = token();
       if (!tok) { return; }
+      inflight[body.client_event_id] = 1;
       send(body, tok, true).then(function (ok) {
+        delete inflight[body.client_event_id];
         if (!ok) { return; }                   // stays queued
         boxDrop(body.client_event_id);
         flush();
@@ -1029,136 +1062,510 @@ try {
       if (e && e.detail) { post(e.detail); }
     });
 
+    function txt(el) { return el ? (el.textContent || '').replace(/\s+/g, ' ').trim() : ''; }
+    function later(fn) { setTimeout(function () { try { fn(); } catch (e) { /* never breaks a page */ } }, 0); }
+    var once = typeof WeakSet === 'function' ? new WeakSet() : null;
+    var lastText = {};                  // question_id → the last written text sent
+
+    /* ── KS3 lesson: everything outside the ladder that takes an answer ──
+       Read from the page's own markup, in the capture phase, before the
+       page's handler runs; never stopped, prevented or altered. See
+       docs: scratchpad truth/activity_ids.md for the inventory.
+         · the "Start here" guess and every other keyed commit
+           ([data-keyedblock]): the FIRST pick in each block. The hook's
+           reply opens "Good guess." on the option the science says is right
+           (build_ks3.py `_hook_guess`), so the hook is judged; any other
+           keyed commit is a commitment the page reveals against (R3: KS3
+           activities never mark), so it is sent self_checked.
+         · a prediction ([data-activity] that is not an instrument, with
+           options and a reveal — shared/ks3.js `wirePredictions`): the first
+           pick, self_checked, with the reveal as what the page showed.
+         · "Your turn" five-line calculations (data-p<N>cfa): each time the
+           check opens the worked lines, the child's five lines, self_checked
+           (the child ticks "I had this" against the model; nothing judges).
+       Everything else on a KS3 page is listed in the inventory as not yet
+       captured, with the reason. */
+    if (/^\/ks3\//.test(path)) {
+      var ks3Slug = function () {
+        var l = document.querySelector('[data-lesson]');
+        return (l && l.getAttribute('data-lesson')) || pathSlug;
+      };
+      var optLabel = function (b) { return txt(b.querySelector('.ks3-opt-label') || b); };
+      // What the child was asked: the commit line where the block has one,
+      // else the block's own headings and paragraphs above its options
+      // (a "Think again" block: the quoted idea, then the ask).
+      var promptOf = function (sec) {
+        var c = sec.querySelector('.ks3-commit');
+        if (c) { return txt(c); }
+        var out = [], kids = sec.children || [];
+        for (var i = 0; i < kids.length; i += 1) {
+          var el = kids[i];
+          if (el.querySelector && (el.matches('.ks3-options') || el.querySelector('.ks3-option'))) { break; }
+          if (/^(P|H2|H3)$/.test(el.tagName) && !el.classList.contains('ks3-eyebrow')) { out.push(txt(el)); }
+          else if (el.querySelector) {
+            var q = el.querySelectorAll('h2, h3, p:not(.ks3-eyebrow)');
+            for (var j = 0; j < q.length; j += 1) { out.push(txt(q[j])); }
+          }
+        }
+        return out.filter(Boolean).join(' ');
+      };
+      var cfaPrefix = function (btn) {
+        var a = btn.attributes || [];
+        for (var i = 0; i < a.length; i += 1) {
+          var m = /^(data-p\d+cfa)-check$/.exec(a[i].name);
+          if (m) { return m[1]; }
+        }
+        return null;
+      };
+      document.addEventListener('click', function (e) {
+        try {
+          var t = e.target;
+          if (!t || !t.closest) { return; }
+          var slug = ks3Slug();
+          var opt = t.closest('.ks3-option');
+          if (opt && !opt.disabled && !opt.closest('.ks3-ladder')) {
+            var sec = opt.closest('[data-activity]');
+            if (!sec || !once || once.has(sec)) { return; }
+            var act = sec.getAttribute('data-activity') || '';
+            var keyed = sec.hasAttribute('data-keyedblock') ? sec.querySelector('[data-keyed]') : null;
+            if (keyed && keyed.contains(opt)) {
+              once.add(sec);
+              if (act === 'hook') {
+                var good = null, mine = null;
+                var opts = keyed.querySelectorAll('.ks3-option');
+                for (var i = 0; i < opts.length; i += 1) {
+                  var di = opts[i].getAttribute('data-i');
+                  var word = txt(keyed.querySelector('.ks3-keyed-reply[data-reply="' + di + '"] strong'));
+                  if (word.indexOf('Good guess') === 0) { good = opts[i]; }
+                  if (opts[i] === opt) { mine = word; }
+                }
+                post({ key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#start', rung: null,
+                       kind: 'choice', question_text: promptOf(sec), answer: optLabel(opt),
+                       correct_answer: good ? optLabel(good) : null,
+                       is_correct: mine == null || good == null ? null : mine.indexOf('Good guess') === 0 });
+              } else {
+                post({ key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act, rung: null,
+                       kind: 'choice', question_text: promptOf(sec), answer: optLabel(opt),
+                       correct_answer: null, is_correct: null, self_checked: true });
+              }
+              return;
+            }
+            if (!sec.hasAttribute('data-instrument') && sec.querySelector('[data-reveal]')) {
+              once.add(sec);
+              post({ key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act, rung: null,
+                     kind: 'choice', question_text: promptOf(sec), answer: optLabel(opt),
+                     correct_answer: txt(sec.querySelector('[data-reveal]')) || null,
+                     is_correct: null, self_checked: true });
+            }
+            return;
+          }
+          var btn = t.closest('button');
+          if (!btn || btn.disabled) { return; }
+          var pre = cfaPrefix(btn);
+          if (!pre) { return; }
+          var q = btn.closest('[' + pre + '-q]');
+          var csec = btn.closest('[data-activity]');
+          if (!q || !csec) { return; }
+          var rev = q.querySelector('[' + pre + '-reveal]');
+          if (!rev || !rev.hasAttribute('hidden')) { return; }   // already open: not a new submission
+          later(function () {
+            if (rev.hasAttribute('hidden')) { return; }          // the page refused (nothing to check yet)
+            var labelFor = function (inp) {
+              var l = inp.id ? q.querySelector('label[for="' + inp.id + '"]') : null;
+              return l ? txt(l) : '';
+            };
+            var ins = q.querySelectorAll('[' + pre + '-input]');
+            var mine = [];
+            for (var i = 0; i < ins.length; i += 1) { mine.push((labelFor(ins[i]) ? labelFor(ins[i]) + ': ' : '') + (ins[i].value || '').trim()); }
+            var rows = q.querySelectorAll('[' + pre + '-line]');
+            var model = [];
+            for (var k = 0; k < rows.length; k += 1) {
+              var row = rows[k].parentNode;
+              var lab = row ? txt(row.querySelector('.ks3-cfa-label')) : '';
+              model.push((lab ? lab + ': ' : '') + txt(rows[k]));
+            }
+            var n = parseInt(q.getAttribute(pre + '-q'), 10);
+            post({ key_stage: 'KS3', lesson_slug: ks3Slug(),
+                   question_id: ks3Slug() + '#' + (csec.getAttribute('data-activity') || 'your-turn') + '-' + ((isNaN(n) ? 0 : n) + 1),
+                   rung: null, kind: 'written', question_text: txt(q.querySelector('[' + pre + '-head]')),
+                   answer: mine.join('\n'), correct_answer: model.join('\n'),
+                   is_correct: null, self_checked: true });
+          });
+        } catch (err) { /* capture never breaks a lesson */ }
+      }, true);
+      return;
+    }
+
     if (!/^\/(combined|triple)\//.test(path)) { return; }
 
     /* ── KS4 classic: the first resolution of each quiz card ── */
     var settled = typeof WeakSet === 'function' ? new WeakSet() : null;
+    var matchSent = {};                 // question_id → the slot last sent
     document.addEventListener('click', function (e) {
       try {
         var btn = e.target && e.target.closest ? e.target.closest('.quiz-opt') : null;
-        if (!btn || btn.disabled) { return; }
-        var card = btn.closest('.quiz-card');
-        if (!card || !card.hasAttribute('data-answer') || !btn.hasAttribute('data-oi')) { return; }
-        // The card's own script marks it once and ignores every later click
-        // (`card.dataset.answered`), so only the first resolution is sent.
-        if (card.hasAttribute('data-answered') || (settled && settled.has(card))) { return; }
-        if (settled) { settled.add(card); }
-        var opts = card.querySelectorAll('.quiz-opt');
-        var right = parseInt(card.getAttribute('data-answer'), 10);
-        var picked = parseInt(btn.getAttribute('data-oi'), 10);
-        var q = card.querySelector('.q-text');
-        post({
-          key_stage: 'KS4', lesson_slug: pathSlug, question_id: null, rung: null,
-          kind: 'choice',
-          question_text: q ? q.textContent : '',
-          answer: (btn.textContent || '').trim(),
-          correct_answer: opts[right] ? (opts[right].textContent || '').trim() : null,
-          is_correct: picked === right,
-          criteria: null, marks: null,
-          time_spent_seconds: since()
+        if (btn && !btn.disabled) {
+          var card = btn.closest('.quiz-card');
+          if (!card || !card.hasAttribute('data-answer') || !btn.hasAttribute('data-oi')) { return; }
+          // The card's own script marks it once and ignores every later click
+          // (`card.dataset.answered`), so only the first resolution is sent.
+          if (card.hasAttribute('data-answered') || (settled && settled.has(card))) { return; }
+          if (settled) { settled.add(card); }
+          var opts = card.querySelectorAll('.quiz-opt');
+          var right = parseInt(card.getAttribute('data-answer'), 10);
+          var picked = parseInt(btn.getAttribute('data-oi'), 10);
+          var q = card.querySelector('.q-text');
+          post({
+            key_stage: 'KS4', lesson_slug: pathSlug, question_id: null, rung: null,
+            kind: 'choice',
+            question_text: q ? q.textContent : '',
+            answer: (btn.textContent || '').trim(),
+            correct_answer: opts[right] ? (opts[right].textContent || '').trim() : null,
+            is_correct: picked === right
+          });
+          return;
+        }
+        /* The matching exercise: on "Check Answers", every placed card whose
+           slot changed since it was last sent. The page's checkMatching()
+           runs first (this reads its verdict classes a tick later). */
+        var chk = e.target && e.target.closest ? e.target.closest('.match-check-btn') : null;
+        if (!chk) { return; }
+        var m = /checkMatching\('([^']*)'/.exec(chk.getAttribute('onclick') || '');
+        var st = (m && m[1]) || pathSlug;
+        var scope = chk.closest('.section') || document;
+        later(function () {
+          var drops = scope.querySelectorAll('.match-drop');
+          for (var i = 0; i < drops.length; i += 1) {
+            var placed = drops[i].querySelector('.match-def');
+            if (!placed) { continue; }
+            var n = parseInt(placed.getAttribute('data-index'), 10);
+            var id = 'ks4c:' + st + ':match-' + ((isNaN(n) ? i : n) + 1);
+            var slot = drops[i].getAttribute('data-accepts');
+            if (matchSent[id] === slot) { continue; }
+            matchSent[id] = slot;
+            var g = placed.getAttribute('data-group');
+            var home = scope.querySelector('.match-drop[data-accepts-group="' + g + '"]');
+            post({
+              key_stage: 'KS4', lesson_slug: pathSlug, question_id: id, rung: null, kind: 'choice',
+              question_text: txt(placed),
+              answer: txt(drops[i].parentNode && drops[i].parentNode.querySelector('.match-term')),
+              correct_answer: home ? txt(home.parentNode && home.parentNode.querySelector('.match-term')) : null,
+              is_correct: drops[i].classList.contains('match-correct')
+            });
+          }
         });
       } catch (err) { /* capture never breaks the quiz */ }
     }, true);
 
-    /* ── KS4 rebuilt (pilot) page: Ks4Ladder's four rungs ── */
-    var RUNGS = ['r1', 'r2', 'r3', 'r4'];
+    /* ── KS4 rebuilt (pilot) page: every shared block that takes an answer ──
+       shared/ks4-runtime.js hands each redrawn block instance to the tap; a
+       block's state moving from "not answered" to "answered" is the answer.
+       Read-only. Ids number a block by its AUTHORED order among blocks of
+       the same kind in the lesson's template (not DOM order), 1-based.
+       A lesson's own bespoke activities (Design's per-lesson logic, e.g.
+       "Build the two cells") have no shared shape and are not captured —
+       see the inventory. */
     var prevOf = typeof WeakMap === 'function' ? new WeakMap() : null;
-    var lastR4Of = typeof WeakMap === 'function' ? new WeakMap() : null;
-    function kid(api, name) {
-      if (!api.host || !api.host.querySelectorAll) { return null; }
+    function ownerOf(api) {
+      var el = api.host && api.host.parentNode;
+      while (el) { if (el.__mrbKs4) { return el.__mrbKs4; } el = el.parentNode; }
+      return null;
+    }
+    function rootLevel(api) { var o = ownerOf(api); return !!o && o.comp === undefined; }
+    function nth(api) {
+      var owner = ownerOf(api);
+      var want = api.host && api.host.getAttribute ? parseInt(api.host.getAttribute('data-dc-tpl'), 10) : NaN;
+      if (!owner || !owner.template || isNaN(want)) { return 1; }
+      var list = [];
+      (function walk(n) {
+        if (!n || typeof n !== 'object') { return; }
+        if (Array.isArray(n)) { n.forEach(walk); return; }
+        if (n.t === 'child' && n.comp === api.comp) { list.push(n.i); }
+        for (var k in n) {
+          if (k !== 'a' && Object.prototype.hasOwnProperty.call(n, k) && n[k] && typeof n[k] === 'object') { walk(n[k]); }
+        }
+      })(owner.template.roots);
+      var ix = list.indexOf(want);
+      return ix < 0 ? 1 : ix + 1;
+    }
+    function kids(api, name) {
+      var out = [];
+      if (!api.host || !api.host.querySelectorAll) { return out; }
       var nodes = api.host.querySelectorAll('[data-dc-tpl]');
       for (var i = 0; i < nodes.length; i += 1) {
         var a = nodes[i].__mrbKs4;
-        if (a && a !== api && a.comp === name) { return a; }
+        if (a && a !== api && a.comp === name && ownerOf(a) === api) { out.push(a); }
       }
+      return out;
+    }
+    function optText(o) { return o && o.text != null ? String(o.text) : null; }
+    function rightOpt(opts) {
+      for (var i = 0; i < (opts || []).length; i += 1) { if (opts[i] && opts[i].correct) { return opts[i]; } }
       return null;
     }
-    function rungOut(api, key) {
-      var L = api.logic, s = L.state || {}, p = L.props || {}, R = p.rungs || {};
-      var slug = p.slug || pathSlug;
-      var d = {
-        key_stage: 'KS4', lesson_slug: slug, question_id: 'ks4:' + slug + '#' + key, rung: key,
-        criteria: null, marks: null, correct_answer: null, is_correct: null
-      };
-      if (key === 'r1') {
-        var r1 = R.r1 || {}, o1 = r1.options || [], pick = o1[s.r1Pick] || {}, good = null;
-        for (var i = 0; i < o1.length; i += 1) { if (o1[i] && o1[i].correct) { good = o1[i]; break; } }
-        d.kind = 'choice';
-        d.question_text = r1.prompt || '';
-        d.answer = pick.text == null ? null : pick.text;
-        d.correct_answer = good ? good.text : null;
-        d.is_correct = s.r1 === true;
-      } else if (key === 'r2') {
-        var r2 = R.r2 || {}, kind = r2.kind || 'calc';
-        d.question_text = r2.prompt || '';
-        d.is_correct = s.r2 === true;
-        if (kind === 'data') {
-          var parts = r2.parts || [];
-          d.kind = 'choice';
-          d.answer = parts.map(function (pt, k) {
-            var v = s.r2parts ? s.r2parts[k] : undefined;
-            return (pt.label || '') + ': ' + ((pt.options || [])[v] == null ? '' : pt.options[v]);
-          }).join('\n');
-          d.correct_answer = parts.map(function (pt) {
-            return (pt.label || '') + ': ' + ((pt.options || [])[pt.answer] == null ? String(pt.answer) : pt.options[pt.answer]);
-          }).join('\n');
-        } else if (kind === 'text') {
-          d.kind = 'numeric';                       // a typed answer marked against a key
-          d.answer = s.r2num || '';
-          d.correct_answer = (r2.accept || [])[0] == null ? null : r2.accept[0];
-        } else {
-          var conv = r2.convOptions || [];
-          d.kind = 'numeric';
-          d.answer = (conv[s.r2conv] != null ? conv[s.r2conv] + ' → ' : '') +
-                     String(s.r2num || '').trim() + (s.r2unit ? ' ' + s.r2unit : '');
-          d.correct_answer = (conv[r2.convAnswer] != null ? conv[r2.convAnswer] + ' → ' : '') +
-                     (r2.answer == null ? '' : String(r2.answer)) + (r2.unit ? ' ' + r2.unit : '');
-        }
-      } else if (key === 'r3') {
-        var r3 = R.r3 || {}, links = r3.links || [], herr = r3.herrings || [];
-        var chain = kid(api, 'Ks4Chain');
-        var ids = chain && chain.logic && chain.logic.state ? (chain.logic.state.chain || []) : [];
-        d.kind = 'order';
-        d.question_text = r3.prompt || '';
-        d.answer = ids.map(function (id) {
-          var n = parseInt(String(id).slice(1), 10);
-          if (String(id).charAt(0) === 'L') { return links[n] == null ? '' : links[n]; }
-          return herr[n] && herr[n].text != null ? herr[n].text : '';
-        }).join('\n');
-        d.correct_answer = links.join('\n');
-        d.is_correct = s.r3 === true;
-      } else {
-        var r4 = R.r4 || {};
-        var write = kid(api, 'Ks4Write');
-        var text = write && write.logic && write.logic.state ? String(write.logic.state.text || '').trim() : '';
-        d.kind = 'written';
-        d.question_text = r4.question || '';
-        d.answer = text;
-        d.criteria = (r4.points && r4.points.length)
-          ? r4.points.slice()
-          : (r4.levels || []).map(function (lv) { return (lv.label ? lv.label + ': ' : '') + (lv.text || ''); });
-        d.marks = r4.marks || 4;
-        // The same words sent twice are one answer: after "Retry my misses"
-        // the rung is re-scored on ticks, but only new writing is re-sent.
-        if (lastR4Of.get(api) === text) { return; }
-        lastR4Of.set(api, text);
-      }
-      d.time_spent_seconds = since();
+    function chainAnswer(chainApi, links, herr) {
+      var ids = chainApi && chainApi.logic && chainApi.logic.state ? (chainApi.logic.state.chain || []) : [];
+      return ids.map(function (id) {
+        var n = parseInt(String(id).slice(1), 10);
+        if (String(id).charAt(0) === 'L') { return links[n] == null ? '' : links[n]; }
+        return herr[n] && herr[n].text != null ? herr[n].text : '';
+      }).join('\n');
+    }
+    function schemeOf(it) {
+      return (it.points && it.points.length)
+        ? it.points.slice()
+        : (it.levels || []).map(function (lv) { return (lv.label ? lv.label + ': ' : '') + (lv.text || ''); });
+    }
+    function writtenOut(d, text) {
+      // The same words sent twice are one answer.
+      if (lastText[d.question_id] === text) { return; }
+      lastText[d.question_id] = text;
+      d.answer = text;
       post(d);
     }
+    function calcAnswer(it, conv, num, unit) {
+      var c = it.convOptions || [];
+      return (c[conv] != null ? c[conv] + ' → ' : '') + String(num || '').trim() + (unit ? ' ' + unit : '');
+    }
+    function calcRight(it) {
+      var c = it.convOptions || [];
+      return (c[it.convAnswer] != null ? c[it.convAnswer] + ' → ' : '') +
+             (it.answer == null ? '' : String(it.answer)) + (it.unit ? ' ' + it.unit : '');
+    }
+    function base(id, rung) {
+      return { key_stage: 'KS4', lesson_slug: pathSlug, question_id: 'ks4:' + pathSlug + '#' + id,
+               rung: rung || null, criteria: null, marks: null, correct_answer: null, is_correct: null };
+    }
+
+    var HANDLERS = {
+      Ks4Guess: function (api, s, prev) {
+        if (!rootLevel(api) || prev.pick != null || s.pick == null) { return; }
+        var p = api.logic.props || {}, o = (p.options || [])[s.pick] || {};
+        var d = base('start');
+        d.kind = 'choice'; d.question_text = p.question || '';
+        d.answer = optText(o); d.correct_answer = optText(rightOpt(p.options));
+        d.is_correct = !!o.correct;
+        post(d);
+      },
+      Ks4Choice: function (api, s, prev) {
+        if (!rootLevel(api) || prev.pick != null || s.pick == null) { return; }
+        var p = api.logic.props || {}, opts = p.options || [], o = opts[s.pick] || {};
+        var graded = opts.some(function (x) { return x && x.correct !== undefined; });
+        var d = base('choice-' + nth(api));
+        d.kind = 'choice'; d.question_text = p.prompt || '';
+        d.answer = optText(o);
+        if (graded) { d.correct_answer = optText(rightOpt(opts)); d.is_correct = !!o.correct; }
+        else { d.correct_answer = p.reveal || null; d.self_checked = true; }
+        post(d);
+      },
+      Ks4Sort: function (api, s, prev) {
+        if (!rootLevel(api) || prev.checked || !s.checked) { return; }
+        var p = api.logic.props || {}, k = nth(api), bins = p.bins || [];
+        var binLabel = function (id) { for (var j = 0; j < bins.length; j += 1) { if (bins[j].id === id) { return bins[j].label; } } return null; };
+        (p.items || []).forEach(function (it, i) {
+          var at = (s.placed || {})[i];
+          if (at === undefined) { return; }
+          var d = base('sort-' + k + '-' + (i + 1));
+          d.kind = 'choice';
+          d.question_text = (p.prompt || p.title || 'Sort') + ' — ' + (it.text || '');
+          d.answer = binLabel(at); d.correct_answer = binLabel(it.bin);
+          d.is_correct = at === it.bin;
+          post(d);
+        });
+      },
+      Ks4QuizBank: function (api, s, prev) {
+        if (!rootLevel(api)) { return; }
+        var p = api.logic.props || {};
+        var all = (p.questions || []).filter(Boolean).slice(0, 5);
+        var was = prev.picks || {};
+        Object.keys(s.picks || {}).forEach(function (i) {
+          if (was[i] !== undefined) { return; }
+          var q = all[i]; if (!q) { return; }
+          var o = (q.options || [])[s.picks[i]] || {};
+          var d = base('quiz-' + nth(api) + '-' + (+i + 1));
+          // The practice set IS the subtopic's authored quiz (ks4-lib.js
+          // `bank()` over all_subtopics_*.py), route by route — the same
+          // items a classic page's cards carry. So it takes the classic id:
+          // null here, and the server derives `ks4q:<slug>:<sha1 of the
+          // normalised text>`, which is the same question on every route.
+          d.question_id = null;
+          d.kind = 'choice'; d.question_text = q.prompt || '';
+          d.answer = optText(o); d.correct_answer = optText(rightOpt(q.options));
+          d.is_correct = !!o.correct;
+          post(d);
+        });
+      },
+      Ks4Cfifa: function (api, s, prev) {
+        if (!rootLevel(api)) { return; }
+        var p = api.logic.props || {}, defs = p.questions || [], was = prev.q || {}, k = nth(api);
+        Object.keys(s.q || {}).forEach(function (i) {
+          var now = s.q[i] || {};
+          if (!now.open || (was[i] && was[i].open)) { return; }
+          var o = defs[i] || {}, steps = o.steps || [];
+          var d = base('cfifa-' + k + '-' + (+i + 1));
+          d.kind = 'written'; d.question_text = o.head || ''; d.self_checked = true;
+          d.answer = steps.map(function (st, j) { return (st.label ? st.label + ': ' : '') + String((now.lines || [])[j] || '').trim(); }).join('\n');
+          d.correct_answer = steps.map(function (st) { return (st.label ? st.label + ': ' : '') + (st.line || ''); }).join('\n');
+          post(d);
+        });
+      },
+      Ks4Steps: function (api, s, prev) {
+        var p = api.logic.props || {};
+        if (!rootLevel(api) || p.mode !== 'attempt' || prev.checked || !s.checked) { return; }
+        var mine = [], model = [];
+        (p.steps || []).forEach(function (st, i) {
+          (st.lines || []).forEach(function (ln, j) {
+            var lab = ln.label ? ln.label + ': ' : '';
+            mine.push(lab + String((s.vals || {})[i + '-' + j] || '').trim());
+            model.push(lab + (ln.line || ''));
+          });
+        });
+        var d = base('steps-' + nth(api));
+        d.kind = 'written'; d.question_text = p.head || ''; d.self_checked = true;
+        d.answer = mine.join('\n'); d.correct_answer = model.join('\n');
+        post(d);
+      },
+      Ks4Chain: function (api, s, prev) {
+        if (!rootLevel(api) || prev.reported || !s.reported) { return; }
+        var p = api.logic.props || {}, links = p.links || [], herr = p.herrings || [];
+        var ids = s.chain || [];
+        var ok = ids.length === links.length && ids.every(function (id, k) { return id === 'L' + k; });
+        var d = base('chain-' + nth(api));
+        d.kind = 'order'; d.question_text = p.prompt || p.title || '';
+        d.answer = chainAnswer(api, links, herr); d.correct_answer = links.join('\n');
+        d.is_correct = ok;
+        post(d);
+      },
+      Ks4Write: function (api, s, prev) {
+        if (!rootLevel(api) || prev.open || !s.open) { return; }
+        var p = api.logic.props || {};
+        var d = base('write-' + nth(api));
+        d.kind = 'written'; d.question_text = p.question || '';
+        d.criteria = schemeOf(p); d.marks = p.marks || 4;
+        writtenOut(d, String(s.text || '').trim());
+      },
+      Ks4Ladder: function (api, s, prev) {
+        var L = api.logic, p = L.props || {}, R = p.rungs || {};
+        ['r1', 'r2', 'r3', 'r4'].forEach(function (key) {
+          var was = prev[key] === undefined ? null : prev[key];
+          var v = s[key] === undefined ? null : s[key];
+          if (was !== null || v === null) { return; }
+          var d = base(key, key);
+          if (p.slug) { d.lesson_slug = p.slug; d.question_id = 'ks4:' + p.slug + '#' + key; }
+          var r = R[key] || {};
+          if (key === 'r1') {
+            var o1 = r.options || [];
+            d.kind = 'choice'; d.question_text = r.prompt || '';
+            d.answer = optText(o1[s.r1Pick]); d.correct_answer = optText(rightOpt(o1));
+          } else if (key === 'r2') {
+            var kind = r.kind || 'calc';
+            d.question_text = r.prompt || '';
+            if (kind === 'data') {
+              var parts = r.parts || [];
+              d.kind = 'choice';
+              d.answer = parts.map(function (pt, k) {
+                var vv = s.r2parts ? s.r2parts[k] : undefined;
+                return (pt.label || '') + ': ' + ((pt.options || [])[vv] == null ? '' : pt.options[vv]);
+              }).join('\n');
+              d.correct_answer = parts.map(function (pt) {
+                return (pt.label || '') + ': ' + ((pt.options || [])[pt.answer] == null ? String(pt.answer) : pt.options[pt.answer]);
+              }).join('\n');
+            } else if (kind === 'text') {
+              d.kind = 'numeric';               // a typed answer marked against a key
+              d.answer = s.r2num || '';
+              d.correct_answer = (r.accept || [])[0] == null ? null : r.accept[0];
+            } else {
+              d.kind = 'numeric';
+              d.answer = calcAnswer(r, s.r2conv, s.r2num, s.r2unit);
+              d.correct_answer = calcRight(r);
+            }
+          } else if (key === 'r3') {
+            d.kind = 'order'; d.question_text = r.prompt || '';
+            d.answer = chainAnswer(kids(api, 'Ks4Chain')[0], r.links || [], r.herrings || []);
+            d.correct_answer = (r.links || []).join('\n');
+          } else {
+            var w = kids(api, 'Ks4Write')[0];
+            d.kind = 'written'; d.question_text = r.question || '';
+            d.criteria = schemeOf(r); d.marks = r.marks || 4;
+            writtenOut(d, w && w.logic && w.logic.state ? String(w.logic.state.text || '').trim() : '');
+            return;
+          }
+          // The page scores the rung whole: the marks on screen, or none.
+          d.marks = r.marks || { r1: 1, r2: 2, r3: 3 }[key];
+          d.is_correct = v === true;
+          d.marks_scored = v === true ? d.marks : 0;
+          post(d);
+        });
+      },
+      Ks4Practice: function (api, s, prev) {
+        var p = api.logic.props || {}, R = p.rungs || {};
+        var L = [R.r1 || [], R.r2 || [], R.r3 || [], R.r4 || []];
+        var was = prev.q || {}, now = s.q || {}, hidden = s.hidden || {};
+        var chainKeys = [], writeKeys = [];
+        L.forEach(function (items, ri) {
+          items.forEach(function (it, i) {
+            var k = ri + '-' + i, kind = it.kind || 'mcq';
+            if (kind === 'chain' && !hidden[k]) { chainKeys.push(k); }
+            if (kind === 'write' && !hidden[k]) { writeKeys.push(k); }
+          });
+        });
+        L.forEach(function (items, ri) {
+          items.forEach(function (it, i) {
+            var k = ri + '-' + i, st = now[k] || {}, pv = was[k] || {};
+            var res = st.res === undefined ? null : st.res, pres = pv.res === undefined ? null : pv.res;
+            if (pres !== null || res === null) { return; }
+            var kind = it.kind || 'mcq';
+            var d = base('r' + (ri + 1) + '-' + (i + 1), 'r' + (ri + 1));
+            d.question_text = it.prompt || '';
+            d.marks = it.marks || [1, 3, 3, 6][ri];
+            if (kind === 'write') {
+              var w = kids(api, 'Ks4Write')[writeKeys.indexOf(k)];
+              d.kind = 'written'; d.question_text = it.prompt || it.question || '';
+              d.criteria = schemeOf(it);
+              writtenOut(d, w && w.logic && w.logic.state ? String(w.logic.state.text || '').trim() : '');
+              return;
+            }
+            if (kind === 'mcq') {
+              d.kind = 'choice';
+              d.answer = optText((it.options || [])[st.pick]); d.correct_answer = optText(rightOpt(it.options));
+            } else if (kind === 'calc') {
+              d.kind = 'numeric';
+              d.answer = calcAnswer(it, st.conv, st.num, st.unit); d.correct_answer = calcRight(it);
+            } else {
+              d.kind = 'order';
+              d.answer = chainAnswer(kids(api, 'Ks4Chain')[chainKeys.indexOf(k)], it.links || [], it.herrings || []);
+              d.correct_answer = (it.links || []).join('\n');
+            }
+            d.is_correct = res === true;
+            d.marks_scored = res === true ? d.marks : 0;
+            post(d);
+          });
+        });
+      }
+    };
+
+    // What each block's handler compares against: the few state fields that
+    // say "answered", copied (the block replaces these objects on setState,
+    // but a copy costs nothing and cannot alias).
+    function snap(s) {
+      var o = {};
+      ['pick', 'checked', 'reported', 'open', 'r1', 'r2', 'r3', 'r4'].forEach(function (k) { o[k] = s[k]; });
+      o.picks = Object.assign({}, s.picks || {});
+      o.q = {};
+      Object.keys(s.q || {}).forEach(function (k) { o.q[k] = Object.assign({}, s.q[k]); });
+      return o;
+    }
+    var EMPTY = { pick: null, checked: false, reported: false, open: false,
+                  r1: null, r2: null, r3: null, r4: null, picks: {}, q: {} };
+
     window.MrBadmusKS4Tap = function (api) {
-      if (!api || api.comp !== 'Ks4Ladder' || !api.logic || !prevOf) { return; }
+      if (!api || !api.logic || !prevOf) { return; }
+      var h = HANDLERS[api.comp];
+      if (!h) { return; }
       var s = api.logic.state || {};
-      var prev = prevOf.get(api) || { r1: null, r2: null, r3: null, r4: null };
-      var now = {};
-      RUNGS.forEach(function (k) {
-        var v = s[k] === undefined ? null : s[k];
-        now[k] = v;
-        if (prev[k] === null && v !== null) {
-          try { rungOut(api, k); } catch (e) { /* capture never breaks a lesson */ }
-        }
-      });
-      prevOf.set(api, now);
+      var prev = prevOf.get(api) || EMPTY;
+      prevOf.set(api, snap(s));
+      try { h(api, s, prev); } catch (e) { /* capture never breaks a lesson */ }
     };
   })();
 } catch (e) {}
