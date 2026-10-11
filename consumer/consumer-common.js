@@ -578,6 +578,11 @@
         }
         document.body.style.display = 'block';
         var session = state.session;
+        // ⊕ Parent truth — a child's queued lesson answers, with this page's
+        // fresh token. Child sessions only; nothing for a parent or a stranger.
+        if (session && session.access_token && isChildSession(session)) {
+          setTimeout(function () { flushAnswerOutbox(session.access_token); }, 1500);
+        }
         return opts.run({
           sb: client,
           session: session,
@@ -1147,6 +1152,64 @@
   function isChildSession(session) {
     var c = window.MrBadmusConfig;
     return !!(c && typeof c.isChildSession === 'function' && c.isChildSession(session));
+  }
+
+  /* ── flushAnswerOutbox — parent truth follow-up (11 Oct 2026) ──────────
+     The lesson pages (shared/mrbadmus.v2.js) write every answer a consumer
+     child gives to localStorage `mrb_answer_outbox_v1` BEFORE sending it,
+     and remove it once the server answers 2xx. Those pages load no Supabase
+     SDK, so an expired token there means a 401 and a queued answer. This
+     page DOES have the SDK, and getSession() has just refreshed the token —
+     so a child opening Today (or any consumer page) delivers whatever is
+     waiting: oldest first, removed on 2xx, kept on any failure (and the
+     flush stops there), anything older than 7 days dropped. The server
+     de-duplicates on `client_event_id`, so a re-send is safe.
+     ⚠️ TWIN of the outbox in shared/mrbadmus.v2.js: the same key, cap, age
+     limit and route. Change them together. */
+  var OUTBOX_KEY = 'mrb_answer_outbox_v1', OUTBOX_CAP = 200, OUTBOX_TTL_MS = 7 * 24 * 3600 * 1000;
+  var outboxFlushing = false;
+  function outboxRead() {
+    try {
+      var v = JSON.parse(window.localStorage.getItem(OUTBOX_KEY) || '[]');
+      return Array.isArray(v) ? v : [];
+    } catch (e) { return []; }
+  }
+  function outboxWrite(list) {
+    try {
+      if (!list.length) { window.localStorage.removeItem(OUTBOX_KEY); }
+      else { window.localStorage.setItem(OUTBOX_KEY, JSON.stringify(list.slice(-OUTBOX_CAP))); }
+    } catch (e) { /* private mode — nothing was queued here either */ }
+  }
+  function outboxFresh(b) {
+    var t = b && b.client_event_id && Date.parse(b.answered_at);
+    return !!t && (Date.now() - t) < OUTBOX_TTL_MS;
+  }
+  function flushAnswerOutbox(token) {
+    if (outboxFlushing || !token || !CFG.BACKEND_URL) { return; }
+    var queue = outboxRead().filter(outboxFresh);
+    outboxWrite(queue);
+    if (!queue.length) { return; }
+    outboxFlushing = true;
+    var i = 0;
+    (function next() {
+      if (i >= queue.length) { outboxFlushing = false; return; }
+      var b = queue[i++];
+      var sent;
+      try {
+        sent = fetch(CFG.BACKEND_URL + '/api/consumer/child/answer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify(b)
+        }).then(function (r) { return !!(r && r.ok); }, function () { return false; });
+      } catch (e) { sent = Promise.resolve(false); }
+      sent.then(function (ok) {
+        if (!ok) { outboxFlushing = false; return; }
+        outboxWrite(outboxRead().filter(function (x) {
+          return outboxFresh(x) && x.client_event_id !== b.client_event_id;
+        }));
+        next();
+      });
+    })();
   }
 
   /* ── childSignIn — THE one username sign-in (B2C unit 6) ───────────────
