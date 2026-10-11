@@ -6,6 +6,11 @@
   },
   {
     "subject": "physics",
+    "name": "Waves Practical Lab",
+    "path": "/simulations/physics/waves-practical-lab/"
+  },
+  {
+    "subject": "physics",
     "name": "Seismic Wave Lab",
     "path": "/simulations/physics/seismic-wave-lab/"
   },

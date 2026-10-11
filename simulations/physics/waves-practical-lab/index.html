@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en" data-sim="practical">
+<head>
+<meta charset="utf-8">
+<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#FBF3E6">
+<title>Waves Practical Lab | MrBadmus</title>
+<!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614"><!--/mrb:brand-head-->
+<link rel="stylesheet" href="/simulations/simulations.css?v=af9714e9">
+<link rel="stylesheet" href="/simulations/fullscreen.css?v=382e3789">
+<link rel="stylesheet" href="sim-theme.css">
+<script src="/shared/theme.js?v=f04be205" defer></script>
+<script src="/simulations/fullscreen.js?v=992283cb" defer></script>
+<script src="/simulations/dc-runtime.js?v=d8291a18"></script>
+</head>
+<body>
+<header class="sim-bar">
+  <!--mrb:brand--><a class="mrb-brand" href="/" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
+  <a class="sim-back" href="/simulations/physics/"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>Physics</a>
+  <button class="sim-fs" type="button" aria-label="Full screen" aria-pressed="false"><svg class="sim-fs__in" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7V2h5M16 7V2h-5M2 11v5h5M16 11v5h-5"/></svg><svg class="sim-fs__out" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M7 2v5H2M11 2v5h5M7 16v-5H2M11 16v-5h5"/></svg><span class="sim-fs__text">Full screen</span></button>
+  <span class="mrb-theme-slot" data-mrb-theme="compact"></span>
+</header>
+<x-dc>
+<helmet>
+  <title>Waves Practical Lab</title>
+  <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+  <style>
+    body{margin:0;background:#FBF3E6}
+    [hidden]{display:none !important}
+    :focus-visible{outline:2px solid #E4572E;outline-offset:2px}
+    a{color:#A93411}a:hover{color:#7F2408}
+    #wpl-lab button:disabled{opacity:.45;cursor:default}
+  </style>
+</helmet>
+<div style="background:var(--st-ground);color:var(--st-ink);font-family:var(--st-ui);font-size:17px;line-height:1.5;min-height:100vh">
+  <div style="max-width:1500px;margin:0 auto;padding:28px clamp(16px,2.4vw,36px) 48px;display:grid;gap:22px">
+    <header style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 24px">
+      <div style="min-width:0">
+        <div style="font:500 12px/1.3 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;color:var(--st-caption)">AQA Physics 4.6.1.2 · Required practical · Waves</div>
+        <h1 style="margin:12px 0 0;font:600 clamp(34px,4vw,56px)/1 var(--st-display);letter-spacing:-0.035em;text-wrap:balance">Waves Practical Lab</h1>
+        <p style="margin:12px 0 0;color:var(--st-muted);font-size:18px;max-width:50ch;text-wrap:pretty">Measure the frequency and the wavelength. Then work out the wave speed.</p>
+      </div>
+      <div id="tabs" role="tablist" aria-label="Practical" style="display:flex;flex-wrap:wrap;gap:3px;padding:3px;background:var(--st-seg-bg);border-radius:9px">
+        <button role="tab" aria-selected="true" data-mode="R" style="font:500 15px/1 var(--st-ui);padding:11px 18px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer;white-space:nowrap">Ripple tank</button>
+        <button role="tab" aria-selected="false" data-mode="S" style="font:500 15px/1 var(--st-ui);padding:11px 18px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer;white-space:nowrap">Waves on a string</button>
+      </div>
+    </header>
+
+    <div style="display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start">
+      <div style="flex:2.1 1 620px;min-width:0;display:grid;gap:16px">
+        <div id="wpl-lab" data-fs="0" style="position:relative;background:var(--st-paper);border:1px solid var(--st-edge);border-radius:var(--st-r-stage);overflow:hidden;display:grid;box-shadow:var(--st-shadow-frame)">
+          <canvas id="stage" aria-label="Animated apparatus for the waves required practical" style="display:block;width:100%;height:clamp(340px,56vh,600px);touch-action:none"></canvas>
+
+          <div id="ctl-R" style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:14px 16px;border-top:1px solid var(--st-rule-soft)">
+            <button id="r-play" style="display:inline-flex;align-items:center;justify-content:center;gap:9px;min-width:7.5em;font:600 16px/1 var(--st-ui);padding:13px 18px;border:0;border-radius:var(--st-r-btn);background:var(--st-accent-text);color:var(--st-paper);cursor:pointer" style-hover="background:var(--st-accent-hover)"></button>
+            <button id="r-restart" style="display:inline-flex;align-items:center;gap:8px;font:600 16px/1 var(--st-ui);padding:12px 16px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"></path><path d="M2.5 2v3.5H6"></path></svg>Restart</button>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:9px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="r-slow" style="width:17px;height:17px;margin:0;accent-color:var(--wpl-accent,#A93411)"><span>Slow motion</span></label>
+            <div style="display:flex;align-items:center;gap:8px;font-size:15px;color:var(--st-muted)">Motor
+              <div id="r-freq" role="radiogroup" aria-label="Motor frequency" style="display:flex;gap:2px;padding:2px;background:var(--st-seg-bg);border-radius:8px">
+                <button data-volt="3" style="font:500 14px/1 var(--st-ui);padding:9px 12px;border:0;border-radius:6px;background:transparent;color:var(--st-caption);cursor:pointer;white-space:nowrap">Low</button>
+                <button data-volt="5" style="font:500 14px/1 var(--st-ui);padding:9px 12px;border:0;border-radius:6px;background:transparent;color:var(--st-caption);cursor:pointer;white-space:nowrap">Medium</button>
+                <button data-volt="7" style="font:500 14px/1 var(--st-ui);padding:9px 12px;border:0;border-radius:6px;background:transparent;color:var(--st-caption);cursor:pointer;white-space:nowrap">High</button>
+              </div>
+            </div>
+            <div aria-label="Stopwatch" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 8px 6px 12px;border:1px solid var(--st-rule);border-radius:10px">
+              <span style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.12em;text-transform:uppercase;color:var(--st-caption)">Stopwatch</span>
+              <span id="sw-lcd" style="font:500 20px/1 var(--st-mono);font-variant-numeric:tabular-nums;background:var(--st-room);color:#F5E6C8;border-radius:6px;padding:7px 10px;min-width:5.4em;text-align:right">0.00 s</span>
+              <button id="sw-start" style="font:600 14px/1 var(--st-ui);padding:10px 14px;border:0;border-radius:var(--st-r-btn);background:var(--st-ink);color:var(--st-paper);cursor:pointer;min-width:4.6em">Start</button>
+              <button id="sw-reset" style="font:600 14px/1 var(--st-ui);padding:9px 12px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">Reset</button>
+              <span style="font-size:13px;color:var(--st-muted)">stops at 10 s</span>
+            </div>
+            <div aria-label="Strobe lamp" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 8px 6px 12px;border:1px solid var(--st-rule);border-radius:10px">
+              <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none"><input type="checkbox" id="st-on" style="width:17px;height:17px;margin:0;accent-color:var(--wpl-accent,#A93411)"><span>Strobe</span></label>
+              <button id="st-dn" aria-label="Strobe frequency down" style="font:600 16px/1 var(--st-ui);width:38px;height:38px;padding:0;text-align:center;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">−</button>
+              <span id="st-lcd" style="font:500 20px/1 var(--st-mono);font-variant-numeric:tabular-nums;background:var(--st-room);color:#F5E6C8;border-radius:6px;padding:7px 10px;min-width:5.4em;text-align:right">5.0 Hz</span>
+              <button id="st-up" aria-label="Strobe frequency up" style="font:600 16px/1 var(--st-ui);width:38px;height:38px;padding:0;text-align:center;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">+</button>
+            </div>
+            <button id="r-record" style="display:inline-flex;align-items:center;gap:8px;font:600 16px/1 var(--st-ui);padding:12px 16px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer;margin-left:auto" style-hover="background:var(--st-note-bg)">Record trial<svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 1.5v11M1.5 8 6 12.5 10.5 8"></path></svg></button>
+          </div>
+          <div id="tog-R" style="display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 16px">
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-side" style="width:17px;height:17px;margin:0;accent-color:var(--wpl-accent,#A93411)"><span>Side view</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-marks" style="width:17px;height:17px;margin:0;accent-color:var(--wpl-accent,#A93411)"><span>Markers A and B</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="o-p" style="width:17px;height:17px;margin:0;accent-color:var(--wpl-accent,#A93411)"><span>Point P</span></label>
+            <span style="margin-left:auto;align-self:center;font-size:14px;color:var(--st-muted)">Drag A, B and P on the paper.</span>
+          </div>
+
+          <div id="ctl-S" hidden style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:14px 16px;border-top:1px solid var(--st-rule-soft)">
+            <button id="s-play" style="display:inline-flex;align-items:center;justify-content:center;gap:9px;min-width:7.5em;font:600 16px/1 var(--st-ui);padding:13px 18px;border:0;border-radius:var(--st-r-btn);background:var(--st-accent-text);color:var(--st-paper);cursor:pointer" style-hover="background:var(--st-accent-hover)"></button>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:9px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="s-slow" style="width:17px;height:17px;margin:0;accent-color:var(--wpl-accent,#A93411)"><span>Slow motion</span></label>
+            <div aria-label="Signal generator" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 8px 6px 12px;border:1px solid var(--st-rule);border-radius:10px">
+              <span style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.12em;text-transform:uppercase;color:var(--st-caption)">Signal generator</span>
+              <button data-df="-1" style="font:600 14px/1 var(--st-ui);height:38px;padding:0 10px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">−1</button>
+              <button data-df="-0.1" style="font:600 14px/1 var(--st-ui);height:38px;padding:0 10px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">−0.1</button>
+              <span id="sg-lcd" style="font:500 20px/1 var(--st-mono);font-variant-numeric:tabular-nums;background:var(--st-room);color:#F5E6C8;border-radius:6px;padding:7px 10px;min-width:5.4em;text-align:right">40.0 Hz</span>
+              <button data-df="0.1" style="font:600 14px/1 var(--st-ui);height:38px;padding:0 10px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">+0.1</button>
+              <button data-df="1" style="font:600 14px/1 var(--st-ui);height:38px;padding:0 10px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">+1</button>
+              <input id="s-freq" type="range" min="5" max="120" step="0.1" value="40" aria-label="Frequency dial" style="width:140px;accent-color:var(--wpl-accent,#A93411)">
+            </div>
+            <label for="s-mass" style="display:flex;align-items:center;gap:8px;font-size:15px;color:var(--st-muted)">Hanging mass
+              <select id="s-mass" style="font:500 15px var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-control);padding:8px 10px;cursor:pointer">
+                <option value="100">100 g</option><option value="200" selected>200 g</option><option value="300">300 g</option><option value="400">400 g</option><option value="500">500 g</option>
+              </select>
+            </label>
+            <button id="s-record" style="display:inline-flex;align-items:center;gap:8px;font:600 16px/1 var(--st-ui);padding:12px 16px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer;margin-left:auto" style-hover="background:var(--st-note-bg)">Record trial<svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 1.5v11M1.5 8 6 12.5 10.5 8"></path></svg></button>
+          </div>
+          <div id="tog-S" hidden style="display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 16px">
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="os-marks" style="width:17px;height:17px;margin:0;accent-color:var(--wpl-accent,#A93411)"><span>Markers A and B</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:7px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="os-na" style="width:17px;height:17px;margin:0;accent-color:var(--wpl-accent,#A93411)"><span>Nodes and antinodes</span></label>
+            <span style="margin-left:auto;align-self:center;font-size:14px;color:var(--st-muted)">Drag A and B along the string.</span>
+          </div>
+        </div>
+
+        <div id="ro-R" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px">
+          <div style="background:var(--st-paper);border:1.5px solid var(--st-accent);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div style="display:flex;align-items:center;gap:7px;font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)"><i style="width:10px;height:10px;background:var(--st-accent);border-radius:50%;flex:none"></i>Waves past P</div>
+            <div id="ro-count" style="margin-top:6px;font:500 clamp(22px,2vw,28px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">0</div>
+            <div id="ro-count-s" style="font-size:14px;color:var(--st-muted)">start the stopwatch, then count</div>
+          </div>
+          <div style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Distance A to B</div>
+            <div id="ro-ab" style="margin-top:6px;font:500 clamp(22px,2vw,28px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">0.0 cm</div>
+            <div id="ro-ab-s" style="font-size:14px;color:var(--st-muted)">= 0.000 m</div>
+          </div>
+          <div style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Wave speed</div>
+            <div style="margin-top:6px;font:600 clamp(22px,2vw,28px)/1.2 var(--st-display);letter-spacing:-0.02em">v = f × λ</div>
+            <div style="font-size:14px;color:var(--st-muted)">f in Hz · λ in m · v in m/s</div>
+          </div>
+          <div id="ro-true-R" hidden style="background:var(--st-paper);border:1.5px dashed var(--st-note-border);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Teacher · true values</div>
+            <div id="ro-true-R-v" style="margin-top:6px;font:500 clamp(22px,2vw,28px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">–</div>
+            <div id="ro-true-R-s" style="font-size:14px;color:var(--st-muted)"></div>
+          </div>
+        </div>
+        <div id="ro-S" hidden style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px">
+          <div style="background:var(--st-paper);border:1.5px solid var(--st-accent);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Frequency, f</div>
+            <div id="ros-f" style="margin-top:6px;font:500 clamp(22px,2vw,28px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">40.0 Hz</div>
+            <div style="font-size:14px;color:var(--st-muted)">read from the signal generator</div>
+          </div>
+          <div style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Distance A to B</div>
+            <div id="ros-ab" style="margin-top:6px;font:500 clamp(22px,2vw,28px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">0.0 cm</div>
+            <div style="font-size:14px;color:var(--st-muted)">read from the metre rule</div>
+          </div>
+          <div style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Wave speed</div>
+            <div style="margin-top:6px;font:600 clamp(22px,2vw,28px)/1.2 var(--st-display);letter-spacing:-0.02em">v = f × λ</div>
+            <div style="font-size:14px;color:var(--st-muted)">each loop is half a wavelength</div>
+          </div>
+          <div id="ro-true-S" hidden style="background:var(--st-paper);border:1.5px dashed var(--st-note-border);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Teacher · true values</div>
+            <div id="ro-true-S-v" style="margin-top:6px;font:500 clamp(22px,2vw,28px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">–</div>
+            <div id="ro-true-S-s" style="font-size:14px;color:var(--st-muted)"></div>
+          </div>
+        </div>
+      </div>
+
+      <aside aria-live="polite" style="flex:1 1 320px;min-width:0;position:sticky;top:16px;background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:22px 22px 20px;display:grid;gap:14px;align-content:start">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <span id="g-count" style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;color:var(--st-caption)">Step 1</span>
+          <div id="g-dots" style="display:flex;gap:4px;flex-wrap:wrap"></div>
+        </div>
+        <div id="g-part" style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.12em;text-transform:uppercase;color:var(--st-accent-text)">Ripple tank</div>
+        <h2 id="g-title" style="margin:0;font:600 clamp(24px,2.1vw,32px)/1.15 var(--st-display);letter-spacing:-0.025em;text-wrap:balance"></h2>
+        <div id="g-text" style="font-size:clamp(17px,1.35vw,20px);line-height:1.5;color:var(--st-body);display:grid;gap:10px;text-wrap:pretty"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;padding-top:4px">
+          <button id="g-back" style="display:inline-flex;align-items:center;gap:8px;font:600 16px/1 var(--st-ui);padding:13px 16px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"><svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6H2M6.5 1.5 2 6l4.5 4.5"></path></svg>Back</button>
+          <button id="g-next" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;font:600 16px/1 var(--st-ui);padding:14px 18px;border:0;border-radius:var(--st-r-btn);background:var(--st-accent-text);color:var(--st-paper);cursor:pointer" style-hover="background:var(--st-accent-hover)"></button>
+        </div>
+        <div id="g-keys" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14px;color:var(--st-muted)"></div>
+      </aside>
+    </div>
+
+    <section aria-label="Results" style="display:grid;gap:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:10px;border-top:1px solid var(--st-rule)">
+        <h2 style="margin:0;font:600 28px/1.1 var(--st-display);letter-spacing:-0.03em">Results</h2>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span id="res-hint" style="font-size:14px;color:var(--st-muted)">Record a trial, then type the number of waves between A and B.</span>
+          <button id="res-toggle" data-sec="res" style="display:inline-flex;align-items:center;gap:7px;font:500 14px/1 var(--st-ui);padding:8px 12px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"></button>
+        </div>
+      </div>
+      <div id="res-body" style="display:grid;gap:12px">
+        <div id="res-R" style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:6px 8px;overflow-x:auto">
+          <table style="border-collapse:collapse;width:100%;min-width:760px;font-variant-numeric:tabular-nums">
+            <thead><tr id="th-R" style="font:500 12px/1.3 var(--st-mono);letter-spacing:0.06em;text-transform:uppercase;color:var(--st-caption)"><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">Trial</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">Waves A to B</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">A to B (m)</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">λ = d ÷ waves (m)</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">Waves past P</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">Time (s)</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">f = waves ÷ time (Hz)</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">v = f × λ (m/s)</th><th style="border-bottom:1px solid var(--st-rule)"></th></tr></thead>
+            <tbody id="tb-R"></tbody>
+          </table>
+        </div>
+        <div id="res-S" hidden style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:6px 8px;overflow-x:auto">
+          <table style="border-collapse:collapse;width:100%;min-width:640px;font-variant-numeric:tabular-nums">
+            <thead><tr style="font:500 12px/1.3 var(--st-mono);letter-spacing:0.06em;text-transform:uppercase;color:var(--st-caption)"><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">Trial</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">f (Hz)</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">Loops A to B</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">A to B (m)</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">λ = 2 × d ÷ loops (m)</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">v = f × λ (m/s)</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">Mass (g)</th><th style="border-bottom:1px solid var(--st-rule)"></th></tr></thead>
+            <tbody id="tb-S"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Check your understanding" style="display:grid;gap:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:10px;border-top:1px solid var(--st-rule)">
+        <h2 style="margin:0;font:600 28px/1.1 var(--st-display);letter-spacing:-0.03em">Check your understanding</h2>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span id="score" style="font:500 15px/1 var(--st-mono);letter-spacing:0.04em;color:var(--st-ink)">Score: 0 / 6</span>
+          <button id="quiz-toggle" data-sec="quiz" style="display:inline-flex;align-items:center;gap:7px;font:500 14px/1 var(--st-ui);padding:8px 12px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"></button>
+        </div>
+      </div>
+      <div id="quiz-body" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px"></div>
+    </section>
+
+    <footer style="color:var(--st-muted);font-size:14px;max-width:90ch">Ripple tank: the wave speed is set by the water depth, so changing the motor frequency changes the wavelength but not the speed. String: the speed is set by the tension and the string. The motor frequency is not printed anywhere: you have to measure it.</footer>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;teacherMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher&quot;},&quot;showResults&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections on load&quot;},&quot;showQuiz&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections on load&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() { this._lab = startLab(this.props); }
+  componentDidUpdate(prev) {
+    if (!this._lab) return;
+    for (const [p, sec] of [["showResults", "res"], ["showQuiz", "quiz"]])
+      if (prev[p] !== this.props[p] && this.props[p] !== undefined) this._lab.setSection(sec, !!this.props[p]);
+    if (prev.teacherMode !== this.props.teacherMode) this._lab.setTeacher(!!this.props.teacherMode);
+  }
+  componentWillUnmount() { this._lab && this._lab.stop(); }
+  renderVals() { return {}; }
+}
+
+const I = {
+  play: '<svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9.5-5.5z" fill="currentColor"/></svg>',
+  pause: '<svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><rect x="2.5" y="1.5" width="3.4" height="11" rx="1" fill="currentColor"/><rect x="8.1" y="1.5" width="3.4" height="11" rx="1" fill="currentColor"/></svg>',
+  right: '<svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-1px"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg>',
+  left: '<svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-1px"><path d="M14.5 6H2M6.5 1.5 2 6l4.5 4.5"/></svg>',
+  tick: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none"><path d="M3 8.5 6.5 12 13 4.5"/></svg>',
+  cross: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex:none"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+  eye: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></svg>',
+  eyeOff: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/><path d="M2.5 2.5l11 11"/></svg>',
+};
+const KBD = (t) => `<span style="font:500 11px/1 var(--st-mono);letter-spacing:0.04em;color:var(--st-caption);border:1px solid var(--st-rule-strong);border-radius:4px;padding:4px 6px;display:inline-flex;align-items:center">${t}</span>`;
+
+function startLab(props) {
+  const $ = (id) => document.getElementById(id);
+  const cv = $("stage"), cx = cv.getContext("2d");
+  let C = {};
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement);
+    const v = (n, d) => cs.getPropertyValue(n).trim() || d;
+    C = { stage: v("--st-paper", "#FFFDF8"), ground: v("--st-ground", "#FBF3E6"), ink: v("--st-ink", "#1A1714"), muted: v("--st-muted", "#6E655D"),
+      caption: v("--st-caption", "#7A6E5F"), line: v("--st-rule-strong", "#D6C6A8"), rule: v("--st-rule", "#E0D2B9"), grid: v("--st-paper-grid", "#F2E8D6"),
+      accent: v("--st-accent", "#E4572E"), accentText: v("--st-accent-text", "#A93411"), room: v("--st-room", "#15110C"),
+      water: v("--physics", "#1D6FB8"), lamp: "#FFC53D", wood: "#B07A45" };
+  }
+  readColors(); setTimeout(readColors, 400);
+  new MutationObserver(readColors).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+  // ---------- state ----------
+  const g = 9.81;
+  const R = { playing: true, t: 0, speed: 1, volt: 5, depth: 5, side: true, marks: true, p: true, truth: false,
+    A: 6, B: 24, P: 20, sw: { running: false, time: 0, startIdx: 0, count: 0, lastFlash: -1 }, strobe: false, fs: 5.0, flashT: -1, TANK: 36 };
+  const S = { playing: true, t: 0, f: 40.0, mass: 200, slow: false, marks: true, na: false, truth: false,
+    A: 0.10, B: 0.80, L: 1.0, Lp: 1.10, mu: 0.0020, a: 1.0, beta: 0.035 };
+  let mode = "R";
+
+  // ---------- ripple physics ----------
+  const rf = () => 0.93 * R.volt + 0.2;
+  const rv = () => 100 * Math.sqrt(g * R.depth / 1000);
+  const rlam = () => rv() / rf();
+  const rk = () => 2 * Math.PI / rlam(), rw = () => 2 * Math.PI * rf();
+  const shownT = () => R.strobe ? Math.floor(R.t * R.fs) / R.fs : R.t;
+  function crestIdxAt(x, t) { return Math.floor((rw() * t - rk() * x - Math.PI / 2) / (2 * Math.PI)); }
+  function crestsAt(t) {
+    const out = [], front = Math.min(rv() * t, R.TANK), n0 = crestIdxAt(0, t);
+    for (let n = n0; n > n0 - 200; n--) { const x = (rw() * t - Math.PI / 2 - 2 * Math.PI * n) / rk(); if (x < 0) continue; if (x > front) break; out.push(x); }
+    return out;
+  }
+
+  // ---------- string physics ----------
+  const sT = () => S.mass / 1000 * g, sv = () => Math.sqrt(sT() / S.mu), slam = () => sv() / S.f;
+  function cSin(re, im) { return [Math.sin(re) * Math.cosh(im), Math.cos(re) * Math.sinh(im)]; }
+  function cDiv(a, b) { const d = b[0] * b[0] + b[1] * b[1]; return [(a[0] * b[0] + a[1] * b[1]) / d, (a[1] * b[0] - a[0] * b[1]) / d]; }
+  let profile = null, profKey = "";
+  function stringProfile() {
+    const key = S.f + "|" + S.mass + "|" + S.L; if (key === profKey) return profile;
+    const N = 400, k = 2 * Math.PI * S.f / sv(), bi = -S.beta / S.L, den = cSin(k * S.L, bi * S.L), pts = [];
+    for (let i = 0; i <= N; i++) { const x = S.L * i / N, Y = cDiv(cSin(k * (S.L - x), bi * (S.L - x)), den); pts.push({ x, re: S.a * Y[0], im: S.a * Y[1], amp: S.a * Math.hypot(Y[0], Y[1]) }); }
+    profile = pts; profKey = key; return pts;
+  }
+  const loopsNow = () => S.f * 2 * S.L / sv();
+
+  // ---------- canvas ----------
+  let W = 0, H = 0, dpr = 1;
+  function resize() { dpr = Math.min(2, window.devicePixelRatio || 1); const r = cv.getBoundingClientRect(); W = r.width; H = r.height; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); cx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+  const ro = new ResizeObserver(resize); ro.observe(cv); resize();
+  const UI = '"Instrument Sans", system-ui, sans-serif', MONO = '"DM Mono", ui-monospace, monospace';
+  function rr(x, y, w, h, r) { cx.beginPath(); cx.roundRect ? cx.roundRect(x, y, w, h, r) : cx.rect(x, y, w, h); }
+  function label(t, x, y, col, size = 15, align = "left", weight = 600, bg = null, fam = UI) {
+    cx.font = `${weight} ${size}px ${fam}`; if ("letterSpacing" in cx) cx.letterSpacing = fam === MONO ? "1.5px" : "0px";
+    cx.textAlign = align; cx.textBaseline = "middle";
+    if (bg) { const m = cx.measureText(t).width, p = 6, bx = align === "center" ? x - m / 2 : align === "right" ? x - m : x; cx.fillStyle = bg; rr(bx - p, y - size * 0.75, m + p * 2, size * 1.5, 6); cx.fill(); }
+    cx.fillStyle = col; cx.fillText(t, x, y);
+  }
+  function arrow(x1, y1, x2, y2, col, lw, head = 11, both = false) {
+    cx.strokeStyle = col; cx.fillStyle = col; cx.lineWidth = lw; cx.lineCap = "round";
+    cx.beginPath(); cx.moveTo(x1, y1); cx.lineTo(x2, y2); cx.stroke();
+    const tip = (ax, ay, bx, by) => { const a = Math.atan2(by - ay, bx - ax); cx.beginPath(); cx.moveTo(bx, by); cx.lineTo(bx - head * Math.cos(a - 0.45), by - head * Math.sin(a - 0.45)); cx.lineTo(bx - head * Math.cos(a + 0.45), by - head * Math.sin(a + 0.45)); cx.closePath(); cx.fill(); };
+    tip(x1, y1, x2, y2); if (both) tip(x2, y2, x1, y1);
+  }
+  const small = () => W < 640;
+  function grid() { cx.strokeStyle = C.grid; cx.lineWidth = 1; cx.beginPath(); for (let x = 36; x < W; x += 36) { cx.moveTo(x + 0.5, 0); cx.lineTo(x + 0.5, H); } for (let y = 36; y < H; y += 36) { cx.moveTo(0, y + 0.5); cx.lineTo(W, y + 0.5); } cx.stroke(); }
+
+  // ---------- ripple tank ----------
+  let G = {};
+  function rippleGeom() {
+    const left = Math.max(small() ? 46 : 92, W * 0.075), right = W - (small() ? 14 : 26), s = (right - left) / R.TANK;
+    const sideH = R.side ? Math.max(130, H * 0.34) : 0, paperTop = sideH + 10, paperBot = H - 64;
+    G = { left, right, s, sideH, paperTop, paperBot, X: (cm) => left + cm * s, toCm: (px) => (px - left) / s }; return G;
+  }
+  function drawSide(td) {
+    const { X, s, sideH } = G, yLamp = 26, yW = sideH * 0.50, yBot = sideH * 0.74, yPaper = sideH - 12, front = Math.min(rv() * td, R.TANK);
+    const lx = X(R.TANK * 0.5);
+    const crests = crestsAt(td).filter((x) => x > 0.3 && x < R.TANK - 0.3);
+    cx.strokeStyle = "rgba(255,197,61,.5)"; cx.lineWidth = 1.2; const q = rlam() * 0.22;
+    crests.forEach((xc) => { for (const dx of [-q, q]) { cx.beginPath(); cx.moveTo(lx, yLamp + 10); cx.lineTo(X(xc + dx), yW); cx.lineTo(X(xc), yPaper); cx.stroke(); } });
+    cx.fillStyle = C.lamp; cx.beginPath(); cx.arc(lx, yLamp, 11, 0, Math.PI * 2); cx.fill();
+    cx.strokeStyle = C.ink; cx.lineWidth = 2; cx.stroke(); cx.fillStyle = C.ink; cx.fillRect(lx - 7, yLamp - 24, 14, 9);
+    if (!small()) label("lamp", lx + 18, yLamp, C.muted, 13, "left", 600);
+    const amp = Math.min(8, sideH * 0.05);
+    cx.beginPath(); cx.moveTo(X(-1.2), yBot);
+    for (let i = 0; i <= 180; i++) { const xcm = -1.2 + (R.TANK + 1.2) * i / 180; let eta = 0; if (xcm >= 0 && xcm <= front) eta = Math.sin(rw() * td - rk() * xcm) * (0.55 + 0.45 * Math.exp(-xcm / 30)); cx.lineTo(X(xcm), yW - eta * amp); }
+    cx.lineTo(X(R.TANK), yBot); cx.closePath(); cx.fillStyle = C.water; cx.globalAlpha = 0.28; cx.fill(); cx.globalAlpha = 1; cx.strokeStyle = C.water; cx.lineWidth = 2; cx.stroke();
+    cx.fillStyle = C.line; cx.fillRect(X(-1.4), yBot, X(R.TANK) - X(-1.4) + 4, 5);
+    cx.fillStyle = C.line; cx.beginPath(); cx.moveTo(X(R.TANK - 3), yBot); cx.lineTo(X(R.TANK), yW - 10); cx.lineTo(X(R.TANK), yBot); cx.closePath(); cx.fill();
+    const bob = Math.sin(rw() * td) * Math.min(4, sideH * 0.025);
+    cx.fillStyle = C.wood; rr(X(-1.1), yW - 18 + bob, 1.0 * s + 2, 30, 3); cx.fill();
+    cx.fillStyle = C.ink; rr(X(-1.6), yW - 40 + bob, 2.2 * s, 20, 5); cx.fill();
+    cx.strokeStyle = C.line; cx.lineWidth = 3; cx.beginPath(); cx.moveTo(X(-1.4), yPaper); cx.lineTo(X(R.TANK), yPaper); cx.stroke();
+    crests.forEach((xc) => { cx.fillStyle = C.lamp; cx.beginPath(); cx.ellipse(X(xc), yPaper, Math.max(4, rlam() * s * 0.12), 4, 0, 0, Math.PI * 2); cx.fill(); });
+    if (!small()) {
+      label("motor", X(-1.6) - 6, yW - 30 + bob, C.muted, 13, "right", 600);
+      label("vibrating bar", X(0.4), yW + 16, C.ink, 13, "left", 600, C.stage);
+      label("water", X(R.TANK * 0.8), yBot - 10, C.water, 13, "center", 600);
+      label("white paper", X(-1.4), yPaper - 11, C.muted, 12, "left", 600);
+    }
+    cx.strokeStyle = C.rule; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(0, sideH); cx.lineTo(W, sideH); cx.stroke();
+    label("SIDE VIEW", 16, 20, C.caption, 12, "left", 500, null, MONO);
+  }
+  function drawPaper(td) {
+    const { X, s, paperTop, paperBot } = G, front = Math.min(rv() * td, R.TANK), x0 = Math.floor(X(0)), x1 = Math.ceil(X(R.TANK));
+    cx.fillStyle = C.room; rr(X(-1.4), paperTop, x1 - X(-1.4), paperBot - paperTop, 8); cx.fill();
+    const base = [21, 17, 12], hi = [250, 240, 220];
+    for (let px = x0; px < x1; px++) {
+      const xcm = (px + 0.5 - G.left) / s; let Iv = 0.14;
+      if (xcm <= front) { const ph = Math.sin(rw() * td - rk() * xcm), c = 0.5 + 0.5 * Math.exp(-xcm / 45); Iv = 0.14 + c * (0.86 * Math.pow((1 + ph) / 2, 5) - 0.1 * Math.pow((1 - ph) / 2, 2)); }
+      Iv = Math.max(0, Math.min(1, Iv));
+      cx.fillStyle = `rgb(${base.map((b, i) => Math.round(b + (hi[i] - b) * Iv)).join(",")})`; cx.fillRect(px, paperTop, 1.2, paperBot - paperTop);
+    }
+    cx.fillStyle = "#0A0806"; cx.fillRect(X(-1.1), paperTop, 1.0 * s, paperBot - paperTop);
+    label("PATTERN ON THE PAPER", X(0.6) + 6, paperTop + 18, "#D8CBB4", 12, "left", 500, "rgba(10,8,6,.88)", MONO);
+    if (R.strobe) { const on = performance.now() - R.flashT < 70; label("STROBE", G.right - 10, paperTop + 18, on ? C.lamp : "#8E8273", 12, "right", 500, null, MONO); }
+    // ruler
+    const ry = paperBot + 6, rh = 50;
+    cx.fillStyle = C.ground; rr(X(-0.6), ry, X(R.TANK) - X(-0.6), rh, 5); cx.fill(); cx.strokeStyle = C.line; cx.lineWidth = 1.5; rr(X(-0.6), ry, X(R.TANK) - X(-0.6), rh, 5); cx.stroke();
+    cx.strokeStyle = C.ink;
+    const rFont = small() ? 11 : 13; cx.font = `500 ${rFont}px ${MONO}`; if ("letterSpacing" in cx) cx.letterSpacing = "1.5px";
+    const rW = cx.measureText("00").width + 10; let rStep = 1; for (const c of [1, 2, 5, 10]) { rStep = c; if (c * s >= rW) break; }
+    for (let mm = 0; mm <= R.TANK * 10; mm++) {
+      const x = X(mm / 10), len = mm % 10 === 0 ? 18 : mm % 5 === 0 ? 12 : 7;
+      if (s < 18 && mm % 10 && mm % 5) continue;
+      cx.lineWidth = mm % 10 === 0 ? 1.6 : 1; cx.beginPath(); cx.moveTo(x, ry); cx.lineTo(x, ry + len); cx.stroke();
+      if (mm % 10 === 0 && (mm / 10) % rStep === 0) label(String(mm / 10), x, ry + 31, C.ink, small() ? 11 : 13, "center", 500, null, MONO);
+    }
+    label("cm", X(R.TANK) - 4, ry + rh - 10, C.caption, 11, "right", 500, null, MONO);
+    if (R.p) {
+      const x = X(R.P), flash = performance.now() - R.sw.lastFlash < 160;
+      cx.strokeStyle = C.accent; cx.lineWidth = flash ? 6 : 3; cx.setLineDash([2, 5]); cx.beginPath(); cx.moveTo(x, paperTop + 34); cx.lineTo(x, paperBot - 4); cx.stroke(); cx.setLineDash([]);
+      cx.fillStyle = C.accent; cx.beginPath(); cx.arc(x, paperBot - 20, flash ? 15 : 12, 0, Math.PI * 2); cx.fill();
+      label("P", x, paperBot - 20, "#fff", 14, "center", 700);
+    }
+    if (R.marks) {
+      for (const [k, xcm] of [["A", R.A], ["B", R.B]]) {
+        const x = X(xcm);
+        cx.strokeStyle = "#FFFDF8"; cx.lineWidth = 2; cx.setLineDash([7, 5]); cx.beginPath(); cx.moveTo(x, paperTop + 40); cx.lineTo(x, paperBot + 26); cx.stroke(); cx.setLineDash([]);
+        cx.fillStyle = C.stage; cx.beginPath(); cx.arc(x, paperTop + 40, 14, 0, Math.PI * 2); cx.fill();
+        label(k, x, paperTop + 40, C.ink, 15, "center", 700);
+      }
+      const y = paperTop + 70, xa = X(Math.min(R.A, R.B)), xb = X(Math.max(R.A, R.B));
+      if (xb - xa > 30) arrow(xa + 3, y, xb - 3, y, "#FFFDF8", 2.5, 10, true);
+      const dAB = Math.abs(R.B - R.A);
+      label(`A to B = ${dAB.toFixed(1)} cm = ${(dAB / 100).toFixed(3)} m`, (xa + xb) / 2, y + 22, C.ink, small() ? 13 : 15, "center", 600, C.stage);
+    }
+  }
+
+  // ---------- string ----------
+  function drawString() {
+    const left = Math.max(small() ? 70 : 120, W * 0.11), right = W - (small() ? 60 : 110), s = (right - left) / S.Lp;
+    const X = (m) => left + m * s; G = { X, s, left, right, toM: (px) => (px - left) / s };
+    const yS = H * 0.38, yBench = H * 0.72, prof = stringProfile(), maxAmp = Math.max(...prof.map((p) => p.amp));
+    const pxPerMm = Math.min(H * 0.19 / 30, 4.2), clampY = (mm) => Math.max(-H * 0.215, Math.min(H * 0.215, mm * pxPerMm));
+    label("WAVES ON A STRING", 16, 20, C.caption, 12, "left", 500, null, MONO);
+    cx.fillStyle = C.wood; cx.globalAlpha = .3; cx.fillRect(X(0) - 90, yBench, X(S.Lp) - X(0) + 110, 14); cx.globalAlpha = 1;
+    cx.strokeStyle = C.line; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(X(0) - 90, yBench); cx.lineTo(X(S.Lp) + 20, yBench); cx.stroke();
+    // bridge + string tail
+    cx.fillStyle = C.wood; cx.beginPath(); cx.moveTo(X(S.L), yS); cx.lineTo(X(S.L) - 13, yBench); cx.lineTo(X(S.L) + 13, yBench); cx.closePath(); cx.fill();
+    cx.strokeStyle = C.ink; cx.lineWidth = 2.5; cx.beginPath(); cx.moveTo(X(S.L), yS); cx.lineTo(X(S.Lp), yS); cx.stroke();
+    // vibration generator
+    const vy = yS + 14, phase = 2 * Math.PI * (S.slow ? 0.6 : S.f) * S.t;
+    cx.fillStyle = C.ink; rr(X(0) - 40, vy, 80, yBench - vy, 8); cx.fill();
+    const pinY = yS - (S.slow ? clampY(S.a * Math.cos(phase)) : 0); cx.fillStyle = C.muted; cx.fillRect(X(0) - 3, pinY, 6, vy - pinY);
+    label("vibration generator", X(0), yBench + 30, C.ink, small() ? 11 : 14, "center", 600);
+    // pulley + masses
+    const pr = 14, px = X(S.Lp), py = yS + pr;
+    cx.fillStyle = C.muted; cx.fillRect(px - 4, py, 8, yBench - py);
+    cx.strokeStyle = C.ink; cx.lineWidth = 3; cx.beginPath(); cx.arc(px + pr, py, pr, 0, Math.PI * 2); cx.stroke();
+    cx.fillStyle = C.ink; cx.beginPath(); cx.arc(px + pr, py, 3, 0, Math.PI * 2); cx.fill();
+    const hx = px + 2 * pr, nM = S.mass / 100;
+    cx.strokeStyle = C.ink; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(hx, py); cx.lineTo(hx, yBench + 26); cx.stroke();
+    for (let i = 0; i < nM; i++) { cx.fillStyle = i % 2 ? C.line : C.rule; rr(hx - 22, yBench + 28 + i * 13, 44, 11, 3); cx.fill(); }
+    cx.fillStyle = C.ink; cx.fillRect(hx - 2, yBench + 26, 4, nM * 13 + 6);
+    label("pulley", px + 2 * pr + 8, py + 2, C.ink, small() ? 11 : 14, "left", 600);
+    label(`${S.mass} g`, hx + 28, yBench + 34 + nM * 6, C.muted, small() ? 11 : 14, "left", 600);
+    if (!small()) label("bridge", X(S.L), yBench + 14, C.muted, 12, "center", 600, C.stage);
+    // signal generator box
+    if (!small()) {
+      const gx = X(0) - 100, gy = yBench + 52, gw = 150, gh = 58;
+      cx.fillStyle = C.stage; rr(gx, gy, gw, gh, 8); cx.fill(); cx.strokeStyle = C.ink; cx.lineWidth = 1.5; rr(gx, gy, gw, gh, 8); cx.stroke();
+      cx.fillStyle = C.room; rr(gx + 10, gy + 10, gw - 20, 26, 5); cx.fill();
+      label(`${S.f.toFixed(1)} Hz`, gx + gw - 18, gy + 23, "#F5E6C8", 17, "right", 500, null, MONO);
+      label("signal generator", gx + gw / 2, gy + 47, C.ink, 12, "center", 600);
+      cx.strokeStyle = C.muted; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(gx + gw, gy + 30); cx.bezierCurveTo(gx + gw + 40, gy + 30, X(0) - 50, yBench - 10, X(0) - 40, yBench - 22); cx.stroke();
+    }
+    // metre rule
+    const ry = yS + H * 0.235, rh = 40;
+    cx.fillStyle = C.ground; rr(X(0) - 8, ry, X(1.0) - X(0) + 16, rh, 5); cx.fill(); cx.strokeStyle = C.line; cx.lineWidth = 1.5; rr(X(0) - 8, ry, X(1.0) - X(0) + 16, rh, 5); cx.stroke();
+    cx.strokeStyle = C.ink;
+    const sFont = small() ? 10 : 12; cx.font = `500 ${sFont}px ${MONO}`; if ("letterSpacing" in cx) cx.letterSpacing = "1.5px";
+    const sW = cx.measureText("100").width + 8; let sStep = 10; for (const c of [10, 20, 50]) { sStep = c; if (c * s / 100 >= sW) break; }
+    for (let cm = 0; cm <= 100; cm++) {
+      const x = X(cm / 100), len = cm % 10 === 0 ? 16 : cm % 5 === 0 ? 11 : 6;
+      cx.lineWidth = cm % 10 === 0 ? 1.6 : 1; cx.beginPath(); cx.moveTo(x, ry); cx.lineTo(x, ry + len); cx.stroke();
+      if (cm % sStep === 0) label(String(cm), x, ry + 28, C.ink, small() ? 10 : 12, "center", 500, null, MONO);
+    }
+    label("cm", X(1.0) + 6, ry + rh - 9, C.caption, 11, "left", 500, null, MONO);
+    // envelope + string
+    cx.beginPath();
+    prof.forEach((p, i) => { const y = yS - clampY(p.amp); i ? cx.lineTo(X(p.x), y) : cx.moveTo(X(p.x), y); });
+    for (let i = prof.length - 1; i >= 0; i--) cx.lineTo(X(prof[i].x), yS + clampY(prof[i].amp));
+    cx.closePath(); cx.fillStyle = C.water; cx.globalAlpha = 0.14; cx.fill(); cx.globalAlpha = 1;
+    if (S.slow) {
+      cx.strokeStyle = C.ink; cx.lineWidth = 3; cx.beginPath();
+      prof.forEach((p, i) => { const y = yS - clampY(p.re * Math.cos(phase) - p.im * Math.sin(phase)); i ? cx.lineTo(X(p.x), y) : cx.moveTo(X(p.x), y); }); cx.stroke();
+    } else {
+      for (let j = 0; j < 8; j++) { const ph = j * Math.PI / 4; cx.strokeStyle = C.ink; cx.globalAlpha = 0.2; cx.lineWidth = 2; cx.beginPath();
+        prof.forEach((p, i) => { const y = yS - clampY(p.re * Math.cos(ph) - p.im * Math.sin(ph)); i ? cx.lineTo(X(p.x), y) : cx.moveTo(X(p.x), y); }); cx.stroke(); }
+      cx.globalAlpha = 0.5; cx.strokeStyle = C.ink; cx.lineWidth = 1.5;
+      cx.beginPath(); prof.forEach((p, i) => { const y = yS - clampY(p.amp); i ? cx.lineTo(X(p.x), y) : cx.moveTo(X(p.x), y); }); cx.stroke();
+      cx.beginPath(); prof.forEach((p, i) => { const y = yS + clampY(p.amp); i ? cx.lineTo(X(p.x), y) : cx.moveTo(X(p.x), y); }); cx.stroke(); cx.globalAlpha = 1;
+    }
+    const steady = maxAmp > 8;
+    if (S.na && steady) {
+      for (let i = 1; i < prof.length - 1; i++) {
+        const a = prof[i - 1].amp, b = prof[i].amp, c = prof[i + 1].amp;
+        if (b < a && b <= c && b < maxAmp * 0.25) label("N", X(prof[i].x), yS - 26, C.ink, 16, "center", 700, C.stage);
+        if (b > a && b >= c && b > maxAmp * 0.6) label("A", X(prof[i].x), yS - clampY(b) - 16, C.accentText, 15, "center", 700, C.stage);
+      }
+      label("N", X(S.L), yS - 26, C.ink, 16, "center", 700, C.stage);
+      if (!small()) label("N = node   A = antinode", right, 20, C.muted, 13, "right", 500);
+    }
+    if (!steady) label("No clear standing wave yet. Change the frequency slowly.", (X(0) + X(S.Lp)) / 2, yS - H * 0.17, C.muted, small() ? 13 : 16, "center", 600, C.stage);
+    if (S.marks) {
+      for (const [k, xm] of [["A", S.A], ["B", S.B]]) {
+        const x = X(xm), yt = yS - H * 0.27;
+        cx.strokeStyle = C.accent; cx.lineWidth = 2; cx.setLineDash([7, 5]); cx.beginPath(); cx.moveTo(x, yt); cx.lineTo(x, ry + rh + 16); cx.stroke(); cx.setLineDash([]);
+        cx.fillStyle = C.accent; cx.beginPath(); cx.arc(x, yt, 14, 0, Math.PI * 2); cx.fill(); label(k, x, yt, "#fff", 15, "center", 700);
+      }
+      const y = ry + rh + 14, xa = X(Math.min(S.A, S.B)), xb = X(Math.max(S.A, S.B));
+      if (xb - xa > 30) arrow(xa + 3, y, xb - 3, y, C.accent, 2.5, 10, true);
+      label(`A to B = ${(Math.abs(S.B - S.A) * 100).toFixed(1)} cm`, (xa + xb) / 2, y + 20, C.ink, small() ? 13 : 15, "center", 600, C.stage);
+    }
+  }
+
+  function draw() {
+    cx.clearRect(0, 0, W, H); cx.fillStyle = C.stage; cx.fillRect(0, 0, W, H); grid();
+    if (mode === "R") { rippleGeom(); const td = shownT(); if (R.side) drawSide(td); drawPaper(td); } else drawString();
+  }
+
+  // ---------- stopwatch ----------
+  function swUpdate(dt) {
+    const sw = R.sw; if (!sw.running) return;
+    sw.time += dt;
+    if (sw.time >= 10) { const over = sw.time - 10; sw.time = 10; R.t -= over; settleCount(); R.t += over; sw.running = false; setSW(); return; }
+    settleCount();
+  }
+  function settleCount() {
+    const sw = R.sw; if (rv() * R.t < R.P) { sw.startIdx = crestIdxAt(R.P, R.t); return; }
+    const c = crestIdxAt(R.P, R.t) - sw.startIdx; if (c > sw.count) { sw.count = c; sw.lastFlash = performance.now(); }
+  }
+  function setSW() { $("sw-start").textContent = R.sw.running ? "Stop" : "Start"; }
+  $("sw-start").onclick = () => {
+    const sw = R.sw;
+    if (sw.running) sw.running = false;
+    else { if (sw.time >= 10) { sw.time = 0; sw.count = 0; } sw.running = true; sw.startIdx = crestIdxAt(R.P, R.t) - sw.count; if (!R.playing) setPlayR(true); }
+    setSW();
+  };
+  $("sw-reset").onclick = () => { Object.assign(R.sw, { running: false, time: 0, count: 0 }); setSW(); };
+
+  // ---------- readouts ----------
+  const fmt = (x, d) => x.toFixed(d);
+  function readouts() {
+    if (mode === "R") {
+      $("sw-lcd").textContent = fmt(R.sw.time, 2) + " s";
+      $("ro-count").textContent = R.sw.count;
+      $("ro-count-s").textContent = R.sw.time > 0 ? `in ${fmt(R.sw.time, 2)} s` : "start the stopwatch, then count";
+      const dAB = Math.abs(R.B - R.A);
+      $("ro-ab").textContent = fmt(dAB, 1) + " cm";
+      $("ro-ab-s").textContent = `= ${(dAB / 100).toFixed(3)} m`;
+      const lr = liveRow();
+      if (lr && Math.abs(lr.d - dAB) > 1e-9) {
+        lr.d = dAB; const i = rowsR.indexOf(lr), dc = $("tb-R").querySelector(`[data-d="${i}"]`), lc = $("tb-R").querySelector(`[data-lam="${i}"]`);
+        if (dc) dc.innerHTML = dCellR(lr, true); if (lc) lc.innerHTML = lamCellR(lr);
+      }
+      $("st-lcd").textContent = fmt(R.fs, 1) + " Hz";
+      $("ro-true-R-v").textContent = `f = ${fmt(rf(), 2)} Hz`;
+      $("ro-true-R-s").textContent = `λ = ${fmt(rlam(), 2)} cm · v = ${fmt(rv() / 100, 3)} m/s`;
+    } else {
+      $("sg-lcd").textContent = fmt(S.f, 1) + " Hz"; $("ros-f").textContent = fmt(S.f, 1) + " Hz";
+      const dS = Math.abs(S.B - S.A);
+      $("ros-ab").textContent = fmt(dS * 100, 1) + " cm";
+      const ls = liveRowS();
+      if (ls && Math.abs(ls.d - dS) > 1e-9) {
+        ls.d = dS; const i = rowsS.indexOf(ls), dc = $("tb-S").querySelector(`[data-d="${i}"]`), lc = $("tb-S").querySelector(`[data-lam="${i}"]`);
+        if (dc) dc.innerHTML = dCellS(ls, true); if (lc) lc.innerHTML = lamCellS(ls);
+      }
+      const res = [1, 2, 3, 4, 5, 6].map((k) => fmt(k * sv() / (2 * S.L), 1)).join(", ");
+      $("ro-true-S-v").textContent = `v = ${fmt(sv(), 1)} m/s`;
+      $("ro-true-S-s").textContent = `λ = ${fmt(slam(), 3)} m · clear patterns at ${res} Hz`;
+    }
+  }
+  let rerenderTables = null;
+  function setTeacher(on) { R.truth = S.truth = on; $("ro-true-R").hidden = !on; $("ro-true-S").hidden = !on; rerenderTables && rerenderTables(); }
+  setTeacher(!!props.teacherMode);
+
+  // ---------- loop ----------
+  let prev = performance.now(), lastRO = 0, lastFlashIdx = -1, raf = 0, alive = true;
+  function frame(now) {
+    if (!alive) return;
+    const dt = Math.min(0.05, (now - prev) / 1000); prev = now;
+    if (mode === "R" && R.playing) { const sdt = dt * R.speed; R.t += sdt; swUpdate(sdt); if (R.strobe) { const fi = Math.floor(R.t * R.fs); if (fi !== lastFlashIdx) { lastFlashIdx = fi; R.flashT = now; } } }
+    if (mode === "S" && S.playing) S.t += dt;
+    draw();
+    if (now - lastRO > 90) { readouts(); lastRO = now; liveText(); }
+    raf = requestAnimationFrame(frame);
+  }
+  raf = requestAnimationFrame(frame);
+
+  // ---------- controls ----------
+  function setPlayR(p) { R.playing = p; $("r-play").innerHTML = p ? I.pause + "Freeze" : I.play + "Play"; }
+  function setPlayS(p) { S.playing = p; $("s-play").innerHTML = p ? I.pause + "Pause" : I.play + "Play"; }
+  $("r-play").onclick = () => setPlayR(!R.playing);
+  $("s-play").onclick = () => setPlayS(!S.playing);
+  function restartR() { R.t = 0; Object.assign(R.sw, { running: false, time: 0, count: 0 }); setSW(); setPlayR(true); }
+  $("r-restart").onclick = restartR;
+  $("r-slow").onchange = (e) => R.speed = e.target.checked ? 0.25 : 1;
+  const seg = (root, attr, val) => root.querySelectorAll("button").forEach((b) => { const on = b.dataset[attr] == val; b.setAttribute("aria-checked", on);
+    Object.assign(b.style, on ? { background: "var(--st-paper)", color: "var(--st-ink)", fontWeight: "600", boxShadow: "0 1px 2px rgba(60,40,10,0.16)" } : { background: "transparent", color: "var(--st-caption)", fontWeight: "500", boxShadow: "none" }); });
+  $("r-freq").querySelectorAll("button").forEach((b) => b.onclick = () => { R.volt = +b.dataset.volt; restartR(); syncToggles(); });
+  $("st-on").onchange = (e) => R.strobe = e.target.checked;
+  $("st-up").onclick = () => R.fs = Math.min(12, Math.round((R.fs + 0.1) * 10) / 10);
+  $("st-dn").onclick = () => R.fs = Math.max(0.5, Math.round((R.fs - 0.1) * 10) / 10);
+  const togR = { side: "o-side", marks: "o-marks", p: "o-p" }, togS = { marks: "os-marks", na: "os-na" };
+  for (const [k, id] of Object.entries(togR)) $(id).onchange = (e) => R[k] = e.target.checked;
+  for (const [k, id] of Object.entries(togS)) $(id).onchange = (e) => S[k] = e.target.checked;
+  function syncToggles() {
+    for (const [k, id] of Object.entries(togR)) $(id).checked = R[k];
+    for (const [k, id] of Object.entries(togS)) $(id).checked = S[k];
+    $("st-on").checked = R.strobe; $("s-slow").checked = S.slow; $("r-slow").checked = R.speed < 1;
+    seg($("r-freq"), "volt", R.volt); $("s-freq").value = S.f; $("s-mass").value = S.mass;
+  }
+  function setF(f) { S.f = Math.max(5, Math.min(120, Math.round(f * 10) / 10)); $("s-freq").value = S.f; }
+  document.querySelectorAll("[data-df]").forEach((b) => b.onclick = () => setF(S.f + +b.dataset.df));
+  $("s-freq").oninput = (e) => setF(+e.target.value);
+  $("s-mass").onchange = (e) => S.mass = +e.target.value;
+  $("s-slow").onchange = (e) => S.slow = e.target.checked;
+
+  const tabs = [...document.querySelectorAll("#tabs button")];
+  function setMode(m) {
+    mode = m; seg($("tabs"), "mode", m); tabs.forEach((b) => b.setAttribute("aria-selected", b.dataset.mode === m));
+    for (const id of ["ctl-R", "tog-R", "ro-R", "res-R"]) $(id).hidden = m !== "R";
+    for (const id of ["ctl-S", "tog-S", "ro-S", "res-S"]) $(id).hidden = m !== "S";
+    $("res-hint").textContent = m === "R" ? "Record a trial, type what you measured, then press Work out v to check." : "Record a trial, type f and the loops, then press Work out v to check.";
+  }
+  tabs.forEach((b) => b.onclick = () => goStep(b.dataset.mode === "R" ? 0 : firstS));
+
+  // ---------- dragging ----------
+  let drag = null;
+  function pick(px, py) {
+    if (mode === "R") {
+      rippleGeom(); const c = [];
+      if (R.marks) { c.push(["A", G.X(R.A), G.paperTop + 40]); c.push(["B", G.X(R.B), G.paperTop + 40]); }
+      if (R.p) c.push(["P", G.X(R.P), G.paperBot - 20]);
+      for (const [k, x, y] of c) if (Math.hypot(px - x, py - y) < 26) return k;
+      for (const [k, x] of c) if (Math.abs(px - x) < 10 && py > G.paperTop) return k;
+    } else if (S.marks && G.X) {
+      const yt = H * 0.38 - H * 0.27;
+      for (const k of ["A", "B"]) { const x = G.X(S[k]); if (Math.hypot(px - x, py - yt) < 26 || (Math.abs(px - x) < 10 && py > yt)) return k; }
+    }
+    return null;
+  }
+  const pos = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  cv.addEventListener("pointerdown", (e) => { const [px, py] = pos(e); drag = pick(px, py); if (drag) { cv.setPointerCapture(e.pointerId); e.preventDefault(); } });
+  cv.addEventListener("pointermove", (e) => {
+    const [px, py] = pos(e);
+    if (!drag) { cv.style.cursor = pick(px, py) ? "ew-resize" : "default"; return; }
+    if (mode === "R") { const v = Math.max(0, Math.min(R.TANK, Math.round(G.toCm(px) * 10) / 10)); if (drag === "P") { R.P = v; R.sw.startIdx = crestIdxAt(R.P, R.t) - R.sw.count; } else R[drag] = v; }
+    else S[drag] = Math.max(0, Math.min(1.0, Math.round(G.toM(px) * 1000) / 1000));
+  });
+  const endDrag = () => drag = null;
+  cv.addEventListener("pointerup", endDrag); cv.addEventListener("pointercancel", endDrag);
+
+  // ---------- results ----------
+  const rowsR = [], rowsS = [];
+  const sig = (x, n = 3) => isFinite(x) ? Number(x.toPrecision(n)).toString() : "–";
+  const TD = "padding:12px 10px;border-bottom:1px solid var(--st-rule-soft);font-size:16px;vertical-align:middle";
+  const INP = "width:4.5em;font:600 16px var(--st-ui);text-align:center;border:1.5px solid var(--st-accent-text);border-radius:6px;padding:7px 4px;background:var(--st-paper);color:var(--st-ink)";
+  const DEL = "font:500 13px/1 var(--st-ui);padding:8px 10px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer";
+  const EMPTY = (cols, t) => `<tr><td colspan="${cols}" style="${TD};color:var(--st-muted);padding:18px 10px">${t}</td></tr>`;
+  const d1 = (x) => (+x).toFixed(1), d2 = (x) => (+x).toFixed(2);
+  $("r-record").onclick = () => { rowsR.push({ d: Math.abs(R.B - R.A), count: "", time: "", n: "", show: false, vTrue: rv() / 100 }); renderR(); setSection("res", true); };
+  $("s-record").onclick = () => { rowsS.push({ f: "", d: Math.abs(S.B - S.A), mass: S.mass, n: "", show: false, vTrue: sv() }); renderS(); setSection("res", true); };
+  const LIVE = `<span style="font:500 10px/1 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-accent-text);border:1px solid currentColor;border-radius:4px;padding:3px 5px;vertical-align:middle">live</span>`;
+  const check = (v, r) => { if (!R.truth || !isFinite(r.vTrue)) return ""; const p = Math.abs(v - r.vTrue) / r.vTrue * 100, ok = p < 10; return `<div style="margin-top:4px;font-size:13px;color:${ok ? "var(--wpl-ok-text,#0A6B36)" : "var(--wpl-bad,#B3261E)"}">true ${sig(r.vTrue)} m/s · ${ok ? "within" : "off by"} ${p.toFixed(0)}%</div>`; };
+  const meanRow = (vs, span, cols) => vs.length > 1 ? `<tr><td colspan="${span}" style="${TD};text-align:right;color:var(--st-muted)">Mean wave speed</td><td style="${TD};font-weight:600">${sig(vs.reduce((a, b) => a + b, 0) / vs.length)} m/s</td><td colspan="${cols}" style="${TD}"></td></tr>` : "";
+  const REV = "font:600 13px/1 var(--st-ui);padding:9px 12px;border:0;border-radius:var(--st-r-btn);background:var(--st-accent-text);color:var(--st-paper);cursor:pointer;white-space:nowrap";
+  const field = (i, key, val, lbl, w = "4.5em") => `<input data-i="${i}" data-k="${key}" inputmode="decimal" value="${val}" aria-label="${lbl}, trial ${i + 1}" placeholder="?" style="${INP};width:${w}">`;
+  const mut = (t) => `<span style="color:var(--st-muted)">${t}</span>`;
+  function wire(tb, rows, render) {
+    tb.querySelectorAll("input").forEach((inp) => inp.onchange = () => { rows[+inp.dataset.i][inp.dataset.k] = inp.value; render(); });
+    tb.querySelectorAll("[data-del]").forEach((b) => b.onclick = () => { rows.splice(+b.dataset.del, 1); render(); });
+    tb.querySelectorAll("[data-rev]").forEach((b) => b.onclick = () => { rows[+b.dataset.rev].show = true; render(); });
+  }
+  // the newest row follows the live A to B distance until its wave speed is worked out
+  const liveRow = () => { const r = rowsR[rowsR.length - 1]; return r && !r.show ? r : null; };
+  const dCellR = (r, live) => `${(r.d / 100).toFixed(3)} ${mut(`= ${d1(r.d)} cm`)}${live ? " " + LIVE : ""}`;
+  const liveRowS = () => { const r = rowsS[rowsS.length - 1]; return r && !r.show ? r : null; };
+  const dCellS = (r, live) => `${r.d.toFixed(3)}${live ? " " + LIVE : ""}`;
+  const lamCellS = (r) => { const n = parseFloat(r.n), lam = n > 0 ? 2 * r.d / n : NaN; return isFinite(lam) ? `${mut(`2 × ${r.d.toFixed(3)} ÷ ${n} =`)} <b>${sig(lam)}</b>` : mut("type the loops A to B"); };
+  const lamCellR = (r) => { const n = parseFloat(r.n), lamm = n > 0 ? r.d / n / 100 : NaN; return isFinite(lamm) ? `${mut(`${(r.d / 100).toFixed(3)} ÷ ${n} =`)} <b>${sig(lamm)}</b>` : mut("type the waves A to B"); };
+  function renderR() {
+    const tb = $("tb-R");
+    if (!rowsR.length) { tb.innerHTML = EMPTY(9, "No trials yet. Measure, then press Record trial."); return; }
+    let html = "", vs = [];
+    rowsR.forEach((r, i) => {
+      const n = parseFloat(r.n), cnt = parseFloat(r.count), t = parseFloat(r.time);
+      const lamm = n > 0 ? r.d / n / 100 : NaN, f = cnt >= 0 && t > 0 ? cnt / t : NaN, v = f * lamm;
+      const ready = isFinite(v); if (ready && r.show) vs.push(v);
+      const fCell = isFinite(f) ? `${mut(`${cnt} ÷ ${t} =`)} <b>${sig(f)}</b>` : mut("fill in count and time");
+      const vCell = !ready ? mut("–") : r.show ? `${mut(`${sig(f)} × ${sig(lamm)} =`)} <b>${sig(v)}</b>${check(v, r)}` : `<button data-rev="${i}" style="${REV}">Work out v</button>`;
+      html += `<tr><td style="${TD}">${i + 1}</td><td style="${TD}">${field(i, "n", r.n, "Waves between A and B")}</td><td data-d="${i}" style="${TD};white-space:nowrap">${dCellR(r, r === liveRow())}</td><td data-lam="${i}" style="${TD};white-space:nowrap">${lamCellR(r)}</td><td style="${TD}">${field(i, "count", r.count, "Waves past P")}</td><td style="${TD}">${field(i, "time", r.time, "Time in seconds", "5em")}</td><td style="${TD};white-space:nowrap">${fCell}</td><td style="${TD};white-space:nowrap">${vCell}</td><td style="${TD};text-align:right"><button data-del="${i}" style="${DEL}">Delete</button></td></tr>`;
+    });
+    html += meanRow(vs, 7, 1);
+    tb.innerHTML = html; wire(tb, rowsR, renderR);
+  }
+  function renderS() {
+    const tb = $("tb-S");
+    if (!rowsS.length) { tb.innerHTML = EMPTY(8, "No trials yet. Find a clear standing wave, then press Record trial."); return; }
+    let html = "", vs = [];
+    rowsS.forEach((r, i) => {
+      const n = parseFloat(r.n), f = parseFloat(r.f), lam = n > 0 ? 2 * r.d / n : NaN, v = f * lam, ready = isFinite(v) && f > 0;
+      if (ready && r.show) vs.push(v);
+      const vCell = !ready ? mut("–") : r.show ? `${mut(`${f} × ${sig(lam)} =`)} <b>${sig(v)}</b>${check(v, r)}` : `<button data-rev="${i}" style="${REV}">Work out v</button>`;
+      html += `<tr><td style="${TD}">${i + 1}</td><td style="${TD}">${field(i, "f", r.f, "Frequency in hertz", "5em")}</td><td style="${TD}">${field(i, "n", r.n, "Loops between A and B")}</td><td data-d="${i}" style="${TD};white-space:nowrap">${dCellS(r, r === liveRowS())}</td><td data-lam="${i}" style="${TD};white-space:nowrap">${lamCellS(r)}</td><td style="${TD};white-space:nowrap">${vCell}</td><td style="${TD}">${r.mass}</td><td style="${TD};text-align:right"><button data-del="${i}" style="${DEL}">Delete</button></td></tr>`;
+    });
+    html += meanRow(vs, 5, 2);
+    tb.innerHTML = html; wire(tb, rowsS, renderS);
+  }
+  rerenderTables = () => { renderR(); renderS(); }; rerenderTables();
+
+  // ---------- sections ----------
+  const secProp = { res: "showResults", quiz: "showQuiz" };
+  function setSection(sec, show, save = true) {
+    $(sec + "-body").hidden = !show; const b = $(sec + "-toggle");
+    b.innerHTML = show ? I.eyeOff + "Hide" : I.eye + "Show"; b.setAttribute("aria-expanded", show);
+    if (save) try { localStorage.setItem("wpl-sec-" + sec, show ? "1" : "0"); } catch (e) {}
+  }
+  for (const sec of Object.keys(secProp)) {
+    let saved = null; try { saved = localStorage.getItem("wpl-sec-" + sec); } catch (e) {}
+    setSection(sec, saved !== null ? saved === "1" : props[secProp[sec]] !== false, false);
+    $(sec + "-toggle").onclick = () => setSection(sec, $(sec + "-body").hidden);
+  }
+
+  // ---------- guided method ----------
+  function markersOnCrests() {
+    const cr = crestsAt(shownT()).filter((x) => x >= 2 && x <= R.TANK - 1).sort((a, b) => a - b); if (cr.length < 2) return;
+    const a = cr[0], n = Math.floor((cr[cr.length - 1] - a) / rlam() + 0.01); R.A = Math.round(a * 10) / 10; R.B = Math.round((a + n * rlam()) * 10) / 10;
+  }
+  function markersOnNodes() { S.A = 0; S.B = S.L; }
+  const nearestRes = (n) => Math.round(n * sv() / (2 * S.L) * 10) / 10;
+
+  const steps = [
+    { m: "R", title: "The set-up", go() { Object.assign(R, { side: true, marks: false, p: false, strobe: false, speed: 1, volt: 5 }); restartR(); R.t = 3.2; setPlayR(false); },
+      text: () => `<p>A motor vibrates a bar in shallow water. A lamp shines through the water onto white paper.</p><p class="copy">Each crest focuses the light: one bright line = one wave.</p>` },
+    { m: "R", title: "Measure the frequency", go() { Object.assign(R, { side: false, marks: false, p: true, speed: 0.25 }); R.P = 20; Object.assign(R.sw, { running: false, time: 0, count: 0 }); setSW(); setPlayR(true); },
+      text: () => `<p>Press <b>Start</b>. Count the bright lines passing <b>P</b> until the stopwatch stops at 10 s.</p><p class="copy">f = waves counted ÷ 10 s</p><p class="look">Slow motion is on so you can count. The stopwatch still shows real time.</p>` },
+    { m: "R", title: "Measure the wavelength", live: true, go() { Object.assign(R, { side: false, marks: true, p: false }); setPlayR(false); markersOnCrests(); },
+      text: () => { const d = Math.abs(R.B - R.A), n = Math.max(1, Math.round(d / rlam())), dm = d / 100; return `<p><b>Freeze</b> the pattern. Put <b>A</b> and <b>B</b> on bright lines as far apart as you can.</p><p>${n} waves fit between A and B. The ruler reads <b>${d1(d)} cm = ${dm.toFixed(3)} m</b>.</p><p class="copy">λ = distance ÷ number of waves<br>λ = ${dm.toFixed(3)} ÷ ${n} = ${sig(dm / n)} m</p><p class="look">Convert cm to m before you divide. Measuring across many waves makes the uncertainty smaller.</p>`; } },
+    { m: "R", title: "Calculate the wave speed", live: true, go() { Object.assign(R, { side: false, marks: true, p: true }); R.sw.running = false; setSW(); setPlayR(false); markersOnCrests(); },
+      text: () => { const d = Math.abs(R.B - R.A), n = Math.max(1, Math.round(d / rlam())), lam = d / n / 100;
+        const head = `<p class="eq">v = f × λ</p><p>λ = ${(d / 100).toFixed(3)} ÷ ${n} = <b>${sig(lam)} m</b></p>`;
+        if (R.sw.time < 9.9 || !R.sw.count) return head + `<p class="look">Go back one step and finish the 10 s count first.</p>`;
+        const f = R.sw.count / R.sw.time; return head + `<p>f = ${R.sw.count} ÷ ${d2(R.sw.time)} = <b>${d1(f)} Hz</b></p><p class="copy">v = ${d1(f)} × ${sig(lam)} = ${sig(f * lam)} m/s</p><p class="look">Press <b>Record trial</b>. In the table, type ${n} waves, your count and the time, then press <b>Work out v</b> to check.</p>`; } },
+    { m: "R", title: "The strobe method", go() { Object.assign(R, { side: false, marks: false, p: false, speed: 1, strobe: true }); R.fs = Math.round((rf() - 0.3) * 10) / 10; setPlayR(true); },
+      text: () => `<p>A strobe lamp flashes at a set frequency. When it matches the wave frequency, the pattern looks frozen.</p><p>Use <b>+</b> and <b>−</b> until the bright lines stop creeping.</p><p class="copy">Frozen pattern: strobe frequency = wave frequency</p>` },
+    { m: "R", title: "Change the frequency", go() { Object.assign(R, { side: true, strobe: false, marks: false, p: false, speed: 1, volt: 7 }); restartR(); },
+      text: () => `<p>The motor is now on <b>High</b>. The bright lines are closer together: higher f, shorter λ.</p><p class="copy">The wave speed stays the same. It depends only on the water depth.</p><p class="look">Try Low, Medium and High and record a trial for each. The table gives you the mean. f × λ does not change.</p>` },
+    { m: "S", title: "The set-up", go() { Object.assign(S, { marks: false, na: false, slow: false, mass: 200 }); setF(40); setPlayS(true); },
+      text: () => `<p>A signal generator drives a <b>vibration generator</b> at one end of the string. Hanging masses over a pulley keep the tension constant.</p><p class="look">Read the frequency straight off the signal generator.</p>` },
+    { m: "S", title: "Find a standing wave", go() { Object.assign(S, { marks: false, na: false, mass: 200 }); setF(44); },
+      text: () => `<p>At most frequencies the string barely moves. Change f slowly until you see a <b>steady pattern of loops</b>.</p><p class="look">Hint: try about ${d1(nearestRes(3))} Hz.</p>` },
+    { m: "S", title: "Nodes and loops", go() { Object.assign(S, { na: true, marks: false, slow: true }); setF(nearestRes(3)); },
+      text: () => `<p><b>N</b> = node, where the string does not move. <b>A</b> = antinode, the biggest vibration.</p><p class="copy">Each loop is half a wavelength.</p>` },
+    { m: "S", title: "Measure the wavelength", live: true, go() { Object.assign(S, { na: true, marks: true, slow: false }); setF(nearestRes(3)); markersOnNodes(); },
+      text: () => { const d = Math.abs(S.B - S.A), n = Math.max(1, Math.round(2 * d / slam())); return `<p>Measure node to node across as many loops as you can: <b>${n} ${n === 1 ? 'loop' : 'loops'} = ${d.toFixed(3)} m</b>.</p><p class="copy">λ = 2 × length ÷ loops = 2 × ${d.toFixed(3)} ÷ ${n} = ${(2 * d / n).toFixed(3)} m</p>`; } },
+    { m: "S", title: "Calculate the wave speed", live: true, go() { S.marks = true; },
+      text: () => { const n = Math.max(1, Math.round(2 * Math.abs(S.B - S.A) / slam())), lam = 2 * Math.abs(S.B - S.A) / n; return `<p>f = <b>${d1(S.f)} Hz</b> from the signal generator.</p><p class="copy">v = f × λ = ${d1(S.f)} × ${lam.toFixed(3)} = ${d1(S.f * lam)} m/s</p><p class="look">Press <b>Record trial</b>. In the table, type ${d1(S.f)} Hz and ${n} ${n === 1 ? 'loop' : 'loops'}, then press <b>Work out v</b> to check.</p>`; } },
+    { m: "S", title: "Change the frequency", go() { Object.assign(S, { na: true, marks: true, mass: 200 }); setF(nearestRes(4)); markersOnNodes(); },
+      text: () => `<p>Now 4 loops fit at ${d1(S.f)} Hz. Higher f, shorter λ.</p><p class="copy">The wave speed stays the same. It depends only on the tension and the string.</p><p class="look">Record this trial too and compare the two speeds.</p>` },
+  ];
+  const firstS = steps.findIndex((s) => s.m === "S");
+  const ST = {
+    look: "margin:0;background:var(--st-note-bg);border:1px dashed var(--st-note-border);border-radius:var(--st-r-card);padding:12px 14px;font-weight:500;color:var(--st-ink);font-size:16px",
+    copy: "margin:0;color:var(--st-accent-text);font-size:clamp(18px,1.5vw,21px);font-weight:600;line-height:1.35",
+    eq: "margin:0;font:600 34px/1.1 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink);background:var(--st-num-well);border-radius:var(--st-r-card);padding:12px 16px",
+    cl: "display:block;font:500 11px/1 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:5px",
+  };
+  let step = 0, lastHTML = "";
+  const dots = $("g-dots");
+  steps.forEach(() => { const d = document.createElement("i"); d.style.cssText = "width:10px;height:10px;border-radius:3px;display:block;background:var(--st-rule-strong)"; dots.appendChild(d); });
+  $("g-keys").innerHTML = `Keys: ${KBD("Space")} freeze or play · ${KBD(I.right)} next · ${KBD(I.left)} back`;
+  function styleText(gt) {
+    gt.querySelectorAll("p").forEach((p) => p.style.margin = "0");
+    gt.querySelectorAll(".look").forEach((el) => el.style.cssText = ST.look);
+    gt.querySelectorAll(".eq").forEach((el) => el.style.cssText = ST.eq);
+    gt.querySelectorAll(".copy").forEach((el) => { el.style.cssText = ST.copy; el.insertAdjacentHTML("afterbegin", `<span style="${ST.cl}">Copy this down</span>`); });
+  }
+  function goStep(i) {
+    step = Math.max(0, Math.min(steps.length - 1, i));
+    const st = steps[step]; setMode(st.m);
+    st.go(); profKey = ""; syncToggles();
+    const inSec = steps.filter((s) => s.m === st.m), k = inSec.indexOf(st);
+    $("g-count").textContent = `Step ${k + 1} of ${inSec.length}`;
+    $("g-part").textContent = st.m === "R" ? "Ripple tank" : "Waves on a string";
+    $("g-title").textContent = st.title;
+    const gt = $("g-text"); gt.innerHTML = lastHTML = st.text(); styleText(gt);
+    [...dots.children].forEach((d, j) => d.style.background = j === step ? "var(--st-accent)" : j < step ? "var(--st-ink)" : "var(--st-rule-strong)");
+    $("g-back").disabled = step === 0;
+    $("g-next").innerHTML = step === steps.length - 1 ? "Start again" : "Next" + I.right;
+  }
+  function liveText() {
+    const st = steps[step]; if (!st || !st.live || st.m !== mode) return;
+    const html = st.text(); if (html !== lastHTML) { const gt = $("g-text"); gt.innerHTML = lastHTML = html; styleText(gt); }
+  }
+  $("g-next").onclick = () => goStep(step === steps.length - 1 ? 0 : step + 1);
+  $("g-back").onclick = () => goStep(step - 1);
+  const onKey = (e) => {
+    if (e.target.closest("input,select,textarea")) return;
+    if (e.key === " ") { e.preventDefault(); mode === "R" ? setPlayR(!R.playing) : setPlayS(!S.playing); }
+    else if (e.key === "ArrowRight") goStep(step + 1); else if (e.key === "ArrowLeft") goStep(step - 1);
+  };
+  document.addEventListener("keydown", onKey);
+  goStep(0);
+
+  // ---------- quiz ----------
+  const Q = [
+    { s: "A student counts 32 waves passing a point in 10 s. What is the frequency?", o: ["32 Hz", "3.2 Hz", "0.31 Hz"], a: 1, why: "32 ÷ 10 = 3.2 Hz." },
+    { s: "10 wavelengths measure 45 cm on the ruler. What is the wavelength in metres?", o: ["4.5 m", "0.045 m", "0.45 m"], a: 1, why: "45 cm = 0.45 m. Then 0.45 ÷ 10 = 0.045 m." },
+    { s: "Why measure across many waves and divide, instead of measuring one wave?", o: ["It reduces the uncertainty in the wavelength", "It makes the waves travel more slowly", "One wave is too small to see"], a: 0, why: "The reading error is shared across all the waves, so the uncertainty in λ is smaller." },
+    { s: "λ = 4.5 cm and f = 5.0 Hz. What is the wave speed?", o: ["22.5 m/s", "0.225 m/s", "0.9 m/s"], a: 1, why: "Convert first: 4.5 cm = 0.045 m. v = 5.0 × 0.045 = 0.225 m/s." },
+    { s: "On the string, 4 loops measure 1.20 m. What is the wavelength?", o: ["0.30 m", "0.60 m", "2.40 m"], a: 1, why: "Each loop is half a wavelength. λ = 2 × 1.20 ÷ 4 = 0.60 m." },
+    { s: "The frequency is increased and a new clear pattern appears. The tension is unchanged. The wave speed…", o: ["increases", "decreases", "stays the same"], a: 2, why: "The speed depends on the tension and the string, not on f. Higher f just gives a shorter λ." },
+  ];
+  let score = 0; const qs = $("quiz-body"); $("score").textContent = `Score: 0 / ${Q.length}`;
+  const OPT = "display:flex;align-items:center;gap:10px;width:100%;font:500 16px/1.35 var(--st-ui);text-align:left;border:1.5px solid var(--st-btn-border);background:var(--st-paper);color:var(--st-ink);border-radius:var(--st-r-control);padding:11px 14px;cursor:pointer";
+  Q.forEach((q, qi) => {
+    const box = document.createElement("div");
+    box.style.cssText = "background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:18px;display:grid;gap:8px;align-content:start;min-width:0";
+    box.innerHTML = `<div style="display:flex;gap:10px;align-items:flex-start"><span style="flex:none;width:24px;height:24px;border-radius:5px;background:var(--st-num-well);display:flex;align-items:center;justify-content:center;font:500 12px/1 var(--st-mono);color:var(--st-caption);margin-top:1px">${String(qi + 1).padStart(2, "0")}</span><div style="font-weight:600;font-size:17px;line-height:1.4">${q.s}</div></div>`;
+    const fb = document.createElement("div"); fb.style.cssText = "font-size:15px;line-height:1.45"; let done = false;
+    const btns = q.o.map((t, oi) => {
+      const b = document.createElement("button"); b.style.cssText = OPT; b.innerHTML = `<span>${t}</span>`;
+      b.onmouseenter = () => { if (!done) b.style.background = "var(--st-note-bg)"; }; b.onmouseleave = () => { if (!done) b.style.background = "var(--st-paper)"; };
+      b.onclick = () => {
+        if (done) return; done = true; const right = oi === q.a;
+        btns.forEach((x, xi) => { x.style.cursor = "default"; x.style.background = "var(--st-paper)"; if (xi !== oi && xi !== q.a) x.style.opacity = "0.55"; });
+        const mark = (el, ok) => { el.style.borderColor = ok ? "var(--wpl-ok,#12A150)" : "var(--wpl-bad,#B3261E)"; el.style.background = ok ? "var(--wpl-ok-bg,#E4F7EB)" : "var(--wpl-bad-bg,#FBE4DE)"; el.insertAdjacentHTML("afterbegin", `<span style="display:flex;color:${ok ? "var(--wpl-ok-text,#0A6B36)" : "var(--wpl-bad,#B3261E)"}">${ok ? I.tick : I.cross}</span>`); };
+        mark(b, right); if (!right) mark(btns[q.a], true);
+        fb.style.color = right ? "var(--wpl-ok-text,#0A6B36)" : "var(--wpl-bad,#B3261E)"; fb.innerHTML = `<b>${right ? "Correct." : "Not quite."}</b> <span style="color:var(--st-body)">${q.why}</span>`;
+        if (right) score++; $("score").textContent = `Score: ${score} / ${Q.length}`;
+      };
+      box.appendChild(b); return b;
+    });
+    box.appendChild(fb); qs.appendChild(box);
+  });
+
+  return { setSection, setTeacher, stop() { alive = false; cancelAnimationFrame(raf); ro.disconnect(); document.removeEventListener("keydown", onKey); } };
+}
+</script>
+</body>
+</html>

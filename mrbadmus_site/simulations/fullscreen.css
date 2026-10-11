@@ -41,3 +41,19 @@ html[data-sim="seismic"].sim-full .plate { width: min(100%, calc(100dvh - 330px)
    the site bar and gives the app the whole window. ── */
 html[data-sim="circuit"].sim-full [data-screen-label="Circuit Lab"] { height: 100dvh !important; }
 html[data-sim="circuit"].sim-full .sim-bar { top: auto; bottom: 14px; }
+
+/* ── Waves Practical Lab: keeps the practical tabs, the apparatus (stage),
+   its controls (play, motor, stopwatch, strobe / signal generator, mass) and
+   the tickboxes. Hides the titles, the readout cards, the step guide, the
+   results table, the quiz and the footnote, and the Record trial buttons
+   (the table they fill is hidden). ── */
+html[data-sim="practical"].sim-full div:has(> header) { max-width: none; padding-top: 56px; padding-bottom: 16px; gap: 12px; }
+html[data-sim="practical"].sim-full div:has(> header) > header > :first-child { display: none !important; }
+html[data-sim="practical"].sim-full div:has(> header) > :nth-child(n+3) { display: none !important; }
+html[data-sim="practical"].sim-full div:has(> header) > :nth-child(2) > :nth-child(n+2) { display: none !important; }
+html[data-sim="practical"].sim-full div:has(> header) > :nth-child(2) > :first-child > :nth-child(n+2) { display: none !important; }
+html[data-sim="practical"].sim-full #r-record,
+html[data-sim="practical"].sim-full #s-record,
+html[data-sim="practical"].sim-full #tog-R > span,
+html[data-sim="practical"].sim-full #tog-S > span { display: none !important; }
+html[data-sim="practical"].sim-full #stage { height: calc(100dvh - 400px) !important; min-height: 220px; }
