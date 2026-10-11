@@ -38785,8 +38785,7 @@
    "ks4c:using-moles-calculations:match-4": "Empirical formula: S 50%, O 50% by mass",
    "ks4q:using-moles-calculations:35ba626cd3": "Neither — both are present in exactly the right ratio: 0.1 mol Na needs 0.05 mol Cl₂ (2:1 ratio)",
    "ks4q:using-moles-calculations:7aebbd1287": "2Mg + O₂ → 2MgO — moles: 4.8 ÷ 24 = 0.2, 3.2 ÷ 32 = 0.1, 8.0 ÷ 40 = 0.2, a 2 : 1 : 2 ratio",
-   "ks4q:using-moles-calculations:d1f269ffc8": "1 mol/dm³ — c = 0.3 ÷ 0.3 dm³ = 1 mol/dm³",
-   "ks4q:using-moles-calculations:d6b6aea21b": "2Mg + O₂ → 2MgO — moles: 4.8 ÷ 24 = 0.2, 3.2 ÷ 32 = 0.1, 8.0 ÷ 40 = 0.2, a 2 : 1 : 2 ratio"
+   "ks4q:using-moles-calculations:d1f269ffc8": "1 mol/dm³ — c = 0.3 ÷ 0.3 dm³ = 1 mol/dm³"
   },
   "points": [
    {
@@ -38828,7 +38827,7 @@
    {
     "added": "round-2",
     "id": "ks4.using-moles-calculations.10",
-    "label": "Use mole ratios from experimental masses to deduce and write a balanced equation"
+    "label": "Use experimental masses and mole ratios to deduce a balanced chemical equation"
    }
   ],
   "questions": {
@@ -38893,7 +38892,7 @@
    "ks4:using-moles-calculations:ch#r1": "ks4.using-moles-calculations.8",
    "ks4:using-moles-calculations:ch#r2": "ks4.using-moles-calculations.9",
    "ks4:using-moles-calculations:ch#r3": "ks4.using-moles-calculations.9",
-   "ks4:using-moles-calculations:ch#r4": "ks4.using-moles-calculations.10",
+   "ks4:using-moles-calculations:ch#r4": "ks4.using-moles-calculations.9",
    "ks4:using-moles-calculations:ch#sort-1-1": "ks4.using-moles-calculations.8",
    "ks4:using-moles-calculations:ch#sort-1-2": "ks4.using-moles-calculations.8",
    "ks4:using-moles-calculations:ch#sort-1-3": "ks4.using-moles-calculations.8",
@@ -38908,7 +38907,7 @@
    "ks4:using-moles-calculations:th#r1": "ks4.using-moles-calculations.8",
    "ks4:using-moles-calculations:th#r2": "ks4.using-moles-calculations.9",
    "ks4:using-moles-calculations:th#r3": "ks4.using-moles-calculations.9",
-   "ks4:using-moles-calculations:th#r4": "ks4.using-moles-calculations.10",
+   "ks4:using-moles-calculations:th#r4": "ks4.using-moles-calculations.9",
    "ks4:using-moles-calculations:th#sort-1-1": "ks4.using-moles-calculations.8",
    "ks4:using-moles-calculations:th#sort-1-2": "ks4.using-moles-calculations.8",
    "ks4:using-moles-calculations:th#sort-1-3": "ks4.using-moles-calculations.8",
@@ -38922,8 +38921,7 @@
    "ks4c:using-moles-calculations:match-4": "ks4.using-moles-calculations.6",
    "ks4q:using-moles-calculations:35ba626cd3": "ks4.using-moles-calculations.8",
    "ks4q:using-moles-calculations:7aebbd1287": "ks4.using-moles-calculations.6",
-   "ks4q:using-moles-calculations:d1f269ffc8": "ks4.using-moles-calculations.1",
-   "ks4q:using-moles-calculations:d6b6aea21b": "ks4.using-moles-calculations.10"
+   "ks4q:using-moles-calculations:d1f269ffc8": "ks4.using-moles-calculations.1"
   },
   "scope_ref": "using-moles-calculations",
   "subject": "chemistry",

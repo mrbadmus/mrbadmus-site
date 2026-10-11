@@ -89,10 +89,12 @@ TEST_VECTOR_ID = "ks4q:scalar-vector-quantities:3616a6034c"
 # ── the classic quiz card id ────────────────────────────────────────────
 
 def ks4_quiz_norm(text):
-    """NFKC → strip a leading card number ("1. " / "1) ") → collapse every
-    whitespace run to one space → trim → lowercase. In that order."""
+    """NFKC → strip a leading card number ("1. " / "1) ", the number must be
+    FOLLOWED BY WHITESPACE, so "4.8 g of…" keeps its "4.8") → collapse every
+    whitespace run to one space → trim → lowercase. In that order. Identical
+    to the backend's ks4QuizId (strip `^ws* digits [.)] ws+`, ruled 11 Oct 2026)."""
     t = unicodedata.normalize("NFKC", text)
-    t = re.sub(r"^\s*\d+[.)]\s*", "", t)
+    t = re.sub(r"^\s*\d+[.)]\s+", "", t)
     t = re.sub(r"\s+", " ", t).strip()
     return t.lower()
 
