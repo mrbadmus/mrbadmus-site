@@ -26,16 +26,18 @@ html[data-sim="wave"].sim-full div:has(> header) > :nth-child(2) > :nth-child(n+
 html[data-sim="wave"].sim-full div:has(> header) > :nth-child(2) > :first-child > :nth-child(n+2) { display: none !important; }
 html[data-sim="wave"].sim-full #stage { height: calc(100dvh - 330px) !important; min-height: 220px; }
 
-/* ── Seismic Wave Lab: keeps the Earth, the clock, play / restart / speed,
-   the legend and the two toggle rows (inside the Earth; what to show). ── */
+/* ── Seismic Wave Lab: keeps the Earth, the clock, play / restart / move the
+   earthquake / speed, the legend, and the two toggle rows (Inside the Earth,
+   Show with Layer names). Hides the titles, the step guide, the live line,
+   the tally, the seismogram, key words, quiz and the section Hide / Show
+   buttons. ── */
 html[data-sim="seismic"].sim-full main { max-width: none; padding-top: 56px; padding-bottom: 16px; gap: 12px; }
 html[data-sim="seismic"].sim-full main > header,
 html[data-sim="seismic"].sim-full main > :nth-child(n+3) { display: none !important; }
-html[data-sim="seismic"].sim-full .lab .note,
-html[data-sim="seismic"].sim-full .lab .live,
-html[data-sim="seismic"].sim-full section.guide,
-html[data-sim="seismic"].sim-full .ctl:has(.tally) { display: none !important; }
-html[data-sim="seismic"].sim-full .plate { width: min(100%, calc(100dvh - 330px)); min-width: 260px; margin-inline: auto; }
+html[data-sim="seismic"].sim-full main > :nth-child(2) > :nth-child(2) > :first-child,
+html[data-sim="seismic"].sim-full main > :nth-child(2) > :nth-child(2) > :nth-child(2) > :nth-child(3),
+html[data-sim="seismic"].sim-full #live { display: none !important; }
+html[data-sim="seismic"].sim-full #earth { width: min(100%, calc(100dvh - 330px)) !important; min-width: 260px; margin-inline: auto; }
 
 /* ── Circuit Lab: it is already a full-window app, so full screen only drops
    the site bar and gives the app the whole window. ── */

@@ -1,0 +1,28 @@
+/* Dark values for the lab's --st-* tokens, so it follows the site's Light /
+   Dark / System control. Light is Design's file, untouched. Values mirror the
+   site's dark palette (shared/ks3-theme.css) and the Waves Practical Lab.
+   The Earth's layer colours are drawn on the canvas and stay as Design drew
+   them: a light-coloured cross-section on the dark graph paper. */
+html[data-theme="dark"] {
+  --st-ground: #16120E; --st-paper: #1F1A15; --st-paper-grid: #2A231C;
+  --st-ink: #F3ECE0; --st-body: #E3D9CA; --st-muted: #C2B6A6; --st-caption: #B0A493;
+  --st-faint: #B0A493; --st-ghost: #A39786;
+  --st-rule: #3E352C; --st-rule-soft: #332B23; --st-rule-fact: #332B23; --st-rule-strong: #5E5246;
+  --st-edge: #4F443A; --st-btn-border: #5E5246; --st-seg-bg: #2A231C; --st-note-bg: #2A231C;
+  --st-note-border: #5E5246; --st-num-well: #2A231C; --st-crumb-bg: #231D17;
+  --st-chip-tint: #3A2418; --st-chip-tint-border: #6B3A22;
+  --st-accent: #F07A4E; --st-accent-text: #FF9E78; --st-accent-hover: #FFC2A8;
+  --st-shadow-frame: 0 26px 64px -32px rgba(0, 0, 0, 0.8);
+  /* seismogram + canvas label colours, read by the lab's script */
+  --swl-label: #F3ECE0; --swl-dash: #B0A493;
+  --swl-grid: #3E352C; --swl-muted: #C2B6A6; --swl-base: #5E5246; --swl-trace: #F3ECE0;
+  --swl-p: #8FB7FF; --swl-ptext: #A9C4FF; --swl-s: #FF9E78; --swl-chip: #16120E;
+  --swl-ok: #3CC477; --swl-ok-text: #86E6AC; --swl-ok-bg: #15301F;
+  --swl-bad: #FF8A7A; --swl-bad-bg: #3A1D18;
+}
+html[data-theme="dark"] body { background: #16120E; }
+html[data-theme="dark"] a { color: #FF9E78; }
+html[data-theme="dark"] a:hover { color: #FFC2A8; }
+
+/* Narrow phones: never let Design's segmented controls push the page wider. */
+#model, #waves, #speed { max-width: 100%; box-sizing: border-box; }
