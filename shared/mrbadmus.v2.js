@@ -1332,8 +1332,21 @@ try {
       return (c[it.convAnswer] != null ? c[it.convAnswer] + ' → ' : '') +
              (it.answer == null ? '' : String(it.answer)) + (it.unit ? ' ' + it.unit : '');
     }
+    /* The ROUTE is part of every pilot id (Commander's ruling, 11 Oct 2026):
+       128 of 308 pilot pages choose content by route (`hi ? … : …`), so a
+       position-only id could name two different questions. The two letters
+       come from the page path: /combined|triple/ → c|t, /foundation|higher/
+       → f|h, so ch, cf, th, tf. One id is always exactly one question.
+       ⚠️ Joined with ':' — `ks4:<slug>:<route>#…` — not the '@' first
+       ruled: the server refuses any id outside ^[a-z0-9:#._-]{1,200}$, and
+       ':' is already the separator in `ks4q:<slug>:<hash>`. */
+    var routeSeg = (function () {
+      var m = /^\/(combined|triple)\/(foundation|higher)\//.exec(path);
+      return m ? ':' + m[1].charAt(0) + m[2].charAt(0) : '';
+    })();
+    function pilotId(slug, id) { return 'ks4:' + slug + routeSeg + '#' + id; }
     function base(id, rung) {
-      return { key_stage: 'KS4', lesson_slug: pathSlug, question_id: 'ks4:' + pathSlug + '#' + id,
+      return { key_stage: 'KS4', lesson_slug: pathSlug, question_id: pilotId(pathSlug, id),
                rung: rung || null, criteria: null, marks: null, correct_answer: null, is_correct: null };
     }
 
@@ -1451,7 +1464,7 @@ try {
           var v = s[key] === undefined ? null : s[key];
           if (was !== null || v === null) { return; }
           var d = base(key, key);
-          if (p.slug) { d.lesson_slug = p.slug; d.question_id = 'ks4:' + p.slug + '#' + key; }
+          if (p.slug) { d.lesson_slug = p.slug; d.question_id = pilotId(p.slug, key); }
           var r = R[key] || {};
           if (key === 'r1') {
             var o1 = r.options || [];
