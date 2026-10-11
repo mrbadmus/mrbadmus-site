@@ -539,7 +539,7 @@
       var host = document.createElement("div");
       host.setAttribute("style", "display: contents;");
       if (node.i !== undefined) { host.setAttribute("data-dc-tpl", String(node.i)); }
-      var inst = createInstance(reg.Component, props, reg.template, ctx.components, host);
+      var inst = createInstance(reg.Component, props, reg.template, ctx.components, host, node.comp);
       live = { kind: "child", comp: node.comp, dom: host, inst: inst };
       return { live: live, doms: [host] };
     }
@@ -564,12 +564,18 @@
      Owns one `DCLogic` instance, its persistent live tree (parallel to
      `template.roots`), and the render scheduler `setState` posts to.
      ============================================================================ */
-  function createInstance(ComponentClass, initialProps, template, components, hostDom) {
+  function createInstance(ComponentClass, initialProps, template, components, hostDom, compName) {
     var logic = new ComponentClass(initialProps);
     var liveRoots = new Array(template.roots.length);
     var pending = null, queued = [], lastProps = shallow(logic.props);
     var api = {
       logic: logic,
+      // ⊕ Parent truth — the block's registered name ("Ks4Ladder", …) and
+      // its host, so the read-only tap above can tell a ladder from any
+      // other block and find the ladder's own Ks4Chain / Ks4Write inside it.
+      // `comp` is undefined on the page's root instance.
+      comp: compName,
+      host: hostDom,
       misses: [],
       renders: 0,
       schedule: function (cb) {
@@ -583,6 +589,17 @@
           var prevProps = lastProps;
           lastProps = shallow(logic.props);
           logic.componentDidUpdate(prevProps);
+          /* ⊕ Parent truth (11 Oct 2026) — a read-only look at the state a
+             setState just drew, for a consumer child's answer capture
+             (mrbadmus.v2.js sets MrBadmusKS4Tap on a child session and on
+             nothing else). It is handed this instance and may only READ it:
+             it never sets state, never touches the DOM, and a throw from it
+             is swallowed here so it can never break a lesson. Absent — every
+             school pupil — this is one typeof and nothing happens. */
+          var tap = window.MrBadmusKS4Tap;
+          if (typeof tap === "function") {
+            try { tap(api); } catch (e) { /* capture never breaks a lesson */ }
+          }
         }, 0);
       },
       setProps: function (newProps) {
@@ -605,6 +622,8 @@
       }
     };
     logic.__host = api;
+    // A JS property, not an attribute: nothing is added to the markup.
+    hostDom.__mrbKs4 = api;
     api.draw();
     logic.componentDidMount();
     return api;
