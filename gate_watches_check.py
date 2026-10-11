@@ -65,6 +65,9 @@ BANK_CONTENT_GATES = frozenset({
     # ⊕ MRB-352 run 2: the figure manifest ships a KS3 figure only if a
     # question references it, so it scans every bank file for `figure` ids
     "figure_manifest", "figures_mirror",
+    # ⊕ parent truth, 11 Oct 2026: every bank question must carry a
+    # knowledge point, so a bank edit is exactly what this gate checks
+    "knowledge_points_check",
 })
 
 _QUESTIONS_SAMPLES = (

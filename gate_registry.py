@@ -2807,6 +2807,33 @@ GATES = [
              "delivery verbatim — which is why this gate's own `run_check` "
              "only re-walks the `source` layer plus its mirrors, not all "
              "101 rows."),
+
+    dict(name="knowledge_points_check",
+         cmd=["python3", "tools/export_knowledge_points.py", "--check"],
+         speed="fast",
+         watches=["tools/export_knowledge_points.py", "tools/kp_classify.py",
+                  "knowledge_points/*.json", "ks3_data/**", "ks4_data/**",
+                  "ks4_lessons/**", "all_subtopics_*.py", "export_ks3_extended.py",
+                  "shared/exam-content/*.js", "combined/**", "triple/**"],
+         # ⚠️ Named gap (MRB-346 rule 1): the 14 pilot lessons' ladder rungs
+         # are read from Design's `.dc.html` under docs/ks4/design-reference/,
+         # which no `watches` may name. The rung IDS (`ks4:<slug>#r1..r4`) come
+         # from `ks4_lessons.LESSONS`, which IS watched, so a new or removed
+         # pilot lesson still selects this gate; only a rung's wording does not.
+         why="Parent truth (11 Oct 2026) — EVERY QUESTION CARRIES A KNOWLEDGE "
+             "POINT. A parent is shown which points their child has and has "
+             "not secured, and 'a different question testing the same point' "
+             "is found through the tag. `knowledge_points/*.json` holds the "
+             "machine-drafted points and tags; this gate reads every question "
+             "through the loaders (both banks, both ladders, the KS3 exam "
+             "twins, the KS4 classic quiz cards and rebuilt-lesson rungs) and "
+             "fails if one is neither tagged nor listed untagged, if a tag "
+             "dangles or crosses scopes, or if `ks4_quiz_id` stops producing "
+             "the contract's test vector — the backend derives the same id "
+             "from the same card text, and a drift on either side would "
+             "silently untag every classic card. A new or changed bank "
+             "question turns this red until its scope is re-tagged "
+             "(`python3 tools/kp_classify.py --scope <ref> --force`)."),
 ]
 
 
