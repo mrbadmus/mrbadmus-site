@@ -525,9 +525,16 @@ SCIENCE = [
     dict(id='B7W-FP-CHAIN', slug='fungal-protist-diseases', layer='logic',
          old="'Nets stop mosquitoes biting people while they sleep.'",
          new="'Nets stop these mosquitoes biting people while they sleep.'"),
+    # the old second link could still refer back to the question, so the order drug -> specific -> delivers also read sensibly and
+    # was rejected. Each link now follows only from the one before: specific -> binds only to them; the drug bound to the antibody is
+    # carried to those cells; so only those cells are reached.
     dict(id='B7W-MA-CHAIN', slug='monoclonal-antibodies', layer='logic',
-         old="'A toxic drug, radioactive substance or growth-stopping chemical is bound to it.'",
-         new="'A toxic drug, radioactive substance or growth-stopping chemical is bound to this antibody.'"),
+         old="['The antibody is specific to an antigen on the cancer cells.', 'A toxic drug, radioactive substance or growth-stopping chemical is bound to it.', 'It delivers the substance to the cancer cells only, so other cells aren\\u2019t harmed.']",
+         new="['The antibody is specific to an antigen on the cancer cells, so it binds only to them.', 'A toxic drug, radioactive substance or growth-stopping chemical bound to the antibody is carried to those cells.', 'So the substance reaches the cancer cells only, and other cells aren\\u2019t harmed.']"),
+    # CH TH rung 2b has ONE wrong-answer string for any wrong convert/number/unit, so it says what the right method is.
+    dict(id='B7W-RP-CONVFB', slug='rate-of-photosynthesis', layer='logic',
+         old="wrong: 'Square each distance: 100 and 900. 900 \\u00f7 100 = 9.'",
+         new="wrong: 'Both distances are already in cm, so there is nothing to convert. Square each distance: 100 and 900. 900 \\u00f7 100 = 9.'"),
     # target includes the next link's opening so it cannot match the wrong_explanations string of the same words
     dict(id='B7W-AB-CHAIN-1', slug='antibiotics-painkillers', layer='logic',
          old="'Antibiotics cannot kill viral pathogens.', 'Prescribing",

@@ -1022,7 +1022,7 @@ class Component extends DCLogic {
             model: ['C \u00b7 nothing to convert', 'F \u00b7 rate = amount of oxygen \u00f7 time', 'I \u00b7 rate = 36 \u00f7 3', 'F \u00b7 rate = 12', 'A \u00b7 12 bubbles per minute'] },
           H ? { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'A lamp is moved from 10 cm to 30 cm from some pondweed. Calculate how many times lower the light intensity is.',
             convOptions: ['Nothing to convert: both in cm', 'Convert only the 30 cm to m: divide by 100', 'Convert only the 10 cm to mm: multiply by 10'], convAnswer: 0, answer: 9, tol: 0.05, unit: 'times', units: ['times', 'cm', 'cm\u00b2'],
-            right: '1 \u00f7 10\u00b2 = 0.01; 1 \u00f7 30\u00b2 = 0.00111; 0.01 \u00f7 0.00111 = 9 times lower.', wrong: 'Square each distance: 100 and 900. 900 \u00f7 100 = 9.',
+            right: '1 \u00f7 10\u00b2 = 0.01; 1 \u00f7 30\u00b2 = 0.00111; 0.01 \u00f7 0.00111 = 9 times lower.', wrong: 'Both distances are already in cm, so there is nothing to convert. Square each distance: 100 and 900. 900 \u00f7 100 = 9.',
             model: ['C \u00b7 nothing to convert: both in cm', 'F \u00b7 relative light intensity = 1 \u00f7 d\u00b2', 'I \u00b7 1 \u00f7 10\u00b2; 1 \u00f7 30\u00b2', 'F \u00b7 0.01; 0.00111...', 'A \u00b7 9 times lower'] }
           : { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'Pondweed gives off 2.7 cm\u00b3 of oxygen in 90 s. Calculate the rate in cm\u00b3 per minute.',
             convOptions: ['Nothing to convert', 'Convert s to min: divide by 60', 'Convert s to min: multiply by 60'], convAnswer: 1, answer: 1.8, tol: 0.05, unit: 'cm\u00b3 per minute', units: ['cm\u00b3 per minute', 'cm\u00b3 per second', 'cm\u00b3'],
