@@ -667,6 +667,7 @@ HEAD_ASSETS = """<link rel="preload" href="/shared/fonts/fraunces-var-latin.woff
   <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
   <link rel="stylesheet" href="/shared/nav.css"/>
+  <link rel="stylesheet" href="/shared/drawer.css"/>
   <script src="/shared/config.js"></script>
   <script src="/shared/search-index.js" defer></script>
   <script src="/shared/search.js" defer></script>
@@ -688,6 +689,32 @@ THEME_COLOR = "#F7F1E5"  # pre-paint browser chrome tint — matches --bg (light
 # ─────────────────────────────────────────────
 #  UPDATED NAV — includes pathway context
 # ─────────────────────────────────────────────
+
+
+# ⊕ Front door (12 Oct 2026) — THE ONE PUBLIC BAR. brand · theme · ONE home
+# button · hamburger, and nothing else. 3D Studio, Challenge, Leaderboard and
+# Search moved into the drawer; the name chip became the drawer's account
+# section. `#nav-auth-area` is where shared/nav.js paints the home button
+# ("Sign in" signed out; "My class", "My classes", "My dashboard" or "Today"
+# signed in) and the burger is what it binds the drawer to. The theme control
+# is the compact variant (theme.js: one button below 600px) at every width.
+# Hand-written pages carry <!--mrb:cluster-->…<!--/mrb:cluster--> and
+# `stamp_cluster()` rewrites the region on every build, so the bar cannot drift
+# from this one definition.
+NAV_CLUSTER_INNER = (
+    '<span class="mrb-theme-slot" data-mrb-theme="compact"></span>\n'
+    '    <span id="nav-auth-area"></span>\n'
+    '    <button class="nav-burger" type="button" aria-label="Open menu" '
+    'aria-expanded="false" aria-controls="nav-drawer">'
+    '<span></span><span></span><span></span></button>')
+NAV_CLUSTER = ('<div class="nav-cluster">\n    ' + NAV_CLUSTER_INNER + '\n  </div>')
+_CLUSTER_RE = re.compile(r"<!--mrb:cluster-->.*?<!--/mrb:cluster-->", re.S)
+
+
+def stamp_cluster(html):
+    """Rewrite every <!--mrb:cluster--> region with the one cluster."""
+    return _CLUSTER_RE.sub(
+        lambda m: "<!--mrb:cluster-->" + NAV_CLUSTER + "<!--/mrb:cluster-->", html)
 
 
 def nav_html(active_subject="", pathway="", tier="", chrome=False):
@@ -725,15 +752,7 @@ def nav_html(active_subject="", pathway="", tier="", chrome=False):
         return f"""<nav class="nav">
   <div class="k4-navbar">
     {brand.brand_lockup("/")}
-    <div class="nav-cluster">
-      <a href="/3d/" class="nav-text-link">3D Studio</a>
-      <a href="/weekly-challenge.html" class="challenge-chip" aria-label="Weekly challenge"><svg viewBox="0 0 12 16" width="12" height="15" fill="currentColor" aria-hidden="true"><path d="M7.4 0L1 9.2h3.6L3.4 16 11 6.1H6.6L7.4 0z"/></svg> <span class="nav-chip-label">Challenge</span></a>
-      <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard"><svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 3h7v4.5a3.5 3.5 0 01-7 0V3zM6.5 4.2H4v1.3a2.4 2.4 0 002.4 2.4M13.5 4.2H16v1.3a2.4 2.4 0 01-2.4 2.4M10 11v3M7 17h6l-.7-2.4h-4.6L7 17z"/></svg></a>
-      <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){{MRBSearch.open();}}return false;"><svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="5.6"/><path d="M13.2 13.2L17 17"/></svg></a>
-      {THEME_SLOT}
-      <span id="nav-auth-area"></span>
-      <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
-    </div>
+    <!--mrb:cluster-->{NAV_CLUSTER}<!--/mrb:cluster-->
   </div>
 </nav>"""
 
@@ -777,15 +796,7 @@ def nav_html(active_subject="", pathway="", tier="", chrome=False):
     return f"""<nav class="nav">
   {brand.brand_lockup("/")}
   {crumbs_block}
-  <div class="nav-cluster">
-    <a href="/3d/" class="nav-text-link">3D Studio</a>
-    <a href="/weekly-challenge.html" class="challenge-chip" aria-label="Weekly challenge">⚡ <span class="nav-chip-label">Challenge</span></a>
-    <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard">🏆</a>
-    <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){{MRBSearch.open();}}return false;">🔍</a>
-    {THEME_SLOT}
-    <span id="nav-auth-area"></span>
-    <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
-  </div>
+  <!--mrb:cluster-->{NAV_CLUSTER}<!--/mrb:cluster-->
 </nav>"""
 
 
@@ -4269,6 +4280,7 @@ html {{ background: #0F0F1A; }}
   {brand.BRAND_HEAD}
   <link rel="stylesheet" href="/shared/styles.css"/>
   <link rel="stylesheet" href="/shared/nav.css"/>
+  <link rel="stylesheet" href="/shared/drawer.css"/>
   <script src="/shared/config.js"></script>
   <script src="/shared/account.js" defer></script>
   <script src="/shared/nav.js" defer></script>
@@ -4383,6 +4395,7 @@ html {{ background: #0F0F1A; }}
   {brand.BRAND_HEAD}
   <link rel="stylesheet" href="/shared/styles.css"/>
   <link rel="stylesheet" href="/shared/nav.css"/>
+  <link rel="stylesheet" href="/shared/drawer.css"/>
   <script src="/shared/config.js"></script>
   <script src="/shared/account.js" defer></script>
   <script src="/shared/nav.js" defer></script>
@@ -6464,14 +6477,15 @@ def build_site(output_dir="mrbadmus_site"):
                 _theme_stamped += 1
                 _content = _themed
             if (brand.BRAND_START[:-3] not in _content and brand.HEAD_START not in _content
-                    and topbar.TOPBAR_END not in _content):
+                    and topbar.TOPBAR_END not in _content
+                    and "<!--/mrb:cluster-->" not in _content):
                 continue
             _brand_pages += 1
             # ⊕ Stage B (phone run, 28 Sep 2026) — the one pupil top bar's
             # region (<!--mrb:topbar …-->…<!--/mrb:topbar-->) is stamped in the
             # same pass, BEFORE the brand: the bar draws brand.py's lockup
             # itself, so it carries no mrb:brand markers of its own.
-            _new = brand.stamp_brand(topbar.stamp_topbar(_content))
+            _new = stamp_cluster(brand.stamp_brand(topbar.stamp_topbar(_content)))
             if _new != _content:
                 with open(_fp, "w", encoding="utf-8") as _fh:
                     _fh.write(_new)

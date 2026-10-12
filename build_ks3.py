@@ -216,7 +216,10 @@ VERSIONED_ASSETS = ("tokens.css", "styles.css", "nav.css", "ks3.css", "ks3.js",
                      # (topbar.css/.js) and what its right-hand group needs:
                      # config.js (so ?env=test reaches the bar), and the
                      # bell. Same staleness argument as every line above.
-                     "topbar.css", "topbar.js", "config.js", "student-bell.js")
+                     "topbar.css", "topbar.js", "config.js", "student-bell.js",
+                     # ⊕ Front door (12 Oct 2026) — the one drawer (nav.js +
+                     # drawer.css) and the two files Search loads on demand.
+                     "drawer.css", "nav.js", "search.js", "search-index.js")
 
 
 def asset_versions(repo_root="."):
@@ -687,6 +690,7 @@ def shell(title, body, nav=(None, None), discipline=None, description="",
 <link rel="stylesheet" href="/shared/ks3.css"/>
 <link rel="stylesheet" href="/shared/ks3-theme.css"/>
 <link rel="stylesheet" href="/shared/topbar.css"/>
+<link rel="stylesheet" href="/shared/drawer.css"/>
 %(headlinks)s</head>
 <body class="rd" data-mode="ks3"%(lesson)s%(style)s>
 %(header)s
@@ -699,7 +703,9 @@ def shell(title, body, nav=(None, None), discipline=None, description="",
   </div>
 </footer>
 <script src="/shared/config.js" defer></script>
-%(tail)s%(themescript)s%(scripts)s<script src="/shared/account.js" defer></script>
+%(tail)s%(themescript)s%(scripts)s<script>window.MRB_SEARCH_SRC=["/shared/search-index.js","/shared/search.js"];</script>
+<script src="/shared/account.js" defer></script>
+<script src="/shared/nav.js" defer></script>
 <script src="/shared/class-entry.js" defer></script>
 <script src="/shared/student-bell.js" defer></script>
 <script src="/shared/topbar.js" defer></script>

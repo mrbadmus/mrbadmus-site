@@ -1,0 +1,146 @@
+/* ───────────────────────────────────────────────────────────────────────
+   shared/drawer.css — the hamburger, the home button and the ONE drawer
+   (front door run, 12 Oct 2026)
+
+   Built by shared/nav.js, loaded by EVERY public page: the classic nav, the
+   KS4 chrome, the KS3 and KS4-pilot bars, the leaderboard, the simulations
+   and the 3D Studio. These rules used to live in nav.css, which also carries
+   the `.nav` bar rules and the cluster ladder — and a KS3 page must not
+   inherit those. This file holds only the parts that are the same
+   everywhere, in the site tokens (tokens.css, which every one of those pages
+   loads and which carries the dark twin), so a family's own sheet can still
+   re-skin a surface by a more specific selector (ks4-chrome.css does).
+   ─────────────────────────────────────────────────────────────────────── */
+
+/* The KS3 and KS4-pilot pages do not load tokens.css, so each token falls back
+   to the --ks3-* twin (KS3 and the KS4 pilot) or the --sim-* twin (simulations)
+   that family already themes, dark included, then to a light literal. */
+
+/* ── The home button: Sign in, My class, My classes, My dashboard, Today ── */
+#nav-auth-area {
+  display: inline-flex; align-items: center; min-width: 0; flex: 0 1 auto;
+}
+.mrb-homebtn {
+  box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 36px; max-width: 44vw; padding: 0 14px;
+  border-radius: 999px;
+  /* Fixed, not var(--accent): KS3 and the pilot resolve --accent to the brand
+     #E4572E, which is 3.68:1 under white (contrast_audit). #A63C12 is 6.4:1 in
+     both themes, and a button needs no dark twin of its own. */
+  background: #A63C12; color: #fff;
+  font: 700 0.875rem/1 var(--font-sans, system-ui, sans-serif);
+  text-decoration: none; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+  transition: background 0.15s;
+}
+.mrb-homebtn:hover { background: #8F300D; color: #fff; text-decoration: none; }
+.mrb-homebtn:focus-visible { outline: 2px solid var(--accent, #A63C12); outline-offset: 2px; }
+
+/* ── Hamburger: a 40px box with light lines; the finger gets 44px ──────── */
+.nav-burger {
+  position: relative;
+  box-sizing: border-box;
+  display: inline-flex; flex-direction: column; justify-content: center; align-items: center;
+  gap: 4px;
+  width: 40px; height: 40px; padding: 0;
+  background: none;
+  border: 1px solid var(--border, var(--ks3-rule, var(--sim-rule, #E0D2B9)));
+  border-radius: 10px;
+  cursor: pointer; flex: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+/* 2px of invisible tap area on every side: 40 + 4 = 44px. */
+.nav-burger::after { content: ""; position: absolute; inset: -2px; }
+.nav-burger:hover { background: var(--accent-soft, color-mix(in srgb, #E4572E 14%, transparent)); border-color: var(--accent-border, #E4572E); }
+.nav-burger span {
+  display: block; height: 1.5px; width: 16px;
+  background: var(--text, var(--ks3-ink, var(--sim-ink, #221E1B))); border-radius: 2px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.nav-burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+.nav-burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+.nav-burger:focus-visible { outline: 2px solid var(--accent, #A63C12); outline-offset: 2px; }
+
+/* ── Drawer + scrim (built by nav.js) ── */
+.nav-overlay {
+  position: fixed; inset: 0;
+  background: rgba(20, 14, 8, 0.44);
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 200;
+}
+.nav-overlay.open { opacity: 1; visibility: visible; }
+
+.nav-drawer {
+  position: fixed; top: 0; right: 0; height: 100%;
+  width: min(320px, 85vw);
+  box-sizing: border-box;
+  background: var(--card, var(--ks3-card, var(--sim-card, #FFFCF5))); color: var(--text, var(--ks3-ink, var(--sim-ink, #221E1B)));
+  border-left: 1px solid var(--border, var(--ks3-rule, var(--sim-rule, #E0D2B9)));
+  box-shadow: var(--shadow-pop, 0 18px 40px -20px rgba(40, 26, 10, 0.45));
+  transform: translateX(100%);
+  transition: transform 0.24s ease;
+  z-index: 201;
+  display: flex; flex-direction: column;
+  padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+.nav-drawer.open { transform: translateX(0); }
+@media (prefers-reduced-motion: reduce) {
+  .nav-drawer, .nav-overlay, .nav-burger span { transition: none; }
+}
+
+.nav-drawer-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.nav-drawer-title {
+  font-family: var(--font-serif, Georgia, serif);
+  font-optical-sizing: auto; font-weight: 600; font-size: 1.05rem;
+  color: var(--text, var(--ks3-ink, var(--sim-ink, #221E1B)));
+}
+.nav-drawer-close {
+  background: none; border: none; color: var(--muted, var(--ks3-ink-muted, var(--sim-muted, #5E5145)));
+  font-size: 1.4rem; line-height: 1; cursor: pointer;
+  min-width: 44px; min-height: 44px; padding: 4px 8px; border-radius: 8px;
+}
+.nav-drawer-close:hover { background: var(--sunken, var(--ks3-inset, var(--sim-ground, #F1E6D2))); color: var(--text, var(--ks3-ink, var(--sim-ink, #221E1B))); }
+.nav-drawer-close:focus-visible { outline: 2px solid var(--accent, #A63C12); outline-offset: 2px; }
+
+/* ── The account section: who you are, and the way out ── */
+.nav-drawer-account { padding-bottom: 12px; margin-bottom: 8px; border-bottom: 1px solid var(--border, var(--ks3-rule, var(--sim-rule, #E0D2B9))); }
+.nav-drawer-account:empty { display: none; }
+.nav-account-id {
+  margin: 0 0 10px; font-size: 1rem; color: var(--text, var(--ks3-ink, var(--sim-ink, #221E1B)));
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.nav-account-id strong { font-weight: 700; }
+.nav-account-actions { display: flex; flex-direction: column; gap: 2px; }
+.nav-account-btn {
+  box-sizing: border-box;
+  display: flex; align-items: center; width: 100%; min-height: 44px;
+  padding: 0 12px; border-radius: 10px; border: none; background: none;
+  font: 600 1rem/1 var(--font-sans, system-ui, sans-serif);
+  color: var(--text, var(--ks3-ink, var(--sim-ink, #221E1B))); text-align: left; text-decoration: none; cursor: pointer;
+}
+.nav-account-btn:hover { background: var(--accent-soft, color-mix(in srgb, #E4572E 14%, transparent)); color: var(--accent, #A63C12); }
+.nav-account-btn:focus-visible { outline: 2px solid var(--accent, #A63C12); outline-offset: 2px; }
+.nav-account-btn--primary { background: #A63C12; color: #fff; justify-content: center; }
+.nav-account-btn--primary:hover { background: #8F300D; color: #fff; }
+
+/* ── The site links ── */
+.nav-drawer-menu { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
+.nav-drawer-menu a,
+.nav-drawer-menu button.nav-drawer-link {
+  display: flex; align-items: center; gap: 12px; width: 100%; box-sizing: border-box;
+  min-height: 44px; text-align: left; background: none; border: none;
+  font-family: var(--font-sans, system-ui, sans-serif); font-size: 1rem; font-weight: 600;
+  color: var(--text, var(--ks3-ink, var(--sim-ink, #221E1B))); text-decoration: none;
+  padding: 11px 12px; border-radius: 10px; cursor: pointer;
+}
+.nav-drawer-menu a[hidden], .nav-drawer-menu button[hidden] { display: none; }
+.nav-drawer-menu a:hover,
+.nav-drawer-menu button.nav-drawer-link:hover { background: var(--accent-soft, color-mix(in srgb, #E4572E 14%, transparent)); color: var(--accent, #A63C12); }
+.nav-drawer-menu a:focus-visible,
+.nav-drawer-menu button.nav-drawer-link:focus-visible { outline: 2px solid var(--accent, #A63C12); outline-offset: 2px; }
+.nav-drawer-menu .nav-drawer-ico { font-size: 1.1rem; width: 22px; text-align: center; flex-shrink: 0; }

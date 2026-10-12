@@ -147,7 +147,8 @@ LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
 # "nav.js", "class-entry.js").
 # ⊕ Front door (12 Oct 2026) — `account.js` BEFORE `class-entry.js`: the one map
 # of who goes where, which class-entry.js asks at call time.
-NAV_DEPS = ("tokens.css", "nav.css", "topbar.css", "account.js", "class-entry.js")
+NAV_DEPS = ("tokens.css", "nav.css", "topbar.css", "drawer.css", "account.js",
+            "nav.js", "class-entry.js")
 
 # ⊕ MRB-337, 8 Sep 2026 — the bell, and it is deliberately NOT in NAV_DEPS.
 # NAV_DEPS is what the retired page loaded, byte for byte, and that sentence
@@ -180,7 +181,9 @@ NAV_DEPS = ("tokens.css", "nav.css", "topbar.css", "account.js", "class-entry.js
 PAGE_DEPS = ("config.js",) + NAV_DEPS + ("student-bell.js", "theme.js",
                                          "topbar.js")
 
-STAMPED_DEPS = PAGE_DEPS + (LIVE_JS_NAME,)
+# ⊕ Front door — the two files the drawer's Search loads on demand are stamped
+# like every other bare /shared/ reference this build writes.
+STAMPED_DEPS = PAGE_DEPS + (LIVE_JS_NAME, "search.js", "search-index.js")
 
 # Design's four editor props, pinned. R27.
 PINNED_PROPS = dict(density="comfortable", topCount=10,
@@ -1800,7 +1803,8 @@ def live_nav():
             (brand.MARK_SVG, "brand.py's mark, byte for byte"),
             ('data-mrb-topbar="leaderboard"', "the one pupil top bar"),
             ("data-mrb-topbar-end", "the bar's right-hand group"),
-            ('data-mrb-topbar-who="all"', "the sign-in / bell / avatar slot"),
+            ('id="nav-auth-area"', "the home-button slot (front door, 12 Oct 2026)"),
+            ('class="nav-burger"', "the hamburger"),
             ("data-mrb-theme", "the theme control's slot")):
         if want not in nav:
             raise SystemExit(
@@ -1907,6 +1911,9 @@ def page_html(roots, imports, logic, nav, fixture, versions):
                % json.dumps({k: v for k, v in sorted(versions.items())
                              if k in STAMPED_DEPS},
                             separators=(",", ":")))
+    # ⊕ Front door — what the drawer's Search fetches on first use.
+    dep_map += ("<script>window.MRB_SEARCH_SRC=[\"/shared/search-index.js\","
+                "\"/shared/search.js\"];</script>\n")
 
     head_links = "".join(
         ("<link rel=\"stylesheet\" href=\"/shared/%s\">\n" % d)

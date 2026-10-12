@@ -342,13 +342,16 @@ body[data-chrome="ks4"] .nav-icon-link {
 body[data-chrome="ks4"] .nav-icon-link:hover { border-color: var(--k4-ink); color: var(--k4-ink-2); text-decoration: none; }
 
 body[data-chrome="ks4"] .nav-burger {
-  width: 44px; height: 44px; display: grid; place-items: center; gap: 5px;
+  /* ⊕ Front door (12 Oct 2026) — a 40px box with light lines (drawer.css owns
+     the 44px tap area and the line weight); only the chrome's colours are
+     applied here. */
+  width: 40px; height: 40px; display: inline-flex;
   border-radius: 12px; background: var(--k4-sunken);
   border: 1.5px solid var(--k4-border); cursor: pointer;
 }
 body[data-chrome="ks4"] .nav-burger:hover { border-color: var(--k4-ink); }
 body[data-chrome="ks4"] .nav-burger span {
-  width: 20px; height: 2.4px; border-radius: 2px; background: var(--k4-ink); display: block;
+  width: 16px; height: 1.5px; border-radius: 2px; background: var(--k4-ink); display: block;
 }
 
 /* The auth area is rendered by shared/nav.js. Its three states — signed
@@ -1013,8 +1016,6 @@ body[data-chrome="ks4"] .nav-drawer-close { color: var(--k4-ink); }
      is no wider at 360 than it was. */
   body[data-chrome="ks4"] .challenge-chip { height: 44px; min-width: 44px; padding: 0 14px; font-size: 15px; justify-content: center; }
   body[data-chrome="ks4"] .nav-cluster { gap: 8px; }
-  body[data-chrome="ks4"] .nav-icon-link,
-  body[data-chrome="ks4"] .nav-burger { width: 40px; height: 40px; }
   body[data-chrome="ks4"] #nav-auth-area a,
   body[data-chrome="ks4"] #nav-auth-area > span { height: 40px; padding: 0 12px; font-size: 15px; }
 
@@ -1034,3 +1035,19 @@ body[data-chrome="ks4"] .nav-drawer-close { color: var(--k4-ink); }
    than a 360px viewport on their own. */
 body[data-chrome="ks4"] .k4-row-title,
 body[data-chrome="ks4"] .k4-h1 { overflow-wrap: break-word; }
+
+/* ═══ ⊕ FRONT DOOR (12 Oct 2026) — THE ONE PUBLIC BAR, ON A PHONE ═════════
+   The bar holds brand · theme · home button · hamburger (the cluster's other
+   members moved into the drawer, so the wrap rules and the "stand down below
+   560px" ladder above no longer have anything to act on). On a phone it is
+   ONE row, at most 56px, never wraps, and is NOT sticky: it scrolls away with
+   the page and never covers lesson text. Desktop keeps its sticky 66px bar. */
+@media (max-width: 700px) {
+  body[data-chrome="ks4"] .nav { position: static; }
+  body[data-chrome="ks4"] .k4-navbar {
+    flex-wrap: nowrap; min-height: 0; height: 54px; /* + the nav's 2px rule = 56 */ padding: 0 14px; gap: 8px;
+  }
+  body[data-chrome="ks4"] .nav-cluster { flex-wrap: nowrap; gap: 8px; min-width: 0; }
+  body[data-chrome="ks4"] #nav-auth-area > a { height: 40px !important; padding: 0 12px !important; font-size: 15px !important; }
+}
+@media (max-width: 359px) { body[data-chrome="ks4"] .mrb-brand__word { display: none; } }

@@ -1,3 +1,14 @@
+// ⊕ Front door (12 Oct 2026) — THE STUDIO WEARS THE ONE PUBLIC BAR'S RIGHT-HAND
+// END. The inert "Lessons / Practice" nav, "Sign in" and "Create free account"
+// are gone: the bar's end is now the site's single home button ("Sign in", or
+// "My class" / "My classes" / "My dashboard" / "Today" for a signed-in person)
+// and the hamburger, and BOTH ARE DRAWN BY shared/nav.js — this component only
+// renders the two empty hooks it binds to (`#nav-auth-area`, `.nav-burger`),
+// so there is one drawer implementation on the whole site and the studio has
+// no copy of it. nav.js refills the slot if a layout change remounts the
+// header. No theme control: the studio is a light-only surface and does not
+// honour html[data-theme], so a theme button here would do nothing.
+//
 // Header at all three breakpoints (§01/§02/§04/§05). Brand: ⊕ one-mark ruling
 // (Mide, 13 Sep 2026) — the ONE site lockup, taken at run time from
 // /shared/brand/brand.js (written by brand.py; loaded by index.html together
@@ -29,6 +40,26 @@ function Brand({ onDark }: { onDark: boolean }) {
     )
   }
   return <span className="brand-slot" dangerouslySetInnerHTML={{ __html: lib.lockup('/index.html', onDark) }} />
+}
+
+/** The shared public bar's end (shared/nav.js paints into and binds these). */
+function PublicEnd() {
+  return (
+    <>
+      <span id="nav-auth-area" />
+      <button
+        className="nav-burger"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="nav-drawer"
+      >
+        <span />
+        <span />
+        <span />
+      </button>
+    </>
+  )
 }
 
 export function ModeToggle({
@@ -110,9 +141,7 @@ export function TopBar({
           brand
         )}
         <div className="topbar__end">
-          <a className="signin" style={{ fontWeight: 600, fontSize: 13, color: 'var(--st-accent-text)' }} href="/auth.html">
-            Sign in
-          </a>
+          <PublicEnd />
         </div>
       </header>
     )
@@ -128,6 +157,7 @@ export function TopBar({
         {brand}
         <div className="topbar__end">
           <ModeToggle mode={mode} onMode={onMode} />
+          <PublicEnd />
         </div>
       </header>
     )
@@ -136,14 +166,8 @@ export function TopBar({
   return (
     <header className="topbar">
       {brand}
-      <nav className="topbar__nav" aria-label="Site">
-        <span>Lessons</span>
-        <span>Practice</span>
-        <span className="is-here">3D Studio</span>
-      </nav>
       <div className="topbar__end">
-        <a className="signin" href="/auth.html">Sign in</a>
-        <a className="cta" href="/auth.html">Create free account</a>
+        <PublicEnd />
       </div>
     </header>
   )

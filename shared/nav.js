@@ -1,27 +1,23 @@
 /* ───────────────────────────────────────────────────────────────────────
    shared/nav.js — behaviour for the canonical public top-nav (MRB-109)
 
-   Two jobs, both centralised here so every public page behaves identically:
+   ⊕ Front door (12 Oct 2026) — the ONE public bar and its ONE drawer, for
+   every public system (classic nav, KS4 chrome, the KS3 / KS4-pilot /
+   leaderboard bars, simulations, 3D Studio). Two jobs:
 
-   1. AUTH CONTROL. Renders #nav-auth-area: Sign In / Sign Up when signed
-      out, the profile chip (with role-based routing + avatar) when signed in.
-      Ported verbatim from the previous per-page inline script — the chip's
-      accent-soft/accent/accent-border colour pair is the audited ~5.5:1
-      contrast fix; do not weaken it. Routing the chip is UX only; RLS guards
-      the data. ⊕ Front door (12 Oct 2026): WHERE the chip goes is no longer
-      decided here — shared/account.js, the one map, answers it for every
-      kind of person (the old staff/student split sent a parent to a teacher
-      page that bounced them out).
+   1. THE HOME BUTTON. Paints `#nav-auth-area`: "Sign in" when signed out;
+      when signed in, the one button for this kind of person (shared/
+      account.js decides which — nothing here routes).
 
-   2. DRAWER. Injects an accessible full-menu drawer opened by the .nav-burger
-      button: aria-expanded, Escape to close, outside-click to close, focus
-      moves into the drawer on open and back to the button on close, focus is
-      trapped while open, fully keyboard operable. The drawer's auth row
-      mirrors the state rendered into #nav-auth-area.
+   2. THE DRAWER. Opened by any `.nav-burger` on the page: the account
+      section at the top (name · kind, My profile, Switch account, Sign out —
+      or Sign in / Sign up), then the site links. Accessible: aria-expanded,
+      Escape, outside-click, focus into the drawer on open and back to the
+      button on close, focus trapped while open. Its CSS is shared/drawer.css.
 
-   Loaded with `defer` on every public page. Degrades gracefully: if it fails
-   to load, the persistent cluster (Challenge / Leaderboard / Search) and the
-   default Sign In / Sign Up links remain usable from the HTML.
+   Loaded with `defer` on every public page, after shared/account.js. Degrades
+   gracefully: without account.js the signed-in bar shows no button and the
+   drawer still offers a plain Sign out.
    ─────────────────────────────────────────────────────────────────────── */
 (function () {
   'use strict';
@@ -141,189 +137,115 @@
 
   if (window.MRB_NAV_TEST_HOOK) { window.MRB_NAV_TEST_HOOK.carry = carry; }
 
-  // ── Drawer auth row — mirrors the signed-in / signed-out state ──────────
-  function renderDrawerAuthSignedOut(slot) {
-    if (!slot) return;
-    slot.innerHTML =
-      '<a href="/auth.html?tab=signin" class="btn-signin">Sign In</a>' +
-      '<a href="/auth.html?tab=signup" class="btn-signup">Sign Up</a>';
-  }
-  function renderDrawerAuthSignedIn(slot, href, firstName, avatarUrl) {
-    if (!slot) return;
-    var inner = (avatarUrl
-      ? '<img src="' + esc(avatarUrl) + '" alt="" style="width:26px;height:26px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);"/> '
-      : '👤 ') + '<span class="nav-chip-name">' + esc(firstName) + '</span>';
-    slot.innerHTML = '<a href="' + href + '" class="nav-drawer-chip" style="background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-border);">' + inner + '</a>';
-  }
+  /* ═══════════════════════════════════════════════════════════════════════
+     ⊕ FRONT DOOR (12 Oct 2026) — THE ONE PUBLIC BAR, AND ITS ONE DRAWER
 
-  /* ⊕ B2C polish (9 Oct 2026) — SIGN IN IS IN THE BAR ON A DESKTOP.
-     65b8cbf3a (MRB-109 follow-up, July) emptied #nav-auth-area for a
-     signed-out visitor and left Sign In only inside the hamburger drawer, so
-     at 1280px a visitor looking for it had to open a menu to find it. The
-     bar's own copy is back, Sign In only (Sign Up stays in the drawer), and
-     it is drawn here rather than in each page's HTML so every page that
-     loads this file gets it from one place. At 900px and below nav.css and
-     ks4-chrome.css hide it, so the phone bar is exactly what it was and the
-     drawer is still the way in there. It is painted in the same task as the
-     session check below, so a signed-in pupil never sees it flash. */
-  function renderBarSignedOut(area) {
-    if (!area) return;
-    area.innerHTML = '<a href="' + carry('/auth.html?tab=signin') + '" class="btn-signin nav-bar-signin">Sign In</a>';
-  }
+     Everything below this line used to be a name chip, a Challenge pill, a
+     Sign Up button and a drawer whose first row was a profile link. A parent
+     who tapped "Dad" was sent to a teacher page; there was no Sign out
+     anywhere on a public page but the pupil avatar menu.
 
-  // ── Auth control (nav cluster + drawer) ─────────────────────────────────
-  function initAuth(drawerAuthSlot) {
-    var area = document.getElementById('nav-auth-area');
-    // Default (signed-out) drawer state; upgraded below if a live session exists.
-    renderDrawerAuthSignedOut(drawerAuthSlot);
-    if (!area) return;
-    // Default (signed-out) bar state; paintChip() replaces it when signed in.
-    renderBarSignedOut(area);
-    if (!SUPA_URL || !SUPA_KEY || !SESSION_KEY) return;
+     The bar now holds: brand · theme · ONE home button · hamburger. This
+     file paints the home button into `#nav-auth-area` and builds the drawer,
+     and it is the only drawer in the estate — the classic nav, the KS4
+     chrome, the KS3 and KS4-pilot bars, the leaderboard, the simulations and
+     the 3D Studio all load THIS file and the same shared/drawer.css.
 
+     WHO the person is and WHERE their home is come from shared/account.js
+     (the one map). Nothing here decides a route.
+
+     ── The home button ─────────────────────────────────────────────────────
+     Signed out        "Sign in" → /auth.html?tab=signin
+     Signed in         the kind's home button: pupil "My class" / "My classes",
+                       staff "My classes", parent and organisation staff and
+                       the operator "My dashboard", a family child "Today".
+     Signed-in pupil with NO class: NO button. The only page a classless pupil
+       could be sent to is /student/classes.html, whose empty state says
+       "Back to homepage" — a loop. There is no join-by-code path on the site
+       (classes come from the teacher's roster), so the honest answer is
+       nothing in the bar and "My profile" in the drawer.
+
+     It is painted in the same task as the session check, so a signed-in
+     person never sees "Sign in" flash: with a session the slot is filled from
+     the last answer for this person (localStorage, per user id, dropped by
+     sign-out) or left empty until the map answers. The slot is re-painted if
+     a page's runtime redraws the bar.
+     ═══════════════════════════════════════════════════════════════════════ */
+  var HOME_PREFIX = 'mrb-home:v1:';
+  var HIDE_FOR = { parent: 1, child: 1, org_staff: 1, operator: 1 };
+  var HIDE_HREFS = ['/weekly-challenge.html', '/leaderboard.html', '/my-challenges.html'];
+
+  var state = { mode: null, home: undefined, acct: null };   // mode: 'out' | 'in'
+
+  function storedUser() {
     try {
+      if (!SESSION_KEY) return null;
       var raw = localStorage.getItem(SESSION_KEY);
-      if (!raw) return;
-      var session = JSON.parse(raw);
-      var user = session && session.user;
-      // Expired stored session → keep Sign In / Sign Up (don't render a chip
-      // that would 401 on click).
-      var expMs = session && session.expires_at ? session.expires_at * 1000 : 0;
-      if (!user || (expMs && expMs <= Date.now())) return;
+      if (!raw) return null;
+      if (raw.indexOf('base64-') === 0) raw = decodeURIComponent(escape(atob(raw.slice(7))));
+      var s = JSON.parse(raw);
+      var expMs = s && s.expires_at ? s.expires_at * 1000 : 0;
+      if (!s || !s.user || !s.user.id || (expMs && expMs <= Date.now())) return null;
+      return s.user;
+    } catch (e) { return null; }
+  }
 
-      /* ⊕ MRB-337/N5, 8 Sep 2026 — THE EMAIL LOCAL PART IS NOT A NAME.
-         This used to read `... || (user.email && user.email.split('@')[0])`,
-         so a pupil whose sign-up carried no `first_name` in `user_metadata`
-         — which is most of a rostered school, because the roster import
-         writes names to `profiles`, not to the auth metadata — wore their
-         own email address in the top bar: `👤 aiden.cole`.
+  function homeArea() { return document.getElementById('nav-auth-area'); }
 
-         Two things were wrong with that, and only one of them is layout.
-         It is a name a shared classroom screen should not be showing at all;
-         and it is unbounded, so on a 390px phone the cluster reached 395.3px
-         and the bar scrolled sideways. `profiles.first_name` is the real
-         name and was already being fetched ONE LINE BELOW for the role
-         route — the same request, the same round trip, one more column.
-
-         So: metadata if the sign-up carried one, else the cached profile
-         name, else the profile fetch when it lands, else a short generic
-         word. The email is not in that ladder at any rung. The cap in
-         `shared/nav.css` (`.nav-chip-name`) is the other half: a fix that
-         depends on names being short is not a fix. */
-      var nameKey = 'mrb-profile-name:' + user.id;
-      var firstName = (user.user_metadata && user.user_metadata.first_name) || '';
-      if (!firstName) {
-        try { firstName = localStorage.getItem(nameKey) || ''; } catch (err) {}
-      }
-      if (!firstName) { firstName = 'You'; }
-
-      // Route the chip by advisory role, cached PER USER so a previous
-      // account's route can't leak onto a different signed-in user.
-      // ⊕ Front door (12 Oct 2026) — `v2`: the old key held a parent's
-      // /teacher-profile.html (the 9 Oct trap) and would be painted for one
-      // page load before the real answer landed. A new name starts clean.
-      var hrefKey = 'mrb-profile-href:v2:' + user.id;
-      var profileHref = '/profile-setup.html';
-      try { profileHref = localStorage.getItem(hrefKey) || profileHref; } catch (err) {}
-      // A family child's route needs no read: the address says it.
-      if (NAVCFG.isChildSession && NAVCFG.isChildSession(session) && window.MrBadmusAccount) {
-        profileHref = window.MrBadmusAccount.describe('child', { childHome: NAVCFG.CHILD_HOME }).home;
-      }
-
-      // The avatar the chip is currently wearing, so a NAME change can
-      // repaint without knowing whether an avatar has landed yet.
-      var shownAvatar = null;
-
-      function paintChip(avatarUrl) {
-        shownAvatar = avatarUrl || null;
-        var inner = avatarUrl
-          ? '<img src="' + esc(avatarUrl) + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);" alt=""/><span class="nav-chip-name" style="color:var(--accent);font-weight:700;font-size:0.82rem;">' + esc(firstName) + '</span>'
-          : '👤 <span class="nav-chip-name">' + esc(firstName) + '</span>';
-        var style = avatarUrl
-          ? 'display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;'
-          : 'background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-border);padding:5px 12px;border-radius:999px;font-weight:700;font-size:0.82rem;text-decoration:none;white-space:nowrap;';
-        area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="' + style + '">' + inner + '</a>';
-        renderDrawerAuthSignedIn(drawerAuthSlot, profileHref, firstName, avatarUrl);
-        carryLinks();
-      }
-
-      paintChip(null);
-
-      // Resolve role → correct profile route (staff vs student). A 401/empty
-      // response must NOT overwrite the cached route with the student default.
-      fetch(SUPA_URL + '/rest/v1/profiles?id=eq.' + user.id + '&select=role,first_name,school_id', {
-        headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token }
-      }).then(function (r) { return r.ok ? r.json() : null; }).then(function (rows) {
-        if (!rows || !rows[0]) return;
-        /* ⊕ Front door (12 Oct 2026) — THE CHIP'S ROUTE COMES FROM THE ONE MAP
-           (shared/account.js). It used to be `role !== 'student'` →
-           /teacher-profile.html, which sent a parent (role 'parent') to a
-           teacher page that bounced them out: the 9 Oct trap. The map knows
-           every kind: a person's profile page where one exists, otherwise
-           their home. The role row is handed to it, so there is no second
-           read of `profiles`; the only extra request is the cached schools
-           lookup for staff. Without the map (a page that lacks the tag) the
-           old two-way split stands. */
-        var A = window.MrBadmusAccount;
-        if (A) {
-          return A.resolve({ profile: rows[0], session: session, classes: false }).then(function (acct) {
-            if (acct && acct.kind) profileHref = acct.profileUrl || acct.home || profileHref;
-            return rows;
-          }, function () { return rows; });
-        }
-        profileHref = (rows[0].role && rows[0].role !== 'student') ? '/teacher-profile.html' : '/profile-setup.html';
-        return rows;
-      }).then(function (rows) {
-        if (!rows || !rows[0]) return;
-        try { localStorage.setItem(hrefKey, profileHref); } catch (err) {}
-        // The real name, cached per user like the route above it, so the next
-        // page does not have to open on 'You' and then correct itself.
-        var real = rows[0].first_name;
-        if (real && real !== firstName) {
-          firstName = real;
-          try { localStorage.setItem(nameKey, real); } catch (err) {}
-          paintChip(shownAvatar);   // repaints the drawer chip too
-        }
-        var link = document.getElementById('nav-profile-link');
-        if (link) link.setAttribute('href', carry(profileHref));
-        var dchip = drawerAuthSlot && drawerAuthSlot.querySelector('a');
-        if (dchip) dchip.setAttribute('href', carry(profileHref));
-      }).catch(function () {});
-
-      /* Fetch avatar (best-effort) and upgrade the chip to show it.
-
-         ⊕ MRB-336, 8 Sep 2026 — THROUGH config.js, like the two constants at
-         the top of this file. It named production outright, and it is only
-         reached once a session has been FOUND — so while the session lookup
-         above was also pinned to production this line could never run outside
-         the live site, and fixing the lookup is what exposed it. In any other
-         world it is a cross-origin call to a backend that has never heard of
-         the origin: a red CORS line on every page that carries this nav, for a
-         request whose answer is a best-effort avatar. */
-      if (NAVCFG.BACKEND_URL) fetch(NAVCFG.BACKEND_URL + '/api/profile', {
-        headers: { 'Authorization': 'Bearer ' + session.access_token }
-      }).then(function (r) { return r.ok ? r.json() : null; }).then(function (profile) {
-        if (profile && profile.avatar_url) paintChip(profile.avatar_url);
-      }).catch(function () {});
-    } catch (e) {}
+  function paintBar() {
+    var area = homeArea();
+    if (!area) return;
+    if (state.mode === 'out') {
+      area.innerHTML = '<a href="' + esc(carry('/auth.html?tab=signin')) + '" class="mrb-homebtn">Sign in</a>';
+    } else if (state.mode === 'in' && state.home) {
+      area.innerHTML = '<a href="' + esc(carry(state.home.href)) + '" class="mrb-homebtn">' + esc(state.home.label) + '</a>';
+    } else {
+      area.innerHTML = '';
+    }
+    carryLinks(area);
   }
 
   // ── Drawer (full menu) ──────────────────────────────────────────────────
   var MENU = [
     { ico: '🏠', label: 'Home', href: '/index.html' },
+    { ico: '📘', label: 'KS3', href: '/ks3/' },
+    { ico: '🎯', label: 'GCSE', href: '/ks4.html' },
+    { ico: '🧪', label: 'Simulations', href: '/simulations/' },
+    // A microscope rather than the anatomical heart this link used to be: the
+    // studio holds eight specimens, and only one of them is a heart.
+    { ico: '🔬', label: '3D Studio', href: '/3d/' },
     { ico: '⚡', label: 'Challenge', href: '/weekly-challenge.html' },
     { ico: '🏆', label: 'Leaderboard', href: '/leaderboard.html' },
-    // A microscope rather than the anatomical heart this link used to be: the
-    // studio holds eight specimens, and only one of them is a heart. The drawer
-    // row is labelled either way — the glyph is company for the word, never a
-    // substitute for it.
-    { ico: '🔬', label: '3D Studio', href: '/3d/' },
-    { ico: '🧪', label: 'Simulations', href: '/simulations/' },
-    { ico: '📄', label: 'Past Papers', href: '/past-papers.html' },
+    { ico: '📄', label: 'Past papers', href: '/past-papers.html' },
     { ico: '📚', label: 'Revision', href: '/revision.html' },
     { ico: '📊', label: 'My Challenges', href: '/my-challenges.html' },
     { ico: '🔍', label: 'Search', search: true }
   ];
+
+  var drawerEl = null;
+
+  /* Search opens the site-wide overlay. Pages that carry it (the classic nav,
+     the KS4 chrome) already have shared/search.js; the others (KS3, the KS4
+     pilot lessons, the leaderboard) name the two files in
+     `window.MRB_SEARCH_SRC` — written as quoted /shared/ paths in the page,
+     so the build's cache-bust pass stamps them like any <script src> — and
+     they are fetched the first time Search is pressed, not on every page
+     load (search-index.js is 88KB). Never an unstamped URL: /shared/* is
+     served `immutable`. A page with neither simply has no Search row. */
+  function openSearch() {
+    if (window.MRBSearch) { window.MRBSearch.open(); return; }
+    var src = window.MRB_SEARCH_SRC;
+    if (!src || !src.length) return;
+    var i = 0;
+    (function next() {
+      if (i >= src.length) { if (window.MRBSearch) window.MRBSearch.open(); return; }
+      var el = document.createElement('script');
+      el.src = src[i++];
+      el.onload = next;
+      el.onerror = function () { /* no search is better than a broken bar */ };
+      document.head.appendChild(el);
+    })();
+  }
 
   function buildDrawer() {
     var overlay = document.createElement('div');
@@ -337,76 +259,108 @@
     drawer.setAttribute('aria-modal', 'true');
     drawer.setAttribute('aria-label', 'Main menu');
     /* ⊕ D12 (theme-run audit, 27 Sep 2026) — CLOSED by default, here at
-       creation, not only inside close(): the drawer is built once and
-       starts life off-canvas (`transform: translateX(100%)`, no `.open`
-       class yet), and `inert` on this attribute right now, not toggled
-       later, means there is never a frame where a freshly-built, closed
-       drawer is reachable. `open()`/`close()` below toggle both away and
-       back. `inert` (not just `aria-hidden`) is what actually pulls its
-       twelve links/buttons — and, since the theme run, the Light/Dark/
-       System radios — out of the TAB ORDER; `aria-hidden` alone hides it
-       from a screen reader's tree but a sighted keyboard user would still
-       Tab into an invisible off-canvas control. `.nav-overlay`, the scrim,
-       needs no such treatment — it is `visibility: hidden` while closed,
-       which already removes it from both the accessibility tree and the
-       tab order on its own. */
+       creation: `inert` pulls every link out of the TAB ORDER (aria-hidden
+       alone would still let a sighted keyboard user Tab into an invisible
+       off-canvas control). open()/close() toggle both. */
     drawer.inert = true;
     drawer.setAttribute('aria-hidden', 'true');
 
     var menuItems = MENU.map(function (m) {
       if (m.search) {
-        return '<button type="button" class="nav-drawer-link" data-search="1">' +
+        return '<button type="button" class="nav-drawer-link" data-search="1" hidden>' +
           '<span class="nav-drawer-ico">' + m.ico + '</span>' + m.label + '</button>';
       }
       return '<a href="' + m.href + '"><span class="nav-drawer-ico">' + m.ico + '</span>' + m.label + '</a>';
     }).join('');
 
+    /* No theme row: the bar carries the theme control at every width now. */
     drawer.innerHTML =
       '<div class="nav-drawer-head">' +
         '<span class="nav-drawer-title">Menu</span>' +
         '<button type="button" class="nav-drawer-close" aria-label="Close menu">&times;</button>' +
       '</div>' +
-      '<nav class="nav-drawer-menu" aria-label="Full site menu">' + menuItems + '</nav>' +
-      // Theme run (27 Sep 2026): the Light / Dark / System control lives here
-      // on every width, and is the ONLY copy below 900px, where nav.css hides
-      // the bar's own slot — the bar's measured phone ladder (MRB-259/337) has
-      // no 96px to spare once a pupil is signed in and the bell is up.
-      // shared/theme.js mounts into it and keeps both copies in step.
-      '<div class="nav-drawer-theme"><span class="nav-drawer-theme-label">Theme</span>' +
-        '<span class="mrb-theme-slot" data-mrb-theme></span></div>' +
-      '<div class="nav-drawer-auth" id="nav-drawer-auth"></div>';
+      '<div class="nav-drawer-account" id="nav-drawer-account"></div>' +
+      '<nav class="nav-drawer-menu" aria-label="Full site menu">' + menuItems + '</nav>';
 
     document.body.appendChild(overlay);
     document.body.appendChild(drawer);
     return { overlay: overlay, drawer: drawer };
   }
 
-  function initDrawer() {
-    var burger = document.querySelector('.nav-burger');
-    if (!burger) return null;
+  function paintAccount() {
+    var box = document.getElementById('nav-drawer-account');
+    if (!box) return;
+    var a = state.acct;
+    var html = '';
+    if (state.mode === 'out') {
+      html = '<div class="nav-account-actions">' +
+        '<a href="/auth.html?tab=signin" class="nav-account-btn nav-account-btn--primary">Sign in</a>' +
+        '<a href="/auth.html?tab=signup" class="nav-account-btn">Sign up</a></div>';
+    } else if (state.mode === 'in') {
+      var id = a && a.kindLabel
+        ? (a.name ? '<strong>' + esc(a.name) + '</strong> · ' + esc(a.kindLabel) : '<strong>' + esc(a.kindLabel) + '</strong>')
+        : '<strong>Signed in</strong>';
+      html = '<p class="nav-account-id">' + id + '</p><div class="nav-account-actions">' +
+        (a && a.profileUrl ? '<a href="' + esc(a.profileUrl) + '" class="nav-account-btn">My profile</a>' : '') +
+        '<button type="button" class="nav-account-btn" data-act="switch">Switch account</button>' +
+        '<button type="button" class="nav-account-btn" data-act="signout">Sign out</button></div>';
+    }
+    box.innerHTML = html;
+    carryLinks(box);
+  }
 
+  function paintMenuForKind() {
+    var drawer = drawerEl;
+    if (!drawer) return;
+    var hide = !!(state.acct && HIDE_FOR[state.acct.kind]);
+    /* Matched on the PATH, not the attribute: on a test page `carry()` has
+       appended ?env=…&api=… to every href, and an exact [href="…"] selector
+       would then find nothing and hide nothing. */
+    Array.prototype.forEach.call(drawer.querySelectorAll('.nav-drawer-menu a[href]'), function (a) {
+      if (HIDE_HREFS.indexOf(String(a.getAttribute('href')).split('?')[0]) !== -1) a.hidden = hide;
+    });
+  }
+
+  /* The fallback when shared/account.js is not on the page: clear the stored
+     token and go to the school door. The real sign-out (the map's) also
+     revokes at the server, drops the caches and lands on the kind's own door. */
+  function fallbackSignOut() {
+    try { if (SESSION_KEY) localStorage.removeItem(SESSION_KEY); } catch (e) {}
+    window.location.replace(carry('/auth.html'));
+  }
+
+  function initDrawer() {
     var built = buildDrawer();
     var overlay = built.overlay;
     var drawer = built.drawer;
+    drawerEl = drawer;
     var closeBtn = drawer.querySelector('.nav-drawer-close');
     var lastFocused = null;
+    var activeBurger = null;
 
+    function burgers() { return document.querySelectorAll('.nav-burger'); }
+    function setExpanded(v) {
+      burgers().forEach(function (b) { b.setAttribute('aria-expanded', v ? 'true' : 'false'); });
+    }
     function focusables() {
       return Array.prototype.slice.call(
         drawer.querySelectorAll('a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])')
       ).filter(function (el) { return el.offsetParent !== null; });
     }
 
-    function open() {
-      lastFocused = document.activeElement;
+    function open(from) {
+      lastFocused = from || document.activeElement;
+      activeBurger = from || null;
+      // Search is offered only where the page has the overlay to open.
+      var sb = drawer.querySelector('[data-search]');
+      if (sb) sb.hidden = !(window.MRBSearch || window.MRB_SEARCH_SRC);
       // ⊕ D12 — remove BEFORE the drawer needs to take focus: an inert
-      // subtree cannot receive it, so this must run before the
-      // focusables()/.focus() call three lines down, not after.
+      // subtree cannot receive it.
       drawer.inert = false;
       drawer.removeAttribute('aria-hidden');
       overlay.classList.add('open');
       drawer.classList.add('open');
-      burger.setAttribute('aria-expanded', 'true');
+      setExpanded(true);
       document.body.style.overflow = 'hidden';
       var f = focusables();
       (f[0] || drawer).focus();
@@ -414,36 +368,44 @@
     function close() {
       overlay.classList.remove('open');
       drawer.classList.remove('open');
-      // ⊕ D12 — restored once the drawer is closing. `close()` moves focus
-      // back to the burger a few lines down, off the drawer entirely, so
-      // setting `inert` here never strands focus inside a now-inert node.
       drawer.inert = true;
       drawer.setAttribute('aria-hidden', 'true');
-      burger.setAttribute('aria-expanded', 'false');
+      setExpanded(false);
       document.body.style.overflow = '';
       // Return focus to the button that opened the drawer (spec requirement).
-      // Fall back to whatever was focused before, if the burger is gone.
-      if (burger && burger.focus) burger.focus();
+      var back = (activeBurger && activeBurger.isConnected) ? activeBurger : document.querySelector('.nav-burger');
+      if (back && back.focus) back.focus();
       else if (lastFocused && lastFocused.focus) lastFocused.focus();
     }
     function isOpen() { return drawer.classList.contains('open'); }
 
-    burger.addEventListener('click', function () { isOpen() ? close() : open(); });
+    /* Delegated, not bound: a page's runtime may redraw its bar (the KS4
+       pilot lessons do), and a listener on the old node would be lost. */
+    document.addEventListener('click', function (e) {
+      var b = e.target && e.target.closest ? e.target.closest('.nav-burger') : null;
+      if (!b) return;
+      e.preventDefault();
+      if (isOpen()) close(); else open(b);
+    });
     closeBtn.addEventListener('click', close);
     overlay.addEventListener('click', close);
 
-    // Search item opens the site-wide overlay (same wiring as the nav icon).
-    var searchBtn = drawer.querySelector('[data-search]');
-    if (searchBtn) {
-      searchBtn.addEventListener('click', function () {
+    drawer.addEventListener('click', function (e) {
+      var t = e.target && e.target.closest ? e.target.closest('a, button') : null;
+      if (!t) return;
+      if (t.hasAttribute('data-search')) {
         close();
-        if (window.MRBSearch) window.MRBSearch.open();
-      });
-    }
-
-    // Close on link click (so the drawer doesn't linger over the new page nav).
-    drawer.querySelectorAll('.nav-drawer-menu a').forEach(function (a) {
-      a.addEventListener('click', function () { close(); });
+        openSearch();
+        return;
+      }
+      var act = t.getAttribute('data-act');
+      if (act) {
+        var A = window.MrBadmusAccount;
+        if (act === 'signout') { if (A) A.signOut(); else fallbackSignOut(); }
+        else if (act === 'switch') { if (A) A.switchAccount(); else fallbackSignOut(); }
+        return;
+      }
+      if (t.tagName === 'A') close();   // so the drawer doesn't linger over the new page
     });
 
     // Escape + focus trap.
@@ -458,13 +420,70 @@
         else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
       }
     });
+  }
 
-    return drawer.querySelector('#nav-drawer-auth');
+  function applyAccount(acct) {
+    state.acct = acct;
+    if (!acct) {
+      // The stored session no longer resolves to anyone (expired or removed).
+      state.mode = 'out'; state.home = undefined;
+    } else {
+      state.mode = 'in';
+      if (acct.kind) {
+        state.home = acct.homeButton || null;
+        var user = storedUser();
+        try {
+          if (user) localStorage.setItem(HOME_PREFIX + user.id, JSON.stringify(state.home || { none: 1 }));
+        } catch (e) {}
+      }
+    }
+    paintBar();
+    paintAccount();
+    paintMenuForKind();
+  }
+
+  function initBar() {
+    var user = storedUser();
+    if (!user) {
+      state.mode = 'out';
+      paintBar();
+      paintAccount();
+      return;
+    }
+    // Signed in: never "Sign in". The last answer for THIS person fills the
+    // slot instantly; with none, it stays empty until the map answers.
+    state.mode = 'in';
+    try {
+      var hint = JSON.parse(localStorage.getItem(HOME_PREFIX + user.id) || 'null');
+      state.home = hint && hint.href ? hint : null;
+    } catch (e) { state.home = null; }
+    paintBar();
+    paintAccount();
+    var A = window.MrBadmusAccount;
+    if (!A) return;
+    A.resolve().then(applyAccount, function () {});
+  }
+
+  /* A runtime that redraws the bar (the KS4 pilot lessons) empties the slot;
+     refill it from the last answer rather than leaving the page without one. */
+  function watchBar() {
+    if (!window.MutationObserver) return;
+    var queued = false;
+    new MutationObserver(function () {
+      if (queued) return;
+      queued = true;
+      (window.requestAnimationFrame || setTimeout)(function () {
+        queued = false;
+        var area = homeArea();
+        if (area && state.mode && !area.firstElementChild && (state.mode === 'out' || state.home)) paintBar();
+      });
+    }).observe(document.documentElement, { childList: true, subtree: true });
   }
 
   function boot() {
-    var drawerAuthSlot = initDrawer();      // null if no .nav-burger on the page
-    initAuth(drawerAuthSlot);
+    initDrawer();
+    initBar();
+    watchBar();
     carryLinks();
   }
 

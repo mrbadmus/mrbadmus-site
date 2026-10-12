@@ -239,3 +239,24 @@ span.mrb-topbar__title[aria-current] {
 .mrb-topbar__menu button:hover { background: var(--tb-well); }
 
 @media print { .mrb-topbar__end { display: none !important; } }
+
+/* ═══ ⊕ FRONT DOOR (12 Oct 2026) — THE PUBLIC KINDS (ks3 · ks4 · leaderboard) ═
+   brand · [title] · theme · home button · hamburger. The title is the parent
+   link ("‹ Cells and organisation"); the lesson page already shows where it
+   is, so the title is kept on a wide screen only — below 900px the bar is the
+   brand and its controls, on one row. (Stickiness belongs to `.ks3-nav`, in
+   ks3.css; this file does not touch it.) */
+@media (max-width: 899px) {
+  .mrb-topbar[data-mrb-topbar="ks3"] .mrb-topbar__title,
+  .mrb-topbar[data-mrb-topbar="ks4"] .mrb-topbar__title,
+  .mrb-topbar[data-mrb-topbar="leaderboard"] .mrb-topbar__title { display: none; }
+}
+@media (max-width: 359px) { .mrb-topbar .mrb-brand__word { display: none; } }
+.mrb-topbar__end #nav-auth-area { flex: 0 1 auto; min-width: 0; }
+/* The phone rail is 54px: with `.ks3-nav`'s 2px rule (or a plain bar's 1px) the
+   whole bar stays within 56px. */
+@media (max-width: 700px) {
+  .mrb-topbar[data-mrb-topbar="ks3"] .mrb-topbar__rail,
+  .mrb-topbar[data-mrb-topbar="ks4"] .mrb-topbar__rail,
+  .mrb-topbar[data-mrb-topbar="leaderboard"] .mrb-topbar__rail { min-height: 54px; }
+}

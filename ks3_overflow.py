@@ -147,6 +147,18 @@ _PROBE_TMPL = """(function () {
     var el = all[i], rc = el.getBoundingClientRect();
     if (rc.width === 0 && rc.height === 0) { continue; }
     if (rc.right <= vw + eps && rc.left >= -eps) { continue; }
+    // ⊕ FRONT DOOR (12 Oct 2026) — a `position: fixed` element (or one inside
+    // one) is out of the document flow and cannot make the page scroll
+    // sideways: the closed hamburger drawer rests off-canvas at
+    // translateX(100%%), 320px wide, by design. The document and body
+    // assertions below still catch any real sideways scroll, and every
+    // in-flow wide element is still held to the scroller rule.
+    var fx = false, f = el;
+    while (f && f !== document.documentElement) {
+      if (getComputedStyle(f).position === 'fixed') { fx = true; break; }
+      f = f.parentElement;
+    }
+    if (fx) { continue; }
     // Wider than the viewport. Legal ONLY inside a real scroller.
     var scroller = null, n = el.parentElement;
     while (n && n !== document.documentElement) {

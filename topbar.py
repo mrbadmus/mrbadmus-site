@@ -32,9 +32,18 @@ import re
 import brand
 
 KINDS = ("ks3", "ks4", "leaderboard", "student")
+# ⊕ Front door (12 Oct 2026) — the PUBLIC kinds wear the one public bar: brand,
+# [title], theme, the home button, the hamburger. They have no bell/avatar
+# "who" slot any more: who the person is and where they go is the map's
+# (shared/account.js) and the drawer's (shared/nav.js). `student` — the pupil
+# app pages — is unchanged.
+PUBLIC_KINDS = ("ks3", "ks4", "leaderboard")
 TONES = ("chrome", "studio")
 WHO = ("all", "avatar", "none")
 
+BURGER = ('<button class="nav-burger" type="button" aria-label="Open menu" '
+          'aria-expanded="false" aria-controls="nav-drawer">'
+          '<span></span><span></span><span></span></button>')
 THEME_SLOT_COMPACT = '<span class="mrb-theme-slot" data-mrb-theme="compact"></span>'
 
 
@@ -72,6 +81,14 @@ def topbar(title=None, href=None, kind="ks3", host_class="", tone="chrome",
     if who not in WHO:
         raise ValueError("topbar: who %r not in %r" % (who, WHO))
     cls = "mrb-topbar" + (" " + host_class if host_class else "")
+    if kind in PUBLIC_KINDS:
+        return ('<header class="%s" data-mrb-topbar="%s" data-mrb-bell-tone="%s">'
+                '<div class="mrb-topbar__rail">%s%s'
+                '<div class="mrb-topbar__end" data-mrb-topbar-end>%s%s%s</div>'
+                '</div></header>'
+                % (cls, kind, tone, brand.brand_lockup(brand_href),
+                   title_html(title, href), THEME_SLOT_COMPACT,
+                   '<span id="nav-auth-area"></span>', BURGER))
     slot = ("" if who == "none" else
             '<span class="mrb-topbar__who" data-mrb-topbar-who="%s"></span>' % who)
     return ('<header class="%s" data-mrb-topbar="%s" data-mrb-bell-tone="%s">'

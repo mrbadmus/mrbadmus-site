@@ -733,6 +733,18 @@ PAGES = [
     # Root / public pages.
     dict(key="root_auth", url="/auth.html"),
     dict(key="root_leaderboard", url="/leaderboard.html"),
+    # ⊕ FRONT DOOR (12 Oct 2026) — THE ONE DRAWER, OPEN. Its links and the
+    # account section's buttons are not in the tab order at rest (the drawer is
+    # `inert` until opened), so the at-rest sweeps never reach them. These two
+    # open it through the real burger and sweep the drawer alone.
+    dict(key="drawer_open_classic", url="/past-papers.html",
+         pre_js="document.querySelector('.nav-burger').click()",
+         wait_js="document.getElementById('nav-drawer').classList.contains('open')",
+         scope="#nav-drawer", no_chat=True),
+    dict(key="drawer_open_ks3", url="/ks3/biology/cells-and-organisation/specialised-cells.html",
+         pre_js="document.querySelector('.nav-burger').click()",
+         wait_js="document.getElementById('nav-drawer').classList.contains('open')",
+         scope="#nav-drawer", no_chat=True),
     dict(key="root_index", url="/index.html"),
 
     # One representative KS3 lesson page (built output).
@@ -795,7 +807,9 @@ def audit_page(browser, port, spec):
         "unreached": unreached,
         "unreachable_candidates": unreach_data.get("unreachable_candidates", []),
     }
-    result["chat"] = audit_chat_panel(p)
+    # The drawer cases sweep the open drawer only; the chat launcher sits
+    # behind its scrim, so that audit is not theirs to run.
+    result["chat"] = None if spec.get("no_chat") else audit_chat_panel(p)
     return result
 
 
@@ -956,6 +970,46 @@ def main(argv):
                       "highlighted row, Enter opens the pupil, Esc closes "
                       "and returns focus to \"Find a student\""
                       % (pupil_key, pr["rows_at_open"]))
+
+        # ⊕ FRONT DOOR — the drawer's own keyboard contract: it opens on the
+        # burger, focus moves INTO it, Tab cannot leave it, Escape closes it
+        # and focus goes back to the burger that opened it.
+        for dkey, durl in (("drawer_keyboard_classic", "/past-papers.html"),
+                           ("drawer_keyboard_ks3",
+                            "/ks3/biology/cells-and-organisation/specialised-cells.html")):
+            if filters and not any(f in dkey for f in filters):
+                continue
+            with cdp.Browser() as b:
+                dp = b.page("http://127.0.0.1:%d%s" % (port, durl))
+                time.sleep(0.6)
+                real_click(dp, ".nav-burger")
+                time.sleep(0.4)
+                st = dp.eval("(function(){var d=document.getElementById('nav-drawer');"
+                             "return {open:d.classList.contains('open'),"
+                             "exp:document.querySelector('.nav-burger').getAttribute('aria-expanded'),"
+                             "inside:d.contains(document.activeElement),inert:!!d.inert};})()")
+                trapped = True
+                for _ in range(16):
+                    press_tab(dp)
+                    if not dp.eval("document.getElementById('nav-drawer').contains(document.activeElement)"):
+                        trapped = False
+                        break
+                press_escape(dp)
+                time.sleep(0.3)
+                end = dp.eval("(function(){var d=document.getElementById('nav-drawer');"
+                              "return {closed:!d.classList.contains('open'),inert:!!d.inert,"
+                              "back:document.activeElement===document.querySelector('.nav-burger'),"
+                              "exp:document.querySelector('.nav-burger').getAttribute('aria-expanded')};})()")
+            ok = (st["open"] and st["exp"] == "true" and st["inside"] and not st["inert"]
+                  and trapped and end["closed"] and end["inert"] and end["back"]
+                  and end["exp"] == "false")
+            if ok:
+                print("  %-24s ✅  opens on the burger, focus moves in, Tab cannot leave, "
+                      "Escape closes it and returns focus to the burger" % dkey)
+            else:
+                failed += 1
+                print("  %-24s ❌ open=%s trapped=%s | after Esc: %s"
+                      % (dkey, st, trapped, end))
 
         if shots_dir:
             print("\n  shots -> %s" % shots_dir)
