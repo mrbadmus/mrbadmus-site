@@ -2531,6 +2531,9 @@ body.rd[data-mode="ks3"] {
 @media (max-width: 1339px) {
   :root { --ks3-sticky-h: 140px; }   /* the rail bar is sticky down here */
 }
+@media (max-width: 700px) {
+  :root { --ks3-sticky-h: 44px; }    /* header scrolls away; only the strip is sticky */
+}
 html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 
 /* ── the progress rail, both variants (MRB-208 rule 2) ──
@@ -2709,6 +2712,35 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   height: 100%;
   width: 0;
   background: var(--ks3-accent);
+}
+
+/* ⊕ Front door run, 12 Oct 2026 (Part 4) — THE PHONE STRIP.
+   On a phone the sticky header (72-130px) PLUS this strip pinned the strip
+   ~130px down the screen, so lesson text showed above it and was cut off
+   behind it. Mide's iPhone screenshots, IMG_5533-5535. Up to 700px:
+     - the header scrolls away with the page (it is not sticky here);
+     - the strip is flush at `top: 0`, 44px tall at most;
+     - it slides off the top while the reader scrolls DOWN and comes back on a
+       small scroll UP (`.is-away`, toggled by `wireRailAutoHide` in ks3.js).
+   `transform` and not `top`/`height`: a sticky element's transform moves
+   nothing else, so nothing under it reflows or shifts. Desktop is untouched —
+   every rule below sits inside the media query. */
+@media (max-width: 700px) {
+  .ks3-nav { position: static; }
+  .ks3-railbar {
+    top: 0;
+    box-sizing: border-box;
+    height: 44px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    transition: transform .2s ease;
+  }
+  .ks3-railbar-row { width: 100%; }
+  .ks3-railbar.is-away { transform: translateY(-100%); }
+}
+@media (max-width: 700px) and (prefers-reduced-motion: reduce) {
+  .ks3-railbar { transition: none; }
 }
 
 /* ── KEY FACT (⊕ §4.8.1 B) ──
@@ -4458,6 +4490,13 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-tune-dial[data-dial="EXTRA"] { background: var(--ks3-accent-tint); }
 .ks3-tune-part { display: block; font-size: 18px; font-weight: 700; }
 .ks3-tune-why { display: block; margin-top: 3px; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body); }
+/* ⊕ Front door run, 12 Oct 2026 (Part 4) — below 480px the dial tag sits ABOVE
+   the text instead of in a 74px left column that squeezed the sentence to
+   four or five words a line (IMG_5533-5535). Layout only. */
+@media (max-width: 480px) {
+  .ks3-tune { flex-direction: column; gap: 8px; }
+  .ks3-tune-dial { flex: 0 0 auto; align-self: flex-start; padding: 5px 14px; }
+}
 .ks3-bench-problem {
   margin: 18px 0 0;
   padding-top: 16px;

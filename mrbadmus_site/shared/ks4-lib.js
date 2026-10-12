@@ -148,3 +148,23 @@ window.KS4 = (function () {
   return { rail: rail, observe: observe, route: route, ready: ready, fig: fig, ROUTES: ROUTES, EQ: EQ, EQ_BY_YEAR: EQ_BY_YEAR, EQ_YEAR: EQ_YEAR, video: video, VIDEOS: VIDEOS, src: src, routeKey: routeKey, flags: flags, item: item, quiz: quiz, find: find, bank: bank,
     tip: tip, keyLines: keyLines, commonMistake: commonMistake, cfifa: cfifa, fifas: fifas, load: load, save: save, hash: hash, hrefFor: hrefFor };
 })();
+
+/* ⊕ Front door run, 12 Oct 2026 (Part 4) — hide the phone progress strip while
+   reading down, bring it back on a small scroll up (CSS: ks4-lesson.css). */
+(function () {
+  var root = document.documentElement, lastY = window.pageYOffset || 0, ticking = false;
+  function update() {
+    ticking = false;
+    var y = window.pageYOffset || 0, dy = y - lastY;
+    if (y <= 80 || dy <= -6) { root.classList.remove('ks4-rail-away'); }
+    else if (dy > 8) { root.classList.add('ks4-rail-away'); }
+    else { return; }
+    lastY = y;
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
+  }, { passive: true });
+  document.addEventListener('focusin', function (e) {
+    if (e.target && e.target.closest && e.target.closest('[data-rail="top"]')) { root.classList.remove('ks4-rail-away'); }
+  });
+})();

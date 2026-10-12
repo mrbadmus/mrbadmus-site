@@ -241,3 +241,22 @@ html[data-theme="dark"] body {
 @media (max-width: 400px) {
   .ks3-route-menu { left: 0; right: auto; }
 }
+
+/* ⊕ Front door run, 12 Oct 2026 (Part 4) — THE PHONE STRIP, pilot lessons.
+   The template carries the strip's padding inline, which made it 47px; up to
+   700px it is 44px at most, flush at top:0, and slides off while the reader
+   scrolls down (`ks4-rail-away` on <html>, set by ks4-lib.js). `!important`
+   because the template styles are inline. `transform` only: nothing reflows. */
+@media (max-width: 700px) {
+  nav[data-rail="top"] {
+    box-sizing: border-box !important; height: 44px !important;
+    padding: 0 16px !important; top: 0 !important;
+    display: flex; align-items: center;
+    transition: transform .2s ease;
+  }
+  nav[data-rail="top"] > div { width: 100%; }
+  html.ks4-rail-away nav[data-rail="top"] { transform: translateY(-100%); }
+}
+@media (max-width: 700px) and (prefers-reduced-motion: reduce) {
+  nav[data-rail="top"] { transition: none; }
+}
