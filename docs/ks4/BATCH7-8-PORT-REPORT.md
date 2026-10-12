@@ -124,7 +124,38 @@ broken. No `.dc.html` or `Batch N/` text survives on any page.
 
 ### Checks
 
-<!-- WALK7 -->
+- **Gates (builder):** `ks4_parity.py --batch batch-7` 826 PASS 0 FAIL; `ks4_batch_check` clean for batches 2–7
+  (batch 7: 59 pages); one `build_all.py`; diff against `origin/main` = the 118 batch-7 page files, the new batch-7
+  files, `build_ks4.py` and `ks4_batch_rulings.py`. Batches 1–6, KS3, B2C, flashcards, Simulations,
+  `shared/ks4-nav.js` and `shared/ks4-lib.js` byte-identical to main.
+- **Independent pupil walk (Opus auditor, not the builder), 390 px, light theme, one headless Chrome:** all 59 pages,
+  every opener option, every teaching control and range, Think again, Sort wrong-then-right, the whole ladder with
+  right and wrong answers, chains, mark schemes and "Retry my misses", all five practice questions wrong then right,
+  every link; plus targeted drives of the viral clue game, the antibiotics pairs, the plant-doctor game, every figure
+  state and every calculation rung.
+  - Hard checks clean on all 59 from the first pass: five practice questions on every route, ladder 2·2·2·1 on
+    every route, no alert/confirm/prompt, no "Shape:" or stray tokens, no console errors (including after
+    interactions), no horizontal scroll, every formula drawn with real subscripts (C₆H₁₂O₆ included), no HTML sub
+    inside SVG, every link resolves.
+  - The first pass found defects, all fixed by named `B7W-*` rulings and re-walked:
+    a right answer marked wrong on the CH/TH inverse-square rung (both "convert" distractors were also correct if
+    applied to both distances; now "convert only one distance", and the feedback says why); the viral clue table
+    stayed blank for a disease answered wrongly (now fills on any answer); five chains that accepted only one of
+    two sensible orders (fungal nets, monoclonal, antibiotics ×2, bark; reworded so the order is forced); labels
+    clipped or overlapping (rate "enzymes denatured", exercise "shortfall" and "oxygen debt", HIV "immune cells
+    attacked", anaerobic header, malaria box); doubled words ("Fair guess. A fair guess", "Yes. Yes:"); "Pick a
+    distance." shown three times; the drug-testing gates figure redrawn as two rows of three (label text 5.7 px →
+    11–13 px at 390). Three old verbatim items rebuilt on the auditor's science flags: plant cuticle key ("stops
+    pathogens getting into the leaf", not "landing"), herd-immunity reply to "naturally immune", and "Root cells get
+    no light and have no chloroplasts" taught before rung 2 asks it.
+  - Re-walk after the fixes: every item fixed; regression sweep 59 of 59 pass.
+- **Kept (auditor flags, lead's ruling):** uses-of-glucose q3 "main use … (ATP)" and metabolism q2's "catabolic" are
+  old verbatim words of the same off-spec class listed after batches 4–6; the rate practical's bubble counts
+  (52/30/16/9) are made-up teaching data and need not follow the inverse square law (the page teaches the law for
+  light intensity, not rate).
+- **Known, left as Design drew them:** most figure labels render at 5–7.5 px on a 390 px phone (as in batches 4–6);
+  prev/next labels use the shared nav's older titles ("Uses of Glucose from Photosynthesis") — changing them would
+  move every KS4 page; the lipid figure does not colour the glycerol bead differently.
 
 ---
 
