@@ -886,7 +886,7 @@ class Component extends DCLogic {
   }
   cycFig(n) {
     const D = window.KS4D, C = D.C; let b = '';
-    const P = [[110, 90, 'person with malaria'], [330, 90, 'protist develops in mosquito'], [330, 240, 'mosquito bites again'], [110, 240, 'new person: fever']];
+    const P = [[110, 90, 'person with malaria'], [330, 90, 'protist develops: in mosquito'], [330, 240, 'mosquito bites again'], [110, 240, 'new person: fever']];
     P.forEach((p, i) => {
       b += BOX(p[0] - 90, p[1] - 38, 180, 76, i === n ? '#F6D9D0' : '#FFFDF8', C.stroke, i === n ? 3.5 : 2);
       const w = p[2].split(': ');
@@ -915,7 +915,7 @@ class Component extends DCLogic {
     return Object.assign(c, { mrbLink_communicable_diseases_defence: (KS4.hrefFor('communicable-diseases-defence', c) || '#'),
       hookOptions: [
         { text: 'Something it carries', correct: true, reply: 'Yes: the mosquito carries a protist. The protist is the pathogen.' },
-        { text: 'The mosquito itself', correct: false, reply: 'A fair guess, but the mosquito carries the pathogen, a protist. The mosquito is the vector.' }
+        { text: 'The mosquito itself', correct: false, reply: 'But the mosquito carries the pathogen, a protist. The mosquito is the vector.' }
       ],
       spotBtns: this.btns(SPOT.map((x, i) => (i + 1) + ' \u00b7 ' + x.k), s.spot, (i) => this.setState({ spot: i, spots: this.seen('spots', i) })),
       spotFig: c.ready ? K.fig(this.spotFig(s.spot), '') : null,
@@ -952,7 +952,7 @@ class Component extends DCLogic {
             ['Purple or black spots develop on the leaves.', 'The leaves turn yellow and drop early.', 'With fewer leaves, photosynthesis is reduced, so the plant grows less.'],
             [['The fungus blocks the xylem.', 'It affects the leaves.'], ['The spots stop the roots taking in water.', 'Black spot is a leaf disease.']]),
           CHAIN('Explain', 'Explain how mosquito nets reduce the spread of malaria. Put the links in order.',
-            ['Mosquitoes are the vector: they carry the malaria protist.', 'Nets stop mosquitoes biting people while they sleep.', 'So the protist isn\u2019t passed between people.'],
+            ['Mosquitoes are the vector: they carry the malaria protist.', 'Nets stop these mosquitoes biting people while they sleep.', 'So the protist isn\u2019t passed between people.'],
             [['Nets kill the protist in the blood.', 'Nets stop bites.'], ['Nets stop malaria spreading in water.', 'Malaria is spread by mosquitoes.']])
         ],
         r4: [

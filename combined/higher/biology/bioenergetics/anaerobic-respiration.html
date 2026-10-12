@@ -867,7 +867,7 @@ class Component extends DCLogic {
     rows.forEach((r, j) => { b += D.T(20, 104 + j * 70, r, 13, { anchor: 'start', fill: C.stroke }); });
     COLS.forEach((c, i) => {
       const x = 160 + i * 168, on = i === sel;
-      b += BOX(x, 20, 156, 50, on ? '#F6D9D0' : '#FFFDF8', C.stroke, on ? 3.5 : 2) + D.T(x + 78, 50, c.k, 13, { fill: C.stroke });
+      b += BOX(x, 20, 156, 50, on ? '#F6D9D0' : '#FFFDF8', C.stroke, on ? 3.5 : 2) + (c.k.length > 18 ? c.k.split(': ').map((ln, q) => D.T(x + 78, 41 + q * 17, ln, 13, { fill: C.stroke })).join('') : D.T(x + 78, 50, c.k, 13, { fill: C.stroke }));
       [[c.o], c.p, [c.e]].forEach((cell, j) => {
         const y = 78 + j * 70;
         b += BOX(x, y, 156, 58, on ? '#FFFDF8' : '#F3EEE2', C.stroke, on ? 2.5 : 1.5);

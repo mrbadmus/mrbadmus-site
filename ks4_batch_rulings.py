@@ -508,10 +508,87 @@ SCIENCE = [
          new="'Mechanical: tricks animals, for example leaf spots that look like butterfly eggs, so butterflies don\\u2019t lay eggs there.'"),
     dict(id='B7-PD-BARK', slug='plant-disease-detection-defence', layer='logic',
          old="'The dead cells fall off, taking pathogens on them away.'",
-         new="'The dead cells fall off, and any pathogens on them fall off too.'"),
+         new="'Also, the dead cells fall off, and any pathogens on them fall off too.'"),
     dict(id='B7-AR-Q5-2', slug='aerobic-respiration', layer='logic',
          old="1: 'Mitochondria number follows energy demand, not cell size.'",
          new="1: 'They need a lot of energy: the number of mitochondria follows energy demand.'"),
+    # ── Batch 7: fixes from the pupil walk (the lead, after the independent walk of c850c51ba) ──
+    # converting BOTH distances is also correct, so the old distractors marked a right method wrong; converting only one is genuinely wrong
+    dict(id='B7W-RP-CONV', slug='rate-of-photosynthesis', layer='logic',
+         old="convOptions: ['Nothing to convert: both in cm', 'Convert cm to m: divide by 100', 'Convert cm to mm: multiply by 10']",
+         new="convOptions: ['Nothing to convert: both in cm', 'Convert only the 30 cm to m: divide by 100', 'Convert only the 10 cm to mm: multiply by 10']"),
+    # a disease's table row fills when ANY clue for it is answered (the reply already reveals the disease), not only on a correct pick
+    dict(id='B7W-VD-CLUES', slug='viral-diseases', layer='logic',
+         old='got: i === CL.d && s.got.indexOf(i) < 0 ? s.got.concat([i]) : s.got',
+         new='got: s.got.indexOf(CL.d) < 0 ? s.got.concat([CL.d]) : s.got'),
+    # chain link forced by the one before
+    dict(id='B7W-FP-CHAIN', slug='fungal-protist-diseases', layer='logic',
+         old="'Nets stop mosquitoes biting people while they sleep.'",
+         new="'Nets stop these mosquitoes biting people while they sleep.'"),
+    dict(id='B7W-MA-CHAIN', slug='monoclonal-antibodies', layer='logic',
+         old="'A toxic drug, radioactive substance or growth-stopping chemical is bound to it.'",
+         new="'A toxic drug, radioactive substance or growth-stopping chemical is bound to this antibody.'"),
+    # target includes the next link's opening so it cannot match the wrong_explanations string of the same words
+    dict(id='B7W-AB-CHAIN-1', slug='antibiotics-painkillers', layer='logic',
+         old="'Antibiotics cannot kill viral pathogens.', 'Prescribing",
+         new="'Antibiotics cannot kill viral pathogens, so they won\\u2019t work on it.', 'Prescribing"),
+    dict(id='B7W-AB-CHAIN-2', slug='antibiotics-painkillers', layer='logic',
+         old="'Completing the course kills all the bacteria, so none survive to form resistant strains.'",
+         new="'So completing the course kills all the bacteria, and none survive to form resistant strains.'"),
+    dict(id='B7W-PD-Q2KEY', slug='plant-disease-detection-defence', layer='logic',
+         old='It provides a waterproof physical barrier that prevents pathogens from landing and colonising the leaf surface',
+         new='It provides a waterproof physical barrier that stops pathogens getting into the leaf'),
+    dict(id='B7W-VAC-WX3', slug='vaccination', layer='logic',
+         old="'Natural immunity after infection DOES contribute to herd immunity \\u2014 but vaccination is the safer way to achieve it without suffering the disease.'",
+         new="'That is one person\\u2019s immunity. Herd immunity is when enough of the population is immune that the pathogen cannot spread.'"),
+    dict(id='B7W-PS-ROOTS', slug='photosynthesis', layer='logic',
+         old="how: 'Water is absorbed by the roots and carried up the xylem to the leaves.'",
+         new="how: 'Water is absorbed by the roots and carried up the xylem to the leaves. Root cells get no light and have no chloroplasts, so they do not photosynthesise.'"),
+    # the one-line label ran past the SVG's right edge; two lines, right of the curve
+    dict(id='B7W-RP-TEMP-LABEL', slug='rate-of-photosynthesis', layer='logic',
+         old="D.T(345, 150, 'enzymes denatured', 12, { anchor: 'start', weight: 'normal', fill: C.stroke })",
+         new="D.T(345, 142, 'enzymes', 12, { anchor: 'start', weight: 'normal', fill: C.stroke }) + D.T(345, 157, 'denatured', 12, { anchor: 'start', weight: 'normal', fill: C.stroke })"),
+    # the label sat on the title 'oxygen for the muscles'; it now sits inside the dashed shortfall box
+    dict(id='B7W-EX-SHORTFALL', slug='response-to-exercise', layer='logic',
+         old="D.T(265, 250 - need - 8, 'shortfall', 12, { fill: C.red })",
+         new="D.T(265, 250 - (need + got) / 2 + 4, 'shortfall', 12, { fill: C.red })"),
+    # moved into the shaded area below both curves
+    dict(id='B7W-EX-DEBT-LABEL', slug='response-to-exercise', layer='logic',
+         old="D.T(X0 + 10.4 * dx, Y0 - 90, 'oxygen debt', 12, { fill: C.blue })",
+         new="D.T(X0 + 9.2 * dx, Y0 - 80, 'oxygen debt', 12, { fill: C.blue })"),
+    # 'immune cells attacked' overflowed its box: two lines; the other two boxes are unchanged
+    dict(id='B7W-VD-HIV-LABEL', slug='viral-diseases', layer='logic',
+         old='D.T(x + 62, 106, t, 13, { fill: i <= n ? C.stroke : C.muted })',
+         new="(t.length > 18 ? [t.slice(0, t.lastIndexOf(' ')), t.slice(t.lastIndexOf(' ') + 1)] : [t]).map((ln, k, a) => D.T(x + 62, 106 + (k - (a.length - 1) / 2) * 16, ln, 13, { fill: i <= n ? C.stroke : C.muted })).join('')"),
+    # 'Anaerobic: plants, yeast' was wider than its column header; only that header breaks onto two lines
+    dict(id='B7W-AN-HEAD', slug='anaerobic-respiration', layer='logic',
+         old='D.T(x + 78, 50, c.k, 13, { fill: C.stroke })',
+         new="(c.k.length > 18 ? c.k.split(': ').map((ln, q) => D.T(x + 78, 41 + q * 17, ln, 13, { fill: C.stroke })).join('') : D.T(x + 78, 50, c.k, 13, { fill: C.stroke }))"),
+    # the box label was wider than its box; the figure's own ': ' two-line split now breaks it (the colon is not drawn)
+    dict(id='B7W-FP-CYCLE-LABEL', slug='fungal-protist-diseases', layer='logic',
+         old="[330, 90, 'protist develops in mosquito']",
+         new="[330, 90, 'protist develops: in mosquito']"),
+    # the block already says 'Fair guess.'
+    dict(id='B7W-FP-REPLY', slug='fungal-protist-diseases', layer='logic',
+         old="reply: 'A fair guess, but the mosquito carries",
+         new="reply: 'But the mosquito carries"),
+    # the data note already says 'Yes.'
+    dict(id='B7W-VAC-DATA', slug='vaccination', layer='logic',
+         old="r: 'Yes: from about 800 a year",
+         new="r: 'From about 800 a year"),
+    # 'Pick a distance.' was shown three times before any press; it now shows once, in the live note beside the figure
+    dict(id='B7W-RP-PICK-1', slug='rate-of-photosynthesis', layer='template',
+         old=' Count the bubbles of oxygen given off in one minute. Pick a distance.</p>',
+         new=' Count the bubbles of oxygen given off in one minute.</p>'),
+    dict(id='B7W-RP-PICK-2', slug='rate-of-photosynthesis', layer='logic',
+         old="readings: readings.length ? readings : ['Pick a distance.'],",
+         new='readings: readings,'),
+    # M3 (pupil walk): the six gates were one row in a 660-wide drawing, shown at about 5.7 px at 390 px. Two rows of
+    # three in a 340-wide drawing doubles the text. Labels, order, dots and every state are unchanged; this also
+    # carries the two-line wrap of B7W-DD-GATE-LABEL (that entry is folded in here).
+    dict(id='B7W-DD-GATES', slug='drug-discovery-development', layer='logic',
+         old="    GATES.forEach((g, i) => {\n      const x = 14 + i * 108;\n      b += BOX(x, 40, 98, 70, i === n ? '#F6D9D0' : i < n ? '#FFFDF8' : '#E9E2CF', C.stroke, i === n ? 3.5 : 2);\n      const w = g.k.split(', ');\n      w.forEach((t, k) => { b += D.T(x + 49, 72 + k * 18 - (w.length - 1) * 9, t, 12, { fill: i <= n ? C.stroke : C.muted }); });\n      for (let j = 0; j < 24; j++) { const cx = x + 14 + (j % 6) * 14, cy = 132 + Math.floor(j / 6) * 14; const on = j < left[i] && i <= n; b += D.circ(cx, cy, 4.5, on ? C.blue : 'none', on ? 'none' : C.muted, on ? 0 : 1); }\n    });\n    if (n === 4) {\n      b += BOX(150, 210, 360, 76, '#FFFDF8') + D.T(330, 234, 'who knows who got the drug?', 13, { fill: C.stroke });\n      b += D.T(250, 262, 'patients: no', 13, { weight: 'normal', fill: C.stroke }) + D.T(410, 262, 'doctors: no', 13, { weight: 'normal', fill: C.stroke });\n    } else b += D.T(330, 250, GATES[n].who, 14, { fill: C.stroke, style: 'italic' });\n    b += D.T(330, 22, 'blue dots: drug candidates still in the running', 12, { weight: 'normal', fill: C.stroke });\n    return D.svg(660, 300, b,",
+         new="    GATES.forEach((g, i) => {\n      const x = 14 + (i % 3) * 108, oy = Math.floor(i / 3) * 150;\n      b += BOX(x, 40 + oy, 98, 70, i === n ? '#F6D9D0' : i < n ? '#FFFDF8' : '#E9E2CF', C.stroke, i === n ? 3.5 : 2);\n      const w = (g.k.indexOf(', ') < 0 && g.k.length > 14) ? [g.k.slice(0, g.k.lastIndexOf(' ')), g.k.slice(g.k.lastIndexOf(' ') + 1)] : g.k.split(', ');\n      w.forEach((t, k) => { b += D.T(x + 49, 72 + oy + k * 18 - (w.length - 1) * 9, t, 12, { fill: i <= n ? C.stroke : C.muted }); });\n      for (let j = 0; j < 24; j++) { const cx = x + 14 + (j % 6) * 14, cy = 132 + oy + Math.floor(j / 6) * 14; const on = j < left[i] && i <= n; b += D.circ(cx, cy, 4.5, on ? C.blue : 'none', on ? 'none' : C.muted, on ? 0 : 1); }\n    });\n    if (n === 4) {\n      b += BOX(14, 340, 310, 76, '#FFFDF8') + D.T(169, 364, 'who knows who got the drug?', 13, { fill: C.stroke });\n      b += D.T(99, 392, 'patients: no', 13, { weight: 'normal', fill: C.stroke }) + D.T(239, 392, 'doctors: no', 13, { weight: 'normal', fill: C.stroke });\n    } else b += D.T(169, 360, GATES[n].who, 14, { fill: C.stroke, style: 'italic' });\n    b += D.T(169, 22, 'blue dots: drug candidates still in the running', 12, { weight: 'normal', fill: C.stroke });\n    return D.svg(340, 430, b,"),
 ]
 
 # ── Batch 7 port mechanics (not science rulings) ───────────────────────

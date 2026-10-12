@@ -863,7 +863,7 @@ class Component extends DCLogic {
     const X0 = 60, Y0 = 250, W = 540, dx = W / 13;
     const bands = [[0, 2.5, 'rest'], [2.5, 7.5, 'exercise'], [7.5, 13, 'recovery']];
     bands.forEach((bd, i) => { b += '<rect x="' + (X0 + bd[0] * dx) + '" y="40" width="' + ((bd[1] - bd[0]) * dx) + '" height="' + (Y0 - 40) + '" fill="' + (i === ph ? '#F6D9D0' : 'transparent') + '"/>' + D.T(X0 + (bd[0] + bd[1]) / 2 * dx, 34, bd[2], 13, { fill: C.stroke }); });
-    if (H) { let d = 'M' + (X0 + 7.5 * dx) + ' ' + (Y0 - (BR[7] - 0) * 4.5); for (let i = 8; i < 14; i++) d += ' L' + (X0 + i * dx) + ' ' + (Y0 - BR[i] * 4.5); d += ' L' + (X0 + 13 * dx) + ' ' + (Y0 - 14 * 4.5) + ' L' + (X0 + 7.5 * dx) + ' ' + (Y0 - 14 * 4.5) + ' Z'; b += '<path d="' + d + '" fill="#BFD6F2" opacity=".75"/>' + D.T(X0 + 10.4 * dx, Y0 - 90, 'oxygen debt', 12, { fill: C.blue }); }
+    if (H) { let d = 'M' + (X0 + 7.5 * dx) + ' ' + (Y0 - (BR[7] - 0) * 4.5); for (let i = 8; i < 14; i++) d += ' L' + (X0 + i * dx) + ' ' + (Y0 - BR[i] * 4.5); d += ' L' + (X0 + 13 * dx) + ' ' + (Y0 - 14 * 4.5) + ' L' + (X0 + 7.5 * dx) + ' ' + (Y0 - 14 * 4.5) + ' Z'; b += '<path d="' + d + '" fill="#BFD6F2" opacity=".75"/>' + D.T(X0 + 9.2 * dx, Y0 - 80, 'oxygen debt', 12, { fill: C.blue }); }
     b += D.line(X0, Y0, X0 + W, Y0, 2.5) + D.line(X0, Y0, X0, 40, 2.5) + D.T(X0 + W / 2, Y0 + 26, 'time', 13, { fill: C.stroke });
     const path = (arr, k) => arr.map((v, i) => (i ? 'L' : 'M') + (X0 + i * dx).toFixed(1) + ' ' + (Y0 - v * k).toFixed(1)).join(' ');
     b += '<path d="' + path(HR, 1.15) + '" fill="none" stroke="' + C.red + '" stroke-width="4"/>' + '<path d="' + path(BR, 4.5) + '" fill="none" stroke="' + C.blue + '" stroke-width="4" stroke-dasharray="8 5"/>';
@@ -875,7 +875,7 @@ class Component extends DCLogic {
     const need = p ? 230 : 110, got = p ? 150 : 110;
     b += BOX(70, 250 - need, 90, need, '#F6D9D0') + D.T(115, 272, 'needed', 13, { fill: C.stroke });
     b += BOX(220, 250 - got, 90, got, '#DDEEF6') + D.T(265, 272, 'delivered', 13, { fill: C.stroke });
-    if (p) b += '<rect x="220" y="' + (250 - need) + '" width="90" height="' + (need - got) + '" fill="none" stroke="' + C.red + '" stroke-width="2.5" stroke-dasharray="5 4"/>' + D.T(265, 250 - need - 8, 'shortfall', 12, { fill: C.red });
+    if (p) b += '<rect x="220" y="' + (250 - need) + '" width="90" height="' + (need - got) + '" fill="none" stroke="' + C.red + '" stroke-width="2.5" stroke-dasharray="5 4"/>' + D.T(265, 250 - (need + got) / 2 + 4, 'shortfall', 12, { fill: C.red });
     b += D.T(190, 14, 'oxygen for the muscles', 13, { fill: C.stroke });
     return D.svg(380, 285, b, p ? 'Sprint: the muscles need more oxygen than the blood can deliver; there is a shortfall.' : 'Jog: oxygen delivered matches oxygen needed.');
   }

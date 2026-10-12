@@ -897,7 +897,7 @@ class Component extends DCLogic {
   hivFig(n) {
     const D = window.KS4D, C = D.C; let b = '';
     const lab = ['flu-like illness', 'immune cells attacked', 'AIDS'];
-    lab.forEach((t, i) => { const x = 20 + i * 140; b += BOX(x, 60, 124, 80, i <= n ? (i === 2 ? '#F6D9D0' : '#EDE7F6') : '#E9E2CF', C.stroke, i === n ? 3.5 : 2) + D.T(x + 62, 106, t, 13, { fill: i <= n ? C.stroke : C.muted }); if (i < 2) b += D.arrow(x + 126, 100, x + 138, 100, C.stroke, 2.5); });
+    lab.forEach((t, i) => { const x = 20 + i * 140; b += BOX(x, 60, 124, 80, i <= n ? (i === 2 ? '#F6D9D0' : '#EDE7F6') : '#E9E2CF', C.stroke, i === n ? 3.5 : 2) + (t.length > 18 ? [t.slice(0, t.lastIndexOf(' ')), t.slice(t.lastIndexOf(' ') + 1)] : [t]).map((ln, k, a) => D.T(x + 62, 106 + (k - (a.length - 1) / 2) * 16, ln, 13, { fill: i <= n ? C.stroke : C.muted })).join(''); if (i < 2) b += D.arrow(x + 126, 100, x + 138, 100, C.stroke, 2.5); });
     const cells = [8, 5, 1][n];
     for (let i = 0; i < 8; i++) b += D.circ(60 + i * 44, 200, 14, i < cells ? '#B9A7D8' : 'none', i < cells ? C.stroke : C.muted, 2, i < cells ? '' : ' stroke-dasharray="3 3"');
     b += D.T(214, 246, 'immune cells', 13, { weight: 'normal', fill: C.stroke });
@@ -940,7 +940,7 @@ class Component extends DCLogic {
       clueFig: c.ready ? K.fig(this.clueFig(s.got), '') : null,
       clueCount: 'Clue ' + (s.ci + 1) + ' of ' + CLUES.length,
       clueText: CL.t,
-      clueBtns: this.btns(DIS, s.pick, (i) => { if (s.pick !== null) return; this.setState({ pick: i, got: i === CL.d && s.got.indexOf(i) < 0 ? s.got.concat([i]) : s.got }); }),
+      clueBtns: this.btns(DIS, s.pick, (i) => { if (s.pick !== null) return; this.setState({ pick: i, got: s.got.indexOf(CL.d) < 0 ? s.got.concat([CL.d]) : s.got }); }),
       clueNote: !answered ? 'Which disease?' : right ? 'Yes: ' + DIS[CL.d] + '. That clue gives it away.' : 'Not this time: it\u2019s ' + DIS[CL.d] + '.',
       clueNextShow: answered && s.ci < CLUES.length - 1, clueNextLabel: 'Next clue', nextStyle: this.seg(true),
       onClueNext: () => this.setState({ ci: s.ci + 1, pick: null }),

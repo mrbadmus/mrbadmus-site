@@ -873,18 +873,18 @@ class Component extends DCLogic {
     const D = window.KS4D, C = D.C; let b = '';
     const left = [24, 14, 8, 5, 3, 2];
     GATES.forEach((g, i) => {
-      const x = 14 + i * 108;
-      b += BOX(x, 40, 98, 70, i === n ? '#F6D9D0' : i < n ? '#FFFDF8' : '#E9E2CF', C.stroke, i === n ? 3.5 : 2);
-      const w = g.k.split(', ');
-      w.forEach((t, k) => { b += D.T(x + 49, 72 + k * 18 - (w.length - 1) * 9, t, 12, { fill: i <= n ? C.stroke : C.muted }); });
-      for (let j = 0; j < 24; j++) { const cx = x + 14 + (j % 6) * 14, cy = 132 + Math.floor(j / 6) * 14; const on = j < left[i] && i <= n; b += D.circ(cx, cy, 4.5, on ? C.blue : 'none', on ? 'none' : C.muted, on ? 0 : 1); }
+      const x = 14 + (i % 3) * 108, oy = Math.floor(i / 3) * 150;
+      b += BOX(x, 40 + oy, 98, 70, i === n ? '#F6D9D0' : i < n ? '#FFFDF8' : '#E9E2CF', C.stroke, i === n ? 3.5 : 2);
+      const w = (g.k.indexOf(', ') < 0 && g.k.length > 14) ? [g.k.slice(0, g.k.lastIndexOf(' ')), g.k.slice(g.k.lastIndexOf(' ') + 1)] : g.k.split(', ');
+      w.forEach((t, k) => { b += D.T(x + 49, 72 + oy + k * 18 - (w.length - 1) * 9, t, 12, { fill: i <= n ? C.stroke : C.muted }); });
+      for (let j = 0; j < 24; j++) { const cx = x + 14 + (j % 6) * 14, cy = 132 + oy + Math.floor(j / 6) * 14; const on = j < left[i] && i <= n; b += D.circ(cx, cy, 4.5, on ? C.blue : 'none', on ? 'none' : C.muted, on ? 0 : 1); }
     });
     if (n === 4) {
-      b += BOX(150, 210, 360, 76, '#FFFDF8') + D.T(330, 234, 'who knows who got the drug?', 13, { fill: C.stroke });
-      b += D.T(250, 262, 'patients: no', 13, { weight: 'normal', fill: C.stroke }) + D.T(410, 262, 'doctors: no', 13, { weight: 'normal', fill: C.stroke });
-    } else b += D.T(330, 250, GATES[n].who, 14, { fill: C.stroke, style: 'italic' });
-    b += D.T(330, 22, 'blue dots: drug candidates still in the running', 12, { weight: 'normal', fill: C.stroke });
-    return D.svg(660, 300, b, 'Drug testing gate ' + (n + 1) + ' of 6, ' + GATES[n].k + ': ' + GATES[n].note);
+      b += BOX(14, 340, 310, 76, '#FFFDF8') + D.T(169, 364, 'who knows who got the drug?', 13, { fill: C.stroke });
+      b += D.T(99, 392, 'patients: no', 13, { weight: 'normal', fill: C.stroke }) + D.T(239, 392, 'doctors: no', 13, { weight: 'normal', fill: C.stroke });
+    } else b += D.T(169, 360, GATES[n].who, 14, { fill: C.stroke, style: 'italic' });
+    b += D.T(169, 22, 'blue dots: drug candidates still in the running', 12, { weight: 'normal', fill: C.stroke });
+    return D.svg(340, 430, b, 'Drug testing gate ' + (n + 1) + ' of 6, ' + GATES[n].k + ': ' + GATES[n].note);
   }
   renderVals() {
     const s = this.state, K = window.KS4;
