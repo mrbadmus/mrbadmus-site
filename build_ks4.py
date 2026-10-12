@@ -243,6 +243,8 @@ KS4_VERSIONED = ("ks4-ds.css", "ks4-theme.css", "ks4-lesson.css",
                   # class-entry.js for who is looking, the bell).
                   "topbar.css", "topbar.js", "config.js", "class-entry.js",
                   "student-bell.js",
+                  # ⊕ Front door (12 Oct 2026) — the one map; class-entry.js asks it.
+                  "account.js",
                   # ⊕ B2C polish (9 Oct 2026) — the tutor panel's own rules;
                   # they lived only in styles.css, which these pages never load.
                   "tutor-panel.css")
@@ -2021,6 +2023,7 @@ def render_page(lesson, route, compiled_lesson, block_scripts, prev_next, versio
 %(mount_script)s
 <script src="/shared/config.js" defer></script>
 %(tutor)s
+<script src="/shared/account.js" defer></script>
 <script src="/shared/class-entry.js" defer></script>
 <script src="/shared/student-bell.js" defer></script>
 <script src="/shared/topbar.js" defer></script>

@@ -187,7 +187,7 @@ GATES = [
     dict(name="brand_one_mark",
          cmd=["python3", "brand_one_mark.py"],
          speed="fast",
-         watches=["config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "brand_one_mark.py", "brand.py", "shared/brand/**",
+         watches=["shared/account.js", "config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "brand_one_mark.py", "brand.py", "shared/brand/**",
                   "generate_site_v5.py", "build_ks3.py", "build_ks4.py",
                   "ks4_rulings.py", "build_student_port.py", "build_teacher_port.py",
                   "brand_port.py", "student_rulings.py", "teacher_rulings.py",
@@ -381,7 +381,7 @@ GATES = [
          # ks3/**` (the only tree it opens), and generate_site_v5.py, which it
          # executes. Those are also precisely the changes the drift check
          # exists to detect collateral damage FROM.
-         watches=["config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "verify_ks3.py", "ks3_parity.py", "ks3_canvas.py",
+         watches=["shared/account.js", "config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "verify_ks3.py", "ks3_parity.py", "ks3_canvas.py",
                   "ks3_figure_sweep.py", "ks3_overflow.py", "ks3_browser.py",
                   "build_ks3.py", "ks3_art/**", "ks3_data/**",
                   "!ks3_data/**/questions_*.py",
@@ -429,7 +429,7 @@ GATES = [
     dict(name="student_behaviour",
          cmd=["python3", "student_behaviour.py"],
          speed="slow",
-         watches=["student_behaviour.py", "ks3_browser.py",
+         watches=["shared/account.js", "student_behaviour.py", "ks3_browser.py",
                   "build_student_port.py", "student_rulings.py",
                   "student_template.py", "shared/student-runtime.js",
                   "shared/student-live.js", "shared/student-fixture-class.js",
@@ -455,12 +455,41 @@ GATES = [
              "palette: parity drives the PREVIEW pair and behaviour compares "
              "text, so a colour change ships unwatched without this."),
 
+    # ── ⊕ Front door (12 Oct 2026) · the one map of who goes where ────
+
+    dict(name="account_map_check",
+         cmd=["python3", "account_map_check.py"],
+         speed="fast",
+         watches=["account_map_check.py", "account_map_check.js",
+                  "shared/account.js"],
+         why="⊕ Front door, Part 1 — `shared/account.js`, the ONE place that "
+             "decides where a person goes, under Node. The 9 Oct 2026 trap "
+             "(a parent signed in, the top bar sent them to "
+             "/teacher-profile.html, the teacher guard bounced them to "
+             "/index.html, and there was no sign-out) was five files each "
+             "deciding for themselves; this pins the single answer. The "
+             "precedence (child, parent, organisation staff, school staff — "
+             "even an operator who teaches — then the operator RPC for staff "
+             "with no school, then pupil); each kind's home, sign-in door, "
+             "label and profile route; every branch auth.html's "
+             "redirectAfterAuth had (the 9 Oct parent fix, ?return=, KS3 "
+             "never to the wizard, GCSE incomplete to profile-setup, and "
+             "that NOBODY but a GCSE pupil is ever sent there); the "
+             "fail-open fallbacks (a failed schools or operator read is "
+             "staff, a failed profile read is unknown and routes nowhere, "
+             "never to a bounce); the audience guard (org staff off teacher "
+             "pages, a parent off pupil pages, a school pupil off family "
+             "pages, nobody redirected to the page they are on, ?env/?api "
+             "surviving); and sign-out landing each kind on its own door "
+             "with the local token gone even when the network call fails. "
+             "Stubbed storage, fetch and location — no browser."),
+
     # ── ⊕ MRB-287 · the teacher dashboard port ─────────────────────────
 
     dict(name="week_scope_check",
          cmd=["python3", "week_scope_check.py"],
          speed="fast",
-         watches=["week_scope_check.py", "week_scope_check.js",
+         watches=["shared/account.js", "week_scope_check.py", "week_scope_check.js",
                   "shared/teacher-live.js"],
          why="⊕ x-week-truth (MRB-353 redone), 4 Oct 2026 — `weekScope`, "
              "under Node, against data shaped like the two real classes the "
@@ -511,7 +540,7 @@ GATES = [
     dict(name="flashcard_homework_drive",
          cmd=["python3", "flashcard_homework_drive.py"],
          speed="slow",
-         watches=["flashcard_homework_drive.py", "ks3_browser.py",
+         watches=["shared/account.js", "flashcard_homework_drive.py", "ks3_browser.py",
                   "student_rulings.py", "build_student_port.py", "student_template.py",
                   "student_templates.json",
                   "student/class-fixture.html", "shared/student-fixture-class.js",
@@ -591,7 +620,7 @@ GATES = [
     dict(name="flashcard_progress_drive",
          cmd=["python3", "flashcard_progress_drive.py"],
          speed="slow",
-         watches=["flashcard_progress_drive.py", "ks3_browser.py",
+         watches=["shared/account.js", "flashcard_progress_drive.py", "ks3_browser.py",
                   "teacher/flashcards.html",
                   "shared/flashcard-progress.js", "shared/flashcard-progress.css",
                   "shared/flashcard-truth.js",
@@ -630,7 +659,7 @@ GATES = [
     dict(name="flashcard_decks_drive",
          cmd=["python3", "flashcard_decks_drive.py"],
          speed="slow",
-         watches=["config_env.py", "flashcard_decks_drive.py", "ks3_browser.py",
+         watches=["shared/account.js", "config_env.py", "flashcard_decks_drive.py", "ks3_browser.py",
                   "shared/set-work.js", "shared/set-work.css",
                   "shared/flashcard-decks.js", "shared/flashcard-decks.css",
                   "shared/formulae.js", "shared/teacher-admin-nav.js", "shared/teacher-topbar.js",
@@ -670,7 +699,7 @@ GATES = [
     dict(name="flashcard_request_shape_drive",
          cmd=["python3", "flashcard_request_shape_drive.py"],
          speed="slow",
-         watches=["flashcard_request_shape_drive.py", "ks3_browser.py",
+         watches=["shared/account.js", "flashcard_request_shape_drive.py", "ks3_browser.py",
                   "shared/teacher-data.js", "shared/student-data.js",
                   "shared/class-entry.js"],
          why="⊕ MRB-351 landing, 27 Sep 2026 (Mide's ruling) — 'the live "
@@ -706,7 +735,7 @@ GATES = [
     dict(name="today_drive",
          cmd=["python3", "today_drive.py"],
          speed="slow",
-         watches=["config_env.py", "today_drive.py", "ks3_browser.py", "teacher/today.html",
+         watches=["shared/account.js", "config_env.py", "today_drive.py", "ks3_browser.py", "teacher/today.html",
                   "teacher/timetable.html",
                   "mrbadmus_site/teacher/today.html",
                   "mrbadmus_site/teacher/timetable.html",
@@ -748,7 +777,7 @@ GATES = [
          # body handed to it is what this drive captures and asserts on. The
          # function's own source cannot change that, which is the whole reason
          # this gate runs offline on every push.
-         watches=["import_year_drive.py", "ks3_browser.py",
+         watches=["shared/account.js", "import_year_drive.py", "ks3_browser.py",
                   "teacher/import.html", "shared/class-entry.js",
                   "shared/teacher-guard.js", "shared/teacher-admin-nav.js", "shared/teacher-topbar.js",
                   "shared/teacher-topbar.css",
@@ -951,7 +980,7 @@ GATES = [
     dict(name="pool_ownership",
          cmd=["python3", "pool_ownership.py"],
          speed="fast",
-         watches=["pool_ownership.py", "shared/student-live.js",
+         watches=["shared/account.js", "pool_ownership.py", "shared/student-live.js",
                   "shared/ks3.js", "shared/teacher-live.js",
                   "shared/teacher-data.js", "shared/student-data.js",
                   "shared/class-entry.js", "shared/mrbadmus.v2.js",
@@ -996,7 +1025,7 @@ GATES = [
     dict(name="leaderboard_tells",
          cmd=["python3", "leaderboard_tells.py"],
          speed="fast",
-         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "leaderboard_tells.py", "build_leaderboard_port.py",
+         watches=["shared/account.js", "topbar.py", "shared/topbar.css", "shared/topbar.js", "leaderboard_tells.py", "build_leaderboard_port.py",
                   "leaderboard.html", "mrbadmus_site/leaderboard.html"],
          why="no student Design invented reaches the live leaderboard. The "
              "corpus is DERIVED from the vendored delivery on every run — "
@@ -1014,7 +1043,7 @@ GATES = [
     dict(name="week_truth",
          cmd=["python3", "verify_week_truth.py"],
          speed="fast",
-         watches=["verify_week_truth.py", "shared/teacher-live.js",
+         watches=["shared/account.js", "verify_week_truth.py", "shared/teacher-live.js",
                   "shared/teacher-data.js"],
          needs_env="MRB_BACKEND",
          why="⊕ MRB-330 — ONE WEEK, agreed on by every surface that names it. "
@@ -1070,7 +1099,7 @@ GATES = [
          # `leaderboard_fixtures/` and nothing else (see the note below), so
          # the live page cannot move its outcome. leaderboard_tells is the
          # gate that reads those two files.
-         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "leaderboard_behaviour.py", "ks3_browser.py",
+         watches=["shared/account.js", "topbar.py", "shared/topbar.css", "shared/topbar.js", "leaderboard_behaviour.py", "ks3_browser.py",
                   "build_leaderboard_port.py", "leaderboard_fixtures/**",
                   "shared/leaderboard-live.js", "shared/leaderboard-ds.css",
                   "shared/student-runtime.js"],
@@ -1486,7 +1515,7 @@ GATES = [
     dict(name="ks4_chrome_drive",
          cmd=["python3", "ks4_chrome_drive.py"],
          speed="slow",
-         watches=["ks4_chrome_drive.py", "ks3_browser.py",
+         watches=["shared/account.js", "ks4_chrome_drive.py", "ks3_browser.py",
                   "generate_site_v5.py", "build_ks3.py", "all_subtopics_*.py",
                   "shared/ks4-chrome.css", "shared/ks4-chrome.js",
                   "shared/nav.css", "shared/nav.js", "shared/styles.css",
@@ -1644,7 +1673,7 @@ GATES = [
     dict(name="student_controls_drive",
          cmd=["python3", "student_controls_drive.py"],
          speed="slow",
-         watches=["config_env.py", "student_controls_drive.py", "ks3_browser.py",
+         watches=["shared/account.js", "config_env.py", "student_controls_drive.py", "ks3_browser.py",
                   "build_student_port.py", "student_rulings.py",
                   "shared/student-live.js", "shared/student-runtime.js",
                   "shared/student-data.js", "shared/student-guard.js",
@@ -1733,7 +1762,7 @@ GATES = [
     dict(name="seating_drive",
          cmd=["python3", "seating_drive.py"],
          speed="slow",
-         watches=["seating_drive.py", "ks3_browser.py",
+         watches=["shared/account.js", "seating_drive.py", "ks3_browser.py",
                   "teacher/seating.html",
                   "mrbadmus_site/teacher/seating.html",
                   "shared/seating-canvas.js", "shared/seating-data.js",
@@ -1756,7 +1785,7 @@ GATES = [
     dict(name="assignments_hold_drive",
          cmd=["python3", "assignments_hold_drive.py"],
          speed="slow",
-         watches=["assignments_hold_drive.py", "ks3_browser.py",
+         watches=["shared/account.js", "assignments_hold_drive.py", "ks3_browser.py",
                   "teacher/admin.html", "mrbadmus_site/teacher/admin.html",
                   "shared/teacher-data.js", "shared/teacher-guard.js",
                   "shared/teacher-admin-nav.js", "shared/teacher-topbar.js",
@@ -1848,7 +1877,7 @@ GATES = [
     dict(name="teacher_perf_budget",
          cmd=["python3", "teacher_perf_budget.py"],
          speed="slow",
-         watches=["teacher_perf_budget.py", "ks3_browser.py",
+         watches=["shared/account.js", "teacher_perf_budget.py", "ks3_browser.py",
                   "build_teacher_port.py", "teacher_rulings.py",
                   "teacher/today.html", "mrbadmus_site/teacher/**",
                   "shared/teacher-live.js", "shared/teacher-data.js",
@@ -1905,7 +1934,7 @@ GATES = [
     dict(name="teacher_admin_foreign_class",
          cmd=["python3", "teacher_admin_foreign_class_drive.py"],
          speed="slow",
-         watches=["config_env.py", "teacher_admin_foreign_class_drive.py",
+         watches=["shared/account.js", "config_env.py", "teacher_admin_foreign_class_drive.py",
                   "admin_view_drive.py", "ks3_browser.py",
                   "build_teacher_port.py", "teacher_rulings.py",
                   "mrbadmus_site/teacher/**", "teacher/admin.html",
@@ -1987,7 +2016,7 @@ GATES = [
     dict(name="set_work",
          cmd=["python3", "set_work_drive.py"],
          speed="slow",
-         watches=["config_env.py", "set_work_drive.py", "mrb331_fixture.py", "ks3_browser.py",
+         watches=["shared/account.js", "config_env.py", "set_work_drive.py", "mrb331_fixture.py", "ks3_browser.py",
                   "ks3_data/**", "ks4_data/**", "build_teacher_port.py",
                   "teacher_rulings.py", "build_student_port.py",
                   "student_rulings.py", "shared/set-work.js",
@@ -2032,7 +2061,7 @@ GATES = [
          # credentialed, row-WRITING drive for every unrelated migration in
          # the estate. The one named is the one this gate's before/after
          # assertions are written against.
-         watches=["config_env.py", "teacher_admin_real_drive.py", "ks3_browser.py",
+         watches=["shared/account.js", "config_env.py", "teacher_admin_real_drive.py", "ks3_browser.py",
                   "build_teacher_port.py", "teacher_rulings.py",
                   "mrbadmus_site/teacher/**", "shared/teacher-live.js",
                   "shared/teacher-data.js", "shared/teacher-guard.js",
@@ -2122,7 +2151,7 @@ GATES = [
          # reason: section b is the STUBBED half. It never reaches the edge
          # function — it asserts on the body handed to the stub. The `_real`
          # row below, which completes an actual import, keeps the path.
-         watches=["mrb328_import_picker_drive.py", "import_year_drive.py",
+         watches=["shared/account.js", "mrb328_import_picker_drive.py", "import_year_drive.py",
                   "ks3_browser.py", "teacher/import.html",
                   "shared/class-entry.js", "shared/teacher-guard.js",
                   "shared/teacher-admin-nav.js", "shared/teacher-topbar.js",
@@ -2164,7 +2193,7 @@ GATES = [
          # this is a watch on the artefact rather than on the behaviour — kept
          # because an edit to that source is exactly the moment the real
          # import wants re-driving.
-         watches=["mrb328_import_picker_drive.py", "import_year_drive.py",
+         watches=["shared/account.js", "mrb328_import_picker_drive.py", "import_year_drive.py",
                   "ks3_browser.py", "teacher/import.html",
                   "shared/class-entry.js", "shared/teacher-guard.js",
                   "shared/teacher-admin-nav.js", "shared/teacher-topbar.js",
@@ -2196,7 +2225,7 @@ GATES = [
     dict(name="mrb328_card_prefetch",
          cmd=["python3", "mrb328_card_prefetch_drive.py"],
          speed="slow",
-         watches=["mrb328_card_prefetch_drive.py", "ks3_browser.py",
+         watches=["shared/account.js", "mrb328_card_prefetch_drive.py", "ks3_browser.py",
                   "build_teacher_port.py", "teacher_rulings.py",
                   "shared/teacher-live.js", "shared/teacher-data.js",
                   "shared/teacher-guard.js", "shared/student-runtime.js",
@@ -2242,7 +2271,7 @@ GATES = [
     dict(name="student_bell_drive",
          cmd=["python3", "student_bell_drive.py"],
          speed="slow",
-         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "student_bell_drive.py", "ks3_browser.py",
+         watches=["shared/account.js", "topbar.py", "shared/topbar.css", "shared/topbar.js", "student_bell_drive.py", "ks3_browser.py",
                   "build_student_port.py", "student_rulings.py",
                   "build_leaderboard_port.py", "generate_site_v5.py",
                   "shared/student-bell.js", "shared/student-live.js",
@@ -2318,7 +2347,7 @@ GATES = [
     dict(name="teacher_rollup_equal",
          cmd=["python3", "mrb348_teacher_rollup_proof.py"],
          speed="slow",
-         watches=["config_env.py", "mrb348_teacher_rollup_proof.py",
+         watches=["shared/account.js", "config_env.py", "mrb348_teacher_rollup_proof.py",
                   "supabase/migrations/"
                   "20260922231500_mrb348_teacher_class_rollup.sql",
                   # ⊕ Mide's 23 Sep 2026 ruling — the proof now also calls
@@ -2371,7 +2400,7 @@ GATES = [
     dict(name="theme_wiring_check",
          cmd=["python3", "theme_wiring_check.py"],
          speed="fast",
-         watches=["config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "theme_wiring_check.py", "theme_head.py", "shared/theme.js",
+         watches=["shared/account.js", "config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "theme_wiring_check.py", "theme_head.py", "shared/theme.js",
                   "generate_site_v5.py", "build_ks3.py", "build_ks4.py",
                   "build_student_port.py", "build_teacher_port.py",
                   "build_leaderboard_port.py", "student_rulings.py",
@@ -2387,7 +2416,7 @@ GATES = [
     dict(name="contrast_audit",
          cmd=["python3", "contrast_audit.py", "--quick", "--gate"],
          speed="fast",
-         watches=[
+         watches=["shared/account.js", 
                   # ⊕ B2C unit 6 — every consumer, parents, org and go page is measured flag on.
                   "consumer/**", "parents/**", "org/**", "go/**", 
                   "config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "contrast_audit.py", "ks3_browser.py",
@@ -2511,7 +2540,7 @@ GATES = [
     dict(name="contrast_audit_interactions",
          cmd=["python3", "contrast_audit.py", "--interactions", "--quick", "--gate"],
          speed="slow",
-         watches=[
+         watches=["shared/account.js", 
                   # ⊕ B2C unit 6 — every consumer, parents, org and go page is measured flag on.
                   "config_env.py", "consumer_dash_fixture.py", "shared/config.js", "consumer/**", "parents/**", "org/**", "go/**", 
                   "topbar.py", "shared/topbar.css", "shared/topbar.js", "contrast_audit.py", "ks3_browser.py",
@@ -2556,7 +2585,7 @@ GATES = [
     dict(name="consumer_dash_drive",
          cmd=["python3", "consumer_dash_drive.py", "--skip-timeout"],
          speed="slow",
-         watches=["consumer_dash_drive.py", "consumer_dash_fixture.py", "ks3_browser.py",
+         watches=["shared/account.js", "consumer_dash_drive.py", "consumer_dash_fixture.py", "ks3_browser.py",
                   "consumer/overview.html", "consumer/account.html",
                   "consumer/signup.html", "consumer/consumer-common.js",
                   "consumer/consumer.css", "shared/config.js",
@@ -2598,7 +2627,7 @@ GATES = [
          # the estate, which is the intolerable-hook failure mode this
          # file's own docstring warns turns into "a gate that stops
          # watching". Deviation recorded rather than silently followed.
-         watches=["topbar.py", "shared/topbar.css", "shared/topbar.js", "focus_audit.py", "ks3_browser.py",
+         watches=["shared/account.js", "topbar.py", "shared/topbar.css", "shared/topbar.js", "focus_audit.py", "ks3_browser.py",
                   "build_student_port.py", "build_teacher_port.py",
                   "student_rulings.py", "student_template.py",
                   "shared/student-runtime.js", "shared/student-live.js",
@@ -2651,7 +2680,7 @@ GATES = [
     dict(name="ks4_pilot_check",
          cmd=["python3", "ks4_pilot_check.py"],
          speed="fast",
-         watches=["config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "ks4_pilot_check.py", "build_ks4.py", "ks4_lessons/**",
+         watches=["shared/account.js", "config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "ks4_pilot_check.py", "build_ks4.py", "ks4_lessons/**",
                   "ks4_rulings.py", "shared/ks4-ds.css", "shared/ks4-theme.css",
                   "shared/ks4-lesson.css", "shared/ks4-source.js",
                   "shared/ks4-lib.js", "shared/ks4-diagrams.js",
@@ -2723,7 +2752,7 @@ GATES = [
     dict(name="student_lessons_cards_check",
          cmd=["python3", "student_lessons_cards_check.py"],
          speed="fast",
-         watches=["student_lessons_cards_check.py", "shared/student-live.js"],
+         watches=["shared/account.js", "student_lessons_cards_check.py", "shared/student-live.js"],
          why="MRB-336 N2, 26 Sep 2026 — the \"Lessons in this topic\" "
              "cards resolve a KS4 slug's href (via lessonsFor[currentId], "
              "the same list ks4TopicHref already fills for the docket) "
@@ -2739,7 +2768,7 @@ GATES = [
     dict(name="ks4_parity",
          cmd=["python3", "ks4_parity.py"],
          speed="slow",
-         watches=["config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "ks4_parity.py", "ks3_browser.py", "build_ks4.py",
+         watches=["shared/account.js", "config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "ks4_parity.py", "ks3_browser.py", "build_ks4.py",
                   "ks4_lessons/**", "ks4_rulings.py", "ks4_batch_rulings.py", "ks4_science_rulings.py",
                   "shared/ks4-ds.css", "shared/ks4-theme.css",
                   "shared/ks4-lesson.css", "shared/ks4-source.js",

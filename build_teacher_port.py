@@ -307,7 +307,7 @@ _REFUSED = {"import.html"}
 # reason every other bare `/shared/` reference this build writes does:
 # unstamped under `/shared/*`'s `immutable, max-age=31536000` is a
 # year-long pin on the control's own bytes.
-STAMPED_DEPS = ("config.js", "class-entry.js", "teacher-guard.js",
+STAMPED_DEPS = ("config.js", "account.js", "class-entry.js", "teacher-guard.js",
                 "teacher-data.js", "shoutouts.js", "teacher-admin-nav.js",
                 "teacher-picker.js", "rum.js",
                 SETWORK_CSS_NAME, SETWORK_JS_NAME, CSV_JS_NAME,
