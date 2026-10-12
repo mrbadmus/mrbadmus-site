@@ -5,9 +5,27 @@
     python3 tools/export_knowledge_points.py --coverage   # the coverage report
     python3 tools/export_knowledge_points.py --load test  # upsert into TEST, then verify
     python3 tools/export_knowledge_points.py --verify test
+    python3 tools/export_knowledge_points.py --backend [DIR]        # write DIR/knowledge-points.json
+    python3 tools/export_knowledge_points.py --check-backend [DIR]  # the gate (knowledge_points_mirror)
 
 The data is `knowledge_points/ks3.json`, `ks4.json` and `untagged.json`,
 drafted by `tools/kp_classify.py` (see `knowledge_points/README.md`).
+
+── --backend / --check-backend (13 Oct 2026) ─────────────────────────
+
+Production will not get the `knowledge_points` tables (42k rows cannot be
+loaded there), so the backend reads the tags from a FILE it ships with:
+`knowledge-points.json` in the backend repo root, read by
+`consumer/knowledge-index.js`. `--backend` writes it from ks3.json + ks4.json;
+`--check-backend` rebuilds it in memory and compares byte for byte, exit 1 on
+drift (the `knowledge_points_mirror` gate — the same pattern as
+`export_curriculum_tree.py --check`). DIR defaults to `MRB_BACKEND_DIR`, then
+the sibling backend checkout, exactly as export_curriculum_tree finds it.
+Shape (one entry per line, so a re-draft diffs as lines):
+
+    {"v": 1,
+     "points": {"<kp id>": {"label", "key_stage", "scope"}, …},
+     "questions": {"<question id>": ["<kp id>", "<answer key>" | null], …}}
 
 ── --check ─────────────────────────────────────────────────────────────
 
@@ -369,9 +387,137 @@ def coverage():
     lines.append("classic quiz cards on the generated pages: %d unique on %d page(s), %d tagged"
                  % (len(pids), pages, sum(1 for q in pids if q in tagged)))
     lines.append("ks4QuizId test vector: %s" % kpc.ks4_quiz_id(*kpc.TEST_VECTOR_ARGS))
+    lines += [""] + bank_coverage(data, exp, tagged, unt)
     text = "\n".join(lines)
     print(text)
     return text
+
+
+# The two banks Set work and the family practice sets serve from, by name,
+# with the knowledge points that bank can barely test. A bank is the repo's
+# Python source of that table (ks3_data/question_bank.py → ks3_assignment_bank,
+# ks4_data → ks4_assignment_bank), read through kpc.inventory().
+BANKS = (("ks3_assignment_bank", "ks3_bank", "ks3"), ("ks4_assignment_bank", "ks4_bank", "ks4"))
+
+
+def bank_coverage(data, exp, tagged, unt):
+    lines = ["Per bank (the Python sources of the two assignment banks), and every other source together", ""]
+    count = collections.Counter()           # (source group, kp) → questions
+    for q, kp in tagged.items():
+        src = report_source(q, exp)
+        count[(src if src in ("ks3_bank", "ks4_bank") else "other", kp)] += 1
+    every = collections.Counter(tagged.values())
+    for table, src, name in BANKS:
+        ids = [q for q, v in exp.items() if v[0] == src]
+        t = sum(1 for q in ids if q in tagged)
+        pts = [p["id"] for e in data[name].values() for p in e["points"]]
+        scopes = {e["scope_ref"] for e in data[name].values()
+                  if any(report_source(q, exp) == src for q in e["questions"])}
+        in_scope = [p for e in data[name].values() if e["scope_ref"] in scopes for p in [x["id"] for x in e["points"]]]
+        thin = sorted((p for p in in_scope if count[(src, p)] < 3), key=lambda p: (count[(src, p)], p))
+        lines.append("%s (%s): %d question(s), %d tagged, %d untagged (%d listed in untagged.json)"
+                     % (table, src, len(ids), t, len(ids) - t, sum(1 for q in ids if q in unt)))
+        lines.append("  %d %s scope(s) with bank rows, %d knowledge point(s) in them (of %d %s points)"
+                     % (len(scopes), name.upper(), len(in_scope), len(pts), name.upper()))
+        lines.append("  knowledge points with fewer than 3 %s questions: %d (0: %d, 1: %d, 2: %d)"
+                     % (table, len(thin), *(sum(1 for p in thin if count[(src, p)] == n) for n in (0, 1, 2))))
+        for p in thin:
+            lines.append("    %d  %s" % (count[(src, p)], p))
+    other = [q for q, v in exp.items() if v[0] not in ("ks3_bank", "ks4_bank")]
+    other += [q for q in list(tagged) + list(unt) if report_source(q) == "exam_ks4" and q not in exp]
+    t = sum(1 for q in other if q in tagged)
+    pts = [p["id"] for name in ("ks3", "ks4") for e in data[name].values() for p in e["points"]]
+    thin = sorted((p for p in pts if count[("other", p)] < 3), key=lambda p: (count[("other", p)], p))
+    lines.append("every other source (ladder, exam, lesson pages): %d question(s), %d tagged, %d untagged"
+                 % (len(other), t, len(other) - t))
+    lines.append("  knowledge points with fewer than 3 questions from these sources: %d (0: %d, 1: %d, 2: %d)"
+                 % (len(thin), *(sum(1 for p in thin if count[("other", p)] == n) for n in (0, 1, 2))))
+    thin_all = sorted((p for p in pts if every[p] < 3), key=lambda p: (every[p], p))
+    lines.append("all sources together: knowledge points with fewer than 3 questions: %d" % len(thin_all))
+    for p in thin_all:
+        lines.append("    %d  %s" % (every[p], p))
+    return lines
+
+
+# ── the backend's copy (13 Oct 2026) ───────────────────────────────────
+
+BACKEND_NAME = "knowledge-points.json"
+
+
+def build_backend_index(data=None):
+    data = data or load_data()
+    points, questions = {}, {}
+    for name, ks in (("ks3", "KS3"), ("ks4", "KS4")):
+        for ref, e in data[name].items():
+            for p in e["points"]:
+                points[p["id"]] = {"label": p["label"], "key_stage": ks, "scope": ref}
+            keys = e.get("keys") or {}
+            for qid, kp in e["questions"].items():
+                if qid in questions:
+                    raise SystemExit("export_knowledge_points: %s is tagged twice" % qid)
+                questions[qid] = [kp, keys.get(qid)]
+    return {"v": 1, "points": points, "questions": questions}
+
+
+def serialise_backend(index):
+    """One entry per line, keys sorted: deterministic, and a re-drafted scope
+    diffs as the lines that moved rather than one 2.5 MB line."""
+    dump = lambda v: json.dumps(v, ensure_ascii=False, separators=(",", ":"))
+    out = ['{"v":%d,' % index["v"], '"points":{']
+    out.append(",\n".join("%s:%s" % (dump(k), dump(index["points"][k])) for k in sorted(index["points"])))
+    out.append('},\n"questions":{')
+    out.append(",\n".join("%s:%s" % (dump(k), dump(index["questions"][k])) for k in sorted(index["questions"])))
+    out.append("}}")
+    return "\n".join(out) + "\n"
+
+
+def backend_dir(arg):
+    if arg:
+        return arg
+    import export_curriculum_tree as ect
+    return ect.default_out_dir()
+
+
+def write_backend(arg):
+    path = os.path.join(backend_dir(arg), BACKEND_NAME)
+    index = build_backend_index()
+    text = serialise_backend(index)
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write(text)
+    print("wrote %s — %d point(s), %d question(s), %d answer key(s), %d bytes"
+          % (path, len(index["points"]), len(index["questions"]),
+             sum(1 for v in index["questions"].values() if v[1] is not None), len(text.encode("utf-8"))))
+    return 0
+
+
+def check_backend(arg):
+    path = os.path.join(backend_dir(arg), BACKEND_NAME)
+    index = build_backend_index()
+    text = serialise_backend(index)
+    summary = "%d point(s), %d question(s)" % (len(index["points"]), len(index["questions"]))
+    if not os.path.isfile(path):
+        print("❌ %s does not exist — the backend has no knowledge-point mirror. "
+              "Write it: python3 tools/export_knowledge_points.py --backend <backend dir>" % path)
+        return 1
+    with open(path, encoding="utf-8") as fh:
+        have = fh.read()
+    if have == text:
+        print("✅ %s matches knowledge_points/*.json — %s" % (path, summary))
+        return 0
+    try:
+        old = json.loads(have)
+        moved_q = sorted(q for q in set(old.get("questions", {})) | set(index["questions"])
+                         if old.get("questions", {}).get(q) != index["questions"].get(q))
+        moved_p = sorted(p for p in set(old.get("points", {})) | set(index["points"])
+                         if old.get("points", {}).get(p) != index["points"].get(p))
+        print("❌ %s has DRIFTED from knowledge_points/*.json: %d question(s) and %d point(s) differ%s"
+              % (path, len(moved_q), len(moved_p),
+                 (" — e.g. " + ", ".join((moved_q + moved_p)[:6])) if moved_q or moved_p else
+                 " (same content, different bytes)"))
+    except ValueError:
+        print("❌ %s is not valid JSON." % path)
+    print("   Rebuild: python3 tools/export_knowledge_points.py --backend <backend dir>")
+    return 1
 
 
 # ── load (TEST only) ────────────────────────────────────────────────────
@@ -500,7 +646,15 @@ def main():
     g.add_argument("--coverage", action="store_true")
     g.add_argument("--load", choices=["test", "prod"])
     g.add_argument("--verify", choices=["test", "prod"])
+    g.add_argument("--backend", nargs="?", const="", metavar="DIR",
+                   help="write DIR/%s (DIR: MRB_BACKEND_DIR, else the sibling backend)" % BACKEND_NAME)
+    g.add_argument("--check-backend", nargs="?", const="", metavar="DIR",
+                   help="exit 1 if DIR/%s has drifted from the JSON" % BACKEND_NAME)
     a = ap.parse_args()
+    if a.backend is not None:
+        return write_backend(a.backend)
+    if a.check_backend is not None:
+        return check_backend(a.check_backend)
     if a.check:
         return 1 if check() else 0
     if a.coverage:

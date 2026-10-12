@@ -1364,6 +1364,28 @@ GATES = [
              "`MRB_BACKEND_DIR`, or the sibling repo, or `<this>-backend` "
              "beside it, in that order."),
 
+    dict(name="knowledge_points_mirror",
+         cmd=["python3", "tools/export_knowledge_points.py", "--check-backend"],
+         speed="fast",
+         watches=["tools/export_knowledge_points.py", "tools/kp_classify.py",
+                  "tools/export_curriculum_tree.py", "knowledge_points/*.json"],
+         needs="tools/export_knowledge_points.py",
+         why="Parent truth r2 (13 Oct 2026) — THE BACKEND'S COPY OF THE "
+             "KNOWLEDGE POINTS HAS NOT DRIFTED. Production does not get the "
+             "`knowledge_points` / `question_knowledge_points` tables (42k "
+             "rows), so the backend tags every consumer child's answer, and "
+             "marks every revealed lesson block by its answer key, from "
+             "`knowledge-points.json` in its own repo root, exported from "
+             "`knowledge_points/ks3.json` + `ks4.json`. A re-drafted scope or "
+             "a hand-moved question that is not re-exported would tag a "
+             "parent's view with the OLD point, or mark a choice against the "
+             "OLD key, and nothing else would say so. Fast, no network, no "
+             "credential: it rebuilds the file in memory and compares byte "
+             "for byte, and names the questions and points that moved. "
+             "⚠️ Like `curriculum_tree_mirror`, it needs the backend checkout "
+             "— `MRB_BACKEND_DIR`, or the sibling repo — and cannot watch "
+             "the backend file itself, which lives in the other repo."),
+
     dict(name="ks4_pool_drive",
          cmd=["python3", "ks4_pool_drive.py"],
          speed="slow",

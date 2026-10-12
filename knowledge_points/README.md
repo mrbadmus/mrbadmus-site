@@ -60,7 +60,8 @@ questions: {question_id: point_id}}`.
   named rule per instrument kind (`AUTHORED_RULES`). Predictions, written
   items, explorations and instruments whose one id covers several questions
   have no key. `--check` recomputes every key and refuses one that is not a
-  rendered option. Loaded into `question_knowledge_points.answer_key`.
+  rendered option. Exported into the backend's `knowledge-points.json`
+  (see below); also loaded into TEST's `question_knowledge_points.answer_key`.
 - Round-2 ids were placed onto the EXISTING points (one model call per
   scope). Where nothing fitted, a new point was appended to the end of that
   scope, never renumbering the others; those points carry `"added": "round-2"` (or `"round-3"`)
@@ -86,4 +87,28 @@ questions: {question_id: point_id}}`.
 - **Load into TEST:** `python3 tools/export_knowledge_points.py --load test`
   (upsert, prune rows the JSON no longer names, then verify row for row).
   There is no production load yet: production does not have the tables.
-- **Coverage:** `python3 tools/export_knowledge_points.py --coverage`.
+- **Coverage:** `python3 tools/export_knowledge_points.py --coverage`. Ends
+  with a per-bank section: for `ks3_assignment_bank` and `ks4_assignment_bank`
+  (their Python sources) and for every other source together, the questions
+  tagged and untagged, and every knowledge point with fewer than 3 questions
+  from that source, listed by id.
+
+## The backend's copy — `knowledge-points.json` (13 Oct 2026)
+
+**The backend does not read the `knowledge_points` tables any more.**
+Production will not get them (42k rows), so the backend ships its own copy:
+`knowledge-points.json` in the backend repo root, read once (lazily) by
+`consumer/knowledge-index.js`. It is how a consumer child's answer gets its
+knowledge point, how a revealed lesson block is marked by its answer key, and
+how the parent's activity view labels each point. Shape: `points` (point id →
+`{label, key_stage, scope}`) and `questions` (question id → `[point id,
+answer key or null]`), one entry per line.
+
+**After ANY edit to ks3.json or ks4.json, re-export it:**
+
+    python3 tools/export_knowledge_points.py --backend <backend checkout>
+
+and commit the file in the backend repo. The `knowledge_points_mirror` gate
+(`--check-backend`, the backend dir from `MRB_BACKEND_DIR` or the sibling
+checkout) turns red until the two agree. The TEST tables can still be loaded
+with `--load test` for SQL work, but nothing the backend does depends on them.
