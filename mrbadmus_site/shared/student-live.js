@@ -2153,6 +2153,32 @@
   }
 
   function makeSink(assignment, questions, progress, token, userId) {
+    /* ⊕ Parent truth (11 Oct 2026) — a consumer CHILD's answers carry a real
+       time. `time_spent_seconds` has been null on every row this page ever
+       wrote, and it stays null for a school pupil: their payload is exactly
+       what it was. For a child session (MrBadmusConfig.isChildSession — the
+       session's own address, read from the device, no network call) it is
+       what this page can measure honestly: the seconds since the child's
+       previous answer here, or since the set was opened for the first —
+       capped at 30 minutes, beyond which it is a tab left open, not work.
+       It is not "time on this question": the page does not tell the sink
+       when a question is SHOWN, only when it is answered. */
+    var childClock = null;
+    try {
+      var cfgC = window.MrBadmusConfig;
+      if (cfgC && cfgC.AUTH_STORAGE_KEY && typeof cfgC.isChildSession === "function"
+          && cfgC.isChildSession(JSON.parse(window.localStorage.getItem(cfgC.AUTH_STORAGE_KEY) || "null"))) {
+        childClock = { at: Date.now() };
+      }
+    } catch (e) { childClock = null; }
+    function childSecs() {
+      if (!childClock) { return null; }
+      var now = Date.now();
+      var secs = Math.round((now - childClock.at) / 1000);
+      childClock.at = now;
+      return secs < 0 ? 0 : (secs > 1800 ? 1800 : secs);
+    }
+
     /* The page speaks in (question index, option index). The route speaks in
        question_ref and option letters. This is the whole of the translation,
        kept in one place so neither side has to know the other's vocabulary. */
@@ -2666,7 +2692,7 @@
       },
 
       saveAnswer: function (ev) {
-        var body = payloadFor(ev.index, ev.option, null);
+        var body = payloadFor(ev.index, ev.option, childSecs());
         if (!body) { return null; }
         var k = String(ev.index);
         var ts = Date.now();

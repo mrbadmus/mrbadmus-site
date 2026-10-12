@@ -338,7 +338,7 @@
 </div>
 
 <script src="/shared/config.js?v=ab7a89ac"></script>
-<script src="/consumer/consumer-common.js?v=8ead95e6"></script>
+<script src="/consumer/consumer-common.js?v=3ccc29c2"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/unit-check.html — ten questions, fifteen minutes, one unit.
@@ -412,6 +412,17 @@
     var chosen = {};         // question id → option index (or typed string)
     var at = 0;
     var startedAt = 0;
+    /* ⊕ Parent truth (11 Oct 2026) — seconds spent ON each question, sent
+       with each answer as `t` so a parent sees where the time went. Time
+       accrues to whichever question is on screen, from the moment it is
+       painted until another is (or the check is handed in); going back to a
+       question adds to its total. A question never opened has no `t`. */
+    var dwell = {};          // question id → ms on screen
+    var onQ = null, onSince = 0;
+    function settleDwell() {
+      if (onQ != null) { dwell[onQ] = (dwell[onQ] || 0) + Math.max(0, Date.now() - onSince); }
+      onQ = null;
+    }
     var ticker = null;
     var submitting = false;
     var practiceRun = false; // this sitting is a retake
@@ -538,6 +549,7 @@
                              'Try again tomorrow.');
           }
           chosen = {}; at = 0;
+          dwell = {}; onQ = null;
           autoSubmitted = false;
           startedAt = Date.now();
           showExits(false);            // no way out of a running clock but handing in
@@ -588,6 +600,7 @@
 
     function paintRun() {
       var q = attempt.qs[at];
+      settleDwell(); onQ = q.id; onSince = Date.now();
       var picked = chosen[q.id];
       var total = attempt.qs.length;
       var isShort = q.short === true || !q.options || !q.options.length;
@@ -676,9 +689,13 @@
       if (ticker) { clearInterval(ticker); ticker = null; }
       timer.hidden = true;
 
+      settleDwell();
       var answers = attempt.qs.map(function (q) {
         // The option INDEX (or the typed string for a short item).
-        return { id: q.id, chosen: (chosen[q.id] != null ? chosen[q.id] : null) };
+        var a = { id: q.id, chosen: (chosen[q.id] != null ? chosen[q.id] : null) };
+        // ⊕ Parent truth — whole seconds on this question, capped at 30 min.
+        if (dwell[q.id] != null) { a.t = Math.min(1800, Math.round(dwell[q.id] / 1000)); }
+        return a;
       });
       var elapsed = Math.floor((Date.now() - startedAt) / 1000);
 

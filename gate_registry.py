@@ -2807,6 +2807,50 @@ GATES = [
              "delivery verbatim — which is why this gate's own `run_check` "
              "only re-walks the `source` layer plus its mirrors, not all "
              "101 rows."),
+
+    dict(name="knowledge_points_check",
+         cmd=["python3", "tools/export_knowledge_points.py", "--check"],
+         speed="fast",
+         watches=["tools/export_knowledge_points.py", "tools/kp_classify.py",
+                  "tools/kp_ks4_eval.js",
+                  "knowledge_points/*.json", "ks3_data/**", "ks4_data/**",
+                  "ks4_lessons/**", "all_subtopics_*.py", "export_ks3_extended.py",
+                  "shared/exam-content/*.js", "combined/**", "triple/**",
+                  # round 2: the rebuilt KS4 lessons' ids are read by running
+                  # each lesson's logic per route, after the build's rulings
+                  "build_ks4.py", "ks4_rulings.py", "ks4_science_rulings.py",
+                  "ks4_batch_rulings.py", "shared/ks4-source*.js",
+                  "shared/ks4-lib.js", "shared/ks4-diagrams.js",
+                  # round 3: KS3 instrument units and every answer key are
+                  # read off the BUILT KS3 pages, by the tap's own rules
+                  "tools/kp_ks3_units.py", "ks3/**", "build_ks3.py",
+                  "ks3_art/**", "shared/mrbadmus.v2.js"],
+         # ⚠️ Named gap (MRB-346 rule 1): the 14 pilot lessons' ladder rungs
+         # are read from Design's `.dc.html` under docs/ks4/design-reference/,
+         # which no `watches` may name. The rung IDS (`ks4:<slug>#r1..r4`) come
+         # from `ks4_lessons.LESSONS`, which IS watched, so a new or removed
+         # pilot lesson still selects this gate; only a rung's wording does not.
+         why="Parent truth (11 Oct 2026) — EVERY QUESTION CARRIES A KNOWLEDGE "
+             "POINT. A parent is shown which points their child has and has "
+             "not secured, and 'a different question testing the same point' "
+             "is found through the tag. `knowledge_points/*.json` holds the "
+             "machine-drafted points and tags; this gate reads every question "
+             "through the loaders (both banks, both ladders, the KS3 exam "
+             "twins, the KS4 classic quiz cards, and — round 2 — every other "
+             "id a lesson page sends: KS3 Start here, predictions, keyed "
+             "commits and 'your turn'; KS4 classic matching; and every "
+             "rebuilt-lesson block per route, `ks4:<slug>:<route>#…`, read by "
+             "running each lesson's logic in Node; round 3, the KS3 "
+             "question-shaped instruments) and that every ANSWER KEY — the "
+             "one right option's text as the page renders it — still equals "
+             "what the sources say and is one of the rendered options; and "
+             "fails if one is neither tagged nor listed untagged, if a tag "
+             "dangles or crosses scopes, or if `ks4_quiz_id` stops producing "
+             "the contract's test vector — the backend derives the same id "
+             "from the same card text, and a drift on either side would "
+             "silently untag every classic card. A new or changed bank "
+             "question turns this red until its scope is re-tagged "
+             "(`python3 tools/kp_classify.py --scope <ref> --force`)."),
 ]
 
 

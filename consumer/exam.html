@@ -412,7 +412,7 @@
 </div>
 
 <script src="/shared/config.js?v=ab7a89ac"></script>
-<script src="/consumer/consumer-common.js?v=8ead95e6"></script>
+<script src="/consumer/consumer-common.js?v=3ccc29c2"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/exam.html — write an answer, get it marked. MRB-317 Night 3.
@@ -504,6 +504,12 @@
     var currentUnit = null;       // the unit name from /child/today, or null
     var openId = new URLSearchParams(window.location.search).get('q');
     var draft = '';               // survives a 503 — see markAnswer()
+    /* ⊕ Parent truth (11 Oct 2026) — when the writing screen for this
+       question was first shown, so the mark request can say how long the
+       answer took (question shown → "Mark my answer"). Kept across a failed
+       mark (the child is still on the same attempt); cleared by a new
+       attempt, another question or the list. */
+    var writeClock = null;        // { id, at }
     var result = null;            // the LAST mark for the open question
     var justSent = false;
 
@@ -521,6 +527,7 @@
     function toPick() {
       fromToday = false;
       screen = 'pick'; result = null; justSent = false; draft = '';
+      writeClock = null;
       paint();
     }
 
@@ -849,6 +856,7 @@
       if (!q) { return; }
       openId = id;
       justSent = !!q.waiting;
+      writeClock = null;
       /* Coming back from a question must land on the group it came from,
          open. Set here rather than on the back button so it is true however
          the child gets back — the header arrow, a mark, a send. */
@@ -879,6 +887,7 @@
 
     function paintWrite() {
       var q = find(openId) || {};
+      if (!writeClock || writeClock.id !== q.id) { writeClock = { id: q.id, at: Date.now() }; }
       var words = draft.trim() ? draft.trim().split(/\s+/).length : 0;
       var tooShort = words < 3;
 
@@ -933,11 +942,15 @@
       screen = 'marking';
       paint();
 
+      var spent = (writeClock && writeClock.id === q.id)
+        ? Math.max(0, Math.min(1800, Math.round((Date.now() - writeClock.at) / 1000)))
+        : null;
       C.api('/api/consumer/mark', {
         method: 'POST', token: ctx.token,
-        body: { question_id: q.id, answer: text }
+        body: { question_id: q.id, answer: text, time_spent_seconds: spent }
       }).then(function (d) {
         d = d || {};
+        writeClock = null;
         result = { score: d.score, max: d.max, hits: d.hits || [],
                    feedback: d.feedback, answer: text, answer_id: d.answer_id,
                    practice: d.provider === 'stub' };
