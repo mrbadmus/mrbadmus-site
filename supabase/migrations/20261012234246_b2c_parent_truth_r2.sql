@@ -21,7 +21,7 @@
 -- (text, lesson, time) in a proper table" — this is the reply half of it.
 --
 -- Apply AFTER 20261011170510.
--- Rollback: supabase/rollbacks/20261013003836_b2c_parent_truth_r2_rollback.sql
+-- Rollback: supabase/rollbacks/20261012234246_b2c_parent_truth_r2_rollback.sql
 
 alter table public.child_answers add column mark_level smallint;
 alter table public.child_answers add column mark_next_step text;

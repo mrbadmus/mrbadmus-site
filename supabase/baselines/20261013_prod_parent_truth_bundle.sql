@@ -6,9 +6,9 @@
 --   * child_answers           — the answer ledger, final shape: everything
 --                                20261011124719 created, plus client_event_id
 --                                (20261011131302) and mark_level /
---                                mark_next_step (20261013003836).
+--                                mark_next_step (20261012234246).
 --   * child_tutor_questions   — what a consumer child asked the tutor, final
---                                shape: plus reply / replied_at (20261013003836).
+--                                shape: plus reply / replied_at (20261012234246).
 --   * their indexes, and RLS ENABLED WITH NO POLICIES (service role only:
 --     parents read through GET /api/consumer/children/:id/activity, which
 --     checks guardianship itself).

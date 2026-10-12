@@ -1,4 +1,4 @@
--- Rollback for migrations/20261013003836_b2c_parent_truth_r2.sql (TEST).
+-- Rollback for migrations/20261012234246_b2c_parent_truth_r2.sql (TEST).
 -- Drops the four r2 columns — and so every stored tutor reply and every
 -- stored level / next step — plus their CHECKs and the cap's index. The rest
 -- of both tables, and every other row, is untouched. The backend probes the
@@ -16,4 +16,4 @@ alter table public.child_answers drop constraint if exists child_answers_mark_le
 alter table public.child_answers drop column if exists mark_next_step;
 alter table public.child_answers drop column if exists mark_level;
 
-delete from supabase_migrations.schema_migrations where version = '20261013003836';
+delete from supabase_migrations.schema_migrations where version = '20261012234246';
