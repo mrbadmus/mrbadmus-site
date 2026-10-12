@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drug discovery and development · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Infection and response" title="Drug discovery and development" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.3.1.9</p>
+        <h1>Drug discovery and development</h1>
+        <p class="ks3-bigq">A new drug has to pass gate after gate before anyone can be prescribed it. Follow one through.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Who went first?" scene="Every medicine in a pharmacy was once brand new, and nobody knew whether it was safe." question="was it tested on people first, or on cells and animals first?" options="{{ hookOptions }}" bridge="Cells and animals first. Next: where drugs come from, then every gate in between." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-source" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Where drugs come from</p>
+        <h2 style="margin: 6px 0 0;">From plants, moulds and chemists.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Traditionally, drugs were extracted from plants and microorganisms. Tap each one.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ srcCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Most new drugs are now synthesised by chemists in the pharmaceutical industry. However, the starting point may still be a chemical extracted from a plant.</p>
+      </section>
+
+      <section id="s-gates" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Testing a new drug</p>
+        <h2 style="margin: 6px 0 0;">Gate by gate.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">New drugs are extensively tested for toxicity (is it harmful?), efficacy (does it work?) and dose (how much?). Most candidates fail along the way. Step through the gates.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ gateBtns }}" as="b" hint-placeholder-count="6"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ gateFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ gateNote }}</p></div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Thalidomide, a 1950s drug for morning sickness, had not been tested for its effects on unborn babies. It caused severe birth defects, and drug testing was made much stricter.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · what is a placebo?</p></div>
+        <p class="ks3-mis-quote">&ldquo;A placebo is a small dose of the drug.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="What is a placebo?" options="{{ thinkOptions }}" reveal="A placebo does not contain the drug. Comparing the two groups shows whether the drug itself works." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Preclinical or clinical?" prompt="Place each test." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Preclinical: cells, tissues, live animals. Clinical: healthy volunteers, then patients, with a placebo in double-blind trials." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The stages in order, and what each checks.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why a stage is done that way, link by link.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">A reason, using what you know.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">New drugs are tested for toxicity, efficacy and dose: in cells, tissues and animals first, then in clinical trials, then peer reviewed.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="drug-discovery-development" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Drug discovery and development" spec="AQA 4.3.1.9" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure what double-blind means?" legal="The candidate dots are illustrative, not real attrition figures." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'drug-discovery-development';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const RAIL = [
+  { id: 's-hook', label: 'Who went first?', short: 'HOOK' },
+  { id: 's-source', label: 'Where drugs come from', short: 'SOURCES' },
+  { id: 's-gates', label: 'Testing gate by gate', short: 'TESTING' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Preclinical or clinical', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const STATE = { src: [], gate: 0, gates: [0] };
+const SRC = [
+  { name: 'Digitalis', why: 'A heart drug. It originates from foxgloves.' },
+  { name: 'Aspirin', why: 'A painkiller. It originates from willow.' },
+  { name: 'Penicillin', why: 'An antibiotic, discovered by Alexander Fleming from the Penicillium mould.' }
+];
+const GATES = [
+  { k: 'Cells and tissues', who: 'preclinical, in a laboratory', note: 'Preclinical testing is done in a laboratory, first using cells and tissues. Is it toxic? Does it have an effect?' },
+  { k: 'Live animals', who: 'preclinical, in a laboratory', note: 'Still preclinical: the drug is tested on live animals, to check toxicity and efficacy in a whole organism.' },
+  { k: 'Healthy volunteers', who: 'clinical trial', note: 'Clinical trials use healthy volunteers and patients. Very low doses are given at the start, to check the drug is safe.' },
+  { k: 'Patients, optimum dose', who: 'clinical trial', note: 'If the drug is safe, further clinical trials find the optimum dose for the drug.' },
+  { k: 'Double-blind', who: 'clinical trial', note: 'In double-blind trials some patients get a placebo, which doesn\u2019t contain the drug. Neither the doctors nor the patients know who had which until the trial is complete.' },
+  { k: 'Peer review', who: 'before publication', note: 'The results of testing and trials are published only after scrutiny by peer review: other scientists check them.' }
+];
+
+class Component extends DCLogic {
+  
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: rk === 'TF' || rk === 'TH', isTH: rk === 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+
+  gateFig(n) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const left = [24, 14, 8, 5, 3, 2];
+    GATES.forEach((g, i) => {
+      const x = 14 + i * 108;
+      b += BOX(x, 40, 98, 70, i === n ? '#F6D9D0' : i < n ? '#FFFDF8' : '#E9E2CF', C.stroke, i === n ? 3.5 : 2);
+      const w = g.k.split(', ');
+      w.forEach((t, k) => { b += D.T(x + 49, 72 + k * 18 - (w.length - 1) * 9, t, 12, { fill: i <= n ? C.stroke : C.muted }); });
+      for (let j = 0; j < 24; j++) { const cx = x + 14 + (j % 6) * 14, cy = 132 + Math.floor(j / 6) * 14; const on = j < left[i] && i <= n; b += D.circ(cx, cy, 4.5, on ? C.blue : 'none', on ? 'none' : C.muted, on ? 0 : 1); }
+    });
+    if (n === 4) {
+      b += BOX(150, 210, 360, 76, '#FFFDF8') + D.T(330, 234, 'who knows who got the drug?', 13, { fill: C.stroke });
+      b += D.T(250, 262, 'patients: no', 13, { weight: 'normal', fill: C.stroke }) + D.T(410, 262, 'doctors: no', 13, { weight: 'normal', fill: C.stroke });
+    } else b += D.T(330, 250, GATES[n].who, 14, { fill: C.stroke, style: 'italic' });
+    b += D.T(330, 22, 'blue dots: drug candidates still in the running', 12, { weight: 'normal', fill: C.stroke });
+    return D.svg(660, 300, b, 'Drug testing gate ' + (n + 1) + ' of 6, ' + GATES[n].k + ': ' + GATES[n].note);
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.src.length === 3, s.gates.length === 6, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const bankSrc = [
+      { q: 'What is a double-blind clinical trial?', opts: [['Neither the patients nor the doctors know who is receiving the real drug or the placebo \u2014 eliminates bias from both sides', true], ['Only the patients don\u2019t know which treatment they are receiving', false], ['The trial uses two different drugs tested simultaneously against each other', false], ['The trial is conducted in the dark to prevent visual identification of the drug', false]],
+        wrong_explanations: { 1: 'If only the PATIENT doesn\u2019t know = single-blind. Double-blind means BOTH patient AND doctor are unaware \u2014 this prevents the doctor\u2019s expectations influencing how they assess patient progress.', 2: 'A trial testing two real drugs against each other is a comparative trial \u2014 double-blind refers to who knows about treatment allocation, not how many drugs are tested.', 3: '\u2018Blind\u2019 in a clinical context means \u2018unaware of treatment allocation\u2019 \u2014 it has nothing to do with actual darkness.' } },
+      { q: 'Why is a placebo used in clinical trials?', opts: [['To control for the placebo effect \u2014 some patients improve just because they believe they are being treated', true], ['To give patients a low starting dose before they receive the real drug', false], ['To ensure every patient receives some form of medical benefit during the trial', false], ['To test the side effects of inactive substances', false]],
+        wrong_explanations: { 1: 'A placebo is not a low dose \u2014 it is INACTIVE and contains no active ingredient.', 2: 'Patients in the placebo group receive no active treatment \u2014 this is ethically managed carefully and only used when ethically appropriate.', 3: 'Placebos by definition have no pharmacological activity \u2014 any side effects are psychological or coincidental.' } },
+      { q: 'What was the key lesson from the thalidomide tragedy?', opts: [['Drugs must be rigorously tested for all potential effects including effects on embryos \u2014 testing requirements were significantly strengthened', true], ['Natural drugs are always safer than synthetic ones', false], ['Sedatives should never be prescribed during pregnancy', false], ['Clinical trials are unnecessary if a drug has been shown to be safe in adults', false]],
+        wrong_explanations: { 1: 'Thalidomide was a synthetic drug \u2014 but many synthetic drugs are completely safe. The lesson was specifically about testing for effects on ALL groups, especially embryos.', 2: 'The lesson was specifically about testing for ALL effects in ALL populations \u2014 not a blanket ban on sedatives in pregnancy.', 3: 'The thalidomide case showed exactly WHY clinical trials must be thorough \u2014 an adult-safe drug was devastating to embryos.' } },
+      { q: 'Which plant does the heart drug digitalis originate from?', opts: [['Foxgloves', true], ['Willow', false], ['Penicillium mould', false], ['Poppies', false]],
+        wrong_explanations: { 1: 'Aspirin originates from willow.', 2: 'Penicillin came from the Penicillium mould.', 3: 'Digitalis originates from foxgloves.' } },
+      { q: 'Why are the results of drug trials checked by peer review before they are published?', opts: [['So other scientists can check the method and results are valid', true], ['So the drug can be sold sooner', false], ['So patients know whether they had the placebo', false], ['Because peer review is the same as an animal test', false]],
+        wrong_explanations: { 1: 'Peer review checks the science; it doesn\u2019t speed up sales.', 2: 'That is told after the trial; peer review is about checking results.', 3: 'Peer review is scrutiny by other scientists, after testing.' } }
+    ];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'On cells and animals first', correct: true, reply: 'Yes: in a laboratory first, then on people.' },
+        { text: 'On people first', correct: false, reply: 'Drugs are tested in a laboratory first, on cells, tissues and live animals, and only then on people.' }
+      ],
+      srcCards: this.cards(SRC, 'src'),
+      gateBtns: this.btns(GATES.map((g, i) => (i + 1) + ' \u00b7 ' + g.k), s.gate, (i) => this.setState({ gate: i, gates: this.seen('gates', i) })),
+      gateFig: c.ready ? K.fig(this.gateFig(s.gate), '') : null,
+      gateNote: GATES[s.gate].note,
+      thinkOptions: [
+        { text: 'A very low dose of the drug', correct: false, reply: 'Very low doses come at the start of clinical trials. A placebo contains no drug.' },
+        { text: 'A different, older drug', correct: false, reply: 'A placebo contains no drug at all.' },
+        { text: 'A dummy that doesn\u2019t contain the drug', correct: true, reply: 'It looks the same but has no drug in it.' }
+      ],
+      sortBins: [{ id: 'p', label: 'Preclinical (laboratory)' }, { id: 'c', label: 'Clinical trial' }],
+      sortItems: [
+        { text: 'Tested on cells', bin: 'p', why: 'In a laboratory.' },
+        { text: 'Tested on tissues', bin: 'p', why: 'In a laboratory.' },
+        { text: 'Tested on live animals', bin: 'p', why: 'Still preclinical.' },
+        { text: 'Very low doses for healthy volunteers', bin: 'c', why: 'The start of clinical trials.' },
+        { text: 'Finding the optimum dose', bin: 'c', why: 'In patients.' },
+        { text: 'Some patients given a placebo', bin: 'c', why: 'Double-blind trials.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the drug that originates from foxgloves.', 'Digitalis.', [['Aspirin', 'From willow.'], 'Digitalis', ['Penicillin', 'From the Penicillium mould.']]),
+          MCQ('State', 'State what is given at the start of a clinical trial.', 'Very low doses of the drug.', ['Very low doses of the drug', ['The highest safe dose', 'Doses start very low.'], ['Only placebos', 'Placebos come in double-blind trials.']])
+        ],
+        r2: [
+          MCQ('Give', 'Give the three things new drugs are tested for.', 'Toxicity, efficacy and dose.', [['Colour, taste and price', 'Not what testing checks.'], 'Toxicity, efficacy and dose', ['Speed, size and shape', 'Not what testing checks.'], ['Antigens, antibodies and antitoxins', 'Those are immune system words.']]),
+          MCQ('Suggest', 'Suggest why neither doctors nor patients know who has the placebo.', 'So their expectations can\u2019t affect the results.', [['To save money', 'It\u2019s about fair results.'], ['So the drug works faster', 'Knowing doesn\u2019t change the drug.'], ['Because placebos are secret medicines', 'Placebos contain no drug.'], 'So what they expect can\u2019t affect the results'])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain why a new drug is first given to healthy volunteers at very low doses. Put the links in order.',
+            ['Preclinical tests on cells, tissues and animals can\u2019t show every effect in humans.', 'A very low dose limits any harm if the drug turns out to be toxic.', 'If it is found to be safe, further trials can find the optimum dose.'],
+            [['Low doses work best in patients.', 'The optimum dose is found later.'], ['Healthy volunteers can\u2019t have side effects.', 'They can; that is what is being checked.']]),
+          CHAIN('Explain', 'Explain why double-blind trials with a placebo are used. Put the links in order.',
+            ['Some patients are given a placebo, which doesn\u2019t contain the drug.', 'Neither doctors nor patients know who had the drug until the trial is complete.', 'So any difference between the groups is caused by the drug, not by expectations.'],
+            [['The placebo is a weaker version of the drug.', 'It contains no drug.'], ['Only the patients don\u2019t know.', 'That would be single-blind.']])
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 6, prompt: 'Describe how a new drug is tested before it can be used.',
+            levels: LV6('Preclinical and clinical stages in order, with toxicity, efficacy, dose, double-blind and peer review.', 'Most stages in order, with some detail.', 'Simple statements about testing.'),
+            points: ['Tested for toxicity, efficacy and dose.', 'Preclinical testing in a laboratory on cells, tissues and live animals.', 'Clinical trials on healthy volunteers at very low doses first.', 'If safe, further trials on patients find the optimum dose.', 'Double-blind trials: some patients get a placebo; neither doctors nor patients know who had what.', 'Results published only after peer review.'],
+            reject: ['\u201cTested on sick people first.\u201d', '\u201cA placebo is a small dose of the drug.\u201d'] }
+        ]
+      },
+      keyLines: ['Traditionally drugs came from plants and microorganisms: digitalis from foxgloves; aspirin from willow; penicillin, discovered by Fleming, from Penicillium mould.', 'Most new drugs are synthesised by chemists; the starting point may still be a plant chemical.', 'Drugs are tested for toxicity, efficacy and dose. Preclinical: cells, tissues, live animals.', 'Clinical trials: healthy volunteers at very low doses, then patients for the optimum dose. Double-blind with a placebo. Published after peer review.'],
+      bank: c.ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.3.1.8-antibiotics-painkillers.dc.html', label: 'Antibiotics and painkillers' },
+      endNext: { href: 'ks4-biology-4.3.2.1-monoclonal-antibodies.dc.html', label: 'Monoclonal antibodies (Triple Higher)' },
+      endConnects: [{ href: 'ks4-biology-4.3.3.1-plant-disease-detection-defence.dc.html', label: 'Plant defences: chemicals from plants (Triple)' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

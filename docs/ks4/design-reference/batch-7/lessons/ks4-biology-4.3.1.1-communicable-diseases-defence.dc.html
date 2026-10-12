@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Communicable diseases and defences · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Infection and response" title="Communicable diseases and defences" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.3.1.1 · 4.3.1.6</p>
+        <h1>Communicable diseases and defences</h1>
+        <p class="ks3-bigq">Pathogens spread from host to host. Follow one in, switch off a defence, and see what stops it next.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Germs everywhere." scene="Germs are on door handles, phones and your own hands. You touch thousands of them every day." question="would a germ get into your body more easily through unbroken skin, or through a cut?" options="{{ hookOptions }}" bridge="Skin is the first barrier. Next: how pathogens spread, and the other barriers." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-spread" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Pathogens · how they spread</p>
+        <h2 style="margin: 6px 0 0;">Four kinds of pathogen, a few ways in.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Pathogens are microorganisms that cause infectious disease: viruses, bacteria, protists and fungi. They may infect plants or animals. Bacteria and viruses reproduce rapidly inside the body. Bacteria may produce toxins that damage tissues; viruses live and reproduce inside cells, causing cell damage.</p>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Pick a route of spread, then see what breaks it.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ spreadBtns }}" as="b" hint-placeholder-count="4"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+          <div style="display: flex; flex-direction: column; gap: 10px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ spreadNote }}</p></div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Vaccination stops many diseases spreading at all: in <a href="ks4-biology-4.3.1.7-vaccination.dc.html">Vaccination</a>. The named diseases are in <a href="ks4-biology-4.3.1.2-viral-diseases.dc.html">Viral</a>, <a href="ks4-biology-4.3.1.3-bacterial-diseases.dc.html">Bacterial</a> and <a href="ks4-biology-4.3.1.4-fungal-protist-diseases.dc.html">Fungal and protist diseases</a>.</p>
+      </section>
+
+      <section id="s-barriers" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Non-specific defences</p>
+        <h2 style="margin: 6px 0 0;">Keep them out.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Most pathogens are stopped before they get into the body. Pick how a pathogen arrives, then switch that defence off and see how far it gets.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ wayBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><button type="button" onClick="{{ onOff }}" aria-pressed="{{ off }}" style="{{ offStyle }}">{{ offLabel }}</button></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ wayFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ wayNote }}</p></div>
+      </section>
+
+      <section id="s-wbc" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The immune system · white blood cells</p>
+        <h2 style="margin: 6px 0 0;">If a pathogen gets in.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">If a pathogen enters the body, the immune system tries to destroy it. White blood cells do this in three ways. Pick each one.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ wbcBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ wbcFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ wbcNote }}</p></div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">If the same pathogen comes back, white blood cells make the right antibodies quickly: in <a href="ks4-biology-4.3.1.7-vaccination.dc.html">Vaccination</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · who makes antibodies?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Phagocytes make antibodies.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Which white blood cells make antibodies?" options="{{ thinkOptions }}" reveal="Lymphocytes. Phagocytes engulf and digest pathogens; lymphocytes make antibodies and antitoxins." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Barrier or white blood cell?" prompt="Place each defence." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Barriers keep pathogens out. White blood cells deal with the ones that get in." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Each defence, and what it does to the pathogen.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How a defence stops the pathogen, link by link.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Give</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">One way to break a route of spread.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Barriers keep most pathogens out. White blood cells destroy those that get in: phagocytosis, antibodies and antitoxins.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="communicable-diseases-defence" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Communicable diseases and defences" spec="AQA 4.3.1.1, 4.3.1.6" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which white blood cell does what?" legal="Drawings are schematic, not to scale." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'communicable-diseases-defence';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const RAIL = [
+  { id: 's-hook', label: 'Skin or a cut', short: 'HOOK' },
+  { id: 's-spread', label: 'How pathogens spread', short: 'SPREAD' },
+  { id: 's-barriers', label: 'Keep them out', short: 'BARRIERS' },
+  { id: 's-wbc', label: 'White blood cells', short: 'WBC' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Barrier or white blood cell', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const STATE = { sp: null, sps: [], way: 0, ways: [0], off: false, offs: [], wbc: 0, wbcs: [0] };
+const SPREAD = [
+  { k: 'Air', how: 'Droplets from coughs and sneezes are breathed in by other people. Example: measles.', stop: 'Cover coughs and sneezes; isolate infected people.' },
+  { k: 'Water', how: 'Drinking water that contains the pathogen. Example: cholera.', stop: 'Treat water so it is safe to drink.' },
+  { k: 'Direct contact', how: 'Touching or sexual contact; in plants, contact between an infected plant and a healthy one. Examples: gonorrhoea; tobacco mosaic virus.', stop: 'Hygiene: wash hands, clean surfaces and tools. Use condoms. Remove infected plants.' },
+  { k: 'Vector', how: 'Another organism carries the pathogen to a new host. Example: mosquitoes carry the malaria protist.', stop: 'Destroy or control the vector: kill mosquitoes, use nets.' }
+];
+const WAYS = [
+  { k: 'Breathed in', site: 'nose, trachea, bronchi', on: 'The nose traps particles that may contain pathogens. In the trachea and bronchi, mucus traps pathogens and cilia move the mucus up to the throat, where it is swallowed.', off: 'With no mucus and cilia, pathogens reach the lungs. Now the white blood cells must deal with them.' },
+  { k: 'Swallowed', site: 'stomach', on: 'The stomach contains acid, which kills most of the pathogens swallowed with food or drink.', off: 'With no stomach acid, more pathogens survive and get further into the body. Now the white blood cells must deal with them.' },
+  { k: 'On the skin', site: 'skin', on: 'Unbroken skin is a barrier: pathogens can\u2019t get through it.', off: 'A cut breaks the barrier. Pathogens get into the blood, and the white blood cells must deal with them.' }
+];
+const WBC = [
+  { k: 'Phagocytosis', note: 'Phagocytes engulf pathogens and digest them. They attack any pathogen they meet.' },
+  { k: 'Antibodies', note: 'Lymphocytes make antibodies. Each antibody fits the antigens of one type of pathogen, so antibodies are specific. They target the pathogen so it can be destroyed.' },
+  { k: 'Antitoxins', note: 'Lymphocytes also make antitoxins. Antitoxins neutralise the toxins some bacteria release. They don\u2019t kill the bacteria themselves.' }
+];
+
+class Component extends DCLogic {
+  
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: rk === 'TF' || rk === 'TH', isTH: rk === 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+
+  wayFig(w, off) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const W = WAYS[w];
+    b += BOX(20, 70, 170, 80, '#FFFDF8') + D.T(105, 106, W.k, 17, { fill: C.stroke }) + D.T(105, 130, 'pathogen arrives', 13, { weight: 'normal', fill: C.stroke });
+    b += D.arrow(196, 110, 246, 110, C.stroke, 3);
+    b += BOX(252, 60, 190, 100, off ? '#FFFDF8' : '#DDEFD3', off ? C.red : C.stroke, off ? 3 : 2.5);
+    b += D.T(347, 98, W.site, 14, { fill: C.stroke }) + D.T(347, 124, off ? 'switched off' : 'defence working', 13, { weight: 'normal', fill: off ? C.red : C.stroke });
+    if (!off) { b += D.T(347, 190, 'stopped here', 16, { fill: C.label }); }
+    else { b += D.arrow(448, 110, 498, 110, C.red, 3) + BOX(504, 60, 150, 100, '#EDE7F6') + D.T(579, 98, 'into the body', 16, { fill: C.stroke }) + D.T(579, 124, 'white blood cells', 13, { weight: 'normal', fill: C.stroke }); }
+    return D.svg(680, 210, b, W.k + ': the ' + W.site + (off ? ' defence is switched off, so the pathogen gets into the body, where white blood cells meet it.' : ' stops the pathogen.'));
+  }
+  Y(x, y, a, col) {
+    const r = a * Math.PI / 180, c = Math.cos(r), s = Math.sin(r);
+    const P = (dx, dy) => (x + dx * c - dy * s).toFixed(1) + ' ' + (y + dx * s + dy * c).toFixed(1);
+    return '<path d="M' + P(0, 14) + ' L' + P(0, 0) + ' L' + P(-8, -9) + ' M' + P(0, 0) + ' L' + P(8, -9) + '" fill="none" stroke="' + (col || '#3B82F6') + '" stroke-width="3.5" stroke-linecap="round"/>';
+  }
+  wbcFig(m) {
+    const D = window.KS4D, C = D.C; let b = '';
+    if (m === 0) {
+      b += D.circ(190, 150, 100, '#EDE7F6', C.stroke, 3) + D.circ(150, 120, 26, '#B9A7D8', C.stroke, 2);
+      b += D.circ(215, 180, 30, '#F6EFD9', C.stroke, 2, ' stroke-dasharray="4 4"') + D.circ(215, 180, 12, '#E07B5A', C.stroke, 2);
+      b += D.circ(360, 90, 12, '#E07B5A', C.stroke, 2) + D.arrow(345, 100, 300, 125, C.stroke, 2.5);
+      b += D.T(190, 280, 'phagocyte', 16, { fill: C.stroke }) + D.T(360, 66, 'pathogen', 13, { weight: 'normal', fill: C.stroke }) + D.T(300, 230, 'engulfed and digested', 13, { weight: 'normal', fill: C.stroke });
+    } else if (m === 1) {
+      b += D.circ(110, 150, 70, '#EDE7F6', C.stroke, 3) + D.circ(110, 150, 40, '#B9A7D8', C.stroke, 2) + D.T(110, 250, 'lymphocyte', 16, { fill: C.stroke });
+      b += this.Y(200, 120, 90) + this.Y(215, 185, 70);
+      b += D.circ(330, 150, 48, '#E07B5A', C.stroke, 2.5) + D.T(330, 250, 'pathogen', 16, { fill: C.stroke });
+      [0, 72, 144, 216, 288].forEach((a) => { const r = a * Math.PI / 180; b += this.Y(330 + 62 * Math.cos(r), 150 + 62 * Math.sin(r), a + 90); });
+      b += D.T(330, 40, 'antibodies fit its antigens', 13, { weight: 'normal', fill: C.stroke });
+    } else {
+      b += '<rect x="40" y="110" width="130" height="70" rx="35" fill="#B8D99A" stroke="' + C.stroke + '" stroke-width="2.5"/>' + D.T(105, 210, 'bacterium', 16, { fill: C.stroke });
+      [[210, 120], [240, 170], [280, 130]].forEach((p) => { b += D.circ(p[0], p[1], 8, '#C8102E', 'none', 0); });
+      [[330, 110], [360, 160], [320, 200]].forEach((p) => { b += D.circ(p[0], p[1], 8, '#C8102E', 'none', 0) + D.circ(p[0], p[1], 14, 'none', '#3B82F6', 4); });
+      b += D.T(245, 90, 'toxins', 13, { weight: 'normal', fill: C.red }) + D.T(345, 245, 'antitoxins neutralise them', 13, { weight: 'normal', fill: C.stroke });
+    }
+    return D.svg(420, 300, b, ['A phagocyte engulfing and digesting a pathogen.', 'A lymphocyte making antibodies that fit the antigens on a pathogen.', 'A bacterium releasing toxins; antitoxins bind to the toxins and neutralise them.'][m]);
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.sps.length === 4, s.ways.length === 3 && s.offs.length > 0, s.wbcs.length === 3, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const SP = s.sp === null ? null : SPREAD[s.sp];
+    const bankSrc = [
+      { q: 'What is the difference between a phagocyte and a lymphocyte?', opts: [['Phagocytes engulf pathogens non-specifically. Lymphocytes produce specific antibodies.', true], ['Phagocytes produce antibodies. Lymphocytes engulf pathogens.', false], ['Both engulf pathogens \u2014 they are the same type of white blood cell.', false], ['Phagocytes fight bacterial infections only. Lymphocytes fight viral infections only.', false]],
+        wrong_explanations: { 1: 'This is exactly the wrong way around. Phagocytes = engulf. Lymphocytes = antibodies.', 2: 'Both are white blood cells but they have completely different functions \u2014 phagocytes engulf, lymphocytes make antibodies.', 3: 'Both types of white blood cell work against a wide range of pathogens \u2014 they are not limited to one type of infection.' } },
+      { q: 'Why are memory cells important for immunity?', opts: [['They remain in the blood after infection and allow a rapid, large antibody response if the same pathogen is encountered again', true], ['They physically block pathogens from entering the bloodstream', false], ['They produce antibiotics to destroy bacterial infections', false], ['They replace damaged body cells after an infection has passed', false]],
+        wrong_explanations: { 1: 'Memory cells are immune cells \u2014 they don\u2019t form physical barriers. That role belongs to skin, mucus and cilia.', 2: 'Antibiotics are medicines \u2014 they are not produced by any body cells. Memory cells produce antibodies, not antibiotics.', 3: 'Cell replacement is done by stem cells and normal cell division \u2014 memory cells specifically remember and respond to specific pathogens.' } },
+      { q: 'How does the Anopheles mosquito spread malaria?', opts: [['It is a vector \u2014 it carries the Plasmodium protist and injects it into humans when it bites', true], ['The mosquito itself causes malaria \u2014 it is the pathogen', false], ['Mosquito bites break the skin, allowing malaria bacteria from the air to enter', false], ['The mosquito contaminates water sources with Plasmodium', false]],
+        wrong_explanations: { 1: 'The MOSQUITO is the vector \u2014 Plasmodium is the pathogen. The mosquito carries and transmits Plasmodium but does not cause the disease itself.', 2: 'Malaria is caused by a PROTIST (Plasmodium) \u2014 not bacteria. And it is injected through the bite, not from the air.', 3: 'Malaria is transmitted through bites \u2014 not through water. Cholera spreads through contaminated water.' } },
+      { q: 'Why does the body produce mucus in the airways?', opts: [['To trap inhaled pathogens and particles before they reach the lungs \u2014 cilia then sweep the mucus up to be swallowed', true], ['To provide a moist surface for gas exchange in the lungs', false], ['To produce antibodies that neutralise pathogens in the airways', false], ['To prevent the airways from drying out in cold weather', false]],
+        wrong_explanations: { 1: 'Gas exchange occurs in the ALVEOLI \u2014 the main function of mucus in the airways is trapping pathogens, not gas exchange.', 2: 'Antibodies are produced by LYMPHOCYTES in the blood \u2014 not by mucus. Mucus is a physical/chemical barrier.', 3: 'Moisture in the airways is a secondary benefit \u2014 the PRIMARY function of mucus is trapping pathogens and particles.' } },
+      { q: 'What do antitoxins do?', opts: [['Neutralise the toxins released by bacteria', true], ['Kill bacteria directly', false], ['Engulf and digest pathogens', false], ['Stop pathogens entering through the skin', false]],
+        wrong_explanations: { 1: 'Antitoxins act on the toxins, not on the bacteria.', 2: 'That is phagocytosis, done by phagocytes.', 3: 'That is the skin\u2019s job as a barrier.' } }
+    ];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'Through a cut', correct: true, reply: 'Yes. Unbroken skin is a barrier; a cut opens a way in.' },
+        { text: 'Through unbroken skin', correct: false, reply: 'Unbroken skin is a barrier pathogens can\u2019t get through. A cut opens a way in.' }
+      ],
+      spreadBtns: this.btns(SPREAD.map((x) => x.k), s.sp, (i) => this.setState({ sp: i, sps: this.seen('sps', i) })),
+      spreadNote: SP ? SP.how + ' Break it: ' + SP.stop : 'Pick a route.',
+      wayBtns: this.btns(WAYS.map((x) => x.k), s.way, (i) => this.setState({ way: i, ways: this.seen('ways', i), off: false })),
+      off: s.off, offLabel: s.off ? 'Switch it back on' : 'Switch this defence off', offStyle: this.seg(s.off),
+      onOff: () => this.setState({ off: !s.off, offs: s.off ? s.offs : this.seen('offs', s.way) }),
+      wayFig: c.ready ? K.fig(this.wayFig(s.way, s.off), '') : null,
+      wayNote: s.off ? WAYS[s.way].off : WAYS[s.way].on,
+      wbcBtns: this.btns(WBC.map((x) => x.k), s.wbc, (i) => this.setState({ wbc: i, wbcs: this.seen('wbcs', i) })),
+      wbcFig: c.ready ? K.fig(this.wbcFig(s.wbc), '') : null,
+      wbcNote: WBC[s.wbc].note,
+      thinkOptions: [
+        { text: 'Phagocytes', correct: false, reply: 'Phagocytes engulf and digest pathogens. Lymphocytes make antibodies.' },
+        { text: 'Lymphocytes', correct: true, reply: 'Lymphocytes make antibodies, and antitoxins too.' },
+        { text: 'Red blood cells', correct: false, reply: 'Red blood cells carry oxygen.' }
+      ],
+      sortBins: [{ id: 'b', label: 'Keeps pathogens out' }, { id: 'w', label: 'White blood cells' }],
+      sortItems: [
+        { text: 'Unbroken skin', bin: 'b', why: 'A barrier.' },
+        { text: 'The nose traps particles', bin: 'b', why: 'Stops them going further in.' },
+        { text: 'Cilia move mucus up the trachea', bin: 'b', why: 'Trapped pathogens are swallowed.' },
+        { text: 'Stomach acid', bin: 'b', why: 'Kills most swallowed pathogens.' },
+        { text: 'Engulfing and digesting pathogens', bin: 'w', why: 'Phagocytosis.' },
+        { text: 'Making antibodies', bin: 'w', why: 'Lymphocytes.' },
+        { text: 'Making antitoxins', bin: 'w', why: 'Lymphocytes; they neutralise toxins.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the type of white blood cell that engulfs pathogens.', 'A phagocyte.', [['Lymphocyte', 'Lymphocytes make antibodies.'], 'Phagocyte', ['Red blood cell', 'Red blood cells carry oxygen.']]),
+          MCQ('State', 'State what antitoxins do.', 'They neutralise toxins released by bacteria.', ['Neutralise toxins', ['Kill bacteria', 'They act on the toxins, not the bacteria.'], ['Trap pathogens in mucus', 'That is the airways\u2019 job.']])
+        ],
+        r2: [
+          MCQ('Give', 'A disease spreads in droplets from coughs and sneezes. Give one way to reduce its spread.', 'For example isolate infected people, or cover coughs and sneezes.', [['Treat the drinking water', 'That stops water-borne diseases.'], 'Isolate infected people', ['Use mosquito nets', 'That stops a vector.'], ['Take antibiotics before going out', 'That doesn\u2019t stop droplets spreading.']]),
+          MCQ('Identify', 'Identify the vector in the spread of malaria.', 'The mosquito.', [['The protist', 'The protist is the pathogen.'], ['Dirty water', 'Malaria isn\u2019t spread by water.'], 'The mosquito', ['The red blood cell', 'That is where the protist lives in the body.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain how the trachea and bronchi stop pathogens reaching the lungs. Put the links in order.',
+            ['Mucus in the trachea and bronchi traps pathogens.', 'Cilia move the mucus up to the throat.', 'The mucus is swallowed, and acid in the stomach kills most of the pathogens.'],
+            [['Cilia kill the pathogens.', 'Cilia move mucus; they don\u2019t kill anything.'], ['Mucus makes antibodies.', 'Lymphocytes make antibodies.']]),
+          CHAIN('Explain', 'A pathogen gets into the blood. Explain how lymphocytes help to destroy it. Put the links in order.',
+            ['The pathogen has antigens on its surface.', 'Lymphocytes make antibodies that fit those antigens.', 'The antibodies target the pathogen so it can be destroyed.'],
+            [['Lymphocytes engulf the pathogen.', 'That is phagocytes.'], ['Any antibody fits any pathogen.', 'Antibodies are specific.']])
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 6, prompt: 'Describe how the human body defends itself against pathogens.',
+            levels: LV6('Barriers and all three white blood cell defences, each with how it works.', 'Several defences with some detail of how they work.', 'Simple statements naming defences.'),
+            points: ['Unbroken skin is a barrier.', 'The nose traps particles that may contain pathogens.', 'In the trachea and bronchi, mucus traps pathogens and cilia move it to the throat.', 'Stomach acid kills most swallowed pathogens.', 'Phagocytes engulf and digest pathogens.', 'Lymphocytes make specific antibodies, and antitoxins that neutralise toxins.'],
+            reject: ['\u201cCilia kill the germs.\u201d', '\u201cPhagocytes make antibodies.\u201d'] }
+        ]
+      },
+      keyLines: ['Pathogens are microorganisms that cause infectious disease: viruses, bacteria, protists and fungi. They infect plants or animals.', 'They spread by air, water, direct contact, or a vector. Break the route: isolate, treat water, hygiene and condoms, control vectors.', 'Barriers: skin; the nose; mucus and cilia in the trachea and bronchi; acid in the stomach.', 'White blood cells: phagocytosis; antibody production; antitoxin production.'],
+      bank: c.ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: '../../Batch 6/lessons/ks4-biology-4.2.3.2-translocation.dc.html', label: 'Translocation' },
+      endNext: { href: 'ks4-biology-4.3.1.2-viral-diseases.dc.html', label: 'Viral diseases' },
+      endConnects: [{ href: '../../Batch 6/lessons/ks4-biology-4.2.2.5-health-disease.dc.html', label: 'Health, disease and risk factors' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

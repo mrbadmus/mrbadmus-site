@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photosynthesis · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Bioenergetics" title="Photosynthesis" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.4.1.1</p>
+        <h1>Photosynthesis</h1>
+        <p class="ks3-bigq">A plant makes its own food from air, water and light. Bring the three together in a leaf cell and watch what comes out.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="The cupboard plant." scene="A houseplant is left in a dark cupboard for a few weeks while its owners are away. When they get back, it is pale and drooping." question="is that because it needs light, or because it needs fresh air?" options="{{ hookOptions }}" bridge="Light. Next: what a plant does with it." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-leaf" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Inside a leaf cell</p>
+        <h2 style="margin: 6px 0 0;">Bring the raw materials together.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Photosynthesis happens in the chloroplasts, where chlorophyll absorbs light. Send in each raw material, and the light. Then switch the light off.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ inBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><button type="button" onClick="{{ onDark }}" aria-pressed="{{ dark }}" style="{{ darkStyle }}">{{ darkLabel }}</button></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ leafFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ leafNote }}</p></div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">How fast this happens, and what limits it: in <a href="ks4-biology-4.4.1.2-rate-of-photosynthesis.dc.html">Rate of photosynthesis</a>.</p>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The equation</p>
+        <h2 style="margin: 6px 0 0;">Written out.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Learn the word equation. Light is written over the arrow: it supplies the energy, it isn’t a reactant.</p>
+        <p style="margin: 12px 0 0; display: inline-block; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 19px; line-height: 1.5;">carbon dioxide + water <span style="display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1;"><span style="font-size: 13px;">light</span><svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></span> glucose + oxygen</p>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Photosynthesis is endothermic: energy is transferred from the environment to the chloroplasts by light. Recognise the symbols: tap each.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ symCards }}" as="f" hint-placeholder-count="4"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">What the plant does with the glucose: in <a href="ks4-biology-4.4.1.3-uses-of-glucose.dc.html">Uses of glucose</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · food from the soil</p></div>
+        <p class="ks3-mis-quote">&ldquo;Plants get their food from the soil.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Where does a plant’s glucose come from?" options="{{ thinkOptions }}" reveal="The plant makes it in its leaves, from carbon dioxide and water, using light: photosynthesis." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="In, out or neither?" prompt="Place each one." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Carbon dioxide and water go in; glucose and oxygen come out. Light supplies the energy." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Where the reactants come from and what is made.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why photosynthesis is endothermic.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Identify</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">A chemical from its symbol.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Carbon dioxide + water, with light, gives glucose + oxygen. It is endothermic and happens in the chloroplasts.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="photosynthesis" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Photosynthesis" spec="AQA 4.4.1.1" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure why light isn’t a reactant?" legal="The leaf cell is schematic." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'photosynthesis';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const RAIL = [
+  { id: 's-hook', label: 'The cupboard plant', short: 'HOOK' },
+  { id: 's-leaf', label: 'Inside a leaf cell', short: 'LEAF' },
+  { id: 's-equation', label: 'The equation', short: 'EQUATION' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'In, out or neither', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const STATE = { ins: [], dark: false, darkSeen: false, syms: [] };
+const INS = [
+  { k: 'Carbon dioxide', how: 'Carbon dioxide diffuses in from the air through the stomata.' },
+  { k: 'Water', how: 'Water is absorbed by the roots and carried up the xylem to the leaves.' },
+  { k: 'Light', how: 'Chlorophyll in the chloroplasts absorbs light: energy is transferred to the chloroplasts.' }
+];
+const SYM = [
+  { name: 'CO\u2082', why: 'Carbon dioxide.' },
+  { name: 'H\u2082O', why: 'Water.' },
+  { name: 'C\u2086H\u2081\u2082O\u2086', why: 'Glucose.' },
+  { name: 'O\u2082', why: 'Oxygen.' }
+];
+
+class Component extends DCLogic {
+  
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: rk === 'TF' || rk === 'TH', isTH: rk === 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+
+  leafFig(ins, dark) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const has = (i) => ins.indexOf(i) >= 0, light = has(2) && !dark, go = has(0) && has(1) && light;
+    b += BOX(200, 60, 280, 190, '#E3F0D6') + D.T(340, 50, 'leaf cell', 13, { weight: 'normal', fill: C.stroke });
+    b += '<ellipse cx="340" cy="155" rx="80" ry="46" fill="' + (dark ? '#6E8F5C' : '#4F9A4A') + '" stroke="' + C.stroke + '" stroke-width="2.5"/>' + D.T(340, 160, 'chloroplast', 14, { fill: '#FFFFFF' });
+    if (has(0)) b += D.arrow(40, 100, 255, 130, C.stroke, 3) + D.T(40, 88, 'carbon dioxide', 13, { anchor: 'start', fill: C.stroke });
+    if (has(1)) b += D.arrow(40, 220, 255, 180, C.blue, 3) + D.T(40, 244, 'water', 13, { anchor: 'start', fill: C.blue });
+    if (has(2)) { if (dark) b += D.T(340, 30, 'light off', 14, { fill: C.muted }); else for (let k = 0; k < 3; k++) b += D.arrow(300 + k * 40, 0, 320 + k * 20, 105, C.gold, 3); }
+    if (go) { b += D.arrow(425, 140, 630, 110, C.label, 3) + D.T(640, 104, 'glucose', 14, { anchor: 'end', fill: C.label }) + D.arrow(425, 175, 630, 210, C.red, 3) + D.T(640, 232, 'oxygen', 14, { anchor: 'end', fill: C.red }); }
+    else b += D.T(560, 160, has(2) && dark ? 'stopped' : 'waiting', 14, { fill: C.muted });
+    return D.svg(660, 270, b, go ? 'Carbon dioxide, water and light reach the chloroplast; glucose and oxygen come out.' : 'Chloroplast in a leaf cell; photosynthesis is not running yet: ' + (dark ? 'the light is off.' : 'a raw material or light is missing.'));
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.ins.length === 3 && s.darkSeen, s.syms.length === 4, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const go = s.ins.length === 3 && !s.dark;
+    const bankSrc = [
+      { q: 'What is the word equation for photosynthesis?', opts: [['Carbon dioxide + water \u2192 glucose + oxygen', true], ['Glucose + oxygen \u2192 carbon dioxide + water', false], ['Carbon dioxide + glucose \u2192 water + oxygen', false], ['Water + oxygen \u2192 carbon dioxide + glucose', false]],
+        wrong_explanations: { 1: 'That is the equation for AEROBIC RESPIRATION \u2014 the exact reverse of photosynthesis.', 2: 'CO\u2082 and glucose are never on the same side. CO\u2082 is a reactant; glucose is a product of photosynthesis.', 3: 'Oxygen is a PRODUCT \u2014 it is produced by photosynthesis and released. It doesn\u2019t go in.' } },
+      { q: 'In a dark room, does a plant carry out photosynthesis?', opts: [['No \u2014 photosynthesis requires light energy and cannot occur in darkness', true], ['Yes \u2014 plants always photosynthesise, day and night', false], ['Yes \u2014 plants store light energy during the day and use it at night', false], ['Only partially \u2014 stomata close so photosynthesis slows but doesn\u2019t stop', false]],
+        wrong_explanations: { 1: 'Respiration occurs day and night \u2014 but PHOTOSYNTHESIS specifically requires light energy. Without light, it stops completely.', 2: 'Plants do store glucose \u2014 but photosynthesis itself cannot run without light. The stored glucose is used in respiration at night.', 3: 'Stomata closing does reduce gas exchange in the dark, but photosynthesis stops specifically because there is no light energy, not because stomata are closed.' } },
+      { q: 'Where exactly in a plant cell does photosynthesis take place?', opts: [['Chloroplasts \u2014 which contain the chlorophyll pigment that absorbs light', true], ['Mitochondria \u2014 which produce the energy needed for photosynthesis', false], ['The nucleus \u2014 which contains the genes controlling photosynthesis', false], ['The vacuole \u2014 which stores the raw materials for photosynthesis', false]],
+        wrong_explanations: { 1: 'Mitochondria are the site of RESPIRATION \u2014 they produce ATP energy but do not carry out photosynthesis.', 2: 'The nucleus contains the DNA instructions but is not the location where photosynthesis reactions actually occur.', 3: 'The vacuole stores cell sap (sugars and salts) \u2014 it is not involved in carrying out photosynthesis.' } },
+      { q: 'Why is photosynthesis described as endothermic?', opts: [['Energy is transferred from the environment to the chloroplasts by light', true], ['It gives out heat to the surroundings', false], ['It happens inside the plant', false], ['It uses oxygen', false]],
+        wrong_explanations: { 1: 'Giving out energy would be exothermic, like respiration.', 2: 'Where it happens doesn\u2019t make it endothermic.', 3: 'Oxygen is a product of photosynthesis.' } },
+      { q: 'Which is the chemical symbol for glucose?', opts: [['C\u2086H\u2081\u2082O\u2086', true], ['CO\u2082', false], ['H\u2082O', false], ['O\u2082', false]],
+        wrong_explanations: { 1: 'CO\u2082 is carbon dioxide.', 2: 'H\u2082O is water.', 3: 'O\u2082 is oxygen.' } }
+    ];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'It needs light', correct: true, reply: 'Yes. Without light, a plant can\u2019t make its food.' },
+        { text: 'It needs fresh air', correct: false, reply: 'It does use gases from the air, but the cupboard\u2019s problem is the dark. Without light, a plant can\u2019t make its food.' }
+      ],
+      inBtns: INS.map((x, i) => { const on = s.ins.indexOf(i) >= 0; return { label: (on ? 'In: ' : 'Send in ') + x.k.toLowerCase(), pressed: on, style: this.seg(on), onClick: () => this.setState({ ins: on ? s.ins : s.ins.concat([i]) }) }; }),
+      dark: s.dark, darkLabel: s.dark ? 'Switch the light back on' : 'Switch the light off', darkStyle: this.seg(s.dark),
+      onDark: () => this.setState({ dark: !s.dark, darkSeen: true }),
+      leafFig: c.ready ? K.fig(this.leafFig(s.ins, s.dark), '') : null,
+      leafNote: s.dark ? 'In the dark, photosynthesis stops. Respiration carries on in every living cell, day and night.' : go ? 'All three in: carbon dioxide and water react to make glucose and oxygen. Oxygen leaves through the stomata.' : s.ins.length ? INS[s.ins[s.ins.length - 1]].how + ' Still missing: ' + INS.filter((x, i) => s.ins.indexOf(i) < 0).map((x) => x.k.toLowerCase()).join(' and ') + '.' : 'Send in carbon dioxide, water and light.',
+      symCards: this.cards(SYM, 'syms'),
+      thinkOptions: [
+        { text: 'It absorbs it from the soil', correct: false, reply: 'Roots take in water and mineral ions, not glucose.' },
+        { text: 'It makes it in its leaves from carbon dioxide and water, using light', correct: true, reply: 'Photosynthesis, in the chloroplasts.' },
+        { text: 'It comes from fertiliser', correct: false, reply: 'Fertiliser supplies mineral ions, not glucose.' }
+      ],
+      sortBins: [{ id: 'r', label: 'Goes in (reactant)' }, { id: 'p', label: 'Comes out (product)' }, { id: 'n', label: 'Neither' }],
+      sortItems: [
+        { text: 'Carbon dioxide', bin: 'r', why: 'In through the stomata.' },
+        { text: 'Water', bin: 'r', why: 'Up the xylem.' },
+        { text: 'Glucose', bin: 'p', why: 'Made in the chloroplast.' },
+        { text: 'Oxygen', bin: 'p', why: 'Out through the stomata.' },
+        { text: 'Light', bin: 'n', why: 'The energy source, written over the arrow.' },
+        { text: 'Food from the soil', bin: 'n', why: 'Plants make their own glucose.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the green substance in chloroplasts that absorbs light.', 'Chlorophyll.', [['Glucose', 'A product of photosynthesis.'], 'Chlorophyll', ['Cellulose', 'Makes cell walls.']]),
+          MCQ('State', 'State the products of photosynthesis.', 'Glucose and oxygen.', ['Glucose and oxygen', ['Carbon dioxide and water', 'Those are the reactants.'], ['Light and heat', 'Neither is a product.']])
+        ],
+        r2: [
+          MCQ('Identify', 'Identify the chemical symbol for carbon dioxide.', 'CO\u2082.', [['H\u2082O', 'Water.'], ['O\u2082', 'Oxygen.'], 'CO\u2082', ['C\u2086H\u2081\u2082O\u2086', 'Glucose.']]),
+          MCQ('Suggest', 'Suggest why root cells do not photosynthesise.', 'They are underground, with no light, and have no chloroplasts.', [['They have no water', 'Roots absorb water.'], 'They get no light and have no chloroplasts', ['They have no mitochondria', 'Root cells respire, so they do.'], ['They are dead', 'Root cells are living.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain how the raw materials for photosynthesis reach the chloroplasts in a leaf. Put the links in order.',
+            ['Water is absorbed by the roots.', 'Water is carried up the xylem to the leaves.', 'Carbon dioxide diffuses into the leaf through the stomata, and reaches the chloroplasts.'],
+            [['Glucose is absorbed from the soil.', 'Glucose is made by the plant.'], ['Oxygen enters through the stomata to be used.', 'Oxygen is a product.']]),
+          CHAIN('Explain', 'Explain why photosynthesis is an endothermic reaction. Put the links in order.',
+            ['Chlorophyll in the chloroplasts absorbs light.', 'So energy is transferred from the environment to the chloroplasts by light.', 'The reaction takes energy in, so it is endothermic.'],
+            [['Photosynthesis gives out heat.', 'That would be exothermic.'], ['Light is a reactant used up in the reaction.', 'Light supplies the energy.']])
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 4, prompt: 'Describe how a plant makes glucose by photosynthesis.',
+            levels: LV4('Reactants, where they come from, light absorbed by chlorophyll in chloroplasts, and the products.', 'Reactants or products named, with little detail.'),
+            points: ['Carbon dioxide enters through the stomata; water comes up the xylem from the roots.', 'Chlorophyll in the chloroplasts absorbs light.', 'Carbon dioxide and water react to make glucose and oxygen.', 'Energy is transferred to the chloroplasts by light: endothermic.'],
+            reject: ['\u201cPlants get glucose from the soil.\u201d', '\u201cOxygen is a reactant.\u201d'] }
+        ]
+      },
+      keyLines: ['Photosynthesis: carbon dioxide + water, with light, gives glucose + oxygen.', 'It happens in chloroplasts, where chlorophyll absorbs light.', 'It is endothermic: energy is transferred from the environment to the chloroplasts by light.', 'Recognise the symbols CO\u2082, H\u2082O, O\u2082 and C\u2086H\u2081\u2082O\u2086. Photosynthesis needs light; respiration happens all the time.'],
+      bank: c.ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.3.3.1-plant-disease-detection-defence.dc.html', label: 'Plant disease (Triple)' },
+      endNext: { href: 'ks4-biology-4.4.1.2-rate-of-photosynthesis.dc.html', label: 'Rate of photosynthesis' },
+      endConnects: [{ href: '../../Batch 5/lessons/ks4-biology-4.2.3.1-plant-tissues.dc.html', label: 'Plant tissues' }, { href: 'ks4-biology-4.4.2.1-aerobic-respiration.dc.html', label: 'Aerobic respiration' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

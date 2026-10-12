@@ -57,6 +57,9 @@ _HREF_RE = re.compile(r"href: '" + _XB + r"([\w.\-]+)\.dc\.html'")
 def apply_connects(source_file, logic, slug_by_file, other_slug_by_file=None):
     replaced = []
     other = other_slug_by_file or {}
+    # ⊕ Batch 7: its renderVals holds the route flags on `const c = this.common(done)`, with no bare `R`
+    # (the batch-4..6 pages spread `R`). The batch-4..6 spelling is unchanged.
+    rvar = "c" if "const c = this.common(" in logic and "Object.assign({}, R," not in logic else "R"
 
     def sub(m):
         f = m.group(1) + ".dc.html"
@@ -66,7 +69,7 @@ def apply_connects(source_file, logic, slug_by_file, other_slug_by_file=None):
                 "ks4_batch_rulings B-CONNECTS: %s links to %r, which is not "
                 "one of this batch's lessons nor any registered lesson." % (source_file, f))
         replaced.append(slug)
-        return "href: KS4.hrefFor('%s', R)" % slug
+        return "href: KS4.hrefFor('%s', %s)" % (slug, rvar)
     return _HREF_RE.sub(sub, logic), replaced
 
 
@@ -76,6 +79,7 @@ def apply_connects(source_file, logic, slug_by_file, other_slug_by_file=None):
 # on a renderVals that does not return through the route helper.
 _TPL_HREF_RE = re.compile(r'href="' + _XB + r'([\w.\-]+)\.dc\.html"')
 _RV_ANCHOR = "return Object.assign({}, R, {"
+_RV_ANCHOR_C = "return Object.assign(c, {"
 
 
 def apply_inline_links(source_file, tpl, logic, slug_by_file, other_slug_by_file=None):
@@ -94,12 +98,18 @@ def apply_inline_links(source_file, tpl, logic, slug_by_file, other_slug_by_file
         return 'href="{{ mrbLink_%s }}"' % slug.replace("-", "_")
     tpl = _TPL_HREF_RE.sub(sub, tpl)
     if found:
-        if logic.count(_RV_ANCHOR) != 1:
+        # ⊕ Batch 7: its renderVals builds `const c = this.common(done)` and returns
+        # `Object.assign(c, {...})`; the route flags live on `c`, not on a bare `R`. The batch-4..6
+        # anchor is tried first and unchanged, so those builds cannot move.
+        anchor, rvar = _RV_ANCHOR, "R"
+        if logic.count(_RV_ANCHOR) == 0 and logic.count(_RV_ANCHOR_C) == 1:
+            anchor, rvar = _RV_ANCHOR_C, "c"
+        if logic.count(anchor) != 1:
             raise RulingError(
                 "ks4_batch_rulings B-INLINE-LINKS: %s needs %r exactly once in renderVals (found %d)."
-                % (source_file, _RV_ANCHOR, logic.count(_RV_ANCHOR)))
-        vals = " ".join("mrbLink_%s: (KS4.hrefFor('%s', R) || '#')," % (sl.replace("-", "_"), sl) for sl in found)
-        logic = logic.replace(_RV_ANCHOR, _RV_ANCHOR + " " + vals, 1)
+                % (source_file, anchor, logic.count(anchor)))
+        vals = " ".join("mrbLink_%s: (KS4.hrefFor('%s', %s) || '#')," % (sl.replace("-", "_"), sl, rvar) for sl in found)
+        logic = logic.replace(anchor, anchor + " " + vals, 1)
     return tpl, logic, found
 
 
@@ -361,7 +371,173 @@ SCIENCE = [
     dict(id="B6-PTR-ENZ-2", slug="digestive-system", layer="logic",
          old="    return Object.assign({}, R, {",
          new="    return Object.assign({}, R, { mrbLink_enzymes: ((window.KS4 && window.KS4.hrefFor('enzymes', R)) || '#'),"),
+
+    # ═══ Batch 7 science rulings (Prompt AC, 12 Oct 2026; rulings by the lead) ═══
+    # drug-discovery-development: thalidomide is not in the spec (the lesson's own NOTES 7.4 says
+    # Code may drop the line and q3 together). The paragraph under the gate figure goes ...
+    dict(id="B7-DD-THAL", slug="drug-discovery-development", layer="template",
+         old=r'''        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Thalidomide, a 1950s drug for morning sickness, had not been tested for its effects on unborn babies. It caused severe birth defects, and drug testing was made much stricter.</p>
+''',
+         new=""),
+    # ... and q3 ("the key lesson from the thalidomide tragedy") is replaced by the KS4 bank item (the lead
+    # changed e07 to e08: her ladder rung 2 already asks for the three things a drug is tested for)
+    # ks4-drug-discovery-development-e08, in her object format, key first. The bank stays five.
+    dict(id="B7-DD-Q3", slug="drug-discovery-development", layer="logic",
+         old=r'''      { q: 'What was the key lesson from the thalidomide tragedy?', opts: [['Drugs must be rigorously tested for all potential effects including effects on embryos \u2014 testing requirements were significantly strengthened', true], ['Natural drugs are always safer than synthetic ones', false], ['Sedatives should never be prescribed during pregnancy', false], ['Clinical trials are unnecessary if a drug has been shown to be safe in adults', false]],
+        wrong_explanations: { 1: 'Thalidomide was a synthetic drug \u2014 but many synthetic drugs are completely safe. The lesson was specifically about testing for effects on ALL groups, especially embryos.', 2: 'The lesson was specifically about testing for ALL effects in ALL populations \u2014 not a blanket ban on sedatives in pregnancy.', 3: 'The thalidomide case showed exactly WHY clinical trials must be thorough \u2014 an adult-safe drug was devastating to embryos.' } },
+''',
+         new=r'''      { q: 'State what is meant by the efficacy of a drug.', opts: [['How well it works', true], ['How harmful the drug is to the body of the patient who is taking it', false], ['How long the drug remains active inside the body after it has been swallowed', false], ['How much of the drug has to be given in order to produce any effect', false]],
+        wrong_explanations: { 1: 'That is toxicity: how harmful the drug is.', 2: 'Drugs are tested for toxicity, efficacy and dose. Efficacy is how well the drug works.', 3: 'That is the dose: how much of the drug to give.' } },
+'''),
+    # ── Batch 7 science rulings, lessons 1-16 (the lead's examination) ──
+    # the 'resistant bacteria multiply' step drew ten live non-resistant bacteria again, as if the killed ones grew back
+    dict(id='B7-BD-RESFIG', slug='bacterial-diseases', layer='logic',
+         old='const resistant = n < 3 ? R.indexOf(i) >= 0 : true;',
+         new='const resistant = n < 2 ? R.indexOf(i) >= 0 : true;'),
+    # rung 2's key needs it taught (spec 4.3.1.2 words)
+    dict(id='B7-VD-FATAL', slug='viral-diseases', layer='logic',
+         old="{ t: 'Most young children are vaccinated against it', d: 0 }",
+         new="{ t: 'Can be fatal if complications arise, so most young children are vaccinated against it', d: 0 }"),
+    dict(id='B7-VD-CHLORO', slug='viral-diseases', layer='logic',
+         old='TMV gives a distinctive mosaic pattern of discolouration on the leaves. Less of the leaf',
+         new='TMV gives a distinctive mosaic pattern of discolouration on the leaves: the pale patches have less chlorophyll. Less of the leaf'),
+    # bank q1's key needs the reason taught
+    dict(id='B7-AB-VIRUS', slug='antibiotics-painkillers', layer='logic',
+         old='Nothing happens to the virus: antibiotics cannot kill viral pathogens.',
+         new='Nothing happens to the virus: antibiotics cannot kill viral pathogens. A virus has none of the bacterial structures that antibiotics attack.'),
+    dict(id='B7-VAC-HERD', slug='vaccination', layer='template',
+         old='the spread of the pathogen is very much reduced. Set how many people are immune',
+         new='the spread of the pathogen is very much reduced. This is called herd immunity. Set how many people are immune'),
+    dict(id='B7-VAC-MEMORY', slug='vaccination', layer='template',
+         old='If the same pathogen re-enters the body, the white blood cells respond quickly',
+         new='Some of these white blood cells stay in the body as memory cells. If the same pathogen re-enters the body, the white blood cells respond quickly'),
+    # labels must match what the 25-person grid draws
+    dict(id='B7-VAC-GRID', slug='vaccination', layer='logic',
+         old="{ k: '50% immune', n: 12 }, { k: '95% immune', n: 23 }",
+         new="{ k: '48% immune', n: 12 }, { k: '96% immune', n: 24 }"),
+    dict(id='B7-CD-MEMORY', slug='communicable-diseases-defence', layer='template',
+         old='If the same pathogen comes back, white blood cells make the right antibodies quickly: in ',
+         new='Some white blood cells stay in the blood as memory cells, so if the same pathogen comes back the right antibodies are made quickly: more in '),
+    # aphids are Triple-only; this is shown on Combined
+    dict(id='B7-FP-APHID', slug='fungal-protist-diseases', layer='logic',
+         old="{ text: 'By insects such as aphids', correct: false,",
+         new="{ text: 'By insects', correct: false,"),
+    dict(id='B7-FP-WX3', slug='fungal-protist-diseases', layer='logic',
+         old='Black spot spreads by water, so wetting the leaves won\\u2019t help.',
+         new='Black spot spreads by water, so wetting the leaves could help it spread.'),
+    # one glycerol + three fatty acids is 4 units, not a 6-bead chain
+    dict(id='B7-MET-LIPID', slug='metabolism', layer='logic',
+         old='chain(250, 120, 6, col)',
+         new='chain(250, 120, i === 1 ? 4 : 6, col)'),
+    # respiration breaks down glucose, which is one unit, not a 6-bead polymer
+    dict(id='B7-MET-GLUCOSE', slug='metabolism', layer='logic',
+         old='chain(30, 120, 6, col)',
+         new='(i === 3 ? D.circ(85, 120, 22, col, C.stroke, 2) : chain(30, 120, 6, col))'),
+    dict(id='B7-MET-UREA', slug='metabolism', layer='logic',
+         old="small: 'urea', big: 'excess protein'",
+         new="small: 'amino acids, then urea', big: 'excess protein'"),
+    dict(id='B7-MET-PLANTS', slug='metabolism', layer='logic',
+         old="'Building up: glucose and nitrate ions form amino acids",
+         new="'Building up: in plants, glucose and nitrate ions form amino acids"),
+    dict(id='B7-MET-WX2', slug='metabolism', layer='logic',
+         old="2: 'CO\\u2082 is transported in the blood and exhaled \\u2014 it is not converted to urea.'",
+         new="2: 'Urea contains nitrogen, which comes from amino acids. Carbon dioxide and water contain no nitrogen.'"),
+    dict(id='B7-MET-KIDNEY', slug='metabolism', layer='logic',
+         old="3: 'The kidneys filter urea.' }",
+         new="3: 'Urea is carried to the kidneys for excretion.' }"),
+    # distance is lamp-to-pondweed: the 0 cm tick sits at the pondweed
+    dict(id='B7-RP-ZERO-1', slug='rate-of-photosynthesis', layer='logic',
+         old='lx = tx - 60 - d * 8',
+         new='lx = tx - d * 8'),
+    dict(id='B7-RP-ZERO-2', slug='rate-of-photosynthesis', layer='logic',
+         old='const x = tx - 60 - k * 8',
+         new='const x = tx - k * 8'),
+    # heat shield narrowed and moved between the pondweed and the nearest (10 cm) lamp position
+    dict(id='B7-RP-ZERO-3', slug='rate-of-photosynthesis', layer='logic',
+         old="b += BOX(tx - 115, 110, 60, 118, '#DDEEF6') + D.T(tx - 85, 100, 'heat shield', 11, { weight: 'normal', fill: C.stroke });",
+         new="b += BOX(tx - 42, 110, 22, 118, '#DDEEF6') + D.T(tx - 20, 88, 'heat shield', 11, { anchor: 'end', weight: 'normal', fill: C.stroke });"),
+    # the written equation is RELATIVE light intensity
+    dict(id='B7-RP-REL-1', slug='rate-of-photosynthesis', layer='logic',
+         old='light intensity (L) = 1 \\u00f7 d\\u00b2',
+         new='relative light intensity (L) = 1 \\u00f7 d\\u00b2'),
+    # lines 321, 327, 334, 336, 366 (lower case)
+    dict(id='B7-RP-REL-2', slug='rate-of-photosynthesis', layer='logic',
+         old='light intensity = 1 \\u00f7 d\\u00b2',
+         new='relative light intensity = 1 \\u00f7 d\\u00b2', count=5),
+    # line 390 (key note, capital L)
+    dict(id='B7-RP-REL-3', slug='rate-of-photosynthesis', layer='logic',
+         old='Light intensity = 1 \\u00f7 d\\u00b2, both',
+         new='Relative light intensity = 1 \\u00f7 d\\u00b2, both'),
+    # the limiting idea is Higher-only and the key fact shows on every route
+    dict(id='B7-RP-KEYFACT', slug='rate-of-photosynthesis', layer='template',
+         old='The factor in shortest supply limits the rate.',
+         new='Temperature, light intensity, carbon dioxide concentration and the amount of chlorophyll all affect the rate.'),
+    # H is declared at the top of renderVals (const H = c.isHigher)
+    dict(id='B7-EX-R4-1', slug='response-to-exercise', layer='logic',
+         old="prompt: 'Explain how the body responds to a period of vigorous exercise, and why breathing stays fast afterwards.'",
+         new="prompt: H ? 'Explain how the body responds to a period of vigorous exercise, and why breathing stays fast afterwards.' : 'Explain how the body responds to a period of vigorous exercise.'"),
+    dict(id='B7-EX-R4-2', slug='response-to-exercise', layer='logic',
+         old="'The build-up of lactic acid creates an oxygen debt, so breathing stays fast after.'",
+         new="'The build-up of lactic acid creates an oxygen debt.'"),
+    # links 2 and 3 could be swapped; link 3 now follows from link 2
+    dict(id='B7-EX-CHAIN', slug='response-to-exercise', layer='logic',
+         old="'Blood carries the lactic acid to the liver, where it is converted back into glucose.'",
+         new="'So breathing stays fast until the lactic acid has been removed.'"),
+    dict(id='B7-PS-CHAIN', slug='photosynthesis', layer='logic',
+         old="'Carbon dioxide diffuses into the leaf through the stomata, and reaches the chloroplasts.'",
+         new="'The water reaches the chloroplasts, along with carbon dioxide that diffused in through the stomata.'"),
+    dict(id='B7-AR-CHAIN', slug='aerobic-respiration', layer='logic',
+         old="'Aerobic respiration happens in the mitochondria.'",
+         new="'So they need a high rate of aerobic respiration, which happens in the mitochondria.'"),
+    # muscle fibres are among the largest cells, so the old distractor may be true
+    dict(id='B7-AR-Q5-1', slug='aerobic-respiration', layer='logic',
+         old="['They are the largest cells in the body', false]",
+         new="['They need very little energy', false]"),
+    # FLAGS F1 bans ATP numbers
+    dict(id='B7-AN-ATP', slug='anaerobic-respiration', layer='logic',
+         old='Anaerobic respiration produces FAR LESS ATP (~2 vs ~36) \\u2014 it is not chosen for maximum performance.',
+         new='Anaerobic respiration transfers much LESS energy than aerobic \\u2014 it is not chosen for maximum performance.'),
+    dict(id='B7-UG-WP', slug='uses-of-glucose', layer='logic',
+         old='it doesn\\u2019t affect osmosis or water potential inside cells',
+         new='it doesn\\u2019t affect osmosis'),
+    dict(id='B7-UG-POTATO', slug='uses-of-glucose', layer='template',
+         old='A potato is mostly food the plant made',
+         new='A potato is packed with food the plant made'),
+    dict(id='B7-PD-MIMIC', slug='plant-disease-detection-defence', layer='logic',
+         old="'Mechanical: tricks animals, for example by looking like something else.'",
+         new="'Mechanical: tricks animals, for example leaf spots that look like butterfly eggs, so butterflies don\\u2019t lay eggs there.'"),
+    dict(id='B7-PD-BARK', slug='plant-disease-detection-defence', layer='logic',
+         old="'The dead cells fall off, taking pathogens on them away.'",
+         new="'The dead cells fall off, and any pathogens on them fall off too.'"),
+    dict(id='B7-AR-Q5-2', slug='aerobic-respiration', layer='logic',
+         old="1: 'Mitochondria number follows energy demand, not cell size.'",
+         new="1: 'They need a lot of energy: the number of mitochondria follows energy demand.'"),
 ]
+
+# ── Batch 7 port mechanics (not science rulings) ───────────────────────
+# B7-<slug>-CHIP, one per batch-7 lesson: every batch-7 page builds its render values in a
+# `common()` helper that returns a FRESH object ({ route, rk, onRoute: R.onRoute || ..., ...})
+# rather than spreading the route helper, so B-R12's one route chip got no words and no menu
+# (as batch 4's infrared, batch 5's red-shift and batch 6's three did). Same one-line repair as
+# B4-IRB-CHIP: pass routeWords / routeSwitchOptions through. B-R12 still fails loud without it.
+# monoclonal-antibodies is the one-route page: it has no chip to feed (B7-ONE-ROUTE below),
+# but the pass-through is harmless and keeps the 16 pages identical in shape.
+_B7_SLUGS = ["communicable-diseases-defence", "viral-diseases", "bacterial-diseases",
+             "fungal-protist-diseases", "vaccination", "antibiotics-painkillers",
+             "drug-discovery-development", "monoclonal-antibodies", "plant-disease-detection-defence",
+             "photosynthesis", "rate-of-photosynthesis", "uses-of-glucose", "aerobic-respiration",
+             "anaerobic-respiration", "response-to-exercise", "metabolism"]
+SCIENCE.extend(
+    dict(id="B7-%s-CHIP" % sl.upper(), slug=sl, layer="logic",
+         old="return { route, rk, onRoute: R.onRoute || (() => {}),",
+         new="return { route, rk, onRoute: R.onRoute || (() => {}), routeWords: R.routeWords, routeSwitchOptions: R.routeSwitchOptions,")
+    for sl in _B7_SLUGS)
+
+# B7-ONE-ROUTE: a lesson that ships on ONE route (monoclonal-antibodies, TH only) has no Route
+# <select> and no "Foundation · Higher" chip to remove: Design drew a single "Triple Higher only"
+# pill and no picker (her NOTES 8.1). B-R1 and B-R12 are not applicable to it; they are skipped
+# only for a record whose `routes` has exactly one entry, and ONLY if the template really has no
+# select and no tier chip (otherwise it fails loud, so a delivery that grows a picker is caught).
 APPLIED = []
 
 
@@ -370,10 +546,11 @@ def apply_science(slug, layer, text):
         if r["slug"] != slug or r["layer"] != layer:
             continue
         n = text.count(r["old"])
-        if n != 1:
-            raise RulingError("ks4_batch_rulings %s: expected exactly 1 occurrence in %s (%s), found %d.\n  looking for: %r"
-                              % (r["id"], slug, layer, n, r["old"][:160]))
-        text = text.replace(r["old"], r["new"], 1)
+        want = r.get("count", 1)  # ⊕ batch 7: a ruling may name an expected count above 1; any other count fails
+        if n != want:
+            raise RulingError("ks4_batch_rulings %s: expected exactly %d occurrence(s) in %s (%s), found %d.\n  looking for: %r"
+                              % (r["id"], want, slug, layer, n, r["old"][:160]))
+        text = text.replace(r["old"], r["new"])
         APPLIED.append(r["id"])
     return text
 
@@ -381,8 +558,16 @@ def apply_science(slug, layer, text):
 def port_lesson(lesson, tpl, logic, slug_by_file, other_slug_by_file=None):
     """-> (tpl, logic, report-dict)."""
     src = lesson["source_file"]
-    tpl = ks4_rulings.apply_r1_route_selector(src, tpl)
-    tpl = _chip(lesson["slug"], tpl)
+    if len(lesson["routes"]) == 1:
+        # ⊕ B7-ONE-ROUTE (see above): nothing to remove, and it must really be absent.
+        if "<select" in tpl or ks4_rulings.R12_TIER_LINE in tpl:
+            raise RulingError("ks4_batch_rulings B7-ONE-ROUTE: %s ships on one route but its template "
+                              "still carries a Route picker or tier chip." % src)
+        if "Triple Higher only" not in tpl:
+            raise RulingError("ks4_batch_rulings B7-ONE-ROUTE: %s has no 'Triple Higher only' pill." % src)
+    else:
+        tpl = ks4_rulings.apply_r1_route_selector(src, tpl)
+        tpl = _chip(lesson["slug"], tpl)
     logic, n_prev, n_next = ks4_rulings.apply_r_prevnext(src, logic)
     logic, connects = apply_connects(src, logic, slug_by_file, other_slug_by_file)
     tpl, logic, inline = apply_inline_links(src, tpl, logic, slug_by_file, other_slug_by_file)
@@ -418,3 +603,24 @@ def apply_triangle_top_label(logic):
     _require(logic, TRI_CELL_FROM, "Ks4Triangle.dc.html", "B4-TRI-TOP")
     _require(logic, TRI_AT_FROM, "Ks4Triangle.dc.html", "B4-TRI-TOP")
     return logic.replace(TRI_CELL_FROM, TRI_CELL_TO, 1).replace(TRI_AT_FROM, TRI_AT_TO, 1)
+
+
+# ⊕ B7-END-EMPTY-CONNECTS (batch 7 only; applied to batch 7's OWN copy of Ks4End by compile_block).
+# Design's connects for bacterial-diseases (Culturing microorganisms, Triple) and drug-discovery-development
+# (Plant defences, Triple) are Triple-only, so on the two Combined routes R-CONNECTS' filter leaves an EMPTY
+# list under a still-visible "Connects to" heading. The section is wrapped in sc-if and hidden when the
+# filtered list is empty. Words, links and every non-empty page are unchanged. Fails loud if a target moved.
+END_SEC_FROM = "    <section>\n      <h2>Connects to</h2>"
+END_SEC_TO = "    <sc-if value=\"{{ hasConnects }}\"><section>\n      <h2>Connects to</h2>"
+END_SEC_CLOSE_FROM = "      </ul>\n    </section>\n    <section class=\"ks3-tutor\">"
+END_SEC_CLOSE_TO = "      </ul>\n    </section></sc-if>\n    <section class=\"ks3-tutor\">"
+END_LOGIC_FROM = "connects: (p.connects || []).filter(function (c) { return !!c.href; }), tutorLine:"
+END_LOGIC_TO = ("connects: (p.connects || []).filter(function (c) { return !!c.href; }), "
+                "hasConnects: (p.connects || []).filter(function (c) { return !!c.href; }).length > 0, tutorLine:")
+
+
+def apply_end_hide_empty_connects(tpl, logic):
+    for text, frm in ((tpl, END_SEC_FROM), (tpl, END_SEC_CLOSE_FROM), (logic, END_LOGIC_FROM)):
+        _require(text, frm, "Ks4End.dc.html", "B7-END-EMPTY-CONNECTS")
+    tpl = tpl.replace(END_SEC_FROM, END_SEC_TO, 1).replace(END_SEC_CLOSE_FROM, END_SEC_CLOSE_TO, 1)
+    return tpl, logic.replace(END_LOGIC_FROM, END_LOGIC_TO, 1)

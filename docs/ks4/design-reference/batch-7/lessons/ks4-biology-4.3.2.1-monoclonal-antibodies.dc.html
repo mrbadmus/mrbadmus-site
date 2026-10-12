@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monoclonal antibodies · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Infection and response" title="Monoclonal antibodies" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.3.2.1–4.3.2.2</p>
+        <h1>Monoclonal antibodies</h1>
+        <p class="ks3-bigq">Antibodies that bind one target and nothing else. Combine two cells to make them, then see what they are used for.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Triple Higher only</span>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="One line or two." scene="A home pregnancy test shows its result within minutes, from just a few drops of urine." question="does the strip find one exact chemical, or anything unusual in the sample?" options="{{ hookOptions }}" bridge="One exact chemical. The antibodies on the strip bind to one target only. Next: how they are made." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-hybrid" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Two cells, one job</p>
+        <h2 style="margin: 6px 0 0;">Why fuse two cells?</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Monoclonal antibodies are produced from a single clone of cells. They are specific to one binding site on one protein antigen, so they can target a specific chemical or specific cells in the body. To make them, two kinds of cell are combined. Pick each.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ cellBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ cellFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ cellNote }}</p></div>
+        </div>
+      </section>
+
+      <section id="s-make" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Production</p>
+        <h2 style="margin: 6px 0 0;">From mouse to bottle.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Step through how monoclonal antibodies are produced.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ makeBtns }}" as="b" hint-placeholder-count="6"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ makeFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ makeNote }}</p></div>
+      </section>
+
+      <section id="s-uses" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Uses · and a catch</p>
+        <h2 style="margin: 6px 0 0;">One target, many uses.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Tap each use. Then weigh them up: monoclonal antibodies create more side effects than expected, and they are not yet as widely used as everyone hoped when they were first developed.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ useCards }}" as="f" hint-placeholder-count="4"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · which part makes the antibody?</p></div>
+        <p class="ks3-mis-quote">&ldquo;The tumour cell makes the antibody.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="In a hybridoma cell, which part lets it make the antibody?" options="{{ thinkOptions }}" reveal="The lymphocyte part. The tumour cell part lets it keep dividing." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Advantage or disadvantage?" prompt="Place each point." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Very specific and made in large amounts, but more side effects than expected and not as widely used as hoped." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How they are produced, step by step.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How a use depends on binding one antigen.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Evaluate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Advantages and disadvantages, then a judgement.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">A hybridoma cell can both divide and make one antibody. Cloned, it makes large amounts of identical antibodies that bind one antigen only.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="monoclonal-antibodies" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Monoclonal antibodies" spec="AQA 4.3.2.1–4.3.2.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure why the two cells are combined?" legal="Drawings are schematic." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'monoclonal-antibodies';
+const OK = ["Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const RAIL = [
+  { id: 's-hook', label: 'One line or two', short: 'HOOK' },
+  { id: 's-hybrid', label: 'Why fuse?', short: 'HYBRIDOMA' },
+  { id: 's-make', label: 'Production', short: 'MAKE' },
+  { id: 's-uses', label: 'Uses', short: 'USES' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'For or against', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const STATE = { cell: 0, cells: [0], mk: 0, mks: [0], uses: [] };
+const CELLS = [
+  { k: 'Mouse lymphocyte', makes: true, divides: false, note: 'Mouse lymphocytes are stimulated to make one particular antibody. But they don\u2019t keep dividing, so they can\u2019t make it in large amounts.' },
+  { k: 'Tumour cell', makes: false, divides: true, note: 'This particular kind of tumour cell keeps dividing. But it doesn\u2019t make the antibody.' },
+  { k: 'Hybridoma cell', makes: true, divides: true, note: 'Combine the two and you get a hybridoma cell. It can both divide and make the antibody.' }
+];
+const MAKE = [
+  { k: 'Stimulate', note: 'A mouse is injected with the antigen, stimulating its lymphocytes to make a particular antibody.' },
+  { k: 'Collect', note: 'The lymphocytes that make the antibody are collected from the mouse.' },
+  { k: 'Combine', note: 'The lymphocytes are combined with a particular kind of tumour cell.' },
+  { k: 'Hybridoma', note: 'This makes hybridoma cells, which can both divide and make the antibody.' },
+  { k: 'Clone', note: 'Single hybridoma cells are cloned to produce many identical cells that all produce the same antibody.' },
+  { k: 'Purify', note: 'A large amount of the antibody can be collected and purified.' }
+];
+const USES = [
+  { name: 'Pregnancy tests', why: 'Antibodies bind to a hormone found only in the urine of pregnant women, hCG, and nothing else.' },
+  { name: 'Laboratory tests', why: 'To measure the levels of hormones and other chemicals in blood, or to detect pathogens.' },
+  { name: 'Research', why: 'To locate or identify specific molecules in a cell or tissue, by binding to them with a fluorescent dye.' },
+  { name: 'Treating cancer', why: 'The antibody is bound to a radioactive substance, a toxic drug or a chemical that stops cells growing and dividing. It delivers this to the cancer cells without harming other cells in the body.' }
+];
+
+class Component extends DCLogic {
+  
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: rk === 'TF' || rk === 'TH', isTH: rk === 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+
+  Y(x, y, a, col) {
+    const r = a * Math.PI / 180, c = Math.cos(r), s = Math.sin(r);
+    const P = (dx, dy) => (x + dx * c - dy * s).toFixed(1) + ' ' + (y + dx * s + dy * c).toFixed(1);
+    return '<path d="M' + P(0, 14) + ' L' + P(0, 0) + ' L' + P(-8, -9) + ' M' + P(0, 0) + ' L' + P(8, -9) + '" fill="none" stroke="' + (col || '#3B82F6') + '" stroke-width="3.5" stroke-linecap="round"/>';
+  }
+  cellFig(i) {
+    const D = window.KS4D, C = D.C, X = CELLS[i]; let b = '';
+    const fill = ['#EDE7F6', '#F6D9D0', '#E3DCF0'][i];
+    b += D.circ(120, 130, 70, fill, C.stroke, 3) + D.circ(120, 130, 30, i === 1 ? '#E07B5A' : '#B9A7D8', C.stroke, 2);
+    if (i === 2) b += D.circ(140, 115, 18, '#E07B5A', C.stroke, 2);
+    if (X.makes) { b += this.Y(215, 90, 60) + this.Y(225, 140, 90) + this.Y(210, 185, 120); }
+    b += D.T(120, 230, X.k.toLowerCase(), 15, { fill: C.stroke });
+    b += BOX(270, 70, 140, 50, X.makes ? '#DDEFD3' : '#FFFDF8') + D.T(340, 101, X.makes ? 'makes antibody' : 'no antibody', 13, { fill: C.stroke });
+    b += BOX(270, 140, 140, 50, X.divides ? '#DDEFD3' : '#FFFDF8') + D.T(340, 171, X.divides ? 'keeps dividing' : 'stops dividing', 13, { fill: C.stroke });
+    return D.svg(430, 250, b, X.k + ': ' + (X.makes ? 'makes the antibody' : 'does not make the antibody') + ', ' + (X.divides ? 'keeps dividing.' : 'does not keep dividing.'));
+  }
+  makeFig(n) {
+    const D = window.KS4D, C = D.C; let b = '';
+    MAKE.forEach((m, i) => { const x = 14 + i * 108; b += BOX(x, 40, 96, 60, i === n ? '#F6D9D0' : i < n ? '#FFFDF8' : '#E9E2CF', C.stroke, i === n ? 3.5 : 2) + D.T(x + 48, 75, m.k, 13, { fill: i <= n ? C.stroke : C.muted }); if (i < 5) b += D.arrow(x + 97, 70, x + 107, 70, C.stroke, 2); });
+    const cx = 330, cy = 180;
+    if (n <= 1) { b += '<ellipse cx="' + cx + '" cy="' + cy + '" rx="70" ry="38" fill="#E9E2CF" stroke="' + C.stroke + '" stroke-width="2.5"/>' + D.T(cx, cy + 5, 'mouse', 14, { fill: C.stroke }); if (n === 1) b += D.circ(cx + 120, cy, 20, '#EDE7F6', C.stroke, 2) + D.arrow(cx + 72, cy, cx + 96, cy, C.stroke, 2.5); }
+    else if (n <= 3) { b += D.circ(cx - 80, cy, 24, '#EDE7F6', C.stroke, 2) + D.T(cx - 80, cy + 44, 'lymphocyte', 12, { weight: 'normal', fill: C.stroke }) + D.circ(cx + 80, cy, 24, '#F6D9D0', C.stroke, 2) + D.T(cx + 80, cy + 44, 'tumour cell', 12, { weight: 'normal', fill: C.stroke });
+      if (n === 3) b += D.circ(cx, cy, 30, '#E3DCF0', C.stroke, 3) + D.T(cx, cy + 50, 'hybridoma', 13, { fill: C.stroke }); }
+    else if (n === 4) { for (let i = 0; i < 8; i++) b += D.circ(cx - 140 + i * 40, cy, 15, '#E3DCF0', C.stroke, 2); b += D.T(cx, cy + 40, 'many identical hybridoma cells', 13, { weight: 'normal', fill: C.stroke }); }
+    else { b += '<rect x="' + (cx - 30) + '" y="' + (cy - 50) + '" width="60" height="90" rx="10" fill="#DDEEF6" stroke="' + C.stroke + '" stroke-width="2.5"/>'; for (let i = 0; i < 6; i++) b += this.Y(cx - 15 + (i % 3) * 15, cy - 25 + Math.floor(i / 3) * 30, 0); b += D.T(cx, cy + 62, 'purified antibody', 13, { fill: C.stroke }); }
+    return D.svg(670, 250, b, 'Production step ' + (n + 1) + ' of 6, ' + MAKE[n].k + ': ' + MAKE[n].note);
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.cells.length === 3, s.mks.length === 6, s.uses.length === 4, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const bankSrc = [
+      { q: 'What is a hybridoma cell and why is it useful?', opts: [['A cell formed by fusing a lymphocyte with a tumour cell \u2014 it divides indefinitely AND produces specific antibodies', true], ['A lymphocyte that has been infected by a virus \u2014 producing antibodies to fight it', false], ['A stem cell that can differentiate into any type of immune cell', false], ['A cancer cell that has been trained to produce antibodies by injecting it with antigens', false]],
+        wrong_explanations: { 1: 'A virus-infected lymphocyte would produce antibodies against the virus \u2014 not a hybridoma.', 2: 'Stem cells differentiate into specialised cells \u2014 hybridomas are a specific fusion product for antibody production.', 3: 'Cancer cells don\u2019t produce antibodies naturally \u2014 they are fused with lymphocytes to give them this ability.' } },
+      { q: 'Why are monoclonal antibodies more targeted than conventional chemotherapy for cancer treatment?', opts: [['They bind specifically to proteins on cancer cell surfaces \u2014 leaving healthy cells unaffected', true], ['They are injected directly into tumours \u2014 not into the bloodstream', false], ['They are made from the patient\u2019s own cells \u2014 so they know which cells are cancerous', false], ['They kill cancer cells instantly \u2014 unlike chemotherapy which takes weeks', false]],
+        wrong_explanations: { 1: 'Monoclonal antibodies can be given intravenously \u2014 the specificity comes from their precise binding to cancer-cell antigens, not from targeted injection.', 2: 'Current monoclonal antibodies are generally not made from the patient\u2019s own cells \u2014 they are produced from mouse or humanised cell lines.', 3: 'Both treatments take time to work \u2014 the advantage of monoclonal antibodies is specificity, not speed.' } },
+      { q: 'A pregnancy test uses monoclonal antibodies specific to hCG. What does this mean?', opts: [['The antibodies bind ONLY to hCG molecules \u2014 not to other hormones or substances in urine', true], ['The antibodies were taken from a pregnant woman\u2019s blood', false], ['The antibodies can detect any hormone in the body', false], ['The test uses polyclonal antibodies for a broad detection range', false]],
+        wrong_explanations: { 1: 'The antibodies come from hybridoma cells cultured in a laboratory \u2014 not from a pregnant woman.', 2: 'Each monoclonal antibody binds to one binding site on one protein antigen, so antibodies made for hCG bind only hCG \u2014 not other hormones.', 3: 'Pregnancy tests use MONOCLONAL antibodies \u2014 specific to hCG only. This specificity prevents false positives from other hormones.' } },
+      { q: 'How are monoclonal antibodies used in research?', opts: [['Bound to a fluorescent dye, to locate or identify specific molecules in a cell or tissue', true], ['To make cells divide faster', false], ['To kill every bacterium in a sample', false], ['To turn tumour cells into lymphocytes', false]],
+        wrong_explanations: { 1: 'They bind to a target; they don\u2019t speed up division.', 2: 'Each antibody binds one specific antigen, not every bacterium.', 3: 'Lymphocytes and tumour cells are fused to make hybridomas, not converted.' } },
+      { q: 'Which is a disadvantage of using monoclonal antibodies?', opts: [['They create more side effects than expected', true], ['They bind to only one antigen', false], ['They can carry a drug to cancer cells', false], ['They can be made in large amounts', false]],
+        wrong_explanations: { 1: 'Binding one antigen is what makes them useful.', 2: 'Delivering a drug only to cancer cells is an advantage.', 3: 'Large amounts are an advantage of cloning hybridomas.' } }
+    ];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'One exact chemical', correct: true, reply: 'Yes: one hormone, and nothing else. Monoclonal antibodies make that possible.' },
+        { text: 'Anything unusual in the sample', correct: false, reply: 'The strip finds one exact chemical, a hormone. That is the trick of monoclonal antibodies.' }
+      ],
+      cellBtns: this.btns(CELLS.map((x) => x.k), s.cell, (i) => this.setState({ cell: i, cells: this.seen('cells', i) })),
+      cellFig: c.ready ? K.fig(this.cellFig(s.cell), '') : null,
+      cellNote: CELLS[s.cell].note,
+      makeBtns: this.btns(MAKE.map((x, i) => (i + 1) + ' \u00b7 ' + x.k), s.mk, (i) => this.setState({ mk: i, mks: this.seen('mks', i) })),
+      makeFig: c.ready ? K.fig(this.makeFig(s.mk), '') : null,
+      makeNote: MAKE[s.mk].note,
+      useCards: this.cards(USES, 'uses'),
+      thinkOptions: [
+        { text: 'The tumour cell part', correct: false, reply: 'The tumour cell part lets it keep dividing.' },
+        { text: 'The lymphocyte part', correct: true, reply: 'The tumour part lets it keep dividing.' },
+        { text: 'The mouse\u2019s blood', correct: false, reply: 'The antibody is made by the hybridoma cells, grown outside the mouse.' }
+      ],
+      sortBins: [{ id: 'a', label: 'Advantage' }, { id: 'd', label: 'Disadvantage' }],
+      sortItems: [
+        { text: 'Bind to one binding site on one antigen', bin: 'a', why: 'So they target one chemical or cell type.' },
+        { text: 'Deliver a drug to cancer cells without harming other cells', bin: 'a', why: 'Targeted treatment.' },
+        { text: 'Create more side effects than expected', bin: 'd', why: 'A spec evaluation point.' },
+        { text: 'Not as widely used as was hoped', bin: 'd', why: 'A spec evaluation point.' },
+        { text: 'Made in large amounts by cloning', bin: 'a', why: 'Hybridomas keep dividing.' },
+        { text: 'Mice are used to make them', bin: 'd', why: 'Some people object to using animals.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the cell made by combining a lymphocyte with a tumour cell.', 'A hybridoma cell.', [['A phagocyte', 'A white blood cell that engulfs pathogens.'], 'A hybridoma cell', ['A stem cell', 'Not made by fusion.']]),
+          MCQ('State', 'State why the lymphocyte is combined with a tumour cell.', 'The tumour cell keeps dividing.', ['So the cell keeps dividing', ['So the cell makes antibodies', 'The lymphocyte part already makes the antibody.'], ['So the antibodies kill tumours', 'The fusion is about dividing.']])
+        ],
+        r2: [
+          MCQ('Give', 'Give one way monoclonal antibodies are used to treat cancer.', 'Bound to a radioactive substance, a toxic drug or a chemical that stops cells growing and dividing.', [['Injected to make the patient\u2019s lymphocytes divide', 'They carry a substance to the cancer cells.'], 'Bound to a toxic drug, delivered to the cancer cells', ['Swallowed to kill bacteria in the gut', 'They aren\u2019t antibiotics.'], ['Used to stop all cells dividing', 'They target cancer cells only.']]),
+          MCQ('Suggest', 'Suggest why a pregnancy test gives no result with other hormones in urine.', 'The antibodies bind to one binding site on one antigen only.', [['The other hormones are destroyed by the strip', 'The antibodies simply don\u2019t bind them.'], ['Other hormones aren\u2019t found in urine', 'Many are.'], 'The antibodies bind only to that one hormone', ['The test uses many kinds of antibody', 'It uses one, made from a single clone.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain how a large amount of one monoclonal antibody is produced. Put the links in order.',
+            ['Mouse lymphocytes are stimulated to make a particular antibody.', 'They are combined with a tumour cell to make a hybridoma cell, which can divide and make the antibody.', 'A single hybridoma cell is cloned, and the antibody is collected and purified.'],
+            [['The tumour cell makes the antibody.', 'The lymphocyte part makes it.'], ['The antibody is collected from the mouse\u2019s blood.', 'It is collected from the cloned hybridoma cells.']]),
+          CHAIN('Explain', 'Explain how a monoclonal antibody can treat cancer without harming other cells. Put the links in order.',
+            ['The antibody is specific to an antigen on the cancer cells.', 'A toxic drug, radioactive substance or growth-stopping chemical is bound to it.', 'It delivers the substance to the cancer cells only, so other cells aren\u2019t harmed.'],
+            [['The antibody kills every dividing cell.', 'That is the problem with older treatments.'], ['The antibody has no side effects at all.', 'They create more side effects than expected.']])
+        ],
+        r4: [
+          { kind: 'write', command: 'Evaluate', marks: 6, prompt: 'Evaluate the use of monoclonal antibodies to treat cancer.',
+            levels: LV6('Advantages and disadvantages, each explained, with a judgement.', 'Advantages and at least one disadvantage, with some explanation.', 'One or two simple points.'),
+            points: ['Specific to one binding site on one antigen, found on the cancer cells.', 'Can carry a radioactive substance, toxic drug or growth-stopping chemical.', 'Delivers it to cancer cells without harming other cells.', 'They create more side effects than expected.', 'Not yet as widely used as was hoped.', 'Mice are used in production; a judgement weighing these.'],
+            reject: ['\u201cThey have no side effects.\u201d', '\u201cThe tumour cell makes the antibody.\u201d'] }
+        ]
+      },
+      keyLines: ['Monoclonal antibodies come from a single clone of cells and are specific to one binding site on one protein antigen.', 'Mouse lymphocytes are stimulated to make an antibody, then combined with a tumour cell to make a hybridoma, which can both divide and make the antibody.', 'Single hybridoma cells are cloned; the antibody is collected and purified.', 'Uses: pregnancy tests; lab tests for hormones, chemicals and pathogens; research with fluorescent dye; cancer treatment. More side effects than expected; not as widely used as hoped.'],
+      bank: c.ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.3.1.9-drug-discovery-development.dc.html', label: 'Drug discovery and development' },
+      endNext: { href: 'ks4-biology-4.3.3.1-plant-disease-detection-defence.dc.html', label: 'Plant disease (Triple)' },
+      endConnects: [{ href: 'ks4-biology-4.3.1.1-communicable-diseases-defence.dc.html', label: 'Antibodies and white blood cells' }, { href: '../../Batch 6/lessons/ks4-biology-4.2.2.7-cancer.dc.html', label: 'Cancer' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

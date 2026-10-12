@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plant disease and defences · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Infection and response" title="Plant disease and defences" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.3.3.1–4.3.3.2</p>
+        <h1>Plant disease and defences</h1>
+        <p class="ks3-bigq">A sick plant can’t tell you what’s wrong. Read the signs, diagnose it, then see how plants fight back.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Triple only</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="2"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Yellow leaves." scene="A houseplant has been in the same pot for years. Its leaves are slowly turning yellow." question="is that more likely to be a germ, or something missing from the soil?" options="{{ hookOptions }}" bridge="Either is possible, and the signs tell them apart. Time to play plant doctor." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-doctor" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Plant doctor</p>
+        <h2 style="margin: 6px 0 0;">What is wrong with this plant?</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Plants can be infected by viral, bacterial and fungal pathogens, and damaged by insects. They can also be damaged by ion deficiencies. Look at each plant and diagnose it.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ caseFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">{{ caseCount }}</p><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ dxBtns }}" as="b" hint-placeholder-count="5"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ dxNote }}</p><sc-if value="{{ caseNextShow }}"><button type="button" onClick="{{ onCaseNext }}" style="{{ nextStyle }}">Next plant</button></sc-if></div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Understanding ion deficiencies lets growers give plants the best conditions.</p>
+        <sc-if value="{{ isTH }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 16px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);"><div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Higher</span><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Detecting and identifying disease</p></div><p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Plant diseases can be detected by: stunted growth; spots on leaves; areas of decay (rot); growths; malformed stems or leaves; discolouration; the presence of pests.</p><p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Identification can be made by: reference to a gardening manual or website; taking infected plants to a laboratory to identify the pathogen; using testing kits that contain monoclonal antibodies.</p></div></sc-if>
+      </section>
+
+      <section id="s-defence" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Plant defences</p>
+        <h2 style="margin: 6px 0 0;">Three kinds of defence.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Plants have no antibodies. Their defences are physical, chemical and mechanical. Tap each.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ defCards }}" as="f" hint-placeholder-count="8"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">TMV and black spot in detail: in <a href="ks4-biology-4.3.1.2-viral-diseases.dc.html">Viral diseases</a> and <a href="ks4-biology-4.3.1.4-fungal-protist-diseases.dc.html">Fungal and protist diseases</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · plants and antibodies</p></div>
+        <p class="ks3-mis-quote">&ldquo;Plants fight disease with antibodies, like we do.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="How do plants defend themselves?" options="{{ thinkOptions }}" reveal="With physical, chemical and mechanical defences. Plants have no antibodies or white blood cells." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Physical, chemical or mechanical?" prompt="Place each defence." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Physical barriers resist microorganisms; chemicals kill bacteria or deter herbivores; mechanical adaptations deter or trick animals." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Each defence and what it does.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why a deficiency affects growth, link by link.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">A diagnosis or a fix, from the signs.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Nitrate deficiency stunts growth; magnesium deficiency causes chlorosis. Plant defences are physical, chemical and mechanical.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="plant-disease-detection-defence" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Plant disease and defences" spec="AQA 4.3.3.1–4.3.3.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure how to tell the deficiencies apart?" legal="Plant drawings are schematic." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'plant-disease-detection-defence';
+const OK = ["Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const RAIL = [
+  { id: 's-hook', label: 'Yellow leaves', short: 'HOOK' },
+  { id: 's-doctor', label: 'Plant doctor', short: 'DIAGNOSE' },
+  { id: 's-defence', label: 'Plant defences', short: 'DEFENCES' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Physical, chemical or mechanical', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const STATE = { ci: 0, pick: null, defs: [] };
+const DX = ['Virus (TMV)', 'Fungus (black spot)', 'Insects (aphids)', 'Nitrate deficiency', 'Magnesium deficiency'];
+const CASES = [
+  { d: 3, sign: 'A short plant, much smaller than the others', why: 'Stunted growth is caused by nitrate deficiency. Nitrate ions are needed for protein synthesis, and therefore growth.' },
+  { d: 0, sign: 'A mosaic pattern of discolouration on the leaves', why: 'Tobacco mosaic virus: a viral disease.' },
+  { d: 4, sign: 'Yellow leaves all over (chlorosis), with no spots', why: 'Chlorosis is caused by magnesium deficiency. Magnesium ions are needed to make chlorophyll.' },
+  { d: 2, sign: 'Small insects crowded on the stem', why: 'Aphids: the insects that damage plants.' },
+  { d: 1, sign: 'Purple or black spots on the leaves', why: 'Black spot: a fungal disease.' }
+];
+const DEF = [
+  { name: 'Cellulose cell walls', why: 'Physical: resist invasion by microorganisms.' },
+  { name: 'Tough waxy cuticle on leaves', why: 'Physical: a barrier that stops microorganisms getting in.' },
+  { name: 'Bark: layers of dead cells', why: 'Physical: around stems; the dead cells fall off, taking pathogens with them.' },
+  { name: 'Antibacterial chemicals', why: 'Chemical: kill or stop bacteria.' },
+  { name: 'Poisons', why: 'Chemical: deter herbivores.' },
+  { name: 'Thorns and hairs', why: 'Mechanical: deter animals.' },
+  { name: 'Leaves that droop or curl when touched', why: 'Mechanical: can dislodge or scare off animals.' },
+  { name: 'Mimicry', why: 'Mechanical: tricks animals, for example by looking like something else.' }
+];
+
+class Component extends DCLogic {
+  
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: rk === 'TF' || rk === 'TH', isTH: rk === 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+
+  leaf(x, y, a, fill, extra) {
+    return '<g transform="translate(' + x + ' ' + y + ') rotate(' + a + ')"><path d="M0 0 C18 -22 52 -22 70 0 C52 22 18 22 0 0 Z" fill="' + fill + '" stroke="#1A1A1A" stroke-width="2"/>' + (extra || '') + '</g>';
+  }
+  caseFig(i) {
+    const D = window.KS4D, C = D.C, d = CASES[i].d; let b = '';
+    const h = d === 3 ? 110 : 220, top = 290 - h;
+    b += '<path d="M150 290 L270 290 L255 340 L165 340 Z" fill="#C98B5E" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    b += D.line(210, 290, 210, top, 5, '#5C7A3A');
+    const n = d === 3 ? 2 : 4;
+    for (let k = 0; k < n; k++) {
+      const y = 290 - (k + 1) * h / (n + 0.5), right = k % 2 === 0;
+      let fill = '#4F9A4A', extra = '';
+      if (d === 4) fill = '#D9C76A';
+      if (d === 0) extra = '<ellipse cx="22" cy="-3" rx="9" ry="6" fill="#D9C76A"/><ellipse cx="44" cy="4" rx="10" ry="6" fill="#D9C76A"/><ellipse cx="56" cy="-4" rx="6" ry="4" fill="#A9CF8A"/>';
+      if (d === 1) extra = '<circle cx="24" cy="-2" r="5" fill="#2A1E2E"/><circle cx="42" cy="5" r="6" fill="#2A1E2E"/><circle cx="54" cy="-5" r="4" fill="#2A1E2E"/>';
+      b += this.leaf(210, y, right ? -20 : 200, fill, extra);
+    }
+    if (d === 2) for (let k = 0; k < 9; k++) b += '<ellipse cx="' + (204 + (k % 2) * 12) + '" cy="' + (top + 40 + k * 14) + '" rx="5" ry="4" fill="#7FB04A" stroke="' + C.stroke + '" stroke-width="1"/>';
+    if (d === 3) b += '<line x1="300" y1="70" x2="300" y2="290" stroke="' + C.muted + '" stroke-width="2" stroke-dasharray="5 5"/>' + D.T(300, 60, 'normal height', 12, { weight: 'normal', fill: C.muted });
+    return D.svg(420, 355, b, 'Plant ' + (i + 1) + ': ' + CASES[i].sign + '.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.ci >= CASES.length - 1 && s.pick !== null, s.defs.length === DEF.length, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const CS = CASES[s.ci], answered = s.pick !== null;
+    const base = [
+      { q: 'A gardener notices black spots on their rose leaves and the leaves are turning yellow. What is most likely causing this?', opts: [['Rose black spot \u2014 a fungal disease caused by Diplocarpon rosae', true], ['Tobacco mosaic virus \u2014 a viral disease causing discolouration', false], ['Salmonella \u2014 a bacterial infection from contaminated soil', false], ['The plant is simply overwatered and needs less water', false]],
+        wrong_explanations: { 1: 'TMV causes a mosaic pattern of light and dark green/yellow patches \u2014 not specific black spots with yellowing leaves around them.', 2: 'Salmonella affects animals, not plants \u2014 it does not cause leaf spots in roses.', 3: 'Overwatering can cause some yellowing, but the distinctive BLACK SPOTS specifically indicate rose black spot fungal infection.' } },
+      { q: 'Why does the waxy cuticle on leaves help protect the plant from disease?', opts: [['It provides a waterproof physical barrier that prevents pathogens from landing and colonising the leaf surface', true], ['It contains antibiotics that kill any bacteria landing on the leaf', false], ['It absorbs UV radiation to prevent DNA damage in leaf cells', false], ['It makes leaves slippery so insects cannot grip and feed on them', false]],
+        wrong_explanations: { 1: 'The cuticle does not contain antibiotics \u2014 it is a physical, waterproof barrier. Plant chemical defences (like tannins or allicin) are separate from the cuticle.', 2: 'UV protection is a secondary function in some plants \u2014 but the PRIMARY defensive role of the cuticle is as a physical barrier to pathogens and water loss.', 3: 'Waxiness can make leaves slippery, but the main function is waterproofing \u2014 creating an inhospitable surface for pathogen growth.' } },
+      { q: 'A plant\u2019s leaves turn yellow all over. Which ion is it most likely to be short of?', opts: [['Magnesium', true], ['Nitrate', false], ['Sodium', false], ['Chloride', false]],
+        wrong_explanations: { 1: 'Nitrate deficiency causes stunted growth.', 2: 'Magnesium is the ion needed to make chlorophyll.', 3: 'Magnesium is the ion needed to make chlorophyll.' } },
+      { q: 'Why does nitrate deficiency cause stunted growth?', opts: [['Nitrate ions are needed for protein synthesis, and therefore growth', true], ['Nitrate ions are needed to make chlorophyll', false], ['Nitrate ions kill pathogens', false], ['Nitrate ions make the stem hard', false]],
+        wrong_explanations: { 1: 'That is magnesium.', 2: 'Nitrate is an ion plants need, not a defence.', 3: 'Nitrate is needed for protein synthesis.' } }
+    ];
+    const fifth = c.isTH
+      ? { q: 'How can testing kits identify the pathogen that has infected a plant?', opts: [['They contain monoclonal antibodies that bind to one specific pathogen', true], ['They contain antibiotics that kill the pathogen', false], ['They measure how tall the plant is', false], ['They contain poisons that deter herbivores', false]],
+          wrong_explanations: { 1: 'Antibiotics kill bacteria; they don\u2019t identify anything.', 2: 'Height shows stunting, not which pathogen.', 3: 'Poisons are a plant\u2019s own chemical defence.' } }
+      : { q: 'Which of these is a mechanical adaptation of a plant?', opts: [['Leaves that droop or curl when touched', true], ['A tough waxy cuticle', false], ['Antibacterial chemicals', false], ['Cellulose cell walls', false]],
+          wrong_explanations: { 1: 'That is a physical defence.', 2: 'That is a chemical defence.', 3: 'That is a physical defence.' } };
+    const bankSrc = base.concat([fifth]);
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'A germ', correct: true, reply: 'It could be: some pathogens cause yellow patches. But yellowing all over with no spots often means something is missing.' },
+        { text: 'Something missing from the soil', correct: true, reply: 'Often, yes. Yellowing all over is a sign of magnesium deficiency. Some pathogens cause yellow patches too.' }
+      ],
+      caseFig: c.ready ? K.fig(this.caseFig(s.ci), '') : null,
+      caseCount: 'Plant ' + (s.ci + 1) + ' of ' + CASES.length + ': ' + CS.sign,
+      dxBtns: this.btns(DX, s.pick, (i) => { if (s.pick === null) this.setState({ pick: i }); }),
+      dxNote: !answered ? 'Pick a diagnosis.' : (s.pick === CS.d ? 'Yes. ' : 'Not this one: it\u2019s ' + DX[CS.d].toLowerCase() + '. ') + CS.why,
+      caseNextShow: answered && s.ci < CASES.length - 1, nextStyle: this.seg(true),
+      onCaseNext: () => this.setState({ ci: s.ci + 1, pick: null }),
+      defCards: this.cards(DEF, 'defs'),
+      thinkOptions: [
+        { text: 'Lymphocytes make antibodies', correct: false, reply: 'Plants have no lymphocytes or antibodies.' },
+        { text: 'Physical, chemical and mechanical defences', correct: true, reply: 'For example cell walls, antibacterial chemicals and thorns.' },
+        { text: 'Phagocytes engulf the pathogens', correct: false, reply: 'Phagocytes are white blood cells in animals.' }
+      ],
+      sortBins: [{ id: 'p', label: 'Physical' }, { id: 'c', label: 'Chemical' }, { id: 'm', label: 'Mechanical' }],
+      sortItems: [
+        { text: 'Cellulose cell walls', bin: 'p', why: 'Resist microorganisms.' },
+        { text: 'Tough waxy cuticle', bin: 'p', why: 'A barrier on leaves.' },
+        { text: 'Bark that falls off', bin: 'p', why: 'Layers of dead cells.' },
+        { text: 'Antibacterial chemicals', bin: 'c', why: 'Act on bacteria.' },
+        { text: 'Poisons', bin: 'c', why: 'Deter herbivores.' },
+        { text: 'Thorns and hairs', bin: 'm', why: 'Deter animals.' },
+        { text: 'Leaves that curl when touched', bin: 'm', why: 'A movement.' },
+        { text: 'Mimicry', bin: 'm', why: 'Tricks animals.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the ion plants need to make chlorophyll.', 'Magnesium.', [['Nitrate', 'Nitrate is for protein synthesis.'], 'Magnesium', ['Sodium', 'Not the one.']]),
+          MCQ('Name', 'Name an insect that damages plants.', 'Aphids.', ['Aphids', ['Mosquitoes', 'They carry malaria to humans.'], ['Bees', 'Bees pollinate plants.']])
+        ],
+        r2: [
+          MCQ('Give', 'Give one physical defence of a plant.', 'Cellulose cell walls, a tough waxy cuticle, or bark.', [['Poisons', 'A chemical defence.'], 'A tough waxy cuticle', ['Thorns', 'A mechanical adaptation.'], ['Antibodies', 'Plants don\u2019t make antibodies.']]),
+          MCQ('Suggest', 'A grower\u2019s plants are much shorter than expected. Suggest what the grower should add to the soil.', 'Nitrate ions, needed for protein synthesis and growth.', [['Magnesium ions', 'Magnesium deficiency causes yellow leaves.'], ['Antibiotics', 'Stunting from a deficiency isn\u2019t an infection.'], ['Fungicide', 'There is no sign of a fungus.'], 'Nitrate ions'])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain why magnesium deficiency reduces the growth of a plant. Put the links in order.',
+            ['Magnesium ions are needed to make chlorophyll.', 'Without enough, the leaves have less chlorophyll and turn yellow (chlorosis).', 'So less light is absorbed, less photosynthesis happens, and the plant grows less.'],
+            [['Magnesium is needed for protein synthesis.', 'That is nitrate.'], ['Magnesium deficiency is a viral infection.', 'It is an ion deficiency.']]),
+          CHAIN('Explain', 'Explain how bark helps protect a tree from pathogens. Put the links in order.',
+            ['Bark is layers of dead cells around the stem.', 'It resists invasion by microorganisms.', 'The dead cells fall off, taking pathogens on them away.'],
+            [['Bark contains antibodies.', 'Plants don\u2019t make antibodies.'], ['Bark is a chemical defence.', 'It is physical.']])
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 6, prompt: 'Describe the ways plants defend themselves against pathogens and animals.',
+            levels: LV6('Physical, chemical and mechanical defences, each with examples and what they do.', 'Two kinds of defence with examples.', 'Simple examples of defences.'),
+            points: ['Physical: cellulose cell walls resist invasion by microorganisms.', 'Physical: a tough waxy cuticle on leaves; bark, layers of dead cells which fall off.', 'Chemical: antibacterial chemicals.', 'Chemical: poisons to deter herbivores.', 'Mechanical: thorns and hairs deter animals.', 'Mechanical: leaves that droop or curl when touched; mimicry to trick animals.'],
+            reject: ['\u201cPlants make antibodies.\u201d', '\u201cThorns stop bacteria.\u201d'] }
+        ]
+      },
+      keyLines: ['Plants can be infected by viral, bacterial and fungal pathogens and by insects: TMV (virus), black spot (fungus), aphids (insects).', 'Ion deficiencies: nitrate (for protein synthesis and growth) causes stunted growth; magnesium (to make chlorophyll) causes chlorosis.', 'Physical defences: cellulose cell walls; tough waxy cuticle; bark, dead cells which fall off. Chemical: antibacterial chemicals; poisons.', 'Mechanical: thorns and hairs; leaves which droop or curl when touched; mimicry.'].concat(c.isTH ? ['Higher: detect disease by its signs or pests; identify it with a manual or website, a laboratory, or testing kits containing monoclonal antibodies.'] : []),
+      bank: c.ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.3.2.1-monoclonal-antibodies.dc.html', label: 'Monoclonal antibodies (Triple Higher)' },
+      endNext: { href: 'ks4-biology-4.4.1.1-photosynthesis.dc.html', label: 'Photosynthesis' },
+      endConnects: [{ href: 'ks4-biology-4.3.1.9-drug-discovery-development.dc.html', label: 'Drugs from plants' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

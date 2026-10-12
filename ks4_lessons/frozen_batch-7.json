@@ -1,0 +1,66 @@
+{
+ "aerobic-respiration": {
+  "hash": "ffeb9c5516a9d5cfec4b5e49afb86810bdde49b02cef3755226623395da6b6c7",
+  "review_state": "examiner-reviewed"
+ },
+ "anaerobic-respiration": {
+  "hash": "314ed401e938a1694a3bfa4d86ed4f4aa4129d70a977d4928c9cce8af901d7cd",
+  "review_state": "examiner-reviewed"
+ },
+ "antibiotics-painkillers": {
+  "hash": "c55fecf48b529098da11a2bcf5cd634b77627046d2045e2281244163b9299ab0",
+  "review_state": "examiner-reviewed"
+ },
+ "bacterial-diseases": {
+  "hash": "88bcecf3fa2ad5ad360a56b6204bd8db6f90907ebfe4cb37e60aa9f852f37501",
+  "review_state": "examiner-reviewed"
+ },
+ "communicable-diseases-defence": {
+  "hash": "d08058c3d92f4db05c0f7ded1dc4687a95ce7c6fd11212e89ddd70969498f563",
+  "review_state": "examiner-reviewed"
+ },
+ "drug-discovery-development": {
+  "hash": "f56b399dcbaedaa312122a24daee3172532cf620edb2ca10c6d7d5a379a39bbe",
+  "review_state": "examiner-reviewed"
+ },
+ "fungal-protist-diseases": {
+  "hash": "3f2b08027ba0d12d668b7605aeb69f6e5152b5d9df30f192350e72151e48b2de",
+  "review_state": "examiner-reviewed"
+ },
+ "metabolism": {
+  "hash": "97cf3490736dbac9eb5f207e0ef7ca37d7c2f1e362a91c3e61e9f4e6223288bd",
+  "review_state": "examiner-reviewed"
+ },
+ "monoclonal-antibodies": {
+  "hash": "c9c0f7d2ee85359e8f6790f0ab942d9390eb4491c3217e786a7da90d14bbb3db",
+  "review_state": "examiner-reviewed"
+ },
+ "photosynthesis": {
+  "hash": "9305b1944be166fa5b50894375c920173a7af1ba74d2207a94b15ea27a0c5a3b",
+  "review_state": "examiner-reviewed"
+ },
+ "plant-disease-detection-defence": {
+  "hash": "8208e273bdcaf91d24a2a79dc6939abcde94b011504546d3f3ab1460e2d5311e",
+  "review_state": "examiner-reviewed"
+ },
+ "rate-of-photosynthesis": {
+  "hash": "4581fd0fc8b03d50a865e5ed9533969c4c8f8270d25ad05d3007979427e738fc",
+  "review_state": "examiner-reviewed"
+ },
+ "response-to-exercise": {
+  "hash": "9d7cc23aca82c7d257b1a6aa6d3441618339645f417a160f3eee9cd967dd5d15",
+  "review_state": "examiner-reviewed"
+ },
+ "uses-of-glucose": {
+  "hash": "5b826a0a4fd000f657f40b2f1a71773ffb583925d42bf7b1568eebd07cd3a8a2",
+  "review_state": "examiner-reviewed"
+ },
+ "vaccination": {
+  "hash": "f0764456787ce2aeae4b53853d24cea03b27c948f9a57cba79ee9cd8e117d58a",
+  "review_state": "examiner-reviewed"
+ },
+ "viral-diseases": {
+  "hash": "2864898499522a81946d9fb18d6a722b6ca8aed9eeff23973ae2ccaec071a24b",
+  "review_state": "examiner-reviewed"
+ }
+}
