@@ -888,7 +888,7 @@ class Component extends DCLogic {
   }
   ivfFig(n) {
     const D = window.KS4D, C = D.C; let b = '';
-    const L = ['FSH and LH given', 'eggs collected; fertilised in the lab', 'embryos develop', '1 or 2 embryos into the uterus'];
+    const L = ['FSH and LH given', 'eggs collected; fertilised in the lab', 'embryos develop', '1 or 2 embryos; into the uterus'];
     L.forEach((t, i) => {
       const x = 20 + i * 160, on = n > i;
       b += BOX(x, 30, 140, 84, on ? '#FBE3D6' : '#F3F0E7', on ? C.stroke : C.muted, 2.5);
@@ -959,7 +959,7 @@ class Component extends DCLogic {
             ['The mother is given FSH and LH to stimulate the maturation of several eggs.', 'The eggs are collected and fertilised with sperm from the father in the laboratory.', 'The fertilised eggs develop into embryos.', 'One or two embryos, as tiny balls of cells, are inserted into the uterus.'],
             [['The baby grows in the laboratory until birth.', 'Embryos go into the uterus as tiny balls of cells.'], ['Progesterone is given to make eggs mature.', 'FSH and LH do that.']])
           : CHAIN('Explain', 'Explain why someone might choose condoms. Put the links in order.',
-            ['Condoms are a barrier method.', 'They prevent sperm reaching an egg.', 'They also protect against sexually transmitted infections.', 'And they contain no hormones.'],
+            ['Condoms are a barrier method.', 'They prevent sperm reaching an egg.', 'They also protect against sexually transmitted infections, and they contain no hormones.'],
             [['Condoms stop eggs maturing.', 'That is a hormonal method.'], ['Condoms are permanent.', 'Sterilisation is permanent.']])
         ],
         r4: [

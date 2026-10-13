@@ -880,7 +880,7 @@ class Component extends DCLogic {
     b += '<path d="M300 240 L344 240 L352 330 L314 336 Z" fill="' + (hi(2) ? '#F2C9AE' : '#E7DCC9') + '" stroke="' + (hi(2) ? C.red : C.stroke) + '" stroke-width="' + (hi(2) ? 6 : 3) + '"/>';
     b += '<path d="M314 336 L352 330 L356 356 L318 358 Z" fill="#F3F0E7" stroke="' + C.muted + '" stroke-width="2"/>';
     const lab = (x1, y1, x2, y2, t, i, anchor) => D.line(x1, y1, x2, y2, 2, hi(i) ? C.red : C.stroke) + D.T(x2 + (anchor === 'end' ? -6 : 6), y2 + 5, t, 16, { anchor: anchor || 'start', fill: hi(i) ? C.red : C.stroke });
-    b += lab(200, 60, 120, 22, 'cerebral cortex', 0, 'end') + lab(470, 270, 520, 300, 'cerebellum', 1) + lab(330, 300, 250, 320, 'medulla', 2, 'end');
+    b += lab(200, 60, 170, 22, 'cerebral cortex', 0, 'end') + lab(470, 270, 520, 300, 'cerebellum', 1) + lab(330, 300, 250, 320, 'medulla', 2, 'end');
     b += D.T(370, 352, 'spinal cord', 12, { anchor: 'start', fill: C.muted, weight: 'normal' }) + D.T(40, 340, 'front', 12, { anchor: 'start', fill: C.muted, weight: 'normal' });
     return D.svg(640, 370, b, 'Side view of the brain: cerebral cortex, cerebellum and medulla' + (sel === null || sel === undefined ? '.' : '; ' + REG[sel].k + ' highlighted.'));
   }
@@ -936,13 +936,13 @@ class Component extends DCLogic {
         ],
         r3: [
           CHAIN('Explain', 'After a stroke, a patient keeps losing their balance. Explain which region was damaged. Put the links in order.',
-            ['Balance depends on coordinating muscular activity.', 'Muscle coordination is the job of the cerebellum.', 'So the stroke probably damaged the cerebellum.'],
+            ['Balance depends on coordinating muscular activity.', 'That coordination is the job of the cerebellum.', 'So the stroke probably damaged the cerebellum.'],
             [['Balance is a conscious decision, so it was the cortex.', 'Balance is coordinated automatically.'], ['The medulla controls balance.', 'The medulla controls heartbeat and breathing.']]),
           TH ? CHAIN('Explain', 'Explain how neuroscientists have linked brain regions to functions. Put the links in order.',
-            ['Patients with damage to one region lose a particular function.', 'Electrically stimulating a small area produces a particular response.', 'MRI scans show which regions are active during a task.'],
+            ['Patients with damage to one region lose a particular function.', 'Electrically stimulating that region produces a response linked to the same function.', 'MRI scans then confirm that the region is active when the function is used.'],
             [['Brain tissue is removed from healthy people to test.', 'That would damage the brain.'], ['Every region does every job.', 'Different regions carry out different functions.']])
           : CHAIN('Explain', 'Explain why you keep breathing while you are asleep. Put the links in order.',
-            ['Breathing is an unconscious activity.', 'Unconscious activities are controlled by the medulla.', 'So breathing carries on without conscious thought, even in sleep.'],
+            ['Breathing is an unconscious activity.', 'Unconscious activities like this are controlled by the medulla.', 'So breathing carries on without conscious thought, even in sleep.'],
             [['The cerebral cortex keeps you breathing.', 'The cortex is conscious activity.'], ['The cerebellum controls breathing.', 'The cerebellum coordinates muscles and balance.']])
         ],
         r4: [

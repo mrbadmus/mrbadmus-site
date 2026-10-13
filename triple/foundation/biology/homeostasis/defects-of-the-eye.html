@@ -889,7 +889,7 @@ class Component extends DCLogic {
     b += D.circ(fx, cy, 6, C.red);
     if (labels) {
       const where = fx < xR - 20 ? 'focus in front of the retina' : fx > xR + 5 ? 'focus behind the retina' : 'focus on the retina';
-      b += D.T(fx, 300, where, 14, { fill: C.red }) + D.T(xR - 10, 76, 'retina', 13, { fill: C.stroke, weight: 'normal' });
+      b += D.T(Math.min(fx, 570), 300, where, 14, { fill: C.red }) + D.T(xR - 10, 76, 'retina', 13, { fill: C.stroke, weight: 'normal' });
       b += D.T(40, 300, def === 0 ? 'from a distant object' : 'near object', 13, { anchor: 'start', fill: C.stroke, weight: 'normal' });
       if (lens) b += D.T(gx, 270, lens === 1 ? 'concave' : 'convex', 13, { fill: C.stroke });
     }

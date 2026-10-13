@@ -800,6 +800,71 @@ def apply_lnk_links(source_file, logic):
         n.append(1)
     return logic, n[0], n[1]
 
+# ═══ Batch 8: fixes from the pupil walk (the lead, after the walk of b03b0002e) ═══
+SCIENCE.extend([
+    dict(id='B8W-BR-CHAIN-A', slug='the-brain', layer='logic',
+         old="'Muscle coordination is the job of the cerebellum.'",
+         new="'That coordination is the job of the cerebellum.'"),
+    dict(id='B8W-BR-CHAIN-TF', slug='the-brain', layer='logic',
+         old="'Unconscious activities are controlled by the medulla.'",
+         new="'Unconscious activities like this are controlled by the medulla.'"),
+    dict(id='B8W-BR-CHAIN-TH', slug='the-brain', layer='logic',
+         old="['Patients with damage to one region lose a particular function.', 'Electrically stimulating a small area produces a particular response.', 'MRI scans show which regions are active during a task.']",
+         new="['Patients with damage to one region lose a particular function.', 'Electrically stimulating that region produces a response linked to the same function.', 'MRI scans then confirm that the region is active when the function is used.']"),
+    dict(id='B8W-TR-CHAIN-RISE', slug='thermoregulation', layer='logic',
+         old="'Sweat glands produce sweat.'",
+         new="'Sweat glands also produce sweat.'"),
+    dict(id='B8W-TR-CHAIN-FALL', slug='thermoregulation', layer='logic',
+         old="['Receptors in the thermoregulatory centre detect the fall in blood temperature.', 'Blood vessels supplying the skin constrict.', 'Sweating stops.', 'Skeletal muscles contract: shivering.']",
+         new="['Receptors in the thermoregulatory centre detect the fall in blood temperature.', 'Blood vessels supplying the skin constrict and sweating stops, so less energy is transferred from the skin.', 'Skeletal muscles also contract: shivering.']"),
+    # the target runs on into the distractors so it cannot match the rung-3 CH TH chain or the rung-2 bank (the four-link sentence list also appears in a second chain)
+    dict(id='B8W-HR-CHAIN-JOBS', slug='human-reproduction-hormones', layer='logic',
+         old="['FSH from the pituitary causes an egg to mature.', 'Oestrogen from the ovary rebuilds the uterus lining.', 'LH from the pituitary stimulates the release of the egg.', 'Oestrogen and progesterone maintain the uterus lining.'],\n            [['The ovaries make FSH and LH.'",
+         new="['FSH from the pituitary causes an egg to mature.', 'Meanwhile, oestrogen from the ovary rebuilds the uterus lining.', 'Once the lining has been rebuilt, LH from the pituitary stimulates the release of that egg.', 'After ovulation, oestrogen and progesterone maintain the lining.'],\n            [['The ovaries make FSH and LH.'"),
+    dict(id='B8W-CF-CHAIN-CONDOM', slug='contraception-fertility', layer='logic',
+         old="['Condoms are a barrier method.', 'They prevent sperm reaching an egg.', 'They also protect against sexually transmitted infections.', 'And they contain no hormones.']",
+         new="['Condoms are a barrier method.', 'They prevent sperm reaching an egg.', 'They also protect against sexually transmitted infections, and they contain no hormones.']"),
+    dict(id='B8W-SAR-CHAIN-CUTTING', slug='sexual-asexual-reproduction', layer='logic',
+         old="['Only one parent is involved.', 'There is no fusion of gametes, so no mixing of genetic information.', 'The new cells are made by mitosis.', 'So the new plant is a clone.']",
+         new="['A cutting is part of one parent plant.', 'Its cells divide by mitosis, copying that parent’s genetic information exactly.', 'With no fusion of gametes, nothing is added to that genetic information, so the new plant is a clone.']"),
+    # the old distractor contradicted the page's own sentence 'Oestrogen and progesterone maintain the uterus lining'
+    dict(id='B8W-HR-Q3', slug='human-reproduction-hormones', layer='logic',
+         old="['Maintains the uterus lining in the second half of the cycle', 'Maintaining the uterus lining in the second half = PROGESTERONE. Oestrogen rebuilds it in the first half.']",
+         new="['Stimulates sperm production', 'That is testosterone.']"),
+    # spec 4.5.3.2 words
+    dict(id='B8W-BG-TYPES-KEY', slug='blood-glucose-diabetes', layer='logic',
+         old="'Type 1: pancreas produces no insulin (autoimmune). Type 2: cells become resistant to insulin (lifestyle-related).'",
+         new="'Type 1: the pancreas fails to produce sufficient insulin. Type 2: the body cells no longer respond to the insulin produced by the pancreas.'"),
+    # removes only the off-spec 'tablets' claim
+    dict(id='B8W-BG-TYPES-REPLY', slug='blood-glucose-diabetes', layer='logic',
+         old='TYPE 2 is usually managed first with diet, exercise and tablets.',
+         new='TYPE 2 is usually managed first with diet and exercise.'),
+    # the Type 1 loop's last step (every route, section 1, completed to tick INSULIN) is where the page teaches 'treatment: insulin injections'
+    dict(id='B8W-BG-INJECT', slug='blood-glucose-diabetes', layer='logic',
+         old="'Blood glucose stays high. Treatment: insulin injections.'",
+         new="'Blood glucose stays high. Treatment: insulin injections. Insulin is a protein, so it would be digested if swallowed; it is injected instead.'"),
+    # the label ran off the left edge; the leader now ends further right so the text sits inside the figure
+    dict(id='B8W-BR-CORTEX-LABEL', slug='the-brain', layer='logic',
+         old="lab(200, 60, 120, 22, 'cerebral cortex', 0, 'end')",
+         new="lab(200, 60, 170, 22, 'cerebral cortex', 0, 'end')"),
+    # the figure's own '; ' two-line split now breaks it (the semicolon is not drawn)
+    dict(id='B8W-CF-IVF-LABEL', slug='contraception-fertility', layer='logic',
+         old="'1 or 2 embryos into the uterus'",
+         new="'1 or 2 embryos; into the uterus'"),
+    # hyperopia + concave focuses beyond the right edge; the label is held inside it (no other state has fx > 570 - verified by screenshot of all six)
+    dict(id='B8W-DE-FOCUS-LABEL', slug='defects-of-the-eye', layer='logic',
+         old='b += D.T(fx, 300, where, 14, { fill: C.red })',
+         new='b += D.T(Math.min(fx, 570), 300, where, 14, { fill: C.red })'),
+    # the red X covered the end of 'Coordination centre'; it now sits in the box's top-right corner, above the text
+    dict(id='B8W-HO-X', slug='homeostasis', layer='logic',
+         old='<line x1="\' + (x + 150) + \'" y1="36" x2="\' + (x + 176) + \'" y2="62"/><line x1="\' + (x + 176) + \'" y1="36" x2="\' + (x + 150) + \'" y2="62"/></g>\'',
+         new='<line x1="\' + (x + 164) + \'" y1="31" x2="\' + (x + 176) + \'" y2="43"/><line x1="\' + (x + 176) + \'" y1="31" x2="\' + (x + 164) + \'" y2="43"/></g>\''),
+    # the LH label ran into the 'ovulation' label
+    dict(id='B8W-HR-LH-LABEL', slug='human-reproduction-hormones', layer='logic',
+         old="[X(13.6), 44, 'LH']",
+         new="[(+X(13.6) - 8).toFixed(1), 44, 'LH']"),
+])
+
 APPLIED = []
 
 
