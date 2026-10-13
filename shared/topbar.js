@@ -41,15 +41,37 @@
     catch (e) { return null; }
   }
 
-  /* `env` and `api` travel, so a tester on TEST stays on TEST. */
+  /* `env` and `api` travel, so a tester on TEST stays on TEST.
+     ⊕ D15a (13 Oct 2026): the same rule as shared/nav.js's carry(), so the
+     link's own query and #hash survive (this used to append "?env=" AFTER
+     a hash, where the next page never reads it). Another origin, mailto:
+     and the like are left exactly as written. */
+  var CARRY = (function () {
+    var out = [];
+    ['env', 'api'].forEach(function (k) { var v = q(k); if (v) { out.push([k, v]); } });
+    return out;
+  })();
+
   function carry(href) {
-    var keep = [];
-    ['env', 'api'].forEach(function (k) {
-      var v = q(k);
-      if (v && href.indexOf(k + '=') < 0) { keep.push(k + '=' + encodeURIComponent(v)); }
-    });
-    if (!keep.length) { return href; }
-    return href + (href.indexOf('?') < 0 ? '?' : '&') + keep.join('&');
+    if (!CARRY.length || typeof href !== 'string' || href === '') { return href; }
+    if (href.charAt(0) === '#') { return href; }
+    var asWritten = href;
+    if (href.charAt(0) !== '/' || href.charAt(1) === '/') {
+      var u;
+      try { u = new URL(href, window.location.href); } catch (e) { return href; }
+      if (u.origin !== window.location.origin || !/^https?:$/.test(u.protocol)) { return href; }
+      href = u.pathname + u.search + u.hash;
+    }
+    var hash = '', h = href.indexOf('#');
+    if (h >= 0) { hash = href.slice(h); href = href.slice(0, h); }
+    var own = '', i = href.indexOf('?');
+    if (i >= 0) { own = href.slice(i + 1); href = href.slice(0, i); }
+    var qs = new URLSearchParams(own);
+    var missing = CARRY.filter(function (kv) { return !qs.has(kv[0]); });
+    if (!missing.length) { return asWritten; }
+    missing.forEach(function (kv) { qs.set(kv[0], kv[1]); });
+    var str = qs.toString();
+    return href + (str ? '?' + str : '') + hash;
   }
 
   function here(href) {
@@ -91,6 +113,79 @@
       if (m) { localStorage.removeItem('sb-' + m[1] + '-auth-token'); }
     } catch (e) {}
     window.location.replace(carry('/auth.html'));
+  }
+
+  /* ⊕ D15b (13 Oct 2026) — "Sign out" asks first, for everyone. The menu
+     puts it one row under My class / Settings on a phone; a mis-tap that
+     silently ended the session cost a pupil their page. Same shape as the
+     family pages' confirm (consumer-common.js signOutControl), built here
+     because the lesson pages never load that file: Esc, a tap on the veil
+     or "Stay signed in" cancels, Tab stays inside, focus goes back to the
+     avatar, and the SAFE answer takes focus so a stray Enter keeps the
+     session.
+
+     ⚠️ ON <body>, NOT INSIDE THE BAR. `.mrb-topbar` is a size container and
+     KS3's `.ks3-nav` is blurred (backdrop-filter): either one makes a
+     `position: fixed` child fixed to the BAR, not the screen. The --tb-*
+     colours are therefore copied off the bar as resolved values, so the
+     dialog wears the same family palette in either theme. */
+  var TB_TOKENS = ['--tb-ink', '--tb-body', '--tb-paper', '--tb-rule', '--tb-well', '--tb-ui', '--tb-accent'];
+  var veil = null;
+
+  function confirmSignOut(opener) {
+    if (veil) { return; }
+    var source = (opener && opener.closest && opener.closest('.mrb-topbar, [data-mrb-topbar-tokens]')) ||
+                 document.querySelector('.mrb-topbar, [data-mrb-topbar-tokens]');
+    veil = document.createElement('div');
+    veil.className = 'mrb-tb-veil';
+    if (source && window.getComputedStyle) {
+      var cs = window.getComputedStyle(source);
+      TB_TOKENS.forEach(function (k) {
+        var v = cs.getPropertyValue(k);
+        if (v && v.trim()) { veil.style.setProperty(k, v.trim()); }
+      });
+    }
+    veil.innerHTML =
+      '<div class="mrb-tb-confirm" role="dialog" aria-modal="true" aria-labelledby="mrb-tb-confirm-h">' +
+        '<h2 id="mrb-tb-confirm-h">Sign out?</h2>' +
+        '<div class="mrb-tb-confirm__acts">' +
+          '<button type="button" class="mrb-tb-confirm__stay">Stay signed in</button>' +
+          '<button type="button" class="mrb-tb-confirm__go" data-mrb-topbar-signout-confirm="1">Sign out</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(veil);
+
+    var stay = veil.querySelector('.mrb-tb-confirm__stay');
+    var go = veil.querySelector('.mrb-tb-confirm__go');
+
+    function close() {
+      if (!veil) { return; }
+      document.removeEventListener('keydown', onKey, true);
+      if (veil.parentNode) { veil.parentNode.removeChild(veil); }
+      veil = null;
+      /* A runtime may have redrawn the bar while the dialog was up. */
+      var back = (opener && opener.isConnected) ? opener : document.querySelector('.mrb-topbar__avatar');
+      if (back) { back.focus(); }
+    }
+    function onKey(ev) {
+      if (!veil) { return; }
+      if (ev.key === 'Escape') { ev.preventDefault(); ev.stopPropagation(); close(); return; }
+      if (ev.key === 'Tab') {
+        var last = go.disabled ? stay : go;
+        if (ev.shiftKey && document.activeElement === stay) { ev.preventDefault(); last.focus(); }
+        else if (!ev.shiftKey && document.activeElement === last) { ev.preventDefault(); stay.focus(); }
+        else if (!veil.contains(document.activeElement)) { ev.preventDefault(); stay.focus(); }
+      }
+    }
+    document.addEventListener('keydown', onKey, true);
+    veil.addEventListener('click', function (ev) { if (ev.target === veil) { close(); } });
+    stay.addEventListener('click', close);
+    go.addEventListener('click', function () {
+      go.disabled = true;
+      go.textContent = 'Signing out\u2026';
+      signOut();
+    });
+    stay.focus();
   }
 
   function el(tag, cls, text) {
@@ -139,7 +234,12 @@
     var out = el('button', '', 'Sign out');
     out.type = 'button';
     out.setAttribute('data-mrb-topbar-signout', '1');
-    out.addEventListener('click', signOut);
+    out.addEventListener('click', function (ev) {
+      ev.stopPropagation();
+      btn.setAttribute('aria-expanded', 'false');
+      menu.hidden = true;
+      confirmSignOut(btn);
+    });
     menu.appendChild(out);
 
     btn.addEventListener('click', function (ev) {
@@ -227,16 +327,26 @@
      test world as well. Sign in, My class and Settings already go through
      carry(); the static links the build writes into the bar (the lockup,
      "‹ <unit>") did not, so a tester on ?env=test who went home or up a
-     level arrived on production config. Rewritten at the moment of the
-     click; with no env/api on this page carry() returns the href as is. */
-  document.addEventListener('click', function (ev) {
-    var a = ev.target && ev.target.closest ? ev.target.closest('[data-mrb-topbar] a[href^="/"]') : null;
-    if (!a) { return; }
-    var h = a.getAttribute('href');
-    if (h.charAt(1) === '/') { return; }
-    var n = carry(h);
-    if (n !== h) { a.setAttribute('href', n); }
-  }, true);
+     level arrived on production config.
+
+     ⊕ D15a (13 Oct 2026) — EVERY LINK ON THE PAGE, not only the bar's. A
+     KS3 lesson does not load shared/nav.js, so its next-lesson cards and
+     "keep going" links still dropped ?env/?api. Rewritten at the moment of
+     the click, the middle-click (a new tab) and the context menu ("Copy
+     link"), exactly as nav.js does. With no env/api on this page CARRY is
+     empty and none of this is registered: the live site is untouched. */
+  if (CARRY.length) {
+    var onFollow = function (ev) {
+      var a = ev.target && ev.target.closest ? ev.target.closest('a[href]') : null;
+      if (!a) { return; }
+      var h = a.getAttribute('href');
+      var n = carry(h);
+      if (n !== h) { a.setAttribute('href', n); }
+    };
+    document.addEventListener('click', onFollow, true);
+    document.addEventListener('auxclick', onFollow, true);
+    document.addEventListener('contextmenu', onFollow, true);
+  }
 
   window.MRBTopbar = { hydrate: hydrate, signOut: signOut };
 

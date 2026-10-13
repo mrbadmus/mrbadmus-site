@@ -116,6 +116,36 @@
   }
   function go(path, extra) { window.location.href = href(path, extra); }
 
+  /* ⊕ D15a (13 Oct 2026) — THE LINKS NOBODY ROUTED THROUGH href().
+     Every link this file and public.js draw goes through `href()`, but a
+     page that writes a literal into its own markup did not: the sign-up
+     step's "Read the terms" / "Read the privacy policy" and the account
+     page's privacy row opened /parents/terms.html bare, so a tester on
+     ?env=test reading the terms mid-signup landed on PRODUCTION config in
+     the new tab. So any same-origin link is carried at the moment it is
+     followed — a click, a middle-click (a new tab) or the context menu
+     ("Copy link") — the same last-word rewrite shared/nav.js does on the
+     main site. `href()` keeps a key the link already sets and leaves its
+     own query and #hash alone. With no env/api in this page's URL nothing
+     is registered and every link is exactly as written. */
+  (function () {
+    if (!carryQuery().toString()) { return; }
+    function onFollow(ev) {
+      var a = ev.target && ev.target.closest ? ev.target.closest('a[href]') : null;
+      if (!a) { return; }
+      var raw = a.getAttribute('href');
+      if (!raw || raw.charAt(0) === '#') { return; }
+      var u;
+      try { u = new URL(raw, window.location.href); } catch (e) { return; }
+      if (u.origin !== window.location.origin || !/^https?:$/.test(u.protocol)) { return; }
+      var n = href(u.pathname + u.search + u.hash);
+      if (n !== raw) { a.setAttribute('href', n); }
+    }
+    document.addEventListener('click', onFollow, true);
+    document.addEventListener('auxclick', onFollow, true);
+    document.addEventListener('contextmenu', onFollow, true);
+  })();
+
   /* ── The nav ────────────────────────────────────────────────────────────
      Deliberately thin. Night 3 replaces every one of these screens with
      Design's, so this is a brand-correct placeholder and not a design. */
@@ -1228,11 +1258,19 @@
     } else if (err && (err.code === 'network' || err.code === 'timeout')) {
       out = err.message;
     } else if (err && (err.code === 'account_closing' || err.code === 'login_unavailable' ||
-               err.code === 'account_check_failed')) {
+               err.code === 'account_check_failed' || err.status >= 500)) {
+      /* ⊕ 13 Oct 2026: `status >= 500` as well. A 503 when the sign-in
+         service is busy (or a gateway 502/503 with no JSON body at all, so
+         no code) used to fall through to "doesn't match" — telling a child
+         a correct password was wrong. A server failure is never a
+         refusal; only a 401/4xx is. The backend's own sentence is shown
+         when it wrote one; a bodiless gateway error gets this file's. */
       /* Not about the password: the account is being deleted, or the server
          could not check. "Doesn't match" there sends a child to re-type a
          password that was right. */
-      out = plainMessage(err, 'We couldn’t check that right now. Please try again in a minute.');
+      var said = err.data && err.data.message;
+      out = (said && plainSentence(said)) ? said
+          : 'We couldn’t check that right now — try again in a minute.';
     } else {
       // Wrong password, unknown username, removed child, a parent trying to
       // come in this way — one sentence.
