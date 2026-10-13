@@ -356,3 +356,7 @@ dialogs or stray text; every link resolves. Two defects found and fixed (the las
 Kept as Design wrote it: practice q3's reply to "warms the leaf" (verbatim pack item); potometer labels are small at
 390 px, as elsewhere.
 
+**Shipped:** pushed 13 Oct 2026 as `93ba3fc89..7b17700a6`; `check_ks4_live.py --batch batch-6`: all 50 batch-6 pages
+live are this build byte for byte (the four transpiration pages new, the other 46 unchanged), and every asset they
+name matches its stamp.
+
