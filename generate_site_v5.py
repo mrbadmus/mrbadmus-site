@@ -978,7 +978,7 @@ def chat_html():
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)" tabindex="0" role="button" aria-label="Attach a photo">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask MrBadmus anything... (paste screenshots with Ctrl+V)"/>
+      <input type="text" id="ci" placeholder="Ask MrBadmus anything..." data-paste-hint/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

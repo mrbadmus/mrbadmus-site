@@ -139,6 +139,31 @@
 
   if (window.MRB_NAV_TEST_HOOK) { window.MRB_NAV_TEST_HOOK.carry = carry; }
 
+  /* ⊕ D15d (13 Oct 2026) — THE PASTE HINT IS ONLY FOR A KEYBOARD.
+     The tutor's box used to say "(paste screenshots with Ctrl+V)" on every
+     device, phones included, where there is no Ctrl and no V. The page now
+     ships the neutral "Ask MrBadmus anything..." (generate_site_v5.py
+     chat_html, index.html, ks4.html, each marked `data-paste-hint`) and the
+     hint is added here only where a mouse or trackpad says a keyboard is
+     there too — ⌘V on a Mac, Ctrl+V elsewhere. */
+  function pasteHint() {
+    try {
+      if (!window.matchMedia || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) { return; }
+      var mac = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent || '');
+      var tail = ' (paste a screenshot with ' + (mac ? '\u2318V' : 'Ctrl+V') + ')';
+      document.querySelectorAll('input[data-paste-hint]').forEach(function (i) {
+        if (i.getAttribute('data-paste-hint') === 'done') { return; }
+        i.setAttribute('data-paste-hint', 'done');
+        i.setAttribute('placeholder', (i.getAttribute('placeholder') || '') + tail);
+      });
+    } catch (e) {}
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', pasteHint);
+  } else {
+    pasteHint();
+  }
+
   // ── Drawer auth row — mirrors the signed-in / signed-out state ──────────
   function renderDrawerAuthSignedOut(slot) {
     if (!slot) return;
