@@ -285,6 +285,19 @@
     padding: 16px 20px 14px;
     border-bottom: 2px solid var(--ks3-ink);
   }
+  /* ⊕ fixD: the phone header already carries a back arrow or the brand, a
+     title and the account button, so Sign out is the 44px icon square
+     there below 600px (its aria-label carries the word), as below 400px
+     on every family page (consumer.css). */
+  @media (max-width: 599px) {
+    .dk-mobilehead .c-signout-btn { width: 44px; padding: 0; justify-content: center; }
+    .dk-mobilehead .c-signout-btn span { display: none; }
+  }
+  /* …and from 901px, where the theme pill is fixed at the top right, the
+     header keeps clear of it (the sidebar takes over at 960). */
+  @media (min-width: 901px) {
+    .dk-mobilehead { padding-right: 136px; }
+  }
   /* ⊕ One mark (Mide, 13 Sep 2026): `.dk-brandword` retired — the brand is
      the one lockup (`C.brandLockup`), styled by shared/brand/brand.css. */
   .dk-main { max-width: 560px; margin: 0 auto; padding: 24px 20px 40px; }
@@ -408,7 +421,7 @@
 </div>
 
 <script src="/shared/config.js?v=ab7a89ac"></script>
-<script src="/consumer/consumer-common.js?v=b8cd6065"></script>
+<script src="/consumer/consumer-common.js?v=21221612"></script>
 <script src="/consumer/topic-picker.js?v=9bcb2548"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
@@ -728,7 +741,7 @@
   function loadPicker(c) {
     if (S.pickerFor === c.id) { return Promise.resolve(); }
     S.pickerFor = c.id;
-    S.picker = null; S.topic = null; S.tp = {};
+    S.picker = null; S.topic = null; S.tp = {}; S.examAny = null;
     return Promise.all([
       C.api('/api/consumer/children/' + encodeURIComponent(c.id) + '/picker', { token: ctx.token }),
       curriculum ? Promise.resolve(curriculum) : window.MrBadmusTopicPicker.loadIndex()
@@ -736,6 +749,9 @@
       .then(function (out) {
         curriculum = out[1];
         S.picker = (out[0] && out[0].units) || [];
+        /* Defect 4: is there an exam question left for this child at all
+           (null = the backend could not say, so offer it as before). */
+        S.examAny = out[0] ? (out[0].exam_any === undefined ? null : out[0].exam_any) : null;
         if (S.view === 'setwork') { render(); }
       })
       .catch(function (e) {
@@ -1142,7 +1158,8 @@
         '<span style="display:grid;place-items:center;width:32px;height:32px;border:2px solid var(--ks3-ink);' +
           'border-radius:10px;background:var(--ks3-band);font-family:var(--ks3-font-display);' +
           'font-weight:800;font-size:14px;color:var(--ks3-ink)">' +
-          esc(parentInitial()) + '</span>' + esc(parentName()) + '</div></div>';
+          esc(parentInitial()) + '</span>' + esc(parentName()) + '</div>' +
+      '<span data-signout-slot="side" style="display:block;margin-top:12px"></span></div>';
 
     document.getElementById('dk-side').innerHTML = side;
 
@@ -1157,11 +1174,13 @@
     }
     head += '<span style="flex:1;font-family:var(--ks3-font-display);font-weight:800;font-size:20px;' +
       'letter-spacing:-.02em">' + esc(screenTitle()) + '</span>' +
+      '<span data-signout-slot="head" style="display:inline-flex;flex:0 0 auto"></span>' +
       '<a href="' + account + '" aria-label="Account" style="display:grid;place-items:center;width:40px;' +
       'height:40px;border:2px solid var(--ks3-ink);border-radius:12px;background:var(--ks3-band);' +
       'font-family:var(--ks3-font-display);font-weight:800;font-size:16px;color:var(--ks3-ink);' +
       'text-decoration:none">' + esc(parentInitial()) + '</a>';
     document.getElementById('dk-head').innerHTML = head;
+    placeSignout();
 
     document.getElementById('dk-banners').innerHTML = bannerHtml();
 
@@ -1178,6 +1197,33 @@
       '</button>' +
       '<a class="dk-tab" href="' + account + '" style="color:var(--ks3-ink-muted)">' +
         svg(MARK.user, 22) + 'Account</a>';
+  }
+
+  /* ⊕ fixD (13 Oct 2026) — SIGN OUT, FOR THE PARENT. A blind run found no
+     way out anywhere on the dashboard: home, a child, Messages. The same
+     control the child surfaces and signup use (C.signOutControl: it asks
+     first, the safe answer focused), at the foot of the sidebar from 960px
+     and in the phone header beside the account button. Each is mounted ONCE
+     into a node that renderShell() moves into its slot, because the shell
+     is redrawn by innerHTML on every badge change and a re-mounted button
+     would drop an open confirm's way back. */
+  var SIGNOUT_HOSTS = null;
+  function placeSignout() {
+    if (!ctx) { return; }
+    if (!SIGNOUT_HOSTS) {
+      SIGNOUT_HOSTS = {};
+      ['side', 'head'].forEach(function (k) {
+        var h = document.createElement('span');
+        h.style.display = 'contents';
+        C.signOutControl(h, { sb: ctx.sb, redirectTo: '/parents/',
+                              note: 'You’ll sign in again with your email or Google.' });
+        SIGNOUT_HOSTS[k] = h;
+      });
+    }
+    Object.keys(SIGNOUT_HOSTS).forEach(function (k) {
+      var slot = document.querySelector('[data-signout-slot="' + k + '"]');
+      if (slot) { slot.appendChild(SIGNOUT_HOSTS[k]); }
+    });
   }
 
   function parentName() { return S.parent.name || 'You'; }
@@ -1617,8 +1663,36 @@
   /* ⊕ B2C polish 3 (defect 1). The Set button is live only when what it
      would set is on screen: an exam question (the server picks it), or a
      topic the picker is showing as chosen. Its label says which. */
-  function setReady() { return S.workKind === 'exam' || !!S.topic; }
+  /* ⊕ Defect 4 (13 Oct 2026). "An exam question" was offered for Cell
+     Biology and refused only after Set. The picker now says, per unit,
+     whether an exam question is left (`exam` true/false/null) and, over all
+     of them, `exam_any`; only a definite false holds the button, and its
+     label says why before anyone presses it. */
+  function examUnitFor(sel) {
+    if (!sel || !Array.isArray(S.picker)) { return null; }
+    var code = sel.unitCode ? String(sel.unitCode).toLowerCase() : '';
+    for (var i = 0; i < S.picker.length; i++) {
+      var u = S.picker[i];
+      if (sel.level === 'lesson' && sel.slug) {
+        if ((u.lessons || []).some(function (l) { return l.slug === sel.slug; })) { return u; }
+      } else if ((code && String(u.unit_code || '').toLowerCase() === code) || u.name === sel.unitName) {
+        return u;
+      }
+    }
+    return null;
+  }
+  function examAvailable() {
+    if (!Array.isArray(S.picker)) { return true; }
+    if (!S.topic) { return S.examAny !== false; }
+    var u = examUnitFor(S.topic);
+    return !u || u.exam !== false;
+  }
+  function setReady() { return S.workKind === 'exam' ? examAvailable() : !!S.topic; }
   function setLabel() {
+    if (S.workKind === 'exam' && !examAvailable()) {
+      return S.topic ? ('No exam question on ' + S.topic.unitName + ' yet')
+                     : 'No exam question left for this year yet';
+    }
     if (!setReady()) { return 'Choose a topic first'; }
     return S.due === 0 ? 'Set to open today' : ('Set to open ' + civilLabel(dueDate(S.due)));
   }
@@ -2162,6 +2236,7 @@
       var k = child();
       var t = S.topic;
       if (S.workKind !== 'exam' && !t) { return msg('Choose a topic first.', 'error', el); }
+      if (!setReady()) { return; }
       var body = { kind: S.workKind, scheduled_for: dueDate(S.due) };
       /* ⊕ B2C unit 7 (ruling 7): an exam question carries the topic too. */
       if (t) {
@@ -2370,6 +2445,7 @@
 
     return Promise.all([loadFamily(), loadPrices()])
       .then(function () {
+        C.markParent(ctx.session);       // fixD: /parents/ may now say "Dashboard"
         if (signupMidway()) { return toSignup(); }
         lastLoad = Date.now();
         render();

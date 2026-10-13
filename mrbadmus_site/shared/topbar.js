@@ -165,7 +165,7 @@
       veil = null;
       /* A runtime may have redrawn the bar while the dialog was up. */
       var back = (opener && opener.isConnected) ? opener : document.querySelector('.mrb-topbar__avatar');
-      if (back) { back.focus(); }
+      if (back) { back.focus({ preventScroll: true }); }
     }
     function onKey(ev) {
       if (!veil) { return; }
@@ -250,14 +250,19 @@
       menu.hidden = !open;
       if (open) {
         var first = menu.querySelector('a,button');
-        if (first) { first.focus(); }
+        /* ⊕ fixD (13 Oct 2026): preventScroll on every focus() this bar
+           makes. On a KS3 lesson a plain focus() into the sticky bar threw a
+           pupil scrolled 2400px down back to y=352 (and Escape, focusing
+           the avatar, to the top). Present since the bar landed (3b5d88b90);
+           the sign-out confirm's return-focus repeated it. */
+        if (first) { first.focus({ preventScroll: true }); }
       }
     });
     menu.addEventListener('keydown', function (ev) {
       if (ev.key === 'Escape') {
         btn.setAttribute('aria-expanded', 'false');
         menu.hidden = true;
-        btn.focus();
+        btn.focus({ preventScroll: true });
         ev.stopPropagation();
       }
     });

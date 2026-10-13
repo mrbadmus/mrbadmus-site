@@ -883,8 +883,9 @@ try {
        page's quiz end message (`#quizEndMsg`), or under the ladder's score
        line on a KS3 page ("You got N of M.") or a rebuilt KS4 page
        ("Score N of 4");
-     · and at the end of the page, above the footer, on KS3 and rebuilt KS4
-       pages (a classic page's quiz IS the end of its page, so it gets one).
+     · and at the end of the page — after the end-matter cards on KS3, above
+       the footer on rebuilt KS4 pages (a classic page's quiz IS the end of
+       its page, so it gets one).
    Each is the page's own primary button class (`ks3-btn is-primary` on KS3,
    `btn btn--primary` on a rebuilt KS4 page, `btn-primary` on a classic one),
    so both themes are the design system's, with a 48px tap target. `env` and
@@ -948,8 +949,19 @@ try {
             by.parentNode.insertBefore(make('score', !!end), by.nextSibling);
           }
         }
+        /* ⊕ fixD (13 Oct 2026): on a KS3 lesson the footer sits OUTSIDE
+           <main>, so a link placed above it ran the full page width, flush
+           at x=0. There it goes straight after the end-matter cards, inside
+           the lesson's own column. A rebuilt KS4 page keeps its footer in
+           that column (beside the cards), and keeps the old place. */
         var foot = document.querySelector('footer.ks3-footer');
-        if (foot && foot.parentNode) {
+        var cards = document.querySelector('.ks3-endmatter');
+        if (cards && cards.parentNode && (!foot || foot.parentNode !== cards.parentNode)) {
+          var after = cards.nextElementSibling;
+          if (!(after && after.getAttribute('data-mrb-child-home') === 'end')) {
+            cards.parentNode.insertBefore(make('end', false), cards.nextSibling);
+          }
+        } else if (foot && foot.parentNode) {
           var prev = foot.previousElementSibling;
           if (!(prev && prev.getAttribute('data-mrb-child-home') === 'end')) {
             foot.parentNode.insertBefore(make('end', false), foot);
