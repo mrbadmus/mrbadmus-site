@@ -1047,29 +1047,43 @@ try {
       return v.length > n ? v.slice(0, n) : v;
     }
 
-    /* THE page clock (round 4). An answer's time starts at the LATEST of:
-         · the previous recorded answer on this page,
-         · page load (navigation start), and
-         · the most recent interaction (pointerdown / keydown / drop) whose
-           target is OUTSIDE this answer's own block —
-       so time spent on another block, recorded or not, is never swallowed.
-       A small ring of recent interactions is kept for that. When one action
-       yields several answers (a matching Check, a sort Check) the elapsed
-       time is split equally across them in whole seconds that sum to it.
-       ⊕ 13 Oct 2026 — MEASURED, never estimated (Mide: "measured active time
-       only, or no time at all"). Time the tab was hidden inside that window
-       (another tab, a locked phone) is taken out, and more than 30 minutes
-       of what is left is sent as null — unknown — rather than capped to an
-       invented 30. */
+    /* THE page clock. ⊕ 13 Oct 2026 (parent-truth blind run) — ONE
+       definition for every lesson-page answer, KS3, KS4 classic and KS4
+       rebuilt alike:
+         time_spent_seconds = the VISIBLE seconds since the previous
+         recorded answer on this page (any question, including an earlier
+         attempt at the same one), or — for the first answer — since the
+         page first became visible.
+       Nothing else restarts it: not a link tap or a card move inside the
+       question, not a tick, typing, "Show the next step", opening the
+       tutor. (The round-4 clock also restarted on the last pointerdown /
+       keydown OUTSIDE the answer's block; the blind run showed that
+       inconsistent — a Ks4Chain on a rebuilt ladder rung restarted it on
+       every link tap, so a 24 s question was recorded as 1 s, while a
+       worked example's "Show the next step" did not. It is gone.) The
+       `__block` an answer is posted with is now ignored by the clock.
+       MEASURED, never estimated (Mide: "measured active time only, or no
+       time at all"): time the tab was hidden inside the window (another
+       tab, a locked phone) is taken out, and more than 30 minutes of what
+       is left is sent as null — unknown — rather than capped to an
+       invented 30.
+       ONE PRESS, SEVERAL ANSWERS (a matching or sort Check): the elapsed
+       time is split EQUALLY in whole seconds, the remainder going one
+       second each to the first answers, so the press's answers always sum
+       to exactly the elapsed time and none claims it all. Over the cap,
+       every one is null. Each answer keeps its own client_event_id. */
     var lastAt = Date.now();
+    var hiddenSince = document.visibilityState === 'hidden' ? Date.now() : null;
     try {
-      if (window.performance && typeof window.performance.now === 'function') {
+      // Visible from navigation start: the clock starts there. Opened in a
+      // background tab (or prerendered): it starts now and the hidden span
+      // below takes it forward to the first moment the page is seen.
+      if (hiddenSince == null && window.performance && typeof window.performance.now === 'function') {
         lastAt = Date.now() - window.performance.now();
       }
     } catch (e) { /* keep install time */ }
     // Hidden-tab spans, [from, to] in ms, plus the one open now (if any).
     var hiddenSpans = [];
-    var hiddenSince = document.visibilityState === 'hidden' ? Date.now() : null;
     document.addEventListener('visibilitychange', function () {
       var now = Date.now();
       if (document.visibilityState === 'hidden') {
@@ -1090,29 +1104,12 @@ try {
       }
       return Math.max(0, (to - from) - gone);
     }
-    var ring = [];                              // newest last: { t, el }
-    ['pointerdown', 'keydown', 'drop'].forEach(function (type) {
-      document.addEventListener(type, function (e) {
-        ring.push({ t: Date.now(), el: e.target });
-        if (ring.length > 40) { ring.shift(); }
-      }, true);
-    });
-    function startFor(block) {
-      var start = lastAt;
-      if (block && block.contains) {
-        for (var i = ring.length - 1; i >= 0; i -= 1) {
-          var r = ring[i];
-          if (r.t <= start) { break; }
-          if (!(r.el && r.el.nodeType && block.contains(r.el))) { start = r.t; break; }
-        }
-      }
-      return start;
-    }
-    // Whole seconds for `n` answers given at once from `block`, summing to
-    // the visible elapsed time — or all null when that is over the cap.
-    function spans(block, n) {
+    // Whole seconds for `n` answers recorded by one press, summing to the
+    // visible time since the previous recorded answer — or all null when
+    // that is over the cap. Every recorded answer restarts the clock.
+    function spans(n) {
       var now = Date.now();
-      var total = Math.round(visibleMs(startFor(block), now) / 1000);
+      var total = Math.round(visibleMs(lastAt, now) / 1000);
       lastAt = now;
       var out = [];
       if (total > CAP_S) {
@@ -1220,7 +1217,7 @@ try {
       return v || null;
     }
     function post(d) {
-      var t = ('__t' in d) ? d.__t : spans(d.__block || null, 1)[0];
+      var t = ('__t' in d) ? d.__t : spans(1)[0];
       var mk = (typeof d.marks === 'number' && isFinite(d.marks)) ? Math.round(d.marks) : null;
       if (mk !== null && (mk < 1 || mk > 20)) { mk = null; }
       var ms = (mk !== null && typeof d.marks_scored === 'number' && isFinite(d.marks_scored))
@@ -1299,10 +1296,10 @@ try {
       return d;
     }
 
-    // Several answers from ONE action in `block`: the elapsed time is split.
-    function postAll(list, block) {
+    // Several answers from ONE press: the elapsed time is split (see the clock).
+    function postAll(list) {
       if (!list.length) { return; }
-      var ts = spans(block || null, list.length);
+      var ts = spans(list.length);
       list.forEach(function (d, k) { d.__t = ts[k]; post(d); });
     }
 
@@ -1725,7 +1722,7 @@ try {
               is_correct: drops[i].classList.contains('match-correct')
             });
           }
-          postAll(batch, scope === document ? null : scope);   // one Check, the time split across its cards
+          postAll(batch);   // one Check, the time split across its cards
         });
       } catch (err) { /* capture never breaks the quiz */ }
     }, true);
@@ -1866,7 +1863,7 @@ try {
           d.is_correct = at === it.bin;
           batch.push(d);
         });
-        postAll(batch, api.host);                // one Check, the time split across its cards
+        postAll(batch);                // one Check, the time split across its cards
       },
       Ks4QuizBank: function (api, s, prev) {
         if (!rootLevel(api)) { return; }
