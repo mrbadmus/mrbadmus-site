@@ -1,0 +1,39 @@
+# Design's delivery, unmodified. Source: Design's Output/Batch 8/lessons (13 Oct 2026)
+# Verify: cd docs/ks4/design-reference/batch-8 && md5sum -c MD5SUMS   (macOS: md5 -r <file>)
+
+7944057425a50d5fd9c99f8b44cf0675  lessons/Ks4Cfifa.dc.html
+96891e81a2bb42139d7afa149821958c  lessons/Ks4Chain.dc.html
+029dd4506e0b9550aa660ba99987a3c8  lessons/Ks4Choice.dc.html
+a67112065727183112bc7914021a6072  lessons/Ks4Chrome.dc.html
+78f325cf60ac6a159e56821c9c3acc1e  lessons/Ks4End.dc.html
+a5473bce6894d173ad6734d69e068ffa  lessons/Ks4Guess.dc.html
+fb55a861975b0c66bcda7fe5dd1eacdb  lessons/Ks4KeyNote.dc.html
+d5257905b41d13b49d2b082c3523702f  lessons/Ks4Practice.dc.html
+40cc9550bdc8852a75b24ce932c26032  lessons/Ks4QuizBank.dc.html
+3caab7c8e6fe7124559c737569d2b24c  lessons/Ks4Sort.dc.html
+6e8ed204e600f0d6e7997d77015c925a  lessons/Ks4Steps.dc.html
+3846bc85d2d5260ed8b388fc0efaf40a  lessons/Ks4Triangle.dc.html
+640b6cc3754e7107255bcef26097100f  lessons/Ks4Video.dc.html
+5bd355235328e528e645760625b3730f  lessons/Ks4Write.dc.html
+813350f09861210ce61957e37374b5cb  lessons/NOTES-KS4-batch-8.md
+641661c2b3996470c3b3865283b0b421  lessons/README.txt
+887eba0f013071a69f6940330c71215d  lessons/ks4-biology-4.5.1-homeostasis.dc.html
+e812029908b51a370b6d22635f2d26d9  lessons/ks4-biology-4.5.2.1-nervous-system.dc.html
+f172a848a797281c47e7887a61c58ac4  lessons/ks4-biology-4.5.2.1-reaction-time.dc.html
+9af0cfa7b591b16a9421b07e1f481983  lessons/ks4-biology-4.5.2.1-reflex-actions.dc.html
+7eb4d54d109d6d0955d1eca9493bdc1e  lessons/ks4-biology-4.5.2.2-the-brain.dc.html
+9b06788723b49805a731356925fb892b  lessons/ks4-biology-4.5.2.3-defects-of-the-eye.dc.html
+11d7965d3841059bd2fde99f55c216f9  lessons/ks4-biology-4.5.2.3-the-eye.dc.html
+eaf263cdde83e695dcaf31bbd100c135  lessons/ks4-biology-4.5.2.4-thermoregulation.dc.html
+9fb2c2f48f5c568d2c8182c328ba9b6e  lessons/ks4-biology-4.5.3.1-endocrine-system.dc.html
+b76d6ef96d1510dcd4a1b973fbc27e2b  lessons/ks4-biology-4.5.3.2-blood-glucose-diabetes.dc.html
+8a325cd221eaa034e2310bebaae0d124  lessons/ks4-biology-4.5.3.4-human-reproduction-hormones.dc.html
+6c3d554603dd8f10c8cb769121bf75b4  lessons/ks4-biology-4.5.3.5-contraception-fertility.dc.html
+20eb3326351d27e3d990a57ee27fb701  lessons/ks4-biology-4.6.1.1-sexual-asexual-reproduction.dc.html
+e08d2f32031844e27bcd68f257076005  lessons/ks4-biology-4.6.1.2-meiosis.dc.html
+3589798fbc07eceae87d77a9bbf4a20d  lessons/ks4-biology-4.6.1.3-advantages-sexual-asexual.dc.html
+6b224bc7a0e48bfe20f3e8678aec8f20  lessons/ks4-biology-4.6.1.4-dna-genome.dc.html
+7959be1777b0f0c3e329027ff9f47216  lessons/ks4-diagrams.js
+b765d8241fd115918bccb977388d6bd4  lessons/ks4-lib.js
+69e1b11a2d63c89e584f80ab402132ca  lessons/ks4-theme.css
+951ae391b8ae72ef12e671c2fad23353  lessons/support.js

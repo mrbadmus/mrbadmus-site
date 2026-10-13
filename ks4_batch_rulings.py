@@ -36,10 +36,15 @@ def _chip(slug, tpl):
     tpl = tpl.replace(ks4_rulings.R12_TIER_LINE, "", 1)
     std = ks4_rulings.R12_PATHWAY_STD_SPAN
     only = std.replace("Combined · Triple", "Triple only")
+    # ⊕ Batch 8: its Triple-only lessons draw the pathway pill as plain "Triple" (batch 7 wrote "Triple only"). The
+    # batch 4-7 candidates are tried first, in the same order, so their builds cannot move.
+    triple = std.replace("Combined · Triple", "Triple")
     if tpl.count(std) == 1:
         pathway = std
-    else:
+    elif tpl.count(only) == 1 or tpl.count(triple) != 1:
         pathway = only
+    else:
+        pathway = triple
     _require(tpl, pathway, slug, "B-R12 (pathway span)")
     return tpl.replace(pathway, ks4_rulings.R12_CHIP_BLOCK, 1)
 
@@ -622,6 +627,179 @@ SCIENCE.extend(
 # pill and no picker (her NOTES 8.1). B-R1 and B-R12 are not applicable to it; they are skipped
 # only for a record whose `routes` has exactly one entry, and ONLY if the template really has no
 # select and no tier chip (otherwise it fails loud, so a delivery that grows a picker is caught).
+# rulings-batch8.py — paste the SCIENCE entries into ks4_batch_rulings.SCIENCE (before the `]` that closes it, i.e. before
+# the line `]` that precedes `# ── Batch 7 port mechanics`), and the mechanics block after it. Generated against her bytes;
+# every target below was found exactly the stated number of times, in the stated layer.
+
+# ═══ Batch 8 science rulings ═══
+B8_SCIENCE = [
+    # renderVals read TH inside `done = [...]` before `const H/TH = c.is…` is declared (a ReferenceError once the guarded step completes). The same flag is now computed first, by the same route helper common() uses (K.route -> OK-checked route -> rk).
+    dict(id='B8-THE-BRAIN-TDZ', slug='the-brain', layer='logic',
+         old='const done = [s.hook !== null, s.regs.length === 3, s.syms.length === 4 && (!TH || s.maps.length === 3), s.think !== null, s.sort, s.ladder];',
+         new="const rk0 = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[((r) => (OK.indexOf(r) >= 0 ? r : OK[OK.length - 1]))((window.KS4 ? window.KS4.route(this) : { route: OK[OK.length - 1] }).route)];\n    const done = [s.hook !== null, s.regs.length === 3, s.syms.length === 4 && (rk0 !== 'TH' || s.maps.length === 3), s.think !== null, s.sort, s.ladder];"),
+    # renderVals read TH inside `done = [...]` before `const H/TH = c.is…` is declared (a ReferenceError once the guarded step completes). The same flag is now computed first, by the same route helper common() uses (K.route -> OK-checked route -> rk).
+    dict(id='B8-THERMOREGULATION-TDZ', slug='thermoregulation', layer='logic',
+         old='const done = [s.hook !== null, s.cen.length === 4, s.temps.indexOf(0) >= 0 && s.temps.indexOf(2) >= 0 && (!TH || s.ctxs.length === 2), s.think !== null, s.sort, s.ladder];',
+         new="const rk0 = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[((r) => (OK.indexOf(r) >= 0 ? r : OK[OK.length - 1]))((window.KS4 ? window.KS4.route(this) : { route: OK[OK.length - 1] }).route)];\n    const done = [s.hook !== null, s.cen.length === 4, s.temps.indexOf(0) >= 0 && s.temps.indexOf(2) >= 0 && (rk0 !== 'TH' || s.ctxs.length === 2), s.think !== null, s.sort, s.ladder];"),
+    # renderVals read H inside `done = [...]` before `const H/TH = c.is…` is declared (a ReferenceError once the guarded step completes). The same flag is now computed first, by the same route helper common() uses (K.route -> OK-checked route -> rk).
+    dict(id='B8-ENDOCRINE-SYSTEM-TDZ', slug='endocrine-system', layer='logic',
+         old='const done = [s.hook !== null, s.gls.length === 6 && (!H || (s.hi.length === 2 && s.fbs.length === 2)), s.sent.length === 2, s.think !== null, s.sort, s.ladder];',
+         new="const rk0 = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[((r) => (OK.indexOf(r) >= 0 ? r : OK[OK.length - 1]))((window.KS4 ? window.KS4.route(this) : { route: OK[OK.length - 1] }).route)];\n    const done = [s.hook !== null, s.gls.length === 6 && (!(rk0 === 'CH' || rk0 === 'TH') || (s.hi.length === 2 && s.fbs.length === 2)), s.sent.length === 2, s.think !== null, s.sort, s.ladder];"),
+    # renderVals read H inside `done = [...]` before `const H/TH = c.is…` is declared (a ReferenceError once the guarded step completes). The same flag is now computed first, by the same route helper common() uses (K.route -> OK-checked route -> rk).
+    dict(id='B8-BLOOD-GLUCOSE-DIABETES-TDZ', slug='blood-glucose-diabetes', layer='logic',
+         old='const done = [s.hook !== null, s.modes.length === 3 && (!H || s.lowDone), s.curves.length === 3 && s.types.length === 2, s.think !== null, s.sort, s.ladder];',
+         new="const rk0 = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[((r) => (OK.indexOf(r) >= 0 ? r : OK[OK.length - 1]))((window.KS4 ? window.KS4.route(this) : { route: OK[OK.length - 1] }).route)];\n    const done = [s.hook !== null, s.modes.length === 3 && (!(rk0 === 'CH' || rk0 === 'TH') || s.lowDone), s.curves.length === 3 && s.types.length === 2, s.think !== null, s.sort, s.ladder];"),
+    # renderVals read H inside `done = [...]` before `const H/TH = c.is…` is declared (a ReferenceError once the guarded step completes). The same flag is now computed first, by the same route helper common() uses (K.route -> OK-checked route -> rk).
+    dict(id='B8-HUMAN-REPRODUCTION-HORMONES-TDZ', slug='human-reproduction-hormones', layer='logic',
+         old='const done = [s.hook !== null, s.pub.length === 3, s.sts.length === 4 && (!H || s.hors.length === 4), s.think !== null, s.sort, s.ladder];',
+         new="const rk0 = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[((r) => (OK.indexOf(r) >= 0 ? r : OK[OK.length - 1]))((window.KS4 ? window.KS4.route(this) : { route: OK[OK.length - 1] }).route)];\n    const done = [s.hook !== null, s.pub.length === 3, s.sts.length === 4 && (!(rk0 === 'CH' || rk0 === 'TH') || s.hors.length === 4), s.think !== null, s.sort, s.ladder];"),
+    # renderVals read H inside `done = [...]` before `const H/TH = c.is…` is declared (a ReferenceError once the guarded step completes). The same flag is now computed first, by the same route helper common() uses (K.route -> OK-checked route -> rk).
+    dict(id='B8-CONTRACEPTION-FERTILITY-TDZ', slug='contraception-fertility', layer='logic',
+         old='const done = [s.hook !== null, s.ms.length === 7, s.needs.length === 3 && (!H || (s.ivfDone && s.ev.length === 3)), s.think !== null, s.sort, s.ladder];',
+         new="const rk0 = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[((r) => (OK.indexOf(r) >= 0 ? r : OK[OK.length - 1]))((window.KS4 ? window.KS4.route(this) : { route: OK[OK.length - 1] }).route)];\n    const done = [s.hook !== null, s.ms.length === 7, s.needs.length === 3 && (!(rk0 === 'CH' || rk0 === 'TH') || (s.ivfDone && s.ev.length === 3)), s.think !== null, s.sort, s.ladder];"),
+    # hyperopia + concave lens drew converging rays; VERIFY ALL 6 VIEWS in a screenshot
+    dict(id='B8-DE-WRONGLENS', slug='defects-of-the-eye', layer='logic',
+         old='const atG = lens === 0 ? null : cy + s * (lens === 1 ? 42 : 58);',
+         new='const atG = lens === 0 ? null : cy + s * (lens === 1 ? (def === 0 ? 42 : 16) : 58);'),
+    dict(id='B8-NS-RUNG2', slug='nervous-system', layer='logic',
+         old='Made-up data: touch to response took 0.15 s with the hand near the face and 0.18 s with the hand at the foot. Suggest why.',
+         new='Made-up data: a person responded to a touch on the cheek in 0.15 s and to a touch on the foot in 0.18 s. Suggest why.'),
+    dict(id='B8-DE-LASER', slug='defects-of-the-eye', layer='logic',
+         old="{ name: 'Laser surgery', why: 'Changes the shape of the cornea. Benefit:",
+         new="{ name: 'Laser surgery', why: 'Changes the shape of the cornea: for myopia it is made flatter, so it refracts light less. Benefit:"),
+    dict(id='B8-DE-SPECS', slug='defects-of-the-eye', layer='logic',
+         old='Risk: can break or be lost; the eye itself is unchanged.',
+         new='Risk: can break or be lost.'),
+    dict(id='B8-RT-MM', slug='reaction-time', layer='template',
+         old='m × 100, mm ÷ 10.',
+         new='m × 100; mm ÷ 10, so 120 mm = 12 cm.'),
+    dict(id='B8-TR-EVAP', slug='thermoregulation', layer='logic',
+         old='and sweat glands produce sweat. Both transfer energy',
+         new='and sweat glands produce sweat, which evaporates from the skin. Both transfer energy'),
+    dict(id='B8-NS-NT', slug='nervous-system', layer='logic',
+         old="'The chemical reaches the next neurone and starts a new electrical impulse.'",
+         new="'The chemical, a neurotransmitter, binds to receptors on the next neurone and starts a new electrical impulse.'"),
+    dict(id='B8-EYE-ACC', slug='the-eye', layer='template',
+         old='You look up from the far side of a field to a book in your hands.',
+         new='You stop looking at the far side of a field and look at a book in your hands.'),
+    # route split: CF TF get the bank e06 item, CH TH get the bank s15 item (CH TH already carry nGr, an LH-peak item, so e06 would give two LH-release items). Replaces the verbatim q1, whose wx mentions the corpus luteum.
+    dict(id='B8-HR-Q1', slug='human-reproduction-hormones', layer='logic',
+         old="const q1 = Q('Which hormone triggers ovulation?', 'LH (Luteinising Hormone) — a surge at around Day 14 releases the egg from the follicle', [['FSH — it stimulates the follicle to release the egg', 'FSH stimulates EGG MATURATION — it prepares the follicle but doesn’t trigger the release. The LH SURGE causes ovulation.'], ['Oestrogen — high oestrogen directly causes egg release', 'High oestrogen causes the RELEASE OF LH from the pituitary — it’s the subsequent LH surge that triggers ovulation, not oestrogen directly.'], ['Progesterone — it relaxes the follicle wall to release the egg', 'Progesterone is produced AFTER ovulation by the corpus luteum — it maintains the uterus lining. It does not trigger ovulation.']]);",
+         new="const q1 = H ? Q('Explain why oestrogen levels rise before the LH surge rather than after it.', 'The rising oestrogen is what stimulates the pituitary to release LH', [['Oestrogen has to be used up before LH can be made by the pituitary', 'Oestrogen stimulates LH release; it is not used up first.'], ['LH cannot be carried in blood that already contains oestrogen', 'Both hormones are carried in the blood at the same time.'], ['Oestrogen is released by the egg once it has left the ovary', 'Oestrogen is made by the ovary, and it rises before the egg is released.']]) : Q('What does the hormone LH cause to happen?', 'Ovulation', [['It causes the lining of the uterus to be shed at the start of a cycle', 'Not LH: LH causes ovulation, the release of an egg from the ovary.'], ['It causes the uterus lining to thicken in readiness for an embryo', 'That is oestrogen. LH causes ovulation.'], ['It causes the follicle in the ovary to begin maturing an egg cell', 'That is FSH. LH causes the mature egg to be released.']]);"),
+    # bank s04 on every route; replaces the verbatim q2 (corpus luteum in its wx). B8-HR-IMPLANT teaches it first.
+    dict(id='B8-HR-Q2', slug='human-reproduction-hormones', layer='logic',
+         old="const q2 = Q('What happens to progesterone levels if fertilisation does NOT occur?', 'Progesterone falls — the uterus lining breaks down — menstruation begins and the cycle restarts', [['Progesterone rises — signalling the body to prepare for pregnancy anyway', 'Progesterone rising would signal PREGNANCY — which hasn’t occurred. Without an embryo producing hormones, the corpus luteum degenerates and progesterone falls.'], ['Progesterone stays the same indefinitely until the next menstrual cycle', 'Progesterone cannot stay elevated indefinitely — the corpus luteum degenerates after about 14 days without an embryo implanting.'], ['Progesterone triggers FSH release to immediately start a new cycle', 'FSH is released at the start of a new cycle as progesterone falls — but it is oestrogen and progesterone levels, not progesterone directly stimulating FSH.']]);",
+         new="const q2 = Q('If an embryo implants, progesterone stays high instead of falling. Explain why this matters.', 'It keeps the lining in place to support the embryo', [['It stops the embryo from dividing too quickly at first', 'Progesterone acts on the uterus lining, not on how fast the embryo divides.'], ['It restarts the cycle so a second egg can be released', 'High progesterone keeps the lining in place; it does not start a new cycle.'], ['It causes the lining to be shed and then rebuilt more thickly', 'Shedding would remove the lining the embryo needs. Progesterone maintains it.']]);"),
+    # the rung's command-word chip is the first MCQ argument, so it changes with the stem (Give -> State, as the neighbouring rung already does)
+    dict(id='B8-HR-GRAMMAR', slug='human-reproduction-hormones', layer='logic',
+         old="MCQ('Give', 'Give how often an egg is released, approximately.',",
+         new="MCQ('State', 'State approximately how often an egg is released.',"),
+    dict(id='B8-BG-HOOK-TITLE', slug='blood-glucose-diabetes', layer='template',
+         old='title="Skipped lunch." scene="You skip lunch and feel a bit shaky by mid-afternoon. A snack later, you feel fine again."',
+         new='title="A big bowl of pasta." scene="You eat a big bowl of pasta and your blood glucose rises. Two hours later it is back where it started, though you have eaten nothing else."'),
+    # the rail label (RAIL const, L141)
+    dict(id='B8-BG-HOOK-RAIL', slug='blood-glucose-diabetes', layer='logic',
+         old='"label":"Skipped lunch"',
+         new='"label":"A big bowl of pasta"'),
+    # plasmid rings ARE GCSE; spec 4.6.1.4 two strands forming a double helix
+    dict(id='B8-DNA-CIRCLE', slug='dna-genome', layer='logic',
+         old="['Circle', 'Not at GCSE.']",
+         new="['Circle', 'DNA’s two strands twist into a double helix.']"),
+    # red blood cells have no nucleus
+    dict(id='B8-DNA-EVERY-1', slug='dna-genome', layer='template',
+         old='is the instruction for that kept in every cell of your body, or only in some cells?',
+         new='is the instruction for that kept in nearly every cell of your body, or only in some cells?'),
+    dict(id='B8-DNA-EVERY-2', slug='dna-genome', layer='logic',
+         old="{ text: 'In every cell', correct: true,",
+         new="{ text: 'In nearly every cell', correct: true,"),
+    # non-coding DNA is Triple Higher only
+    dict(id='B8-DNA-NONCODING', slug='dna-genome', layer='logic',
+         old="'Not all DNA codes for proteins — a significant portion of the genome is non-coding DNA. Genes are specifically the protein-coding sequences.'",
+         new="'Not all DNA is genes. A gene is a small section of DNA that codes for a particular protein.'"),
+    dict(id='B8-CF-DIAPHRAGM', slug='contraception-fertility', layer='logic',
+         old="'Preventing sperm entering = BARRIER METHODS (condoms, diaphragm). The pill has no physical barrier effect.'",
+         new="'Preventing sperm entering = a CONDOM, a barrier method. The pill has no physical barrier effect.'"),
+    # age-appropriate: what a method blocks, not how it is used
+    dict(id='B8-CF-IUD', slug='contraception-fertility', layer='logic',
+         old="['It covers the penis', 'That is a male condom.']",
+         new="['It stops eggs maturing', 'That is a hormonal method.']"),
+    # ST[3] (L148); the target includes the following words because the sentence also occurs twice in rung chains; so the q2 replacement is taught first
+    dict(id='B8-HR-IMPLANT', slug='human-reproduction-hormones', layer='logic',
+         old="note: 'Oestrogen and progesterone maintain the uterus lining. If the egg",
+         new="note: 'Oestrogen and progesterone maintain the uterus lining. If an embryo implants, progesterone keeps the lining in place. If the egg"),
+    # q1 (TF TH) tests advantages taught two lessons later; the bank is the CF CH set on every route
+    dict(id='B8-SAR-BANK', slug='sexual-asexual-reproduction', layer='logic',
+         old='const BANK = TR ? [q1, q3, nPl, nMit, nVar] : [q3, nPl, nMit, nVar, nClo];',
+         new='const BANK = [q3, nPl, nMit, nVar, nClo];'),
+    dict(id='B8-ADV-WHEAT', slug='advantages-sexual-asexual', layer='logic',
+         old="['Wheat', 'Not a named example.']",
+         new="['Wheat', 'Wheat grows from seeds, not bulbs.']"),
+]
+SCIENCE.extend(B8_SCIENCE)
+
+# ── Batch 8 port mechanics (not science rulings) ───────────────────────
+# B8-<SLUG>-CHIP, one per batch-8 lesson: as in batch 7, every page builds its render values in a `common()` helper that
+# returns a FRESH object, so B-R12's one route chip got no words and no menu. Same one-line repair as B7-<SLUG>-CHIP.
+_B8_SLUGS = ["homeostasis", "nervous-system", "reflex-actions", "reaction-time", "the-brain", "the-eye",
+             "defects-of-the-eye", "thermoregulation", "endocrine-system", "blood-glucose-diabetes",
+             "human-reproduction-hormones", "contraception-fertility", "sexual-asexual-reproduction", "meiosis",
+             "advantages-sexual-asexual", "dna-genome"]
+SCIENCE.extend(
+    dict(id="B8-%s-CHIP" % sl.upper(), slug=sl, layer="logic",
+         old="return { route, rk, onRoute: R.onRoute || (() => {}),",
+         new="return { route, rk, onRoute: R.onRoute || (() => {}), routeWords: R.routeWords, routeSwitchOptions: R.routeSwitchOptions,")
+    for sl in _B8_SLUGS)
+
+# B8-INLINE-TRIPLE-PTR (two entries): a pointer Design wrote as plain words + a link to a TRIPLE-ONLY lesson, shown on every
+# route. On Combined the link would resolve to nothing (B-INLINE-LINKS falls back to '#'), a dead link. Her own text labels it
+# "(Triple)", so the pointer is shown on the Triple routes only (her words unchanged). These run AFTER B-INLINE-LINKS, so the
+# targets carry the rewritten `{{ mrbLink_… }}` hrefs.
+SCIENCE.extend([
+    dict(id="B8-PTR-HOMEOSTASIS-THERMO", slug="homeostasis", layer="template",
+         old='''<p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">How sweating and shivering work: <a href="{{ mrbLink_thermoregulation }}">Thermoregulation</a> (Triple).</p>''',
+         new='''<sc-if value="{{ isTriple }}"><p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">How sweating and shivering work: <a href="{{ mrbLink_thermoregulation }}">Thermoregulation</a> (Triple).</p></sc-if>'''),
+    dict(id="B8-PTR-REFLEX-EYE", slug="reflex-actions", layer="template",
+         old='''How the pupil reflex works: <a href="{{ mrbLink_the_eye }}">The eye</a> (Triple). ''',
+         new='''<sc-if value="{{ isTriple }}">How the pupil reflex works: <a href="{{ mrbLink_the_eye }}">The eye</a> (Triple). </sc-if>'''),
+])
+
+# B8-LNK (engine, not per lesson): batch 8 writes its prev/next/connects as `LNK('<slug>', '<label>')` over a
+# `const FILE = {slug: '<file>.dc.html'}` map, not as `{ href: '<file>.dc.html' }` objects, so B-PREVNEXT and B-CONNECTS match
+# nothing and the G3 guard would raise on the FILE map. This one function (called from port_lesson):
+#   * empties the FILE map (no `.dc.html` text survives);
+#   * makes LNK resolve through KS4.hrefFor(slug, c) -- the same resolver every connects link uses, so a Triple-only target
+#     is simply null on a Combined route and Ks4End's filter drops it;
+#   * sets the resolver's route (`LNK_R = c;`) right after `const c = this.common(done);`;
+#   * swaps the single-line `endPrev:` / `endNext:` for the per-route mount props, like B-PREVNEXT.
+# Fail-loud on every anchor. Lessons without the LNK helper (batches 4-7) are untouched.
+_LNK_DEF = "const LNK = (k, label) => ({ href: FILE[k], label });"
+_FILE_RE = re.compile(r"^const FILE = \{[^\n]*\};$", re.M)
+_LNK_PREV_RE = re.compile(r"^(\s*)endPrev:[^\n]*\n", re.M)
+_LNK_NEXT_RE = re.compile(r"^(\s*)endNext:[^\n]*\n", re.M)
+_COMMON_DONE = "const c = this.common(done);"
+
+
+def apply_lnk_links(source_file, logic):
+    if _LNK_DEF not in logic:
+        return logic, 0, 0
+    if len(_FILE_RE.findall(logic)) != 1 or logic.count(_LNK_DEF) != 1 or logic.count(_COMMON_DONE) != 1:
+        raise RulingError("ks4_batch_rulings B8-LNK: %s does not carry exactly one FILE map, one LNK helper and one "
+                          "`%s`." % (source_file, _COMMON_DONE))
+    logic = _FILE_RE.sub("const FILE = {}; // \u2295 B8-LNK: links resolve through KS4.hrefFor", logic, count=1)
+    logic = logic.replace(_LNK_DEF, "let LNK_R = null; // \u2295 B8-LNK\n"
+                          "const LNK = (k, label) => ({ href: ((window.KS4 && LNK_R) ? window.KS4.hrefFor(k, LNK_R) : null), label });", 1)
+    logic = logic.replace(_COMMON_DONE, _COMMON_DONE + " LNK_R = c;", 1)
+    n = []
+    for rx, key, prop in ((_LNK_PREV_RE, "endPrev", "prev"), (_LNK_NEXT_RE, "endNext", "next")):
+        if ("%s: this.props.mrbPrevNext.%s," % (key, prop)) in logic:
+            n.append(0)     # already swapped by B-PREVNEXT (e.g. `endNext: null,`)
+            continue
+        if len(rx.findall(logic)) != 1:
+            raise RulingError("ks4_batch_rulings B8-LNK: %s needs exactly one `%s:` line." % (source_file, key))
+        logic = rx.sub(lambda m: "%s%s: this.props.mrbPrevNext.%s,\n" % (m.group(1), key, prop), logic, count=1)
+        n.append(1)
+    return logic, n[0], n[1]
+
 APPLIED = []
 
 
@@ -653,6 +831,8 @@ def port_lesson(lesson, tpl, logic, slug_by_file, other_slug_by_file=None):
         tpl = ks4_rulings.apply_r1_route_selector(src, tpl)
         tpl = _chip(lesson["slug"], tpl)
     logic, n_prev, n_next = ks4_rulings.apply_r_prevnext(src, logic)
+    logic, n_prev2, n_next2 = apply_lnk_links(src, logic)   # ⊕ batch 8: LNK()/FILE links
+    n_prev, n_next = n_prev + n_prev2, n_next + n_next2
     logic, connects = apply_connects(src, logic, slug_by_file, other_slug_by_file)
     tpl, logic, inline = apply_inline_links(src, tpl, logic, slug_by_file, other_slug_by_file)
     tpl = apply_science(lesson["slug"], "template", tpl)

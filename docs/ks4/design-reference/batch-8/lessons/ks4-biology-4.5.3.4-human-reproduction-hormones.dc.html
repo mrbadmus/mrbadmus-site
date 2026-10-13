@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hormones in human reproduction · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Homeostasis and response" title="Hormones in human reproduction" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.5.3.4 · Combined 4.5.3.3</p>
+        <h1>Hormones in human reproduction</h1>
+        <p class="ks3-bigq">Four hormones run a 28-day cycle. Turn the dial and see which hormone is at work at each stage.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Once a month." scene="Most people know a period comes roughly once a month." question="is that timed by a clock in the body, or by chemicals in the blood?" options="{{ hookOptions }}" bridge="Chemicals in the blood: hormones. Four of them set the timing." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-puberty" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Puberty</p>
+        <h2 style="margin: 6px 0 0;">Reproductive hormones.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">During puberty, reproductive hormones cause secondary sex characteristics to develop. Tap each.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ pubCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Where the glands are: <a href="ks4-biology-4.5.3.1-endocrine-system.dc.html">The endocrine system</a>.</p>
+      </section>
+
+      <section id="s-cycle" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The menstrual cycle</p>
+        <h2 style="margin: 6px 0 0;">The 28-day cycle.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Several hormones are involved in the menstrual cycle. FSH causes maturation of an egg in the ovary. LH stimulates the release of the egg. Oestrogen and progesterone are involved in maintaining the uterus lining. Turn the dial: pick each stage.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ stBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ dialFig }}</div><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ stNote }}</p></div>
+        <sc-if value="{{ isHigher }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 16px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);"><div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Higher</span><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">How the hormones interact</p></div>
+          <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">The hormones act on each other. Pick a hormone to see its line on the graph and what it does to the others.</p>
+          <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ horBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+          <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ curveFig }}</div></div>
+          <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ horNote }}</p></div>
+        </div></sc-if>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Using hormones to prevent or help pregnancy: <a href="ks4-biology-4.5.3.5-contraception-fertility.dc.html">Contraception and fertility</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · which one releases the egg?</p></div>
+        <p class="ks3-mis-quote">&ldquo;FSH releases the egg.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Which hormone stimulates the release of an egg?" options="{{ thinkOptions }}" reveal="LH. FSH causes an egg to mature; LH stimulates its release." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Where is it made?" prompt="Place each hormone." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Pituitary: FSH and LH. Ovaries: oestrogen and progesterone. Testes: testosterone." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">What each hormone does in the cycle.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How the hormones interact (Higher).</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Use the graph</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Read when each hormone rises and peaks (Higher).</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">FSH matures an egg, LH releases it, and oestrogen and progesterone maintain the uterus lining. Ovulation happens about every 28 days.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="human-reproduction-hormones" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Hormones in human reproduction" spec="AQA 4.5.3.4 (Combined 4.5.3.3)" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which gland makes which hormone?" legal="The cycle dial and hormone curves are schematic; cycle length varies from person to person." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'human-reproduction-hormones';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const FILE = {"homeostasis":"ks4-biology-4.5.1-homeostasis.dc.html","nervous-system":"ks4-biology-4.5.2.1-nervous-system.dc.html","reflex-actions":"ks4-biology-4.5.2.1-reflex-actions.dc.html","reaction-time":"ks4-biology-4.5.2.1-reaction-time.dc.html","the-brain":"ks4-biology-4.5.2.2-the-brain.dc.html","the-eye":"ks4-biology-4.5.2.3-the-eye.dc.html","defects-of-the-eye":"ks4-biology-4.5.2.3-defects-of-the-eye.dc.html","thermoregulation":"ks4-biology-4.5.2.4-thermoregulation.dc.html","endocrine-system":"ks4-biology-4.5.3.1-endocrine-system.dc.html","blood-glucose-diabetes":"ks4-biology-4.5.3.2-blood-glucose-diabetes.dc.html","human-reproduction-hormones":"ks4-biology-4.5.3.4-human-reproduction-hormones.dc.html","contraception-fertility":"ks4-biology-4.5.3.5-contraception-fertility.dc.html","sexual-asexual-reproduction":"ks4-biology-4.6.1.1-sexual-asexual-reproduction.dc.html","meiosis":"ks4-biology-4.6.1.2-meiosis.dc.html","advantages-sexual-asexual":"ks4-biology-4.6.1.3-advantages-sexual-asexual.dc.html","dna-genome":"ks4-biology-4.6.1.4-dna-genome.dc.html","metabolism":"../../Batch 7/lessons/ks4-biology-4.4.2.3-metabolism.dc.html","aerobic-respiration":"../../Batch 7/lessons/ks4-biology-4.4.2.1-aerobic-respiration.dc.html","response-to-exercise":"../../Batch 7/lessons/ks4-biology-4.4.2.2-response-to-exercise.dc.html","fungal-protist-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.4-fungal-protist-diseases.dc.html","bacterial-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.3-bacterial-diseases.dc.html","cell-specialisation":"../../Batch 6/lessons/ks4-biology-4.1.1.3-cell-specialisation.dc.html","culturing-microorganisms":"../../Batch 6/lessons/ks4-biology-4.1.1.6-culturing-microorganisms.dc.html","digestive-system":"../../Batch 6/lessons/ks4-biology-4.2.2.1-digestive-system.dc.html","stem-cells":"../../Batch 6/lessons/ks4-biology-4.1.2.3-stem-cells.dc.html"};
+const LNK = (k, label) => ({ href: FILE[k], label });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const PATH = (d, col, w, extra) => '<path d="' + d + '" fill="none" stroke="' + (col || '#1A1A1A') + '" stroke-width="' + (w || 3) + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>';
+const RAIL = [{"id":"s-hook","label":"Once a month","short":"HOOK"},{"id":"s-puberty","label":"Reproductive hormones","short":"PUBERTY"},{"id":"s-cycle","label":"The 28-day cycle","short":"CYCLE"},{"id":"s-think","label":"Think again","short":"THINK"},{"id":"s-sort","label":"Where is it made?","short":"SORT"},{"id":"s-ladder","label":"Exam ladder","short":"LADDER"}];
+const STATE = {"pub":[],"st":null,"sts":[],"hor":null,"hors":[]};
+const PUB = [
+  { name: 'Oestrogen', why: 'The main female reproductive hormone, produced in the ovary.' },
+  { name: 'Testosterone', why: 'The main male reproductive hormone, produced by the testes. It stimulates sperm production.' },
+  { name: 'Ovulation', why: 'At puberty eggs begin to mature, and one is released approximately every 28 days.' }
+];
+const ST = [
+  { k: 'Days 1–4', a: [1, 4], note: 'The uterus lining breaks down and is shed: menstruation, a period. FSH from the pituitary is causing an egg to mature in the ovary.' },
+  { k: 'Days 5–13', a: [5, 13], note: 'The uterus lining is rebuilt, stimulated by oestrogen from the ovary. The egg carries on maturing.' },
+  { k: 'Day 14', a: [14, 14], note: 'Ovulation: LH from the pituitary stimulates the release of the egg from the ovary.' },
+  { k: 'Days 15–28', a: [15, 28], note: 'Oestrogen and progesterone maintain the uterus lining. If the egg is not fertilised, the lining breaks down again and the cycle restarts.' }
+];
+const HOR = [
+  { k: 'FSH', note: 'FSH (pituitary) causes an egg to mature and stimulates the ovaries to produce oestrogen.' },
+  { k: 'Oestrogen', note: 'Oestrogen (ovary) rises in the first half and peaks just before ovulation. It inhibits FSH and stimulates the release of LH.' },
+  { k: 'LH', note: 'LH (pituitary) rises sharply to a peak just before ovulation, around day 14, and stimulates the release of the egg.' },
+  { k: 'Progesterone', note: 'Progesterone is high in the second half and maintains the lining. It inhibits both FSH and LH. When it falls, FSH can rise again and a new cycle starts.' }
+];
+
+class Component extends DCLogic {
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH', T = rk === 'TF' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: T, notTriple: !T, isTH: rk === 'TH', notTH: rk !== 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+  dialFig(st) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const cx = 170, cy = 160, r = 112;
+    const ang = (d) => ((d - 1) / 28) * 2 * Math.PI - Math.PI / 2;
+    const arc = (d1, d2, col, w) => { const a1 = ang(d1), a2 = ang(d2 + 1); const x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1), x2 = cx + r * Math.cos(a2), y2 = cy + r * Math.sin(a2); return '<path d="M' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' A' + r + ' ' + r + ' 0 ' + (a2 - a1 > Math.PI ? 1 : 0) + ' 1 ' + x2.toFixed(1) + ' ' + y2.toFixed(1) + '" fill="none" stroke="' + col + '" stroke-width="' + w + '"/>'; };
+    const cols = ['#C8102E', '#F2C9AE', '#FBBF24', '#A9D9BE'];
+    ST.forEach((x, i) => { b += arc(x.a[0], x.a[1], cols[i], st === i ? 30 : 18); });
+    for (let d = 1; d <= 28; d++) { const a = ang(d); b += D.line(cx + (r - 24) * Math.cos(a), cy + (r - 24) * Math.sin(a), cx + (r - 16) * Math.cos(a), cy + (r - 16) * Math.sin(a), 1.5, C.stroke); }
+    [1, 7, 14, 21, 28].forEach((d) => { const a = ang(d + 0.5); b += D.T(cx + (r + 30) * Math.cos(a), cy + (r + 30) * Math.sin(a) + 5, String(d), 13, { fill: C.stroke }); });
+    b += D.T(cx, cy - 4, st === null ? 'day' : ST[st].k.toLowerCase(), 17, { fill: C.stroke }) + D.T(cx, cy + 20, st === null ? 'pick a stage' : ['period', 'lining rebuilt', 'ovulation', 'lining maintained'][st], 13, { fill: C.muted, weight: 'normal' });
+    return D.svg(340, 320, b, '28-day cycle dial' + (st === null ? '.' : ', ' + ST[st].k + ' highlighted.'));
+  }
+  curveFig(sel) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const x0 = 50, y0 = 230, sx = 20;
+    const X = (d) => (x0 + (d - 1) * sx).toFixed(1);
+    b += D.line(x0, 30, x0, y0, 2.5, C.stroke) + D.line(x0, y0, x0 + 27 * sx, y0, 2.5, C.stroke);
+    [1, 7, 14, 21, 28].forEach((d) => { b += D.line(+X(d), y0, +X(d), y0 + 6, 2, C.stroke) + D.T(+X(d), y0 + 22, String(d), 12, { fill: C.stroke, weight: 'normal' }); });
+    b += D.T(x0 + 27 * sx, y0 + 40, 'day of cycle', 12, { anchor: 'end', fill: C.stroke, weight: 'normal' }) + D.T(x0 + 4, 22, 'hormone level', 12, { anchor: 'start', fill: C.stroke, weight: 'normal' });
+    b += D.line(+X(14), 30, +X(14), y0, 1.5, C.muted, ' stroke-dasharray="5 5"') + D.T(+X(14) + 4, 44, 'ovulation', 12, { anchor: 'start', fill: C.muted, weight: 'normal' });
+    const L = [
+      { k: 'FSH', col: '#3B82F6', d: 'M' + X(1) + ' 170 C' + X(3) + ' 140 ' + X(6) + ' 150 ' + X(9) + ' 185 C' + X(11) + ' 200 ' + X(12) + ' 160 ' + X(13.5) + ' 150 C' + X(15) + ' 160 ' + X(16) + ' 205 ' + X(20) + ' 210 C' + X(24) + ' 212 ' + X(26) + ' 200 ' + X(28) + ' 175' },
+      { k: 'Oestrogen', col: '#C8102E', d: 'M' + X(1) + ' 210 C' + X(5) + ' 208 ' + X(9) + ' 180 ' + X(12.5) + ' 90 C' + X(13.5) + ' 70 ' + X(14.5) + ' 160 ' + X(17) + ' 175 C' + X(20) + ' 160 ' + X(23) + ' 150 ' + X(28) + ' 210' },
+      { k: 'LH', col: '#2E5E45', d: 'M' + X(1) + ' 205 C' + X(8) + ' 205 ' + X(11) + ' 200 ' + X(12.8) + ' 180 L' + X(13.6) + ' 50 L' + X(14.6) + ' 190 C' + X(17) + ' 205 ' + X(22) + ' 206 ' + X(28) + ' 205' },
+      { k: 'Progesterone', col: '#B7791F', d: 'M' + X(1) + ' 220 C' + X(10) + ' 220 ' + X(13) + ' 218 ' + X(15) + ' 205 C' + X(17) + ' 160 ' + X(19) + ' 100 ' + X(21) + ' 100 C' + X(23) + ' 100 ' + X(25) + ' 150 ' + X(28) + ' 220' }
+    ];
+    L.forEach((l, i) => { b += PATH(l.d, l.col, sel === i ? 5.5 : 3, sel === null || sel === i ? '' : ' stroke-opacity="0.3"'); });
+    const lab = [[X(4), 136, 'FSH'], [X(11), 84, 'oestrogen'], [X(13.6), 44, 'LH'], [X(21), 92, 'progesterone']];
+    lab.forEach((t, i) => { b += D.T(+t[0], t[1], t[2], 13, { fill: L[i].col }); });
+    return D.svg(620, 280, b, 'Levels of FSH, oestrogen, LH and progesterone over a 28-day cycle; LH peaks just before ovulation at day 14.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.pub.length === 3, s.sts.length === 4 && (!H || s.hors.length === 4), s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const H = c.isHigher, TR = c.isTriple, TH = c.isTH, rk = c.rk;
+    const q1 = Q('Which hormone triggers ovulation?', 'LH (Luteinising Hormone) — a surge at around Day 14 releases the egg from the follicle', [['FSH — it stimulates the follicle to release the egg', 'FSH stimulates EGG MATURATION — it prepares the follicle but doesn’t trigger the release. The LH SURGE causes ovulation.'], ['Oestrogen — high oestrogen directly causes egg release', 'High oestrogen causes the RELEASE OF LH from the pituitary — it’s the subsequent LH surge that triggers ovulation, not oestrogen directly.'], ['Progesterone — it relaxes the follicle wall to release the egg', 'Progesterone is produced AFTER ovulation by the corpus luteum — it maintains the uterus lining. It does not trigger ovulation.']]);
+    const q2 = Q('What happens to progesterone levels if fertilisation does NOT occur?', 'Progesterone falls — the uterus lining breaks down — menstruation begins and the cycle restarts', [['Progesterone rises — signalling the body to prepare for pregnancy anyway', 'Progesterone rising would signal PREGNANCY — which hasn’t occurred. Without an embryo producing hormones, the corpus luteum degenerates and progesterone falls.'], ['Progesterone stays the same indefinitely until the next menstrual cycle', 'Progesterone cannot stay elevated indefinitely — the corpus luteum degenerates after about 14 days without an embryo implanting.'], ['Progesterone triggers FSH release to immediately start a new cycle', 'FSH is released at the start of a new cycle as progesterone falls — but it is oestrogen and progesterone levels, not progesterone directly stimulating FSH.']]);
+    const q3 = Q('What is the role of oestrogen in the menstrual cycle?', 'Repairs and thickens the uterus lining after menstruation — also triggers the LH surge at high levels', [['Triggers ovulation directly at low concentrations', 'Oestrogen at HIGH concentrations triggers LH release, and LH causes ovulation — but at LOW concentrations, oestrogen inhibits FSH, not triggers ovulation.'], ['Maintains the uterus lining in the second half of the cycle', 'Maintaining the uterus lining in the second half = PROGESTERONE. Oestrogen rebuilds it in the first half.'], ['Stimulates egg maturation in the follicle', 'Stimulating egg maturation = FSH. Oestrogen is produced AS A RESULT of FSH stimulation, not a cause of egg maturation.']]);
+    const nOes = Q('What does oestrogen do in the menstrual cycle?', 'It rebuilds the uterus lining', [['It releases the egg', 'That is LH.'], ['It makes the egg mature', 'That is FSH.'], ['It makes sperm', 'Testosterone stimulates sperm production.']]);
+    const nTes = Q('What does testosterone do?', 'It stimulates sperm production', [['It releases an egg', 'That is LH.'], ['It maintains the uterus lining', 'Oestrogen and progesterone.'], ['It is made in the pituitary gland', 'Testosterone is made by the testes.']]);
+    const nGl = Q('Which gland produces FSH and LH?', 'The pituitary gland', [['The ovaries', 'They make oestrogen and progesterone.'], ['The testes', 'They make testosterone.'], ['The thyroid', 'Not a reproductive gland.']]);
+    const nGr = Q('On a graph of hormone levels, one hormone rises to a sharp peak just before ovulation at about day 14. Which is it?', 'LH', [['Progesterone', 'Progesterone is high in the second half.'], ['FSH', 'FSH rises, but LH has the sharp peak.'], ['Testosterone', 'Not a menstrual-cycle hormone.']]);
+    const BANK = H ? [q1, q2, q3, nGl, nGr] : [q1, q2, nOes, nTes, nGl];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'Chemicals in the blood', correct: true, reply: 'Yes: hormones, rising and falling in a cycle.' },
+        { text: 'A clock in the body', correct: false, reply: 'There’s no clock: hormones, chemicals in the blood, rise and fall in a cycle that sets the timing.' }
+      ],
+      pubCards: this.cards(PUB, 'pub'),
+      stBtns: this.btns(ST.map((x) => x.k), s.st, (i) => this.setState({ st: i, sts: this.seen('sts', i) })),
+      dialFig: c.ready ? K.fig(this.dialFig(s.st), '') : null,
+      stNote: s.st === null ? 'Pick a stage.' : ST[s.st].note,
+      horBtns: this.btns(HOR.map((x) => x.k), s.hor, (i) => this.setState({ hor: i, hors: this.seen('hors', i) })),
+      curveFig: c.ready && H ? K.fig(this.curveFig(s.hor), '') : null,
+      horNote: s.hor === null ? 'Pick a hormone.' : HOR[s.hor].note,
+      thinkOptions: [
+        { text: 'FSH', correct: false, reply: 'FSH causes the egg to mature.' },
+        { text: 'LH', correct: true, reply: 'LH stimulates the release of the egg.' },
+        { text: 'Progesterone', correct: false, reply: 'Progesterone maintains the uterus lining.' }
+      ],
+      sortBins: [{ id: 'p', label: 'Pituitary gland' }, { id: 'o', label: 'Ovaries' }, { id: 't', label: 'Testes' }],
+      sortItems: [
+        { text: 'FSH', bin: 'p', why: 'Pituitary.' },
+        { text: 'LH', bin: 'p', why: 'Pituitary.' },
+        { text: 'Oestrogen', bin: 'o', why: 'Ovaries.' },
+        { text: 'Progesterone', bin: 'o', why: 'Ovaries.' },
+        { text: 'Testosterone', bin: 't', why: 'Testes.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the hormone that causes an egg to mature in the ovary.', 'FSH.', ['FSH', ['LH', 'LH releases the egg.'], ['Testosterone', 'Male hormone.']]),
+          MCQ('State', 'State where testosterone is produced.', 'The testes.', [['The ovaries', 'Oestrogen and progesterone.'], 'The testes', ['The pituitary', 'FSH and LH.']])
+        ],
+        r2: [
+          MCQ('Identify', 'Identify the gland that produces FSH and LH.', 'The pituitary gland.', ['Pituitary gland', ['Ovary', 'Oestrogen and progesterone.'], ['Thyroid', 'Not reproductive.'], ['Pancreas', 'Insulin.']]),
+          MCQ('Give', 'Give how often an egg is released, approximately.', 'About every 28 days.', [['Every day', 'Far too often.'], 'About every 28 days', ['Once a year', 'Too rarely.']])
+        ],
+        r3: [
+          CHAIN('Describe', 'Describe the main events of the menstrual cycle. Put the links in order.',
+            ['The uterus lining breaks down and is shed: menstruation.', 'The lining is rebuilt, stimulated by oestrogen.', 'Around day 14, LH stimulates the release of an egg.', 'Oestrogen and progesterone maintain the lining; if the egg isn’t fertilised, it breaks down again.'],
+            [['The lining is rebuilt during the period.', 'It is shed first, then rebuilt.'], ['FSH releases the egg.', 'LH releases it.']]),
+          H ? CHAIN('Explain', 'Explain how falling progesterone leads to a new cycle. Put the links in order.',
+            ['Progesterone inhibits FSH and LH.', 'If no egg is fertilised, progesterone falls.', 'FSH is no longer inhibited, so it rises.', 'FSH causes a new egg to mature.'],
+            [['Progesterone stimulates FSH directly.', 'Progesterone inhibits FSH.'], ['Oestrogen releases the next egg.', 'LH releases the egg.']])
+          : CHAIN('Describe', 'Describe the job of each hormone in the cycle. Put the links in order.',
+            ['FSH from the pituitary causes an egg to mature.', 'Oestrogen from the ovary rebuilds the uterus lining.', 'LH from the pituitary stimulates the release of the egg.', 'Oestrogen and progesterone maintain the uterus lining.'],
+            [['The ovaries make FSH and LH.', 'The pituitary makes them.'], ['Testosterone matures the egg.', 'Testosterone is the male hormone.']])
+        ],
+        r4: [
+          H ? WRITE('Explain', 6, 'Explain how FSH, oestrogen, LH and progesterone interact to control the menstrual cycle.',
+            LV6('Each hormone’s source and role, every interaction, and how the cycle restarts.', 'Most roles and some interactions.', 'Some roles, no interactions.'),
+            ['FSH (pituitary) causes an egg to mature and stimulates the ovaries to produce oestrogen.', 'Oestrogen rebuilds the uterus lining.', 'Oestrogen inhibits FSH and stimulates LH.', 'LH stimulates the release of the egg (ovulation, about day 14).', 'Progesterone maintains the lining and inhibits FSH and LH.', 'Progesterone falls if there is no fertilisation; the lining is shed and FSH rises again.'],
+            ['“FSH releases the egg.”', '“The ovaries make FSH and LH.”'])
+          : WRITE('Describe', 4, 'Describe the roles of FSH, LH, oestrogen and progesterone in the menstrual cycle.',
+            LV4('All four hormones with a correct role each, in cycle order.', 'Two or three hormones with roles.'),
+            ['FSH causes an egg to mature in the ovary.', 'LH stimulates the release of the egg.', 'Oestrogen rebuilds the uterus lining.', 'Oestrogen and progesterone maintain the uterus lining.'],
+            ['“FSH releases the egg.”', '“The lining rebuilds during the period.”'])
+        ]
+      },
+      keyLines: H ? ['Reproductive hormones cause secondary sex characteristics at puberty. Oestrogen: ovary. Testosterone: testes; stimulates sperm production.', 'FSH matures an egg; LH stimulates its release (about every 28 days); oestrogen and progesterone maintain the uterus lining.', 'FSH stimulates oestrogen; oestrogen inhibits FSH and stimulates LH; progesterone inhibits FSH and LH.', 'On a graph: oestrogen peaks before ovulation, LH peaks sharply just before ovulation, progesterone is high in the second half.']
+        : ['Reproductive hormones cause secondary sex characteristics at puberty.', 'Oestrogen: main female hormone, from the ovary. Testosterone: main male hormone, from the testes; stimulates sperm production.', 'FSH causes an egg to mature; LH stimulates its release, about every 28 days.', 'Oestrogen and progesterone are involved in maintaining the uterus lining.'],
+      endPrev: LNK('blood-glucose-diabetes', 'Blood glucose and diabetes'),
+      endNext: LNK('contraception-fertility', 'Contraception and fertility'),
+      endConnects: [LNK('endocrine-system', 'The endocrine system')],
+      bank: c.ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The endocrine system · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Homeostasis and response" title="The endocrine system" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.5.3.1</p>
+        <h1>The endocrine system</h1>
+        <p class="ks3-bigq">Glands send chemical messages in the blood. Find the six glands, then race a hormone against a nerve impulse.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A fright." scene="A door slams behind you in an empty house. Minutes later your heart is still pounding." question="is that long-lasting pounding caused by a message along nerves, or by a chemical in your blood?" options="{{ hookOptions }}" bridge="A chemical in the blood: a hormone. Its effect is slower to start but lasts longer." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-glands" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Glands and hormones</p>
+        <h2 style="margin: 6px 0 0;">Six glands.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The endocrine system is made of glands that secrete chemicals called hormones directly into the bloodstream. The blood carries each hormone to a target organ, where it produces an effect. Tap each gland to find it.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ glBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ glFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ glNote }}</p></div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">The pituitary gland in the brain is a master gland: it secretes several hormones into the blood in response to body conditions, and these act on other glands to make them release hormones.</p>
+        <sc-if value="{{ isHigher }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 16px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);"><div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Higher</span><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Adrenaline and thyroxine</p></div>
+          <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ hiCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+          <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Thyroxine levels are controlled by negative feedback. Follow the diagram: push the level down or up.</p>
+          <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ fbBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+          <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ fbFig }}</div></div>
+          <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ fbNote }}</p></div>
+        </div></sc-if>
+      </section>
+
+      <section id="s-race" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Compare</p>
+        <h2 style="margin: 6px 0 0;">Hormone or nerve impulse?</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Send both to the same target and compare. Compared with the nervous system, hormonal effects are slower but act for longer.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ raceBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ raceFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ raceNote }}</p></div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">How nerve impulses travel: <a href="ks4-biology-4.5.2.1-nervous-system.dc.html">The nervous system</a>. Hormones at work: <a href="ks4-biology-4.5.3.2-blood-glucose-diabetes.dc.html">Blood glucose and diabetes</a> and <a href="ks4-biology-4.5.3.4-human-reproduction-hormones.dc.html">Hormones in human reproduction</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · every organ?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Every organ responds to every hormone.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="A hormone in the blood reaches every organ. Which organs respond to it?" options="{{ thinkOptions }}" reveal="Only its target organ. The blood carries it everywhere; the target organ is where it produces an effect." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Nervous or hormonal?" prompt="Place each one." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Nervous: electrical, fast, short-lived. Hormonal: chemical in the blood, slower, lasts longer." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Identify</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The six glands on a diagram of the body.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How a hormone reaches its target organ.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Hormonal and nervous control: speed, duration, how the signal travels.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Glands secrete hormones directly into the blood, which carries them to a target organ. Hormonal effects are slower than nervous ones but last longer.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="endocrine-system" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="The endocrine system" spec="AQA 4.5.3.1" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure where the adrenal glands are?" legal="Body outlines and the response graph are schematic." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'endocrine-system';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const FILE = {"homeostasis":"ks4-biology-4.5.1-homeostasis.dc.html","nervous-system":"ks4-biology-4.5.2.1-nervous-system.dc.html","reflex-actions":"ks4-biology-4.5.2.1-reflex-actions.dc.html","reaction-time":"ks4-biology-4.5.2.1-reaction-time.dc.html","the-brain":"ks4-biology-4.5.2.2-the-brain.dc.html","the-eye":"ks4-biology-4.5.2.3-the-eye.dc.html","defects-of-the-eye":"ks4-biology-4.5.2.3-defects-of-the-eye.dc.html","thermoregulation":"ks4-biology-4.5.2.4-thermoregulation.dc.html","endocrine-system":"ks4-biology-4.5.3.1-endocrine-system.dc.html","blood-glucose-diabetes":"ks4-biology-4.5.3.2-blood-glucose-diabetes.dc.html","human-reproduction-hormones":"ks4-biology-4.5.3.4-human-reproduction-hormones.dc.html","contraception-fertility":"ks4-biology-4.5.3.5-contraception-fertility.dc.html","sexual-asexual-reproduction":"ks4-biology-4.6.1.1-sexual-asexual-reproduction.dc.html","meiosis":"ks4-biology-4.6.1.2-meiosis.dc.html","advantages-sexual-asexual":"ks4-biology-4.6.1.3-advantages-sexual-asexual.dc.html","dna-genome":"ks4-biology-4.6.1.4-dna-genome.dc.html","metabolism":"../../Batch 7/lessons/ks4-biology-4.4.2.3-metabolism.dc.html","aerobic-respiration":"../../Batch 7/lessons/ks4-biology-4.4.2.1-aerobic-respiration.dc.html","response-to-exercise":"../../Batch 7/lessons/ks4-biology-4.4.2.2-response-to-exercise.dc.html","fungal-protist-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.4-fungal-protist-diseases.dc.html","bacterial-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.3-bacterial-diseases.dc.html","cell-specialisation":"../../Batch 6/lessons/ks4-biology-4.1.1.3-cell-specialisation.dc.html","culturing-microorganisms":"../../Batch 6/lessons/ks4-biology-4.1.1.6-culturing-microorganisms.dc.html","digestive-system":"../../Batch 6/lessons/ks4-biology-4.2.2.1-digestive-system.dc.html","stem-cells":"../../Batch 6/lessons/ks4-biology-4.1.2.3-stem-cells.dc.html"};
+const LNK = (k, label) => ({ href: FILE[k], label });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const PATH = (d, col, w, extra) => '<path d="' + d + '" fill="none" stroke="' + (col || '#1A1A1A') + '" stroke-width="' + (w || 3) + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>';
+const RAIL = [{"id":"s-hook","label":"A fright","short":"HOOK"},{"id":"s-glands","label":"Six glands","short":"GLANDS"},{"id":"s-race","label":"Hormone or nerve","short":"RACE"},{"id":"s-think","label":"Think again","short":"THINK"},{"id":"s-sort","label":"Nervous or hormonal?","short":"SORT"},{"id":"s-ladder","label":"Exam ladder","short":"LADDER"}];
+const STATE = {"gl":null,"gls":[],"hi":[],"fb":null,"fbs":[],"sent":[]};
+const GL = [
+  { k: 'Pituitary gland', base: 'In the brain. The master gland: its hormones act on other glands. It also makes FSH and LH.', hi: 'In the brain. The master gland: its hormones act on other glands, for example the thyroid. It also makes FSH and LH.' },
+  { k: 'Thyroid', base: 'In the neck.', hi: 'In the neck. Makes thyroxine, which stimulates the basal metabolic rate.' },
+  { k: 'Adrenal glands', base: 'One on top of each kidney.', hi: 'One on top of each kidney. Make adrenaline in times of fear or stress.' },
+  { k: 'Pancreas', base: 'Below the stomach. Makes insulin, which controls blood glucose.', hi: 'Below the stomach. Makes insulin and glucagon, which control blood glucose.' },
+  { k: 'Ovaries', base: 'In the lower abdomen (female). Make oestrogen and progesterone.', hi: 'In the lower abdomen (female). Make oestrogen and progesterone.' },
+  { k: 'Testes', base: 'In the scrotum (male). Make testosterone.', hi: 'In the scrotum (male). Make testosterone.' }
+];
+const HI = [
+  { name: 'Adrenaline', why: 'From the adrenal glands in times of fear or stress. It increases the heart rate and boosts the delivery of oxygen and glucose to the brain and muscles, preparing the body for flight or fight.' },
+  { name: 'Thyroxine', why: 'From the thyroid gland. It stimulates the basal metabolic rate and plays an important role in growth and development.' }
+];
+const FB = [
+  { k: 'Thyroxine level falls', note: 'The pituitary releases more of its hormone (TSH), so the thyroid releases more thyroxine. The level rises back to normal.' },
+  { k: 'Thyroxine level rises', note: 'The pituitary releases less TSH, so the thyroid releases less thyroxine. The level falls back to normal.' }
+];
+
+class Component extends DCLogic {
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH', T = rk === 'TF' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: T, notTriple: !T, isTH: rk === 'TH', notTH: rk !== 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+  glFig(sel) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const person = (ox, female) => {
+      let p = D.circ(ox, 60, 36, '#FFFDF8', C.stroke, 3) + '<rect x="' + (ox - 16) + '" y="94" width="32" height="20" fill="#FFFDF8" stroke="' + C.stroke + '" stroke-width="3"/>';
+      p += '<path d="M' + (ox - 70) + ' 120 Q' + ox + ' 104 ' + (ox + 70) + ' 120 L' + (ox + 60) + ' 300 Q' + ox + ' 316 ' + (ox - 60) + ' 300 Z" fill="#FFFDF8" stroke="' + C.stroke + '" stroke-width="3"/>';
+      p += D.T(ox, 344, female ? 'female' : 'male', 13, { fill: C.muted, weight: 'normal' });
+      return p;
+    };
+    b += person(170, true) + person(490, false);
+    const on = (k) => sel !== null && GL[sel].k === k;
+    const mark = (x, y, k, shape) => { const h = on(k); return shape(x, y, h ? '#C8102E' : '#F2C9AE', h ? 3.5 : 2); };
+    const blob = (rx, ry) => (x, y, f, w) => '<ellipse cx="' + x + '" cy="' + y + '" rx="' + rx + '" ry="' + ry + '" fill="' + f + '" stroke="' + C.stroke + '" stroke-width="' + w + '"/>';
+    [170, 490].forEach((ox) => {
+      b += mark(ox, 62, 'Pituitary gland', blob(7, 6)) + mark(ox, 108, 'Thyroid', blob(14, 7));
+      b += D.circ(ox - 26, 212, 9, 'none', C.muted, 1.5, ' stroke-dasharray="3 3"') + D.circ(ox + 26, 212, 9, 'none', C.muted, 1.5, ' stroke-dasharray="3 3"');
+      b += mark(ox - 26, 198, 'Adrenal glands', blob(9, 5)) + mark(ox + 26, 198, 'Adrenal glands', blob(9, 5));
+      b += mark(ox + 6, 182, 'Pancreas', blob(30, 8));
+    });
+    b += mark(140, 262, 'Ovaries', blob(9, 7)) + mark(200, 262, 'Ovaries', blob(9, 7));
+    b += mark(476, 318, 'Testes', blob(8, 9)) + mark(504, 318, 'Testes', blob(8, 9));
+    if (sel !== null) b += D.T(330, 30, GL[sel].k.toLowerCase(), 16, { fill: C.red });
+    return D.svg(660, 360, b, 'Female and male body outlines with the pituitary, thyroid, adrenal glands, pancreas, ovaries and testes' + (sel !== null ? '; ' + GL[sel].k + ' highlighted.' : '.'));
+  }
+  fbFig(dir) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const box = (x, y, w, t, hl) => BOX(x, y, w, 56, hl ? '#FBE3D6' : '#FFFFFF') + D.T(x + w / 2, y + 34, t, 15, { fill: C.stroke });
+    b += box(230, 20, 200, 'pituitary gland', dir !== null) + box(440, 130, 200, 'thyroid gland', dir !== null) + box(230, 240, 200, 'thyroxine in blood', dir !== null) + box(20, 130, 200, 'level detected', dir !== null);
+    b += D.arrow(432, 60, 520, 126, C.stroke, 3) + D.arrow(520, 190, 434, 262, C.stroke, 3) + D.arrow(228, 266, 120, 192, C.stroke, 3) + D.arrow(120, 128, 226, 52, C.stroke, 3);
+    const mid = dir === 0 ? 'more TSH' : dir === 1 ? 'less TSH' : 'TSH';
+    b += D.T(520, 92, mid, 14, { anchor: 'start', fill: C.red });
+    b += D.T(520, 230, dir === 0 ? 'more thyroxine' : dir === 1 ? 'less thyroxine' : 'thyroxine', 14, { anchor: 'start', fill: C.red });
+    if (dir !== null) b += D.T(330, 160, dir === 0 ? 'level rises back' : 'level falls back', 16, { fill: C.blue });
+    return D.svg(660, 310, b, 'Negative feedback loop: pituitary, thyroid, thyroxine level.');
+  }
+  raceFig(sent) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const x0 = 60, y0 = 230, W = 560;
+    b += D.line(x0, 30, x0, y0, 2.5, C.stroke) + D.line(x0, y0, x0 + W, y0, 2.5, C.stroke);
+    b += D.T(x0 + W, y0 + 26, 'time', 13, { anchor: 'end', fill: C.stroke, weight: 'normal' }) + D.T(x0 + 6, 24, 'size of effect', 13, { anchor: 'start', fill: C.stroke, weight: 'normal' });
+    if (sent.indexOf(0) >= 0) b += PATH('M' + x0 + ' ' + y0 + ' L' + (x0 + 14) + ' 60 L' + (x0 + 60) + ' ' + y0 + ' L' + (x0 + W) + ' ' + y0, C.blue, 4) + D.T(x0 + 70, 70, 'nerve impulse: fast, short-lived', 13, { anchor: 'start', fill: C.blue });
+    if (sent.indexOf(1) >= 0) b += PATH('M' + x0 + ' ' + y0 + ' L' + (x0 + 90) + ' ' + y0 + ' C' + (x0 + 160) + ' ' + y0 + ' ' + (x0 + 180) + ' 120 ' + (x0 + 250) + ' 120 L' + (x0 + 440) + ' 120 C' + (x0 + 500) + ' 120 ' + (x0 + 520) + ' 190 ' + (x0 + W) + ' 200', C.red, 4) + D.T(x0 + 300, 108, 'hormone: slower, lasts longer', 13, { fill: C.red });
+    return D.svg(660, 260, b, 'Effect against time for a nerve impulse and a hormone sent to the same target.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.gls.length === 6 && (!H || (s.hi.length === 2 && s.fbs.length === 2)), s.sent.length === 2, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const H = c.isHigher, TR = c.isTriple, TH = c.isTH, rk = c.rk;
+    const q1 = Q('How do hormones reach their target organs?', 'Via the bloodstream — secreted directly into the blood by endocrine glands', [['Via nerve fibres — along the same pathways as electrical impulses', 'Hormones travel in BLOOD, not along nerves — this is the fundamental difference between the two communication systems.'], ['Through ducts that lead directly to the target organ', 'EXOCRINE glands (e.g. salivary glands, sweat glands) use ducts. ENDOCRINE glands secrete directly into the blood — they have no ducts.'], ['They diffuse through tissue fluid between neighbouring cells only', 'Hormones travel long distances in the blood — they don’t diffuse locally like paracrine signals.']]);
+    const q2 = Q('Which hormone prepares the body for ‘fight or flight’?', 'Adrenaline — released by the adrenal glands in response to stress or danger', [['Insulin — released by the pancreas to lower blood glucose', 'Insulin lowers blood glucose — it is released after eating, not in response to danger.'], ['Thyroxine — released by the thyroid to increase metabolic rate', 'Thyroxine controls long-term metabolic rate — it is not the emergency stress hormone.'], ['Oestrogen — released by the ovaries to prepare the body for reproduction', 'Oestrogen is involved in the menstrual cycle — not in acute stress responses.']]);
+    const q3 = Q('Which best describes the difference between nervous and hormonal communication?', 'Nervous = fast, short-lived, specific target via nerves. Hormonal = slower, longer-lasting, via bloodstream to target organs.', [['Nervous = slow, long-lasting. Hormonal = fast, short-lived.', 'This is exactly the wrong way round. Nervous is FAST and SHORT. Hormonal is SLOWER and LONGER-LASTING.'], ['They work in the same way — both use chemicals to transmit signals.', 'Both do use chemicals at some point (neurotransmitters at synapses / hormones in blood) — but their overall mechanisms, speeds and targets are very different.'], ['Nervous system only controls muscles. Hormonal system only controls glands.', 'The nervous system controls both muscles AND glands. Hormones affect many different tissues — not just glands.']]);
+    const nLoc = Q('Where is the pituitary gland?', 'In the brain', [['In the neck', 'That is the thyroid.'], ['On top of each kidney', 'Those are the adrenal glands.'], ['Below the stomach', 'That is the pancreas.']]);
+    const nMas = Q('Why is the pituitary called the master gland?', 'Its hormones act on other glands to make them release hormones', [['It makes every hormone in the body', 'Each gland makes its own hormones.'], ['It is the largest gland', 'Not size: what its hormones do.'], ['It controls the nervous system', 'It is part of the endocrine system.']]);
+    const nTgt = Q('A hormone travels in the blood to every organ. Where does it produce an effect?', 'In its target organ', [['In every organ equally', 'Only the target organ responds.'], ['Only in the gland that made it', 'It acts on a target organ elsewhere.'], ['In the nerves', 'Hormones act through the blood.']]);
+    const nFb = Q('A diagram shows: thyroxine level falls, the pituitary releases more TSH, the thyroid releases more thyroxine. What happens next?', 'The thyroxine level rises back to normal: negative feedback', [['The thyroxine level keeps falling', 'More thyroxine is released, so it rises.'], ['The pituitary stops working', 'It responds to the level.'], ['The thyroid releases adrenaline', 'The thyroid makes thyroxine.']]);
+    const BANK = H ? [q1, q2, q3, nLoc, nFb] : [q1, q3, nLoc, nMas, nTgt];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'A chemical in my blood', correct: true, reply: 'Yes: a hormone. Slower to start, but it lasts.' },
+        { text: 'A message along nerves', correct: false, reply: 'Nerves gave the instant jump, and that is over in a moment. The pounding that lasts is a chemical in the blood: a hormone.' }
+      ],
+      glBtns: this.btns(GL.map((x) => x.k), s.gl, (i) => this.setState({ gl: i, gls: this.seen('gls', i) })),
+      glFig: c.ready ? K.fig(this.glFig(s.gl), '') : null,
+      glNote: s.gl === null ? 'Tap a gland.' : (H ? GL[s.gl].hi : GL[s.gl].base),
+      hiCards: this.cards(HI, 'hi'),
+      fbBtns: this.btns(FB.map((x) => x.k), s.fb, (i) => this.setState({ fb: i, fbs: this.seen('fbs', i) })),
+      fbFig: c.ready && H ? K.fig(this.fbFig(s.fb), '') : null,
+      fbNote: s.fb === null ? 'Push the level one way.' : FB[s.fb].note,
+      raceBtns: [['Send a nerve impulse', 0], ['Release a hormone', 1]].map((x) => { const on = s.sent.indexOf(x[1]) >= 0; return { label: x[0], pressed: on, style: this.seg(on), onClick: () => this.setState({ sent: this.seen('sent', x[1]) }) }; }),
+      raceFig: c.ready ? K.fig(this.raceFig(s.sent), '') : null,
+      raceNote: s.sent.length === 2 ? 'The impulse acts at once and fades fast. The hormone travels in the blood: its effect starts later and lasts much longer.' : s.sent.length ? 'Now send the other.' : 'Send one of each.',
+      thinkOptions: [
+        { text: 'Every organ it reaches', correct: false, reply: 'It reaches every organ, but only one kind responds.' },
+        { text: 'Only its target organ', correct: true, reply: 'That is where it produces its effect.' },
+        { text: 'Only the gland that made it', correct: false, reply: 'It acts on a target organ elsewhere.' }
+      ],
+      sortBins: [{ id: 'n', label: 'Nervous' }, { id: 'h', label: 'Hormonal' }],
+      sortItems: [
+        { text: 'Electrical impulses', bin: 'n', why: 'Along neurones.' },
+        { text: 'Chemicals carried in the blood', bin: 'h', why: 'Hormones.' },
+        { text: 'Very fast', bin: 'n', why: 'Impulses.' },
+        { text: 'Slower to act', bin: 'h', why: 'The blood carries it.' },
+        { text: 'Effect is short-lived', bin: 'n', why: 'Over quickly.' },
+        { text: 'Effect lasts longer', bin: 'h', why: 'Hormonal.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('State', 'State where endocrine glands secrete hormones.', 'Directly into the bloodstream.', ['Directly into the bloodstream', ['Along nerves', 'Hormones travel in the blood.'], ['Into the gut', 'Not hormones.']]),
+          MCQ('Name', 'Name the master gland.', 'The pituitary gland.', [['Thyroid', 'In the neck.'], 'Pituitary gland', ['Pancreas', 'Controls blood glucose.']])
+        ],
+        r2: [
+          MCQ('Identify', 'Identify the gland found in the neck.', 'The thyroid.', ['Thyroid', ['Adrenal gland', 'On the kidneys.'], ['Pituitary', 'In the brain.'], ['Pancreas', 'Below the stomach.']]),
+          MCQ('Give', 'Give one way hormonal control differs from nervous control.', 'Slower, or acts for longer.', [['It is faster', 'Nervous is faster.'], 'It acts for longer', ['It uses electrical impulses', 'That is nervous.']])
+        ],
+        r3: [
+          CHAIN('Describe', 'Describe how a hormone produces an effect. Put the links in order.',
+            ['A gland secretes the hormone directly into the bloodstream.', 'The blood carries the hormone around the body.', 'At the target organ, the hormone produces an effect.'],
+            [['The hormone travels along a nerve.', 'Hormones travel in the blood.'], ['Every organ responds equally.', 'Only the target organ.']]),
+          H ? CHAIN('Explain', 'The thyroxine level in the blood falls. Explain how it returns to normal. Put the links in order.',
+            ['The fall is detected.', 'The pituitary releases more TSH.', 'The thyroid releases more thyroxine.', 'The thyroxine level rises back to normal: negative feedback.'],
+            [['The thyroid releases less thyroxine.', 'That would lower it further.'], ['Adrenaline replaces the thyroxine.', 'Different hormone, different job.']])
+          : CHAIN('Explain', 'Explain why a hormone’s effect starts later than a nerve impulse’s, but lasts longer. Put the links in order.',
+            ['A nerve impulse travels along neurones as an electrical signal: very fast.', 'A hormone has to be carried by the blood to its target: slower.', 'The hormone stays in the blood for some time, so its effect lasts longer.'],
+            [['Hormones travel along nerves.', 'They travel in the blood.'], ['Nerve effects last for hours.', 'They are short-lived.']])
+        ],
+        r4: [
+          H ? WRITE('Explain', 6, 'Explain the roles of adrenaline and thyroxine in the body, and how thyroxine levels are controlled.',
+            LV6('Both hormones with gland and effect, and the full feedback loop in both directions.', 'Both hormones’ roles, or one role plus the loop.', 'One hormone and one effect.'),
+            ['Adrenaline: from the adrenal glands in fear or stress.', 'It increases heart rate and boosts oxygen and glucose delivery to brain and muscles: flight or fight.', 'Thyroxine: from the thyroid; stimulates the basal metabolic rate; growth and development.', 'Thyroxine is controlled by negative feedback.', 'Level falls: pituitary releases more TSH, thyroid releases more thyroxine.', 'Level rises: less TSH, less thyroxine; the level returns to normal.'],
+            ['“Adrenaline calms you down.”', '“Hormones travel along nerves.”'])
+          : WRITE('Compare', 4, 'Compare hormonal and nervous coordination.',
+            LV4('Signal, route, speed and duration for both, as direct comparisons.', 'One or two differences, or features of one system only.'),
+            ['Nervous: electrical impulses along neurones; hormonal: chemicals carried in the blood.', 'Nervous is faster; hormonal is slower.', 'Nervous effects are short-lived; hormonal effects last longer.', 'Hormones act on a target organ; impulses go to an effector.'],
+            ['“Hormones travel along nerves.”', '“Hormonal control is faster.”'])
+        ]
+      },
+      keyLines: H ? ['Glands secrete hormones directly into the blood, which carries them to a target organ.', 'Six glands: pituitary (brain), thyroid (neck), adrenal glands (on the kidneys), pancreas, ovaries, testes. The pituitary is the master gland.', 'Adrenaline: fear or stress, heart rate up, more oxygen and glucose to brain and muscles. Thyroxine: basal metabolic rate, growth and development.', 'Thyroxine levels are controlled by negative feedback. Hormonal effects are slower than nervous ones but last longer.']
+        : ['Glands secrete hormones directly into the blood, which carries them to a target organ.', 'Six glands: pituitary (brain), thyroid (neck), adrenal glands (on the kidneys), pancreas, ovaries, testes.', 'The pituitary is the master gland: its hormones act on other glands.', 'Compared with the nervous system, hormonal effects are slower but act for longer.'],
+      endPrev: TR ? LNK('thermoregulation', 'Thermoregulation') : LNK('reaction-time', 'Reaction time'),
+      endNext: LNK('blood-glucose-diabetes', 'Blood glucose and diabetes'),
+      endConnects: [LNK('homeostasis', 'Homeostasis'), LNK('nervous-system', 'The nervous system')],
+      bank: c.ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Advantages of sexual and asexual reproduction · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Inheritance, variation and evolution" title="Advantages of sexual and asexual reproduction" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.6.1.3</p>
+        <h1>Advantages of sexual and asexual reproduction</h1>
+        <p class="ks3-bigq">Speed or variety? Set the conditions, predict which population does better, then meet organisms that use both.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="2"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Field and meadow." scene="A farmer’s field of identical crop plants sits next to a wild meadow full of different plants." question="which is more likely to be wiped out by one new disease?" options="{{ hookOptions }}" bridge="The field: identical plants are all equally at risk. Variation has a price and a payoff." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-dial" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Speed or variety</p>
+        <h2 style="margin: 6px 0 0;">Which does better?</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Two populations: one made by asexual reproduction (clones), one by sexual reproduction (varied). Pick the conditions, then predict which population does better.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ envBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ predBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ popFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ popNote }}</p></div>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The advantages of each. Tap each.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ advCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+      </section>
+
+      <section id="s-both" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Both ways</p>
+        <h2 style="margin: 6px 0 0;">Organisms that use both.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Some organisms reproduce both ways. Pick one.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ orgBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ orgFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ orgNote }}</p></div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">You only need to know these named organisms. For any other organism, use the information you are given to explain the advantages. Malaria as a disease: <a href="../../Batch 7/lessons/ks4-biology-4.3.1.4-fungal-protist-diseases.dc.html">Fungal and protist diseases</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · just worse?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Asexual reproduction is just worse.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="When is asexual reproduction the better strategy?" options="{{ thinkOptions }}" reveal="When conditions are favourable: one parent, no mate to find, faster, and many identical offspring." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Whose advantage?" prompt="Place each advantage." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Sexual: variation and its survival advantage. Asexual: one parent, no mate, faster, many identical offspring." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">An advantage, using the information about an organism you’re given.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The advantages of sexual and asexual reproduction.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why an organism switches between the two.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Sexual reproduction gives variation, a survival advantage when the environment changes. Asexual reproduction is faster and needs one parent, giving many identical offspring when conditions are favourable.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="advantages-sexual-asexual" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Advantages of sexual and asexual reproduction" spec="AQA 4.6.1.3 (Triple)" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which advantage goes with which kind?" legal="Population pictures are illustrative." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'advantages-sexual-asexual';
+const OK = ["Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const FILE = {"homeostasis":"ks4-biology-4.5.1-homeostasis.dc.html","nervous-system":"ks4-biology-4.5.2.1-nervous-system.dc.html","reflex-actions":"ks4-biology-4.5.2.1-reflex-actions.dc.html","reaction-time":"ks4-biology-4.5.2.1-reaction-time.dc.html","the-brain":"ks4-biology-4.5.2.2-the-brain.dc.html","the-eye":"ks4-biology-4.5.2.3-the-eye.dc.html","defects-of-the-eye":"ks4-biology-4.5.2.3-defects-of-the-eye.dc.html","thermoregulation":"ks4-biology-4.5.2.4-thermoregulation.dc.html","endocrine-system":"ks4-biology-4.5.3.1-endocrine-system.dc.html","blood-glucose-diabetes":"ks4-biology-4.5.3.2-blood-glucose-diabetes.dc.html","human-reproduction-hormones":"ks4-biology-4.5.3.4-human-reproduction-hormones.dc.html","contraception-fertility":"ks4-biology-4.5.3.5-contraception-fertility.dc.html","sexual-asexual-reproduction":"ks4-biology-4.6.1.1-sexual-asexual-reproduction.dc.html","meiosis":"ks4-biology-4.6.1.2-meiosis.dc.html","advantages-sexual-asexual":"ks4-biology-4.6.1.3-advantages-sexual-asexual.dc.html","dna-genome":"ks4-biology-4.6.1.4-dna-genome.dc.html","metabolism":"../../Batch 7/lessons/ks4-biology-4.4.2.3-metabolism.dc.html","aerobic-respiration":"../../Batch 7/lessons/ks4-biology-4.4.2.1-aerobic-respiration.dc.html","response-to-exercise":"../../Batch 7/lessons/ks4-biology-4.4.2.2-response-to-exercise.dc.html","fungal-protist-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.4-fungal-protist-diseases.dc.html","bacterial-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.3-bacterial-diseases.dc.html","cell-specialisation":"../../Batch 6/lessons/ks4-biology-4.1.1.3-cell-specialisation.dc.html","culturing-microorganisms":"../../Batch 6/lessons/ks4-biology-4.1.1.6-culturing-microorganisms.dc.html","digestive-system":"../../Batch 6/lessons/ks4-biology-4.2.2.1-digestive-system.dc.html","stem-cells":"../../Batch 6/lessons/ks4-biology-4.1.2.3-stem-cells.dc.html"};
+const LNK = (k, label) => ({ href: FILE[k], label });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const PATH = (d, col, w, extra) => '<path d="' + d + '" fill="none" stroke="' + (col || '#1A1A1A') + '" stroke-width="' + (w || 3) + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>';
+const RAIL = [{"id":"s-hook","label":"Field and meadow","short":"HOOK"},{"id":"s-dial","label":"Which does better?","short":"PREDICT"},{"id":"s-both","label":"Organisms that use both","short":"BOTH"},{"id":"s-think","label":"Think again","short":"THINK"},{"id":"s-sort","label":"Whose advantage?","short":"SORT"},{"id":"s-ladder","label":"Exam ladder","short":"LADDER"}];
+const STATE = {"env":0,"pred":[null,null],"adv":[],"org":null,"orgs":[]};
+const ENV = ['Favourable, stable conditions', 'A new disease arrives'];
+const POP = [
+  'Clones do better here. Asexual reproduction is faster and needs only one parent, so many identical offspring are produced while conditions are favourable.',
+  'The varied population does better. The clones are all equally susceptible. In the varied population, some individuals happen to survive, and natural selection favours them.'
+];
+const ADV = [
+  { name: 'Sexual: variation', why: 'Sexual reproduction produces variation in the offspring.' },
+  { name: 'Sexual: survival', why: 'If the environment changes, variation gives a survival advantage by natural selection.' },
+  { name: 'Sexual: selective breeding', why: 'Natural selection can be speeded up by humans in selective breeding to increase food production.' },
+  { name: 'Asexual: one parent', why: 'Only one parent is needed. It is more time and energy efficient, as there is no need to find a mate.' },
+  { name: 'Asexual: speed', why: 'Faster than sexual reproduction: many identical offspring can be produced when conditions are favourable.' }
+];
+const ORG = [
+  { k: 'Malarial parasites', note: 'Malarial parasites reproduce asexually in the human host, but sexually in the mosquito.' },
+  { k: 'Fungi', note: 'Many fungi reproduce asexually by spores, but also reproduce sexually to give variation.' },
+  { k: 'Strawberry plants', note: 'Strawberry plants produce seeds sexually, but also reproduce asexually by runners.' },
+  { k: 'Daffodils', note: 'Daffodils produce seeds sexually, but also reproduce asexually by bulb division.' }
+];
+
+class Component extends DCLogic {
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH', T = rk === 'TF' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: T, notTriple: !T, isTH: rk === 'TH', notTH: rk !== 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+  popFig(env, show) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const plant = (x, y, col, dead) => (dead ? '<g opacity="0.4">' : '') + D.line(x, y + 22, x, y, 3, '#2E5E45') + D.circ(x, y - 4, 11, col, C.stroke, 2) + (dead ? '</g>' + '<g stroke="' + C.red + '" stroke-width="3" stroke-linecap="round"><line x1="' + (x - 9) + '" y1="' + (y - 13) + '" x2="' + (x + 9) + '" y2="' + (y + 5) + '"/><line x1="' + (x + 9) + '" y1="' + (y - 13) + '" x2="' + (x - 9) + '" y2="' + (y + 5) + '"/></g>' : '');
+    b += BOX(16, 16, 304, 214, '#FFFDF8') + BOX(340, 16, 304, 214, '#FFFDF8');
+    b += D.T(168, 44, 'clones (asexual)', 14, { fill: C.stroke }) + D.T(492, 44, 'varied (sexual)', 14, { fill: C.stroke });
+    const cols = ['#C8102E', '#3B82F6', '#FBBF24', '#2E8B7F', '#A855F7', '#F97316'];
+    const nC = show && env === 0 ? 12 : 6, nV = 6;
+    for (let i = 0; i < nC; i++) b += plant(48 + (i % 6) * 48, 90 + Math.floor(i / 6) * 70, '#2E8B7F', show && env === 1);
+    for (let i = 0; i < nV; i++) b += plant(372 + (i % 6) * 48, 90, cols[i], show && env === 1 && [0, 2, 3, 5].indexOf(i) >= 0);
+    if (!show) b += D.T(330, 220, 'predict first', 13, { fill: C.muted, weight: 'normal' });
+    else b += D.T(168, 214, env === 0 ? 'more offspring, faster' : 'all equally susceptible', 13, { fill: C.stroke, weight: 'normal' }) + D.T(492, 214, env === 0 ? 'fewer offspring' : 'some survive', 13, { fill: C.stroke, weight: 'normal' });
+    return D.svg(660, 246, b, show ? (env === 0 ? 'Stable conditions: the clone population has grown larger.' : 'New disease: every clone dies; some varied plants survive.') : 'Two populations, result hidden.');
+  }
+  orgFig(o) {
+    const D = window.KS4D, C = D.C; let b = '';
+    if (o === null) return D.svg(660, 120, D.T(330, 66, 'pick an organism', 15, { fill: C.muted, weight: 'normal' }), 'No organism picked.');
+    const L = [['in the human host', 'asexual'], ['in the mosquito', 'sexual']];
+    const S = [L, [['spores', 'asexual'], ['to give variation', 'sexual']], [['runners', 'asexual'], ['seeds', 'sexual']], [['bulb division', 'asexual'], ['seeds', 'sexual']]][o];
+    S.forEach((x, i) => { const bx = 60 + i * 300; b += BOX(bx, 30, 240, 80, i ? '#E6F1F8' : '#E7F0EC') + D.T(bx + 120, 64, x[1], 18, { fill: C.stroke }) + D.T(bx + 120, 90, x[0], 14, { fill: C.stroke, weight: 'normal' }); });
+    if (o === 0) b += D.arrow(302, 60, 358, 60, C.stroke, 3) + D.arrow(358, 84, 302, 84, C.stroke, 3);
+    return D.svg(660, 140, b, ORG[o].note);
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.pred[0] !== null && s.pred[1] !== null && s.adv.length === 5, s.orgs.length === 4, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const H = c.isHigher, TR = c.isTriple, TH = c.isTH, rk = c.rk;
+    const p = s.pred[s.env], right = s.env === 0 ? 0 : 1;
+    const BANK = [
+      Q('A population of bacteria reproduces asexually. A new antibiotic is introduced. What is most likely to happen?', 'Almost all bacteria die — they are genetically identical so equally susceptible, though any rare mutant may survive', [['All bacteria survive — asexual reproduction makes them immune to antibiotics', 'Asexual reproduction produces identical clones — no resistance to antibiotics, not immune. Resistance must arise through rare mutations.'], ['Half survive — asexual reproduction produces 50% resistant offspring automatically', 'Asexual reproduction produces genetically identical offspring — not 50% resistant. Variation only arises from mutations, not from the mode of reproduction.'], ['They immediately switch to sexual reproduction to create resistant variants', 'Bacteria cannot switch reproductive strategies on demand — and even if they could, sexual reproduction wouldn’t instantly produce resistant offspring.']]),
+      Q('Why do many plants use both sexual and asexual reproduction?', 'Asexual gives fast colonisation in stable conditions; sexual creates variation for adaptation to changing environments', [['Sexual is used in summer and asexual in winter — seasons determine the method', 'While seasons can influence reproduction, the key advantage is about STABILITY vs CHANGE — not specifically seasons.'], ['Asexual reproduction is used when they can’t find mates; sexual when mates are available', 'Plants don’t search for mates — pollen is carried to them by wind or insects. Plants use both methods because each has an advantage: runners give fast, identical copies; seeds give variation.'], ['Both methods produce identical offspring — there is no benefit to using both', 'Sexual and asexual reproduction produce very different offspring — sexual gives variation, asexual gives clones. There is a clear benefit to each.']]),
+      Q('How do malarial parasites reproduce?', 'Asexually in the human host, sexually in the mosquito', [['Sexually in the human host, asexually in the mosquito', 'It is the other way round.'], ['Only asexually', 'They use both methods.'], ['Only sexually', 'They use both methods.']]),
+      Q('How can humans speed up natural selection to increase food production?', 'By selective breeding', [['By cloning every crop', 'Clones have no variation to select from.'], ['By stopping plants reproducing', 'Then there would be no crops.'], ['By using only asexual reproduction', 'Selective breeding uses sexual reproduction.']]),
+      Q('A water flea reproduces asexually when food is plentiful, and sexually when its pond starts to dry out. Suggest why it reproduces sexually when the pond dries out.', 'Variation gives some offspring a better chance of surviving the changing conditions', [['Sexual reproduction is faster', 'Asexual is faster.'], ['It needs only one parent', 'Sexual reproduction needs two.'], ['It makes identical offspring', 'Sexual reproduction gives variation.']])
+    ];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'The field of identical plants', correct: true, reply: 'Yes. If one plant can catch it, they all can.' },
+        { text: 'The wild meadow', correct: false, reply: 'The meadow’s variety protects it: some plants are likely to survive. Identical plants are all equally at risk.' }
+      ],
+      envBtns: this.btns(ENV, s.env, (i) => this.setState({ env: i })),
+      predBtns: this.btns(['Clones do better', 'Varied does better'], p, (i) => { const a = s.pred.slice(); a[s.env] = i; this.setState({ pred: a }); }),
+      popFig: c.ready ? K.fig(this.popFig(s.env, p !== null), '') : null,
+      popNote: p === null ? 'Predict first.' : (p === right ? 'Yes. ' : 'Not here. ') + POP[s.env],
+      advCards: this.cards(ADV, 'adv'),
+      orgBtns: this.btns(ORG.map((x) => x.k), s.org, (i) => this.setState({ org: i, orgs: this.seen('orgs', i) })),
+      orgFig: c.ready ? K.fig(this.orgFig(s.org), '') : null,
+      orgNote: s.org === null ? 'Pick an organism.' : ORG[s.org].note,
+      thinkOptions: [
+        { text: 'Never', correct: false, reply: 'It has real advantages.' },
+        { text: 'When conditions are favourable', correct: true, reply: 'Faster, one parent, many identical offspring.' },
+        { text: 'When a new disease arrives', correct: false, reply: 'Then identical offspring are all equally susceptible.' }
+      ],
+      sortBins: [{ id: 's', label: 'Sexual' }, { id: 'a', label: 'Asexual' }],
+      sortItems: [
+        { text: 'Variation in the offspring', bin: 's', why: 'Sexual.' },
+        { text: 'A survival advantage if the environment changes', bin: 's', why: 'Natural selection acts on variation.' },
+        { text: 'Used in selective breeding', bin: 's', why: 'Speeds up natural selection.' },
+        { text: 'Only one parent needed', bin: 'a', why: 'Asexual.' },
+        { text: 'No need to find a mate', bin: 'a', why: 'Time and energy efficient.' },
+        { text: 'Many identical offspring when conditions are favourable', bin: 'a', why: 'Faster.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Give', 'Give one advantage of asexual reproduction.', 'Only one parent; no mate needed; faster; many identical offspring when conditions are favourable.', ['Only one parent is needed', ['It produces variation', 'That is sexual.'], ['It speeds up natural selection', 'That is selective breeding.']]),
+          MCQ('State', 'State how malarial parasites reproduce in the mosquito.', 'Sexually.', [['Asexually', 'That is in the human host.'], 'Sexually', ['They don’t reproduce there', 'They do: sexually.']])
+        ],
+        r2: [
+          MCQ('Identify', 'Identify the plant that reproduces asexually by bulb division.', 'Daffodils.', ['Daffodil', ['Strawberry', 'Runners.'], ['Wheat', 'Not a named example.']]),
+          MCQ('Suggest', 'Suggest why a field of identical crop plants could be wiped out by one new disease.', 'They are genetically identical, so all are equally susceptible.', [['They grow too fast', 'Speed isn’t the problem.'], 'They are all equally susceptible', ['They have two parents', 'Clones have one.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain how variation gives a species a survival advantage when its environment changes. Put the links in order.',
+            ['Sexual reproduction produces variation in the offspring.', 'When the environment changes, some individuals are better suited to it.', 'These survive and reproduce: natural selection.', 'So the species is more likely to survive.'],
+            [['All the offspring are identical, so they all survive.', 'Identical offspring are all equally at risk.'], ['The parent decides which offspring survive.', 'Natural selection does.']]),
+          CHAIN('Explain', 'Explain why asexual reproduction is an advantage when conditions are favourable. Put the links in order.',
+            ['Only one parent is needed.', 'No time or energy is spent finding a mate.', 'It is faster than sexual reproduction.', 'So many identical offspring are produced while conditions last.'],
+            [['It produces lots of variation.', 'That is sexual.'], ['Two parents share the work.', 'Asexual has one parent.']])
+        ],
+        r4: [
+          WRITE('Explain', 6, 'Aphids are small insects. In summer, with plenty of food, females reproduce asexually. In autumn, as conditions change, they reproduce sexually. Explain the advantages to aphids of reproducing in each way.',
+            LV6('Both seasons linked to the right advantages, using the information given, with natural selection explained.', 'Advantages of both ways, partly linked to the seasons.', 'One advantage, not linked.'),
+            ['Summer: food is plentiful, so conditions are favourable.', 'Asexual: one parent, no mate to find, faster.', 'Many identical offspring quickly while food lasts.', 'Autumn: conditions change.', 'Sexual: variation in the offspring.', 'Some offspring survive the new conditions: a survival advantage by natural selection.'],
+            ['“Asexual is just worse.”', '“Clones can adapt to anything.”'])
+        ]
+      },
+      keyLines: ['Sexual: variation in offspring; a survival advantage by natural selection if the environment changes; used in selective breeding.', 'Asexual: one parent; time and energy efficient (no mate); faster; many identical offspring when conditions are favourable.', 'Both: malarial parasites (asexual in the human host, sexual in the mosquito); fungi (spores, and sexually for variation).', 'Plants: seeds sexually, and runners (strawberries) or bulb division (daffodils) asexually.'],
+      endPrev: LNK('meiosis', 'Meiosis'),
+      endNext: LNK('dna-genome', 'DNA and the genome'),
+      endConnects: [LNK('sexual-asexual-reproduction', 'Sexual and asexual reproduction'), LNK('bacterial-diseases', 'Bacterial diseases (resistance)')],
+      bank: c.ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

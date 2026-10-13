@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reaction time · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Homeostasis and response" title="Reaction time" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.5.2.1 · Combined 4.5.2</p>
+        <h1>Reaction time</h1>
+        <p class="ks3-bigq">Drop a ruler, catch it, and turn the distance into a time. Then test whether one factor changes it.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">{{ rpLabel }}</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Catch!" scene="Someone knocks a phone off the table and you grab for it." question="are you quicker to catch it when you’re wide awake, or when you’re tired?" options="{{ hookOptions }}" bridge="Wide awake. Tiredness slows reactions. Now measure one." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-rp" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">{{ rpLabel }}</p>
+        <h2 style="margin: 6px 0 0;">The ruler drop.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Reaction time is the time between a stimulus and your response. A partner holds a ruler vertically with 0 cm level with the top of your thumb and finger. Without warning, they drop it; you catch it. Read the distance at the top of your thumb. The longer the distance, the longer the reaction time. Test one factor: distraction, by doing mental arithmetic while you catch.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ condBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ dropBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ rulerFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ rpNote }}</p><sc-if value="{{ barsOn }}" hint-placeholder-val="{{ true }}"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ barFig }}</div></sc-if></div>
+        </div>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The conversion table turns a distance into a time. Check its units: here distance is in cm and time in s.</p>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ tableFig }}</div></div>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Planning one? Tap each part.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ planCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Typical reaction times range from 0.2 s to 0.9 s; for a simple stimulus like this, about 0.2–0.3 s. Alcohol, tiredness and distraction slow reactions; caffeine is a stimulant and speeds up the nervous system. The pathway itself: <a href="ks4-biology-4.5.2.1-nervous-system.dc.html">The nervous system</a>.</p>
+      </section>
+
+      <section id="s-calc" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Method · mean of repeats</p>
+        <p style="margin: 10px 0 0; display: inline-block; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 19px; line-height: 1.5;">mean = total of the repeats ÷ number of repeats</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Written out</p>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Measurements are affected by random error: results vary in unpredictable ways. Repeating and reporting a mean reduces the effect. Put every repeat in the same unit first: ms ÷ 1000 gives s, so 240 ms = 0.24 s. A distance in m or mm must go into cm before you use the table: m × 100, mm ÷ 10.</p>
+        <div style="margin-top: 18px;"><sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}"><dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import></sc-if></div>
+      </section>
+
+      <section id="s-steps" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Steps" mode="worked" id="rt-w" eyebrow="Worked example · table, then mean · one line at a time" head="A ruler is caught at 0.20 m, 0.25 m and 0.30 m. Use the conversion table to find the mean reaction time." lead="Two steps: read each time from the table, then find the mean." steps="{{ wSteps }}" next="Now the same two steps yourself." hint-size="100%,900px"></dc-import>
+          <div style="margin-top: 22px;">
+            <dc-import name="Ks4Steps" mode="attempt" id="rt-a" head="A ruler is caught at 150 mm, 200 mm and 250 mm. Use the conversion table to find the mean reaction time." lead="Write each line, then check your working." steps="{{ aSteps }}" close="Looking up 150 in a table set out in cm gives nothing: convert mm to cm first." on-done="{{ onSteps }}" hint-size="100%,900px"></dc-import>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · further means faster?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Further down the ruler means faster reactions.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Pupil A catches the ruler at 12 cm. Pupil B catches it at 30 cm. Who reacted faster?" options="{{ thinkOptions }}" reveal="A. The ruler falls further the longer you take, so a longer distance means a longer reaction time." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Which variable?" prompt="Distraction investigation. Place each one." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Change one thing, measure one thing, keep everything else the same." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Plan</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Variables, method, repeats, safety and ethics, and how you’ll show the results.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">A mean, with every repeat in the same unit.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Use the table</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Distance to time, units checked first.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">A longer catch distance means a longer reaction time. Read times from the conversion table, repeat, and report a mean.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="reaction-time" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Reaction time" spec="AQA 4.5.2.1 (Combined 4.5.2) · RP 6 / RP 7" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which unit the table wants?" legal="Catch distances and the conversion table are teaching values." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'reaction-time';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const FILE = {"homeostasis":"ks4-biology-4.5.1-homeostasis.dc.html","nervous-system":"ks4-biology-4.5.2.1-nervous-system.dc.html","reflex-actions":"ks4-biology-4.5.2.1-reflex-actions.dc.html","reaction-time":"ks4-biology-4.5.2.1-reaction-time.dc.html","the-brain":"ks4-biology-4.5.2.2-the-brain.dc.html","the-eye":"ks4-biology-4.5.2.3-the-eye.dc.html","defects-of-the-eye":"ks4-biology-4.5.2.3-defects-of-the-eye.dc.html","thermoregulation":"ks4-biology-4.5.2.4-thermoregulation.dc.html","endocrine-system":"ks4-biology-4.5.3.1-endocrine-system.dc.html","blood-glucose-diabetes":"ks4-biology-4.5.3.2-blood-glucose-diabetes.dc.html","human-reproduction-hormones":"ks4-biology-4.5.3.4-human-reproduction-hormones.dc.html","contraception-fertility":"ks4-biology-4.5.3.5-contraception-fertility.dc.html","sexual-asexual-reproduction":"ks4-biology-4.6.1.1-sexual-asexual-reproduction.dc.html","meiosis":"ks4-biology-4.6.1.2-meiosis.dc.html","advantages-sexual-asexual":"ks4-biology-4.6.1.3-advantages-sexual-asexual.dc.html","dna-genome":"ks4-biology-4.6.1.4-dna-genome.dc.html","metabolism":"../../Batch 7/lessons/ks4-biology-4.4.2.3-metabolism.dc.html","aerobic-respiration":"../../Batch 7/lessons/ks4-biology-4.4.2.1-aerobic-respiration.dc.html","response-to-exercise":"../../Batch 7/lessons/ks4-biology-4.4.2.2-response-to-exercise.dc.html","fungal-protist-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.4-fungal-protist-diseases.dc.html","bacterial-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.3-bacterial-diseases.dc.html","cell-specialisation":"../../Batch 6/lessons/ks4-biology-4.1.1.3-cell-specialisation.dc.html","culturing-microorganisms":"../../Batch 6/lessons/ks4-biology-4.1.1.6-culturing-microorganisms.dc.html","digestive-system":"../../Batch 6/lessons/ks4-biology-4.2.2.1-digestive-system.dc.html","stem-cells":"../../Batch 6/lessons/ks4-biology-4.1.2.3-stem-cells.dc.html"};
+const LNK = (k, label) => ({ href: FILE[k], label });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const PATH = (d, col, w, extra) => '<path d="' + d + '" fill="none" stroke="' + (col || '#1A1A1A') + '" stroke-width="' + (w || 3) + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>';
+const RAIL = [{"id":"s-hook","label":"Catch!","short":"HOOK"},{"id":"s-rp","label":"The ruler drop","short":"PRACTICAL"},{"id":"s-calc","label":"Reading the table · the mean","short":"CFIFA"},{"id":"s-steps","label":"Table, then mean","short":"STEPS"},{"id":"s-think","label":"Think again","short":"THINK"},{"id":"s-sort","label":"Which variable?","short":"SORT"},{"id":"s-ladder","label":"Exam ladder","short":"LADDER"}];
+const STATE = {"cond":0,"r0":0,"r1":0,"plan":[],"calc":0,"steps":false};
+const DATA = [[20, 25, 20], [35, 40, 45]];
+const TT = { 5: '0.10', 10: '0.14', 15: '0.17', 20: '0.20', 25: '0.23', 30: '0.25', 35: '0.27', 40: '0.29', 45: '0.30' };
+const MEANS = ['0.21', '0.29'];
+const PLAN = [
+  { name: 'Independent variable', why: 'The factor you change: with or without distraction.' },
+  { name: 'Dependent variable', why: 'What you measure: the catch distance, turned into a reaction time.' },
+  { name: 'Control variables', why: 'Same person, same hand, same ruler, same starting position, no warning before the drop.' },
+  { name: 'Safe and ethical', why: 'Informed consent; anyone may stop at any time. If testing caffeine: a small, legal dose, and no one with a heart condition or caffeine sensitivity takes part.' },
+  { name: 'Showing the results', why: 'A table of repeats and means, then a bar chart of mean reaction time for each condition: the factor is in categories.' }
+];
+const cf = (id, head, close, conv, ins, fine, ans, ph) => ({ tab: id.slice(-2) === 'q1' ? 'Question 1' : 'Question 2', id, head, close,
+  steps: [{ letter: 'C', label: 'Convert', placeholder: ph, line: conv }, { letter: 'F', label: 'Formula', placeholder: 'written out', line: 'mean = total of the repeats ÷ number of repeats' }, { letter: 'I', label: 'Insert', placeholder: 'mean = … ÷ …', line: ins }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: fine }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: ans }] });
+
+class Component extends DCLogic {
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH', T = rk === 'TF' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: T, notTriple: !T, isTH: rk === 'TH', notTH: rk !== 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+  rulerFig(cond, n) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const y0 = 300, k = 5.4;
+    b += '<rect x="110" y="' + (y0 - 52 * k) + '" width="56" height="' + (52 * k) + '" rx="4" fill="#FBEFC9" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    for (let d = 0; d <= 50; d += 5) { const y = y0 - d * k; b += D.line(110, y, d % 10 === 0 ? 134 : 124, y, 2, C.stroke) + (d % 10 === 0 ? D.T(102, y + 5, String(d), 13, { anchor: 'end', fill: C.stroke, weight: 'normal' }) : ''); }
+    b += D.T(60, 24, 'cm', 13, { fill: C.muted, weight: 'normal' });
+    b += PATH('M200 ' + (y0 + 4) + ' q-22 -4 -30 -4', C.muted, 3) + D.T(206, y0 + 8, 'thumb and finger start at 0 cm', 13, { anchor: 'start', fill: C.muted, weight: 'normal' });
+    if (n > 0) { const d = DATA[cond][n - 1], y = y0 - d * k; b += D.line(100, y, 180, y, 4, C.red) + D.T(190, y + 5, 'caught at ' + d + ' cm', 15, { anchor: 'start', fill: C.red }); }
+    return D.svg(420, 330, b, n > 0 ? 'Ruler caught at ' + DATA[cond][n - 1] + ' cm.' : 'A ruler held vertically, 0 cm at the catcher’s fingers.');
+  }
+  barFig() {
+    const D = window.KS4D, C = D.C; let b = '';
+    const x0 = 70, y0 = 210, k = 600;
+    b += D.line(x0, 20, x0, y0, 2.5, C.stroke) + D.line(x0, y0, 400, y0, 2.5, C.stroke);
+    [0, 0.1, 0.2, 0.3].forEach((v) => { const y = y0 - v * k; b += D.line(x0 - 6, y, x0, y, 2, C.stroke) + D.T(x0 - 10, y + 5, v.toFixed(1), 12, { anchor: 'end', fill: C.stroke, weight: 'normal' }); });
+    MEANS.forEach((m, i) => { const h = parseFloat(m) * k, x = 120 + i * 150; b += '<rect x="' + x + '" y="' + (y0 - h) + '" width="90" height="' + h + '" fill="' + (i ? '#F2C9AE' : '#A9D9BE') + '" stroke="' + C.stroke + '" stroke-width="2.5"/>' + D.T(x + 45, y0 - h - 8, m + ' s', 14, { fill: C.stroke }) + D.T(x + 45, y0 + 22, i ? 'distraction' : 'no distraction', 13, { fill: C.stroke, weight: 'normal' }); });
+    b += D.T(18, 115, 'mean reaction time / s', 12, { fill: C.stroke, weight: 'normal' }).replace('<text', '<text transform="rotate(-90 18 115)"');
+    return D.svg(420, 250, b, 'Bar chart: mean reaction time 0.21 s with no distraction, 0.29 s with distraction.');
+  }
+  tableFig() {
+    const D = window.KS4D;
+    return D.table(['distance (cm)', '5', '10', '15', '20', '25', '30', '35', '40', '45'], [['time (s)', '0.10', '0.14', '0.17', '0.20', '0.23', '0.25', '0.27', '0.29', '0.30']], { widths: [160, 64, 64, 64, 64, 64, 64, 64, 64, 64], alt: 'Conversion table: distance fallen in cm to reaction time in s.' });
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.r0 === 3 && s.r1 === 3 && s.plan.length === 5, s.calc > 0, s.steps, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const H = c.isHigher, TR = c.isTriple, TH = c.isTH, rk = c.rk;
+    const n = s.cond ? s.r1 : s.r0;
+    const list = (ci, m) => DATA[ci].slice(0, m).map((d) => d + ' cm, ' + TT[d] + ' s').join('; ');
+    let rpNote = 'Pick a condition, then drop the ruler three times.';
+    if (n > 0) rpNote = (s.cond ? 'With distraction: ' : 'No distraction: ') + list(s.cond, n) + '. ' + (n < 3 ? 'Drop again.' : 'Mean: ' + MEANS[s.cond] + ' s. ' + (s.r0 === 3 && s.r1 === 3 ? 'Distraction made the mean reaction time longer.' : 'Now the other condition.'));
+    const BANK = [
+      Q('Why should a reaction time experiment use multiple repeats and calculate the mean?', 'Reaction time varies randomly between trials — the mean gives a more reliable estimate of true reaction time', [['The ruler wears out and becomes less accurate after each drop', 'Rulers don’t wear out with use — the variation is in the human nervous system response, not the equipment.'], ['The person’s brain learns the formula and gets better at calculating the answer', 'The person does not calculate anything during the experiment — they simply catch the ruler. Multiple repeats address random biological variation.'], ['Multiple repeats prevent the person from practising and improving', 'Practice effects are a potential confound — but the PRIMARY reason for multiple repeats is to reduce random variation in measurements.']]),
+      Q('A ruler is caught at 0.15 m. Use the table (distance in cm, time in s): 15 cm = 0.17 s. What is the reaction time?', '0.17 s', [['0.15 s', 'That is the distance in m, not a time.'], ['1.5 s', 'Convert 0.15 m to 15 cm, then read the table.'], ['15 s', 'Far too long: read the time from the table.']]),
+      Q('Reaction times of 0.26 s, 0.30 s and 0.28 s were measured. Calculate the mean.', '0.28 s', [['0.84 s', 'That is the total: divide by 3.'], ['0.30 s', 'That is the largest value.'], ['0.26 s', 'That is the smallest value.']]),
+      Q('In an investigation into the effect of distraction on reaction time, which is a control variable?', 'The same ruler is used for every drop', [['Whether the person is distracted', 'That is the independent variable.'], ['The distance the ruler falls', 'That is what is measured.'], ['The mean reaction time', 'That is calculated from the measurements.']]),
+      Q('Which step makes a caffeine reaction-time investigation safe and ethical?', 'Everyone gives informed consent and a small, legal dose is used', [['Give as much caffeine as possible to see a big effect', 'Doses must be small and safe.'], ['Include people with heart conditions to get more data', 'They should be excluded.'], ['Don’t tell people what they are drinking or let them stop', 'Consent and the right to withdraw are needed.']])
+    ];
+    return Object.assign(c, {
+      rpLabel: TR ? 'Biology required practical 7' : 'Required practical 6',
+      hookOptions: [
+        { text: 'When I’m wide awake', correct: true, reply: 'Yes. Tiredness slows reactions.' },
+        { text: 'When I’m tired', correct: false, reply: 'Tiredness slows reactions, so you’re quicker wide awake.' }
+      ],
+      condBtns: this.btns(['No distraction', 'With distraction'], s.cond, (i) => this.setState({ cond: i })),
+      dropBtns: [{ label: n >= 3 ? 'Three repeats done' : 'Drop the ruler', pressed: false, style: this.seg(false), onClick: () => { if (n < 3) this.setState(s.cond ? { r1: s.r1 + 1 } : { r0: s.r0 + 1 }); } }],
+      rulerFig: c.ready ? K.fig(this.rulerFig(s.cond, n), '') : null,
+      rpNote, barsOn: s.r0 === 3 && s.r1 === 3,
+      barFig: c.ready && s.r0 === 3 && s.r1 === 3 ? K.fig(this.barFig(), '') : null,
+      tableFig: c.ready ? K.fig(this.tableFig(), '') : null,
+      planCards: this.cards(PLAN, 'plan'),
+      cfExamples: [
+        { tab: 'Nothing to convert', next: 'Now one that needs converting.', head: 'Reaction times of 0.20 s, 0.23 s and 0.20 s were measured. Calculate the mean reaction time.', steps: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert: all three are in s.' },
+          { letter: 'F', label: 'Formula', line: 'mean = total of the repeats ÷ number of repeats' },
+          { letter: 'I', label: 'Insert', line: 'mean = (0.20 + 0.23 + 0.20) ÷ 3' },
+          { letter: 'F', label: 'Fine-tune', line: 'mean = 0.63 ÷ 3 = 0.21' },
+          { letter: 'A', label: 'Answer', line: '0.21 s' }] },
+        { tab: 'Convert first', next: 'Now yours, below.', head: 'A computer test gives 240 ms, 260 ms and 280 ms. Calculate the mean reaction time in s.', steps: [
+          { letter: 'C', label: 'Convert', line: '240 ÷ 1000 = 0.24 s; 260 ÷ 1000 = 0.26 s; 280 ÷ 1000 = 0.28 s', note: 'The answer is asked for in s, so each repeat goes into s first.' },
+          { letter: 'F', label: 'Formula', line: 'mean = total of the repeats ÷ number of repeats' },
+          { letter: 'I', label: 'Insert', line: 'mean = (0.24 + 0.26 + 0.28) ÷ 3' },
+          { letter: 'F', label: 'Fine-tune', line: 'mean = 0.78 ÷ 3 = 0.26' },
+          { letter: 'A', label: 'Answer', line: '0.26 s' }] }
+      ],
+      cfQuestions: [
+        cf('rt-q1', 'Reaction times of 0.31 s, 0.27 s and 0.29 s were measured. Calculate the mean reaction time.', '0.31 + 0.27 + 0.29 = 0.87 is the total: divide by 3.', 'Nothing to convert: all in s.', 'mean = (0.31 + 0.27 + 0.29) ÷ 3', 'mean = 0.87 ÷ 3 = 0.29', '0.29 s', 'anything to convert?'),
+        cf('rt-q2', 'A computer test gives 180 ms, 220 ms and 230 ms. Calculate the mean reaction time in s.', '630 ÷ 3 = 210 is in ms: convert to s, 0.21 s.', '180 ÷ 1000 = 0.18 s; 220 ÷ 1000 = 0.22 s; 230 ÷ 1000 = 0.23 s', 'mean = (0.18 + 0.22 + 0.23) ÷ 3', 'mean = 0.63 ÷ 3 = 0.21', '0.21 s', 'ms to s?')
+      ],
+      onCalc: (k) => this.setState({ calc: Math.max(s.calc, k || 1) }),
+      wSteps: [
+        { title: 'Read each time from the table', carry: '0.20 s, 0.23 s, 0.25 s', lines: [
+          { letter: 'C', label: 'Convert', line: '0.20 m × 100 = 20 cm; 0.25 m × 100 = 25 cm; 0.30 m × 100 = 30 cm', note: 'The table is in cm, so each distance goes into cm first.' },
+          { letter: 'F', label: 'Formula', line: 'read across the table: distance (cm) to time (s)' },
+          { letter: 'I', label: 'Insert', line: 'look up 20 cm, 25 cm, 30 cm' },
+          { letter: 'F', label: 'Fine-tune', line: '20 cm: 0.20 s; 25 cm: 0.23 s; 30 cm: 0.25 s' },
+          { letter: 'A', label: 'Answer', line: 'times: 0.20 s, 0.23 s, 0.25 s' }] },
+        { title: 'Find the mean', lines: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert: all in s.' },
+          { letter: 'F', label: 'Formula', line: 'mean = total of the repeats ÷ number of repeats' },
+          { letter: 'I', label: 'Insert', line: 'mean = (0.20 + 0.23 + 0.25) ÷ 3' },
+          { letter: 'F', label: 'Fine-tune', line: 'mean = 0.68 ÷ 3 = 0.2267' },
+          { letter: 'A', label: 'Answer', line: 'mean reaction time ≈ 0.23 s' }] }
+      ],
+      aSteps: [
+        { title: 'Read each time from the table', carry: '0.17 s, 0.20 s, 0.23 s', lines: [
+          { letter: 'C', label: 'Convert', placeholder: 'mm to cm?', line: '150 ÷ 10 = 15 cm; 200 ÷ 10 = 20 cm; 250 ÷ 10 = 25 cm' },
+          { letter: 'F', label: 'Formula', placeholder: 'how do you get a time?', line: 'read across the table: distance (cm) to time (s)' },
+          { letter: 'I', label: 'Insert', placeholder: 'look up …', line: 'look up 15 cm, 20 cm, 25 cm' },
+          { letter: 'F', label: 'Fine-tune', placeholder: 'the three times', line: '15 cm: 0.17 s; 20 cm: 0.20 s; 25 cm: 0.23 s' },
+          { letter: 'A', label: 'Answer', placeholder: 'times', line: 'times: 0.17 s, 0.20 s, 0.23 s' }] },
+        { title: 'Find the mean', lines: [
+          { letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: 'Nothing to convert: all in s.' },
+          { letter: 'F', label: 'Formula', placeholder: 'written out', line: 'mean = total of the repeats ÷ number of repeats' },
+          { letter: 'I', label: 'Insert', placeholder: 'mean = … ÷ 3', line: 'mean = (0.17 + 0.20 + 0.23) ÷ 3' },
+          { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'mean = 0.60 ÷ 3 = 0.20' },
+          { letter: 'A', label: 'Answer', placeholder: 'with unit', line: 'mean reaction time = 0.20 s' }] }
+      ],
+      onSteps: () => this.setState({ steps: true }),
+      thinkOptions: [
+        { text: 'Pupil A, at 12 cm', correct: true, reply: 'The ruler fell less far before A caught it.' },
+        { text: 'Pupil B, at 30 cm', correct: false, reply: 'B let the ruler fall further, so B took longer.' },
+        { text: 'You can’t tell from distances', correct: false, reply: 'You can: a longer distance means a longer time. The table gives the times.' }
+      ],
+      sortBins: [{ id: 'i', label: 'Independent' }, { id: 'd', label: 'Dependent' }, { id: 'c', label: 'Control' }],
+      sortItems: [
+        { text: 'With or without mental arithmetic', bin: 'i', why: 'The factor you change.' },
+        { text: 'Distance the ruler falls', bin: 'd', why: 'What you measure.' },
+        { text: 'Reaction time from the table', bin: 'd', why: 'Worked out from the measurement.' },
+        { text: 'The same ruler every time', bin: 'c', why: 'Kept the same.' },
+        { text: 'Catching with the same hand', bin: 'c', why: 'Kept the same.' },
+        { text: '0 cm level with the top of the thumb at the start', bin: 'c', why: 'Same starting position every drop.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'A student tests reaction time with and without music playing. Name the independent variable.', 'Whether music is playing.', ['Whether music is playing', ['The distance the ruler falls', 'That is measured: the dependent variable.'], ['The ruler', 'Kept the same: a control.']]),
+          MCQ('State', 'State what a longer catch distance tells you about reaction time.', 'The reaction time is longer.', [['The reaction time is shorter', 'The ruler fell further, so it took longer.'], 'The reaction time is longer', ['Nothing', 'The table turns distance into time.']])
+        ],
+        r2: [
+          MCQ('Calculate', 'Reaction times of 0.26 s, 0.30 s and 0.25 s. Calculate the mean.', '(0.26 + 0.30 + 0.25) ÷ 3 = 0.81 ÷ 3 = 0.27 s.', [['0.81 s', 'That is the total.'], '0.27 s', ['0.25 s', 'The smallest, not the mean.'], ['0.30 s', 'The largest.']]),
+          MCQ('Use the table', 'A ruler is caught at 0.35 m. Use the conversion table to find the reaction time.', '0.35 m = 35 cm, which the table gives as 0.27 s.', [['0.35 s', 'That is the distance in m.'], '0.27 s', ['0.30 s', 'That is 45 cm.'], ['3.5 s', 'Convert to cm, then read the table.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain why the student repeats each test and calculates a mean. Put the links in order.',
+            ['Each catch varies in unpredictable ways: random error.', 'Repeating gives several measurements of the same thing.', 'A mean reduces the effect of random error.'],
+            [['Repeats make it a fair test.', 'Control variables make it fair.'], ['The ruler gets more accurate with use.', 'The variation is in the person.']]),
+          CHAIN('Explain', 'Explain why the results are shown as a bar chart, not a line graph. Put the links in order.',
+            ['The independent variable is in categories: with or without distraction.', 'There are no values in between to join up.', 'So each condition gets its own bar of mean reaction time.'],
+            [['Bar charts are always used in biology.', 'It depends on the variable.'], ['A line graph can’t show means.', 'It can, if the variable is continuous.']])
+        ],
+        r4: [
+          WRITE('Plan', 6, 'Plan an investigation into the effect of caffeine on reaction time using the ruler-drop test.',
+            LV6('A clear method with IV, DV and controls, repeats and a mean, the conversion table, safety and ethics, and a bar chart of the means.', 'A method with some variables and repeats; safety or results mentioned.', 'A few relevant steps, little detail.'),
+            ['IV: caffeine drink or no caffeine; DV: catch distance, turned into a reaction time with the conversion table.', 'Partner drops the ruler without warning; read the distance at the top of the thumb.', 'Controls: same person, hand, ruler, starting position, same volume of drink.', 'Repeat each condition several times and calculate a mean.', 'Safe and ethical: informed consent, small legal dose, exclude heart conditions or caffeine sensitivity, right to withdraw.', 'Results table, then a bar chart of mean reaction time for each condition.'],
+            ['“Repeating makes it a fair test.”', '“Give lots of caffeine to see a big effect.”'])
+        ]
+      },
+      keyLines: ['Reaction time: the time between a stimulus and a response. Typical values 0.2 s to 0.9 s; about 0.2–0.3 s for a simple stimulus.', 'Ruler drop: 0 cm at the top of the thumb, drop without warning, read the catch distance. Longer distance, longer time.', 'Use the conversion table, units checked. Repeat and report a mean to reduce random error.', 'Change one factor, control the rest, act safely and ethically, and show the means as a bar chart.'],
+      endPrev: LNK('reflex-actions', 'Reflex actions'),
+      endNext: TR ? LNK('the-brain', 'The brain (Triple)') : LNK('endocrine-system', 'The endocrine system'),
+      endConnects: [LNK('nervous-system', 'The nervous system')],
+      bank: c.ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

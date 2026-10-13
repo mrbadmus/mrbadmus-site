@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meiosis · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Inheritance, variation and evolution" title="Meiosis" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.6.1.2</p>
+        <h1>Meiosis</h1>
+        <p class="ks3-bigq">One cell divides twice to make four different gametes, and two gametes make a new 46. Predict each number before it appears.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Half from each." scene="People say you got your eyes from one parent and your hair from the other." question="does a sperm cell carry all of a parent’s chromosomes, or half?" options="{{ hookOptions }}" bridge="Half: a single set. Meiosis makes that happen." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-steps" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Meiosis</p>
+        <h2 style="margin: 6px 0 0;">Cell to embryo.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Cells in reproductive organs divide by meiosis to form gametes. Step through, from one cell to an embryo. The model shows 2 pairs of chromosomes; a human cell has 23 pairs, 46 in all.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ stepBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ stepFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ stepNote }}</p></div>
+      </section>
+
+      <section id="s-why" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Fertilisation</p>
+        <h2 style="margin: 6px 0 0;">Why halve it?</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Gametes join at fertilisation to restore the normal number of chromosomes. Try it both ways.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ halfBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ halfNote }}</p></div>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Four things to remember. Tap each.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ factCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Why gametes and fertilisation matter: <a href="ks4-biology-4.6.1.1-sexual-asexual-reproduction.dc.html">Sexual and asexual reproduction</a>. What the chromosomes carry: <a href="ks4-biology-4.6.1.4-dna-genome.dc.html">DNA and the genome</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · two cells?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Meiosis makes two cells, like mitosis.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="How many gametes does one cell make by meiosis?" options="{{ thinkOptions }}" reveal="Four. The cell divides twice, and each gamete has a single set of chromosomes." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Meiosis or mitosis?" prompt="Place each one." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Meiosis: four different gametes with a single set. Mitosis: identical cells, as when the embryo grows." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">What happens when a cell divides to form gametes.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why gametes have a single set of chromosomes.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Chromosome numbers in gametes and after fertilisation.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Meiosis: copies made, the cell divides twice, four gametes each with a single set of chromosomes, all genetically different. Fertilisation restores the normal number.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="meiosis" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Meiosis" spec="AQA 4.6.1.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Mixing up meiosis and mitosis?" legal="The cells are a model, not to scale." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'meiosis';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const FILE = {"homeostasis":"ks4-biology-4.5.1-homeostasis.dc.html","nervous-system":"ks4-biology-4.5.2.1-nervous-system.dc.html","reflex-actions":"ks4-biology-4.5.2.1-reflex-actions.dc.html","reaction-time":"ks4-biology-4.5.2.1-reaction-time.dc.html","the-brain":"ks4-biology-4.5.2.2-the-brain.dc.html","the-eye":"ks4-biology-4.5.2.3-the-eye.dc.html","defects-of-the-eye":"ks4-biology-4.5.2.3-defects-of-the-eye.dc.html","thermoregulation":"ks4-biology-4.5.2.4-thermoregulation.dc.html","endocrine-system":"ks4-biology-4.5.3.1-endocrine-system.dc.html","blood-glucose-diabetes":"ks4-biology-4.5.3.2-blood-glucose-diabetes.dc.html","human-reproduction-hormones":"ks4-biology-4.5.3.4-human-reproduction-hormones.dc.html","contraception-fertility":"ks4-biology-4.5.3.5-contraception-fertility.dc.html","sexual-asexual-reproduction":"ks4-biology-4.6.1.1-sexual-asexual-reproduction.dc.html","meiosis":"ks4-biology-4.6.1.2-meiosis.dc.html","advantages-sexual-asexual":"ks4-biology-4.6.1.3-advantages-sexual-asexual.dc.html","dna-genome":"ks4-biology-4.6.1.4-dna-genome.dc.html","metabolism":"../../Batch 7/lessons/ks4-biology-4.4.2.3-metabolism.dc.html","aerobic-respiration":"../../Batch 7/lessons/ks4-biology-4.4.2.1-aerobic-respiration.dc.html","response-to-exercise":"../../Batch 7/lessons/ks4-biology-4.4.2.2-response-to-exercise.dc.html","fungal-protist-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.4-fungal-protist-diseases.dc.html","bacterial-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.3-bacterial-diseases.dc.html","cell-specialisation":"../../Batch 6/lessons/ks4-biology-4.1.1.3-cell-specialisation.dc.html","culturing-microorganisms":"../../Batch 6/lessons/ks4-biology-4.1.1.6-culturing-microorganisms.dc.html","digestive-system":"../../Batch 6/lessons/ks4-biology-4.2.2.1-digestive-system.dc.html","stem-cells":"../../Batch 6/lessons/ks4-biology-4.1.2.3-stem-cells.dc.html"};
+const LNK = (k, label) => ({ href: FILE[k], label });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const PATH = (d, col, w, extra) => '<path d="' + d + '" fill="none" stroke="' + (col || '#1A1A1A') + '" stroke-width="' + (w || 3) + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>';
+const RAIL = [{"id":"s-hook","label":"Half from each","short":"HOOK"},{"id":"s-steps","label":"Cell to embryo","short":"STEPPER"},{"id":"s-why","label":"Why halve it?","short":"WHY"},{"id":"s-think","label":"Think again","short":"THINK"},{"id":"s-sort","label":"Meiosis or mitosis?","short":"SORT"},{"id":"s-ladder","label":"Exam ladder","short":"LADDER"}];
+const STATE = {"step":0,"gateMsg":"","maxStep":0,"half":null,"halves":[],"facts":[]};
+const STEPS = [
+  { t: 'One cell in the testes or ovaries: 46 chromosomes (23 pairs).' },
+  { t: 'Copies of the genetic information are made: each chromosome is copied.' },
+  { t: 'The cell divides for the first time: two cells.' },
+  { t: 'It divides a second time: four gametes, each with a single set of chromosomes (23 in humans). All are genetically different.', gate: { q: 'Dividing twice makes how many gametes?', opts: ['2', '4', '8'], right: 1, no: ['One division gives 2. Meiosis divides twice.', '', 'Three divisions would give 8. Meiosis divides twice.'] } },
+  { t: 'Fertilisation: two gametes join, restoring the normal number: 23 + 23 = 46.', gate: { q: 'A human gamete has 23 chromosomes. Two join: how many?', opts: ['23', '46', '92'], right: 1, no: ['Fertilisation joins two gametes: add them.', '', 'That would happen if each gamete had 46. Each has 23.'] } },
+  { t: 'The new cell divides by mitosis. The number of cells increases.' },
+  { t: 'As the embryo develops, cells differentiate.' }
+];
+const FACTS = [
+  { name: 'Where', why: 'Only cells in reproductive organs, such as the testes and ovaries, divide by meiosis.' },
+  { name: 'A single set', why: 'Each gamete has one set of chromosomes: 23 single chromosomes, not 23 pairs.' },
+  { name: 'All different', why: 'All the gametes are genetically different from each other.' },
+  { name: 'After fertilisation', why: 'The new cell divides by mitosis to make the embryo; then cells differentiate.' }
+];
+
+class Component extends DCLogic {
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH', T = rk === 'TF' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: T, notTriple: !T, isTH: rk === 'TH', notTH: rk !== 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+  stepFig(st) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const R = '#C8102E', B = '#3B82F6', Y = '#FBBF24', G = '#2E8B7F';
+    const chr = (x, y, len, col, dbl, tip) => { const one = (xx) => '<rect x="' + xx + '" y="' + (y - len / 2) + '" width="8" height="' + len + '" rx="4" fill="' + col + '"/>' + (tip ? '<rect x="' + xx + '" y="' + (y + len / 2 - 10) + '" width="8" height="10" rx="3" fill="' + tip + '"/>' : ''); return dbl ? one(x - 5) + one(x + 3) : one(x); };
+    const cell = (x, y, r, kids) => D.circ(x, y, r, '#FFFDF8', C.stroke, 2.5) + kids;
+    const top = ['1 cell · 46 chromosomes', '1 cell · copies made', '2 cells', '4 gametes · 23 each', '23 + 23 = 46', 'cells increase by mitosis', 'cells differentiate'][st];
+    b += D.T(330, 28, top, 16, { fill: C.stroke });
+    if (st <= 1) { const d = st === 1; b += cell(330, 145, 90, chr(290, 145, 70, R, d) + chr(315, 145, 70, B, d) + chr(350, 145, 40, Y, d) + chr(375, 145, 40, G, d)); }
+    if (st === 2) { b += cell(200, 145, 72, chr(185, 145, 64, R, true) + chr(215, 145, 38, Y, true)) + cell(460, 145, 72, chr(445, 145, 64, B, true) + chr(475, 145, 38, G, true)); }
+    if (st === 3) { const g = [[R, Y, null, null], [R, Y, B, G], [B, G, null, null], [B, G, R, Y]]; g.forEach((k, i) => { const x = 90 + i * 160; b += cell(x, 145, 50, chr(x - 12, 145, 56, k[0], false, k[2]) + chr(x + 12, 145, 32, k[1], false, k[3])); }); }
+    if (st === 4) {
+      b += cell(110, 145, 24, chr(104, 145, 26, R) + chr(116, 145, 16, Y)) + PATH('M86 145 q-20 -12 -36 0 q-16 12 -30 0', C.stroke, 2.5) + D.T(110, 196, 'sperm: 23', 13, { fill: C.stroke, weight: 'normal' });
+      b += cell(270, 145, 64, chr(255, 145, 56, B) + chr(285, 145, 32, G)) + D.T(270, 232, 'egg: 23', 13, { fill: C.stroke, weight: 'normal' });
+      b += D.arrow(350, 145, 420, 145, C.stroke, 3) + cell(510, 145, 72, chr(482, 145, 60, R) + chr(498, 145, 60, B) + chr(522, 145, 36, Y) + chr(538, 145, 36, G)) + D.T(510, 240, 'fertilised: 46', 13, { fill: C.stroke, weight: 'normal' });
+    }
+    if (st === 5) { [[250, 145, 52], [410, 110, 40], [410, 190, 40], [540, 90, 30], [600, 150, 30], [540, 210, 30]].forEach((p, i) => { b += D.circ(p[0], p[1], p[2], '#FFFDF8', C.stroke, 2.5); }); b += D.arrow(310, 145, 360, 120, C.stroke, 3) + D.arrow(456, 130, 506, 110, C.stroke, 3); }
+    if (st === 6) { const sh = [['#FBE3D6', 0], ['#E7F0EC', 1], ['#E6F1F8', 2], ['#FBEFC9', 0], ['#FBE3D6', 1], ['#E7F0EC', 2], ['#E6F1F8', 0]]; sh.forEach((x, i) => { const cx = 180 + (i % 4) * 100, cy = 110 + Math.floor(i / 4) * 90; b += x[1] === 0 ? D.circ(cx, cy, 36, x[0], C.stroke, 2.5) : x[1] === 1 ? '<rect x="' + (cx - 44) + '" y="' + (cy - 22) + '" width="88" height="44" rx="12" fill="' + x[0] + '" stroke="' + C.stroke + '" stroke-width="2.5"/>' : '<path d="M' + (cx - 40) + ' ' + cy + ' L' + cx + ' ' + (cy - 34) + ' L' + (cx + 40) + ' ' + cy + ' L' + cx + ' ' + (cy + 34) + ' Z" fill="' + x[0] + '" stroke="' + C.stroke + '" stroke-width="2.5"/>'; }); }
+    return D.svg(660, 260, b, STEPS[st].t);
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.maxStep >= 6, s.halves.length === 2 && s.facts.length === 4, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const H = c.isHigher, TR = c.isTriple, TH = c.isTH, rk = c.rk;
+    const nx = s.step + 1, gate = nx < STEPS.length ? STEPS[nx].gate : null;
+    const go = (to) => this.setState({ step: to, gateMsg: '', maxStep: Math.max(s.maxStep, to) });
+    const stepBtns = s.step >= 6 ? [{ label: 'Start again', pressed: false, style: this.seg(false), onClick: () => this.setState({ step: 0, gateMsg: '' }) }]
+      : gate ? gate.opts.map((o, i) => ({ label: o, pressed: false, style: this.seg(false), onClick: () => (i === gate.right ? go(nx) : this.setState({ gateMsg: gate.no[i] })) }))
+      : [{ label: 'Next step', pressed: false, style: this.seg(false), onClick: () => go(nx) }];
+    const stepNote = STEPS[s.step].t + (gate ? ' Predict: ' + gate.q : '') + (s.gateMsg ? ' ' + s.gateMsg : '');
+    const BANK = [
+      Q('How many chromosomes does a human gamete contain, and why?', '23 — meiosis halves the chromosome number so that fertilisation restores the full 46', [['46 — gametes have the same chromosome number as body cells', 'If gametes had 46 chromosomes, fertilisation would produce 92 — doubling every generation. Meiosis halves the number to 23 so fertilisation gives 46.'], ['92 — gametes have double the chromosome number ready for fertilisation', 'If gametes had 92, fertilisation would give 184. Meiosis halves the number to 23, so two gametes make 46.'], ['23 pairs — gametes have paired chromosomes just like body cells', 'Gametes have unpaired chromosomes — 23 singles. Paired chromosomes (46 total) are in body cells, not gametes.']]),
+      Q('Where in the human body does meiosis happen?', 'In the reproductive organs: testes and ovaries', [['In every body cell', 'Only cells in reproductive organs.'], ['In the skin, to repair cuts', 'Repair uses mitosis.'], ['In the embryo, to make it grow', 'The embryo grows by mitosis.']]),
+      Q('When a cell divides to form gametes, how many times does it divide, and how many gametes form?', 'Twice, forming four gametes', [['Once, forming two', 'That is mitosis.'], ['Twice, forming two', 'Two divisions give four cells.'], ['Four times, forming four', 'It divides twice.']]),
+      Q('How do the gametes made from one cell compare with each other?', 'They are all genetically different', [['They are all identical', 'All gametes are genetically different.'], ['Two pairs of identical twins', 'All four are different.'], ['Identical to the parent cell', 'They have a single set of chromosomes.']]),
+      Q('After fertilisation, how does the new cell make an embryo?', 'It divides by mitosis, and then cells differentiate', [['It divides by meiosis', 'Meiosis forms gametes.'], ['It stays as one cell', 'The number of cells increases.'], ['It fuses with more gametes', 'Only two gametes fuse.']])
+    ];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'Half', correct: true, reply: 'Yes: a single set of chromosomes.' },
+        { text: 'All of them', correct: false, reply: 'Only half: a single set. Otherwise the number would double every generation.' }
+      ],
+      stepBtns, stepNote,
+      stepFig: c.ready ? K.fig(this.stepFig(s.step), '') : null,
+      halfBtns: this.btns(['Gametes with 23', 'Gametes with 46'], s.half, (i) => this.setState({ half: i, halves: this.seen('halves', i) })),
+      halfNote: s.half === null ? 'Pick one.' : s.half === 0 ? '23 + 23 = 46: the normal number, generation after generation.' : '46 + 46 = 92 in the child, and 184 in the next generation: the number would double every generation.',
+      factCards: this.cards(FACTS, 'facts'),
+      thinkOptions: [
+        { text: 'Two', correct: false, reply: 'Two is mitosis, or one division.' },
+        { text: 'Four', correct: true, reply: 'The cell divides twice.' },
+        { text: 'Forty-six', correct: false, reply: '46 is the number of chromosomes in a body cell.' }
+      ],
+      sortBins: [{ id: 'm', label: 'Meiosis' }, { id: 't', label: 'Mitosis' }],
+      sortItems: [
+        { text: 'Makes four cells', bin: 'm', why: 'Divides twice.' },
+        { text: 'Cells are genetically different', bin: 'm', why: 'All gametes differ.' },
+        { text: 'Forms gametes', bin: 'm', why: 'In reproductive organs.' },
+        { text: 'Single set of chromosomes', bin: 'm', why: '23 in humans.' },
+        { text: 'Makes identical cells', bin: 't', why: 'Mitosis.' },
+        { text: 'Increases the number of cells in an embryo', bin: 't', why: 'After fertilisation.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('State', 'State how many times a cell divides when it forms gametes.', 'Twice.', [['Once', 'That would give two cells.'], 'Twice', ['Four times', 'Four is the number of gametes.']]),
+          MCQ('Name', 'Name where meiosis happens in humans.', 'The reproductive organs: testes and ovaries.', ['Testes and ovaries', ['Skin', 'Skin cells divide by mitosis.'], ['Every body cell', 'Only reproductive organs.']])
+        ],
+        r2: [
+          MCQ('Calculate', 'A dog body cell has 78 chromosomes. How many are in each dog gamete?', '78 ÷ 2 = 39.', [['78', 'Gametes have a single set: half.'], '39', ['156', 'That doubles it.']]),
+          MCQ('Identify', 'Identify how the fertilised egg cell divides to form an embryo.', 'By mitosis.', ['Mitosis', ['Meiosis', 'Meiosis forms gametes.'], ['It doesn’t divide', 'The number of cells increases.']])
+        ],
+        r3: [
+          CHAIN('Describe', 'Describe what happens when a cell divides to form gametes. Put the links in order.',
+            ['Copies of the genetic information are made.', 'The cell divides twice.', 'Four gametes form, each with a single set of chromosomes.', 'All the gametes are genetically different.'],
+            [['The cell divides once to make two identical cells.', 'That is mitosis.'], ['Each gamete gets 23 pairs.', 'A single set: 23 single chromosomes.']]),
+          CHAIN('Explain', 'Explain why gametes have a single set of chromosomes. Put the links in order.',
+            ['Each human gamete has 23 chromosomes.', 'At fertilisation, two gametes join.', '23 + 23 = 46, the normal number is restored.', 'So the number stays the same each generation.'],
+            [['Gametes have 46 so the baby gets 92.', 'The number would double each generation.'], ['Halving removes genes.', 'Each gamete still has one copy of every gene.']])
+        ],
+        r4: [
+          WRITE('Describe', 6, 'Describe how a new human embryo forms, starting with a cell in the testes or ovaries.',
+            LV6('Meiosis in order with numbers, fertilisation restoring 46, then mitosis and differentiation.', 'Meiosis and fertilisation described, some numbers.', 'A few steps, little order.'),
+            ['A cell in the testes or ovaries divides by meiosis.', 'Copies of the genetic information are made; the cell divides twice.', 'Four gametes, each with a single set (23), all genetically different.', 'At fertilisation two gametes join: 23 + 23 = 46, the normal number.', 'The new cell divides by mitosis; the number of cells increases.', 'As the embryo develops, cells differentiate.'],
+            ['“Gametes have 23 pairs.”', '“The embryo grows by meiosis.”'])
+        ]
+      },
+      keyLines: ['Cells in reproductive organs divide by meiosis to form gametes.', 'Copies of the genetic information are made; the cell divides twice to form four gametes, each with a single set of chromosomes.', 'All gametes are genetically different. Fertilisation restores the normal number: 23 + 23 = 46.', 'The new cell divides by mitosis; the number of cells increases; as the embryo develops, cells differentiate.'],
+      endPrev: LNK('sexual-asexual-reproduction', 'Sexual and asexual reproduction'),
+      endNext: TR ? LNK('advantages-sexual-asexual', 'Advantages of sexual and asexual reproduction') : LNK('dna-genome', 'DNA and the genome'),
+      endConnects: [LNK('stem-cells', 'Stem cells')],
+      bank: c.ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

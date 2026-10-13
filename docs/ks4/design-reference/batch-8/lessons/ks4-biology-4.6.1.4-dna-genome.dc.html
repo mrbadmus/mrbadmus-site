@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DNA and the genome · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Inheritance, variation and evolution" title="DNA and the genome" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.6.1.4 · Combined 4.6.1.3</p>
+        <h1>DNA and the genome</h1>
+        <p class="ks3-bigq">Zoom from a cell to a single gene, then see what reading the whole human genome is for.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Your mother’s nose." scene="Someone says you have your mother’s nose." question="is the instruction for that kept in every cell of your body, or only in some cells?" options="{{ hookOptions }}" bridge="In the nucleus of your cells, as DNA. Zoom in to find it." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-zoom" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Genetic material</p>
+        <h2 style="margin: 6px 0 0;">Cell to gene.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The genetic material in the nucleus of a cell is a chemical called DNA. Zoom in, one level at a time.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ lvBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ zoomFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ zoomNote }}</p></div>
+        <sc-if value="{{ isTriple }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 16px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);"><div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Triple</span><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">What DNA is made of</p></div>
+          <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">DNA’s repeating units and how its two strands pair up are their own lesson, DNA structure (Triple; base pairing is Triple Higher).</p>
+        </div></sc-if>
+      </section>
+
+      <section id="s-genome" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The genome</p>
+        <h2 style="margin: 6px 0 0;">The human genome.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The genome of an organism is the entire genetic material of that organism. The whole human genome has now been studied, and this will have great importance for medicine in the future. Tap each reason it matters.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ whyCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">How chromosomes are shared out to gametes: <a href="ks4-biology-4.6.1.2-meiosis.dc.html">Meiosis</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · gene or chromosome?</p></div>
+        <p class="ks3-mis-quote">&ldquo;A gene and a chromosome are the same thing.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="How are a gene and a chromosome related?" options="{{ thinkOptions }}" reveal="A gene is a small section of DNA on a chromosome. Each chromosome carries many genes." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Which term?" prompt="Place each description." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Genome: everything. Chromosome: holds the DNA. DNA: two strands, a double helix. Gene: a small section that codes for a protein." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How DNA, chromosomes and genes are related.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Discuss</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The importance of understanding the human genome.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Define</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Genome and gene, in the spec’s words.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">DNA is a polymer of two strands forming a double helix, in chromosomes. A gene is a small section of DNA that codes for a particular sequence of amino acids, to make a specific protein.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="dna-genome" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="DNA and the genome" spec="AQA 4.6.1.4 (Combined 4.6.1.3)" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Mixing up gene, chromosome and genome?" legal="The zoom figures are schematic and not to scale." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'dna-genome';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const FILE = {"homeostasis":"ks4-biology-4.5.1-homeostasis.dc.html","nervous-system":"ks4-biology-4.5.2.1-nervous-system.dc.html","reflex-actions":"ks4-biology-4.5.2.1-reflex-actions.dc.html","reaction-time":"ks4-biology-4.5.2.1-reaction-time.dc.html","the-brain":"ks4-biology-4.5.2.2-the-brain.dc.html","the-eye":"ks4-biology-4.5.2.3-the-eye.dc.html","defects-of-the-eye":"ks4-biology-4.5.2.3-defects-of-the-eye.dc.html","thermoregulation":"ks4-biology-4.5.2.4-thermoregulation.dc.html","endocrine-system":"ks4-biology-4.5.3.1-endocrine-system.dc.html","blood-glucose-diabetes":"ks4-biology-4.5.3.2-blood-glucose-diabetes.dc.html","human-reproduction-hormones":"ks4-biology-4.5.3.4-human-reproduction-hormones.dc.html","contraception-fertility":"ks4-biology-4.5.3.5-contraception-fertility.dc.html","sexual-asexual-reproduction":"ks4-biology-4.6.1.1-sexual-asexual-reproduction.dc.html","meiosis":"ks4-biology-4.6.1.2-meiosis.dc.html","advantages-sexual-asexual":"ks4-biology-4.6.1.3-advantages-sexual-asexual.dc.html","dna-genome":"ks4-biology-4.6.1.4-dna-genome.dc.html","metabolism":"../../Batch 7/lessons/ks4-biology-4.4.2.3-metabolism.dc.html","aerobic-respiration":"../../Batch 7/lessons/ks4-biology-4.4.2.1-aerobic-respiration.dc.html","response-to-exercise":"../../Batch 7/lessons/ks4-biology-4.4.2.2-response-to-exercise.dc.html","fungal-protist-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.4-fungal-protist-diseases.dc.html","bacterial-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.3-bacterial-diseases.dc.html","cell-specialisation":"../../Batch 6/lessons/ks4-biology-4.1.1.3-cell-specialisation.dc.html","culturing-microorganisms":"../../Batch 6/lessons/ks4-biology-4.1.1.6-culturing-microorganisms.dc.html","digestive-system":"../../Batch 6/lessons/ks4-biology-4.2.2.1-digestive-system.dc.html","stem-cells":"../../Batch 6/lessons/ks4-biology-4.1.2.3-stem-cells.dc.html"};
+const LNK = (k, label) => ({ href: FILE[k], label });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const PATH = (d, col, w, extra) => '<path d="' + d + '" fill="none" stroke="' + (col || '#1A1A1A') + '" stroke-width="' + (w || 3) + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>';
+const RAIL = [{"id":"s-hook","label":"Your mother’s nose","short":"HOOK"},{"id":"s-zoom","label":"Cell to gene","short":"ZOOM"},{"id":"s-genome","label":"The human genome","short":"GENOME"},{"id":"s-think","label":"Think again","short":"THINK"},{"id":"s-sort","label":"Which term?","short":"SORT"},{"id":"s-ladder","label":"Exam ladder","short":"LADDER"}];
+const STATE = {"lv":0,"lvs":[0],"why":[]};
+const LV = [
+  { k: 'Cell', note: 'A body cell. Its genetic material is in the nucleus.' },
+  { k: 'Nucleus', note: 'The nucleus contains the chromosomes. A human body cell has 46.' },
+  { k: 'Chromosome', note: 'The DNA is contained in structures called chromosomes.' },
+  { k: 'DNA', note: 'DNA is a polymer made up of two strands forming a double helix.' },
+  { k: 'Gene', note: 'A gene is a small section of DNA on a chromosome.' },
+  { k: 'Protein', note: 'Each gene codes for a particular sequence of amino acids, to make a specific protein.' }
+];
+const WHY = [
+  { name: 'Genes linked to disease', why: 'The search for genes linked to different types of disease.' },
+  { name: 'Inherited disorders', why: 'Understanding and treatment of inherited disorders.' },
+  { name: 'Human migration', why: 'Use in tracing human migration patterns from the past.' }
+];
+
+class Component extends DCLogic {
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH', T = rk === 'TF' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: T, notTriple: !T, isTH: rk === 'TH', notTH: rk !== 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+  zoomFig(lv) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const chrom = (x, y, s, hi) => { let r = '<rect x="' + (x - 9 * s) + '" y="' + (y - 50 * s) + '" width="' + (18 * s) + '" height="' + (100 * s) + '" rx="' + (9 * s) + '" fill="#F6E3D8" stroke="' + C.stroke + '" stroke-width="2.5"/>'; if (hi) r += '<rect x="' + (x - 9 * s) + '" y="' + (y - 10 * s) + '" width="' + (18 * s) + '" height="' + (14 * s) + '" fill="#C8102E" fill-opacity="0.75"/>'; return r; };
+    if (lv === 0) { b += '<ellipse cx="330" cy="130" rx="200" ry="100" fill="#FFF4E0" stroke="' + C.stroke + '" stroke-width="3"/>' + D.circ(330, 130, 44, '#F6E3D8', C.stroke, 3) + D.T(330, 136, 'nucleus', 14, { fill: C.stroke }) + D.T(330, 256, 'cell', 14, { fill: C.stroke }); }
+    if (lv === 1) { b += D.circ(330, 130, 110, '#F6E3D8', C.stroke, 3); for (let i = 0; i < 8; i++) { const a = i * 0.785; b += '<g transform="rotate(' + (i * 37) + ' ' + (330 + Math.cos(a) * 55).toFixed(0) + ' ' + (130 + Math.sin(a) * 55).toFixed(0) + ')">' + chrom(330 + Math.cos(a) * 55, 130 + Math.sin(a) * 55, 0.4) + '</g>'; } b += D.T(330, 262, 'nucleus: chromosomes inside', 14, { fill: C.stroke }); }
+    if (lv === 2) { b += chrom(330, 130, 2) + D.T(330, 262, 'one chromosome', 14, { fill: C.stroke }); }
+    if (lv === 3 || lv === 4) {
+      let s1 = '', s2 = '';
+      for (let x = 60; x <= 600; x += 6) { const y1 = 130 + 50 * Math.sin((x - 60) / 40), y2 = 130 - 50 * Math.sin((x - 60) / 40); s1 += (x === 60 ? 'M' : 'L') + x + ' ' + y1.toFixed(1); s2 += (x === 60 ? 'M' : 'L') + x + ' ' + y2.toFixed(1); }
+      for (let x = 70; x <= 600; x += 18) { const y1 = 130 + 50 * Math.sin((x - 60) / 40), y2 = 130 - 50 * Math.sin((x - 60) / 40); b += D.line(x, y1, x, y2, 2, '#B9897A'); }
+      if (lv === 4) b += '<rect x="250" y="66" width="160" height="128" rx="10" fill="#C8102E" fill-opacity="0.16" stroke="#C8102E" stroke-width="3"/>' + D.T(330, 58, 'one gene', 14, { fill: C.red });
+      b += PATH(s1, C.blue, 4) + PATH(s2, C.label, 4) + D.T(330, 230, lv === 3 ? 'two strands: a double helix' : 'a small section of DNA', 14, { fill: C.stroke });
+    }
+    if (lv === 5) {
+      b += '<rect x="40" y="110" width="200" height="40" rx="8" fill="#C8102E" fill-opacity="0.2" stroke="#C8102E" stroke-width="3"/>' + D.T(140, 136, 'gene', 15, { fill: C.red }) + D.arrow(250, 130, 330, 130, C.stroke, 3) + D.T(290, 116, 'codes for', 12, { fill: C.stroke, weight: 'normal' });
+      const cols = ['#3B82F6', '#FBBF24', '#2E8B7F', '#A855F7', '#F97316', '#3B82F6', '#2E8B7F'];
+      cols.forEach((c2, i) => { b += D.circ(360 + i * 38, 130, 16, c2, C.stroke, 2) + (i < cols.length - 1 ? D.line(376 + i * 38, 130, 382 + i * 38, 130, 2, C.stroke) : ''); });
+      b += D.T(474, 180, 'a sequence of amino acids: a protein', 13, { fill: C.stroke, weight: 'normal' });
+    }
+    return D.svg(660, 280, b, LV[lv].note);
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.lvs.length === 6, s.why.length === 3, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const H = c.isHigher, TR = c.isTriple, TH = c.isTH, rk = c.rk;
+    const BANK = [
+      Q('What is a gene?', 'A specific sequence of DNA bases that codes for a particular protein', [['A complete chromosome containing all the genetic information', 'A complete chromosome contains thousands of genes — it is not itself a gene.'], ['A unit of heredity that controls physical appearance only', 'Genes code for proteins, which then influence characteristics — but genes control far more than physical appearance (e.g. enzyme production, cell signalling).'], ['Any section of DNA — all DNA constitutes genes', 'Not all DNA codes for proteins — a significant portion of the genome is non-coding DNA. Genes are specifically the protein-coding sequences.']]),
+      Q('What was the Human Genome Project?', 'An international project that sequenced all ~3 billion base pairs of human DNA and mapped all human genes', [['A project to create genetically modified humans with improved characteristics', 'The Human Genome Project was about SEQUENCING and MAPPING the genome — not about genetically modifying humans.'], ['A database of all known genetic diseases and their cures', 'While the HGP has helped identify disease genes, it was a mapping and sequencing project — not a medical treatment database.'], ['A study comparing the DNA of humans to chimpanzees', 'While comparisons with other species were made using genome data, the primary goal was mapping and sequencing the HUMAN genome itself.']]),
+      Q('What is the genome of an organism?', 'The entire genetic material of that organism', [['One gene', 'A gene is a small section of DNA.'], ['One chromosome', 'The genome is all the genetic material.'], ['The proteins it makes', 'Genes code for proteins; the genome is the genetic material.']]),
+      Q('Which describes DNA?', 'A polymer made up of two strands forming a double helix', [['A single strand', 'DNA has two strands.'], ['A protein made of amino acids', 'DNA codes for proteins; it isn’t one.'], ['Found only in sex cells', 'DNA is in the nucleus of body cells too.']]),
+      Q('Which is one use of understanding the human genome?', 'Tracing human migration patterns from the past', [['Changing the weather', 'Not genetic.'], ['Making every person identical', 'Not a use of the genome.'], ['Stopping all mutations', 'Mutations still happen.']])
+    ];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'In every cell', correct: true, reply: 'Yes. The genetic material is in the nucleus of your body cells.' },
+        { text: 'Only in some cells', correct: false, reply: 'Your body cells each have the genetic material in their nucleus, not just a few.' }
+      ],
+      lvBtns: this.btns(LV.map((x) => x.k), s.lv, (i) => this.setState({ lv: i, lvs: this.seen('lvs', i) })),
+      zoomFig: c.ready ? K.fig(this.zoomFig(s.lv), '') : null,
+      zoomNote: LV[s.lv].note,
+      whyCards: this.cards(WHY, 'why'),
+      thinkOptions: [
+        { text: 'They are the same thing', correct: false, reply: 'A chromosome carries many genes.' },
+        { text: 'A gene is a small section of DNA on a chromosome', correct: true, reply: 'Each gene codes for one specific protein.' },
+        { text: 'A chromosome is a small part of a gene', correct: false, reply: 'The other way round.' }
+      ],
+      sortBins: [{ id: 'g', label: 'Genome' }, { id: 'c', label: 'Chromosome' }, { id: 'd', label: 'DNA' }, { id: 'n', label: 'Gene' }],
+      sortItems: [
+        { text: 'The entire genetic material of an organism', bin: 'g', why: 'Genome.' },
+        { text: 'Structure in the nucleus that contains the DNA', bin: 'c', why: 'Chromosome.' },
+        { text: 'A human body cell has 46', bin: 'c', why: 'Chromosomes.' },
+        { text: 'A polymer of two strands forming a double helix', bin: 'd', why: 'DNA.' },
+        { text: 'A small section of DNA on a chromosome', bin: 'n', why: 'Gene.' },
+        { text: 'Codes for a particular sequence of amino acids', bin: 'n', why: 'Gene: makes a specific protein.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the shape formed by the two strands of DNA.', 'A double helix.', ['Double helix', ['Single strand', 'DNA has two.'], ['Circle', 'Not at GCSE.']]),
+          MCQ('State', 'State what a gene codes for.', 'A particular sequence of amino acids, to make a specific protein.', [['A whole chromosome', 'A chromosome holds many genes.'], 'A sequence of amino acids that makes a protein', ['A cell', 'Genes code for proteins.']])
+        ],
+        r2: [
+          MCQ('Identify', 'Identify where DNA is found in a body cell.', 'In chromosomes, in the nucleus.', [['In the cell membrane', 'No.'], 'In chromosomes in the nucleus', ['In the cytoplasm only', 'It is in the nucleus.']]),
+          MCQ('Give', 'Give one reason why understanding the human genome is important.', 'Searching for genes linked to disease; understanding and treating inherited disorders; tracing human migration patterns.', ['Searching for genes linked to disease', ['Making identical people', 'Not a use.'], ['Changing blood groups', 'Not a use.']])
+        ],
+        r3: [
+          CHAIN('Describe', 'Describe how DNA, chromosomes, genes and proteins are related. Put the links in order.',
+            ['The genetic material in the nucleus is DNA.', 'The DNA is contained in chromosomes.', 'A gene is a small section of DNA on a chromosome.', 'Each gene codes for a sequence of amino acids, making a specific protein.'],
+            [['A gene contains many chromosomes.', 'A chromosome contains many genes.'], ['DNA is a single strand.', 'Two strands: a double helix.']]),
+          CHAIN('Explain', 'Explain how studying the human genome helps medicine. Put the links in order.',
+            ['The whole human genome has now been studied.', 'Scientists can search for genes linked to different types of disease.', 'This helps the understanding and treatment of inherited disorders.'],
+            [['It cured every genetic disease.', 'It helps the search; it isn’t a cure.'], ['It made new genes.', 'It studied existing ones.']])
+        ],
+        r4: [
+          WRITE('Discuss', 4, 'Discuss the importance of understanding the human genome.',
+            LV4('What the genome is, and all three uses explained.', 'One or two uses named.'),
+            ['The genome is the entire genetic material of an organism; the whole human genome has been studied.', 'Search for genes linked to different types of disease.', 'Understanding and treatment of inherited disorders.', 'Tracing human migration patterns from the past.'],
+            ['“The Human Genome Project cured genetic diseases.”', '“The genome is just one gene.”'])
+        ]
+      },
+      keyLines: ['The genetic material in the nucleus is DNA: a polymer of two strands forming a double helix, contained in chromosomes.', 'A gene is a small section of DNA on a chromosome. It codes for a particular sequence of amino acids, to make a specific protein.', 'The genome is the entire genetic material of an organism. The whole human genome has now been studied.', 'Importance: genes linked to disease; inherited disorders; tracing human migration patterns.'],
+      endPrev: TR ? LNK('advantages-sexual-asexual', 'Advantages of sexual and asexual reproduction') : LNK('meiosis', 'Meiosis'),
+      endNext: null,
+      endConnects: [LNK('meiosis', 'Meiosis'), LNK('sexual-asexual-reproduction', 'Sexual and asexual reproduction')],
+      bank: c.ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>
