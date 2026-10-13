@@ -52,6 +52,16 @@ questions: {question_id: point_id}}`.
   `<slug>#<activity>-<n>` (269 units), read off the BUILT pages by the same
   rules as the answer tap (`tools/kp_ks3_units.py`), placed onto the points
   as round 2 left them (own cache; earlier rounds undisturbed).
+- **Round 4 (13 Oct 2026):** the practice-set items Design authors INSIDE a
+  rebuilt lesson (batch 4 on, the lesson's `bankSrc`), which are not in the
+  subtopic's quiz — e.g. "What do antitoxins do?" on
+  communicable-diseases-defence. The practice set sends question_id null and
+  the server derives the CLASSIC id `ks4q:<slug>:<h>` from the prompt, so
+  these are classic-shaped ids no earlier round could see (176 of them, on 56
+  lessons). Read by evaluating each lesson's `Ks4QuizBank` per route (the
+  first 5 items — all the answer tap sends), `ks4_lessonbank_items()`. Also
+  round 4: the 929 block ids of the 16 batch-7 lessons merged after round 3.
+  All placed by the top-up (below); its new points carry `"added": "round-4"`.
 - **Answer keys:** each scope's `keys` map gives, for every lesson-page
   question with exactly ONE right option, that option's text exactly as the
   page renders and sends it (trimmed only). It comes from the page markup
@@ -72,6 +82,20 @@ questions: {question_id: point_id}}`.
 - **To fix a label or move a question by hand**, edit the JSON directly. Keep
   the point ids as they are, then run
   `python3 tools/export_knowledge_points.py --check`.
+- **After new lessons or questions arrive (a merge, a new batch): top up.**
+
+      MRB_BACKEND_DIR=<backend checkout> python3 tools/kp_classify.py --top-up --cache <dir>
+
+  It reads the COMMITTED `ks3.json`/`ks4.json`, finds every id the loaders
+  know that they do not tag, and places only those onto their scope's
+  EXISTING points (the round-2 prompt, one call per scope, `"added":
+  "round-4"` on any new point). Nothing already tagged moves and no point is
+  renumbered, and it needs no cache — use it rather than the full run below,
+  whose round-1-3 cache lives outside the repo and is gone after a reboot
+  (the full run with no cache would re-draft and renumber every scope). A
+  brand-new scope with no points is drafted by round 1 first. `--scope`
+  narrows it. Then `--check`, `--backend`, and commit both repos.
+  `MRB_BACKEND_DIR` also says whose `.env` the model key is read from.
 - **To re-draft one scope** without touching any other:
 
       python3 tools/kp_classify.py --cache <cache dir> --scope <slug> --force

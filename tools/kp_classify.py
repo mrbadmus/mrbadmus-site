@@ -5,6 +5,8 @@
     python3 tools/kp_classify.py --cache DIR --scope enzymes --force   # redo ONE scope
     python3 tools/kp_classify.py --cache DIR --assemble-only # rebuild the JSON from cache, no calls
     python3 tools/kp_classify.py --inventory                 # count what would be classified
+    python3 tools/kp_classify.py --cache DIR --top-up         # tag only what the committed JSON
+                                                             # does not; renumbers nothing (round 4)
 
 ── WHAT THIS IS (parent truth, 11 Oct 2026) ────────────────────────────
 
@@ -72,7 +74,11 @@ if TOOLS not in sys.path:
 if REPO not in sys.path:
     sys.path.insert(0, REPO)
 
-BACKEND_ENV = "/Users/midebadmus/Documents/GitHub/mrbadmus---backend/.env"
+# The backend checkout's .env (TEST project): MRB_BACKEND_DIR when set — a
+# worktree run must read its OWN backend worktree, not the main checkout —
+# else the main checkout.
+BACKEND_ENV = os.path.join(os.environ.get("MRB_BACKEND_DIR")
+                           or "/Users/midebadmus/Documents/GitHub/mrbadmus---backend", ".env")
 MODEL = "claude-sonnet-4-6"          # the backend's model
 KP_DIR = os.path.join(REPO, "knowledge_points")
 RUNGS_KS3 = ("recall", "apply", "explain", "produce")
@@ -232,7 +238,10 @@ def ks4_rungs():
 
 ROUTES = ("cf", "ch", "tf", "th")
 ANSWER_BLOCKS = ("Ks4Guess", "Ks4Choice", "Ks4Sort", "Ks4Cfifa", "Ks4Steps",
-                 "Ks4Ladder", "Ks4Practice", "Ks4Chain", "Ks4Write")
+                 "Ks4Ladder", "Ks4Practice", "Ks4Chain", "Ks4Write",
+                 # the practice set: its items take the CLASSIC id
+                 # (`ks4q:`), see ks4_lessonbank_items() (round 4)
+                 "Ks4QuizBank")
 
 
 def ks4_lesson_sources(L):
@@ -429,7 +438,8 @@ DB_SOURCE = {"ks3_bank": "ks3_bank", "ks3_ladder": "ks3_ladder", "ks4_bank": "ks
              "ks4_quiz": "ks4_lesson", "ks4_rung": "ks4_lesson", "exam": "exam",
              "ks3_start": "ks3_lesson", "ks3_predict": "ks3_lesson", "ks3_keyed": "ks3_lesson",
              "ks3_yourturn": "ks3_lesson", "ks3_lesson": "ks3_lesson", "ks4_match": "ks4_lesson",
-             "ks4_quizbank": "ks4_lesson", "ks3_instrument": "ks3_lesson"}
+             "ks4_quizbank": "ks4_lesson", "ks3_instrument": "ks3_lesson",
+             "ks4_lessonbank": "ks4_lesson"}
 for _k in ("start", "choice", "sort", "cfifa", "steps", "ladder", "practice", "chain", "write"):
     DB_SOURCE["ks4_pilot_" + _k] = "ks4_lesson"
 
@@ -661,6 +671,56 @@ def ks4_quizbank_extra():
     return out
 
 
+# How many practice-set items the answer tap reports: mrbadmus.v2.js
+# HANDLERS.Ks4QuizBank takes `questions.filter(Boolean).slice(0, 5)`.
+QUIZBANK_SENT = 5
+
+
+def ks4_lessonbank_items():
+    """{subtopic: [(qid, 'ks4_lessonbank', stem, answer)]} — round 4 (13 Oct
+    2026). A rebuilt lesson's practice set (Ks4QuizBank) sends each answer
+    with question_id null, and the server derives the CLASSIC id
+    `ks4q:<slug>:<h>` from the prompt it was sent. On the pilot and batches
+    2-3 the set is `K.bank()` — the subtopic's own quiz, already a classic
+    card id. From batch 4 on, Design authors the set in the lesson
+    (`bankSrc`), sometimes with items the subtopic quiz does not have ("What
+    do antitoxins do?"); rounds 1-3 never saw those. Read here from each
+    lesson's logic evaluated per route (the same Node evaluation as
+    ks4_pilot_items), the first QUIZBANK_SENT items, hashing the prompt
+    exactly as the page sends it. Ids already known as classic cards or
+    ruled practice-set stems are skipped."""
+    known = {q for e in ks4_subtopics().values() for q in e["quiz"]}
+    known |= {it[0] for items in ks4_quizbank_extra().values() for it in items}
+    out = {}
+    for slug, routes in sorted(ks4_pilot_eval().items()):
+        if slug.endswith("__error"):
+            raise SystemExit("kp: %s: %s" % (slug, routes))
+        for _r, blocks in sorted(routes.items()):
+            for it in blocks:
+                if it.get("name") != "Ks4QuizBank":
+                    continue
+                if "error" in it:
+                    raise SystemExit("kp: %s Ks4QuizBank: %s" % (slug, it["error"]))
+                qs = [q for q in (it["props"].get("questions") or []) if q][:QUIZBANK_SENT]
+                for q in qs:
+                    if not isinstance(q, dict) or not q.get("prompt"):
+                        continue
+                    qid = ks4_quiz_id(slug, str(q["prompt"]))
+                    if qid in known:
+                        continue
+                    known.add(qid)
+                    out.setdefault(slug, []).append((qid, "ks4_lessonbank", plain(q["prompt"]),
+                                                     _right(q.get("options"))))
+    return out
+
+
+def round4_inventory():
+    """{('KS4', subtopic): [...]}: round 4's own new ids (the lesson-authored
+    practice-set items). The top-up (`--top-up`) also places every OTHER id
+    the loaders know that the committed JSON does not tag yet."""
+    return {("KS4", slug): items for slug, items in ks4_lessonbank_items().items()}
+
+
 def round3_inventory():
     """{('KS3', slug): [(qid, 'ks3_instrument', stem, answer)]}: the KS3
     question-shaped instruments' units, `<slug>#<activity>-<n>`, read from the
@@ -776,6 +836,22 @@ def answer_keys():
             good = [plain(o) for o, ok in f_q.get("opts") or [] if ok]
             if qid not in out:
                 out[qid] = (good[0] if len(good) == 1 else None, opts, "authored correct option")
+    # a lesson-authored practice-set item (batch 4 on): the page's own text
+    for slug, routes in ks4_pilot_eval().items():
+        for _r, blocks in routes.items():
+            for it in blocks:
+                if it.get("name") != "Ks4QuizBank":
+                    continue
+                for q in [q for q in ((it.get("props") or {}).get("questions") or []) if q][:QUIZBANK_SENT]:
+                    if isinstance(q, dict) and q.get("prompt"):
+                        qid = ks4_quiz_id(slug, str(q["prompt"]))
+                        if qid not in out:
+                            opts = [o for o in q.get("options") or [] if isinstance(o, dict)]
+                            good = [str(o.get("text")).strip() for o in opts if o.get("correct")]
+                            out[qid] = (good[0] if len(good) == 1 else None,
+                                        [str(o.get("text")).strip() for o in opts if o.get("text") is not None],
+                                        "lesson practice-set correct option" if len(good) == 1
+                                        else "no single option marked correct")
     # a practice-set stem a science ruling rewrote (only in ks4-source.js)
     for slug, items in ks4_quizbank_extra().items():
         for qid, _src, _stem, ans in items:
@@ -1456,6 +1532,134 @@ def write_json(path, obj):
         fh.write("\n")
 
 
+# ── the top-up (round 4, 13 Oct 2026): from the COMMITTED JSON ──────────
+
+def write_keys(data):
+    """Every scope's `keys`: the right option's text, exactly as the page
+    renders it, for each tagged lesson-page question that has exactly one."""
+    keys = answer_keys()
+    for ks in ("KS3", "KS4"):
+        for e in data[ks].values():
+            k = {q: keys[q][0] for q in e["questions"] if q in keys and keys[q][0] is not None}
+            if k:
+                e["keys"] = dict(sorted(k.items()))
+            else:
+                e.pop("keys", None)
+
+
+def top_up(a):
+    """Tag every question id the loaders know that the committed
+    knowledge_points/*.json does not, WITHOUT the round-1-3 cache and without
+    renumbering any point.
+
+    The full pipeline (main) rebuilds rounds 1-3 from the per-scope cache; a
+    scope with no valid cache entry is re-drafted from scratch and its points
+    renumbered. That cache lives outside the repo and does not survive a
+    reboot, so after a merge brings new lessons the full pipeline would
+    re-draft (and renumber) every scope in the estate. The top-up instead
+    reads the COMMITTED points and tags as they stand and places only the
+    missing ids onto their scope's EXISTING points — the round-2 prompt and
+    rules, one call per scope, round-4 cache (`x4__…`) — appending a new point
+    (`"added": "round-4"`) only where none fits. Nothing already tagged moves.
+    A scope with no points at all (a brand-new subtopic or lesson) is drafted
+    by round 1 first, which numbers its points from 1 — there was nothing to
+    renumber."""
+    data = {"KS3": json.load(open(os.path.join(KP_DIR, "ks3.json"), encoding="utf-8")),
+            "KS4": json.load(open(os.path.join(KP_DIR, "ks4.json"), encoding="utf-8"))}
+    untagged = json.load(open(os.path.join(KP_DIR, "untagged.json"), encoding="utf-8"))
+    inv = inventory()
+    want = {}
+    for ks in ("KS3", "KS4"):
+        for ref, sc in inv[ks].items():
+            for q in sc["questions"]:
+                if q[1] != "ks4_rung":            # round 1's retired route-less ids
+                    want.setdefault((ks, ref), []).append(q)
+    for extras in (extras_inventory(), round3_inventory(), round4_inventory()):
+        for key, items in extras.items():
+            want.setdefault(key, []).extend(items)
+    tagged = {q for ks in data for e in data[ks].values() for q in e["questions"]}
+    named = set(a.scope)
+    todo = {}
+    for key, items in sorted(want.items()):
+        if named and key[1] not in named:
+            continue
+        seen, miss = set(), []
+        for it in items:
+            if it[0] not in tagged and it[0] not in seen:
+                seen.add(it[0])
+                miss.append(it)
+        if miss:
+            todo[key] = miss
+    os.makedirs(a.cache, exist_ok=True)
+
+    # a scope with no points yet: round 1 drafts it (its round-1 questions)
+    for key in sorted(todo):
+        ks, ref = key
+        if ref in data[ks]:
+            continue
+        scope = inv[ks][ref]
+        c = classify_scope(scope, a.cache)
+        if c.get("failed"):
+            for q in todo[key]:
+                untagged["questions"][q[0]] = {"source": DB_SOURCE[q[1]], "scope_ref": ref,
+                                               "reason": "scope classification failed"}
+            del todo[key]
+            continue
+        prefix = ks.lower()
+        qmap = {}
+        for i, p in enumerate(c["points"], 1):
+            for n in p["questions"]:
+                if scope["questions"][n - 1][1] != "ks4_rung":
+                    qmap[scope["questions"][n - 1][0]] = "%s.%s.%d" % (prefix, ref, i)
+        data[ks][ref] = {"scope_ref": ref, "key_stage": ks, "subject": scope["subject"],
+                         "title": scope["title"],
+                         "points": [{"id": "%s.%s.%d" % (prefix, ref, i), "label": p["label"]}
+                                    for i, p in enumerate(c["points"], 1)],
+                         "questions": dict(sorted(qmap.items()))}
+        todo[key] = [q for q in todo[key] if q[0] not in qmap]
+        if not todo[key]:
+            del todo[key]
+        print("  round 1 drafted new scope %s %s: %d points" % (ks, ref, len(c["points"])), flush=True)
+
+    print("kp: top-up — %d id(s) untagged in %d scope(s); placing them onto the existing points with %s"
+          % (sum(len(v) for v in todo.values()), len(todo), MODEL))
+
+    def run_x(key):
+        e = data[key[0]][key[1]]
+        return key, classify_extras(key, e["title"], list(e["points"]), todo[key], a.cache, "round-4")
+
+    xres = {}
+    with cf.ThreadPoolExecutor(max_workers=a.workers) as ex:
+        for key, c in ex.map(run_x, sorted(todo)):
+            xres[key] = c
+            print("  %s %s: %s" % (key[0], key[1], "FAILED" if c.get("failed") else
+                                   "%d id(s), %d new point(s)" % (len(c["assign"]), len(c.get("new_points") or []))),
+                  flush=True)
+    merge_extras(data, todo, xres, untagged, "round-4")
+    placed = {q for key, c in xres.items() if not c.get("failed") for q in c["assign"]}
+    for q in placed:
+        untagged["questions"].pop(q, None)
+    # KS3 exam twins follow their rung
+    for exam_id, rung_id, slug in inv["exam_ks3"]:
+        e = data["KS3"].get(slug)
+        if e and rung_id in e["questions"] and exam_id not in e["questions"]:
+            e["questions"][exam_id] = e["questions"][rung_id]
+            untagged["questions"].pop(exam_id, None)
+    for ks in data:
+        for e in data[ks].values():
+            e["questions"] = dict(sorted(e["questions"].items()))
+    write_keys(data)
+    untagged["questions"] = dict(sorted(untagged["questions"].items()))
+    write_json(os.path.join(KP_DIR, "ks3.json"), data["KS3"])
+    write_json(os.path.join(KP_DIR, "ks4.json"), data["KS4"])
+    write_json(os.path.join(KP_DIR, "untagged.json"), untagged)
+    print("kp: top-up wrote knowledge_points/*.json — %d id(s) placed, %d still untagged"
+          % (len(placed), len(untagged["questions"])))
+    print("kp: this run's model usage — %d call(s), %d input token(s), %d output token(s)"
+          % (USAGE["calls"], USAGE["input_tokens"], USAGE["output_tokens"]))
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--cache", default=os.environ.get("KP_CACHE") or os.path.expanduser("~/tmp/kp-cache"))
@@ -1466,7 +1670,12 @@ def main():
     ap.add_argument("--no-exam", action="store_true", help="skip the KS4 exam-row pass")
     ap.add_argument("--workers", type=int, default=5)
     ap.add_argument("--inventory", action="store_true")
+    ap.add_argument("--top-up", action="store_true",
+                    help="tag only the ids the committed JSON does not, onto the existing points "
+                         "(no cache needed, nothing renumbered); --scope narrows it")
     a = ap.parse_args()
+    if a.top_up:
+        return top_up(a)
 
     inv = inventory()
     if a.inventory:
@@ -1541,7 +1750,8 @@ def main():
     # round 2 left them. Each round has its own cache, so a later round never
     # disturbs an earlier one's placements or numbering.
     data = {"KS3": ks3, "KS4": ks4}
-    for rnd, extras in (("round-2", extras_inventory()), ("round-3", round3_inventory())):
+    for rnd, extras in (("round-2", extras_inventory()), ("round-3", round3_inventory()),
+                        ("round-4", round4_inventory())):
         xres = {}
         xtodo = []
         for key in sorted(extras):
@@ -1572,14 +1782,7 @@ def main():
 
     # answer keys: the right option's text, exactly as the page renders it,
     # for every lesson-page question that has exactly one
-    keys = answer_keys()
-    for ks in ("KS3", "KS4"):
-        for e in data[ks].values():
-            k = {q: keys[q][0] for q in e["questions"] if q in keys and keys[q][0] is not None}
-            if k:
-                e["keys"] = dict(sorted(k.items()))
-            else:
-                e.pop("keys", None)
+    write_keys(data)
     untagged["questions"] = dict(sorted(untagged["questions"].items()))
     os.makedirs(KP_DIR, exist_ok=True)
     write_json(os.path.join(KP_DIR, "ks3.json"), ks3)
