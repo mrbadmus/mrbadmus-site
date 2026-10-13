@@ -1064,9 +1064,15 @@
       var human = q.human || null;
       var level = levelOf(r.level);
       var top = topLevel(q);
-      var nextLine = (level != null && level < top && r.next_step)
-        ? ('<p class="ex-level-next"><strong>To reach Level ' + (level + 1) + ':</strong> ' +
-           esc(String(r.next_step)) + '</p>')
+      // A next step that already opens "To reach Level …" (a mark stored
+      // before the backend began stripping that lead-in) is shown as it is,
+      // not under a second "To reach Level N:".
+      var nextStep = r.next_step ? String(r.next_step) : '';
+      var selfLed = /^\s*to\s+(?:reach|get\s+to)\s+(?:level\s+\d+|the\s+next\s+level)\b/i.test(nextStep);
+      var nextLine = (level != null && level < top && nextStep)
+        ? ('<p class="ex-level-next">' +
+           (selfLed ? '' : '<strong>To reach Level ' + (level + 1) + ':</strong> ') +
+           esc(nextStep) + '</p>')
         : '';
 
       var scheme = q.scheme || [];
