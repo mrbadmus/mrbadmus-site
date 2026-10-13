@@ -865,6 +865,26 @@ SCIENCE.extend([
          new="[(+X(13.6) - 8).toFixed(1), 44, 'LH']"),
 ])
 
+# ═══ Batch 6 fix: Design's updated transpiration (13 Oct 2026); the lead's rulings ═══
+SCIENCE.extend([
+    # the rail listed Think again before Rate of uptake and Step 1/Step 2, but the page (and done[]) are in the order calc, steps, think; the rail ticked the wrong sections
+    dict(id='B6F-TR-RAIL', slug='transpiration', layer='logic',
+         old="  { id: 's-think', label: 'Think again', short: 'THINK' },\n  { id: 's-calc', label: 'Rate of uptake', short: 'CFIFA' },\n  { id: 's-steps', label: 'Step 1, Step 2', short: 'STEPS' },\n",
+         new="  { id: 's-calc', label: 'Rate of uptake', short: 'CFIFA' },\n  { id: 's-steps', label: 'Step 1, Step 2', short: 'STEPS' },\n  { id: 's-think', label: 'Think again', short: 'THINK' },\n"),
+    # matches the 3 s.f. of 31.4 mm³ and the attempt's 15.7
+    dict(id='B6F-TR-ROUND', slug='transpiration', layer='logic',
+         old="{ letter: 'A', label: 'Answer', line: 'rate \\u2248 6.3 mm\\u00b3/min' }",
+         new="{ letter: 'A', label: 'Answer', line: 'rate \\u2248 6.28 mm\\u00b3/min' }"),
+    # the halving shares the Convert line
+    dict(id='B6F-TR-HALVE', slug='transpiration', layer='logic',
+         old="note: 'Halve the diameter to get the radius, as its own line.'",
+         new="note: 'Halve the diameter to get the radius before using the formula.'"),
+    # the triangle block already prints that instruction
+    dict(id='B6F-TR-TAP', slug='transpiration', layer='template',
+         old='so 90 s = 1.5 min. Tap the quantity you want to find.</p>',
+         new='so 90 s = 1.5 min.</p>'),
+])
+
 APPLIED = []
 
 
