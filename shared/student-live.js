@@ -700,6 +700,48 @@
 
   function assignmentHref() { return carryParams("/student/assignment.html"); }
 
+  /* ⊕ Parent truth (13 Oct 2026) — a family/organisation CHILD's way home.
+     A child's home is Today (MrBadmusConfig.CHILD_HOME), never the school
+     class page — student-guard.js sends them away from that page anyway. The
+     same two parameters travel as the guard's own redirect carries (`env`,
+     `api`), so a tester on TEST stays on TEST. `isChildHere()` is the one
+     test (MrBadmusConfig.isChildSession, the stored session's own address, no
+     network call); a school pupil never matches, so every branch on it is a
+     no-op for them. */
+  function isChildHere() {
+    try {
+      var c = window.MrBadmusConfig;
+      return !!(c && c.AUTH_STORAGE_KEY && typeof c.isChildSession === "function"
+        && c.isChildSession(JSON.parse(window.localStorage.getItem(c.AUTH_STORAGE_KEY) || "null")));
+    } catch (e) { return false; }
+  }
+  function childHomeHref() {
+    var c = window.MrBadmusConfig || {};
+    var q = new URLSearchParams(window.location.search);
+    var keep = new URLSearchParams();
+    ["env", "api"].forEach(function (k) { if (q.get(k)) { keep.set(k, q.get(k)); } });
+    var qs = keep.toString();
+    return (c.CHILD_HOME || "/consumer/today.html") + (qs ? "?" + qs : "");
+  }
+
+  /* The done screen's way home, for a child only. Design's own "Back to
+     <class>" (node 347) was pruned in the Stage B audit — the bar's "‹ class"
+     is a school pupil's way back — so for a child the screen ended with no
+     way to Today but a small bar link. Drawn into the done screen's action
+     row (node 343) as its FIRST, primary button, in Design's own primary
+     style for that row (her node 346: --ks3-accent-text on --st-paper, 48px),
+     after every draw because the runtime rebuilds the mount on each one. */
+  function drawChildBackToday(host) {
+    var row = (host || document).querySelector('[data-dc-tpl="343"]');
+    if (!row || row.querySelector("[data-mrb-child-home]")) { return; }
+    var a = document.createElement("a");
+    a.href = childHomeHref();
+    a.setAttribute("data-mrb-child-home", "1");
+    a.style.cssText = "all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:10px;min-height:48px;background:var(--ks3-accent-text);color:var(--st-paper);font:600 15px/1 var(--st-ui);border-radius:var(--st-r-btn);padding:0 20px";
+    a.textContent = "Back to Today";
+    row.insertBefore(a, row.firstChild);
+  }
+
   /* ⊕ MRB-331 — THE SAME PAGE, TOLD WHICH PIECE OF WORK TO OPEN.
 
      The bare `assignmentHref()` above means "whatever this class's current
@@ -2158,25 +2200,69 @@
        wrote, and it stays null for a school pupil: their payload is exactly
        what it was. For a child session (MrBadmusConfig.isChildSession — the
        session's own address, read from the device, no network call) it is
-       what this page can measure honestly: the seconds since the child's
-       previous answer here, or since the set was opened for the first —
-       capped at 30 minutes, beyond which it is a tab left open, not work.
-       It is not "time on this question": the page does not tell the sink
-       when a question is SHOWN, only when it is answered. */
+       MEASURED, never estimated (⊕ 13 Oct 2026, Mide: "measured active time
+       only, or no time at all"):
+         · it starts the moment THAT question was shown — read off the page's
+           own state after each draw (`noteShown` below), so time spent on
+           another question, the summary or the sheet is never billed to it;
+         · it stops the moment the answer is confirmed;
+         · time the tab was hidden in between (another tab, a locked phone)
+           is taken out — `visibleMs`;
+         · more than 30 minutes of visible time is not a measurement of work,
+           and is sent as null (unknown) rather than capped to an invented
+           30. A question whose showing the page never saw is null too. */
     var childClock = null;
     try {
       var cfgC = window.MrBadmusConfig;
       if (cfgC && cfgC.AUTH_STORAGE_KEY && typeof cfgC.isChildSession === "function"
           && cfgC.isChildSession(JSON.parse(window.localStorage.getItem(cfgC.AUTH_STORAGE_KEY) || "null"))) {
-        childClock = { at: Date.now() };
+        childClock = { shownAt: {}, shownKey: null, hidden: [],
+                       hiddenSince: (document.visibilityState === "hidden") ? Date.now() : null };
       }
     } catch (e) { childClock = null; }
-    function childSecs() {
+    if (childClock) {
+      document.addEventListener("visibilitychange", function () {
+        var now = Date.now();
+        if (document.visibilityState === "hidden") {
+          if (childClock.hiddenSince == null) { childClock.hiddenSince = now; }
+        } else if (childClock.hiddenSince != null) {
+          childClock.hidden.push([childClock.hiddenSince, now]);
+          childClock.hiddenSince = null;
+          if (childClock.hidden.length > 200) { childClock.hidden.shift(); }
+        }
+      });
+      /* Which question is on screen, after every draw. The runtime draws the
+         first frame inside `__MRB_MOUNT__()`, before `mountedApp` is set, so
+         the read waits one tick. A question counts as shown again only when
+         the screen moves to it from something else. */
+      var noteShown = function () {
+        var st = mountedApp && mountedApp.logic && mountedApp.logic.state;
+        if (!st) { return; }
+        var key = (st.view === "q" && typeof st.idx === "number") ? st.idx : null;
+        if (key !== childClock.shownKey) {
+          childClock.shownKey = key;
+          if (key != null) { childClock.shownAt[key] = Date.now(); }
+        }
+      };
+      window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
+      window.__MRB_AFTER_DRAW__.push(function () { setTimeout(noteShown, 0); });
+    }
+    function visibleMs(from, to) {
+      var gone = 0;
+      var spans = childClock.hidden.slice();
+      if (childClock.hiddenSince != null) { spans.push([childClock.hiddenSince, to]); }
+      spans.forEach(function (h) {
+        var a = Math.max(from, h[0]), b = Math.min(to, h[1]);
+        if (b > a) { gone += b - a; }
+      });
+      return Math.max(0, (to - from) - gone);
+    }
+    function childSecs(index) {
       if (!childClock) { return null; }
-      var now = Date.now();
-      var secs = Math.round((now - childClock.at) / 1000);
-      childClock.at = now;
-      return secs < 0 ? 0 : (secs > 1800 ? 1800 : secs);
+      var from = childClock.shownAt[index];
+      if (typeof from !== "number") { return null; }
+      var secs = Math.round(visibleMs(from, Date.now()) / 1000);
+      return secs > 1800 ? null : secs;
     }
 
     /* The page speaks in (question index, option index). The route speaks in
@@ -2692,7 +2778,7 @@
       },
 
       saveAnswer: function (ev) {
-        var body = payloadFor(ev.index, ev.option, childSecs());
+        var body = payloadFor(ev.index, ev.option, childSecs(ev.index));
         if (!body) { return null; }
         var k = String(ev.index);
         var ts = Date.now();
@@ -6040,7 +6126,7 @@
          goes: THIS assignment's class, by id, carrying `env`. Not
          `history.back()`, which lands wherever the pupil came from (a bell
          message, a KS3 lesson) — a button reading "‹ 8r/Sc1" goes to 8r/Sc1. */
-      classHref: (function () {
+      classHref: isChildHere() ? childHomeHref() : (function () {
         var base = carryParams("/student/class.html");
         return /[?&]class=/.test(base) ? base
           : base + (base.indexOf("?") < 0 ? "?" : "&") +
@@ -6101,7 +6187,10 @@
       lateText: lateTextFor(a.due_at, progress && progress.submission
                                       ? progress.submission.completed_at : null),
 
-      className: name,
+      /* ⊕ 13 Oct 2026 — a child's bar reads "‹ Today", because for a child
+         `classHref` (above) goes to Today. Their "class" is the parent-named
+         one their work hangs off, which they are never shown elsewhere. */
+      className: isChildHere() ? "Today" : name,
       backToClass: "Back to " + name,
       topicTitle: a.topic || a.title || "",
 
@@ -6979,6 +7068,15 @@
              render, and a sink that arrived a tick later would resume nothing
              on the one paint that matters. */
           if (pendingSink) { window.__MRB_SINK__ = pendingSink; }
+
+          /* ⊕ 13 Oct 2026 — a child's done screen gets "Back to Today". Before
+             the mount, so the first frame that is a done screen has it. */
+          if (page === "assignment" && isChildHere()) {
+            window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
+            window.__MRB_AFTER_DRAW__.push(function (host) {
+              try { drawChildBackToday(host); } catch (e) { /* never breaks the page */ }
+            });
+          }
 
           var app = window.__MRB_MOUNT__();
           mountedApp = app;
