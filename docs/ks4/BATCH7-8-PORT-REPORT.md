@@ -159,9 +159,156 @@ broken. No `.dc.html` or `Batch N/` text survives on any page.
 
 ---
 
-## Batch 8: homeostasis and response, inheritance (16 lessons)
+- **Shipped:** pushed 13 Oct 2026 as `3650fb9ff..c9af64ea2`; `check_ks4_live.py --batch batch-7`: all 59 live pages are
+  this build byte for byte, and every asset they name matches its stamp.
 
-<!-- BATCH8 -->
+---
+
+## Batch 8: homeostasis and response, inheritance (16 lessons, 54 pages)
+
+### Files and routes
+
+| # | lesson (live slug) | topic | routes |
+|---|---|---|---|
+| 1 | homeostasis | homeostasis | CF CH TF TH |
+| 2 | nervous-system | homeostasis | CF CH TF TH |
+| 3 | reflex-actions | homeostasis | CF CH TF TH |
+| 4 | reaction-time | homeostasis | CF CH TF TH |
+| 5 | the-brain | homeostasis | TF TH |
+| 6 | the-eye | homeostasis | TF TH |
+| 7 | defects-of-the-eye | homeostasis | TF TH |
+| 8 | thermoregulation | homeostasis | TF TH |
+| 9 | endocrine-system | homeostasis | CF CH TF TH |
+| 10 | blood-glucose-diabetes | homeostasis | CF CH TF TH |
+| 11 | human-reproduction-hormones | homeostasis | CF CH TF TH |
+| 12 | contraception-fertility | homeostasis | CF CH TF TH |
+| 13 | sexual-asexual-reproduction | inheritance | CF CH TF TH |
+| 14 | meiosis | inheritance | CF CH TF TH |
+| 15 | advantages-sexual-asexual | inheritance | TF TH |
+| 16 | dna-genome | inheritance | CF CH TF TH |
+
+54 pages per tree. Her shared blocks are byte-identical to batch 7's except `Ks4Steps` (one line: an optional
+`eyebrow`, used on reaction time's table-then-mean chain).
+
+### Port mechanics (not science)
+
+- **The crash on six pages (B8-<lesson>-TDZ).** On the brain, thermoregulation, endocrine system, blood glucose,
+  human reproduction and contraception, the progress-rail line read the route flag (`H` or `TH`) before the line
+  that set it. Loading the page was fine; the moment a pupil finished the guarded step (the fourth brain patient,
+  the sixth gland, the third blood-glucose mode, the fourth cycle stage, the third contraception need, both
+  temperature views) the page stopped working, on every route that got that far. Design's check only loaded each
+  page, so it could not see it. Each ruling computes the same flag first, exactly as the page's own route helper
+  does; nothing else changes. Batch 7 has no such line (checked by script on all 32 files).
+- **B8-LNK**: batch 8 writes its links through a `LNK(slug, label)` helper over a file map, not `href` objects;
+  the ruling sends them through the live route-aware link helper.
+- **B8-<slug>-CHIP** (16), the "Triple" pathway pill, and the empty "Connects to" hide extended to batch 8's own
+  end block, as in batch 7.
+- **Triple-only pointers on Combined pages** (homeostasis → Thermoregulation, reflex actions → The eye): her text
+  labels them "(Triple)"; they would have been dead links on Combined routes, so they show on Triple routes only.
+  Her words are unchanged.
+
+### G3 links
+
+Prev/next follow the live per-topic order: homeostasis (first in its topic) and sexual and asexual reproduction
+(first in inheritance) have no Back link; DNA and the genome keeps the live Next. Her links into batches 6 and 7
+(Metabolism, Aerobic respiration, Fungal and protist diseases) resolve to the live pages. DNA's Triple pointer to
+the DNA structure lesson stays unlinked, as she built it (lane ruling 16.1; that lesson is batch 9).
+
+### Lane rulings (from Mide's prompt)
+
+- **4.7 reaction-time conversion table**: kept, given not derived. The examiner recomputed all nine values
+  (t = √(2d ÷ 9.8), 2 dp: 5 cm 0.10 s … 45 cm 0.30 s; 15 cm is 0.1750, which rounds to 0.17). No free-fall
+  equation, ½, √ or 9.8 appears anywhere.
+- **11.6 progesterone "from the ovary"**: kept. Verbatim q1 and q2 both mention the corpus luteum in their
+  explanations, so both are replaced from the KS4 bank on every route: q1 → `ks4-human-reproduction-hormones-e06`
+  ("What does the hormone LH cause to happen?") on CF TF and `-s15` ("Explain why oestrogen levels rise before
+  the LH surge") on CH TH, because CH TH already has a graph item whose answer is the LH peak; q2 → `-s04`
+  (progesterone keeps the lining if an embryo implants), with one sentence added to the cycle stepper so it is
+  taught first (B8-HR-IMPLANT). No "corpus luteum" remains anywhere.
+- **12.5 contraception**: both lines kept. Every method's wording was checked line by line against 8461 4.5.3.5 /
+  8464 4.5.3.4 and matches; two old verbatim strings were not (below).
+- **16.1 DNA and the genome**: kept as she built it.
+- **7.2 and 15.4**: ruled below.
+
+### Design's "Code to check" items
+
+- **7.2 Defects of the eye.** Hard lenses (long-lasting, less comfortable), soft lenses (comfortable, higher
+  infection risk) and the replacement lens: KEEP. Laser surgery keeps "usually removes the need for glasses or
+  contact lenses", plus "for myopia it is made flatter, so it refracts light less" (B8-DE-LASER: bank q2 keys on
+  it). Spectacles' "risk" line loses "the eye itself is unchanged", which is not a risk (B8-DE-SPECS).
+- **15.4 Advantages.** The water flea (asexual when food is plentiful, sexual when the pond dries) and the aphids on
+  rung 4: KEEP. Both are accurate and given as information, which is exactly what 8461 4.6.1.3 allows.
+- **4.6 Reaction time**: both typical-time statements kept; 0.2–0.3 s for a simple ruler catch sits inside the
+  physics spec's 0.2–0.9 s.
+
+### Science rulings from the examination (batch 8)
+
+| id | lesson | what changed, and why |
+|---|---|---|
+| B8-DE-WRONGLENS | defects of the eye | The "wrong lens" view for long sight drew the concave lens bending rays inwards, like a converging lens, beside a note saying it spreads them further. Now drawn diverging. |
+| B8-NS-RUNG2 | nervous system | The data question moved the hand ("near the face" vs "at the foot"); the nerve from the hand is the same length either way, so the keyed answer didn't follow. Now a touch on the cheek vs the foot. |
+| B8-NS-NT | nervous system | "The chemical, a neurotransmitter, binds to receptors on the next neurone": a verbatim bank key uses the word. |
+| B8-RT-MM | reaction time | The method block now shows "mm ÷ 10, so 120 mm = 12 cm"; the Step 1 attempt converts mm and only m → cm had been shown. |
+| B8-TR-EVAP | thermoregulation | "Sweat, which evaporates from the skin": the TF bank item's key relies on evaporation, which was only in the TH layer. |
+| B8-EYE-ACC | the eye | Accommodation context reworded ("You stop looking at the far side of a field and look at a book"); "look up from" read as looking away. |
+| B8-BG-HOOK | blood glucose | The opener had a snack fixing low blood sugar, which backs the answer marked wrong, and raising low glucose is glucagon (HT only). Now "A big bowl of pasta": glucose rises after a meal and is back to normal two hours later with nothing else eaten. Question and bridge unchanged. |
+| B8-DNA-CIRCLE | DNA and the genome | A distractor reply said a circle of DNA is "Not at GCSE"; plasmid rings are GCSE. Now "DNA's two strands twist into a double helix". |
+| B8-DNA-EVERY | DNA and the genome | "Nearly every cell" (red blood cells have no nucleus). |
+| B8-DNA-NONCODING | DNA and the genome | A reply mentioned non-coding DNA (Triple HT only): now "A gene is a small section of DNA that codes for a particular protein." |
+| B8-CF-DIAPHRAGM | contraception | An old reply said a diaphragm stops sperm entering; it covers the cervix. Now names only the condom. |
+| B8-CF-IUD | contraception | A distractor described how a condom is worn; replaced with "It stops eggs maturing" (hormonal), keeping to what each method blocks. |
+| B8-HR-GRAMMAR | human reproduction | "State approximately how often an egg is released" (was "Give how often…, approximately"). |
+| B8-SAR-BANK | sexual and asexual | On TF TH the bank tested advantages taught two lessons later; every route now gets the same five. |
+| B8-ADV-WHEAT | advantages | "Wheat grows from seeds, not bulbs" (the reply gave the wrong reason). |
+
+### Checks
+
+- **Gates (builder):** `ks4_parity.py --batch batch-8` 756 PASS 0 FAIL; `ks4_batch_check` clean for batches 2–8
+  (batch 8: 54 pages); one `build_all.py`; diff against main = the 108 batch-8 page files, the new batch-8 files,
+  `build_ks4.py` and `ks4_batch_rulings.py`. Batches 1–7 (including batch 7's metabolism page), KS3, B2C,
+  flashcards, Simulations, `shared/ks4-nav.js` and `shared/ks4-lib.js` byte-identical to main.
+- **Independent pupil walk (the same Opus auditor, not the builder)**, 390 px, light theme, one headless Chrome, all
+  54 pages, everything pressed as for batch 7; every 3- and 4-link chain (108) tried in every order.
+  - Clean on all 54 from the first pass: no console errors or exceptions anywhere, including after every
+    interaction on the six formerly crashing pages (every step completed on every route, every rail item ticks);
+    five practice questions and ladder 2·2·2·1 on every route; no dialogs, "Shape:" or stray tokens; no horizontal
+    scroll; no raw subscript digits, no HTML sub inside SVG, cm³ drawn on the glucose axis; every link resolves;
+    the "(Triple)" pointers appear on Triple routes only; reproduction and contraception keep to hormones, the
+    lining, ovulation and what each method blocks. Every reaction-time mean, conversion and table value, the
+    glucose curves and the meiosis numbers recomputed correct.
+  - Fixed after the first pass (named `B8W-*` rulings): three clipped labels ("cerebral cortex" off the left of
+    both brain figures, the IVF "1 or 2 embryos into the uterus" stage, "focus behind the retina"), two overlaps
+    (the homeostasis red X over "Coordination centre", "LH" running into "ovulation"); a CH/TH reproduction
+    distractor marked wrong although the page teaches it ("maintains the uterus lining in the second half" →
+    "Stimulates sperm production"); eight chains that rejected a second sensible order (brain ×3, thermoregulation
+    ×2, reproduction, contraception, cuttings) reworded or merged so one order is forced; blood glucose's Type 1/2
+    key put in the spec's words ("fails to produce sufficient insulin"), "tablets" removed from its reply, and
+    "Insulin is a protein, so it would be digested if swallowed; it is injected instead" taught before the
+    practice key relies on it.
+- **Kept (old verbatim words, same class as batches 4–7):** DNA's "DNA bases" / "~3 billion base pairs" on Combined
+  routes; thermoregulation's "latent heat"; blood glucose's "beta cells"/"autoimmune" (answerable by elimination).
+- **Known, left as Design drew them:** tiny figure text at 390 (worst on the nervous-system pathway and the
+  reaction-time table); contraception's "Sperm meets egg"/"Embryo implants" touch their box edges; "predict first"
+  sits across panel borders on advantages; the reproduction hormone graph marks ovulation but not menstruation
+  (pack flag HRH-F2 asked for both: a figure addition for Design, not a port fix).
+
+- **Re-walk after the fixes:** every item fixed; regression sweep 54 of 54 pass; the six formerly crashing lessons
+  re-walked in full on all 20 route pages (every step done, every rail item ticked, ladders 4/4 after retry,
+  practice 5/5). Two old verbatim wrong-answer replies on blood glucose left as written: "Only TYPE 1 is
+  autoimmune" (term not taught) and "about 90% of all diabetes cases" (true, not on the spec).
+
+---
+
+## For Mide (nothing here blocks; your call when convenient)
+
+1. **Old verbatim quiz words that are off-spec but not wrong**: ATP (uses of glucose), "catabolic" (metabolism TH),
+   "DNA bases" and "~3 billion base pairs" on Combined (DNA), "latent heat" (thermoregulation), "beta cells",
+   "autoimmune" and "about 90%" (blood glucose). Same class as the list after batches 4–6.
+2. **Tiny figure text on phones**: most figure labels in both batches render at 5–7.5 px on a 390 px screen. Only the
+   drug-testing gates figure was redrawn (two rows; now 11–13 px). A general fix belongs in Design's diagram style.
+3. **Prev/next labels** use the shared nav's older titles (e.g. "Uses of Glucose from Photosynthesis"). Changing them
+   moves every KS4 page.
+4. **Hormone graph** (reproduction, CH TH) marks ovulation but not menstruation; the pack asked for both. For Design.
 
 ---
 
