@@ -312,8 +312,47 @@ the DNA structure lesson stays unlinked, as she built it (lane ruling 16.1; that
 
 ---
 
-## Still missing (not built)
+## Batch 6 fix: Transpiration with rate calculations (1 lesson, 4 pages)
 
-- **Batch 6 transpiration with rate calculations.** Pending: Mide to download Design's updated Batch 6 transpiration
-  file. Design made it (her batch 7 and 8 NOTES both say so, `Batch 6/lessons/ks4-biology-4.2.3.2-transpiration.dc.html`)
-  but it is not in this download; the live page is still the old one.
+The pending item from batches 7–8, now done. Mide downloaded Design's updated file on 13 Oct ("Batch 6 fix", 44 KB;
+the live page had come from her 31 KB file of 4 Oct). It replaces the old file verbatim in
+`docs/ks4/design-reference/batch-6/lessons/` (`MD5SUMS` updated). Her shared blocks beside it are byte-identical to
+batch 6's, and her page style is unchanged, so transpiration stays in batch 6 and only its four pages change
+(CF CH TF TH, both trees). The batch-6 shared assets did not move a byte; the other 46 batch-6 pages and every other
+page are byte-identical to main. Only transpiration's freeze hash moved in `frozen_batch-6.json`.
+
+What is new on the page: rate of uptake from a potometer = distance the bubble moves ÷ time, in mm/min, with the
+s → min conversion taught as its own step (90 s = 1.5 min); a mean of repeats; then the volume chain
+(volume = π r² × distance, then rate of uptake = volume ÷ time) as a worked Step 1 / Step 2 and an attempt. CFIFA on
+every calculation; three formula triangles, all "Written out" with no chip (π fixed; covering r² gives the √ line).
+A new practice item (24 mm in 120 s) and a new ladder calculation (42 mm in 180 s) replace two older items.
+
+Science check (an Opus examiner, every number recomputed against the pack and 8461/8464 4.2.3.2): all worked
+examples, attempts, keys and distractors correct (45÷5 = 9; 18÷1.5 = 12; mean 9; 32÷4 = 8; 27÷3 = 9; 39÷3 = 13;
+π × 0.5² × 40 = 31.4 mm³ → 6.28 mm³/min; π × 1² × 30 = 94.2 mm³ → 15.7 mm³/min; ladder 42÷3 = 14 mm/min; each
+distractor models one real mistake and none is also correct). Every step is taught before it is tested, on every
+route; the page says the potometer measures water uptake, which approximates water lost. Rulings:
+
+| id | what changed, and why |
+|---|---|
+| B6F-TR-RAIL | Her rail still listed "Think again" before the two new calculation sections, while the page (and the tick order) had moved it after them, so the rail ticked the wrong sections. Rail now in page order. |
+| B6F-TR-ROUND | The worked answer reads 6.28 mm³/min (was 6.3), matching the 3 s.f. of 31.4 mm³ and of the attempt's 15.7. |
+| B6F-TR-HALVE | A note claimed halving the diameter is "its own line"; it shares the Convert line. Now "…before using the formula". |
+| B6F-TR-TAP | "Tap the quantity you want to find." removed from the paragraph; the triangle block already says it (no redundant text). |
+
+| B6F-TR-VAPOUR | From the pupil walk: "water vapour out" ran off the right edge of the stoma figure in the state the page opens in. Now anchored inside. |
+| B6F-TR-CHAINQ | From the pupil walk: rung 3b asked how water moves "from the roots to the air around a leaf", but its links can only go leaf first ("…drawn up the xylem to replace it"), so a pupil starting at the roots was marked wrong. The stem now asks how water evaporating from a leaf draws water up from the roots; links unchanged. |
+
+B6-TR-DIST (the bubble-distance formula, live since batch 6) still applies to her new file unchanged.
+
+Independent pupil walk (the same Opus auditor), 390 px, light theme, all four routes, everything pressed: all 16
+potometer combinations (4 mm to 36 mm, every factor moves the bubble the right way, the drawn bubble matches the
+text); all three triangles "Written out", π fixed, the √ line on covering r²; every CFIFA worked example and attempt
+and the Step 1 / Step 2 chain recomputed correct (the attempts are self-marked: the pupil sees the model lines and
+ticks what they had); the ladder calculation accepts 14 (and 14 mm/min, 14.0, ±0.1) with "divide by 60" and mm/min,
+and rejects only genuinely wrong conversions, numbers or units; practice 5 and ladder 2·2·2·1 on every route; the
+rail ticks each section when that section is done, in page order; H₂O, CO₂, mm³ and r² render; no console errors,
+dialogs or stray text; every link resolves. Two defects found and fixed (the last two rulings above); re-check clean.
+Kept as Design wrote it: practice q3's reply to "warms the leaf" (verbatim pack item); potometer labels are small at
+390 px, as elsewhere.
+
