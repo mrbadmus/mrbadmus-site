@@ -473,7 +473,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
 
 KEY STAGE 3 — THIS OVERRIDES THE EXAM FRAMING ABOVE.
 You are talking to a KS3 student: roughly 11 to 14 years old, two or three years before they start a GCSE course. Everything above about warmth, honesty, the FIFA method for calculations, units in every answer, and safeguarding still applies exactly as written. The exam-board framing does not.
-- Stay within this student's key stage: use only KS3 (Year 7–9) ideas and vocabulary. Never bring in GCSE-only content or terms (for example "cardiac output" or "stroke volume"). If they ask about something that goes beyond KS3, answer at KS3 depth in KS3 words and say they will meet more of it later.
+- Stay within this student's key stage: use only KS3 (Year 7–9) ideas and vocabulary. Never bring in GCSE-only content or terms — for example ions (H⁺, OH⁻), moles, electron arrangements or shells beyond KS3, "cardiac output" or "stroke volume". Do not slip them in under another name or as a symbol either — no "H⁺ particles", no ion formulae. If the honest answer needs a GCSE idea, explain it in KS3 words without the GCSE term, and say they'll meet the full picture at GCSE. Decide this before you start writing, and check every term you use against it.
 - This student has NO tier and NO pathway. Never say "Higher tier", "Foundation", "Triple", "Combined", "paper 1", "mark scheme", "the spec" or a spec point code. They do not exist for this student yet, and naming them tells a twelve-year-old they are behind.
 - Do not label content ⭐ HIGHER TIER or 🔬 TRIPLE ONLY. There are no tiers here.
 - Drop the "✅ Key exam words" line and the command-word drilling. Teach the correct scientific word — "respiration", "diffusion", "chromosome" — because the word is the idea and they will need it later, but teach it as the name of a thing, not as a mark-scheme term.
@@ -1239,8 +1239,17 @@ try {
         answer: clip(d.answer, 5000),
         correct_answer: clip(d.correct_answer, 5000),
         is_correct: typeof d.is_correct === 'boolean' ? d.is_correct : null,
+        // The server takes up to 20 points of up to 600 characters each and
+        // refuses anything longer, so they are cut to fit here rather than
+        // losing the answer to a 400.
         criteria: Array.isArray(d.criteria)
-          ? d.criteria.slice(0, 12).map(function (x) { return clip(x, 2000); })
+          ? d.criteria.slice(0, 20).map(function (x) { return clip(x, 600); })
+          : null,
+        // ⊕ 13 Oct 2026: a calculation's Answer line and the model's, for the
+        // server's value-and-unit check (calcOf). Absent everywhere else.
+        calc: d.calc && typeof d.calc === 'object'
+          ? { answer: clip(d.calc.answer || '', 600), key: clip(d.calc.key || '', 600),
+              point: (typeof d.calc.point === 'number' && d.calc.point >= 0) ? Math.floor(d.calc.point) : null }
           : null,
         marks: mk,
         // Round 3: what the PAGE awarded, where the page awards marks (a KS4
@@ -1267,6 +1276,29 @@ try {
       });
     }
 
+    /* ⊕ 13 Oct 2026 — a written CALCULATION (KS3 "Your turn", KS4 Ks4Cfifa
+       and Ks4Steps "attempt"): marked, never self-checked. The scheme is the
+       model's own lines, one point and one mark a line — the list the page
+       itself shows under "tick what you had" — and `calc` names the Answer
+       line, so the server can check the final value and unit by key
+       (consumer/answers.js calcVerdict) beside the marker. The child's ticks
+       are not sent: they are never the mark. `model` and `labels` are the
+       model's lines with and without their labels; `mine` the child's raw
+       lines, in the same order. */
+    function calcOf(d, model, labels, mine) {
+      var ai = -1;
+      for (var i = 0; i < labels.length; i += 1) { if (/^answer\b/i.test(String(labels[i] || '').trim())) { ai = i; } }
+      if (ai < 0) { ai = model.length - 1; }
+      d.criteria = model;
+      d.marks = model.length;
+      d.self_checked = false;
+      if (ai >= 0 && model[ai] != null) {
+        var keyLine = String(model[ai]).replace(/^[^:]*:\s*/, '');
+        d.calc = { answer: mine[ai] == null ? '' : String(mine[ai]), key: keyLine, point: ai };
+      }
+      return d;
+    }
+
     // Several answers from ONE action in `block`: the elapsed time is split.
     function postAll(list, block) {
       if (!list.length) { return; }
@@ -1289,7 +1321,6 @@ try {
 
     function txt(el) { return el ? (el.textContent || '').replace(/\s+/g, ' ').trim() : ''; }
     function later(fn) { setTimeout(function () { try { fn(); } catch (e) { /* never breaks a page */ } }, 0); }
-    var once = typeof WeakSet === 'function' ? new WeakSet() : null;
     var lastText = {};                  // question_id → the last written text sent
 
     /* ── KS3 lesson: everything outside the ladder that takes an answer ──
@@ -1297,17 +1328,20 @@ try {
        page's handler runs; never stopped, prevented or altered. See
        docs: scratchpad truth/activity_ids.md for the inventory.
          · the "Start here" guess and every other keyed commit
-           ([data-keyedblock]): the FIRST pick in each block. The hook's
+           ([data-keyedblock]): every pick that changes the choice (⊕ 13 Oct
+           2026 — the block stays changeable, so each is an attempt). The hook's
            reply opens "Good guess." on the option the science says is right
            (build_ks3.py `_hook_guess`), so the hook is judged; any other
            keyed commit is a commitment the page reveals against (R3: KS3
            activities never mark), so it is sent self_checked.
          · a prediction ([data-activity] that is not an instrument, with
-           options and a reveal — shared/ks3.js `wirePredictions`): the first
-           pick, self_checked, with the reveal as what the page showed.
+           options and a reveal — shared/ks3.js `wirePredictions`): every
+           changed pick, self_checked, with the reveal as what the page showed.
          · "Your turn" five-line calculations (data-p<N>cfa): each time the
-           check opens the worked lines, the child's five lines, self_checked
-           (the child ticks "I had this" against the model; nothing judges).
+           check opens the worked lines, the child's five lines — ⊕ 13 Oct
+           2026 MARKED (calcOf): the model's lines are the scheme and the
+           Answer line is checked by value and unit. The child's "I had this"
+           ticks are never the mark and are not sent.
        Everything else on a KS3 page is listed in the inventory as not yet
        captured, with the reason. */
     if (/^\/ks3\//.test(path)) {
@@ -1353,7 +1387,8 @@ try {
          `data-<p>-card|item|side|row|case|cell|q|sample|scenario|panel|seg|
          test`, else the button's own `data-<p>-of`, else the `<unit>:` prefix
          of its value, else the whole block. n = the unit's order among the
-         block's units (authored order). The FIRST commit per unit is sent.
+         block's units (authored order). The first commit per unit is sent, and every later
+         one the instrument visibly takes (answerA, ⊕ 13 Oct 2026).
          Right/wrong comes from the markup where the markup carries it —
          `data-correct` on the option, `data-<p>-want-<unit>` on the block,
          `data-<p>-is` in the unit, `data-answer` on the unit's row, or the
@@ -1419,11 +1454,27 @@ try {
         return out.join(' ');
       };
       var sentUnits = {};
+      // What a press visibly did to its option: chosen (aria-pressed) and the
+      // verdict / chosen classes the instruments put on it.
+      var CHOSEN_CLS = ['is-correct', 'is-right', 'is-wrong', 'is-chosen', 'is-picked', 'is-selected', 'is-on'];
+      var markOf = function (b) {
+        var out = b.getAttribute('aria-pressed') === 'true' ? 'p' : '';
+        for (var i = 0; i < CHOSEN_CLS.length; i += 1) { if (b.classList && b.classList.contains(CHOSEN_CLS[i])) { out += '|' + CHOSEN_CLS[i]; } }
+        return out;
+      };
       var answerA = function (btn, sec, slug) {
         var u = unitOf(btn, sec);
         var act = sec.getAttribute('data-activity') || 'block';
         var id = slug + '#' + act + '-' + unitNo(sec, u.key);
-        if (sentUnits[id]) { return; }
+        // ⊕ 13 Oct 2026 (every attempt): the first commit in a unit is sent
+        // as before. A LATER press in the same unit is a new attempt only
+        // when the instrument took it — the option was not already the
+        // chosen one and the page's own handler marked it chosen (or put a
+        // verdict on it) a tick later. A press an instrument ignores (a
+        // locked unit) changes nothing on the page and sends nothing.
+        var repeat = !!sentUnits[id];
+        var markBefore = markOf(btn);
+        if (repeat && markBefore.charAt(0) === 'p') { return; }
         sentUnits[id] = 1;
         // A unit named only by an attribute (`data-<p>-of`, `<unit>:value`)
         // has no element of its own: its scope is the box holding its picks.
@@ -1459,6 +1510,10 @@ try {
           if (row && sec.contains(row) && row !== btn) { good = byValue(row.getAttribute('data-answer')); verdict = row.getAttribute('data-answer') === vv; }
         }
         later(function () {
+          if (repeat) {
+            var markAfter = markOf(btn);
+            if (!markAfter || markAfter === markBefore) { return; }
+          }
           if (verdict === null && btn.classList) {
             if (btn.classList.contains('is-correct') || btn.classList.contains('is-right')) { verdict = true; good = btn; }
             else if (btn.classList.contains('is-wrong')) {
@@ -1523,11 +1578,19 @@ try {
           var opt = t.closest('.ks3-option');
           if (opt && !opt.disabled && !opt.closest('.ks3-ladder')) {
             var sec = opt.closest('[data-activity]');
-            if (!sec || !once || once.has(sec)) { return; }
+            if (!sec) { return; }
+            // ⊕ 13 Oct 2026 (Mide: every attempt is recorded): a keyed
+            // commit and a prediction both stay CHANGEABLE (shared/ks3.js
+            // wireKeyedCommit / wirePredictions — "Good guess." after a wrong
+            // "Fair guess." is the page working). So every press that CHANGES
+            // the choice is a new answer — a new row, its own client_event_id
+            // (post), the server numbering the attempt. A press on the option
+            // already chosen changes nothing and is not sent. Read in the
+            // capture phase, so aria-pressed is still the PREVIOUS choice.
+            if (opt.getAttribute('aria-pressed') === 'true') { return; }
             var act = sec.getAttribute('data-activity') || '';
             var keyed = sec.hasAttribute('data-keyedblock') ? sec.querySelector('[data-keyed]') : null;
             if (keyed && keyed.contains(opt)) {
-              once.add(sec);
               if (act === 'hook') {
                 var good = null, mine = null;
                 var opts = keyed.querySelectorAll('.ks3-option');
@@ -1549,7 +1612,6 @@ try {
               return;
             }
             if (!sec.hasAttribute('data-instrument') && sec.querySelector('[data-reveal]')) {
-              once.add(sec);
               // No option is authored as right (ks3_data `kind: predict` has
               // `options` and `reveal`, never an answer key), so
               // correct_answer stays null and the reveal goes in `explanation`.
@@ -1576,21 +1638,30 @@ try {
               return l ? txt(l) : '';
             };
             var ins = q.querySelectorAll('[' + pre + '-input]');
-            var mine = [];
-            for (var i = 0; i < ins.length; i += 1) { mine.push((labelFor(ins[i]) ? labelFor(ins[i]) + ': ' : '') + (ins[i].value || '').trim()); }
+            var mine = [], mineVals = [];
+            for (var i = 0; i < ins.length; i += 1) {
+              mineVals.push((ins[i].value || '').trim());
+              mine.push((labelFor(ins[i]) ? labelFor(ins[i]) + ': ' : '') + (ins[i].value || '').trim());
+            }
             var rows = q.querySelectorAll('[' + pre + '-line]');
-            var model = [];
+            var model = [], labs = [];
             for (var k = 0; k < rows.length; k += 1) {
               var row = rows[k].parentNode;
               var lab = row ? txt(row.querySelector('.ks3-cfa-label')) : '';
+              labs.push(lab);
               model.push((lab ? lab + ': ' : '') + txt(rows[k]));
             }
             var n = parseInt(q.getAttribute(pre + '-q'), 10);
-            post({ __block: q, key_stage: 'KS3', lesson_slug: ks3Slug(),
+            // ⊕ 13 Oct 2026 (Mide: a written answer is MARKED when it is
+            // submitted; the child's own ticks are never the mark): the five
+            // lines go to the marker with the model's five lines as the
+            // scheme, one mark a line, and the Answer line is checked against
+            // the model's answer by value and unit (calcOf).
+            post(calcOf({ __block: q, key_stage: 'KS3', lesson_slug: ks3Slug(),
                    question_id: ks3Slug() + '#' + (csec.getAttribute('data-activity') || 'your-turn') + '-' + ((isNaN(n) ? 0 : n) + 1),
                    rung: null, kind: 'written', question_text: txt(q.querySelector('[' + pre + '-head]')),
                    answer: mine.join('\n'), correct_answer: model.join('\n'),
-                   is_correct: null, self_checked: true });
+                   is_correct: null }, model, labs, mineVals));
           });
         } catch (err) { /* capture never breaks a lesson */ }
       }, true);
@@ -1668,6 +1739,7 @@ try {
        "Build the two cells") have no shared shape and are not captured —
        see the inventory. */
     var prevOf = typeof WeakMap === 'function' ? new WeakMap() : null;
+    var sortSent = {};                         // question_id → the box last sent
     function ownerOf(api) {
       var el = api.host && api.host.parentNode;
       while (el) { if (el.__mrbKs4) { return el.__mrbKs4; } el = el.parentNode; }
@@ -1783,6 +1855,11 @@ try {
           var at = (s.placed || {})[i];
           if (at === undefined) { return; }
           var d = base('sort-' + k + '-' + (i + 1));
+          // A re-check (after moving cards) sends only the cards whose box
+          // changed since they were last sent — an unmoved card is the same
+          // answer, not a new attempt (as the classic matching exercise).
+          if (sortSent[d.question_id] === at) { return; }
+          sortSent[d.question_id] = at;
           d.kind = 'choice';
           d.question_text = (p.prompt || p.title || 'Sort') + ' — ' + (it.text || '');
           d.answer = binLabel(at); d.correct_answer = binLabel(it.bin);
@@ -1821,38 +1898,84 @@ try {
           if (!now.open || (was[i] && was[i].open)) { return; }
           var o = defs[i] || {}, steps = o.steps || [];
           var d = base('cfifa-' + k + '-' + (+i + 1));
-          d.kind = 'written'; d.question_text = o.head || ''; d.self_checked = true;
-          d.answer = steps.map(function (st, j) { return (st.label ? st.label + ': ' : '') + String((now.lines || [])[j] || '').trim(); }).join('\n');
-          d.correct_answer = steps.map(function (st) { return (st.label ? st.label + ': ' : '') + (st.line || ''); }).join('\n');
-          post(d);
+          d.kind = 'written'; d.question_text = o.head || '';
+          var mineC = steps.map(function (st, j) { return String((now.lines || [])[j] || '').trim(); });
+          var modelC = steps.map(function (st) { return (st.label ? st.label + ': ' : '') + (st.line || ''); });
+          d.answer = steps.map(function (st, j) { return (st.label ? st.label + ': ' : '') + mineC[j]; }).join('\n');
+          d.correct_answer = modelC.join('\n');
+          // Marked, never self-checked (calcOf): the five model lines are
+          // the scheme, the Answer line is checked by value and unit.
+          post(calcOf(d, modelC, steps.map(function (st) { return st.label || ''; }), mineC));
         });
       },
       Ks4Steps: function (api, s, prev) {
         var p = api.logic.props || {};
         if (!rootLevel(api) || p.mode !== 'attempt' || prev.checked || !s.checked) { return; }
-        var mine = [], model = [];
+        var mine = [], model = [], labs = [], raw = [];
         (p.steps || []).forEach(function (st, i) {
           (st.lines || []).forEach(function (ln, j) {
             var lab = ln.label ? ln.label + ': ' : '';
-            mine.push(lab + String((s.vals || {})[i + '-' + j] || '').trim());
+            raw.push(String((s.vals || {})[i + '-' + j] || '').trim());
+            mine.push(lab + raw[raw.length - 1]);
             model.push(lab + (ln.line || ''));
+            labs.push(ln.label || '');
           });
         });
         var d = base('steps-' + nth(api));
-        d.kind = 'written'; d.question_text = p.head || ''; d.self_checked = true;
+        d.kind = 'written'; d.question_text = p.head || '';
         d.answer = mine.join('\n'); d.correct_answer = model.join('\n');
-        post(d);
+        // Marked, never self-checked (calcOf): every model line a point.
+        post(calcOf(d, model, labs, raw));
       },
+      /* ⊕ 13 Oct 2026 (every attempt): EVERY check of a chain is an answer
+         — "Check again" after a wrong order, and the "Linked now." that
+         follows, included. Ks4Chain counts its checks in `attempts`; each
+         rise is one press, sent once (prevOf holds the last count).
+         A chain inside a rung (Ks4Ladder r3, a Ks4Practice chain item)
+         reports only its FIRST check to the rung, and the rung's handler
+         sends that one with the rung's id and marks; every later check is
+         sent here, under the same id, so the server numbers it attempt 2,
+         3…. Each attempt carries what that attempt earned. */
       Ks4Chain: function (api, s, prev) {
-        if (!rootLevel(api) || prev.reported || !s.reported) { return; }
+        var was = prev.attempts || 0, now = s.attempts || 0;
+        if (now <= was) { return; }
         var p = api.logic.props || {}, links = p.links || [], herr = p.herrings || [];
         var ids = s.chain || [];
         var ok = ids.length === links.length && ids.every(function (id, k) { return id === 'L' + k; });
-        var d = base('chain-' + nth(api));
-        d.kind = 'order'; d.question_text = p.prompt || p.title || '';
-        d.answer = chainAnswer(api, links, herr); d.correct_answer = links.join('\n');
-        d.is_correct = ok;
-        post(d);
+        if (rootLevel(api)) {
+          var d = base('chain-' + nth(api));
+          d.kind = 'order'; d.question_text = p.prompt || p.title || '';
+          d.answer = chainAnswer(api, links, herr); d.correct_answer = links.join('\n');
+          d.is_correct = ok;
+          post(d);
+          return;
+        }
+        if (now < 2) { return; }                 // the first check is the rung's
+        var owner = ownerOf(api);
+        if (!owner || !owner.logic) { return; }
+        var op = owner.logic.props || {}, R = op.rungs || {}, r = null, d2 = null;
+        if (owner.comp === 'Ks4Ladder') {
+          r = R.r3 || {};
+          d2 = base('r3', 'r3');
+          if (op.slug) { d2.lesson_slug = op.slug; d2.question_id = pilotId(op.slug, 'r3'); }
+          d2.marks = r.marks || 3;
+        } else if (owner.comp === 'Ks4Practice') {
+          var L = [R.r1 || [], R.r2 || [], R.r3 || [], R.r4 || []], hidden = (owner.logic.state || {}).hidden || {}, keys = [];
+          L.forEach(function (items, ri) {
+            items.forEach(function (it, ii) { if ((it.kind || 'mcq') === 'chain' && !hidden[ri + '-' + ii]) { keys.push([ri, ii]); } });
+          });
+          var at = keys[kids(owner, 'Ks4Chain').indexOf(api)];
+          if (!at) { return; }
+          r = L[at[0]][at[1]] || {};
+          d2 = base('r' + (at[0] + 1) + '-' + (at[1] + 1), 'r' + (at[0] + 1));
+          d2.marks = r.marks || [1, 3, 3, 6][at[0]];
+        } else { return; }
+        d2.kind = 'order'; d2.question_text = r.prompt || '';
+        d2.answer = chainAnswer(api, r.links || links, r.herrings || herr);
+        d2.correct_answer = (r.links || links).join('\n');
+        d2.is_correct = ok;
+        d2.marks_scored = ok ? d2.marks : 0;
+        post(d2);
       },
       Ks4Write: function (api, s, prev) {
         if (!rootLevel(api) || prev.open || !s.open) { return; }
@@ -1967,13 +2090,13 @@ try {
     // but a copy costs nothing and cannot alias).
     function snap(s) {
       var o = {};
-      ['pick', 'checked', 'reported', 'open', 'r1', 'r2', 'r3', 'r4'].forEach(function (k) { o[k] = s[k]; });
+      ['pick', 'checked', 'reported', 'attempts', 'open', 'r1', 'r2', 'r3', 'r4'].forEach(function (k) { o[k] = s[k]; });
       o.picks = Object.assign({}, s.picks || {});
       o.q = {};
       Object.keys(s.q || {}).forEach(function (k) { o.q[k] = Object.assign({}, s.q[k]); });
       return o;
     }
-    var EMPTY = { pick: null, checked: false, reported: false, open: false,
+    var EMPTY = { pick: null, checked: false, reported: false, attempts: 0, open: false,
                   r1: null, r2: null, r3: null, r4: null, picks: {}, q: {} };
 
     window.MrBadmusKS4Tap = function (api) {
