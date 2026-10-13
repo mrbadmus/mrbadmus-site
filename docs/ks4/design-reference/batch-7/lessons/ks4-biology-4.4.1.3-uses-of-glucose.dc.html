@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uses of glucose · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Bioenergetics" title="Uses of glucose" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.4.1.3</p>
+        <h1>Uses of glucose</h1>
+        <p class="ks3-bigq">A plant makes glucose in its leaves. Send it down each of its five routes, and find out why it is stored as starch.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Inside a potato." scene="A potato is mostly food the plant made in its leaves and sent underground to store." question="is that food stored as sugar, or as starch?" options="{{ hookOptions }}" bridge="Starch. First, all five things a plant does with its glucose." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-fate" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Where the glucose goes</p>
+        <h2 style="margin: 6px 0 0;">Five uses.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The glucose made in photosynthesis is used in five ways. Send glucose down each route. One route needs something from the soil first.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ useBtns }}" as="b" hint-placeholder-count="5"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><button type="button" onClick="{{ onNitrate }}" aria-pressed="{{ nitrate }}" style="{{ nitrateStyle }}">{{ nitrateLabel }}</button></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ fateFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ fateNote }}</p></div>
+      </section>
+
+      <section id="s-starch" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Why starch?</p>
+        <h2 style="margin: 6px 0 0;">Store it so it stays put.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Glucose dissolves; starch doesn’t. Compare a storage cell full of each.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ stBtns }}" as="b" hint-placeholder-count="2"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ stFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ stNote }}</p></div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Starch is stored in potato tubers, parsnip roots, seeds such as wheat and rice, and leaves. Sugars move round the plant dissolved, in the phloem: in <a href="../../Batch 6/lessons/ks4-biology-4.2.3.2-translocation.dc.html">Translocation</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · cellulose</p></div>
+        <p class="ks3-mis-quote">&ldquo;Cellulose is an energy store.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="What is cellulose used for in a plant?" options="{{ thinkOptions }}" reveal="Cellulose strengthens the cell wall. Starch, fats and oils are the stores." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Stored, built or respired?" prompt="Place each use." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Starch, fats and oils are stored; cellulose and proteins are built; glucose is respired all the time." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Each use of glucose and its purpose.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why starch is the store, link by link.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why a plant can’t make a molecule.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Glucose is used for respiration, starch, fats and oils, cellulose and amino acids. Proteins also need nitrate ions from the soil.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="uses-of-glucose" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Uses of glucose" spec="AQA 4.4.1.3" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure why starch, not glucose?" legal="Drawings are schematic." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'uses-of-glucose';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const RAIL = [
+  { id: 's-hook', label: 'Inside a potato', short: 'HOOK' },
+  { id: 's-fate', label: 'Five uses', short: 'USES' },
+  { id: 's-starch', label: 'Why starch?', short: 'STARCH' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Stored, built or used', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const STATE = { use: null, uses: [], nitrate: false, st: 0, sts: [0] };
+const USES = [
+  { k: 'Respiration', note: 'Glucose is used for respiration, in every living cell, all the time.' },
+  { k: 'Starch', note: 'Glucose is converted into insoluble starch for storage.' },
+  { k: 'Fats and oils', note: 'Glucose is used to produce fat or oil for storage, for example in seeds such as sunflower and rapeseed.' },
+  { k: 'Cellulose', note: 'Glucose is used to produce cellulose, which strengthens the cell wall.' },
+  { k: 'Amino acids', note: 'Glucose is used to produce amino acids for protein synthesis. To make proteins, plants also use nitrate ions absorbed from the soil.' }
+];
+
+class Component extends DCLogic {
+  
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: rk === 'TF' || rk === 'TH', isTH: rk === 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+
+  fateFig(seen, nit) {
+    const D = window.KS4D, C = D.C; let b = '';
+    b += D.circ(110, 170, 52, '#FBE7A1', C.stroke, 3) + D.T(110, 176, 'glucose', 16, { fill: C.stroke });
+    USES.forEach((u, i) => {
+      const y = 30 + i * 62, on = seen.indexOf(i) >= 0, blocked = i === 4 && !nit;
+      b += D.arrow(164, 170, 320, y + 22, on && !blocked ? C.label : C.muted, on ? 3 : 1.5);
+      b += BOX(326, y, 210, 46, on && !blocked ? '#DDEFD3' : '#FFFDF8', C.stroke, on ? 3 : 2) + D.T(431, y + 29, u.k, 15, { fill: C.stroke });
+    });
+    b += BOX(560, 270, 100, 46, nit ? '#DDEEF6' : '#E9E2CF', C.stroke, 2) + D.T(610, 290, 'nitrate ions', 12, { fill: C.stroke }) + D.T(610, 306, 'from the soil', 11, { weight: 'normal', fill: C.stroke });
+    if (nit) b += D.arrow(560, 285, 540, 278, C.blue, 3);
+    return D.svg(670, 340, b, 'Glucose branching to five uses: respiration, starch, fats and oils, cellulose, amino acids. Amino acids also need nitrate ions from the soil' + (nit ? ', which are supplied.' : ', not yet supplied.'));
+  }
+  stFig(m) {
+    const D = window.KS4D, C = D.C; let b = '';
+    b += BOX(60, 40, 260, 190, '#FFFDF8', C.stroke, 3);
+    if (!m) { for (let i = 0; i < 60; i++) b += D.circ(80 + (i * 37) % 220, 60 + (i * 53) % 150, 3, '#D9A520', 'none', 0); b += D.arrow(0, 135, 55, 135, C.blue, 4) + D.arrow(380, 135, 325, 135, C.blue, 4) + D.T(190, 260, 'glucose dissolved: water moves in', 13, { fill: C.stroke }); }
+    else { [[110, 90], [180, 80], [250, 110], [130, 170], [210, 160], [270, 190]].forEach((p) => { b += '<ellipse cx="' + p[0] + '" cy="' + p[1] + '" rx="24" ry="16" fill="#F4F0E2" stroke="' + C.stroke + '" stroke-width="2"/>'; }); b += D.T(190, 260, 'starch grains: no effect on osmosis', 13, { fill: C.stroke }); }
+    return D.svg(380, 280, b, m ? 'A storage cell holding insoluble starch grains; water does not move in.' : 'A storage cell full of dissolved glucose; water moves into it by osmosis.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.uses.length === 5 && s.nitrate, s.sts.length === 2, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const blocked = s.use === 4 && !s.nitrate;
+    const bankSrc = [
+      { q: 'Why do plants store glucose as starch rather than keeping it as glucose?', opts: [['Starch is insoluble \u2014 it doesn\u2019t affect osmosis or water potential inside cells', true], ['Starch dissolves more easily in cell sap', false], ['Starch is easier to transport around the plant than glucose', false], ['Glucose would be eaten by bacteria if stored directly', false]],
+        wrong_explanations: { 1: 'It\u2019s the other way round: glucose dissolves; starch is insoluble, which is why it is stored.', 2: 'Sugars move in the phloem dissolved, as sucrose. Starch is not transported: it is the insoluble store.', 3: 'Bacteria can break down starch too \u2014 the reason is osmosis, not bacterial protection.' } },
+      { q: 'A plant is grown in soil with no nitrate ions. Which molecule will it struggle to make?', opts: [['Proteins \u2014 amino acids need nitrogen (from nitrates) to form the amino group', true], ['Glucose \u2014 nitrates are needed for photosynthesis', false], ['Starch \u2014 nitrate ions are needed to convert glucose to starch', false], ['Cellulose \u2014 cell walls require nitrogen to polymerise glucose', false]],
+        wrong_explanations: { 1: 'Glucose is produced by photosynthesis using CO\u2082 and water \u2014 nitrates are not needed.', 2: 'Starch is made from glucose polymerisation \u2014 no nitrogen is needed for this process.', 3: 'Cellulose is made from glucose joined by glycosidic bonds \u2014 no nitrogen involved.' } },
+      { q: 'What is the main use of glucose in plants?', opts: [['Aerobic respiration \u2014 releasing energy (ATP) to power all cell processes', true], ['Making starch \u2014 all glucose is stored for later use', false], ['Building cell walls from cellulose \u2014 the plant\u2019s primary structural need', false], ['Making proteins \u2014 converting glucose to amino acids', false]],
+        wrong_explanations: { 1: 'Not all glucose is stored \u2014 plants use glucose continuously for growth, which means some becomes cellulose, but energy supply via respiration is the primary ongoing use.', 2: 'Cellulose is important but only for cell walls \u2014 energy supply through respiration is the primary ongoing requirement.', 3: 'Protein synthesis is important, but requires nitrogen \u2014 not all glucose goes to proteins.' } },
+      { q: 'What does a plant use cellulose for?', opts: [['Strengthening the cell wall', true], ['Storing energy in seeds', false], ['Absorbing light', false], ['Making proteins', false]],
+        wrong_explanations: { 1: 'Fats, oils and starch are the stores.', 2: 'Chlorophyll absorbs light.', 3: 'Amino acids make proteins.' } },
+      { q: 'Why do sunflower seeds contain oil made from glucose?', opts: [['The oil is a store', true], ['The oil strengthens the cell walls', false], ['The oil absorbs nitrate ions', false], ['The oil is used in photosynthesis', false]],
+        wrong_explanations: { 1: 'Cellulose strengthens cell walls.', 2: 'Roots absorb nitrate ions.', 3: 'Photosynthesis uses carbon dioxide and water.' } }
+    ];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'As starch', correct: true, reply: 'Yes. Potatoes are packed with starch.' },
+        { text: 'As sugar', correct: false, reply: 'A potato stores it as starch. Next you\u2019ll see why.' }
+      ],
+      useBtns: this.btns(USES.map((x) => x.k), s.use, (i) => this.setState({ use: i, uses: this.seen('uses', i) })),
+      nitrate: s.nitrate, nitrateLabel: s.nitrate ? 'Nitrate ions supplied' : 'Supply nitrate ions from the soil', nitrateStyle: this.seg(s.nitrate),
+      onNitrate: () => this.setState({ nitrate: true }),
+      fateFig: c.ready ? K.fig(this.fateFig(s.uses, s.nitrate), '') : null,
+      fateNote: s.use === null ? 'Pick a use.' : blocked ? 'Blocked: amino acids also need nitrate ions from the soil. Supply them.' : USES[s.use].note,
+      stBtns: this.btns(['Stored as glucose', 'Stored as starch'], s.st, (i) => this.setState({ st: i, sts: this.seen('sts', i) })),
+      stFig: c.ready ? K.fig(this.stFig(s.st), '') : null,
+      stNote: s.st ? 'Starch is insoluble, so it doesn\u2019t affect osmosis. The cell can store lots of it.' : 'Glucose is soluble. A cell full of dissolved glucose would draw water in by osmosis.',
+      thinkOptions: [
+        { text: 'It is an energy store', correct: false, reply: 'Starch, fats and oils are the stores.' },
+        { text: 'It strengthens the cell wall', correct: true, reply: 'Cellulose is made from glucose.' },
+        { text: 'It is used to make proteins', correct: false, reply: 'Amino acids, with nitrate ions, make proteins.' }
+      ],
+      sortBins: [{ id: 's', label: 'Stored' }, { id: 'b', label: 'Used to build' }, { id: 'r', label: 'Respired' }],
+      sortItems: [
+        { text: 'Starch in a potato tuber', bin: 's', why: 'Insoluble store.' },
+        { text: 'Oil in rapeseed', bin: 's', why: 'Stored oil.' },
+        { text: 'Starch in parsnip roots', bin: 's', why: 'A root store.' },
+        { text: 'Cellulose in the cell wall', bin: 'b', why: 'Strengthens it.' },
+        { text: 'Amino acids, then proteins', bin: 'b', why: 'With nitrate ions.' },
+        { text: 'Glucose in every living cell, all the time', bin: 'r', why: 'Respiration.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the substance made from glucose that strengthens plant cell walls.', 'Cellulose.', [['Starch', 'Starch is a store.'], 'Cellulose', ['Chlorophyll', 'Chlorophyll absorbs light.']]),
+          MCQ('State', 'State which ions plants need, as well as glucose, to make proteins.', 'Nitrate ions.', ['Nitrate ions', ['Magnesium ions', 'Magnesium is for chlorophyll.'], ['Sodium ions', 'Not the ions for proteins.']])
+        ],
+        r2: [
+          MCQ('Give', 'Give one substance a plant makes from glucose for storage.', 'Starch, or fats and oils.', [['Cellulose', 'Cellulose strengthens cell walls.'], ['Chlorophyll', 'Not made for storage.'], 'Starch', ['Nitrate', 'Nitrate comes from the soil.']]),
+          MCQ('Suggest', 'Suggest why a potato stores starch rather than glucose.', 'Starch is insoluble, so it doesn\u2019t affect osmosis.', [['Starch dissolves easily', 'It is insoluble.'], 'Starch is insoluble, so water isn\u2019t drawn in by osmosis', ['Starch is moved round the plant in the phloem', 'Dissolved sugars are.'], ['Glucose can\u2019t be made in leaves', 'Glucose is made by photosynthesis.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain why plants store glucose as starch. Put the links in order.',
+            ['Glucose is soluble.', 'A store of dissolved glucose would draw water into the cells by osmosis.', 'Starch is insoluble, so it can be stored without affecting osmosis.'],
+            [['Starch holds no energy.', 'It can be turned back into glucose for respiration.'], ['Starch is transported in the phloem.', 'Dissolved sugars are; starch stays put.']]),
+          CHAIN('Explain', 'Explain how a plant makes proteins from the glucose made in photosynthesis. Put the links in order.',
+            ['Glucose is made in photosynthesis.', 'The plant uses glucose and nitrate ions absorbed from the soil to produce amino acids.', 'The amino acids are used for protein synthesis.'],
+            [['Glucose alone is enough to make proteins.', 'Nitrate ions are also needed.'], ['Plants absorb proteins from the soil.', 'Plants make their own.']])
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 4, prompt: 'Describe how plants use the glucose made in photosynthesis.',
+            levels: LV4('Four or five uses, each with its purpose, including nitrate for proteins.', 'Two or three uses named.'),
+            points: ['Respiration.', 'Insoluble starch, and fats or oils, for storage.', 'Cellulose, to strengthen the cell wall.', 'Amino acids for protein synthesis, also using nitrate ions from the soil.'],
+            reject: ['\u201cStarch is stored because it holds more energy.\u201d', '\u201cCellulose is an energy store.\u201d'] }
+        ]
+      },
+      keyLines: ['Glucose is used for respiration.', 'It is converted into insoluble starch, and into fats and oils, for storage.', 'It is used to produce cellulose, which strengthens the cell wall.', 'It is used to produce amino acids for protein synthesis; plants also need nitrate ions from the soil.', 'Starch is stored, not glucose, because it is insoluble and doesn\u2019t affect osmosis.'],
+      bank: c.ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.4.1.2-rate-of-photosynthesis.dc.html', label: 'Rate of photosynthesis' },
+      endNext: { href: 'ks4-biology-4.4.2.1-aerobic-respiration.dc.html', label: 'Aerobic respiration' },
+      endConnects: [{ href: '../../Batch 6/lessons/ks4-biology-4.2.2.1-digestive-system.dc.html', label: 'Food tests (required practical)' }, { href: 'ks4-biology-4.4.2.3-metabolism.dc.html', label: 'Metabolism' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

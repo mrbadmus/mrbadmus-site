@@ -491,8 +491,8 @@
      `verdict` word (consumer/marking.js verdictFor: full marks / nearly
      there / halfway / a start / not yet), and that word is the one used
      when it is there, so the page and the parent's report can never
-     disagree about a mark. A stored mark reopened from the list carries no
-     verdict, so the page's own bands remain as the fallback — now on the
+     disagree about a mark. GET /child/exam-questions carries it for a stored
+     mark too; an older answer without one falls back to the page's own bands — now on the
      backend's thresholds (0.66 / 0.34; this used to say 0.40, so a 2/6 read
      "A start" here and "halfway" everywhere else). */
   var VERDICT_LINE = {
@@ -556,7 +556,29 @@
        answer took (question shown → "Mark my answer"). Kept across a failed
        mark (the child is still on the same attempt); cleared by a new
        attempt, another question or the list. */
-    var writeClock = null;        // { id, at }
+    /* ⊕ 13 Oct 2026 — ACTIVE time only, the rule the practice and lesson
+       senders follow. Time the tab was hidden is not time spent writing,
+       so the clock pauses on `visibilitychange`; and a total over 1800 s is
+       sent as null (unknown), never capped to 1800 — a capped number is a
+       made-up one. */
+    var writeClock = null;        // { id, ms, since }  since = visible-from, or null while hidden
+    function startClock(id) {
+      return { id: id, ms: 0, since: document.hidden ? null : Date.now() };
+    }
+    function activeSeconds(clock) {
+      if (!clock) { return null; }
+      var ms = clock.ms + (clock.since != null ? (Date.now() - clock.since) : 0);
+      var sec = Math.max(0, Math.round(ms / 1000));
+      return sec > 1800 ? null : sec;
+    }
+    document.addEventListener('visibilitychange', function () {
+      if (!writeClock) { return; }
+      if (document.hidden) {
+        if (writeClock.since != null) { writeClock.ms += Date.now() - writeClock.since; writeClock.since = null; }
+      } else if (writeClock.since == null) {
+        writeClock.since = Date.now();
+      }
+    });
     var result = null;            // the LAST mark for the open question
     var justSent = false;
 
@@ -913,6 +935,7 @@
       if (q.done && q.answer) {
         result = { score: scoreOf(q), max: q.marks, hits: q.hits || [],
                    feedback: q.feedback, answer: q.answer,
+                   verdict: q.verdict || '',
                    level: levelOf(q.level), next_step: q.next_step || '',
                    practice: !!q.practice };   // ⊕ B2C polish: a stored stub mark says so too
         screen = 'result';
@@ -935,7 +958,7 @@
 
     function paintWrite() {
       var q = find(openId) || {};
-      if (!writeClock || writeClock.id !== q.id) { writeClock = { id: q.id, at: Date.now() }; }
+      if (!writeClock || writeClock.id !== q.id) { writeClock = startClock(q.id); }
       var words = draft.trim() ? draft.trim().split(/\s+/).length : 0;
       var tooShort = words < 3;
 
@@ -990,9 +1013,7 @@
       screen = 'marking';
       paint();
 
-      var spent = (writeClock && writeClock.id === q.id)
-        ? Math.max(0, Math.min(1800, Math.round((Date.now() - writeClock.at) / 1000)))
-        : null;
+      var spent = (writeClock && writeClock.id === q.id) ? activeSeconds(writeClock) : null;
       C.api('/api/consumer/mark', {
         method: 'POST', token: ctx.token,
         body: { question_id: q.id, answer: text, time_spent_seconds: spent }

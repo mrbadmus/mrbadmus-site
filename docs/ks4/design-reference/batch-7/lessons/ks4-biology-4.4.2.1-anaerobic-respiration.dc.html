@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anaerobic respiration · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Bioenergetics" title="Anaerobic respiration" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.4.2.1</p>
+        <h1>Anaerobic respiration</h1>
+        <p class="ks3-bigq">When oxygen runs short, cells still respire, but differently. Compare all three, then put yeast to work.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Burning legs, rising dough." scene="Sprint flat out and your legs start to burn. Leave bread dough somewhere warm and it puffs up." question="do both of these happen with plenty of oxygen, or without enough oxygen?" options="{{ hookOptions }}" bridge="Without enough oxygen. Next: what changes when cells respire that way." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-compare" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Three ways to respire</p>
+        <h2 style="margin: 6px 0 0;">With oxygen, and without.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">If insufficient oxygen is supplied, cells respire anaerobically. Compare the three. Pick a column.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ colBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ cmpFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ cmpNote }}</p></div>
+        <p style="margin: 12px 0 0; display: inline-block; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 19px; line-height: 1.5;">in muscles: glucose <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> lactic acid</p><br>
+        <p style="margin: 12px 0 0; display: inline-block; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 19px; line-height: 1.5;">in plant and yeast cells: glucose <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> ethanol + carbon dioxide</p>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">What happens to the lactic acid afterwards: in <a href="ks4-biology-4.4.2.2-response-to-exercise.dc.html">Response to exercise</a>.</p>
+      </section>
+
+      <section id="s-yeast" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Fermentation</p>
+        <h2 style="margin: 6px 0 0;">Yeast at work.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Anaerobic respiration in yeast cells is called fermentation. It is of economic importance in making bread and alcoholic drinks. Pick one.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ ferBtns }}" as="b" hint-placeholder-count="2"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ ferFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ ferNote }}</p></div>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · yeast</p></div>
+        <p class="ks3-mis-quote">&ldquo;Yeast makes lactic acid.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="What does yeast make when it respires anaerobically?" options="{{ thinkOptions }}" reveal="Ethanol and carbon dioxide. Muscles make lactic acid." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Which kind?" prompt="Place each statement." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Aerobic: oxygen, carbon dioxide and water, much more energy. Anaerobic: lactic acid in muscles; ethanol and carbon dioxide in plants and yeast." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Oxygen, products and energy, side by side.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why less energy is transferred, link by link.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">When a cell would respire anaerobically.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Anaerobic respiration: glucose gives lactic acid in muscles, or ethanol + carbon dioxide in plants and yeast. Much less energy is transferred.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="anaerobic-respiration" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Anaerobic respiration" spec="AQA 4.4.2.1" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which product goes with which?" legal="Drawings are schematic." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'anaerobic-respiration';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const RAIL = [
+  { id: 's-hook', label: 'Burning legs, rising dough', short: 'HOOK' },
+  { id: 's-compare', label: 'Three ways to respire', short: 'COMPARE' },
+  { id: 's-yeast', label: 'Fermentation', short: 'YEAST' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Which kind?', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const STATE = { col: 0, cols: [0], fer: 0, fers: [0] };
+const COLS = [
+  { k: 'Aerobic', o: 'needed', p: ['carbon dioxide', '+ water'], e: 'much more', note: 'Aerobic respiration uses oxygen. Glucose is completely oxidised, so much more energy is transferred.' },
+  { k: 'Anaerobic: muscles', o: 'not needed', p: ['lactic acid'], e: 'much less', note: 'In muscles, without enough oxygen: glucose gives lactic acid. The oxidation of glucose is incomplete, so much less energy is transferred.' },
+  { k: 'Anaerobic: plants, yeast', o: 'not needed', p: ['ethanol', '+ carbon dioxide'], e: 'much less', note: 'In plant and yeast cells, without oxygen: glucose gives ethanol and carbon dioxide. Again, much less energy is transferred than in aerobic respiration.' }
+];
+
+class Component extends DCLogic {
+  
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: rk === 'TF' || rk === 'TH', isTH: rk === 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+
+  cmpFig(sel) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const rows = ['oxygen', 'products', 'energy transferred'];
+    rows.forEach((r, j) => { b += D.T(20, 104 + j * 70, r, 13, { anchor: 'start', fill: C.stroke }); });
+    COLS.forEach((c, i) => {
+      const x = 160 + i * 168, on = i === sel;
+      b += BOX(x, 20, 156, 50, on ? '#F6D9D0' : '#FFFDF8', C.stroke, on ? 3.5 : 2) + D.T(x + 78, 50, c.k, 13, { fill: C.stroke });
+      [[c.o], c.p, [c.e]].forEach((cell, j) => {
+        const y = 78 + j * 70;
+        b += BOX(x, y, 156, 58, on ? '#FFFDF8' : '#F3EEE2', C.stroke, on ? 2.5 : 1.5);
+        cell.forEach((t, k) => { b += D.T(x + 78, y + 34 + k * 17 - (cell.length - 1) * 8, t, 13, { weight: on ? 'bold' : 'normal', fill: C.stroke }); });
+      });
+    });
+    return D.svg(670, 300, b, 'Comparison. Aerobic: oxygen needed; carbon dioxide and water; much more energy. Anaerobic in muscles: no oxygen; lactic acid; much less energy. Anaerobic in plants and yeast: no oxygen; ethanol and carbon dioxide; much less energy.');
+  }
+  ferFig(m) {
+    const D = window.KS4D, C = D.C; let b = '';
+    if (!m) { b += '<path d="M60 220 L340 220 L320 250 L80 250 Z" fill="#C98B5E" stroke="' + C.stroke + '" stroke-width="2.5"/><path d="M80 220 C80 120 320 120 320 220 Z" fill="#F4E3C1" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+      [[140, 190], [200, 170], [250, 195], [170, 205], [280, 205], [220, 150]].forEach((p) => { b += D.circ(p[0], p[1], 9, '#FFFDF8', C.stroke, 1.5); });
+      b += D.T(200, 100, 'carbon dioxide bubbles', 13, { fill: C.stroke }); }
+    else { b += '<path d="M150 60 L250 60 L250 90 C290 120 290 150 290 250 L110 250 C110 150 110 120 150 90 Z" fill="#E8D58A" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+      for (let k = 0; k < 6; k++) b += D.circ(170 + (k % 3) * 30, 220 - k * 22, 5, '#FFFDF8', C.stroke, 1.2);
+      b += D.T(200, 40, 'ethanol in the drink', 13, { fill: C.stroke }); }
+    return D.svg(400, 270, b, m ? 'An alcoholic drink: yeast made the ethanol; some drinks keep the carbon dioxide as fizz.' : 'Bread dough risen with bubbles of carbon dioxide from yeast.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.cols.length === 3, s.fers.length === 2, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const bankSrc = [
+      { q: 'What is produced by anaerobic respiration in yeast?', opts: [['Ethanol and carbon dioxide', true], ['Lactic acid', false], ['Glucose and oxygen', false], ['Carbon dioxide and water', false]],
+        wrong_explanations: { 1: 'Lactic acid is produced by ANIMAL muscles during anaerobic respiration \u2014 NOT by yeast. Yeast produces ethanol + CO\u2082.', 2: 'Glucose and oxygen are the REACTANTS in aerobic respiration \u2014 they go in, not come out of anaerobic respiration.', 3: 'CO\u2082 and water = products of AEROBIC respiration. Anaerobic respiration in yeast produces ethanol + CO\u2082 (not water).' } },
+      { q: 'Why does bread dough rise when yeast is added?', opts: [['Yeast ferments sugars in the dough \u2014 the CO\u2082 produced forms bubbles that make the dough expand', true], ['Yeast produces oxygen which inflates the dough', false], ['Yeast absorbs water from the dough, making it lighter', false], ['Yeast produces lactic acid which reacts with flour to create gas', false]],
+        wrong_explanations: { 1: 'Yeast produces CO\u2082 and ethanol during fermentation \u2014 not oxygen. The ethanol evaporates when the bread is baked.', 2: 'Yeast absorbs sugars for fermentation \u2014 it doesn\u2019t absorb significant water from the dough.', 3: 'Yeast (not animals) in bread produces ethanol and CO\u2082 \u2014 not lactic acid.' } },
+      { q: 'During a sprint race, an athlete\u2019s muscles switch to anaerobic respiration. Why?', opts: [['The muscles are working so hard that oxygen cannot be delivered fast enough \u2014 anaerobic respiration continues without it', true], ['Anaerobic respiration produces more ATP, so athletes switch to it for maximum performance', false], ['The lungs stop absorbing oxygen during intense exercise', false], ['Glucose runs out during sprinting so the muscles use a different fuel', false]],
+        wrong_explanations: { 1: 'Anaerobic respiration produces FAR LESS ATP (~2 vs ~36) \u2014 it is not chosen for maximum performance. It is an emergency fallback when oxygen supply is insufficient.', 2: 'The lungs work harder during exercise, not less \u2014 breathing rate and depth increase. But even this can\u2019t supply enough oxygen for maximum muscle output.', 3: 'Muscles use glucose during sprinting \u2014 glycogen stores are broken down to supply glucose. Glucose shortage (\u2018hitting the wall\u2019) is different from the short-term switch to anaerobic respiration.' } },
+      { q: 'Which transfers more energy from each glucose molecule, and why?', opts: [['Aerobic respiration, because glucose is completely oxidised', true], ['Anaerobic respiration, because it is faster', false], ['Both the same, because both start with glucose', false], ['Anaerobic respiration, because lactic acid holds extra energy', false]],
+        wrong_explanations: { 1: 'In anaerobic respiration the oxidation of glucose is incomplete, so much less energy is transferred.', 2: 'Starting with glucose isn\u2019t enough: complete oxidation transfers much more.', 3: 'Energy left in lactic acid is energy not transferred to the cell.' } },
+      { q: 'A plant\u2019s roots are in waterlogged soil, short of oxygen. What do the root cells make when they respire?', opts: [['Ethanol and carbon dioxide', true], ['Lactic acid', false], ['Oxygen and glucose', false], ['Carbon dioxide and water only', false]],
+        wrong_explanations: { 1: 'Lactic acid is made in muscles.', 2: 'Those are made in photosynthesis, not respiration.', 3: 'That is aerobic respiration, which needs oxygen.' } }
+    ];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'Without enough oxygen', correct: true, reply: 'Yes. Both are respiration without enough oxygen.' },
+        { text: 'With plenty of oxygen', correct: false, reply: 'Both happen without enough oxygen: muscles in a sprint, yeast in dough.' }
+      ],
+      colBtns: this.btns(COLS.map((x) => x.k), s.col, (i) => this.setState({ col: i, cols: this.seen('cols', i) })),
+      cmpFig: c.ready ? K.fig(this.cmpFig(s.col), '') : null,
+      cmpNote: COLS[s.col].note,
+      ferBtns: this.btns(['Bread', 'Alcoholic drinks'], s.fer, (i) => this.setState({ fer: i, fers: this.seen('fers', i) })),
+      ferFig: c.ready ? K.fig(this.ferFig(s.fer), '') : null,
+      ferNote: s.fer ? 'Yeast ferments sugar into ethanol, the alcohol in the drink. In beer and sparkling wine, the carbon dioxide gives the fizz.' : 'Yeast in the dough respires anaerobically. The carbon dioxide makes bubbles, so the dough rises. The ethanol evaporates when it is baked.',
+      thinkOptions: [
+        { text: 'Lactic acid', correct: false, reply: 'Muscles make lactic acid.' },
+        { text: 'Carbon dioxide and water', correct: false, reply: 'That is aerobic respiration.' },
+        { text: 'Ethanol and carbon dioxide', correct: true, reply: 'Plant cells make these too, when short of oxygen.' }
+      ],
+      sortBins: [{ id: 'a', label: 'Aerobic' }, { id: 'm', label: 'Anaerobic: muscles' }, { id: 'y', label: 'Anaerobic: plants, yeast' }],
+      sortItems: [
+        { text: 'Needs oxygen', bin: 'a', why: 'Aerobic means with oxygen.' },
+        { text: 'Makes carbon dioxide and water', bin: 'a', why: 'Complete oxidation.' },
+        { text: 'Makes lactic acid', bin: 'm', why: 'Muscles short of oxygen.' },
+        { text: 'Makes ethanol and carbon dioxide', bin: 'y', why: 'Plants and yeast.' },
+        { text: 'Called fermentation in yeast', bin: 'y', why: 'Bread and alcoholic drinks.' },
+        { text: 'Transfers much more energy', bin: 'a', why: 'Glucose fully oxidised.' },
+        { text: 'Happens in a sprint when oxygen can\u2019t arrive fast enough', bin: 'm', why: 'Lactic acid builds up.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('State', 'State the product of anaerobic respiration in muscles.', 'Lactic acid.', [['Ethanol', 'Plants and yeast.'], 'Lactic acid', ['Carbon dioxide and water', 'Aerobic respiration.']]),
+          MCQ('Name', 'Name anaerobic respiration in yeast cells.', 'Fermentation.', ['Fermentation', ['Photosynthesis', 'Makes glucose.'], ['Digestion', 'Breaks down food.']])
+        ],
+        r2: [
+          MCQ('Give', 'Give one use of fermentation by yeast.', 'Making bread, or alcoholic drinks.', [['Making cheese mould', 'Not fermentation by yeast.'], 'Making bread', ['Making lactic acid', 'Muscles make lactic acid.'], ['Making oxygen', 'Yeast doesn\u2019t make oxygen.']]),
+          MCQ('Suggest', 'Suggest why plant roots in waterlogged soil respire anaerobically.', 'The water leaves too little oxygen for aerobic respiration.', [['There is too much light', 'Roots are underground.'], ['They have no glucose', 'They still use glucose.'], 'There isn\u2019t enough oxygen in the soil', ['Roots always respire anaerobically', 'Only when short of oxygen.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain why anaerobic respiration transfers less energy than aerobic respiration. Put the links in order.',
+            ['Anaerobic respiration happens without enough oxygen.', 'So the oxidation of glucose is incomplete.', 'So much less energy is transferred than when glucose is completely oxidised.'],
+            [['Anaerobic respiration uses no glucose.', 'It still starts from glucose.'], ['Anaerobic respiration is faster, so it transfers more.', 'It transfers much less.']]),
+          CHAIN('Explain', 'Explain why bread dough rises when yeast is added. Put the links in order.',
+            ['Yeast in the dough respires anaerobically: fermentation.', 'Fermentation produces carbon dioxide.', 'Bubbles of carbon dioxide make the dough rise.'],
+            [['Yeast makes oxygen, which fills the dough.', 'It makes carbon dioxide.'], ['Yeast makes lactic acid.', 'Muscles do.']])
+        ],
+        r4: [
+          { kind: 'write', command: 'Compare', marks: 6, prompt: 'Compare aerobic and anaerobic respiration.',
+            levels: LV6('Oxygen, products for muscles and for plants/yeast, and relative energy, all compared, with why.', 'Most differences, with the products correct.', 'One or two simple differences.'),
+            points: ['Aerobic needs oxygen; anaerobic happens without enough oxygen.', 'Both start with glucose.', 'Aerobic products: carbon dioxide and water.', 'Anaerobic in muscles: lactic acid.', 'Anaerobic in plants and yeast: ethanol and carbon dioxide (fermentation in yeast).', 'Aerobic transfers much more energy; anaerobic oxidation of glucose is incomplete.'],
+            reject: ['\u201cYeast makes lactic acid.\u201d', '\u201cAnaerobic gives more energy.\u201d'] }
+        ]
+      },
+      keyLines: ['If insufficient oxygen is supplied, cells respire anaerobically.', 'In muscles: glucose gives lactic acid.', 'In plant and yeast cells: glucose gives ethanol + carbon dioxide. In yeast this is fermentation, used to make bread and alcoholic drinks.', 'The oxidation of glucose is incomplete, so much less energy is transferred than in aerobic respiration.'],
+      bank: c.ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.4.2.1-aerobic-respiration.dc.html', label: 'Aerobic respiration' },
+      endNext: { href: 'ks4-biology-4.4.2.2-response-to-exercise.dc.html', label: 'Response to exercise' },
+      endConnects: []
+    });
+  }
+}
+</script>
+</body>
+</html>

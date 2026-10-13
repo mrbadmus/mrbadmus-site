@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metabolism · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Bioenergetics" title="Metabolism" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.4.2.3</p>
+        <h1>Metabolism</h1>
+        <p class="ks3-bigq">Every reaction in your body counts. Sort them into building up and breaking down, and follow excess protein out.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Half a tonne a year." scene="You eat about half a tonne of food every year." question="does your body only break that food down, or does it also build new things from it?" options="{{ hookOptions }}" bridge="Both. Metabolism is every reaction, building up and breaking down." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-reactions" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Building up and breaking down</p>
+        <h2 style="margin: 6px 0 0;">Small units, big molecules.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Metabolism is the sum of all the reactions in a cell or the body. The energy transferred by respiration is used for the continual, enzyme-controlled processes of metabolism that synthesise new molecules. Pick each reaction.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ rxBtns }}" as="b" hint-placeholder-count="5"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ rxFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ rxNote }}</p></div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Sugars, amino acids, fatty acids and glycerol are the small units: carbohydrates, proteins and lipids are built from them and broken back down to them. Why plants store starch: in <a href="ks4-biology-4.4.1.3-uses-of-glucose.dc.html">Uses of glucose</a>.</p>
+        <sc-if value="{{ isHigher }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 16px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);"><div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Higher</span><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Thyroxine</p></div><p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Thyroxine from the thyroid gland stimulates the basal metabolic rate.</p></div></sc-if>
+      </section>
+
+      <section id="s-urea" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Excess protein</p>
+        <h2 style="margin: 6px 0 0;">Protein out, as urea.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The body can’t store excess protein. Excess proteins are broken down to form urea for excretion. Urea is carried in the blood plasma to the kidneys.</p>
+        <sc-if value="{{ isTriple }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 16px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);"><div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Triple</span><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">The kidneys</p></div><p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">The kidneys filter urea out of the blood, and it leaves the body in the urine.</p></div></sc-if>
+        <sc-if value="{{ isTH }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 16px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);"><div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Triple Higher</span><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">In the liver</p></div><p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Excess amino acids are deaminated in the liver to form ammonia. Ammonia is toxic, so it is immediately converted to urea for safe excretion.</p></div></sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · what makes a lipid?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Fat is made of glycerol and one fatty acid.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="A lipid molecule is formed from…" options="{{ thinkOptions }}" reveal="One molecule of glycerol and three molecules of fatty acids." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Building up or breaking down?" prompt="Place each reaction." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Starch, glycogen, cellulose, lipids and proteins are built up. Respiration and urea formation break down." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Metabolic reactions, with their small units.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How respiration and building-up are linked.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why a missing substance stops a reaction.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Metabolism is the sum of all the reactions in a cell or the body. Energy from respiration drives the reactions that build new molecules.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="metabolism" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Metabolism" spec="AQA 4.4.2.3" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which reactions build up?" legal="Molecule drawings are schematic." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'metabolism';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const RAIL = [
+  { id: 's-hook', label: 'Food in', short: 'HOOK' },
+  { id: 's-reactions', label: 'Build up, break down', short: 'REACTIONS' },
+  { id: 's-urea', label: 'Excess protein', short: 'UREA' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Build or break', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const STATE = { rx: 0, rxs: [0] };
+const RX = [
+  { k: 'Glucose to starch, glycogen, cellulose', build: true, small: 'glucose', big: 'starch, glycogen, cellulose', note: 'Building up: glucose is converted to starch, glycogen and cellulose.' },
+  { k: 'Glycerol + fatty acids to lipid', build: true, small: 'glycerol + 3 fatty acids', big: 'lipid', note: 'Building up: a lipid is formed from one molecule of glycerol and three molecules of fatty acids.' },
+  { k: 'Glucose + nitrate to protein', build: true, small: 'glucose + nitrate ions', big: 'amino acids, then protein', note: 'Building up: glucose and nitrate ions form amino acids, which in turn are used to synthesise proteins.' },
+  { k: 'Respiration', build: false, small: 'carbon dioxide + water', big: 'glucose', note: 'Breaking down: respiration. The energy it transfers drives the building-up reactions.' },
+  { k: 'Excess protein to urea', build: false, small: 'urea', big: 'excess protein', note: 'Breaking down: excess proteins are broken down to form urea for excretion.' }
+];
+
+class Component extends DCLogic {
+  
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: rk === 'TF' || rk === 'TH', isTH: rk === 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+
+  rxFig(i) {
+    const D = window.KS4D, C = D.C, R = RX[i]; let b = '';
+    const units = (x, y, n, col) => { let s = ''; for (let k = 0; k < n; k++) s += D.circ(x + k * 26, y, 10, col, C.stroke, 2); return s; };
+    const chain = (x, y, n, col) => { let s = D.line(x, y, x + (n - 1) * 22, y, 4); for (let k = 0; k < n; k++) s += D.circ(x + k * 22, y, 10, col, C.stroke, 2); return s; };
+    const col = ['#FBE7A1', '#F4D6A8', '#C9E3C2', '#FBE7A1', '#C9E3C2'][i];
+    if (R.build) { b += units(40, 120, 4, col) + D.T(80, 160, R.small, 13, { fill: C.stroke }) + D.arrow(160, 120, 230, 120, C.label, 4) + D.T(195, 104, 'build up', 12, { fill: C.label }) + chain(250, 120, 6, col) + D.T(305, 160, R.big, 13, { fill: C.stroke }); }
+    else { b += chain(30, 120, 6, col) + D.T(85, 160, R.big, 13, { fill: C.stroke }) + D.arrow(160, 120, 230, 120, C.red, 4) + D.T(195, 104, 'break down', 12, { fill: C.red }) + units(255, 120, 4, i === 3 ? '#DDEEF6' : '#E9E2CF') + D.T(295, 160, R.small, 13, { fill: C.stroke }); }
+    return D.svg(400, 200, b, R.note);
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.rxs.length === 5, true, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const items = {
+      q1: { q: 'What is metabolism?', opts: [['The sum of all chemical reactions taking place in a cell or organism', true], ['Only the reactions that release energy \u2014 such as respiration', false], ['The process of digesting food in the gut', false], ['How quickly a person breathes and moves', false]],
+        wrong_explanations: { 1: 'Metabolism includes ALL reactions \u2014 both energy-releasing (catabolism) and energy-using (anabolism). Respiration is just one part.', 2: 'Digestion is one part of metabolism \u2014 but metabolism includes protein synthesis, DNA replication, glycogen synthesis, and many more reactions.', 3: 'Breathing rate and movement speed are consequences of metabolic activity \u2014 metabolism itself refers to the chemical reactions, not the physical movements.' } },
+      q2: { q: 'Why is urea produced in the liver?', opts: [['Excess amino acids cannot be stored \u2014 the amino group is removed (deamination) and converted to urea for excretion', true], ['Urea is produced when glucose is broken down in anaerobic respiration', false], ['The liver converts CO\u2082 and water into urea to reduce acid in the blood', false], ['Urea is made when fat molecules are broken down into fatty acids', false]],
+        wrong_explanations: { 1: 'Anaerobic respiration in animals produces LACTIC ACID \u2014 not urea. Urea comes specifically from amino acid breakdown.', 2: 'CO\u2082 is transported in the blood and exhaled \u2014 it is not converted to urea.', 3: 'Fat breakdown produces fatty acids and glycerol \u2014 not urea. Urea specifically comes from amino acid deamination.' } },
+      q3: { q: 'Which of the following is an example of an ANABOLIC (building) reaction?', opts: [['Amino acids joined together at ribosomes to make a protein', true], ['Glucose broken down in aerobic respiration to release ATP', false], ['Starch digested by amylase into maltose in the mouth', false], ['Lactic acid produced in muscles during anaerobic respiration', false]],
+        wrong_explanations: { 1: 'Aerobic respiration BREAKS DOWN glucose \u2014 this is a catabolic reaction.', 2: 'Digestion BREAKS DOWN starch \u2014 another catabolic reaction.', 3: 'Lactic acid production is the result of breaking down glucose \u2014 catabolic.' } },
+      amino: { q: 'Which two substances does a plant use to form amino acids?', opts: [['Glucose and nitrate ions', true], ['Starch and oxygen', false], ['Glycerol and fatty acids', false], ['Urea and water', false]],
+        wrong_explanations: { 1: 'Starch is a store, and oxygen isn\u2019t used to make amino acids.', 2: 'Glycerol and fatty acids form lipids.', 3: 'Urea is made from excess protein; it isn\u2019t used to make it.' } },
+      lipid: { q: 'What is a lipid molecule formed from?', opts: [['One glycerol and three fatty acids', true], ['One glycerol and one fatty acid', false], ['Glucose and nitrate ions', false], ['Amino acids', false]],
+        wrong_explanations: { 1: 'Three fatty acids, not one.', 2: 'Those form amino acids.', 3: 'Amino acids form proteins.' } },
+      energy: { q: 'What is the energy transferred by respiration used for in metabolism?', opts: [['Enzyme-controlled reactions that synthesise new molecules', true], ['Making oxygen', false], ['Breaking down urea', false], ['Absorbing light', false]],
+        wrong_explanations: { 1: 'Oxygen is used in respiration; it isn\u2019t made by metabolism in animals.', 2: 'Urea is excreted, not broken down.', 3: 'Chlorophyll absorbs light in photosynthesis.' } },
+      thy: { q: 'What does thyroxine do?', opts: [['Stimulates the basal metabolic rate', true], ['Breaks down excess protein', false], ['Forms lipids', false], ['Filters urea', false]],
+        wrong_explanations: { 1: 'Excess proteins are broken down to form urea.', 2: 'Lipids are formed from glycerol and fatty acids.', 3: 'The kidneys filter urea.' } }
+    };
+    let bankSrc = [items.q1, items.q3, items.amino, items.lipid, c.isHigher ? items.thy : items.energy];
+    if (c.isTH) bankSrc = [items.q1, items.q3, items.amino, items.q2, items.thy];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'It also builds new things from it', correct: true, reply: 'Yes. Your body breaks food down and builds new molecules from the pieces.' },
+        { text: 'It only breaks food down', correct: false, reply: 'It does break food down, and it also builds new molecules from the pieces.' }
+      ],
+      rxBtns: this.btns(RX.map((x) => x.k), s.rx, (i) => this.setState({ rx: i, rxs: this.seen('rxs', i) })),
+      rxFig: c.ready ? K.fig(this.rxFig(s.rx), '') : null,
+      rxNote: RX[s.rx].note,
+      thinkOptions: [
+        { text: 'One glycerol and one fatty acid', correct: false, reply: 'Three fatty acids, not one.' },
+        { text: 'Amino acids', correct: false, reply: 'Amino acids form proteins.' },
+        { text: 'One glycerol and three fatty acids', correct: true, reply: 'That forms one lipid molecule.' }
+      ],
+      sortBins: [{ id: 'b', label: 'Building up' }, { id: 'd', label: 'Breaking down' }],
+      sortItems: [
+        { text: 'Glucose to starch', bin: 'b', why: 'Many glucose units joined.' },
+        { text: 'Glucose to glycogen', bin: 'b', why: 'A store in animals.' },
+        { text: 'Glucose to cellulose', bin: 'b', why: 'For cell walls.' },
+        { text: 'Glycerol + three fatty acids to a lipid', bin: 'b', why: 'Lipid synthesis.' },
+        { text: 'Glucose + nitrate ions to amino acids, then protein', bin: 'b', why: 'Protein synthesis.' },
+        { text: 'Respiration', bin: 'd', why: 'Glucose broken down.' },
+        { text: 'Excess protein to urea', bin: 'd', why: 'For excretion.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('State', 'State what metabolism is.', 'The sum of all the reactions in a cell or the body.', ['All the reactions in a cell or the body', ['Only respiration', 'Respiration is one reaction.'], ['How fast you burn food', 'It includes building up too.']]),
+          MCQ('Name', 'Name the small molecules a lipid is formed from.', 'Glycerol and fatty acids.', [['Amino acids', 'They form proteins.'], 'Glycerol and fatty acids', ['Glucose', 'Glucose forms starch, glycogen, cellulose.']])
+        ],
+        r2: [
+          MCQ('Give', 'Give one metabolic reaction that builds a larger molecule.', 'E.g. glucose to starch, glycogen or cellulose; lipids; proteins.', [['Respiration', 'That breaks glucose down.'], 'Glucose to glycogen', ['Excess protein to urea', 'That breaks protein down.'], ['Digesting starch', 'That breaks starch down.']]),
+          MCQ('Suggest', 'Suggest why plants grown without nitrate ions grow poorly.', 'They can\u2019t form amino acids, so can\u2019t synthesise proteins.', [['They can\u2019t make glucose', 'Glucose comes from photosynthesis.'], ['They can\u2019t respire', 'Respiration doesn\u2019t need nitrate.'], 'They can\u2019t form amino acids to make proteins', ['They make too much urea', 'Plants don\u2019t excrete urea.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain how respiration and building-up reactions are linked in metabolism. Put the links in order.',
+            ['Respiration breaks down glucose and transfers energy.', 'The energy is used by continual, enzyme-controlled reactions.', 'These reactions synthesise new molecules, such as proteins from amino acids.'],
+            [['Building-up reactions make energy.', 'They use energy.'], ['Respiration and metabolism are the same.', 'Respiration is one metabolic reaction.']]),
+          CHAIN('Explain', 'Explain what happens to excess protein in the body. Put the links in order.',
+            ['The body can\u2019t store excess protein.', 'Excess proteins are broken down to form urea.', 'Urea is carried in the blood plasma to the kidneys and excreted.'],
+            [['Urea comes from fat.', 'It comes from protein.'], ['Excess protein is stored as glycogen.', 'Glycogen is made from glucose.']])
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 4, prompt: 'Describe examples of metabolic reactions that build up and break down molecules.',
+            levels: LV4('At least three building-up and two breaking-down reactions, with their small units.', 'Some reactions named, with little on their units.'),
+            points: ['Glucose converted to starch, glycogen and cellulose.', 'One glycerol and three fatty acids form a lipid.', 'Glucose and nitrate ions form amino acids, used to synthesise proteins.', 'Respiration; and excess proteins broken down to urea for excretion.'],
+            reject: ['\u201cMetabolism is just respiration.\u201d', '\u201cA lipid is glycerol and one fatty acid.\u201d'] }
+        ]
+      },
+      keyLines: ['Metabolism is the sum of all the reactions in a cell or the body.', 'Energy transferred by respiration drives the continual, enzyme-controlled reactions that synthesise new molecules.', 'Building up: glucose to starch, glycogen and cellulose; glycerol + three fatty acids to a lipid; glucose + nitrate ions to amino acids, then proteins.', 'Breaking down: respiration; excess proteins to urea for excretion.'].concat(c.isHigher ? ['Higher: thyroxine stimulates the basal metabolic rate.'] : []).concat(c.isTriple ? ['Triple: the kidneys filter urea into the urine.'] : []).concat(c.isTH ? ['Triple Higher: excess amino acids are deaminated in the liver to ammonia, then converted to urea.'] : []),
+      bank: c.ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.4.2.2-response-to-exercise.dc.html', label: 'Response to exercise' },
+      endNext: null,
+      endConnects: [{ href: 'ks4-biology-4.4.1.3-uses-of-glucose.dc.html', label: 'Uses of glucose' }, { href: 'ks4-biology-4.4.2.1-aerobic-respiration.dc.html', label: 'Aerobic respiration' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fungal and protist diseases · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Infection and response" title="Fungal and protist diseases" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.3.1.4–4.3.1.5</p>
+        <h1>Fungal and protist diseases</h1>
+        <p class="ks3-bigq">A fungus on roses and a protist carried by mosquitoes. Follow each one, then break its spread.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A bite on holiday." scene="Mosquitoes bite millions of people every summer. In some parts of the world, a bite can lead to malaria." question="is the mosquito that bites you the thing that makes you ill, or something it carries?" options="{{ hookOptions }}" bridge="The mosquito carries a protist. First, a fungus that attacks roses." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-spot" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Fungus · rose black spot</p>
+        <h2 style="margin: 6px 0 0;">Spots, then fewer leaves.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Rose black spot is a fungal disease. It is spread in the environment by water or wind. Step through what happens to an infected rose.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ spotBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ spotFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ spotNote }}</p></div>
+        </div>
+      </section>
+
+      <section id="s-malaria" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Protist · malaria</p>
+        <h2 style="margin: 6px 0 0;">A life cycle that includes the mosquito.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Malaria is caused by a protist. The mosquito is the vector: it carries the protist, but it isn’t the pathogen. Step round the cycle.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ cycBtns }}" as="b" hint-placeholder-count="4"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ cycFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ cycNote }}</p></div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Vectors and other routes of spread: in <a href="ks4-biology-4.3.1.1-communicable-diseases-defence.dc.html">Communicable diseases and defences</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · how black spot spreads</p></div>
+        <p class="ks3-mis-quote">&ldquo;Insects spread black spot.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="How is rose black spot spread?" options="{{ thinkOptions }}" reveal="By water or wind. That’s why affected leaves are removed and destroyed." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Fungus or protist?" prompt="Place each clue." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Black spot: a fungus spread by water or wind. Malaria: a protist carried by mosquitoes." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The symptoms, how it spreads, and how it is controlled.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why a control measure works, link by link.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The two diseases, point by point.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Rose black spot is a fungus spread by water or wind. Malaria is a protist; the mosquito is its vector.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="fungal-protist-diseases" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Fungal and protist diseases" spec="AQA 4.3.1.4–4.3.1.5" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure what a vector is?" legal="Drawings are schematic." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'fungal-protist-diseases';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const RAIL = [
+  { id: 's-hook', label: 'A bite on holiday', short: 'HOOK' },
+  { id: 's-spot', label: 'Rose black spot', short: 'BLACK SPOT' },
+  { id: 's-malaria', label: 'Malaria', short: 'MALARIA' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Fungus or protist', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const STATE = { spot: 0, spots: [0], cyc: 0, cycs: [0] };
+const SPOT = [
+  { k: 'Spots', note: 'Purple or black spots develop on the leaves.' },
+  { k: 'Yellow, then drop', note: 'The leaves often turn yellow and drop early.' },
+  { k: 'Fewer leaves', note: 'With fewer leaves, photosynthesis is reduced, so the plant\u2019s growth is affected. Treat with fungicides and/or remove and destroy the affected leaves.' }
+];
+const CYC = [
+  { k: 'Bite', note: 'A mosquito bites a person who has malaria and takes in the protist with the blood.' },
+  { k: 'Inside the mosquito', note: 'The protist develops inside the mosquito. This stage is part of its life cycle.' },
+  { k: 'Next bite', note: 'The mosquito bites another person, and the protist gets into their blood.' },
+  { k: 'Illness', note: 'Malaria causes recurrent episodes of fever and can be fatal. Control: stop mosquitoes breeding, and use mosquito nets to avoid being bitten.' }
+];
+
+class Component extends DCLogic {
+  
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: rk === 'TF' || rk === 'TH', isTH: rk === 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+
+  leaf(cx, cy, fill) {
+    return '<path d="M' + cx + ' ' + (cy - 80) + ' C' + (cx + 62) + ' ' + (cy - 55) + ' ' + (cx + 62) + ' ' + (cy + 50) + ' ' + cx + ' ' + (cy + 80) + ' C' + (cx - 62) + ' ' + (cy + 50) + ' ' + (cx - 62) + ' ' + (cy - 55) + ' ' + cx + ' ' + (cy - 80) + ' Z" fill="' + fill + '" stroke="#1A1A1A" stroke-width="2.5"/>' + window.KS4D.line(cx, cy - 76, cx, cy + 96, 3, '#2E5E2E');
+  }
+  spotFig(n) {
+    const D = window.KS4D, C = D.C; let b = '';
+    b += D.line(210, 300, 210, 40, 6, '#5C7A3A');
+    const L = [[130, 90], [290, 120], [130, 190], [290, 230]];
+    L.forEach((p, i) => {
+      const gone = n === 2 && i % 2 === 0;
+      if (gone) { b += '<g transform="translate(' + (p[0] - 40) + ' 230) rotate(60)" opacity=".55">' + this.leaf(0, 0, '#D9C76A') + '</g>'; return; }
+      b += D.line(210, p[1], p[0], p[1], 3, '#5C7A3A');
+      b += this.leaf(p[0], p[1], n >= 1 && i % 2 === 0 ? '#D9C76A' : '#4F9A4A');
+      [[-12, -30], [10, -5], [-14, 22], [12, 40]].forEach((q) => { b += D.circ(p[0] + q[0], p[1] + q[1] * 0.7, 6, '#2A1E2E', 'none', 0); });
+    });
+    b += D.T(210, 330, ['purple or black spots', 'leaves turn yellow', 'leaves drop early'][n], 15, { fill: C.stroke });
+    return D.svg(420, 345, b, 'Rose stem with black-spotted leaves: ' + SPOT[n].note);
+  }
+  cycFig(n) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const P = [[110, 90, 'person with malaria'], [330, 90, 'protist develops in mosquito'], [330, 240, 'mosquito bites again'], [110, 240, 'new person: fever']];
+    P.forEach((p, i) => {
+      b += BOX(p[0] - 90, p[1] - 38, 180, 76, i === n ? '#F6D9D0' : '#FFFDF8', C.stroke, i === n ? 3.5 : 2);
+      const w = p[2].split(': ');
+      b += D.T(p[0], p[1] + (w.length > 1 ? -4 : 5), w[0], 13, { fill: C.stroke }) + (w[1] ? D.T(p[0], p[1] + 16, w[1], 13, { weight: 'normal', fill: C.stroke }) : '');
+    });
+    b += D.arrow(202, 90, 238, 90, C.stroke, 3) + D.arrow(330, 130, 330, 200, C.stroke, 3) + D.arrow(238, 240, 202, 240, C.stroke, 3) + D.arrow(110, 200, 110, 130, C.muted, 2.5);
+    b += D.T(220, 170, 'the mosquito is the vector', 13, { weight: 'normal', fill: C.stroke, style: 'italic' });
+    return D.svg(440, 300, b, 'Malaria life cycle, stage ' + (n + 1) + ' of 4: ' + CYC[n].note);
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.spots.length === 3, s.cycs.length === 4, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const bankSrc = [
+      { q: 'Why does rose black spot cause poor plant growth?', opts: [['Infected leaves develop spots and fall off \u2014 less leaf area means less photosynthesis and less glucose for growth', true], ['The fungus blocks the xylem, preventing water reaching the leaves', false], ['The fungus produces toxins that directly kill root cells', false], ['Spores block stomata, preventing CO\u2082 from entering the leaf', false]],
+        wrong_explanations: { 1: 'Rose black spot infects LEAF CELLS \u2014 it doesn\u2019t block xylem. The impact is through reduced photosynthetic capacity.', 2: 'Rose black spot is a leaf disease \u2014 it doesn\u2019t specifically target roots.', 3: 'Blocking stomata is not the primary mechanism \u2014 the main effect is leaf loss through defoliation reducing total photosynthesis.' } },
+      { q: 'What is the role of the Anopheles mosquito in malaria?', opts: [['It is the vector \u2014 it carries Plasmodium from one human to another when it bites', true], ['It is the pathogen \u2014 the mosquito itself causes the disease', false], ['It injects its own saliva which contains the fever-causing toxin', false], ['It is only involved in spreading malaria in tropical countries \u2014 not elsewhere', false]],
+        wrong_explanations: { 1: 'The PATHOGEN is Plasmodium (the protist). The mosquito is the VECTOR \u2014 it carries and transmits the pathogen without being the cause of disease itself.', 2: 'Mosquito saliva can cause local irritation \u2014 but the disease malaria is caused specifically by Plasmodium being injected, not by the saliva itself.', 3: 'Malaria is predominantly tropical because Anopheles mosquitoes thrive in warm, wet environments \u2014 but the mosquito\u2019s role as vector is the same wherever it lives.' } },
+      { q: 'How can rose black spot be treated?', opts: [['Fungicides, and removing and destroying the affected leaves', true], ['Antibiotics', false], ['Mosquito nets', false], ['Watering the leaves more often', false]],
+        wrong_explanations: { 1: 'Antibiotics kill bacteria; black spot is a fungus.', 2: 'Nets stop mosquito bites, which spread malaria.', 3: 'Black spot spreads by water, so wetting the leaves won\u2019t help.' } },
+      { q: 'What type of pathogen causes malaria?', opts: [['A protist', true], ['A virus', false], ['A bacterium', false], ['A fungus', false]],
+        wrong_explanations: { 1: 'Malaria is caused by a protist.', 2: 'Malaria is caused by a protist, so antibiotics are not the treatment.', 3: 'Rose black spot is the fungal example.' } },
+      { q: 'Which measure helps control the spread of malaria?', opts: [['Stopping mosquitoes breeding', true], ['Spraying fungicide', false], ['Vaccinating poultry', false], ['Cooking food thoroughly', false]],
+        wrong_explanations: { 1: 'Fungicide treats fungal diseases like black spot.', 2: 'That controls Salmonella.', 3: 'Malaria isn\u2019t spread in food.' } }
+    ];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'Something it carries', correct: true, reply: 'Yes: the mosquito carries a protist. The protist is the pathogen.' },
+        { text: 'The mosquito itself', correct: false, reply: 'A fair guess, but the mosquito carries the pathogen, a protist. The mosquito is the vector.' }
+      ],
+      spotBtns: this.btns(SPOT.map((x, i) => (i + 1) + ' \u00b7 ' + x.k), s.spot, (i) => this.setState({ spot: i, spots: this.seen('spots', i) })),
+      spotFig: c.ready ? K.fig(this.spotFig(s.spot), '') : null,
+      spotNote: SPOT[s.spot].note,
+      cycBtns: this.btns(CYC.map((x, i) => (i + 1) + ' \u00b7 ' + x.k), s.cyc, (i) => this.setState({ cyc: i, cycs: this.seen('cycs', i) })),
+      cycFig: c.ready ? K.fig(this.cycFig(s.cyc), '') : null,
+      cycNote: CYC[s.cyc].note,
+      thinkOptions: [
+        { text: 'By insects such as aphids', correct: false, reply: 'Black spot isn\u2019t carried by insects.' },
+        { text: 'By water or wind', correct: true, reply: 'So removing and destroying affected leaves helps.' },
+        { text: 'By mosquitoes', correct: false, reply: 'Mosquitoes are the vector for malaria.' }
+      ],
+      sortBins: [{ id: 'f', label: 'Rose black spot (fungus)' }, { id: 'p', label: 'Malaria (protist)' }],
+      sortItems: [
+        { text: 'Spread by water or wind', bin: 'f', why: 'In the environment.' },
+        { text: 'Carried by a mosquito', bin: 'p', why: 'The mosquito is the vector.' },
+        { text: 'Purple or black spots on leaves', bin: 'f', why: 'Leaves then turn yellow.' },
+        { text: 'Recurrent episodes of fever', bin: 'p', why: 'Can be fatal.' },
+        { text: 'Leaves drop early', bin: 'f', why: 'Less photosynthesis.' },
+        { text: 'Treated with fungicides', bin: 'f', why: 'They kill fungi.' },
+        { text: 'Mosquito nets help', bin: 'p', why: 'They stop bites.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the type of pathogen that causes malaria.', 'A protist.', [['A fungus', 'Rose black spot is a fungus.'], ['A virus', 'Measles and HIV are viruses.'], 'A protist']),
+          MCQ('Name', 'Name the type of pathogen that causes rose black spot.', 'A fungus.', ['A fungus', ['A protist', 'Malaria is caused by a protist.'], ['A bacterium', 'Salmonella is a bacterium.']])
+        ],
+        r2: [
+          MCQ('Give', 'Give one way of controlling the spread of malaria.', 'Stop mosquitoes breeding, or use mosquito nets.', [['Spray fungicide', 'That treats fungal diseases.'], 'Use mosquito nets', ['Take antibiotics', 'Malaria is caused by a protist.'], ['Cook food thoroughly', 'Malaria isn\u2019t spread in food.']]),
+          MCQ('Suggest', 'Suggest why a gardener removes and destroys leaves with black spot.', 'So the fungus can\u2019t spread from them to other leaves by water or wind.', [['To let more light reach the roots', 'The aim is to stop spread.'], ['Because the leaves contain mosquitoes', 'Black spot is a fungus.'], ['To make the rose produce antibodies', 'Plants don\u2019t make antibodies.'], 'So the fungus can\u2019t spread to other leaves'])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain why rose black spot affects the growth of a rose. Put the links in order.',
+            ['Purple or black spots develop on the leaves.', 'The leaves turn yellow and drop early.', 'With fewer leaves, photosynthesis is reduced, so the plant grows less.'],
+            [['The fungus blocks the xylem.', 'It affects the leaves.'], ['The spots stop the roots taking in water.', 'Black spot is a leaf disease.']]),
+          CHAIN('Explain', 'Explain how mosquito nets reduce the spread of malaria. Put the links in order.',
+            ['Mosquitoes are the vector: they carry the malaria protist.', 'Nets stop mosquitoes biting people while they sleep.', 'So the protist isn\u2019t passed between people.'],
+            [['Nets kill the protist in the blood.', 'Nets stop bites.'], ['Nets stop malaria spreading in water.', 'Malaria is spread by mosquitoes.']])
+        ],
+        r4: [
+          { kind: 'write', command: 'Compare', marks: 4, prompt: 'Compare rose black spot and malaria.',
+            levels: LV4('Pathogen type, spread and control for both, point by point.', 'One disease described, or one point each.'),
+            points: ['Rose black spot is caused by a fungus; malaria by a protist.', 'Black spot is spread by water or wind; malaria by mosquitoes, the vector.', 'Black spot: spots, yellow leaves that drop early, less photosynthesis. Malaria: recurrent fever, can be fatal.', 'Black spot is treated with fungicides and removing leaves; malaria is controlled by stopping mosquitoes breeding and using nets.'],
+            reject: ['\u201cMosquitoes cause malaria.\u201d', '\u201cBlack spot is spread by insects.\u201d'] }
+        ]
+      },
+      keyLines: ['Rose black spot is a fungal disease: purple or black spots on leaves, which turn yellow and drop early, so photosynthesis is reduced.', 'It spreads by water or wind. Treat with fungicides and/or remove and destroy affected leaves.', 'Malaria is caused by a protist whose life cycle includes the mosquito. The mosquito is the vector.', 'Malaria causes recurrent episodes of fever and can be fatal. Control: stop mosquitoes breeding; use nets.'],
+      bank: c.ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.3.1.3-bacterial-diseases.dc.html', label: 'Bacterial diseases' },
+      endNext: { href: 'ks4-biology-4.3.1.7-vaccination.dc.html', label: 'Vaccination' },
+      endConnects: [{ href: 'ks4-biology-4.3.3.1-plant-disease-detection-defence.dc.html', label: 'Plant disease (Triple)' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

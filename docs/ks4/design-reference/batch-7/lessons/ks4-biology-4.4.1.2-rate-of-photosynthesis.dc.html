@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rate of photosynthesis · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Bioenergetics" title="Rate of photosynthesis" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.4.1.2</p>
+        <h1>Rate of photosynthesis</h1>
+        <p class="ks3-bigq">Move the lamp, count the bubbles, work out the rate. Then find what stops it going any faster.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">{{ rpLabel }}</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Windowsill or corner?" scene="Two identical basil plants in the same kitchen: one on a sunny windowsill, one in a dim corner." question="will more light speed up the plant’s food-making, or make no difference?" options="{{ hookOptions }}" bridge="More light speeds it up, up to a point. Time to measure it." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-rp" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">{{ rpLabel }}</p>
+        <h2 style="margin: 6px 0 0;">Light intensity and the rate of photosynthesis.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Put pondweed in a tube of water with a lamp at a measured distance. A large beaker of water between them acts as a heat shield, and a thermometer checks the temperature stays the same. Count the bubbles of oxygen given off in one minute. Pick a distance.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ distBtns }}" as="b" hint-placeholder-count="4"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ rpFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;"><div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border); font-family: var(--ks3-font-mono); font-size: 17px; line-height: 1.7;"><p style="margin: 0; font-weight: 500;">distance · bubbles in 1 min</p><sc-for list="{{ readings }}" as="r" hint-placeholder-count="2"><p style="margin: 0;">{{ r }}</p></sc-for></div><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ rpNote }}</p></div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Repeat at each distance and find a mean. Measuring the volume of oxygen, for example with a gas syringe, is more accurate than counting bubbles.</p>
+      </section>
+
+      <section id="s-factors" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Limiting factors</p>
+        <h2 style="margin: 6px 0 0;">What holds the rate back?</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">A limiting factor is the one in short supply that stops the rate going any higher. Four factors affect the rate of photosynthesis. Pick each one.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ facBtns }}" as="b" hint-placeholder-count="4"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ facFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ facNote }}</p></div>
+        </div>
+        <sc-if value="{{ isHigher }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 16px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);"><div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Higher</span><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Interacting factors · greenhouses</p></div><p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">These factors interact, and any one of them may be the factor that limits photosynthesis. When a graph has more than one line, decide which factor is limiting on each part.</p><div style="margin-top: 12px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ hiFig }}</div><p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Growers add heat, light or carbon dioxide to greenhouses, but only while that factor is limiting, and only while the extra crop earns more than it costs. Is each step worth it?</p><div style="margin-top: 10px; display: flex; flex-direction: column; gap: 10px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ ghBtns }}" as="b" hint-placeholder-count="2"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ ghNote }}</p></div></div></sc-if>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equation · rate of photosynthesis</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">The amount is bubbles of oxygen, or a volume of oxygen in cm<sup>3</sup>. Time must be in the unit the rate asks for: seconds ÷ 60 gives minutes, so 90 s = 1.5 min. Tap the quantity you want to find.</p>
+        <div style="margin-top: 14px; max-width: 520px;"><dc-import name="Ks4Triangle" eq="{{ eqRate }}" variant="full" hint-size="100%,420px"></dc-import></div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+        <sc-if value="{{ isHigher }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 22px; padding: 22px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Higher</span><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Light intensity and distance</p></div>
+            <p style="margin: 10px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Light intensity is inversely proportional to the square of the distance from the lamp. Put both distances in the same unit before you square them. Work out the light intensity at each distance on its own line, then compare.</p>
+        <div style="margin-top: 14px; max-width: 520px;"><dc-import name="Ks4Triangle" eq="{{ eqInv }}" variant="full" hint-size="100%,420px"></dc-import></div>
+            <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 18px;">
+              <dc-import name="Ks4Cfifa" examples="{{ invExamples }}" questions="{{ invQuestions }}" on-open="{{ onInv }}" hint-size="100%,900px"></dc-import>
+            </div></sc-if>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · why it levels off</p></div>
+        <p class="ks3-mis-quote">&ldquo;It levels off because the plant runs out of chlorophyll.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="A graph of rate against light intensity levels off. Why?" options="{{ thinkOptions }}" reveal="Another factor is now limiting, such as carbon dioxide or temperature. Chlorophyll isn’t used up." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Change, measure or keep the same?" prompt="Place each variable in the practical." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Change the lamp distance, measure the oxygen, and keep everything else the same." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Amount ÷ time, with the time in the right unit.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">A graph’s shape, using limiting factors.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">A method, with controls and repeats.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">The factor in shortest supply limits the rate. Rate of photosynthesis = amount of oxygen ÷ time.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="rate-of-photosynthesis" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Rate of photosynthesis" spec="AQA 4.4.1.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which factor is limiting?" legal="Bubble counts, curves and greenhouse figures are made-up teaching data." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'rate-of-photosynthesis';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const RAIL = [
+  { id: 's-hook', label: 'Windowsill or corner', short: 'HOOK' },
+  { id: 's-rp', label: 'Required practical', short: 'PRACTICAL' },
+  { id: 's-factors', label: 'Limiting factors', short: 'FACTORS' },
+  { id: 's-equation', label: 'Rate equation', short: 'EQUATION' },
+  { id: 's-calc', label: 'Calculate the rate', short: 'CFIFA' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Variables', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const STATE = { dist: null, done4: [], fac: 0, facs: [0], gh: null, calc: 0, inv: 0 };
+const DIST = [{ d: 10, n: 52 }, { d: 20, n: 30 }, { d: 30, n: 16 }, { d: 40, n: 9 }];
+const FAC = [
+  { k: 'Light intensity', note: 'As light intensity increases, the rate increases: more energy is available. Then the line levels off. Light is no longer the limiting factor; another factor is.' },
+  { k: 'Carbon dioxide', note: 'Carbon dioxide is a raw material. More carbon dioxide, faster rate, until the line levels off and another factor is limiting.' },
+  { k: 'Temperature', note: 'The rate rises with temperature up to an optimum. Above it, the enzymes are denatured: their active site changes shape, so the rate falls. This curve doesn\u2019t level off.' },
+  { k: 'Chlorophyll', note: 'Less chlorophyll, for example in yellowing or diseased leaves, or the pale parts of a variegated leaf, absorbs less light, so the rate is lower.' }
+];
+const EQ_R = { name: 'Rate of photosynthesis', written: 'rate = amount of oxygen \u00f7 time', source: 'none',
+  top: { s: 'A', name: 'amount of oxygen', unit: 'bubbles or cm\u00b3' },
+  bottom: [{ s: 'R', name: 'rate', unit: 'per min' }, { s: 't', name: 'time', unit: 'min' }] };
+const EQ_I = { name: 'Relative light intensity', written: 'light intensity (L) = 1 \u00f7 d\u00b2', source: 'none',
+  top: { s: '1', name: 'one, a fixed number', unit: '', fixed: true },
+  bottom: [{ s: 'L', name: 'relative light intensity', unit: 'no unit' }, { s: 'd\u00b2', root: 'd', name: 'distance from the lamp', unit: 'cm' }] };
+
+class Component extends DCLogic {
+  
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: rk === 'TF' || rk === 'TH', isTH: rk === 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+
+  rpFig(i) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const d = i === null ? 20 : DIST[i].d, tx = 470, lx = tx - 60 - d * 8;
+    b += D.line(40, 230, 620, 230, 3) ;
+    for (let k = 0; k <= 40; k += 10) { const x = tx - 60 - k * 8; b += D.line(x, 230, x, 240, 2) + D.T(x, 256, k + ' cm', 11, { weight: 'normal', fill: C.stroke }); }
+    b += '<path d="M' + (lx - 22) + ' 150 L' + (lx + 22) + ' 150 L' + (lx + 12) + ' 120 L' + (lx - 12) + ' 120 Z" fill="' + C.gold + '" stroke="' + C.stroke + '" stroke-width="2"/>' + D.line(lx, 150, lx, 228, 4) + D.T(lx, 108, 'lamp', 13, { fill: C.stroke });
+    b += BOX(tx - 115, 110, 60, 118, '#DDEEF6') + D.T(tx - 85, 100, 'heat shield', 11, { weight: 'normal', fill: C.stroke });
+    b += '<rect x="' + (tx - 14) + '" y="60" width="28" height="168" rx="12" fill="#DDEEF6" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    b += '<path d="M' + tx + ' 220 C' + (tx - 10) + ' 190 ' + (tx + 10) + ' 170 ' + tx + ' 140" fill="none" stroke="#3E7A36" stroke-width="5"/>';
+    if (i !== null) { const n = Math.min(6, Math.round(DIST[i].n / 9) + 1); for (let k = 0; k < n; k++) b += D.circ(tx + (k % 2 ? 4 : -3), 128 - k * 11, 3.5, '#FFFFFF', C.stroke, 1.2); }
+    b += D.line(tx + 26, 70, tx + 26, 210, 3, C.red) + D.T(tx + 34, 66, 'thermometer', 11, { anchor: 'start', weight: 'normal', fill: C.stroke });
+    b += D.T(tx, 46, 'pondweed', 13, { fill: C.stroke });
+    return D.svg(640, 270, b, 'Required practical set-up: lamp at ' + d + ' cm from pondweed in a tube of water, a beaker of water between as a heat shield, and a thermometer.' + (i === null ? '' : ' ' + DIST[i].n + ' bubbles in one minute.'));
+  }
+  axes(b, D, C, xl, yl) {
+    b += D.line(60, 230, 400, 230, 2.5) + D.line(60, 230, 60, 30, 2.5);
+    b += D.T(230, 262, xl, 13, { fill: C.stroke }) + '<text x="22" y="130" transform="rotate(-90 22 130)" font-family="Georgia, serif" font-size="13" font-weight="bold" fill="' + C.stroke + '" text-anchor="middle">' + yl + '</text>';
+    return b;
+  }
+  facFig(f) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const xl = ['light intensity', 'carbon dioxide concentration', 'temperature', 'light intensity'][f];
+    b = this.axes(b, D, C, xl, 'rate of photosynthesis');
+    const plateau = 'M60 230 C140 150 200 80 280 75 L390 75';
+    if (f < 2) { b += '<path d="' + plateau + '" fill="none" stroke="' + C.blue + '" stroke-width="4"/>' + D.T(330, 64, 'another factor limits', 12, { weight: 'normal', fill: C.stroke }) + D.T(130, 120, 'this factor limits', 12, { weight: 'normal', fill: C.stroke }); }
+    else if (f === 2) { b += '<path d="M60 220 C150 190 210 70 250 60 C280 55 300 120 340 225" fill="none" stroke="' + C.blue + '" stroke-width="4"/>' + D.T(252, 48, 'optimum', 12, { fill: C.stroke }) + D.T(345, 150, 'enzymes denatured', 12, { anchor: 'start', weight: 'normal', fill: C.stroke }); }
+    else { b += '<path d="' + plateau + '" fill="none" stroke="#3E7A36" stroke-width="4"/><path d="M60 230 C140 180 200 140 280 135 L390 135" fill="none" stroke="#B9B36A" stroke-width="4" stroke-dasharray="7 5"/>' + D.T(395, 64, 'green leaf', 12, { anchor: 'end', fill: '#3E7A36' }) + D.T(395, 124, 'less chlorophyll', 12, { anchor: 'end', fill: C.stroke }); }
+    return D.svg(420, 275, b, FAC[f].k + ' against rate of photosynthesis. ' + FAC[f].note);
+  }
+  hiFig() {
+    const D = window.KS4D, C = D.C; let b = '';
+    b = this.axes(b, D, C, 'light intensity', 'rate of photosynthesis');
+    b += '<path d="M60 230 C140 130 200 60 280 55 L390 55" fill="none" stroke="' + C.blue + '" stroke-width="4"/>' + D.T(395, 45, 'high carbon dioxide', 12, { anchor: 'end', fill: C.stroke });
+    b += '<path d="M60 230 C120 170 160 135 220 130 L390 130" fill="none" stroke="' + C.red + '" stroke-width="4" stroke-dasharray="7 5"/>' + D.T(395, 120, 'low carbon dioxide', 12, { anchor: 'end', fill: C.stroke });
+    b += D.T(300, 165, 'flat part of the low line:', 11, { weight: 'normal', fill: C.stroke }) + D.T(300, 180, 'carbon dioxide is limiting', 11, { weight: 'normal', fill: C.stroke });
+    return D.svg(420, 275, b, 'Rate against light intensity at two carbon dioxide levels. Both rise at first, when light limits. The low carbon dioxide line levels off lower: there carbon dioxide is limiting.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const c0 = this.common([]);
+    const H = c0.isHigher;
+    const done = [s.hook !== null, s.done4.length === 4, s.facs.length === 4, s.calc >= 1, s.calc >= 2 && (!H || s.inv >= 2), s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const triple = c.rk === 'TF' || c.rk === 'TH';
+    const items = {
+      q1: { q: 'A plant is given very bright light and high CO\u2082. The rate of photosynthesis stops increasing. What is now the most likely limiting factor?', opts: [['Temperature \u2014 enzyme activity is now the bottleneck', true], ['Light intensity \u2014 the plant needs even more light', false], ['Carbon dioxide \u2014 the plant needs more CO\u2082', false], ['The plant has used up all its chlorophyll', false]],
+        wrong_explanations: { 1: 'Light is already very bright \u2014 it is NOT the limiting factor.', 2: 'CO\u2082 is already high \u2014 it is NOT the limiting factor.', 3: 'Chlorophyll is not used up \u2014 it is a pigment that absorbs light and is not consumed. Another factor is now limiting the rate.' } },
+      q2: { q: 'In an experiment, moving a lamp further from an aquatic plant reduces the bubble count. What does this show?', opts: [['Light intensity is the limiting factor at that distance \u2014 reducing it reduces the rate of photosynthesis', true], ['The plant needs to be closer to warm water', false], ['CO\u2082 levels decrease as the lamp moves further away', false], ['The plant becomes stressed when the lamp moves', false]],
+        wrong_explanations: { 1: 'The temperature is kept the same (heat shield / water bath), so the drop in rate is caused by less light.', 2: 'Moving a lamp doesn\u2019t change CO\u2082 levels \u2014 CO\u2082 comes from the water/air around the plant.', 3: 'Less light energy reaches the chloroplasts, so the rate falls.' } },
+      q3: { q: 'Why does photosynthesis rate decrease at temperatures above the optimum?', opts: [['Enzymes in the chloroplast denature \u2014 their active sites change shape permanently and can no longer function', true], ['The plant closes its stomata to prevent water loss in the heat', false], ['High temperatures cause chlorophyll to break down permanently', false], ['More CO\u2082 evaporates from the leaf at higher temperatures', false]],
+        wrong_explanations: { 1: 'Stomata closing reduces CO\u2082 entry \u2014 but the primary reason for rate decrease above optimum temperature is ENZYME DENATURATION.', 2: 'Chlorophyll can be affected by extreme heat, but at typical above-optimum temperatures (e.g. 45\u201350\u00b0C) the main limiting effect is enzyme denaturation.', 3: 'CO\u2082 is a gas that dissolves in water \u2014 it doesn\u2019t \u2018evaporate from the leaf\u2019. The CO\u2082 supply issue is about stomata and diffusion rates.' } },
+      chl: { q: 'The pale parts of a variegated leaf photosynthesise more slowly than the green parts. Why?', opts: [['They have less chlorophyll, so they absorb less light', true], ['They have more chlorophyll, which slows the reaction', false], ['They get less carbon dioxide from the air', false], ['They are colder than the green parts', false]],
+        wrong_explanations: { 1: 'The pale parts have less chlorophyll, not more.', 2: 'The whole leaf gets the same air.', 3: 'Both parts are at the same temperature.' } },
+      rate: { q: 'Pondweed gives off 60 bubbles of oxygen in 5 minutes. What is the rate of photosynthesis?', opts: [['12 bubbles per minute', true], ['300 bubbles per minute', false], ['0.08 bubbles per minute', false], ['65 bubbles per minute', false]],
+        wrong_explanations: { 1: 'That multiplies. Rate = amount \u00f7 time.', 2: 'That is time \u00f7 amount, upside down.', 3: 'That adds. Rate = amount \u00f7 time.' } },
+      graph: { q: 'A graph of rate of photosynthesis against light intensity rises, then levels off. What does the flat part show?', opts: [['Light intensity is no longer the limiting factor', true], ['The plant has run out of chlorophyll', false], ['The light has been switched off', false], ['Photosynthesis has stopped', false]],
+        wrong_explanations: { 1: 'Chlorophyll isn\u2019t used up; another factor is limiting.', 2: 'Light intensity is still increasing along the axis.', 3: 'The rate is steady, not zero.' } },
+      inv: { q: 'A lamp is moved from 10 cm to 20 cm from a plant. What happens to the light intensity?', opts: [['It falls to a quarter', true], ['It halves', false], ['It doubles', false], ['It stays the same', false]],
+        wrong_explanations: { 1: 'Light intensity goes with 1 \u00f7 d\u00b2: double the distance, a quarter of the light.', 2: 'Moving away lowers the light intensity.', 3: 'Distance changes the light intensity.' } }
+    };
+    const bankSrc = H ? [items.q1, items.q3, items.chl, items.rate, items.inv] : [items.q3, items.q2, items.chl, items.rate, items.graph];
+    const readings = DIST.filter((x, i) => s.done4.indexOf(i) >= 0).map((x) => x.d + ' cm \u00b7 ' + x.n);
+    const GH = [
+      { k: 'Raise CO\u2082 from 0.04% to 0.1%', note: 'Worth it. Carbon dioxide was limiting, so the yield rises: the extra crop is worth \u00a3300 and the carbon dioxide costs \u00a3100.' },
+      { k: 'Raise CO\u2082 from 0.1% to 0.2%', note: 'Not worth it. Now light is limiting, so the yield barely rises: the extra crop is worth \u00a340, but the carbon dioxide costs \u00a3100.' }
+    ];
+    const cf = (id, head, close, conv, ins, fine, ans, ph) => ({ tab: id.slice(-2) === 'q1' ? 'Question 1' : 'Question 2', id, head, close,
+      steps: [{ letter: 'C', label: 'Convert', placeholder: ph, line: conv }, { letter: 'F', label: 'Formula', placeholder: 'written out', line: 'rate = amount of oxygen \u00f7 time' }, { letter: 'I', label: 'Insert', placeholder: 'rate = \u2026 \u00f7 \u2026', line: ins }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: fine }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: ans }] });
+    return Object.assign(c, {
+      rpLabel: triple ? 'Biology required practical 6' : 'Required practical 5',
+      hookOptions: [
+        { text: 'More light speeds it up', correct: true, reply: 'Yes, up to a point. Next you\u2019ll measure it.' },
+        { text: 'It makes no difference', correct: false, reply: 'More light does speed up photosynthesis, up to a point. Next you\u2019ll measure it.' }
+      ],
+      distBtns: DIST.map((x, i) => ({ label: x.d + ' cm', pressed: s.dist === i, style: this.seg(s.dist === i), onClick: () => this.setState({ dist: i, done4: this.seen('done4', i) }) })),
+      rpFig: c.ready ? K.fig(this.rpFig(s.dist), '') : null,
+      readings: readings.length ? readings : ['Pick a distance.'],
+      rpNote: s.dist === null ? 'Pick a distance.' : DIST[s.dist].n + ' bubbles in one minute at ' + DIST[s.dist].d + ' cm. ' + (s.done4.length === 4 ? 'The closer the lamp, the higher the light intensity, and the faster the rate.' : 'Try another distance.'),
+      facBtns: this.btns(FAC.map((x) => x.k), s.fac, (i) => this.setState({ fac: i, facs: this.seen('facs', i) })),
+      facFig: c.ready ? K.fig(this.facFig(s.fac), '') : null,
+      facNote: FAC[s.fac].note,
+      hiFig: c.ready && H ? K.fig(this.hiFig(), '') : null,
+      ghBtns: this.btns(GH.map((x) => x.k), s.gh, (i) => this.setState({ gh: i })),
+      ghNote: s.gh === null ? 'Pick a step.' : GH[s.gh].note,
+      eqRate: EQ_R, eqInv: EQ_I,
+      cfExamples: [
+        { tab: 'Nothing to convert', eq: EQ_R, find: 'R', next: 'Now one that needs converting.', head: 'Pondweed gives off 48 bubbles of oxygen in 4 minutes. Calculate the rate of photosynthesis.', steps: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert: bubbles and minutes give bubbles per minute.' },
+          { letter: 'F', label: 'Formula', line: 'rate = amount of oxygen \u00f7 time' },
+          { letter: 'I', label: 'Insert', line: 'rate = 48 \u00f7 4' },
+          { letter: 'F', label: 'Fine-tune', line: 'rate = 12' },
+          { letter: 'A', label: 'Answer', line: '12 bubbles per minute' }] },
+        { tab: 'Convert first', eq: EQ_R, find: 'R', next: 'Now yours, below.', head: 'Pondweed gives off 3.6 cm\u00b3 of oxygen in 90 s. Calculate the rate in cm\u00b3 per minute.', steps: [
+          { letter: 'C', label: 'Convert', line: '90 s \u00f7 60 = 1.5 min', note: 'The rate is asked for per minute, so the time must be in minutes.' },
+          { letter: 'F', label: 'Formula', line: 'rate = amount of oxygen \u00f7 time' },
+          { letter: 'I', label: 'Insert', line: 'rate = 3.6 \u00f7 1.5' },
+          { letter: 'F', label: 'Fine-tune', line: 'rate = 2.4' },
+          { letter: 'A', label: 'Answer', line: '2.4 cm\u00b3 per minute' }] }
+      ],
+      cfQuestions: [
+        cf('rp-q1', 'Pondweed gives off 75 bubbles in 5 minutes. Calculate the rate of photosynthesis.', '75 \u00d7 5 = 375 multiplies: rate is amount divided by time.', 'Nothing to convert: bubbles and minutes.', 'rate = 75 \u00f7 5', 'rate = 15', '15 bubbles per minute', 'anything to convert?'),
+        cf('rp-q2', 'Pondweed gives off 4.2 cm\u00b3 of oxygen in 120 s. Calculate the rate in cm\u00b3 per minute.', '4.2 \u00f7 120 = 0.035 is per second: convert 120 s to 2 min first.', '120 s \u00f7 60 = 2 min', 'rate = 4.2 \u00f7 2', 'rate = 2.1', '2.1 cm\u00b3 per minute', 's to min?')
+      ],
+      onCalc: (n) => this.setState({ calc: n }),
+      invExamples: [
+        { tab: 'Same units', eq: EQ_I, find: 'L', next: 'Now one that needs converting.', head: 'A lamp is moved from 10 cm to 20 cm from some pondweed. How does the light intensity change?', steps: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert: both distances are in cm.' },
+          { letter: 'F', label: 'Formula', line: 'light intensity = 1 \u00f7 d\u00b2' },
+          { letter: 'I', label: 'Insert', line: 'at 10 cm: 1 \u00f7 10\u00b2; at 20 cm: 1 \u00f7 20\u00b2', note: 'One line for each distance.' },
+          { letter: 'F', label: 'Fine-tune', line: '1 \u00f7 100 = 0.01; 1 \u00f7 400 = 0.0025' },
+          { letter: 'A', label: 'Answer', line: '0.0025 \u00f7 0.01 = 0.25: a quarter of the light intensity' }] },
+        { tab: 'Convert first', eq: EQ_I, find: 'L', next: 'Now yours, below.', head: 'A lamp is moved from 0.1 m to 30 cm from some pondweed. How does the light intensity change?', steps: [
+          { letter: 'C', label: 'Convert', line: '0.1 m \u00d7 100 = 10 cm', note: 'Both distances in cm before squaring.' },
+          { letter: 'F', label: 'Formula', line: 'light intensity = 1 \u00f7 d\u00b2' },
+          { letter: 'I', label: 'Insert', line: 'at 10 cm: 1 \u00f7 10\u00b2; at 30 cm: 1 \u00f7 30\u00b2' },
+          { letter: 'F', label: 'Fine-tune', line: '1 \u00f7 100 = 0.01; 1 \u00f7 900 = 0.00111...' },
+          { letter: 'A', label: 'Answer', line: '0.00111... \u00f7 0.01 = 0.111...: a ninth of the light intensity' }] }
+      ],
+      invQuestions: [
+        { tab: 'Question 1', id: 'inv-q1', head: 'A lamp is moved from 15 cm to 30 cm from a plant. How does the light intensity change?', close: 'Doubling the distance halves it? No: square the distances. A quarter.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'same units?', line: 'Nothing to convert: both in cm.' }, { letter: 'F', label: 'Formula', placeholder: 'written out', line: 'light intensity = 1 \u00f7 d\u00b2' }, { letter: 'I', label: 'Insert', placeholder: 'one line per distance', line: 'at 15 cm: 1 \u00f7 15\u00b2; at 30 cm: 1 \u00f7 30\u00b2' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work out both', line: '1 \u00f7 225 = 0.00444...; 1 \u00f7 900 = 0.00111...' }, { letter: 'A', label: 'Answer', placeholder: 'compare them', line: '0.00111 \u00f7 0.00444 = 0.25: a quarter' }] },
+        { tab: 'Question 2', id: 'inv-q2', head: 'A lamp is moved from 5 cm to 0.2 m from a plant. How does the light intensity change?', close: 'Squaring 0.2 alongside 5 mixes units: convert 0.2 m to 20 cm first.',
+          steps: [{ letter: 'C', label: 'Convert', placeholder: 'm to cm?', line: '0.2 m \u00d7 100 = 20 cm' }, { letter: 'F', label: 'Formula', placeholder: 'written out', line: 'light intensity = 1 \u00f7 d\u00b2' }, { letter: 'I', label: 'Insert', placeholder: 'one line per distance', line: 'at 5 cm: 1 \u00f7 5\u00b2; at 20 cm: 1 \u00f7 20\u00b2' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work out both', line: '1 \u00f7 25 = 0.04; 1 \u00f7 400 = 0.0025' }, { letter: 'A', label: 'Answer', placeholder: 'compare them', line: '0.0025 \u00f7 0.04 = 0.0625: a sixteenth' }] }
+      ],
+      onInv: (n) => this.setState({ inv: n }),
+      thinkOptions: [
+        { text: 'The plant has used up its chlorophyll', correct: false, reply: 'Chlorophyll isn\u2019t used up.' },
+        { text: 'Another factor is now limiting', correct: true, reply: 'For example carbon dioxide or temperature.' },
+        { text: 'The light has stopped reaching the plant', correct: false, reply: 'Light intensity is still rising along the axis.' }
+      ],
+      sortBins: [{ id: 'i', label: 'Change it (independent)' }, { id: 'd', label: 'Measure it (dependent)' }, { id: 'c', label: 'Keep it the same (control)' }],
+      sortItems: [
+        { text: 'Distance of the lamp', bin: 'i', why: 'This changes the light intensity.' },
+        { text: 'Bubbles of oxygen in one minute', bin: 'd', why: 'This shows the rate.' },
+        { text: 'Temperature of the water', bin: 'c', why: 'Heat shield and thermometer.' },
+        { text: 'Amount of carbon dioxide in the water', bin: 'c', why: 'Another limiting factor.' },
+        { text: 'Same piece of pondweed', bin: 'c', why: 'Same amount of chlorophyll.' },
+        { text: 'Time the bubbles are counted for', bin: 'c', why: 'A fair comparison.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the gas given off by the pondweed in the practical.', 'Oxygen.', [['Carbon dioxide', 'Carbon dioxide is taken in.'], 'Oxygen', ['Nitrogen', 'Not a product of photosynthesis.']]),
+          MCQ('State', 'State what is placed between the lamp and the pondweed to stop the water warming up.', 'A large beaker of water, as a heat shield.', ['A beaker of water as a heat shield', ['A mirror', 'That would reflect light.'], ['A thermometer', 'That checks the temperature; it doesn\u2019t stop warming.']])
+        ],
+        r2: [
+          { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'Pondweed gives off 36 bubbles of oxygen in 3 minutes. Calculate the rate of photosynthesis in bubbles per minute.',
+            convOptions: ['Nothing to convert', 'Convert minutes to seconds: multiply by 60', 'Convert minutes to hours: divide by 60'], convAnswer: 0, answer: 12, tol: 0.1, unit: 'bubbles per minute', units: ['bubbles per minute', 'bubbles', 'minutes'],
+            right: '36 \u00f7 3 = 12 bubbles per minute.', wrong: 'Rate = amount \u00f7 time = 36 \u00f7 3.',
+            model: ['C \u00b7 nothing to convert', 'F \u00b7 rate = amount of oxygen \u00f7 time', 'I \u00b7 rate = 36 \u00f7 3', 'F \u00b7 rate = 12', 'A \u00b7 12 bubbles per minute'] },
+          H ? { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'A lamp is moved from 10 cm to 30 cm from some pondweed. Calculate how many times lower the light intensity is.',
+            convOptions: ['Nothing to convert: both in cm', 'Convert cm to m: divide by 100', 'Convert cm to mm: multiply by 10'], convAnswer: 0, answer: 9, tol: 0.05, unit: 'times', units: ['times', 'cm', 'cm\u00b2'],
+            right: '1 \u00f7 10\u00b2 = 0.01; 1 \u00f7 30\u00b2 = 0.00111; 0.01 \u00f7 0.00111 = 9 times lower.', wrong: 'Square each distance: 100 and 900. 900 \u00f7 100 = 9.',
+            model: ['C \u00b7 nothing to convert: both in cm', 'F \u00b7 light intensity = 1 \u00f7 d\u00b2', 'I \u00b7 1 \u00f7 10\u00b2; 1 \u00f7 30\u00b2', 'F \u00b7 0.01; 0.00111...', 'A \u00b7 9 times lower'] }
+          : { kind: 'calc', command: 'Calculate', marks: 2, prompt: 'Pondweed gives off 2.7 cm\u00b3 of oxygen in 90 s. Calculate the rate in cm\u00b3 per minute.',
+            convOptions: ['Nothing to convert', 'Convert s to min: divide by 60', 'Convert s to min: multiply by 60'], convAnswer: 1, answer: 1.8, tol: 0.05, unit: 'cm\u00b3 per minute', units: ['cm\u00b3 per minute', 'cm\u00b3 per second', 'cm\u00b3'],
+            right: '90 s = 1.5 min; 2.7 \u00f7 1.5 = 1.8 cm\u00b3 per minute.', wrong: '90 s \u00f7 60 = 1.5 min; then 2.7 \u00f7 1.5.',
+            model: ['C \u00b7 90 s \u00f7 60 = 1.5 min', 'F \u00b7 rate = amount of oxygen \u00f7 time', 'I \u00b7 rate = 2.7 \u00f7 1.5', 'F \u00b7 rate = 1.8', 'A \u00b7 1.8 cm\u00b3 per minute'] }
+        ],
+        r3: [
+          CHAIN('Explain', 'A graph of rate against light intensity rises, then levels off. Explain its shape. Put the links in order.',
+            ['At low light intensity, light is the limiting factor.', 'So more light gives more energy, and the rate increases.', 'Then the line levels off: another factor, such as carbon dioxide or temperature, is now limiting.'],
+            [['The plant runs out of chlorophyll.', 'Chlorophyll isn\u2019t used up.'], ['Too much light kills the plant.', 'The rate stays steady; it doesn\u2019t fall.']]),
+          H ? CHAIN('Explain', 'A grower adds carbon dioxide to a greenhouse. Explain why adding more and more is not always worth it. Put the links in order.',
+            ['Extra carbon dioxide raises the rate only while carbon dioxide is the limiting factor.', 'Once another factor, such as light, is limiting, the yield barely rises.', 'Then the extra crop earns less than the carbon dioxide costs, so profit falls.'],
+            [['Carbon dioxide always raises the yield.', 'Only while it is limiting.'], ['Carbon dioxide denatures the enzymes.', 'Temperature does that.']])
+          : CHAIN('Explain', 'Explain why the rate of photosynthesis falls at temperatures above the optimum. Put the links in order.',
+            ['Photosynthesis is controlled by enzymes.', 'Above the optimum, the enzymes are denatured: the active site changes shape.', 'So the reaction slows, and the rate falls.'],
+            [['The plant runs out of light.', 'Light doesn\u2019t change with temperature.'], ['Heat makes the plant use up its chlorophyll.', 'Chlorophyll isn\u2019t used up.']])
+        ],
+        r4: [
+          { kind: 'write', command: 'Describe', marks: 6, prompt: 'Describe how to investigate the effect of light intensity on the rate of photosynthesis using pondweed.',
+            levels: LV6('A clear, logical method: changing the distance, measuring the rate, control variables, repeats.', 'Most of a method, with some control or measurement detail.', 'Simple statements about the lamp or bubbles.'),
+            points: ['Put pondweed in a tube of water, with a lamp at a measured distance.', 'Count the bubbles of oxygen (or collect the gas) in a set time, e.g. one minute.', 'Repeat at different distances from the lamp.', 'Use a beaker of water as a heat shield and check the temperature with a thermometer.', 'Keep carbon dioxide, the pondweed and the time the same.', 'Repeat each distance and find the mean; rate = amount \u00f7 time.'],
+            reject: ['\u201cThe lamp only gives out light, so temperature doesn\u2019t matter.\u201d', '\u201cChange the lamp and the temperature together.\u201d'] }
+        ]
+      },
+      keyLines: ['A limiting factor is the one in short supply that stops the rate rising: light intensity, carbon dioxide, temperature or the amount of chlorophyll.', 'Light and carbon dioxide graphs rise, then level off when another factor limits. Above the optimum temperature, enzymes are denatured and the rate falls.', 'Rate = amount of oxygen \u00f7 time. Convert seconds to minutes first if the rate is per minute.', (c.rk === 'TF' || c.rk === 'TH' ? 'Biology required practical 6' : 'Required practical 5') + ': lamp distance changes light intensity; heat shield and thermometer keep temperature the same; repeat and find a mean.'].concat(H ? ['Higher: factors interact. Light intensity = 1 \u00f7 d\u00b2, both distances in the same unit. Add heat, light or carbon dioxide only while it is limiting and pays.'] : []),
+      bank: c.ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.4.1.1-photosynthesis.dc.html', label: 'Photosynthesis' },
+      endNext: { href: 'ks4-biology-4.4.1.3-uses-of-glucose.dc.html', label: 'Uses of glucose' },
+      endConnects: [{ href: 'ks4-biology-4.3.3.1-plant-disease-detection-defence.dc.html', label: 'Plant disease: magnesium and chlorophyll (Triple)' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

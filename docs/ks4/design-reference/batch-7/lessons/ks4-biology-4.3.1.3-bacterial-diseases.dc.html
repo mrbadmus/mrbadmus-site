@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bacterial diseases · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Infection and response" title="Bacterial diseases" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.3.1.3</p>
+        <h1>Bacterial diseases</h1>
+        <p class="ks3-bigq">Two bacterial diseases, two routes in. The route decides the control, and one of them is outrunning penicillin.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Pink in the middle." scene="A chicken burger comes out of the pan still pink in the middle. Someone eats it anyway." question="if it makes them ill, is that more likely to be the meat itself, or something living on it?" options="{{ hookOptions }}" bridge="Bacteria on the meat. Next: how two bacterial diseases spread, and how each is stopped." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-contrast" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Salmonella · gonorrhoea</p>
+        <h2 style="margin: 6px 0 0;">Same kind of pathogen, different routes in.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Bacteria reproduce rapidly inside the body. They may produce poisons, called toxins, that damage tissues and make us feel ill. Pick a disease: how it spreads decides how it is controlled.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ disBtns }}" as="b" hint-placeholder-count="2"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ disFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ disNote }}</p></div>
+      </section>
+
+      <section id="s-resist" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Why penicillin stopped working</p>
+        <h2 style="margin: 6px 0 0;">Resistant strains.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Gonorrhoea was easily treated with the antibiotic penicillin until many resistant strains appeared. Step through how a resistant strain takes over.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ resBtns }}" as="b" hint-placeholder-count="4"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ resFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ resNote }}</p></div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">How to slow resistance down: in <a href="ks4-biology-4.3.1.8-antibiotics-painkillers.dc.html">Antibiotics and painkillers</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · did penicillin cause it?</p></div>
+        <p class="ks3-mis-quote">&ldquo;The antibiotic made the bacteria mutate.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Why did penicillin stop working against many gonorrhoea bacteria?" options="{{ thinkOptions }}" reveal="Resistant bacteria were already there, by chance mutation. Penicillin killed the rest; the resistant ones survived and reproduced." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Salmonella or gonorrhoea?" prompt="Place each feature." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Salmonella comes in food; gonorrhoea is spread by sexual contact. The route decides the control." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How it spreads, its symptoms, and how it is controlled.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why a resistant strain becomes common, link by link.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Two diseases, point by point.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Salmonella is spread in food; gonorrhoea by sexual contact. Penicillin once treated gonorrhoea easily, until resistant strains appeared.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="bacterial-diseases" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Bacterial diseases" spec="AQA 4.3.1.3" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure how a resistant strain takes over?" legal="Drawings are schematic." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'bacterial-diseases';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const RAIL = [
+  { id: 's-hook', label: 'Pink in the middle', short: 'HOOK' },
+  { id: 's-contrast', label: 'Salmonella and gonorrhoea', short: 'CONTRAST' },
+  { id: 's-resist', label: 'Resistant strains', short: 'RESIST' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Which disease?', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const STATE = { dis: 0, diss: [0], res: 0, ress: [0] };
+const DIS = [
+  { k: 'Salmonella food poisoning', spread: ['bacteria eaten in food,', 'or on food prepared', 'in unhygienic conditions'], sym: ['fever, abdominal cramps,', 'vomiting, diarrhoea,', 'from bacteria and toxins'], ctl: ['cook food thoroughly;', 'hygiene; in the UK,', 'poultry are vaccinated'],
+    note: 'Salmonella is spread in food, or on food prepared in unhygienic conditions. The bacteria and the toxins they secrete cause fever, abdominal cramps, vomiting and diarrhoea. In the UK, poultry are vaccinated against Salmonella to control the spread.' },
+  { k: 'Gonorrhoea', spread: ['sexual contact:', 'a sexually transmitted', 'disease (STD)'], sym: ['thick yellow or green', 'discharge from vagina or', 'penis; pain on urinating'], ctl: ['treatment with', 'antibiotics; condoms', '(barrier contraception)'],
+    note: 'Gonorrhoea is a sexually transmitted disease, spread by sexual contact. Symptoms: a thick yellow or green discharge from the vagina or penis, and pain on urinating. Its spread is controlled by treatment with antibiotics, or by using a barrier method of contraception such as a condom.' }
+];
+const RES = [
+  { k: 'A mixed population', note: 'Mutations in bacteria produce new strains. By chance, a few are resistant to penicillin.' },
+  { k: 'Penicillin given', note: 'Penicillin kills the bacteria that aren\u2019t resistant. The resistant ones are not killed.' },
+  { k: 'Survivors reproduce', note: 'The resistant bacteria survive and reproduce, so the population of the resistant strain rises.' },
+  { k: 'A resistant strain', note: 'The resistant strain spreads, because people aren\u2019t immune to it and penicillin no longer treats it.' }
+];
+
+class Component extends DCLogic {
+  
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: rk === 'TF' || rk === 'TH', isTH: rk === 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+
+  disFig(i) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const d = DIS[i], cols = [['how it spreads', d.spread], ['symptoms', d.sym], ['control', d.ctl]];
+    cols.forEach((col, j) => {
+      const x = 20 + j * 220;
+      b += BOX(x, 50, 190, 130, j === 2 ? '#DDEFD3' : '#FFFDF8') + D.T(x + 95, 36, col[0], 14, { fill: C.stroke });
+      col[1].forEach((t, k) => { b += D.T(x + 95, 92 + k * 24, t, 14, { weight: 'normal', fill: C.stroke }); });
+      if (j < 2) b += D.arrow(x + 194, 115, x + 216, 115, C.stroke, 2.5);
+    });
+    return D.svg(680, 200, b, d.k + '. Spread: ' + d.spread.join(' ') + '. Symptoms: ' + d.sym.join(' ') + '. Control: ' + d.ctl.join(' ') + '.');
+  }
+  resFig(n) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const R = [2, 9], pos = [];
+    for (let i = 0; i < 12; i++) pos.push([60 + (i % 4) * 90, 50 + Math.floor(i / 4) * 70]);
+    pos.forEach((p, i) => {
+      const resistant = n < 3 ? R.indexOf(i) >= 0 : true;
+      const alive = n === 0 ? true : n === 1 ? R.indexOf(i) >= 0 : true;
+      b += '<rect x="' + (p[0] - 26) + '" y="' + (p[1] - 13) + '" width="52" height="26" rx="13" fill="' + (!alive ? 'none' : resistant ? '#E07B5A' : '#B8D99A') + '" stroke="' + (alive ? C.stroke : C.muted) + '" stroke-width="2"' + (alive ? '' : ' stroke-dasharray="4 4"') + '/>';
+    });
+    b += D.T(200, 250, n === 1 ? 'penicillin added' : n === 0 ? 'orange: resistant' : 'resistant bacteria multiply', 14, { fill: C.stroke });
+    return D.svg(400, 270, b, RES[n].k + ': ' + RES[n].note);
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.diss.length === 2, s.ress.length === 4, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const bankSrc = [
+      { q: 'How is Salmonella food poisoning prevented?', opts: [['Thorough cooking to kill bacteria, good food hygiene, refrigeration and hand washing', true], ['Taking antibiotics before eating suspected food', false], ['Avoiding all animal products entirely', false], ['Vaccinating all humans against Salmonella', false]],
+        wrong_explanations: { 1: 'Taking antibiotics preventatively is dangerous \u2014 it promotes antibiotic resistance without benefit.', 2: 'Thorough cooking makes animal products safe \u2014 you don\u2019t need to avoid them entirely.', 3: 'Human Salmonella vaccines are not routinely used \u2014 poultry vaccination is used in the UK to reduce the source.' } },
+      { q: 'Why is gonorrhoea becoming harder to treat?', opts: [['Antibiotic-resistant strains have evolved \u2014 bacteria with resistance mutations survive antibiotic treatment and pass on resistance genes', true], ['Gonorrhoea has mutated into a virus, which antibiotics cannot target', false], ['The antibiotic makes the bacteria mutate', false], ['People have developed immunity to the antibiotics used to treat it', false]],
+        wrong_explanations: { 1: 'Gonorrhoea remains a bacterium \u2014 bacteria cannot evolve into viruses. The issue is antibiotic resistance in bacterial populations.', 2: 'Mutations happen by chance. The antibiotic doesn\u2019t cause them: it kills the bacteria that aren\u2019t resistant, so the resistant ones survive and reproduce.', 3: 'People develop immunity to pathogens, not to medicines. Antibiotic resistance is a property of the BACTERIA, not of human patients.' } },
+      { q: 'What causes the symptoms of Salmonella food poisoning?', opts: [['The bacteria and the toxins they secrete', true], ['A virus in the food', false], ['Antibiotics in the meat', false], ['Mosquito bites', false]],
+        wrong_explanations: { 1: 'Salmonella is a bacterium.', 2: 'The symptoms come from the bacteria and their toxins.', 3: 'Salmonella is spread in food.' } },
+      { q: 'Which of these helps control the spread of gonorrhoea?', opts: [['Using a condom', true], ['Cooking food thoroughly', false], ['Vaccinating poultry', false], ['Using mosquito nets', false]],
+        wrong_explanations: { 1: 'That controls Salmonella.', 2: 'That controls Salmonella.', 3: 'Gonorrhoea is spread by sexual contact, not by a vector.' } },
+      { q: 'Why are poultry in the UK vaccinated against Salmonella?', opts: [['To control the spread of Salmonella to people through food', true], ['To make the chickens grow faster', false], ['So that people don\u2019t need to cook chicken', false], ['Because Salmonella is a virus', false]],
+        wrong_explanations: { 1: 'The vaccine is to control Salmonella, not growth.', 2: 'Food should still be cooked thoroughly.', 3: 'Salmonella is a bacterium.' } }
+    ];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'Something living on it', correct: true, reply: 'Yes: bacteria such as Salmonella, which thorough cooking kills.' },
+        { text: 'The meat itself', correct: false, reply: 'It\u2019s bacteria living on the meat, such as Salmonella. Thorough cooking kills them.' }
+      ],
+      disBtns: this.btns(DIS.map((x) => x.k), s.dis, (i) => this.setState({ dis: i, diss: this.seen('diss', i) })),
+      disFig: c.ready ? K.fig(this.disFig(s.dis), '') : null,
+      disNote: DIS[s.dis].note,
+      resBtns: this.btns(RES.map((x, i) => (i + 1) + ' \u00b7 ' + x.k), s.res, (i) => this.setState({ res: i, ress: this.seen('ress', i) })),
+      resFig: c.ready ? K.fig(this.resFig(s.res), '') : null,
+      resNote: RES[s.res].note,
+      thinkOptions: [
+        { text: 'Penicillin made the bacteria mutate', correct: false, reply: 'Mutations happen by chance. Penicillin only kills the bacteria that aren\u2019t resistant.' },
+        { text: 'Patients\u2019 bodies got used to penicillin', correct: false, reply: 'The bacteria are resistant, not the patients.' },
+        { text: 'Resistant bacteria survived and reproduced', correct: true, reply: 'So the resistant strain\u2019s population rose.' }
+      ],
+      sortBins: [{ id: 's', label: 'Salmonella' }, { id: 'g', label: 'Gonorrhoea' }],
+      sortItems: [
+        { text: 'Spread in food', bin: 's', why: 'Or on food prepared in unhygienic conditions.' },
+        { text: 'Spread by sexual contact', bin: 'g', why: 'An STD.' },
+        { text: 'Poultry vaccinated in the UK', bin: 's', why: 'Controls the source.' },
+        { text: 'Thick yellow or green discharge', bin: 'g', why: 'From the vagina or penis.' },
+        { text: 'Fever, cramps, vomiting, diarrhoea', bin: 's', why: 'From the bacteria and their toxins.' },
+        { text: 'Pain on urinating', bin: 'g', why: 'A symptom of gonorrhoea.' },
+        { text: 'Condoms control the spread', bin: 'g', why: 'A barrier method.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the antibiotic that once easily treated gonorrhoea.', 'Penicillin.', [['Paracetamol', 'A painkiller, not an antibiotic.'], 'Penicillin', ['Insulin', 'A hormone.']]),
+          MCQ('State', 'State how Salmonella is spread.', 'In food, or on food prepared in unhygienic conditions.', ['In food', ['By sexual contact', 'That is gonorrhoea.'], ['By mosquitoes', 'That is malaria.']])
+        ],
+        r2: [
+          MCQ('Give', 'Give one symptom of gonorrhoea.', 'Thick yellow or green discharge, or pain on urinating.', [['A red skin rash', 'That is measles.'], ['Fever and diarrhoea', 'That is Salmonella.'], 'Pain on urinating', ['A mosaic pattern', 'That is TMV.']]),
+          MCQ('Suggest', 'Suggest why condoms reduce the spread of gonorrhoea.', 'They are a barrier, so the bacteria aren\u2019t passed on in sexual contact.', [['They kill the bacteria with antibiotics', 'Condoms are a barrier, not a medicine.'], ['They make people immune', 'Immunity comes from white blood cells.'], 'They stop the bacteria passing between people during sex', ['They cure the infection', 'Treatment is with antibiotics.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain why penicillin no longer treats many cases of gonorrhoea. Put the links in order.',
+            ['Mutations produced strains of the bacteria that are resistant to penicillin.', 'Penicillin killed the bacteria that weren\u2019t resistant, but the resistant ones survived.', 'The resistant bacteria reproduced, so the resistant strain became common.'],
+            [['Penicillin made the bacteria mutate.', 'Mutations happen by chance.'], ['People became resistant to penicillin.', 'The bacteria are resistant.']]),
+          CHAIN('Explain', 'Explain how undercooked chicken can make someone ill. Put the links in order.',
+            ['Salmonella bacteria on the chicken are not killed, because it isn\u2019t cooked thoroughly.', 'The bacteria are eaten and secrete toxins in the body.', 'The bacteria and toxins cause fever, cramps, vomiting and diarrhoea.'],
+            [['The chicken meat itself is poisonous.', 'It\u2019s the bacteria on it.'], ['Salmonella is a virus that spreads in coughs.', 'Salmonella is a bacterium, spread in food.']])
+        ],
+        r4: [
+          { kind: 'write', command: 'Compare', marks: 4, prompt: 'Compare Salmonella food poisoning and gonorrhoea: how each is spread and how its spread is controlled.',
+            levels: LV4('Spread and control for both, linked: the route decides the control.', 'One disease, or spread only.'),
+            points: ['Salmonella is spread in food, or on food prepared in unhygienic conditions.', 'Salmonella is controlled by vaccinating poultry (UK), cooking thoroughly and hygiene.', 'Gonorrhoea is spread by sexual contact.', 'Gonorrhoea is controlled by antibiotic treatment and condoms; resistant strains make treatment harder.'],
+            reject: ['\u201cGonorrhoea can\u2019t be treated at all.\u201d', '\u201cSalmonella is spread in droplets.\u201d'] }
+        ]
+      },
+      keyLines: ['Bacteria reproduce rapidly in the body and may produce toxins that damage tissues and make us feel ill.', 'Salmonella: spread in food or on food prepared unhygienically; fever, cramps, vomiting and diarrhoea from the bacteria and their toxins; UK poultry are vaccinated.', 'Gonorrhoea: an STD spread by sexual contact; thick yellow or green discharge, pain on urinating; controlled by antibiotics and condoms.', 'Penicillin once treated gonorrhoea easily, until resistant strains appeared: the resistant bacteria survive and reproduce.'],
+      bank: c.ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.3.1.2-viral-diseases.dc.html', label: 'Viral diseases' },
+      endNext: { href: 'ks4-biology-4.3.1.4-fungal-protist-diseases.dc.html', label: 'Fungal and protist diseases' },
+      endConnects: [{ href: '../../Batch 6/lessons/ks4-biology-4.1.1.6-culturing-microorganisms.dc.html', label: 'Culturing microorganisms (Triple)' }]
+    });
+  }
+}
+</script>
+</body>
+</html>

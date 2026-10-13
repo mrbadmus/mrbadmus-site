@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Response to exercise · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Bioenergetics" title="Response to exercise" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.4.2.2</p>
+        <h1>Response to exercise</h1>
+        <p class="ks3-bigq">Run, stop, recover. Watch heart and breathing rates change, and find out why you keep panting after you stop.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Running for the bus." scene="You sprint for a bus and just make it. You sit down." question="does your breathing go back to normal straight away, or do you keep breathing hard for a while?" options="{{ hookOptions }}" bridge="You keep breathing hard. Next: what happens during the run, and after." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-timeline" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Rest, exercise, recovery</p>
+        <h2 style="margin: 6px 0 0;">Heart and lungs keep up.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">During exercise the human body reacts to the increased demand for energy. Step through the run.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ phBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ tlFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ tlNote }}</p></div>
+      </section>
+
+      <section id="s-fatigue" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">When oxygen runs short</p>
+        <h2 style="margin: 6px 0 0;">A jog, or a sprint?</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Compare the oxygen your muscles need with the oxygen your blood can deliver.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ paceBtns }}" as="b" hint-placeholder-count="2"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ paceFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ paceNote }}</p></div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">During long periods of vigorous activity, muscles become fatigued and stop contracting efficiently.</p>
+        <sc-if value="{{ isHigher }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 16px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);"><div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Higher</span><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Oxygen debt and the liver</p></div><p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Blood flowing through the muscles transports the lactic acid to the liver, where it is converted back into glucose.</p><p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Oxygen debt is the amount of extra oxygen the body needs after exercise to react with the accumulated lactic acid and remove it from the cells.</p></div></sc-if>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Anaerobic respiration itself: in <a href="ks4-biology-4.4.2.1-anaerobic-respiration.dc.html">Anaerobic respiration</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · what changes?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Breathing faster is all that changes.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="During exercise, which of these increase?" options="{{ thinkOptions }}" reveal="Heart rate, breathing rate and breath volume all increase, to supply the muscles with more oxygenated blood." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="During or after?" prompt="Place each change." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="During: heart and breathing speed up, and lactic acid can build up. After: breathing stays raised for a while." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How heart and breathing rates change on a graph.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why each change happens, link by link.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why muscles stop working well.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Exercise raises heart rate, breathing rate and breath volume. Short of oxygen, muscles make lactic acid, creating an oxygen debt.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="response-to-exercise" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Response to exercise" spec="AQA 4.4.2.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure what the oxygen debt is?" legal="Heart-rate and breathing-rate curves are made-up teaching data." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'response-to-exercise';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const RAIL = [
+  { id: 's-hook', label: 'Running for the bus', short: 'HOOK' },
+  { id: 's-timeline', label: 'Rest, exercise, recovery', short: 'TIMELINE' },
+  { id: 's-fatigue', label: 'When oxygen runs short', short: 'FATIGUE' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'During or after', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const STATE = { ph: 0, phs: [0], pace: 0, paces: [0] };
+const HR = [70, 70, 70, 120, 150, 160, 162, 163, 140, 115, 95, 82, 76, 72];
+const BR = [14, 14, 14, 26, 34, 38, 40, 40, 36, 31, 26, 21, 17, 15];
+
+class Component extends DCLogic {
+  
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: rk === 'TF' || rk === 'TH', isTH: rk === 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+
+  tlFig(ph, H) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const X0 = 60, Y0 = 250, W = 540, dx = W / 13;
+    const bands = [[0, 2.5, 'rest'], [2.5, 7.5, 'exercise'], [7.5, 13, 'recovery']];
+    bands.forEach((bd, i) => { b += '<rect x="' + (X0 + bd[0] * dx) + '" y="40" width="' + ((bd[1] - bd[0]) * dx) + '" height="' + (Y0 - 40) + '" fill="' + (i === ph ? '#F6D9D0' : 'transparent') + '"/>' + D.T(X0 + (bd[0] + bd[1]) / 2 * dx, 34, bd[2], 13, { fill: C.stroke }); });
+    if (H) { let d = 'M' + (X0 + 7.5 * dx) + ' ' + (Y0 - (BR[7] - 0) * 4.5); for (let i = 8; i < 14; i++) d += ' L' + (X0 + i * dx) + ' ' + (Y0 - BR[i] * 4.5); d += ' L' + (X0 + 13 * dx) + ' ' + (Y0 - 14 * 4.5) + ' L' + (X0 + 7.5 * dx) + ' ' + (Y0 - 14 * 4.5) + ' Z'; b += '<path d="' + d + '" fill="#BFD6F2" opacity=".75"/>' + D.T(X0 + 10.4 * dx, Y0 - 90, 'oxygen debt', 12, { fill: C.blue }); }
+    b += D.line(X0, Y0, X0 + W, Y0, 2.5) + D.line(X0, Y0, X0, 40, 2.5) + D.T(X0 + W / 2, Y0 + 26, 'time', 13, { fill: C.stroke });
+    const path = (arr, k) => arr.map((v, i) => (i ? 'L' : 'M') + (X0 + i * dx).toFixed(1) + ' ' + (Y0 - v * k).toFixed(1)).join(' ');
+    b += '<path d="' + path(HR, 1.15) + '" fill="none" stroke="' + C.red + '" stroke-width="4"/>' + '<path d="' + path(BR, 4.5) + '" fill="none" stroke="' + C.blue + '" stroke-width="4" stroke-dasharray="8 5"/>';
+    b += D.T(X0 + W + 4, Y0 - HR[13] * 1.15 - 8, 'heart rate', 12, { anchor: 'end', fill: C.red }) + D.T(X0 + W + 4, Y0 - BR[13] * 4.5 + 18, 'breathing rate', 12, { anchor: 'end', fill: C.blue });
+    return D.svg(640, 285, b, 'Heart rate and breathing rate over rest, exercise and recovery: both rise during exercise and fall slowly after; breathing stays raised for a while.' + (H ? ' The extra breathing after exercise is shaded as the oxygen debt.' : ''));
+  }
+  paceFig(p) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const need = p ? 230 : 110, got = p ? 150 : 110;
+    b += BOX(70, 250 - need, 90, need, '#F6D9D0') + D.T(115, 272, 'needed', 13, { fill: C.stroke });
+    b += BOX(220, 250 - got, 90, got, '#DDEEF6') + D.T(265, 272, 'delivered', 13, { fill: C.stroke });
+    if (p) b += '<rect x="220" y="' + (250 - need) + '" width="90" height="' + (need - got) + '" fill="none" stroke="' + C.red + '" stroke-width="2.5" stroke-dasharray="5 4"/>' + D.T(265, 250 - need - 8, 'shortfall', 12, { fill: C.red });
+    b += D.T(190, 14, 'oxygen for the muscles', 13, { fill: C.stroke });
+    return D.svg(380, 285, b, p ? 'Sprint: the muscles need more oxygen than the blood can deliver; there is a shortfall.' : 'Jog: oxygen delivered matches oxygen needed.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.phs.length === 3, s.paces.length === 2, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const H = c.isHigher;
+    const PH = [
+      'At rest, heart rate and breathing rate are low and steady.',
+      'Muscles need more energy, so they respire faster. Heart rate, breathing rate and breath volume all increase to supply the muscles with more oxygenated blood.',
+      H ? 'Exercise stops, but breathing stays raised for a while. The extra oxygen taken in after exercise is the oxygen debt: it reacts with the lactic acid that built up and removes it from the cells.' : 'Exercise stops, but breathing stays raised for a while. Lactic acid built up during the sprint, creating an oxygen debt.'
+    ];
+    const items = {
+      q1: { q: 'Why does heart rate increase during exercise?', opts: [['To deliver more oxygen and glucose to muscles and remove CO\u2082 and lactic acid faster', true], ['To raise body temperature to improve enzyme efficiency', false], ['To produce more red blood cells for the increased demand', false], ['To increase blood pressure so more oxygen enters through the skin', false]],
+        wrong_explanations: { 1: 'Exercise does raise body temperature slightly \u2014 but this is a consequence, not the purpose of increased heart rate.', 2: 'New red blood cells take days to produce \u2014 the immediate response is to pump existing blood faster.', 3: 'Oxygen doesn\u2019t enter through the skin in humans \u2014 it enters through the lungs. The skin\u2019s increased blood flow is for COOLING, not oxygen absorption.' } },
+      q2: { q: 'Why do you continue to breathe heavily for several minutes after stopping intense exercise?', opts: [['Repaying the oxygen debt \u2014 extra O\u2082 is needed to convert accumulated lactic acid back to glucose in the liver', true], ['The lungs take time to slow down after being stimulated', false], ['To replace all the oxygen used during exercise', false], ['Lactic acid in the blood stimulates the lungs to keep working hard', false]],
+        wrong_explanations: { 1: 'The lungs respond to chemical signals from the blood \u2014 they slow down when CO\u2082 and lactic acid levels normalise.', 2: 'All the oxygen used during exercise was already replaced during exercise \u2014 the post-exercise breathing is specifically about the lactic acid that accumulated.', 3: 'Lactic acid in the blood does stimulate breathing \u2014 but the reason breathing stays elevated is specifically to process that lactic acid in the liver.' } },
+      q3: { q: 'What is oxygen debt?', opts: [['The extra oxygen needed after exercise to convert accumulated lactic acid back to glucose in the liver', true], ['The oxygen missing from muscle cells during intense exercise', false], ['The difference between oxygen inhaled and oxygen used during exercise', false], ['The oxygen stored in myoglobin in muscles before exercise', false]],
+        wrong_explanations: { 1: 'The lack of oxygen in muscles during exercise is what CAUSES anaerobic respiration \u2014 oxygen debt specifically refers to the post-exercise oxygen requirement to process the resulting lactic acid.', 2: 'Difference between inhaled and used oxygen relates to metabolic efficiency \u2014 oxygen debt is specifically post-exercise processing of lactic acid.', 3: 'Myoglobin stores oxygen in muscles \u2014 this is used during exercise, but \u2018oxygen debt\u2019 refers to the post-exercise recovery process.' } },
+      vol: { q: 'During exercise, which of these increase?', opts: [['Heart rate, breathing rate and breath volume', true], ['Only breathing rate', false], ['Only heart rate', false], ['None of them', false]],
+        wrong_explanations: { 1: 'Heart rate and breath volume rise too.', 2: 'Breathing rate and breath volume rise too.', 3: 'All three rise, to supply more oxygenated blood.' } },
+      fat: { q: 'Why do muscles become fatigued during long periods of vigorous activity?', opts: [['Lactic acid builds up and the muscles stop contracting efficiently', true], ['The muscles run out of blood', false], ['The heart stops pumping', false], ['The muscles make too much oxygen', false]],
+        wrong_explanations: { 1: 'Blood keeps flowing; it can\u2019t deliver oxygen fast enough.', 2: 'The heart rate rises during exercise.', 3: 'Muscles use oxygen; they don\u2019t make it.' } },
+      ana: { q: 'When does anaerobic respiration take place in muscles?', opts: [['When insufficient oxygen is supplied', true], ['Only when you are asleep', false], ['When there is too much oxygen', false], ['Only after exercise stops', false]],
+        wrong_explanations: { 1: 'It happens during vigorous exercise.', 2: 'It happens when oxygen is short.', 3: 'It happens during exercise, when oxygen can\u2019t arrive fast enough.' } },
+      debt: { q: 'What does the build-up of lactic acid in muscles create?', opts: [['An oxygen debt', true], ['More glucose in the muscles', false], ['Extra oxygen in the muscles', false], ['Carbon dioxide and water', false]],
+        wrong_explanations: { 1: 'Lactic acid comes from glucose that was only partly oxidised.', 2: 'It builds up because oxygen is short.', 3: 'Those are products of aerobic respiration.' } }
+    };
+    const bankSrc = H ? [items.q1, items.q2, items.q3, items.vol, items.fat] : [items.q1, items.vol, items.fat, items.ana, items.debt];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'Keep breathing hard for a while', correct: true, reply: 'Yes. Your body is still catching up.' },
+        { text: 'Back to normal straight away', correct: false, reply: 'Breathing stays fast for a while after you stop. Your body is still catching up.' }
+      ],
+      phBtns: this.btns(['Rest', 'Exercise', 'Recovery'], s.ph, (i) => this.setState({ ph: i, phs: this.seen('phs', i) })),
+      tlFig: c.ready ? K.fig(this.tlFig(s.ph, H), '') : null,
+      tlNote: PH[s.ph],
+      paceBtns: this.btns(['Gentle jog', 'Flat-out sprint'], s.pace, (i) => this.setState({ pace: i, paces: this.seen('paces', i) })),
+      paceFig: c.ready ? K.fig(this.paceFig(s.pace), '') : null,
+      paceNote: s.pace ? 'If insufficient oxygen is supplied, anaerobic respiration takes place in the muscles. The incomplete oxidation of glucose causes a build-up of lactic acid and creates an oxygen debt.' : 'The heart and lungs keep up: enough oxygen reaches the muscles for aerobic respiration.',
+      thinkOptions: [
+        { text: 'Only breathing rate', correct: false, reply: 'Heart rate and breath volume rise too.' },
+        { text: 'Heart rate, breathing rate and breath volume', correct: true, reply: 'All three supply the muscles with more oxygenated blood.' },
+        { text: 'Only heart rate', correct: false, reply: 'Breathing rate and breath volume rise too.' }
+      ],
+      sortBins: [{ id: 'd', label: 'During exercise' }, { id: 'a', label: 'After exercise' }],
+      sortItems: [
+        { text: 'Heart rate rises', bin: 'd', why: 'More oxygenated blood to the muscles.' },
+        { text: 'Breath volume rises', bin: 'd', why: 'More oxygen taken in.' },
+        { text: 'Lactic acid builds up in a sprint', bin: 'd', why: 'Oxygen can\u2019t arrive fast enough.' },
+        { text: 'Muscles respire anaerobically', bin: 'd', why: 'When oxygen is insufficient.' },
+        { text: 'Breathing stays raised for a while', bin: 'a', why: 'The oxygen debt.' },
+        { text: 'Heart rate falls back to resting', bin: 'a', why: 'Demand drops.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('State', 'State what happens to heart rate during exercise.', 'It increases.', [['It falls', 'It rises to supply more oxygenated blood.'], 'It increases', ['It stays the same', 'It rises.']]),
+          MCQ('Name', 'Name the substance that builds up in muscles when they respire anaerobically.', 'Lactic acid.', ['Lactic acid', ['Ethanol', 'Yeast and plants make ethanol.'], ['Oxygen', 'Oxygen is short.']])
+        ],
+        r2: [
+          MCQ('Give', 'Give one change in breathing during exercise.', 'Breathing rate increases, or breath volume increases.', [['Breathing stops', 'It speeds up.'], 'Breath volume increases', ['Breathing rate falls', 'It rises.'], ['Less oxygen is breathed in', 'More is.']]),
+          MCQ('Suggest', 'Suggest why a sprinter\u2019s legs stop working well near the end of a long, hard race.', 'Lactic acid builds up and the muscles become fatigued.', [['The legs run out of blood', 'Blood keeps flowing.'], 'Lactic acid has built up and the muscles are fatigued', ['The heart has slowed down', 'Heart rate is high.'], ['The muscles have too much oxygen', 'Oxygen is short.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain why heart rate and breathing rate increase during exercise. Put the links in order.',
+            ['Exercising muscles need more energy, so they respire faster.', 'They need more oxygen, and more carbon dioxide must be removed.', 'Faster heart and breathing rates, and bigger breaths, supply more oxygenated blood to the muscles.'],
+            [['Heart rate rises to make you hotter.', 'It rises to supply oxygenated blood.'], ['Breathing faster is the only change.', 'Heart rate and breath volume rise too.']]),
+          H ? CHAIN('Explain', 'Explain why you keep breathing hard after a sprint. Put the links in order.',
+            ['Lactic acid built up in the muscles during the sprint.', 'Extra oxygen is needed after exercise to react with the lactic acid and remove it from the cells: the oxygen debt.', 'Blood carries the lactic acid to the liver, where it is converted back into glucose.'],
+            [['The lungs are still tired.', 'The extra oxygen deals with lactic acid.'], ['Oxygen debt is running out of oxygen during the race.', 'It is the extra oxygen needed after.']])
+          : CHAIN('Explain', 'Explain why lactic acid builds up in muscles during a sprint. Put the links in order.',
+            ['The heart and lungs can\u2019t supply oxygen as fast as the muscles need it.', 'So the muscles respire anaerobically.', 'The incomplete oxidation of glucose causes a build-up of lactic acid, creating an oxygen debt.'],
+            [['The muscles run out of glucose.', 'They still use glucose.'], ['Lactic acid comes from breathing too fast.', 'It comes from anaerobic respiration.']])
+        ],
+        r4: [
+          { kind: 'write', command: 'Explain', marks: 6, prompt: 'Explain how the body responds to a period of vigorous exercise, and why breathing stays fast afterwards.',
+            levels: LV6('Changes during exercise and why, anaerobic respiration and lactic acid, and the oxygen debt after.', 'Changes during exercise with some reasons; lactic acid mentioned.', 'Simple statements that heart and breathing rates rise.'),
+            points: ['Muscles need more energy, so respiration increases.', 'Heart rate, breathing rate and breath volume increase.', 'This supplies the muscles with more oxygenated blood.', 'If oxygen is insufficient, muscles respire anaerobically and lactic acid builds up.', 'Long vigorous activity: muscles fatigue and stop contracting efficiently.', H ? 'Oxygen debt: extra oxygen after exercise reacts with the lactic acid; blood takes lactic acid to the liver to be converted to glucose.' : 'The build-up of lactic acid creates an oxygen debt, so breathing stays fast after.'],
+            reject: ['\u201cOxygen debt is running out of oxygen during exercise.\u201d', '\u201cHeart rate rises to make you hotter.\u201d'] }
+        ]
+      },
+      keyLines: ['During exercise, heart rate, breathing rate and breath volume increase to supply the muscles with more oxygenated blood.', 'If insufficient oxygen is supplied, muscles respire anaerobically. Incomplete oxidation of glucose causes a build-up of lactic acid and creates an oxygen debt.', 'During long periods of vigorous activity muscles become fatigued and stop contracting efficiently.'].concat(H ? ['Higher: blood carries lactic acid to the liver, where it is converted back into glucose. Oxygen debt is the extra oxygen needed after exercise to react with the lactic acid and remove it from the cells.'] : []),
+      bank: c.ready ? bankSrc.map((q) => K.item(q)) : [],
+      endPrev: { href: 'ks4-biology-4.4.2.1-anaerobic-respiration.dc.html', label: 'Anaerobic respiration' },
+      endNext: { href: 'ks4-biology-4.4.2.3-metabolism.dc.html', label: 'Metabolism' },
+      endConnects: [{ href: '../../Batch 4/lessons/ks4-biology-4.2.2.2-heart-blood-vessels.dc.html', label: 'The heart and blood vessels' }]
+    });
+  }
+}
+</script>
+</body>
+</html>
