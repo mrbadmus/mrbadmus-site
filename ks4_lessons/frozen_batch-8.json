@@ -1,0 +1,66 @@
+{
+ "advantages-sexual-asexual": {
+  "hash": "a2e91fa15640c93affdd19b0d20a528ddb793de7c021bc0c38bb9622446aa684",
+  "review_state": "examiner-reviewed"
+ },
+ "blood-glucose-diabetes": {
+  "hash": "3512e381c9fd20242422d996b69fd5dffe2a6c678874d46f8e5f3e55ac2209a0",
+  "review_state": "examiner-reviewed"
+ },
+ "contraception-fertility": {
+  "hash": "3655013cb6ccb706c3cca2ee3be95662d9fafa46345b62fb206eb4e2355f1dc4",
+  "review_state": "examiner-reviewed"
+ },
+ "defects-of-the-eye": {
+  "hash": "22858022d369466d1b205ce279d19b034138ed01f8cc6580f170b80271ebb9cd",
+  "review_state": "examiner-reviewed"
+ },
+ "dna-genome": {
+  "hash": "8d85a53b5b8364eca2b7477b8f35d9259150fdd7393f4abaea59b0aa5c75160f",
+  "review_state": "examiner-reviewed"
+ },
+ "endocrine-system": {
+  "hash": "5996f16254ebc056b1b575fc98c267ad615b6b5f17c5e9d2b80aa55f590c1194",
+  "review_state": "examiner-reviewed"
+ },
+ "homeostasis": {
+  "hash": "654e8daaecb0fcfd26e9ce7ba88814e68105a0cb04ee1e7482cbe4a25ab3384e",
+  "review_state": "examiner-reviewed"
+ },
+ "human-reproduction-hormones": {
+  "hash": "5c3ce100ce19007bbd1f6ef28aefdd1c21275110838a4c6635503f268d6cad6d",
+  "review_state": "examiner-reviewed"
+ },
+ "meiosis": {
+  "hash": "f53a45787d740c14624cfed51095cd589701fcd88ac0b19fa300271a427692e4",
+  "review_state": "examiner-reviewed"
+ },
+ "nervous-system": {
+  "hash": "5af9266013b8c2ae3879c276669b45e045ec6a9802d09f3ae01ec4928ca51c85",
+  "review_state": "examiner-reviewed"
+ },
+ "reaction-time": {
+  "hash": "f442ae3e6cfe71f6c66a020974e457390e2fd35cd32492f7847ce58b94e79222",
+  "review_state": "examiner-reviewed"
+ },
+ "reflex-actions": {
+  "hash": "d841c378bb8fb092b055e814208a30cdcb7ff9df463ca9c403e4ac31e14361cd",
+  "review_state": "examiner-reviewed"
+ },
+ "sexual-asexual-reproduction": {
+  "hash": "2ca01a8c8c36a17ffd01014dc1aad298d30ad30157e4a8318af9643b020eddc4",
+  "review_state": "examiner-reviewed"
+ },
+ "the-brain": {
+  "hash": "3a9f5fc41aa3bdb023343d362de03de809bc929d01ce8af7271ada3f9e9560c5",
+  "review_state": "examiner-reviewed"
+ },
+ "the-eye": {
+  "hash": "f04cd72a5f71657eec5aa1054d4a8ca80cccbdc30de75fb6d5cb71dda5379141",
+  "review_state": "examiner-reviewed"
+ },
+ "thermoregulation": {
+  "hash": "17774d3b8a0f3b2cf79d5b074a960bf104bba56e3c95911d0dbe09db75a3ef44",
+  "review_state": "examiner-reviewed"
+ }
+}

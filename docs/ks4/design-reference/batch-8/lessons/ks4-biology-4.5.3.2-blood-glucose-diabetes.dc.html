@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blood glucose and diabetes · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Homeostasis and response" title="Blood glucose and diabetes" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.5.3.2</p>
+        <h1>Blood glucose and diabetes</h1>
+        <p class="ks3-bigq">A meal pushes your blood glucose up and insulin brings it back. Break the loop two different ways and see what diabetes does.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Skipped lunch." scene="You skip lunch and feel a bit shaky by mid-afternoon. A snack later, you feel fine again." question="does your blood sugar just go up and down with food, or does your body pull it back to normal?" options="{{ hookOptions }}" bridge="Your body pulls it back. The pancreas watches the level." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-loop" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Control</p>
+        <h2 style="margin: 6px 0 0;">After a meal.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Blood glucose concentration is monitored and controlled by the pancreas. If it is too high, the pancreas produces the hormone insulin, which causes glucose to move from the blood into the cells. In liver and muscle cells, excess glucose is converted to glycogen for storage. Step through a meal, then break the loop.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ modeBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ stepBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ loopFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ loopNote }}</p></div>
+        <sc-if value="{{ isHigher }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 16px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);"><div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Higher</span><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Too low: glucagon</p></div>
+          <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">If blood glucose concentration is too low, the pancreas produces the hormone glucagon, which causes glycogen to be converted into glucose and released into the blood. Glucagon and insulin interact in a negative feedback cycle to control blood glucose.</p>
+          <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ lowBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+          <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ lowNote }}</p></div>
+        </div></sc-if>
+      </section>
+
+      <section id="s-graph" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Data</p>
+        <h2 style="margin: 6px 0 0;">Read the graph.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Each person drank the same glucose drink at 0 hours. Pick a line and read it.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ curveBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ graphFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ graphNote }}</p></div>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Two types of diabetes. Tap each.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ typeCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Obesity is a risk factor for Type 2 diabetes. Weighing up advice on diet and exercise involves social and ethical issues as well as science. Hormones in general: <a href="ks4-biology-4.5.3.1-endocrine-system.dc.html">The endocrine system</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · insulin is sugar?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Insulin raises your blood sugar.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="What does insulin do to blood glucose concentration?" options="{{ thinkOptions }}" reveal="It lowers it: insulin causes glucose to move from the blood into the cells." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Type 1 or Type 2?" prompt="Place each one." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Type 1: not enough insulin, injections. Type 2: cells don’t respond, diet and exercise." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">What happens to blood glucose after a meal.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Use the graph</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Read peaks and times, and compare people with and without diabetes.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Type 1 and Type 2: cause and treatment.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Too much glucose: the pancreas releases insulin, glucose moves into cells, and liver and muscle cells store the excess as glycogen. Type 1: too little insulin. Type 2: cells don’t respond.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="blood-glucose-diabetes" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Blood glucose and diabetes" spec="AQA 4.5.3.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Mixing up insulin, glycogen and glucagon?" legal="Graph values are made up for teaching." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'blood-glucose-diabetes';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const FILE = {"homeostasis":"ks4-biology-4.5.1-homeostasis.dc.html","nervous-system":"ks4-biology-4.5.2.1-nervous-system.dc.html","reflex-actions":"ks4-biology-4.5.2.1-reflex-actions.dc.html","reaction-time":"ks4-biology-4.5.2.1-reaction-time.dc.html","the-brain":"ks4-biology-4.5.2.2-the-brain.dc.html","the-eye":"ks4-biology-4.5.2.3-the-eye.dc.html","defects-of-the-eye":"ks4-biology-4.5.2.3-defects-of-the-eye.dc.html","thermoregulation":"ks4-biology-4.5.2.4-thermoregulation.dc.html","endocrine-system":"ks4-biology-4.5.3.1-endocrine-system.dc.html","blood-glucose-diabetes":"ks4-biology-4.5.3.2-blood-glucose-diabetes.dc.html","human-reproduction-hormones":"ks4-biology-4.5.3.4-human-reproduction-hormones.dc.html","contraception-fertility":"ks4-biology-4.5.3.5-contraception-fertility.dc.html","sexual-asexual-reproduction":"ks4-biology-4.6.1.1-sexual-asexual-reproduction.dc.html","meiosis":"ks4-biology-4.6.1.2-meiosis.dc.html","advantages-sexual-asexual":"ks4-biology-4.6.1.3-advantages-sexual-asexual.dc.html","dna-genome":"ks4-biology-4.6.1.4-dna-genome.dc.html","metabolism":"../../Batch 7/lessons/ks4-biology-4.4.2.3-metabolism.dc.html","aerobic-respiration":"../../Batch 7/lessons/ks4-biology-4.4.2.1-aerobic-respiration.dc.html","response-to-exercise":"../../Batch 7/lessons/ks4-biology-4.4.2.2-response-to-exercise.dc.html","fungal-protist-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.4-fungal-protist-diseases.dc.html","bacterial-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.3-bacterial-diseases.dc.html","cell-specialisation":"../../Batch 6/lessons/ks4-biology-4.1.1.3-cell-specialisation.dc.html","culturing-microorganisms":"../../Batch 6/lessons/ks4-biology-4.1.1.6-culturing-microorganisms.dc.html","digestive-system":"../../Batch 6/lessons/ks4-biology-4.2.2.1-digestive-system.dc.html","stem-cells":"../../Batch 6/lessons/ks4-biology-4.1.2.3-stem-cells.dc.html"};
+const LNK = (k, label) => ({ href: FILE[k], label });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const PATH = (d, col, w, extra) => '<path d="' + d + '" fill="none" stroke="' + (col || '#1A1A1A') + '" stroke-width="' + (w || 3) + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>';
+const RAIL = [{"id":"s-hook","label":"Skipped lunch","short":"HOOK"},{"id":"s-loop","label":"After a meal","short":"INSULIN"},{"id":"s-graph","label":"Read the graph","short":"GRAPH"},{"id":"s-think","label":"Think again","short":"THINK"},{"id":"s-sort","label":"Type 1 or Type 2?","short":"SORT"},{"id":"s-ladder","label":"Exam ladder","short":"LADDER"}];
+const STATE = {"mode":0,"step":0,"modes":[],"low":0,"lowDone":false,"curve":null,"curves":[],"types":[]};
+const MODES = ['No diabetes', 'Type 1', 'Type 2'];
+const STEPS = [
+  ['Blood glucose is at its normal level. Press Next step: eat a meal.', 'The meal is digested: blood glucose rises.', 'The pancreas detects the rise and produces insulin.', 'Insulin causes glucose to move from the blood into the cells. In liver and muscle cells, excess glucose is converted to glycogen.', 'Blood glucose falls back to normal.'],
+  ['Blood glucose is at its normal level. Press Next step: eat a meal.', 'The meal is digested: blood glucose rises.', 'Type 1: the pancreas fails to produce enough insulin.', 'Without insulin, glucose stays in the blood.', 'Blood glucose stays high. Treatment: insulin injections.'],
+  ['Blood glucose is at its normal level. Press Next step: eat a meal.', 'The meal is digested: blood glucose rises.', 'The pancreas produces insulin.', 'Type 2: the body cells no longer respond to insulin, so glucose stays in the blood.', 'Blood glucose stays high. Common treatments: a carbohydrate-controlled diet and an exercise regime.']
+];
+const LOW = ['Blood glucose is at its normal level. Press Next step: skip a meal and exercise.', 'Cells keep using glucose: blood glucose falls too low.', 'The pancreas detects the fall and produces glucagon.', 'Glucagon causes glycogen in the liver to be converted into glucose, released into the blood.', 'Blood glucose rises back to normal. Insulin and glucagon act as a negative feedback cycle.'];
+const CURVES = [
+  { k: 'Without diabetes', note: 'Rises from 90 to a peak of 140 at about 45 minutes, then back to 90 by 2 hours: insulin moved the glucose into cells.' },
+  { k: 'With Type 1 diabetes', note: 'Starts higher, rises to 260 at about 1.5 hours and is still about 240 at 3 hours: not enough insulin to bring it down.' },
+  { k: 'Type 1 after an insulin injection', note: 'Insulin injected at 3 hours: the line falls to about 130 by 5 hours as glucose moves into cells.' }
+];
+const TYPES = [
+  { name: 'Type 1', why: 'The pancreas fails to produce sufficient insulin, so blood glucose can rise to dangerously high levels. Treated with insulin injections.' },
+  { name: 'Type 2', why: 'The body cells no longer respond to insulin produced by the pancreas. A carbohydrate-controlled diet and an exercise regime are common treatments. Obesity is a risk factor.' }
+];
+
+class Component extends DCLogic {
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH', T = rk === 'TF' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: T, notTriple: !T, isTH: rk === 'TH', notTH: rk !== 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+  loopFig(mode, step) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const y0 = 220, hi = 120;
+    b += D.line(30, y0, 630, y0, 2, C.muted, ' stroke-dasharray="7 6"') + D.T(632, y0 - 8, 'normal', 13, { anchor: 'end', fill: C.muted, weight: 'normal' });
+    b += D.T(30, 70, 'blood glucose', 13, { anchor: 'start', fill: C.muted, weight: 'normal' });
+    let d = 'M30 ' + y0 + ' L140 ' + y0;
+    if (step >= 1) d += ' C180 ' + y0 + ' 200 ' + hi + ' 250 ' + hi;
+    if (step >= 2) d += ' L340 ' + hi;
+    if (step >= 3) d += mode === 0 ? ' C380 ' + hi + ' 400 ' + (hi + 40) + ' 430 ' + (hi + 50) : ' L430 ' + (hi - 4);
+    if (step >= 4) d += mode === 0 ? ' C470 ' + (hi + 70) + ' 490 ' + y0 + ' 540 ' + y0 + ' L630 ' + y0 : ' L630 ' + (hi - 10);
+    b += PATH(d, C.red, 4);
+    const ins = step >= 2 ? (mode === 1 ? 'insulin: too little' : 'insulin released') : 'pancreas';
+    b += BOX(250, 20, 180, 50, step >= 2 ? '#FBE3D6' : '#FFFFFF') + D.T(340, 51, ins, 15, { fill: C.stroke });
+    if (step >= 3) b += BOX(450, 20, 190, 50, mode === 0 ? '#E7F0EC' : '#E4E1D8') + D.T(545, 51, mode === 0 ? 'into cells; glycogen' : mode === 1 ? 'glucose stays in blood' : 'cells don’t respond', 14, { fill: C.stroke });
+    return D.svg(660, 250, b, MODES[mode] + ': ' + STEPS[mode][step]);
+  }
+  graphFig(sel) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const x0 = 70, y0 = 270, sx = 110, sy = 0.9;
+    const P = (t, g) => (x0 + t * sx).toFixed(1) + ' ' + (y0 - (g - 60) * sy).toFixed(1);
+    b += D.line(x0, 20, x0, y0, 2.5, C.stroke) + D.line(x0, y0, x0 + 5 * sx, y0, 2.5, C.stroke);
+    for (let t = 0; t <= 5; t++) b += D.line(x0 + t * sx, y0, x0 + t * sx, y0 + 6, 2, C.stroke) + D.T(x0 + t * sx, y0 + 24, String(t), 13, { fill: C.stroke, weight: 'normal' });
+    [60, 100, 140, 180, 220, 260].forEach((g) => { const y = y0 - (g - 60) * sy; b += D.line(x0 - 6, y, x0, y, 2, C.stroke) + D.T(x0 - 10, y + 5, String(g), 12, { anchor: 'end', fill: C.stroke, weight: 'normal' }) + D.line(x0, y, x0 + 5 * sx, y, 1, '#D9D3C4'); });
+    b += D.T(x0 + 5 * sx, y0 + 44, 'time after glucose drink / hours', 12, { anchor: 'end', fill: C.stroke, weight: 'normal' });
+    b += D.T(x0 + 4, 14, 'blood glucose / mg per 100 cm³', 12, { anchor: 'start', fill: C.stroke, weight: 'normal' });
+    const w = (i) => (sel === i ? 5.5 : 3.5), op = (i) => (sel === null || sel === i ? '' : ' stroke-opacity="0.35"');
+    b += PATH('M' + P(0, 90) + ' C' + P(0.3, 90) + ' ' + P(0.5, 140) + ' ' + P(0.75, 140) + ' C' + P(1.1, 140) + ' ' + P(1.5, 92) + ' ' + P(2, 90) + ' L' + P(5, 90), C.blue, w(0), op(0));
+    b += PATH('M' + P(0, 120) + ' C' + P(0.5, 120) + ' ' + P(1, 255) + ' ' + P(1.5, 260) + ' C' + P(2, 262) + ' ' + P(2.6, 245) + ' ' + P(3, 240), C.red, w(1), op(1));
+    b += PATH('M' + P(3, 240) + ' C' + P(3.6, 236) + ' ' + P(4.2, 150) + ' ' + P(5, 130), C.red, w(2), op(2) + ' stroke-dasharray="9 6"');
+    b += D.arrow(x0 + 3 * sx, y0 - (240 - 60) * sy - 52, x0 + 3 * sx, y0 - (240 - 60) * sy - 10, C.stroke, 3) + D.T(x0 + 3 * sx, y0 - (240 - 60) * sy - 58, 'insulin injected', 12, { fill: C.stroke });
+    b += D.T(x0 + 4.9 * sx, y0 - 34 * sy - 4, 'without diabetes', 12, { anchor: 'end', fill: C.blue }) + D.T(x0 + 1.6 * sx, y0 - 205 * sy - 10, 'Type 1 diabetes', 12, { fill: C.red });
+    return D.svg(660, 330, b, 'Blood glucose after a glucose drink for a person without diabetes and a person with Type 1 diabetes, with insulin injected at 3 hours.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.modes.length === 3 && (!H || s.lowDone), s.curves.length === 3 && s.types.length === 2, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const H = c.isHigher, TR = c.isTriple, TH = c.isTH, rk = c.rk;
+    const q1 = Q('Blood glucose rises after eating. Which hormone is released and what does it do?', 'Insulin — released by pancreas beta cells, causes glucose to be converted to glycogen in the liver', [['Glucagon — released by pancreas alpha cells, causes glycogen to be broken down', 'Glucagon is released when blood glucose is TOO LOW — it would make a post-meal rise even worse.'], ['Adrenaline — released by adrenal glands, increases blood glucose further', 'Adrenaline does raise blood glucose (for fight or flight) — but is not the routine homeostatic response to eating.'], ['Thyroxine — released by thyroid, converts glucose to glycogen', 'Thyroxine controls metabolic rate — it does not regulate blood glucose directly.']]);
+    const q2 = Q('Why must Type 1 diabetics inject insulin rather than take it as a tablet?', 'Insulin is a protein — it would be digested and destroyed by proteases in the gut before reaching the blood', [['Insulin tablets haven’t been invented yet', 'Oral insulin formulations are being researched (with special protective coatings) but the traditional reason is protein digestion in the gut.'], ['The stomach acid destroys insulin too slowly for it to work', 'It’s not about speed — insulin is a large protein molecule that gets broken down into amino acids by digestive enzymes before being absorbed.'], ['Tablets cannot reach the pancreas where insulin needs to work', 'Insulin doesn’t work IN the pancreas — it is secreted by the pancreas and works on LIVER and MUSCLE cells. The issue is gut digestion.']]);
+    const q3 = Q('What is the key difference between Type 1 and Type 2 diabetes?', 'Type 1: pancreas produces no insulin (autoimmune). Type 2: cells become resistant to insulin (lifestyle-related).', [['Type 1 is more common than Type 2', 'Type 2 is FAR MORE COMMON — it makes up about 90% of all diabetes cases. Type 1 is less common.'], ['Type 2 requires insulin injections; Type 1 can be managed with diet alone', 'This is the wrong way round. TYPE 1 requires insulin injections because the pancreas cannot make it. TYPE 2 is usually managed first with diet, exercise and tablets.'], ['Both types are caused by the immune system destroying pancreas cells', 'Only TYPE 1 is autoimmune. TYPE 2 develops due to insulin resistance — the immune system is not the cause.']]);
+    const nGr = Q('Made-up data: after a glucose drink, Person A’s blood glucose rises to 140 and is back to normal in 2 hours. Person B’s rises to 260 and is still high after 3 hours. What does this suggest?', 'Person B has diabetes: not enough insulin effect to bring the glucose down', [['Person A has diabetes', 'A’s level returned to normal.'], ['Person B made more insulin than A', 'More insulin would bring it down faster.'], ['Both people are the same', 'B’s level stayed high.']]);
+    const nIn = Q('What is the first effect of insulin on blood glucose?', 'It causes glucose to move from the blood into the cells', [['It turns glycogen into glucose', 'That is glucagon (Higher).'], ['It adds glucose to the blood', 'Insulin lowers blood glucose.'], ['It digests carbohydrates', 'Enzymes digest carbohydrates.']]);
+    const nGn = Q('Blood glucose falls too low. What does glucagon cause?', 'Glycogen to be converted into glucose and released into the blood', [['Glucose to move into cells', 'That is insulin.'], ['Glucose to be converted into glycogen', 'That is insulin, in liver and muscle.'], ['The pancreas to stop working', 'The pancreas produces glucagon.']]);
+    const BANK = H ? [q1, q2, q3, nGr, nGn] : [q1, q2, q3, nGr, nIn];
+    const loopBtn = { label: s.step >= 4 ? 'Start again' : 'Next step', pressed: false, style: this.seg(false), onClick: () => this.setState(s.step >= 4 ? { step: 0 } : { step: s.step + 1, modes: s.step === 3 ? this.seen('modes', s.mode) : s.modes }) };
+    const lowBtn = { label: s.low >= 4 ? 'Start again' : 'Next step', pressed: false, style: this.seg(false), onClick: () => this.setState(s.low >= 4 ? { low: 0 } : { low: s.low + 1, lowDone: s.lowDone || s.low === 3 }) };
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'My body pulls it back to normal', correct: true, reply: 'Yes. The pancreas monitors it and responds.' },
+        { text: 'It just goes up and down with food', correct: false, reply: 'It does rise after food, but your body brings it back to normal.' }
+      ],
+      modeBtns: this.btns(MODES, s.mode, (i) => this.setState({ mode: i, step: 0 })),
+      stepBtns: [loopBtn],
+      loopFig: c.ready ? K.fig(this.loopFig(s.mode, s.step), '') : null,
+      loopNote: STEPS[s.mode][s.step],
+      lowBtns: [lowBtn],
+      lowNote: LOW[s.low],
+      curveBtns: this.btns(CURVES.map((x) => x.k), s.curve, (i) => this.setState({ curve: i, curves: this.seen('curves', i) })),
+      graphFig: c.ready ? K.fig(this.graphFig(s.curve), '') : null,
+      graphNote: s.curve === null ? 'Pick a line.' : CURVES[s.curve].note,
+      typeCards: this.cards(TYPES, 'types'),
+      thinkOptions: [
+        { text: 'It raises it', correct: false, reply: 'Insulin lowers it.' },
+        { text: 'It lowers it: glucose moves into cells', correct: true, reply: 'Liver and muscle cells then store the excess as glycogen.' },
+        { text: 'Nothing: insulin is a sugar', correct: false, reply: 'Insulin is a hormone, a protein.' }
+      ],
+      sortBins: [{ id: '1', label: 'Type 1' }, { id: '2', label: 'Type 2' }],
+      sortItems: [
+        { text: 'The pancreas fails to produce enough insulin', bin: '1', why: 'Type 1.' },
+        { text: 'Body cells no longer respond to insulin', bin: '2', why: 'Type 2.' },
+        { text: 'The pancreas still produces insulin', bin: '2', why: 'Type 2: the cells don’t respond to it.' },
+        { text: 'Treated with insulin injections', bin: '1', why: 'Type 1.' },
+        { text: 'Carbohydrate-controlled diet and exercise', bin: '2', why: 'Common Type 2 treatments.' },
+        { text: 'Obesity is a risk factor', bin: '2', why: 'Type 2.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the organ that monitors and controls blood glucose concentration.', 'The pancreas.', ['Pancreas', ['Liver', 'The liver stores glycogen.'], ['Stomach', 'Digests food.']]),
+          MCQ('State', 'State what excess glucose is converted to in liver and muscle cells.', 'Glycogen.', [['Glucagon', 'A hormone (Higher), not a store.'], 'Glycogen', ['Insulin', 'The hormone that triggers it.']])
+        ],
+        r2: [
+          MCQ('Give', 'Give one common treatment for Type 2 diabetes.', 'A carbohydrate-controlled diet, or an exercise regime.', [['A pancreas transplant', 'Not the common treatment.'], 'A carbohydrate-controlled diet', ['Eating more sugar', 'That would raise blood glucose.']]),
+          MCQ('Use the data', 'Made-up data: Person A’s blood glucose is back to normal 2 hours after a glucose drink; Person B’s is still high after 3 hours. Which person has diabetes?', 'Person B: their blood glucose wasn’t brought back down.', [['Person A', 'A returned to normal.'], 'Person B', ['Neither', 'B’s stayed high.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain how blood glucose returns to normal after a meal. Put the links in order.',
+            ['Blood glucose concentration rises.', 'The pancreas produces insulin.', 'Insulin causes glucose to move from the blood into the cells.', 'In liver and muscle cells excess glucose is converted to glycogen; the level falls back.'],
+            [['The pancreas produces glycogen.', 'Glycogen is the store in liver and muscle.'], ['Insulin adds glucose to the blood.', 'Insulin lowers blood glucose.']]),
+          H ? CHAIN('Explain', 'Explain how blood glucose returns to normal when it falls too low. Put the links in order.',
+            ['The pancreas detects the low concentration.', 'The pancreas produces glucagon.', 'Glucagon causes glycogen to be converted into glucose.', 'Glucose is released into the blood; the level rises back.'],
+            [['Glucagon turns glucose into glycogen.', 'That would lower it further.'], ['Insulin is released to raise it.', 'Insulin lowers blood glucose.']])
+          : CHAIN('Explain', 'Explain why blood glucose stays high after a meal in a person with Type 2 diabetes. Put the links in order.',
+            ['The pancreas still produces insulin.', 'The body cells no longer respond to the insulin.', 'So glucose does not move from the blood into the cells.', 'Blood glucose stays high.'],
+            [['The pancreas produces no insulin at all.', 'That is Type 1.'], ['The cells make too much glucose.', 'Glucose comes from food.']])
+        ],
+        r4: [
+          H ? WRITE('Explain', 6, 'Explain how insulin and glucagon keep blood glucose concentration within a normal range.',
+            LV6('Both directions, each with detection, hormone and effect, named as a negative feedback cycle.', 'One direction in full, or both with gaps.', 'A hormone named with one effect.'),
+            ['The pancreas monitors blood glucose.', 'Too high: insulin; glucose moves from the blood into the cells.', 'Excess glucose converted to glycogen in liver and muscle cells.', 'Too low: glucagon; glycogen converted into glucose and released into the blood.', 'Each response opposes the change.', 'Insulin and glucagon interact in a negative feedback cycle.'],
+            ['“Glycogen and glucagon are the same.”', '“Insulin raises blood glucose.”'])
+          : WRITE('Compare', 4, 'Compare Type 1 and Type 2 diabetes.',
+            LV4('Cause and treatment for both, as direct comparisons.', 'Some features of one or both types.'),
+            ['Type 1: the pancreas fails to produce sufficient insulin.', 'Type 2: body cells no longer respond to insulin.', 'Type 1: treated with insulin injections.', 'Type 2: carbohydrate-controlled diet and exercise; obesity is a risk factor.'],
+            ['“Type 2 means no insulin is made.”', '“All diabetics inject insulin.”'])
+        ]
+      },
+      keyLines: H ? ['The pancreas monitors and controls blood glucose concentration.', 'Too high: insulin; glucose moves from the blood into cells; liver and muscle cells store excess as glycogen.', 'Too low: glucagon; glycogen is converted into glucose and released into the blood. A negative feedback cycle.', 'Type 1: not enough insulin, injections. Type 2: cells don’t respond; diet and exercise; obesity a risk factor.']
+        : ['The pancreas monitors and controls blood glucose concentration.', 'Too high: the pancreas produces insulin, which causes glucose to move from the blood into the cells.', 'In liver and muscle cells excess glucose is converted to glycogen for storage.', 'Type 1: not enough insulin, injections. Type 2: cells don’t respond; diet and exercise; obesity a risk factor.'],
+      endPrev: LNK('endocrine-system', 'The endocrine system'),
+      endNext: LNK('human-reproduction-hormones', 'Hormones in human reproduction'),
+      endConnects: [LNK('homeostasis', 'Homeostasis'), LNK('digestive-system', 'The digestive system')],
+      bank: c.ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

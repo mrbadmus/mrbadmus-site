@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The brain · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Homeostasis and response" title="The brain" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.5.2.2</p>
+        <h1>The brain</h1>
+        <p class="ks3-bigq">Three regions, three kinds of job. Find each one, then work out which was damaged from what a patient can’t do.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="2"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Spin and stop." scene="You spin round ten times on the spot, then try to walk in a straight line." question="is staying balanced something you think about, or something your brain does automatically?" options="{{ hookOptions }}" bridge="Automatically. One region of the brain coordinates it. Find it." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-regions" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Regions</p>
+        <h2 style="margin: 6px 0 0;">Three regions.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The brain controls complex behaviour. It is made of billions of interconnected neurones and has different regions that carry out different functions. Tap each region to find it on the diagram.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ regBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ regFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ regNote }}</p></div>
+      </section>
+
+      <section id="s-damage" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Damage</p>
+        <h2 style="margin: 6px 0 0;">Which region was damaged?</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Each patient below has damage to one region. Pick a patient, then check which region lights up.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ symBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ symFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ symNote }}</p></div>
+        <sc-if value="{{ isTH }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 16px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);"><div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Triple Higher</span><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">How do we know? Why is it hard?</p></div>
+          <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Neuroscientists have mapped regions of the brain to particular functions in three ways. Tap each.</p>
+          <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ mapCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+          <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">The complexity and delicacy of the brain make investigating and treating brain disorders very difficult. Damaged neurones are not easily repaired or replaced. Taking a sample of brain tissue, or operating, risks damaging other parts of the brain.</p>
+        </div></sc-if>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Reflexes that pass through an unconscious part of the brain: <a href="ks4-biology-4.5.2.1-reflex-actions.dc.html">Reflex actions</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · who does the thinking?</p></div>
+        <p class="ks3-mis-quote">&ldquo;The cerebellum does the thinking.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Which region carries out memory, language and consciousness?" options="{{ thinkOptions }}" reveal="The cerebral cortex. The cerebellum coordinates muscles and balance." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Region and job" prompt="Place each one." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Cortex: thinking, memory, language. Cerebellum: coordination and balance. Medulla: heartbeat and breathing." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Identify</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The cerebral cortex, cerebellum and medulla on a diagram.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">What each region does.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Which region is damaged, from what a patient can’t do.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Cerebral cortex: consciousness, intelligence, memory and language. Cerebellum: muscle coordination. Medulla: unconscious activities such as heartbeat and breathing.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="the-brain" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="The brain" spec="AQA 4.5.2.2 (Triple)" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Mixing up the cerebral cortex and the cerebellum?" legal="The brain diagram is schematic. Patients are illustrative." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'the-brain';
+const OK = ["Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const FILE = {"homeostasis":"ks4-biology-4.5.1-homeostasis.dc.html","nervous-system":"ks4-biology-4.5.2.1-nervous-system.dc.html","reflex-actions":"ks4-biology-4.5.2.1-reflex-actions.dc.html","reaction-time":"ks4-biology-4.5.2.1-reaction-time.dc.html","the-brain":"ks4-biology-4.5.2.2-the-brain.dc.html","the-eye":"ks4-biology-4.5.2.3-the-eye.dc.html","defects-of-the-eye":"ks4-biology-4.5.2.3-defects-of-the-eye.dc.html","thermoregulation":"ks4-biology-4.5.2.4-thermoregulation.dc.html","endocrine-system":"ks4-biology-4.5.3.1-endocrine-system.dc.html","blood-glucose-diabetes":"ks4-biology-4.5.3.2-blood-glucose-diabetes.dc.html","human-reproduction-hormones":"ks4-biology-4.5.3.4-human-reproduction-hormones.dc.html","contraception-fertility":"ks4-biology-4.5.3.5-contraception-fertility.dc.html","sexual-asexual-reproduction":"ks4-biology-4.6.1.1-sexual-asexual-reproduction.dc.html","meiosis":"ks4-biology-4.6.1.2-meiosis.dc.html","advantages-sexual-asexual":"ks4-biology-4.6.1.3-advantages-sexual-asexual.dc.html","dna-genome":"ks4-biology-4.6.1.4-dna-genome.dc.html","metabolism":"../../Batch 7/lessons/ks4-biology-4.4.2.3-metabolism.dc.html","aerobic-respiration":"../../Batch 7/lessons/ks4-biology-4.4.2.1-aerobic-respiration.dc.html","response-to-exercise":"../../Batch 7/lessons/ks4-biology-4.4.2.2-response-to-exercise.dc.html","fungal-protist-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.4-fungal-protist-diseases.dc.html","bacterial-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.3-bacterial-diseases.dc.html","cell-specialisation":"../../Batch 6/lessons/ks4-biology-4.1.1.3-cell-specialisation.dc.html","culturing-microorganisms":"../../Batch 6/lessons/ks4-biology-4.1.1.6-culturing-microorganisms.dc.html","digestive-system":"../../Batch 6/lessons/ks4-biology-4.2.2.1-digestive-system.dc.html","stem-cells":"../../Batch 6/lessons/ks4-biology-4.1.2.3-stem-cells.dc.html"};
+const LNK = (k, label) => ({ href: FILE[k], label });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const PATH = (d, col, w, extra) => '<path d="' + d + '" fill="none" stroke="' + (col || '#1A1A1A') + '" stroke-width="' + (w || 3) + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>';
+const RAIL = [{"id":"s-hook","label":"Spin and stop","short":"HOOK"},{"id":"s-regions","label":"Three regions","short":"REGIONS"},{"id":"s-damage","label":"Which region?","short":"DAMAGE"},{"id":"s-think","label":"Think again","short":"THINK"},{"id":"s-sort","label":"Region and job","short":"SORT"},{"id":"s-ladder","label":"Exam ladder","short":"LADDER"}];
+const STATE = {"reg":null,"regs":[],"sym":null,"syms":[],"maps":[]};
+const REG = [
+  { k: 'Cerebral cortex', note: 'The large, folded outer layer. Consciousness, intelligence, memory and language.' },
+  { k: 'Cerebellum', note: 'At the back, under the cortex. Coordinates muscular activity and balance.' },
+  { k: 'Medulla', note: 'At the base, joining the spinal cord. Controls unconscious activities such as heartbeat and breathing.' }
+];
+const SYM = [
+  { k: 'Walks unsteadily, loses balance', r: 1, note: 'Cerebellum: muscle coordination and balance.' },
+  { k: 'Heart rhythm and breathing disturbed', r: 2, note: 'Medulla: unconscious activities such as heartbeat and breathing.' },
+  { k: 'Can’t find the right words', r: 0, note: 'Cerebral cortex: language.' },
+  { k: 'Can’t form new memories', r: 0, note: 'Cerebral cortex: memory.' }
+];
+const MAP = [
+  { name: 'Patients with brain damage', why: 'Damage to one region, and the function the patient loses, links that region to that function.' },
+  { name: 'Electrically stimulating parts of the brain', why: 'Stimulating a small area and seeing the response, for example a movement or a sensation.' },
+  { name: 'MRI scanning', why: 'Images show which regions are active while a person carries out a task.' }
+];
+
+class Component extends DCLogic {
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH', T = rk === 'TF' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: T, notTriple: !T, isTH: rk === 'TH', notTH: rk !== 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+  brainFig(sel) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const hi = (i) => sel === i;
+    const cx = 'M80 200 C60 110 150 36 280 36 C410 36 490 104 480 190 C474 226 436 236 404 228 C380 236 340 240 300 242 C220 252 110 252 80 200 Z';
+    b += '<path d="' + cx + '" fill="' + (hi(0) ? '#F2C9AE' : '#F6E3D8') + '" stroke="' + (hi(0) ? C.red : C.stroke) + '" stroke-width="' + (hi(0) ? 6 : 3) + '"/>';
+    ['M140 110 q20 -24 44 0 q20 24 44 0', 'M250 80 q22 -22 44 0 q22 22 44 0', 'M120 170 q24 -18 48 0 q24 18 48 0', 'M260 150 q24 -22 48 0 q24 22 48 0', 'M380 120 q20 -18 40 0', 'M200 210 q20 -14 40 0 q20 14 40 0'].forEach((d) => { b += PATH(d, '#B9897A', 2.5); });
+    b += '<path d="M352 238 C360 214 420 206 462 222 C500 238 494 290 450 300 C410 308 362 294 352 262 Z" fill="' + (hi(1) ? '#F2C9AE' : '#E7DCC9') + '" stroke="' + (hi(1) ? C.red : C.stroke) + '" stroke-width="' + (hi(1) ? 6 : 3) + '"/>';
+    [[372, 250, 470, 238], [368, 266, 480, 258], [372, 282, 474, 278]].forEach((p) => { b += PATH('M' + p[0] + ' ' + p[1] + ' Q' + ((p[0] + p[2]) / 2) + ' ' + (p[1] - 8) + ' ' + p[2] + ' ' + p[3], '#A08F72', 2); });
+    b += '<path d="M300 240 L344 240 L352 330 L314 336 Z" fill="' + (hi(2) ? '#F2C9AE' : '#E7DCC9') + '" stroke="' + (hi(2) ? C.red : C.stroke) + '" stroke-width="' + (hi(2) ? 6 : 3) + '"/>';
+    b += '<path d="M314 336 L352 330 L356 356 L318 358 Z" fill="#F3F0E7" stroke="' + C.muted + '" stroke-width="2"/>';
+    const lab = (x1, y1, x2, y2, t, i, anchor) => D.line(x1, y1, x2, y2, 2, hi(i) ? C.red : C.stroke) + D.T(x2 + (anchor === 'end' ? -6 : 6), y2 + 5, t, 16, { anchor: anchor || 'start', fill: hi(i) ? C.red : C.stroke });
+    b += lab(200, 60, 120, 22, 'cerebral cortex', 0, 'end') + lab(470, 270, 520, 300, 'cerebellum', 1) + lab(330, 300, 250, 320, 'medulla', 2, 'end');
+    b += D.T(370, 352, 'spinal cord', 12, { anchor: 'start', fill: C.muted, weight: 'normal' }) + D.T(40, 340, 'front', 12, { anchor: 'start', fill: C.muted, weight: 'normal' });
+    return D.svg(640, 370, b, 'Side view of the brain: cerebral cortex, cerebellum and medulla' + (sel === null || sel === undefined ? '.' : '; ' + REG[sel].k + ' highlighted.'));
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.regs.length === 3, s.syms.length === 4 && (!TH || s.maps.length === 3), s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const H = c.isHigher, TR = c.isTriple, TH = c.isTH, rk = c.rk;
+    const q1 = Q('A patient suffers a stroke affecting the cerebellum. Which function is most likely to be impaired?', 'Coordination and balance — the cerebellum controls smooth, coordinated movement', [['Heart rate — the cerebellum controls autonomic functions', 'Heart rate and breathing are controlled by the MEDULLA OBLONGATA — not the cerebellum.'], ['Memory and language — the cerebellum controls higher cognitive functions', 'Memory and language are controlled by the CEREBRAL CORTEX — not the cerebellum.'], ['Breathing — the cerebellum controls respiratory rate', 'Breathing rate is controlled by the MEDULLA — the cerebellum coordinates movement.']]);
+    const q2 = Q('Why is it difficult to repair brain damage caused by a stroke?', 'Adult brain neurones cannot regenerate — unlike most other body cells, damaged neurones are not replaced', [['The blood-brain barrier prevents blood from reaching damaged areas', 'The blood-brain barrier restricts what substances cross from blood to brain — it doesn’t prevent blood from reaching the brain (in fact strokes are often caused by blood supply being cut off).'], ['Strokes destroy the entire brain — there is no undamaged tissue to repair from', 'Strokes affect specific regions — not the whole brain. The challenge is neurone regeneration in those regions.'], ['The immune system attacks any new neurones, preventing recovery', 'The immune system does play a role in brain inflammation after injury — but the primary reason for poor recovery is the inability of neurones to regenerate.']]);
+    const nMed = Q('Which region of the brain controls heartbeat and breathing?', 'The medulla', [['The cerebral cortex', 'Thinking, memory and language.'], ['The cerebellum', 'Coordination and balance.'], ['The spinal cord', 'Part of the CNS, but not a region of the brain.']]);
+    const nCtx = Q('Which function is carried out by the cerebral cortex?', 'Language', [['Balance', 'The cerebellum.'], ['Breathing', 'The medulla.'], ['Heartbeat', 'The medulla.']]);
+    const nNeu = Q('What is the brain made of?', 'Billions of interconnected neurones', [['A few large neurones', 'Billions, all interconnected.'], ['Muscle tissue', 'The brain is nervous tissue.'], ['One region that does every job', 'It has different regions with different functions.']]);
+    const nPos = Q('Which region is the large, folded outer layer of the brain?', 'The cerebral cortex', [['The cerebellum', 'At the back, under the cortex.'], ['The medulla', 'At the base, joining the spinal cord.'], ['The spinal cord', 'Not part of the brain.']]);
+    const nMri = Q('How does MRI scanning help neuroscientists map the brain?', 'It shows which regions are active during a task', [['It repairs damaged neurones', 'It is a scan, not a treatment.'], ['It removes a sample of brain tissue', 'It doesn’t touch the brain.'], ['It stimulates a region with electricity', 'That is electrical stimulation.']]);
+    const BANK = TH ? [q1, q2, nMed, nCtx, nMri] : [q1, nMed, nCtx, nNeu, nPos];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'My brain does it automatically', correct: true, reply: 'Yes. One region coordinates balance without you thinking.' },
+        { text: 'I think about it', correct: false, reply: 'You can concentrate, but balance is coordinated automatically, by one region of the brain.' }
+      ],
+      regBtns: this.btns(REG.map((x) => x.k), s.reg, (i) => this.setState({ reg: i, regs: this.seen('regs', i) })),
+      regFig: c.ready ? K.fig(this.brainFig(s.reg), '') : null,
+      regNote: s.reg === null ? 'Tap a region.' : REG[s.reg].note,
+      symBtns: this.btns(SYM.map((x) => x.k), s.sym, (i) => this.setState({ sym: i, syms: this.seen('syms', i) })),
+      symFig: c.ready ? K.fig(this.brainFig(s.sym === null ? null : SYM[s.sym].r), '') : null,
+      symNote: s.sym === null ? 'Pick a patient.' : SYM[s.sym].note,
+      mapCards: this.cards(MAP, 'maps'),
+      thinkOptions: [
+        { text: 'The cerebellum', correct: false, reply: 'The cerebellum coordinates muscles and balance.' },
+        { text: 'The cerebral cortex', correct: true, reply: 'The folded outer layer: consciousness, intelligence, memory and language.' },
+        { text: 'The medulla', correct: false, reply: 'The medulla controls heartbeat and breathing.' }
+      ],
+      sortBins: [{ id: 'c', label: 'Cerebral cortex' }, { id: 'b', label: 'Cerebellum' }, { id: 'm', label: 'Medulla' }],
+      sortItems: [
+        { text: 'Memory', bin: 'c', why: 'Cerebral cortex.' },
+        { text: 'Language', bin: 'c', why: 'Cerebral cortex.' },
+        { text: 'Consciousness', bin: 'c', why: 'Cerebral cortex.' },
+        { text: 'Muscle coordination', bin: 'b', why: 'Cerebellum.' },
+        { text: 'Balance', bin: 'b', why: 'Cerebellum.' },
+        { text: 'Heartbeat', bin: 'm', why: 'Medulla: unconscious.' },
+        { text: 'Breathing', bin: 'm', why: 'Medulla: unconscious.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the region of the brain that controls breathing.', 'The medulla.', [['Cerebellum', 'Coordination and balance.'], 'Medulla', ['Cerebral cortex', 'Thinking and memory.']]),
+          MCQ('State', 'State the function of the cerebellum.', 'Coordination of muscular activity and balance.', ['Coordinating muscles and balance', ['Memory', 'Cerebral cortex.'], ['Heartbeat', 'Medulla.']])
+        ],
+        r2: [
+          MCQ('Identify', 'Identify the region that joins the brain to the spinal cord.', 'The medulla.', [['Cerebral cortex', 'The outer folded layer.'], ['Cerebellum', 'At the back.'], 'Medulla']),
+          MCQ('Suggest', 'After a head injury, a patient can walk normally but can’t remember new names. Suggest which region was damaged.', 'The cerebral cortex: memory.', ['Cerebral cortex', ['Cerebellum', 'Walking and balance are fine.'], ['Medulla', 'Heartbeat and breathing aren’t mentioned.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'After a stroke, a patient keeps losing their balance. Explain which region was damaged. Put the links in order.',
+            ['Balance depends on coordinating muscular activity.', 'Muscle coordination is the job of the cerebellum.', 'So the stroke probably damaged the cerebellum.'],
+            [['Balance is a conscious decision, so it was the cortex.', 'Balance is coordinated automatically.'], ['The medulla controls balance.', 'The medulla controls heartbeat and breathing.']]),
+          TH ? CHAIN('Explain', 'Explain how neuroscientists have linked brain regions to functions. Put the links in order.',
+            ['Patients with damage to one region lose a particular function.', 'Electrically stimulating a small area produces a particular response.', 'MRI scans show which regions are active during a task.'],
+            [['Brain tissue is removed from healthy people to test.', 'That would damage the brain.'], ['Every region does every job.', 'Different regions carry out different functions.']])
+          : CHAIN('Explain', 'Explain why you keep breathing while you are asleep. Put the links in order.',
+            ['Breathing is an unconscious activity.', 'Unconscious activities are controlled by the medulla.', 'So breathing carries on without conscious thought, even in sleep.'],
+            [['The cerebral cortex keeps you breathing.', 'The cortex is conscious activity.'], ['The cerebellum controls breathing.', 'The cerebellum coordinates muscles and balance.']])
+        ],
+        r4: [
+          TH ? WRITE('Explain', 6, 'Explain how regions of the brain have been mapped to their functions, and why brain disorders are difficult to investigate and treat.',
+            LV6('All three mapping methods with what each shows, plus the complexity and delicacy of the brain and why repair is hard.', 'Two methods, or one method and a clear difficulty.', 'One method or one difficulty, little explanation.'),
+            ['Patients with brain damage: a lost function linked to the damaged region.', 'Electrical stimulation of a small area produces a response.', 'MRI scanning shows which regions are active during a task.', 'The brain is complex and delicate.', 'Damaged neurones are not easily repaired or replaced.', 'Taking samples or operating risks damaging other parts of the brain.'],
+            ['“Scientists cut up living brains to see what each part does.”', '“Brain damage heals like a cut.”'])
+          : WRITE('Describe', 4, 'Describe where the cerebral cortex, cerebellum and medulla are, and what each does.',
+            LV4('All three regions placed and each matched to its function.', 'Two regions with functions, or all three named with little detail.'),
+            ['Cerebral cortex: folded outer layer; consciousness, intelligence, memory, language.', 'Cerebellum: back of the brain, under the cortex; muscle coordination and balance.', 'Medulla: base of the brain, joining the spinal cord; heartbeat and breathing.', 'Each region carries out different functions.'],
+            ['“The cerebellum does the thinking.”', '“The cortex controls heartbeat.”'])
+        ]
+      },
+      keyLines: TH ? ['The brain controls complex behaviour: billions of interconnected neurones in regions with different functions.', 'Cerebral cortex: consciousness, intelligence, memory, language. Cerebellum: muscle coordination. Medulla: heartbeat, breathing.', 'Regions were mapped from patients with brain damage, electrical stimulation and MRI scanning.', 'The brain is complex and delicate, so investigating and treating disorders is very difficult.']
+        : ['The brain controls complex behaviour: billions of interconnected neurones in regions with different functions.', 'Cerebral cortex: the folded outer layer; consciousness, intelligence, memory, language.', 'Cerebellum: at the back; muscle coordination and balance.', 'Medulla: at the base; unconscious activities such as heartbeat and breathing.'],
+      endPrev: LNK('reaction-time', 'Reaction time'),
+      endNext: LNK('the-eye', 'The eye'),
+      endConnects: [LNK('nervous-system', 'The nervous system'), LNK('stem-cells', 'Stem cells')],
+      bank: c.ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

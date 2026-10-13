@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The eye · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Homeostasis and response" title="The eye" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.5.2.3</p>
+        <h1>The eye</h1>
+        <p class="ks3-bigq">Every part of the eye has a shape that suits its job. Find each part, then watch the lens change for near and far.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="2"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Lights off." scene="You walk from a bright kitchen into a dark bedroom. At first you can see almost nothing." question="do your pupils get bigger or smaller?" options="{{ hookOptions }}" bridge="Bigger, to let more light in. It happens without you thinking." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-parts" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Structure and function</p>
+        <h2 style="margin: 6px 0 0;">Parts of the eye.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The eye is a sense organ containing receptors sensitive to light intensity and colour. Tap each part to find it and see how its structure suits its job.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ partBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ partFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ partNote }}</p></div>
+      </section>
+
+      <section id="s-focus" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Accommodation</p>
+        <h2 style="margin: 6px 0 0;">Near and far, light and dark.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Accommodation is the process of changing the shape of the lens to focus on near or distant objects. Switch between them.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ distBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ focusFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ focusNote }}</p></div>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The pupil changes size by reflex. The iris has two sets of muscles: when one set contracts, the other relaxes.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ lightBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; align-items: start;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ pupilFig }}</div><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ pupilNote }}</p></div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">When the eyeball or lens can’t focus light on the retina: <a href="ks4-biology-4.5.2.3-defects-of-the-eye.dc.html">Defects of the eye</a>. Reflexes in general: <a href="ks4-biology-4.5.2.1-reflex-actions.dc.html">Reflex actions</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · relax to see close?</p></div>
+        <p class="ks3-mis-quote">&ldquo;To see close up, the ciliary muscles relax.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="You look up from the far side of a field to a book in your hands. What do the ciliary muscles do?" options="{{ thinkOptions }}" reveal="They contract. The suspensory ligaments loosen and the lens becomes thicker, refracting light more strongly." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Near or far?" prompt="Place each change." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Near: contract, loosen, thicker. Distant: relax, pulled tight, thinner." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Identify</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Each structure on a diagram of the eye.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How each structure’s shape suits its function.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">What happens to the lens for a near or a distant object.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Near object: ciliary muscles contract, suspensory ligaments loosen, lens thicker. Distant object: ciliary muscles relax, ligaments pulled tight, lens thinner.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="the-eye" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="The eye" spec="AQA 4.5.2.3 (Triple)" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Getting contract and relax the wrong way round?" legal="The eye diagrams are schematic and not to scale." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'the-eye';
+const OK = ["Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const FILE = {"homeostasis":"ks4-biology-4.5.1-homeostasis.dc.html","nervous-system":"ks4-biology-4.5.2.1-nervous-system.dc.html","reflex-actions":"ks4-biology-4.5.2.1-reflex-actions.dc.html","reaction-time":"ks4-biology-4.5.2.1-reaction-time.dc.html","the-brain":"ks4-biology-4.5.2.2-the-brain.dc.html","the-eye":"ks4-biology-4.5.2.3-the-eye.dc.html","defects-of-the-eye":"ks4-biology-4.5.2.3-defects-of-the-eye.dc.html","thermoregulation":"ks4-biology-4.5.2.4-thermoregulation.dc.html","endocrine-system":"ks4-biology-4.5.3.1-endocrine-system.dc.html","blood-glucose-diabetes":"ks4-biology-4.5.3.2-blood-glucose-diabetes.dc.html","human-reproduction-hormones":"ks4-biology-4.5.3.4-human-reproduction-hormones.dc.html","contraception-fertility":"ks4-biology-4.5.3.5-contraception-fertility.dc.html","sexual-asexual-reproduction":"ks4-biology-4.6.1.1-sexual-asexual-reproduction.dc.html","meiosis":"ks4-biology-4.6.1.2-meiosis.dc.html","advantages-sexual-asexual":"ks4-biology-4.6.1.3-advantages-sexual-asexual.dc.html","dna-genome":"ks4-biology-4.6.1.4-dna-genome.dc.html","metabolism":"../../Batch 7/lessons/ks4-biology-4.4.2.3-metabolism.dc.html","aerobic-respiration":"../../Batch 7/lessons/ks4-biology-4.4.2.1-aerobic-respiration.dc.html","response-to-exercise":"../../Batch 7/lessons/ks4-biology-4.4.2.2-response-to-exercise.dc.html","fungal-protist-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.4-fungal-protist-diseases.dc.html","bacterial-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.3-bacterial-diseases.dc.html","cell-specialisation":"../../Batch 6/lessons/ks4-biology-4.1.1.3-cell-specialisation.dc.html","culturing-microorganisms":"../../Batch 6/lessons/ks4-biology-4.1.1.6-culturing-microorganisms.dc.html","digestive-system":"../../Batch 6/lessons/ks4-biology-4.2.2.1-digestive-system.dc.html","stem-cells":"../../Batch 6/lessons/ks4-biology-4.1.2.3-stem-cells.dc.html"};
+const LNK = (k, label) => ({ href: FILE[k], label });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const PATH = (d, col, w, extra) => '<path d="' + d + '" fill="none" stroke="' + (col || '#1A1A1A') + '" stroke-width="' + (w || 3) + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>';
+const RAIL = [{"id":"s-hook","label":"Lights off","short":"HOOK"},{"id":"s-parts","label":"Parts of the eye","short":"PARTS"},{"id":"s-focus","label":"Near and far · light and dark","short":"FOCUS"},{"id":"s-think","label":"Think again","short":"THINK"},{"id":"s-sort","label":"Near or far?","short":"SORT"},{"id":"s-ladder","label":"Exam ladder","short":"LADDER"}];
+const STATE = {"part":null,"parts":[],"dist":0,"dists":[0],"light":0,"lights":[0]};
+const PARTS = [
+  { k: 'Cornea', note: 'Transparent and curved at the front: it lets light in and refracts it.' },
+  { k: 'Iris', note: 'A coloured ring of muscle: it controls the size of the pupil, so how much light reaches the retina.' },
+  { k: 'Lens', note: 'Transparent and able to change shape: it focuses light on the retina.' },
+  { k: 'Ciliary muscles', note: 'A ring of muscle around the lens: contracts or relaxes to change the lens shape.' },
+  { k: 'Suspensory ligaments', note: 'Fibres joining the ciliary muscles to the lens: loosen or are pulled tight.' },
+  { k: 'Retina', note: 'The inner layer at the back: contains receptor cells sensitive to light intensity and colour.' },
+  { k: 'Optic nerve', note: 'Carries impulses from the retina to the brain.' },
+  { k: 'Sclera', note: 'The tough, white outer layer: protects the eye and keeps its shape.' }
+];
+const FOCUS = ['Distant object: the ciliary muscles relax, the suspensory ligaments are pulled tight, and the lens is pulled thin. It refracts light only slightly. The light focuses on the retina.', 'Near object: the ciliary muscles contract, the suspensory ligaments loosen, and the lens becomes thicker. It refracts light strongly. The light focuses on the retina.'];
+const PUPIL = ['Dim light: the radial muscles contract and the circular muscles relax. The pupil gets bigger, letting more light in.', 'Bright light: the circular muscles contract and the radial muscles relax. The pupil gets smaller, protecting the retina.'];
+
+class Component extends DCLogic {
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH', T = rk === 'TF' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: T, notTriple: !T, isTH: rk === 'TH', notTH: rk !== 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+  eyeFig(sel, near, rays) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const hi = (k) => sel === k, st = (k) => (hi(k) ? C.red : C.stroke), sw = (k, w) => (hi(k) ? w + 3 : w);
+    b += D.circ(380, 180, 140, '#FFFDF8', st('Sclera'), sw('Sclera', 5));
+    b += '<path d="M492 96 A140 140 0 0 1 492 264" fill="none" stroke="' + (hi('Retina') ? C.red : '#C8102E') + '" stroke-width="' + (hi('Retina') ? 10 : 6) + '" stroke-opacity="' + (hi('Retina') ? 1 : 0.55) + '"/>';
+    b += '<path d="M512 196 L600 214 L600 236 L506 216 Z" fill="' + (hi('Optic nerve') ? '#F2C9AE' : '#F6E3D8') + '" stroke="' + st('Optic nerve') + '" stroke-width="' + sw('Optic nerve', 2.5) + '"/>';
+    b += '<path d="M262 96 Q196 180 262 264" fill="#E6F1F8" stroke="' + st('Cornea') + '" stroke-width="' + sw('Cornea', 3.5) + '"/>';
+    b += '<rect x="266" y="98" width="12" height="62" rx="4" fill="#5B6B82" stroke="' + st('Iris') + '" stroke-width="' + sw('Iris', 2) + '"/><rect x="266" y="200" width="12" height="62" rx="4" fill="#5B6B82" stroke="' + st('Iris') + '" stroke-width="' + sw('Iris', 2) + '"/>';
+    const rx = near ? 26 : 14;
+    b += '<ellipse cx="300" cy="180" rx="' + rx + '" ry="52" fill="#DDEFF9" stroke="' + st('Lens') + '" stroke-width="' + sw('Lens', 3) + '"/>';
+    b += '<ellipse cx="300" cy="74" rx="14" ry="16" fill="#F2C9AE" stroke="' + st('Ciliary muscles') + '" stroke-width="' + sw('Ciliary muscles', 2.5) + '"/><ellipse cx="300" cy="286" rx="14" ry="16" fill="#F2C9AE" stroke="' + st('Ciliary muscles') + '" stroke-width="' + sw('Ciliary muscles', 2.5) + '"/>';
+    const lig = (x1, y1, x2, y2) => near ? PATH('M' + x1 + ' ' + y1 + ' Q' + (x1 + 8) + ' ' + ((y1 + y2) / 2) + ' ' + x2 + ' ' + y2, st('Suspensory ligaments'), sw('Suspensory ligaments', 1.8)) : D.line(x1, y1, x2, y2, sw('Suspensory ligaments', 1.8), st('Suspensory ligaments'));
+    [-6, 0, 6].forEach((d) => { b += lig(300 + d, 90, 300 + d * 2, 130) + lig(300 + d, 270, 300 + d * 2, 230); });
+    if (rays) {
+      const fx = 518, fy = 180;
+      [150, 210].forEach((y) => { const sy = near ? 180 + (y - 180) * 0.15 : y; b += D.line(near ? 60 : 20, sy, 300, y, 2.5, C.gold) + D.line(300, y, fx, fy, 2.5, C.gold); });
+      if (near) b += D.circ(60, 180, 6, C.stroke) + D.T(60, 206, 'near object', 13, { fill: C.stroke, weight: 'normal' }); else b += D.T(30, 136, 'from a distant object', 13, { anchor: 'start', fill: C.stroke, weight: 'normal' });
+      b += D.circ(fx, fy, 5, C.red);
+    } else {
+      const lab = (x1, y1, x2, y2, t, anchor) => D.line(x1, y1, x2, y2, 1.8, hi(t) ? C.red : C.muted) + D.T(x2 + (anchor === 'end' ? -6 : 6), y2 + 5, t.toLowerCase(), 14, { anchor: anchor || 'start', fill: hi(t) ? C.red : C.stroke });
+      b += lab(228, 190, 160, 226, 'Cornea', 'end') + lab(266, 112, 190, 92, 'Iris', 'end') + lab(312, 180, 380, 180, 'Lens') + lab(288, 70, 200, 34, 'Ciliary muscles', 'end') + lab(304, 256, 340, 372, 'Suspensory ligaments') + lab(512, 140, 560, 96, 'Retina') + lab(590, 230, 560, 300, 'Optic nerve') + lab(430, 48, 470, 22, 'Sclera');
+    }
+    return D.svg(660, rays ? 360 : 390, b, rays ? (near ? 'Thick lens focusing light from a near object on the retina.' : 'Thin lens focusing light from a distant object on the retina.') : 'Cross-section of the eye' + (sel ? ', ' + sel + ' highlighted.' : '.'));
+  }
+  pupilFig(bright) {
+    const D = window.KS4D, C = D.C; let b = '';
+    b += D.circ(170, 120, 92, '#FFFDF8', C.stroke, 3) + D.circ(170, 120, 62, '#6F8FA8', C.stroke, 2.5);
+    for (let a = 0; a < 360; a += 20) { const r = (a * Math.PI) / 180; b += D.line(170 + Math.cos(r) * (bright ? 22 : 40), 120 + Math.sin(r) * (bright ? 22 : 40), 170 + Math.cos(r) * 60, 120 + Math.sin(r) * 60, 1.5, '#4B6A82'); }
+    b += D.circ(170, 120, bright ? 18 : 36, '#1A1A1A');
+    b += D.T(170, 230, bright ? 'bright: small pupil' : 'dim: large pupil', 14, { fill: C.stroke });
+    return D.svg(340, 250, b, bright ? 'Front view of the eye in bright light: small pupil.' : 'Front view of the eye in dim light: large pupil.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.parts.length === 8, s.dists.length === 2 && s.lights.length === 2, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const H = c.isHigher, TR = c.isTriple, TH = c.isTH, rk = c.rk;
+    const BANK = [
+      Q('A student looks from a distant window to a book close to them. What happens to the ciliary muscles and lens?', 'Ciliary muscles contract → suspensory ligaments slacken → lens becomes more rounded for near vision', [['Ciliary muscles relax → suspensory ligaments become taut → lens becomes flatter for near vision', 'Relaxing ciliary muscles = FAR vision (flat lens). For NEAR vision, ciliary muscles must CONTRACT.'], ['Ciliary muscles contract → suspensory ligaments become taut → lens becomes flatter', 'When ciliary muscles contract, ligaments SLACKEN (not become taut). The lens rounds up because tension is removed.'], ['Ciliary muscles relax → suspensory ligaments slacken → lens becomes more rounded', 'Relaxing ciliary muscles causes ligaments to become taut — but the lens becomes FLAT, not rounded.']]),
+      Q('Why do the pupils constrict in bright light?', 'To reduce the amount of light entering the eye — preventing damage to the sensitive retina', [['To increase the amount of light entering — bright light improves vision', 'Constriction REDUCES light entry — pupils dilate to INCREASE light entry in dim conditions.'], ['To improve colour vision — cones work better with a smaller pupil', 'Cones work well in bright light regardless of pupil size — the pupil reflex is about PROTECTING the retina from excessive light.'], ['The lens expands when bright and blocks more of the pupil', 'The lens doesn’t change size or block the pupil — accommodation changes lens shape, not size.']]),
+      Q('What is the function of the sclera?', 'It protects the eye and keeps its shape', [['It refracts light onto the retina', 'That is the cornea and lens.'], ['It controls the size of the pupil', 'That is the iris.'], ['It carries impulses to the brain', 'That is the optic nerve.']]),
+      Q('Which structure contains receptor cells sensitive to light intensity and colour?', 'The retina', [['The cornea', 'The cornea refracts light.'], ['The iris', 'The iris controls the pupil.'], ['The optic nerve', 'The optic nerve carries impulses from the retina.']]),
+      Q('What does the optic nerve do?', 'Carries impulses from the retina to the brain', [['Carries light to the brain', 'Light stops at the retina; impulses travel on.'], ['Changes the shape of the lens', 'The ciliary muscles do that.'], ['Holds the lens in place', 'The suspensory ligaments do that.']])
+    ];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'Bigger', correct: true, reply: 'Yes. More light reaches the retina.' },
+        { text: 'Smaller', correct: false, reply: 'They get bigger in the dark, to let more light in. Smaller is for bright light.' }
+      ],
+      partBtns: this.btns(PARTS.map((x) => x.k), s.part, (i) => this.setState({ part: i, parts: this.seen('parts', i) })),
+      partFig: c.ready ? K.fig(this.eyeFig(s.part === null ? null : PARTS[s.part].k, false, false), '') : null,
+      partNote: s.part === null ? 'Tap a part.' : PARTS[s.part].note,
+      distBtns: this.btns(['Distant object', 'Near object'], s.dist, (i) => this.setState({ dist: i, dists: this.seen('dists', i) })),
+      focusFig: c.ready ? K.fig(this.eyeFig(null, s.dist === 1, true), '') : null,
+      focusNote: FOCUS[s.dist],
+      lightBtns: this.btns(['Dim light', 'Bright light'], s.light, (i) => this.setState({ light: i, lights: this.seen('lights', i) })),
+      pupilFig: c.ready ? K.fig(this.pupilFig(s.light === 1), '') : null,
+      pupilNote: PUPIL[s.light],
+      thinkOptions: [
+        { text: 'They relax', correct: false, reply: 'Relaxing is for distant objects.' },
+        { text: 'They contract', correct: true, reply: 'The ligaments loosen and the lens becomes thicker.' },
+        { text: 'Nothing: the lens moves forward', correct: false, reply: 'The lens changes shape; it doesn’t move.' }
+      ],
+      sortBins: [{ id: 'n', label: 'Near object' }, { id: 'd', label: 'Distant object' }],
+      sortItems: [
+        { text: 'Ciliary muscles contract', bin: 'n', why: 'Near.' },
+        { text: 'Suspensory ligaments loosen', bin: 'n', why: 'Near.' },
+        { text: 'Lens thicker, refracts light strongly', bin: 'n', why: 'Near.' },
+        { text: 'Ciliary muscles relax', bin: 'd', why: 'Distant.' },
+        { text: 'Suspensory ligaments pulled tight', bin: 'd', why: 'Distant.' },
+        { text: 'Lens thin, refracts light only slightly', bin: 'd', why: 'Distant.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the tough, white outer layer of the eye.', 'The sclera.', ['Sclera', ['Cornea', 'Transparent, at the front.'], ['Retina', 'The inner layer at the back.']]),
+          MCQ('State', 'State the function of the optic nerve.', 'Carries impulses from the retina to the brain.', [['Lets light into the eye', 'That is the cornea and pupil.'], 'Carries impulses from the retina to the brain', ['Focuses light', 'That is the lens.']])
+        ],
+        r2: [
+          MCQ('Identify', 'Identify the structure that controls how much light reaches the retina.', 'The iris, by changing the size of the pupil.', [['The lens', 'The lens focuses light.'], 'The iris', ['The sclera', 'The sclera protects the eye.'], ['The ciliary muscles', 'These change the lens shape.']]),
+          MCQ('Describe', 'Describe what happens to the pupil in dim light.', 'It gets bigger, letting more light in.', ['It gets bigger', ['It gets smaller', 'That is bright light.'], ['It stays the same', 'It changes by reflex.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain how the eye focuses on a near object. Put the links in order.',
+            ['The ciliary muscles contract.', 'The suspensory ligaments loosen.', 'The lens becomes thicker and refracts light strongly.', 'The light is focused on the retina.'],
+            [['The suspensory ligaments contract.', 'Ligaments aren’t muscles: they loosen or are pulled tight.'], ['The lens moves closer to the cornea.', 'It changes shape; it doesn’t move.']]),
+          CHAIN('Explain', 'Explain how the eye focuses on a distant object. Put the links in order.',
+            ['The ciliary muscles relax.', 'The suspensory ligaments are pulled tight.', 'The lens is pulled thin and refracts light only slightly.', 'The light is focused on the retina.'],
+            [['The ciliary muscles contract.', 'That is for near objects.'], ['The pupil gets bigger to focus.', 'The pupil controls light, not focus.']])
+        ],
+        r4: [
+          WRITE('Explain', 6, 'A person walks out of a dark cinema into bright sunlight and reads a sign far away. Explain the changes in their eyes.',
+            LV6('Pupil reflex with both muscle sets, why it protects the retina, and full accommodation for a distant object ending on the retina.', 'Pupil change and lens change described, some reasons.', 'One change named.'),
+            ['Bright light: the circular muscles of the iris contract and the radial muscles relax.', 'The pupil gets smaller, so less light enters and the retina is protected.', 'This is a reflex: automatic.', 'Distant sign: the ciliary muscles relax.', 'The suspensory ligaments are pulled tight and the lens is pulled thin.', 'The lens refracts light only slightly, focusing it on the retina.'],
+            ['“The pupil shrinks itself.”', '“The ligaments contract.”'])
+        ]
+      },
+      keyLines: ['The eye is a sense organ with receptors sensitive to light intensity and colour, in the retina.', 'Cornea refracts; iris controls the pupil; lens focuses; optic nerve carries impulses to the brain; sclera protects and keeps the shape.', 'Near: ciliary muscles contract, ligaments loosen, lens thicker. Distant: muscles relax, ligaments tight, lens thin.', 'Dim light: pupil bigger. Bright light: pupil smaller. One set of iris muscles contracts while the other relaxes.'],
+      endPrev: LNK('the-brain', 'The brain'),
+      endNext: LNK('defects-of-the-eye', 'Defects of the eye'),
+      endConnects: [LNK('reflex-actions', 'Reflex actions')],
+      bank: c.ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

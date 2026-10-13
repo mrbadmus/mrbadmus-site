@@ -1481,7 +1481,7 @@ def compile_block(page, name, design_dir=None):
         logic = ks4_rulings.apply_r_end_connects_filter(logic)
         # ⊕ B7-END-EMPTY-CONNECTS (ks4_batch_rulings.py) — batch 7's OWN copy of the block only: hide
         # the "Connects to" section when the route filter leaves it empty. Batches 2-6 are untouched.
-        if design_dir and design_dir.replace(os.sep, "/").rstrip("/").endswith("design-reference/batch-7/lessons"):
+        if design_dir and design_dir.replace(os.sep, "/").rstrip("/").endswith(("design-reference/batch-7/lessons", "design-reference/batch-8/lessons")):
             tpl, logic = ks4_batch_rulings.apply_end_hide_empty_connects(tpl, logic)
     if name in _BLOCK_R2:
         logic = _BLOCK_R2[name](logic)

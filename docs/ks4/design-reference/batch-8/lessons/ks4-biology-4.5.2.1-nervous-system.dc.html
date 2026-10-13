@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The nervous system · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Homeostasis and response" title="The nervous system" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.5.2.1 · Combined 4.5.2</p>
+        <h1>The nervous system</h1>
+        <p class="ks3-bigq">A message from your fingertip reaches a muscle in a fraction of a second. Cut one link and see what fails.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Hot pan handle." scene="You grab a pan handle that turns out to be hot, and let go straight away." question="does the message travel through your body as electricity in nerves, or in your blood?" options="{{ hookOptions }}" bridge="Electrical impulses, along nerves. Next: the route they take." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-path" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The nervous system</p>
+        <h2 style="margin: 6px 0 0;">Receptor to effector.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The nervous system lets you react to your surroundings and coordinate your behaviour. Information from receptors passes along neurones as electrical impulses to the central nervous system (CNS): the brain and spinal cord. The CNS coordinates the response of effectors: muscles contracting or glands secreting hormones. Tap each type of neurone.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ neurCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Now cut one link and predict what is lost.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ cutBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ chainFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ chainNote }}</p></div>
+      </section>
+
+      <section id="s-syn" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Synapses</p>
+        <h2 style="margin: 6px 0 0;">Across the gap.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Neurones are not joined end to end. Where two meet there is a tiny gap, a synapse. An electrical impulse can’t cross it: a chemical carries the signal across. Step through.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ synBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ synFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ synNote }}</p></div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Nerve impulses travel along neurones; hormones travel in the blood and are slower: <a href="ks4-biology-4.5.3.1-endocrine-system.dc.html">The endocrine system</a>. Some drugs and alcohol slow the nervous system and increase reaction time: <a href="ks4-biology-4.5.2.1-reaction-time.dc.html">Reaction time</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · jumping the gap?</p></div>
+        <p class="ks3-mis-quote">&ldquo;The electrical signal jumps across to the next nerve.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="How does the signal get from one neurone to the next?" options="{{ thinkOptions }}" reveal="A chemical is released, diffuses across the synapse and starts a new impulse in the next neurone." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Which neurone?" prompt="Place each one." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Sensory: receptor to CNS. Relay: inside the CNS. Motor: CNS to effector." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The pathway from receptor to effector, in order.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How a signal crosses a synapse, link by link.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Use the data</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Read a table about the nervous system and say what it shows.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Electrical impulses travel along neurones: sensory to the CNS, relay within it, motor to the effector. A chemical crosses each synapse.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="nervous-system" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="The nervous system" spec="AQA 4.5.2.1 (Combined 4.5.2)" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which way each neurone carries impulses?" legal="Figures are schematic. Response-time data in the practice are made up for teaching." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'nervous-system';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const FILE = {"homeostasis":"ks4-biology-4.5.1-homeostasis.dc.html","nervous-system":"ks4-biology-4.5.2.1-nervous-system.dc.html","reflex-actions":"ks4-biology-4.5.2.1-reflex-actions.dc.html","reaction-time":"ks4-biology-4.5.2.1-reaction-time.dc.html","the-brain":"ks4-biology-4.5.2.2-the-brain.dc.html","the-eye":"ks4-biology-4.5.2.3-the-eye.dc.html","defects-of-the-eye":"ks4-biology-4.5.2.3-defects-of-the-eye.dc.html","thermoregulation":"ks4-biology-4.5.2.4-thermoregulation.dc.html","endocrine-system":"ks4-biology-4.5.3.1-endocrine-system.dc.html","blood-glucose-diabetes":"ks4-biology-4.5.3.2-blood-glucose-diabetes.dc.html","human-reproduction-hormones":"ks4-biology-4.5.3.4-human-reproduction-hormones.dc.html","contraception-fertility":"ks4-biology-4.5.3.5-contraception-fertility.dc.html","sexual-asexual-reproduction":"ks4-biology-4.6.1.1-sexual-asexual-reproduction.dc.html","meiosis":"ks4-biology-4.6.1.2-meiosis.dc.html","advantages-sexual-asexual":"ks4-biology-4.6.1.3-advantages-sexual-asexual.dc.html","dna-genome":"ks4-biology-4.6.1.4-dna-genome.dc.html","metabolism":"../../Batch 7/lessons/ks4-biology-4.4.2.3-metabolism.dc.html","aerobic-respiration":"../../Batch 7/lessons/ks4-biology-4.4.2.1-aerobic-respiration.dc.html","response-to-exercise":"../../Batch 7/lessons/ks4-biology-4.4.2.2-response-to-exercise.dc.html","fungal-protist-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.4-fungal-protist-diseases.dc.html","bacterial-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.3-bacterial-diseases.dc.html","cell-specialisation":"../../Batch 6/lessons/ks4-biology-4.1.1.3-cell-specialisation.dc.html","culturing-microorganisms":"../../Batch 6/lessons/ks4-biology-4.1.1.6-culturing-microorganisms.dc.html","digestive-system":"../../Batch 6/lessons/ks4-biology-4.2.2.1-digestive-system.dc.html","stem-cells":"../../Batch 6/lessons/ks4-biology-4.1.2.3-stem-cells.dc.html"};
+const LNK = (k, label) => ({ href: FILE[k], label });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const PATH = (d, col, w, extra) => '<path d="' + d + '" fill="none" stroke="' + (col || '#1A1A1A') + '" stroke-width="' + (w || 3) + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>';
+const RAIL = [{"id":"s-hook","label":"Hot pan handle","short":"HOOK"},{"id":"s-path","label":"Receptor to effector","short":"PATHWAY"},{"id":"s-syn","label":"Across a synapse","short":"SYNAPSE"},{"id":"s-think","label":"Think again","short":"THINK"},{"id":"s-sort","label":"Which neurone?","short":"SORT"},{"id":"s-ladder","label":"Exam ladder","short":"LADDER"}];
+const STATE = {"neur":[],"cut":0,"cuts":[0],"syn":0,"synDone":false};
+const NEUR = [
+  { name: 'Sensory neurone', why: 'Carries impulses from a receptor to the CNS.' },
+  { name: 'Relay neurone', why: 'Inside the CNS. Passes impulses from a sensory neurone to a motor neurone.' },
+  { name: 'Motor neurone', why: 'Carries impulses from the CNS to an effector: a muscle or a gland.' }
+];
+const CUTS = ['Nothing cut', 'Cut the sensory neurone', 'Damage the spinal cord', 'Cut the motor neurone'];
+const CUT_NOTE = ['Receptor, sensory neurone, CNS, motor neurone, effector: the muscle contracts and the hand lets go.', 'Impulses from the receptor never reach the CNS, so no response is coordinated.', 'Impulses arrive but the CNS can’t pass them on to the motor neurone: no response.', 'The CNS coordinates a response, but no impulses reach the muscle: it doesn’t contract.'];
+const SYN = ['An electrical impulse travels along the first neurone.', 'The impulse reaches the end of the neurone: a chemical is released.', 'The chemical diffuses across the gap.', 'The chemical reaches the next neurone and starts a new electrical impulse.'];
+
+class Component extends DCLogic {
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH', T = rk === 'TF' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: T, notTriple: !T, isTH: rk === 'TH', notTH: rk !== 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+  chainFig(cut) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const L = ['Stimulus', 'Receptor', 'Sensory neurone', 'CNS', 'Motor neurone', 'Effector', 'Response'];
+    const brk = cut === 1 ? 2 : cut === 2 ? 3 : cut === 3 ? 4 : -1;
+    L.forEach((t, i) => {
+      const x = 18 + i * 108, dead = brk >= 0 && i > brk, me = i === brk;
+      b += BOX(x, 50, 96, 66, me ? '#E4E1D8' : dead ? '#F3F0E7' : i === 3 ? '#FBE3D6' : '#FFFFFF', dead ? C.muted : C.stroke, 2.5);
+      const w = t.split(' ');
+      if (w.length === 2) { b += D.T(x + 48, 79, w[0], 14, { fill: dead ? C.muted : C.stroke }) + D.T(x + 48, 97, w[1], 14, { fill: dead ? C.muted : C.stroke }); }
+      else b += D.T(x + 48, 88, t, 14, { fill: dead ? C.muted : C.stroke });
+      if (me) b += '<g stroke="' + C.red + '" stroke-width="4" stroke-linecap="round"><line x1="' + (x + 30) + '" y1="36" x2="' + (x + 66) + '" y2="130"/><line x1="' + (x + 66) + '" y1="36" x2="' + (x + 30) + '" y2="130"/></g>';
+      if (i < 6) b += D.arrow(x + 98, 83, x + 106, 83, dead || me ? C.muted : C.stroke, 3);
+    });
+    b += D.T(18 + 3 * 108 + 48, 140, 'brain and spinal cord', 12, { fill: C.muted, weight: 'normal' });
+    return D.svg(780, 160, b, cut === 0 ? 'Stimulus, receptor, sensory neurone, CNS, motor neurone, effector, response.' : 'The pathway with one link broken; everything after it is lost.');
+  }
+  synFig(st) {
+    const D = window.KS4D, C = D.C; let b = '';
+    b += '<path d="M20 70 H250 Q300 70 300 120 Q300 170 250 170 H20 Z" fill="#FFF4E0" stroke="' + C.stroke + '" stroke-width="3"/>';
+    b += '<path d="M640 70 H410 Q360 70 360 120 Q360 170 410 170 H640 Z" fill="#E7F0EC" stroke="' + C.stroke + '" stroke-width="3"/>';
+    b += D.T(130, 200, 'first neurone', 14, { fill: C.stroke }) + D.T(510, 200, 'next neurone', 14, { fill: C.stroke }) + D.T(330, 50, 'synapse (gap)', 14, { fill: C.muted });
+    if (st >= 0) b += D.arrow(40, 120, st >= 1 ? 250 : 180, 120, C.gold, 5);
+    const dots = (xs) => xs.map((p) => D.circ(p[0], p[1], 6, C.red)).join('');
+    if (st === 1) b += dots([[278, 96], [284, 120], [278, 144], [270, 108], [270, 132]]);
+    if (st === 2) b += dots([[318, 92], [330, 112], [322, 130], [340, 146], [334, 100]]);
+    if (st === 3) b += dots([[368, 98], [366, 120], [368, 142]]) + D.arrow(400, 120, 620, 120, C.gold, 5);
+    return D.svg(660, 220, b, SYN[st]);
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.neur.length === 3 && s.cuts.length >= 3, s.synDone, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const H = c.isHigher, TR = c.isTriple, TH = c.isTH, rk = c.rk;
+    const BANK = [
+      Q('What is the correct pathway for a nerve signal from receptor to effector?', 'Receptor → sensory neurone → relay neurone → motor neurone → effector', [['Receptor → motor neurone → relay neurone → sensory neurone → effector', 'Motor and sensory neurones are in the wrong order. SENSORY carries to the CNS; MOTOR carries away from the CNS.'], ['Effector → sensory neurone → CNS → motor neurone → receptor', 'The pathway runs from receptor to effector — not in reverse.'], ['Receptor → CNS → sensory neurone → motor neurone', 'Sensory neurones carry signals TO the CNS. They come AFTER the receptor, not after the CNS.']]),
+      Q('How does a nerve signal cross a synapse?', 'Neurotransmitters are released, diffuse across the gap and bind to receptors on the next neurone', [['The electrical impulse jumps across the gap directly', 'The synapse is a liquid-filled gap — electrical impulses cannot jump across it. Chemical neurotransmitters are essential.'], ['The two neurones fuse temporarily to allow the signal through', 'Neurones never physically fuse — the synaptic gap is always maintained. Fusion would prevent the one-way transmission that synapses provide.'], ['Blood vessels carry chemical signals across the synaptic gap', 'Synaptic transmission takes microseconds — blood flow is far too slow. Neurotransmitters diffuse across the tiny gap.']]),
+      Q('What makes up the central nervous system?', 'The brain and spinal cord', [['The brain only', 'The spinal cord is part of the CNS too.'], ['All the nerves in the body', 'Nerves connect the CNS to the rest of the body.'], ['The brain and the sense organs', 'Sense organs contain receptors; they are not the CNS.']]),
+      Q('Which of these is a response by an effector?', 'A gland secreting a hormone', [['A receptor detecting light', 'That is detection, not a response.'], ['An impulse travelling along a sensory neurone', 'That carries information to the CNS.'], ['The spinal cord passing on an impulse', 'That is coordination.']]),
+      Q('Made-up data: a response through 2 synapses took 6 ms; through 4 synapses, 9 ms; through 6 synapses, 12 ms. What do the data show?', 'The more synapses, the longer the response takes', [['The more synapses, the shorter the response', 'The times get longer as synapses are added.'], ['Synapses make no difference', 'The time rises by 3 ms for every two synapses.'], ['Impulses travel faster across synapses than along neurones', 'The data show each synapse adds time.']])
+    ];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'As electricity in nerves', correct: true, reply: 'Yes: electrical impulses along neurones.' },
+        { text: 'In your blood', correct: false, reply: 'Chemical messages in the blood are hormones, and they are slower. This one is electrical, along neurones.' }
+      ],
+      neurCards: this.cards(NEUR, 'neur'),
+      cutBtns: this.btns(CUTS, s.cut, (i) => this.setState({ cut: i, cuts: this.seen('cuts', i) })),
+      chainFig: c.ready ? K.fig(this.chainFig(s.cut), '') : null,
+      chainNote: CUT_NOTE[s.cut],
+      synBtns: [{ label: s.syn >= 3 ? 'Start again' : 'Next step', pressed: false, style: this.seg(false), onClick: () => this.setState({ syn: s.syn >= 3 ? 0 : s.syn + 1, synDone: s.synDone || s.syn === 2 }) }],
+      synFig: c.ready ? K.fig(this.synFig(s.syn), '') : null,
+      synNote: SYN[s.syn],
+      thinkOptions: [
+        { text: 'The impulse jumps across the gap', correct: false, reply: 'An electrical impulse can’t cross the gap.' },
+        { text: 'The neurones are joined, so it flows straight on', correct: false, reply: 'There is a gap: a synapse.' },
+        { text: 'A chemical diffuses across the gap', correct: true, reply: 'It then starts a new impulse in the next neurone.' }
+      ],
+      sortBins: [{ id: 's', label: 'Sensory' }, { id: 'r', label: 'Relay' }, { id: 'm', label: 'Motor' }],
+      sortItems: [
+        { text: 'Carries impulses from a receptor to the CNS', bin: 's', why: 'Sensory: towards the CNS.' },
+        { text: 'Carries impulses from fingertip skin to the spinal cord', bin: 's', why: 'From a receptor to the CNS.' },
+        { text: 'Found inside the CNS', bin: 'r', why: 'Relay neurones are in the brain and spinal cord.' },
+        { text: 'Links a sensory neurone to a motor neurone', bin: 'r', why: 'That is the relay’s job.' },
+        { text: 'Carries impulses from the CNS to a muscle', bin: 'm', why: 'Motor: to an effector.' },
+        { text: 'Carries impulses to a gland', bin: 'm', why: 'A gland is an effector.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the two parts of the central nervous system.', 'The brain and spinal cord.', [['Brain and nerves', 'Nerves are outside the CNS.'], 'Brain and spinal cord', ['Spinal cord and muscles', 'Muscles are effectors.']]),
+          MCQ('State', 'State how information travels along a neurone.', 'As electrical impulses.', ['As electrical impulses', ['In the blood', 'That is hormones.'], ['As a chemical along the neurone', 'A chemical crosses the synapse; along the neurone it is electrical.']])
+        ],
+        r2: [
+          MCQ('Identify', 'Identify the neurone that carries impulses from the CNS to an effector.', 'The motor neurone.', [['Sensory neurone', 'That carries impulses to the CNS.'], ['Relay neurone', 'That stays inside the CNS.'], 'Motor neurone']),
+          MCQ('Use the data', 'Made-up data: touch to response took 0.15 s with the hand near the face and 0.18 s with the hand at the foot. Suggest why.', 'The impulses travel further along neurones, so it takes longer.', ['The impulses travel a longer distance', ['The foot has no receptors', 'There was a response, so there are receptors.'], ['Hormones carry the message from the foot', 'It is a nerve pathway.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain how a signal passes from one neurone to the next. Put the links in order.',
+            ['An electrical impulse reaches the end of the first neurone.', 'A chemical is released into the synapse.', 'The chemical diffuses across the gap.', 'It starts a new electrical impulse in the next neurone.'],
+            [['The impulse jumps across the gap.', 'Electrical impulses can’t cross a synapse.'], ['The blood carries the chemical across.', 'The chemical diffuses across the tiny gap.']]),
+          CHAIN('Describe', 'You touch a hot pan. Describe the pathway that makes your arm muscle contract. Put the links in order.',
+            ['Receptors in the skin detect the heat.', 'A sensory neurone carries impulses to the spinal cord.', 'A relay neurone passes the impulses to a motor neurone.', 'A motor neurone carries impulses to the arm muscle, which contracts.'],
+            [['The motor neurone carries impulses to the spinal cord.', 'Motor neurones carry impulses away from the CNS.'], ['The muscle detects the heat.', 'Receptors detect; muscles respond.']])
+        ],
+        r4: [
+          WRITE('Describe', 4, 'Describe how the nervous system produces a response to a stimulus.',
+            LV4('Receptor, the three neurones in order with direction, CNS coordination, synapses and the effector’s response.', 'Some parts named, in a muddled order.'),
+            ['A receptor detects the stimulus.', 'Electrical impulses travel along a sensory neurone to the CNS (brain and spinal cord).', 'A relay neurone passes impulses to a motor neurone; a chemical crosses each synapse.', 'The motor neurone carries impulses to an effector: a muscle contracts or a gland secretes.'],
+            ['“Electrical signals jump across the synapse.”', '“The message travels in the blood.”'])
+        ]
+      },
+      keyLines: ['The nervous system lets you react to your surroundings and coordinate behaviour.', 'CNS = brain and spinal cord. Information travels along neurones as electrical impulses.', 'Stimulus, receptor, sensory neurone, CNS (relay), motor neurone, effector (muscle contracts or gland secretes), response.', 'A synapse is a gap: a chemical is released, diffuses across and starts a new impulse.'],
+      endPrev: LNK('homeostasis', 'Homeostasis'),
+      endNext: LNK('reflex-actions', 'Reflex actions'),
+      endConnects: [LNK('cell-specialisation', 'Cell specialisation'), LNK('endocrine-system', 'The endocrine system')],
+      bank: c.ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

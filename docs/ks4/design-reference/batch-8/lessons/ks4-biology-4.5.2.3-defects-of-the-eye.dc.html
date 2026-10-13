@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Defects of the eye · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Homeostasis and response" title="Defects of the eye" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.5.2.3</p>
+        <h1>Defects of the eye</h1>
+        <p class="ks3-bigq">In two common defects, light doesn’t focus on the retina. Find where it lands, then drop in the lens that fixes it.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="2"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Glasses on." scene="Look around a classroom at who wears glasses, and when they put them on." question="is it more often to see the board, or to read a book close up?" options="{{ hookOptions }}" bridge="For most young people, the board. Find out why." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-rays" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Ray diagrams</p>
+        <h2 style="margin: 6px 0 0;">Where does it focus?</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">In myopia (short sight) and hyperopia (long sight), rays of light do not focus on the retina. Spectacle lenses refract the rays so that they do. Pick a defect, then try each lens.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ defBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ lensBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ rayFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ rayNote }}</p></div>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Read this one: which defect is it, and which lens corrects it?</p>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ readFig }}</div></div>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ readBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ readNote }}</p></div>
+      </section>
+
+      <section id="s-fix" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Treatments</p>
+        <h2 style="margin: 6px 0 0;">Ways to correct it.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Spectacles are the usual treatment. New technologies now include hard and soft contact lenses, laser surgery to change the shape of the cornea, and a replacement lens in the eye. Tap each for a benefit and a risk.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ fixCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">How a normal eye focuses on near and distant objects: <a href="ks4-biology-4.5.2.3-the-eye.dc.html">The eye</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · short sight, near things?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Short-sighted means you can’t see things that are close.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="What can’t a short-sighted person see clearly?" options="{{ thinkOptions }}" reveal="Distant objects. Light from them focuses in front of the retina. Near objects are clear." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Myopia or hyperopia?" prompt="Place each one." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Myopia: distant blur, focus in front, concave lens. Hyperopia: near blur, focus behind, convex lens." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Interpret</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">A ray diagram: where the rays focus and what that means.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How a lens moves the focus onto the retina.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Evaluate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Treatments, with a benefit and a risk for each, then a judgement.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Myopia: distant objects blurred, light focuses in front of the retina, concave lens. Hyperopia: near objects blurred, focus behind the retina, convex lens.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="defects-of-the-eye" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Defects of the eye" spec="AQA 4.5.2.3 (Triple)" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Getting concave and convex the wrong way round?" legal="Ray diagrams are schematic and not to scale." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'defects-of-the-eye';
+const OK = ["Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const FILE = {"homeostasis":"ks4-biology-4.5.1-homeostasis.dc.html","nervous-system":"ks4-biology-4.5.2.1-nervous-system.dc.html","reflex-actions":"ks4-biology-4.5.2.1-reflex-actions.dc.html","reaction-time":"ks4-biology-4.5.2.1-reaction-time.dc.html","the-brain":"ks4-biology-4.5.2.2-the-brain.dc.html","the-eye":"ks4-biology-4.5.2.3-the-eye.dc.html","defects-of-the-eye":"ks4-biology-4.5.2.3-defects-of-the-eye.dc.html","thermoregulation":"ks4-biology-4.5.2.4-thermoregulation.dc.html","endocrine-system":"ks4-biology-4.5.3.1-endocrine-system.dc.html","blood-glucose-diabetes":"ks4-biology-4.5.3.2-blood-glucose-diabetes.dc.html","human-reproduction-hormones":"ks4-biology-4.5.3.4-human-reproduction-hormones.dc.html","contraception-fertility":"ks4-biology-4.5.3.5-contraception-fertility.dc.html","sexual-asexual-reproduction":"ks4-biology-4.6.1.1-sexual-asexual-reproduction.dc.html","meiosis":"ks4-biology-4.6.1.2-meiosis.dc.html","advantages-sexual-asexual":"ks4-biology-4.6.1.3-advantages-sexual-asexual.dc.html","dna-genome":"ks4-biology-4.6.1.4-dna-genome.dc.html","metabolism":"../../Batch 7/lessons/ks4-biology-4.4.2.3-metabolism.dc.html","aerobic-respiration":"../../Batch 7/lessons/ks4-biology-4.4.2.1-aerobic-respiration.dc.html","response-to-exercise":"../../Batch 7/lessons/ks4-biology-4.4.2.2-response-to-exercise.dc.html","fungal-protist-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.4-fungal-protist-diseases.dc.html","bacterial-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.3-bacterial-diseases.dc.html","cell-specialisation":"../../Batch 6/lessons/ks4-biology-4.1.1.3-cell-specialisation.dc.html","culturing-microorganisms":"../../Batch 6/lessons/ks4-biology-4.1.1.6-culturing-microorganisms.dc.html","digestive-system":"../../Batch 6/lessons/ks4-biology-4.2.2.1-digestive-system.dc.html","stem-cells":"../../Batch 6/lessons/ks4-biology-4.1.2.3-stem-cells.dc.html"};
+const LNK = (k, label) => ({ href: FILE[k], label });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const PATH = (d, col, w, extra) => '<path d="' + d + '" fill="none" stroke="' + (col || '#1A1A1A') + '" stroke-width="' + (w || 3) + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>';
+const RAIL = [{"id":"s-hook","label":"Glasses on","short":"HOOK"},{"id":"s-rays","label":"Where does it focus?","short":"RAYS"},{"id":"s-fix","label":"Ways to correct it","short":"FIX"},{"id":"s-think","label":"Think again","short":"THINK"},{"id":"s-sort","label":"Myopia or hyperopia?","short":"SORT"},{"id":"s-ladder","label":"Exam ladder","short":"LADDER"}];
+const STATE = {"def":0,"lens":0,"seenCombos":["0-0"],"read":null,"fixes":[]};
+const NOTE = {
+  '0-0': 'Myopia: light from a distant object focuses in front of the retina, so the image is blurred. The eyeball is usually too long, or the lens too curved.',
+  '0-1': 'A concave lens spreads the rays out before they enter the eye. Now they focus on the retina.',
+  '0-2': 'A convex lens brings the rays together sooner: the focus moves further in front of the retina. Worse.',
+  '1-0': 'Hyperopia: light from a near object would focus behind the retina, so the image is blurred. The eyeball is usually too short, or the lens too flat.',
+  '1-1': 'A concave lens spreads the rays further: the focus moves even further behind the retina. Worse.',
+  '1-2': 'A convex lens brings the rays together before they enter the eye. Now they focus on the retina.'
+};
+const FIX = [
+  { name: 'Spectacles', why: 'Concave or convex lenses refract the rays. Benefit: no surgery, easy to change. Risk: can break or be lost; the eye itself is unchanged.' },
+  { name: 'Hard contact lenses', why: 'Sit on the cornea. Benefit: last a long time, almost invisible. Risk: can be less comfortable; infection if not cleaned.' },
+  { name: 'Soft contact lenses', why: 'Sit on the cornea. Benefit: comfortable, almost invisible. Risk: higher risk of eye infection.' },
+  { name: 'Laser surgery', why: 'Changes the shape of the cornea. Benefit: usually removes the need for glasses or contact lenses. Risk: surgery can go wrong; dry eyes.' },
+  { name: 'Replacement lens', why: 'The eye’s own lens is removed and an artificial lens put in. Benefit: corrects vision long-term. Risk: surgery, possible infection or damage to the eye.' }
+];
+
+class Component extends DCLogic {
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH', T = rk === 'TF' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: T, notTriple: !T, isTH: rk === 'TH', notTH: rk !== 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+  rayFig(def, lens, labels) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const xF = 260, xR = def === 0 ? 560 : 470, xL = 300, cy = 170;
+    const fx = def === 0 ? [480, 556, 410][lens] : [540, 610, 466][lens];
+    b += '<ellipse cx="' + ((xF + xR) / 2) + '" cy="' + cy + '" rx="' + ((xR - xF) / 2) + '" ry="110" fill="#FFFDF8" stroke="' + C.stroke + '" stroke-width="3"/>';
+    b += '<path d="M' + (xR - 14) + ' 92 Q' + (xR + 6) + ' ' + cy + ' ' + (xR - 14) + ' 248" fill="none" stroke="#C8102E" stroke-width="6" stroke-opacity="0.55"/>';
+    b += '<ellipse cx="' + xL + '" cy="' + cy + '" rx="12" ry="56" fill="#DDEFF9" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    const gx = 170, ys = [120, 220];
+    if (lens === 1) b += '<path d="M' + (gx - 14) + ' 96 L' + (gx + 14) + ' 96 Q' + (gx + 4) + ' ' + cy + ' ' + (gx + 14) + ' 244 L' + (gx - 14) + ' 244 Q' + (gx - 4) + ' ' + cy + ' ' + (gx - 14) + ' 96 Z" fill="#E6F1F8" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    if (lens === 2) b += '<ellipse cx="' + gx + '" cy="' + cy + '" rx="14" ry="74" fill="#E6F1F8" stroke="' + C.stroke + '" stroke-width="2.5"/>';
+    ys.forEach((y) => {
+      const s = y < cy ? -1 : 1;
+      const atG = lens === 0 ? null : cy + s * (lens === 1 ? 42 : 58);
+      if (def === 0) { const y0 = atG === null ? y : atG; b += D.line(30, y0, lens ? gx : xL, y0, 2.5, C.gold); if (lens) b += D.line(gx, y0, xL, y, 2.5, C.gold); }
+      else { b += D.circ(40, cy, 6, C.stroke); if (lens) b += D.line(40, cy, gx, atG, 2.5, C.gold) + D.line(gx, atG, xL, y, 2.5, C.gold); else b += D.line(40, cy, xL, y, 2.5, C.gold); }
+      if (fx <= xR) { b += D.line(xL, y, fx, cy, 2.5, C.gold); if (fx < xR - 2) { const ye = cy + (xR - 14 - fx) * ((cy - y) / (fx - xL)); b += D.line(fx, cy, xR - 14, ye, 2.5, C.gold); } }
+      else { const yr = y + (xR - 14 - xL) * ((cy - y) / (fx - xL)); b += D.line(xL, y, xR - 14, yr, 2.5, C.gold) + D.line(xR - 14, yr, fx, cy, 2, C.gold, ' stroke-dasharray="6 6"'); }
+    });
+    b += D.circ(fx, cy, 6, C.red);
+    if (labels) {
+      const where = fx < xR - 20 ? 'focus in front of the retina' : fx > xR + 5 ? 'focus behind the retina' : 'focus on the retina';
+      b += D.T(fx, 300, where, 14, { fill: C.red }) + D.T(xR - 10, 76, 'retina', 13, { fill: C.stroke, weight: 'normal' });
+      b += D.T(40, 300, def === 0 ? 'from a distant object' : 'near object', 13, { anchor: 'start', fill: C.stroke, weight: 'normal' });
+      if (lens) b += D.T(gx, 270, lens === 1 ? 'concave' : 'convex', 13, { fill: C.stroke });
+    }
+    return D.svg(660, 320, b, (def === 0 ? 'Myopia' : 'Hyperopia') + (lens === 0 ? ', no lens' : lens === 1 ? ', concave lens' : ', convex lens') + '.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.seenCombos.indexOf('0-1') >= 0 && s.seenCombos.indexOf('1-2') >= 0 && s.read !== null, s.fixes.length === 5, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const H = c.isHigher, TR = c.isTriple, TH = c.isTH, rk = c.rk;
+    const key = s.def + '-' + s.lens;
+    const READ = [
+      { k: 'Myopia; concave lens', r: 'Look where the dot is: behind the retina, and the object is near. That is hyperopia.' },
+      { k: 'Hyperopia; convex lens', r: 'Yes. Rays from a near object would focus behind the retina; a convex lens brings them onto it.', ok: true },
+      { k: 'Hyperopia; concave lens', r: 'Right defect, wrong lens: a concave lens would push the focus further back.' }
+    ];
+    const BANK = [
+      Q('A student cannot see the board clearly but can read their textbook easily. What is the most likely condition and correction?', 'Short-sight (myopia) — corrected with concave (diverging) lenses', [['Long-sight (hyperopia) — corrected with convex (converging) lenses', 'Long-sighted people can’t see NEAR things clearly — this student reads the textbook easily, so it isn’t long-sight. Not seeing the distant board is short-sight, corrected with a concave lens.'], ['Short-sight (myopia) — corrected with convex (converging) lenses', 'Cannot see far but CAN see near = SHORT-SIGHT. Concave lenses correct short-sight, not convex.'], ['Long-sight (hyperopia) — corrected with concave (diverging) lenses', 'Long-sight cannot see near objects and CAN see distant objects more easily. If near vision is fine, it’s short-sight.']]),
+      Q('How does laser eye surgery correct short-sight?', 'The laser flattens the cornea — reducing its curvature and refractive power, moving the focal point back onto the retina', [['The laser makes the cornea more curved — increasing refraction and moving the focal point forward', 'Making the cornea MORE curved = correcting LONG-SIGHT (needs more refraction). Short-sight needs LESS refraction = FLATTER cornea.'], ['The laser reshapes the lens — making it flatter to reduce refraction', 'Laser surgery operates on the CORNEA — not the lens. The lens is not reshaped by laser treatment.'], ['The laser shortens the eyeball — bringing the retina closer to the focal point', 'Laser surgery cannot change the physical length of the eyeball — it only reshapes the cornea’s surface curvature.']]),
+      Q('In a ray diagram of an uncorrected eye, rays from a near object meet behind the retina. Which defect is shown?', 'Hyperopia (long sight)', [['Myopia (short sight)', 'In myopia, light focuses in front of the retina.'], ['A normal eye', 'In a normal eye, rays meet on the retina.'], ['It can’t be either defect', 'Focus behind the retina is hyperopia.']]),
+      Q('Which lens corrects hyperopia?', 'A convex lens', [['A concave lens', 'That corrects myopia.'], ['No lens: only surgery works', 'Spectacle lenses are the usual treatment.'], ['A tinted lens', 'Tint doesn’t change where light focuses.']]),
+      Q('What happens in a replacement lens treatment?', 'The eye’s own lens is removed and an artificial lens put in', [['The cornea is reshaped with a laser', 'That is laser surgery.'], ['A lens is placed on the surface of the cornea', 'That is a contact lens.'], ['The eyeball is made shorter', 'No treatment changes the eyeball’s length.']])
+    ];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'To see the board', correct: true, reply: 'For most young people, yes: they can’t see distant things clearly.' },
+        { text: 'To read close up', correct: false, reply: 'Some people do, often older people. For most pupils it’s the board: distant things blur.' }
+      ],
+      defBtns: this.btns(['Myopia', 'Hyperopia'], s.def, (i) => this.setState({ def: i, lens: 0, seenCombos: s.seenCombos.indexOf(i + '-0') >= 0 ? s.seenCombos : s.seenCombos.concat([i + '-0']) })),
+      lensBtns: this.btns(['No lens', 'Concave lens', 'Convex lens'], s.lens, (i) => { const k = s.def + '-' + i; this.setState({ lens: i, seenCombos: s.seenCombos.indexOf(k) >= 0 ? s.seenCombos : s.seenCombos.concat([k]) }); }),
+      rayFig: c.ready ? K.fig(this.rayFig(s.def, s.lens, true), '') : null,
+      rayNote: NOTE[key],
+      readFig: c.ready ? K.fig(this.rayFig(1, 0, false), '') : null,
+      readBtns: this.btns(READ.map((x) => x.k), s.read, (i) => this.setState({ read: i })),
+      readNote: s.read === null ? 'Pick an answer.' : READ[s.read].r,
+      fixCards: this.cards(FIX, 'fixes'),
+      thinkOptions: [
+        { text: 'Near objects', correct: false, reply: 'That is long sight.' },
+        { text: 'Distant objects', correct: true, reply: 'Light from them focuses in front of the retina.' },
+        { text: 'Anything at all', correct: false, reply: 'Near objects are still clear.' }
+      ],
+      sortBins: [{ id: 'm', label: 'Myopia' }, { id: 'h', label: 'Hyperopia' }],
+      sortItems: [
+        { text: 'Distant objects look blurred', bin: 'm', why: 'Short sight.' },
+        { text: 'Near objects look blurred', bin: 'h', why: 'Long sight.' },
+        { text: 'Light focuses in front of the retina', bin: 'm', why: 'Myopia.' },
+        { text: 'Light would focus behind the retina', bin: 'h', why: 'Hyperopia.' },
+        { text: 'Corrected with a concave lens', bin: 'm', why: 'It spreads the rays out.' },
+        { text: 'Corrected with a convex lens', bin: 'h', why: 'It brings the rays together.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('State', 'State what a person with myopia cannot see clearly.', 'Distant objects.', ['Distant objects', ['Near objects', 'That is hyperopia.'], ['Colours', 'Not a focusing defect.']]),
+          MCQ('Name', 'Name the type of lens used to correct hyperopia.', 'A convex lens.', [['Concave', 'That corrects myopia.'], 'Convex', ['Flat glass', 'It wouldn’t refract the rays.']])
+        ],
+        r2: [
+          MCQ('Identify', 'Identify where light from a distant object focuses in an eye with myopia.', 'In front of the retina.', ['In front of the retina', ['On the retina', 'That is a normal eye.'], ['Behind the retina', 'That is hyperopia.']]),
+          MCQ('Give', 'Give one new technology used to correct eye defects.', 'Hard or soft contact lenses, laser surgery to change the shape of the cornea, or a replacement lens.', [['Bigger pupils', 'Not a treatment.'], ['A longer eyeball', 'Eyeball length can’t be changed.'], 'Laser surgery to change the shape of the cornea'])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain how a concave lens corrects myopia. Put the links in order.',
+            ['Light from a distant object focuses in front of the retina.', 'A concave lens spreads the rays out before they enter the eye.', 'The rays now focus on the retina.', 'So distant objects look clear.'],
+            [['The lens makes the eyeball shorter.', 'Lenses refract light; they don’t change the eye.'], ['A concave lens brings the rays together sooner.', 'That is a convex lens.']]),
+          CHAIN('Explain', 'Explain how a convex lens corrects hyperopia. Put the links in order.',
+            ['Light from a near object would focus behind the retina.', 'A convex lens brings the rays together before they enter the eye.', 'The rays now focus on the retina.', 'So near objects look clear.'],
+            [['A convex lens spreads the rays out.', 'That is a concave lens.'], ['The lens makes the pupil smaller.', 'The iris controls the pupil.']])
+        ],
+        r4: [
+          WRITE('Evaluate', 6, 'A teenager has myopia. Evaluate the ways it could be corrected.',
+            LV6('Several methods, each with a benefit and a risk, and a reasoned judgement.', 'Two or three methods with some benefits or risks.', 'One method named, little evaluation.'),
+            ['Spectacles with concave lenses: no surgery, easy to change; can break, the eye is unchanged.', 'Hard contact lenses: long-lasting, almost invisible; can be less comfortable.', 'Soft contact lenses: comfortable; higher risk of infection.', 'Laser surgery changes the shape of the cornea: usually no more glasses; surgical risks.', 'Replacement lens: long-term correction; surgical risk.', 'A judgement, e.g. spectacles or contacts first while eyesight is still changing.'],
+            ['“A convex lens corrects short sight.”', '“Laser surgery reshapes the lens.”'])
+        ]
+      },
+      keyLines: ['Myopia and hyperopia: rays of light do not focus on the retina.', 'Myopia (short sight): distant objects blurred, focus in front of the retina, corrected with a concave lens.', 'Hyperopia (long sight): near objects blurred, focus behind the retina, corrected with a convex lens.', 'New technologies: hard and soft contact lenses, laser surgery to change the shape of the cornea, a replacement lens.'],
+      endPrev: LNK('the-eye', 'The eye'),
+      endNext: LNK('thermoregulation', 'Thermoregulation'),
+      endConnects: [LNK('the-eye', 'The eye')],
+      bank: c.ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

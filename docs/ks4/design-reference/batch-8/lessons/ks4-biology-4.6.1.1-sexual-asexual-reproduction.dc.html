@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sexual and asexual reproduction · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Inheritance, variation and evolution" title="Sexual and asexual reproduction" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.6.1.1</p>
+        <h1>Sexual and asexual reproduction</h1>
+        <p class="ks3-bigq">One parent or two? Predict whether the offspring will be identical or different, then see why.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Cuttings and siblings." scene="A cutting snipped from a houseplant grows into a new plant. Brothers and sisters grow up in the same family." question="does the new plant from the cutting have one parent, or two?" options="{{ hookOptions }}" bridge="One parent. That changes what the offspring are like." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-ab" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Two kinds</p>
+        <h2 style="margin: 6px 0 0;">Identical or different?</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Pick a kind of reproduction, then predict: will the offspring be identical to each other, or different?</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ modeBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ predBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ abFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ abNote }}</p></div>
+      </section>
+
+      <section id="s-ex" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Examples</p>
+        <h2 style="margin: 6px 0 0;">Gametes and examples.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Sexual reproduction involves the joining (fusion) of male and female gametes. The formation of gametes involves meiosis. Tap each example.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ exCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+        <sc-if value="{{ isTriple }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 16px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);"><div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Triple</span><p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">Which is better?</p></div>
+          <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Each kind has advantages and disadvantages, and some organisms use both: <a href="ks4-biology-4.6.1.3-advantages-sexual-asexual.dc.html">Advantages of sexual and asexual reproduction</a>.</p>
+        </div></sc-if>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">How gametes are made: <a href="ks4-biology-4.6.1.2-meiosis.dc.html">Meiosis</a>.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · a bit different?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Asexual offspring are a bit different from the parent.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="How do offspring from asexual reproduction compare with their parent?" options="{{ thinkOptions }}" reveal="They are genetically identical: clones. There is no mixing of genetic information." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Sexual or asexual?" prompt="Place each one." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Sexual: two parents, gametes fuse, variety. Asexual: one parent, mitosis only, clones." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Sexual or asexual reproduction, in the spec’s words.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The two kinds: parents, gametes, cell division, offspring.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why offspring are identical or varied.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Sexual: gametes fuse, genetic information mixes, offspring vary. Asexual: one parent, no fusion of gametes, only mitosis, offspring are clones.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="sexual-asexual-reproduction" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Sexual and asexual reproduction" spec="AQA 4.6.1.1" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Mixing up mitosis and meiosis?" legal="Cells and genes are drawn as a model." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const SLUG = 'sexual-asexual-reproduction';
+const OK = ["Combined Foundation","Combined Higher","Triple Foundation","Triple Higher"];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const FILE = {"homeostasis":"ks4-biology-4.5.1-homeostasis.dc.html","nervous-system":"ks4-biology-4.5.2.1-nervous-system.dc.html","reflex-actions":"ks4-biology-4.5.2.1-reflex-actions.dc.html","reaction-time":"ks4-biology-4.5.2.1-reaction-time.dc.html","the-brain":"ks4-biology-4.5.2.2-the-brain.dc.html","the-eye":"ks4-biology-4.5.2.3-the-eye.dc.html","defects-of-the-eye":"ks4-biology-4.5.2.3-defects-of-the-eye.dc.html","thermoregulation":"ks4-biology-4.5.2.4-thermoregulation.dc.html","endocrine-system":"ks4-biology-4.5.3.1-endocrine-system.dc.html","blood-glucose-diabetes":"ks4-biology-4.5.3.2-blood-glucose-diabetes.dc.html","human-reproduction-hormones":"ks4-biology-4.5.3.4-human-reproduction-hormones.dc.html","contraception-fertility":"ks4-biology-4.5.3.5-contraception-fertility.dc.html","sexual-asexual-reproduction":"ks4-biology-4.6.1.1-sexual-asexual-reproduction.dc.html","meiosis":"ks4-biology-4.6.1.2-meiosis.dc.html","advantages-sexual-asexual":"ks4-biology-4.6.1.3-advantages-sexual-asexual.dc.html","dna-genome":"ks4-biology-4.6.1.4-dna-genome.dc.html","metabolism":"../../Batch 7/lessons/ks4-biology-4.4.2.3-metabolism.dc.html","aerobic-respiration":"../../Batch 7/lessons/ks4-biology-4.4.2.1-aerobic-respiration.dc.html","response-to-exercise":"../../Batch 7/lessons/ks4-biology-4.4.2.2-response-to-exercise.dc.html","fungal-protist-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.4-fungal-protist-diseases.dc.html","bacterial-diseases":"../../Batch 7/lessons/ks4-biology-4.3.1.3-bacterial-diseases.dc.html","cell-specialisation":"../../Batch 6/lessons/ks4-biology-4.1.1.3-cell-specialisation.dc.html","culturing-microorganisms":"../../Batch 6/lessons/ks4-biology-4.1.1.6-culturing-microorganisms.dc.html","digestive-system":"../../Batch 6/lessons/ks4-biology-4.2.2.1-digestive-system.dc.html","stem-cells":"../../Batch 6/lessons/ks4-biology-4.1.2.3-stem-cells.dc.html"};
+const LNK = (k, label) => ({ href: FILE[k], label });
+const BOX = (x, y, w, h, fill, stroke, sw) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const PATH = (d, col, w, extra) => '<path d="' + d + '" fill="none" stroke="' + (col || '#1A1A1A') + '" stroke-width="' + (w || 3) + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>';
+const RAIL = [{"id":"s-hook","label":"Cuttings and siblings","short":"HOOK"},{"id":"s-ab","label":"Identical or different?","short":"PREDICT"},{"id":"s-ex","label":"Gametes and examples","short":"EXAMPLES"},{"id":"s-think","label":"Think again","short":"THINK"},{"id":"s-sort","label":"Sexual or asexual?","short":"SORT"},{"id":"s-ladder","label":"Exam ladder","short":"LADDER"}];
+const STATE = {"mode":0,"pred":[null,null],"ex":[]};
+const MODES = ['Asexual: one parent', 'Sexual: two parents'];
+const NOTES = ['Asexual reproduction involves only one parent and no fusion of gametes. There is no mixing of genetic information, so the offspring are genetically identical: clones. Only mitosis is involved.', 'Sexual reproduction involves the fusion of male and female gametes. There is mixing of genetic information, which leads to variety in the offspring.'];
+const EX = [
+  { name: 'Sperm and egg cells', why: 'The gametes in animals. They fuse at fertilisation.' },
+  { name: 'Pollen and egg cells', why: 'The gametes in flowering plants.' },
+  { name: 'Strawberry runners', why: 'Asexual: new plants grow from one parent by mitosis, so they are clones.' },
+  { name: 'Bacteria splitting in two', why: 'Asexual: bacteria multiply by simple cell division (binary fission). Plants and fungi reproduce asexually by mitosis.' }
+];
+
+class Component extends DCLogic {
+  state = Object.assign({ active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false }, STATE);
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  common(done) {
+    const s = this.state, K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    const H = rk === 'CH' || rk === 'TH', T = rk === 'TF' || rk === 'TH';
+    return { route, rk, onRoute: R.onRoute || (() => {}), isHigher: H, notHigher: !H, isTriple: T, notTriple: !T, isTH: rk === 'TH', notTH: rk !== 'TH',
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready: !!(s.libReady && K && window.KS4D),
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (i) => this.setState({ hook: i }), onThink: (i) => this.setState({ think: i }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }) };
+  }
+  abFig(mode, show) {
+    const D = window.KS4D, C = D.C; let b = '';
+    const cell = (x, y, cols, r) => { let s = D.circ(x, y, r || 34, '#FFFDF8', C.stroke, 2.5); cols.forEach((c2, i) => { s += '<rect x="' + (x - 18 + i * 10) + '" y="' + (y - 14) + '" width="7" height="28" rx="3" fill="' + c2 + '"/>'; }); return s; };
+    const R = '#C8102E', B = '#3B82F6', G = '#2E8B7F', Y = '#FBBF24';
+    if (mode === 0) {
+      b += cell(110, 110, [R, R, B, B], 44) + D.T(110, 176, 'one parent', 13, { fill: C.stroke, weight: 'normal' });
+      b += D.arrow(170, 110, 260, 110, C.stroke, 3) + D.T(215, 96, 'mitosis', 13, { fill: C.stroke });
+      for (let i = 0; i < 4; i++) b += show ? cell(320 + i * 88, 110, [R, R, B, B]) : D.circ(320 + i * 88, 110, 34, '#F3F0E7', C.muted, 2, ' stroke-dasharray="5 5"') + D.T(320 + i * 88, 116, '?', 18, { fill: C.muted });
+    } else {
+      b += cell(70, 80, [R, B], 30) + cell(70, 160, [G, Y], 30) + D.T(70, 210, 'two gametes', 13, { fill: C.stroke, weight: 'normal' });
+      b += D.arrow(110, 120, 200, 120, C.stroke, 3) + D.T(155, 106, 'fuse', 13, { fill: C.stroke });
+      const kids = [[R, B, G, Y], [R, R, Y, G], [B, R, G, G], [B, B, Y, Y]];
+      for (let i = 0; i < 4; i++) b += show ? cell(260 + i * 98, 120, kids[i]) : D.circ(260 + i * 98, 120, 34, '#F3F0E7', C.muted, 2, ' stroke-dasharray="5 5"') + D.T(260 + i * 98, 126, '?', 18, { fill: C.muted });
+      if (show) b += D.T(410, 200, 'offspring from different fertilisations', 13, { fill: C.stroke, weight: 'normal' });
+    }
+    return D.svg(660, 230, b, mode === 0 ? (show ? 'One parent; four identical offspring.' : 'One parent; offspring hidden.') : (show ? 'Gametes fuse; offspring each have a different mix.' : 'Two gametes; offspring hidden.'));
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4;
+    const done = [s.hook !== null, s.pred[0] !== null && s.pred[1] !== null, s.ex.length === 4, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done);
+    const H = c.isHigher, TR = c.isTriple, TH = c.isTH, rk = c.rk;
+    const p = s.pred[s.mode];
+    const right = s.mode === 0 ? 0 : 1;
+    const q1 = Q('What is the main genetic advantage of sexual reproduction over asexual reproduction?', 'It creates genetic variation — offspring differ from parents, allowing adaptation to changing environments', [['It is faster — more offspring are produced in less time', 'ASEXUAL reproduction is faster — producing large numbers of identical offspring quickly. Sexual reproduction is slower but creates variation.'], ['Only one parent is needed — saving time and energy', 'Requiring only ONE parent = ASEXUAL reproduction. Sexual reproduction needs two parents.'], ['All offspring are perfectly adapted — no risk of poor survival', 'It is ASEXUAL reproduction where all offspring are identical clones of a well-adapted parent. Sexual reproduction means offspring vary.']]);
+    const q3 = Q('Bacteria reproduce by binary fission — splitting into two identical cells. What type of reproduction is this?', 'Asexual reproduction — one parent, offspring are genetically identical clones', [['Sexual reproduction — two bacteria combine to share genetic material', 'Some bacteria do exchange genetic material (conjugation) — but binary fission specifically produces identical copies from one parent. It is asexual.'], ['Meiosis — the chromosome number is halved in each new bacterium', 'Binary fission produces identical cells from ONE parent — it does not involve halving chromosome numbers. Bacteria are haploid anyway.'], ['Fertilisation — two gametes fuse to form a new bacterium', 'Gametes are specialised sex cells — bacteria don’t produce gametes in binary fission.']]);
+    const nPl = Q('What are the gametes in flowering plants?', 'Pollen and egg cells', [['Sperm and egg cells', 'Those are the gametes in animals.'], ['Seeds and leaves', 'Seeds form after fertilisation; leaves aren’t gametes.'], ['Runners', 'Runners are asexual reproduction.']]);
+    const nMit = Q('Which kind of reproduction involves only mitosis?', 'Asexual reproduction', [['Sexual reproduction', 'Forming gametes involves meiosis.'], ['Both kinds equally', 'Only asexual involves mitosis alone.'], ['Neither', 'Asexual reproduction uses mitosis.']]);
+    const nVar = Q('Why do offspring of sexual reproduction show variety?', 'There is mixing of genetic information from two parents', [['They are made by mitosis', 'Mitosis makes identical cells.'], ['They have only one parent', 'Sexual reproduction has two.'], ['Their environment is the same', 'Variety comes from mixing genetic information.']]);
+    const nClo = Q('What is a clone?', 'An offspring genetically identical to its parent', [['An offspring with two parents', 'That is sexual reproduction.'], ['A gamete', 'Gametes are sex cells.'], ['An offspring with half its parent’s genes', 'Clones have all the same genetic information.']]);
+    const BANK = TR ? [q1, q3, nPl, nMit, nVar] : [q3, nPl, nMit, nVar, nClo];
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'One parent', correct: true, reply: 'Yes. Everything comes from the plant it was cut from.' },
+        { text: 'Two parents', correct: false, reply: 'A cutting comes from just one plant: one parent.' }
+      ],
+      modeBtns: this.btns(MODES, s.mode, (i) => this.setState({ mode: i })),
+      predBtns: this.btns(['Identical', 'Different'], p, (i) => { const a = s.pred.slice(); a[s.mode] = i; this.setState({ pred: a }); }),
+      abFig: c.ready ? K.fig(this.abFig(s.mode, p !== null), '') : null,
+      abNote: p === null ? 'Predict first: identical or different?' : (p === right ? 'Yes. ' : 'Not this time. ') + NOTES[s.mode],
+      exCards: this.cards(EX, 'ex'),
+      thinkOptions: [
+        { text: 'A bit different', correct: false, reply: 'No mixing of genetic information, so no differences.' },
+        { text: 'Genetically identical: clones', correct: true, reply: 'Only mitosis is involved.' },
+        { text: 'Half the same', correct: false, reply: 'That would need two parents.' }
+      ],
+      sortBins: [{ id: 's', label: 'Sexual' }, { id: 'a', label: 'Asexual' }],
+      sortItems: [
+        { text: 'Two parents', bin: 's', why: 'Two gametes fuse.' },
+        { text: 'Fusion of gametes', bin: 's', why: 'Sexual.' },
+        { text: 'Variety in the offspring', bin: 's', why: 'Genetic information mixes.' },
+        { text: 'Only one parent', bin: 'a', why: 'Asexual.' },
+        { text: 'Offspring are clones', bin: 'a', why: 'No mixing.' },
+        { text: 'Only mitosis involved', bin: 'a', why: 'Asexual.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the gametes in flowering plants.', 'Pollen and egg cells.', ['Pollen and egg cells', ['Sperm and egg cells', 'Animals.'], ['Seeds', 'Not gametes.']]),
+          MCQ('State', 'State how many parents are involved in asexual reproduction.', 'One.', ['One', ['Two', 'Sexual.'], ['None', 'There is always a parent.']])
+        ],
+        r2: [
+          MCQ('Identify', 'Identify the type of cell division in asexual reproduction.', 'Mitosis.', [['Meiosis', 'Forming gametes involves meiosis.'], 'Mitosis', ['Fertilisation', 'Not a cell division.']]),
+          MCQ('Give', 'Give the reason offspring of sexual reproduction vary.', 'Mixing of genetic information from two parents.', [['They are clones', 'Clones are identical.'], 'Genetic information from two parents is mixed', ['Only mitosis is involved', 'That gives identical offspring.']])
+        ],
+        r3: [
+          CHAIN('Describe', 'Describe sexual reproduction. Put the links in order.',
+            ['Gametes are formed by meiosis.', 'A male gamete and a female gamete fuse.', 'Genetic information from the two parents is mixed.', 'So the offspring show variety.'],
+            [['Only mitosis is involved.', 'That is asexual.'], ['The offspring are clones.', 'Clones come from asexual reproduction.']]),
+          CHAIN('Explain', 'Explain why a plant grown from a cutting is identical to its parent. Put the links in order.',
+            ['Only one parent is involved.', 'There is no fusion of gametes, so no mixing of genetic information.', 'The new cells are made by mitosis.', 'So the new plant is a clone.'],
+            [['The cutting has two parents.', 'It comes from one plant.'], ['The cells are made by meiosis.', 'Meiosis forms gametes.']])
+        ],
+        r4: [
+          WRITE('Compare', 4, 'Compare sexual and asexual reproduction.',
+            LV4('Parents, gametes, cell division and offspring compared directly for both.', 'Some features of one or both kinds.'),
+            ['Sexual: two parents; asexual: one parent.', 'Sexual: fusion of male and female gametes; asexual: no fusion of gametes.', 'Sexual: gamete formation involves meiosis; asexual: only mitosis.', 'Sexual: mixing of genetic information gives variety; asexual: clones.'],
+            ['“Plants can’t reproduce sexually.”', '“Asexual offspring are a bit different.”'])
+        ]
+      },
+      keyLines: ['Sexual reproduction: fusion of male and female gametes. Sperm and egg cells in animals; pollen and egg cells in flowering plants.', 'Mixing of genetic information leads to variety in the offspring. Forming gametes involves meiosis.', 'Asexual reproduction: one parent, no fusion of gametes, no mixing of genetic information.', 'Asexual offspring are genetically identical clones. Only mitosis is involved.'],
+      endPrev: LNK('contraception-fertility', 'Contraception and fertility'),
+      endNext: LNK('meiosis', 'Meiosis'),
+      endConnects: [LNK('culturing-microorganisms', 'Culturing microorganisms (binary fission)')],
+      bank: c.ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>
