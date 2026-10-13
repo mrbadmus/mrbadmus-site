@@ -846,7 +846,7 @@ class Component extends DCLogic {
     for (let i = 0; i < 6; i++) b += '<path d="M' + (20 + i * 70) + ' 20 Q' + (55 + i * 70) + ' 140 ' + (20 + i * 70) + ' 260" fill="none" stroke="#B9CFA4" stroke-width="2"/>';
     b += '<path d="M220 50 Q' + (220 - gap - 60) + ' 140 220 230 Q' + (220 - gap - 10) + ' 140 220 50 Z" fill="#7FC07A" stroke="' + C.stroke + '" stroke-width="2.5"/>';
     b += '<path d="M220 50 Q' + (220 + gap + 60) + ' 140 220 230 Q' + (220 + gap + 10) + ' 140 220 50 Z" fill="#7FC07A" stroke="' + C.stroke + '" stroke-width="2.5"/>';
-    if (open) { b += '<ellipse cx="220" cy="140" rx="' + (gap * 0.7) + '" ry="70" fill="#2B3A2E"/>'; for (let i = 0; i < 3; i++) b += D.arrow(220, 120 + i * 20, 330, 90 + i * 30, '#3B82F6', 3); b += D.T(340, 70, 'water vapour out', 13, { anchor: 'start', fill: '#3B82F6' }); }
+    if (open) { b += '<ellipse cx="220" cy="140" rx="' + (gap * 0.7) + '" ry="70" fill="#2B3A2E"/>'; for (let i = 0; i < 3; i++) b += D.arrow(220, 120 + i * 20, 330, 90 + i * 30, '#3B82F6', 3); b += D.T(432, 70, 'water vapour out', 13, { anchor: 'end', fill: '#3B82F6' }); }
     b += D.T(120, 140, 'guard cell', 13, { fill: C.stroke }) + D.T(320, 220, 'guard cell', 13, { fill: C.stroke });
     b += D.T(220, 285, open ? 'stoma open' : 'stoma closed', 15, { fill: C.stroke });
     return D.svg(440, 300, b, open ? 'A stoma open between two guard cells; water vapour diffuses out.' : 'A stoma closed: the two guard cells meet, so little water vapour escapes.');
@@ -944,7 +944,7 @@ class Component extends DCLogic {
           { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why transpiration is faster on a windy day. Put the links in order.',
             links: ['Wind blows water vapour away from around the leaf.', 'So the difference in water vapour between inside and outside the leaf stays large.', 'So water vapour diffuses out of the stomata faster.'],
             herrings: [{ text: 'Wind cools the leaf, so it loses less water.', why: 'Wind speeds transpiration up.' }, { text: 'Wind pushes water into the stomata.', why: 'Water vapour moves out.' }] },
-          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how water moves from the roots to the air around a leaf. Put the links in order.',
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how water evaporating from a leaf draws water up from the roots. Put the links in order.',
             links: ['Water evaporates from the leaf and diffuses out through the stomata as water vapour.', 'More water is drawn up the xylem to replace it.', 'Water enters the roots from the soil, keeping the transpiration stream going.'],
             herrings: [{ text: 'Phloem pumps water up to the leaves.', why: 'Water moves in the xylem; nothing pumps it.' }, { text: 'The roots push all the water up by active transport.', why: 'Water is drawn up as it evaporates from the leaves.' }] }
         ],

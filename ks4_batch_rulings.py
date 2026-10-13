@@ -885,6 +885,18 @@ SCIENCE.extend([
          new='so 90 s = 1.5 min.</p>'),
 ])
 
+# ═══ Transpiration: fixes from the pupil walk ═══
+SCIENCE.extend([
+    # the label ran past the right edge of the stoma figure in the open state; it is now right-aligned inside the 440-wide drawing (the closed state has no such label)
+    dict(id='B6F-TR-VAPOUR', slug='transpiration', layer='logic',
+         old="D.T(340, 70, 'water vapour out', 13, { anchor: 'start', fill: '#3B82F6' })",
+         new="D.T(432, 70, 'water vapour out', 13, { anchor: 'end', fill: '#3B82F6' })"),
+    # the keyed order starts at the leaf; the old stem invited starting at the roots
+    dict(id='B6F-TR-CHAINQ', slug='transpiration', layer='logic',
+         old="prompt: 'Explain how water moves from the roots to the air around a leaf. Put the links in order.'",
+         new="prompt: 'Explain how water evaporating from a leaf draws water up from the roots. Put the links in order.'"),
+])
+
 APPLIED = []
 
 
