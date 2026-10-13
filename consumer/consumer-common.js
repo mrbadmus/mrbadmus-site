@@ -1523,6 +1523,31 @@
     });
   }
 
+  /* ⊕ fixD (13 Oct 2026) — DOES THE PUBLIC FRONT DOOR KNOW A PARENT?
+     /parents/ loads no Supabase SDK on purpose (see boot()), so it cannot
+     ask whose session this browser holds — and the session key alone cannot
+     tell a parent from a school pupil or teacher, who share the project.
+     The family dashboard can: it has just read the family. So it leaves a
+     marker, `mrb.parent` = the parent's user id, and the public header shows
+     "Dashboard" only while that marker AND a session for the SAME user are
+     both in this browser. Sign-out (clearLocalState) drops every `mrb.` key
+     and the session; a school sign-out drops the session, which is enough. */
+  var PARENT_MARK = 'mrb.parent';
+  function markParent(session) {
+    var id = session && session.user && session.user.id;
+    if (!id || isChildSession(session)) { return; }
+    try { window.localStorage.setItem(PARENT_MARK, String(id)); } catch (e) { /* private window */ }
+  }
+  function parentSignedIn() {
+    try {
+      var id = window.localStorage.getItem(PARENT_MARK);
+      var ref = projectRef();
+      if (!id || !ref) { return false; }
+      var s = JSON.parse(window.localStorage.getItem('sb-' + ref + '-auth-token') || 'null');
+      return !!(s && s.user && String(s.user.id) === id && s.refresh_token);
+    } catch (e) { return false; }
+  }
+
   /* ⊕ B2C polish round 3 (9 Oct 2026) — THE ONE CHILD SUMMARY LINE.
      The parent saw Maya three ways: her own view read "Year 10 · AQA ·
      Combined · Alongside school", the home card "Year 10 · Alongside
@@ -1612,6 +1637,8 @@
     signOutControl: signOutControl,
     isChildSession: isChildSession,
     clearLocalState: clearLocalState,
+    markParent: markParent,
+    parentSignedIn: parentSignedIn,
 
     // B2C unit 6 — the one username sign-in, shared by /go and auth.html.
     childSignIn: childSignIn
