@@ -741,7 +741,7 @@
   function loadPicker(c) {
     if (S.pickerFor === c.id) { return Promise.resolve(); }
     S.pickerFor = c.id;
-    S.picker = null; S.topic = null; S.tp = {};
+    S.picker = null; S.topic = null; S.tp = {}; S.examAny = null;
     return Promise.all([
       C.api('/api/consumer/children/' + encodeURIComponent(c.id) + '/picker', { token: ctx.token }),
       curriculum ? Promise.resolve(curriculum) : window.MrBadmusTopicPicker.loadIndex()
@@ -749,6 +749,9 @@
       .then(function (out) {
         curriculum = out[1];
         S.picker = (out[0] && out[0].units) || [];
+        /* Defect 4: is there an exam question left for this child at all
+           (null = the backend could not say, so offer it as before). */
+        S.examAny = out[0] ? (out[0].exam_any === undefined ? null : out[0].exam_any) : null;
         if (S.view === 'setwork') { render(); }
       })
       .catch(function (e) {
@@ -1660,8 +1663,36 @@
   /* ⊕ B2C polish 3 (defect 1). The Set button is live only when what it
      would set is on screen: an exam question (the server picks it), or a
      topic the picker is showing as chosen. Its label says which. */
-  function setReady() { return S.workKind === 'exam' || !!S.topic; }
+  /* ⊕ Defect 4 (13 Oct 2026). "An exam question" was offered for Cell
+     Biology and refused only after Set. The picker now says, per unit,
+     whether an exam question is left (`exam` true/false/null) and, over all
+     of them, `exam_any`; only a definite false holds the button, and its
+     label says why before anyone presses it. */
+  function examUnitFor(sel) {
+    if (!sel || !Array.isArray(S.picker)) { return null; }
+    var code = sel.unitCode ? String(sel.unitCode).toLowerCase() : '';
+    for (var i = 0; i < S.picker.length; i++) {
+      var u = S.picker[i];
+      if (sel.level === 'lesson' && sel.slug) {
+        if ((u.lessons || []).some(function (l) { return l.slug === sel.slug; })) { return u; }
+      } else if ((code && String(u.unit_code || '').toLowerCase() === code) || u.name === sel.unitName) {
+        return u;
+      }
+    }
+    return null;
+  }
+  function examAvailable() {
+    if (!Array.isArray(S.picker)) { return true; }
+    if (!S.topic) { return S.examAny !== false; }
+    var u = examUnitFor(S.topic);
+    return !u || u.exam !== false;
+  }
+  function setReady() { return S.workKind === 'exam' ? examAvailable() : !!S.topic; }
   function setLabel() {
+    if (S.workKind === 'exam' && !examAvailable()) {
+      return S.topic ? ('No exam question on ' + S.topic.unitName + ' yet')
+                     : 'No exam question left for this year yet';
+    }
     if (!setReady()) { return 'Choose a topic first'; }
     return S.due === 0 ? 'Set to open today' : ('Set to open ' + civilLabel(dueDate(S.due)));
   }
@@ -2205,6 +2236,7 @@
       var k = child();
       var t = S.topic;
       if (S.workKind !== 'exam' && !t) { return msg('Choose a topic first.', 'error', el); }
+      if (!setReady()) { return; }
       var body = { kind: S.workKind, scheduled_for: dueDate(S.due) };
       /* ⊕ B2C unit 7 (ruling 7): an exam question carries the topic too. */
       if (t) {
