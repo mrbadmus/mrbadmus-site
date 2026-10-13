@@ -16,8 +16,8 @@
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/ks3.css?v=2f931f9a"/>
-<link rel="stylesheet" href="/shared/ks3-theme.css?v=6e4b9223"/>
-  <link rel="stylesheet" href="/consumer/consumer.css?v=b02d0232"/>
+<link rel="stylesheet" href="/shared/ks3-theme.css?v=16898136"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=123d1b60"/>
   <style>
   /* ── consumer/exam.html — Design's `Child Exam Questions.dc.html`, live ──
      Her per-element inline styles transcribed; the repeated ones lifted here
@@ -265,6 +265,17 @@
     margin: 0; font-size: 16px; font-weight: 700; color: var(--ks3-ok-text);
     text-align: right; max-width: 50%;
   }
+  /* ⊕ D11: the level a levels-marked answer reached, under the mark, and
+     the one step to the next level, under the score row. */
+  .ex-level {
+    margin: 8px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ks3-ink);
+  }
+  .ex-level-next {
+    margin: 14px 0 0; padding: 10px 12px; border-radius: 10px;
+    background: var(--ks3-band); font-size: 16px; line-height: 1.5; color: var(--ks3-ink);
+  }
+  .ex-level-next strong { font-weight: 700; }
   .ex-point { display: flex; gap: 12px; align-items: flex-start; font-size: 17px; line-height: 1.5; }
   .ex-point-mark {
     display: grid; place-items: center; flex: 0 0 26px; height: 26px;
@@ -412,7 +423,7 @@
 </div>
 
 <script src="/shared/config.js?v=ab7a89ac"></script>
-<script src="/consumer/consumer-common.js?v=3ccc29c2"></script>
+<script src="/consumer/consumer-common.js?v=b8cd6065"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/exam.html — write an answer, get it marked. MRB-317 Night 3.
@@ -476,12 +487,48 @@
     return isNaN(d.getTime()) ? String(v) : ('Marked ' + C.fmtDate(v));
   }
 
-  function verdictFor(score, max) {
+  /* ⊕ D11 (13 Oct 2026). The backend's /mark answer carries its own
+     `verdict` word (consumer/marking.js verdictFor: full marks / nearly
+     there / halfway / a start / not yet), and that word is the one used
+     when it is there, so the page and the parent's report can never
+     disagree about a mark. A stored mark reopened from the list carries no
+     verdict, so the page's own bands remain as the fallback — now on the
+     backend's thresholds (0.66 / 0.34; this used to say 0.40, so a 2/6 read
+     "A start" here and "halfway" everywhere else). */
+  var VERDICT_LINE = {
+    'full marks':   'Full marks.',
+    'nearly there': 'Solid. The rest is precision.',
+    'halfway':      'Halfway. Read the note.',
+    'a start':      'A start. Read the note, then go again.',
+    'not yet':      'A start. Read the note, then go again.'
+  };
+  function verdictFor(score, max, word) {
+    var said = word && VERDICT_LINE[String(word).toLowerCase()];
+    if (said) { return said; }
     if (!max) { return ''; }
     if (score === max) { return 'Full marks.'; }
     if (score >= max * 0.66) { return 'Solid. The rest is precision.'; }
-    if (score >= max * 0.4) { return 'Halfway. Read the note.'; }
+    if (score >= max * 0.34) { return 'Halfway. Read the note.'; }
     return 'A start. Read the note, then go again.';
+  }
+
+  /* ⊕ D11 (13 Oct 2026). A levels-marked 6-mark answer comes back with
+     `level` (0-3) and one `next_step` line. Point-marked questions carry
+     neither and render exactly as before. The top level is the question's
+     own highest descriptor when the list carries `levels`, else 3; there is
+     no "to reach" line at the top. */
+  function levelOf(v) {
+    if (v == null || v === '') { return null; }
+    var n = Number(v);
+    return (isFinite(n) && n >= 0 && n === Math.floor(n)) ? n : null;
+  }
+  function topLevel(q) {
+    var top = 0;
+    (Array.isArray(q && q.levels) ? q.levels : []).forEach(function (l) {
+      var n = levelOf(l && l.level);
+      if (n != null && n > top) { top = n; }
+    });
+    return top || 3;
   }
 
   C.boot({ requireSession: true, signInPath: C.childLoginUrl, run: function (ctx) {
@@ -866,6 +913,7 @@
       if (q.done && q.answer) {
         result = { score: scoreOf(q), max: q.marks, hits: q.hits || [],
                    feedback: q.feedback, answer: q.answer,
+                   level: levelOf(q.level), next_step: q.next_step || '',
                    practice: !!q.practice };   // ⊕ B2C polish: a stored stub mark says so too
         screen = 'result';
       } else {
@@ -953,6 +1001,8 @@
         writeClock = null;
         result = { score: d.score, max: d.max, hits: d.hits || [],
                    feedback: d.feedback, answer: text, answer_id: d.answer_id,
+                   verdict: d.verdict || '',
+                   level: levelOf(d.level), next_step: d.next_step || '',
                    practice: d.provider === 'stub' };
         if (d.quotaLeft != null) { quota.left = d.quotaLeft; }
         if (d.quotaTotal != null) { quota.total = d.quotaTotal; }
@@ -991,6 +1041,12 @@
       var r = result || {};
       var max = r.max != null ? r.max : q.marks;
       var human = q.human || null;
+      var level = levelOf(r.level);
+      var top = topLevel(q);
+      var nextLine = (level != null && level < top && r.next_step)
+        ? ('<p class="ex-level-next"><strong>To reach Level ' + (level + 1) + ':</strong> ' +
+           esc(String(r.next_step)) + '</p>')
+        : '';
 
       var scheme = q.scheme || [];
       var hits = {};
@@ -1035,9 +1091,11 @@
               '<p class="ex-score-label">Your mark</p>' +
               '<p class="ex-score">' + esc(r.score == null ? '—' : r.score) +
                 '<span>/' + esc(max == null ? '?' : max) + '</span></p>' +
+              (level != null ? ('<p class="ex-level">Level ' + esc(level) + '</p>') : '') +
             '</div>' +
-            '<p class="ex-verdict">' + esc(verdictFor(r.score, max)) + '</p>' +
+            '<p class="ex-verdict">' + esc(verdictFor(r.score, max, r.verdict)) + '</p>' +
           '</div>' +
+          nextLine +
           (r.practice
             ? '<p class="ex-practice">Practice mark — the AI marker didn’t check this one.</p>'
             : '') +

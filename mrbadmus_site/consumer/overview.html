@@ -16,8 +16,8 @@
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/ks3.css?v=2f931f9a"/>
-<link rel="stylesheet" href="/shared/ks3-theme.css?v=6e4b9223"/>
-  <link rel="stylesheet" href="/consumer/consumer.css?v=b02d0232"/>
+<link rel="stylesheet" href="/shared/ks3-theme.css?v=16898136"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=123d1b60"/>
   <link rel="stylesheet" href="/consumer/topic-picker.css?v=e3aa94e9"/>
   <style>
   /* ═══════════════════════════════════════════════════════════════════════
@@ -408,7 +408,7 @@
 </div>
 
 <script src="/shared/config.js?v=ab7a89ac"></script>
-<script src="/consumer/consumer-common.js?v=3ccc29c2"></script>
+<script src="/consumer/consumer-common.js?v=b8cd6065"></script>
 <script src="/consumer/topic-picker.js?v=9bcb2548"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
@@ -858,13 +858,13 @@
 
   function doingSummary(k) {
     var w = workOf(k), done = doneOf(k);
-    var mins = w.reduce(function (t, it) {
-      return t + (it.done && it.mins != null && !isNaN(Number(it.mins)) ? Number(it.mins) : 0);
-    }, 0);
     /* Design's third sentence was "Usually logs in around 7.30pm" — a habit
-       nothing records. The slot keeps a fact we do hold. */
-    var line = done + ' of ' + w.length + ' sessions done so far this week, ' +
-               mins + ' minutes on task.';
+       nothing records. The slot keeps a fact we do hold.
+       ⊕ 13 Oct 2026 (B7) — ", N minutes on task" is GONE. It summed each
+       done item's PLANNED minutes and printed the total as time on task: an
+       estimate shown as a measurement. This dashboard has no measured feed,
+       and Mide's rule is "measured active time only, or no time at all". */
+    var line = done + ' of ' + w.length + ' sessions done so far this week.';
     var last = whenLabel(lastActiveOf(k));
     if (last) { line += ' Last active ' + last + '.'; }
     return line;
@@ -1278,7 +1278,12 @@
       }).join('') + '</div>';
 
     var firstKid = S.kids[0];
-    var t = tier('month');
+    /* ⊕ 13 Oct 2026 (B6) — the extra-child price on the parent's OWN plan:
+       a yearly family sees the yearly extra, "a year extra"; monthly (or not
+       yet known) sees the monthly one. From the pricing tiers, never a
+       constant. */
+    var perYear = S.billing && S.billing.interval === 'year';
+    var t = tier(perYear ? 'year' : 'month');
     html += '<div class="dk-narrow" style="margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
       '<a class="dk-tile" href="' + esc(C.href('/consumer/report.html', { child: firstKid.id })) + '">' +
         '<span style="font-weight:700">Termly report</span>' +
@@ -1288,7 +1293,7 @@
         'gap:4px;padding:16px;border:2px dashed var(--ks3-rule-strong);border-radius:var(--ks3-r-card);' +
         'background:none;color:var(--ks3-accent-text);text-decoration:none">' +
         '<span style="font-weight:700">Add a child</span>' +
-        '<span class="dk-tile-sub">' + (t ? (esc(money(t.rest)) + ' a month extra') : 'One price per child') +
+        '<span class="dk-tile-sub">' + (t ? (esc(money(t.rest)) + (perYear ? ' a year extra' : ' a month extra')) : 'One price per child') +
         '</span></a>') +
     '</div>';
     return html;
@@ -1422,7 +1427,10 @@
               '<span style="display:block;font-size:16px;font-weight:600">' +
                 esc(it.title || 'Work') + '</span>' +
               '<span style="display:block;font-size:13px;color:var(--ks3-ink-muted)">' +
-                esc([it.source, it.mins != null ? (it.mins + ' min') : null]
+                /* ⊕ 13 Oct 2026 (B7) — the planned minutes are a PLAN, so
+                   they show only on work still to do. On a done row "20 min"
+                   read as how long it took, which nothing measured. */
+                esc([it.source, (!it.done && it.mins != null) ? (it.mins + ' min') : null]
                     .filter(Boolean).join(' · ')) + '</span></span>' +
             /* A DONE item is a record of what a child did and the contract
                refuses to remove one (409). So the button is not rendered

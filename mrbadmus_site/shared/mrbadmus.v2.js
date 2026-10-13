@@ -66,7 +66,8 @@ CORE TEACHING RULES — ALWAYS FOLLOW:
 You are preparing students for real GCSE exams. Every scientific answer you give must use the precise terminology that AQA (and other exam boards) reward in their mark schemes. Warmth and clarity are essential, but they must NEVER come at the cost of scientific accuracy or mark-worthy vocabulary.
 Core requirements for every science answer:
 - Use correct scientific terminology, always. Never substitute everyday language for a technical term that would earn a mark. Examples: say "reduction" and "gain of electrons" — not just "the metal comes out"; say "electrolysis" — not just "using electricity to separate it"; say "displacement reaction with scrap iron" — not just "iron pulls the metal out"; say "leachate solution" — not just "the liquid"; say "exothermic" / "endothermic" — not just "gives off heat" / "takes in heat"; say "respiration" — not just "making energy"; say "diffusion" / "active transport" / "osmosis" — name the actual process, never just "moves across"; say "resultant force" — not just "overall push"; say "partially permeable membrane" — not just "a sort of net"; say "denatured" — not just "broken". The analogy can come alongside the correct term, but the correct term must always be there. Think of it as: technical word first, then plain-English explanation, then optional analogy. Never analogy instead of the correct term.
-- Match the depth to the student's tier. If the student is on a Higher tier page, include Higher-tier content (half equations, detailed mechanisms, quantitative reasoning, ionic equations). If they're on a Triple Science page, include Triple-only content where relevant. Never strip a Higher or Triple student's answer down to Foundation level "to keep it simple" — they need the full depth to earn the marks available to them. Equally, don't dump Higher content on a Foundation student and overwhelm them. Use the tier information in the system prompt to calibrate.
+- Refer to required practicals by their name (e.g. 'the specific heat capacity practical'); never give a required-practical number.
+- Stay within the student's key stage and tier. Match the depth to the student's tier. If the student is on a Higher tier page, include Higher-tier content (half equations, detailed mechanisms, quantitative reasoning, ionic equations). If they're on a Triple Science page, include Triple-only content where relevant. Never strip a Higher or Triple student's answer down to Foundation level "to keep it simple" — they need the full depth to earn the marks available to them. Equally, don't dump Higher content on a Foundation student and overwhelm them. Use the tier information in the system prompt to calibrate.
 - Respect exam command words. GCSE mark schemes are strict about command words — students lose marks constantly because they describe when asked to explain. Mirror the depth the command word demands: State / Give / Name → one-word or short-phrase answer, no justification; Describe → say what happens, in order, without needing to justify; Explain → say what happens AND why (use "because", "therefore", "this is due to"); Compare → cover similarities AND differences (use "whereas", "in contrast"); Evaluate → give both sides plus a judgement or conclusion; Calculate → show full working using FIFA, with units at every stage; Suggest → apply known science to an unfamiliar context.
 - For "explain", "describe", "how does X work", or "outline the process" questions: Structure your answer as numbered steps that mirror how a mark scheme awards points. Each step should contain at least one mark-worthy keyword. Cover the full process end-to-end — do not skip stages. If the exam board would award 6 marks for the question, your answer should contain at least 6 distinct mark-worthy points.
 - Always give named, specific examples when explaining a concept. Examiners want the specific example, not the general category: "An exothermic reaction" → say "combustion of methane" or "neutralisation of HCl with NaOH"; "A use of graphene" → say "electrodes in batteries" or "composites for strength"; "A reactive metal" → say "potassium" or "sodium"; "A greenhouse gas" → say "carbon dioxide" or "methane"; "An enzyme" → say "amylase" or "lipase".
@@ -131,16 +132,16 @@ Remember: Students lose marks for vague language, wrong command-word matching, m
 CURRENT PAGE CONTEXT: AQA GCSE Physics (8463) — but answer ALL science subjects if asked
 
 FULL PHYSICS SPECIFICATION TOPICS:
-4.1 Energy: KE=½mv², GPE=mgh, E=mcΔθ, E=½ke², efficiency, energy resources, conduction/convection/radiation. RP1 specific heat capacity, RP2 insulation.
-4.2 Electricity: Q=It, V=IR, circuit symbols, ohmic/non-ohmic, series and parallel, AC/DC, mains wiring, P=VI, P=I²R, E=Pt, E=QV, National Grid, transformers. RP3 resistance of wire, RP4 I-V characteristics. Higher: potential dividers. Triple: static electricity, electric fields.
-4.3 Particle Model: density ρ=m/V, states of matter, changes of state, internal energy, E=mcΔθ, E=mL (latent heat), gas pressure and temperature. Higher: Boyle's law, absolute zero. RP5 density.
-4.4 Atomic Structure: protons/neutrons/electrons, isotopes, atomic model history, radioactive decay (alpha/beta/gamma), nuclear equations, half-life, background radiation, fission/fusion. RP6 half-life sim.
-4.5 Forces: scalars/vectors, W=mg, resultant forces, W=Fs, F=ke (Hooke's Law), moments, p=F/A, pressure in fluids, s=vt, v=u+at, s=½(u+v)t, F=ma, Newton's laws, momentum p=mv, stopping distances. Higher: impulse=FΔt, terminal velocity. RP7 acceleration, RP8 spring extension.
-4.6 Waves: v=fλ, T=1/f, transverse/longitudinal, EM spectrum, reflection, refraction, sound. Higher: n=sin(i)/sin(r). Triple: lenses, X-rays, radio waves. RP9 waves, RP10 light.
-4.7 Magnetism: magnetic fields, electromagnets, Fleming's LHR, F=BIL, motors, induction, generators, Vp/Vs=Np/Ns, transformer efficiency. Higher: induced EMF. RP11 motor effect.
+4.1 Energy: KE=½mv², GPE=mgh, E=mcΔθ, E=½ke², efficiency, energy resources, conduction/convection/radiation. Required practicals: specific heat capacity; insulation.
+4.2 Electricity: Q=It, V=IR, circuit symbols, ohmic/non-ohmic, series and parallel, AC/DC, mains wiring, P=VI, P=I²R, E=Pt, E=QV, National Grid, transformers. Required practicals: resistance of wire; I-V characteristics. Higher: potential dividers. Triple: static electricity, electric fields.
+4.3 Particle Model: density ρ=m/V, states of matter, changes of state, internal energy, E=mcΔθ, E=mL (latent heat), gas pressure and temperature. Higher: Boyle's law, absolute zero. Required practical: density.
+4.4 Atomic Structure: protons/neutrons/electrons, isotopes, atomic model history, radioactive decay (alpha/beta/gamma), nuclear equations, half-life, background radiation, fission/fusion. Required practical: half-life sim.
+4.5 Forces: scalars/vectors, W=mg, resultant forces, W=Fs, F=ke (Hooke's Law), moments, p=F/A, pressure in fluids, s=vt, v=u+at, s=½(u+v)t, F=ma, Newton's laws, momentum p=mv (Higher only), stopping distances. Higher: impulse=FΔt, terminal velocity. Required practicals: acceleration; spring extension.
+4.6 Waves: v=fλ, T=1/f, transverse/longitudinal, EM spectrum, reflection, refraction, sound. Higher: n=sin(i)/sin(r). Triple: lenses, X-rays, radio waves. Required practicals: waves; light.
+4.7 Magnetism: magnetic fields, electromagnets. Higher only: Fleming's LHR, F=BIL, motors, induction, generators, Vp/Vs=Np/Ns, transformer efficiency. Higher: induced EMF. Required practical: motor effect.
 4.8 Space (TRIPLE ONLY): Solar System, stellar life cycles, orbital motion, red-shift, Big Bang, expanding universe.
 
-REQUIRED PRACTICALS: RP1-RP11 as listed above.
+REQUIRED PRACTICALS: as listed under each topic above, by name.
 KEY EQUATIONS: All equation sheet equations apply.`,
 
     chemistry: `${BASE_PROMPT}
@@ -150,27 +151,27 @@ CURRENT PAGE CONTEXT: AQA GCSE Chemistry (8462) — but answer ALL science subje
 FULL CHEMISTRY SPECIFICATION TOPICS:
 4.1 Atomic Structure & Periodic Table: protons/neutrons/electrons, Ar, Mr, isotopes, electronic structure, periodic table groups/periods, Group 1 (alkali metals), Group 7 (halogens), Group 0 (noble gases), transition metals.
 4.2 Bonding: ionic (electron transfer, giant lattice), covalent (electron sharing, simple molecular vs giant), metallic (delocalised electrons), alloys, polymers. Higher: dot-cross diagrams. Triple: intermolecular forces.
-4.3 Quantitative Chemistry: mol=mass÷Mr, mol=c×V, mol=V÷24, % yield=actual÷theoretical×100, atom economy=Mr(useful)÷Mr(all)×100, balancing equations. Higher: limiting reactants, titration calcs.
-4.4 Chemical Changes: reactivity series, displacement, metal extraction, pH scale, neutralisation, acid+metal→salt+H₂, acid+base→salt+H₂O, acid+carbonate→salt+H₂O+CO₂, making salts, electrolysis (molten and solutions). Higher: half equations. RP1 making salts, RP2 electrolysis.
-4.5 Energy Changes: exothermic/endothermic, reaction profiles, activation energy, bond energies (ΔH=bonds broken−bonds formed), cells, fuel cells. Higher: bond energy calcs. RP3 temperature changes.
-4.6 Rate & Equilibrium: rate=quantity÷time, collision theory, factors (concentration, temp, surface area, catalyst), measuring rate, reversible reactions, Le Chatelier's principle, Haber process. Higher: equilibrium position calculations. RP4 thiosulfate, RP5 marble chips.
+4.3 Quantitative Chemistry: Higher only — moles: mol=mass÷Mr, mol=c×V, mol=V÷24; % yield=actual÷theoretical×100, atom economy=Mr(useful)÷Mr(all)×100, balancing equations. Higher: limiting reactants, titration calcs.
+4.4 Chemical Changes: reactivity series, displacement, metal extraction, pH scale, neutralisation, acid+metal→salt+H₂, acid+base→salt+H₂O, acid+carbonate→salt+H₂O+CO₂, making salts, electrolysis (molten and solutions). Higher: half equations. Required practicals: making salts; electrolysis.
+4.5 Energy Changes: exothermic/endothermic, reaction profiles, activation energy, bond energies (ΔH=bonds broken−bonds formed — Higher only), cells, fuel cells. Higher: bond energy calcs. Required practical: temperature changes.
+4.6 Rate & Equilibrium: rate=quantity÷time, collision theory, factors (concentration, temp, surface area, catalyst), measuring rate, reversible reactions, Le Chatelier's principle (Higher only), Haber process. Higher: equilibrium position calculations. Required practicals: thiosulfate; marble chips.
 4.7 Organic Chemistry: crude oil, fractional distillation, alkanes (CₙH₂ₙ₊₂), cracking, alkenes (CₙH₂ₙ), addition reactions, polymerisation, alcohols, carboxylic acids, esters. Higher: mechanisms. Triple: amino acids, condensation polymers. 
-4.8 Chemical Analysis: pure substances, chromatography (Rf=spot÷solvent), flame tests, testing gases, ion tests, mass spectrometry, IR spectroscopy. Higher: interpreting spectra. RP6 chromatography, RP7 ion tests.
+4.8 Chemical Analysis: pure substances, chromatography (Rf=spot÷solvent), flame tests, testing gases, ion tests, mass spectrometry, IR spectroscopy. Higher: interpreting spectra. Required practicals: chromatography; ion tests.
 4.9 Atmosphere: composition, evolution of atmosphere, greenhouse effect, climate change, carbon footprint, pollutants (CO, NOₓ, SO₂, particulates).
-4.10 Using Resources: finite/renewable, water treatment, LCA, corrosion, alloys, ceramics, polymers, composites, Haber process (N₂+3H₂⇌2NH₃), NPK fertilisers. Higher: fertiliser calculations. RP8 water purification.`,
+4.10 Using Resources: finite/renewable, water treatment, LCA, corrosion, alloys, ceramics, polymers, composites, Haber process (N₂+3H₂⇌2NH₃), NPK fertilisers. Higher: fertiliser calculations. Required practical: water purification.`,
 
     biology: `${BASE_PROMPT}
 
 CURRENT PAGE CONTEXT: AQA GCSE Biology (8461) — but answer ALL science subjects if asked
 
 FULL BIOLOGY SPECIFICATION TOPICS:
-4.1 Cell Biology: animal/plant/bacterial cells, eukaryotic/prokaryotic, specialised cells, magnification=image÷actual, diffusion/osmosis/active transport, mitosis, stem cells, growth. Higher: meiosis, stem cell ethics. RP1 microscopy, RP2 osmosis.
-4.2 Organisation: cell→tissue→organ→system, digestive system, enzymes (lock-and-key, active site), effect of temp/pH on enzymes, heart, blood vessels (arteries/veins/capillaries), blood components, respiratory system, health and disease, cancer. Higher: CHD treatments, plant transport. RP3 enzyme pH, RP4 food tests.
+4.1 Cell Biology: animal/plant/bacterial cells, eukaryotic/prokaryotic, specialised cells, magnification=image÷actual, diffusion/osmosis/active transport, mitosis, stem cells, growth. Higher: meiosis, stem cell ethics. Required practicals: microscopy; osmosis.
+4.2 Organisation: cell→tissue→organ→system, digestive system, enzymes (lock-and-key, active site), effect of temp/pH on enzymes, heart, blood vessels (arteries/veins/capillaries), blood components, respiratory system, health and disease, cancer. Higher: CHD treatments, plant transport. Required practicals: enzyme pH; food tests.
 4.3 Infection & Response: pathogens (bacteria/viruses/fungi/protists), spread of disease, specific diseases (measles, HIV, malaria, TMV, rose black spot, Salmonella), immune system (phagocytosis, antibodies, memory cells), vaccination, antibiotics, drug development. Higher: monoclonal antibodies, plant defences.
-4.4 Bioenergetics: photosynthesis (6CO₂+6H₂O→C₆H₁₂O₆+6O₂), limiting factors (light, CO₂, temp), uses of glucose, aerobic respiration (C₆H₁₂O₆+6O₂→6CO₂+6H₂O), anaerobic (glucose→lactic acid; glucose→ethanol+CO₂), exercise response. Higher: rate graphs, metabolism. RP5 photosynthesis, RP6 fermentation.
-4.5 Homeostasis & Response: homeostasis, nervous system (CNS, neurons, synapses), reflex arc, brain, eye, endocrine system, blood glucose (insulin/glucagon), diabetes Type 1&2, thermoregulation, kidneys/ADH, menstrual cycle (FSH/LH/oestrogen/progesterone), contraception, fertility treatments. Higher: negative feedback, IVF ethics. Triple: kidney detail. RP7 reaction time.
+4.4 Bioenergetics: photosynthesis (6CO₂+6H₂O→C₆H₁₂O₆+6O₂), limiting factors (light, CO₂, temp), uses of glucose, aerobic respiration (C₆H₁₂O₆+6O₂→6CO₂+6H₂O), anaerobic (glucose→lactic acid; glucose→ethanol+CO₂), exercise response (oxygen debt is Higher only). Higher: rate graphs, metabolism. Required practicals: photosynthesis; fermentation.
+4.5 Homeostasis & Response: homeostasis, nervous system (CNS, neurons, synapses), reflex arc, brain, eye, endocrine system, blood glucose (insulin; glucagon and how blood glucose is raised again are Higher only), diabetes Type 1&2, thermoregulation, kidneys/ADH, menstrual cycle (FSH/LH/oestrogen/progesterone; how these hormones interact to control the cycle is Higher only), contraception, fertility treatments (using hormones to treat infertility, including IVF, is Higher only). Higher: negative feedback (adrenaline, thyroxine), IVF ethics. Triple: kidney detail. Required practical: reaction time.
 4.6 Inheritance: DNA structure, genes/alleles/chromosomes, dominant/recessive, Punnett squares, cystic fibrosis, polydactyly, sex determination, variation (genetic/environmental), mutation, natural selection, evolution evidence, classification. Higher: codominance, genetic engineering. Triple: protein synthesis.
-4.7 Ecology: populations/communities/ecosystems, abiotic/biotic factors, interdependence, food webs, competition, adaptations, quadrats/transects, water/carbon/nitrogen cycles, biodiversity, deforestation, climate change, conservation, mark-recapture formula. Higher: biodiversity index, predator-prey. RP8 habitat sampling.`
+4.7 Ecology: populations/communities/ecosystems, abiotic/biotic factors, interdependence, food webs, competition, adaptations, quadrats/transects, water/carbon/nitrogen cycles, biodiversity, deforestation, climate change, conservation, mark-recapture formula. Higher: biodiversity index, predator-prey. Required practical: habitat sampling.`
   };
 
   /* ⊕ HONEST WHEN IT CANNOT ANSWER (Mide's ruling, 5 Oct 2026). When the
@@ -472,6 +473,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
 
 KEY STAGE 3 — THIS OVERRIDES THE EXAM FRAMING ABOVE.
 You are talking to a KS3 student: roughly 11 to 14 years old, two or three years before they start a GCSE course. Everything above about warmth, honesty, the FIFA method for calculations, units in every answer, and safeguarding still applies exactly as written. The exam-board framing does not.
+- Stay within this student's key stage: use only KS3 (Year 7–9) ideas and vocabulary. Never bring in GCSE-only content or terms (for example "cardiac output" or "stroke volume"). If they ask about something that goes beyond KS3, answer at KS3 depth in KS3 words and say they will meet more of it later.
 - This student has NO tier and NO pathway. Never say "Higher tier", "Foundation", "Triple", "Combined", "paper 1", "mark scheme", "the spec" or a spec point code. They do not exist for this student yet, and naming them tells a twelve-year-old they are behind.
 - Do not label content ⭐ HIGHER TIER or 🔬 TRIPLE ONLY. There are no tiers here.
 - Drop the "✅ Key exam words" line and the command-word drilling. Teach the correct scientific word — "respiration", "diffusion", "chromosome" — because the word is the idea and they will need it later, but teach it as the name of a thing, not as a mark-scheme term.
@@ -479,7 +481,38 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
 - Never refer to the student by their school year. Say "a student your age".
 - Keep it short and concrete. Curiosity is the whole point at this stage — if they ask something off-topic that comes from real interest, follow it.`;
 
+  /* ⊕ Parent truth (13 Oct 2026) — a child is TOLD, before they type, that
+     their parent can see what they ask. A child session's questions are
+     logged for their parent (see `ask()`: question, lesson, time — never the
+     reply), so a child must not find that out afterwards. One plain line,
+     above the input, in the panel's own body ink (--text on --bg: AA in both
+     themes on every page that mounts the panel), tied to the input with
+     aria-describedby so a screen reader says it too. "Parent or tutor": an
+     organisation's child is attached to the organisation's account, not a
+     parent's, and the page cannot tell the two apart without a network call.
+     ONLY FOR A CHILD SESSION (MrBadmusConfig.isChildSession); a school pupil's
+     panel is untouched. */
+  function childDisclosure() {
+    try {
+      const c = cfg();
+      if (!c || typeof c.isChildSession !== 'function') return;
+      const sess = JSON.parse(localStorage.getItem(c.AUTH_STORAGE_KEY) || 'null');
+      if (!c.isChildSession(sess)) return;
+      const row = document.querySelector('#chatOverlay .chat-input-row');
+      if (!row || document.getElementById('chatDisclosure')) return;
+      const p = document.createElement('p');
+      p.id = 'chatDisclosure';
+      p.className = 'chat-disclosure';
+      p.style.cssText = 'margin:0 auto;max-width:860px;width:100%;box-sizing:border-box;padding:10px 24px 6px;font-size:0.875rem;line-height:1.4;font-weight:500;color:var(--text)';
+      p.textContent = 'Your parent or tutor can see the questions you ask here.';
+      row.parentNode.insertBefore(p, row);
+      const input = document.getElementById('ci');
+      if (input) input.setAttribute('aria-describedby', 'chatDisclosure');
+    } catch (e) { /* a missing line never breaks the tutor */ }
+  }
+
   async function init(config) {
+    childDisclosure();
     currentKeyStage = config.keyStage || '';
     await loadStudentSession();
     currentSubject = config.subject || 'physics';
@@ -492,6 +525,11 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
       if (studentProfile?.tier) {
         const tierLabel = studentProfile.tier.charAt(0).toUpperCase() + studentProfile.tier.slice(1);
         systemPrompt += `\n\nThe student is on the ${tierLabel} tier.`;
+        /* ⊕ 13 Oct 2026 — stay within the student's key stage and tier, said
+           explicitly for Foundation (the backend carries the same guard). */
+        if (studentProfile.tier === 'foundation') {
+          systemPrompt += ` Stay within Foundation tier content. Do not teach Higher-only content unless the student explicitly asks for it, and when they do, label it ⭐ HIGHER TIER. In the specification above, anything marked "Higher only" or listed after "Higher:" is Higher-only content.`;
+        }
       }
       if (studentProfile?.science_pathway) {
         const pathLabel = studentProfile.science_pathway.charAt(0).toUpperCase() + studentProfile.science_pathway.slice(1);
@@ -834,6 +872,107 @@ try {
   })();
 } catch (e) {}
 
+/* ── Parent truth (13 Oct 2026): "Back to Today" when a child finishes ────
+   A family or organisation child's home is Today (MrBadmusConfig.CHILD_HOME).
+   Finishing a lesson used to leave them at the bottom of a lesson page with
+   the school's way out (the top bar's lesson links) and no way back to the
+   list their parent set. So, ONLY FOR A CHILD SESSION (the same one test as
+   above, no network call), once the page shows its own "finished" state a
+   primary "Back to Today" link is revealed:
+     · beside what the page shows when it is finished — under a classic KS4
+       page's quiz end message (`#quizEndMsg`), or under the ladder's score
+       line on a KS3 page ("You got N of M.") or a rebuilt KS4 page
+       ("Score N of 4");
+     · and at the end of the page, above the footer, on KS3 and rebuilt KS4
+       pages (a classic page's quiz IS the end of its page, so it gets one).
+   Each is the page's own primary button class (`ks3-btn is-primary` on KS3,
+   `btn btn--primary` on a rebuilt KS4 page, `btn-primary` on a classic one),
+   so both themes are the design system's, with a 48px tap target. `env` and
+   `api` travel, as the student guard's own redirect to Today carries them.
+   A school pupil's page installs nothing here. Once revealed, it stays: a
+   "Retry my misses" that empties the ladder does not take the way home away. */
+try {
+  (function () {
+    var path = window.location.pathname || '';
+    if (!/^\/(ks3|combined|triple)\//.test(path)) { return; }
+    function start() {
+      var c = window.MrBadmusConfig;
+      if (!c || !c.AUTH_STORAGE_KEY || typeof c.isChildSession !== 'function') { return; }
+      var session = null;
+      try { session = JSON.parse(window.localStorage.getItem(c.AUTH_STORAGE_KEY) || 'null'); } catch (e) { return; }
+      if (!session || !c.isChildSession(session)) { return; }
+      function home() {
+        var q = new URLSearchParams(window.location.search), keep = new URLSearchParams();
+        ['env', 'api'].forEach(function (k) { if (q.get(k)) { keep.set(k, q.get(k)); } });
+        var qs = keep.toString();
+        return (c.CHILD_HOME || '/consumer/today.html') + (qs ? '?' + qs : '');
+      }
+      function txt(el) { return el ? (el.textContent || '').replace(/\s+/g, ' ').trim() : ''; }
+      function endMsg() {
+        var end = document.getElementById('quizEndMsg');
+        return (end && end.style.display !== 'none' && txt(end)) ? end : null;
+      }
+      function ladderDone() {
+        var t = txt(document.querySelector('.ks3-ladder-score .ks3-score'));
+        return /^Score \d+ of \d+$/.test(t) || /^You got \d+ of \d+\.$/.test(t);
+      }
+      function btnClass() {
+        if (document.querySelector('link[href*="/shared/ks3.css"]')) { return 'ks3-btn is-primary'; }
+        if (document.querySelector('link[href*="/shared/ks4-ds.css"]')) { return 'btn btn--primary'; }
+        return 'btn-primary';
+      }
+      function make(where, centre) {
+        var box = document.createElement('div');
+        box.setAttribute('data-mrb-child-home', where);
+        box.style.cssText = 'margin:18px 0;' + (centre ? 'text-align:center;' : '');
+        var a = document.createElement('a');
+        a.href = home();
+        a.className = btnClass();
+        a.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;min-height:48px;box-sizing:border-box;text-decoration:none;flex:none';
+        a.textContent = 'Back to Today';
+        box.appendChild(a);
+        return box;
+      }
+      var shown = false;
+      function ensure() {
+        if (!shown) {
+          if (!endMsg() && !ladderDone()) { return; }
+          shown = true;
+        }
+        var end = document.getElementById('quizEndMsg');
+        var score = document.querySelector('.ks3-ladder-score');
+        var by = end || score;
+        if (by && by.parentNode) {
+          var next = by.nextElementSibling;
+          if (!(next && next.getAttribute('data-mrb-child-home') === 'score')) {
+            by.parentNode.insertBefore(make('score', !!end), by.nextSibling);
+          }
+        }
+        var foot = document.querySelector('footer.ks3-footer');
+        if (foot && foot.parentNode) {
+          var prev = foot.previousElementSibling;
+          if (!(prev && prev.getAttribute('data-mrb-child-home') === 'end')) {
+            foot.parentNode.insertBefore(make('end', false), foot);
+          }
+        }
+      }
+      // The page redraws parts of itself (a rebuilt KS4 page patches its
+      // blocks in place and may drop a node it does not own): re-ensured on
+      // every change, idempotently.
+      var busy = false;
+      new MutationObserver(function () {
+        if (busy) { return; }
+        busy = true;
+        try { ensure(); } finally { busy = false; }
+      }).observe(document.body, { subtree: true, childList: true, attributes: true,
+                                  attributeFilter: ['style'], characterData: true });
+      ensure();
+    }
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', start); }
+    else { start(); }
+  })();
+} catch (e) {}
+
 /* ── Parent truth (11 Oct 2026): a consumer child's lesson answers ─────────
    Mide's brief: a parent sees exactly what their child did. Every answer a
    family or organisation child gives on a lesson page is sent, as it is
@@ -905,13 +1044,40 @@ try {
        A small ring of recent interactions is kept for that. When one action
        yields several answers (a matching Check, a sort Check) the elapsed
        time is split equally across them in whole seconds that sum to it.
-       Capped at 30 minutes. */
+       ⊕ 13 Oct 2026 — MEASURED, never estimated (Mide: "measured active time
+       only, or no time at all"). Time the tab was hidden inside that window
+       (another tab, a locked phone) is taken out, and more than 30 minutes
+       of what is left is sent as null — unknown — rather than capped to an
+       invented 30. */
     var lastAt = Date.now();
     try {
       if (window.performance && typeof window.performance.now === 'function') {
         lastAt = Date.now() - window.performance.now();
       }
     } catch (e) { /* keep install time */ }
+    // Hidden-tab spans, [from, to] in ms, plus the one open now (if any).
+    var hiddenSpans = [];
+    var hiddenSince = document.visibilityState === 'hidden' ? Date.now() : null;
+    document.addEventListener('visibilitychange', function () {
+      var now = Date.now();
+      if (document.visibilityState === 'hidden') {
+        if (hiddenSince == null) { hiddenSince = now; }
+      } else if (hiddenSince != null) {
+        hiddenSpans.push([hiddenSince, now]);
+        hiddenSince = null;
+        if (hiddenSpans.length > 200) { hiddenSpans.shift(); }
+      }
+    });
+    function visibleMs(from, to) {
+      var gone = 0;
+      var list = hiddenSpans.slice();
+      if (hiddenSince != null) { list.push([hiddenSince, to]); }
+      for (var i = 0; i < list.length; i += 1) {
+        var a = Math.max(from, list[i][0]), b = Math.min(to, list[i][1]);
+        if (b > a) { gone += b - a; }
+      }
+      return Math.max(0, (to - from) - gone);
+    }
     var ring = [];                              // newest last: { t, el }
     ['pointerdown', 'keydown', 'drop'].forEach(function (type) {
       document.addEventListener(type, function (e) {
@@ -931,13 +1097,17 @@ try {
       return start;
     }
     // Whole seconds for `n` answers given at once from `block`, summing to
-    // the elapsed time.
+    // the visible elapsed time — or all null when that is over the cap.
     function spans(block, n) {
       var now = Date.now();
-      var total = Math.round((now - startFor(block)) / 1000);
-      total = total < 0 ? 0 : (total > CAP_S ? CAP_S : total);
+      var total = Math.round(visibleMs(startFor(block), now) / 1000);
       lastAt = now;
-      var out = [], each = Math.floor(total / n), rest = total - each * n;
+      var out = [];
+      if (total > CAP_S) {
+        for (var z = 0; z < n; z += 1) { out.push(null); }
+        return out;
+      }
+      var each = Math.floor(total / n), rest = total - each * n;
       for (var k = 0; k < n; k += 1) { out.push(each + (k < rest ? 1 : 0)); }
       return out;
     }
@@ -1038,7 +1208,7 @@ try {
       return v || null;
     }
     function post(d) {
-      var t = typeof d.__t === 'number' ? d.__t : spans(d.__block || null, 1)[0];
+      var t = ('__t' in d) ? d.__t : spans(d.__block || null, 1)[0];
       var mk = (typeof d.marks === 'number' && isFinite(d.marks)) ? Math.round(d.marks) : null;
       if (mk !== null && (mk < 1 || mk > 20)) { mk = null; }
       var ms = (mk !== null && typeof d.marks_scored === 'number' && isFinite(d.marks_scored))
