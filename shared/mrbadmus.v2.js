@@ -528,7 +528,7 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
         /* ⊕ 13 Oct 2026 — stay within the student's key stage and tier, said
            explicitly for Foundation (the backend carries the same guard). */
         if (studentProfile.tier === 'foundation') {
-          systemPrompt += ` Stay within Foundation tier content. Do not teach Higher-only content unless the student explicitly asks for it, and when they do, label it ⭐ HIGHER TIER. In the specification above, anything marked "Higher only" or listed after "Higher:" is Higher-only content.`;
+          systemPrompt += ` Stay within Foundation tier content. Do not teach Higher-only content unless the student explicitly asks for it, and when they do, label it ⭐ HIGHER TIER. In the specification above, anything marked "Higher only" is Higher-only content. Items listed after "Higher:" may be answered if asked, labelled ⭐ HIGHER TIER.`;
         }
       }
       if (studentProfile?.science_pathway) {
