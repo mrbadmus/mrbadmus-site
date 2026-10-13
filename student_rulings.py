@@ -7392,3 +7392,180 @@ LOGIC["class view"].extend([
 ])
 # 257 = the "Show top 10 / Show top 5" button inside the chips row (253).
 WRAP["class view"][257] = "showSizeToggle"
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# ⊕ C9 (Mide, overnight run 13 Oct 2026) — THE QUESTION PAGE ON A WIDE SCREEN
+# ══════════════════════════════════════════════════════════════════════════
+#
+#   "The practice/question page leaves most of a wide screen empty. At 1280
+#    and wider, the question, the options and the question tracker use the
+#    full width at a larger size, with no large empty band under the
+#    content, and feedback after each answer appears in view. The 390 layout
+#    stays as it is."
+#
+# Measured before (fixture, 2560×1440): the shell stopped at 1460px, the
+# reading column (node 106, `<main>`) at 820px, the h1 at 32px and the option
+# text at 16.5px — every clamp() had hit its maximum by ~1250px — so 70% of
+# the screen was ground, and on 1280×800 the credited answer's feedback card
+# sat under the action bar.
+#
+# ⚠️ EVERYTHING HERE IS INSIDE `@media (min-width: 1280px)`. Below that the
+# page is byte-for-byte what it was: the only other change is a data
+# attribute (`data-mrb-qw`) on the nodes the rules name, which paints
+# nothing. The 390 identity is proved by pixel diff in the C9 report.
+#
+# ⚠️ WHY `!important` HERE, when the TYPE_SCALE note above argues against
+# it: TYPE_SCALE/STYLE_EDIT rewrite an inline literal at EVERY width, and
+# this ruling must not touch 390. A media query is the only way to say "only
+# wide", and an inline declaration outranks any selector, so a wide-only rule
+# has to be important. It is one block, scoped to one attribute that exists
+# on this page alone (student-ds.css is shared with the class view).
+#
+# What changes at ≥1280:
+#   · the shell (105) drops Design's 1460px cap; the rail (267) widens with
+#     the screen, 320 → 480px, and the gap with it;
+#   · the reading column (106) drops its 820px cap and is centred in the
+#     height between the header and the action bar, as is the rail — so the
+#     work sits in the middle of the screen, not stranded at the top of it;
+#   · a question WITH a figure draws figure and options side by side (the
+#     options in one column beside it), which is what keeps the answer's
+#     feedback above the action bar at 1280×800; without a figure the
+#     options stay Design's two columns, full width;
+#   · type and controls scale on Design's own unit (cqw) with higher
+#     ceilings: stem 32 → 56px, option text 16.5 → 28px, feedback 15 → 24px,
+#     tracker cells 52 → 84px tall;
+#   · after Confirm, if a feedback note is below the action bar, the page
+#     scrolls just far enough to show it (LOGIC below). Wide screens only.
+# No text is added anywhere.
+_C9_ATTRS = {
+    105: "shell", 106: "main", 112: "stem", 114: "fig", 251: "opts",
+    253: "opt", 254: "key", 255: "text", 256: "mark", 263: "status",
+    265: "note", 267: "rail", 269: "railhead", 270: "railtitle",
+    271: "railcount", 272: "railgrid", 274: "railcell", 275: "railnum",
+    283: "railstats", 286: "statlabel", 287: "statvalue", 350: "actionbar",
+}
+for _n, _v in _C9_ATTRS.items():
+    SET_ATTR["assignment"].setdefault(_n, {})["data-mrb-qw"] = _v
+
+C9_WIDE_CSS = """
+/* ⊕ C9 (13 Oct 2026) — the question screen at 1280px and wider. See
+   student_rulings.py, "C9", for the ruling. Nothing below 1280 changes. */
+@media (min-width: 1280px) {
+  [data-mrb-qw="shell"] {
+    max-width: none !important;
+    grid-template-columns: minmax(0, 1fr) clamp(320px, 18.75cqw, 480px) !important;
+    gap: clamp(32px, 2.6cqw, 64px) !important;
+    align-items: center !important;
+  }
+  [data-mrb-qw="main"] {
+    max-width: none !important;
+    padding-top: clamp(26px, 2.2cqw, 56px) !important;
+    padding-bottom: clamp(30px, 2.4cqw, 60px) !important;
+  }
+  /* outranks the page's own `.rd[data-mode="ks3"] [data-q-eyebrow]` (13px) */
+  .rd[data-mode="ks3"] [data-mrb-qw="main"] .eyebrow { font-size: clamp(13px, 0.72cqw, 18px); }
+  [data-mrb-qw="stem"] {
+    max-width: min(44ch, 100%) !important;
+    font-size: clamp(32px, 2.35cqw, 56px) !important;
+  }
+
+  /* figure and options side by side, when there is a figure */
+  [data-mrb-qw="main"]:has(> [data-mrb-qw="fig"]) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: clamp(20px, 1.9cqw, 48px);
+    align-items: start;
+  }
+  [data-mrb-qw="main"]:has(> [data-mrb-qw="fig"]) > *:not([data-mrb-qw="fig"]):not([data-mrb-qw="opts"]),
+  [data-mrb-qw="main"]:has(> [data-mrb-qw="fig"]) > [style*="display:contents"] > * {
+    grid-column: 1 / -1;
+  }
+  [data-mrb-qw="main"]:has(> [data-mrb-qw="fig"]) > [data-mrb-qw="fig"] { grid-column: 1; }
+  [data-mrb-qw="main"]:has(> [data-mrb-qw="fig"]) > [data-mrb-qw="opts"] {
+    grid-column: 2;
+    grid-template-columns: minmax(0, 1fr) !important;
+    margin-top: clamp(15px, 1.7cqw, 40px) !important;
+  }
+  [data-mrb-qw="fig"] { margin-top: clamp(15px, 1.7cqw, 40px) !important; }
+  /* Design's resting figure cap (figCap, clamp(132px,34cqw,232px)) — the
+     zoomed cap is a different string and is left alone. */
+  [data-mrb-qw="fig"] svg[style*="34cqw"] { max-height: clamp(232px, 40vh, 600px) !important; }
+
+  [data-mrb-qw="opts"] {
+    gap: clamp(9px, 0.7cqw, 16px) !important;
+    margin-top: clamp(16px, 1.9cqw, 40px) !important;
+  }
+  [data-mrb-qw="opt"] {
+    min-height: clamp(60px, 4.2cqw, 104px) !important;
+    padding: clamp(14px, 1.15cqw, 28px) clamp(15px, 1.3cqw, 32px) !important;
+    gap: clamp(6px, 0.45cqw, 12px) clamp(12px, 1cqw, 24px) !important;
+  }
+  [data-mrb-qw="key"] {
+    width: clamp(28px, 2.2cqw, 50px) !important;
+    height: clamp(28px, 2.2cqw, 50px) !important;
+    border-radius: clamp(8px, 0.6cqw, 12px) !important;
+    font-size: clamp(12px, 0.8cqw, 19px) !important;
+  }
+  [data-mrb-qw="text"] {
+    font-size: clamp(17px, 1.25cqw, 28px) !important;
+    padding-top: clamp(4px, 0.35cqw, 9px) !important;
+  }
+  [data-mrb-qw="mark"] { padding-top: clamp(7px, 0.6cqw, 15px) !important; }
+  [data-mrb-qw="status"] { font-size: clamp(12px, 0.66cqw, 16px) !important; }
+  [data-mrb-qw="note"] {
+    font-size: clamp(15.5px, 1.02cqw, 24px) !important;
+    padding-top: clamp(11px, 0.8cqw, 18px) !important;
+  }
+
+  /* the question tracker (the rail) */
+  [data-mrb-qw="rail"] {
+    padding-top: clamp(26px, 2.2cqw, 56px) !important;
+    padding-bottom: clamp(30px, 2.4cqw, 60px) !important;
+  }
+  [data-mrb-qw="railhead"] { padding: clamp(14px, 1cqw, 24px) clamp(16px, 1.2cqw, 28px) !important; }
+  [data-mrb-qw="railtitle"], [data-mrb-qw="railcount"] { font-size: clamp(12px, 0.7cqw, 17px) !important; }
+  [data-mrb-qw="railgrid"] {
+    gap: clamp(8px, 0.6cqw, 14px) !important;
+    padding: clamp(16px, 1.2cqw, 28px) !important;
+  }
+  [data-mrb-qw="railcell"] { height: clamp(52px, 3.3cqw, 84px) !important; }
+  [data-mrb-qw="railnum"] { font-size: clamp(12px, 0.8cqw, 19px) !important; }
+  [data-mrb-qw="railstats"] { padding: 0 clamp(16px, 1.2cqw, 28px) clamp(16px, 1.2cqw, 28px) !important; }
+  [data-mrb-qw="statlabel"] { font-size: clamp(12px, 0.7cqw, 17px) !important; }
+  [data-mrb-qw="statvalue"] { font-size: clamp(22px, 1.6cqw, 40px) !important; margin-top: clamp(8px, 0.55cqw, 14px) !important; }
+}
+"""
+PORT_CSS += C9_WIDE_CSS
+
+# Feedback in view. Anchored on Sharpen C5's own replacement text (above),
+# which LOGIC applies first. Instant, not smooth: the clock's once-a-second
+# redraw restores `scrollY` and would cut a smooth scroll short. It moves only
+# as far as needed to clear the action bar, and never further than the top of
+# the options, so the question itself stays on screen.
+LOGIC["assignment"].append((
+    "        revising: null, revised: !!p.revised || !!p.handedAt };\n"
+    "    }, () => this.saveLive());",
+    "        revising: null, revised: !!p.revised || !!p.handedAt };\n"
+    "    }, () => {\n"
+    "      this.saveLive();\n"
+    "      /* ⊕ C9 (13 Oct 2026) — on a wide screen, the feedback just drawn\n"
+    "         is brought above the action bar. Below 1280px, nothing. */\n"
+    "      if (typeof window === 'undefined' || !window.matchMedia ||\n"
+    "          !window.matchMedia('(min-width: 1280px)').matches) return;\n"
+    "      window.requestAnimationFrame(() => {\n"
+    "        const notes = document.querySelectorAll('[data-mrb-qw=\"note\"]');\n"
+    "        if (!notes.length) return;\n"
+    "        let bottom = 0;\n"
+    "        notes.forEach((n) => { bottom = Math.max(bottom, n.getBoundingClientRect().bottom); });\n"
+    "        const bar = document.querySelector('[data-mrb-qw=\"actionbar\"]');\n"
+    "        const limit = window.innerHeight - (bar ? bar.offsetHeight : 0) - 16;\n"
+    "        if (bottom <= limit) return;\n"
+    "        const opts = document.querySelector('[data-mrb-qw=\"opts\"]');\n"
+    "        const head = document.querySelector('header');\n"
+    "        const room = opts ? opts.getBoundingClientRect().top - (head ? head.offsetHeight : 0) - 16 : bottom - limit;\n"
+    "        const by = Math.min(bottom - limit, Math.max(0, room));\n"
+    "        if (by > 0) window.scrollBy(0, by);\n"
+    "      });\n"
+    "    });",
+))
