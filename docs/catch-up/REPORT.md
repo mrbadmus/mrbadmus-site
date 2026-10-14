@@ -187,6 +187,27 @@ card): `~/tmp/catch-up-live/shots/` (46 files).
   loads on this machine. The rig reloads on that exact error, and no
   assertion was weakened.
 
+## What the gates found
+
+Six gates went red on the first recording. Three were catch-up's and are fixed:
+
+- **flashcard_request_shape_drive.** Catch-up's separate probe request was one call too many. The pages now name `recipient_ids` in the read they already make. If the column is missing, the read is retried once without it and the absence is cached for 10 minutes. This also reverted the pupil page's `select('*')` to main's named column list.
+- **set_work faff sweep.** The seven new strings are now on RISKS A9's approved-wording list, with the reasons beside them. `Set automatically` (an inherited red from main) went on the list too.
+- **flashcard_decks_drive.** The equal-width check now counts only the chips actually shown. A hidden chip must take no room.
+
+The other three, and two later ones, were not caused by catch-up:
+
+- **teacher_rollup_equal: 12 of its 13 mismatches** came from a TEST catch-up fixture. The SQL skips catch-ups and the site's JS does too, but the proof's Python copy of that JS did not. The copy now does the same thing, and no comparison was loosened.
+- **teacher_rollup_equal: the 13th mismatch** was already there before catch-up, and it is on production too. It concerns a head of department's "last active" date for pupil `…0014`:
+  - production's `teacher_class_rollup_v2` counts flashcard sessions;
+  - the browser can't, because `flashcard_sessions` RLS does not let a head of department read them.
+
+  TEST only shows this now because this migration brought TEST's function up to production's body. Clean origin/main fails identically against TEST. **For Mide:** should heads of department be able to see pupils' flashcard sessions, or should the rollup stop counting them? The push carries a GATE-OVERRIDE for this one value, not a weakened gate.
+- **set_work `scope_spoof_rejected`.** Backend 7412690 re-flagged meiosis as combined content, so the check failed on main as well. Its example is now `dna-structure` (still triple-only), the same swap the backend test made.
+- **set_work's three "a scope of N exists" checks** are TEST-data preconditions that the grown banks no longer meet. They are inherited from main, which Mide overrode on 14 Oct.
+- **student_bell_drive.** Pupil sign-in on TEST was re-provisioned. With a local backend, `bell_survives_redraw` presses the brand lockup as if it were a button. Clean main fails the same way. This needs fixing in the drive, separately.
+- **teacher_behaviour.** The failure was a Chrome navigation error on both tries, and the gate passed on re-run.
+
 ## Ordering hazard (also in the apply sheet)
 
 `feat/x-mig-pupil-class` (the stars functions) and the MRB-351 rollup v2 file
