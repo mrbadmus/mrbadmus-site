@@ -1350,6 +1350,13 @@ try {
       // What the child was asked: the commit line where the block has one,
       // else the block's own headings and paragraphs above its options
       // (a "Think again" block: the quoted idea, then the ask).
+      // ⊕ 14 Oct 2026: only what is ON SCREEN is the question. Text in a
+      // hidden reveal (an answer not yet shown) and a progress counter
+      // ("0 of 5 ruled on", `data-count`) never were, and are left out.
+      var onScreen = function (el) {
+        return !el.closest('[hidden]') && !el.hasAttribute('data-count') &&
+               !!(el.getClientRects && el.getClientRects().length);
+      };
       var promptOf = function (sec) {
         var c = sec.querySelector('.ks3-commit');
         if (c) { return txt(c); }
@@ -1357,10 +1364,10 @@ try {
         for (var i = 0; i < kids.length; i += 1) {
           var el = kids[i];
           if (el.querySelector && (el.matches('.ks3-options') || el.querySelector('.ks3-option'))) { break; }
-          if (/^(P|H2|H3)$/.test(el.tagName) && !el.classList.contains('ks3-eyebrow')) { out.push(txt(el)); }
+          if (/^(P|H2|H3)$/.test(el.tagName) && !el.classList.contains('ks3-eyebrow')) { if (onScreen(el)) { out.push(txt(el)); } }
           else if (el.querySelector) {
             var q = el.querySelectorAll('h2, h3, p:not(.ks3-eyebrow)');
-            for (var j = 0; j < q.length; j += 1) { out.push(txt(q[j])); }
+            for (var j = 0; j < q.length; j += 1) { if (onScreen(q[j])) { out.push(txt(q[j])); } }
           }
         }
         return out.filter(Boolean).join(' ');
@@ -1477,12 +1484,32 @@ try {
         // has no element of its own: its scope is the box holding its picks.
         var scope = u.el || (btn.parentElement && btn.parentElement.parentElement) || sec;
         if (!sec.contains(scope)) { scope = sec; }
-        var prompt = scope !== sec
-          ? visibleText(scope, function (el) {
-              return /^(P|H2|H3|H4|LI)$/.test(el.tagName) && !el.hasAttribute('data-count') &&
-                     !SHOWN_RE.test(Object.keys(el.dataset || {}).join('-'));
-            })
-          : promptOf(sec);
+        /* ⊕ 14 Oct 2026 — the question AS SHOWN: the block's own ask (its
+           heading, "Acid, alkali or neutral? Commit on all eight.") and then
+           the unit's words ("Lemon juice kitchen"). A card alone lost the
+           ask. A block-wide unit (no unit element: a step of a method, a
+           scenario tab) reads the nearest box around the pressed option that
+           has words of its own, never the whole block — the whole block
+           carried every other step and, before onScreen, their hidden
+           verdicts. Only visible lines; never an option's own label. Ids are
+           untouched: they never came from this text. */
+        var lineTest = function (el) {
+          return /^(P|H2|H3|H4|LI)$/.test(el.tagName) && onScreen(el) && !el.querySelector('button') &&
+                 !SHOWN_RE.test(Object.keys(el.dataset || {}).join('-'));
+        };
+        var near = scope;
+        if (scope === sec) {
+          near = sec;
+          for (var up = btn.parentElement; up && up !== sec; up = up.parentElement) {
+            if (visibleText(up, lineTest)) { near = up; break; }
+          }
+        }
+        var ask = '', hs = sec.querySelectorAll('h2, h3');
+        for (var hi = 0; hi < hs.length; hi += 1) {
+          if (!near.contains(hs[hi]) && onScreen(hs[hi]) && !hs[hi].closest('button')) { ask = txt(hs[hi]); break; }
+        }
+        var body = near === sec && sec.querySelector('.ks3-commit') ? promptOf(sec) : visibleText(near, lineTest);
+        var prompt = ask && body.indexOf(ask) < 0 ? (body ? ask + ' — ' + body : ask) : body;
         var oa = optAttr(btn), v = oa ? oa.value : (btn.getAttribute('data-i') || '');
         var uk = v.indexOf(':') > 0 ? v.split(':')[0] : '', vv = v.indexOf(':') > 0 ? v.split(':').slice(1).join(':') : v;
         var opts = Array.prototype.filter.call(scope.querySelectorAll('button'), isOption);
@@ -1769,6 +1796,44 @@ try {
       }
       return out;
     }
+    /* ⊕ 14 Oct 2026: the question AS SHOWN. A block's template may print
+       words of its own around a prop on the same line — Ks4Guess prints
+       "If you had to guess, " + `question` — and the ledger must hold the
+       line the child read, not the prop alone. This finds the template
+       element whose text is built from `expr`, reads that element's text
+       from THIS instance's DOM (never a nested block's), and falls back to
+       the template's literal words around `value` when the DOM is not
+       there. Only for blocks whose id does not hash the text: a classic
+       practice set's id is derived from its text and keeps the prop. */
+    // Template node kinds that are not an element of their own (ks4-runtime.js).
+    var NOT_EL = { '#': 1, 'if': 1, 'for': 1, 'import': 1, 'child': 1, 'helmet': 1, 'sc-helmet': 1 };
+    function shownLine(api, expr, value) {
+      var at = null, parts = null;
+      (function walk(n, el) {
+        if (at !== null || !n || typeof n !== 'object') { return; }
+        if (Array.isArray(n)) { n.forEach(function (x) { walk(x, el); }); return; }
+        if (n.t === '#' && n.v && Array.isArray(n.v.parts)) {
+          var hit = n.v.parts.filter(function (x) { return x && typeof x === 'object'; });
+          if (hit.length === 1 && hit[0].e === expr) { at = el; parts = n.v.parts; return; }
+        }
+        if (n.t === 'child') { return; }        // another block's words are not this one's
+        for (var k in n) {
+          if (k !== 'a' && Object.prototype.hasOwnProperty.call(n, k) && n[k] && typeof n[k] === 'object') {
+            walk(n[k], (n.t && !NOT_EL[n.t] && n.i !== undefined) ? n.i : el);
+          }
+        }
+      })(api.template && api.template.roots, null);
+      if (at !== null && api.host && api.host.querySelectorAll) {
+        var els = api.host.querySelectorAll('[data-dc-tpl="' + at + '"]');
+        for (var i = 0; i < els.length; i += 1) {
+          var up = els[i].parentNode;
+          while (up && !up.__mrbKs4) { up = up.parentNode; }
+          if (up === api.host) { var t = txt(els[i]); if (t) { return t; } }
+        }
+      }
+      if (!parts || value == null || value === '') { return value || ''; }
+      return parts.map(function (x) { return typeof x === 'string' ? x : String(value); }).join('').replace(/\s+/g, ' ').trim();
+    }
     function optText(o) { return o && o.text != null ? String(o.text) : null; }
     function rightOpt(opts) {
       for (var i = 0; i < (opts || []).length; i += 1) { if (opts[i] && opts[i].correct) { return opts[i]; } }
@@ -1827,7 +1892,9 @@ try {
         if (!rootLevel(api) || prev.pick != null || s.pick == null) { return; }
         var p = api.logic.props || {}, o = (p.options || [])[s.pick] || {};
         var d = base('start');
-        d.kind = 'choice'; d.question_text = p.question || '';
+        // The line on screen is "If you had to guess, " + `question`: the
+        // lead is the template's, not the prop's (shownLine).
+        d.kind = 'choice'; d.question_text = shownLine(api, 'question', p.question || '');
         d.answer = optText(o); d.correct_answer = optText(rightOpt(p.options));
         d.is_correct = !!o.correct;
         post(d);
