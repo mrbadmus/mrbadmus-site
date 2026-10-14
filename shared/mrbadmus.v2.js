@@ -1769,6 +1769,44 @@ try {
       }
       return out;
     }
+    /* ⊕ 14 Oct 2026: the question AS SHOWN. A block's template may print
+       words of its own around a prop on the same line — Ks4Guess prints
+       "If you had to guess, " + `question` — and the ledger must hold the
+       line the child read, not the prop alone. This finds the template
+       element whose text is built from `expr`, reads that element's text
+       from THIS instance's DOM (never a nested block's), and falls back to
+       the template's literal words around `value` when the DOM is not
+       there. Only for blocks whose id does not hash the text: a classic
+       practice set's id is derived from its text and keeps the prop. */
+    // Template node kinds that are not an element of their own (ks4-runtime.js).
+    var NOT_EL = { '#': 1, 'if': 1, 'for': 1, 'import': 1, 'child': 1, 'helmet': 1, 'sc-helmet': 1 };
+    function shownLine(api, expr, value) {
+      var at = null, parts = null;
+      (function walk(n, el) {
+        if (at !== null || !n || typeof n !== 'object') { return; }
+        if (Array.isArray(n)) { n.forEach(function (x) { walk(x, el); }); return; }
+        if (n.t === '#' && n.v && Array.isArray(n.v.parts)) {
+          var hit = n.v.parts.filter(function (x) { return x && typeof x === 'object'; });
+          if (hit.length === 1 && hit[0].e === expr) { at = el; parts = n.v.parts; return; }
+        }
+        if (n.t === 'child') { return; }        // another block's words are not this one's
+        for (var k in n) {
+          if (k !== 'a' && Object.prototype.hasOwnProperty.call(n, k) && n[k] && typeof n[k] === 'object') {
+            walk(n[k], (n.t && !NOT_EL[n.t] && n.i !== undefined) ? n.i : el);
+          }
+        }
+      })(api.template && api.template.roots, null);
+      if (at !== null && api.host && api.host.querySelectorAll) {
+        var els = api.host.querySelectorAll('[data-dc-tpl="' + at + '"]');
+        for (var i = 0; i < els.length; i += 1) {
+          var up = els[i].parentNode;
+          while (up && !up.__mrbKs4) { up = up.parentNode; }
+          if (up === api.host) { var t = txt(els[i]); if (t) { return t; } }
+        }
+      }
+      if (!parts || value == null || value === '') { return value || ''; }
+      return parts.map(function (x) { return typeof x === 'string' ? x : String(value); }).join('').replace(/\s+/g, ' ').trim();
+    }
     function optText(o) { return o && o.text != null ? String(o.text) : null; }
     function rightOpt(opts) {
       for (var i = 0; i < (opts || []).length; i += 1) { if (opts[i] && opts[i].correct) { return opts[i]; } }
@@ -1827,7 +1865,9 @@ try {
         if (!rootLevel(api) || prev.pick != null || s.pick == null) { return; }
         var p = api.logic.props || {}, o = (p.options || [])[s.pick] || {};
         var d = base('start');
-        d.kind = 'choice'; d.question_text = p.question || '';
+        // The line on screen is "If you had to guess, " + `question`: the
+        // lead is the template's, not the prop's (shownLine).
+        d.kind = 'choice'; d.question_text = shownLine(api, 'question', p.question || '');
         d.answer = optText(o); d.correct_answer = optText(rightOpt(p.options));
         d.is_correct = !!o.correct;
         post(d);
