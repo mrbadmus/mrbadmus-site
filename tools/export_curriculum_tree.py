@@ -252,6 +252,27 @@ def serialise(tree):
 
 INDEX_NAME = os.path.join("consumer", "curriculum-index.json")
 
+# ── where Year 11 opens, pinned for the B2C index (Mide, 13 Oct 2026) ──
+#
+# (pathway, tier, subject) -> the topic Year 11 opens with. A block named here
+# takes its year split from this table instead of `ks4_seed_sow.split_index`.
+#
+# The picker's "taught in Year N" has to agree with the child's own plan, and
+# that plan is the families' `scheme_of_work_entries` rows, seeded before the
+# KS4 route move. The move grew Combined Higher physics from 53 subtopics to 58.
+# At 53 the halfway cut was a tie between the boundaries either side of Atomic
+# Structure, and ties go to the earlier boundary, so Atomic Structure was Year 11.
+# At 58 it is not a tie, and the cut moves Atomic Structure to Year 10, a year
+# the database plan does not teach it in. Mide ruled that the index takes the
+# route move's eight subtopics and nothing else, with Atomic Structure staying
+# in Year 11.
+#
+# ⚠️ This pins the INDEX only. `ks4_seed_sow` still cuts where it cuts, so a
+# school scheme re-seeded from it is not ruled on here.
+B2C_YEAR11_OPENS = {
+    ("combined", "higher", "physics"): "atomic-structure",
+}
+
 
 def build_index(tree=None):
     import ks4_seed_sow as sow
@@ -266,8 +287,18 @@ def build_index(tree=None):
             key = pathway[0] + tier[0]
             for subject in SUBJECTS:
                 rows, omitted = sow.build_block(pathway, tier, subject)
+                order = sow.PATHWAY_TOPIC_MAP[(pathway, tier)][subject]
+                opens = B2C_YEAR11_OPENS.get((pathway, tier, subject))
+                if opens is not None and opens not in order:
+                    raise SystemExit(
+                        "export_curriculum_tree: B2C_YEAR11_OPENS pins %s/%s "
+                        "%s Year 11 to open at %r, which that block does not "
+                        "teach." % (pathway, tier, subject, opens))
                 for r in rows + omitted:
-                    years.setdefault((subject, r["subtopic"]), {})[key] = r["year_group"]
+                    year = r["year_group"]
+                    if opens is not None:
+                        year = 11 if order.index(r["topic_id"]) >= order.index(opens) else 10
+                    years.setdefault((subject, r["subtopic"]), {})[key] = year
 
     import ks3_data
     unit_year = {u["code"]: u["typical_year"] for u in ks3_data.build_units()}
