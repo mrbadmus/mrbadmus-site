@@ -462,10 +462,20 @@ window.MrBadmusStudentData = (function () {
        `'mcq_set'` and the request shape below is identical to main's, plus
        one harmless extra column. No retry, because `quiz_type` cannot 42703
        — it is exactly as safe to name as `due_at`. */
+    /* ⊕ CATCH-UP (14 Oct 2026) — `select('*')`, DELIBERATELY, AND NOT A
+       SECOND PROBE. A catch-up is an `assignments` row carrying
+       `recipient_ids uuid[]` (NULL = the whole class). That column exists on
+       TEST and NOT on production yet, so it cannot be NAMED here — naming it
+       would 42703 the whole class page on production, which is precisely the
+       rule the paragraph above records. `*` returns it when the column exists
+       and simply does not when it does not: no probe, no retry, no extra
+       request, and a production page is request-for-request what it was.
+       The row is read field by field below, so the wider payload reaches
+       nothing else. `scope_kind` / `scope_ref` (the lesson, for a catch-up)
+       have existed since MRB-335 and arrive the same way. */
     const assignmentsPromise = settle(sb
       .from('assignments')
-      .select('id, title, subject_id, due_at, release_at, deleted_at, ' +
-              'quiz_type, subject:subject_id ( name )')
+      .select('*, subject:subject_id ( name )')
       .eq('class_id', classId)
       .is('deleted_at', null));
 
@@ -626,7 +636,16 @@ window.MrBadmusStudentData = (function () {
     }
 
     // 5. Compute viewer stats.
-    const assignments = assignmentsRes.data || [];
+    /* ⊕ CATCH-UP — the audience rule, `applies(row, pupil)`. RLS already hides
+       another pupil's catch-up from a pupil's own read; this is the same rule
+       for the readers RLS does not narrow (a teacher or admin viewing a pupil's
+       class page), so the page never shows one pupil another's catch-up. */
+    function isCatchUpRow(a) {
+      return Array.isArray(a.recipient_ids) && a.recipient_ids.length > 0;
+    }
+    const assignments = (assignmentsRes.data || []).filter(function (a) {
+      return !isCatchUpRow(a) || a.recipient_ids.indexOf(viewingStudentId) >= 0;
+    });
 
     /* ⊕ MRB-351 landing — `kind` DERIVED, never selected. See the comment on
        `assignmentsPromise` above. On production `quiz_type` is never
@@ -751,6 +770,11 @@ window.MrBadmusStudentData = (function () {
         // Both DERIVED from `quiz_type`, never selected — see above.
         kind: kindOf(a),
         flashcard_mode: flashcardModeOf(a),
+        // ⊕ CATCH-UP — named pupils only; `catch_up` is the one boolean the
+        // page reads, `scope_*` is the lesson (see `assignmentsPromise`).
+        catch_up: isCatchUpRow(a),
+        scope_kind: a.scope_kind || null,
+        scope_ref: a.scope_ref || null,
       };
 
       if (isSubmitted) {
