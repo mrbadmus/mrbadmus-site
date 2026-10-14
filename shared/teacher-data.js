@@ -221,6 +221,47 @@ window.MrBadmusTeacherData = (function () {
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
   }
 
+  /* ═══ ⊕ CATCH-UP (14 Oct 2026, docs/catch-up/PLAN.md §1) ═══════════════
+     A catch-up is an `assignments` row with `recipient_ids` set: work for
+     NAMED pupils of a class. NULL means the whole class, which is every row
+     that existed before the feature.
+
+     ⚠️ `recipient_ids` IS NOT ON PRODUCTION until Mide says so, and
+     PostgREST 400s a whole select that names a missing column. So the
+     column is never named in a read until `recipientIdsSupported` has
+     cleared it. Absent column ⇒ nothing is a catch-up and every read is
+     byte-for-byte the one it was before. A definite "does not exist"
+     (42703 / PGRST204) is cached (memory, and sessionStorage for ten
+     minutes so a page load does not pay a 400); anything else re-probes. */
+  const RI_KEY = 'mrb-ri-cap:v1';
+  const RI_NO_TTL_MS = 10 * 60 * 1000;
+  let _recipientCols = null;
+  async function recipientIdsSupported(sb) {
+    if (_recipientCols !== null) return _recipientCols;
+    try {
+      const at = Number(sessionStorage.getItem(RI_KEY));
+      if (at > 0 && (Date.now() - at) < RI_NO_TTL_MS) { _recipientCols = false; return false; }
+    } catch (e) { /* private window: probe */ }
+    try {
+      const r = await sb.from('assignments').select('recipient_ids').limit(0);
+      if (!r.error) { _recipientCols = true; return true; }
+      if (r.error.code === '42703' || r.error.code === 'PGRST204') {
+        _recipientCols = false;
+        try { sessionStorage.setItem(RI_KEY, String(Date.now())); } catch (e) { /* ok */ }
+        return false;
+      }
+      return false;
+    } catch (e) { return false; }
+  }
+  /* The ONE definition of "is a catch-up" and "does this row apply to this
+     pupil" on the teacher side. Everything below calls these two. */
+  function isCatchUp(row) {
+    return !!row && Array.isArray(row.recipient_ids) && row.recipient_ids.length > 0;
+  }
+  function catchUpApplies(row, pupilId) {
+    return !row || !row.recipient_ids || row.recipient_ids.indexOf(pupilId) > -1;
+  }
+
   // Compute the current assignment-week window for a class, given the
   // class's assignment_day_of_week (postgres dow: 0=Sun … 6=Sat). NULL
   // means "not configured" — fall back to Monday (1).
@@ -339,6 +380,7 @@ window.MrBadmusTeacherData = (function () {
 
     try {
       // Stage A — student count + assignment ids. Independent, parallel.
+      const riCols = (await recipientIdsSupported(sb)) ? ', recipient_ids' : '';
       const [studentsRes, assignmentsRes] = await Promise.all([
         sb.from('class_members')
           .select('*', { count: 'exact', head: true })
@@ -346,7 +388,7 @@ window.MrBadmusTeacherData = (function () {
           .is('left_at', null)
           .is('deleted_at', null),
         sb.from('assignments')
-          .select('id')
+          .select('id' + riCols)
           .eq('class_id', classId)
           .is('deleted_at', null),
       ]);
@@ -355,7 +397,10 @@ window.MrBadmusTeacherData = (function () {
       if (assignmentsRes.error) throw assignmentsRes.error;
 
       const student_count = studentsRes.count || 0;
-      const assignmentIds = (assignmentsRes.data || []).map(function (r) { return r.id; });
+      /* ⊕ Catch-up — split out at the seam: not a class assignment. */
+      const assignmentIds = (assignmentsRes.data || [])
+        .filter(function (r) { return !isCatchUp(r); })
+        .map(function (r) { return r.id; });
       const assignment_count = assignmentIds.length;
 
       // No assignments → no submissions to fetch, no completion to compute.
@@ -1027,6 +1072,7 @@ window.MrBadmusTeacherData = (function () {
     //     drives assignment stats.
     // Q3: assignments — used directly for the assignments list AND
     //     (after extracting ids) as the IN-filter for Q4.
+    const riColsD = (await recipientIdsSupported(sb)) ? ', recipient_ids' : '';
     const [q1, q2, q3] = await Promise.all([
       sb.from('class_teachers')
         .select(
@@ -1047,7 +1093,7 @@ window.MrBadmusTeacherData = (function () {
         .is('deleted_at', null),
       sb.from('assignments')
         .select(
-          'id, title, due_at, release_at, source, set_by, subject_id, ' +
+          'id, title, due_at, release_at, source, set_by, subject_id' + riColsD + ', ' +
           'subject:subject_id ( id, name )'
         )
         .eq('class_id', classId)
@@ -1107,7 +1153,8 @@ window.MrBadmusTeacherData = (function () {
       return m.left_at == null;
     });
 
-    const assignments = (q3.data || []);
+    /* ⊕ Catch-up — split out at the seam; nothing below sees one. */
+    const assignments = (q3.data || []).filter(function (a) { return !isCatchUp(a); });
     const assignmentIds = assignments.map(function (a) { return a.id; });
 
     // ── Stage B — Q4: submissions (only if there are assignments) ────
@@ -1391,6 +1438,7 @@ window.MrBadmusTeacherData = (function () {
       throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
     }
 
+    const riColsS = (await recipientIdsSupported(sb)) ? ', recipient_ids' : '';
     // ── Stage A — four parallel queries ──────────────────────────────
     // Q1: class_teachers (driver). Same shape as loadClassDetail; gives
     //     us the class + teacher-subject rows for derivePill.
@@ -1416,7 +1464,7 @@ window.MrBadmusTeacherData = (function () {
         .is('deleted_at', null),
       sb.from('assignments')
         .select(
-          'id, title, due_at, release_at, source, set_by, subject_id, ' +
+          'id, title, due_at, release_at, source, set_by, subject_id' + riColsS + ', ' +
           'subject:subject_id ( id, name )'
         )
         .eq('class_id', classId)
@@ -1511,7 +1559,9 @@ window.MrBadmusTeacherData = (function () {
     }
 
     const klass = teacherRows[0].class;
-    const assignments = q3.data || [];
+    /* ⊕ Catch-up — this pupil's own catch-ups stay (labelled in the history,
+       left out of the stats); one set for somebody else is not theirs. */
+    const assignments = (q3.data || []).filter(function (a) { return catchUpApplies(a, studentId); });
     const assignmentIds = assignments.map(function (a) { return a.id; });
 
     // ── Stage B — Q5: this student's submissions (skip round-trip if
@@ -1572,6 +1622,7 @@ window.MrBadmusTeacherData = (function () {
         max_score: sub.max_score,
         score_pct: pct,
         on_time: on_time,
+        catch_up: isCatchUp(a),
       });
     });
     // Sort submitted_at DESC. (No NULLS LAST tier: nulls already filtered above.)
@@ -1588,6 +1639,7 @@ window.MrBadmusTeacherData = (function () {
     let total_max = 0;
     let last_active_at = null;
     submission_history.forEach(function (r) {
+      if (r.catch_up) return;       // ⊕ Catch-up: shown in the history, not in the stats
       submissions_completed += 1;
       if (r.on_time === true) on_time_count += 1;
       if (r.score != null && r.max_score != null && r.max_score > 0) {
@@ -2041,8 +2093,9 @@ window.MrBadmusTeacherData = (function () {
     }
 
     // ── Stage A — three parallel reads, each chunked over the id list ──
-    let links, memberRows, assignmentRows;
+    let links, memberRows, assignmentRows, catchUpRows = [];
     try {
+      const riCols = (await recipientIdsSupported(sb)) ? ', recipient_ids' : '';
       const [a, b, c] = await Promise.all([
         inChunks(ids, async function (chunk) {
           const r = await sb.from('class_teachers')
@@ -2130,7 +2183,7 @@ window.MrBadmusTeacherData = (function () {
               'id, class_id, title, due_at, release_at, source, set_by, ' +
               'set_tier, scope_kind, scope_ref, set_subject:subject, paper, ' +
               'quiz_type, teacher_note, ' +
-              'created_at, academic_week, subject_id, ' +
+              'created_at, academic_week, subject_id' + riCols + ', ' +
               'subject:subject_id ( id, name )'
             )
             .in('class_id', chunk)
@@ -2149,7 +2202,7 @@ window.MrBadmusTeacherData = (function () {
               .select(
                 'id, class_id, title, due_at, release_at, source, set_by, ' +
                 'set_tier, scope_kind, scope_ref, set_subject:subject, paper, ' +
-                'quiz_type, created_at, academic_week, subject_id, ' +
+                'quiz_type, created_at, academic_week, subject_id' + riCols + ', ' +
                 'subject:subject_id ( id, name )'
               )
               .in('class_id', chunk)
@@ -2161,6 +2214,15 @@ window.MrBadmusTeacherData = (function () {
         }),
       ]);
       links = a; memberRows = b; assignmentRows = c;
+      /* ⊕ CATCH-UP SPLIT, AT THE LOAD SEAM. `assignmentRows` is what Stage B,
+         the flashcard reads, the per-class assembly and every figure
+         `teacher-live.js` derives all start from, so taking the catch-ups out
+         HERE means no completion, mean, matrix, roster, grid, digest or
+         insight can count one. They are kept, whole, in `catchUpRows` and
+         drawn only by the week card. The SQL twin is
+         `teacher_class_rollup_v2`'s `AND a.recipient_ids IS NULL`. */
+      catchUpRows = assignmentRows.filter(isCatchUp);
+      assignmentRows = assignmentRows.filter(function (r) { return !isCatchUp(r); });
     } catch (err) {
       const stage = err && err.__stage ? err.__stage : 'class_teachers';
       const e = new Error('[teacher-data] ' + stage + ' query failed: ' + (err && err.message));
@@ -2310,6 +2372,31 @@ window.MrBadmusTeacherData = (function () {
         e.code = 'query_failed_submissions';
         e.cause = err;
         throw e;
+      }
+    }
+
+    /* ⊕ Catch-up — the named pupils' results, read on their own and kept OUT
+       of `submissionRows` (which every aggregate derives from). One read,
+       and none at all on a class with no catch-up — which is every class
+       until a teacher sets one, and every class on a project without the
+       column. Failure degrades to "no results yet", never to a thrown load. */
+    const catchUpScoped = catchUpRows.filter(function (a) {
+      return subsScope === null || subsScope.has(a.class_id);
+    });
+    let catchUpSubs = [];
+    if (catchUpScoped.length > 0) {
+      try {
+        catchUpSubs = await inChunks(catchUpScoped.map(function (a) { return a.id; }), async function (chunk) {
+          const r = await sb.from('assignment_submissions')
+            .select('id, assignment_id, student_id, score, max_score, ' +
+                    'submitted_at, completed_at, started_at, status, attempts, attempt_no')
+            .in('assignment_id', chunk)
+            .is('deleted_at', null);
+          if (r.error) throw r.error;
+          return r.data || [];
+        });
+      } catch (err) {
+        console.error('[teacher-data] catch-up submissions query failed (soft-fail: results read as not started)', err);
       }
     }
 
@@ -2528,6 +2615,32 @@ window.MrBadmusTeacherData = (function () {
       submissionsByClass.get(cid).push(sub);
     });
 
+    /* ⊕ Catch-up — per class, the catch-up rows with each named pupil's
+       first-attempt result. Never merged into `assignments`/`submissions`. */
+    const catchUpFirst = pickFirstAttempts(catchUpSubs);
+    const catchUpsByClass = new Map();
+    catchUpRows.forEach(function (a) {
+      if (!catchUpsByClass.has(a.class_id)) catchUpsByClass.set(a.class_id, []);
+      const results = {};
+      (a.recipient_ids || []).forEach(function (pid) {
+        const sub = catchUpFirst.get(a.id + ':' + pid);
+        results[pid] = sub ? {
+          status: sub.status || null,
+          score: sub.score, max_score: sub.max_score,
+          completed_at: sub.completed_at || null,
+          submitted_at: sub.submitted_at || null,
+          started_at: sub.started_at || null,
+        } : null;
+      });
+      catchUpsByClass.get(a.class_id).push({
+        id: a.id, title: a.title, due_at: a.due_at, release_at: a.release_at,
+        created_at: a.created_at, academic_week: a.academic_week,
+        set_tier: a.set_tier, scope_kind: a.scope_kind, scope_ref: a.scope_ref,
+        recipient_ids: a.recipient_ids.slice(),
+        results: results,
+      });
+    });
+
     const out = {};
     byClassId.forEach(function (entry, id) {
       const klass = entry.klass;
@@ -2550,6 +2663,8 @@ window.MrBadmusTeacherData = (function () {
         departed_count: departedByClass.get(id) || 0,
         assignments: assignmentsByClass.get(id) || [],
         submissions: submissionsByClass.get(id) || [],
+        // ⊕ Catch-up — kept apart from both lists above, on purpose.
+        catch_ups: catchUpsByClass.get(id) || [],
         // ⊕ MRB-351 landing — per-pupil MAX(flashcard_sessions.last_seen_at),
         // scoped to this class's own released flashcard assignments. `{}`
         // for a class with no flashcard work (the common case today);
@@ -3828,6 +3943,9 @@ window.MrBadmusTeacherData = (function () {
     // MRB-287 — the redesigned dashboard's two reads. Additive: nothing
     // above changed, and no existing caller sees a difference.
     loadClassMatrices,
+    // ⊕ Catch-up — the one definition, for every teacher-side reader.
+    isCatchUp,
+    catchUpApplies,
     // ⊕ MRB-348 WS-2 — the server-side aggregate behind the summary screens.
     loadClassSummaries,
     loadCompleteFor,

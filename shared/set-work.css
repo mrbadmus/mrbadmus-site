@@ -823,3 +823,16 @@ html[data-theme="dark"] .sw-toast { color: #16120D; }
   .sw-dl-menu { min-width: 156px; }
   .sw-scope + .sw-scope { margin-top: 16px; padding-top: 14px; }
 }
+
+/* ── ⊕ Catch-up (14 Oct 2026) ────────────────────────────────────────────
+   The catch-up type shows its own blocks (`sw-cuonly`) and hides the ones a
+   flat lesson search makes redundant (`sw-nocu`: subject, paper, the tree).
+   !important because `.sw-chips`/`.sw-tree` set display themselves and these
+   must win whatever order the sheet's rules load in. */
+.sw-cuonly { display: none !important; }
+.sw-overlay[data-sw-type="catchup"] .sw-cuonly:not([hidden]) { display: block !important; }
+.sw-overlay[data-sw-type="catchup"] .sw-tree.sw-cuonly:not([hidden]) { display: flex !important; }
+.sw-overlay[data-sw-type="catchup"] .sw-chips.sw-cuonly:not([hidden]) { display: flex !important; }
+.sw-overlay[data-sw-type="catchup"] .sw-nocu { display: none !important; }
+.sw-tree[hidden], .sw-row[hidden] { display: none !important; }
+[data-sw="lesson-search"] { margin-top: 12px; }

@@ -4735,6 +4735,24 @@ function MRB_WEEK_SCOPE(papers, weeks, wi, mx){
     papers:papers||[], released:[], live:[], closed:[],
     scheduled:[], reteach:null};}
 
+/* ⊕ CATCH-UP (14 Oct 2026) — the catch-ups set in the selected week, from
+   the page's own `CATCHUPS` map. DEFENSIVE where MRB_PICK is not: a catch-up
+   is an addition, a fixture or an older payload without the key means "none",
+   never a thrown error and a blank class page. */
+function MRB_CATCH_UPS(classId, weeks, wi){
+  var d=window.__MRB_DATA__, L=window.MrBadmusTeacherLive;
+  var list=(d&&d.CATCHUPS&&d.CATCHUPS[classId])||[];
+  if(!list.length||!L||!L.catchUpsForWeek){return [];}
+  return L.catchUpsForWeek(list, weeks||[], wi||0);}
+
+/* ⊕ CATCH-UP — one pupil's own, for the student screen. [] when the pupil is
+   unknown or the key is absent. */
+function MRB_STUDENT_CATCH_UPS(classId, studentId){
+  var d=window.__MRB_DATA__, L=window.MrBadmusTeacherLive;
+  var list=(d&&d.CATCHUPS&&d.CATCHUPS[classId])||[];
+  if(!studentId||!list.length||!L||!L.catchUpsForPupil){return [];}
+  return L.catchUpsForPupil(list, studentId);}
+
 /* "Opens Mon 5 Oct" / "starts Mon 5 Oct" — a not-started week's homework
    card, off a scheduled paper's own `release_at` where there is one and the
    selected week's own Monday otherwise (`monYmd`, from `MRB_WEEK_SCOPE`'s
