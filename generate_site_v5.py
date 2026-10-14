@@ -1148,41 +1148,23 @@ def make_landing():
                    '\n  <script src="/shared/k4-facts.js" defer></script>')
 
 
-# ── The rotating science-fact panel (MRB-342.2 Part 4) ──────────────────
+# ── The science-fact panel (MRB-342.2 Part 4; stilled 12 Oct 2026) ───────
 #
 # Sits beside the hero headline on desktop, under the lede on phone —
 # purely from `.k4-band`'s own `flex-wrap: wrap` in shared/ks4-chrome.css,
 # no CSS `order` and no DOM reordering. The DOM stays headline, lede,
 # facts, so the accessible reading order is identical at every breakpoint.
-# Content is `shared/science-facts.js` (~80 vetted facts);
-# the crossfade and shuffle logic is `shared/k4-facts.js`, both stamped
-# like every other shared/ asset by the cache-bust pass below.
+# Content is `shared/science-facts.js` (~80 vetted facts); the page-load
+# pick is `shared/k4-facts.js`, both stamped like every other shared/
+# asset by the cache-bust pass below.
 #
-# `k4-dot`, `k4-eyebrow` and the mono kicker idiom are lifted from the
-# door cards a few lines above, and the absolutely-positioned crossfade
-# stage is the SAME technique the "Top stars" rail already uses
-# (`.k4-stars-slides` / `.k4-stars-slide.k4-on` in shared/ks4-chrome.css) —
-# reused rather than reinvented, so this is one more instance of a pattern
-# already reviewed, not a new one.
-#
-# `aria-hidden="true"` on the whole rotating stage plus a single static
-# fact rendered for assistive tech (visually hidden, chosen once and never
-# rewritten) — see the CSS comment on `.k4-facts-sr` — is the accessible
-# contract: a screen-reader user is never interrupted by a fact changing,
-# and never told about a rotation happening only for sighted visitors.
-#
-# Card redesign 25 Sep 2026: `.k4-facts-stack-1/-2` are the two decorative
-# offset rects behind the card (a dealt-deck look), from Claude Design's
-# "Science Fact Card" delivery (repo root, `Science Fact Card.html`) — the
-# stacking, the bordered card, the pulsing subject dot and the word-reveal
-# text are shared/ks4-chrome.css + shared/k4-facts.js. Nothing else about
-# this panel (data source, shuffle-bag rotation, pause-on-hover/focus,
-# reduced-motion contract) changed.
+# One fact per page load and then still: no rotation, no animation (Mide,
+# 12 Oct 2026 — back to the quiet pre-redesign card). `aria-hidden="true"`
+# on the visible stage plus a visually hidden paragraph carrying the same
+# fact is the accessible contract: a screen reader reads it once.
 def k4_facts_panel():
     return """
     <aside class="k4-band-side k4-facts" id="k4-facts" aria-label="A science fact">
-      <span class="k4-facts-stack k4-facts-stack-1" aria-hidden="true"></span>
-      <span class="k4-facts-stack k4-facts-stack-2" aria-hidden="true"></span>
       <div class="k4-facts-stage" id="k4-facts-stage" aria-hidden="true"></div>
       <p class="k4-facts-sr" id="k4-facts-sr"></p>
     </aside>"""
