@@ -39,7 +39,12 @@ function makeContext() {
     requestAnimationFrame: () => 0, cancelAnimationFrame: noop,
     matchMedia: () => ({ matches: false, addEventListener: noop, removeEventListener: noop }),
     document: { getElementById: () => null, querySelector: () => null, querySelectorAll: () => [],
-                documentElement: { getAttribute: () => null }, addEventListener: noop },
+                documentElement: { getAttribute: () => null,
+                                   classList: { add: noop, remove: noop, toggle: noop, contains: () => false } },
+                addEventListener: noop, removeEventListener: noop },
+    // page-level listeners in the lesson script (14 Oct 2026: build_ks4's
+    // KS4_RAIL_JS, the phone strip that hides on scroll) — wired, never fired
+    addEventListener: noop, removeEventListener: noop, pageYOffset: 0, scrollY: 0,
     localStorage: { getItem: () => null, setItem: noop },
     IntersectionObserver: function () { return { observe: noop, disconnect: noop }; },
     performance: { now: () => 0 },
