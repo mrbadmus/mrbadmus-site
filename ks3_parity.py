@@ -6512,8 +6512,12 @@ CONTRAST = [
          fg="a.mrb-topbar__title", bg=".ks3-nav", need=4.5),
     dict(name="top bar parent link on a unit index's bar", on=UNIT,
          fg="a.mrb-topbar__title", bg=".ks3-nav", need=4.5),
-    dict(name="top bar Sign in on the bar", on=LESSON,
-         fg=".mrb-topbar__signin", bg=".ks3-nav", need=4.5),
+    # ⊕ FRONT DOOR (12 Oct 2026) — WAS ".mrb-topbar__signin on .ks3-nav" (a
+    # text pill drawn by topbar.js). The signed-out bar now carries the shared
+    # home button, "Sign in", a FILLED button: white on its own #A63C12 ground,
+    # so the pair is the button's text against the button's own fill.
+    dict(name="top bar home button (Sign in) on its own fill", on=LESSON,
+         fg=".mrb-homebtn", bg=".mrb-homebtn", need=4.5),
     dict(name="nav brand wordmark on page ground", on=LESSON,
          # ⊕ one-mark ruling 13 Sep 2026: `.ks3-brand` → the one lockup.
          fg=".mrb-brand__word", bg=".ks3-nav", need=4.5),

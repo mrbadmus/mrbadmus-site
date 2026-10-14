@@ -141,6 +141,13 @@
            reason it is stored at all. */
         question_text: r.question || "",
         rung: r.key,
+        /* ⊕ Parent truth (11 Oct 2026) — the question's STABLE id, for every
+           pupil. `quiz_question_attempts.question_ref` exists on production
+           and has been NULL on every ladder row; `<slug>#<rung>` is the
+           ks3_ladder_questions id format, so the row now names the authored
+           question it answers rather than leaving it to be re-derived from
+           (subtopic, rung). It only fills a column that was empty. */
+        question_ref: slug + "#" + r.key,
         selected_answer: r.selectedText || "",
         correct_answer: r.correctText || "",
         /* ⊕ MRB-270 phase 5 — the letter, beside the text rather than glued
@@ -174,6 +181,19 @@
       };
     });
 
+    var body = {
+      subject: discipline, topic: unit, subtopic: slug,
+      score: got, max_score: total,
+      attempts: attempts
+    };
+    /* ⊕ Parent truth (11 Oct 2026) — a consumer CHILD's post also names this
+       page load's visit, so the server can tie the score to the per-answer
+       rows the same visit sent (/api/consumer/child/answer). The id exists
+       only on a child session (mrbadmus.v2.js sets MrBadmusAnswerCapture for
+       no one else), so a school pupil's body is exactly what it was. */
+    var cap = window.MrBadmusAnswerCapture;
+    if (cap && cap.visitId) { body.visit_id = cap.visitId; }
+
     try {
       fetch(cfg.BACKEND_URL + "/api/quiz-score", {
         method: "POST",
@@ -183,11 +203,7 @@
         // when it is most needed.
         keepalive: true,
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-        body: JSON.stringify({
-          subject: discipline, topic: unit, subtopic: slug,
-          score: got, max_score: total,
-          attempts: attempts
-        })
+        body: JSON.stringify(body)
       }).catch(function () { /* best-effort — the ladder itself never waits on this */ });
     } catch (e) { /* private mode, or fetch unavailable — degrade silently */ }
   }
@@ -489,6 +505,37 @@
       if (secs < 0) { secs = 0; }
       rec.timeSpent = secs > TIME_CAP_S ? TIME_CAP_S : secs;
       lastResolvedAt = now;
+    }
+
+    /* ⊕ Parent truth (11 Oct 2026) — EVERY ANSWER, AS IT IS GIVEN, for a
+       consumer child only. A parent sees what their child actually did, and
+       the one /api/quiz-score row per finished ladder cannot show that: it is
+       sent once, at the end, with only the LAST answer to each rung, and
+       never for a ladder left half-done.
+
+       So each answer is announced the moment this file already knows it — a
+       marked rung's click (including one reopened by "Retry my misses"), and
+       a written rung's "Complete" whenever the writing differs from what was
+       last sent — as a `mrb:answer` event on `document`. mrbadmus.v2.js holds
+       the one listener and the one network call, and installs both only for
+       a child session; it is also what sets `MrBadmusAnswerCapture`. With no
+       capture on the page (every school pupil, every signed-out visitor)
+       this returns before building anything: no event, no object, no change.
+
+       Time is stamped by the sender, on ONE clock for every answer on the
+       page (seconds since the previous answer of any kind, the first since
+       page load), so it is not computed here; stampTime still times a rung's
+       first resolution for the quiz-score row (MRB-262), unchanged. */
+    function answerOut(rec, d) {
+      if (!window.MrBadmusAnswerCapture) { return; }
+      d.key_stage = "KS3";
+      d.lesson_slug = slug;
+      d.question_id = slug + "#" + rec.key;
+      d.rung = rec.key;
+      d.question_text = rec.question || "";
+      try {
+        document.dispatchEvent(new CustomEvent("mrb:answer", { detail: d }));
+      } catch (e) { /* an old browser — the lesson never depends on this */ }
     }
     /* MRB-257 (C3) — the score and note lines describe THIS sitting. A
        returning student's self-marked work is restored on load (wireSelf
@@ -806,6 +853,13 @@
               rec.correctLetter = right.letter;
             }
           });
+          if (window.MrBadmusAnswerCapture) {               // ⊕ parent truth
+            answerOut(rec, {
+              kind: "choice", answer: chosen.text,
+              correct_answer: rec.correctText || null, is_correct: correct,
+              criteria: null, marks: null
+            });
+          }
           each(options, function (b) {
             b.disabled = true;
             var mark = b.querySelector(".ks3-opt-mark");
@@ -998,6 +1052,19 @@
             var first = !rec.shown;
             show();
             if (first) { stampTime(rec); }
+            /* ⊕ Parent truth — each "Complete" is a submission of the
+               writing, so a child's answer is sent when it is committed and
+               again when they rewrite it; the same words twice are one
+               answer. The server marks it against the rung's scheme
+               (`marks: null` — it knows them). */
+            var said = answer ? (answer.value || "").trim() : "";
+            if (window.MrBadmusAnswerCapture && said !== rec.lastSaid) {
+              rec.lastSaid = said;
+              answerOut(rec, {
+                kind: "written", answer: said, correct_answer: null,
+                is_correct: null, criteria: criteria.slice(), marks: null
+              });
+            }
           }
           saveWork();
           refresh(true);
@@ -1042,7 +1109,12 @@
         }
         // Already-seen criteria are not a leak; hiding a ticked box would
         // be a lie about the state.
-        if (saved.shown || anyTicked) { show(); } else { collapse(); }
+        if (saved.shown || anyTicked) {
+          show();
+          // ⊕ Parent truth — writing committed on an earlier visit is not a
+          // new answer just because the page was opened again.
+          rec.lastSaid = answer ? (answer.value || "").trim() : "";
+        } else { collapse(); }
       } else {
         collapse();
       }
@@ -37699,7 +37771,10 @@
 
     function measure() {
       var navH = nav.getBoundingClientRect().height;
-      var total = navH + (sticks(bar) ? bar.getBoundingClientRect().height : 0);
+      // On a phone the header is `position: static` and scrolls away, so it no
+      // longer counts towards what an anchor has to clear (Part 4, 12 Oct).
+      var total = (sticks(nav) ? navH : 0) +
+                  (sticks(bar) ? bar.getBoundingClientRect().height : 0);
       root.style.setProperty("--ks3-nav-h", navH.toFixed(2) + "px");
       root.style.setProperty("--ks3-sticky-h", total.toFixed(2) + "px");
     }
@@ -37770,8 +37845,52 @@
     each(boxes, function (box) { ro.observe(box); });
   }
 
+  /* ⊕ Front door run, 12 Oct 2026 (Part 4) — HIDE THE PHONE STRIP WHILE
+     READING DOWN, BRING IT BACK ON A SMALL SCROLL UP.
+
+     Up to 700px the progress strip is flush at the top and would otherwise sit
+     over the lesson text for the whole page. Scrolling down more than 8px past
+     the first 80px adds `.is-away` (the stylesheet slides it off with a
+     transform, so nothing reflows); any scroll up of 6px or more removes it,
+     as does being near the top or keyboard focus landing inside the strip.
+     The stylesheet owns whether it animates (no transition under
+     prefers-reduced-motion: the strip just appears or disappears) and owns the
+     700px limit: above it `.is-away` has no rule, so desktop is unchanged even
+     though this listener still runs. Passive listener, one rAF per frame. */
+  function wireRailAutoHide() {
+    var bar = document.querySelector(".ks3-railbar");
+    if (!bar) { return; }
+    var lastY = window.pageYOffset || 0;
+    var ticking = false;
+
+    function update() {
+      ticking = false;
+      var y = window.pageYOffset || 0;
+      var dy = y - lastY;
+      if (y <= 80) {
+        bar.classList.remove("is-away");
+      } else if (dy > 8) {
+        bar.classList.add("is-away");
+      } else if (dy <= -6) {
+        bar.classList.remove("is-away");
+      } else {
+        return;               // a tiny move: keep the baseline, decide later
+      }
+      lastY = y;
+    }
+
+    window.addEventListener("scroll", function () {
+      if (!ticking) {
+        ticking = true;
+        window.requestAnimationFrame(update);
+      }
+    }, { passive: true });
+    bar.addEventListener("focusin", function () { bar.classList.remove("is-away"); });
+  }
+
   function init() {
     wireStickyHeight();
+    wireRailAutoHide();
     wireFigureCues(document);
     wirePredictions(document);
     wireCriteria(document);

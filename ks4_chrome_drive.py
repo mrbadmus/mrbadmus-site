@@ -234,47 +234,134 @@ def check_no_progress(page, label, signed_in):
                  % (label, "signed-in" if signed_in else "signed-out", claim))
 
 
-# ⊕ B2C polish (9 Oct 2026) — the widest viewport at which the bar's own
-# signed-out Sign In stands down (nav.css / ks4-chrome.css, max-width: 900px).
-BAR_SIGNIN_HIDDEN_MAX = 900
+# ⊕ FRONT DOOR (12 Oct 2026) — THE BAR'S CONTRACT CHANGED, AND SO DID THIS.
+# It used to assert the old cluster: the signed-in name chip ("Anifat"), the
+# bar's own "Sign In" only above 900px (empty at 900px and below), "Sign In /
+# Sign Up" in the drawer's auth row. The public bar is now brand · theme · ONE
+# home button · hamburger at EVERY width, the account lives at the top of the
+# drawer, and the home button says "Sign in" signed out at every width. The
+# assertions below are the new contract and each one still fails if the bar
+# regresses (a chip, a Challenge pill, a search icon, a second row, a sticky
+# phone bar, a small burger):
+#
+#   before                                    after
+#   signed out, slot "" (≤900) / "Sign In"   slot "Sign in" at every width
+#   signed in, slot contains the name         slot is the home label, no name
+#   drawer `#nav-drawer-auth` Sign In/Up      `#nav-drawer-account` Sign in/Sign up
+#                                             signed in: "<name> · <kind>", My
+#                                             profile, Switch account, Sign out
+#   (no assertion on what else is in the bar) NONE of .nav-text-link,
+#                                             .challenge-chip, .nav-icon-link,
+#                                             .nav-class-link, #nav-profile-link,
+#                                             a bell; exactly brand + theme + home
+#                                             + burger
+#   (no assertion on the phone bar)           ≤700px: one row, ≤56px, not sticky;
+#                                             burger a 40px box, ≥44px to the finger
+HOME_LABELS = ("My class", "My classes", "My dashboard", "Today")
+BAR_FORBIDDEN = (".nav-text-link, .challenge-chip, .nav-icon-link, .nav-class-link, "
+                 "#nav-profile-link, [data-mrb-bell], .mrb-topbar__who")
+BAR_PHONE_MAX = 700
+# The signed-in drive has no backend, so the profile read the map makes is
+# answered here: a teacher at a school. The map then resolves kind "staff",
+# whose home button reads "My classes" and whose drawer reads "Anifat · Teacher".
+STUB_PROFILE_JS = r"""(function(){var of=window.fetch;
+function J(b){return Promise.resolve(new Response(JSON.stringify(b),{status:200,headers:{'Content-Type':'application/json'}}));}
+window.fetch=function(u,i){var s=String((u&&u.url)||u);
+if(/\/rest\/v1\/profiles/.test(s))return J([{role:'teacher',first_name:'Anifat',display_name:'Anifat',school_id:'s1'}]);
+if(/\/rest\/v1\/schools/.test(s))return J([{kind:'school'}]);
+if(/\/rest\/v1\/(academic_years|class_members|classes)/.test(s))return J([]);
+return of.apply(this,arguments);};})();"""
+
+
+def check_bar_contract(page, label, width):
+    """Exactly brand + theme + home + burger; and, on a phone, one slim, static row."""
+    m = page.eval(
+        "(function(){"
+        "var bar=document.querySelector('nav.nav, header.mrb-topbar');"
+        "if(!bar)return {nobar:true};"
+        "var forb=bar.querySelectorAll(%s).length;"
+        "var vis=function(e){var r=e.getBoundingClientRect(),cs=getComputedStyle(e);"
+        "return r.width>0&&r.height>0&&cs.visibility!=='hidden'&&cs.display!=='none'};"
+        "var parts={brand:bar.querySelector('.mrb-brand'),theme:bar.querySelector('.mrb-theme-slot'),"
+        "home:bar.querySelector('#nav-auth-area'),burger:bar.querySelector('.nav-burger')};"
+        "var missing=Object.keys(parts).filter(function(k){return !parts[k]});"
+        "var tops=Object.keys(parts).filter(function(k){return parts[k]&&vis(parts[k])}).map(function(k){var r=parts[k].getBoundingClientRect();return r.top+r.height/2});"
+        "var bb=bar.getBoundingClientRect(),cs=getComputedStyle(bar);"
+        "var bg=parts.burger&&parts.burger.getBoundingClientRect();"
+        "var af=parts.burger?getComputedStyle(parts.burger,'::after'):null;"
+        "var tap=bg&&af?bg.width+2*Math.abs(parseFloat(af.top)||0):0;"
+        "var links=Array.prototype.filter.call(bar.querySelectorAll('a[href],button'),function(e){return vis(e)&&!e.closest('.mrb-theme-slot')&&!e.closest('#nav-auth-area')&&!e.matches('.nav-burger')&&!e.closest('.mrb-brand')&&!e.closest('.nav-crumbs')&&!e.matches('.mrb-brand,.mrb-topbar__title')}).map(function(e){return (e.className||e.tagName)+':'+(e.textContent||'').trim().slice(0,20)});"
+        "return {forb:forb,missing:missing,spread:tops.length?Math.max.apply(0,tops)-Math.min.apply(0,tops):0,"
+        "h:bb.height,pos:cs.position,bw:bg&&bg.width,bh:bg&&bg.height,tap:tap,links:links};})()" % json.dumps(BAR_FORBIDDEN))
+    if m.get("nobar"):
+        fail("%s — no public bar on the page" % label)
+        return
+    if m["forb"]:
+        fail("%s — the bar still carries a retired control (3D Studio / Challenge / "
+             "Leaderboard / Search / name chip / bell): %d found" % (label, m["forb"]))
+    if m["missing"]:
+        fail("%s — the bar is missing %s" % (label, ", ".join(m["missing"])))
+    if m["links"]:
+        fail("%s — the bar holds more than brand + theme + home + burger: %s"
+             % (label, m["links"]))
+    if width <= BAR_PHONE_MAX:
+        if m["h"] > 56.5:
+            fail("%s — the phone bar is %.0fpx tall, over the 56px ceiling" % (label, m["h"]))
+        if m["spread"] > 10:
+            fail("%s — the phone bar wraps: its parts sit %.0fpx apart vertically" % (label, m["spread"]))
+        if m["pos"] in ("sticky", "fixed"):
+            fail("%s — the phone bar is %s; it must scroll away" % (label, m["pos"]))
+    elif m["pos"] != "sticky" and "mrb-topbar" not in (page.eval(
+            "(document.querySelector('nav.nav, header.mrb-topbar')||{}).className") or ""):
+        fail("%s — the desktop bar is %s, expected sticky (unchanged)" % (label, m["pos"]))
+    if m["bw"] is not None and (abs(m["bw"] - 40) > 0.6 or abs(m["bh"] - 40) > 0.6):
+        fail("%s — the burger is %.0f×%.0f, expected a 40px box" % (label, m["bw"], m["bh"]))
+    if m["tap"] < 44:
+        fail("%s — the burger's tap area is %.0fpx, under 44" % (label, m["tap"]))
 
 
 def check_auth_chip(page, label, signed_in, has_slot=True, width=None):
-    """The auth state, where shared/nav.js actually puts it.
-
-    Signed OUT, nav.js renders Sign In / Sign Up into the DRAWER
-    (`#nav-drawer-auth`) at every width. ⊕ B2C polish (9 Oct 2026): it also
-    draws Sign In (only) into `#nav-auth-area`, visible above 900px and hidden
-    at 900px and below, so the phone bar is unchanged. Until then the cluster
-    slot was EMPTY signed out (65b8cbf3a, July), and this check asserted
-    exactly that. `innerText` skips a display:none child, so a phone-width
-    read is still "" and a desktop read is "Sign In"."""
+    """The home button and the drawer's account section, where shared/nav.js puts them."""
     if not has_slot:
         return
     got = page.eval(
         "(function(){var a=document.getElementById('nav-auth-area');"
         "return a? a.innerText.replace(/\\s+/g,' ').trim() : null;})()")
-    drawer = page.eval(
-        "(function(){var d=document.getElementById('nav-drawer-auth');"
+    # the drawer is built once nav.js boots; give the map's answer a moment
+    page.eval("new Promise(function(r){setTimeout(r,400)})")
+    acct = page.eval(
+        "(function(){var d=document.getElementById('nav-drawer-account');"
         "return d? d.innerText.replace(/\\s+/g,' ').trim() : null;})()")
     if got is None:
         fail("%s — no #nav-auth-area on the page at all" % label)
         return
     if signed_in:
-        if "Anifat" not in got:
-            fail("%s — signed in, but the cluster chip reads %r" % (label, got))
-        if drawer is not None and "Sign In" in (drawer or ""):
-            fail("%s — signed in, but the drawer still offers Sign In (%r)"
-                 % (label, drawer))
+        for _ in range(10):
+            if got in HOME_LABELS:
+                break
+            page.eval("new Promise(function(r){setTimeout(r,300)})")
+            got = page.eval("(document.getElementById('nav-auth-area')||{}).innerText||''").strip()
+        if got != "My classes":
+            fail("%s — signed in as a teacher, the home button reads %r, expected 'My classes'"
+                 % (label, got))
+        acct = page.eval(
+            "(document.getElementById('nav-drawer-account')||{}).innerText||''")
+        acct = " ".join(acct.split())
+        for want in ("Anifat · Teacher", "My profile", "Switch account", "Sign out"):
+            if want not in acct:
+                fail("%s — signed in, the drawer's account section lacks %r (%r)"
+                     % (label, want, acct))
+        if "Sign in" in acct or "Sign up" in acct:
+            fail("%s — signed in, the drawer still offers Sign in/up (%r)" % (label, acct))
     else:
-        want = ("Sign In" if width is not None and width > BAR_SIGNIN_HIDDEN_MAX
-                else "")
-        if got != want:
-            fail("%s — signed out, the bar's auth slot reads %r, expected %r"
-                 % (label, got, want))
-        if drawer is not None and "Sign In" not in drawer:
-            fail("%s — signed out, but the drawer does not offer Sign In (%r)"
-                 % (label, drawer))
+        if got != "Sign in":
+            fail("%s — signed out, the bar's home button reads %r, expected 'Sign in' "
+                 "at every width" % (label, got))
+        if acct is None or "Sign in" not in acct or "Sign up" not in acct:
+            fail("%s — signed out, the drawer's account section is not Sign in / Sign up (%r)"
+                 % (label, acct))
+    if width is not None:
+        check_bar_contract(page, label, width)
 
 
 def walk_links(page, label, want):
@@ -333,6 +420,7 @@ def main():
                     # `addScriptToEvaluateOnNewDocument` runs before any of
                     # the page's own scripts, on every navigation, which is
                     # exactly the moment a real session would already exist.
+                    page.send("Page.addScriptToEvaluateOnNewDocument", {"source": STUB_PROFILE_JS})
                     page.send("Page.addScriptToEvaluateOnNewDocument", {
                         "source": "try{localStorage.setItem(%s,%s);}catch(e){}"
                                   % (json.dumps(SESSION_KEY),
@@ -355,7 +443,7 @@ def main():
                         # slot at all — asserting one would be asserting that
                         # the estate MRB-301 must not touch had been touched.
                         check_auth_chip(page, "%s @%d" % (label, width),
-                                        signed_in, has_slot=(label != "ks3-entry"),
+                                        signed_in, has_slot=True,
                                         width=width)
                         if width in (WIDTHS[0], 390):
                             page.screenshot(

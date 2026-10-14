@@ -213,8 +213,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/shared/config.js?v=ab7a89ac"></script>
+<!-- Front door (12 Oct 2026): the one map of who goes where — redirectAfterAuth asks it. -->
+<script src="/shared/account.js?v=70302fa6"></script>
+<script src="/shared/class-entry.js?v=8c087f18" defer></script>
 <!-- B2C unit 6: the one username sign-in (childSignIn), shared with /go. -->
-<script src="/consumer/consumer-common.js?v=8ead95e6"></script>
+<script src="/consumer/consumer-common.js?v=098698a0"></script>
 <script src="/shared/username-generator.js?v=6502aa56"></script>
 <script>
   // ── Config sourced from /shared/config.js (prod by default,
@@ -352,7 +355,10 @@
     return path + (q ? '?' + q : '') + hash;
   }
   function childHome() {
-    return carryEnv((window.MrBadmusConfig && window.MrBadmusConfig.CHILD_HOME) || '/consumer/today.html');
+    // The child's home is the map's (account.js reads config.CHILD_HOME).
+    const A = window.MrBadmusAccount;
+    const home = A ? A.describe('child', { childHome: window.MrBadmusConfig && window.MrBadmusConfig.CHILD_HOME }).home : null;
+    return carryEnv(home || (window.MrBadmusConfig && window.MrBadmusConfig.CHILD_HOME) || '/consumer/today.html');
   }
 
   async function signIn() {
@@ -491,58 +497,42 @@
   }
 
   function redirectAfterAuth() {
-    // Where to land after a successful sign-in.
-    // Students with no science_pathway go to /profile-setup (the existing
-    // student-onboarding wizard). Staff (teacher/hod/admin) skip the
-    // student profile-setup gate — they don't have a science_pathway by
-    // design, and profile-setup is a student-shaped form that doesn't
-    // apply to them. Stage 6 (MRB-10) will introduce a teacher-shaped
-    // onboarding flow.
+    /* Where to land after a successful sign-in.
+
+       ⊕ Front door (12 Oct 2026) — THE DECISION LIVES IN shared/account.js.
+       This function used to hold it, branch by branch: child → Today, staff →
+       Today, parent → the family dashboard (bolted on 9 Oct after a parent
+       landed in the student wizard), KS3 pupil → ?return=, GCSE pupil with no
+       pathway or tier → /profile-setup.html. Four other files made the same
+       kind of decision independently and disagreed, which is how a parent got
+       trapped. Now there is one map: this asks it who the person is and where
+       they go, and keeps only what is local to the sign-in page — the
+       ?return= it was given and the `env`/`api` carry.
+
+       Everything the old branches did is preserved by `afterAuthTarget`
+       (account_map_check pins each case): ?return= is honoured for staff, KS3
+       and complete GCSE pupils; a parent and a child ignore it; only a GCSE
+       pupil with an incomplete profile reaches /profile-setup.html; and
+       organisation staff, who the old code sent to the teacher dashboard, go
+       to /org/index.html. A read that FAILED is not "no profile": the person
+       goes where they were headed instead of into the wizard. */
     const returnUrl = new URLSearchParams(window.location.search).get('return') || '/index.html';
     sb.auth.getSession().then(({ data: { session } }) => {
       if (!session) return;
-      // B2C unit 6 — a family child's home is their Today page.
-      if (window.MrBadmusConfig.isChildSession && window.MrBadmusConfig.isChildSession(session)) {
-        window.location.href = childHome();
+      const A = window.MrBadmusAccount;
+      if (!A) {
+        // account.js did not load: a child still goes to Today (the one rule
+        // that needs no read), everyone else where they were headed.
+        const isChild = window.MrBadmusConfig.isChildSession && window.MrBadmusConfig.isChildSession(session);
+        window.location.href = isChild ? childHome() : carryEnv(returnUrl);
         return;
       }
-      sb.from('profiles').select('first_name, science_pathway, tier, role, key_stage').eq('id', session.user.id).single()
-        .then(({ data: p, error }) => {
-          // A real query failure (network blip, RLS error) is NOT the same as
-          // "no profile row". Don't trap the user in the student wizard on a
-          // transient error — send them to where they were headed. PGRST116 is
-          // Supabase's "no rows" code, which we treat as a genuinely new user.
-          if (error && error.code !== 'PGRST116') {
-            window.location.href = carryEnv(returnUrl);
-            return;
-          }
-          const isStaff = p && ['teacher', 'hod', 'admin'].includes(p.role);
-          if (isStaff) {
-            // Honour ?return= if explicitly set, otherwise default to Today
-            // (MRB-325 ruling 1 — Today is the landing surface, not My classes).
-            window.location.href = carryEnv(returnUrl !== '/index.html' ? returnUrl : '/teacher/today.html');
-          } else if (p && p.role === 'parent') {
-            // ⊕ B2C polish (9 Oct 2026). A family parent has no
-            // science_pathway either, and fell through to the STUDENT
-            // profile wizard below. Their home is the family dashboard;
-            // overview.html forwards an unfinished signup on to signup.html
-            // at the step it left (ec659574d). A family CHILD never reaches
-            // here — isChildSession above sends them to Today.
-            window.location.href = carryEnv('/consumer/overview.html');
-          } else if (p && p.key_stage === 'KS3') {
-            // KS3 students legitimately have no science_pathway/tier (DB
-            // constraint blocks them from KS4 fields). Never send them to the
-            // GCSE onboarding wizard — that's the MRB-101 sign-in loop.
-            window.location.href = carryEnv(returnUrl);
-          } else if (!p || !p.science_pathway || !p.tier) {
-            // GCSE student with an incomplete profile (missing pathway OR tier)
-            // finishes onboarding first. Checking both fields closes the gap
-            // where a tier-less profile slipped through to a backend 400.
-            window.location.href = carryEnv('/profile-setup.html');
-          } else {
-            window.location.href = carryEnv(returnUrl);
-          }
-        });
+      // fresh: a profile finished seconds ago must not be answered from the
+      // five-minute cache. The class lookup is left on: a pupil with a class
+      // lands on it (class-entry.js is on this page for exactly that).
+      A.resolve({ session: session, fresh: true }).then((acct) => {
+        window.location.href = carryEnv(A.afterAuthTarget(acct, returnUrl));
+      }, () => { window.location.href = carryEnv(returnUrl); });
     });
   }
 

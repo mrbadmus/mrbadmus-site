@@ -50,6 +50,7 @@
     orgs:    { href: '/parents/organisations.html',  label: 'Organisations' },
     signIn:  { href: '/parents/sign-in.html',        label: 'Sign in' },
     signUp:  { href: '/consumer/signup.html',        label: 'Start free' },
+    dash:    { href: '/consumer/overview.html',      label: 'Dashboard' },
 
     /* ⊕ NOT DESIGN'S. She drew no legal links; a UK consumer subscription
        cannot open beta without terms and a privacy policy reachable from
@@ -114,6 +115,11 @@
       return '<a href="' + attr(key) + '"' + (extra ? ' class="' + extra + '"' : '') +
         (on ? ' aria-current="page"' : '') + '>' + esc(PAGES[key].label) + '</a>';
     }
+    /* ⊕ fixD (13 Oct 2026): a parent already signed in on this browser
+       (C.parentSignedIn — the dashboard's own marker, no SDK, no network)
+       is offered their dashboard, not "Sign in" and "Start free". */
+    var signedIn = C.parentSignedIn();
+    var cta = signedIn ? 'dash' : 'signUp';
     var BURGER = '<svg class="pb-menu-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
       '<path class="pb-menu-open" d="M4 7h16M4 12h16M4 17h16"/>' +
       '<path class="pb-menu-close" d="M6 6l12 12M18 6L6 18"/></svg>';
@@ -131,10 +137,12 @@
         link('how') + link('homeEd') + link('pricing') + link('orgs') +
       '</nav>' +
       '<span style="flex:1"></span>' +
-      '<a class="pb-signin" href="' + attr('signIn') + '" style="font-weight:700;font-size:16px;color:var(--ks3-ink)">Sign in</a>' +
-      '<a href="' + attr('signUp') + '" style="display:flex;align-items:center;min-height:44px;' +
+      (signedIn ? '' :
+      '<a class="pb-signin" href="' + attr('signIn') + '" style="font-weight:700;font-size:16px;color:var(--ks3-ink)">Sign in</a>') +
+      '<a href="' + attr(cta) + '" style="display:flex;align-items:center;min-height:44px;' +
       'padding:0 18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);' +
-      'background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:16px">Start free</a>' +
+      'background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:16px">' +
+      esc(PAGES[cta].label) + '</a>' +
       /* Theme run (26 Sep 2026): the shared Light/Dark/System control, at
          the right-hand end next to Sign in / Start free, from 900px up.
          shared/theme.js mounts into every [data-mrb-theme] slot and keeps
@@ -145,7 +153,7 @@
       '<div class="pb-menu" id="pb-menu" hidden>' +
         '<nav aria-label="Sections">' +
           menuLink('how') + menuLink('homeEd') + menuLink('pricing') + menuLink('orgs') +
-          menuLink('signIn', 'pb-menu-signin') +
+          (signedIn ? '' : menuLink('signIn', 'pb-menu-signin')) +
         '</nav>' +
         '<div class="pb-menu-theme"><span>Theme</span>' +
           '<span class="mrb-theme-slot" data-mrb-theme></span></div>' +

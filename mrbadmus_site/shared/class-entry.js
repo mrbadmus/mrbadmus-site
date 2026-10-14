@@ -60,7 +60,7 @@
 (function () {
   'use strict';
 
-  var CACHE_PREFIX = 'mrb-class-entry:v2:';   // v2: year-scoped (MRB-261)
+  var CACHE_PREFIX = 'mrb-class-entry:v3:';   // v2: year-scoped (MRB-261); v3: pupils only (front door)
   /* 30 min. It was 10, and the entry it caches answers ONE question — which
      class page to link to — which changes only when a teacher enrols or
      removes somebody. A lesson is an hour, so 30 minutes still surfaces a
@@ -295,6 +295,10 @@
        classroom machine is exactly where one child's resolved session must
        not survive into the next child's. */
     'mrb-student-session:',
+    /* ⊕ Front door (12 Oct 2026) — shared/account.js's resolved kind. The
+       same reason as every family here: a shared machine must not carry one
+       person's "I am a teacher" into the next person's session. */
+    'mrb-account:',
     /* ⊕ Stage B (phone run, 28 Sep 2026) — the top bar's initials. Same
        reason as every family above: one child's initials must not sit on a
        shared classroom machine's bar after the next child signs in. */
@@ -321,6 +325,7 @@
     // from a promise resolved for the person who just left.
     _yearsInflight = null;
     _inflight = null;
+    _pupilInflight = null;
     _viewer = null;
   }
 
@@ -395,8 +400,21 @@
   }
 
   /* ── Resolution ──────────────────────────────────────────────────────────
+     ⊕ Front door (12 Oct 2026) — SPLIT IN TWO. This used to read the viewer's
+     role itself and decide: staff → /teacher/classes.html, child → Today,
+     anyone else → look for a class. That was one of five places deciding where
+     a person goes, and the five disagreed (a parent was treated as staff).
+     Now:
+
+       pupilEntry()  the CLASS question only — "which class page is mine" —
+                     for a pupil. Role-blind: it does not ask who is asking.
+       resolve()     asks shared/account.js (the one map) who the viewer is.
+                     A pupil gets pupilEntry()'s answer; everyone else gets
+                     their kind's home.
+
      Returns a promise for { href, label, title } or null (render nothing). */
   var _inflight = null;
+  var _pupilInflight = null;
 
   /* Staff surfaces, where the viewer CANNOT be a student — every one of these
      pages opens with a role guard that sends a student home. See below. */
@@ -407,9 +425,14 @@
            p.indexOf('/hod/') === 0;
   }
 
-  function resolve() {
-    if (_inflight) return _inflight;
-    _inflight = (function () {
+  /* opts.force — look the class up even on a staff surface. account.js sets it
+     when a pupil has just been bounced off a /teacher/ page and needs their
+     way home. A forced answer is neither read from nor written to the cache
+     and never memoised, so it cannot change what the page's own entry says. */
+  function pupilEntry(opts) {
+    var force = !!(opts && opts.force);
+    if (!force && _pupilInflight) return _pupilInflight;
+    var p = (function () {
       var conf = cfg();
       var ref = projectRef(conf.url);
       if (!ref) return Promise.resolve(null);
@@ -417,39 +440,17 @@
       var session = readSession(ref);
       if (!session) return Promise.resolve(null);   // signed out → nothing
 
-      /* ⊕ B2C unit 6 (5 Oct 2026) — A FAMILY CHILD'S WAY HOME IS TODAY.
-         A family (or organisation) child is enrolled in a class too — the
-         one their weekly work hangs off, named after the parent — so the
-         membership read below found it and every lesson page offered "My
-         class": the SCHOOL class page, which shows them a parent-named class,
-         a due date Today contradicts and a school leaderboard. Their home is
-         /consumer/today.html. Decided from the session's own address
-         (MrBadmusConfig.isChildSession — the one test, shared with the
-         consumer pages), before any read and before the cache: no network,
-         and nothing cached under the old answer can outlive this. A school
-         pupil's address never carries the suffix, so their entry is exactly
-         what it was. `pupil` keeps the bar's pupil affordances (bell,
-         Settings) that the /student/ href used to imply. */
-      var c0 = window.MrBadmusConfig;
-      if (c0 && typeof c0.isChildSession === 'function' && c0.isChildSession(session)) {
-        return Promise.resolve({ href: c0.CHILD_HOME || '/consumer/today.html',
-                                 label: 'Today', title: 'Your Today page',
-                                 pupil: true });
-      }
-
       var cacheKey = CACHE_PREFIX + conf.env + ':' + session.user.id;
-      var cached = cacheGet(cacheKey);
-      if (cached !== null) return Promise.resolve(cached);
+      if (!force) {
+        var cached = cacheGet(cacheKey);
+        if (cached !== null) return Promise.resolve(cached);
+      }
 
       var uid = encodeURIComponent(session.user.id);
 
-      /* Role, membership and the school's academic years in parallel. A
-         teacher is never a class_member, so the first two answers can't both
-         be positive; asking for all three at once still costs one round trip.
-         academic_years is readable by any member of the school
-         (academic_years_member_read), so this needs no new grant — and since
-         27 Aug it goes through `academicYears()` above, so the dashboards read
-         that list once rather than twice.
+      /* Membership and the school's academic years in parallel; the latter
+         goes through `academicYears()` above so the dashboards read that list
+         once rather than twice (27 Aug 2026).
 
          ⊕ 27 Aug 2026 — THE MEMBERSHIP QUERY IS SKIPPED ON STAFF SURFACES.
          `class_members?student_id=eq.<uuid>` with a TEACHER's uuid in it can
@@ -457,47 +458,25 @@
          linked through `class_teachers`. It was firing on every teacher
          dashboard load anyway, inside the cold-connection wave the whole page
          was queuing behind, to answer a question whose answer was structurally
-         empty. It is skipped by SURFACE rather than by role because role only
-         arrives with the first response — and every `/teacher/*`, `/admin/*`
-         and `/hod/*` page opens with a guard that sends a student home, so a
-         viewer who reaches one either is staff or is about to be redirected.
-         Everywhere else — KS3, KS4, the public pages, `/student/*` — the
-         question is real and all three still go together. */
-      var wantMembership = !onStaffSurface();
+         empty. It is skipped by SURFACE rather than by role because every
+         `/teacher/*`, `/admin/*` and `/hod/*` page opens with a guard that
+         sends a student home. Everywhere else — KS3, KS4, the public pages,
+         `/student/*` — the question is real. A staff surface answers null and
+         CACHES NOTHING: a null written here would answer "no class" for the
+         next half hour on the KS3 lesson pages too. */
+      if (onStaffSurface() && !force) { return Promise.resolve(null); }
 
       return Promise.all([
-        rest(conf, session, 'profiles?id=eq.' + uid + '&select=role'),
-        wantMembership
-          ? rest(conf, session,
-                 'class_members?student_id=eq.' + uid +
-                 '&left_at=is.null&deleted_at=is.null&select=class_id')
-          : Promise.resolve([]),
+        rest(conf, session,
+             'class_members?student_id=eq.' + uid +
+             '&left_at=is.null&deleted_at=is.null&select=class_id'),
         academicYears()
       ]).then(function (res) {
-        var roleRows = res[0], memberRows = res[1], yearRows = res[2];
-        var role = (roleRows && roleRows[0] && roleRows[0].role) || null;
-
-        // Staff get the equivalent entry, pointing at their own classes page.
-        // Rendered on role alone: teacher/classes.html owns its empty state,
-        // and a teacher between timetables still needs the way in.
-        if (role && role !== 'student') {
-          var staff = { href: '/teacher/classes.html', label: 'My classes',
-                        title: 'Your classes' };
-          cacheSet(cacheKey, staff);
-          return staff;
-        }
-
-        /* We are on a staff surface and the viewer is a student — so we
-           deliberately did not ask about their membership, and we do not know
-           it. Render nothing (the guard on this page is about to send them
-           home anyway) and CACHE NOTHING: writing a null here would answer
-           "no class" for the next half hour on the KS3 lesson pages too,
-           which is the entry disappearing from the one place it matters. */
-        if (!wantMembership) { return null; }
+        var memberRows = res[0], yearRows = res[1];
 
         var ids = (memberRows || []).map(function (r) { return r.class_id; })
                                     .filter(Boolean);
-        if (!ids.length) { cacheSet(cacheKey, null); return null; }
+        if (!ids.length) { if (!force) cacheSet(cacheKey, null); return null; }
 
         // Second hop rather than a PostgREST embed: `!inner` plus an embedded
         // `deleted_at=is.null` filter is the fiddlier syntax of the two and
@@ -521,7 +500,7 @@
                     '&select=id,name&order=name.asc')
           .then(function (classes) {
             classes = classes || [];
-            if (!classes.length) { cacheSet(cacheKey, null); return null; }
+            if (!classes.length) { if (!force) cacheSet(cacheKey, null); return null; }
 
             var entry;
             if (classes.length === 1) {
@@ -542,9 +521,34 @@
                 title: classes.length + ' classes'
               };
             }
-            cacheSet(cacheKey, entry);
+            if (!force) cacheSet(cacheKey, entry);
             return entry;
           });
+      });
+    })();
+    if (!force) _pupilInflight = p;
+    return p;
+  }
+
+  function resolve() {
+    if (_inflight) return _inflight;
+    _inflight = (function () {
+      var A = window.MrBadmusAccount;
+      /* account.js absent (a page that has not been given the tag yet): the
+         only entry this module can still answer on its own is a pupil's. */
+      if (!A) { return pupilEntry(); }
+      return A.resolve().then(function (acct) {
+        if (!acct || !acct.kind) { return null; }       // signed out, or unknown
+        // A pupil with no class gets nothing, as it always has: the entry is
+        // never offered to a page that would have nothing to show them.
+        if (acct.kind === 'pupil') {
+          return acct.hasClass ? { href: acct.home, label: acct.homeLabel, title: acct.homeTitle } : null;
+        }
+        var entry = { href: acct.home, label: acct.homeLabel, title: acct.homeTitle };
+        // `pupil` keeps the bar's pupil affordances (bell, Settings) for a
+        // family child, whose href used to imply them by living under /student/.
+        if (acct.kind === 'child') { entry.pupil = true; }
+        return entry;
       });
     })();
     return _inflight;
@@ -614,40 +618,11 @@
   //    page now carries the one top bar (topbar.py), whose avatar menu holds
   //    "My class", and `mount()` below stands down on any page with that bar.
 
-  // 2. Public / KS4 — into the persistent cluster, before the auth control,
-  //    plus a drawer row. .nav-class-link collapses one rung ABOVE
-  //    .nav-text-link (see shared/nav.css) so the measured 600px ladder that
-  //    3D Studio was fitted to is left exactly as it was tested.
-  function renderPublic(entry) {
-    var cluster = document.querySelector('.nav-cluster');
-    if (!cluster) return false;
-    var authArea = cluster.querySelector('#nav-auth-area');
-    var a = anchor('nav-class-link', entry);
-    if (authArea) cluster.insertBefore(a, authArea);
-    else cluster.appendChild(a);
-
-    // Drawer row, first in the menu — below the collapse breakpoints this is
-    // the only place the entry lives, so it leads rather than trails. nav.js
-    // built the drawer on DOMContentLoaded; we are past a network round trip,
-    // so it exists. If it somehow doesn't, the cluster link above still does.
-    var menu = document.querySelector('#nav-drawer .nav-drawer-menu');
-    if (menu && !menu.querySelector('[data-mrb-class-entry]')) {
-      var d = document.createElement('a');
-      d.href = entry.href;
-      d.title = entry.title;
-      d.setAttribute('data-mrb-class-entry', '1');
-      d.innerHTML = '<span class="nav-drawer-ico">🎒</span>';
-      d.appendChild(document.createTextNode(entry.label));
-      menu.insertBefore(d, menu.firstChild);
-      // nav.js wires "close on link click" over the rows that existed when it
-      // ran, so this one wires its own.
-      d.addEventListener('click', function () {
-        var burger = document.querySelector('.nav-burger');
-        if (burger && burger.getAttribute('aria-expanded') === 'true') burger.click();
-      });
-    }
-    return true;
-  }
+  // 2. Public / KS4 — ⊖ RETIRED by the front door run (12 Oct 2026). This
+  //    inserted a "My class" link into `.nav-cluster` and a 🎒 row into the
+  //    drawer. The public bar now has ONE home button, painted by shared/nav.js
+  //    from shared/account.js's answer (which asks `pupilEntry()` here for the
+  //    pupil's class), so a second copy would put the entry on the page twice.
 
   // 3. Dashboards — plain text link in the right-hand group, matching the
   //    utilitarian styling the brand rule pins for these pages (no logo asset,
@@ -672,10 +647,13 @@
        menu, filled by shared/topbar.js); drawing a second one here would put
        "My class" on the page twice. */
     if (document.querySelector('[data-mrb-topbar]')) return;
+    /* ⊕ Front door — only the dashboards (`nav.top-nav`) still take an entry
+       from here; on every other page there is nothing to draw, so no read. */
+    if (!document.querySelector('nav.top-nav')) return;
     resolve().then(function (entry) {
       if (!entry) return;                 // signed out, or zero classes
       if (isHere(entry.href)) return;     // already here
-      renderPublic(entry) || renderDashboard(entry);
+      renderDashboard(entry);
     }).catch(function () { /* never break a page over a nav affordance */ });
   }
 
@@ -688,6 +666,7 @@
      two of them are unfinished at once. */
   window.MRBClassEntry = {
     resolve: resolve,
+    pupilEntry: pupilEntry,
     viewer: viewer,
     mount: mount,
     workingAcademicYear: workingAcademicYear,

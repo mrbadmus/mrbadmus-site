@@ -15,9 +15,9 @@
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
-  <link rel="stylesheet" href="/shared/ks3.css?v=2f931f9a"/>
-<link rel="stylesheet" href="/shared/ks3-theme.css?v=6e4b9223"/>
-  <link rel="stylesheet" href="/consumer/consumer.css?v=b02d0232"/>
+  <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
+<link rel="stylesheet" href="/shared/ks3-theme.css?v=16898136"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=123d1b60"/>
   <style>
   /* ═══════════════════════════════════════════════════════════════════════
      consumer/report.html — Claude Design's `Termly Report.dc.html`.
@@ -248,7 +248,9 @@
 </div>
 
 <script src="/shared/config.js?v=ab7a89ac"></script>
-<script src="/consumer/consumer-common.js?v=8ead95e6"></script>
+<!-- Front door (12 Oct 2026): the one map; consumer-common asks it whether a school pupil has wandered in. -->
+<script src="/shared/account.js?v=70302fa6"></script>
+<script src="/consumer/consumer-common.js?v=098698a0"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/report.html — the termly report. MRB-317 Night 3.
@@ -316,12 +318,20 @@
         (r.sessions.done != null ? r.sessions.done : '—') + '/' +
         (r.sessions.set != null ? r.sessions.set : '—'), 'completed of set'));
     }
-    if (r.minutes != null) {
-      var hrs = Math.floor(r.minutes / 60), mins = r.minutes % 60;
+    /* ⊕ 13 Oct 2026 (B7) — the label says exactly what the number is: time
+       MEASURED on questions (the backend now sends `minutes` from measured
+       answer times only). Nothing measured — 0 or null — and the box is not
+       drawn at all, rather than reading "0h 0m" as if the child did nothing.
+       The backend's own `minutes_measured_note`, when sent, is the note. */
+    var measured = Math.round(Number(r.minutes));
+    if (r.minutes != null && isFinite(measured) && measured > 0) {
+      var hrs = Math.floor(measured / 60), mins = measured % 60;
       /* Design's note read "over 16 weeks". The report payload carries no
          week count, so the note says which stretch of time it is instead of
          inventing a number of weeks. */
-      stats.push(statBox('Time on task', hrs + 'h ' + mins + 'm', 'this term'));
+      var mNote = (typeof r.minutes_measured_note === 'string' && r.minutes_measured_note.trim())
+        ? r.minutes_measured_note.trim() : 'this term';
+      stats.push(statBox('Measured time on questions', hrs + 'h ' + mins + 'm', mNote));
     }
     /* ⚠️ checksAvg is null when nothing was sat. "null%" on a document a
        council may read is the failure this line exists to prevent. */

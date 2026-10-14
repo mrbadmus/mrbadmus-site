@@ -116,6 +116,36 @@
   }
   function go(path, extra) { window.location.href = href(path, extra); }
 
+  /* ⊕ D15a (13 Oct 2026) — THE LINKS NOBODY ROUTED THROUGH href().
+     Every link this file and public.js draw goes through `href()`, but a
+     page that writes a literal into its own markup did not: the sign-up
+     step's "Read the terms" / "Read the privacy policy" and the account
+     page's privacy row opened /parents/terms.html bare, so a tester on
+     ?env=test reading the terms mid-signup landed on PRODUCTION config in
+     the new tab. So any same-origin link is carried at the moment it is
+     followed — a click, a middle-click (a new tab) or the context menu
+     ("Copy link") — the same last-word rewrite shared/nav.js does on the
+     main site. `href()` keeps a key the link already sets and leaves its
+     own query and #hash alone. With no env/api in this page's URL nothing
+     is registered and every link is exactly as written. */
+  (function () {
+    if (!carryQuery().toString()) { return; }
+    function onFollow(ev) {
+      var a = ev.target && ev.target.closest ? ev.target.closest('a[href]') : null;
+      if (!a) { return; }
+      var raw = a.getAttribute('href');
+      if (!raw || raw.charAt(0) === '#') { return; }
+      var u;
+      try { u = new URL(raw, window.location.href); } catch (e) { return; }
+      if (u.origin !== window.location.origin || !/^https?:$/.test(u.protocol)) { return; }
+      var n = href(u.pathname + u.search + u.hash);
+      if (n !== raw) { a.setAttribute('href', n); }
+    }
+    document.addEventListener('click', onFollow, true);
+    document.addEventListener('auxclick', onFollow, true);
+    document.addEventListener('contextmenu', onFollow, true);
+  })();
+
   /* ── The nav ────────────────────────────────────────────────────────────
      Deliberately thin. Night 3 replaces every one of these screens with
      Design's, so this is a brand-correct placeholder and not a design. */
@@ -578,6 +608,24 @@
         }
         document.body.style.display = 'block';
         var session = state.session;
+        // ⊕ Parent truth — a child's queued lesson answers, with this page's
+        // fresh token. Child sessions only; nothing for a parent or a stranger.
+        if (session && session.access_token && isChildSession(session)) {
+          setTimeout(function () { flushAnswerOutbox(session.access_token); }, 1500);
+        }
+        /* ⊕ Front door (12 Oct 2026) — A SCHOOL PUPIL ON A FAMILY PAGE GOES
+           HOME. These pages had no audience check: a pupil who followed a
+           link here got an API 403 sentence. shared/account.js (the one map,
+           a static tag on the page) says whether this person belongs here and
+           sends a school pupil to their own home if not. ONLY pages that
+           require a session ask, and only a school pupil is turned away —
+           staff stay, because the operator console is a consumer page and an
+           operator may also hold a school. FAIL-OPEN and NOT awaited: the
+           page draws immediately, and any failure or missing account.js
+           leaves it exactly as it was. */
+        if (session && opts.requireSession && window.MrBadmusAccount) {
+          try { window.MrBadmusAccount.guardAudience('consumer', { session: session }); } catch (e) { /* courtesy only */ }
+        }
         return opts.run({
           sb: client,
           session: session,
@@ -1149,6 +1197,64 @@
     return !!(c && typeof c.isChildSession === 'function' && c.isChildSession(session));
   }
 
+  /* ── flushAnswerOutbox — parent truth follow-up (11 Oct 2026) ──────────
+     The lesson pages (shared/mrbadmus.v2.js) write every answer a consumer
+     child gives to localStorage `mrb_answer_outbox_v1` BEFORE sending it,
+     and remove it once the server answers 2xx. Those pages load no Supabase
+     SDK, so an expired token there means a 401 and a queued answer. This
+     page DOES have the SDK, and getSession() has just refreshed the token —
+     so a child opening Today (or any consumer page) delivers whatever is
+     waiting: oldest first, removed on 2xx, kept on any failure (and the
+     flush stops there), anything older than 7 days dropped. The server
+     de-duplicates on `client_event_id`, so a re-send is safe.
+     ⚠️ TWIN of the outbox in shared/mrbadmus.v2.js: the same key, cap, age
+     limit and route. Change them together. */
+  var OUTBOX_KEY = 'mrb_answer_outbox_v1', OUTBOX_CAP = 200, OUTBOX_TTL_MS = 7 * 24 * 3600 * 1000;
+  var outboxFlushing = false;
+  function outboxRead() {
+    try {
+      var v = JSON.parse(window.localStorage.getItem(OUTBOX_KEY) || '[]');
+      return Array.isArray(v) ? v : [];
+    } catch (e) { return []; }
+  }
+  function outboxWrite(list) {
+    try {
+      if (!list.length) { window.localStorage.removeItem(OUTBOX_KEY); }
+      else { window.localStorage.setItem(OUTBOX_KEY, JSON.stringify(list.slice(-OUTBOX_CAP))); }
+    } catch (e) { /* private mode — nothing was queued here either */ }
+  }
+  function outboxFresh(b) {
+    var t = b && b.client_event_id && Date.parse(b.answered_at);
+    return !!t && (Date.now() - t) < OUTBOX_TTL_MS;
+  }
+  function flushAnswerOutbox(token) {
+    if (outboxFlushing || !token || !CFG.BACKEND_URL) { return; }
+    var queue = outboxRead().filter(outboxFresh);
+    outboxWrite(queue);
+    if (!queue.length) { return; }
+    outboxFlushing = true;
+    var i = 0;
+    (function next() {
+      if (i >= queue.length) { outboxFlushing = false; return; }
+      var b = queue[i++];
+      var sent;
+      try {
+        sent = fetch(CFG.BACKEND_URL + '/api/consumer/child/answer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify(b)
+        }).then(function (r) { return !!(r && r.ok); }, function () { return false; });
+      } catch (e) { sent = Promise.resolve(false); }
+      sent.then(function (ok) {
+        if (!ok) { outboxFlushing = false; return; }
+        outboxWrite(outboxRead().filter(function (x) {
+          return outboxFresh(x) && x.client_event_id !== b.client_event_id;
+        }));
+        next();
+      });
+    })();
+  }
+
   /* ── childSignIn — THE one username sign-in (B2C unit 6) ───────────────
      /go and auth.html both sign a child in with a username. One path, so
      the two can never disagree about what the backend is asked or what a
@@ -1165,11 +1271,19 @@
     } else if (err && (err.code === 'network' || err.code === 'timeout')) {
       out = err.message;
     } else if (err && (err.code === 'account_closing' || err.code === 'login_unavailable' ||
-               err.code === 'account_check_failed')) {
+               err.code === 'account_check_failed' || err.status >= 500)) {
+      /* ⊕ 13 Oct 2026: `status >= 500` as well. A 503 when the sign-in
+         service is busy (or a gateway 502/503 with no JSON body at all, so
+         no code) used to fall through to "doesn't match" — telling a child
+         a correct password was wrong. A server failure is never a
+         refusal; only a 401/4xx is. The backend's own sentence is shown
+         when it wrote one; a bodiless gateway error gets this file's. */
       /* Not about the password: the account is being deleted, or the server
          could not check. "Doesn't match" there sends a child to re-type a
          password that was right. */
-      out = plainMessage(err, 'We couldn’t check that right now. Please try again in a minute.');
+      var said = err.data && err.data.message;
+      out = (said && plainSentence(said)) ? said
+          : 'We couldn’t check that right now — try again in a minute.';
     } else {
       // Wrong password, unknown username, removed child, a parent trying to
       // come in this way — one sentence.
@@ -1422,6 +1536,31 @@
     });
   }
 
+  /* ⊕ fixD (13 Oct 2026) — DOES THE PUBLIC FRONT DOOR KNOW A PARENT?
+     /parents/ loads no Supabase SDK on purpose (see boot()), so it cannot
+     ask whose session this browser holds — and the session key alone cannot
+     tell a parent from a school pupil or teacher, who share the project.
+     The family dashboard can: it has just read the family. So it leaves a
+     marker, `mrb.parent` = the parent's user id, and the public header shows
+     "Dashboard" only while that marker AND a session for the SAME user are
+     both in this browser. Sign-out (clearLocalState) drops every `mrb.` key
+     and the session; a school sign-out drops the session, which is enough. */
+  var PARENT_MARK = 'mrb.parent';
+  function markParent(session) {
+    var id = session && session.user && session.user.id;
+    if (!id || isChildSession(session)) { return; }
+    try { window.localStorage.setItem(PARENT_MARK, String(id)); } catch (e) { /* private window */ }
+  }
+  function parentSignedIn() {
+    try {
+      var id = window.localStorage.getItem(PARENT_MARK);
+      var ref = projectRef();
+      if (!id || !ref) { return false; }
+      var s = JSON.parse(window.localStorage.getItem('sb-' + ref + '-auth-token') || 'null');
+      return !!(s && s.user && String(s.user.id) === id && s.refresh_token);
+    } catch (e) { return false; }
+  }
+
   /* ⊕ B2C polish round 3 (9 Oct 2026) — THE ONE CHILD SUMMARY LINE.
      The parent saw Maya three ways: her own view read "Year 10 · AQA ·
      Combined · Alongside school", the home card "Year 10 · Alongside
@@ -1511,6 +1650,8 @@
     signOutControl: signOutControl,
     isChildSession: isChildSession,
     clearLocalState: clearLocalState,
+    markParent: markParent,
+    parentSignedIn: parentSignedIn,
 
     // B2C unit 6 — the one username sign-in, shared by /go and auth.html.
     childSignIn: childSignIn

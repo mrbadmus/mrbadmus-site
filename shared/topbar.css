@@ -238,4 +238,91 @@ span.mrb-topbar__title[aria-current] {
 .mrb-topbar__menu a:hover,
 .mrb-topbar__menu button:hover { background: var(--tb-well); }
 
-@media print { .mrb-topbar__end { display: none !important; } }
+/* ── the sign-out confirm (D15b, 13 Oct 2026) ──────────────────────────
+   On <body>, outside the bar (see topbar.js confirmSignOut for why); the
+   --tb-* values it reads are copied onto the veil from the bar it came
+   from, so it wears that family's palette in either theme. The fallbacks
+   below are the light KS3 values, for a veil that somehow got none. */
+.mrb-tb-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.45);
+}
+.mrb-tb-confirm {
+  width: 100%;
+  max-width: 340px;
+  box-sizing: border-box;
+  padding: 22px 20px 20px;
+  border-radius: 16px;
+  background: var(--tb-paper, #FFFCF5);
+  color: var(--tb-ink, #221E1B);
+  border: 1px solid var(--tb-rule, #E0D2B9);
+  box-shadow: 0 18px 40px -20px rgba(40, 26, 10, 0.45);
+  font-family: var(--tb-ui, system-ui, sans-serif);
+}
+.mrb-tb-confirm h2 {
+  margin: 0;
+  font: 700 22px/1.2 var(--tb-ui, system-ui, sans-serif);
+  letter-spacing: -0.01em;
+  color: var(--tb-ink, #221E1B);
+}
+.mrb-tb-confirm__acts {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.mrb-tb-confirm__acts button {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 10px;
+  border-radius: 12px;
+  border: 2px solid var(--tb-ink, #221E1B);
+  font: 600 15px/1.2 var(--tb-ui, system-ui, sans-serif);
+  white-space: nowrap;
+  text-align: center;
+}
+/* Scoped one level deeper than the `all: unset` rule above, or it wins. */
+.mrb-tb-confirm__acts .mrb-tb-confirm__stay { background: var(--tb-paper, #FFFCF5); color: var(--tb-ink, #221E1B); }
+.mrb-tb-confirm__acts .mrb-tb-confirm__stay:hover { background: var(--tb-well, #F1E6D2); }
+.mrb-tb-confirm__acts .mrb-tb-confirm__go { background: var(--tb-ink, #221E1B); color: var(--tb-paper, #FFFCF5); }
+.mrb-tb-confirm__acts button:focus-visible { outline: 3px solid var(--tb-accent, #E4572E); outline-offset: 2px; }
+.mrb-tb-confirm__acts button[disabled] { opacity: .7; cursor: default; }
+/* Narrower than any phone we support, the pair stacks rather than wraps. */
+@media (max-width: 330px) {
+  .mrb-tb-confirm__acts { grid-template-columns: 1fr; }
+}
+
+@media print { .mrb-topbar__end { display: none !important; } .mrb-tb-veil { display: none !important; } }
+
+/* ═══ ⊕ FRONT DOOR (12 Oct 2026) — THE PUBLIC KINDS (ks3 · ks4 · leaderboard) ═
+   brand · [title] · theme · home button · hamburger. The title is the parent
+   link ("‹ Cells and organisation"); the lesson page already shows where it
+   is, so the title is kept on a wide screen only — below 900px the bar is the
+   brand and its controls, on one row. (Stickiness belongs to `.ks3-nav`, in
+   ks3.css; this file does not touch it.) */
+@media (max-width: 899px) {
+  .mrb-topbar[data-mrb-topbar="ks3"] .mrb-topbar__title,
+  .mrb-topbar[data-mrb-topbar="ks4"] .mrb-topbar__title,
+  .mrb-topbar[data-mrb-topbar="leaderboard"] .mrb-topbar__title { display: none; }
+}
+@media (max-width: 359px) { .mrb-topbar .mrb-brand__word { display: none; } }
+.mrb-topbar__end #nav-auth-area { flex: 0 1 auto; min-width: 0; }
+/* The phone rail is 54px: with `.ks3-nav`'s 2px rule (or a plain bar's 1px) the
+   whole bar stays within 56px. */
+@media (max-width: 700px) {
+  .mrb-topbar[data-mrb-topbar="ks3"] .mrb-topbar__rail,
+  .mrb-topbar[data-mrb-topbar="ks4"] .mrb-topbar__rail,
+  .mrb-topbar[data-mrb-topbar="leaderboard"] .mrb-topbar__rail { min-height: 54px; }
+}

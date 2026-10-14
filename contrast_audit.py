@@ -874,6 +874,31 @@ _ipage("D1 ks3 tutor chat [open+message]",
        "ks3/physics/electric-circuits/current-and-circuits.html",
        setup=_CHAT_OPEN_JS)
 
+# ── E1–E3 (front door, 12 Oct 2026): THE ONE DRAWER, OPEN, WITH THE HOME BUTTON
+# VISIBLE. The bar's single button and the drawer's account section are new
+# surfaces on every public page, and they only exist as text once nav.js has
+# painted them — so a gate that never opens the drawer measures neither. Each
+# case opens it through the real `.nav-burger` click (the delegated handler is
+# the real open path). Signed OUT: "Sign in" in the bar, Sign in / Sign up in
+# the drawer. Signed IN: the same fake session the chrome drive uses, with the
+# profile read answered as a teacher at a school, so the bar reads "My classes"
+# and the drawer "<name> · Teacher", My profile, Switch account, Sign out. The
+# measure runs light and dark, at 1280 and 390.
+import ks4_chrome_drive as _kcd
+_SIGNED_IN_PRE = (_kcd.STUB_PROFILE_JS + "try{localStorage.setItem(%s,%s);}catch(e){}"
+                  % (json.dumps(_kcd.SESSION_KEY), json.dumps(json.dumps(_kcd.FAKE_SESSION))))
+_DRAWER_OPEN_JS = r"""
+(function(){ var b = document.querySelector('.nav-burger'); if (b) { b.click(); } })()
+"""
+for _lbl, _path, _pre in (
+        ("E1 classic page, drawer open [signed out]", "past-papers.html", None),
+        ("E2 landing, drawer open [signed in teacher]", "index.html", _SIGNED_IN_PRE),
+        ("E3 ks3 lesson, drawer open [signed in teacher]",
+         "ks3/biology/cells-and-organisation/specialised-cells.html", _SIGNED_IN_PRE),
+        ("E4 ks3 lesson, drawer open [signed out]",
+         "ks3/biology/cells-and-organisation/specialised-cells.html", None)):
+    _ipage(_lbl, _path, setup=_DRAWER_OPEN_JS, wait=1.4, prescript=_pre, widths=[1280, 390])
+
 # ── D2: the safeguarding box lessons — static content, no interaction
 # needed, just not previously in PAGES/INTERACTION_PAGES at all. ──
 for _slug, _path in (

@@ -209,163 +209,9 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* The drawer is its own column, is not width-constrained by the bar, and is
-   where a pupil goes to read the name in full. */
-.nav-drawer-auth .nav-chip-name { max-width: 190px; }
-
-/* ── Hamburger button ── */
-.nav-burger {
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 4px;
-  width: 40px;
-  height: 38px;
-  padding: 0 9px;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background 0.15s, border-color 0.15s;
-}
-.nav-burger:hover { background: var(--accent-soft); border-color: var(--accent-border); }
-.nav-burger span {
-  display: block;
-  height: 2px;
-  width: 100%;
-  background: var(--text);
-  border-radius: 2px;
-  transition: transform 0.2s, opacity 0.2s;
-}
-.nav-burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-.nav-burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-.nav-burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-.nav-burger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-/* ── Drawer + scrim (injected by nav.js) ── */
-.nav-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(20, 14, 8, 0.44);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.2s ease, visibility 0.2s ease;
-  z-index: 200;
-}
-.nav-overlay.open { opacity: 1; visibility: visible; }
-
-.nav-drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  height: 100%;
-  width: min(320px, 85vw);
-  background: var(--card);
-  border-left: 1px solid var(--border);
-  box-shadow: var(--shadow-pop);
-  transform: translateX(100%);
-  transition: transform 0.24s ease;
-  z-index: 201;
-  display: flex;
-  flex-direction: column;
-  padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
-  overflow-y: auto;
-}
-.nav-drawer.open { transform: translateX(0); }
-
-.nav-drawer-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-.nav-drawer-title {
-  font-family: var(--font-serif);
-  font-optical-sizing: auto;
-  font-weight: 600;
-  font-size: 1.05rem;
-  color: var(--text);
-}
-.nav-drawer-close {
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-size: 1.4rem;
-  line-height: 1;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 8px;
-}
-.nav-drawer-close:hover { background: var(--sunken); color: var(--text); }
-.nav-drawer-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-.nav-drawer-menu { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
-.nav-drawer-menu a,
-.nav-drawer-menu button.nav-drawer-link {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: none;
-  font-family: var(--font-sans);
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text);
-  text-decoration: none;
-  padding: 13px 12px;
-  border-radius: 10px;
-  cursor: pointer;
-}
-.nav-drawer-menu a:hover,
-.nav-drawer-menu button.nav-drawer-link:hover { background: var(--accent-soft); color: var(--accent); }
-.nav-drawer-menu a:focus-visible,
-.nav-drawer-menu button.nav-drawer-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.nav-drawer-menu .nav-drawer-ico { font-size: 1.1rem; width: 22px; text-align: center; flex-shrink: 0; }
-
-.nav-drawer-auth {
-  margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.nav-drawer-auth a,
-.nav-drawer-auth .nav-drawer-chip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 14px;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 0.95rem;
-  text-decoration: none;
-  white-space: nowrap;
-}
 
 /* ── Responsive tightening ── */
 @media (max-width: 900px) { .nav-crumbs { display: none; } }
-/* Theme run (27 Sep 2026): the theme control leaves the bar at the same rung
-   just above the crumbs (clean from 916px on a signed-in lesson page with
-   the bell; 960 for headroom) and lives in the drawer below it (nav.js). By
-   student_bell_drive's width ladder: with a signed-in chip and the bell up,
-   the bar's own copy cost 7-42px of sideways scroll at 360-430. */
-@media (max-width: 960px) { .nav-cluster > .mrb-theme-slot { display: none; } }
-/* ⊕ B2C polish (9 Oct 2026) — the bar's signed-out Sign In (drawn by
-   shared/nav.js) is a desktop affordance. At 900px and below it stands down
-   and the drawer's Sign In is the way in, exactly as it was before it
-   returned, so the phone bar's measured ladder below is untouched. */
-@media (max-width: 900px) { #nav-auth-area .nav-bar-signin { display: none; } }
-.nav-drawer-theme {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  margin-top: 10px; padding: 10px 12px; border-top: 1px solid var(--border);
-  color: var(--text);
-}
-.nav-drawer-theme-label { font-weight: 600; font-size: 0.95rem; }
 /* 3D Studio collapses one rung ABOVE Sign Up, not with it, and the extra rung
    is measured rather than chosen. It is a word, so it is the widest item in the
    cluster (~103px on a generated topic page, where reading density scales the
@@ -405,7 +251,6 @@
      The signed-in chip is a single element and is unaffected. */
   #nav-auth-area .btn-signup { display: none; }
   .btn-signin { padding: 7px 12px; }
-  .nav-burger { width: 36px; padding: 0 8px; }
 }
 /* Smallest phones: Leaderboard + Search collapse into the drawer so the bar
    never overflows. Challenge (primary CTA), Sign In and the menu stay put. */
@@ -417,3 +262,22 @@
      display name yields the last of the room on its own, by the shrink rule
      above, which costs a long name some characters and a short one nothing. */
 }
+
+/* ═══ ⊕ FRONT DOOR (12 Oct 2026) — THE ONE PUBLIC BAR ════════════════════
+   brand · theme · ONE home button · hamburger, and nothing else. 3D Studio,
+   Challenge, Leaderboard, Search and the name chip moved into the drawer
+   (shared/nav.js, shared/drawer.css); their rules above are kept only for
+   the dashboards that still draw `.nav-class-link`. The theme control is in
+   the bar at EVERY width now (it used to leave at 960px because the bar had
+   no room for it beside a chip, a pill and two icons; it now has all the
+   room it needs). */
+.nav-cluster { gap: 8px; }
+@media (max-width: 700px) {
+  /* One row, never taller than 56px, and NOT sticky: on a phone the bar
+     scrolls away with the page so it never covers lesson text. Desktop keeps
+     its sticky 62px bar. */
+  .nav { position: static; height: 56px; padding: 0 16px; gap: 8px; }
+  .nav-crumbs { display: none; }
+}
+/* The wordmark is the first thing to give if 360px cannot fit the row. */
+@media (max-width: 359px) { .nav .mrb-brand__word { display: none; } }

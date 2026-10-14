@@ -3583,6 +3583,93 @@ a:hover { color: var(--st-accent-hover); }
 /* ⊕ Sharpen C6 (P22) — results cards keep their own height. */
 [data-mrb-results-grid] { align-items: start; }
 
+/* ⊕ C9 (13 Oct 2026) — the question screen at 1280px and wider. See
+   student_rulings.py, "C9", for the ruling. Nothing below 1280 changes. */
+@media (min-width: 1280px) {
+  [data-mrb-qw="shell"] {
+    max-width: none !important;
+    grid-template-columns: minmax(0, 1fr) clamp(320px, 18.75cqw, 480px) !important;
+    gap: clamp(32px, 2.6cqw, 64px) !important;
+    align-items: center !important;
+  }
+  [data-mrb-qw="main"] {
+    max-width: none !important;
+    padding-top: clamp(26px, 2.2cqw, 56px) !important;
+    padding-bottom: clamp(30px, 2.4cqw, 60px) !important;
+  }
+  /* outranks the page's own `.rd[data-mode="ks3"] [data-q-eyebrow]` (13px) */
+  .rd[data-mode="ks3"] [data-mrb-qw="main"] .eyebrow { font-size: clamp(13px, 0.72cqw, 18px); }
+  [data-mrb-qw="stem"] {
+    max-width: min(44ch, 100%) !important;
+    font-size: clamp(32px, 2.35cqw, 56px) !important;
+  }
+
+  /* figure and options side by side, when there is a figure */
+  [data-mrb-qw="main"]:has(> [data-mrb-qw="fig"]) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: clamp(20px, 1.9cqw, 48px);
+    align-items: start;
+  }
+  [data-mrb-qw="main"]:has(> [data-mrb-qw="fig"]) > *:not([data-mrb-qw="fig"]):not([data-mrb-qw="opts"]),
+  [data-mrb-qw="main"]:has(> [data-mrb-qw="fig"]) > [style*="display:contents"] > * {
+    grid-column: 1 / -1;
+  }
+  [data-mrb-qw="main"]:has(> [data-mrb-qw="fig"]) > [data-mrb-qw="fig"] { grid-column: 1; }
+  [data-mrb-qw="main"]:has(> [data-mrb-qw="fig"]) > [data-mrb-qw="opts"] {
+    grid-column: 2;
+    grid-template-columns: minmax(0, 1fr) !important;
+    margin-top: clamp(15px, 1.7cqw, 40px) !important;
+  }
+  [data-mrb-qw="fig"] { margin-top: clamp(15px, 1.7cqw, 40px) !important; }
+  /* Design's resting figure cap (figCap, clamp(132px,34cqw,232px)) — the
+     zoomed cap is a different string and is left alone. */
+  [data-mrb-qw="fig"] svg[style*="34cqw"] { max-height: clamp(232px, 40vh, 600px) !important; }
+
+  [data-mrb-qw="opts"] {
+    gap: clamp(9px, 0.7cqw, 16px) !important;
+    margin-top: clamp(16px, 1.9cqw, 40px) !important;
+  }
+  [data-mrb-qw="opt"] {
+    min-height: clamp(60px, 4.2cqw, 104px) !important;
+    padding: clamp(14px, 1.15cqw, 28px) clamp(15px, 1.3cqw, 32px) !important;
+    gap: clamp(6px, 0.45cqw, 12px) clamp(12px, 1cqw, 24px) !important;
+  }
+  [data-mrb-qw="key"] {
+    width: clamp(28px, 2.2cqw, 50px) !important;
+    height: clamp(28px, 2.2cqw, 50px) !important;
+    border-radius: clamp(8px, 0.6cqw, 12px) !important;
+    font-size: clamp(12px, 0.8cqw, 19px) !important;
+  }
+  [data-mrb-qw="text"] {
+    font-size: clamp(17px, 1.25cqw, 28px) !important;
+    padding-top: clamp(4px, 0.35cqw, 9px) !important;
+  }
+  [data-mrb-qw="mark"] { padding-top: clamp(7px, 0.6cqw, 15px) !important; }
+  [data-mrb-qw="status"] { font-size: clamp(12px, 0.66cqw, 16px) !important; }
+  [data-mrb-qw="note"] {
+    font-size: clamp(15.5px, 1.02cqw, 24px) !important;
+    padding-top: clamp(11px, 0.8cqw, 18px) !important;
+  }
+
+  /* the question tracker (the rail) */
+  [data-mrb-qw="rail"] {
+    padding-top: clamp(26px, 2.2cqw, 56px) !important;
+    padding-bottom: clamp(30px, 2.4cqw, 60px) !important;
+  }
+  [data-mrb-qw="railhead"] { padding: clamp(14px, 1cqw, 24px) clamp(16px, 1.2cqw, 28px) !important; }
+  [data-mrb-qw="railtitle"], [data-mrb-qw="railcount"] { font-size: clamp(12px, 0.7cqw, 17px) !important; }
+  [data-mrb-qw="railgrid"] {
+    gap: clamp(8px, 0.6cqw, 14px) !important;
+    padding: clamp(16px, 1.2cqw, 28px) !important;
+  }
+  [data-mrb-qw="railcell"] { height: clamp(52px, 3.3cqw, 84px) !important; }
+  [data-mrb-qw="railnum"] { font-size: clamp(12px, 0.8cqw, 19px) !important; }
+  [data-mrb-qw="railstats"] { padding: 0 clamp(16px, 1.2cqw, 28px) clamp(16px, 1.2cqw, 28px) !important; }
+  [data-mrb-qw="statlabel"] { font-size: clamp(12px, 0.7cqw, 17px) !important; }
+  [data-mrb-qw="statvalue"] { font-size: clamp(22px, 1.6cqw, 40px) !important; margin-top: clamp(8px, 0.55cqw, 14px) !important; }
+}
+
 
 /* ⊕ D5 (theme-run audit, 27 Sep 2026). The flashcards "Next" button (node
    10363, STYLE_EDIT 'class view') is Design's own inline

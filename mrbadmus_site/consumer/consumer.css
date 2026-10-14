@@ -562,6 +562,14 @@ body {
 .c-signout-acts .c-signout-stay { background: var(--ks3-card); color: var(--ks3-ink); }
 .c-signout-acts .c-signout-go { background: var(--ks3-ink); color: var(--ks3-on-dark); }
 .c-signout-acts button[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
+/* ⊕ D15c (13 Oct 2026): at 360px the card leaves each of two columns
+   ~103px of text room, and "Stay signed in" (16px/700) needs ~116px, so it
+   broke over two lines. Never wrap a button label; on a phone-width screen
+   the pair stacks instead, the safe answer on top (it already takes focus). */
+.c-signout-acts button { white-space: nowrap; }
+@media (max-width: 419px) {
+  .c-signout-acts { grid-template-columns: 1fr; }
+}
 
 /* ── B2C repair, 3 Oct 2026 — the one checkout path (C.startCheckout) ──
    The busy control shows a spinner and nothing else; the failure line sits

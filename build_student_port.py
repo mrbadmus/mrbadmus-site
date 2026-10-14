@@ -222,7 +222,7 @@ LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
 # comes back unstamped, and `/shared/*` is served
 # `immutable, max-age=31536000` — a year-long pin on the control's own
 # bytes for any child whose first load happens before a later fix ships.
-STAMPED_DEPS = ("config.js", "class-entry.js", "student-guard.js",
+STAMPED_DEPS = ("config.js", "account.js", "class-entry.js", "student-guard.js",
                 "student-data.js", "rum.js", "student-bell.js",
                 "shoutouts.js", "figures-ks3.js", "figures-ks4.js",
                 "theme.js",

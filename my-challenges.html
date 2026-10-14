@@ -11,7 +11,8 @@
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
-  <link rel="stylesheet" href="/shared/nav.css?v=fd272b63"/>
+  <link rel="stylesheet" href="/shared/nav.css?v=1a7c09b3"/>
+  <link rel="stylesheet" href="/shared/drawer.css?v=d5f4eb49"/>
   <!-- MRB-337 — the student's messages. config.js first (it is the
        environment switcher shared/student-bell.js reads for the backend URL
        and the session key; absent, the bell falls back to production, which
@@ -21,9 +22,10 @@
   <script src="/shared/config.js?v=ab7a89ac"></script>
   <script src="/shared/search-index.js?v=c016cb14" defer></script>
   <script src="/shared/search.js?v=d011978d" defer></script>
-  <script src="/shared/nav.js?v=ecf7e0e2" defer></script>
-  <script src="/shared/class-entry.js?v=f09195e5" defer></script>
-  <script src="/shared/student-bell.js?v=c9eba610" defer></script>
+  <script src="/shared/account.js?v=70302fa6" defer></script>
+  <script src="/shared/nav.js?v=edf9f4c2" defer></script>
+  <script src="/shared/class-entry.js?v=8c087f18" defer></script>
+  <script src="/shared/student-bell.js?v=26753434" defer></script>
   <style>
     html { background: var(--bg); }
     :root {
@@ -131,15 +133,11 @@
 
 <nav class="nav">
   <!--mrb:brand--><a class="mrb-brand" href="/" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
-  <div class="nav-cluster">
-    <a href="/3d/" class="nav-text-link">3D Studio</a>
-    <a href="/weekly-challenge.html" class="challenge-chip" aria-label="Weekly challenge">⚡ <span class="nav-chip-label">Challenge</span></a>
-    <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard">🏆</a>
-    <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;">🔍</a>
-    <span class="mrb-theme-slot" data-mrb-theme></span>
+  <!--mrb:cluster--><div class="nav-cluster">
+    <span class="mrb-theme-slot" data-mrb-theme="compact"></span>
     <span id="nav-auth-area"></span>
     <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
-  </div>
+  </div><!--/mrb:cluster-->
 </nav>
 
 <div class="container">
@@ -202,6 +200,17 @@
       document.getElementById('not-logged-in').style.display = 'block';
       return;
     }
+
+    // ⊕ Front door, Part 5 — a parent, family child or organisation person who
+    // opens this page by URL goes to their own home (fail-open, not awaited).
+    // account.js is a deferred tag and init() starts at parse time, so on a fast
+    // session read the map is not there yet: wait for DOMContentLoaded (deferred
+    // scripts have run by then) rather than silently skipping the check.
+    (function fdGuard() {
+      var A = window.MrBadmusAccount;
+      if (A) { try { A.guardAudience('challenge', { session: session }); } catch (e) {} return; }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fdGuard, { once: true });
+    })();
 
     try {
       var res = await fetch(RENDER_URL + '/api/weekly-scores/history', {

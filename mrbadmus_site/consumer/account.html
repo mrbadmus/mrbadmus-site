@@ -15,9 +15,9 @@
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
-  <link rel="stylesheet" href="/shared/ks3.css?v=2f931f9a"/>
-<link rel="stylesheet" href="/shared/ks3-theme.css?v=6e4b9223"/>
-  <link rel="stylesheet" href="/consumer/consumer.css?v=b02d0232"/>
+  <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
+<link rel="stylesheet" href="/shared/ks3-theme.css?v=16898136"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=123d1b60"/>
   <style>
   /* ═══════════════════════════════════════════════════════════════════════
      consumer/account.html — Claude Design's `Parent Account.dc.html`.
@@ -162,6 +162,11 @@
     .ak-first { margin-top: 0 !important; }
     .ak-head { padding: 16px 48px 14px; }
   }
+  /* ⊕ fixD: above 900px the theme pill is fixed at the top right
+     (consumer.css) and would sit on Sign out; the header keeps clear of it. */
+  @media (min-width: 901px) {
+    .ak-head { padding-right: 136px; }
+  }
   </style>
 <style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
 </head>
@@ -175,7 +180,9 @@
 </div>
 
 <script src="/shared/config.js?v=ab7a89ac"></script>
-<script src="/consumer/consumer-common.js?v=8ead95e6"></script>
+<!-- Front door (12 Oct 2026): the one map; consumer-common asks it whether a school pupil has wandered in. -->
+<script src="/shared/account.js?v=70302fa6"></script>
+<script src="/consumer/consumer-common.js?v=098698a0"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/account.html — the money page. MRB-317 Night 3.
@@ -313,7 +320,18 @@
       /* ⊕ One mark (Mide, 13 Sep 2026): the lockup, not the bare mark. */
       C.brandLockup('/consumer/overview.html') +
       '<span style="flex:1" class="ak-brandword">Account</span>';
+    /* ⊕ fixD (13 Oct 2026): Sign out, the dashboard's control (see
+       placeSignout() in overview.html), mounted once and moved back in
+       after every redraw of this header. */
+    if (!SIGNOUT_HOST && ctx) {
+      SIGNOUT_HOST = document.createElement('span');
+      SIGNOUT_HOST.style.cssText = 'display:inline-flex;flex:0 0 auto';
+      C.signOutControl(SIGNOUT_HOST, { sb: ctx.sb, redirectTo: '/parents/',
+                                       note: 'You’ll sign in again with your email or Google.' });
+    }
+    if (SIGNOUT_HOST) { document.getElementById('ak-head').appendChild(SIGNOUT_HOST); }
   }
+  var SIGNOUT_HOST = null;
 
   function planCard() {
     var b = S.billing;
@@ -451,8 +469,11 @@
     var allowed = wantsPortal ? !!b.can_portal : !!b.can_checkout;
     var label = def.cta.label;
     if (def.cta.act === 'checkout' && st === 'locked') {
-      var t = tier('month');
-      label = t ? ('Restart · from ' + C.money(t.first) + ' a month') : 'Restart';
+      /* ⊕ 13 Oct 2026 (B6) — the restart checks out on the plan's own
+         interval (`interval()`, sent with the checkout below), so the price
+         beside it is that interval's, from the pricing tiers. */
+      var t = tier(interval());
+      label = t ? ('Restart · from ' + C.money(t.first) + ' ' + per()) : 'Restart';
     }
     if (allowed) {
       var look = CTAS[def.cta.kind];
