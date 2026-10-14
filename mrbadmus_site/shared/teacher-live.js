@@ -65,6 +65,9 @@
      one a screen can survive without. */
   var DEPS = [
     "/shared/config.js",
+    /* ⊕ Front door (12 Oct 2026) — the one map, BEFORE class-entry.js and the
+       guard, which both ask it at call time. */
+    "/shared/account.js",
     "/shared/class-entry.js",
     "/shared/teacher-guard.js",
     "/shared/teacher-data.js",
@@ -323,12 +326,16 @@
      and the one file with a load-time side effect is in the wave after it
      either way. */
   async function loadDeps() {
-    var first = [loadScript(DEPS[0])];               // config.js
+    /* ⊕ Front door (12 Oct 2026) — account.js (DEPS[1]) rides in the FIRST wave:
+       class-entry.js asks it the moment it mounts, in the second, and an
+       account.js that arrives after it would be answered as "absent". It reads
+       nothing at evaluation time, so it has no need to wait for config.js. */
+    var first = [loadScript(DEPS[0]), loadScript(DEPS[1])];   // config.js, account.js
     if (!window.supabase || !window.supabase.createClient) {
       first.push(loadScript(SDK_URL));
     }
     await Promise.all(first);
-    await Promise.all(DEPS.slice(1).map(function (src) {
+    await Promise.all(DEPS.slice(2).map(function (src) {
       return loadScript(src);
     }));
   }

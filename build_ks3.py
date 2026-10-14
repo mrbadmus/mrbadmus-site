@@ -197,6 +197,10 @@ _KS3_ART = ks3_art.load()
 # `shared/mrbadmus.v2.js`, so the two hashes are the same eight characters.
 VERSIONED_ASSETS = ("tokens.css", "styles.css", "nav.css", "ks3.css", "ks3.js",
                      "class-entry.js", "mrbadmus.v2.js",
+                     # ⊕ Front door (12 Oct 2026) — the one map of who goes where;
+                     # class-entry.js asks it. A stale copy would route a person
+                     # by the old rules, silently.
+                     "account.js",
                      # ⊕ theme run (26 Sep 2026) — the shared Light/Dark/System
                      # control (theme.js) and KS3's own dark-token remap
                      # (ks3-theme.css). Same staleness argument as the rest of
@@ -695,7 +699,8 @@ def shell(title, body, nav=(None, None), discipline=None, description="",
   </div>
 </footer>
 <script src="/shared/config.js" defer></script>
-%(tail)s%(themescript)s%(scripts)s<script src="/shared/class-entry.js" defer></script>
+%(tail)s%(themescript)s%(scripts)s<script src="/shared/account.js" defer></script>
+<script src="/shared/class-entry.js" defer></script>
 <script src="/shared/student-bell.js" defer></script>
 <script src="/shared/topbar.js" defer></script>
 </body>

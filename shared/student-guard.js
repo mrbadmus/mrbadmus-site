@@ -23,11 +23,10 @@
  *
  * Behaviour:
  *   - No active session   → redirect to /auth.html?return=<current-path>
- *   - Session valid, role !== 'student' → redirect to /index.html
- *     (rationale: no "logged in but wrong role for this page" surface
- *      exists yet; landing is the safe default. A teacher who accidentally
- *      lands on a /student/* URL goes home rather than seeing an awkward
- *      error. Revisit when a dedicated wrong-role page appears.)
+ *   - Session valid, role !== 'student' → redirect to that person's own home
+ *     (shared/account.js, the one map — front door, 12 Oct 2026). It used to
+ *     be /index.html on the reasoning that no wrong-role surface existed;
+ *     it now does, and it is the person's home.
  *   - Session valid + role === 'student' → call onAllowed({ user, profile })
  *
  * NOT IN SCOPE here: class-membership check. That's a per-page concern
@@ -90,8 +89,35 @@ window.MrBadmusStudentGuard = (function () {
     window.location.replace('/auth.html?return=' + encodeURIComponent(here) + carryEnvQuery());
   }
 
-  function bounceToHome() {
-    window.location.replace('/index.html');
+  /* ⊕ Front door (12 Oct 2026) — A WRONG-DOOR BOUNCE GOES TO THAT PERSON'S
+     HOME, NEVER /index.html. This used to send a parent who opened a pupil page
+     to the landing page, where the top bar then offered them a profile link
+     that bounced them here again (Mide, 9 Oct). Where the person's home is
+     is decided by shared/account.js, the one map, from the profile row this
+     guard already holds; the guard only decides THAT they are on the wrong
+     page. With no profile row there is no kind to route by, and with
+     account.js absent there is no map: those two keep the landing page. */
+  function bounceToHome(profile) {
+    const A = window.MrBadmusAccount;
+    if (!A || !profile) { window.location.replace('/index.html'); return; }
+    A.resolve({ profile: profile, classes: false, force: true }).then(function (acct) {
+      window.location.replace(acct && acct.home ? acct.home : '/index.html');
+    }, function () { window.location.replace('/index.html'); });
+  }
+
+  /* ⊕ Front door (12 Oct 2026) — A DENIAL ALWAYS LEAVES. `onDenied` is the
+     page's chance to react (draw a state, log), and it used to be the page's
+     ONLY response: four hand-written pages (today, decks, flashcards,
+     timetable) pass an `onDenied` whose comment reads "the guard redirects"
+     — and the guard did not, because handing it a callback switched the
+     default redirect off. A parent or a pupil on one of them was left on a
+     blank page (body is display:none until allowed). The callback now runs
+     first, then the redirect the guard would have made without one. */
+  function denied(onDenied, info, leave) {
+    if (onDenied) {
+      try { onDenied(info); } catch (e) { console.error('[guard] onDenied threw', e); }
+    }
+    return leave();
   }
 
   /* ── the resolved session, remembered ────────────────────────────────
@@ -302,8 +328,7 @@ window.MrBadmusStudentGuard = (function () {
     // unlike getSession() which only reads localStorage.
     const { data: { user }, error: userError } = await sb.auth.getUser();
     if (userError || !user) {
-      if (onDenied) return onDenied({ reason: 'no_session', error: userError });
-      return bounceToLogin();
+      return denied(onDenied, { reason: 'no_session', error: userError }, function () { return bounceToLogin(); });
     }
     // The validated user, in case the stored copy was unreadable above.
     if (childAwayFromSchoolPage({ user: user })) { return; }
@@ -324,18 +349,15 @@ window.MrBadmusStudentGuard = (function () {
       // signed in. Bounce to login so a re-auth returns them here (return path
       // preserved). PGRST116 is Supabase's "no rows" code, handled below.
       console.error('[student-guard] profile lookup errored — bouncing to login', error);
-      if (onDenied) return onDenied({ reason: 'profile_lookup_failed', error });
-      return bounceToLogin();
+      return denied(onDenied, { reason: 'profile_lookup_failed', error }, function () { return bounceToLogin(); });
     }
     if (!profile) {
       console.error('[student-guard] no profile row for session user — bouncing to home', error);
-      if (onDenied) return onDenied({ reason: 'no_profile', error });
-      return bounceToHome();
+      return denied(onDenied, { reason: 'no_profile', error }, function () { return bounceToHome(); });
     }
 
     if (!ALLOWED_ROLES.includes(profile.role)) {
-      if (onDenied) return onDenied({ reason: 'wrong_role', role: profile.role });
-      return bounceToHome();
+      return denied(onDenied, { reason: 'wrong_role', role: profile.role }, function () { return bounceToHome(profile); });
     }
 
     /* ⊕ MRB-348 round 4 — …unless the page already drew. On a cached load
@@ -353,6 +375,14 @@ window.MrBadmusStudentGuard = (function () {
   // in spirit: the redirect always happens, even if signOut errors,
   // so the student is never stranded on a protected page.
   async function signOut() {
+    /* ⊕ Front door (12 Oct 2026) — ONE SIGN-OUT. shared/account.js does the
+       cache sweep, the server revoke (through this page's own client), the
+       local clear that survives a dead network, and the redirect to the door
+       that belongs to the person's kind. What follows is the same sequence as
+       it was, kept for a page that somehow has no account.js. */
+    if (window.MrBadmusAccount) {
+      return window.MrBadmusAccount.signOut({ sb: getClient() });
+    }
     /* ⊕ MRB-328 J4(b) — the shared session caches, dropped BEFORE the network
        call and before the redirect. A student surface caches only the class
        entry and the academic years, not a session (the optimistic-render path

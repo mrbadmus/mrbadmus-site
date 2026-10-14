@@ -145,7 +145,9 @@ LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
 # must follow class-entry.js (it asks class-entry who is looking). The tuple
 # used to read ("tokens.css", "nav.css", "search-index.js", "search.js",
 # "nav.js", "class-entry.js").
-NAV_DEPS = ("tokens.css", "nav.css", "topbar.css", "class-entry.js")
+# ⊕ Front door (12 Oct 2026) — `account.js` BEFORE `class-entry.js`: the one map
+# of who goes where, which class-entry.js asks at call time.
+NAV_DEPS = ("tokens.css", "nav.css", "topbar.css", "account.js", "class-entry.js")
 
 # ⊕ MRB-337, 8 Sep 2026 — the bell, and it is deliberately NOT in NAV_DEPS.
 # NAV_DEPS is what the retired page loaded, byte for byte, and that sentence

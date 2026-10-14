@@ -243,6 +243,8 @@ KS4_VERSIONED = ("ks4-ds.css", "ks4-theme.css", "ks4-lesson.css",
                   # class-entry.js for who is looking, the bell).
                   "topbar.css", "topbar.js", "config.js", "class-entry.js",
                   "student-bell.js",
+                  # ⊕ Front door (12 Oct 2026) — the one map; class-entry.js asks it.
+                  "account.js",
                   # ⊕ B2C polish (9 Oct 2026) — the tutor panel's own rules;
                   # they lived only in styles.css, which these pages never load.
                   "tutor-panel.css")
@@ -668,6 +670,58 @@ def build_ds_css():
     return _DS_CSS_HEADER + body
 
 
+# ⊕ Front door run, 12 Oct 2026 (Part 4) — the pilot lessons' progress strip
+# (`nav[data-rail="top"]`, fixed at top:0, 47px) is hidden on phones while the
+# reader scrolls DOWN and returns on a small scroll UP, like KS3's strip
+# (`wireRailAutoHide` in shared/ks3.js). State lives on <html>
+# (`ks4-rail-away`), not on the strip: the runtime patches the strip's node in
+# place and may replace it, and a class on a node it owns would be lost. The
+# 700px limit, the 44px height and no-motion-under-reduced-motion are in
+# KS4_RAIL_CSS below; above 700px the class does nothing.
+KS4_RAIL_JS = """
+/* ⊕ Front door run, 12 Oct 2026 (Part 4) — hide the phone progress strip while
+   reading down, bring it back on a small scroll up (CSS: ks4-lesson.css). */
+(function () {
+  var root = document.documentElement, lastY = window.pageYOffset || 0, ticking = false;
+  function update() {
+    ticking = false;
+    var y = window.pageYOffset || 0, dy = y - lastY;
+    if (y <= 80 || dy <= -6) { root.classList.remove('ks4-rail-away'); }
+    else if (dy > 8) { root.classList.add('ks4-rail-away'); }
+    else { return; }
+    lastY = y;
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
+  }, { passive: true });
+  document.addEventListener('focusin', function (e) {
+    if (e.target && e.target.closest && e.target.closest('[data-rail="top"]')) { root.classList.remove('ks4-rail-away'); }
+  });
+})();
+"""
+
+KS4_RAIL_CSS = """
+/* ⊕ Front door run, 12 Oct 2026 (Part 4) — THE PHONE STRIP, pilot lessons.
+   The template carries the strip's padding inline, which made it 47px; up to
+   700px it is 44px at most, flush at top:0, and slides off while the reader
+   scrolls down (`ks4-rail-away` on <html>, set by ks4-lib.js). `!important`
+   because the template styles are inline. `transform` only: nothing reflows. */
+@media (max-width: 700px) {
+  nav[data-rail="top"] {
+    box-sizing: border-box !important; height: 44px !important;
+    padding: 0 16px !important; top: 0 !important;
+    display: flex; align-items: center;
+    transition: transform .2s ease;
+  }
+  nav[data-rail="top"] > div { width: 100%; }
+  html.ks4-rail-away nav[data-rail="top"] { transform: translateY(-100%); }
+}
+@media (max-width: 700px) and (prefers-reduced-motion: reduce) {
+  nav[data-rail="top"] { transition: none; }
+}
+"""
+
+
 def build_ks4_lib_js():
     text = open(os.path.join(DESIGN_DIR, "ks4-lib.js"), encoding="utf-8").read()
     text = ks4_rulings.apply_r2_ks4lib(text)
@@ -737,7 +791,7 @@ def build_ks4_lib_js():
     if text.count(tail_from) != 1:
         raise SystemExit("build_ks4_lib_js: expected exactly one %r" % tail_from)
     text = text.replace(tail_from, tail_to, 1)
-    return text
+    return text + KS4_RAIL_JS
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -957,7 +1011,7 @@ def collect_lesson_css(all_files):
                "   <helmet> of the 14 lessons + 11 blocks, deduplicated "
                "(exact text match), first-seen order.\n"
                "   Never hand-edit; re-run build_ks4.py. */\n\n")
-    return header + "\n\n".join(chunks) + "\n" + KS4_DARK_MODE_FIXES + KS4_CHIP_CSS
+    return header + "\n\n".join(chunks) + "\n" + KS4_DARK_MODE_FIXES + KS4_CHIP_CSS + KS4_RAIL_CSS
 
 
 def collect_batch_lesson_css(base_dir, files, out_name):
@@ -2021,6 +2075,7 @@ def render_page(lesson, route, compiled_lesson, block_scripts, prev_next, versio
 %(mount_script)s
 <script src="/shared/config.js" defer></script>
 %(tutor)s
+<script src="/shared/account.js" defer></script>
 <script src="/shared/class-entry.js" defer></script>
 <script src="/shared/student-bell.js" defer></script>
 <script src="/shared/topbar.js" defer></script>

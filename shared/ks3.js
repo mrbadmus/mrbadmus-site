@@ -37771,7 +37771,10 @@
 
     function measure() {
       var navH = nav.getBoundingClientRect().height;
-      var total = navH + (sticks(bar) ? bar.getBoundingClientRect().height : 0);
+      // On a phone the header is `position: static` and scrolls away, so it no
+      // longer counts towards what an anchor has to clear (Part 4, 12 Oct).
+      var total = (sticks(nav) ? navH : 0) +
+                  (sticks(bar) ? bar.getBoundingClientRect().height : 0);
       root.style.setProperty("--ks3-nav-h", navH.toFixed(2) + "px");
       root.style.setProperty("--ks3-sticky-h", total.toFixed(2) + "px");
     }
@@ -37842,8 +37845,52 @@
     each(boxes, function (box) { ro.observe(box); });
   }
 
+  /* ⊕ Front door run, 12 Oct 2026 (Part 4) — HIDE THE PHONE STRIP WHILE
+     READING DOWN, BRING IT BACK ON A SMALL SCROLL UP.
+
+     Up to 700px the progress strip is flush at the top and would otherwise sit
+     over the lesson text for the whole page. Scrolling down more than 8px past
+     the first 80px adds `.is-away` (the stylesheet slides it off with a
+     transform, so nothing reflows); any scroll up of 6px or more removes it,
+     as does being near the top or keyboard focus landing inside the strip.
+     The stylesheet owns whether it animates (no transition under
+     prefers-reduced-motion: the strip just appears or disappears) and owns the
+     700px limit: above it `.is-away` has no rule, so desktop is unchanged even
+     though this listener still runs. Passive listener, one rAF per frame. */
+  function wireRailAutoHide() {
+    var bar = document.querySelector(".ks3-railbar");
+    if (!bar) { return; }
+    var lastY = window.pageYOffset || 0;
+    var ticking = false;
+
+    function update() {
+      ticking = false;
+      var y = window.pageYOffset || 0;
+      var dy = y - lastY;
+      if (y <= 80) {
+        bar.classList.remove("is-away");
+      } else if (dy > 8) {
+        bar.classList.add("is-away");
+      } else if (dy <= -6) {
+        bar.classList.remove("is-away");
+      } else {
+        return;               // a tiny move: keep the baseline, decide later
+      }
+      lastY = y;
+    }
+
+    window.addEventListener("scroll", function () {
+      if (!ticking) {
+        ticking = true;
+        window.requestAnimationFrame(update);
+      }
+    }, { passive: true });
+    bar.addEventListener("focusin", function () { bar.classList.remove("is-away"); });
+  }
+
   function init() {
     wireStickyHeight();
+    wireRailAutoHide();
     wireFigureCues(document);
     wirePredictions(document);
     wireCriteria(document);

@@ -7,9 +7,11 @@
       out, the profile chip (with role-based routing + avatar) when signed in.
       Ported verbatim from the previous per-page inline script — the chip's
       accent-soft/accent/accent-border colour pair is the audited ~5.5:1
-      contrast fix; do not weaken it. Role routing (staff → teacher-profile,
-      students → profile-setup) is UX only; RLS guards the data. Does not
-      touch redirectAfterAuth() — MRB-101 sign-in routing is unaffected.
+      contrast fix; do not weaken it. Routing the chip is UX only; RLS guards
+      the data. ⊕ Front door (12 Oct 2026): WHERE the chip goes is no longer
+      decided here — shared/account.js, the one map, answers it for every
+      kind of person (the old staff/student split sent a parent to a teacher
+      page that bounced them out).
 
    2. DRAWER. Injects an accessible full-menu drawer opened by the .nav-burger
       button: aria-expanded, Escape to close, outside-click to close, focus
@@ -242,9 +244,16 @@
 
       // Route the chip by advisory role, cached PER USER so a previous
       // account's route can't leak onto a different signed-in user.
-      var hrefKey = 'mrb-profile-href:' + user.id;
+      // ⊕ Front door (12 Oct 2026) — `v2`: the old key held a parent's
+      // /teacher-profile.html (the 9 Oct trap) and would be painted for one
+      // page load before the real answer landed. A new name starts clean.
+      var hrefKey = 'mrb-profile-href:v2:' + user.id;
       var profileHref = '/profile-setup.html';
       try { profileHref = localStorage.getItem(hrefKey) || profileHref; } catch (err) {}
+      // A family child's route needs no read: the address says it.
+      if (NAVCFG.isChildSession && NAVCFG.isChildSession(session) && window.MrBadmusAccount) {
+        profileHref = window.MrBadmusAccount.describe('child', { childHome: NAVCFG.CHILD_HOME }).home;
+      }
 
       // The avatar the chip is currently wearing, so a NAME change can
       // repaint without knowing whether an avatar has landed yet.
@@ -267,11 +276,30 @@
 
       // Resolve role → correct profile route (staff vs student). A 401/empty
       // response must NOT overwrite the cached route with the student default.
-      fetch(SUPA_URL + '/rest/v1/profiles?id=eq.' + user.id + '&select=role,first_name', {
+      fetch(SUPA_URL + '/rest/v1/profiles?id=eq.' + user.id + '&select=role,first_name,school_id', {
         headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token }
       }).then(function (r) { return r.ok ? r.json() : null; }).then(function (rows) {
         if (!rows || !rows[0]) return;
+        /* ⊕ Front door (12 Oct 2026) — THE CHIP'S ROUTE COMES FROM THE ONE MAP
+           (shared/account.js). It used to be `role !== 'student'` →
+           /teacher-profile.html, which sent a parent (role 'parent') to a
+           teacher page that bounced them out: the 9 Oct trap. The map knows
+           every kind: a person's profile page where one exists, otherwise
+           their home. The role row is handed to it, so there is no second
+           read of `profiles`; the only extra request is the cached schools
+           lookup for staff. Without the map (a page that lacks the tag) the
+           old two-way split stands. */
+        var A = window.MrBadmusAccount;
+        if (A) {
+          return A.resolve({ profile: rows[0], session: session, classes: false }).then(function (acct) {
+            if (acct && acct.kind) profileHref = acct.profileUrl || acct.home || profileHref;
+            return rows;
+          }, function () { return rows; });
+        }
         profileHref = (rows[0].role && rows[0].role !== 'student') ? '/teacher-profile.html' : '/profile-setup.html';
+        return rows;
+      }).then(function (rows) {
+        if (!rows || !rows[0]) return;
         try { localStorage.setItem(hrefKey, profileHref); } catch (err) {}
         // The real name, cached per user like the route above it, so the next
         // page does not have to open on 'You' and then correct itself.

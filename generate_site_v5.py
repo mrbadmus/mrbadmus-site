@@ -670,6 +670,7 @@ HEAD_ASSETS = """<link rel="preload" href="/shared/fonts/fraunces-var-latin.woff
   <script src="/shared/config.js"></script>
   <script src="/shared/search-index.js" defer></script>
   <script src="/shared/search.js" defer></script>
+  <script src="/shared/account.js" defer></script>
   <script src="/shared/nav.js" defer></script>
   <script src="/shared/class-entry.js" defer></script>""" % KS4_FAVICON_LINK
 # ⊕ Test isolation (Mide's ruling, 5 Oct 2026) — `config.js` FIRST, and NOT
@@ -4269,6 +4270,7 @@ html {{ background: #0F0F1A; }}
   <link rel="stylesheet" href="/shared/styles.css"/>
   <link rel="stylesheet" href="/shared/nav.css"/>
   <script src="/shared/config.js"></script>
+  <script src="/shared/account.js" defer></script>
   <script src="/shared/nav.js" defer></script>
   <script src="/shared/class-entry.js" defer></script>
   {extra_css}
@@ -4382,6 +4384,7 @@ html {{ background: #0F0F1A; }}
   <link rel="stylesheet" href="/shared/styles.css"/>
   <link rel="stylesheet" href="/shared/nav.css"/>
   <script src="/shared/config.js"></script>
+  <script src="/shared/account.js" defer></script>
   <script src="/shared/nav.js" defer></script>
   <script src="/shared/class-entry.js" defer></script>
   {extra_css}

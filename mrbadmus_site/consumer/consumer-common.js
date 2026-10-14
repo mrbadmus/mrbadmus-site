@@ -613,6 +613,19 @@
         if (session && session.access_token && isChildSession(session)) {
           setTimeout(function () { flushAnswerOutbox(session.access_token); }, 1500);
         }
+        /* ⊕ Front door (12 Oct 2026) — A SCHOOL PUPIL ON A FAMILY PAGE GOES
+           HOME. These pages had no audience check: a pupil who followed a
+           link here got an API 403 sentence. shared/account.js (the one map,
+           a static tag on the page) says whether this person belongs here and
+           sends a school pupil to their own home if not. ONLY pages that
+           require a session ask, and only a school pupil is turned away —
+           staff stay, because the operator console is a consumer page and an
+           operator may also hold a school. FAIL-OPEN and NOT awaited: the
+           page draws immediately, and any failure or missing account.js
+           leaves it exactly as it was. */
+        if (session && opts.requireSession && window.MrBadmusAccount) {
+          try { window.MrBadmusAccount.guardAudience('consumer', { session: session }); } catch (e) { /* courtesy only */ }
+        }
         return opts.run({
           sb: client,
           session: session,
