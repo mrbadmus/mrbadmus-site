@@ -323,6 +323,36 @@ window.MrBadmusStudentData = (function () {
    *     week: { start_at, end_at, anchor_day, anchor_source },
    *   }
    */
+  /* ⊕ CATCH-UP (14 Oct 2026) — the optimistic `recipient_ids` read; see
+     the comment on `assignmentsPromise` in `loadStudentClass`. The twin of
+     `withRecipientIds` in shared/teacher-data.js, same key, same rule. */
+  var RI_KEY = 'mrb-ri-cap:v1';
+  var RI_NO_TTL_MS = 10 * 60 * 1000;
+  var riState = null;                 // null unknown · true present · false absent
+  function riKnownAbsent() {
+    if (riState !== null) { return riState === false; }
+    try {
+      var at = Number(sessionStorage.getItem(RI_KEY));
+      if (at > 0 && (Date.now() - at) < RI_NO_TTL_MS) { riState = false; return true; }
+    } catch (e) { /* private window: stay "unknown" */ }
+    return false;
+  }
+  function riAbsentError(err) {
+    if (!err || (err.code !== '42703' && err.code !== 'PGRST204')) { return false; }
+    var msg = String(err.message || '') + ' ' + String(err.details || '') + ' ' + String(err.hint || '');
+    return msg.indexOf('recipient_ids') > -1;
+  }
+  async function recipientIdsRead(run) {
+    var cols = riKnownAbsent() ? '' : ', recipient_ids';
+    var r = await run(cols);
+    if (!cols || !r) { return r; }
+    if (!r.error) { riState = true; return r; }
+    if (!riAbsentError(r.error)) { return r; }
+    riState = false;
+    try { sessionStorage.setItem(RI_KEY, String(Date.now())); } catch (e) { /* ok */ }
+    return run('');
+  }
+
   async function loadStudentClass(classId, viewingStudentId) {
     if (!isUuid(classId)) {
       const e = new Error('Invalid class id');
@@ -462,22 +492,34 @@ window.MrBadmusStudentData = (function () {
        `'mcq_set'` and the request shape below is identical to main's, plus
        one harmless extra column. No retry, because `quiz_type` cannot 42703
        — it is exactly as safe to name as `due_at`. */
-    /* ⊕ CATCH-UP (14 Oct 2026) — `select('*')`, DELIBERATELY, AND NOT A
-       SECOND PROBE. A catch-up is an `assignments` row carrying
-       `recipient_ids uuid[]` (NULL = the whole class). That column exists on
-       TEST and NOT on production yet, so it cannot be NAMED here — naming it
-       would 42703 the whole class page on production, which is precisely the
-       rule the paragraph above records. `*` returns it when the column exists
-       and simply does not when it does not: no probe, no retry, no extra
-       request, and a production page is request-for-request what it was.
-       The row is read field by field below, so the wider payload reaches
-       nothing else. `scope_kind` / `scope_ref` (the lesson, for a catch-up)
-       have existed since MRB-335 and arrive the same way. */
-    const assignmentsPromise = settle(sb
-      .from('assignments')
-      .select('*, subject:subject_id ( name )')
-      .eq('class_id', classId)
-      .is('deleted_at', null));
+    /* ⊕ CATCH-UP (14 Oct 2026) — `recipient_ids`, NAMED OPTIMISTICALLY.
+       A catch-up is an `assignments` row carrying `recipient_ids uuid[]`
+       (NULL = the whole class). That column exists on TEST and NOT on
+       production until Mide says yes, and naming a missing column 42703s
+       the whole read. It is named here anyway while what this tab knows
+       about it is "unknown" or "present" — no probe of its own, so with the
+       migration applied the request count is main's exactly. A 42703 /
+       PGRST204 that names `recipient_ids` is a definite "absent": it is
+       cached (memory + sessionStorage for ten minutes, the same key
+       shared/teacher-data.js uses — it is one fact about one database) and
+       THIS read is issued again without the column, once. Only that second
+       answer reaches the code below, so nothing is drawn twice. Any other
+       error is returned untouched and never cached.
+
+       ⚠️ The first version used `select('*')` to avoid even that one 400.
+       It stopped naming `quiz_type`, the column `kindOf` depends on (the
+       paragraph above), which `flashcard_request_shape_drive` asserts by
+       name; `*` also widened every pupil's payload to every column. The
+       list below is main's plus the three a catch-up needs. */
+    const assignmentsPromise = settle(recipientIdsRead(function (riCols) {
+      return sb
+        .from('assignments')
+        .select('id, title, subject_id, due_at, release_at, deleted_at, ' +
+                'quiz_type, scope_kind, scope_ref' + riCols + ', ' +
+                'subject:subject_id ( name )')
+        .eq('class_id', classId)
+        .is('deleted_at', null);
+    }));
 
     const mySubsPromise = settle(sb
       .from('assignment_submissions')
