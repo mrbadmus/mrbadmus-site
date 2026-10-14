@@ -1577,8 +1577,55 @@ def top_up(a):
     for extras in (extras_inventory(), round3_inventory(), round4_inventory()):
         for key, items in extras.items():
             want.setdefault(key, []).extend(items)
-    tagged = {q for ks in data for e in data[ks].values() for q in e["questions"]}
     named = set(a.scope)
+
+    # A lesson that CHANGED since it was tagged (14 Oct 2026: Design's
+    # updated transpiration lesson). Two signals, both read off the loaders:
+    #  * a tagged lesson-page id no loader knows any more — the block or the
+    #    practice-set item is gone — is pruned with its key;
+    #  * a tagged id whose committed answer key no longer matches the key
+    #    recomputed from the sources (it gained, lost or changed its one right
+    #    option) is a different question under the same id — it is untagged
+    #    here and placed again below, like a new id.
+    # Exam rows (`ks3-`/`bv2-`/`cs-`) and bank rows are never touched here:
+    # their ids are not position-derived, and the gate checks them.
+    known = {it[0] for items in want.values() for it in items}
+    keys_now = answer_keys()
+    pruned, changed = [], []
+    for ks in data:
+        for ref, e in data[ks].items():
+            if named and ref not in named:
+                continue
+            ek = e.get("keys") or {}
+            for q in list(e["questions"]):
+                src = source_of(q)
+                if src in ("exam", "ks3_bank", "ks4_bank"):
+                    continue
+                if q not in known:
+                    pruned.append((q, e["questions"].pop(q)))
+                    ek.pop(q, None)
+                    continue
+                now = keys_now[q][0] if q in keys_now else None
+                if now != ek.get(q):
+                    changed.append((q, e["questions"].pop(q), ek.get(q), now))
+                    ek.pop(q, None)
+    for q, kp in pruned:
+        print("  pruned (no loader knows it any more): %s (was %s)" % (q, kp))
+    for q, kp, was, now in changed:
+        print("  re-placing (its answer changed: %r → %r): %s (was %s)" % (was, now, q, kp))
+    # A point the pruning left with no questions is dropped — BEFORE anything
+    # is placed, and only when it is its scope's LAST point and was itself
+    # added after round 1 — so no other point's number moves. Its id is then
+    # free for the next point appended. Any other emptied point is left for a
+    # person (reported after placement; the gate names it).
+    for ks in data:
+        for ref, e in data[ks].items():
+            used = set(e["questions"].values())
+            while e["points"] and e["points"][-1]["id"] not in used and e["points"][-1].get("added"):
+                gone = e["points"].pop()
+                print("  dropped emptied trailing point %s (%s, added %s)" % (gone["id"], gone["label"], gone["added"]))
+
+    tagged = {q for ks in data for e in data[ks].values() for q in e["questions"]}
     todo = {}
     for key, items in sorted(want.items()):
         if named and key[1] not in named:
@@ -1636,6 +1683,13 @@ def top_up(a):
                                    "%d id(s), %d new point(s)" % (len(c["assign"]), len(c.get("new_points") or []))),
                   flush=True)
     merge_extras(data, todo, xres, untagged, "round-4")
+    for ks in data:
+        for ref, e in data[ks].items():
+            used = set(e["questions"].values())
+            for pt in e["points"]:
+                if pt["id"] not in used:
+                    print("  ⚠️ %s has no questions and is not the last point — needs a person "
+                          "(the gate names it)" % pt["id"])
     placed = {q for key, c in xres.items() if not c.get("failed") for q in c["assign"]}
     for q in placed:
         untagged["questions"].pop(q, None)

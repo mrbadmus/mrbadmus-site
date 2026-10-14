@@ -94,7 +94,19 @@ questions: {question_id: point_id}}`.
   whose round-1-3 cache lives outside the repo and is gone after a reboot
   (the full run with no cache would re-draft and renumber every scope). A
   brand-new scope with no points is drafted by round 1 first. `--scope`
-  narrows it. Then `--check`, `--backend`, and commit both repos.
+  narrows it.
+  ⊕ 14 Oct 2026 — a lesson that CHANGED (Design's updated transpiration):
+  a tagged lesson-page id no loader knows any more is pruned with its key,
+  and a tagged id whose committed answer key no longer matches the key
+  recomputed from the sources (it gained, lost or changed its one right
+  option — a different question under the same position id) is untagged and
+  placed again. A point the pruning leaves empty is dropped only if it is
+  the scope's LAST point and was itself added after round 1, so nothing else
+  renumbers — its id is then free for the next appended point (it happened
+  once: `ks4.transpiration.9` was "Guard cells…" on 13 Oct and is the
+  potometer-volume point from 14 Oct). Any other emptied point is left for
+  a person; the gate names it. A wording-only change that keeps the key is
+  not detected and keeps its tag. Exam and bank rows are never pruned. Then `--check`, `--backend`, and commit both repos.
   `MRB_BACKEND_DIR` also says whose `.env` the model key is read from.
 - **To re-draft one scope** without touching any other:
 
