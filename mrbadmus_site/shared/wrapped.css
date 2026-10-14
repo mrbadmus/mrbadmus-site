@@ -52,8 +52,8 @@
 /* ── The card ──────────────────────────────────────────────────────────── */
 .wr-card {
   position: absolute; top: 0; right: 0; bottom: 0; left: 0;
-  display: flex; flex-direction: column; justify-content: center;
-  padding: calc(var(--wr-u) * 22) calc(var(--wr-u) * 8) calc(var(--wr-u) * 12);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: calc(var(--wr-u) * 22) calc(var(--wr-u) * 8) calc(var(--wr-u) * 12 + env(safe-area-inset-bottom, 0px));
   animation: wr-fade .3s ease-out both;
 }
 .wr-card > * { position: relative; z-index: 2; }
@@ -96,20 +96,27 @@
 .wr-name .wr-un { font-size: .3em; letter-spacing: -.01em; font-weight: 600; display: block; margin-top: .12em; animation: wr-fade .6s .8s both; }
 
 /* ── flashcards: a deck dealt behind the number ───────────────────────── */
-.wr-deck { right: calc(var(--wr-u) * 8); top: calc(var(--wr-u) * 20); width: calc(var(--wr-u) * 30); height: calc(var(--wr-u) * 42); }
+.wr-deck { left: 50%; top: 13%; height: 36%; aspect-ratio: 5 / 7; transform: translateX(-46%); }
 .wr-deck i {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: calc(var(--wr-u) * 3);
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: calc(var(--wr-u) * 3.6);
   background: var(--wr-sh); border: 3px solid var(--wr-fg);
   transform: rotate(calc(var(--i) * 7deg - 17deg)) translate(calc(var(--i) * 1.5px), 0);
   animation: wr-deal .7s calc(var(--i) * .1s + .15s) cubic-bezier(.2, .9, .25, 1) both;
 }
-.wr-deck i:last-child::after { content: ""; position: absolute; top: 50%; left: 50%; width: 30%; height: 30%; margin: -15% 0 0 -15%; border-radius: 50%; background: var(--wr-fg); }
+/* the top card face: a ruled card with a drawn tick, never a typed character */
+.wr-deck i:last-child {
+  background-image: linear-gradient(var(--wr-fg), var(--wr-fg)), linear-gradient(var(--wr-fg), var(--wr-fg)), linear-gradient(var(--wr-fg), var(--wr-fg));
+  background-repeat: no-repeat; background-color: var(--wr-sh);
+  background-size: 62% 4%, 70% 3%, 44% 3%; background-position: 50% 54%, 50% 68%, 36% 80%;
+}
+.wr-deck i:last-child svg { position: absolute; left: 50%; top: 10%; width: 36%; height: 30%; margin-left: -18%; fill: none; stroke: var(--wr-fg); stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
 
 /* ── homework: sheets and a star burst ────────────────────────────────── */
-.wr-sheets { right: calc(var(--wr-u) * 9); top: calc(var(--wr-u) * 21); width: calc(var(--wr-u) * 28); height: calc(var(--wr-u) * 38); }
-.wr-sheets i { position: absolute; left: 0; width: 100%; height: calc(var(--wr-u) * 9); border-radius: calc(var(--wr-u) * 1.4); background: var(--wr-sh); border: 3px solid var(--wr-fg); top: calc(var(--i) * var(--wr-u) * 7); animation: wr-stack .55s calc(var(--i) * .13s + .2s) cubic-bezier(.2, 1.1, .3, 1) both; }
+.wr-sheets { left: 50%; top: 14%; width: calc(var(--wr-u) * 50); height: 34%; transform: translateX(-50%); }
+.wr-sheets i { position: absolute; left: 0; width: 100%; height: 17%; border-radius: calc(var(--wr-u) * 2); background: var(--wr-sh); border: 3px solid var(--wr-fg); top: calc(var(--i) * 20.5%); animation: wr-stack .55s calc(var(--i) * .13s + .2s) cubic-bezier(.2, 1.1, .3, 1) both; }
+.wr-sheets i::after { content: ""; position: absolute; left: 8%; top: 40%; width: 46%; height: 20%; border-radius: 99px; background: var(--wr-fg); opacity: .85; }
 .wr-burst { left: 0; top: 0; width: 100%; height: 100%; }
-.wr-burst svg { position: absolute; left: 42%; top: 34%; width: calc(var(--wr-u) * 8); height: calc(var(--wr-u) * 8); margin: calc(var(--wr-u) * -4) 0 0 calc(var(--wr-u) * -4); fill: var(--wr-sh); stroke: var(--wr-fg); stroke-width: 1.6; stroke-linejoin: round; transform: translate(var(--dx), var(--dy)) rotate(var(--r)); animation: wr-star 1.1s calc(var(--i) * .05s + 1.1s) cubic-bezier(.1, .8, .3, 1) both; }
+.wr-burst svg { position: absolute; left: 50%; top: 31%; width: calc(var(--wr-u) * 11); height: calc(var(--wr-u) * 11); margin: calc(var(--wr-u) * -5.5) 0 0 calc(var(--wr-u) * -5.5); fill: var(--wr-sh); stroke: var(--wr-fg); stroke-width: 1.6; stroke-linejoin: round; transform: translate(var(--dx), var(--dy)) rotate(var(--r)); animation: wr-star 1.1s calc(var(--i) * .05s + 1.1s) cubic-bezier(.1, .8, .3, 1) both; }
 
 /* ── best topic: words rise through a mask, a bar sweeps under ─────────── */
 .wr-phrase { margin: 0; color: var(--wr-hi); font: 800 calc(var(--wr-u) * 17)/.98 var(--st-display, 'Bricolage Grotesque', sans-serif); letter-spacing: -.035em; overflow: hidden; padding-bottom: .08em; }
@@ -117,13 +124,13 @@
 .wr-sweep { display: block; height: calc(var(--wr-u) * 2.2); margin-top: calc(var(--wr-u) * 3); border-radius: 2px; background: var(--wr-sh); transform-origin: 0 50%; animation: wr-grow 1s .7s cubic-bezier(.2, .9, .2, 1) both; width: 60%; }
 
 /* ── streak: a staircase of weeks ─────────────────────────────────────── */
-.wr-steps { left: calc(var(--wr-u) * 8); right: calc(var(--wr-u) * 8); bottom: 0; height: calc(var(--wr-u) * 40); display: flex; align-items: flex-end; gap: calc(var(--wr-u) * 1.2); }
-.wr-steps i { flex: 1 1 0; height: calc(var(--wr-u) * (5 + var(--i) * 2.7)); border-radius: calc(var(--wr-u) * 1) calc(var(--wr-u) * 1) 0 0; background: var(--wr-sh); transform-origin: 50% 100%; animation: wr-up .6s calc(var(--i) * .11s + .25s) cubic-bezier(.2, 1, .3, 1) both; }
+.wr-steps { left: calc(var(--wr-u) * 8); right: calc(var(--wr-u) * 8); top: 13%; height: 38%; display: flex; align-items: flex-end; gap: calc(var(--wr-u) * 1.2); }
+.wr-steps i { flex: 1 1 0; height: calc(var(--wr-u) * (7 + var(--i) * 4.6)); border-radius: calc(var(--wr-u) * 1) calc(var(--wr-u) * 1) 0 0; background: var(--wr-sh); transform-origin: 50% 100%; animation: wr-up .6s calc(var(--i) * .11s + .25s) cubic-bezier(.2, 1, .3, 1) both; }
 .wr-steps i.wr-now { background: var(--wr-fg); animation: wr-up .6s calc(var(--i) * .11s + .25s) cubic-bezier(.2, 1, .3, 1) both, wr-pulse 1.4s 1.8s ease-in-out infinite; }
 
 /* ── top band: rings burst out of the number ─────────────────────────── */
-.wr-rings { left: 50%; top: 46%; width: 0; height: 0; }
-.wr-rings i { position: absolute; border-radius: 50%; border: 4px solid var(--wr-sh); width: calc(var(--wr-u) * 30); height: calc(var(--wr-u) * 30); margin: calc(var(--wr-u) * -15) 0 0 calc(var(--wr-u) * -15); animation: wr-ring 2.2s calc(var(--i) * .35s + .3s) cubic-bezier(.1, .7, .3, 1) both; }
+.wr-rings { left: 50%; top: 31%; width: 0; height: 0; }
+.wr-rings i { position: absolute; border-radius: 50%; border: 4px solid var(--wr-sh); width: calc(var(--wr-u) * 34); height: calc(var(--wr-u) * 34); margin: calc(var(--wr-u) * -17) 0 0 calc(var(--wr-u) * -17); animation: wr-ring 2.2s calc(var(--i) * .35s + .3s) cubic-bezier(.1, .7, .3, 1) both; }
 .wr-slam { animation: wr-slam .8s .2s cubic-bezier(.2, 1.4, .3, 1) both; transform-origin: 0 60%; }
 .wr-top { font: 800 calc(var(--wr-u) * 12)/1 var(--st-display, 'Bricolage Grotesque', sans-serif); letter-spacing: -.03em; color: var(--wr-fg); margin: 0 0 calc(var(--wr-u) * 1); }
 
@@ -213,10 +220,16 @@ html[data-theme="dark"] .wr-open.wr-open-row { background: var(--st-paper, #201A
 .wr-rm .wr-pulse, .wr-rm .wr-steps i.wr-now { animation: none !important; }
 .wr-rm .wr-burst { display: none; }
 
-.wr-rise { left: calc(var(--wr-u) * 8); right: calc(var(--wr-u) * 8); top: calc(var(--wr-u) * 22); height: calc(var(--wr-u) * 40); }
+.wr-rise { left: calc(var(--wr-u) * 8); right: calc(var(--wr-u) * 8); top: 14%; height: 34%; }
 .wr-rise svg { width: 100%; height: 100%; display: block; overflow: visible; }
-.wr-rise path { fill: none; stroke: var(--wr-sh); stroke-width: 2.6; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; animation: wr-draw 2s .4s cubic-bezier(.3, .7, .2, 1) both; }
+.wr-rise path { fill: none; stroke: var(--wr-sh); stroke-width: 3.4; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; animation: wr-draw 2s .4s cubic-bezier(.3, .7, .2, 1) both; }
 .wr-rise circle { fill: var(--wr-sh); animation: wr-fade .4s 2.2s both; }
 @keyframes wr-draw { from { stroke-dashoffset: 1; } }
 
 html:not([data-theme="dark"]) .wr-card[data-kind="zero"] .wr-btn { color: #FBF3E6; }
+
+/* text-only cards: the label sits under the bars, the phrase anchors low, the ghost chevron fills between */
+.wr-card[data-kind="best_topic"] .wr-lab, .wr-card[data-kind="most_secured"] .wr-lab, .wr-card[data-kind="revisit"] .wr-lab { margin-bottom: auto; font-size: calc(var(--wr-u) * 6); }
+.wr-card[data-kind="best_topic"] .wr-ghost, .wr-card[data-kind="most_secured"] .wr-ghost, .wr-card[data-kind="revisit"] .wr-ghost, .wr-card[data-kind="top3"] .wr-ghost { opacity: .14; }
+.wr-card[data-kind="top3"] .wr-lab { font-size: calc(var(--wr-u) * 6); }
+.wr-card[data-kind="forward"] .wr-track { margin-bottom: 0; }

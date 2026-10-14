@@ -229,7 +229,9 @@
     },
     flashcards: function (c) {
       var el = card("flashcards");
-      el.appendChild(artEl("wr-deck", 6));
+      var dk = artEl("wr-deck", 6);
+      dk.lastChild.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.8l5 5L20 6.5"/></svg>';
+      el.appendChild(dk);
       el.appendChild(numEl(c.secured));
       el.appendChild(h("p", "wr-sub", pl(c.secured, "flashcard secured", "flashcards secured")));
       if (c.decks_finished > 0) { el.appendChild(h("p", "wr-line", "and " + c.decks_finished + " " + pl(c.decks_finished, "deck", "decks") + " finished")); }
@@ -242,8 +244,8 @@
         for (i = 0; i < 9; i++) {
           var s = svg(ICON.star), ang = -Math.PI * (0.1 + 0.8 * (i / 8)), r = 24 + (i % 3) * 8;
           s.style.setProperty("--i", i);
-          s.style.setProperty("--dx", Math.round(Math.cos(ang) * r) + "vw");
-          s.style.setProperty("--dy", Math.round(Math.sin(ang) * r * 1.1) + "vw");
+          s.style.setProperty("--dx", "calc(var(--wr-u) * " + Math.round(Math.cos(ang) * r) + ")");
+          s.style.setProperty("--dy", "calc(var(--wr-u) * " + Math.round(Math.sin(ang) * r * 1.1) + ")");
           s.style.setProperty("--r", (i * 47) % 160 - 80 + "deg");
           b.appendChild(s);
         }
@@ -260,6 +262,7 @@
     },
     best_topic: function (c) {
       var el = card("best_topic");
+      el.appendChild(h("div", "wr-art wr-ghost")).appendChild(h("img")).src = MARK_URL;
       el.appendChild(h("p", "wr-lab", "Best topic"));
       var ph = wordsEl("h2", "wr-phrase", c.topic); ph.setAttribute("data-fit", "1"); el.appendChild(ph);
       el.appendChild(h("span", "wr-sweep"));
@@ -334,6 +337,7 @@
     },
     most_secured: function (c) {
       var el = card("most_secured");
+      el.appendChild(h("div", "wr-art wr-ghost")).appendChild(h("img")).src = MARK_URL;
       el.appendChild(h("p", "wr-lab", "Most secured"));
       var ph = wordsEl("h2", "wr-phrase", c.topic); ph.setAttribute("data-fit", "1"); el.appendChild(ph);
       el.appendChild(h("span", "wr-sweep"));
@@ -342,6 +346,7 @@
     },
     revisit: function (c) {
       var el = card("revisit");
+      el.appendChild(h("div", "wr-art wr-ghost")).appendChild(h("img")).src = MARK_URL;
       el.appendChild(h("p", "wr-lab", "Next to revisit"));
       var ph = wordsEl("h2", "wr-phrase", c.topic); ph.setAttribute("data-fit", "1"); el.appendChild(ph);
       el.appendChild(h("span", "wr-sweep"));
@@ -350,6 +355,7 @@
     },
     top3: function (c) {
       var el = card("top3"), ul = h("ul", "wr-podium"), i;
+      el.appendChild(h("div", "wr-art wr-ghost")).appendChild(h("img")).src = MARK_URL;
       el.appendChild(h("p", "wr-lab", "Top three"));
       for (i = 0; i < Math.min(3, c.pupils.length); i++) {
         var p = c.pupils[i], li = h("li");
