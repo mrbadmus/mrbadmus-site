@@ -896,11 +896,14 @@ def check_write(t_teacher, scopes):
     # ── C2 · scope_spoof_rejected ─────────────────────────────────────
     #
     # ⚠️ THE REFUSAL IS AT THE SCOPE, NOT AT THE POOL, AND THAT IS STRONGER.
-    # The tree is RE-DERIVED from the class on every request, so `meiosis` is
+    # The tree is RE-DERIVED from the class on every request, so `dna-structure` is
     # not "found and then rejected" for a combined class — it is not in the
     # tree that gets walked, so there is nothing to find. A filter applied
     # after a lookup is a filter a caller can forget.
-    for label, ref, kind in (("a triple-only subtopic", "meiosis", "subtopic"),
+    # ⊕ 14 Oct 2026: was `meiosis`, which BANK-FLAGS.sql / backend 7412690
+    # re-flagged as combined content; `dna-structure` is still triple-only,
+    # the same swap test_set_work_v2 made.
+    for label, ref, kind in (("a triple-only subtopic", "dna-structure", "subtopic"),
                              ("the space topic", "space", "topic"),
                              ("a KS3 unit code", "B1", "topic"),
                              ("something invented", "not-a-real-topic", "topic")):
@@ -913,9 +916,9 @@ def check_write(t_teacher, scopes):
 
     # ── C3 · foreign_question_rejected — the meiosis-in-Energy-Changes case ─
     #
-    # Two ids from `meiosis` (triple-only BIOLOGY) posted under `energy-changes`
-    # (CHEMISTRY) at the combined class. It is wrong three ways at once — wrong
-    # topic, wrong subject, wrong pathway — and the route must not distinguish
+    # Two ids from `meiosis` (BIOLOGY) posted under `energy-changes`
+    # (CHEMISTRY) at the combined class. It is wrong two ways at once — wrong
+    # topic, wrong subject (meiosis stopped being triple-only on 14 Oct) — and the route must not distinguish
     # them: a missing id and an out-of-scope id are ONE refusal, because telling
     # them apart would confirm the existence of a question the caller was never
     # offered.
