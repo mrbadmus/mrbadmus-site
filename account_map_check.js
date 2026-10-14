@@ -185,6 +185,7 @@ job('audiences: consumer turns away only a school pupil', function () {
     var allowed = A.AUDIENCES.consumer.indexOf(k) !== -1;
     assert.strictEqual(allowed, k !== 'pupil', k);
   });
+  assert.deepStrictEqual(A.AUDIENCES.challenge, ['pupil', 'staff', 'operator']);
   assert.deepStrictEqual(A.AUDIENCES.staff, ['staff', 'operator']);
   assert.deepStrictEqual(A.AUDIENCES.pupil, ['pupil']);
 });
@@ -240,6 +241,23 @@ job('resolve: no profile row = a new pupil who needs the wizard', function () {
   return resolveWith({ profile: undefined }).then(function (a) {
     assert.strictEqual(a.kind, 'pupil'); assert.strictEqual(a.gcseComplete, false);
     assert.strictEqual(A.afterAuthTarget(a, '/index.html'), '/profile-setup.html');
+  });
+});
+job('resolve: the one home button — by kind; a classless pupil has none', function () {
+  return resolveWith({ profile: P.parent }).then(function (a) {
+    assert.deepStrictEqual(a.homeButton, { href: '/consumer/overview.html', label: 'My dashboard' });
+    return resolveWith({ profile: P.teacher, schoolKind: 'school' });
+  }).then(function (a) {
+    assert.deepStrictEqual(a.homeButton, { href: '/teacher/today.html', label: 'My classes' });
+    return resolveWith({ email: 'k@children.mrbadmus.internal' });
+  }).then(function (a) {
+    assert.deepStrictEqual(a.homeButton, { href: '/consumer/today.html', label: 'Today' });
+    return resolveWith({ profile: P.pupilGcse, pupilEntry: null });
+  }).then(function (a) {
+    assert.strictEqual(a.homeButton, null, 'no class, no button: /student/classes.html would loop');
+    return resolveWith({ profile: P.pupilGcse, pupilEntry: { href: '/student/class.html?class=c1', label: 'My class', title: 't' } });
+  }).then(function (a) {
+    assert.deepStrictEqual(a.homeButton, { href: '/student/class.html?class=c1', label: 'My class' });
   });
 });
 job('resolve: pupil gets their class from class-entry, not from a second query', function () {

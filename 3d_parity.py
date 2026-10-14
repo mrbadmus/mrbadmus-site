@@ -505,15 +505,15 @@ COMPONENTS = [
     dict(name="brand wordmark", on="s01", sel=".mrb-brand",
          props={"font-family": "Bricolage Grotesque", "font-weight": "600",
                 "font-size": "21px", "color": "#221E1B"}),
-    dict(name="nav resting item", on="s01", sel=".topbar__nav span",
-         props={"color": "#6E655D", "font-size": "15px"}),
-    dict(name="nav current item", on="s01", sel=".topbar__nav .is-here",
-         props={"color": "#1A1714"}),
-    # accent-text fill, not the reference's #E4572E (allow-list rule 15)
-    dict(name="create-account CTA", on="s01", sel=".cta",
-         props={"background-color": "#A93411", "color": "#FFFDF8",
-                "font-size": "14px", "font-weight": "600",
-                "border-top-left-radius": "8px"}),
+    # ⊕ FRONT DOOR (12 Oct 2026) — the bar's right-hand end is the site's one
+    # home button + hamburger (shared/nav.js paints and binds them). BEFORE:
+    # the reference's inert "Lessons / Practice / 3D Studio" nav (colours
+    # #6E655D / #1A1714, 15px) and the "Create free account" CTA (#A93411
+    # fill, 14px/600, 8px radius) were pinned here. AFTER: they must be GONE
+    # (see the absence checks in the s01 block below), and the hamburger is a
+    # 40px box — the same measurement on every public bar.
+    dict(name="burger is a 40px box", on="s01", sel=".topbar .nav-burger",
+         props={"width": "40px", "height": "40px"}),
     dict(name="breadcrumb strip", on="s01", sel=".crumbstrip",
          props={"height": "56px", "background-color": "#F7EDDC"}),
     dict(name="breadcrumb is mono caption", on="s01", sel=".crumb",
@@ -689,8 +689,10 @@ COMPONENTS = [
     dict(name="menu trigger is square", on="s05", sel=".libtrigger--square",
          props={"width": "38px", "height": "38px",
                 "border-top-left-radius": "10px"}),
-    dict(name="phone sign-in is accent text", on="s05", sel=".signin",
-         props={"color": "#A93411", "font-size": "13px", "font-weight": "600"}),
+    # ⊕ FRONT DOOR — the phone's own "Sign in" text link (accent text, 13px/600)
+    # is replaced by the shared home button; the burger is the same 40px box.
+    dict(name="phone burger is a 40px box", on="s05", sel=".topbar .nav-burger",
+         props={"width": "40px", "height": "40px"}),
     dict(name="sheet", on="s05", sel=".sheet",
          props={"background-color": "#FFFDF8", "border-top-left-radius": "18px",
                 "border-top-color": "#E0D2B9"}),
@@ -1275,12 +1277,16 @@ def check_structure(page, screen, counts):
         # §01: header → crumb strip → library / stage / panel, in order
         # (⊕ one-mark ruling 13 Sep 2026: the brand is `.mrb-brand` now)
         need(".topbar .mrb-brand")
-        need(".topbar__nav span", 3, "Lessons / Practice / 3D Studio")
-        need(".topbar__nav .is-here")
-        if page.eval("window.__st.text('.topbar__nav .is-here')") != "3D Studio":
-            p.append("s01: the current nav item is not '3D Studio'")
-        need(".topbar .signin")
-        need(".topbar .cta")
+        # ⊕ FRONT DOOR — the end of the bar is #nav-auth-area + .nav-burger,
+        # and the old inert nav, "Sign in" link and "Create free account" CTA
+        # are gone: each absence is asserted, so a regression back fails here.
+        need(".topbar #nav-auth-area")
+        need(".topbar .nav-burger")
+        for gone in (".topbar__nav", ".topbar .signin", ".topbar .cta"):
+            back = page.eval("document.querySelectorAll(%r).length" % gone)
+            if back:
+                p.append("s01: %s is back in the bar (%d) — the studio wears the "
+                         "shared home button and hamburger only" % (gone, back))
         need(".crumbstrip .crumb")
         need(".crumbstrip .modeseg")
         order = page.eval(
@@ -1476,7 +1482,8 @@ def check_structure(page, screen, counts):
     elif screen == "s05":
         need(".libtrigger--square")
         need(".topbar .mrb-brand")  # ⊕ one-mark ruling 13 Sep 2026
-        need(".signin")
+        need(".topbar #nav-auth-area")   # ⊕ FRONT DOOR: the shared home button replaces the phone "Sign in" link
+        need(".topbar .nav-burger")
         need(".sheet")
         need(".sheet__grab .sheet__handle")
         need(".sheet__foot .lessonglyph")

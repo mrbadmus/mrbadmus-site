@@ -244,7 +244,7 @@ KS4_VERSIONED = ("ks4-ds.css", "ks4-theme.css", "ks4-lesson.css",
                   "topbar.css", "topbar.js", "config.js", "class-entry.js",
                   "student-bell.js",
                   # ⊕ Front door (12 Oct 2026) — the one map; class-entry.js asks it.
-                  "account.js",
+                  "account.js", "nav.js", "drawer.css", "search.js", "search-index.js",
                   # ⊕ B2C polish (9 Oct 2026) — the tutor panel's own rules;
                   # they lived only in styles.css, which these pages never load.
                   "tutor-panel.css")
@@ -2062,6 +2062,7 @@ def render_page(lesson, route, compiled_lesson, block_scripts, prev_next, versio
 <link rel="stylesheet" href="/shared/ks4-theme.css">
 <link rel="stylesheet" href="/shared/ks4-lesson.css">
 %(batch_css)s<link rel="stylesheet" href="/shared/topbar.css">
+<link rel="stylesheet" href="/shared/drawer.css">
 <link rel="stylesheet" href="/shared/tutor-panel.css">
 <style>html,body{margin:0;padding:0;background:#FBF3E6}@media screen{html[data-theme="dark"] body,html[data-theme="dark"]{background:#16120E}}</style>
 </head>
@@ -2075,7 +2076,9 @@ def render_page(lesson, route, compiled_lesson, block_scripts, prev_next, versio
 %(mount_script)s
 <script src="/shared/config.js" defer></script>
 %(tutor)s
+<script>window.MRB_SEARCH_SRC=["/shared/search-index.js","/shared/search.js"];</script>
 <script src="/shared/account.js" defer></script>
+<script src="/shared/nav.js" defer></script>
 <script src="/shared/class-entry.js" defer></script>
 <script src="/shared/student-bell.js" defer></script>
 <script src="/shared/topbar.js" defer></script>
@@ -2188,7 +2191,7 @@ def prerender_all(cdp, pages):
                         # signed-out "Sign in" until the runtime redraws.
                         baked = page.eval(
                             "(function(){[].forEach.call(document.querySelectorAll("
-                            "'[data-mrb-topbar-who]'),function(s){s.textContent='';});"
+                            "'[data-mrb-topbar-who],#nav-auth-area'),function(s){s.textContent='';});"
                             "return document.querySelector('#ks4-mount').innerHTML;})()")
                         break
                     time.sleep(0.1)

@@ -618,40 +618,11 @@
   //    page now carries the one top bar (topbar.py), whose avatar menu holds
   //    "My class", and `mount()` below stands down on any page with that bar.
 
-  // 2. Public / KS4 — into the persistent cluster, before the auth control,
-  //    plus a drawer row. .nav-class-link collapses one rung ABOVE
-  //    .nav-text-link (see shared/nav.css) so the measured 600px ladder that
-  //    3D Studio was fitted to is left exactly as it was tested.
-  function renderPublic(entry) {
-    var cluster = document.querySelector('.nav-cluster');
-    if (!cluster) return false;
-    var authArea = cluster.querySelector('#nav-auth-area');
-    var a = anchor('nav-class-link', entry);
-    if (authArea) cluster.insertBefore(a, authArea);
-    else cluster.appendChild(a);
-
-    // Drawer row, first in the menu — below the collapse breakpoints this is
-    // the only place the entry lives, so it leads rather than trails. nav.js
-    // built the drawer on DOMContentLoaded; we are past a network round trip,
-    // so it exists. If it somehow doesn't, the cluster link above still does.
-    var menu = document.querySelector('#nav-drawer .nav-drawer-menu');
-    if (menu && !menu.querySelector('[data-mrb-class-entry]')) {
-      var d = document.createElement('a');
-      d.href = entry.href;
-      d.title = entry.title;
-      d.setAttribute('data-mrb-class-entry', '1');
-      d.innerHTML = '<span class="nav-drawer-ico">🎒</span>';
-      d.appendChild(document.createTextNode(entry.label));
-      menu.insertBefore(d, menu.firstChild);
-      // nav.js wires "close on link click" over the rows that existed when it
-      // ran, so this one wires its own.
-      d.addEventListener('click', function () {
-        var burger = document.querySelector('.nav-burger');
-        if (burger && burger.getAttribute('aria-expanded') === 'true') burger.click();
-      });
-    }
-    return true;
-  }
+  // 2. Public / KS4 — ⊖ RETIRED by the front door run (12 Oct 2026). This
+  //    inserted a "My class" link into `.nav-cluster` and a 🎒 row into the
+  //    drawer. The public bar now has ONE home button, painted by shared/nav.js
+  //    from shared/account.js's answer (which asks `pupilEntry()` here for the
+  //    pupil's class), so a second copy would put the entry on the page twice.
 
   // 3. Dashboards — plain text link in the right-hand group, matching the
   //    utilitarian styling the brand rule pins for these pages (no logo asset,
@@ -676,10 +647,13 @@
        menu, filled by shared/topbar.js); drawing a second one here would put
        "My class" on the page twice. */
     if (document.querySelector('[data-mrb-topbar]')) return;
+    /* ⊕ Front door — only the dashboards (`nav.top-nav`) still take an entry
+       from here; on every other page there is nothing to draw, so no read. */
+    if (!document.querySelector('nav.top-nav')) return;
     resolve().then(function (entry) {
       if (!entry) return;                 // signed out, or zero classes
       if (isHere(entry.href)) return;     // already here
-      renderPublic(entry) || renderDashboard(entry);
+      renderDashboard(entry);
     }).catch(function () { /* never break a page over a nav affordance */ });
   }
 

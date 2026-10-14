@@ -577,14 +577,21 @@ def phase_source():
 
 
 def phase_chrome(key, sess_a, base, api, aid):
-    """The KS4 chrome surfaces — badge, panel, keyboard, widths, navigation.
+    """The pupil dashboard surface — badge, panel, keyboard, widths, navigation.
 
-    my-challenges.html is the surface used because it needs NO backend of its
+    student/classes.html is the surface used because it needs NO backend of its
     own to render its chrome, so a failure here is the bell's and nothing
-    else's.
+    else's. (⊕ Front door: it was my-challenges.html, a public page.)
     """
-    print("\n  ── phase 1 · the bell on a KS4 chrome page (my-challenges) ──")
-    url = base + "/my-challenges.html?env=test&api=" + api
+    print("\n  ── phase 1 · the bell on a pupil page (student/classes) ──")
+    # ⊕ FRONT DOOR (12 Oct 2026) — WAS my-challenges.html. The public bar no
+    # longer takes a bell (brand · theme · one home button · hamburger, and
+    # nothing else), so the badge, the panel, the keyboard and the widths are
+    # asked of the PUPIL surface the bell lives on: student/classes.html, whose
+    # dashboard `nav.top-nav` student-bell.js still auto-attaches to and which
+    # needs no backend of its own to draw. That the public bar has NO bell is
+    # asserted separately, in phase 4b.
+    url = base + "/student/classes.html?env=test&api=" + api
     b = cdp.Browser().start()
     try:
         if not plant(b, base, key, sess_a):
@@ -677,8 +684,7 @@ def phase_chrome(key, sess_a, base, api, aid):
         page = b.page(url, settle=0.8)
         st = wait_bell(page)
         check("narrow_bell_visible", st.get("visible") and st.get("badgeShown"),
-              "390px: the bell is on screen (nav.css hides .nav-icon-link "
-              "below 400 — the bell does not use that class)")
+              "390px: the bell is on screen")
         page.eval("document.querySelector('[data-mrb-bell]').click()")
         time.sleep(0.5)
         st = page.eval(BELL_STATE)
@@ -708,7 +714,7 @@ def phase_chrome(key, sess_a, base, api, aid):
               FEED.reads == ["reminder:11111111-1111-1111-1111-111111111111"],
               "POST …/read carried %s" % (FEED.reads or "NOTHING"))
 
-        # ── the badge cleared, back on the chrome page ───────────────────
+        # ── the badge cleared, back on the pupil page ───────────────────
         sized(b, 1280)
         page = b.page(url, settle=0.8)
         st = wait_bell(page)
@@ -868,26 +874,26 @@ def phase_signed_out(base, api):
             time.sleep(1.0)
             if page.eval("!!document.querySelector('[data-mrb-bell]')"):
                 seen.append(name)
-            if not page.eval("!!window.MrBadmusBell"):
-                noisy.append(name + " (the module did not even load)")
             for line in page.console_errors():
                 if "student-bell" in str(line):
                     noisy.append("%s: %s" % (name, str(line)[:80]))
         check("signed_out_no_bell", not seen,
               "no bell on any of the four public pages"
               if not seen else "a bell appeared on: " + ", ".join(seen))
+        # ⊕ FRONT DOOR — the "module did not even load" clause is gone: the public
+        # pages no longer need student-bell.js at all (their bar has no bell).
         check("signed_out_quiet", not noisy,
-              "the module loaded on all four and said nothing"
+              "all four loaded and said nothing"
               if not noisy else "; ".join(noisy))
     finally:
         b.close()
 
 
+# ⊕ FRONT DOOR (12 Oct 2026) — the four PUBLIC pages (leaderboard, weekly-
+# challenge, my-challenges, revision) left this list: their bar no longer
+# carries a bell. They are asserted bell-FREE in phase 4b. What is left is the
+# pupil surfaces a bell belongs on.
 SURFACES = [
-    ("leaderboard",       "/leaderboard.html"),
-    ("weekly-challenge",  "/weekly-challenge.html"),
-    ("my-challenges",     "/my-challenges.html"),
-    ("revision",          "/revision.html"),
     ("student/classes",   "/student/classes.html"),
     ("student/class",     "/student/class.html"),
     ("student/assignment", "/student/assignment.html"),
@@ -987,7 +993,7 @@ def phase_surfaces(key, sess_a, base, api, aid):
                     width, 820)
 
         check("bell_widens_nothing", not widened,
-              "14 measurements, %s" % (", ".join(widened) if widened else
+              "6 measurements, %s" % (", ".join(widened) if widened else
                                        "removing the bell narrows no surface "
                                        "— it costs nothing horizontally"))
         check("bell_on_every_surface", not missing,
@@ -1000,35 +1006,30 @@ def phase_surfaces(key, sess_a, base, api, aid):
         b.close()
 
 
-# ⚠️ THE WIDTH LADDER. Every phone width the nav's own media queries make a
-# DIFFERENT layout at, plus the two either side of each hinge.
+# ⊕ FRONT DOOR (12 Oct 2026) — THE WIDTH LADDER, RE-POINTED.
 #
-# `phase_surfaces` above asks at 390 and 1280, and for a long time that was the
-# whole of it. It was not enough, and the way it was not enough is worth
-# stating because the intuition that produced it is the natural one:
+# It used to measure what the BELL cost the public bar's signed-in cluster (a
+# name chip, a Challenge pill, two icons and a bell sharing 360-430px) and what
+# a 32-character display name cost beside it. That cluster is gone: the public
+# bar is brand · theme · ONE home button · hamburger, the name is the drawer's,
+# and the bell no longer lives on a public page at all. What the same seven
+# widths now have to prove, signed in as a pupil, on the four public pages:
 #
-#   MRB-337's bell overflowed the bar at 390px — and ALSO at 414px, by very
-#   much more (501–508px against 390's 427–434px). Nobody saw the 414 case for
-#   a day, because a defect that lives strictly between the two widths a gate
-#   measures is invisible to that gate for ever.
-#
-# ⚠️ AND 414 IS THE WORST WIDTH, NOT 390. "Test the smallest phone" is exactly
-# the reasoning that produced the blind spot. `shared/nav.css` collapses
-# `.nav-icon-link` — Leaderboard and Search — into the drawer at ≤400px, so a
-# 390px bar is carrying TWO FEWER ITEMS than a 414px one. The bar is at its
-# FULLEST just above that hinge, not at its narrowest screen. 430 and 414 sit
-# above it, 400 and 393 and 390 and 375 below it, and 360 is the second hinge
-# (`.nav-brand` drops to 1rem there).
+#   before                                       after
+#   removing the bell narrows nothing            there IS NO bell on the bar
+#   a 32-char name costs 0px (.nav-chip-name)    there is NO name chip on the bar
+#   the chip never reads the email               the drawer's "<name> · Pupil"
+#                                                never reads the email
+#   (no assertion on the bar's shape)            ≤700px: one row ≤56px, not
+#                                                sticky; the bar never scrolls
+#                                                sideways; a 40px burger
+#   (not asserted)                               the home button is a pupil's
+#                                                "My class"/"My classes", or
+#                                                absent for a pupil with no class
 LADDER = (360, 375, 390, 393, 400, 414, 430)
 
-# The four that failed, and the only four that can be asked. They are the
-# signed-in KS4 pages that load `shared/config.js`, which is what points
-# `shared/nav.js` at THIS world's project ref — without it the nav falls back
-# to the production ref, finds no session, and draws a signed-OUT bar with no
-# chip to measure. `index.html` and the ~900 KS4 chrome/lesson pages carry the
-# same nav and do NOT load config.js, so a TEST world cannot see their chip at
-# all. That is a limit of this harness, not a defect in them, and it is the
-# reason this ladder names four pages rather than every page wearing the nav.
+# The four public surfaces, which load shared/config.js (what points
+# shared/nav.js at THIS world's project ref).
 LADDER_SURFACES = [
     ("leaderboard",      "/leaderboard.html"),
     ("weekly-challenge", "/weekly-challenge.html"),
@@ -1036,72 +1037,36 @@ LADDER_SURFACES = [
     ("revision",         "/revision.html"),
 ]
 
-# Longer than any real first name, and deliberately so — see `phase_ladder`.
-LONG_NAME = "Konstantina-Alexandra-Wilhelmina"
-
-LADDER_PROBE = r"""(function (nm) {
+LADDER_PROBE = r"""(function () {
   var de = document.documentElement;
-  var bell = document.querySelector('[data-mrb-bell]');
-  var chip = document.getElementById('nav-profile-link');
-  var span = chip && chip.querySelector('.nav-chip-name');
-  var out = {clientW: de.clientWidth, bell: !!bell, chip: !!chip,
-             span: !!span,
-             chipText: chip ? (chip.innerText || '').replace(/\s+/g, ' ').trim() : null};
-
-  function costOfBell() {
-    if (!bell) { return 0; }
-    var par = bell.parentNode, nx = bell.nextSibling, panel =
-      document.getElementById('mrb-bell-panel');
-    var before = de.scrollWidth;
-    bell.remove(); if (panel) { panel.remove(); }
-    var after = de.scrollWidth;
-    par.insertBefore(bell, nx);
-    return before - after;
-  }
-
-  out.realW = de.scrollWidth;
-  out.bellCostReal = costOfBell();
-  if (span) {
-    var was = span.textContent;
-    span.textContent = nm;
-    out.longW = de.scrollWidth;
-    out.bellCostLong = costOfBell();
-    out.truncated = span.scrollWidth > span.clientWidth + 1;
-    span.textContent = was;
-  }
-  return out;
-})(""" + json.dumps(LONG_NAME) + ")"
+  var bar = document.querySelector('nav.nav, header.mrb-topbar');
+  var home = document.getElementById('nav-auth-area');
+  var burger = document.querySelector('.nav-burger');
+  var acct = document.getElementById('nav-drawer-account');
+  var cs = bar ? getComputedStyle(bar) : null;
+  var br = burger ? burger.getBoundingClientRect() : null;
+  return {
+    clientW: de.clientWidth,
+    bar: !!bar,
+    bell: !!document.querySelector('[data-mrb-bell]'),
+    chip: !!document.getElementById('nav-profile-link'),
+    retired: bar ? bar.querySelectorAll('.nav-text-link,.challenge-chip,.nav-icon-link,.nav-class-link').length : 0,
+    home: home ? (home.innerText || '').replace(/\s+/g, ' ').trim() : null,
+    barH: bar ? bar.getBoundingClientRect().height : null,
+    pos: cs ? cs.position : null,
+    barOverflow: bar ? bar.scrollWidth - bar.clientWidth : null,
+    burgerW: br ? br.width : null, burgerH: br ? br.height : null,
+    acct: acct ? (acct.innerText || '').replace(/\s+/g, ' ').trim() : null
+  };
+})()"""
 
 
 def phase_ladder(key, sess_a, base, api):
-    """The bell, and the name beside it, across every width the nav changes at.
-
-    ⚠️ BOTH ASSERTIONS ARE DIFFERENCES, AND THAT IS DELIBERATE. `phase_surfaces`
-    already explains why an ABSOLUTE `scrollWidth <= clientWidth` is the wrong
-    question here: the leaderboard's own podium has overflowed 390px on its own
-    account, and a bare absolute would fail this drive for somebody else's
-    defect while proving nothing about the bell. The same logic applies twice
-    over at seven widths. So:
-
-      · what does the BELL cost?  measure, remove it, measure again → 0
-      · what does a LONG NAME cost?  measure, lengthen it, measure again → 0
-
-    The second is the guard on `.nav-chip-name` in `shared/nav.css`. A display
-    name is user data of unbounded length, and if the cap is ever removed the
-    long name costs width and this goes red — which is the whole point.
-
-    ⚠️ THE LONG NAME MATTERS MORE THAN IT LOOKS. A fixture with a short name
-    passes whatever the CSS says, and the real failure mode is a long one. It
-    is exactly how this stayed hidden: `shared/nav.js` used to fall back to the
-    EMAIL LOCAL PART, so TEST drew `mrb326_pupil_a` and production mostly drew
-    a real first name — the defect was louder in the sandbox than in the world,
-    which is the opposite of the usual way round and easy to dismiss as a
-    fixture artefact. `chip_is_never_the_email` below pins the other half.
-    """
-    print("\n  ── phase 4b · the width ladder, %s ──"
+    """The public bar, signed in as a pupil, across every width it changes at."""
+    print("\n  ── phase 4b · the public bar, signed in, %s ──"
           % ", ".join(str(w) for w in LADDER))
     b = cdp.Browser().start()
-    bell_cost, name_cost, no_span, emails = [], [], [], []
+    bell, chip, retired, labels, shape, sideways, burger, emails = [], [], [], [], [], [], [], []
     seen = 0
     try:
         if not plant(b, base, key, sess_a):
@@ -1111,56 +1076,44 @@ def phase_ladder(key, sess_a, base, api):
             for width in LADDER:
                 sized(b, width, 820)
                 page = b.page(base + path + "?env=test&api=" + api, settle=0.9)
-                wait_bell(page, seconds=20)
+                time.sleep(1.2)          # the map's answer paints the button
                 r = page.eval(LADDER_PROBE)
-                if not isinstance(r, dict) or not r.get("chip"):
-                    no_span.append("%s@%d drew no signed-in chip"
-                                   % (name, width))
+                if not isinstance(r, dict) or not r.get("bar"):
+                    labels.append("%s@%d drew no public bar" % (name, width))
                     continue
                 seen += 1
-                # The nav.js half: the chip must never wear the email.
-                txt = r.get("chipText") or ""
-                if local in txt or "@" in txt:
-                    emails.append("%s@%d chip reads %r" % (name, width, txt))
-                if r.get("bellCostReal"):
-                    bell_cost.append("%s@%d the bell costs %dpx"
-                                     % (name, width, r["bellCostReal"]))
-                if not r.get("span"):
-                    no_span.append("%s@%d has no .nav-chip-name to cap the "
-                                   "display name" % (name, width))
-                    continue
-                grew = r.get("longW", 0) - r.get("realW", 0)
-                if grew > 0:
-                    name_cost.append(
-                        "%s@%d a %d-character name costs %dpx (%d→%d), and "
-                        "the name box %s"
-                        % (name, width, len(LONG_NAME), grew, r["realW"],
-                           r["longW"],
-                           "did truncate" if r.get("truncated")
-                           else "did NOT truncate"))
-                if r.get("bellCostLong"):
-                    bell_cost.append("%s@%d with a long name the bell costs "
-                                     "%dpx" % (name, width, r["bellCostLong"]))
+                tag = "%s@%d" % (name, width)
+                if r["bell"]: bell.append(tag)
+                if r["chip"]: chip.append(tag)
+                if r["retired"]: retired.append("%s (%d)" % (tag, r["retired"]))
+                if r["home"] not in ("", "My class", "My classes"):
+                    labels.append("%s home button reads %r" % (tag, r["home"]))
+                if width <= 700 and (r["barH"] > 56.5 or r["pos"] in ("sticky", "fixed")):
+                    shape.append("%s %.0fpx %s" % (tag, r["barH"], r["pos"]))
+                if r["barOverflow"] > 1:
+                    sideways.append("%s bar overflows by %dpx" % (tag, r["barOverflow"]))
+                if abs((r["burgerW"] or 0) - 40) > 0.6 or abs((r["burgerH"] or 0) - 40) > 0.6:
+                    burger.append("%s burger %.0fx%.0f" % (tag, r["burgerW"] or 0, r["burgerH"] or 0))
+                if "@" in (r.get("acct") or "") or local in (r.get("acct") or ""):
+                    emails.append("%s drawer reads %r" % (tag, r["acct"]))
         n = len(LADDER_SURFACES) * len(LADDER)
-        check("ladder_bell_costs_nothing", not bell_cost,
-              ", ".join(bell_cost) if bell_cost
-              else "%d measurement(s) across %d width(s): removing the bell "
-                   "narrows nothing, with a real name or a long one"
-                   % (seen * 2, len(LADDER)))
-        check("ladder_long_name_costs_nothing", not name_cost,
-              ", ".join(name_cost) if name_cost
-              else "a %d-character display name costs 0px at every one of the "
-                   "%d widths — .nav-chip-name truncates instead of pushing "
-                   "the bar" % (len(LONG_NAME), len(LADDER)))
-        check("chip_is_never_the_email", not emails,
-              ", ".join(emails) if emails
-              else "%d chip(s) read a name, never %r or anything with an @"
-                   % (seen, local))
-        if no_span:
-            check("ladder_not_asked", None, "; ".join(no_span))
-        elif seen != n:
-            check("ladder_not_asked", None,
-                  "%d of %d cells measured" % (seen, n))
+        check("ladder_no_bell_on_public_bar", not bell,
+              ", ".join(bell) if bell else "%d cell(s): no bell on any public bar" % seen)
+        check("ladder_no_name_chip", not chip and not retired,
+              ", ".join(chip + retired) if (chip or retired)
+              else "no name chip, Challenge pill, icon or text link in the bar")
+        check("ladder_home_button_is_the_pupils", not labels,
+              ", ".join(labels) if labels else "the one button reads My class / My classes (or is absent: no class)")
+        check("ladder_phone_bar_one_slim_static_row", not shape,
+              ", ".join(shape) if shape else "≤700px: ≤56px and scrolls away at every width")
+        check("ladder_bar_never_scrolls_sideways", not sideways,
+              ", ".join(sideways) if sideways else "the bar's own width holds at every width")
+        check("ladder_burger_is_40px", not burger,
+              ", ".join(burger) if burger else "a 40px box at every width")
+        check("drawer_never_reads_the_email", not emails,
+              ", ".join(emails) if emails else "the account section reads a name, never %r or an @" % local)
+        if seen != n:
+            check("ladder_not_asked", None, "%d of %d cells measured" % (seen, n))
     finally:
         b.close()
 

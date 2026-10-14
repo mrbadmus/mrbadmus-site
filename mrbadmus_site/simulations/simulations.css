@@ -47,3 +47,10 @@ body {
 .sim-item svg { color: var(--sim-accent-text); flex: none; }
 .sim-retry a { color: var(--sim-accent-text); }
 @media (max-width: 400px) { .sim-bar { gap: 8px; } }
+
+/* ⊕ Front door (12 Oct 2026) — the bar ends in the site's home button and
+   hamburger (shared/nav.js, shared/drawer.css), after the compact theme slot.
+   On a phone it is one row of at most 56px; it was never sticky. */
+.sim-bar #nav-auth-area { flex: 0 1 auto; }
+@media (max-width: 700px) { .sim-bar { height: 56px; } }
+@media (max-width: 359px) { .sim-bar .mrb-brand__word { display: none; } }

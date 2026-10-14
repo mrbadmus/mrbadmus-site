@@ -117,7 +117,12 @@
     staff:    ['staff', 'operator'],
     parent:   ['parent'],
     child:    ['child'],
-    consumer: ['parent', 'child', 'org_staff', 'operator', 'staff']
+    consumer: ['parent', 'child', 'org_staff', 'operator', 'staff'],
+    // The weekly challenge and the challenge history are a school pupil's (and
+    // a teacher may look). A parent, a family child or organisation staff who
+    // opens one by URL goes to their own home instead of an API error or the
+    // GCSE wizard — front door Part 5.
+    challenge: ['pupil', 'staff', 'operator']
   };
 
   function isStaffRole(role) { return STAFF_ROLES.indexOf(role) !== -1; }
@@ -346,6 +351,9 @@
     acct.gcseComplete = !!(p.science_pathway && p.tier);
     acct.unknown = !kind;
     acct.hasClass = false;
+    /* The ONE button the public bar shows for this person: their home, by the
+       home's own label. A pupil's is set once their class is known (run()). */
+    acct.homeButton = (kind && kind !== 'pupil') ? { href: acct.home, label: acct.homeLabel } : null;
     return acct;
   }
 
@@ -389,7 +397,32 @@
       return Promise.resolve(childAcct);
     }
 
-    var ce = root.MRBClassEntry;
+    return classEntryReady(opts.classes !== false).then(function (ce) {
+      return runWith(opts, conf, session, ce);
+    });
+  }
+
+  /* class-entry.js is a deferred tag that runs AFTER nav.js and account.js, and
+     nav.js asks for the account the moment it boots — so on a pupil's page the
+     first answer would be given before the one module that knows their class
+     had loaded, and read "no class". If the page HAS the tag, wait for it
+     (bounded: 4s); if it has none, there is nothing to wait for. */
+  function classEntryReady(want) {
+    if (!want) return Promise.resolve(null);
+    if (root.MRBClassEntry) return Promise.resolve(root.MRBClassEntry);
+    var d = root.document;
+    if (!d || !d.querySelector || !d.querySelector('script[src*="class-entry.js"]')) return Promise.resolve(null);
+    return new Promise(function (resolve) {
+      var tries = 0;
+      (function poll() {
+        if (root.MRBClassEntry) return resolve(root.MRBClassEntry);
+        if (++tries > 80) return resolve(null);
+        setTimeout(poll, 50);
+      })();
+    });
+  }
+
+  function runWith(opts, conf, session, ce) {
     var wantClass = opts.classes !== false && ce && typeof ce.pupilEntry === 'function';
     var key = factsKey(conf, session.user.id);
 
@@ -430,17 +463,21 @@
       if (!facts) {                       // kind null, unknown true: callers do nothing
         var u = describe(null);
         u.userId = session.user.id; u.role = null; u.schoolKind = null; u.name = null;
-        u.firstName = null; u.keyStage = null; u.gcseComplete = null; u.unknown = true; u.hasClass = false;
+        u.firstName = null; u.keyStage = null; u.gcseComplete = null; u.unknown = true; u.hasClass = false; u.homeButton = null;
         return u;
       }
       var acct = accountFrom(session, facts.profile, facts.school, false);
-      if (acct.kind !== 'pupil' || !wantClass) return acct;
+      if (acct.kind !== 'pupil') return acct;
+      if (!wantClass) { acct.homeButton = null; return acct; }   // class not looked up: no claim
       return pupilEntry().then(function (entry) {
         if (entry) {
           var d = describe('pupil', { classEntry: entry });
           acct.home = d.home; acct.homeLabel = d.homeLabel; acct.homeTitle = d.homeTitle;
           acct.hasClass = true;
+          acct.homeButton = { href: d.home, label: d.homeLabel };
         }
+        // else: a pupil with NO class has no home button (see nav.js — the
+        // only page to send them to says "Back to homepage"); null, not a guess.
         return acct;
       });
     });
@@ -510,7 +547,7 @@
           var k = store.key(i);
           if (k == null) continue;
           if (/^sb-.*-auth-token/.test(k) || (ref && k.indexOf('sb-' + ref + '-') === 0) ||
-              k.indexOf('mrb-profile-') === 0 || k.indexOf('mrb-account:') === 0 ||
+              k.indexOf('mrb-profile-') === 0 || k.indexOf('mrb-home:') === 0 || k.indexOf('mrb-account:') === 0 ||
               // the consumer app's own state (a signup draft…): consumer-common's
               // clearLocalState sweeps `mrb.`, and a parent's family state must not
               // outlive Sign out on a shared device. Preferences (`mrb-theme`) are

@@ -821,8 +821,10 @@
   function autoAttach() {
     if (mounted) { return; }
     if (!storedToken()) { return; }
-    var host = document.querySelector(".nav-cluster") ||
-               document.querySelector("nav.top-nav > div:last-of-type");
+    /* ⊕ Front door (12 Oct 2026) — the PUBLIC bar (`.nav-cluster`) no longer
+       takes a bell: it holds brand, theme, one home button and the hamburger.
+       Only the dashboards' own `nav.top-nav` is auto-attached to. */
+    var host = document.querySelector("nav.top-nav > div:last-of-type");
     if (!host) { return; }
     var before = host.querySelector("#nav-auth-area") ||
                  host.querySelector(".nav-burger") ||
