@@ -232,10 +232,18 @@
       if (!item) { return false; }
       if (openState && openState.id === key) { return true; }
       if (openState) { api.close(true); }
+      /* The sheet sits UNDER the pupil's own header, and that header scrolls
+         away with the page: a pupil who scrolled down to a catch-up card has no
+         header on screen, and the sheet would open over the whole phone. So the
+         page goes back to the top first (the header is then where `topOffset`
+         reads it), and close puts the pupil back where they were. */
+      var prevScroll = window.pageYOffset || document.documentElement.scrollTop || 0;
+      if (prevScroll) { try { window.scrollTo(0, 0); } catch (e) { /* the sheet still opens */ } }
       var built = build(item);
       document.body.appendChild(built.root);
       openState = { id: key, root: built.root, frame: built.frame,
-                    opener: document.activeElement, prevOverflow: document.documentElement.style.overflow };
+                    opener: document.activeElement, prevOverflow: document.documentElement.style.overflow,
+                    prevScroll: prevScroll };
       document.documentElement.style.overflow = "hidden";
       try { built.close.focus({ preventScroll: true }); } catch (e) { /* focus is a nicety */ }
       return true;
@@ -248,6 +256,7 @@
       if (s.root.parentNode) { s.root.parentNode.removeChild(s.root); }
       document.documentElement.style.overflow = s.prevOverflow || "";
       if (!keepFragment) { dropFragment(); }
+      if (!keepFragment && s.prevScroll) { try { window.scrollTo(0, s.prevScroll); } catch (e) { /* a nicety */ } }
       try { if (s.opener && s.opener.focus && document.contains(s.opener)) { s.opener.focus({ preventScroll: true }); } }
       catch (e) { /* focus is a nicety */ }
     },
