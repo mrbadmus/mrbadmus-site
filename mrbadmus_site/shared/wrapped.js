@@ -93,7 +93,7 @@
   function client() {
     try {
       var g = ROLE === "teacher" ? win.MrBadmusTeacherGuard : win.MrBadmusStudentGuard;
-      if (!g || !win.MrBadmusConfig || !win.supabase || !win.supabase.createClient || typeof g.getClient !== "function") { return null; }
+      if (!g || !win.supabase || !win.supabase.createClient || typeof g.getClient !== "function") { return null; }
       return g.getClient() || null;
     } catch (e) { return null; }
   }
