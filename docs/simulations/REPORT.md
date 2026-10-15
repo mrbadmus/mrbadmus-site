@@ -80,3 +80,24 @@ Seismic Wave Lab:
 4. In the solid-core model S still shows a shadow band (104.5°–125.5°) from refraction at the boundary; pupils may ask.
 5. Travel times run about 10–20% short of real values; no text claims exact values.
 6. AQA 4.6.1.5 is Physics-only; Combined pupils aren't examined on it, and the page does not say so (unchanged from before).
+
+## 15 Oct 2026 — Refraction Lab
+
+`/simulations/physics/refraction-lab/`, from Design's `Refraction Lab (export)`. Ported like the Waves Practical Lab: site bar (one mark, "Physics" back link, Full screen, theme), her "MrBadmusAI" bar, her in-stage full-screen button and her `_ds_bundle.js` (retired chevron) removed, `/simulations/dc-runtime.js` for the runtime, `data-sim="refraction"` keep-list in `fullscreen.css`, `sim-theme.css` for dark. The lab paper and the wavefront tank stay light in dark mode (drawn as paper, like the Circuit Lab workbench); the sin i / sin r graph follows the theme.
+
+**Mide's seven corrections, all fixed and driven in headless Chrome with real mouse input (30/30):**
+1. **Ruler round the block.** Drag roughly along a side of the block (or its traced outline) and the line snaps to that whole side, corner to corner; ends snap to corners and edges. A free line now stops exactly where the ruler stopped (it used to run 0.8 cm past both ends). With any tool but Move, the block and ray box stay put, so drawing near the block no longer drags it.
+2. **Block from the tray.** Hovering used to place it (the cursor check had a side effect). It now leaves the tray only when pressed and dragged, and lands where it is dropped.
+3. **Normal.** Works on an outline drawn with the ruler as well as Trace outline. With the glass on the paper it refuses: "Lift the block first. The normal is drawn on the paper, not on the glass." With no outline at all it says how to make one.
+4. **Ray box** 2.6 × 1.8 cm (was 3.6 × 2.6). Dragging or turning it can never push the box or its knob off the paper; turning brings it closer to the block instead.
+5. **Protractor reads at once.** Placed where the ray meets the edge, it opens on the side of the normal that was clicked and lines its hairline up with the ray there: "i = 40°" where the ray went in, "r = 25°" after Flip. The hairline snaps onto a ray within 2.5°. Wrong placement is explained on the paper and in the Protractor card: nowhere near the edge, on the edge with no ray, no ray on this side ("Press Flip protractor"), hairline off the ray ("Drag the red hairline onto the ray").
+6. **One number.** The "29° · 151°" pair is gone. The protractor still has its two printed scales (as a real one does), but the scale being read is drawn strong and the other faded.
+7. **Wavefront tickboxes.** "Rays and angles" and "Follow one wavefront" carried a `checked` attribute, which the runtime turned into a locked (controlled) input: after one click the box looked ticked but stayed off. Now they switch off and on.
+
+Also fixed: the page was 794px wide on a 390px phone after the graph had been drawn at desktop width (it never redrew); the graph now redraws when its card resizes and the page grid cannot grow past the screen. The ray box is drawn under the pencil work so it never hides a protractor reading. Messages clear when the tool changes.
+
+### Science for Mide
+1. **Fixed (arithmetic):** quiz Q2 offered "26°" as the answer while its own explanation gives r = 25°; sin⁻¹(sin 40° ÷ 1.5) = 25.4°. The option now reads 25°.
+2. **Not changed:** refractive index and n = sin i ÷ sin r are not in the AQA 8463 specification (Snell's law is A-level). The lab's results table, graph, readout card and quiz Q6 are built on it. Keep as extension, or cut back to "r is smaller than i"?
+3. **Not changed:** the practical is Physics-only (4.6.1.3, required practical 10); the wavefront explanation of refraction is Higher tier (4.6.2.2). The page says neither.
+4. **New wording, mine:** at the exit point the protractor names "the angle of the ray inside the block" and "the angle of the ray leaving the block" rather than i / r, since i and r in the practical mean the entry point.

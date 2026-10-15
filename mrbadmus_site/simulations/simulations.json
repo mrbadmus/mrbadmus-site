@@ -18,5 +18,10 @@
     "subject": "physics",
     "name": "Circuit Lab",
     "path": "/simulations/physics/circuit-lab/"
+  },
+  {
+    "subject": "physics",
+    "name": "Refraction Lab",
+    "path": "/simulations/physics/refraction-lab/"
   }
 ]
