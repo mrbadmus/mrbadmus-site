@@ -38,7 +38,7 @@ Branch `feat/wrapped` (site), migration parked on `feat/wrapped-migrations`.
   toward the week streak only.
 - No term dates exist anywhere in the repo or DB. Rainford Oct half term:
   last day Fri 23 Oct 2026, back Mon 2 Nov (St Helens dates). Christmas: last
-  day assumed Fri 18 Dec 2026 — UNCONFIRMED, flagged for Mide, and a setting.
+  day Fri 18 Dec 2026 — CONFIRMED by Mide 15 Oct 2026 (card keeps "by Christmas"); a setting.
 - Prod preview ids: AY `b0308282-5429-4050-827f-4707286a88aa` (pupil, 8r/Sc1
   `d9740ab8-c4e3-4c22-bce9-629b650782c5`, username WolfBeam); Mide
   `74db2bf7-7c0d-47e6-9479-5cee3cda610e` (teacher of 8r/Sc1). The other
