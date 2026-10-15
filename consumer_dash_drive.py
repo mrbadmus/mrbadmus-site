@@ -340,6 +340,61 @@ def trialing(d):
     d.shot("trialing-chat-390.png")
 
 
+def parent_three(d):
+    """⊕ 15 Oct 2026, Mide's three parent fixes — the two on this page.
+
+    * No "Free week: N days left. Billing" box at the foot of the sidebar,
+      in any trial state (a count, a count of 1, no count at all) — nor its
+      phone twin, the same sentence as a banner above every screen at 390.
+    * Cancelling stays one tap away: Account is linked from the dashboard at
+      1280 (sidebar) and 390 (top bar), and the Account page offers the
+      Stripe portal — manage, cancel, change card — in every state that has
+      a subscription to manage.
+    * "Next:" never doubles the punctuation after a title that already ends
+      a sentence, and still ends a plain title with a full stop."""
+    print("\n── parent fixes, 15 Oct 2026 ──")
+    for dl in (6, 1, None):
+        d.open("consumer/overview.html", width=1280, state="trialing", kids=2, days_left=dl)
+        side = d.text("#dk-side")
+        check(side and "Free week" not in side and "days left" not in side and "in progress" not in side,
+              "1280 trialing (days_left=%r): no free-week box in the sidebar" % (dl,), side[-160:])
+        check(d.js("!!document.querySelector('#dk-side a[href*=\"/consumer/account.html\"]')"),
+              "…and Account is one tap away in the sidebar")
+    d.shot("parent3-dashboard-1280.png", width=1280)
+    for dl in (6, 1, None):
+        d.open("consumer/overview.html", width=390, state="trialing", kids=2, days_left=dl)
+        b = d.text("#dk-banners")
+        check("Free week" not in b and "days left" not in b and "day left" not in b,
+              "390 trialing (days_left=%r): no free-week banner (the sidebar's phone twin)" % (dl,), b)
+    check(d.js("(function(){var a=document.querySelector('a[aria-label=\"Account\"]');"
+               "return !!a&&a.getBoundingClientRect().width>0;})()"),
+          "390 trialing: Account is one tap away in the top bar")
+    d.shot("parent3-dashboard-390.png")
+
+    d.open("consumer/overview.html", width=1280, state="trialing", kids=2,
+           next_title="Testing the model: does it explain everything?")
+    t = d.text("#c-main")
+    check("Next: Testing the model: does it explain everything?" in t and "everything?." not in t,
+          "a title ending '?' takes no full stop after it",
+          [ln for ln in t.split("\n") if "Next:" in ln])
+    d.open("consumer/overview.html", width=1280, state="trialing", kids=2)
+    t = d.text("#c-main")
+    check("Next: Quick questions: cells." in t,
+          "…and a plain title still ends with one", [ln for ln in t.split("\n") if "Next:" in ln])
+
+    for st in ("trialing", "active", "past_due", "cancelled"):
+        for w in (1280, 390):
+            d.open("consumer/account.html", width=w, state=st, kids=2)
+            check(d.js("!!document.querySelector('.ak-plan button[data-act=portal]')"),
+                  "account %s @%d: the Stripe billing portal button is there" % (st, w),
+                  d.text(".ak-plan")[:200])
+            if st in ("trialing", "active"):
+                check("Cancel in the billing portal" in d.text("body"),
+                      "account %s @%d: …and 'Cancel in the billing portal'" % (st, w))
+            if st == "trialing":
+                d.shot("parent3-account-%d.png" % w, width=w)
+
+
 def week_repair(d):
     """B2C week repair (4 Oct 2026). Work set for a later week is listed, the
     strip is Monday-first (unit 7, ruling 3), the browser keeps no week helper, and a carried link keeps ONE '?'."""
@@ -862,6 +917,7 @@ def main():
             not_writable(d)
             no_children(d)
             trialing(d)
+            parent_three(d)
             week_repair(d)
             checkout_cases(d, args.skip_timeout)
             stale_message(d)
