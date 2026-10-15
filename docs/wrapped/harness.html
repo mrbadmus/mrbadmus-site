@@ -1,0 +1,17 @@
+<!doctype html>
+<!-- LOCAL TEST HARNESS for shared/wrapped.js. Not published (docs/ is not served).
+     Served from the repo root by tools/wrapped_walk.py --harness. -->
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wrapped harness</title>
+<script>
+(function(){var q=new URLSearchParams(location.search),t=q.get('theme')==='dark'?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<link rel="stylesheet" href="/shared/student-ds.css">
+<link rel="stylesheet" href="/shared/wrapped.css">
+<style>body{margin:0;background:var(--st-ground);color:var(--st-ink);font-family:var(--st-ui)}main{padding:40px 20px}</style>
+</head><body>
+<div id="mrb-student"><main data-dc-tpl="x"><section data-dc-tpl="40"><h1>8r/Sc1</h1></section><section data-dc-tpl="55"><h2>On the bench now</h2></section></main></div>
+<script src="/shared/wrapped.js"></script>
+</body></html>

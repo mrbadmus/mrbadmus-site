@@ -165,6 +165,11 @@ PICKER_JS_NAME = "teacher-picker.js"
 SETWORK_CSS_NAME = "set-work.css"
 SETWORK_JS_NAME = "set-work.js"
 
+# ⊕ MRB Wrapped — the Class Wrapped story. See `wrapped` in page_html: the
+# class screen only, the LIVE page only (a fixture has no Supabase config).
+WRAPPED_CSS_NAME = "wrapped.css"
+WRAPPED_JS_NAME = "wrapped.js"
+
 # ⊕ Mide's item 9, 24 Sep 2026 — the Answer Breakdown panel. See `breakdown`
 # in page_html, and `AMENDED_ADDITIONS["breakdown-open"]` in
 # teacher_rulings.py for the row control that opens it. Same shape as
@@ -311,6 +316,7 @@ STAMPED_DEPS = ("config.js", "account.js", "class-entry.js", "teacher-guard.js",
                 "teacher-data.js", "shoutouts.js", "teacher-admin-nav.js",
                 "teacher-picker.js", "rum.js",
                 SETWORK_CSS_NAME, SETWORK_JS_NAME, CSV_JS_NAME,
+                WRAPPED_CSS_NAME, WRAPPED_JS_NAME,
                 "figures-ks3.js", "figures-ks4.js",
                 BREAKDOWN_CSS_NAME, BREAKDOWN_JS_NAME, "theme.js",
                 FLASHCARD_BREAKDOWN_JS_NAME,
@@ -412,6 +418,9 @@ PAGES = [
          # prunes — so the other five carry neither the button nor a reason
          # to load its script.
          csv_upload=True,
+         # ⊕ Wrapped — `wrapped=True` ON THIS ONE ONLY: its button joins the
+         # same action row (node 213) as the CSV trigger.
+         wrapped=True,
          fixture_out="class-detail-fixture.html",
          fixture_js="teacher-fixture-class-detail.js",
          empty_out="class-detail-empty-fixture.html",
@@ -5519,6 +5528,17 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
     # failure, exactly as `admin_nav` behaves there.
     csv_js = ("<script src=\"/shared/%s\"></script>\n"
               % CSV_JS_NAME if spec.get("csv_upload") else "")
+    # ⊕ MRB Wrapped — LIVE PAGE ONLY, unlike every tag above. A fixture has no
+    # `MrBadmusConfig` and no Supabase client, so the script would do nothing
+    # there anyway; leaving it off keeps the fixtures byte-identical to what
+    # the gates measured before Wrapped existed. The stylesheet rides in the
+    # <head> with set-work's (the overlay can open the instant the page is
+    # interactive); the script is appended to the CSV tag at the foot.
+    if spec.get("wrapped") and not fixture:
+        setwork_css += ("<link rel=\"stylesheet\" href=\"/shared/%s\">\n"
+                        % WRAPPED_CSS_NAME)
+        csv_js += ("<script src=\"/shared/%s\" data-wrapped=\"teacher\">"
+                   "</script>\n" % WRAPPED_JS_NAME)
     # ⚠️ EMITTED ON BOTH PAGES, including the fixture, which never reads it.
     # The gates document the fixture as "the same bytes apart from its banner
     # and its last two script tags", and that sentence is what lets them

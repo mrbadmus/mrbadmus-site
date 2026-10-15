@@ -239,7 +239,9 @@ STAMPED_DEPS = ("config.js", "account.js", "class-entry.js", "student-guard.js",
                 # ⊕ CATCH-UP (14 Oct 2026) — the lesson sheet, injected by
                 # student-live.js's DEPS like the rest; unstamped under
                 # `immutable` it would be a file pinned for a year.
-                "catch-up-sheet.js")
+                "catch-up-sheet.js",
+                # ⊕ MRB Wrapped — the half-term story (class view, live page).
+                "wrapped.css", "wrapped.js")
 # ⊕ One mark (Mide, 13 Sep 2026) — the kit's favicon, the lockup's
 # stylesheet and brand.js, which the runtime draws the header brand from.
 STAMPED_DEPS += brand_port.BRAND_DEPS
@@ -4255,6 +4257,18 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
                       or k == KS4_LESSON_INDEX_NAME},
                      separators=(",", ":"))
     )
+    # ⊕ MRB Wrapped — the half-term story, on the CLASS view's LIVE page only.
+    # Not on assignment.html (this function is shared by both pages; the
+    # viewport meta above is conditioned on the same `spec["page"]`), and not
+    # on the fixture, which has no Supabase config for it to read. The
+    # stylesheet goes in <head> (the overlay can open the moment the page is
+    # interactive); the script rides with the live data script at the foot.
+    wrapped_on = spec["page"] == "class view" and not fixture
+    wrapped_css = ("<link rel=\"stylesheet\" href=\"/shared/wrapped.css\">\n"
+                   if wrapped_on else "")
+    if wrapped_on:
+        tail += ("<script src=\"/shared/wrapped.js\" data-wrapped=\"pupil\">"
+                 "</script>\n")
     return stamp_versions((
         # ⚑ THE <title> CARRIES NO CLASS. It used to read
         # `8r/Sc1 · My class · MrBadmusAI` on the production page — one real
@@ -4318,6 +4332,7 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
         # stylesheet: the assignment bar's avatar and menu (shared/topbar.js,
         # loaded at the end of <body>) are styled by it on both pages.
         "<link rel=\"stylesheet\" href=\"/shared/topbar.css\">\n"
+        "%s"
         # ⊕ Theme run, 27 Sep 2026 — was a hard-coded #FBF3E6. Same light
         # byte value, but now a token so `html[data-theme="dark"]` can
         # redefine --st-ground and this ground follows it, instead of
@@ -4352,6 +4367,7 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
            (_BANNER % (spec["page"].capitalize(), LIVE_JS_NAME,
                        spec["fixture_out"])),
            DS_CSS_URL,
+           wrapped_css,
            # ⊕ 22 Aug 2026 — the theme bridge, class view only. See above.
            # ⊕ 23 Aug 2026 — and the espresso page chrome beside it.
            # ⊕ 23 Aug 2026 — and the assignment has one of its own now, so

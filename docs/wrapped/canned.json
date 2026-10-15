@@ -1,0 +1,40 @@
+{
+  "busy": {"state":"open","preview":true,"zero":false,"name":{"first":"AY","username":"WolfBeam"},
+    "class":{"id":"x","name":"8r/Sc1"},"window":{"from":"2026-09-01","to":"2026-10-20"},
+    "cards":[
+      {"kind":"opener"},
+      {"kind":"flashcards","secured":148,"decks_finished":3},
+      {"kind":"homework","handed_in":11,"stars":312},
+      {"kind":"best_topic","topic":"Particle Model of Matter","source":"homework","pct":86},
+      {"kind":"streak","weeks":6,"current":true},
+      {"kind":"top_band","scope":"year","band":10,"year_group":8,"topic":"Cells and organisation"},
+      {"kind":"forward","metric":"cards","now":148,"projected":410}
+    ]},
+  "light": {"state":"open","preview":true,"zero":false,"name":{"first":"Mia","username":null},
+    "class":{"id":"x","name":"8r/Sc1"},"window":{"from":"2026-09-01","to":"2026-10-20"},
+    "cards":[
+      {"kind":"opener"},
+      {"kind":"homework","handed_in":1,"stars":0},
+      {"kind":"top_band","scope":"personal","topic":"Cell structure","cards":12}
+    ]},
+  "classband": {"state":"open","preview":true,"zero":false,"name":{"first":"Oluwatobiloba","username":"CosmicFox"},
+    "class":{"id":"x","name":"11r/Sc1"},"window":{"from":"2026-09-01","to":"2026-10-20"},
+    "cards":[
+      {"kind":"opener"},
+      {"kind":"flashcards","secured":1034,"decks_finished":1},
+      {"kind":"best_topic","topic":"Electromagnetic radiation and photosynthesis","source":"deck","cards":12},
+      {"kind":"top_band","scope":"class","top":3,"class_name":"11r/Sc1","topic":"Atomic structure"},
+      {"kind":"forward","metric":"homework","now":4,"projected":9}
+    ]},
+  "zero": {"state":"open","preview":true,"zero":true,"show_zero":true,"name":{"first":"Sam","username":null},
+    "class":{"id":"x","name":"8r/Sc1"}},
+  "teacher": {"state":"open","preview":true,"class":{"id":"x","name":"8r/Sc1","year_group":8},
+    "cards":[
+      {"kind":"opener","pupils":30,"active":12},
+      {"kind":"homework","handed_in":96},
+      {"kind":"flashcards","secured":2210,"decks":14},
+      {"kind":"most_secured","topic":"Cell structure","pct":82},
+      {"kind":"revisit","topic":"Particle Model of Matter","pct":41},
+      {"kind":"top3","pupils":[{"first_name":"AY","stars":312},{"first_name":"Mia","stars":280},{"first_name":"Tobi","stars":255}]}
+    ]}
+}
