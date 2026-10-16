@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<style>
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .3s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="font-family: var(--ks3-font-body); color: var(--ks3-ink); text-wrap: pretty;">
+  <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+    <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">{{ eyebrow }}</p>
+    <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink);">{{ command }}</span>
+    <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; padding: 3px 10px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">{{ marksLabel }}</span>
+  </div>
+  <sc-if value="{{ hasFigure }}"><div style="margin: 14px 0 0;">{{ figure }}</div></sc-if>
+  <p style="margin: 12px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.01em; max-width: 60ch;">{{ question }}</p>
+  <label for="{{ fieldId }}" style="display: block; margin: 16px 0 6px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Your answer · write it first</label>
+  <textarea id="{{ fieldId }}" value="{{ text }}" onChange="{{ onText }}" onInput="{{ onText }}" placeholder="{{ placeholder }}" rows="7" style="display: block; width: 100%; box-sizing: border-box; font: inherit; font-size: 18px; line-height: 1.6; padding: 14px 16px; border-radius: 14px; border: 2px solid var(--ks3-option-border); background: var(--ks3-card); color: var(--ks3-ink); resize: vertical; min-height: 170px;"></textarea>
+  <div style="margin-top: 12px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+    <button type="button" class="ks3-reveal-btn" onClick="{{ onReveal }}" disabled="{{ revealLocked }}" style="{{ revealStyle }}">{{ revealLabel }}</button>
+    <span style="font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ wordCount }}</span>
+  </div>
+  <sc-if value="{{ open }}">
+    <div data-arrive="1" style="margin-top: 16px; padding: 22px; border-radius: 18px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+      <sc-if value="{{ hasLevels }}">
+        <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Levels · pick the one your answer reaches</p>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <sc-for list="{{ levels }}" as="lv" hint-placeholder-count="3">
+            <button type="button" onClick="{{ lv.onClick }}" aria-pressed="{{ lv.pressed }}" style="{{ lv.style }}">
+              <span style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; white-space: nowrap;">{{ lv.head }}</span>
+              <span style="font-size: 17px; line-height: 1.5;">{{ lv.text }}</span>
+            </button>
+          </sc-for>
+        </div>
+        <p style="margin: 18px 0 10px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Indicative content · tick what you wrote</p>
+      </sc-if>
+      <sc-if value="{{ noLevels }}">
+        <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Marking points · one mark each · tick what you wrote</p>
+      </sc-if>
+      <ul class="ks3-ticks" style="margin: 0;">
+        <sc-for list="{{ points }}" as="pt" hint-placeholder-count="4">
+          <li class="ks3-tick">
+            <input type="checkbox" id="{{ pt.id }}" checked="{{ pt.checked }}" onChange="{{ pt.onToggle }}">
+            <label for="{{ pt.id }}"><span class="ks3-tick-num">{{ pt.num }}</span> {{ pt.text }}</label>
+          </li>
+        </sc-for>
+      </ul>
+      <sc-if value="{{ hasReject }}">
+        <div style="margin-top: 14px; padding: 14px 16px; border-radius: 14px; background: var(--ks3-alert-tint); border: 2px solid var(--ks3-alert-border);">
+          <p style="margin: 0 0 6px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-alert-text);">Do not accept</p>
+          <sc-for list="{{ reject }}" as="r" hint-placeholder-count="2">
+            <p style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">{{ r }}</p>
+          </sc-for>
+        </div>
+      </sc-if>
+      <p role="status" style="margin: 16px 0 0; font-size: 19px; font-weight: 700;">{{ tally }}</p>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:860},&quot;command&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Explain&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;marks&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:4,&quot;tsType&quot;:&quot;number&quot;},&quot;question&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;points&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string[]&quot;},&quot;levels&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;{label:string,text:string,max:number}&gt;&quot;},&quot;reject&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string[]&quot;},&quot;onMark&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(a:{awarded:number,marks:number,set:boolean})=&gt;void&quot;}}">
+class Component extends DCLogic {
+  state = { text: '', open: false, ticks: [], level: null, reported: false };
+  report(ticks, level) {
+    const p = this.props;
+    if (typeof p.onMark !== 'function') return;
+    p.onMark(this.award(ticks, level));
+  }
+  award(ticks, level) {
+    const p = this.props;
+    const marks = p.marks || 4;
+    if (p.levels && p.levels.length) {
+      if (level === null) return { awarded: 0, marks, set: false };
+      const lv = p.levels[level];
+      return { awarded: lv.max, marks, set: true };
+    }
+    const n = (p.points || []).filter((x, i) => ticks[i]).length;
+    return { awarded: Math.min(marks, n), marks, set: true };
+  }
+  renderVals() {
+    const p = this.props;
+    const s = this.state;
+    const words = s.text.trim() ? s.text.trim().split(/\s+/).length : 0;
+    const need = p.minWords || 12;
+    const marks = p.marks || 4;
+    const levels = p.levels || [];
+    const a = this.award(s.ticks, s.level);
+    return {
+      eyebrow: p.eyebrow || 'Extended response',
+      command: p.command || 'Explain',
+      marksLabel: marks + ' marks',
+      hasFigure: !!p.figureSvg,
+      figure: p.figureSvg ? React.createElement('div', { role: 'img', 'aria-label': p.figureAlt || '', style: { maxWidth: p.figureMax || '640px' }, dangerouslySetInnerHTML: { __html: p.figureSvg } }) : null,
+      question: p.question || '',
+      fieldId: (p.id || 'xr') + '-text',
+      text: s.text,
+      placeholder: p.placeholder || 'Write in full sentences.',
+      onText: (e) => this.setState({ text: e.target.value }),
+      wordCount: s.open ? words + ' words written' : (words < need ? words + ' words · the mark scheme opens at ' + need : words + ' words'),
+      revealLocked: s.open || words < need,
+      revealStyle: (s.open || words < need) ? 'opacity:.45;cursor:default;' : '',
+      revealLabel: s.open ? 'Mark scheme open' : 'Show the mark scheme',
+      onReveal: () => { if (words >= need) { this.setState({ open: true }); this.report(s.ticks, s.level); } },
+      open: s.open,
+      hasLevels: levels.length > 0, noLevels: levels.length === 0,
+      levels: levels.map((lv, i) => ({
+        head: lv.label, text: lv.text, pressed: s.level === i,
+        style: 'display:flex;gap:14px;align-items:baseline;text-align:left;font:inherit;padding:12px 14px;min-height:48px;border-radius:14px;cursor:pointer;color:var(--ks3-ink);background:' +
+          (s.level === i ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';border:2px solid ' + (s.level === i ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+        onClick: () => { this.setState({ level: i }); this.report(s.ticks, i); }
+      })),
+      points: (p.points || []).map((t, i) => ({
+        id: (p.id || 'xr') + '-pt' + i, num: String(i + 1), text: t, checked: !!s.ticks[i],
+        onToggle: () => { const nx = s.ticks.slice(); nx[i] = !nx[i]; this.setState({ ticks: nx }); this.report(nx, s.level); }
+      })),
+      hasReject: !!(p.reject && p.reject.length), reject: p.reject || [],
+      tally: levels.length ? (s.level === null ? 'Pick a level to award yourself a mark.' : 'You awarded yourself ' + a.awarded + ' of ' + marks + ' (the top of that level). An examiner places the answer in a level first, then drops a mark inside it for any link that is missing.')
+        : 'You awarded yourself ' + a.awarded + ' of ' + marks + '.'
+    };
+  }
+}
+
+</script>
+</body>
+</html>

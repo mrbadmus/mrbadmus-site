@@ -1,0 +1,38 @@
+# Design's delivery, unmodified. Source: Design's Output/Batch 10/lessons (16 Oct 2026)
+# Verify: cd docs/ks4/design-reference/batch-10 && md5sum -c MD5SUMS   (macOS: md5 -r <file>)
+
+7944057425a50d5fd9c99f8b44cf0675  lessons/Ks4Cfifa.dc.html
+96891e81a2bb42139d7afa149821958c  lessons/Ks4Chain.dc.html
+029dd4506e0b9550aa660ba99987a3c8  lessons/Ks4Choice.dc.html
+a67112065727183112bc7914021a6072  lessons/Ks4Chrome.dc.html
+78f325cf60ac6a159e56821c9c3acc1e  lessons/Ks4End.dc.html
+a5473bce6894d173ad6734d69e068ffa  lessons/Ks4Guess.dc.html
+fb55a861975b0c66bcda7fe5dd1eacdb  lessons/Ks4KeyNote.dc.html
+d5257905b41d13b49d2b082c3523702f  lessons/Ks4Practice.dc.html
+40cc9550bdc8852a75b24ce932c26032  lessons/Ks4QuizBank.dc.html
+3caab7c8e6fe7124559c737569d2b24c  lessons/Ks4Sort.dc.html
+6e8ed204e600f0d6e7997d77015c925a  lessons/Ks4Steps.dc.html
+3846bc85d2d5260ed8b388fc0efaf40a  lessons/Ks4Triangle.dc.html
+640b6cc3754e7107255bcef26097100f  lessons/Ks4Video.dc.html
+5bd355235328e528e645760625b3730f  lessons/Ks4Write.dc.html
+1a4a57d5e46ddbcf19f0da875a4cc3b5  lessons/NOTES-KS4-batch-10.md
+6a12a3ffc4845d3085aa7c547ce7b7f6  lessons/README.txt
+f54915ebb3adbf3645179dea63d29e94  lessons/ks4-biology-4.7.1.1-ecosystems.dc.html
+18afe2b0535cb03c8be86883d55f7e82  lessons/ks4-biology-4.7.1.1-population-competition.dc.html
+02ad4daae8094dad73db3bb2b6eb5b50  lessons/ks4-biology-4.7.1.2-abiotic-biotic-factors.dc.html
+b349b42b402421044178c537f8a91012  lessons/ks4-biology-4.7.1.4-adaptations.dc.html
+0f101bb6afb342c988448e50aa97439c  lessons/ks4-biology-4.7.2.1-food-chains-webs.dc.html
+67f24ef9cc430fbe223bfaf02fe5e970  lessons/ks4-biology-4.7.2.1-sampling-techniques.dc.html
+29e05248dd8145b84a7dc013866d2601  lessons/ks4-biology-4.7.2.4-environmental-change.dc.html
+328b887abe1d7beb1b28808c381f87e4  lessons/ks4-biology-4.7.3.4-deforestation.dc.html
+106846f6858c2372104c0ed48f1de5a3  lessons/ks4-biology-4.7.3.6-maintaining-biodiversity.dc.html
+cbee0067c4098d6dd980383b337359fc  lessons/ks4-biology-4.7.4.1-trophic-levels.dc.html
+d2adf6fd3518f43174fa5ece749ab8ac  lessons/ks4-biology-4.7.4.2-pyramids-of-biomass.dc.html
+b6df1359f9a957d973bb399d9afe1df0  lessons/ks4-biology-4.7.4.3-transfer-of-biomass.dc.html
+551e89a876a564196681ef543a93b405  lessons/ks4-biology-4.7.5.2-farming-techniques.dc.html
+f93a52f4b019913efa1bdc47aaa9968c  lessons/ks4-biology-4.7.5.3-sustainable-fisheries.dc.html
+8e98a813954563fe590459fecea7d7bb  lessons/ks4-biology-4.7.5.4-role-of-biotechnology.dc.html
+7959be1777b0f0c3e329027ff9f47216  lessons/ks4-diagrams.js
+b765d8241fd115918bccb977388d6bd4  lessons/ks4-lib.js
+69e1b11a2d63c89e584f80ab402132ca  lessons/ks4-theme.css
+951ae391b8ae72ef12e671c2fad23353  lessons/support.js

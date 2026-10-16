@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deforestation · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Ecology" title="Deforestation" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.7.3.4 · Combined and Triple</p>
+        <h1>Deforestation</h1>
+        <p class="ks3-bigq">Why tropical forest is cleared, two separate reasons the carbon dioxide rises, what else is lost, and whether it is worth it.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">All four routes</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="2"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Forest to ranch." scene="A patch of tropical forest is cut down and burned to make a cattle ranch." question="would the air end up with more carbon dioxide, or less?" options="{{ hookOptions }}" bridge="More, for two separate reasons. Both earn marks." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-why" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Why forests are cleared</p>
+        <h2 style="margin: 6px 0 0;">Three reasons.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Large-scale deforestation in tropical areas has occurred to provide land for cattle and rice fields, and to grow crops for biofuels. Tap each.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ rCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+      </section>
+
+      <section id="s-co2" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The carbon dioxide</p>
+        <h2 style="margin: 6px 0 0;">Two arrows change.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Trees take carbon dioxide in by photosynthesis. Burning felled trees releases it. Microorganisms that decay the leftover wood respire, releasing it too. Fell the patch and watch both arrows.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ fBtns }}" as="b" hint-placeholder-count="2"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ fFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ fNote }}</p></div>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Give the two separate reasons atmospheric carbon dioxide rises after deforestation. Select both, then check.</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ bq.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div><div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ bq.note }}</p></div>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Why does the decay of felled wood release carbon dioxide?</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ dq.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div><div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ dq.note }}</p></div>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The forest was also the habitat of many species. When it goes, they go: biodiversity falls. <a href="{{ bioHref }}">Biodiversity</a> and <a href="{{ mbHref }}">Maintaining biodiversity</a> take that further.</p>
+      </section>
+
+      <section id="s-weigh" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Evaluate</p>
+        <h2 style="margin: 6px 0 0;">Worth it?</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">You should be able to evaluate the environmental implications of deforestation. Put the gains on one side and the costs on the other, then judge. Tap each.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ wCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+        <div style="margin-top: 14px; padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px dashed var(--ks3-ink); font-size: 17px; line-height: 1.55; max-width: 62ch;"><p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Information · made-up data for practice</p><p style="margin: 6px 0 0;">A country plans to clear 2000 km² of forest for a biofuel crop. The biofuel would replace 1% of the country’s petrol. The forest holds about 800 species of tree and is home to a monkey found nowhere else.</p></div>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Which judgement weighs both sides?</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ jq.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div><div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ jq.note }}</p></div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · rot or burn?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Rotting wood doesn’t give off carbon dioxide, only burning does.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Felled trees are left to rot. What happens to the carbon in the wood?" options="{{ thinkOptions }}" reveal="It is released as carbon dioxide. Microorganisms decompose the wood and respire, and respiration releases carbon dioxide. Burning is faster, but decay gets there too." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Reason or consequence?" prompt="Place each one." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Reasons: land for cattle, rice fields, biofuel crops. Consequences: less carbon dioxide removed, more released, less biodiversity." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why tropical forest is cleared.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The two reasons carbon dioxide rises, and the loss of biodiversity.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Evaluate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The implications of deforestation: a benefit, a cost and a judgement.</dd></div>
+        </dl>
+      </section>
+
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Forest is cleared for cattle, rice fields and biofuel crops. Carbon dioxide rises for two reasons: less is taken in by photosynthesis, and more is released by burning and by microorganisms decaying the wood. Habitats are lost, so biodiversity falls.</p>
+      </div>
+
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="deforestation" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Deforestation" spec="AQA 4.7.3.4" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Giving only one reason for the carbon dioxide rise?" legal="The biofuel plan and its figures are made up for practice." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+
+const SLUG = 'deforestation';
+const OK = ['Combined Foundation', 'Combined Higher', 'Triple Foundation', 'Triple Higher'];
+const FILE = {"ecosystems":"ks4-biology-4.7.1.1-ecosystems.dc.html","population-competition":"ks4-biology-4.7.1.1-population-competition.dc.html","abiotic-biotic-factors":"ks4-biology-4.7.1.2-abiotic-biotic-factors.dc.html","adaptations":"ks4-biology-4.7.1.4-adaptations.dc.html","food-chains-webs":"ks4-biology-4.7.2.1-food-chains-webs.dc.html","sampling-techniques":"ks4-biology-4.7.2.1-sampling-techniques.dc.html","environmental-change":"ks4-biology-4.7.2.4-environmental-change.dc.html","deforestation":"ks4-biology-4.7.3.4-deforestation.dc.html","maintaining-biodiversity":"ks4-biology-4.7.3.6-maintaining-biodiversity.dc.html","trophic-levels":"ks4-biology-4.7.4.1-trophic-levels.dc.html","pyramids-of-biomass":"ks4-biology-4.7.4.2-pyramids-of-biomass.dc.html","transfer-of-biomass":"ks4-biology-4.7.4.3-transfer-of-biomass.dc.html","farming-techniques":"ks4-biology-4.7.5.2-farming-techniques.dc.html","sustainable-fisheries":"ks4-biology-4.7.5.3-sustainable-fisheries.dc.html","role-of-biotechnology":"ks4-biology-4.7.5.4-role-of-biotechnology.dc.html","biodiversity":"../../KS4 Batch 4/ks4-biology-4.7.3.1-biodiversity.dc.html","water-cycle":"../../KS4 Batch 4/ks4-biology-4.7.2.2-water-cycle.dc.html","transport-in-cells":"../../KS4 Batch 4/ks4-biology-4.1.3-transport-in-cells.dc.html","food-security":"../../Batch 6/lessons/ks4-biology-4.7.5.1-factors-affecting-food-security.dc.html","culturing-microorganisms":"../../Batch 6/lessons/ks4-biology-4.1.1.6-culturing-microorganisms.dc.html","photosynthesis":"../../Batch 7/lessons/ks4-biology-4.4.1.1-photosynthesis.dc.html","aerobic-respiration":"../../Batch 7/lessons/ks4-biology-4.4.2.1-aerobic-respiration.dc.html","evolution-natural-selection":"../../Batch 9/lessons/ks4-biology-4.6.2.2-evolution-natural-selection.dc.html","genetic-engineering":"../../Batch 9/lessons/ks4-biology-4.6.2.4-genetic-engineering.dc.html","resistant-bacteria":"../../Batch 9/lessons/ks4-biology-4.6.3.7-resistant-bacteria.dc.html","variation":"../../Batch 9/lessons/ks4-biology-4.6.2.1-variation.dc.html"};
+const ORDER = [["ecosystems","Ecosystems",0],["population-competition","Population and competition",0],["abiotic-biotic-factors","Abiotic and biotic factors",0],["adaptations","Adaptations",0],["food-chains-webs","Food chains and food webs",0],["sampling-techniques","Sampling techniques",0],["environmental-change","The impact of environmental change",2],["deforestation","Deforestation",0],["maintaining-biodiversity","Maintaining biodiversity",0],["trophic-levels","Trophic levels",1],["pyramids-of-biomass","Pyramids of biomass",1],["transfer-of-biomass","Transfer of biomass",1],["farming-techniques","Farming techniques",1],["sustainable-fisheries","Sustainable fisheries",1],["role-of-biotechnology","The role of biotechnology",1]];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const CALC = (prompt, convOptions, convAnswer, answer, unit, units, right, wrong, model, tol) => ({ kind: 'calc', command: 'Calculate', marks: 2, prompt, convOptions, convAnswer, answer, tol: tol == null ? 0.05 : tol, unit, units, right, wrong, model });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const V = (q, opts, we) => ({ q, opts, wrong_explanations: we });
+const LNK = (k, label) => ({ href: FILE[k], label });
+const BOX = (x, y, w, h, fill, stroke, sw, rx) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + (rx == null ? 12 : rx) + '" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const PATH = (d, col, w, extra) => '<path d="' + d + '" fill="none" stroke="' + (col || '#1A1A1A') + '" stroke-width="' + (w || 3) + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>';
+const TX = (x, y, t, size, o) => window.KS4D.T(x, y, t, size, Object.assign({ fill: '#1A1A1A' }, o || {}));
+const TXN = (x, y, t, size, o) => TX(x, y, t, size, Object.assign({ weight: 'normal' }, o || {}));
+const GREEN = '#2E5E45', LEAF = '#A9D9BE', TAN = '#F2C9AE', SKY = '#DDEEF6', RED = '#C8102E', BLUE = '#3B82F6', INK = '#1A1A1A', PAPER = '#FFFDF8', TINT = '#FBE3D6';
+const CFL = (c, f, i, ft, a, cn) => [{ letter: 'C', label: 'Convert', line: c, note: cn || '' }, { letter: 'F', label: 'Formula', line: f }, { letter: 'I', label: 'Insert', line: i }, { letter: 'F', label: 'Fine-tune', line: ft }, { letter: 'A', label: 'Answer', line: a }];
+const CFQ = (c, f, i, ft, a, pc) => [{ letter: 'C', label: 'Convert', placeholder: pc || 'anything to convert?', line: c }, { letter: 'F', label: 'Formula', placeholder: 'written out', line: f }, { letter: 'I', label: 'Insert', placeholder: 'numbers in', line: i }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: ft }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: a }];
+
+const RAIL = [{ id: 's-hook', label: 'Forest to ranch', short: 'HOOK' }, { id: 's-why', label: 'Why', short: 'WHY' }, { id: 's-co2', label: 'Carbon dioxide', short: 'CO2' }, { id: 's-weigh', label: 'Worth it?', short: 'WEIGH' }, { id: 's-think', label: 'Think again', short: 'THINK' }, { id: 's-sort', label: 'Reason or consequence?', short: 'SORT' }, { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }];
+const RC = [
+  { name: 'Land for cattle', why: 'Grazing land for beef cattle: more food for a growing population.' },
+  { name: 'Land for rice fields', why: 'Flooded fields to grow rice: more food.' },
+  { name: 'Crops for biofuels', why: 'Plants such as sugar cane grown to make fuel, like ethanol, in place of petrol.' }
+];
+const WC = [
+  { name: 'Gain · food', why: 'Cattle and rice feed a growing human population.' },
+  { name: 'Gain · fuel', why: 'Biofuels replace some fossil fuel.' },
+  { name: 'Cost · carbon dioxide', why: 'Less photosynthesis takes it in; burning and decay release it. Atmospheric carbon dioxide rises, adding to global warming.' },
+  { name: 'Cost · biodiversity', why: 'The habitat of many species is destroyed, so species are lost, some before their value (such as new medicines) is known.' }
+];
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false, f: 0 };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  allSeen(key, n) { return (this.state[key] || []).length >= n; }
+  pick(key, q) {
+    const v = this.state[key], has = typeof v === 'number';
+    return { btns: q.opts.map((o, i) => ({ label: o, pressed: v === i, style: this.seg(v === i), onClick: () => this.setState({ [key]: i, [key + 'Ok']: !!this.state[key + 'Ok'] || i === q.right }) })),
+      note: !has ? (q.ask || 'Pick one.') : v === q.right ? q.yes : (q.no[v] || ''), done: !!this.state[key + 'Ok'], v: has ? v : null };
+  }
+  stepper(key, steps) {
+    const s = this.state, i = s[key] || 0, mx = s[key + 'Max'] || 0, msg = s[key + 'Msg'] || '';
+    const nx = i + 1, gate = nx < steps.length ? steps[nx].gate : null;
+    const go = (to) => this.setState({ [key]: to, [key + 'Msg']: '', [key + 'Max']: Math.max(this.state[key + 'Max'] || 0, to) });
+    const btns = i >= steps.length - 1 ? [{ label: 'Start again', pressed: false, style: this.seg(false), onClick: () => this.setState({ [key]: 0, [key + 'Msg']: '' }) }]
+      : gate ? gate.opts.map((o, k) => ({ label: o, pressed: false, style: this.seg(false), onClick: () => (k === gate.right ? go(nx) : this.setState({ [key + 'Msg']: gate.no[k] || '' })) }))
+      : [{ label: i === 0 && mx === 0 ? 'Start' : 'Next step', pressed: false, style: this.seg(false), onClick: () => go(nx) }];
+    return { i, btns, note: steps[i].t + (gate ? ' Predict: ' + gate.q : '') + (msg ? ' ' + msg : ''), done: mx >= steps.length - 1 };
+  }
+  multi(key, items, ask) {
+    const sel = this.state[key] || [], chk = !!this.state[key + 'Chk'];
+    const right = items.every((it, i) => !!it.on === (sel.indexOf(i) >= 0));
+    const btns = items.map((it, i) => { const on = sel.indexOf(i) >= 0; return { label: it.label, pressed: on, style: this.seg(on), onClick: () => this.setState({ [key]: on ? sel.filter((x) => x !== i) : sel.concat([i]), [key + 'Chk']: false }) }; });
+    btns.push({ label: 'Check', pressed: false, style: this.seg(false) + 'border-color:var(--ks3-ink);', onClick: () => this.setState({ [key + 'Chk']: true, [key + 'Ok']: !!this.state[key + 'Ok'] || right }) });
+    return { btns, chk, right, done: !!this.state[key + 'Ok'], ask: ask || 'Select, then check.', note: !chk ? (ask || 'Select every one that applies, then check.') : right ? '' : 'Not yet. Look again at each one.' };
+  }
+  flags() {
+    const K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    return { R, route, rk, H: rk === 'CH' || rk === 'TH', T: rk === 'TF' || rk === 'TH', TH: rk === 'TH' };
+  }
+  common(done, F, ready) {
+    const s = this.state, K = window.KS4;
+    const av = ORDER.filter((o) => !o[2] || (o[2] === 1 && F.T) || (o[2] === 2 && F.TH)), i = av.findIndex((o) => o[0] === SLUG);
+    return { route: F.route, rk: F.rk, onRoute: F.R.onRoute || (() => {}), isHigher: F.H, notHigher: !F.H, isTriple: F.T, notTriple: !F.T, isTH: F.TH, notTH: !F.TH,
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready,
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (x) => this.setState({ hook: x }), onThink: (x) => this.setState({ think: x }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }),
+      onCalc: (k) => this.setState((st) => ({ calc: Math.max(st.calc || 0, k || 1) })), onSteps: () => this.setState({ steps: true }),
+      endPrev: i > 0 ? LNK(av[i - 1][0], av[i - 1][1]) : null,
+      endNext: i >= 0 && i < av.length - 1 ? LNK(av[i + 1][0], av[i + 1][1]) : null };
+  }
+
+  fFig(f) {
+    const D = window.KS4D; let b = '';
+    b += '<rect x="20" y="30" width="640" height="70" rx="12" fill="' + SKY + '" stroke="' + INK + '" stroke-width="2"/>' + TX(340, 58, 'atmosphere', 16) + TX(340, 84, f ? 'carbon dioxide rising' : 'carbon dioxide steady', 15, { fill: f ? RED : GREEN });
+    b += '<rect x="20" y="290" width="640" height="30" fill="#8B5E3C" opacity=".5"/>';
+    if (!f) {
+      [80, 180, 500, 600].forEach((x) => { b += D.line(x, 290, x, 200, 8, '#6B4A2B') + D.circ(x, 180, 40, '#2E5E45', INK, 2); });
+      b += D.arrow(340, 250, 340, 106, GREEN, 6) + TX(340, 272, 'photosynthesis', 15, { fill: GREEN }) + TXN(340, 290, 'takes carbon dioxide in', 14);
+    } else {
+      [90, 250].forEach((x) => { b += D.line(x, 290, x, 260, 8, '#6B4A2B') + PATH('M' + (x - 14) + ' 262 h28', INK, 2); });
+      b += D.arrow(170, 250, 170, 106, GREEN, 3) + TXN(170, 268, 'less photosynthesis', 13, { fill: GREEN }) + TXN(170, 284, 'less taken in', 13);
+      b += '<path d="M300 290 q20 -60 40 -30 q10 -40 30 -10 q10 -30 30 40 z" fill="#FBBF24" stroke="' + RED + '" stroke-width="2"/>' + D.arrow(345, 240, 345, 106, RED, 7) + TXN(345, 268, 'burning', 13, { fill: RED }) + TXN(345, 284, 'releases', 13);
+      b += '<rect x="480" y="262" width="110" height="26" rx="8" fill="#6B4A2B"/>' + [[495, 275], [520, 270], [545, 278], [570, 272]].map((p) => D.circ(p[0], p[1], 4, LEAF, INK, 1)).join('') + D.arrow(535, 250, 535, 106, RED, 6) + TXN(535, 236, 'decay: microorganisms', 13, { fill: RED }) + TXN(535, 252, 'respire and release', 13, { fill: RED }) + TXN(535, 304, 'rotting wood', 13);
+    }
+    return D.svg(680, 340, b, f ? 'Forest cleared: a small photosynthesis arrow in, large burning and decay arrows out; atmospheric carbon dioxide rising.' : 'Forest standing: a large photosynthesis arrow takes carbon dioxide in; atmospheric carbon dioxide steady.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4, D = window.KS4D, F = this.flags();
+    const ready = !!(s.libReady && K && D);
+    const fig = (f) => (ready ? K.fig(f(), '') : null);
+    const bq = this.multi('bq', [{ label: 'Fewer trees, so less carbon dioxide is taken in by photosynthesis', on: true }, { label: 'Burning and decay of the wood release carbon dioxide', on: true }, { label: 'Cattle breathe in carbon dioxide', on: false }, { label: 'Trees release oxygen that destroys carbon dioxide', on: false }], 'Select both reasons, then check.');
+    const dq = this.pick('dq', { opts: ['Microorganisms respire as they break down the wood, releasing carbon dioxide', 'The wood turns directly into carbon dioxide', 'Decay absorbs carbon dioxide'], right: 0, yes: 'Yes: decay is a biological process. Decomposers respire, and respiration releases carbon dioxide.', no: ['', 'Wood does not turn into carbon dioxide on its own; microorganisms carry out the decay.', 'Decay releases carbon dioxide; it does not absorb it.'] });
+    const jq = this.pick('jq', { opts: ['The fuel saving is small (1%) while clearing releases carbon dioxide and destroys an irreplaceable habitat, so the costs outweigh the gain', 'Biofuel is green, so the plan is good', 'Monkeys are more important than people, so the plan is bad'], right: 0, yes: 'Yes: name the benefit, weigh it against the two costs with the numbers, and judge.', no: ['', 'Clearing the forest releases carbon dioxide and destroys habitat; that cost must be weighed, not ignored.', 'A judgement weighs both sides with the information: a 1% fuel saving against carbon dioxide and 800 tree species.'] });
+    const BANK = [
+      V("How does deforestation lead to LESS carbon dioxide being removed from the atmosphere?", [["Fewer trees means less photosynthesis, so less CO₂ is absorbed", true], ["Trees release oxygen that destroys carbon dioxide", false], ["Cutting trees cools the planet, trapping CO₂ in the soil", false], ["Deforestation increases the number of decomposers", false]], { "1": "Oxygen does not destroy carbon dioxide. Trees take CO₂ in by photosynthesis, so fewer trees means less CO₂ removed.", "2": "Cutting trees does not trap CO₂ in the soil — it means less CO₂ is taken in by photosynthesis.", "3": "Decomposers feeding on felled wood RELEASE CO₂ by respiration — that adds CO₂; it does not explain why less is removed." }),
+      V("Burning felled trees and the decay of leftover wood both release carbon dioxide. Why does decay release CO₂?", [["Microorganisms respire as they break down the dead wood, releasing CO₂", true], ["Wood turns directly into carbon dioxide with no organisms involved", false], ["Decay absorbs carbon dioxide from the air", false], ["Only burning releases CO₂ — decay does not", false]], { "1": "Decay is a biological process — microorganisms carry it out; wood does not turn into CO₂ on its own.", "2": "Decay releases CO₂, it does not absorb it — decomposers respire.", "3": "Decay releases CO₂ too: decomposer microorganisms respire as they break down the wood." }),
+      Q('Which is a reason large areas of tropical forest have been cleared?', 'To provide land for cattle and rice fields', [['To grow more trees', 'Clearing removes trees.'], ['To reduce carbon dioxide', 'Clearing raises carbon dioxide.'], ['To protect rare species', 'Clearing destroys their habitat.']]),
+      Q('Why does deforestation reduce biodiversity?', 'The habitat of many species is destroyed, so those species are lost from the area', [['Cattle eat all the animals', 'Cattle eat grass; the habitat loss is the cause.'], ['Carbon dioxide poisons the animals', 'The rise in carbon dioxide matters for warming, not as a poison here.'], ['Biodiversity is not affected', 'Many species lose their habitat.']]),
+      Q('A forest is cleared to grow a biofuel crop. Give one benefit and one cost.', 'Benefit: fuel to replace some fossil fuel. Cost: carbon dioxide released and habitat lost', [['Benefit: more trees. Cost: none', 'Trees are lost, and there are costs.'], ['Benefit: lower carbon dioxide. Cost: fewer cattle', 'Clearing raises carbon dioxide.'], ['Benefit: none. Cost: biofuel', 'Biofuel is the gain; the costs are carbon dioxide and biodiversity.']])
+    ];
+    const done = [s.hook !== null, this.allSeen('rCards', 3), this.allSeen('fSeen', 2) && bq.done && dq.done, this.allSeen('wCards', 4) && jq.done, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done, F, ready);
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'More carbon dioxide', correct: true, reply: 'Burning releases it, and the trees that used to take it in are gone.' },
+        { text: 'Less carbon dioxide', correct: false, reply: 'The trees were taking carbon dioxide in by photosynthesis; burning them releases it. Both changes push the same way: more.' }
+      ],
+      rCards: this.cards(RC, 'rCards'),
+      fBtns: this.btns(['Forest standing', 'Forest cleared'], s.f, (i) => this.setState({ f: i, fSeen: this.seen('fSeen', i) })), fFig: fig(() => this.fFig(s.f)),
+      fNote: s.f ? 'Cleared: less photosynthesis, so less carbon dioxide is taken in. Burning releases carbon dioxide, and microorganisms decaying the leftover wood respire and release more. Atmospheric carbon dioxide rises.' : 'Standing: the trees take carbon dioxide in by photosynthesis and lock the carbon up as wood.',
+      bq: { btns: bq.btns, note: bq.chk && bq.right ? 'Both: less taken in, and more released. Give both for full marks.' : bq.note }, dq, jq, bioHref: FILE.biodiversity, mbHref: FILE['maintaining-biodiversity'],
+      wCards: this.cards(WC, 'wCards'),
+      thinkOptions: [
+        { text: 'Released as carbon dioxide by microorganisms as they decay the wood', correct: true, reply: 'Decomposers respire.' },
+        { text: 'It stays locked in the wood for ever', correct: false, reply: 'Microorganisms break the wood down and respire, releasing carbon dioxide.' },
+        { text: 'It turns into soil', correct: false, reply: 'Some carbon enters the soil, but much is released as carbon dioxide by decomposers respiring.' }
+      ],
+      sortBins: [{ id: 'r', label: 'Reason for deforestation' }, { id: 'c', label: 'Consequence of deforestation' }],
+      sortItems: [
+        { text: 'Clearing land to graze cattle', bin: 'r', why: 'Food.' },
+        { text: 'Making rice fields', bin: 'r', why: 'Food.' },
+        { text: 'Growing crops to make biofuels', bin: 'r', why: 'Fuel.' },
+        { text: 'Less carbon dioxide removed by photosynthesis', bin: 'c', why: 'Fewer trees.' },
+        { text: 'Carbon dioxide released by burning and decay', bin: 'c', why: 'Burning, and microorganisms respiring.' },
+        { text: 'Reduced biodiversity as habitats are lost', bin: 'c', why: 'Species lose their habitat.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Give', 'Give one reason tropical forest has been cleared.', 'Land for cattle, land for rice fields, or crops for biofuels.', ['To grow crops for biofuels', ['To increase biodiversity', 'Clearing reduces it.'], ['To take in more carbon dioxide', 'Trees take in carbon dioxide; removing them takes in less.']]),
+          MCQ('Name', 'Name the process by which trees take carbon dioxide out of the atmosphere.', 'Photosynthesis.', ['Photosynthesis', ['Respiration', 'Respiration releases carbon dioxide.'], ['Decay', 'Decay releases carbon dioxide.']])
+        ],
+        r2: [
+          MCQ('Explain', 'Explain why burning felled trees raises atmospheric carbon dioxide.', 'Burning releases the carbon stored in the wood as carbon dioxide.', ['Burning releases the carbon in the wood as carbon dioxide', ['Burning uses up oxygen, which turns into carbon dioxide', 'The carbon comes from the wood.'], ['Burning makes the remaining trees photosynthesise less', 'Burning itself releases carbon dioxide.']]),
+          MCQ('Explain', 'Explain why clearing a forest reduces biodiversity.', 'The habitat of many species is destroyed, so they are lost from the area.', ['Many species lose their habitat and die out locally', ['The carbon dioxide kills them', 'Habitat loss is the reason.'], ['Cattle outcompete the wild animals for food', 'The forest animals have lost their habitat before the cattle arrive.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain how deforestation raises the level of carbon dioxide in the atmosphere. Put the links in order.',
+            ['Fewer trees means less photosynthesis, so less carbon dioxide is taken in.', 'Burning the felled trees releases carbon dioxide.', 'Microorganisms decaying the leftover wood respire, releasing more carbon dioxide.'],
+            [['The cattle breathe in the carbon dioxide.', 'Animals breathe carbon dioxide out, not in.'], ['Trees release oxygen that destroys carbon dioxide.', 'Oxygen does not destroy carbon dioxide.']]),
+          CHAIN('Explain', 'Explain why felled wood left to rot releases carbon dioxide. Put the links in order.',
+            ['Microorganisms feed on the dead wood.', 'They respire as they break it down.', 'Respiration releases carbon dioxide into the air.'],
+            [['The wood turns into carbon dioxide on its own.', 'Decay is done by microorganisms.'], ['Rotting wood absorbs carbon dioxide.', 'Decay releases it.']])
+        ],
+        r4: [
+          WRITE('Evaluate', 6, 'Information: a country plans to clear 2000 km² of forest for a biofuel crop that would replace 1% of its petrol. The forest holds about 800 species of tree and a monkey found nowhere else. Evaluate the plan.',
+            LV6('A benefit and both costs explained with the information, ending in a judgement.', 'A benefit and a cost, limited judgement.', 'One relevant point.'),
+            ['Benefit: biofuel replaces some fossil fuel, 1% of petrol.', 'Cost: fewer trees take in less carbon dioxide by photosynthesis.', 'Cost: burning and decay of the felled trees release carbon dioxide, adding to global warming.', 'Cost: 800 tree species and a monkey found nowhere else lose their habitat; biodiversity falls and the monkey could become extinct.', 'Judgement: a 1% fuel saving is small against those costs, so the plan is hard to justify; a smaller area or already-cleared land would reduce the harm.'],
+            ['“Biofuel is green, so the plan has no cost.”', '“Rotting wood does not release carbon dioxide.”'])
+        ]
+      },
+      keyLines: ['Large-scale deforestation in tropical areas has occurred to provide land for cattle and rice fields, and to grow crops for biofuels.', 'Carbon dioxide rises for two separate reasons: less is taken in because fewer trees photosynthesise, and more is released by burning and by microorganisms decaying the wood (they respire).', 'Habitats are destroyed, so biodiversity is reduced.', 'Evaluate: a gain (food, fuel), the two costs (carbon dioxide, biodiversity), then a judgement using the information given.'],
+      endConnects: [LNK('biodiversity', 'Biodiversity'), LNK('maintaining-biodiversity', 'Maintaining biodiversity'), LNK('photosynthesis', 'Photosynthesis'), LNK('food-security', 'Food security')],
+      bank: ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

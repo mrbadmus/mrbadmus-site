@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transfer of biomass · MrBadmusAI GCSE Biology</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Biology" unit="Ecology" title="Transfer of biomass" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Biology 4.7.4.3 · Triple only</p>
+        <h1>Transfer of biomass</h1>
+        <p class="ks3-bigq">Where the mass of a meal goes, why about 90% never reaches the next level, and how to turn two biomass values into an efficiency.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Triple only</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Calculates</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="2"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A big dinner." scene="You eat a large dinner, but the next morning you have not gained a dinner’s weight." question="did most of that mass leave your body, or did it turn into muscle and fat?" options="{{ hookOptions }}" bridge="Most of the biomass an organism takes in never becomes part of it. That is why each trophic level holds less." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-loss" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Where the biomass goes</p>
+        <h2 style="margin: 6px 0 0;">1000 g of grass into a rabbit.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Producers are mostly plants and algae which transfer about 1% of the incident energy from light for photosynthesis. Then only approximately 10% of the biomass from each trophic level is transferred to the level above it. Follow 1000 g of grass. The split is illustrative; it varies between organisms.</p>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ lFig }}</div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ lCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Which of these is egested rather than excreted?</p>
+        <div style="margin-top: 14px;"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ eq.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div></div><div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ eq.note }}</p></div>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Less biomass at each level supports fewer organisms, so food chains rarely go beyond four or five levels.</p>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equation · efficiency of biomass transfer</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Efficiency is the biomass that reaches the next level as a fraction of the biomass at this level. Both values must be in the same unit. Tap the quantity you want to find.</p>
+        <div style="margin-top: 14px; max-width: 520px;">
+          <dc-import name="Ks4Triangle" eq="{{ eqEff }}" variant="full" hint-size="100%,420px"></dc-import>
+        </div>
+        <p style="margin: 16px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">The triangle gives the efficiency as a decimal (or a fraction). Turning it into a percentage is its own line:</p>
+        <p style="margin: 10px 0 0; display: inline-block; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 20px;">efficiency (%) = decimal × 100</p>
+        <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Always divide the next level by this level. An answer over 100% means you divided the bigger number by the smaller: impossible, so turn it round.</p>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-steps" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Steps" mode="worked" id="tb-w" head="Grain has a biomass of 20 000 kg. Cattle fed on it have a biomass of 2000 kg. People eating the beef gain 200 kg of biomass. Calculate the efficiency of each transfer, and the fraction of the grain’s biomass that reaches the people." lead="Two transfers, so two steps, then combine them." steps="{{ wSteps }}" next="Now the same two steps yourself." hint-size="100%,900px"></dc-import>
+          <div style="margin-top: 22px;">
+            <dc-import name="Ks4Steps" mode="attempt" id="tb-a" head="Algae in a pond have a biomass of 5000 g/m². Small fish eating the algae have a biomass of 400 g/m². Large fish eating the small fish have a biomass of 40 g/m². Calculate the efficiency of each transfer and the percentage of the algae’s biomass that reaches the large fish." lead="Write each line, then check your working." steps="{{ aSteps }}" close="5000 ÷ 400 gives 1250%: impossible. Divide the next level by this level." on-done="{{ onSteps }}" hint-size="100%,900px"></dc-import>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · over 100%?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Divide the bigger number by the smaller.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Grass 4000 g/m², rabbits 320 g/m². A pupil writes efficiency = (4000 ÷ 320) × 100 = 1250%. What has gone wrong?" options="{{ thinkOptions }}" reveal="The division is the wrong way round. Efficiency = biomass at the next level ÷ biomass at this level = 320 ÷ 4000 = 0.08, so 8%. An answer over 100% is impossible: more cannot come out than went in." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Egested or excreted?" prompt="Place each loss." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Egested: faeces, material never absorbed. Excreted: waste made by the body’s chemistry, carbon dioxide and water from respiration, urea and water in urine." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Efficiency as a percentage or a fraction; biomass transferred; two transfers in a row.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How biomass is lost between trophic levels, and the effect on numbers at each level.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The 1% and the 10%.</dd></div>
+        </dl>
+      </section>
+
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Only about 10% of the biomass at one trophic level reaches the next. The rest leaves as faeces (egested), as carbon dioxide and water from respiration, and as urea and water in urine. Efficiency = next level ÷ this level, then × 100.</p>
+      </div>
+
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="transfer-of-biomass" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Transfer of biomass" spec="AQA 4.7.4.3 (Biology only)" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Biology" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Getting an efficiency over 100%?" legal="All biomass values are made up round numbers for practice." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+
+const SLUG = 'transfer-of-biomass';
+const OK = ['Triple Foundation', 'Triple Higher'];
+const FILE = {"ecosystems":"ks4-biology-4.7.1.1-ecosystems.dc.html","population-competition":"ks4-biology-4.7.1.1-population-competition.dc.html","abiotic-biotic-factors":"ks4-biology-4.7.1.2-abiotic-biotic-factors.dc.html","adaptations":"ks4-biology-4.7.1.4-adaptations.dc.html","food-chains-webs":"ks4-biology-4.7.2.1-food-chains-webs.dc.html","sampling-techniques":"ks4-biology-4.7.2.1-sampling-techniques.dc.html","environmental-change":"ks4-biology-4.7.2.4-environmental-change.dc.html","deforestation":"ks4-biology-4.7.3.4-deforestation.dc.html","maintaining-biodiversity":"ks4-biology-4.7.3.6-maintaining-biodiversity.dc.html","trophic-levels":"ks4-biology-4.7.4.1-trophic-levels.dc.html","pyramids-of-biomass":"ks4-biology-4.7.4.2-pyramids-of-biomass.dc.html","transfer-of-biomass":"ks4-biology-4.7.4.3-transfer-of-biomass.dc.html","farming-techniques":"ks4-biology-4.7.5.2-farming-techniques.dc.html","sustainable-fisheries":"ks4-biology-4.7.5.3-sustainable-fisheries.dc.html","role-of-biotechnology":"ks4-biology-4.7.5.4-role-of-biotechnology.dc.html","biodiversity":"../../KS4 Batch 4/ks4-biology-4.7.3.1-biodiversity.dc.html","water-cycle":"../../KS4 Batch 4/ks4-biology-4.7.2.2-water-cycle.dc.html","transport-in-cells":"../../KS4 Batch 4/ks4-biology-4.1.3-transport-in-cells.dc.html","food-security":"../../Batch 6/lessons/ks4-biology-4.7.5.1-factors-affecting-food-security.dc.html","culturing-microorganisms":"../../Batch 6/lessons/ks4-biology-4.1.1.6-culturing-microorganisms.dc.html","photosynthesis":"../../Batch 7/lessons/ks4-biology-4.4.1.1-photosynthesis.dc.html","aerobic-respiration":"../../Batch 7/lessons/ks4-biology-4.4.2.1-aerobic-respiration.dc.html","evolution-natural-selection":"../../Batch 9/lessons/ks4-biology-4.6.2.2-evolution-natural-selection.dc.html","genetic-engineering":"../../Batch 9/lessons/ks4-biology-4.6.2.4-genetic-engineering.dc.html","resistant-bacteria":"../../Batch 9/lessons/ks4-biology-4.6.3.7-resistant-bacteria.dc.html","variation":"../../Batch 9/lessons/ks4-biology-4.6.2.1-variation.dc.html"};
+const ORDER = [["ecosystems","Ecosystems",0],["population-competition","Population and competition",0],["abiotic-biotic-factors","Abiotic and biotic factors",0],["adaptations","Adaptations",0],["food-chains-webs","Food chains and food webs",0],["sampling-techniques","Sampling techniques",0],["environmental-change","The impact of environmental change",2],["deforestation","Deforestation",0],["maintaining-biodiversity","Maintaining biodiversity",0],["trophic-levels","Trophic levels",1],["pyramids-of-biomass","Pyramids of biomass",1],["transfer-of-biomass","Transfer of biomass",1],["farming-techniques","Farming techniques",1],["sustainable-fisheries","Sustainable fisheries",1],["role-of-biotechnology","The role of biotechnology",1]];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const CALC = (prompt, convOptions, convAnswer, answer, unit, units, right, wrong, model, tol) => ({ kind: 'calc', command: 'Calculate', marks: 2, prompt, convOptions, convAnswer, answer, tol: tol == null ? 0.05 : tol, unit, units, right, wrong, model });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const V = (q, opts, we) => ({ q, opts, wrong_explanations: we });
+const LNK = (k, label) => ({ href: FILE[k], label });
+const BOX = (x, y, w, h, fill, stroke, sw, rx) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + (rx == null ? 12 : rx) + '" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const PATH = (d, col, w, extra) => '<path d="' + d + '" fill="none" stroke="' + (col || '#1A1A1A') + '" stroke-width="' + (w || 3) + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>';
+const TX = (x, y, t, size, o) => window.KS4D.T(x, y, t, size, Object.assign({ fill: '#1A1A1A' }, o || {}));
+const TXN = (x, y, t, size, o) => TX(x, y, t, size, Object.assign({ weight: 'normal' }, o || {}));
+const GREEN = '#2E5E45', LEAF = '#A9D9BE', TAN = '#F2C9AE', SKY = '#DDEEF6', RED = '#C8102E', BLUE = '#3B82F6', INK = '#1A1A1A', PAPER = '#FFFDF8', TINT = '#FBE3D6';
+const CFL = (c, f, i, ft, a, cn) => [{ letter: 'C', label: 'Convert', line: c, note: cn || '' }, { letter: 'F', label: 'Formula', line: f }, { letter: 'I', label: 'Insert', line: i }, { letter: 'F', label: 'Fine-tune', line: ft }, { letter: 'A', label: 'Answer', line: a }];
+const CFQ = (c, f, i, ft, a, pc) => [{ letter: 'C', label: 'Convert', placeholder: pc || 'anything to convert?', line: c }, { letter: 'F', label: 'Formula', placeholder: 'written out', line: f }, { letter: 'I', label: 'Insert', placeholder: 'numbers in', line: i }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: ft }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: a }];
+
+const RAIL = [{ id: 's-hook', label: 'A big dinner', short: 'HOOK' }, { id: 's-loss', label: 'Where it goes', short: 'LOSSES' }, { id: 's-equation', label: 'Efficiency', short: 'EQUATION' }, { id: 's-calc', label: 'CFIFA', short: 'CFIFA' }, { id: 's-steps', label: 'Step 1, Step 2', short: 'STEPS' }, { id: 's-think', label: 'Think again', short: 'THINK' }, { id: 's-sort', label: 'Egested or excreted?', short: 'SORT' }, { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }];
+const EQ_E = { name: 'Efficiency of biomass transfer', written: 'efficiency = biomass at the next level \u00f7 biomass at this level', source: 'none',
+  top: { s: 'B\u2082', name: 'biomass at the next level', unit: 'g/m\u00b2 or kg' },
+  bottom: [{ s: 'E', name: 'efficiency (as a decimal)', unit: '\u00d7 100 for %' }, { s: 'B\u2081', name: 'biomass at this level', unit: 'g/m\u00b2 or kg' }] };
+const LC = [
+  { name: 'Faeces · egested', why: 'Not all the ingested material is absorbed; some is egested as faeces.' },
+  { name: 'Carbon dioxide and water · respiration', why: 'Large amounts of glucose are used in respiration. The carbon dioxide and water made leave the body: mass lost.' },
+  { name: 'Urea and water · urine', why: 'Some absorbed material is lost as waste in urine.' },
+  { name: 'New rabbit · about 10%', why: 'Only the biomass that becomes part of the rabbit’s body is available to the fox.' }
+];
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false, calc: 0, steps: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  btns(labels, cur, pick) { return labels.map((l, i) => ({ label: l, pressed: cur === i, style: this.seg(cur === i), onClick: () => pick(i) })); }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  allSeen(key, n) { return (this.state[key] || []).length >= n; }
+  pick(key, q) {
+    const v = this.state[key], has = typeof v === 'number';
+    return { btns: q.opts.map((o, i) => ({ label: o, pressed: v === i, style: this.seg(v === i), onClick: () => this.setState({ [key]: i, [key + 'Ok']: !!this.state[key + 'Ok'] || i === q.right }) })),
+      note: !has ? (q.ask || 'Pick one.') : v === q.right ? q.yes : (q.no[v] || ''), done: !!this.state[key + 'Ok'], v: has ? v : null };
+  }
+  stepper(key, steps) {
+    const s = this.state, i = s[key] || 0, mx = s[key + 'Max'] || 0, msg = s[key + 'Msg'] || '';
+    const nx = i + 1, gate = nx < steps.length ? steps[nx].gate : null;
+    const go = (to) => this.setState({ [key]: to, [key + 'Msg']: '', [key + 'Max']: Math.max(this.state[key + 'Max'] || 0, to) });
+    const btns = i >= steps.length - 1 ? [{ label: 'Start again', pressed: false, style: this.seg(false), onClick: () => this.setState({ [key]: 0, [key + 'Msg']: '' }) }]
+      : gate ? gate.opts.map((o, k) => ({ label: o, pressed: false, style: this.seg(false), onClick: () => (k === gate.right ? go(nx) : this.setState({ [key + 'Msg']: gate.no[k] || '' })) }))
+      : [{ label: i === 0 && mx === 0 ? 'Start' : 'Next step', pressed: false, style: this.seg(false), onClick: () => go(nx) }];
+    return { i, btns, note: steps[i].t + (gate ? ' Predict: ' + gate.q : '') + (msg ? ' ' + msg : ''), done: mx >= steps.length - 1 };
+  }
+  multi(key, items, ask) {
+    const sel = this.state[key] || [], chk = !!this.state[key + 'Chk'];
+    const right = items.every((it, i) => !!it.on === (sel.indexOf(i) >= 0));
+    const btns = items.map((it, i) => { const on = sel.indexOf(i) >= 0; return { label: it.label, pressed: on, style: this.seg(on), onClick: () => this.setState({ [key]: on ? sel.filter((x) => x !== i) : sel.concat([i]), [key + 'Chk']: false }) }; });
+    btns.push({ label: 'Check', pressed: false, style: this.seg(false) + 'border-color:var(--ks3-ink);', onClick: () => this.setState({ [key + 'Chk']: true, [key + 'Ok']: !!this.state[key + 'Ok'] || right }) });
+    return { btns, chk, right, done: !!this.state[key + 'Ok'], ask: ask || 'Select, then check.', note: !chk ? (ask || 'Select every one that applies, then check.') : right ? '' : 'Not yet. Look again at each one.' };
+  }
+  flags() {
+    const K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    return { R, route, rk, H: rk === 'CH' || rk === 'TH', T: rk === 'TF' || rk === 'TH', TH: rk === 'TH' };
+  }
+  common(done, F, ready) {
+    const s = this.state, K = window.KS4;
+    const av = ORDER.filter((o) => !o[2] || (o[2] === 1 && F.T) || (o[2] === 2 && F.TH)), i = av.findIndex((o) => o[0] === SLUG);
+    return { route: F.route, rk: F.rk, onRoute: F.R.onRoute || (() => {}), isHigher: F.H, notHigher: !F.H, isTriple: F.T, notTriple: !F.T, isTH: F.TH, notTH: !F.TH,
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready,
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (x) => this.setState({ hook: x }), onThink: (x) => this.setState({ think: x }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }),
+      onCalc: (k) => this.setState((st) => ({ calc: Math.max(st.calc || 0, k || 1) })), onSteps: () => this.setState({ steps: true }),
+      endPrev: i > 0 ? LNK(av[i - 1][0], av[i - 1][1]) : null,
+      endNext: i >= 0 && i < av.length - 1 ? LNK(av[i + 1][0], av[i + 1][1]) : null };
+  }
+
+  lFig() {
+    const D = window.KS4D; let b = '';
+    b += BOX(20, 130, 150, 80, LEAF, INK, 2.5) + TX(95, 165, '1000 g grass', 17) + TXN(95, 190, 'eaten', 13);
+    b += '<path d="M170 140 L300 100 L300 110 L170 160 Z" fill="' + TAN + '" opacity=".8"/>' + '<path d="M170 160 L300 150 L300 160 L170 185 Z" fill="' + TINT + '" opacity=".9"/>' + '<path d="M170 185 L300 200 L300 205 L170 195 Z" fill="' + SKY + '"/>' + '<path d="M170 195 L300 240 L300 243 L170 200 Z" fill="#E8B98F"/>';
+    b += D.arrow(300, 105, 420, 70, INK, 3) + BOX(430, 50, 220, 44, TAN, INK, 2) + TX(540, 78, 'faeces (egested)', 14);
+    b += D.arrow(300, 155, 420, 130, INK, 3) + BOX(430, 110, 220, 44, TINT, INK, 2) + TX(540, 138, 'CO₂ and water (respiration)', 14);
+    b += D.arrow(300, 203, 420, 190, INK, 3) + BOX(430, 170, 220, 44, SKY, INK, 2) + TX(540, 198, 'urea and water (urine)', 14);
+    b += D.arrow(300, 242, 420, 255, INK, 3) + BOX(430, 235, 220, 44, '#E8B98F', INK, 2.5) + TX(540, 263, 'new rabbit: about 100 g', 14);
+    b += TXN(235, 290, 'split is illustrative and varies', 13, { fill: '#8A8378' });
+    return D.svg(680, 310, b, '1000 g of grass eaten by a rabbit: most leaves as faeces, as carbon dioxide and water from respiration, and as urea and water in urine; about 100 g becomes rabbit.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4, D = window.KS4D, F = this.flags();
+    const ready = !!(s.libReady && K && D);
+    const fig = (f) => (ready ? K.fig(f(), '') : null);
+    const eq = this.pick('eq', { opts: ['Faeces', 'Carbon dioxide', 'Urea'], right: 0, yes: 'Yes: faeces are material that was never absorbed, so they are egested. Excretion is waste made by the body’s chemistry: carbon dioxide, water, urea.', no: ['', 'Carbon dioxide is made in respiration, so it is excreted.', 'Urea is made by the body and excreted in urine.'] });
+    const BANK = [
+      V("Why do intensive farming methods restrict farm animals' movement to improve food production efficiency?", [["Less movement means less energy used in respiration for muscle activity — more energy retained as body mass (biomass for humans to eat)", true], ["Restricted movement prevents disease spreading between animals", false], ["Animals that move less eat less food — reducing farming costs", false], ["Restricted movement makes animals heavier due to water retention", false]], { "1": "Disease prevention may be a concern but is not the reason for restricting movement in the context of energy efficiency.", "2": "Animals that move less may eat slightly less, but the key reason is that energy from food is retained as BIOMASS rather than used in movement.", "3": "Body mass increase is due to biomass accumulation — not water retention. The mechanism is reduced respiration for movement." }),
+      Q('Producers have a biomass of 5000 g/m². Primary consumers have a biomass of 500 g/m². What is the efficiency of transfer?', '10%: (500 ÷ 5000) × 100', [['1000%: (5000 ÷ 500) × 100', 'Divided the wrong way round: an efficiency over 100% is impossible. Next level ÷ this level.'], ['90%: the percentage not transferred', '90% is the loss. Efficiency is what is transferred: 500 ÷ 5000.'], ['4500%: 5000 − 500', 'That is the biomass not transferred, in g/m², not an efficiency.']]),
+      Q('Grass has a biomass of 800 g/m² and the rabbits feeding on it 80 g/m². Give the efficiency as a fraction.', '1/10', [['10/1', 'Next level over this level: 80/800 = 1/10.'], ['1/80', 'Simplify 80/800 by dividing both by 80: 1/10.'], ['9/10', 'That is the fraction lost.']]),
+      Q('Grain 10 000 kg, cattle fed on it 1000 kg, people eating the beef 100 kg. What percentage of the grain’s biomass reaches the people?', '1%: 10% of 10%', [['10%', 'That is one transfer; there are two.'], ['20%', 'Efficiencies multiply, they do not add: 0.1 × 0.1 = 0.01.'], ['100%', 'Each transfer loses about 90%.']]),
+      Q('Explain how biomass is lost between a rabbit and the fox that eats it.', 'Some is egested as faeces; some is lost as carbon dioxide and water in respiration and as urea and water in urine', [['It is lost as heat', 'Energy is lost as heat; biomass leaves as substances.'], ['The fox leaves most of the rabbit uneaten', 'The spec’s losses are inside the fox: faeces, respiration, urine.'], ['No biomass is lost', 'Only about 10% is passed on.']])
+    ];
+    const done = [s.hook !== null, this.allSeen('lCards', 4) && eq.done, true, s.calc >= 2, s.steps, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done, F, ready);
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'Most of it left', correct: true, reply: 'As faeces, as carbon dioxide and water breathed out after respiration, and as urea and water in urine. Only a little became you.' },
+        { text: 'It became muscle and fat', correct: false, reply: 'Only a small part did. The rest left as faeces, as carbon dioxide and water from respiration, and as urea and water in urine. That is why you did not gain a dinner.' }
+      ],
+      lFig: fig(() => this.lFig()), lCards: this.cards(LC, 'lCards'), eq, eqEff: EQ_E,
+      cfExamples: [
+        { tab: 'Verbatim', eq: EQ_E, find: 'E', next: 'Now one with a unit to convert.', head: 'Grass has biomass 2000 g/m². Rabbits eating this grass have biomass 160 g/m². Calculate the efficiency of transfer.', steps: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert — both biomass values are already in matching units (g/m²).' },
+          { letter: 'F', label: 'Formula', line: 'Efficiency (%) = (biomass at next level ÷ biomass at current level) × 100' },
+          { letter: 'I', label: 'Insert', line: 'Next level (rabbits) = 160; Current level (grass) = 2000' },
+          { letter: 'F', label: 'Fine-tune', line: 'Efficiency = (160 ÷ 2000) × 100 = 0.08 × 100' },
+          { letter: 'A', label: 'Answer', line: 'Efficiency = 8%' }] },
+        { tab: 'Convert kg to g', eq: EQ_E, find: 'E', next: 'Now as a fraction.', head: 'Producers have a biomass of 6 kg/m². Primary consumers have a biomass of 480 g/m². Calculate the efficiency of transfer.', steps: CFL('6 kg/m² = 6000 g/m²', 'efficiency = biomass at the next level ÷ biomass at this level, × 100', 'efficiency = 480 ÷ 6000 × 100', 'efficiency = 0.08 × 100 = 8', '8%', 'Both values must be in the same unit before dividing.') },
+        { tab: 'As a fraction', eq: EQ_E, find: 'E', next: 'Now yours, below.', head: 'Algae 1000 g/m²; water fleas 100 g/m². Give the efficiency of transfer as a fraction.', steps: CFL('Nothing to convert: both in g/m².', 'efficiency = biomass at the next level ÷ biomass at this level', 'efficiency = 100 ÷ 1000', 'efficiency = 100/1000 = 1/10', '1/10 (which is 10%)') }
+      ],
+      cfQuestions: [
+        { tab: 'Question 1', id: 'tb-q1', head: 'Grass 3000 g/m²; grasshoppers 240 g/m². Calculate the efficiency of transfer as a percentage.', close: '3000 ÷ 240 = 12.5, giving 1250%: impossible. Divide the next level by this level.', steps: CFQ('Nothing to convert: both in g/m².', 'efficiency = biomass at the next level ÷ biomass at this level, × 100', 'efficiency = 240 ÷ 3000 × 100', 'efficiency = 0.08 × 100 = 8', '8%') },
+        { tab: 'Question 2', id: 'tb-q2', head: 'Producers 2 kg/m²; primary consumers 300 g/m². Calculate the efficiency of transfer as a percentage.', close: '300 ÷ 2 = 150, so 15 000%: the units did not match. 2 kg/m² is 2000 g/m².', steps: CFQ('2 kg/m² = 2000 g/m²', 'efficiency = biomass at the next level ÷ biomass at this level, × 100', 'efficiency = 300 ÷ 2000 × 100', 'efficiency = 0.15 × 100 = 15', '15%', 'kg to g?') },
+        { tab: 'Question 3', id: 'tb-q3', head: 'A level has a biomass of 1500 g/m² and the transfer to the next level is 12% efficient. Calculate the biomass at the next level.', close: '1500 ÷ 12 = 125 divides; the next level is efficiency (as a decimal) × this level.', steps: CFQ('12% = 0.12 as a decimal', 'biomass at the next level = efficiency × biomass at this level', 'next level = 0.12 × 1500', 'next level = 180', '180 g/m²', '% to decimal') }
+      ],
+      wSteps: [
+        { title: 'Efficiency of each transfer', eq: EQ_E, find: 'E', carry: '10% and 10%', lines: CFL('Nothing to convert: all in kg.', 'efficiency = biomass at the next level ÷ biomass at this level, × 100', 'grain to cattle: 2000 ÷ 20 000 × 100; cattle to people: 200 ÷ 2000 × 100', '0.1 × 100 = 10 and 0.1 × 100 = 10', '10% for each transfer') },
+        { title: 'Combine the two transfers', lines: CFL('10% = 0.1 as a decimal', 'overall fraction = efficiency 1 × efficiency 2', 'overall = 0.1 × 0.1', 'overall = 0.01 = 1/100, or check: 200 ÷ 20 000 = 0.01', '1/100 of the grain’s biomass reaches the people (1%)').map((l, i) => (i === 2 ? Object.assign(l, { note: 'Efficiencies multiply along a chain; they do not add.' }) : l)) }
+      ],
+      aSteps: [
+        { title: 'Efficiency of each transfer', carry: '8% and 10%', lines: CFQ('Nothing to convert: all in g/m².', 'efficiency = biomass at the next level ÷ biomass at this level, × 100', 'algae to small fish: 400 ÷ 5000 × 100; small to large fish: 40 ÷ 400 × 100', '0.08 × 100 = 8 and 0.1 × 100 = 10', '8% and 10%') },
+        { title: 'Combine the two transfers', lines: CFQ('8% = 0.08 and 10% = 0.1', 'overall = efficiency 1 × efficiency 2, × 100', 'overall = 0.08 × 0.1 × 100', 'overall = 0.008 × 100 = 0.8, or check: 40 ÷ 5000 × 100 = 0.8', '0.8% of the algae’s biomass reaches the large fish', '% to decimals') }
+      ],
+      thinkOptions: [
+        { text: 'The division is the wrong way round: it should be 320 ÷ 4000', correct: true, reply: '0.08, so 8%.' },
+        { text: 'The × 100 is wrong', correct: false, reply: 'The × 100 turns the decimal into a percentage. The error is dividing 4000 by 320.' },
+        { text: 'Nothing: 1250% is fine', correct: false, reply: 'More cannot come out than went in. Over 100% is impossible.' }
+      ],
+      sortBins: [{ id: 'g', label: 'Egested' }, { id: 'x', label: 'Excreted' }],
+      sortItems: [
+        { text: 'Faeces', bin: 'g', why: 'Material never absorbed.' },
+        { text: 'Carbon dioxide from respiration', bin: 'x', why: 'Made by the body.' },
+        { text: 'Water from respiration', bin: 'x', why: 'Made by the body.' },
+        { text: 'Urea in urine', bin: 'x', why: 'Made by the body.' },
+        { text: 'Water in urine', bin: 'x', why: 'Waste from the body.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('State', 'State approximately what percentage of the biomass at one trophic level is transferred to the level above.', 'About 10%.', ['About 10%', ['About 90%', 'That is the share lost.'], ['About 1%', '1% is the share of light energy producers transfer.']]),
+          MCQ('Give', 'Give one way biomass is lost from a trophic level.', 'Faeces (egested); carbon dioxide and water from respiration; urea and water in urine.', ['Egested as faeces', ['Lost as heat', 'Energy is lost as heat; biomass leaves as substances.'], ['Absorbed by the producers', 'Producers take in carbon dioxide, not biomass.']])
+        ],
+        r2: [
+          CALC('Grass has a biomass of 2500 g/m². Rabbits eating it have a biomass of 300 g/m². Calculate the efficiency of transfer as a percentage.', ['Nothing to convert', 'Convert g to kg', 'Convert % to a decimal'], 0, 12, '%', ['%', 'g/m²', 'kg/m²'], '300 ÷ 2500 = 0.12; × 100 = 12%.', 'efficiency = next level ÷ this level = 300 ÷ 2500, then × 100.', ['C · nothing to convert', 'F · efficiency = next level ÷ this level, × 100', 'I · efficiency = 300 ÷ 2500 × 100', 'F · efficiency = 0.12 × 100 = 12', 'A · 12%']),
+          CALC('Producers have a biomass of 4 kg/m². Primary consumers have a biomass of 360 g/m². Calculate the efficiency of transfer as a percentage.', ['Nothing to convert', 'Convert 4 kg/m² to 4000 g/m²', 'Convert 4 kg/m² to 400 g/m²'], 1, 9, '%', ['%', 'g/m²', 'kg/m²'], '4 kg = 4000 g; 360 ÷ 4000 = 0.09; 9%.', 'Match the units first: 4000 g/m². Then 360 ÷ 4000 × 100.', ['C · 4 kg/m² = 4000 g/m²', 'F · efficiency = next level ÷ this level, × 100', 'I · efficiency = 360 ÷ 4000 × 100', 'F · efficiency = 0.09 × 100 = 9', 'A · 9%'])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain why a food chain rarely has more than four or five trophic levels. Put the links in order.',
+            ['Only about 10% of the biomass at each level is transferred to the next.', 'After a few transfers very little biomass remains.', 'Too little biomass is left to support the organisms of another level.'],
+            [['Biomass is lost as heat at each level.', 'Energy is lost as heat; biomass leaves as substances.'], ['The animals at the top are too big.', 'Size is not the limit.']]),
+          CHAIN('Explain', 'Explain why eating grain feeds more people than feeding the grain to cattle and eating the beef. Put the links in order.',
+            ['Each transfer between trophic levels passes on only about 10% of the biomass.', 'Grain to cattle to people is two transfers, so about 10% of 10%, or 1%, of the grain’s biomass reaches the people.', 'Eating the grain directly is one transfer, so about ten times more biomass reaches the people.'],
+            [['Cattle add biomass to the grain.', 'Cattle lose most of it as faeces, respiration and urine.'], ['The two transfers add up to 20%.', 'Efficiencies multiply: 0.1 × 0.1 = 0.01.']])
+        ],
+        r4: [
+          WRITE('Explain', 6, 'A fox eats rabbits. Explain why the biomass of the foxes in a wood is much less than the biomass of the rabbits, and how this affects the number of organisms at each trophic level.',
+            LV6('All three losses in the spec’s words, the 10% figure, and the effect on numbers and chain length.', 'Two losses and the idea of less biomass higher up.', 'One loss or a statement that biomass falls.'),
+            ['Not all the rabbit material a fox eats is absorbed; some is egested as faeces.', 'Some absorbed material is lost as carbon dioxide and water in respiration; large amounts of glucose are used in respiration.', 'Some is lost as urea and water in urine.', 'So only about 10% of the rabbits’ biomass becomes fox biomass.', 'Less biomass at each level supports fewer organisms, so there are far fewer foxes than rabbits and chains rarely pass four or five levels.'],
+            ['“Biomass is lost as heat.”', '“Faeces are excreted.”'])
+        ]
+      },
+      keyLines: ['Producers are mostly plants and algae which transfer about 1% of the incident energy from light for photosynthesis.', 'Only approximately 10% of the biomass from each trophic level is transferred to the level above it.', 'Losses: not all the ingested material is absorbed, some is egested as faeces; some absorbed material is lost as waste, such as carbon dioxide and water in respiration and water and urea in urine. Large amounts of glucose are used in respiration.', 'Efficiency = biomass at the next level ÷ biomass at this level, as a fraction or × 100 as a percentage. Match the units first. Over 100% is impossible.', 'Two transfers: multiply the efficiencies (10% of 10% is 1%). Less biomass at each level supports fewer organisms, so chains are short.'],
+      endConnects: [LNK('trophic-levels', 'Trophic levels'), LNK('pyramids-of-biomass', 'Pyramids of biomass'), LNK('farming-techniques', 'Farming techniques'), LNK('aerobic-respiration', 'Aerobic respiration')],
+      bank: ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>
