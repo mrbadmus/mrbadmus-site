@@ -589,6 +589,17 @@
        modes and the two rules. Nouns and labels; the one-word tags are the
        mono eyebrow on each mode card. No sentence explains either mode. */
     stepsFlash: ["Classes", "Deck", "Detail"],
+    /* ⊕ Catch-up (14 Oct 2026) — a lesson and its questions set to NAMED pupils. */
+    stepsCatchUp: ["Pupils", "Lesson", "Questions"],
+    typeCatchUp: "Catch-up",
+    labelPupils: "Pupils",
+    noLessons: "No lessons",
+    labelLesson: "Lesson",
+    searchLesson: "Search lessons",
+    lessonsAll: "All lessons",
+    noPupils: "No pupils",
+    catchUpTitle: function (name) { return "Catch-up: " + name; },
+    catchUpPupils: function (n) { return n + (n === 1 ? " pupil" : " pupils"); },
     labelType: "Type",
     typeQuestions: "Questions",
     typeFlashcards: "Flashcards",
@@ -890,6 +901,9 @@
          `syncStep` and `submit`, and never renumbers a step. `fc` is the
          flashcard set's own three facts. */
       type: "questions",
+      /* ⊕ Catch-up — the pupils ticked (ids), the lesson search text and
+         whether the list is widened past the class's current topic. */
+      cu: { pupils: [], q: "", all: false },
       fc: { deck: null, mode: "make", rule: "secure", cards: 0, deckTitle: "", preset: false },
       /* ⊕ 25 Sep 2026 — THE QUESTIONS AN EDITED SET ALREADY HOLDS, and
          whether they have been PLACED. `keepPicked` (MRB-336) and
@@ -1089,10 +1103,21 @@
     /* ── panel 0: Classes ── */
     var pClasses = el("div", "sw-panel");
     pClasses.setAttribute("data-sw", "panel-classes");
-    pClasses.appendChild(el("div", "sw-label", SAY.labelClasses));
+    var classLbl = el("div", "sw-label", SAY.labelClasses);
+    pClasses.appendChild(classLbl);
     var classList = el("div", "sw-tree sw-classes");
     classList.setAttribute("data-sw", "class-list");
     pClasses.appendChild(classList);
+    /* ⊕ Catch-up — the pupils of the chosen class, drawn only on that type. */
+    var pupilsLbl = el("div", "sw-label sw-cuonly", SAY.labelPupils);
+    var pupilsList = el("div", "sw-tree sw-cuonly");
+    pupilsList.setAttribute("data-sw", "pupil-list");
+    var pupilsNote = el("div", "sw-row-tag sw-cuonly", SAY.loading);
+    pupilsNote.setAttribute("data-sw", "pupil-note");
+    pupilsNote.hidden = true;
+    pClasses.appendChild(pupilsLbl);
+    pClasses.appendChild(pupilsList);
+    pClasses.appendChild(pupilsNote);
     /* ⊕ MRB-335 — the scope's failure, on the step the teacher is standing
        on. The tree carries the same word one step further in; a teacher who
        cannot get past step 0 was never going to read that one. */
@@ -1104,6 +1129,27 @@
     /* ── panel 1: Topic ── */
     var pTopic = el("div", "sw-panel");
     pTopic.setAttribute("data-sw", "panel-topic");
+    /* ⊕ Catch-up — the lesson picker sits ABOVE the tier rail, since it is
+       the first thing a catch-up asks. Subject/paper/tree are hidden for it
+       by CSS (`sw-nocu`); search reaches every lesson, so they add nothing. */
+    var lessonLbl = el("div", "sw-label sw-cuonly", SAY.labelLesson);
+    var lessonSearch = document.createElement("input");
+    lessonSearch.type = "search";
+    lessonSearch.className = "sw-input sw-cuonly";
+    lessonSearch.placeholder = SAY.searchLesson;
+    lessonSearch.setAttribute("aria-label", SAY.searchLesson);
+    lessonSearch.setAttribute("data-sw", "lesson-search");
+    var lessonChips = el("div", "sw-chips sw-cuonly");
+    lessonChips.setAttribute("data-sw", "lesson-scope");
+    var lessonList = el("div", "sw-tree sw-cuonly");
+    lessonList.setAttribute("data-sw", "lesson-list");
+    var lessonNote = el("div", "sw-row-tag sw-cuonly", "");
+    lessonNote.setAttribute("data-sw", "lesson-note");
+    lessonNote.hidden = true;
+    pTopic.appendChild(lessonLbl); pTopic.appendChild(lessonSearch);
+    pTopic.appendChild(lessonChips); pTopic.appendChild(lessonList);
+    pTopic.appendChild(lessonNote);
+
     pTopic.appendChild(el("div", "sw-label", SAY.labelTier));
     var tierChips = el("div", "sw-chips");
     tierChips.setAttribute("data-sw", "tier-chips");
@@ -1111,16 +1157,19 @@
 
     var subjLabel = el("div", "sw-label", SAY.labelSubject);
     var subjChips = el("div", "sw-chips");
+    subjLabel.classList.add("sw-nocu"); subjChips.classList.add("sw-nocu");
     subjChips.setAttribute("data-sw", "subject-chips");
     pTopic.appendChild(subjLabel); pTopic.appendChild(subjChips);
 
     var paperLabel = el("div", "sw-label", SAY.labelPaper);
     var paperChips = el("div", "sw-chips");
+    paperLabel.classList.add("sw-nocu"); paperChips.classList.add("sw-nocu");
     paperChips.setAttribute("data-sw", "paper-chips");
     pTopic.appendChild(paperLabel); pTopic.appendChild(paperChips);
 
-    pTopic.appendChild(el("div", "sw-label", SAY.labelTopics));
-    var tree = el("div", "sw-tree");
+    var topicsLbl = el("div", "sw-label sw-nocu", SAY.labelTopics);
+    pTopic.appendChild(topicsLbl);
+    var tree = el("div", "sw-tree sw-nocu");
     tree.setAttribute("data-sw", "tree");
     pTopic.appendChild(tree);
     /* ⊕ first-week fixes (22 Sep 2026) — THE TREE PANEL'S OWN STATUS, AND IT IS A SIBLING OF THE
@@ -1321,6 +1370,10 @@
       overlay: overlay, sheet: sheet, head: head, back: back, step: step,
       primary: primary, body: body,
       pClasses: pClasses, classList: classList, classNote: classNote,
+      classLbl: classLbl, pupilsLbl: pupilsLbl, pupilsList: pupilsList,
+      pupilsNote: pupilsNote, pupilRows: [],
+      lessonSearch: lessonSearch, lessonChips: lessonChips, lessonChipList: null,
+      lessonList: lessonList, lessonNote: lessonNote, lessonRows: [],
       pTopic: pTopic, tierChips: tierChips,
       subjLabel: subjLabel, subjChips: subjChips,
       paperLabel: paperLabel, paperChips: paperChips, tree: tree,
@@ -1418,8 +1471,14 @@
     /* ⊕ MRB-351 — the type rail, the mode cards and the rule chips. */
     els.typeList = buildChips(els.typeChips, [
       { key: "questions", label: SAY.typeQuestions },
-      { key: "flashcards", label: SAY.typeFlashcards }
+      { key: "flashcards", label: SAY.typeFlashcards },
+      { key: "catchup", label: SAY.typeCatchUp }
     ], function (k) { setType(k); });
+    els.lessonSearch.addEventListener("input", function () {
+      if (!S) { return; }
+      S.cu.q = els.lessonSearch.value;
+      syncLessons();
+    });
     els.fcModeBtns.forEach(function (m) {
       m.node.addEventListener("click", function () {
         if (!S || S.fc.mode === m.key) { return; }
@@ -1685,6 +1744,7 @@
       if (top && top.wrap.hidden) { sc.kind = ""; sc.ref = ""; }
     }
     els.tree.classList.remove("sw-bad");
+    syncLessons();
   }
 
   /* The scope holding this node, or null. ⊕ MRB-342. */
@@ -1978,6 +2038,10 @@
      picks several topics with long names; the teacher may still type
      whatever they like over any of this, exactly as before. */
   function autoTitle() {
+    if (S.type === "catchup") {
+      var lr = nodeFor(cur().kind, cur().ref);
+      return lr ? SAY.catchUpTitle(String(lr.data.name || "")).slice(0, 80) : "";
+    }
     var scopes = filledScopes();
     if (!scopes.length) { scopes = [cur()]; }
     var names = scopes.map(scopeName).filter(function (n) { return !!n; });
@@ -2057,6 +2121,7 @@
       els.classRows.push(rec);
       row.addEventListener("click", function () {
         if (row.getAttribute("aria-disabled") === "true") { return; }
+        if (S.type === "catchup") { cuPickClass(rec.id); return; }
         var i = S.classes.indexOf(rec.id);
         if (i > -1) { S.classes.splice(i, 1); } else { S.classes.push(rec.id); }
         /* ⊕ MRB-335 — THE FIRST TAP ANCHORS, and the anchor is what every
@@ -2138,7 +2203,7 @@
          silence. Same treatment, same reason, as a zero-count topic. */
       /* ⊕ MRB-351 — no cohort on a flashcard set: one deck may go to any
          class this teacher sets work to, whatever its tier or pathway. */
-      var out = S.type !== "flashcards" && !!(S.cohortIds && !S.cohortIds[r.id]);
+      var out = S.type === "questions" && !!(S.cohortIds && !S.cohortIds[r.id]);
       r.node.setAttribute("aria-disabled", out ? "true" : "false");
       r.node.classList.toggle("is-on", on);
       r.node.setAttribute("aria-pressed", on ? "true" : "false");
@@ -2245,7 +2310,7 @@
        triple. `PATCH` does take `scopes[]` now, and an edit SHOWS every topic
        the set already holds (`placeStored`), but adding a new topic to live
        work is a scope decision nobody has ruled on, so it stays hidden. */
-    els.addTopic.hidden = !!S.editId;
+    els.addTopic.hidden = !!S.editId || S.type === "catchup";
     /* ⊕ first-week fixes (22 Sep 2026) — THE CEILING ON A SET IS ITS NUMBER OF TOPICS, and this is
        the control that wears it.
 
@@ -2613,8 +2678,12 @@
       buildSubjectChips();
       buildPaperChips();
       buildTree();
+      buildLessons();
+      buildPupils();
       syncTree();
       syncScopes();
+      syncTypeChoice();
+      syncCatchUp();
       /* ⊕ MRB-342.2 §3.3 — read once, per `/scope` answer, same as everything
          else this function resolves. */
       syncNoteVisibility();
@@ -3202,6 +3271,15 @@
        observe a fetch at all, so no state a fetch can be in can reach it. The
        Topic step carries the waiting instead, and says which of loading /
        ready / failed it is showing; see `syncScopePanel`. */
+    /* ⊕ Catch-up — ONE class, and 1 to 10 of its pupils. The scope must have
+       answered (the pupils come from it), unlike Set work's step 0. */
+    if (S.type === "catchup") {
+      if (S.step === 0) {
+        return S.classes.length === 1 && !!S.scope && cuSupported() &&
+          S.cu.pupils.length >= 1 && S.cu.pupils.length <= CU_MAX_PUPILS;
+      }
+      if (S.step === 1 && cur().kind !== "subtopic") { return false; }
+    }
     if (S.step === 0) { return S.classes.length > 0; }
     /* ⊕ MRB-351 — a flashcard set never reads `/scope`. */
     if (S.type === "flashcards") { return flashStepValid(); }
@@ -3373,7 +3451,8 @@
 
   function syncStep() {
     var flash = (S.type === "flashcards");
-    els.step.textContent = (flash ? SAY.stepsFlash : SAY.steps)[S.step];
+    var cu = (S.type === "catchup");
+    els.step.textContent = (flash ? SAY.stepsFlash : (cu ? SAY.stepsCatchUp : SAY.steps))[S.step];
     els.overlay.setAttribute("data-sw-step", String(S.step));
     els.overlay.setAttribute("data-sw-type", S.type);
     els.pClasses.hidden = (S.step !== 0);
@@ -3393,9 +3472,12 @@
        change, so arriving at it mid-fetch shows `Loading` rather than the
        blank tree a teacher would read as "no topics". */
     syncScopePanel();
-    els.relLbl.hidden = ro;
-    els.relChips.hidden = ro;
-    if (ro) { els.relFields.hidden = true; }
+    /* ⊕ Catch-up — released at once, so there is no release control. */
+    els.relLbl.hidden = ro || cu;
+    els.relChips.hidden = ro || cu;
+    if (ro || cu) { els.relFields.hidden = true; }
+    els.addTopic.hidden = els.addTopic.hidden || cu;
+    syncCatchUp();
     els.roTierLbl.hidden = !ro;
     els.roTier.hidden = !ro;
     els.roScopeLbl.hidden = !ro;
@@ -3570,9 +3652,12 @@
       var noteVal = els.noteValue();
       if (noteVal) { payload.note = noteVal; }
     }
+    /* ⊕ Catch-up — exactly one class, one lesson-scope, and the named pupils. */
+    if (S.type === "catchup") { payload.pupil_ids = S.cu.pupils.slice(); }
     var title = payload.title;
     var classCount = payload.class_ids.length;
     var only = classCount === 1 ? classNameOf(payload.class_ids[0]) : "";
+    var cuCount = S.type === "catchup" ? S.cu.pupils.length : 0;
     /* ⚠️ CAPTURED, NOT READ BACK OFF `S`. A response can arrive after the
        sheet has closed — that is the whole reason `close()` now refuses
        mid-flight — and the toast and the refresh must still happen, because
@@ -3600,14 +3685,16 @@
       var done = { title: title, classIds: payload.class_ids,
                    assignmentIds: r.body.assignment_ids || [],
                    releaseAt: r.body.release_at || null,
-                   replayed: !!r.body.replayed };
+                   replayed: !!r.body.replayed,
+                   catchUp: cuCount > 0, pupilIds: payload.pupil_ids || [] };
       if (S && mySession === session) {
         S.busy = false;
         S.submitting = false;
         S.clientRef = "";
         close();
       }
-      toast(classCount === 1 && only
+      if (cuCount) { toast(SAY.setForClass(title, SAY.catchUpPupils(cuCount))); }
+      else toast(classCount === 1 && only
         ? SAY.setForClass(title, only)
         : SAY.setForClasses(title, classCount));
       /* ⚠️ THE REFRESH SEAM, and it is what v1 never had. v1's `swNext`
@@ -3773,6 +3860,7 @@
     if (!S || S.editId || S.type === k) { return; }
     S.type = k;
     S.clientRef = "";
+    if (k === "catchup") { return enterCatchUp(); }
     /* ⊕ Set from class (M), 27 Sep 2026 — the choice MOVES the sheet.
        Flashcards goes to the Deck step as soon as there is a class to set
        it to (from a class page there always is); with none ticked yet it
@@ -3785,6 +3873,7 @@
       if (S.step === 1 || S.classes.length) { S.step = 1; }
     } else {
       S.step = 0;
+      S.cu.pupils = [];
       /* Back to Questions: the cohort applies again. A class ticked while
          the type was Flashcards may be outside it, and goes. */
       els.classNote.hidden = !S.scopeErr;
@@ -3797,6 +3886,205 @@
     }
     syncClasses();
     syncStep();
+  }
+
+  /* ═════════════════════════════════════════════════════════════════════
+     16b. CATCH-UP — ⊕ 14 Oct 2026 (docs/catch-up/PLAN.md §3)
+
+     The same sheet and the same Detail step, with a different front: the
+     teacher ticks NAMED pupils of one class, picks ONE lesson (a subtopic
+     / KS3 lesson) and gets Set work's own preview, swap, tier and count.
+     The lesson list is a flat view over the tree `/scope` already sent, so a
+     pick is `pickScope("subtopic", ref)` and nothing downstream knows the
+     difference. The server writes `recipient_ids`; this file never names
+     the column.
+     ═════════════════════════════════════════════════════════════════════ */
+
+  var CU_MAX_PUPILS = 10;
+
+  function cuInfo() { return (S && S.scope && S.scope.catch_up) || null; }
+  /* Strict, like `assignment_note`: absent or false is "not offered". */
+  function cuSupported() { var c = cuInfo(); return !!(c && c.supported === true); }
+
+  function enterCatchUp() {
+    /* One class only. The first ticked one stays; an unanchored sheet that
+       reaches here has at least the one that made `/scope` answer. */
+    var keep = S.classId || S.classes[0] || "";
+    S.classes = keep ? [keep] : [];
+    S.cu.pupils = [];
+    S.step = 0;
+    els.classNote.hidden = !S.scopeErr;
+    if (keep && S.classId !== keep) { cuPickClass(keep); return; }
+    if (keep && !S.scope && !S.scopeLoading) { loadScope(); }
+    syncClasses();
+    syncStep();
+  }
+
+  /* A different class is a different roster, tree and tier list: re-anchor
+     exactly as the first tap does, and let `/scope` redraw the rest. */
+  function cuPickClass(id) {
+    if (S.classes.length === 1 && S.classes[0] === id && S.scope) { return; }
+    S.classes = [id];
+    S.classId = id;
+    S.cu.pupils = [];
+    S.scope = null;
+    S.cohortIds = null;
+    S.scopeErr = false;
+    S.scopes = [freshScope()];
+    S.si = 0;
+    els.overlay.setAttribute("data-sw-class", id);
+    els.tree.textContent = "";
+    els.treeRows = [];
+    buildPupils();
+    syncClasses();
+    loadScope();
+    syncStep();
+  }
+
+  function buildPupils() {
+    var host = els.pupilsList;
+    var list = ((cuInfo() || {}).pupils || []).slice().sort(function (a, b) {
+      return String(a.last_name || "").localeCompare(String(b.last_name || "")) ||
+             String(a.first_name || "").localeCompare(String(b.first_name || ""));
+    });
+    var want = list.map(function (p) { return p.id; }).join(",");
+    var have = els.pupilRows.map(function (r) { return r.id; }).join(",");
+    if (want === have && (want || host.childNodes.length === 0)) { syncPupils(); return; }
+    host.textContent = "";
+    els.pupilRows = [];
+    var ids = {};
+    list.forEach(function (p) {
+      ids[String(p.id)] = true;
+      var row = btn("sw-row", null);
+      row.setAttribute("data-sw", "pupil");
+      row.setAttribute("data-sw-ref", String(p.id));
+      var box = el("span", null);
+      box.style.cssText = "flex:none;width:16px;height:16px;border-radius:5px;" +
+        "border:1.5px solid var(--st-rule-strong)";
+      var main = el("span", "sw-row-main");
+      main.appendChild(el("span", "sw-row-name",
+        (String(p.first_name || "") + " " + String(p.last_name || "")).trim()));
+      row.appendChild(box); row.appendChild(main);
+      host.appendChild(row);
+      var rec = { id: String(p.id), node: row, box: box };
+      els.pupilRows.push(rec);
+      row.addEventListener("click", function () {
+        if (!S || row.getAttribute("aria-disabled") === "true") { return; }
+        var i = S.cu.pupils.indexOf(rec.id);
+        if (i > -1) { S.cu.pupils.splice(i, 1); }
+        else { S.cu.pupils.push(rec.id); }
+        syncPupils();
+        syncValidity();
+      });
+    });
+    /* A pupil who is no longer in the roster cannot stay ticked. */
+    S.cu.pupils = S.cu.pupils.filter(function (id) { return ids[id]; });
+    syncPupils();
+  }
+
+  function syncPupils() {
+    if (!S) { return; }
+    var full = S.cu.pupils.length >= CU_MAX_PUPILS;
+    els.pupilRows.forEach(function (r) {
+      var on = S.cu.pupils.indexOf(r.id) > -1;
+      /* At the ceiling the unticked rows stop, the ticked ones stay live. */
+      r.node.setAttribute("aria-disabled", (full && !on) ? "true" : "false");
+      r.node.classList.toggle("is-on", on);
+      r.node.setAttribute("aria-pressed", on ? "true" : "false");
+      r.box.style.background = on ? "var(--st-accent-text)" : "transparent";
+      r.box.style.borderColor = on ? "var(--st-accent-text)" : "var(--st-rule-strong)";
+    });
+    var note = "";
+    if (S.type === "catchup") {
+      if (S.scopeLoading || (!S.scope && !S.scopeErr)) { note = S.classes.length ? SAY.loading : ""; }
+      else if (S.scope && !els.pupilRows.length) { note = SAY.noPupils; }
+    }
+    els.pupilsNote.textContent = note;
+    els.pupilsNote.hidden = !note;
+  }
+
+  function buildLessons() {
+    var host = els.lessonList;
+    host.textContent = "";
+    els.lessonRows = [];
+    var tree = (S.scope && S.scope.tree) || [];
+    tree.forEach(function (topic) {
+      (topic.children || []).forEach(function (kid) {
+        var row = btn("sw-row", null);
+        row.setAttribute("data-sw", "lesson");
+        row.setAttribute("data-sw-ref", String(kid.id));
+        var main = el("span", "sw-row-main");
+        main.appendChild(el("span", "sw-row-name", String(kid.name || "")));
+        main.appendChild(el("span", "sw-row-tag", String(topic.name || "")));
+        var count = el("span", "sw-count", "0");
+        row.appendChild(main); row.appendChild(count);
+        host.appendChild(row);
+        var rec = { ref: String(kid.id), topicRef: String(topic.id), data: kid,
+                    topic: topic, node: row, count: count,
+                    hay: (String(kid.name || "") + " " + String(topic.name || "")).toLowerCase() };
+        els.lessonRows.push(rec);
+        row.addEventListener("click", function () {
+          if (!S || row.getAttribute("aria-disabled") === "true") { return; }
+          pickScope("subtopic", rec.ref);
+        });
+      });
+    });
+    /* The scope rail exists only when the class has a current topic to
+       narrow to; without one the list is simply every lesson. */
+    var ct = (cuInfo() || {}).current_topic;
+    if (ct && ct.ref) {
+      els.lessonChipList = buildChips(els.lessonChips, [
+        { key: "topic", label: String(ct.name || "") },
+        { key: "all", label: SAY.lessonsAll }
+      ], function (k) { S.cu.all = (k === "all"); syncLessons(); });
+    } else {
+      els.lessonChips.textContent = "";
+      els.lessonChipList = null;
+    }
+    els.lessonSearch.value = S.cu.q || "";
+    syncLessons();
+  }
+
+  /* Patches visibility, counts and selection IN PLACE — nothing is rebuilt
+     while the teacher is typing or scrolling. */
+  function syncLessons() {
+    if (!S || !els || !els.lessonRows) { return; }
+    var ct = (cuInfo() || {}).current_topic;
+    var narrow = !!(ct && ct.ref) && !S.cu.all;
+    var q = String(S.cu.q || "").trim().toLowerCase();
+    var sel = cur();
+    var shown = 0;
+    els.lessonRows.forEach(function (r) {
+      var n = countAt(r.data, S.tier);
+      r.count.textContent = String(n);
+      /* A query reaches every lesson; the topic narrowing is for an empty one. */
+      var vis = q ? (r.hay.indexOf(q) > -1)
+                  : (!narrow || r.topicRef === String(ct.ref));
+      r.node.hidden = !vis;
+      if (vis) { shown += 1; }
+      var on = (sel.kind === "subtopic" && sel.ref === r.ref);
+      r.node.classList.toggle("is-on", on);
+      r.node.setAttribute("aria-pressed", on ? "true" : "false");
+      r.node.setAttribute("aria-disabled", n > 0 ? "false" : "true");
+    });
+    if (els.lessonChipList) { syncChips(els.lessonChipList, S.cu.all ? "all" : "topic"); }
+    els.lessonChips.hidden = !els.lessonChipList || !!q;
+    var note = (S.type === "catchup" && S.scope && !shown) ? SAY.noLessons : "";
+    els.lessonNote.textContent = note;
+    els.lessonNote.hidden = !note;
+  }
+
+  /* Which blocks the catch-up type shows, re-stated on every step change. */
+  function syncCatchUp() {
+    if (!S || !els) { return; }
+    var cu = (S.type === "catchup");
+    /* From a class page the class is already fixed; naming it again as a
+       one-row list would be redundant. The classes screen still needs it. */
+    var hideClass = cu && isAnchoredOpen;
+    els.classLbl.hidden = hideClass;
+    els.classList.hidden = hideClass;
+    syncPupils();
+    syncLessons();
   }
 
   function syncFlash() {
@@ -3957,7 +4245,12 @@
      step after; the Detail step is about the set already chosen. */
   function syncTypeChoice() {
     if (!S || !els) { return; }
-    var on = !S.editId && fcCapable() && S.step < 2;
+    var fcOn = fcCapable(), cuOn = cuSupported();
+    var on = !S.editId && (fcOn || cuOn) && S.step < 2;
+    (els.typeList || []).forEach(function (c) {
+      if (c.key === "flashcards") { c.node.hidden = !fcOn; }
+      if (c.key === "catchup") { c.node.hidden = !cuOn; }
+    });
     els.typeWrap.hidden = !on;
     els.overlay.setAttribute("data-sw-fc", fcCapableCache === null ? "unknown" : String(fcCapableCache));
     syncChips(els.typeList, S.type);

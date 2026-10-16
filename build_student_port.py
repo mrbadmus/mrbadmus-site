@@ -236,6 +236,10 @@ STAMPED_DEPS = ("config.js", "account.js", "class-entry.js", "student-guard.js",
                 # ⊕ Stage B — the one pupil top bar's stylesheet and script
                 # (the assignment bar's avatar; see page_html).
                 "topbar.css", "topbar.js",
+                # ⊕ CATCH-UP (14 Oct 2026) — the lesson sheet, injected by
+                # student-live.js's DEPS like the rest; unstamped under
+                # `immutable` it would be a file pinned for a year.
+                "catch-up-sheet.js",
                 # ⊕ MRB Wrapped — the half-term story (class view, live page).
                 "wrapped.css", "wrapped.js")
 # ⊕ One mark (Mide, 13 Sep 2026) — the kit's favicon, the lockup's

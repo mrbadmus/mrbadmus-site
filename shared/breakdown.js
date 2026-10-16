@@ -251,6 +251,23 @@
     return out;
   }
 
+  /* ⊕ Catch-up (14 Oct 2026) — THE PUPILS A CATCH-UP WAS SET TO, or null for
+     ordinary whole-class work. A catch-up names one or two pupils of a class,
+     so "Pupil i of N" must count THEM, not the class. `recipient_ids` is not
+     on production until Mide says yes, and PostgREST 400s a whole select that
+     names a missing column, so it is never named here: `select("*")` returns
+     whichever columns exist and the field is simply absent when the column
+     is. Any failure is "not a catch-up" — the panel then behaves exactly as it
+     did before this existed. */
+  async function loadRecipients(sb, assignmentId) {
+    try {
+      var r = await sb.from("assignments").select("*").eq("id", assignmentId).limit(1);
+      if (r.error || !r.data || !r.data.length) { return null; }
+      var ids = r.data[0].recipient_ids;
+      return (Array.isArray(ids) && ids.length) ? ids : null;
+    } catch (e) { return null; }
+  }
+
   /* MUST-1 — the one pupil `loadRoster` did not return, fetched directly
      so the panel can still show their real name rather than "pupil 1". */
   async function loadOneProfile(sb, studentId) {
@@ -1339,10 +1356,15 @@
         loadRoster(sb, o.classId),
         loadAssignment(sb, assignmentId),
         loadQuestions(sb, assignmentId),
-        loadSubmissions(sb, assignmentId)
+        loadSubmissions(sb, assignmentId),
+        loadRecipients(sb, assignmentId)
       ]);
       var klass = loaded[0], roster = loaded[1], assignment = loaded[2],
-          questions = loaded[3], rawSubmissions = loaded[4];
+          questions = loaded[3], rawSubmissions = loaded[4], recipients = loaded[5];
+      /* ⊕ Catch-up — the roster is the named pupils only. */
+      if (recipients) {
+        roster = roster.filter(function (r) { return recipients.indexOf(r.id) > -1; });
+      }
 
       if (mySession !== session) { return; }
 
