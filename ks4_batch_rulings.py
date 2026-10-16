@@ -32,6 +32,12 @@ from ks4_rulings import RulingError, _require
 
 
 def _chip(slug, tpl):
+    # ⊕ B10-ALL-FOUR-PILL: batch 10 draws ONE header pill, "All four routes", on its four-route pages (no tier pill
+    # beside it). That single pill is what the route chip replaces. Taken only when the tier pill is absent and the
+    # pill is there exactly once, so batches 4-8 (which all carry the tier pill) cannot reach it.
+    allfour = ks4_rulings.R12_PATHWAY_STD_SPAN.replace("Combined · Triple", "All four routes")
+    if tpl.count(ks4_rulings.R12_TIER_LINE) == 0 and tpl.count(allfour) == 1:
+        return tpl.replace(allfour, ks4_rulings.R12_CHIP_BLOCK, 1)
     _require(tpl, ks4_rulings.R12_TIER_LINE, slug, "B-R12 (tier span)")
     tpl = tpl.replace(ks4_rulings.R12_TIER_LINE, "", 1)
     std = ks4_rulings.R12_PATHWAY_STD_SPAN
@@ -777,18 +783,21 @@ _FILE_RE = re.compile(r"^const FILE = \{[^\n]*\};$", re.M)
 _LNK_PREV_RE = re.compile(r"^(\s*)endPrev:[^\n]*\n", re.M)
 _LNK_NEXT_RE = re.compile(r"^(\s*)endNext:[^\n]*\n", re.M)
 _COMMON_DONE = "const c = this.common(done);"
+_COMMON_DONE_FFR = "const c = this.common(done, F, ready);"   # ⊕ batch 10: common(done, F, ready)
 
 
 def apply_lnk_links(source_file, logic):
     if _LNK_DEF not in logic:
         return logic, 0, 0
-    if len(_FILE_RE.findall(logic)) != 1 or logic.count(_LNK_DEF) != 1 or logic.count(_COMMON_DONE) != 1:
+    # ⊕ Batch 10: its pages call `this.common(done, F, ready)`. Batch 8's spelling is tried first and unchanged.
+    common = _COMMON_DONE if (logic.count(_COMMON_DONE) == 1 and logic.count(_COMMON_DONE_FFR) == 0) else _COMMON_DONE_FFR
+    if len(_FILE_RE.findall(logic)) != 1 or logic.count(_LNK_DEF) != 1 or logic.count(common) != 1:
         raise RulingError("ks4_batch_rulings B8-LNK: %s does not carry exactly one FILE map, one LNK helper and one "
-                          "`%s`." % (source_file, _COMMON_DONE))
+                          "`%s`." % (source_file, common))
     logic = _FILE_RE.sub("const FILE = {}; // \u2295 B8-LNK: links resolve through KS4.hrefFor", logic, count=1)
     logic = logic.replace(_LNK_DEF, "let LNK_R = null; // \u2295 B8-LNK\n"
                           "const LNK = (k, label) => ({ href: ((window.KS4 && LNK_R) ? window.KS4.hrefFor(k, LNK_R) : null), label });", 1)
-    logic = logic.replace(_COMMON_DONE, _COMMON_DONE + " LNK_R = c;", 1)
+    logic = logic.replace(common, common + " LNK_R = c;", 1)
     n = []
     for rx, key, prop in ((_LNK_PREV_RE, "endPrev", "prev"), (_LNK_NEXT_RE, "endNext", "next")):
         if ("%s: this.props.mrbPrevNext.%s," % (key, prop)) in logic:
@@ -796,7 +805,8 @@ def apply_lnk_links(source_file, logic):
             continue
         if len(rx.findall(logic)) != 1:
             raise RulingError("ks4_batch_rulings B8-LNK: %s needs exactly one `%s:` line." % (source_file, key))
-        logic = rx.sub(lambda m: "%s%s: this.props.mrbPrevNext.%s,\n" % (m.group(1), key, prop), logic, count=1)
+        # ⊕ Batch 10: her endNext line also CLOSES the object (`... : null };`); keep that closer. Batch 8's lines do not.
+        logic = rx.sub(lambda m: "%s%s: this.props.mrbPrevNext.%s,%s\n" % (m.group(1), key, prop, " };" if m.group(0).rstrip().endswith("};") else ""), logic, count=1)
         n.append(1)
     return logic, n[0], n[1]
 
@@ -897,6 +907,346 @@ SCIENCE.extend([
          new="prompt: 'Explain how water evaporating from a leaf draws water up from the roots. Put the links in order.'"),
 ])
 
+# B10-FILE-REFS (engine): batch 10 binds in-text link hrefs (`pcHref: FILE['population-competition']`) straight off the
+# FILE map, which B8-LNK has emptied. Each `FILE['key']` / `FILE.key` is rewritten to the same resolver LNK uses, routed
+# per pupil (null on a route the target lacks -> '#', like B-INLINE-LINKS), and a FILE key whose name differs from the
+# live slug is mapped here. Runs only if such a reference exists (batches 4-8 have none after B8-LNK), fail-loud on an
+# unmapped key via KS4.hrefFor returning null -> '#', which the G3/dead-link checks in batch_check catch.
+_FILE_KEY_TO_SLUG = {"food-security": "factors-affecting-food-security"}
+_FILE_REF_RE = re.compile(r"\bFILE(?:\['([\w-]+)'\]|\.([a-z][\w]*))")
+
+
+def apply_file_refs(source_file, logic):
+    def sub(m):
+        key = m.group(1) or m.group(2)
+        return "(LNK('%s', '').href || '#')" % _FILE_KEY_TO_SLUG.get(key, key)
+    if "let LNK_R = null;" not in logic:
+        if _FILE_REF_RE.search(logic):
+            raise RulingError("ks4_batch_rulings B10-FILE-REFS: %s reads FILE[...] but has no B8-LNK resolver." % source_file)
+        return logic, []
+    found = [m.group(1) or m.group(2) for m in _FILE_REF_RE.finditer(logic)]
+    return _FILE_REF_RE.sub(sub, logic), found
+
+
+# ── Batch 10 port mechanics (not science rulings) ──────────────────────
+# B10-<SLUG>-CHIP, one per batch-10 lesson: her `common(done, F, ready)` returns a FRESH object (route: F.route, ...
+# onRoute: F.R.onRoute ...), so B-R12's one route chip got no words and no menu. Same repair as B7/B8-<SLUG>-CHIP,
+# spelled for her F.R shape.
+_B10_SLUGS = ["ecosystems", "population-competition", "abiotic-biotic-factors", "adaptations", "food-chains-webs",
+              "sampling-techniques", "environmental-change", "deforestation", "maintaining-biodiversity",
+              "trophic-levels", "pyramids-of-biomass", "transfer-of-biomass", "farming-techniques",
+              "sustainable-fisheries", "role-of-biotechnology"]
+SCIENCE.extend(
+    dict(id="B10-%s-CHIP" % sl.upper(), slug=sl, layer="logic",
+         old="onRoute: F.R.onRoute || (() => {}), isHigher: F.H,",
+         new="onRoute: F.R.onRoute || (() => {}), routeWords: F.R.routeWords, routeSwitchOptions: F.R.routeSwitchOptions, isHigher: F.H,")
+    for sl in _B10_SLUGS)
+
+# B10-<SLUG>-FOODSEC: her FILE key `food-security` is the live slug `factors-affecting-food-security` (Triple only, so the
+# link is simply absent on a Combined route). Label unchanged.
+SCIENCE.extend(
+    dict(id="B10-%s-FOODSEC" % sl.upper(), slug=sl, layer="logic",
+         old="LNK('food-security', 'Food security')",
+         new="LNK('factors-affecting-food-security', 'Food security')")
+    for sl in ["deforestation", "sustainable-fisheries", "farming-techniques", "role-of-biotechnology"])
+
+# ═══ Batch 10: lane ruling (Mide) - batch 9 is not live, so every pointer to a batch 9 page is dropped ═══
+# Each entry is one named drop; the before/after text is in the batch 10 port report so batch 9 can restore it.
+SCIENCE.extend([
+    dict(id="B10-ADAPTATIONS-B9-CONNECT", slug="adaptations", layer="logic",
+         old="LNK('evolution-natural-selection', 'Evolution and natural selection'), ",
+         new=""),
+    dict(id="B10-ADAPTATIONS-B9-NSHREF-BIND", slug="adaptations", layer="logic",
+         old="nsHref: (LNK('evolution-natural-selection', '').href || '#'), ",
+         new=""),
+    dict(id="B10-ADAPTATIONS-B9-NSLINK", slug="adaptations", layer="template",
+         old='<a href="{{ nsHref }}">natural selection</a>',
+         new="natural selection"),
+    dict(id="B10-ENVIRONMENTAL-CHANGE-B9-CONNECT", slug="environmental-change", layer="logic",
+         old=", LNK('variation', 'Variation')",
+         new=""),
+    dict(id="B10-FARMING-TECHNIQUES-B9-CONNECT", slug="farming-techniques", layer="logic",
+         old=", LNK('resistant-bacteria', 'Resistant bacteria')",
+         new=""),
+    dict(id="B10-ROLE-OF-BIOTECHNOLOGY-B9-CONNECT", slug="role-of-biotechnology", layer="logic",
+         old="LNK('genetic-engineering', 'Genetic engineering'), ",
+         new=""),
+    dict(id="B10-ROLE-OF-BIOTECHNOLOGY-B9-GEHREF-BIND", slug="role-of-biotechnology", layer="logic",
+         old=" geHref: (LNK('genetic-engineering', '').href || '#'),",
+         new=""),
+    dict(id="B10-ROLE-OF-BIOTECHNOLOGY-B9-GELINK", slug="role-of-biotechnology", layer="template",
+         old=' How the gene is moved is in <a href="{{ geHref }}">Genetic engineering</a>; here the chain is the point.',
+         new=""),
+])
+
+
+# ═══ Batch 10 (examination): the lead's rulings on b10-a/b/c, exact strings from the examiners' files ═══
+SCIENCE.extend([
+    dict(id='B10-ECO-COMP', slug='ecosystems', layer='template',
+         old='<p style="margin: 12px 0 0; max-width: 62ch;">Competition, and what plants and animals compete for, is taught in <a href="{{ pcHref }}">Population and competition</a>.</p>',
+         new='<p style="margin: 12px 0 0; max-width: 62ch;">Plants in a community often compete with each other for light and space, and for water and mineral ions from the soil; animals often compete with each other for food, mates and territory. Competition is taught in full in <a href="{{ pcHref }}">Population and competition</a>.</p>'),
+    dict(id='B10-ECO-ART', slug='ecosystems', layer='template',
+         old='<p style="margin: 12px 0 0; max-width: 62ch;">A habitat is the place where an organism lives: the woodland floor, the canopy, a pond.</p>',
+         new='<p style="margin: 12px 0 0; max-width: 62ch;">A habitat is the place where an organism lives: the woodland floor, the canopy, a pond.</p>\n        <p style="margin: 12px 0 0; max-width: 62ch;">People make artificial ecosystems too: farmland growing a single crop has far fewer species than a natural wood, because one crop dominates and most other species are removed.</p>'),
+    dict(id='B10-ECO-WEB-1', slug='ecosystems', layer='logic',
+         old="ar('grass', 'deer');",
+         new="ar('grass', 'deer'); ar('flowers', 'deer');"),
+    dict(id='B10-ECO-WEB-2', slug='ecosystems', layer='logic',
+         old='Grass and shrubs feed deer, which feed wolves.',
+         new='Grass, shrubs and flowering plants feed deer, which feed wolves.'),
+    dict(id='B10-ECO-CHAIN', slug='ecosystems', layer='logic',
+         old="'Their food supply falls.'",
+         new="'So their food supply falls.'"),
+    dict(id='B10-ECO-HOOK', slug='ecosystems', layer='logic',
+         old='Nothing eats a flower’s bees, yet the flowers still need them',
+         new='Flowers don’t eat bees, yet they still need them'),
+    dict(id='B10-PC-YR-1', slug='population-competition', layer='logic',
+         old="'Year 4: lynx peak, about a year and a half after the hare peak. Hares falling fast.'",
+         new="'Year 4: lynx just past their peak, which came about a year and a half after the hare peak. Hares falling fast.'"),
+    dict(id='B10-PC-YR-2', slug='population-competition', layer='logic',
+         old='lynx go hungry and start to fall.',
+         new='lynx go hungry and are falling.'),
+    dict(id='B10-PC-NQ-1', slug='population-competition', layer='template',
+         old='At year 5 the hares are falling fast.',
+         new='At year 4 the hares are falling fast.'),
+    dict(id='B10-PC-NQ-2', slug='population-competition', layer='logic',
+         old='as the graph shows at years 5 to 7.',
+         new='as the graph shows at years 4 to 6.'),
+    dict(id='B10-PC-LAG', slug='population-competition', layer='logic',
+         old='Y = (v) => 270 - v * 1.9',
+         new='Y = (v) => 270 - v * 1.6'),
+    dict(id='B10-ABF-CHAIN', slug='abiotic-biotic-factors', layer='logic',
+         old="'Fish need dissolved oxygen for respiration.'",
+         new="'So the fish get less of the dissolved oxygen they need for respiration.'"),
+    dict(id='B10-ABF-PATH', slug='abiotic-biotic-factors', layer='logic',
+         old='A pathogen is a living microorganism. A new disease',
+         new='A pathogen is a living microorganism, such as a bacterium or a fungus. A new disease'),
+    dict(id='B10-ABF-POND', slug='abiotic-biotic-factors', layer='logic',
+         old="'The oxygen fell first; the fish depended on it.'",
+         new="'Fewer fish would use less oxygen, not more; the warmer water held less.'"),
+    dict(id='B10-ABF-OXY', slug='abiotic-biotic-factors', layer='logic',
+         old='Warm or polluted water holds less.',
+         new='Warm water holds less, and some pollution lowers it too.'),
+    dict(id='B10-AD-FOX', slug='adaptations', layer='logic',
+         old="{ name: 'Blood flow to its paws is reduced in the cold', t: 2, why: 'A process inside the body: less heat carried to the surface.' }",
+         new="{ name: 'Thick fur on the soles of its paws', t: 0, why: 'A body part: insulates its feet from the snow and ice.' }"),
+    dict(id='B10-AD-HUMP-1', slug='adaptations', layer='logic',
+         old='storing fat in a hump.',
+         new='surviving the loss of a lot of body water.'),
+    dict(id='B10-AD-HUMP-2', slug='adaptations', layer='logic',
+         old="'Fat in the hump (functional) is an energy store; it is not water.'",
+         new="'Fat stored in the hump is an energy store; it is not water.'"),
+    dict(id='B10-AD-JERB', slug='adaptations', layer='logic',
+         old="and it never drinks, getting water from its food. Which is a functional adaptation?', 'Getting all its water from food: a process inside the body.', ['Getting all its water from its food'",
+         new="and its kidneys make very concentrated urine. Which is a functional adaptation?', 'Making very concentrated urine: a process inside the body.', ['Making very concentrated urine'"),
+    dict(id='B10-AD-CACT', slug='adaptations', layer='logic',
+         old="['Spines instead of leaves give a small surface, so little water is lost.', 'The thick waxy stem stores water and stops it escaping.', 'Wide shallow roots take up rain quickly before it drains away.']",
+         new="['Wide shallow roots take up rain quickly before it drains away.', 'The thick waxy stem stores that water and stops it escaping.', 'Spines instead of leaves give a small surface, so little of the stored water is lost.']"),
+    dict(id='B10-AD-NS', slug='adaptations', layer='logic',
+         old="so more of them survived and bred.'",
+         new="so more of them survived, bred and passed the feature on to their offspring.'"),
+    dict(id='B10-AD-PROD', slug='adaptations', layer='logic',
+         old="['Producers', 'Some may be, but the name for organisms of very extreme environments is extremophiles.']",
+         new="['Herbivores', 'Herbivores eat plants; the name for organisms of very extreme environments is extremophiles.']"),
+    dict(id='B10-FCW-LVL-1', slug='food-chains-webs', layer='logic',
+         old='chFig() {',
+         new='chFig(T) {'),
+    dict(id='B10-FCW-LVL-2', slug='food-chains-webs', layer='logic',
+         old="+ TXN(x + 65, 212, 'level ' + (i + 1), 13, { fill: '#8A8378' });",
+         new="+ (T ? TXN(x + 65, 212, 'level ' + (i + 1), 13, { fill: '#8A8378' }) : '');"),
+    dict(id='B10-FCW-LVL-3', slug='food-chains-webs', layer='logic',
+         old='chFig: fig(() => this.chFig()),',
+         new='chFig: fig(() => this.chFig(T)),'),
+    dict(id='B10-SAMP-STILL', slug='sampling-techniques', layer='logic',
+         old='Thousands of daisies, and they do not stay still for you.',
+         new='Thousands of daisies, far too many to count one by one.'),
+    dict(id='B10-SAMP-YES', slug='sampling-techniques', layer='logic',
+         old="yes: 'Yes. Random means every point in the habitat has the same chance",
+         new="yes: 'Right. Random means every point in the habitat has the same chance"),
+    dict(id='B10-ENV-MAP-1', slug='environmental-change', layer='template',
+         old='A made-up butterfly, the hedge brown, was recorded in 10 km squares of Great Britain in 1980 and again in 2020.',
+         new='A butterfly, the hedge brown, was recorded in grid squares across Great Britain in 1980 and again in 2020 (the records here are made up).'),
+    dict(id='B10-ENV-MAP-2', slug='environmental-change', layer='template',
+         old='The hedge brown butterfly, the river and all numbers are made up for practice.',
+         new='The hedge brown records, the river and all numbers are made up for practice.'),
+    dict(id='B10-ENV-MISMATCH', slug='environmental-change', layer='logic',
+         old='Warmer springs: flowers bloom and insects emerge earlier; some species spread north or uphill, while species at the warm edge of their range lose ground.',
+         new='Warmer springs: flowers bloom and insects emerge earlier; some species spread north or uphill, while species at the warm edge of their range lose ground. If a bird’s nesting does not shift as far as its food does, the two fall out of step and fewer chicks survive.'),
+    dict(id='B10-ENV-EVOL-1', slug='environmental-change', layer='logic',
+         old='Forty years is too short for evolution; the butterfly spread into places that had become warm enough.',
+         new='Spreading into new squares is moving, not evolving; the butterfly may have spread into places that had become warm enough.'),
+    dict(id='B10-ENV-EVOL-2', slug='environmental-change', layer='logic',
+         old='Too fast for evolution; it moved into newly suitable areas.',
+         new='A range shift is the species moving into newly suitable areas, not evolving.'),
+    dict(id='B10-DEF-ARROW-1', slug='deforestation', layer='logic',
+         old='D.arrow(340, 250, 340, 106, GREEN, 6)',
+         new='D.arrow(340, 106, 340, 250, GREEN, 6)'),
+    dict(id='B10-DEF-ARROW-2', slug='deforestation', layer='logic',
+         old='D.arrow(170, 250, 170, 106, GREEN, 3)',
+         new='D.arrow(170, 106, 170, 250, GREEN, 3)'),
+    dict(id='B10-DEF-CHAIN-1', slug='deforestation', layer='logic',
+         old="'Burning the felled trees releases carbon dioxide.'",
+         new="'As well as that, burning the felled trees releases carbon dioxide.'"),
+    dict(id='B10-DEF-CHAIN-2', slug='deforestation', layer='logic',
+         old="'Microorganisms decaying the leftover wood respire, releasing more carbon dioxide.'",
+         new="'Then microorganisms decaying the wood left after burning respire, releasing more carbon dioxide.'"),
+    dict(id='B10-DEF-RAIL', slug='deforestation', layer='logic',
+         old="short: 'CO2'",
+         new="short: 'CO₂'"),
+    dict(id='B10-MB-LABEL', slug='maintaining-biodiversity', layer='logic',
+         old="TX(340, 28, 'hedgerow', 14, { fill: PAPER })",
+         new="TX(340, 28, 'hedgerow', 14, { fill: INK })"),
+    dict(id='B10-MB-CHAIN', slug='maintaining-biodiversity', layer='logic',
+         old="'Recycling resources means less waste goes to landfill, so less land is lost and less pollution is made.'",
+         new="'So recycling helps: less waste goes to landfill, so less land is lost and less pollution is made.'"),
+    dict(id='B10-TL-ARROWS', slug='trophic-levels', layer='template',
+         old='Further trophic levels are numbered subsequently according to how far the organism is along the food chain.</p>',
+         new='Further trophic levels are numbered subsequently according to how far the organism is along the food chain. Each arrow points from the organism that is eaten to the organism that eats it: the direction in which energy and biomass are transferred.</p>'),
+    dict(id='B10-PYR-TENTH', slug='pyramids-of-biomass', layer='logic',
+         old="'Only about 10% passes to each level, so each bar is about a tenth of the one below.'",
+         new="'Only about 10% passes to each level on average, so each bar is much narrower than the one below (here a fifth, then a tenth).'"),
+    dict(id='B10-PYR-CHAIN', slug='pyramids-of-biomass', layer='logic',
+         old="'Some absorbed material is lost as carbon dioxide and water in respiration, and as urea and water in urine.'",
+         new="'Then some of the absorbed material is lost as carbon dioxide and water in respiration, and as urea and water in urine.'"),
+    dict(id='B10-PYR-META', slug='pyramids-of-biomass', layer='template',
+         old='divide every value by it. This is a drawing scale, not a spec equation, so there is no triangle.</p>',
+         new='divide every value by it.</p>'),
+    dict(id='B10-TOB-FARM', slug='transfer-of-biomass', layer='template',
+         old='Less biomass at each level supports fewer organisms, so food chains rarely go beyond four or five levels.</p>',
+         new='Less biomass at each level supports fewer organisms, so food chains rarely go beyond four or five levels. Farmers use this: limiting an animal’s movement means less of its food is used in respiration, so more becomes body mass.</p>'),
+    dict(id='B10-TOB-CHAIN', slug='transfer-of-biomass', layer='logic',
+         old="'Eating the grain directly is one transfer, so about ten times more biomass reaches the people.'",
+         new="'So eating the grain directly, one transfer, passes about ten times more biomass to the people.'"),
+    dict(id='B10-TOB-FOX', slug='transfer-of-biomass', layer='logic',
+         old="'The spec’s losses are inside the fox: faeces, respiration, urine.'",
+         new="'A fox eats most of a rabbit. The main losses are inside the fox: faeces, respiration, urine.'"),
+    dict(id='B10-TOB-UNIT', slug='transfer-of-biomass', layer='logic',
+         old="unit: 'g/m\\u00b2 or kg'",   # her source spells the superscript as the JS escape \u00b2 (same string as the examiner's literal ²)
+         new="unit: 'g/m\\u00b2, kg/m\\u00b2 or kg (same unit for both)'", count=2),
+    dict(id='B10-FT-SPLIT', slug='farming-techniques', layer='logic',
+         old="'respiration: movement and heat '",
+         new="'respiration, faeces, urine '"),
+    dict(id='B10-FT-BATTERY', slug='farming-techniques', layer='logic',
+         old='Battery chickens cannot exhibit natural behaviours',
+         new='Intensively farmed chickens cannot exhibit natural behaviours'),
+    dict(id='B10-FT-BATTERY-2', slug='farming-techniques', layer='logic',
+         old='Battery farming produces more greenhouse gases',
+         new='Intensive farming produces more greenhouse gases'),
+    dict(id='B10-FT-JUDGE', slug='farming-techniques', layer='logic',
+         old=', which the higher free-range price reflects',
+         new='; free range avoids these but its meat costs twice as much, so the choice depends on how they are weighed'),
+    dict(id='B10-FT-WARM', slug='farming-techniques', layer='template',   # examiner file said logic; the sentence is a Ks4Choice reveal attribute in her template
+         old='no need to keep warm',
+         new='less need to keep warm'),
+    dict(id='B10-SF-STEADY', slug='sustainable-fisheries', layer='logic',
+         old="['It rose steadily from 60 000 to 160 000 tonnes'",
+         new="['It rose from 60 000 to 160 000 tonnes'"),
+    dict(id='B10-SF-STEADY-2', slug='sustainable-fisheries', layer='logic',
+         old="'The stock rose steadily, from 60 000 to 160 000 tonnes.'",
+         new="'The stock rose, slowly at first, from 60 000 to 160 000 tonnes.'"),
+    dict(id='B10-SF-STEADY-3', slug='sustainable-fisheries', layer='logic',
+         old="'Nothing in the data says that; the stock rose steadily after the quota.'",
+         new="'Nothing in the data says that; the stock rose after the quota.'"),
+    dict(id='B10-SF-GRAPH', slug='sustainable-fisheries', layer='template',
+         old='Use the graph',
+         new='Use the data', count=2),
+    dict(id='B10-SF-GRAPH-2', slug='sustainable-fisheries', layer='logic',
+         old='Use the graph',
+         new='Use the data', count=2),
+    dict(id='B10-RB-FLOW', slug='role-of-biotechnology', layer='logic',
+         old="why: 'Concerns about GM crops include the effect on populations of wild flowers and insects.' }",
+         new="why: 'Concerns about GM crops include the effect on populations of wild flowers and insects. For example, a gene for herbicide resistance might spread in pollen to wild relatives of the crop, making weeds that are hard to control.' }"),
+    dict(id='B10-RB-HERB', slug='role-of-biotechnology', layer='logic',
+         old="GM crops are designed to withstand herbicide — they don't absorb more into edible tissue. The concern is about GENE FLOW to wild plants.",
+         new='Herbicide residues in food are a separate, regulated question. The environmental concern is about GENE FLOW to wild plants.'),
+    dict(id='B10-RB-RESP', slug='role-of-biotechnology', layer='template',
+         old='because there is no animal respiring most of it away',
+         new='because the fungus does not move or keep itself warm, so far less of the glucose is respired away'),
+    dict(id='B10-RB-CHAIN', slug='role-of-biotechnology', layer='logic',
+         old="'Air is supplied so the conditions are aerobic and the fungus grows.'",
+         new="'Air is bubbled through the syrup, so the conditions are aerobic and the fungus grows.'"),
+    dict(id='B10-RB-MADEUP', slug='role-of-biotechnology', layer='template',
+         old='Information · made-up data for practice',
+         new='Information'),
+])
+
+
+# ═══ Batch 10: fixes from the pupil walk (batch-10-walk.md; the lead's rulings) ═══
+SCIENCE.extend([
+    dict(id='B10W-AD-EARS', slug='adaptations', layer='logic',
+         old="Ears don't store water — water is stored in fat (camels) or conserved through concentrated urine (kangaroo rats). The large ear surface area is for cooling.",
+         new="Ears don't store water; desert animals save water in other ways, such as very concentrated urine (kangaroo rats). The large ear surface area is for cooling."),
+    dict(id='B10W-DEF-DECAY', slug='deforestation', layer='logic',
+         old='D.arrow(535, 250, 535, 106, RED, 6)',
+         new='D.arrow(535, 222, 535, 106, RED, 6)'),
+    dict(id='B10W-ECO-OAK', slug='ecosystems', layer='logic',
+         old="D.line(230, 215, 230, 150, 5, GREEN) + D.circ(230, 135, 28, LEAF, INK, 2) + TXN(230, 240, 'oak', 13)",
+         new="D.line(120, 218, 120, 184, 4, GREEN) + D.circ(120, 170, 14, LEAF, INK, 2) + TXN(120, 232, 'oak', 13)"),
+    dict(id='B10W-ECO-WORM', slug='ecosystems', layer='logic',
+         old="TXN(450, 240, 'earthworm', 13)",
+         new="TXN(450, 232, 'earthworm', 13)"),
+    dict(id='B10W-TL-MOLECULES', slug='trophic-levels', layer='logic',
+         old="TXN(140, 200, 'small soluble molecules', 14, { fill: BLUE, anchor: 'start' })",
+         new="TXN(470, 200, 'small soluble molecules', 14, { fill: BLUE, anchor: 'start' })"),
+    dict(id='B10W-ABF-OUTCOMPETING', slug='abiotic-biotic-factors', layer='logic',
+         old="'one species outcompeting', 'another'",
+         new="'one species', 'outcompeting another'"),
+    dict(id='B10W-TL-SPARROWHAWK', slug='trophic-levels', layer='logic',
+         old='TX(x + 65, 154, it[0], 18)',
+         new='TX(x + 65, 154, it[0], it[0].length > 9 ? 16 : 18)'),
+    dict(id='B10W-SAMP-PAIRS', slug='sampling-techniques', layer='logic',
+         old="'3, 7   8, 2   5, 4'",
+         new="'(3, 7)  (8, 2)  (5, 4)'"),
+    dict(id='B10W-SAMP-DAISY', slug='sampling-techniques', layer='logic',
+         old="TR[s.tr][2] + ' daisies. '",
+         new="TR[s.tr][2] + (TR[s.tr][2] === 1 ? ' daisy. ' : ' daisies. ')"),
+    dict(id='B10W-TOB-TAB', slug='transfer-of-biomass', layer='logic',
+         old="tab: 'Verbatim'",
+         new="tab: 'Matching units'"),
+    dict(id='B10W-PYR-LABELS', slug='pyramids-of-biomass', layer='logic',
+         old='Math.max(w / 2, 70)',
+         new='Math.min(Math.max(w / 2, 70), 250)', count=2),
+    dict(id='B10W-FCW-QUOTES', slug='food-chains-webs', layer='template',
+         old='The arrow means “eats”.&rdquo;',
+         new='The arrow means ‘eats’.&rdquo;'),
+    dict(id='B10W-DEF-HEADING', slug='deforestation', layer='template',
+         old='Two arrows change.',
+         new='Carbon in, carbon out.'),
+    dict(id='B10W-DEF-LEAD', slug='deforestation', layer='template',
+         old='watch both arrows.',
+         new='watch the arrows change.'),
+    dict(id='B10W-FCW-RABBITS-FX', slug='food-chains-webs', layer='logic',
+         old="label: 'Rabbits double', fx: { grass: -1, fox: 1, shrew: -1 },",
+         new="label: 'Rabbits double', fx: { grass: -1, rabbit: 1, fox: 1, shrew: -1, owl: -1 },"),
+    dict(id='B10W-FCW-RABBITS-T', slug='food-chains-webs', layer='logic',
+         old="more foxes also eat more shrews, so shrews fall.'",
+         new="more foxes also eat more shrews, so shrews fall. Owls, which eat only shrews, have less food and fall.'"),
+    dict(id='B10W-MY-1', slug='role-of-biotechnology', layer='logic',
+         old="{ t: 'A large fermenter is filled with glucose syrup: the food for the fungus.' }",
+         new="{ t: 'A large fermenter is filled with glucose syrup.' }"),
+    dict(id='B10W-MY-2', slug='role-of-biotechnology', layer='logic',
+         old="{ t: 'The fungus Fusarium is added. Air is bubbled through: aerobic conditions, so the fungus respires aerobically and grows fast.', gate:",
+         new="{ t: 'The fungus Fusarium is added.', gate:"),
+    dict(id='B10W-MY-3', slug='role-of-biotechnology', layer='logic',
+         old="{ t: 'The fungus multiplies, filling the tank with fungal biomass.', gate:",
+         new="{ t: 'Air is bubbled through: aerobic conditions, so the fungus respires aerobically and grows fast. The fungus multiplies, filling the tank with fungal biomass.', gate:"),
+    dict(id='B10W-ECO-CASCADE', slug='ecosystems', layer='logic',
+         old=' But the cascade of effects described is accurate.',
+         new=''),
+    dict(id='B10W-AD-INFO', slug='adaptations', layer='template',
+         old='Information · made-up data for practice',
+         new='Information'),
+    # Re-walk: the figure drew "air in (aerobic)" from step 1, before the pupil predicts why air is bubbled
+    # through; it now appears from step 2, where the text gives the reason (B10W-MY-3).
+    dict(id='B10W-MY-AIRFIG', slug='role-of-biotechnology', layer='logic',
+         old="if (i >= 1) { b += D.arrow(120, 250, 226, 250, BLUE, 3)",
+         new="if (i >= 2) { b += D.arrow(120, 250, 226, 250, BLUE, 3)"),
+    # Re-walk: "soil, water, temperature" ran across the Community box's bottom border at the Ecosystem step.
+    dict(id='B10W-ECO-ABIOTIC-LBL', slug='ecosystems', layer='logic',
+         old="TXN(90, 290, 'soil, water, temperature', 13, { anchor: 'start' })",
+         new="TXN(90, 298, 'soil, water, temperature', 13, { anchor: 'start' })"),
+])
+
 APPLIED = []
 
 
@@ -919,6 +1269,11 @@ def port_lesson(lesson, tpl, logic, slug_by_file, other_slug_by_file=None):
     src = lesson["source_file"]
     if len(lesson["routes"]) == 1:
         # ⊕ B7-ONE-ROUTE (see above): nothing to remove, and it must really be absent.
+        # ⊕ B10-ONE-ROUTE-SELECT: batch 10's one-route page (environmental-change, TH only) still draws a Route picker
+        # with a single option. It is removed by the same R1 rule as every other page's picker; batch 7's one-route page
+        # has none, so its path is unchanged. The tier chip must still be absent.
+        if "<select" in tpl:
+            tpl = ks4_rulings.apply_r1_route_selector(src, tpl)
         if "<select" in tpl or ks4_rulings.R12_TIER_LINE in tpl:
             raise RulingError("ks4_batch_rulings B7-ONE-ROUTE: %s ships on one route but its template "
                               "still carries a Route picker or tier chip." % src)
@@ -930,6 +1285,7 @@ def port_lesson(lesson, tpl, logic, slug_by_file, other_slug_by_file=None):
     logic, n_prev, n_next = ks4_rulings.apply_r_prevnext(src, logic)
     logic, n_prev2, n_next2 = apply_lnk_links(src, logic)   # ⊕ batch 8: LNK()/FILE links
     n_prev, n_next = n_prev + n_prev2, n_next + n_next2
+    logic, _file_refs = apply_file_refs(src, logic)         # ⊕ batch 10: FILE['key'] in-text hrefs
     logic, connects = apply_connects(src, logic, slug_by_file, other_slug_by_file)
     tpl, logic, inline = apply_inline_links(src, tpl, logic, slug_by_file, other_slug_by_file)
     tpl = apply_science(lesson["slug"], "template", tpl)
