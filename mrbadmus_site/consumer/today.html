@@ -407,7 +407,7 @@
 
     <div id="td-later-block"></div>
 
-    <div class="td-quick">
+    <div class="td-quick" id="td-quick" hidden>
       <a id="td-quick-exam" href="/consumer/exam.html">
         <strong>Exam questions</strong><span>Write one, get it marked</span>
       </a>
@@ -789,6 +789,7 @@
        "Which unit? Open it from your Today page" — said to a child who had
        just opened it from their Today page. */
     function renderQuick() {
+      el('td-quick').hidden = false;             // shown only once Today has loaded
       el('td-quick-exam').href = C.href('/consumer/exam.html');
 
       var items = data.items || [];
@@ -943,7 +944,14 @@
            is OUR failure: "Today couldn't load." and Try again. Never
            "sign in", never a streak of 0 (the stats stay hidden). */
     function loadFailed(e) {
+      /* ⊕ Saved work follow-up (16 Oct 2026): a failed load shows the
+         failure line and Try again, and NOTHING that only the server could
+         have said — no stats, no "Unit check · None due", no later list,
+         no flags, no unread count, no left-over items. */
       el('td-stats').hidden = true;
+      el('td-quick').hidden = true;
+      el('td-msg-count').hidden = true;
+      ['td-see-host', 'td-flags', 'td-later-block'].forEach(function (id) { el(id).innerHTML = ''; });
       el('td-nothing').innerHTML = '';
       var host = el('td-items');
       if (C.isSignedOut(e)) { C.signedOutPanel(host, C.childLoginUrl, 'td-oops'); return; }

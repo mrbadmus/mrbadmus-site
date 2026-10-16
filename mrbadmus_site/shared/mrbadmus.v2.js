@@ -1427,6 +1427,53 @@ try {
       })();
     }
 
+    /* ⊕ Saved work follow-up (16 Oct 2026) — THE CHILD'S OWN TICKS.
+       "I had this" lines (KS3 and KS4 "Your turn", Ks4Steps) and a written
+       answer's criteria (a KS3 written rung, Ks4Write) are the child's
+       self-marking. They were kept only on the page, so 5 of 5 ticked on
+       one device came back 0 of 5 on another. Each change is sent (after a
+       short pause, so a run of taps is one request) to
+       POST /api/consumer/child/self-ticks, which keeps them on that
+       answer's own ledger row — never a mark, never a new row. A 404 means
+       the answer itself has not reached the ledger yet (a written answer is
+       marked first): tried again, waiting longer each time, for ~2 minutes. While `mute` is held (a restore) nothing
+       is sent, and the restored ticks are remembered as already saved. */
+    var tickTimers = {}, tickLast = {}, tickWant = {};
+    function sendTicks(qid, list, tries) {
+      qid = safeId(qid);
+      if (!qid) { return; }
+      list = (list || []).filter(function (n) { return n >= 1 && n <= 20; });
+      var key = list.join(',');
+      if (muted) { tickLast[qid] = key; tickWant[qid] = key; return; }
+      if (tries && tickWant[qid] !== key) { return; }        // a newer set has been asked for
+      tickWant[qid] = key;
+      if (!tries && tickLast[qid] === key) { return; }
+      clearTimeout(tickTimers[qid]);
+      tickTimers[qid] = setTimeout(function () {
+        var go = function (tok) {
+          return fetch(c.BACKEND_URL + '/api/consumer/child/self-ticks', {
+            method: 'POST', keepalive: true,
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+            body: JSON.stringify({ question_id: qid, ticks: list })
+          });
+        };
+        token().then(function (tok) { return tok ? go(tok) : null; })
+          .then(function (r) {
+            if (r && r.status === 401 && auth) { return auth.refresh(c).then(function (t2) { return t2 ? go(t2) : r; }); }
+            return r;
+          })
+          .then(function (r) {
+            if (r && (r.ok || r.status === 204)) { tickLast[qid] = key; return; }
+            // A written answer is marked BEFORE its row lands (up to half a
+            // minute), so the wait grows: 3 s, 6 s, … eight tries, ~2 min.
+            if (r && r.status === 404 && (tries || 0) < 8) {
+              setTimeout(function () { sendTicks(qid, list, (tries || 0) + 1); }, 3000 * ((tries || 0) + 1));
+            }
+          }, function () { /* the next change sends them again */ });
+      }, tries ? 0 : 700);
+    }
+    window.MrBadmusAnswerCapture.ticks = sendTicks;
+
     // The server accepts ids matching ^[a-z0-9:#._-]{1,200}$ and marks 1–20
     // with 0 ≤ marks_scored ≤ marks; anything else is sent as null rather
     // than refused, so an odd authored id never loses the answer itself.
@@ -1931,6 +1978,27 @@ try {
         } catch (err) { /* capture never breaks a lesson */ }
       }, true);
 
+      /* ── Saved work follow-up: "Your turn" ticks ("I had this") ──
+         Read a tick after the page has flipped it; the whole set of ticked
+         lines for that question goes to sendTicks (above). */
+      document.addEventListener('click', function (e) {
+        var tb = e.target && e.target.closest ? e.target.closest('.ks3-cfa-tick') : null;
+        if (!tb) { return; }
+        later(function () {
+          var pre = null, a = tb.attributes || [];
+          for (var i = 0; i < a.length && !pre; i += 1) { var m = /^(data-p\d+cfa)-tick$/.exec(a[i].name); if (m) { pre = m[1]; } }
+          var q = pre ? tb.closest('[' + pre + '-q]') : null;
+          var csec = tb.closest('[data-activity]');
+          if (!q || !csec) { return; }
+          var n = parseInt(q.getAttribute(pre + '-q'), 10);
+          var list = [];
+          Array.prototype.forEach.call(q.querySelectorAll('[' + pre + '-tick]'), function (x) {
+            if (x.getAttribute('aria-pressed') === 'true') { list.push(parseInt(x.getAttribute(pre + '-tick'), 10) + 1); }
+          });
+          sendTicks(ks3Slug() + '#' + (csec.getAttribute('data-activity') || 'your-turn') + '-' + ((isNaN(n) ? 0 : n) + 1), list);
+        });
+      }, false);
+
       /* ── Saved work, KS3: everything OUTSIDE the ladder ──
          (The ladder puts its own rungs back — shared/ks3.js wireLadder.)
          Each saved answer is given again, oldest first, through the page's
@@ -1982,7 +2050,16 @@ try {
             var q = sec.querySelector('[' + pre + '-q="' + (n - 1) + '"]');
             if (!q) { return; }
             var rev = q.querySelector('[' + pre + '-reveal]');
-            if (rev && !rev.hasAttribute('hidden')) { return; }       // already open
+            // The child's own "I had this" ticks, as they were saved (an
+            // older row without them leaves the ticks as the page has them).
+            var putTicks = function () {
+              if (!Array.isArray(r.self_ticks)) { return; }
+              Array.prototype.forEach.call(q.querySelectorAll('[' + pre + '-tick]'), function (tb) {
+                var want = r.self_ticks.indexOf(parseInt(tb.getAttribute(pre + '-tick'), 10) + 1) >= 0;
+                if ((tb.getAttribute('aria-pressed') === 'true') !== want && !tb.disabled) { tb.click(); }
+              });
+            };
+            if (rev && !rev.hasAttribute('hidden')) { putTicks(); return; }       // already open
             var lines = String(r.answer || '').split('\n');
             var ins = q.querySelectorAll('[' + pre + '-input]');
             for (var k = 0; k < ins.length; k += 1) {
@@ -1995,6 +2072,7 @@ try {
             }
             var chk = q.querySelector('[' + pre + '-check]');
             if (chk && !chk.disabled) { chk.click(); }
+            putTicks();
             return;
           }
           if (kindOf(sec, KIND_B5C)) {
@@ -2553,8 +2631,123 @@ try {
     var EMPTY = { pick: null, checked: false, reported: false, attempts: 0, open: false,
                   r1: null, r2: null, r3: null, r4: null, picks: {}, q: {} };
 
+    /* ── Saved work follow-up (16 Oct 2026): the child's own ticks on a
+       rebuilt page — a Ks4Write's marking points (on its own, or as a
+       ladder's rung 4 / a practice set's written item), a "Your turn"
+       (Ks4Cfifa) question's "I had this" lines, a Ks4Steps attempt's lines.
+       Ids are the ones the answer itself was posted with. */
+    function boolList(arr) {
+      var out = [];
+      (arr || []).forEach(function (v, i) { if (v) { out.push(i + 1); } });
+      return out;
+    }
+    function writeQid(api) {
+      if (rootLevel(api)) { return pilotId(pathSlug, 'write-' + nth(api)); }
+      var owner = ownerOf(api);
+      if (!owner || !owner.logic) { return null; }
+      var op = owner.logic.props || {};
+      if (owner.comp === 'Ks4Ladder') { return pilotId(op.slug || pathSlug, 'r4'); }
+      if (owner.comp === 'Ks4Practice') {
+        var R = op.rungs || {}, L = [R.r1 || [], R.r2 || [], R.r3 || [], R.r4 || []];
+        var hidden = (owner.logic.state || {}).hidden || {}, keys = [];
+        L.forEach(function (items, ri) {
+          items.forEach(function (it, ii) { if ((it.kind || 'mcq') === 'write' && !hidden[ri + '-' + ii]) { keys.push([ri, ii]); } });
+        });
+        var at = keys[kids(owner, 'Ks4Write').indexOf(api)];
+        return at ? pilotId(pathSlug, 'r' + (at[0] + 1) + '-' + (at[1] + 1)) : null;
+      }
+      return null;
+    }
+    function stepsTicks(p, ticks) {
+      var out = [], at = 0;
+      (p.steps || []).forEach(function (stp, si) {
+        (stp.lines || []).forEach(function (ln, j) { at += 1; if ((ticks || {})[si + '-' + j]) { out.push(at); } });
+      });
+      return out;
+    }
+    function tickTap(api) {
+      var st = api.logic.state || {}, p = api.logic.props || {};
+      if (api.comp === 'Ks4Write') {
+        if (!st.open || (p.levels && p.levels.length)) { return; }
+        var qid = writeQid(api);
+        if (qid) { sendTicks(qid, boolList(st.ticks)); }
+      } else if (api.comp === 'Ks4Cfifa' && rootLevel(api)) {
+        var k = nth(api);
+        Object.keys(st.q || {}).forEach(function (i) {
+          var q = st.q[i];
+          if (q && q.open) { sendTicks(pilotId(pathSlug, 'cfifa-' + k + '-' + (+i + 1)), boolList(q.ticks)); }
+        });
+      } else if (api.comp === 'Ks4Steps' && rootLevel(api) && p.mode === 'attempt' && st.checked) {
+        sendTicks(pilotId(pathSlug, 'steps-' + nth(api)), stepsTicks(p, st.ticks));
+      }
+    }
+
+    /* ── Saved work follow-up: a lesson's OWN one-off activities ──
+       Some rebuilt lessons ask questions in their own code rather than in a
+       shared block (eukaryotes-prokaryotes' cell builder, "Which cell has
+       it?", and its three "how many fit" estimates). Their answers live in
+       the lesson's root state, and nothing recorded them. The mechanism is
+       general; each lesson is named here by what its own render already
+       shows, so nothing in Design's lesson code (examiner-frozen) changes:
+         pick  — the state map {item index → option index} the buttons fill;
+         step  — the state field naming the item on screen;
+         opts  — the render value listing the options ({label});
+         title — the render value naming the item; lead — the ask;
+         right — true when the render shows the CHOSEN option is right.
+       The right answer is found by asking the lesson's own render which
+       option it would call right. Each choice is one ledger row,
+       `ks4:<slug>:<route>#<id>-<n>`, kind choice, right/wrong. */
+    var ROOT_SPECS = {
+      'eukaryotes-prokaryotes': [
+        { id: 'builder', pick: 'bPick', step: 'bk', opts: 'bOpts', title: 'bTitle',
+          lead: function () { return 'Which cell has it?'; },
+          right: function (v) { return /as you said\.$/.test(String(v.bWord || '')); } },
+        { id: 'estimate', pick: 'fPick', step: 'fk', opts: 'fOpts', title: 'fTitle',
+          lead: function (v) { return 'Estimate · ' + (v.fName || ''); },
+          right: function (v) { return v.fWord === 'Yes.'; } }
+      ]
+    };
+    var rootPrev = {};
+    function valsAt(L, patch) {
+      var keep = L.state;
+      L.state = Object.assign({}, keep, patch);
+      try { return L.renderVals() || {}; } finally { L.state = keep; }
+    }
+    function labelsOf(v, sp) { return (v[sp.opts] || []).map(function (o) { return o && o.label != null ? String(o.label) : ''; }); }
+    function rootTap(api) {
+      var specs = ROOT_SPECS[pathSlug];
+      if (!specs) { return; }
+      var L = api.logic, st = L.state || {};
+      specs.forEach(function (sp) {
+        var cur = st[sp.pick] || {}, was = rootPrev[sp.pick] || {};
+        rootPrev[sp.pick] = Object.assign({}, cur);
+        Object.keys(cur).forEach(function (k) {
+          if (was[k] === cur[k]) { return; }
+          var at = {}; at[sp.step] = +k;
+          var v = valsAt(L, at), labels = labelsOf(v, sp), good = null;
+          for (var i = 0; i < labels.length && good === null; i += 1) {
+            var tryPatch = {}; tryPatch[sp.step] = +k; tryPatch[sp.pick] = Object.assign({}, cur); tryPatch[sp.pick][k] = i;
+            if (sp.right(valsAt(L, tryPatch))) { good = i; }
+          }
+          var d = base(sp.id + '-' + (+k + 1));
+          d.__block = api.host;
+          d.kind = 'choice';
+          d.question_text = sp.lead(v) + ' — ' + (v[sp.title] || '');
+          d.answer = labels[cur[k]] == null ? null : labels[cur[k]];
+          d.correct_answer = good === null ? null : labels[good];
+          d.is_correct = good === null ? null : cur[k] === good;
+          if (good === null) { d.self_checked = true; }
+          post(d);
+        });
+      });
+    }
+
     window.MrBadmusKS4Tap = function (api) {
       if (!api || !api.logic || !prevOf) { return; }
+      // ⊕ Saved work follow-up: the lesson's own one-off activities (the
+      // page's root instance) and the child's own ticks.
+      if (api.comp === undefined) { try { rootTap(api); } catch (e) { /* never breaks a lesson */ } return; }
+      try { tickTap(api); } catch (e) { /* never breaks a lesson */ }
       var h = HANDLERS[api.comp];
       if (!h) { return; }
       var s = api.logic.state || {};
@@ -2607,22 +2800,35 @@ try {
       });
       return out;
     }
+    /* ⊕ Saved work follow-up (16 Oct 2026): the ticks are the child's OWN
+       (`self_ticks`, 1-based, saved by sendTicks). The marker's credit
+       (points_hit) is never shown as the child's ticks — that showed marking
+       point 1 unticked on a rung the child had ticked 6 of 6 and awarded
+       themselves 4 of 4 (the marker had credited points 2–6). */
     function ticksBack(r, n) {
       var t = [];
-      if (!r || !n || !Array.isArray(r.points_hit) || (r.points_total != null && r.points_total !== n)) { return t; }
-      r.points_hit.forEach(function (h) { if (h >= 1 && h <= n) { t[h - 1] = true; } });
+      if (!r || !n || !Array.isArray(r.self_ticks)) { return t; }
+      r.self_ticks.forEach(function (h) { if (h >= 1 && h <= n) { t[h - 1] = true; } });
       return t;
     }
-    // A Ks4Write put back; returns the marks its own tally now shows.
-    function writeBack(w, r, points, marks) {
+    // A Ks4Write put back; returns the marks its own tally now shows. An
+    // older row with no saved ticks falls back to the marker's score.
+    function writeBack(w, r, points, marks, notify) {
       if (!w || !w.logic || !r) { return null; }
       var ws = w.logic.state || {};
       if (ws.open || String(ws.text || '').trim()) { return null; }
       var ticks = ticksBack(r, (points || []).length);
       var n = ticks.filter(Boolean).length;
       w.logic.setState({ text: String(r.answer || ''), open: true, ticks: ticks, reported: true });
-      return (points || []).length ? Math.min(marks, n) : (r.marks_scored == null ? 0 : r.marks_scored);
+      var aw = (points || []).length && Array.isArray(r.self_ticks) ? Math.min(marks, n) : (r.marks_scored == null ? 0 : r.marks_scored);
+      // A Write on its own tells the lesson it was marked, as it does live.
+      var wp = w.logic.props || {};
+      if (notify && (points || []).length && typeof wp.onMark === 'function') { wp.onMark({ awarded: aw, marks: marks, set: true }); }
+      return aw;
     }
+    // A block's own "done" signal to its lesson, as the block sends it live,
+    // so the lesson's progress (its rail, "N of 5 done") counts it.
+    function tell(fn) { if (typeof fn === 'function') { try { fn.apply(null, Array.prototype.slice.call(arguments, 1)); } catch (e) { /* never breaks a lesson */ } } }
     function chainSet(ch, rs, links, herr) {
       if (!ch || !ch.logic || !rs || !rs.length || (ch.logic.state || {}).attempts) { return; }
       ch.logic.setState({ chain: chainBack(links, herr, lastOf(rs).answer), checked: true, attempts: rs.length, reported: true });
@@ -2640,6 +2846,38 @@ try {
         seen.push(api);
         try { putBack(api); } catch (e) { /* one block never stops the rest */ }
       });
+      try { rootBack(); } catch (e) { /* the lesson's own activities never stop the rest */ }
+      /* The lesson's own one-off activities (ROOT_SPECS): each saved choice
+         back in the lesson's root state, and the item on screen moved to
+         where the child would naturally carry on — the first item after the
+         last one they answered, or the last item when all are answered. */
+      function rootBack() {
+        var specs = ROOT_SPECS[pathSlug];
+        var host = document.getElementById('ks4-mount');
+        var api = host && host.__mrbKs4;
+        if (!specs || !api || !api.logic) { return; }
+        var L = api.logic, patch = {}, has = false;
+        specs.forEach(function (sp) {
+          var map = Object.assign({}, (L.state || {})[sp.pick] || {}), last = -1, total = 0;
+          for (var j = 0; j < 60; j += 1) {
+            var at = {}; at[sp.step] = j;
+            var v;
+            try { v = valsAt(L, at); } catch (e) { break; }
+            if (!v || v[sp.title] == null) { break; }
+            total = j + 1;
+            var r = lastOf(ids[pilotId(pathSlug, sp.id + '-' + (j + 1))]);
+            if (!r || map[j] !== undefined) { continue; }
+            var i = labelsOf(v, sp).map(function (l) { return same(l, r.answer); }).indexOf(true);
+            if (i >= 0) { map[j] = i; last = Math.max(last, j); }
+          }
+          if (last < 0) { return; }
+          patch[sp.pick] = map;
+          patch[sp.step] = last < total - 1 ? last + 1 : last;
+          rootPrev[sp.pick] = Object.assign({}, map);
+          has = true;
+        });
+        if (has) { L.setState(patch); }
+      }
       function rowsOf(id) { return ids[pilotId(pathSlug, id)] || null; }
       function putBack(api) {
         var L = api.logic, p = L.props || {}, st = L.state || {}, r, rs, i;
@@ -2647,12 +2885,12 @@ try {
           case 'Ks4Guess':
             if (!rootLevel(api) || st.pick != null || !(r = lastOf(rowsOf('start')))) { return; }
             i = idxOf((p.options || []).slice(0, 2), r.answer);
-            if (i >= 0) { L.setState({ pick: i }); }
+            if (i >= 0) { L.setState({ pick: i }); tell(p.onCommit, i, !!((p.options || [])[i] || {}).correct); }
             return;
           case 'Ks4Choice':
             if (!rootLevel(api) || st.pick != null || !(r = lastOf(rowsOf('choice-' + nth(api))))) { return; }
             i = idxOf(p.options, r.answer);
-            if (i >= 0) { L.setState({ pick: i }); }
+            if (i >= 0) { L.setState({ pick: i }); tell(p.onCommit, i, (p.options || [])[i]); }
             return;
           case 'Ks4QuizBank': {
             if (!rootLevel(api)) { return; }
@@ -2668,11 +2906,13 @@ try {
           }
           case 'Ks4Write':
             if (!rootLevel(api)) { return; }
-            writeBack(api, lastOf(rowsOf('write-' + nth(api))), p.levels && p.levels.length ? [] : p.points, p.marks || 4);
+            writeBack(api, lastOf(rowsOf('write-' + nth(api))), p.levels && p.levels.length ? [] : p.points, p.marks || 4, true);
             return;
           case 'Ks4Chain':
-            if (!rootLevel(api)) { return; }
-            chainSet(api, rowsOf('chain-' + nth(api)), p.links || [], p.herrings || []);
+            if (!rootLevel(api) || st.attempts) { return; }
+            rs = rowsOf('chain-' + nth(api));
+            chainSet(api, rs, p.links || [], p.herrings || []);
+            if (rs && rs.length) { tell(p.onDone, { correct: rs[0].is_correct === true }); }
             return;
           case 'Ks4Sort': {
             if (!rootLevel(api) || st.checked || Object.keys(st.placed || {}).length) { return; }
@@ -2682,7 +2922,11 @@ try {
               if (!sr) { return; }
               for (var b = 0; b < bins.length; b += 1) { if (same(bins[b].label, sr.answer)) { placed[n] = bins[b].id; got = true; return; } }
             });
-            if (got) { L.setState({ placed: placed, checked: true, reported: true }); }
+            if (got) {
+              L.setState({ placed: placed, checked: true, reported: true });
+              var allRight = (p.items || []).every(function (it, n) { return placed[n] !== undefined && placed[n] === it.bin; });
+              tell(p.onDone, { correct: allRight });
+            }
             return;
           }
           case 'Ks4Cfifa': {
@@ -2695,10 +2939,14 @@ try {
               qs[n] = { lines: (o.steps || []).map(function (stp, j) {
                 var line = lines[j] == null ? '' : lines[j], lead = stp.label ? stp.label + ': ' : '';
                 return lead && line.indexOf(lead) === 0 ? line.slice(lead.length) : line;
-              }), ticks: [], open: true };
+              }), ticks: ticksBack(cr, (o.steps || []).length), open: true };
               gotC = true;
             });
-            if (gotC) { L.setState({ q: qs }); }
+            if (gotC) {
+              L.setState({ q: qs });
+              var open = (p.questions || []).filter(function (o, n) { return qs[n] && qs[n].open; }).length;
+              tell(p.onOpen, open, (p.questions || []).length);
+            }
             return;
           }
           case 'Ks4Steps': {
@@ -2711,7 +2959,12 @@ try {
                 vals[si + '-' + j] = lead && line.indexOf(lead) === 0 ? line.slice(lead.length) : line;
               });
             });
-            L.setState({ vals: vals, checked: true });
+            var tk = {}, own = Array.isArray(r.self_ticks) ? r.self_ticks : [], n1 = 0;
+            (p.steps || []).forEach(function (stp, si) {
+              (stp.lines || []).forEach(function (ln, j) { n1 += 1; if (own.indexOf(n1) >= 0) { tk[si + '-' + j] = true; } });
+            });
+            L.setState({ vals: vals, ticks: tk, checked: true });
+            tell(p.onDone);
             return;
           }
           case 'Ks4Ladder': {

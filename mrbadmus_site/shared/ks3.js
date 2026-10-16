@@ -1129,8 +1129,19 @@
           refresh(true);
         });
       }
+      // ⊕ Saved work follow-up (16 Oct 2026): a family child's own ticks
+      // go to the server too (MrBadmusAnswerCapture.ticks — a child session
+      // only), so another device shows exactly what they ticked.
+      function sendTicks() {
+        var cap = window.MrBadmusAnswerCapture;
+        if (!cap || typeof cap.ticks !== "function") { return; }
+        var list = [];
+        boxes.forEach(function (b, i) { if (b.checked) { list.push(i + 1); } });
+        cap.ticks(slug + "#" + rec.key, list);
+      }
       boxes.forEach(function (b) {
         b.addEventListener("change", function () {
+          sendTicks();
           tell(); saveWork(); refresh(true);
           // ⊕ MRB-239 — still marking, so push the send back. Without this
           // the quiet window would expire mid-way through a careful read of
@@ -1156,24 +1167,23 @@
 
       /* ⊕ Saved work (16 Oct 2026) — a family child's writing, put back from
          the SERVER (any device, after signing out and in). The server's row
-         wins over this device's copy. The ticks are this device's own when
-         its copy is the same writing (they are the child's self-mark and
-         were never sent); otherwise — a fresh device — the points the
-         server's marking credited (points_hit, 1-based, against these same
-         criteria), so the tally shows the marks the answer earned. Reached
-         only through MrBadmusSaved (a child session only). */
+         wins over this device's copy, and so do the child's OWN ticks saved
+         on it (`self_ticks`, 1-based). An older row without them keeps this
+         device's ticks when its copy is the same writing, and otherwise
+         shows none: the marker's credit (points_hit) is not the child's
+         self-mark and is never shown as their ticks. Reached only through
+         MrBadmusSaved (a child session only). */
       rec.restoreSaved = function (row) {
         if (!answer || !row) { return; }
         var text = String(row.answer == null ? "" : row.answer);
         var local = work[rec.key];
-        var keep = !!(local && typeof local.text === "string" && local.text.trim() === text.trim() &&
+        var own = Array.isArray(row.self_ticks) ? row.self_ticks : null;
+        var keep = !own && !!(local && typeof local.text === "string" && local.text.trim() === text.trim() &&
                       local.ticks && local.ticks.length);
         answer.value = keep ? local.text : text;
-        boxes.forEach(function (b, i) { b.checked = keep ? !!local.ticks[i] : false; });
-        if (!keep && Array.isArray(row.points_hit) &&
-            (row.points_total == null || row.points_total === boxes.length)) {
-          row.points_hit.forEach(function (h) { if (boxes[h - 1]) { boxes[h - 1].checked = true; } });
-        }
+        boxes.forEach(function (b, i) {
+          b.checked = own ? own.indexOf(i + 1) >= 0 : (keep ? !!local.ticks[i] : false);
+        });
         show();
         rec.lastSaid = text.trim();
         gate();
