@@ -189,6 +189,27 @@ job('audiences: consumer turns away only a school pupil', function () {
   assert.deepStrictEqual(A.AUDIENCES.staff, ['staff', 'operator']);
   assert.deepStrictEqual(A.AUDIENCES.pupil, ['pupil']);
 });
+job('audiences: /parents/ turns away a pupil and a child; /org/ admits only organisation staff and the operator', function () {
+  var all = ['pupil', 'staff', 'parent', 'child', 'org_staff', 'operator'];
+  all.forEach(function (k) {
+    assert.strictEqual(A.AUDIENCES.parents_public.indexOf(k) !== -1, k !== 'pupil' && k !== 'child', 'parents_public ' + k);
+    assert.strictEqual(A.AUDIENCES.org.indexOf(k) !== -1, k === 'org_staff' || k === 'operator', 'org ' + k);
+  });
+});
+job('guardAudience: a pupil on /parents/ is sent to their own home; a teacher stays; a parent stays', function () {
+  world({ profile: P.pupilKs3, pathname: '/parents/index.html' });
+  return A.guardAudience('parents_public').then(function (stay) {
+    assert.strictEqual(stay, false);
+    var to = (calls.filter(function (c) { return c[0] === 'replace'; })[0] || [])[1];
+    assert.ok(to && !/parents/.test(to), 'sent home, got ' + to);
+    world({ profile: P.teacher, schoolKind: 'school', pathname: '/parents/index.html' });
+    return A.guardAudience('parents_public');
+  }).then(function (stay) {
+    assert.strictEqual(stay, true);
+    world({ profile: P.parent, pathname: '/parents/index.html' });
+    return A.guardAudience('parents_public');
+  }).then(function (stay) { assert.strictEqual(stay, true); });
+});
 
 // ── 5. resolve against stubbed reads ──────────────────────────────────────
 function resolveWith(o, opts) { world(o); return A.resolve(Object.assign({ fresh: true }, opts || {})); }
@@ -342,27 +363,34 @@ function signOutWith(o, fn) {
              token: globalThis.localStorage.getItem(STORAGE_KEY) };
   });
 }
-job('signOut: each kind lands on its own door, and the token is gone', function () {
+job('signOut: everybody lands on the front page; only a child keeps /go/; the token is gone', function () {
   return signOutWith({ profile: P.parent }).then(function (r) {
-    assert.strictEqual(r.to, '/parents/sign-in.html'); assert.strictEqual(r.token, null);
+    assert.strictEqual(r.to, '/'); assert.strictEqual(r.token, null);
     return signOutWith({ email: 'k@children.mrbadmus.internal' });
   }).then(function (r) {
-    assert.strictEqual(r.to, '/go/');
+    assert.strictEqual(r.to, '/go/', 'a child has no other door and no school page links to /go/');
     return signOutWith({ profile: P.teacher, schoolKind: 'school' });
   }).then(function (r) {
-    assert.strictEqual(r.to, '/auth.html');
+    assert.strictEqual(r.to, '/');
     return signOutWith({ profile: P.teacher, schoolKind: 'organisation' });
-  }).then(function (r) { assert.strictEqual(r.to, '/org/sign-in.html'); });
+  }).then(function (r) {
+    assert.strictEqual(r.to, '/');
+    return signOutWith({ profile: P.pupilKs3 });
+  }).then(function (r) { assert.strictEqual(r.to, '/'); });
 });
 job('signOut: still signs out when the network is down', function () {
   return signOutWith({ profile: P.parent, logoutFails: true }).then(function (r) {
-    assert.strictEqual(r.token, null, 'local token cleared regardless'); assert.strictEqual(r.to, '/parents/sign-in.html');
+    assert.strictEqual(r.token, null, 'local token cleared regardless'); assert.strictEqual(r.to, '/');
   });
 });
-job('signOut: unknown kind (failed read) → the school door; switchAccount → school door whatever the kind', function () {
+job('signOut: unknown kind (failed read) → the front page; switchAccount → the school door whatever the kind', function () {
   return signOutWith({ profileFails: true }).then(function (r) {
-    assert.strictEqual(r.to, '/auth.html');
+    assert.strictEqual(r.to, '/');
     world({ profile: P.parent });
+    return A.switchAccount();
+  }).then(function () {
+    assert.strictEqual(calls.filter(function (c) { return c[0] === 'replace'; })[0][1], '/auth.html');
+    world({ email: 'k@children.mrbadmus.internal' });
     return A.switchAccount();
   }).then(function () {
     assert.strictEqual(calls.filter(function (c) { return c[0] === 'replace'; })[0][1], '/auth.html');

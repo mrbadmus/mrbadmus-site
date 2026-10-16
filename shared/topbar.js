@@ -7,8 +7,9 @@
      signed out   → "Sign in"  (not on kind="student": the page's guard owns
                                 signed-out there and will redirect)
      signed in    → the bell (pupils only), then the avatar and its menu:
-                    My class · Settings · Sign out
-                    (a family child: Today · Settings · Sign out)
+                    My class · Settings · Switch account · Sign out
+                    (a family child: Today · Settings · Sign out — no Switch
+                    account: /go/ is their only door)
 
    Load AFTER config.js, class-entry.js, student-bell.js and theme.js. All
    four are optional in the sense that a missing one degrades to less, never
@@ -112,7 +113,38 @@
       var m = /^https?:\/\/([^.]+)\./.exec(c.SUPABASE_URL || '');
       if (m) { localStorage.removeItem('sb-' + m[1] + '-auth-token'); }
     } catch (e) {}
+    window.location.replace(carry('/'));
+  }
+
+  /* ⊕ Front door (16 Oct 2026) — Switch account: sign out and land on the door
+     every adult can sign in at. Through the page's own client where the
+     student guard holds one. */
+  function switchAccount() {
+    var g = window.MrBadmusStudentGuard;
+    if (g && typeof g.switchAccount === 'function') { g.switchAccount(); return; }
+    var A = window.MrBadmusAccount;
+    if (A && typeof A.switchAccount === 'function') { A.switchAccount(); return; }
+    signOut();
     window.location.replace(carry('/auth.html'));
+  }
+
+  /* A family or organisation child never gets Switch account: /go/ is their
+     only door and an adult's sign-in page is not for them. The entry says so
+     (their home is /consumer/today.html, not /student/), and the session's
+     own address is checked too for the moment the entry is not known yet. */
+  function isChildViewer(entry) {
+    if (entry && entry.href && entry.href.indexOf('/student/') !== 0 && entry.pupil === true) { return true; }
+    try {
+      var c = window.MrBadmusConfig;
+      if (c && typeof c.isChildSession === 'function' && c.AUTH_STORAGE_KEY) {
+        var raw = localStorage.getItem(c.AUTH_STORAGE_KEY);
+        if (raw) {
+          if (raw.indexOf('base64-') === 0) { raw = decodeURIComponent(escape(atob(raw.slice(7)))); }
+          return !!c.isChildSession(JSON.parse(raw));
+        }
+      }
+    } catch (e) { /* unknown: treated as not a child by the entry test above */ }
+    return false;
   }
 
   /* ⊕ D15b (13 Oct 2026) — "Sign out" asks first, for everyone. The menu
@@ -132,7 +164,7 @@
   var TB_TOKENS = ['--tb-ink', '--tb-body', '--tb-paper', '--tb-rule', '--tb-well', '--tb-ui', '--tb-accent'];
   var veil = null;
 
-  function confirmSignOut(opener) {
+  function confirmSignOut(opener, switching) {
     if (veil) { return; }
     var source = (opener && opener.closest && opener.closest('.mrb-topbar, [data-mrb-topbar-tokens]')) ||
                  document.querySelector('.mrb-topbar, [data-mrb-topbar-tokens]');
@@ -147,10 +179,10 @@
     }
     veil.innerHTML =
       '<div class="mrb-tb-confirm" role="dialog" aria-modal="true" aria-labelledby="mrb-tb-confirm-h">' +
-        '<h2 id="mrb-tb-confirm-h">Sign out?</h2>' +
+        '<h2 id="mrb-tb-confirm-h">' + (switching ? 'Switch account?' : 'Sign out?') + '</h2>' +
         '<div class="mrb-tb-confirm__acts">' +
           '<button type="button" class="mrb-tb-confirm__stay">Stay signed in</button>' +
-          '<button type="button" class="mrb-tb-confirm__go" data-mrb-topbar-signout-confirm="1">Sign out</button>' +
+          '<button type="button" class="mrb-tb-confirm__go" data-mrb-topbar-signout-confirm="1">' + (switching ? 'Switch account' : 'Sign out') + '</button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(veil);
@@ -182,8 +214,8 @@
     stay.addEventListener('click', close);
     go.addEventListener('click', function () {
       go.disabled = true;
-      go.textContent = 'Signing out\u2026';
-      signOut();
+      go.textContent = switching ? 'Switching\u2026' : 'Signing out\u2026';
+      if (switching) { switchAccount(); } else { signOut(); }
     });
     stay.focus();
   }
@@ -230,6 +262,18 @@
       var st = el('a', '', 'Settings');
       st.href = carry('/student/settings.html');
       menu.appendChild(st);
+    }
+    if (!isChildViewer(entry)) {
+      var sw = el('button', '', 'Switch account');
+      sw.type = 'button';
+      sw.setAttribute('data-mrb-topbar-switch', '1');
+      sw.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        btn.setAttribute('aria-expanded', 'false');
+        menu.hidden = true;
+        confirmSignOut(btn, true);
+      });
+      menu.appendChild(sw);
     }
     var out = el('button', '', 'Sign out');
     out.type = 'button';

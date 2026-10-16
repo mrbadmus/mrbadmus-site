@@ -84,6 +84,16 @@
     org_staff: '/org/sign-in.html'
   };
 
+  /* Where SIGN OUT lands (front door, 16 Oct 2026). It used to be the kind's
+     own door above, which put a signed-out teacher on /auth.html, a parent on
+     the family sign-in and a pupil's sign-out on a form — Mide: "when I sign
+     out I should land on the front page, signed out". Everybody now lands on
+     the front page, where the bar says Sign in. The ONE exception is a family
+     or organisation child: /go/ is their only door and no school-facing page
+     links to it, so the front page would strand them. Switch account is a
+     different act and keeps DOORS.pupil (the one door every adult can use). */
+  var SIGN_OUT_TO = { adult: '/', child: DOORS.child };
+
   var HOMES = {
     // pupil's real home is their class page — see describe(), which takes it
     // from class-entry. This is the picker, used until/unless that is known.
@@ -122,7 +132,14 @@
     // a teacher may look). A parent, a family child or organisation staff who
     // opens one by URL goes to their own home instead of an API error or the
     // GCSE wizard — front door Part 5.
-    challenge: ['pupil', 'staff', 'operator']
+    challenge: ['pupil', 'staff', 'operator'],
+    // The /parents/ marketing pages and sign-in (front door, 16 Oct 2026). A
+    // pupil or a family child who opens one by URL goes to their own home;
+    // staff are let through for the same reason `consumer` lets them through
+    // (the operator, and Mide, who also holds a family login).
+    parents_public: ['parent', 'org_staff', 'operator', 'staff'],
+    // /org/ is organisation staff and the operator.
+    org: ['org_staff', 'operator']
   };
 
   function isStaffRole(role) { return STAFF_ROLES.indexOf(role) !== -1; }
@@ -532,10 +549,10 @@
           dead network cannot hold the person on the page;
        4. clear every sign-in token this browser holds, for both projects,
           and the per-person name/route the nav remembered;
-       5. leave, to the door that belongs to the kind: school people
-          /auth.html, a parent /parents/sign-in.html, a child /go/,
-          organisation staff /org/sign-in.html. Unknown kind → /auth.html.
-     `switchAccount()` is the same with the school door whatever the kind:
+       5. leave, to the front page `/` — signed out, the bar says Sign in —
+          or, for a family/organisation child alone, /go/ (their only door).
+          (Until 16 Oct 2026 this was each kind's own door; see SIGN_OUT_TO.)
+     `switchAccount()` is the same but lands on the school door whatever the kind:
      signing in as somebody else always starts at the one door every kind of
      person can use. No school page gains a link to the family side. */
   function clearLocalState(conf) {
@@ -565,12 +582,13 @@
     var session = readSession(conf);
     var Cfg = root.MrBadmusConfig;
 
-    var doorP;
-    if (opts.to) doorP = Promise.resolve(opts.to);
-    else if (!session) doorP = Promise.resolve(DOORS.pupil);
-    else if (Cfg && typeof Cfg.isChildSession === 'function' && Cfg.isChildSession(session)) doorP = Promise.resolve(DOORS.child);
-    else doorP = timed(resolve({ classes: false }), 1500, null)
-      .then(function (a) { return (a && a.door) || DOORS.pupil; });
+    /* Nothing to ask: whether this is a child is written on the session
+       itself, so the destination is known before anything is torn down. */
+    var door;
+    if (opts.to) door = opts.to;
+    else if (session && Cfg && typeof Cfg.isChildSession === 'function' && Cfg.isChildSession(session)) door = SIGN_OUT_TO.child;
+    else door = SIGN_OUT_TO.adult;
+    var doorP = Promise.resolve(door);
 
     return doorP.then(function (door) {
       try { var ce = root.MRBClassEntry; if (ce && ce.dropCaches) ce.dropCaches(); } catch (e) {}
@@ -604,6 +622,7 @@
     STAFF_ROLES: STAFF_ROLES,
     AUDIENCES: AUDIENCES,
     DOORS: DOORS,
+    SIGN_OUT_TO: SIGN_OUT_TO,
     HOMES: HOMES,
     KIND_LABELS: KIND_LABELS,
     // pure
