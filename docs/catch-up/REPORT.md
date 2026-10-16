@@ -11,12 +11,15 @@ questions. The teacher picks the lesson (Mide, 13 Oct). Build contract:
 |---|---|---|
 | backend | `mrbadmus---backend` 9ec3907 (server.js, test_catch_up.js) | live on Render |
 | site | this branch → main (teacher side, pupil side, proof rig) | see the push commit |
-| database | `feat/catch-up-migration` — `supabase/CATCH-UP-APPLY.md` | **TEST only; production waits for Mide** |
+| database | `feat/catch-up-migration` (pushed, not merged) — `supabase/CATCH-UP-APPLY.md` | **applied on production by Mide, 15 Oct 2026** (column, CHECK, RESTRICTIVE policy, all three md5s verified read-only after; 0 catch-ups of 33 rows) |
 
 The site and the backend work **with or without** the migration. Both probe for
 `assignments.recipient_ids`; when it is absent, nothing is a catch-up and the
-Catch-up option is not offered. That makes today's push a no-op for every
-teacher and pupil until the migration is applied and Render is restarted.
+Catch-up option is not offered. On Mide's instruction the database went first,
+so the site was pushed only after production had the column and no page ever
+asks for a column that is not there. The backend caches its probe for the life
+of the process, so **Render must be restarted once** after the SQL for
+teachers to be offered Catch-up.
 
 ## The design, in five lines
 
@@ -207,6 +210,17 @@ The other three, and two later ones, were not caused by catch-up:
 - **set_work's three "a scope of N exists" checks** are TEST-data preconditions that the grown banks no longer meet. They are inherited from main, which Mide overrode on 14 Oct.
 - **student_bell_drive.** Pupil sign-in on TEST was re-provisioned. With a local backend, `bell_survives_redraw` presses the brand lockup as if it were a button. Clean main fails the same way. This needs fixing in the drive, separately.
 - **teacher_behaviour.** The failure was a Chrome navigation error on both tries, and the gate passed on re-run.
+
+### What ships red, and why (the push commit carries one GATE-OVERRIDE each)
+
+- **set_work.** Two direct runs on the merged tree, 15–16 Oct:
+  - Both runs failed the three inherited bank-size preconditions.
+  - Each run also failed a *different* set of page-load checks, and each set passed on the other run: the pupil class page, the admin's sign-in and the pupil assignment page.
+  - Measured the same night: `cdn.jsdelivr.net` served supabase-js in 0.4 s on 6 of 10 fetches and in 2.5–7.8 s on the other 4. A page waiting for its client library past the drive's settle draws only its frame.
+  - `sheet_shows_the_class_it_was_opened_for` failed twice in five runs. In both, the sheet named the RIGHT class with 0 topics: `/scope` had not answered inside the drive's fixed 4 s wait, rather than the wrong class being painted. Against TEST from this Mac, `/scope` takes 3.5–8 s, and catch-up's sequential roster and scheme reads add 0.3–0.6 s. **Follow-up:** run them in parallel in the backend.
+- **teacher_rollup_equal.** One value remains, pupil 0014's `last_at` for a head of department, as explained above. It is a production gap that predates catch-up, and it waits for Mide's ruling on flashcard RLS.
+
+Every other gate is green on the pushed tree, including `frozen_window_guard`.
 
 ## Ordering hazard (also in the apply sheet)
 
