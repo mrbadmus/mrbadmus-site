@@ -829,7 +829,10 @@
     }
     var next = null;
     for (var i = 0; i < w.length; i++) { if (!w[i].done) { next = w[i]; break; } }
-    return done + ' of ' + n + ' done. Next: ' + (next && next.title ? next.title : '—') + '.';
+    /* ⊕ 15 Oct 2026: a title that already ends a sentence ("Testing the
+       model: does it explain everything?") takes no full stop of ours. */
+    var nt = next && next.title ? String(next.title) : '—';
+    return done + ' of ' + n + ' done. Next: ' + nt + (/[.?!…]$/.test(nt.trim()) ? '' : '.');
   }
 
   function scoresOf(k) { return Array.isArray(k.scores) ? k.scores : []; }
@@ -976,14 +979,10 @@
     }
     var gate = gateHtml();
     if (gate) { return gate; }
-    if (st === 'trialing') {
-      var end = dayMonth(b.trial_end);
-      var days = b.days_left;
-      return '<div class="dk-banner"><span style="flex:1"><strong>Free week:</strong> ' +
-        (days != null ? (esc(String(days)) + (days === 1 ? ' day' : ' days') + ' left.') : 'in progress.') +
-        (end ? (' First payment ' + esc(end) + '.') : '') +
-        '</span><a href="' + account + '" style="font-weight:700;white-space:nowrap">Billing</a></div>';
-    }
+    /* ⊕ 15 Oct 2026 (Mide): no free-week banner either. Below 960 this
+       banner IS the sidebar's status line, and the same "Free week: N days
+       left. Billing" box sat on top of every phone screen. Account, in the
+       tab bar, has the free week and the Stripe portal. */
     if (st === 'past_due') {
       /* ⚠️ MIDE'S RULING, MRB-317. Design's banner counted days of grace
          ("{{graceDays}} more days"). A countdown on a page about somebody's
@@ -1133,12 +1132,11 @@
         (delOn ? (' Everything is deleted on ' + esc(delOn) + '.') : '') +
         '<br><a href="' + account + '" style="font-weight:700">Undo</a></div>';
     }
-    if (bst === 'trialing') {
-      sideNote = '<div style="padding:12px 14px;border:2px solid var(--ks3-ink);border-radius:14px;' +
-        'background:var(--ks3-band);font-size:14px"><strong>Free week:</strong> ' +
-        (S.billing.days_left != null ? (esc(String(S.billing.days_left)) + ' days left.') : 'in progress.') +
-        '<br><a href="' + account + '" style="font-weight:700">Billing</a></div>';
-    } else if (bst === 'past_due') {
+    /* ⊕ 15 Oct 2026 (Mide): no free-week box here, in any trial state. It
+       said "Free week: N days left. Billing" at the foot of every screen;
+       Account, one tap above it, has the free week and the Stripe portal
+       (manage, cancel, change card), and consumer_dash_drive pins that. */
+    if (bst === 'past_due') {
       var r = dayMonth(S.billing.retry_at);
       sideNote = '<div style="padding:12px 14px;border:2px solid var(--ks3-alert-border);border-radius:14px;' +
         'background:var(--ks3-alert-tint);font-size:14px;color:var(--ks3-alert-text)">' +

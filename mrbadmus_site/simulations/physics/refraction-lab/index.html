@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en" data-sim="refraction">
+<head>
+<meta charset="utf-8">
+<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#FBF3E6">
+<title>Refraction Lab | MrBadmus</title>
+<!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614"><!--/mrb:brand-head-->
+<link rel="stylesheet" href="/simulations/simulations.css?v=c4ad56a2">
+<link rel="stylesheet" href="/simulations/fullscreen.css?v=12843bb8">
+<link rel="stylesheet" href="sim-theme.css">
+<link rel="stylesheet" href="/shared/drawer.css?v=d5f4eb49"/>
+<script src="/shared/config.js?v=ab7a89ac"></script>
+<script>window.MRB_SEARCH_SRC=["/shared/search-index.js?v=c016cb14","/shared/search.js?v=d011978d"];</script>
+<script src="/shared/account.js?v=70302fa6" defer></script>
+<script src="/shared/nav.js?v=edf9f4c2" defer></script>
+<script src="/shared/class-entry.js?v=8c087f18" defer></script>
+<script src="/shared/theme.js?v=f04be205" defer></script>
+<script src="/simulations/fullscreen.js?v=992283cb" defer></script>
+<script src="/simulations/dc-runtime.js?v=d8291a18"></script>
+</head>
+<body>
+<header class="sim-bar">
+  <!--mrb:brand--><a class="mrb-brand" href="/" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
+  <a class="sim-back" href="/simulations/physics/"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>Physics</a>
+  <button class="sim-fs" type="button" aria-label="Full screen" aria-pressed="false"><svg class="sim-fs__in" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7V2h5M16 7V2h-5M2 11v5h5M16 11v5h-5"/></svg><svg class="sim-fs__out" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M7 2v5H2M11 2v5h5M7 16v-5H2M11 16v-5h5"/></svg><span class="sim-fs__text">Full screen</span></button>
+  <span class="mrb-theme-slot" data-mrb-theme="compact"></span>
+  <span id="nav-auth-area"></span>
+  <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
+</header>
+<x-dc>
+<helmet>
+  <title>Refraction Lab</title>
+  <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+  <style>
+    body{margin:0;background:#FBF3E6}
+    [hidden]{display:none !important}
+    :focus-visible{outline:2px solid #E4572E;outline-offset:2px}
+    a{color:#A93411}a:hover{color:#7F2408}
+    #rfl-lab button:disabled{opacity:.45;cursor:default}
+  </style>
+</helmet>
+<div style="background:var(--st-ground);color:var(--st-ink);font-family:var(--st-ui);font-size:17px;line-height:1.5;min-height:100vh">
+  <div style="max-width:1560px;margin:0 auto;padding:22px clamp(16px,2.4vw,36px) 48px;display:grid;gap:20px">
+    <header style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px">
+      <div style="min-width:0">
+        <div style="font:500 12px/1.3 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;color:var(--st-caption)">AQA Physics 4.6.1.3 · Required practical · Refraction</div>
+        <h1 style="margin:10px 0 0;font:600 clamp(32px,3.6vw,50px)/1 var(--st-display);letter-spacing:-0.035em;text-wrap:balance">Refraction Lab</h1>
+      </div>
+      <div id="tabs" role="tablist" aria-label="Section" style="display:flex;flex-wrap:wrap;gap:3px;padding:3px;background:var(--st-seg-bg);border-radius:9px">
+        <button role="tab" aria-selected="true" data-mode="L" style="font:500 15px/1 var(--st-ui);padding:11px 18px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer;white-space:nowrap">Practical</button>
+        <button role="tab" aria-selected="false" data-mode="W" style="font:500 15px/1 var(--st-ui);padding:11px 18px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer;white-space:nowrap">Wavefronts</button>
+      </div>
+    </header>
+
+    <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+      <div style="flex:3 1 680px;min-width:0;display:grid;gap:14px">
+        <div id="rfl-lab" data-fs="0" style="position:relative;background:var(--st-paper);border:1px solid var(--st-edge);border-radius:var(--st-r-stage);overflow:hidden;display:grid;box-shadow:var(--st-shadow-frame)">
+          <canvas id="stage" aria-label="Paper with a glass block, a ray box and drawing tools" style="display:block;width:100%;height:clamp(440px,64vh,760px);touch-action:none"></canvas>
+          <canvas id="wstage" hidden aria-label="Animated wavefronts crossing from air into glass" style="display:block;width:100%;height:clamp(400px,58vh,680px);touch-action:none"></canvas>
+
+          <div id="tools-L" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 16px;border-top:1px solid var(--st-rule-soft)">
+            <div id="tools" role="radiogroup" aria-label="Tool" style="display:flex;flex-wrap:wrap;gap:2px;padding:2px;background:var(--st-seg-bg);border-radius:9px">
+              <button data-tool="move" title="Move (V)" style="display:inline-flex;align-items:center;gap:7px;font:500 14px/1 var(--st-ui);height:40px;padding:0 13px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 1v14M1 8h14M5.5 3.5 8 1l2.5 2.5M5.5 12.5 8 15l2.5-2.5M3.5 5.5 1 8l2.5 2.5M12.5 5.5 15 8l-2.5 2.5"></path></svg>Move</button>
+              <button data-tool="pencil" title="Pencil (P)" style="display:inline-flex;align-items:center;gap:7px;font:500 14px/1 var(--st-ui);height:40px;padding:0 13px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.5 2.5l2 2L5 13H3v-2z"></path><path d="M10 4l2 2"></path></svg>Pencil</button>
+              <button data-tool="ruler" title="Ruler (R)" style="display:inline-flex;align-items:center;gap:7px;font:500 14px/1 var(--st-ui);height:40px;padding:0 13px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 11 11 2l3 3-9 9z"></path><path d="M5 8l1.5 1.5M7.5 5.5 9 7M10 3l1.5 1.5"></path></svg>Ruler</button>
+              <button data-tool="normal" title="Normal (N)" style="display:inline-flex;align-items:center;gap:7px;font:500 14px/1 var(--st-ui);height:40px;padding:0 13px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M1.5 12.5h13M8 12.5V2" stroke-dasharray="2.5 2"></path><path d="M8 9.5h3v3"></path></svg>Normal</button>
+              <button data-tool="protractor" title="Protractor (T)" style="display:inline-flex;align-items:center;gap:7px;font:500 14px/1 var(--st-ui);height:40px;padding:0 13px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M1.5 11.5a6.5 6.5 0 0 1 13 0z"></path><path d="M8 11.5V8.5M4.5 10.5l1-1M11.5 10.5l-1-1"></path></svg>Protractor</button>
+              <button data-tool="eraser" title="Eraser (E)" style="display:inline-flex;align-items:center;gap:7px;font:500 14px/1 var(--st-ui);height:40px;padding:0 13px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 13.5 1.8 9.3a1 1 0 0 1 0-1.4L8 1.7a1 1 0 0 1 1.4 0l4.2 4.2a1 1 0 0 1 0 1.4L9 13.5zM4 7.5l5 5M3.5 13.5h11"></path></svg>Eraser</button>
+            </div>
+            <button id="l-trace" style="display:inline-flex;align-items:center;gap:8px;font:600 15px/1 var(--st-ui);height:40px;padding:0 14px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">Trace outline</button>
+            <button id="l-flip" style="display:inline-flex;align-items:center;gap:8px;font:600 15px/1 var(--st-ui);height:40px;padding:0 14px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">Flip protractor</button>
+            <button id="l-undo" title="Undo (Ctrl+Z)" style="display:inline-flex;align-items:center;gap:8px;font:600 15px/1 var(--st-ui);height:40px;padding:0 14px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"><svg width="15" height="13" viewBox="0 0 16 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 2 1.5 5.5 5 9"></path><path d="M1.5 5.5H10a4 4 0 0 1 0 8H7"></path></svg>Undo</button>
+            <button id="l-clear" title="Clear marks and lines. Keeps the outline." style="display:inline-flex;align-items:center;gap:8px;font:600 15px/1 var(--st-ui);height:40px;padding:0 14px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">Clear paper</button>
+            <span id="tool-hint" style="margin-left:auto;font-size:14px;color:var(--st-muted);min-width:0"></span>
+          </div>
+          <div id="ctl-L" style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:0 16px 14px">
+            <button id="l-on" style="display:inline-flex;align-items:center;justify-content:center;gap:9px;min-width:8.5em;font:600 16px/1 var(--st-ui);padding:13px 18px;border:0;border-radius:var(--st-r-btn);background:var(--st-accent-text);color:var(--st-paper);cursor:pointer" style-hover="background:var(--st-accent-hover)"></button>
+            <div aria-label="Turn the ray box" style="display:flex;flex-wrap:nowrap;white-space:nowrap;align-items:center;gap:6px;padding:5px 8px 5px 12px;border:1px solid var(--st-rule);border-radius:10px">
+              <span style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.12em;text-transform:uppercase;color:var(--st-caption);margin-right:4px">Turn</span>
+              <button data-rot="-5" style="font:600 14px/1 var(--st-ui);height:38px;padding:0 11px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">−5°</button>
+              <button data-rot="-1" style="font:600 14px/1 var(--st-ui);height:38px;padding:0 11px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">−1°</button>
+              <button data-rot="1" style="font:600 14px/1 var(--st-ui);height:38px;padding:0 11px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">+1°</button>
+              <button data-rot="5" style="font:600 14px/1 var(--st-ui);height:38px;padding:0 11px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">+5°</button>
+              <button id="l-norm" style="font:600 14px/1 var(--st-ui);height:38px;padding:0 12px;border:0;border-radius:var(--st-r-btn);background:var(--st-ink);color:var(--st-paper);cursor:pointer">Along the normal</button>
+              <label id="l-iset-wrap" hidden style="display:flex;align-items:center;gap:6px;font-size:14px;color:var(--st-muted)">i =<input id="l-iset" type="number" min="0" max="85" step="1" value="40" aria-label="Set the angle of incidence" style="width:4.2em;font:600 15px var(--st-ui);text-align:center;border:1.5px solid var(--st-accent-text);border-radius:6px;padding:7px 4px;background:var(--st-paper);color:var(--st-ink)">°</label>
+            </div>
+            <button id="l-block" style="display:inline-flex;align-items:center;gap:8px;font:600 15px/1 var(--st-ui);height:40px;padding:0 14px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"></button>
+            <label for="l-mat" style="display:flex;align-items:center;gap:8px;font-size:15px;color:var(--st-muted)">Block
+              <select id="l-mat" style="font:500 15px var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-control);padding:8px 10px;cursor:pointer">
+                <option value="Glass">Glass</option><option value="Perspex">Perspex</option><option value="Water">Water</option><option value="Diamond">Diamond</option>
+              </select>
+            </label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:9px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="l-refl" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span style="white-space:nowrap">Reflected ray</span></label>
+            <button id="l-record" style="display:inline-flex;align-items:center;gap:8px;font:600 16px/1 var(--st-ui);padding:12px 16px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer;margin-left:auto" style-hover="background:var(--st-note-bg)">Record trial<svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 1.5v11M1.5 8 6 12.5 10.5 8"></path></svg></button>
+          </div>
+
+          <div id="ctl-W" hidden style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:14px 16px;border-top:1px solid var(--st-rule-soft)">
+            <button id="w-play" style="display:inline-flex;align-items:center;justify-content:center;gap:9px;min-width:7.5em;font:600 16px/1 var(--st-ui);padding:13px 18px;border:0;border-radius:var(--st-r-btn);background:var(--st-accent-text);color:var(--st-paper);cursor:pointer" style-hover="background:var(--st-accent-hover)"></button>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:9px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="w-slow" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Slow motion</span></label>
+            <div aria-label="Angle of incidence" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 8px 6px 12px;border:1px solid var(--st-rule);border-radius:10px">
+              <span style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.12em;text-transform:uppercase;color:var(--st-caption)">Angle i</span>
+              <input id="w-ang" type="range" min="0" max="80" step="1" value="45" aria-label="Angle of incidence" style="width:160px;accent-color:#A93411">
+              <span id="w-ang-lcd" style="font:500 20px/1 var(--st-mono);font-variant-numeric:tabular-nums;background:var(--st-room);color:#F5E6C8;border-radius:6px;padding:7px 10px;min-width:3.2em;text-align:right">45°</span>
+            </div>
+            <label for="w-mat" style="display:flex;align-items:center;gap:8px;font-size:15px;color:var(--st-muted)">Into
+              <select id="w-mat" style="font:500 15px var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-control);padding:8px 10px;cursor:pointer">
+                <option value="Glass">Glass</option><option value="Perspex">Perspex</option><option value="Water">Water</option><option value="Diamond">Diamond</option>
+              </select>
+            </label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:9px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="w-rays" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Rays and angles</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:9px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="w-hl" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Follow one wavefront</span></label>
+          </div>
+        </div>
+
+        <div id="ro-L" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+          <div style="background:var(--st-paper);border:1.5px solid var(--st-accent);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div style="display:flex;align-items:center;gap:7px;font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)"><i style="width:10px;height:10px;background:var(--st-accent);border-radius:50%;flex:none"></i>Protractor</div>
+            <div id="ro-read" style="margin-top:6px;font:500 clamp(22px,2vw,28px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">–</div>
+            <div id="ro-read-s" style="font-size:14px;color:var(--st-muted)">click where the ray meets the edge of the block</div>
+          </div>
+          <div style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Refractive index</div>
+            <div style="margin-top:6px;font:600 clamp(22px,2vw,28px)/1.2 var(--st-display);letter-spacing:-0.02em">n = sin i ÷ sin r</div>
+            <div style="font-size:14px;color:var(--st-muted)">i and r are measured from the normal</div>
+          </div>
+          <div id="ro-true" hidden style="background:var(--st-paper);border:1.5px dashed var(--st-note-border);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Teacher · true values</div>
+            <div id="ro-true-v" style="margin-top:6px;font:500 clamp(22px,2vw,28px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">–</div>
+            <div id="ro-true-s" style="font-size:14px;color:var(--st-muted)"></div>
+          </div>
+        </div>
+        <div id="ro-W" hidden style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+          <div style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Speed</div>
+            <div id="ro-v" style="margin-top:6px;font:500 clamp(20px,1.8vw,26px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">–</div>
+            <div id="ro-v-s" style="font-size:14px;color:var(--st-muted)">slower in glass: v = c ÷ n</div>
+          </div>
+          <div style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Wavelength</div>
+            <div id="ro-lam" style="margin-top:6px;font:500 clamp(20px,1.8vw,26px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">–</div>
+            <div style="font-size:14px;color:var(--st-muted)">shorter in glass: λ = v ÷ f</div>
+          </div>
+          <div style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Frequency</div>
+            <div id="ro-f" style="margin-top:6px;font:500 clamp(20px,1.8vw,26px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">same</div>
+            <div style="font-size:14px;color:var(--st-muted)">set by the source, not the material</div>
+          </div>
+          <div style="background:var(--st-paper);border:1.5px solid var(--st-accent);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Direction</div>
+            <div id="ro-dir" style="margin-top:6px;font:500 clamp(20px,1.8vw,26px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">–</div>
+            <div id="ro-dir-s" style="font-size:14px;color:var(--st-muted)"></div>
+          </div>
+        </div>
+      </div>
+
+      <aside aria-live="polite" style="flex:1 1 300px;max-width:420px;min-width:0;position:sticky;top:16px;background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:20px 22px 18px;display:grid;gap:12px;align-content:start">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <span id="g-count" style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;color:var(--st-caption)">Step 1</span>
+          <div id="g-dots" style="display:flex;gap:4px;flex-wrap:wrap"></div>
+        </div>
+        <div id="g-part" style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.12em;text-transform:uppercase;color:var(--st-accent-text)">Practical</div>
+        <h2 id="g-title" style="margin:0;font:600 clamp(22px,2vw,30px)/1.15 var(--st-display);letter-spacing:-0.025em;text-wrap:balance"></h2>
+        <div id="g-text" style="font-size:clamp(16px,1.25vw,18px);line-height:1.5;color:var(--st-body);display:grid;gap:10px;text-wrap:pretty"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;padding-top:4px">
+          <button id="g-back" style="display:inline-flex;align-items:center;gap:8px;font:600 16px/1 var(--st-ui);padding:13px 16px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"><svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6H2M6.5 1.5 2 6l4.5 4.5"></path></svg>Back</button>
+          <button id="g-next" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;font:600 16px/1 var(--st-ui);padding:14px 18px;border:0;border-radius:var(--st-r-btn);background:var(--st-accent-text);color:var(--st-paper);cursor:pointer" style-hover="background:var(--st-accent-hover)"></button>
+        </div>
+        <div id="g-keys" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14px;color:var(--st-muted)"></div>
+      </aside>
+    </div>
+
+    <section aria-label="Results" style="display:grid;gap:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:10px;border-top:1px solid var(--st-rule)">
+        <h2 style="margin:0;font:600 28px/1.1 var(--st-display);letter-spacing:-0.03em">Results</h2>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span id="res-hint" style="font-size:14px;color:var(--st-muted)">Record a trial, then type the i and r you measured.</span>
+          <button id="res-toggle" data-sec="res" style="display:inline-flex;align-items:center;gap:7px;font:500 14px/1 var(--st-ui);padding:8px 12px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"></button>
+        </div>
+      </div>
+      <div id="res-body" style="display:flex;flex-wrap:wrap;gap:12px;align-items:stretch">
+        <div style="flex:2 1 560px;min-width:0;background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:6px 8px;overflow-x:auto">
+          <table style="border-collapse:collapse;width:100%;min-width:760px;font-variant-numeric:tabular-nums">
+            <thead><tr style="font:500 12px/1.3 var(--st-mono);letter-spacing:0.06em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap"><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">Trial</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">Block</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">i (°)</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">r (°)</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">sin i</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">sin r</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">n = sin i ÷ sin r</th><th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">Check</th><th style="border-bottom:1px solid var(--st-rule)"></th></tr></thead>
+            <tbody id="tb-L"></tbody>
+          </table>
+        </div>
+        <div style="flex:1 1 300px;min-width:0;background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:14px 16px;display:grid;gap:6px;align-content:start">
+          <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">sin i against sin r</div>
+          <canvas id="plot" aria-label="Graph of sin i against sin r" style="display:block;width:100%;height:250px"></canvas>
+          <div id="plot-cap" style="font-size:14px;color:var(--st-muted)">A straight line through the origin. Its gradient is n.</div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Check your understanding" style="display:grid;gap:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:10px;border-top:1px solid var(--st-rule)">
+        <h2 style="margin:0;font:600 28px/1.1 var(--st-display);letter-spacing:-0.03em">Check your understanding</h2>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span id="score" style="font:500 15px/1 var(--st-mono);letter-spacing:0.04em;color:var(--st-ink);white-space:nowrap">Score: 0 / 6</span>
+          <button id="quiz-toggle" data-sec="quiz" style="display:inline-flex;align-items:center;gap:7px;font:500 14px/1 var(--st-ui);padding:8px 12px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"></button>
+        </div>
+      </div>
+      <div id="quiz-body" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px"></div>
+    </section>
+
+    <footer style="color:var(--st-muted);font-size:14px;max-width:90ch">Refractive indices: glass 1.50, Perspex 1.49, water 1.33, diamond 2.42. The ray box has no angle scale: i and r must both be measured with the protractor.</footer>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;teacherMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher&quot;},&quot;material&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Glass&quot;,&quot;options&quot;:[&quot;Glass&quot;,&quot;Perspex&quot;,&quot;Water&quot;,&quot;Diamond&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lab&quot;},&quot;showResults&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections on load&quot;},&quot;showQuiz&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections on load&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() { this._lab = startLab(this.props); }
+  componentDidUpdate(prev) {
+    if (!this._lab) return;
+    for (const [p, sec] of [["showResults", "res"], ["showQuiz", "quiz"]])
+      if (prev[p] !== this.props[p] && this.props[p] !== undefined) this._lab.setSection(sec, !!this.props[p]);
+    if (prev.teacherMode !== this.props.teacherMode) this._lab.setTeacher(!!this.props.teacherMode);
+    if (prev.material !== this.props.material && this.props.material) this._lab.setMaterial(this.props.material);
+  }
+  componentWillUnmount() { this._lab && this._lab.stop(); }
+  renderVals() { return {}; }
+}
+
+const I = {
+  play: '<svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9.5-5.5z" fill="currentColor"/></svg>',
+  pause: '<svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><rect x="2.5" y="1.5" width="3.4" height="11" rx="1" fill="currentColor"/><rect x="8.1" y="1.5" width="3.4" height="11" rx="1" fill="currentColor"/></svg>',
+  right: '<svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-1px"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg>',
+  left: '<svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-1px"><path d="M14.5 6H2M6.5 1.5 2 6l4.5 4.5"/></svg>',
+  tick: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none"><path d="M3 8.5 6.5 12 13 4.5"/></svg>',
+  cross: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex:none"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+  eye: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></svg>',
+  eyeOff: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/><path d="M2.5 2.5l11 11"/></svg>',
+  bulb: '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5.5 14h5M6 11.5h4M8 1.5a4.5 4.5 0 0 0-2.5 8.2V11h5V9.7A4.5 4.5 0 0 0 8 1.5z"/></svg>',
+};
+const KBD = (t) => `<span style="font:500 11px/1 var(--st-mono);letter-spacing:0.04em;color:var(--st-caption);border:1px solid var(--st-rule-strong);border-radius:4px;padding:4px 6px;display:inline-flex;align-items:center;white-space:nowrap">${t}</span>`;
+
+function startLab(props) {
+  const $ = (id) => document.getElementById(id);
+  const cv = $("stage"), cx = cv.getContext("2d"), wv = $("wstage"), wx = wv.getContext("2d");
+  const D2R = Math.PI / 180, R2D = 180 / Math.PI, cl1 = (v) => Math.max(-1, Math.min(1, v));
+  let C = {}, CP = {};
+  // The lab paper and the wavefront tank are drawn as paper, light in both themes
+  // (as the Circuit Lab workbench is); only the sin i / sin r graph follows the theme.
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement), tv = (n, d) => cs.getPropertyValue(n).trim() || d;
+    const dark = document.documentElement.getAttribute("data-theme") === "dark", v = (n, d) => dark ? d : tv(n, d);
+    CP = { stage: tv("--st-paper", "#FFFDF8"), ink: tv("--st-ink", "#1A1714"), muted: tv("--st-muted", "#6E655D"), caption: tv("--st-caption", "#7A6E5F"), grid: tv("--st-paper-grid", "#F2E8D6"), accent: tv("--st-accent", "#E4572E"), accentText: tv("--st-accent-text", "#A93411") };
+    C = { stage: v("--st-paper", "#FFFDF8"), ground: v("--st-ground", "#FBF3E6"), ink: v("--st-ink", "#1A1714"), muted: v("--st-muted", "#6E655D"), caption: v("--st-caption", "#7A6E5F"),
+      line: v("--st-rule-strong", "#D6C6A8"), rule: v("--st-rule", "#E0D2B9"), grid: v("--st-paper-grid", "#F2E8D6"), accent: v("--st-accent", "#E4572E"), accentText: v("--st-accent-text", "#A93411"),
+      room: v("--st-room", "#15110C"), glass: "#8FB3D1", glassEdge: "#3F6E95", ray: "#F5A623", rayCore: "#FFF0C2", pencil: "#3A3733", prot: "rgba(52,88,128,0.8)", protFill: "rgba(120,160,205,0.17)", bad: "#B3261E", good: "#0A6B36" };
+  }
+  readColors(); setTimeout(readColors, 400);
+  new MutationObserver(() => { readColors(); drawPlot(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+  // ---------- state (cm on a 30 cm wide sheet) ----------
+  const MATS = { Glass: 1.50, Perspex: 1.49, Water: 1.33, Diamond: 2.42 };
+  const FACES = { top: { x: 0, y: -1 }, bottom: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
+  const BOXL = 2.6, BOXW = 1.8, KNOB = 0.42, PR = 5.6;
+  const L = { mat: MATS[props.material] ? props.material : "Glass", block: { on: false, x: 15, y: 10.2, w: 12, h: 6 }, box: { on: true, x: 9.1, y: 3.6, ang: 50 * D2R }, refl: false, tool: "move",
+    draw: { outline: null, marks: [], lines: [], normals: [], prot: null }, undo: [], teacher: !!props.teacherMode };
+  const Wst = { playing: true, t: 0, slow: false, i: 45, rays: true, hl: true };
+  let mode = "L", lastEntry = null, lastRay = null, memo = null, alive = true, hintMsg = "", hintT = 0, hintDur = 2600;
+  const n = () => MATS[L.mat];
+  const dirOf = (a) => ({ x: Math.cos(a), y: Math.sin(a) });
+  const blockRect = () => ({ x0: L.block.x - L.block.w / 2, y0: L.block.y - L.block.h / 2, x1: L.block.x + L.block.w / 2, y1: L.block.y + L.block.h / 2 });
+  const inRect = (p, R) => p.x > R.x0 && p.x < R.x1 && p.y > R.y0 && p.y < R.y1;
+  const far = (p, d) => ({ x: p.x + d.x * 80, y: p.y + d.y * 80 });
+
+  // ---------- optics ----------
+  function rayRect(p, d, R) {
+    let best = null;
+    const test = (face, t, q) => { if (t > 1e-6 && (!best || t < best.t)) best = { t, p: q, face, nrm: FACES[face] }; };
+    if (Math.abs(d.y) > 1e-9) for (const [y, f] of [[R.y0, "top"], [R.y1, "bottom"]]) { const t = (y - p.y) / d.y, x = p.x + t * d.x; if (x >= R.x0 - 1e-6 && x <= R.x1 + 1e-6) test(f, t, { x, y }); }
+    if (Math.abs(d.x) > 1e-9) for (const [x, f] of [[R.x0, "left"], [R.x1, "right"]]) { const t = (x - p.x) / d.x, y = p.y + t * d.y; if (y >= R.y0 - 1e-6 && y <= R.y1 + 1e-6) test(f, t, { x, y }); }
+    return best;
+  }
+  function refract(d, nm, eta) { const c = -(d.x * nm.x + d.y * nm.y), k = 1 - eta * eta * (1 - c * c); if (k < 0) return null; const f = eta * c - Math.sqrt(k); return { x: eta * d.x + f * nm.x, y: eta * d.y + f * nm.y }; }
+  function reflect(d, nm) { const k = 2 * (d.x * nm.x + d.y * nm.y); return { x: d.x - k * nm.x, y: d.y - k * nm.y }; }
+  function trace(force) {
+    const T = { segs: [], entry: null, exit: null, tir: [], refl: null, inside: false };
+    if (!L.box.on && !force) return T;
+    const p = { x: L.box.x, y: L.box.y }, d = dirOf(L.box.ang), R = blockRect();
+    if (L.block.on && inRect(p, R)) T.inside = true;
+    const hit = L.block.on && !T.inside ? rayRect(p, d, R) : null;
+    if (!hit) { T.segs.push({ a: p, b: far(p, d), glass: false }); return T; }
+    T.segs.push({ a: p, b: hit.p, glass: false });
+    const i = Math.acos(cl1(-(d.x * hit.nrm.x + d.y * hit.nrm.y))), t = refract(d, hit.nrm, 1 / n());
+    const r = Math.acos(cl1(-(t.x * hit.nrm.x + t.y * hit.nrm.y)));
+    T.refl = { a: hit.p, b: far(hit.p, reflect(d, hit.nrm)) };
+    T.entry = { p: hit.p, face: hit.face, nrm: hit.nrm, i, r, dIn: d, dOut: t };
+    let q = hit.p, u = t;
+    for (let k = 0; k < 8; k++) {
+      const h = rayRect(q, u, R); if (!h) break;
+      T.segs.push({ a: q, b: h.p, glass: true });
+      const inN = { x: -h.nrm.x, y: -h.nrm.y }, out = refract(u, inN, n());
+      if (!out) { T.tir.push({ p: h.p, face: h.face }); u = reflect(u, inN); q = h.p; continue; }
+      T.exit = { p: h.p, face: h.face, nrm: h.nrm, ang: Math.acos(cl1(u.x * h.nrm.x + u.y * h.nrm.y)), e: Math.acos(cl1(out.x * h.nrm.x + out.y * h.nrm.y)), dIn: u, dOut: out };
+      T.segs.push({ a: h.p, b: far(h.p, out), glass: false }); break;
+    }
+    return T;
+  }
+  const lateral = (T) => T.entry && T.exit ? Math.abs((T.exit.p.x - T.entry.p.x) * T.entry.dIn.y - (T.exit.p.y - T.entry.p.y) * T.entry.dIn.x) : 0;
+  function setI(deg) {
+    const e = trace(true).entry; if (!e) return false;
+    const nm = e.nrm, tp = { x: -nm.y, y: nm.x }, side = Math.sign(e.dIn.x * tp.x + e.dIn.y * tp.y) || 1, a = deg * D2R;
+    const d = { x: -nm.x * Math.cos(a) + tp.x * side * Math.sin(a), y: -nm.y * Math.cos(a) + tp.y * side * Math.sin(a) };
+    aimAt(e.p, d, Math.hypot(e.p.x - L.box.x, e.p.y - L.box.y)); return true;
+  }
+  // The box's front is at (x, y); its back, with the knob, is BOXL + 2*KNOB behind.
+  const BACK = BOXL + 2 * KNOB, EDGE = 0.25;
+  function keepBoxOn() {
+    const d = dirOf(L.box.ang), hc = Hcm();
+    for (const k of [0, BACK]) { const x = L.box.x - d.x * k, y = L.box.y - d.y * k;
+      if (x < EDGE) L.box.x += EDGE - x; else if (x > 30 - EDGE) L.box.x -= x - (30 - EDGE);
+      if (y < EDGE) L.box.y += EDGE - y; else if (y > hc - EDGE) L.box.y -= y - (hc - EDGE); }
+  }
+  // Point the box along d at the pivot, as far back as `want` allows while the knob stays on the paper.
+  function aimAt(piv, d, want) {
+    const lim = (pc, dc, lo, hi) => dc > 1e-6 ? (pc - lo) / dc : dc < -1e-6 ? (pc - hi) / dc : Infinity;
+    const dist = Math.max(Math.min(want, 0.3), Math.min(want, lim(piv.x, d.x, EDGE, 30 - EDGE) - BACK, lim(piv.y, d.y, EDGE, Hcm() - EDGE) - BACK));
+    L.box.ang = Math.atan2(d.y, d.x); L.box.x = piv.x - d.x * dist; L.box.y = piv.y - d.y * dist;
+  }
+  function placeBoxFor(deg) {
+    const R = blockRect(), e = { x: L.block.x - 2.2, y: R.y0 }, a = deg * D2R, d = { x: Math.sin(a), y: Math.cos(a) };
+    aimAt(e, d, 4.2);
+  }
+
+  // ---------- canvas ----------
+  let W = 0, H = 0, s = 33, dpr = 1, WW = 0, WH = 0;
+  function fit(c, ctx) { const r = c.getBoundingClientRect(); c.width = Math.round(r.width * dpr); c.height = Math.round(r.height * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); return [r.width, r.height]; }
+  function resize() { dpr = Math.min(2, window.devicePixelRatio || 1); [W, H] = fit(cv, cx); s = W / 30 || 33; [WW, WH] = fit(wv, wx); }
+  const ro = new ResizeObserver(resize); ro.observe(cv); ro.observe(wv); resize();
+  const Hcm = () => H / s;
+  const P = (cm) => cm * s;
+  const UI = '"Instrument Sans", system-ui, sans-serif', MONO = '"DM Mono", ui-monospace, monospace';
+  function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+  function label(ctx, t, x, y, col, size = 15, align = "left", weight = 600, bg = null, fam = UI) {
+    ctx.font = `${weight} ${size}px ${fam}`; if ("letterSpacing" in ctx) ctx.letterSpacing = fam === MONO ? "1.2px" : "0px";
+    ctx.textAlign = align; ctx.textBaseline = "middle";
+    if (bg) { const m = ctx.measureText(t).width, p = 6, bx = align === "center" ? x - m / 2 : align === "right" ? x - m : x; ctx.fillStyle = bg; rr(ctx, bx - p, y - size * 0.75, m + p * 2, size * 1.5, 6); ctx.fill(); }
+    ctx.fillStyle = col; ctx.fillText(t, x, y);
+  }
+  function arrow(ctx, x1, y1, x2, y2, col, lw, head = 10, both = false) {
+    ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = lw; ctx.lineCap = "round"; ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    const tip = (ax, ay, bx, by) => { const a = Math.atan2(by - ay, bx - ax); ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx - head * Math.cos(a - 0.45), by - head * Math.sin(a - 0.45)); ctx.lineTo(bx - head * Math.cos(a + 0.45), by - head * Math.sin(a + 0.45)); ctx.closePath(); ctx.fill(); };
+    tip(x1, y1, x2, y2); if (both) tip(x2, y2, x1, y1);
+  }
+  function arcBetween(ctx, cxp, cyp, r, v1, v2) { const a1 = Math.atan2(v1.y, v1.x), a2 = Math.atan2(v2.y, v2.x); let dl = a2 - a1; while (dl > Math.PI) dl -= 2 * Math.PI; while (dl < -Math.PI) dl += 2 * Math.PI; ctx.beginPath(); ctx.arc(cxp, cyp, r, a1, a2, dl < 0); ctx.stroke(); return a1 + dl / 2; }
+
+  // ---------- drawing: lab ----------
+  const trayRect = () => ({ x0: 30 - 7.2, y0: 2.2, x1: 30 - 0.6, y1: 5.2 });
+  function drawLab() {
+    cx.fillStyle = C.stage; cx.fillRect(0, 0, W, H);
+    cx.strokeStyle = C.grid; cx.lineWidth = 1; cx.beginPath(); for (let i = 1; i < 30; i++) { cx.moveTo(P(i) + 0.5, 0); cx.lineTo(P(i) + 0.5, H); } for (let j = 1; j < Hcm(); j++) { cx.moveTo(0, P(j) + 0.5); cx.lineTo(W, P(j) + 0.5); } cx.stroke();
+    const T = trace(); if (T.entry && L.block.on) { lastEntry = { i: T.entry.i, r: T.entry.r, e: T.exit ? T.exit.e : NaN, mat: L.mat, n: n(), lat: lateral(T) }; lastRay = { in: { ...T.entry.p }, out: T.exit ? { ...T.exit.p } : null }; }
+    // outline (pencil)
+    const O = L.draw.outline;
+    if (O) { cx.strokeStyle = C.pencil; cx.lineWidth = 1.4; cx.setLineDash([]); cx.strokeRect(P(O.x0), P(O.y0), P(O.x1 - O.x0), P(O.y1 - O.y0)); }
+    // block
+    if (L.block.on) {
+      const R = blockRect(); cx.fillStyle = C.protFill; cx.fillStyle = "rgba(143,179,209,0.36)"; cx.fillRect(P(R.x0), P(R.y0), P(R.x1 - R.x0), P(R.y1 - R.y0));
+      cx.strokeStyle = C.glassEdge; cx.lineWidth = 2; cx.strokeRect(P(R.x0), P(R.y0), P(R.x1 - R.x0), P(R.y1 - R.y0));
+      cx.strokeStyle = "rgba(255,255,255,0.7)"; cx.lineWidth = 1; cx.strokeRect(P(R.x0) + 4, P(R.y0) + 4, P(R.x1 - R.x0) - 8, P(R.y1 - R.y0) - 8);
+      label(cx, L.mat.toLowerCase(), P(R.x1) - 10, P(R.y1) - 13, C.glassEdge, 12, "right", 600);
+    } else {
+      const t = trayRect(); cx.setLineDash([5, 4]); cx.strokeStyle = C.line; cx.lineWidth = 1.2; rr(cx, P(t.x0), P(t.y0), P(t.x1 - t.x0), P(t.y1 - t.y0), 8); cx.stroke(); cx.setLineDash([]);
+      cx.fillStyle = "rgba(143,179,209,0.36)"; cx.fillRect(P(t.x0) + 10, P(t.y0 + 1.5) - P(0.55), P(2.2), P(1.1)); cx.strokeStyle = C.glassEdge; cx.lineWidth = 1.5; cx.strokeRect(P(t.x0) + 10, P(t.y0 + 1.5) - P(0.55), P(2.2), P(1.1));
+      label(cx, L.mat + " block", P(t.x0) + 10 + P(2.2) + 10, P(t.y0 + 1.5) - 9, C.ink, 13, "left", 600);
+      label(cx, "drag onto the paper", P(t.x0) + 10 + P(2.2) + 10, P(t.y0 + 1.5) + 9, C.muted, 12, "left", 500);
+    }
+    // ray
+    if (L.box.on) {
+      if (L.refl && T.refl) { cx.strokeStyle = "rgba(245,166,35,0.35)"; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(P(T.refl.a.x), P(T.refl.a.y)); cx.lineTo(P(T.refl.b.x), P(T.refl.b.y)); cx.stroke(); }
+      for (const sg of T.segs) {
+        const path = () => { cx.beginPath(); cx.moveTo(P(sg.a.x), P(sg.a.y)); cx.lineTo(P(sg.b.x), P(sg.b.y)); cx.stroke(); };
+        cx.lineCap = "round"; cx.setLineDash([]);
+        cx.strokeStyle = "rgba(245,166,35,0.22)"; cx.lineWidth = sg.glass ? 9 : 12; path();
+        cx.strokeStyle = C.ray; cx.lineWidth = sg.glass ? 3 : 3.6; path();
+        cx.strokeStyle = C.rayCore; cx.lineWidth = 1.2; path();
+      }
+      for (const t of T.tir) label(cx, "total internal reflection", P(t.p.x), P(t.p.y) + (t.face === "bottom" ? 18 : -18), C.accentText, 12, "center", 600, C.stage);
+      if (T.inside) label(cx, "move the ray box off the block", P(L.box.x), P(L.box.y) - P(BOXW), C.accentText, 13, "center", 600, C.stage);
+    }
+    drawBox();
+    // pencil work
+    cx.strokeStyle = C.pencil; cx.lineWidth = 1.5; cx.setLineDash([]);
+    for (const m of L.draw.marks) { const x = P(m.x), y = P(m.y), k = P(0.22); cx.beginPath(); cx.moveTo(x - k, y - k); cx.lineTo(x + k, y + k); cx.moveTo(x + k, y - k); cx.lineTo(x - k, y + k); cx.stroke(); }
+    for (const l of L.draw.lines) { cx.beginPath(); cx.moveTo(P(l.A.x), P(l.A.y)); cx.lineTo(P(l.B.x), P(l.B.y)); cx.stroke(); }
+    for (const nl of L.draw.normals) { const nm = FACES[nl.face], k = 4.6; cx.setLineDash([7, 5]); cx.beginPath(); cx.moveTo(P(nl.p.x - nm.x * k), P(nl.p.y - nm.y * k)); cx.lineTo(P(nl.p.x + nm.x * k), P(nl.p.y + nm.y * k)); cx.stroke(); cx.setLineDash([]);
+      label(cx, "normal", P(nl.p.x + nm.x * k) + (nm.x ? 0 : 8), P(nl.p.y + nm.y * k) + (nm.y ? -10 * Math.sign(nm.y) + 0 : 0), C.muted, 12, nm.x ? "center" : "left", 500); }
+    if (drag && drag.kind === "ruler") { const f = edgeOf(drag.a, drag.cur), a = f ? f.a : drag.a, b = f ? f.b : drag.cur;
+      cx.strokeStyle = f ? "rgba(58,55,51,0.85)" : "rgba(58,55,51,0.55)"; cx.lineWidth = f ? 2 : 1.5; cx.setLineDash(f ? [] : [4, 4]); cx.beginPath(); cx.moveTo(P(a.x), P(a.y)); cx.lineTo(P(b.x), P(b.y)); cx.stroke(); cx.setLineDash([]); cx.lineWidth = 1.5; }
+    drawProt();
+    // teacher overlay
+    if (L.teacher && T.entry && L.block.on) {
+      const e = T.entry, cxp = P(e.p.x), cyp = P(e.p.y), r1 = P(1.7);
+      cx.setLineDash([4, 4]); cx.strokeStyle = C.accentText; cx.lineWidth = 1.2; cx.beginPath(); cx.moveTo(cxp - e.nrm.x * P(3), cyp - e.nrm.y * P(3)); cx.lineTo(cxp + e.nrm.x * P(3), cyp + e.nrm.y * P(3)); cx.stroke(); cx.setLineDash([]);
+      cx.lineWidth = 1.6; let m = arcBetween(cx, cxp, cyp, r1, e.nrm, { x: -e.dIn.x, y: -e.dIn.y });
+      label(cx, `i = ${(e.i * R2D).toFixed(0)}°`, cxp + Math.cos(m) * P(2.5), cyp + Math.sin(m) * P(2.5), C.accentText, 13, "center", 600, C.stage);
+      m = arcBetween(cx, cxp, cyp, r1, { x: -e.nrm.x, y: -e.nrm.y }, e.dOut);
+      label(cx, `r = ${(e.r * R2D).toFixed(0)}°`, cxp + Math.cos(m) * P(2.5), cyp + Math.sin(m) * P(2.5), C.accentText, 13, "center", 600, C.stage);
+      if (T.exit) { const x = T.exit, xp = P(x.p.x), yp = P(x.p.y); m = arcBetween(cx, xp, yp, r1, x.nrm, x.dOut); label(cx, `${(x.e * R2D).toFixed(0)}°`, xp + Math.cos(m) * P(2.4), yp + Math.sin(m) * P(2.4), C.accentText, 13, "center", 600, C.stage); }
+    }
+    // hint
+    const hint = performance.now() - hintT < hintDur ? hintMsg : protGuide();
+    if (hint) label(cx, hint, W / 2, H - 22, C.accentText, 14, "center", 600, C.stage);
+    label(cx, "PAPER · 1 cm GRID", 14, H - 16, C.caption, 11, "left", 500, null, MONO);
+  }
+  function drawBox() {
+    const b = L.box; cx.save(); cx.translate(P(b.x), P(b.y)); cx.rotate(b.ang);
+    if (b.on) { const g = cx.createRadialGradient(0, 0, 0, 0, 0, P(1.6)); g.addColorStop(0, "rgba(255,220,120,0.55)"); g.addColorStop(1, "rgba(255,220,120,0)"); cx.fillStyle = g; cx.beginPath(); cx.arc(0, 0, P(1.6), 0, Math.PI * 2); cx.fill(); }
+    cx.fillStyle = "#2B2622"; rr(cx, -P(BOXL), -P(BOXW / 2), P(BOXL), P(BOXW), 6); cx.fill(); cx.strokeStyle = "#0E0B08"; cx.lineWidth = 1.5; cx.stroke();
+    cx.strokeStyle = "rgba(255,255,255,0.14)"; cx.lineWidth = 1; cx.beginPath(); for (let k = 1; k <= 2; k++) { cx.moveTo(-P(BOXL) + P(0.28) * k, -P(BOXW / 2) + 5); cx.lineTo(-P(BOXL) + P(0.28) * k, P(BOXW / 2) - 5); } cx.stroke();
+    cx.fillStyle = b.on ? "#FFE9A8" : "#5E554C"; cx.fillRect(-P(0.22), -P(0.4), P(0.3), P(0.8));
+    cx.fillStyle = "#6B6158"; cx.beginPath(); cx.arc(-P(BOXL + KNOB), 0, P(KNOB), 0, Math.PI * 2); cx.fill(); cx.strokeStyle = "#15110C"; cx.lineWidth = 1.5; cx.stroke();
+    cx.fillStyle = "#15110C"; cx.beginPath(); cx.arc(-P(BOXL + KNOB), 0, P(0.12), 0, Math.PI * 2); cx.fill();
+    if (P(BOXL) > 64) { cx.fillStyle = "#C9BBA6"; cx.font = `500 10px ${MONO}`; cx.textAlign = "center"; cx.textBaseline = "middle"; cx.save(); cx.translate(-P(BOXL / 2) - P(0.1), 0); if (Math.cos(b.ang) < 0) cx.rotate(Math.PI); cx.fillText("RAY BOX", 0, 0); cx.restore(); }
+    cx.restore();
+  }
+  function protFrame(pr) { const nm = FACES[pr.face], tp = { x: -nm.y * pr.side, y: nm.x * pr.side }; return { nm, tp, dir: (th) => ({ x: nm.x * Math.cos(th) + tp.x * Math.sin(th), y: nm.y * Math.cos(th) + tp.y * Math.sin(th) }) }; }
+  function drawProt() {
+    const pr = L.draw.prot; if (!pr) return;
+    const { nm, tp, dir } = protFrame(pr), r = P(PR), cxp = P(pr.p.x), cyp = P(pr.p.y);
+    const a0 = Math.atan2(nm.y, nm.x), sgn = Math.sign(nm.x * tp.y - nm.y * tp.x) || 1;
+    cx.beginPath(); cx.moveTo(cxp, cyp); cx.arc(cxp, cyp, r, a0, a0 + sgn * Math.PI, sgn < 0); cx.closePath(); cx.fillStyle = C.protFill; cx.fill(); cx.strokeStyle = C.prot; cx.lineWidth = 1.5; cx.stroke();
+    cx.beginPath(); cx.arc(cxp, cyp, r - P(0.62), a0, a0 + sgn * Math.PI, sgn < 0); cx.lineWidth = 0.8; cx.stroke();
+    cx.beginPath(); cx.arc(cxp, cyp, r - P(1.18), a0, a0 + sgn * Math.PI, sgn < 0); cx.stroke();
+    cx.lineWidth = 1; cx.beginPath();
+    for (let deg = 0; deg <= 180; deg++) { const d = dir(deg * D2R), len = deg % 10 === 0 ? P(0.62) : deg % 5 === 0 ? P(0.42) : P(0.24); cx.moveTo(cxp + d.x * (r - len), cyp + d.y * (r - len)); cx.lineTo(cxp + d.x * r, cyp + d.y * r); }
+    cx.stroke();
+    // Two scales, as on a real protractor. The one being read (0 on the normal, on the
+    // hairline's side of the surface) is drawn strong; the other is faded.
+    const outer = pr.hair <= Math.PI / 2;
+    cx.fillStyle = "#2B3F55"; cx.textAlign = "center"; cx.textBaseline = "middle";
+    for (let deg = 0; deg <= 180; deg += 10) {
+      const d = dir(deg * D2R), rot = Math.atan2(d.y, d.x) + Math.PI / 2;
+      cx.save(); cx.globalAlpha = outer ? 1 : 0.28; cx.translate(cxp + d.x * (r - P(0.9)), cyp + d.y * (r - P(0.9))); cx.rotate(rot); cx.font = `600 ${Math.max(9, Math.min(12, s * 0.33))}px ${MONO}`; cx.fillText(String(deg), 0, 0); cx.restore();
+      cx.save(); cx.globalAlpha = outer ? 0.28 : 1; cx.translate(cxp + d.x * (r - P(1.46)), cyp + d.y * (r - P(1.46))); cx.rotate(rot); cx.font = `600 ${Math.max(8, Math.min(10.5, s * 0.29))}px ${MONO}`; cx.fillText(String(180 - deg), 0, 0); cx.restore();
+    }
+    cx.strokeStyle = C.prot; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(cxp - nm.x * r, cyp - nm.y * r); cx.lineTo(cxp + nm.x * r, cyp + nm.y * r); cx.stroke();
+    cx.beginPath(); cx.arc(cxp, cyp, 3.5, 0, Math.PI * 2); cx.stroke();
+    // hairline
+    const hd = dir(pr.hair), tipx = cxp + hd.x * (r + P(0.5)), tipy = cyp + hd.y * (r + P(0.5));
+    cx.strokeStyle = C.accentText; cx.lineWidth = 1.6; cx.beginPath(); cx.moveTo(cxp, cyp); cx.lineTo(tipx, tipy); cx.stroke();
+    cx.fillStyle = C.stage; cx.beginPath(); cx.arc(tipx, tipy, 8, 0, Math.PI * 2); cx.fill(); cx.strokeStyle = C.accentText; cx.lineWidth = 2; cx.stroke();
+    const rd = protRead(), lx = cxp + hd.x * (r + P(1.6)), ly = cyp + hd.y * (r + P(1.6));
+    label(cx, rd.main, lx, ly, C.accentText, 14, "center", 700, C.stage, MONO);
+  }
+
+  // ---------- drawing: wavefronts ----------
+  function drawW() {
+    const w = WW, h = WH; if (!w) return;
+    const yb = h * 0.5, ox = w * 0.5, nn = n(), i = Wst.i * D2R, r = Math.asin(Math.sin(i) / nn);
+    const lam1 = Math.max(36, Math.min(64, h * 0.095)), lam2 = lam1 / nn, f = 0.7, v1 = f * lam1, v2 = f * lam2;
+    const d1 = { x: Math.sin(i), y: Math.cos(i) }, d2 = { x: Math.sin(r), y: Math.cos(r) }, Rr = Math.hypot(w, h);
+    wx.fillStyle = C.stage; wx.fillRect(0, 0, w, h); wx.fillStyle = "rgba(143,179,209,0.30)"; wx.fillRect(0, yb, w, h - yb);
+    const fronts = (d, lam, v, air) => {
+      wx.save(); wx.beginPath(); wx.rect(0, air ? 0 : yb, w, air ? yb : h - yb); wx.clip();
+      const sh = v * Wst.t, e = { x: -d.y, y: d.x };
+      for (let m = Math.floor((-Rr - sh) / lam); m <= Math.ceil((Rr - sh) / lam); m++) {
+        const xi = sh + m * lam, px = ox + d.x * xi, py = yb + d.y * xi, hl = Wst.hl && ((m % 6) + 6) % 6 === 0;
+        wx.strokeStyle = hl ? C.accent : "rgba(26,23,20,0.5)"; wx.lineWidth = hl ? 3.2 : 1.5;
+        wx.beginPath(); wx.moveTo(px - e.x * Rr, py - e.y * Rr); wx.lineTo(px + e.x * Rr, py + e.y * Rr); wx.stroke();
+      }
+      wx.restore();
+    };
+    fronts(d1, lam1, v1, true); fronts(d2, lam2, v2, false);
+    wx.strokeStyle = C.glassEdge; wx.lineWidth = 2.5; wx.beginPath(); wx.moveTo(0, yb); wx.lineTo(w, yb); wx.stroke();
+    wx.setLineDash([7, 5]); wx.strokeStyle = C.muted; wx.lineWidth = 1.3; wx.beginPath(); wx.moveTo(ox, yb - h * 0.44); wx.lineTo(ox, yb + h * 0.44); wx.stroke(); wx.setLineDash([]);
+    label(wx, "normal", ox + 8, yb - h * 0.44 + 8, C.muted, 12, "left", 500);
+    label(wx, "AIR", 16, 22, C.caption, 12, "left", 500, null, MONO); label(wx, L.mat.toUpperCase(), 16, yb + 22, C.glassEdge, 12, "left", 500, null, MONO);
+    // wavelength dimension in each medium, riding on the fronts
+    const dim = (d, lam, v, side, txt) => {
+      const e = { x: -d.y, y: d.x }, sh = v * Wst.t, base = side * (-lam * 2.0), m = Math.floor((base - sh) / lam), xi = sh + m * lam, off = -side * Math.min(w, 2.2 * h) * 0.15;
+      const ax = ox + d.x * xi + e.x * off, ay = yb + d.y * xi + e.y * off, bx = ax + d.x * lam, by = ay + d.y * lam;
+      arrow(wx, ax, ay, bx, by, C.ink, 1.6, 8, true);
+      label(wx, txt, (ax + bx) / 2 + e.x * 16, (ay + by) / 2 + e.y * 16, C.ink, 14, "center", 600, C.stage);
+    };
+    dim(d1, lam1, v1, 1, "λ"); dim(d2, lam2, v2, -1, nn === 1 ? "λ" : `λ ÷ ${nn.toFixed(2)}`);
+    // crest counters
+    const ft = f * Wst.t, cnt = Math.floor(ft), flash = ft - cnt < 0.18;
+    const so = Math.min(w, 2.2 * h) * 0.17;
+    const pP = { x: ox + d1.x * (-lam1 * 3) + d1.y * so, y: yb + d1.y * (-lam1 * 3) - d1.x * so };
+    const pQ = { x: ox + d2.x * (lam2 * 3) - d2.y * so, y: yb + d2.y * (lam2 * 3) + d2.x * so };
+    for (const [p, k, t] of [[pP, "P", "in air"], [pQ, "Q", `in ${L.mat.toLowerCase()}`]]) {
+      wx.fillStyle = flash ? C.accent : C.ink; wx.beginPath(); wx.arc(p.x, p.y, flash ? 7 : 5, 0, Math.PI * 2); wx.fill();
+      label(wx, `${k} · ${cnt} wavefronts passed ${t}`, p.x + 12, p.y, C.ink, 13, "left", 600, C.stage);
+    }
+    if (Wst.rays) {
+      const L1 = h * 0.4;
+      arrow(wx, ox - d1.x * L1, yb - d1.y * L1, ox, yb, C.accentText, 2.4, 11);
+      arrow(wx, ox, yb, ox + d2.x * L1, yb + d2.y * L1, C.accentText, 2.4, 11);
+      wx.strokeStyle = C.accentText; wx.lineWidth = 1.5; const ra = h * 0.16;
+      if (Wst.i > 0) {
+        let m = arcBetween(wx, ox, yb, ra, { x: 0, y: -1 }, { x: -d1.x, y: -d1.y }); label(wx, `i = ${Wst.i}°`, ox + Math.cos(m) * (ra + 26), yb + Math.sin(m) * (ra + 26), C.accentText, 14, "center", 700, C.stage);
+        m = arcBetween(wx, ox, yb, ra, { x: 0, y: 1 }, d2); label(wx, `r = ${(r * R2D).toFixed(0)}°`, ox + Math.cos(m) * (ra + 26), yb + Math.sin(m) * (ra + 26), C.accentText, 14, "center", 700, C.stage);
+      } else label(wx, "i = 0: straight through, no bending", ox + 14, yb + 28, C.accentText, 14, "left", 700, C.stage);
+    }
+  }
+
+  // ---------- loop ----------
+  let raf = 0, lastT = performance.now(), lastRO = 0;
+  function frame(now) {
+    if (!alive) return;
+    const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
+    if (mode === "W" && Wst.playing) Wst.t += dt * (Wst.slow ? 0.25 : 1);
+    if (mode === "L") drawLab(); else drawW();
+    if (now - lastRO > 90) { readouts(); lastRO = now; liveText(); }
+    raf = requestAnimationFrame(frame);
+  }
+  raf = requestAnimationFrame(frame);
+
+  // ---------- readouts ----------
+  // ---------- protractor: what it is measuring ----------
+  // Directions of the drawn lines (and the live ray) that leave this point.
+  function rayDirsAt(pt) {
+    const out = [], add = (q) => { const dx = q.x - pt.x, dy = q.y - pt.y, l = Math.hypot(dx, dy); if (l > 0.3) out.push({ x: dx / l, y: dy / l }); };
+    for (const l of L.draw.lines) if (!l.edge && segDist(pt, l.A, l.B).d < 0.25) { add(l.A); add(l.B); }
+    if (L.box.on && L.block.on) for (const sg of trace().segs) { if (Math.hypot(sg.a.x - pt.x, sg.a.y - pt.y) < 0.25) add(sg.b); if (Math.hypot(sg.b.x - pt.x, sg.b.y - pt.y) < 0.25) add(sg.a); }
+    return out;
+  }
+  // "in" where the ray went into the block, "out" where it came out, null if neither.
+  function protRole(pr) { if (!lastRay) return null; const near = (q) => q && Math.hypot(q.x - pr.p.x, q.y - pr.p.y) < 0.4; return near(lastRay.in) ? "in" : near(lastRay.out) ? "out" : null; }
+  // Hairline angles (0 = normal pointing out into the air) of the rays on the protractor's side.
+  function protCands(pr) {
+    const { nm, tp } = protFrame(pr);
+    return rayDirsAt(pr.p).filter((v) => Math.abs(v.x * nm.x + v.y * nm.y) > 0.08 && v.x * tp.x + v.y * tp.y > -0.02)
+      .map((v) => Math.max(0, Math.min(Math.PI, Math.atan2(v.x * tp.x + v.y * tp.y, v.x * nm.x + v.y * nm.y))));
+  }
+  const pickHair = (c, wantAir) => c.find((h) => (h <= Math.PI / 2) === wantAir) ?? c[0];
+  function aimHair(pr, wantAir, fallback) { const c = protCands(pr); pr.hair = c.length ? pickHair(c, wantAir) : fallback; }
+  function flipProt(pr) { const wasAir = pr.hair <= Math.PI / 2; pr.side *= -1; aimHair(pr, !wasAir, Math.PI - pr.hair); }
+  // One reading, from the normal, on the side of the surface the hairline is on.
+  function protRead() {
+    const pr = L.draw.prot; if (!pr) return null;
+    const deg = Math.round(pr.hair * R2D), air = deg <= 90, ang = air ? deg : 180 - deg, role = protRole(pr);
+    const cands = protCands(pr), onRay = cands.some((h) => Math.abs(h - pr.hair) < 0.6 * D2R), anyRay = rayDirsAt(pr.p).length > 0;
+    const sym = role === "in" ? (air ? "i" : "r") : "";
+    const name = role === "in" ? (air ? "angle of incidence" : "angle of refraction") : role === "out" ? (air ? "angle of the ray leaving the block" : "angle of the ray inside the block") : (air ? "angle in the air" : "angle in the block");
+    let guide = "";
+    if (!anyRay) guide = "No ray here. Put the protractor's centre where the ray meets the edge of the block.";
+    else if (!cands.length) guide = "No ray on this side of the normal. Press Flip protractor.";
+    else if (!onRay) guide = "Drag the red hairline onto the ray.";
+    return { ang, air, sym, name, onRay, guide, main: onRay && sym ? `${sym} = ${ang}°` : `${ang}°` };
+  }
+  const protGuide = () => { const rd = protRead(); return rd ? rd.guide : ""; };
+  function readouts() {
+    if (mode === "L") {
+      const rd = protRead();
+      $("ro-read").textContent = rd ? rd.main : "–";
+      $("ro-read-s").textContent = !rd ? "click where the ray meets the edge of the block" : rd.guide || `${rd.name}, measured from the normal`;
+      if (L.teacher) {
+        const T = trace(true), e = T.entry;
+        $("ro-true-v").textContent = e && L.block.on ? `i = ${(e.i * R2D).toFixed(1)}° · r = ${(e.r * R2D).toFixed(1)}°` : "–";
+        $("ro-true-s").textContent = e && L.block.on ? `n = ${n().toFixed(2)} · sin i ÷ sin r = ${(Math.sin(e.i) / Math.sin(e.r) || 0).toFixed(2)}${T.exit ? ` · leaves at ${(T.exit.e * R2D).toFixed(1)}°, shifted ${lateral(T).toFixed(1)} cm` : T.tir.length ? " · total internal reflection" : ""}` : "aim the ray at the block";
+        if (e && L.block.on && document.activeElement !== $("l-iset")) $("l-iset").value = Math.round(e.i * R2D);
+      }
+    } else {
+      const nn = n(), i = Wst.i, r = Math.asin(Math.sin(i * D2R) / nn) * R2D;
+      $("ro-v").textContent = `${(3 / nn).toFixed(2)} × 10⁸ m/s`; $("ro-v-s").textContent = `3.00 × 10⁸ ÷ ${nn.toFixed(2)} in ${L.mat.toLowerCase()}`;
+      $("ro-lam").textContent = `λ ÷ ${nn.toFixed(2)}`;
+      $("ro-dir").textContent = i === 0 ? "i = 0 · r = 0" : `i = ${i}° · r = ${r.toFixed(0)}°`;
+      $("ro-dir-s").textContent = i === 0 ? "along the normal: no change in direction, still slows" : "bends towards the normal";
+    }
+  }
+
+  // ---------- lab controls ----------
+  const seg = (root, attr, val) => root.querySelectorAll("button").forEach((b) => { const on = b.dataset[attr] == val; b.setAttribute("aria-checked", on);
+    Object.assign(b.style, on ? { background: "var(--st-paper)", color: "var(--st-ink)", fontWeight: "600", boxShadow: "0 1px 2px rgba(60,40,10,0.16)" } : { background: "transparent", color: "var(--st-caption)", fontWeight: "500", boxShadow: "none" }); });
+  const HINTS = { move: "Drag the block or the ray box. Drag the knob to turn the ray.", pencil: "Click on the ray, outside the block, to put a cross.", ruler: "Drag along a side of the block to draw it. Cross to cross draws a ray.", normal: "Lift the block, then click the outline where the ray goes in or comes out.", protractor: "Click where the ray meets the edge of the block.", eraser: "Click a cross, line, normal or protractor to rub it out." };
+  function setTool(t) { if (t !== L.tool) hintT = -1e9; L.tool = t; seg($("tools"), "tool", t); $("tool-hint").textContent = HINTS[t]; cv.style.cursor = t === "move" ? "default" : "crosshair"; }
+  $("tools").querySelectorAll("button").forEach((b) => b.onclick = () => setTool(b.dataset.tool));
+  const hint = (m, ms = 3200) => { hintMsg = m; hintT = performance.now(); hintDur = ms; };
+  function pushUndo() { L.undo.push(JSON.stringify(L.draw)); if (L.undo.length > 60) L.undo.shift(); }
+  function setOn(v) { L.box.on = v; $("l-on").innerHTML = (v ? I.pause : I.bulb) + (v ? "Ray box off" : "Ray box on"); }
+  $("l-on").onclick = () => setOn(!L.box.on);
+  function syncBlockBtn() { $("l-block").textContent = L.block.on ? "Lift the block" : "Place the block"; }
+  $("l-block").onclick = () => { L.block.on = !L.block.on; if (L.block.on) { L.block.x = Math.min(30 - L.block.w / 2, Math.max(L.block.w / 2, L.block.x)); L.block.y = Math.min(Hcm() - L.block.h / 2, Math.max(L.block.h / 2, L.block.y)); } syncBlockBtn(); };
+  document.querySelectorAll("[data-rot]").forEach((b) => b.onclick = () => { const d = +b.dataset.rot, e = trace(true).entry; if (e && L.block.on) { const tp = { x: -e.nrm.y, y: e.nrm.x }, side = Math.sign(e.dIn.x * tp.x + e.dIn.y * tp.y) || 1; setI(Math.max(-85, Math.min(85, side * e.i * R2D + d)) * side); } else { L.box.ang += d * D2R; keepBoxOn(); } });
+  $("l-norm").onclick = () => { if (!setI(0)) hint("Aim the ray at the block first."); };
+  $("l-iset").onchange = (e) => setI(Math.max(0, Math.min(85, +e.target.value || 0)));
+  $("l-refl").onchange = (e) => L.refl = e.target.checked;
+  function setMaterial(m) { if (!MATS[m]) return; L.mat = m; $("l-mat").value = m; $("w-mat").value = m; }
+  $("l-mat").onchange = (e) => setMaterial(e.target.value); $("w-mat").onchange = (e) => setMaterial(e.target.value);
+  $("l-trace").onclick = () => { if (!L.block.on) return hint("Place the block on the paper first."); pushUndo(); L.draw.outline = blockRect(); };
+  $("l-flip").onclick = () => { const pr = L.draw.prot; if (!pr) return hint("Place the protractor first."); pushUndo(); flipProt(pr); };
+  $("l-undo").onclick = undo;
+  function undo() { const u = L.undo.pop(); if (u) L.draw = JSON.parse(u); }
+  $("l-clear").onclick = () => { pushUndo(); L.draw = { outline: L.draw.outline, marks: [], lines: [], normals: [], prot: null }; };
+  function syncAll() { setOn(L.box.on); syncBlockBtn(); $("l-refl").checked = L.refl; setMaterial(L.mat); setTool(L.tool); $("w-ang").value = Wst.i; $("w-ang-lcd").textContent = Wst.i + "°"; $("w-slow").checked = Wst.slow; $("w-rays").checked = Wst.rays; $("w-hl").checked = Wst.hl; setPlayW(Wst.playing); }
+
+  // ---------- snapping + tools ----------
+  function snaps() {
+    const out = []; const T = L.box.on && L.block.on ? trace() : null;
+    if (T && T.entry) out.push({ x: T.entry.p.x, y: T.entry.p.y, face: T.entry.face }); if (T && T.exit) out.push({ x: T.exit.p.x, y: T.exit.p.y, face: T.exit.face });
+    for (const l of L.draw.lines) for (const e of [l.A, l.B]) if (e.face) out.push(e); else if (l.edge) out.push({ x: e.x, y: e.y });
+    for (const nl of L.draw.normals) out.push({ x: nl.p.x, y: nl.p.y, face: nl.face });
+    for (const m of L.draw.marks) out.push({ x: m.x, y: m.y });
+    for (const R of edgeRects()) out.push({ x: R.x0, y: R.y0 }, { x: R.x1, y: R.y0 }, { x: R.x0, y: R.y1 }, { x: R.x1, y: R.y1 });
+    return out;
+  }
+  function nearestSnap(p, tol, needFace) { let best = null, bd = tol; for (const q of snaps()) { if (needFace && !q.face) continue; const d = Math.hypot(q.x - p.x, q.y - p.y); if (d < bd) { bd = d; best = q; } } return best; }
+  const rectFaces = (R) => [{ face: "top", a: { x: R.x0, y: R.y0 }, b: { x: R.x1, y: R.y0 } }, { face: "bottom", a: { x: R.x0, y: R.y1 }, b: { x: R.x1, y: R.y1 } },
+    { face: "left", a: { x: R.x0, y: R.y0 }, b: { x: R.x0, y: R.y1 } }, { face: "right", a: { x: R.x1, y: R.y0 }, b: { x: R.x1, y: R.y1 } }];
+  // The block (while it is on the paper) and its traced outline: what the ruler lines up with.
+  const edgeRects = () => [...(L.block.on ? [blockRect()] : []), ...(L.draw.outline ? [L.draw.outline] : [])];
+  // Edges drawn on the paper: the traced outline, and ruler lines drawn along a side of the block.
+  function drawnFaces() { const F = L.draw.outline ? rectFaces(L.draw.outline) : []; for (const l of L.draw.lines) if (l.edge) F.push({ face: l.edge, a: l.A, b: l.B }); return F; }
+  function nearestFace(p, tol) {
+    const F = drawnFaces(); if (L.block.on) F.push(...rectFaces(blockRect()));
+    let best = null, bd = tol; for (const f of F) { const { d, q } = segDist(p, f.a, f.b); if (d < bd) { bd = d; best = { x: q.x, y: q.y, face: f.face }; } } return best;
+  }
+  // Both ends of a ruler drag on the same side of the block: that whole side, corner to corner.
+  function edgeOf(a, b) {
+    if (Math.hypot(b.x - a.x, b.y - a.y) < 0.8) return null;
+    for (const R of edgeRects()) for (const f of rectFaces(R)) if (segDist(a, f.a, f.b).d < 0.45 && segDist(b, f.a, f.b).d < 0.45) return f;
+    return null;
+  }
+  function rulerSnap(p) {
+    const sp = nearestSnap(p, 0.6); if (sp) return sp;
+    let best = null, bd = 0.35; for (const R of edgeRects()) for (const f of rectFaces(R)) { const { d, q } = segDist(p, f.a, f.b); if (d < bd) { bd = d; best = q; } }
+    return best || p;
+  }
+  function segDist(p, a, b) { const dx = b.x - a.x, dy = b.y - a.y, l2 = dx * dx + dy * dy || 1e-9; const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / l2)); const q = { x: a.x + t * dx, y: a.y + t * dy }; return { d: Math.hypot(p.x - q.x, p.y - q.y), q }; }
+  function extendLine(a, b) {
+    const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy), u = { x: dx / len, y: dy / len }, hits = [];
+    for (const f of drawnFaces()) {
+      if (f.a.y === f.b.y) { if (Math.abs(u.y) > 1e-9) { const t = (f.a.y - a.y) / u.y, x = a.x + t * u.x; if (x >= Math.min(f.a.x, f.b.x) - 0.03 && x <= Math.max(f.a.x, f.b.x) + 0.03) hits.push({ t, face: f.face }); } }
+      else if (Math.abs(u.x) > 1e-9) { const t = (f.a.x - a.x) / u.x, y = a.y + t * u.y; if (y >= Math.min(f.a.y, f.b.y) - 0.03 && y <= Math.max(f.a.y, f.b.y) + 0.03) hits.push({ t, face: f.face }); }
+    }
+    const end = (t0, fwd) => { const on = hits.find((h) => Math.abs(h.t - t0) < 0.12); if (on) return { t: t0, face: on.face };
+      const c = hits.filter((h) => fwd ? h.t > t0 + 0.12 && h.t < t0 + 40 : h.t < t0 - 0.12 && h.t > t0 - 40).sort((p, q) => fwd ? p.t - q.t : q.t - p.t)[0];
+      return c ? { t: c.t, face: c.face } : { t: t0, face: null }; };
+    const A = end(0, false), B = end(len, true);
+    return { A: { x: a.x + A.t * u.x, y: a.y + A.t * u.y, face: A.face }, B: { x: a.x + B.t * u.x, y: a.y + B.t * u.y, face: B.face } };
+  }
+  function pencilAt(p) {
+    const T = trace(); let best = null, bd = 0.5;
+    for (const sg of T.segs) { const { d, q } = segDist(p, sg.a, sg.b); if (d < bd) { bd = d; best = { q, glass: sg.glass }; } }
+    if (best && best.glass) return hint("You can't mark under the glass. Mark the ray outside the block.");
+    pushUndo(); L.draw.marks.push(best ? best.q : p);
+  }
+  function normalAt(p) {
+    if (L.block.on) return hint("Lift the block first. The normal is drawn on the paper, not on the glass.", 4000);
+    const sp = nearestSnap(p, 0.7, true), f = sp || nearestFace(p, 1.3);
+    if (!f) return hint(drawnFaces().length ? "Click on the outline of the block, where the ray goes in or comes out." : "There's no outline yet. Put the block back and press Trace outline, or draw round it with the Ruler.", 4500);
+    pushUndo(); L.draw.normals.push({ p: { x: f.x, y: f.y }, face: f.face });
+  }
+  function protAt(p) {
+    const pr = L.draw.prot;
+    if (pr && Math.hypot(pr.p.x - p.x, pr.p.y - p.y) < 1.2) { pushUndo(); flipProt(pr); return; }
+    const sp = nearestSnap(p, 0.9, true) || nearestFace(p, 1.3);
+    if (!sp) return hint("Put the protractor's centre on the edge of the block, where the ray goes in or comes out.", 4500);
+    const nm = FACES[sp.face], tp0 = { x: -nm.y, y: nm.x }, npr = { p: { x: sp.x, y: sp.y }, face: sp.face, side: 1, hair: 0.5 };
+    // It opens on the side of the normal that was clicked. Clicked right on the point: where the
+    // ray went in it measures i first; where it came out, the ray inside the block first.
+    const role = protRole(npr), wantAir = role !== "out", off = (p.x - sp.x) * tp0.x + (p.y - sp.y) * tp0.y;
+    let side = Math.abs(off) > 0.3 ? Math.sign(off) : 0;
+    if (!side) {
+      const dirs = rayDirsAt(npr.p).filter((v) => Math.abs(v.x * nm.x + v.y * nm.y) > 0.08), pick = dirs.find((v) => (v.x * nm.x + v.y * nm.y > 0) === wantAir) || dirs[0];
+      side = pick ? Math.sign(pick.x * tp0.x + pick.y * tp0.y) || 1 : Math.sign((L.box.x - sp.x) * tp0.x + (L.box.y - sp.y) * tp0.y) || 1;
+    }
+    npr.side = side; aimHair(npr, wantAir, 0.5);
+    pushUndo(); L.draw.prot = npr;
+  }
+  function eraseAt(p) {
+    const D = L.draw; let k = D.marks.findIndex((m) => Math.hypot(m.x - p.x, m.y - p.y) < 0.45); if (k >= 0) { pushUndo(); D.marks.splice(k, 1); return; }
+    if (D.prot && Math.hypot(D.prot.p.x - p.x, D.prot.p.y - p.y) < 1) { pushUndo(); D.prot = null; return; }
+    k = D.normals.findIndex((nl) => { const nm = FACES[nl.face]; return segDist(p, { x: nl.p.x - nm.x * 4.6, y: nl.p.y - nm.y * 4.6 }, { x: nl.p.x + nm.x * 4.6, y: nl.p.y + nm.y * 4.6 }).d < 0.35; }); if (k >= 0) { pushUndo(); D.normals.splice(k, 1); return; }
+    k = D.lines.findIndex((l) => segDist(p, l.A, l.B).d < 0.35); if (k >= 0) { pushUndo(); D.lines.splice(k, 1); return; }
+    const O = D.outline; if (O && (Math.abs(p.x - O.x0) < 0.35 || Math.abs(p.x - O.x1) < 0.35 || Math.abs(p.y - O.y0) < 0.35 || Math.abs(p.y - O.y1) < 0.35) && p.x > O.x0 - 0.4 && p.x < O.x1 + 0.4 && p.y > O.y0 - 0.4 && p.y < O.y1 + 0.4) { pushUndo(); D.outline = null; }
+  }
+
+  // ---------- pointer ----------
+  let drag = null;
+  const posCm = (e) => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / s, y: (e.clientY - r.top) / s }; };
+  // peek: only asking what is under the pointer (for the cursor). Never changes anything.
+  // The block and the ray box move with the Move tool only, so the other tools can work right up to their edges.
+  function grab(p, peek) {
+    const pr = L.draw.prot;
+    if (pr) { const { dir } = protFrame(pr), hd = dir(pr.hair), tip = { x: pr.p.x + hd.x * (PR + 0.5), y: pr.p.y + hd.y * (PR + 0.5) }; if (Math.hypot(p.x - tip.x, p.y - tip.y) < 0.6 || (segDist(p, { x: pr.p.x + hd.x * PR * 0.4, y: pr.p.y + hd.y * PR * 0.4 }, tip).d < 0.3)) return { kind: "hair" }; }
+    if (!L.block.on) { const t = trayRect(); if (inRect(p, t)) { if (peek) return { kind: "tray" };
+      L.block.on = true; L.block.x = Math.min(30 - L.block.w / 2, Math.max(L.block.w / 2, p.x)); L.block.y = Math.min(Hcm() - L.block.h / 2, Math.max(L.block.h / 2, p.y)); syncBlockBtn();
+      return { kind: "block", off: { x: 0, y: 0 } }; } }
+    if (L.tool !== "move") return null;
+    const b = L.box, d = dirOf(b.ang), knob = { x: b.x - d.x * (BOXL + KNOB), y: b.y - d.y * (BOXL + KNOB) };
+    if (Math.hypot(p.x - knob.x, p.y - knob.y) < KNOB + 0.3) { const e = L.block.on ? trace(true).entry : null, piv = e ? e.p : { x: b.x, y: b.y }; return { kind: "knob", piv, dist: Math.hypot(piv.x - b.x, piv.y - b.y) }; }
+    const rel = { x: p.x - b.x, y: p.y - b.y }, along = rel.x * d.x + rel.y * d.y, across = -rel.x * d.y + rel.y * d.x;
+    if (along > -BOXL - 0.1 && along < 0.25 && Math.abs(across) < BOXW / 2 + 0.1) return { kind: "box", off: rel };
+    if (L.block.on) { const R = blockRect(); if (inRect(p, R)) return { kind: "block", off: { x: p.x - L.block.x, y: p.y - L.block.y } }; }
+    return null;
+  }
+  cv.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0) return; const p = posCm(e);
+    drag = grab(p);
+    if (!drag && L.tool === "ruler") { const a = rulerSnap(p); drag = { kind: "ruler", a, cur: a }; }
+    if (drag) { try { cv.setPointerCapture(e.pointerId); } catch (err) {} e.preventDefault(); return; }
+    if (L.tool === "pencil") pencilAt(p); else if (L.tool === "normal") normalAt(p); else if (L.tool === "protractor") protAt(p); else if (L.tool === "eraser") eraseAt(p);
+  });
+  cv.addEventListener("pointermove", (e) => {
+    const p = posCm(e);
+    if (!drag) { const g = grab(p, true); cv.style.cursor = g ? (g.kind === "knob" || g.kind === "hair" || g.kind === "tray" ? "grab" : "move") : L.tool === "move" ? "default" : "crosshair"; return; }
+    if (drag.kind === "box") { L.box.x = p.x - drag.off.x; L.box.y = p.y - drag.off.y; keepBoxOn(); }
+    else if (drag.kind === "knob") { const dx = drag.piv.x - p.x, dy = drag.piv.y - p.y, l = Math.hypot(dx, dy) || 1; aimAt(drag.piv, { x: dx / l, y: dy / l }, drag.dist); if (!drag.dist) keepBoxOn(); }
+    else if (drag.kind === "block") { L.block.x = Math.min(30 - L.block.w / 2, Math.max(L.block.w / 2, p.x - drag.off.x)); L.block.y = Math.min(Hcm() - L.block.h / 2, Math.max(L.block.h / 2, p.y - drag.off.y)); }
+    else if (drag.kind === "hair") { const pr = L.draw.prot, { nm, tp } = protFrame(pr), rel = { x: p.x - pr.p.x, y: p.y - pr.p.y }; pr.hair = Math.round(Math.max(0, Math.min(Math.PI, Math.atan2(rel.x * tp.x + rel.y * tp.y, rel.x * nm.x + rel.y * nm.y))) * R2D) * D2R;
+      const near = protCands(pr).find((h) => Math.abs(h - pr.hair) < 2.5 * D2R); if (near !== undefined) pr.hair = near; }
+    else if (drag.kind === "ruler") drag.cur = rulerSnap(p);
+  });
+  const endDrag = () => {
+    if (drag && drag.kind === "ruler" && Math.hypot(drag.cur.x - drag.a.x, drag.cur.y - drag.a.y) > 0.8) {
+      const f = edgeOf(drag.a, drag.cur), same = (q, r) => Math.hypot(q.x - r.x, q.y - r.y) < 0.05;
+      if (f && L.draw.lines.some((l) => l.edge === f.face && same(l.A, f.a) && same(l.B, f.b))) hint("That side is already drawn.");
+      else { pushUndo(); L.draw.lines.push(f ? { A: { x: f.a.x, y: f.a.y, face: null }, B: { x: f.b.x, y: f.b.y, face: null }, edge: f.face } : extendLine(drag.a, drag.cur)); }
+    }
+    drag = null;
+  };
+  cv.addEventListener("pointerup", endDrag); cv.addEventListener("pointercancel", endDrag);
+
+  // ---------- wavefront controls ----------
+  function setPlayW(p) { Wst.playing = p; $("w-play").innerHTML = p ? I.pause + "Pause" : I.play + "Play"; }
+  $("w-play").onclick = () => setPlayW(!Wst.playing);
+  $("w-slow").onchange = (e) => Wst.slow = e.target.checked;
+  $("w-ang").oninput = (e) => { Wst.i = +e.target.value; $("w-ang-lcd").textContent = Wst.i + "°"; };
+  $("w-rays").onchange = (e) => Wst.rays = e.target.checked; $("w-hl").onchange = (e) => Wst.hl = e.target.checked;
+
+  // ---------- tabs ----------
+  const tabs = [...document.querySelectorAll("#tabs button")];
+  function setMode(m) {
+    mode = m; seg($("tabs"), "mode", m); tabs.forEach((b) => b.setAttribute("aria-selected", b.dataset.mode === m));
+    for (const id of ["stage", "tools-L", "ctl-L", "ro-L"]) $(id).hidden = m !== "L";
+    for (const id of ["wstage", "ctl-W", "ro-W"]) $(id).hidden = m !== "W";
+    requestAnimationFrame(resize);
+  }
+  tabs.forEach((b) => b.onclick = () => goStep(b.dataset.mode === "L" ? 0 : firstW));
+
+  // ---------- results ----------
+  const rows = [];
+  const TD = "padding:12px 10px;border-bottom:1px solid var(--st-rule-soft);font-size:16px;vertical-align:middle";
+  const INP = "width:4.5em;font:600 16px var(--st-ui);text-align:center;border:1.5px solid var(--st-accent-text);border-radius:6px;padding:7px 4px;background:var(--st-paper);color:var(--st-ink)";
+  const DEL = "font:500 13px/1 var(--st-ui);padding:8px 10px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer";
+  const mut = (t) => `<span style="color:var(--st-muted)">${t}</span>`;
+  const field = (i, key, val, lbl) => `<input data-i="${i}" data-k="${key}" inputmode="decimal" value="${val}" aria-label="${lbl}, trial ${i + 1}" placeholder="?" style="${INP}">`;
+  $("l-record").onclick = () => { if (!lastEntry) return hint("Shine the ray at the block first."); rows.push({ ...lastEntry, i: "", r: "" }); renderRows(); setSection("res", true); };
+  function evalRow(r) {
+    const i = parseFloat(r.i), rr_ = parseFloat(r.r); if (!isFinite(i) || !isFinite(rr_)) return { state: "wait" };
+    if (i < 0 || rr_ < 0 || i > 90 || rr_ > 90) return { state: "bad", msg: "Angles from the normal are between 0° and 90°." };
+    if (rr_ > i + 0.5) { let m = `Something is wrong: going into ${r.mat.toLowerCase()} light bends towards the normal, so r must be smaller than i.`; if (Math.abs(rr_ - (90 - r.r * R2D)) < 3 || Math.abs(i - (90 - r.i * R2D)) < 3) m += " It looks like you measured from the surface. Measure from the normal."; return { state: "bad", msg: m }; }
+    if (i < 1 && rr_ < 1) return { state: "note", msg: "Along the normal: no bending. n can't be found from this trial." };
+    if (i < 1) return { state: "bad", msg: "i = 0 gives r = 0. Check the angle of refraction." };
+    const nn = Math.sin(i * D2R) / Math.sin(rr_ * D2R);
+    const off = Math.abs(nn - r.n) / r.n;
+    return { state: off < 0.08 ? "ok" : "warn", n: nn, msg: off < 0.08 ? "r is less than i: bends towards the normal." : Math.abs(i - (90 - r.i * R2D)) < 3 ? "i looks like 90° minus the angle: measure from the normal." : "r < i, but n looks off for this block. Re-check both readings." };
+  }
+  function renderRows() {
+    const tb = $("tb-L");
+    if (!rows.length) { tb.innerHTML = `<tr><td colspan="9" style="${TD};color:var(--st-muted);padding:18px 10px">No trials yet. Measure i and r, then press Record trial.</td></tr>`; drawPlot(); return; }
+    let html = "", ns = [];
+    rows.forEach((r, k) => {
+      const ev = evalRow(r), i = parseFloat(r.i), rr_ = parseFloat(r.r), bad = ev.state === "bad";
+      const col = bad ? "var(--rfl-bad,#B3261E)" : ev.state === "ok" ? "var(--rfl-ok-text,#0A6B36)" : "var(--st-muted)";
+      if (ev.state === "ok" || ev.state === "warn") ns.push(ev.n);
+      const sinCell = (v) => isFinite(v) && v >= 0 && v <= 90 ? Math.sin(v * D2R).toFixed(3) : mut("–");
+      const nCell = ev.n ? `<b>${ev.n.toFixed(2)}</b>` : mut("–");
+      const teach = L.teacher ? `<div style="font-size:13px;color:var(--st-caption);margin-top:4px">true i = ${(r.i * R2D).toFixed(1)}°, r = ${(r.r * R2D).toFixed(1)}°, n = ${r.n.toFixed(2)}</div>` : "";
+      const chk = ev.state === "wait" ? mut("type i and r") : `<div style="display:flex;gap:7px;align-items:flex-start;color:${col};font-size:14px;line-height:1.35;min-width:200px;max-width:40ch">${bad ? I.cross : ev.state === "ok" ? I.tick : ""}<span>${ev.msg}</span></div>`;
+      html += `<tr style="${bad ? "background:var(--rfl-bad-bg,#FBE4DE)" : ""}"><td style="${TD}">${k + 1}</td><td style="${TD}">${r.mat}</td><td style="${TD}">${field(k, "i", r.i, "Angle of incidence")}</td><td style="${TD}">${field(k, "r", r.r, "Angle of refraction")}</td><td style="${TD}">${sinCell(i)}</td><td style="${TD}">${sinCell(rr_)}</td><td style="${TD};white-space:nowrap">${nCell}${teach}</td><td style="${TD}">${chk}</td><td style="${TD};text-align:right"><button data-del="${k}" style="${DEL}">Delete</button></td></tr>`;
+    });
+    if (ns.length > 1) html += `<tr><td colspan="6" style="${TD};text-align:right;color:var(--st-muted)">Mean refractive index</td><td style="${TD};font-weight:600">${(ns.reduce((a, b) => a + b, 0) / ns.length).toFixed(2)}</td><td colspan="2" style="${TD}"></td></tr>`;
+    tb.innerHTML = html;
+    tb.querySelectorAll("input").forEach((inp) => inp.onchange = () => { rows[+inp.dataset.i][inp.dataset.k] = inp.value; renderRows(); });
+    tb.querySelectorAll("[data-del]").forEach((b) => b.onclick = () => { rows.splice(+b.dataset.del, 1); renderRows(); });
+    drawPlot();
+  }
+  function drawPlot() {
+    const c = $("plot"), ctx = c.getContext("2d"), r = c.getBoundingClientRect(); if (!r.width) return;
+    c.width = r.width * dpr; c.height = r.height * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const w = r.width, h = r.height, m = { l: 44, r: 14, t: 12, b: 34 }, pw = w - m.l - m.r, ph = h - m.t - m.b;
+    const X = (v) => m.l + v * pw, Y = (v) => m.t + ph - v * ph;
+    ctx.clearRect(0, 0, w, h); ctx.strokeStyle = CP.grid; ctx.lineWidth = 1; ctx.beginPath(); for (let k = 0; k <= 5; k++) { ctx.moveTo(X(k / 5), Y(0)); ctx.lineTo(X(k / 5), Y(1)); ctx.moveTo(X(0), Y(k / 5)); ctx.lineTo(X(1), Y(k / 5)); } ctx.stroke();
+    ctx.strokeStyle = CP.ink; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(X(0), Y(1)); ctx.lineTo(X(0), Y(0)); ctx.lineTo(X(1), Y(0)); ctx.stroke();
+    for (let k = 0; k <= 5; k += 1) { label(ctx, (k / 5).toFixed(1), X(k / 5), h - 18, CP.caption, 11, "center", 500, null, MONO); label(ctx, (k / 5).toFixed(1), m.l - 8, Y(k / 5), CP.caption, 11, "right", 500, null, MONO); }
+    label(ctx, "sin r", X(1), h - 5, CP.muted, 12, "right", 600); ctx.save(); ctx.translate(12, Y(1)); ctx.rotate(-Math.PI / 2); label(ctx, "sin i", 0, 0, CP.muted, 12, "right", 600); ctx.restore();
+    const pts = rows.map((rw) => ({ ev: evalRow(rw), x: Math.sin(parseFloat(rw.r) * D2R), y: Math.sin(parseFloat(rw.i) * D2R) })).filter((p) => (p.ev.state === "ok" || p.ev.state === "warn") && isFinite(p.x) && isFinite(p.y));
+    let sxy = 0, sxx = 0; for (const p of pts) { sxy += p.x * p.y; sxx += p.x * p.x; }
+    const g = sxx > 0 ? sxy / sxx : NaN;
+    if (isFinite(g) && pts.length >= 2) { ctx.strokeStyle = CP.accentText; ctx.lineWidth = 1.8; ctx.setLineDash([6, 4]); const xe = Math.min(1, 1 / g); ctx.beginPath(); ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(xe), Y(xe * g)); ctx.stroke(); ctx.setLineDash([]); }
+    for (const p of pts) { ctx.fillStyle = CP.accent; ctx.beginPath(); ctx.arc(X(p.x), Y(p.y), 5, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = CP.stage; ctx.lineWidth = 1.5; ctx.stroke(); }
+    $("plot-cap").textContent = pts.length >= 2 && isFinite(g) ? `Best line through the origin: gradient = ${g.toFixed(2)}. That is n.` : "Plot at least two trials. A straight line through the origin: its gradient is n.";
+  }
+  renderRows();
+  const roPlot = new ResizeObserver(() => drawPlot()); roPlot.observe($("plot"));
+
+  // ---------- sections / teacher ----------
+  const secProp = { res: "showResults", quiz: "showQuiz" };
+  function setSection(sec, show, save = true) {
+    $(sec + "-body").hidden = !show; const b = $(sec + "-toggle"); b.innerHTML = show ? I.eyeOff + "Hide" : I.eye + "Show"; b.setAttribute("aria-expanded", show);
+    if (save) try { localStorage.setItem("rfl-sec-" + sec, show ? "1" : "0"); } catch (e) {}
+    if (sec === "res" && show) requestAnimationFrame(drawPlot);
+  }
+  for (const sec of Object.keys(secProp)) {
+    let saved = null; try { saved = localStorage.getItem("rfl-sec-" + sec); } catch (e) {}
+    setSection(sec, saved !== null ? saved === "1" : props[secProp[sec]] !== false, false);
+    $(sec + "-toggle").onclick = () => setSection(sec, $(sec + "-body").hidden);
+  }
+  function setTeacher(v) { L.teacher = v; $("ro-true").hidden = !v; $("l-iset-wrap").hidden = !v; renderRows(); }
+  setTeacher(L.teacher);
+
+  // ---------- guided steps ----------
+  const freshDraw = () => ({ outline: null, marks: [], lines: [], normals: [], prot: null });
+  function autoMarks(T) { const e = T.entry, x = T.exit; const m = []; for (const k of [1.6, 3.8]) m.push({ x: e.p.x - e.dIn.x * k, y: e.p.y - e.dIn.y * k }); if (x) for (const k of [1.6, 3.8]) m.push({ x: x.p.x + x.dOut.x * k, y: x.p.y + x.dOut.y * k }); L.draw.marks = m; }
+  function autoLines() { const m = L.draw.marks; if (m.length < 4) return; const l1 = extendLine(m[1], m[0]), l2 = extendLine(m[3], m[2]); const eA = l1.A.face ? l1.A : l1.B, eB = l2.A.face ? l2.A : l2.B; L.draw.lines = [l1, l2, extendLine(eA, eB)]; }
+  const hairFor = (pr, v) => { const { nm, tp } = protFrame(pr); return Math.max(0, Math.min(Math.PI, Math.atan2(v.x * tp.x + v.y * tp.y, v.x * nm.x + v.y * nm.y))); };
+  function protOn(pt, face, v) { const nm = FACES[face], tp0 = { x: -nm.y, y: nm.x }, side = Math.sign(v.x * tp0.x + v.y * tp0.y) || 1; const pr = { p: { x: pt.x, y: pt.y }, face, side, hair: 0 }; pr.hair = hairFor(pr, v); L.draw.prot = pr; }
+  function demo(level, deg = 40) {
+    L.draw = freshDraw(); L.undo = []; L.refl = false; L.block.on = true; L.block.x = 15; L.block.y = Math.max(L.block.h / 2 + 5.4, Hcm() * 0.62);
+    L.draw.outline = blockRect(); setOn(false);
+    if (level >= 1) { setOn(true); placeBoxFor(deg); L.refl = level === 1; }
+    if (level >= 2) { memo = trace(true); autoMarks(memo); lastRay = { in: { ...memo.entry.p }, out: memo.exit ? { ...memo.exit.p } : null }; }
+    if (level >= 3) { L.block.on = false; setOn(false); autoLines(); }
+    if (level >= 4) L.draw.normals = [{ p: memo.entry.p, face: memo.entry.face }];
+    if (level >= 5) protOn(memo.entry.p, memo.entry.face, { x: -memo.entry.dIn.x, y: -memo.entry.dIn.y });
+    if (level >= 6) protOn(memo.entry.p, memo.entry.face, memo.entry.dOut);
+    if (level >= 7 && memo.exit) { L.block.on = true; setOn(true); protOn(memo.exit.p, memo.exit.face, memo.exit.dOut); }
+    syncBlockBtn(); $("l-refl").checked = L.refl;
+  }
+  const deg0 = (x) => (x * R2D).toFixed(0);
+  const steps = [
+    { m: "L", title: "Set up", go() { L.draw = freshDraw(); L.undo = []; L.block.on = false; setOn(false); L.refl = false; placeBoxFor(40); L.box.y = 4.6; syncBlockBtn(); $("l-refl").checked = false; setTool("move"); },
+      text: () => `<p>Drag the glass block onto the paper. Press <b>Trace outline</b>, or draw round it with the <b>Ruler</b>.</p><p class="look">Press Next and each step is done for you. Then clear the paper and do it yourself.</p>` },
+    { m: "L", title: "Shine the ray", go() { demo(1); setTool("move"); },
+      text: () => `<p>Turn the ray box on. Aim the ray at the long face, at an angle. Drag the <b>knob</b> to turn it, or use the <b>Turn</b> buttons.</p><p>The ray bends going in and bends again coming out. A faint reflected ray bounces off the first surface too.</p>` },
+    { m: "L", title: "Mark the rays", go() { demo(2); setTool("pencil"); },
+      text: () => `<p>With the <b>Pencil</b>, put two crosses on the ray going in and two on the ray coming out. Keep each pair well apart.</p><p class="look">You can't mark under the glass, so the ray inside is found later by joining the entry and exit points.</p>` },
+    { m: "L", title: "Lift the block, join the lines", go() { demo(3); setTool("ruler"); },
+      text: () => `<p>Lift the block and switch the ray box off. With the <b>Ruler</b>, drag from cross to cross: each line runs on to the outline.</p><p>Then drag from the point where the ray went in to the point where it came out. That is the refracted ray.</p>` },
+    { m: "L", title: "Draw the normal", go() { demo(4); setTool("normal"); },
+      text: () => `<p>With the <b>Normal</b> tool, click the outline where the ray went in. A dashed line at 90° to the surface appears.</p><p class="copy">Angles are always measured from the normal, never from the surface.</p>` },
+    { m: "L", title: "Measure i", live: true, go() { demo(5); setTool("protractor"); },
+      text: () => { const rd = protRead(); return `<p>Click the entry point with the <b>Protractor</b>. Its straight edge sits on the normal. The red hairline lies on the incident ray.</p><p>Read the scale that starts at <b>0 on the normal</b>, on the air side: i = <b>${rd && rd.onRay && rd.sym === "i" ? rd.ang : "–"}°</b>.</p>`; } },
+    { m: "L", title: "Measure r", live: true, go() { demo(6); setTool("protractor"); },
+      text: () => { const rd = protRead(); return `<p>Press <b>Flip protractor</b> so it covers the glass side. The hairline moves onto the refracted ray. Read from the 0 on the normal inside the block: r = <b>${rd && rd.onRay && rd.sym === "r" ? rd.ang : "–"}°</b>.</p><p class="copy">Going into glass, r is smaller than i: light bends towards the normal.</p>`; } },
+    { m: "L", title: "The ray coming out", go() { demo(7); setTool("move"); },
+      text: () => memo && memo.exit ? `<p>Leaving the glass, light bends <b>away</b> from the normal, by the same angle: it comes out at ${deg0(memo.exit.e)}°, the same as i.</p><p>The emergent ray is parallel to the incident ray, shifted sideways by ${lateral(memo).toFixed(1)} cm.</p>` : `<p>Leaving the glass, light bends away from the normal.</p>` },
+    { m: "L", title: "Along the normal", go() { demo(1); L.refl = false; setI(0); const e = trace(true).entry; L.box.x = e.p.x - e.dIn.x * 3.4; L.box.y = e.p.y - e.dIn.y * 3.4; L.draw.normals = [{ p: e.p, face: "top" }]; setTool("move"); $("l-refl").checked = false; },
+      text: () => `<p>Turn the ray box until the ray travels along the normal. i = 0, so r = 0: no bending at all.</p><p class="look">The light still slows down inside the block. See the Wavefronts tab.</p>` },
+    { m: "L", title: "Record and repeat", go() { demo(1, 50); L.refl = false; $("l-refl").checked = false; setTool("move"); },
+      text: () => `<p>Press <b>Record trial</b> and type your i and r. Repeat for 30°, 40°, 50° and 60°.</p><p class="copy">n = sin i ÷ sin r is the same every time.</p><p class="look">Now press Clear paper and do the whole method yourself. Try a different block.</p>` },
+    { m: "W", title: "Light slows down", go() { Wst.i = 0; Wst.rays = true; Wst.hl = true; Wst.t = 0; setPlayW(true); },
+      text: () => `<p>Each line is a wavefront, one wavelength apart. In glass the light travels slower, so the fronts bunch up: a shorter wavelength.</p><p class="copy">The frequency does not change. Every front that reaches the boundary passes through it: count P and Q.</p>` },
+    { m: "W", title: "Why it bends", go() { Wst.i = 45; Wst.rays = false; Wst.hl = true; setPlayW(true); },
+      text: () => `<p>Now the fronts hit the boundary at an angle. One end of each front reaches the glass first and slows down while the other end is still moving fast in air.</p><p>The front swings round. Follow the orange one.</p><p class="copy">The direction turns towards the normal.</p>` },
+    { m: "W", title: "The refractive index", go() { Wst.i = 45; Wst.rays = true; Wst.hl = true; },
+      text: () => `<p class="eq">n = c ÷ v = sin i ÷ sin r</p><p>${L.mat} has n = ${n().toFixed(2)}: light travels at ${(3 / n()).toFixed(2)} × 10⁸ m/s inside it and its wavelength is λ ÷ ${n().toFixed(2)}.</p><p class="look">Change the angle and the material. Set i = 0: still slower, still shorter, no bend.</p>` },
+  ];
+  const firstW = steps.findIndex((s) => s.m === "W");
+  const ST = {
+    look: "margin:0;background:var(--st-note-bg);border:1px dashed var(--st-note-border);border-radius:var(--st-r-card);padding:12px 14px;font-weight:500;color:var(--st-ink);font-size:15px",
+    copy: "margin:0;color:var(--st-accent-text);font-size:clamp(17px,1.4vw,20px);font-weight:600;line-height:1.35",
+    eq: "margin:0;font:600 clamp(22px,2vw,30px)/1.15 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink);background:var(--st-num-well);border-radius:var(--st-r-card);padding:12px 16px",
+    cl: "display:block;font:500 11px/1 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:5px",
+  };
+  let step = 0, lastHTML = "";
+  const dots = $("g-dots");
+  steps.forEach(() => { const d = document.createElement("i"); d.style.cssText = "width:10px;height:10px;border-radius:3px;display:block;background:var(--st-rule-strong)"; dots.appendChild(d); });
+  $("g-keys").innerHTML = `Keys: ${KBD(I.right)} next · ${KBD(I.left)} back · ${KBD("V")}${KBD("P")}${KBD("R")}${KBD("N")}${KBD("T")}${KBD("E")} tools · ${KBD("Ctrl Z")} undo`;
+  function styleText(gt) {
+    gt.querySelectorAll("p").forEach((p) => p.style.margin = "0");
+    gt.querySelectorAll(".look").forEach((el) => el.style.cssText = ST.look);
+    gt.querySelectorAll(".eq").forEach((el) => el.style.cssText = ST.eq);
+    gt.querySelectorAll(".copy").forEach((el) => { el.style.cssText = ST.copy; el.insertAdjacentHTML("afterbegin", `<span style="${ST.cl}">Copy this down</span>`); });
+  }
+  function goStep(i) {
+    step = Math.max(0, Math.min(steps.length - 1, i));
+    const st = steps[step]; setMode(st.m); st.go(); syncAll();
+    const inSec = steps.filter((s) => s.m === st.m), k = inSec.indexOf(st);
+    $("g-count").textContent = `Step ${k + 1} of ${inSec.length}`;
+    $("g-part").textContent = st.m === "L" ? "Practical" : "Wavefronts";
+    $("g-title").textContent = st.title;
+    const gt = $("g-text"); gt.innerHTML = lastHTML = st.text(); styleText(gt);
+    [...dots.children].forEach((d, j) => d.style.background = j === step ? "var(--st-accent)" : j < step ? "var(--st-ink)" : "var(--st-rule-strong)");
+    $("g-back").disabled = step === 0;
+    $("g-next").innerHTML = step === steps.length - 1 ? "Start again" : "Next" + I.right;
+  }
+  function liveText() {
+    const st = steps[step]; if (!st || !st.live || st.m !== mode) return;
+    const html = st.text(); if (html !== lastHTML) { const gt = $("g-text"); gt.innerHTML = lastHTML = html; styleText(gt); }
+  }
+  $("g-next").onclick = () => goStep(step === steps.length - 1 ? 0 : step + 1);
+  $("g-back").onclick = () => goStep(step - 1);
+  const TOOLKEY = { v: "move", p: "pencil", r: "ruler", n: "normal", t: "protractor", e: "eraser" };
+  const onKey = (e) => {
+    if (e.target.closest("input,select,textarea")) return;
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") { e.preventDefault(); undo(); return; }
+    if (e.key === "ArrowRight") goStep(step + 1); else if (e.key === "ArrowLeft") goStep(step - 1);
+    else if (mode === "L" && TOOLKEY[e.key.toLowerCase()] && !e.ctrlKey && !e.metaKey) setTool(TOOLKEY[e.key.toLowerCase()]);
+    else if (mode === "W" && e.key === " ") { e.preventDefault(); setPlayW(!Wst.playing); }
+  };
+  document.addEventListener("keydown", onKey);
+  goStep(0);
+
+  // ---------- quiz ----------
+  const Q = [
+    { s: "Angles of incidence and refraction are measured between the ray and…", o: ["the normal", "the surface of the block", "the edge of the paper"], a: 0, why: "Always from the normal: the line at 90° to the surface at the point where the ray hits." },
+    { s: "A ray enters glass (n = 1.5) at i = 40°. Which is the angle of refraction?", o: ["40°", "25°", "64°"], a: 1, why: "Going into glass the ray bends towards the normal, so r < i. sin r = sin 40° ÷ 1.5 gives r = 25°." },
+    { s: "The ray travels along the normal into the block. What happens?", o: ["It bends towards the normal", "It passes straight through, but slower", "It reflects back"], a: 1, why: "i = 0 so r = 0: no change in direction. The light still slows down and its wavelength shortens." },
+    { s: "Which of these does NOT change when light passes from air into glass?", o: ["speed", "wavelength", "frequency"], a: 2, why: "Frequency is set by the source. Speed falls to c ÷ n, and wavelength falls with it, λ = v ÷ f." },
+    { s: "Why does a wavefront change direction at the boundary?", o: ["One end slows down before the other end", "The glass pulls the light towards it", "The light is reflected inside the glass"], a: 0, why: "The end that enters the glass first slows, while the rest is still fast in air. The front swings towards the normal." },
+    { s: "sin i = 0.64 and sin r = 0.43. What is the refractive index?", o: ["0.67", "0.21", "1.5"], a: 2, why: "n = sin i ÷ sin r = 0.64 ÷ 0.43 = 1.5." },
+  ];
+  let score = 0; const qs = $("quiz-body"); $("score").textContent = `Score: 0 / ${Q.length}`;
+  const OPT = "display:flex;align-items:center;gap:10px;width:100%;font:500 16px/1.35 var(--st-ui);text-align:left;border:1.5px solid var(--st-btn-border);background:var(--st-paper);color:var(--st-ink);border-radius:var(--st-r-control);padding:11px 14px;cursor:pointer";
+  Q.forEach((q, qi) => {
+    const box = document.createElement("div");
+    box.style.cssText = "background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:18px;display:grid;gap:8px;align-content:start;min-width:0";
+    box.innerHTML = `<div style="display:flex;gap:10px;align-items:flex-start"><span style="flex:none;width:24px;height:24px;border-radius:5px;background:var(--st-num-well);display:flex;align-items:center;justify-content:center;font:500 12px/1 var(--st-mono);color:var(--st-caption);margin-top:1px">${String(qi + 1).padStart(2, "0")}</span><div style="font-weight:600;font-size:17px;line-height:1.4">${q.s}</div></div>`;
+    const fb = document.createElement("div"); fb.style.cssText = "font-size:15px;line-height:1.45"; let done = false;
+    const btns = q.o.map((t, oi) => {
+      const b = document.createElement("button"); b.style.cssText = OPT; b.innerHTML = `<span>${t}</span>`;
+      b.onmouseenter = () => { if (!done) b.style.background = "var(--st-note-bg)"; }; b.onmouseleave = () => { if (!done) b.style.background = "var(--st-paper)"; };
+      b.onclick = () => {
+        if (done) return; done = true; const right = oi === q.a;
+        btns.forEach((x, xi) => { x.style.cursor = "default"; x.style.background = "var(--st-paper)"; if (xi !== oi && xi !== q.a) x.style.opacity = "0.55"; });
+        const mark = (el, ok) => { el.style.borderColor = ok ? "var(--rfl-ok,#12A150)" : "var(--rfl-bad,#B3261E)"; el.style.background = ok ? "var(--rfl-ok-bg,#E4F7EB)" : "var(--rfl-bad-bg,#FBE4DE)"; el.insertAdjacentHTML("afterbegin", `<span style="display:flex;color:${ok ? "var(--rfl-ok-text,#0A6B36)" : "var(--rfl-bad,#B3261E)"}">${ok ? I.tick : I.cross}</span>`); };
+        mark(b, right); if (!right) mark(btns[q.a], true);
+        fb.style.color = right ? "var(--rfl-ok-text,#0A6B36)" : "var(--rfl-bad,#B3261E)"; fb.innerHTML = `<b>${right ? "Correct." : "Not quite."}</b> <span style="color:var(--st-body)">${q.why}</span>`;
+        if (right) score++; $("score").textContent = `Score: ${score} / ${Q.length}`;
+      };
+      box.appendChild(b); return b;
+    });
+    box.appendChild(fb); qs.appendChild(box);
+  });
+
+  return { setSection, setTeacher, setMaterial, stop() { alive = false; cancelAnimationFrame(raf); ro.disconnect(); roPlot.disconnect(); document.removeEventListener("keydown", onKey); } };
+}
+</script>
+</body>
+</html>

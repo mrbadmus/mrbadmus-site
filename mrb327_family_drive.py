@@ -1368,8 +1368,10 @@ def phase_l(p, ids):
     check("Not found" not in t[:200], "L the parent dashboard renders", t[:200].replace("\n", " "))
     check("Amara" in t and "Tobi" in t, "L the dashboard shows both children",
           t[:400].replace("\n", " "))
-    check("Free week" in t or "free week" in t.lower(),
-          "L the dashboard states the billing state", t[:400].replace("\n", " "))
+    # ⊕ 15 Oct 2026: Mide removed the dashboard's free-week box; the billing
+    # state lives on Account, which the dashboard links to.
+    check("days left" not in t and p.eval("!!document.querySelector('a[href*=\"/consumer/account.html\"]')"),
+          "L the dashboard carries no free-week box, and links to Account", t[:400].replace("\n", " "))
     check(not errs(p), "L parent dashboard: zero console errors", errs(p))
     shot(p, "L2-parent-dashboard.png", width=1200, height=1400)
     p.set_viewport(390, 900, settle=0.3)

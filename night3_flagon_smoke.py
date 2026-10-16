@@ -136,7 +136,7 @@ def main():
             visit(p, "/parents/pricing.html", "public pricing (flag on)", a.shots, expect=["£9.99"])
             # parent journey
             with_session(p, sess)
-            visit(p, "/consumer/overview.html", "dashboard trialing", a.shots, "built-dash-trialing.png", expect=["Free week", "Amara", "Leo"])
+            visit(p, "/consumer/overview.html", "dashboard trialing", a.shots, "built-dash-trialing.png", expect=["Amara", "Leo"])  # ⊕ 15 Oct 2026: no free-week box on the dashboard
             visit(p, "/consumer/overview.html?child=%s&view=child" % kids[0]["id"], "child detail", a.shots, expect=["Amara"])
             visit(p, "/consumer/account.html", "account trialing", a.shots, expect=["Free week"])
             visit(p, "/consumer/report.html?child=%s" % kids[0]["id"], "report", a.shots, expect=["Science progress report"])

@@ -473,7 +473,8 @@ _JS = r"""
 
 def prescript(state="trialing", kids=2, checkout="ok", deletion=None, messages=None,
               fail=None, signed_in=True, draft=None, taken=None, existing=False,
-              password_ok=False, unconfirmed=False, who="parent"):
+              password_ok=False, unconfirmed=False, who="parent", next_title=None,
+              days_left="fixture"):
     """`fail`: regexes over the request path that answer 500 — for proving a
     page's failure line, not for anything a gate measures.
 
@@ -489,8 +490,17 @@ def prescript(state="trialing", kids=2, checkout="ok", deletion=None, messages=N
     ⊕ B2C unit 6: `who` is "parent" (default), "child" (a family child's
     session — the child pages and Today), "org" (organisation staff) or
     "operator" (the platform operator's admin pages). `signed_in=False`
-    with any `who` is a visitor on a public page, flag on."""
-    fx = {"family": family(state, kids, deletion), "pricing": PRICING,
+    with any `who` is a visitor on a public page, flag on.
+
+    ⊕ 15 Oct 2026: `next_title` renames the first child's first unfinished
+    row (the dashboard's "Next:" line); `days_left` overrides the trial's
+    count (None = the backend sent no count)."""
+    fam = json.loads(json.dumps(family(state, kids, deletion)))
+    if next_title is not None:
+        fam["children"][0]["work"][1]["title"] = next_title
+    if days_left != "fixture":
+        fam["billing"]["days_left"] = days_left
+    fx = {"family": fam, "pricing": PRICING,
           "checkout": checkout, "messages": messages or [], "fail": fail or [],
           "pickers": json.loads(json.dumps(PICKERS)), "signedIn": signed_in,
           "draft": draft, "taken": taken or [], "existing": existing,

@@ -687,7 +687,9 @@ def state_trialing(p, customer):
           "mirror quantity follows the Stripe item quantity", row and row.get("quantity"))
     generate_week()
     assert_state(p, "trialing", "01-trialing", "trialing", "full", "trialing", True,
-                 overview_expect=["Free week", "Amara"],
+                 # ⊕ 15 Oct 2026: the dashboard no longer says "Free week"
+                 # (Mide removed the box); the account page still does.
+                 overview_expect=["Amara"], overview_forbid=["days left"],
                  account_expect=["Free week", "Manage card in Stripe"],
                  today_expect=["Amara"])
     return sub
