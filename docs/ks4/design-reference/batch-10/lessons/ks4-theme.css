@@ -1,0 +1,32 @@
+/* KS4 dark mode. TOKENS ONLY — no classes live here.
+   Remaps the --ks3-* family (which KS4 inherits) for dark grounds.
+   Applies under the OS setting, or when a page root carries data-theme="dark".
+   Every -text token measured >= 4.5:1 on --ks3-ground, --ks3-card and its own tint;
+   figure plates stay cream (#F3F0E7) in both modes, so diagram ink never changes. */
+.rd[data-mode="ks3"][data-theme="dark"],
+[data-theme="dark"] .rd[data-mode="ks3"] {
+  --ks3-ground: #16120E; --ks3-card: #1F1A15; --ks3-band: #2A231C; --ks3-inset: #231D17; --ks3-row-dim: #1B1611;
+  --ks3-rule: #3E352C; --ks3-rule-strong: #5E5246; --ks3-option-border: #4F443A; --ks3-option-spent: #2B241D;
+  --ks3-ink: #F3ECE0; --ks3-ink-body: #E3D9CA; --ks3-ink-muted: #C2B6A6; --ks3-ink-faint: #B0A493; --ks3-ink-ghost: #8A7F72;
+  --ks3-accent: #F07A4E; --ks3-accent-text: #FF9E78; --ks3-accent-tint: #3A2218; --ks3-accent-hover: #FFC2A8;
+  --ks3-ok: #3CC477; --ks3-ok-text: #86E6AC; --ks3-ok-tint: #15301F;
+  --ks3-alert: #FFC53D; --ks3-alert-text: #FFDC85; --ks3-alert-tint: #33290F; --ks3-alert-border: #D9821A;
+  --ks3-stretch: #9C7BFF; --ks3-stretch-text: #C2ADFF; --ks3-stretch-tint: #261D3D; --ks3-stretch-rule: #44386A;
+  --ks3-blue: #6C8EFF; --ks3-blue-text: #A8C0FF; --ks3-blue-tint: #1B2440;
+  --ks3-on-dark: #16120E; /* ink-filled controls (reveal, check, retry) flip to light fills in dark mode, so their label flips dark */
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  .rd[data-mode="ks3"]:not([data-theme="light"]):not([data-theme="light"] .rd) {
+    --ks3-ground: #16120E; --ks3-card: #1F1A15; --ks3-band: #2A231C; --ks3-inset: #231D17; --ks3-row-dim: #1B1611;
+    --ks3-rule: #3E352C; --ks3-rule-strong: #5E5246; --ks3-option-border: #4F443A; --ks3-option-spent: #2B241D;
+    --ks3-ink: #F3ECE0; --ks3-ink-body: #E3D9CA; --ks3-ink-muted: #C2B6A6; --ks3-ink-faint: #B0A493; --ks3-ink-ghost: #8A7F72;
+    --ks3-accent: #F07A4E; --ks3-accent-text: #FF9E78; --ks3-accent-tint: #3A2218; --ks3-accent-hover: #FFC2A8;
+    --ks3-ok: #3CC477; --ks3-ok-text: #86E6AC; --ks3-ok-tint: #15301F;
+    --ks3-alert: #FFC53D; --ks3-alert-text: #FFDC85; --ks3-alert-tint: #33290F; --ks3-alert-border: #D9821A;
+    --ks3-stretch: #9C7BFF; --ks3-stretch-text: #C2ADFF; --ks3-stretch-tint: #261D3D; --ks3-stretch-rule: #44386A;
+    --ks3-blue: #6C8EFF; --ks3-blue-text: #A8C0FF; --ks3-blue-tint: #1B2440;
+    --ks3-on-dark: #16120E; /* ink-filled controls (reveal, check, retry) flip to light fills in dark mode, so their label flips dark */
+  color-scheme: dark;
+  }
+}
