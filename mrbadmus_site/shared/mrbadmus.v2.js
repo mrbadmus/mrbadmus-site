@@ -26,6 +26,97 @@ window.MrBadmus = (function() {
     return (c && c.BACKEND_URL && c.SUPABASE_URL && c.SUPABASE_ANON_KEY && c.AUTH_STORAGE_KEY) ? c : null;
   }
 
+  /* ⊕ Saved work follow-up (16 Oct 2026) — A CURRENT TOKEN FOR A FAMILY
+     CHILD. A child who sat on a lesson for more than an hour, or whose
+     phone slept, held an expired access token: every answer then queued
+     behind a 401, the tutor refused, and the page restored nothing. These
+     pages (KS3, rebuilt KS4) load no Supabase SDK, and
+     consumer/consumer-common.js — which has the same fix as `api()` — is
+     not on them, so this is the small local twin. Only the child-only
+     paths below call it; a school pupil's page never does.
+       · token(c): the session's access token — through the SDK's
+         getSession() (which refreshes) when the page has the SDK, otherwise
+         the stored one, refreshed first when it expires within a minute;
+       · refresh(c): one refresh, for a 401 from our backend.
+     A refresh without the SDK is GoTrue's own refresh-token grant, written
+     back to the same localStorage key in the same shape, and only while
+     that key still holds the SAME person (a different account's session is
+     never swapped in). One refresh at a time per page. A refused refresh
+     returns null: the caller keeps its answer queued, as before. */
+  const childAuth = (function () {
+    let client = null, pending = null;
+    function stored(c) {
+      try { return JSON.parse(localStorage.getItem(c.AUTH_STORAGE_KEY) || 'null'); } catch (e) { return null; }
+    }
+    function uid(s) { return s && s.user && s.user.id ? s.user.id : null; }
+    function sdk(c) {
+      if (!client && window.supabase && typeof window.supabase.createClient === 'function') {
+        try { client = window.supabase.createClient(c.SUPABASE_URL, c.SUPABASE_ANON_KEY); } catch (e) { client = null; }
+      }
+      return client;
+    }
+    /* One refresh, under the SAME lock shared/config.js's timed child-token
+       refresher takes ('lock:' + AUTH_STORAGE_KEY, exclusive), so the two
+       never spend one refresh token at once. Inside the lock storage is read
+       again: if someone else has already refreshed (same person, a token not
+       expiring within a minute — and, for a 401, not the token that failed),
+       that token is used with no request. Otherwise the stored refresh token
+       is spent, and the result is written only if storage still holds that
+       refresh token. Without navigator.locks, the same steps run unlocked. */
+    function grant(c, s, force) {
+      if (pending) return pending;
+      const failed = s.access_token;
+      const work = () => {
+        const cur = stored(c);
+        if (!cur || uid(cur) !== uid(s) || !cur.refresh_token) return null;
+        const fresh = cur.access_token && cur.expires_at && cur.expires_at * 1000 > Date.now() + 60000;
+        if (fresh && (!force || cur.access_token !== failed)) return cur.access_token;
+        const spent = cur.refresh_token;
+        return fetch(c.SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'apikey': c.SUPABASE_ANON_KEY },
+          body: JSON.stringify({ refresh_token: spent })
+        }).then(r => (r.ok ? r.json() : null)).then(n => {
+          if (!n || !n.access_token || uid(n) !== uid(cur)) return null;
+          const next = Object.assign({}, cur, n);
+          if (!n.expires_at) next.expires_at = Math.floor(Date.now() / 1000) + (Number(n.expires_in) || 3600);
+          const now = stored(c);
+          if (now && uid(now) === uid(cur) && now.refresh_token === spent) {
+            try { localStorage.setItem(c.AUTH_STORAGE_KEY, JSON.stringify(next)); } catch (e) {}
+          }
+          return next.access_token;
+        }, () => null);
+      };
+      const locks = navigator.locks && typeof navigator.locks.request === 'function' ? navigator.locks : null;
+      pending = Promise.resolve(locks ? locks.request('lock:' + c.AUTH_STORAGE_KEY, { mode: 'exclusive' }, work) : work())
+        .catch(() => null);
+      pending.then(() => { pending = null; }, () => { pending = null; });
+      return pending;
+    }
+    async function viaSdk(cl, s, fn) {
+      try {
+        const r = await cl.auth[fn]();
+        const ns = r && r.data && r.data.session;
+        return ns && ns.access_token && uid(ns) === uid(s) ? ns.access_token : null;
+      } catch (e) { return null; }
+    }
+    async function token(c) {
+      const s = stored(c);
+      if (!s || !s.access_token) return null;
+      const cl = sdk(c);
+      if (cl) return (await viaSdk(cl, s, 'getSession')) || s.access_token;
+      if (!s.refresh_token || !s.expires_at || s.expires_at * 1000 > Date.now() + 60000) return s.access_token;
+      return (await grant(c, s)) || s.access_token;
+    }
+    async function refresh(c) {
+      const s = stored(c);
+      if (!s || !s.refresh_token || !uid(s)) return null;
+      const cl = sdk(c);
+      return cl ? viaSdk(cl, s, 'refreshSession') : grant(c, s, true);
+    }
+    return { token, refresh };
+  })();
+
   // Load student name + profile from Supabase session (if logged in)
   async function loadStudentSession() {
     try {
@@ -198,13 +289,17 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     } catch (e) { return null; }
   }
 
-  function addMsg(role, html) {
+  // `before` (⊕ saved work, 16 Oct 2026): put the message ahead of that node
+  // instead of at the end. Only a family child's restored conversation passes
+  // it; every other call is exactly as before.
+  function addMsg(role, html, before) {
     const box = document.getElementById('chatMsgs');
     if (!box) return null;
     const d = document.createElement('div');
     d.className = `chat-msg chat-msg--${role}`;
     d.innerHTML = `<div class="chat-msg__avatar">${role==='user'?'🧑':'⚡'}</div><div class="chat-msg__bubble">${html}</div>`;
-    box.appendChild(d);
+    if (before && before.parentNode === box) box.insertBefore(d, before);
+    else box.appendChild(d);
     box.scrollTop = box.scrollHeight;
     return d;
   }
@@ -647,6 +742,7 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
         ? "Hey " + studentName + "! 👋 I'm Mr Badmus, here to help you smash your " + subj + ". What are we stuck on?"
         : "Hey! 👋 I'm Mr Badmus, here to help you smash your " + subj + ". What are we stuck on?";
       addMsg('bot', greet);
+      drawSavedTalk();                       // a family child's earlier conversation, if any
     }
     setTimeout(() => document.getElementById('ci')?.focus(), 100);
   }
@@ -734,7 +830,15 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
           childContext = { path: window.location.pathname, title: currentTopic || document.title || '' };
         }
       } catch (e) {}
-      const res = await fetch(c.BACKEND_URL + '/api/chat', {
+      /* ⊕ A child's token is a CURRENT one (childAuth), and a 401 is
+         refreshed and asked once more — a child back from a long pause is
+         answered, and their question is logged. A school pupil's request is
+         exactly as before: the stored token, one request. */
+      if (childContext) {
+        const fresh = await childAuth.token(c);
+        if (fresh) authHeaders['Authorization'] = 'Bearer ' + fresh;
+      }
+      const chatOnce = () => fetch(c.BACKEND_URL + '/api/chat', {
         method:'POST',
         headers: authHeaders,
         body:JSON.stringify(childContext
@@ -742,6 +846,11 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
           : { system:systemPrompt, messages:chatHistory }),
         signal: controller.signal
       });
+      let res = await chatOnce();
+      if (res.status === 401 && childContext) {
+        const again = await childAuth.refresh(c);
+        if (again) { authHeaders['Authorization'] = 'Bearer ' + again; res = await chatOnce(); }
+      }
       clearTimeout(timeout);
       if (!res.ok) {
         const said = await limitMessage(res);
@@ -764,7 +873,57 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
     document.getElementById('chatMsgs').scrollTop = 99999;
   }
 
-  return { init, open, close, ask };
+  /* ⊕ Saved work (Mide, 16 Oct 2026): "the full tutor conversation for that
+     lesson" comes back on load — on any device, after signing out and in.
+     ONLY FOR A FAMILY OR ORGANISATION CHILD: the one caller is the saved-work
+     loader at the end of this file, which installs itself for a child
+     session (MrBadmusConfig.isChildSession) and for nobody else, so a school
+     pupil's panel never reaches this.
+
+     `rows` are the child's own exchanges on this lesson, oldest first, from
+     GET /api/consumer/child/saved: {question, has_image, reply, answered,
+     asked_at}. Each answered one is drawn exactly as it was live — the
+     question escaped (esc), the reply through formatReply — and seeds
+     chatHistory, so a follow-up question carries the conversation. An
+     exchange the tutor never answered is left out, as it was left out of
+     chatHistory live. The picture itself is not kept anywhere, so a photo
+     question says so in words.
+
+     Drawn after the greeting when the panel first opens (open() adds the
+     greeting); if the panel is already open, slotted in after the greeting,
+     ahead of anything asked on this visit. */
+  const PHOTO_ONLY = 'Answer this GCSE Science question fully using FIFA for any calculations.';
+  let savedTalk = null;
+  function drawSavedTalk() {
+    const rows = savedTalk;
+    savedTalk = null;
+    if (!rows || !rows.length) return;
+    const box = document.getElementById('chatMsgs');
+    if (!box) return;
+    const anchor = box.children[1] || null;       // after the greeting
+    rows.forEach(r => {
+      const q = r.has_image && r.question === PHOTO_ONLY ? '' : String(r.question || '');
+      addMsg('user', esc(q || 'Please answer this question:') +
+        (r.has_image ? '<br><em>(You sent a photo with this question.)</em>' : ''), anchor);
+      addMsg('bot', formatReply(r.reply), anchor);
+    });
+    box.scrollTop = box.scrollHeight;
+  }
+  function restoreTalk(rows) {
+    const done = (rows || []).filter(r => r && r.answered && typeof r.reply === 'string' && r.reply !== '' && typeof r.question === 'string');
+    if (!done.length) return;
+    const past = [];
+    done.forEach(r => {
+      past.push({ role:'user', content:r.question });
+      past.push({ role:'assistant', content:r.reply });
+    });
+    chatHistory = past.concat(chatHistory);
+    while (chatHistory.length > 20) chatHistory.splice(0, 2);
+    savedTalk = done;
+    if (chatInited) drawSavedTalk();
+  }
+
+  return { init, open, close, ask, restoreTalk, childAuth };
 })();
 
 /* ── MOBILE NAV HAMBURGER ── */
@@ -848,18 +1007,52 @@ try {
         var score = document.querySelector('.ks3-ladder-score .ks3-score');
         return !!(score && /^Score \d+ of \d+$/.test((score.textContent || '').trim()));
       }
+      /* ⊕ Saved work (16 Oct 2026): a page that comes back FINISHED because
+         its answers were restored from the server was finished on an earlier
+         visit — that visit already sent this. So nothing is checked while
+         the saved work is being put back, and a page that is finished the
+         moment it has been put back is latched as sent. Only a page the
+         child finishes now sends. */
+      // Read when asked: on a deferred page this runs before the loader at
+      // the end of this file has installed MrBadmusSaved.
+      function restoring() {
+        var sv = window.MrBadmusSaved;
+        return !!(sv && sv.state !== 'done');
+      }
+      document.addEventListener('mrb:saved-applied', function () {
+        if (sent) { return; }
+        if (finished()) { sent = true; if (obs) { obs.disconnect(); } }
+        else { check(); }
+      });
       function check() {
+        if (restoring()) { return; }
         if (sent || !finished()) { return; }
         sent = true;
         if (obs) { obs.disconnect(); }
+        /* ⊕ Saved work follow-up (16 Oct 2026): a lost "done" breaks the
+           child's streak, so the token is a CURRENT one (MrBadmus.childAuth
+           refreshes an expired one) and a 401 is refreshed once and sent
+           once more. */
         try {
           var s2 = JSON.parse(window.localStorage.getItem(c.AUTH_STORAGE_KEY) || 'null') || session;
-          fetch(c.BACKEND_URL + '/api/consumer/child/lesson-done', {
-            method: 'POST',
-            keepalive: true,
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + s2.access_token },
-            body: JSON.stringify({ path: path, key_stage: 'KS4' })
-          }).catch(function () { /* best effort — the lesson never waits on this */ });
+          var auth = window.MrBadmus && window.MrBadmus.childAuth;
+          var done = function (tok) {
+            return fetch(c.BACKEND_URL + '/api/consumer/child/lesson-done', {
+              method: 'POST',
+              keepalive: true,
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+              body: JSON.stringify({ path: path, key_stage: 'KS4' })
+            });
+          };
+          Promise.resolve(auth ? auth.token(c) : s2.access_token)
+            .then(function (tok) { return done(tok || s2.access_token); })
+            .then(function (r) {
+              if (r && r.status === 401 && auth) {
+                return auth.refresh(c).then(function (t2) { return t2 ? done(t2) : r; });
+              }
+              return r;
+            })
+            .catch(function () { /* best effort — the lesson never waits on this */ });
         } catch (e) { /* fetch unavailable — degrade silently */ }
       }
       obs = new MutationObserver(check);
@@ -1039,7 +1232,24 @@ try {
       return h.slice(0, 8) + '-' + h.slice(8, 12) + '-' + h.slice(12, 16) + '-' + h.slice(16, 20) + '-' + h.slice(20);
     }
     var visitId = uuid();
-    window.MrBadmusAnswerCapture = { visitId: visitId };
+    /* ⊕ Saved work (16 Oct 2026) — `replay` and `mute`, for the saved-work
+       loader at the end of this file. When a child comes back to a lesson,
+       their answers are put back by the page's OWN controls (or, on the
+       rebuilt KS4 pages, the block's own state), and every capture path below
+       sees that as an answer being given. While `mute` is held, nothing is
+       sent: a restored answer is never a second ledger row. The capture's
+       memory of what it has already sent (sentUnits, lastText, matchSent…)
+       still moves, exactly as if the child had just done it, so the NEXT real
+       answer is judged against the restored one. Each page type below
+       registers one `replay` function; each is handed the child's saved rows
+       for this lesson, oldest first. */
+    var muted = 0;
+    var replay = [];
+    window.MrBadmusAnswerCapture = {
+      visitId: visitId,
+      replay: replay,
+      mute: function (on) { muted = Math.max(0, muted + (on ? 1 : -1)); }
+    };
 
     function clip(v, n) {
       if (v == null) { return null; }
@@ -1164,31 +1374,40 @@ try {
     function boxDrop(id) {
       boxWrite(boxRead().filter(function (b) { return boxFresh(b) && b.client_event_id !== id; }));
     }
+    /* ⊕ Saved work follow-up (16 Oct 2026): the token is a CURRENT one
+       (MrBadmus.childAuth — refreshed when it has expired), and a 401 is
+       refreshed once and sent once more, so an answer given after a long
+       pause is saved now rather than queued behind an expired token. */
+    var auth = window.MrBadmus && window.MrBadmus.childAuth;
     function token() {
+      if (auth) { return auth.token(c); }
       try {
         var s2 = JSON.parse(window.localStorage.getItem(c.AUTH_STORAGE_KEY) || 'null');
-        return (s2 && s2.access_token) || null;
-      } catch (e) { return null; }
+        return Promise.resolve((s2 && s2.access_token) || null);
+      } catch (e) { return Promise.resolve(null); }
     }
     // Resolves true only on a 2xx (204 included). `live` sends ride on
     // keepalive so they survive the page going away; a flush does not, as
     // keepalive bodies share a small per-page budget.
-    function send(body, tok, live) {
+    function send(body, tok, live, retried) {
       try {
         return fetch(ANSWER_URL, {
           method: 'POST',
           keepalive: !!live,
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
           body: JSON.stringify(body)
-        }).then(function (r) { return !!(r && r.ok); }, function () { return false; });
+        }).then(function (r) {
+          if (r && r.status === 401 && !retried && auth) {
+            return auth.refresh(c).then(function (t2) { return t2 ? send(body, t2, live, true) : false; });
+          }
+          return !!(r && r.ok);
+        }, function () { return false; });
       } catch (e) { return Promise.resolve(false); }
     }
     var flushing = false;
     var inflight = {};                         // client_event_id → a send this page has not heard back from
     function flush() {
       if (flushing) { return; }
-      var tok = token();
-      if (!tok) { return; }
       var all = boxRead().filter(boxFresh);
       boxWrite(all);                           // the 7-day drop, persisted
       var queue = all.filter(function (b) { return !inflight[b.client_event_id]; });
@@ -1199,7 +1418,7 @@ try {
         if (i >= queue.length) { flushing = false; return; }
         var b = queue[i++];
         inflight[b.client_event_id] = 1;
-        send(b, tok, false).then(function (ok) {
+        token().then(function (tok) { return tok ? send(b, tok, false) : false; }).then(function (ok) {
           delete inflight[b.client_event_id];
           if (!ok) { flushing = false; return; }   // keep it and the rest; try again later
           boxDrop(b.client_event_id);
@@ -1217,6 +1436,7 @@ try {
       return v || null;
     }
     function post(d) {
+      if (muted) { return; }                   // a restored answer, already in the ledger
       var t = ('__t' in d) ? d.__t : spans(1)[0];
       var mk = (typeof d.marks === 'number' && isFinite(d.marks)) ? Math.round(d.marks) : null;
       if (mk !== null && (mk < 1 || mk > 20)) { mk = null; }
@@ -1262,10 +1482,8 @@ try {
         time_spent_seconds: t
       };
       boxKeep(body);                           // written ahead: queued until the server has it
-      var tok = token();
-      if (!tok) { return; }
       inflight[body.client_event_id] = 1;
-      send(body, tok, true).then(function (ok) {
+      token().then(function (tok) { return tok ? send(body, tok, true) : false; }).then(function (ok) {
         delete inflight[body.client_event_id];
         if (!ok) { return; }                   // stays queued
         boxDrop(body.client_event_id);
@@ -1298,7 +1516,7 @@ try {
 
     // Several answers from ONE press: the elapsed time is split (see the clock).
     function postAll(list) {
-      if (!list.length) { return; }
+      if (!list.length || muted) { return; }
       var ts = spans(list.length);
       list.forEach(function (d, k) { d.__t = ts[k]; post(d); });
     }
@@ -1318,6 +1536,29 @@ try {
 
     function txt(el) { return el ? (el.textContent || '').replace(/\s+/g, ' ').trim() : ''; }
     function later(fn) { setTimeout(function () { try { fn(); } catch (e) { /* never breaks a page */ } }, 0); }
+    /* Saved-work helpers (16 Oct 2026). `same` compares two pieces of text as
+       the ledger stored them (whitespace runs collapsed); `quizKey` is the
+       server's normaliseQuizText (consumer/answers.js) — the text a KS4 quiz
+       card's id is hashed from — so a card is matched to its saved row by the
+       very text the id came from. `byId` groups the child's rows per question,
+       oldest first; the last of a group is the latest attempt. */
+    function same(a, b) {
+      return String(a == null ? '' : a).replace(/\s+/g, ' ').trim() === String(b == null ? '' : b).replace(/\s+/g, ' ').trim();
+    }
+    function quizKey(t) {
+      var x = String(t == null ? '' : t);
+      try { x = x.normalize('NFKC'); } catch (e) { /* old browser */ }
+      return x.replace(/^\s*\d+[.)]\s+/, '').replace(/\s+/g, ' ').trim().toLowerCase();
+    }
+    function byId(rows) {
+      var out = {};
+      (rows || []).forEach(function (r) {
+        if (!r || !r.question_id) { return; }
+        (out[r.question_id] = out[r.question_id] || []).push(r);
+      });
+      return out;
+    }
+    function lastOf(list) { return list && list.length ? list[list.length - 1] : null; }
     var lastText = {};                  // question_id → the last written text sent
 
     /* ── KS3 lesson: everything outside the ladder that takes an answer ──
@@ -1689,6 +1930,101 @@ try {
           });
         } catch (err) { /* capture never breaks a lesson */ }
       }, true);
+
+      /* ── Saved work, KS3: everything OUTSIDE the ladder ──
+         (The ladder puts its own rungs back — shared/ks3.js wireLadder.)
+         Each saved answer is given again, oldest first, through the page's
+         own control: the same option pressed, the same "Your turn" lines
+         typed and checked. So the page ends in exactly the state the child
+         left it in — a changed guess shows the latest guess, an instrument
+         shows every unit committed — and every lock, reveal, rail stop and
+         progress count is the page's own doing. `mute` is held by the loader
+         throughout, so none of it is sent again. Ids are read the way the
+         capture above WRITES them (slug#start, slug#<activity>,
+         slug#<activity>-<n>). */
+      replay.push(function (rows) {
+        var slug = ks3Slug();
+        var acts = {};
+        Array.prototype.forEach.call(document.querySelectorAll('[data-activity]'), function (el) {
+          var a = el.getAttribute('data-activity');
+          if (a && !acts[a] && !el.closest('.ks3-ladder')) { acts[a] = el; }
+        });
+        var pressOpt = function (list, label) {
+          for (var i = 0; i < list.length; i += 1) {
+            if (same(optLabel(list[i]), label)) {
+              if (list[i].getAttribute('aria-pressed') !== 'true' && !list[i].disabled) { list[i].click(); }
+              return;
+            }
+          }
+        };
+        var one = function (key, r) {
+          if (key === 'start') {
+            var hook = acts.hook;
+            var kd = hook && hook.hasAttribute('data-keyedblock') ? hook.querySelector('[data-keyed]') : null;
+            if (kd) { pressOpt(kd.querySelectorAll('.ks3-option'), r.answer); }
+            return;
+          }
+          var sec = acts[key];
+          if (sec && !(sec.hasAttribute('data-instrument') && !sec.hasAttribute('data-keyedblock'))) {
+            var keyed = sec.hasAttribute('data-keyedblock') ? sec.querySelector('[data-keyed]') : null;
+            pressOpt((keyed || sec).querySelectorAll('.ks3-option'), r.answer);
+            return;
+          }
+          var m = /^(.+)-(\d+)$/.exec(key);
+          if (!m || !acts[m[1]]) { return; }
+          sec = acts[m[1]];
+          var n = parseInt(m[2], 10);
+          if (r.answer_kind === 'written') {
+            // "Your turn": the five lines, typed back, then checked.
+            var pre = null, bs = sec.querySelectorAll('button');
+            for (var i = 0; i < bs.length && !pre; i += 1) { pre = cfaPrefix(bs[i]); }
+            if (!pre) { return; }
+            var q = sec.querySelector('[' + pre + '-q="' + (n - 1) + '"]');
+            if (!q) { return; }
+            var rev = q.querySelector('[' + pre + '-reveal]');
+            if (rev && !rev.hasAttribute('hidden')) { return; }       // already open
+            var lines = String(r.answer || '').split('\n');
+            var ins = q.querySelectorAll('[' + pre + '-input]');
+            for (var k = 0; k < ins.length; k += 1) {
+              var lab = ins[k].id ? q.querySelector('label[for="' + ins[k].id + '"]') : null;
+              var line = lines[k] == null ? '' : lines[k];
+              var lt = lab ? txt(lab) : '';
+              if (lt && line.indexOf(lt + ': ') === 0) { line = line.slice(lt.length + 2); }
+              ins[k].value = line;
+              try { ins[k].dispatchEvent(new Event('input', { bubbles: true })); } catch (e) { /* old browser */ }
+            }
+            var chk = q.querySelector('[' + pre + '-check]');
+            if (chk && !chk.disabled) { chk.click(); }
+            return;
+          }
+          if (kindOf(sec, KIND_B5C)) {
+            var w = sec.querySelector('[data-b5c]') || sec;
+            var tabs = w.querySelectorAll('[data-b5c-pick]');
+            var item = tabs[n - 1] ? tabs[n - 1].getAttribute('data-b5c-pick') : null;
+            if (!item) { return; }
+            if (tabs[n - 1].getAttribute('aria-pressed') !== 'true') { tabs[n - 1].click(); }
+            pressOpt(w.querySelectorAll('.ks3-b5c-opt[data-owner="' + item + '"]'), r.answer);
+            var c5 = w.querySelector('[data-b5c-check]');
+            if (c5 && !c5.disabled) { c5.click(); }
+            return;
+          }
+          if (kindOf(sec, KIND_A)) {
+            var keys = [], opts = [], all = sec.querySelectorAll('button');
+            for (var j = 0; j < all.length; j += 1) {
+              if (!isOption(all[j]) || all[j].closest('.ks3-ladder')) { continue; }
+              var uk = unitOf(all[j], sec).key;
+              if (keys.indexOf(uk) < 0) { keys.push(uk); }
+              if (keys.indexOf(uk) === n - 1) { opts.push(all[j]); }
+            }
+            pressOpt(opts, r.answer);
+          }
+        };
+        (rows || []).forEach(function (r) {
+          var id = String(r.question_id || '');
+          if (id.indexOf(slug + '#') !== 0 || /#(recall|apply|explain|produce)$/.test(id)) { return; }
+          try { one(id.slice(slug.length + 1), r); } catch (e) { /* one block never stops the rest */ }
+        });
+      });
       return;
     }
 
@@ -1753,6 +2089,60 @@ try {
         });
       } catch (err) { /* capture never breaks the quiz */ }
     }, true);
+
+    /* ── Saved work, KS4 classic: the quiz cards ──
+       A card's saved row is found by the card's own question text (its id is
+       hashed from exactly that), and the option the child chose is pressed
+       again: the card's script marks it, shows the feedback and moves the
+       progress line, as it did live. Only the FIRST resolution was ever sent
+       and the card locks after it, so the first row is the one. (The matching
+       exercise is drag-placed and is not put back.) */
+    replay.push(function (rows) {
+      var first = {};
+      (rows || []).forEach(function (r) {
+        if (!r || !/^ks4q:/.test(String(r.question_id || '')) || r.answer_kind !== 'choice') { return; }
+        var k = quizKey(r.question_text);
+        if (!(k in first)) { first[k] = r; }
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('.quiz-card'), function (card) {
+        if (card.hasAttribute('data-answered')) { return; }
+        var r = first[quizKey(txt(card.querySelector('.q-text')))];
+        if (!r) { return; }
+        var opts = card.querySelectorAll('.quiz-opt');
+        for (var i = 0; i < opts.length; i += 1) {
+          if (same(opts[i].textContent, r.answer)) { if (!opts[i].disabled) { opts[i].click(); } return; }
+        }
+      });
+      /* The matching exercise: each card's LATEST checked place
+         (`ks4c:<st>:match-<n>`, the term of the row it sat in) is put back
+         the way the page's own drop handler places a card, then the page's
+         own "Check Answers" marks them. Rows exist only for a checked
+         exercise, so a restored one is a checked one. */
+      var ids = byId(rows);
+      Array.prototype.forEach.call(document.querySelectorAll('.match-check-btn'), function (chk) {
+        var m = /checkMatching\('([^']*)'/.exec(chk.getAttribute('onclick') || '');
+        var st = (m && m[1]) || pathSlug;
+        var scope = chk.closest('.section') || document;
+        var moved = false;
+        Array.prototype.forEach.call(scope.querySelectorAll('.match-def'), function (def) {
+          var n = parseInt(def.getAttribute('data-index'), 10);
+          var r = lastOf(ids['ks4c:' + st + ':match-' + ((isNaN(n) ? 0 : n) + 1)]);
+          if (!r || (def.parentNode && def.parentNode.classList && def.parentNode.classList.contains('match-drop'))) { return; }
+          var drops = scope.querySelectorAll('.match-drop');
+          for (var i = 0; i < drops.length; i += 1) {
+            var term = drops[i].parentNode && drops[i].parentNode.querySelector('.match-term');
+            if (drops[i].querySelector('.match-def') || !same(txt(term), r.answer)) { continue; }
+            drops[i].innerHTML = '';
+            drops[i].appendChild(def);
+            drops[i].classList.add('has-item');
+            drops[i].classList.remove('match-correct', 'match-wrong');
+            moved = true;
+            return;
+          }
+        });
+        if (moved) { chk.click(); }
+      });
+    });
 
     /* ── KS4 rebuilt (pilot) page: every shared block that takes an answer ──
        shared/ks4-runtime.js hands each redrawn block instance to the tap; a
@@ -2174,5 +2564,366 @@ try {
       try { h(api, s, prev); } catch (e) { /* capture never breaks a lesson */ }
       curBlock = null;
     };
+
+    /* ── Saved work, KS4 rebuilt (pilot) page: each block's own state ──
+       Every shared block that takes an answer is handed back the state its
+       saved answers describe, through the block's own setState — the same
+       call its buttons make — so the block draws itself exactly as it was:
+       the option picked and its verdict, the five lines typed, the chain in
+       its order, the writing with its mark scheme open. Ids are matched the
+       way the tap above WRITES them (pilotId, nth, the ladder's own slug); a
+       practice-set question by its text (the server hashed its id from it).
+       A block the child has already answered on this visit is left alone.
+       The tap then sees these states arrive; `mute` (held by the loader until
+       the redraw has run) stops any of them being sent again.
+
+       Self-marking on a fresh device: a written answer's ticks are the
+       points the server's marking credited (points_hit, 1-based, against the
+       same list the page shows) — the child's own ticks were never sent. */
+    function idxOf(opts, text) {
+      for (var i = 0; i < (opts || []).length; i += 1) { if (opts[i] && same(opts[i].text, text)) { return i; } }
+      return -1;
+    }
+    function calcBack(it, answer) {
+      var c = it.convOptions || [], a = String(answer == null ? '' : answer), conv = null, best = -1;
+      for (var i = 0; i < c.length; i += 1) {
+        var lead = String(c[i]) + ' \u2192 ';
+        if (a.indexOf(lead) === 0 && lead.length > best) { conv = i; best = lead.length; }
+      }
+      var rest = conv === null ? a : a.slice(best);
+      var unit = '';
+      (it.units || []).forEach(function (u) {
+        u = String(u);
+        if (u && (rest === u || rest.slice(-(u.length + 1)) === ' ' + u) && u.length > unit.length) { unit = u; }
+      });
+      return { conv: conv, num: (unit ? rest.slice(0, rest.length - unit.length) : rest).trim(), unit: unit };
+    }
+    function chainBack(links, herr, answer) {
+      var used = {}, out = [];
+      String(answer == null ? '' : answer).split('\n').forEach(function (line) {
+        var i;
+        for (i = 0; i < (links || []).length; i += 1) { if (!used['L' + i] && same(links[i], line)) { used['L' + i] = 1; out.push('L' + i); return; } }
+        for (i = 0; i < (herr || []).length; i += 1) { if (!used['H' + i] && herr[i] && same(herr[i].text, line)) { used['H' + i] = 1; out.push('H' + i); return; } }
+      });
+      return out;
+    }
+    function ticksBack(r, n) {
+      var t = [];
+      if (!r || !n || !Array.isArray(r.points_hit) || (r.points_total != null && r.points_total !== n)) { return t; }
+      r.points_hit.forEach(function (h) { if (h >= 1 && h <= n) { t[h - 1] = true; } });
+      return t;
+    }
+    // A Ks4Write put back; returns the marks its own tally now shows.
+    function writeBack(w, r, points, marks) {
+      if (!w || !w.logic || !r) { return null; }
+      var ws = w.logic.state || {};
+      if (ws.open || String(ws.text || '').trim()) { return null; }
+      var ticks = ticksBack(r, (points || []).length);
+      var n = ticks.filter(Boolean).length;
+      w.logic.setState({ text: String(r.answer || ''), open: true, ticks: ticks, reported: true });
+      return (points || []).length ? Math.min(marks, n) : (r.marks_scored == null ? 0 : r.marks_scored);
+    }
+    function chainSet(ch, rs, links, herr) {
+      if (!ch || !ch.logic || !rs || !rs.length || (ch.logic.state || {}).attempts) { return; }
+      ch.logic.setState({ chain: chainBack(links, herr, lastOf(rs).answer), checked: true, attempts: rs.length, reported: true });
+    }
+    replay.push(function (rows) {
+      var ids = byId(rows);
+      var quiz = {};
+      (rows || []).forEach(function (r) {
+        if (r && /^ks4q:/.test(String(r.question_id || ''))) { quiz[quizKey(r.question_text)] = r; }   // the last wins
+      });
+      var seen = [];
+      Array.prototype.forEach.call(document.querySelectorAll('[data-dc-tpl]'), function (el) {
+        var api = el.__mrbKs4;
+        if (!api || !api.logic || seen.indexOf(api) >= 0) { return; }
+        seen.push(api);
+        try { putBack(api); } catch (e) { /* one block never stops the rest */ }
+      });
+      function rowsOf(id) { return ids[pilotId(pathSlug, id)] || null; }
+      function putBack(api) {
+        var L = api.logic, p = L.props || {}, st = L.state || {}, r, rs, i;
+        switch (api.comp) {
+          case 'Ks4Guess':
+            if (!rootLevel(api) || st.pick != null || !(r = lastOf(rowsOf('start')))) { return; }
+            i = idxOf((p.options || []).slice(0, 2), r.answer);
+            if (i >= 0) { L.setState({ pick: i }); }
+            return;
+          case 'Ks4Choice':
+            if (!rootLevel(api) || st.pick != null || !(r = lastOf(rowsOf('choice-' + nth(api))))) { return; }
+            i = idxOf(p.options, r.answer);
+            if (i >= 0) { L.setState({ pick: i }); }
+            return;
+          case 'Ks4QuizBank': {
+            if (!rootLevel(api)) { return; }
+            var picks = Object.assign({}, st.picks || {}), any = false;
+            (p.questions || []).filter(Boolean).slice(0, 5).forEach(function (q, k) {
+              var qr = quiz[quizKey(q.prompt)];
+              if (!qr || picks[k] !== undefined) { return; }
+              var j = idxOf(q.options, qr.answer);
+              if (j >= 0) { picks[k] = j; any = true; }
+            });
+            if (any) { L.setState({ picks: picks }); }
+            return;
+          }
+          case 'Ks4Write':
+            if (!rootLevel(api)) { return; }
+            writeBack(api, lastOf(rowsOf('write-' + nth(api))), p.levels && p.levels.length ? [] : p.points, p.marks || 4);
+            return;
+          case 'Ks4Chain':
+            if (!rootLevel(api)) { return; }
+            chainSet(api, rowsOf('chain-' + nth(api)), p.links || [], p.herrings || []);
+            return;
+          case 'Ks4Sort': {
+            if (!rootLevel(api) || st.checked || Object.keys(st.placed || {}).length) { return; }
+            var k4 = nth(api), bins = p.bins || [], placed = {}, got = false;
+            (p.items || []).forEach(function (it, n) {
+              var sr = lastOf(rowsOf('sort-' + k4 + '-' + (n + 1)));
+              if (!sr) { return; }
+              for (var b = 0; b < bins.length; b += 1) { if (same(bins[b].label, sr.answer)) { placed[n] = bins[b].id; got = true; return; } }
+            });
+            if (got) { L.setState({ placed: placed, checked: true, reported: true }); }
+            return;
+          }
+          case 'Ks4Cfifa': {
+            if (!rootLevel(api)) { return; }
+            var kc = nth(api), qs = Object.assign({}, st.q || {}), gotC = false;
+            (p.questions || []).forEach(function (o, n) {
+              var cr = lastOf(rowsOf('cfifa-' + kc + '-' + (n + 1)));
+              if (!cr || (qs[n] && qs[n].open)) { return; }
+              var lines = String(cr.answer || '').split('\n');
+              qs[n] = { lines: (o.steps || []).map(function (stp, j) {
+                var line = lines[j] == null ? '' : lines[j], lead = stp.label ? stp.label + ': ' : '';
+                return lead && line.indexOf(lead) === 0 ? line.slice(lead.length) : line;
+              }), ticks: [], open: true };
+              gotC = true;
+            });
+            if (gotC) { L.setState({ q: qs }); }
+            return;
+          }
+          case 'Ks4Steps': {
+            if (!rootLevel(api) || p.mode !== 'attempt' || st.checked || !(r = lastOf(rowsOf('steps-' + nth(api))))) { return; }
+            var sl = String(r.answer || '').split('\n'), vals = {}, at = 0;
+            (p.steps || []).forEach(function (stp, si) {
+              (stp.lines || []).forEach(function (ln, j) {
+                var line = sl[at] == null ? '' : sl[at], lead = ln.label ? ln.label + ': ' : '';
+                at += 1;
+                vals[si + '-' + j] = lead && line.indexOf(lead) === 0 ? line.slice(lead.length) : line;
+              });
+            });
+            L.setState({ vals: vals, checked: true });
+            return;
+          }
+          case 'Ks4Ladder': {
+            var R = p.rungs || {}, slug = p.slug || pathSlug, patch = {}, has = false;
+            var lid = function (key) { return ids[pilotId(slug, key)] || null; };
+            if (st.r1 == null && (r = lastOf(lid('r1')))) {
+              i = idxOf((R.r1 || {}).options, r.answer);
+              if (i >= 0) { patch.r1 = !!((R.r1.options[i] || {}).correct); patch.r1Pick = i; has = true; }
+            }
+            if (st.r2 == null && (r = lastOf(lid('r2')))) {
+              var r2 = R.r2 || {}, kind = r2.kind || 'calc';
+              if (kind === 'calc') {
+                var cb = calcBack(r2, r.answer);
+                patch.r2conv = cb.conv; patch.r2num = cb.num; patch.r2unit = cb.unit;
+              } else if (kind === 'text') {
+                patch.r2num = String(r.answer || '');
+              } else {
+                var parts = {}, pl = String(r.answer || '').split('\n');
+                (r2.parts || []).forEach(function (pt, n) {
+                  var line = pl[n] == null ? '' : pl[n], lead = (pt.label || '') + ': ';
+                  if (line.indexOf(lead) === 0) { line = line.slice(lead.length); }
+                  var o = (pt.options || []).map(String).indexOf(line);
+                  if (o >= 0) { parts[n] = String(o); }
+                });
+                patch.r2parts = parts;
+              }
+              patch.r2 = r.is_correct === true; has = true;
+            }
+            rs = lid('r3');
+            if (st.r3 == null && rs && rs.length) {
+              patch.r3 = rs[0].is_correct === true; has = true;      // the rung scores the first check
+              chainSet(kids(api, 'Ks4Chain')[0], rs, (R.r3 || {}).links || [], (R.r3 || {}).herrings || []);
+            }
+            if (st.r4 == null && (r = lastOf(lid('r4')))) {
+              var r4 = R.r4 || {}, mk4 = r4.marks || 4;
+              var aw = writeBack(kids(api, 'Ks4Write')[0], r, r4.levels && r4.levels.length ? [] : r4.points, mk4);
+              if (aw != null) { patch.r4 = aw >= Math.ceil(mk4 / 2); patch.r4a = aw; has = true; }
+            }
+            if (has) { L.setState(patch); }
+            return;
+          }
+          case 'Ks4Practice': {
+            var RP = p.rungs || {}, LP = [RP.r1 || [], RP.r2 || [], RP.r3 || [], RP.r4 || []];
+            var q = Object.assign({}, st.q || {}), hid = st.hidden || {}, chainKeys = [], writeKeys = [], gotP = false;
+            LP.forEach(function (items, ri) {
+              items.forEach(function (it, n) {
+                var kk = ri + '-' + n, kd = it.kind || 'mcq';
+                if (kd === 'chain' && !hid[kk]) { chainKeys.push(kk); }
+                if (kd === 'write' && !hid[kk]) { writeKeys.push(kk); }
+              });
+            });
+            LP.forEach(function (items, ri) {
+              items.forEach(function (it, n) {
+                var kk = ri + '-' + n, kd = it.kind || 'mcq', cur = q[kk] || {};
+                if (cur.res != null) { return; }
+                var prs = ids[pilotId(pathSlug, 'r' + (ri + 1) + '-' + (n + 1))];
+                var pr = lastOf(prs);
+                if (!pr) { return; }
+                var base = { res: null, pick: null, conv: null, num: '', unit: '' };
+                if (kd === 'mcq') {
+                  var j = idxOf(it.options, pr.answer);
+                  if (j < 0) { return; }
+                  q[kk] = Object.assign(base, cur, { res: !!(it.options[j] || {}).correct, pick: j });
+                } else if (kd === 'calc') {
+                  var cbp = calcBack(it, pr.answer);
+                  q[kk] = Object.assign(base, cur, { res: pr.is_correct === true, conv: cbp.conv, num: cbp.num, unit: cbp.unit });
+                } else if (kd === 'chain') {
+                  q[kk] = Object.assign(base, cur, { res: prs[0].is_correct === true });
+                  chainSet(kids(api, 'Ks4Chain')[chainKeys.indexOf(kk)], prs, it.links || [], it.herrings || []);
+                } else {
+                  var mkw = it.marks || [1, 3, 3, 6][ri];
+                  var awp = writeBack(kids(api, 'Ks4Write')[writeKeys.indexOf(kk)], pr, it.levels && it.levels.length ? [] : it.points, mkw);
+                  if (awp == null) { return; }
+                  q[kk] = Object.assign(base, cur, { res: awp >= Math.ceil(mkw / 2), awarded: awp });
+                }
+                gotP = true;
+              });
+            });
+            if (gotP) { L.setState({ q: q }); }
+            return;
+          }
+          default:
+            return;
+        }
+      }
+    });
+  })();
+} catch (e) {}
+
+/* ── Saved work (Mide, 16 Oct 2026): a child's lesson comes back as they
+   left it ──────────────────────────────────────────────────────────────
+   "Pages don't restore saved work. When a child returns to a lesson … only
+   written answers reappear (from the device). Multiple-choice answers and the
+   tutor conversation are gone, though both are on the server. On load, every
+   page restores from the server: every answer the child gave, right/wrong
+   and marks, where they got to, and the full tutor conversation for that
+   lesson. It must work on a different device and after signing out and back
+   in."
+
+   ONLY FOR A CHILD SESSION (MrBadmusConfig.isChildSession — the session's
+   own `@children.mrbadmus.internal` address, no network call), on a lesson
+   page. Mide's brief is the ruling that a family or organisation child's
+   lesson is put back on load; for every school pupil the MRB-291 /
+   architecture §4.8.1 rule ("nothing ticked on load") stands, and this
+   installs nothing — no request, no global, no listener.
+
+   One read: GET /api/consumer/child/saved?path=<this page>, the child's own
+   answers for this lesson (every attempt, oldest first) and their tutor
+   exchanges on it. Then, once the page has wired itself:
+     · the KS3 ladder puts its rungs back (shared/ks3.js, via `when`);
+     · every other answerable block is replayed through the page's own
+       controls or state (the `replay` functions the answer capture above
+       registers), with the capture MUTED — nothing restored is ever sent
+       again, so the ledger gets no duplicate rows;
+     · the tutor panel gets the conversation (MrBadmus.restoreTalk).
+   The scroll position and focus are put back afterwards: restoring never
+   moves the page. If the read fails (offline, an expired token), nothing is
+   replayed and the page keeps what it already shows from the device — the
+   KS3 written rungs' own localStorage copy is the offline fallback.
+   `state` is 'loading' until all of this has happened, then 'done', and
+   `mrb:saved-applied` is dispatched on document (the KS4 "lesson done" signal
+   waits for it, so a lesson finished on an EARLIER visit is not re-sent). */
+try {
+  (function () {
+    var path = window.location.pathname || '';
+    if (!/^\/(ks3|combined|triple)\//.test(path)) { return; }
+    var c = window.MrBadmusConfig;
+    if (!c || !c.BACKEND_URL || !c.AUTH_STORAGE_KEY || typeof c.isChildSession !== 'function') { return; }
+    var session = null;
+    try { session = JSON.parse(window.localStorage.getItem(c.AUTH_STORAGE_KEY) || 'null'); } catch (e) { return; }
+    if (!session || !session.access_token || !c.isChildSession(session)) { return; }
+
+    var waiting = [];
+    var saved = window.MrBadmusSaved = {
+      state: 'loading',
+      data: null,                 // {answers, tutor} once read; null if the read failed
+      // fn(data) once the saved work is in (data null when it could not be
+      // read). Called at once when it already is.
+      when: function (fn) {
+        if (typeof fn !== 'function') { return; }
+        if (saved.state === 'done' || saved.state === 'applying') { try { fn(saved.data); } catch (e) {} return; }
+        waiting.push(fn);
+      }
+    };
+
+    var read = new Promise(function (resolve) {
+      var done = false;
+      var finish = function (v) { if (!done) { done = true; resolve(v); } };
+      setTimeout(function () { finish(null); }, 12000);          // never hold the page longer
+      // A CURRENT token (MrBadmus.childAuth refreshes an expired one), and a
+      // 401 is refreshed once and asked once more.
+      var auth = window.MrBadmus && window.MrBadmus.childAuth;
+      var ask = function (tok) {
+        return fetch(c.BACKEND_URL + '/api/consumer/child/saved?path=' + encodeURIComponent(path), {
+          headers: { 'Authorization': 'Bearer ' + tok, 'Accept': 'application/json' },
+          cache: 'no-store'
+        });
+      };
+      try {
+        Promise.resolve(auth ? auth.token(c) : session.access_token)
+          .then(function (tok) { return ask(tok || session.access_token); })
+          .then(function (r) {
+            if (r.status === 401 && auth) {
+              return auth.refresh(c).then(function (t2) { return t2 ? ask(t2) : r; });
+            }
+            return r;
+          })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (b) {
+            finish(b && b.ok && Array.isArray(b.answers) ? { answers: b.answers, tutor: Array.isArray(b.tutor) ? b.tutor : [] } : null);
+          }, function () { finish(null); });
+      } catch (e) { finish(null); }
+    });
+    // The page has wired itself once DOMContentLoaded's own listeners have run.
+    var wired = new Promise(function (resolve) {
+      var go = function () { setTimeout(resolve, 0); };
+      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
+    });
+
+    Promise.all([read, wired]).then(function (v) {
+      var data = v[0];
+      saved.data = data;
+      saved.state = 'applying';
+      var cap = window.MrBadmusAnswerCapture;
+      var x = window.scrollX, y = window.scrollY, had = document.activeElement;
+      if (cap && cap.mute) { cap.mute(true); }
+      try {
+        waiting.splice(0).forEach(function (fn) { try { fn(data); } catch (e) {} });
+        if (data && data.answers.length && cap && cap.replay) {
+          cap.replay.forEach(function (fn) { try { fn(data.answers); } catch (e) {} });
+        }
+        if (data && data.tutor.length && window.MrBadmus && typeof window.MrBadmus.restoreTalk === 'function') {
+          window.MrBadmus.restoreTalk(data.tutor);
+        }
+      } catch (e) { /* restoring never breaks a lesson */ }
+      // The rebuilt KS4 blocks redraw on the next frame and the KS3 capture
+      // reads its verdicts a tick later: the mute is held past both.
+      var raf = window.requestAnimationFrame || function (f) { return setTimeout(f, 16); };
+      raf(function () {
+        raf(function () {
+          setTimeout(function () {
+            if (cap && cap.mute) { cap.mute(false); }
+            try {
+              if (had && had !== document.activeElement && typeof had.focus === 'function' && had !== document.body) { had.focus({ preventScroll: true }); }
+              else if (document.activeElement && document.activeElement !== had && document.activeElement.blur) { document.activeElement.blur(); }
+            } catch (e) {}
+            window.scrollTo(x, y);
+            saved.state = 'done';
+            try { document.dispatchEvent(new CustomEvent('mrb:saved-applied')); } catch (e) {}
+          }, 60);
+        });
+      });
+    });
   })();
 } catch (e) {}

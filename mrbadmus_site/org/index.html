@@ -16,13 +16,11 @@
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
-<link rel="stylesheet" href="/shared/ks3-theme.css?v=16898136"/>
-  <link rel="stylesheet" href="/consumer/consumer.css?v=123d1b60"/>
-  <link rel="stylesheet" href="/org/org.css?v=c3d813f7"/>
-<style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
+<link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=6662eebf"/>
+  <link rel="stylesheet" href="/org/org.css?v=a05b30e7"/>
 </head>
 <body>
-<div class="mrb-theme-float"><span class="mrb-theme-slot" data-mrb-theme></span></div>
 
 
 <div class="rd og-page og-root" data-mode="ks3" id="c-main">
@@ -33,6 +31,7 @@
       <!-- ⊕ One mark (Mide, 13 Sep 2026) — supersedes MRB-316 ruling 1's
            "no chevron on a staff surface": every page carries the one lockup. -->
       <!--mrb:brand href=/org/index.html--><a class="mrb-brand" href="/org/index.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
+      <span class="mrb-theme-slot c-theme-btn" data-mrb-theme="compact"></span>
     </div>
     <div class="og-side-org">
       <p class="og-side-kind" id="side-kind">—</p>
@@ -60,6 +59,8 @@
         <option value="messages">Messages</option>
         <option value="account">Account</option>
       </select>
+      <!-- ⊕ 16 Oct 2026: the theme control, in this header. -->
+      <span class="mrb-theme-slot c-head-theme" data-mrb-theme="compact"></span>
     </header>
 
     <main class="og-main" id="main">
@@ -69,8 +70,8 @@
   </div>
 </div>
 
-<script src="/shared/config.js?v=ab7a89ac"></script>
-<script src="/consumer/consumer-common.js?v=098698a0"></script>
+<script src="/shared/config.js?v=bb268b6f"></script>
+<script src="/consumer/consumer-common.js?v=8cba5fba"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    /org/index.html — the organisation dashboard. MRB-318, Night 3.
@@ -1554,7 +1555,8 @@
 
       el('mnav').onchange = function () { go(el('mnav').value); };
       el('signout').onclick = function () {
-        ctx.sb.auth.signOut().then(function () { C.go('/org/sign-in.html'); });
+        // ⊕ Orion fix: this device only — never the person's other devices.
+        ctx.sb.auth.signOut({ scope: 'local' }).then(function () { C.go('/org/sign-in.html'); });
       };
 
       /* ⊕ DROP 2 — the thread list, read alongside the org payload rather

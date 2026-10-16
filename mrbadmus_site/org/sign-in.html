@@ -20,18 +20,11 @@
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
-<link rel="stylesheet" href="/shared/ks3-theme.css?v=16898136"/>
-  <link rel="stylesheet" href="/consumer/consumer.css?v=123d1b60"/>
-  <link rel="stylesheet" href="/org/org.css?v=c3d813f7"/>
-<style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
+<link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=6662eebf"/>
+  <link rel="stylesheet" href="/org/org.css?v=a05b30e7"/>
 </head>
 <body>
-<!-- ⊕ B2C polish (9 Oct 2026): the phone row for the theme control. The
-     header slot below is theme.js's one-icon compact menu, and at 360-390
-     the full Light/Dark/System group does not fit beside the header's own
-     buttons; so below 601px the header slot hides and this row shows the
-     full group, in flow, above the header (consumer.css). -->
-<div class="mrb-theme-float c-theme-phone"><span class="mrb-theme-slot" data-mrb-theme></span></div>
 <!-- ⊕ B2C polish: the theme control lives in the header (below), beside
      "Family sign in" — as a fixed float it sat on top of that link. -->
 
@@ -119,8 +112,8 @@
   </main>
 </div>
 
-<script src="/shared/config.js?v=ab7a89ac"></script>
-<script src="/consumer/consumer-common.js?v=098698a0"></script>
+<script src="/shared/config.js?v=bb268b6f"></script>
+<script src="/consumer/consumer-common.js?v=8cba5fba"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    /org/sign-in.html — MRB-318, Night 3.
@@ -210,7 +203,9 @@
          next visit starts from a clean form rather than from a session that
          can only ever be refused. */
       function refuse() {
-        return sb.auth.signOut().catch(function () { /* already gone */ })
+        // ⊕ Orion fix: this device only — a refused visitor's OTHER
+        // sessions (a teacher's school laptop, say) are none of this page's business.
+        return sb.auth.signOut({ scope: 'local' }).catch(function () { /* already gone */ })
           .then(function () {
             say(elErr, 'That account isn’t set up for an organisation on ' +
                        'MrBadmus. If it should be, write to support@mrbadmus.com.');

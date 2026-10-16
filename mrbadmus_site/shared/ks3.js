@@ -194,17 +194,37 @@
     var cap = window.MrBadmusAnswerCapture;
     if (cap && cap.visitId) { body.visit_id = cap.visitId; }
 
-    try {
-      fetch(cfg.BACKEND_URL + "/api/quiz-score", {
+    function post(tok) {
+      return fetch(cfg.BACKEND_URL + "/api/quiz-score", {
         method: "POST",
         // ⊕ MRB-239 — `keepalive` is what lets this survive the unload that
         // triggered it. Without it the pagehide send is a request the
         // browser is entitled to cancel on its way out, which is exactly
         // when it is most needed.
         keepalive: true,
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + tok },
         body: JSON.stringify(body)
-      }).catch(function () { /* best-effort — the ladder itself never waits on this */ });
+      });
+    }
+    /* ⊕ Saved work follow-up (16 Oct 2026) — for a FAMILY CHILD this post
+       is what marks the lesson done (and so keeps their streak), so it uses
+       a CURRENT token (MrBadmus.childAuth refreshes an expired one) and a
+       401 is refreshed once and sent once more. `cap` exists only on a child
+       session; a school pupil's send is exactly as before. */
+    var auth = cap && window.MrBadmus && window.MrBadmus.childAuth;
+    try {
+      if (auth) {
+        Promise.resolve(auth.token(cfg)).then(function (t) { return post(t || token); })
+          .then(function (r) {
+            if (r && r.status === 401) {
+              return auth.refresh(cfg).then(function (t2) { return t2 ? post(t2) : r; });
+            }
+            return r;
+          })
+          .catch(function () { /* best-effort — the ladder itself never waits on this */ });
+      } else {
+        post(token).catch(function () { /* best-effort — the ladder itself never waits on this */ });
+      }
     } catch (e) { /* private mode, or fetch unavailable — degrade silently */ }
   }
 
@@ -878,6 +898,45 @@
         });
       });
 
+      /* ⊕ Saved work (16 Oct 2026) — a family child's answer, put back from
+         the server on load: the rung exactly as the click above leaves it
+         (locked, the verdict marks, the feedback), with NONE of the click's
+         side effects — no answerOut (it is already in the ledger), no
+         stampTime (a restored rung's time is unknown, as for every restored
+         rung), no live refresh. Reached only through MrBadmusSaved, which
+         exists for a child session and nobody else. */
+      rec.restore = function (btn) {
+        if (rec.resolved || options.indexOf(btn) < 0) { return; }
+        rec.resolved = true;
+        rung.setAttribute("data-locked", "1");
+        var correct = btn.getAttribute("data-correct") === "1";
+        rec.met = correct;
+        var chosen = answerParts(options.indexOf(btn), btn);
+        rec.selectedText = chosen.text;
+        rec.selectedLetter = chosen.letter;
+        options.forEach(function (b, i) {
+          if (b.getAttribute("data-correct") === "1") {
+            var right = answerParts(i, b);
+            rec.correctText = right.text;
+            rec.correctLetter = right.letter;
+          }
+        });
+        each(options, function (b) {
+          b.disabled = true;
+          var mark = b.querySelector(".ks3-opt-mark");
+          if (b.getAttribute("data-correct") === "1") {
+            b.classList.add("is-correct");
+            if (mark) { mark.innerHTML = TICK_SVG; }
+          } else if (b === btn) {
+            b.classList.add("is-wrong");
+            if (mark) { mark.innerHTML = CROSS_SVG; }
+          } else {
+            b.classList.add("is-spent");
+          }
+        });
+        feedback(correct, btn.getAttribute("data-feedback"));
+      };
+
       rec.reopen = function () {
         rung.removeAttribute("data-locked");
         rec.resolved = false;
@@ -1095,6 +1154,32 @@
         saveWork();
       };
 
+      /* ⊕ Saved work (16 Oct 2026) — a family child's writing, put back from
+         the SERVER (any device, after signing out and in). The server's row
+         wins over this device's copy. The ticks are this device's own when
+         its copy is the same writing (they are the child's self-mark and
+         were never sent); otherwise — a fresh device — the points the
+         server's marking credited (points_hit, 1-based, against these same
+         criteria), so the tally shows the marks the answer earned. Reached
+         only through MrBadmusSaved (a child session only). */
+      rec.restoreSaved = function (row) {
+        if (!answer || !row) { return; }
+        var text = String(row.answer == null ? "" : row.answer);
+        var local = work[rec.key];
+        var keep = !!(local && typeof local.text === "string" && local.text.trim() === text.trim() &&
+                      local.ticks && local.ticks.length);
+        answer.value = keep ? local.text : text;
+        boxes.forEach(function (b, i) { b.checked = keep ? !!local.ticks[i] : false; });
+        if (!keep && Array.isArray(row.points_hit) &&
+            (row.points_total == null || row.points_total === boxes.length)) {
+          row.points_hit.forEach(function (h) { if (boxes[h - 1]) { boxes[h - 1].checked = true; } });
+        }
+        show();
+        rec.lastSaid = text.trim();
+        gate();
+        saveWork();
+      };
+
       // Restore this student's own work, so a returning student sees
       // their own writing rather than an empty box.
       var saved = work[rec.key];
@@ -1153,6 +1238,49 @@
         wireMarked(rung, rec);
       }
     });
+
+    /* ⊕ Saved work (Mide, 16 Oct 2026) — FOR A FAMILY OR ORGANISATION CHILD
+       ONLY, the ladder comes back from the server as they left it: each
+       rung's LATEST answer (a rung answered wrong, retried and answered
+       right reads as it does after those clicks — right), its verdict and
+       feedback, the written rungs' writing and marks, and so the bar and
+       the score line. This supersedes MRB-291 / architecture §4.8.1
+       ("nothing ticked on load") for those children, by Mide's brief;
+       `MrBadmusSaved` is installed by shared/mrbadmus.v2.js for a child
+       session and for nobody else, so a school pupil's ladder never reaches
+       this and is exactly as before. Nothing here is sent: no answer event,
+       no time stamp, and a ladder that comes back COMPLETE is latched as
+       submitted — its score was sent by the visit that completed it. */
+    if (window.MrBadmusSaved && typeof window.MrBadmusSaved.when === "function") {
+      window.MrBadmusSaved.when(function (data) {
+        if (!data || !data.answers || touched) { return; }
+        var latest = {};
+        data.answers.forEach(function (r) {
+          if (r && r.question_id && String(r.question_id).indexOf(slug + "#") === 0) { latest[r.question_id] = r; }
+        });
+        var any = false;
+        rungs.forEach(function (r) {
+          var row = latest[slug + "#" + r.key];
+          if (!row) { return; }
+          if (r.mode === "marked" && row.answer_kind === "choice" && !r.resolved && r.restore) {
+            var hit = null;
+            r.options.forEach(function (b) {
+              var lab = b.querySelector(".ks3-opt-label");
+              var t = ((lab ? lab.textContent : b.textContent) || "").replace(/\s+/g, " ").trim();
+              if (!hit && t === String(row.answer == null ? "" : row.answer).replace(/\s+/g, " ").trim()) { hit = b; }
+            });
+            if (hit) { r.restore(hit); any = true; }
+          } else if (r.mode === "self" && row.answer_kind === "written" && r.restoreSaved) {
+            r.restoreSaved(row);
+            any = true;
+          }
+        });
+        if (!any) { return; }
+        var all = rungs.length > 0 && rungs.every(function (r) { return r.resolved; });
+        if (all) { submitted = true; }
+        refresh();
+      });
+    }
 
     retry.addEventListener("click", function () {
       var first = null;

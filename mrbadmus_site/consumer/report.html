@@ -16,8 +16,8 @@
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
-<link rel="stylesheet" href="/shared/ks3-theme.css?v=16898136"/>
-  <link rel="stylesheet" href="/consumer/consumer.css?v=123d1b60"/>
+<link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=6662eebf"/>
   <style>
   /* ═══════════════════════════════════════════════════════════════════════
      consumer/report.html — Claude Design's `Termly Report.dc.html`.
@@ -213,6 +213,7 @@
 
   @media print {
     @page { size: A4; margin: 0; }
+    .rpt-theme { display: none !important; }
     html, body { background: #fff; }
     .rpt-root { background: #fff; padding: 0; min-height: 0; }
     .rpt-sheet {
@@ -226,10 +227,8 @@
     .rpt-actions { display: none !important; }
   }
   </style>
-<style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
 </head>
 <body>
-<div class="mrb-theme-float"><span class="mrb-theme-slot" data-mrb-theme></span></div>
 
 
 <div class="rd rpt-root" data-mode="ks3" id="rpt-root">
@@ -247,10 +246,10 @@
   </div>
 </div>
 
-<script src="/shared/config.js?v=ab7a89ac"></script>
+<script src="/shared/config.js?v=bb268b6f"></script>
 <!-- Front door (12 Oct 2026): the one map; consumer-common asks it whether a school pupil has wandered in. -->
-<script src="/shared/account.js?v=70302fa6"></script>
-<script src="/consumer/consumer-common.js?v=098698a0"></script>
+<script src="/shared/account.js?v=ccaf2d73"></script>
+<script src="/consumer/consumer-common.js?v=8cba5fba"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/report.html — the termly report. MRB-317 Night 3.
@@ -470,7 +469,7 @@
     ].filter(Boolean).join(' · ');
 
     document.getElementById('c-main').innerHTML =
-      '<div style="display:flex;align-items:center;gap:8pt;padding:0 0 8pt;margin-bottom:16pt;' +
+      '<div class="rpt-brandrow" style="display:flex;align-items:center;gap:8pt;padding:0 0 8pt;margin-bottom:16pt;' +
         'border-bottom:1.5pt solid #221E1B">' +
         '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">' +
           '<path d="M4 4l8 8-8 8" fill="none" stroke="#E4572E" stroke-width="3.2" ' +
@@ -480,7 +479,11 @@
         '<span style="font-family:\'Bricolage Grotesque\',sans-serif;font-weight:800;font-size:13pt;' +
           'letter-spacing:-.02em;color:#221E1B">MrBadmus</span>' +
         (r.ref ? ('<span class="rpt-kicker" style="margin-left:auto">Report ref ' + esc(r.ref) +
-                  '</span>') : '') + '</div>' +
+                  '</span>') : '') +
+        /* ⊕ 16 Oct 2026: the theme control ends the sheet's brand row (it was a
+           pill floating above the sheet). Never printed — see @media print. */
+        '<span class="mrb-theme-slot c-head-theme rpt-theme" data-mrb-theme="compact" style="margin-left:' +
+          (r.ref ? '4pt' : 'auto') + '"></span></div>' +
       '<p class="rpt-mono" style="margin:0;font-size:10pt;letter-spacing:.14em;' +
         'text-transform:uppercase;color:#5F564F">Science progress report · ' +
         esc(r.term || term) + '</p>' +

@@ -576,11 +576,19 @@
       try { var ce = root.MRBClassEntry; if (ce && ce.dropCaches) ce.dropCaches(); } catch (e) {}
       _memo = null;
       var revoke = Promise.resolve();
+      /* ⊕ Orion fix (16 Oct 2026): a FAMILY sign-out (parent, family or
+         organisation child, organisation staff) ends this device's session
+         only. supabase-js's default scope is 'global', which ends every
+         session the account has — a child signing out on the family laptop
+         was signed out on their own phone mid-lesson. School pupils, staff
+         and the operator keep the default, unchanged. */
+      var family = door === DOORS.parent || door === DOORS.child || door === DOORS.org_staff ||
+        !!(session && Cfg && typeof Cfg.isChildSession === 'function' && Cfg.isChildSession(session));
       try {
         if (opts.sb && opts.sb.auth && typeof opts.sb.auth.signOut === 'function') {
-          revoke = Promise.resolve(opts.sb.auth.signOut());
+          revoke = Promise.resolve(family ? opts.sb.auth.signOut({ scope: 'local' }) : opts.sb.auth.signOut());
         } else if (session && conf.url) {
-          revoke = root.fetch(conf.url + '/auth/v1/logout', {
+          revoke = root.fetch(conf.url + '/auth/v1/logout' + (family ? '?scope=local' : ''), {
             method: 'POST', keepalive: true,
             headers: { 'apikey': conf.key, 'Authorization': 'Bearer ' + session.access_token }
           });
