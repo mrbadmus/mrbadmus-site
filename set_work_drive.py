@@ -896,11 +896,14 @@ def check_write(t_teacher, scopes):
     # ── C2 · scope_spoof_rejected ─────────────────────────────────────
     #
     # ⚠️ THE REFUSAL IS AT THE SCOPE, NOT AT THE POOL, AND THAT IS STRONGER.
-    # The tree is RE-DERIVED from the class on every request, so `meiosis` is
+    # The tree is RE-DERIVED from the class on every request, so `dna-structure` is
     # not "found and then rejected" for a combined class — it is not in the
     # tree that gets walked, so there is nothing to find. A filter applied
     # after a lookup is a filter a caller can forget.
-    for label, ref, kind in (("a triple-only subtopic", "meiosis", "subtopic"),
+    # ⊕ 14 Oct 2026: was `meiosis`, which BANK-FLAGS.sql / backend 7412690
+    # re-flagged as combined content; `dna-structure` is still triple-only,
+    # the same swap test_set_work_v2 made.
+    for label, ref, kind in (("a triple-only subtopic", "dna-structure", "subtopic"),
                              ("the space topic", "space", "topic"),
                              ("a KS3 unit code", "B1", "topic"),
                              ("something invented", "not-a-real-topic", "topic")):
@@ -913,9 +916,9 @@ def check_write(t_teacher, scopes):
 
     # ── C3 · foreign_question_rejected — the meiosis-in-Energy-Changes case ─
     #
-    # Two ids from `meiosis` (triple-only BIOLOGY) posted under `energy-changes`
-    # (CHEMISTRY) at the combined class. It is wrong three ways at once — wrong
-    # topic, wrong subject, wrong pathway — and the route must not distinguish
+    # Two ids from `meiosis` (BIOLOGY) posted under `energy-changes`
+    # (CHEMISTRY) at the combined class. It is wrong two ways at once — wrong
+    # topic, wrong subject (meiosis stopped being triple-only on 14 Oct) — and the route must not distinguish
     # them: a missing id and an out-of-scope id are ONE refusal, because telling
     # them apart would confirm the existence of a question the caller was never
     # offered.
@@ -1626,6 +1629,25 @@ FAFF_EXACT = {
     "Type", "Deck", "Flashcards", "Mode", "Rule",
     "Pupils write the answers", "Ready-made cards",
     "Stretch", "Support", "Secure", "Quick",
+    # ⊕ x-setwork (Prompt X) — `SAY.setAutomatically`, the automatic
+    # producer's tag when the row has no week number. Its `· Wk N` form is in
+    # FAFF_PATTERNS below, whose comment already says this literal is "covered
+    # by every string in SAY is in one of the two sets" — it never was, which
+    # is the inherited `faff_sweep (the table)` red on main. Registered here,
+    # where that comment always meant it to be.
+    "Set automatically",
+    # ⊕ CATCH-UP (14 Oct 2026, docs/catch-up/PLAN.md §3) — SEVEN, all nouns
+    # or noun phrases. `Catch-up` is the third type chip beside `Questions`
+    # and `Flashcards`. `Pupils` and `Lesson` are the step names that replace
+    # `Classes` and `Topic` (the third, `Questions`, is already here) and the
+    # labels over the same two lists. `Search lessons` is the search box's
+    # placeholder AND its accessible name — one string, both jobs, so it sits
+    # here rather than on FAFF_ARIA. `All lessons` is the chip beside the
+    # class's current topic (whose own label is DATA, a topic name). `No
+    # lessons` / `No pupils` are the two empty states in the tag slot, where
+    # `Unavailable` and `Loading` already go — one noun phrase each, no third.
+    "Catch-up", "Pupils", "Lesson", "Search lessons", "All lessons",
+    "No lessons", "No pupils",
 }
 # ⚠️ A SECOND SET, AND SPLITTING THEM IS THE POINT RATHER THAN A CONCESSION.
 # These four are `aria-label`s on the date and time inputs and are never
@@ -1657,6 +1679,9 @@ FAFF_PATTERNS = [
     # covered by "every string in SAY is in one of the two sets".
     re.compile(r"^Set automatically · Wk \d+$"),
     re.compile(r"^\d+ students?$"),
+    # ⊕ Catch-up — `SAY.catchUpPupils(n)`, the toast's second half on a
+    # catch-up ("<title> · 1 pupil"), exactly `pupils(n)`'s shape.
+    re.compile(r"^\d+ pupils?$"),
     re.compile(r"^\d+\.$"),                      # the question number, "1."
     re.compile(r"^.{1,80} · .+$"),               # the toast: title · class(es)
     # ⊕ MRB-342.2 — the note field's live count, and the two ruled clamp
@@ -2938,6 +2963,17 @@ def check_faff(p, scopes):
            "counter twice, the pool clamp note in two tier registers, the "
            "ceiling clamp note) all match their ruled pattern",
            "; ".join(composed2) if not bad2 else str(bad2))
+
+    # ⊕ Catch-up — its one composed string, in both numbers.
+    composed3 = p.eval("""(function(){var S=window.MRBSetWork.SAY;
+        return [S.catchUpPupils(1), S.catchUpPupils(3)];})()""")
+    bad3 = [c for c in composed3
+            if c not in FAFF_EXACT
+            and not any(r.match(c) for r in FAFF_PATTERNS)]
+    record(not bad3,
+           "faff_sweep — catch-up's composed string (the toast's pupil "
+           "count, singular and plural) is a label plus a number",
+           "; ".join(composed3) if not bad3 else str(bad3))
 
     # ⚠️ AND THE THREE v1 SENTENCES MUST BE GONE BY NAME. A general "no long
     # strings" rule would pass a NEW sentence; naming the ones that were there

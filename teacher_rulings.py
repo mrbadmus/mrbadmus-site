@@ -3830,6 +3830,102 @@ _CLASS_ACTION_BTN = _PICK_ENTRY_BTN
 
 
 INSERT_AT = {
+    # ── ⊕ CATCH-UP, 14 Oct 2026 · THE STUDENT SCREEN ────────────────────────
+    #
+    # This pupil's OWN catch-ups, labelled Catch-up, between the tiles and the
+    # submission history. Not in the history table: that table is homework,
+    # its tiles and its "N assignments" line are derived from it, and a
+    # catch-up must not move any of them. Matched on the pupil's id
+    # (`MRB_STUDENT_CATCH_UPS`), so a catch-up set for a classmate is absent.
+    (330, 344): ({
+        "t": "if", "e": "hasStudentCatchUps",
+        "c": [{
+            "t": "div",
+            "a": {"data-mrb-added": "student-catch-ups",
+                  "style": "margin-top:16px;padding:20px;background:var(--st-paper);"
+                           "border:1px solid var(--st-rule-soft);border-radius:12px"},
+            "c": [
+                {"t": "div",
+                 "a": {"style": "font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
+                                "text-transform:uppercase;color:var(--st-caption)"},
+                 "c": [{"t": "#", "v": "Catch-up"}]},
+                {"t": "for", "e": "studentCatchUps", "as": "sc",
+                 "c": [{
+                     "t": "div",
+                     "a": {"data-mrb-cell": "student-catch-up",
+                           "style": "display:flex;align-items:baseline;"
+                                    "justify-content:space-between;gap:10px;"
+                                    "padding:8px 0 0"},
+                     "c": [
+                         {"t": "span",
+                          "a": {"style": "font:500 15.5px/1.3 var(--st-ui);color:var(--st-ink)"},
+                          "c": [{"t": "#", "v": {"parts": [{"e": "sc.lesson"}]}}]},
+                         {"t": "span",
+                          "a": {"style": "flex:none;font:500 16px/1.2 var(--st-mono);"
+                                         "color:var(--st-muted)"},
+                          "c": [{"t": "#", "v": {"parts": [{"e": "sc.result"}]}}]},
+                     ]}]},
+            ]}]},
+        "this pupil's own catch-ups on the student screen."),
+    # ── ⊕ CATCH-UP, 14 Oct 2026 (docs/catch-up/PLAN.md §3) · THE WEEK'S CARD ──
+    #
+    # In the week a catch-up was set, one card per catch-up under the
+    # `glance` grid: "Catch-up · N pupils", the lesson, and each NAMED pupil
+    # with their result (score/max once finished, otherwise their state).
+    # Design drew nothing of the kind; the card is Design's own card register
+    # (nodes 224/225/226/246/247/249 verbatim) so it reads as hers.
+    #
+    # ⚠️ IT READS `catchUps`, A LIST NO HOMEWORK FIGURE IS DERIVED FROM. It
+    # cannot move "N of M in", a mean, a roster column or the table: those
+    # were never handed a catch-up (`loadClassMatrices` splits them out).
+    #
+    # ⚠️ NOT GATED ON `klass.hasWork`: a class whose only work this week is a
+    # catch-up has "no work set" in the class sense, and the catch-up must
+    # still be reachable. After node 222 so it sits under the grid it joins.
+    (208, 222): ({
+        "t": "if", "e": "hasCatchUps",
+        "c": [{
+            "t": "for", "e": "catchUps", "as": "cu",
+            "c": [{
+                "t": "div",
+                "a": {"data-mrb-added": "catch-up-card",
+                      "style": "display:flex;flex-direction:column;padding:20px;"
+                               "margin-top:16px;background:var(--st-paper);"
+                               "border:1px solid var(--st-rule-soft);"
+                               "border-radius:12px"},
+                "c": [
+                    {"t": "div",
+                     "a": {"style": "font:500 13px/1.2 var(--st-mono);"
+                                    "letter-spacing:.16em;text-transform:uppercase;"
+                                    "color:var(--st-caption)"},
+                     "c": [{"t": "#", "v": {"parts": ["Catch-up \u00b7 ",
+                                                       {"e": "cu.countLabel"}]}}]},
+                    {"t": "div",
+                     "a": {"style": "margin-top:10px;font:600 21px/1.3 var(--st-ui);"
+                                    "color:var(--st-ink);text-wrap:pretty"},
+                     "c": [{"t": "#", "v": {"parts": [{"e": "cu.lesson"}]}}]},
+                    {"t": "div", "a": {"style": "margin-top:12px"},
+                     "c": [{
+                         "t": "for", "e": "cu.pupils", "as": "cp",
+                         "c": [{
+                             "t": "div",
+                             "a": {"data-mrb-cell": "catch-up-pupil",
+                                   "style": "display:flex;align-items:baseline;"
+                                            "justify-content:space-between;gap:10px;"
+                                            "padding:6px 0"},
+                             "c": [
+                                 {"t": "span",
+                                  "a": {"style": "font:500 15.5px/1.3 var(--st-ui);"
+                                                 "color:var(--st-ink)"},
+                                  "c": [{"t": "#", "v": {"parts": [{"e": "cp.name"}]}}]},
+                                 {"t": "span",
+                                  "a": {"style": "flex:none;font:500 16px/1.2 var(--st-mono);"
+                                                 "color:var(--st-muted)"},
+                                  "c": [{"t": "#", "v": {"parts": [{"e": "cp.result"}]}}]},
+                             ]}]}]},
+                ]}]}]},
+        "the week's Catch-up cards, one per catch-up set in the week in view: "
+        "the lesson and each named pupil's result."),
     # ── ⊕ SHARPEN B5, 29 Sep 2026 · THE STUDENTS TABLE'S SCORE COLUMN ──
     #
     # THIS WEEK says whether a pupil handed the week's work in; nothing on
@@ -11671,7 +11767,19 @@ componentDidUpdate() {
       weekFwdColor: wi <= 0 ? 'var(--st-rule-strong)' : 'var(--st-ink)',
       weekBackCursor: wi >= kWeeks.length - 1 ? 'default' : 'pointer',
       weekFwdCursor: wi <= 0 ? 'default' : 'pointer',
-      rosterWeekCol: wWeek ? (wWeek.now ? 'This week' : wWeek.range) : 'This week',""",
+      rosterWeekCol: wWeek ? (wWeek.now ? 'This week' : wWeek.range) : 'This week',
+      /* ⊕ CATCH-UP (14 Oct 2026) — the catch-ups SET in the week in view, off
+         `MRB_CATCH_UPS` (teacher-live.js `catchUpsForWeek`, the week bar's own
+         bucket rule). A separate list on purpose: `kPapers`, `kMx` and every
+         figure derived from them were never handed a catch-up (teacher-data.js
+         splits them out at the load seam), so nothing here can change a
+         homework figure. */
+      catchUps: MRB_CATCH_UPS(k.id, kWeeks, wi),
+      hasCatchUps: MRB_CATCH_UPS(k.id, kWeeks, wi).length > 0,
+      /* ⊕ CATCH-UP — the student screen's own list: THIS pupil's, matched on
+         the pupil's id. One set for somebody else is never theirs. */
+      studentCatchUps: MRB_STUDENT_CATCH_UPS(k.id, this.state.studentId),
+      hasStudentCatchUps: MRB_STUDENT_CATCH_UPS(k.id, this.state.studentId).length > 0,""",
      "the nine keys Mide's week bar renders — the chips, the sentence under "
      "them, the two chevrons with their disabled colours and cursors, and "
      "the roster column's heading. All nine are v2's, `weekTabs` re-derived "

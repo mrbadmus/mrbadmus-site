@@ -117,7 +117,10 @@
     /* ⊕ MRB-352 Stage D2 — "Your flashcards", the library of sets the pupil
        has been all the way through (STAGE-D-PLAN.md §3). Offered after the
        paint by `wireLibrary` below; it loads its own stylesheet. */
-    "/shared/flashcard-library.js"
+    "/shared/flashcard-library.js",
+    /* ⊕ CATCH-UP (14 Oct 2026) — the lesson sheet a catch-up opens INSIDE
+       the page (docs/catch-up/PLAN.md §4). Both pupil pages use it. */
+    "/shared/catch-up-sheet.js"
   ];
 
   /* ── plain words, for when the page cannot render ───────────────────────
@@ -1383,6 +1386,12 @@
     var base = carryParams("/student/assignment.html");
     return base + (base.indexOf("?") < 0 ? "?" : "&") +
            "assignment=" + encodeURIComponent(id);
+  }
+
+  /* ⊕ CATCH-UP — the teacher's title is "Catch-up: <lesson name>"; the card,
+     the row and the sheet already say Catch-up, so the lesson name is shown. */
+  function catchUpTitle(t) {
+    return String(t || "").replace(/^\s*catch-?up\s*[:\u2013\u2014-]\s*/i, "").trim() || "Your lesson";
   }
 
   /* A KS3 lesson slug → the lesson's own page, or "" if this build does not
@@ -3622,6 +3631,9 @@
         if (w.release_at && Date.parse(w.release_at) > serverNow) { return false; }
         var card = byId[w.id];
         if (!card || card.is_submitted) { return false; }
+        /* ⊕ CATCH-UP — never homework. A catch-up has its own card on the
+           bench (`benchCuList` below), labelled Catch-up. */
+        if (card.catch_up) { return false; }
         /* ⊕ MRB-351 — the bench is a QUESTION set's docket ("N questions",
            Open the assignment). A flashcard deck is homework in the list
            below, opened in the flashcard overlay, never the bench. */
@@ -3685,6 +3697,40 @@
        cards. It is the same expression over the same three buckets and it is
        still read only from this point down; nothing between the two positions
        touches `detail`. */
+    /* ── ⊕ CATCH-UP (14 Oct 2026) — A LESSON, THEN ITS QUESTIONS ─────────
+       A catch-up is an ordinary `assignments` row set to named pupils
+       (`recipient_ids`; `c.catch_up` here — the data layer already applied
+       the audience rule, so every card on this page is this pupil's own).
+       It is labelled "Catch-up" wherever it appears, never "Homework", and
+       tapping it opens the LESSON first, inside this page, in the sheet from
+       shared/catch-up-sheet.js; "Start the questions" there is the normal
+       assignment page.
+
+       THE LESSON is the row's scope (`scope_ref`, a KS3 lesson slug or a KS4
+       subtopic slug); the questions' resolved lesson (`lessonsFor`, already
+       built for KS3 and KS4 alike) is preferred and the scope is the
+       fallback. A lesson this build has no page for resolves to "" and the
+       row simply goes straight to the questions. */
+    function cuTitle(c) { return catchUpTitle(c.title); }
+    function cuLessonUrl(c) {
+      var l = lessonsFor[c.id];
+      if (l && l.length && l[0].href) { return l[0].href; }
+      if (!c.scope_ref) { return ""; }
+      return klass.key_stage === "KS4"
+        ? ks4TopicHref(c.scope_ref, subjectForAssignment[c.id] || "", klass.science_pathway, klass.tier)
+        : lessonHref(c.scope_ref);
+    }
+    var cuById = {};
+    cards.forEach(function (c) {
+      if (!c || !c.catch_up) { return; }
+      cuById[c.id] = { id: c.id, title: cuTitle(c), lessonUrl: cuLessonUrl(c),
+                       questionsUrl: assignmentHrefFor(c.id) };
+    });
+    function cuHrefFor(id) {
+      return (cuById[id] && cuById[id].lessonUrl && window.MRBCatchUp)
+        ? window.MRBCatchUp.hrefFor(id) : assignmentHrefFor(id);
+    }
+
     var work = cards.map(function (c) {
       var status;
       if (c.is_submitted) {
@@ -3801,6 +3847,16 @@
             : ((status === "open" || status === "missed")
                 ? assignmentHrefFor(c.id) : ""))
       };
+      if (c.catch_up) {
+        row.catchUp = true;
+        row.title = cuTitle(c);
+        row.brief = "Catch-up" + (qTotalFor[c.id] ? " \u00b7 " + qTotalFor[c.id] + " questions" : "");
+        if (cuById[c.id] && cuById[c.id].lessonUrl) {
+          /* the lesson first: both buttons open the sheet */
+          row.lessonHref = cuHrefFor(c.id);
+          if (status === "open" || status === "missed") { row.assignmentHref = cuHrefFor(c.id); }
+        }
+      }
       if (c.kind === "flashcards") {
         row.fc = true;
         /* A finished deck's button is "Revise your cards", and it goes to
@@ -3909,6 +3965,24 @@
     }).map(function (c) {
       return { id: c.id, title: c.title || "", dueAt: c.due_at || null,
                count: fcCounts[c.id] || 0 };
+    });
+    /* ⊕ CATCH-UP — unfinished catch-ups for THIS pupil, soonest due first
+       (undated last). Overdue ones stay: like overdue homework, a missed
+       catch-up is still work to do ("Finish it", "Was due …"). A finished one
+       is gone. Released only — the pupil's own read already hides the rest. */
+    var benchCuList = assignmentCards.filter(function (c) {
+      if (!c || !c.catch_up || c.is_submitted || c.kind === "flashcards") { return false; }
+      if (c.release_at && Date.parse(c.release_at) > serverNow) { return false; }
+      return true;
+    }).sort(function (a, b) {
+      if (!a.due_at && !b.due_at) { return 0; }
+      if (!a.due_at) { return 1; }
+      if (!b.due_at) { return -1; }
+      return a.due_at < b.due_at ? -1 : (a.due_at > b.due_at ? 1 : 0);
+    }).map(function (c) {
+      return { id: c.id, title: cuTitle(c), dueAt: c.due_at || null,
+               overdue: !!(c.due_at && Date.parse(c.due_at) < serverNow),
+               count: qTotalFor[c.id] || 0, href: cuHrefFor(c.id) };
     });
     var benchBase = {
       done: benchDone,
@@ -5460,7 +5534,7 @@
          never retract work a child can already see. So a held school can hold
          RELEASED teacher-set work, and saying "isn't live yet" over the top of
          it is a false sentence about homework the child is expected to do. */
-      benchHeldLine: benchFcList.length ? "" : benchBase.held,
+      benchHeldLine: (benchFcList.length || benchCuList.length) ? "" : benchBase.held,
       /* ⊕ Stage B (phone run, 28 Sep 2026) — THE BENCH IS NEVER EMPTY.
          With nothing open and nothing finished the bench used to draw its
          dark frame and nothing in it. `drawBenchNext` fills it with ONE thing
@@ -5468,7 +5542,7 @@
          Mide, 22 Sep), practice on the current topic, the next lesson to
          read. Practice is read from `__MRB_DATA__` at draw time, because the
          bank arrives after the paint (foldInPractice). */
-      benchEmpty: benchBase.empty && !benchFcList.length,
+      benchEmpty: benchBase.empty && !benchFcList.length && !benchCuList.length,
       /* ⊕ Stage B audit — no corner count on the flashcards card: "01 / 81"
          under it already carries the 81 (student_rulings LOGIC). */
       cardCorner: false,
@@ -5476,7 +5550,7 @@
         var dueOf = {};
         (assignmentCards || []).forEach(function (c) { if (c && c.id) { dueOf[c.id] = c.due_at; } });
         var missed = (work || []).filter(function (r) {
-          return r && r.status === "missed" && !r.fc && r.assignmentHref;
+          return r && r.status === "missed" && !r.fc && !r.catchUp && r.assignmentHref;
         }).sort(function (a, b) {
           return String(dueOf[a.id] || "").localeCompare(String(dueOf[b.id] || ""));
         });
@@ -5497,10 +5571,16 @@
       })(),
       /* ⊕ 8 Oct 2026 — a deck still to do fills the card in place of the done
          bench (the deck is the thing left to do); see `benchFcList`. */
-      benchDone: benchDone && !benchFcList.length,
+      benchDone: benchDone && !benchFcList.length && !benchCuList.length,
       /* ⊕ 8 Oct 2026 — read by `drawBenchFc`, never by the template. */
       benchFc: benchFcList[0] || null,
       benchFcList: benchFcList,
+      /* ⊕ CATCH-UP — read by `drawBenchCu`, never by the template. */
+      benchCu: benchCuList[0] || null,
+      benchCuList: benchCuList,
+      /* the sheet's registry: every catch-up this pupil can see, finished or
+         not (a finished row's "Open the lesson" opens the sheet too). */
+      catchUpItems: Object.keys(cuById).map(function (k) { return cuById[k]; }),
       benchBase: benchBase,
       /* ⊕ 23 Aug 2026 — PHASE 4. ONE FACT, ONE NEGATION. Design's amended
          bench is two branches and names them `benchOpen` and `benchDone`;
@@ -6129,6 +6209,20 @@
       questions: questions,
 
       assignmentLessonHref: lessonHref(assignmentLessonSlug),
+      /* ⊕ CATCH-UP — on a catch-up's questions page the pupil can reopen the
+         lesson in the sheet without leaving the questions (`mode: "back"`).
+         `recipient_ids` and `scope_ref` ride the payload's assignment. The
+         lesson is the scope; the first question's lesson is the fallback. */
+      catchUp: (function () {
+        if (!(Array.isArray(a.recipient_ids) && a.recipient_ids.length)) { return null; }
+        var slug = a.scope_ref || assignmentLessonSlug;
+        if (!slug) { return null; }
+        var hint = typeof a.subject === "string" ? a.subject.toLowerCase() : "";
+        var url = klass.key_stage === "KS4"
+          ? ks4TopicHref(slug, hint, klass.science_pathway, klass.tier)
+          : lessonHref(slug);
+        return url ? { id: a.id, title: catchUpTitle(a.title), lessonUrl: url, questionsUrl: "" } : null;
+      })(),
       /* ⊕ Stage B (phone run, 28 Sep 2026) — where the bar's back button
          goes: THIS assignment's class, by id, carrying `env`. Not
          `history.back()`, which lands wherever the pupil came from (a bell
@@ -6315,7 +6409,7 @@
        deck to do, no open homework and a missed set, this box is the homework
        half of the split (`drawBenchFc` calls in here). A pupil with no deck
        never takes this path — `benchFc` is null — so their bench is as it was. */
-    var withDeck = !!(d && d.benchFc && !d.benchOpen && d.benchNextMissed);
+    var withDeck = !!(d && (d.benchFc || d.benchCu) && !d.benchOpen && d.benchNextMissed);
     if (!d || (!d.benchEmpty && !d.benchDone && !withDeck)) { return; }
     var frame = document.querySelector('[data-port-region="bench"]');
     if (!frame || frame.querySelector("[data-mrb-bench-next]")) { return; }
@@ -6434,9 +6528,11 @@
   function benchFcApply(d) {
     var list = d.benchFcList || [], base = d.benchBase || {};
     d.benchFc = list[0] || null;
-    d.benchDone = !!base.done && !d.benchFc;
-    d.benchEmpty = !!base.empty && !d.benchFc;
-    d.benchHeldLine = d.benchFc ? "" : (base.held || "");
+    /* ⊕ CATCH-UP — an unfinished catch-up fills the done/empty bench too. */
+    d.benchCu = (d.benchCuList || [])[0] || null;
+    d.benchDone = !!base.done && !d.benchFc && !d.benchCu;
+    d.benchEmpty = !!base.empty && !d.benchFc && !d.benchCu;
+    d.benchHeldLine = (d.benchFc || d.benchCu) ? "" : (base.held || "");
   }
 
   /* A deck was finished in this visit (the work row is patched by the caller):
@@ -6531,7 +6627,8 @@
     if (!d.benchOpen && d.benchNextMissed) { drawBenchNext(d); }
     Array.prototype.forEach.call(frame.children, function (el) {
       if (hw || !el.querySelector) { return; }
-      if (d.benchOpen ? el.querySelector("[data-bench-docket]") : el.hasAttribute("data-mrb-bench-next")) { hw = el; }
+      if (d.benchOpen ? el.querySelector("[data-bench-docket]")
+          : (el.hasAttribute("data-mrb-bench-next") || el.hasAttribute("data-mrb-bench-cu"))) { hw = el; }
     });
     if (hw) {
       hw.setAttribute("data-mrb-bench-hw", "1");
@@ -6641,6 +6738,178 @@
     frame.appendChild(root);
   }
 
+  /* ⊕ CATCH-UP (14 Oct 2026) — THE CATCH-UP CARD ON THE BENCH (docs/catch-up/
+     PLAN.md §4; the data half is `benchCuList` in buildClass).
+
+     Four cases, by what else is on the bench (homework = open, or overdue and
+     unfinished, as `drawBenchFc` counts it):
+
+       homework · no deck   split, homework | catch-up        mode "half"
+       homework · deck      bench stays homework | deck; the catch-up has its
+                            OWN card directly below, same family   mode "below"
+       no homework · deck   the catch-up takes the homework half,
+                            catch-up | deck                    mode "hwhalf"
+       neither              the catch-up fills the bench       mode "full"
+
+     DOM hooks (for a proof rig): the card is `[data-mrb-bench-cu]` with the
+     mode in `data-mrb-bench-cu-mode`; its button is `[data-mrb-bench-cu-go]`
+     (href `#catchup=<id>`, which opens the lesson sheet); in "below" mode it
+     sits in `[data-mrb-bench-cu-card]`, a sibling after
+     `[data-port-region="bench"]`. Overdue unfinished says "Finish it" and a
+     "Was due …" row, as overdue homework does.
+
+     Drawn after each runtime redraw, idempotently, with the bench's own
+     tokens only (every bench theme and light/dark follow). Must run BEFORE
+     `drawBenchFc` so that, in "hwhalf", the catch-up precedes the deck. */
+  function benchCuStyle() {
+    if (document.querySelector('style[data-mrb="bench-cu"]')) { return; }
+    benchFcStyle();   // the split grid this half shares
+    var st = document.createElement("style");
+    st.setAttribute("data-mrb", "bench-cu");
+    st.textContent =
+      "[data-mrb-bench-split]>[data-mrb-bench-cu]{border-top:1px solid var(--st-room-border)}" +
+      "[data-mrb-bench-split]>[data-mrb-bench-cu][data-mrb-bench-hw]{border-top:0}" +
+      "@media (min-width:1024px){" +
+      "[data-mrb-bench-split]>[data-mrb-bench-hw]+[data-mrb-bench-cu]{border-top:0;border-left:1px solid var(--st-room-border)}" +
+      "}";
+    document.head.appendChild(st);
+  }
+
+  function drawBenchCu(data0) {
+    var d = window.__MRB_DATA__ || data0;
+    var cu = d && d.benchCu;
+    var frame = document.querySelector('[data-port-region="bench"]');
+    if (!cu || !frame || document.querySelector("[data-mrb-bench-cu]")) { return; }
+    benchCuStyle();
+
+    var missedHw = !d.benchOpen && !!d.benchNextMissed;
+    if (missedHw) { drawBenchNext(d); }
+    var hw = null;
+    Array.prototype.forEach.call(frame.children, function (c) {
+      if (hw || !c.querySelector) { return; }
+      if (d.benchOpen ? c.querySelector("[data-bench-docket]") : c.hasAttribute("data-mrb-bench-next")) { hw = c; }
+    });
+    var fcOn = !!d.benchFc;
+    var mode = hw ? (fcOn ? "below" : "half") : (fcOn ? "hwhalf" : "full");
+    var desk = !!(window.matchMedia && window.matchMedia("(min-width:1024px)").matches);
+    var twoCol = desk && mode === "full";
+
+    function el(tag, css, text) {
+      var e = document.createElement(tag);
+      if (css) { e.style.cssText = css; }
+      if (text != null) { e.textContent = text; }
+      return e;
+    }
+    var root = el("div", "min-width:0;display:grid;grid-template-columns:" +
+      (twoCol ? "minmax(0,1fr) minmax(300px,440px)" : "minmax(0,1fr)") +
+      ";gap:clamp(22px,2.8cqw,40px);padding:clamp(22px,2.4cqw,32px) clamp(18px,2.5cqw,36px) clamp(24px,2.6cqw,36px)");
+    root.setAttribute("data-mrb-bench-cu", "1");
+    root.setAttribute("data-mrb-bench-cu-mode", mode);
+
+    var dock = el("div", "order:" + (twoCol ? 3 : 1) + ";min-width:0;display:flex;flex-direction:column;" +
+      "border-radius:var(--st-r-stage);background:var(--st-paper);border:1px solid var(--st-edge);overflow:hidden");
+    dock.setAttribute("data-bench-docket", "1");
+    var kick = el("div", "display:flex;align-items:center;gap:10px;flex-wrap:wrap;" +
+      "padding:clamp(13px,1.3cqw,17px) clamp(14px,1.5cqw,20px);background:var(--st-num-well);" +
+      "border-bottom:1px solid var(--st-edge)");
+    var eyebrow = el("span", "display:block", "Catch-up");
+    eyebrow.className = "eyebrow";
+    kick.appendChild(eyebrow);
+    dock.appendChild(kick);
+    var grid = el("div", "flex:1;display:grid;grid-template-columns:" +
+      (desk ? "minmax(0,1fr)" : "repeat(auto-fit,minmax(148px,1fr))") +
+      ";align-content:space-between;gap:0 clamp(14px,2cqw,26px);padding:clamp(4px,0.5cqw,8px) clamp(14px,1.5cqw,20px)");
+    function fact(label, value) {
+      var row = el("div", "min-width:0;display:flex;flex-direction:" + (desk ? "row" : "column") +
+        ";align-items:" + (desk ? "baseline" : "flex-start") + ";gap:" + (desk ? "14px" : "9px") +
+        ";padding:clamp(11px,1.15cqw,15px) 0;border-bottom:1px solid var(--st-rule-fact)");
+      row.appendChild(el("span", "font:500 12px/1.4 var(--st-mono);letter-spacing:0.07em;" +
+        "color:var(--st-caption);white-space:nowrap", label));
+      row.appendChild(el("span", "margin-left:" + (desk ? "auto" : "0") + ";min-width:0;text-align:" +
+        (desk ? "right" : "left") + ";font:500 clamp(15px,1.35cqw,17px)/1.3 var(--st-ui);" +
+        "letter-spacing:-0.02em;color:var(--st-ink);text-wrap:pretty", value));
+      grid.appendChild(row);
+    }
+    if (cu.dueAt) { fact(cu.overdue ? "WAS DUE" : "DUE", fmtDueMixed(cu.dueAt)); }
+    if (grid.children.length) { dock.appendChild(grid); } else { kick.style.borderBottom = "0"; }
+
+    var left = el("div", "min-width:0;display:flex;flex-direction:column;order:2");
+    var col = el("div", "display:flex;flex-direction:column;height:100%");
+    col.appendChild(el("h2", "margin:clamp(12px,1.2cqw,16px) 0 0;font:600 clamp(27px,3.6cqw,46px)/1 " +
+      "var(--st-display);letter-spacing:-0.04em;color:var(--st-cream);overflow-wrap:anywhere",
+      cu.title || "Your lesson"));
+    col.appendChild(el("div", "margin-top:clamp(20px,1.9cqw,26px)"));
+    var act = el("div", "margin-top:auto;padding-top:clamp(22px,2.2cqw,30px);display:flex;" +
+      "align-items:center;gap:clamp(12px,1.6cqw,22px);flex-wrap:wrap");
+    var go = document.createElement("a");
+    go.href = cu.href;
+    go.setAttribute("data-mrb-bench-cu-go", "1");
+    go.style.cssText = "all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;" +
+      "gap:10px;min-height:44px;background:var(--ks3-accent-text);color:var(--st-paper);" +
+      "font:600 15px/1 var(--st-ui);border-radius:var(--st-r-btn);padding:15px 20px";
+    go.appendChild(document.createTextNode(cu.overdue ? "Finish it" : "Open the lesson"));
+    var svgNS = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("aria-hidden", "true");
+    svg.setAttribute("height", "11"); svg.setAttribute("width", "11");
+    svg.setAttribute("viewBox", "0 0 22 22");
+    var path = document.createElementNS(svgNS, "path");
+    path.setAttribute("d", "M6 3.5 L13.5 11 L6 18.5");
+    path.setAttribute("fill", "none"); path.setAttribute("stroke", "currentColor");
+    path.setAttribute("stroke-linecap", "round"); path.setAttribute("stroke-linejoin", "round");
+    path.setAttribute("stroke-width", "3.4");
+    svg.appendChild(path);
+    go.appendChild(svg);
+    act.appendChild(go);
+    if (cu.count) {
+      var meter = el("span", "display:flex;align-items:center;gap:11px;margin-left:auto");
+      meter.appendChild(el("span", "font:600 12px/1 var(--st-mono);letter-spacing:0.08em;color:var(--st-room-muted);" +
+        "text-transform:uppercase", cu.count + " questions"));
+      act.appendChild(meter);
+    }
+    col.appendChild(act);
+    left.appendChild(col);
+    root.appendChild(dock);
+    root.appendChild(left);
+
+    if (mode === "below") {
+      var card = frame.cloneNode(false);
+      card.removeAttribute("data-port-region");
+      card.removeAttribute("data-mrb-bench-split");
+      card.setAttribute("data-mrb-bench-cu-card", "1");
+      var strip = frame.firstElementChild;
+      if (strip && /repeating-linear-gradient/.test(strip.getAttribute("style") || "")) {
+        card.appendChild(strip.cloneNode(true));
+      }
+      card.appendChild(root);
+      frame.parentNode.insertBefore(card, frame.nextSibling);
+      return;
+    }
+    if (hw) { hw.setAttribute("data-mrb-bench-hw", "1"); }
+    else { root.setAttribute("data-mrb-bench-hw", "1"); }
+    if (mode !== "full") { frame.setAttribute("data-mrb-bench-split", "1"); }
+    frame.appendChild(root);
+  }
+
+  /* ⊕ CATCH-UP — the questions page's way back to the lesson. One quiet
+     button at the start of the bar's end group (`[data-port-bell-host]`, the
+     bell/avatar/theme row); it only changes the fragment, so the sheet opens
+     over the questions and the answers underneath are never touched.
+     Idempotent, redone after every runtime redraw. */
+  function drawLessonButton(item) {
+    var host = document.querySelector("[data-port-bell-host]");
+    if (!host || !item || host.querySelector("[data-mrb-cu-reopen]")) { return; }
+    var b = document.createElement("a");
+    b.href = window.MRBCatchUp.hrefFor(item.id);
+    b.setAttribute("data-mrb-cu-reopen", "1");
+    b.style.cssText = "all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;" +
+      "min-height:40px;padding:0 14px;border-radius:var(--st-r-btn,12px);border:1px solid var(--st-rule,#E0D2B9);" +
+      "background:var(--st-paper,#FFFCF5);color:var(--st-ink,#221E1B);font:600 14px/1 var(--st-ui,system-ui,sans-serif);" +
+      "white-space:nowrap";
+    b.textContent = "Lesson";
+    host.insertBefore(b, host.firstChild);
+  }
+
   function drawHeld(data0) {
     /* ⊕ 8 Oct 2026 — read at draw time: a deck finishing in this visit hands
        the card back (`benchFcFinished`), and the line must follow. */
@@ -6649,7 +6918,8 @@
     var frame = document.querySelector('[data-port-region="bench"]');
     if (!frame || frame.querySelector("[data-mrb-held]")
         || frame.querySelector("[data-mrb-bench-next]")
-        || frame.querySelector("[data-mrb-bench-fc]")) { return; }
+        || frame.querySelector("[data-mrb-bench-fc]")
+        || frame.querySelector("[data-mrb-bench-cu]")) { return; }
 
     var p = document.createElement("p");
     p.setAttribute("data-mrb-held", "1");
@@ -7129,6 +7399,19 @@
              `markRemindersReadOnOpen`. */
           if (page === "assignment") { markRemindersReadOnOpen(sb, klass.id); }
 
+          /* ⊕ CATCH-UP — "Lesson" in the questions page's bar reopens the
+             lesson sheet over the questions. Registered and drawn only for a
+             catch-up; the progress of every answer is saved per answer
+             already, and nothing here navigates. */
+          if (page === "assignment" && data && data.catchUp && window.MRBCatchUp) {
+            try {
+              window.MRBCatchUp.register([data.catchUp], { mode: "back" });
+              window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
+              window.__MRB_AFTER_DRAW__.push(function () { drawLessonButton(data.catchUp); });
+              drawLessonButton(data.catchUp);
+            } catch (cuErr) { console.info("[student-live] catch-up lesson button", cuErr && cuErr.message); }
+          }
+
           /* ⊕ MRB-328 J4(a) — one timing row, and it cannot hurt the page.
              The clock is read HERE, on the line after the mount, because that
              is the moment the student stops waiting. rum.js is then fetched
@@ -7290,11 +7573,19 @@
           if (page === "class" && data) {
             window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
             benchFcCtx = { sb: sb, uid: ctx.user && ctx.user.id };
+            /* ⊕ CATCH-UP — the sheet learns this pupil's catch-ups, and the
+               catch-up card goes FIRST so that beside a deck it is the
+               homework half (see `drawBenchCu`). */
+            if (window.MRBCatchUp && data.catchUpItems && data.catchUpItems.length) {
+              try { window.MRBCatchUp.register(data.catchUpItems, { mode: "class" }); }
+              catch (e) { console.info("[student-live] catch-up sheet", e && e.message); }
+            }
+            window.__MRB_AFTER_DRAW__.push(function () { drawBenchCu(data); });
             window.__MRB_AFTER_DRAW__.push(function () { drawBenchFc(data); });
             window.__MRB_AFTER_DRAW__.push(function () { drawBenchNext(data); });
             window.__MRB_AFTER_DRAW__.push(function () { drawHeld(data); });
             /* each on its own: a throw here must never turn the page into SAY.generic */
-            [drawBenchFc, drawBenchNext, drawHeld].forEach(function (fn) {
+            [drawBenchCu, drawBenchFc, drawBenchNext, drawHeld].forEach(function (fn) {
               try { fn(data); } catch (e) { console.info("[student-live] bench draw", e && e.message); }
             });
             setTimeout(benchFcRefresh, 0);

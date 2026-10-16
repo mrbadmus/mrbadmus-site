@@ -1907,6 +1907,98 @@
   }
 
   /* ═════════════════════════════════════════════════════════════════════
+     CATCH-UPS — ⊕ 14 Oct 2026 (docs/catch-up/PLAN.md §3)
+
+     `teacher-data.js`'s `loadClassMatrices` takes catch-ups OUT of
+     `pack.assignments` / `pack.submissions` at the load seam, so
+     `buildPapers`, `buildMatrix`, `buildRoster`, `buildGrid`, the rollup
+     twin and every digest/insight figure never see one — they cannot count
+     what they are never handed. `pack.catch_ups` is the separate list, and
+     this is the only code that reads it: one entry per catch-up with the
+     week it was set in (the SAME `assignPaperWeeks` rule homework uses, so
+     the two agree on which week is which) and each named pupil's result.
+
+     Nothing here feeds a number the class screen already draws. */
+  function buildCatchUps(pack, weeks, viewing, now) {
+    var list = (pack && pack.catch_ups) || [];
+    if (!list.length) { return []; }
+    var nameOf = {};
+    (pack.members || []).forEach(function (m) {
+      nameOf[m.student_id] = (String(m.first_name || "") + " " + String(m.last_name || "")).trim();
+    });
+    var items = list.map(function (a) {
+      return { academic_week: a.academic_week, due_at: a.due_at,
+               release_at: a.release_at, kind: "mcq_set", _a: a };
+    });
+    assignPaperWeeks(items, weeks, viewing, now);
+    var nowIso = new Date(now).toISOString();
+    return items.map(function (it) {
+      var a = it._a;
+      var pupils = (a.recipient_ids || []).map(function (pid) {
+        var r = a.results ? a.results[pid] : null;
+        var res;
+        if (r && ((r.completed_at || r.submitted_at) || r.status === "complete")) {
+          res = (r.score != null && r.max_score != null && r.max_score > 0)
+            ? (r.score + "/" + r.max_score) : "Done";
+        } else if (r) {
+          res = "In progress";
+        } else if (a.due_at && a.due_at < nowIso) {
+          res = "Missing";
+        } else {
+          res = "Not started";
+        }
+        return { id: pid, name: nameOf[pid] || "Left the class", result: res };
+      }).sort(function (x, y) { return x.name.localeCompare(y.name); });
+      return {
+        id: a.id,
+        /* The title is "Catch-up: <lesson>" by default; the card is already
+           headed Catch-up, so the prefix is dropped rather than said twice. */
+        lesson: String(a.title || "").replace(/^Catch-up:\s*/i, ""),
+        weekIdx: it.weekIdx,
+        dueAt: a.due_at || null,
+        due: a.due_at ? (function () {
+          var d = asDate(a.due_at);
+          return d ? dowDayMonthLdn(d) : "";
+        })() : "",
+        n: pupils.length,
+        countLabel: pupils.length === 1 ? "1 pupil" : (pupils.length + " pupils"),
+        pupils: pupils
+      };
+    });
+  }
+
+  /* One pupil's own catch-ups, newest first — the student screen's list.
+     A catch-up set for somebody else never appears here: it is matched on
+     the pupil's id, not on the class. */
+  function catchUpsForPupil(list, pupilId) {
+    var out = [];
+    (list || []).forEach(function (c) {
+      for (var i = 0; i < c.pupils.length; i += 1) {
+        if (c.pupils[i].id === pupilId) {
+          out.push({ id: c.id, lesson: c.lesson, due: c.due, dueAt: c.dueAt,
+                     result: c.pupils[i].result });
+          return;
+        }
+      }
+    });
+    return out.sort(function (a, b) {
+      return String(b.dueAt || "") < String(a.dueAt || "") ? -1 : 1;
+    });
+  }
+
+  /* The week-bar bucket rule, byte for byte `weekScope`'s: the current-week
+     chip carries everything at or ahead of it, the oldest chip everything at
+     or behind it, every other chip its own week. */
+  function catchUpsForWeek(list, weeks, wi) {
+    list = list || []; weeks = weeks || [];
+    var oldest = wi >= weeks.length - 1;
+    return list.filter(function (c) {
+      if (wi === 0) { return c.weekIdx == null || c.weekIdx <= 0; }
+      return oldest ? c.weekIdx >= wi : c.weekIdx === wi;
+    });
+  }
+
+  /* ═════════════════════════════════════════════════════════════════════
      THE CLASS × QUESTION GRID
      ═════════════════════════════════════════════════════════════════════
 
@@ -2806,7 +2898,8 @@
       departed: pack.departed_count,
       assignment_count: papers.length
     };
-    return { entry: entry, mx: mx, roster: roster, papers: papers };
+    return { entry: entry, mx: mx, roster: roster, papers: papers,
+             catchUps: buildCatchUps(pack, yearWeeks, viewing, now) };
   }
 
   /* MRB-325 ruling 5 — a school_admin opening a class they do not
@@ -2902,6 +2995,7 @@
     c.MATRIX[classId] = built.mx;
     c.ROSTER[classId] = built.roster;
     c.WEEKS[classId] = yearWeeks;
+    (c.CATCHUPS = c.CATCHUPS || {})[classId] = built.catchUps;
     c.CLASSES.push(built.entry);
     return true;
   }
@@ -3162,7 +3256,7 @@
 
     // `now` is taken ONCE, above, before the aggregate is asked — the
     // database is sent the same instant this page reasons with.
-    var CLASSES = [], MATRIX = {}, ROSTER = {}, PAPERS = {}, WEEKS = {};
+    var CLASSES = [], MATRIX = {}, ROSTER = {}, PAPERS = {}, WEEKS = {}, CATCHUPS = {};
 
     /* ⊕ MRB-306 — ONE WEEK LIST FOR THE WHOLE PAGE, keyed per class because
        that is the shape `weeks()` reads (`MRB_PICK('WEEKS', k.id)`). The
@@ -3222,6 +3316,7 @@
       MATRIX[c.id] = built.mx;
       ROSTER[c.id] = built.roster;
       WEEKS[c.id] = yearWeeks;
+      CATCHUPS[c.id] = built.catchUps;
       CLASSES.push(built.entry);
     });
 
@@ -3283,6 +3378,7 @@
       ROSTER: ROSTER,
       PAPERS: PAPERS,
       WEEKS: WEEKS,
+      CATCHUPS: CATCHUPS,
       GRID: {}
     };
     return cache;
@@ -4125,6 +4221,7 @@
       ROSTER: c.ROSTER,
       PAPERS: c.PAPERS,
       WEEKS: c.WEEKS,
+      CATCHUPS: c.CATCHUPS || {},
       GRID: c.GRID,
       FEED: FEED,
       /* ⊕ MRB-306 Phase 2b — `{ <submission_id>: comment }` for the
@@ -4585,6 +4682,9 @@
     // hand-building already-bucketed fixtures that could not catch a
     // mismatch between the two functions.
     weekScope: weekScope,
+    catchUpsForWeek: catchUpsForWeek,
+    catchUpsForPupil: catchUpsForPupil,
+    buildCatchUps: buildCatchUps,
     buildWeeks: buildWeeks,
     assignPaperWeeks: assignPaperWeeks,
     dowDayMonthLdn: dowDayMonthLdn,
