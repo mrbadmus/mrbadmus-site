@@ -167,6 +167,75 @@
 
   window.MrBadmusConfig = config;
 
+  /* ── A child's token stays fresh on a lesson page (Orion fix, 16 Oct 2026)
+   * The lesson pages (/ks3/, /combined/, /triple/) load no Supabase SDK, so
+   * nothing there ever refreshed the session: they read the access token out
+   * of storage at the moment they post. A family child arrives from Today
+   * with whatever life that token had left — often minutes — and a lesson
+   * takes longer, so the finish post (KS3 /api/quiz-score, KS4
+   * /api/consumer/child/lesson-done) went out with an expired token, was
+   * refused 401, and the lesson the child had just finished never ticked
+   * off: no done day, no streak. So, FOR A CHILD SESSION ON A LESSON PAGE
+   * ONLY, this keeps the stored session fresh: on load, when the tab comes
+   * back, and once a minute, it refreshes when under five minutes remain.
+   *
+   * It does exactly what supabase-js does, under the SAME cross-tab lock
+   * (`lock:<storage key>`), re-reading storage inside the lock — so a Today
+   * tab's own refresh and this one can never both spend one refresh token.
+   * A refused refresh (session revoked) changes nothing here: the page is
+   * not the place to sign anyone out. School pupils, staff and parents are
+   * never touched. */
+  try {
+    (function () {
+      if (!/^\/(ks3|combined|triple)\//.test(window.location.pathname || '')) return;
+      var KEY = config.AUTH_STORAGE_KEY;
+      var MARGIN_S = 5 * 60;
+      var busy = false;
+      function stored() {
+        try { return JSON.parse(window.localStorage.getItem(KEY) || 'null'); } catch (e) { return null; }
+      }
+      function stale(s) {
+        var exp = s && Number(s.expires_at);
+        return !exp || (exp - Date.now() / 1000) < MARGIN_S;
+      }
+      function refresh() {
+        var s = stored();
+        if (!s || !s.refresh_token || !config.isChildSession(s) || !stale(s)) return Promise.resolve();
+        return fetch(config.SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'apikey': config.SUPABASE_ANON_KEY },
+          body: JSON.stringify({ refresh_token: s.refresh_token })
+        }).then(function (r) {
+          return r.ok ? r.json() : null;
+        }).then(function (d) {
+          if (!d || !d.access_token || !d.refresh_token) return;
+          // Only if nobody else replaced the session meanwhile.
+          var now = stored();
+          if (!now || now.refresh_token !== s.refresh_token) return;
+          var next = Object.assign({}, now, d);
+          if (!d.expires_at && d.expires_in) next.expires_at = Math.round(Date.now() / 1000) + Number(d.expires_in);
+          if (!d.user) next.user = now.user;
+          window.localStorage.setItem(KEY, JSON.stringify(next));
+        }).catch(function () { /* offline — the next tick tries again */ });
+      }
+      function tick() {
+        if (busy || window.supabase) return;          // a page with the SDK refreshes itself
+        var s = stored();
+        if (!s || !config.isChildSession(s) || !stale(s)) return;
+        busy = true;
+        var run = (navigator.locks && navigator.locks.request)
+          ? navigator.locks.request('lock:' + KEY, { mode: 'exclusive' }, refresh)
+          : refresh();
+        Promise.resolve(run).then(function () { busy = false; }, function () { busy = false; });
+      }
+      config.refreshChildToken = tick;
+      tick();
+      window.setInterval(function () { if (document.visibilityState !== 'hidden') tick(); }, 60 * 1000);
+      document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') tick(); });
+      window.addEventListener('pageshow', tick);
+    })();
+  } catch (e) { /* never worth breaking a lesson page */ }
+
   /* ⊕ Test isolation (5 Oct 2026) — the early-connection hints, moved here.
      The generated student and teacher pages used to carry
        <link rel="preconnect"   href="https://<prod project>.supabase.co">

@@ -2633,6 +2633,42 @@ GATES = [
              "drops the one 26-second hanging-checkout wait; run without it "
              "to prove the timeout itself."),
 
+    # ── ⊕ 16 Oct 2026 · the theme control lives in the header ───────────
+    dict(name="theme_placement_drive",
+         cmd=["python3", "theme_placement_drive.py"],
+         speed="slow",
+         needs="mrbadmus_site",
+         watches=["theme_placement_drive.py", "ks3_browser.py",
+                  "consumer_dash_fixture.py", "today_drive.py", "config_env.py",
+                  "shared/theme.js", "shared/ks3-theme.css", "shared/account.js",
+                  "shared/config.js", "shared/topbar.css", "shared/topbar.js",
+                  "shared/teacher-topbar.css", "shared/teacher-topbar.js",
+                  "shared/brand/**", "brand.py", "topbar.py",
+                  "consumer/**", "parents/**", "org/**", "go/**",
+                  "teacher/today.html", "teacher/import.html", "teacher/seating.html",
+                  "teacher_fixtures/class-detail-fixture.html",
+                  "teacher_rulings.py", "build_teacher_port.py",
+                  "student_rulings.py", "build_student_port.py",
+                  "generate_site_v5.py", "build_ks3.py", "build_ks4.py",
+                  "build_leaderboard_port.py",
+                  "auth.html", "index.html", "leaderboard.html",
+                  "simulations/**",
+                  "mrbadmus_site/**/*.html"],
+         why="Owner's defect, 16 Oct 2026: 'The Light/Dark/System switch "
+             "sits on its own row above the header on phones, wasting "
+             "space. Put it inside the header (or the menu) on every page "
+             "family.' For one page of every family (KS4 classic + pilot, "
+             "KS3, student, generated + hand-written teacher, every B2C "
+             "consumer/parents/org/go page, auth, index, leaderboard, a "
+             "simulation) at 390 and 1280: the visible theme control (or, "
+             "where it lives in a menu, the menu button, and opening it "
+             "shows the control) lies inside the header band; no theme "
+             "control sits outside it; the 390 header is one row (<=72px); "
+             "the 390 tap target is >=44px. Offline: consumer pages through "
+             "consumer_dash_fixture, teacher pages through today_drive's "
+             "stubbed teacher, everything else with script-initiated "
+             "redirects cancelled."),
+
     # ── ⊕ Experience run, 24 Sep 2026 (stream G) · keyboard focus ──────
 
     dict(name="focus_audit",

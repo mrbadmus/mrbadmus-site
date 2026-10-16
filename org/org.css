@@ -219,6 +219,20 @@ input::placeholder, textarea::placeholder { color: var(--ks3-ink-muted); }
 
 .og-main { max-width: 1200px; padding: 24px 20px 60px; }
 
+/* ⊕ 16 Oct 2026 — the theme control lives IN these headers (it was a row
+   of its own above them on a phone). On a phone each header stays ONE row:
+   12/10px instead of 16-18px, a long organisation name ellipsises rather
+   than wrapping to a second line, and sign-in's "For organisations" badge
+   steps aside — the eyebrow and the h1 right below it say the same thing. */
+@media screen and (max-width: 600px) {
+  .og-signin-head { padding-top: 12px; padding-bottom: 12px; flex-wrap: nowrap; }
+  .og-signin-head .og-badge { display: none; }
+  .og-mhead { padding-top: 12px; padding-bottom: 10px; }
+  .og-mhead #mhead-name {
+    min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+}
+
 @media (min-width: 960px) {
   .og-root { display: grid; grid-template-columns: 260px 1fr; }
   .og-side {

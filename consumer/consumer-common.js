@@ -269,11 +269,116 @@
   var LONG_TIMEOUT_MS = 120000;
   var LONG_CALL = /\/(mark|generate|mb-mark)$|\/unit-check\/submit$|\/pupils\/bulk$/;
 
+  /* ── api — every consumer call, with a token that is CURRENT ─────────────
+     ⊕ Orion fix (16 Oct 2026). Pages hand api() `ctx.token`, the access
+     token boot() read ONCE. A page left open (Today on a phone overnight)
+     kept sending that string long after it expired or after its session was
+     ended elsewhere, and every 401 that came back was shown as "Sign in to
+     continue" — to a child who was, as far as this device knew, signed in.
+
+     Now, when this page has a Supabase client and the call is authenticated:
+       1. the token is read from the client on EVERY call (getSession()
+          refreshes an expired one) — only ever the SAME person's token; a
+          different account's session is never swapped in;
+       2. a 401 from our backend → refreshSession() once, then the call once
+          more with the new token;
+       3. only when the refresh itself is REFUSED (the session is really
+          gone — revoked, signed out on this device in another tab) is it
+          "signed out": an Error with code `signed_out`, which a page shows
+          as "This device was signed out" with the right sign-in door
+          (signedOutPanel). A refresh that could not reach Supabase is a
+          network failure, never a sign-out.
+     Any other failure keeps its own status and code (network, timeout, 5xx,
+     503 auth_unavailable, 429) and must never be worded as "sign in". */
+  function jwtSub(t) {
+    try {
+      var p = String(t || '').split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      while (p.length % 4) { p += '='; }
+      return JSON.parse(window.atob(p)).sub || null;
+    } catch (e) { return null; }
+  }
+  function signedOutError() {
+    var e = new Error('This device has been signed out.');
+    e.status = 401;
+    e.code = 'signed_out';
+    return e;
+  }
+  function samePerson(a, b) { return !!a && !!b && (a === b || (jwtSub(a) && jwtSub(a) === jwtSub(b))); }
+  /* → { token } | { gone: true } */
+  function currentToken(given) {
+    return Promise.resolve(client.auth.getSession()).then(function (r) {
+      var s = r && r.data && r.data.session;
+      if (s && s.access_token) { return { token: samePerson(s.access_token, given) ? s.access_token : given }; }
+      // supabase-js drops the session when a refresh is REFUSED and keeps it
+      // on a network fault; no session and no error = cleared (signed out in
+      // another tab on this device).
+      if (r && r.error && sessionNetworkFault(r.error)) { return { token: given }; }
+      return { gone: true };
+    }, function () { return { token: given }; });
+  }
+  /* → { token } | { gone: true } | { offline: true } */
+  function refreshedToken(given) {
+    return Promise.resolve(client.auth.refreshSession()).then(function (r) {
+      var s = r && r.data && r.data.session;
+      if (s && s.access_token && !(r && r.error)) {
+        return samePerson(s.access_token, given) ? { token: s.access_token } : { gone: true };
+      }
+      if (r && r.error && sessionNetworkFault(r.error)) { return { offline: true }; }
+      return { gone: true };
+    }, function (e) { return sessionNetworkFault(e) ? { offline: true } : { gone: true }; });
+  }
+  function offlineError() {
+    var out = new Error('We couldn’t reach MrBadmus. Check your connection and try again.');
+    out.code = 'network';
+    out.status = 0;
+    return out;
+  }
   function api(path, opts) {
     opts = opts || {};
+    if (!opts.token || !client || !client.auth || opts.fixedToken) { return apiOnce(path, opts, opts.token); }
+    return currentToken(opts.token).then(function (c) {
+      if (c.gone) { throw signedOutError(); }
+      return apiOnce(path, opts, c.token).catch(function (e) {
+        if (!e || e.status !== 401) { throw e; }
+        return refreshedToken(c.token).then(function (r) {
+          if (r.gone) { throw signedOutError(); }
+          if (r.offline) { throw offlineError(); }
+          return apiOnce(path, opts, r.token).catch(function (e2) {
+            // A fresh token our backend still refuses: the session is over.
+            if (e2 && e2.status === 401) { throw signedOutError(); }
+            throw e2;
+          });
+        });
+      });
+    });
+  }
+
+  /* The honest signed-out state, with the door that belongs to this person.
+     `href` — the sign-in page (C.childLoginUrl for a child). Clears this
+     project's stale session key so that door does not bounce straight back
+     here on a session that no longer exists. */
+  function forgetSession() {
+    var ref = projectRef();
+    try {
+      for (var i = window.localStorage.length - 1; i >= 0; i--) {
+        var k = window.localStorage.key(i);
+        if (k && ref && k.indexOf('sb-' + ref + '-auth-token') === 0) { window.localStorage.removeItem(k); }
+      }
+    } catch (e) { /* private mode */ }
+  }
+  function signedOutPanel(host, signInHref, cls) {
+    forgetSession();
+    if (!host) { return; }
+    host.innerHTML = '<div class="' + (cls || 'c-fail') + '" role="status">' +
+      '<p>This device was signed out.</p>' +
+      '<p><a class="c-signin-again" href="' + escapeHtml(href(signInHref || CHILD_LOGIN_URL)) + '">Sign in again</a></p></div>';
+  }
+  function isSignedOut(e) { return !!e && e.code === 'signed_out'; }
+
+  function apiOnce(path, opts, token) {
     var base = (window.MrBadmusConfig && window.MrBadmusConfig.BACKEND_URL) || '';
     var init = { method: opts.method || 'GET', headers: {} };
-    if (opts.token) { init.headers['Authorization'] = 'Bearer ' + opts.token; }
+    if (token) { init.headers['Authorization'] = 'Bearer ' + token; }
     if (opts.body != null) {
       init.headers['Content-Type'] = 'application/json';
       init.body = JSON.stringify(opts.body);
@@ -1446,10 +1551,14 @@
     };
     if (!c || !c.auth || typeof c.auth.signOut !== 'function') { return done(); }
     var p;
-    /* Default scope: the refresh token is revoked at the server too, which
-       is the difference between "this browser forgot" and "that session is
-       over". On a shared device only the second one is a sign-out. */
-    try { p = c.auth.signOut(); } catch (e) { p = null; }
+    /* `scope: 'local'`: THIS device's session is revoked at the server (its
+       refresh token can never be used again — "that session is over", which
+       on a shared device is the only real sign-out) and every OTHER device
+       stays signed in. ⊕ Orion fix (16 Oct 2026): this used the default,
+       'global', which ends EVERY session the account has — so a child
+       signing out on the family laptop silently signed them out on their
+       own phone, whose Today then said "Sign in to continue" mid-use. */
+    try { p = c.auth.signOut({ scope: 'local' }); } catch (e) { p = null; }
     if (!p || typeof p.then !== 'function') { return done(); }
     return p.then(done, function (e) {
       console.error('[consumer/signout]', e);
@@ -1644,6 +1753,9 @@
     pricing: pricing,
     price: price,
     childLoginUrl: CHILD_LOGIN_URL,
+    // Orion fix (16 Oct 2026) — a session that really is gone, said honestly.
+    isSignedOut: isSignedOut,
+    signedOutPanel: signedOutPanel,
 
     // Night 4 (MRB-317 ruling 3) — see the signing-out note above.
     signOut: signOut,

@@ -17,8 +17,8 @@
 <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
 <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
 <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
-<link rel="stylesheet" href="/shared/ks3-theme.css?v=16898136"/>
-<link rel="stylesheet" href="/consumer/consumer.css?v=123d1b60"/>
+<link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
+<link rel="stylesheet" href="/consumer/consumer.css?v=6662eebf"/>
 <link rel="stylesheet" href="/parents/public.css?v=27b5e5fd"/>
 <link rel="stylesheet" href="/consumer/topic-picker.css?v=e3aa94e9"/>
 <!-- ⊕ B2C polish (9 Oct 2026): public.css's `.pb-body button{font:inherit}`
@@ -27,20 +27,24 @@
      on this page. -->
 <style>.pb-body .c-signout-btn{font-weight:700;font-size:15px}.pb-body .c-signout-acts button{font-weight:700;font-size:16px}</style>
 <style>.su-rail-btn{background:none}.su-rail-btn:hover{border-color:var(--ks3-rule-strong)!important}.su-rail-btn:focus-visible{outline:3px solid var(--ks3-accent);outline-offset:2px}</style>
-<style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
 </head>
 <body class="pb-body">
-<div class="mrb-theme-float"><span class="mrb-theme-slot" data-mrb-theme></span></div>
 
 
 <div class="rd su-root" data-mode="ks3" id="c-main" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased">
 
 <aside class="su-rail" style="padding:28px 28px 32px">
-  <div id="rail-brand" style="display:flex;align-items:center;gap:10px"></div>
+  <!-- ⊕ 16 Oct 2026: the theme control sits at the end of the rail's brand
+       row (the one-button menu, consumer.css .c-theme-btn) — no longer a
+       pill floating over the page. -->
+  <div class="su-rail-top" style="display:flex;align-items:center;gap:10px">
+    <div id="rail-brand" style="display:flex;align-items:center;gap:10px"></div>
+    <span class="mrb-theme-slot c-theme-btn" data-mrb-theme="compact"></span>
+  </div>
   <ol id="rail-steps" style="margin:48px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px"></ol>
   <!-- ⊕ B2C polish (9 Oct 2026): Sign out, for a signed-in parent — see
        renderSignout(). At the foot of the desktop rail (the rail is a
-       100vh flex column), clear of the fixed theme pill at top right. -->
+       100vh flex column). -->
   <div id="rail-signout" hidden style="margin-top:auto;padding-top:24px"></div>
 </aside>
 
@@ -48,17 +52,18 @@
   <span id="head-brand" style="display:flex;align-items:center;gap:10px"></span>
   <span id="step-label" style="margin-left:auto;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ks3-ink-muted)"></span>
   <!-- ⊕ B2C polish (9 Oct 2026): Sign out on a phone/tablet — see
-       renderSignout(). Below 960px the theme pill is its own row ABOVE this
-       header (consumer.css, 86dd8b39e), so nothing sits on it; below 400px
+       renderSignout(). The theme control sits just before it, in this header
+       (16 Oct 2026); below 400px
        the button is the 44px icon square (consumer.css .c-signout-btn). -->
+  <span class="mrb-theme-slot c-head-theme" data-mrb-theme="compact"></span>
   <span id="head-signout" hidden style="flex:0 0 auto"></span>
 </header>
 
 <main class="su-main" id="su-main" style="max-width:520px;margin:0 auto;padding:28px 20px 80px"></main>
 </div>
 
-<script src="/shared/config.js?v=ab7a89ac"></script>
-<script src="/consumer/consumer-common.js?v=098698a0"></script>
+<script src="/shared/config.js?v=bb268b6f"></script>
+<script src="/consumer/consumer-common.js?v=8cba5fba"></script>
 <script src="/parents/public.js?v=4cab1125"></script>
 <script src="/consumer/topic-picker.js?v=9bcb2548"></script>
 <script>

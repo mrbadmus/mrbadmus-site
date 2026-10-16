@@ -135,16 +135,9 @@
    never a fight. */
 [data-theme="dark"] body { background: #16120E; }
 
-/* The floating theme-control badge (18 hand-written B2C pages whose own
-   header markup is too heterogeneous to thread THEME_SLOT into individually
-   — see the run report). It sits as a sibling of the page's inner
-   `.rd[data-mode="ks3"]` wrapper, not a descendant, on purpose (some of
-   these pages replace that wrapper's entire contents at runtime), so it
-   cannot reach a --ks3-* token at all; its light colours are literals in
-   its own inline <style> block for the same reason. This is its dark
-   counterpart, kept in the one file that already owns every other dark
-   value rather than repeated 18 times. */
-[data-theme="dark"] .mrb-theme-float { background: #1F1A15; color: #F3ECE0; }
+/* ⊕ 16 Oct 2026: the floating theme-control badge (`.mrb-theme-float`) and
+   its dark colours are retired — every B2C page now carries the control in
+   its own header (consumer/consumer.css, theme_placement_drive.py). */
 
 /* ── large ink text painted directly on a season/browse fill ──
    `.ks3-season-name` (32px/800) and `.ks3-browse-ht .ks3-code` (23px/800)

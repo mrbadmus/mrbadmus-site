@@ -617,25 +617,6 @@ body {
 /* ⊕ B2C polish: a theme slot sitting in a child page's header row. */
 .c-head-theme { display: inline-flex; align-items: center; flex: 0 0 auto; }
 
-/* ⊕ B2C polish (4 Oct 2026). The page-level theme control (the fixed
-   `.mrb-theme-float` hand-stamped into these pages) sat on top of each
-   page's own header controls on a phone — the dashboard's child switcher,
-   the terms page's "Start free", the sign-in links — so a tap meant for them
-   changed the theme instead. Below 900px it leaves the fixed layer and sits
-   in the page flow, a pill at the top right ABOVE the header, where nothing
-   else is. Its colours stay its own (the inline style, and ks3-theme.css's
-   dark rule), so it is the same pill in both themes. The three child pages
-   carry the control inside their header instead (data-mrb-theme="compact").
-   Page-local: this file is loaded only by consumer/parents/org/go pages, and
-   shared/theme.js is untouched. `body >` outranks the float's own <style>. */
-@media (max-width: 900px) {
-  body > .mrb-theme-float {
-    position: static;
-    width: max-content;
-    margin: 8px 12px 0 auto;
-  }
-}
-
 /* ⊕ B2C polish (4 Oct 2026) — DARK MODE, fixed at the token level.
    Measured live on every consumer / parents / org / go page and signed-in
    state (contrast_audit's own _MEASURE_JS, 390 and 1280). The gate's own
@@ -728,35 +709,28 @@ html[data-theme="dark"] .rd :is(.c-ink, .ex-dark, .td-dark-card, .uc-rules, .gl-
   color: var(--ks3-ink-muted);
 }
 
-/* ⊕ B2C polish (9 Oct 2026) — THE THEME CONTROL ON A PHONE IS IN FLOW.
-   Each page's own head style makes `.mrb-theme-float` a fixed pill at
-   top:10px right:10px. On a phone or a tablet that pill sat ON the page's
-   header: over signup's "Step 2 of 4", over the dashboard's Account button,
-   and the blind run saw it partly cut off at the top of signup's child
-   step. Below 960px (where the dashboard's mobile header with its top-right
-   Account button runs) it now takes its own row, in flow, top right, above
-   the header, with the 16px gutter — it covers nothing, cannot be clipped,
-   and keeps all three options at 44x44 (theme.js's touch rule).
-   `html body >` outranks the page's own `.mrb-theme-float` rule whatever
-   the load order. Pages whose control lives in the HEADER (Today, exam,
-   unit check, org sign-in) show theme.js's one-icon compact menu there;
-   below 601px the full group does not fit beside their header buttons, so
-   the header slot hides and a `.c-theme-phone` row (the same pill, in the
-   same place as every other consumer page) shows instead. */
-html body > .mrb-theme-float.c-theme-phone { display: none; }
-@media screen and (max-width: 959px) {
-  html body > .mrb-theme-float {
-    position: relative;
-    top: auto;
-    right: auto;
-    z-index: auto;
-    display: block;
-    width: max-content;
-    max-width: calc(100% - 32px);
-    margin: 8px 16px 0 auto;
-  }
-}
+/* ⊕ 16 Oct 2026 (owner: "the Light/Dark/System switch sits on its own row
+   above the header on phones, wasting space") — THE THEME CONTROL LIVES IN
+   THE HEADER, on every consumer / parents / org / go page, at every width.
+   The fixed `.mrb-theme-float` pill (and the in-flow row it became below
+   960px, 86dd8b39e / 9 Oct) is GONE: every page now carries theme.js's
+   compact slot (data-mrb-theme="compact") at the trailing end of its own
+   header — one 44px button below 600px that opens Light / Dark / System,
+   the inline group of three above it. theme_placement_drive.py measures it.
+
+   `.c-theme-btn`: a slot that is the one-button menu at EVERY width — the
+   desktop sidebars (dashboard, signup rail, org), whose brand row is too
+   narrow for the lockup plus the inline group of three. */
+.c-theme-btn .mrb-theme-c > .mrb-theme { display: none; }
+.c-theme-btn .mrb-theme-menu { display: inline-block; }
+.c-theme-btn { margin-left: auto; }
+
+/* The phone header is ONE row and no taller than it needs to be: the 44px
+   controls plus 12/10px, not 16/14px — the space the theme row used to
+   waste stays given back. */
 @media screen and (max-width: 600px) {
-  html body > .mrb-theme-float.c-theme-phone { display: block; }
-  html body .c-head-theme { display: none; }
+  .rd :is(.td-head, .ex-head, .uc-head, .ak-head, .dk-mobilehead) {
+    padding-top: 12px;
+    padding-bottom: 10px;
+  }
 }
