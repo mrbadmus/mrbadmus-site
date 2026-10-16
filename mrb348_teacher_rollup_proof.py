@@ -284,6 +284,32 @@ def in_list(ids):
     return "in.(%s)" % ",".join(ids)
 
 
+def is_catch_up(row):
+    """`isCatchUp` in shared/teacher-data.js."""
+    r = (row or {}).get("recipient_ids")
+    return isinstance(r, list) and len(r) > 0
+
+
+_RI = {}
+
+
+def recipient_ids_supported(key, token):
+    """`withRecipientIds` in shared/teacher-data.js names the column
+    optimistically and treats it as absent only on 42703 / PGRST204; one
+    probe here gives the proof the same answer."""
+    if "v" not in _RI:
+        req = urllib.request.Request(
+            URL + "/rest/v1/assignments?select=recipient_ids&limit=0",
+            headers={"apikey": key, "Authorization": "Bearer " + token})
+        try:
+            urllib.request.urlopen(req, timeout=60, context=CTX).read()
+            _RI["v"] = True
+        except urllib.error.HTTPError as e:
+            body = e.read().decode()
+            _RI["v"] = not ('"42703"' in body or '"PGRST204"' in body)
+    return _RI["v"]
+
+
 def load_class_matrices(key, token, ids, with_subs=True):
     """`loadClassMatrices(classIds)`, read for read."""
     links = rest("class_teachers?select=" + urllib.parse.quote(
@@ -296,11 +322,15 @@ def load_class_matrices(key, token, ids, with_subs=True):
         "class_id,student_id,joined_at,left_at,"
         "student:student_id(id,first_name,last_name,avatar_url,deleted_at)")
         + "&class_id=" + in_list(ids) + "&deleted_at=is.null", key, token)
+    ri = ",recipient_ids" if recipient_ids_supported(key, token) else ""
     assigns = rest("assignments?select=" + urllib.parse.quote(
         "id,class_id,title,due_at,release_at,source,set_by,set_tier,scope_kind,"
-        "scope_ref,set_subject:subject,paper,created_at,academic_week,subject_id,"
-        "subject:subject_id(id,name),kind")
+        "scope_ref,set_subject:subject,paper,created_at,academic_week,subject_id"
+        + ri + ",subject:subject_id(id,name),kind")
         + "&class_id=" + in_list(ids) + "&deleted_at=is.null", key, token)
+    # ⊕ Catch-up — `loadClassMatrices`'s split at the load seam: a row with
+    # `recipient_ids` set is not a class assignment and nothing derives from it.
+    assigns = [a for a in assigns if not is_catch_up(a)]
 
     by_class = {}
     for row in links:

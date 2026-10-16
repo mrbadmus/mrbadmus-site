@@ -221,6 +221,72 @@ window.MrBadmusTeacherData = (function () {
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
   }
 
+  /* ═══ ⊕ CATCH-UP (14 Oct 2026, docs/catch-up/PLAN.md §1) ═══════════════
+     A catch-up is an `assignments` row with `recipient_ids` set: work for
+     NAMED pupils of a class. NULL means the whole class, which is every row
+     that existed before the feature.
+
+     ⚠️ `recipient_ids` IS NOT ON PRODUCTION until Mide says so, and
+     PostgREST 400s a whole select that names a missing column (42703, or
+     PGRST204 from the schema cache).
+
+     HOW IT IS READ — OPTIMISTICALLY, WITH NO PROBE OF ITS OWN. The first
+     version asked `select('recipient_ids').limit(0)` before every read: an
+     extra round trip on every teacher page, for ever, which
+     `flashcard_request_shape_drive` measures against main and refuses. So
+     the column is NAMED in the read the page was making anyway
+     (`withRecipientIds` below), while what we know about it is "unknown" or
+     "present". If PostgREST answers 42703 / PGRST204 about `recipient_ids`,
+     that is a definite "absent": it is cached (memory, plus sessionStorage
+     for ten minutes so the next page load does not pay the 400 again) and
+     the SAME read is issued again without the column, exactly once. Its
+     answer is the only one the caller ever sees, so nothing renders twice
+     and no row is lost. Any OTHER error is handed back untouched — never
+     cached, never retried here — and the caller's own error path runs as it
+     always did.
+
+     So: with the migration applied the request count is main's exactly; on
+     a project without it, one failed request per ten-minute window per tab,
+     then main's count again. Absent column ⇒ nothing is a catch-up and every
+     read is byte-for-byte the one it was before. */
+  const RI_KEY = 'mrb-ri-cap:v1';
+  const RI_NO_TTL_MS = 10 * 60 * 1000;
+  let _recipientCols = null;          // null unknown · true present · false absent
+  function recipientIdsKnownAbsent() {
+    if (_recipientCols !== null) return _recipientCols === false;
+    try {
+      const at = Number(sessionStorage.getItem(RI_KEY));
+      if (at > 0 && (Date.now() - at) < RI_NO_TTL_MS) { _recipientCols = false; return true; }
+    } catch (e) { /* private window: stay "unknown" */ }
+    return false;
+  }
+  function isRecipientIdsAbsentError(err) {
+    if (!err || (err.code !== '42703' && err.code !== 'PGRST204')) return false;
+    /* About THIS column — a different missing column is not our answer. */
+    const msg = String(err.message || '') + ' ' + String(err.details || '') + ' ' + String(err.hint || '');
+    return msg.indexOf('recipient_ids') > -1;
+  }
+  /* `run(cols)` builds and awaits ONE PostgREST read, appending `cols`
+     (", recipient_ids" or "") to its select. Returns that read's result. */
+  async function withRecipientIds(run) {
+    const cols = recipientIdsKnownAbsent() ? '' : ', recipient_ids';
+    const r = await run(cols);
+    if (!cols || !r) return r;
+    if (!r.error) { _recipientCols = true; return r; }
+    if (!isRecipientIdsAbsentError(r.error)) return r;
+    _recipientCols = false;
+    try { sessionStorage.setItem(RI_KEY, String(Date.now())); } catch (e) { /* ok */ }
+    return run('');
+  }
+  /* The ONE definition of "is a catch-up" and "does this row apply to this
+     pupil" on the teacher side. Everything below calls these two. */
+  function isCatchUp(row) {
+    return !!row && Array.isArray(row.recipient_ids) && row.recipient_ids.length > 0;
+  }
+  function catchUpApplies(row, pupilId) {
+    return !row || !row.recipient_ids || row.recipient_ids.indexOf(pupilId) > -1;
+  }
+
   // Compute the current assignment-week window for a class, given the
   // class's assignment_day_of_week (postgres dow: 0=Sun … 6=Sat). NULL
   // means "not configured" — fall back to Monday (1).
@@ -345,17 +411,22 @@ window.MrBadmusTeacherData = (function () {
           .eq('class_id', classId)
           .is('left_at', null)
           .is('deleted_at', null),
-        sb.from('assignments')
-          .select('id')
-          .eq('class_id', classId)
-          .is('deleted_at', null),
+        withRecipientIds(function (riCols) {
+          return sb.from('assignments')
+            .select('id' + riCols)
+            .eq('class_id', classId)
+            .is('deleted_at', null);
+        }),
       ]);
 
       if (studentsRes.error) throw studentsRes.error;
       if (assignmentsRes.error) throw assignmentsRes.error;
 
       const student_count = studentsRes.count || 0;
-      const assignmentIds = (assignmentsRes.data || []).map(function (r) { return r.id; });
+      /* ⊕ Catch-up — split out at the seam: not a class assignment. */
+      const assignmentIds = (assignmentsRes.data || [])
+        .filter(function (r) { return !isCatchUp(r); })
+        .map(function (r) { return r.id; });
       const assignment_count = assignmentIds.length;
 
       // No assignments → no submissions to fetch, no completion to compute.
@@ -1045,13 +1116,15 @@ window.MrBadmusTeacherData = (function () {
         )
         .eq('class_id', classId)
         .is('deleted_at', null),
-      sb.from('assignments')
-        .select(
-          'id, title, due_at, release_at, source, set_by, subject_id, ' +
-          'subject:subject_id ( id, name )'
-        )
-        .eq('class_id', classId)
-        .is('deleted_at', null),
+      withRecipientIds(function (riCols) {
+        return sb.from('assignments')
+          .select(
+            'id, title, due_at, release_at, source, set_by, subject_id' + riCols + ', ' +
+            'subject:subject_id ( id, name )'
+          )
+          .eq('class_id', classId)
+          .is('deleted_at', null);
+      }),
     ]);
 
     if (q1.error) {
@@ -1107,7 +1180,8 @@ window.MrBadmusTeacherData = (function () {
       return m.left_at == null;
     });
 
-    const assignments = (q3.data || []);
+    /* ⊕ Catch-up — split out at the seam; nothing below sees one. */
+    const assignments = (q3.data || []).filter(function (a) { return !isCatchUp(a); });
     const assignmentIds = assignments.map(function (a) { return a.id; });
 
     // ── Stage B — Q4: submissions (only if there are assignments) ────
@@ -1414,13 +1488,15 @@ window.MrBadmusTeacherData = (function () {
         .eq('student_id', studentId)
         .is('left_at', null)
         .is('deleted_at', null),
-      sb.from('assignments')
-        .select(
-          'id, title, due_at, release_at, source, set_by, subject_id, ' +
-          'subject:subject_id ( id, name )'
-        )
-        .eq('class_id', classId)
-        .is('deleted_at', null),
+      withRecipientIds(function (riCols) {
+        return sb.from('assignments')
+          .select(
+            'id, title, due_at, release_at, source, set_by, subject_id' + riCols + ', ' +
+            'subject:subject_id ( id, name )'
+          )
+          .eq('class_id', classId)
+          .is('deleted_at', null);
+      }),
       sb.from('profiles')
         .select('id, first_name, last_name, avatar_url, science_pathway, tier, year_group, deleted_at')
         .eq('id', studentId)
@@ -1511,7 +1587,9 @@ window.MrBadmusTeacherData = (function () {
     }
 
     const klass = teacherRows[0].class;
-    const assignments = q3.data || [];
+    /* ⊕ Catch-up — this pupil's own catch-ups stay (labelled in the history,
+       left out of the stats); one set for somebody else is not theirs. */
+    const assignments = (q3.data || []).filter(function (a) { return catchUpApplies(a, studentId); });
     const assignmentIds = assignments.map(function (a) { return a.id; });
 
     // ── Stage B — Q5: this student's submissions (skip round-trip if
@@ -1572,6 +1650,7 @@ window.MrBadmusTeacherData = (function () {
         max_score: sub.max_score,
         score_pct: pct,
         on_time: on_time,
+        catch_up: isCatchUp(a),
       });
     });
     // Sort submitted_at DESC. (No NULLS LAST tier: nulls already filtered above.)
@@ -1588,6 +1667,7 @@ window.MrBadmusTeacherData = (function () {
     let total_max = 0;
     let last_active_at = null;
     submission_history.forEach(function (r) {
+      if (r.catch_up) return;       // ⊕ Catch-up: shown in the history, not in the stats
       submissions_completed += 1;
       if (r.on_time === true) on_time_count += 1;
       if (r.score != null && r.max_score != null && r.max_score > 0) {
@@ -2041,7 +2121,7 @@ window.MrBadmusTeacherData = (function () {
     }
 
     // ── Stage A — three parallel reads, each chunked over the id list ──
-    let links, memberRows, assignmentRows;
+    let links, memberRows, assignmentRows, catchUpRows = [];
     try {
       const [a, b, c] = await Promise.all([
         inChunks(ids, async function (chunk) {
@@ -2070,7 +2150,7 @@ window.MrBadmusTeacherData = (function () {
           return r.data || [];
         }),
         inChunks(ids, async function (chunk) {
-          const r = await sb.from('assignments')
+          const r = await withRecipientIds(function (riCols) { return sb.from('assignments')
             /* ⊕ MRB-336 — `release_at`, `source` AND `set_by` JOIN THE SELECT.
                ⛔ `release_at` was written by Set work and read by NOBODY on the
                teacher side. So a row released next Monday was drawn "Open",
@@ -2130,11 +2210,11 @@ window.MrBadmusTeacherData = (function () {
               'id, class_id, title, due_at, release_at, source, set_by, ' +
               'set_tier, scope_kind, scope_ref, set_subject:subject, paper, ' +
               'quiz_type, teacher_note, ' +
-              'created_at, academic_week, subject_id, ' +
+              'created_at, academic_week, subject_id' + riCols + ', ' +
               'subject:subject_id ( id, name )'
             )
             .in('class_id', chunk)
-            .is('deleted_at', null);
+            .is('deleted_at', null); });
           /* ⊕ Stream J, 25 Sep 2026 (experience run, item 4) — `teacher_note`
              ADDED so the Set-work sheet's Edit form can show the note it is
              about to overwrite (`buildPapers` in shared/teacher-live.js
@@ -2144,16 +2224,20 @@ window.MrBadmusTeacherData = (function () {
              shared/breakdown.js: retried without it on error, so a project
              whose `assignments` table has not carried the migration yet
              still loads every class rather than throwing on this one field. */
+          /* ⊕ Catch-up — `withRecipientIds` has already answered an absent
+             `recipient_ids` with its own one retry, so an error reaching here
+             is about something else; this fallback names the column only if
+             it is not known to be absent. */
           if (r.error) {
-            var r2 = await sb.from('assignments')
+            var r2 = await withRecipientIds(function (riCols) { return sb.from('assignments')
               .select(
                 'id, class_id, title, due_at, release_at, source, set_by, ' +
                 'set_tier, scope_kind, scope_ref, set_subject:subject, paper, ' +
-                'quiz_type, created_at, academic_week, subject_id, ' +
+                'quiz_type, created_at, academic_week, subject_id' + riCols + ', ' +
                 'subject:subject_id ( id, name )'
               )
               .in('class_id', chunk)
-              .is('deleted_at', null);
+              .is('deleted_at', null); });
             if (r2.error) { r2.error.__stage = 'assignments'; throw r2.error; }
             return r2.data || [];
           }
@@ -2161,6 +2245,15 @@ window.MrBadmusTeacherData = (function () {
         }),
       ]);
       links = a; memberRows = b; assignmentRows = c;
+      /* ⊕ CATCH-UP SPLIT, AT THE LOAD SEAM. `assignmentRows` is what Stage B,
+         the flashcard reads, the per-class assembly and every figure
+         `teacher-live.js` derives all start from, so taking the catch-ups out
+         HERE means no completion, mean, matrix, roster, grid, digest or
+         insight can count one. They are kept, whole, in `catchUpRows` and
+         drawn only by the week card. The SQL twin is
+         `teacher_class_rollup_v2`'s `AND a.recipient_ids IS NULL`. */
+      catchUpRows = assignmentRows.filter(isCatchUp);
+      assignmentRows = assignmentRows.filter(function (r) { return !isCatchUp(r); });
     } catch (err) {
       const stage = err && err.__stage ? err.__stage : 'class_teachers';
       const e = new Error('[teacher-data] ' + stage + ' query failed: ' + (err && err.message));
@@ -2310,6 +2403,31 @@ window.MrBadmusTeacherData = (function () {
         e.code = 'query_failed_submissions';
         e.cause = err;
         throw e;
+      }
+    }
+
+    /* ⊕ Catch-up — the named pupils' results, read on their own and kept OUT
+       of `submissionRows` (which every aggregate derives from). One read,
+       and none at all on a class with no catch-up — which is every class
+       until a teacher sets one, and every class on a project without the
+       column. Failure degrades to "no results yet", never to a thrown load. */
+    const catchUpScoped = catchUpRows.filter(function (a) {
+      return subsScope === null || subsScope.has(a.class_id);
+    });
+    let catchUpSubs = [];
+    if (catchUpScoped.length > 0) {
+      try {
+        catchUpSubs = await inChunks(catchUpScoped.map(function (a) { return a.id; }), async function (chunk) {
+          const r = await sb.from('assignment_submissions')
+            .select('id, assignment_id, student_id, score, max_score, ' +
+                    'submitted_at, completed_at, started_at, status, attempts, attempt_no')
+            .in('assignment_id', chunk)
+            .is('deleted_at', null);
+          if (r.error) throw r.error;
+          return r.data || [];
+        });
+      } catch (err) {
+        console.error('[teacher-data] catch-up submissions query failed (soft-fail: results read as not started)', err);
       }
     }
 
@@ -2528,6 +2646,32 @@ window.MrBadmusTeacherData = (function () {
       submissionsByClass.get(cid).push(sub);
     });
 
+    /* ⊕ Catch-up — per class, the catch-up rows with each named pupil's
+       first-attempt result. Never merged into `assignments`/`submissions`. */
+    const catchUpFirst = pickFirstAttempts(catchUpSubs);
+    const catchUpsByClass = new Map();
+    catchUpRows.forEach(function (a) {
+      if (!catchUpsByClass.has(a.class_id)) catchUpsByClass.set(a.class_id, []);
+      const results = {};
+      (a.recipient_ids || []).forEach(function (pid) {
+        const sub = catchUpFirst.get(a.id + ':' + pid);
+        results[pid] = sub ? {
+          status: sub.status || null,
+          score: sub.score, max_score: sub.max_score,
+          completed_at: sub.completed_at || null,
+          submitted_at: sub.submitted_at || null,
+          started_at: sub.started_at || null,
+        } : null;
+      });
+      catchUpsByClass.get(a.class_id).push({
+        id: a.id, title: a.title, due_at: a.due_at, release_at: a.release_at,
+        created_at: a.created_at, academic_week: a.academic_week,
+        set_tier: a.set_tier, scope_kind: a.scope_kind, scope_ref: a.scope_ref,
+        recipient_ids: a.recipient_ids.slice(),
+        results: results,
+      });
+    });
+
     const out = {};
     byClassId.forEach(function (entry, id) {
       const klass = entry.klass;
@@ -2550,6 +2694,8 @@ window.MrBadmusTeacherData = (function () {
         departed_count: departedByClass.get(id) || 0,
         assignments: assignmentsByClass.get(id) || [],
         submissions: submissionsByClass.get(id) || [],
+        // ⊕ Catch-up — kept apart from both lists above, on purpose.
+        catch_ups: catchUpsByClass.get(id) || [],
         // ⊕ MRB-351 landing — per-pupil MAX(flashcard_sessions.last_seen_at),
         // scoped to this class's own released flashcard assignments. `{}`
         // for a class with no flashcard work (the common case today);
@@ -3828,6 +3974,9 @@ window.MrBadmusTeacherData = (function () {
     // MRB-287 — the redesigned dashboard's two reads. Additive: nothing
     // above changed, and no existing caller sees a difference.
     loadClassMatrices,
+    // ⊕ Catch-up — the one definition, for every teacher-side reader.
+    isCatchUp,
+    catchUpApplies,
     // ⊕ MRB-348 WS-2 — the server-side aggregate behind the summary screens.
     loadClassSummaries,
     loadCompleteFor,

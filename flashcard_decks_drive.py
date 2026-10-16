@@ -497,10 +497,25 @@ def main():
             check(first == "type", "sheet: the type choice is the first thing on the sheet", first)
             check(not p.eval("document.querySelector('[data-sw=type]').hidden"),
                   "sheet: the type choice is shown on the first step")
-            widths = p.eval("Array.from(document.querySelectorAll('[data-sw=type-chips] .sw-chip'))"
-                            ".map(function(c){return Math.round(c.getBoundingClientRect().width);})")
-            check(len(widths) == 2 and abs(widths[0] - widths[1]) <= 1,
-                  "sheet: Questions and Flashcards are two equal options", widths)
+            # ⊕ Catch-up (14 Oct 2026) — a THIRD type chip, `Catch-up`, exists
+            # in the DOM and is shown only when `/scope` says the class can
+            # take one (`catch_up.supported`). So the claim is made of the
+            # chips that are DRAWN: they are exactly Questions + Flashcards,
+            # or those two + Catch-up, and every drawn one is the same width
+            # — none privileged. A chip that is not drawn must take no room.
+            chips = p.eval("Array.from(document.querySelectorAll('[data-sw=type-chips] .sw-chip'))"
+                           ".map(function(c){var r=c.getBoundingClientRect();"
+                           "return {t:c.textContent, w:Math.round(r.width), shown:!c.hidden};})")
+            shown = [c for c in chips if c["shown"]]
+            names = [c["t"] for c in shown]
+            widths = [c["w"] for c in shown]
+            check(names in (["Questions", "Flashcards"],
+                            ["Questions", "Flashcards", "Catch-up"])
+                  and widths and max(widths) - min(widths) <= 1
+                  and all(c["w"] == 0 for c in chips if not c["shown"]),
+                  "sheet: the type options drawn (Questions and Flashcards, "
+                  "plus Catch-up where the class can take one) are equal "
+                  "options", chips)
             click(p, "[data-sw=class][data-sw-ref='%s']" % C1)
             wait(p, "document.querySelector('[data-sw=overlay]').getAttribute('data-sw-scope-state')==='ready'")
             check(p.eval("document.querySelector(\"[data-sw=class][data-sw-ref='%s']\")"

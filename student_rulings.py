@@ -2475,6 +2475,22 @@ LOGIC = {
             " : 'Complete homework'),\n",
         ),
         # ══════════════════════════════════════════════════════════════════
+        # ⊕ CATCH-UP (14 Oct 2026) — A CATCH-UP IS NEVER "HOMEWORK".
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # A catch-up row (`w.catchUp`, shared/student-live.js) opens the LESSON
+        # first, in the sheet on this page; "Start the questions" is in the
+        # sheet. So its not-yet-done button says what it does, "Open the
+        # lesson" — the same words a marked row already uses — whether or not
+        # the questions have been started. Every other row is untouched, and
+        # Design's fixture has no `catchUp`, so the fixture keeps its values.
+        (
+            " 'See what you sent' : (qDone > 0 ? 'Continue'"
+            " : 'Complete homework'),\n",
+            " 'See what you sent' : (w.catchUp ? 'Open the lesson' : qDone > 0"
+            " ? 'Continue' : 'Complete homework'),\n",
+        ),
+        # ══════════════════════════════════════════════════════════════════
         # ⊕ Experience run, 25 Sep 2026 (stream H) — P11. THE WEEK BUTTONS
         # HAD NO NAME BEYOND THEIR OWN DIGITS.
         # ══════════════════════════════════════════════════════════════════
