@@ -18,7 +18,7 @@
 // until the product wires real destinations.
 
 import type { StageMode } from './Stage'
-import { MenuIcon } from './icons'
+import { SpecimensIcon } from './icons'
 
 declare global {
   interface Window {
@@ -131,9 +131,10 @@ export function TopBar({
           type="button"
           className="libtrigger libtrigger--square"
           aria-label="Open specimen library"
+          title="Specimens"
           onClick={onOpenLibrary}
         >
-          <MenuIcon />
+          <SpecimensIcon />
         </button>
         {phoneTitle ? (
           <span className="brand" style={{ fontSize: 15 }}>{phoneTitle}</span>
@@ -151,7 +152,7 @@ export function TopBar({
     return (
       <header className="topbar">
         <button type="button" className="libtrigger" onClick={onOpenLibrary}>
-          <MenuIcon />
+          <SpecimensIcon />
           Specimens
         </button>
         {brand}
