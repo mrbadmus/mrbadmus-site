@@ -112,3 +112,6 @@ Count: **1 WRONG** (C34, q2 wx2). ROUTE: C21. OFF-SPEC: C9, C10, C17 (all true, 
 SOURCE HAS ERRORS. One frozen wrong explanation is false on a spec recall point (q2 wx2: zinc and iron "vigorous") — q2 is not usable as written. The `higher` field holds base content (reactivity ↔ tendency to form a positive ion) in an off-spec term ("ionisation energy") and is missing on Foundation routes. The file never states 5.4.1.1's oxidation-as-gain-of-oxygen. Steam reactions and hydrogen reduction are true but explicitly outside the spec. All equations, the series order and q1 are correct.
 
 **For Mide:** nothing. All points are settled science.
+
+## Addendum — 17 Oct 2026 (loose-ends run, fix 4): navigation only
+The only change to this lesson is ONE extra entry in the end "Connects to" list: `Oxidation and reduction`, pointing at the `oxidation-reduction` lesson (batch 11, 5.4.1.4), resolved per route through `KS4.hrefFor('oxidation-reduction', R)`; target exists on all four routes. It is the back-link for the pointer batch 11 already makes to this page (BATCH10-11-PORT-REPORT.md "For Mide" deferral, ruled yes). Ruling `LE17-F4-RS-BACK` in `ks4_batch_rulings.py`. No science text, quiz item, theory chunk or figure changed; the Verdict above stands. Re-freeze needed because the logic hash moves: `python3 build_ks4.py --batch batch-5 --freeze`.

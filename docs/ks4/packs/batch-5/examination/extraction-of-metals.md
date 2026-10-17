@@ -98,3 +98,6 @@ Count: **2 WRONG** (C10 frozen eq2; C14 theory); OFF-SPEC: R5 detail; ROUTE: C26
 
 ## 6. Verdict
 SOURCE HAS ERRORS. Frozen equation eq2 (zinc) is unbalanced; theory's anode half equation is unbalanced and HT-only. Both quiz items are correct and usable on all four routes. The spec's core definition (reduction = loss of oxygen; identify oxidised/reduced) is only implicit — must be taught. Blast-furnace and Hall–Héroult detail is off-spec here (given information at most); the `higher` field belongs to 5.10.1.4. **For Mide:** nothing.
+
+## Addendum — 17 Oct 2026 (loose-ends run, fix 4): navigation only
+The only change to this lesson is ONE extra entry in the end "Connects to" list: `Oxidation and reduction`, pointing at the `oxidation-reduction` lesson (batch 11, 5.4.1.4), resolved per route through `KS4.hrefFor('oxidation-reduction', R)`; target exists on all four routes. It is the back-link for the pointer batch 11 already makes to this page (BATCH10-11-PORT-REPORT.md "For Mide" deferral, ruled yes). Ruling `LE17-F4-EM-BACK` in `ks4_batch_rulings.py`. No science text, quiz item, theory chunk or figure changed; the Verdict above stands. Re-freeze needed because the logic hash moves: `python3 build_ks4.py --batch batch-5 --freeze`.
