@@ -767,6 +767,14 @@
       .tb-tab { padding: 6px 11px; font-size: 14px; }
     }
   </style>
+  <!-- ⊕ 16 Oct 2026 (owner: the theme switch "on its own row … wasting
+       space") — the phone bar every other hand-written teacher page has:
+       AFTER the page's own <style>, so at <=560px the bar is ONE row (brand,
+       Today, the menu button) and the name, Sign out and the theme control
+       are reached through the menu, instead of the wrap rule above putting
+       them on a second row. Above 560px nothing changes. -->
+  <link rel="stylesheet" href="/shared/teacher-topbar.css?v=e4a3d0a7">
+  <script src="/shared/teacher-topbar.js?v=70c076e1" defer></script>
 </head>
 <body>
 
@@ -809,6 +817,10 @@
   <div class="tb-seg">
     <a class="tb-tab" data-mrb-today-nav="1" href="/teacher/today.html">Today</a>
   </div>
+  <!-- ⊕ 16 Oct 2026 — the phone menu (shared/teacher-topbar.js), as on
+       today.html. Invisible above 560px. Never the LAST button: Sign out
+       must stay last for teacher-admin-nav.js. -->
+  <button type="button" class="tb-menu" aria-label="Menu"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><path d="M3 5.5h14M3 10h14M3 14.5h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
   <span id="env-pill" class="pill env-prod" title=""></span>
   <span id="nav-user-area" class="tb-who"></span>
   <button class="signout" onclick="MrBadmusTeacherGuard.switchAccount()">Switch account</button>
@@ -1088,8 +1100,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="/shared/config.js?v=ab7a89ac"></script>
-<script src="/shared/account.js?v=85ddd06e"></script>
+<script src="/shared/config.js?v=bb268b6f"></script>
+<script src="/shared/account.js?v=4b873931"></script>
 <script src="/shared/class-entry.js?v=8c087f18" defer></script>
 <script src="/shared/teacher-guard.js?v=207daf14"></script>
 <script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>

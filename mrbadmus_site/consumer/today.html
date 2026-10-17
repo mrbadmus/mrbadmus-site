@@ -16,8 +16,8 @@
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
-<link rel="stylesheet" href="/shared/ks3-theme.css?v=16898136"/>
-  <link rel="stylesheet" href="/consumer/consumer.css?v=db29ae1e"/>
+<link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=5d8a38a0"/>
   <style>
   /* ── consumer/today.html — Design's `Child Today.dc.html`, live ─────────
      Her per-element inline styles are the design. The repeated ones are
@@ -331,16 +331,19 @@
   }
   .td-oops p { margin: 0; }
   .td-oops p + p { margin-top: 6px; color: var(--ks3-ink-body); font-size: 16px; }
+  /* ⊕ Orion fix: the one action a failure offers — Try again, or Sign in
+     again — in the header's own 44px control shape. */
+  .td-oops p + p:has(.td-oops-act, .c-signin-again) { margin-top: 14px; }
+  .td-oops .td-oops-act, .td-oops .c-signin-again {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px;
+    border: 2px solid var(--ks3-ink); border-radius: 12px;
+    background: var(--ks3-ink); color: var(--ks3-on-dark);
+    font: inherit; font-size: 16px; font-weight: 600; text-decoration: none; cursor: pointer;
+  }
+  .td-oops .td-oops-act[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
   </style>
-<style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
 </head>
 <body>
-<!-- ⊕ B2C polish (9 Oct 2026): the phone row for the theme control. The
-     header slot below is theme.js's one-icon compact menu, and at 360-390
-     the full Light/Dark/System group does not fit beside the header's own
-     buttons; so below 601px the header slot hides and this row shows the
-     full group, in flow, above the header (consumer.css). -->
-<div class="mrb-theme-float c-theme-phone"><span class="mrb-theme-slot" data-mrb-theme></span></div>
 
 
 <div class="rd td-root" data-mode="ks3" id="c-main">
@@ -374,9 +377,12 @@
     <p class="td-date" id="td-date"></p>
     <h1 class="td-greet" id="td-greet">Hello.</h1>
 
-    <div class="td-stats">
-      <div class="td-stat">
-        <span class="td-stat-chip td-stat-streak" id="td-streak">0</span>
+    <!-- ⊕ Orion fix (16 Oct 2026): hidden until Today has loaded. The chip
+         used to ship as a static "0", so a load that failed left a child
+         who had worked all week looking at "0 day streak". -->
+    <div class="td-stats" id="td-stats" hidden>
+      <div class="td-stat" id="td-streak-stat">
+        <span class="td-stat-chip td-stat-streak" id="td-streak"></span>
         <span class="td-stat-text"><strong id="td-streak-label">day streak</strong><br>
           <span id="td-streak-note">keep it going this week</span></span>
       </div>
@@ -401,7 +407,7 @@
 
     <div id="td-later-block"></div>
 
-    <div class="td-quick">
+    <div class="td-quick" id="td-quick" hidden>
       <a id="td-quick-exam" href="/consumer/exam.html">
         <strong>Exam questions</strong><span>Write one, get it marked</span>
       </a>
@@ -431,10 +437,10 @@
 
 </div>
 
-<script src="/shared/config.js?v=ab7a89ac"></script>
+<script src="/shared/config.js?v=bb268b6f"></script>
 <!-- Front door (12 Oct 2026): the one map; consumer-common asks it whether a school pupil has wandered in. -->
-<script src="/shared/account.js?v=85ddd06e"></script>
-<script src="/consumer/consumer-common.js?v=ea9adbf1"></script>
+<script src="/shared/account.js?v=4b873931"></script>
+<script src="/consumer/consumer-common.js?v=355a3cd0"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/today.html — the child's whole product, on one screen.
@@ -568,7 +574,12 @@
     }
 
     function renderStats(kid) {
-      var streak = kid.streak == null ? 0 : Number(kid.streak);
+      /* ⊕ Orion fix: null is "the server couldn't read it" — the chip is
+         hidden, never shown as 0. A real 0 (no done days) still shows 0. */
+      el('td-stats').hidden = false;
+      var known = kid.streak != null && !isNaN(Number(kid.streak));
+      el('td-streak-stat').hidden = !known;
+      var streak = known ? Number(kid.streak) : 0;
       el('td-streak').textContent = String(streak);
       /* ⊕ DEVIATION FROM DESIGN, and it is a correction rather than a
          preference. Her label reads "week streak"; the number the backend
@@ -778,6 +789,7 @@
        "Which unit? Open it from your Today page" — said to a child who had
        just opened it from their Today page. */
     function renderQuick() {
+      el('td-quick').hidden = false;             // shown only once Today has loaded
       el('td-quick-exam').href = C.href('/consumer/exam.html');
 
       var items = data.items || [];
@@ -909,25 +921,58 @@
       window.setTimeout(function () { load().catch(function () {}); }, 3000);
     }
     var lastLoad = Date.now();
+    /* ⊕ Orion fix: coming back to the tab reads a CURRENT token (api()
+       refreshes it), and a session that really ended is said, not
+       swallowed. Any other failure on a resume leaves the page as it was. */
     function again() {
       if (Date.now() - lastLoad < 1500) { return; }
       lastLoad = Date.now();
-      load().catch(function () {});
+      load().catch(function (e) { if (C.isSignedOut(e)) { loadFailed(e); } });
     }
     window.addEventListener('pageshow', function (ev) { if (ev.persisted) { again(); } });
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'visible') { again(); }
     });
 
+    /* ⊕ Orion fix (16 Oct 2026). Three different things, said three ways:
+         · the session really is over (api() tried a refresh and Supabase
+           refused it) → "This device was signed out." and the child's own
+           sign-in door;
+         · the account itself says no (403: closing, not a child's) → its
+           own sentence, as before;
+         · anything else — no connection, a timeout, a 5xx, a 503, a 429 —
+           is OUR failure: "Today couldn't load." and Try again. Never
+           "sign in", never a streak of 0 (the stats stay hidden). */
+    function loadFailed(e) {
+      /* ⊕ Saved work follow-up (16 Oct 2026): a failed load shows the
+         failure line and Try again, and NOTHING that only the server could
+         have said — no stats, no "Unit check · None due", no later list,
+         no flags, no unread count, no left-over items. */
+      el('td-stats').hidden = true;
+      el('td-quick').hidden = true;
+      el('td-msg-count').hidden = true;
+      ['td-see-host', 'td-flags', 'td-later-block'].forEach(function (id) { el(id).innerHTML = ''; });
+      el('td-nothing').innerHTML = '';
+      var host = el('td-items');
+      if (C.isSignedOut(e)) { C.signedOutPanel(host, C.childLoginUrl, 'td-oops'); return; }
+      if (C.isClosing(e) || (e && e.status === 403)) {
+        host.innerHTML = '<div class="td-oops"><p>' + C.escapeHtml(C.plainMessage(e)) + '</p>' +
+          (C.isClosing(e) ? '' : '<p>Ask your grown-up to check the account.</p>') + '</div>';
+        return;
+      }
+      host.innerHTML = '<div class="td-oops" role="status"><p>Today couldn’t load.</p>' +
+        '<p><button type="button" class="td-oops-act" id="td-retry">Try again</button></p></div>';
+      el('td-retry').addEventListener('click', function () {
+        var b = this;
+        b.disabled = true;
+        b.textContent = 'Loading…';
+        lastLoad = Date.now();
+        load().catch(loadFailed);
+      });
+    }
+
     show('today');
-    return load().catch(function (e) {
-      el('td-items').innerHTML =
-        '<div class="td-oops"><p>' + C.escapeHtml(C.plainMessage(e)) + '</p>' +
-        /* An account being closed is not a blip: no retry advice. */
-        (C.isClosing(e) ? '' : /try again/i.test(C.plainMessage(e))
-          ? '<p>If it keeps happening, ask your grown-up to check the account.</p>'
-          : '<p>Try again in a moment, or ask your grown-up to check the account.</p>') + '</div>';
-    });
+    return load().catch(loadFailed);
   }});
 })();
 </script>

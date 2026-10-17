@@ -64,7 +64,9 @@
             onclick="MrBadmusTeacherGuard.switchAccount()">Switch account</button>
     <button class="sp-btn sp-btn--quiet" type="button"
             onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
-    <span class="mrb-theme-slot" data-mrb-theme></span>
+    <!-- ⊕ 16 Oct 2026: compact — one 44px button below 600px. The inline
+         group of three ran off the right edge of a 390px phone. -->
+    <span class="mrb-theme-slot" data-mrb-theme="compact"></span>
   </div>
 </nav>
 
@@ -76,11 +78,11 @@
 <input type="file" id="sp-file" class="sp-file" accept="image/*" tabindex="-1" aria-hidden="true">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="/shared/config.js?v=ab7a89ac"></script>
+<script src="/shared/config.js?v=bb268b6f"></script>
 <!-- ⚠️ class-entry.js before any data module: seating-data delegates the
      working-academic-year rule to it and MRB-267 made that load order
      load-bearing across every page that reads a class list. -->
-<script src="/shared/account.js?v=85ddd06e"></script>
+<script src="/shared/account.js?v=4b873931"></script>
 <script src="/shared/class-entry.js?v=8c087f18"></script>
 <script src="/shared/teacher-guard.js?v=207daf14"></script>
 <script src="/shared/seating-canvas.js?v=0cabca6f"></script>
