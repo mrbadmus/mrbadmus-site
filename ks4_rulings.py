@@ -1049,3 +1049,38 @@ def apply_r19_big_question(site_slug, design_file, template_text):
     return template_text.replace(
         needle, '<p class="ks3-bigq">%s</p> <!-- ⊕ R19 -->' % new)
 
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# R20 — the two "If you had to guess" options are shown in a RANDOM order
+# per page load (Mide's ruling, 17 Oct 2026). The authored order is fixed
+# (usually the right option first), so POSITION could carry the answer.
+# This is the ONE place the shuffle lives: every KS4 lesson that mounts
+# Ks4Guess (pilot via R18, batches 2-3 and 4-11 via their own copies of
+# the block, all byte-identical) compiles the block through compile_block.
+#
+# ONLY the display order changes. `state.pick`, `onCommit(i, ...)`, the
+# analytics handler and the saved-answer restore in shared/mrbadmus.v2.js
+# all index `props.options` in AUTHORED order, so state.pick stays an
+# authored index and each option keeps its own reply and correctness.
+# The tag ("This" / "Or this") is positional, so it follows the screen.
+# The coin is tossed once per component instance (state.flip), so it holds
+# across every re-render of that page view. `window.MRB_GUESS_FLIP`
+# (true/false) forces it; tests use it. With no hook it is Math.random().
+# ═══════════════════════════════════════════════════════════════════════
+R20_STATE_FROM = "state = { pick: null };"
+R20_STATE_TO = ("state = { pick: null, flip: (typeof window !== 'undefined' && typeof window.MRB_GUESS_FLIP === 'boolean')"
+                " ? window.MRB_GUESS_FLIP : Math.random() < 0.5 }; /* R20 */")
+R20_LOOP_FROM = "    opts.forEach((o, i) => {\n      const on = pick === i;"
+R20_LOOP_TO = ("    const order = (this.state.flip ? [1, 0] : [0, 1]).filter((k) => opts[k]);\n"
+               "    order.forEach((oi, i) => {\n      const o = opts[oi];\n      const on = pick === oi;")
+R20_CLICK_FROM = "this.setState({ pick: i }); if (typeof p.onCommit === 'function') p.onCommit(i, !!o.correct); }"
+R20_CLICK_TO = "this.setState({ pick: oi }); if (typeof p.onCommit === 'function') p.onCommit(oi, !!o.correct); }"
+
+
+def apply_r20_guess_shuffle(logic_text):
+    for old in (R20_STATE_FROM, R20_LOOP_FROM, R20_CLICK_FROM):
+        _require(logic_text, old, "Ks4Guess.dc.html", "R20")
+    logic_text = logic_text.replace(R20_STATE_FROM, R20_STATE_TO, 1)
+    logic_text = logic_text.replace(R20_LOOP_FROM, R20_LOOP_TO, 1)
+    return logic_text.replace(R20_CLICK_FROM, R20_CLICK_TO, 1)

@@ -604,8 +604,13 @@ def _r18_expected(slug):
     from ks4_lessons import start_here
     r = start_here.START_HERE[slug]
     return ["Start here", r["title"], r["scene"],
-            "If you had to guess, " + r["question"],
-            r["options"][0]["text"], r["options"][1]["text"]]
+            "If you had to guess, " + r["question"]]
+
+
+def _r18_options(slug):
+    from ks4_lessons import start_here
+    r = start_here.START_HERE[slug]
+    return [r["options"][0]["text"], r["options"][1]["text"]]
 
 
 def _r18_check(slug, port_text_norm):
@@ -616,6 +621,20 @@ def _r18_check(slug, port_text_norm):
         if i < 0:
             return "R18 opener: %r missing or out of order" % frag[:80]
         pos = i + 1
+    # ⊕ R20 (17 Oct 2026) — the two options show in a random order per page
+    # load, so they are proved as an UNORDERED pair: both present after the
+    # question, in one order or the other. Every other piece above stays
+    # strictly in order. That the order really varies is
+    # guess_shuffle_drive.py's job.
+    a, b = [squash(normalize_ws(t)) for t in _r18_options(slug)]
+    ok = False
+    for first, second in ((a, b), (b, a)):
+        i = port_sq.find(first, pos)
+        if i >= 0 and port_sq.find(second, i + 1) >= 0:
+            ok = True
+            break
+    if not ok:
+        return "R18 opener: the two guess options are missing after the question"
     if "Commit first" in port_text_norm:
         return "R18 opener: Design's Ks4Choice hook is still present"
     return None

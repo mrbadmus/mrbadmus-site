@@ -23520,6 +23520,29 @@
    — add to wireInstruments(), in the C1 group. Uses each / toArray /
    setHidden / markStage, all already in scope. */
 
+  /* ⊕ Start-here guess: the two options swap places at random, once per page
+     load. Authored order is fixed (the right one is usually first), so
+     position could carry the answer. Only a list marked `data-shuffle` (the
+     guess, build_ks3.py `_hook_guess`) is touched; the four-option keyed
+     blocks keep their order. The buttons are MOVED, not rebuilt, so each
+     keeps its `data-i` and so its reply and its "Good/Fair guess" word; the
+     A/B badge is relabelled for the position it now sits in. The loop runs
+     before any listener is attached, so nothing can be pressed in between.
+     `window.MRB_GUESS_FLIP` (true/false) forces the order; tests use it. */
+  function shuffleGuess(wrap) {
+    var ul = wrap.querySelector("ul[data-shuffle]");
+    if (!ul) { return; }
+    var lis = toArray(ul.children);
+    if (lis.length !== 2) { return; }
+    var flip = (typeof window.MRB_GUESS_FLIP === "boolean")
+      ? window.MRB_GUESS_FLIP : Math.random() < 0.5;
+    if (flip) { ul.insertBefore(lis[1], lis[0]); }
+    each(toArray(ul.children), function (li, k) {
+      var mark = li.querySelector(".ks3-opt-mark");
+      if (mark) { mark.textContent = k === 0 ? "A" : "B"; }
+    });
+  }
+
   /* ── keyed-commit (c1-06 #s-verdict, c1-03 #s-bubble) ──
      Four options, each carrying its own answer. The panel's first paragraph
      is the one the student earned; the rest is what everybody reads.
@@ -23541,6 +23564,7 @@
   function wireKeyedCommit(sec) {
     var wrap = sec.querySelector("[data-keyed]");
     if (!wrap) { return; }
+    shuffleGuess(wrap);
     var opts = toArray(wrap.querySelectorAll(".ks3-option"));
     var panel = wrap.querySelector("[data-reveal]");
     var replies = toArray(wrap.querySelectorAll(".ks3-keyed-reply"));

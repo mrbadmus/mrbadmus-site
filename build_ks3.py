@@ -832,7 +832,7 @@ def _hook_guess(p):
         for i, r in enumerate(p["replies"]))
     return ('<div class="ks3-hook-commit"><p class="ks3-commit">%s</p>'
             '<div class="ks3-keyed" data-keyed>'
-            '<ul class="ks3-options ks3-keyed-options" role="list">%s</ul>'
+            '<ul class="ks3-options ks3-keyed-options" role="list" data-shuffle>%s</ul>'
             '<div class="ks3-keyed-reveal" hidden data-reveal>%s'
             '<p class="ks3-keyed-static">%s</p></div></div></div>'
             % (sci(p["commit"]), buttons, replies, rich(p["reveal"])))

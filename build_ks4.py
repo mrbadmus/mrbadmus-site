@@ -1551,6 +1551,9 @@ def compile_block(page, name, design_dir=None):
         # ⊕ B11W-PM (ks4_batch_rulings.py) — batch 11's OWN copy of the block only: "±0.10" is read as 0.10.
         if design_dir and design_dir.replace(os.sep, "/").rstrip("/").endswith("design-reference/batch-11/lessons"):
             logic = ks4_batch_rulings.apply_practice_pm(logic)
+    if name == "Ks4Guess":
+        # ⊕ R20 (ks4_rulings.py) — the two options show in a random order per page load.
+        logic = ks4_rulings.apply_r20_guess_shuffle(logic)
     if name == "Ks4Sort":
         # ⊕ R17 (ks4_rulings.py) — report completion so the rail stop ticks.
         logic = ks4_rulings.apply_r17_sort_report(logic)

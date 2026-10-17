@@ -1534,6 +1534,33 @@ GATES = [
              "`needs` the vendored delivery, because a gate whose corpus is "
              "missing would pass everything, which is worse than no gate."),
 
+    dict(name="guess_shuffle_drive",
+         cmd=["python3", "guess_shuffle_drive.py"],
+         speed="slow",
+         watches=["guess_shuffle_drive.py", "ks3_browser.py", "ks4_rulings.py",
+                  "build_ks4.py", "build_ks3.py", "shared/ks3.js",
+                  "shared/ks4-runtime.js", "shared/mrbadmus.v2.js",
+                  "ks4_lessons/start_here.py", "ks3_data/start_here.py",
+                  "mrbadmus_site/shared/**",
+                  "mrbadmus_site/combined/foundation/biology/ecology/carbon-cycle.html",
+                  "mrbadmus_site/combined/foundation/chemistry/chemical-changes/ph-scale.html",
+                  "mrbadmus_site/ks3/biology/cells-and-organisation/using-a-microscope.html"],
+         needs="mrbadmus_site/ks4.html",
+         why="the 'If you had to guess' opener's two options swap places at "
+             "random per page load (R20 on KS4, shuffleGuess on KS3), because "
+             "a fixed order let position carry the answer. Other gates compare "
+             "the pair as UNORDERED; this one proves the shuffle is real and "
+             "harmless. On a KS4 lesson with a Code-authored record, a KS4 "
+             "lesson on Design's own Ks4Guess and a KS3 lesson it forces "
+             "window.MRB_GUESS_FLIP false then true and asserts the cards "
+             "appear in opposite orders, that pressing an option shows ITS OWN "
+             "reply and puts 'The answer' / 'Good guess.' on the same option "
+             "text under both orders, that the KS3 A/B badges follow position "
+             "and the four-option verdict block is not reordered, and that "
+             "with NO hook 16 plain loads show both orders (a fair coin misses "
+             "one in 32,768 runs). The hook is absent in production, where the "
+             "order is Math.random()."),
+
     dict(name="ks4_chrome_drive",
          cmd=["python3", "ks4_chrome_drive.py"],
          speed="slow",
