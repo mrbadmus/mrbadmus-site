@@ -507,8 +507,57 @@
     var wantMax = marker.max || "100%";
     if (el.style.maxWidth !== wantMax) { el.style.maxWidth = wantMax; }
     var html = marker.__html || "";
-    if (live.lastHtml !== html) { el.innerHTML = html; live.lastHtml = html; }
+    if (live.lastHtml !== html) { el.innerHTML = html; live.lastHtml = html; figFit(el, html); }
     return { live: live, doms: [el] };
+  }
+
+  /* ⊕ Loose-ends run, 17 Oct 2026 (fix 7a) — figure text floor on phones.
+     Design's figures are `<svg viewBox="0 0 W H" style="width:100%">` whose text is sized in
+     viewBox units, so on a 390px phone a 13-unit label in a 620-unit figure draws at ~7.5px. This
+     does NOT change a word or move a label: it reads the figure's viewBox width and its smallest
+     font-size out of the SVG string and publishes them as `--fig-vb` / `--fig-fs`; ks4-lesson.css
+     (KS4_FIG_CSS, phones only, max-width 719.98px) then gives the <svg> a min-width of
+     11px x vb / fs, so its smallest text is >= 11px, and the frame scrolls sideways when that is
+     wider than the screen. A figure that already reads at >= 11px gets a min-width below 100% and
+     is untouched; desktop (>= 720px) never matches the media query. `data-fig-over` is set only
+     while the frame really overflows (it draws the right-edge fade and makes the frame
+     keyboard-scrollable); `data-fig-end` drops the fade once the pupil has reached the end. */
+  var FIG_RO = (typeof ResizeObserver === "function") ? new ResizeObserver(function (entries) {
+    for (var i = 0; i < entries.length; i++) { figOver(entries[i].target); }
+  }) : null;
+  function figOver(el) {
+    var over = el.scrollWidth > el.clientWidth + 1;
+    if (over !== el.hasAttribute("data-fig-over")) {
+      if (over) { el.setAttribute("data-fig-over", ""); el.setAttribute("tabindex", "0"); }
+      else { el.removeAttribute("data-fig-over"); el.removeAttribute("tabindex"); }
+    }
+    var end = over && el.scrollLeft + el.clientWidth >= el.scrollWidth - 2;
+    if (end !== el.hasAttribute("data-fig-end")) {
+      if (end) { el.setAttribute("data-fig-end", ""); } else { el.removeAttribute("data-fig-end"); }
+    }
+  }
+  function figFit(el, html) {
+    var vb = /<svg[^>]*\sviewBox="\s*[\d.\-]+[ ,]+[\d.\-]+[ ,]+([\d.]+)[ ,]+[\d.]+/.exec(html);
+    var min = Infinity, re = /font-size[=:]\s*"?([\d.]+)/g, m;
+    while ((m = re.exec(html)) !== null) {
+      var f = parseFloat(m[1]);
+      if (f > 0 && f < min) { min = f; }
+    }
+    if (!vb || min === Infinity) {
+      el.removeAttribute("data-fig-fit"); el.style.removeProperty("--fig-vb"); el.style.removeProperty("--fig-fs");
+      figOver(el);
+      return;
+    }
+    el.setAttribute("data-fig-fit", "");
+    el.style.setProperty("--fig-vb", vb[1]);
+    el.style.setProperty("--fig-fs", String(min));
+    if (!el.__figWired) {
+      el.__figWired = true;
+      el.addEventListener("scroll", function () { figOver(el); }, { passive: true });
+      if (FIG_RO) { FIG_RO.observe(el); }
+    }
+    figOver(el);
+    if (typeof requestAnimationFrame === "function") { requestAnimationFrame(function () { figOver(el); }); }
   }
 
   /* ── child components: one persistent instance per `dc-import` position ──

@@ -295,3 +295,17 @@ generator — never re-freeze `ks4_pilot_manifest.json` to make it pass.
   and B5-RSBB-CHIP did; B-R12 keeps failing loud without it. A batch whose shared block differs from the previous
   batch's (batch 6: Ks4Triangle's `fixed: true` cell) registers its OWN block set from its own copy, which is why
   batches 4 and 5 stay byte-identical.
+
+## 9. Figure text floor on phones (loose-ends run, 17 Oct 2026, fix 7a)
+
+Design's figures are `<svg viewBox style="width:100%">` with text sized in viewBox units, so a 13-unit label in a 620-unit
+figure draws at ~7.5px on a 390px phone. The general fix is two small pieces, and no figure's words or geometry change:
+
+- `shared/ks4-runtime.js` `figFit()` (hand-written engine code, runs in `patchFig` whenever a figure's SVG string changes)
+  reads the viewBox width and the smallest `font-size` out of the SVG and publishes `--fig-vb` / `--fig-fs` on the figure frame.
+- `build_ks4.KS4_FIG_CSS` (appended to `shared/ks4-lesson.css`, `max-width: 719.98px` only) gives the `<svg>` a
+  `min-width: calc(11px * var(--fig-vb) / var(--fig-fs))`. The frame scrolls sideways when that is wider than the screen,
+  with a right-edge fade while there is more to see. A figure already at 11px is unchanged; at 720px and up nothing applies.
+
+Proof and gate: `tools/ks4_figure_text_audit.py` (`--check` is the slow gate `ks4_figure_text`). It measures computed
+font-size x `getScreenCTM()` scale per `<text>`/`<tspan>` at 390 wide, presses every lesson button to reach step-revealed figures.

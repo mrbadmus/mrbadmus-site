@@ -700,6 +700,23 @@ KS4_RAIL_JS = """
 })();
 """
 
+KS4_FIG_CSS = """
+/* ⊕ Loose-ends run, 17 Oct 2026 (fix 7a) — figure text floor on phones. ks4-runtime.js figFit() publishes each
+   figure's viewBox width (--fig-vb) and its smallest font-size in viewBox units (--fig-fs); the <svg> is
+   then never narrower than 11px x vb / fs, so its smallest label draws at >= 11px. Wider than the screen,
+   the frame scrolls sideways (nothing is reflowed or re-worded); a figure that already reads at 11px gets a
+   min-width below 100% and is unchanged. Phones and small tablets only: >= 720px never matches. */
+@media (max-width: 719.98px) {
+  [data-fig-fit] { overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin; }
+  [data-fig-fit] > svg { max-width: none; min-width: calc(11px * var(--fig-vb) / var(--fig-fs)); }
+  [data-fig-over]:not([data-fig-end]) {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+            mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+  [data-fig-over]:focus-visible { outline: 2px solid var(--ks3-accent-text, #E4572E); outline-offset: 2px; }
+}
+"""
+
 KS4_RAIL_CSS = """
 /* ⊕ Front door run, 12 Oct 2026 (Part 4) — THE PHONE STRIP, pilot lessons.
    The template carries the strip's padding inline, which made it 47px; up to
@@ -1012,7 +1029,7 @@ def collect_lesson_css(all_files):
                "   <helmet> of the 14 lessons + 11 blocks, deduplicated "
                "(exact text match), first-seen order.\n"
                "   Never hand-edit; re-run build_ks4.py. */\n\n")
-    return header + "\n\n".join(chunks) + "\n" + KS4_DARK_MODE_FIXES + KS4_CHIP_CSS + KS4_RAIL_CSS
+    return header + "\n\n".join(chunks) + "\n" + KS4_DARK_MODE_FIXES + KS4_CHIP_CSS + KS4_RAIL_CSS + KS4_FIG_CSS
 
 
 def collect_batch_lesson_css(base_dir, files, out_name):

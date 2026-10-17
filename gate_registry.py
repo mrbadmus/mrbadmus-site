@@ -2863,6 +2863,26 @@ GATES = [
              "a real scenario this build ever produces, so the gap is the "
              "same shape as `ks3_rail_manifest`'s, not a new kind of hole."),
 
+    dict(name="ks4_figure_text",
+         cmd=["python3", "tools/ks4_figure_text_audit.py", "--check"],
+         speed="slow",
+         needs="mrbadmus_site",
+         watches=["tools/ks4_figure_text_audit.py", "ks3_browser.py", "build_ks4.py", "ks4_lessons/**",
+                  "ks4_rulings.py", "ks4_batch_rulings.py", "ks4_science_rulings.py",
+                  "shared/ks4-ds.css", "shared/ks4-theme.css", "shared/ks4-lesson.css", "shared/ks4-lesson-*.css",
+                  "shared/ks4-lib.js", "shared/ks4-diagrams.js", "shared/ks4-runtime.js", "shared/ks4-ext-*.js",
+                  "shared/ks4-source*.js", "shared/figures-ks4.js",
+                  "mrbadmus_site/combined/**", "mrbadmus_site/triple/**",
+                  "combined/**", "triple/**"],
+         why="Loose-ends run, 17 Oct 2026 (fix 7a) - no figure text on a KS4 lesson page renders under 11 CSS px at "
+             "390px wide. Design's figures size text in viewBox units, so a 13-unit label in a 620-unit figure drew "
+             "at ~7.5px on a phone (BATCH7-8-PORT-REPORT.md, BATCH10-11, BATCH4, BATCH5). ks4-runtime.js figFit() + "
+             "build_ks4.KS4_FIG_CSS give each such figure a phone-only min-width inside a sideways-scrolling frame; "
+             "this gate loads one route of every built lesson at 390 wide, scrolls it, presses every button to reach "
+             "step-revealed figures, and measures each <text>/<tspan> as computed font-size x getScreenCTM scale. "
+             "A page it cannot drive is a failure, not a pass. Figures drawn from figlib (shared/figures-ks4.js) "
+             "carry their own 11px check at build time and are measured here too."),
+
     dict(name="student_lessons_cards_check",
          cmd=["python3", "student_lessons_cards_check.py"],
          speed="fast",
