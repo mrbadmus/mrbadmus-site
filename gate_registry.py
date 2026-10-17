@@ -2385,6 +2385,8 @@ GATES = [
                   # the day that branch's migrations land in this tree.
                   "supabase/migrations/"
                   "20260927100000_mrb351_rollup_v2_live_results_kinds.sql",
+                  "supabase/migrations/"
+                  "20261017120000_rollup_v2_flashcard_visibility.sql",
                   "shared/teacher-data.js", "shared/teacher-live.js",
                   "shared/config.js"],
          needs="mrb348_teacher_rollup_proof.py",
