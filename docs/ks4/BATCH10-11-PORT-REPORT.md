@@ -370,6 +370,19 @@ accepted the simple average: B11-RAM-AG).
   walk fixes changed (salts practice Q4) re-placed; backend `knowledge-points.json` re-exported and pushed before the
   site.
 
+- **Gates (pre-push):** every registered gate green, no override (verify_ks3, ks4_parity, ks4_chrome_drive,
+  test_isolation_drive recorded; ks4_parity's long sweep again needed a quiet machine: it died on the same Chrome
+  websocket timeout while the machine was swapping under another session's drives, and passed when it was not).
+  Main moved twice during the round (the front-door phone fixes, then an account.js re-stamp); each time batch 11's
+  112 page files were rebuilt on the new main (only shared-asset `?v=` stamps changed) and re-gated.
+
+**Shipped:** backend `1eef943..62981be` (knowledge points), then site pushed 17 Oct 2026 as `c5b37f445..950af0c8a`;
+`check_ks4_live.py --batch batch-11`: all 56 live pages are this build byte for byte, and every asset they name
+matches its stamp. Batch 10 re-checked after the same push: 45 of 45.
+
+**KS4 now has 148 rebuilt lessons live** (pilot 14, batches 2–11: 16, 13, 13, 15, 14, 16, 16, 15, 16), of 264 KS4
+subtopics; 117 before this run.
+
 ---
 
 ## For Mide (nothing here blocks; your call when convenient)
