@@ -1771,6 +1771,65 @@ LOOSE = [
 SCIENCE.extend(LOOSE)
 
 
+# fix 7 (words), loose-ends run 17 Oct 2026: off-spec words in the quiz text, replaced with the spec's / pack's own
+# wording. LOGIC layer = the page's own quiz (Design's `Q(...)` / `V(...)` / bankSrc strings). The SOURCE twin
+# (shared/ks4-source-batch-N.js is NOT changed: no batch 7/8/10 lesson reads it, see the loose-ends report). Examiner flags: docs/ks4/packs/batch-{7,8,10}/examination/<slug>.md. Strings are the
+# file's own spelling (batch 7 writes — as an escape; batches 8 and 10 write a literal em dash).
+def _le(rid, slug, old, new):
+    return dict(id=rid, slug=slug, layer="logic", old=old, new=new)
+
+
+LOOSE_F7 = [
+    # ATP -> energy (batch 7; examiner: ATP is not on 8461/8464, "transfers energy" / "energy from respiration")
+    _le("LE17-F7-UG-ATP", "uses-of-glucose", "releasing energy (ATP) to power all cell processes",
+        "releasing energy to power all cell processes"),
+    _le("LE17-F7-PH-ATP", "photosynthesis", "they produce ATP energy but do not carry out photosynthesis.",
+        "they release energy but do not carry out photosynthesis."),
+    _le("LE17-F7-AR-ATP-1", "aerobic-respiration", "Breathing produces ATP. Respiration produces oxygen.",
+        "Breathing releases energy. Respiration produces oxygen."),
+    _le("LE17-F7-AR-ATP-2", "aerobic-respiration", "but ATP is produced by RESPIRATION in cells.",
+        "but energy is released by RESPIRATION in cells."),
+    _le("LE17-F7-AN-ATP", "anaerobic-respiration", "Anaerobic respiration produces more ATP, so athletes",
+        "Anaerobic respiration transfers more energy, so athletes"),
+    _le("LE17-F7-ME-ATP", "metabolism", "Glucose broken down in aerobic respiration to release ATP",
+        "Glucose broken down in aerobic respiration to release energy"),
+    # catabolic / catabolism -> "breaking down" (metabolism; examiner C21)
+    _le("LE17-F7-ME-CAT-1", "metabolism", "both energy-releasing (catabolism) and energy-using (anabolism)",
+        "both energy-releasing (breaking down) and energy-using (anabolism)"),
+    _le("LE17-F7-ME-CAT-2", "metabolism", "BREAKS DOWN glucose \\u2014 this is a catabolic reaction.",
+        "BREAKS DOWN glucose \\u2014 so it is a breaking-down reaction."),
+    _le("LE17-F7-ME-CAT-3", "metabolism", "BREAKS DOWN starch \\u2014 another catabolic reaction.",
+        "BREAKS DOWN starch \\u2014 another breaking-down reaction."),
+    _le("LE17-F7-ME-CAT-4", "metabolism", "breaking down glucose \\u2014 catabolic.",
+        "breaking down glucose \\u2014 so it is not building up."),
+    # "base pairs" is Triple Higher only (8461 4.6.1.5): CF, CH and TF get the spec's "genome" wording, only TH keeps the figure.
+    # `TH` is renderVals' own const (c.isTH), so this is a per-route string, not a second question.
+    _le("LE17-F7-DG-BASEPAIRS", "dna-genome",
+        "'An international project that sequenced all ~3 billion base pairs of human DNA and mapped all human genes'",
+        "(TH ? 'An international project that sequenced all ~3 billion base pairs of human DNA and mapped all human genes' : "
+        "'An international project that sequenced the entire human genome and mapped all human genes')"),
+    # beta cells -> the pancreas; autoimmune -> the spec's "fails to produce sufficient insulin" (blood-glucose-diabetes; examiner C5, C9)
+    _le("LE17-F7-BG-BETA", "blood-glucose-diabetes", "released by pancreas beta cells, causes glucose",
+        "released by the pancreas, causes glucose"),
+    _le("LE17-F7-BG-ALPHA", "blood-glucose-diabetes", "released by pancreas alpha cells, causes glycogen",
+        "released by the pancreas, causes glycogen"),
+    # (q3's credited option "Type 1: pancreas produces no insulin (autoimmune)..." is already rewritten by B8W-BG-TYPES-KEY.)
+    _le("LE17-F7-BG-AUTO", "blood-glucose-diabetes", "Only TYPE 1 is autoimmune. TYPE 2 develops",
+        "Only TYPE 1 involves the pancreas failing to produce sufficient insulin. TYPE 2 develops"),
+    # keystone / niche / aposematism (batch 10; examiner: off-spec glosses)
+    _le("LE17-F7-EC-KEYSTONE", "ecosystems", "but wolves are often keystone predators, so full compensation is rare.",
+        "but wolves are often the main predators, so full compensation is rare."),
+    _le("LE17-F7-PC-NICHE-1", "population-competition", "they always occupy different niches",
+        "they never need the same resources"),
+    _le("LE17-F7-PC-NICHE-2", "population-competition",
+        "The ecological niche concept says species that overlap too much cannot coexist indefinitely.",
+        "Species that compete for the same resources too closely cannot coexist indefinitely."),
+    _le("LE17-F7-AD-APOSEMATISM", "adaptations", "Warning colouration (aposematism) typically involves bright colours",
+        "Warning colours are typically bright"),
+]
+SCIENCE.extend(LOOSE_F7)
+
+
 APPLIED = []
 
 

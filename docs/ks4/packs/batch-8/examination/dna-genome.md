@@ -75,3 +75,14 @@ True routes: CF CH TF TH (matches the site), with a triple layer and a triple-hi
 | C31 | q3 wx3 | (option 3 = "A study comparing the DNA of humans to chimpanzees") wx3 reads "While the HGP has helped identify disease genes, it was a mapping and sequencing project — not a medical treatment database." | **WRONG — misaligned** | Explains option 2 (database). wx2 and wx3 are swapped. (F3) | — |
 
 Count: **1 WRONG item** (q3: wx2 and wx3 swapped, C30–C31, frozen); **3 IMPRECISE** (C9, C12, C13, all re-cuttable theory); ROUTE leaks (C2, C4, C14, C16, C17, C18, q1); GAP (migration patterns — spec-core section added to the source). The batch's `_extract-notes.md` says "No shifted-key defect found anywhere in this batch"; that is not so for q3 here (or for meiosis q1). No `[NEW — to be examined]` lines in this file.
+
+## Addendum — 17 Oct 2026 (loose-ends run, fix 7 words): off-spec words in the quiz replaced
+Wording only. No answer, option order, correct key, question stem, equation, figure or spec point changed; each edit swaps the flagged word for the spec's or pack's own wording (flags above). Changed in `ks4_batch_rulings.py` (logic layer, the page's own quiz). `shared/ks4-source-batch-8.js` is deliberately untouched: no lesson in this batch reads it for anything a pupil sees. Each ruling fails the build unless its text is found exactly once.
+
+`base pairs` is Triple Higher only (8461 4.6.1.5): Combined Foundation, Combined Higher and Triple Foundation get the "genome" wording; only Triple Higher keeps the figure. It is one per-route string on the page (`TH ? old : new`, `TH` is the page's own `c.isTH`), not a second question.
+
+| ruling | before | after |
+|---|---|---|
+| LE17-F7-DG-BASEPAIRS | 'An international project that sequenced all ~3 billion base pairs of human DNA and mapped all human genes' | (TH ? 'An international project that sequenced all ~3 billion base pairs of human DNA and mapped all human genes' : 'An international project that sequenced the entire human genome and mapped all human genes') |
+
+Re-freeze (phase 2): `python3 build_ks4.py --batch batch-8 --freeze`.

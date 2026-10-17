@@ -87,3 +87,16 @@ The single FIFA is a four-step description of the insulin response, not a calcul
 
 ## 6. Verdict
 SOURCE OK WITH FLAGS. No wrong science. The insulin step skips the spec's first effect (glucose moves from blood into cells). Glucagon and the term "negative feedback" are HT and sit on every route today. The spec's graph-interpretation statement (base, MS 2c) has no material at all. **For Mide:** nothing.
+
+## Addendum — 17 Oct 2026 (loose-ends run, fix 7 words): off-spec words in the quiz replaced
+Wording only. No answer, option order, correct key, question stem, equation, figure or spec point changed; each edit swaps the flagged word for the spec's or pack's own wording (flags above). Changed in `ks4_batch_rulings.py` (logic layer, the page's own quiz). `shared/ks4-source-batch-8.js` is deliberately untouched: no lesson in this batch reads it for anything a pupil sees. Each ruling fails the build unless its text is found exactly once.
+
+"alpha cells" is also changed to "the pancreas" (same off-spec family). Page q3's credited option was already rewritten to the spec wording by B8W-BG-TYPES-KEY.
+
+| ruling | before | after |
+|---|---|---|
+| LE17-F7-BG-BETA | released by pancreas beta cells, causes glucose | released by the pancreas, causes glucose |
+| LE17-F7-BG-ALPHA | released by pancreas alpha cells, causes glycogen | released by the pancreas, causes glycogen |
+| LE17-F7-BG-AUTO | Only TYPE 1 is autoimmune. TYPE 2 develops | Only TYPE 1 involves the pancreas failing to produce sufficient insulin. TYPE 2 develops |
+
+Re-freeze (phase 2): `python3 build_ks4.py --batch batch-8 --freeze`.

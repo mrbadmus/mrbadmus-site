@@ -68,3 +68,13 @@ True routes: CF CH TF TH (matches the site). No HT layer, no triple layer.
 | C28 | q2 wx3 | different species CAN compete (squirrels); niche overlap | OK, aligned | Answers option 3. "Niche" off-spec gloss. | — |
 
 wrong_explanations alignment: all 6 keys read in full; each explains its own option. Count: **0 WRONG**; **ROUTE**: C15 (`higher` predator–prey skill is base, not HT); **OFF-SPEC**: C2–C4, C7, C12–C13, C16, C25 (carrying capacity, density factors, intra/inter terms); **IMPRECISE**: C18. No `[NEW — to be examined]` lines in this file.
+
+## Addendum — 17 Oct 2026 (loose-ends run, fix 7 words): off-spec words in the quiz replaced
+Wording only. No answer, option order, correct key, question stem, equation, figure or spec point changed; each edit swaps the flagged word for the spec's or pack's own wording (flags above). Changed in `ks4_batch_rulings.py` (logic layer, the page's own quiz). `shared/ks4-source-batch-10.js` is deliberately untouched: no lesson in this batch reads it for anything a pupil sees. Each ruling fails the build unless its text is found exactly once.
+
+| ruling | before | after |
+|---|---|---|
+| LE17-F7-PC-NICHE-1 | they always occupy different niches | they never need the same resources |
+| LE17-F7-PC-NICHE-2 | The ecological niche concept says species that overlap too much cannot coexist indefinitely. | Species that compete for the same resources too closely cannot coexist indefinitely. |
+
+Re-freeze (phase 2): `python3 build_ks4.py --batch batch-10 --freeze`.

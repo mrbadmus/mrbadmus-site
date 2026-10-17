@@ -83,3 +83,12 @@ Count: **0 WRONG**. OFF-SPEC: ATP throughout, q4. IMPRECISE: C10, C13. ROUTE: C8
 
 ## 5. Verdict
 SOURCE OK WITH FLAGS. All spec science correct. q4 is off-spec (ATP). The liver line is HT and belongs on the HT layer (and properly to Response to exercise). Plants make ethanol + CO₂ too — the comparison must say so. "Fizzy drinks" overreaches. The page ref should read 4.4.2.1. **For Mide:** nothing.
+
+## Addendum — 17 Oct 2026 (loose-ends run, fix 7 words): off-spec words in the quiz replaced
+Wording only. No answer, option order, correct key, question stem, equation, figure or spec point changed; each edit swaps the flagged word for the spec's or pack's own wording (flags above). Changed in `ks4_batch_rulings.py` (logic layer, the page's own quiz). `shared/ks4-source-batch-7.js` is deliberately untouched: no lesson in this batch reads it for anything a pupil sees. Each ruling fails the build unless its text is found exactly once.
+
+| ruling | before | after |
+|---|---|---|
+| LE17-F7-AN-ATP | Anaerobic respiration produces more ATP, so athletes | Anaerobic respiration transfers more energy, so athletes |
+
+Re-freeze (phase 2): `python3 build_ks4.py --batch batch-7 --freeze`.
