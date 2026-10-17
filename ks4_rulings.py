@@ -1084,3 +1084,36 @@ def apply_r20_guess_shuffle(logic_text):
     logic_text = logic_text.replace(R20_STATE_FROM, R20_STATE_TO, 1)
     logic_text = logic_text.replace(R20_LOOP_FROM, R20_LOOP_TO, 1)
     return logic_text.replace(R20_CLICK_FROM, R20_CLICK_TO, 1)
+
+# R21 — a practice option shows its label, never its reason (fix 2, Oct 2026,
+# Mide's ruling).  `shared/ks4-lib.js` `item()` is the ONE doorway every KS4
+# lesson's practice question passes through (pilot K.find, batch K.bank, and the
+# Design batch pages' own V()/Q() lists all end in K.item).  The stored text,
+# `wrong_explanations` and the shuffle key (hash of the ORIGINAL text) are
+# untouched; only the `text` handed to the page changes, and the reason moves
+# into `reply`.  The rule is `option_labels.py`'s, emitted as JS by
+# `option_labels.js_source()` so the Python and JS twins cannot drift.
+R21_ITEM_FROM = (
+    "  function item(q) {\n"
+    "    if (!q) return null;\n"
+    "    var we = q.wrong_explanations || {};\n"
+    "    var opts = q.opts.map(function (o, i) {\n"
+    "      return { text: o[0], correct: !!o[1], reply: o[1] ? RIGHT : (we[String(i)] || ''), k: hash(q.q + '|' + o[0]) };\n"
+    "    });\n")
+
+
+def _r21_item_to():
+    import option_labels
+    return (option_labels.js_source() +
+            "  function item(q) {\n"
+            "    if (!q) return null;\n"
+            "    var we = q.wrong_explanations || {};\n"
+            "    var pl = optionPlan(q.q, q.opts, we); // ⊕ R21\n"
+            "    var opts = q.opts.map(function (o, i) {\n"
+            "      return { text: pl.labels[i], correct: !!o[1], reply: o[1] ? (pl.right[i] ? RIGHT + ' ' + pl.right[i] : RIGHT) : (we[String(i)] || pl.feedback[i] || ''), k: hash(q.q + '|' + o[0]) };\n"
+            "    });\n")
+
+
+def apply_r21_option_labels(text):
+    _require(text, R21_ITEM_FROM, "ks4-lib.js", "R21")
+    return text.replace(R21_ITEM_FROM, _r21_item_to(), 1)

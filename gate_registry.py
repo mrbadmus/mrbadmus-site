@@ -297,6 +297,29 @@ GATES = [
              "than half the answers or never be the answer. KS3's bank once "
              "never landed on D; nothing watched KS4 until this row."),
 
+    dict(name="option_labels",
+         cmd=["python3", "option_labels_check.py"],
+         speed="fast",
+         watches=["option_labels_check.py", "option_labels.py", "generate_site_v5.py",
+                  "build_ks3.py", "build_ks4.py", "ks4_rulings.py", "ks4_lessons/**",
+                  "all_subtopics_*.py", "ks3_data/**", "!ks3_data/**/questions_*.py", "ks3_art/kit.py",
+                  "shared/ks4-lib.js", "mrbadmus_site/combined/**",
+                  "mrbadmus_site/triple/**", "mrbadmus_site/ks3/**"],
+         why="Fix 2 of the loose-ends run (Oct 2026, Mide): a practice option "
+             "must not carry its mistake or working in its label - '0.5 g - "
+             "confusing moles with grams' tells the pupil the answer is wrong "
+             "before they answer. The rule (the text before the first spaced "
+             "em-dash is the label; the reason moves into the feedback) is "
+             "option_labels.py, applied by generate_site_v5.py, build_ks3.py "
+             "and, in JavaScript, by shared/ks4-lib.js item() (ks4_rulings.py "
+             "R21 writes that text FROM option_labels.py). This gate (1) runs "
+             "the generated JS under node over every KS4 question and makes "
+             "it agree with the Python, shuffle order included; (2) checks the "
+             "rule never produces an empty or coinciding label; (3) fails if a "
+             "BUILT page still shows ' - ' in a scored option outside the "
+             "named exceptions. Stored data is untouched, so mirrors and "
+             "knowledge points are not watched here."),
+
     dict(name="answer_lengths",
          cmd=["python3", "verify_answer_lengths.py"],
          speed="fast",
@@ -2978,6 +3001,12 @@ GATES = [
 # repo root, so a new script cannot be quietly neither.
 
 EXCLUDED = {
+    "option_labels.py":
+        "Import-only library (fix 2, Oct 2026): the one rule for a quiz option "
+        "that carries its reason, imported by generate_site_v5.py, build_ks3.py "
+        "and ks4_rulings.py (which writes its JavaScript twin into "
+        "shared/ks4-lib.js). Asserts nothing; `option_labels` is the gate that "
+        "proves it and every gate whose script imports it watches it.",
     "config_env.py":
         "Import-only library (B2C unit 6, 5 Oct 2026): shared/config.js's two "
         "worlds for Python scripts, parsed out of config.js so that no script "

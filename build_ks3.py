@@ -78,6 +78,7 @@ KS4_BRIDGE_PATHWAY = "combined"
 KS4_BRIDGE_TIER = "foundation"
 
 import brand
+import option_labels  # fix 2 (Oct 2026): a ladder option shows its label, never its reason
 import topbar  # the ONE pupil top bar (Stage B, phone run 28 Sep 2026)
 import ks3_art
 from ks3_art.kit import (
@@ -3183,12 +3184,22 @@ def _rung_marked(key, num, name, q):
     This is the only place in the whole generator where `data-correct` appears.
     R3 depends on that staying true.
     """
+    # fix 2 (option_labels.py): the label is the text before " — "; for a WRONG
+    # option the reason moves into its correction when it has none of its own.
+    # A correct option's reason has no slot (the page shows only "Correct."),
+    # so it is dropped from the label and kept in the authored data.
+    fbmap = q.get("feedback") or {}
+    ans = q.get("answer")
+    lp = option_labels.plan(q.get("q", ""),
+                            [(o, i == ans) for i, o in enumerate(q["options"])],
+                            fbmap)
     opts = []
     for i, o in enumerate(q["options"]):
-        fb = (q.get("feedback") or {}).get(i, "")
+        fb = fbmap.get(i, "") or lp["feedback"].get(i, "")
         correct = "1" if i == q.get("answer") else "0"
         opts.append(_option_li(
-            i, o, ' data-correct="%s" data-feedback="%s"' % (correct, e(fb))))
+            i, lp["labels"][i],
+            ' data-correct="%s" data-feedback="%s"' % (correct, e(fb))))
     return ('<div class="ks3-rung" data-rung="%s" data-mode="marked">'
             '<h3 tabindex="-1">Rung %d · %s</h3>'
             '<p class="ks3-rung-q">%s</p>'

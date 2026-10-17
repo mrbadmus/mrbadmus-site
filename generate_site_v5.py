@@ -14,6 +14,7 @@ from theme_head import THEME_HEAD, THEME_SLOT, stamp_theme_head
 import brand  # the ONE brand mark (one-mark ruling, 13 Sep 2026)
 import topbar  # the ONE pupil top bar (Stage B, phone run 28 Sep 2026)
 import launch_config  # the consumer launch decision — committed config, 1 Oct 2026
+import option_labels  # fix 2 (Oct 2026): a quiz option shows its label, never its reason
 
 # Bonding redesign (MRB-113 Phase B) — theory-block decomposition for the
 # redesigned bonding pages. Frozen source fields are never edited; blocks are
@@ -2106,11 +2107,12 @@ def make_quiz(subject, topic, color):
     for i, q in enumerate(questions):
         opts_html = ""
         correct_val = ""
+        _lp = option_labels.plan(q["q"], q["opts"])  # fix 2: label only, never its reason
         for j, (opt_text, is_correct) in enumerate(q["opts"]):
             val = f"opt{i}_{j}"
             if is_correct:
                 correct_val = val
-            opts_html += f'<button class="quiz-opt" data-val="{val}">{opt_text}</button>\n'
+            opts_html += f'<button class="quiz-opt" data-val="{val}">{_lp["labels"][j]}</button>\n'
 
         html += f"""
 <div class="quiz-card" data-answer="{correct_val}">
@@ -3521,16 +3523,17 @@ def make_pilot_quiz(quiz):
     cards_html = ""
     for i, q in enumerate(quiz):
         orig_wrong_exp = q.get("wrong_explanations", {})
+        _lp = option_labels.plan(q["q"], q["opts"], orig_wrong_exp)  # fix 2
         opts_html = ""
         for orig_j, (opt_text, is_correct) in enumerate(q["opts"]):
             attrs = f' data-qi="{i}"'
             if is_correct:
                 attrs += ' data-correct="1"'
             else:
-                exp = orig_wrong_exp.get(orig_j)
+                exp = orig_wrong_exp.get(orig_j) or _lp["feedback"].get(orig_j)
                 if exp:
                     attrs += f' data-wrong-exp="{_esc_attr(exp)}"'
-            opts_html += f'<button class="quiz-opt"{attrs}>{opt_text}</button>\n'
+            opts_html += f'<button class="quiz-opt"{attrs}>{_lp["labels"][orig_j]}</button>\n'
         cards_html += f"""<div class="quiz-card" id="qcard-{i}">
   <div class="q-text">{i+1}. {q['q']}</div>
   <div class="quiz-options">{opts_html}</div>
@@ -3686,16 +3689,17 @@ def _rd_quiz_options(q):
     so display order can never leak or affect marks. Question text, options
     and misconception text are frozen — behaviour only."""
     orig_wrong_exp = q.get("wrong_explanations", {})
+    _lp = option_labels.plan(q["q"], q["opts"], orig_wrong_exp)  # fix 2
     opts_html = ""
     for orig_j, (opt_text, is_correct) in enumerate(q["opts"]):
         attrs = ""
         if is_correct:
             attrs += ' data-correct="1"'
         else:
-            exp = orig_wrong_exp.get(orig_j)
+            exp = orig_wrong_exp.get(orig_j) or _lp["feedback"].get(orig_j)
             if exp:
                 attrs += f' data-wrong-exp="{_esc_attr(exp)}"'
-        opts_html += f'<button class="quiz-opt" type="button"{attrs}>{opt_text}</button>\n'
+        opts_html += f'<button class="quiz-opt" type="button"{attrs}>{_lp["labels"][orig_j]}</button>\n'
     return opts_html
 
 
@@ -3861,6 +3865,10 @@ def make_new_quiz(quiz, color, pilot=False):
         correct_display_idx = None  # position after shuffle
         wrong_exp_map = {}          # display_idx → explanation
         orig_wrong_exp = q.get("wrong_explanations", {})
+        # fix 2 (option_labels.py): the label is the text before " — "; the
+        # reason moves to the wrong-answer feedback. The shuffle above was
+        # seeded from the ORIGINAL text, so the order does not move.
+        _lp = option_labels.plan(q["q"], q["opts"], orig_wrong_exp)
 
         for display_j, (orig_j, (opt_text, is_correct)) in enumerate(opts):
             if is_correct:
@@ -3869,7 +3877,9 @@ def make_new_quiz(quiz, color, pilot=False):
                 # Map original wrong explanation index to new display position
                 if orig_j in orig_wrong_exp:
                     wrong_exp_map[display_j] = orig_wrong_exp[orig_j]
-            opts_html += f'<button class="quiz-opt" data-qi="{i}" data-oi="{display_j}">{opt_text}</button>\n'
+                elif orig_j in _lp["feedback"]:
+                    wrong_exp_map[display_j] = _lp["feedback"][orig_j]
+            opts_html += f'<button class="quiz-opt" data-qi="{i}" data-oi="{display_j}">{_lp["labels"][orig_j]}</button>\n'
 
         wrong_exp_js = "{"
         for idx, explanation in wrong_exp_map.items():

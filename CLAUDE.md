@@ -815,6 +815,18 @@ If the backend is unreachable, the chat falls back to a static message.
   KS4, `N2` means Newton's second law and `F2` means the second filial
   generation, and its only genuine formulae sit inside the eight frozen
   content fields.
+- **A practice option shows its LABEL, never its reason** ⊕ (fix 2, Oct 2026,
+  ruled by Mide). Source options often read `'0.5 g — confusing moles with
+  grams'`; the text before the first spaced em-dash is the label, the rest is
+  the reason and moves into the feedback. The rule is `option_labels.py`
+  (display-time only: stored text, mirrors, knowledge points and shuffle
+  seeds are untouched). It is applied by `generate_site_v5.py` (KS4 topic
+  pages), `build_ks3.py` `_rung_marked` (KS3 ladder) and, in JavaScript, by
+  `shared/ks4-lib.js` `item()` — whose text is WRITTEN from
+  `option_labels.js_source()` by `ks4_rulings.py` R21, never hand-edited. A
+  question where stripping would damage it is left as authored and listed in
+  `docs/ks4/LOOSE-ENDS-DISTRACTOR-SWEEP.md` (regenerate with
+  `tools/option_labels_sweep.py`). Gate: `option_labels`.
 - **Core quantities are defined ONCE** ⊕ (MRB-298/XU-1, 28 Aug 2026). The
   estate held four definitions of temperature across two subjects and three
   were wrong, two of them in marking criteria. The definition now lives in
