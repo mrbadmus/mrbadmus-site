@@ -19,7 +19,7 @@ Three renderers apply it, and they must agree:
                              practice question passes through (JavaScript).
                              Its function text is GENERATED here by `js_source()`
                              from the same constants, via `ks4_rulings.py`
-                             R19, so the two cannot drift; `option_labels_check.py`
+                             R21, so the two cannot drift; `option_labels_check.py`
                              proves they agree over the whole corpus.
 
 `plan()` is all-or-nothing PER QUESTION.  If stripping would damage the
@@ -133,7 +133,7 @@ def js_source():
     """
     import json
     return (
-        "  /* ⊕ R19 (ks4_rulings.py; option_labels.py is the one rule): a practice option\n"
+        "  /* ⊕ R21 (ks4_rulings.py; option_labels.py is the one rule): a practice option\n"
         "     shows only the text BEFORE its first \" — \"; the reason moves into the\n"
         "     feedback. GENERATED from option_labels.py. The shuffle key below is still\n"
         "     computed from the ORIGINAL text, so option order does not move. */\n"
