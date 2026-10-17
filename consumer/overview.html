@@ -1213,7 +1213,7 @@
       ['side', 'head'].forEach(function (k) {
         var h = document.createElement('span');
         h.style.display = 'contents';
-        C.signOutControl(h, { sb: ctx.sb, redirectTo: '/parents/',
+        C.signOutControl(h, { sb: ctx.sb, redirectTo: '/', switchAccount: true,
                               note: 'You’ll sign in again with your email or Google.' });
         SIGNOUT_HOSTS[k] = h;
       });

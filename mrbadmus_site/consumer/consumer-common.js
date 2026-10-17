@@ -1566,6 +1566,17 @@
     });
   }
 
+  /* ⊕ Front door (16 Oct 2026) — SWITCH ACCOUNT. Sign out, then land on the
+     one door every adult can sign in at (/auth.html). Through the page's own
+     client so the session is revoked here; shared/account.js (loaded by the
+     adult pages that offer this) does the sweep, with the plain sign-out as
+     the fallback for a page that does not carry it. */
+  function switchAccount(sb) {
+    var A = window.MrBadmusAccount;
+    if (A && typeof A.switchAccount === 'function') { return A.switchAccount({ sb: sb || client }); }
+    return signOut(sb, '/auth.html');
+  }
+
   /* ── the control the three child surfaces mount ──────────────────────────
      Design drew no sign-out on any child screen, so the BUTTON is invented —
      but nothing about it is: it is her header's own 44px control (the shape
@@ -1617,6 +1628,11 @@
           '<div class="c-signout-acts">' +
             '<button type="button" class="c-signout-stay">Stay signed in</button>' +
             '<button type="button" class="c-signout-go">Sign out</button>' +
+            /* ⊕ Front door (16 Oct 2026): opt-in. An ADULT's page (the family
+               dashboard, the account page, the operator console) offers a
+               way into a different login; the child surfaces and signup pass
+               nothing and render exactly as before. */
+            (opts.switchAccount ? '<button type="button" class="c-signout-switch">Switch account</button>' : '') +
           '</div>' +
         '</div>';
       /* ⚠️ INSIDE THE KS3 ROOT, NOT ON document.body. Every --ks3-* token on
@@ -1640,6 +1656,14 @@
         b.textContent = 'Signing out…';
         signOut(opts.sb, opts.redirectTo);
       });
+      var sw = veil.querySelector('.c-signout-switch');
+      if (sw) {
+        sw.addEventListener('click', function () {
+          sw.disabled = true;
+          sw.textContent = 'Switching…';
+          switchAccount(opts.sb);
+        });
+      }
       // The SAFE answer takes focus. A stray Enter must not end the session.
       veil.querySelector('.c-signout-stay').focus();
     });

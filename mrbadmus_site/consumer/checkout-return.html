@@ -17,23 +17,19 @@
 <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
 <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
 <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
-<link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
-<link rel="stylesheet" href="/consumer/consumer.css?v=6662eebf"/>
+<link rel="stylesheet" href="/shared/ks3-theme.css?v=16898136"/>
+<link rel="stylesheet" href="/consumer/consumer.css?v=db29ae1e"/>
 <link rel="stylesheet" href="/parents/public.css?v=27b5e5fd"/>
+<style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
 </head>
 <body class="pb-body">
+<div class="mrb-theme-float"><span class="mrb-theme-slot" data-mrb-theme></span></div>
 
 
 <div class="rd su-root" data-mode="ks3" id="c-main" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased">
 
 <aside class="su-rail" style="padding:28px 28px 32px">
-  <!-- ⊕ 16 Oct 2026: the theme control sits at the end of the rail's brand
-       row (the one-button menu, consumer.css .c-theme-btn) — no longer a
-       pill floating over the page. -->
-  <div class="su-rail-top" style="display:flex;align-items:center;gap:10px">
-    <div id="rail-brand" style="display:flex;align-items:center;gap:10px"></div>
-    <span class="mrb-theme-slot c-theme-btn" data-mrb-theme="compact"></span>
-  </div>
+  <div id="rail-brand" style="display:flex;align-items:center;gap:10px"></div>
   <ol id="rail-steps" style="margin:48px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px"></ol>
   <div class="su-ink" style="margin-top:auto;padding:18px 20px;border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:5px 5px 0 var(--ks3-accent)">
     <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-alert)">Free for seven days</p>
@@ -43,17 +39,16 @@
 <header class="su-head" style="display:flex;align-items:center;gap:10px;padding:16px 20px 14px;border-bottom:2px solid var(--ks3-ink)">
   <span id="head-brand" style="display:flex;align-items:center;gap:10px"></span>
   <span style="margin-left:auto;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ks3-ink-muted)">You’re in</span>
-  <span class="mrb-theme-slot c-head-theme" data-mrb-theme="compact"></span>
 </header>
 
 <main class="su-main" id="su-main" style="max-width:520px;margin:0 auto;padding:28px 20px 80px"></main>
 </div>
 
-<script src="/shared/config.js?v=bb268b6f"></script>
+<script src="/shared/config.js?v=ab7a89ac"></script>
 <!-- Front door (12 Oct 2026): the one map; consumer-common asks it whether a school pupil has wandered in. -->
-<script src="/shared/account.js?v=ccaf2d73"></script>
-<script src="/consumer/consumer-common.js?v=8cba5fba"></script>
-<script src="/parents/public.js?v=4cab1125"></script>
+<script src="/shared/account.js?v=85ddd06e"></script>
+<script src="/consumer/consumer-common.js?v=ea9adbf1"></script>
+<script src="/parents/public.js?v=26edda28"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/checkout-return.html — where Stripe sends the parent back.

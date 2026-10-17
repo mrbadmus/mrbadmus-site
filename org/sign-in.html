@@ -20,9 +20,9 @@
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
-<link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
-  <link rel="stylesheet" href="/consumer/consumer.css?v=6662eebf"/>
-  <link rel="stylesheet" href="/org/org.css?v=a05b30e7"/>
+<link rel="stylesheet" href="/shared/ks3-theme.css?v=16898136"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=db29ae1e"/>
+  <link rel="stylesheet" href="/org/org.css?v=c3d813f7"/>
 </head>
 <body>
 <!-- ⊕ B2C polish: the theme control lives in the header (below), beside
@@ -112,8 +112,10 @@
   </main>
 </div>
 
-<script src="/shared/config.js?v=bb268b6f"></script>
-<script src="/consumer/consumer-common.js?v=8cba5fba"></script>
+<script src="/shared/config.js?v=ab7a89ac"></script>
+<script src="/shared/account.js?v=85ddd06e"></script>
+<script src="/shared/class-entry.js?v=8c087f18" defer></script>
+<script src="/consumer/consumer-common.js?v=ea9adbf1"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    /org/sign-in.html — MRB-318, Night 3.
@@ -188,7 +190,12 @@
          dashboard in another tab. */
       if (ctx.session) {
         check(ctx.token).then(function (ok) {
-          if (ok) { C.go('/org/index.html'); }
+          if (ok) { C.go('/org/index.html'); return; }
+          /* ⊕ Front door (16 Oct 2026): signed in, but not as organisation
+             staff — a pupil, a teacher or a parent who followed a link here.
+             Their own home, not a form that can only ever refuse them. */
+          var A = window.MrBadmusAccount;
+          if (A && typeof A.guardAudience === 'function') { A.guardAudience('org', { session: ctx.session }); }
         });
       }
 

@@ -163,6 +163,7 @@
     <a href="/teacher/import.html" style="color:var(--muted);font-weight:700;font-size:0.85rem;text-decoration:none;">Import students</a>
     <span id="env-pill" class="pill env-prod" style="display:none;">TEST</span>
     <span class="mrb-theme-slot" data-mrb-theme="compact"></span>
+    <button class="signout-btn" onclick="MrBadmusTeacherGuard.switchAccount()">Switch account</button>
     <button class="signout-btn" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
   </div>
 </nav>
@@ -203,7 +204,7 @@
 <script src="/shared/config.js?v=bb268b6f"></script>
 <script src="/shared/account.js?v=ccaf2d73"></script>
 <script src="/shared/class-entry.js?v=8c087f18" defer></script>
-<script src="/shared/teacher-guard.js?v=33fc3599"></script>
+<script src="/shared/teacher-guard.js?v=207daf14"></script>
 <script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>
 <script>
   // Thin teacher profile (Decision F v1): display name (editable via the

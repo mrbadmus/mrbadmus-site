@@ -12,7 +12,7 @@
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/nav.css?v=1a7c09b3"/>
-  <link rel="stylesheet" href="/shared/drawer.css?v=d5f4eb49"/>
+  <link rel="stylesheet" href="/shared/drawer.css?v=d5f3f86f"/>
   <!-- ⊕ Test isolation (5 Oct 2026): config.js first and undeferred — the
        one place the backend and the Supabase project are named. -->
   <script src="/shared/config.js?v=bb268b6f"></script>
@@ -359,6 +359,7 @@
 
   <div class="dash-actions">
     <button class="btn btn-primary" onclick="editProfile()">✏️ Edit Profile</button>
+    <button class="btn" onclick="switchAccount()">Switch account</button>
     <button class="btn btn-danger" onclick="signOut()">Sign Out</button>
   </div>
 
@@ -837,6 +838,12 @@
   async function signOut() {
     await sb.auth.signOut();
     window.location.href = '/index.html';
+  }
+
+  // Front door (16 Oct 2026): the same account switch as every other Sign out.
+  function switchAccount() {
+    if (window.MrBadmusAccount) { return window.MrBadmusAccount.switchAccount({ sb: sb }); }
+    return sb.auth.signOut().then(function () { window.location.href = '/auth.html'; });
   }
 
   // ══════════════════════════════════════════════════════════

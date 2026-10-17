@@ -758,7 +758,7 @@ input::placeholder, textarea::placeholder { color: var(--st-room-text); }
         document.getElementById('c-main').style.display = '';
 
         document.getElementById('who').textContent = ctx.session.user.email || '';
-        C.signOutControl(document.getElementById('signout-host'), { sb: ctx.sb, label: 'Sign out', redirectTo: '/auth.html' });
+        C.signOutControl(document.getElementById('signout-host'), { sb: ctx.sb, label: 'Sign out', redirectTo: '/', switchAccount: true });
 
         document.getElementById('q').addEventListener('input', function () {
           var v = this.value;

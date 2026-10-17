@@ -17,6 +17,25 @@ export function MenuIcon({ color = 'var(--st-ink)' }: { color?: string }) {
   )
 }
 
+/** ⊕ Front door run 2 (16 Oct 2026) — the specimen library's glyph: a 2×2 grid
+ *  of tiles. It used to be MenuIcon, so the phone header carried TWO
+ *  three-line hamburgers (this and the site's `.nav-burger`) and a pupil could
+ *  not tell which one was the site menu. A grid reads as "a set of things to
+ *  pick from", which is what the library is; MenuIcon is now unused here and
+ *  the one hamburger on the page is the public bar's. */
+export function SpecimensIcon({ color = 'var(--st-ink)' }: { color?: string }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" style={{ color }} aria-hidden="true">
+      <g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round">
+        <rect x="2.25" y="2.25" width="4.5" height="4.5" rx="1" />
+        <rect x="9.25" y="2.25" width="4.5" height="4.5" rx="1" />
+        <rect x="2.25" y="9.25" width="4.5" height="4.5" rx="1" />
+        <rect x="9.25" y="9.25" width="4.5" height="4.5" rx="1" />
+      </g>
+    </svg>
+  )
+}
+
 export function CloseIcon({ color = 'var(--st-ink)' }: { color?: string }) {
   return (
     <svg width="14" height="14" viewBox="0 0 16 16" style={{ color }} aria-hidden="true">

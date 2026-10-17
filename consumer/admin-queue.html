@@ -523,7 +523,7 @@ main.ad-main { max-width: 920px; margin: 0 auto; padding: clamp(18px,3vw,32px) c
            `document.body`. This is the line that shows the page. */
         document.getElementById('c-main').style.display = '';
         document.getElementById('who').textContent = ctx.session.user.email || '';
-        C.signOutControl(document.getElementById('signout-host'), { sb: ctx.sb, label: 'Sign out', redirectTo: '/auth.html' });
+        C.signOutControl(document.getElementById('signout-host'), { sb: ctx.sb, label: 'Sign out', redirectTo: '/', switchAccount: true });
         load();
       });
     }

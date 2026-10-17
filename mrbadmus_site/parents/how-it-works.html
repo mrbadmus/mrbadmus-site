@@ -21,8 +21,8 @@
 <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
 <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
 <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
-<link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
-<link rel="stylesheet" href="/consumer/consumer.css?v=6662eebf"/>
+<link rel="stylesheet" href="/shared/ks3-theme.css?v=16898136"/>
+<link rel="stylesheet" href="/consumer/consumer.css?v=db29ae1e"/>
 <link rel="stylesheet" href="/parents/public.css?v=27b5e5fd"/>
 <style>
 /* Each step is number / words / example. Below 900 they stack; above it
@@ -75,9 +75,11 @@
 <div id="pb-footer"></div>
 </div>
 
-<script src="/shared/config.js?v=bb268b6f"></script>
-<script src="/consumer/consumer-common.js?v=8cba5fba"></script>
-<script src="/parents/public.js?v=4cab1125"></script>
+<script src="/shared/config.js?v=ab7a89ac"></script>
+<script src="/consumer/consumer-common.js?v=ea9adbf1"></script>
+<script src="/parents/public.js?v=26edda28"></script>
+<script src="/shared/account.js?v=85ddd06e"></script>
+<script src="/shared/class-entry.js?v=8c087f18" defer></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    parents/how-it-works.html — MRB-317 Night 3.
@@ -134,6 +136,7 @@
 
   C.boot({ public: true, run: function () {
     P.chrome('how');
+    P.guardWrongRole();
     document.getElementById('cta').href = P.url('signUp');
 
     document.getElementById('steps').innerHTML = STEPS.map(function (s) {

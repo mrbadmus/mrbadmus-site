@@ -16,8 +16,8 @@
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
-<link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
-  <link rel="stylesheet" href="/consumer/consumer.css?v=6662eebf"/>
+<link rel="stylesheet" href="/shared/ks3-theme.css?v=16898136"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=db29ae1e"/>
   <link rel="stylesheet" href="/consumer/topic-picker.css?v=e3aa94e9"/>
   <style>
   /* ═══════════════════════════════════════════════════════════════════════
@@ -293,6 +293,11 @@
     .dk-mobilehead .c-signout-btn { width: 44px; padding: 0; justify-content: center; }
     .dk-mobilehead .c-signout-btn span { display: none; }
   }
+  /* …and from 901px, where the theme pill is fixed at the top right, the
+     header keeps clear of it (the sidebar takes over at 960). */
+  @media (min-width: 901px) {
+    .dk-mobilehead { padding-right: 136px; }
+  }
   /* ⊕ One mark (Mide, 13 Sep 2026): `.dk-brandword` retired — the brand is
      the one lockup (`C.brandLockup`), styled by shared/brand/brand.css. */
   .dk-main { max-width: 560px; margin: 0 auto; padding: 24px 20px 40px; }
@@ -396,8 +401,10 @@
     border-radius: 8px;
   }
   </style>
+<style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
 </head>
 <body>
+<div class="mrb-theme-float"><span class="mrb-theme-slot" data-mrb-theme></span></div>
 
 
 <div class="rd dk-root" data-mode="ks3" id="dk-root">
@@ -413,10 +420,10 @@
   </div>
 </div>
 
-<script src="/shared/config.js?v=bb268b6f"></script>
+<script src="/shared/config.js?v=ab7a89ac"></script>
 <!-- Front door (12 Oct 2026): the one map; consumer-common asks it whether a school pupil has wandered in. -->
-<script src="/shared/account.js?v=ccaf2d73"></script>
-<script src="/consumer/consumer-common.js?v=8cba5fba"></script>
+<script src="/shared/account.js?v=85ddd06e"></script>
+<script src="/consumer/consumer-common.js?v=ea9adbf1"></script>
 <script src="/consumer/topic-picker.js?v=9bcb2548"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
@@ -1054,11 +1061,8 @@
 
     /* ── sidebar (≥960) ───────────────────────────────────────────────── */
     var side =
-      '<div class="dk-side-top" style="display:flex;align-items:center;gap:10px;padding:0 4px">' +
-        C.brandLockup('/consumer/overview.html') +
-        /* ⊕ 16 Oct 2026: the theme control ends the sidebar's brand row
-           (the one-button menu, consumer.css .c-theme-btn). */
-        '<span class="mrb-theme-slot c-theme-btn" data-mrb-theme="compact"></span></div>' +
+      '<div style="display:flex;align-items:center;gap:10px;padding:0 4px">' +
+        C.brandLockup('/consumer/overview.html') + '</div>' +
       '<nav style="margin-top:28px;display:flex;flex-direction:column;gap:4px">' +
         '<button data-act="tab-home" style="display:flex;align-items:center;gap:12px;min-height:46px;' +
           'padding:0 12px;border:2px solid ' + (onChat ? 'transparent' : 'var(--ks3-ink)') + ';' +
@@ -1170,8 +1174,6 @@
     }
     head += '<span style="flex:1;font-family:var(--ks3-font-display);font-weight:800;font-size:20px;' +
       'letter-spacing:-.02em">' + esc(screenTitle()) + '</span>' +
-      /* ⊕ 16 Oct 2026: the theme control, in this header. */
-      '<span class="mrb-theme-slot c-head-theme" data-mrb-theme="compact"></span>' +
       '<span data-signout-slot="head" style="display:inline-flex;flex:0 0 auto"></span>' +
       '<a href="' + account + '" aria-label="Account" style="display:grid;place-items:center;width:40px;' +
       'height:40px;border:2px solid var(--ks3-ink);border-radius:12px;background:var(--ks3-band);' +
@@ -1213,7 +1215,7 @@
       ['side', 'head'].forEach(function (k) {
         var h = document.createElement('span');
         h.style.display = 'contents';
-        C.signOutControl(h, { sb: ctx.sb, redirectTo: '/parents/',
+        C.signOutControl(h, { sb: ctx.sb, redirectTo: '/', switchAccount: true,
                               note: 'You’ll sign in again with your email or Google.' });
         SIGNOUT_HOSTS[k] = h;
       });
@@ -1289,9 +1291,7 @@
               '<div class="dk-mini-n">' + esc(last) + '</div>' +
               '<div class="dk-mini-s">' + esc(trend) + '</div></div>' +
             '<div class="dk-mini"><div class="dk-mini-l">Streak</div>' +
-              /* ⊕ Orion fix (16 Oct 2026): null = the server couldn't read
-                 it. A dash, never a made-up 0. */
-              '<div class="dk-mini-n">' + esc(k.streak != null ? String(k.streak) : '—') + '</div>' +
+              '<div class="dk-mini-n">' + esc(String(k.streak != null ? k.streak : 0)) + '</div>' +
               /* ⊕ MRB-327. This said "weeks", and the number is DAYS.
                  `streakFor()` counts consecutive London days with a completed
                  work item — so a five-day-old account showed its parent
@@ -1299,7 +1299,7 @@
                  "5 day streak" off the very same field. One number, two
                  labels, and the one the parent saw was wrong by a factor of
                  seven. */
-              '<div class="dk-mini-s">' + (k.streak == null ? '' : (k.streak === 1 ? 'day' : 'days')) + '</div></div>' +
+              '<div class="dk-mini-s">' + (k.streak === 1 ? 'day' : 'days') + '</div></div>' +
             '</div>' +
             '<p style="margin:14px 0 0;font-size:15px;color:var(--ks3-ink-body)">' +
               esc(cardHeadline(k)) + '</p>';
@@ -2456,8 +2456,6 @@
         // Signed in with no family yet (signup stopped before
         // /family/ensure): signup makes it and carries on.
         if (e && e.code === 'no_family') { return toSignup(); }
-        // ⊕ Orion fix: a session that really ended says so, with the parent door.
-        if (C.isSignedOut(e)) { return C.signedOutPanel(document.getElementById('c-main'), '/parents/sign-in.html'); }
         C.fail(document.getElementById('c-main'), e.message,
                'Refresh in a moment. If it keeps happening, email support@mrbadmus.com.');
       });

@@ -175,7 +175,58 @@
     return b;
   }
 
+  /* ⊕ Front door (16 Oct 2026) — "Switch account" sits beside Sign out.
+     Mide's own two logins (a parent one, a teacher one) are two accounts, so
+     changing role is signing out of one and into the other; the bar offers it
+     where Sign out already is, and on a phone the menu below lists it just
+     above Sign out with no extra code (it is a bar child like any other).
+     It is injected here, once, so the six GENERATED screens and the
+     hand-written ones that load this file all get it without a hand edit; the
+     observer re-adds it after every redraw, and keeps it IMMEDIATELY before
+     Sign out when Admin / Flashcard decks are injected between them. */
+  function signOutButton(bar) {
+    var bs = bar.querySelectorAll('button');
+    for (var i = 0; i < bs.length; i++) {
+      var b = bs[i];
+      if (b.classList.contains('tb-menu') || b.hasAttribute('data-tb-switch')) { continue; }
+      if (/^sign out$/i.test(label(b))) { return b; }
+    }
+    return null;
+  }
+
+  function switchAccount() {
+    var G = window.MrBadmusTeacherGuard, A = window.MrBadmusAccount;
+    if (G && typeof G.switchAccount === 'function') { G.switchAccount(); return; }
+    if (A && typeof A.switchAccount === 'function') { A.switchAccount(); return; }
+    // No account map on this page: clear the sign-in tokens and go to the door.
+    try {
+      Object.keys(localStorage).forEach(function (k) {
+        if (/^sb-.*-auth-token/.test(k)) { localStorage.removeItem(k); }
+      });
+    } catch (e) { /* storage blocked: the door still opens */ }
+    window.location.replace('/auth.html');
+  }
+
+  function ensureSwitch(bar) {
+    var so = signOutButton(bar);
+    if (!so || !so.parentNode) { return; }
+    var sw = bar.querySelector('[data-tb-switch]');
+    if (sw && sw.nextElementSibling === so) { return; }
+    if (!sw) {
+      sw = document.createElement('button');
+      sw.type = 'button';
+      sw.className = so.className;
+      var st = so.getAttribute('style');
+      if (st) { sw.setAttribute('style', st); }
+      sw.setAttribute('data-tb-switch', '1');
+      sw.textContent = 'Switch account';
+      sw.addEventListener('click', switchAccount);
+    }
+    so.parentNode.insertBefore(sw, so);
+  }
+
   function ensure(bar) {
+    ensureSwitch(bar);
     var btn = bar.querySelector('.tb-menu') || inject(bar);
     if (!btn) { return; }
     openBtn = btn;

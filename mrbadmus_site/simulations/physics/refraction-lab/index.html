@@ -10,11 +10,11 @@
 <link rel="stylesheet" href="/simulations/simulations.css?v=c4ad56a2">
 <link rel="stylesheet" href="/simulations/fullscreen.css?v=12843bb8">
 <link rel="stylesheet" href="sim-theme.css">
-<link rel="stylesheet" href="/shared/drawer.css?v=d5f4eb49"/>
-<script src="/shared/config.js?v=bb268b6f"></script>
+<link rel="stylesheet" href="/shared/drawer.css?v=d5f3f86f"/>
+<script src="/shared/config.js?v=ab7a89ac"></script>
 <script>window.MRB_SEARCH_SRC=["/shared/search-index.js?v=c016cb14","/shared/search.js?v=d011978d"];</script>
-<script src="/shared/account.js?v=ccaf2d73" defer></script>
-<script src="/shared/nav.js?v=edf9f4c2" defer></script>
+<script src="/shared/account.js?v=85ddd06e" defer></script>
+<script src="/shared/nav.js?v=987d5092" defer></script>
 <script src="/shared/class-entry.js?v=8c087f18" defer></script>
 <script src="/shared/theme.js?v=f04be205" defer></script>
 <script src="/simulations/fullscreen.js?v=992283cb" defer></script>
@@ -350,6 +350,41 @@ function startLab(props) {
   }
   function arcBetween(ctx, cxp, cyp, r, v1, v2) { const a1 = Math.atan2(v1.y, v1.x), a2 = Math.atan2(v2.y, v2.x); let dl = a2 - a1; while (dl > Math.PI) dl -= 2 * Math.PI; while (dl < -Math.PI) dl += 2 * Math.PI; ctx.beginPath(); ctx.arc(cxp, cyp, r, a1, a2, dl < 0); ctx.stroke(); return a1 + dl / 2; }
 
+  // ---------- the "normal" label ----------
+  // The label sits ON the normal's own line, centred, just beyond the dashed end. The
+  // protractor's half-disc is centred on the same normal and is wider than the dashed
+  // line is long (radius 5.6 cm against 4.6 cm), so at the old spot - 4.6 cm out, nudged
+  // sideways - the word sat on the 10 and 20 (170 and 180 once flipped) and over the
+  // hairline's reading. If the label's box would touch the protractor (a full circle of
+  // radius PR plus a margin, so either side and either flip is covered) or the reading
+  // tag, it moves outward along the normal until it clears.
+  let normalBoxes = [];
+  const boxAt = (x, y, w, h) => ({ x0: x - w / 2, y0: y - h / 2, x1: x + w / 2, y1: y + h / 2 });
+  const boxHitsDisc = (b, ox, oy, rad) => { const dx = Math.max(b.x0 - ox, 0, ox - b.x1), dy = Math.max(b.y0 - oy, 0, oy - b.y1); return dx * dx + dy * dy < rad * rad; };
+  const boxesHit = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+  // The tag drawProt() puts past the hairline's tip: same text, font, padding and spot.
+  function protReadoutBox(pr) {
+    const { dir } = protFrame(pr), hd = dir(pr.hair), r = P(PR), rd = protRead();
+    cx.font = `700 14px ${MONO}`; if ("letterSpacing" in cx) cx.letterSpacing = "1.2px";
+    const m = cx.measureText(rd.main).width; if ("letterSpacing" in cx) cx.letterSpacing = "0px";
+    return boxAt(P(pr.p.x) + hd.x * (r + P(1.6)), P(pr.p.y) + hd.y * (r + P(1.6)), m + 12, 21);
+  }
+  function placeNormalLabel(nl, nm, k) {
+    cx.font = `500 12px ${UI}`; if ("letterSpacing" in cx) cx.letterSpacing = "0px";
+    const w = cx.measureText("normal").width + 4, h = 12 * 1.3 + 2, half = nm.x ? w / 2 : h / 2;
+    const ox = P(nl.p.x), oy = P(nl.p.y), pr = L.draw.prot;
+    const disc = pr ? { x: P(pr.p.x), y: P(pr.p.y), r: P(PR) + 8 } : null, tag = pr ? protReadoutBox(pr) : null;
+    let d = P(k) + half + 5, x, y, box;
+    for (let i = 0; i < 120; i++) {
+      x = ox + nm.x * d; y = oy + nm.y * d; box = boxAt(x, y, w, h);
+      if (!((disc && boxHitsDisc(box, disc.x, disc.y, disc.r)) || (tag && boxesHit(box, tag)))) break;
+      d += 3;
+    }
+    // Never off the sheet: clamp along the normal's own axis (the other axis is the normal's line).
+    if (nm.x) x = Math.min(W - w / 2 - 2, Math.max(w / 2 + 2, x)); else y = Math.min(H - h / 2 - 2, Math.max(h / 2 + 2, y));
+    return { x, y, box: boxAt(x, y, w, h) };
+  }
+
   // ---------- drawing: lab ----------
   const trayRect = () => ({ x0: 30 - 7.2, y0: 2.2, x1: 30 - 0.6, y1: 5.2 });
   function drawLab() {
@@ -389,8 +424,9 @@ function startLab(props) {
     cx.strokeStyle = C.pencil; cx.lineWidth = 1.5; cx.setLineDash([]);
     for (const m of L.draw.marks) { const x = P(m.x), y = P(m.y), k = P(0.22); cx.beginPath(); cx.moveTo(x - k, y - k); cx.lineTo(x + k, y + k); cx.moveTo(x + k, y - k); cx.lineTo(x - k, y + k); cx.stroke(); }
     for (const l of L.draw.lines) { cx.beginPath(); cx.moveTo(P(l.A.x), P(l.A.y)); cx.lineTo(P(l.B.x), P(l.B.y)); cx.stroke(); }
+    normalBoxes = [];
     for (const nl of L.draw.normals) { const nm = FACES[nl.face], k = 4.6; cx.setLineDash([7, 5]); cx.beginPath(); cx.moveTo(P(nl.p.x - nm.x * k), P(nl.p.y - nm.y * k)); cx.lineTo(P(nl.p.x + nm.x * k), P(nl.p.y + nm.y * k)); cx.stroke(); cx.setLineDash([]);
-      label(cx, "normal", P(nl.p.x + nm.x * k) + (nm.x ? 0 : 8), P(nl.p.y + nm.y * k) + (nm.y ? -10 * Math.sign(nm.y) + 0 : 0), C.muted, 12, nm.x ? "center" : "left", 500); }
+      const nlab = placeNormalLabel(nl, nm, k); normalBoxes.push(nlab.box); label(cx, "normal", nlab.x, nlab.y, C.muted, 12, "center", 500); }
     if (drag && drag.kind === "ruler") { const f = edgeOf(drag.a, drag.cur), a = f ? f.a : drag.a, b = f ? f.b : drag.cur;
       cx.strokeStyle = f ? "rgba(58,55,51,0.85)" : "rgba(58,55,51,0.55)"; cx.lineWidth = f ? 2 : 1.5; cx.setLineDash(f ? [] : [4, 4]); cx.beginPath(); cx.moveTo(P(a.x), P(a.y)); cx.lineTo(P(b.x), P(b.y)); cx.stroke(); cx.setLineDash([]); cx.lineWidth = 1.5; }
     drawProt();

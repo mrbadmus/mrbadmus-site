@@ -125,8 +125,42 @@
 }
 .nav-account-btn:hover { background: var(--accent-soft, color-mix(in srgb, #E4572E 14%, transparent)); color: var(--accent, #A63C12); }
 .nav-account-btn:focus-visible { outline: 2px solid var(--accent, #A63C12); outline-offset: 2px; }
-.nav-account-btn--primary { background: #A63C12; color: #fff; justify-content: center; }
-.nav-account-btn--primary:hover { background: #8F300D; color: #fff; }
+/* ── The drawer's primary button (Sign in) ───────────────────────────────
+   Fill and text are tokens.css's accent pair, WRITTEN OUT as drawer-scoped
+   properties rather than read from --accent: the KS3 and KS4-pilot pages do
+   not load tokens.css and redefine --accent as the brand #E4572E (3.68:1
+   under white), so the page's own --accent cannot be trusted here. Light is
+   --accent / --on-accent / --accent-hover (#A63C12 / #FFFFFF / #8A300C);
+   dark is the [data-theme="dark"] twin (#E0AC4B / #14110D / #ECBE68).
+
+   The selector is `.nav-drawer a.…` (and states) on purpose. A family sheet's
+   blanket link rule — `body[data-chrome="ks4"] a { color: var(--k4-link) }`,
+   specificity 0,1,2 — beats a bare `.nav-account-btn--primary` (0,1,0), which
+   painted rust text on the rust fill (1.03:1) on every GCSE page and gold on
+   rust (3.1:1) in dark. This is the same defect the 4 Sep fix cured for the
+   old `.nav-drawer-auth` markup; the 12 Oct rename left that fix pointing at
+   selectors that no longer exist. */
+.nav-drawer {
+  --drawer-cta: #A63C12; --drawer-cta-hover: #8A300C; --drawer-on-cta: #FFFFFF;
+}
+:root[data-theme="dark"] .nav-drawer {
+  --drawer-cta: #E0AC4B; --drawer-cta-hover: #ECBE68; --drawer-on-cta: #14110D;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .nav-drawer {
+    --drawer-cta: #E0AC4B; --drawer-cta-hover: #ECBE68; --drawer-on-cta: #14110D;
+  }
+}
+.nav-drawer a.nav-account-btn--primary,
+.nav-drawer a.nav-account-btn--primary:link,
+.nav-drawer a.nav-account-btn--primary:visited {
+  background: var(--drawer-cta); color: var(--drawer-on-cta);
+  justify-content: center; text-decoration: none;
+}
+.nav-drawer a.nav-account-btn--primary:hover,
+.nav-drawer a.nav-account-btn--primary:focus-visible {
+  background: var(--drawer-cta-hover); color: var(--drawer-on-cta); text-decoration: none;
+}
 
 /* ── The site links ── */
 .nav-drawer-menu { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }

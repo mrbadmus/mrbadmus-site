@@ -322,7 +322,7 @@
     if (!SIGNOUT_HOST && ctx) {
       SIGNOUT_HOST = document.createElement('span');
       SIGNOUT_HOST.style.cssText = 'display:inline-flex;flex:0 0 auto';
-      C.signOutControl(SIGNOUT_HOST, { sb: ctx.sb, redirectTo: '/parents/',
+      C.signOutControl(SIGNOUT_HOST, { sb: ctx.sb, redirectTo: '/', switchAccount: true,
                                        note: 'You’ll sign in again with your email or Google.' });
     }
     if (SIGNOUT_HOST) { document.getElementById('ak-head').appendChild(SIGNOUT_HOST); }

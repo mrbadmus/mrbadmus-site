@@ -212,12 +212,12 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="/shared/config.js?v=bb268b6f"></script>
+<script src="/shared/config.js?v=ab7a89ac"></script>
 <!-- Front door (12 Oct 2026): the one map of who goes where — redirectAfterAuth asks it. -->
-<script src="/shared/account.js?v=ccaf2d73"></script>
+<script src="/shared/account.js?v=85ddd06e"></script>
 <script src="/shared/class-entry.js?v=8c087f18" defer></script>
 <!-- B2C unit 6: the one username sign-in (childSignIn), shared with /go. -->
-<script src="/consumer/consumer-common.js?v=8cba5fba"></script>
+<script src="/consumer/consumer-common.js?v=ea9adbf1"></script>
 <script src="/shared/username-generator.js?v=6502aa56"></script>
 <script>
   // ── Config sourced from /shared/config.js (prod by default,
@@ -544,14 +544,7 @@
   }
   function signOutFromAuth() {
     if (continueTimer) { clearInterval(continueTimer); continueTimer = null; }
-    /* ⊕ Orion fix (16 Oct 2026): a family child's sign-out ends THIS
-       device's session only, never their other devices'. A school account
-       keeps the default, unchanged. */
-    var cfg = window.MrBadmusConfig, held = null;
-    try { held = JSON.parse(localStorage.getItem(cfg.AUTH_STORAGE_KEY) || 'null'); } catch (e) { held = null; }
-    var child = !!(cfg && typeof cfg.isChildSession === 'function' && cfg.isChildSession(held));
-    (child ? sb.auth.signOut({ scope: 'local' }) : sb.auth.signOut())
-      .then(function () { window.location.reload(); })
+    sb.auth.signOut().then(function () { window.location.reload(); })
       .catch(function () { window.location.reload(); });
   }
 
