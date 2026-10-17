@@ -130,6 +130,13 @@ def unpark_dist():
 def main():
     print("\n🧪 3D Studio ↔ generator isolation gate (spec §10)\n")
 
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import studio_build
+    build_error = studio_build.ensure_built()
+    if build_error:
+        print("❌ ABORT: " + build_error)
+        return 1
+
     if not os.path.isdir(DIST):
         print("❌ ABORT: 3d-studio/dist/ does not exist.")
         print("   This gate proves the published studio survives a generator run;")

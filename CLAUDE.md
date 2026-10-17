@@ -518,6 +518,8 @@ git add -A && git commit && git push     # 3. commit + push (authorised, see the
 
 To check the isolation still holds: `python3 3d_isolation_check.py`.
 
+⊕ **The 3D gates build the studio themselves** (fix 5, 17 Oct 2026). `3d_parity`, `3d_render_check` and `3d_isolation` call `studio_build.ensure_built()` first: if `3d-studio/dist/` is missing or older than its sources they run `npm ci` (only when `node_modules` is missing) and `npm run build`, and they FAIL, never skip, if Node is absent or the build breaks. Their registry rows no longer carry `needs="3d-studio/dist"`. This is the gates building the studio, not the generator — the paragraph above still holds for `build_all.py`.
+
 ### ⊕ (1 Oct 2026) The consumer launch is committed config, not a build argument
 
 Whether the B2C consumer product is live (`/parents/*` indexable,
@@ -971,7 +973,7 @@ and WHAT invalidates a receipt, never what a gate checks once it does run.
 The inherited red (`teacher_admin_foreign_class`, C7 REMINDERS × 3) is still
 inherited and still red; MRB-346 did not touch its target, and a full/forced
 run still needs the same `GATE-OVERRIDE:` line it always did. `3d_*` gates
-still skip cleanly without `3d-studio/dist`.
+now build `3d-studio/dist` themselves (`studio_build.py`) and fail if they cannot.
 
 ### A named, accepted gap
 

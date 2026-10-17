@@ -193,6 +193,14 @@ is tolerated; a mismatch outside this list is a failure.
        its three dragging tiles draw them; built as one plane-strength
        variable at 0.75 at rest and full strength while dragging, which
        satisfies §08's hero, §09's dragging tiles and both prose lines.
+  23.  --st-ok-room #55B36A is in tokens.css but in neither frozen reference:
+       it is the student class view's dark-room green (MRB-270, ruled 20 Aug
+       2026), the studio never paints it, and ks3_parity reads it from this
+       file. Listed in ADOPTED so layer A pins its value instead of calling it
+       invented.
+  24.  Border widths are compared as their device-pixel floor: Chrome reports a
+       1.5px border as 1px at the harness's deviceScaleFactor 1 (see
+       _border_width_ok). studio.css and the reference both say 1.5px.
 
 Provenance for every value in the expectation tables below is the frozen
 reference itself — section and line cited in each screen's comment.
@@ -208,6 +216,7 @@ import sys
 import tempfile
 
 import ks3_browser as cdp
+import studio_build
 from ks3_parity import close_length, parse_rgb, parse_rgba, same_colour
 
 
@@ -326,6 +335,17 @@ ADOPTED = [
      "adopted canonical --ks3-accent-hover; the reference hovers links to "
      "the raw accent (#E4572E, 3.34:1 on ground at 13.5px), which the "
      "MRB-186 accent-contrast ruling disallows for text under 24px"),
+    # Entry 23. NOT a studio colour at all: the studio never paints it. It is
+    # the dark-room success green the student class view uses, minted here
+    # because this file is the one place the `--st-*` family lives
+    # (ks3_parity.check_st_token_contract parses it from this file, so it
+    # cannot move). RULED ACCEPTED by Mide, 20 Aug 2026 (MRB-270); Design asked
+    # for it in "Class view v1 - README.md" §7 - the studio's frozen reference
+    # predates it, so no reference counterpart exists to match.
+    ("--st-ok-room", "#55B36A",
+     "minted 20 Aug 2026 at Design's request for the student class view "
+     "(MRB-270 ruling); graphic-only, unused by the studio; the studio "
+     "references predate it"),
 ]
 
 # the ink alpha forms that follow the ink adoption (swept alongside it)
@@ -1849,6 +1869,29 @@ def _sanity(page, screen, tokens):
     return None
 
 
+def _border_width_ok(got, want):
+    """A border's USED width is snapped DOWN to whole device pixels.
+
+    The harness measures at deviceScaleFactor 1 (ks3_browser.set_viewport), and
+    Chrome's getComputedStyle reports a `1.5px` border as `1px` there - the
+    stylesheet is right, the number is the browser's. Design's reference draws
+    1.5px (shell-v1.html lines 82, 231, ...) and so does studio.css, so the
+    expectation stays Design's 1.5px and the measurement is allowed to arrive
+    as its floor. Anything else (0, 2px, a wrong width) still fails. Ruled in
+    fix 5 of the loose-ends run; these were the two long-standing
+    `1.5px-vs-1px` rows.
+    """
+    import math
+    m = re.match(r"^(-?[\d.]+)px$", want.strip())
+    if not m:
+        return got.lower() == want.lower()
+    w = float(m.group(1))
+    g = re.match(r"^(-?[\d.]+)px$", (got or "").strip())
+    if not g:
+        return False
+    return float(g.group(1)) in (w, float(math.floor(w)))
+
+
 def _check_styles(page, screen, style_rows, problems):
     for spec in [c for c in COMPONENTS if c["on"] == screen]:
         sel = spec["sel"]
@@ -1862,6 +1905,8 @@ def _check_styles(page, screen, style_rows, problems):
                 ok = want.lower() in got.lower()
             elif want.startswith("#"):
                 ok = same_colour(got, want)
+            elif prop.startswith("border-") and prop.endswith("-width"):
+                ok = _border_width_ok(got, want)
             elif want.endswith("px"):
                 ok = close_length(got, want) is True
             else:
@@ -2174,6 +2219,13 @@ def main():
 
     # Before anything is measured, and before layer A prints a single note:
     # a refusal that still emitted partial results would be read as results.
+    # ⊕ Built here, never skipped: the registry row no longer carries
+    # `needs="3d-studio/dist"`. A studio that cannot be built is a red gate.
+    build_error = studio_build.ensure_built()
+    if build_error:
+        print("FAIL: " + build_error)
+        print("NO RESULTS - nothing was measured.")
+        return 1
     if refuse_if_stale("The parity gate"):
         return 1
 

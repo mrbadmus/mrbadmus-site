@@ -379,12 +379,14 @@ GATES = [
     dict(name="3d_isolation",
          cmd=["python3", "3d_isolation_check.py"],
          speed="fast",
-         watches=["3d_isolation_check.py", "generate_site_v5.py",
+         watches=["3d_isolation_check.py", "studio_build.py",
+                  "generate_site_v5.py",
                   "3d-studio/dist/**", "3d-studio/src/**",
+                  "3d-studio/package.json", "3d-studio/package-lock.json",
                   "mrbadmus_site/3d/**"],
-         needs="3d-studio/dist",
          why="spec §10 / MRB-194 — the published studio survives a generator "
-             "run. Needs a build to publish; skipped, by name, without one."),
+             "run. Builds the studio itself (studio_build.py) when dist/ is "
+             "missing or stale, and FAILS rather than skips if it cannot."),
 
     dict(name="verify_ks3",
          cmd=["python3", "verify_ks3.py"],
@@ -1786,23 +1788,27 @@ GATES = [
          # second root of layer A's old-value sweep, spelled by extension for
          # the same reason: the sweep does read that folder's two .md files,
          # and those two are the named gap rather than a pattern to widen.
-         watches=["config_env.py", "3d_parity.py", "ks3_browser.py", "ks3_parity.py",
+         watches=["config_env.py", "3d_parity.py", "studio_build.py",
+                  "ks3_browser.py", "ks3_parity.py",
                   "3d-studio/dist/**", "3d-studio/src/**",
+                  "3d-studio/package.json", "3d-studio/package-lock.json",
                   "3d-studio/reference/*.html", "3d-studio/content/**",
                   ".design-sync/**/*.tsx", ".design-sync/**/*.css",
                   ".design-sync/**/*.json", ".design-sync/**/*.mjs"],
-         needs="3d-studio/dist",
-         why="the studio shell against Design's screens (MRB-186). Needs a "
-             "built studio; skipped, by name, without one."),
+         why="the studio shell against Design's screens (MRB-186). Builds the "
+             "studio itself (studio_build.py) when dist/ is missing or stale, "
+             "and FAILS rather than skips if it cannot."),
 
     dict(name="3d_render_check",
          cmd=["python3", "3d_render_check.py"],
          speed="slow",
-         watches=["3d_render_check.py", "ks3_browser.py", "3d-studio/dist/**",
-                  "3d-studio/src/**", "3d-studio/content/**"],
-         needs="3d-studio/dist",
+         watches=["3d_render_check.py", "studio_build.py", "ks3_browser.py",
+                  "3d-studio/dist/**", "3d-studio/src/**",
+                  "3d-studio/content/**",
+                  "3d-studio/package.json", "3d-studio/package-lock.json"],
          why="the mesh renderer in a real browser (MRB-187) — including that "
-             "a missing GLB routes to the flat stage. Needs a built studio."),
+             "a missing GLB routes to the flat stage. Builds the studio "
+             "itself (studio_build.py) when dist/ is missing or stale."),
 
     dict(name="seating_tells",
          cmd=["python3", "seating_tells.py"],
@@ -3009,6 +3015,11 @@ EXCLUDED = {
         "and ks4_rulings.py (which writes its JavaScript twin into "
         "shared/ks4-lib.js). Asserts nothing; `option_labels` is the gate that "
         "proves it and every gate whose script imports it watches it.",
+    "studio_build.py":
+        "Import-only helper (fix 5, 17 Oct 2026): builds 3d-studio/dist for "
+        "the three 3D gates (3d_parity, 3d_render_check, 3d_isolation) when it "
+        "is missing or stale. Asserts nothing itself; all three import it and "
+        "all three watch it.",
     "config_env.py":
         "Import-only library (B2C unit 6, 5 Oct 2026): shared/config.js's two "
         "worlds for Python scripts, parsed out of config.js so that no script "

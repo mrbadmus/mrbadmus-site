@@ -130,6 +130,7 @@ import tempfile
 import time
 
 import ks3_browser as cdp
+import studio_build
 
 # ── MRB-305 · lift the "coming soon" gate for this harness ────────────────
 # The studio ships gated: dimmed, `inert`, two words over it (`src/studio/
@@ -2280,6 +2281,12 @@ def main():
     print("3D Studio render check (MRB-187 Stage 2) — real Chrome, software WebGL")
     print("  the built app at %s, served as /3d/" % os.path.relpath(DIST, HERE))
     print("  checks 1–10 gate the exit code; frame timing is a report and never does")
+
+    build_error = studio_build.ensure_built()
+    if build_error:
+        print("FAIL: " + build_error)
+        print("NO RESULTS — nothing was measured.")
+        return 1
 
     if not os.path.isdir(DIST) or not os.path.exists(os.path.join(DIST, "index.html")):
         print("FAIL: no built app at %s — run `npm run build` in 3d-studio/"
