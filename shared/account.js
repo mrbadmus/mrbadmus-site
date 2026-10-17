@@ -59,6 +59,13 @@
    static <script> everywhere (never injected on demand): /shared/* is served
    `immutable`, and only a stamped URL is safe under that — see _headers.
 
+   ── Re-stamped 17 Oct 2026 ─────────────────────────────────────────────
+   This comment exists to change the file's stamp. The front-door fixes'
+   first deploy left `account.js?v=85ddd06e` cached at a Cloudflare edge
+   holding the PREVIOUS file, under the year-long `immutable` rule, so no
+   later deploy could reach that URL. A new stamp is the only cure from here
+   (no purge API); see project memory "immutable cache trap".
+
    ── Test isolation ──────────────────────────────────────────────────────
    Every URL here comes from window.MrBadmusConfig. No project or backend is
    named in this file; with no config it finds no session and does nothing.
