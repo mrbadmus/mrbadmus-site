@@ -363,6 +363,9 @@ accepted the simple average: B11-RAM-AG).
   decoy note restored. Re-check 3 found one more (the product labels on the molten-electrolysis crucible touched its
   walls, then their subscripts sat on its floor); moved inward and up (`B11W-EM-PRODUCTS`), clear of walls, floor and
   electrodes by the auditor's measurements. Console clean on every re-checked page.
+- **Pre-push contrast gate:** `contrast_audit` (which samples model of the atom) refused the first push: the
+  scattering figure's "most straight through" was teal on the cream plate at 3.6:1 (body-text floor 4.5:1). Now the
+  same hue darker, #1F6F64, 5.24:1 (`B11W-MOA-TEAL-LBL`); the arrows keep Design's teal.
 - **Knowledge points:** 979 new question ids tagged by the top-up (15 new points, 0 untagged), and the one item the
   walk fixes changed (salts practice Q4) re-placed; backend `knowledge-points.json` re-exported and pushed before the
   site.

@@ -1650,6 +1650,11 @@ B11W = [
     dict(id='B11W-EM-PRODUCTS', slug='electrolysis-molten', layer='logic',
          old="TX(230, 275, c.metal, 13, { fill: BLUE }) + TX(470, 275, c.nm, 13, { fill: RED })",
          new="TX(262, 268, c.metal, 13, { fill: BLUE }) + TX(438, 268, c.nm, 13, { fill: RED })"),
+    # contrast_audit (pre-push): "most straight through" was teal #2E8B7F on the cream plate, 3.6:1 against the 4.5:1
+    # floor for body text. Same hue, darker: #1F6F64 is 5.24:1. The arrows it labels keep Design's teal.
+    dict(id='B11W-MOA-TEAL-LBL', slug='model-of-the-atom', layer='logic',
+         old="TXN(530, 48, 'most straight through', 14, { fill: TEAL })",
+         new="TXN(530, 48, 'most straight through', 14, { fill: '#1F6F64' })"),
     dict(id='B11W-RAM-LABELS', slug='relative-atomic-mass', layer='logic',
          old="TXN(60, 118, 'mass number', 13, { anchor: 'end', fill: MUTED }) + TXN(60, 166, 'atomic number', 13, { anchor: 'end', fill: MUTED })",
          new="TXN(96, 118, 'mass number', 13, { anchor: 'end', fill: MUTED }) + TXN(96, 166, 'atomic number', 13, { anchor: 'end', fill: MUTED })"),

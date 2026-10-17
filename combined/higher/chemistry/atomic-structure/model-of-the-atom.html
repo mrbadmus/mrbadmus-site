@@ -902,7 +902,7 @@ class Component extends DCLogic {
     [70, 100, 130, 160, 190, 220].forEach((y) => { b += D.line(60, y, 400, y, 2.4, TEAL); });
     b += D.arrow(410, 70, 640, 70, TEAL, 3) + D.arrow(410, 100, 640, 100, TEAL, 3) + D.arrow(410, 130, 640, 130, TEAL, 3) + D.arrow(410, 160, 640, 160, TEAL, 3);
     b += D.arrow(410, 190, 620, 250, RED, 3) + D.arrow(400, 220, 120, 250, RED, 3);
-    b += TXN(220, 50, 'alpha particles in', 14) + TXN(530, 48, 'most straight through', 14, { fill: TEAL }) + TXN(570, 272, 'some deflected', 14, { fill: RED }) + TXN(200, 272, 'a very few back', 14, { fill: RED });
+    b += TXN(220, 50, 'alpha particles in', 14) + TXN(530, 48, 'most straight through', 14, { fill: '#1F6F64' }) + TXN(570, 272, 'some deflected', 14, { fill: RED }) + TXN(200, 272, 'a very few back', 14, { fill: RED });
     return D.svg(680, 310, b, 'Alpha particles fired at thin gold foil: most pass straight through, some are deflected, a very few come back.');
   }
   renderVals() {
