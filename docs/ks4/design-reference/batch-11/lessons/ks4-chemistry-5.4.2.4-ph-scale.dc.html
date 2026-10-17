@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The pH scale and neutralisation · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Chemical changes" title="The pH scale and neutralisation" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 5.4.2.4 (+ 5.4.2.5 Higher) · Combined and Triple</p>
+        <h1>The pH scale and neutralisation</h1>
+        <p class="ks3-bigq">Below 7 acid, 7 neutral, above 7 alkali. Measure it with universal indicator or a probe, watch it climb as alkali is added to acid, and (Higher) know that each step is ten times.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <sc-if value="{{ isHigher }}"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Higher layer · ×10 per unit</span></sc-if>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Lemon juice." scene="Squeeze a lemon onto your tongue. Sharp, sour, makes you wince." question="is lemon juice an acid or an alkali?" options="{{ hookOptions }}" bridge="Sour is the taste of an acid. Chemists do not taste things; they use the pH scale, and universal indicator or a probe to read it." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-scale" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The scale</p>
+        <h2 style="margin: 6px 0 0;">Below 7, 7, above 7.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Acids produce hydrogen ions (H<sup>+</sup>) in aqueous solution; aqueous solutions of alkalis contain hydroxide ions (OH<sup>−</sup>). The pH scale, from 0 to 14, measures how acidic or alkaline a solution is. Acids have pH values less than 7; alkalis have pH values greater than 7; pH 7 is neutral. The lower the pH, the more acidic. Universal indicator gives an approximate pH by colour; a pH probe gives a number.</p>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ uiFig }}</div></div>
+        <p style="margin: 14px 0 0; max-width: 62ch;">Each solution has been tested with universal indicator. Place it.</p>
+        <div style="margin-top: 12px; display: grid; gap: 12px;">
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+            <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">{{ r.q }}</p>
+              <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ r.p.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+              <p aria-live="polite" style="margin: 10px 0 0; font-size: 17px; line-height: 1.5;">{{ r.p.note }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-neut" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Neutralisation</p>
+        <h2 style="margin: 6px 0 0;">pH climbs through 7.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Add alkali to an acid and the pH rises: slowly at first, then fast through 7, then levelling off above it. The curve is what a probe records. The reaction between the ions is the same whatever acid and alkali you use.</p>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ curveFig }}</div></div>
+        <p style="margin: 14px 0 0; display: inline-block; padding: 12px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 21px;">H<sup>+</sup>(aq) + OH<sup>−</sup>(aq) <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> H<sub>2</sub>O(l)</p>
+        <p style="margin: 14px 0 0; max-width: 62ch;">Water is added to an acid of pH 2 instead of alkali. What happens to the pH?</p>
+        <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ dq.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+        <p aria-live="polite" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ dq.note }}</p>
+        <sc-if value="{{ isTriple }}"><p style="margin: 14px 0 0; max-width: 62ch; font-size: 17px;">Triple: in a titration a single-colour-change indicator such as phenolphthalein (colourless in acid, pink in alkali) marks the end point. See <a href="{{ titrHref }}">Titrations</a>.</p></sc-if>
+      </section>
+
+      <sc-if value="{{ isHigher }}">
+      <section id="s-ten" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Higher · each pH unit is ten times</p>
+        <h2 style="margin: 6px 0 0;">Ten, a hundred, a thousand.</h2>
+        <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">As the pH decreases by one unit, the hydrogen ion concentration of the solution increases by a factor of 10. So a difference of n whole units is a factor of 10<sup>n</sup>.</p>
+        <p style="margin: 12px 0 0; display: inline-block; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 20px;">factor = 10<sup>(difference in pH)</sup></p>
+        <div style="margin-top: 14px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Worked</p>
+          <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55;">pH 1 compared with pH 3. Difference 3 − 1 = 2 units. Factor = 10<sup>2</sup> = 10 × 10 = 100. The pH 1 solution has 100 times the hydrogen ion concentration.</p>
+        </div>
+        <p style="margin: 14px 0 0; max-width: 62ch;">pH 2 compared with pH 5. How many times more H<sup>+</sup>?</p>
+        <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ tq.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+        <p aria-live="polite" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ tq.note }}</p>
+        <p style="margin: 12px 0 0; font-size: 17px;">The full treatment, with worked CFIFA, is in <a href="{{ swaHref }}">Strong and weak acids</a>.</p>
+      </section>
+      </sc-if>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · nearly 7</p></div>
+        <p class="ks3-mis-quote">&ldquo;pH 6.5 is close enough to 7 to count as neutral.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="A probe reads pH 6.5. What is the solution?" options="{{ thinkOptions }}" reveal="Anything below 7 is acidic, however slightly. Neutral is exactly 7." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Acidic, neutral or alkaline?" prompt="Place each reading." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Below 7 acidic (red, orange, yellow); 7 neutral (green); above 7 alkaline (blue, purple)." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How to measure pH with universal indicator or a probe.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Identify</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Acid, neutral or alkali from a pH or a colour.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Write</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The ionic equation for neutralisation.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Acids: pH below 7, hydrogen ions. Alkalis: pH above 7, hydroxide ions. Neutral: 7. Neutralisation: H<sup>+</sup> + OH<sup>−</sup> → H<sub>2</sub>O. Higher: one pH unit is a factor of 10 in H<sup>+</sup> concentration.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="ph-scale" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="The pH scale and neutralisation" spec="AQA 5.4.2.4 (+ 5.4.2.5 HT) · Combined and Triple" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Reading pH 6.5 as neutral?" legal="Everyday pH values are approximate: dilute hydrochloric acid about 1, vinegar about 3, black coffee about 5, baking soda solution about 9, sodium hydroxide solution about 13." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+
+const SLUG = 'ph-scale';
+const OK = ['Combined Foundation', 'Combined Higher', 'Triple Foundation', 'Triple Higher'];
+const FILE = {"model-of-the-atom":"ks4-chemistry-5.1.1.3-model-of-the-atom.dc.html","subatomic-particles":"ks4-chemistry-5.1.1.4-subatomic-particles.dc.html","relative-atomic-mass":"ks4-chemistry-5.1.1.6-relative-atomic-mass.dc.html","electronic-structure":"ks4-chemistry-5.1.1.7-electronic-structure.dc.html","group-7":"ks4-chemistry-5.1.2.6-group-7.dc.html","transition-metals":"ks4-chemistry-4.1.3.1-transition-metals.dc.html","mass-changes-reactions":"ks4-chemistry-5.3.1.3-mass-changes-reactions.dc.html","chemical-measurements":"ks4-chemistry-5.3.1.4-chemical-measurements.dc.html","moles":"ks4-chemistry-5.3.2.1-moles.dc.html","amounts-in-equations":"ks4-chemistry-5.3.2.2-amounts-in-equations.dc.html","oxidation-reduction":"ks4-chemistry-5.4.1.4-oxidation-reduction.dc.html","salts-neutralisation":"ks4-chemistry-5.4.2.2-salts-neutralisation.dc.html","ph-scale":"ks4-chemistry-5.4.2.4-ph-scale.dc.html","strong-weak-acids":"ks4-chemistry-5.4.2.5-strong-weak-acids.dc.html","electrolysis-principles":"ks4-chemistry-5.4.3.1-electrolysis-principles.dc.html","electrolysis-molten":"ks4-chemistry-5.4.3.2-electrolysis-molten.dc.html","periodic-table":"../../KS4 Batch 4/ks4-chemistry-5.1.2.1-periodic-table.dc.html","group-0":"../../KS4 Batch 5/ks4-chemistry-5.1.2.4-group-0.dc.html","metals-non-metals":"../../KS4 Batch 5/ks4-chemistry-5.1.2.3-metals-non-metals.dc.html","reactivity-series":"../../KS4 Batch 5/ks4-chemistry-5.4.1.1-reactivity-series.dc.html","extraction-of-metals":"../../KS4 Batch 5/ks4-chemistry-5.4.1.3-extraction-of-metals.dc.html","structure-of-atom":"../../KS4 Batch 5/ks4-physics-6.4.1.1-structure-of-atom.dc.html","development-atomic-model":"../../KS4 Batch 5/ks4-physics-6.4.1.3-development-atomic-model.dc.html","atoms-elements-compounds":"/ks4/atoms-elements-compounds","relative-formula-mass":"/ks4/relative-formula-mass","using-moles-calculations":"/ks4/using-moles-calculations","conservation-of-mass":"/ks4/conservation-of-mass","titrations":"/ks4/titrations","percentage-yield":"/ks4/percentage-yield","atom-economy":"/ks4/atom-economy"};
+const ORDER = [["model-of-the-atom","Development of the model of the atom",0],["subatomic-particles","Subatomic particles",0],["relative-atomic-mass","Relative atomic mass, atomic number and isotopes",0],["electronic-structure","Electronic structure",0],["group-7","Group 7: the halogens",0],["transition-metals","Properties of transition metals",1],["mass-changes-reactions","Mass changes in reactions",0],["chemical-measurements","Chemical measurements",0],["moles","Moles",3],["amounts-in-equations","Amounts of substances in equations",3],["oxidation-reduction","Oxidation and reduction",0],["salts-neutralisation","Making salts and neutralisation",0],["ph-scale","The pH scale and neutralisation",0],["strong-weak-acids","Strong and weak acids",3],["electrolysis-principles","The process of electrolysis",0],["electrolysis-molten","Electrolysis of molten ionic compounds",0]];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const V = (q, opts, we) => ({ q, opts, wrong_explanations: we });
+const LNK = (k, label) => ({ href: FILE[k], label });
+const TX = (x, y, t, size, o) => window.KS4D.T(x, y, t, size, Object.assign({ fill: '#1A1A1A' }, o || {}));
+const TXN = (x, y, t, size, o) => TX(x, y, t, size, Object.assign({ weight: 'normal' }, o || {}));
+const BOX = (x, y, w, h, fill, stroke, sw, rx) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + (rx == null ? 12 : rx) + '" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const INK = '#1A1A1A', RED = '#C8102E', TEAL = '#2E8B7F', MUTED = '#8A8378', PAPER = '#FFFDF8';
+const UI = ['#C8102E', '#D8352B', '#E85A2A', '#F08A2E', '#F2B234', '#E8D23A', '#B9D24A', '#5DB85A', '#3FA27A', '#2E8B9A', '#2F6FB0', '#3B52A8', '#4A3F96', '#5B2E7E', '#4A1F66'];
+
+const RAIL = [{ id: 's-hook', label: 'Lemon juice', short: 'HOOK' }, { id: 's-scale', label: 'The scale', short: 'SCALE' }, { id: 's-neut', label: 'Neutralisation', short: 'NEUTRAL' }, { id: 's-ten', label: 'Higher: ×10', short: 'HIGHER', higher: true }, { id: 's-think', label: 'Think again', short: 'THINK' }, { id: 's-sort', label: 'Acid, neutral, alkali?', short: 'SORT' }, { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }];
+const ROWS = [
+  { q: 'Vinegar: universal indicator turns orange.', right: 0, yes: 'Acidic, about pH 3. Orange sits below 7 on the chart.', no: ['', 'Green is neutral. Orange is below 7.', 'Blue and purple are above 7.'] },
+  { q: 'Pure water: universal indicator turns green.', right: 1, yes: 'Neutral, pH 7.', no: ['Green is the colour of exactly 7.', '', 'Green is 7, not above it.'] },
+  { q: 'Oven cleaner: universal indicator turns purple.', right: 2, yes: 'Alkaline, about pH 13 or 14. Purple is the top of the chart.', no: ['Red and orange are the acids.', 'Green is neutral; purple is far above 7.', ''] },
+  { q: 'Black coffee: a probe reads pH 5.', right: 0, yes: 'Acidic: below 7, even if only by two units.', no: ['', 'Only exactly 7 is neutral.', 'Above 7 would be alkaline; 5 is below.'] }
+];
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  pick(key, q) {
+    const v = this.state[key], has = typeof v === 'number';
+    return { btns: q.opts.map((o, i) => ({ label: o, pressed: v === i, style: this.seg(v === i), onClick: () => this.setState({ [key]: i, [key + 'Ok']: !!this.state[key + 'Ok'] || i === q.right }) })),
+      note: !has ? (q.ask || 'Pick one.') : v === q.right ? q.yes : (q.no[v] || ''), done: !!this.state[key + 'Ok'], v: has ? v : null };
+  }
+  flags() {
+    const K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    return { R, route, rk, H: rk === 'CH' || rk === 'TH', T: rk === 'TF' || rk === 'TH', TH: rk === 'TH' };
+  }
+  common(done, F, ready, rail) {
+    const s = this.state, K = window.KS4;
+    const av = ORDER.filter((o) => !o[2] || (o[2] === 1 && F.T) || (o[2] === 2 && F.TH) || (o[2] === 3 && F.H)), i = av.findIndex((o) => o[0] === SLUG);
+    return { route: F.route, rk: F.rk, onRoute: F.R.onRoute || (() => {}), isHigher: F.H, notHigher: !F.H, isTriple: F.T, notTriple: !F.T, isTH: F.TH, notTH: !F.TH,
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready,
+      railV: K ? K.rail(rail || RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (x) => this.setState({ hook: x }), onThink: (x) => this.setState({ think: x }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }),
+      endPrev: i > 0 ? LNK(av[i - 1][0], av[i - 1][1]) : null,
+      endNext: i >= 0 && i < av.length - 1 ? LNK(av[i + 1][0], av[i + 1][1]) : null };
+  }
+
+  uiFig() {
+    const D = window.KS4D; let b = ''; const w = 46, x0 = 30;
+    UI.forEach((c, i) => { b += BOX(x0 + i * w, 60, w - 3, 60, c, INK, 1.5, 4) + TX(x0 + i * w + (w - 3) / 2, 145, String(i), 15); });
+    b += '<path d="M' + x0 + ' 160 h' + (7 * w - 3) + '" stroke="' + RED + '" stroke-width="3"/>' + TX(x0 + 3.5 * w, 184, 'below 7: acidic', 14, { fill: RED });
+    b += TX(x0 + 7 * w + 21, 184, '7: neutral', 14, { fill: TEAL });
+    b += '<path d="M' + (x0 + 8 * w) + ' 160 h' + (7 * w - 3) + '" stroke="#3B52A8" stroke-width="3"/>' + TX(x0 + 11.5 * w, 184, 'above 7: alkaline', 14, { fill: '#3B52A8' });
+    b += TXN(x0 + 7.5 * w, 36, 'universal indicator colour chart: an approximate pH', 14) + TXN(x0 + 7.5 * w, 212, 'a pH probe gives the number directly', 13, { fill: MUTED });
+    return D.svg(730, 230, b, 'Universal indicator colour chart from red at pH 0 through green at 7 to purple at 14, labelled below 7 acidic, 7 neutral, above 7 alkaline.');
+  }
+  curveFig() {
+    const D = window.KS4D; let b = ''; const x0 = 70, y0 = 30, w = 540, h = 200;
+    const X = (v) => x0 + v / 50 * w, Y = (p) => y0 + h - p / 14 * h;
+    b += D.line(x0, y0, x0, y0 + h, 2, INK) + D.line(x0, y0 + h, x0 + w, y0 + h, 2, INK);
+    [0, 7, 14].forEach((p) => { b += D.line(x0 - 6, Y(p), x0, Y(p), 2, INK) + TXN(x0 - 12, Y(p) + 5, String(p), 13, { anchor: 'end' }); });
+    b += D.line(x0, Y(7), x0 + w, Y(7), 1.5, MUTED) + TXN(x0 + w - 4, Y(7) - 6, 'pH 7', 12, { anchor: 'end', fill: MUTED });
+    let d = ''; for (let v = 0; v <= 50; v += 1) { const p = 7 + 6 / (1 + Math.exp(-(v - 25) * 0.9)) - 5.6 + (v < 25 ? -0.0 : 0); const pp = Math.max(1, Math.min(13, p)); d += (v === 0 ? 'M' : 'L') + X(v).toFixed(1) + ' ' + Y(pp).toFixed(1) + ' '; }
+    b += '<path d="' + d + '" fill="none" stroke="' + RED + '" stroke-width="3.5" stroke-linecap="round"/>';
+    b += TXN(x0 + w / 2, y0 + h + 30, 'volume of alkali added', 14) + TXN(x0 + 60, Y(1.6), 'acid: low pH', 12, { fill: MUTED }) + TXN(x0 + w - 70, Y(12.6), 'excess alkali: high pH', 12, { fill: MUTED }) + TXN(X(25) + 70, Y(7) + 40, 'steep through 7', 12, { fill: RED });
+    return D.svg(680, 280, b, 'pH against volume of alkali added to an acid: low and nearly flat, steep through pH 7, then levelling off high.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4, D = window.KS4D, F = this.flags();
+    const ready = !!(s.libReady && K && D);
+    const fig = (f) => (ready ? K.fig(f(), '') : null);
+    const rows = ROWS.map((r, i) => ({ q: r.q, p: this.pick('r' + i, { opts: ['Acidic', 'Neutral', 'Alkaline'], right: r.right, yes: r.yes, no: r.no, ask: 'Place it.' }) }));
+    const dq = this.pick('dq', { opts: ['It rises towards 7 but does not reach it', 'It falls', 'It jumps to 7'], right: 0, yes: 'Yes: dilution lowers the concentration of hydrogen ions, so the pH rises towards 7, but water does not neutralise the acid.', no: ['', 'Water does not make an acid more acidic; it dilutes it.', 'Diluting is not neutralising. Only an alkali takes it to 7.'] });
+    const tq = this.pick('tq', { opts: ['1000 times', '3 times', '30 times'], right: 0, yes: 'Yes: difference 3 units, 10³ = 1000.', no: ['', 'Each unit is a factor of 10, not an extra 1.', 'Multiply the tens: 10 × 10 × 10.'] });
+    const baseBank = [
+      V("An acid is diluted by adding water. What happens to its pH?", [["The pH increases towards 7 — dilution reduces H⁺ concentration, making it less acidic", true], ["The pH decreases — water is neutral so it makes the acid stronger", false], ["The pH stays the same — water doesn't affect the acid", false], ["The pH jumps immediately to 7 — water always neutralises acids", false]], { "1": "Water does not make acid stronger — adding water DILUTES the acid, reducing H⁺ concentration and raising pH.", "2": "Water does affect the acid — it reduces the concentration of H⁺ ions (dilutes them). The pH INCREASES.", "3": "Unless you add enormous amounts of water, the pH approaches 7 gradually but never quite reaches it — you are diluting, not neutralising." }),
+      Q('Universal indicator turns yellow in a solution. What does this show?', 'The solution is weakly acidic, roughly pH 5 or 6', [['It is neutral', 'Neutral is green.'], ['It is strongly alkaline', 'Strong alkalis turn it purple.'], ['It is strongly acidic', 'Strong acids turn it red.']]),
+      Q('Which equation shows what happens to the ions when an acid neutralises an alkali?', 'H⁺(aq) + OH⁻(aq) → H₂O(l)', [['Na⁺(aq) + Cl⁻(aq) → NaCl(aq)', 'Those ions do not change; they stay in solution.'], ['H₂(g) + O₂(g) → H₂O(l)', 'That is hydrogen burning.'], ['acid + alkali → salt + water', 'That is the word equation, not the ions.']]),
+      Q('A pupil wants an exact pH value rather than an approximate one. What should she use?', 'A pH probe', [['Universal indicator', 'It gives an approximate pH from a colour.'], ['Litmus paper', 'Litmus only tells acid from alkali.'], ['A thermometer', 'That measures temperature.']]),
+      Q('Sodium hydroxide solution is added, a little at a time, to hydrochloric acid. Describe the pH change.', 'It rises slowly, then quickly through 7, then levels off above 7', [['It falls from 7', 'It starts low (acid) and rises.'], ['It stays at 7 throughout', 'It is below 7 until the acid is neutralised.'], ['It rises steadily in a straight line', 'The curve is steep around 7 and flatter at the ends.']])
+    ];
+    const htBank = [V("A solution has a pH of 2. Another has a pH of 4. How do their H⁺ ion concentrations compare?", [["pH 2 has 100 times more H⁺ than pH 4 — each unit on the log scale is 10×", true], ["pH 2 has twice as many H⁺ ions as pH 4", false], ["pH 4 has more H⁺ ions — higher pH means more hydrogen", false], ["They have the same H⁺ concentration — both are acidic", false]], { "1": "The pH scale is LOGARITHMIC — each unit represents a 10× change, not a 2× change. pH 2 vs pH 4 = 10² = 100× difference.", "2": "LOWER pH means MORE H⁺ ions — pH 2 is more acidic than pH 4, not less.", "3": "Both are acidic (below 7) but have very different H⁺ concentrations — pH 2 is much more acidic." })].concat(baseBank.slice(0, 4));
+    const rail = F.H ? RAIL : RAIL.filter((r) => !r.higher);
+    const done = F.H ? [s.hook !== null, rows.every((r) => r.p.done), dq.done, tq.done, s.think !== null, s.sort, s.ladder] : [s.hook !== null, rows.every((r) => r.p.done), dq.done, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done, F, ready, rail);
+    return Object.assign(c, {
+      titrHref: FILE['titrations'], swaHref: FILE['strong-weak-acids'],
+      hookOptions: [
+        { text: 'An acid', correct: true, reply: 'Citric acid, at about pH 2 to 3. Sour is the taste of acids. On the pH scale, anything below 7 is acidic.' },
+        { text: 'An alkali', correct: false, reply: 'The sourness gives it away: that is an acid, about pH 2 to 3. Alkalis feel soapy, and sit above 7 on the scale. Below 7 is acid, above 7 alkali, 7 neutral.' }
+      ],
+      uiFig: fig(() => this.uiFig()), rows, curveFig: fig(() => this.curveFig()), dq, tq,
+      thinkOptions: [
+        { text: 'Acidic: anything below 7', correct: true, reply: 'Weakly acidic, but acidic. Neutral is exactly 7.' },
+        { text: 'Neutral: it rounds to 7', correct: false, reply: 'pH does not round. Below 7 is acidic.' },
+        { text: 'Alkaline', correct: false, reply: 'Alkalis are above 7.' }
+      ],
+      sortBins: [{ id: 'a', label: 'Acidic' }, { id: 'n', label: 'Neutral' }, { id: 'k', label: 'Alkaline' }],
+      sortItems: [
+        { text: 'pH 1', bin: 'a', why: 'Strongly acidic.' },
+        { text: 'pH 7', bin: 'n', why: 'Neutral.' },
+        { text: 'pH 13', bin: 'k', why: 'Strongly alkaline.' },
+        { text: 'Universal indicator red', bin: 'a', why: 'Red is pH 0 to 2.' },
+        { text: 'Universal indicator blue', bin: 'k', why: 'Blue is about pH 10 to 12.' },
+        { text: 'pH 6', bin: 'a', why: 'Below 7.' },
+        { text: 'Universal indicator green', bin: 'n', why: 'Green is 7.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('State', 'State the pH of a neutral solution.', '7.', ['7', ['0', 'That is a strong acid.'], ['14', 'That is a strong alkali.']]),
+          MCQ('Give', 'Give the ion that all acids produce in aqueous solution.', 'Hydrogen ions, H⁺.', ['H⁺', ['OH⁻', 'That is alkalis.'], ['H₂O', 'Water is the product of neutralisation.']])
+        ],
+        r2: [
+          MCQ('Identify', 'Universal indicator turns blue in a solution. Identify the type of solution.', 'Alkaline: blue is above 7.', ['Alkaline', ['Acidic', 'Red, orange and yellow are acidic.'], ['Neutral', 'Neutral is green.']]),
+          MCQ('Describe', 'Describe what happens to the pH of an acid as water is added.', 'It rises towards 7 but does not reach it.', ['It rises towards 7', ['It falls below 0', 'Dilution lowers the H⁺ concentration; pH rises.'], ['It becomes 7', 'Diluting is not neutralising.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain how a student could find the approximate pH of a solution with universal indicator. Put the links in order.',
+            ['Add a few drops of universal indicator to a sample of the solution.', 'Compare the colour of the solution with the colour chart.', 'Read off the pH that matches: red to yellow below 7 (acidic), green 7 (neutral), blue to purple above 7 (alkaline).'],
+            [['Use litmus to find the pH number.', 'Litmus only tells acid from alkali.'], ['Taste the solution.', 'Never.']]),
+          CHAIN('Explain', 'Explain what happens, in terms of ions, when sodium hydroxide solution neutralises hydrochloric acid. Put the links in order.',
+            ['The acid provides hydrogen ions, H⁺, and the alkali provides hydroxide ions, OH⁻.', 'Hydrogen ions react with hydroxide ions to produce water: H⁺ + OH⁻ → H₂O.', 'The sodium and chloride ions stay in solution as the salt, and the pH ends at 7 when the ions are matched.'],
+            [['Sodium ions react with chloride ions to form a precipitate.', 'Sodium chloride is soluble; those ions do not change.'], ['Hydrogen gas is given off.', 'Water forms, not hydrogen.']])
+        ],
+        r4: [
+          WRITE('Describe', 4, 'A student adds sodium hydroxide solution to hydrochloric acid 1 cm³ at a time and measures the pH with a probe after each addition. Describe the shape of the graph of pH against volume of alkali, and explain the change in terms of the ions present.',
+            LV4('Shape described in three parts (low, steep rise through 7, levelling high) with the H⁺ + OH⁻ → H₂O explanation and the end point at 7.', 'Shape partly described, or the ionic explanation given alone.'),
+            ['The pH starts low because the acid contains hydrogen ions.', 'It rises slowly, then steeply through pH 7 near the end point.', 'At pH 7 the hydrogen ions have all reacted with hydroxide ions to form water: H⁺ + OH⁻ → H₂O.', 'With excess alkali the pH levels off above 7, because hydroxide ions are now in excess.'],
+            ['“The pH falls as alkali is added.”', '“pH 7 is reached when all the sodium has reacted.”'])
+        ]
+      },
+      keyLines: ['Acids produce hydrogen ions (H⁺) in aqueous solutions; aqueous solutions of alkalis contain hydroxide ions (OH⁻).', 'The pH scale, from 0 to 14, is a measure of the acidity or alkalinity of a solution. Acids: pH less than 7. Alkalis: pH greater than 7. Neutral: pH 7. The lower the pH, the more acidic.', 'Measure pH with universal indicator (or a wide range indicator) for an approximate value by colour, or a pH probe for a number.', 'In neutralisation between an acid and an alkali, hydrogen ions react with hydroxide ions to produce water: H⁺(aq) + OH⁻(aq) → H₂O(l). Adding alkali to acid raises the pH steeply through 7. Diluting an acid raises the pH towards 7 without reaching it.', 'Higher: as the pH decreases by one unit, the hydrogen ion concentration increases by a factor of 10 (pH 1 has 100 times the H⁺ concentration of pH 3). Full treatment in Strong and weak acids.'],
+      endConnects: [LNK('salts-neutralisation', 'Making salts and neutralisation'), LNK('strong-weak-acids', 'Strong and weak acids'), LNK('titrations', 'Titrations')],
+      bank: ready ? (F.H ? htBank : baseBank).map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

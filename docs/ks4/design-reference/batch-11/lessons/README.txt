@@ -1,0 +1,3 @@
+KS4 batch 11: 16 chemistry lessons (atomic structure, quantitative chemistry, acids and electrolysis), one runnable .dc.html each (ks4-chemistry-<spec>-<slug>.dc.html), with the shared blocks (Ks4*.dc.html, ks4-lib.js, ks4-diagrams.js, ks4-theme.css) and support.js so each page runs on its own.
+Open any lesson file directly. Pages link the design system at ../../_ds/… (not included here).
+Routes: transition metals Triple only; moles, amounts in equations and strong and weak acids Higher only; every other lesson on all four routes, with Higher layers hidden on Foundation. See NOTES-KS4-batch-11.md for files, routes, page order, how rules 1–4 are met, quiz provenance and numbered science flags.

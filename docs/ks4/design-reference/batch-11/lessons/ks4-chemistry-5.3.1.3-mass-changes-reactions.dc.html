@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mass changes in reactions · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Quantitative chemistry" title="Mass changes in reactions" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 5.3.1.3 · Combined and Triple</p>
+        <h1>Mass changes in reactions</h1>
+        <p class="ks3-bigq">Mass is always conserved. When a balance reading rises or falls, a gas has joined or left. Explain both with particles, and (Higher) predict the change from the equation.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Calculates</span>
+          <sc-if value="{{ isHigher }}"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Higher layer · reacting masses</span></sc-if>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A fizzy drink on the scales." scene="You open a bottle of fizzy drink, stand it on kitchen scales and leave it for an hour." question="does the reading go up or down?" options="{{ hookOptions }}" bridge="Nothing was destroyed. Gas particles left the bottle and took their mass with them. Every apparent change of mass in chemistry is a gas joining or leaving." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-balances" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Open or sealed</p>
+        <h2 style="margin: 6px 0 0;">Two balances, same reaction.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Marble chips (calcium carbonate) and dilute hydrochloric acid, on two balances. One flask is open; one is sealed. Conservation of mass holds in both: <a href="{{ comHref }}">Conservation of mass</a> covers the law itself.</p>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ bFig }}</div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ pCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+        <p style="margin: 16px 0 0; max-width: 62ch;">Now predict each reading. Falls, rises, or stays the same?</p>
+        <div style="margin-top: 12px; display: grid; gap: 12px;">
+          <sc-for list="{{ scen }}" as="r" hint-placeholder-count="4">
+            <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">{{ r.q }}</p>
+              <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ r.p.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+              <p aria-live="polite" style="margin: 10px 0 0; font-size: 17px; line-height: 1.5;">{{ r.p.note }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equation · mass of gas</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">In an open container the mass of gas that left (or joined) is the difference between the two readings. It is a subtraction, so there is no triangle: one line, both readings in the same unit.</p>
+        <p style="margin: 14px 0 0; display: inline-block; padding: 12px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 21px; line-height: 1.5;">mass of gas = mass before − mass after</p>
+        <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">If the reading rose (a metal gaining oxygen), swap the order: mass gained = mass after − mass before.</p>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <sc-if value="{{ isHigher }}">
+      <section id="s-ht" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Higher · equation · moles from mass</p>
+        <h2 style="margin: 6px 0 0;">Predicting the change from the equation.</h2>
+        <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">On Higher you can predict how much mass a metal gains when it burns, from the balanced equation. The tool is the mole: n = m ÷ M<sub>r</sub>. Moles have their own lesson, <a href="{{ molHref }}">Moles</a>; here is the triangle you need. Tap the quantity you want to find.</p>
+        <div style="margin-top: 14px; max-width: 520px;">
+          <dc-import name="Ks4Triangle" eq="{{ eqN }}" variant="full" hint-size="100%,420px"></dc-import>
+        </div>
+        <p style="margin: 16px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Three steps, each one taught on its own first: moles of the metal (n = m ÷ A<sub>r</sub>), the ratio from the equation, then mass of oxygen (m = n × M<sub>r</sub>). Mass-ratio working (48 g : 80 g) appears only as a check.</p>
+      </section>
+
+      <section id="s-calch" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ hExamples }}" questions="{{ hQuestions }}" on-open="{{ onCalcH }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-steps" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Steps" mode="worked" id="mc-w" head="4.8 g of magnesium burns completely in air: 2Mg + O₂ → 2MgO. Calculate the mass of oxygen gained and the mass of magnesium oxide formed. Ar: Mg = 24, O = 16." lead="Step 1 moles of magnesium. Step 2 the ratio. Step 3 mass of oxygen." steps="{{ wSteps }}" next="Now the same three steps yourself." hint-size="100%,900px"></dc-import>
+          <div style="margin-top: 22px;">
+            <dc-import name="Ks4Steps" mode="attempt" id="mc-a" head="2.4 g of magnesium burns completely in air: 2Mg + O₂ → 2MgO. Calculate the mass of oxygen gained and the mass of magnesium oxide formed. Ar: Mg = 24, O = 16." lead="Write each line, then check your working." steps="{{ aSteps }}" close="0.1 mol Mg does not need 0.1 mol O₂: the equation says 2 : 1, so 0.05 mol." on-done="{{ onSteps }}" hint-size="100%,900px"></dc-import>
+          </div>
+        </sc-if>
+      </section>
+      </sc-if>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · burning</p></div>
+        <p class="ks3-mis-quote">&ldquo;Burning destroys stuff, so the ash must weigh less than the magnesium ribbon.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Magnesium ribbon is heated in an open crucible until it has all turned to white powder. How does the mass of the powder compare with the ribbon?" options="{{ thinkOptions }}" reveal="The powder is heavier. Oxygen particles from the air bond to the magnesium atoms and become part of the solid magnesium oxide: 2Mg + O₂ → 2MgO. Nothing was destroyed." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="What does the balance do?" prompt="Place each experiment." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Falls: a gas escapes from an open container. Rises: a gas from the air joins the solid. Same: sealed, so nothing enters or leaves." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">An apparent change in mass, using the particle model.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The mass of gas lost from two readings; (Higher) the mass gained from the equation.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Predict</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Whether a reading rises, falls or stays the same.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Some reactions may appear to involve a change in mass. The explanation is always a gas: one that escapes from an open container (reading falls) or one from the air that becomes part of the product (reading rises). Sealed, nothing changes.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="mass-changes-reactions" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Mass changes in reactions" spec="AQA 5.3.1.3 · Combined and Triple" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Reading rose when you expected a fall?" legal="Balance readings in the practice are made up round numbers." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+
+const SLUG = 'mass-changes-reactions';
+const OK = ['Combined Foundation', 'Combined Higher', 'Triple Foundation', 'Triple Higher'];
+const FILE = {"model-of-the-atom":"ks4-chemistry-5.1.1.3-model-of-the-atom.dc.html","subatomic-particles":"ks4-chemistry-5.1.1.4-subatomic-particles.dc.html","relative-atomic-mass":"ks4-chemistry-5.1.1.6-relative-atomic-mass.dc.html","electronic-structure":"ks4-chemistry-5.1.1.7-electronic-structure.dc.html","group-7":"ks4-chemistry-5.1.2.6-group-7.dc.html","transition-metals":"ks4-chemistry-4.1.3.1-transition-metals.dc.html","mass-changes-reactions":"ks4-chemistry-5.3.1.3-mass-changes-reactions.dc.html","chemical-measurements":"ks4-chemistry-5.3.1.4-chemical-measurements.dc.html","moles":"ks4-chemistry-5.3.2.1-moles.dc.html","amounts-in-equations":"ks4-chemistry-5.3.2.2-amounts-in-equations.dc.html","oxidation-reduction":"ks4-chemistry-5.4.1.4-oxidation-reduction.dc.html","salts-neutralisation":"ks4-chemistry-5.4.2.2-salts-neutralisation.dc.html","ph-scale":"ks4-chemistry-5.4.2.4-ph-scale.dc.html","strong-weak-acids":"ks4-chemistry-5.4.2.5-strong-weak-acids.dc.html","electrolysis-principles":"ks4-chemistry-5.4.3.1-electrolysis-principles.dc.html","electrolysis-molten":"ks4-chemistry-5.4.3.2-electrolysis-molten.dc.html","periodic-table":"../../KS4 Batch 4/ks4-chemistry-5.1.2.1-periodic-table.dc.html","group-0":"../../KS4 Batch 5/ks4-chemistry-5.1.2.4-group-0.dc.html","metals-non-metals":"../../KS4 Batch 5/ks4-chemistry-5.1.2.3-metals-non-metals.dc.html","reactivity-series":"../../KS4 Batch 5/ks4-chemistry-5.4.1.1-reactivity-series.dc.html","extraction-of-metals":"../../KS4 Batch 5/ks4-chemistry-5.4.1.3-extraction-of-metals.dc.html","structure-of-atom":"../../KS4 Batch 5/ks4-physics-6.4.1.1-structure-of-atom.dc.html","development-atomic-model":"../../KS4 Batch 5/ks4-physics-6.4.1.3-development-atomic-model.dc.html","atoms-elements-compounds":"/ks4/atoms-elements-compounds","relative-formula-mass":"/ks4/relative-formula-mass","using-moles-calculations":"/ks4/using-moles-calculations","conservation-of-mass":"/ks4/conservation-of-mass","titrations":"/ks4/titrations","percentage-yield":"/ks4/percentage-yield","atom-economy":"/ks4/atom-economy"};
+const ORDER = [["model-of-the-atom","Development of the model of the atom",0],["subatomic-particles","Subatomic particles",0],["relative-atomic-mass","Relative atomic mass, atomic number and isotopes",0],["electronic-structure","Electronic structure",0],["group-7","Group 7: the halogens",0],["transition-metals","Properties of transition metals",1],["mass-changes-reactions","Mass changes in reactions",0],["chemical-measurements","Chemical measurements",0],["moles","Moles",3],["amounts-in-equations","Amounts of substances in equations",3],["oxidation-reduction","Oxidation and reduction",0],["salts-neutralisation","Making salts and neutralisation",0],["ph-scale","The pH scale and neutralisation",0],["strong-weak-acids","Strong and weak acids",3],["electrolysis-principles","The process of electrolysis",0],["electrolysis-molten","Electrolysis of molten ionic compounds",0]];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const CALC = (prompt, convOptions, convAnswer, answer, unit, units, right, wrong, model, tol) => ({ kind: 'calc', command: 'Calculate', marks: 2, prompt, convOptions, convAnswer, answer, tol: tol == null ? 0.05 : tol, unit, units, right, wrong, model });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const V = (q, opts, we) => ({ q, opts, wrong_explanations: we });
+const LNK = (k, label) => ({ href: FILE[k], label });
+const TX = (x, y, t, size, o) => window.KS4D.T(x, y, t, size, Object.assign({ fill: '#1A1A1A' }, o || {}));
+const TXN = (x, y, t, size, o) => TX(x, y, t, size, Object.assign({ weight: 'normal' }, o || {}));
+const BOX = (x, y, w, h, fill, stroke, sw, rx) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + (rx == null ? 12 : rx) + '" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const INK = '#1A1A1A', TAN = '#F2C9AE', LEAF = '#A9D9BE', RED = '#C8102E', TEAL = '#2E8B7F', MUTED = '#8A8378', PAPER = '#FFFDF8', SKY = '#DDEEF6';
+const CFL = (c, f, i, ft, a, cn) => [{ letter: 'C', label: 'Convert', line: c, note: cn || '' }, { letter: 'F', label: 'Formula', line: f }, { letter: 'I', label: 'Insert', line: i }, { letter: 'F', label: 'Fine-tune', line: ft }, { letter: 'A', label: 'Answer', line: a }];
+const CFQ = (c, f, i, ft, a, pc) => [{ letter: 'C', label: 'Convert', placeholder: pc || 'anything to convert?', line: c }, { letter: 'F', label: 'Formula', placeholder: 'written out', line: f }, { letter: 'I', label: 'Insert', placeholder: 'numbers in', line: i }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: ft }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: a }];
+const EQ_N = { name: 'Moles from mass', written: 'n = m ÷ Mr', source: 'none', top: { s: 'm', name: 'mass', unit: 'g' }, bottom: [{ s: 'n', name: 'amount of substance', unit: 'mol' }, { s: 'Mr', name: 'relative formula mass (Ar for an element)', unit: 'no unit' }] };
+
+const RAIL = [{ id: 's-hook', label: 'A fizzy drink', short: 'HOOK' }, { id: 's-balances', label: 'Open or sealed', short: 'BALANCES' }, { id: 's-equation', label: 'Mass of gas', short: 'EQUATION' }, { id: 's-calc', label: 'CFIFA', short: 'CFIFA' }, { id: 's-ht', label: 'Higher: moles', short: 'HIGHER', higher: true }, { id: 's-steps', label: 'Step 1, 2, 3', short: 'STEPS', higher: true }, { id: 's-think', label: 'Think again', short: 'THINK' }, { id: 's-sort', label: 'What does the balance do?', short: 'SORT' }, { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }];
+const PC = [
+  { name: 'Open flask: reading falls', why: 'Carbon dioxide is made. Gas particles move freely and spread out of the open flask, taking their mass with them. The balance no longer weighs them.' },
+  { name: 'Sealed flask: reading stays', why: 'The same carbon dioxide is made, but the gas particles cannot leave. Everything that was weighed before is still being weighed: no change.' },
+  { name: 'Metal in air: reading rises', why: 'Oxygen particles from the air bond to the metal atoms and become part of the solid oxide. Mass that was not on the balance now is.' }
+];
+const SCEN = [
+  { q: 'Magnesium ribbon heated in an open crucible.', right: 1, yes: 'Rises: oxygen from the air joins the solid as magnesium oxide.', no: ['The gas is joining, not leaving: oxygen becomes part of the solid.', '', 'Open to the air, so oxygen can get in and add mass.'] },
+  { q: 'Zinc and dilute sulfuric acid in an open test tube.', right: 0, yes: 'Falls: hydrogen gas escapes.', no: ['', 'Nothing is absorbed; hydrogen is made and leaves.', 'Open tube, so the hydrogen gets out.'] },
+  { q: 'Calcium carbonate heated in a sealed tube.', right: 2, yes: 'Stays the same: carbon dioxide is made but trapped inside.', no: ['It would fall if the tube were open. Sealed, the carbon dioxide is still weighed.', 'No gas can get in.', ''] },
+  { q: 'Two solutions mixed in a sealed flask; a solid precipitate forms.', right: 2, yes: 'Stays the same: no gas is made and nothing can enter or leave.', no: ['No gas is produced, and the flask is sealed.', 'No gas enters a sealed flask.', ''] }
+];
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false, calc: 0, calcH: 0, steps: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  allSeen(key, n) { return (this.state[key] || []).length >= n; }
+  pick(key, q) {
+    const v = this.state[key], has = typeof v === 'number';
+    return { btns: q.opts.map((o, i) => ({ label: o, pressed: v === i, style: this.seg(v === i), onClick: () => this.setState({ [key]: i, [key + 'Ok']: !!this.state[key + 'Ok'] || i === q.right }) })),
+      note: !has ? (q.ask || 'Pick one.') : v === q.right ? q.yes : (q.no[v] || ''), done: !!this.state[key + 'Ok'], v: has ? v : null };
+  }
+  flags() {
+    const K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    return { R, route, rk, H: rk === 'CH' || rk === 'TH', T: rk === 'TF' || rk === 'TH', TH: rk === 'TH' };
+  }
+  common(done, F, ready, rail) {
+    const s = this.state, K = window.KS4;
+    const av = ORDER.filter((o) => !o[2] || (o[2] === 1 && F.T) || (o[2] === 2 && F.TH) || (o[2] === 3 && F.H)), i = av.findIndex((o) => o[0] === SLUG);
+    return { route: F.route, rk: F.rk, onRoute: F.R.onRoute || (() => {}), isHigher: F.H, notHigher: !F.H, isTriple: F.T, notTriple: !F.T, isTH: F.TH, notTH: !F.TH,
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready,
+      railV: K ? K.rail(rail || RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (x) => this.setState({ hook: x }), onThink: (x) => this.setState({ think: x }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }),
+      onCalc: (k) => this.setState((st) => ({ calc: Math.max(st.calc || 0, k || 1) })), onCalcH: (k) => this.setState((st) => ({ calcH: Math.max(st.calcH || 0, k || 1) })), onSteps: () => this.setState({ steps: true }),
+      endPrev: i > 0 ? LNK(av[i - 1][0], av[i - 1][1]) : null,
+      endNext: i >= 0 && i < av.length - 1 ? LNK(av[i + 1][0], av[i + 1][1]) : null };
+  }
+
+  bFig() {
+    const D = window.KS4D; let b = '';
+    const flask = (x, sealed, read, label) => {
+      b += BOX(x - 90, 230, 180, 34, PAPER, INK, 2.5, 8) + TX(x, 253, read, 17, { fill: RED });
+      b += '<path d="M' + (x - 22) + ' 95 v40 l-40 70 h124 l-40 -70 v-40 z" fill="' + SKY + '" stroke="' + INK + '" stroke-width="2.5"/>';
+      b += D.circ(x - 10, 190, 7, '#D8D2C4', INK, 1.5) + D.circ(x + 12, 196, 7, '#D8D2C4', INK, 1.5);
+      if (sealed) b += BOX(x - 26, 82, 52, 16, TAN, INK, 2, 4); else { b += D.arrow(x, 90, x, 40, TEAL, 3) + D.arrow(x - 18, 92, x - 30, 48, TEAL, 2.5) + D.arrow(x + 18, 92, x + 30, 48, TEAL, 2.5) + TXN(x, 30, 'CO₂ leaves', 13, { fill: TEAL }); }
+      b += TX(x, 290, label, 15);
+    };
+    flask(180, false, '152.40 g then 150.20 g', 'open: reading falls');
+    flask(520, true, '152.40 g then 152.40 g', 'sealed: reading stays');
+    return D.svg(700, 310, b, 'Two flasks of marble chips in acid on balances: the open flask’s reading falls from 152.40 g to 150.20 g as carbon dioxide leaves; the sealed flask stays at 152.40 g.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4, D = window.KS4D, F = this.flags();
+    const ready = !!(s.libReady && K && D);
+    const fig = (f) => (ready ? K.fig(f(), '') : null);
+    const scen = SCEN.map((r, i) => ({ q: r.q, p: this.pick('sc' + i, { opts: ['Falls', 'Rises', 'Stays the same'], right: r.right, yes: r.yes, no: r.no, ask: 'Predict.' }) }));
+    const baseBank = [
+      V("A student heats calcium carbonate in an open crucible. CaCO₃ → CaO + CO₂. What happens to the measured mass?", [["The mass decreases — CO₂ gas escapes from the open crucible", true], ["The mass increases — oxygen from air is absorbed", false], ["The mass stays the same — conservation of mass", false], ["The mass first increases, then decreases", false]], { "1": "Oxygen is not absorbed here — CaCO₃ is decomposing, not combusting. A gas (CO₂) is PRODUCED and escapes.", "2": "Conservation of mass applies to the TOTAL system. In an open container, the mass of the CONTAINER contents decreases because CO₂ leaves. Conservation is still upheld if you include the escaped CO₂.", "3": "There is no initial increase phase — CO₂ is produced and escapes from the start of heating." }),
+      V("Why does the mass of iron increase when it rusts in air?", [["Oxygen from the air combines with the iron — the oxygen adds to the mass of the solid product (iron oxide)", true], ["Water from humidity condenses on the rust — adding extra mass", false], ["The iron becomes denser as it rusts — same volume but more mass", false], ["Iron oxide has more atoms per formula unit than iron", false]], { "1": "Humidity can contribute, but the primary reason is oxygen being ABSORBED from the air. The reaction is 4Fe + 3O₂ → 2Fe₂O₃ — the oxygen becomes part of the solid.", "2": "Density changes do not increase total mass — mass = density × volume. If both change proportionally, mass stays the same. More mass comes from more matter (oxygen absorbed).", "3": "Atom count per formula unit is irrelevant — it is the MASS of oxygen absorbed from air that increases the total mass." }),
+      Q('A flask of marble chips and acid reads 120.60 g at the start and 119.50 g after five minutes. What mass of gas has escaped?', '1.10 g', [['240.10 g', 'Subtract the readings; do not add them.'], ['119.50 g', 'That is the reading after, not the loss.'], ['0.11 g', 'Check the subtraction: 120.60 − 119.50 = 1.10.']]),
+      Q('The same reaction is run in a sealed flask. What happens to the balance reading?', 'It stays the same: the gas is made but cannot leave', [['It falls, because gas is made', 'Gas is made, but it is trapped and still weighed.'], ['It rises, because gas is made', 'Making a gas inside a sealed flask adds nothing from outside.'], ['It falls, then rises', 'Nothing enters or leaves a sealed flask.']]),
+      Q('Explain, using particles, why the reading rises when copper is heated in air.', 'Oxygen particles from the air bond to the copper atoms and become part of the solid copper oxide', [['Heat has mass and is added to the copper', 'Heat is energy, not matter.'], ['Copper atoms expand when hot', 'Expansion changes volume, not mass.'], ['Copper gives off a gas that is weighed', 'A gas given off would lower the reading.']])
+    ];
+    const htBank = baseBank.slice(0, 4).concat([Q('0.2 mol of magnesium burns: 2Mg + O₂ → 2MgO. How many moles of oxygen molecules react?', '0.1 mol: the ratio Mg : O₂ is 2 : 1', [['0.2 mol: the same as the magnesium', 'The coefficients say 2 Mg for every 1 O₂.'], ['0.4 mol: twice the magnesium', 'That inverts the ratio.'], ['1 mol: the coefficient of O₂', 'The coefficient is a ratio, not an amount.']])]);
+    const rail = F.H ? RAIL : RAIL.filter((r) => !r.higher);
+    const done = F.H ? [s.hook !== null, this.allSeen('pc', 3) && scen.every((r) => r.p.done), true, s.calc >= 2, true, s.steps, s.think !== null, s.sort, s.ladder] : [s.hook !== null, this.allSeen('pc', 3) && scen.every((r) => r.p.done), true, s.calc >= 2, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done, F, ready, rail);
+    return Object.assign(c, {
+      comHref: FILE['conservation-of-mass'], molHref: FILE['moles'],
+      hookOptions: [
+        { text: 'Down', correct: true, reply: 'Carbon dioxide bubbles out of the drink and away into the room. The scales no longer weigh it.' },
+        { text: 'Up', correct: false, reply: 'It drops, slowly. Carbon dioxide gas escapes from the open bottle, and gas has mass. In chemistry a reading only rises when a gas joins the solid, as oxygen does when a metal burns.' }
+      ],
+      bFig: fig(() => this.bFig()), pCards: this.cards(PC, 'pc'), scen, eqN: EQ_N,
+      cfExamples: [
+        { tab: 'Gas escapes', next: 'Now one in kilograms.', head: 'A flask of marble chips and hydrochloric acid has a mass of 152.40 g. After the fizzing stops it has a mass of 150.20 g. Calculate the mass of carbon dioxide that escaped.', steps: CFL('Nothing to convert: both readings are in grams.', 'mass of gas = mass before − mass after', 'mass of gas = 152.40 − 150.20', 'mass of gas = 2.20', '2.20 g of carbon dioxide') },
+        { tab: 'Convert kg to g', next: 'Now one where the reading rises.', head: 'A beaker of acid and zinc has a mass of 0.5 kg at the start and 487 g at the end. Calculate the mass of hydrogen lost.', steps: CFL('0.5 kg = 500 g', 'mass of gas = mass before − mass after', 'mass of gas = 500 − 487', 'mass of gas = 13', '13 g of hydrogen', 'Both readings must be in the same unit before subtracting.') },
+        { tab: 'Reading rises', next: 'Now yours, below.', head: 'A crucible of magnesium has a mass of 24.00 g. After heating in air it has a mass of 26.40 g. Calculate the mass of oxygen gained.', steps: CFL('Nothing to convert: both in grams.', 'mass gained = mass after − mass before', 'mass gained = 26.40 − 24.00', 'mass gained = 2.40', '2.40 g of oxygen joined the solid') }
+      ],
+      cfQuestions: [
+        { tab: 'Question 1', id: 'mc-q1', head: 'A flask of sodium carbonate and acid has a mass of 98.75 g before and 97.65 g after the reaction. Calculate the mass of gas lost.', close: 'Subtract the smaller reading from the larger: 98.75 − 97.65.', steps: CFQ('Nothing to convert: both in grams.', 'mass of gas = mass before − mass after', 'mass of gas = 98.75 − 97.65', 'mass of gas = 1.10', '1.10 g') },
+        { tab: 'Question 2', id: 'mc-q2', head: 'A tube of zinc and acid has a mass of 0.2 kg before and 196 g after. Calculate the mass of hydrogen lost.', close: '0.2 − 196 is meaningless: 0.2 kg is 200 g.', steps: CFQ('0.2 kg = 200 g', 'mass of gas = mass before − mass after', 'mass of gas = 200 − 196', 'mass of gas = 4', '4 g', 'kg to g?') }
+      ],
+      hExamples: [
+        { tab: 'Step 1 alone · moles', eq: EQ_N, find: 'n', next: 'Now the reverse step alone.', head: 'Calculate the amount in moles of 4.8 g of magnesium. Ar(Mg) = 24.', steps: CFL('Nothing to convert: the mass is in grams.', 'n = m ÷ Ar', 'n = 4.8 ÷ 24', 'n = 0.2', '0.2 mol') },
+        { tab: 'Step 3 alone · mass', eq: EQ_N, find: 'm', next: 'Now the three steps chained, below.', head: 'Calculate the mass of 0.1 mol of oxygen molecules, O₂. Mr(O₂) = 32.', steps: CFL('Nothing to convert.', 'm = n × Mr', 'm = 0.1 × 32', 'm = 3.2', '3.2 g', 'Oxygen is O₂, so Mr is 2 × 16 = 32.') }
+      ],
+      hQuestions: [
+        { tab: 'Question 1', id: 'mc-h1', head: 'Calculate the amount in moles of 12 g of magnesium. Ar(Mg) = 24.', close: 'n = m ÷ Ar: divide the mass by 24.', steps: CFQ('Nothing to convert.', 'n = m ÷ Ar', 'n = 12 ÷ 24', 'n = 0.5', '0.5 mol') },
+        { tab: 'Question 2', id: 'mc-h2', head: 'Calculate the mass of 0.25 mol of oxygen molecules, O₂. Mr(O₂) = 32.', close: 'Use Mr of O₂ (32), not O (16).', steps: CFQ('Nothing to convert.', 'm = n × Mr', 'm = 0.25 × 32', 'm = 8', '8 g') }
+      ],
+      wSteps: [
+        { title: 'Moles of magnesium', eq: EQ_N, find: 'n', carry: '0.2 mol Mg', lines: CFL('Nothing to convert: 4.8 g is in grams.', 'n = m ÷ Ar', 'n = 4.8 ÷ 24', 'n = 0.2', '0.2 mol of Mg') },
+        { title: 'The ratio from the equation', carry: '0.1 mol O₂', lines: CFL('Nothing to convert.', '2Mg + O₂ → 2MgO: 2 mol Mg react with 1 mol O₂', 'n(O₂) = 0.2 × 1/2', 'n(O₂) = 0.1', '0.1 mol of O₂').map((l, i) => (i === 2 ? Object.assign(l, { note: 'Wanted ÷ given coefficient: 1 ÷ 2.' }) : l)) },
+        { title: 'Mass of oxygen, then of the oxide', eq: EQ_N, find: 'm', lines: CFL('Nothing to convert.', 'm = n × Mr', 'm(O₂) = 0.1 × 32', 'm(O₂) = 3.2, so MgO = 4.8 + 3.2 = 8.0', '3.2 g of oxygen gained; 8.0 g of MgO. Check by mass ratio: 48 g : 80 g, and 4.8 ÷ 48 = 0.1, 80 × 0.1 = 8.0 g.') }
+      ],
+      aSteps: [
+        { title: 'Moles of magnesium', carry: '0.1 mol Mg', lines: CFQ('Nothing to convert.', 'n = m ÷ Ar', 'n = 2.4 ÷ 24', 'n = 0.1', '0.1 mol of Mg') },
+        { title: 'The ratio from the equation', carry: '0.05 mol O₂', lines: CFQ('Nothing to convert.', '2 mol Mg : 1 mol O₂', 'n(O₂) = 0.1 × 1/2', 'n(O₂) = 0.05', '0.05 mol of O₂') },
+        { title: 'Mass of oxygen, then of the oxide', lines: CFQ('Nothing to convert.', 'm = n × Mr', 'm(O₂) = 0.05 × 32', 'm(O₂) = 1.6, so MgO = 2.4 + 1.6 = 4.0', '1.6 g of oxygen gained; 4.0 g of MgO') }
+      ],
+      thinkOptions: [
+        { text: 'The powder is heavier: oxygen from the air has joined it', correct: true, reply: 'Oxygen particles bond to magnesium atoms and become part of the solid.' },
+        { text: 'The powder is lighter: burning destroys some of it', correct: false, reply: 'Nothing is destroyed. Oxygen is added, so the solid gets heavier.' },
+        { text: 'The same: mass is conserved', correct: false, reply: 'Mass is conserved overall, but the crucible is open: oxygen from outside has been added to what is weighed.' }
+      ],
+      sortBins: [{ id: 'f', label: 'Falls' }, { id: 'r', label: 'Rises' }, { id: 's', label: 'Stays the same' }],
+      sortItems: [
+        { text: 'Marble chips and acid in an open flask', bin: 'f', why: 'Carbon dioxide escapes.' },
+        { text: 'Copper heated in air', bin: 'r', why: 'Oxygen joins the solid.' },
+        { text: 'Precipitate forming in a sealed flask', bin: 's', why: 'No gas; nothing in or out.' },
+        { text: 'Magnesium and acid in an open tube', bin: 'f', why: 'Hydrogen escapes.' },
+        { text: 'Calcium carbonate heated in a sealed tube', bin: 's', why: 'Carbon dioxide trapped.' },
+        { text: 'Iron rusting in air', bin: 'r', why: 'Oxygen from the air joins the iron.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('State', 'State why the reading on a balance can fall during a reaction in an open flask.', 'A gas is produced and escapes.', ['A gas escapes from the flask', ['Mass is destroyed', 'Mass is always conserved.'], ['The flask gets lighter when warm', 'Temperature does not change mass.']]),
+          MCQ('State', 'State what happens to the mass of a solid metal when it is heated in air and reacts.', 'It increases: oxygen is added.', ['It increases', ['It decreases', 'Oxygen joins the solid, so it gets heavier.'], ['It stays the same', 'Open to the air, oxygen is added.']])
+        ],
+        r2: [
+          CALC('A beaker of acid and marble chips has a mass of 210.50 g before and 208.30 g after the reaction. Calculate the mass of carbon dioxide lost.', ['Nothing to convert', 'Convert g to kg', 'Convert g to mol'], 0, 2.2, 'g', ['g', 'kg', 'mol'], '210.50 − 208.30 = 2.20 g.', 'Mass of gas = mass before − mass after.', ['C · nothing to convert', 'F · mass of gas = before − after', 'I · mass of gas = 210.50 − 208.30', 'F · mass of gas = 2.20', 'A · 2.20 g']),
+          CALC('A tube of magnesium and acid has a mass of 0.3 kg before and 298 g after. Calculate the mass of hydrogen lost.', ['Nothing to convert', 'Convert 0.3 kg to 300 g', 'Convert 0.3 kg to 30 g'], 1, 2, 'g', ['g', 'kg', 'mol'], '0.3 kg = 300 g; 300 − 298 = 2 g.', 'Match the units first: 0.3 kg is 300 g.', ['C · 0.3 kg = 300 g', 'F · mass of gas = before − after', 'I · mass of gas = 300 − 298', 'F · mass of gas = 2', 'A · 2 g'])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain, in terms of particles, why the reading falls when marble chips react with acid in an open flask. Put the links in order.',
+            ['The reaction produces carbon dioxide gas.', 'Gas particles move freely and spread out of the open flask into the air.', 'The particles that left have mass, so the balance no longer weighs them and the reading falls.'],
+            [['Mass is destroyed in the reaction.', 'Mass is conserved; the gas simply left.'], ['The acid evaporates.', 'The loss is the carbon dioxide made.']]),
+          CHAIN('Explain', 'Explain why the reading rises when magnesium is heated in an open crucible. Put the links in order.',
+            ['Magnesium reacts with oxygen from the air.', 'Oxygen particles bond to the magnesium atoms and become part of the solid magnesium oxide.', 'The oxygen was not on the balance before and now is, so the reading rises.'],
+            [['Heat adds mass to the magnesium.', 'Heat is energy, not matter.'], ['Magnesium gives off a gas.', 'A gas given off would lower the reading.']])
+        ],
+        r4: [
+          WRITE('Explain', 6, 'A student heats copper in an open crucible and the mass rises. A second student heats calcium carbonate in an open crucible and the mass falls. Explain both observations in terms of the particle model, and explain why neither breaks the law of conservation of mass.',
+            LV6('Both changes explained with particles (oxygen joining; carbon dioxide leaving), and conservation explained through the open system in both cases.', 'Both changes explained, or one explained with conservation.', 'One observation explained.'),
+            ['Copper reacts with oxygen from the air; oxygen particles bond to copper atoms and become part of the solid, so the mass on the balance rises.', 'Calcium carbonate decomposes to calcium oxide and carbon dioxide; the gas particles spread out of the open crucible and are no longer weighed, so the mass falls.', 'In both cases the containers are open, so matter crosses in or out.', 'Counting the oxygen that joined, or the carbon dioxide that left, the total mass of reactants equals the total mass of products.'],
+            ['“Burning destroys some of the copper.”', '“Heat has mass.”'])
+        ]
+      },
+      keyLines: ['Some reactions may appear to involve a change in mass but can usually be explained because a reactant or product is a gas and its mass has not been taken into account.', 'Reading falls: a gas escapes from an open container (marble chips and acid, zinc and acid, heating a carbonate). Gas particles move freely and leave, taking their mass with them.', 'Reading rises: a metal reacts with oxygen from the air and the oxygen becomes part of the solid oxide (2Mg + O₂ → 2MgO).', 'Sealed container: nothing enters or leaves, so the reading stays the same. Mass of gas = mass before − mass after, both in the same unit.', 'Higher: predict the mass change from the balanced equation in three steps: n = m ÷ Ar, the molar ratio, then m = n × Mr. 4.8 g Mg gains 3.2 g of oxygen to make 8.0 g MgO.'],
+      endConnects: [LNK('conservation-of-mass', 'Conservation of mass'), LNK('moles', 'Moles'), LNK('amounts-in-equations', 'Amounts of substances in equations'), LNK('chemical-measurements', 'Chemical measurements')],
+      bank: ready ? (F.H ? htBank : baseBank).map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

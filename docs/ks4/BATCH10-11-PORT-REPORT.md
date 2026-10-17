@@ -180,7 +180,210 @@ hedge brown is a real butterfly, the gatekeeper; only its records are made up: B
 - **Knowledge points (parent view):** the 769 new question ids (ladder, choice, sort and practice items on the 45
   pages) were tagged by `tools/kp_classify.py --top-up` onto the existing points (12 new points across eight lessons,
   0 left untagged), and the backend's `knowledge-points.json` re-exported (additive only) and pushed before the site.
+- **Gates (pre-push):** every registered gate green, no override. Slow gates selected by this branch's paths and
+  recorded: verify_ks3, ks4_parity (full pilot sweep), ks4_chrome_drive, test_isolation_drive. ks4_parity first died
+  three times on a Chrome websocket timeout (`timed out waiting for 2 bytes from chrome`) while another session was
+  building and running headless Chrome; the lesson it stopped on passed alone (92/92), and the full sweep passed on a
+  quiet machine. No gate was weakened.
+
+**Shipped:** backend `dcbb5c8..1eef943` (knowledge points; Render serving 1eef943), then site pushed 16 Oct 2026 as
+`f4e5add6b..7850ba8cc`; `check_ks4_live.py --batch batch-10`: all 45 live pages are this build byte for byte, and
+every asset they name matches its stamp.
 
 ---
 
-<!-- BATCH11 -->
+## Batch 11: atomic structure, quantitative chemistry, acids and electrolysis (16 lessons, 56 pages)
+
+### Files and routes
+
+| # | lesson (live slug) | topic | spec | routes |
+|---|---|---|---|---|
+| 1 | model-of-the-atom | atomic-structure | 5.1.1.3 | CF CH TF TH |
+| 2 | subatomic-particles | atomic-structure | 5.1.1.4 | CF CH TF TH |
+| 3 | relative-atomic-mass | atomic-structure | 5.1.1.6 | CF CH TF TH |
+| 4 | electronic-structure | atomic-structure | 5.1.1.7 | CF CH TF TH |
+| 5 | group-7 | atomic-structure | 5.1.2.6 | CF CH TF TH |
+| 6 | transition-metals | atomic-structure | 8462 4.1.3.1 | TF TH |
+| 7 | mass-changes-reactions | quantitative | 5.3.1.3 | CF CH TF TH |
+| 8 | chemical-measurements | quantitative | 5.3.1.4 | CF CH TF TH |
+| 9 | moles | quantitative | 5.3.2.1 | CH TH |
+| 10 | amounts-in-equations | quantitative | 5.3.2.2 | CH TH |
+| 11 | oxidation-reduction | chemical-changes | 5.4.1.4 (+ 5.4.1.1, 5.4.1.3) | CF CH TF TH |
+| 12 | salts-neutralisation | chemical-changes | 5.4.2.2 | CF CH TF TH |
+| 13 | ph-scale | chemical-changes | 5.4.2.4 | CF CH TF TH |
+| 14 | strong-weak-acids | chemical-changes | 5.4.2.5 | CH TH |
+| 15 | electrolysis-principles | chemical-changes | 5.4.3.1 | CF CH TF TH |
+| 16 | electrolysis-molten | chemical-changes | 5.4.3.2 | CF CH TF TH |
+
+56 pages per tree (CF 12, CH 15, TF 13, TH 16). Each replaces the old generated page at the same URL. New files:
+`ks4_lessons/batch_11.py`, `batch11_ext.js`, `frozen_batch-11.json`, `ks4_batch-11_manifest.json`,
+`shared/ks4-{source,lesson,ext}-batch-11.*`.
+
+### Port mechanics (not science)
+
+- **B11-<slug>-CHIP** (16), and B8-LNK widened again, generically: four pages call `this.common(done, F, ready, rail)`
+  and electrolysis-molten names the result `cm` (its `c` is the compound picker). Tried only when the batch 8 and
+  batch 10 spellings are absent.
+- **B11-HIGHER-PILL** (new): moles, amounts in equations and strong and weak acids (CH TH) draw a filled "Higher only"
+  pill and "Combined · Triple"; the "Higher only" pill is removed (the eyebrow already says "Higher only" and the route
+  chip names the tier) and "Combined · Triple" becomes the route chip, e.g. "Combined Science · Higher tier" with a
+  switch to Triple Higher.
+- **B11-G3-KS4**: batch 11's pages may carry no `/ks4/` text after the link rulings (it never fired).
+- 16 data sections the classifier could not type are `explainer`, as batches 8 and 10.
+- No use-before-declare on any page (checked by the builder and all four examiners).
+- Titles read "… | GCSE Chemistry | MrBadmus".
+
+### G2 links (lane ruling)
+
+Her seven `/ks4/<slug>` placeholders and her `../../KS4 Batch 4|5/…` links now go through the live route-aware link
+helper. Re-pointed on every route: Atoms, elements and compounds; Relative formula mass; Conservation of mass; Using
+moles in calculations (CH TH, which is every route of the two pages that link it); Periodic table, Group 0, Metals and
+non-metals, Reactivity series, Extraction of metals, and physics Structure of the atom and Development of the atomic
+model. Dropped where the route has no such page (no dead link):
+
+| lesson | route | link | what the pupil sees |
+|---|---|---|---|
+| chemical measurements | CF CH | Titrations (connects) | not listed; listed on TF TH |
+| salts and neutralisation | CF CH | Titrations (connects) | not listed; listed on TF TH |
+| pH scale | CF CH | Titrations (connects) | not listed; listed on TF TH |
+| strong and weak acids | CH | Titrations (connects) | not listed; listed on TH |
+| amounts in equations | CH | Percentage yield, Atom economy (in-text, B11-AIE-NOLINKS) | the words, no link; linked on TH |
+| mass changes | CF TF | Moles, Amounts in equations (connects) | not listed; listed on CH TH |
+| pH scale | CF TF | Strong and weak acids (connects) | not listed; listed on CH TH |
+
+Her NOTES say batch-2/3 "Connects to" lists already forward-link to Moles, Amounts in equations, Mass changes and
+Salts: they did (conservation of mass, using moles, titrations), so those links now land on Design's pages with no
+change to those pages. The two conditional rulings (B11-MCR-LINKS, B11-CM-TITLINK) were not needed: the route filter
+already drops those links, proved on the built pages.
+
+### Overlap with live lessons (lane ruling)
+
+None of the 16 slugs was already a ported lesson (batches 2–10), so no ported page is swapped: every lesson replaces
+the OLD generated page at its own slug. Neighbours checked for a shared spec point:
+
+| batch 11 lesson (spec) | live neighbour (batch, spec) | same spec point? | ruling |
+|---|---|---|---|
+| model-of-the-atom (5.1.1.3) | atoms-elements-compounds (b2, 5.1.1.1) | no | both stay; hers points to it |
+| relative-atomic-mass (5.1.1.6) | relative-formula-mass (b2, 5.3.1.2) | no | both stay; hers points to it |
+| electronic-structure (5.1.1.7) | group-0 (b5, 5.1.2.4) | no | both stay; hers points to Group 0 |
+| group-7 (5.1.2.6) | group-1 (b6, 5.1.2.5), group-0 (b5) | no | both stay |
+| transition-metals (8462 4.1.3.1) | group-1 (b6) | no | both stay |
+| mass-changes-reactions (5.3.1.3) | conservation-of-mass (b3, 5.3.1.1) | no | both stay; linked both ways (b3 already linked this URL) |
+| moles (5.3.2.1) | using-moles-calculations (b2, 5.3.2.3–4) | no | both stay; linked both ways (b2 already linked this URL) |
+| amounts-in-equations (5.3.2.2) | using-moles-calculations (b2), conservation-of-mass (b3) | no | both stay; both already linked this URL |
+| oxidation-reduction (5.4.1.4, with the oxygen definitions of 5.4.1.1 and 5.4.1.3) | reactivity-series (b5, 5.4.1.1), extraction-of-metals (b5, 5.4.1.3) | partly: the oxygen definitions | both stay; hers points to both; the batch 5 pages do not point back (adding it would move non-batch pages: For Mide) |
+| salts-neutralisation (5.4.2.2) | reactions-of-acids (b6, 5.4.2.1), titrations (b2, 8462 4.4.2.5) | no | both stay; titrations already linked this URL |
+| ph-scale (5.4.2.4), strong-weak-acids (5.4.2.5) | reactions-of-acids (b6) | no | both stay |
+| electrolysis-principles (5.4.3.1), electrolysis-molten (5.4.3.2) | extraction-of-metals (b5); the old unported half-equations page (5.4.3.5 HT) | no | both stay |
+
+### Equations (lane ruling)
+
+An Opus examiner listed and checked every chemical equation, ionic equation and half equation on all 16 pages (template,
+logic, quiz, figures, chains, sorts) for atoms, charge and state symbols. All balance except two distractors that
+printed H₂ + O₂ → H₂O and called it hydrogen burning (now 2H₂ + O₂ → 2H₂O on pH scale and salts: B11-PH-H2O2,
+B11-SN-H2O). State symbols: the spec prints H⁺(aq) + OH⁻(aq) → H₂O(l) (5.4.2.4), so it now carries them everywhere
+it is taught (B11-PH-KF-SS, B11-PH-CH-SS, B11-SN-STATE); the spec prints its half equations and ionisation equations
+without them (5.4.3.5), so those stay as she wrote them. The lead bromide cell drew three Pb²⁺ to three Br⁻ (charges
+not balancing); now two to four (B11-EP-IONS).
+
+### Design's flags, ruled
+
+KEEP: 1.1–1.4; 2.1, 2.3, 2.4; 3.1–3.3; 4.1, 4.2; 5.1, 5.2; 6.1–6.3; 7.1–7.4; 8.1–8.3; 9.1, 9.2; 10.1–10.3; 11.2, 11.3;
+12.1, 12.3, 12.4; 13.2–13.4; 14.1–14.3; 15.2, 15.3; 16.1, 16.3, 16.4. CHANGE: 2.2, 5.3, 11.1, 13.1, 15.1, 16.2 (each
+Higher layer was hidden, but its key-note line, command-word card or rung text still reached CF and TF); 12.2 (the
+Triple titration key-note line reached Combined); 3.4 (±0.15 is right for rubidium, but on the silver item it also
+accepted the simple average: B11-RAM-AG).
+
+### Science rulings from the examination (batch 11)
+
+| id | lesson | what changed, and why |
+|---|---|---|
+| B11-PH-CURVE | pH scale | The pH curve rose only to 7.4 with its steep part at pH 4.4, while the page, its labels, a practice key and rung 4 say "steep through 7, then high". Now 1.4 → 7.0 at the midpoint → 12.6. |
+| B11-RAM-21 | relative atomic mass | A wrong option "21" had the reply "That is the simple average of 10 and 11" (21 is the sum). Now 10.5. |
+| B11-RAM-AG | relative atomic mass | Silver 13 : 12 gives 107.96, and the ±0.15 tolerance also accepted 108, the simple average this lesson exists to stop. Now thallium-203/205 in 3 : 7 → 204.4 (the simple average 204 is rejected). |
+| B11-G7-NOCHANGE | group 7 | Every "no reaction" cell showed a colourless swatch; bromine water stays orange and iodine solution brown. The swatch is now the added halogen's colour. |
+| B11-G7-ORANGE | group 7 | Distractor "The solution turns orange" (bromine water + KCl) is defensibly true: the bromine water is orange. Now "turns brown". |
+| B11-MCR-H2 | mass changes | Three hydrogen-loss sums claimed 13 g, 4 g and 2 g of H₂ from containers weighing 500, 200 and 300 g (chemically impossible). Now carbon dioxide from marble chips; every number and answer unchanged. |
+| B11-CM-MENISCUS | chemical measurements | The meniscus close-up painted its curve over with a rectangle (a flat top under "read the bottom of the meniscus"). Now drawn curved. |
+| B11-EP-IONS | electrolysis principles | Lead bromide drawn 3 Pb²⁺ : 3 Br⁻; now 2 : 4. |
+| ROUTE (17) | subatomic, group 7, mass changes, oxidation and reduction, salts, pH scale, electrolysis ×2 | B11-SUB-KEYHT, -G7-KEYHT, -G7-ELECTRONS, -MCR-KEYHT, -OXR-KEYFACT, -OXR-KEYNOTE, -OXR-CMDWRITE, -OXR-ELECDIST, -SN-KEYTRIPLE, -PH-KF-HT, -PH-KN-HT, -PH-BIGQ, -EP-KN-HT, -EM-KN-HT/-R4-P/-R4-PTS/-CMD: Higher (or Triple) content outside its gated section now shows only on its routes (the batch 7 B7-RP-KEYFACT class). |
+| Taught before tested (5) | relative atomic mass, moles, amounts, oxidation and reduction | One sentence each, before the test: isotopes react the same because reactions involve electrons (B11-RAM-ISOCHEM); a mole of water is 3 × 6.02 × 10²³ atoms (B11-MOL-ATOMS); wanted ÷ given coefficient before the ratio pick (B11-AIE-RATIO); "a reaction in which both happen is called a redox reaction" (B11-OXR-REDOX); standard form stated where the pick relies on it (B11-MOL-SFPICK). |
+| CHAIN (14) | 12 lessons | Each chain had a second sensible order that would be marked wrong; linking words force one order (B11-MOA-, -SUB-, -RAM-, -ES-, -G7-CHAIN1/2, -TM-, -MOL-CH1/2, -AIE-CH2, -OXR-ZNCHAIN, -SN-CH2, -SWA-CHAIN1/2). |
+| Clarity (the rest) | all | e.g. "Which model first said this?" (Bohr's model is also mostly empty space); Thomson and Rutherford named on the timeline; "even in an ion" on the atomic-number sort item; "Ar has no unit" in the answer box; 2,8,2,1 fallback options for Mg and Ca; O₂ written 1 × 32 not 2 × 16 (the error the page warns against); Mg + 2HCl read in moles as the spec's key-note line; "usually a gas" (the spec's word, not "always"); 10 mol/dm³ sulfuric acid for "concentrated" (2 mol/dm³ is school dilute); "every molecule" for a strong acid (not "nearly every"); a pupil-visible "The pack's example" and "Verbatim" tab renamed; an encouraging wrong reply on the strong/weak opener ("Please not." removed); 18.5 neutrons as the real misconception herring; spectator-ion reply on NaCl. |
+
+### Checks
+
+- **Gates (builder):** `ks4_parity.py --batch batch-11` 784 PASS 0 FAIL; `ks4_batch_check --batch batch-11` clean (56
+  pages, 27 assets, freeze); zero console errors at 1280 and 360 px; no `/ks4/`, `.dc.html`, `Batch N` or `href="#"`
+  on any page; every href resolves on its route. Diff against main: the 112 batch-11 page files, the new batch-11
+  files, `build_ks4.py` (one tuple entry), `ks4_batch_rulings.py` and `knowledge_points/ks4.json`. The inline
+  `<sc-if>` inside a sentence (first used here) was proved on the built pages: present on CH TH, absent on CF TF,
+  no broken text around it.
+- **Independent pupil walk (the same Opus auditor)**, 390 px, light theme, one headless Chrome, all 56 page routes,
+  224 loads, everything pressed.
+  - Clean on all 56 from the first pass: no console errors, dialogs, sideways scroll, stray tokens or `/ks4/` text;
+    no broken link and no link to a page the route lacks; five practice questions and ladder 2·2·2·1 everywhere;
+    every rail item ticks; all 32 chains force one order; real subscripts and superscripts throughout, readable
+    stacked nuclear symbols, drawn arrows (including ⇌), no lost digits or charges; H⁺(aq) + OH⁻(aq) → H₂O(l) with its
+    state symbols on every route; every figure the examination touched holds (pH curve shape, 2 Pb²⁺ : 4 Br⁻, curved
+    meniscus, halogen-coloured "no reaction" swatches, the Mg/Ca shell options); Higher and Triple layering right
+    apart from the items below; every calculation correct, right answers accepted in sensible forms and the modelled
+    mistakes rejected.
+  - Fixed after the first pass (`B11W-*`): labels clipped or overrunning (relative atomic mass, subatomic scale,
+    transition-metal bench, mass-change readouts, apparatus captions, cathode/anode labels cut by the wires); the pH
+    curve's two labels struck through by the new curve, and a "pH" axis title added; a missing space after a
+    superscript ("2e⁻loses", "Cl⁻strong", "H⁺weak") on three Higher pages; two tabs and a heading carrying authoring
+    words ("Verbatim (bracket corrected)", "Worked (verbatim)"); a doubled "Fair guess."; Higher clauses still on CF and
+    TF in two big questions, two command cards and a closing note; "±0.10" rejected on a calculation rung; "How many
+    electrons?" asked twice; two replies repeating the bridge after them; practice steps lettered A–E with options
+    lettered A–E; a group 7 chain that accepted only one of two sensible orders; "10³" rejected where "1000" was
+    wanted (the rungs now ask for a whole number); hyphens for minus signs on the boiling-point chart.
+  - Kept: the ion builder draws every electron (it is the teaching figure); nuclear symbols built in script sit side
+    by side, not stacked (readable); "Nₐ" in script text (Unicode has no subscript capital A); "n = m ÷ Ar" in the
+    mass-changes CFIFA (right for an element); the "(+ 5.4.x.x Higher)" spec reference in four eyebrows; old verbatim
+    wording in replies; prev/next by the live order (group 7 CF CH and transition metals TF TH have no Next).
+
+- **Re-walk after the fixes** (same auditor, all 56 page-routes again): 17 of the 18 fixes confirmed in their states
+  (D10: "0.10", "± 0.10", "±0.10", "+0.10", "0.1" accepted, "0.2" and "±0.20" rejected; D13 key 2, 3, 1, 4, 5 with each
+  distractor still matching its reply; the bars drawn at the true 15× and 8×), and a regression sweep of 56 of 56: no
+  console errors, dialogs, sideways scroll or stray tokens; no broken link or link to a page the route lacks; 5/5 after
+  retry; ladder 2·2·2·1; 32 of 32 chains one order only; every rail item ticks, including the re-driven CFIFA, Steps and
+  triangles on all 18 calculation page-routes.
+  - Still to fix then: "atomic number" still clipped (D1, labels moved further); three figure faults the first pass had
+    missed (an arrow through "about 1 × 10⁻¹⁰ m"; the "−" of the supply hidden on the wire in both electrolysis cells;
+    the wires through "cathode (−)" and "anode (+)" on electrolysis principles, as D16 had been on the molten lesson).
+  - **A lead's error, caught by the re-walk.** The group 7 chain was re-ruled by the lead so its three links run
+    reason → reactivity → displacement and only one order reads (confirmed: the other five orders are rejected and
+    none reads sensibly). In the same pass the lead replaced what it took for a true decoy card, "Reactivity falls down
+    the group.", with a false statement; but each decoy is a pair (card, note), and that string was the true NOTE shown
+    when a pupil places the decoy "Bromine is more reactive than chlorine." The pupil would have been told something
+    false. The ruling was removed, so Design's note stands; nothing shipped with it.
+
+- **Targeted re-checks** (all routes, 390 px): D1 and the three missed figure faults all pass, with Design's true
+  decoy note restored. Re-check 3 found one more (the product labels on the molten-electrolysis crucible touched its
+  walls, then their subscripts sat on its floor); moved inward and up (`B11W-EM-PRODUCTS`), clear of walls, floor and
+  electrodes by the auditor's measurements. Console clean on every re-checked page.
+- **Knowledge points:** 979 new question ids tagged by the top-up (16 new points, 0 untagged), and the one item the
+  walk fixes changed (salts practice Q4) re-placed; backend `knowledge-points.json` re-exported and pushed before the
+  site.
+
+---
+
+## For Mide (nothing here blocks; your call when convenient)
+
+1. **Arctic fox (your ruling 4.3).** The pack gives no functional adaptation that is true of an Arctic fox, so the
+   fox's fourth feature is now a structural one the pack supports (thick fur on the soles of its paws); the
+   functional type is still classified on the same activity through the fennec fox's concentrated urine. If you would
+   rather the fox keep a functional feature, the one Design wrote (reduced blood flow to the paws) is true biology but
+   is not in the pack: say so and it goes back.
+2. **Old-bank options that give themselves away** (batch 11, about 14 pages; the same class is in earlier batches):
+   in Design's verbatim practice items the right option often carries its working and distractors name their own
+   mistake, e.g. moles "0.5 g — confusing moles with grams". Stripping the "— …" tails across the bank is a one-rule
+   change per page if you want it.
+3. **Ks4Guess never shuffles** its two opener options, and the right one is listed first on every page (shared block,
+   all batches since 4).
+4. **Oxidation and reduction ↔ batch 5.** The new page points to Reactivity series and Extraction of metals; those
+   batch 5 pages do not point back. Adding the link would change two pages outside these batches.
+5. **Batch 9 links to restore** when batch 9 goes live: the six listed under batch 10 ("Links to batch 9").
+6. As after earlier batches: small figure text (down to 6 px at 390 px) and old off-spec words in verbatim replies
+   (keystone, niche, aposematism, parasites; capitals for emphasis).

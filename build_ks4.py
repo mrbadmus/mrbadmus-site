@@ -1535,7 +1535,7 @@ def compile_block(page, name, design_dir=None):
         logic = ks4_rulings.apply_r_end_connects_filter(logic)
         # ⊕ B7-END-EMPTY-CONNECTS (ks4_batch_rulings.py) — batch 7's OWN copy of the block only: hide
         # the "Connects to" section when the route filter leaves it empty. Batches 2-6 are untouched.
-        if design_dir and design_dir.replace(os.sep, "/").rstrip("/").endswith(("design-reference/batch-7/lessons", "design-reference/batch-8/lessons", "design-reference/batch-10/lessons")):
+        if design_dir and design_dir.replace(os.sep, "/").rstrip("/").endswith(("design-reference/batch-7/lessons", "design-reference/batch-8/lessons", "design-reference/batch-10/lessons", "design-reference/batch-11/lessons")):
             tpl, logic = ks4_batch_rulings.apply_end_hide_empty_connects(tpl, logic)
     if name in _BLOCK_R2:
         logic = _BLOCK_R2[name](logic)
@@ -1548,6 +1548,9 @@ def compile_block(page, name, design_dir=None):
     if name == "Ks4Practice":
         # ⊕ B-PRACTICE-PARSE (ks4_batch_rulings.py) — R16 for the new block.
         logic = ks4_batch_rulings.apply_practice_parse(logic)
+        # ⊕ B11W-PM (ks4_batch_rulings.py) — batch 11's OWN copy of the block only: "±0.10" is read as 0.10.
+        if design_dir and design_dir.replace(os.sep, "/").rstrip("/").endswith("design-reference/batch-11/lessons"):
+            logic = ks4_batch_rulings.apply_practice_pm(logic)
     if name == "Ks4Sort":
         # ⊕ R17 (ks4_rulings.py) — report completion so the rail stop ticks.
         logic = ks4_rulings.apply_r17_sort_report(logic)
