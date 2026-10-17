@@ -51,12 +51,23 @@
 <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/shared/teacher-ds.css?v=4c461633">
-<link rel="stylesheet" href="/shared/seating.css?v=1ca5298c">
+<link rel="stylesheet" href="/shared/seating.css?v=e68c83ea">
+<!-- ⊕ 17 Oct 2026 — the phone bar the other hand-written teacher pages have
+     (shared/teacher-topbar.css/js): at <=560px the bar is ONE row — the brand
+     and a menu button — and My classes, Today, Switch account, Sign out and
+     the theme control are reached through the menu. Above 560px nothing
+     changes. AFTER seating.css so its one-row rules win. -->
+<link rel="stylesheet" href="/shared/teacher-topbar.css?v=e4a3d0a7">
+<script src="/shared/teacher-topbar.js?v=70c076e1" defer></script>
 </head>
 <body class="sp-body">
 
-<nav class="sp-nav">
+<nav class="sp-nav" data-port-region="topbar">
   <!--mrb:brand--><a class="mrb-brand" href="/" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
+  <!-- ⊕ 17 Oct 2026 — the phone menu (shared/teacher-topbar.js). Invisible
+       above 560px; kept before the right-hand group so Sign out stays the
+       bar's last button. -->
+  <button type="button" class="tb-menu" aria-label="Menu"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><path d="M3 5.5h14M3 10h14M3 14.5h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
   <div class="sp-nav__right">
     <a class="sp-nav__link" href="/teacher/classes.html">My classes</a>
     <a class="sp-nav__link" href="/teacher/today.html">Today</a>
