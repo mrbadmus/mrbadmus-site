@@ -640,6 +640,41 @@ def _r18_check(slug, port_text_norm):
     return None
 
 
+# ⊕ R20 — RULED NORMALISATION (fix 2, Oct 2026, Mide): a practice option shows
+# its label, never its reason (option_labels.py; ks4_rulings.apply_r20_option_labels
+# rewrites shared/ks4-lib.js item()). Design's reference page runs her own,
+# unmodified ks4-lib.js, so its practice options still read "label — reason".
+# The reference side is therefore normalised through option_labels' SAME rule,
+# and ONLY option-label text is touched: every option text in Design's own
+# ks4-source.js quiz for this lesson that the rule would shorten is replaced by
+# its shortened label. Nothing else on either side is altered.
+_R20_CACHE = {}
+
+
+def _r20_option_map(slug):
+    if slug not in _R20_CACHE:
+        import option_labels
+        rec = build_ks4.load_design_source_js().get(
+            ks4_rulings.SLUG_MISMATCHES.get(slug, slug), {})
+        m = {}
+        for items in (rec.get("quiz") or {}).values():
+            for q in items:
+                pl = option_labels.plan(q["q"], q["opts"], q.get("wrong_explanations"))
+                if pl["strip"]:
+                    for (t, _ok), lab in zip(q["opts"], pl["labels"]):
+                        if lab != t:
+                            m[normalize_ws(t)] = normalize_ws(lab)
+        _R20_CACHE[slug] = m
+    return _R20_CACHE[slug]
+
+
+def apply_r20_option_labels(slug, ref_text_norm):
+    t = ref_text_norm
+    for full, lab in sorted(_r20_option_map(slug).items(), key=lambda kv: -len(kv[0])):
+        t = t.replace(full, lab)
+    return t
+
+
 def compare_section_text(slug, route, index, sec, ref_text_norm, port_text_norm):
     if slug in R18_SLUGS and sec.get("id") == "s-hook":
         return _r18_check(slug, port_text_norm)
@@ -658,6 +693,7 @@ def compare_section_text(slug, route, index, sec, ref_text_norm, port_text_norm)
                 expected[:160], got[:160])
         return None
     ref_norm = apply_text_whitelist(slug, route, index, sec, ref_text_norm)
+    ref_norm = apply_r20_option_labels(slug, ref_norm)  # ⊕ R20 ruled normalisation
     port_norm = port_text_norm
     if index == 0:
         # ⊕ R12 — the port's replacement chip/switcher text (symmetric to

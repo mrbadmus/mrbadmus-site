@@ -7161,3 +7161,37 @@ Commit-before-you-reveal gates, predictions and instrument choices (`ks3-option`
 
 Total: 290 unscored option labels on 97 KS3 pages.
 
+
+## 8. Parked follow-up (out of scope, Mide 17 Oct 2026): colon tails
+
+Authored `Q()` items on the Design batch pages put the reason or working after a COLON instead of an em-dash (`100 mol: 2.7 kg = 2700 g, and 2700 / 27 = 100`). Same giveaway, outside the ruling, NOT changed. Questions whose correct option carries a colon tail:
+
+- /combined/foundation/biology/ecology/deforestation.html - **A forest is cleared to grow a biofuel crop. Give one benefit and one cost.** -> correct: `Benefit: fuel to replace some fossil fuel. Cost: carbon dioxide released and habitat lost`
+- /combined/foundation/biology/ecology/food-chains-webs.html - **A pupil writes the chain: fox, rabbit, grass, with arrows pointing from fox to rabbit to grass. What is wrong?** -> correct: `The arrows point the wrong way: they should point from grass to rabbit to fox`
+- /combined/foundation/biology/ecology/food-chains-webs.html - **In the web, shrews are eaten by owls and foxes, and shrews eat grasshoppers. If the shrews die out, what happens to the owls?** -> correct: `They fall: they have lost a food source`
+- /combined/foundation/biology/homeostasis/blood-glucose-diabetes.html - **What is the key difference between Type 1 and Type 2 diabetes?** -> correct: `Type 1: the pancreas fails to produce sufficient insulin. Type 2: the body cells no longer respond to the insulin produced by the pancreas.`
+- /combined/foundation/biology/homeostasis/blood-glucose-diabetes.html - **Made-up data: after a glucose drink, Person A’s blood glucose rises to 140 and is back to normal in 2 hours. Person B’s rises to 260 and is still high after 3 hours. What does this suggest?** -> correct: `Person B has diabetes: not enough insulin effect to bring the glucose down`
+- /combined/foundation/biology/homeostasis/endocrine-system.html - **A diagram shows: thyroxine level falls, the pituitary releases more TSH, the thyroid releases more thyroxine. What happens next?** -> correct: `The thyroxine level rises back to normal: negative feedback`
+- /combined/foundation/biology/inheritance/meiosis.html - **Where in the human body does meiosis happen?** -> correct: `In the reproductive organs: testes and ovaries`
+- /combined/foundation/chemistry/atomic-structure/electronic-structure.html - **Helium is 2. Why is it in Group 0 rather than Group 2?** -> correct: `Its outer shell is full: the first shell holds only 2`
+- /combined/foundation/chemistry/atomic-structure/group-7.html - **Chlorine reacts with hydrogen to form hydrogen chloride. What type of compound is hydrogen chloride?** -> correct: `A covalent molecular compound: a halogen with a non-metal`
+- /combined/foundation/chemistry/chemical-changes/oxidation-reduction.html - **Iron(III) oxide is heated with carbon: 2Fe₂O₃ + 3C → 4Fe + 3CO₂. What happens to the iron(III) oxide?** -> correct: `It is reduced: it loses oxygen`
+- /combined/foundation/chemistry/chemical-changes/oxidation-reduction.html - **Magnesium burns in air: 2Mg + O₂ → 2MgO. Which word describes what happens to the magnesium?** -> correct: `Oxidised: it gains oxygen`
+- /combined/foundation/chemistry/chemical-changes/oxidation-reduction.html - **Zinc is added to copper sulfate solution: Zn + Cu²⁺ → Zn²⁺ + Cu. Which species is oxidised?** -> correct: `Zinc: it loses two electrons to form Zn²⁺`
+- /combined/foundation/chemistry/chemical-changes/salts-neutralisation.html - **Why is copper oxide added to the acid until some is left undissolved?** -> correct: `So that all the acid reacts: none is left to contaminate the salt`
+- /combined/foundation/chemistry/quantitative/mass-changes-reactions.html - **The same reaction is run in a sealed flask. What happens to the balance reading?** -> correct: `It stays the same: the gas is made but cannot leave`
+- /combined/foundation/chemistry/quantitative/mass-changes-reactions.html - **0.2 mol of magnesium burns: 2Mg + O₂ → 2MgO. How many moles of oxygen molecules react?** -> correct: `0.1 mol: the ratio Mg : O₂ is 2 : 1`
+- /combined/higher/chemistry/chemical-changes/strong-weak-acids.html - **Solution A has pH 1 and solution B has pH 4. How many times greater is the hydrogen ion concentration in A?** -> correct: `1000 times: three units, 10³`
+- /combined/higher/chemistry/quantitative/amounts-in-equations.html - **Calculate the mass of magnesium oxide formed when 4.8 g of magnesium burns completely. 2Mg + O₂ → 2MgO. Ar: Mg = 24, O = 16.** -> correct: `8.0 g: n(Mg) = 0.2 mol; ratio 2 : 2 gives 0.2 mol MgO; 0.2 × 40 = 8.0 g`
+- /combined/higher/chemistry/quantitative/amounts-in-equations.html - **Mg + 2HCl → MgCl₂ + H₂. What is the Mr of hydrogen gas used in Step 3?** -> correct: `2: hydrogen gas is H₂`
+- /combined/higher/chemistry/quantitative/moles.html - **How many moles of aluminium atoms are in 2.7 kg of aluminium? Ar(Al) = 27.** -> correct: `100 mol: 2.7 kg = 2700 g, and 2700 ÷ 27 = 100`
+- /combined/higher/chemistry/quantitative/moles.html - **How many molecules are there in 36 g of water? Mr(H₂O) = 18.** -> correct: `1.204 × 10²⁴: 36 ÷ 18 = 2 mol, then 2 × 6.02 × 10²³`
+- /combined/higher/chemistry/quantitative/moles.html - **One mole of water, H₂O, contains 6.02 × 10²³ molecules. How many atoms does it contain?** -> correct: `3 × 6.02 × 10²³ = 1.806 × 10²⁴: each molecule has three atoms`
+- /triple/foundation/biology/ecology/role-of-biotechnology.html - **What is the intended benefit of golden rice?** -> correct: `Improved nutritional value: it makes beta-carotene, a source of vitamin A`
+- /triple/foundation/biology/ecology/transfer-of-biomass.html - **Producers have a biomass of 5000 g/m². Primary consumers have a biomass of 500 g/m². What is the efficiency of transfer?** -> correct: `10%: (500 ÷ 5000) × 100`
+- /triple/foundation/biology/ecology/transfer-of-biomass.html - **Grain 10 000 kg, cattle fed on it 1000 kg, people eating the beef 100 kg. What percentage of the grain’s biomass reaches the people?** -> correct: `1%: 10% of 10%`
+- /triple/foundation/chemistry/atomic-structure/transition-metals.html - **Copper(II) sulfate solution is blue and sodium sulfate solution is colourless. What does this show about copper?** -> correct: `Copper is a transition metal: transition-metal compounds are often coloured`
+- /triple/higher/biology/ecology/environmental-change.html - **Information: oak trees now come into leaf about 10 days earlier than 40 years ago. Caterpillars that eat the new leaves hatch earlier too. A bird that feeds its chicks on these caterpillars has not changed its nesting time. Suggest the effect on the birds.** -> correct: `Fewer caterpillars when the chicks hatch, so fewer chicks survive: a timing mismatch`
+
+Total: 26 questions.
+

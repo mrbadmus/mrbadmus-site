@@ -328,6 +328,31 @@ def main():
     body.append("\nTotal: %d unscored option labels on %d KS3 pages.\n" % (n_act, n_pg))
     SECTION7 = (n_act, n_pg)
 
+    # ---- parked follow-up: colon tails on authored Q() items ---------------
+    body.append("\n## 8. Parked follow-up (out of scope, Mide 17 Oct 2026): colon tails\n")
+    body.append("Authored `Q()` items on the Design batch pages put the reason or working after a COLON "
+                "instead of an em-dash (`100 mol: 2.7 kg = 2700 g, and 2700 / 27 = 100`). Same giveaway, "
+                "outside the ruling, NOT changed. Questions whose correct option carries a colon tail:\n")
+    allq = [f for f in cache if "const Q = (" in cache[f]]
+    if allq:
+        pc = subprocess.run(["node", "-e", NODE.replace("if (expr.indexOf(' \\u2014 ') < 0) continue;", "")],
+                            input=json.dumps(sorted(allq)), capture_output=True, text=True)
+        seen_c = set()
+        n_c = 0
+        if pc.returncode == 0:
+            for f, its in sorted(json.loads(pc.stdout).items()):
+                if isinstance(its, dict):
+                    continue
+                for it in its:
+                    if "opts" not in it or it["q"] in seen_c:
+                        continue
+                    right = [o[0] for o in it["opts"] if o[1]]
+                    if right and re.search(r"\S: \S", right[0]) and OL.SEP not in right[0]:
+                        seen_c.add(it["q"])
+                        n_c += 1
+                        body.append("- %s - **%s** -> correct: `%s`" % (site_url(f), it["q"].replace("\n", " "), right[0]))
+        body.append("\nTotal: %d questions.\n" % n_c)
+
     # ---- assemble --------------------------------------------------------
     head = []
     head.append("# Loose ends, fix 2 - the distractor sweep\n")
