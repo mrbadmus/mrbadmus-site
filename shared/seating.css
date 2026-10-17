@@ -347,7 +347,8 @@ nav.sp-nav {
   .sp-side { position: static; max-height: none; }
 }
 @media (max-width: 460px) {
-  body.sp-body { padding-top: 60px; font-size: 14.5px; }
+  /* 62px: the phone bar is shared/teacher-topbar.css's one 62px row (17 Oct 2026). */
+  body.sp-body { padding-top: 62px; font-size: 14.5px; }
   /* The nav is three links and a wordmark. At 390 it used to wrap "My classes"
      and "Sign out" onto two lines each, which reads as a broken header rather
      than a tight one. Tighten the gaps and let the row scroll instead. */
