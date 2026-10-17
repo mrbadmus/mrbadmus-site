@@ -363,7 +363,7 @@ accepted the simple average: B11-RAM-AG).
   decoy note restored. Re-check 3 found one more (the product labels on the molten-electrolysis crucible touched its
   walls, then their subscripts sat on its floor); moved inward and up (`B11W-EM-PRODUCTS`), clear of walls, floor and
   electrodes by the auditor's measurements. Console clean on every re-checked page.
-- **Knowledge points:** 979 new question ids tagged by the top-up (16 new points, 0 untagged), and the one item the
+- **Knowledge points:** 979 new question ids tagged by the top-up (15 new points, 0 untagged), and the one item the
   walk fixes changed (salts practice Q4) re-placed; backend `knowledge-points.json` re-exported and pushed before the
   site.
 
