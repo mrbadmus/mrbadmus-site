@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moles · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Quantitative chemistry" title="Moles" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 5.3.2.1 · Higher only</p>
+        <h1>Moles</h1>
+        <p class="ks3-bigq">A mole is a count: 6.02 × 10<sup>23</sup> particles. Its mass in grams is the relative formula mass. Two equations, each taught on its own, then chained.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Higher only</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Calculates</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="2"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Two dozens." scene="One bag holds a dozen eggs. Another holds a dozen melons. Same number in each." question="which bag is heavier?" options="{{ hookOptions }}" bridge="Same count, different mass. A mole is chemistry’s dozen: the same number of particles every time, with a mass that depends on what the particles are." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-mole" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The mole</p>
+        <h2 style="margin: 6px 0 0;">One number, any substance.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Chemical amounts are measured in moles (mol). The mass of one mole of a substance in grams is numerically equal to its relative formula mass. One mole of any substance contains the same number of particles: 6.02 × 10<sup>23</sup>, the Avogadro constant, N<sub>A</sub>. The particles can be atoms, molecules, ions, electrons or formula units.</p>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ pFig }}</div></div>
+        <div style="margin-top: 14px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Standard form, before you need it</p>
+          <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">6.02 × 10<sup>23</sup> means 6.02 with the decimal point moved 23 places to the right: 602 followed by 21 zeros. To multiply by a number, multiply the front part: 2 × 6.02 × 10<sup>23</sup> = 12.04 × 10<sup>23</sup> = 1.204 × 10<sup>24</sup>. To divide two numbers with the same power of ten, divide the front parts: 3.01 × 10<sup>23</sup> ÷ 6.02 × 10<sup>23</sup> = 0.5.</p>
+        </div>
+        <p style="margin: 14px 0 0; max-width: 62ch;">What is 0.1 × 6.02 × 10<sup>23</sup>?</p>
+        <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ sf.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+        <p aria-live="polite" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ sf.note }}</p>
+      </section>
+
+      <section id="s-eq1" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equation 1 · moles from mass</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Mass in grams, always. M<sub>r</sub> has no unit (use A<sub>r</sub> for an element). Tap the quantity you want to find.</p>
+        <div style="margin-top: 14px; max-width: 520px;">
+          <dc-import name="Ks4Triangle" eq="{{ eqN }}" variant="full" hint-size="100%,420px"></dc-import>
+        </div>
+      </section>
+
+      <section id="s-calc1" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cf1Examples }}" questions="{{ cf1Questions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-eq2" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none; margin-top: 28px;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equation 2 · particles from moles</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">N<sub>A</sub> is a fixed number, 6.02 × 10<sup>23</sup> per mole, so it cannot be the thing you find. Tap the other two.</p>
+        <div style="margin-top: 14px; max-width: 520px;">
+          <dc-import name="Ks4Triangle" eq="{{ eqP }}" variant="full" hint-size="100%,420px"></dc-import>
+        </div>
+      </section>
+
+      <section id="s-calc2" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cf2Examples }}" questions="{{ cf2Questions }}" on-open="{{ onCalc2 }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-steps" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Steps" mode="worked" id="mol-w1" head="What mass of sodium hydroxide contains 3.01 × 10²³ formula units? Mr(NaOH) = 40." lead="Mass from a particle count: Step 1 particles to moles, Step 2 moles to mass." steps="{{ w1Steps }}" next="Now the other way round." hint-size="100%,900px"></dc-import>
+          <div style="margin-top: 22px;">
+            <dc-import name="Ks4Steps" mode="worked" id="mol-w2" head="How many molecules are there in 9 g of water? Mr(H₂O) = 18." lead="Particles from a mass: Step 1 mass to moles, Step 2 moles to particles." steps="{{ w2Steps }}" next="Now one of each kind yourself." hint-size="100%,900px"></dc-import>
+          </div>
+          <div style="margin-top: 22px;">
+            <dc-import name="Ks4Steps" mode="attempt" id="mol-a" head="How many molecules are there in 4.4 g of carbon dioxide? Mr(CO₂) = 44." lead="Write each line, then check your working." steps="{{ aSteps }}" close="Mass to moles first; multiplying 4.4 by the Avogadro constant skips the mole." on-done="{{ onSteps }}" hint-size="100%,900px"></dc-import>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · same number, same mass?</p></div>
+        <p class="ks3-mis-quote">&ldquo;A mole of anything weighs the same.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="One mole of water (Mr 18) and one mole of carbon dioxide (Mr 44). What do they have in common?" options="{{ thinkOptions }}" reveal="The same number of molecules: 6.02 × 10²³. The masses differ: 18 g and 44 g, because each kind of molecule has its own mass. The dozen melons again." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Which line first?" prompt="For each question, which is the first thing you write?" bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Mass in kg: convert to g first. Mass in g and a count wanted, or a count given and a mass wanted: n = m ÷ Mr or n = particles ÷ Nₐ first. Moles given: straight to the equation you need." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Also on the specification, taught elsewhere</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Percentage by mass of an element in a compound is Foundation content and lives in <a href="{{ rfmHref }}">Relative formula mass</a>. Using moles to balance equations and to find a limiting reactant is in <a href="{{ umcHref }}">Using moles in calculations</a>. Reacting masses are next: <a href="{{ aieHref }}">Amounts of substances in equations</a>.</p>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">n = m ÷ M<sub>r</sub>, with m in grams. Particles = n × 6.02 × 10<sup>23</sup>. One mole of any substance holds the same number of particles; its mass in grams is its M<sub>r</sub>.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="moles" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Moles" spec="AQA 5.3.2.1 · Higher only" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Putting kilograms straight into n = m ÷ Mr?" legal="Relative atomic masses are the AQA periodic-table values rounded as given in each question." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Higher&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+
+const SLUG = 'moles';
+const OK = ['Combined Higher', 'Triple Higher'];
+const FILE = {"model-of-the-atom":"ks4-chemistry-5.1.1.3-model-of-the-atom.dc.html","subatomic-particles":"ks4-chemistry-5.1.1.4-subatomic-particles.dc.html","relative-atomic-mass":"ks4-chemistry-5.1.1.6-relative-atomic-mass.dc.html","electronic-structure":"ks4-chemistry-5.1.1.7-electronic-structure.dc.html","group-7":"ks4-chemistry-5.1.2.6-group-7.dc.html","transition-metals":"ks4-chemistry-4.1.3.1-transition-metals.dc.html","mass-changes-reactions":"ks4-chemistry-5.3.1.3-mass-changes-reactions.dc.html","chemical-measurements":"ks4-chemistry-5.3.1.4-chemical-measurements.dc.html","moles":"ks4-chemistry-5.3.2.1-moles.dc.html","amounts-in-equations":"ks4-chemistry-5.3.2.2-amounts-in-equations.dc.html","oxidation-reduction":"ks4-chemistry-5.4.1.4-oxidation-reduction.dc.html","salts-neutralisation":"ks4-chemistry-5.4.2.2-salts-neutralisation.dc.html","ph-scale":"ks4-chemistry-5.4.2.4-ph-scale.dc.html","strong-weak-acids":"ks4-chemistry-5.4.2.5-strong-weak-acids.dc.html","electrolysis-principles":"ks4-chemistry-5.4.3.1-electrolysis-principles.dc.html","electrolysis-molten":"ks4-chemistry-5.4.3.2-electrolysis-molten.dc.html","periodic-table":"../../KS4 Batch 4/ks4-chemistry-5.1.2.1-periodic-table.dc.html","group-0":"../../KS4 Batch 5/ks4-chemistry-5.1.2.4-group-0.dc.html","metals-non-metals":"../../KS4 Batch 5/ks4-chemistry-5.1.2.3-metals-non-metals.dc.html","reactivity-series":"../../KS4 Batch 5/ks4-chemistry-5.4.1.1-reactivity-series.dc.html","extraction-of-metals":"../../KS4 Batch 5/ks4-chemistry-5.4.1.3-extraction-of-metals.dc.html","structure-of-atom":"../../KS4 Batch 5/ks4-physics-6.4.1.1-structure-of-atom.dc.html","development-atomic-model":"../../KS4 Batch 5/ks4-physics-6.4.1.3-development-atomic-model.dc.html","atoms-elements-compounds":"/ks4/atoms-elements-compounds","relative-formula-mass":"/ks4/relative-formula-mass","using-moles-calculations":"/ks4/using-moles-calculations","conservation-of-mass":"/ks4/conservation-of-mass","titrations":"/ks4/titrations","percentage-yield":"/ks4/percentage-yield","atom-economy":"/ks4/atom-economy"};
+const ORDER = [["model-of-the-atom","Development of the model of the atom",0],["subatomic-particles","Subatomic particles",0],["relative-atomic-mass","Relative atomic mass, atomic number and isotopes",0],["electronic-structure","Electronic structure",0],["group-7","Group 7: the halogens",0],["transition-metals","Properties of transition metals",1],["mass-changes-reactions","Mass changes in reactions",0],["chemical-measurements","Chemical measurements",0],["moles","Moles",3],["amounts-in-equations","Amounts of substances in equations",3],["oxidation-reduction","Oxidation and reduction",0],["salts-neutralisation","Making salts and neutralisation",0],["ph-scale","The pH scale and neutralisation",0],["strong-weak-acids","Strong and weak acids",3],["electrolysis-principles","The process of electrolysis",0],["electrolysis-molten","Electrolysis of molten ionic compounds",0]];
+const LV4 = (a, b) => [{ label: 'Level 2 · 3–4', text: a, max: 4 }, { label: 'Level 1 · 1–2', text: b, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const CALC = (prompt, convOptions, convAnswer, answer, unit, units, right, wrong, model, tol) => ({ kind: 'calc', command: 'Calculate', marks: 2, prompt, convOptions, convAnswer, answer, tol: tol == null ? 0.05 : tol, unit, units, right, wrong, model });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const V = (q, opts, we) => ({ q, opts, wrong_explanations: we });
+const LNK = (k, label) => ({ href: FILE[k], label });
+const TX = (x, y, t, size, o) => window.KS4D.T(x, y, t, size, Object.assign({ fill: '#1A1A1A' }, o || {}));
+const TXN = (x, y, t, size, o) => TX(x, y, t, size, Object.assign({ weight: 'normal' }, o || {}));
+const BOX = (x, y, w, h, fill, stroke, sw, rx) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + (rx == null ? 12 : rx) + '" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const INK = '#1A1A1A', TAN = '#F2C9AE', LEAF = '#A9D9BE', RED = '#C8102E', TEAL = '#2E8B7F', MUTED = '#8A8378', PAPER = '#FFFDF8', SKY = '#DDEEF6';
+const CFL = (c, f, i, ft, a, cn) => [{ letter: 'C', label: 'Convert', line: c, note: cn || '' }, { letter: 'F', label: 'Formula', line: f }, { letter: 'I', label: 'Insert', line: i }, { letter: 'F', label: 'Fine-tune', line: ft }, { letter: 'A', label: 'Answer', line: a }];
+const CFQ = (c, f, i, ft, a, pc) => [{ letter: 'C', label: 'Convert', placeholder: pc || 'anything to convert?', line: c }, { letter: 'F', label: 'Formula', placeholder: 'written out', line: f }, { letter: 'I', label: 'Insert', placeholder: 'numbers in', line: i }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: ft }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: a }];
+const EQ_N = { name: 'Moles from mass', written: 'n = m ÷ Mr', source: 'none', top: { s: 'm', name: 'mass', unit: 'g' }, bottom: [{ s: 'n', name: 'amount of substance', unit: 'mol' }, { s: 'Mr', name: 'relative formula mass (Ar for an element)', unit: 'no unit' }] };
+const EQ_P = { name: 'Particles from moles', written: 'particles = n × Nₐ', source: 'none', top: { s: 'N', name: 'number of particles', unit: 'no unit' }, bottom: [{ s: 'n', name: 'amount of substance', unit: 'mol' }, { s: 'Nₐ', name: 'Avogadro constant, 6.02 × 10²³', unit: 'per mol', fixed: true }] };
+const NA = '6.02 × 10²³';
+
+const RAIL = [{ id: 's-hook', label: 'Two dozens', short: 'HOOK' }, { id: 's-mole', label: 'The mole', short: 'MOLE' }, { id: 's-eq1', label: 'n = m ÷ Mr', short: 'EQ 1' }, { id: 's-calc1', label: 'CFIFA · mass', short: 'CFIFA 1' }, { id: 's-eq2', label: 'particles = n × Nₐ', short: 'EQ 2' }, { id: 's-calc2', label: 'CFIFA · particles', short: 'CFIFA 2' }, { id: 's-steps', label: 'Step 1, Step 2', short: 'STEPS' }, { id: 's-think', label: 'Think again', short: 'THINK' }, { id: 's-sort', label: 'Which line first?', short: 'SORT' }, { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }];
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false, calc: 0, calc2: 0, steps: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  pick(key, q) {
+    const v = this.state[key], has = typeof v === 'number';
+    return { btns: q.opts.map((o, i) => ({ label: o, pressed: v === i, style: this.seg(v === i), onClick: () => this.setState({ [key]: i, [key + 'Ok']: !!this.state[key + 'Ok'] || i === q.right }) })),
+      note: !has ? (q.ask || 'Pick one.') : v === q.right ? q.yes : (q.no[v] || ''), done: !!this.state[key + 'Ok'], v: has ? v : null };
+  }
+  flags() {
+    const K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    return { R, route, rk, H: rk === 'CH' || rk === 'TH', T: rk === 'TF' || rk === 'TH', TH: rk === 'TH' };
+  }
+  common(done, F, ready) {
+    const s = this.state, K = window.KS4;
+    const av = ORDER.filter((o) => !o[2] || (o[2] === 1 && F.T) || (o[2] === 2 && F.TH) || (o[2] === 3 && F.H)), i = av.findIndex((o) => o[0] === SLUG);
+    return { route: F.route, rk: F.rk, onRoute: F.R.onRoute || (() => {}), isHigher: F.H, notHigher: !F.H, isTriple: F.T, notTriple: !F.T, isTH: F.TH, notTH: !F.TH,
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready,
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (x) => this.setState({ hook: x }), onThink: (x) => this.setState({ think: x }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }),
+      onCalc: (k) => this.setState((st) => ({ calc: Math.max(st.calc || 0, k || 1) })), onCalc2: (k) => this.setState((st) => ({ calc2: Math.max(st.calc2 || 0, k || 1) })), onSteps: () => this.setState({ steps: true }),
+      endPrev: i > 0 ? LNK(av[i - 1][0], av[i - 1][1]) : null,
+      endNext: i >= 0 && i < av.length - 1 ? LNK(av[i + 1][0], av[i + 1][1]) : null };
+  }
+
+  pFig() {
+    const D = window.KS4D; let b = '';
+    [['carbon, C', 'Ar 12', '12 g', 24, '#5B5B5B', 'atoms'], ['water, H₂O', 'Mr 18', '18 g', 32, SKY, 'molecules'], ['sodium chloride, NaCl', 'Mr 58.5', '58.5 g', 52, PAPER, 'formula units']].forEach((p, i) => {
+      const x = 130 + i * 230; b += BOX(x - 80, 230, 160, 28, PAPER, INK, 2.5, 8) + TX(x, 250, p[2], 16, { fill: RED });
+      b += '<path d="M' + (x - p[3]) + ' 228 q' + p[3] + ' ' + (-p[3] * 2.2) + ' ' + (p[3] * 2) + ' 0 z" fill="' + p[4] + '" stroke="' + INK + '" stroke-width="2"/>';
+      b += TX(x, 60, p[0], 15) + TXN(x, 80, p[1], 13, { fill: MUTED }) + TX(x, 290, '1 mol = ' + NA + ' ' + p[5], 13, { fill: TEAL });
+    });
+    b += TXN(360, 318, 'different masses, the same number of particles', 13, { fill: MUTED });
+    return D.svg(720, 335, b, 'Three one-mole piles on balances: 12 g of carbon atoms, 18 g of water molecules, 58.5 g of sodium chloride formula units, each containing 6.02 × 10²³ particles.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4, D = window.KS4D, F = this.flags();
+    const ready = !!(s.libReady && K && D);
+    const fig = (f) => (ready ? K.fig(f(), '') : null);
+    const sf = this.pick('sf', { opts: ['6.02 × 10²²', '0.602 × 10²³, left like that', '6.02 × 10²⁴'], right: 0, yes: 'Yes: 0.1 × 6.02 = 0.602, and 0.602 × 10²³ is written 6.02 × 10²².', no: ['', 'Right value, wrong form: the front number must be between 1 and 10, so write 6.02 × 10²².', 'Dividing by 10 lowers the power by one, not raises it.'] });
+    const BANK = [
+      V("How many moles are in 9.8 g of sulfuric acid (H₂SO₄)? Mr = 98.", [["0.1 mol — n = 9.8 ÷ 98 = 0.1", true], ["10 mol — n = 98 ÷ 9.8 = 10", false], ["960.4 mol — n = 9.8 × 98 = 960.4", false], ["0.01 mol — n = 9.8 ÷ 980 = 0.01", false]], { "1": "Dividing the WRONG way: n = mass ÷ Mr not Mr ÷ mass. n = 9.8 ÷ 98 = 0.1 mol.", "2": "Multiplying mass and Mr gives a meaningless large number — always DIVIDE mass by Mr.", "3": "The Mr of H₂SO₄ is 98, not 980. n = 9.8 ÷ 98 = 0.1 mol." }),
+      V("What mass of calcium carbonate (CaCO₃, Mr = 100) contains 3.01 × 10²³ formula units?", [["50 g — 3.01 × 10²³ ÷ 6.02 × 10²³ = 0.5 mol; mass = 0.5 × 100 = 50 g", true], ["100 g — 1 mole has mass 100 g regardless of particle count", false], ["30100 g — multiplying particle count by Mr", false], ["0.5 g — confusing moles with grams", false]], { "1": "3.01 × 10²³ is HALF the Avogadro constant — so this represents 0.5 mol. Mass = 0.5 × 100 = 50 g.", "2": "A particle count must be turned into moles first (÷ 6.02 × 10²³), and only then multiplied by Mr. Multiplying the count by Mr skips the mole and gives a meaningless number.", "3": "0.5 is the number of moles — multiply by Mr (100) to get mass: 0.5 × 100 = 50 g." }),
+      Q('How many moles of aluminium atoms are in 2.7 kg of aluminium? Ar(Al) = 27.', '100 mol: 2.7 kg = 2700 g, and 2700 ÷ 27 = 100', [['0.1 mol: 2.7 ÷ 27', 'The mass must be in grams: 2.7 kg = 2700 g.'], ['10 mol', '2700 ÷ 27 = 100.'], ['72.9 mol: 2.7 × 27', 'Divide mass by Ar; and convert kg to g first.']]),
+      Q('How many molecules are there in 36 g of water? Mr(H₂O) = 18.', '1.204 × 10²⁴: 36 ÷ 18 = 2 mol, then 2 × 6.02 × 10²³', [['6.02 × 10²³', 'That is 1 mol, which is 18 g. 36 g is 2 mol.'], ['3.01 × 10²³', 'That is 0.5 mol, which is 9 g.'], ['2', '2 is the number of moles; multiply by the Avogadro constant for molecules.']]),
+      Q('One mole of water, H₂O, contains 6.02 × 10²³ molecules. How many atoms does it contain?', '3 × 6.02 × 10²³ = 1.806 × 10²⁴: each molecule has three atoms', [['6.02 × 10²³', 'That is the number of molecules; each has 2 H and 1 O.'], ['2 × 6.02 × 10²³', 'Count the oxygen too: 3 atoms per molecule.'], ['18', '18 is the Mr, and the mass of a mole in grams.']])
+    ];
+    const done = [s.hook !== null, sf.done, true, s.calc >= 2, true, s.calc2 >= 2, s.steps, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done, F, ready);
+    return Object.assign(c, {
+      rfmHref: FILE['relative-formula-mass'], umcHref: FILE['using-moles-calculations'], aieHref: FILE['amounts-in-equations'],
+      hookOptions: [
+        { text: 'The melons', correct: true, reply: 'Twelve of anything is twelve, but melons are heavier than eggs. One mole of carbon dioxide and one mole of water hold the same number of molecules; the carbon dioxide weighs more.' },
+        { text: 'The eggs', correct: false, reply: 'Twelve melons would flatten twelve eggs. The number is the same; the mass depends on what you are counting. That is the whole idea of the mole.' }
+      ],
+      pFig: fig(() => this.pFig()), sf, eqN: EQ_N, eqP: EQ_P,
+      cf1Examples: [
+        { tab: 'Verbatim', eq: EQ_N, find: 'n', next: 'Now one in kilograms.', head: 'Calculate the number of moles in 27 g of aluminium (Ar = 27).', steps: [
+          { letter: 'C', label: 'Convert', line: 'Nothing to convert — the mass is already in grams, and n = m ÷ Mr needs the mass in grams (Ar has no unit).' },
+          { letter: 'F', label: 'Formula', line: 'moles = mass ÷ Mr' },
+          { letter: 'I', label: 'Insert', line: 'moles = 27 ÷ 27' },
+          { letter: 'F', label: 'Fine-tune', line: 'moles = 1' },
+          { letter: 'A', label: 'Answer', line: '1 mol of aluminium' }] },
+        { tab: 'Convert kg to g', eq: EQ_N, find: 'n', next: 'Now the triangle the other way.', head: 'Calculate the number of moles of aluminium atoms in 2.7 kg of aluminium (Ar = 27).', steps: CFL('2.7 kg × 1000 = 2700 g', 'n = m ÷ Ar', 'n = 2700 ÷ 27', 'n = 100', '100 mol', 'Grams first: 2.7 ÷ 27 would give 0.1 mol, a thousand times too small.') },
+        { tab: 'Mass from moles', eq: EQ_N, find: 'm', next: 'Now yours, below.', head: 'Calculate the mass of 0.25 mol of calcium carbonate, CaCO₃ (Mr = 100).', steps: CFL('Nothing to convert.', 'm = n × Mr', 'm = 0.25 × 100', 'm = 25', '25 g') }
+      ],
+      cf1Questions: [
+        { tab: 'Question 1', id: 'mol-q1', head: 'Calculate the number of moles in 9 g of water, H₂O (Mr = 18).', close: 'n = m ÷ Mr, so 9 ÷ 18, not 18 ÷ 9.', steps: CFQ('Nothing to convert: grams.', 'n = m ÷ Mr', 'n = 9 ÷ 18', 'n = 0.5', '0.5 mol') },
+        { tab: 'Question 2', id: 'mol-q2', head: 'Calculate the number of moles in 0.5 kg of calcium carbonate, CaCO₃ (Mr = 100).', close: '0.5 ÷ 100 uses kilograms. Convert: 0.5 kg = 500 g.', steps: CFQ('0.5 kg = 500 g', 'n = m ÷ Mr', 'n = 500 ÷ 100', 'n = 5', '5 mol', 'kg to g?') },
+        { tab: 'Question 3', id: 'mol-q3', head: 'Calculate the mass of 2 mol of carbon dioxide, CO₂ (Mr = 44).', close: 'Cover m: m = n × Mr.', steps: CFQ('Nothing to convert.', 'm = n × Mr', 'm = 2 × 44', 'm = 88', '88 g') }
+      ],
+      cf2Examples: [
+        { tab: 'Particles from moles', eq: EQ_P, find: 'N', next: 'Now the triangle the other way.', head: 'How many molecules are there in 2 mol of water?', steps: CFL('Nothing to convert.', 'particles = n × Nₐ', 'particles = 2 × 6.02 × 10²³', 'particles = 12.04 × 10²³ = 1.204 × 10²⁴', '1.204 × 10²⁴ molecules', 'Standard form keeps the front number between 1 and 10.') },
+        { tab: 'Moles from particles', eq: EQ_P, find: 'n', next: 'Now yours, below.', head: 'How many moles is 3.01 × 10²³ formula units of sodium chloride?', steps: CFL('Nothing to convert.', 'n = particles ÷ Nₐ', 'n = 3.01 × 10²³ ÷ 6.02 × 10²³', 'n = 0.5', '0.5 mol', 'Same power of ten top and bottom, so divide the front parts.') }
+      ],
+      cf2Questions: [
+        { tab: 'Question 1', id: 'mol-p1', head: 'How many atoms are there in 0.1 mol of iron?', close: 'Multiply the front part: 0.1 × 6.02 = 0.602, so 6.02 × 10²².', steps: CFQ('Nothing to convert.', 'particles = n × Nₐ', 'particles = 0.1 × 6.02 × 10²³', 'particles = 0.602 × 10²³ = 6.02 × 10²²', '6.02 × 10²² atoms') },
+        { tab: 'Question 2', id: 'mol-p2', head: 'How many moles is 1.204 × 10²⁴ molecules of carbon dioxide?', close: 'Write both with the same power: 12.04 × 10²³ ÷ 6.02 × 10²³ = 2.', steps: CFQ('1.204 × 10²⁴ = 12.04 × 10²³', 'n = particles ÷ Nₐ', 'n = 12.04 × 10²³ ÷ 6.02 × 10²³', 'n = 2', '2 mol', 'same power of ten?') }
+      ],
+      w1Steps: [
+        { title: 'Particles to moles', eq: EQ_P, find: 'n', carry: '0.5 mol', lines: CFL('Nothing to convert.', 'n = particles ÷ Nₐ', 'n = 3.01 × 10²³ ÷ 6.02 × 10²³', 'n = 0.5', '0.5 mol of NaOH') },
+        { title: 'Moles to mass', eq: EQ_N, find: 'm', lines: CFL('Nothing to convert.', 'm = n × Mr', 'm = 0.5 × 40', 'm = 20', '20 g of sodium hydroxide') }
+      ],
+      w2Steps: [
+        { title: 'Mass to moles', eq: EQ_N, find: 'n', carry: '0.5 mol', lines: CFL('Nothing to convert: grams.', 'n = m ÷ Mr', 'n = 9 ÷ 18', 'n = 0.5', '0.5 mol of H₂O') },
+        { title: 'Moles to particles', eq: EQ_P, find: 'N', lines: CFL('Nothing to convert.', 'particles = n × Nₐ', 'particles = 0.5 × 6.02 × 10²³', 'particles = 3.01 × 10²³', '3.01 × 10²³ molecules of water') }
+      ],
+      aSteps: [
+        { title: 'Mass to moles', carry: '0.1 mol', lines: CFQ('Nothing to convert: grams.', 'n = m ÷ Mr', 'n = 4.4 ÷ 44', 'n = 0.1', '0.1 mol of CO₂') },
+        { title: 'Moles to particles', lines: CFQ('Nothing to convert.', 'particles = n × Nₐ', 'particles = 0.1 × 6.02 × 10²³', 'particles = 0.602 × 10²³ = 6.02 × 10²²', '6.02 × 10²² molecules') }
+      ],
+      thinkOptions: [
+        { text: 'The same number of molecules', correct: true, reply: '6.02 × 10²³ each. Masses 18 g and 44 g.' },
+        { text: 'The same mass', correct: false, reply: '18 g against 44 g. The mass of a mole is its Mr in grams.' },
+        { text: 'Nothing: they are different substances', correct: false, reply: 'They share the count. A mole is the same number of particles whatever the substance.' }
+      ],
+      sortBins: [{ id: 'c', label: 'Convert kg to g' }, { id: 'n', label: 'n = m ÷ Mr' }, { id: 'p', label: 'n = particles ÷ Nₐ' }],
+      sortItems: [
+        { text: 'Moles in 1.2 kg of magnesium', bin: 'c', why: '1200 g first, then n = m ÷ Ar.' },
+        { text: 'Molecules in 22 g of carbon dioxide', bin: 'n', why: 'Mass to moles, then × Nₐ.' },
+        { text: 'Mass of 1.204 × 10²⁴ formula units of NaCl', bin: 'p', why: 'Particles to moles, then × Mr.' },
+        { text: 'Moles in 4 g of hydrogen gas, H₂', bin: 'n', why: 'Grams already: 4 ÷ 2 = 2 mol.' },
+        { text: 'Atoms in 0.054 kg of aluminium', bin: 'c', why: '54 g first.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('State', 'State the number of particles in one mole of any substance.', '6.02 × 10²³, the Avogadro constant.', ['6.02 × 10²³', ['6.02 × 10²²', 'That is 0.1 mol.'], ['1.204 × 10²⁴', 'That is 2 mol.']]),
+          MCQ('State', 'State the mass of one mole of water, H₂O (Mr = 18).', '18 g: the Mr in grams.', ['18 g', ['18 kg', 'Grams, not kilograms.'], ['6.02 × 10²³ g', 'That is the number of molecules, not the mass.']])
+        ],
+        r2: [
+          CALC('Calculate the number of moles in 9.8 g of sulfuric acid, H₂SO₄ (Mr = 98).', ['Nothing to convert', 'Convert g to kg', 'Convert Mr to grams'], 0, 0.1, 'mol', ['mol', 'g', 'no unit'], '9.8 ÷ 98 = 0.1 mol.', 'n = m ÷ Mr, with the mass in grams.', ['C · nothing to convert', 'F · n = m ÷ Mr', 'I · n = 9.8 ÷ 98', 'F · n = 0.1', 'A · 0.1 mol'], 0.005),
+          CALC('Calculate the mass of 0.2 mol of magnesium oxide, MgO (Mr = 40).', ['Nothing to convert', 'Convert mol to g', 'Convert 0.2 mol to 200 mol'], 0, 8, 'g', ['g', 'mol', 'kg'], '0.2 × 40 = 8 g.', 'Cover m: m = n × Mr.', ['C · nothing to convert', 'F · m = n × Mr', 'I · m = 0.2 × 40', 'F · m = 8', 'A · 8 g'])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain how to find the number of molecules in 22 g of carbon dioxide (Mr = 44). Put the links in order.',
+            ['Convert the mass to moles: n = 22 ÷ 44 = 0.5 mol.', 'One mole contains 6.02 × 10²³ molecules.', 'So multiply: 0.5 × 6.02 × 10²³ = 3.01 × 10²³ molecules.'],
+            [['Multiply 22 by 6.02 × 10²³.', 'That skips the mole; the mass must become moles first.'], ['Divide 44 by 22 to get 2 mol.', 'n = m ÷ Mr: 22 ÷ 44.']]),
+          CHAIN('Explain', 'Explain why 1 mol of water and 1 mol of sodium chloride have different masses but the same number of particles. Put the links in order.',
+            ['A mole is a fixed number of particles, 6.02 × 10²³, for any substance.', 'The mass of a mole in grams equals the relative formula mass.', 'Water has Mr 18 and sodium chloride Mr 58.5, so the moles weigh 18 g and 58.5 g while holding the same number of particles.'],
+            [['A mole always has a mass of 1 g.', 'The mass of a mole is the Mr in grams.'], ['Sodium chloride has more particles in a mole.', 'Every mole has the same number.']])
+        ],
+        r4: [
+          WRITE('Calculate', 4, 'A sample of magnesium has a mass of 0.048 kg. Calculate the number of magnesium atoms in the sample, showing each step. Ar(Mg) = 24; Avogadro constant = 6.02 × 10²³ per mole.',
+            LV4('kg converted to 48 g, n = 2 mol, atoms = 1.204 × 10²⁴ in correct standard form.', 'Correct moles from a converted mass, or a correct method with the conversion missed.'),
+            ['0.048 kg = 48 g.', 'n = m ÷ Ar = 48 ÷ 24 = 2 mol.', 'atoms = n × Nₐ = 2 × 6.02 × 10²³.', '= 1.204 × 10²⁴ atoms.'],
+            ['“n = 0.048 ÷ 24 = 0.002 mol.”', '“12.04 × 10²³” left as the final answer']) 
+        ]
+      },
+      keyLines: ['Chemical amounts are measured in moles (mol). The mass of one mole of a substance in grams is numerically equal to its relative formula mass.', 'One mole of a substance contains the same number of particles, atoms, molecules or ions as one mole of any other substance: the Avogadro constant, 6.02 × 10²³ per mole.', 'n = m ÷ Mr, with the mass in grams: convert kg to g first (2.7 kg Al = 2700 g = 100 mol). Mr has no unit.', 'particles = n × Nₐ; n = particles ÷ Nₐ. Standard form: keep the front number between 1 and 10 (12.04 × 10²³ = 1.204 × 10²⁴).', 'Chained: mass from a count is particles → moles → mass; a count from a mass is mass → moles → particles. Percentage by mass is in Relative formula mass.'],
+      endConnects: [LNK('amounts-in-equations', 'Amounts of substances in equations'), LNK('relative-formula-mass', 'Relative formula mass'), LNK('using-moles-calculations', 'Using moles in calculations'), LNK('mass-changes-reactions', 'Mass changes in reactions')],
+      bank: ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

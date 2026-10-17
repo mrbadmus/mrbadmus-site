@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amounts of substances in equations · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Quantitative chemistry" title="Amounts of substances in equations" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 5.3.2.2 · Higher only</p>
+        <h1>Amounts of substances in equations</h1>
+        <p class="ks3-bigq">The big numbers in a balanced equation are a ratio of moles. Turn a mass into moles, cross the ratio, turn the moles back into a mass: three steps, each learned on its own first.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Higher only</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Calculates</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="2"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A recipe." scene="A cake recipe needs 2 eggs per cake. You are making 3 cakes." question="do you need 6 eggs or 3 eggs?" options="{{ hookOptions }}" bridge="A recipe is a ratio. So is a balanced equation: 2Mg + O₂ → 2MgO says two magnesium for every one oxygen, however much you make." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-ratio" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Coefficients are a mole ratio</p>
+        <h2 style="margin: 6px 0 0;">Scale one bar and the others follow.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The balancing numbers in a symbol equation give the ratio of moles of each substance. Set the moles of magnesium and watch the oxygen and the oxide.</p>
+        <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ rBtns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ rFig }}</div></div>
+        <p style="margin: 14px 0 0; max-width: 62ch;">N<sub>2</sub> + 3H<sub>2</sub> <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> 2NH<sub>3</sub>. From 0.6 mol of H<sub>2</sub>, how many moles of NH<sub>3</sub>?</p>
+        <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ rq.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+        <p aria-live="polite" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ rq.note }}</p>
+      </section>
+
+      <section id="s-masses" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Masses in a balanced equation</p>
+        <h2 style="margin: 6px 0 0;">Read the equation in grams.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Multiply each coefficient by the M<sub>r</sub> and the equation reads as masses. Conservation of mass checks it: the two sides add up.</p>
+        <div style="margin-top: 14px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 19px; line-height: 1.6;">
+          <p style="margin: 0;">2Mg + O<sub>2</sub> <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> 2MgO</p>
+          <p style="margin: 4px 0 0; color: var(--ks3-ink-muted);">2 × 24 + 2 × 16 <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> 2 × 40</p>
+          <p style="margin: 4px 0 0;"><strong>48 g + 32 g <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> 80 g</strong></p>
+        </div>
+        <p style="margin: 14px 0 0; max-width: 62ch;">N<sub>2</sub> + 3H<sub>2</sub> <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> 2NH<sub>3</sub>. A<sub>r</sub>: N = 14, H = 1. Which line is right?</p>
+        <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ mq.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+        <p aria-live="polite" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ mq.note }}</p>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equation · moles from mass</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">The same triangle as <a href="{{ molHref }}">Moles</a>. It is used twice in a reacting-mass question: forwards for the substance you are given (Step 1), backwards for the one you want (Step 3). The ratio step between them is not a triangle.</p>
+        <div style="margin-top: 14px; max-width: 520px;">
+          <dc-import name="Ks4Triangle" eq="{{ eqN }}" variant="full" hint-size="100%,420px"></dc-import>
+        </div>
+        <p style="margin: 14px 0 0; display: inline-block; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 19px;">Step 2 · n(wanted) = n(given) × wanted coefficient ÷ given coefficient</p>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-steps" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Steps" mode="worked" id="aie-w" head="Calculate the mass of hydrogen produced when 1.2 g of magnesium reacts with excess HCl. Mg + 2HCl → MgCl₂ + H₂. Ar: Mg = 24, H = 1." lead="Step 1 moles of the given substance. Step 2 the ratio. Step 3 mass of the wanted substance." steps="{{ wSteps }}" next="Now the same three steps yourself." hint-size="100%,900px"></dc-import>
+          <div style="margin-top: 22px;">
+            <dc-import name="Ks4Steps" mode="attempt" id="aie-a" head="Calculate the mass of carbon dioxide produced when 8.0 g of calcium carbonate decomposes. CaCO₃ → CaO + CO₂. Mr: CaCO₃ = 100, CO₂ = 44." lead="Write each line, then check your working." steps="{{ aSteps }}" close="8.0 × 44 ÷ 100 happens to work here because the ratio is 1 : 1; write the three steps so it still works when it is not." on-done="{{ onSteps }}" hint-size="100%,900px"></dc-import>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · which way is the ratio?</p></div>
+        <p class="ks3-mis-quote">&ldquo;3H<sub>2</sub> makes 2NH<sub>3</sub>, so 0.6 mol H<sub>2</sub> × 3/2 = 0.9 mol NH<sub>3</sub>.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="N₂ + 3H₂ → 2NH₃. A pupil gets 0.9 mol NH₃ from 0.6 mol H₂. What went wrong?" options="{{ thinkOptions }}" reveal="Wanted over given: NH₃ is 2, H₂ is 3, so 0.6 × 2/3 = 0.4 mol. Fewer moles of ammonia than hydrogen, as the equation says." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Which step is this line?" prompt="Place each line of working." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Step 1 turns the given mass into moles. Step 2 crosses the ratio. Step 3 turns the wanted moles into a mass." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Not on this page</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Percentage yield and atom economy are Chemistry-only and have their own lessons: <a href="{{ pyHref }}">Percentage yield</a> and <a href="{{ aeHref }}">Atom economy</a>. Balancing an equation from reacting masses, and limiting reactants, are in <a href="{{ umcHref }}">Using moles in calculations</a>.</p>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Mass to moles (÷ M<sub>r</sub>), cross the mole ratio from the coefficients, moles to mass (× M<sub>r</sub>). Grams throughout. Use each coefficient once, in the ratio.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="amounts-in-equations" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Amounts of substances in equations" spec="AQA 5.3.2.2 · Higher only" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Flipping the ratio the wrong way?" legal="Relative atomic masses are rounded as given in each question." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Higher&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+
+const SLUG = 'amounts-in-equations';
+const OK = ['Combined Higher', 'Triple Higher'];
+const FILE = {"model-of-the-atom":"ks4-chemistry-5.1.1.3-model-of-the-atom.dc.html","subatomic-particles":"ks4-chemistry-5.1.1.4-subatomic-particles.dc.html","relative-atomic-mass":"ks4-chemistry-5.1.1.6-relative-atomic-mass.dc.html","electronic-structure":"ks4-chemistry-5.1.1.7-electronic-structure.dc.html","group-7":"ks4-chemistry-5.1.2.6-group-7.dc.html","transition-metals":"ks4-chemistry-4.1.3.1-transition-metals.dc.html","mass-changes-reactions":"ks4-chemistry-5.3.1.3-mass-changes-reactions.dc.html","chemical-measurements":"ks4-chemistry-5.3.1.4-chemical-measurements.dc.html","moles":"ks4-chemistry-5.3.2.1-moles.dc.html","amounts-in-equations":"ks4-chemistry-5.3.2.2-amounts-in-equations.dc.html","oxidation-reduction":"ks4-chemistry-5.4.1.4-oxidation-reduction.dc.html","salts-neutralisation":"ks4-chemistry-5.4.2.2-salts-neutralisation.dc.html","ph-scale":"ks4-chemistry-5.4.2.4-ph-scale.dc.html","strong-weak-acids":"ks4-chemistry-5.4.2.5-strong-weak-acids.dc.html","electrolysis-principles":"ks4-chemistry-5.4.3.1-electrolysis-principles.dc.html","electrolysis-molten":"ks4-chemistry-5.4.3.2-electrolysis-molten.dc.html","periodic-table":"../../KS4 Batch 4/ks4-chemistry-5.1.2.1-periodic-table.dc.html","group-0":"../../KS4 Batch 5/ks4-chemistry-5.1.2.4-group-0.dc.html","metals-non-metals":"../../KS4 Batch 5/ks4-chemistry-5.1.2.3-metals-non-metals.dc.html","reactivity-series":"../../KS4 Batch 5/ks4-chemistry-5.4.1.1-reactivity-series.dc.html","extraction-of-metals":"../../KS4 Batch 5/ks4-chemistry-5.4.1.3-extraction-of-metals.dc.html","structure-of-atom":"../../KS4 Batch 5/ks4-physics-6.4.1.1-structure-of-atom.dc.html","development-atomic-model":"../../KS4 Batch 5/ks4-physics-6.4.1.3-development-atomic-model.dc.html","atoms-elements-compounds":"/ks4/atoms-elements-compounds","relative-formula-mass":"/ks4/relative-formula-mass","using-moles-calculations":"/ks4/using-moles-calculations","conservation-of-mass":"/ks4/conservation-of-mass","titrations":"/ks4/titrations","percentage-yield":"/ks4/percentage-yield","atom-economy":"/ks4/atom-economy"};
+const ORDER = [["model-of-the-atom","Development of the model of the atom",0],["subatomic-particles","Subatomic particles",0],["relative-atomic-mass","Relative atomic mass, atomic number and isotopes",0],["electronic-structure","Electronic structure",0],["group-7","Group 7: the halogens",0],["transition-metals","Properties of transition metals",1],["mass-changes-reactions","Mass changes in reactions",0],["chemical-measurements","Chemical measurements",0],["moles","Moles",3],["amounts-in-equations","Amounts of substances in equations",3],["oxidation-reduction","Oxidation and reduction",0],["salts-neutralisation","Making salts and neutralisation",0],["ph-scale","The pH scale and neutralisation",0],["strong-weak-acids","Strong and weak acids",3],["electrolysis-principles","The process of electrolysis",0],["electrolysis-molten","Electrolysis of molten ionic compounds",0]];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const CALC = (prompt, convOptions, convAnswer, answer, unit, units, right, wrong, model, tol) => ({ kind: 'calc', command: 'Calculate', marks: 2, prompt, convOptions, convAnswer, answer, tol: tol == null ? 0.05 : tol, unit, units, right, wrong, model });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const V = (q, opts, we) => ({ q, opts, wrong_explanations: we });
+const LNK = (k, label) => ({ href: FILE[k], label });
+const TX = (x, y, t, size, o) => window.KS4D.T(x, y, t, size, Object.assign({ fill: '#1A1A1A' }, o || {}));
+const TXN = (x, y, t, size, o) => TX(x, y, t, size, Object.assign({ weight: 'normal' }, o || {}));
+const BOX = (x, y, w, h, fill, stroke, sw, rx) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + (rx == null ? 12 : rx) + '" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const INK = '#1A1A1A', TAN = '#F2C9AE', LEAF = '#A9D9BE', RED = '#C8102E', TEAL = '#2E8B7F', MUTED = '#8A8378', PAPER = '#FFFDF8', SKY = '#DDEEF6';
+const CFL = (c, f, i, ft, a, cn) => [{ letter: 'C', label: 'Convert', line: c, note: cn || '' }, { letter: 'F', label: 'Formula', line: f }, { letter: 'I', label: 'Insert', line: i }, { letter: 'F', label: 'Fine-tune', line: ft }, { letter: 'A', label: 'Answer', line: a }];
+const CFQ = (c, f, i, ft, a, pc) => [{ letter: 'C', label: 'Convert', placeholder: pc || 'anything to convert?', line: c }, { letter: 'F', label: 'Formula', placeholder: 'written out', line: f }, { letter: 'I', label: 'Insert', placeholder: 'numbers in', line: i }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: ft }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: a }];
+const EQ_N = { name: 'Moles from mass', written: 'n = m ÷ Mr', source: 'none', top: { s: 'm', name: 'mass', unit: 'g' }, bottom: [{ s: 'n', name: 'amount of substance', unit: 'mol' }, { s: 'Mr', name: 'relative formula mass (Ar for an element)', unit: 'no unit' }] };
+const RATIO = 'n(wanted) = n(given) × wanted coefficient ÷ given coefficient';
+
+const RAIL = [{ id: 's-hook', label: 'A recipe', short: 'HOOK' }, { id: 's-ratio', label: 'Mole ratio', short: 'RATIO' }, { id: 's-masses', label: 'Masses in an equation', short: 'MASSES' }, { id: 's-equation', label: 'The triangle', short: 'EQUATION' }, { id: 's-calc', label: 'CFIFA, one step each', short: 'CFIFA' }, { id: 's-steps', label: 'Step 1, 2, 3', short: 'STEPS' }, { id: 's-think', label: 'Think again', short: 'THINK' }, { id: 's-sort', label: 'Which step?', short: 'SORT' }, { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }];
+const MG = [2, 0.2, 0.6];
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false, calc: 0, steps: false, mg: 0 };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  pick(key, q) {
+    const v = this.state[key], has = typeof v === 'number';
+    return { btns: q.opts.map((o, i) => ({ label: o, pressed: v === i, style: this.seg(v === i), onClick: () => this.setState({ [key]: i, [key + 'Ok']: !!this.state[key + 'Ok'] || i === q.right }) })),
+      note: !has ? (q.ask || 'Pick one.') : v === q.right ? q.yes : (q.no[v] || ''), done: !!this.state[key + 'Ok'], v: has ? v : null };
+  }
+  flags() {
+    const K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    return { R, route, rk, H: rk === 'CH' || rk === 'TH', T: rk === 'TF' || rk === 'TH', TH: rk === 'TH' };
+  }
+  common(done, F, ready) {
+    const s = this.state, K = window.KS4;
+    const av = ORDER.filter((o) => !o[2] || (o[2] === 1 && F.T) || (o[2] === 2 && F.TH) || (o[2] === 3 && F.H)), i = av.findIndex((o) => o[0] === SLUG);
+    return { route: F.route, rk: F.rk, onRoute: F.R.onRoute || (() => {}), isHigher: F.H, notHigher: !F.H, isTriple: F.T, notTriple: !F.T, isTH: F.TH, notTH: !F.TH,
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready,
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (x) => this.setState({ hook: x }), onThink: (x) => this.setState({ think: x }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }),
+      onCalc: (k) => this.setState((st) => ({ calc: Math.max(st.calc || 0, k || 1) })), onSteps: () => this.setState({ steps: true }),
+      endPrev: i > 0 ? LNK(av[i - 1][0], av[i - 1][1]) : null,
+      endNext: i >= 0 && i < av.length - 1 ? LNK(av[i + 1][0], av[i + 1][1]) : null };
+  }
+
+  rFig(mg) {
+    const D = window.KS4D; let b = ''; const scale = 80;
+    const bars = [['Mg', 2, mg, TAN], ['O₂', 1, mg / 2, SKY], ['MgO', 2, mg, LEAF]];
+    bars.forEach((r, i) => { const x = 110 + i * 210, h = r[2] * scale; b += BOX(x - 50, 200 - h, 100, h, r[3], INK, 2, 6) + TX(x, 230, r[0], 18) + TXN(x, 252, 'coefficient ' + r[1], 12, { fill: MUTED }) + TX(x, 190 - h, (+r[2].toFixed(2)) + ' mol', 15); });
+    b += TX(320, 28, '2Mg + O₂ → 2MgO   ratio 2 : 1 : 2', 16) + TXN(320, 282, 'whatever the amount, the ratio holds', 13, { fill: MUTED });
+    return D.svg(640, 300, b, 'Bars for Mg, O₂ and MgO at ' + mg + ', ' + mg / 2 + ' and ' + mg + ' moles, keeping the 2 : 1 : 2 ratio.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4, D = window.KS4D, F = this.flags();
+    const ready = !!(s.libReady && K && D);
+    const fig = (f) => (ready ? K.fig(f(), '') : null);
+    const mg = MG[s.mg];
+    const rBtns = MG.map((m, i) => ({ label: m + ' mol Mg', pressed: s.mg === i, style: this.seg(s.mg === i), onClick: () => this.setState({ mg: i, mgSeen: (this.state.mgSeen || 0) + 1 }) }));
+    const rq = this.pick('rq', { opts: ['0.4 mol: 0.6 × 2/3', '0.6 mol: the same', '0.9 mol: 0.6 × 3/2'], right: 0, yes: 'Yes: wanted coefficient over given coefficient, 2 over 3.', no: ['', 'Only a 1 : 1 ratio keeps the moles the same. Here 3 H₂ make 2 NH₃.', 'That inverts the ratio. NH₃ is the wanted substance, so its coefficient goes on top: 2/3.'] });
+    const mq = this.pick('mq', { opts: ['28 g + 6 g → 34 g', '14 g + 3 g → 17 g', '28 g + 2 g → 30 g'], right: 0, yes: 'Yes: N₂ is 28; 3H₂ is 3 × 2 = 6; 2NH₃ is 2 × 17 = 34. The sides balance.', no: ['', 'Hydrogen is H₂ (Mr 2) and the coefficients count: 3 × 2 = 6, and 2 × 17 = 34.', 'Three moles of H₂: 3 × 2 = 6 g. The sides must add up.'] });
+    const BANK = [
+      V("N₂ + 3H₂ → 2NH₃. How many moles of NH₃ are produced from 0.6 mol of H₂?", [["0.4 mol — ratio H₂:NH₃ = 3:2, so 0.6 × (2/3) = 0.4 mol", true], ["0.6 mol — same moles as H₂ used", false], ["0.9 mol — multiply 0.6 by the coefficient 3/2", false], ["1.2 mol — double the H₂ moles", false]], { "1": "The molar ratio must be used — 3 mol H₂ produces 2 mol NH₃, so 0.6 mol H₂ produces 0.6 × (2/3) = 0.4 mol NH₃.", "2": "0.6 × (3/2) = 0.9 — this inverts the ratio. H₂:NH₃ = 3:2, so NH₃ = H₂ × (2/3).", "3": "Doubling would only apply if the ratio were 1:2 — but H₂:NH₃ = 3:2." }),
+      Q('2Mg + O₂ → 2MgO. Ar: Mg = 24, O = 16. What are the masses shown by the equation?', '48 g + 32 g → 80 g', [['24 g + 16 g → 40 g', 'Count the coefficients: 2 × 24, 2 × 16 for O₂, 2 × 40.'], ['48 g + 16 g → 64 g', 'Oxygen is O₂: Mr 32. The sides must add up.'], ['24 g + 32 g → 56 g', '2Mg is 48 g and 2MgO is 80 g.']]),
+      Q('Calculate the mass of magnesium oxide formed when 4.8 g of magnesium burns completely. 2Mg + O₂ → 2MgO. Ar: Mg = 24, O = 16.', '8.0 g: n(Mg) = 0.2 mol; ratio 2 : 2 gives 0.2 mol MgO; 0.2 × 40 = 8.0 g', [['4.8 g: mass is conserved', 'Oxygen is added, so the oxide is heavier than the metal.'], ['192 g: 4.8 × 40', 'Convert the mass to moles first: 4.8 ÷ 24 = 0.2 mol.'], ['16 g: 0.2 × 2 × 40', 'The coefficient is used once, in the ratio (2 : 2 = 1 : 1), not again in the mass.']]),
+      Q('Mg + 2HCl → MgCl₂ + H₂. What is the Mr of hydrogen gas used in Step 3?', '2: hydrogen gas is H₂', [['1', 'That is the Ar of one hydrogen atom; the gas is H₂.'], ['4', 'The coefficient of H₂ is 1; Mr is 2 × 1 = 2.'], ['36.5', 'That is HCl.']]),
+      Q('A pupil needs the mass of CaO from 10 g of CaCO₃ (CaCO₃ → CaO + CO₂; Mr 100 and 56). Put the method in order.', 'Mass to moles (10 ÷ 100 = 0.1), ratio 1 : 1 (0.1 mol CaO), moles to mass (0.1 × 56 = 5.6 g)', [['Ratio first, then mass to moles, then moles to mass', 'The ratio needs moles, so moles come first.'], ['Mass to moles, then straight to the answer', 'Moles of CaO must be turned back into a mass with × Mr.'], ['Multiply 10 by 56', 'That skips the moles and gives 560, which is meaningless.']])
+    ];
+    const done = [s.hook !== null, (s.mgSeen || 0) >= 2 && rq.done, mq.done, true, s.calc >= 3, s.steps, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done, F, ready);
+    return Object.assign(c, {
+      molHref: FILE['moles'], pyHref: FILE['percentage-yield'], aeHref: FILE['atom-economy'], umcHref: FILE['using-moles-calculations'],
+      hookOptions: [
+        { text: '6 eggs', correct: true, reply: '2 per cake, 3 cakes, 6 eggs. You scaled a ratio. A balanced equation is scaled exactly the same way.' },
+        { text: '3 eggs', correct: false, reply: 'Three cakes at two eggs each is six. The recipe is a ratio you scale up or down, and so is a balanced equation.' }
+      ],
+      rBtns, rFig: fig(() => this.rFig(mg)), rq, mq, eqN: EQ_N,
+      cfExamples: [
+        { tab: 'Step 1 alone · with convert', eq: EQ_N, find: 'n', next: 'Now Step 2 alone.', head: 'Calculate the amount in moles of 2.4 kg of magnesium. Ar(Mg) = 24.', steps: CFL('2.4 kg × 1000 = 2400 g', 'n = m ÷ Ar', 'n = 2400 ÷ 24', 'n = 100', '100 mol of Mg', 'Grams before Step 1, always.') },
+        { tab: 'Step 2 alone · the ratio', next: 'Now Step 3 alone.', head: 'N₂ + 3H₂ → 2NH₃. 0.6 mol of hydrogen reacts. Calculate the moles of ammonia formed.', steps: CFL('Nothing to convert.', RATIO, 'n(NH₃) = 0.6 × 2 ÷ 3', 'n(NH₃) = 0.4', '0.4 mol of NH₃', 'Wanted coefficient on top, given coefficient underneath.') },
+        { tab: 'Step 3 alone · mass', eq: EQ_N, find: 'm', next: 'Now the three chained, below.', head: 'Calculate the mass of 0.05 mol of hydrogen gas, H₂. Ar(H) = 1.', steps: CFL('Nothing to convert.', 'm = n × Mr', 'm = 0.05 × 2', 'm = 0.1', '0.1 g of H₂', 'Hydrogen gas is H₂, so Mr = 2.') }
+      ],
+      cfQuestions: [
+        { tab: 'Question 1 · Step 1', id: 'aie-q1', head: 'Calculate the amount in moles of 5.6 g of iron. Ar(Fe) = 56.', close: 'Divide the mass by Ar: 5.6 ÷ 56.', steps: CFQ('Nothing to convert: grams.', 'n = m ÷ Ar', 'n = 5.6 ÷ 56', 'n = 0.1', '0.1 mol') },
+        { tab: 'Question 2 · Step 2', id: 'aie-q2', head: '2Mg + O₂ → 2MgO. 0.3 mol of magnesium burns. Calculate the moles of oxygen molecules needed.', close: '0.3 × 2/1 flips the ratio. O₂ is wanted (1) and Mg is given (2): 0.3 × 1 ÷ 2.', steps: CFQ('Nothing to convert.', RATIO, 'n(O₂) = 0.3 × 1 ÷ 2', 'n(O₂) = 0.15', '0.15 mol') },
+        { tab: 'Question 3 · Step 3', id: 'aie-q3', head: 'Calculate the mass of 0.15 mol of oxygen molecules, O₂. Ar(O) = 16.', close: 'Oxygen gas is O₂: Mr = 32, not 16.', steps: CFQ('Nothing to convert.', 'm = n × Mr', 'm = 0.15 × 32', 'm = 4.8', '4.8 g') }
+      ],
+      wSteps: [
+        { title: 'Moles of the given substance', eq: EQ_N, find: 'n', carry: '0.05 mol Mg', lines: CFL('Nothing to convert — the mass of magnesium is already in grams throughout the calculation.', 'n = m ÷ Ar', 'n(Mg) = 1.2 ÷ 24', 'n(Mg) = 0.05', '0.05 mol of Mg') },
+        { title: 'The ratio', carry: '0.05 mol H₂', lines: CFL('Nothing to convert.', RATIO, 'Mg : H₂ = 1 : 1, so n(H₂) = 0.05 × 1 ÷ 1', 'n(H₂) = 0.05', '0.05 mol of H₂') },
+        { title: 'Mass of the wanted substance', eq: EQ_N, find: 'm', lines: CFL('Nothing to convert.', 'm = n × Mr', 'm(H₂) = 0.05 × 2', 'm(H₂) = 0.1', '0.1 g of hydrogen produced') }
+      ],
+      aSteps: [
+        { title: 'Moles of the given substance', carry: '0.08 mol CaCO₃', lines: CFQ('Nothing to convert: grams.', 'n = m ÷ Mr', 'n(CaCO₃) = 8.0 ÷ 100', 'n(CaCO₃) = 0.08', '0.08 mol of CaCO₃') },
+        { title: 'The ratio', carry: '0.08 mol CO₂', lines: CFQ('Nothing to convert.', RATIO, 'CaCO₃ : CO₂ = 1 : 1, so n(CO₂) = 0.08 × 1 ÷ 1', 'n(CO₂) = 0.08', '0.08 mol of CO₂') },
+        { title: 'Mass of the wanted substance', lines: CFQ('Nothing to convert.', 'm = n × Mr', 'm(CO₂) = 0.08 × 44', 'm(CO₂) = 3.52', '3.52 g of carbon dioxide') }
+      ],
+      thinkOptions: [
+        { text: 'The ratio is upside down: it should be × 2/3', correct: true, reply: 'Wanted over given. 0.6 × 2/3 = 0.4 mol.' },
+        { text: 'Nothing: 0.9 mol is right', correct: false, reply: 'Three H₂ make only two NH₃, so there must be fewer moles of ammonia, not more.' },
+        { text: 'The moles should have been converted to grams first', correct: false, reply: 'The ratio step works in moles. Grams come in at Step 3.' }
+      ],
+      sortBins: [{ id: '1', label: 'Step 1 · mass to moles' }, { id: '2', label: 'Step 2 · the ratio' }, { id: '3', label: 'Step 3 · moles to mass' }],
+      sortItems: [
+        { text: 'n(Mg) = 4.8 ÷ 24 = 0.2 mol', bin: '1', why: 'Given mass to moles.' },
+        { text: 'n(O₂) = 0.2 × 1 ÷ 2 = 0.1 mol', bin: '2', why: 'Wanted over given coefficient.' },
+        { text: 'm(O₂) = 0.1 × 32 = 3.2 g', bin: '3', why: 'Wanted moles to mass.' },
+        { text: 'n(CaCO₃) = 10 ÷ 100 = 0.1 mol', bin: '1', why: 'Given mass to moles.' },
+        { text: 'm(CaO) = 0.1 × 56 = 5.6 g', bin: '3', why: 'Wanted moles to mass.' },
+        { text: 'n(NH₃) = 0.6 × 2 ÷ 3 = 0.4 mol', bin: '2', why: 'Crossing the ratio.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('State', 'State what the big numbers in a balanced symbol equation tell you.', 'The ratio of moles of each substance.', ['The ratio of moles of each substance', ['The ratio of masses', 'Masses need × Mr as well.'], ['The number of atoms in each molecule', 'That is the small subscript number.']]),
+          MCQ('Give', 'Give the mole ratio of hydrogen to ammonia in N₂ + 3H₂ → 2NH₃.', '3 : 2.', ['3 : 2', ['1 : 2', 'That is nitrogen to ammonia.'], ['2 : 3', 'Hydrogen first: 3 : 2.']])
+        ],
+        r2: [
+          CALC('Calculate the mass of magnesium oxide formed when 4.8 g of magnesium burns completely. 2Mg + O₂ → 2MgO. Ar: Mg = 24, O = 16.', ['Nothing to convert', 'Convert g to kg', 'Convert Mg to O₂'], 0, 8, 'g', ['g', 'mol', 'kg'], 'n(Mg) = 4.8 ÷ 24 = 0.2 mol; ratio 2 : 2 gives 0.2 mol MgO; m = 0.2 × 40 = 8.0 g.', 'Mass to moles, ratio, moles to mass.', ['C · nothing to convert', 'F · n = m ÷ Ar; ratio; m = n × Mr', 'I · n(Mg) = 4.8 ÷ 24 = 0.2; n(MgO) = 0.2 × 2 ÷ 2 = 0.2', 'F · m(MgO) = 0.2 × 40 = 8.0', 'A · 8.0 g'], 0.05),
+          CALC('Calculate the mass of calcium oxide formed when 10 g of calcium carbonate decomposes. CaCO₃ → CaO + CO₂. Mr: CaCO₃ = 100, CaO = 56.', ['Nothing to convert', 'Convert g to kg', 'Convert Mr to g'], 0, 5.6, 'g', ['g', 'mol', 'kg'], 'n(CaCO₃) = 10 ÷ 100 = 0.1 mol; ratio 1 : 1; m(CaO) = 0.1 × 56 = 5.6 g.', 'Three steps: ÷ 100, × 1/1, × 56.', ['C · nothing to convert', 'F · n = m ÷ Mr; ratio; m = n × Mr', 'I · n(CaCO₃) = 10 ÷ 100 = 0.1; n(CaO) = 0.1', 'F · m(CaO) = 0.1 × 56 = 5.6', 'A · 5.6 g'], 0.05)
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain how to calculate the mass of oxygen needed to burn 2.4 g of magnesium (2Mg + O₂ → 2MgO). Put the links in order.',
+            ['Convert the given mass to moles: n(Mg) = 2.4 ÷ 24 = 0.1 mol.', 'Use the ratio Mg : O₂ = 2 : 1, so n(O₂) = 0.1 × 1 ÷ 2 = 0.05 mol.', 'Convert back to mass: m(O₂) = 0.05 × 32 = 1.6 g.'],
+            [['Use the same moles for oxygen as for magnesium.', 'The ratio is 2 : 1, not 1 : 1.'], ['Use Mr = 16 for oxygen.', 'Oxygen gas is O₂, Mr 32.']]),
+          CHAIN('Explain', 'Explain why a balanced equation can be read in grams as well as in moles. Put the links in order.',
+            ['The coefficients give the ratio of moles of each substance.', 'The mass of one mole of a substance in grams is its Mr, so each coefficient × Mr gives a mass.', 'Because mass is conserved, the masses on the two sides add up to the same total, which checks the working.'],
+            [['The coefficients are the masses in grams.', 'They are moles; multiply by Mr for grams.'], ['The subscripts give the moles.', 'Subscripts count atoms in a formula.']])
+        ],
+        r4: [
+          WRITE('Calculate', 6, 'Iron is extracted from iron(III) oxide: Fe₂O₃ + 3CO → 2Fe + 3CO₂. Calculate the mass of iron that can be made from 16 kg of iron(III) oxide. Show each step. Ar: Fe = 56, O = 16.',
+            LV6('kg converted, n(Fe₂O₃) = 100 mol, ratio 1 : 2 gives 200 mol Fe, mass 11 200 g = 11.2 kg, each step shown.', 'Correct moles and ratio with a slip in the final mass, or correct method with the conversion missed.', 'Mr of Fe₂O₃ found (160) or one correct step.'),
+            ['16 kg = 16 000 g. Mr(Fe₂O₃) = 2 × 56 + 3 × 16 = 160.', 'Step 1: n(Fe₂O₃) = 16 000 ÷ 160 = 100 mol.', 'Step 2: ratio Fe₂O₃ : Fe = 1 : 2, so n(Fe) = 100 × 2 ÷ 1 = 200 mol.', 'Step 3: m(Fe) = 200 × 56 = 11 200 g = 11.2 kg.'],
+            ['“n = 16 ÷ 160 = 0.1 mol” (kilograms used)', '“n(Fe) = 100 mol, same as the oxide”'])
+        ]
+      },
+      keyLines: ['The balancing numbers in a symbol equation can be calculated from the masses of reactants and products by converting the masses in grams to amounts in moles; the coefficients are the mole ratio.', 'Masses in a balanced equation: coefficient × Mr for each substance; the two sides add up (2Mg + O₂ → 2MgO reads 48 g + 32 g → 80 g).', 'Reacting masses in three steps. Step 1: n(given) = m ÷ Mr (grams; convert kg or tonnes first). Step 2: n(wanted) = n(given) × wanted coefficient ÷ given coefficient. Step 3: m(wanted) = n × Mr.', 'Use each coefficient once, in the ratio. Hydrogen and oxygen gases are H₂ (Mr 2) and O₂ (Mr 32).', 'Worked: 1.2 g Mg with excess acid gives 0.05 mol Mg, 0.05 mol H₂, 0.1 g of hydrogen.'],
+      endConnects: [LNK('moles', 'Moles'), LNK('mass-changes-reactions', 'Mass changes in reactions'), LNK('using-moles-calculations', 'Using moles in calculations'), LNK('conservation-of-mass', 'Conservation of mass')],
+      bank: ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

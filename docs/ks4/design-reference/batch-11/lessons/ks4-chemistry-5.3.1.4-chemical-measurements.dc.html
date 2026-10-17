@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chemical measurements · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Quantitative chemistry" title="Chemical measurements" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 5.3.1.4 · Combined and Triple</p>
+        <h1>Chemical measurements</h1>
+        <p class="ks3-bigq">Every measurement carries some uncertainty. Choose the right apparatus, read it properly, repeat, and report a mean with its uncertainty: half the range.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Calculates</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Two kitchen jugs." scene="One jug has a mark every 100 mL. The other has a mark every 10 mL. You need 30 mL of milk." question="which jug gets you closer to 30 mL?" options="{{ hookOptions }}" bridge="The closer the marks, the smaller the uncertainty in a reading. The same choice faces a chemist between a measuring cylinder, a pipette and a burette." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-apparatus" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Apparatus and reading it</p>
+        <h2 style="margin: 6px 0 0;">Three ways to measure a volume.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Volumes are measured in cm<sup>3</sup> or dm<sup>3</sup> (1 dm<sup>3</sup> = 1000 cm<sup>3</sup>; 1 cm<sup>3</sup> = 1 mL). Read the bottom of the meniscus, at eye level. A measuring cylinder’s scale runs upwards; a burette’s runs downwards, and a titre is final reading minus initial reading.</p>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ apFig }}</div></div>
+        <p style="margin: 14px 0 0; max-width: 62ch;">You need exactly 25.0 cm<sup>3</sup> of a solution. Which do you reach for?</p>
+        <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ aq.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+        <p aria-live="polite" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ aq.note }}</p>
+      </section>
+
+      <section id="s-words" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Four words, used exactly</p>
+        <h2 style="margin: 6px 0 0;">Accurate, precise, repeatable, reproducible.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">AQA’s definitions, word for word. Tap each.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ wCards }}" as="f" hint-placeholder-count="4"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+        <p style="margin: 14px 0 0; max-width: 62ch;">Measurements are affected by random error, where results vary in unpredictable ways; more measurements and a mean reduce it. Systematic error makes every result differ from the true value by a consistent amount, such as a balance that was not zeroed. A student’s three readings cluster closely but are all 2 g too high. Which word fits?</p>
+        <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ wq.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+        <p aria-live="polite" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ wq.note }}</p>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equations · mean, range, uncertainty</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Use the range of a set of measurements about the mean as a measure of uncertainty. Three lines, one after the other; none is a triangle. Leave an anomalous result out of the mean: it does not belong to the cluster, so it would drag the mean away from the true value.</p>
+        <div style="margin-top: 14px; display: grid; gap: 10px; font-family: var(--ks3-font-mono); font-size: 20px;">
+          <p style="margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">Step 1 · mean = sum of readings ÷ number of readings</p>
+          <p style="margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">Step 2 · range = largest − smallest</p>
+          <p style="margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">Step 3 · uncertainty = ± range ÷ 2, written as mean ± uncertainty</p>
+        </div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ nlFig }}</div></div>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-steps" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Steps" mode="worked" id="cm-w" head="Three titres: 24.10 cm³, 24.30 cm³, 24.20 cm³. Give the result as a mean with its uncertainty." lead="Step 1 the mean. Step 2 the range. Step 3 half the range." steps="{{ wSteps }}" next="Now the same three steps yourself, with an anomaly to spot." hint-size="100%,900px"></dc-import>
+          <div style="margin-top: 22px;">
+            <dc-import name="Ks4Steps" mode="attempt" id="cm-a" head="Four temperature rises: 21.5 °C, 21.3 °C, 23.9 °C, 21.4 °C. One is anomalous. Give the result as a mean with its uncertainty." lead="Leave the anomaly out of every step." steps="{{ aSteps }}" close="23.9 is far from the other three, so it is anomalous and left out of the mean and the range." on-done="{{ onSteps }}" hint-size="100%,900px"></dc-import>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ext" class="ks3-block" style="scroll-margin-top: 92px; border: 2px dashed var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Extension · not on the GCSE specification</p>
+        <h2 style="margin: 6px 0 0;">Percentage uncertainty.</h2>
+        <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Some courses compare an uncertainty with the size of the reading. It explains why a large cylinder is a poor choice for a small volume, but it is not examined at GCSE. Tap the quantity you want to find; the × 100 is its own line.</p>
+        <div style="margin-top: 14px; max-width: 520px;">
+          <dc-import name="Ks4Triangle" eq="{{ eqPct }}" variant="full" hint-size="100%,420px"></dc-import>
+        </div>
+        <p style="margin: 10px 0 0; display: inline-block; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 19px;">% uncertainty = fraction × 100</p>
+        <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Worked (verbatim): 25.0 cm<sup>3</sup> measured with a cylinder of uncertainty ±0.5 cm<sup>3</sup>. % uncertainty = (0.5 ÷ 25.0) × 100 = 0.02 × 100 = 2.0%.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · the whole range?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Readings 12.4, 12.8 and 12.6: the uncertainty is 0.4.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Three readings: 12.4, 12.8, 12.6 cm³. How should the result be written?" options="{{ thinkOptions }}" reveal="Mean 12.6; range 12.8 − 12.4 = 0.4; uncertainty ± 0.4 ÷ 2 = ± 0.2. Result: 12.6 ± 0.2 cm³. The range spans both sides of the mean, so the uncertainty is half of it." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Which word?" prompt="Place each description." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Accurate: close to the true value. Precise: cluster closely. Repeatable: same investigator, same conditions, similar results. Reproducible: different investigators or equipment, similar results." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">A mean, leaving out anomalies; the uncertainty as half the range.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why repeats reduce random error; why a result is anomalous.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Suitable apparatus for a measurement.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Whenever a measurement is made there is always some uncertainty about the result. Repeat, leave out anomalies, take the mean, and report mean ± half the range.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="chemical-measurements" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Chemical measurements" spec="AQA 5.3.1.4 · Combined and Triple" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Using the whole range as the uncertainty?" legal="The readings in this lesson are made up for practice." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+
+const SLUG = 'chemical-measurements';
+const OK = ['Combined Foundation', 'Combined Higher', 'Triple Foundation', 'Triple Higher'];
+const FILE = {"model-of-the-atom":"ks4-chemistry-5.1.1.3-model-of-the-atom.dc.html","subatomic-particles":"ks4-chemistry-5.1.1.4-subatomic-particles.dc.html","relative-atomic-mass":"ks4-chemistry-5.1.1.6-relative-atomic-mass.dc.html","electronic-structure":"ks4-chemistry-5.1.1.7-electronic-structure.dc.html","group-7":"ks4-chemistry-5.1.2.6-group-7.dc.html","transition-metals":"ks4-chemistry-4.1.3.1-transition-metals.dc.html","mass-changes-reactions":"ks4-chemistry-5.3.1.3-mass-changes-reactions.dc.html","chemical-measurements":"ks4-chemistry-5.3.1.4-chemical-measurements.dc.html","moles":"ks4-chemistry-5.3.2.1-moles.dc.html","amounts-in-equations":"ks4-chemistry-5.3.2.2-amounts-in-equations.dc.html","oxidation-reduction":"ks4-chemistry-5.4.1.4-oxidation-reduction.dc.html","salts-neutralisation":"ks4-chemistry-5.4.2.2-salts-neutralisation.dc.html","ph-scale":"ks4-chemistry-5.4.2.4-ph-scale.dc.html","strong-weak-acids":"ks4-chemistry-5.4.2.5-strong-weak-acids.dc.html","electrolysis-principles":"ks4-chemistry-5.4.3.1-electrolysis-principles.dc.html","electrolysis-molten":"ks4-chemistry-5.4.3.2-electrolysis-molten.dc.html","periodic-table":"../../KS4 Batch 4/ks4-chemistry-5.1.2.1-periodic-table.dc.html","group-0":"../../KS4 Batch 5/ks4-chemistry-5.1.2.4-group-0.dc.html","metals-non-metals":"../../KS4 Batch 5/ks4-chemistry-5.1.2.3-metals-non-metals.dc.html","reactivity-series":"../../KS4 Batch 5/ks4-chemistry-5.4.1.1-reactivity-series.dc.html","extraction-of-metals":"../../KS4 Batch 5/ks4-chemistry-5.4.1.3-extraction-of-metals.dc.html","structure-of-atom":"../../KS4 Batch 5/ks4-physics-6.4.1.1-structure-of-atom.dc.html","development-atomic-model":"../../KS4 Batch 5/ks4-physics-6.4.1.3-development-atomic-model.dc.html","atoms-elements-compounds":"/ks4/atoms-elements-compounds","relative-formula-mass":"/ks4/relative-formula-mass","using-moles-calculations":"/ks4/using-moles-calculations","conservation-of-mass":"/ks4/conservation-of-mass","titrations":"/ks4/titrations","percentage-yield":"/ks4/percentage-yield","atom-economy":"/ks4/atom-economy"};
+const ORDER = [["model-of-the-atom","Development of the model of the atom",0],["subatomic-particles","Subatomic particles",0],["relative-atomic-mass","Relative atomic mass, atomic number and isotopes",0],["electronic-structure","Electronic structure",0],["group-7","Group 7: the halogens",0],["transition-metals","Properties of transition metals",1],["mass-changes-reactions","Mass changes in reactions",0],["chemical-measurements","Chemical measurements",0],["moles","Moles",3],["amounts-in-equations","Amounts of substances in equations",3],["oxidation-reduction","Oxidation and reduction",0],["salts-neutralisation","Making salts and neutralisation",0],["ph-scale","The pH scale and neutralisation",0],["strong-weak-acids","Strong and weak acids",3],["electrolysis-principles","The process of electrolysis",0],["electrolysis-molten","Electrolysis of molten ionic compounds",0]];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const CALC = (prompt, convOptions, convAnswer, answer, unit, units, right, wrong, model, tol) => ({ kind: 'calc', command: 'Calculate', marks: 2, prompt, convOptions, convAnswer, answer, tol: tol == null ? 0.05 : tol, unit, units, right, wrong, model });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const LNK = (k, label) => ({ href: FILE[k], label });
+const TX = (x, y, t, size, o) => window.KS4D.T(x, y, t, size, Object.assign({ fill: '#1A1A1A' }, o || {}));
+const TXN = (x, y, t, size, o) => TX(x, y, t, size, Object.assign({ weight: 'normal' }, o || {}));
+const BOX = (x, y, w, h, fill, stroke, sw, rx) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + (rx == null ? 12 : rx) + '" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const INK = '#1A1A1A', TAN = '#F2C9AE', LEAF = '#A9D9BE', RED = '#C8102E', TEAL = '#2E8B7F', MUTED = '#8A8378', PAPER = '#FFFDF8', SKY = '#DDEEF6';
+const CFL = (c, f, i, ft, a, cn) => [{ letter: 'C', label: 'Convert', line: c, note: cn || '' }, { letter: 'F', label: 'Formula', line: f }, { letter: 'I', label: 'Insert', line: i }, { letter: 'F', label: 'Fine-tune', line: ft }, { letter: 'A', label: 'Answer', line: a }];
+const CFQ = (c, f, i, ft, a, pc) => [{ letter: 'C', label: 'Convert', placeholder: pc || 'anything to convert?', line: c }, { letter: 'F', label: 'Formula', placeholder: 'written out', line: f }, { letter: 'I', label: 'Insert', placeholder: 'numbers in', line: i }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: ft }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: a }];
+const EQ_P = { name: 'Percentage uncertainty (extension)', written: 'fraction = uncertainty ÷ measured value, then × 100', source: 'none', top: { s: 'u', name: 'uncertainty', unit: 'same unit as the reading' }, bottom: [{ s: 'f', name: 'fraction (× 100 for %)', unit: 'no unit' }, { s: 'V', name: 'measured value', unit: 'same unit' }] };
+
+const RAIL = [{ id: 's-hook', label: 'Two kitchen jugs', short: 'HOOK' }, { id: 's-apparatus', label: 'Apparatus', short: 'APPARATUS' }, { id: 's-words', label: 'Four words', short: 'WORDS' }, { id: 's-equation', label: 'Mean, range, uncertainty', short: 'EQUATIONS' }, { id: 's-calc', label: 'CFIFA', short: 'CFIFA' }, { id: 's-steps', label: 'Step 1, 2, 3', short: 'STEPS' }, { id: 's-think', label: 'Think again', short: 'THINK' }, { id: 's-sort', label: 'Which word?', short: 'SORT' }, { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }];
+const WC = [
+  { name: 'Accurate', why: 'An accurate measurement is one that is close to the true value.' },
+  { name: 'Precise', why: 'Measurements are precise if they cluster closely.' },
+  { name: 'Repeatable', why: 'Measurements are repeatable when repetition, under the same conditions by the same investigator, gives similar results.' },
+  { name: 'Reproducible', why: 'Measurements are reproducible if similar results are obtained by different investigators with different equipment.' }
+];
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false, calc: 0, steps: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  allSeen(key, n) { return (this.state[key] || []).length >= n; }
+  pick(key, q) {
+    const v = this.state[key], has = typeof v === 'number';
+    return { btns: q.opts.map((o, i) => ({ label: o, pressed: v === i, style: this.seg(v === i), onClick: () => this.setState({ [key]: i, [key + 'Ok']: !!this.state[key + 'Ok'] || i === q.right }) })),
+      note: !has ? (q.ask || 'Pick one.') : v === q.right ? q.yes : (q.no[v] || ''), done: !!this.state[key + 'Ok'], v: has ? v : null };
+  }
+  flags() {
+    const K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    return { R, route, rk, H: rk === 'CH' || rk === 'TH', T: rk === 'TF' || rk === 'TH', TH: rk === 'TH' };
+  }
+  common(done, F, ready) {
+    const s = this.state, K = window.KS4;
+    const av = ORDER.filter((o) => !o[2] || (o[2] === 1 && F.T) || (o[2] === 2 && F.TH) || (o[2] === 3 && F.H)), i = av.findIndex((o) => o[0] === SLUG);
+    return { route: F.route, rk: F.rk, onRoute: F.R.onRoute || (() => {}), isHigher: F.H, notHigher: !F.H, isTriple: F.T, notTriple: !F.T, isTH: F.TH, notTH: !F.TH,
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready,
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (x) => this.setState({ hook: x }), onThink: (x) => this.setState({ think: x }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }),
+      onCalc: (k) => this.setState((st) => ({ calc: Math.max(st.calc || 0, k || 1) })), onSteps: () => this.setState({ steps: true }),
+      endPrev: i > 0 ? LNK(av[i - 1][0], av[i - 1][1]) : null,
+      endNext: i >= 0 && i < av.length - 1 ? LNK(av[i + 1][0], av[i + 1][1]) : null };
+  }
+
+  apFig() {
+    const D = window.KS4D; let b = '';
+    // burette
+    b += BOX(90, 40, 26, 200, SKY, INK, 2, 3) + '<path d="M90 240 l13 20 l13 -20 z" fill="' + SKY + '" stroke="' + INK + '" stroke-width="2"/>' + D.line(103, 260, 103, 280, 2.5, INK);
+    [0, 1, 2, 3, 4].forEach((i) => { b += D.line(116, 60 + i * 40, 126, 60 + i * 40, 1.5, INK) + TXN(132, 64 + i * 40, String(i * 10), 11, { anchor: 'start' }); });
+    b += TX(103, 300, 'burette', 15) + TXN(103, 318, 'scale runs down', 12, { fill: MUTED }) + TXN(103, 334, 'variable volume, ±0.05 cm³ a reading', 11, { fill: MUTED });
+    // pipette
+    b += D.line(290, 40, 290, 110, 4, INK) + '<ellipse cx="290" cy="150" rx="18" ry="40" fill="' + SKY + '" stroke="' + INK + '" stroke-width="2"/>' + D.line(290, 190, 290, 275, 4, INK) + D.line(280, 100, 300, 100, 2, RED);
+    b += TX(290, 300, 'pipette', 15) + TXN(290, 318, 'one fixed volume, e.g. 25.0 cm³', 12, { fill: MUTED }) + TXN(290, 334, 'the smallest uncertainty for that volume', 11, { fill: MUTED });
+    // measuring cylinder
+    b += BOX(440, 90, 60, 180, SKY, INK, 2, 4) + BOX(425, 266, 90, 10, PAPER, INK, 2, 3);
+    [0, 1, 2, 3, 4].forEach((i) => { b += D.line(440, 250 - i * 40, 452, 250 - i * 40, 1.5, INK) + TXN(458, 254 - i * 40, String(i * 25), 11, { anchor: 'start' }); });
+    b += TX(470, 300, 'measuring cylinder', 15) + TXN(470, 318, 'scale runs up', 12, { fill: MUTED }) + TXN(470, 334, 'bigger graduations, bigger uncertainty', 11, { fill: MUTED });
+    // meniscus close-up
+    b += BOX(600, 120, 90, 80, PAPER, INK, 2, 8) + '<path d="M604 160 q41 18 82 0" fill="' + SKY + '" stroke="' + INK + '" stroke-width="2"/>' + '<rect x="604" y="160" width="82" height="36" fill="' + SKY + '"/>' + D.line(604, 196, 686, 196, 1, INK);
+    b += D.arrow(720, 170, 650, 170, RED, 2.5) + TXN(645, 108, 'read the bottom of the meniscus,', 11) + TXN(645, 222, 'at eye level', 11);
+    return D.svg(760, 350, b, 'Burette (scale running downwards), pipette (one fixed volume) and measuring cylinder (scale running upwards), with a close-up of a meniscus read from its bottom at eye level.');
+  }
+  nlFig() {
+    const D = window.KS4D; let b = ''; const x0 = 80, x1 = 640, lo = 24.0, hi = 24.4;
+    const X = (v) => x0 + (v - lo) / (hi - lo) * (x1 - x0);
+    b += D.line(x0, 120, x1, 120, 3, INK);
+    [24.0, 24.1, 24.2, 24.3, 24.4].forEach((v) => { b += D.line(X(v), 112, X(v), 128, 2, INK) + TXN(X(v), 150, v.toFixed(2), 13); });
+    [24.10, 24.30, 24.20].forEach((v) => { b += D.circ(X(v), 92, 8, TEAL, INK, 2); });
+    b += '<path d="M' + X(24.1) + ' 60 v-14 h' + (X(24.3) - X(24.1)) + ' v14" fill="none" stroke="' + RED + '" stroke-width="2.5"/>' + TX(X(24.2), 36, 'range 0.20', 14, { fill: RED });
+    b += '<polygon points="' + X(24.2) + ',104 ' + (X(24.2) - 8) + ',88 ' + (X(24.2) + 8) + ',88" fill="' + INK + '"/>' + TX(X(24.2), 185, 'mean 24.20 ± 0.10 cm³', 16) + TXN(X(24.2), 207, 'the uncertainty reaches 0.10 each side of the mean: half the range', 12, { fill: MUTED });
+    return D.svg(720, 225, b, 'Three titres 24.10, 24.30 and 24.20 on a number line; the range bracket spans 0.20 and the mean 24.20 sits in the middle, so the result is 24.20 ± 0.10 cm³.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4, D = window.KS4D, F = this.flags();
+    const ready = !!(s.libReady && K && D);
+    const fig = (f) => (ready ? K.fig(f(), '') : null);
+    const aq = this.pick('aq', { opts: ['A 25 cm³ pipette', 'A 50 cm³ burette', 'A 100 cm³ measuring cylinder'], right: 0, yes: 'Yes: a pipette delivers its one fixed volume with the smallest uncertainty. A burette is for a variable volume; a large cylinder has the biggest uncertainty.', no: ['', 'A burette suits a volume you do not know in advance, read as final minus initial. For one fixed volume the pipette is better.', 'Its graduations are far apart, so the uncertainty is large for a small volume.'] });
+    const wq = this.pick('wq', { opts: ['Precise but not accurate: a systematic error', 'Accurate but not precise', 'Random error'], right: 0, yes: 'Yes: clustering closely is precision; being consistently 2 g out is a systematic error, so the readings are not accurate. Repeating cannot remove it; zeroing the balance can.', no: ['', 'All 2 g too high is not close to the true value.', 'Random error scatters readings; a consistent 2 g is systematic.'] });
+    const BANK = [
+      Q('Three titres are 22.40, 22.60 and 22.50 cm³. What is the result, written as mean ± uncertainty?', '22.50 ± 0.10 cm³', [['22.50 ± 0.20 cm³', 'The range is 0.20; the uncertainty is half the range.'], ['22.60 ± 0.10 cm³', 'The mean is (22.40 + 22.60 + 22.50) ÷ 3 = 22.50.'], ['22.50 ± 0.05 cm³', 'Half of the range 0.20 is 0.10.']]),
+      Q('A student’s four readings are 15.2, 15.4, 18.9 and 15.3 g. What should she do with 18.9 g?', 'Leave it out of the mean as anomalous', [['Include it: every reading counts', 'An anomaly would drag the mean away from the true value.'], ['Use it as the mean', 'It is the odd one out.'], ['Double the others to match it', 'Never adjust readings to fit.']]),
+      Q('Which statement describes precise measurements?', 'They cluster closely', [['They are close to the true value', 'That is accurate.'], ['They were taken by different investigators', 'That is reproducible.'], ['They are all whole numbers', 'Precision is about clustering, not rounding.']]),
+      Q('Why does taking repeat readings and a mean improve a result?', 'It reduces random error, because unpredictable variations partly cancel', [['It removes systematic error', 'A consistent offset stays in every reading; repeating cannot remove it.'], ['It makes the apparatus more accurate', 'The apparatus is unchanged.'], ['It increases the range', 'The aim is a mean with a small uncertainty.']]),
+      Q('You need to measure exactly 25.0 cm³ of sodium hydroxide solution. Which apparatus gives the smallest uncertainty?', 'A 25 cm³ pipette', [['A 250 cm³ measuring cylinder', 'Large graduations: large uncertainty for 25 cm³.'], ['A 250 cm³ beaker', 'Beakers are not for measuring.'], ['A 50 cm³ burette, read once', 'A burette gives a variable volume from two readings; the pipette is made for this one volume.']])
+    ];
+    const done = [s.hook !== null, aq.done, this.allSeen('wc', 4) && wq.done, true, s.calc >= 2, s.steps, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done, F, ready);
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'The jug marked every 10 mL', correct: true, reply: 'With marks 10 mL apart you can judge 30 mL to within a few millilitres. With marks 100 mL apart you are guessing. Smaller graduations, smaller uncertainty.' },
+        { text: 'The jug marked every 100 mL', correct: false, reply: 'Its first mark is already 100 mL, so 30 mL is a guess. The finer the marks, the smaller the uncertainty, and that is why a chemist chooses between a cylinder, a pipette and a burette.' }
+      ],
+      apFig: fig(() => this.apFig()), aq, wCards: this.cards(WC, 'wc'), wq, nlFig: fig(() => this.nlFig()), eqPct: EQ_P,
+      cfExamples: [
+        { tab: 'Step 1 alone · the mean', next: 'Now Step 3 alone.', head: 'Three volumes of gas are collected: 0.025 dm³, 26 cm³ and 24 cm³. Calculate the mean volume in cm³.', steps: CFL('0.025 dm³ × 1000 = 25 cm³, so the readings are 25, 26, 24 cm³', 'mean = sum of readings ÷ number of readings', 'mean = (25 + 26 + 24) ÷ 3', 'mean = 75 ÷ 3 = 25', '25 cm³', 'All readings must be in the same unit before adding.') },
+        { tab: 'Step 3 alone · the uncertainty', next: 'Now the three steps chained, below.', head: 'A set of readings has a mean of 18.6 °C and a range of 0.6 °C. Give the result with its uncertainty.', steps: CFL('Nothing to convert: both in °C.', 'uncertainty = ± range ÷ 2', 'uncertainty = ± 0.6 ÷ 2', 'uncertainty = ± 0.3', '18.6 ± 0.3 °C') }
+      ],
+      cfQuestions: [
+        { tab: 'Question 1', id: 'cm-q1', head: 'Three masses: 2.42 g, 2.46 g, 2.44 g. Calculate the mean.', close: 'Add the three and divide by 3.', steps: CFQ('Nothing to convert: all in grams.', 'mean = sum ÷ number of readings', 'mean = (2.42 + 2.46 + 2.44) ÷ 3', 'mean = 7.32 ÷ 3 = 2.44', '2.44 g') },
+        { tab: 'Question 2', id: 'cm-q2', head: 'A set of titres has a mean of 23.45 cm³ and a range of 0.30 cm³. Give the result with its uncertainty.', close: '± 0.30 is the whole range; the uncertainty is half of it.', steps: CFQ('Nothing to convert.', 'uncertainty = ± range ÷ 2', 'uncertainty = ± 0.30 ÷ 2', 'uncertainty = ± 0.15', '23.45 ± 0.15 cm³') }
+      ],
+      wSteps: [
+        { title: 'The mean', carry: 'mean 24.20 cm³', lines: CFL('Nothing to convert: all in cm³. No anomaly: the three are close.', 'mean = sum of readings ÷ number of readings', 'mean = (24.10 + 24.30 + 24.20) ÷ 3', 'mean = 72.60 ÷ 3 = 24.20', '24.20 cm³') },
+        { title: 'The range', carry: 'range 0.20 cm³', lines: CFL('Nothing to convert.', 'range = largest − smallest', 'range = 24.30 − 24.10', 'range = 0.20', '0.20 cm³') },
+        { title: 'Half the range', lines: CFL('Nothing to convert.', 'uncertainty = ± range ÷ 2, result = mean ± uncertainty', 'uncertainty = ± 0.20 ÷ 2', 'uncertainty = ± 0.10', '24.20 ± 0.10 cm³') }
+      ],
+      aSteps: [
+        { title: 'The mean, without the anomaly', carry: 'mean 21.4 °C', lines: CFQ('23.9 °C is anomalous: leave it out. Readings used: 21.5, 21.3, 21.4', 'mean = sum ÷ number of readings', 'mean = (21.5 + 21.3 + 21.4) ÷ 3', 'mean = 64.2 ÷ 3 = 21.4', '21.4 °C', 'any anomaly?') },
+        { title: 'The range, without the anomaly', carry: 'range 0.2 °C', lines: CFQ('Still leaving out 23.9.', 'range = largest − smallest', 'range = 21.5 − 21.3', 'range = 0.2', '0.2 °C') },
+        { title: 'Half the range', lines: CFQ('Nothing to convert.', 'uncertainty = ± range ÷ 2', 'uncertainty = ± 0.2 ÷ 2', 'uncertainty = ± 0.1', '21.4 ± 0.1 °C') }
+      ],
+      thinkOptions: [
+        { text: '12.6 ± 0.2 cm³', correct: true, reply: 'Half the range, either side of the mean.' },
+        { text: '12.6 ± 0.4 cm³', correct: false, reply: '0.4 is the whole range. The mean sits in the middle, so the uncertainty is 0.2 each way.' },
+        { text: '12.8 ± 0.2 cm³', correct: false, reply: 'The mean is (12.4 + 12.8 + 12.6) ÷ 3 = 12.6.' }
+      ],
+      sortBins: [{ id: 'a', label: 'Accurate' }, { id: 'p', label: 'Precise' }, { id: 'r', label: 'Repeatable' }, { id: 'o', label: 'Reproducible' }],
+      sortItems: [
+        { text: 'Close to the true value', bin: 'a', why: 'Accuracy.' },
+        { text: 'Readings cluster closely', bin: 'p', why: 'Precision.' },
+        { text: 'Same investigator, same conditions, similar results', bin: 'r', why: 'Repeatable.' },
+        { text: 'Different investigators, different equipment, similar results', bin: 'o', why: 'Reproducible.' },
+        { text: 'A small range', bin: 'p', why: 'Clustering closely.' },
+        { text: 'Another class gets the same value', bin: 'o', why: 'Different people and equipment.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('State', 'State what is meant by an accurate measurement.', 'One that is close to the true value.', ['One that is close to the true value', ['One that is repeated many times', 'Repeats help, but accuracy is closeness to the true value.'], ['One with lots of decimal places', 'Decimal places do not make a reading accurate.']]),
+          MCQ('Give', 'Give the type of error that a balance which was not zeroed introduces.', 'Systematic: every reading differs from the true value by the same amount.', ['Systematic error', ['Random error', 'Random error varies unpredictably; an un-zeroed balance shifts every reading the same way.'], ['No error', 'Every reading is offset.']])
+        ],
+        r2: [
+          CALC('Three titres are 19.80, 20.00 and 19.90 cm³. Calculate the uncertainty, as ± half the range, in cm³.', ['Nothing to convert', 'Convert cm³ to dm³', 'Convert cm³ to g'], 0, 0.1, 'cm³', ['cm³', 'dm³', 'g'], 'Range 20.00 − 19.80 = 0.20; half is ± 0.10 cm³. Mean 19.90, so 19.90 ± 0.10 cm³.', 'Uncertainty = ± range ÷ 2.', ['C · nothing to convert', 'F · uncertainty = ± range ÷ 2', 'I · range = 20.00 − 19.80 = 0.20; ± 0.20 ÷ 2', 'F · ± 0.10', 'A · 19.90 ± 0.10 cm³'], 0.02),
+          CALC('Four temperature rises are 6.2, 6.4, 9.1 and 6.3 °C. One is anomalous. Calculate the mean of the others, in °C.', ['Nothing to convert; leave out 9.1', 'Nothing to convert; use all four', 'Convert °C to K'], 0, 6.3, '°C', ['°C', 'K', 'cm³'], '9.1 is anomalous. (6.2 + 6.4 + 6.3) ÷ 3 = 18.9 ÷ 3 = 6.3 °C.', 'Leave the anomaly out: it would drag the mean away from the true value.', ['C · leave out 9.1 (anomalous)', 'F · mean = sum ÷ number of readings', 'I · mean = (6.2 + 6.4 + 6.3) ÷ 3', 'F · mean = 18.9 ÷ 3 = 6.3', 'A · 6.3 °C'], 0.05)
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain why a student leaves one reading out when calculating a mean. Put the links in order.',
+            ['The reading is far from the others, which cluster closely.', 'It is anomalous: most likely caused by a mistake or a one-off random error.', 'Including it would drag the mean away from the true value, so it is left out of the mean and the range.'],
+            [['It is the largest reading, and the largest is always wrong.', 'Size alone is not the test; distance from the cluster is.'], ['Leaving it out makes the range bigger.', 'Leaving it out makes the range smaller.']]),
+          CHAIN('Explain', 'Explain why a pipette is used rather than a measuring cylinder to measure 25.0 cm³ of alkali for a titration. Put the links in order.',
+            ['A pipette is made to deliver one fixed volume, 25.0 cm³.', 'Its uncertainty for that volume is much smaller than a cylinder’s, whose graduations are far apart.', 'A smaller uncertainty in the volume gives a more accurate result.'],
+            [['A pipette holds more liquid.', 'It holds one fixed volume.'], ['A cylinder cannot be read.', 'It can, from the bottom of the meniscus, but with a larger uncertainty.']])
+        ],
+        r4: [
+          WRITE('Explain', 6, 'A student measures the volume of gas produced in a reaction five times and records 48, 50, 49, 61 and 50 cm³. Describe how she should process these results to report a value with its uncertainty, and explain why repeating the measurement improves the result.',
+            LV6('Anomaly identified and excluded, mean 49.25 (49) cm³, range 2, uncertainty ± 1 cm³, written as mean ± uncertainty, with random error explained and the limit on systematic error noted.', 'Mean with anomaly excluded and uncertainty as half the range, or a full calculation without the explanation.', 'Mean calculated, or anomaly spotted.'),
+            ['61 cm³ is anomalous and is left out.', 'Mean = (48 + 50 + 49 + 50) ÷ 4 = 49.25, about 49 cm³.', 'Range = 50 − 48 = 2 cm³, so uncertainty = ± 1 cm³.', 'Result: 49 ± 1 cm³.', 'Repeats and a mean reduce random error, because unpredictable variations partly cancel out.', 'Repeating does not remove systematic error, which shifts every reading the same way.'],
+            ['“Uncertainty = the range = 2 cm³.”', '“Include 61 because every reading counts.”'])
+        ]
+      },
+      keyLines: ['Whenever a measurement is made there is always some uncertainty about the result obtained. Use the range of a set of measurements about the mean as a measure of uncertainty: mean ± (range ÷ 2). Leave anomalies out.', 'Accurate: close to the true value. Precise: cluster closely. Repeatable: same investigator, same conditions, similar results. Reproducible: different investigators, different equipment, similar results.', 'Random error: results vary unpredictably; reduce it with more measurements and a mean. Systematic error: every result differs from the true value by a consistent amount; repeats do not remove it.', 'Volumes: pipette for one fixed volume (smallest uncertainty), burette for a variable volume (scale runs down; titre = final − initial), measuring cylinder (scale runs up; larger graduations, larger uncertainty). Read the bottom of the meniscus at eye level. 1 dm³ = 1000 cm³.', 'Worked: titres 24.10, 24.30, 24.20 cm³ give 24.20 ± 0.10 cm³. Percentage uncertainty is an extension only, not on the specification.'],
+      endConnects: [LNK('mass-changes-reactions', 'Mass changes in reactions'), LNK('titrations', 'Titrations'), LNK('conservation-of-mass', 'Conservation of mass')],
+      bank: ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -31,6 +31,11 @@ import ks4_rulings
 from ks4_rulings import RulingError, _require
 
 
+B11_HIGHER_ONLY_PILL = (ks4_rulings._INDENT10 + '<span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; '
+                        'letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; '
+                        'background: var(--ks3-ink); color: var(--ks3-ground);">Higher only</span>\n')
+
+
 def _chip(slug, tpl):
     # ⊕ B10-ALL-FOUR-PILL: batch 10 draws ONE header pill, "All four routes", on its four-route pages (no tier pill
     # beside it). That single pill is what the route chip replaces. Taken only when the tier pill is absent and the
@@ -38,6 +43,15 @@ def _chip(slug, tpl):
     allfour = ks4_rulings.R12_PATHWAY_STD_SPAN.replace("Combined · Triple", "All four routes")
     if tpl.count(ks4_rulings.R12_TIER_LINE) == 0 and tpl.count(allfour) == 1:
         return tpl.replace(allfour, ks4_rulings.R12_CHIP_BLOCK, 1)
+    # ⊕ B11-HIGHER-PILL: batch 11's three Higher-only Chemistry pages (moles, amounts-in-equations, strong-weak-acids: CH TH)
+    # draw a filled "Higher only" pill and the "Combined · Triple" pill, and NO "Foundation · Higher" tier pill. "Higher only"
+    # is the tier pill in other words (the eyebrow beside the title already reads "· Higher only"), and the route chip's own
+    # words name the tier, so the pill goes and the pathway pill becomes the chip. Taken only when the tier pill is absent
+    # and both pills are there exactly once: batches 4-8 all carry the tier pill, so none of them can reach it.
+    if (tpl.count(ks4_rulings.R12_TIER_LINE) == 0 and tpl.count(B11_HIGHER_ONLY_PILL) == 1
+            and tpl.count(ks4_rulings.R12_PATHWAY_STD_SPAN) == 1):
+        tpl = tpl.replace(B11_HIGHER_ONLY_PILL, "", 1)
+        return tpl.replace(ks4_rulings.R12_PATHWAY_STD_SPAN, ks4_rulings.R12_CHIP_BLOCK, 1)
     _require(tpl, ks4_rulings.R12_TIER_LINE, slug, "B-R12 (tier span)")
     tpl = tpl.replace(ks4_rulings.R12_TIER_LINE, "", 1)
     std = ks4_rulings.R12_PATHWAY_STD_SPAN
@@ -131,6 +145,18 @@ PRACTICE_PARSE_TO = ("const v = (" + ks4_rulings.R16_PARSE_FN + ")(st.num); // �
 def apply_practice_parse(text):
     _require(text, PRACTICE_PARSE_FROM, "Ks4Practice.dc.html", "B-PRACTICE-PARSE")
     return text.replace(PRACTICE_PARSE_FROM, PRACTICE_PARSE_TO, 1)
+
+# ⊕ B11W-PM (batch 11 only, applied to batch 11's OWN copy of Ks4Practice by compile_block): the calc rung reads the
+# answer with parseFloat, which is NaN on a leading ± so "±0.10" was marked wrong. A leading ± or + is stripped first.
+# Scoped by design_dir exactly as END-EMPTY-CONNECTS is, so batches 4-10 stay byte-identical.
+PRACTICE_PM_FROM = ")(st.num); // \u2295 B-PRACTICE-PARSE (R16 for Ks4Practice)"
+PRACTICE_PM_TO = ")(String(st.num).replace(/^\\s*[\\u00b1+]\\s*/, '')); // \u2295 B-PRACTICE-PARSE (R16 for Ks4Practice) + B11W-PM"
+
+
+def apply_practice_pm(text):
+    _require(text, PRACTICE_PM_FROM, "Ks4Practice.dc.html", "B11W-PM")
+    return text.replace(PRACTICE_PM_FROM, PRACTICE_PM_TO, 1)
+
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -784,6 +810,8 @@ _LNK_PREV_RE = re.compile(r"^(\s*)endPrev:[^\n]*\n", re.M)
 _LNK_NEXT_RE = re.compile(r"^(\s*)endNext:[^\n]*\n", re.M)
 _COMMON_DONE = "const c = this.common(done);"
 _COMMON_DONE_FFR = "const c = this.common(done, F, ready);"   # ⊕ batch 10: common(done, F, ready)
+_COMMON_DONE_RAIL = "const c = this.common(done, F, ready, rail);"        # ⊕ batch 11
+_COMMON_DONE_RAIL_CM = "const cm = this.common(done, F, ready, rail);"   # ⊕ batch 11 (electrolysis-molten)
 
 
 def apply_lnk_links(source_file, logic):
@@ -791,13 +819,23 @@ def apply_lnk_links(source_file, logic):
         return logic, 0, 0
     # ⊕ Batch 10: its pages call `this.common(done, F, ready)`. Batch 8's spelling is tried first and unchanged.
     common = _COMMON_DONE if (logic.count(_COMMON_DONE) == 1 and logic.count(_COMMON_DONE_FFR) == 0) else _COMMON_DONE_FFR
+    cvar = "c"
+    # ⊕ Batch 11: two more spellings, tried ONLY when neither of the batch 8 / batch 10 spellings is present, so no earlier
+    # page can reach them. Her mass-changes, oxidation-reduction, ph-scale and electrolysis-principles pages pass the rail as
+    # a fourth argument (`common(done, F, ready, rail)`); electrolysis-molten also names the result `cm`, because `c` is its
+    # compound picker. The resolver's route is set from whichever name the page really uses.
+    if logic.count(_COMMON_DONE) == 0 and logic.count(_COMMON_DONE_FFR) == 0:
+        for cand, var in ((_COMMON_DONE_RAIL, "c"), (_COMMON_DONE_RAIL_CM, "cm")):
+            if logic.count(cand) == 1:
+                common, cvar = cand, var
+                break
     if len(_FILE_RE.findall(logic)) != 1 or logic.count(_LNK_DEF) != 1 or logic.count(common) != 1:
         raise RulingError("ks4_batch_rulings B8-LNK: %s does not carry exactly one FILE map, one LNK helper and one "
                           "`%s`." % (source_file, common))
     logic = _FILE_RE.sub("const FILE = {}; // \u2295 B8-LNK: links resolve through KS4.hrefFor", logic, count=1)
     logic = logic.replace(_LNK_DEF, "let LNK_R = null; // \u2295 B8-LNK\n"
                           "const LNK = (k, label) => ({ href: ((window.KS4 && LNK_R) ? window.KS4.hrefFor(k, LNK_R) : null), label });", 1)
-    logic = logic.replace(common, common + " LNK_R = c;", 1)
+    logic = logic.replace(common, common + " LNK_R = %s;" % cvar, 1)
     n = []
     for rx, key, prop in ((_LNK_PREV_RE, "endPrev", "prev"), (_LNK_NEXT_RE, "endNext", "next")):
         if ("%s: this.props.mrbPrevNext.%s," % (key, prop)) in logic:
@@ -1247,6 +1285,478 @@ SCIENCE.extend([
          new="TXN(90, 298, 'soil, water, temperature', 13, { anchor: 'start' })"),
 ])
 
+
+# ═══ Batch 11: port mechanics (not science rulings) ═══
+# B11-<SLUG>-CHIP, one per batch-11 lesson: her `common(done, F, ready[, rail])` returns a FRESH object with the same
+# `onRoute: F.R.onRoute || (() => {}), isHigher: F.H,` as batch 10, so B-R12's route chip got no words and no menu.
+# Same repair as B10-<SLUG>-CHIP.
+_B11_SLUGS = ['model-of-the-atom', 'subatomic-particles', 'relative-atomic-mass', 'electronic-structure', 'group-7', 'transition-metals', 'mass-changes-reactions', 'chemical-measurements', 'moles', 'amounts-in-equations', 'oxidation-reduction', 'salts-neutralisation', 'ph-scale', 'strong-weak-acids', 'electrolysis-principles', 'electrolysis-molten']
+SCIENCE.extend(
+    dict(id="B11-%s-CHIP" % sl.upper(), slug=sl, layer="logic",
+         old="onRoute: F.R.onRoute || (() => {}), isHigher: F.H,",
+         new="onRoute: F.R.onRoute || (() => {}), routeWords: F.R.routeWords, routeSwitchOptions: F.R.routeSwitchOptions, isHigher: F.H,")
+    for sl in _B11_SLUGS)
+
+# B11-AIE-NOLINKS (lane ruling G2): amounts-in-equations ships CH TH, but Percentage yield and Atom economy are Triple-only
+# pages (TF TH). On Combined Higher there is no such page, so the words stay and the link does not (no dead '#' anchor). On
+# Triple Higher both link. Same rule as batch 8's "(Triple)" pointers. Inline <sc-if> inside the <p>.
+SCIENCE.append(
+    dict(id='B11-AIE-NOLINKS', slug='amounts-in-equations', layer='template',
+         old='<a href="{{ pyHref }}">Percentage yield</a> and <a href="{{ aeHref }}">Atom economy</a>',
+         new='<sc-if value="{{ isTriple }}"><a href="{{ pyHref }}">Percentage yield</a> and <a href="{{ aeHref }}">Atom economy</a></sc-if>'
+             '<sc-if value="{{ notTriple }}">Percentage yield and Atom economy</sc-if>'))
+
+# ═══ Batch 11 (examination): the lead's rulings, verbatim from the examiner files (RULINGS-b11) ═══
+SCIENCE_B11 = [
+    dict(id='B11-MOA-SORT', slug='model-of-the-atom', layer='template',
+         old='title="Which model says this?"',
+         new='title="Which model first said this?"'),
+    dict(id='B11-MOA-CHAIN', slug='model-of-the-atom', layer='logic',
+         old="'The electron was discovered: a particle much smaller than an atom, found inside atoms.'",
+         new="'Then the electron was discovered: a particle much smaller than an atom, found inside atoms.'"),
+    dict(id='B11-MOA-NAMES-1', slug='model-of-the-atom', layer='logic',
+         old="{ t: 'Plum pudding model (about 1904): ",
+         new="{ t: 'Plum pudding model (Thomson, about 1904): "),
+    dict(id='B11-MOA-NAMES-2', slug='model-of-the-atom', layer='logic',
+         old="{ t: 'Alpha-scattering experiment (1911): ",
+         new="{ t: 'Rutherford’s alpha-scattering (gold foil) experiment (1911): "),
+    dict(id='B11-SUB-KEYHT', slug='subatomic-particles', layer='logic',
+         old="'Ions: atoms lose electrons to become positive, gain electrons to become negative. Protons never change. Neutrons = mass number − atomic number; electrons in an ion = protons − charge (²⁷₁₃Al³⁺: 13 p, 14 n, 10 e).', 'Higher: half equations such as Mg → Mg²⁺ + 2e⁻ and Cl₂ + 2e⁻ → 2Cl⁻ show the electrons lost or gained; the charge must balance on both sides.'],",
+         new="'Ions: atoms lose electrons to become positive, gain electrons to become negative. Protons never change. Neutrons = mass number − atomic number; electrons in an ion = protons − charge (²⁷₁₃Al³⁺: 13 p, 14 n, 10 e).'].concat(F.H ? ['Higher: half equations such as Mg → Mg²⁺ + 2e⁻ and Cl₂ + 2e⁻ → 2Cl⁻ show the electrons lost or gained; the charge must balance on both sides.'] : []),"),
+    dict(id='B11-SUB-CHAIN', slug='subatomic-particles', layer='logic',
+         old="'The atomic number (bottom) is the number of protons.'",
+         new="'Of that total, the atomic number (bottom) is the number of protons.'"),
+    dict(id='B11-SUB-NEUTRAL', slug='subatomic-particles', layer='logic',
+         old="no: ['', it.ch === 0 ? '' : 'That is the number of protons. The charge tells you electrons were ' + (it.ch > 0 ? 'lost' : 'gained') + '.', 'Wrong direction: a positive ion has lost electrons, a negative ion has gained them.'] });",
+         new="no: ['', it.ch === 0 ? 'A neutral atom has as many electrons as protons: ' + it.Z + '.' : 'That is the number of protons. The charge tells you electrons were ' + (it.ch > 0 ? 'lost' : 'gained') + '.', it.ch === 0 ? 'A neutral atom has as many electrons as protons: ' + it.Z + '.' : 'Wrong direction: a positive ion has lost electrons, a negative ion has gained them.'] });"),
+    dict(id='B11-SUB-SORTZ', slug='subatomic-particles', layer='logic',
+         old="{ text: 'Its number is the atomic number', bin: 'p'",
+         new="{ text: 'Its number is the atomic number, even in an ion', bin: 'p'"),
+    dict(id='B11-RAM-21', slug='relative-atomic-mass', layer='logic',
+         old="['21', 'That is the simple average of 10 and 11, with no abundances.']",
+         new="['10.5', 'That is the simple average of 10 and 11, with no abundances.']"),
+    dict(id='B11-RAM-AG', slug='relative-atomic-mass', layer='logic',
+         old="CALC('Silver atoms are silver-107 and silver-109 in the ratio 13 : 12. Calculate the relative atomic mass of silver to 1 decimal place.', ['Nothing to convert', 'Convert the ratio to percentages: 52% and 48%', 'Convert the ratio to percentages: 13% and 12%'], 1, 107.96, 'no unit', ['no unit', 'g', '%'], '13 : 12 is 25 parts: 52% and 48%. [(52 × 107) + (48 × 109)] ÷ 100 = (5564 + 5232) ÷ 100 = 107.96, so 108.0.', 'Turn the ratio into percentages that add to 100 before inserting.', ['C · 13 : 12 = 52% and 48%', 'F · Ar = [Σ(% × mass number)] ÷ 100', 'I · Ar = [(52 × 107) + (48 × 109)] ÷ 100', 'F · Ar = 10 796 ÷ 100 = 107.96', 'A · 108.0 (no unit)'], 0.15)",
+         new="CALC('Thallium atoms are thallium-203 and thallium-205 in the ratio 3 : 7. Calculate the relative atomic mass of thallium to 1 decimal place.', ['Nothing to convert', 'Convert the ratio to percentages: 30% and 70%', 'Convert the ratio to percentages: 3% and 7%'], 1, 204.4, 'no unit', ['no unit', 'g', '%'], '3 : 7 is 10 parts: 30% and 70%. [(30 × 203) + (70 × 205)] ÷ 100 = (6090 + 14 350) ÷ 100 = 204.4.', 'Turn the ratio into percentages that add to 100 before inserting.', ['C · 3 : 7 = 30% and 70%', 'F · Ar = [Σ(% × mass number)] ÷ 100', 'I · Ar = [(30 × 203) + (70 × 205)] ÷ 100', 'F · Ar = 20 440 ÷ 100 = 204.4', 'A · 204.4 (no unit)'], 0.15)"),
+    dict(id='B11-RAM-ISOCHEM', slug='relative-atomic-mass', layer='template',
+         old='Same atomic number, so the same element; different mass number.</p>',
+         new='Same atomic number, so the same element; different mass number. Isotopes have the same number of electrons, and chemical reactions involve the electrons, so isotopes of an element have the same chemical properties.</p>'),
+    dict(id='B11-RAM-CHAIN', slug='relative-atomic-mass', layer='logic',
+         old="'About 75% of chlorine atoms are chlorine-35 and 25% are chlorine-37.'",
+         new="'These isotopes are not equally common: about 75% of chlorine atoms are chlorine-35 and 25% are chlorine-37.'"),
+    dict(id='B11-RAM-HERRING', slug='relative-atomic-mass', layer='logic',
+         old="['Each chlorine atom has 17.5 neutrons.'",
+         new="['Each chlorine atom has 18.5 neutrons.'"),
+    dict(id='B11-RAM-UNIT', slug='relative-atomic-mass', layer='logic',
+         old="{ letter: 'A', label: 'Answer', placeholder: 'with unit', line: a }",
+         new="{ letter: 'A', label: 'Answer', placeholder: 'Ar has no unit', line: a }"),
+    dict(id='B11-ES-OPTS', slug='electronic-structure', layer='logic',
+         old="while (opts.length < 3) opts.push(right + ',1');",
+         new="while (opts.length < 3) opts.push('1,' + cfg.slice(1, -1).concat([cfg[cfg.length - 1] + 1]).join(','));"),
+    dict(id='B11-ES-CHAIN', slug='electronic-structure', layer='logic',
+         old="'Elements with the same number of outer electrons are in the same group and have similar chemical properties.'",
+         new="'So, like all elements with the same number of outer electrons, they are in the same group and have similar chemical properties.'"),
+    dict(id='B11-G7-NOCHANGE-1', slug='group-7', layer='logic',
+         old="(reacts ? ion.col : '#F3F0E7')",
+         new='(reacts ? ion.col : h.col)'),
+    dict(id='B11-G7-NOCHANGE-2', slug='group-7', layer='logic',
+         old="' is less reactive than ' + ion.n + ', so nothing happens.'",
+         new="' is less reactive than ' + ion.n + ', so nothing happens: the colour is just that of the halogen solution added.'"),
+    dict(id='B11-G7-ORANGE', slug='group-7', layer='logic',
+         old="['The solution turns orange', 'Orange would be bromine being displaced; here bromine is the one added, and it cannot displace chlorine.']",
+         new="['The solution turns brown', 'Brown would be iodine forming. There is no iodide here, and bromine cannot displace chlorine.']"),
+    dict(id='B11-G7-KEYHT', slug='group-7', layer='logic',
+         old=", 'Higher: ionic equation Cl₂ + 2Br⁻ → 2Cl⁻ + Br₂. Chlorine gains electrons (reduced); bromide loses electrons (oxidised).'],",
+         new="].concat(F.H ? ['Higher: ionic equation Cl₂ + 2Br⁻ → 2Cl⁻ + Br₂. Chlorine gains electrons (reduced); bromide loses electrons (oxidised).'] : []),"),
+    dict(id='B11-G7-ELECTRONS', slug='group-7', layer='logic',
+         old="'So chlorine takes the electrons from the bromide ions, forming chloride ions and bromine, which turns the solution orange.'",
+         new="'So the more reactive chlorine displaces bromine from its salt, forming potassium chloride and bromine, which turns the solution orange.'"),
+    dict(id='B11-G7-CHAIN1', slug='group-7', layer='logic',
+         old="'Chlorine atoms gain an electron more readily than bromine atoms, because their outer shell is closer to the nucleus.'",
+         new="'So chlorine is more reactive than bromine: it is above bromine in Group 7.'"),
+    # B11W-G7-CHAIN-ORDER (re-ruled after the walk, D14): the three links now run reason → reactivity → displacement,
+    # each leaning on the one before, so no second order reads sensibly.
+    dict(id='B11W-G7-CHAIN-ORDER', slug='group-7', layer='logic',
+         old="'Chlorine is above bromine in Group 7, so it is more reactive.'",
+         new="'Chlorine atoms gain an electron more readily than bromine atoms, because their outer shell is closer to the nucleus.'"),
+    dict(id='B11-G7-CHAIN2-1', slug='group-7', layer='logic',
+         old="'Going down the group, atoms have more shells, so the outer shell is further from the nucleus.'",
+         new="'Going down the group, atoms have more shells, so the outer shell, where that electron goes, is further from the nucleus.'"),
+    dict(id='B11-G7-CHAIN2-2', slug='group-7', layer='logic',
+         old="'The attraction between the nucleus and an incoming electron is weaker, so the electron is gained less easily.'",
+         new="'So the attraction between the nucleus and an incoming electron is weaker, and the electron is gained less easily.'"),
+    dict(id='B11-G7-MRCAUSE', slug='group-7', layer='template',
+         old='Down the group the relative molecular mass, melting point and boiling point increase, because the intermolecular forces increase with the size of the molecules.',
+         new='Down the group the relative molecular mass increases, and so do the melting point and boiling point, because the intermolecular forces increase with the size of the molecules.'),
+    dict(id='B11-G7-CAPTION', slug='group-7', layer='logic',
+         old="'boiling points: room temperature is about 20 °C, so chlorine is a gas, bromine a liquid, iodine a solid'",
+         new="'boiling points; at room temperature (about 20 °C) chlorine is a gas, bromine a liquid, iodine a solid'"),
+    dict(id='B11-G7-FIGLBL', slug='group-7', layer='logic',
+         old='TX(x, y0 + h + 24, p[0], 16)',
+         new='TX(x, y0 + h + 30, p[0], 16)'),
+    dict(id='B11-G7-CASE', slug='group-7', layer='logic',
+         old="no: [same ? 'Same element on both sides: nothing to displace.' : h.n + ' sits below ' + ion.n + ', so it cannot displace it.', h.n + ' is more reactive than ' + ion.n + ': it does displace it.']",
+         new="no: [same ? 'Same element on both sides: nothing to displace.' : h.n[0].toUpperCase() + h.n.slice(1) + ' sits below ' + ion.n + ', so it cannot displace it.', h.n[0].toUpperCase() + h.n.slice(1) + ' is more reactive than ' + ion.n + ': it does displace it.']"),
+    dict(id='B11-TM-CHAIN-1', slug='transition-metals', layer='logic',
+         old="'Iron reacts only slowly with water and oxygen, so it lasts.'",
+         new="'It also reacts only slowly with water and oxygen, so it lasts.'"),
+    dict(id='B11-TM-CHAIN-2', slug='transition-metals', layer='logic',
+         old="'Sodium is soft, melts at 98 °C and reacts vigorously with water and oxygen, so a structure made of it would fail.'",
+         new="'Sodium, by contrast, is soft, melts at 98 °C and reacts vigorously with water and oxygen, so a structure made of it would fail.'"),
+    dict(id='B11-MCR-KEYHT', slug='mass-changes-reactions', layer='logic',
+         old=", 'Higher: predict the mass change from the balanced equation in three steps: n = m ÷ Ar, the molar ratio, then m = n × Mr. 4.8 g Mg gains 3.2 g of oxygen to make 8.0 g MgO.'],",
+         new="].concat(F.H ? ['Higher: predict the mass change from the balanced equation in three steps: n = m ÷ Ar, the molar ratio, then m = n × Mr. 4.8 g Mg gains 3.2 g of oxygen to make 8.0 g MgO.'] : []),"),
+    dict(id='B11-MCR-H2-1', slug='mass-changes-reactions', layer='logic',
+         old="head: 'A beaker of acid and zinc has a mass of 0.5 kg at the start and 487 g at the end. Calculate the mass of hydrogen lost.'",
+         new="head: 'A beaker of acid and marble chips has a mass of 0.5 kg at the start and 487 g at the end. Calculate the mass of carbon dioxide lost.'"),
+    dict(id='B11-MCR-H2-2', slug='mass-changes-reactions', layer='logic',
+         old="'13 g of hydrogen'",
+         new="'13 g of carbon dioxide'"),
+    dict(id='B11-MCR-H2-3', slug='mass-changes-reactions', layer='logic',
+         old="'A tube of zinc and acid has a mass of 0.2 kg before and 196 g after. Calculate the mass of hydrogen lost.'",
+         new="'A flask of marble chips and acid has a mass of 0.2 kg before and 196 g after. Calculate the mass of carbon dioxide lost.'"),
+    dict(id='B11-MCR-H2-4', slug='mass-changes-reactions', layer='logic',
+         old="'A tube of magnesium and acid has a mass of 0.3 kg before and 298 g after. Calculate the mass of hydrogen lost.'",
+         new="'A flask of marble chips and acid has a mass of 0.3 kg before and 298 g after. Calculate the mass of carbon dioxide lost.'"),
+    dict(id='B11-MCR-ALWAYS-1', slug='mass-changes-reactions', layer='template',
+         old='The explanation is always a gas:',
+         new='The explanation is usually a gas:'),
+    dict(id='B11-MCR-ALWAYS-2', slug='mass-changes-reactions', layer='template',
+         old='Every apparent change of mass in chemistry is a gas joining or leaving.',
+         new='An apparent change of mass in a reaction is usually a gas joining or leaving.'),
+    dict(id='B11-MCR-ALWAYS-3', slug='mass-changes-reactions', layer='logic',
+         old='In chemistry a reading only rises when a gas joins the solid, as oxygen does when a metal burns.',
+         new='A reading rises when a gas from the air joins the product, as oxygen does when a metal burns.'),
+    dict(id='B11-CM-MENISCUS', slug='chemical-measurements', layer='logic',
+         old='\'<path d="M604 160 q41 18 82 0" fill="\' + SKY + \'" stroke="\' + INK + \'" stroke-width="2"/>\' + \'<rect x="604" y="160" width="82" height="36" fill="\' + SKY + \'"/>\'',
+         new='\'<path d="M604 160 q41 18 82 0 V196 H604 Z" fill="\' + SKY + \'"/>\' + \'<path d="M604 160 q41 18 82 0" fill="none" stroke="\' + INK + \'" stroke-width="2"/>\''),
+    dict(id='B11-CM-REPRO', slug='chemical-measurements', layer='template',
+         old='Reproducible: different investigators or equipment, similar results.',
+         new='Reproducible: different investigators, different equipment, similar results.'),
+    dict(id='B11-MOL-ATOMS', slug='moles', layer='template',
+         old='The particles can be atoms, molecules, ions, electrons or formula units.</p>',
+         new='The particles can be atoms, molecules, ions, electrons or formula units. Say which you are counting: one mole of water is 6.02 × 10<sup>23</sup> molecules, and each molecule has three atoms, so it is 3 × 6.02 × 10<sup>23</sup> atoms.</p>'),
+    dict(id='B11-MOL-SFPICK-1', slug='moles', layer='template',
+         old='= 1.204 × 10<sup>24</sup>. To divide',
+         new='= 1.204 × 10<sup>24</sup>, because in standard form the front number must be between 1 and 10. To divide'),
+    dict(id='B11-MOL-SFPICK-2', slug='moles', layer='template',
+         old='What is 0.1 × 6.02 × 10<sup>23</sup>?</p>',
+         new='What is 0.1 × 6.02 × 10<sup>23</sup> in standard form?</p>'),
+    dict(id='B11-MOL-SF4', slug='moles', layer='logic',
+         old="Avogadro constant = 6.02 × 10²³ per mole.',",
+         new="Avogadro constant = 6.02 × 10²³ per mole. Give your answer in standard form.',"),
+    dict(id='B11-MOL-CH1', slug='moles', layer='logic',
+         old="'One mole contains 6.02 × 10²³ molecules.'",
+         new="'Then use the Avogadro constant: one mole contains 6.02 × 10²³ molecules.'"),
+    dict(id='B11-MOL-CH2', slug='moles', layer='logic',
+         old="'The mass of a mole in grams equals the relative formula mass.'",
+         new="'But the mass of a mole in grams equals the relative formula mass, which is different for each substance.'"),
+    dict(id='B11-MOL-TAB', slug='moles', layer='logic',
+         old="tab: 'Verbatim'",
+         new="tab: 'Moles from mass'"),
+    dict(id='B11-MOL-H2', slug='moles', layer='logic',
+         old="why: 'Grams already: 4 ÷ 2 = 2 mol.'",
+         new="why: 'Grams already; hydrogen gas is H₂, Mr 2: 4 ÷ 2 = 2 mol.'"),
+    dict(id='B11-AIE-BRIDGE', slug='amounts-in-equations', layer='template',
+         old='says two magnesium for every one oxygen, however much you make.',
+         new='says two magnesium atoms for every one oxygen molecule, however much you make.'),
+    dict(id='B11-AIE-RATIO', slug='amounts-in-equations', layer='template',
+         old='Set the moles of magnesium and watch the oxygen and the oxide.</p>',
+         new='Set the moles of magnesium and watch the oxygen and the oxide. To go from one substance to another, multiply by the wanted coefficient and divide by the given one.</p>'),
+    dict(id='B11-AIE-O2MASS-1', slug='amounts-in-equations', layer='template',
+         old='2 × 24 + 2 × 16',
+         new='2 × 24 + 1 × 32'),
+    dict(id='B11-AIE-O2MASS-2', slug='amounts-in-equations', layer='logic',
+         old="'Count the coefficients: 2 × 24, 2 × 16 for O₂, 2 × 40.'",
+         new="'Count the coefficients: 2 × 24, 1 × 32 for O₂, 2 × 40.'"),
+    dict(id='B11-AIE-KEY1', slug='amounts-in-equations', layer='logic',
+         old="'The balancing numbers in a symbol equation can be calculated from the masses of reactants and products by converting the masses in grams to amounts in moles; the coefficients are the mole ratio.'",
+         new="'Chemical equations can be interpreted in terms of moles: Mg + 2HCl → MgCl₂ + H₂ shows that one mole of magnesium reacts with two moles of hydrochloric acid to produce one mole of magnesium chloride and one mole of hydrogen gas.'"),
+    dict(id='B11-AIE-CH2', slug='amounts-in-equations', layer='logic',
+         old="'The mass of one mole of a substance in grams is its Mr, so each coefficient × Mr gives a mass.'",
+         new="'Then, because the mass of one mole of a substance in grams is its Mr, each coefficient × Mr gives a mass.'"),
+    dict(id='B11-OXR-KEYFACT', slug='oxidation-reduction', layer='template',
+         old='They always happen together. Higher: oxidation is loss of electrons, reduction is gain of electrons (OIL RIG).</p>',
+         new='They always happen together.<sc-if value="{{ isHigher }}"> Higher: oxidation is loss of electrons, reduction is gain of electrons (OIL RIG).</sc-if></p>'),
+    dict(id='B11-OXR-KEYNOTE', slug='oxidation-reduction', layer='logic',
+         old="'Equations must balance. Chlorine and oxygen are Cl₂ and O₂.', 'Higher: oxidation is loss of electrons, reduction is gain of electrons (OIL RIG). Mg → Mg²⁺ + 2e⁻ (oxidised); Cu²⁺ + 2e⁻ → Cu (reduced); ionic equation Mg + Cu²⁺ → Mg²⁺ + Cu.', 'Higher: metals reacting with acids are redox: Mg + 2H⁺ → Mg²⁺ + H₂, magnesium oxidised, hydrogen ions reduced.'],",
+         new="'Equations must balance. Chlorine and oxygen are Cl₂ and O₂.'].concat(F.H ? ['Higher: oxidation is loss of electrons, reduction is gain of electrons (OIL RIG). Mg → Mg²⁺ + 2e⁻ (oxidised); Cu²⁺ + 2e⁻ → Cu (reduced); ionic equation Mg + Cu²⁺ → Mg²⁺ + Cu.', 'Higher: metals reacting with acids are redox: Mg + 2H⁺ → Mg²⁺ + H₂, magnesium oxidised, hydrogen ions reduced.'] : []),"),
+    dict(id='B11-OXR-CMDWRITE', slug='oxidation-reduction', layer='template',
+         old='<div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Write</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">(Higher) an ionic equation for a displacement reaction.</dd></div>',
+         new='<sc-if value="{{ isHigher }}"><div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Write</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">(Higher) an ionic equation for a displacement reaction.</dd></div></sc-if>'),
+    dict(id='B11-OXR-ELECDIST', slug='oxidation-reduction', layer='logic',
+         old="['Reduced: it loses electrons', 'In terms of oxygen, magnesium gains oxygen: oxidised.']",
+         new="['Reduced: it loses oxygen', 'Magnesium gains oxygen; it does not lose it. Gaining oxygen is oxidation.']"),
+    dict(id='B11-OXR-REDOX', slug='oxidation-reduction', layer='template',
+         old='Oxidation is the gain of oxygen; reduction is the loss of oxygen. Watch the oxygen move',
+         new='Oxidation is the gain of oxygen; reduction is the loss of oxygen. A reaction in which both happen is called a redox reaction. Watch the oxygen move'),
+    dict(id='B11-OXR-ZNCHAIN', slug='oxidation-reduction', layer='logic',
+         old="'The zinc oxide loses its oxygen and becomes zinc metal.'",
+         new="'So the zinc oxide loses its oxygen to the carbon and becomes zinc metal.'"),
+    dict(id='B11-OXR-LIGHTER', slug='oxidation-reduction', layer='logic',
+         old="'Reduction is the loss of oxygen, named from the oxide losing mass, but it is a definition, not a weight test.'",
+         new="'Reduction is the loss of oxygen. It is a definition, not a weight test.'"),
+    dict(id='B11-OXR-CREACT', slug='oxidation-reduction', layer='template',
+         old='Carbon reducing a metal oxide is how less reactive metals are extracted:',
+         new='Metals less reactive than carbon can be extracted from their oxides by reduction with carbon:'),
+    dict(id='B11-SN-H2O-1', slug='salts-neutralisation', layer='logic',
+         old='["H₂ + O₂ → H₂O", false]',
+         new='["2H₂ + O₂ → 2H₂O", false]'),
+    dict(id='B11-SN-H2O-2', slug='salts-neutralisation', layer='logic',
+         old="['H₂ + O₂ → H₂O', 'That is hydrogen burning.']",
+         new="['2H₂ + O₂ → 2H₂O', 'That is hydrogen burning.']"),
+    dict(id='B11-SN-STATE-1', slug='salts-neutralisation', layer='logic',
+         old="['H⁺ + OH⁻ → H₂O', [",
+         new="['H⁺(aq) + OH⁻(aq) → H₂O(l)', ["),
+    dict(id='B11-SN-STATE-2', slug='salts-neutralisation', layer='logic',
+         old='The ionic equation H⁺ + OH⁻ → H₂O shows the actual ions involved.',
+         new='The ionic equation H⁺(aq) + OH⁻(aq) → H₂O(l) shows the actual ions involved.'),
+    dict(id='B11-SN-SPECTATOR', slug='salts-neutralisation', layer='logic',
+         old='"This is a precipitation ionic equation — it describes salt formation, not neutralisation."',
+         new='"Na⁺ and Cl⁻ are spectator ions — they stay dissolved and do not react in neutralisation. Only H⁺ and OH⁻ react."'),
+    dict(id='B11-SN-KEYTRIPLE', slug='salts-neutralisation', layer='logic',
+         old="'Neutralisation: H⁺(aq) + OH⁻(aq) → H₂O(l). Triple: a salt from two soluble reactants is made by titration, then repeating without indicator.'],",
+         new="'Neutralisation: H⁺(aq) + OH⁻(aq) → H₂O(l).'].concat(F.T ? ['Triple: a salt from two soluble reactants is made by titration, then repeating without indicator.'] : []),"),
+    dict(id='B11-SN-CH2', slug='salts-neutralisation', layer='logic',
+         old="'The excess solid is removed by filtering, leaving only the salt solution.'",
+         new="'Finally the excess solid is removed by filtering, leaving only the salt solution.'"),
+    dict(id='B11-SN-IONS', slug='salts-neutralisation', layer='template',
+         old='The other ions (Na<sup>+</sup>, Cl<sup>−</sup>) are unchanged',
+         new='The other ions (Na<sup>+</sup> and Cl<sup>−</sup>, for sodium hydroxide and hydrochloric acid) are unchanged'),
+    dict(id='B11-SN-BASE-1', slug='salts-neutralisation', layer='template',
+         old='The metal comes from the base.</p>',
+         new='The metal comes from the base or carbonate.</p>'),
+    dict(id='B11-SN-BASE-2', slug='salts-neutralisation', layer='logic',
+         old="'Zinc carbonate is the base you started with.'",
+         new="'Zinc carbonate is what you started with; the salt is named from the acid.'"),
+    dict(id='B11-PH-CURVE', slug='ph-scale', layer='logic',
+         old='const p = 7 + 6 / (1 + Math.exp(-(v - 25) * 0.9)) - 5.6 + (v < 25 ? -0.0 : 0);',
+         new='const p = 1.4 + 11.2 / (1 + Math.exp(-(v - 25) * 0.9));'),
+    dict(id='B11-PH-H2O2', slug='ph-scale', layer='logic',
+         old="['H₂(g) + O₂(g) → H₂O(l)', 'That is hydrogen burning.']",
+         new="['2H₂(g) + O₂(g) → 2H₂O(l)', 'That is hydrogen burning.']"),
+    dict(id='B11-PH-KF-HT', slug='ph-scale', layer='template',
+         old=' Higher: one pH unit is a factor of 10 in H<sup>+</sup> concentration.</p>',
+         new='<sc-if value="{{ isHigher }}"> Higher: one pH unit is a factor of 10 in H<sup>+</sup> concentration.</sc-if></p>'),
+    dict(id='B11-PH-KN-HT', slug='ph-scale', layer='logic',
+         old="reaching it.', 'Higher: as the pH decreases by one unit, the hydrogen ion concentration increases by a factor of 10 (pH 1 has 100 times the H⁺ concentration of pH 3). Full treatment in Strong and weak acids.'],",
+         new="reaching it.'].concat(F.H ? ['Higher: as the pH decreases by one unit, the hydrogen ion concentration increases by a factor of 10 (pH 1 has 100 times the H⁺ concentration of pH 3). Full treatment in Strong and weak acids.'] : []),"),
+    dict(id='B11-PH-BIGQ', slug='ph-scale', layer='template',
+         old='watch it climb as alkali is added to acid, and (Higher) know that each step is ten times.</p>',
+         new='watch it climb as alkali is added to acid<sc-if value="{{ isHigher }}">, and know that each step is ten times</sc-if>.</p>'),
+    dict(id='B11-PH-KF-SS', slug='ph-scale', layer='template',
+         old='Neutralisation: H<sup>+</sup> + OH<sup>−</sup> → H<sub>2</sub>O.',
+         new='Neutralisation: H<sup>+</sup>(aq) + OH<sup>−</sup>(aq) → H<sub>2</sub>O(l).'),
+    dict(id='B11-PH-CH-SS', slug='ph-scale', layer='logic',
+         old="'Hydrogen ions react with hydroxide ions to produce water: H⁺ + OH⁻ → H₂O.'",
+         new="'Hydrogen ions react with hydroxide ions to produce water: H⁺(aq) + OH⁻(aq) → H₂O(l).'"),
+    dict(id='B11-PH-WX3', slug='ph-scale', layer='logic',
+         old='"3": "Unless you add enormous amounts of water, the pH approaches 7 gradually but never quite reaches it — you are diluting, not neutralising."',
+         new='"3": "However much water you add, the pH approaches 7 gradually but never quite reaches it — you are diluting, not neutralising."'),
+    dict(id='B11-PH-ROW', slug='ph-scale', layer='logic',
+         old="no: ['Red and orange are the acids.', 'Green is neutral; purple is far above 7.', '']",
+         new="no: ['Red, orange and yellow are the acids.', 'Green is neutral; purple is far above 7.', '']"),
+    dict(id='B11-PH-EXACT', slug='ph-scale', layer='logic',
+         old="'A pupil wants an exact pH value rather than an approximate one. What should she use?'",
+         new="'A pupil wants a numerical pH value rather than an approximate one. What should she use?'"),
+    dict(id='B11-SWA-CHAIN1', slug='strong-weak-acids', layer='logic',
+         old="'Ethanoic acid is a weak acid, only partially ionised, so most molecules stay whole.'",
+         new="'Ethanoic acid, by contrast, is a weak acid, only partially ionised, so most molecules stay whole.'"),
+    dict(id='B11-SWA-NEARLY', slug='strong-weak-acids', layer='logic',
+         old="'Hydrochloric acid is a strong acid, completely ionised, so nearly every molecule gives a hydrogen ion.'",
+         new="'Hydrochloric acid is a strong acid, completely ionised, so every molecule gives a hydrogen ion.'"),
+    dict(id='B11-SWA-CHAIN2', slug='strong-weak-acids', layer='logic',
+         old="'Strong and weak describe the fraction of the acid that is ionised.'",
+         new="'Strong and weak, by contrast, describe the fraction of the acid that is ionised.'"),
+    dict(id='B11-SWA-2M', slug='strong-weak-acids', layer='logic',
+         old="{ q: '2 mol/dm³ sulfuric acid', right: 0, yes: 'Strong and concentrated.', no: ['', '2 mol/dm³ is concentrated.', 'Sulfuric acid is strong.', 'Strong, and concentrated.'] },",
+         new="{ q: '10 mol/dm³ sulfuric acid', right: 0, yes: 'Strong and concentrated.', no: ['', '10 mol/dm³ is concentrated.', 'Sulfuric acid is strong.', 'Strong, and concentrated.'] },"),
+    dict(id='B11-SWA-PACK', slug='strong-weak-acids', layer='logic',
+         old="tab: 'The pack’s example'",
+         new="tab: 'Two units'"),
+    dict(id='B11-SWA-HOOK', slug='strong-weak-acids', layer='logic',
+         old="reply: 'Please not. Battery acid is sulfuric acid,",
+         new="reply: 'Battery acid is sulfuric acid,"),
+    dict(id='B11-SWA-ARROW', slug='strong-weak-acids', layer='template',
+         old='The weak acid’s equation has a reversible arrow because most of it stays as molecules.',
+         new='The weak acid’s ionisation is reversible, so its equation has a reversible arrow and most of it stays as molecules.'),
+    dict(id='B11-EP-IONS-A', slug='electrolysis-principles', layer='logic',
+         old="D.circ(gx, gy, 16, k % 2 ? LEAF : SKY, INK, 1.5) + TX(gx, gy + 4, k % 2 ? 'Br⁻' : 'Pb²⁺', 10)",
+         new="D.circ(gx, gy, 16, k % 3 ? LEAF : SKY, INK, 1.5) + TX(gx, gy + 4, k % 3 ? 'Br⁻' : 'Pb²⁺', 10)"),
+    dict(id='B11-EP-IONS-B', slug='electrolysis-principles', layer='logic',
+         old="[390, 240, 'Pb²⁺']",
+         new="[390, 240, 'Br⁻']"),
+    dict(id='B11-EP-KN-HT', slug='electrolysis-principles', layer='logic',
+         old="'A solid ionic compound cannot be electrolysed: its ions are fixed in the lattice.', 'Higher: at the cathode positive ions gain electrons (reduction); at the anode negative ions lose electrons (oxidation). Pb²⁺ + 2e⁻ → Pb; 2Br⁻ → Br₂ + 2e⁻.'],",
+         new="'A solid ionic compound cannot be electrolysed: its ions are fixed in the lattice.'].concat(F.H ? ['Higher: at the cathode positive ions gain electrons (reduction); at the anode negative ions lose electrons (oxidation). Pb²⁺ + 2e⁻ → Pb; 2Br⁻ → Br₂ + 2e⁻.'] : []),"),
+    dict(id='B11-EM-KN-HT', slug='electrolysis-molten', layer='logic',
+         old="It is not a required practical: the electrolysis practical uses aqueous solutions.', 'Higher: half equations. Cathode (reduction): Pb²⁺ + 2e⁻ → Pb; Na⁺ + e⁻ → Na. Anode (oxidation): 2Br⁻ → Br₂ + 2e⁻; 2Cl⁻ → Cl₂ + 2e⁻. The charges balance.'],",
+         new="It is not a required practical: the electrolysis practical uses aqueous solutions.'].concat(F.H ? ['Higher: half equations. Cathode (reduction): Pb²⁺ + 2e⁻ → Pb; Na⁺ + e⁻ → Na. Anode (oxidation): 2Br⁻ → Br₂ + 2e⁻; 2Cl⁻ → Cl₂ + 2e⁻. The charges balance.'] : []),"),
+    dict(id='B11-EM-R4-P', slug='electrolysis-molten', layer='logic',
+         old="explaining why the compound must be molten. (Higher: include the half equations.)',",
+         new="explaining why the compound must be molten.' + (F.H ? ' Include the half equations.' : ''),"),
+    dict(id='B11-EM-R4-PTS', slug='electrolysis-molten', layer='logic',
+         old="'Higher: Na⁺ + e⁻ → Na at the cathode (reduction); 2Cl⁻ → Cl₂ + 2e⁻ at the anode (oxidation).', 'Overall: 2NaCl → 2Na + Cl₂.'],",
+         new="F.H ? 'Na⁺ + e⁻ → Na at the cathode (reduction); 2Cl⁻ → Cl₂ + 2e⁻ at the anode (oxidation).' : null, 'Overall: 2NaCl → 2Na + Cl₂.'].filter(Boolean),"),
+    dict(id='B11-EM-CMD', slug='electrolysis-molten', layer='template',
+         old='<div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Write</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">(Higher) balanced half equations for each electrode.</dd></div>',
+         new='<sc-if value="{{ isHigher }}"><div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Write</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">(Higher) balanced half equations for each electrode.</dd></div></sc-if>'),
+    dict(id='B11-EM-Q1WX3', slug='electrolysis-molten', layer='logic',
+         old='"3": "Electrolysis is done in an enclosed container — calcium doesn\'t react with air at this stage. The product is pure calcium metal."',
+         new='"3": "Molten calcium chloride contains only Ca²⁺ and Cl⁻ ions — there is no oxygen in it. The product is pure calcium metal."'),
+    dict(id='B11-EM-Q2WX3', slug='electrolysis-molten', layer='logic',
+         old='Na⁺ and Cl⁻ (or Pb²⁺ and Br⁻) ions exist in the solid too',
+         new='Pb²⁺ and Br⁻ ions exist in the solid too'),
+]
+SCIENCE.extend(SCIENCE_B11)
+
+# ═══ Batch 11: fixes from the pupil walk (batch-11-walk.md; the lead's rulings) ═══
+# D3: the compiler drops the whitespace-only text node between a closing </sup>/<sub> and the next <span>, so "2e⁻ loses"
+# read "2e⁻loses". Fixed per page by moving the space INSIDE the span (the compiler and runtime are not touched: that would
+# move earlier batches). A scan of the raw files and all 56 built pages found exactly these four joins.
+B11W = [
+    dict(id='B11W-SPACE-OXR', slug='oxidation-reduction', layer='template',
+         old='2e<sup>−</sup> <span style="color: var(--ks3-ink-muted); font-size: 15px;">loses electrons: oxidised',
+         new='2e<sup>−</sup><span style="color: var(--ks3-ink-muted); font-size: 15px;"> loses electrons: oxidised'),
+    dict(id='B11W-SPACE-EP', slug='electrolysis-principles', layer='template',
+         old='2e<sup>−</sup> <span style="color: var(--ks3-ink-muted); font-size: 15px;">loses electrons: oxidation',
+         new='2e<sup>−</sup><span style="color: var(--ks3-ink-muted); font-size: 15px;"> loses electrons: oxidation'),
+    dict(id='B11W-SPACE-SWA-CL', slug='strong-weak-acids', layer='template',
+         old='Cl<sup>−</sup> <span style="color: var(--ks3-ink-muted); font-size: 15px;">strong: complete',
+         new='Cl<sup>−</sup><span style="color: var(--ks3-ink-muted); font-size: 15px;"> strong: complete'),
+    dict(id='B11W-SPACE-SWA-H', slug='strong-weak-acids', layer='template',
+         old='H<sup>+</sup> <span style="color: var(--ks3-ink-muted); font-size: 15px;">weak: partial, reversible',
+         new='H<sup>+</sup><span style="color: var(--ks3-ink-muted); font-size: 15px;"> weak: partial, reversible'),
+    # D1: the nuclide's two labels were clipped at the left edge of the figure.
+    # Re-walk of batch 11 (the lead): three figure faults the first walk missed, and D1 not yet clear.
+    dict(id='B11W-SUB-SCALE-LBL', slug='subatomic-particles', layer='logic',
+         old="TXN(262, 142, 'about 1 × 10⁻¹⁰ m', 13)",
+         new="TXN(262, 166, 'about 1 × 10⁻¹⁰ m', 13)"),
+    dict(id='B11W-EM-SIGN-NEG', slug='electrolysis-molten', layer='logic',
+         old="TX(292, 48, '−', 18, { anchor: 'end' })",
+         new="TX(292, 34, '−', 18, { anchor: 'end' })"),
+    dict(id='B11W-EM-SIGN-POS', slug='electrolysis-molten', layer='logic',
+         old="TX(408, 48, '+', 18, { anchor: 'start' })",
+         new="TX(408, 34, '+', 18, { anchor: 'start' })"),
+    dict(id='B11W-EP-LABELS', slug='electrolysis-principles', layer='logic',
+         old="TX(220, 96, 'cathode (−)', 13) + TX(480, 96, 'anode (+)', 13)",
+         new="TX(212, 96, 'cathode (−)', 13, { anchor: 'end' }) + TX(488, 96, 'anode (+)', 13, { anchor: 'start' })"),
+    dict(id='B11W-EP-SIGN-NEG', slug='electrolysis-principles', layer='logic',
+         old="TX(292, 56, '−', 18, { anchor: 'end' })",
+         new="TX(292, 42, '−', 18, { anchor: 'end' })"),
+    dict(id='B11W-EP-SIGN-POS', slug='electrolysis-principles', layer='logic',
+         old="TX(408, 56, '+', 18, { anchor: 'start' })",
+         new="TX(408, 42, '+', 18, { anchor: 'start' })"),
+    dict(id='B11W-EM-PRODUCTS', slug='electrolysis-molten', layer='logic',
+         old="TX(230, 275, c.metal, 13, { fill: BLUE }) + TX(470, 275, c.nm, 13, { fill: RED })",
+         new="TX(262, 268, c.metal, 13, { fill: BLUE }) + TX(438, 268, c.nm, 13, { fill: RED })"),
+    # contrast_audit (pre-push): "most straight through" was teal #2E8B7F on the cream plate, 3.6:1 against the 4.5:1
+    # floor for body text. Same hue, darker: #1F6F64 is 5.24:1. The arrows it labels keep Design's teal.
+    dict(id='B11W-MOA-TEAL-LBL', slug='model-of-the-atom', layer='logic',
+         old="TXN(530, 48, 'most straight through', 14, { fill: TEAL })",
+         new="TXN(530, 48, 'most straight through', 14, { fill: '#1F6F64' })"),
+    dict(id='B11W-RAM-LABELS', slug='relative-atomic-mass', layer='logic',
+         old="TXN(60, 118, 'mass number', 13, { anchor: 'end', fill: MUTED }) + TXN(60, 166, 'atomic number', 13, { anchor: 'end', fill: MUTED })",
+         new="TXN(96, 118, 'mass number', 13, { anchor: 'end', fill: MUTED }) + TXN(96, 166, 'atomic number', 13, { anchor: 'end', fill: MUTED })"),
+    # D2: the curve ran through both labels; the y axis had no title.
+    dict(id='B11W-PH-LABELS', slug='ph-scale', layer='logic',
+         old="TXN(x0 + 60, Y(1.6), 'acid: low pH', 12, { fill: MUTED }) + TXN(x0 + w - 70, Y(12.6), 'excess alkali: high pH', 12, { fill: MUTED })",
+         new="TXN(x0 + 60, Y(2.4), 'acid: low pH', 12, { fill: MUTED }) + TXN(x0 + w - 70, Y(11.6), 'excess alkali: high pH', 12, { fill: MUTED }) + TXN(x0, y0 - 10, 'pH', 12, { fill: MUTED })"),
+    # D4: an authoring note shown as a pupil tab label.
+    dict(id='B11W-RAM-TAB', slug='relative-atomic-mass', layer='logic',
+         old="tab: 'Verbatim (bracket corrected)'",
+         new="tab: 'Percentages'"),
+    # D5
+    dict(id='B11W-CM-WORKED', slug='chemical-measurements', layer='template',
+         old='Worked (verbatim): 25.0 cm',
+         new='Worked: 25.0 cm'),
+    # D6: three captions ran into each other at phone width; the cylinder's "100" touched its rim.
+    dict(id='B11W-CM-CAP-1', slug='chemical-measurements', layer='logic',
+         old="TXN(103, 334, 'variable volume, ±0.05 cm³ a reading', 11, { fill: MUTED })",
+         new="TXN(103, 332, 'variable volume,', 11, { fill: MUTED }) + TXN(103, 346, '±0.05 cm³ a reading', 11, { fill: MUTED })"),
+    dict(id='B11W-CM-CAP-2', slug='chemical-measurements', layer='logic',
+         old="TXN(290, 334, 'the smallest uncertainty for that volume', 11, { fill: MUTED })",
+         new="TXN(290, 332, 'the smallest uncertainty', 11, { fill: MUTED }) + TXN(290, 346, 'for that volume', 11, { fill: MUTED })"),
+    dict(id='B11W-CM-CAP-3', slug='chemical-measurements', layer='logic',
+         old="TXN(470, 334, 'bigger graduations, bigger uncertainty', 11, { fill: MUTED })",
+         new="TXN(470, 332, 'bigger graduations,', 11, { fill: MUTED }) + TXN(470, 346, 'bigger uncertainty', 11, { fill: MUTED })"),
+    dict(id='B11W-CM-100', slug='chemical-measurements', layer='logic',
+         old="TXN(458, 254 - i * 40, String(i * 25), 11, { anchor: 'start' })",
+         new="TXN(458, 254 - i * 40 + (i === 4 ? 6 : 0), String(i * 25), 11, { anchor: 'start' })"),
+    dict(id='B11W-CM-SVGH', slug='chemical-measurements', layer='logic',
+         old="return D.svg(760, 350, b, 'Burette",
+         new="return D.svg(760, 356, b, 'Burette"),
+    # D7: the radius label ran past the right edge; its note moves down to keep clear.
+    dict(id='B11W-SUB-RADIUS', slug='subatomic-particles', layer='logic',
+         old="TX(430, 84, 'nucleus radius about 1 × 10⁻¹⁴ m', 15, { anchor: 'start' }) + TXN(430, 106, 'less than 1/10 000 of the atom’s radius', 13, { anchor: 'start', fill: MUTED })",
+         new="TX(430, 76, 'nucleus radius', 15, { anchor: 'start' }) + TX(430, 94, 'about 1 × 10⁻¹⁴ m', 15, { anchor: 'start' }) + TXN(430, 112, 'less than 1/10 000 of the atom’s radius', 13, { anchor: 'start', fill: MUTED })"),
+    # D9: Higher wording on the Foundation routes. Each clause now sits in the Higher sc-if; the space at the join is
+    # inside the sc-if where the clause starts a sentence.
+    dict(id='B11W-MCR-BIGQ', slug='mass-changes-reactions', layer='template',
+         old='Explain both with particles, and (Higher) predict the change from the equation.</p>',
+         new='Explain both with particles<sc-if value="{{ isHigher }}">, and (Higher) predict the change from the equation</sc-if>.</p>'),
+    dict(id='B11W-MCR-CMD', slug='mass-changes-reactions', layer='template',
+         old='The mass of gas lost from two readings; (Higher) the mass gained from the equation.</dd>',
+         new='The mass of gas lost from two readings<sc-if value="{{ isHigher }}">; (Higher) the mass gained from the equation</sc-if>.</dd>'),
+    dict(id='B11W-OXR-BIGQ', slug='oxidation-reduction', layer='template',
+         old='one never happens without the other. On Higher, the same two words describe electrons changing hands.</p>',
+         new='one never happens without the other.<sc-if value="{{ isHigher }}"> On Higher, the same two words describe electrons changing hands.</sc-if></p>'),
+    dict(id='B11W-OXR-CMD', slug='oxidation-reduction', layer='template',
+         old='Why, in terms of oxygen (or electrons on Higher).</dd>',
+         new='Why, in terms of oxygen<sc-if value="{{ isHigher }}"> (or electrons on Higher)</sc-if>.</dd>'),
+    dict(id='B11W-OXR-LEGAL', slug='oxidation-reduction', layer='template',
+         old='check the atoms and, on Higher, the charges."',
+         new='check the atoms."'),
+    # D11: the ion line asked "How many electrons?" and so did the pick under it.
+    dict(id='B11W-SUB-IONLINE', slug='subatomic-particles', layer='logic',
+         old="', atomic number ' + it.Z + '. How many electrons?', ionQ",
+         new="', atomic number ' + it.Z + '.', ionQ"),
+    # D12: the reply's last sentence repeated the bridge that follows it.
+    dict(id='B11W-OXR-LOST', slug='oxidation-reduction', layer='logic',
+         old=" Oxygen from the air joined it. Gaining oxygen is called oxidation.' }",
+         new=" Oxygen from the air joined it.' }"),
+    dict(id='B11W-PH-SOUR', slug='ph-scale', layer='logic',
+         old="Citric acid, at about pH 2 to 3. Sour is the taste of acids. On the pH scale",
+         new="Citric acid, at about pH 2 to 3. On the pH scale"),
+    # D13: steps A-E beside options lettered A-D read as "A B, C, A, D, E". The steps are numbered 1-5 (A=1 ... E=5):
+    # the key B,C,A,D,E becomes 2,3,1,4,5 and each distractor keeps the same wrong order, so its reply still fits.
+    dict(id='B11W-SN-STEPS', slug='salts-neutralisation', layer='logic',
+         old="Q('Put the required-practical steps in order: A filter; B warm the acid; C add excess solid; D heat on a water bath until crystals form; E cool and dry.', 'B, C, A, D, E', [['C, B, A, D, E', 'Warm the acid first, then add the solid.'], ['B, C, D, A, E', 'Filter off the excess solid before crystallising.'], ['B, A, C, D, E', 'There is nothing to filter until the solid has been added.']])",
+         new="Q('Put the required-practical steps in order: 1 filter; 2 warm the acid; 3 add excess solid; 4 heat on a water bath until crystals form; 5 cool and dry.', '2, 3, 1, 4, 5', [['3, 2, 1, 4, 5', 'Warm the acid first, then add the solid.'], ['2, 3, 4, 1, 5', 'Filter off the excess solid before crystallising.'], ['2, 1, 3, 4, 5', 'There is nothing to filter until the solid has been added.']])"),
+    # D15: the readouts were wider than their boxes.
+    dict(id='B11W-MCR-BOX', slug='mass-changes-reactions', layer='logic',
+         old="BOX(x - 90, 230, 180, 34, PAPER, INK, 2.5, 8)",
+         new="BOX(x - 115, 230, 230, 34, PAPER, INK, 2.5, 8)"),
+    # D16: the wires ran through the centred electrode labels.
+    dict(id='B11W-EM-LABELS', slug='electrolysis-molten', layer='logic',
+         old="TX(230, 80, 'cathode (−)', 13) + TX(470, 80, 'anode (+)', 13)",
+         new="TX(222, 80, 'cathode (−)', 13, { anchor: 'end' }) + TX(478, 80, 'anode (+)', 13, { anchor: 'start' })"),
+    # D17: "melting point" clipped, and iron's density value ran into sodium's bar. Iron's bars are 200 (was 240); sodium's are
+    # scaled by the same 5/6 so the drawn ratios stay 15x (melting point) and 8x (density), as the labels say.
+    dict(id='B11W-TM-LABEL', slug='transition-metals', layer='logic',
+         old="TXN(80, y + 6, label, 13, { anchor: 'end', fill: MUTED })",
+         new="TXN(92, y + 6, label, 13, { anchor: 'end', fill: MUTED })"),
+    dict(id='B11W-TM-MELT', slug='transition-metals', layer='logic',
+         old="row(80, 'melting point', 240, 16,",
+         new="row(80, 'melting point', 200, 13.3,"),
+    dict(id='B11W-TM-DENSITY', slug='transition-metals', layer='logic',
+         old="row(130, 'density', 240, 30,",
+         new="row(130, 'density', 200, 25,"),
+    # R1: the two strong-weak calc rungs reject 10^3 / 10^2, so they now ask for a whole number.
+    dict(id='B11W-SWA-WHOLE-1', slug='strong-weak-acids', layer='logic',
+         old="how many times greater the hydrogen ion concentration is in A.'",
+         new="how many times greater the hydrogen ion concentration is in A. Give your answer as a whole number.'"),
+    dict(id='B11W-SWA-WHOLE-2', slug='strong-weak-acids', layer='logic',
+         old="hydrogen ion concentration is in the pH 1 solution.'",
+         new="hydrogen ion concentration is in the pH 1 solution. Give your answer as a whole number.'"),
+    # R10: true minus signs on the boiling-point value labels.
+    dict(id='B11W-G7-MINUS', slug='group-7', layer='logic',
+         old="p[1] + ' °C', 13)",
+         new="String(p[1]).replace('-', '−') + ' °C', 13)"),
+]
+SCIENCE.extend(B11W)
+
+
 APPLIED = []
 
 
@@ -1297,6 +1807,13 @@ def port_lesson(lesson, tpl, logic, slug_by_file, other_slug_by_file=None):
         if m:
             raise RulingError("ks4_batch_rulings G3: %s still carries %r in its %s after the link rulings."
                               % (src, m.group(0), layer))
+    # ⊕ B11-G3-KS4: batch 11 only. Her FILE map points seven pages at `/ks4/<slug>` placeholders (G2). B8-LNK empties the
+    # FILE map and every link resolves through KS4.hrefFor, so no `/ks4/` text can survive; this proves it per page.
+    if lesson.get("batch") == "batch-11":
+        for layer, text in (("template", tpl), ("logic", logic)):
+            if "/ks4/" in text:
+                raise RulingError("ks4_batch_rulings B11-G3-KS4: %s still carries a `/ks4/` placeholder in its %s after the "
+                                  "link rulings." % (src, layer))
     # B-R12's chip reads routeWords / routeSwitchOptions off the render values.
     if "Object.assign({}, R," not in logic and "routeWords" not in logic:
         raise RulingError("ks4_batch_rulings B-R12: %s's renderVals neither spreads the route helper nor "

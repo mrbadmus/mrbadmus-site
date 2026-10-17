@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Electrolysis of molten ionic compounds · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Chemical changes" title="Electrolysis of molten ionic compounds" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 5.4.3.2 (+ 5.4.3.5 Higher) · Combined and Triple</p>
+        <h1>Electrolysis of molten ionic compounds</h1>
+        <p class="ks3-bigq">A molten binary compound has only two kinds of ion. The metal forms at the cathode and the non-metal at the anode, every time. Split the formula and send each ion home.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <sc-if value="{{ isHigher }}"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Higher layer · half equations</span></sc-if>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Opposites attract." scene="Two electrodes dip into a molten salt: one positive, one negative. A positive metal ion is drifting between them." question="does the positive ion head for the positive electrode or the negative one?" options="{{ hookOptions }}" bridge="Every molten binary compound works the same way: positive metal ions to the negative cathode, negative non-metal ions to the positive anode." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-pick" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Predict the products</p>
+        <h2 style="margin: 6px 0 0;">Split the formula, send each ion home.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">When a simple ionic compound is melted and electrolysed, the metal is produced at the cathode and the non-metal at the anode. Choose a compound, then say where each ion goes.</p>
+        <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ cBtns }}" as="b" hint-placeholder-count="6"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ cFig }}</div></div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">{{ catQ }}</p>
+            <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ pq1.btns }}" as="b" hint-placeholder-count="2"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+            <p aria-live="polite" style="margin: 10px 0 0; font-size: 17px; line-height: 1.5;">{{ pq1.note }}</p>
+          </div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">{{ anQ }}</p>
+            <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ pq2.btns }}" as="b" hint-placeholder-count="2"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+            <p aria-live="polite" style="margin: 10px 0 0; font-size: 17px; line-height: 1.5;">{{ pq2.note }}</p>
+          </div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">{{ prodLine }}</p>
+      </section>
+
+      <section id="s-demo" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The classroom demonstration</p>
+        <h2 style="margin: 6px 0 0;">Molten lead bromide.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Solid lead bromide in a crucible with two graphite electrodes: no current. Heat it until it melts and the circuit completes. A grey bead of lead collects at the cathode; red-brown bromine vapour comes off the anode. Bromine is toxic, so this is a teacher demonstration in a fume cupboard (anhydrous zinc chloride is a safer alternative). It is not a required practical: the electrolysis practical uses aqueous solutions.</p>
+        <div style="margin-top: 14px; display: grid; gap: 10px; font-family: var(--ks3-font-mono); font-size: 19px;">
+          <p style="margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">PbBr<sub>2</sub>(l) <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> Pb(l) + Br<sub>2</sub>(g)</p>
+          <p style="margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">2NaCl(l) <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> 2Na(l) + Cl<sub>2</sub>(g)</p>
+        </div>
+        <p style="margin: 14px 0 0; max-width: 62ch;">Why does nothing happen until the lead bromide melts?</p>
+        <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ dq.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+        <p aria-live="polite" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ dq.note }}</p>
+        <p style="margin: 14px 0 0; max-width: 62ch; font-size: 17px;">Why some metals need electrolysis rather than carbon is in <a href="{{ extHref }}">Extraction of metals</a>.</p>
+      </section>
+
+      <sc-if value="{{ isHigher }}">
+      <section id="s-half" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Higher · half equations</p>
+        <h2 style="margin: 6px 0 0;">Electrons in, electrons out.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">At the cathode, positive ions gain electrons (reduction). At the anode, negative ions lose electrons (oxidation). Diatomic non-metals need two ions. Check the charge balances on each side.</p>
+        <div style="margin-top: 14px; display: grid; gap: 10px; font-family: var(--ks3-font-mono); font-size: 19px;">
+          <p style="margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">cathode · Pb<sup>2+</sup> + 2e<sup>−</sup> <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> Pb</p>
+          <p style="margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">anode · 2Br<sup>−</sup> <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> Br<sub>2</sub> + 2e<sup>−</sup></p>
+          <p style="margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">cathode · Na<sup>+</sup> + e<sup>−</sup> <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> Na</p>
+          <p style="margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">anode · 2Cl<sup>−</sup> <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> Cl<sub>2</sub> + 2e<sup>−</sup></p>
+        </div>
+        <p style="margin: 14px 0 0; max-width: 62ch;">Complete the cathode half equation for molten zinc chloride: Zn<sup>2+</sup> + ? <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> Zn</p>
+        <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ hq.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+        <p aria-live="polite" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ hq.note }}</p>
+      </section>
+      </sc-if>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · the ion and the element</p></div>
+        <p class="ks3-mis-quote">&ldquo;Molten sodium chloride gives chloride at the anode.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="What is produced at the anode when molten sodium chloride is electrolysed?" options="{{ thinkOptions }}" reveal="Chlorine gas, Cl₂. Chloride is the ion, Cl⁻; at the anode the ions are discharged and become the element." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Cathode product or anode product?" prompt="Place each product." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Metals at the cathode; non-metals at the anode." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Predict</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The products at each electrode for a molten binary compound.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why the compound must be molten; why each ion goes where it does.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Write</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">(Higher) balanced half equations for each electrode.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">When a simple ionic compound is electrolysed in the molten state using inert electrodes, the metal is produced at the cathode and the non-metal at the anode.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="electrolysis-molten" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Electrolysis of molten ionic compounds" spec="AQA 5.4.3.2 (+ 5.4.3.5 HT) · Combined and Triple" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Writing chloride where you mean chlorine?" legal="Molten lead bromide is a teacher demonstration, not a required practical; the electrolysis required practical (Combined RP9 = Chemistry RP3) uses aqueous solutions." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+
+const SLUG = 'electrolysis-molten';
+const OK = ['Combined Foundation', 'Combined Higher', 'Triple Foundation', 'Triple Higher'];
+const FILE = {"model-of-the-atom":"ks4-chemistry-5.1.1.3-model-of-the-atom.dc.html","subatomic-particles":"ks4-chemistry-5.1.1.4-subatomic-particles.dc.html","relative-atomic-mass":"ks4-chemistry-5.1.1.6-relative-atomic-mass.dc.html","electronic-structure":"ks4-chemistry-5.1.1.7-electronic-structure.dc.html","group-7":"ks4-chemistry-5.1.2.6-group-7.dc.html","transition-metals":"ks4-chemistry-4.1.3.1-transition-metals.dc.html","mass-changes-reactions":"ks4-chemistry-5.3.1.3-mass-changes-reactions.dc.html","chemical-measurements":"ks4-chemistry-5.3.1.4-chemical-measurements.dc.html","moles":"ks4-chemistry-5.3.2.1-moles.dc.html","amounts-in-equations":"ks4-chemistry-5.3.2.2-amounts-in-equations.dc.html","oxidation-reduction":"ks4-chemistry-5.4.1.4-oxidation-reduction.dc.html","salts-neutralisation":"ks4-chemistry-5.4.2.2-salts-neutralisation.dc.html","ph-scale":"ks4-chemistry-5.4.2.4-ph-scale.dc.html","strong-weak-acids":"ks4-chemistry-5.4.2.5-strong-weak-acids.dc.html","electrolysis-principles":"ks4-chemistry-5.4.3.1-electrolysis-principles.dc.html","electrolysis-molten":"ks4-chemistry-5.4.3.2-electrolysis-molten.dc.html","periodic-table":"../../KS4 Batch 4/ks4-chemistry-5.1.2.1-periodic-table.dc.html","group-0":"../../KS4 Batch 5/ks4-chemistry-5.1.2.4-group-0.dc.html","metals-non-metals":"../../KS4 Batch 5/ks4-chemistry-5.1.2.3-metals-non-metals.dc.html","reactivity-series":"../../KS4 Batch 5/ks4-chemistry-5.4.1.1-reactivity-series.dc.html","extraction-of-metals":"../../KS4 Batch 5/ks4-chemistry-5.4.1.3-extraction-of-metals.dc.html","structure-of-atom":"../../KS4 Batch 5/ks4-physics-6.4.1.1-structure-of-atom.dc.html","development-atomic-model":"../../KS4 Batch 5/ks4-physics-6.4.1.3-development-atomic-model.dc.html","atoms-elements-compounds":"/ks4/atoms-elements-compounds","relative-formula-mass":"/ks4/relative-formula-mass","using-moles-calculations":"/ks4/using-moles-calculations","conservation-of-mass":"/ks4/conservation-of-mass","titrations":"/ks4/titrations","percentage-yield":"/ks4/percentage-yield","atom-economy":"/ks4/atom-economy"};
+const ORDER = [["model-of-the-atom","Development of the model of the atom",0],["subatomic-particles","Subatomic particles",0],["relative-atomic-mass","Relative atomic mass, atomic number and isotopes",0],["electronic-structure","Electronic structure",0],["group-7","Group 7: the halogens",0],["transition-metals","Properties of transition metals",1],["mass-changes-reactions","Mass changes in reactions",0],["chemical-measurements","Chemical measurements",0],["moles","Moles",3],["amounts-in-equations","Amounts of substances in equations",3],["oxidation-reduction","Oxidation and reduction",0],["salts-neutralisation","Making salts and neutralisation",0],["ph-scale","The pH scale and neutralisation",0],["strong-weak-acids","Strong and weak acids",3],["electrolysis-principles","The process of electrolysis",0],["electrolysis-molten","Electrolysis of molten ionic compounds",0]];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const V = (q, opts, we) => ({ q, opts, wrong_explanations: we });
+const LNK = (k, label) => ({ href: FILE[k], label });
+const TX = (x, y, t, size, o) => window.KS4D.T(x, y, t, size, Object.assign({ fill: '#1A1A1A' }, o || {}));
+const TXN = (x, y, t, size, o) => TX(x, y, t, size, Object.assign({ weight: 'normal' }, o || {}));
+const BOX = (x, y, w, h, fill, stroke, sw, rx) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + (rx == null ? 12 : rx) + '" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const INK = '#1A1A1A', TAN = '#F2C9AE', LEAF = '#A9D9BE', RED = '#C8102E', TEAL = '#2E8B7F', MUTED = '#8A8378', PAPER = '#FFFDF8', SKY = '#DDEEF6', BLUE = '#3B82F6';
+
+const RAIL = [{ id: 's-hook', label: 'Opposites attract', short: 'HOOK' }, { id: 's-pick', label: 'Predict the products', short: 'PREDICT' }, { id: 's-demo', label: 'Lead bromide', short: 'DEMO' }, { id: 's-half', label: 'Higher: half equations', short: 'HIGHER', higher: true }, { id: 's-think', label: 'Think again', short: 'THINK' }, { id: 's-sort', label: 'Which electrode?', short: 'SORT' }, { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }];
+const CMP = [
+  { f: 'NaCl', name: 'sodium chloride', cat: 'Na⁺', an: 'Cl⁻', metal: 'sodium', nm: 'chlorine, Cl₂' },
+  { f: 'PbBr₂', name: 'lead bromide', cat: 'Pb²⁺', an: 'Br⁻', metal: 'lead', nm: 'bromine, Br₂' },
+  { f: 'CaCl₂', name: 'calcium chloride', cat: 'Ca²⁺', an: 'Cl⁻', metal: 'calcium', nm: 'chlorine, Cl₂' },
+  { f: 'ZnCl₂', name: 'zinc chloride', cat: 'Zn²⁺', an: 'Cl⁻', metal: 'zinc', nm: 'chlorine, Cl₂' },
+  { f: 'KI', name: 'potassium iodide', cat: 'K⁺', an: 'I⁻', metal: 'potassium', nm: 'iodine, I₂' },
+  { f: 'Al₂O₃', name: 'aluminium oxide', cat: 'Al³⁺', an: 'O²⁻', metal: 'aluminium', nm: 'oxygen, O₂' }
+];
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false, cmp: 1 };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  pick(key, q) {
+    const v = this.state[key], has = typeof v === 'number';
+    return { btns: q.opts.map((o, i) => ({ label: o, pressed: v === i, style: this.seg(v === i), onClick: () => this.setState({ [key]: i, [key + 'Ok']: !!this.state[key + 'Ok'] || i === q.right }) })),
+      note: !has ? (q.ask || 'Pick one.') : v === q.right ? q.yes : (q.no[v] || ''), done: !!this.state[key + 'Ok'], v: has ? v : null };
+  }
+  flags() {
+    const K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    return { R, route, rk, H: rk === 'CH' || rk === 'TH', T: rk === 'TF' || rk === 'TH', TH: rk === 'TH' };
+  }
+  common(done, F, ready, rail) {
+    const s = this.state, K = window.KS4;
+    const av = ORDER.filter((o) => !o[2] || (o[2] === 1 && F.T) || (o[2] === 2 && F.TH) || (o[2] === 3 && F.H)), i = av.findIndex((o) => o[0] === SLUG);
+    return { route: F.route, rk: F.rk, onRoute: F.R.onRoute || (() => {}), isHigher: F.H, notHigher: !F.H, isTriple: F.T, notTriple: !F.T, isTH: F.TH, notTH: !F.TH,
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready,
+      railV: K ? K.rail(rail || RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (x) => this.setState({ hook: x }), onThink: (x) => this.setState({ think: x }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }),
+      endPrev: i > 0 ? LNK(av[i - 1][0], av[i - 1][1]) : null,
+      endNext: i >= 0 && i < av.length - 1 ? LNK(av[i + 1][0], av[i + 1][1]) : null };
+  }
+
+  cFig(c, show) {
+    const D = window.KS4D; let b = '';
+    b += BOX(300, 24, 100, 36, PAPER, INK, 2.5, 8) + TX(350, 48, 'd.c. supply', 13) + TX(292, 48, '−', 18, { anchor: 'end' }) + TX(408, 48, '+', 18, { anchor: 'start' });
+    b += D.line(300, 42, 230, 42, 2.5, INK) + D.line(230, 42, 230, 100, 2.5, INK) + D.line(400, 42, 470, 42, 2.5, INK) + D.line(470, 42, 470, 100, 2.5, INK);
+    b += '<path d="M180 120 l20 150 q2 12 14 12 h272 q12 0 14 -12 l20 -150" fill="' + TAN + '" stroke="' + INK + '" stroke-width="2.5"/>' + TXN(350, 305, 'crucible of molten ' + c.name + ', graphite electrodes, heated from below', 13, { fill: MUTED });
+    b += BOX(218, 92, 24, 160, '#555', INK, 2, 3) + BOX(458, 92, 24, 160, '#555', INK, 2, 3) + TX(230, 80, 'cathode (−)', 13) + TX(470, 80, 'anode (+)', 13);
+    b += D.circ(300, 190, 20, SKY, INK, 1.5) + TX(300, 195, c.cat, 12) + D.circ(400, 210, 20, LEAF, INK, 1.5) + TX(400, 215, c.an, 12);
+    if (show) { b += D.arrow(276, 190, 248, 190, BLUE, 3) + D.arrow(424, 210, 452, 210, RED, 3) + TX(230, 275, c.metal, 13, { fill: BLUE }) + TX(470, 275, c.nm, 13, { fill: RED }); }
+    else b += TXN(350, 150, 'where does each ion go?', 14, { fill: MUTED });
+    return D.svg(700, 320, b, 'Crucible of molten ' + c.name + ' with cathode on the left and anode on the right; ions ' + c.cat + ' and ' + c.an + (show ? ' moving to the cathode and anode, giving ' + c.metal + ' and ' + c.nm : '') + '.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4, D = window.KS4D, F = this.flags();
+    const ready = !!(s.libReady && K && D);
+    const fig = (f) => (ready ? K.fig(f(), '') : null);
+    const c = CMP[s.cmp];
+    const cBtns = CMP.map((x, i) => ({ label: x.f, pressed: s.cmp === i, style: this.seg(s.cmp === i), onClick: () => this.setState({ cmp: i }) }));
+    const pq1 = this.pick('p1' + c.f, { opts: ['Cathode (−)', 'Anode (+)'], right: 0, ask: 'Where does it go?', yes: 'Yes: positive metal ions go to the negative cathode and are discharged as ' + c.metal + '.', no: ['', 'Positive ions are attracted to the negative electrode.'] });
+    const pq2 = this.pick('p2' + c.f, { opts: ['Cathode (−)', 'Anode (+)'], right: 1, ask: 'Where does it go?', yes: 'Yes: negative non-metal ions go to the positive anode and are discharged as ' + c.nm + '.', no: ['Negative ions are attracted to the positive electrode.', ''] });
+    const show = pq1.done && pq2.done;
+    const dq = this.pick('dq', { opts: ['The ions are fixed in the solid and cannot move', 'There are no ions until it melts', 'The electrodes are not hot enough'], right: 0, yes: 'Yes: Pb²⁺ and Br⁻ ions are in the solid, but locked in the lattice. Melting frees them to move and the current flows.', no: ['', 'Lead bromide is ionic in both states; melting does not change the formula.', 'The electrodes do not need to be hot; the ions need to move.'] });
+    const hq = this.pick('hq', { opts: ['2e⁻', 'e⁻', '2e⁺'], right: 0, yes: 'Yes: Zn²⁺ + 2e⁻ → Zn. Two electrons cancel the 2+ charge; both sides are now neutral.', no: ['', 'One electron would leave Zn⁺. The charge is 2+, so two electrons.', 'There are no positive electrons.'] });
+    const baseBank = [
+      V("Molten calcium chloride (CaCl₂) is electrolysed. What is produced at the cathode?", [["Calcium metal — Ca²⁺ ions are reduced at the negative cathode", true], ["Chlorine gas — Cl⁻ ions are discharged at the cathode", false], ["Calcium chloride — no decomposition occurs at the cathode", false], ["Calcium oxide — the calcium combines with oxygen from the air", false]], { "1": "Cl⁻ is NEGATIVE — it moves to the POSITIVE ANODE, not the cathode. The cathode attracts positive Ca²⁺ ions.", "2": "Electrolysis DOES decompose the compound — that is its purpose.", "3": "Electrolysis is done in an enclosed container — calcium doesn't react with air at this stage. The product is pure calcium metal." }),
+      V("Why must lead bromide be melted before it can be electrolysed?", [["In the solid, Pb²⁺ and Br⁻ ions are fixed — they cannot move to carry charge. Melting gives the ions freedom to move.", true], ["Melting changes the chemical formula of lead bromide, making electrolysis possible.", false], ["The electrodes cannot penetrate a solid — they need a liquid to make contact.", false], ["Solid lead bromide doesn't contain ions — they form when it melts.", false]], { "1": "Melting does NOT change the chemical formula — PbBr₂ is still PbBr₂ whether solid or molten.", "2": "In a proper setup, electrodes can contact a solid — but the solid still won't conduct electricity because the ions can't move.", "3": "Lead bromide is ionic in BOTH solid and molten states — Na⁺ and Cl⁻ (or Pb²⁺ and Br⁻) ions exist in the solid too. They just can't move." }),
+      Q('Molten potassium iodide is electrolysed. Predict the product at each electrode.', 'Potassium at the cathode; iodine at the anode', [['Iodine at the cathode; potassium at the anode', 'Positive K⁺ goes to the negative cathode; negative I⁻ to the positive anode.'], ['Potassium iodide at both', 'Electrolysis breaks the compound into its elements.'], ['Hydrogen at the cathode', 'There is no water: molten, only K⁺ and I⁻ are present.']]),
+      Q('What is observed at the anode when molten lead bromide is electrolysed?', 'Red-brown bromine vapour', [['A grey bead of lead', 'Lead forms at the cathode.'], ['Bubbles of hydrogen', 'There is no water present.'], ['Nothing', 'Bromide ions are discharged there as bromine.']]),
+      Q('Which statement is true for the electrolysis of any molten binary ionic compound?', 'The metal forms at the cathode and the non-metal at the anode', [['The metal forms at the anode', 'Metal ions are positive and go to the negative cathode.'], ['Only the metal is produced', 'Both ions are discharged.'], ['The products depend on the water present', 'Molten compounds contain no water.']])
+    ];
+    const htBank = baseBank.slice(0, 4).concat([Q('Which is the correct half equation at the anode when molten sodium chloride is electrolysed?', '2Cl⁻ → Cl₂ + 2e⁻', [['Cl⁻ → Cl + e⁻', 'Chlorine is diatomic: two chloride ions make one Cl₂.'], ['Cl₂ + 2e⁻ → 2Cl⁻', 'That is chlorine gaining electrons, the reverse; at the anode ions lose electrons.'], ['Na⁺ + e⁻ → Na', 'That is the cathode half equation.']])]);
+    const rail = F.H ? RAIL : RAIL.filter((r) => !r.higher);
+    const predicted = CMP.filter((x) => this.state['p1' + x.f + 'Ok'] && this.state['p2' + x.f + 'Ok']).length;
+    const done = F.H ? [s.hook !== null, predicted >= 2, dq.done, hq.done, s.think !== null, s.sort, s.ladder] : [s.hook !== null, predicted >= 2, dq.done, s.think !== null, s.sort, s.ladder];
+    const cm = this.common(done, F, ready, rail);
+    return Object.assign(cm, {
+      extHref: FILE['extraction-of-metals'],
+      hookOptions: [
+        { text: 'The negative electrode', correct: true, reply: 'Opposites attract. Every positive metal ion ends up at the negative cathode, where it becomes the metal.' },
+        { text: 'The positive electrode', correct: false, reply: 'Like charges push apart. The positive ion is pulled to the negative electrode, the cathode, and that is where the metal always appears.' }
+      ],
+      cBtns, cFig: fig(() => this.cFig(c, show)), catQ: c.cat + ', the metal ion', anQ: c.an + ', the non-metal ion', pq1, pq2,
+      prodLine: show ? 'Molten ' + c.name + ' (' + c.f + ') gives ' + c.metal + ' at the cathode and ' + c.nm + ' at the anode.' : 'Place both ions to see the products. Try at least two compounds.',
+      dq, hq,
+      thinkOptions: [
+        { text: 'Chlorine gas, Cl₂', correct: true, reply: 'Two Cl⁻ ions are discharged to form one Cl₂ molecule.' },
+        { text: 'Chloride, Cl⁻', correct: false, reply: 'Chloride is the ion in the melt. At the electrode it is discharged and becomes the element chlorine.' },
+        { text: 'Sodium', correct: false, reply: 'Sodium forms at the cathode.' }
+      ],
+      sortBins: [{ id: 'c', label: 'Cathode (−)' }, { id: 'a', label: 'Anode (+)' }],
+      sortItems: [
+        { text: 'Lead, from molten lead bromide', bin: 'c', why: 'Metal at the cathode.' },
+        { text: 'Bromine, from molten lead bromide', bin: 'a', why: 'Non-metal at the anode.' },
+        { text: 'Sodium, from molten sodium chloride', bin: 'c', why: 'Metal.' },
+        { text: 'Chlorine, from molten sodium chloride', bin: 'a', why: 'Non-metal.' },
+        { text: 'Aluminium, from molten aluminium oxide', bin: 'c', why: 'Metal.' },
+        { text: 'Oxygen, from molten aluminium oxide', bin: 'a', why: 'Non-metal.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('State', 'State which electrode the metal is produced at when a molten ionic compound is electrolysed.', 'The cathode, the negative electrode.', ['The cathode', ['The anode', 'The non-metal forms at the anode.'], ['Both', 'The metal forms at the cathode only.']]),
+          MCQ('Name', 'Name the product at the anode when molten lead bromide is electrolysed.', 'Bromine.', ['Bromine', ['Lead', 'Lead forms at the cathode.'], ['Bromide', 'Bromide is the ion; bromine is the element produced.']])
+        ],
+        r2: [
+          MCQ('Predict', 'Predict the products when molten zinc chloride is electrolysed.', 'Zinc at the cathode, chlorine at the anode.', ['Zinc at the cathode, chlorine at the anode', ['Chlorine at the cathode, zinc at the anode', 'Positive Zn²⁺ goes to the negative cathode.'], ['Zinc chloride at both', 'The compound is broken into its elements.']]),
+          MCQ('Explain', 'Explain why solid lead bromide does not conduct electricity.', 'Its ions are fixed in the lattice and cannot move.', ['Its ions cannot move', ['It has no ions', 'It is ionic; the ions are fixed.'], ['It has no electrons', 'All substances contain electrons; conduction here needs mobile ions.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain how the products of electrolysing molten calcium chloride can be predicted. Put the links in order.',
+            ['Molten calcium chloride contains only Ca²⁺ and Cl⁻ ions, which are free to move.', 'Positive Ca²⁺ ions move to the negative cathode; negative Cl⁻ ions move to the positive anode.', 'Each ion is discharged at its electrode: calcium metal at the cathode and chlorine gas at the anode.'],
+            [['Water in the melt gives hydrogen at the cathode.', 'A molten compound contains no water.'], ['Calcium forms at the anode because it is a metal.', 'Metal ions are positive and go to the cathode.']]),
+          CHAIN('Explain', 'Explain what is observed when lead bromide is heated with two graphite electrodes connected to a d.c. supply. Put the links in order.',
+            ['At first nothing happens: the solid’s ions cannot move, so no current flows.', 'When the lead bromide melts, the ions can move and the circuit completes.', 'A grey bead of lead forms at the cathode and red-brown bromine vapour is given off at the anode, in a fume cupboard because bromine is toxic.'],
+            [['Bromine forms at the cathode.', 'Bromide ions are negative and go to the anode.'], ['The solid conducts as soon as the supply is switched on.', 'It must melt first.']])
+        ],
+        r4: [
+          WRITE('Explain', 6, 'Molten sodium chloride is electrolysed using inert electrodes. Describe and explain what happens, naming the product at each electrode and explaining why the compound must be molten. (Higher: include the half equations.)',
+            LV6('Molten for mobile ions; Na⁺ to cathode giving sodium, Cl⁻ to anode giving chlorine; discharge explained; both half equations correct on Higher.', 'Products at both electrodes with the molten reason.', 'One product or one reason.'),
+            ['Sodium chloride must be molten so that its Na⁺ and Cl⁻ ions are free to move.', 'Positive Na⁺ ions move to the negative cathode and are discharged as sodium metal.', 'Negative Cl⁻ ions move to the positive anode and are discharged as chlorine gas.', 'Higher: Na⁺ + e⁻ → Na at the cathode (reduction); 2Cl⁻ → Cl₂ + 2e⁻ at the anode (oxidation).', 'Overall: 2NaCl → 2Na + Cl₂.'],
+            ['“Chloride is produced at the anode.”', '“Cl⁻ → Cl + e⁻”'])
+        ]
+      },
+      keyLines: ['When a simple ionic compound (such as lead bromide) is electrolysed in the molten state using inert electrodes, the metal is produced at the cathode and the non-metal is produced at the anode.', 'Molten: only the compound’s own ions are present, so prediction is simple. NaCl gives sodium and chlorine; PbBr₂ gives lead and bromine; Al₂O₃ gives aluminium and oxygen.', 'The solid does not conduct because its ions are fixed; melting frees them. Overall equations: 2NaCl(l) → 2Na(l) + Cl₂(g); PbBr₂(l) → Pb(l) + Br₂(g).', 'Lead bromide is a teacher demonstration in a fume cupboard (bromine is toxic; zinc chloride is a safer alternative). It is not a required practical: the electrolysis practical uses aqueous solutions.', 'Higher: half equations. Cathode (reduction): Pb²⁺ + 2e⁻ → Pb; Na⁺ + e⁻ → Na. Anode (oxidation): 2Br⁻ → Br₂ + 2e⁻; 2Cl⁻ → Cl₂ + 2e⁻. The charges balance.'],
+      endConnects: [LNK('electrolysis-principles', 'The process of electrolysis'), LNK('extraction-of-metals', 'Extraction of metals'), LNK('oxidation-reduction', 'Oxidation and reduction'), LNK('group-7', 'Group 7: the halogens')],
+      bank: ready ? (F.H ? htBank : baseBank).map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

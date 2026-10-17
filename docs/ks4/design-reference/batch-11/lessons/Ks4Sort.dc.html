@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<style>
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .3s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="font-family: var(--ks3-font-body); color: var(--ks3-ink); text-wrap: pretty;">
+  <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">{{ eyebrow }}</p>
+  <h3 style="margin: 6px 0 0; font-size: 26px; line-height: 1.15; letter-spacing: -.02em;">{{ title }}</h3>
+  <p style="margin: 10px 0 0; font-size: 19px; line-height: 1.6; max-width: 62ch;">{{ prompt }}</p>
+  <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">{{ hint }}</p>
+  <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px;">
+    <sc-for list="{{ tray }}" as="c" hint-placeholder-count="6">
+      <button type="button" onClick="{{ c.onClick }}" aria-pressed="{{ c.pressed }}" style="{{ c.style }}">{{ c.text }}</button>
+    </sc-for>
+    <sc-if value="{{ trayEmpty }}"><p style="margin: 0; font-size: 17px; color: var(--ks3-ink-muted);">Every card is placed.</p></sc-if>
+  </div>
+  <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;">
+    <sc-for list="{{ bins }}" as="b" hint-placeholder-count="3">
+      <div style="border-radius: 18px; border: 2px solid var(--ks3-ink); background: var(--ks3-card); padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+        <button type="button" onClick="{{ b.onPlace }}" disabled="{{ b.disabled }}" style="{{ b.headStyle }}">{{ b.label }} <span style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px;">{{ b.cta }}</span></button>
+        <sc-for list="{{ b.items }}" as="it" hint-placeholder-count="0">
+          <div>
+            <button type="button" onClick="{{ it.onClick }}" disabled="{{ it.disabled }}" aria-label="{{ it.aria }}" style="{{ it.style }}">{{ it.text }}</button>
+            <sc-if value="{{ it.hasWhy }}"><p data-arrive="1" style="margin: 6px 0 0; padding: 9px 12px; border-radius: 12px; background: var(--ks3-alert-tint); border: 2px solid var(--ks3-alert-border); font-size: 16px; line-height: 1.5;">{{ it.why }}</p></sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+  </div>
+  <div style="margin-top: 16px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+    <button type="button" class="ks3-reveal-btn" onClick="{{ onCheck }}" disabled="{{ checkLocked }}" style="{{ checkStyle }}">Check the sort</button>
+    <span role="status" style="font-size: 18px; font-weight: 700; color: var(--ks3-ink-body);">{{ status }}</span>
+  </div>
+  <sc-if value="{{ solved }}"><sc-if value="{{ hasDoneNote }}"><p data-arrive="1" style="margin: 14px 0 0; padding: 16px 18px; border-radius: 18px; background: var(--ks3-accent-tint); border: 2px solid var(--ks3-accent); font-size: 18px; line-height: 1.55;">{{ doneNote }}</p></sc-if></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:900},&quot;title&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;prompt&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bins&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;{id:string,label:string}&gt;&quot;},&quot;items&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;{text:string,bin:string,why?:string}&gt;&quot;},&quot;doneNote&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;onDone&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(r:{correct:boolean})=&gt;void&quot;}}">
+class Component extends DCLogic {
+  state = { sel: null, placed: {}, checked: false, reported: false };
+  renderVals() {
+    const p = this.props;
+    const s = this.state;
+    const items = (p.items || []).map((it, i) => Object.assign({ id: i }, it));
+    const H = (t) => { let h = 2166136261; for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
+    const order = items.slice().sort((a, b) => H(a.text) - H(b.text));
+    const tray = order.filter((it) => s.placed[it.id] === undefined);
+    const allPlaced = tray.length === 0 && items.length > 0;
+    const wrong = items.filter((it) => s.placed[it.id] !== undefined && s.placed[it.id] !== it.bin);
+    const solved = s.checked && allPlaced && wrong.length === 0;
+    const chip = (on) => 'font:inherit;font-size:17px;font-weight:600;line-height:1.35;padding:10px 14px;min-height:46px;border-radius:14px;cursor:pointer;text-align:left;color:var(--ks3-ink);background:' +
+      (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';';
+    return {
+      eyebrow: p.eyebrow || 'Sort it',
+      title: p.title || '',
+      prompt: p.prompt || '',
+      hint: 'Tap a card, then tap the box it belongs in. Tap a placed card to take it back.',
+      tray: tray.map((it) => ({
+        text: it.text, pressed: s.sel === it.id, style: chip(s.sel === it.id),
+        onClick: () => { if (!solved) this.setState({ sel: s.sel === it.id ? null : it.id }); }
+      })),
+      trayEmpty: tray.length === 0,
+      bins: (p.bins || []).map((b) => ({
+        label: b.label,
+        cta: s.sel !== null ? '· place here' : '',
+        disabled: s.sel === null || solved,
+        headStyle: 'font:inherit;font-family:var(--ks3-font-display);font-weight:800;font-size:19px;text-align:left;padding:10px 12px;min-height:48px;border-radius:12px;cursor:' + (s.sel !== null ? 'pointer' : 'default') + ';color:var(--ks3-ink);background:' +
+          (s.sel !== null ? 'var(--ks3-accent-tint)' : 'var(--ks3-band)') + ';border:2px ' + (s.sel !== null ? 'solid var(--ks3-accent)' : 'solid transparent') + ';',
+        onPlace: () => {
+          if (s.sel === null || solved) return;
+          const nx = Object.assign({}, s.placed, { [s.sel]: b.id });
+          this.setState({ placed: nx, sel: null, checked: false });
+        },
+        items: items.filter((it) => s.placed[it.id] === b.id).map((it) => {
+          const bad = s.checked && it.bin !== b.id;
+          return {
+            text: it.text, disabled: solved, aria: 'Take back: ' + it.text,
+            style: chip(false) + 'width:100%;background:var(--ks3-card);' + (bad ? 'border-color:var(--ks3-alert-border);' : ''),
+            hasWhy: bad && !!it.why, why: it.why || '',
+            onClick: () => { if (solved) return; const nx = Object.assign({}, s.placed); delete nx[it.id]; this.setState({ placed: nx, checked: false }); }
+          };
+        })
+      })),
+      checkLocked: !allPlaced || s.checked,
+      checkStyle: (!allPlaced || s.checked) ? 'opacity:.45;cursor:default;' : '',
+      status: solved ? 'Every card is where it belongs.' : (s.checked ? (wrong.length === 1 ? 'One card is in the wrong box. Its note says why.' : wrong.length + ' cards are in the wrong box. Their notes say why.') : ''),
+      onCheck: () => {
+        if (!allPlaced) return;
+        this.setState({ checked: true, reported: true });
+        if (!s.reported && typeof p.onDone === 'function') p.onDone({ correct: wrong.length === 0 });
+      },
+      solved, hasDoneNote: !!p.doneNote, doneNote: p.doneNote || ''
+    };
+  }
+}
+
+</script>
+</body>
+</html>

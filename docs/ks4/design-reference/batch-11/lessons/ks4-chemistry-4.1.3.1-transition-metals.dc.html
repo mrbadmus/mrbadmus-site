@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Properties of transition metals · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Atomic structure" title="Properties of transition metals" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 4.1.3.1–4.1.3.2 · Triple only</p>
+        <h1>Properties of transition metals</h1>
+        <p class="ks3-bigq">Iron against sodium, property by property. Then the three things transition metals do that Group 1 metals never do.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Triple only</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="2"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="A bridge." scene="Bridges, cars and saucepans are made of iron and steel. Sodium is also a metal: shiny, and soft enough to cut with a butter knife." question="would you build a bridge out of a metal you can cut with a butter knife?" options="{{ hookOptions }}" bridge="Iron and sodium are both metals, but they could hardly be more different. The transition metals sit in the middle of the periodic table and Group 1 sits at the edge, and the contrast runs through every property." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Iron against sodium</p>
+        <h2 style="margin: 6px 0 0;">Row by row.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">The transition elements are metals with similar properties which are different from those of the elements in Group 1. For each row, predict which metal wins.</p>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ cFig }}</div></div>
+        <div style="margin-top: 14px; display: grid; gap: 12px;">
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+            <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">{{ r.q }}</p>
+              <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ r.p.btns }}" as="b" hint-placeholder-count="2"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+              <p aria-live="polite" style="margin: 10px 0 0; font-size: 17px; line-height: 1.5;">{{ r.p.note }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-typical" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Typical properties</p>
+        <h2 style="margin: 6px 0 0;">Different charges, colours, catalysts.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Many transition elements have ions with different charges, form coloured compounds and are useful as catalysts. The spec’s examples are chromium, manganese, iron, cobalt, nickel and copper. Tap each.</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px;"><sc-for list="{{ tCards }}" as="f" hint-placeholder-count="3"><button type="button" onClick="{{ f.onClick }}" aria-expanded="{{ f.open }}" style="{{ f.style }}"><span style="display: block; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ f.name }}</span><sc-if value="{{ f.open }}"><span data-arrive="1" style="display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; font-weight: 400;">{{ f.why }}</span></sc-if></button></sc-for></div>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ colFig }}</div></div>
+        <p style="margin: 14px 0 0; max-width: 62ch;">Which of these is a transition-metal property that Group 1 metals do not show?</p>
+        <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ tq.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+        <p aria-live="polite" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ tq.note }}</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · all metals?</p></div>
+        <p class="ks3-mis-quote">&ldquo;Metals react with water. Drop iron in a trough and it will fizz like sodium.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Iron filings are dropped into cold water. What happens?" options="{{ thinkOptions }}" reveal="Transition metals are much less reactive than Group 1 metals: iron reacts very slowly with water and oxygen, or not at all. That low reactivity is one reason they are so useful." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Transition metal or Group 1?" prompt="Place each property." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Transition metals: high melting point, dense, hard and strong, low reactivity, coloured compounds, ions with different charges, catalysts. Group 1: low melting point, soft, low density, very reactive, white compounds, one ion charge." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Transition metals with Group 1: melting point, density, strength, hardness, reactivity with oxygen, water and halogens.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The typical properties, with an example metal for each.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why a transition metal suits a use.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Compared with Group 1, transition metals have higher melting points and densities, are stronger and harder, and are much less reactive with oxygen, water and halogens. Many form ions with different charges, coloured compounds, and act as catalysts.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="transition-metals" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Properties of transition metals" spec="AQA 4.1.3.1–4.1.3.2 · Chemistry only" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which properties belong to which block?" legal="Melting points and densities quoted are approximate: iron 1538 °C, 7.9 g/cm³; sodium 98 °C, 0.97 g/cm³." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+
+const SLUG = 'transition-metals';
+const OK = ['Triple Foundation', 'Triple Higher'];
+const FILE = {"model-of-the-atom":"ks4-chemistry-5.1.1.3-model-of-the-atom.dc.html","subatomic-particles":"ks4-chemistry-5.1.1.4-subatomic-particles.dc.html","relative-atomic-mass":"ks4-chemistry-5.1.1.6-relative-atomic-mass.dc.html","electronic-structure":"ks4-chemistry-5.1.1.7-electronic-structure.dc.html","group-7":"ks4-chemistry-5.1.2.6-group-7.dc.html","transition-metals":"ks4-chemistry-4.1.3.1-transition-metals.dc.html","mass-changes-reactions":"ks4-chemistry-5.3.1.3-mass-changes-reactions.dc.html","chemical-measurements":"ks4-chemistry-5.3.1.4-chemical-measurements.dc.html","moles":"ks4-chemistry-5.3.2.1-moles.dc.html","amounts-in-equations":"ks4-chemistry-5.3.2.2-amounts-in-equations.dc.html","oxidation-reduction":"ks4-chemistry-5.4.1.4-oxidation-reduction.dc.html","salts-neutralisation":"ks4-chemistry-5.4.2.2-salts-neutralisation.dc.html","ph-scale":"ks4-chemistry-5.4.2.4-ph-scale.dc.html","strong-weak-acids":"ks4-chemistry-5.4.2.5-strong-weak-acids.dc.html","electrolysis-principles":"ks4-chemistry-5.4.3.1-electrolysis-principles.dc.html","electrolysis-molten":"ks4-chemistry-5.4.3.2-electrolysis-molten.dc.html","periodic-table":"../../KS4 Batch 4/ks4-chemistry-5.1.2.1-periodic-table.dc.html","group-0":"../../KS4 Batch 5/ks4-chemistry-5.1.2.4-group-0.dc.html","metals-non-metals":"../../KS4 Batch 5/ks4-chemistry-5.1.2.3-metals-non-metals.dc.html","reactivity-series":"../../KS4 Batch 5/ks4-chemistry-5.4.1.1-reactivity-series.dc.html","extraction-of-metals":"../../KS4 Batch 5/ks4-chemistry-5.4.1.3-extraction-of-metals.dc.html","structure-of-atom":"../../KS4 Batch 5/ks4-physics-6.4.1.1-structure-of-atom.dc.html","development-atomic-model":"../../KS4 Batch 5/ks4-physics-6.4.1.3-development-atomic-model.dc.html","atoms-elements-compounds":"/ks4/atoms-elements-compounds","relative-formula-mass":"/ks4/relative-formula-mass","using-moles-calculations":"/ks4/using-moles-calculations","conservation-of-mass":"/ks4/conservation-of-mass","titrations":"/ks4/titrations","percentage-yield":"/ks4/percentage-yield","atom-economy":"/ks4/atom-economy"};
+const ORDER = [["model-of-the-atom","Development of the model of the atom",0],["subatomic-particles","Subatomic particles",0],["relative-atomic-mass","Relative atomic mass, atomic number and isotopes",0],["electronic-structure","Electronic structure",0],["group-7","Group 7: the halogens",0],["transition-metals","Properties of transition metals",1],["mass-changes-reactions","Mass changes in reactions",0],["chemical-measurements","Chemical measurements",0],["moles","Moles",3],["amounts-in-equations","Amounts of substances in equations",3],["oxidation-reduction","Oxidation and reduction",0],["salts-neutralisation","Making salts and neutralisation",0],["ph-scale","The pH scale and neutralisation",0],["strong-weak-acids","Strong and weak acids",3],["electrolysis-principles","The process of electrolysis",0],["electrolysis-molten","Electrolysis of molten ionic compounds",0]];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const V = (q, opts, we) => ({ q, opts, wrong_explanations: we });
+const LNK = (k, label) => ({ href: FILE[k], label });
+const TX = (x, y, t, size, o) => window.KS4D.T(x, y, t, size, Object.assign({ fill: '#1A1A1A' }, o || {}));
+const TXN = (x, y, t, size, o) => TX(x, y, t, size, Object.assign({ weight: 'normal' }, o || {}));
+const BOX = (x, y, w, h, fill, stroke, sw, rx) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + (rx == null ? 12 : rx) + '" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const INK = '#1A1A1A', TAN = '#F2C9AE', LEAF = '#A9D9BE', RED = '#C8102E', MUTED = '#8A8378', PAPER = '#FFFDF8';
+
+const RAIL = [{ id: 's-hook', label: 'A bridge', short: 'HOOK' }, { id: 's-bench', label: 'Iron against sodium', short: 'BENCH' }, { id: 's-typical', label: 'Typical properties', short: 'TYPICAL' }, { id: 's-think', label: 'Think again', short: 'THINK' }, { id: 's-sort', label: 'Which block?', short: 'SORT' }, { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }];
+const ROWS = [
+  { q: 'Melting point: which is higher?', right: 0, yes: 'Iron melts at about 1538 °C; sodium at 98 °C, below the boiling point of water.', no: ['', 'Sodium melts at 98 °C. Transition metals have much higher melting points.'] },
+  { q: 'Density: which is denser?', right: 0, yes: 'Iron is about 7.9 g/cm³; sodium about 0.97 g/cm³, so it floats on water.', no: ['', 'Sodium floats on water. Transition metals are much denser.'] },
+  { q: 'Strength and hardness: which is harder?', right: 0, yes: 'Iron is hard and strong; sodium can be cut with a knife.', no: ['', 'Sodium is soft enough to cut with a knife.'] },
+  { q: 'Reaction with water: which is more vigorous?', right: 1, yes: 'Sodium fizzes and melts into a ball on water. Iron reacts very slowly, or not at all.', no: ['Iron hardly reacts with water. Sodium fizzes across the surface.', ''] },
+  { q: 'Reaction with oxygen: which is more vigorous?', right: 1, yes: 'Sodium tarnishes within seconds and burns brightly. Iron oxidises slowly, needing heat to burn.', no: ['Freshly cut sodium tarnishes in seconds. Iron is slow.', ''] },
+  { q: 'Reaction with chlorine: which is more vigorous?', right: 1, yes: 'Sodium burns vigorously in chlorine to give white sodium chloride. Hot iron wool reacts less vigorously, giving orange-brown iron(III) chloride.', no: ['Hot iron wool does react, but less vigorously than sodium, which burns.', ''] }
+];
+const TC = [
+  { name: 'Ions with different charges', why: 'Iron forms Fe²⁺ and Fe³⁺; copper forms Cu⁺ and Cu²⁺. A Group 1 metal forms only one ion: Na⁺.' },
+  { name: 'Coloured compounds', why: 'Copper(II) compounds blue, iron(II) green, iron(III) orange-brown, nickel(II) green, cobalt(II) pink, manganate(VII) purple, dichromate orange. Group 1 compounds are white.' },
+  { name: 'Catalysts', why: 'Transition metals and their compounds speed up reactions without being used up. Iron is the catalyst in the Haber process for making ammonia.' }
+];
+const COLS = [['Cu²⁺', '#3B82F6', 'blue'], ['Fe²⁺', '#8FBF8F', 'green'], ['Fe³⁺', '#C8742A', 'orange-brown'], ['Ni²⁺', '#5AA86A', 'green'], ['Co²⁺', '#E58BB4', 'pink'], ['MnO₄⁻', '#7A2C8E', 'purple'], ['Cr₂O₇²⁻', '#E8923A', 'orange'], ['Na⁺', '#FFFDF8', 'white']];
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  seen(key, i) { const a = this.state[key] || []; return a.indexOf(i) >= 0 ? a : a.concat([i]); }
+  cards(list, key) {
+    const s = this.state;
+    return list.map((f, i) => { const o = (s[key] || []).indexOf(i) >= 0; return { name: f.name, why: f.why, open: o,
+      style: 'text-align:left;font:inherit;color:var(--ks3-ink);padding:14px 16px;min-height:72px;border-radius:var(--ks3-r-panel);cursor:pointer;background:' + (o ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';border:2px solid ' + (o ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';',
+      onClick: () => this.setState({ [key]: this.seen(key, i) }) }; });
+  }
+  allSeen(key, n) { return (this.state[key] || []).length >= n; }
+  pick(key, q) {
+    const v = this.state[key], has = typeof v === 'number';
+    return { btns: q.opts.map((o, i) => ({ label: o, pressed: v === i, style: this.seg(v === i), onClick: () => this.setState({ [key]: i, [key + 'Ok']: !!this.state[key + 'Ok'] || i === q.right }) })),
+      note: !has ? (q.ask || 'Pick one.') : v === q.right ? q.yes : (q.no[v] || ''), done: !!this.state[key + 'Ok'], v: has ? v : null };
+  }
+  flags() {
+    const K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    return { R, route, rk, H: rk === 'CH' || rk === 'TH', T: rk === 'TF' || rk === 'TH', TH: rk === 'TH' };
+  }
+  common(done, F, ready) {
+    const s = this.state, K = window.KS4;
+    const av = ORDER.filter((o) => !o[2] || (o[2] === 1 && F.T) || (o[2] === 2 && F.TH) || (o[2] === 3 && F.H)), i = av.findIndex((o) => o[0] === SLUG);
+    return { route: F.route, rk: F.rk, onRoute: F.R.onRoute || (() => {}), isHigher: F.H, notHigher: !F.H, isTriple: F.T, notTriple: !F.T, isTH: F.TH, notTH: !F.TH,
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready,
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (x) => this.setState({ hook: x }), onThink: (x) => this.setState({ think: x }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }),
+      endPrev: i > 0 ? LNK(av[i - 1][0], av[i - 1][1]) : null,
+      endNext: i >= 0 && i < av.length - 1 ? LNK(av[i + 1][0], av[i + 1][1]) : null };
+  }
+
+  cFig() {
+    const D = window.KS4D; let b = '';
+    TX(0, 0, '', 1);
+    b += TX(230, 36, 'iron (transition metal)', 16) + TX(530, 36, 'sodium (Group 1)', 16);
+    const row = (y, label, a, bcol, av, bv) => { b += TXN(80, y + 6, label, 13, { anchor: 'end', fill: MUTED }) + BOX(100, y - 12, a, 24, TAN, INK, 1.5, 6) + TXN(100 + a + 8, y + 5, av, 12, { anchor: 'start' }) + BOX(400, y - 12, bcol, 24, LEAF, INK, 1.5, 6) + TXN(400 + bcol + 8, y + 5, bv, 12, { anchor: 'start' }); };
+    row(80, 'melting point', 240, 16, '1538 °C', '98 °C');
+    row(130, 'density', 240, 30, '7.9 g/cm³', '0.97 g/cm³');
+    row(180, 'reactivity', 20, 240, 'low', 'very high');
+    b += TXN(230, 240, 'hard, strong; slow with water, oxygen, chlorine', 13, { fill: MUTED }) + TXN(530, 240, 'soft; vigorous with water, oxygen, chlorine', 13, { fill: MUTED });
+    return D.svg(720, 260, b, 'Bars comparing iron and sodium: melting point 1538 against 98 °C, density 7.9 against 0.97 g/cm³, reactivity low against very high.');
+  }
+  colFig() {
+    const D = window.KS4D; let b = '';
+    COLS.forEach((c, i) => { const x = 50 + i * 84; b += BOX(x, 40, 64, 90, c[1], INK, 2, 10) + TX(x + 32, 160, c[0], 15) + TXN(x + 32, 182, c[2], 12, { fill: MUTED }); });
+    b += TXN(360, 215, 'compounds of transition metals are coloured; sodium’s are white', 13, { fill: MUTED });
+    return D.svg(740, 235, b, 'Colour strip: copper(II) blue, iron(II) green, iron(III) orange-brown, nickel(II) green, cobalt(II) pink, manganate(VII) purple, dichromate orange, and sodium white.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4, D = window.KS4D, F = this.flags();
+    const ready = !!(s.libReady && K && D);
+    const fig = (f) => (ready ? K.fig(f(), '') : null);
+    const rows = ROWS.map((r, i) => ({ q: r.q, p: this.pick('r' + i, { opts: ['Iron', 'Sodium'], right: r.right, yes: r.yes, no: r.no, ask: 'Predict.' }) }));
+    const tq = this.pick('tq', { opts: ['Forming coloured compounds', 'Conducting electricity', 'Being shiny when cut'], right: 0, yes: 'Yes: transition-metal compounds are coloured; Group 1 compounds are white. All metals conduct and are shiny.', no: ['', 'All metals conduct electricity.', 'Sodium is shiny when freshly cut, and then tarnishes fast.'] });
+    const BANK = [
+      V("Why are transition metals more useful as structural materials than Group 1 metals?", [["Transition metals have high melting points, high density and high strength — Group 1 metals are soft, low-density and too reactive for structural use", true], ["Transition metals are cheaper than Group 1 metals — cost makes them more practical", false], ["Group 1 metals are radioactive — too dangerous for use in buildings", false], ["Transition metals are lighter than Group 1 metals — easier to work with structurally", false]], { "1": "Cost is a practical factor but not the reason given in chemistry. The key reasons are mechanical properties: strength, hardness, melting point.", "2": "Group 1 metals (lithium, sodium, potassium etc.) are NOT radioactive — they are just very reactive with water and oxygen, making them unsuitable for structural use.", "3": "Transition metals are actually DENSER (heavier) than Group 1 metals — the advantages are strength and chemical stability, not lower weight." }),
+      V("Which transition metal is used as a catalyst in the Haber process to manufacture ammonia?", [["Iron — it acts as a catalyst to speed up the reaction between nitrogen and hydrogen", true], ["Copper — widely used catalyst in many industrial processes", false], ["Platinum — the most effective transition metal catalyst", false], ["Nickel — used in all industrial catalytic processes", false]], { "1": "Copper is a good conductor but not the catalyst used in the Haber process.", "2": "Platinum is a catalyst in catalytic converters for car exhausts — the Haber process uses iron.", "3": "Nickel is used in hydrogenation of vegetable oils — not the Haber process." }),
+      Q('Copper(II) sulfate solution is blue and sodium sulfate solution is colourless. What does this show about copper?', 'Copper is a transition metal: transition-metal compounds are often coloured', [['Copper is more reactive than sodium', 'Sodium is far more reactive; colour is not about reactivity.'], ['Copper sulfate is not a salt', 'Both are salts.'], ['Copper is in Group 1', 'Copper is a transition metal in the central block.']]),
+      Q('Iron forms the compounds FeCl₂ and FeCl₃. What property of transition metals does this illustrate?', 'They form ions with different charges, here Fe²⁺ and Fe³⁺', [['They are good catalysts', 'Catalysis is a different property.'], ['They have high melting points', 'The two formulas show two ion charges, not melting point.'], ['They react vigorously with chlorine', 'Iron reacts less vigorously with chlorine than sodium does.']]),
+      Q('Sodium burns vigorously in chlorine to give a white solid. How does hot iron compare?', 'Iron reacts less vigorously, giving orange-brown iron(III) chloride', [['Iron does not react with chlorine at all', 'Hot iron wool does react, just less vigorously.'], ['Iron reacts more vigorously than sodium', 'Transition metals are less reactive than Group 1.'], ['Iron gives a white solid too', 'Iron(III) chloride is orange-brown; transition-metal compounds are coloured.']])
+    ];
+    const done = [s.hook !== null, rows.every((r) => r.p.done), this.allSeen('tc', 3) && tq.done, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done, F, ready);
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'No', correct: true, reply: 'Nor would anyone. Transition metals are hard, strong, dense, high-melting and slow to react, which is exactly why bridges are iron and not sodium.' },
+        { text: 'Yes, if it was thick enough', correct: false, reply: 'It would still be soft, it would melt at 98 °C, and it would fizz away in the first rain. The contrast between iron and sodium runs through every property, and that is the lesson.' }
+      ],
+      cFig: fig(() => this.cFig()), rows, tCards: this.cards(TC, 'tc'), colFig: fig(() => this.colFig()), tq,
+      thinkOptions: [
+        { text: 'Very little: iron reacts very slowly with water, if at all', correct: true, reply: 'Low reactivity with water and oxygen is typical of transition metals.' },
+        { text: 'It fizzes and skates about like sodium', correct: false, reply: 'That is Group 1. Iron is far less reactive.' },
+        { text: 'It bursts into flame', correct: false, reply: 'Even sodium does not usually ignite in cold water. Iron barely reacts.' }
+      ],
+      sortBins: [{ id: 't', label: 'Transition metal' }, { id: 'g', label: 'Group 1 metal' }],
+      sortItems: [
+        { text: 'Melts at about 1500 °C', bin: 't', why: 'High melting point.' },
+        { text: 'Floats on water and fizzes', bin: 'g', why: 'Low density, very reactive.' },
+        { text: 'Forms blue and green compounds', bin: 't', why: 'Coloured compounds.' },
+        { text: 'Can be cut with a knife', bin: 'g', why: 'Soft.' },
+        { text: 'Used as a catalyst', bin: 't', why: 'Iron in the Haber process.' },
+        { text: 'Forms ions with two different charges', bin: 't', why: 'Fe²⁺ and Fe³⁺.' },
+        { text: 'Compounds are white', bin: 'g', why: 'Sodium chloride, for example.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Give', 'Give one physical property in which iron differs from sodium.', 'Melting point, density, hardness or strength: iron is higher in all.', ['Iron has a much higher melting point', ['Iron is a better conductor of electricity', 'Both conduct well.'], ['Iron is less dense', 'Iron is far denser.']]),
+          MCQ('Name', 'Name the transition metal used as the catalyst in the Haber process.', 'Iron.', ['Iron', ['Copper', 'Copper is used for wiring.'], ['Sodium', 'Not a transition metal.']])
+        ],
+        r2: [
+          MCQ('Compare', 'Compare how sodium and iron react with oxygen.', 'Sodium tarnishes quickly and burns easily; iron oxidises slowly.', ['Sodium reacts quickly; iron reacts slowly', ['Both react equally quickly', 'Group 1 is far more reactive.'], ['Iron reacts quickly; sodium does not react', 'The other way round.']]),
+          MCQ('Explain', 'Explain why copper compounds can be blue or green while sodium compounds are white.', 'Copper is a transition metal: their compounds are coloured.', ['Copper is a transition metal, and transition-metal compounds are coloured', ['Copper compounds contain water', 'Many sodium compounds contain water too and are white.'], ['Sodium is more reactive', 'Reactivity does not set colour.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain why iron is used for building and sodium is not. Put the links in order.',
+            ['Iron is hard, strong and dense with a high melting point.', 'Iron reacts only slowly with water and oxygen, so it lasts.', 'Sodium is soft, melts at 98 °C and reacts vigorously with water and oxygen, so a structure made of it would fail.'],
+            [['Sodium is too expensive.', 'Cost is not the chemistry reason.'], ['Iron is lighter than sodium.', 'Iron is denser.']]),
+          CHAIN('Explain', 'Explain what is meant by saying that iron forms ions with different charges, and give the evidence. Put the links in order.',
+            ['Iron atoms can lose two electrons to form Fe²⁺ or three to form Fe³⁺.', 'So iron forms two sets of compounds: iron(II), such as FeCl₂, and iron(III), such as FeCl₃.', 'The two sets have different colours: iron(II) compounds are green, iron(III) orange-brown.'],
+            [['Iron forms Fe⁻ ions.', 'Metals form positive ions.'], ['Sodium forms Na⁺ and Na²⁺.', 'Group 1 metals form only one ion.']])
+        ],
+        r4: [
+          WRITE('Compare', 6, 'Compare the properties of transition metals with those of Group 1 metals. Include physical properties, reactivity, and two typical properties of transition metals with named examples.',
+            LV6('Melting point, density, hardness and strength compared; reactivity with water, oxygen and halogens compared; coloured compounds, ions with different charges and catalysts with named examples.', 'Several physical properties and reactivity compared, with one typical property.', 'One or two comparisons.'),
+            ['Transition metals have higher melting points and densities and are harder and stronger than Group 1 metals.', 'Transition metals react slowly or not at all with water and oxygen; Group 1 metals react vigorously. Sodium burns in chlorine; hot iron reacts less vigorously.', 'Many transition metals form ions with different charges, such as Fe²⁺ and Fe³⁺.', 'Transition-metal compounds are coloured (copper(II) blue, iron(III) orange-brown); Group 1 compounds are white.', 'Transition metals and their compounds are catalysts, such as iron in the Haber process.'],
+            ['“Transition metals are lighter.”', '“Zinc is a typical transition metal.”'])
+        ]
+      },
+      keyLines: ['The transition elements are metals with similar properties which are different from those of the elements in Group 1. Examples: Cr, Mn, Fe, Co, Ni, Cu.', 'Compared with Group 1: higher melting points, higher densities, greater strength and hardness, and much lower reactivity with oxygen, water and halogens.', 'Many transition elements have ions with different charges (Fe²⁺ and Fe³⁺; Cu⁺ and Cu²⁺).', 'They form coloured compounds: copper(II) blue, iron(II) green, iron(III) orange-brown, nickel(II) green, cobalt(II) pink, manganate(VII) purple, dichromate orange. Group 1 compounds are white.', 'They and their compounds are useful as catalysts: iron in the Haber process.'],
+      endConnects: [LNK('metals-non-metals', 'Metals and non-metals'), LNK('reactivity-series', 'The reactivity series'), LNK('periodic-table', 'The periodic table')],
+      bank: ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

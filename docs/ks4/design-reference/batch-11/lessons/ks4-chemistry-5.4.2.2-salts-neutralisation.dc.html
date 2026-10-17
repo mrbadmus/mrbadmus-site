@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Making salts and neutralisation · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Chemical changes" title="Making salts and neutralisation" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 5.4.2.2–5.4.2.4 · Combined and Triple · Required practical</p>
+        <h1>Making salts and neutralisation</h1>
+        <p class="ks3-bigq">Acid plus an insoluble base makes a salt. Add the solid until no more reacts, filter, crystallise: the required practical, with the reason for every step.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Required practical · Combined RP8 · Chemistry RP1</span>
+          <sc-if value="{{ isTriple }}"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Triple layer · titration</span></sc-if>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Salty water." scene="You have dissolved salt in a glass of water and now you want the salt back." question="would you pour it through a filter, or let the water evaporate?" options="{{ hookOptions }}" bridge="A dissolved salt passes straight through filter paper. Filtering removes solids; evaporating recovers the salt. The required practical uses both, in that order." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-name" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Which salt?</p>
+        <h2 style="margin: 6px 0 0;">The acid names the salt.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Acids are neutralised by metal oxides and metal hydroxides (bases; soluble hydroxides are alkalis) to produce salts and water, and by metal carbonates to produce salts, water and carbon dioxide. Hydrochloric acid produces chlorides, nitric acid produces nitrates, sulfuric acid produces sulfates. The metal comes from the base.</p>
+        <div style="margin-top: 14px; display: grid; gap: 10px; font-family: var(--ks3-font-mono); font-size: 18px;">
+          <p style="margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">acid + metal oxide <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> salt + water</p>
+          <p style="margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">acid + metal carbonate <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> salt + water + carbon dioxide</p>
+          <p style="margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">CuO + H<sub>2</sub>SO<sub>4</sub> <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> CuSO<sub>4</sub> + H<sub>2</sub>O</p>
+        </div>
+        <p style="margin: 14px 0 0; max-width: 62ch;">Zinc carbonate is added to hydrochloric acid. Name the salt.</p>
+        <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ nq.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+        <p aria-live="polite" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ nq.note }}</p>
+      </section>
+
+      <section id="s-rp" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Required practical · Combined RP8 · Chemistry RP1</p>
+        <h2 style="margin: 6px 0 0;">A pure, dry sample of copper sulfate.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Preparation of a pure, dry sample of a soluble salt from an insoluble oxide or carbonate, using a Bunsen burner to heat dilute acid and a water bath or electric heater to evaporate the solution. Step through; before each step, say why.</p>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ rpFig }}</div></div>
+        <div style="margin-top: 14px;"><p aria-live="polite" style="margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ rp.note }}</p></div>
+        <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ rp.btns }}" as="b" hint-placeholder-count="1"><button type="button" onClick="{{ b.onClick }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+        <p style="margin: 14px 0 0; max-width: 62ch; font-size: 17px;">With a carbonate instead of an oxide: add it until the fizzing stops and some solid is left over. That is how you know the carbonate is in excess.</p>
+      </section>
+
+      <section id="s-ionic" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Neutralisation · the ionic equation</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Acids produce hydrogen ions, H<sup>+</sup>, in aqueous solution; alkalis produce hydroxide ions, OH<sup>−</sup>. In neutralisation between an acid and an alkali, hydrogen ions react with hydroxide ions to produce water. The other ions (Na<sup>+</sup>, Cl<sup>−</sup>) are unchanged and stay in solution as the salt.</p>
+        <p style="margin: 14px 0 0; display: inline-block; padding: 12px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 21px;">H<sup>+</sup>(aq) + OH<sup>−</sup>(aq) <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> H<sub>2</sub>O(l)</p>
+      </section>
+
+      <sc-if value="{{ isTriple }}">
+      <section id="s-titr" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Triple · when both reactants dissolve</p>
+        <h2 style="margin: 6px 0 0;">Titration.</h2>
+        <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">Sodium chloride from sodium hydroxide and hydrochloric acid cannot use the excess-solid method: there is no solid to filter off. Instead the volumes of acid and alkali that react with each other are measured by titration using a suitable indicator, then the reaction is repeated with those volumes and no indicator, and the solution crystallised. The method and the calculation are in <a href="{{ titrHref }}">Titrations</a>.</p>
+      </section>
+      </sc-if>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · the last step</p></div>
+        <p class="ks3-mis-quote">&ldquo;Boil the filtrate until it is dry and you have your crystals.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="How should the copper sulfate solution be turned into crystals?" options="{{ thinkOptions }}" reveal="Heat gently on a water bath until crystals start to form at the edge, then leave to cool so the rest crystallise slowly, and pat dry between filter papers. Boiling dry spits, and drives off the water of crystallisation: the blue crystals turn to white powder." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Which acid made it?" prompt="Place each salt." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Chlorides from hydrochloric acid, nitrates from nitric acid, sulfates from sulfuric acid." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The method for a pure, dry sample of a soluble salt.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why excess solid; why filter; why not boil dry.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Name</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The salt from a given acid and base.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Warm the acid, add the insoluble solid until no more reacts, filter off the excess, heat on a water bath until crystals start to form, leave to cool, pat dry. Excess solid means no acid is left in the salt.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="salts-neutralisation" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Making salts and neutralisation" spec="AQA 5.4.2.2–5.4.2.4 · Combined RP8 · Chemistry RP1" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure why the solid has to be in excess?" legal="Required practical numbering: Combined Science RP8 is the same practical as Chemistry RP1." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+
+const SLUG = 'salts-neutralisation';
+const OK = ['Combined Foundation', 'Combined Higher', 'Triple Foundation', 'Triple Higher'];
+const FILE = {"model-of-the-atom":"ks4-chemistry-5.1.1.3-model-of-the-atom.dc.html","subatomic-particles":"ks4-chemistry-5.1.1.4-subatomic-particles.dc.html","relative-atomic-mass":"ks4-chemistry-5.1.1.6-relative-atomic-mass.dc.html","electronic-structure":"ks4-chemistry-5.1.1.7-electronic-structure.dc.html","group-7":"ks4-chemistry-5.1.2.6-group-7.dc.html","transition-metals":"ks4-chemistry-4.1.3.1-transition-metals.dc.html","mass-changes-reactions":"ks4-chemistry-5.3.1.3-mass-changes-reactions.dc.html","chemical-measurements":"ks4-chemistry-5.3.1.4-chemical-measurements.dc.html","moles":"ks4-chemistry-5.3.2.1-moles.dc.html","amounts-in-equations":"ks4-chemistry-5.3.2.2-amounts-in-equations.dc.html","oxidation-reduction":"ks4-chemistry-5.4.1.4-oxidation-reduction.dc.html","salts-neutralisation":"ks4-chemistry-5.4.2.2-salts-neutralisation.dc.html","ph-scale":"ks4-chemistry-5.4.2.4-ph-scale.dc.html","strong-weak-acids":"ks4-chemistry-5.4.2.5-strong-weak-acids.dc.html","electrolysis-principles":"ks4-chemistry-5.4.3.1-electrolysis-principles.dc.html","electrolysis-molten":"ks4-chemistry-5.4.3.2-electrolysis-molten.dc.html","periodic-table":"../../KS4 Batch 4/ks4-chemistry-5.1.2.1-periodic-table.dc.html","group-0":"../../KS4 Batch 5/ks4-chemistry-5.1.2.4-group-0.dc.html","metals-non-metals":"../../KS4 Batch 5/ks4-chemistry-5.1.2.3-metals-non-metals.dc.html","reactivity-series":"../../KS4 Batch 5/ks4-chemistry-5.4.1.1-reactivity-series.dc.html","extraction-of-metals":"../../KS4 Batch 5/ks4-chemistry-5.4.1.3-extraction-of-metals.dc.html","structure-of-atom":"../../KS4 Batch 5/ks4-physics-6.4.1.1-structure-of-atom.dc.html","development-atomic-model":"../../KS4 Batch 5/ks4-physics-6.4.1.3-development-atomic-model.dc.html","atoms-elements-compounds":"/ks4/atoms-elements-compounds","relative-formula-mass":"/ks4/relative-formula-mass","using-moles-calculations":"/ks4/using-moles-calculations","conservation-of-mass":"/ks4/conservation-of-mass","titrations":"/ks4/titrations","percentage-yield":"/ks4/percentage-yield","atom-economy":"/ks4/atom-economy"};
+const ORDER = [["model-of-the-atom","Development of the model of the atom",0],["subatomic-particles","Subatomic particles",0],["relative-atomic-mass","Relative atomic mass, atomic number and isotopes",0],["electronic-structure","Electronic structure",0],["group-7","Group 7: the halogens",0],["transition-metals","Properties of transition metals",1],["mass-changes-reactions","Mass changes in reactions",0],["chemical-measurements","Chemical measurements",0],["moles","Moles",3],["amounts-in-equations","Amounts of substances in equations",3],["oxidation-reduction","Oxidation and reduction",0],["salts-neutralisation","Making salts and neutralisation",0],["ph-scale","The pH scale and neutralisation",0],["strong-weak-acids","Strong and weak acids",3],["electrolysis-principles","The process of electrolysis",0],["electrolysis-molten","Electrolysis of molten ionic compounds",0]];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const V = (q, opts, we) => ({ q, opts, wrong_explanations: we });
+const LNK = (k, label) => ({ href: FILE[k], label });
+const TX = (x, y, t, size, o) => window.KS4D.T(x, y, t, size, Object.assign({ fill: '#1A1A1A' }, o || {}));
+const TXN = (x, y, t, size, o) => TX(x, y, t, size, Object.assign({ weight: 'normal' }, o || {}));
+const BOX = (x, y, w, h, fill, stroke, sw, rx) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + (rx == null ? 12 : rx) + '" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const INK = '#1A1A1A', TAN = '#F2C9AE', LEAF = '#A9D9BE', RED = '#C8102E', TEAL = '#2E8B7F', MUTED = '#8A8378', PAPER = '#FFFDF8', SKY = '#DDEEF6', BLUE = '#3B82F6';
+
+const RAIL = [{ id: 's-hook', label: 'Salty water', short: 'HOOK' }, { id: 's-name', label: 'Which salt?', short: 'NAME' }, { id: 's-rp', label: 'Required practical', short: 'RP' }, { id: 's-ionic', label: 'Ionic equation', short: 'IONIC' }, { id: 's-think', label: 'Think again', short: 'THINK' }, { id: 's-sort', label: 'Which acid?', short: 'SORT' }, { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }];
+const RP = [
+  { t: 'Measure dilute sulfuric acid into a beaker and warm it gently with a Bunsen burner. Warm acid reacts faster with the solid.' },
+  { t: 'Add black copper oxide a spatula at a time, stirring, until some stays undissolved. The solution turns blue. The acid is now all used up.', gate: { q: 'why keep adding copper oxide until some is left over?', opts: ['So that all the acid reacts and none is left to contaminate the salt', 'To make more salt than the acid allows', 'To make the solution hotter'], right: 0, no: ['', 'The acid limits how much salt forms; extra solid makes no more. It makes sure no acid is left.', 'Temperature is set by the Bunsen, not the solid.'] } },
+  { t: 'Filter the mixture through filter paper in a funnel. The excess copper oxide stays on the paper; the blue copper sulfate solution passes through as the filtrate.', gate: { q: 'what stays on the filter paper?', opts: ['The excess copper oxide', 'The copper sulfate', 'The water'], right: 0, no: ['', 'Copper sulfate is dissolved, so it passes through.', 'Water passes through with the dissolved salt.'] } },
+  { t: 'Heat the filtrate on a water bath (or an electric heater) until crystals start to form at the edge. Do not boil it dry.', gate: { q: 'why a water bath rather than heating to dryness over a Bunsen?', opts: ['Gentle heating; boiling dry spits and drives off the water of crystallisation', 'A water bath is faster', 'The salt would catch fire'], right: 0, no: ['', 'It is slower, and that is the point.', 'Copper sulfate does not burn; it loses its water and turns white.'] } },
+  { t: 'Leave the solution to cool so the rest of the crystals form slowly, then pat them dry between filter papers. Pure, dry, blue copper sulfate crystals.' }
+];
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  pick(key, q) {
+    const v = this.state[key], has = typeof v === 'number';
+    return { btns: q.opts.map((o, i) => ({ label: o, pressed: v === i, style: this.seg(v === i), onClick: () => this.setState({ [key]: i, [key + 'Ok']: !!this.state[key + 'Ok'] || i === q.right }) })),
+      note: !has ? (q.ask || 'Pick one.') : v === q.right ? q.yes : (q.no[v] || ''), done: !!this.state[key + 'Ok'], v: has ? v : null };
+  }
+  stepper(key, steps) {
+    const s = this.state, i = s[key] || 0, mx = s[key + 'Max'] || 0, msg = s[key + 'Msg'] || '';
+    const nx = i + 1, gate = nx < steps.length ? steps[nx].gate : null;
+    const go = (to) => this.setState({ [key]: to, [key + 'Msg']: '', [key + 'Max']: Math.max(this.state[key + 'Max'] || 0, to) });
+    const btns = i >= steps.length - 1 ? [{ label: 'Start again', pressed: false, style: this.seg(false), onClick: () => this.setState({ [key]: 0, [key + 'Msg']: '' }) }]
+      : gate ? gate.opts.map((o, k) => ({ label: o, pressed: false, style: this.seg(false), onClick: () => (k === gate.right ? go(nx) : this.setState({ [key + 'Msg']: gate.no[k] || '' })) }))
+      : [{ label: i === 0 && mx === 0 ? 'Start' : 'Next step', pressed: false, style: this.seg(false), onClick: () => go(nx) }];
+    return { i, btns, note: steps[i].t + (gate ? ' Before the next step: ' + gate.q : '') + (msg ? ' ' + msg : ''), done: mx >= steps.length - 1 };
+  }
+  flags() {
+    const K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    return { R, route, rk, H: rk === 'CH' || rk === 'TH', T: rk === 'TF' || rk === 'TH', TH: rk === 'TH' };
+  }
+  common(done, F, ready) {
+    const s = this.state, K = window.KS4;
+    const av = ORDER.filter((o) => !o[2] || (o[2] === 1 && F.T) || (o[2] === 2 && F.TH) || (o[2] === 3 && F.H)), i = av.findIndex((o) => o[0] === SLUG);
+    return { route: F.route, rk: F.rk, onRoute: F.R.onRoute || (() => {}), isHigher: F.H, notHigher: !F.H, isTriple: F.T, notTriple: !F.T, isTH: F.TH, notTH: !F.TH,
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready,
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (x) => this.setState({ hook: x }), onThink: (x) => this.setState({ think: x }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }),
+      endPrev: i > 0 ? LNK(av[i - 1][0], av[i - 1][1]) : null,
+      endNext: i >= 0 && i < av.length - 1 ? LNK(av[i + 1][0], av[i + 1][1]) : null };
+  }
+
+  rpFig(i) {
+    const D = window.KS4D; let b = ''; const names = ['warm the acid', 'add excess CuO', 'filter', 'water bath', 'cool and dry'];
+    names.forEach((n, k) => { const x = 80 + k * 150, on = k === i; b += BOX(x - 60, 40, 120, 200, on ? '#FBE3D6' : PAPER, INK, on ? 3 : 1.5, 12) + TX(x, 262, (k + 1) + ' · ' + n, 12);
+      if (k === 0) b += '<path d="M' + (x - 30) + ' 90 v80 h60 v-80" fill="none" stroke="' + INK + '" stroke-width="2"/>' + BOX(x - 28, 130, 56, 38, SKY, 'none', 0, 2) + D.line(x - 12, 200, x + 12, 200, 2, INK) + '<path d="M' + x + ' 200 l-6 -16 h12 z" fill="' + RED + '"/>';
+      if (k === 1) b += '<path d="M' + (x - 30) + ' 90 v80 h60 v-80" fill="none" stroke="' + INK + '" stroke-width="2"/>' + BOX(x - 28, 120, 56, 48, '#9BC4F0', 'none', 0, 2) + D.circ(x - 10, 160, 5, '#333', 'none', 0) + D.circ(x + 8, 162, 5, '#333', 'none', 0) + D.line(x + 10, 60, x - 6, 120, 2, INK);
+      if (k === 2) b += '<path d="M' + (x - 34) + ' 80 l34 50 l34 -50 z" fill="' + PAPER + '" stroke="' + INK + '" stroke-width="2"/>' + D.line(x, 130, x, 165, 3, INK) + '<path d="M' + (x - 24) + ' 84 l24 36 l24 -36 z" fill="#555"/>' + BOX(x - 24, 170, 48, 40, '#9BC4F0', INK, 1.5, 3);
+      if (k === 3) b += BOX(x - 36, 150, 72, 50, SKY, INK, 2, 4) + '<path d="M' + (x - 28) + ' 150 q28 -36 56 0" fill="#9BC4F0" stroke="' + INK + '" stroke-width="2"/>' + TXN(x, 220, 'water bath', 11, { fill: MUTED });
+      if (k === 4) [[-20, 150], [0, 140], [18, 155], [-8, 170]].forEach((p) => { b += '<rect x="' + (x + p[0] - 8) + '" y="' + (p[1] - 8) + '" width="16" height="16" transform="rotate(45 ' + (x + p[0]) + ' ' + p[1] + ')" fill="' + BLUE + '" stroke="' + INK + '" stroke-width="1.5"/>'; });
+    });
+    return D.svg(760, 280, b, 'Five stations of the required practical: warm the acid, add excess copper oxide, filter, heat on a water bath, cool and dry the blue crystals. Station ' + (i + 1) + ' is highlighted.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4, D = window.KS4D, F = this.flags();
+    const ready = !!(s.libReady && K && D);
+    const fig = (f) => (ready ? K.fig(f(), '') : null);
+    const nq = this.pick('nq', { opts: ['Zinc chloride', 'Zinc sulfate', 'Zinc carbonate'], right: 0, yes: 'Yes: hydrochloric acid makes chlorides, and the metal comes from the carbonate. Water and carbon dioxide are also made, so it fizzes.', no: ['', 'Sulfates come from sulfuric acid.', 'Zinc carbonate is the base you started with.'] });
+    const rp = this.stepper('rp', RP);
+    const BANK = [
+      V("What is the ionic equation for neutralisation?", [["H⁺(aq) + OH⁻(aq) → H₂O(l)", true], ["Acid + alkali → salt + water", false], ["Na⁺(aq) + Cl⁻(aq) → NaCl(s)", false], ["H₂ + O₂ → H₂O", false]], { "1": "This is the WORD equation — an ionic equation uses symbols and charges. The ionic equation H⁺ + OH⁻ → H₂O shows the actual ions involved.", "2": "This is a precipitation ionic equation — it describes salt formation, not neutralisation.", "3": "This is the equation for burning hydrogen in oxygen — not neutralisation." }),
+      Q('Why is copper oxide added to the acid until some is left undissolved?', 'So that all the acid reacts: none is left to contaminate the salt', [['To make more salt', 'The acid limits how much salt forms; extra solid makes no more.'], ['To speed up the reaction', 'Warming does that. The excess is about using up the acid.'], ['Because copper oxide is a catalyst', 'It is a reactant, and the excess is filtered off.']]),
+      Q('Name the salt made when magnesium oxide reacts with nitric acid.', 'Magnesium nitrate', [['Magnesium chloride', 'Chlorides come from hydrochloric acid.'], ['Magnesium sulfate', 'Sulfates come from sulfuric acid.'], ['Nitric oxide', 'The metal comes from the base, the ending from the acid.']]),
+      Q('Put the required-practical steps in order: A filter; B warm the acid; C add excess solid; D heat on a water bath until crystals form; E cool and dry.', 'B, C, A, D, E', [['C, B, A, D, E', 'Warm the acid first, then add the solid.'], ['B, C, D, A, E', 'Filter off the excess solid before crystallising.'], ['B, A, C, D, E', 'There is nothing to filter until the solid has been added.']]),
+      Q('Calcium carbonate is added to hydrochloric acid. How do you know when the carbonate is in excess?', 'The fizzing stops and some solid is left over', [['The solution turns blue', 'That is copper compounds; calcium salts are colourless.'], ['The fizzing gets faster', 'Fizzing slows and stops as the acid is used up.'], ['All the solid dissolves', 'If it all dissolves, the acid may not be used up.']])
+    ];
+    const done = [s.hook !== null, nq.done, rp.done, true, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done, F, ready);
+    return Object.assign(c, {
+      titrHref: FILE['titrations'],
+      hookOptions: [
+        { text: 'Let the water evaporate', correct: true, reply: 'Dissolved salt goes straight through a filter. Evaporate the water and the salt is left behind as crystals, which is the last step of today’s practical.' },
+        { text: 'Pour it through a filter', correct: false, reply: 'Try it and the salty water runs straight through: filters stop solids, and the salt is dissolved. You evaporate the water instead. Filtering has a job too, but earlier: removing the solid you added on purpose.' }
+      ],
+      nq, rpFig: fig(() => this.rpFig(rp.i)), rp,
+      thinkOptions: [
+        { text: 'Heat on a water bath until crystals start to form, then leave to cool and pat dry', correct: true, reply: 'Slow crystallisation gives pure, dry crystals with their water of crystallisation.' },
+        { text: 'Boil it dry over a Bunsen', correct: false, reply: 'It spits, and the heat drives off the water of crystallisation: white powder, not blue crystals.' },
+        { text: 'Put it in the fridge', correct: false, reply: 'Cooling alone does not remove the water. Evaporate some first, then let it cool.' }
+      ],
+      sortBins: [{ id: 'h', label: 'Hydrochloric acid' }, { id: 'n', label: 'Nitric acid' }, { id: 's', label: 'Sulfuric acid' }],
+      sortItems: [
+        { text: 'Copper sulfate', bin: 's', why: 'Sulfates from sulfuric acid.' },
+        { text: 'Zinc chloride', bin: 'h', why: 'Chlorides from hydrochloric acid.' },
+        { text: 'Sodium nitrate', bin: 'n', why: 'Nitrates from nitric acid.' },
+        { text: 'Magnesium sulfate', bin: 's', why: 'Sulfates from sulfuric acid.' },
+        { text: 'Calcium chloride', bin: 'h', why: 'Chlorides from hydrochloric acid.' },
+        { text: 'Potassium nitrate', bin: 'n', why: 'Nitrates from nitric acid.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Name', 'Name the salt formed when copper oxide reacts with sulfuric acid.', 'Copper sulfate.', ['Copper sulfate', ['Copper chloride', 'Chlorides come from hydrochloric acid.'], ['Copper oxide', 'That is the base.']]),
+          MCQ('Give', 'Give the two products when an acid reacts with a metal oxide.', 'A salt and water.', ['A salt and water', ['A salt and hydrogen', 'Hydrogen comes from acid and metal.'], ['A salt, water and carbon dioxide', 'Carbon dioxide comes from a carbonate.']])
+        ],
+        r2: [
+          MCQ('Explain', 'Explain why the mixture is filtered after the solid has been added to the acid.', 'To remove the excess, unreacted solid; the salt solution passes through.', ['To remove the excess solid', ['To remove the water', 'Water passes through with the salt.'], ['To collect the salt crystals', 'The salt is dissolved at this stage.']]),
+          MCQ('Give', 'Give the ionic equation for the reaction between an acid and an alkali.', 'H⁺(aq) + OH⁻(aq) → H₂O(l).', ['H⁺ + OH⁻ → H₂O', ['Na⁺ + Cl⁻ → NaCl', 'Sodium and chloride ions do not change; they are left out.'], ['H₂ + O₂ → H₂O', 'That is hydrogen burning.']])
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain how a pure sample of copper sulfate crystals is obtained from the filtrate. Put the links in order.',
+            ['Heat the filtrate gently on a water bath to evaporate some of the water.', 'Stop when crystals start to form at the edge and leave the solution to cool, so crystals form slowly.', 'Pat the crystals dry between filter papers.'],
+            [['Boil the solution until it is dry.', 'Boiling dry drives off the water of crystallisation and spits.'], ['Filter the hot solution to collect the crystals.', 'The crystals have not formed yet while everything is dissolved.']]),
+          CHAIN('Explain', 'Explain why the salt made by this method contains no acid. Put the links in order.',
+            ['The insoluble solid is added until some is left undissolved, so it is in excess.', 'With the solid in excess, all the acid has reacted and none is left in the solution.', 'The excess solid is removed by filtering, leaving only the salt solution.'],
+            [['The acid evaporates on the water bath.', 'The acid is removed by reacting, not by evaporating.'], ['The filter paper removes the acid.', 'Acid solution would pass through filter paper.']])
+        ],
+        r4: [
+          WRITE('Describe', 6, 'Describe how to prepare a pure, dry sample of magnesium sulfate crystals from magnesium carbonate and dilute sulfuric acid. Give a reason for each step.',
+            LV6('All steps in order (warm acid, add carbonate until fizzing stops and solid is left, filter, heat on a water bath until crystals start to form, cool, dry) each with its reason.', 'Most steps in order with some reasons.', 'Some steps given.'),
+            ['Warm the dilute sulfuric acid gently with a Bunsen burner so the reaction is faster.', 'Add magnesium carbonate, stirring, until the fizzing stops and some solid is left: the carbonate is in excess, so all the acid has reacted.', 'Filter to remove the excess magnesium carbonate; the magnesium sulfate solution is the filtrate.', 'Heat the filtrate on a water bath until crystals start to form, so it is not boiled dry.', 'Leave to cool so the crystals form slowly, then pat them dry between filter papers.'],
+            ['“Add exactly enough carbonate.”', '“Boil until dry.”'])
+        ]
+      },
+      keyLines: ['Acids are neutralised by metal oxides and metal hydroxides (bases) to produce salts and water, and by metal carbonates to produce salts, water and carbon dioxide.', 'Hydrochloric acid produces chlorides, nitric acid produces nitrates, sulfuric acid produces sulfates. The metal comes from the base.', 'Required practical (Combined RP8 = Chemistry RP1): warm the acid; add the insoluble oxide or carbonate until no more reacts (excess, so all the acid is used); filter off the excess solid; heat the filtrate on a water bath until crystals start to form; leave to cool; pat dry.', 'With a carbonate: add until the fizzing stops and solid is left over.', 'Neutralisation: H⁺(aq) + OH⁻(aq) → H₂O(l). Triple: a salt from two soluble reactants is made by titration, then repeating without indicator.'],
+      endConnects: [LNK('ph-scale', 'The pH scale and neutralisation'), LNK('titrations', 'Titrations'), LNK('chemical-measurements', 'Chemical measurements'), LNK('reactivity-series', 'The reactivity series')],
+      bank: ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

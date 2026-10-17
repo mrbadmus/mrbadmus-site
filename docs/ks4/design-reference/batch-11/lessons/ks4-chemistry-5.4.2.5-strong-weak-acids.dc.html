@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strong and weak acids · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Chemical changes" title="Strong and weak acids" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 5.4.2.5 · Higher only</p>
+        <h1>Strong and weak acids</h1>
+        <p class="ks3-bigq">Strong means completely ionised; concentrated means a lot of acid per dm<sup>3</sup>. Two different axes. And each pH unit is a factor of ten in hydrogen ion concentration.</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; background: var(--ks3-ink); color: var(--ks3-ground);">Higher only</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Calculates</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="2"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Guess" title="Two spills." scene="Vinegar is an acid. So is the acid inside a car battery." question="which would you rather spill on your hand?" options="{{ hookOptions }}" bridge="Both are acids, but one is weak and one is strong. The difference is how completely the acid splits into ions in water." on-commit="{{ onHook }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section id="s-ion" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Degree of ionisation</p>
+        <h2 style="margin: 6px 0 0;">All of it, or only some of it.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">A strong acid is completely ionised in aqueous solution: hydrochloric, nitric and sulfuric acids. A weak acid is only partially ionised: ethanoic, citric and carbonic acids. The weak acid’s equation has a reversible arrow because most of it stays as molecules.</p>
+        <div style="margin-top: 14px;"><div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ ionFig }}</div></div>
+        <div style="margin-top: 14px; display: grid; gap: 10px; font-family: var(--ks3-font-mono); font-size: 19px;">
+          <p style="margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">HCl <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 12h15M13 6l6 6-6 6"></path></svg> H<sup>+</sup> + Cl<sup>−</sup> <span style="color: var(--ks3-ink-muted); font-size: 15px;">strong: complete</span></p>
+          <p style="margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">CH<sub>3</sub>COOH <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; vertical-align: -0.14em; margin: 0 .2em; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 9h15M15 5l4 4M20 15H5M9 19l-4-4"></path></svg> CH<sub>3</sub>COO<sup>−</sup> + H<sup>+</sup> <span style="color: var(--ks3-ink-muted); font-size: 15px;">weak: partial, reversible</span></p>
+        </div>
+        <p style="margin: 14px 0 0; max-width: 62ch;">For a given concentration, which acid has the lower pH?</p>
+        <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ iq.btns }}" as="b" hint-placeholder-count="3"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+        <p aria-live="polite" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-size: 17px; line-height: 1.55;">{{ iq.note }}</p>
+      </section>
+
+      <section id="s-grid" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Two axes</p>
+        <h2 style="margin: 6px 0 0;">Strong is not concentrated.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Concentrated and dilute describe the amount of substance per unit volume. Strong and weak describe how completely the acid ionises. Any combination is possible. Place each beaker.</p>
+        <div style="margin-top: 14px; display: grid; gap: 12px;">
+          <sc-for list="{{ grid }}" as="r" hint-placeholder-count="4">
+            <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">{{ r.q }}</p>
+              <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;"><sc-for list="{{ r.p.btns }}" as="b" hint-placeholder-count="4"><button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button></sc-for></div>
+              <p aria-live="polite" style="margin: 10px 0 0; font-size: 17px; line-height: 1.5;">{{ r.p.note }}</p>
+            </div>
+          </sc-for>
+        </div>
+        <p style="margin: 14px 0 0; max-width: 62ch; font-size: 17px;">Reacting with excess magnesium: equal volumes of the two acids at the same concentration give the same total volume of hydrogen, because they contain the same amount of acid and the weak acid keeps ionising as its hydrogen ions are used up. The weak acid just fizzes more slowly.</p>
+      </section>
+
+      <section id="s-equation" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Equation · pH and hydrogen ion concentration</p>
+        <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">As the pH decreases by one unit, the hydrogen ion concentration of the solution increases by a factor of 10. A difference of n whole units is therefore a factor of 10<sup>n</sup>. This is a power, not a product, so there is no triangle: one line.</p>
+        <p style="margin: 14px 0 0; display: inline-block; padding: 12px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 21px;">factor = 10<sup>(difference in pH)</sup></p>
+        <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.55; max-width: 62ch;">The lower pH has the higher concentration. Three units is 10 × 10 × 10 = 1000, not 30.</p>
+      </section>
+
+      <section id="s-calc" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Cfifa" examples="{{ cfExamples }}" questions="{{ cfQuestions }}" on-open="{{ onCalc }}" hint-size="100%,900px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · dilute and weak</p></div>
+        <p class="ks3-mis-quote">&ldquo;Add water to hydrochloric acid and it becomes a weak acid.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Your call" command="Choose" prompt="Hydrochloric acid is diluted with a lot of water. What is it now?" options="{{ thinkOptions }}" reveal="A dilute strong acid. Dilution lowers the concentration and raises the pH, but every HCl molecule present is still fully ionised. Strength does not change with dilution." right-word="Yes." wrong-word="Not quite." on-commit="{{ onThink }}" hint-size="100%,360px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort" title="Which word?" prompt="Place each description." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Strong and weak: how completely the acid ionises. Concentrated and dilute: how much acid per dm³." on-done="{{ onSort }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Why a strong acid has a lower pH than a weak acid of the same concentration.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">The difference between strong and concentrated.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Calculate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">How many times the hydrogen ion concentration changes between two pH values.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Strong acids ionise completely; weak acids only partially. Same concentration: the strong acid has the lower pH. Each pH unit down is ten times the hydrogen ion concentration.</p>
+      </div>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Practice" slug="strong-weak-acids" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Strong and weak acids" spec="AQA 5.4.2.5 · Higher only" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,300px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Mixing up strong with concentrated?" legal="pH values for 0.1 mol/dm³ acids are approximate: hydrochloric about 1, ethanoic about 3." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Higher&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+
+const SLUG = 'strong-weak-acids';
+const OK = ['Combined Higher', 'Triple Higher'];
+const FILE = {"model-of-the-atom":"ks4-chemistry-5.1.1.3-model-of-the-atom.dc.html","subatomic-particles":"ks4-chemistry-5.1.1.4-subatomic-particles.dc.html","relative-atomic-mass":"ks4-chemistry-5.1.1.6-relative-atomic-mass.dc.html","electronic-structure":"ks4-chemistry-5.1.1.7-electronic-structure.dc.html","group-7":"ks4-chemistry-5.1.2.6-group-7.dc.html","transition-metals":"ks4-chemistry-4.1.3.1-transition-metals.dc.html","mass-changes-reactions":"ks4-chemistry-5.3.1.3-mass-changes-reactions.dc.html","chemical-measurements":"ks4-chemistry-5.3.1.4-chemical-measurements.dc.html","moles":"ks4-chemistry-5.3.2.1-moles.dc.html","amounts-in-equations":"ks4-chemistry-5.3.2.2-amounts-in-equations.dc.html","oxidation-reduction":"ks4-chemistry-5.4.1.4-oxidation-reduction.dc.html","salts-neutralisation":"ks4-chemistry-5.4.2.2-salts-neutralisation.dc.html","ph-scale":"ks4-chemistry-5.4.2.4-ph-scale.dc.html","strong-weak-acids":"ks4-chemistry-5.4.2.5-strong-weak-acids.dc.html","electrolysis-principles":"ks4-chemistry-5.4.3.1-electrolysis-principles.dc.html","electrolysis-molten":"ks4-chemistry-5.4.3.2-electrolysis-molten.dc.html","periodic-table":"../../KS4 Batch 4/ks4-chemistry-5.1.2.1-periodic-table.dc.html","group-0":"../../KS4 Batch 5/ks4-chemistry-5.1.2.4-group-0.dc.html","metals-non-metals":"../../KS4 Batch 5/ks4-chemistry-5.1.2.3-metals-non-metals.dc.html","reactivity-series":"../../KS4 Batch 5/ks4-chemistry-5.4.1.1-reactivity-series.dc.html","extraction-of-metals":"../../KS4 Batch 5/ks4-chemistry-5.4.1.3-extraction-of-metals.dc.html","structure-of-atom":"../../KS4 Batch 5/ks4-physics-6.4.1.1-structure-of-atom.dc.html","development-atomic-model":"../../KS4 Batch 5/ks4-physics-6.4.1.3-development-atomic-model.dc.html","atoms-elements-compounds":"/ks4/atoms-elements-compounds","relative-formula-mass":"/ks4/relative-formula-mass","using-moles-calculations":"/ks4/using-moles-calculations","conservation-of-mass":"/ks4/conservation-of-mass","titrations":"/ks4/titrations","percentage-yield":"/ks4/percentage-yield","atom-economy":"/ks4/atom-economy"};
+const ORDER = [["model-of-the-atom","Development of the model of the atom",0],["subatomic-particles","Subatomic particles",0],["relative-atomic-mass","Relative atomic mass, atomic number and isotopes",0],["electronic-structure","Electronic structure",0],["group-7","Group 7: the halogens",0],["transition-metals","Properties of transition metals",1],["mass-changes-reactions","Mass changes in reactions",0],["chemical-measurements","Chemical measurements",0],["moles","Moles",3],["amounts-in-equations","Amounts of substances in equations",3],["oxidation-reduction","Oxidation and reduction",0],["salts-neutralisation","Making salts and neutralisation",0],["ph-scale","The pH scale and neutralisation",0],["strong-weak-acids","Strong and weak acids",3],["electrolysis-principles","The process of electrolysis",0],["electrolysis-molten","Electrolysis of molten ionic compounds",0]];
+const LV6 = (a, b, c) => [{ label: 'Level 3 · 5–6', text: a, max: 6 }, { label: 'Level 2 · 3–4', text: b, max: 4 }, { label: 'Level 1 · 1–2', text: c, max: 2 }, { label: 'No relevant content · 0', text: '', max: 0 }];
+const MCQ = (command, prompt, why, opts) => ({ kind: 'mcq', command, marks: 1, prompt, why, options: opts.map((o) => (typeof o === 'string' ? { text: o, correct: true } : { text: o[0], correct: false, reply: o[1] })) });
+const CHAIN = (command, prompt, links, herrings) => ({ kind: 'chain', command, marks: 3, prompt, links, herrings: herrings.map((h) => ({ text: h[0], why: h[1] })) });
+const WRITE = (command, marks, prompt, levels, points, reject) => ({ kind: 'write', command, marks, prompt, levels, points, reject });
+const CALC = (prompt, convOptions, convAnswer, answer, unit, units, right, wrong, model, tol) => ({ kind: 'calc', command: 'Calculate', marks: 2, prompt, convOptions, convAnswer, answer, tol: tol == null ? 0.05 : tol, unit, units, right, wrong, model });
+const Q = (q, right, wrongs) => ({ q, opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])), wrong_explanations: wrongs.reduce((o, w, i) => { o[String(i + 1)] = w[1]; return o; }, {}) });
+const V = (q, opts, we) => ({ q, opts, wrong_explanations: we });
+const LNK = (k, label) => ({ href: FILE[k], label });
+const TX = (x, y, t, size, o) => window.KS4D.T(x, y, t, size, Object.assign({ fill: '#1A1A1A' }, o || {}));
+const TXN = (x, y, t, size, o) => TX(x, y, t, size, Object.assign({ weight: 'normal' }, o || {}));
+const BOX = (x, y, w, h, fill, stroke, sw, rx) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + (rx == null ? 12 : rx) + '" fill="' + fill + '" stroke="' + (stroke || '#1A1A1A') + '" stroke-width="' + (sw || 2.5) + '"/>';
+const INK = '#1A1A1A', TAN = '#F2C9AE', LEAF = '#A9D9BE', RED = '#C8102E', TEAL = '#2E8B7F', MUTED = '#8A8378', PAPER = '#FFFDF8', SKY = '#DDEEF6';
+const CFL = (c, f, i, ft, a, cn) => [{ letter: 'C', label: 'Convert', line: c, note: cn || '' }, { letter: 'F', label: 'Formula', line: f }, { letter: 'I', label: 'Insert', line: i }, { letter: 'F', label: 'Fine-tune', line: ft }, { letter: 'A', label: 'Answer', line: a }];
+const CFQ = (c, f, i, ft, a, pc) => [{ letter: 'C', label: 'Convert', placeholder: pc || 'anything to convert?', line: c }, { letter: 'F', label: 'Formula', placeholder: 'written out', line: f }, { letter: 'I', label: 'Insert', placeholder: 'numbers in', line: i }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: ft }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: a }];
+const FML = 'factor = 10 to the power of (difference in pH)';
+
+const RAIL = [{ id: 's-hook', label: 'Two spills', short: 'HOOK' }, { id: 's-ion', label: 'Degree of ionisation', short: 'IONISE' }, { id: 's-grid', label: 'Two axes', short: 'AXES' }, { id: 's-equation', label: 'Factor of ten', short: 'EQUATION' }, { id: 's-calc', label: 'CFIFA', short: 'CFIFA' }, { id: 's-think', label: 'Think again', short: 'THINK' }, { id: 's-sort', label: 'Which word?', short: 'SORT' }, { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }];
+const GRID = [
+  { q: '0.001 mol/dm³ hydrochloric acid', right: 1, yes: 'Strong and dilute: every HCl molecule is ionised, but there are few of them per dm³.', no: ['Not much acid per dm³: dilute.', '', 'HCl is strong whatever its concentration.', 'Strong, and dilute.'] },
+  { q: '5 mol/dm³ ethanoic acid', right: 2, yes: 'Weak and concentrated: lots of acid per dm³, but only a small fraction ionised.', no: ['Ethanoic acid is weak.', 'Ethanoic acid is weak; and 5 mol/dm³ is concentrated.', '', '5 mol/dm³ is concentrated.'] },
+  { q: '2 mol/dm³ sulfuric acid', right: 0, yes: 'Strong and concentrated.', no: ['', '2 mol/dm³ is concentrated.', 'Sulfuric acid is strong.', 'Strong, and concentrated.'] },
+  { q: '0.01 mol/dm³ citric acid', right: 3, yes: 'Weak and dilute.', no: ['Citric acid is weak, and 0.01 is dilute.', 'Citric acid is weak.', '0.01 mol/dm³ is dilute.', ''] }
+];
+const GOPTS = ['Strong, concentrated', 'Strong, dilute', 'Weak, concentrated', 'Weak, dilute'];
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, think: null, sort: false, ladder: false, calc: 0 };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 14px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;text-align:left;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  pick(key, q) {
+    const v = this.state[key], has = typeof v === 'number';
+    return { btns: q.opts.map((o, i) => ({ label: o, pressed: v === i, style: this.seg(v === i), onClick: () => this.setState({ [key]: i, [key + 'Ok']: !!this.state[key + 'Ok'] || i === q.right }) })),
+      note: !has ? (q.ask || 'Pick one.') : v === q.right ? q.yes : (q.no[v] || ''), done: !!this.state[key + 'Ok'], v: has ? v : null };
+  }
+  flags() {
+    const K = window.KS4;
+    const R = K ? K.route(this) : { route: OK[OK.length - 1], onRoute: () => {} };
+    const route = OK.indexOf(R.route) >= 0 ? R.route : OK[OK.length - 1];
+    const rk = { 'Combined Foundation': 'CF', 'Combined Higher': 'CH', 'Triple Foundation': 'TF', 'Triple Higher': 'TH' }[route];
+    return { R, route, rk, H: rk === 'CH' || rk === 'TH', T: rk === 'TF' || rk === 'TH', TH: rk === 'TH' };
+  }
+  common(done, F, ready) {
+    const s = this.state, K = window.KS4;
+    const av = ORDER.filter((o) => !o[2] || (o[2] === 1 && F.T) || (o[2] === 2 && F.TH) || (o[2] === 3 && F.H)), i = av.findIndex((o) => o[0] === SLUG);
+    return { route: F.route, rk: F.rk, onRoute: F.R.onRoute || (() => {}), isHigher: F.H, notHigher: !F.H, isTriple: F.T, notTriple: !F.T, isTH: F.TH, notTH: !F.TH,
+      routeOptions: OK.map((x) => ({ value: x, label: x })), ready,
+      railV: K ? K.rail(RAIL, done, s.active) : { rail: [] },
+      theme: this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined, draftVisible: this.props.showDraft !== false,
+      video: K && s.hook !== null ? K.video(SLUG) : null,
+      onHook: (x) => this.setState({ hook: x }), onThink: (x) => this.setState({ think: x }), onSort: () => this.setState({ sort: true }), onLadder: () => this.setState({ ladder: true }),
+      onCalc: (k) => this.setState((st) => ({ calc: Math.max(st.calc || 0, k || 1) })),
+      endPrev: i > 0 ? LNK(av[i - 1][0], av[i - 1][1]) : null,
+      endNext: i >= 0 && i < av.length - 1 ? LNK(av[i + 1][0], av[i + 1][1]) : null };
+  }
+
+  ionFig() {
+    const D = window.KS4D; let b = '';
+    const beaker = (x, title, sub) => { b += '<path d="M' + (x - 110) + ' 70 v180 q0 14 14 14 h192 q14 0 14 -14 v-180" fill="' + SKY + '" stroke="' + INK + '" stroke-width="2.5"/>' + TX(x, 48, title, 16) + TXN(x, 292, sub, 13, { fill: MUTED }); };
+    beaker(190, 'hydrochloric acid, 0.1 mol/dm³', 'all ions: pH about 1');
+    beaker(530, 'ethanoic acid, 0.1 mol/dm³', 'mostly molecules: pH about 3');
+    const pts = [[-80, 100], [-30, 130], [30, 95], [80, 140], [-70, 190], [0, 210], [70, 200], [-20, 160], [50, 170], [-85, 230], [20, 240], [85, 235]];
+    pts.forEach((p, i) => { const x = 190 + p[0], y = p[1]; b += D.circ(x - 10, y, 10, RED, INK, 1.5) + TX(x - 10, y + 4, 'H⁺', 10, { fill: PAPER }) + D.circ(x + 14, y, 10, LEAF, INK, 1.5) + TX(x + 14, y + 4, 'Cl⁻', 9); });
+    pts.forEach((p, i) => { const x = 530 + p[0], y = p[1]; if (i === 5) { b += D.circ(x - 10, y, 10, RED, INK, 1.5) + TX(x - 10, y + 4, 'H⁺', 10, { fill: PAPER }) + D.circ(x + 16, y, 11, LEAF, INK, 1.5); } else { b += BOX(x - 22, y - 9, 44, 18, TAN, INK, 1.5, 9) + TX(x, y + 4, 'CH₃COOH', 8); } });
+    return D.svg(720, 305, b, 'Two beakers at the same concentration: hydrochloric acid fully split into H⁺ and Cl⁻ ions; ethanoic acid mostly intact molecules with only one ionised.');
+  }
+  renderVals() {
+    const s = this.state, K = window.KS4, D = window.KS4D, F = this.flags();
+    const ready = !!(s.libReady && K && D);
+    const fig = (f) => (ready ? K.fig(f(), '') : null);
+    const iq = this.pick('iq', { opts: ['The strong acid: more of it is ionised, so more H⁺', 'The weak acid: it is gentler', 'The same: same concentration'], right: 0, yes: 'Yes: at the same concentration the strong acid has the higher hydrogen ion concentration, so the lower pH. 0.1 mol/dm³ HCl is about pH 1; 0.1 mol/dm³ ethanoic acid about pH 3.', no: ['', 'Gentler means fewer H⁺ ions, which is a higher pH, not lower.', 'Same amount of acid, but a different fraction ionised, so different H⁺ concentrations.'] });
+    const grid = GRID.map((g, i) => ({ q: g.q, p: this.pick('g' + i, { opts: GOPTS, right: g.right, yes: g.yes, no: g.no, ask: 'Place it.' }) }));
+    const BANK = [
+      V("Two acids, 0.1 mol/dm³ HCl and 0.1 mol/dm³ CH₃COOH, are compared. Which has a lower pH and why?", [["HCl — it fully ionises, producing [H⁺] ≈ 0.1 mol/dm³. CH₃COOH only partially ionises, producing far less H⁺.", true], ["CH₃COOH — weak acids are more reactive and produce more H⁺", false], ["Both have the same pH — they are the same concentration", false], ["HCl — HCl molecules are larger and release more H⁺ per molecule", false]], { "1": "Weak acids are LESS reactive per unit concentration — they produce FEWER H⁺ ions, not more.", "2": "Same concentration does NOT mean same pH — the degree of ionisation determines [H⁺], which determines pH.", "3": "HCl produces one H⁺ per molecule (monoprotic) — the lower pH is due to COMPLETE ionisation, not molecule size." }),
+      V("Is it possible to have a dilute solution of a strong acid?", [["Yes — strong means fully ionised, dilute means low concentration. A 0.001 mol/dm³ HCl solution is dilute but still a strong acid.", true], ["No — strong acids must always be concentrated", false], ["No — diluting an acid makes it weak", false], ["Yes — but only if a catalyst is added to maintain ionisation", false]], { "1": "Strong/weak describes degree of IONISATION. Concentrated/dilute describes AMOUNT per volume. These are completely independent.", "2": "Diluting HCl just reduces the concentration — HCl always fully ionises. It doesn't become a weak acid.", "3": "No catalyst is needed — strength (ionisation) is an intrinsic property of the acid." }),
+      Q('Solution A has pH 1 and solution B has pH 4. How many times greater is the hydrogen ion concentration in A?', '1000 times: three units, 10³', [['3 times', 'Each unit is a factor of 10, so three units is 10 × 10 × 10.'], ['30 times', 'Multiply the tens, do not add them.'], ['100 times', 'That would be two units; 4 − 1 = 3.']]),
+      Q('Which of these is a weak acid?', 'Ethanoic acid', [['Hydrochloric acid', 'Strong: completely ionised.'], ['Sulfuric acid', 'Strong.'], ['Nitric acid', 'Strong.']]),
+      Q('Equal volumes of 1 mol/dm³ hydrochloric acid and 1 mol/dm³ ethanoic acid are each added to excess magnesium. Compare the hydrogen produced.', 'The same total volume, but the ethanoic acid produces it more slowly', [['The hydrochloric acid produces more hydrogen', 'Both contain the same amount of acid; the weak acid keeps ionising as its H⁺ is used.'], ['The ethanoic acid produces more hydrogen', 'Same amount of acid, same total hydrogen.'], ['The ethanoic acid produces none', 'It reacts, more slowly: fewer H⁺ ions at any moment.']])
+    ];
+    const done = [s.hook !== null, iq.done, grid.every((g) => g.p.done), true, s.calc >= 2, s.think !== null, s.sort, s.ladder];
+    const c = this.common(done, F, ready);
+    return Object.assign(c, {
+      hookOptions: [
+        { text: 'The vinegar', correct: true, reply: 'Vinegar is dilute ethanoic acid, a weak acid: only a small fraction of its molecules split into ions. Battery acid is sulfuric acid, strong and concentrated: fully ionised, and lots of it.' },
+        { text: 'The battery acid', correct: false, reply: 'Please not. Battery acid is sulfuric acid, strong and concentrated: every molecule split into ions and plenty of them. Vinegar is a weak acid, and dilute. Those two words, strong and concentrated, are the lesson.' }
+      ],
+      ionFig: fig(() => this.ionFig()), iq, grid,
+      cfExamples: [
+        { tab: 'The pack’s example', next: 'Now a bigger gap.', head: '0.1 mol/dm³ hydrochloric acid has pH 1. 0.1 mol/dm³ ethanoic acid has pH 3. How many times greater is the hydrogen ion concentration in the hydrochloric acid?', steps: CFL('Nothing to convert: both are whole-number pH values.', FML, 'difference = 3 − 1 = 2, so factor = 10²', 'factor = 10 × 10 = 100', '100 times the hydrogen ion concentration', 'The lower pH has the higher concentration.') },
+        { tab: 'Four units', next: 'Now yours, below.', head: 'Solution A has pH 2 and solution B has pH 6. How many times greater is the hydrogen ion concentration in A?', steps: CFL('Nothing to convert.', FML, 'difference = 6 − 2 = 4, so factor = 10⁴', 'factor = 10 × 10 × 10 × 10 = 10 000', '10 000 times') }
+      ],
+      cfQuestions: [
+        { tab: 'Question 1', id: 'swa-q1', head: 'Solution X has pH 3 and solution Y has pH 5. How many times greater is the hydrogen ion concentration in X?', close: 'Two units is 10², which is 100, not 20.', steps: CFQ('Nothing to convert.', FML, 'difference = 5 − 3 = 2, so factor = 10²', 'factor = 100', '100 times') },
+        { tab: 'Question 2', id: 'swa-q2', head: 'A solution has pH 1. Another has pH 4. How many times greater is the hydrogen ion concentration in the pH 1 solution?', close: 'Three units: 10 × 10 × 10 = 1000.', steps: CFQ('Nothing to convert.', FML, 'difference = 4 − 1 = 3, so factor = 10³', 'factor = 1000', '1000 times') }
+      ],
+      thinkOptions: [
+        { text: 'A dilute strong acid', correct: true, reply: 'Fewer HCl molecules per dm³, every one of them ionised.' },
+        { text: 'A weak acid', correct: false, reply: 'Weak means partially ionised. HCl is fully ionised at any concentration; it is now dilute, not weak.' },
+        { text: 'Neutral', correct: false, reply: 'Dilution raises the pH towards 7 but never reaches it.' }
+      ],
+      sortBins: [{ id: 's', label: 'Strong' }, { id: 'w', label: 'Weak' }, { id: 'c', label: 'Concentrated' }, { id: 'd', label: 'Dilute' }],
+      sortItems: [
+        { text: 'Completely ionised in water', bin: 's', why: 'Strong.' },
+        { text: 'Only partially ionised in water', bin: 'w', why: 'Weak.' },
+        { text: 'A large amount of acid per dm³', bin: 'c', why: 'Concentrated.' },
+        { text: 'A small amount of acid per dm³', bin: 'd', why: 'Dilute.' },
+        { text: 'Equation written with a reversible arrow', bin: 'w', why: 'Weak acids reach an equilibrium.' },
+        { text: 'Hydrochloric, nitric, sulfuric', bin: 's', why: 'The strong acids.' },
+        { text: 'Ethanoic, citric, carbonic', bin: 'w', why: 'The weak acids.' }
+      ],
+      rungs: {
+        r1: [
+          MCQ('Define', 'Define a strong acid.', 'An acid that is completely ionised in aqueous solution.', ['Completely ionised in aqueous solution', ['An acid with a high concentration', 'That is concentrated.'], ['An acid with a low pH', 'A strong acid can have a pH of 4 if dilute enough.']]),
+          MCQ('Name', 'Name one weak acid.', 'Ethanoic, citric or carbonic acid.', ['Ethanoic acid', ['Nitric acid', 'Strong.'], ['Sulfuric acid', 'Strong.']])
+        ],
+        r2: [
+          CALC('Solution A has pH 2 and solution B has pH 5. Calculate how many times greater the hydrogen ion concentration is in A.', ['Nothing to convert', 'Convert pH to mol/dm³', 'Convert pH to %'], 0, 1000, 'times', ['times', 'mol/dm³', 'pH'], 'Difference 3 units: 10³ = 1000.', 'Each pH unit is a factor of 10; multiply the tens.', ['C · nothing to convert', 'F · factor = 10^(difference)', 'I · difference = 5 − 2 = 3', 'F · 10³ = 1000', 'A · 1000 times'], 1),
+          CALC('A solution of pH 1 is compared with one of pH 3. Calculate how many times greater the hydrogen ion concentration is in the pH 1 solution.', ['Nothing to convert', 'Convert pH to mol/dm³', 'Convert to a percentage'], 0, 100, 'times', ['times', 'mol/dm³', 'pH'], 'Difference 2 units: 10² = 100.', 'Two tens multiplied, not added.', ['C · nothing to convert', 'F · factor = 10^(difference)', 'I · difference = 3 − 1 = 2', 'F · 10² = 100', 'A · 100 times'], 1)
+        ],
+        r3: [
+          CHAIN('Explain', 'Explain why 0.1 mol/dm³ ethanoic acid has a higher pH than 0.1 mol/dm³ hydrochloric acid. Put the links in order.',
+            ['Hydrochloric acid is a strong acid, completely ionised, so nearly every molecule gives a hydrogen ion.', 'Ethanoic acid is a weak acid, only partially ionised, so most molecules stay whole.', 'The ethanoic acid has a lower hydrogen ion concentration, and a lower H⁺ concentration means a higher pH.'],
+            [['Ethanoic acid is more dilute.', 'Both are 0.1 mol/dm³.'], ['Ethanoic acid molecules are bigger.', 'Size is not the reason; ionisation is.']]),
+          CHAIN('Explain', 'Explain the difference between a concentrated weak acid and a dilute strong acid. Put the links in order.',
+            ['Concentrated and dilute describe the amount of acid per unit volume.', 'Strong and weak describe the fraction of the acid that is ionised.', 'So a concentrated weak acid has many molecules, few of them ionised; a dilute strong acid has few molecules, all of them ionised.'],
+            [['Strong acids are always concentrated.', 'The two axes are independent.'], ['Diluting a strong acid makes it weak.', 'Dilution changes concentration, not strength.']])
+        ],
+        r4: [
+          WRITE('Explain', 6, 'Two acids are each 0.1 mol/dm³: hydrochloric acid (pH 1) and ethanoic acid (pH 3). Explain the difference in pH, state how the hydrogen ion concentrations compare numerically, and explain why diluting the hydrochloric acid does not make it a weak acid.',
+            LV6('Ionisation explained for both, 100 times stated with the ×10 per unit reasoning, and strength distinguished from concentration.', 'Ionisation explained and either the factor or the strength/concentration point.', 'One correct statement about strong or weak acids.'),
+            ['Hydrochloric acid is strong: completely ionised, so its hydrogen ion concentration is about 0.1 mol/dm³.', 'Ethanoic acid is weak: only partially ionised (reversible), so far fewer hydrogen ions.', 'Lower hydrogen ion concentration means higher pH, so ethanoic acid is pH 3.', 'Each pH unit is a factor of 10, so two units means the hydrochloric acid has 100 times the hydrogen ion concentration.', 'Diluting lowers the concentration and raises the pH, but every HCl molecule present is still fully ionised: it is a dilute strong acid, not a weak acid.'],
+            ['“Ethanoic acid has twice the pH so half the H⁺.”', '“Diluting makes it weak.”'])
+        ]
+      },
+      keyLines: ['A strong acid is completely ionised in aqueous solution (hydrochloric, nitric, sulfuric). A weak acid is only partially ionised (ethanoic, citric, carbonic), written with a reversible arrow.', 'For a given concentration of aqueous solutions, the stronger an acid, the lower the pH: 0.1 mol/dm³ HCl is about pH 1; 0.1 mol/dm³ CH₃COOH about pH 3.', 'Concentrated and dilute describe the amount of substance per unit volume. Strong and weak describe ionisation. A dilute strong acid and a concentrated weak acid both exist.', 'As the pH decreases by one unit, the hydrogen ion concentration increases by a factor of 10. A difference of n units is a factor of 10ⁿ: pH 1 against pH 3 is 100 times.', 'With excess magnesium, equal volumes of the two acids at the same concentration give the same total hydrogen; the weak acid reacts more slowly.'],
+      endConnects: [LNK('ph-scale', 'The pH scale and neutralisation'), LNK('salts-neutralisation', 'Making salts and neutralisation'), LNK('titrations', 'Titrations')],
+      bank: ready ? BANK.map((q) => K.item(q)) : []
+    });
+  }
+}
+</script>
+</body>
+</html>
