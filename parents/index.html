@@ -26,7 +26,7 @@
 <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
 <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
 <link rel="stylesheet" href="/shared/ks3-theme.css?v=16898136"/>
-<link rel="stylesheet" href="/consumer/consumer.css?v=123d1b60"/>
+<link rel="stylesheet" href="/consumer/consumer.css?v=db29ae1e"/>
 <link rel="stylesheet" href="/parents/public.css?v=27b5e5fd"/>
 <style>
 /* This page's own grid, above Design's 900px breakpoint. The base
@@ -130,8 +130,10 @@
 </div>
 
 <script src="/shared/config.js?v=ab7a89ac"></script>
-<script src="/consumer/consumer-common.js?v=098698a0"></script>
-<script src="/parents/public.js?v=4cab1125"></script>
+<script src="/consumer/consumer-common.js?v=ea9adbf1"></script>
+<script src="/parents/public.js?v=26edda28"></script>
+<script src="/shared/account.js?v=85ddd06e"></script>
+<script src="/shared/class-entry.js?v=8c087f18" defer></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    parents/index.html — the public home page. MRB-317 Night 3.
@@ -184,6 +186,7 @@
 
   C.boot({ public: true, run: function () {
     P.chrome('home');
+    P.guardWrongRole();
 
     document.getElementById('cta-hero').href    = P.url('signUp');
     document.getElementById('cta-how').href     = P.url('how');

@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
 <link rel="stylesheet" href="/shared/ks3-theme.css?v=16898136"/>
-  <link rel="stylesheet" href="/consumer/consumer.css?v=123d1b60"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=db29ae1e"/>
   <link rel="stylesheet" href="/org/org.css?v=c3d813f7"/>
 <style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
 </head>
@@ -42,7 +42,7 @@
     <div class="og-seats">
       <p id="seats-line">—</p>
       <div class="og-seat-bar"><i id="seat-fill" style="width:0%;"></i></div>
-      <p class="og-who"><span id="who">—</span> · <button type="button" id="signout" style="padding:0;border:0;background:none;font:inherit;font-weight:700;color:var(--ks3-accent-text);cursor:pointer;">Sign out</button></p>
+      <p class="og-who"><span id="who">—</span> · <button type="button" id="signout" style="padding:0;border:0;background:none;font:inherit;font-weight:700;color:var(--ks3-accent-text);cursor:pointer;">Sign out</button> · <button type="button" id="switch-account" style="padding:0;border:0;background:none;font:inherit;font-weight:700;color:var(--ks3-accent-text);cursor:pointer;">Switch account</button></p>
     </div>
   </aside>
 
@@ -70,7 +70,9 @@
 </div>
 
 <script src="/shared/config.js?v=ab7a89ac"></script>
-<script src="/consumer/consumer-common.js?v=098698a0"></script>
+<script src="/shared/account.js?v=85ddd06e"></script>
+<script src="/shared/class-entry.js?v=8c087f18" defer></script>
+<script src="/consumer/consumer-common.js?v=ea9adbf1"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    /org/index.html — the organisation dashboard. MRB-318, Night 3.
@@ -1553,8 +1555,16 @@
       if (!ctx.session) { return C.go('/org/sign-in.html'); }
 
       el('mnav').onchange = function () { go(el('mnav').value); };
-      el('signout').onclick = function () {
-        ctx.sb.auth.signOut().then(function () { C.go('/org/sign-in.html'); });
+      /* ⊕ Front door (16 Oct 2026): Sign out lands on the front page and
+         clears this browser's state the way every other sign-out does
+         (C.signOut: the server revoke, then the local sweep whether or not
+         it worked). Switch account is the same teardown landing on the one
+         door every adult can sign in at. */
+      el('signout').onclick = function () { C.signOut(ctx.sb, '/'); };
+      el('switch-account').onclick = function () {
+        var A = window.MrBadmusAccount;
+        if (A && typeof A.switchAccount === 'function') { A.switchAccount({ sb: ctx.sb }); }
+        else { C.signOut(ctx.sb, '/auth.html'); }
       };
 
       /* ⊕ DROP 2 — the thread list, read alongside the org payload rather
@@ -1588,7 +1598,14 @@
            and the only useful next step is the sign-in page — which will say
            so properly, in Design's words, next to the form. */
         if (e && (e.status === 403 || e.status === 401)) {
-          return C.go('/org/sign-in.html');
+          /* ⊕ Front door (16 Oct 2026): asked ONLY of someone the API has
+             just refused, so a real organisation login can never be bounced
+             by a failed profile read. A pupil, a teacher or a parent goes to
+             their own home; anyone the map cannot place gets the form. */
+          var A = window.MrBadmusAccount;
+          var home = (A && typeof A.guardAudience === 'function')
+            ? A.guardAudience('org', { session: ctx.session }) : Promise.resolve(true);
+          return home.then(function (stay) { if (stay) { C.go('/org/sign-in.html'); } });
         }
         el('boot-msg').style.display = 'none';
         C.fail(el('main'), e.message,

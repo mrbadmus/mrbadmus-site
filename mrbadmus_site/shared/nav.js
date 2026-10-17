@@ -327,7 +327,9 @@
         : '<strong>Signed in</strong>';
       html = '<p class="nav-account-id">' + id + '</p><div class="nav-account-actions">' +
         (a && a.profileUrl ? '<a href="' + esc(a.profileUrl) + '" class="nav-account-btn">My profile</a>' : '') +
-        '<button type="button" class="nav-account-btn" data-act="switch">Switch account</button>' +
+        /* A family or organisation child has one door, /go/; an adult's
+           sign-in page is not theirs (front door, 16 Oct 2026). */
+        (a && a.kind === 'child' ? '' : '<button type="button" class="nav-account-btn" data-act="switch">Switch account</button>') +
         '<button type="button" class="nav-account-btn" data-act="signout">Sign out</button></div>';
     }
     box.innerHTML = html;
@@ -348,10 +350,10 @@
 
   /* The fallback when shared/account.js is not on the page: clear the stored
      token and go to the school door. The real sign-out (the map's) also
-     revokes at the server, drops the caches and lands on the kind's own door. */
-  function fallbackSignOut() {
+     revokes at the server, drops the caches and lands on the front page. */
+  function fallbackSignOut(to) {
     try { if (SESSION_KEY) localStorage.removeItem(SESSION_KEY); } catch (e) {}
-    window.location.replace(carry('/auth.html'));
+    window.location.replace(carry(to || '/'));
   }
 
   function initDrawer() {
@@ -426,8 +428,8 @@
       var act = t.getAttribute('data-act');
       if (act) {
         var A = window.MrBadmusAccount;
-        if (act === 'signout') { if (A) A.signOut(); else fallbackSignOut(); }
-        else if (act === 'switch') { if (A) A.switchAccount(); else fallbackSignOut(); }
+        if (act === 'signout') { if (A) A.signOut(); else fallbackSignOut('/'); }
+        else if (act === 'switch') { if (A) A.switchAccount(); else fallbackSignOut('/auth.html'); }
         return;
       }
       if (t.tagName === 'A') close();   // so the drawer doesn't linger over the new page
@@ -478,13 +480,17 @@
     // Signed in: never "Sign in". The last answer for THIS person fills the
     // slot instantly; with none, it stays empty until the map answers.
     state.mode = 'in';
+    /* ⊕ Front door (16 Oct 2026) — a hint is only a stand-in for the map's
+       answer, so it is used only on a page that HAS the map. Without
+       account.js nothing would ever confirm it or withdraw it, and a pupil
+       who has since left their class would keep a button to a dead end. */
+    var A = window.MrBadmusAccount;
     try {
       var hint = JSON.parse(localStorage.getItem(HOME_PREFIX + user.id) || 'null');
-      state.home = hint && hint.href ? hint : null;
+      state.home = A && hint && hint.href ? hint : null;
     } catch (e) { state.home = null; }
     paintBar();
     paintAccount();
-    var A = window.MrBadmusAccount;
     if (!A) return;
     A.resolve().then(applyAccount, function () {});
   }

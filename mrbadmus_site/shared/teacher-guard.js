@@ -417,8 +417,18 @@ window.MrBadmusTeacherGuard = (function () {
     const isTest = window.MrBadmusConfig && window.MrBadmusConfig.environment === 'test';
     // ⊕ B2C polish — and `api` with it, when the page has one.
     const apiQ = new URLSearchParams(window.location.search).get('api');
-    window.location.replace('/auth.html' + (isTest ? '?env=test' + (apiQ ? '&api=' + encodeURIComponent(apiQ) : '') : ''));
+    window.location.replace('/' + (isTest ? '?env=test' + (apiQ ? '&api=' + encodeURIComponent(apiQ) : '') : ''));
   }
 
-  return { requireTeacherRole, signOut, getClient, ALLOWED_ROLES };
+  /* ⊕ Front door (16 Oct 2026) — "Switch account" beside every Sign out:
+     the same teardown, but landing on the one door every adult can sign in
+     at. Through THIS page's client, so the session is revoked here. */
+  async function switchAccount() {
+    if (window.MrBadmusAccount) {
+      return window.MrBadmusAccount.switchAccount({ sb: getClient() });
+    }
+    return signOut().then(function () {});
+  }
+
+  return { requireTeacherRole, signOut, switchAccount, getClient, ALLOWED_ROLES };
 })();

@@ -899,6 +899,20 @@ for _lbl, _path, _pre in (
          "ks3/biology/cells-and-organisation/specialised-cells.html", None)):
     _ipage(_lbl, _path, setup=_DRAWER_OPEN_JS, wait=1.4, prescript=_pre, widths=[1280, 390])
 
+# ── E5–E6 (front door run 2, 16 Oct 2026): THE SIGNED-OUT DRAWER ON THE GCSE
+# CHROME. E1 and E4 are a classic page and a KS3 lesson, neither of which
+# carries `body[data-chrome="ks4"]`, so the one place the drawer's primary
+# "Sign in" button was unreadable was the one place nothing opened it:
+# `body[data-chrome="ks4"] a { color: var(--k4-link) }` (specificity 0,1,2)
+# beat the button's own `color: #fff` (0,1,0) and painted rust text on the
+# rust fill — 1.03:1 in light, gold on rust (3.1:1) in dark. Measured here in
+# both themes at both widths, on the GCSE hub and on a topic page.
+for _lbl, _path in (
+        ("E5 gcse hub, drawer open [signed out]", "ks4.html"),
+        ("E6 gcse topic page, drawer open [signed out]",
+         "combined/foundation/physics/electricity/circuit-symbols.html")):
+    _ipage(_lbl, _path, setup=_DRAWER_OPEN_JS, wait=1.4, prescript=None, widths=[1280, 390])
+
 # ── D2: the safeguarding box lessons — static content, no interaction
 # needed, just not previously in PAGES/INTERACTION_PAGES at all. ──
 for _slug, _path in (

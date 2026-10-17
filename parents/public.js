@@ -364,7 +364,27 @@
     if (f) { f.outerHTML = footer(); }
   }
 
+  /* ⊕ Front door (16 Oct 2026) — WRONG ROLE ON THE FAMILY FRONT DOOR.
+     A school pupil, or a family child, who opens /parents/ with a session in
+     this browser is sent to their own home (shared/account.js, audience
+     `parents_public`); a parent, organisation staff, the operator and school
+     staff are let through. It asks only when there IS a stored session and
+     the dashboard's own marker does not already say "parent", so a signed-out
+     visitor — most of the page's traffic — costs nothing and sees no change.
+     Called by the marketing pages and sign-in, NOT by privacy, terms or
+     reset-password (which runs on a recovery session). */
+  function guardWrongRole() {
+    var A = window.MrBadmusAccount, Cfg = window.MrBadmusConfig;
+    if (!A || typeof A.guardAudience !== 'function' || !Cfg || !Cfg.AUTH_STORAGE_KEY) { return; }
+    try {
+      if (!window.localStorage.getItem(Cfg.AUTH_STORAGE_KEY)) { return; }
+      if (C.parentSignedIn()) { return; }
+    } catch (e) { return; }
+    A.guardAudience('parents_public');
+  }
+
   window.MrBadmusPublic = {
+    guardWrongRole: guardWrongRole,
     PAGES: PAGES,
     PENDING: PENDING,
     PATH: PATH,
