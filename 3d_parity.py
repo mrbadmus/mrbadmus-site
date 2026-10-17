@@ -198,9 +198,10 @@ is tolerated; a mismatch outside this list is a failure.
        2026), the studio never paints it, and ks3_parity reads it from this
        file. Listed in ADOPTED so layer A pins its value instead of calling it
        invented.
-  24.  Border widths are compared as their device-pixel floor: Chrome reports a
-       1.5px border as 1px at the harness's deviceScaleFactor 1 (see
-       _border_width_ok). studio.css and the reference both say 1.5px.
+  24.  Border-width rows are MEASURED at deviceScaleFactor 2 (_read_at_dpr2),
+       compared exactly: Chrome snaps computed border widths to whole device
+       pixels, so a 1.5px border reads 1px at the harness's DPR 1.
+       studio.css and the reference both say 1.5px.
 
 Provenance for every value in the expectation tables below is the frozen
 reference itself — section and line cited in each screen's comment.
@@ -1869,27 +1870,29 @@ def _sanity(page, screen, tokens):
     return None
 
 
-def _border_width_ok(got, want):
-    """A border's USED width is snapped DOWN to whole device pixels.
+def _read_at_dpr2(page, sel, prop):
+    """Read a computed style with the page at deviceScaleFactor 2, then put
+    it back at 1.
 
-    The harness measures at deviceScaleFactor 1 (ks3_browser.set_viewport), and
-    Chrome's getComputedStyle reports a `1.5px` border as `1px` there - the
-    stylesheet is right, the number is the browser's. Design's reference draws
-    1.5px (shell-v1.html lines 82, 231, ...) and so does studio.css, so the
-    expectation stays Design's 1.5px and the measurement is allowed to arrive
-    as its floor. Anything else (0, 2px, a wrong width) still fails. Ruled in
-    fix 5 of the loose-ends run; these were the two long-standing
-    `1.5px-vs-1px` rows.
+    Chrome snaps a USED border width down to whole device pixels, and the
+    harness runs at deviceScaleFactor 1 (ks3_browser.set_viewport), so a
+    `1.5px` border resolves to `1px` there - stylesheet right, number the
+    browser's. Design's reference draws 1.5px (shell-v1.html lines 82, 231,
+    ...). Measuring border widths at DPR 2 keeps 1.5px distinguishable from
+    1px, so a real drift to 1px still fails; CSS layout is identical at either
+    DPR, so nothing else on the screen moves. Only border-*-width rows use it.
     """
-    import math
-    m = re.match(r"^(-?[\d.]+)px$", want.strip())
-    if not m:
-        return got.lower() == want.lower()
-    w = float(m.group(1))
-    g = re.match(r"^(-?[\d.]+)px$", (got or "").strip())
-    if not g:
-        return False
-    return float(g.group(1)) in (w, float(math.floor(w)))
+    size = page.eval("[window.innerWidth, window.innerHeight]") or [0, 0]
+
+    def _dpr(n):
+        page.send("Emulation.setDeviceMetricsOverride",
+                  {"width": int(size[0]), "height": int(size[1]),
+                   "deviceScaleFactor": n, "mobile": False})
+    _dpr(2)
+    try:
+        return (page.eval("window.__st.style(%r, %r)" % (sel, prop)) or "").strip()
+    finally:
+        _dpr(1)
 
 
 def _check_styles(page, screen, style_rows, problems):
@@ -1900,13 +1903,14 @@ def _check_styles(page, screen, style_rows, problems):
                             % (spec["name"], sel, screen))
             continue
         for prop, want in sorted(spec["props"].items()):
-            got = (page.eval("window.__st.style(%r, %r)" % (sel, prop)) or "").strip()
+            if prop.startswith("border-") and prop.endswith("-width"):
+                got = _read_at_dpr2(page, sel, prop)
+            else:
+                got = (page.eval("window.__st.style(%r, %r)" % (sel, prop)) or "").strip()
             if prop == "font-family":
                 ok = want.lower() in got.lower()
             elif want.startswith("#"):
                 ok = same_colour(got, want)
-            elif prop.startswith("border-") and prop.endswith("-width"):
-                ok = _border_width_ok(got, want)
             elif want.endswith("px"):
                 ok = close_length(got, want) is True
             else:
