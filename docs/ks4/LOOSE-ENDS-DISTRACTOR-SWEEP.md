@@ -9,7 +9,7 @@ One display-time rule (`option_labels.plan`), applied where the options are draw
 | renderer | file | where the reason goes |
 |---|---|---|
 | KS4 topic-page quiz (4 emitters) | `generate_site_v5.py` | a wrong option with no authored explanation gets its reason as the wrong-answer feedback; a correct option's reason has no slot on these pages (the page says only "Correct") and is dropped from the label |
-| KS4 lesson pages (pilot + batches; `K.find`, `K.bank`, inline `V()`/`Q()`) | `shared/ks4-lib.js` `item()`, text written by `ks4_rulings.py` R20 from `option_labels.js_source()` | wrong option: authored explanation, else the reason; correct option: the standard line plus the reason |
+| KS4 lesson pages (pilot + batches; `K.find`, `K.bank`, inline `V()`/`Q()`) | `shared/ks4-lib.js` `item()`, text written by `ks4_rulings.py` R21 from `option_labels.js_source()` | wrong option: authored explanation, else the reason; correct option: the standard line plus the reason |
 | KS3 mastery ladder | `build_ks3.py` `_rung_marked` | wrong option: authored correction, else the reason; a correct option's reason has no slot (the page says only "Correct.") and is dropped from the label |
 
 A question is left EXACTLY as authored (and listed in section 3) when stripping would damage it: an empty or bare-connective head, two options collapsing to the same label, a pairing/matching stem, or a short head-plus-descriptor pair.
