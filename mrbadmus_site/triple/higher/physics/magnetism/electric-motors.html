@@ -125,17 +125,17 @@ html { background: var(--bg); }
   <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "A commutator converts DC to pulsed DC in the coil — it\'s not an AC-to-DC converter (that\'s a rectifier).",1: "The brushes connect to the supply — the commutator specifically reverses current direction at the right moment.",2: "The commutator doesn\'t affect field strength — it only switches current direction.",}'>
   <div class="q-text">1. Why does a DC motor need a split-ring commutator?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">It converts AC supply to DC for the motor coil</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">It connects the motor to the power supply</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">It increases the magnetic field strength</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">It reverses the current in the coil every half turn</button>
+<button class="quiz-opt" data-qi="0" data-oi="1" data-full="It connects the motor to the power supply — without it no current would flow">It connects the motor to the power supply</button>
+<button class="quiz-opt" data-qi="0" data-oi="2" data-full="It increases the magnetic field strength — making the motor more powerful">It increases the magnetic field strength</button>
+<button class="quiz-opt" data-qi="0" data-oi="3" data-full="It reverses the current in the coil every half turn — ensuring the forces always act to rotate the coil in the same direction">It reverses the current in the coil every half turn</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Accelerating the car to a stop makes no sense — regenerative braking decelerates by extracting energy from the motion.",2: "Conventional friction brakes do convert KE to thermal — but regenerative braking specifically avoids this by converting to electrical energy instead.",3: "Both conventional braking (KE → thermal) and regenerative braking (KE → electrical) happen simultaneously in many EVs — but regenerative braking specifically refers to the electrical recovery.",}'>
   <div class="q-text">2. An electric vehicle uses regenerative braking. What energy transfer occurs?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Electrical energy → kinetic energy</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Kinetic energy → electrical energy</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Chemical energy → thermal energy</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Kinetic energy → thermal energy</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0" data-full="Electrical energy → kinetic energy — the motor accelerates the car to a stop">Electrical energy → kinetic energy</button>
+<button class="quiz-opt" data-qi="1" data-oi="1" data-full="Kinetic energy → electrical energy — the motor runs in reverse as a generator, charging the battery">Kinetic energy → electrical energy</button>
+<button class="quiz-opt" data-qi="1" data-oi="2" data-full="Chemical energy → thermal energy — brakes convert stored energy to heat">Chemical energy → thermal energy</button>
+<button class="quiz-opt" data-qi="1" data-oi="3" data-full="Kinetic energy → thermal energy — friction brakes absorb kinetic energy as heat">Kinetic energy → thermal energy</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -200,7 +200,7 @@ html { background: var(--bg); }
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="/shared/mrbadmus.v2.js?v=1b8100fa"></script>
+  <script src="/shared/mrbadmus.v2.js?v=74e0c78e"></script>
   <script>MrBadmus.init({subject:'physics',topic:'Electric Motors (6.7.2.3)'});</script>
   <script>
 const SCORE_MESSAGES = [

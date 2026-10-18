@@ -127,18 +127,18 @@ html { background: var(--bg); }
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
   <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "The complementary strand is NOT identical — A pairs with T and G pairs with C, producing a different sequence.",2: "U (uracil) replaces T in RNA — but this question asks about the complementary DNA strand, which uses T not U.",3: "Bases pair with their COMPLEMENTS, not like-for-like: A pairs with T (not A), G pairs with C (not G).",}'>
   <div class="q-text">1. A section of DNA has the base sequence ATCGTA. What is the complementary strand sequence?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">TAGCAT</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">ATCGTA</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">UAGCAU</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">TACGAT</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0" data-full="TAGCAT — A pairs with T, T pairs with A, C pairs with G, G pairs with C, T pairs with A, A pairs with T">TAGCAT</button>
+<button class="quiz-opt" data-qi="0" data-oi="1" data-full="ATCGTA — the complementary strand is identical to the original">ATCGTA</button>
+<button class="quiz-opt" data-qi="0" data-oi="2" data-full="UAGCAU — RNA bases replace DNA bases on the complementary strand">UAGCAU</button>
+<button class="quiz-opt" data-qi="0" data-oi="3" data-full="TACGAT — bases pair like-for-like: A with A, T with T">TACGAT</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Both strands are copied — each serves as a template for a new complementary strand.",2: "Conservative replication (one cell gets both originals) was one proposed model — but experiments showed semi-conservative replication is what actually happens.",3: "DNA replication is NOT random — it is a precise, controlled process producing two identical double helices, each with one original strand.",}'>
   <div class="q-text">2. During DNA replication, why does each daughter cell end up with one original and one new DNA strand?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Only one strand is ever copied</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Semi-conservative replication</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Conservative replication</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">The DNA is split randomly</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0" data-full="Only one strand is ever copied — the other strand stays as original in both cells">Only one strand is ever copied</button>
+<button class="quiz-opt" data-qi="1" data-oi="1" data-full="Semi-conservative replication — each original strand acts as a template and a new complementary strand is built alongside it">Semi-conservative replication</button>
+<button class="quiz-opt" data-qi="1" data-oi="2" data-full="Conservative replication — one cell gets both original strands, the other gets two new strands">Conservative replication</button>
+<button class="quiz-opt" data-qi="1" data-oi="3" data-full="The DNA is split randomly — sometimes two original, sometimes two new strands end up in one cell">The DNA is split randomly</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -203,7 +203,7 @@ html { background: var(--bg); }
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="/shared/mrbadmus.v2.js?v=1b8100fa"></script>
+  <script src="/shared/mrbadmus.v2.js?v=74e0c78e"></script>
   <script>MrBadmus.init({subject:'biology',topic:'DNA Structure (4.6.2.1)'});</script>
   <script>
 const SCORE_MESSAGES = [

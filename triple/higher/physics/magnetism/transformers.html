@@ -159,18 +159,18 @@ html { background: var(--bg); }
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
   <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Technically DC frequency = 0 Hz, and transformers are designed for 50 Hz — but the fundamental reason is CONSTANT FLUX, not calibration.",1: "DC flows through coils perfectly well — it\'s the absence of CHANGE that prevents transformer action.",2: "DC can flow through transformer coils and would create a magnetic field — but a CONSTANT field causes no induction.",}'>
   <div class="q-text">1. Why can't transformers work with direct current (DC)?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">DC has a frequency of zero</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">DC cannot flow through coils of wire</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">DC is too powerful for the iron core</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">DC produces a constant magnetic flux</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0" data-full="DC has a frequency of zero — transformers are calibrated for 50 Hz only">DC has a frequency of zero</button>
+<button class="quiz-opt" data-qi="0" data-oi="1" data-full="DC cannot flow through coils of wire — coils require AC to function">DC cannot flow through coils of wire</button>
+<button class="quiz-opt" data-qi="0" data-oi="2" data-full="DC is too powerful for the iron core — it would overheat and be destroyed">DC is too powerful for the iron core</button>
+<button class="quiz-opt" data-qi="0" data-oi="3" data-full="DC produces a constant magnetic flux — no change in flux means no induced emf in the secondary coil (Faraday&#x27;s law requires changing flux)">DC produces a constant magnetic flux</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "While there is some electromagnetic radiation from power lines, this is not the reason for high voltage — P_loss = I²R is the key formula.",2: "Electrical signals travel at nearly the speed of light regardless of voltage — voltage doesn\'t affect transmission speed.",3: "Transformers work at any voltage — the reason for high voltage is specifically to reduce current and therefore reduce I²R heating losses.",}'>
   <div class="q-text">2. Why does the National Grid transmit electricity at very high voltages?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">High voltage prevents energy loss by radiation</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">High voltage means low current for the same power</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0" data-full="High voltage prevents energy loss by radiation — lower voltage radiates more energy">High voltage prevents energy loss by radiation</button>
+<button class="quiz-opt" data-qi="1" data-oi="1" data-full="High voltage means low current for the same power — less power wasted as heat in cables since P_loss = I²R">High voltage means low current for the same power</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">High voltage makes electricity travel faster through the cables</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Transformers only work at high voltages</button>
+<button class="quiz-opt" data-qi="1" data-oi="3" data-full="Transformers only work at high voltages — required for transformer compatibility">Transformers only work at high voltages</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -235,7 +235,7 @@ html { background: var(--bg); }
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="/shared/mrbadmus.v2.js?v=1b8100fa"></script>
+  <script src="/shared/mrbadmus.v2.js?v=74e0c78e"></script>
   <script>MrBadmus.init({subject:'physics',topic:'Transformers (6.7.3.4 (HT only, physics only))'});</script>
   <script>
 const SCORE_MESSAGES = [

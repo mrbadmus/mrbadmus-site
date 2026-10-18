@@ -1582,6 +1582,8 @@ try {
     });
 
     function txt(el) { return el ? (el.textContent || '').replace(/\s+/g, ' ').trim() : ''; }
+    // fix 2 (display-only): a KS4 classic option whose label was shortened keeps its stored text on data-full.
+    function sentOpt(b) { return b.hasAttribute('data-full') ? (b.getAttribute('data-full') || '').trim() : (b.textContent || '').trim(); }
     function later(fn) { setTimeout(function () { try { fn(); } catch (e) { /* never breaks a page */ } }, 0); }
     /* Saved-work helpers (16 Oct 2026). `same` compares two pieces of text as
        the ledger stored them (whitespace runs collapsed); `quizKey` is the
@@ -1634,7 +1636,7 @@ try {
         var l = document.querySelector('[data-lesson]');
         return (l && l.getAttribute('data-lesson')) || pathSlug;
       };
-      var optLabel = function (b) { return txt(b.querySelector('.ks3-opt-label') || b); };
+      var optLabel = function (b) { return b.hasAttribute && b.hasAttribute('data-full') ? txt({ textContent: b.getAttribute('data-full') }) : txt(b.querySelector('.ks3-opt-label') || b); }; // fix 2: a shortened label still sends its stored text (data-full)
       // What the child was asked: the commit line where the block has one,
       // else the block's own headings and paragraphs above its options
       // (a "Think again" block: the quoted idea, then the ask).
@@ -2129,8 +2131,8 @@ try {
             __block: card, key_stage: 'KS4', lesson_slug: pathSlug, question_id: null, rung: null,
             kind: 'choice',
             question_text: q ? q.textContent : '',
-            answer: (btn.textContent || '').trim(),
-            correct_answer: opts[right] ? (opts[right].textContent || '').trim() : null,
+            answer: sentOpt(btn),
+            correct_answer: opts[right] ? sentOpt(opts[right]) : null,
             is_correct: picked === right
           });
           return;
@@ -2188,7 +2190,7 @@ try {
         if (!r) { return; }
         var opts = card.querySelectorAll('.quiz-opt');
         for (var i = 0; i < opts.length; i += 1) {
-          if (same(opts[i].textContent, r.answer)) { if (!opts[i].disabled) { opts[i].click(); } return; }
+          if (same(sentOpt(opts[i]), r.answer)) { if (!opts[i].disabled) { opts[i].click(); } return; }
         }
       });
       /* The matching exercise: each card's LATEST checked place
@@ -2302,7 +2304,8 @@ try {
       if (!parts || value == null || value === '') { return value || ''; }
       return parts.map(function (x) { return typeof x === 'string' ? x : String(value); }).join('').replace(/\s+/g, ' ').trim();
     }
-    function optText(o) { return o && o.text != null ? String(o.text) : null; }
+    // fix 2 (display-only): a KS4 lesson option's `full` is the stored text; `text` is the label shown.
+    function optText(o) { return o && o.full != null ? String(o.full) : (o && o.text != null ? String(o.text) : null); }
     function rightOpt(opts) {
       for (var i = 0; i < (opts || []).length; i += 1) { if (opts[i] && opts[i].correct) { return opts[i]; } }
       return null;
@@ -2774,7 +2777,7 @@ try {
        points the server's marking credited (points_hit, 1-based, against the
        same list the page shows) — the child's own ticks were never sent. */
     function idxOf(opts, text) {
-      for (var i = 0; i < (opts || []).length; i += 1) { if (opts[i] && same(opts[i].text, text)) { return i; } }
+      for (var i = 0; i < (opts || []).length; i += 1) { if (opts[i] && same(opts[i].full != null ? opts[i].full : opts[i].text, text)) { return i; } }
       return -1;
     }
     function calcBack(it, answer) {

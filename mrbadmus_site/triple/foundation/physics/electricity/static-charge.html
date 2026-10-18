@@ -127,15 +127,15 @@ html { background: var(--bg); }
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
   <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Charge is conserved — rubbing transfers existing charges, it does not create new ones.",1: "Protons are fixed in the nucleus — they cannot be transferred by rubbing. Only electrons move.",2: "Both types of charge do not transfer simultaneously in this way — only electrons (negative) move.",}'>
   <div class="q-text">1. A plastic rod is rubbed with a woollen cloth and becomes negatively charged. What has happened?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Electrons were created in the rod by rubbing</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Protons transferred from the cloth to the rod</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Both positive and negative charges transferred</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Electrons transferred from the cloth to the rod</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0" data-full="Electrons were created in the rod by rubbing — friction generates new electrons">Electrons were created in the rod by rubbing</button>
+<button class="quiz-opt" data-qi="0" data-oi="1" data-full="Protons transferred from the cloth to the rod — rod gains positive charge">Protons transferred from the cloth to the rod</button>
+<button class="quiz-opt" data-qi="0" data-oi="2" data-full="Both positive and negative charges transferred — more negative arrived in the rod">Both positive and negative charges transferred</button>
+<button class="quiz-opt" data-qi="0" data-oi="3" data-full="Electrons transferred from the cloth to the rod — rod gains electrons (negative), cloth loses electrons (positive)">Electrons transferred from the cloth to the rod</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Precipitators are electrical devices — they use electric fields, not magnetic fields.",2: "Scrubbers (wet systems) dissolve gases like SO₂ — precipitators work by electrostatic attraction to plates.",3: "Precipitators use electrostatics — not heat. They don\'t burn the soot.",}'>
   <div class="q-text">2. Why are electrostatic precipitators used in power station chimneys?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">They give soot particles an electric charge so they are attracted to oppositely charged collection plates</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0" data-full="They give soot particles an electric charge so they are attracted to oppositely charged collection plates — removing particulates from the exhaust gas">They give soot particles an electric charge so they are attracted to oppositely charged collection plates</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">They use magnetic fields to filter out metal particles from the smoke</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">They dissolve soot in water sprayed into the chimney</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">They heat the smoke so soot burns completely before leaving the chimney</button>
@@ -203,7 +203,7 @@ html { background: var(--bg); }
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="/shared/mrbadmus.v2.js?v=1b8100fa"></script>
+  <script src="/shared/mrbadmus.v2.js?v=74e0c78e"></script>
   <script>MrBadmus.init({subject:'physics',topic:'Static Charge (6.2.5 (physics only))'});</script>
   <script>
 const SCORE_MESSAGES = [

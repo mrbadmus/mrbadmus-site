@@ -130,18 +130,18 @@ html { background: var(--bg); }
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
   <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Coolant removes thermal energy from the core — control rods are neutron absorbers.",2: "Fuel is contained in the fuel rods and pressure vessel — control rods specifically absorb neutrons.",3: "MODERATORS (water/graphite) slow neutrons — control rods ABSORB them. These are different functions.",}'>
   <div class="q-text">1. What is the purpose of control rods in a nuclear reactor?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">They cool the reactor core</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">They absorb neutrons</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">They contain the radioactive fuel</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">They slow down neutrons</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0" data-full="They cool the reactor core — preventing overheating by absorbing thermal energy">They cool the reactor core</button>
+<button class="quiz-opt" data-qi="0" data-oi="1" data-full="They absorb neutrons — inserting them deeper reduces neutron availability and slows the chain reaction">They absorb neutrons</button>
+<button class="quiz-opt" data-qi="0" data-oi="2" data-full="They contain the radioactive fuel — preventing radiation from escaping the reactor">They contain the radioactive fuel</button>
+<button class="quiz-opt" data-qi="0" data-oi="3" data-full="They slow down neutrons — making them more likely to cause fission of U-235">They slow down neutrons</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Gamma radiation does carry some energy away — but the primary energy source is the mass-energy conversion (mass defect), not the gamma radiation itself.",2: "Fission involves NUCLEAR forces — much stronger than chemical bonds. Chemical bond energies are millions of times smaller.",3: "Electrons are not the primary energy carriers in fission — it\'s the kinetic energy of the fission fragments and the mass-energy conversion.",}'>
   <div class="q-text">2. Why is energy released in a nuclear fission reaction?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The gamma radiation produced carries energy from the nucleus to the surroundings</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">The total mass of products is slightly less than the total mass of reactants</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">The nucleus breaks apart releasing chemical bonds</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Electrons are released from the nucleus</button>
+<button class="quiz-opt" data-qi="1" data-oi="1" data-full="The total mass of products is slightly less than the total mass of reactants — this &#x27;mass defect&#x27; is converted to energy via E = mc²">The total mass of products is slightly less than the total mass of reactants</button>
+<button class="quiz-opt" data-qi="1" data-oi="2" data-full="The nucleus breaks apart releasing chemical bonds — chemical potential energy becomes kinetic energy">The nucleus breaks apart releasing chemical bonds</button>
+<button class="quiz-opt" data-qi="1" data-oi="3" data-full="Electrons are released from the nucleus — their kinetic energy is the source of fission energy">Electrons are released from the nucleus</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -206,7 +206,7 @@ html { background: var(--bg); }
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="/shared/mrbadmus.v2.js?v=1b8100fa"></script>
+  <script src="/shared/mrbadmus.v2.js?v=74e0c78e"></script>
   <script>MrBadmus.init({subject:'physics',topic:'Nuclear Fission (6.4.5.1 (physics only))'});</script>
   <script>
 const SCORE_MESSAGES = [

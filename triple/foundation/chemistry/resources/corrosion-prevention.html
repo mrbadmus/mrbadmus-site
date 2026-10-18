@@ -130,18 +130,18 @@ html { background: var(--bg); }
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
   <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Oxygen diffuses readily through water — density is not the limiting factor.",2: "Both seawater and pure water contain dissolved oxygen — oxygen availability is not the key difference.",3: "Seawater is slightly alkaline but LOWER pH (more acidic conditions) speeds up rusting — not higher pH.",}'>
   <div class="q-text">1. Iron rusts quickly in seawater but slowly in pure water. Why?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Seawater contains dissolved salts</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0" data-full="Seawater contains dissolved salts — these act as an electrolyte, increasing electrical conductivity and speeding up electrochemical corrosion">Seawater contains dissolved salts</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">Pure water is too dense for oxygen to penetrate to the iron surface</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Seawater contains oxygen</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Seawater is alkaline</button>
+<button class="quiz-opt" data-qi="0" data-oi="2" data-full="Seawater contains oxygen — pure water has no dissolved oxygen">Seawater contains oxygen</button>
+<button class="quiz-opt" data-qi="0" data-oi="3" data-full="Seawater is alkaline — higher pH accelerates rusting">Seawater is alkaline</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Scratches expose iron to both oxygen and water — rusting would certainly begin without sacrificial protection.",2: "Zinc coatings do NOT self-heal — once physically damaged, the barrier is broken. Protection continues due to ELECTROCHEMICAL sacrificial action.",3: "Zinc is MORE reactive than iron (higher in the reactivity series) — this is exactly why it sacrifices itself to protect the iron.",}'>
   <div class="q-text">2. Why does galvanising protect steel even after the zinc coating is scratched?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Zinc is more reactive than iron</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">The scratch is too small for oxygen to enter</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">The zinc reforms over the scratch</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Zinc is less reactive than iron</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0" data-full="Zinc is more reactive than iron — zinc acts as a sacrificial metal and corrodes preferentially, protecting the exposed iron underneath">Zinc is more reactive than iron</button>
+<button class="quiz-opt" data-qi="1" data-oi="1" data-full="The scratch is too small for oxygen to enter — so rusting cannot begin">The scratch is too small for oxygen to enter</button>
+<button class="quiz-opt" data-qi="1" data-oi="2" data-full="The zinc reforms over the scratch — self-healing coating">The zinc reforms over the scratch</button>
+<button class="quiz-opt" data-qi="1" data-oi="3" data-full="Zinc is less reactive than iron — the iron corrodes first before reaching the zinc">Zinc is less reactive than iron</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -206,7 +206,7 @@ html { background: var(--bg); }
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="/shared/mrbadmus.v2.js?v=1b8100fa"></script>
+  <script src="/shared/mrbadmus.v2.js?v=74e0c78e"></script>
   <script>MrBadmus.init({subject:'chemistry',topic:'Corrosion and Its Prevention (4.10.3.1)'});</script>
   <script>
 const SCORE_MESSAGES = [

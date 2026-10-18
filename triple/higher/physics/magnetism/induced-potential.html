@@ -138,10 +138,10 @@ html { background: var(--bg); }
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "DC CAN be produced from rotation — using a split-ring commutator instead of slip rings.",1: "Generator magnets are permanent — they don\'t switch polarity. The AC arises from the coil\'s rotation geometry.",2: "Slip rings maintain continuous connection without reversal — it\'s the SPLIT-RING COMMUTATOR (not slip rings) that produces DC by swapping connections each half-turn.",}'>
   <div class="q-text">2. Why does a simple AC generator produce alternating current rather than direct current?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Generators always produce AC</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">AC generators use alternating magnets that switch polarity regularly</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">The slip rings swap connections every half-turn</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">As the coil rotates, the rate at which it cuts field lines varies sinusoidally</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0" data-full="Generators always produce AC — there is no physical way to make DC from rotation">Generators always produce AC</button>
+<button class="quiz-opt" data-qi="1" data-oi="1" data-full="AC generators use alternating magnets that switch polarity regularly — this produces AC">AC generators use alternating magnets that switch polarity regularly</button>
+<button class="quiz-opt" data-qi="1" data-oi="2" data-full="The slip rings swap connections every half-turn — reversing the current direction">The slip rings swap connections every half-turn</button>
+<button class="quiz-opt" data-qi="1" data-oi="3" data-full="As the coil rotates, the rate at which it cuts field lines varies sinusoidally — the emf and current reverse direction every half-turn">As the coil rotates, the rate at which it cuts field lines varies sinusoidally</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -206,7 +206,7 @@ html { background: var(--bg); }
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="/shared/mrbadmus.v2.js?v=1b8100fa"></script>
+  <script src="/shared/mrbadmus.v2.js?v=74e0c78e"></script>
   <script>MrBadmus.init({subject:'physics',topic:'Induced Potential and the Generator Effect (6.7.3.1 (HT only, physics only))'});</script>
   <script>
 const SCORE_MESSAGES = [

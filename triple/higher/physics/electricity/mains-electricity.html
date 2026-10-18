@@ -124,18 +124,18 @@ html { background: var(--bg); }
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
   <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Neutral is at ~0 V, not 230 V. Live is the dangerous wire at high pd.",1: "Neutral wire resistance is very low — fuses work electrically in either wire. The reason is SAFETY ISOLATION.",2: "Both wires carry AC — fuses work with AC. The reason is about isolating the appliance from the dangerous 230 V.",}'>
   <div class="q-text">1. Why must a fuse be in the live wire, not the neutral wire?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The neutral wire is at 230 V</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0" data-full="The neutral wire is at 230 V — it would blow constantly">The neutral wire is at 230 V</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">The neutral wire has too much resistance for a fuse to work</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Fuses only work with DC</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">If in the neutral wire, the appliance remains at 230 V even when the fuse blows</button>
+<button class="quiz-opt" data-qi="0" data-oi="2" data-full="Fuses only work with DC — neutral carries AC">Fuses only work with DC</button>
+<button class="quiz-opt" data-qi="0" data-oi="3" data-full="If in the neutral wire, the appliance remains at 230 V even when the fuse blows — still dangerous">If in the neutral wire, the appliance remains at 230 V even when the fuse blows</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Earth wire provides a low-resistance path. The resulting surge blows the fuse. Earth does not permanently carry current.",1: "Earth wire activates whenever live connects to earth (e.g. through the metal case) — not only in storms.",3: "Metal is an excellent conductor — current flows easily through it.",}'>
   <div class="q-text">2. A metal-cased appliance develops a fault — live touches the case. What happens if it is properly earthed?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Earth wire permanently absorbs the fault current</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Nothing</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Large current flows through earth wire, fuse blows, circuit breaks</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Current stays in the case</button>
+<button class="quiz-opt" data-qi="1" data-oi="1" data-full="Nothing — earth wire only activates in thunderstorms">Nothing</button>
+<button class="quiz-opt" data-qi="1" data-oi="2" data-full="Large current flows through earth wire, fuse blows, circuit breaks — case is made safe">Large current flows through earth wire, fuse blows, circuit breaks</button>
+<button class="quiz-opt" data-qi="1" data-oi="3" data-full="Current stays in the case — metal is a poor conductor">Current stays in the case</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -200,7 +200,7 @@ html { background: var(--bg); }
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="/shared/mrbadmus.v2.js?v=1b8100fa"></script>
+  <script src="/shared/mrbadmus.v2.js?v=74e0c78e"></script>
   <script>MrBadmus.init({subject:'physics',topic:'Mains Electricity (6.2.3.2)'});</script>
   <script>
 const SCORE_MESSAGES = [

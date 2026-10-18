@@ -135,18 +135,18 @@ html { background: var(--bg); }
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
   <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "CₙH₂ₙ is the formula for ALKENES (unsaturated) — alkanes use CₙH₂ₙ₊₂. For n=5: 2(5)+2=12 hydrogens.",1: "C₅H₅ is not a simple alkane or alkene — alkanes always have 2n+2 hydrogens.",2: "C₅H₈ doesn\'t fit either alkane or alkene formula — may be an alkyne or cyclic compound.",}'>
   <div class="q-text">1. An alkane has 5 carbon atoms. What is its molecular formula?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">C₅H₁₀</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">C₅H₅</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">C₅H₈</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">C₅H₁₂</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0" data-full="C₅H₁₀ — using CₙH₂ₙ — the alkene formula">C₅H₁₀</button>
+<button class="quiz-opt" data-qi="0" data-oi="1" data-full="C₅H₅ — half the expected hydrogens">C₅H₅</button>
+<button class="quiz-opt" data-qi="0" data-oi="2" data-full="C₅H₈ — fewer than expected">C₅H₈</button>
+<button class="quiz-opt" data-qi="0" data-oi="3" data-full="C₅H₁₂ — using CₙH₂ₙ₊₂: n=5, 2(5)+2 = 12 hydrogens">C₅H₁₂</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Incomplete combustion releases LESS energy per gram — not more. It is less efficient.",1: "Water vapour is produced in BOTH complete and incomplete combustion — it is not specific to incomplete.",2: "CO₂ contributes to climate change but is not immediately toxic like CO. Incomplete combustion produces CO (toxic) and particulates.",}'>
   <div class="q-text">2. Why is incomplete combustion of fuels more dangerous than complete combustion?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Incomplete combustion releases more energy</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0" data-full="Incomplete combustion releases more energy — causing overheating">Incomplete combustion releases more energy</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">Water vapour produced from incomplete combustion causes corrosion</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">Incomplete combustion only produces CO₂ which is more harmful than CO</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Carbon monoxide is produced</button>
+<button class="quiz-opt" data-qi="1" data-oi="3" data-full="Carbon monoxide is produced — a toxic, colourless, odourless gas that prevents oxygen transport in blood">Carbon monoxide is produced</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -211,7 +211,7 @@ html { background: var(--bg); }
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="/shared/mrbadmus.v2.js?v=1b8100fa"></script>
+  <script src="/shared/mrbadmus.v2.js?v=74e0c78e"></script>
   <script>MrBadmus.init({subject:'chemistry',topic:'Crude Oil, Hydrocarbons and Alkanes (5.7.1.1)'});</script>
   <script>
 const SCORE_MESSAGES = [

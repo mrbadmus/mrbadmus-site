@@ -831,6 +831,8 @@
       function answerParts(i, btn) {
         var labelEl = btn.querySelector(".ks3-opt-label");
         var text = ((labelEl ? labelEl.textContent : btn.textContent) || "").trim();
+        // fix 2 (display-only): a shortened label still SENDS its stored text.
+        if (btn.hasAttribute("data-full")) { text = (btn.getAttribute("data-full") || "").trim(); }
         return { letter: letters[i] || "", text: text };
       }
 
@@ -1277,6 +1279,7 @@
             r.options.forEach(function (b) {
               var lab = b.querySelector(".ks3-opt-label");
               var t = ((lab ? lab.textContent : b.textContent) || "").replace(/\s+/g, " ").trim();
+              if (b.hasAttribute("data-full")) { t = (b.getAttribute("data-full") || "").replace(/\s+/g, " ").trim(); }
               if (!hit && t === String(row.answer == null ? "" : row.answer).replace(/\s+/g, " ").trim()) { hit = b; }
             });
             if (hit) { r.restore(hit); any = true; }

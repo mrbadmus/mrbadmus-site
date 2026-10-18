@@ -132,18 +132,18 @@ html { background: var(--bg); }
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
   <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Distance is never zero if the runner moved — it counts total path length regardless of direction.",2: "Displacement is the NET change in position. After a full lap the runner is back at start → displacement = 0. Distance is the total path = 400 m.",3: "Distance = displacement only for straight-line motion in one direction — a full lap gives zero displacement.",}'>
   <div class="q-text">1. A runner completes one full lap of a 400 m circular track. What is the runner's distance and displacement?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Distance = 400 m, displacement = 0 m</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Both are zero</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Distance = 0 m, displacement = 400 m</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Distance = 400 m, displacement = 400 m</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0" data-full="Distance = 400 m, displacement = 0 m — the runner returns to the starting point">Distance = 400 m, displacement = 0 m</button>
+<button class="quiz-opt" data-qi="0" data-oi="1" data-full="Both are zero — one full lap cancels everything out">Both are zero</button>
+<button class="quiz-opt" data-qi="0" data-oi="2" data-full="Distance = 0 m, displacement = 400 m — same as the lap distance">Distance = 0 m, displacement = 400 m</button>
+<button class="quiz-opt" data-qi="0" data-oi="3" data-full="Distance = 400 m, displacement = 400 m — both equal the lap length">Distance = 400 m, displacement = 400 m</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Vectors in OPPOSITE directions SUBTRACT. Adding gives 11 N which ignores direction.",1: "Forces only cancel when equal in magnitude AND opposite in direction. 8 N ≠ 3 N so they don\'t cancel.",2: "The net force is in the direction of the LARGER force — 8 N is larger than 3 N so resultant is rightward.",}'>
   <div class="q-text">2. Two forces act on a box: 8 N to the right and 3 N to the left. What is the resultant force?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">11 N to the right</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Zero</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">5 N to the left</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">5 N to the right</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0" data-full="11 N to the right — 8 + 3 = 11 N (added without considering direction)">11 N to the right</button>
+<button class="quiz-opt" data-qi="1" data-oi="1" data-full="Zero — two forces always cancel out">Zero</button>
+<button class="quiz-opt" data-qi="1" data-oi="2" data-full="5 N to the left — 3 − 8 = −5 N so leftward">5 N to the left</button>
+<button class="quiz-opt" data-qi="1" data-oi="3" data-full="5 N to the right — 8 − 3 = 5 N; direction is that of the larger force">5 N to the right</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -208,7 +208,7 @@ html { background: var(--bg); }
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="/shared/mrbadmus.v2.js?v=1b8100fa"></script>
+  <script src="/shared/mrbadmus.v2.js?v=74e0c78e"></script>
   <script>MrBadmus.init({subject:'physics',topic:'Scalar and Vector Quantities (6.5.1.1)'});</script>
   <script>
 const SCORE_MESSAGES = [

@@ -159,18 +159,18 @@ html { background: var(--bg); }
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
   <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Components are only equal when θ = 45° — at 67.4° the components are unequal.",1: "A force at an angle to the horizontal ALWAYS has both horizontal and vertical components unless it\'s purely horizontal.",2: "Horizontal uses COS (angle from horizontal), vertical uses SIN — they are swapped in this option.",}'>
   <div class="q-text">1. A 13 N force acts at 67.4° to the horizontal. What are the horizontal and vertical components? (sin67.4° = 0.923, cos67.4° = 0.385)</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Both = 9.2 N</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Horizontal = 13 N, vertical = 0</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Horizontal = 12 N, vertical = 5 N</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Horizontal = 5 N, vertical = 12 N</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0" data-full="Both = 9.2 N — equal components at 67.4°">Both = 9.2 N</button>
+<button class="quiz-opt" data-qi="0" data-oi="1" data-full="Horizontal = 13 N, vertical = 0 — horizontal force has no vertical component">Horizontal = 13 N, vertical = 0</button>
+<button class="quiz-opt" data-qi="0" data-oi="2" data-full="Horizontal = 12 N, vertical = 5 N — Fx = 13×0.923; Fy = 13×0.385">Horizontal = 12 N, vertical = 5 N</button>
+<button class="quiz-opt" data-qi="0" data-oi="3" data-full="Horizontal = 5 N, vertical = 12 N — Fx = 13×0.385 = 5 N; Fy = 13×0.923 = 12 N">Horizontal = 5 N, vertical = 12 N</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "A closed triangle means ZERO resultant, which means equilibrium — zero resultant = zero acceleration.",2: "Parallel forces cannot form a triangle — vectors must point in different directions.",3: "A closed triangle means the forces cancel — but they don\'t have to be equal. A closed triangle can be scalene (all different sides).",}'>
   <div class="q-text">2. Three forces acting on an object form a closed triangle when drawn tip-to-tail. What does this tell us?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The object is in equilibrium</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">The object is accelerating</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">The forces all act in the same direction</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">The three forces are all equal in magnitude</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0" data-full="The object is in equilibrium — the resultant of the three forces is zero">The object is in equilibrium</button>
+<button class="quiz-opt" data-qi="1" data-oi="1" data-full="The object is accelerating — closed triangles indicate net force">The object is accelerating</button>
+<button class="quiz-opt" data-qi="1" data-oi="2" data-full="The forces all act in the same direction — parallel vectors form triangles">The forces all act in the same direction</button>
+<button class="quiz-opt" data-qi="1" data-oi="3" data-full="The three forces are all equal in magnitude — equilateral triangle">The three forces are all equal in magnitude</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -235,7 +235,7 @@ html { background: var(--bg); }
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="/shared/mrbadmus.v2.js?v=1b8100fa"></script>
+  <script src="/shared/mrbadmus.v2.js?v=74e0c78e"></script>
   <script>MrBadmus.init({subject:'physics',topic:'Resolving Forces and Vector Diagrams (6.5.1 (HT only))'});</script>
   <script>
 const SCORE_MESSAGES = [

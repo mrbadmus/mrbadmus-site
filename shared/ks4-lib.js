@@ -68,10 +68,10 @@ window.KS4 = (function () {
     var we = q.wrong_explanations || {};
     var pl = optionPlan(q.q, q.opts, we); // ⊕ R21
     var opts = q.opts.map(function (o, i) {
-      return { text: pl.labels[i], correct: !!o[1], reply: o[1] ? (pl.right[i] ? RIGHT + ' ' + pl.right[i] : RIGHT) : (we[String(i)] || pl.feedback[i] || ''), k: hash(q.q + '|' + o[0]) };
+      return { text: pl.labels[i], correct: !!o[1], reply: o[1] ? (pl.right[i] ? RIGHT + ' ' + pl.right[i] : RIGHT) : (we[String(i)] || pl.feedback[i] || ''), k: hash(q.q + '|' + o[0]), full: o[0] };
     });
     opts.sort(function (a, b) { return a.k - b.k; });
-    return { prompt: q.q, options: opts.map(function (o) { return { text: o.text, correct: o.correct, reply: o.reply }; }) };
+    return { prompt: q.q, options: opts.map(function (o) { return { text: o.text, correct: o.correct, reply: o.reply, full: o.full }; }) }; // ⊕ R21: `full` is the STORED text the capture still sends
   }
   function quiz(slug, r) {
     var s = src(slug).quiz || {};
