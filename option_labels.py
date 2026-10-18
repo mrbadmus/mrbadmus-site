@@ -123,6 +123,24 @@ def plan(stem, options, explanations=None):
     return out
 
 
+def sent_text(raw):
+    """What a page's option button used to SEND as its text: the rendered
+    textContent of the stored option (tags dropped, entities decoded, trimmed).
+    Display-only rule (Mide, D): the pupil sees the short label, but the page
+    keeps sending exactly this for the chosen / right option."""
+    import html as _h
+    return _h.unescape(re.sub(r"<[^>]+>", "", raw)).strip()
+
+
+def full_attr(label, raw, sent=None):
+    """` data-full="..."` for an option whose label was shortened, else ''.
+    `sent` overrides the text carried (KS3, where textContent is of sci())."""
+    if label == raw:
+        return ""
+    import html as _h
+    return ' data-full="%s"' % _h.escape(sent if sent is not None else sent_text(raw), quote=True)
+
+
 def js_source():
     """The JavaScript twin of `plan()`, as ES5 text for `shared/ks4-lib.js`.
 

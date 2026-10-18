@@ -303,7 +303,7 @@ GATES = [
          watches=["option_labels_check.py", "option_labels.py", "generate_site_v5.py",
                   "build_ks3.py", "build_ks4.py", "ks4_rulings.py", "ks4_lessons/**",
                   "all_subtopics_*.py", "ks3_data/**", "!ks3_data/**/questions_*.py", "ks3_art/kit.py",
-                  "shared/ks4-lib.js", "mrbadmus_site/combined/**",
+                  "shared/ks4-lib.js", "shared/ks3.js", "shared/mrbadmus.v2.js", "mrbadmus_site/combined/**",
                   "mrbadmus_site/triple/**", "mrbadmus_site/ks3/**"],
          why="Fix 2 of the loose-ends run (Oct 2026, Mide): a practice option "
              "must not carry its mistake or working in its label - '0.5 g - "
@@ -2961,7 +2961,9 @@ GATES = [
                   # round 3: KS3 instrument units and every answer key are
                   # read off the BUILT KS3 pages, by the tap's own rules
                   "tools/kp_ks3_units.py", "ks3/**", "build_ks3.py",
-                  "ks3_art/**", "shared/mrbadmus.v2.js"],
+                  "ks3_art/**", "shared/mrbadmus.v2.js", "shared/ks3.js",
+                  # fix 2: the option-label rule, and the senders it must not break
+                  "option_labels.py", "generate_site_v5.py"],
          # ⚠️ Named gap (MRB-346 rule 1): the 14 pilot lessons' ladder rungs
          # are read from Design's `.dc.html` under docs/ks4/design-reference/,
          # which no `watches` may name. The rung IDS (`ks4:<slug>#r1..r4`) come

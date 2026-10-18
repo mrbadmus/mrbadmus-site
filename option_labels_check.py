@@ -124,7 +124,7 @@ def check_twins(qs, problems):
               "var localStorage = {}; var document = { documentElement: { classList: { add: function () {}, remove: function () {} } }, addEventListener: function () {} };\n" + lib +
               "\nvar qs = JSON.parse(require('fs').readFileSync(0, 'utf8'));\n"
               "var out = qs.map(function (q) { var it = window.KS4.item(q); "
-              "return it.options.map(function (o) { return [o.text, o.correct, o.reply]; }); });\n"
+              "return it.options.map(function (o) { return [o.text, o.correct, o.reply, o.full]; }); });\n"
               "process.stdout.write(JSON.stringify(out));\n")
     payload = []
     for (_s, _r, _t, _slug, _i, q) in qs:
@@ -140,6 +140,11 @@ def check_twins(qs, problems):
     for (subject, route, topic, slug, i, q), g in zip(qs, got):
         pl = OL.plan(q["q"], q["opts"], q.get("wrong_explanations"))
         want = js_expected(q, pl)
+        # display-only: every option still carries its STORED text as `full`
+        if sorted(x[3] for x in g) != sorted(t for t, _ok in q["opts"]):
+            bad += 1
+            problems.append("KS4 lesson option `full` != stored text on %s/%s %s q%d" % (subject, slug, route, i))
+        g = [x[:3] for x in g]
         if g != want:
             bad += 1
             if bad <= 5:

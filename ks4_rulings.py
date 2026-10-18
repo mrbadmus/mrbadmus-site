@@ -1110,10 +1110,16 @@ def _r21_item_to():
             "    var we = q.wrong_explanations || {};\n"
             "    var pl = optionPlan(q.q, q.opts, we); // ⊕ R21\n"
             "    var opts = q.opts.map(function (o, i) {\n"
-            "      return { text: pl.labels[i], correct: !!o[1], reply: o[1] ? (pl.right[i] ? RIGHT + ' ' + pl.right[i] : RIGHT) : (we[String(i)] || pl.feedback[i] || ''), k: hash(q.q + '|' + o[0]) };\n"
+            "      return { text: pl.labels[i], correct: !!o[1], reply: o[1] ? (pl.right[i] ? RIGHT + ' ' + pl.right[i] : RIGHT) : (we[String(i)] || pl.feedback[i] || ''), k: hash(q.q + '|' + o[0]), full: o[0] };\n"
             "    });\n")
+
+
+R21_RETURN_FROM = ("    return { prompt: q.q, options: opts.map(function (o) { return { text: o.text, correct: o.correct, reply: o.reply }; }) };\n")
+R21_RETURN_TO = ("    return { prompt: q.q, options: opts.map(function (o) { return { text: o.text, correct: o.correct, reply: o.reply, full: o.full }; }) }; // \u2295 R21: `full` is the STORED text the capture still sends\n")
 
 
 def apply_r21_option_labels(text):
     _require(text, R21_ITEM_FROM, "ks4-lib.js", "R21")
+    _require(text, R21_RETURN_FROM, "ks4-lib.js", "R21")
+    text = text.replace(R21_RETURN_FROM, R21_RETURN_TO, 1)
     return text.replace(R21_ITEM_FROM, _r21_item_to(), 1)

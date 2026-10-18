@@ -244,7 +244,9 @@ def page_choice_keys(slug):
         if box is None:
             continue
         bs = [b for b in box.find_all("button") if "ks3-option" in (b.get("class") or [])]
-        lab = lambda b: (b.select_one(".ks3-opt-label") or b).get_text().strip()
+        # fix 2 (display-only): a shortened label still SENDS its stored text,
+        # carried on data-full (ks3.js answerParts reads it), so the key is that.
+        lab = lambda b: (b.get("data-full") if b.has_attr("data-full") else (b.select_one(".ks3-opt-label") or b).get_text()).strip()
         good = [b for b in bs if (b.get("data-correct") or "") not in ("", "0", "false")]
         out["%s#%s" % (slug, rung)] = {"options": [lab(b) for b in bs],
                                          "key": lab(good[0]) if len(good) == 1 else None}

@@ -2112,7 +2112,7 @@ def make_quiz(subject, topic, color):
             val = f"opt{i}_{j}"
             if is_correct:
                 correct_val = val
-            opts_html += f'<button class="quiz-opt" data-val="{val}">{_lp["labels"][j]}</button>\n'
+            opts_html += f'<button class="quiz-opt" data-val="{val}"{option_labels.full_attr(_lp["labels"][j], opt_text)}>{_lp["labels"][j]}</button>\n'
 
         html += f"""
 <div class="quiz-card" data-answer="{correct_val}">
@@ -3533,7 +3533,7 @@ def make_pilot_quiz(quiz):
                 exp = orig_wrong_exp.get(orig_j) or _lp["feedback"].get(orig_j)
                 if exp:
                     attrs += f' data-wrong-exp="{_esc_attr(exp)}"'
-            opts_html += f'<button class="quiz-opt"{attrs}>{_lp["labels"][orig_j]}</button>\n'
+            opts_html += f'<button class="quiz-opt"{attrs}{option_labels.full_attr(_lp["labels"][orig_j], opt_text)}>{_lp["labels"][orig_j]}</button>\n'
         cards_html += f"""<div class="quiz-card" id="qcard-{i}">
   <div class="q-text">{i+1}. {q['q']}</div>
   <div class="quiz-options">{opts_html}</div>
@@ -3699,7 +3699,7 @@ def _rd_quiz_options(q):
             exp = orig_wrong_exp.get(orig_j) or _lp["feedback"].get(orig_j)
             if exp:
                 attrs += f' data-wrong-exp="{_esc_attr(exp)}"'
-        opts_html += f'<button class="quiz-opt" type="button"{attrs}>{_lp["labels"][orig_j]}</button>\n'
+        opts_html += f'<button class="quiz-opt" type="button"{attrs}{option_labels.full_attr(_lp["labels"][orig_j], opt_text)}>{_lp["labels"][orig_j]}</button>\n'
     return opts_html
 
 
@@ -3879,7 +3879,7 @@ def make_new_quiz(quiz, color, pilot=False):
                     wrong_exp_map[display_j] = orig_wrong_exp[orig_j]
                 elif orig_j in _lp["feedback"]:
                     wrong_exp_map[display_j] = _lp["feedback"][orig_j]
-            opts_html += f'<button class="quiz-opt" data-qi="{i}" data-oi="{display_j}">{_lp["labels"][orig_j]}</button>\n'
+            opts_html += f'<button class="quiz-opt" data-qi="{i}" data-oi="{display_j}"{option_labels.full_attr(_lp["labels"][orig_j], opt_text)}>{_lp["labels"][orig_j]}</button>\n'
 
         wrong_exp_js = "{"
         for idx, explanation in wrong_exp_map.items():

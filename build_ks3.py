@@ -3197,9 +3197,13 @@ def _rung_marked(key, num, name, q):
     for i, o in enumerate(q["options"]):
         fb = fbmap.get(i, "") or lp["feedback"].get(i, "")
         correct = "1" if i == q.get("answer") else "0"
+        # Display-only: the pupil sees the label; the page keeps SENDING the
+        # stored text (what textContent of the full option used to be), carried
+        # on `data-full` and read by ks3.js answerParts / mrbadmus.v2.js.
+        full = option_labels.full_attr(lp["labels"][i], o, sent=option_labels.sent_text(sci(o)))
         opts.append(_option_li(
             i, lp["labels"][i],
-            ' data-correct="%s" data-feedback="%s"' % (correct, e(fb))))
+            ' data-correct="%s" data-feedback="%s"%s' % (correct, e(fb), full)))
     return ('<div class="ks3-rung" data-rung="%s" data-mode="marked">'
             '<h3 tabindex="-1">Rung %d · %s</h3>'
             '<p class="ks3-rung-q">%s</p>'

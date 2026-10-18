@@ -498,7 +498,7 @@ def _first(v):
 def _right(options):
     for o in options or []:
         if isinstance(o, dict) and o.get("correct"):
-            return plain(o.get("text"))
+            return plain(o.get("full") if o.get("full") is not None else o.get("text"))  # fix 2: the stored text is what is sent
     return ""
 
 
@@ -798,8 +798,10 @@ def answer_keys():
 
                 def one(opts, qid, why):
                     opts = [o for o in opts or [] if isinstance(o, dict)]
-                    texts = [str(o.get("text")).strip() for o in opts if o.get("text") is not None]
-                    good = [str(o.get("text")).strip() for o in opts if o.get("correct")]
+                    # fix 2: `full` is the stored text the capture sends (text is the label)
+                    sent = lambda o: str(o.get("full") if o.get("full") is not None else o.get("text")).strip()
+                    texts = [sent(o) for o in opts if o.get("text") is not None]
+                    good = [sent(o) for o in opts if o.get("correct")]
                     out[qid] = (good[0] if len(good) == 1 else None, texts,
                                 why if len(good) == 1 else "no single option marked correct")
                 if nm == "Ks4Guess":
@@ -847,9 +849,10 @@ def answer_keys():
                         qid = ks4_quiz_id(slug, str(q["prompt"]))
                         if qid not in out:
                             opts = [o for o in q.get("options") or [] if isinstance(o, dict)]
-                            good = [str(o.get("text")).strip() for o in opts if o.get("correct")]
+                            _sent = lambda o: str(o.get("full") if o.get("full") is not None else o.get("text")).strip()
+                            good = [_sent(o) for o in opts if o.get("correct")]
                             out[qid] = (good[0] if len(good) == 1 else None,
-                                        [str(o.get("text")).strip() for o in opts if o.get("text") is not None],
+                                        [_sent(o) for o in opts if o.get("text") is not None],
                                         "lesson practice-set correct option" if len(good) == 1
                                         else "no single option marked correct")
     # a practice-set stem a science ruling rewrote (only in ks4-source.js)

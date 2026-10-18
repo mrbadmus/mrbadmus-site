@@ -186,6 +186,53 @@ def page_quiz_ids():
     return pages, ids
 
 
+def sender_reads_full_errors():
+    """fix 2 (display-only option labels). A shortened option label still SENDS
+    its stored text, carried on `data-full` (KS3 ladder, KS4 classic quiz) or
+    on the option's `full` (KS4 lesson, via shared/ks4-lib.js item()). The
+    answer keys above are compared against that stored text, so this asserts,
+    for every kind of page that carries a stripped option, that the sender
+    really reads the attribute -- otherwise the key and the send would drift
+    apart silently."""
+    errs = []
+
+    def read(rel):
+        with open(os.path.join(REPO, rel), encoding="utf-8") as fh:
+            return fh.read()
+
+    def any_page(top, needle):
+        for dp, _dn, fn in os.walk(os.path.join(REPO, top)):
+            for f in fn:
+                if f.endswith(".html"):
+                    with open(os.path.join(dp, f), encoding="utf-8") as fh:
+                        if needle in fh.read():
+                            return True
+        return False
+
+    v2, ks3, lib = read("shared/mrbadmus.v2.js"), read("shared/ks3.js"), read("shared/ks4-lib.js")
+    if any_page("ks3", ' data-full="'):
+        if not re.search(r"function answerParts\(i, btn\) \{[^}]*?data-full", ks3, re.S):
+            errs.append("KS3 pages carry data-full but ks3.js answerParts does not send it")
+        if ks3.count('getAttribute("data-full")') < 2:
+            errs.append("KS3 pages carry data-full but ks3.js saved-work restore does not read it")
+        if not re.search(r"var optLabel = function \(b\) \{[^;]*data-full", v2):
+            errs.append("KS3 pages carry data-full but mrbadmus.v2.js optLabel does not read it")
+    for top in ("combined", "triple"):
+        if any_page(top, 'class="quiz-opt"') and any_page(top, ' data-full="'):
+            if not re.search(r"function sentOpt\(b\) \{[^}]*data-full", v2) or "answer: sentOpt(btn)" not in v2 \
+                    or "correct_answer: opts[right] ? sentOpt(opts[right])" not in v2:
+                errs.append("KS4 classic pages carry data-full but mrbadmus.v2.js does not send it")
+            break
+    if "full: o[0]" in lib or "full: o.full" in lib:
+        if not ("full: o[0]" in lib and "full: o.full" in lib):
+            errs.append("shared/ks4-lib.js item() sets `full` on only one of its two maps")
+        if not re.search(r"function optText\(o\) \{[^}]*o\.full", v2) or "opts[i].full != null" not in v2:
+            errs.append("KS4 lesson options carry `full` but mrbadmus.v2.js optText/idxOf do not read it")
+    else:
+        errs.append("shared/ks4-lib.js item() no longer carries the stored text as `full`")
+    return errs
+
+
 def check(data=None, inv=None, quiet=False):
     data = data or load_data()
     inv = inv or kpc.inventory()
@@ -285,6 +332,8 @@ def check(data=None, inv=None, quiet=False):
     for q in want_keys:
         if q not in have_keys and q in where:
             errs.append("%s: has a single right option (%r) but no answer key" % (q, want_keys[q][0]))
+
+    errs.extend(sender_reads_full_errors())
 
     pages, pids = page_quiz_ids()
     stray = sorted(pids - set(exp))
