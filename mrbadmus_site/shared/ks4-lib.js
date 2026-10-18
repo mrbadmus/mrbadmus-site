@@ -28,11 +28,47 @@ window.KS4 = (function () {
     return h >>> 0;
   }
   var RIGHT = 'This is the answer the mark scheme credits.';
+  /* ⊕ R21 (ks4_rulings.py; option_labels.py is the one rule): a practice option
+     shows only the text BEFORE its first " — "; the reason moves into the
+     feedback. GENERATED from option_labels.py. The shuffle key below is still
+     computed from the ORIGINAL text, so option order does not move. */
+  var OPT_SEP = " \u2014 ";
+  var OPT_CONNECTIVES = ["because", "so", "and", "but", "as", "since", "then", "which", "while", "hence", "therefore", "if", "or", "thus", "when"];
+  var OPT_PAIRING = new RegExp("\\b(match(ed|es|ing)?|pair(s|ed|ing)?|sort(ed)?|categori[sz]e|classify|which (goes|belongs) with)\\b", 'i');
+  var OPT_DESC_RE = /[0-9=\u00f7\u00d7+]/;
+  function optWords(s) { return s.trim().split(/\s+/).filter(Boolean); }
+  function optSplit(t) {
+    var i = t.indexOf(OPT_SEP);
+    if (i < 0) return [t, ''];
+    return [t.slice(0, i).trim(), t.slice(i + OPT_SEP.length).trim()];
+  }
+  function optNorm(s) { return s.replace(/\s+/g, ' ').trim().toLowerCase(); }
+  function optionPlan(stem, opts, we) {
+    var parts = opts.map(function (o) { return optSplit(o[0]); });
+    var out = { strip: false, labels: opts.map(function (o) { return o[0]; }), feedback: {}, right: {} };
+    var tailed = parts.filter(function (p) { return p[1]; });
+    if (!tailed.length) return out;
+    var heads = parts.map(function (p) { return p[0]; });
+    var bad = heads.some(function (h) { return h.length < 1; })
+      || heads.some(function (h) { return OPT_CONNECTIVES.indexOf(h.toLowerCase().replace(/[^a-z]+$/, '')) >= 0; })
+      || (function () { var seen = {}, dup = false; heads.forEach(function (h) { var k = optNorm(h); if (seen[k]) dup = true; seen[k] = 1; }); return dup; })()
+      || OPT_PAIRING.test(stem || '')
+      || tailed.every(function (p) { return optWords(p[0]).length <= 2 && optWords(p[1]).length <= 3 && !OPT_DESC_RE.test(p[1]); });
+    if (bad) return out;
+    out.strip = true; out.labels = heads;
+    parts.forEach(function (p, i) {
+      if (!p[1]) return;
+      if (opts[i][1]) out.right[i] = p[1];
+      else if (!(we && we[String(i)])) out.feedback[i] = p[1];
+    });
+    return out;
+  }
   function item(q) {
     if (!q) return null;
     var we = q.wrong_explanations || {};
+    var pl = optionPlan(q.q, q.opts, we); // ⊕ R21
     var opts = q.opts.map(function (o, i) {
-      return { text: o[0], correct: !!o[1], reply: o[1] ? RIGHT : (we[String(i)] || ''), k: hash(q.q + '|' + o[0]) };
+      return { text: pl.labels[i], correct: !!o[1], reply: o[1] ? (pl.right[i] ? RIGHT + ' ' + pl.right[i] : RIGHT) : (we[String(i)] || pl.feedback[i] || ''), k: hash(q.q + '|' + o[0]) };
     });
     opts.sort(function (a, b) { return a.k - b.k; });
     return { prompt: q.q, options: opts.map(function (o) { return { text: o.text, correct: o.correct, reply: o.reply }; }) };
