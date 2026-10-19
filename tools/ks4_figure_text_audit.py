@@ -69,6 +69,7 @@ MEASURE_JS = r"""
       var fs = parseFloat(cs.fontSize);
       if (!(fs > 0)) { return; }
       var px = Math.round(fs * Math.hypot(m.a, m.b) * 100) / 100;
+      if (px < 0.05) { return; }                          // scaled to nothing (an animation's hidden state): not drawn
       rec.nodes.push({ s: s.slice(0, 40), fs: fs, px: px, h: px < 11 ? t.outerHTML.slice(0, 240) + ' <' + t.parentElement.tagName + ' ' + (t.parentElement.getAttribute('transform') || '') : '' });
     });
     if (rec.nodes.length) { out.push(rec); }
@@ -132,6 +133,10 @@ def audit_page(browser, base, slug, route):
     figs = {}
 
     def collect():
+        # a figure mid-animation can be scaled down for a few frames: wait until nothing is animating (max ~1.5 s)
+        page.eval("new Promise(function(r){var n=0;(function w(){var a=(document.getAnimations?document.getAnimations():[])"
+                  ".filter(function(x){return x.playState==='running'&&x.effect&&x.effect.getTiming().iterations!==Infinity});"
+                  "if(!a.length||n++>30){r(true);}else{setTimeout(w,50);}})();})", timeout=10)
         for rec in json.loads(page.eval(MEASURE_JS) or "[]"):
             if rec["key"] not in figs:
                 figs[rec["key"]] = rec
