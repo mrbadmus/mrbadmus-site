@@ -198,10 +198,11 @@ is tolerated; a mismatch outside this list is a failure.
        2026), the studio never paints it, and ks3_parity reads it from this
        file. Listed in ADOPTED so layer A pins its value instead of calling it
        invented.
-  24.  Border-width rows are MEASURED at deviceScaleFactor 2 (_read_at_dpr2),
-       compared exactly: Chrome snaps computed border widths to whole device
-       pixels, so a 1.5px border reads 1px at the harness's DPR 1.
-       studio.css and the reference both say 1.5px.
+  24.  Border-width rows read the AUTHORED width from the stylesheet
+       (_authored_border_width) and compare it exactly: Chrome now snaps used
+       border widths to whole CSS pixels at any DPR (1.5px computes as 1px),
+       so the computed value cannot tell 1.5px from 1px. studio.css and the
+       reference both say 1.5px.
 
 Provenance for every value in the expectation tables below is the frozen
 reference itself — section and line cited in each screen's comment.
@@ -1870,29 +1871,58 @@ def _sanity(page, screen, tokens):
     return None
 
 
-def _read_at_dpr2(page, sel, prop):
-    """Read a computed style with the page at deviceScaleFactor 2, then put
-    it back at 1.
+_JS_AUTHORED_BORDER = r"""
+(function (sel, prop) {
+  var el = document.querySelector(sel), out = null;
+  if (!el) return null;
+  function walk(rules) {
+    for (var i = 0; i < rules.length; i++) {
+      var r = rules[i];
+      if (r.cssRules && r.media) {            // @media: only while it applies
+        if (window.matchMedia(r.media.mediaText).matches) walk(r.cssRules);
+      } else if (r.cssRules && !r.selectorText) {
+        walk(r.cssRules);                     // @layer / @supports
+      } else if (r.selectorText) {
+        var ok = false;
+        try { ok = el.matches(r.selectorText); } catch (e) {}
+        var v = ok && r.style ? r.style.getPropertyValue(prop) : '';
+        if (ok && r.style && !v) {
+          // `border: 1.5px solid var(--x)` cannot be expanded to longhands
+          // (the var() is unresolved), so read the shorthand text instead.
+          var sh = r.style.getPropertyValue('border') ||
+                   r.style.getPropertyValue(prop.replace(/-(top|right|bottom|left)-width$/, '-$1')) || '';
+          var m = /(^|\s)(\d*\.?\d+px)(\s|$)/.exec(sh);
+          if (m) v = m[2];
+        }
+        if (v && /px$/.test(v)) out = v;      // last px declaration wins; keywords (medium) are an unset shorthand slot, not a width
+      }
+    }
+  }
+  for (var s = 0; s < document.styleSheets.length; s++) {
+    try { walk(document.styleSheets[s].cssRules); } catch (e) {}
+  }
+  return out;
+})(%s, %s)
+"""
 
-    Chrome snaps a USED border width down to whole device pixels, and the
-    harness runs at deviceScaleFactor 1 (ks3_browser.set_viewport), so a
-    `1.5px` border resolves to `1px` there - stylesheet right, number the
-    browser's. Design's reference draws 1.5px (shell-v1.html lines 82, 231,
-    ...). Measuring border widths at DPR 2 keeps 1.5px distinguishable from
-    1px, so a real drift to 1px still fails; CSS layout is identical at either
-    DPR, so nothing else on the screen moves. Only border-*-width rows use it.
+
+def _authored_border_width(page, sel, prop):
+    """The border width the STYLESHEET declares for `sel`, not the used one.
+
+    Chrome (observed on 155) snaps a USED border width to whole CSS pixels:
+    `1.5px` resolves to `1px`, `2.5px` to `2px`, `0.5px` to `1px`, at
+    deviceScaleFactor 1 AND 2 alike - so getComputedStyle can no longer tell
+    1.5px from 1px at any DPR, and the two `1.5px` rows went red the day the
+    browser did this. Design's reference draws 1.5px (shell-v1.html lines 82,
+    231, ...). The authored value is still readable from the CSSOM (shorthand
+    `border:` expands to longhands there), so these rows read it from the
+    last matching style rule in source order and compare it EXACTLY: a real
+    drift to 1px in studio.css still fails. Limitations, deliberately
+    accepted for two plain-class rows: specificity is not computed, and inline
+    styles / !important are not consulted.
     """
-    size = page.eval("[window.innerWidth, window.innerHeight]") or [0, 0]
-
-    def _dpr(n):
-        page.send("Emulation.setDeviceMetricsOverride",
-                  {"width": int(size[0]), "height": int(size[1]),
-                   "deviceScaleFactor": n, "mobile": False})
-    _dpr(2)
-    try:
-        return (page.eval("window.__st.style(%r, %r)" % (sel, prop)) or "").strip()
-    finally:
-        _dpr(1)
+    return (page.eval(_JS_AUTHORED_BORDER % (json.dumps(sel), json.dumps(prop)))
+            or "").strip()
 
 
 def _check_styles(page, screen, style_rows, problems):
@@ -1903,10 +1933,14 @@ def _check_styles(page, screen, style_rows, problems):
                             % (spec["name"], sel, screen))
             continue
         for prop, want in sorted(spec["props"].items()):
+            got = (page.eval("window.__st.style(%r, %r)" % (sel, prop)) or "").strip()
             if prop.startswith("border-") and prop.endswith("-width"):
-                got = _read_at_dpr2(page, sel, prop)
-            else:
-                got = (page.eval("window.__st.style(%r, %r)" % (sel, prop)) or "").strip()
+                # Only a FRACTIONAL expectation needs the stylesheet: the
+                # browser reports its whole-pixel floor, which cannot be told
+                # from a real drift. Whole-pixel expectations stay computed.
+                m = re.match(r"^(\d+)\.\d+px$", want)
+                if m and got == "%spx" % m.group(1):
+                    got = _authored_border_width(page, sel, prop) or got
             if prop == "font-family":
                 ok = want.lower() in got.lower()
             elif want.startswith("#"):
