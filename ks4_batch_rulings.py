@@ -1759,15 +1759,14 @@ SCIENCE.extend(B11W)
 
 # ═══ Loose-ends run, 17 Oct 2026 ═══
 # fix 4: batch 11's oxidation-reduction lists reactivity-series and extraction-of-metals under "Connects to"
-# (BATCH10-11-PORT-REPORT.md "For Mide" deferral, now ruled). These add the same pointer back. Navigation only:
+# (BATCH10-11-PORT-REPORT.md "For Mide" deferral, now ruled). This adds the pointer back from reactivity-series.
+# extraction-of-metals needs none: its Next card already IS oxidation-reduction on all four routes, and a second link
+# to the same page would break the no-redundant-text rule. Navigation only:
 # no science text changes. Applied AFTER apply_connects, so `old` is the post-port form (rvar `R` on batch 5).
 LOOSE = [
     dict(id="LE17-F4-RS-BACK", slug="reactivity-series", layer="logic",
          old="endConnects: [{ href: KS4.hrefFor('extraction-of-metals', R), label: 'Extraction of metals and reduction' }]",
          new="endConnects: [{ href: KS4.hrefFor('extraction-of-metals', R), label: 'Extraction of metals and reduction' }, { href: KS4.hrefFor('oxidation-reduction', R), label: 'Oxidation and reduction' }]"),
-    dict(id="LE17-F4-EM-BACK", slug="extraction-of-metals", layer="logic",
-         old="endConnects: [{ href: KS4.hrefFor('earths-resources', R), label: 'Using the Earth\\u2019s resources' }]",
-         new="endConnects: [{ href: KS4.hrefFor('earths-resources', R), label: 'Using the Earth\\u2019s resources' }, { href: KS4.hrefFor('oxidation-reduction', R), label: 'Oxidation and reduction' }]"),
 ]
 SCIENCE.extend(LOOSE)
 
