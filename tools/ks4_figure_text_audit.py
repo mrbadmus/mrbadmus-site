@@ -61,12 +61,15 @@ MEASURE_JS = r"""
       var s = (t.tagName.toLowerCase() === 'text' && t.querySelector('tspan')) ? '' : (t.textContent || '').trim();
       if (!s) { return; }
       if (!t.getClientRects().length) { return; }
+      if (t.hasAttribute('baseline-shift')) { return; }   // subscript digits: part of a label that clears the floor
       var cs = getComputedStyle(t);
       if (cs.display === 'none' || cs.visibility === 'hidden') { return; }
       var m = t.getScreenCTM && t.getScreenCTM();
       if (!m) { return; }
       var fs = parseFloat(cs.fontSize);
-      rec.nodes.push({ s: s.slice(0, 40), fs: fs, px: Math.round(fs * Math.hypot(m.a, m.b) * 100) / 100 });
+      if (!(fs > 0)) { return; }
+      var px = Math.round(fs * Math.hypot(m.a, m.b) * 100) / 100;
+      rec.nodes.push({ s: s.slice(0, 40), fs: fs, px: px, h: px < 11 ? t.outerHTML.slice(0, 240) + ' <' + t.parentElement.tagName + ' ' + (t.parentElement.getAttribute('transform') || '') : '' });
     });
     if (rec.nodes.length) { out.push(rec); }
   });
@@ -154,6 +157,7 @@ def audit_page(browser, base, slug, route):
             "scroll_width": rec.get("scrollW"), "column_width": rec.get("colW"),
             "text_nodes": len(rec["nodes"]), "smallest_px": min(n["px"] for n in rec["nodes"]),
             "below_floor": len(small), "samples": [n["s"] for n in sorted(small, key=lambda n: n["px"])[:4]],
+            "markup": [n["h"] for n in sorted(small, key=lambda n: n["px"])[:2]],
         })
     return rows, clicks
 
@@ -198,12 +202,23 @@ def main(argv=None):
     base = "http://127.0.0.1:%d" % port
     rows, failures = [], []
     try:
-        with ks3_browser.Browser() as browser:
+        browser = ks3_browser.Browser().start()
+        try:
             for n, (_, slug, route) in enumerate(todo, 1):
-                try:
-                    r, clicks = audit_page(browser, base, slug, route)
-                except Exception as e:  # a page that cannot be driven is a finding, not a pass
-                    failures.append("%s %s: %s" % (slug, route, e))
+                r = clicks = None
+                for attempt in (1, 2):   # Chrome dying mid-run is not a finding about the page: restart it, retry once
+                    try:
+                        r, clicks = audit_page(browser, base, slug, route)
+                        break
+                    except Exception as e:
+                        err = e
+                        try:
+                            browser.close()
+                        except Exception:
+                            pass
+                        browser = ks3_browser.Browser().start()
+                if r is None:  # a page that cannot be driven twice is a finding, not a pass
+                    failures.append("%s %s: %s" % (slug, route, err))
                     continue
                 rows += r
                 low = [x for x in r if x["below_floor"]]
@@ -211,6 +226,11 @@ def main(argv=None):
                     n, len(todo), slug, route, len(r), clicks,
                     ("UNDER %gpx: %d fig(s), smallest %.1f" % (FLOOR, len(low), min(x["smallest_px"] for x in low)))
                     if low else "ok"), flush=True)
+        finally:
+            try:
+                browser.close()
+            except Exception:
+                pass
     finally:
         server.shutdown()
 

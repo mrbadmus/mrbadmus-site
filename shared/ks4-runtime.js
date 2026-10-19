@@ -523,7 +523,7 @@
      while the frame really overflows (it draws the right-edge fade and makes the frame
      keyboard-scrollable); `data-fig-end` drops the fade once the pupil has reached the end. */
   var FIG_RO = (typeof ResizeObserver === "function") ? new ResizeObserver(function (entries) {
-    for (var i = 0; i < entries.length; i++) { figOver(entries[i].target); }
+    for (var i = 0; i < entries.length; i++) { figRefine(entries[i].target); figOver(entries[i].target); }
   }) : null;
   function figOver(el) {
     var over = el.scrollWidth > el.clientWidth + 1;
@@ -557,7 +557,37 @@
       if (FIG_RO) { FIG_RO.observe(el); }
     }
     figOver(el);
-    if (typeof requestAnimationFrame === "function") { requestAnimationFrame(function () { figOver(el); }); }
+    if (typeof requestAnimationFrame === "function") {
+      requestAnimationFrame(function () { figRefine(el); figOver(el); });
+    }
+  }
+  /* The string scan above cannot see a `transform="scale()"` on a group, so a label written at 20 units can still
+     draw at 0.79 of that. Once the figure is laid out, measure every drawn <text> / <tspan> in the real DOM, as
+     font-size x (its screen scale / the figure's own viewBox scale), i.e. its size in viewBox units, and lower
+     --fig-fs to the smallest. Subscript tspans (baseline-shift, written at 75% by ks4-ext) are part of a label that
+     already clears the floor and are left out. */
+  function figRefine(el) {
+    var svg = el.querySelector("svg");
+    if (!svg || !svg.getScreenCTM || !el.hasAttribute("data-fig-fit")) { return; }
+    var base = svg.getScreenCTM();
+    if (!base) { return; }
+    var b = Math.hypot(base.a, base.b);
+    if (!(b > 0)) { return; }
+    var min = parseFloat(el.style.getPropertyValue("--fig-fs")) || Infinity;
+    var nodes = svg.querySelectorAll("text, tspan");
+    for (var i = 0; i < nodes.length; i++) {
+      var t = nodes[i];
+      if (t.hasAttribute("baseline-shift") || !(t.textContent || "").trim()) { continue; }
+      if (t.tagName.toLowerCase() === "text" && t.querySelector("tspan")) { continue; }
+      var m = t.getScreenCTM();
+      var fs = parseFloat(getComputedStyle(t).fontSize);
+      if (!m || !(fs > 0)) { continue; }
+      var eff = fs * Math.hypot(m.a, m.b) / b;
+      if (eff > 0 && eff < min) { min = eff; }
+    }
+    if (min !== Infinity && String(min) !== el.style.getPropertyValue("--fig-fs")) {
+      el.style.setProperty("--fig-fs", String(min));
+    }
   }
 
   /* ── child components: one persistent instance per `dc-import` position ──
