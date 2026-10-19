@@ -13,8 +13,8 @@ viewBox scale, any CSS width, and any transform; getBoundingClientRect().height 
 How figures are reached: a lesson page is loaded at 390x844 / DPR 1, scrolled top to bottom (lazy sections), then
 every enabled <button> inside #ks4-mount is clicked ONE at a time (hook picks, tabs, steps, level toggles), and the
 figures are re-measured after each click; a figure is identified by its markup, so one drawn twice counts once.
-One route per lesson by default (the lesson's Triple Higher page, else its first route); --all-routes walks all four,
-which matters only where a figure differs by route. Read-only: nothing is written under the repo, results go to
+One route per lesson by default (the lesson's Triple Higher page, else its first route) - except the ROUTE_VARYING lessons,
+whose figures differ by route and get all four; --all-routes walks all four everywhere. Read-only: nothing is written under the repo, results go to
 $MRB_SHOTS / gate_tmp().
 
   python3 tools/ks4_figure_text_audit.py                       # audit every built lesson, print the table
@@ -99,6 +99,14 @@ SCROLL_JS = r"""
 """
 
 
+# Lessons whose figures are not the same on every route (found by the 17 Oct 2026 all-routes audit): the default run
+# walks all four routes of these and the Triple Higher page of every other lesson.
+ROUTE_VARYING = {"polymers", "oxidation-reduction", "enzymes", "using-moles-calculations", "concentration-of-solutions",
+                 "changes-in-energy", "internal-energy", "decomposition", "specific-latent-heat", "particle-motion-pressure",
+                 "infrared-black-bodies", "thermal-conductivity", "uses-em-waves", "rate-of-photosynthesis", "homeostasis",
+                 "endocrine-system", "human-reproduction-hormones", "contraception-fertility"}
+
+
 def lessons(batch=None, only=None, all_routes=False):
     out = []
     names = ["pilot"] + sorted(ks4_lessons.batch_modules())
@@ -109,7 +117,7 @@ def lessons(batch=None, only=None, all_routes=False):
             if only and L["slug"] not in only:
                 continue
             routes = list(L["routes"])
-            if not all_routes:
+            if not all_routes and L["slug"] not in ROUTE_VARYING:
                 routes = ["TH"] if "TH" in routes else routes[:1]
             for r in routes:
                 out.append((name, L["slug"], r))
