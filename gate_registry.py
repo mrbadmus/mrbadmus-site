@@ -384,9 +384,14 @@ GATES = [
                   "3d-studio/dist/**", "3d-studio/src/**",
                   "3d-studio/package.json", "3d-studio/package-lock.json",
                   "mrbadmus_site/3d/**"],
+         needs="3d-studio/dist",
          why="spec §10 / MRB-194 — the published studio survives a generator "
-             "run. Builds the studio itself (studio_build.py) when dist/ is "
-             "missing or stale, and FAILS rather than skips if it cannot."),
+             "run. FAST, and it runs build_all, so it stays SKIPPED, by name, "
+             "when there is no built studio: an unskippable build_all in the "
+             "fast set adds 20-35 minutes to every worktree push. When dist/ "
+             "does exist it still builds the studio itself (studio_build.py) "
+             "if dist/ is stale, and FAILS rather than skips if it cannot. "
+             "3d_parity and 3d_render_check stay unskippable."),
 
     dict(name="verify_ks3",
          cmd=["python3", "verify_ks3.py"],
