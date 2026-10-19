@@ -976,6 +976,9 @@ def check_layout(R, slug, route, width, ref_widths_entry, port_widths_entry, hav
                     continue
                 else:
                     h_tol = 2
+                grow = ((port_widths_entry.get("fig_grow") or [])[i:i + 1] or [0])[0]
+                if grow and pb["h"] > rb["h"] and dh <= grow + h_tol and dw <= 1:
+                    continue   # R23: the section is taller only by what its scrolling figures account for
                 if dh > h_tol or dw > 1:
                     box_fails.append("section %r (index %d): dh=%d dw=%d"
                                       % (section_key(rsec), i, dh, dw))
@@ -1507,6 +1510,29 @@ def check_prev_next(R, slug, route, url, lesson, data):
 # ═══════════════════════════════════════════════════════════════════════
 # the sweep
 # ═══════════════════════════════════════════════════════════════════════
+# ⊕ R23 — RULED NORMALISATION (loose-ends run, 17 Oct 2026, fix 7a): on a phone, shared/ks4-runtime.js figFit() +
+# build_ks4.KS4_FIG_CSS widen a figure so its smallest label draws at >= 11px, and `height:auto` makes the SVG
+# proportionally taller than Design's 100%-width figure. A section's box may therefore be taller than Design's by AT MOST
+# that growth: the extra height of each scrolling figure (`[data-fig-over]`) over the height it would have had at the
+# column width. Per `.ks3-lesson` child, same indexing as MD.measure_sections. A section that grows by more than its
+# figures account for still fails C-box; a section that SHRINKS is untouched by this rule.
+FIG_GROW_JS = """
+(function () {
+  var root = document.querySelector('.ks3-lesson');
+  if (!root) { return []; }
+  return Array.prototype.map.call(root.children, function (el) {
+    var g = 0;
+    el.querySelectorAll('[data-fig-over]').forEach(function (f) {
+      var s = f.querySelector('svg'); if (!s || !s.viewBox || !s.viewBox.baseVal.width) { return; }
+      var vb = s.viewBox.baseVal, natural = f.clientWidth * vb.height / vb.width;
+      g += Math.max(0, s.getBoundingClientRect().height - natural);
+    });
+    return Math.round(g);
+  });
+})()
+"""
+
+
 def measure_port_widths(page, url, widths):
     page.goto(url, settle=0.8)
     MD.set_media(page, scheme="light")
@@ -1518,6 +1544,7 @@ def measure_port_widths(page, url, widths):
         time.sleep(0.5)
         rail_top = MD.measure_sections(page), MD.measure_overflow(page)
         entry = {
+            "fig_grow": page.eval(FIG_GROW_JS) or [],
             "sections": rail_top[0],
             "overflow": rail_top[1],
             "rail": MD.measure_rail(page),
