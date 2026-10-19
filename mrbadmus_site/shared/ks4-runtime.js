@@ -565,7 +565,8 @@
      draw at 0.79 of that. Once the figure is laid out, measure every drawn <text> / <tspan> in the real DOM, as
      font-size x (its screen scale / the figure's own viewBox scale), i.e. its size in viewBox units, and lower
      --fig-fs to the smallest. Subscript tspans (baseline-shift, written at 75% by ks4-ext) are part of a label that
-     already clears the floor and are left out. */
+     already clears the floor and are left out, as is anything scaled below 0.4 of the figure (a transient animation
+     state; counting it once produced a 7900px frame). */
   function figRefine(el) {
     var svg = el.querySelector("svg");
     if (!svg || !svg.getScreenCTM || !el.hasAttribute("data-fig-fit")) { return; }
@@ -582,7 +583,9 @@
       var m = t.getScreenCTM();
       var fs = parseFloat(getComputedStyle(t).fontSize);
       if (!m || !(fs > 0)) { continue; }
-      var eff = fs * Math.hypot(m.a, m.b) / b;
+      var rel = Math.hypot(m.a, m.b) / b;
+      if (rel < 0.4) { continue; }   // scaled right down: an animation's hidden / entering state, not how the label reads
+      var eff = fs * rel;
       if (eff > 0 && eff < min) { min = eff; }
     }
     if (min !== Infinity && String(min) !== el.style.getPropertyValue("--fig-fs")) {
