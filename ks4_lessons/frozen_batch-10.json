@@ -4,7 +4,7 @@
   "review_state": "examiner-reviewed"
  },
  "adaptations": {
-  "hash": "c2d769dfe1ebc479ad095f6dc6954283a01d95133d4c4bbcd4c726a1cba9ab3c",
+  "hash": "8c376b6ed4fd314432266db5313e0db700a7ed00da34838339a6901ffde6dd55",
   "review_state": "examiner-reviewed"
  },
  "deforestation": {
@@ -12,7 +12,7 @@
   "review_state": "examiner-reviewed"
  },
  "ecosystems": {
-  "hash": "5b352166175500a270618710d66ed17f381e0b572a77ddfb5f0ac8e779b563a2",
+  "hash": "475209f0ab5580f9d908fc3416e33cb9131ab4caa65a41e28dda2e904ca76298",
   "review_state": "examiner-reviewed"
  },
  "environmental-change": {
@@ -32,7 +32,7 @@
   "review_state": "examiner-reviewed"
  },
  "population-competition": {
-  "hash": "4544dadaaa3cd98db9041ca1ee448c04a5e34e9d88a4ea5ca9239721143aa47d",
+  "hash": "58e5399e053b221890e2c963e920fc1261357d76e14dc2ae513aa1b8f6c95109",
   "review_state": "examiner-reviewed"
  },
  "pyramids-of-biomass": {

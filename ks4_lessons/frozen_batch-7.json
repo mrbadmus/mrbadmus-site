@@ -1,10 +1,10 @@
 {
  "aerobic-respiration": {
-  "hash": "ffeb9c5516a9d5cfec4b5e49afb86810bdde49b02cef3755226623395da6b6c7",
+  "hash": "6833bb87afbba35971aab4012cd1d1d4e34f25bc1764c086d22d280191790fb4",
   "review_state": "examiner-reviewed"
  },
  "anaerobic-respiration": {
-  "hash": "2423c05731630b806d8dd9480a04664b87e42106113bd466eae6ae57bcd3c4c9",
+  "hash": "49f899a1f24327e6d0555ad67862d150434f56b8120eb4adc321cbb2471d502b",
   "review_state": "examiner-reviewed"
  },
  "antibiotics-painkillers": {
@@ -28,7 +28,7 @@
   "review_state": "examiner-reviewed"
  },
  "metabolism": {
-  "hash": "97cf3490736dbac9eb5f207e0ef7ca37d7c2f1e362a91c3e61e9f4e6223288bd",
+  "hash": "e686e2e6862f7ff7e51db5577a7ea8535623c09436b54a29e1650f34099a945b",
   "review_state": "examiner-reviewed"
  },
  "monoclonal-antibodies": {
@@ -36,7 +36,7 @@
   "review_state": "examiner-reviewed"
  },
  "photosynthesis": {
-  "hash": "647d8bfa9dd46934e63e20233e1fde6752c9a61d5f0d36ed625885a014a1dabb",
+  "hash": "ccf11cb7f54ab297e46ab8819066e0db7a1566726b6b432cbab14fee043f3555",
   "review_state": "examiner-reviewed"
  },
  "plant-disease-detection-defence": {
@@ -52,7 +52,7 @@
   "review_state": "examiner-reviewed"
  },
  "uses-of-glucose": {
-  "hash": "5b826a0a4fd000f657f40b2f1a71773ffb583925d42bf7b1568eebd07cd3a8a2",
+  "hash": "79e4bad31660a2aa445d31b695a8a211d9dc38b373877c587d2afb0bf8410e22",
   "review_state": "examiner-reviewed"
  },
  "vaccination": {

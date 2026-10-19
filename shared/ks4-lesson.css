@@ -260,3 +260,18 @@ html[data-theme="dark"] body {
 @media (max-width: 700px) and (prefers-reduced-motion: reduce) {
   nav[data-rail="top"] { transition: none; }
 }
+
+/* ⊕ Loose-ends run, 17 Oct 2026 (fix 7a) — figure text floor on phones. ks4-runtime.js figFit() publishes each
+   figure's viewBox width (--fig-vb) and its smallest font-size in viewBox units (--fig-fs); the <svg> is
+   then never narrower than 11px x vb / fs, so its smallest label draws at >= 11px. Wider than the screen,
+   the frame scrolls sideways (nothing is reflowed or re-worded); a figure that already reads at 11px gets a
+   min-width below 100% and is unchanged. Phones and small tablets only: >= 720px never matches. */
+@media (max-width: 719.98px) {
+  [data-fig-fit] { overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin; }
+  [data-fig-fit] > svg { max-width: none; min-width: calc(11px * var(--fig-vb) / var(--fig-fs)); }
+  [data-fig-over]:not([data-fig-end]) {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+            mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+  [data-fig-over]:focus-visible { outline: 2px solid var(--ks3-accent-text, #E4572E); outline-offset: 2px; }
+}
