@@ -1123,3 +1123,20 @@ def apply_r21_option_labels(text):
     _require(text, R21_RETURN_FROM, "ks4-lib.js", "R21")
     text = text.replace(R21_RETURN_FROM, R21_RETURN_TO, 1)
     return text.replace(R21_ITEM_FROM, _r21_item_to(), 1)
+
+
+# R22 — an option's SHOWN text may differ from its STORED text (loose-ends run, 17 Oct 2026, fix 7 words).
+# An off-spec word in a credited option cannot be edited in the stored string: `full` (what the capture sends and
+# knowledge_points keys on) must stay byte-identical until the platform chat refreshes the keys. A lesson's option
+# may therefore carry a third element `{ stored: '<old text>' }`; item() reports that as `full` and hashes the
+# shuffle key from it, so neither the answer key nor the option order moves. Absent (every other option in the
+# estate): exactly R21's behaviour. The object test keeps the other 3-element arrays in the lessons (hook and
+# sort items with a reason string) out of it.
+R22_FROM = "k: hash(q.q + '|' + o[0]), full: o[0] };"
+R22_TO = ("k: hash(q.q + '|' + ((o[2] && o[2].stored != null) ? o[2].stored : o[0])), "
+          "full: (o[2] && o[2].stored != null) ? o[2].stored : o[0] }; // \u2295 R22")
+
+
+def apply_r22_stored_text(text):
+    _require(text, R22_FROM, "ks4-lib.js", "R22")
+    return text.replace(R22_FROM, R22_TO, 1)

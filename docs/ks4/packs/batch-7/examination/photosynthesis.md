@@ -110,4 +110,4 @@ Wording only. No answer, option order, correct key, question stem, equation, fig
 |---|---|---|
 | LE17-F7-PH-ATP | they produce ATP energy but do not carry out photosynthesis. | they release energy but do not carry out photosynthesis. |
 
-Re-freeze (phase 2): `python3 build_ks4.py --batch batch-7 --freeze`.
+Re-freeze: `python3 build_ks4.py --batch batch-7 --freeze`.

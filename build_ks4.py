@@ -744,6 +744,7 @@ def build_ks4_lib_js():
     text = ks4_rulings.apply_r2_ks4lib(text)
     text = ks4_rulings.apply_r11_route_lib(text)
     text = ks4_rulings.apply_r21_option_labels(text)  # fix 2: a practice option shows its label, not its reason
+    text = ks4_rulings.apply_r22_stored_text(text)  # loose-ends fix 7: shown text may differ from the stored/sent text
 
     # ⊕ batch engine fix (docs/ks4/batch-engine.md §7b, 1 Oct 2026) — this
     # USED to build NAV from `ks4_lessons.all_lessons()` (every registered

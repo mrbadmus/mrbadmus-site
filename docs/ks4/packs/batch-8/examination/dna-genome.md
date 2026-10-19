@@ -79,10 +79,13 @@ Count: **1 WRONG item** (q3: wx2 and wx3 swapped, C30–C31, frozen); **3 IMPREC
 ## Addendum — 17 Oct 2026 (loose-ends run, fix 7 words): off-spec words in the quiz replaced
 Wording only. No answer, option order, correct key, question stem, equation, figure or spec point changed; each edit swaps the flagged word for the spec's or pack's own wording (flags above). Changed in `ks4_batch_rulings.py` (logic layer, the page's own quiz). `shared/ks4-source-batch-8.js` is deliberately untouched: no lesson in this batch reads it for anything a pupil sees. Each ruling fails the build unless its text is found exactly once.
 
-`base pairs` is Triple Higher only (8461 4.6.1.5): Combined Foundation, Combined Higher and Triple Foundation get the "genome" wording; only Triple Higher keeps the figure. It is one per-route string on the page (`TH ? old : new`, `TH` is the page's own `c.isTH`), not a second question.
+**Answer key unchanged; parked kp refresh for platform chat.** Where the changed text is an OPTION (credited or distractor), the change is display-only (R22 in `ks4_rulings.py`): the option carries `{ stored: '<old text>' }`, so what the page SENDS (`full`) and the option order are byte-identical to before, and `knowledge_points` keys still match. Reply/feedback-only edits need no such handling. Display-only here: DG-Q, DG-BASEPAIRS.
+
+`base pairs` is Triple Higher only (8461 4.6.1.5): Combined Foundation, Combined Higher and Triple Foundation are SHOWN the "genome" wording; only Triple Higher shows the figure. One per-route string on the page (`TH ? old : new`, `TH` is the page's own `c.isTH`), not a second question. All routes still send the old text.
 
 | ruling | before | after |
 |---|---|---|
-| LE17-F7-DG-BASEPAIRS | 'An international project that sequenced all ~3 billion base pairs of human DNA and mapped all human genes' | (TH ? 'An international project that sequenced all ~3 billion base pairs of human DNA and mapped all human genes' : 'An international project that sequenced the entire human genome and mapped all human genes') |
+| LE17-F7-DG-Q | opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])) | opts: [[(right && right.shown) \|\| right, true, (right && right.shown) ? { stored: right.stored } : undefined]].concat(wrongs.map((w) => [w[0], false, w[2]])) |
+| LE17-F7-DG-BASEPAIRS | 'An international project that sequenced all ~3 billion base pairs of human DNA and mapped all human genes' | { shown: (TH ? 'An international project that sequenced all ~3 billion base pairs of human DNA and mapped all human genes' : 'An international project that sequenced the entire human genome and mapped all human genes'), stored: 'An international project that sequenced all ~3 billion base pairs of human DNA and mapped all human genes' } |
 
-Re-freeze (phase 2): `python3 build_ks4.py --batch batch-8 --freeze`.
+Re-freeze: `python3 build_ks4.py --batch batch-8 --freeze`.

@@ -1781,18 +1781,22 @@ def _le(rid, slug, old, new):
 
 LOOSE_F7 = [
     # ATP -> energy (batch 7; examiner: ATP is not on 8461/8464, "transfers energy" / "energy from respiration")
-    _le("LE17-F7-UG-ATP", "uses-of-glucose", "releasing energy (ATP) to power all cell processes",
-        "releasing energy to power all cell processes"),
+    # DISPLAY-ONLY (R22): a credited/option text that changes carries its old text as `{ stored }`, which is what
+    # K.item() reports as `full` and the capture sends, so the answer key (knowledge_points) is byte-identical.
+    _le("LE17-F7-UG-ATP", "uses-of-glucose",
+        "['Aerobic respiration \\u2014 releasing energy (ATP) to power all cell processes', true]",
+        "['Aerobic respiration \\u2014 releasing energy to power all cell processes', true, { stored: 'Aerobic respiration \\u2014 releasing energy (ATP) to power all cell processes' }]"),
     _le("LE17-F7-PH-ATP", "photosynthesis", "they produce ATP energy but do not carry out photosynthesis.",
         "they release energy but do not carry out photosynthesis."),
-    _le("LE17-F7-AR-ATP-1", "aerobic-respiration", "Breathing produces ATP. Respiration produces oxygen.",
-        "Breathing releases energy. Respiration produces oxygen."),
+    _le("LE17-F7-AR-ATP-1", "aerobic-respiration", "['Breathing produces ATP. Respiration produces oxygen.', false]",
+        "['Breathing releases energy. Respiration produces oxygen.', false, { stored: 'Breathing produces ATP. Respiration produces oxygen.' }]"),
     _le("LE17-F7-AR-ATP-2", "aerobic-respiration", "but ATP is produced by RESPIRATION in cells.",
         "but energy is released by RESPIRATION in cells."),
-    _le("LE17-F7-AN-ATP", "anaerobic-respiration", "Anaerobic respiration produces more ATP, so athletes",
-        "Anaerobic respiration transfers more energy, so athletes"),
-    _le("LE17-F7-ME-ATP", "metabolism", "Glucose broken down in aerobic respiration to release ATP",
-        "Glucose broken down in aerobic respiration to release energy"),
+    _le("LE17-F7-AN-ATP", "anaerobic-respiration",
+        "['Anaerobic respiration produces more ATP, so athletes switch to it for maximum performance', false]",
+        "['Anaerobic respiration transfers more energy, so athletes switch to it for maximum performance', false, { stored: 'Anaerobic respiration produces more ATP, so athletes switch to it for maximum performance' }]"),
+    _le("LE17-F7-ME-ATP", "metabolism", "['Glucose broken down in aerobic respiration to release ATP', false]",
+        "['Glucose broken down in aerobic respiration to release energy', false, { stored: 'Glucose broken down in aerobic respiration to release ATP' }]"),
     # catabolic / catabolism -> "breaking down" (metabolism; examiner C21)
     _le("LE17-F7-ME-CAT-1", "metabolism", "both energy-releasing (catabolism) and energy-using (anabolism)",
         "both energy-releasing (breaking down) and energy-using (anabolism)"),
@@ -1804,23 +1808,34 @@ LOOSE_F7 = [
         "breaking down glucose \\u2014 so it is not building up."),
     # "base pairs" is Triple Higher only (8461 4.6.1.5): CF, CH and TF get the spec's "genome" wording, only TH keeps the figure.
     # `TH` is renderVals' own const (c.isTH), so this is a per-route string, not a second question.
+    # Q() learns to carry the stored text: `right` may be `{ shown, stored }`, a wrong may carry a third `{ stored }` element.
+    _le("LE17-F7-DG-Q", "dna-genome",
+        "opts: [[right, true]].concat(wrongs.map((w) => [w[0], false]))",
+        "opts: [[(right && right.shown) || right, true, (right && right.shown) ? { stored: right.stored } : undefined]].concat(wrongs.map((w) => [w[0], false, w[2]]))"),
+    # "base pairs" is Triple Higher only (8461 4.6.1.5): CF, CH and TF are SHOWN the genome wording, only TH keeps the figure;
+    # every route still SENDS the stored text. `TH` is renderVals' own const (c.isTH).
     _le("LE17-F7-DG-BASEPAIRS", "dna-genome",
         "'An international project that sequenced all ~3 billion base pairs of human DNA and mapped all human genes'",
-        "(TH ? 'An international project that sequenced all ~3 billion base pairs of human DNA and mapped all human genes' : "
-        "'An international project that sequenced the entire human genome and mapped all human genes')"),
+        "{ shown: (TH ? 'An international project that sequenced all ~3 billion base pairs of human DNA and mapped all human genes' : 'An international project that sequenced the entire human genome and mapped all human genes'), stored: 'An international project that sequenced all ~3 billion base pairs of human DNA and mapped all human genes' }"),
     # beta cells -> the pancreas; autoimmune -> the spec's "fails to produce sufficient insulin" (blood-glucose-diabetes; examiner C5, C9)
-    _le("LE17-F7-BG-BETA", "blood-glucose-diabetes", "released by pancreas beta cells, causes glucose",
-        "released by the pancreas, causes glucose"),
-    _le("LE17-F7-BG-ALPHA", "blood-glucose-diabetes", "released by pancreas alpha cells, causes glycogen",
-        "released by the pancreas, causes glycogen"),
+    _le("LE17-F7-BG-Q", "blood-glucose-diabetes",
+        "opts: [[right, true]].concat(wrongs.map((w) => [w[0], false]))",
+        "opts: [[(right && right.shown) || right, true, (right && right.shown) ? { stored: right.stored } : undefined]].concat(wrongs.map((w) => [w[0], false, w[2]]))"),
+    _le("LE17-F7-BG-BETA", "blood-glucose-diabetes",
+        "'Insulin — released by pancreas beta cells, causes glucose to be converted to glycogen in the liver'",
+        "{ shown: 'Insulin — released by the pancreas, causes glucose to be converted to glycogen in the liver', stored: 'Insulin — released by pancreas beta cells, causes glucose to be converted to glycogen in the liver' }"),
+    _le("LE17-F7-BG-ALPHA", "blood-glucose-diabetes",
+        "['Glucagon — released by pancreas alpha cells, causes glycogen to be broken down', 'Glucagon is released when blood glucose is TOO LOW — it would make a post-meal rise even worse.']",
+        "['Glucagon — released by the pancreas, causes glycogen to be broken down', 'Glucagon is released when blood glucose is TOO LOW — it would make a post-meal rise even worse.', { stored: 'Glucagon — released by pancreas alpha cells, causes glycogen to be broken down' }]"),
     # (q3's credited option "Type 1: pancreas produces no insulin (autoimmune)..." is already rewritten by B8W-BG-TYPES-KEY.)
     _le("LE17-F7-BG-AUTO", "blood-glucose-diabetes", "Only TYPE 1 is autoimmune. TYPE 2 develops",
         "Only TYPE 1 involves the pancreas failing to produce sufficient insulin. TYPE 2 develops"),
     # keystone / niche / aposematism (batch 10; examiner: off-spec glosses)
     _le("LE17-F7-EC-KEYSTONE", "ecosystems", "but wolves are often keystone predators, so full compensation is rare.",
         "but wolves are often the main predators, so full compensation is rare."),
-    _le("LE17-F7-PC-NICHE-1", "population-competition", "they always occupy different niches",
-        "they never need the same resources"),
+    _le("LE17-F7-PC-NICHE-1", "population-competition",
+        '["Different species never compete — they always occupy different niches", false]',
+        '["Different species never compete — they never need the same resources", false, { stored: "Different species never compete — they always occupy different niches" }]'),
     _le("LE17-F7-PC-NICHE-2", "population-competition",
         "The ecological niche concept says species that overlap too much cannot coexist indefinitely.",
         "Species that compete for the same resources too closely cannot coexist indefinitely."),

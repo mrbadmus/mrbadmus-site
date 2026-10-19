@@ -91,12 +91,15 @@ SOURCE OK WITH FLAGS. No wrong science. The insulin step skips the spec's first 
 ## Addendum — 17 Oct 2026 (loose-ends run, fix 7 words): off-spec words in the quiz replaced
 Wording only. No answer, option order, correct key, question stem, equation, figure or spec point changed; each edit swaps the flagged word for the spec's or pack's own wording (flags above). Changed in `ks4_batch_rulings.py` (logic layer, the page's own quiz). `shared/ks4-source-batch-8.js` is deliberately untouched: no lesson in this batch reads it for anything a pupil sees. Each ruling fails the build unless its text is found exactly once.
 
+**Answer key unchanged; parked kp refresh for platform chat.** Where the changed text is an OPTION (credited or distractor), the change is display-only (R22 in `ks4_rulings.py`): the option carries `{ stored: '<old text>' }`, so what the page SENDS (`full`) and the option order are byte-identical to before, and `knowledge_points` keys still match. Reply/feedback-only edits need no such handling. Display-only here: BG-Q, BG-BETA, BG-ALPHA.
+
 "alpha cells" is also changed to "the pancreas" (same off-spec family). Page q3's credited option was already rewritten to the spec wording by B8W-BG-TYPES-KEY.
 
 | ruling | before | after |
 |---|---|---|
-| LE17-F7-BG-BETA | released by pancreas beta cells, causes glucose | released by the pancreas, causes glucose |
-| LE17-F7-BG-ALPHA | released by pancreas alpha cells, causes glycogen | released by the pancreas, causes glycogen |
+| LE17-F7-BG-Q | opts: [[right, true]].concat(wrongs.map((w) => [w[0], false])) | opts: [[(right && right.shown) \|\| right, true, (right && right.shown) ? { stored: right.stored } : undefined]].concat(wrongs.map((w) => [w[0], false, w[2]])) |
+| LE17-F7-BG-BETA | 'Insulin — released by pancreas beta cells, causes glucose to be converted to glycogen in the liver' | { shown: 'Insulin — released by the pancreas, causes glucose to be converted to glycogen in the liver', stored: 'Insulin — released by pancreas beta cells, causes glucose to be converted to glycogen in the liver' } |
+| LE17-F7-BG-ALPHA | ['Glucagon — released by pancreas alpha cells, causes glycogen to be broken down', 'Glucagon is released when blood glucose is TOO LOW — it would make a post-meal rise even worse.'] | ['Glucagon — released by the pancreas, causes glycogen to be broken down', 'Glucagon is released when blood glucose is TOO LOW — it would make a post-meal rise even worse.', { stored: 'Glucagon — released by pancreas alpha cells, causes glycogen to be broken down' }] |
 | LE17-F7-BG-AUTO | Only TYPE 1 is autoimmune. TYPE 2 develops | Only TYPE 1 involves the pancreas failing to produce sufficient insulin. TYPE 2 develops |
 
-Re-freeze (phase 2): `python3 build_ks4.py --batch batch-8 --freeze`.
+Re-freeze: `python3 build_ks4.py --batch batch-8 --freeze`.

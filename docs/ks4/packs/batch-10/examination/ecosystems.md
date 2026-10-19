@@ -78,4 +78,4 @@ Wording only. No answer, option order, correct key, question stem, equation, fig
 |---|---|---|
 | LE17-F7-EC-KEYSTONE | but wolves are often keystone predators, so full compensation is rare. | but wolves are often the main predators, so full compensation is rare. |
 
-Re-freeze (phase 2): `python3 build_ks4.py --batch batch-10 --freeze`.
+Re-freeze: `python3 build_ks4.py --batch batch-10 --freeze`.

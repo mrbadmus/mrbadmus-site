@@ -72,4 +72,4 @@ Wording only. No answer, option order, correct key, question stem, equation, fig
 |---|---|---|
 | LE17-F7-AD-APOSEMATISM | Warning colouration (aposematism) typically involves bright colours | Warning colours are typically bright |
 
-Re-freeze (phase 2): `python3 build_ks4.py --batch batch-10 --freeze`.
+Re-freeze: `python3 build_ks4.py --batch batch-10 --freeze`.
