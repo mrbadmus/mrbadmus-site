@@ -39,6 +39,7 @@
     :focus-visible{outline:2px solid #E4572E;outline-offset:2px}
     a{color:#A93411}a:hover{color:#7F2408}
     #rfl-lab button:disabled{opacity:.45;cursor:default}
+    #w-ang-box:focus-within{outline:2px solid #E4572E;outline-offset:2px}
   </style>
 </helmet>
 <div style="background:var(--st-ground);color:var(--st-ink);font-family:var(--st-ui);font-size:17px;line-height:1.5;min-height:100vh">
@@ -84,7 +85,7 @@
               <button data-rot="1" style="font:600 14px/1 var(--st-ui);height:38px;padding:0 11px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">+1°</button>
               <button data-rot="5" style="font:600 14px/1 var(--st-ui);height:38px;padding:0 11px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">+5°</button>
               <button id="l-norm" style="font:600 14px/1 var(--st-ui);height:38px;padding:0 12px;border:0;border-radius:var(--st-r-btn);background:var(--st-ink);color:var(--st-paper);cursor:pointer">Along the normal</button>
-              <label id="l-iset-wrap" hidden style="display:flex;align-items:center;gap:6px;font-size:14px;color:var(--st-muted)">i =<input id="l-iset" type="number" min="0" max="85" step="1" value="40" aria-label="Set the angle of incidence" style="width:4.2em;font:600 15px var(--st-ui);text-align:center;border:1.5px solid var(--st-accent-text);border-radius:6px;padding:7px 4px;background:var(--st-paper);color:var(--st-ink)">°</label>
+              <label id="l-iset-wrap" hidden style="display:flex;align-items:center;gap:6px;font-size:14px;color:var(--st-muted)">i =<input id="l-iset" type="number" min="0" max="85" step="1" aria-label="Set the angle of incidence" style="width:4.2em;font:600 15px var(--st-ui);text-align:center;border:1.5px solid var(--st-accent-text);border-radius:6px;padding:7px 4px;background:var(--st-paper);color:var(--st-ink)">°</label>
             </div>
             <button id="l-block" style="display:inline-flex;align-items:center;gap:8px;font:600 15px/1 var(--st-ui);height:40px;padding:0 14px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"></button>
             <label for="l-mat" style="display:flex;align-items:center;gap:8px;font-size:15px;color:var(--st-muted)">Block
@@ -101,8 +102,8 @@
             <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:9px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="w-slow" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Slow motion</span></label>
             <div aria-label="Angle of incidence" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 8px 6px 12px;border:1px solid var(--st-rule);border-radius:10px">
               <span style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.12em;text-transform:uppercase;color:var(--st-caption)">Angle i</span>
-              <input id="w-ang" type="range" min="0" max="80" step="1" value="45" aria-label="Angle of incidence" style="width:160px;accent-color:#A93411">
-              <span id="w-ang-lcd" style="font:500 20px/1 var(--st-mono);font-variant-numeric:tabular-nums;background:var(--st-room);color:#F5E6C8;border-radius:6px;padding:7px 10px;min-width:3.2em;text-align:right">45°</span>
+              <input id="w-ang" type="range" min="0" max="80" step="1" aria-label="Angle of incidence" style="width:160px;accent-color:#A93411">
+              <label id="w-ang-box" title="Type an angle from 0 to 80" style="display:inline-flex;align-items:center;justify-content:flex-end;font:500 20px/1 var(--st-mono);font-variant-numeric:tabular-nums;background:var(--st-room);color:#F5E6C8;border-radius:6px;padding:7px 10px;min-width:3.2em;cursor:text"><input id="w-ang-lcd" type="text" inputmode="numeric" maxlength="2" autocomplete="off" aria-label="Angle of incidence in degrees, 0 to 80" style="width:2ch;margin:0;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:right;outline:none">°</label>
             </div>
             <label for="w-mat" style="display:flex;align-items:center;gap:8px;font-size:15px;color:var(--st-muted)">Into
               <select id="w-mat" style="font:500 15px var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-control);padding:8px 10px;cursor:pointer">
@@ -626,7 +627,7 @@ function startLab(props) {
   $("l-undo").onclick = undo;
   function undo() { const u = L.undo.pop(); if (u) L.draw = JSON.parse(u); }
   $("l-clear").onclick = () => { pushUndo(); L.draw = { outline: L.draw.outline, marks: [], lines: [], normals: [], prot: null }; };
-  function syncAll() { setOn(L.box.on); syncBlockBtn(); $("l-refl").checked = L.refl; setMaterial(L.mat); setTool(L.tool); $("w-ang").value = Wst.i; $("w-ang-lcd").textContent = Wst.i + "°"; $("w-slow").checked = Wst.slow; $("w-rays").checked = Wst.rays; $("w-hl").checked = Wst.hl; setPlayW(Wst.playing); }
+  function syncAll() { setOn(L.box.on); syncBlockBtn(); $("l-refl").checked = L.refl; setMaterial(L.mat); setTool(L.tool); setAngW(Wst.i); $("w-slow").checked = Wst.slow; $("w-rays").checked = Wst.rays; $("w-hl").checked = Wst.hl; setPlayW(Wst.playing); }
 
   // ---------- snapping + tools ----------
   function snaps() {
@@ -760,7 +761,24 @@ function startLab(props) {
   function setPlayW(p) { Wst.playing = p; $("w-play").innerHTML = p ? I.pause + "Pause" : I.play + "Play"; }
   $("w-play").onclick = () => setPlayW(!Wst.playing);
   $("w-slow").onchange = (e) => Wst.slow = e.target.checked;
-  $("w-ang").oninput = (e) => { Wst.i = +e.target.value; $("w-ang-lcd").textContent = Wst.i + "°"; };
+  // Neither the slider nor the typed box carries a value attribute in the markup: under
+  // dc-runtime that makes React control the input and snap it back after every input event.
+  const angLcd = $("w-ang-lcd"), clampAng = (v) => Math.max(0, Math.min(80, Math.round(v)));
+  function setAngW(v, typing) { Wst.i = clampAng(v); $("w-ang").value = Wst.i; if (!typing) angLcd.value = Wst.i; }
+  $("w-ang").oninput = (e) => setAngW(+e.target.value);
+  angLcd.onfocus = () => setTimeout(() => angLcd.select(), 0);
+  angLcd.oninput = () => {
+    const t = angLcd.value.replace(/\D/g, ""); if (t !== angLcd.value) angLcd.value = t;
+    if (t === "") return;
+    if (+t > 80) angLcd.value = "80";
+    setAngW(+t, true);
+  };
+  angLcd.onblur = () => setAngW(Wst.i);
+  angLcd.onkeydown = (e) => {
+    if (e.key === "Enter") angLcd.blur();
+    else if (e.key === "Escape") { angLcd.value = Wst.i; angLcd.blur(); }
+    else if (e.key === "ArrowUp" || e.key === "ArrowDown") { e.preventDefault(); setAngW(Wst.i + (e.key === "ArrowUp" ? 1 : -1)); angLcd.select(); }
+  };
   $("w-rays").onchange = (e) => Wst.rays = e.target.checked; $("w-hl").onchange = (e) => Wst.hl = e.target.checked;
 
   // ---------- tabs ----------
