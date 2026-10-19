@@ -67,8 +67,10 @@ window.KS4 = (function () {
     if (!q) return null;
     var we = q.wrong_explanations || {};
     var pl = optionPlan(q.q, q.opts, we); // ⊕ R21
-    var opts = q.opts.map(function (o, i) {
-      return { text: pl.labels[i], correct: !!o[1], reply: o[1] ? (pl.right[i] ? RIGHT + ' ' + pl.right[i] : RIGHT) : (we[String(i)] || pl.feedback[i] || ''), k: hash(q.q + '|' + ((o[2] && o[2].stored != null) ? o[2].stored : o[0])), full: (o[2] && o[2].stored != null) ? o[2].stored : o[0] }; // ⊕ R22
+    // ⊕ R22: `sopts` is q.opts with each option's STORED text put back, so `k` and `full` below stay the stored string
+    var sopts = q.opts.map(function (o) { return (o[2] && o[2].stored != null) ? [o[2].stored, o[1]] : o; });
+    var opts = sopts.map(function (o, i) {
+      return { text: pl.labels[i], correct: !!o[1], reply: o[1] ? (pl.right[i] ? RIGHT + ' ' + pl.right[i] : RIGHT) : (we[String(i)] || pl.feedback[i] || ''), k: hash(q.q + '|' + o[0]), full: o[0] };
     });
     opts.sort(function (a, b) { return a.k - b.k; });
     return { prompt: q.q, options: opts.map(function (o) { return { text: o.text, correct: o.correct, reply: o.reply, full: o.full }; }) }; // ⊕ R21: `full` is the STORED text the capture still sends
