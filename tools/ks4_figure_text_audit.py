@@ -52,8 +52,10 @@ MEASURE_JS = r"""
     var texts = svg.querySelectorAll('text');
     if (!texts.length) { return; }
     var rect = svg.getBoundingClientRect();
+    var col = svg.parentElement ? svg.parentElement.clientWidth : 0;
     var rec = { key: (svg.getAttribute('aria-label') || '') + '|' + vb.width + 'x' + vb.height + '|' + svg.innerHTML.length + '|' + svg.innerHTML.slice(0, 160) + svg.innerHTML.slice(-160),
                 alt: svg.getAttribute('aria-label') || '', vb: [vb.width, vb.height], width: Math.round(rect.width),
+                scrollW: Math.round(rect.width), colW: col,
                 drawn: rect.width > 0 && rect.height > 0, nodes: [] };
     Array.prototype.forEach.call(svg.querySelectorAll('text, tspan'), function (t) {
       var s = (t.tagName.toLowerCase() === 'text' && t.querySelector('tspan')) ? '' : (t.textContent || '').trim();
@@ -110,12 +112,19 @@ def lessons(batch=None, only=None, all_routes=False):
     return out
 
 
+BASELINE = False
+BASELINE_JS = ("(function(){var s=document.createElement('style');"
+               "s.textContent='[data-fig-fit]>svg{min-width:0!important}';document.head.appendChild(s);return true;})()")
+
+
 def audit_page(browser, base, slug, route):
     url = base + ks4_lessons.site_url(slug, route)
     page = browser.attach()
     page.send("Emulation.setDeviceMetricsOverride",
               {"width": WIDTH, "height": HEIGHT, "deviceScaleFactor": 1, "mobile": False})
     page.goto(url, settle=0.6)
+    if BASELINE:
+        page.eval(BASELINE_JS)
     page.eval(SCROLL_JS, timeout=60)
     figs = {}
 
@@ -142,6 +151,7 @@ def audit_page(browser, base, slug, route):
         rows.append({
             "lesson": slug, "route": route, "figure": idx + 1, "alt": rec["alt"][:80],
             "viewbox": rec["vb"], "rendered_width": rec["width"],
+            "scroll_width": rec.get("scrollW"), "column_width": rec.get("colW"),
             "text_nodes": len(rec["nodes"]), "smallest_px": min(n["px"] for n in rec["nodes"]),
             "below_floor": len(small), "samples": [n["s"] for n in sorted(small, key=lambda n: n["px"])[:4]],
         })
@@ -166,8 +176,12 @@ def main(argv=None):
     ap.add_argument("--batch", help="pilot | batch-N only")
     ap.add_argument("--only", help="comma-separated lesson slugs")
     ap.add_argument("--all-routes", action="store_true")
+    ap.add_argument("--baseline", action="store_true",
+                    help="switch the phone text-floor CSS off first: the 'before' count the fix is measured against")
     ap.add_argument("--out", help="directory for audit.json / audit.md (default: gate_tmp()/ks4-figure-text)")
     args = ap.parse_args(argv)
+    global BASELINE
+    BASELINE = args.baseline
 
     if not os.path.isdir(SITE):
         print("ks4_figure_text_audit: mrbadmus_site/ is missing - build first (python3 build_all.py).")

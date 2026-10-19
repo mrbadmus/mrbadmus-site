@@ -1132,9 +1132,12 @@ def apply_r21_option_labels(text):
 # shuffle key from it, so neither the answer key nor the option order moves. Absent (every other option in the
 # estate): exactly R21's behaviour. The object test keeps the other 3-element arrays in the lessons (hook and
 # sort items with a reason string) out of it.
-R22_FROM = "k: hash(q.q + '|' + o[0]), full: o[0] };"
-R22_TO = ("k: hash(q.q + '|' + ((o[2] && o[2].stored != null) ? o[2].stored : o[0])), "
-          "full: (o[2] && o[2].stored != null) ? o[2].stored : o[0] }; // \u2295 R22")
+R22_FROM = ("    var opts = q.opts.map(function (o, i) {\n"
+            "      return { text: pl.labels[i],")
+R22_TO = ("    // \u2295 R22: `sopts` is q.opts with each option's STORED text put back, so `k` and `full` below stay the stored string\n"
+          "    var sopts = q.opts.map(function (o) { return (o[2] && o[2].stored != null) ? [o[2].stored, o[1]] : o; });\n"
+          "    var opts = sopts.map(function (o, i) {\n"
+          "      return { text: pl.labels[i],")
 
 
 def apply_r22_stored_text(text):
