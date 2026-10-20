@@ -85,6 +85,34 @@
   function qs() {
     try { return new win.URLSearchParams(win.location.search); } catch (e) { return { get: function () { return null; } }; }
   }
+  /* cleanTopic:start (display only; the stored title is never touched).
+     Drops a leading or trailing tier tag in brackets, a trailing Quiz / Deck /
+     Flashcards / Homework, and the dashes left behind. Sentence case only when
+     the whole title was in capitals. If nothing would be left, the original
+     is kept. tools/wrapped_cleantopic_test.js loads this block by its markers. */
+  function cleanTopic(raw) {
+    if (typeof raw !== "string") { return raw; }
+    var orig = raw, t = raw.replace(/\s+/g, " ").trim(), prev, n = 0;
+    var TAG = "(?:higher|foundation|ht|ft|triple|combined|wk\\s*\\d+)";
+    var SEP = "[\\s\\-\\u2013\\u2014:\\u00b7|,]";
+    var lead = new RegExp("^(?:[\\(\\[]\\s*" + TAG + "\\s*[\\)\\]]|(?:ht|ft)(?=\\s))" + SEP + "*", "i");
+    var trail = new RegExp(SEP + "*[\\(\\[]\\s*" + TAG + "\\s*[\\)\\]]$", "i");
+    var word = new RegExp(SEP + "*\\b(?:quiz|deck|flashcards|homework)$", "i");
+    var edge = new RegExp("^" + SEP + "+|" + SEP + "+$", "g");
+    do {
+      prev = t;
+      t = t.replace(lead, "").replace(trail, "").replace(word, "").replace(edge, "");
+      n++;
+    } while (t !== prev && n < 6);
+    if (!t || !/[a-z0-9]/i.test(t)) { return orig; }
+    var letters = orig.replace(/[^A-Za-z]/g, "");
+    if (letters.length > 1 && letters === letters.toUpperCase() && (t.length > 4 || /\s/.test(t))) {
+      t = t.charAt(0) + t.slice(1).toLowerCase();
+    }
+    return t;
+  }
+  /* cleanTopic:end */
+
   function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -103,6 +131,17 @@
       if (!r || r.error) { throw new Error((r && r.error && (r.error.code || r.error.message)) || "rpc"); }
       return r.data;
     });
+  }
+
+  /* Open counts. Fire-and-forget: nothing waits on it, nothing reads its result,
+     and a missing function (PostgREST 404), a network error or a thrown error
+     are all swallowed. Preview opens are not sent; the database ignores them too. */
+  function mark(ev) {
+    try {
+      if (S.preview || !S.sb || !S.classId) { return; }
+      var r = S.sb.rpc("wrapped_mark", { p_class_id: S.classId, p_event: ev });
+      if (r && typeof r.then === "function") { r.then(function () { /* ignored */ }, function () { /* ignored */ }); }
+    } catch (e) { /* ignored */ }
   }
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -264,7 +303,7 @@
       var el = card("best_topic");
       el.appendChild(h("div", "wr-art wr-ghost")).appendChild(h("img")).src = MARK_URL;
       el.appendChild(h("p", "wr-lab", "Best topic"));
-      var ph = wordsEl("h2", "wr-phrase", c.topic); ph.setAttribute("data-fit", "1"); el.appendChild(ph);
+      var ph = wordsEl("h2", "wr-phrase", cleanTopic(c.topic)); ph.setAttribute("data-fit", "1"); el.appendChild(ph);
       el.appendChild(h("span", "wr-sweep"));
       el.appendChild(h("p", "wr-line", c.source === "deck" ? "Every card secured" : c.pct + "% on your homework"));
       return el;
@@ -282,11 +321,11 @@
       var el = card("top_band"), big, line;
       el.appendChild(artEl("wr-rings", 4));
       if (c.scope === "year") {
-        big = ["Top", c.band + "%"]; line = "of Year " + c.year_group + " on " + c.topic;
+        big = ["Top", c.band + "%"]; line = "of Year " + c.year_group + " on " + cleanTopic(c.topic);
       } else if (c.scope === "class") {
-        big = ["Top", String(c.top)]; line = "in " + c.class_name + " on " + c.topic;
+        big = ["Top", String(c.top)]; line = "in " + c.class_name + " on " + cleanTopic(c.topic);
       } else {
-        big = ["Every", "card"]; line = "You secured every " + c.topic + " card";
+        big = ["Every", "card"]; line = "You secured every " + cleanTopic(c.topic) + " card";
       }
       var w = h("div", "wr-slam");
       w.appendChild(h("p", "wr-top", big[0]));
@@ -339,7 +378,7 @@
       var el = card("most_secured");
       el.appendChild(h("div", "wr-art wr-ghost")).appendChild(h("img")).src = MARK_URL;
       el.appendChild(h("p", "wr-lab", "Most secured"));
-      var ph = wordsEl("h2", "wr-phrase", c.topic); ph.setAttribute("data-fit", "1"); el.appendChild(ph);
+      var ph = wordsEl("h2", "wr-phrase", cleanTopic(c.topic)); ph.setAttribute("data-fit", "1"); el.appendChild(ph);
       el.appendChild(h("span", "wr-sweep"));
       el.appendChild(h("p", "wr-line", c.pct + "% of cards secured"));
       return el;
@@ -348,7 +387,7 @@
       var el = card("revisit");
       el.appendChild(h("div", "wr-art wr-ghost")).appendChild(h("img")).src = MARK_URL;
       el.appendChild(h("p", "wr-lab", "Next to revisit"));
-      var ph = wordsEl("h2", "wr-phrase", c.topic); ph.setAttribute("data-fit", "1"); el.appendChild(ph);
+      var ph = wordsEl("h2", "wr-phrase", cleanTopic(c.topic)); ph.setAttribute("data-fit", "1"); el.appendChild(ph);
       el.appendChild(h("span", "wr-sweep"));
       el.appendChild(h("p", "wr-line", c.pct + "% so far"));
       return el;
@@ -378,9 +417,9 @@
     if (by.homework && by.homework.stars > 0) { out.push({ pal: "opener", num: by.homework.stars, label: pl(by.homework.stars, "star earned", "stars earned") }); }
     if (by.streak) { out.push({ pal: "streak", num: by.streak.weeks, label: pl(by.streak.weeks, "week in a row", "weeks in a row") }); }
     var tb = by.top_band;
-    if (tb && tb.scope === "year") { out.push({ pal: "top_band", phrase: "Top " + tb.band + "%", label: "of Year " + tb.year_group + " on " + tb.topic }); }
-    else if (tb && tb.scope === "personal") { out.push({ pal: "top_band", phrase: "Every card", label: "secured on " + tb.topic }); }
-    if (by.best_topic) { out.push({ pal: "best_topic", phrase: by.best_topic.topic, label: "Best topic" }); }
+    if (tb && tb.scope === "year") { out.push({ pal: "top_band", phrase: "Top " + tb.band + "%", label: "of Year " + tb.year_group + " on " + cleanTopic(tb.topic) }); }
+    else if (tb && tb.scope === "personal") { out.push({ pal: "top_band", phrase: "Every card", label: "secured on " + cleanTopic(tb.topic) }); }
+    if (by.best_topic) { out.push({ pal: "best_topic", phrase: cleanTopic(by.best_topic.topic), label: "Best topic" }); }
     return out.slice(0, 4);
   }
   function nameText(P) { var n = displayName(P.name); return n.username ? n.first + " (" + n.username + ")" : n.first; }
@@ -527,6 +566,7 @@
     for (k = 0; k < bars.length; k++) { bars[k].firstChild.style.transform = "scaleX(" + (k < i ? 1 : 0) + ")"; }
     S.stage.setAttribute("aria-label", "Card " + (i + 1) + " of " + S.cards.length);
     fitAll();
+    if (item.end && !S.markedEnd) { S.markedEnd = true; mark("end"); }
     countUps(el, S.tok);
     var focusMe = el.querySelector("button");
     if (focusMe && item.end) { /* leave focus on the close control; Tab reaches the buttons */ }
@@ -639,6 +679,8 @@
     var i;
     for (i = 0; i < S.cards.length; i++) { var s = h("i"); s.appendChild(h("b")); S.barsHost.appendChild(s); }
     S.last = 0;
+    S.markedEnd = false;
+    mark("open");
     show(0);
     if (!S.raf) { S.raf = win.requestAnimationFrame(tick); }
   }
@@ -791,6 +833,7 @@
   function doShare(mode, P, btn) {
     if (S.sharing) { return; }
     S.sharing = true; btn.disabled = true;
+    mark("share");
     var note = S.ov && S.ov.querySelector(".wr-note");
     function done() { S.sharing = false; btn.disabled = false; }
     drawImageCanvas(P).then(function (cv) {
