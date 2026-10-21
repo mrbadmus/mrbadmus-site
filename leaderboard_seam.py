@@ -87,9 +87,10 @@ function boot(opts) {
       return Promise.resolve({ok: true, json: function () { return {}; }});
     }
     if (fail > 0) { fail -= 1; return Promise.reject(new Error('stubbed')); }
+    const body = opts.respond ? opts.respond(String(url)) : (opts.payload || PAYLOAD);
     return Promise.resolve({
       ok: true,
-      json: function () { return Promise.resolve(opts.payload || PAYLOAD); }
+      json: function () { return Promise.resolve(body); }
     });
   };
   if (opts.supabase) { global.window.supabase = opts.supabase; }
@@ -366,6 +367,151 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
        + 'that axis\'s current week rather than to index 3',
        s.api.weekIndex() >= 0 && s.api.weekIndex() < s.api.weeks().length,
        'weekIndex = ' + s.api.weekIndex() + ' of ' + s.api.weeks().length);
+  }
+
+  /* ── 9. ⊕ R37 -- the time axis ───────────────────────────────────── */
+  {
+    /* A backend that serves different boards for different periods, keyed by
+       the `period=` the URL carries. `auto` resolves to 'all' here, which is
+       the live answer today (23 entries ever, one this week). */
+    const respond = function (url) {
+      const m = /period=(\w+)/.exec(url);
+      const asked = m ? m[1] : 'week';
+      const served = asked === 'auto' ? 'all' : asked;
+      return Object.assign({}, PAYLOAD, {
+        period: served,
+        counts: {week: 1, half: 4, all: 23},
+        half_term: {from: '2026-09-01'},
+        target: {name: 'Mr Badmus', score: 8, max_score: 10},
+        board: PAYLOAD.board.map(function (r) {
+          return Object.assign({}, r, {
+            staff: served === 'half' && r.rank === 1,
+            played: served === 'week' ? undefined : 7});
+        })
+      });
+    };
+    const s = boot({respond: respond});
+    await wait(40);
+    const first = s.boards()[0] ? s.boards()[0].url : '';
+    ok('R37: the FIRST board request asks for period=auto',
+       /[?&]period=auto\b/.test(first), first);
+    ok('R37: auto is adopted -- the tab the backend named is now selected',
+       s.api.period() === 'all', 'period = ' + s.api.period());
+    ok('R37: and its answer is already cached under that period',
+       s.api.status() === 'ok' && s.api.rows().length === 2,
+       'status ' + s.api.status());
+
+    const n0 = s.boards().length;
+    s.api.select({tier: 'Higher'});
+    await wait(40);
+    const tierReq = s.boards()[s.boards().length - 1].url;
+    ok('R37: a TIER press keeps the tab -- period=all, not auto and not week',
+       /[?&]period=all\b/.test(tierReq) && /tier=higher/.test(tierReq), tierReq);
+    ok('R37: the aggregates send NO week_start',
+       tierReq.indexOf('week_start') < 0, tierReq);
+    s.api.select({tier: 'Foundation'});
+    await wait(40);
+    ok('R37: returning to a tier already fetched on that tab does not refetch',
+       s.boards().length === n0 + 1, 'requests ' + n0 + ' -> ' + s.boards().length);
+
+    s.api.select({period: 'half'});
+    await wait(40);
+    const halfReq = s.boards()[s.boards().length - 1].url;
+    ok('R37: a TAB press asks for that period explicitly',
+       /[?&]period=half\b/.test(halfReq) && /tier=foundation/.test(halfReq),
+       halfReq);
+    ok('R37: the half-term answer is not the all-time one (period in the key)',
+       s.api.rows()[0].played === 7 && s.api.rows()[0].staff === true,
+       JSON.stringify(s.api.rows()[0]));
+    const nHalf = s.boards().length;
+    s.api.select({period: 'all'});
+    await wait(40);
+    s.api.select({period: 'half'});
+    await wait(40);
+    ok('R37: tabs already fetched are never refetched',
+       s.boards().length === nHalf, 'requests ' + nHalf + ' -> ' + s.boards().length);
+
+    s.api.select({period: 'week'});
+    await wait(40);
+    const weekReq = s.boards()[s.boards().length - 1].url;
+    ok('R37: the weekly tab lands on the CURRENT week (week_start sent)',
+       /[?&]period=week\b/.test(weekReq) && /week_start=2026-08-21/.test(weekReq),
+       weekReq);
+
+    /* ── R38/R39/R41 -- what the seam hands the view-model ── */
+    s.api.select({period: 'half'});
+    await wait(40);
+    ok('R38: half_term.from is passed through as the payload gave it',
+       s.api.halfFrom() === '2026-09-01', String(s.api.halfFrom()));
+    ok('R39: target passes through with the payload\'s own numbers',
+       JSON.stringify(s.api.target()) ===
+       JSON.stringify({name: 'Mr Badmus', score: 8, max_score: 10}),
+       JSON.stringify(s.api.target()));
+    ok('R41: staff is true only where the payload said so',
+       s.api.rows()[0].staff === true && s.api.rows()[1].staff === false,
+       JSON.stringify(s.api.rows().map(function (r) { return r.staff; })));
+  }
+  {
+    /* An old backend: no period, no counts, no target, no staff. The page
+       must read it as a weekly board and invent nothing. */
+    const s = boot({});
+    await wait(40);
+    ok('R37: a payload with no `period` is a WEEKLY board',
+       s.api.period() === 'week', 'period = ' + s.api.period());
+    ok('R39: no target in the payload -> target() is null, not a default',
+       s.api.target() === null, JSON.stringify(s.api.target()));
+    ok('R38: no half_term in the payload -> halfFrom() is null',
+       s.api.halfFrom() === null, String(s.api.halfFrom()));
+    ok('R41: no `staff` on a row -> false, and no `played` -> null (never 0)',
+       s.api.rows()[0].staff === false && s.api.rows()[0].played === null,
+       JSON.stringify(s.api.rows()[0]));
+    ok('R42: signed out -> signedIn() false and isStaff() false',
+       s.api.signedIn() === false && s.api.isStaff() === false, '');
+  }
+  {
+    /* A tab pressed while the first (auto) request is still in flight is the
+       pupil's choice, and the late answer must not move it. */
+    let release = null;
+    const gate = new Promise(function (r) { release = r; });
+    const respond = function (url) {
+      return Object.assign({}, PAYLOAD, {
+        period: /period=auto/.test(url) ? 'all' : (/period=half/.test(url) ? 'half' : 'week')});
+    };
+    const s = boot({respond: respond});
+    s.api.select({period: 'half'});            // before the auto answer lands
+    await wait(60);
+    ok('R37: a tab pressed while auto is in flight outranks the late answer',
+       s.api.period() === 'half', 'period = ' + s.api.period());
+  }
+  for (const role of ['teacher', 'hod', 'admin', 'student']) {
+    const supabase = {
+      createClient: function () {
+        return {
+          auth: {getSession: function () {
+            return Promise.resolve({data: {session: {
+              access_token: 'tok', user: {id: 'u1'}}}});
+          }},
+          from: function () {
+            return {select: function (cols) {
+              ok('R42: the profile read asks for `role` alongside the tier (' + role + ')',
+                 /\brole\b/.test(cols) && /\btier\b/.test(cols), String(cols));
+              return {eq: function () {
+              return {single: function () {
+                return Promise.resolve({data: {
+                  tier: 'higher', username: 'WolfSummit53', first_name: 'Ada',
+                  role: role}});
+              }};
+            }}; }};
+          }
+        };
+      }
+    };
+    const s = boot({supabase: supabase});
+    await wait(60);
+    const staff = role !== 'student';
+    ok('R42: role ' + role + ' -> isStaff() ' + staff + ', signedIn() true',
+       s.api.isStaff() === staff && s.api.signedIn() === true,
+       'isStaff=' + s.api.isStaff() + ' signedIn=' + s.api.signedIn());
   }
 
   process.stdout.write(JSON.stringify(checks));

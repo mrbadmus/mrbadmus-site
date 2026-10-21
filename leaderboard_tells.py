@@ -155,6 +155,20 @@ def check_page(path, corpus):
             "every real student would read another student's initials in the "
             "card headed YOUR STANDING." % n_ay)
 
+    # ⊕ R39 / R42 -- Mr Badmus's score is the payload's, never a literal, and
+    # the page links the challenge and nothing consumer-facing.
+    if re.search(r"Mr Badmus[^'\"\n]{0,24}scored[^'\"\n]{0,12}\d", page):
+        problems.append(
+            "carries a hard-coded score for Mr Badmus. The band's number is "
+            "the payload's `target` (R39); a literal ships a fabricated one.")
+    if "targetText" not in page or "/weekly-challenge.html" not in page:
+        problems.append("lacks the target band's binding or its Play link "
+                        "(R39/R40/R42).")
+    for bad in ("/parents/", "/go/", "/org/"):
+        if bad in page:
+            problems.append("links %s; the leaderboard may not point at the "
+                            "consumer product." % bad)
+
     for tell, budget in sorted(PRNG_BUDGET.items()):
         got = page.count(tell)
         if got > budget:

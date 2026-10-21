@@ -20,8 +20,8 @@
   <script src="/shared/account.js?v=7230a8eb" defer></script>
   <script src="/shared/nav.js?v=987d5092" defer></script>
   <script src="/shared/class-entry.js?v=8c087f18" defer></script>
-  <link rel="stylesheet" href="/shared/ks4-chrome.css?v=1ad44ce6"/>
-  <script src="/shared/ks4-chrome.js?v=106abc34" defer></script>
+  <link rel="stylesheet" href="/shared/ks4-chrome.css?v=04a74580"/>
+  <script src="/shared/ks4-chrome.js?v=c8a8b5ab" defer></script>
   <script src="/shared/science-facts.js?v=d7e6fb1d" defer></script>
   <script src="/shared/k4-facts.js?v=1b6c5e88" defer></script>
   <script src="/shared/theme.js?v=f04be205" defer></script>
@@ -87,15 +87,12 @@
       <p class="k4-challenge-head">Ten minutes, one science</p>
       <p class="k4-challenge-sub">New questions every Friday — biology, chemistry and physics, at your own tier.</p>
     </div>
-    <div class="k4-challenge-cell" id="k4-lead-foundation" hidden>
-      <div class="k4-kicker">Leading · Foundation</div>
-      <p class="k4-challenge-head" data-k4-name></p>
-      <p class="k4-challenge-sub"><span data-k4-pct></span> so far this week</p>
-    </div>
-    <div class="k4-challenge-cell" id="k4-lead-higher" hidden>
-      <div class="k4-kicker">Leading · Higher</div>
-      <p class="k4-challenge-head" data-k4-name></p>
-      <p class="k4-challenge-sub"><span data-k4-pct></span> so far this week</p>
+    <div class="k4-challenge-cell" id="k4-lead" hidden>
+      <div class="k4-kicker" data-k4-kicker></div>
+      <ol class="k4-lead-list" data-k4-rows></ol>
+      <p class="k4-lead-empty" data-k4-empty hidden></p>
+      <p class="k4-lead-target" data-k4-target hidden></p>
+      <a class="k4-lead-link" href="/leaderboard.html" data-k4-more>See the leaderboard</a>
     </div>
     <div class="k4-challenge-cell k4-challenge-go">
       <a class="k4-cta-solid" href="/weekly-challenge.html">Take the challenge <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg></a>

@@ -694,6 +694,115 @@ rule("R23", "`hash` and `rng` are KEPT.",
       "`leaderboard_tells.py` asserts the caller count is one."),
 
 
+rule("R37", "The board gains a TIME AXIS: a segmented control \"This week · "
+            "This half term · All time\" as the first control under the page "
+            "header, built by cloning Design's own tier toggle. The first "
+            "load asks the backend for `period=auto` and adopts the tab it "
+            "names; every press after that is explicit and keeps the tier "
+            "and subject. The cache key includes the period, and the week "
+            "only for the weekly view.",
+     "THE 'WEEKLY BOARD ALIVE' UNIT, 21 OCT 2026: the leaderboard must never "
+     "look empty, and must say so honestly. Early in a week the board has two or three "
+     "names on it and reads as a ghost town. The fix is not to invent "
+     "names but to let the pupil see a wider REAL window: the backend now "
+     "serves this half term and the whole year, and `auto` picks the "
+     "narrowest window that still has five entrants. "
+     "⚠️ THE TAB IS CLONED FROM DESIGN'S TIER TOGGLE, NOT DRAWN: same "
+     "container, same buttons, same tokens, so it cannot drift from the "
+     "control it sits beside. "
+     "⚠️ AN EXPLICIT PRESS OUTRANKS THE BACKEND'S GUESS. If a tab is pressed "
+     "while the `auto` request is still in flight, the late answer is filed "
+     "in the cache but does not move the selection. "
+     "⚠️ THE WEEK IS NOT IN THE AGGREGATE KEYS: a pupil who browsed three "
+     "past weeks and then pressed 'This half term' must not strand three "
+     "cache entries for a board that ignores the week. Going back to 'This "
+     "week' lands on the CURRENT week, because that is what the tab says."),
+
+rule("R38", "On the two aggregate tabs: the week rail card (and its "
+            "countdown) is not drawn; the header date line reads \"THIS HALF "
+            "TERM · SINCE <d MON>\" (from `half_term.from`) or \"ALL TIME\"; "
+            "the stats are ENTRIES, MEDIAN SCORE and FASTEST PAPER "
+            "(BIGGEST CLIMB is dropped and the row of three is laid out as "
+            "three, not as four with a hole); a row's headline is MARKS "
+            "(\"151 marks\") with the percentage as the second figure; the "
+            "MOVE column becomes PLAYED (papers sat) and carries no arrows; "
+            "the board footer reads \"TOP 10 ONLY · N ENTRIES\" with no cut "
+            "line. The rail snap in `componentDidMount` is bounded and the "
+            "one-second tick runs on the weekly tab only.",
+     "The aggregate payload ranks by marks, not by percentage, so a headline "
+     "of 92% above a row that is ranked below a 70% would read as a bug; "
+     "marks are what the order means. `move` and `biggest_climb` are null "
+     "on an aggregate (there is no 'previous half term' to have climbed "
+     "from), and a column of NEW chips would be nine copies of the same "
+     "non-fact, so the column carries the other thing the payload does "
+     "know: how many papers each pupil sat. The cut line is null for the "
+     "same reason, and the pill that would have read 'ALL 23 LISTED' under "
+     "ten rows is dropped. The per-subject breakdown's '9/15 marks' note is "
+     "blank on an aggregate: per-subject percentages are over the period, "
+     "and 15 is one paper. "
+     "⚠️ THE RAIL SNAP WAS A RETRY-FOREVER LOOP. Design's `snap` re-queues "
+     "itself every 120ms until the rail exists, which was fine while the rail "
+     "always did. A page that OPENS on an aggregate tab would spin it for the "
+     "life of the page, so it gives up after forty tries; "
+     "`componentDidUpdate` (R33) scrolls the selected chip into view when the "
+     "rail is next drawn, so nothing is lost."),
+
+rule("R39", "A separate band between the stats and the table — never a row, "
+            "never ranked, no rank number, no avatar — reads \"Mr Badmus "
+            "scored 8/10. Can you beat him?\" from the payload's `target`, "
+            "with a Play link to /weekly-challenge.html. On the aggregate "
+            "tabs it is prefixed \"This week, \". It is hidden when `target` "
+            "is null and when the weekly tab is showing a closed week from "
+            "the rail. A perfect score reads \"Can you match him?\".",
+     "Mr Badmus's own real score on this week's challenge: a number a pupil "
+     "can aim at that is neither invented nor another pupil's. It is "
+     "OUTSIDE the table on purpose: he is not a competitor, he is never in "
+     "`board`, `me` or `counts`, and putting him in a row would rank him. "
+     "The score is the payload's; this file supplies no number. The band is "
+     "hidden on a closed week because the payload describes THIS week's "
+     "challenge and the pupil is looking at a different one. A ten out of "
+     "ten cannot be beaten, only matched; saying so is the honest sentence."),
+
+rule("R40", "When the selected board settles with zero entries the table and "
+            "the stats are replaced by one panel: \"Be the first on the "
+            "board this week\" (this half term: \"…this half term\"; all "
+            "time: \"Be the first on the board\") with a Play button. A "
+            "closed week with no entries says \"Nobody sat this week\" and "
+            "offers no button. When the Mr Badmus band is showing, the "
+            "panel drops its own Play button.",
+     "The page used to show a headed table with no rows, four tiles reading "
+     "0 and em dashes, and 'NO ENTRIES' in a pill: three ways of saying "
+     "nothing and no way forward. One sentence and one door replaces them. "
+     "Loading and error are NOT this state and are untouched (R19/R20): "
+     "the panel appears only when the payload has settled and says zero. "
+     "⚠️ TWO PLAY BUTTONS A THUMB APART IS REDUNDANT TEXT. The band is "
+     "already offering Play, so the panel's is withheld rather than "
+     "duplicated. A closed week cannot be played, so its empty state does "
+     "not invite anyone to be first on it."),
+
+rule("R41", "A row with `staff: true` wears a small \"Teacher\" pill after "
+            "the username — the podium's three places, the table rows and "
+            "the viewer's pinned row — built from existing tokens "
+            "(`--st-mono`, `--st-num-well`, `--st-rule`, `--st-body`).",
+     "Teachers play the challenge too, and a pupil comparing themselves "
+     "with a teacher's score should be told that is what it is. The flag "
+     "comes from the backend (`staff`), not from anything this page "
+     "infers, and the pill is deliberately the quietest chip on the page: "
+     "neutral ground, no accent, so it never competes with YOU."),
+
+rule("R42", "\"Teachers, take the challenge\" links to /weekly-challenge.html "
+            "quietly below the board, shown when the viewer is signed out "
+            "or is staff (`profiles.role` in teacher / hod / admin, read "
+            "alongside the tier). A signed-in pupil never sees it.",
+     "The leaderboard is public and a teacher who lands on it has no other "
+     "door to the challenge from here. A pupil already has the whole page "
+     "built around them and does not need an instruction aimed at staff. "
+     "The role rides on the profile read the page already makes for the "
+     "tier: no new round trip. A profile that cannot be read counts as "
+     "not-staff, which is the conservative direction."),
+
+
+
 # ══════════════════════════════════════════════════════════════════════════
 #  Balanced-literal surgery on Design's logic
 # ══════════════════════════════════════════════════════════════════════════
@@ -865,6 +974,19 @@ function MRB_CLOSES(){return MRB_LB().closesAt();}
    sample never waits and never fails. */
 function MRB_CUT_STATE(){var s=MRB_STATUS();
   return s==='ok'?null:(s==='error'?'COULD NOT LOAD':'LOADING');}
+/* ⊕ R37-R42 — the board's time axis, Mr Badmus's own score, and who may be
+   shown the teachers' link. Each is read from the payload or the profile and
+   nothing here supplies a value. */
+function MRB_PERIOD(){return MRB_LB().period();}
+function MRB_TARGET(){return MRB_LB().target();}
+function MRB_SIGNED_IN(){return MRB_LB().signedIn();}
+function MRB_IS_STAFF(){return MRB_LB().isStaff();}
+/* The header line for an aggregate tab. `half_term.from` is the payload's; a
+   payload that lacks it gets the bare label rather than a guessed date. */
+function MRB_PERIOD_TITLE(p){
+  if(p==='all')return 'ALL TIME';
+  var f=MRB_LB().halfFrom(),m=f&&/^(\\d{4})-(\\d{2})-(\\d{2})$/.exec(f);
+  return m?'THIS HALF TERM \\u00B7 SINCE '+(+m[3])+' '+MON[+m[2]-1]:'THIS HALF TERM';}
 """
 
 
@@ -892,7 +1014,19 @@ _AGGREGATE = """    /* ⊕ MRB-290 R13 — Design's five aggregates computed fro
     const d = Math.max(0, Math.floor(ms / 864e5));
     const h = Math.max(0, Math.floor(ms / 36e5) % 24);
     const mi = Math.max(0, Math.floor(ms / 6e4) % 60);
-    const sec = Math.max(0, Math.floor(ms / 1000) % 60);"""
+    const sec = Math.max(0, Math.floor(ms / 1000) % 60);
+    /* ⊕ R39 / R40 — the target band and the empty board. Mr Badmus's score is
+       the payload's `target`; the weekly tab shows it only on the CURRENT
+       week (the payload describes this week's challenge, and a closed week
+       from the rail is somebody else's round). A tie cannot be "beaten". */
+    const _T = MRB_TARGET();
+    const _ok = MRB_STATUS() === 'ok';
+    const _emptyOn = _ok && entries === 0;
+    const _targetOn = _ok && !!_T && (_agg || live);
+    const _targetText = !_T ? '' : ((_agg ? 'This week, ' : '')
+      + (_T.name || 'Mr Badmus') + ' scored ' + _T.score + '/' + _T.max_score
+      + (_T.score >= _T.max_score ? '. Can you match him?'
+                                  : '. Can you beat him?'));"""
 
 
 def seam_logic(logic):
@@ -915,7 +1049,8 @@ def seam_logic(logic):
         "const meRow = board.find(x => x.name === VIEWER);",
         "const meRow = MRB_ME();", "R3")
     logic = swap(logic, "name: VIEWER,", "name: MRB_VIEWER_NAME(), "
-                        "initials: '', avImg: 'none',", "R3/R18/R25")
+                        "initials: '', avImg: 'none', staff: false,",
+                 "R3/R18/R25/R41")
 
     # ── R25 — the avatar, inside Design's disc ───────────────────────────
     #
@@ -947,7 +1082,8 @@ def seam_logic(logic):
         "const blank = { name: '\\u2014', initials: '--', "
         "pctLabel: '\\u2014', score: '\\u2014' };",
         "const blank = { name: '\\u2014', initials: '--', avImg: 'none', "
-        "isYou: false, pctLabel: '\\u2014', score: '\\u2014' };", "R25")
+        "isYou: false, staff: false, pctLabel: '\\u2014', "
+        "score: '\\u2014' };", "R25/R41")
 
     # ⚠️ R26 BEFORE the consts go, for exactly the reason R3's three swaps
     # are: this is a CLASS FIELD INITIALISER and it reads `LIVE`. Dropped
@@ -1013,14 +1149,23 @@ def seam_logic(logic):
        own answer and survives a subject press that reindexes the array.
        Design's rail scroll-snap below is kept exactly as drawn. */
     this._t = setInterval(() => {
-      if (MRB_IS_CURRENT()) { this.setState({ now: Date.now() }); }
+      /* ⊕ R38 — the countdown lives in the rail card, which the two
+         aggregate tabs do not draw: no tick, no redraw each second. */
+      if (MRB_IS_CURRENT() && MRB_PERIOD() === 'week') {
+        this.setState({ now: Date.now() });
+      }
     }, 1000);
+    /* ⊕ R38 — BOUNDED. The rail is not drawn on the two aggregate tabs, and
+       Design's retry-until-it-exists loop would then spin for ever on a page
+       that opens on one. componentDidUpdate puts the rail where it belongs
+       the moment it is drawn, so giving up here loses nothing. */
+    let _tries = 0;
     const snap = () => {
       const el = this.rail();
       if (el && el.scrollWidth > el.clientWidth) { el.scrollLeft = el.scrollWidth; }
-      else { setTimeout(snap, 120); }
+      else if (_tries++ < 40) { setTimeout(snap, 120); }
     };
-    setTimeout(snap, 60);""", "R12")
+    setTimeout(snap, 60);""", "R12/R38")
 
     # ── R10 — selection lives in the seam ────────────────────────────────
     #
@@ -1060,7 +1205,10 @@ def seam_logic(logic):
         "     are told apart by the last-snapped week_start. */\n"
         "  componentDidUpdate() {\n"
         "    const el = this.rail();\n"
-        "    if (!el) { return; }\n"
+        "    /* ⊕ R38 — no rail on an aggregate tab. Forget the week it was\n"
+        "       last snapped to, so that when it comes back (rebuilt at\n"
+        "       scroll 0) the selected chip is scrolled into view again. */\n"
+        "    if (!el) { this._railWeek = null; return; }\n"
         "    const idx = MRB_STATE(this).wk;\n"
         "    const wks = MRB_WEEKS();\n"
         "    const sel = wks[idx] ? wks[idx].week_start : null;\n"
@@ -1099,8 +1247,10 @@ def seam_logic(logic):
     logic = swap(
         logic,
         "      weekTitle: dates[s.wk].no + ' \\u00B7 ' + dates[s.wk].range,",
-        "      weekTitle: _wk.range ? (_wk.no + ' \\u00B7 ' + _wk.range) : '',",
-        "R24")
+        "      /* ⊕ R38 — the two aggregate tabs name a PERIOD, not a week. */\n"
+        "      weekTitle: _agg ? MRB_PERIOD_TITLE(_P)\n"
+        "        : (_wk.range ? (_wk.no + ' \\u00B7 ' + _wk.range) : ''),",
+        "R24/R38")
     logic = swap(logic, "dates[s.wk].long.toUpperCase()",
                  "_wk.long.toUpperCase()", "R24")
 
@@ -1215,8 +1365,12 @@ def seam_logic(logic):
         "           content is a fact we do not have does not belong in the\n"
         "           sentence at all. */\n"
         "        ? ('TOP ' + topCount + ' ONLY')\n"
-        "        : ('TOP ' + topCount + ' ONLY \\u00B7 ' + entries\n"
-        "           + ' SAT THIS WEEK'),", "R30")
+        "        /* ⊕ R38 — an aggregate has no cut line, and its count is\n"
+        "           ENTRIES (papers sat over the period), not a week's sitters. */\n"
+        "        : (_agg ? ('TOP ' + topCount + ' ONLY \\u00B7 ' + entries\n"
+        "                   + ' ENTRIES')\n"
+        "           : ('TOP ' + topCount + ' ONLY \\u00B7 ' + entries\n"
+        "              + ' SAT THIS WEEK')),", "R30/R38")
 
     logic = swap(
         logic,
@@ -1241,8 +1395,112 @@ def seam_logic(logic):
         logic,
         "cutValue: cut ? 'CUT LINE ' + cut.pct + '%' : 'NO ENTRIES',",
         "cutValue: MRB_CUT_STATE() || (cut ? 'CUT LINE ' + cut.pct + '%'\n"
-        "        : (entries ? 'ALL ' + entries + ' LISTED' : 'NO ENTRIES')),",
-        "R17/R19/R20")
+        "        : (entries ? 'ALL ' + entries + ' LISTED' : 'NO ENTRIES')),\n"
+        "      /* ⊕ R38 — the pill is dropped on a settled aggregate board: it\n"
+        "         would claim 'ALL 23 LISTED' under ten rows. */\n"
+        "      cutOn: !_agg || MRB_STATUS() !== 'ok',",
+        "R17/R19/R20/R38")
+
+    # ── R37–R42 — the board that is never empty, honestly ────────────────
+    #
+    # ORDER: after R14 (`board.length` → `entries`), so none of the text
+    # added here is counted by that three-occurrence assertion.
+    logic = swap(
+        logic, "    const board = this.board(s.wk);",
+        "    /* ⊕ R37. The board's TIME AXIS. `_agg` is the two aggregate tabs\n"
+        "       (this half term, all time); 'auto' is the not-yet-resolved\n"
+        "       first load and is neither, so it draws as the weekly board\n"
+        "       does while it loads. */\n"
+        "    const _P = MRB_PERIOD();\n"
+        "    const _agg = _P === 'half' || _P === 'all';\n"
+        "    const board = this.board(s.wk);", "R37")
+
+    # R38 — what a row says on an aggregate board.
+    logic = swap(
+        logic,
+        "        pctLabel: x.pct + '%', score: x.marks + '/' + x.total, "
+        "time: fmtTime(x.secs),",
+        "        /* ⊕ R38. On an aggregate the headline is MARKS (they rank by\n"
+        "           marks) and the percentage is the second figure. */\n"
+        "        pctLabel: _agg\n"
+        "          ? x.marks + (x.marks === 1 ? ' mark' : ' marks')\n"
+        "          : x.pct + '%',\n"
+        "        score: _agg ? x.pct + '%' : x.marks + '/' + x.total,\n"
+        "        time: fmtTime(x.secs),\n"
+        "        /* ⊕ R41. A teacher's row wears a pill. */\n"
+        "        staff: !!x.staff,", "R38/R41")
+    logic = swap(
+        logic, "        up: up, down: down, flat: flat,",
+        "        up: !_agg && up, down: !_agg && down, flat: !_agg && flat,",
+        "R38")
+    logic = swap(
+        logic, "moveLabel: x.move === null ? 'NEW'",
+        "moveLabel: _agg ? (x.played == null ? '\\u2014' : String(x.played))\n"
+        "          : x.move === null ? 'NEW'", "R38")
+    logic = swap(
+        logic, "moveFull: x.move === null ? 'NEW ENTRY'",
+        "moveFull: _agg ? (x.played == null ? '\\u2014' : x.played + ' played')\n"
+        "          : x.move === null ? 'NEW ENTRY'", "R38")
+    logic = swap(
+        logic, "moveFg: x.move === null ? 'var(--st-accent-text)'",
+        "moveFg: _agg ? 'var(--st-muted)'\n"
+        "          : x.move === null ? 'var(--st-accent-text)'", "R38")
+    logic = swap(
+        logic, "moveBg: x.move === null ? 'var(--st-chip-tint)'",
+        "moveBg: _agg ? 'var(--st-num-well)'\n"
+        "          : x.move === null ? 'var(--st-chip-tint)'", "R38")
+    logic = swap(
+        logic,
+        "note: on ? Math.round(x.per[k] / 100 * 15) + '/15 marks' "
+        ": 'not attempted'",
+        "note: on ? (_agg ? '' : Math.round(x.per[k] / 100 * 15) + '/15 marks')"
+        " : 'not attempted'", "R38")
+
+    # R38 — three tiles on an aggregate, not four.
+    logic = swap(
+        logic,
+        "{ label: 'BIGGEST CLIMB', value: climb && climb.move > 0 ? "
+        "'+' + climb.move : '\\u2014', hue: 'var(--chemistry)' }",
+        "...(_agg ? [] : [{ label: 'BIGGEST CLIMB', value: climb && "
+        "climb.move > 0 ? '+' + climb.move : '\\u2014', "
+        "hue: 'var(--chemistry)' }])", "R38")
+
+    # R37–R42 — everything the new markup binds to, in one block.
+    logic = swap(
+        logic, "      stats: [",
+        "      /* ⊕ R37 — the tabs. A press is explicit and keeps tier and\n"
+        "         subject; the rail card belongs to the weekly tab alone. */\n"
+        "      tabs: [['week', 'This week'], ['half', 'This half term'],\n"
+        "             ['all', 'All time']].map(([k, label]) => ({\n"
+        "        label: label,\n"
+        "        pressed: _P === k ? 'true' : 'false',\n"
+        "        bg: _P === k ? 'var(--st-paper)' : 'transparent',\n"
+        "        fg: _P === k ? 'var(--st-ink)' : 'var(--st-muted)',\n"
+        "        onSelect: () => { MRB_SET({ period: k });\n"
+        "          this.setState(p => ({ flip: !p.flip, open: null })); }\n"
+        "      })),\n"
+        "      showRail: _P === 'week',\n"
+        "      periodKey: _P,\n"
+        "      /* ⊕ R38 — headers that name what the column now holds. */\n"
+        "      headMove: _agg ? 'PLAYED' : 'MOVE',\n"
+        "      headMarks: _agg ? 'PERCENT' : 'MARKS',\n"
+        "      statN: _agg ? '3' : '4',\n"
+        "      /* ⊕ R39 — Mr Badmus's band. ⊕ R40 — the empty board. */\n"
+        "      targetOn: _targetOn,\n"
+        "      targetText: _targetText,\n"
+        "      statsOn: !_emptyOn,\n"
+        "      tableOn: !_emptyOn,\n"
+        "      emptyOn: _emptyOn,\n"
+        "      emptyTitle: _P === 'half' ? 'Be the first on the board this half term'\n"
+        "        : _P === 'all' ? 'Be the first on the board'\n"
+        "        : (live ? 'Be the first on the board this week'\n"
+        "                : 'Nobody sat this week'),\n"
+        "      /* One Play button when the band is not already offering one,\n"
+        "         and never on a closed week, which cannot be played. */\n"
+        "      emptyPlay: _emptyOn && (_agg || live) && !_targetOn,\n"
+        "      /* ⊕ R42 — signed out, or staff; never a signed-in pupil. */\n"
+        "      teachersOn: !MRB_SIGNED_IN() || MRB_IS_STAFF(),\n"
+        "      stats: [", "R37-R42")
 
     n["rulings"] = len(RULINGS)
     return logic, n
@@ -1438,6 +1696,70 @@ RESPONSIVE_CSS = """
   overflow-x: auto !important;
   overflow-y: hidden !important;
   -webkit-overflow-scrolling: touch;
+}
+"""
+
+# ⊕ "Weekly board alive" (21 Oct 2026, R37-R42). Appended to the page's own
+# stylesheet beside R35's block, for the same reason: an attribute hook and a
+# media query cannot live in an inline style. Tokens only -- every colour here
+# is an --st-* token, so the dark theme's remap reaches it with no rule of
+# its own.
+ALIVE_CSS = """
+
+/* ── ⊕ R37 — the time-axis tabs at a phone width. Three labels in Design's
+   20px-padded pill measure 377px against a 334px content box at 390px, so
+   the padding and the type step down until they fit; the tier toggle beside
+   it is untouched. */
+@media (max-width: 719px) {
+  [data-lb-tabs] { max-width: 100%; }
+  [data-lb-tabs] button {
+    padding: 10px 12px !important;
+    font-size: 14.5px !important;
+  }
+}
+
+/* ── ⊕ R38 — "235 marks" is wider than a phone podium column holds at Design's
+   type size, and `nowrap` plus `overflow: hidden` on the step cut it to
+   "235 mark". On an aggregate the headline steps down and may wrap onto two
+   lines ("235" / "marks"). Anchored on the two R34 sizes. */
+@media (max-width: 719px) {
+  [data-lb-podium="half"] [style*="font: 600 40px/1"],
+  [data-lb-podium="all"] [style*="font: 600 40px/1"],
+  [data-lb-podium="half"] [style*="font: 600 30px/1"],
+  [data-lb-podium="all"] [style*="font: 600 30px/1"] {
+    font-size: 17px !important; line-height: 1.1 !important;
+    overflow-wrap: normal; word-break: normal;
+  }
+}
+
+/* ── ⊕ R38 — three tiles, laid out as three. Phone: two columns, the last
+   tile across the full row (a third column at 390px cannot hold "FASTEST
+   PAPER"); tablet and up: three equal columns. */
+[data-lb-fit="stats"][data-lb-n="3"] > :last-child { grid-column: 1 / -1; }
+@media (min-width: 720px) {
+  [data-lb-fit="stats"][data-lb-n="3"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+  [data-lb-fit="stats"][data-lb-n="3"] > :last-child { grid-column: auto; }
+}
+
+/* ── ⊕ R39 / R40 / R42 — the Play button and the teachers' link. The ground
+   is --st-accent-text and the ink is --st-paper: the YOU chip's own pairing,
+   which holds 6.5:1 in light and flips with the theme in dark. The :hover
+   rule restates the colour because the page's bare `a:hover` would otherwise
+   turn the label the same orange as its ground. */
+.lb-play, .lb-play:hover {
+  display: inline-block; flex: none; text-align: center;
+  font: 600 15px/1 var(--st-ui); color: var(--st-paper);
+  border-radius: var(--r-pill); padding: 11px 20px;
+}
+.lb-play { background: var(--st-accent-text); }
+.lb-play:hover { background: var(--st-accent-hover); }
+.lb-teachers { color: var(--st-muted); text-decoration: underline;
+               text-underline-offset: 3px; }
+.lb-teachers:hover { color: var(--st-accent-text); }
+.lb-play:focus-visible, .lb-teachers:focus-visible {
+  outline: 2px solid var(--st-accent-text); outline-offset: 3px;
 }
 """
 
@@ -1736,6 +2058,299 @@ def bind_podium_you(roots):
 
 
 PODIUM_YOU_EXPECTED = 3
+
+
+# ══════════════════════════════════════════════════════════════════════════
+#  R41 — the Teacher pill
+# ══════════════════════════════════════════════════════════════════════════
+
+# ⚠️ ONE STYLE STRING, THREE PLACES. The podium variant adds the bottom margin
+# that the YOU chip (R32) does not have; everything else is identical so a
+# teacher's pill looks the same wherever it appears.
+_PILL_STYLE = ("flex: none; white-space: nowrap; font: 500 14px/1 "
+               "var(--st-mono); letter-spacing: .06em; color: var(--st-body); "
+               "background: var(--st-num-well); border: 1px solid "
+               "var(--st-rule); border-radius: 4px; padding: 3px 7px;")
+
+
+def _pill(expr, extra=""):
+    return {"t": "if", "e": expr, "c": [
+        {"t": "span", "a": {"class": "lb-teacher",
+                            "style": _PILL_STYLE + extra},
+         "c": [{"t": "#", "v": "Teacher"}]}]}
+
+
+def add_staff_pills(roots):
+    """Insert the Teacher pill after the name on the podium, rows and pinned row.
+
+    ⚠️ MUST RUN BEFORE `bind_podium_you` (R32). That pass inserts the YOU chip
+    right after each podium name; with the pill already there the order comes
+    out name · YOU · Teacher, the same as the table row (name · YOU · Teacher),
+    instead of two different orders on one page.
+
+    Returns (roots, hits) keyed by place: podium p1-p3, "row", "pinned".
+    """
+    out = json.loads(json.dumps(roots))
+    hits = {}
+
+    def expr_of(kid):
+        if not isinstance(kid, dict):
+            return None
+        only = kid.get("c") or []
+        if len(only) != 1 or not isinstance(only[0], dict) \
+                or only[0].get("t") != "#":
+            return None
+        v = only[0].get("v")
+        parts = v.get("parts") if isinstance(v, dict) else None
+        if not parts or len(parts) != 1 or not isinstance(parts[0], dict):
+            return None
+        return parts[0].get("e") or None
+
+    def walk(n):
+        if not isinstance(n, dict):
+            return
+        kids = n.get("c")
+        if not kids:
+            return
+        rebuilt = []
+        for kid in kids:
+            rebuilt.append(kid)
+            e = expr_of(kid)
+            if e in ("p1.name", "p2.name", "p3.name"):
+                place = e[:-len(".name")]
+                rebuilt.append(_pill(place + ".staff", " margin-bottom: 12px;"))
+                hits[place] = hits.get(place, 0) + 1
+            elif e == "r.name":
+                # Design's table row: name span, then `sc-if r.isYou`. The
+                # pill goes after the chip, so the order is name · YOU · Teacher.
+                rebuilt.append(None)       # placeholder, resolved below
+            else:
+                walk(kid)
+        # Resolve the row placeholder: skip past an immediately following
+        # `if r.isYou` node so the pill lands after it.
+        final, i = [], 0
+        while i < len(rebuilt):
+            item = rebuilt[i]
+            if item is None:
+                chip = rebuilt[i + 1] if i + 1 < len(rebuilt) else None
+                if isinstance(chip, dict) and chip.get("t") == "if" \
+                        and chip.get("e") == "r.isYou":
+                    final.append(chip)
+                    final.append(_pill("r.staff"))
+                    i += 2
+                else:
+                    final.append(_pill("r.staff"))
+                    i += 1
+                hits["row"] = hits.get("row", 0) + 1
+                continue
+            final.append(item)
+            i += 1
+        # The pinned row: a static YOU span follows `me.name`; the pill goes
+        # after it.
+        for j, item in enumerate(final):
+            if expr_of(item) == "me.name":
+                nxt = final[j + 1] if j + 1 < len(final) else None
+                txt = (nxt or {}).get("c") if isinstance(nxt, dict) else None
+                if txt and isinstance(txt[0], dict) and txt[0].get("v") == "YOU":
+                    final.insert(j + 2, _pill("me.staff"))
+                    hits["pinned"] = hits.get("pinned", 0) + 1
+                    break
+        n["c"] = final
+
+    for r in out:
+        walk(r)
+    return out, hits
+
+
+PILL_EXPECTED = {"p1": 1, "p2": 1, "p3": 1, "row": 1, "pinned": 1}
+
+
+# ══════════════════════════════════════════════════════════════════════════
+#  R37 / R38 / R39 / R40 / R42 — the tabs, the band, the empty panel, the link
+# ══════════════════════════════════════════════════════════════════════════
+
+_RAIL_CARD_HEAD = "margin-top: 30px; background: var(--st-paper); "
+_PLAY = {"t": "a", "a": {"class": "lb-play", "href": "/weekly-challenge.html"},
+         "c": [{"t": "#", "v": "Play"}]}
+
+
+def _bound(expr):
+    return {"t": "#", "v": {"parts": [{"e": expr}]}}
+
+
+def add_alive(roots):
+    """The structural half of R37–R42. Returns (roots, hits).
+
+    Everything is anchored on what Design's node IS (the rail card holds
+    `#ks4-week-rail`; the stats grid is the one carrying R35's hook; the table
+    frame carries R35's other hook; the tier toggle is the `for` over `tiers`)
+    and never on a node index, so a re-numbered delivery fails loudly here
+    rather than wrapping the wrong element.
+    """
+    out = json.loads(json.dumps(roots))
+    hits = {}
+
+    def has(n, pred):
+        if not isinstance(n, dict):
+            return False
+        if pred(n):
+            return True
+        return any(has(c, pred) for c in (n.get("c") or []))
+
+    def find_parent_of(pred):
+        """(parent, index) of the unique child satisfying pred, or raise."""
+        found = []
+
+        def walk(n):
+            if not isinstance(n, dict):
+                return
+            for i, c in enumerate(n.get("c") or []):
+                if isinstance(c, dict) and pred(c):
+                    found.append((n, i))
+                walk(c)
+        for r in out:
+            walk(r)
+        return found
+
+    def one(label, found):
+        if len(found) != 1:
+            raise SystemExit(
+                "build_leaderboard_port.py: R37-R42 anchor %r matched %d "
+                "node(s) and expected one.\n  Design has redrawn that element; "
+                "re-anchor against her source rather than relaxing the count."
+                % (label, len(found)))
+        hits[label] = 1
+        return found[0]
+
+    # ── the rail card: wrapped in `showRail`, the tabs placed above it ────
+    def is_rail_card(n):
+        st = (n.get("a") or {}).get("style")
+        return n.get("t") == "div" and isinstance(st, str) \
+            and st.startswith(_RAIL_CARD_HEAD) \
+            and has(n, lambda m: (m.get("a") or {}).get("id") == "ks4-week-rail")
+
+    parent, i = one("rail card", find_parent_of(is_rail_card))
+    rail = parent["c"][i]
+
+    # The tier toggle, cloned. Found by what it iterates (`tiers`).
+    def is_tier_toggle(n):
+        return n.get("t") == "div" and any(
+            isinstance(c, dict) and c.get("t") == "for" and c.get("e") == "tiers"
+            for c in (n.get("c") or []))
+    tp, ti = one("tier toggle", find_parent_of(is_tier_toggle))
+    toggle = json.loads(json.dumps(tp["c"][ti]))
+    toggle.setdefault("a", {}).update({
+        "data-lb-tabs": "1", "role": "group", "aria-label": "Time period"})
+    loop = toggle["c"][0]
+    loop["e"] = "tabs"
+    btn = loop["c"][0]
+    btn.setdefault("a", {})["aria-pressed"] = {"parts": [{"e": "t.pressed"}]}
+
+    # `display: flex` so the pill hugs its three labels instead of stretching
+    # across the page (a block parent gives a flex child the full width).
+    tabs = {"t": "div", "a": {"style": "margin-top: 26px; display: flex;"},
+            "c": [toggle]}
+    parent["c"][i:i + 1] = [tabs, {"t": "if", "e": "showRail", "c": [rail]}]
+
+    # ── the podium frame: a period hook for the phone-width rule below ─────
+    def is_podium(n):
+        st = (n.get("a") or {}).get("style")
+        return isinstance(st, str) and st.startswith(PODIUM_CAP)
+    pp, pi = one("podium frame", find_parent_of(is_podium))
+    pp["c"][pi]["a"]["data-lb-podium"] = {"parts": [{"e": "periodKey"}]}
+
+    # ── the stats grid: `statsOn`, and a column-count hook for R38 ────────
+    def is_stats(n):
+        return (n.get("a") or {}).get("data-lb-fit") == "stats"
+    sp, si = one("stats grid", find_parent_of(is_stats))
+    stats = sp["c"][si]
+    stats["a"]["data-lb-n"] = {"parts": [{"e": "statN"}]}
+
+    band = {"t": "if", "e": "targetOn", "c": [
+        {"t": "div",
+         "a": {"class": "lb-target", "data-lb-target": "1",
+               "style": "margin-top: 18px; display: flex; align-items: "
+                        "center; justify-content: space-between; gap: 14px "
+                        "18px; flex-wrap: wrap; padding: 14px 18px; "
+                        "background: var(--st-note-bg); border: 1px solid "
+                        "var(--st-note-border); border-radius: "
+                        "var(--st-r-card);"},
+         "c": [{"t": "p",
+                "a": {"style": "margin: 0; min-width: 0; font: 600 18px/1.3 "
+                               "var(--st-display); letter-spacing: -0.02em; "
+                               "color: var(--st-ink);"},
+                "c": [_bound("targetText")]},
+               json.loads(json.dumps(_PLAY))]}]}
+    sp["c"][si:si + 1] = [{"t": "if", "e": "statsOn", "c": [stats]}, band]
+
+    # ── the table frame: `tableOn`; the empty panel and the link follow ───
+    def is_table(n):
+        return (n.get("a") or {}).get("data-lb-fit") == "table"
+    tp2, ti2 = one("table frame", find_parent_of(is_table))
+    table = tp2["c"][ti2]
+
+    empty = {"t": "if", "e": "emptyOn", "c": [
+        {"t": "div",
+         "a": {"data-lb-empty": "1",
+               "style": "margin-top: 18px; background: var(--st-paper); "
+                        "border: 1px solid var(--st-edge); border-radius: "
+                        "var(--st-r-frame); padding: 44px 22px; text-align: "
+                        "center; display: flex; flex-direction: column; "
+                        "align-items: center; gap: 18px;"},
+         "c": [{"t": "p",
+                "a": {"style": "margin: 0; font: 600 26px/1.15 "
+                               "var(--st-display); letter-spacing: -0.03em; "
+                               "color: var(--st-ink);"},
+                "c": [_bound("emptyTitle")]},
+               {"t": "if", "e": "emptyPlay",
+                "c": [json.loads(json.dumps(_PLAY))]}]}]}
+    link = {"t": "if", "e": "teachersOn", "c": [
+        {"t": "p",
+         "a": {"style": "margin: 22px 0 0; text-align: center; "
+                        "font: 500 15px/1.4 var(--st-ui);"},
+         "c": [{"t": "a", "a": {"class": "lb-teachers",
+                                "href": "/weekly-challenge.html"},
+                "c": [{"t": "#", "v": "Teachers, take the challenge"}]}]}]}
+    tp2["c"][ti2:ti2 + 1] = [{"t": "if", "e": "tableOn", "c": [table]},
+                             empty, link]
+
+    # ── the two column headers that name what the column holds ────────────
+    def retitle(literal, expr):
+        n = [0]
+
+        def walk(x):
+            if not isinstance(x, dict):
+                return
+            if x.get("t") == "#" and x.get("v") == literal:
+                x["v"] = {"parts": [{"e": expr}]}
+                n[0] += 1
+            for c in (x.get("c") or []):
+                walk(c)
+        for r in out:
+            walk(r)
+        return n[0]
+    for literal, expr in (("MOVE", "headMove"), ("MARKS", "headMarks")):
+        got = retitle(literal, expr)
+        if got != 1:
+            raise SystemExit(
+                "build_leaderboard_port.py: R38 retitles the column header "
+                "%r and found %d text node(s) reading it, expecting one."
+                % (literal, got))
+        hits["head " + literal] = 1
+
+    # ── the cut pill: `cutOn` ─────────────────────────────────────────────
+    def is_cut_pill(n):
+        c = n.get("c") or []
+        return n.get("t") == "span" and len(c) == 1 and isinstance(c[0], dict) \
+            and c[0].get("v") == {"parts": [{"e": "cutValue"}]}
+    cp, ci = one("cut pill", find_parent_of(is_cut_pill))
+    cp["c"][ci:ci + 1] = [{"t": "if", "e": "cutOn", "c": [cp["c"][ci]]}]
+    return out, hits
+
+
+ALIVE_EXPECTED = {"podium frame": 1, "rail card": 1, "tier toggle": 1, "stats grid": 1,
+                  "table frame": 1, "head MOVE": 1, "head MARKS": 1,
+                  "cut pill": 1}
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -2222,9 +2837,16 @@ _FIXTURE_API = r"""
 /* GENERATED FIXTURE DATA — not checked in, not published. */
 (function () {
   var D = %(payloads)s;
+  /* ⊕ R37 — the two aggregate boards, keyed Tier|Subject|half and
+     Tier|Subject|all. Held apart from the weekly payloads: the weekly keys
+     end in a date, and a sort over mixed keys picks the wrong "latest". */
+  var AG = %(aggs)s;
   var VIEWER = %(viewer)s;
   var START = %(start)s;
-  var sel = {tier: START.tier, subject: START.subject, week: START.week};
+  var SIGNED_IN = %(signed_in)s;
+  var STAFF = %(staff)s;
+  var sel = {tier: START.tier, subject: START.subject, week: START.week,
+             period: START.period || 'week'};
   var redraw = function () {};
   var mounted = null;
 
@@ -2233,8 +2855,13 @@ _FIXTURE_API = r"""
     var m = n.match(/^([A-Z])[a-z]*([A-Z])/);
     return m ? m[1] + m[2] : n.slice(0, 2).toUpperCase();
   }
-  function key() { return [sel.tier, sel.subject, sel.week].join('|'); }
-  function cur() { return D[key()] || null; }
+  function key() {
+    return [sel.tier, sel.subject,
+            sel.period === 'week' ? sel.week : sel.period].join('|');
+  }
+  function cur() {
+    return (sel.period === 'week' ? D[key()] : AG[key()]) || null;
+  }
 
   var TO_KEY = {biology: 'B', chemistry: 'C', physics: 'P'};
   function safeAvatar(u) {
@@ -2259,7 +2886,9 @@ _FIXTURE_API = r"""
             avatar_url: safeAvatar(r.avatar_url),
             move: (r.move === undefined ? null : r.move),
             was: (r.was === undefined ? null : r.was),
-            streak: r.streak || 0};
+            streak: r.streak || 0,
+            staff: r.staff === true,
+            played: (typeof r.played === 'number') ? r.played : null};
   }
 
   var api = {
@@ -2294,6 +2923,20 @@ _FIXTURE_API = r"""
     },
     me: function () { var d = cur(); return (d && d.me) ? mapRow(d.me) : null; },
     isCurrent: function () { var d = cur(); return !!(d && d.is_current); },
+    period: function () { return sel.period; },
+    target: function () {
+      var d = cur(), t = d && d.target;
+      if (!t || typeof t.score !== 'number' || typeof t.max_score !== 'number') {
+        return null;
+      }
+      return {name: t.name, score: t.score, max_score: t.max_score};
+    },
+    halfFrom: function () {
+      var d = cur(), h = d && d.half_term;
+      return (h && typeof h.from === 'string') ? h.from : null;
+    },
+    signedIn: function () { return SIGNED_IN; },
+    isStaff: function () { return STAFF; },
     now: function () { return Date.parse('2026-08-25T09:00:00Z'); },
     closesAt: function () {
       var d = cur();
@@ -2306,12 +2949,19 @@ _FIXTURE_API = r"""
       if (p.tier) { sel.tier = p.tier; }
       if (p.subject) { sel.subject = p.subject; }
       if ('week' in p) { sel.week = p.week; }
+      if (p.period) {
+        var was = cur();
+        sel.period = p.period;
+        if (p.period === 'week' && !('week' in p) && was && was.current_week) {
+          sel.week = was.current_week;
+        }
+      }
       /* ⚠️ THE SAME FALLBACK THE SEAM HAS. A tier or subject press keeps the
          DATE; if the new axis has no such week the index falls back to that
          axis's current week. Without this the fixture would resolve to a
          missing key and render an empty board — which would look exactly
          like the empty-week state and pass. */
-      if (!D[key()]) {
+      if (sel.period === 'week' && !D[key()]) {
         var w = api.weeks();
         for (var i = 0; i < w.length; i++) {
           if (w[i].is_current) { sel.week = w[i].week_start; break; }
@@ -2334,6 +2984,82 @@ _FIXTURE_API = r"""
 
 def _clone(p):
     return json.loads(json.dumps(p))
+
+
+# ══════════════════════════════════════════════════════════════════════════
+#  R37-R42 -- the aggregate boards, the target and the staff flag
+# ══════════════════════════════════════════════════════════════════════════
+#
+# ⚠️ FIXTURE-ONLY, AND NONE OF IT SHIPS. `leaderboard_fixtures/` is outside
+# every published tree. These functions turn the weekly payloads Design's
+# sample produces into payloads in the SHAPE the new backend serves for
+# `period=half` and `period=all`, so the behaviour gate can drive the tabs with
+# no network. Every handle in them is Design's invented sample -- the same
+# allowance the rest of the fixtures already have, and the reason
+# `leaderboard_tells` scans the two live pages and never this directory.
+
+# What the fixture world calls half term: inside its frozen summer (R29).
+FIXTURE_HALF_TERM_FROM = "2026-07-20"
+# Mr Badmus's fixture score. Overall is three papers of ten; a single science
+# is one. The page reads it from `target` and supplies no number of its own.
+FIXTURE_TARGET = {"overall": ("Mr Badmus", 24, 30), "other": ("Mr Badmus", 8, 10)}
+
+
+def _with_target(p, on):
+    if not p:
+        return p
+    if not on:
+        p["target"] = None
+        return p
+    name, score, mx = FIXTURE_TARGET[
+        "overall" if p.get("subject") == "overall" else "other"]
+    p["target"] = {"name": name, "score": score, "max_score": mx}
+    return p
+
+
+def _agg_row(r, i, mult):
+    r = _clone(r)
+    r["total"] = r["total"] * mult
+    r["marks"] = max(1, round(r["total"] * max(20, r["pct"] - (i % 3) * 3)
+                              / 100))
+    r["pct"] = round(r["marks"] / r["total"] * 100)
+    r["secs"] = r["secs"] * mult
+    r["played"] = max(1, len(r["done"])) * mult
+    r["move"] = None
+    r["was"] = None
+    r["streak"] = 0
+    r["staff"] = False
+    return r
+
+
+def _agg_payload(p, period, staff_rows=(), staff_me=False):
+    """The `period=half|all` envelope for a weekly payload `p`."""
+    q = _clone(p)
+    k = 3 if period == "half" else 9
+    rows = [_agg_row(r, i, k + (i * 5) % 4) for i, r in enumerate(q["board"])]
+    rows.sort(key=lambda r: (-r["marks"], -r["pct"], r["secs"], r["name"]))
+    for i, r in enumerate(rows):
+        r["rank"] = i + 1
+        r["staff"] = i in staff_rows
+    q["board"] = rows
+    if q.get("me"):
+        mine = [r for r in rows if r["name"] == q["me"]["name"]]
+        if mine:
+            q["me"] = _clone(mine[0])
+        else:
+            m = _agg_row(q["me"], 5, k)
+            m["rank"] = q["me"]["rank"]
+            m["staff"] = bool(staff_me)
+            q["me"] = m
+    q["period"] = period
+    q["half_term"] = {"from": FIXTURE_HALF_TERM_FROM}
+    q["entries"] = int(q["entries"] * (1.6 if period == "half" else 2.4)) \
+        if q["entries"] else 0
+    q["biggest_climb"] = None
+    q["cut_pct"] = None
+    q["counts"] = {"week": p["entries"], "half": q["entries"],
+                   "all": q["entries"]}
+    return q
 
 
 def _shape_empty(p):
@@ -2508,7 +3234,7 @@ FIXTURES = [
     dict(out="leaderboard-empty-fixture.html",
          js="leaderboard-fixture-empty.js",
          axis=("Higher", "Overall"), week="live", shape=_shape_empty,
-         status="ok",
+         status="ok", target=False,
          what="a week nobody sat. ⚠️ THE LIVE LANDING STATE of "
               "Higher/Overall on 25 Aug 2026 — not a corner case"),
     dict(out="leaderboard-thin-fixture.html",
@@ -2550,6 +3276,33 @@ FIXTURES = [
          status="ok", viewer_fn=_viewer_rank2,
          what="the viewer is RANK 2, on the podium — R32. Mide's own state "
               "when he reported that nothing on the board said so"),
+    dict(out="leaderboard-half-fixture.html",
+         js="leaderboard-fixture-half.js",
+         axis=("Higher", "Overall"), week="live", shape=None, status="ok",
+         period="half", staff_rows=(2, 5),
+         what="THIS HALF TERM, opened on that tab -- R37/R38. Marks as the "
+              "headline, no movement arrows, no rail card, three stat tiles, "
+              "the Mr Badmus band with its 'This week, ' prefix, and a "
+              "Teacher pill on a podium place and on a table row (R41)"),
+    dict(out="leaderboard-all-fixture.html",
+         js="leaderboard-fixture-all.js",
+         axis=("Higher", "Overall"), week="live", shape=_shape_outside,
+         status="ok", viewer=OUTSIDE_VIEWER, post=_post_outside,
+         period="all", staff_viewer=True, staff_me=True,
+         what="ALL TIME, and the viewer is a TEACHER below the cut -- R41's "
+              "pinned-row pill and R42's teachers' link in one state"),
+    dict(out="leaderboard-notarget-fixture.html",
+         js="leaderboard-fixture-notarget.js",
+         axis=("Higher", "Overall"), week="live", shape=None, status="ok",
+         target=False,
+         what="the payload's `target` is null -- R39. No band at all, and "
+              "nothing in its place"),
+    dict(out="leaderboard-pastweek-fixture.html",
+         js="leaderboard-fixture-pastweek.js",
+         axis=("Higher", "Overall"), week="prev", shape=None, status="ok",
+         what="a CLOSED week selected from the rail, with a `target` still "
+              "on the payload -- R39. The page, not the fixture, must hide "
+              "the band"),
     dict(out="leaderboard-loading-fixture.html",
          js="leaderboard-fixture-loading.js",
          axis=("Foundation", "Overall"), week="live", shape=_shape_loading,
@@ -2825,6 +3578,17 @@ def build():
             "source; do not relax the count."
             % (FIT_HOOKS_EXPECTED, n_fit))
 
+    # ⊕ R41 BEFORE R32 -- see add_staff_pills' own note on the order.
+    roots, pill_hits = add_staff_pills(roots)
+    if pill_hits != PILL_EXPECTED:
+        raise SystemExit(
+            "build_leaderboard_port.py: R41 expected the Teacher pill in %s "
+            "and placed it in %s.\n"
+            "  The five places are the podium's three names, the table row's "
+            "name and the pinned row's name. A miss means Design has changed "
+            "how a name is drawn, and a teacher would silently stop being "
+            "marked as one there." % (PILL_EXPECTED, pill_hits))
+
     roots, n_you = bind_podium_you(roots)
     if n_you != PODIUM_YOU_EXPECTED:
         raise SystemExit(
@@ -2835,6 +3599,12 @@ def build():
             "place would silently lose their marker again — which is the "
             "defect Mide reported."
             % (PODIUM_YOU_EXPECTED, n_you))
+
+    roots, alive_hits = add_alive(roots)
+    if alive_hits != ALIVE_EXPECTED:
+        raise SystemExit(
+            "build_leaderboard_port.py: R37-R42 expected %s and placed %s."
+            % (ALIVE_EXPECTED, alive_hits))
 
     print("     ⊕ tree:  %d monogram(s) bound to me.initials, "
           "%d disc(s) given a bound avatar,\n"
@@ -2852,6 +3622,7 @@ def build():
     tpl_json = json.dumps(roots)
     css, topped = check_tokens(css, tpl_json, logic)
     css = css + RESPONSIVE_CSS      # R35
+    css = css + ALIVE_CSS           # R37-R42
     css = css + CONTRAST_TOKENS_CSS  # Experience run, item 13
     css = css + THEME_DARK_CSS       # theme run, 27 Sep 2026
     print("     ✅ tokens: every var(--…) resolves%s"
@@ -2949,7 +3720,8 @@ def build():
             raise SystemExit(
                 "build_leaderboard_port.py: Design's sample produced no "
                 "payload for %s/%s." % axis)
-        hit = keys[-1] if when == "live" else keys[0]
+        hit = (keys[-1] if when == "live"
+               else keys[-2] if when == "prev" else keys[0])
         return hit, payloads[hit]
 
     os.makedirs(FIXTURE_OUT, exist_ok=True)
@@ -2972,6 +3744,24 @@ def build():
         if spec.get("post") and shaped:
             shaped = spec["post"](shaped, key)
         tier, subject = spec["axis"]
+        # ⊕ R39 -- Mr Badmus's score rides on EVERY weekly payload, closed
+        # weeks included, so the gate can prove the PAGE hides the band on a
+        # closed week rather than the fixture merely not offering one.
+        shaped = {k: _with_target(_clone(v), spec.get("target", True))
+                  for k, v in shaped.items()}
+        # ⊕ R37 -- the two aggregate boards, one pair per (tier, subject),
+        # derived from the SHAPED live week so an empty or thin fixture has
+        # empty or thin aggregates too.
+        aggs = {}
+        if shaped:
+            for t in ("Foundation", "Higher"):
+                for sj in ("Overall", "Biology", "Chemistry", "Physics"):
+                    live = sorted(k for k in shaped
+                                  if k.startswith("%s|%s|" % (t, sj)))[-1]
+                    for per in ("half", "all"):
+                        aggs["%s|%s|%s" % (t, sj, per)] = _agg_payload(
+                            shaped[live], per, spec.get("staff_rows", ()),
+                            spec.get("staff_me", False))
         # ⊕ R32's fixture names its viewer FROM THE DATA rather than from a
         # literal: the podium fixture's viewer must BE the rank-2 student,
         # and hardcoding a name would silently stop being that student the
@@ -2979,11 +3769,15 @@ def build():
         who = spec.get("viewer", viewer)
         if spec.get("viewer_fn"):
             who = spec["viewer_fn"](shaped[key])
-        start = dict(tier=tier, subject=subject, week=key.split("|")[2])
+        start = dict(tier=tier, subject=subject, week=key.split("|")[2],
+                     period=spec.get("period", "week"))
         js = _FIXTURE_API % dict(
             payloads=json.dumps(shaped, separators=(",", ":")),
+            aggs=json.dumps(aggs, separators=(",", ":")),
             viewer=json.dumps(who),
             start=json.dumps(start),
+            signed_in=json.dumps(bool(who)),
+            staff=json.dumps(bool(spec.get("staff_viewer", False))),
             status=json.dumps(spec["status"]))
         with open(os.path.join(FIXTURE_OUT, spec["js"]), "w",
                   encoding="utf-8") as fh:

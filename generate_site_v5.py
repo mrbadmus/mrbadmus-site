@@ -1189,9 +1189,11 @@ def k4_challenge_strip():
     Server-rendered: the kicker, the true copy, and the call to action —
     all three are facts about the product, not about a student.
 
-    Client-filled (shared/ks4-chrome.js, one public GET): the two tier
-    leaders. Each cell ships `hidden` and is REMOVED if its tier has no
-    entrant this week, so an empty week renders as an empty week.
+    Client-filled (shared/ks4-chrome.js, one public GET of /board): ONE cell
+    with the top three on the board the visitor's own leaderboard opens on
+    (tier from the profile if signed in, else Foundation; period `auto`) and
+    Mr Badmus's real score when there is one. It ships `hidden`, is revealed
+    only when filled, and is REMOVED on a failed fetch.
 
     ⚠️ Design's drawn cells were "Your best 68%", "Beat it and you move up
     4 places" and "Your rank 14th of 212". All three are per-student
@@ -1205,15 +1207,12 @@ def k4_challenge_strip():
       <p class="k4-challenge-head">Ten minutes, one science</p>
       <p class="k4-challenge-sub">New questions every Friday — biology, chemistry and physics, at your own tier.</p>
     </div>
-    <div class="k4-challenge-cell" id="k4-lead-foundation" hidden>
-      <div class="k4-kicker">Leading · Foundation</div>
-      <p class="k4-challenge-head" data-k4-name></p>
-      <p class="k4-challenge-sub"><span data-k4-pct></span> so far this week</p>
-    </div>
-    <div class="k4-challenge-cell" id="k4-lead-higher" hidden>
-      <div class="k4-kicker">Leading · Higher</div>
-      <p class="k4-challenge-head" data-k4-name></p>
-      <p class="k4-challenge-sub"><span data-k4-pct></span> so far this week</p>
+    <div class="k4-challenge-cell" id="k4-lead" hidden>
+      <div class="k4-kicker" data-k4-kicker></div>
+      <ol class="k4-lead-list" data-k4-rows></ol>
+      <p class="k4-lead-empty" data-k4-empty hidden></p>
+      <p class="k4-lead-target" data-k4-target hidden></p>
+      <a class="k4-lead-link" href="/leaderboard.html" data-k4-more>See the leaderboard</a>
     </div>
     <div class="k4-challenge-cell k4-challenge-go">
       <a class="k4-cta-solid" href="/weekly-challenge.html">Take the challenge {K4_ARROW}</a>

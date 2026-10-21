@@ -53,8 +53,17 @@ is PRINTED rather than rounded up to "every control", for the same reason.
                                       no YOU badge, board still renders
   leaderboard-error-fixture.html      the fetch failed. Every control stays
                                       live, because the press IS the retry
+  leaderboard-half-fixture.html       ⊕ R37/R38/R41 -- opened on THIS HALF
+                                      TERM: marks, no arrows, no rail, three
+                                      tiles, the band, Teacher pills
+  leaderboard-all-fixture.html        ⊕ ALL TIME, viewer a teacher below the
+                                      cut: pinned-row pill + teachers' link
+  leaderboard-notarget-fixture.html   ⊕ R39 -- `target` null: no band
+  leaderboard-pastweek-fixture.html   ⊕ R39 -- a closed week: band hidden
+                                      although the payload carries a target
 """
 
+import json
 import os
 import re
 import sys
@@ -84,6 +93,14 @@ FIXTURES = [
      "no payload yet — R30, the live cold-start window"),
     ("leaderboard-error-fixture.html",
      "the fetch failed — every control still live"),
+    ("leaderboard-half-fixture.html",
+     "this half term — marks, no arrows, Teacher pills (R37/R38/R41)"),
+    ("leaderboard-all-fixture.html",
+     "all time, viewer a teacher below the cut (R41/R42)"),
+    ("leaderboard-notarget-fixture.html",
+     "no target on the payload — no Mr Badmus band (R39)"),
+    ("leaderboard-pastweek-fixture.html",
+     "a closed week — the band stays hidden (R39)"),
 ]
 
 # ⊕ MRB-290 R25. Per fixture: (discs that must carry a face, discs that must
@@ -102,6 +119,8 @@ YOU_EXPECT = {
         (1, "the viewer is below the cut — the pinned row is the only place"),
     "leaderboard-signedout-fixture.html":
         (0, "there is no viewer at all"),
+    "leaderboard-all-fixture.html":
+        (1, "a teacher below the cut -- the pinned row is the only place"),
     "leaderboard-loading-fixture.html":
         (0, "no payload has arrived, so no row is anyone's"),
     "leaderboard-empty-fixture.html":
@@ -141,7 +160,18 @@ WORD_TELLS = ["null", "undefined", "NaN", "Infinity"]
 # fixtures names a string that must be on the page for the state to have
 # rendered as a state rather than as an absence.
 MUST_SAY = {
-    "leaderboard-empty-fixture.html": ["NO ENTRIES"],
+    # ⊕ R40 -- the empty board says one useful thing, and offers the door.
+    "leaderboard-empty-fixture.html": ["Be the first on the board this week"],
+    "leaderboard-fixture.html": [
+        "Mr Badmus scored 24/30. Can you beat him?"],
+    "leaderboard-half-fixture.html": [
+        "THIS HALF TERM \u00b7 SINCE 20 JUL",
+        "This week, Mr Badmus scored 24/30. Can you beat him?",
+        "TOP 10 ONLY \u00b7 ", " ENTRIES", "MEDIAN SCORE", "FASTEST PAPER",
+        " marks", "PLAYED", "PERCENT", "Teacher"],
+    "leaderboard-all-fixture.html": [
+        "ALL TIME", "Teacher", "Teachers, take the challenge", " marks"],
+    "leaderboard-signedout-fixture.html": ["Teachers, take the challenge"],
     "leaderboard-thin-fixture.html": ["ALL 1 LISTED"],
     "leaderboard-outside-fixture.html": ["YOU"],
     "leaderboard-error-fixture.html": ["COULD NOT LOAD"],
@@ -158,6 +188,44 @@ MUST_SAY = {
 # for the right reason and says the wrong one sends the next reader to the
 # wrong file.
 MUST_NOT_SAY = {
+    # ⊕ R40 -- the three ways the old empty week said nothing.
+    "leaderboard-empty-fixture.html": [
+        ("NO ENTRIES", "R40 replaced the headed-but-empty table and its "
+                       "'NO ENTRIES' pill with one sentence and one door"),
+        ("Mr Badmus", "the payload's `target` is null here, and a band "
+                      "naming him with no score would be invented"),
+    ],
+    # ⊕ R39 -- no target, no band.
+    "leaderboard-notarget-fixture.html": [
+        ("Mr Badmus", "`target` is null on this payload; nothing may stand "
+                      "in its place"),
+    ],
+    "leaderboard-pastweek-fixture.html": [
+        ("Mr Badmus", "the payload still carries a target but this is a "
+                      "CLOSED week; the band describes this week's challenge"),
+        ("CLOSES IN", "a closed week is locked, not closing"),
+    ],
+    # ⊕ R38 -- what an aggregate tab must not say.
+    "leaderboard-half-fixture.html": [
+        ("CLOSES IN", "the countdown belongs to the weekly round"),
+        ("LOCKED", "an aggregate has no round to lock"),
+        ("BIGGEST CLIMB", "there is no previous half term to have climbed "
+                          "from; the tile is dropped (R38)"),
+        ("NEW", "a column of NEW chips is nine copies of a non-fact (R38)"),
+        ("HELD", "no movement on an aggregate (R38)"),
+        ("CUT LINE", "an aggregate has no cut line (R38)"),
+        ("Teachers, take the challenge", "the viewer is a signed-in pupil"),
+    ],
+    "leaderboard-all-fixture.html": [
+        ("CLOSES IN", "the countdown belongs to the weekly round"),
+        ("BIGGEST CLIMB", "dropped on an aggregate (R38)"),
+        ("THIS HALF TERM", "this is the ALL TIME tab"),
+    ],
+    # ⊕ R42 -- a signed-in pupil is never pointed at the teachers' link.
+    "leaderboard-fixture.html": [
+        ("Teachers, take the challenge", "the viewer is a signed-in pupil"),
+        ("THIS HALF TERM", "this fixture opens on the weekly tab"),
+    ],
     "leaderboard-signedout-fixture.html": [
         ("YOU", "there is no signed-in viewer here, and badging a row as "
                 "the viewer's when there is no viewer is how a student is "
@@ -173,6 +241,36 @@ MUST_NOT_SAY = {
     ],
 }
 
+
+# ⊕ R37-R42 -- per fixture, what the STRUCTURE must be on load. `None` is
+# "not asserted here"; every value that is asserted is asserted exactly.
+ALL_TABS = ["This week", "This half term", "All time"]
+EXPECT_STATE = {
+    # the busy week, a signed-in pupil: tab on week, rail drawn, the band,
+    # NO pill (Design's sample has no teacher), no teachers' link
+    "leaderboard-fixture.html": dict(
+        tabOn=["This week"], rail=True, bandPlay="/weekly-challenge.html",
+        band="Mr Badmus scored 24/30. Can you beat him?",
+        pills=0, teachers=None, empty=None, tiles=4),
+    # the empty board: one sentence, one Play, no band, no table
+    "leaderboard-empty-fixture.html": dict(
+        tabOn=["This week"], band=None, empty="Be the first on the board "
+        "this week", emptyPlay="/weekly-challenge.html", tiles=0,
+        playLinks=1),
+    "leaderboard-signedout-fixture.html": dict(
+        tabOn=["This week"], teachers="/weekly-challenge.html", pills=0),
+    "leaderboard-half-fixture.html": dict(
+        tabOn=["This half term"], rail=False, pills=2, teachers=None,
+        band="This week, Mr Badmus scored 24/30. Can you beat him?",
+        bandPlay="/weekly-challenge.html", tiles=3, arrows=0),
+    "leaderboard-all-fixture.html": dict(
+        tabOn=["All time"], rail=False, pills=1, teachers="/weekly-challenge.html",
+        tiles=3, arrows=0),
+    "leaderboard-notarget-fixture.html": dict(
+        tabOn=["This week"], band=None, rail=True, pills=0),
+    "leaderboard-pastweek-fixture.html": dict(
+        tabOn=["This week"], band=None, rail=True),
+}
 
 HOST = "#mrb-leaderboard"
 
@@ -251,7 +349,38 @@ _DRIVE_JS = r"""
      moment, which is exactly the failure MRB-287 §7 records inside the gate
      written to catch dead controls. Initial state here; liveness across the
      whole drive below. */
+  /* ⊕ R37-R42 -- the STRUCTURE the new markup must produce, measured on the
+     initial render and before any press: which tab is on, how many Teacher
+     pills, whether the rail card is drawn, what the band and the empty panel
+     say and where their Play links go. Text alone cannot tell a pill from a
+     word in a sentence, nor a link from a label. */
+  function structure() {
+    var tabs = host.querySelector('[data-lb-tabs]');
+    var btns = tabs ? Array.prototype.slice.call(tabs.querySelectorAll('button')) : [];
+    var on = btns.filter(function (b) { return b.getAttribute('aria-pressed') === 'true'; });
+    var band = host.querySelector('[data-lb-target]');
+    var empty = host.querySelector('[data-lb-empty]');
+    var tlink = Array.prototype.filter.call(host.querySelectorAll('a'), function (a) {
+      return /Teachers, take the challenge/.test(a.textContent); })[0];
+    var stats = host.querySelector('[data-lb-fit="stats"]');
+    return {
+      tabLabels: btns.map(function (b) { return b.textContent.trim(); }),
+      tabOn: on.map(function (b) { return b.textContent.trim(); }),
+      pills: host.querySelectorAll('.lb-teacher').length,
+      rail: !!document.getElementById('ks4-week-rail'),
+      band: band ? band.querySelector('p').textContent.trim() : null,
+      bandPlay: band && band.querySelector('a') ? band.querySelector('a').getAttribute('href') : null,
+      empty: empty ? empty.querySelector('p').textContent.trim() : null,
+      emptyPlay: empty && empty.querySelector('a') ? empty.querySelector('a').getAttribute('href') : null,
+      teachers: tlink ? tlink.getAttribute('href') : null,
+      tiles: stats ? stats.children.length : 0,
+      playLinks: host.querySelectorAll('a.lb-play').length,
+      arrows: host.querySelectorAll('svg path[d="M5 0l5 9H0z"], svg path[d="M5 9L0 0h10z"]').length
+    };
+  }
+
   var first = snap();
+  var state0 = structure();
   var firstAvatars = avatars();
 
   /* ⊕ AT MOST ONE "YOU" CHIP, EVER — and this check exists because a fixture
@@ -375,6 +504,7 @@ _DRIVE_JS = r"""
           errors: errors, misses: s.misses, renders: s.renders,
           text: s.text, len: (s.text || '').trim().length,
           youFirst: youChips(first.text), youLast: youChips(s.text),
+          state: state0,
           firstText: first.text, firstLen: (first.text || '').trim().length,
           faces: firstAvatars.faces, letters: firstAvatars.letters,
           both: firstAvatars.both, railScrollable: railScrollable};
@@ -486,6 +616,23 @@ def drive(pg, port, path, what, label):
                 "rank 2, and nothing on the board said so."
                 % (tag, n, want_you[0], want_you[1]))
 
+    # ⊕ R37-R42 -- the structure, exactly.
+    st = got.get("state") or {}
+    if st.get("tabLabels") != ALL_TABS:
+        problems.append(
+            "%s: the time-axis tabs read %r and must read %r, in that order, "
+            "as the first control under the header (R37)."
+            % (tag, st.get("tabLabels"), ALL_TABS))
+    for k, want_v in EXPECT_STATE.get(path, {}).items():
+        if st.get(k) != want_v:
+            problems.append(
+                "%s: structure %r is %r on load and must be %r (R37-R42)."
+                % (tag, k, st.get(k), want_v))
+    if st.get("playLinks", 0) > 2:
+        problems.append(
+            "%s: %d Play buttons on one board. The band and the empty panel "
+            "never both offer one (R40)." % (tag, st.get("playLinks")))
+
     # ⊕ MRB-290 R33 — the rail follows the selection.
     rf = got.get("railFollow") or {}
     if rf.get("tested"):
@@ -564,6 +711,147 @@ def drive(pg, port, path, what, label):
     return problems, got.get("pressed", 0), got.get("found", 0)
 
 
+# ══════════════════════════════════════════════════════════════════════════
+#  ⊕ R37-R42 -- the tabs as a JOURNEY, and the phone
+# ══════════════════════════════════════════════════════════════════════════
+
+_FLOW_STATE_JS = r"""(function () {
+  var host = document.querySelector("#mrb-leaderboard");
+  var tabs = host.querySelector('[data-lb-tabs]');
+  var on = Array.prototype.filter.call(tabs.querySelectorAll('button'),
+    function (b) { return b.getAttribute('aria-pressed') === 'true'; })
+    .map(function (b) { return b.textContent.trim(); });
+  /* The tier toggle is the OTHER segmented control: Foundation / Higher, with
+     the selected one on a paper ground. */
+  var tier = Array.prototype.filter.call(host.querySelectorAll('button'),
+    function (b) { return /^(Foundation|Higher)$/.test(b.textContent.trim()) &&
+      (b.getAttribute('style') || '').indexOf('background: var(--st-paper)') >= 0; })
+    .map(function (b) { return b.textContent.trim(); });
+  var band = host.querySelector('[data-lb-target]');
+  return {tab: on, tier: tier, rail: !!document.getElementById('ks4-week-rail'),
+          text: host.innerText || '',
+          band: band ? band.querySelector('p').textContent.trim() : null};
+})()"""
+
+_FLOW_PRESS_JS = r"""(function (label, within) {
+  var host = document.querySelector("#mrb-leaderboard");
+  var scope = within ? host.querySelector(within) : host;
+  var b = Array.prototype.filter.call(scope.querySelectorAll('button'),
+    function (x) { return x.textContent.trim() === label; })[0];
+  if (!b) { return false; }
+  b.click();
+  return true;
+})"""
+
+
+def flow(pg, port):
+    """The tabs pressed in the order a pupil would, asserting the keep-rules."""
+    problems = []
+    pg.set_viewport(1460, 1200)
+    pg.goto("http://127.0.0.1:%d/%s/leaderboard-fixture.html" % (port, PAGE_DIR),
+            settle=1.2)
+
+    def press(label, within=None):
+        ok = pg.eval("(%s)(%s, %s)" % (_FLOW_PRESS_JS, json.dumps(label),
+                                        json.dumps(within)))
+        time.sleep(0.7)
+        return ok
+
+    def state():
+        return pg.eval(_FLOW_STATE_JS)
+
+    def expect(cond, msg):
+        if not cond:
+            problems.append("flow: " + msg)
+
+    s0 = state()
+    expect(s0["tab"] == ["This week"] and s0["rail"],
+           "the busy week opens on This week with the rail drawn: %r" % s0["tab"])
+    tier0 = s0["tier"]
+
+    expect(press("This half term", "[data-lb-tabs]"), "no 'This half term' tab")
+    s = state()
+    expect(s["tab"] == ["This half term"], "tab did not move: %r" % s["tab"])
+    expect("THIS HALF TERM · SINCE 20 JUL" in s["text"],
+           "the half-term header line is missing")
+    expect(not s["rail"] and "CLOSES IN" not in s["text"],
+           "the rail card (and its countdown) is still drawn on an aggregate")
+    expect(s["tier"] == tier0, "the half-term tab dropped the tier: %r -> %r"
+           % (tier0, s["tier"]))
+    expect(s["band"] == "This week, Mr Badmus scored 24/30. Can you beat him?",
+           "the aggregate band reads %r" % s["band"])
+
+    other = "Foundation" if tier0 == ["Higher"] else "Higher"
+    expect(press(other), "no %s tier button" % other)
+    s = state()
+    expect(s["tab"] == ["This half term"] and s["tier"] == [other],
+           "a TIER press must keep the tab: tab=%r tier=%r" % (s["tab"], s["tier"]))
+    expect(press("Physics"), "no Physics chip")
+    s = state()
+    expect(s["tab"] == ["This half term"],
+           "a SUBJECT press must keep the tab: %r" % s["tab"])
+
+    expect(press("All time", "[data-lb-tabs]"), "no 'All time' tab")
+    s = state()
+    expect(s["tab"] == ["All time"] and "ALL TIME" in s["text"]
+           and "THIS HALF TERM" not in s["text"], "the all-time header is wrong")
+
+    expect(press("This week", "[data-lb-tabs]"), "no 'This week' tab")
+    s = state()
+    expect(s["tab"] == ["This week"] and s["rail"], "This week did not return")
+    expect(s["band"] and s["band"].startswith("Physics") is False
+           and s["band"].startswith("Mr Badmus scored"),
+           "the weekly band reads %r (no prefix on the weekly tab)" % s["band"])
+
+    # A closed week from the rail hides the band; the aggregate shows it again.
+    pg.eval("document.getElementById('ks4-week-rail').children[0].click()")
+    time.sleep(0.7)
+    s = state()
+    expect(s["band"] is None, "the band shows on a CLOSED week: %r" % s["band"])
+    expect(press("This half term", "[data-lb-tabs]"), "no half tab (closed week)")
+    s = state()
+    expect(s["band"] is not None and s["band"].startswith("This week, "),
+           "the aggregate lost its band after a closed week: %r" % s["band"])
+    expect(press("This week", "[data-lb-tabs]"), "no 'This week' tab (return)")
+    s = state()
+    expect(s["band"] is not None and s["rail"],
+           "'This week' did not land on the CURRENT week after a closed one")
+    return problems
+
+
+_PHONE_JS = r"""(function () {
+  var d = document.documentElement;
+  var tabs = document.querySelector('[data-lb-tabs]');
+  var r = tabs ? tabs.getBoundingClientRect() : null;
+  return {sw: d.scrollWidth, cw: d.clientWidth,
+          tabsRight: r ? Math.round(r.right) : null,
+          tabsScroll: tabs ? tabs.scrollWidth - tabs.clientWidth : null};
+})()"""
+
+PHONE_PAGES = ["leaderboard-fixture.html", "leaderboard-half-fixture.html",
+               "leaderboard-all-fixture.html", "leaderboard-empty-fixture.html",
+               "leaderboard-pastweek-fixture.html"]
+
+
+def phone(pg, port):
+    """390px: the page itself never scrolls sideways, and the tabs fit."""
+    problems = []
+    pg.set_viewport(390, 844)
+    for path in PHONE_PAGES:
+        pg.goto("http://127.0.0.1:%d/%s/%s" % (port, PAGE_DIR, path), settle=1.2)
+        m = pg.eval(_PHONE_JS)
+        if m["sw"] > m["cw"] + 1:
+            problems.append("phone: %s scrolls sideways at 390px (%dpx of "
+                            "content in %dpx)" % (path, m["sw"], m["cw"]))
+        if m["tabsRight"] is None or m["tabsRight"] > 390 - 8 \
+                or m["tabsScroll"] > 1:
+            problems.append("phone: %s -- the time-axis tabs do not fit at "
+                            "390px (right edge %r, overflow %r)"
+                            % (path, m["tabsRight"], m["tabsScroll"]))
+    pg.set_viewport(1460, 1200)
+    return problems
+
+
 def main(argv=None):
     os.chdir(REPO)
     import ks3_browser as cdp
@@ -608,6 +896,20 @@ def main(argv=None):
                     print("     %-38s ✅  %d distinct control(s) pressed "
                           "(%d clickable at the widest render)  — %s"
                           % (path, pressed, found, label))
+            # ⊕ R37-R42 -- the tabs as a journey, then the phone.
+            for name, fn in (("tab journey", flow), ("390px", phone)):
+                problems = fn(pg, port)
+                for line in pg.console_errors():
+                    if "favicon" not in line:
+                        problems.append("%s: console error -- %s"
+                                        % (name, line[:200]))
+                if problems:
+                    failed += 1
+                    print("     %-38s ❌ %d problem(s)" % (name, len(problems)))
+                    for q in problems:
+                        print("          · %s" % q)
+                else:
+                    print("     %-38s ✅" % name)
     finally:
         try:
             server.shutdown()
@@ -615,7 +917,7 @@ def main(argv=None):
             pass
 
     if failed:
-        print("\n  FAIL  %d of %d fixture(s).\n" % (failed, len(FIXTURES)))
+        print("\n  FAIL  %d check(s).\n" % failed)
         return 1
     print("\n  PASS  %d fixture(s), %d distinct control(s) pressed across "
           "them.\n        Every fixture mounted, every binding resolved, "

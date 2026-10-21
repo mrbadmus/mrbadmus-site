@@ -91,17 +91,32 @@
   var store = {
     /* Design's words, because Design's `renderVals` compares against them
        (`s.tier === t`, `SUBJ_KEY[s.subject]`). Translated at the fetch. */
-    sel: {tier: "Foundation", subject: "Overall", week: null},
+    /* ⊕ R37 — `period` is the board's TIME AXIS: "week" (one Friday-to-
+       Thursday round), "half" (since the half-term start), "all" (the whole
+       year). It starts as "auto": the first request lets the backend choose
+       the busiest period that still has five entrants, and the tab it names
+       is adopted when the answer arrives. Every press after that is explicit. */
+    sel: {tier: "Foundation", subject: "Overall", week: null, period: "auto"},
     cache: {},
     skew: 0,
     skewSet: false,
     viewer: {name: "", initials: ""},
     signedIn: false,
+    /* ⊕ R42 — profiles.role in teacher / hod / admin. Read with the tier. */
+    staff: false,
     redraw: function () {}
   };
 
+  /* ⊕ R37 — THE PERIOD IS PART OF THE KEY. A half-term board and a weekly
+     board for the same tier and subject are different answers, and sharing a
+     slot would serve one as the other. The week only belongs to the key on
+     the weekly view: the two aggregates ignore it, so a pupil browsing past
+     weeks and then switching tab must not strand a separate cache entry per
+     week they happened to have open. */
   function key(sel) {
-    return sel.tier + "|" + sel.subject + "|" + (sel.week || "");
+    var p = sel.period || "week";
+    return sel.tier + "|" + sel.subject + "|" + p + "|" +
+           (p === "week" ? (sel.week || "") : "");
   }
 
   /* ── identity ────────────────────────────────────────────────────────
@@ -177,7 +192,11 @@
          absent key as HELD. */
       move: (r.move === undefined ? null : r.move),
       was: (r.was === undefined ? null : r.was),
-      streak: r.streak || 0
+      streak: r.streak || 0,
+      /* ⊕ R41 / R38 — `staff` badges a teacher's row; `played` (papers sat)
+         exists on aggregate rows only, and null is "not given", never 0. */
+      staff: r.staff === true,
+      played: (typeof r.played === "number") ? r.played : null
     };
   }
 
@@ -186,7 +205,13 @@
     var q = "?tier=" + encodeURIComponent(sel.tier.toLowerCase());
     var s = TO_QUERY[sel.subject];
     if (s) { q += "&subject=" + s; }
-    if (sel.week) { q += "&week_start=" + encodeURIComponent(sel.week); }
+    var p = sel.period || "week";
+    q += "&period=" + p;
+    /* The aggregates describe the whole period; a week_start would be an
+       argument they ignore, so it is not sent. */
+    if (p === "week" && sel.week) {
+      q += "&week_start=" + encodeURIComponent(sel.week);
+    }
     return backendUrl() + "/api/weekly-leaderboard/board" + q;
   }
 
@@ -210,6 +235,7 @@
       return;
     }
     store.cache[k] = {status: "loading", payload: null};
+    var asked = sel.period, askTier = sel.tier, askSubject = sel.subject;
     var opts = token ? {headers: {Authorization: "Bearer " + token}} : {};
     Promise.resolve().then(function () { return fetch(urlFor(sel), opts); }).then(function (r) {
       if (!r.ok) { throw new Error("HTTP " + r.status); }
@@ -221,12 +247,32 @@
         var srv = Date.parse(d.server_now);
         if (!isNaN(srv)) { store.skew = Date.now() - srv; store.skewSet = true; }
       }
-      store.cache[k] = {status: "ok", payload: d};
-      /* The backend is the authority on which week this is. Asking for
-         nothing and being given `current_week` is the normal first load. */
-      if (!sel.week && d.week_start) {
+      var done = {status: "ok", payload: d};
+      store.cache[k] = done;
+      /* ⊕ R37 — AUTO RESOLVES TO A NAMED PERIOD. The answer is filed under
+         the key of the period it ACTUALLY served as well, so the tab the
+         page now shows is already cached, and the selection is moved onto
+         it — but only if nothing else has moved it in the meantime: a tab
+         pressed while the first request was in flight is the pupil's choice
+         and outranks the backend's guess. A payload that names no period
+         (an older backend) is a weekly board. */
+      var got = d.period || "week";
+      if (asked === "auto") {
+        var served = {tier: askTier, subject: askSubject, period: got,
+                      week: got === "week" ? d.week_start : ""};
+        store.cache[key(served)] = done;
+        if (store.sel.period === "auto" && store.sel.tier === askTier &&
+            store.sel.subject === askSubject) {
+          store.sel.period = got;
+          if (got === "week" && !store.sel.week && d.week_start) {
+            store.sel.week = d.week_start;
+          }
+        }
+      } else if (got === "week" && !sel.week && d.week_start) {
+        /* The backend is the authority on which week this is. Asking for
+           nothing and being given `current_week` is the normal first load. */
         sel.week = d.week_start;
-        store.cache[key(sel)] = store.cache[k];
+        store.cache[key(sel)] = done;
       }
       store.redraw();
     }).catch(function (e) {
@@ -308,6 +354,29 @@
       return !!(d && d.is_current);
     },
 
+    /* ⊕ R37 — the tab on show: "auto" until the first answer names one. */
+    period: function () { return store.sel.period; },
+
+    /* ⊕ R39 — Mr Badmus's own real score on this week's challenge, or null.
+       Passed through as the payload gave it; nothing here supplies a number. */
+    target: function () {
+      var d = entry().payload, t = d && d.target;
+      if (!t || typeof t.score !== "number" || typeof t.max_score !== "number") {
+        return null;
+      }
+      return {name: t.name, score: t.score, max_score: t.max_score};
+    },
+
+    /* ⊕ R38 — where the half-term board starts, as the payload says. */
+    halfFrom: function () {
+      var d = entry().payload, h = d && d.half_term;
+      return (h && typeof h.from === "string") ? h.from : null;
+    },
+
+    /* ⊕ R42 — who may be shown the "Teachers, take the challenge" link. */
+    signedIn: function () { return !!store.signedIn; },
+    isStaff: function () { return !!store.staff; },
+
     /* Server-anchored. Never `Date.now()` on its own. */
     now: function () { return Date.now() - store.skew; },
 
@@ -332,6 +401,18 @@
       if (patch.tier) { store.sel.tier = patch.tier; }
       if (patch.subject) { store.sel.subject = patch.subject; }
       if ("week" in patch) { store.sel.week = patch.week; }
+      /* ⊕ R37 — a TAB press is explicit, and the tier and subject the pupil
+         is on are kept. Going BACK to the weekly tab lands on the current
+         week, not on whichever past week they last had open: the tab is
+         labelled "This week". */
+      if (patch.period) {
+        var cur = entry().payload;          // read BEFORE the key moves
+        store.sel.period = patch.period;
+        if (patch.period === "week" && !("week" in patch) &&
+            cur && cur.current_week) {
+          store.sel.week = cur.current_week;
+        }
+      }
       /* ⚠️ A tier or subject press keeps the DATE and lets the index move.
          If the new axis has no such week, `weekIndex()` falls back to that
          axis's current week — which is why the week is not cleared here. */
@@ -384,7 +465,7 @@
       token = sess.access_token;
       store.signedIn = true;
       return sb.from("profiles")
-        .select("tier, username, first_name")
+        .select("tier, username, first_name, role")
         .eq("id", sess.user.id).single();
     }).then(function (p) {
       if (p && p.data) {
@@ -393,6 +474,8 @@
         /* The same rule the endpoint applies to everybody else's row, so the
            viewer's own name in the standing card matches the name in the
            board. */
+        store.staff = (p.data.role === "teacher" || p.data.role === "hod" ||
+                       p.data.role === "admin");
         var n = p.data.username || p.data.first_name || "Student";
         store.viewer = {name: n, initials: initialsOf(n)};
       }

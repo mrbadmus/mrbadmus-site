@@ -375,6 +375,108 @@ def walk_links(page, label, want):
                  % (label, w))
 
 
+# ══════════════════════════════════════════════════════════════════════════
+#  The landing's leaderboard cell, DRIVEN against stubbed /board answers
+# ══════════════════════════════════════════════════════════════════════════
+#
+# The journey above has no backend, so the cell is only ever seen REMOVED (the
+# cold-Render state). This feeds it the four answers the backend can give and
+# asserts what a pupil would read. Names are the fixture's, never the site's.
+
+def _board_stub(payload):
+    body = json.dumps(payload) if payload is not None else "null"
+    return ("(function(){var of=window.fetch;window.fetch=function(u,i){"
+            "var s=String((u&&u.url)||u);"
+            "if(/\\/api\\/weekly-leaderboard\\/board/.test(s)){window.__boardUrl=s;"
+            + ("return Promise.resolve(new Response(%s,{status:200,"
+               "headers:{'Content-Type':'application/json'}}));" % json.dumps(body)
+               if payload is not None else
+               "return Promise.reject(new Error('stubbed down'));")
+            + "}return of.apply(this,arguments);};})();")
+
+
+def _row(rank, name, **kw):
+    r = {"name": name, "rank": rank, "pct": 90 - rank, "marks": 100 - 10 * rank,
+         "total": 120, "secs": 100, "per": {}, "done": [], "staff": False}
+    r.update(kw)
+    return r
+
+
+STRIP_CASES = [
+    ("week", {"tier": "foundation", "period": "week", "is_current": True,
+              "board": [_row(1, "FixtureOne1"), _row(2, "FixtureTwo2", staff=True),
+                        _row(3, "FixtureThree3"), _row(4, "FixtureFour4")],
+              "target": {"name": "Mr Badmus", "score": 8, "max_score": 10}},
+     ["This week · Foundation", "FixtureOne1", "89%", "Teacher",
+      "Mr Badmus scored 8/10. Can you beat him?", "See the leaderboard"],
+     ["FixtureFour4", "This week, "]),
+    ("all", {"tier": "foundation", "period": "all", "is_current": True,
+             "board": [_row(1, "FixtureOne1", marks=151), _row(2, "FixtureTwo2")],
+             "target": {"name": "Mr Badmus", "score": 24, "max_score": 30}},
+     ["All time · Foundation", "151 marks",
+      "This week, Mr Badmus scored 24/30. Can you beat him?"], ["%"]),
+    ("empty", {"tier": "foundation", "period": "all", "is_current": True,
+               "board": [], "target": None},
+     ["Be the first on the board", "All time · Foundation"],
+     ["See the leaderboard", "Mr Badmus"]),
+    ("down", None, None, None),
+]
+
+
+def strip_drive(base, shots):
+    print("══ LANDING LEADERBOARD CELL ══")
+    with cdp.Browser() as b:
+        page = b.attach()
+        for label, payload, want, never in STRIP_CASES:
+            sid = page.send("Page.addScriptToEvaluateOnNewDocument",
+                            {"source": _board_stub(payload)}).get("identifier")
+            for width in (1440, 390):
+                page.set_viewport(width, 900)
+                page.goto(base + "/index.html", settle=1.0)
+                tag = "strip/%s @%d" % (label, width)
+                got = page.eval(
+                    "(function(){var c=document.getElementById('k4-lead');"
+                    "var d=document.documentElement;"
+                    "return {present:!!c,hidden:c?c.hidden:null,"
+                    "text:c?c.innerText:'',url:window.__boardUrl||'',"
+                    "sw:d.scrollWidth,cw:d.clientWidth,"
+                    "links:c?Array.prototype.map.call(c.querySelectorAll('a'),"
+                    "function(a){return a.getAttribute('href')}):[],"
+                    "cta:!!document.querySelector('.k4-cta-solid')};})()")
+                if not got["cta"]:
+                    fail("%s -- the Take the challenge button is gone" % tag)
+                if got["sw"] > got["cw"] + 1:
+                    fail("%s -- scrolls sideways (%d in %d)" % (tag, got["sw"], got["cw"]))
+                if label == "down":
+                    if got["present"]:
+                        fail("%s -- a failed fetch must REMOVE the cell" % tag)
+                    continue
+                if "tier=foundation" not in got["url"] or "period=auto" not in got["url"]:
+                    fail("%s -- asked %r, expected tier=foundation&period=auto"
+                         % (tag, got["url"]))
+                if not got["present"] or got["hidden"]:
+                    fail("%s -- the cell is not revealed once filled" % tag)
+                    continue
+                for w in want:
+                    # innerText applies the kicker's text-transform: uppercase
+                    if w.lower() not in got["text"].lower():
+                        fail("%s -- does not say %r (reads %r)" % (tag, w, got["text"][:200]))
+                for n in never:
+                    if n in got["text"]:
+                        fail("%s -- says %r and must not" % (tag, n))
+                for h in got["links"]:
+                    if any(x in h for x in ("/parents/", "/go/", "/org/")):
+                        fail("%s -- links %s" % (tag, h))
+                for theme in ("light", "dark"):
+                    page.eval("document.documentElement.setAttribute('data-theme','%s')" % theme)
+                    page.screenshot(os.path.join(shots, "home-strip-%s-%d-%s.png" % (label, width, theme)),
+                                    width=width)
+            if sid:
+                page.send("Page.removeScriptToEvaluateOnNewDocument", {"identifier": sid})
+    print("   ✓ week / all-time / empty / failed fetch, at 1440 and 390")
+
+
+
 def main():
     ap = argparse.ArgumentParser()
     # ⚠️ DEFAULTS OUTSIDE THE REPO, and that is not tidiness.
@@ -486,6 +588,7 @@ def main():
                     page.goto(base + route)
                     walk_links(page, route, want)
                     print("   ✓ %s offers %d next steps" % (route, len(want)))
+        strip_drive(base, args.shots)
     finally:
         server.shutdown()
 

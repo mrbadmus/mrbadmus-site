@@ -3571,6 +3571,63 @@ a:hover { color: var(--st-accent-hover); }
   -webkit-overflow-scrolling: touch;
 }
 
+
+/* ── ⊕ R37 — the time-axis tabs at a phone width. Three labels in Design's
+   20px-padded pill measure 377px against a 334px content box at 390px, so
+   the padding and the type step down until they fit; the tier toggle beside
+   it is untouched. */
+@media (max-width: 719px) {
+  [data-lb-tabs] { max-width: 100%; }
+  [data-lb-tabs] button {
+    padding: 10px 12px !important;
+    font-size: 14.5px !important;
+  }
+}
+
+/* ── ⊕ R38 — "235 marks" is wider than a phone podium column holds at Design's
+   type size, and `nowrap` plus `overflow: hidden` on the step cut it to
+   "235 mark". On an aggregate the headline steps down and may wrap onto two
+   lines ("235" / "marks"). Anchored on the two R34 sizes. */
+@media (max-width: 719px) {
+  [data-lb-podium="half"] [style*="font: 600 40px/1"],
+  [data-lb-podium="all"] [style*="font: 600 40px/1"],
+  [data-lb-podium="half"] [style*="font: 600 30px/1"],
+  [data-lb-podium="all"] [style*="font: 600 30px/1"] {
+    font-size: 17px !important; line-height: 1.1 !important;
+    overflow-wrap: normal; word-break: normal;
+  }
+}
+
+/* ── ⊕ R38 — three tiles, laid out as three. Phone: two columns, the last
+   tile across the full row (a third column at 390px cannot hold "FASTEST
+   PAPER"); tablet and up: three equal columns. */
+[data-lb-fit="stats"][data-lb-n="3"] > :last-child { grid-column: 1 / -1; }
+@media (min-width: 720px) {
+  [data-lb-fit="stats"][data-lb-n="3"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+  [data-lb-fit="stats"][data-lb-n="3"] > :last-child { grid-column: auto; }
+}
+
+/* ── ⊕ R39 / R40 / R42 — the Play button and the teachers' link. The ground
+   is --st-accent-text and the ink is --st-paper: the YOU chip's own pairing,
+   which holds 6.5:1 in light and flips with the theme in dark. The :hover
+   rule restates the colour because the page's bare `a:hover` would otherwise
+   turn the label the same orange as its ground. */
+.lb-play, .lb-play:hover {
+  display: inline-block; flex: none; text-align: center;
+  font: 600 15px/1 var(--st-ui); color: var(--st-paper);
+  border-radius: var(--r-pill); padding: 11px 20px;
+}
+.lb-play { background: var(--st-accent-text); }
+.lb-play:hover { background: var(--st-accent-hover); }
+.lb-teachers { color: var(--st-muted); text-decoration: underline;
+               text-underline-offset: 3px; }
+.lb-teachers:hover { color: var(--st-accent-text); }
+.lb-play:focus-visible, .lb-teachers:focus-visible {
+  outline: 2px solid var(--st-accent-text); outline-offset: 3px;
+}
+
 :root {
   --st-muted:   #605851;
   --st-caption: #685E51;

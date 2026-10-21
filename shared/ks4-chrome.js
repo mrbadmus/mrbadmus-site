@@ -89,19 +89,91 @@
   function mountChallengeStrip(data) {
     var strip = document.getElementById('k4-challenge');
     if (!strip) return;
+    var cell = document.getElementById('k4-lead');
+    if (!cell) return;
+    // No payload (cold backend, failed fetch): the cell is removed, and the
+    // heading and the call to action still render.
+    if (!data || !data.tier) { cell.parentNode.removeChild(cell); return; }
 
-    [['foundation', data && data.foundation_top3],
-     ['higher',     data && data.higher_top3]].forEach(function (pair) {
-      var tier = pair[0];
-      var top = pair[1] && pair[1].length ? pair[1][0] : null;
-      var cell = document.getElementById('k4-lead-' + tier);
-      if (!cell) return;
-      var p = pct(top);
-      if (!top || p === null) { cell.parentNode.removeChild(cell); return; }
-      cell.querySelector('[data-k4-name]').textContent = displayName(top);
-      cell.querySelector('[data-k4-pct]').textContent = p + '%';
-      cell.hidden = false;
+    var period = data.period === 'half' || data.period === 'all' ? data.period : 'week';
+    var tab = period === 'half' ? 'This half term' : period === 'all' ? 'All time' : 'This week';
+    var tier = data.tier === 'higher' ? 'Higher' : 'Foundation';
+    cell.querySelector('[data-k4-kicker]').textContent = tab + ' \u00B7 ' + tier;
+
+    var rows = (data.board || []).slice(0, 3);
+    var list = cell.querySelector('[data-k4-rows]');
+    var empty = cell.querySelector('[data-k4-empty]');
+    var more = cell.querySelector('[data-k4-more]');
+    var tgt = cell.querySelector('[data-k4-target]');
+
+    if (!rows.length) {
+      // The existing "Take the challenge" button is the Play button.
+      list.hidden = true;
+      more.hidden = true;
+      empty.textContent = period === 'half' ? 'Be the first on the board this half term'
+                        : period === 'all' ? 'Be the first on the board'
+                        : 'Be the first on the board this week';
+      empty.hidden = false;
+    } else {
+      var html = '';
+      for (var i = 0; i < rows.length; i++) {
+        var r = rows[i];
+        var val = period === 'week' ? (typeof r.pct === 'number' ? Math.round(r.pct) : null) : r.marks;
+        if (val === null || val === undefined) continue;
+        html += '<li class="k4-lead-row">' +
+                  '<span class="k4-lead-rank">' + String(i + 1).padStart(2, '0') + '</span>' +
+                  '<span class="k4-lead-who">' + esc(displayName(r)) +
+                    (r.staff === true ? '<span class="k4-lead-teacher">Teacher</span>' : '') +
+                  '</span>' +
+                  '<span class="k4-lead-val">' + (period === 'week' ? val + '%' : val + (val === 1 ? ' mark' : ' marks')) + '</span>' +
+                '</li>';
+      }
+      list.innerHTML = html;
+    }
+
+    var t = data.target;
+    var closed = period === 'week' && data.is_current === false;
+    if (t && typeof t.score === 'number' && typeof t.max_score === 'number' && !closed) {
+      tgt.textContent = (period === 'week' ? '' : 'This week, ') + (t.name || 'Mr Badmus') +
+        ' scored ' + t.score + '/' + t.max_score + '. ' +
+        (t.score >= t.max_score ? 'Can you match him?' : 'Can you beat him?');
+      tgt.hidden = false;
+    }
+    cell.hidden = false;
+  }
+
+  // The tier the leaderboard itself opens on for this visitor: the signed-in
+  // pupil's own profile tier, else Foundation (shared/leaderboard-live.js's
+  // signed-out default). The session is read from the same localStorage slot
+  // account.js reads, and the profile with one REST call; any failure is a
+  // signed-out visitor, which is Foundation.
+  function leaderboardTier() {
+    return new Promise(function (resolve) {
+      var done = false;
+      function fin(t) { if (!done) { done = true; resolve(t); } }
+      try {
+        var c = window.MrBadmusConfig || {};
+        var raw = c.AUTH_STORAGE_KEY && window.localStorage.getItem(c.AUTH_STORAGE_KEY);
+        if (!raw || !c.SUPABASE_URL || !c.SUPABASE_ANON_KEY) return fin('foundation');
+        if (raw.indexOf('base64-') === 0) raw = decodeURIComponent(escape(window.atob(raw.slice(7))));
+        var s = JSON.parse(raw);
+        if (!s || !s.access_token || !s.user || !s.user.id) return fin('foundation');
+        setTimeout(function () { fin('foundation'); }, 2500);
+        fetch(c.SUPABASE_URL + '/rest/v1/profiles?id=eq.' + encodeURIComponent(s.user.id) + '&select=tier', {
+          headers: { apikey: c.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + s.access_token, Accept: 'application/json' }
+        }).then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (rows) { fin(rows && rows[0] && rows[0].tier === 'higher' ? 'higher' : 'foundation'); })
+          .catch(function () { fin('foundation'); });
+      } catch (e) { fin('foundation'); }
     });
+  }
+
+  function bootStrip() {
+    leaderboardTier().then(function (tier) {
+      return fetch(backend() + '/api/weekly-leaderboard/board?tier=' + tier + '&period=auto');
+    }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { mountChallengeStrip(d); })
+      .catch(function () { mountChallengeStrip(null); });
   }
 
   // ── The GCSE hub's "Top stars" rail ──────────────────────────────────
@@ -195,20 +267,17 @@
   }
 
   function boot() {
-    if (!document.getElementById('k4-challenge') && !document.getElementById('k4-stars')) return;
+    if (document.getElementById('k4-challenge')) bootStrip();
+    if (!document.getElementById('k4-stars')) return;
     Promise.resolve().then(function () { return fetch(backend() + '/api/weekly-leaderboard/landing'); })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
         if (!data) throw new Error('no data');
-        mountChallengeStrip(data);
         mountStars(data);
       })
       .catch(function () {
-        // A failed or cold fetch leaves both surfaces in their
-        // server-rendered state: the strip keeps its true copy and its
-        // call to action, the rail says nobody is on it yet. Neither
-        // shows a number, which is the whole point.
-        mountChallengeStrip(null);
+        // A failed or cold fetch leaves the rail in its server-rendered
+        // state: it says nobody is on it yet, and shows no number.
         mountStars(null);
       });
   }

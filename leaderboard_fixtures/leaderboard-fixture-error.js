@@ -2,9 +2,16 @@
 /* GENERATED FIXTURE DATA — not checked in, not published. */
 (function () {
   var D = {};
+  /* ⊕ R37 — the two aggregate boards, keyed Tier|Subject|half and
+     Tier|Subject|all. Held apart from the weekly payloads: the weekly keys
+     end in a date, and a sort over mixed keys picks the wrong "latest". */
+  var AG = {};
   var VIEWER = "AmberYew12";
-  var START = {"tier": "Higher", "subject": "Overall", "week": "2026-08-24"};
-  var sel = {tier: START.tier, subject: START.subject, week: START.week};
+  var START = {"tier": "Higher", "subject": "Overall", "week": "2026-08-24", "period": "week"};
+  var SIGNED_IN = true;
+  var STAFF = false;
+  var sel = {tier: START.tier, subject: START.subject, week: START.week,
+             period: START.period || 'week'};
   var redraw = function () {};
   var mounted = null;
 
@@ -13,8 +20,13 @@
     var m = n.match(/^([A-Z])[a-z]*([A-Z])/);
     return m ? m[1] + m[2] : n.slice(0, 2).toUpperCase();
   }
-  function key() { return [sel.tier, sel.subject, sel.week].join('|'); }
-  function cur() { return D[key()] || null; }
+  function key() {
+    return [sel.tier, sel.subject,
+            sel.period === 'week' ? sel.week : sel.period].join('|');
+  }
+  function cur() {
+    return (sel.period === 'week' ? D[key()] : AG[key()]) || null;
+  }
 
   var TO_KEY = {biology: 'B', chemistry: 'C', physics: 'P'};
   function safeAvatar(u) {
@@ -39,7 +51,9 @@
             avatar_url: safeAvatar(r.avatar_url),
             move: (r.move === undefined ? null : r.move),
             was: (r.was === undefined ? null : r.was),
-            streak: r.streak || 0};
+            streak: r.streak || 0,
+            staff: r.staff === true,
+            played: (typeof r.played === 'number') ? r.played : null};
   }
 
   var api = {
@@ -74,6 +88,20 @@
     },
     me: function () { var d = cur(); return (d && d.me) ? mapRow(d.me) : null; },
     isCurrent: function () { var d = cur(); return !!(d && d.is_current); },
+    period: function () { return sel.period; },
+    target: function () {
+      var d = cur(), t = d && d.target;
+      if (!t || typeof t.score !== 'number' || typeof t.max_score !== 'number') {
+        return null;
+      }
+      return {name: t.name, score: t.score, max_score: t.max_score};
+    },
+    halfFrom: function () {
+      var d = cur(), h = d && d.half_term;
+      return (h && typeof h.from === 'string') ? h.from : null;
+    },
+    signedIn: function () { return SIGNED_IN; },
+    isStaff: function () { return STAFF; },
     now: function () { return Date.parse('2026-08-25T09:00:00Z'); },
     closesAt: function () {
       var d = cur();
@@ -86,12 +114,19 @@
       if (p.tier) { sel.tier = p.tier; }
       if (p.subject) { sel.subject = p.subject; }
       if ('week' in p) { sel.week = p.week; }
+      if (p.period) {
+        var was = cur();
+        sel.period = p.period;
+        if (p.period === 'week' && !('week' in p) && was && was.current_week) {
+          sel.week = was.current_week;
+        }
+      }
       /* ⚠️ THE SAME FALLBACK THE SEAM HAS. A tier or subject press keeps the
          DATE; if the new axis has no such week the index falls back to that
          axis's current week. Without this the fixture would resolve to a
          missing key and render an empty board — which would look exactly
          like the empty-week state and pass. */
-      if (!D[key()]) {
+      if (sel.period === 'week' && !D[key()]) {
         var w = api.weeks();
         for (var i = 0; i < w.length; i++) {
           if (w[i].is_current) { sel.week = w[i].week_start; break; }

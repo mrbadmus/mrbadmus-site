@@ -347,6 +347,42 @@ def check_walls(pages):
 
 # ══════════════════════════════════════════════════════════════════════════
 
+def check_strip():
+    """The landing's challenge strip: ONE hidden leaderboard cell, no two-tier
+    leaders, nothing a pupil could mistake for a number, no consumer links."""
+    import re
+    html = open(os.path.join(OUT, "index.html"), encoding="utf-8").read()
+    m = re.search(r'<section class="k4-challenge".*?</section>', html, re.S)
+    if not m:
+        return fail("index.html has no challenge strip")
+    strip = m.group(0)
+    cell = re.search(r'<div class="k4-challenge-cell" id="k4-lead"[^>]*>', strip)
+    if not cell or " hidden" not in cell.group(0):
+        fail("the strip's leaderboard cell must exist as #k4-lead and SHIP "
+             "hidden (revealed only when filled)")
+    for gone in ("k4-lead-foundation", "k4-lead-higher", "so far this week",
+                 "Leading"):
+        if gone in strip:
+            fail("the strip still carries %r -- the two tier-leader cells "
+                 "were replaced by one" % gone)
+    if strip.count('id="k4-lead') != 1:
+        fail("the strip must hold exactly one leaderboard cell")
+    if 'href="/leaderboard.html"' not in strip:
+        fail("the strip's cell must link to /leaderboard.html")
+    if not re.search(r'k4-cta-solid" href="/weekly-challenge.html"', strip):
+        fail("the Take the challenge button (the Play button) is gone")
+    for bad in ("/parents/", "/go/", "/org/"):
+        if bad in strip:
+            fail("the strip links %s -- the leaderboard cell may not" % bad)
+    if re.search(r"\d", re.sub(r"<[^>]+>", " ", cell.group(0) if cell else "")):
+        fail("the cell ships a digit before any data arrives")
+    js = open(os.path.join(ROOT, "shared", "ks4-chrome.js"), encoding="utf-8").read()
+    if "/api/weekly-leaderboard/board?tier=" not in js or "period=auto" not in js:
+        fail("ks4-chrome.js must read /board with period=auto for the strip")
+    if re.search(r"Mr Badmus[^'\"]*scored \d", js):
+        fail("ks4-chrome.js hard-codes a score for Mr Badmus")
+
+
 def main():
     if not os.path.isdir(OUT):
         raise SystemExit(
@@ -369,6 +405,7 @@ def main():
     check_pages(pages, corpus)
     check_destinations(pages)
     check_walls(pages)
+    check_strip()
 
     print("ks4_chrome_tells — %d chrome pages" % len(pages))
     print("  corpus derived from %s:" % rel(DELIVERY))

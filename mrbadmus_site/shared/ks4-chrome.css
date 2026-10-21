@@ -776,6 +776,30 @@ body[data-chrome="ks4"] .k4-challenge-head {
   font-size: 25px; letter-spacing: -.02em; color: var(--k4-ink);
 }
 body[data-chrome="ks4"] .k4-challenge-sub { margin: 5px 0 0; font-size: 16px; color: var(--k4-muted); }
+/* The one leaderboard cell: top three, Mr Badmus's line, a link. Tokens only,
+   so the dark theme's remap of --k4-* reaches it with no rule of its own. */
+body[data-chrome="ks4"] .k4-lead-list { list-style: none; margin: 9px 0 0; padding: 0; }
+body[data-chrome="ks4"] .k4-lead-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 4px 0; font-size: 17px; color: var(--k4-ink);
+}
+body[data-chrome="ks4"] .k4-lead-who {
+  display: flex; align-items: center; gap: 8px; min-width: 0; font-weight: 600;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+body[data-chrome="ks4"] .k4-lead-rank { font-family: var(--k4-mono); font-size: 13px; color: var(--k4-muted); margin-right: 10px; }
+body[data-chrome="ks4"] .k4-lead-row { justify-content: flex-start; }
+body[data-chrome="ks4"] .k4-lead-row .k4-lead-who { flex: 1 1 auto; }
+body[data-chrome="ks4"] .k4-lead-val { font-family: var(--k4-mono); font-size: 15px; color: var(--k4-muted); flex-shrink: 0; margin-left: auto; }
+body[data-chrome="ks4"] .k4-lead-teacher {
+  flex: none; font-family: var(--k4-mono); font-size: 12px; font-weight: 500;
+  color: var(--k4-muted); border: 1px solid var(--k4-border); border-radius: 4px; padding: 2px 6px;
+}
+body[data-chrome="ks4"] .k4-lead-empty { margin: 9px 0 0; font-family: var(--k4-display); font-weight: 800; font-size: 20px; letter-spacing: -.02em; color: var(--k4-ink); }
+body[data-chrome="ks4"] .k4-lead-target { margin: 9px 0 0; font-size: 16px; color: var(--k4-muted); }
+body[data-chrome="ks4"] .k4-lead-link { display: inline-block; margin-top: 8px; font-size: 16px; font-weight: 600; color: var(--k4-link); }
+body[data-chrome="ks4"] .k4-lead-list[hidden], body[data-chrome="ks4"] .k4-lead-empty[hidden],
+body[data-chrome="ks4"] .k4-lead-target[hidden], body[data-chrome="ks4"] .k4-lead-link[hidden] { display: none; }
 body[data-chrome="ks4"] .k4-challenge-go { display: flex; justify-content: flex-end; }
 body[data-chrome="ks4"] .k4-challenge-go.k4-challenge-cell { border-left: 0; padding-left: 0; }
 
